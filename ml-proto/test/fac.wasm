@@ -1,0 +1,38 @@
+;; (c) 2015 Andreas Rossberg
+
+(module
+  ;; Recursive factorial
+  (func (param i64) (result i64)
+    (return
+      (if
+        (eq.i64 (getlocal 0) (const.i64 0))
+        (const.i64 1)
+        (mul.i64 (getlocal 0) (call 0 (sub.i64 (getlocal 0) (const.i64 1))))
+      )
+    )
+  )
+
+  ;; Iterative factorial
+  (func (param i64) (result i64)
+    (local i64)
+    (setlocal 1 (const.i64 1))
+    (label
+      (loop
+        (if
+          (eq.i64 (getlocal 0) (const.i64 0))
+          (break 0)
+          (block
+            (setlocal 1 (mul.i64 (getlocal 0) (getlocal 1)))
+            (setlocal 0 (sub.i64 (getlocal 0) (const.i64 1)))
+          )
+        )
+      )
+    )
+    (return (getlocal 1))
+  )
+
+  (export 0 1)
+)
+
+(invoke 0 (const.i64 25))
+(invoke 1 (const.i64 25))
