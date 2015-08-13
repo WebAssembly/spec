@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import os.path
 import unittest
 import subprocess
@@ -8,14 +9,23 @@ import glob
 class RunTests(unittest.TestCase):
   def _runTestFile(self, shortName, fileName, interpreterPath):
     print("\n// %s" % shortName)
-    exitCode = subprocess.call([interpreterPath, fileName])
+    logPath = fileName.replace("/test/", "/test/output/").replace(".wasm", ".wasm.log")
+    exitCode = subprocess.call(
+      ("%s %s | tee %s") % (interpreterPath, fileName, logPath),
+      shell=True
+    )
     self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
+
+def generate_test_case(rec):
+  return lambda self : self._runTestFile(*rec)
+
 
 def generate_test_cases(cls, interpreterPath, files):
   for fileName in files:
     absFileName = os.path.abspath(fileName)
     attrName = fileName
-    testCase = lambda self : self._runTestFile(attrName, absFileName, interpreterPath)
+    rec = (attrName, absFileName, interpreterPath)
+    testCase = generate_test_case(rec)
     setattr(cls, attrName, testCase)
 
 def rebuild_interpreter():
@@ -28,7 +38,13 @@ def rebuild_interpreter():
 
   return interpreterPath
 
-if __name__ == "__main__":  
+if __name__ == "__main__":
+  try:
+    os.makedirs("test/output/")
+  except OSError:
+    pass
+
   interpreterPath = rebuild_interpreter()
-  generate_test_cases(RunTests, interpreterPath, glob.glob("test/*.wasm"))
+  testFiles = glob.glob("test/*.wasm")
+  generate_test_cases(RunTests, interpreterPath, testFiles)
   unittest.main()
