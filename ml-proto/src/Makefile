@@ -5,7 +5,7 @@
 NAME = wasm
 MODULES = \
   flags lib source error \
-  types memory syntax \
+  types values memory syntax \
   check arithmetic eval print script \
   lexer parser \
   main
