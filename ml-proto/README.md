@@ -15,7 +15,9 @@ The interpreter can also be run as a REPL, allowing to enter pieces of scripts i
 
 ## Building
 
-You'll need OCaml 4.02. Then go to the `src` directory and simply do
+You'll need OCaml 4.02. The best way to get this is to download the source tarball from the ocaml website ( http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.2.tar.gz ) and do the configure / make dance.
+
+Once you have ocaml, go to the `src` directory and simply do
 
 ```
 make
@@ -32,7 +34,7 @@ ocamlbuild -libs bigarray main.native
 and get an executable named `src/main.native`.
 
 
-## Building on Windows
+### Building on Windows
 
 Install OCaml for Windows from the github page: http://protz.github.io/ocaml-installer/
 
