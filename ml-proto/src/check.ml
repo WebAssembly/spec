@@ -68,13 +68,13 @@ let type_mem = function
   | Memory.Float32Mem -> Float32Type
   | Memory.Float64Mem -> Float64Type
 
-let type_value = type_of
-let type_unop = type_of
-let type_binop = type_of
-let type_relop = type_of
+let type_value = Values.type_of
+let type_unop = Values.type_of
+let type_binop = Values.type_of
+let type_relop = Values.type_of
 
 let type_cvt at = function
-  | Int32 cvt ->
+  | Values.Int32 cvt ->
     let open Int32Op in
     (match cvt with
     | ToInt32S | ToInt32U -> error at "invalid conversion op Int32->Int32"
@@ -82,7 +82,7 @@ let type_cvt at = function
     | ToFloat32S | ToFloat32U | ToFloatCast -> Int32Type, Float32Type
     | ToFloat64S | ToFloat64U -> Int32Type, Float64Type
     )
-  | Int64 cvt ->
+  | Values.Int64 cvt ->
     let open Int64Op in
     (match cvt with
     | ToInt32S | ToInt32U -> Int64Type, Int32Type
@@ -90,7 +90,7 @@ let type_cvt at = function
     | ToFloat32S | ToFloat32U -> Int64Type, Float32Type
     | ToFloat64S | ToFloat64U | ToFloatCast -> Int64Type, Float64Type
     )
-  | Float32 cvt ->
+  | Values.Float32 cvt ->
     let open Float32Op in
     (match cvt with
     | ToInt32S | ToInt32U | ToIntCast -> Float32Type, Int32Type
@@ -98,7 +98,7 @@ let type_cvt at = function
     | ToFloat32 -> error at "invalid conversion op Float32->Float32"
     | ToFloat64 -> Float32Type, Float64Type
     )
-  | Float64 cvt ->
+  | Values.Float64 cvt ->
     let open Float64Op in
     (match cvt with
     | ToInt32S | ToInt32U -> Float64Type, Int32Type

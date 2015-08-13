@@ -2,10 +2,14 @@
  * (c) 2015 Andreas Rossberg
  *)
 
-open Types
 open Syntax
 open Source
 open Printf
+
+
+(* Types *)
+
+open Types
 
 let func_type f =
   let {Syntax.params; results; _} = f.it in
@@ -17,14 +21,16 @@ let string_of_table_type = function
 
 
 let print_var_sig prefix i t =
-  printf "%s %d : %s\n" prefix i (string_of_value_type t.it)
+  printf "%s %d : %s\n" prefix i (Types.string_of_value_type t.it)
 
 let print_func_sig prefix i f =
-  printf "%s %d : %s\n" prefix i (string_of_func_type (func_type f))
+  printf "%s %d : %s\n" prefix i (Types.string_of_func_type (func_type f))
 
 let print_table_sig prefix i t_opt =
   printf "%s %d : %s\n" prefix i (string_of_table_type t_opt)
 
+
+(* Syntax *)
 
 let print_func i f =
   print_func_sig "func" i f
@@ -57,7 +63,8 @@ let print_module_sig m =
 
 
 let print_values vs =
-  let ts = List.map type_of vs in
-  printf "%s : %s\n" (string_of_values vs) (string_of_expr_type ts);
+  let ts = List.map Values.type_of vs in
+  printf "%s : %s\n"
+    (Values.string_of_values vs) (Types.string_of_expr_type ts);
   flush_all ()
 

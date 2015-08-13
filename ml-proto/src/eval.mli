@@ -3,7 +3,7 @@
  *)
 
 type module_instance
-type value = Types.value
+type value = Values.value
 
 val init : Syntax.modul -> module_instance
 val invoke : module_instance -> int -> value list -> value list

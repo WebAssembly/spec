@@ -2,9 +2,10 @@
  * (c) 2015 Andreas Rossberg
  *)
 
-(* Types *)
+open Values
 
-open Types
+
+(* Types *)
 
 type value_type = Types.value_type Source.phrase
 

@@ -2,7 +2,7 @@
  * (c) 2015 Andreas Rossberg
  *)
 
-open Types
+open Values
 open Syntax
 open Source
 
@@ -11,7 +11,7 @@ let error = Error.error
 
 (* Module Instances *)
 
-type value = Types.value
+type value = Values.value
 type func = Syntax.func
 
 type module_instance =
@@ -65,8 +65,8 @@ let memory_error at = function
 
 let type_error at v t =
   error at
-    ("runtime: type error, expected " ^ string_of_value_type t ^
-      ", got " ^ string_of_value_type (type_of v))
+    ("runtime: type error, expected " ^ Types.string_of_value_type t ^
+      ", got " ^ Types.string_of_value_type (type_of v))
 
 let unary vs at =
   match vs with
@@ -77,7 +77,7 @@ let unary vs at =
 let int32 v at =
   match unary v at with
   | Int32 i -> i
-  | v -> type_error at v Int32Type
+  | v -> type_error at v Types.Int32Type
 
 
 (* Evaluation *)

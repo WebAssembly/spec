@@ -4,7 +4,6 @@
 
 {
 open Parser
-open Types
 open Syntax
 
 let convert_pos pos =
@@ -42,10 +41,10 @@ let convert_text s =
   Buffer.contents b
 
 let value_type = function
-  | "i32" -> Int32Type
-  | "i64" -> Int64Type
-  | "f32" -> Float32Type
-  | "f64" -> Float64Type
+  | "i32" -> Types.Int32Type
+  | "i64" -> Types.Int64Type
+  | "f32" -> Types.Float32Type
+  | "f64" -> Types.Float64Type
   | _ -> assert false
 
 let mem_type s t =
@@ -70,14 +69,14 @@ module F64 = Float64Op
 
 let intop t i32 i64 =
   match t with
-  | "i32" -> Int32 i32
-  | "i64" -> Int64 i64
+  | "i32" -> Values.Int32 i32
+  | "i64" -> Values.Int64 i64
   | _ -> assert false
 
 let floatop t f32 f64 =
   match t with
-  | "f32" -> Float32 f32
-  | "f64" -> Float64 f64
+  | "f32" -> Values.Float32 f32
+  | "f64" -> Values.Float64 f64
   | _ -> assert false
 
 let memop d a s t =
@@ -126,10 +125,10 @@ rule token = parse
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
-  | "i32" { TYPE Int32Type }
-  | "i64" { TYPE Int64Type }
-  | "f32" { TYPE Float32Type }
-  | "f64" { TYPE Float64Type }
+  | "i32" { TYPE Types.Int32Type }
+  | "i64" { TYPE Types.Int64Type }
+  | "f32" { TYPE Types.Float32Type }
+  | "f64" { TYPE Types.Float64Type }
 
   | "nop" { NOP }
   | "block" { BLOCK }
@@ -233,10 +232,10 @@ rule token = parse
   | "convert."(fxx as t)".f64"
     { CONVERT (floatop t F32.ToFloat64 F64.ToFloat64) }
 
-  | "cast.i32.f32" { CONVERT (Int32 I32.ToFloatCast) }
-  | "cast.i64.f64" { CONVERT (Int64 I64.ToFloatCast) }
-  | "cast.f32.i32" { CONVERT (Float32 F32.ToIntCast) }
-  | "cast.f64.i64" { CONVERT (Float64 F64.ToIntCast) }
+  | "cast.i32.f32" { CONVERT (Values.Int32 I32.ToFloatCast) }
+  | "cast.i64.f64" { CONVERT (Values.Int64 I64.ToFloatCast) }
+  | "cast.f32.i32" { CONVERT (Values.Float32 F32.ToIntCast) }
+  | "cast.f64.i64" { CONVERT (Values.Float64 F64.ToIntCast) }
 
   | "func" { FUNC }
   | "param" { PARAM }

@@ -48,7 +48,7 @@ let align ty a =
   if a mod n <> 0 then raise Align else a / n
 
 
-open Types
+open Values
 
 let address_of_value = function
   | Int32 i -> Int32.to_int i

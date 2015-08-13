@@ -2,9 +2,9 @@
  * (c) 2015 Andreas Rossberg
  *)
 
-open Types
+open Values
 
-exception TypeError of int * value * value_type
+exception TypeError of int * value * Types.value_type
 
 val eval_unop : Syntax.unop -> value -> value
 val eval_binop : Syntax.binop -> value -> value -> value

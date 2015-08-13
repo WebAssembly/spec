@@ -3,6 +3,8 @@
  *)
 
 open Types
+open Values
+
 
 (* Runtime type errors *)
 

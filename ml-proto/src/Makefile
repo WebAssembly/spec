@@ -9,7 +9,7 @@ MODULES = \
   check arithmetic eval print script \
   lexer parser \
   main
-NOMLI = flags types syntax sexpr main
+NOMLI = flags types values syntax sexpr main
 PARSERS = parser
 LEXERS = lexer
 LIBRARIES = bigarray
