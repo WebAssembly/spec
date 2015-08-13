@@ -8,7 +8,7 @@ to be incomplet and inkorrect.
 
 Participation is welcome. Discussions about new features, significant semantic
 changes, or any specification change likely to generate substantial discussion
-should take place
+should take place in
 [the WebAssembly design repository](https://github.com/WebAssembly/design)
 first, so that this spec repository can remain focused. And please follow the
-(guidelines for contributing)[Contributing.md].
+[guidelines for contributing](Contributing.md).
