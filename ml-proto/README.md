@@ -69,7 +69,7 @@ For most part, the language understood by the interpreter is based on Ben's V8 p
 
 The implementation tries to separate the concern of what is the language (and its semantics) from what is its external encoding. In that spirit, the actual AST is regular and minimal, while certain abbreviations are considered "syntactic sugar" of an external representation optimised for compactness.
 
-For example, `if` always has an else-branch in the AST, but in the external format an else-less conditional is allowed as an abbreviation for one with `nop`. Simlarly, blocks can sometimes be left implicit in sub-expressions. Furthermore, fallthru is a flag on each `switch` arm in the AST, but an explicit "opcode" in the external form.
+For example, `if` always has an else-branch in the AST, but in the external format an else-less conditional is allowed as an abbreviation for one with `nop`. Similarly, blocks can sometimes be left implicit in sub-expressions. Furthermore, fallthru is a flag on each `switch` arm in the AST, but an explicit "opcode" in the external form.
 
 Here, the external format is S-expressions, but similar considerations would apply to a binary encoding. That is, there would be codes for certain abbreviations, but these are just a matter of the encoding.
 
@@ -95,7 +95,7 @@ type expr =
   | Destruct of var list * expr         (* destructure multi-value into locals
   | GetLocal of var                     (* read local variable
   | SetLocal of var * expr              (* write local variable
-  | GetGlobal of var                    (* read glboal variable
+  | GetGlobal of var                    (* read global variable
   | SetGlobal of var * expr             (* write global variable
   | GetMemory of memop * expr           (* read memory address
   | SetMemory of memop * expr * expr    (* write memory address
