@@ -29,8 +29,38 @@ Alternatively, you can also say (in `src`):
 ocamlbuild -libs bigarray main.native
 ```
 
-and get an executable named `src/main.native`. On Windows you'll need Cygwin.
+and get an executable named `src/main.native`.
 
+
+## Building on Windows
+
+Install OCaml for Windows from the github page: http://protz.github.io/ocaml-installer/
+
+The installer will automatically install core cygwin packages. Contrary to the directions, however, you need a set of additional packages for ocaml & ocamlbuild to work, so select them in the cygwin installer (or run cygwinsetup manually to add them after the fact):
+
+```
+make
+
+mingw64-i686-binutils
+            -gcc-core
+            -gcc-g++
+            -headers
+            -runtime
+            -windows-default-manifest
+            -winpthreads
+
+mingw64-x86_64-binutils
+              -gcc-core
+              -gcc-g++
+              -headers
+              -runtime
+              -windows-default-manifest
+              -winpthreads
+```
+
+The set of packages may be different on 32-bit Windows. 
+
+The current set of prototypes does not rely on opam or ocaml packages, but be aware that opam does not work on Windows.
 
 ## Synopsis
 
