@@ -4,8 +4,8 @@
 
 type command = command' Source.phrase
 and command' =
-  | Define of Syntax.modul
-  | Invoke of int * Syntax.expr list
+  | Define of Ast.modul
+  | Invoke of int * Ast.expr list
 
 type script = command list
 

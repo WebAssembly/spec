@@ -12,4 +12,4 @@ parser.mli
 *.opt
 *.zip
 _build
-
+wasm

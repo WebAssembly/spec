@@ -4,7 +4,7 @@
 
 %{
 open Source
-open Syntax
+open Ast
 open Script
 
 let position_to_pos position =
@@ -50,12 +50,12 @@ let literal at s t =
 %token<int> VAR
 %token<Types.value_type> TYPE
 %token<Types.value_type> CONST
-%token<Syntax.unop> UNARY
-%token<Syntax.binop> BINARY
-%token<Syntax.relop> COMPARE
-%token<Syntax.cvt> CONVERT
-%token<Syntax.memop> GETMEMORY
-%token<Syntax.memop> SETMEMORY
+%token<Ast.unop> UNARY
+%token<Ast.binop> BINARY
+%token<Ast.relop> COMPARE
+%token<Ast.cvt> CONVERT
+%token<Ast.memop> GETMEMORY
+%token<Ast.memop> SETMEMORY
 
 %start script
 %type<Script.script> script

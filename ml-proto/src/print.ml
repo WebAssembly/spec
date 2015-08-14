@@ -2,7 +2,7 @@
  * (c) 2015 Andreas Rossberg
  *)
 
-open Syntax
+open Ast
 open Source
 open Printf
 
@@ -12,7 +12,7 @@ open Printf
 open Types
 
 let func_type f =
-  let {Syntax.params; results; _} = f.it in
+  let {Ast.params; results; _} = f.it in
   {ins = List.map Source.it params; outs = List.map Source.it results}
 
 let string_of_table_type = function
@@ -30,7 +30,7 @@ let print_table_sig prefix i t_opt =
   printf "%s %d : %s\n" prefix i (string_of_table_type t_opt)
 
 
-(* Syntax *)
+(* Ast *)
 
 let print_func i f =
   print_func_sig "func" i f
