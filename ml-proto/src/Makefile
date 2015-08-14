@@ -5,11 +5,11 @@
 NAME = wasm
 MODULES = \
   flags lib source error \
-  types values memory syntax \
+  types values memory ast \
   check arithmetic eval print script \
   lexer parser \
   main
-NOMLI = flags types values syntax sexpr main
+NOMLI = flags types values ast sexpr main
 PARSERS = parser
 LEXERS = lexer
 LIBRARIES = bigarray

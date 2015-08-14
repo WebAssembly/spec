@@ -40,7 +40,7 @@ sig
   val float_of_bits : t -> float
 end
 
-module IntOp (IntOpSyntax : module type of Syntax.IntOp ()) (Int : INT) =
+module IntOp (IntOpSyntax : module type of Ast.IntOp ()) (Int : INT) =
 struct
   open IntOpSyntax
 
@@ -122,8 +122,8 @@ struct
     function Int64 i -> i | v -> raise (TypeError (n, v, Int64Type))
 end
 
-module Int32Op = IntOp (Syntax.Int32Op) (Int32X)
-module Int64Op = IntOp (Syntax.Int64Op) (Int64X)
+module Int32Op = IntOp (Ast.Int32Op) (Int32X)
+module Int64Op = IntOp (Ast.Int64Op) (Int64X)
 
 
 (* Float operators *)
@@ -135,7 +135,7 @@ sig
   val to_value : float -> value
 end
 
-module FloatOp (FloatOpSyntax : module type of Syntax.FloatOp ())
+module FloatOp (FloatOpSyntax : module type of Ast.FloatOp ())
   (Float : FLOAT) =
 struct
   open FloatOpSyntax
@@ -202,8 +202,8 @@ struct
     function Float64 z -> z | v -> raise (TypeError (n, v, Float64Type))
 end
 
-module Float32Op = FloatOp (Syntax.Float32Op) (Float32X)
-module Float64Op = FloatOp (Syntax.Float64Op) (Float64X)
+module Float32Op = FloatOp (Ast.Float32Op) (Float32X)
+module Float64Op = FloatOp (Ast.Float64Op) (Float64X)
 
 
 (* Dispatch *)

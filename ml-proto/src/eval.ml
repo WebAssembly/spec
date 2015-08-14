@@ -3,7 +3,7 @@
  *)
 
 open Values
-open Syntax
+open Ast
 open Source
 
 let error = Error.error
@@ -12,7 +12,7 @@ let error = Error.error
 (* Module Instances *)
 
 type value = Values.value
-type func = Syntax.func
+type func = Ast.func
 
 type module_instance =
 {
@@ -238,7 +238,7 @@ and eval_func m f vs =
 (* Modules *)
 
 let init m =
-  let {Syntax.funcs; exports; tables; globals; memory = (n, _)} = m.it in
+  let {Ast.funcs; exports; tables; globals; memory = (n, _)} = m.it in
   {
     funcs = funcs;
     exports = List.map (fun x -> List.nth funcs x.it) exports;
