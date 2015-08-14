@@ -11,12 +11,30 @@ class RunTests(unittest.TestCase):
   def _runTestFile(self, shortName, fileName, interpreterPath):
     print("\n// %s" % shortName)
     sys.stdout.flush()
+
     logPath = fileName.replace("test/", "test/output/").replace(".wasm", ".wasm.log")
+    try:
+      os.remove(logPath)
+    except OSError:
+      pass
+
     commandStr = ("%s %s | tee %s") % (interpreterPath, fileName, logPath)
-    print("// %s" % commandStr)
-    sys.stdout.flush()
     exitCode = subprocess.call(commandStr, shell=True)
     self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
+
+    try:
+      expected = open(fileName.replace("test/", "test/expected-output/").replace(".wasm", ".wasm.log"))
+    except IOError:
+      print("// WARNING: No expected output found for this test")
+      return
+
+    output = open(logPath)
+
+    with expected:
+      with output:
+        expectedText = expected.read()
+        actualText = output.read()
+        self.assertEqual(expectedText, actualText)
 
 def generate_test_case(rec):
   return lambda self : self._runTestFile(*rec)

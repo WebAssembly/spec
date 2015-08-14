@@ -1,0 +1,6 @@
+export 0 : () -> Int32
+export 1 : () -> Int32
+export 2 : () -> Float64
+1 : Int32
+1 : Int32
+-3.10552331248e+231 : Float64
