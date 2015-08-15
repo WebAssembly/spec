@@ -4,6 +4,7 @@ parser.mli
 *.cmi
 *.cmo
 *.cmx
+*.exe
 *.o
 *.output
 *.depend
