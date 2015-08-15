@@ -108,7 +108,7 @@ Here, the external format is S-expressions, but similar considerations would app
 
 ## Internal Syntax
 
-The core language is defined in `syntax.ml`, and looks as follows:
+The core language is defined in `ast.ml`, and looks as follows:
 
 ```
 type var = int
@@ -241,7 +241,7 @@ The interpreter also supports a "dry" mode (flag `-d`), in which modules are onl
 
 The implementation consists of the following parts:
 
-* *AST* (`syntax.ml`, `types.ml`, `source.ml[i]`). Notably, the `phrase` wrapper type around each AST node carries the source position information.
+* *Abstract Syntax* (`ast.ml`, `types.ml`, `source.ml[i]`). Notably, the `phrase` wrapper type around each AST node carries the source position information.
 
 * *Parser* (`lexer.mll`, `parser.mly`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing.
 
