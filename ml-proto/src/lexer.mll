@@ -157,7 +157,7 @@ rule token = parse
   | "set"(dist as d)(align as a)"."(mfxx as t) { SETMEMORY (memop d a ' ' t) }
 
   | "const."(nxx as t) { CONST (value_type t) }
-  | "switch."(ixx as t) { SWITCH (value_type t) }
+  | "switch."(nxx as t) { SWITCH (value_type t) }
 
   | "neg."(ixx as t) { UNARY (intop t I32.Neg I64.Neg) }
   | "abs."(ixx as t) { UNARY (intop t I32.Abs I64.Abs) }

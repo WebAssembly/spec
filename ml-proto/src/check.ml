@@ -153,7 +153,7 @@ let rec check_expr c ts e =
     check_exprs c (label c x) es
 
   | Switch (t, e1, arms, e2) ->
-    require (t.it = Int32Type || t.it = Int64Type) e.at "invalid switch";
+    require (t.it = Int32Type || t.it = Int64Type) t.at "invalid switch type";
     (* TODO: Check that cases are unique. *)
     check_expr c [t.it] e1;
     List.iter (check_arm c t.it ts) arms;
