@@ -20,10 +20,10 @@ type func_type = {ins : expr_type; outs : expr_type}
 (* String conversion *)
 
 let string_of_value_type = function
-  | Int32Type -> "Int32"
-  | Int64Type -> "Int64"
-  | Float32Type -> "Float32"
-  | Float64Type -> "Float64"
+  | Int32Type -> "i32"
+  | Int64Type -> "i64"
+  | Float32Type -> "f32"
+  | Float64Type -> "f64"
 
 let string_of_expr_type = function
   | [t] -> string_of_value_type t

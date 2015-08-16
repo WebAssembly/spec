@@ -27,4 +27,4 @@
   (export 0)
 )
 
-(invoke 0 (const.i64 3) (const.i64 5))
+(invoke 0 (const.i64 3) (const.i64 5))  ;; 253 : i64
