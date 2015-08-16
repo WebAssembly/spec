@@ -119,7 +119,7 @@ let rec eval_expr c e =
   | Break (x, es) ->
     raise (label c x (eval_exprs c es))
 
-  | Switch (e1, arms, e2) ->
+  | Switch (_t, e1, arms, e2) ->
     let v = unary (eval_expr c e1) e1.at in
     (match List.fold_left (eval_arm c v) `Seek arms with
     | `Seek | `Fallthru -> eval_expr c e2

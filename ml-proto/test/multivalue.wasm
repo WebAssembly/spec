@@ -11,7 +11,7 @@
     (local i32 i32)
     (setlocal 0 (const.i32 1))
     (setlocal 1 (const.i32 2))
-    (switch (getparam 0)
+    (switch.i32 (getparam 0)
       ;; Destructure
       (case 1
         (destruct 0 1 (call 0 (getlocal 0) (getlocal 1)))
@@ -34,6 +34,37 @@
       (case 5
         (return (label (call 0 (break 0 (call 0 (getlocal 0) (getlocal 1))))))
       )
+      ;; Pass through block
+      (case 6
+        (return
+          (block
+            (setlocal 1 (const.i32 3))
+            (call 0 (getlocal 0) (getlocal 1))
+          )
+        )
+      )
+      ;; Pass through conditional
+      (case 7)
+      (case 8
+        (return
+          (if (eq.i32 (mods.i32 (getparam 0) (const.i32 2)) (const.i32 0))
+            (call 0 (getlocal 0) (getlocal 1))
+            (call 0 (getlocal 1) (getlocal 0))
+          )
+        )
+      )
+      ;; Pass through switch
+      (case 9)
+      (case 10)
+      (case 11
+        (return
+          (switch.i32 (getparam 0)
+            (case 9 (call 0 (getlocal 0) (getlocal 1)))
+            (case 10 (call 0 (getlocal 1) (getlocal 0)))
+            (label (break 0 (getlocal 0) (getlocal 0)))
+          )
+        )
+      )
       ;; Dummy default
       (return (getlocal 0) (getlocal 1))
     )
@@ -47,3 +78,9 @@
 (invoke 0 (const.i32 3))  ;; (1 2) : (Int32 Int32)
 (invoke 0 (const.i32 4))  ;; (1 2) : (Int32 Int32)
 (invoke 0 (const.i32 5))  ;; (2 1) : (Int32 Int32)
+(invoke 0 (const.i32 6))  ;; (3 1) : (Int32 Int32)
+(invoke 0 (const.i32 7))  ;; (1 2) : (Int32 Int32)
+(invoke 0 (const.i32 8))  ;; (2 1) : (Int32 Int32)
+(invoke 0 (const.i32 9))  ;; (2 1) : (Int32 Int32)
+(invoke 0 (const.i32 10))  ;; (1 2) : (Int32 Int32)
+(invoke 0 (const.i32 11))  ;; (1 1) : (Int32 Int32)

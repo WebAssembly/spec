@@ -152,10 +152,11 @@ let rec check_expr c ts e =
   | Break (x, es) ->
     check_exprs c (label c x) es
 
-  | Switch (e1, arms, e2) ->
+  | Switch (t, e1, arms, e2) ->
+    require (t.it = Int32Type || t.it = Int64Type) e.at "invalid switch";
     (* TODO: Check that cases are unique. *)
-    check_expr c [Int32Type] e1;
-    List.iter (check_arm c ts) arms;
+    check_expr c [t.it] e1;
+    List.iter (check_arm c t.it ts) arms;
     check_expr c ts e2
 
   | Call (x, es) ->
@@ -237,9 +238,9 @@ and check_exprs c ts = function
 and check_literal c ts l =
     check_type [type_value l.it] ts l.at
 
-and check_arm c ts arm =
+and check_arm c t ts arm =
   let {value = l; expr = e; fallthru} = arm.it in
-  check_literal c [Int32Type] l;
+  check_literal c [t] l;
   check_expr c (if fallthru then [] else ts) e
 
 

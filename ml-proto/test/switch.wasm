@@ -1,0 +1,60 @@
+;; (c) 2015 Andreas Rossberg
+
+(module
+  ;; Statement switch
+  (func (param i32) (result i32)
+    (local i32)
+    (setlocal 0 (const.i32 100))
+    (label
+      (switch.i32 (getparam 0)
+        (case 0 (return (getparam 0)))
+        (case 1 (nop) fallthru)
+        (case 2)  ;; implicit fallthru
+        (case 3 (setlocal 0 (neg.i32 (getparam 0))) (break))
+        (case 4 (break))
+        (case 5 (setlocal 0 (const.i32 101)))
+        (case 6 (setlocal 0 (const.i32 101)) fallthru)
+        (;default;) (setlocal 0 (const.i32 102))
+      )
+    )
+    (return (getlocal 0))
+  )
+
+  ;; Expression switch
+  (func (param i64) (result i64)
+    (local i64)
+    (setlocal 0 (const.i64 100))
+    (return
+      (label
+        (switch.i64 (getparam 0)
+          (case 0 (return (getparam 0)))
+          (case 1 (nop) fallthru)
+          (case 2)  ;; implicit fallthru
+          (case 3 (break 0 (neg.i64 (getparam 0))))
+          (case 6 (setlocal 0 (const.i64 101)) fallthru)
+          (;default;) (getlocal 0)
+        )
+      )
+    )
+  )
+
+  (export 0 1)
+)
+
+(invoke 0 (const.i32 0))  ;; 0 : Int32
+(invoke 0 (const.i32 1))  ;; -1 : Int32
+(invoke 0 (const.i32 2))  ;; -2 : Int32
+(invoke 0 (const.i32 3))  ;; -3 : Int32
+(invoke 0 (const.i32 4))  ;; 100 : Int32
+(invoke 0 (const.i32 5))  ;; 101 : Int32
+(invoke 0 (const.i32 6))  ;; 102 : Int32
+(invoke 0 (const.i32 7))  ;; 102 : Int32
+(invoke 0 (const.i32 -10))  ;; 102 : Int32
+
+(invoke 1 (const.i64 0))  ;; 0 : Int64
+(invoke 1 (const.i64 1))  ;; -1 : Int64
+(invoke 1 (const.i64 2))  ;; -2 : Int64
+(invoke 1 (const.i64 3))  ;; -3 : Int64
+(invoke 1 (const.i64 6))  ;; 101 : Int64
+(invoke 1 (const.i64 7))  ;; 100 : Int64
+(invoke 1 (const.i64 -10))  ;; 100 : Int64

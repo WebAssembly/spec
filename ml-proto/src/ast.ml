@@ -58,7 +58,7 @@ and expr' =
   | Loop of expr
   | Label of expr
   | Break of var * expr list
-  | Switch of expr * arm list * expr
+  | Switch of value_type * expr * arm list * expr
   | Call of var * expr list
   | Dispatch of var * expr * expr list
   | Return of expr list

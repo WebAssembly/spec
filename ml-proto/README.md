@@ -171,7 +171,7 @@ expr:
   ( label <expr>* )                   ;; = (label (block <expr>*))
   ( break <var> <expr>* )
   ( break )                           ;; = (break 0)
-  ( switch <expr> <case>* <expr> )
+  ( switch.<type> <expr> <case>* <expr> )
   ( call <var> <expr>* )
   ( dispatch <var> <expr> <expr>* )
   ( return <expr>* )

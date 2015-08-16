@@ -50,6 +50,7 @@ let literal at s t =
 %token<int> VAR
 %token<Types.value_type> TYPE
 %token<Types.value_type> CONST
+%token<Types.value_type> SWITCH
 %token<Ast.unop> UNARY
 %token<Ast.binop> BINARY
 %token<Ast.relop> COMPARE
@@ -102,7 +103,8 @@ expr1 :
   | LABEL expr_block { Label $2 }
   | BREAK var expr_list { Break ($2, $3) }
   | BREAK { Break (0 @@ at(), []) }  /* Sugar */
-  | SWITCH expr arms { let x, y = $3 in Switch ($2, x, y) }
+  | SWITCH expr arms
+    { let x, y = $3 in Switch ($1 @@ ati 0, $2, List.map (fun a -> a $1) x, y) }
   | CALL var expr_list { Call ($2, $3) }
   | DISPATCH var expr expr_list { Dispatch ($2, $3, $4) }
   | RETURN expr_list { Return $2 }
@@ -135,11 +137,12 @@ fallthru :
 ;
 arm :
   | LPAR CASE literal expr_block fallthru RPAR
-    { {value = literal (ati 3) $3 Types.Int32Type; expr = $4;
-       fallthru = $5} @@ at() }
+    { fun t ->
+        {value = literal (ati 3) $3 t; expr = $4; fallthru = $5} @@ at() }
   | LPAR CASE literal RPAR  /* Sugar */
-    { {value = literal (ati 3) $3 Types.Int32Type; expr = Nop @@ ati 4;
-       fallthru = true} @@ at() }
+    { fun t ->
+        {value = literal (ati 3) $3 t; expr = Nop @@ ati 4; fallthru = true}
+          @@ at() }
 ;
 arms :
   | expr { [], $1 }
