@@ -5,16 +5,17 @@
   (func (param i64) (result i64)
     (return
       (if
-        (eq.i64 (getlocal 0) (const.i64 0))
+        (eq.i64 (getparam 0) (const.i64 0))
         (const.i64 1)
-        (mul.i64 (getlocal 0) (call 0 (sub.i64 (getlocal 0) (const.i64 1))))
+        (mul.i64 (getparam 0) (call 0 (sub.i64 (getparam 0) (const.i64 1))))
       )
     )
   )
 
   ;; Iterative factorial
   (func (param i64) (result i64)
-    (local i64)
+    (local i64 i64)
+    (setlocal 0 (getparam 0))
     (setlocal 1 (const.i64 1))
     (label
       (loop
@@ -34,5 +35,5 @@
   (export 0 1)
 )
 
-(invoke 0 (const.i64 25))
-(invoke 1 (const.i64 25))
+(invoke 0 (const.i64 25))  ;; 7034535277573963776 : Int64
+(invoke 1 (const.i64 25))  ;; 7034535277573963776 : Int64

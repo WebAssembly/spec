@@ -63,6 +63,7 @@ and expr' =
   | Dispatch of var * expr * expr list
   | Return of expr list
   | Destruct of var list * expr
+  | GetParam of var
   | GetLocal of var
   | SetLocal of var * expr
   | GetGlobal of var

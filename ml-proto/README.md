@@ -125,6 +125,7 @@ type expr =
   | Dispatch of var * expr * expr list  (* call function through table
   | Return of expr list                 (* return 0 to many value
   | Destruct of var list * expr         (* destructure multi-value into locals
+  | GetParam of var                     (* read parameter
   | GetLocal of var                     (* read local variable
   | SetLocal of var * expr              (* write local variable
   | GetGlobal of var                    (* read global variable
@@ -175,6 +176,7 @@ expr:
   ( dispatch <var> <expr> <expr>* )
   ( return <expr>* )
   ( destruct <var>* <expr> )
+  ( getparam <var> )
   ( getlocal <var> )
   ( setlocal <var> <expr> )
   ( getglobal <var> )

@@ -63,6 +63,6 @@
   (export 0 1 2)
 )
 
-(invoke 0)
-(invoke 1)
-(invoke 2)
+(invoke 0)  ;; 1 : Int32
+(invoke 1)  ;; 1 : Int32
+(invoke 2)  ;; -3.10552331246e+231 : Float64

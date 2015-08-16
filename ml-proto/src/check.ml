@@ -20,6 +20,7 @@ type context =
   funcs : func_type list;
   globals : value_type list;
   locals : value_type list;
+  params : value_type list;
   returns : expr_type;
   labels : expr_type list;
   tables : func_type list
@@ -27,10 +28,11 @@ type context =
 
 let lookup category list x =
   try List.nth list x.it
-  with Invalid_argument _ ->
+  with Failure _ ->
     error x.at ("unknown " ^ category ^ " " ^ string_of_int x.it)
 
 let func c x = lookup "function" c.funcs x
+let param c x = lookup "parameter" c.params x
 let local c x = lookup "local" c.locals x
 let global c x = lookup "global" c.globals x
 let table c x = lookup "table" c.tables x
@@ -174,6 +176,9 @@ let rec check_expr c ts e =
     check_expr c (List.map (local c) xs) e1;
     check_type [] ts e.at
 
+  | GetParam x ->
+    check_type [param c x] ts e.at
+
   | GetLocal x ->
     check_type [local c x] ts e.at
 
@@ -254,7 +259,8 @@ and check_arm c ts arm =
 
 let check_func c f =
   let {params; results; locals; body = e} = f.it in
-  let c' = {c with locals = List.map it (params @ locals);
+  let c' = {c with locals = List.map it locals;
+                  params = List.map it params;
                   returns = List.map it results} in
   check_expr c' (List.map it results) e
 
@@ -277,6 +283,7 @@ let check_module m =
       funcs = List.map type_func funcs;
       globals = List.map it globals;
       locals = [];
+      params = [];
       returns = [];
       tables = [];
       labels = []
