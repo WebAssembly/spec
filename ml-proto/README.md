@@ -203,7 +203,7 @@ module: ( module <func>* <global>* <export>* <table>* <memory>? <data>* )
 global: ( global <type>* )
 export: ( export <var>* )
 table:  ( table <var>* )
-memory: ( memory int int? )
+memory: ( memory <int> <int>? )
 data:   ( data "<char>*" )
 ```
 
