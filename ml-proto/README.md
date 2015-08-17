@@ -194,11 +194,12 @@ case:
   ( case <value> <expr>* fallthru? )  ;; = (case <int> (block <expr>*) fallthru?)
   ( case <value> )                    ;; = (case <int> (nop) fallthru)
 
-module: ( module <func>* <global>* <export>* <table>* <memory>? <data>* )
 func:   ( func <param>* <result>* <local>* <expr>* )
 param:  ( param <type>* )
 result: ( result <type>* )
 local:  ( local <type>* )
+
+module: ( module <func>* <global>* <export>* <table>* <memory>? <data>* )
 global: ( global <type>* )
 export: ( export <var>* )
 table:  ( table <var>* )
