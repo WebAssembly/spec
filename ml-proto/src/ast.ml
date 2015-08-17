@@ -102,6 +102,7 @@ type modul = modul' Source.phrase
 and modul' =
 {
   memory : int64 * int64;
+  data : string;
   funcs : func list;
   exports : var list;
   tables : table list;

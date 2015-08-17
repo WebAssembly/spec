@@ -22,20 +22,21 @@ let error_nest start lexbuf m =
   lexbuf.Lexing.lex_start_p <- start;
   error lexbuf m
 
-let convert_escape = function
-  | 'n' -> '\n'
-  | 't' -> '\t'
-  | '\\' -> '\\'
-  | '\'' -> '\''
-  | '\"' -> '\"'
-  | _ -> assert false
-
 let convert_text s =
   let b = Buffer.create (String.length s) in
   let i = ref 1 in
   while !i < String.length s - 1 do
-    Buffer.add_char b
-      (if s.[!i] <> '\\' then s.[!i] else (incr i; convert_escape s.[!i]));
+    let c = if s.[!i] <> '\\' then s.[!i] else
+      match (incr i; s.[!i]) with
+      | 'n' -> '\n'
+      | 't' -> '\t'
+      | '\\' -> '\\'
+      | '\'' -> '\''
+      | '\"' -> '\"'
+      | d ->
+        incr i;
+        Char.chr (int_of_string ("0x" ^ String.make 1 d ^ String.make 1 s.[!i]))
+    in Buffer.add_char b c;
     incr i
   done;
   Buffer.contents b
@@ -94,11 +95,12 @@ let memop d a s t =
 
 let space = [' ''\t']
 let digit = ['0'-'9']
+let hexdigit = ['0'-'9''a'-'f''A'-'F']
 let letter = ['a'-'z''A'-'Z']
 let symbol = ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`']
 let tick = '\''
 let escape = ['n''t''\\''\'''\"']
-let character = [^'"''\\''\n'] | '\\'escape
+let character = [^'"''\\''\n'] | '\\'escape | '\\'hexdigit hexdigit
 
 let num = ('+' | '-')? digit+
 let int = num
@@ -243,12 +245,13 @@ rule token = parse
   | "result" { RESULT }
   | "local" { LOCAL }
   | "module" { MODULE }
+  | "memory" { MEMORY }
+  | "data" { DATA }
   | "global" { GLOBAL }
   | "import" { IMPORT }
   | "export" { EXPORT }
   | "table" { TABLE }
 
-  | "memory" { MEMORY }
   | "invoke" { INVOKE }
 
   | ";;"[^'\n']*eof { EOF }

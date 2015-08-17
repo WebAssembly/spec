@@ -40,8 +40,8 @@ let literal at s t =
 %token CALL DISPATCH RETURN DESTRUCT
 %token GETPARAM GETLOCAL SETLOCAL GETGLOBAL SETGLOBAL GETMEMORY SETMEMORY
 %token CONST UNARY BINARY COMPARE CONVERT
-%token FUNC PARAM RESULT LOCAL MODULE GLOBAL IMPORT EXPORT TABLE
-%token MEMORY DEFINE INVOKE
+%token FUNC PARAM RESULT LOCAL MODULE MEMORY DATA GLOBAL IMPORT EXPORT TABLE
+%token INVOKE
 %token EOF
 
 %token<string> INT
@@ -174,7 +174,7 @@ func :
 module_fields :
   | /* empty */
     { let memory = (Int64.zero, Int64.zero) in
-      {memory; funcs = []; exports = []; globals = []; tables = []} }
+      {memory; data = ""; funcs = []; exports = []; globals = []; tables = []} }
   | func module_fields
     { {$2 with funcs = $1 :: $2.funcs} }
   | LPAR GLOBAL value_type_list RPAR module_fields
@@ -187,13 +187,15 @@ module_fields :
     { {$6 with memory = (Int64.of_string $3, Int64.of_string $4)} }
   | LPAR MEMORY INT RPAR module_fields  /* Sugar */
     { {$5 with memory = (Int64.of_string $3, Int64.of_string $3)} }
+  | LPAR DATA TEXT RPAR module_fields
+    { {$5 with data = $5.data ^ $3} }
 ;
 modul :
   | LPAR MODULE module_fields RPAR { $3 @@ at() }
   | func  /* Sugar */
     { let memory = (Int64.zero, Int64.zero) in
-      {funcs = [$1]; exports = [0 @@ at()]; globals = []; tables = []; memory}
-        @@ at() }
+      {memory; data = ""; funcs = [$1]; exports = [0 @@ at()]; globals = [];
+       tables = []} @@ at() }
 ;
 
 

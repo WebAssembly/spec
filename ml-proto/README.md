@@ -194,7 +194,7 @@ case:
   ( case <value> <expr>* fallthru? )  ;; = (case <int> (block <expr>*) fallthru?)
   ( case <value> )                    ;; = (case <int> (nop) fallthru)
 
-module: ( module <func>* <global>* <export>* <table>* <memory>? )
+module: ( module <func>* <global>* <export>* <table>* <memory>? <data>* )
 func:   ( func <param>* <result>* <local>* <expr>* )
 param:  ( param <type>* )
 result: ( result <type>* )
@@ -203,9 +203,12 @@ global: ( global <type>* )
 export: ( export <var>* )
 table:  ( table <var>* )
 memory: ( memory int int? )
+data:   ( data "<char>*" )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions.
+
+The data string is used to initialise the lower end of the memory. It is an ASCII string, that can have the usual escape sequences, or hex escapes of the form `\xx` to denote a single byte.
 
 Comments can be written in one of two ways:
 

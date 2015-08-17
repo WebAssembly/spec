@@ -261,7 +261,7 @@ and check_arm c t ts arm =
 let check_func c f =
   let {params; results; locals; body = e} = f.it in
   let c' = {c with locals = List.map it locals;
-                  params = List.map it params;
+                   params = List.map it params;
                   returns = List.map it results} in
   check_expr c' (List.map it results) e
 
@@ -278,7 +278,9 @@ let check_export c x =
   ignore (func c x)
 
 let check_module m =
-  let {funcs; exports; tables; globals; memory} = m.it in
+  let {funcs; exports; tables; globals; memory; data} = m.it in
+  require (fst memory >= Int64.of_int (String.length data)) m.at
+    "data section does not fit memory";
   let c =
     {
       funcs = List.map type_func funcs;

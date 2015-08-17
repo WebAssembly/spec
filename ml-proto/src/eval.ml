@@ -250,14 +250,16 @@ and eval_func m f vs =
 (* Modules *)
 
 let init m =
-  let {Ast.funcs; exports; tables; globals; memory = (n, _)} = m.it in
+  let {Ast.funcs; exports; tables; globals; memory = (n, _); data} = m.it in
+  let memory = Memory.create (Int64.to_int n) in
+  Memory.init memory data;
   {
-    funcs = funcs;
+    funcs;
     exports = List.map (fun x -> List.nth funcs x.it) exports;
     tables =
       List.map (fun t -> List.map (fun x -> List.nth funcs x.it) t.it) tables;
     globals = List.map eval_decl globals;
-    memory = Memory.create (Int64.to_int n)
+    memory
   }
 
 let invoke m x vs =

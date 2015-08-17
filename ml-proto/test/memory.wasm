@@ -2,6 +2,15 @@
 
 (module
   (memory 1024)
+  (data "ABC\a7D")
+
+  ;; Data section
+  (func (result i32)
+    (and.i32
+      (eq.i32 (getnearu.i8 (const.i32 0)) (const.i32 65))
+      (eq.i32 (getfaru.i8 (const.i64 3)) (const.i32 167))
+    )
+  )
 
   ;; Aligned read/write
   (func (result i32)
@@ -60,9 +69,10 @@
     (return (getnear.f64 (const.i32 0)))
   )
 
-  (export 0 1 2)
+  (export 0 1 2 3)
 )
 
 (invoke 0)  ;; 1 : i32
 (invoke 1)  ;; 1 : i32
-(invoke 2)  ;; -3.10552331246e+231 : f64
+(invoke 2)  ;; 1 : i32
+(invoke 3)  ;; -3.10552331246e+231 : f64

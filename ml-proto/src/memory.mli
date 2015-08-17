@@ -16,6 +16,7 @@ exception Align
 exception Address
 
 val create : int -> memory
+val init : memory -> string -> unit
 val load : memory -> alignment -> address -> mem_type -> Values.value
 val store : memory -> alignment -> address -> mem_type -> Values.value -> unit
 
