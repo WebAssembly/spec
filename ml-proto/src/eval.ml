@@ -266,6 +266,7 @@ let invoke m x vs =
   let f = export m (x @@ Source.no_region) in
   eval_func m f vs
 
-let eval m e =
-  let f = {params = []; results = []; locals = []; body = e} @@ Source.no_region
-  in unary (eval_func m f []) e.at
+let eval e =
+  let f = {params = []; results = []; locals = []; body = e} @@ Source.no_region in
+  let m = {funcs = [f]; exports = [f]; tables = []; globals = []; memory = (Memory.create 0)} in
+  unary (eval_func m f []) e.at

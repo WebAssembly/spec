@@ -230,10 +230,12 @@ In order to be able to check and run modules for testing purposes, the S-express
 script: <cmd>*
 
 cmd:
-  <module>                  ;; define, validate, and initialize module
-  ( invoke <var> <expr>* )  ;; invoke export and print result
-  <func>                    ;; = (module <func> (export 0))
-  ( invoke <expr>* )        ;; = (invoke 0 <expr>*)
+  <module>                                      ;; define, validate, and initialize module
+  ( invoke <var> <expr>* )                      ;; invoke export and print result
+  ( asserteq (invoke <var> <expr>* ) <expr>* )  ;; assert expected results of invocation
+  <func>                                        ;; = (module <func> (export 0))
+  ( invoke <expr>* )                            ;; = (invoke 0 <expr>*)
+  ( asserteq (invoke <expr>* ) <expr>* )        ;; = (asserteq (invoke 0 <expr>*) <expr>*)
 ```
 
 Invocation is only possible after a module has been defined.

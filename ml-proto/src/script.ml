@@ -35,11 +35,11 @@ let run_command cmd =
       current_module := Some (Eval.init m)
     | Invoke (i, es) ->
       trace "Invoking...";
+      let vs = List.map Eval.eval es in
       let m = match !current_module with
         | Some m -> m
         | None -> Error.error cmd.at "no module defined to invoke"
       in
-      let vs = List.map (Eval.eval m) es in
       let vs' = Eval.invoke m i vs in
       if vs' <> [] then Print.print_values vs'
     | AssertEqInvoke (i, arg_es, expect_es) ->
@@ -48,11 +48,10 @@ let run_command cmd =
         | Some m -> m
         | None -> Error.error cmd.at "no module defined to invoke"
       in
-      let eval = Eval.eval m in
-      let arg_vs = List.map eval arg_es in
+      let arg_vs = List.map Eval.eval arg_es in
       let got_vs = Eval.invoke m i arg_vs in
-      let expect_vs = List.map eval expect_es in
-      if List.exists2 (<>) got_vs expect_vs then begin
+      let expect_vs = List.map Eval.eval expect_es in
+      if got_vs <> expect_vs then begin
         print_string "Got: ";
         Print.print_values got_vs;
         print_string "Expect: ";
