@@ -1,4 +1,8 @@
-export "rec_fac" : i64 -> i64
-export "iter_fac" : i64 -> i64
+export "fac-rec" : i64 -> i64
+export "fac-iter" : i64 -> i64
+export "fac-rec-named" : i64 -> i64
+export "fac-iter-named" : i64 -> i64
+7034535277573963776 : i64
+7034535277573963776 : i64
 7034535277573963776 : i64
 7034535277573963776 : i64
