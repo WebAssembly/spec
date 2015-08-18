@@ -51,7 +51,7 @@ let run_command cmd =
       let arg_vs = List.map Eval.eval arg_es in
       let got_vs = Eval.invoke m i arg_vs in
       let expect_vs = List.map Eval.eval expect_es in
-      if List.exists2 (<>) got_vs expect_vs then begin
+      if got_vs <> expect_vs then begin
         print_string "Got: ";
         Print.print_values got_vs;
         print_string "Expect: ";
