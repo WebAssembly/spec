@@ -18,6 +18,8 @@ sig
   type t
   val of_value : int -> value -> t
   val to_value : t -> value
+  val zero : t
+  val one : t
   val size : int
   val neg : t -> t
   val abs : t -> t
@@ -50,7 +52,14 @@ struct
       | Abs -> Int.abs
       | Not -> Int.lognot
       | Clz -> fun i -> i  (* TODO *)
-      | Ctz -> fun i -> i  (* TODO *)
+      | Ctz -> fun i ->
+        let open Int in
+        if i = zero then zero else
+        let rec loop j =
+          if logand i j = zero
+          then add one (loop (shift_left j 1))
+          else zero
+        in loop one
     in fun v -> Int.to_value (f (Int.of_value 1 v))
 
   let binop op =
