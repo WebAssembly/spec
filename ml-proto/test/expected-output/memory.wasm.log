@@ -1,6 +1,8 @@
-export 0 : () -> Int32
-export 1 : () -> Int32
-export 2 : () -> Float64
-1 : Int32
-1 : Int32
--3.10552331248e+231 : Float64
+export 0 : () -> i32
+export 1 : () -> i32
+export 2 : () -> i32
+export 3 : () -> f64
+1 : i32
+1 : i32
+1 : i32
+-3.10552331246e+231 : f64
