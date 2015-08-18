@@ -155,7 +155,7 @@ type: i32 | i64 | f32 | f64
 memtype: <type> | i8 | i16
 
 value: <int> | <float>
-var: <int>
+var: <int> | <name>
 
 unop:  neg | abs | not | ...
 binop: add | sub | mul | ...
@@ -168,7 +168,7 @@ expr:
   ( if <expr> <expr> <expr> )
   ( if <expr> <expr> )                ;; = (if <expr> <expr> (nop))
   ( loop <expr>* )                    ;; = (loop (block <expr>*))
-  ( label <expr>* )                   ;; = (label (block <expr>*))
+  ( label <name>? <expr>* )           ;; = (label (block <expr>*))
   ( break <var> <expr>* )
   ( break )                           ;; = (break 0)
   ( switch.<type> <expr> <case>* <expr> )
@@ -194,13 +194,13 @@ case:
   ( case <value> <expr>* fallthru? )  ;; = (case <int> (block <expr>*) fallthru?)
   ( case <value> )                    ;; = (case <int> (nop) fallthru)
 
-func:   ( func <param>* <result>* <local>* <expr>* )
-param:  ( param <type>* )
+func:   ( func <name>? <param>* <result>* <local>* <expr>* )
+param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type>* )
-local:  ( local <type>* )
+local:  ( local <type>* ) | ( local <name> <type> )
 
 module: ( module <func>* <global>* <export>* <table>* <memory>? <data>* )
-global: ( global <type>* )
+global: ( global <type>* ) | ( global <name> <type> )
 export: ( export <var>* )
 table:  ( table <var>* )
 memory: ( memory <int> <int>? )
