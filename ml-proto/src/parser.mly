@@ -143,8 +143,8 @@ literal :
 ;
 
 var :
-  | INT { fun c lookup -> int_of_string $1 @@ at() }
-  | VAR { fun c lookup -> lookup c ($1 @@ at()) @@ at() }
+  | INT { fun c lookup -> let i = int_of_string $1 in lazy i @@ at() }
+  | VAR { fun c lookup -> let at = at() in lazy (lookup c ($1 @@ at)) @@ at }
 ;
 var_list :
   | /* empty */ { fun c lookup -> [] }
@@ -167,7 +167,7 @@ oper :
   | LABEL bind_var expr_block  /* Sugar */
     { fun c -> Label ($3 (bind_label c $2)) }
   | BREAK var expr_list { fun c -> Break ($2 c label, $3 c) }
-  | BREAK { fun c -> Break (0 @@ at(), []) }  /* Sugar */
+  | BREAK { fun c -> Break (lazy 0 @@ at(), []) }  /* Sugar */
   | SWITCH expr arms
     { fun c -> let x, y = $3 c in
         Switch ($1 @@ ati 1, $2 c, List.map (fun a -> a $1) x, y) }
@@ -279,8 +279,8 @@ modul :
   | LPAR MODULE module_fields RPAR { $3 c0 @@ at() }
   | func  /* Sugar */
     { let memory = (Int64.zero, Int64.zero) in
-      {memory; data = ""; funcs = [$1 c0]; exports = [0 @@ at()]; globals = [];
-       tables = []} @@ at() }
+      {memory; data = ""; funcs = [$1 c0]; exports = [lazy 0 @@ at()];
+       globals = []; tables = []} @@ at() }
 ;
 
 

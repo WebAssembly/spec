@@ -38,9 +38,9 @@ type config =
 }
 
 let lookup category list x =
-  try List.nth list x.it
-  with Failure _ ->
-    error x.at ("runtime: undefined " ^ category ^ " " ^ string_of_int x.it)
+  let i = Lazy.force x.it in
+  try List.nth list i with Failure _ ->
+    error x.at ("runtime: undefined " ^ category ^ " " ^ string_of_int i)
 
 let export m x = lookup "export" m.exports x
 let func c x = lookup "function" c.modul.funcs x
@@ -133,7 +133,7 @@ let rec eval_expr c e =
   | Dispatch (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = eval_exprs c es in
-    eval_func c.modul (table c x (Int32.to_int i @@ e1.at)) vs
+    eval_func c.modul (table c x (lazy (Int32.to_int i) @@ e1.at)) vs
 
   | Return es ->
     raise (c.return (eval_exprs c es))
@@ -253,17 +253,17 @@ let init m =
   let {Ast.funcs; exports; tables; globals; memory = (n, _); data} = m.it in
   let memory = Memory.create (Int64.to_int n) in
   Memory.init memory data;
+  let func x = List.nth funcs (Lazy.force x.it) in
   {
     funcs;
-    exports = List.map (fun x -> List.nth funcs x.it) exports;
-    tables =
-      List.map (fun t -> List.map (fun x -> List.nth funcs x.it) t.it) tables;
+    exports = List.map func exports;
+    tables = List.map (fun t -> List.map func t.it) tables;
     globals = List.map eval_decl globals;
     memory
   }
 
 let invoke m x vs =
-  let f = export m (x @@ Source.no_region) in
+  let f = export m (lazy x @@ Source.no_region) in
   eval_func m f vs
 
 let eval e =
