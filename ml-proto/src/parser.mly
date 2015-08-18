@@ -41,7 +41,7 @@ let literal at s t =
 %token GETPARAM GETLOCAL SETLOCAL GETGLOBAL SETGLOBAL GETMEMORY SETMEMORY
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY DATA GLOBAL IMPORT EXPORT TABLE
-%token INVOKE
+%token INVOKE ASSERTEQ
 %token EOF
 
 %token<string> INT
@@ -205,6 +205,8 @@ cmd :
   | modul { Define $1 @@ at() }
   | LPAR INVOKE INT expr_list RPAR { Invoke (int_of_string $3, $4) @@ at() }
   | LPAR INVOKE expr_list RPAR { Invoke (0, $3) @@ at() }  /* Sugar */
+  | LPAR ASSERTEQ LPAR INVOKE INT expr_list RPAR expr_list RPAR { AssertEqInvoke (int_of_string $5, $6, $8) @@ at() }
+  | LPAR ASSERTEQ LPAR INVOKE expr_list RPAR expr_list RPAR { AssertEqInvoke (0, $5, $7) @@ at() }  /* Sugar */
 ;
 cmd_list :
   | /* empty */ { [] }
