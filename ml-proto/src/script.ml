@@ -10,6 +10,7 @@ type command = command' phrase
 and command' =
   | Define of Ast.modul
   | Invoke of int * Ast.expr list
+  | AssertEqInvoke of int * Ast.expr list * Ast.expr list
 
 type script = command list
 
@@ -41,6 +42,23 @@ let run_command cmd =
       let vs = List.map (Eval.eval m) es in
       let vs' = Eval.invoke m i vs in
       if vs' <> [] then Print.print_values vs'
+    | AssertEqInvoke (i, arg_es, expect_es) ->
+      trace "AssertEqInvoke...";
+      let m = match !current_module with
+        | Some m -> m
+        | None -> Error.error cmd.at "no module defined to invoke"
+      in
+      let eval = Eval.eval m in
+      let arg_vs = List.map eval arg_es in
+      let got_vs = Eval.invoke m i arg_vs in
+      let expect_vs = List.map eval expect_es in
+      if List.exists2 (<>) got_vs expect_vs then begin
+        print_string "Got: ";
+        Print.print_values got_vs;
+        print_string "Expect: ";
+        Print.print_values expect_vs;
+        Error.error cmd.at "assertion failed"
+      end;
   with Error.Error (at, s) ->
     trace "Error:";
     prerr_endline (Source.string_of_region at ^ ": " ^ s)
@@ -51,6 +69,7 @@ let dry_command cmd =
     Check.check_module m;
     if !Flags.print_sig then Print.print_module_sig m
   | Invoke _ -> ()
+  | AssertEqInvoke _ -> ()
 
 let run script =
   List.iter (if !Flags.dry then dry_command else run_command) script

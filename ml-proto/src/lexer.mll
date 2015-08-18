@@ -253,6 +253,7 @@ rule token = parse
   | "table" { TABLE }
 
   | "invoke" { INVOKE }
+  | "asserteq" { ASSERTEQ }
 
   | ";;"[^'\n']*eof { EOF }
   | ";;"[^'\n']*'\n' { Lexing.new_line lexbuf; token lexbuf }
