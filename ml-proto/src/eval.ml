@@ -14,10 +14,13 @@ let error = Error.error
 type value = Values.value
 type func = Ast.func
 
+module ExportMap = Map.Make(String)
+type export_map = func ExportMap.t
+
 type module_instance =
 {
   funcs : func list;
-  exports : func list;
+  exports : export_map;
   tables : func list list;
   globals : value ref list;
   memory : Memory.t
@@ -42,13 +45,17 @@ let lookup category list x =
   with Failure _ ->
     error x.at ("runtime: undefined " ^ category ^ " " ^ string_of_int x.it)
 
-let export m x = lookup "export" m.exports x
 let func c x = lookup "function" c.modul.funcs x
 let global c x = lookup "global" c.modul.globals x
 let table c x y = lookup "entry" (lookup "table" c.modul.tables x) y
 let param c x = lookup "parameter" c.params x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
+
+let export m x =
+  try ExportMap.find x.it m.exports
+  with Not_found ->
+    error x.at ("runtime: undefined export " ^ x.it)
 
 module MakeLabel () =
 struct
@@ -255,7 +262,7 @@ let init m =
   Memory.init memory data;
   {
     funcs;
-    exports = List.map (fun x -> List.nth funcs x.it) exports;
+    exports = ExportMap.map (fun idx -> List.nth funcs idx.it) exports;
     tables =
       List.map (fun t -> List.map (fun x -> List.nth funcs x.it) t.it) tables;
     globals = List.map eval_decl globals;
@@ -267,7 +274,8 @@ let invoke m x vs =
   eval_func m f vs
 
 let eval e =
-  let memory = Memory.create 0 in
   let f = {params = []; results = []; locals = []; body = e} @@ no_region in
-  let m = {funcs = [f]; exports = [f]; tables = []; globals = []; memory} in
+  let memory = Memory.create 0 in
+  let exports = ExportMap.singleton "eval" f in
+  let m = {funcs = [f]; exports; tables = []; globals = []; memory} in
   unary (eval_func m f []) e.at

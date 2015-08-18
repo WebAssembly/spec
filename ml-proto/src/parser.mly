@@ -91,6 +91,14 @@ var_list :
   | var var_list { $1 :: $2 }
 ;
 
+export :
+  | LPAR TEXT INT RPAR { ($2, int_of_string $3) }
+;
+export_list :
+  | /* empty */ { Ast.ExportMap.empty }
+  | export export_list { Ast.ExportMap.add (fst $1) (snd $1 @@ at()) $2 }
+;
+
 expr :
   | LPAR expr1 RPAR { $2 @@ at() }
 ;
@@ -174,13 +182,15 @@ func :
 module_fields :
   | /* empty */
     { let memory = (Int64.zero, Int64.zero) in
-      {memory; data = ""; funcs = []; exports = []; globals = []; tables = []} }
+      {memory; data = ""; funcs = []; exports = Ast.ExportMap.empty; globals = []; tables = []} }
   | func module_fields
     { {$2 with funcs = $1 :: $2.funcs} }
   | LPAR GLOBAL value_type_list RPAR module_fields
     { {$5 with globals = $3 @ $5.globals} }
-  | LPAR EXPORT var_list RPAR module_fields
-    { {$5 with exports = $3 @ $5.exports} }
+  | LPAR EXPORT export_list RPAR module_fields
+    { if not (Ast.ExportMap.is_empty $5.exports)
+      then Error.error (at ()) "multiple export sections"
+      else {$5 with exports = $3 } }
   | LPAR TABLE var_list RPAR module_fields
     { {$5 with tables = ($3 @@ ati 3) :: $5.tables} }
   | LPAR MEMORY INT INT RPAR module_fields
@@ -192,10 +202,6 @@ module_fields :
 ;
 modul :
   | LPAR MODULE module_fields RPAR { $3 @@ at() }
-  | func  /* Sugar */
-    { let memory = (Int64.zero, Int64.zero) in
-      {memory; data = ""; funcs = [$1]; exports = [0 @@ at()]; globals = [];
-       tables = []} @@ at() }
 ;
 
 
@@ -203,12 +209,10 @@ modul :
 
 cmd :
   | modul { Define $1 @@ at() }
-  | LPAR INVOKE INT expr_list RPAR { Invoke (int_of_string $3, $4) @@ at() }
-  | LPAR INVOKE expr_list RPAR { Invoke (0, $3) @@ at() }  /* Sugar */
-  | LPAR ASSERTEQ LPAR INVOKE INT expr_list RPAR expr_list RPAR 
-    { AssertEqInvoke (int_of_string $5, $6, $8) @@ at() }
-  | LPAR ASSERTEQ LPAR INVOKE expr_list RPAR expr_list RPAR 
-    { AssertEqInvoke (0, $5, $7) @@ at() }  /* Sugar */
+  | LPAR INVOKE TEXT expr_list RPAR
+    { Invoke ($3, $4) @@ at() }
+  | LPAR ASSERTEQ LPAR INVOKE TEXT expr_list RPAR expr_list RPAR
+    { AssertEqInvoke ($5, $6, $8) @@ at() }
 ;
 cmd_list :
   | /* empty */ { [] }

@@ -38,7 +38,6 @@ let global c x = lookup "global" c.globals x
 let table c x = lookup "table" c.tables x
 let label c x = lookup "label" c.labels x
 
-
 (* Type comparison *)
 
 let check_type actual expected at =
@@ -274,8 +273,8 @@ let check_table c table =
     List.iter (fun xI -> check_func_type (func c xI) s xI.at) xs;
     {c with tables = c.tables @ [s]}
 
-let check_export c x =
-  ignore (func c x)
+let check_export c str idx =
+  ignore (func c idx)
 
 let check_module m =
   let {funcs; exports; tables; globals; memory; data} = m.it in
@@ -294,4 +293,4 @@ let check_module m =
   in
   let c' = List.fold_left check_table c tables in
   List.iter (check_func c') funcs;
-  List.iter (check_export c') exports
+  ExportMap.iter (check_export c') exports

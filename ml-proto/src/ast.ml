@@ -96,6 +96,9 @@ and func' =
   body : expr
 }
 
+module ExportMap = Map.Make(String)
+type export_map = var ExportMap.t
+
 type table = var list Source.phrase
 
 type modul = modul' Source.phrase
@@ -104,7 +107,7 @@ and modul' =
   memory : int64 * int64;
   data : string;
   funcs : func list;
-  exports : var list;
+  exports : export_map;
   tables : table list;
   globals : value_type list
 }

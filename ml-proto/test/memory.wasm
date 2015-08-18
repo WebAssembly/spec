@@ -69,10 +69,10 @@
     (return (getnear.f64 (const.i32 0)))
   )
 
-  (export 0 1 2 3)
+  (export ("data" 0) ("aligned" 1) ("unaligned" 2) ("cast" 3))
 )
 
-(invoke 0)  ;; 1 : i32
-(invoke 1)  ;; 1 : i32
-(invoke 2)  ;; 1 : i32
-(invoke 3)  ;; -3.10552331246e+231 : f64
+(invoke "data")  ;; 1 : i32
+(invoke "aligned")  ;; 1 : i32
+(invoke "unaligned")  ;; 1 : i32
+(invoke "cast")  ;; -3.10552331246e+231 : f64
