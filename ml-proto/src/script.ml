@@ -33,23 +33,23 @@ let run_command cmd =
       end;
       trace "Initializing...";
       current_module := Some (Eval.init m)
-    | Invoke (str, es) ->
+    | Invoke (name, es) ->
       trace "Invoking...";
       let m = match !current_module with
         | Some m -> m
         | None -> Error.error cmd.at "no module defined to invoke"
       in
       let vs = List.map Eval.eval es in
-      let vs' = Eval.invoke m str vs in
+      let vs' = Eval.invoke m name vs in
       if vs' <> [] then Print.print_values vs'
-    | AssertEqInvoke (str, arg_es, expect_es) ->
+    | AssertEqInvoke (name, arg_es, expect_es) ->
       trace "Assert invoking...";
       let m = match !current_module with
         | Some m -> m
         | None -> Error.error cmd.at "no module defined to invoke"
       in
       let arg_vs = List.map Eval.eval arg_es in
-      let got_vs = Eval.invoke m str arg_vs in
+      let got_vs = Eval.invoke m name arg_vs in
       let expect_vs = List.map Eval.eval expect_es in
       if got_vs <> expect_vs then begin
         print_string "Result: ";

@@ -38,7 +38,8 @@
     )
   )
 
-  (export ("stmt" 0) ("expr" 1))
+  (export "stmt" 0)
+  (export "expr" 1)
 )
 
 (invoke "stmt" (const.i32 0))  ;; 0 : i32

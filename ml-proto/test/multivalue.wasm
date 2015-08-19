@@ -70,7 +70,7 @@
     )
   )
 
-  (export ("test" 1))
+  (export "test" 1)
 )
 
 (invoke "test" (const.i32 1))  ;; (2 1) : (i32 i32)
