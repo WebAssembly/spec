@@ -91,10 +91,6 @@ var_list :
   | var var_list { $1 :: $2 }
 ;
 
-export :
-  | TEXT var { {name = $1; func = $2} @@ at() }
-;
-
 expr :
   | LPAR expr1 RPAR { $2 @@ at() }
 ;
@@ -175,16 +171,20 @@ func :
 
 /* Modules */
 
+export :
+  | LPAR EXPORT TEXT var RPAR { {name = $3; func = $4} @@ at() }
+;
+
 module_fields :
   | /* empty */
     { let memory = (Int64.zero, Int64.zero) in
       {memory; data = ""; funcs = []; exports = []; globals = []; tables = []} }
   | func module_fields
     { {$2 with funcs = $1 :: $2.funcs} }
+  | export module_fields
+    { {$2 with exports = $1 :: $2.exports} }
   | LPAR GLOBAL value_type_list RPAR module_fields
     { {$5 with globals = $3 @ $5.globals} }
-  | LPAR EXPORT export RPAR module_fields
-    { {$5 with exports = $3 :: $5.exports} }
   | LPAR TABLE var_list RPAR module_fields
     { {$5 with tables = ($3 @@ ati 3) :: $5.tables} }
   | LPAR MEMORY INT INT RPAR module_fields
