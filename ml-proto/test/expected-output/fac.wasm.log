@@ -1,4 +1,4 @@
-export 0 : i64 -> i64
-export 1 : i64 -> i64
+export "rec_fac" : i64 -> i64
+export "iter_fac" : i64 -> i64
 7034535277573963776 : i64
 7034535277573963776 : i64

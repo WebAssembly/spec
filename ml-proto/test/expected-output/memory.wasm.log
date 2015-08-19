@@ -1,7 +1,7 @@
-export 0 : () -> i32
-export 1 : () -> i32
-export 2 : () -> i32
-export 3 : () -> f64
+export "data" : () -> i32
+export "aligned" : () -> i32
+export "unaligned" : () -> i32
+export "cast" : () -> f64
 1 : i32
 1 : i32
 1 : i32

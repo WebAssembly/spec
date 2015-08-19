@@ -97,7 +97,7 @@ and func' =
 }
 
 type export = export' Source.phrase
-and export' = {name : string; func : var }
+and export' = {name : string; func : var}
 
 type table = var list Source.phrase
 

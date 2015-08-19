@@ -26,8 +26,8 @@ let print_var_sig prefix i t =
 let print_func_sig prefix i f =
   printf "%s %d : %s\n" prefix i (Types.string_of_func_type (func_type f))
 
-let print_export_sig prefix i name f =
-  printf "%s %d (%s) : %s\n" prefix i name (Types.string_of_func_type (func_type f))
+let print_export_sig prefix n f =
+  printf "%s \"%s\" : %s\n" prefix n (Types.string_of_func_type (func_type f))
 
 let print_table_sig prefix i t_opt =
   printf "%s %d : %s\n" prefix i (string_of_table_type t_opt)
@@ -41,8 +41,8 @@ let print_func i f =
 let print_global i t =
   print_var_sig "global" i t
 
-let print_export m i x =
-  print_export_sig "export" i x.it.name (List.nth m.it.funcs x.it.func.it)
+let print_export m i ex =
+  print_export_sig "export" ex.it.name (List.nth m.it.funcs ex.it.func.it)
 
 let print_table m i tab =
   let t_opt =

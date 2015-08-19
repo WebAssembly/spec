@@ -273,8 +273,9 @@ let check_table c table =
     List.iter (fun xI -> check_func_type (func c xI) s xI.at) xs;
     {c with tables = c.tables @ [s]}
 
-let check_export c x =
-  ignore (func c x.it.func)
+let check_export c ex =
+  let {name = _; func = x} = ex.it in
+  ignore (func c x)
 
 let check_module m =
   let {funcs; exports; tables; globals; memory; data} = m.it in

@@ -259,12 +259,13 @@ and eval_func m f vs =
 let init m =
   let {Ast.funcs; exports; tables; globals; memory = (n, _); data} = m.it in
   let memory = Memory.create (Int64.to_int n) in
-  let add_to_map m x = ExportMap.add x.it.name (List.nth funcs x.it.func.it) m in
-  let exports = List.fold_left add_to_map ExportMap.empty exports in
-  let tables = List.map (fun t -> List.map (fun x -> List.nth funcs x.it) t.it) tables in
-  let globals = List.map eval_decl globals in
   Memory.init memory data;
-  { funcs; exports; tables; globals; memory }
+  let func x = List.nth funcs x.it in
+  let export ex = ExportMap.add ex.it.name (func ex.it.func) in
+  let exports = List.fold_right export exports ExportMap.empty in
+  let tables = List.map (fun tab -> List.map func tab.it) tables in
+  let globals = List.map eval_decl globals in
+  {funcs; exports; tables; globals; memory}
 
 let invoke m x vs =
   let f = export m (x @@ Source.no_region) in
