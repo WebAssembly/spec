@@ -156,6 +156,7 @@ memtype: <type> | i8 | i16
 
 value: <int> | <float>
 var: <int>
+name: "<char>*"
 
 unop:  neg | abs | not | ...
 binop: add | sub | mul | ...
@@ -201,7 +202,7 @@ local:  ( local <type>* )
 
 module: ( module <func>* <global>* <export>* <table>* <memory>? <data>* )
 global: ( global <type>* )
-export: ( export <var>* )
+export: ( export <name> <var> )
 table:  ( table <var>* )
 memory: ( memory <int> <int>? )
 data:   ( data "<char>*" )
@@ -230,12 +231,9 @@ In order to be able to check and run modules for testing purposes, the S-express
 script: <cmd>*
 
 cmd:
-  <module>                                      ;; define, validate, and initialize module
-  ( invoke <var> <expr>* )                      ;; invoke export and print result
-  ( asserteq (invoke <var> <expr>* ) <expr>* )  ;; assert expected results of invocation
-  <func>                                        ;; = (module <func> (export 0))
-  ( invoke <expr>* )                            ;; = (invoke 0 <expr>*)
-  ( asserteq (invoke <expr>* ) <expr>* )        ;; = (asserteq (invoke 0 <expr>*) <expr>*)
+  <module>                                       ;; define, validate, and initialize module
+  ( invoke <name> <expr>* )                      ;; invoke export and print result
+  ( asserteq (invoke <name> <expr>* ) <expr>* )  ;; assert expected results of invocation
 ```
 
 Invocation is only possible after a module has been defined.

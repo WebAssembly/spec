@@ -29,8 +29,9 @@
     (return (getlocal 1))
   )
 
-  (export 0 1)
+  (export "rec_fac" 0)
+  (export "iter_fac" 1)
 )
 
-(invoke 0 (const.i64 25))  ;; 7034535277573963776 : i64
-(invoke 1 (const.i64 25))  ;; 7034535277573963776 : i64
+(invoke "rec_fac" (const.i64 25))  ;; 7034535277573963776 : i64
+(invoke "iter_fac" (const.i64 25))  ;; 7034535277573963776 : i64

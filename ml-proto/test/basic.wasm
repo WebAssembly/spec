@@ -3,7 +3,7 @@
     (return (add.i32 (getparam 0) (const.i32 1)))
   )
 
-  (export 0)
+  (export "e" 0)
 )
 
-(asserteq (invoke 0 (const.i32 42)) (const.i32 43))
+(asserteq (invoke "e" (const.i32 42)) (const.i32 43))

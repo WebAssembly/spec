@@ -38,7 +38,6 @@ let global c x = lookup "global" c.globals x
 let table c x = lookup "table" c.tables x
 let label c x = lookup "label" c.labels x
 
-
 (* Type comparison *)
 
 let check_type actual expected at =
@@ -275,7 +274,7 @@ let check_table c table =
     {c with tables = c.tables @ [s]}
 
 let check_export c x =
-  ignore (func c x)
+  ignore (func c x.it.func)
 
 let check_module m =
   let {funcs; exports; tables; globals; memory; data} = m.it in

@@ -38,23 +38,24 @@
     )
   )
 
-  (export 0 1)
+  (export "stmt" 0)
+  (export "expr" 1)
 )
 
-(invoke 0 (const.i32 0))  ;; 0 : i32
-(invoke 0 (const.i32 1))  ;; -1 : i32
-(invoke 0 (const.i32 2))  ;; -2 : i32
-(invoke 0 (const.i32 3))  ;; -3 : i32
-(invoke 0 (const.i32 4))  ;; 100 : i32
-(invoke 0 (const.i32 5))  ;; 101 : i32
-(invoke 0 (const.i32 6))  ;; 102 : i32
-(invoke 0 (const.i32 7))  ;; 102 : i32
-(invoke 0 (const.i32 -10))  ;; 102 : i32
+(invoke "stmt" (const.i32 0))  ;; 0 : i32
+(invoke "stmt" (const.i32 1))  ;; -1 : i32
+(invoke "stmt" (const.i32 2))  ;; -2 : i32
+(invoke "stmt" (const.i32 3))  ;; -3 : i32
+(invoke "stmt" (const.i32 4))  ;; 100 : i32
+(invoke "stmt" (const.i32 5))  ;; 101 : i32
+(invoke "stmt" (const.i32 6))  ;; 102 : i32
+(invoke "stmt" (const.i32 7))  ;; 102 : i32
+(invoke "stmt" (const.i32 -10))  ;; 102 : i32
 
-(invoke 1 (const.i64 0))  ;; 0 : i64
-(invoke 1 (const.i64 1))  ;; -1 : i64
-(invoke 1 (const.i64 2))  ;; -2 : i64
-(invoke 1 (const.i64 3))  ;; -3 : i64
-(invoke 1 (const.i64 6))  ;; 101 : i64
-(invoke 1 (const.i64 7))  ;; 100 : i64
-(invoke 1 (const.i64 -10))  ;; 100 : i64
+(invoke "expr" (const.i64 0))  ;; 0 : i64
+(invoke "expr" (const.i64 1))  ;; -1 : i64
+(invoke "expr" (const.i64 2))  ;; -2 : i64
+(invoke "expr" (const.i64 3))  ;; -3 : i64
+(invoke "expr" (const.i64 6))  ;; 101 : i64
+(invoke "expr" (const.i64 7))  ;; 100 : i64
+(invoke "expr" (const.i64 -10))  ;; 100 : i64
