@@ -39,13 +39,13 @@ let print_global i t =
   print_var_sig "global" i t
 
 let print_export m i x =
-  print_func_sig "export" i (List.nth m.it.funcs (Lazy.force x.it))
+  print_func_sig "export" i (List.nth m.it.funcs x.it)
 
 let print_table m i tab =
   let t_opt =
     match tab.it with
     | [] -> None
-    | x::_ -> Some (func_type (List.nth m.it.funcs (Lazy.force x.it)))
+    | x::_ -> Some (func_type (List.nth m.it.funcs x.it))
   in print_table_sig "table" i t_opt
 
 

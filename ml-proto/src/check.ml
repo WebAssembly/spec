@@ -27,9 +27,8 @@ type context =
 }
 
 let lookup category list x =
-  let i = Lazy.force x.it in
-  try List.nth list i with Failure _ ->
-    error x.at ("unknown " ^ category ^ " " ^ string_of_int i)
+  try List.nth list x.it with Failure _ ->
+    error x.at ("unknown " ^ category ^ " " ^ string_of_int x.it)
 
 let func c x = lookup "function" c.funcs x
 let param c x = lookup "parameter" c.params x

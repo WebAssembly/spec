@@ -47,7 +47,7 @@ type memop = {dist : dist; align : Memory.alignment; mem : Memory.mem_type}
 
 (* Expressions *)
 
-type var = int Lazy.t Source.phrase
+type var = int Source.phrase
 type literal = value Source.phrase
 
 type expr = expr' Source.phrase
