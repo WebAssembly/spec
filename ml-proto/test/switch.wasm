@@ -2,44 +2,44 @@
 
 (module
   ;; Statement switch
-  (func (param i32) (result i32)
-    (local i32)
-    (setlocal 0 (const.i32 100))
+  (func $stmt (param $i i32) (result i32)
+    (local $j i32)
+    (setlocal $j (const.i32 100))
     (label
-      (switch.i32 (getparam 0)
-        (case 0 (return (getparam 0)))
+      (switch.i32 (getparam $i)
+        (case 0 (return (getparam $i)))
         (case 1 (nop) fallthru)
         (case 2)  ;; implicit fallthru
-        (case 3 (setlocal 0 (neg.i32 (getparam 0))) (break))
+        (case 3 (setlocal $j (neg.i32 (getparam $i))) (break))
         (case 4 (break))
-        (case 5 (setlocal 0 (const.i32 101)))
-        (case 6 (setlocal 0 (const.i32 101)) fallthru)
-        (;default;) (setlocal 0 (const.i32 102))
+        (case 5 (setlocal $j (const.i32 101)))
+        (case 6 (setlocal $j (const.i32 101)) fallthru)
+        (;default;) (setlocal $j (const.i32 102))
       )
     )
-    (return (getlocal 0))
+    (return (getlocal $j))
   )
 
   ;; Expression switch
-  (func (param i64) (result i64)
-    (local i64)
-    (setlocal 0 (const.i64 100))
+  (func $expr (param $i i64) (result i64)
+    (local $j i64)
+    (setlocal $j (const.i64 100))
     (return
-      (label
-        (switch.i64 (getparam 0)
-          (case 0 (return (getparam 0)))
+      (label $l
+        (switch.i64 (getparam $i)
+          (case 0 (return (getparam $i)))
           (case 1 (nop) fallthru)
           (case 2)  ;; implicit fallthru
-          (case 3 (break 0 (neg.i64 (getparam 0))))
-          (case 6 (setlocal 0 (const.i64 101)) fallthru)
-          (;default;) (getlocal 0)
+          (case 3 (break $l (neg.i64 (getparam $i))))
+          (case 6 (setlocal $j (const.i64 101)) fallthru)
+          (;default;) (getlocal $j)
         )
       )
     )
   )
 
-  (export "stmt" 0)
-  (export "expr" 1)
+  (export "stmt" $stmt)
+  (export "expr" $expr)
 )
 
 (invoke "stmt" (const.i32 0))  ;; 0 : i32

@@ -106,7 +106,7 @@ let num = ('+' | '-')? digit+
 let int = num
 let float = (num '.' digit+) | num ('e' | 'E') num
 let text = '"' character* '"'
-let name = (letter | symbol) (letter | digit | '_' | tick | symbol)*
+let name = '$' (letter | digit | '_' | tick | symbol)+
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")

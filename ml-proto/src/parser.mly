@@ -143,8 +143,8 @@ literal :
 ;
 
 var :
-  | INT { fun c lookup -> int_of_string $1 @@ at() }
-  | VAR { fun c lookup -> lookup c ($1 @@ at()) @@ at() }
+  | INT { let at = at() in fun c lookup -> int_of_string $1 @@ at }
+  | VAR { let at = at() in fun c lookup -> lookup c ($1 @@ at) @@ at }
 ;
 var_list :
   | /* empty */ { fun c lookup -> [] }
@@ -155,22 +155,24 @@ bind_var :
 ;
 
 expr :
-  | LPAR oper RPAR { fun c -> $2 c @@ at() }
+  | LPAR oper RPAR { let at = at() in fun c -> $2 c @@ at }
 ;
 oper :
   | NOP { fun c -> Nop }
   | BLOCK expr expr_list { fun c -> Block ($2 c :: $3 c) }
   | IF expr expr expr { fun c -> If ($2 c, $3 c, $4 c) }
-  | IF expr expr { fun c -> If ($2 c, $3 c, Nop @@ ati 1) }  /* Sugar */
+  | IF expr expr  /* Sugar */
+    { let at1 = ati 1 in fun c -> If ($2 c, $3 c, Nop @@ at1) }
   | LOOP expr_block { fun c -> Loop ($2 c) }
   | LABEL expr_block { fun c -> Label ($2 (anon_label c)) }
   | LABEL bind_var expr_block  /* Sugar */
     { fun c -> Label ($3 (bind_label c $2)) }
   | BREAK var expr_list { fun c -> Break ($2 c label, $3 c) }
-  | BREAK { fun c -> Break (0 @@ at(), []) }  /* Sugar */
+  | BREAK { let at = at() in fun c -> Break (0 @@ at, []) }  /* Sugar */
   | SWITCH expr arms
-    { fun c -> let x, y = $3 c in
-        Switch ($1 @@ ati 1, $2 c, List.map (fun a -> a $1) x, y) }
+    { let at1 = ati 1 in
+      fun c -> let x, y = $3 c in
+        Switch ($1 @@ at1, $2 c, List.map (fun a -> a $1) x, y) }
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | DISPATCH var expr expr_list { fun c -> Dispatch ($2 c table, $3 c, $4 c) }
   | RETURN expr_list { fun c -> Return ($2 c) }
@@ -194,8 +196,8 @@ expr_list :
 ;
 expr_block :
   | expr { $1 }
-  | expr expr expr_list { fun c -> Block ($1 c :: $2 c :: $3 c) @@ at() } 
-      /* Sugar */
+  | expr expr expr_list  /* Sugar */
+    { let at = at() in fun c -> Block ($1 c :: $2 c :: $3 c) @@ at }
 ;
 
 fallthru :
@@ -204,12 +206,13 @@ fallthru :
 ;
 arm :
   | LPAR CASE literal expr_block fallthru RPAR
-    { fun c t ->
-        {value = literal (ati 3) $3 t; expr = $4 c; fallthru = $5} @@ at() }
+    { let at = at() in let at3 = ati 3 in
+      fun c t ->
+        {value = literal at3 $3 t; expr = $4 c; fallthru = $5} @@ at }
   | LPAR CASE literal RPAR  /* Sugar */
-    { fun c t ->
-        {value = literal (ati 3) $3 t; expr = Nop @@ ati 4; fallthru = true}
-          @@ at() }
+    { let at = at() in let at3 = ati 3 in let at4 = ati 4 in
+      fun c t ->
+        {value = literal at3 $3 t; expr = Nop @@ at4; fallthru = true} @@ at }
 ;
 arms :
   | expr { fun c -> [], $1 c }
@@ -221,36 +224,41 @@ arms :
 
 func_fields :
   | /* empty */  /* Sugar */
-    { fun c -> {params = []; results = []; locals = []; body = Nop @@ at()} }
+    { let at = at() in
+      fun c -> {params = []; results = []; locals = []; body = Nop @@ at} }
   | expr_block
     { fun c -> {params = []; results = []; locals = []; body = $1 c} }
   | LPAR PARAM value_type_list RPAR func_fields
     { fun c -> anon_params c $3; let f = $5 c in
-        {f with params = $3 @ f.params} }
+      {f with params = $3 @ f.params} }
   | LPAR PARAM bind_var value_type RPAR func_fields  /* Sugar */
     { fun c -> bind_param c $3; let f = $6 c in
-        {f with params = $4 :: f.params} }
+      {f with params = $4 :: f.params} }
   | LPAR RESULT value_type_list RPAR func_fields
-    { fun c -> let f = $5 c in {f with results = $3 @ f.results} }
+    { fun c -> let f = $5 c in
+      {f with results = $3 @ f.results} }
   | LPAR LOCAL value_type_list RPAR func_fields
     { fun c -> anon_locals c $3; let f = $5 c in
-        {f with locals = $3 @ f.locals} }
+      {f with locals = $3 @ f.locals} }
   | LPAR LOCAL bind_var value_type RPAR func_fields  /* Sugar */
     { fun c -> bind_local c $3; let f = $6 c in
-        {f with locals = $4 :: f.locals} }
+      {f with locals = $4 :: f.locals} }
 ;
 func :
   | LPAR FUNC func_fields RPAR
-    { fun c -> anon_func c; fun () -> $3 (enter_func c) @@ at() }
+    { let at = at() in
+      fun c -> anon_func c; fun () -> $3 (enter_func c) @@ at }
   | LPAR FUNC bind_var func_fields RPAR  /* Sugar */
-    { fun c -> bind_func c $3; fun () -> $4 (enter_func c) @@ at() }
+    { let at = at() in
+      fun c -> bind_func c $3; fun () -> $4 (enter_func c) @@ at }
 ;
 
 
 /* Modules */
 
 export :
-  | LPAR EXPORT TEXT var RPAR { fun c -> {name = $3; func = $4 c func} @@ at() }
+  | LPAR EXPORT TEXT var RPAR
+    { let at = at() in fun c -> {name = $3; func = $4 c func} @@ at }
 ;
 
 module_fields :
@@ -259,26 +267,28 @@ module_fields :
       {memory; data = ""; funcs = []; exports = []; globals = []; tables = []} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in
-        {m with funcs = f () :: m.funcs} }
+      {m with funcs = f () :: m.funcs} }
   | export module_fields
-    { fun c -> let m = $2 c in {m with exports = $1 c :: m.exports} }
+    { fun c -> let m = $2 c in
+      {m with exports = $1 c :: m.exports} }
   | LPAR GLOBAL value_type_list RPAR module_fields
     { fun c -> anon_globals c $3; let m = $5 c in
-        {m with globals = $3 @ m.globals} }
+      {m with globals = $3 @ m.globals} }
   | LPAR GLOBAL bind_var value_type RPAR module_fields  /* Sugar */
     { fun c -> bind_global c $3; let m = $6 c in
-        {m with globals = $4 :: m.globals} }
+      {m with globals = $4 :: m.globals} }
   | LPAR TABLE var_list RPAR module_fields
     { fun c -> let m = $5 c in
-        {m with tables = ($3 c func @@ ati 3) :: m.tables} }
+      {m with tables = ($3 c func @@ ati 3) :: m.tables} }
   | LPAR MEMORY INT INT RPAR module_fields
     { fun c -> let m = $6 c in
-        {m with memory = (Int64.of_string $3, Int64.of_string $4)} }
+      {m with memory = (Int64.of_string $3, Int64.of_string $4)} }
   | LPAR MEMORY INT RPAR module_fields  /* Sugar */
     { fun c -> let m = $5 c in
-        {m with memory = (Int64.of_string $3, Int64.of_string $3)} }
+      {m with memory = (Int64.of_string $3, Int64.of_string $3)} }
   | LPAR DATA TEXT RPAR module_fields
-    { fun c -> let m = $5 c in {m with data = $3 ^ m.data} }
+    { fun c -> let m = $5 c in
+      {m with data = $3 ^ m.data} }
 ;
 modul :
   | LPAR MODULE module_fields RPAR { $3 c0 @@ at() }

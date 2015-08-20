@@ -2,44 +2,51 @@
 
 (module
   ;; Swap
-  (func (param i32 i32) (result i32 i32)
+  (func $swap (param i32 i32) (result i32 i32)
     (return (getparam 1) (getparam 0))
   )
 
   ;; Test
-  (func (param i32) (result i32 i32)
-    (local i32 i32)
-    (setlocal 0 (const.i32 1))
-    (setlocal 1 (const.i32 2))
-    (switch.i32 (getparam 0)
+  (func $test (param $case i32) (result i32 i32)
+    (local $x1 i32)
+    (local $x2 i32)
+    (setlocal $x1 (const.i32 1))
+    (setlocal $x2 (const.i32 2))
+    (switch.i32 (getparam $case)
       ;; Destructure
       (case 1
-        (destruct 0 1 (call 0 (getlocal 0) (getlocal 1)))
-        (return (getlocal 0) (getlocal 1))
+        (destruct $x1 $x2 (call $swap (getlocal $x1) (getlocal $x2)))
+        (return (getlocal $x1) (getlocal $x2))
       )
       ;; Return directly
       (case 2
-        (return (call 0 (getlocal 0) (getlocal 1)))
+        (return (call $swap (getlocal $x1) (getlocal $x2)))
       )
       ;; Pass on to other call
       (case 3
-        (return (call 0 (call 0 (getlocal 0) (getlocal 1))))
+        (return (call $swap (call $swap (getlocal $x1) (getlocal $x2))))
       )
       ;; Break
       (case 4
-        (destruct 0 1 (label (call 0 (break 0 (getlocal 0) (getlocal 1)))))
-        (return (getlocal 0) (getlocal 1))
+        (destruct $x1 $x2
+          (label $l (call $swap (break $l (getlocal $x1) (getlocal $x2))))
+        )
+        (return (getlocal $x1) (getlocal $x2))
       )
       ;; Pass on to break
       (case 5
-        (return (label (call 0 (break 0 (call 0 (getlocal 0) (getlocal 1))))))
+        (return
+          (label $l
+            (call $swap (break $l (call $swap (getlocal $x1) (getlocal $x2))))
+          )
+        )
       )
       ;; Pass through block
       (case 6
         (return
           (block
-            (setlocal 1 (const.i32 3))
-            (call 0 (getlocal 0) (getlocal 1))
+            (setlocal $x2 (const.i32 3))
+            (call $swap (getlocal $x1) (getlocal $x2))
           )
         )
       )
@@ -47,9 +54,9 @@
       (case 7)
       (case 8
         (return
-          (if (eq.i32 (mods.i32 (getparam 0) (const.i32 2)) (const.i32 0))
-            (call 0 (getlocal 0) (getlocal 1))
-            (call 0 (getlocal 1) (getlocal 0))
+          (if (eq.i32 (mods.i32 (getparam $case) (const.i32 2)) (const.i32 0))
+            (call $swap (getlocal $x1) (getlocal $x2))
+            (call $swap (getlocal $x2) (getlocal $x1))
           )
         )
       )
@@ -58,19 +65,19 @@
       (case 10)
       (case 11
         (return
-          (switch.i32 (getparam 0)
-            (case 9 (call 0 (getlocal 0) (getlocal 1)))
-            (case 10 (call 0 (getlocal 1) (getlocal 0)))
-            (label (break 0 (getlocal 0) (getlocal 0)))
+          (switch.i32 (getparam $case)
+            (case 9 (call $swap (getlocal $x1) (getlocal $x2)))
+            (case 10 (call $swap (getlocal $x2) (getlocal $x1)))
+            (label $l (break $l (getlocal $x1) (getlocal $x1)))
           )
         )
       )
       ;; Dummy default
-      (return (getlocal 0) (getlocal 1))
+      (return (getlocal $x1) (getlocal $x2))
     )
   )
 
-  (export "test" 1)
+  (export "test" $test)
 )
 
 (invoke "test" (const.i32 1))  ;; (2 1) : (i32 i32)

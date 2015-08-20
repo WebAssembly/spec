@@ -155,7 +155,7 @@ type: i32 | i64 | f32 | f64
 memtype: <type> | i8 | i16
 
 value: <int> | <float>
-var: <int> | <name>
+var: <int> | $<name>
 
 unop:  neg | abs | not | ...
 binop: add | sub | mul | ...
