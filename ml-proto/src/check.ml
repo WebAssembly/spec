@@ -38,6 +38,7 @@ let global c x = lookup "global" c.globals x
 let table c x = lookup "table" c.tables x
 let label c x = lookup "label" c.labels x
 
+
 (* Type comparison *)
 
 let check_type actual expected at =
@@ -264,10 +265,10 @@ let check_func c f =
                   returns = List.map it results} in
   check_expr c' (List.map it results) e
 
-let check_table c table =
-  match table.it with
+let check_table c tab =
+  match tab.it with
   | [] ->
-    error table.at "empty table"
+    error tab.at "empty table"
   | x::xs ->
     let s = func c x in
     List.iter (fun xI -> check_func_type (func c xI) s xI.at) xs;

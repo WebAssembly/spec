@@ -2,6 +2,25 @@
  * (c) 2015 Andreas Rossberg
  *)
 
+(*
+ * Throughout the implementation we use consistent naming conventions for
+ * syntactic elements, associated with the types defined here and in a few
+ * other places:
+ *
+ *   x : var
+ *   v : value
+ *   e : expr
+ *   f : func
+ *   m : modul
+ *
+ *   t : value_type
+ *   s : func_type
+ *   c : context / config
+ *
+ * These conventions mostly follow standard practice in language semantics.
+ *)
+
+
 open Values
 
 
