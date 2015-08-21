@@ -50,7 +50,7 @@ type context =
   {funcs : space; globals : space; locals : space; labels : int VarMap.t}
 
 let empty () = {map = VarMap.empty; count = 0}
-let c0 =
+let c0 () =
   {funcs = empty (); globals = empty ();
    locals = empty (); labels = VarMap.empty}
 
@@ -286,7 +286,7 @@ module_fields :
       {m with data = $3 ^ m.data} }
 ;
 modul :
-  | LPAR MODULE module_fields RPAR { $3 c0 @@ at() }
+  | LPAR MODULE module_fields RPAR { $3 (c0 ()) @@ at() }
 ;
 
 
@@ -295,9 +295,9 @@ modul :
 cmd :
   | modul { Define $1 @@ at() }
   | LPAR INVOKE TEXT expr_list RPAR
-    { Invoke ($3, $4 c0) @@ at() }
+    { Invoke ($3, $4 (c0 ())) @@ at() }
   | LPAR ASSERTEQ LPAR INVOKE TEXT expr_list RPAR expr_list RPAR
-    { AssertEqInvoke ($5, $6 c0, $8 c0) @@ at() }
+    { AssertEqInvoke ($5, $6 (c0 ()), $8 (c0 ())) @@ at() }
 ;
 cmd_list :
   | /* empty */ { [] }
