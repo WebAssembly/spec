@@ -9,23 +9,20 @@ import sys
 
 class RunTests(unittest.TestCase):
   def _runTestFile(self, shortName, fileName, interpreterPath):
-    print("\n// %s" % shortName)
-    sys.stdout.flush()
-
     logPath = fileName.replace("test/", "test/output/").replace(".wasm", ".wasm.log")
     try:
       os.remove(logPath)
     except OSError:
       pass
 
-    commandStr = ("%s %s | tee %s") % (interpreterPath, fileName, logPath)
+    commandStr = ("%s %s > %s") % (interpreterPath, fileName, logPath)
     exitCode = subprocess.call(commandStr, shell=True)
     self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
 
     try:
       expected = open(fileName.replace("test/", "test/expected-output/").replace(".wasm", ".wasm.log"))
     except IOError:
-      print("// WARNING: No expected output found for this test")
+      # print("// WARNING: No expected output found for %s" % fileName)
       return
 
     output = open(logPath)
@@ -47,24 +44,34 @@ def generate_test_cases(cls, interpreterPath, files):
     testCase = generate_test_case(rec)
     setattr(cls, attrName, testCase)
 
-def rebuild_interpreter():
-  interpreterPath = os.path.abspath("src/main.native")
+def find_interpreter(path):
+  if not os.path.exists(path):
+    raise Exception("Interpreter has not been built. Looked for %s" % path)
 
-  print("// building main.native")
+def rebuild_interpreter(path):
+  print("// building %s" % path)
   sys.stdout.flush()
   exitCode = subprocess.call(["ocamlbuild", "-libs", "bigarray", "main.native"], cwd=os.path.abspath("src"))
   if (exitCode != 0):
     raise Exception("ocamlbuild failed with exit code %i" % exitCode)
-
-  return interpreterPath
+  if not os.path.exists(path):
+    raise Exception("Interpreter has not been built. Looked for %s" % path)
 
 if __name__ == "__main__":
+  interpreterPath = os.path.abspath("src/main.native")
+
   try:
     os.makedirs("test/output/")
   except OSError:
     pass
 
-  interpreterPath = rebuild_interpreter()
+  shouldBuildInterpreter = ("--build" in sys.argv)
+  if shouldBuildInterpreter:
+    sys.argv.remove("--build")
+    rebuild_interpreter(interpreterPath)
+  else:
+    find_interpreter(interpreterPath)
+
   testFiles = glob.glob("test/*.wasm")
   generate_test_cases(RunTests, interpreterPath, testFiles)
   unittest.main()
