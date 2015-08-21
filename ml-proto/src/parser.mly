@@ -150,8 +150,8 @@ bind_var :
   | VAR { $1 @@ at() }
 ;
 
-segment :
-  | INT TEXT { {Memory.addr = int_of_string $1; Memory.data = $2} @@ at() }
+data :
+  | LPAR DATA INT TEXT RPAR { {Memory.addr = int_of_string $3; Memory.data = $4} @@ at() }
 ;
 
 expr :
@@ -285,9 +285,8 @@ module_fields :
   | LPAR MEMORY INT RPAR module_fields  /* Sugar */
     { fun c -> let m = $5 c in
       {m with memory = (int_of_string $3, int_of_string $3)} }
-  | LPAR DATA segment RPAR module_fields
-    { fun c -> let m = $5 c in
-      {m with data = $3 :: m.data} }
+  | data module_fields
+    { fun c -> let m = $2 c in {m with data = $1 :: m.data} }
 ;
 modul :
   | LPAR MODULE module_fields RPAR { $3 (c0 ()) @@ at() }
