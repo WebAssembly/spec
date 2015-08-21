@@ -35,21 +35,27 @@ let process file source =
     trace "Parsing...";
     let script = parse file source in
     trace "Running...";
-    Script.run script
+    Script.run script;
+    true
   with Error.Error (at, s) ->
     trace "Error:";
-    prerr_endline (Source.string_of_region at ^ ": " ^ s)
+    prerr_endline (Source.string_of_region at ^ ": " ^ s);
+    false
 
 let process_file file =
   trace ("Loading (" ^ file ^ ")...");
   let source = load file in
-  process file source
+  if not (process file source) then exit 1
 
 let rec process_stdin () =
   print_string (name ^ "> "); flush_all ();
   match try Some (input_line stdin) with End_of_file -> None with
-  | None -> print_endline ""; trace "Bye."
-  | Some source -> process "stdin" source; process_stdin ()
+  | None ->
+    print_endline "";
+    trace "Bye."
+  | Some source ->
+    ignore (process "stdin" source);
+    process_stdin ()
 
 let greet () =
   print_endline ("Version " ^ version)

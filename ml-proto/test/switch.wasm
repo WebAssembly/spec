@@ -28,7 +28,7 @@
       (label $l
         (switch.i64 (getlocal $i)
           (case 0 (return (getlocal $i)))
-          (case 1 (nop) fallthru)
+          (ase 1 (nop) fallthru)
           (case 2)  ;; implicit fallthru
           (case 3 (break $l (neg.i64 (getlocal $i))))
           (case 6 (setlocal $j (const.i64 101)) fallthru)
