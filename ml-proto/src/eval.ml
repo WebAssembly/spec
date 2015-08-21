@@ -245,8 +245,8 @@ and eval_func m f vs =
 
 let init m =
   let {Ast.funcs; exports; tables; globals; memory = (n, _); data} = m.it in
-  let memory = Memory.create (Int64.to_int n) in
-  Memory.init memory data;
+  let memory = Memory.create n in
+  Memory.init memory (List.map (fun seg -> seg.it) data);
   let func x = List.nth funcs x.it in
   let export ex = ExportMap.add ex.it.name (func ex.it.func) in
   let exports = List.fold_right export exports ExportMap.empty in

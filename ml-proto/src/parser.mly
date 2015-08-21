@@ -150,6 +150,10 @@ bind_var :
   | VAR { $1 @@ at() }
 ;
 
+segment :
+  | INT TEXT { {Memory.addr = int_of_string $1; Memory.data = $2} @@ at() }
+;
+
 expr :
   | LPAR oper RPAR { let at = at() in fun c -> $2 c @@ at }
 ;
@@ -258,8 +262,8 @@ export :
 
 module_fields :
   | /* empty */
-    { fun c -> let memory = (Int64.zero, Int64.zero) in
-      {memory; data = ""; funcs = []; exports = []; globals = []; tables = []} }
+    { fun c ->
+      {memory = (0, 0); data = []; funcs = []; exports = []; globals = []; tables = []} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in
       {m with funcs = f () :: m.funcs} }
@@ -277,13 +281,13 @@ module_fields :
       {m with tables = ($3 c func @@ ati 3) :: m.tables} }
   | LPAR MEMORY INT INT RPAR module_fields
     { fun c -> let m = $6 c in
-      {m with memory = (Int64.of_string $3, Int64.of_string $4)} }
+      {m with memory = (int_of_string $3, int_of_string $4)} }
   | LPAR MEMORY INT RPAR module_fields  /* Sugar */
     { fun c -> let m = $5 c in
-      {m with memory = (Int64.of_string $3, Int64.of_string $3)} }
-  | LPAR DATA TEXT RPAR module_fields
+      {m with memory = (int_of_string $3, int_of_string $3)} }
+  | LPAR DATA segment RPAR module_fields
     { fun c -> let m = $5 c in
-      {m with data = $3 ^ m.data} }
+      {m with data = $3 :: m.data} }
 ;
 modul :
   | LPAR MODULE module_fields RPAR { $3 (c0 ()) @@ at() }

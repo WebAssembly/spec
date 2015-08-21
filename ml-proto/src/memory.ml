@@ -8,11 +8,17 @@ open Bigarray
 (* Types and view types *)
 
 type address = int
+type size = address
 type alignment = Aligned | Unaligned
 type mem_type =
   | SInt8Mem | SInt16Mem | SInt32Mem | SInt64Mem
   | UInt8Mem | UInt16Mem | UInt32Mem | UInt64Mem
   | Float32Mem | Float64Mem
+type segment =
+{
+  addr : address;
+  data : string
+}
 
 type memory = (int, int8_unsigned_elt, c_layout) Array1.t
 type t = memory
@@ -43,13 +49,17 @@ let create n =
   Array1.fill mem 0;
   mem
 
-let init mem s =
-  if String.length s > Array1.dim mem then raise Bounds;
-  (* There currently is no way to blit from a string. *)
-  for i = 0 to String.length s - 1 do
-    (view mem : char_view).{i} <- s.[i]
+let init_seg mem seg =
+  (*
+   * The Check.check_data_segment ensures seg is in bounds.
+   * There currently is no way to blit from a string.
+   *)
+  for i = 0 to String.length seg.data - 1 do
+    (view mem : char_view).{seg.addr + i} <- seg.data.[i]
   done
 
+let init mem segs =
+  List.iter (init_seg mem) segs
 
 (* Alignment *)
 

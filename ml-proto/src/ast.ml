@@ -105,6 +105,9 @@ and arm' =
 
 (* Functions and Modules *)
 
+
+type segment = Memory.segment Source.phrase
+
 type func = func' Source.phrase
 and func' =
 {
@@ -122,8 +125,8 @@ type table = var list Source.phrase
 type modul = modul' Source.phrase
 and modul' =
 {
-  memory : int64 * int64;
-  data : string;
+  memory : Memory.size * Memory.size;
+  data : segment list;
   funcs : func list;
   exports : export list;
   tables : table list;

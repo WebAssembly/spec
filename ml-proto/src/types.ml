@@ -16,7 +16,6 @@ type value_type = Int32Type | Int64Type | Float32Type | Float64Type
 type expr_type = value_type list
 type func_type = {ins : expr_type; outs : expr_type}
 
-
 (* String conversion *)
 
 let string_of_value_type = function
