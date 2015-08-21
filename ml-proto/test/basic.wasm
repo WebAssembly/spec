@@ -1,9 +1,9 @@
 (module
-  (func (param i32) (result i32)
-    (return (add.i32 (getparam 0) (const.i32 1)))
+  (func $f (param $n i32) (result i32)
+    (return (add.i32 (getparam $n) (const.i32 1)))
   )
 
-  (export "e" 0)
+  (export "e" $f)
 )
 
 (asserteq (invoke "e" (const.i32 42)) (const.i32 43))

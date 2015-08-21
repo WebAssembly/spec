@@ -106,7 +106,7 @@ let num = ('+' | '-')? digit+
 let int = num
 let float = (num '.' digit+) | num ('e' | 'E') num
 let text = '"' character* '"'
-let atom = (letter | digit | '_' | tick | symbol)*
+let name = '$' (letter | digit | '_' | tick | symbol)+
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -254,6 +254,8 @@ rule token = parse
 
   | "invoke" { INVOKE }
   | "asserteq" { ASSERTEQ }
+
+  | name as s { VAR s }
 
   | ";;"[^'\n']*eof { EOF }
   | ";;"[^'\n']*'\n' { Lexing.new_line lexbuf; token lexbuf }

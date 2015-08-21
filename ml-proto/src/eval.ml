@@ -41,8 +41,7 @@ type config =
 }
 
 let lookup category list x =
-  try List.nth list x.it
-  with Failure _ ->
+  try List.nth list x.it with Failure _ ->
     error x.at ("runtime: undefined " ^ category ^ " " ^ string_of_int x.it)
 
 let func c x = lookup "function" c.modul.funcs x
@@ -267,8 +266,8 @@ let init m =
   let globals = List.map eval_decl globals in
   {funcs; exports; tables; globals; memory}
 
-let invoke m x vs =
-  let f = export m (x @@ Source.no_region) in
+let invoke m name vs =
+  let f = export m (name @@ no_region) in
   eval_func m f vs
 
 let eval e =

@@ -27,8 +27,7 @@ type context =
 }
 
 let lookup category list x =
-  try List.nth list x.it
-  with Failure _ ->
+  try List.nth list x.it with Failure _ ->
     error x.at ("unknown " ^ category ^ " " ^ string_of_int x.it)
 
 let func c x = lookup "function" c.funcs x
