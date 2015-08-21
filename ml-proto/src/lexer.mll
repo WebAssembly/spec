@@ -145,7 +145,6 @@ rule token = parse
   | "return" { RETURN }
   | "destruct" { DESTRUCT }
 
-  | "getparam" { GETPARAM }
   | "getlocal" { GETLOCAL }
   | "setlocal" { SETLOCAL }
   | "getglobal" { GETGLOBAL }

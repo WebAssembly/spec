@@ -6,11 +6,11 @@
     (local $j i32)
     (setlocal $j (const.i32 100))
     (label
-      (switch.i32 (getparam $i)
-        (case 0 (return (getparam $i)))
+      (switch.i32 (getlocal $i)
+        (case 0 (return (getlocal $i)))
         (case 1 (nop) fallthru)
         (case 2)  ;; implicit fallthru
-        (case 3 (setlocal $j (neg.i32 (getparam $i))) (break))
+        (case 3 (setlocal $j (neg.i32 (getlocal $i))) (break))
         (case 4 (break))
         (case 5 (setlocal $j (const.i32 101)))
         (case 6 (setlocal $j (const.i32 101)) fallthru)
@@ -26,11 +26,11 @@
     (setlocal $j (const.i64 100))
     (return
       (label $l
-        (switch.i64 (getparam $i)
-          (case 0 (return (getparam $i)))
+        (switch.i64 (getlocal $i)
+          (case 0 (return (getlocal $i)))
           (case 1 (nop) fallthru)
           (case 2)  ;; implicit fallthru
-          (case 3 (break $l (neg.i64 (getparam $i))))
+          (case 3 (break $l (neg.i64 (getlocal $i))))
           (case 6 (setlocal $j (const.i64 101)) fallthru)
           (;default;) (getlocal $j)
         )

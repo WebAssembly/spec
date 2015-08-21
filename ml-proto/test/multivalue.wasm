@@ -3,7 +3,7 @@
 (module
   ;; Swap
   (func $swap (param i32 i32) (result i32 i32)
-    (return (getparam 1) (getparam 0))
+    (return (getlocal 1) (getlocal 0))
   )
 
   ;; Test
@@ -12,7 +12,7 @@
     (local $x2 i32)
     (setlocal $x1 (const.i32 1))
     (setlocal $x2 (const.i32 2))
-    (switch.i32 (getparam $case)
+    (switch.i32 (getlocal $case)
       ;; Destructure
       (case 1
         (destruct $x1 $x2 (call $swap (getlocal $x1) (getlocal $x2)))
@@ -54,7 +54,7 @@
       (case 7)
       (case 8
         (return
-          (if (eq.i32 (mods.i32 (getparam $case) (const.i32 2)) (const.i32 0))
+          (if (eq.i32 (mods.i32 (getlocal $case) (const.i32 2)) (const.i32 0))
             (call $swap (getlocal $x1) (getlocal $x2))
             (call $swap (getlocal $x2) (getlocal $x1))
           )
@@ -65,7 +65,7 @@
       (case 10)
       (case 11
         (return
-          (switch.i32 (getparam $case)
+          (switch.i32 (getlocal $case)
             (case 9 (call $swap (getlocal $x1) (getlocal $x2)))
             (case 10 (call $swap (getlocal $x2) (getlocal $x1)))
             (label $l (break $l (getlocal $x1) (getlocal $x1)))

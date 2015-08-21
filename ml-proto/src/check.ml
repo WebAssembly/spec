@@ -19,19 +19,21 @@ type context =
 {
   funcs : func_type list;
   globals : value_type list;
+  tables : func_type list;
   locals : value_type list;
-  params : value_type list;
   returns : expr_type;
-  labels : expr_type list;
-  tables : func_type list
+  labels : expr_type list
 }
+
+let c0 =
+  {funcs = []; globals = []; tables = [];
+   locals = []; returns = []; labels = []} 
 
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
     error x.at ("unknown " ^ category ^ " " ^ string_of_int x.it)
 
 let func c x = lookup "function" c.funcs x
-let param c x = lookup "parameter" c.params x
 let local c x = lookup "local" c.locals x
 let global c x = lookup "global" c.globals x
 let table c x = lookup "table" c.tables x
@@ -176,9 +178,6 @@ let rec check_expr c ts e =
     check_expr c (List.map (local c) xs) e1;
     check_type [] ts e.at
 
-  | GetParam x ->
-    check_type [param c x] ts e.at
-
   | GetLocal x ->
     check_type [local c x] ts e.at
 
@@ -259,8 +258,7 @@ and check_arm c t ts arm =
 
 let check_func c f =
   let {params; results; locals; body = e} = f.it in
-  let c' = {c with locals = List.map it locals;
-                   params = List.map it params;
+  let c' = {c with locals = List.map it params @ List.map it locals;
                   returns = List.map it results} in
   check_expr c' (List.map it results) e
 
@@ -281,17 +279,8 @@ let check_module m =
   let {funcs; exports; tables; globals; memory; data} = m.it in
   require (fst memory >= Int64.of_int (String.length data)) m.at
     "data section does not fit memory";
-  let c =
-    {
-      funcs = List.map type_func funcs;
-      globals = List.map it globals;
-      locals = [];
-      params = [];
-      returns = [];
-      tables = [];
-      labels = []
-    }
-  in
+  let c = {c0 with funcs = List.map type_func funcs;
+                 globals = List.map it globals} in
   let c' = List.fold_left check_table c tables in
   List.iter (check_func c') funcs;
   List.iter (check_export c') exports

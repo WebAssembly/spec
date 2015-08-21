@@ -34,7 +34,6 @@ type label = value list -> exn
 type config =
 {
   modul : module_instance;
-  params : value list;
   locals : value ref list;
   labels : label list;
   return : label
@@ -47,7 +46,6 @@ let lookup category list x =
 let func c x = lookup "function" c.modul.funcs x
 let global c x = lookup "global" c.modul.globals x
 let table c x y = lookup "entry" (lookup "table" c.modul.tables x) y
-let param c x = lookup "parameter" c.params x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
@@ -149,9 +147,6 @@ let rec eval_expr c e =
     List.iter2 (fun x v -> local c x := v) xs vs;
     []
 
-  | GetParam x ->
-    [param c x]
-
   | GetLocal x ->
     [!(local c x)]
 
@@ -240,15 +235,8 @@ and eval_decl t =
 
 and eval_func m f vs =
   let module Return = MakeLabel () in
-  let c =
-    {
-      modul = m;
-      params = vs;
-      locals = List.map eval_decl f.it.locals;
-      labels = [];
-      return = Return.label
-    }
-  in
+  let locals = List.map (fun v -> ref v) vs @ List.map eval_decl f.it.locals in
+  let c = {modul = m; locals; labels = []; return = Return.label} in
   try eval_expr c f.it.body
   with Return.Label vs -> vs
 

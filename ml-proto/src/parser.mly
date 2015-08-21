@@ -47,17 +47,16 @@ module VarMap = Map.Make(String)
 type space = {mutable map : int VarMap.t; mutable count : int}
 
 type context =
-  {funcs : space; globals : space;
-   params : space; locals : space; labels : int VarMap.t}
+  {funcs : space; globals : space; locals : space; labels : int VarMap.t}
 
 let empty () = {map = VarMap.empty; count = 0}
 let c0 =
   {funcs = empty (); globals = empty ();
-   params = empty (); locals = empty (); labels = VarMap.empty}
+   locals = empty (); labels = VarMap.empty}
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
-  {c with params = empty (); locals = empty ()}
+  {c with locals = empty ()}
 
 let lookup category space x =
   try VarMap.find x.it space.map
@@ -65,7 +64,6 @@ let lookup category space x =
 
 let func c x = lookup "function" c.funcs x
 let global c x = lookup "global" c.globals x
-let param c x = lookup "parameter" c.params x
 let local c x = lookup "local" c.locals x
 let table c x = lookup "table" (empty ()) x
 let label c x =
@@ -80,7 +78,6 @@ let bind category space x =
 
 let bind_func c x = bind "function" c.funcs x
 let bind_global c x = bind "global" c.globals x
-let bind_param c x = bind "parameter" c.params x
 let bind_local c x = bind "local" c.locals x
 let bind_label c x =
   if VarMap.mem x.it c.labels then
@@ -91,7 +88,6 @@ let anon space n = space.count <- space.count + n
 
 let anon_func c = anon c.funcs 1
 let anon_globals c ts = anon c.globals (List.length ts)
-let anon_params c ts = anon c.params (List.length ts)
 let anon_locals c ts = anon c.locals (List.length ts)
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %}
@@ -99,7 +95,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token INT FLOAT TEXT VAR TYPE LPAR RPAR
 %token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHRU
 %token CALL DISPATCH RETURN DESTRUCT
-%token GETPARAM GETLOCAL SETLOCAL GETGLOBAL SETGLOBAL GETMEMORY SETMEMORY
+%token GETLOCAL SETLOCAL GETGLOBAL SETGLOBAL GETMEMORY SETMEMORY
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY DATA GLOBAL IMPORT EXPORT TABLE
 %token INVOKE ASSERTEQ
@@ -177,7 +173,6 @@ oper :
   | DISPATCH var expr expr_list { fun c -> Dispatch ($2 c table, $3 c, $4 c) }
   | RETURN expr_list { fun c -> Return ($2 c) }
   | DESTRUCT var_list expr { fun c -> Destruct ($2 c local, $3 c) }
-  | GETPARAM var { fun c -> GetParam ($2 c param) }
   | GETLOCAL var { fun c -> GetLocal ($2 c local) }
   | SETLOCAL var expr { fun c -> SetLocal ($2 c local, $3 c) }
   | GETGLOBAL var { fun c -> GetGlobal ($2 c global) }
@@ -229,10 +224,10 @@ func_fields :
   | expr_block
     { fun c -> {params = []; results = []; locals = []; body = $1 c} }
   | LPAR PARAM value_type_list RPAR func_fields
-    { fun c -> anon_params c $3; let f = $5 c in
+    { fun c -> anon_locals c $3; let f = $5 c in
       {f with params = $3 @ f.params} }
   | LPAR PARAM bind_var value_type RPAR func_fields  /* Sugar */
-    { fun c -> bind_param c $3; let f = $6 c in
+    { fun c -> bind_local c $3; let f = $6 c in
       {f with params = $4 :: f.params} }
   | LPAR RESULT value_type_list RPAR func_fields
     { fun c -> let f = $5 c in

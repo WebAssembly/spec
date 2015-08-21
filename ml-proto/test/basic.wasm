@@ -1,6 +1,6 @@
 (module
   (func $f (param $n i32) (result i32)
-    (return (add.i32 (getparam $n) (const.i32 1)))
+    (return (add.i32 (getlocal $n) (const.i32 1)))
   )
 
   (export "e" $f)

@@ -3,19 +3,19 @@
 (module
   ;; Recursive factorial
   (func (param i64) (result i64)
-    (if (eq.i64 (getparam 0) (const.i64 0))
+    (if (eq.i64 (getlocal 0) (const.i64 0))
       (const.i64 1)
-      (mul.i64 (getparam 0) (call 0 (sub.i64 (getparam 0) (const.i64 1))))
+      (mul.i64 (getlocal 0) (call 0 (sub.i64 (getlocal 0) (const.i64 1))))
     )
   )
 
   ;; Recursive factorial named
   (func $fac-rec (param $n i64) (result i64)
-    (if (eq.i64 (getparam $n) (const.i64 0))
+    (if (eq.i64 (getlocal $n) (const.i64 0))
       (const.i64 1)
       (mul.i64
-        (getparam $n)
-        (call $fac-rec (sub.i64 (getparam $n) (const.i64 1)))
+        (getlocal $n)
+        (call $fac-rec (sub.i64 (getlocal $n) (const.i64 1)))
       )
     )
   )
@@ -23,28 +23,28 @@
   ;; Iterative factorial
   (func (param i64) (result i64)
     (local i64 i64)
-    (setlocal 0 (getparam 0))
-    (setlocal 1 (const.i64 1))
+    (setlocal 1 (getlocal 0))
+    (setlocal 2 (const.i64 1))
     (label
       (loop
         (if
-          (eq.i64 (getlocal 0) (const.i64 0))
+          (eq.i64 (getlocal 1) (const.i64 0))
           (break 0)
           (block
-            (setlocal 1 (mul.i64 (getlocal 0) (getlocal 1)))
-            (setlocal 0 (sub.i64 (getlocal 0) (const.i64 1)))
+            (setlocal 2 (mul.i64 (getlocal 1) (getlocal 2)))
+            (setlocal 1 (sub.i64 (getlocal 1) (const.i64 1)))
           )
         )
       )
     )
-    (return (getlocal 1))
+    (return (getlocal 2))
   )
 
   ;; Iterative factorial named
   (func $fac-iter (param $n i64) (result i64)
     (local $i i64)
     (local $res i64)
-    (setlocal $i (getparam $n))
+    (setlocal $i (getlocal $n))
     (setlocal $res (const.i64 1))
     (label $done
       (loop
