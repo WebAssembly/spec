@@ -11,3 +11,4 @@ and command' =
 type script = command list
 
 val run : script -> unit (* raises Error.Error *)
+val trace : string -> unit

@@ -17,9 +17,9 @@ type script = command list
 
 (* Execution *)
 
-let current_module : Eval.module_instance option ref = ref None
-
 let trace name = if !Flags.trace then print_endline ("-- " ^ name)
+
+let current_module : Eval.module_instance option ref = ref None
 
 let run_command cmd =
   match cmd.it with
@@ -32,6 +32,7 @@ let run_command cmd =
     end;
     trace "Initializing...";
     current_module := Some (Eval.init m)
+
   | Invoke (name, es) ->
     trace "Invoking...";
     let m = match !current_module with
@@ -41,6 +42,7 @@ let run_command cmd =
     let vs = List.map Eval.eval es in
     let vs' = Eval.invoke m name vs in
     if vs' <> [] then Print.print_values vs'
+
   | AssertEqInvoke (name, arg_es, expect_es) ->
     trace "Assert invoking...";
     let m = match !current_module with
