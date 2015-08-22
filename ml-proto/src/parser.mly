@@ -203,11 +203,11 @@ arm :
   | LPAR CASE literal expr_block fallthru RPAR
     { let at = at() in let at3 = ati 3 in
       fun c t ->
-        {value = literal at3 $3 t; expr = $4 c; fallthru = $5} @@ at }
+      {value = literal at3 $3 t; expr = $4 c; fallthru = $5} @@ at }
   | LPAR CASE literal RPAR  /* Sugar */
     { let at = at() in let at3 = ati 3 in let at4 = ati 4 in
       fun c t ->
-        {value = literal at3 $3 t; expr = Nop @@ at4; fallthru = true} @@ at }
+      {value = literal at3 $3 t; expr = Nop @@ at4; fallthru = true} @@ at }
 ;
 arms :
   | expr { fun c -> [], $1 c }
@@ -252,7 +252,8 @@ func :
 /* Modules */
 
 segment :
-  | LPAR SEGMENT INT TEXT RPAR { {Memory.addr = int_of_string $3; Memory.data = $4} @@ at() }
+  | LPAR SEGMENT INT TEXT RPAR
+    { {Memory.addr = int_of_string $3; Memory.data = $4} @@ at() }
 ;
 segment_list :
   | /* empty */ { [] }
@@ -261,9 +262,11 @@ segment_list :
 
 memory :
   | LPAR MEMORY INT INT segment_list RPAR
-    { {initial = int_of_string $3; max = int_of_string $4; segments = $5 } @@ at() }
+    { {initial = int_of_string $3; max = int_of_string $4; segments = $5 }
+        @@ at() }
   | LPAR MEMORY INT segment_list RPAR
-    { {initial = int_of_string $3; max = int_of_string $3; segments = $4 } @@ at() }
+    { {initial = int_of_string $3; max = int_of_string $3; segments = $4 }
+        @@ at() }
 ;
 
 export :
@@ -293,8 +296,8 @@ module_fields :
   | memory module_fields
     { fun c -> let m = $2 c in
       match m.memory with
-        | Some _ -> Error.error $1.at "more than one memory section"
-        | None -> {m with memory = Some $1} }
+      | Some _ -> Error.error $1.at "more than one memory section"
+      | None -> {m with memory = Some $1} }
 ;
 modul :
   | LPAR MODULE module_fields RPAR { $3 (c0 ()) @@ at() }

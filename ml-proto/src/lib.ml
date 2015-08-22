@@ -26,3 +26,14 @@ struct
     | x::xs -> let ys, y = split_last xs in x::ys, y
     | [] -> failwith "split_last"
 end
+
+module Option =
+struct
+  let map f = function
+    | Some x -> Some (f x)
+    | None -> None
+
+  let app f = function
+    | Some x -> f x
+    | None -> ()
+end

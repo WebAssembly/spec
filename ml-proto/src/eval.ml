@@ -245,19 +245,20 @@ and eval_func m f vs =
 
 let init m =
   let {Ast.funcs; exports; tables; globals; memory} = m.it in
-  let memory = match memory with
-    | Some {it = {initial; segments} } ->
-        let m = Memory.create initial in
-        Memory.init m (List.map (fun seg -> seg.it) segments);
-        m
+  let mem =
+    match memory with
     | None -> Memory.create 0
+    | Some {it = {initial; segments}} ->
+      let mem = Memory.create initial in
+      Memory.init mem (List.map it segments);
+      mem
   in
   let func x = List.nth funcs x.it in
   let export ex = ExportMap.add ex.it.name (func ex.it.func) in
   let exports = List.fold_right export exports ExportMap.empty in
   let tables = List.map (fun tab -> List.map func tab.it) tables in
   let globals = List.map eval_decl globals in
-  {funcs; exports; tables; globals; memory}
+  {funcs; exports; tables; globals; memory = mem}
 
 let invoke m name vs =
   let f = export m (name @@ no_region) in
