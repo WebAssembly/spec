@@ -248,7 +248,7 @@ let init m =
   let mem =
     match memory with
     | None -> Memory.create 0
-    | Some {it = {initial; segments}} ->
+    | Some {it = {initial; segments; _}} ->
       let mem = Memory.create initial in
       Memory.init mem (List.map it segments);
       mem
