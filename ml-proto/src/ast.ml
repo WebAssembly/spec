@@ -105,8 +105,14 @@ and arm' =
 
 (* Functions and Modules *)
 
-
-type segment = Memory.segment Source.phrase
+type memory = memory' Source.phrase
+and memory' =
+{
+  initial : Memory.size;
+  max : Memory.size;
+  segments : segment list;
+}
+and segment = Memory.segment Source.phrase
 
 type func = func' Source.phrase
 and func' =
@@ -125,8 +131,7 @@ type table = var list Source.phrase
 type modul = modul' Source.phrase
 and modul' =
 {
-  memory : Memory.size * Memory.size;
-  data : segment list;
+  memory : memory option;
   funcs : func list;
   exports : export list;
   tables : table list;

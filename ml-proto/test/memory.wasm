@@ -1,9 +1,7 @@
 ;; (c) 2015 Andreas Rossberg
 
 (module
-  (memory 1024)
-  (data 0 "ABC\a7D")
-  (data 20 "WASM")
+  (memory 1024 (segment 0 "ABC\a7D") (segment 20 "WASM"))
 
   ;; Data section
   (func $data (result i32)

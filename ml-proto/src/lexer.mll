@@ -245,7 +245,7 @@ rule token = parse
   | "local" { LOCAL }
   | "module" { MODULE }
   | "memory" { MEMORY }
-  | "data" { DATA }
+  | "segment" { SEGMENT }
   | "global" { GLOBAL }
   | "import" { IMPORT }
   | "export" { EXPORT }

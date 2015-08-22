@@ -50,14 +50,13 @@ let create n =
   mem
 
 let init_seg mem seg =
-  if String.length seg.data > Array1.dim mem then raise Bounds;
   (* There currently is no way to blit from a string. *)
   for i = 0 to String.length seg.data - 1 do
     (view mem : char_view).{seg.addr + i} <- seg.data.[i]
   done
 
 let init mem segs =
-  List.iter (init_seg mem) segs
+  try List.iter (init_seg mem) segs with Invalid_argument _ -> raise Bounds
 
 (* Alignment *)
 

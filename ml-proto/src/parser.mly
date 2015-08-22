@@ -97,7 +97,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token CALL DISPATCH RETURN DESTRUCT
 %token GETLOCAL SETLOCAL GETGLOBAL SETGLOBAL GETMEMORY SETMEMORY
 %token CONST UNARY BINARY COMPARE CONVERT
-%token FUNC PARAM RESULT LOCAL MODULE MEMORY DATA GLOBAL IMPORT EXPORT TABLE
+%token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT GLOBAL IMPORT EXPORT TABLE
 %token INVOKE ASSERTEQ
 %token EOF
 
@@ -148,10 +148,6 @@ var_list :
 ;
 bind_var :
   | VAR { $1 @@ at() }
-;
-
-data :
-  | LPAR DATA INT TEXT RPAR { {Memory.addr = int_of_string $3; Memory.data = $4} @@ at() }
 ;
 
 expr :
@@ -255,6 +251,21 @@ func :
 
 /* Modules */
 
+segment :
+  | LPAR SEGMENT INT TEXT RPAR { {Memory.addr = int_of_string $3; Memory.data = $4} @@ at() }
+;
+segment_list :
+  | /* empty */ { [] }
+  | segment segment_list { $1 :: $2 }
+;
+
+memory :
+  | LPAR MEMORY INT INT segment_list RPAR
+    { {initial = int_of_string $3; max = int_of_string $4; segments = $5 } @@ at() }
+  | LPAR MEMORY INT segment_list RPAR
+    { {initial = int_of_string $3; max = int_of_string $3; segments = $4 } @@ at() }
+;
+
 export :
   | LPAR EXPORT TEXT var RPAR
     { let at = at() in fun c -> {name = $3; func = $4 c func} @@ at }
@@ -263,7 +274,7 @@ export :
 module_fields :
   | /* empty */
     { fun c ->
-      {memory = (0, 0); data = []; funcs = []; exports = []; globals = []; tables = []} }
+      {memory = None; funcs = []; exports = []; globals = []; tables = []} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in
       {m with funcs = f () :: m.funcs} }
@@ -279,14 +290,11 @@ module_fields :
   | LPAR TABLE var_list RPAR module_fields
     { fun c -> let m = $5 c in
       {m with tables = ($3 c func @@ ati 3) :: m.tables} }
-  | LPAR MEMORY INT INT RPAR module_fields
-    { fun c -> let m = $6 c in
-      {m with memory = (int_of_string $3, int_of_string $4)} }
-  | LPAR MEMORY INT RPAR module_fields  /* Sugar */
-    { fun c -> let m = $5 c in
-      {m with memory = (int_of_string $3, int_of_string $3)} }
-  | data module_fields
-    { fun c -> let m = $2 c in {m with data = $1 :: m.data} }
+  | memory module_fields
+    { fun c -> let m = $2 c in
+      match m.memory with
+        | Some _ -> Error.error $1.at "more than one memory section"
+        | None -> {m with memory = Some $1} }
 ;
 modul :
   | LPAR MODULE module_fields RPAR { $3 (c0 ()) @@ at() }
