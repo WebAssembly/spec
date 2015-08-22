@@ -1,14 +1,19 @@
 ;; (c) 2015 Andreas Rossberg
 
 (module
-  (memory 1024)
-  (data "ABC\a7D")
+  (memory 1024 (segment 0 "ABC\a7D") (segment 20 "WASM"))
 
   ;; Data section
   (func $data (result i32)
     (and.i32
-      (eq.i32 (getnearu.i8 (const.i32 0)) (const.i32 65))
-      (eq.i32 (getfaru.i8 (const.i64 3)) (const.i32 167))
+      (and.i32
+        (eq.i32 (getnearu.i8 (const.i32 0)) (const.i32 65))
+        (eq.i32 (getfaru.i8 (const.i64 3)) (const.i32 167))
+      )
+      (and.i32
+        (eq.i32 (getnearu.i8 (const.i32 20)) (const.i32 87))
+        (eq.i32 (getfaru.i8 (const.i64 23)) (const.i32 77))
+      )
     )
   )
 

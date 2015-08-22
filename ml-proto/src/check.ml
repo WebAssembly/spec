@@ -275,10 +275,24 @@ let check_export c ex =
   let {name = _; func = x} = ex.it in
   ignore (func c x)
 
-let check_module m =
-  let {funcs; exports; tables; globals; memory; data} = m.it in
-  require (fst memory >= Int64.of_int (String.length data)) m.at
+let check_segment memory prev_end seg =
+  let seg_end = seg.it.Memory.addr + String.length seg.it.Memory.data in
+  require (seg.it.Memory.addr >= prev_end) seg.at
+    "data section not disjoint and ordered";
+  require (memory.it.initial >= seg_end) seg.at
     "data section does not fit memory";
+  seg_end
+
+let check_memory memory =
+  require (memory.it.initial <= memory.it.max) memory.at
+    "initial memory size must be less than maximum";
+  ignore (List.fold_left (check_segment memory) 0 memory.it.segments)
+
+let check_module m =
+  let {funcs; exports; tables; globals; memory} = m.it in
+  match memory with
+    | Some memory -> check_memory memory
+    | None -> ();
   let c = {c0 with funcs = List.map type_func funcs;
                  globals = List.map it globals} in
   let c' = List.fold_left check_table c tables in

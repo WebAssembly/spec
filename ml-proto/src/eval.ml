@@ -244,9 +244,14 @@ and eval_func m f vs =
 (* Modules *)
 
 let init m =
-  let {Ast.funcs; exports; tables; globals; memory = (n, _); data} = m.it in
-  let memory = Memory.create (Int64.to_int n) in
-  Memory.init memory data;
+  let {Ast.funcs; exports; tables; globals; memory} = m.it in
+  let memory = match memory with
+    | Some {it = {initial; segments} } ->
+        let m = Memory.create initial in
+        Memory.init m (List.map (fun seg -> seg.it) segments);
+        m
+    | None -> Memory.create 0
+  in
   let func x = List.nth funcs x.it in
   let export ex = ExportMap.add ex.it.name (func ex.it.func) in
   let exports = List.fold_right export exports ExportMap.empty in
