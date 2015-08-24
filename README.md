@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/WebAssembly/spec.svg?branch=master)](https://travis-ci.org/WebAssembly/spec)
+
 # spec
 
 This repository holds the official specifications and reference implementations
