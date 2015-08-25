@@ -22,7 +22,7 @@
   (global $scratch i32)
 )
 
-(invoke "even" (const.i32 13))  ;; 0 : i32
-(invoke "even" (const.i32 20))  ;; 1 : i32
-(invoke "odd" (const.i32 13))  ;; 1 : i32
-(invoke "odd" (const.i32 20))  ;; 0 : i32
+(asserteq (invoke "even" (const.i32 13)) (const.i32 0))
+(asserteq (invoke "even" (const.i32 20)) (const.i32 1))
+(asserteq (invoke "odd" (const.i32 13)) (const.i32 1))
+(asserteq (invoke "odd" (const.i32 20)) (const.i32 0))
