@@ -51,7 +51,7 @@ def find_interpreter(path):
 def rebuild_interpreter(path):
   print("// building %s" % path)
   sys.stdout.flush()
-  exitCode = subprocess.call(["ocamlbuild", "-libs", "bigarray, str", "main.native"], cwd=os.path.abspath("src"))
+  exitCode = subprocess.call(["ocamlbuild", "-libs", "bigarray, nums, str", "main.native"], cwd=os.path.abspath("src"))
   if (exitCode != 0):
     raise Exception("ocamlbuild failed with exit code %i" % exitCode)
   if not os.path.exists(path):
