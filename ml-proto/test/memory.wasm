@@ -70,8 +70,9 @@
       (eq.f64 (getnear.f64 (const.i32 8)) (cast.i64.f64 (const.i64 -12345)))
       (return (const.f64 0))
     )
-    (setfarunaligneds.i16 (const.i64 3) (const.i32 -23423))
-    (return (getnear.f64 (const.i32 0)))
+    (setfarunaligneds.i64 (const.i64 9) (const.i64 0))
+    (setfarunaligneds.i16 (const.i64 15) (const.i32 16453))
+    (return (getnearunaligned.f64 (const.i32 9)))
   )
 
   (export "data" $data)
@@ -83,4 +84,4 @@
 (asserteq (invoke "data") (const.i32 1))
 (asserteq (invoke "aligned") (const.i32 1))
 (asserteq (invoke "unaligned") (const.i32 1))
-(invoke "cast")  ;; -3.10552331246e+231 : f64
+(asserteq (invoke "cast") (const.f64 42.0))
