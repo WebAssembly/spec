@@ -233,6 +233,7 @@ cmd:
   <module>                                       ;; define, validate, and initialize module
   ( invoke <name> <expr>* )                      ;; invoke export and print result
   ( asserteq (invoke <name> <expr>* ) <expr>* )  ;; assert expected results of invocation
+  ( assertinvalid <module> <failure> )           ;; assert invalid module with given failure string
 ```
 
 Invocation is only possible after a module has been defined.

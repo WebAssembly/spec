@@ -7,22 +7,22 @@
 (module (memory 1 1 (segment 0 "a")))
 (module (memory 100 1000 (segment 0 "a") (segment 99 "b")))
 (module (memory 100 1000 (segment 0 "a") (segment 1 "b") (segment 2 "c")))
-(invalid
+(assertinvalid
   (module (memory 1 0))
   "initial memory size must be less than maximum")
-(invalid
+(assertinvalid
   (module (memory 0 0 (segment 0 "a")))
   "data segment does not fit memory")
-(invalid
+(assertinvalid
   (module (memory 100 1000 (segment 0 "a") (segment 500 "b")))
   "data segment does not fit memory")
-(invalid
+(assertinvalid
   (module (memory 100 1000 (segment 0 "abc") (segment 0 "def")))
   "data segment not disjoint and ordered")
-(invalid
+(assertinvalid
   (module (memory 100 1000 (segment 3 "ab") (segment 0 "de")))
   "data segment not disjoint and ordered")
-(invalid
+(assertinvalid
   (module (memory 100 1000 (segment 0 "a") (segment 2 "b") (segment 1 "c")))
   "data segment not disjoint and ordered")
 
