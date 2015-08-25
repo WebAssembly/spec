@@ -1,5 +1,31 @@
 ;; (c) 2015 Andreas Rossberg
 
+(module (memory 0 0))
+(module (memory 0 1))
+(module (memory 4096 16777216))
+(module (memory 0 0 (segment 0 "")))
+(module (memory 1 1 (segment 0 "a")))
+(module (memory 100 1000 (segment 0 "a") (segment 99 "b")))
+(module (memory 100 1000 (segment 0 "a") (segment 1 "b") (segment 2 "c")))
+(invalid
+  (module (memory 1 0))
+  "initial memory size must be less than maximum")
+(invalid
+  (module (memory 0 0 (segment 0 "a")))
+  "data segment does not fit memory")
+(invalid
+  (module (memory 100 1000 (segment 0 "a") (segment 500 "b")))
+  "data segment does not fit memory")
+(invalid
+  (module (memory 100 1000 (segment 0 "abc") (segment 0 "def")))
+  "data segment not disjoint and ordered")
+(invalid
+  (module (memory 100 1000 (segment 3 "ab") (segment 0 "de")))
+  "data segment not disjoint and ordered")
+(invalid
+  (module (memory 100 1000 (segment 0 "a") (segment 2 "b") (segment 1 "c")))
+  "data segment not disjoint and ordered")
+
 (module
   (memory 1024 (segment 0 "ABC\a7D") (segment 20 "WASM"))
 

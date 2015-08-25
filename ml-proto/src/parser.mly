@@ -98,7 +98,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token GETLOCAL SETLOCAL GETGLOBAL SETGLOBAL GETMEMORY SETMEMORY
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT GLOBAL IMPORT EXPORT TABLE
-%token INVOKE ASSERTEQ
+%token INVALID INVOKE ASSERTEQ
 %token EOF
 
 %token<string> INT
@@ -308,6 +308,7 @@ modul :
 
 cmd :
   | modul { Define $1 @@ at() }
+  | LPAR INVALID modul TEXT RPAR { Invalid ($3, $4) @@ at() }
   | LPAR INVOKE TEXT expr_list RPAR
     { Invoke ($3, $4 (c0 ())) @@ at() }
   | LPAR ASSERTEQ LPAR INVOKE TEXT expr_list RPAR expr_list RPAR

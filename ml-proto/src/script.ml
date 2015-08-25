@@ -9,6 +9,7 @@ open Source
 type command = command' phrase
 and command' =
   | Define of Ast.modul
+  | Invalid of Ast.modul * string
   | Invoke of string * Ast.expr list
   | AssertEqInvoke of string * Ast.expr list * Ast.expr list
 
@@ -32,6 +33,15 @@ let run_command cmd =
     end;
     trace "Initializing...";
     current_module := Some (Eval.init m)
+
+  | Invalid (m, re) ->
+    trace "Checking invalid...";
+    (match try Check.check_module m; None with Error.Error (at, s) -> Some s with
+    | None ->
+      Error.error cmd.at "expected invalid module"
+    | Some s ->
+      if not (Str.string_match (Str.regexp re) s 0) then
+        Error.error cmd.at ("validation failure \"" ^ s ^ "\" does not match: " ^ re))
 
   | Invoke (name, es) ->
     trace "Invoking...";
@@ -65,6 +75,7 @@ let dry_command cmd =
   | Define m ->
     Check.check_module m;
     if !Flags.print_sig then Print.print_module_sig m
+  | Invalid (m, re) -> ()
   | Invoke _ -> ()
   | AssertEqInvoke _ -> ()
 

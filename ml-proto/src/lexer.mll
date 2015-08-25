@@ -251,6 +251,7 @@ rule token = parse
   | "export" { EXPORT }
   | "table" { TABLE }
 
+  | "invalid" { INVALID }
   | "invoke" { INVOKE }
   | "asserteq" { ASSERTEQ }
 
