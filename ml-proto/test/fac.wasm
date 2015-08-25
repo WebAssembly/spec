@@ -67,7 +67,7 @@
   (export "fac-iter-named" $fac-iter)
 )
 
-(invoke "fac-rec" (const.i64 25))  ;; 7034535277573963776 : i64
-(invoke "fac-iter" (const.i64 25))  ;; 7034535277573963776 : i64
-(invoke "fac-rec-named" (const.i64 25))  ;; 7034535277573963776 : i64
-(invoke "fac-iter-named" (const.i64 25))  ;; 7034535277573963776 : i64
+(asserteq (invoke "fac-rec" (const.i64 25)) (const.i64 7034535277573963776))
+(asserteq (invoke "fac-iter" (const.i64 25)) (const.i64 7034535277573963776))
+(asserteq (invoke "fac-rec-named" (const.i64 25)) (const.i64 7034535277573963776))
+(asserteq (invoke "fac-iter-named" (const.i64 25)) (const.i64 7034535277573963776))

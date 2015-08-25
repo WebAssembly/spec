@@ -42,20 +42,20 @@
   (export "expr" $expr)
 )
 
-(invoke "stmt" (const.i32 0))  ;; 0 : i32
-(invoke "stmt" (const.i32 1))  ;; -1 : i32
-(invoke "stmt" (const.i32 2))  ;; -2 : i32
-(invoke "stmt" (const.i32 3))  ;; -3 : i32
-(invoke "stmt" (const.i32 4))  ;; 100 : i32
-(invoke "stmt" (const.i32 5))  ;; 101 : i32
-(invoke "stmt" (const.i32 6))  ;; 102 : i32
-(invoke "stmt" (const.i32 7))  ;; 102 : i32
-(invoke "stmt" (const.i32 -10))  ;; 102 : i32
+(asserteq (invoke "stmt" (const.i32 0)) (const.i32 0))
+(asserteq (invoke "stmt" (const.i32 1)) (const.i32 -1))
+(asserteq (invoke "stmt" (const.i32 2)) (const.i32 -2))
+(asserteq (invoke "stmt" (const.i32 3)) (const.i32 -3))
+(asserteq (invoke "stmt" (const.i32 4)) (const.i32 100))
+(asserteq (invoke "stmt" (const.i32 5)) (const.i32 101))
+(asserteq (invoke "stmt" (const.i32 6)) (const.i32 102))
+(asserteq (invoke "stmt" (const.i32 7)) (const.i32 102))
+(asserteq (invoke "stmt" (const.i32 -10)) (const.i32 102))
 
-(invoke "expr" (const.i64 0))  ;; 0 : i64
-(invoke "expr" (const.i64 1))  ;; -1 : i64
-(invoke "expr" (const.i64 2))  ;; -2 : i64
-(invoke "expr" (const.i64 3))  ;; -3 : i64
-(invoke "expr" (const.i64 6))  ;; 101 : i64
-(invoke "expr" (const.i64 7))  ;; 100 : i64
-(invoke "expr" (const.i64 -10))  ;; 100 : i64
+(asserteq (invoke "expr" (const.i64 0)) (const.i64 0))
+(asserteq (invoke "expr" (const.i64 1)) (const.i64 -1))
+(asserteq (invoke "expr" (const.i64 2)) (const.i64 -2))
+(asserteq (invoke "expr" (const.i64 3)) (const.i64 -3))
+(asserteq (invoke "expr" (const.i64 6)) (const.i64 101))
+(asserteq (invoke "expr" (const.i64 7)) (const.i64 100))
+(asserteq (invoke "expr" (const.i64 -10)) (const.i64 100))

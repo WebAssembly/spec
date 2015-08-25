@@ -80,7 +80,7 @@
   (export "cast" $cast)
 )
 
-(invoke "data")  ;; 1 : i32
-(invoke "aligned")  ;; 1 : i32
-(invoke "unaligned")  ;; 1 : i32
+(asserteq (invoke "data") (const.i32 1))
+(asserteq (invoke "aligned") (const.i32 1))
+(asserteq (invoke "unaligned") (const.i32 1))
 (invoke "cast")  ;; -3.10552331246e+231 : f64
