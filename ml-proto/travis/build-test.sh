@@ -11,13 +11,7 @@ export PATH=$PWD/ocaml/install/bin:$PATH
 
 cd src
 
-make clean
-rm -f lexer.ml
-rm -f parser.ml
-rm -f parser.mli
-
 ocamlbuild -libs bigarray main.native
-make
 
 cd ..
 
