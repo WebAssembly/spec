@@ -271,9 +271,14 @@ let check_table c tab =
     List.iter (fun xI -> check_func_type (func c xI) s xI.at) xs;
     {c with tables = c.tables @ [s]}
 
-let check_export c ex =
-  let {name = _; func = x} = ex.it in
-  ignore (func c x)
+module NameSet = Set.Make(String)
+
+let check_export c set ex =
+  let {name; func = x} = ex.it in
+  ignore (func c x);
+  require (not (NameSet.mem name set)) ex.at
+    "duplicate export name";
+  NameSet.add name set
 
 let check_segment size prev_end seg =
   let seg_end = seg.it.Memory.addr + String.length seg.it.Memory.data in
@@ -295,4 +300,4 @@ let check_module m =
                  globals = List.map it globals} in
   let c' = List.fold_left check_table c tables in
   List.iter (check_func c') funcs;
-  List.iter (check_export c') exports
+  ignore (List.fold_left (check_export c') NameSet.empty exports)

@@ -5,8 +5,9 @@
 type command = command' Source.phrase
 and command' =
   | Define of Ast.modul
+  | AssertInvalid of Ast.modul * string
   | Invoke of string * Ast.expr list
-  | AssertEqInvoke of string * Ast.expr list * Ast.expr list
+  | AssertEq of string * Ast.expr list * Ast.expr list
 
 type script = command list
 
