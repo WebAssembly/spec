@@ -22,31 +22,43 @@
 )
 
 (asserteq
-  (invoke "eq_float32" (const.f32 1.123456789012345) (const.f32 1.123456789))
+  (invoke "eq_float32"
+    (add.f32 (const.f32 1.1234567890) (const.f32 1.2345e-10))
+    (const.f32 1.123456789)
+  )
   (const.i32 1)
 )
 
 (asserteq
-  (invoke "eq_float64" (const.f64 1.123456789012345) (const.f64 1.123456789))
+  (invoke "eq_float64"
+    (add.f64 (const.f64 1.1234567890) (const.f64 1.2345e-10))
+    (const.f64 1.123456789)
+  )
   (const.i32 0)
 )
 
 (asserteq
-  (invoke "eq_float32" (const.f32 1e40) (const.f32 1e50))
+  (invoke "eq_float32"
+    (mul.f32 (const.f32 1e20) (const.f32 1e20))
+    (mul.f32 (const.f32 1e25) (const.f32 1e25))
+  )
   (const.i32 1)
 )
 
 (asserteq
-  (invoke "eq_float64" (const.f64 1e40) (const.f64 1e50))
+  (invoke "eq_float64"
+    (mul.f64 (const.f64 1e20) (const.f64 1e20))
+    (mul.f64 (const.f64 1e25) (const.f64 1e25))
+  )
   (const.i32 0)
 )
 
 (asserteq
-  (invoke "div_float32" (const.f32 1.123456789012345) (const.f32 100))
+  (invoke "div_float32" (const.f32 1.123456789) (const.f32 100))
   (const.f32 0.011234568432)
 )
 
 (asserteq
-  (invoke "div_float64" (const.f64 1.123456789012345) (const.f64 100))
-  (const.f64 0.01123456789012345)
+  (invoke "div_float64" (const.f64 1.123456789) (const.f64 100))
+  (const.f64 0.01123456789)
 )

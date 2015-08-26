@@ -104,7 +104,7 @@ let character = [^'"''\\''\n'] | '\\'escape | '\\'hexdigit hexdigit
 
 let num = ('+' | '-')? digit+
 let int = num
-let float = (num '.' digit+) | num ('e' | 'E') num
+let float = (num '.' digit+) | num ('.' digit+)? ('e' | 'E') num
 let text = '"' character* '"'
 let name = '$' (letter | digit | '_' | tick | symbol)+
 
