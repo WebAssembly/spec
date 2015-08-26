@@ -1,0 +1,52 @@
+(module
+  (func $eq_float32 (param $x f32) (param $y f32) (result i32)
+    (eq.f32 (getlocal $x) (getlocal $y))
+  )
+
+  (func $eq_float64 (param $x f64) (param $y f64) (result i32)
+    (eq.f64 (getlocal $x) (getlocal $y))
+  )
+
+  (func $div_float32 (param $x f32) (param $y f32) (result f32)
+    (div.f32 (getlocal $x) (getlocal $y))
+  )
+
+  (func $div_float64 (param $x f64) (param $y f64) (result f64)
+    (div.f64 (getlocal $x) (getlocal $y))
+  )
+
+  (export "eq_float32" $eq_float32)
+  (export "eq_float64" $eq_float64)
+  (export "div_float32" $div_float32)
+  (export "div_float64" $div_float64)
+)
+
+(asserteq
+  (invoke "eq_float32" (const.f32 1.123456789012345) (const.f32 1.123456789))
+  (const.i32 1)
+)
+
+(asserteq
+  (invoke "eq_float64" (const.f64 1.123456789012345) (const.f64 1.123456789))
+  (const.i32 0)
+)
+
+(asserteq
+  (invoke "eq_float32" (const.f32 1e40) (const.f32 1e50))
+  (const.i32 1)
+)
+
+(asserteq
+  (invoke "eq_float64" (const.f64 1e40) (const.f64 1e50))
+  (const.i32 0)
+)
+
+(asserteq
+  (invoke "div_float32" (const.f32 1.123456789012345) (const.f32 100))
+  (const.f32 0.011234568432)
+)
+
+(asserteq
+  (invoke "div_float64" (const.f64 1.123456789012345) (const.f64 100))
+  (const.f64 0.01123456789012345)
+)
