@@ -194,7 +194,6 @@ struct
       | Sub -> (-.)
       | Mul -> ( *.)
       | Div -> (/.)
-      | Mod -> mod_float
       | CopySign -> copysign
     in
     fun v1 v2 -> Float.to_value (f (Float.of_value 1 v1) (Float.of_value 2 v2))
