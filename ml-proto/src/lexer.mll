@@ -210,35 +210,39 @@ rule token = parse
   | "gt."(fxx as t) { COMPARE (floatop t F32.Gt F64.Gt) }
   | "ge."(fxx as t) { COMPARE (floatop t F32.Ge F64.Ge) }
 
-  | "converts."(ixx as t)".i32" { CONVERT (intop t I32.ToInt32S I64.ToInt32S) }
-  | "convertu."(ixx as t)".i32" { CONVERT (intop t I32.ToInt32U I64.ToInt32U) }
-  | "converts."(ixx as t)".i64" { CONVERT (intop t I32.ToInt64S I64.ToInt64S) }
-  | "convertu."(ixx as t)".i64" { CONVERT (intop t I32.ToInt64U I64.ToInt64U) }
-  | "converts."(ixx as t)".f32"
-    { CONVERT (intop t I32.ToFloat32S I64.ToFloat32S) }
-  | "convertu."(ixx as t)".f32"
-    { CONVERT (intop t I32.ToFloat32U I64.ToFloat32U) }
-  | "converts."(ixx as t)".f64"
-    { CONVERT (intop t I32.ToFloat64S I64.ToFloat64S) }
-  | "convertu."(ixx as t)".f64"
-    { CONVERT (intop t I32.ToFloat64U I64.ToFloat64U) }
-  | "converts."(fxx as t)".i32"
-    { CONVERT (floatop t F32.ToInt32S F64.ToInt32S) }
-  | "convertu."(fxx as t)".i32"
-    { CONVERT (floatop t F32.ToInt32U F64.ToInt32U) }
-  | "converts."(fxx as t)".i64"
-    { CONVERT (floatop t F32.ToInt64S F64.ToInt64S) }
-  | "convertu."(fxx as t)".i64"
-    { CONVERT (floatop t F32.ToInt64U F64.ToInt64U) }
-  | "convert."(fxx as t)".f32"
-    { CONVERT (floatop t F32.ToFloat32 F64.ToFloat32) }
-  | "convert."(fxx as t)".f64"
-    { CONVERT (floatop t F32.ToFloat64 F64.ToFloat64) }
+  | "converts.i32."(ixx as t)
+    { CONVERT (intop t I32.FromInt32S I64.FromInt32S) }
+  | "convertu.i32."(ixx as t)
+    { CONVERT (intop t I32.FromInt32U I64.FromInt32U) }
+  | "converts.i64."(ixx as t)
+    { CONVERT (intop t I32.FromInt64S I64.FromInt64S) }
+  | "convertu.i64."(ixx as t)
+    { CONVERT (intop t I32.FromInt64U I64.FromInt64U) }
+  | "converts.f32."(ixx as t)
+    { CONVERT (intop t I32.FromFloat32S I64.FromFloat32S) }
+  | "convertu.f32."(ixx as t)
+    { CONVERT (intop t I32.FromFloat32U I64.FromFloat32U) }
+  | "converts.f64."(ixx as t)
+    { CONVERT (intop t I32.FromFloat64S I64.FromFloat64S) }
+  | "convertu.f64."(ixx as t)
+    { CONVERT (intop t I32.FromFloat64U I64.FromFloat64U) }
+  | "converts.i32."(fxx as t)
+    { CONVERT (floatop t F32.FromInt32S F64.FromInt32S) }
+  | "convertu.i32."(fxx as t)
+    { CONVERT (floatop t F32.FromInt32U F64.FromInt32U) }
+  | "converts.i64."(fxx as t)
+    { CONVERT (floatop t F32.FromInt64S F64.FromInt64S) }
+  | "convertu.i64."(fxx as t)
+    { CONVERT (floatop t F32.FromInt64U F64.FromInt64U) }
+  | "convert.f32."(fxx as t)
+    { CONVERT (floatop t F32.FromFloat32 F64.FromFloat32) }
+  | "convert.f64."(fxx as t)
+    { CONVERT (floatop t F32.FromFloat64 F64.FromFloat64) }
 
-  | "cast.i32.f32" { CONVERT (Values.Int32 I32.ToFloatCast) }
-  | "cast.i64.f64" { CONVERT (Values.Int64 I64.ToFloatCast) }
-  | "cast.f32.i32" { CONVERT (Values.Float32 F32.ToIntCast) }
-  | "cast.f64.i64" { CONVERT (Values.Float64 F64.ToIntCast) }
+  | "cast.i32.f32" { CONVERT (Values.Float32 F32.CastInt) }
+  | "cast.i64.f64" { CONVERT (Values.Float64 F64.CastInt) }
+  | "cast.f32.i32" { CONVERT (Values.Int32 I32.CastFloat) }
+  | "cast.f64.i64" { CONVERT (Values.Int64 I64.CastFloat) }
 
   | "func" { FUNC }
   | "param" { PARAM }

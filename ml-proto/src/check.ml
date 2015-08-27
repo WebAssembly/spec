@@ -76,35 +76,35 @@ let type_cvt at = function
   | Values.Int32 cvt ->
     let open Int32Op in
     (match cvt with
-    | ToInt32S | ToInt32U -> error at "invalid conversion op Int32->Int32"
-    | ToInt64S | ToInt64U -> Int32Type, Int64Type
-    | ToFloat32S | ToFloat32U | ToFloatCast -> Int32Type, Float32Type
-    | ToFloat64S | ToFloat64U -> Int32Type, Float64Type
-    )
+    | FromInt32S | FromInt32U -> error at "invalid conversion op Int32->Int32"
+    | FromInt64S | FromInt64U -> Int64Type
+    | FromFloat32S | FromFloat32U | CastFloat -> Float32Type
+    | FromFloat64S | FromFloat64U -> Float64Type
+    ), Int32Type
   | Values.Int64 cvt ->
     let open Int64Op in
     (match cvt with
-    | ToInt32S | ToInt32U -> Int64Type, Int32Type
-    | ToInt64S | ToInt64U -> error at "invalid conversion op Int64->Int64"
-    | ToFloat32S | ToFloat32U -> Int64Type, Float32Type
-    | ToFloat64S | ToFloat64U | ToFloatCast -> Int64Type, Float64Type
-    )
+    | FromInt32S | FromInt32U -> Int32Type
+    | FromInt64S | FromInt64U -> error at "invalid conversion op Int64->Int64"
+    | FromFloat32S | FromFloat32U -> Float32Type
+    | FromFloat64S | FromFloat64U | CastFloat -> Float64Type
+    ), Int64Type
   | Values.Float32 cvt ->
     let open Float32Op in
     (match cvt with
-    | ToInt32S | ToInt32U | ToIntCast -> Float32Type, Int32Type
-    | ToInt64S | ToInt64U -> Float32Type, Int64Type
-    | ToFloat32 -> error at "invalid conversion op Float32->Float32"
-    | ToFloat64 -> Float32Type, Float64Type
-    )
+    | FromInt32S | FromInt32U | CastInt -> Int32Type
+    | FromInt64S | FromInt64U -> Int64Type
+    | FromFloat32 -> error at "invalid conversion op Float32->Float32"
+    | FromFloat64 -> Float64Type
+    ), Float32Type
   | Values.Float64 cvt ->
     let open Float64Op in
     (match cvt with
-    | ToInt32S | ToInt32U -> Float64Type, Int32Type
-    | ToInt64S | ToInt64U | ToIntCast -> Float64Type, Int64Type
-    | ToFloat32 -> Float64Type, Float32Type
-    | ToFloat64 -> error at "invalid conversion op Float64->Float64"
-    )
+    | FromInt32S | FromInt32U -> Int32Type
+    | FromInt64S | FromInt64U | CastInt -> Int64Type
+    | FromFloat32 -> Float32Type
+    | FromFloat64 -> error at "invalid conversion op Float64->Float64"
+    ), Float64Type
 
 let type_func f =
   let {params; results; _} = f.it in
