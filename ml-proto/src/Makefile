@@ -12,7 +12,7 @@ MODULES = \
 NOMLI = flags types values ast sexpr main
 PARSERS = parser
 LEXERS = lexer
-LIBRARIES = bigarray str
+LIBRARIES = bigarray nums str
 SAMPLES = 
 TEXTS = 
 
