@@ -105,7 +105,10 @@
   (func $cast (result f64)
     (stores.i64 (const.i32 8) (const.i64 -12345))
     (if
-      (eq.f64 (load.f64 (const.i32 8)) (cast.i64.f64 (const.i64 -12345)))
+      (eq.f64
+        (load.f64 (const.i32 8))
+        (reinterpret.i64.f64 (const.i64 -12345))
+      )
       (return (const.f64 0))
     )
     (stores.1.i64 (const.i32 9) (const.i64 0))

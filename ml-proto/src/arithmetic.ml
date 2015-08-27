@@ -165,17 +165,15 @@ struct
 
   let cvt op =
     let f = match op with
-      | FromInt32S -> fun v -> Int.of_int32 (Int32X.of_value 1 v)
-      | FromInt32U -> fun v ->
+      | ExtendSInt32 -> fun v -> Int.of_int32 (Int32X.of_value 1 v)
+      | ExtendUInt32 -> fun v ->
         Int.of_big_int_u (Int32X.to_big_int_u (Int32X.of_value 1 v))
-      | FromInt64S -> fun v -> Int.of_int64 (Int64X.of_value 1 v)
-      | FromInt64U -> fun v ->
-        Int.of_big_int_u (Int64X.to_big_int_u (Int64X.of_value 1 v))
-      | FromFloat32S -> fun v -> Int.of_float (Float32X.of_value 1 v)
-      | FromFloat32U -> fun v -> of_float_u (Float32X.of_value 1 v)
-      | FromFloat64S -> fun v -> Int.of_float (Float64X.of_value 1 v)
-      | FromFloat64U -> fun v -> of_float_u (Float64X.of_value 1 v)
-      | CastFloat -> fun v ->
+      | WrapInt64 -> fun v -> Int.of_int64 (Int64X.of_value 1 v)
+      | TruncSFloat32 -> fun v -> Int.of_float (Float32X.of_value 1 v)
+      | TruncUFloat32 -> fun v -> of_float_u (Float32X.of_value 1 v)
+      | TruncSFloat64 -> fun v -> Int.of_float (Float64X.of_value 1 v)
+      | TruncUFloat64 -> fun v -> of_float_u (Float64X.of_value 1 v)
+      | ReinterpretFloat -> fun v ->
         if Int.size = 32
         then Int.bits_of_float (Float32X.of_value 1 v)
         else Int.bits_of_float (Float64X.of_value 1 v)
@@ -224,15 +222,15 @@ struct
 
   let cvt op =
     let f = match op with
-      | FromInt32S -> fun v -> Int32.to_float (Int32X.of_value 1 v)
-      | FromInt32U -> fun v ->
+      | ConvertSInt32 -> fun v -> Int32.to_float (Int32X.of_value 1 v)
+      | ConvertUInt32 -> fun v ->
         Big_int.float_of_big_int (Int32X.to_big_int_u (Int32X.of_value 1 v))
-      | FromInt64S -> fun v -> Int64.to_float (Int64X.of_value 1 v)
-      | FromInt64U -> fun v ->
+      | ConvertSInt64 -> fun v -> Int64.to_float (Int64X.of_value 1 v)
+      | ConvertUInt64 -> fun v ->
         Big_int.float_of_big_int (Int64X.to_big_int_u (Int64X.of_value 1 v))
-      | FromFloat32 -> fun v -> Float32X.of_value 1 v
-      | FromFloat64 -> fun v -> Float64X.of_value 1 v
-      | CastInt -> fun v ->
+      | PromoteFloat32 -> fun v -> Float32X.of_value 1 v
+      | DemoteFloat64 -> fun v -> Float64X.of_value 1 v
+      | ReinterpretInt -> fun v ->
         if Float.size = 32
         then Int32.float_of_bits (Int32X.of_value 1 v)
         else Int64.float_of_bits (Int64X.of_value 1 v)

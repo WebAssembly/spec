@@ -189,7 +189,7 @@ expr:
   ( <binop>.<type> <expr> <expr> )
   ( <relop>.<type> <expr> <expr> )
   ( convert(s|u)?.<type>.<type> <expr> )
-  ( cast.<type>.<type> <expr> )
+  ( reinterpret.<type>.<type> <expr> )
 
 case:
   ( case <value> <expr>* fallthru? )  ;; = (case <int> (block <expr>*) fallthru?)
