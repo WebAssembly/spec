@@ -155,10 +155,10 @@ let rec eval_expr c e =
     local c x := v1;
     []
 
-  | GetGlobal x ->
+  | LoadGlobal x ->
     [!(global c x)]
 
-  | SetGlobal (x, e1) ->
+  | StoreGlobal (x, e1) ->
     let v1 = unary (eval_expr c e1) e1.at in
     global c x := v1;
     []

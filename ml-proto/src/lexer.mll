@@ -142,8 +142,9 @@ rule token = parse
 
   | "getlocal" { GETLOCAL }
   | "setlocal" { SETLOCAL }
-  | "getglobal" { GETGLOBAL }
-  | "setglobal" { SETGLOBAL }
+
+  | "load_global" { LOADGLOBAL }
+  | "store_global" { STOREGLOBAL }
 
   | "load"(align as a)(sign as s)"."(mixx as t)
     { LOAD (memop a s t) }

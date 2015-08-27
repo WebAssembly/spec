@@ -12,7 +12,7 @@
   )
 
   (func $odd (param $n i32) (result i32)
-    (setglobal $scratch (getlocal $n))
+    (store_global $scratch (getlocal $n))
     (if (eq.i32 (getlocal $n) (const.i32 0))
       (const.i32 0)
       (call $even (sub.i32 (getlocal $n) (const.i32 1)))

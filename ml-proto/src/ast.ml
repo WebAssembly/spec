@@ -83,8 +83,8 @@ and expr' =
   | Destruct of var list * expr
   | GetLocal of var
   | SetLocal of var * expr
-  | GetGlobal of var
-  | SetGlobal of var * expr
+  | LoadGlobal of var
+  | StoreGlobal of var * expr
   | Load of memop * expr
   | Store of memop * expr * expr
   | Const of literal
