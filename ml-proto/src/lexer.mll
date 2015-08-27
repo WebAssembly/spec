@@ -80,16 +80,12 @@ let floatop t f32 f64 =
   | "f64" -> Values.Float64 f64
   | _ -> assert false
 
-let memop d a s t =
-  let dist = match d with
-    | "near" -> Near
-    | "far" -> Far
-    | _ -> assert false
-  and align = match a with
+let memop a s t =
+  let align = match a with
     | "" -> Memory.Aligned
     | "unaligned" -> Memory.Unaligned
     | _ -> assert false
-  in {dist; align; mem = mem_type s t}
+  in {align; mem = mem_type s t}
 }
 
 
@@ -114,7 +110,6 @@ let nxx = ixx | fxx
 let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
-let dist = "near" | "far"
 let align = "" | "unaligned"
 
 rule token = parse
@@ -150,12 +145,12 @@ rule token = parse
   | "getglobal" { GETGLOBAL }
   | "setglobal" { SETGLOBAL }
 
-  | "get"(dist as d)(align as a)(sign as s)"."(mixx as t)
-    { GETMEMORY (memop d a s t) }
-  | "set"(dist as d)(align as a)(sign as s)"."(mixx as t)
-    { SETMEMORY (memop d a s t) }
-  | "get"(dist as d)(align as a)"."(mfxx as t) { GETMEMORY (memop d a ' ' t) }
-  | "set"(dist as d)(align as a)"."(mfxx as t) { SETMEMORY (memop d a ' ' t) }
+  | "load"(align as a)(sign as s)"."(mixx as t)
+    { LOAD (memop a s t) }
+  | "store"(align as a)(sign as s)"."(mixx as t)
+    { STORE (memop a s t) }
+  | "load"(align as a)"."(mfxx as t) { LOAD (memop a ' ' t) }
+  | "store"(align as a)"."(mfxx as t) { STORE (memop a ' ' t) }
 
   | "const."(nxx as t) { CONST (value_type t) }
   | "switch."(nxx as t) { SWITCH (value_type t) }

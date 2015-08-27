@@ -78,7 +78,6 @@ open Values
 
 let address_of_value = function
   | Int32 i -> Int32.to_int i
-  | Int64 i -> Int64.to_int i
   | _ -> raise Address
 
 

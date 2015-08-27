@@ -55,10 +55,6 @@ let nary = List.map (fun ty -> [ty])
 
 (* Type Synthesis *)
 
-let type_dist = function
-  | Near -> Int32Type
-  | Far -> Int64Type
-
 let type_mem = function
   | Memory.SInt8Mem -> Int32Type
   | Memory.SInt16Mem -> Int32Type
@@ -192,12 +188,12 @@ let rec check_expr c ts e =
     check_expr c [global c x] e1;
     check_type [] ts e.at
 
-  | GetMemory (memop, e1) ->
-    check_expr c [type_dist memop.dist] e1;
+  | Load (memop, e1) ->
+    check_expr c [Int32Type] e1;
     check_type [type_mem memop.mem] ts e.at
 
-  | SetMemory (memop, e1, e2) ->
-    check_expr c [type_dist memop.dist] e1;
+  | Store (memop, e1, e2) ->
+    check_expr c [Int32Type] e1;
     check_expr c [type_mem memop.mem] e2;
     check_type [] ts e.at
 

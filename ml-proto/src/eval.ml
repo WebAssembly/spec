@@ -163,12 +163,12 @@ let rec eval_expr c e =
     global c x := v1;
     []
 
-  | GetMemory ({align; mem; _}, e1) ->
+  | Load ({align; mem; _}, e1) ->
     let v1 = unary (eval_expr c e1) e1.at in
     (try [Memory.load c.modul.memory align (Memory.address_of_value v1) mem]
     with exn -> memory_error e.at exn)
 
-  | SetMemory ({align; mem; _}, e1, e2) ->
+  | Store ({align; mem; _}, e1, e2) ->
     let v1 = unary (eval_expr c e1) e1.at in
     let v2 = unary (eval_expr c e2) e2.at in
     (try Memory.store c.modul.memory align (Memory.address_of_value v1) mem v2
