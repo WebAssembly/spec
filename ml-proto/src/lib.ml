@@ -37,3 +37,7 @@ struct
     | Some x -> f x
     | None -> ()
 end
+
+let is_power_of_two x =
+  assert (x >= 0);
+  x <> 0 && (x land (x - 1)) == 0

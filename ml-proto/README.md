@@ -160,7 +160,9 @@ var: <int> | $<name>
 unop:  neg | abs | not | ...
 binop: add | sub | mul | ...
 relop: eq | neq | lt | ...
-memop: (unaligned)?(s|u)?
+sign: s|u
+align: 1|2|4|8|...
+memop: (<sign>.)?(<align>.)?
 
 expr:
   ( nop )
@@ -181,8 +183,8 @@ expr:
   ( setlocal <var> <expr> )
   ( load_global <var> )
   ( store_global <var> <expr> )
-  ( load<memop>.<memtype> <expr> )
-  ( store<memop>.<memtype> <expr> <expr> )
+  ( load<memop><memtype> <expr> )
+  ( store<memop><memtype> <expr> <expr> )
   ( const.<type> <num> )
   ( <unop>.<type> <expr> )
   ( <binop>.<type> <expr> <expr> )
