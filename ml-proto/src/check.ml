@@ -189,10 +189,12 @@ let rec check_expr c ts e =
     check_type [] ts e.at
 
   | Load (memop, e1) ->
+    check_memop memop e.at;
     check_expr c [Int32Type] e1;
     check_type [type_mem memop.mem] ts e.at
 
   | Store (memop, e1, e2) ->
+    check_memop memop e.at;
     check_expr c [Int32Type] e1;
     check_expr c [type_mem memop.mem] e2;
     check_type [] ts e.at
@@ -236,6 +238,13 @@ and check_arm c t ts arm =
   let {value = l; expr = e; fallthru} = arm.it in
   check_literal c [t] l;
   check_expr c (if fallthru then [] else ts) e
+
+and check_memop memop at =
+  require (memop.align = 1 || memop.align = 2 ||
+           memop.align = 4 || memop.align = 8)
+    at "invalid alignment";
+  require (memop.align <= (Memory.mem_size memop.mem))
+    at "alignment too big"
 
 
 (*

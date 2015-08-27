@@ -80,12 +80,16 @@ let floatop t f32 f64 =
   | "f64" -> Values.Float64 f64
   | _ -> assert false
 
+let default_alignment = function
+  | "i8" -> 1
+  | "i16" -> 2
+  | "i32" | "f32" -> 4
+  | "i64" | "f64" -> 8
+  | _ -> assert false
+
 let memop a s t =
-  let align = match a with
-    | "" -> Memory.Aligned
-    | "unaligned" -> Memory.Unaligned
-    | _ -> assert false
-  in {align; mem = mem_type s t}
+  let align = if a = "" then default_alignment t else int_of_string a in
+  {align; mem = mem_type s t}
 }
 
 
@@ -110,7 +114,7 @@ let nxx = ixx | fxx
 let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
-let align = "" | "unaligned"
+let align = digit+
 
 rule token = parse
   | "(" { LPAR }
@@ -146,12 +150,14 @@ rule token = parse
   | "load_global" { LOADGLOBAL }
   | "store_global" { STOREGLOBAL }
 
-  | "load"(align as a)(sign as s)"."(mixx as t)
-    { LOAD (memop a s t) }
-  | "store"(align as a)(sign as s)"."(mixx as t)
-    { STORE (memop a s t) }
-  | "load"(align as a)"."(mfxx as t) { LOAD (memop a ' ' t) }
-  | "store"(align as a)"."(mfxx as t) { STORE (memop a ' ' t) }
+  | "load"(sign as s)"."(align as a)"."(mixx as t) { LOAD (memop a s t) }
+  | "store"(sign as s)"."(align as a)"."(mixx as t) { STORE (memop a s t) }
+  | "load"(sign as s)"."(mixx as t) { LOAD (memop "" s t) }
+  | "store"(sign as s)"."(mixx as t) { STORE (memop "" s t) }
+  | "load."(align as a)"."(mfxx as t) { LOAD (memop a ' ' t) }
+  | "store."(align as a)"."(mfxx as t) { STORE (memop a ' ' t) }
+  | "load."(mfxx as t) { LOAD (memop "" ' ' t) }
+  | "store."(mfxx as t) { STORE (memop "" ' ' t) }
 
   | "const."(nxx as t) { CONST (value_type t) }
   | "switch."(nxx as t) { SWITCH (value_type t) }
