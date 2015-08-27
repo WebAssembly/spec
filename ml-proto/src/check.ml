@@ -240,8 +240,7 @@ and check_arm c t ts arm =
   check_expr c (if fallthru then [] else ts) e
 
 and check_memop memop at =
-  require (Lib.is_power_of_two memop.align) at "non-power-of-two alignment";
-  require (memop.align <= Memory.mem_size memop.mem) at "alignment too big"
+  require (Lib.is_power_of_two memop.align) at "non-power-of-two alignment"
 
 
 (*
