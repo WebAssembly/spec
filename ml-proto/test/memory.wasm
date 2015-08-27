@@ -32,11 +32,11 @@
 (assertinvalid (module (func (loadu.4.i16 (const.i32 0)))) "alignment too big")
 (assertinvalid (module (func (loadu.8.i32 (const.i32 0)))) "alignment too big")
 (assertinvalid (module (func (load.8.f32 (const.i32 0)))) "alignment too big")
-(assertinvalid (module (func (loadu.0.i64 (const.i32 0)))) "invalid alignment")
-(assertinvalid (module (func (loadu.3.i64 (const.i32 0)))) "invalid alignment")
-(assertinvalid (module (func (loadu.5.i64 (const.i32 0)))) "invalid alignment")
-(assertinvalid (module (func (loadu.6.i64 (const.i32 0)))) "invalid alignment")
-(assertinvalid (module (func (loadu.7.i64 (const.i32 0)))) "invalid alignment")
+(assertinvalid (module (func (loadu.0.i64 (const.i32 0)))) "non-power-of-two alignment")
+(assertinvalid (module (func (loadu.3.i64 (const.i32 0)))) "non-power-of-two alignment")
+(assertinvalid (module (func (loadu.5.i64 (const.i32 0)))) "non-power-of-two alignment")
+(assertinvalid (module (func (loadu.6.i64 (const.i32 0)))) "non-power-of-two alignment")
+(assertinvalid (module (func (loadu.7.i64 (const.i32 0)))) "non-power-of-two alignment")
 
 (module
   (memory 1024 (segment 0 "ABC\a7D") (segment 20 "WASM"))
