@@ -243,7 +243,7 @@ and check_memop memop at =
   require (memop.align = 1 || memop.align = 2 ||
            memop.align = 4 || memop.align = 8)
     at "invalid alignment";
-  require (memop.align <= (Memory.mem_size memop.mem))
+  require (memop.align <= Memory.mem_size memop.mem)
     at "alignment too big"
 
 
