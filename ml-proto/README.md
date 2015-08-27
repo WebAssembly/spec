@@ -160,7 +160,7 @@ var: <int> | $<name>
 unop:  neg | abs | not | ...
 binop: add | sub | mul | ...
 relop: eq | neq | lt | ...
-memop: (near|far)(unaligned)?(s|u)?
+memop: (unaligned)?(s|u)?
 
 expr:
   ( nop )
@@ -179,10 +179,10 @@ expr:
   ( getparam <var> )
   ( getlocal <var> )
   ( setlocal <var> <expr> )
-  ( getglobal <var> )
-  ( setglobal <var> <expr> )
-  ( get<memop>.<memtype> <expr> )
-  ( set<memop>.<memtype> <expr> <expr> )
+  ( load_global <var> )
+  ( store_global <var> <expr> )
+  ( load<memop>.<memtype> <expr> )
+  ( store<memop>.<memtype> <expr> <expr> )
   ( const.<type> <num> )
   ( <unop>.<type> <expr> )
   ( <binop>.<type> <expr> <expr> )
