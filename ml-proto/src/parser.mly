@@ -95,7 +95,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token INT FLOAT TEXT VAR TYPE LPAR RPAR
 %token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHRU
 %token CALL DISPATCH RETURN DESTRUCT
-%token GETLOCAL SETLOCAL GETGLOBAL SETGLOBAL GETMEMORY SETMEMORY
+%token GETLOCAL SETLOCAL LOADGLOBAL STOREGLOBAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT GLOBAL IMPORT EXPORT TABLE
 %token ASSERTINVALID INVOKE ASSERTEQ
@@ -112,8 +112,8 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<Ast.binop> BINARY
 %token<Ast.relop> COMPARE
 %token<Ast.cvt> CONVERT
-%token<Ast.memop> GETMEMORY
-%token<Ast.memop> SETMEMORY
+%token<Ast.memop> LOAD
+%token<Ast.memop> STORE
 
 %start script
 %type<Script.script> script
@@ -175,10 +175,10 @@ oper :
   | DESTRUCT var_list expr { fun c -> Destruct ($2 c local, $3 c) }
   | GETLOCAL var { fun c -> GetLocal ($2 c local) }
   | SETLOCAL var expr { fun c -> SetLocal ($2 c local, $3 c) }
-  | GETGLOBAL var { fun c -> GetGlobal ($2 c global) }
-  | SETGLOBAL var expr { fun c -> SetGlobal ($2 c global, $3 c) }
-  | GETMEMORY expr { fun c -> GetMemory ($1, $2 c) }
-  | SETMEMORY expr expr { fun c -> SetMemory ($1, $2 c, $3 c) }
+  | LOADGLOBAL var { fun c -> LoadGlobal ($2 c global) }
+  | STOREGLOBAL var expr { fun c -> StoreGlobal ($2 c global, $3 c) }
+  | LOAD expr { fun c -> Load ($1, $2 c) }
+  | STORE expr expr { fun c -> Store ($1, $2 c, $3 c) }
   | CONST literal { fun c -> Const (literal (ati 2) $2 $1) }
   | UNARY expr { fun c -> Unary ($1, $2 c) }
   | BINARY expr expr { fun c -> Binary ($1, $2 c, $3 c) }

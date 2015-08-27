@@ -60,8 +60,7 @@ type binop = (Int32Op.binop, Int64Op.binop, Float32Op.binop, Float64Op.binop) op
 type relop = (Int32Op.relop, Int64Op.relop, Float32Op.relop, Float64Op.relop) op
 type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
 
-type dist = Near | Far
-type memop = {dist : dist; align : Memory.alignment; mem : Memory.mem_type}
+type memop = {align : Memory.alignment; mem : Memory.mem_type}
 
 
 (* Expressions *)
@@ -84,10 +83,10 @@ and expr' =
   | Destruct of var list * expr
   | GetLocal of var
   | SetLocal of var * expr
-  | GetGlobal of var
-  | SetGlobal of var * expr
-  | GetMemory of memop * expr
-  | SetMemory of memop * expr * expr
+  | LoadGlobal of var
+  | StoreGlobal of var * expr
+  | Load of memop * expr
+  | Store of memop * expr * expr
   | Const of literal
   | Unary of unop * expr
   | Binary of binop * expr * expr

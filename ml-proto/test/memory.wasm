@@ -33,12 +33,12 @@
   (func $data (result i32)
     (and.i32
       (and.i32
-        (eq.i32 (getnearu.i8 (const.i32 0)) (const.i32 65))
-        (eq.i32 (getfaru.i8 (const.i64 3)) (const.i32 167))
+        (eq.i32 (loadu.i8 (const.i32 0)) (const.i32 65))
+        (eq.i32 (loadu.i8 (const.i32 3)) (const.i32 167))
       )
       (and.i32
-        (eq.i32 (getnearu.i8 (const.i32 20)) (const.i32 87))
-        (eq.i32 (getfaru.i8 (const.i64 23)) (const.i32 77))
+        (eq.i32 (loadu.i8 (const.i32 20)) (const.i32 87))
+        (eq.i32 (loadu.i8 (const.i32 23)) (const.i32 77))
       )
     )
   )
@@ -54,8 +54,8 @@
           (break)
         )
         (setlocal 2 (mul.i32 (getlocal 0) (const.i32 4)))
-        (setnears.i32 (getlocal 2) (getlocal 0))
-        (setlocal 1 (getnears.i32 (getlocal 2)))
+        (stores.i32 (getlocal 2) (getlocal 0))
+        (setlocal 1 (loads.i32 (getlocal 2)))
         (if
           (neq.i32 (getlocal 0) (getlocal 1))
           (return (const.i32 0))
@@ -77,8 +77,8 @@
           (break)
         )
         (setlocal 2 (converts.i32.f64 (getlocal 0)))
-        (setnearunaligned.f64 (getlocal 0) (getlocal 2))
-        (setlocal 1 (getnearunaligned.f64 (getlocal 0)))
+        (storeunaligned.f64 (getlocal 0) (getlocal 2))
+        (setlocal 1 (loadunaligned.f64 (getlocal 0)))
         (if
           (neq.f64 (getlocal 2) (getlocal 1))
           (return (const.i32 0))
@@ -91,14 +91,14 @@
 
   ;; Memory cast
   (func $cast (result f64)
-    (setnears.i64 (const.i32 8) (const.i64 -12345))
+    (stores.i64 (const.i32 8) (const.i64 -12345))
     (if
-      (eq.f64 (getnear.f64 (const.i32 8)) (cast.i64.f64 (const.i64 -12345)))
+      (eq.f64 (load.f64 (const.i32 8)) (cast.i64.f64 (const.i64 -12345)))
       (return (const.f64 0))
     )
-    (setfarunaligneds.i64 (const.i64 9) (const.i64 0))
-    (setfarunaligneds.i16 (const.i64 15) (const.i32 16453))
-    (return (getnearunaligned.f64 (const.i32 9)))
+    (storeunaligneds.i64 (const.i32 9) (const.i64 0))
+    (storeunaligneds.i16 (const.i32 15) (const.i32 16453))
+    (return (loadunaligned.f64 (const.i32 9)))
   )
 
   (export "data" $data)

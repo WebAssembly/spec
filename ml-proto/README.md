@@ -128,10 +128,10 @@ type expr =
   | GetParam of var                     (* read parameter
   | GetLocal of var                     (* read local variable
   | SetLocal of var * expr              (* write local variable
-  | GetGlobal of var                    (* read global variable
-  | SetGlobal of var * expr             (* write global variable
-  | GetMemory of memop * expr           (* read memory address
-  | SetMemory of memop * expr * expr    (* write memory address
+  | LoadGlobal of var                   (* read global variable
+  | StoreGlobal of var * expr           (* write global variable
+  | Load of memop * expr                (* read memory address
+  | Store of memop * expr * expr        (* write memory address
   | Const of value                      (* constant
   | Unary of unop * expr                (* unary arithmetic operator
   | Binary of binop * expr * expr       (* binary arithmetic operator
