@@ -37,9 +37,9 @@ struct
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
              | And | Or | Xor | Shl | Shr | Sar
   type relop = Eq | Neq | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
-  type cvt = FromInt32S | FromInt32U | FromInt64S | FromInt64U
-           | FromFloat32S | FromFloat32U | FromFloat64S | FromFloat64U
-           | CastFloat
+  type cvt = ExtendSInt32 | ExtendUInt32 | WrapInt64
+           | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
+           | ReinterpretFloat
 end
 
 module FloatOp () =
@@ -47,8 +47,9 @@ struct
   type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
   type binop = Add | Sub | Mul | Div | CopySign | Min | Max
   type relop = Eq | Neq | Lt | Le | Gt | Ge
-  type cvt = FromInt32S | FromInt32U | FromInt64S | FromInt64U
-           | FromFloat32 | FromFloat64 | CastInt
+  type cvt = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
+           | PromoteFloat32 | DemoteFloat64
+           | ReinterpretInt
 end
 
 module Int32Op = IntOp ()

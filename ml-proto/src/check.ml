@@ -76,34 +76,34 @@ let type_cvt at = function
   | Values.Int32 cvt ->
     let open Int32Op in
     (match cvt with
-    | FromInt32S | FromInt32U -> error at "invalid conversion op Int32->Int32"
-    | FromInt64S | FromInt64U -> Int64Type
-    | FromFloat32S | FromFloat32U | CastFloat -> Float32Type
-    | FromFloat64S | FromFloat64U -> Float64Type
+    | ExtendSInt32 | ExtendUInt32 -> error at "invalid conversion"
+    | WrapInt64 -> Int64Type
+    | TruncSFloat32 | TruncUFloat32 | ReinterpretFloat -> Float32Type
+    | TruncSFloat64 | TruncUFloat64 -> Float64Type
     ), Int32Type
   | Values.Int64 cvt ->
     let open Int64Op in
     (match cvt with
-    | FromInt32S | FromInt32U -> Int32Type
-    | FromInt64S | FromInt64U -> error at "invalid conversion op Int64->Int64"
-    | FromFloat32S | FromFloat32U -> Float32Type
-    | FromFloat64S | FromFloat64U | CastFloat -> Float64Type
+    | ExtendSInt32 | ExtendUInt32 -> Int32Type
+    | WrapInt64 -> error at "invalid conversion"
+    | TruncSFloat32 | TruncUFloat32 -> Float32Type
+    | TruncSFloat64 | TruncUFloat64 | ReinterpretFloat -> Float64Type
     ), Int64Type
   | Values.Float32 cvt ->
     let open Float32Op in
     (match cvt with
-    | FromInt32S | FromInt32U | CastInt -> Int32Type
-    | FromInt64S | FromInt64U -> Int64Type
-    | FromFloat32 -> error at "invalid conversion op Float32->Float32"
-    | FromFloat64 -> Float64Type
+    | ConvertSInt32 | ConvertUInt32 | ReinterpretInt -> Int32Type
+    | ConvertSInt64 | ConvertUInt64 -> Int64Type
+    | PromoteFloat32 -> error at "invalid conversion"
+    | DemoteFloat64 -> Float64Type
     ), Float32Type
   | Values.Float64 cvt ->
     let open Float64Op in
     (match cvt with
-    | FromInt32S | FromInt32U -> Int32Type
-    | FromInt64S | FromInt64U | CastInt -> Int64Type
-    | FromFloat32 -> Float32Type
-    | FromFloat64 -> error at "invalid conversion op Float64->Float64"
+    | ConvertSInt32 | ConvertUInt32 -> Int32Type
+    | ConvertSInt64 | ConvertUInt64 | ReinterpretInt -> Int64Type
+    | PromoteFloat32 -> Float32Type
+    | DemoteFloat64 -> error at "invalid conversion"
     ), Float64Type
 
 let type_func f =
