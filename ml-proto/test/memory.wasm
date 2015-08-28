@@ -1,5 +1,6 @@
 ;; (c) 2015 Andreas Rossberg
 
+;; Test memory section structure
 (module (memory 0 0))
 (module (memory 0 1))
 (module (memory 4096 16777216))
@@ -25,6 +26,17 @@
 (assertinvalid
   (module (memory 100 1000 (segment 0 "a") (segment 2 "b") (segment 1 "c")))
   "data segment not disjoint and ordered")
+
+;; Test alignment annotation rules
+(module (func (loadu.2.i8 (const.i32 0))))
+(module (func (loadu.4.i16 (const.i32 0))))
+(module (func (loadu.8.i32 (const.i32 0))))
+(module (func (load.8.f32 (const.i32 0))))
+(assertinvalid (module (func (loadu.0.i64 (const.i32 0)))) "non-power-of-two alignment")
+(assertinvalid (module (func (loadu.3.i64 (const.i32 0)))) "non-power-of-two alignment")
+(assertinvalid (module (func (loadu.5.i64 (const.i32 0)))) "non-power-of-two alignment")
+(assertinvalid (module (func (loadu.6.i64 (const.i32 0)))) "non-power-of-two alignment")
+(assertinvalid (module (func (loadu.7.i64 (const.i32 0)))) "non-power-of-two alignment")
 
 (module
   (memory 1024 (segment 0 "ABC\a7D") (segment 20 "WASM"))
@@ -77,8 +89,8 @@
           (break)
         )
         (setlocal 2 (converts.i32.f64 (getlocal 0)))
-        (storeunaligned.f64 (getlocal 0) (getlocal 2))
-        (setlocal 1 (loadunaligned.f64 (getlocal 0)))
+        (store.1.f64 (getlocal 0) (getlocal 2))
+        (setlocal 1 (load.1.f64 (getlocal 0)))
         (if
           (neq.f64 (getlocal 2) (getlocal 1))
           (return (const.i32 0))
@@ -96,9 +108,9 @@
       (eq.f64 (load.f64 (const.i32 8)) (cast.i64.f64 (const.i64 -12345)))
       (return (const.f64 0))
     )
-    (storeunaligneds.i64 (const.i32 9) (const.i64 0))
-    (storeunaligneds.i16 (const.i32 15) (const.i32 16453))
-    (return (loadunaligned.f64 (const.i32 9)))
+    (stores.1.i64 (const.i32 9) (const.i64 0))
+    (stores.1.i16 (const.i32 15) (const.i32 16453))
+    (return (load.1.f64 (const.i32 9)))
   )
 
   (export "data" $data)

@@ -18,3 +18,5 @@ sig
   val map : ('a -> 'b) -> 'a option -> 'b option
   val app : ('a -> unit) -> 'a option -> unit
 end
+
+val is_power_of_two : int -> bool
