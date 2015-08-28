@@ -162,9 +162,9 @@ let rec eval_expr c e =
     global c x := v1;
     []
 
-  | Load ({mem; _}, e1) ->
+  | Load ({mem; ty; _}, e1) ->
     let v1 = unary (eval_expr c e1) e1.at in
-    (try [Memory.load c.modul.memory (Memory.address_of_value v1) mem]
+    (try [Memory.load c.modul.memory (Memory.address_of_value v1) mem ty]
     with exn -> memory_error e.at exn)
 
   | Store ({mem; _}, e1, e2) ->

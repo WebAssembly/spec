@@ -12,7 +12,7 @@
     (local $x2 i32)
     (set_local $x1 (i32.const 1))
     (set_local $x2 (i32.const 2))
-    (switch.i32 (get_local $case)
+    (switch/i32 (get_local $case)
       ;; Destructure
       (case 1
         (destruct $x1 $x2 (call $swap (get_local $x1) (get_local $x2)))
@@ -65,7 +65,7 @@
       (case 10)
       (case 11
         (return
-          (switch.i32 (get_local $case)
+          (switch/i32 (get_local $case)
             (case 9 (call $swap (get_local $x1) (get_local $x2)))
             (case 10 (call $swap (get_local $x2) (get_local $x1)))
             (label $l (break $l (get_local $x1) (get_local $x1)))

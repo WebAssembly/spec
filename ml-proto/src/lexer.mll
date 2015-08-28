@@ -48,21 +48,6 @@ let value_type = function
   | "f64" -> Types.Float64Type
   | _ -> assert false
 
-let mem_type s t =
-  let open Memory in
-  match s, t with
-  | 's', "i8" -> SInt8Mem
-  | 's', "i16" -> SInt16Mem
-  | 's', "i32" -> SInt32Mem
-  | 's', "i64" -> SInt64Mem
-  | 'u', "i8" -> UInt8Mem
-  | 'u', "i16" -> UInt16Mem
-  | 'u', "i32" -> UInt32Mem
-  | 'u', "i64" -> UInt64Mem
-  | ' ', "f32" -> Float32Mem
-  | ' ', "f64" -> Float64Mem
-  | _ -> assert false
-
 let intop t i32 i64 =
   match t with
   | "i32" -> Values.Int32 i32
@@ -75,16 +60,25 @@ let floatop t f32 f64 =
   | "f64" -> Values.Float64 f64
   | _ -> assert false
 
-let default_alignment = function
-  | "i8" -> 1
-  | "i16" -> 2
-  | "i32" | "f32" -> 4
-  | "i64" | "f64" -> 8
+let mem_type t sign memty =
+  let open Memory in
+  match t, sign, memty with
+  | ("i32" | "i64"), 's', "i8" -> SInt8Mem
+  | ("i32" | "i64"), 's', "i16" -> SInt16Mem
+  | ("i32" | "i64"), 's', "i32" -> SInt32Mem
+  | "i64", 's', "i64" -> SInt64Mem
+  | ("i32" | "i64"), 'u', "i8" -> UInt8Mem
+  | ("i32" | "i64"), 'u', "i16" -> UInt16Mem
+  | ("i32" | "i64"), 'u', "i32" -> UInt32Mem
+  | "i64", 'u', "i64" -> UInt64Mem
+  | "f32", ' ', "f32" -> Float32Mem
+  | "f64", ' ', "f64" -> Float64Mem
   | _ -> assert false
 
-let memop a s t =
-  let align = if a = "" then default_alignment t else int_of_string a in
-  {align; mem = mem_type s t}
+let memop ty sign memsize a =
+  let memty = mem_type ty sign memsize in
+  let align = if a = "" then Memory.mem_size memty else int_of_string a in
+  {ty = value_type ty; mem = memty; align}
 }
 
 
@@ -145,16 +139,19 @@ rule token = parse
   | "load_global" { LOADGLOBAL }
   | "store_global" { STOREGLOBAL }
 
-  | "load_"(sign as s)"."(align as a)"."(mixx as t) { LOAD (memop a s t) }
-  | "store_"(sign as s)"."(align as a)"."(mixx as t) { STORE (memop a s t) }
-  | "load_"(sign as s)"."(mixx as t) { LOAD (memop "" s t) }
-  | "store_"(sign as s)"."(mixx as t) { STORE (memop "" s t) }
-  | "load."(align as a)"."(mfxx as t) { LOAD (memop a ' ' t) }
-  | "store."(align as a)"."(mfxx as t) { STORE (memop a ' ' t) }
-  | "load."(mfxx as t) { LOAD (memop "" ' ' t) }
-  | "store."(mfxx as t) { STORE (memop "" ' ' t) }
+  | (ixx as t)".load_"(sign as s)"/"(mixx as m)"/"(align as a)
+    { LOAD (memop t s m a) }
+  | (ixx as t)".load_"(sign as s)"/"(mixx as m) { LOAD (memop t s m "") }
+  | (ixx as t)".load/"(mixx as m)"/"(align as a) { LOAD (memop t 's' m a) }
+  | (ixx as t)".load/"(mixx as m) { LOAD (memop t 's' m "") }
+  | (ixx as t)".store/"(mixx as m)"/"(align as a) { STORE (memop t 's' m a) }
+  | (ixx as t)".store/"(mixx as m) { STORE (memop t 's' m "") }
+  | (fxx as t)".load/"(mfxx as m)"/"(align as a) { LOAD (memop t ' ' m a) }
+  | (fxx as t)".store/"(mfxx as m)"/"(align as a) { STORE (memop t ' ' m a) }
+  | (fxx as t)".load/"(mfxx as m) { LOAD (memop t ' ' m "") }
+  | (fxx as t)".store/"(mfxx as m) { STORE (memop t ' ' m "") }
 
-  | "switch."(nxx as t) { SWITCH (value_type t) }
+  | "switch/"(nxx as t) { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
 
   | (ixx as t)".neg" { UNARY (intop t Int32Op.Neg Int64Op.Neg) }
@@ -206,31 +203,31 @@ rule token = parse
   | (fxx as t)".gt" { COMPARE (floatop t Float32Op.Gt Float64Op.Gt) }
   | (fxx as t)".ge" { COMPARE (floatop t Float32Op.Ge Float64Op.Ge) }
 
-  | "i64.extend_s.i32" { CONVERT (Values.Int64 Int64Op.ExtendSInt32) }
-  | "i64.extend_u.i32" { CONVERT (Values.Int64 Int64Op.ExtendUInt32) }
-  | "i64.wrap.i64" { CONVERT (Values.Int32 Int32Op.WrapInt64) }
-  | (ixx as t)".trunc_s.f32"
+  | "i64.extend_s/i32" { CONVERT (Values.Int64 Int64Op.ExtendSInt32) }
+  | "i64.extend_u/i32" { CONVERT (Values.Int64 Int64Op.ExtendUInt32) }
+  | "i64.wrap/i64" { CONVERT (Values.Int32 Int32Op.WrapInt64) }
+  | (ixx as t)".trunc_s/f32"
     { CONVERT (intop t Int32Op.TruncSFloat32 Int64Op.TruncSFloat32) }
-  | (ixx as t)".trunc_u.f32"
+  | (ixx as t)".trunc_u/f32"
     { CONVERT (intop t Int32Op.TruncUFloat32 Int64Op.TruncUFloat32) }
-  | (ixx as t)".trunc_s.f64"
+  | (ixx as t)".trunc_s/f64"
     { CONVERT (intop t Int32Op.TruncSFloat64 Int64Op.TruncSFloat64) }
-  | (ixx as t)".trunc_u.f64"
+  | (ixx as t)".trunc_u/f64"
     { CONVERT (intop t Int32Op.TruncUFloat64 Int64Op.TruncUFloat64) }
-  | (fxx as t)".convert_s.i32"
+  | (fxx as t)".convert_s/i32"
     { CONVERT (floatop t Float32Op.ConvertSInt32 Float64Op.ConvertSInt32) }
-  | (fxx as t)".convert_u.i32"
+  | (fxx as t)".convert_u/i32"
     { CONVERT (floatop t Float32Op.ConvertUInt32 Float64Op.ConvertUInt32) }
-  | (fxx as t)".convert_s.i64"
+  | (fxx as t)".convert_s/i64"
     { CONVERT (floatop t Float32Op.ConvertSInt64 Float64Op.ConvertSInt64) }
-  | (fxx as t)".convert_u.i64"
+  | (fxx as t)".convert_u/i64"
     { CONVERT (floatop t Float32Op.ConvertUInt64 Float64Op.ConvertUInt64) }
-  | "f64.promote.f32" { CONVERT (Values.Float64 Float64Op.PromoteFloat32) }
-  | "f32.demote.f64" { CONVERT (Values.Float32 Float32Op.DemoteFloat64) }
-  | "f32.reinterpret.i32" { CONVERT (Values.Float32 Float32Op.ReinterpretInt) }
-  | "f64.reinterpret.i64" { CONVERT (Values.Float64 Float64Op.ReinterpretInt) }
-  | "i32.reinterpret.f32" { CONVERT (Values.Int32 Int32Op.ReinterpretFloat) }
-  | "i64.reinterpret.f64" { CONVERT (Values.Int64 Int64Op.ReinterpretFloat) }
+  | "f64.promote/f32" { CONVERT (Values.Float64 Float64Op.PromoteFloat32) }
+  | "f32.demote/f64" { CONVERT (Values.Float32 Float32Op.DemoteFloat64) }
+  | "f32.reinterpret/i32" { CONVERT (Values.Float32 Float32Op.ReinterpretInt) }
+  | "f64.reinterpret/i64" { CONVERT (Values.Float64 Float64Op.ReinterpretInt) }
+  | "i32.reinterpret/f32" { CONVERT (Values.Int32 Int32Op.ReinterpretFloat) }
+  | "i64.reinterpret/f64" { CONVERT (Values.Int64 Int64Op.ReinterpretFloat) }
 
   | "func" { FUNC }
   | "param" { PARAM }
