@@ -80,7 +80,7 @@ and expr' =
   | Break of var * expr list
   | Switch of value_type * expr * arm list * expr
   | Call of var * expr list
-  | Dispatch of var * expr * expr list
+  | CallIndirect of var * expr * expr list
   | Return of expr list
   | Destruct of var list * expr
   | GetLocal of var

@@ -161,7 +161,7 @@ let rec check_expr c ts e =
     check_exprs c ins es;
     check_type outs ts e.at
 
-  | Dispatch (x, e1, es) ->
+  | CallIndirect (x, e1, es) ->
     let {ins; outs} = table c x in
     check_expr c [Int32Type] e1;
     check_exprs c ins es;
