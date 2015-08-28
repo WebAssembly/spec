@@ -9,17 +9,11 @@ open Bigarray
 
 type address = int
 type size = address
-type alignment = Aligned | Unaligned
+type mem_size = int
 type mem_type =
   | SInt8Mem | SInt16Mem | SInt32Mem | SInt64Mem
   | UInt8Mem | UInt16Mem | UInt32Mem | UInt64Mem
   | Float32Mem | Float64Mem
-
-let mem_size = function
-  | SInt8Mem | UInt8Mem -> 1
-  | SInt16Mem | UInt16Mem -> 2
-  | SInt32Mem | UInt32Mem | Float32Mem -> 4
-  | SInt64Mem | UInt64Mem | Float64Mem -> 8
 
 type segment =
 {
@@ -45,8 +39,18 @@ type float64_view = (float, float64_elt, c_layout) Array1.t
 let view : memory -> ('c, 'd, c_layout) Array1.t = Obj.magic
 
 
+(* Queries *)
+
+let mem_size = function
+  | SInt8Mem | UInt8Mem -> 1
+  | SInt16Mem | UInt16Mem -> 2
+  | SInt32Mem | UInt32Mem | Float32Mem -> 4
+  | SInt64Mem | UInt64Mem | Float64Mem -> 8
+
+
 (* Creation and initialization *)
 
+exception Type
 exception Bounds
 exception Address
 
@@ -74,39 +78,58 @@ let address_of_value = function
 
 (* Load and store *)
 
+let int32_mask = Int64.shift_right_logical (Int64.of_int (-1)) 32
+let int64_of_int32_u i = Int64.logand (Int64.of_int32 i) int32_mask
+
 let buf = create 8
 
-let load mem a ty =
-  let sz = mem_size ty in
+let load mem a memty valty =
+  let sz = mem_size memty in
+  let open Types in
   try
     Array1.blit (Array1.sub mem a sz) (Array1.sub buf 0 sz);
-    match ty with
-    | SInt8Mem -> Int32 (Int32.of_int (view buf : sint8_view).{0})
-    | SInt16Mem -> Int32 (Int32.of_int (view buf : sint16_view).{0})
-    | SInt32Mem -> Int32 (view buf : sint32_view).{0}
-    | SInt64Mem -> Int64 (view buf : sint64_view).{0}
-    | UInt8Mem -> Int32 (Int32.of_int (view buf : uint8_view).{0})
-    | UInt16Mem -> Int32 (Int32.of_int (view buf : uint16_view).{0})
-    | UInt32Mem -> Int32 (view buf : uint32_view).{0}
-    | UInt64Mem -> Int64 (view buf : uint64_view).{0}
-    | Float32Mem -> Float32 (view buf : float32_view).{0}
-    | Float64Mem -> Float64 (view buf : float64_view).{0}
+    match memty, valty with
+    | SInt8Mem, Int32Type -> Int32 (Int32.of_int (view buf : sint8_view).{0})
+    | SInt8Mem, Int64Type -> Int64 (Int64.of_int (view buf : sint8_view).{0})
+    | SInt16Mem, Int32Type -> Int32 (Int32.of_int (view buf : sint16_view).{0})
+    | SInt16Mem, Int64Type -> Int64 (Int64.of_int (view buf : sint16_view).{0})
+    | SInt32Mem, Int32Type -> Int32 (view buf : sint32_view).{0}
+    | SInt32Mem, Int64Type ->
+      Int64 (Int64.of_int32 (view buf : sint32_view).{0})
+    | SInt64Mem, Int64Type -> Int64 (view buf : sint64_view).{0}
+    | UInt8Mem, Int32Type -> Int32 (Int32.of_int (view buf : uint8_view).{0})
+    | UInt8Mem, Int64Type -> Int64 (Int64.of_int (view buf : uint8_view).{0})
+    | UInt16Mem, Int32Type -> Int32 (Int32.of_int (view buf : uint16_view).{0})
+    | UInt16Mem, Int64Type -> Int64 (Int64.of_int (view buf : uint16_view).{0})
+    | UInt32Mem, Int32Type -> Int32 (view buf : uint32_view).{0}
+    | UInt32Mem, Int64Type ->
+      Int64 (int64_of_int32_u (view buf : uint32_view).{0})
+    | UInt64Mem, Int64Type -> Int64 (view buf : uint64_view).{0}
+    | Float32Mem, Float32Type -> Float32 (view buf : float32_view).{0}
+    | Float64Mem, Float64Type -> Float64 (view buf : float64_view).{0}
+    | _ -> raise Type
   with Invalid_argument _ -> raise Bounds
 
-let store mem a ty v =
-  let sz = mem_size ty in
+let store mem a memty v =
+  let sz = mem_size memty in
   try
-    (match ty, v with
+    (match memty, v with
     | SInt8Mem, Int32 x -> (view buf : sint8_view).{0} <- Int32.to_int x
+    | SInt8Mem, Int64 x -> (view buf : sint8_view).{0} <- Int64.to_int x
     | SInt16Mem, Int32 x -> (view buf : sint16_view).{0} <- Int32.to_int x
+    | SInt16Mem, Int64 x -> (view buf : sint16_view).{0} <- Int64.to_int x
     | SInt32Mem, Int32 x -> (view buf : sint32_view).{0} <- x
+    | SInt32Mem, Int64 x -> (view buf : sint32_view).{0} <- Int64.to_int32 x
     | SInt64Mem, Int64 x -> (view buf : sint64_view).{0} <- x
     | UInt8Mem, Int32 x -> (view buf : uint8_view).{0} <- Int32.to_int x
+    | UInt8Mem, Int64 x -> (view buf : uint8_view).{0} <- Int64.to_int x
     | UInt16Mem, Int32 x -> (view buf : uint16_view).{0} <- Int32.to_int x
+    | UInt16Mem, Int64 x -> (view buf : uint16_view).{0} <- Int64.to_int x
     | UInt32Mem, Int32 x -> (view buf : uint32_view).{0} <- x
+    | UInt32Mem, Int64 x -> (view buf : uint32_view).{0} <- Int64.to_int32 x
     | UInt64Mem, Int64 x -> (view buf : uint64_view).{0} <- x
     | Float32Mem, Float32 x -> (view buf : float32_view).{0} <- x
     | Float64Mem, Float64 x -> (view buf : float64_view).{0} <- x
-    | _ -> assert false);
+    | _ -> raise Type);
     Array1.blit (Array1.sub buf 0 sz) (Array1.sub mem a sz)
   with Invalid_argument _ -> raise Bounds

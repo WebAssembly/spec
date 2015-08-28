@@ -19,4 +19,7 @@ sig
   val app : ('a -> unit) -> 'a option -> unit
 end
 
-val is_power_of_two : int -> bool
+module Int :
+sig
+  val is_power_of_two : int -> bool
+end
