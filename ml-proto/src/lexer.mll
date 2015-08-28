@@ -63,11 +63,6 @@ let mem_type s t =
   | ' ', "f64" -> Float64Mem
   | _ -> assert false
 
-module I32 = Int32Op
-module I64 = Int64Op
-module F32 = Float32Op
-module F64 = Float64Op
-
 let intop t i32 i64 =
   match t with
   | "i32" -> Values.Int32 i32
@@ -140,104 +135,102 @@ rule token = parse
   | "case" { CASE }
   | "fallthrough" { FALLTHROUGH }
   | "call" { CALL }
-  | "callindirect" { CALLINDIRECT }
+  | "call_indirect" { CALLINDIRECT }
   | "return" { RETURN }
   | "destruct" { DESTRUCT }
 
-  | "getlocal" { GETLOCAL }
-  | "setlocal" { SETLOCAL }
+  | "get_local" { GETLOCAL }
+  | "set_local" { SETLOCAL }
 
   | "load_global" { LOADGLOBAL }
   | "store_global" { STOREGLOBAL }
 
-  | "load"(sign as s)"."(align as a)"."(mixx as t) { LOAD (memop a s t) }
-  | "store"(sign as s)"."(align as a)"."(mixx as t) { STORE (memop a s t) }
-  | "load"(sign as s)"."(mixx as t) { LOAD (memop "" s t) }
-  | "store"(sign as s)"."(mixx as t) { STORE (memop "" s t) }
+  | "load_"(sign as s)"."(align as a)"."(mixx as t) { LOAD (memop a s t) }
+  | "store_"(sign as s)"."(align as a)"."(mixx as t) { STORE (memop a s t) }
+  | "load_"(sign as s)"."(mixx as t) { LOAD (memop "" s t) }
+  | "store_"(sign as s)"."(mixx as t) { STORE (memop "" s t) }
   | "load."(align as a)"."(mfxx as t) { LOAD (memop a ' ' t) }
   | "store."(align as a)"."(mfxx as t) { STORE (memop a ' ' t) }
   | "load."(mfxx as t) { LOAD (memop "" ' ' t) }
   | "store."(mfxx as t) { STORE (memop "" ' ' t) }
 
-  | "const."(nxx as t) { CONST (value_type t) }
   | "switch."(nxx as t) { SWITCH (value_type t) }
+  | (nxx as t)".const" { CONST (value_type t) }
 
-  | "neg."(ixx as t) { UNARY (intop t I32.Neg I64.Neg) }
-  | "abs."(ixx as t) { UNARY (intop t I32.Abs I64.Abs) }
-  | "not."(ixx as t) { UNARY (intop t I32.Not I64.Not) }
-  | "clz."(ixx as t) { UNARY (intop t I32.Clz I64.Clz) }
-  | "ctz."(ixx as t) { UNARY (intop t I32.Ctz I64.Ctz) }
-  | "neg."(fxx as t) { UNARY (floatop t F32.Neg F64.Neg) }
-  | "abs."(fxx as t) { UNARY (floatop t F32.Abs F64.Abs) }
-  | "ceil."(fxx as t) { UNARY (floatop t F32.Ceil F64.Ceil) }
-  | "floor."(fxx as t) { UNARY (floatop t F32.Floor F64.Floor) }
-  | "trunc."(fxx as t) { UNARY (floatop t F32.Trunc F64.Trunc) }
-  | "round."(fxx as t) { UNARY (floatop t F32.Round F64.Round) }
+  | (ixx as t)".neg" { UNARY (intop t Int32Op.Neg Int64Op.Neg) }
+  | (ixx as t)".abs" { UNARY (intop t Int32Op.Abs Int64Op.Abs) }
+  | (ixx as t)".not" { UNARY (intop t Int32Op.Not Int64Op.Not) }
+  | (ixx as t)".clz" { UNARY (intop t Int32Op.Clz Int64Op.Clz) }
+  | (ixx as t)".ctz" { UNARY (intop t Int32Op.Ctz Int64Op.Ctz) }
+  | (fxx as t)".neg" { UNARY (floatop t Float32Op.Neg Float64Op.Neg) }
+  | (fxx as t)".abs" { UNARY (floatop t Float32Op.Abs Float64Op.Abs) }
+  | (fxx as t)".ceil" { UNARY (floatop t Float32Op.Ceil Float64Op.Ceil) }
+  | (fxx as t)".floor" { UNARY (floatop t Float32Op.Floor Float64Op.Floor) }
+  | (fxx as t)".trunc" { UNARY (floatop t Float32Op.Trunc Float64Op.Trunc) }
+  | (fxx as t)".round" { UNARY (floatop t Float32Op.Round Float64Op.Round) }
 
-  | "add."(ixx as t) { BINARY (intop t I32.Add I64.Add) }
-  | "sub."(ixx as t) { BINARY (intop t I32.Sub I64.Sub) }
-  | "mul."(ixx as t) { BINARY (intop t I32.Mul I64.Mul) }
-  | "divs."(ixx as t) { BINARY (intop t I32.DivS I64.DivS) }
-  | "divu."(ixx as t) { BINARY (intop t I32.DivU I64.DivU) }
-  | "mods."(ixx as t) { BINARY (intop t I32.ModS I64.ModS) }
-  | "modu."(ixx as t) { BINARY (intop t I32.ModU I64.ModU) }
-  | "and."(ixx as t) { BINARY (intop t I32.And I64.And) }
-  | "or."(ixx as t) { BINARY (intop t I32.Or I64.Or) }
-  | "xor."(ixx as t) { BINARY (intop t I32.Xor I64.Xor) }
-  | "shl."(ixx as t) { BINARY (intop t I32.Shl I64.Shl) }
-  | "shr."(ixx as t) { BINARY (intop t I32.Shr I64.Shr) }
-  | "sar."(ixx as t) { BINARY (intop t I32.Sar I64.Sar) }
-  | "add."(fxx as t) { BINARY (floatop t F32.Add F64.Add) }
-  | "sub."(fxx as t) { BINARY (floatop t F32.Sub F64.Sub) }
-  | "mul."(fxx as t) { BINARY (floatop t F32.Mul F64.Mul) }
-  | "div."(fxx as t) { BINARY (floatop t F32.Div F64.Div) }
-  | "copysign."(fxx as t) { BINARY (floatop t F32.CopySign F64.CopySign) }
+  | (ixx as t)".add" { BINARY (intop t Int32Op.Add Int64Op.Add) }
+  | (ixx as t)".sub" { BINARY (intop t Int32Op.Sub Int64Op.Sub) }
+  | (ixx as t)".mul" { BINARY (intop t Int32Op.Mul Int64Op.Mul) }
+  | (ixx as t)".div_s" { BINARY (intop t Int32Op.DivS Int64Op.DivS) }
+  | (ixx as t)".div_u" { BINARY (intop t Int32Op.DivU Int64Op.DivU) }
+  | (ixx as t)".mod_s" { BINARY (intop t Int32Op.ModS Int64Op.ModS) }
+  | (ixx as t)".mod_u" { BINARY (intop t Int32Op.ModU Int64Op.ModU) }
+  | (ixx as t)".and" { BINARY (intop t Int32Op.And Int64Op.And) }
+  | (ixx as t)".or" { BINARY (intop t Int32Op.Or Int64Op.Or) }
+  | (ixx as t)".xor" { BINARY (intop t Int32Op.Xor Int64Op.Xor) }
+  | (ixx as t)".shl" { BINARY (intop t Int32Op.Shl Int64Op.Shl) }
+  | (ixx as t)".shr" { BINARY (intop t Int32Op.Shr Int64Op.Shr) }
+  | (ixx as t)".sar" { BINARY (intop t Int32Op.Sar Int64Op.Sar) }
+  | (fxx as t)".add" { BINARY (floatop t Float32Op.Add Float64Op.Add) }
+  | (fxx as t)".sub" { BINARY (floatop t Float32Op.Sub Float64Op.Sub) }
+  | (fxx as t)".mul" { BINARY (floatop t Float32Op.Mul Float64Op.Mul) }
+  | (fxx as t)".div" { BINARY (floatop t Float32Op.Div Float64Op.Div) }
+  | (fxx as t)".copysign"
+    { BINARY (floatop t Float32Op.CopySign Float64Op.CopySign) }
 
-  | "eq."(ixx as t) { COMPARE (intop t I32.Eq I64.Eq) }
-  | "neq."(ixx as t) { COMPARE (intop t I32.Neq I64.Neq) }
-  | "lts."(ixx as t) { COMPARE (intop t I32.LtS I64.LtS) }
-  | "ltu."(ixx as t) { COMPARE (intop t I32.LtU I64.LtU) }
-  | "les."(ixx as t) { COMPARE (intop t I32.LeS I64.LeS) }
-  | "leu."(ixx as t) { COMPARE (intop t I32.LeU I64.LeU) }
-  | "gts."(ixx as t) { COMPARE (intop t I32.GtS I64.GtS) }
-  | "gtu."(ixx as t) { COMPARE (intop t I32.GtU I64.GtU) }
-  | "ges."(ixx as t) { COMPARE (intop t I32.GeS I64.GeS) }
-  | "geu."(ixx as t) { COMPARE (intop t I32.GeU I64.GtU) }
-  | "eq."(fxx as t) { COMPARE (floatop t F32.Eq F64.Eq) }
-  | "neq."(fxx as t) { COMPARE (floatop t F32.Neq F64.Neq) }
-  | "lt."(fxx as t) { COMPARE (floatop t F32.Lt F64.Lt) }
-  | "le."(fxx as t) { COMPARE (floatop t F32.Le F64.Le) }
-  | "gt."(fxx as t) { COMPARE (floatop t F32.Gt F64.Gt) }
-  | "ge."(fxx as t) { COMPARE (floatop t F32.Ge F64.Ge) }
+  | (ixx as t)".eq" { COMPARE (intop t Int32Op.Eq Int64Op.Eq) }
+  | (ixx as t)".neq" { COMPARE (intop t Int32Op.Neq Int64Op.Neq) }
+  | (ixx as t)".lt_s" { COMPARE (intop t Int32Op.LtS Int64Op.LtS) }
+  | (ixx as t)".lt_u" { COMPARE (intop t Int32Op.LtU Int64Op.LtU) }
+  | (ixx as t)".le_s" { COMPARE (intop t Int32Op.LeS Int64Op.LeS) }
+  | (ixx as t)".le_u" { COMPARE (intop t Int32Op.LeU Int64Op.LeU) }
+  | (ixx as t)".gt_s" { COMPARE (intop t Int32Op.GtS Int64Op.GtS) }
+  | (ixx as t)".gt_u" { COMPARE (intop t Int32Op.GtU Int64Op.GtU) }
+  | (ixx as t)".ge_s" { COMPARE (intop t Int32Op.GeS Int64Op.GeS) }
+  | (ixx as t)".ge_u" { COMPARE (intop t Int32Op.GeU Int64Op.GtU) }
+  | (fxx as t)".eq" { COMPARE (floatop t Float32Op.Eq Float64Op.Eq) }
+  | (fxx as t)".neq" { COMPARE (floatop t Float32Op.Neq Float64Op.Neq) }
+  | (fxx as t)".lt" { COMPARE (floatop t Float32Op.Lt Float64Op.Lt) }
+  | (fxx as t)".le" { COMPARE (floatop t Float32Op.Le Float64Op.Le) }
+  | (fxx as t)".gt" { COMPARE (floatop t Float32Op.Gt Float64Op.Gt) }
+  | (fxx as t)".ge" { COMPARE (floatop t Float32Op.Ge Float64Op.Ge) }
 
-  | "extends.i32.i64" { CONVERT (Values.Int64 I64.ExtendSInt32) }
-  | "extendu.i32.i64" { CONVERT (Values.Int64 I64.ExtendUInt32) }
-  | "wrap.i64.i32" { CONVERT (Values.Int32 I32.WrapInt64) }
-  | "truncs.f32."(ixx as t)
-    { CONVERT (intop t I32.TruncSFloat32 I64.TruncSFloat32) }
-  | "truncu.f32."(ixx as t)
-    { CONVERT (intop t I32.TruncUFloat32 I64.TruncUFloat32) }
-  | "truncs.f64."(ixx as t)
-    { CONVERT (intop t I32.TruncSFloat64 I64.TruncSFloat64) }
-  | "truncu.f64."(ixx as t)
-    { CONVERT (intop t I32.TruncUFloat64 I64.TruncUFloat64) }
-  | "converts.i32."(fxx as t)
-    { CONVERT (floatop t F32.ConvertSInt32 F64.ConvertSInt32) }
-  | "convertu.i32."(fxx as t)
-    { CONVERT (floatop t F32.ConvertUInt32 F64.ConvertUInt32) }
-  | "converts.i64."(fxx as t)
-    { CONVERT (floatop t F32.ConvertSInt64 F64.ConvertSInt64) }
-  | "convertu.i64."(fxx as t)
-    { CONVERT (floatop t F32.ConvertUInt64 F64.ConvertUInt64) }
-  | "promote.f32.f64"
-    { CONVERT (Values.Float64 F64.PromoteFloat32) }
-  | "demote.f64.f32"
-    { CONVERT (Values.Float32 F32.DemoteFloat64) }
-
-  | "reinterpret.i32.f32" { CONVERT (Values.Float32 F32.ReinterpretInt) }
-  | "reinterpret.i64.f64" { CONVERT (Values.Float64 F64.ReinterpretInt) }
-  | "reinterpret.f32.i32" { CONVERT (Values.Int32 I32.ReinterpretFloat) }
-  | "reinterpret.f64.i64" { CONVERT (Values.Int64 I64.ReinterpretFloat) }
+  | "i64.extend_s.i32" { CONVERT (Values.Int64 Int64Op.ExtendSInt32) }
+  | "i64.extend_u.i32" { CONVERT (Values.Int64 Int64Op.ExtendUInt32) }
+  | "i64.wrap.i64" { CONVERT (Values.Int32 Int32Op.WrapInt64) }
+  | (ixx as t)".trunc_s.f32"
+    { CONVERT (intop t Int32Op.TruncSFloat32 Int64Op.TruncSFloat32) }
+  | (ixx as t)".trunc_u.f32"
+    { CONVERT (intop t Int32Op.TruncUFloat32 Int64Op.TruncUFloat32) }
+  | (ixx as t)".trunc_s.f64"
+    { CONVERT (intop t Int32Op.TruncSFloat64 Int64Op.TruncSFloat64) }
+  | (ixx as t)".trunc_u.f64"
+    { CONVERT (intop t Int32Op.TruncUFloat64 Int64Op.TruncUFloat64) }
+  | (fxx as t)".convert_s.i32"
+    { CONVERT (floatop t Float32Op.ConvertSInt32 Float64Op.ConvertSInt32) }
+  | (fxx as t)".convert_u.i32"
+    { CONVERT (floatop t Float32Op.ConvertUInt32 Float64Op.ConvertUInt32) }
+  | (fxx as t)".convert_s.i64"
+    { CONVERT (floatop t Float32Op.ConvertSInt64 Float64Op.ConvertSInt64) }
+  | (fxx as t)".convert_u.i64"
+    { CONVERT (floatop t Float32Op.ConvertUInt64 Float64Op.ConvertUInt64) }
+  | "f64.promote.f32" { CONVERT (Values.Float64 Float64Op.PromoteFloat32) }
+  | "f32.demote.f64" { CONVERT (Values.Float32 Float32Op.DemoteFloat64) }
+  | "f32.reinterpret.i32" { CONVERT (Values.Float32 Float32Op.ReinterpretInt) }
+  | "f64.reinterpret.i64" { CONVERT (Values.Float64 Float64Op.ReinterpretInt) }
+  | "i32.reinterpret.f32" { CONVERT (Values.Int32 Int32Op.ReinterpretFloat) }
+  | "i64.reinterpret.f64" { CONVERT (Values.Int64 Int64Op.ReinterpretFloat) }
 
   | "func" { FUNC }
   | "param" { PARAM }
@@ -251,9 +244,9 @@ rule token = parse
   | "export" { EXPORT }
   | "table" { TABLE }
 
-  | "assertinvalid" { ASSERTINVALID }
+  | "assert_invalid" { ASSERTINVALID }
+  | "assert_eq" { ASSERTEQ }
   | "invoke" { INVOKE }
-  | "asserteq" { ASSERTEQ }
 
   | name as s { VAR s }
 

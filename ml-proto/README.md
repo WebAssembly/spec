@@ -114,28 +114,29 @@ The core language is defined in `ast.ml`, and looks as follows:
 type var = int
 
 type expr =
-  | Nop                                 (* do nothing
-  | Block of expr list                  (* execute in sequence
-  | If of expr * expr * expr            (* conditional
-  | Loop of expr                        (* infinite loop
-  | Label of expr                       (* labelled expression
-  | Break of int * expr list            (* break to n-th surrounding label
-  | Switch of expr * arm list * expr    (* switch, latter expr is default
-  | Call of var * expr list             (* call function
-  | Dispatch of var * expr * expr list  (* call function through table
-  | Return of expr list                 (* return 0 to many value
-  | Destruct of var list * expr         (* destructure multi-value into locals
-  | GetLocal of var                     (* read local variable
-  | SetLocal of var * expr              (* write local variable
-  | LoadGlobal of var                   (* read global variable
-  | StoreGlobal of var * expr           (* write global variable
-  | Load of memop * expr                (* read memory address
-  | Store of memop * expr * expr        (* write memory address
-  | Const of value                      (* constant
-  | Unary of unop * expr                (* unary arithmetic operator
-  | Binary of binop * expr * expr       (* binary arithmetic operator
-  | Compare of relop * expr * expr      (* arithmetic comparison
-  | Convert of cvt * expr               (* conversion
+  | Nop                                     (* do nothing
+  | Block of expr list                      (* execute in sequence
+  | If of expr * expr * expr                (* conditional
+  | Loop of expr                            (* infinite loop
+  | Label of expr                           (* labelled expression
+  | Break of int * expr list                (* break to n-th surrounding label
+  | Switch of expr * arm list * expr        (* switch, latter expr is default
+  | Call of var * expr list                 (* call function
+  | CallIndirect of var * expr * expr list  (* call function through table
+  | Return of expr list                     (* return 0 to many value
+  | Destruct of var list * expr             (* destructure multi-value into locals
+  | GetParam of var                         (* read parameter
+  | GetLocal of var                         (* read local variable
+  | SetLocal of var * expr                  (* write local variable
+  | LoadGlobal of var                       (* read global variable
+  | StoreGlobal of var * expr               (* write global variable
+  | Load of memop * expr                    (* read memory address
+  | Store of memop * expr * expr            (* write memory address
+  | Const of value                          (* constant
+  | Unary of unop * expr                    (* unary arithmetic operator
+  | Binary of binop * expr * expr           (* binary arithmetic operator
+  | Compare of relop * expr * expr          (* arithmetic comparison
+  | Convert of cvt * expr                   (* conversion
 
 and arm = {value : value; expr : expr; fallthru : bool}
 ```
@@ -189,7 +190,7 @@ expr:
   ( <binop>.<type> <expr> <expr> )
   ( <relop>.<type> <expr> <expr> )
   ( convert(s|u)?.<type>.<type> <expr> )
-  ( reinterpret.<type>.<type> <expr> )
+  ( cast.<type>.<type> <expr> )
 
 case:
   ( case <value> <expr>* fallthrough? )  ;; = (case <int> (block <expr>*) fallthrough?)

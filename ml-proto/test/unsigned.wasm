@@ -1,0 +1,78 @@
+(module
+  (func $divmod (param $i i64) (param $j i64) (result i64 i64 i64 i64)
+    (return
+      (i64.div_s (get_local $i) (get_local $j))
+      (i64.div_u (get_local $i) (get_local $j))
+      (i64.mod_s (get_local $i) (get_local $j))
+      (i64.mod_u (get_local $i) (get_local $j))
+    )
+  )
+
+  (func $compare (param $i i64) (param $j i64) (result i32 i32 i32 i32)
+    (return
+      (i64.lt_s (get_local $i) (get_local $j))
+      (i64.lt_u (get_local $i) (get_local $j))
+      (i64.ge_s (get_local $i) (get_local $j))
+      (i64.ge_u (get_local $i) (get_local $j))
+    )
+  )
+
+  (func $cvt_float (param $x f64) (result i32 i64)
+    (return
+      (i32.trunc_u.f64 (get_local $x))
+      (i64.trunc_u.f64 (get_local $x))
+    )
+  )
+
+  (export "divmod" $divmod)
+  (export "compare" $compare)
+  (export "cvt_float" $cvt_float)
+)
+
+(assert_eq
+  (invoke "divmod"
+    (i64.add (i64.const 9223372036854775807) (i64.const 2))  ;; max_int64+2
+    (i64.const 1000)
+  )
+  (i64.const -9223372036854775)  ;; div_s
+  (i64.const 9223372036854775)   ;; div_u
+  (i64.const -807)               ;; div_s
+  (i64.const 809)                ;; div_u
+)
+
+(assert_eq
+  (invoke "compare"
+    (i64.add (i64.const 9223372036854775807) (i64.const 1))  ;; max_int64+1
+    (i64.const 9223372036854775807)
+  )
+  (i32.const 1)  ;; lt_s
+  (i32.const 0)  ;; lt_u
+  (i32.const 0)  ;; ge_s
+  (i32.const 1)  ;; ge_u
+)
+
+(assert_eq (invoke "cvt_float" (f64.const 1e8))
+  (i32.const 100000000) (i64.const 100000000)
+)
+
+(assert_eq (invoke "cvt_float" (f64.const 1e16))
+  (i32.const 0) (i64.const 10000000000000000)
+)
+
+(assert_eq (invoke "cvt_float" (f64.const 1e30))
+  (i32.const 0) (i64.const 0)
+)
+
+(assert_eq (invoke "cvt_float" (f64.const -1))
+  (i32.const 0) (i64.const 0)
+)
+
+(assert_eq
+  (invoke "cvt_float" (f64.const 4294967295))  ;; max_uint32
+  (i32.const -1) (i64.const 4294967295)
+)
+
+(assert_eq
+  (invoke "cvt_float" (f64.const 9223372036854775808))  ;; max_int64+1
+  (i32.const 0) (i64.const -9223372036854775808)
+)

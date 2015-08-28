@@ -1,18 +1,18 @@
 (module
   (func $eq_float32 (param $x f32) (param $y f32) (result i32)
-    (eq.f32 (getlocal $x) (getlocal $y))
+    (f32.eq (get_local $x) (get_local $y))
   )
 
   (func $eq_float64 (param $x f64) (param $y f64) (result i32)
-    (eq.f64 (getlocal $x) (getlocal $y))
+    (f64.eq (get_local $x) (get_local $y))
   )
 
   (func $div_float32 (param $x f32) (param $y f32) (result f32)
-    (div.f32 (getlocal $x) (getlocal $y))
+    (f32.div (get_local $x) (get_local $y))
   )
 
   (func $div_float64 (param $x f64) (param $y f64) (result f64)
-    (div.f64 (getlocal $x) (getlocal $y))
+    (f64.div (get_local $x) (get_local $y))
   )
 
   (export "eq_float32" $eq_float32)
@@ -21,44 +21,44 @@
   (export "div_float64" $div_float64)
 )
 
-(asserteq
+(assert_eq
   (invoke "eq_float32"
-    (add.f32 (const.f32 1.1234567890) (const.f32 1.2345e-10))
-    (const.f32 1.123456789)
+    (f32.add (f32.const 1.1234567890) (f32.const 1.2345e-10))
+    (f32.const 1.123456789)
   )
-  (const.i32 1)
+  (i32.const 1)
 )
 
-(asserteq
+(assert_eq
   (invoke "eq_float64"
-    (add.f64 (const.f64 1.1234567890) (const.f64 1.2345e-10))
-    (const.f64 1.123456789)
+    (f64.add (f64.const 1.1234567890) (f64.const 1.2345e-10))
+    (f64.const 1.123456789)
   )
-  (const.i32 0)
+  (i32.const 0)
 )
 
-(asserteq
+(assert_eq
   (invoke "eq_float32"
-    (mul.f32 (const.f32 1e20) (const.f32 1e20))
-    (mul.f32 (const.f32 1e25) (const.f32 1e25))
+    (f32.mul (f32.const 1e20) (f32.const 1e20))
+    (f32.mul (f32.const 1e25) (f32.const 1e25))
   )
-  (const.i32 1)
+  (i32.const 1)
 )
 
-(asserteq
+(assert_eq
   (invoke "eq_float64"
-    (mul.f64 (const.f64 1e20) (const.f64 1e20))
-    (mul.f64 (const.f64 1e25) (const.f64 1e25))
+    (f64.mul (f64.const 1e20) (f64.const 1e20))
+    (f64.mul (f64.const 1e25) (f64.const 1e25))
   )
-  (const.i32 0)
+  (i32.const 0)
 )
 
-(asserteq
-  (invoke "div_float32" (const.f32 1.123456789) (const.f32 100))
-  (const.f32 0.011234568432)
+(assert_eq
+  (invoke "div_float32" (f32.const 1.123456789) (f32.const 100))
+  (f32.const 0.011234568432)
 )
 
-(asserteq
-  (invoke "div_float64" (const.f64 1.123456789) (const.f64 100))
-  (const.f64 0.01123456789)
+(assert_eq
+  (invoke "div_float64" (f64.const 1.123456789) (f64.const 100))
+  (f64.const 0.01123456789)
 )

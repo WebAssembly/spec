@@ -3,19 +3,19 @@
 (module
   ;; Recursive factorial
   (func (param i64) (result i64)
-    (if (eq.i64 (getlocal 0) (const.i64 0))
-      (const.i64 1)
-      (mul.i64 (getlocal 0) (call 0 (sub.i64 (getlocal 0) (const.i64 1))))
+    (if (i64.eq (get_local 0) (i64.const 0))
+      (i64.const 1)
+      (i64.mul (get_local 0) (call 0 (i64.sub (get_local 0) (i64.const 1))))
     )
   )
 
   ;; Recursive factorial named
   (func $fac-rec (param $n i64) (result i64)
-    (if (eq.i64 (getlocal $n) (const.i64 0))
-      (const.i64 1)
-      (mul.i64
-        (getlocal $n)
-        (call $fac-rec (sub.i64 (getlocal $n) (const.i64 1)))
+    (if (i64.eq (get_local $n) (i64.const 0))
+      (i64.const 1)
+      (i64.mul
+        (get_local $n)
+        (call $fac-rec (i64.sub (get_local $n) (i64.const 1)))
       )
     )
   )
@@ -23,42 +23,42 @@
   ;; Iterative factorial
   (func (param i64) (result i64)
     (local i64 i64)
-    (setlocal 1 (getlocal 0))
-    (setlocal 2 (const.i64 1))
+    (set_local 1 (get_local 0))
+    (set_local 2 (i64.const 1))
     (label
       (loop
         (if
-          (eq.i64 (getlocal 1) (const.i64 0))
+          (i64.eq (get_local 1) (i64.const 0))
           (break 0)
           (block
-            (setlocal 2 (mul.i64 (getlocal 1) (getlocal 2)))
-            (setlocal 1 (sub.i64 (getlocal 1) (const.i64 1)))
+            (set_local 2 (i64.mul (get_local 1) (get_local 2)))
+            (set_local 1 (i64.sub (get_local 1) (i64.const 1)))
           )
         )
       )
     )
-    (return (getlocal 2))
+    (return (get_local 2))
   )
 
   ;; Iterative factorial named
   (func $fac-iter (param $n i64) (result i64)
     (local $i i64)
     (local $res i64)
-    (setlocal $i (getlocal $n))
-    (setlocal $res (const.i64 1))
+    (set_local $i (get_local $n))
+    (set_local $res (i64.const 1))
     (label $done
       (loop
         (if
-          (eq.i64 (getlocal $i) (const.i64 0))
+          (i64.eq (get_local $i) (i64.const 0))
           (break $done)
           (block
-            (setlocal $res (mul.i64 (getlocal $i) (getlocal $res)))
-            (setlocal $i (sub.i64 (getlocal $i) (const.i64 1)))
+            (set_local $res (i64.mul (get_local $i) (get_local $res)))
+            (set_local $i (i64.sub (get_local $i) (i64.const 1)))
           )
         )
       )
     )
-    (return (getlocal $res))
+    (return (get_local $res))
   )
 
   (export "fac-rec" 0)
@@ -67,7 +67,7 @@
   (export "fac-iter-named" $fac-iter)
 )
 
-(asserteq (invoke "fac-rec" (const.i64 25)) (const.i64 7034535277573963776))
-(asserteq (invoke "fac-iter" (const.i64 25)) (const.i64 7034535277573963776))
-(asserteq (invoke "fac-rec-named" (const.i64 25)) (const.i64 7034535277573963776))
-(asserteq (invoke "fac-iter-named" (const.i64 25)) (const.i64 7034535277573963776))
+(assert_eq (invoke "fac-rec" (i64.const 25)) (i64.const 7034535277573963776))
+(assert_eq (invoke "fac-iter" (i64.const 25)) (i64.const 7034535277573963776))
+(assert_eq (invoke "fac-rec-named" (i64.const 25)) (i64.const 7034535277573963776))
+(assert_eq (invoke "fac-iter-named" (i64.const 25)) (i64.const 7034535277573963776))
