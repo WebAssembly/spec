@@ -3,41 +3,41 @@
 (module
   ;; Swap
   (func $swap (param i32 i32) (result i32 i32)
-    (return (getlocal 1) (getlocal 0))
+    (return (get_local 1) (get_local 0))
   )
 
   ;; Test
   (func $test (param $case i32) (result i32 i32)
     (local $x1 i32)
     (local $x2 i32)
-    (setlocal $x1 (const.i32 1))
-    (setlocal $x2 (const.i32 2))
-    (switch.i32 (getlocal $case)
+    (set_local $x1 (i32.const 1))
+    (set_local $x2 (i32.const 2))
+    (switch.i32 (get_local $case)
       ;; Destructure
       (case 1
-        (destruct $x1 $x2 (call $swap (getlocal $x1) (getlocal $x2)))
-        (return (getlocal $x1) (getlocal $x2))
+        (destruct $x1 $x2 (call $swap (get_local $x1) (get_local $x2)))
+        (return (get_local $x1) (get_local $x2))
       )
       ;; Return directly
       (case 2
-        (return (call $swap (getlocal $x1) (getlocal $x2)))
+        (return (call $swap (get_local $x1) (get_local $x2)))
       )
       ;; Pass on to other call
       (case 3
-        (return (call $swap (call $swap (getlocal $x1) (getlocal $x2))))
+        (return (call $swap (call $swap (get_local $x1) (get_local $x2))))
       )
       ;; Break
       (case 4
         (destruct $x1 $x2
-          (label $l (call $swap (break $l (getlocal $x1) (getlocal $x2))))
+          (label $l (call $swap (break $l (get_local $x1) (get_local $x2))))
         )
-        (return (getlocal $x1) (getlocal $x2))
+        (return (get_local $x1) (get_local $x2))
       )
       ;; Pass on to break
       (case 5
         (return
           (label $l
-            (call $swap (break $l (call $swap (getlocal $x1) (getlocal $x2))))
+            (call $swap (break $l (call $swap (get_local $x1) (get_local $x2))))
           )
         )
       )
@@ -45,8 +45,8 @@
       (case 6
         (return
           (block
-            (setlocal $x2 (const.i32 3))
-            (call $swap (getlocal $x1) (getlocal $x2))
+            (set_local $x2 (i32.const 3))
+            (call $swap (get_local $x1) (get_local $x2))
           )
         )
       )
@@ -54,9 +54,9 @@
       (case 7)
       (case 8
         (return
-          (if (eq.i32 (rems.i32 (getlocal $case) (const.i32 2)) (const.i32 0))
-            (call $swap (getlocal $x1) (getlocal $x2))
-            (call $swap (getlocal $x2) (getlocal $x1))
+          (if (i32.eq (i32.rem_s (get_local $case) (i32.const 2)) (i32.const 0))
+            (call $swap (get_local $x1) (get_local $x2))
+            (call $swap (get_local $x2) (get_local $x1))
           )
         )
       )
@@ -65,29 +65,29 @@
       (case 10)
       (case 11
         (return
-          (switch.i32 (getlocal $case)
-            (case 9 (call $swap (getlocal $x1) (getlocal $x2)))
-            (case 10 (call $swap (getlocal $x2) (getlocal $x1)))
-            (label $l (break $l (getlocal $x1) (getlocal $x1)))
+          (switch.i32 (get_local $case)
+            (case 9 (call $swap (get_local $x1) (get_local $x2)))
+            (case 10 (call $swap (get_local $x2) (get_local $x1)))
+            (label $l (break $l (get_local $x1) (get_local $x1)))
           )
         )
       )
       ;; Dummy default
-      (return (getlocal $x1) (getlocal $x2))
+      (return (get_local $x1) (get_local $x2))
     )
   )
 
   (export "test" $test)
 )
 
-(asserteq (invoke "test" (const.i32 1)) (const.i32 2) (const.i32 1)) 
-(asserteq (invoke "test" (const.i32 2)) (const.i32 2) (const.i32 1))
-(asserteq (invoke "test" (const.i32 3)) (const.i32 1) (const.i32 2))
-(asserteq (invoke "test" (const.i32 4)) (const.i32 1) (const.i32 2))
-(asserteq (invoke "test" (const.i32 5)) (const.i32 2) (const.i32 1))
-(asserteq (invoke "test" (const.i32 6)) (const.i32 3) (const.i32 1))
-(asserteq (invoke "test" (const.i32 7)) (const.i32 1) (const.i32 2))
-(asserteq (invoke "test" (const.i32 8)) (const.i32 2) (const.i32 1))
-(asserteq (invoke "test" (const.i32 9)) (const.i32 2) (const.i32 1))
-(asserteq (invoke "test" (const.i32 10)) (const.i32 1) (const.i32 2))
-(asserteq (invoke "test" (const.i32 11)) (const.i32 1) (const.i32 1))
+(assert_eq (invoke "test" (i32.const 1)) (i32.const 2) (i32.const 1)) 
+(assert_eq (invoke "test" (i32.const 2)) (i32.const 2) (i32.const 1))
+(assert_eq (invoke "test" (i32.const 3)) (i32.const 1) (i32.const 2))
+(assert_eq (invoke "test" (i32.const 4)) (i32.const 1) (i32.const 2))
+(assert_eq (invoke "test" (i32.const 5)) (i32.const 2) (i32.const 1))
+(assert_eq (invoke "test" (i32.const 6)) (i32.const 3) (i32.const 1))
+(assert_eq (invoke "test" (i32.const 7)) (i32.const 1) (i32.const 2))
+(assert_eq (invoke "test" (i32.const 8)) (i32.const 2) (i32.const 1))
+(assert_eq (invoke "test" (i32.const 9)) (i32.const 2) (i32.const 1))
+(assert_eq (invoke "test" (i32.const 10)) (i32.const 1) (i32.const 2))
+(assert_eq (invoke "test" (i32.const 11)) (i32.const 1) (i32.const 1))

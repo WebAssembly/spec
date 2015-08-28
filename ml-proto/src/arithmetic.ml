@@ -194,11 +194,11 @@ struct
     let f = match op with
       | Neg -> (~-.)
       | Abs -> abs_float
+      | Sqrt  -> sqrt
       | Ceil -> ceil
       | Floor -> floor
       | Trunc -> fun _ -> 0.0  (* TODO *)
       | Nearest -> fun _ -> 0.0  (* TODO *)
-      | Sqrt  -> sqrt
     in fun v -> Float.to_value (f (Float.of_value 1 v))
 
   let binop op =
@@ -207,9 +207,9 @@ struct
       | Sub -> (-.)
       | Mul -> ( *.)
       | Div -> (/.)
-      | CopySign -> copysign
       | Min -> min
       | Max -> max
+      | CopySign -> copysign
     in
     fun v1 v2 -> Float.to_value (f (Float.of_value 1 v1) (Float.of_value 2 v2))
 
