@@ -138,9 +138,9 @@ rule token = parse
   | "label" { LABEL }
   | "break" { BREAK }
   | "case" { CASE }
-  | "fallthru" { FALLTHRU }
+  | "fallthrough" { FALLTHROUGH }
   | "call" { CALL }
-  | "dispatch" { DISPATCH }
+  | "callindirect" { CALLINDIRECT }
   | "return" { RETURN }
   | "destruct" { DESTRUCT }
 

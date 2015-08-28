@@ -94,12 +94,12 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %}
 
 %token INT FLOAT TEXT VAR TYPE LPAR RPAR
-%token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHRU
-%token CALL DISPATCH RETURN DESTRUCT
+%token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
+%token CALL CALLINDIRECT RETURN DESTRUCT
 %token GETLOCAL SETLOCAL LOADGLOBAL STOREGLOBAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT GLOBAL IMPORT EXPORT TABLE
-%token ASSERTINVALID INVOKE ASSERTEQ
+%token ASSERTINVALID ASSERTEQ INVOKE
 %token EOF
 
 %token<string> INT
@@ -171,7 +171,8 @@ oper :
       fun c -> let x, y = $3 c in
         Switch ($1 @@ at1, $2 c, List.map (fun a -> a $1) x, y) }
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
-  | DISPATCH var expr expr_list { fun c -> Dispatch ($2 c table, $3 c, $4 c) }
+  | CALLINDIRECT var expr expr_list
+    { fun c -> CallIndirect ($2 c table, $3 c, $4 c) }
   | RETURN expr_list { fun c -> Return ($2 c) }
   | DESTRUCT var_list expr { fun c -> Destruct ($2 c local, $3 c) }
   | GETLOCAL var { fun c -> GetLocal ($2 c local) }
@@ -196,12 +197,12 @@ expr_block :
     { let at = at() in fun c -> Block ($1 c :: $2 c :: $3 c) @@ at }
 ;
 
-fallthru :
+fallthrough :
   | /* empty */ { false }
-  | FALLTHRU { true }
+  | FALLTHROUGH { true }
 ;
 arm :
-  | LPAR CASE literal expr_block fallthru RPAR
+  | LPAR CASE literal expr_block fallthrough RPAR
     { let at = at() in let at3 = ati 3 in
       fun c t ->
       {value = literal at3 $3 t; expr = $4 c; fallthru = $5} @@ at }

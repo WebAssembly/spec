@@ -133,7 +133,7 @@ let rec eval_expr c e =
     let vs = eval_exprs c es in
     eval_func c.modul (func c x) vs
 
-  | Dispatch (x, e1, es) ->
+  | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = eval_exprs c es in
     eval_func c.modul (table c x (Int32.to_int i @@ e1.at)) vs

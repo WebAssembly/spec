@@ -174,7 +174,7 @@ expr:
   ( break )                           ;; = (break 0)
   ( switch.<type> <expr> <case>* <expr> )
   ( call <var> <expr>* )
-  ( dispatch <var> <expr> <expr>* )
+  ( callindirect <var> <expr> <expr>* )
   ( return <expr>* )
   ( destruct <var>* <expr> )
   ( getparam <var> )
@@ -192,8 +192,8 @@ expr:
   ( reinterpret.<type>.<type> <expr> )
 
 case:
-  ( case <value> <expr>* fallthru? )  ;; = (case <int> (block <expr>*) fallthru?)
-  ( case <value> )                    ;; = (case <int> (nop) fallthru)
+  ( case <value> <expr>* fallthrough? )  ;; = (case <int> (block <expr>*) fallthrough?)
+  ( case <value> )                       ;; = (case <int> (nop) fallthrough)
 
 func:   ( func <name>? <param>* <result>* <local>* <expr>* )
 param:  ( param <type>* ) | ( param <name> <type> )
