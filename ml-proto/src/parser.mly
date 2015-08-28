@@ -36,7 +36,8 @@ let literal at s t =
     match t with
     | Types.Int32Type -> Values.Int32 (Int32.of_string s) @@ at
     | Types.Int64Type -> Values.Int64 (Int64.of_string s) @@ at
-    | Types.Float32Type -> Values.Float32 (float_of_string s) @@ at
+    | Types.Float32Type ->
+      Values.Float32 (Values.float32 (float_of_string s)) @@ at
     | Types.Float64Type -> Values.Float64 (float_of_string s) @@ at
   with _ -> Error.error at "constant out of range"
 

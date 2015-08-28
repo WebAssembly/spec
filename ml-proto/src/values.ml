@@ -38,3 +38,8 @@ let string_of_value = function
 let string_of_values = function
   | [v] -> string_of_value v
   | vs -> "(" ^ String.concat " " (List.map string_of_value vs) ^ ")"
+
+
+(* Float32 truncation *)
+
+let float32 x = Int32.float_of_bits (Int32.bits_of_float x)

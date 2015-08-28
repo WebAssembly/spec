@@ -104,7 +104,7 @@ let character = [^'"''\\''\n'] | '\\'escape | '\\'hexdigit hexdigit
 
 let num = ('+' | '-')? digit+
 let int = num
-let float = (num '.' digit+) | num ('e' | 'E') num
+let float = (num '.' digit+) | num ('.' digit+)? ('e' | 'E') num
 let text = '"' character* '"'
 let name = '$' (letter | digit | '_' | tick | symbol)+
 
@@ -191,7 +191,6 @@ rule token = parse
   | "sub."(fxx as t) { BINARY (floatop t F32.Sub F64.Sub) }
   | "mul."(fxx as t) { BINARY (floatop t F32.Mul F64.Mul) }
   | "div."(fxx as t) { BINARY (floatop t F32.Div F64.Div) }
-  | "mod."(fxx as t) { BINARY (floatop t F32.Mod F64.Mod) }
   | "copysign."(fxx as t) { BINARY (floatop t F32.CopySign F64.CopySign) }
 
   | "eq."(ixx as t) { COMPARE (intop t I32.Eq I64.Eq) }

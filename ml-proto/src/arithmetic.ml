@@ -80,7 +80,7 @@ struct
   let of_big_int_u = of_big_int_u_for size Big_int.int64_of_big_int
 end
 
-module IntOp (IntOpSyntax : module type of Ast.IntOp ()) (Int : INT) =
+module IntOp (IntOpSyntax : module type of Ast.IntOp()) (Int : INT) =
 struct
   open IntOpSyntax
   open Big_int
@@ -133,13 +133,14 @@ struct
       | ToInt32U -> fun i -> Int32 (Int32X.of_big_int_u (Int.to_big_int_u i))
       | ToInt64S -> fun i -> Int64 (Int.to_int64 i)
       | ToInt64U -> fun i -> Int64 (Int64X.of_big_int_u (Int.to_big_int_u i))
-      | ToFloat32S -> fun i -> Float32 (Int.to_float i)
-      | ToFloat32U -> fun i -> Float32 (float_of_big_int (Int.to_big_int_u i))
+      | ToFloat32S -> fun i -> Float32 (float32 (Int.to_float i))
+      | ToFloat32U -> fun i ->
+        Float32 (float32 (float_of_big_int (Int.to_big_int_u i)))
       | ToFloat64S -> fun i -> Float64 (Int.to_float i)
       | ToFloat64U -> fun i -> Float64 (float_of_big_int (Int.to_big_int_u i))
       | ToFloatCast -> fun i ->
         if Int.size = 32
-        then Float32 (Int.float_of_bits i)
+        then Float32 (float32 (Int.float_of_bits i))
         else Float64 (Int.float_of_bits i)
     in fun v -> f (Int.of_value 1 v)
 end
@@ -160,7 +161,7 @@ end
 module Float32X =
 struct
   let size = 32
-  let to_value z = Float32 z
+  let to_value z = Float32 (float32 z)
   let of_value n =
     function Float32 z -> z | v -> raise (TypeError (n, v, Float32Type))
 end
@@ -173,8 +174,7 @@ struct
     function Float64 z -> z | v -> raise (TypeError (n, v, Float64Type))
 end
 
-module FloatOp (FloatOpSyntax : module type of Ast.FloatOp ())
-  (Float : FLOAT) =
+module FloatOp (FloatOpSyntax : module type of Ast.FloatOp()) (Float : FLOAT) =
 struct
   open FloatOpSyntax
 
@@ -194,7 +194,6 @@ struct
       | Sub -> (-.)
       | Mul -> ( *.)
       | Div -> (/.)
-      | Mod -> mod_float
       | CopySign -> copysign
     in
     fun v1 v2 -> Float.to_value (f (Float.of_value 1 v1) (Float.of_value 2 v2))
@@ -227,7 +226,7 @@ struct
         if x < limit then Int64.of_float x else
         Int64.add (Int64.of_float (x -. limit +. 1.0)) Int64.max_int
       in Int64 i
-    | ToFloat32 -> fun x -> Float32 x
+    | ToFloat32 -> fun x -> Float32 (float32 x)
     | ToFloat64 -> fun x -> Float64 x
     | ToIntCast -> fun x ->
       if Float.size = 32
