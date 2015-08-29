@@ -163,24 +163,24 @@ relop: eq | neq | lt | ...
 sign: s|u
 align: 1|2|4|8|...
 memop: (<sign>.)?(<align>.)?
+cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
 expr:
   ( nop )
   ( block <expr>+ )
   ( if <expr> <expr> <expr> )
-  ( if <expr> <expr> )                ;; = (if <expr> <expr> (nop))
-  ( loop <expr>* )                    ;; = (loop (block <expr>*))
-  ( label <name>? <expr>* )           ;; = (label (block <expr>*))
+  ( if <expr> <expr> )                     ;; = (if <expr> <expr> (nop))
+  ( loop <expr>* )                         ;; = (loop (block <expr>*))
+  ( label <name>? <expr>* )                ;; = (label (block <expr>*))
   ( break <var> <expr>* )
-  ( break )                           ;; = (break 0)
-  ( switch.<type> <expr> <case>* <expr> )
+  ( break )                                ;; = (break 0)
+  ( <type>.switch <expr> <case>* <expr> )
   ( call <var> <expr>* )
-  ( callindirect <var> <expr> <expr>* )
+  ( call_indirect <var> <expr> <expr>* )
   ( return <expr>* )
   ( destruct <var>* <expr> )
-  ( getparam <var> )
-  ( getlocal <var> )
-  ( setlocal <var> <expr> )
+  ( get_local <var> )
+  ( set_local <var> <expr> )
   ( load_global <var> )
   ( store_global <var> <expr> )
   ( load<memop><memtype> <expr> )
@@ -189,8 +189,7 @@ expr:
   ( <unop>.<type> <expr> )
   ( <binop>.<type> <expr> <expr> )
   ( <relop>.<type> <expr> <expr> )
-  ( convert(s|u)?.<type>.<type> <expr> )
-  ( cast.<type>.<type> <expr> )
+  ( <type>.<cvtop>/<type> <expr> )
 
 case:
   ( case <value> <expr>* fallthrough? )  ;; = (case <int> (block <expr>*) fallthrough?)
