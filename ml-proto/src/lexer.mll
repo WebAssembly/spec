@@ -60,25 +60,11 @@ let floatop t f32 f64 =
   | "f64" -> Values.Float64 f64
   | _ -> assert false
 
-let mem_type t sign memty =
-  let open Memory in
-  match t, sign, memty with
-  | ("i32" | "i64"), 's', "i8" -> SInt8Mem
-  | ("i32" | "i64"), 's', "i16" -> SInt16Mem
-  | ("i32" | "i64"), 's', "i32" -> SInt32Mem
-  | "i64", 's', "i64" -> SInt64Mem
-  | ("i32" | "i64"), 'u', "i8" -> UInt8Mem
-  | ("i32" | "i64"), 'u', "i16" -> UInt16Mem
-  | ("i32" | "i64"), 'u', "i32" -> UInt32Mem
-  | "i64", 'u', "i64" -> UInt64Mem
-  | "f32", ' ', "f32" -> Float32Mem
-  | "f64", ' ', "f64" -> Float64Mem
-  | _ -> assert false
-
 let memop ty sign memsize a =
-  let memty = mem_type ty sign memsize in
-  let align = if a = "" then Memory.mem_size memty else int_of_string a in
-  {ty = value_type ty; mem = memty; align}
+  let size = int_of_string memsize in
+  let align = if a = "" then size else int_of_string a in
+  let signed = if sign = ' ' then None else Some (sign = 's') in
+  {ty = value_type ty; size; align; signed}
 }
 
 
@@ -91,6 +77,7 @@ let tick = '\''
 let escape = ['n''t''\\''\'''\"']
 let character = [^'"''\\''\n'] | '\\'escape | '\\'hexdigit hexdigit
 
+let nat = digit+
 let num = ('+' | '-')? digit+
 let int = num
 let float = (num '.' digit+) | num ('.' digit+)? ('e' | 'E') num
@@ -100,10 +87,8 @@ let name = '$' (letter | digit | '_' | tick | symbol)+
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
 let nxx = ixx | fxx
-let mixx = "i" ("8" | "16" | "32" | "64")
-let mfxx = "f" ("32" | "64")
+let size = "8" | "16" | "32" | "64"
 let sign = "s" | "u"
-let align = digit+
 
 rule token = parse
   | "(" { LPAR }
@@ -139,17 +124,13 @@ rule token = parse
   | "load_global" { LOADGLOBAL }
   | "store_global" { STOREGLOBAL }
 
-  | (ixx as t)".load_"(sign as s)"/"(mixx as m)"/"(align as a)
+  | (ixx as t)".load"(size as m)"_"(sign as s)"/"(nat as a)
     { LOAD (memop t s m a) }
-  | (ixx as t)".load_"(sign as s)"/"(mixx as m) { LOAD (memop t s m "") }
-  | (ixx as t)".load/"(mixx as m)"/"(align as a) { LOAD (memop t 's' m a) }
-  | (ixx as t)".load/"(mixx as m) { LOAD (memop t 's' m "") }
-  | (ixx as t)".store/"(mixx as m)"/"(align as a) { STORE (memop t 's' m a) }
-  | (ixx as t)".store/"(mixx as m) { STORE (memop t 's' m "") }
-  | (fxx as t)".load/"(mfxx as m)"/"(align as a) { LOAD (memop t ' ' m a) }
-  | (fxx as t)".store/"(mfxx as m)"/"(align as a) { STORE (memop t ' ' m a) }
-  | (fxx as t)".load/"(mfxx as m) { LOAD (memop t ' ' m "") }
-  | (fxx as t)".store/"(mfxx as m) { STORE (memop t ' ' m "") }
+  | (ixx as t)".load"(size as m)"_"(sign as s) { LOAD (memop t s m "") }
+  | (nxx as t)".load"(size as m)"/"(nat as a) { LOAD (memop t ' ' m a) }
+  | (nxx as t)".load"(size as m) { LOAD (memop t ' ' m "") }
+  | (nxx as t)".store"(size as m)"/"(nat as a) { STORE (memop t ' ' m a) }
+  | (nxx as t)".store"(size as m) { STORE (memop t ' ' m "") }
 
   | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }

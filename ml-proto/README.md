@@ -152,18 +152,15 @@ The S-expression syntax is defined in `parser.mly`, the opcodes in `lexer.mll`. 
 
 ```
 type: i32 | i64 | f32 | f64
-memtype: <type> | i8 | i16
-
+size: 8 | 16 | 32 | 64
 value: <int> | <float>
 var: <int> | $<name>
 
 unop:  neg | abs | not | ...
 binop: add | sub | mul | ...
 relop: eq | neq | lt | ...
-sign: s|u
-align: 1|2|4|8|...
-memop: (<sign>.)?(<align>.)?
-cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
+cvtop: wrap | trunc_<sign> | extend_<sign> | ...
+sign: s | u
 
 expr:
   ( nop )
@@ -183,8 +180,8 @@ expr:
   ( set_local <var> <expr> )
   ( load_global <var> )
   ( store_global <var> <expr> )
-  ( <type>.load<memop><memtype> <expr> )
-  ( <type>.store<memop><memtype> <expr> <expr> )
+  ( <type>.load<size>(_<sign>)?(/<nat>)? <expr> )
+  ( <type>.store<size>(/<nat>)? <expr> <expr> )
   ( <type>.const <value> )
   ( <type>.<unop> <expr> )
   ( <type>.<binop> <expr> <expr> )

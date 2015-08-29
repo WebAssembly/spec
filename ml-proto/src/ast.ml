@@ -62,7 +62,8 @@ type binop = (Int32Op.binop, Int64Op.binop, Float32Op.binop, Float64Op.binop) op
 type relop = (Int32Op.relop, Int64Op.relop, Float32Op.relop, Float64Op.relop) op
 type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
 
-type memop = {ty : Types.value_type; mem : Memory.mem_type; align : int}
+type memop =
+  {ty : Types.value_type; size : int; align : int; signed : bool option}
 
 
 (* Expressions *)

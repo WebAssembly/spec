@@ -35,29 +35,29 @@
 )
 
 ;; Test alignment annotation rules
-(module (func (i32.load_u/i8/2 (i32.const 0))))
-(module (func (i32.load_u/i16/4 (i32.const 0))))
-(module (func (i32.load_u/i32/8 (i32.const 0))))
-(module (func (f32.load/f32/8 (i32.const 0))))
+(module (func (i32.load8_u/2 (i32.const 0))))
+(module (func (i32.load16_u/4 (i32.const 0))))
+(module (func (i32.load32/8 (i32.const 0))))
+(module (func (f32.load32/8 (i32.const 0))))
 
 (assert_invalid
-  (module (func (i64.load_u/i64/0 (i32.const 0))))
+  (module (func (i64.load64_u/0 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (func (i64.load_u/i64/3 (i32.const 0))))
+  (module (func (i64.load64_u/3 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (func (i64.load_u/i64/5 (i32.const 0))))
+  (module (func (i64.load64_u/5 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (func (i64.load_u/i64/6 (i32.const 0))))
+  (module (func (i64.load64_u/6 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (func (i64.load_u/i64/7 (i32.const 0))))
+  (module (func (i64.load64_u/7 (i32.const 0))))
   "non-power-of-two alignment"
 )
 
@@ -68,12 +68,12 @@
   (func $data (result i32)
     (i32.and
       (i32.and
-        (i32.eq (i32.load_u/i8 (i32.const 0)) (i32.const 65))
-        (i32.eq (i32.load_u/i8 (i32.const 3)) (i32.const 167))
+        (i32.eq (i32.load8_u (i32.const 0)) (i32.const 65))
+        (i32.eq (i32.load8_u (i32.const 3)) (i32.const 167))
       )
       (i32.and
-        (i32.eq (i32.load_u/i8 (i32.const 20)) (i32.const 87))
-        (i32.eq (i32.load_u/i8 (i32.const 23)) (i32.const 77))
+        (i32.eq (i32.load8_u (i32.const 20)) (i32.const 87))
+        (i32.eq (i32.load8_u (i32.const 23)) (i32.const 77))
       )
     )
   )
@@ -89,8 +89,8 @@
           (break)
         )
         (set_local 2 (i32.mul (get_local 0) (i32.const 4)))
-        (i32.store/i32 (get_local 2) (get_local 0))
-        (set_local 1 (i32.load_s/i32 (get_local 2)))
+        (i32.store32 (get_local 2) (get_local 0))
+        (set_local 1 (i32.load32 (get_local 2)))
         (if
           (i32.neq (get_local 0) (get_local 1))
           (return (i32.const 0))
@@ -112,8 +112,8 @@
           (break)
         )
         (set_local 2 (f64.convert_s/i32 (get_local 0)))
-        (f64.store/f64/1 (get_local 0) (get_local 2))
-        (set_local 1 (f64.load/f64/1 (get_local 0)))
+        (f64.store64/1 (get_local 0) (get_local 2))
+        (set_local 1 (f64.load64/1 (get_local 0)))
         (if
           (f64.neq (get_local 2) (get_local 1))
           (return (i32.const 0))
@@ -126,17 +126,17 @@
 
   ;; Memory cast
   (func $cast (result f64)
-    (i64.store/i64 (i32.const 8) (i64.const -12345))
+    (i64.store64 (i32.const 8) (i64.const -12345))
     (if
       (f64.eq
-        (f64.load/f64 (i32.const 8))
+        (f64.load64 (i32.const 8))
         (f64.reinterpret/i64 (i64.const -12345))
       )
       (return (f64.const 0))
     )
-    (i64.store/i64/1 (i32.const 9) (i64.const 0))
-    (i32.store/i16/1 (i32.const 15) (i32.const 16453))
-    (return (f64.load/f64/1 (i32.const 9)))
+    (i64.store64/1 (i32.const 9) (i64.const 0))
+    (i32.store16/1 (i32.const 15) (i32.const 16453))
+    (return (f64.load64/1 (i32.const 9)))
   )
 
   (export "data" $data)
