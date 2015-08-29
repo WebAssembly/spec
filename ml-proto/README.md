@@ -185,10 +185,10 @@ expr:
   ( store_global <var> <expr> )
   ( <type>.load<memop><memtype> <expr> )
   ( <type>.store<memop><memtype> <expr> <expr> )
-  ( <type>.const <num> )
-  ( <unop>.<type> <expr> )
-  ( <binop>.<type> <expr> <expr> )
-  ( <relop>.<type> <expr> <expr> )
+  ( <type>.const <value> )
+  ( <type>.<unop> <expr> )
+  ( <type>.<binop> <expr> <expr> )
+  ( <type>.<relop> <expr> <expr> )
   ( <type>.<cvtop>/<type> <expr> )
 
 case:
