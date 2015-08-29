@@ -151,7 +151,7 @@ rule token = parse
   | (fxx as t)".load/"(mfxx as m) { LOAD (memop t ' ' m "") }
   | (fxx as t)".store/"(mfxx as m) { STORE (memop t ' ' m "") }
 
-  | "switch/"(nxx as t) { SWITCH (value_type t) }
+  | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
 
   | (ixx as t)".neg" { UNARY (intop t Int32Op.Neg Int64Op.Neg) }
