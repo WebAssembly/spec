@@ -193,6 +193,8 @@ rule token = parse
   | "mul."(fxx as t) { BINARY (floatop t F32.Mul F64.Mul) }
   | "div."(fxx as t) { BINARY (floatop t F32.Div F64.Div) }
   | "copysign."(fxx as t) { BINARY (floatop t F32.CopySign F64.CopySign) }
+  | "min."(fxx as t) { BINARY (floatop t F32.Min F64.Min) }
+  | "max."(fxx as t) { BINARY (floatop t F32.Max F64.Max) }
 
   | "eq."(ixx as t) { COMPARE (intop t I32.Eq I64.Eq) }
   | "neq."(ixx as t) { COMPARE (intop t I32.Neq I64.Neq) }
