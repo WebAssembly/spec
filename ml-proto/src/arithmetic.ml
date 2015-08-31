@@ -186,6 +186,7 @@ struct
       | Floor -> floor
       | Trunc -> fun _ -> 0.0  (* TODO *)
       | Round -> fun _ -> 0.0  (* TODO *)
+      | Sqrt  -> sqrt
     in fun v -> Float.to_value (f (Float.of_value 1 v))
 
   let binop op =

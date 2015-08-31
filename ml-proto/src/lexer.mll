@@ -173,6 +173,7 @@ rule token = parse
   | "floor."(fxx as t) { UNARY (floatop t F32.Floor F64.Floor) }
   | "trunc."(fxx as t) { UNARY (floatop t F32.Trunc F64.Trunc) }
   | "round."(fxx as t) { UNARY (floatop t F32.Round F64.Round) }
+  | "sqrt."(fxx as t) { UNARY (floatop t F32.Sqrt F64.Sqrt) }
 
   | "add."(ixx as t) { BINARY (intop t I32.Add I64.Add) }
   | "sub."(ixx as t) { BINARY (intop t I32.Sub I64.Sub) }
