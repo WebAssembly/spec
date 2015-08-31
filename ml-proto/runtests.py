@@ -9,6 +9,9 @@ import sys
 
 class RunTests(unittest.TestCase):
   def _runTestFile(self, shortName, fileName, interpreterPath):
+    # HACK: Windows python compatibility
+    fileName = fileName.replace("\\", "/")
+
     logPath = fileName.replace("test/", "test/output/").replace(".wasm", ".wasm.log")
     try:
       os.remove(logPath)
@@ -59,6 +62,8 @@ def rebuild_interpreter(path):
 
 if __name__ == "__main__":
   interpreterPath = os.path.abspath("src/main.native")
+  # HACK: Windows python compatibility
+  interpreterPath = interpreterPath.replace("\\", "/")
 
   try:
     os.makedirs("test/output/")
