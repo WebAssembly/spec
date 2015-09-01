@@ -6,27 +6,24 @@
     (param $result i32) (local $count i32) 
 
     (block 
-      (setlocal $count (loads.1.i32 (const.i32 0) ))
+      (setlocal $count (call $Program_get_ResultCount))
       (stores.1.i32 
         (mul.i32 
           (add.i32 
-            (const.i32 4)
+            (const.i32 0)
             (getlocal $count)
           )
           (const.i32 4)
         )
         (getlocal $result)
       )
-      (stores.1.i32 
-        (const.i32 0)
-        (add.i32 
+      (call $Program_set_ResultCount (add.i32 
           (getlocal $count)
           (const.i32 1)
-        )
-      )
+        ))
     )
-
   )
+
   (func $Program_Clear
     (param $offset i32) (param $count i32) (local $i i32) 
 
@@ -35,7 +32,7 @@
       ;; for (var (@<var System.Int32 i> = 0); ...)
       (setlocal $i (const.i32 0))
 
-      (label $loop_4096 
+      (label $loop_0 
         (loop 
           ;; for (...; (@<var System.Int32 i> < @<parameter System.Int32 count>); ...)
 
@@ -45,7 +42,7 @@
               (getlocal $count)
             )
             (nop)
-            (break $loop_4096)
+            (break $loop_0)
           )
 
           ;; for (...) { 
@@ -65,36 +62,40 @@
         )
       )
     )
-
   )
+
+  (func $Program_get_ResultCount
+
+    (result i32)
+
+    (return (load_global $Program_ResultCount_value))
+  )
+
   (func $Program_GetResult
     (param $index i32) 
     (result i32)
 
     (return (loads.1.i32 (mul.i32 
           (add.i32 
-            (const.i32 4)
+            (const.i32 0)
             (getlocal $index)
           )
           (const.i32 4)
         ) ))
   )
-  (func $Program_GetResultCount
 
-    (result i32)
+  (func $Program_set_ResultCount
+    (param $value i32) 
 
-    (return (loads.1.i32 (const.i32 0) ))
+    (store_global $Program_ResultCount_value (getlocal $value))
   )
+
   (func $Program_Sieve
     (param $target i32) (local $squareRoot f64) (local $candidate i32) (local $multiple i32) 
 
-
     (block 
-      (stores.1.i32 
-        (const.i32 0)
-        (const.i32 0)
-      )
-      (call $Program_Clear (const.i32 4) (const.i32 16384) )
+      (call $Program_set_ResultCount (const.i32 0))
+      (call $Program_Clear (const.i32 0) (const.i32 16384) )
       (call $Program_Clear (const.i32 16388) (getlocal $target) )
       (setlocal $squareRoot (sqrt.f64 (converts.i32.f64 (getlocal $target)) ))
       (call $Program_AddResult (const.i32 2) )
@@ -102,7 +103,7 @@
       ;; for (var (@<var System.Int32 candidate> = 3); ...)
       (setlocal $candidate (const.i32 3))
 
-      (label $loop_4097 
+      (label $loop_0 
         (loop 
           ;; for (...; (@<var System.Int32 candidate> < @<parameter System.Int32 target>); ...)
 
@@ -112,7 +113,7 @@
               (getlocal $target)
             )
             (nop)
-            (break $loop_4097)
+            (break $loop_0)
           )
 
           ;; for (...) { 
@@ -141,7 +142,7 @@
                         (getlocal $candidate)
                       ))
 
-                    (label $loop_4098 
+                    (label $loop_1 
                       (loop 
                         ;; for (...; (@<var System.Int32 multiple> < @<parameter System.Int32 target>); ...)
 
@@ -151,7 +152,7 @@
                             (getlocal $target)
                           )
                           (nop)
-                          (break $loop_4098)
+                          (break $loop_1)
                         )
 
                         ;; for (...) { 
@@ -188,21 +189,22 @@
         )
       )
     )
-
   )
 
+  (export "get_ResultCount" $Program_get_ResultCount)
   (export "getResult" $Program_GetResult)
-
-  (export "getResultCount" $Program_GetResultCount)
-
+  (export "set_ResultCount" $Program_set_ResultCount)
   (export "sieve" $Program_Sieve)
+
+  (global $Program_ResultCount_value i32)
 
   (memory 131072 131072)
 
 )
 
+
 (invoke "sieve" (const.i32 24) )
-(asserteq (invoke "getResultCount"  ) (const.i32 9) )
+(asserteq (invoke "get_ResultCount"  ) (const.i32 9) )
 (asserteq (invoke "getResult" (const.i32 0)  ) (const.i32 2) )
 (asserteq (invoke "getResult" (const.i32 1)  ) (const.i32 3) )
 (asserteq (invoke "getResult" (const.i32 2)  ) (const.i32 5) )

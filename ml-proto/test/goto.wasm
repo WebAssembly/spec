@@ -6,24 +6,21 @@
     (param $result i32) (local $count i32) 
 
     (block 
-      (setlocal $count (loads.1.i32 (const.i32 0) ))
+      (setlocal $count (call $Program_get_ResultCount))
       (storeu.1.i8 
         (add.i32 
-          (const.i32 4)
+          (const.i32 0)
           (getlocal $count)
         )
         (getlocal $result)
       )
-      (stores.1.i32 
-        (const.i32 0)
-        (add.i32 
+      (call $Program_set_ResultCount (add.i32 
           (getlocal $count)
           (const.i32 1)
-        )
-      )
+        ))
     )
-
   )
+
   (func $Program_Clear
     (param $offset i32) (param $count i32) (local $i i32) 
 
@@ -32,7 +29,7 @@
       ;; for (var (@<var System.Int32 i> = 0); ...)
       (setlocal $i (const.i32 0))
 
-      (label $loop_4096 
+      (label $loop_0 
         (loop 
           ;; for (...; (@<var System.Int32 i> < @<parameter System.Int32 count>); ...)
 
@@ -42,7 +39,7 @@
               (getlocal $count)
             )
             (nop)
-            (break $loop_4096)
+            (break $loop_0)
           )
 
           ;; for (...) { 
@@ -62,36 +59,34 @@
         )
       )
     )
-
   )
+
+  (func $Program_get_ResultCount
+
+    (result i32)
+
+    (return (load_global $Program_ResultCount_value))
+  )
+
   (func $Program_GetResult
     (param $index i32) 
     (result i32)
 
     (return (loadu.1.i8 (add.i32 
-          (const.i32 4)
+          (const.i32 0)
           (getlocal $index)
         ) ))
   )
-  (func $Program_GetResultCount
 
-    (result i32)
-
-    (return (loads.1.i32 (const.i32 0) ))
-  )
   (func $Program_Gotos
 
-
     (block 
-      (stores.1.i32 
-        (const.i32 0)
-        (const.i32 0)
-      )
-      (call $Program_Clear (const.i32 4) (const.i32 128) )
+      (call $Program_set_ResultCount (const.i32 0))
+      (call $Program_Clear (const.i32 0) (const.i32 128) )
       (call $Program_GotosInner )
     )
-
   )
+
   (func $Program_GotosInner
     (local $i i32) 
     (local $currentLabel_0 i32) 
@@ -125,7 +120,7 @@
                     ))
                   (call $Program_AddResult (const.i32 1) )
 
-                  (label $loop_4097 
+                  (label $loop_1 
                     (loop 
                       ;; for (...; (@<var System.Int32 i> < 16); ...)
 
@@ -135,7 +130,7 @@
                           (const.i32 16)
                         )
                         (nop)
-                        (break $loop_4097)
+                        (break $loop_1)
                       )
 
                       ;; for (...) { 
@@ -173,21 +168,28 @@
         )
       )
     )
-
   )
 
+  (func $Program_set_ResultCount
+    (param $value i32) 
+
+    (store_global $Program_ResultCount_value (getlocal $value))
+  )
+
+  (export "get_ResultCount" $Program_get_ResultCount)
   (export "getResult" $Program_GetResult)
-
-  (export "getResultCount" $Program_GetResultCount)
-
   (export "gotos" $Program_Gotos)
+  (export "set_ResultCount" $Program_set_ResultCount)
+
+  (global $Program_ResultCount_value i32)
 
   (memory 1024 1024)
 
 )
 
+
 (invoke "gotos" )
-(asserteq (invoke "getResultCount"  ) (const.i32 16) )
+(asserteq (invoke "get_ResultCount"  ) (const.i32 16) )
 (asserteq (invoke "getResult" (const.i32 0)  ) (const.i32 1) )
 (asserteq (invoke "getResult" (const.i32 1)  ) (const.i32 3) )
 (asserteq (invoke "getResult" (const.i32 2)  ) (const.i32 3) )

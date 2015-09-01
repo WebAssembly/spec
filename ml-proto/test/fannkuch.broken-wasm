@@ -4,16 +4,15 @@
 
   (func $Program_fannkuch
     (param $n i32) (local $sign i32) (local $maxflips i32) (local $sum i32) 
-    (local $j i32) (local $num i32) (local $q0 i32) (local $flag i32) 
-    (local $k i32) (local $flips i32) (local $qq i32) (local $flag2 i32) 
-    (local $flag3 i32) (local $l i32) (local $m i32) (local $t i32) 
-    (local $flag4 i32) (local $flag5 i32) (local $t3 i32) (local $i2 i32) 
-    (local $sx i32) (local $flag7 i32) (local $j2 i32) 
+    (local $j i32) (local $q0 i32) (local $k i32) (local $flips i32) 
+    (local $qq i32) (local $l i32) (local $m i32) (local $t i32) 
+    (local $t3 i32) (local $i2 i32) (local $sx i32) (local $j2 i32) 
+
     (local $currentLabel_0 i32) 
 
     (block 
 
-      ;; LabelGroup 0
+      ;; LabelGroup 0 (starting at $entry0)
       (setlocal $currentLabel_0 (const.i32 0))
 
       (label $labelgroup_0 (loop (label $labelgroup_0_dispatch 
@@ -27,7 +26,7 @@
             ;; for (var (@<var System.Int32 j> = 0); ...)
             (setlocal $j (const.i32 0))
 
-            (label $loop_4096 
+            (label $loop_0 
               (loop 
                 ;; for (...; (@<var System.Int32 j> < @<parameter System.Int32 n>); ...)
 
@@ -37,7 +36,7 @@
                     (getlocal $n)
                   )
                   (nop)
-                  (break $loop_4096)
+                  (break $loop_0)
                 )
 
                 ;; for (...) { 
@@ -72,41 +71,41 @@
                     )
                     (getlocal $j)
                   )
-                  (setlocal $num (getlocal $j))
-                  (setlocal $j (add.i32 
-                      (getlocal $num)
-                      (const.i32 1)
-                    ))
                 )
+
+                ;; for (...; ...; <!>)
+                (setlocal $j (add.i32 
+                    (getlocal $j)
+                    (const.i32 1)
+                  ))
               )
             )
 
             ;; while (<JSBooleanLiteral True>)
-            (label $loop_4097 
+            (label $loop_1 
               (loop 
 
                 (if 
                   (const.i32 1)
                   (nop)
-                  (break $loop_4097)
+                  (break $loop_1)
                 )
 
                 ;; while (...) { 
                 (block 
                   (setlocal $q0 (loads.1.i32 (const.i32 128) ))
-                  (setlocal $flag (gts.i32 
-                      (getlocal $q0)
-                      (const.i32 0)
-                    ))
 
                   (if 
-                    (getlocal $flag)
+                    (neq.i32 
+                      (getlocal $q0)
+                      (const.i32 0)
+                    )
                     (block 
 
                       ;; for (var (@<var System.Int32 k> = 1); ...)
                       (setlocal $k (const.i32 1))
 
-                      (label $loop_4098 
+                      (label $loop_2 
                         (loop 
                           ;; for (...; (@<var System.Int32 k> < @<parameter System.Int32 n>); ...)
 
@@ -116,33 +115,32 @@
                               (getlocal $n)
                             )
                             (nop)
-                            (break $loop_4098)
+                            (break $loop_2)
                           )
 
                           ;; for (...) { 
-                          (block 
-                            (stores.1.i32 
-                              (mul.i32 
+                          (stores.1.i32 
+                            (mul.i32 
+                              (add.i32 
+                                (const.i32 64)
+                                (getlocal $k)
+                              )
+                              (const.i32 4)
+                            )
+                            (loads.1.i32 (mul.i32 
                                 (add.i32 
-                                  (const.i32 64)
+                                  (const.i32 32)
                                   (getlocal $k)
                                 )
                                 (const.i32 4)
-                              )
-                              (loads.1.i32 (mul.i32 
-                                  (add.i32 
-                                    (const.i32 32)
-                                    (getlocal $k)
-                                  )
-                                  (const.i32 4)
-                                ) )
-                            )
-                            (setlocal $num (getlocal $k))
-                            (setlocal $k (add.i32 
-                                (getlocal $num)
-                                (const.i32 1)
-                              ))
+                              ) )
                           )
+
+                          ;; for (...; ...; <!>)
+                          (setlocal $k (add.i32 
+                              (getlocal $k)
+                              (const.i32 1)
+                            ))
                         )
                       )
                       (setlocal $flips (const.i32 1))
@@ -166,13 +164,12 @@
                                   )
                                   (const.i32 4)
                                 ) ))
-                            (setlocal $flag2 (eq.i32 
-                                (getlocal $qq)
-                                (const.i32 0)
-                              ))
 
                             (if 
-                              (getlocal $flag2)
+                              (eq.i32 
+                                (getlocal $qq)
+                                (const.i32 0)
+                              )
                               (break $loop_3)
                             )
                             (stores.1.i32 
@@ -185,13 +182,12 @@
                               )
                               (getlocal $q0)
                             )
-                            (setlocal $flag3 (ges.i32 
-                                (getlocal $q0)
-                                (const.i32 3)
-                              ))
 
                             (if 
-                              (getlocal $flag3)
+                              (ges.i32 
+                                (getlocal $q0)
+                                (const.i32 3)
+                              )
                               (block 
                                 (setlocal $l (const.i32 1))
                                 (setlocal $m (sub.i32 
@@ -200,7 +196,7 @@
                                   ))
 
                                 ;; do {
-                                (label $loop_4099 
+                                (label $loop_4 
                                   (loop 
                                     (block 
                                       (setlocal $t (loads.1.i32 (mul.i32 
@@ -236,14 +232,12 @@
                                         )
                                         (getlocal $t)
                                       )
-                                      (setlocal $num (getlocal $l))
                                       (setlocal $l (add.i32 
-                                          (getlocal $num)
+                                          (getlocal $l)
                                           (const.i32 1)
                                         ))
-                                      (setlocal $num (getlocal $m))
                                       (setlocal $m (sub.i32 
-                                          (getlocal $num)
+                                          (getlocal $m)
                                           (const.i32 1)
                                         ))
                                     )
@@ -256,16 +250,15 @@
                                         (getlocal $m)
                                       )
                                       (nop)
-                                      (break $loop_4099)
+                                      (break $loop_4)
                                     )
                                   )
                                 )
                               )
                             )
                             (setlocal $q0 (getlocal $qq))
-                            (setlocal $num (getlocal $flips))
                             (setlocal $flips (add.i32 
-                                (getlocal $num)
+                                (getlocal $flips)
                                 (const.i32 1)
                               ))
                           )
@@ -278,24 +271,22 @@
                             (getlocal $flips)
                           )
                         ))
-                      (setlocal $flag4 (gts.i32 
-                          (getlocal $flips)
-                          (getlocal $maxflips)
-                        ))
 
                       (if 
-                        (getlocal $flag4)
+                        (gts.i32 
+                          (getlocal $flips)
+                          (getlocal $maxflips)
+                        )
                         (setlocal $maxflips (getlocal $flips))
                       )
                     )
                   )
-                  (setlocal $flag5 (eq.i32 
-                      (getlocal $sign)
-                      (const.i32 1)
-                    ))
 
                   (if 
-                    (getlocal $flag5)
+                    (eq.i32 
+                      (getlocal $sign)
+                      (const.i32 1)
+                    )
                     (block 
                       (stores.1.i32 
                         (const.i32 132)
@@ -346,7 +337,7 @@
                                 ) ))
 
                             (if 
-                              (gts.i32 
+                              (neq.i32 
                                 (getlocal $sx)
                                 (const.i32 0)
                               )
@@ -367,16 +358,15 @@
                                 (break $loop_5)
                               )
                             )
-                            (setlocal $flag7 (eq.i32 
+
+                            (if 
+                              (eq.i32 
                                 (getlocal $i2)
                                 (sub.i32 
                                   (getlocal $n)
                                   (const.i32 1)
                                 )
-                              ))
-
-                            (if 
-                              (getlocal $flag7)
+                              )
                               ;; goto Block_8
                               (block (setlocal $currentLabel_0 (const.i32 1)) (break $labelgroup_0_dispatch) )
                             )
@@ -395,7 +385,7 @@
                             ;; for (var (@<var System.Int32 j2> = 0); ...)
                             (setlocal $j2 (const.i32 0))
 
-                            (label $loop_4100 
+                            (label $loop_6 
                               (loop 
                                 ;; for (...; (@<var System.Int32 j2> <= @<var System.Int32 i2>); ...)
 
@@ -405,36 +395,35 @@
                                     (getlocal $i2)
                                   )
                                   (nop)
-                                  (break $loop_4100)
+                                  (break $loop_6)
                                 )
 
                                 ;; for (...) { 
-                                (block 
-                                  (stores.1.i32 
-                                    (mul.i32 
+                                (stores.1.i32 
+                                  (mul.i32 
+                                    (add.i32 
+                                      (const.i32 32)
+                                      (getlocal $j2)
+                                    )
+                                    (const.i32 4)
+                                  )
+                                  (loads.1.i32 (mul.i32 
                                       (add.i32 
                                         (const.i32 32)
-                                        (getlocal $j2)
+                                        (add.i32 
+                                          (getlocal $j2)
+                                          (const.i32 1)
+                                        )
                                       )
                                       (const.i32 4)
-                                    )
-                                    (loads.1.i32 (mul.i32 
-                                        (add.i32 
-                                          (const.i32 32)
-                                          (add.i32 
-                                            (getlocal $j2)
-                                            (const.i32 1)
-                                          )
-                                        )
-                                        (const.i32 4)
-                                      ) )
-                                  )
-                                  (setlocal $num (getlocal $j2))
-                                  (setlocal $j2 (add.i32 
-                                      (getlocal $num)
-                                      (const.i32 1)
-                                    ))
+                                    ) )
                                 )
+
+                                ;; for (...; ...; <!>)
+                                (setlocal $j2 (add.i32 
+                                    (getlocal $j2)
+                                    (const.i32 1)
+                                  ))
                               )
                             )
                             (stores.1.i32 
@@ -450,12 +439,13 @@
                               )
                               (getlocal $t3)
                             )
-                            (setlocal $num (getlocal $i2))
-                            (setlocal $i2 (add.i32 
-                                (getlocal $num)
-                                (const.i32 1)
-                              ))
                           )
+
+                          ;; for (...; ...; <!>)
+                          (setlocal $i2 (add.i32 
+                              (getlocal $i2)
+                              (const.i32 1)
+                            ))
                         )
                       )
                     )
@@ -489,8 +479,8 @@
         )
       ))
     )
-
   )
+
   (func $Program_readI32
     (param $base i32) (param $offset i32) 
     (result i32)
@@ -505,12 +495,12 @@
   )
 
   (export "fannkuch" $Program_fannkuch)
-
   (export "readI32" $Program_readI32)
 
   (memory 4096 4096)
 
 )
+
 
 (invoke "fannkuch" (const.i32 7) )
 (asserteq (invoke "readI32" (const.i32 0) (const.i32 0)  ) (const.i32 228) )

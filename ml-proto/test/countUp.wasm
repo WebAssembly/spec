@@ -3,15 +3,14 @@
 (module 
 
   (func $Program_countUp
-    (param $outOffset i32) (param $count i32) (local $i i32) (local $num i32) 
-
+    (param $outOffset i32) (param $count i32) (local $i i32) 
 
     (block 
 
       ;; for (var (@<var System.Int32 i> = 0); ...)
       (setlocal $i (const.i32 0))
 
-      (label $loop_4096 
+      (label $loop_0 
         (loop 
           ;; for (...; (@<var System.Int32 i> < @<parameter System.Int32 count>); ...)
 
@@ -21,32 +20,31 @@
               (getlocal $count)
             )
             (nop)
-            (break $loop_4096)
+            (break $loop_0)
           )
 
           ;; for (...) { 
-          (block 
-            (stores.1.i32 
-              (mul.i32 
-                (add.i32 
-                  (getlocal $outOffset)
-                  (getlocal $i)
-                )
-                (const.i32 4)
+          (stores.1.i32 
+            (mul.i32 
+              (add.i32 
+                (getlocal $outOffset)
+                (getlocal $i)
               )
-              (getlocal $i)
+              (const.i32 4)
             )
-            (setlocal $num (getlocal $i))
-            (setlocal $i (add.i32 
-                (getlocal $num)
-                (const.i32 1)
-              ))
+            (getlocal $i)
           )
+
+          ;; for (...; ...; <!>)
+          (setlocal $i (add.i32 
+              (getlocal $i)
+              (const.i32 1)
+            ))
         )
       )
     )
-
   )
+
   (func $Program_readI32
     (param $base i32) (param $offset i32) 
     (result i32)
@@ -61,12 +59,12 @@
   )
 
   (export "countUp" $Program_countUp)
-
   (export "readI32" $Program_readI32)
 
   (memory 4096 4096)
 
 )
+
 
 (invoke "countUp" (const.i32 0) (const.i32 32) )
 (invoke "countUp" (const.i32 16) (const.i32 4) )
