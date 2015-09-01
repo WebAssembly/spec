@@ -33,7 +33,7 @@ type value_type = Types.value_type Source.phrase
 
 module IntOp () =
 struct
-  type unop = Neg | Abs | Not | Clz | Ctz
+  type unop = Clz | Ctz | Popcnt
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
              | And | Or | Xor | Shl | Shr | Sar
   type relop = Eq | Neq | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU

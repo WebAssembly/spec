@@ -154,11 +154,9 @@ rule token = parse
   | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
 
-  | (ixx as t)".neg" { UNARY (intop t Int32Op.Neg Int64Op.Neg) }
-  | (ixx as t)".abs" { UNARY (intop t Int32Op.Abs Int64Op.Abs) }
-  | (ixx as t)".not" { UNARY (intop t Int32Op.Not Int64Op.Not) }
   | (ixx as t)".clz" { UNARY (intop t Int32Op.Clz Int64Op.Clz) }
   | (ixx as t)".ctz" { UNARY (intop t Int32Op.Ctz Int64Op.Ctz) }
+  | (ixx as t)".popcnt" { UNARY (intop t Int32Op.Popcnt Int64Op.Popcnt) }
   | (fxx as t)".neg" { UNARY (floatop t Float32Op.Neg Float64Op.Neg) }
   | (fxx as t)".abs" { UNARY (floatop t Float32Op.Abs Float64Op.Abs) }
   | (fxx as t)".sqrt" { UNARY (floatop t Float32Op.Sqrt Float64Op.Sqrt) }
