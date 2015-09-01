@@ -103,8 +103,8 @@ struct
       | Mul -> Int.mul
       | DivS -> Int.div
       | DivU -> fun i j -> Int.of_big_int_u (unsigned div_big_int i j)
-      | ModS -> Int.rem
-      | ModU -> fun i j -> Int.of_big_int_u (unsigned mod_big_int i j)
+      | RemS -> Int.rem
+      | RemU -> fun i j -> Int.of_big_int_u (unsigned mod_big_int i j)
       | And -> Int.logand
       | Or -> Int.logor
       | Xor -> Int.logxor
