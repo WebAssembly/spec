@@ -3,8 +3,8 @@
     (return
       (divs.i64 (getlocal $i) (getlocal $j))
       (divu.i64 (getlocal $i) (getlocal $j))
-      (mods.i64 (getlocal $i) (getlocal $j))
-      (modu.i64 (getlocal $i) (getlocal $j))
+      (rems.i64 (getlocal $i) (getlocal $j))
+      (remu.i64 (getlocal $i) (getlocal $j))
     )
   )
 

@@ -180,8 +180,8 @@ rule token = parse
   | "mul."(ixx as t) { BINARY (intop t I32.Mul I64.Mul) }
   | "divs."(ixx as t) { BINARY (intop t I32.DivS I64.DivS) }
   | "divu."(ixx as t) { BINARY (intop t I32.DivU I64.DivU) }
-  | "mods."(ixx as t) { BINARY (intop t I32.ModS I64.ModS) }
-  | "modu."(ixx as t) { BINARY (intop t I32.ModU I64.ModU) }
+  | "rems."(ixx as t) { BINARY (intop t I32.RemS I64.RemS) }
+  | "remu."(ixx as t) { BINARY (intop t I32.RemU I64.RemU) }
   | "and."(ixx as t) { BINARY (intop t I32.And I64.And) }
   | "or."(ixx as t) { BINARY (intop t I32.Or I64.Or) }
   | "xor."(ixx as t) { BINARY (intop t I32.Xor I64.Xor) }
