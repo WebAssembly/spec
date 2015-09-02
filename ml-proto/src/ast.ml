@@ -43,7 +43,7 @@ end
 
 module FloatOp () =
 struct
-  type unop = Neg | Abs | Ceil | Floor | Trunc | Round | Sqrt
+  type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
   type binop = Add | Sub | Mul | Div | CopySign
   type relop = Eq | Neq | Lt | Le | Gt | Ge
   type cvt = ToInt32S | ToInt32U | ToInt64S | ToInt64U | ToIntCast
