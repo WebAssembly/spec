@@ -119,11 +119,9 @@ struct
 
   let unop op =
     let f = match op with
-      | Neg -> Int.neg
-      | Abs -> Int.abs
-      | Not -> Int.lognot
       | Clz -> fun i -> i  (* TODO *)
       | Ctz -> fun i -> i  (* TODO *)
+      | Popcnt -> fun i -> i  (* TODO *)
     in fun v -> Int.to_value (f (Int.of_value 1 v))
 
   let binop op =
