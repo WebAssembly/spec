@@ -37,8 +37,9 @@ struct
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
              | And | Or | Xor | Shl | Shr | Sar
   type relop = Eq | Neq | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
-  type cvt = ToInt32S | ToInt32U | ToInt64S | ToInt64U
-           | ToFloat32S | ToFloat32U | ToFloat64S | ToFloat64U | ToFloatCast
+  type cvt = ExtendSInt32 | ExtendUInt32 | WrapInt64
+           | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
+           | ReinterpretFloat
 end
 
 module FloatOp () =
@@ -46,8 +47,9 @@ struct
   type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
   type binop = Add | Sub | Mul | Div | CopySign | Min | Max
   type relop = Eq | Neq | Lt | Le | Gt | Ge
-  type cvt = ToInt32S | ToInt32U | ToInt64S | ToInt64U | ToIntCast
-           | ToFloat32 | ToFloat64
+  type cvt = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
+           | PromoteFloat32 | DemoteFloat64
+           | ReinterpretInt
 end
 
 module Int32Op = IntOp ()
@@ -60,7 +62,7 @@ type binop = (Int32Op.binop, Int64Op.binop, Float32Op.binop, Float64Op.binop) op
 type relop = (Int32Op.relop, Int64Op.relop, Float32Op.relop, Float64Op.relop) op
 type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
 
-type memop = {align : int; mem : Memory.mem_type}
+type memop = {ty : Types.value_type; mem : Memory.mem_type; align : int}
 
 
 (* Expressions *)
@@ -78,7 +80,7 @@ and expr' =
   | Break of var * expr list
   | Switch of value_type * expr * arm list * expr
   | Call of var * expr list
-  | Dispatch of var * expr * expr list
+  | CallIndirect of var * expr * expr list
   | Return of expr list
   | Destruct of var list * expr
   | GetLocal of var

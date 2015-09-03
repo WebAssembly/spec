@@ -1,24 +1,24 @@
 (module
   (func $divmod (param $i i64) (param $j i64) (result i64 i64 i64 i64)
     (return
-      (divs.i64 (getlocal $i) (getlocal $j))
-      (divu.i64 (getlocal $i) (getlocal $j))
-      (rems.i64 (getlocal $i) (getlocal $j))
-      (remu.i64 (getlocal $i) (getlocal $j))
+      (i64.div_s (get_local $i) (get_local $j))
+      (i64.div_u (get_local $i) (get_local $j))
+      (i64.rem_s (get_local $i) (get_local $j))
+      (i64.rem_u (get_local $i) (get_local $j))
     )
   )
 
   (func $compare (param $i i64) (param $j i64) (result i32 i32 i32 i32)
     (return
-      (lts.i64 (getlocal $i) (getlocal $j))
-      (ltu.i64 (getlocal $i) (getlocal $j))
-      (ges.i64 (getlocal $i) (getlocal $j))
-      (geu.i64 (getlocal $i) (getlocal $j))
+      (i64.lt_s (get_local $i) (get_local $j))
+      (i64.lt_u (get_local $i) (get_local $j))
+      (i64.ge_s (get_local $i) (get_local $j))
+      (i64.ge_u (get_local $i) (get_local $j))
     )
   )
 
   (func $cvt_float (param $x f64) (result i32 i64)
-    (return (convertu.f64.i32 (getlocal $x)) (convertu.f64.i64 (getlocal $x)))
+    (return (i32.trunc_u/f64 (get_local $x)) (i64.trunc_u/f64 (get_local $x)))
   )
 
   (export "divmod" $divmod)
@@ -26,50 +26,50 @@
   (export "cvt_float" $cvt_float)
 )
 
-(asserteq
+(assert_eq
   (invoke "divmod"
-    (add.i64 (const.i64 9223372036854775807) (const.i64 2))  ;; max_int64+2
-    (const.i64 1000)
+    (i64.add (i64.const 9223372036854775807) (i64.const 2))  ;; max_int64+2
+    (i64.const 1000)
   )
-  (const.i64 -9223372036854775)  ;; divs
-  (const.i64 9223372036854775)   ;; divu
-  (const.i64 -807)               ;; divs
-  (const.i64 809)                ;; divu
+  (i64.const -9223372036854775)  ;; div_s
+  (i64.const 9223372036854775)   ;; div_u
+  (i64.const -807)               ;; div_s
+  (i64.const 809)                ;; div_u
 )
 
-(asserteq
+(assert_eq
   (invoke "compare"
-    (add.i64 (const.i64 9223372036854775807) (const.i64 1))  ;; max_int64+1
-    (const.i64 9223372036854775807)
+    (i64.add (i64.const 9223372036854775807) (i64.const 1))  ;; max_int64+1
+    (i64.const 9223372036854775807)
   )
-  (const.i32 1)  ;; lts
-  (const.i32 0)  ;; ltu
-  (const.i32 0)  ;; ges
-  (const.i32 1)  ;; geu
+  (i32.const 1)  ;; lt_s
+  (i32.const 0)  ;; lt_u
+  (i32.const 0)  ;; ge_s
+  (i32.const 1)  ;; ge_u
 )
 
-(asserteq (invoke "cvt_float" (const.f64 1e8))
-  (const.i32 100000000) (const.i64 100000000)
+(assert_eq (invoke "cvt_float" (f64.const 1e8))
+  (i32.const 100000000) (i64.const 100000000)
 )
 
-(asserteq (invoke "cvt_float" (const.f64 1e16))
-  (const.i32 0) (const.i64 10000000000000000)
+(assert_eq (invoke "cvt_float" (f64.const 1e16))
+  (i32.const 0) (i64.const 10000000000000000)
 )
 
-(asserteq (invoke "cvt_float" (const.f64 1e30))
-  (const.i32 0) (const.i64 0)
+(assert_eq (invoke "cvt_float" (f64.const 1e30))
+  (i32.const 0) (i64.const 0)
 )
 
-(asserteq (invoke "cvt_float" (const.f64 -1))
-  (const.i32 0) (const.i64 0)
+(assert_eq (invoke "cvt_float" (f64.const -1))
+  (i32.const 0) (i64.const 0)
 )
 
-(asserteq
-  (invoke "cvt_float" (const.f64 4294967295))  ;; max_uint32
-  (const.i32 -1) (const.i64 4294967295)
+(assert_eq
+  (invoke "cvt_float" (f64.const 4294967295))  ;; max_uint32
+  (i32.const -1) (i64.const 4294967295)
 )
 
-(asserteq
-  (invoke "cvt_float" (const.f64 9223372036854775808))  ;; max_int64+1
-  (const.i32 0) (const.i64 -9223372036854775808)
+(assert_eq
+  (invoke "cvt_float" (f64.const 9223372036854775808))  ;; max_int64+1
+  (i32.const 0) (i64.const -9223372036854775808)
 )

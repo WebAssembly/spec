@@ -38,6 +38,9 @@ struct
     | None -> ()
 end
 
-let is_power_of_two x =
-  assert (x >= 0);
-  x <> 0 && (x land (x - 1)) == 0
+module Int =
+struct
+  let is_power_of_two x =
+    if x < 0 then failwith "is_power_of_two";
+    x <> 0 && (x land (x - 1)) = 0
+end

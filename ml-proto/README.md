@@ -114,29 +114,29 @@ The core language is defined in `ast.ml`, and looks as follows:
 type var = int
 
 type expr =
-  | Nop                                 (* do nothing
-  | Block of expr list                  (* execute in sequence
-  | If of expr * expr * expr            (* conditional
-  | Loop of expr                        (* infinite loop
-  | Label of expr                       (* labelled expression
-  | Break of int * expr list            (* break to n-th surrounding label
-  | Switch of expr * arm list * expr    (* switch, latter expr is default
-  | Call of var * expr list             (* call function
-  | Dispatch of var * expr * expr list  (* call function through table
-  | Return of expr list                 (* return 0 to many value
-  | Destruct of var list * expr         (* destructure multi-value into locals
-  | GetParam of var                     (* read parameter
-  | GetLocal of var                     (* read local variable
-  | SetLocal of var * expr              (* write local variable
-  | LoadGlobal of var                   (* read global variable
-  | StoreGlobal of var * expr           (* write global variable
-  | Load of memop * expr                (* read memory address
-  | Store of memop * expr * expr        (* write memory address
-  | Const of value                      (* constant
-  | Unary of unop * expr                (* unary arithmetic operator
-  | Binary of binop * expr * expr       (* binary arithmetic operator
-  | Compare of relop * expr * expr      (* arithmetic comparison
-  | Convert of cvt * expr               (* conversion
+  | Nop                                     (* do nothing
+  | Block of expr list                      (* execute in sequence
+  | If of expr * expr * expr                (* conditional
+  | Loop of expr                            (* infinite loop
+  | Label of expr                           (* labelled expression
+  | Break of int * expr list                (* break to n-th surrounding label
+  | Switch of expr * arm list * expr        (* switch, latter expr is default
+  | Call of var * expr list                 (* call function
+  | CallIndirect of var * expr * expr list  (* call function through table
+  | Return of expr list                     (* return 0 to many value
+  | Destruct of var list * expr             (* destructure multi-value into locals
+  | GetParam of var                         (* read parameter
+  | GetLocal of var                         (* read local variable
+  | SetLocal of var * expr                  (* write local variable
+  | LoadGlobal of var                       (* read global variable
+  | StoreGlobal of var * expr               (* write global variable
+  | Load of memop * expr                    (* read memory address
+  | Store of memop * expr * expr            (* write memory address
+  | Const of value                          (* constant
+  | Unary of unop * expr                    (* unary arithmetic operator
+  | Binary of binop * expr * expr           (* binary arithmetic operator
+  | Compare of relop * expr * expr          (* arithmetic comparison
+  | Convert of cvt * expr                   (* conversion
 
 and arm = {value : value; expr : expr; fallthru : bool}
 ```
@@ -163,38 +163,37 @@ relop: eq | neq | lt | ...
 sign: s|u
 align: 1|2|4|8|...
 memop: (<sign>.)?(<align>.)?
+cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
 expr:
   ( nop )
   ( block <expr>+ )
   ( if <expr> <expr> <expr> )
-  ( if <expr> <expr> )                ;; = (if <expr> <expr> (nop))
-  ( loop <expr>* )                    ;; = (loop (block <expr>*))
-  ( label <name>? <expr>* )           ;; = (label (block <expr>*))
+  ( if <expr> <expr> )                     ;; = (if <expr> <expr> (nop))
+  ( loop <expr>* )                         ;; = (loop (block <expr>*))
+  ( label <name>? <expr>* )                ;; = (label (block <expr>*))
   ( break <var> <expr>* )
-  ( break )                           ;; = (break 0)
-  ( switch.<type> <expr> <case>* <expr> )
+  ( break )                                ;; = (break 0)
+  ( <type>.switch <expr> <case>* <expr> )
   ( call <var> <expr>* )
-  ( dispatch <var> <expr> <expr>* )
+  ( call_indirect <var> <expr> <expr>* )
   ( return <expr>* )
   ( destruct <var>* <expr> )
-  ( getparam <var> )
-  ( getlocal <var> )
-  ( setlocal <var> <expr> )
+  ( get_local <var> )
+  ( set_local <var> <expr> )
   ( load_global <var> )
   ( store_global <var> <expr> )
-  ( load<memop><memtype> <expr> )
-  ( store<memop><memtype> <expr> <expr> )
-  ( const.<type> <num> )
-  ( <unop>.<type> <expr> )
-  ( <binop>.<type> <expr> <expr> )
-  ( <relop>.<type> <expr> <expr> )
-  ( convert(s|u)?.<type>.<type> <expr> )
-  ( cast.<type>.<type> <expr> )
+  ( <type>.load<memop><memtype> <expr> )
+  ( <type>.store<memop><memtype> <expr> <expr> )
+  ( <type>.const <value> )
+  ( <type>.<unop> <expr> )
+  ( <type>.<binop> <expr> <expr> )
+  ( <type>.<relop> <expr> <expr> )
+  ( <type>.<cvtop>/<type> <expr> )
 
 case:
-  ( case <value> <expr>* fallthru? )  ;; = (case <int> (block <expr>*) fallthru?)
-  ( case <value> )                    ;; = (case <int> (nop) fallthru)
+  ( case <value> <expr>* fallthrough? )  ;; = (case <int> (block <expr>*) fallthrough?)
+  ( case <value> )                       ;; = (case <int> (nop) fallthrough)
 
 func:   ( func <name>? <param>* <result>* <local>* <expr>* )
 param:  ( param <type>* ) | ( param <name> <type> )
