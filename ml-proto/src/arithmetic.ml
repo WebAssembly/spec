@@ -196,8 +196,8 @@ struct
       | Mul -> ( *.)
       | Div -> (/.)
       | CopySign -> copysign
-      | Min -> fun _ _ -> 0.0 (* TODO *)
-      | Max -> fun _ _ -> 0.0 (* TODO *)
+      | Min -> min
+      | Max -> max
     in
     fun v1 v2 -> Float.to_value (f (Float.of_value 1 v1) (Float.of_value 2 v2))
 
