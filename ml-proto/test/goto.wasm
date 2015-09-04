@@ -1,0 +1,209 @@
+;; Goto, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+
+(module 
+
+  (func $Program_AddResult
+    (param $result i32) (local $count i32) 
+
+    (block 
+      (setlocal $count (call $Program_get_ResultCount))
+      (storeu.1.i8 
+        (add.i32 
+          (const.i32 0)
+          (getlocal $count)
+        )
+        (getlocal $result)
+      )
+      (call $Program_set_ResultCount (add.i32 
+          (getlocal $count)
+          (const.i32 1)
+        ))
+    )
+  )
+
+  (func $Program_Clear
+    (param $offset i32) (param $count i32) (local $i i32) 
+
+    (block 
+
+      ;; for (var (@<var System.Int32 i> = 0); ...)
+      (setlocal $i (const.i32 0))
+
+      (label $loop_0 
+        (loop 
+          ;; for (...; (@<var System.Int32 i> < @<parameter System.Int32 count>); ...)
+
+          (if 
+            (lts.i32 
+              (getlocal $i)
+              (getlocal $count)
+            )
+            (nop)
+            (break $loop_0)
+          )
+
+          ;; for (...) { 
+          (storeu.1.i8 
+            (add.i32 
+              (getlocal $offset)
+              (getlocal $i)
+            )
+            (const.i32 0)
+          )
+
+          ;; for (...; ...; <!>)
+          (setlocal $i (add.i32 
+              (getlocal $i)
+              (const.i32 1)
+            ))
+        )
+      )
+    )
+  )
+
+  (func $Program_get_ResultCount
+
+    (result i32)
+
+    (return (load_global $Program_ResultCount_value))
+  )
+
+  (func $Program_GetResult
+    (param $index i32) 
+    (result i32)
+
+    (return (loadu.1.i8 (add.i32 
+          (const.i32 0)
+          (getlocal $index)
+        ) ))
+  )
+
+  (func $Program_Gotos
+
+    (block 
+      (call $Program_set_ResultCount (const.i32 0))
+      (call $Program_Clear (const.i32 0) (const.i32 128) )
+      (call $Program_GotosInner )
+    )
+  )
+
+  (func $Program_GotosInner
+    (local $i i32) 
+    (local $currentLabel_0 i32) 
+
+    (block 
+      (setlocal $i (const.i32 0))
+
+      ;; while (<JSBooleanLiteral True>)
+      (label $loop_0 
+        (loop 
+
+          (if 
+            (const.i32 1)
+            (nop)
+            (break $loop_0)
+          )
+
+          ;; while (...) { 
+          (block 
+
+            ;; LabelGroup 0 (starting at IL_03)
+            (setlocal $currentLabel_0 (const.i32 0))
+
+            (label $labelgroup_0 (loop (label $labelgroup_0_dispatch 
+              ;; Begin Label IL_03
+              (if (eq.i32 (getlocal $currentLabel_0) (const.i32 0)) 
+                (block 
+                  (setlocal $i (add.i32 
+                      (getlocal $i)
+                      (const.i32 1)
+                    ))
+                  (call $Program_AddResult (const.i32 1) )
+
+                  (label $loop_1 
+                    (loop 
+                      ;; for (...; (@<var System.Int32 i> < 16); ...)
+
+                      (if 
+                        (lts.i32 
+                          (getlocal $i)
+                          (const.i32 16)
+                        )
+                        (nop)
+                        (break $loop_1)
+                      )
+
+                      ;; for (...) { 
+                      (block 
+
+                        (if 
+                          (eq.i32 
+                            (getlocal $i)
+                            (const.i32 8)
+                          )
+                          ;; goto IL_03
+                          (block (setlocal $currentLabel_0 (const.i32 0)) (break $labelgroup_0_dispatch) )
+                        )
+                        (call $Program_AddResult (const.i32 3) )
+                      )
+
+                      ;; for (...; ...; <!>)
+                      (setlocal $i (add.i32 
+                          (getlocal $i)
+                          (const.i32 1)
+                        ))
+                    )
+                  )
+                  (break $loop_0)
+                )
+
+              )
+              ;; End Label IL_03
+
+              ;; Fallthrough exit from labelgroup 0
+              (break $labelgroup_0)
+              )
+            ))
+          )
+        )
+      )
+    )
+  )
+
+  (func $Program_set_ResultCount
+    (param $value i32) 
+
+    (store_global $Program_ResultCount_value (getlocal $value))
+  )
+
+  (export "get_ResultCount" $Program_get_ResultCount)
+  (export "getResult" $Program_GetResult)
+  (export "gotos" $Program_Gotos)
+  (export "set_ResultCount" $Program_set_ResultCount)
+
+  (global $Program_ResultCount_value i32)
+
+  (memory 1024 1024)
+
+)
+
+
+(invoke "gotos" )
+(asserteq (invoke "get_ResultCount"  ) (const.i32 16) )
+(asserteq (invoke "getResult" (const.i32 0)  ) (const.i32 1) )
+(asserteq (invoke "getResult" (const.i32 1)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 2)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 3)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 4)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 5)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 6)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 7)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 8)  ) (const.i32 1) )
+(asserteq (invoke "getResult" (const.i32 9)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 10)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 11)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 12)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 13)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 14)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 15)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 16)  ) (const.i32 0) )

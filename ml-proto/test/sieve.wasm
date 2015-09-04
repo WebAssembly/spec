@@ -1,0 +1,216 @@
+;; Sieve, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+
+(module 
+
+  (func $Program_AddResult
+    (param $result i32) (local $count i32) 
+
+    (block 
+      (setlocal $count (call $Program_get_ResultCount))
+      (stores.1.i32 
+        (mul.i32 
+          (add.i32 
+            (const.i32 0)
+            (getlocal $count)
+          )
+          (const.i32 4)
+        )
+        (getlocal $result)
+      )
+      (call $Program_set_ResultCount (add.i32 
+          (getlocal $count)
+          (const.i32 1)
+        ))
+    )
+  )
+
+  (func $Program_Clear
+    (param $offset i32) (param $count i32) (local $i i32) 
+
+    (block 
+
+      ;; for (var (@<var System.Int32 i> = 0); ...)
+      (setlocal $i (const.i32 0))
+
+      (label $loop_0 
+        (loop 
+          ;; for (...; (@<var System.Int32 i> < @<parameter System.Int32 count>); ...)
+
+          (if 
+            (lts.i32 
+              (getlocal $i)
+              (getlocal $count)
+            )
+            (nop)
+            (break $loop_0)
+          )
+
+          ;; for (...) { 
+          (storeu.1.i8 
+            (add.i32 
+              (getlocal $offset)
+              (getlocal $i)
+            )
+            (const.i32 0)
+          )
+
+          ;; for (...; ...; <!>)
+          (setlocal $i (add.i32 
+              (getlocal $i)
+              (const.i32 1)
+            ))
+        )
+      )
+    )
+  )
+
+  (func $Program_get_ResultCount
+
+    (result i32)
+
+    (return (load_global $Program_ResultCount_value))
+  )
+
+  (func $Program_GetResult
+    (param $index i32) 
+    (result i32)
+
+    (return (loads.1.i32 (mul.i32 
+          (add.i32 
+            (const.i32 0)
+            (getlocal $index)
+          )
+          (const.i32 4)
+        ) ))
+  )
+
+  (func $Program_set_ResultCount
+    (param $value i32) 
+
+    (store_global $Program_ResultCount_value (getlocal $value))
+  )
+
+  (func $Program_Sieve
+    (param $target i32) (local $squareRoot f64) (local $candidate i32) (local $multiple i32) 
+
+    (block 
+      (call $Program_set_ResultCount (const.i32 0))
+      (call $Program_Clear (const.i32 0) (const.i32 16384) )
+      (call $Program_Clear (const.i32 16388) (getlocal $target) )
+      (setlocal $squareRoot (sqrt.f64 (converts.i32.f64 (getlocal $target)) ))
+      (call $Program_AddResult (const.i32 2) )
+
+      ;; for (var (@<var System.Int32 candidate> = 3); ...)
+      (setlocal $candidate (const.i32 3))
+
+      (label $loop_0 
+        (loop 
+          ;; for (...; (@<var System.Int32 candidate> < @<parameter System.Int32 target>); ...)
+
+          (if 
+            (lts.i32 
+              (getlocal $candidate)
+              (getlocal $target)
+            )
+            (nop)
+            (break $loop_0)
+          )
+
+          ;; for (...) { 
+          (block 
+
+            (if 
+              (eq.i32 
+                (loadu.1.i8 (add.i32 
+                    (const.i32 16388)
+                    (getlocal $candidate)
+                  ) )
+                (const.i32 0)
+              )
+              (block 
+
+                (if 
+                  (lt.f64 
+                    (converts.i32.f64 (getlocal $candidate))
+                    (getlocal $squareRoot)
+                  )
+                  (block 
+
+                    ;; for (var (@<var System.Int32 multiple> = (@<var System.Int32 candidate> * @<var System.Int32 candidate>)); ...)
+                    (setlocal $multiple (mul.i32 
+                        (getlocal $candidate)
+                        (getlocal $candidate)
+                      ))
+
+                    (label $loop_1 
+                      (loop 
+                        ;; for (...; (@<var System.Int32 multiple> < @<parameter System.Int32 target>); ...)
+
+                        (if 
+                          (lts.i32 
+                            (getlocal $multiple)
+                            (getlocal $target)
+                          )
+                          (nop)
+                          (break $loop_1)
+                        )
+
+                        ;; for (...) { 
+                        (storeu.1.i8 
+                          (add.i32 
+                            (const.i32 16388)
+                            (getlocal $multiple)
+                          )
+                          (const.i32 1)
+                        )
+
+                        ;; for (...; ...; <!>)
+                        (setlocal $multiple (add.i32 
+                            (getlocal $multiple)
+                            (mul.i32 
+                              (const.i32 2)
+                              (getlocal $candidate)
+                            )
+                          ))
+                      )
+                    )
+                  )
+                )
+                (call $Program_AddResult (getlocal $candidate) )
+              )
+            )
+          )
+
+          ;; for (...; ...; <!>)
+          (setlocal $candidate (add.i32 
+              (getlocal $candidate)
+              (const.i32 2)
+            ))
+        )
+      )
+    )
+  )
+
+  (export "get_ResultCount" $Program_get_ResultCount)
+  (export "getResult" $Program_GetResult)
+  (export "set_ResultCount" $Program_set_ResultCount)
+  (export "sieve" $Program_Sieve)
+
+  (global $Program_ResultCount_value i32)
+
+  (memory 131072 131072)
+
+)
+
+
+(invoke "sieve" (const.i32 24) )
+(asserteq (invoke "get_ResultCount"  ) (const.i32 9) )
+(asserteq (invoke "getResult" (const.i32 0)  ) (const.i32 2) )
+(asserteq (invoke "getResult" (const.i32 1)  ) (const.i32 3) )
+(asserteq (invoke "getResult" (const.i32 2)  ) (const.i32 5) )
+(asserteq (invoke "getResult" (const.i32 3)  ) (const.i32 7) )
+(asserteq (invoke "getResult" (const.i32 4)  ) (const.i32 11) )
+(asserteq (invoke "getResult" (const.i32 5)  ) (const.i32 13) )
+(asserteq (invoke "getResult" (const.i32 6)  ) (const.i32 17) )
+(asserteq (invoke "getResult" (const.i32 7)  ) (const.i32 19) )
+(asserteq (invoke "getResult" (const.i32 8)  ) (const.i32 23) )
