@@ -305,3 +305,6 @@ let eval e =
   let host = {page_size = 1} in
   let m = {imports = []; exports; tables = []; funcs = [f]; memory; host} in
   eval_func m f []
+
+let memory_for_module m =
+  m.memory

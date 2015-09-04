@@ -50,7 +50,7 @@ type context =
   {funcs : space; imports : space; locals : space; labels : int VarMap.t}
 
 let empty () = {map = VarMap.empty; count = 0}
-let c0 () =
+let empty_context () =
   {funcs = empty (); imports = empty ();
    locals = empty (); labels = VarMap.empty}
 
@@ -99,7 +99,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
 %token PAGESIZE MEMORYSIZE RESIZEMEMORY
-%token ASSERTINVALID ASSERTEQ ASSERTTRAP INVOKE
+%token ASSERTINVALID ASSERTEQ ASSERTTRAP ASSERTHEAPEQ INVOKE
 %token EOF
 
 %token<string> INT
@@ -330,7 +330,7 @@ module_fields :
       | None -> {m with memory = Some $1} }
 ;
 modul :
-  | LPAR MODULE module_fields RPAR { $3 (c0 ()) @@ at() }
+  | LPAR MODULE module_fields RPAR { $3 (empty_context ()) @@ at() }
 ;
 
 
@@ -340,11 +340,13 @@ cmd :
   | modul { Define $1 @@ at() }
   | LPAR ASSERTINVALID modul TEXT RPAR { AssertInvalid ($3, $4) @@ at() }
   | LPAR INVOKE TEXT expr_list RPAR
-    { Invoke ($3, $4 (c0 ())) @@ at() }
+    { Invoke ($3, $4 (empty_context ())) @@ at() }
   | LPAR ASSERTEQ LPAR INVOKE TEXT expr_list RPAR expr RPAR
-    { AssertEq ($5, $6 (c0 ()), $8 (c0 ())) @@ at() }
+    { AssertEq ($5, $6 (empty_context ()), $8 (empty_context ())) @@ at() }
   | LPAR ASSERTTRAP LPAR INVOKE TEXT expr_list RPAR TEXT RPAR
-    { AssertTrap ($5, $6 (c0 ()), $8) @@ at() }
+    { AssertTrap ($5, $6 (empty_context ()), $8) @@ at() }
+  | LPAR ASSERTHEAPEQ INT TEXT RPAR
+    { AssertHeapEq (int_of_string $3, $4) @@ at() }
 ;
 cmd_list :
   | /* empty */ { [] }

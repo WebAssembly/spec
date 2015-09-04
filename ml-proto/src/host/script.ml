@@ -3,6 +3,9 @@
  *)
 
 open Source
+open Types
+open Memory
+open Values
 
 (* Script representation *)
 
@@ -13,6 +16,7 @@ and command' =
   | Invoke of string * Ast.expr list
   | AssertEq of string * Ast.expr list * Ast.expr
   | AssertTrap of string * Ast.expr list * string
+  | AssertHeapEq of int * string
 
 type script = command list
 
@@ -38,7 +42,7 @@ let assert_error f err re at =
   | _ ->
     Error.error at ("expected " ^ err)
 
-let run_command cmd =
+let rec run_command cmd =
   match cmd.it with
   | Define m ->
     trace "Checking...";
@@ -92,6 +96,53 @@ let run_command cmd =
     let vs = eval_args es cmd.at in
     assert_error (fun () -> Eval.invoke m name vs) "trap" re cmd.at
 
+  | AssertHeapEq (offset, expected) ->
+    let m = match !current_module with
+      | Some m -> m
+      | None -> Error.error cmd.at "no module defined to examine heap"
+    in
+    let count = String.length expected in
+    let mem = Eval.memory_for_module m in
+    let actual = memory_as_string mem offset count in
+
+    for i = 0 to count - 1 do
+      let expected_ch = expected.[i] in
+      let actual_ch = actual.[i] in
+
+      if expected_ch <> actual_ch then begin
+        print_string "Result: \"";
+        
+        for j = 0 to count - 1 do
+          let ch = actual.[j] in
+          print_string (Char.escaped ch);
+        done;
+
+        print_string "\"\nExpect: \"";
+
+        for j = 0 to count - 1 do
+          let ch = expected.[j] in
+          print_string (Char.escaped ch);
+        done;
+
+        print_string "\"\n";
+        Error.error cmd.at "heap assertion failed"
+      end
+    done;
+
+and char_at_memory_offset m base offset =
+  let code = match Memory.load m (base + offset) Int8Mem SX with
+    | Int32 i -> Int32.to_int i
+    | _ -> assert false
+  in
+  Char.chr code
+
+and memory_as_string m offset count =
+  let result = Buffer.create count in
+  for i = 0 to count - 1 do
+    Buffer.add_char result (char_at_memory_offset m offset i);
+  done;
+  Buffer.contents result
+
 let dry_command cmd =
   match cmd.it with
   | Define m ->
@@ -101,6 +152,7 @@ let dry_command cmd =
   | Invoke _ -> ()
   | AssertEq _ -> ()
   | AssertTrap _ -> ()
+  | AssertHeapEq _ -> ()
 
 let run script =
   List.iter (if !Flags.dry then dry_command else run_command) script

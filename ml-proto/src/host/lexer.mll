@@ -249,6 +249,7 @@ rule token = parse
   | "assert_invalid" { ASSERTINVALID }
   | "assert_eq" { ASSERTEQ }
   | "assert_trap" { ASSERTTRAP }
+  | "assert_heap_eq" { ASSERTHEAPEQ }
   | "invoke" { INVOKE }
 
   | name as s { VAR s }
