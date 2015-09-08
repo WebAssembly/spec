@@ -1,0 +1,102 @@
+(module
+
+  ;; i64.extend_s/i32
+  (func $i64_extend_s_i32 (param $x i32) (result i64) (i64.extend_s/i32 (get_local $x)))
+  (export "$i64_extend_s_i32" $i64_extend_s_i32)
+
+  ;; i64.extend_u/i32
+  (func $i64_extend_u_i32 (param $x i32) (result i64) (i64.extend_u/i32 (get_local $x)))
+  (export "$i64_extend_u_i32" $i64_extend_u_i32)
+
+  ;; i32.wrap/i64
+  (func $i32_wrap_i64 (param $x i64) (result i32) (i32.wrap/i64 (get_local $x)))
+  (export "$i32_wrap_i64" $i32_wrap_i64)
+
+  ;; i32.trunc_s/f32
+  (func $i32_trunc_s_f32 (param $x f32) (result i32) (i32.trunc_s/f32 (get_local $x)))
+  (export "$i32_trunc_s_f32" $i32_trunc_s_f32)
+
+  ;; i32.trunc_u/f32
+  (func $i32_trunc_u_f32 (param $x f32) (result i32) (i32.trunc_u/f32 (get_local $x)))
+  (export "$i32_trunc_u_f32" $i32_trunc_u_f32)
+
+  ;; i64.trunc_s/f32
+  (func $i64_trunc_s_f32 (param $x f32) (result i64) (i64.trunc_s/f32 (get_local $x)))
+  (export "$i64_trunc_s_f32" $i64_trunc_s_f32)
+
+  ;; i64.trunc_u/f32
+  (func $i64_trunc_u_f32 (param $x f32) (result i64) (i64.trunc_u/f32 (get_local $x)))
+  (export "$i64_trunc_u_f32" $i64_trunc_u_f32)
+)
+
+;; i64.extend_s/i32
+(assert_eq (invoke "$i64_extend_s_i32" (i32.const 0)) (i64.const 0))
+(assert_eq (invoke "$i64_extend_s_i32" (i32.const 10000)) (i64.const 10000))
+(assert_eq (invoke "$i64_extend_s_i32" (i32.const -10000)) (i64.const -10000))
+
+;; i64.extend_u/i32
+(assert_eq (invoke "$i64_extend_u_i32" (i32.const 0)) (i64.const 0))
+(assert_eq (invoke "$i64_extend_u_i32" (i32.const 10000)) (i64.const 10000))
+(assert_eq (invoke "$i64_extend_u_i32" (i32.const -10000)) (i64.const 4294957296)) ;; ffff ffff ffff d8f0
+
+;; i32.wrap/i64
+(assert_eq (invoke "$i32_wrap_i64" (i64.const -1)) (i32.const -1))
+(assert_eq (invoke "$i32_wrap_i64" (i64.const -100000)) (i32.const -100000))
+(assert_eq (invoke "$i32_wrap_i64" (i64.const -2147483648)) (i32.const -2147483648)) ;; ffff ffff 8000 0000
+(assert_eq (invoke "$i32_wrap_i64" (i64.const -2147483649)) (i32.const 2147483647)) ;; ffff ffff 7fff ffff
+(assert_eq (invoke "$i32_wrap_i64" (i64.const -4294967296)) (i32.const 0)) ;; ffff ffff 0000 0000
+(assert_eq (invoke "$i32_wrap_i64" (i64.const -4294967297)) (i32.const -1)) ;; ffff fffe ffff ffff
+(assert_eq (invoke "$i32_wrap_i64" (i64.const -4294967295)) (i32.const 1)) ;; ffff ffff 0000 0001
+(assert_eq (invoke "$i32_wrap_i64" (i64.const 0)) (i32.const 0))
+(assert_eq (invoke "$i32_wrap_i64" (i64.const 1311768467463790320)) (i32.const -1698898192)) ;; 1234 5678 9abc def0
+(assert_eq (invoke "$i32_wrap_i64" (i64.const 4294967295)) (i32.const -1)) ;; 0000 0000 ffff ffff
+(assert_eq (invoke "$i32_wrap_i64" (i64.const 4294967296)) (i32.const 0)) ;; 0000 0001 0000 0000
+(assert_eq (invoke "$i32_wrap_i64" (i64.const 4294967297)) (i32.const 1)) ;; 0000 0001 0000 0001
+
+;; i32.trunc_s/f32
+(assert_eq (invoke "$i32_trunc_s_f32" (f32.const 1.0)) (i32.const 1))
+(assert_eq (invoke "$i32_trunc_s_f32" (f32.const 1.1)) (i32.const 1))
+(assert_eq (invoke "$i32_trunc_s_f32" (f32.const 1.5)) (i32.const 1))
+(assert_eq (invoke "$i32_trunc_s_f32" (f32.const -1.0)) (i32.const -1))
+(assert_eq (invoke "$i32_trunc_s_f32" (f32.const -1.1)) (i32.const -1))
+(assert_eq (invoke "$i32_trunc_s_f32" (f32.const -1.5)) (i32.const -1))
+(assert_eq (invoke "$i32_trunc_s_f32" (f32.const -1.9)) (i32.const -1))
+(assert_eq (invoke "$i32_trunc_s_f32" (f32.const -2.0)) (i32.const -2))
+
+;; i32.trunc_u/f32
+(assert_eq (invoke "$i32_trunc_u_f32" (f32.const 1.0)) (i32.const 1))
+(assert_eq (invoke "$i32_trunc_u_f32" (f32.const 1.1)) (i32.const 1))
+(assert_eq (invoke "$i32_trunc_u_f32" (f32.const 1.5)) (i32.const 1))
+(assert_eq (invoke "$i32_trunc_u_f32" (f32.const 1.9)) (i32.const 1))
+(assert_eq (invoke "$i32_trunc_u_f32" (f32.const 2.0)) (i32.const 2))
+(assert_eq (invoke "$i32_trunc_u_f32" (f32.const 2147483648)) (i32.const -2147483648)) ;; 0x1.00000p+31 -> 8000 0000
+
+;; i64.trunc_s/f32
+(assert_eq (invoke "$i64_trunc_s_f32" (f32.const 1.0)) (i64.const 1))
+(assert_eq (invoke "$i64_trunc_s_f32" (f32.const 1.1)) (i64.const 1))
+(assert_eq (invoke "$i64_trunc_s_f32" (f32.const 1.5)) (i64.const 1))
+(assert_eq (invoke "$i64_trunc_s_f32" (f32.const -1.0)) (i64.const -1))
+(assert_eq (invoke "$i64_trunc_s_f32" (f32.const -1.1)) (i64.const -1))
+(assert_eq (invoke "$i64_trunc_s_f32" (f32.const -1.5)) (i64.const -1))
+(assert_eq (invoke "$i64_trunc_s_f32" (f32.const -1.9)) (i64.const -1))
+(assert_eq (invoke "$i64_trunc_s_f32" (f32.const -2.0)) (i64.const -2))
+(assert_eq (invoke "$i64_trunc_s_f32" (f32.const 4294967296)) (i64.const 4294967296)) ;; 0x1.00000p+32 -> 1 0000 0000
+(assert_eq (invoke "$i64_trunc_s_f32" (f32.const -4294967296)) (i64.const -4294967296)) ;; -0x1.00000p+32 -> ffff ffff 0000 0000
+
+;; i64.trunc_u/f32
+(assert_eq (invoke "$i64_trunc_u_f32" (f32.const 1.0)) (i64.const 1))
+(assert_eq (invoke "$i64_trunc_u_f32" (f32.const 1.1)) (i64.const 1))
+(assert_eq (invoke "$i64_trunc_u_f32" (f32.const 1.5)) (i64.const 1))
+(assert_eq (invoke "$i64_trunc_u_f32" (f32.const 4294967296)) (i64.const 4294967296))
+
+(;
+  todo:
+    fxx.convert_s/ixx
+    fxx.convert_u/ixx
+    f64.promote/f32
+    f32.demote/f64
+    f32.reinterpret/i32
+    f64.reinterpret/i64
+    i32.reinterpret/f32
+    i64.reinterpret/f64
+;)
