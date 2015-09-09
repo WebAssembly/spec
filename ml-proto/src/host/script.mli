@@ -7,7 +7,7 @@ and command' =
   | Define of Ast.modul
   | AssertInvalid of Ast.modul * string
   | Invoke of string * Ast.expr list
-  | AssertEq of string * Ast.expr list * Ast.expr list
+  | AssertEq of string * Ast.expr list * Ast.expr
 
 type script = command list
 

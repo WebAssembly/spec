@@ -34,5 +34,6 @@ let (@@) phrase' region = {at = region; it = phrase'}
 let (@@@) phrase' regions = phrase'@@(span regions)
 
 let it phrase = phrase.it
+let ito o = match o with Some phrase -> (Some phrase.it) | None -> None
 let at phrase = phrase.at
 let ats phrases = span (List.map at phrases)

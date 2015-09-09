@@ -27,6 +27,7 @@ open Values
 (* Types *)
 
 type value_type = Types.value_type Source.phrase
+type expr_type = value_type option
 
 
 (* Operators *)
@@ -77,12 +78,11 @@ and expr' =
   | If of expr * expr * expr
   | Loop of expr
   | Label of expr
-  | Break of var * expr list
+  | Break of var * expr option
   | Switch of value_type * expr * arm list * expr
   | Call of var * expr list
   | CallIndirect of var * expr * expr list
-  | Return of expr list
-  | Destruct of var list * expr
+  | Return of expr option
   | GetLocal of var
   | SetLocal of var * expr
   | LoadGlobal of var
@@ -119,7 +119,7 @@ type func = func' Source.phrase
 and func' =
 {
   params : value_type list;
-  results : value_type list;
+  result : expr_type;
   locals : value_type list;
   body : expr
 }

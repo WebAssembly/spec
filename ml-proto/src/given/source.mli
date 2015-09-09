@@ -20,5 +20,6 @@ val (@@) : 'a -> region -> 'a phrase
 val (@@@) : 'a -> region list -> 'a phrase
 
 val it : 'a phrase -> 'a
+val ito : 'a phrase option -> 'a option
 val at : 'a phrase -> region
 val ats : 'a phrase list -> region

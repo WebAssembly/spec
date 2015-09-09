@@ -12,8 +12,8 @@ open Printf
 open Types
 
 let func_type f =
-  let {Ast.params; results; _} = f.it in
-  {ins = List.map Source.it params; outs = List.map Source.it results}
+  let {Ast.params; result; _} = f.it in
+  {ins = List.map Source.it params; out = ito result}
 
 let string_of_table_type = function
   | None -> "()"
@@ -65,9 +65,14 @@ let print_module_sig m =
   flush_all ()
 
 
-let print_values vs =
-  let ts = List.map Values.type_of vs in
-  printf "%s : %s\n"
-    (Values.string_of_values vs) (Types.string_of_expr_type ts);
-  flush_all ()
+let print_value vo =
+  match vo with
+  | Some v ->
+      let t = Values.type_of v in
+      printf "%s : %s\n"
+        (Values.string_of_value v) (Types.string_of_value_type t);
+      flush_all ()
+  | None ->
+      printf "()";
+      flush_all ()
 

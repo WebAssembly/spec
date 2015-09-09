@@ -131,7 +131,6 @@ rule token = parse
   | "call" { CALL }
   | "call_indirect" { CALLINDIRECT }
   | "return" { RETURN }
-  | "destruct" { DESTRUCT }
 
   | "get_local" { GETLOCAL }
   | "set_local" { SETLOCAL }
