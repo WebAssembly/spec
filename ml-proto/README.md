@@ -120,6 +120,7 @@ type expr =
   | Break of int * expr option              (* break to n-th surrounding label
   | Switch of expr * arm list * expr        (* switch, latter expr is default
   | Call of var * expr list                 (* call function
+  | CallImport of var * expr list           (* call imported function
   | CallIndirect of var * expr * expr list  (* call function through table
   | Return of expr option                   (* return 0 to many value
   | GetParam of var                         (* read parameter
@@ -171,6 +172,7 @@ expr:
   ( break )                                ;; = (break 0)
   ( <type>.switch <expr> <case>* <expr> )
   ( call <var> <expr>* )
+  ( call_import <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
   ( return <expr>? )
   ( get_local <var> )
@@ -194,7 +196,8 @@ param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type> )
 local:  ( local <type>* ) | ( local <name> <type> )
 
-module: ( module <func>* <global>* <export>* <table>* <memory>? <data>* )
+module: ( module <func>* <global>* <import>* <export>* <table>* <memory>? <data>* )
+import: ( import <name>? "<module_name>" "<func_name>" (param <type>* ) (result <type>)* )
 export: ( export "<char>*" <var> )
 global: ( global <type>* ) | ( global <name> <type> )
 table:  ( table <var>* )

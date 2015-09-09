@@ -39,7 +39,8 @@ let run_command cmd =
       Print.print_module_sig m
     end;
     trace "Initializing...";
-    current_module := Some (Eval.init m)
+    let imports = Builtins.match_imports m.it.Ast.imports in
+    current_module := Some (Eval.init m imports)
 
   | AssertInvalid (m, re) ->
     trace "Checking invalid...";

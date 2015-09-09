@@ -18,6 +18,7 @@ let require b at s = if not b then error at s
 type context =
 {
   funcs : func_type list;
+  imports : func_type list;
   globals : value_type list;
   tables : func_type list;
   locals : value_type list;
@@ -26,7 +27,7 @@ type context =
 }
 
 let c0 =
-  {funcs = []; globals = []; tables = [];
+  {funcs = []; imports = []; globals = []; tables = [];
    locals = []; return = None; labels = []}
 
 let lookup category list x =
@@ -34,6 +35,7 @@ let lookup category list x =
     error x.at ("unknown " ^ category ^ " " ^ string_of_int x.it)
 
 let func c x = lookup "function" c.funcs x
+let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
 let global c x = lookup "global" c.globals x
 let table c x = lookup "table" c.tables x
@@ -108,6 +110,10 @@ let type_func f =
   let {params; result; _} = f.it in
   {ins = List.map it params; out = Lib.Option.map it result}
 
+let type_import f =
+  let {func_params; func_result; _} = f.it in
+  {ins = List.map it func_params; out = ito func_result}
+
 
 (* Type Analysis *)
 
@@ -158,6 +164,11 @@ let rec check_expr c et e =
 
   | Call (x, es) ->
     let {ins; out} = func c x in
+    check_exprs c ins es;
+    check_type out et e.at
+
+  | CallImport (x, es) ->
+    let {ins; out} = import c x in
     check_exprs c ins es;
     check_type out et e.at
 
@@ -303,9 +314,10 @@ let check_memory memory =
   ignore (List.fold_left (check_segment memory.it.initial) 0 memory.it.segments)
 
 let check_module m =
-  let {funcs; exports; tables; globals; memory} = m.it in
+  let {imports; exports; globals; tables; funcs; memory} = m.it in
   Lib.Option.app check_memory memory;
   let c = {c0 with funcs = List.map type_func funcs;
+                 imports = List.map type_import imports;
                  globals = List.map it globals} in
   let c' = List.fold_left check_table c tables in
   List.iter (check_func c') funcs;

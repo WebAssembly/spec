@@ -48,12 +48,14 @@ module VarMap = Map.Make(String)
 type space = {mutable map : int VarMap.t; mutable count : int}
 
 type context =
-  {funcs : space; globals : space; locals : space; labels : int VarMap.t}
+  {funcs : space; imports : space; globals : space; locals : space;
+   labels : int VarMap.t}
 
 let empty () = {map = VarMap.empty; count = 0}
 let c0 () =
-  {funcs = empty (); globals = empty ();
-   locals = empty (); labels = VarMap.empty}
+  {funcs = empty (); imports = empty();
+   globals = empty (); locals = empty ();
+   labels = VarMap.empty}
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
@@ -64,6 +66,7 @@ let lookup category space x =
   with Not_found -> Error.error x.at ("unknown " ^ category ^ " " ^ x.it)
 
 let func c x = lookup "function" c.funcs x
+let import c x = lookup "import" c.imports x
 let global c x = lookup "global" c.globals x
 let local c x = lookup "local" c.locals x
 let table c x = lookup "table" (empty ()) x
@@ -78,6 +81,7 @@ let bind category space x =
   space.count <- space.count + 1
 
 let bind_func c x = bind "function" c.funcs x
+let bind_import c x = bind "import" c.imports x
 let bind_global c x = bind "global" c.globals x
 let bind_local c x = bind "local" c.locals x
 let bind_label c x =
@@ -88,6 +92,7 @@ let bind_label c x =
 let anon space n = space.count <- space.count + n
 
 let anon_func c = anon c.funcs 1
+let anon_import c = anon c.imports 1
 let anon_globals c ts = anon c.globals (List.length ts)
 let anon_locals c ts = anon c.locals (List.length ts)
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
@@ -95,7 +100,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 %token INT FLOAT TEXT VAR TYPE LPAR RPAR
 %token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
-%token CALL CALLINDIRECT RETURN
+%token CALL CALLIMPORT CALLINDIRECT RETURN
 %token GETLOCAL SETLOCAL LOADGLOBAL STOREGLOBAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT GLOBAL IMPORT EXPORT TABLE
@@ -171,6 +176,7 @@ oper :
       fun c -> let x, y = $3 c in
         Switch ($1 @@ at1, $2 c, List.map (fun a -> a $1) x, y) }
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
+  | CALLIMPORT var expr_list { fun c -> CallImport ($2 c import, $3 c) }
   | CALLINDIRECT var expr expr_list
     { fun c -> CallIndirect ($2 c table, $3 c, $4 c) }
   | RETURN expr_opt { fun c -> Return ($2 c) }
@@ -277,6 +283,24 @@ memory :
         @@ at() }
 ;
 
+func_params :
+  | LPAR PARAM value_type_list RPAR { $3 }
+;
+func_result :
+  | /* empty */ { None }
+  | LPAR RESULT value_type RPAR { Some $3 }
+;
+import :
+  | LPAR IMPORT bind_var TEXT TEXT func_params func_result RPAR
+    { let at = at() in fun c -> bind_import c $3;
+      {module_name = $4; func_name = $5; func_params = $6; func_result = $7 }
+        @@ at }
+  | LPAR IMPORT TEXT TEXT func_params func_result RPAR  /* Sugar */
+    { let at = at() in fun c -> anon_import c;
+      {module_name = $3; func_name = $4; func_params = $5; func_result = $6 }
+        @@ at }
+;
+
 export :
   | LPAR EXPORT TEXT var RPAR
     { let at = at() in fun c -> {name = $3; func = $4 c func} @@ at }
@@ -285,10 +309,14 @@ export :
 module_fields :
   | /* empty */
     { fun c ->
-      {memory = None; funcs = []; exports = []; globals = []; tables = []} }
+      { imports = []; exports = []; globals = []; tables = []; funcs = [];
+        memory = None;} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in
       {m with funcs = f () :: m.funcs} }
+  | import module_fields
+    { fun c -> let i = $1 c in let m = $2 c in
+      {m with imports = i :: m.imports} }
   | export module_fields
     { fun c -> let m = $2 c in
       {m with exports = $1 c :: m.exports} }
