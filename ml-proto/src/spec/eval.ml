@@ -17,7 +17,7 @@ type func = Ast.func
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
 
-type module_instance =
+type instance =
 {
   funcs : func list;
   exports : export_map;
@@ -33,7 +33,7 @@ type label = value list -> exn
 
 type config =
 {
-  modul : module_instance;
+  modul : instance;
   locals : value ref list;
   labels : label list;
   return : label

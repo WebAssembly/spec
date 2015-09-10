@@ -2,10 +2,10 @@
  * (c) 2015 Andreas Rossberg
  *)
 
-type module_instance
+type instance
 type value = Values.value
 
-val init : Ast.modul -> module_instance
-val invoke : module_instance -> string -> value list -> value list
+val init : Ast.modul -> instance
+val invoke : instance -> string -> value list -> value list
   (* raise Error.Error *)
 val eval : Ast.expr -> value (* raise Error.Error *)

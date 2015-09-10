@@ -20,7 +20,7 @@ type script = command list
 
 let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 
-let current_module : Eval.module_instance option ref = ref None
+let current_module : Eval.instance option ref = ref None
 
 let run_command cmd =
   match cmd.it with
