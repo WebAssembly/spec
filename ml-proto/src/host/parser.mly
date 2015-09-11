@@ -113,8 +113,8 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<Ast.binop> BINARY
 %token<Ast.relop> COMPARE
 %token<Ast.cvt> CONVERT
-%token<Ast.memop> LOAD
-%token<Ast.memop> STORE
+%token<Ast.loadop> LOAD
+%token<Ast.storeop> STORE
 
 %start script
 %type<Script.script> script
