@@ -160,7 +160,7 @@ let rec eval_expr c e =
   | StoreGlobal (x, e1) ->
     let v1 = unary (eval_expr c e1) e1.at in
     global c x := v1;
-    []
+    [v1]
 
   | Load ({mem; ty; _}, e1) ->
     let v1 = unary (eval_expr c e1) e1.at in

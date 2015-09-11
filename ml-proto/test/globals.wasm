@@ -22,9 +22,9 @@
 )
 
 (assert_eq (invoke "storeandload" (i32.const 25)) (i32.const 25))
-(invoke "sx0" (i32.const 10))
+(assert_eq (invoke "sx0" (i32.const 10)) (i32.const 10))
 (assert_eq (invoke "gx0") (i32.const 10))
 
-(invoke "sx1" (i32.const 12))
+(assert_eq (invoke "sx1" (i32.const 12)) (i32.const 12))
 (assert_eq (invoke "gx1") (i32.const 12))
 (assert_eq (invoke "gx0") (i32.const 10))
