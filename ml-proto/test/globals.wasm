@@ -1,0 +1,30 @@
+(module
+   (global $rx0 i32)
+   (global $rx1 i32)
+
+   (func $gx0 (load_global $rx0))
+   (func $sx0 (param i32) (store_global $rx0 (get_local 0)))
+
+   (func $gx1 (load_global $rx1))
+   (func $sx1 (param i32) (store_global $rx1 (get_local 0)))
+
+   (func $storeandload (param i32)
+    (call $sx0 (get_local 0))
+    (call $gx0))
+
+   (export "gx0" $gx0)
+   (export "sx0" $sx0)
+
+   (export "gx1" $gx1)
+   (export "sx1" $sx1)
+
+   (export "storeandload" $storeandload)
+)
+
+(assert_eq (invoke "storeandload" (i32.const 25)) (i32.const 25))
+(invoke "sx0" (i32.const 10))
+(assert_eq (invoke "gx0") (i32.const 10))
+
+(invoke "sx1" (i32.const 12))
+(assert_eq (invoke "gx1") (i32.const 12))
+(assert_eq (invoke "gx0") (i32.const 10))
