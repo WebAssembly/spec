@@ -12,11 +12,23 @@
     (call $sx0 (get_local 0))
     (call $gx0))
 
+   (func $lssg (param i32) (result i32)
+    (local $l1 i32) 
+    (local $l2 i32) 
+
+    (set_local $l1 (set_local $l2 (get_local 0))))
+
+   (func $gssg (param i32) (result i32)
+    (store_global $rx0 (store_global $rx1 (get_local 0))))
+
    (export "gx0" $gx0)
    (export "sx0" $sx0)
 
    (export "gx1" $gx1)
    (export "sx1" $sx1)
+
+   (export "localsetsetget" $lssg)
+   (export "globalsetsetget" $gssg)
 
    (export "storeandload" $storeandload)
 )
@@ -28,3 +40,5 @@
 (assert_eq (invoke "sx1" (i32.const 12)) (i32.const 12))
 (assert_eq (invoke "gx1") (i32.const 12))
 (assert_eq (invoke "gx0") (i32.const 10))
+(assert_eq (invoke "localsetsetget" (i32.const 13)) (i32.const 13))
+(assert_eq (invoke "globalsetsetget" (i32.const 14)) (i32.const 14))
