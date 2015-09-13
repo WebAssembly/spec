@@ -186,7 +186,7 @@ let rec check_expr c ts e =
 
   | StoreGlobal (x, e1) ->
     check_expr c [global c x] e1;
-    check_type [] ts e.at
+    check_type [global c x] ts e.at
 
   | Load (memop, e1) ->
     check_memop memop e.at;
