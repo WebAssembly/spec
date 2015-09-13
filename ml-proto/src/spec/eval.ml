@@ -172,7 +172,7 @@ let rec eval_expr c e =
     let v2 = unary (eval_expr c e2) e2.at in
     (try Memory.store c.modul.memory (Memory.address_of_value v1) mem v2
     with exn -> memory_error e.at exn);
-    []
+    [v2]
 
   | Const v ->
     [v.it]

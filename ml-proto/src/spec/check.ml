@@ -197,7 +197,7 @@ let rec check_expr c ts e =
     check_memop memop e.at;
     check_expr c [Int32Type] e1;
     check_expr c [memop.ty] e2;
-    check_type [] ts e.at
+    check_type [memop.ty] ts e.at
 
   | Const v ->
     check_literal c ts v
