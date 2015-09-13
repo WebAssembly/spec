@@ -1,0 +1,11 @@
+(module 
+ (memory 1024)
+
+ (func $store-i32 (param $v i32) (result i32)
+  (i32.store/i32 (i32.const 4) (get_local $v)))
+
+ (export "store-i32" $store-i32))
+
+(assert_eq (invoke "store-i32" (i32.const 42)) (i32.const 42))
+
+

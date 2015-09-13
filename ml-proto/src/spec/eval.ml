@@ -152,7 +152,7 @@ let rec eval_expr c e =
   | SetLocal (x, e1) ->
     let v1 = unary (eval_expr c e1) e1.at in
     local c x := v1;
-    []
+    [v1]
 
   | LoadGlobal x ->
     [!(global c x)]
@@ -160,7 +160,7 @@ let rec eval_expr c e =
   | StoreGlobal (x, e1) ->
     let v1 = unary (eval_expr c e1) e1.at in
     global c x := v1;
-    []
+    [v1]
 
   | Load ({mem; ty; _}, e1) ->
     let v1 = unary (eval_expr c e1) e1.at in
@@ -172,7 +172,7 @@ let rec eval_expr c e =
     let v2 = unary (eval_expr c e2) e2.at in
     (try Memory.store c.modul.memory (Memory.address_of_value v1) mem v2
     with exn -> memory_error e.at exn);
-    []
+    [v2]
 
   | Const v ->
     [v.it]

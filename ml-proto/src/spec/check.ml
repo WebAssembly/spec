@@ -179,14 +179,14 @@ let rec check_expr c ts e =
 
   | SetLocal (x, e1) ->
     check_expr c [local c x] e1;
-    check_type [] ts e.at
+    check_type [local c x] ts e.at
 
   | LoadGlobal x ->
     check_type [global c x] ts e.at
 
   | StoreGlobal (x, e1) ->
     check_expr c [global c x] e1;
-    check_type [] ts e.at
+    check_type [global c x] ts e.at
 
   | Load (memop, e1) ->
     check_memop memop e.at;
@@ -197,7 +197,7 @@ let rec check_expr c ts e =
     check_memop memop e.at;
     check_expr c [Int32Type] e1;
     check_expr c [memop.ty] e2;
-    check_type [] ts e.at
+    check_type [memop.ty] ts e.at
 
   | Const v ->
     check_literal c ts v
