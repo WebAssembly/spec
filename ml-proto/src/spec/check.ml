@@ -179,7 +179,7 @@ let rec check_expr c ts e =
 
   | SetLocal (x, e1) ->
     check_expr c [local c x] e1;
-    check_type [] ts e.at
+    check_type [local c x] ts e.at
 
   | LoadGlobal x ->
     check_type [global c x] ts e.at

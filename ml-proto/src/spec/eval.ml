@@ -152,7 +152,7 @@ let rec eval_expr c e =
   | SetLocal (x, e1) ->
     let v1 = unary (eval_expr c e1) e1.at in
     local c x := v1;
-    []
+    [v1]
 
   | LoadGlobal x ->
     [!(global c x)]
