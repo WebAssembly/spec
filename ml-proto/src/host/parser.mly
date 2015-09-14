@@ -164,9 +164,8 @@ oper :
   | LABEL expr_block { fun c -> Label ($2 (anon_label c)) }
   | LABEL bind_var expr_block  /* Sugar */
     { fun c -> Label ($3 (bind_label c $2)) }
-  | BREAK var expr { fun c -> Break ($2 c label, Some ($3 c)) }
-  | BREAK var { fun c -> Break ($2 c label, None) }
-  | BREAK { let at = at() in fun c -> Break (0 @@ at, None) }
+  | BREAK var expr_opt { fun c -> Break ($2 c label, $3 c) }
+  | BREAK { let at = at() in fun c -> Break (0 @@ at, None) }  /* Sugar */
   | SWITCH expr arms
     { let at1 = ati 1 in
       fun c -> let x, y = $3 c in
@@ -174,8 +173,7 @@ oper :
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | CALLINDIRECT var expr expr_list
     { fun c -> CallIndirect ($2 c table, $3 c, $4 c) }
-  | RETURN expr { fun c -> Return (Some ($2 c)) }
-  | RETURN { fun c -> Return None }
+  | RETURN expr_opt { fun c -> Return ($2 c) }
   | GETLOCAL var { fun c -> GetLocal ($2 c local) }
   | SETLOCAL var expr { fun c -> SetLocal ($2 c local, $3 c) }
   | LOADGLOBAL var { fun c -> LoadGlobal ($2 c global) }
@@ -187,6 +185,10 @@ oper :
   | BINARY expr expr { fun c -> Binary ($1, $2 c, $3 c) }
   | COMPARE expr expr { fun c -> Compare ($1, $2 c, $3 c) }
   | CONVERT expr { fun c -> Convert ($1, $2 c) }
+;
+expr_opt :
+  | /* empty */ { fun c -> None }
+  | expr { fun c -> Some ($1 c) }
 ;
 expr_list :
   | /* empty */ { fun c -> [] }

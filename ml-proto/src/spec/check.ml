@@ -106,7 +106,7 @@ let type_cvt at = function
 
 let type_func f =
   let {params; result; _} = f.it in
-  {ins = List.map it params; out = ito result}
+  {ins = List.map it params; out = Lib.Option.map it result}
 
 
 (* Type Analysis *)
@@ -268,8 +268,8 @@ and check_memop {ty; mem; align} at =
 let check_func c f =
   let {params; result; locals; body = e} = f.it in
   let c' = {c with locals = List.map it params @ List.map it locals;
-                   return = ito result} in
-  check_expr c' (ito result) e
+                   return = Lib.Option.map it result} in
+  check_expr c' (Lib.Option.map it result) e
 
 let check_table c tab =
   match tab.it with

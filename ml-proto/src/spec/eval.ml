@@ -12,7 +12,6 @@ let error = Error.error
 (* Module Instances *)
 
 type value = Values.value
-type expr_value = value option
 type func = Ast.func
 
 module ExportMap = Map.Make(String)
@@ -30,7 +29,7 @@ type instance =
 
 (* Configurations *)
 
-type label = expr_value -> exn
+type label = value option -> exn
 
 type config =
 {
@@ -57,7 +56,7 @@ let export m x =
 
 module MakeLabel () =
 struct
-  exception Label of expr_value
+  exception Label of value option
   let label v = Label v
 end
 
@@ -93,7 +92,7 @@ let int32 v at =
  *   e  : expr
  *   eo : expr option
  *   v  : value
- *   ev : expr_value
+ *   ev : value option
  *)
 
 let rec eval_expr (c : config) (e : expr) =
@@ -130,13 +129,13 @@ let rec eval_expr (c : config) (e : expr) =
     )
 
   | Call (x, es) ->
-    let vs = List.map (eval_expr c) es in
-    eval_func c.modul (func c x) vs e.at
+    let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
+    eval_func c.modul (func c x) vs
 
   | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
-    let vs = List.map (eval_expr c) es in
-    eval_func c.modul (table c x (Int32.to_int i @@ e1.at)) vs e.at
+    let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
+    eval_func c.modul (table c x (Int32.to_int i @@ e1.at)) vs
 
   | Return eo ->
     raise (c.return (eval_expr_option c eo))
@@ -216,9 +215,9 @@ and eval_arm c ev stage arm =
 and eval_decl t =
   ref (default_value t.it)
 
-and eval_func (m : instance) (f : func) (evs : expr_value list) (at : region) =
+and eval_func (m : instance) (f : func) (evs : value list) =
   let module Return = MakeLabel () in
-  let args = List.map (fun ev -> ref (some ev at)) evs in
+  let args = List.map (fun v -> ref v) evs in
   let vars = List.map eval_decl f.it.locals in
   let locals = args @ vars in
   let c = {modul = m; locals; labels = []; return = Return.label} in
@@ -246,13 +245,12 @@ let init m =
   {funcs; exports; tables; globals; memory = mem}
 
 let invoke m name vs =
-  let evs = List.map (fun v -> Some v) vs in
   let f = export m (name @@ no_region) in
-  eval_func m f evs no_region
+  eval_func m f vs
 
 let eval e =
   let f = {params = []; result = None; locals = []; body = e} @@ no_region in
   let memory = Memory.create 0 in
   let exports = ExportMap.singleton "eval" f in
   let m = {funcs = [f]; exports; tables = []; globals = []; memory} in
-  eval_func m f [] e.at
+  eval_func m f []

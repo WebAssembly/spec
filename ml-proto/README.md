@@ -117,11 +117,11 @@ type expr =
   | If of expr * expr * expr                (* conditional
   | Loop of expr                            (* infinite loop
   | Label of expr                           (* labelled expression
-  | Break of int * expr                     (* break to n-th surrounding label
+  | Break of int * expr option              (* break to n-th surrounding label
   | Switch of expr * arm list * expr        (* switch, latter expr is default
   | Call of var * expr list                 (* call function
   | CallIndirect of var * expr * expr list  (* call function through table
-  | Return of expr                          (* return 0 to many value
+  | Return of expr option                   (* return 0 to many value
   | GetParam of var                         (* read parameter
   | GetLocal of var                         (* read local variable
   | SetLocal of var * expr                  (* write local variable
@@ -167,12 +167,12 @@ expr:
   ( if <expr> <expr> )                     ;; = (if <expr> <expr> (nop))
   ( loop <expr>* )                         ;; = (loop (block <expr>*))
   ( label <name>? <expr>* )                ;; = (label (block <expr>*))
-  ( break <var> <expr> )
+  ( break <var> <expr>? )
   ( break )                                ;; = (break 0)
   ( <type>.switch <expr> <case>* <expr> )
   ( call <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
-  ( return <expr> )
+  ( return <expr>? )
   ( get_local <var> )
   ( set_local <var> <expr> )
   ( load_global <var> )
