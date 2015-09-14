@@ -86,21 +86,51 @@ end
 
 module type FLOAT =
 sig
+  type t
+  type bits
+  val of_float : float -> t
+  val to_float : t -> float
+  val of_string : string -> t
+  val to_string : t -> string
+  val of_bits : bits -> t
+  val to_bits : t -> bits
+  val add : t -> t -> t
+  val sub : t -> t -> t
+  val mul : t -> t -> t
+  val div : t -> t -> t
+  val sqrt : t -> t
+  val min : t -> t -> t
+  val max : t -> t -> t
+  val ceil : t -> t
+  val floor : t -> t
+  val trunc : t -> t
+  val nearest : t -> t
+  val abs : t -> t
+  val neg : t -> t
+  val copysign : t -> t -> t
+  val eq : t -> t -> bool
+  val ne : t -> t -> bool
+  val lt : t -> t -> bool
+  val le : t -> t -> bool
+  val gt : t -> t -> bool
+  val ge : t -> t -> bool
   val size : int
-  val of_value : int -> value -> float
-  val to_value : float -> value
+  val of_value : int -> value -> t
+  val to_value : t -> value
 end
 
 module Float32X =
 struct
+  include Float32
   let size = 32
-  let to_value z = Float32 (float32 z)
+  let to_value z = Float32 z
   let of_value n =
     function Float32 z -> z | v -> raise (TypeError (n, v, Float32Type))
 end
 
 module Float64X =
 struct
+  include Float64
   let size = 64
   let to_value z = Float64 z
   let of_value n =
@@ -167,14 +197,14 @@ struct
       | ExtendUInt32 -> fun v ->
         Int.of_big_int_u (Int32X.to_big_int_u (Int32X.of_value 1 v))
       | WrapInt64 -> fun v -> Int.of_int64 (Int64X.of_value 1 v)
-      | TruncSFloat32 -> fun v -> Int.of_float (Float32X.of_value 1 v)
-      | TruncUFloat32 -> fun v -> of_float_u (Float32X.of_value 1 v)
-      | TruncSFloat64 -> fun v -> Int.of_float (Float64X.of_value 1 v)
-      | TruncUFloat64 -> fun v -> of_float_u (Float64X.of_value 1 v)
+      | TruncSFloat32 -> fun v -> Int.of_float (Float32.to_float (Float32X.of_value 1 v))
+      | TruncUFloat32 -> fun v -> of_float_u (Float32.to_float (Float32X.of_value 1 v))
+      | TruncSFloat64 -> fun v -> Int.of_float (Float64.to_float (Float64X.of_value 1 v))
+      | TruncUFloat64 -> fun v -> of_float_u (Float64.to_float (Float64X.of_value 1 v))
       | ReinterpretFloat -> fun v ->
         if Int.size = 32
-        then Int.bits_of_float (Float32X.of_value 1 v)
-        else Int.bits_of_float (Float64X.of_value 1 v)
+        then Int.bits_of_float (Float32.to_float (Float32X.of_value 1 v))
+        else Int.bits_of_float (Float64.to_float (Float64X.of_value 1 v))
     in fun v -> Int.to_value (f v)
 end
 
@@ -190,35 +220,35 @@ struct
 
   let unop op =
     let f = match op with
-      | Neg -> (~-.)
-      | Abs -> abs_float
-      | Sqrt  -> sqrt
-      | Ceil -> ceil
-      | Floor -> floor
-      | Trunc -> fun _ -> 0.0  (* TODO *)
-      | Nearest -> fun _ -> 0.0  (* TODO *)
+      | Neg -> Float.neg
+      | Abs -> Float.abs
+      | Sqrt  -> Float.sqrt
+      | Ceil -> Float.ceil
+      | Floor -> Float.floor
+      | Trunc -> Float.trunc
+      | Nearest -> Float.nearest
     in fun v -> Float.to_value (f (Float.of_value 1 v))
 
   let binop op =
     let f = match op with
-      | Add -> (+.)
-      | Sub -> (-.)
-      | Mul -> ( *.)
-      | Div -> (/.)
-      | Min -> min
-      | Max -> max
-      | CopySign -> copysign
+      | Add -> Float.add
+      | Sub -> Float.sub
+      | Mul -> Float.mul
+      | Div -> Float.div
+      | Min -> Float.min
+      | Max -> Float.max
+      | CopySign -> Float.copysign
     in
     fun v1 v2 -> Float.to_value (f (Float.of_value 1 v1) (Float.of_value 2 v2))
 
   let relop op =
     let f = match op with
-      | Eq -> (=)
-      | Ne -> (<>)
-      | Lt -> (<)
-      | Le -> (<=)
-      | Gt -> (>)
-      | Ge -> (>=)
+      | Eq -> Float.eq
+      | Ne -> Float.ne
+      | Lt -> Float.lt
+      | Le -> Float.le
+      | Gt -> Float.gt
+      | Ge -> Float.ge
     in fun v1 v2 -> f (Float.of_value 1 v1) (Float.of_value 2 v2)
 
   let cvt op =
@@ -229,13 +259,13 @@ struct
       | ConvertSInt64 -> fun v -> Int64.to_float (Int64X.of_value 1 v)
       | ConvertUInt64 -> fun v ->
         Big_int.float_of_big_int (Int64X.to_big_int_u (Int64X.of_value 1 v))
-      | PromoteFloat32 -> fun v -> Float32X.of_value 1 v
-      | DemoteFloat64 -> fun v -> Float64X.of_value 1 v
+      | PromoteFloat32 -> fun v -> (Float32.to_float (Float32X.of_value 1 v))
+      | DemoteFloat64 -> fun v -> (Float64.to_float (Float64X.of_value 1 v))
       | ReinterpretInt -> fun v ->
         if Float.size = 32
         then Int32.float_of_bits (Int32X.of_value 1 v)
         else Int64.float_of_bits (Int64X.of_value 1 v)
-    in fun v -> Float.to_value (f v)
+    in fun v -> (Float.to_value (Float.of_float (f v)))
 end
 
 module Float32Op = FloatOp (Ast.Float32Op) (Float32X)
