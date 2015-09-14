@@ -60,27 +60,32 @@ let floatop t f32 f64 =
   | "f64" -> Values.Float64 f64
   | _ -> assert false
 
-let mem_type t sign memty =
+let mem_type mty =
   let open Memory in
-  match t, sign, memty with
-  | ("i32" | "i64"), 's', "i8" -> SInt8Mem
-  | ("i32" | "i64"), 's', "i16" -> SInt16Mem
-  | ("i32" | "i64"), 's', "i32" -> SInt32Mem
-  | "i64", 's', "i64" -> SInt64Mem
-  | ("i32" | "i64"), 'u', "i8" -> UInt8Mem
-  | ("i32" | "i64"), 'u', "i16" -> UInt16Mem
-  | ("i32" | "i64"), 'u', "i32" -> UInt32Mem
-  | "i64", 'u', "i64" -> UInt64Mem
-  | "f32", ' ', "f32" -> Float32Mem
-  | "f64", ' ', "f64" -> Float64Mem
+  match mty with
+  | "i8" -> Int8Mem
+  | "i16" -> Int16Mem
+  | "i32" -> Int32Mem
+  | "i64" -> Int64Mem
+  | "f32" -> Float32Mem
+  | "f64" -> Float64Mem
   | _ -> assert false
 
-let memop ty sign memsize a =
-  let memty = mem_type ty sign memsize in
-  let align = if a = "" then Memory.mem_size memty else int_of_string a in
-  {ty = value_type ty; mem = memty; align}
-}
+let loadop t sign a =
+  let mem = mem_type t in
+  let ext = match sign with
+    | ' ' -> Memory.NX
+    | 's' -> Memory.SX
+    | 'u' -> Memory.ZX
+    | _ -> assert false in
+  let align = if a = "" then Memory.mem_size mem else int_of_string a in
+  {mem; ext; align}
 
+let storeop t a =
+  let mem = mem_type t in
+  let align = if a = "" then Memory.mem_size mem else int_of_string a in
+  {mem; align}
+}
 
 let space = [' ''\t']
 let digit = ['0'-'9']
@@ -104,6 +109,7 @@ let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
 let align = digit+
+let width = digit+
 
 rule token = parse
   | "(" { LPAR }
@@ -138,17 +144,14 @@ rule token = parse
   | "load_global" { LOADGLOBAL }
   | "store_global" { STOREGLOBAL }
 
-  | (ixx as t)".load_"(sign as s)"/"(mixx as m)"/"(align as a)
-    { LOAD (memop t s m a) }
-  | (ixx as t)".load_"(sign as s)"/"(mixx as m) { LOAD (memop t s m "") }
-  | (ixx as t)".load/"(mixx as m)"/"(align as a) { LOAD (memop t 's' m a) }
-  | (ixx as t)".load/"(mixx as m) { LOAD (memop t 's' m "") }
-  | (ixx as t)".store/"(mixx as m)"/"(align as a) { STORE (memop t 's' m a) }
-  | (ixx as t)".store/"(mixx as m) { STORE (memop t 's' m "") }
-  | (fxx as t)".load/"(mfxx as m)"/"(align as a) { LOAD (memop t ' ' m a) }
-  | (fxx as t)".store/"(mfxx as m)"/"(align as a) { STORE (memop t ' ' m a) }
-  | (fxx as t)".load/"(mfxx as m) { LOAD (memop t ' ' m "") }
-  | (fxx as t)".store/"(mfxx as m) { STORE (memop t ' ' m "") }
+  | (nxx as t)".load" { LOAD (loadop t ' ' "") }
+  | (nxx as t)".load/"(align as a) { LOAD (loadop t ' ' a) }
+  | (ixx)".load"(width as w)"_"(sign as s) { LOAD (loadop ("i" ^ w) s "") }
+  | (ixx)".load"(width as w)"_"(sign as s)"/"(align as a) { LOAD (loadop ("i" ^ w) s a) }
+  | (nxx as t)".store" { STORE (storeop t "") }
+  | (nxx as t)".store/"(align as a) { STORE (storeop t a) }
+  | (ixx)".store"(width as w) { STORE (storeop ("i" ^ w) "") }
+  | (ixx)".store"(width as w)"/"(align as a) { STORE (storeop ("i" ^ w) a) }
 
   | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
