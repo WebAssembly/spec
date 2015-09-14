@@ -235,7 +235,7 @@ and eval_func (m : instance) (f : func) (evs : value list) =
 (* Modules *)
 
 let init m imports =
-  assert ((List.length imports) = (List.length m.it.Ast.imports));
+  assert (List.length imports = List.length m.it.Ast.imports);
   let {Ast.exports; globals; tables; funcs; memory; _} = m.it in
   let mem =
     match memory with
