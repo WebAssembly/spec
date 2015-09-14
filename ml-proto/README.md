@@ -194,18 +194,18 @@ param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type> )
 local:  ( local <type>* ) | ( local <name> <type> )
 
-module: ( module <func>* <global>* <import>* <export>* <table>* <memory>? <data>* )
-import: ( import <name>? "<module_name>" "<func_name>" (param <type>* ) (result <type>)* )
-export: ( export "<char>*" <var> )
-global: ( global <type>* ) | ( global <name> <type> )
-table:  ( table <var>* )
-memory: ( memory <int> <int>? )
-data:   ( data "<char>*" )
+module:  ( module <func>* <global>* <import>* <export>* <table>* <memory>? )
+import:  ( import <name>? "<module_name>" "<func_name>" (param <type>* ) (result <type>)* )
+export:  ( export "<char>*" <var> )
+global:  ( global <type>* ) | ( global <name> <type> )
+table:   ( table <var>* )
+memory:  ( memory <int> <int>? <segment>* )
+segment: ( segment <int> "<char>*" )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions.
 
-The data string is used to initialise the lower end of the memory. It is an ASCII string, that can have the usual escape sequences, or hex escapes of the form `\xx` to denote a single byte.
+The segment string is used to initialize the memory at the given offset.
 
 Comments can be written in one of two ways:
 
