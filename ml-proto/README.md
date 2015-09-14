@@ -88,8 +88,6 @@ For most part, the language understood by the interpreter is based on Ben's V8 p
 
 * *Expression Language.* There is no distinction between statements and expressions, everything is an expression. Some have an empty return type. Consequently, there is no need for a comma operator or ternary operator.
 
-* *Multiple Values.* Functions can return multiple values. These can be destructured with a dedicated expression. They can also be returned from a caller (e.g. for tail-calls). Parameters and results are treated fully symmetrically.
-
 * *Simple Loops*. Like in Ben's prototype, there is only one sort of loop, the infinite one, which can only be terminated by an explicit `break`. In such a language, a `continue` statement actually is completely redundant, because it equivalent to a `break` to a label on the loop's *body*. So I dropped `continue`.
 
 * *Break with Arguments.* In the spirit of a true expression language, `break` can carry arguments, which then become the result of the labelled expression it cuts to.
@@ -119,12 +117,11 @@ type expr =
   | If of expr * expr * expr                (* conditional
   | Loop of expr                            (* infinite loop
   | Label of expr                           (* labelled expression
-  | Break of int * expr list                (* break to n-th surrounding label
+  | Break of int * expr option              (* break to n-th surrounding label
   | Switch of expr * arm list * expr        (* switch, latter expr is default
   | Call of var * expr list                 (* call function
   | CallIndirect of var * expr * expr list  (* call function through table
-  | Return of expr list                     (* return 0 to many value
-  | Destruct of var list * expr             (* destructure multi-value into locals
+  | Return of expr option                   (* return 0 to many value
   | GetParam of var                         (* read parameter
   | GetLocal of var                         (* read local variable
   | SetLocal of var * expr                  (* write local variable
@@ -142,8 +139,6 @@ and arm = {value : value; expr : expr; fallthru : bool}
 ```
 
 See the code for more details on the auxiliary types. It also contains ASTs for functions and modules.
-
-As currently implemented, multiple values can be *produced* by either `Call`/`Dispatch` or `Break`/`Label`, and *consumed* by `Destruct`, `Return` or `Call`/`Dispatch`. They pass through `Block`, `Loop`, `Label` and `Switch`. This may be considered too rich, or not rich enough.
 
 
 ## External Syntax
@@ -172,13 +167,12 @@ expr:
   ( if <expr> <expr> )                     ;; = (if <expr> <expr> (nop))
   ( loop <expr>* )                         ;; = (loop (block <expr>*))
   ( label <name>? <expr>* )                ;; = (label (block <expr>*))
-  ( break <var> <expr>* )
+  ( break <var> <expr>? )
   ( break )                                ;; = (break 0)
   ( <type>.switch <expr> <case>* <expr> )
   ( call <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
-  ( return <expr>* )
-  ( destruct <var>* <expr> )
+  ( return <expr>? )
   ( get_local <var> )
   ( set_local <var> <expr> )
   ( load_global <var> )
@@ -195,9 +189,9 @@ case:
   ( case <value> <expr>* fallthrough? )  ;; = (case <int> (block <expr>*) fallthrough?)
   ( case <value> )                       ;; = (case <int> (nop) fallthrough)
 
-func:   ( func <name>? <param>* <result>* <local>* <expr>* )
+func:   ( func <name>? <param>* <result>? <local>* <expr>* )
 param:  ( param <type>* ) | ( param <name> <type> )
-result: ( result <type>* )
+result: ( result <type> )
 local:  ( local <type>* ) | ( local <name> <type> )
 
 module: ( module <func>* <global>* <export>* <table>* <memory>? <data>* )
@@ -233,7 +227,7 @@ script: <cmd>*
 cmd:
   <module>                                       ;; define, validate, and initialize module
   ( invoke <name> <expr>* )                      ;; invoke export and print result
-  ( asserteq (invoke <name> <expr>* ) <expr>* )  ;; assert expected results of invocation
+  ( asserteq (invoke <name> <expr>* ) <expr> )   ;; assert expected results of invocation
   ( assertinvalid <module> <failure> )           ;; assert invalid module with given failure string
 ```
 

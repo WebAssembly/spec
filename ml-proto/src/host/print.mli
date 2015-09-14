@@ -4,5 +4,5 @@
 
 val print_module : Ast.modul -> unit
 val print_module_sig : Ast.modul -> unit
-val print_values : Values.value list -> unit
+val print_value : Values.value option -> unit
 

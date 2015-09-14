@@ -11,7 +11,7 @@ and command' =
   | Define of Ast.modul
   | AssertInvalid of Ast.modul * string
   | Invoke of string * Ast.expr list
-  | AssertEq of string * Ast.expr list * Ast.expr list
+  | AssertEq of string * Ast.expr list * Ast.expr
 
 type script = command list
 
@@ -20,7 +20,14 @@ type script = command list
 
 let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 
-let current_module : Eval.module_instance option ref = ref None
+let current_module : Eval.instance option ref = ref None
+
+let eval_args es at =
+  let evs = List.map Eval.eval es in
+  let reject_none = function
+    | Some v -> v
+    | None -> Error.error at "unexpected () value" in
+  List.map reject_none evs
 
 let run_command cmd =
   match cmd.it with
@@ -50,24 +57,24 @@ let run_command cmd =
       | Some m -> m
       | None -> Error.error cmd.at "no module defined to invoke"
     in
-    let vs = List.map Eval.eval es in
-    let vs' = Eval.invoke m name vs in
-    if vs' <> [] then Print.print_values vs'
+    let vs = eval_args es cmd.at in
+    let v = Eval.invoke m name vs in
+    if v <> None then Print.print_value v
 
-  | AssertEq (name, arg_es, expect_es) ->
+  | AssertEq (name, arg_es, expect_e) ->
     trace "Assert invoking...";
     let m = match !current_module with
       | Some m -> m
       | None -> Error.error cmd.at "no module defined to invoke"
     in
-    let arg_vs = List.map Eval.eval arg_es in
-    let got_vs = Eval.invoke m name arg_vs in
-    let expect_vs = List.map Eval.eval expect_es in
-    if got_vs <> expect_vs then begin
+    let arg_vs = eval_args arg_es cmd.at in
+    let got_v = Eval.invoke m name arg_vs in
+    let expect_v = Eval.eval expect_e in
+    if got_v <> expect_v then begin
       print_string "Result: ";
-      Print.print_values got_vs;
+      Print.print_value got_v;
       print_string "Expect: ";
-      Print.print_values expect_vs;
+      Print.print_value expect_v;
       Error.error cmd.at "assertion failed"
     end
 

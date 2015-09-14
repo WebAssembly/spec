@@ -95,7 +95,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 %token INT FLOAT TEXT VAR TYPE LPAR RPAR
 %token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
-%token CALL CALLINDIRECT RETURN DESTRUCT
+%token CALL CALLINDIRECT RETURN
 %token GETLOCAL SETLOCAL LOADGLOBAL STOREGLOBAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT GLOBAL IMPORT EXPORT TABLE
@@ -164,8 +164,8 @@ oper :
   | LABEL expr_block { fun c -> Label ($2 (anon_label c)) }
   | LABEL bind_var expr_block  /* Sugar */
     { fun c -> Label ($3 (bind_label c $2)) }
-  | BREAK var expr_list { fun c -> Break ($2 c label, $3 c) }
-  | BREAK { let at = at() in fun c -> Break (0 @@ at, []) }  /* Sugar */
+  | BREAK var expr_opt { fun c -> Break ($2 c label, $3 c) }
+  | BREAK { let at = at() in fun c -> Break (0 @@ at, None) }  /* Sugar */
   | SWITCH expr arms
     { let at1 = ati 1 in
       fun c -> let x, y = $3 c in
@@ -173,8 +173,7 @@ oper :
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | CALLINDIRECT var expr expr_list
     { fun c -> CallIndirect ($2 c table, $3 c, $4 c) }
-  | RETURN expr_list { fun c -> Return ($2 c) }
-  | DESTRUCT var_list expr { fun c -> Destruct ($2 c local, $3 c) }
+  | RETURN expr_opt { fun c -> Return ($2 c) }
   | GETLOCAL var { fun c -> GetLocal ($2 c local) }
   | SETLOCAL var expr { fun c -> SetLocal ($2 c local, $3 c) }
   | LOADGLOBAL var { fun c -> LoadGlobal ($2 c global) }
@@ -186,6 +185,10 @@ oper :
   | BINARY expr expr { fun c -> Binary ($1, $2 c, $3 c) }
   | COMPARE expr expr { fun c -> Compare ($1, $2 c, $3 c) }
   | CONVERT expr { fun c -> Convert ($1, $2 c) }
+;
+expr_opt :
+  | /* empty */ { fun c -> None }
+  | expr { fun c -> Some ($1 c) }
 ;
 expr_list :
   | /* empty */ { fun c -> [] }
@@ -222,18 +225,21 @@ arms :
 func_fields :
   | /* empty */  /* Sugar */
     { let at = at() in
-      fun c -> {params = []; results = []; locals = []; body = Nop @@ at} }
+      fun c -> {params = []; result = None; locals = []; body = Nop @@ at} }
   | expr_block
-    { fun c -> {params = []; results = []; locals = []; body = $1 c} }
+    { fun c -> {params = []; result = None; locals = []; body = $1 c} }
   | LPAR PARAM value_type_list RPAR func_fields
     { fun c -> anon_locals c $3; let f = $5 c in
       {f with params = $3 @ f.params} }
   | LPAR PARAM bind_var value_type RPAR func_fields  /* Sugar */
     { fun c -> bind_local c $3; let f = $6 c in
       {f with params = $4 :: f.params} }
-  | LPAR RESULT value_type_list RPAR func_fields
-    { fun c -> let f = $5 c in
-      {f with results = $3 @ f.results} }
+  | LPAR RESULT value_type RPAR func_fields
+    { let at = at() in
+      fun c -> let f = $5 c in
+        match f.result with
+        | Some _ -> Error.error at "more than one return type"
+        | None -> {f with result = Some $3} }
   | LPAR LOCAL value_type_list RPAR func_fields
     { fun c -> anon_locals c $3; let f = $5 c in
       {f with locals = $3 @ f.locals} }
@@ -313,7 +319,7 @@ cmd :
   | LPAR ASSERTINVALID modul TEXT RPAR { AssertInvalid ($3, $4) @@ at() }
   | LPAR INVOKE TEXT expr_list RPAR
     { Invoke ($3, $4 (c0 ())) @@ at() }
-  | LPAR ASSERTEQ LPAR INVOKE TEXT expr_list RPAR expr_list RPAR
+  | LPAR ASSERTEQ LPAR INVOKE TEXT expr_list RPAR expr RPAR
     { AssertEq ($5, $6 (c0 ()), $8 (c0 ())) @@ at() }
 ;
 cmd_list :

@@ -21,13 +21,13 @@ type context =
   globals : value_type list;
   tables : func_type list;
   locals : value_type list;
-  returns : expr_type;
+  return : expr_type;
   labels : expr_type list
 }
 
 let c0 =
   {funcs = []; globals = []; tables = [];
-   locals = []; returns = []; labels = []} 
+   locals = []; return = None; labels = []}
 
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
@@ -43,14 +43,12 @@ let label c x = lookup "label" c.labels x
 (* Type comparison *)
 
 let check_type actual expected at =
-  require (expected = [] || actual = expected) at
+  require (expected = None || actual = expected) at
     ("type mismatch: expression has type " ^ string_of_expr_type actual ^
      " but the context requires " ^ string_of_expr_type expected)
 
 let check_func_type actual expected at =
   require (actual = expected) at "inconsistent function type in table"
-
-let nary = List.map (fun ty -> [ty])
 
 
 (* Type Synthesis *)
@@ -107,137 +105,138 @@ let type_cvt at = function
     ), Float64Type
 
 let type_func f =
-  let {params; results; _} = f.it in
-  {ins = List.map it params; outs = List.map it results}
+  let {params; result; _} = f.it in
+  {ins = List.map it params; out = Lib.Option.map it result}
 
 
 (* Type Analysis *)
 
 (*
- * check_expr : context -> expr -> expr_type -> unit
+ * check_expr : context -> expr_type -> expr -> unit
  *
  * Conventions:
- *   c : context
- *   e : expr
- *   v : value
- *   t : value_type
+ *   c  : context
+ *   e  : expr
+ *   eo : expr option
+ *   v  : value
+ *   t  : value_type
+ *   et : expr_type
  *)
 
-let rec check_expr c ts e =
+let rec check_expr c et e =
   match e.it with
   | Nop ->
-    check_type [] ts e.at
+    check_type None et e.at
 
   | Block es ->
     require (es <> []) e.at "invalid block";
     let es', eN = Lib.List.split_last es in
-    List.iter (check_expr c []) es';
-    check_expr c ts eN
+    List.iter (check_expr c None) es';
+    check_expr c et eN
 
   | If (e1, e2, e3) ->
-    check_expr c [Int32Type] e1;
-    check_expr c ts e2;
-    check_expr c ts e3
+    check_expr c (Some Int32Type) e1;
+    check_expr c et e2;
+    check_expr c et e3
 
   | Loop e1 ->
-    check_expr c [] e1
+    check_expr c None e1
 
   | Label e1 ->
-    let c' = {c with labels = ts :: c.labels} in
-    check_expr c' ts e1
+    let c' = {c with labels = et :: c.labels} in
+    check_expr c' et e1
 
-  | Break (x, es) ->
-    check_exprs c (label c x) es
+  | Break (x, eo) ->
+    check_expr_option c (label c x) eo e.at
 
   | Switch (t, e1, arms, e2) ->
     require (t.it = Int32Type || t.it = Int64Type) t.at "invalid switch type";
     (* TODO: Check that cases are unique. *)
-    check_expr c [t.it] e1;
-    List.iter (check_arm c t.it ts) arms;
-    check_expr c ts e2
+    check_expr c (Some t.it) e1;
+    List.iter (check_arm c t.it et) arms;
+    check_expr c et e2
 
   | Call (x, es) ->
-    let {ins; outs} = func c x in
+    let {ins; out} = func c x in
     check_exprs c ins es;
-    check_type outs ts e.at
+    check_type out et e.at
 
   | CallIndirect (x, e1, es) ->
-    let {ins; outs} = table c x in
-    check_expr c [Int32Type] e1;
+    let {ins; out} = table c x in
+    check_expr c (Some Int32Type) e1;
     check_exprs c ins es;
-    check_type outs ts e.at
+    check_type out et e.at
 
-  | Return es ->
-    check_exprs c c.returns es
-
-  | Destruct (xs, e1) ->
-    check_expr c (List.map (local c) xs) e1;
-    check_type [] ts e.at
+  | Return eo ->
+    check_expr_option c c.return eo e.at
 
   | GetLocal x ->
-    check_type [local c x] ts e.at
+    check_type (Some (local c x)) et e.at
 
   | SetLocal (x, e1) ->
-    check_expr c [local c x] e1;
-    check_type [] ts e.at
+    check_expr c (Some (local c x)) e1;
+    check_type None et e.at
 
   | LoadGlobal x ->
-    check_type [global c x] ts e.at
+    check_type (Some (global c x)) et e.at
 
   | StoreGlobal (x, e1) ->
-    check_expr c [global c x] e1;
-    check_type [] ts e.at
+    check_expr c (Some (global c x)) e1;
+    check_type None et e.at
 
   | Load (memop, e1) ->
     check_memop memop e.at;
-    check_expr c [Int32Type] e1;
-    check_type [type_mem memop.mem] ts e.at
+    check_expr c (Some Int32Type) e1;
+    check_type (Some (type_mem memop.mem)) et e.at
 
   | Store (memop, e1, e2) ->
     check_memop memop e.at;
-    check_expr c [Int32Type] e1;
-    check_expr c [memop.ty] e2;
-    check_type [] ts e.at
+    check_expr c (Some Int32Type) e1;
+    check_expr c (Some memop.ty) e2;
+    check_type None et e.at
 
   | Const v ->
-    check_literal c ts v
+    check_literal c et v
 
   | Unary (unop, e1) ->
     let t = type_unop unop in
-    check_expr c [t] e1;
-    check_type [t] ts e.at
+    check_expr c (Some t) e1;
+    check_type (Some t) et e.at
 
   | Binary (binop, e1, e2) ->
     let t = type_binop binop in
-    check_expr c [t] e1;
-    check_expr c [t] e2;
-    check_type [t] ts e.at
+    check_expr c (Some t) e1;
+    check_expr c (Some t) e2;
+    check_type (Some t) et e.at
 
   | Compare (relop, e1, e2) ->
     let t = type_relop relop in
-    check_expr c [t] e1;
-    check_expr c [t] e2;
-    check_type [Int32Type] ts e.at
+    check_expr c (Some t) e1;
+    check_expr c (Some t) e2;
+    check_type (Some Int32Type) et e.at
 
   | Convert (cvt, e1) ->
     let t1, t = type_cvt e.at cvt in
-    check_expr c [t1] e1;
-    check_type [t] ts e.at
+    check_expr c (Some t1) e1;
+    check_type (Some t) et e.at
 
-and check_exprs c ts = function
-  | [e] ->
-    check_expr c ts e
-  | es ->
-    try List.iter2 (check_expr c) (nary ts) es
-    with Invalid_argument _ -> error (Source.ats es) "arity mismatch"
+and check_exprs c ts es =
+  let ets = List.map (fun x -> Some x) ts in
+  try List.iter2 (check_expr c) ets es
+  with Invalid_argument _ -> error (Source.ats es) "arity mismatch"
 
-and check_literal c ts l =
-    check_type [type_value l.it] ts l.at
+and check_expr_option c et eo at =
+  match eo with
+  | Some e -> check_expr c et e
+  | None -> check_type None et at
 
-and check_arm c t ts arm =
+and check_literal c et l =
+  check_type (Some (type_value l.it)) et l.at
+
+and check_arm c t et arm =
   let {value = l; expr = e; fallthru} = arm.it in
-  check_literal c [t] l;
-  check_expr c (if fallthru then [] else ts) e
+  check_literal c (Some t) l;
+  check_expr c (if fallthru then None else et) e
 
 and check_memop {ty; mem; align} at =
   require (Lib.Int.is_power_of_two align) at "non-power-of-two alignment";
@@ -267,10 +266,10 @@ and check_memop {ty; mem; align} at =
  *)
 
 let check_func c f =
-  let {params; results; locals; body = e} = f.it in
+  let {params; result; locals; body = e} = f.it in
   let c' = {c with locals = List.map it params @ List.map it locals;
-                  returns = List.map it results} in
-  check_expr c' (List.map it results) e
+                   return = Lib.Option.map it result} in
+  check_expr c' (Lib.Option.map it result) e
 
 let check_table c tab =
   match tab.it with
