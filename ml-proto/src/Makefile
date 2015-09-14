@@ -3,15 +3,16 @@
 #
 
 NAME = wasm
+INCLUDES = -I host -I given -I spec
 MODULES = \
-  flags lib source error \
-  types values memory ast \
-  check arithmetic eval print script \
-  lexer parser \
-  main
-NOMLI = flags types values ast sexpr main
-PARSERS = parser
-LEXERS = lexer
+  host/flags given/lib given/source spec/error \
+  spec/types spec/values spec/memory spec/ast \
+  spec/check spec/arithmetic spec/eval host/print host/script \
+  host/lexer host/parser \
+  host/main
+NOMLI = host/flags spec/types spec/values spec/ast host/main
+PARSERS = host/parser
+LEXERS = host/lexer
 LIBRARIES = bigarray nums str
 SAMPLES = 
 TEXTS = 
@@ -38,7 +39,7 @@ $(filter-out $(NOMLI:%=%.cmo), $(CMOS)): %.cmo: %.cmi
 $(filter-out $(NOMLI:%=%.cmx), $(CMXS)): %.cmx: %.cmi
 
 Makefile.depend: $(MLS) $(MLIS) Makefile
-	ocamldep $^ >$@
+	ocamldep $(INCLUDES) $^ >$@
 
 -include Makefile.depend
 
@@ -50,8 +51,10 @@ zip: $(MLS) $(MLIS) $(MLYS) $(MLLS) Makefile $(IMLS) $(TXTS)
 	rm -r tmp
 
 clean:
-	rm -f *.cmi *.cmo *.cmx *.o *.output *.depend
-	rm -f *.native *.byte $(NAME) $(NAME).opt $(NAME).zip
+	rm -f given/*.cmi given/*.cmo given/*.cmx given/*.o
+	rm -f spec/*.cmi spec/*.cmo spec/*.cmx spec/*.o
+	rm -f host/*.cmi host/*.cmo host/*.cmx host/*.o host/*.output
+	rm -f *.depend *.native *.byte $(NAME) $(NAME).opt $(NAME).zip
 	rm -rf _build
 	rm -f *~
 
@@ -59,13 +62,13 @@ distclean: clean
 	rm -f $(PARSERS:%=%.mli) $(PARSERS:%=%.ml) $(LEXERS:%=%.ml)
 
 %.cmi: %.mli
-	ocamlc -c $(OCAMLCOPTS) $<
+	ocamlc -c $(INCLUDES) $(OCAMLCOPTS) $<
 
 %.cmo: %.ml
-	ocamlc -c $(OCAMLCOPTS) -g $<
+	ocamlc -c $(INCLUDES) $(OCAMLCOPTS) -g $<
 
 %.cmx: %.ml
-	ocamlopt -c $(OCAMLCOPTS) $<
+	ocamlopt -c $(INCLUDES) $(OCAMLCOPTS) $<
 
 %.ml: %.mly
 	ocamlyacc -v $<

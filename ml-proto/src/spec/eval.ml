@@ -17,7 +17,7 @@ type func = Ast.func
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
 
-type module_instance =
+type instance =
 {
   funcs : func list;
   exports : export_map;
@@ -29,11 +29,11 @@ type module_instance =
 
 (* Configurations *)
 
-type label = value list -> exn
+type label = value option -> exn
 
 type config =
 {
-  modul : module_instance;
+  modul : instance;
   locals : value ref list;
   labels : label list;
   return : label
@@ -56,8 +56,8 @@ let export m x =
 
 module MakeLabel () =
 struct
-  exception Label of value list
-  let label vs = Label vs
+  exception Label of value option
+  let label v = Label v
 end
 
 
@@ -73,14 +73,13 @@ let type_error at v t =
     ("runtime: type error, expected " ^ Types.string_of_value_type t ^
       ", got " ^ Types.string_of_value_type (type_of v))
 
-let unary vs at =
-  match vs with
-  | [v] -> v
-  | [] -> error at "runtime: expression produced no value"
-  | _ -> error at "runtime: expression produced multiple values"
+let some v at =
+  match v with
+  | Some v -> v
+  | None -> error at "runtime: expression produced no value"
 
 let int32 v at =
-  match unary v at with
+  match some v at with
   | Int32 i -> i
   | v -> type_error at v Types.Int32Type
 
@@ -88,18 +87,18 @@ let int32 v at =
 (* Evaluation *)
 
 (*
- * eval_expr : config -> expr -> value list
- *
  * Conventions:
- *   c : config
- *   e : expr
- *   v : value
+ *   c  : config
+ *   e  : expr
+ *   eo : expr option
+ *   v  : value
+ *   vo : value option
  *)
 
-let rec eval_expr c e =
+let rec eval_expr (c : config) (e : expr) =
   match e.it with
   | Nop ->
-    []
+    None
 
   | Block es ->
     let es', eN = Lib.List.split_last es in
@@ -117,99 +116,95 @@ let rec eval_expr c e =
   | Label e1 ->
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
-    (try eval_expr c' e1 with L.Label vs -> vs)
+    (try eval_expr c' e1 with L.Label vo -> vo)
 
-  | Break (x, es) ->
-    raise (label c x (eval_exprs c es))
+  | Break (x, eo) ->
+    raise (label c x (eval_expr_option c eo))
 
   | Switch (_t, e1, arms, e2) ->
-    let v = unary (eval_expr c e1) e1.at in
-    (match List.fold_left (eval_arm c v) `Seek arms with
+    let vo = some (eval_expr c e1) e1.at in
+    (match List.fold_left (eval_arm c vo) `Seek arms with
     | `Seek | `Fallthru -> eval_expr c e2
     | `Done vs -> vs
     )
 
   | Call (x, es) ->
-    let vs = eval_exprs c es in
+    let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     eval_func c.modul (func c x) vs
 
   | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
-    let vs = eval_exprs c es in
+    let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     eval_func c.modul (table c x (Int32.to_int i @@ e1.at)) vs
 
-  | Return es ->
-    raise (c.return (eval_exprs c es))
-
-  | Destruct (xs, e1) ->
-    let vs = eval_expr c e1 in
-    List.iter2 (fun x v -> local c x := v) xs vs;
-    []
+  | Return eo ->
+    raise (c.return (eval_expr_option c eo))
 
   | GetLocal x ->
-    [!(local c x)]
+    Some !(local c x)
 
   | SetLocal (x, e1) ->
-    let v1 = unary (eval_expr c e1) e1.at in
+    let v1 = some (eval_expr c e1) e1.at in
     local c x := v1;
-    []
+    None
 
   | LoadGlobal x ->
-    [!(global c x)]
+    Some !(global c x)
 
   | StoreGlobal (x, e1) ->
-    let v1 = unary (eval_expr c e1) e1.at in
+    let v1 = some (eval_expr c e1) e1.at in
     global c x := v1;
-    []
+    None
 
-  | Load ({mem; ty; _}, e1) ->
-    let v1 = unary (eval_expr c e1) e1.at in
-    (try [Memory.load c.modul.memory (Memory.address_of_value v1) mem ty]
+  | Load ({mem; ext; align = _}, e1) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    (try Some (Memory.load c.modul.memory (Memory.address_of_value v1) mem ext)
     with exn -> memory_error e.at exn)
 
-  | Store ({mem; _}, e1, e2) ->
-    let v1 = unary (eval_expr c e1) e1.at in
-    let v2 = unary (eval_expr c e2) e2.at in
+  | Store ({mem; align = _}, e1, e2) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    let v2 = some (eval_expr c e2) e2.at in
     (try Memory.store c.modul.memory (Memory.address_of_value v1) mem v2
     with exn -> memory_error e.at exn);
-    []
+    None
 
   | Const v ->
-    [v.it]
+    Some v.it
 
   | Unary (unop, e1) ->
-    let v1 = unary (eval_expr c e1) e1.at in
-    (try [Arithmetic.eval_unop unop v1]
+    let v1 = some (eval_expr c e1) e1.at in
+    (try Some (Arithmetic.eval_unop unop v1)
     with Arithmetic.TypeError (_, v, t) -> type_error e1.at v t)
 
   | Binary (binop, e1, e2) ->
-    let v1 = unary (eval_expr c e1) e1.at in
-    let v2 = unary (eval_expr c e2) e2.at in
-    (try [Arithmetic.eval_binop binop v1 v2]
+    let v1 = some (eval_expr c e1) e1.at in
+    let v2 = some (eval_expr c e2) e2.at in
+    (try Some (Arithmetic.eval_binop binop v1 v2)
     with Arithmetic.TypeError (i, v, t) ->
       type_error (if i = 1 then e1 else e2).at v t)
 
   | Compare (relop, e1, e2) ->
-    let v1 = unary (eval_expr c e1) e1.at in
-    let v2 = unary (eval_expr c e2) e2.at in
-    (try [Int32 Int32.(if Arithmetic.eval_relop relop v1 v2 then one else zero)]
+    let v1 = some (eval_expr c e1) e1.at in
+    let v2 = some (eval_expr c e2) e2.at in
+    (try
+      let b = Arithmetic.eval_relop relop v1 v2 in
+      Some (Int32 Int32.(if b then one else zero))
     with Arithmetic.TypeError (i, v, t) ->
       type_error (if i = 1 then e1 else e2).at v t)
 
   | Convert (cvt, e1) ->
-    let v1 = unary (eval_expr c e1) e1.at in
-    (try [Arithmetic.eval_cvt cvt v1]
+    let v1 = some (eval_expr c e1) e1.at in
+    (try Some (Arithmetic.eval_cvt cvt v1)
     with Arithmetic.TypeError (_, v, t) -> type_error e1.at v t)
 
-and eval_exprs c = function
-  | [e] ->
-    eval_expr c e
-  | es ->
-    List.concat (List.map (eval_expr c) es)
+and eval_expr_option c eo =
+  match eo with
+  | Some e -> eval_expr c e
+  | None -> None
 
-and eval_arm c v stage arm =
+and eval_arm c vo stage arm =
   let {value; expr = e; fallthru} = arm.it in
-  match stage, v = value.it with
+  match stage, vo = value.it with
   | `Seek, true | `Fallthru, _ ->
     if fallthru
     then (ignore (eval_expr c e); `Fallthru)
@@ -217,27 +212,17 @@ and eval_arm c v stage arm =
   | `Seek, false | `Done _, _ ->
     stage
 
-
-(*
- * eval_func : modul -> func -> value list -> value list
- *
- * Conventions:
- *   c : config
- *   m : modul
- *   f : func
- *   e : expr
- *   v : value
- *)
-
 and eval_decl t =
   ref (default_value t.it)
 
-and eval_func m f vs =
+and eval_func (m : instance) (f : func) (evs : value list) =
   let module Return = MakeLabel () in
-  let locals = List.map (fun v -> ref v) vs @ List.map eval_decl f.it.locals in
+  let args = List.map ref evs in
+  let vars = List.map eval_decl f.it.locals in
+  let locals = args @ vars in
   let c = {modul = m; locals; labels = []; return = Return.label} in
   try eval_expr c f.it.body
-  with Return.Label vs -> vs
+  with Return.Label vo -> vo
 
 
 (* Modules *)
@@ -264,8 +249,8 @@ let invoke m name vs =
   eval_func m f vs
 
 let eval e =
-  let f = {params = []; results = []; locals = []; body = e} @@ no_region in
+  let f = {params = []; result = None; locals = []; body = e} @@ no_region in
   let memory = Memory.create 0 in
   let exports = ExportMap.singleton "eval" f in
   let m = {funcs = [f]; exports; tables = []; globals = []; memory} in
-  unary (eval_func m f []) e.at
+  eval_func m f []

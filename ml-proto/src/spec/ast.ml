@@ -27,6 +27,7 @@ open Values
 (* Types *)
 
 type value_type = Types.value_type Source.phrase
+type expr_type = value_type option
 
 
 (* Operators *)
@@ -62,7 +63,8 @@ type binop = (Int32Op.binop, Int64Op.binop, Float32Op.binop, Float64Op.binop) op
 type relop = (Int32Op.relop, Int64Op.relop, Float32Op.relop, Float64Op.relop) op
 type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
 
-type memop = {ty : Types.value_type; mem : Memory.mem_type; align : int}
+type loadop = {mem : Memory.mem_type; ext : Memory.extension; align : int}
+type storeop = {mem : Memory.mem_type; align : int}
 
 
 (* Expressions *)
@@ -77,18 +79,17 @@ and expr' =
   | If of expr * expr * expr
   | Loop of expr
   | Label of expr
-  | Break of var * expr list
+  | Break of var * expr option
   | Switch of value_type * expr * arm list * expr
   | Call of var * expr list
   | CallIndirect of var * expr * expr list
-  | Return of expr list
-  | Destruct of var list * expr
+  | Return of expr option
   | GetLocal of var
   | SetLocal of var * expr
   | LoadGlobal of var
   | StoreGlobal of var * expr
-  | Load of memop * expr
-  | Store of memop * expr * expr
+  | Load of loadop * expr
+  | Store of storeop * expr * expr
   | Const of literal
   | Unary of unop * expr
   | Binary of binop * expr * expr
@@ -119,7 +120,7 @@ type func = func' Source.phrase
 and func' =
 {
   params : value_type list;
-  results : value_type list;
+  result : expr_type;
   locals : value_type list;
   body : expr
 }
