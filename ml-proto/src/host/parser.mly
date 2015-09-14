@@ -53,7 +53,7 @@ type context =
 
 let empty () = {map = VarMap.empty; count = 0}
 let c0 () =
-  {funcs = empty (); imports = empty();
+  {funcs = empty (); imports = empty ();
    globals = empty (); locals = empty ();
    labels = VarMap.empty}
 
@@ -309,8 +309,8 @@ export :
 module_fields :
   | /* empty */
     { fun c ->
-      { imports = []; exports = []; globals = []; tables = []; funcs = [];
-        memory = None;} }
+      {imports = []; exports = []; globals = []; tables = []; funcs = [];
+       memory = None} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in
       {m with funcs = f () :: m.funcs} }

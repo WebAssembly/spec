@@ -112,7 +112,7 @@ let type_func f =
 
 let type_import f =
   let {func_params; func_result; _} = f.it in
-  {ins = List.map it func_params; out = ito func_result}
+  {ins = List.map it func_params; out = Lib.Option.map it func_result}
 
 
 (* Type Analysis *)

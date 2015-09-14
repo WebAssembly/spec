@@ -13,7 +13,7 @@ let error = Error.error
 
 type value = Values.value
 type func = Ast.func
-type import = expr_value list -> expr_value
+type import = value list -> value option
 
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
@@ -136,7 +136,7 @@ let rec eval_expr (c : config) (e : expr) =
     eval_func c.modul (func c x) vs
 
   | CallImport (x, es) ->
-    let vs = List.map (eval_expr c) es in
+    let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
     (import c x) vs
 
   | CallIndirect (x, e1, es) ->
