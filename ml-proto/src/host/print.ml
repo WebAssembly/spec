@@ -13,7 +13,7 @@ open Types
 
 let func_type f =
   let {Ast.params; result; _} = f.it in
-  {ins = List.map Source.it params; out = Lib.Option.map it result}
+  {ins = List.map it params; out = Lib.Option.map it result}
 
 let string_of_table_type = function
   | None -> "()"
