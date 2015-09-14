@@ -179,8 +179,8 @@ rule token = parse
   | (ixx as t)".or" { BINARY (intop t Int32Op.Or Int64Op.Or) }
   | (ixx as t)".xor" { BINARY (intop t Int32Op.Xor Int64Op.Xor) }
   | (ixx as t)".shl" { BINARY (intop t Int32Op.Shl Int64Op.Shl) }
-  | (ixx as t)".shr" { BINARY (intop t Int32Op.Shr Int64Op.Shr) }
-  | (ixx as t)".sar" { BINARY (intop t Int32Op.Sar Int64Op.Sar) }
+  | (ixx as t)".shr_u" { BINARY (intop t Int32Op.ShrU Int64Op.ShrU) }
+  | (ixx as t)".shr_s" { BINARY (intop t Int32Op.ShrS Int64Op.ShrS) }
   | (fxx as t)".add" { BINARY (floatop t Float32Op.Add Float64Op.Add) }
   | (fxx as t)".sub" { BINARY (floatop t Float32Op.Sub Float64Op.Sub) }
   | (fxx as t)".mul" { BINARY (floatop t Float32Op.Mul Float64Op.Mul) }
