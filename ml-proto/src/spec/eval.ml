@@ -95,7 +95,7 @@ let int32 v at =
  *   e  : expr
  *   eo : expr option
  *   v  : value
- *   ev : value option
+ *   vo : value option
  *)
 
 let rec eval_expr (c : config) (e : expr) =
@@ -119,20 +119,20 @@ let rec eval_expr (c : config) (e : expr) =
   | Label e1 ->
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
-    (try eval_expr c' e1 with L.Label ev -> ev)
+    (try eval_expr c' e1 with L.Label vo -> vo)
 
   | Break (x, eo) ->
     raise (label c x (eval_expr_option c eo))
 
   | Switch (_t, e1, arms, e2) ->
-    let ev = some (eval_expr c e1) e1.at in
-    (match List.fold_left (eval_arm c ev) `Seek arms with
+    let vo = some (eval_expr c e1) e1.at in
+    (match List.fold_left (eval_arm c vo) `Seek arms with
     | `Seek | `Fallthru -> eval_expr c e2
     | `Done vs -> vs
     )
 
   | Call (x, es) ->
-    let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
+    let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     eval_func c.modul (func c x) vs
 
   | CallImport (x, es) ->
@@ -141,7 +141,7 @@ let rec eval_expr (c : config) (e : expr) =
 
   | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
-    let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
+    let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     eval_func c.modul (table c x (Int32.to_int i @@ e1.at)) vs
 
   | Return eo ->
@@ -209,9 +209,9 @@ and eval_expr_option c eo =
   | Some e -> eval_expr c e
   | None -> None
 
-and eval_arm c ev stage arm =
+and eval_arm c vo stage arm =
   let {value; expr = e; fallthru} = arm.it in
-  match stage, ev = value.it with
+  match stage, vo = value.it with
   | `Seek, true | `Fallthru, _ ->
     if fallthru
     then (ignore (eval_expr c e); `Fallthru)
@@ -224,12 +224,12 @@ and eval_decl t =
 
 and eval_func (m : instance) (f : func) (evs : value list) =
   let module Return = MakeLabel () in
-  let args = List.map (fun v -> ref v) evs in
+  let args = List.map ref evs in
   let vars = List.map eval_decl f.it.locals in
   let locals = args @ vars in
   let c = {modul = m; locals; labels = []; return = Return.label} in
   try eval_expr c f.it.body
-  with Return.Label ev -> ev
+  with Return.Label vo -> vo
 
 
 (* Modules *)
