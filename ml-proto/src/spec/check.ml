@@ -181,12 +181,12 @@ let rec check_expr c et e =
     check_type None et e.at
 
   | Load (loadop, e1) ->
-    check_memop loadop.align e.at;
+    check_align loadop.align e.at;
     check_expr c (Some Int32Type) e1;
     check_type (Some (type_mem loadop.mem)) et e.at
 
   | Store (storeop, e1, e2) ->
-    check_memop storeop.align e.at;
+    check_align storeop.align e.at;
     check_expr c (Some Int32Type) e1;
     check_expr c (Some (type_mem storeop.mem)) e2;
     check_type None et e.at
@@ -234,7 +234,7 @@ and check_arm c t et arm =
   check_literal c (Some t) l;
   check_expr c (if fallthru then None else et) e
 
-and check_memop align at =
+and check_align align at =
   require (Lib.Int.is_power_of_two align) at "non-power-of-two alignment"
 
 
