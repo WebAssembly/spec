@@ -137,8 +137,8 @@ struct
       | Or -> Int.logor
       | Xor -> Int.logxor
       | Shl -> fun i j -> Int.shift_left i (Int.to_int j)
-      | Shr -> fun i j -> Int.shift_right_logical i (Int.to_int j)
-      | Sar -> fun i j -> Int.shift_right i (Int.to_int j)
+      | ShrU -> fun i j -> Int.shift_right_logical i (Int.to_int j)
+      | ShrS -> fun i j -> Int.shift_right i (Int.to_int j)
     in fun v1 v2 -> Int.to_value (f (Int.of_value 1 v1) (Int.of_value 2 v2))
 
   let relop op =
