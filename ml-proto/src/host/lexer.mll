@@ -192,7 +192,7 @@ rule token = parse
     { BINARY (floatop t Float32Op.CopySign Float64Op.CopySign) }
 
   | (ixx as t)".eq" { COMPARE (intop t Int32Op.Eq Int64Op.Eq) }
-  | (ixx as t)".neq" { COMPARE (intop t Int32Op.Neq Int64Op.Neq) }
+  | (ixx as t)".ne" { COMPARE (intop t Int32Op.Ne Int64Op.Ne) }
   | (ixx as t)".lt_s" { COMPARE (intop t Int32Op.LtS Int64Op.LtS) }
   | (ixx as t)".lt_u" { COMPARE (intop t Int32Op.LtU Int64Op.LtU) }
   | (ixx as t)".le_s" { COMPARE (intop t Int32Op.LeS Int64Op.LeS) }
@@ -202,7 +202,7 @@ rule token = parse
   | (ixx as t)".ge_s" { COMPARE (intop t Int32Op.GeS Int64Op.GeS) }
   | (ixx as t)".ge_u" { COMPARE (intop t Int32Op.GeU Int64Op.GtU) }
   | (fxx as t)".eq" { COMPARE (floatop t Float32Op.Eq Float64Op.Eq) }
-  | (fxx as t)".neq" { COMPARE (floatop t Float32Op.Neq Float64Op.Neq) }
+  | (fxx as t)".ne" { COMPARE (floatop t Float32Op.Ne Float64Op.Ne) }
   | (fxx as t)".lt" { COMPARE (floatop t Float32Op.Lt Float64Op.Lt) }
   | (fxx as t)".le" { COMPARE (floatop t Float32Op.Le Float64Op.Le) }
   | (fxx as t)".gt" { COMPARE (floatop t Float32Op.Gt Float64Op.Gt) }

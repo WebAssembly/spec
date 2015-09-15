@@ -144,7 +144,7 @@ struct
   let relop op =
     let f = match op with
       | Eq -> (=)
-      | Neq -> (<>)
+      | Ne -> (<>)
       | LtS -> (<)
       | LtU -> unsigned lt_big_int
       | LeS -> (<=)
@@ -214,7 +214,7 @@ struct
   let relop op =
     let f = match op with
       | Eq -> (=)
-      | Neq -> (<>)
+      | Ne -> (<>)
       | Lt -> (<)
       | Le -> (<=)
       | Gt -> (>)

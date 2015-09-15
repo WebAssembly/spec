@@ -37,7 +37,7 @@ struct
   type unop = Clz | Ctz | Popcnt
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
              | And | Or | Xor | Shl | ShrU | ShrS
-  type relop = Eq | Neq | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
+  type relop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type cvt = ExtendSInt32 | ExtendUInt32 | WrapInt64
            | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
            | ReinterpretFloat
@@ -47,7 +47,7 @@ module FloatOp () =
 struct
   type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
   type binop = Add | Sub | Mul | Div | CopySign | Min | Max
-  type relop = Eq | Neq | Lt | Le | Gt | Ge
+  type relop = Eq | Ne | Lt | Le | Gt | Ge
   type cvt = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
            | PromoteFloat32 | DemoteFloat64
            | ReinterpretInt
