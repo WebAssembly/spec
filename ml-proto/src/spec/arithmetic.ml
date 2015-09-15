@@ -13,6 +13,7 @@ exception TypeError of int * value * value_type
 
 (* Int traits *)
 
+(* TODO: Replace this with BASIC_INT *)
 module type INT =
 sig
   type t
@@ -84,6 +85,7 @@ end
 
 (* Float traits *)
 
+(* TODO: Replace this with BASIC_FLOAT *)
 module type FLOAT =
 sig
   type t
