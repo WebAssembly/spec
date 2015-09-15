@@ -135,6 +135,7 @@ rule token = parse
   | "case" { CASE }
   | "fallthrough" { FALLTHROUGH }
   | "call" { CALL }
+  | "call_import" { CALLIMPORT }
   | "call_indirect" { CALLINDIRECT }
   | "return" { RETURN }
 

@@ -82,6 +82,7 @@ and expr' =
   | Break of var * expr option
   | Switch of value_type * expr * arm list * expr
   | Call of var * expr list
+  | CallImport of var * expr list
   | CallIndirect of var * expr * expr list
   | Return of expr option
   | GetLocal of var
@@ -128,6 +129,15 @@ and func' =
 type export = export' Source.phrase
 and export' = {name : string; func : var}
 
+type import = import' Source.phrase
+and import' =
+{
+  module_name : string;
+  func_name : string;
+  func_params : value_type list;
+  func_result : expr_type;
+}
+
 type table = var list Source.phrase
 
 type modul = modul' Source.phrase
@@ -135,6 +145,7 @@ and modul' =
 {
   memory : memory option;
   funcs : func list;
+  imports : import list;
   exports : export list;
   tables : table list;
   globals : value_type list
