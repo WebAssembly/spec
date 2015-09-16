@@ -25,7 +25,6 @@ type instance =
   imports : import list;
   exports : export_map;
   tables : func list list;
-  globals : value ref list;
   memory : Memory.t;
   host : host_params
 }
@@ -52,7 +51,6 @@ let lookup category list x =
 
 let func c x = lookup "function" c.modul.funcs x
 let import c x = lookup "import" c.modul.imports x
-let global c x = lookup "global" c.modul.globals x
 let table c x y = lookup "entry" (lookup "table" c.modul.tables x) y
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
@@ -160,14 +158,6 @@ let rec eval_expr (c : config) (e : expr) =
     local c x := v1;
     None
 
-  | LoadGlobal x ->
-    Some !(global c x)
-
-  | StoreGlobal (x, e1) ->
-    let v1 = some (eval_expr c e1) e1.at in
-    global c x := v1;
-    None
-
   | Load ({mem; ext; align = _}, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     (try Some (Memory.load c.modul.memory (Memory.address_of_value v1) mem ext)
@@ -237,13 +227,10 @@ and eval_arm c vo stage arm =
   | `Seek, false | `Done _, _ ->
     stage
 
-and eval_decl t =
-  ref (default_value t.it)
-
 and eval_func (m : instance) (f : func) (evs : value list) =
   let module Return = MakeLabel () in
   let args = List.map ref evs in
-  let vars = List.map eval_decl f.it.locals in
+  let vars = List.map (fun t -> ref (default_value t.it)) f.it.locals in
   let locals = args @ vars in
   let c = {modul = m; locals; labels = []; return = Return.label} in
   try eval_expr c f.it.body
@@ -265,14 +252,13 @@ let init m imports host =
   assert (List.length imports = List.length m.it.Ast.imports);
   assert (host.page_size > 0);
   assert (Lib.Int.is_power_of_two host.page_size);
-  let {Ast.exports; globals; tables; funcs; memory; _} = m.it in
+  let {Ast.exports; tables; funcs; memory; _} = m.it in
   let mem = init_memory memory in
   let func x = List.nth funcs x.it in
   let export ex = ExportMap.add ex.it.name (func ex.it.func) in
   let exports = List.fold_right export exports ExportMap.empty in
   let tables = List.map (fun tab -> List.map func tab.it) tables in
-  let globals = List.map eval_decl globals in
-  {funcs; imports; exports; tables; globals; memory = mem; host}
+  {funcs; imports; exports; tables; memory = mem; host}
 
 let invoke m name vs =
   let f = export m (name @@ no_region) in
@@ -284,6 +270,5 @@ let eval e =
   let memory = Memory.create 0 in
   let exports = ExportMap.singleton "eval" f in
   let host = {page_size = 1} in
-  let m = {imports = []; exports; globals = []; tables = []; funcs = [f];
-           memory; host} in
+  let m = {imports = []; exports; tables = []; funcs = [f]; memory; host} in
   eval_func m f []

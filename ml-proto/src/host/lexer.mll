@@ -143,9 +143,6 @@ rule token = parse
   | "get_local" { GETLOCAL }
   | "set_local" { SETLOCAL }
 
-  | "load_global" { LOADGLOBAL }
-  | "store_global" { STOREGLOBAL }
-
   | (nxx as t)".load" { LOAD (loadop t ' ' "") }
   | (nxx as t)".load/"(align as a) { LOAD (loadop t ' ' a) }
   | (ixx)".load"(width as w)"_"(sign as s) { LOAD (loadop ("i" ^ w) s "") }
@@ -246,7 +243,6 @@ rule token = parse
   | "module" { MODULE }
   | "memory" { MEMORY }
   | "segment" { SEGMENT }
-  | "global" { GLOBAL }
   | "import" { IMPORT }
   | "export" { EXPORT }
   | "table" { TABLE }

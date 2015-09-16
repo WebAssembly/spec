@@ -38,9 +38,6 @@ let print_table_sig prefix i t_opt =
 let print_func i f =
   print_func_sig "func" i f
 
-let print_global i t =
-  print_var_sig "global" i t
-
 let print_export m i ex =
   print_export_sig "export" ex.it.name (List.nth m.it.funcs ex.it.func.it)
 
@@ -53,9 +50,8 @@ let print_table m i tab =
 
 
 let print_module m =
-  let {funcs; globals; exports; tables} = m.it in
+  let {funcs; exports; tables} = m.it in
   List.iteri print_func funcs;
-  List.iteri print_global globals;
   List.iteri (print_export m) exports;
   List.iteri (print_table m) tables;
   flush_all ()
