@@ -227,6 +227,16 @@ let rec check_expr c et e =
     check_expr c (Some t1) e1;
     check_type (Some t) et e.at
 
+  | PageSize ->
+    check_type (Some Int32Type) et e.at
+
+  | MemorySize ->
+    check_type (Some Int32Type) et e.at
+
+  | ResizeMemory e ->
+    check_expr c (Some Int32Type) e;
+    check_type None et e.at
+
 and check_exprs c ts es =
   let ets = List.map (fun x -> Some x) ts in
   try List.iter2 (check_expr c) ets es

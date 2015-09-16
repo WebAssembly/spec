@@ -103,6 +103,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token GETLOCAL SETLOCAL LOADGLOBAL STOREGLOBAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT GLOBAL IMPORT EXPORT TABLE
+%token PAGESIZE MEMORYSIZE RESIZEMEMORY
 %token ASSERTINVALID ASSERTEQ ASSERTFAULT INVOKE
 %token EOF
 
@@ -190,6 +191,9 @@ oper :
   | BINARY expr expr { fun c -> Binary ($1, $2 c, $3 c) }
   | COMPARE expr expr { fun c -> Compare ($1, $2 c, $3 c) }
   | CONVERT expr { fun c -> Convert ($1, $2 c) }
+  | PAGESIZE { fun c -> PageSize }
+  | MEMORYSIZE { fun c -> MemorySize }
+  | RESIZEMEMORY expr { fun c -> ResizeMemory ($2 c) }
 ;
 expr_opt :
   | /* empty */ { fun c -> None }

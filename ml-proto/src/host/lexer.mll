@@ -235,6 +235,10 @@ rule token = parse
   | "i32.reinterpret/f32" { CONVERT (Values.Int32 Int32Op.ReinterpretFloat) }
   | "i64.reinterpret/f64" { CONVERT (Values.Int64 Int64Op.ReinterpretFloat) }
 
+  | "page_size" { PAGESIZE }
+  | "memory_size" { MEMORYSIZE }
+  | "resize_memory" { RESIZEMEMORY }
+
   | "func" { FUNC }
   | "param" { PARAM }
   | "result" { RESULT }

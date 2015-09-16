@@ -20,7 +20,8 @@ type segment =
   data : string
 }
 
-type memory = (int, int8_unsigned_elt, c_layout) Array1.t
+type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
+type memory = memory' ref
 type t = memory
 
 type char_view = (char, int8_unsigned_elt, c_layout) Array1.t
@@ -35,7 +36,7 @@ type uint64_view = (int64, int64_elt, c_layout) Array1.t
 type float32_view = (int32, int32_elt, c_layout) Array1.t
 type float64_view = (int64, int64_elt, c_layout) Array1.t
 
-let view : memory -> ('c, 'd, c_layout) Array1.t = Obj.magic
+let view : memory' -> ('c, 'd, c_layout) Array1.t = Obj.magic
 
 
 (* Queries *)
@@ -53,12 +54,16 @@ exception Type
 exception Bounds
 exception Address
 
-let create n =
+let create' n =
   let mem = Array1.create Int8_unsigned C_layout n in
   Array1.fill mem 0;
   mem
 
+let create n =
+  ref (create' n)
+
 let init_seg mem seg =
+  let mem = !mem in
   (* There currently is no way to blit from a string. *)
   for i = 0 to String.length seg.data - 1 do
     (view mem : char_view).{seg.addr + i} <- seg.data.[i]
@@ -67,6 +72,17 @@ let init_seg mem seg =
 let init mem segs =
   try List.iter (init_seg mem) segs with Invalid_argument _ -> raise Bounds
 
+
+let size mem =
+  let mem = !mem in
+  Array1.dim mem
+
+let resize mem n =
+  let before = !mem in
+  let after = create' n in
+  let min = min (Array1.dim before) n in
+  Array1.blit (Array1.sub before 0 min) (Array1.sub after 0 min);
+  mem := after
 
 open Values
 
@@ -80,9 +96,10 @@ let address_of_value = function
 let int32_mask = Int64.shift_right_logical (Int64.of_int (-1)) 32
 let int64_of_int32_u i = Int64.logand (Int64.of_int32 i) int32_mask
 
-let buf = create 8
+let buf = create' 8
 
 let load mem a memty ext =
+  let mem = !mem in
   let sz = mem_size memty in
   let open Types in
   try
@@ -100,6 +117,7 @@ let load mem a memty ext =
   with Invalid_argument _ -> raise Bounds
 
 let store mem a memty v =
+  let mem = !mem in
   let sz = mem_size memty in
   try
     (match memty, v with

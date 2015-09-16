@@ -49,7 +49,8 @@ let run_command cmd =
     end;
     trace "Initializing...";
     let imports = Builtins.match_imports m.it.Ast.imports in
-    current_module := Some (Eval.init m imports)
+    let host_params = {Eval.page_size = Params.page_size} in
+    current_module := Some (Eval.init m imports host_params)
 
   | AssertInvalid (m, re) ->
     trace "Checking invalid...";

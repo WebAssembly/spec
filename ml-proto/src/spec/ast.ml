@@ -96,6 +96,9 @@ and expr' =
   | Binary of binop * expr * expr
   | Compare of relop * expr * expr
   | Convert of cvt * expr
+  | PageSize
+  | MemorySize
+  | ResizeMemory of expr
 
 and arm = arm' Source.phrase
 and arm' =

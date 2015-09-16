@@ -135,6 +135,9 @@ type expr =
   | Binary of binop * expr * expr           (* binary arithmetic operator
   | Compare of relop * expr * expr          (* arithmetic comparison
   | Convert of cvt * expr                   (* conversion
+  | PageSize                                (* return host-defined page_size
+  | MemorySize                              (* return current size of linear memory
+  | ResizeMemory                            (* resize linear memory
 
 and arm = {value : value; expr : expr; fallthru : bool}
 ```
@@ -184,6 +187,9 @@ expr:
   ( <type>.<binop> <expr> <expr> )
   ( <type>.<relop> <expr> <expr> )
   ( <type>.<cvtop>/<type> <expr> )
+  ( page_size )
+  ( memory_size )
+  ( resize_memory <expr> )
 
 case:
   ( case <value> <expr>* fallthrough? )  ;; = (case <int> (block <expr>*) fallthrough?)

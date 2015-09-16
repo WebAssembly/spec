@@ -5,13 +5,13 @@
 NAME = wasm
 INCLUDES = -I host -I given -I spec
 MODULES = \
-  host/flags given/lib given/source given/float32 given/float64 spec/error \
+  host/params host/flags given/lib given/source given/float32 given/float64 spec/error \
   spec/types spec/values spec/memory spec/ast \
   spec/check spec/arithmetic spec/eval \
   host/print host/builtins host/script \
   host/lexer host/parser \
   host/main
-NOMLI = host/flags spec/types spec/values spec/ast host/main
+NOMLI = host/params host/flags spec/types spec/values spec/ast host/main
 PARSERS = host/parser
 LEXERS = host/lexer
 LIBRARIES = bigarray nums str
