@@ -2,14 +2,6 @@
  * (c) 2015 Andreas Rossberg
  *)
 
-(* Number formats *)
-
-type uint32 = int32   (* approximate *)
-type uint64 = int64   (* approximate *)
-type float32 = float  (* approximate *)
-type float64 = float
-
-
 (* Types *)
 
 type value_type = Int32Type | Int64Type | Float32Type | Float64Type

@@ -5,7 +5,7 @@
 NAME = wasm
 INCLUDES = -I host -I given -I spec
 MODULES = \
-  host/flags given/lib given/source spec/error \
+  host/flags given/lib given/source given/float32 given/float64 spec/error \
   spec/types spec/values spec/memory spec/ast \
   spec/check spec/arithmetic spec/eval \
   host/print host/builtins host/script \
