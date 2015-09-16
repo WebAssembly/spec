@@ -21,7 +21,7 @@
   (export "div_float64" $div_float64)
 )
 
-(assert_eq
+(assert_same
   (invoke "eq_float32"
     (f32.add (f32.const 1.1234567890) (f32.const 1.2345e-10))
     (f32.const 1.123456789)
@@ -29,7 +29,7 @@
   (i32.const 1)
 )
 
-(assert_eq
+(assert_same
   (invoke "eq_float64"
     (f64.add (f64.const 1.1234567890) (f64.const 1.2345e-10))
     (f64.const 1.123456789)
@@ -37,7 +37,7 @@
   (i32.const 0)
 )
 
-(assert_eq
+(assert_same
   (invoke "eq_float32"
     (f32.mul (f32.const 1e20) (f32.const 1e20))
     (f32.mul (f32.const 1e25) (f32.const 1e25))
@@ -45,7 +45,7 @@
   (i32.const 1)
 )
 
-(assert_eq
+(assert_same
   (invoke "eq_float64"
     (f64.mul (f64.const 1e20) (f64.const 1e20))
     (f64.mul (f64.const 1e25) (f64.const 1e25))
@@ -53,12 +53,12 @@
   (i32.const 0)
 )
 
-(assert_eq
+(assert_same
   (invoke "div_float32" (f32.const 1.123456789) (f32.const 100))
   (f32.const 0.011234568432)
 )
 
-(assert_eq
+(assert_same
   (invoke "div_float64" (f64.const 1.123456789) (f64.const 100))
   (f64.const 0.01123456789)
 )

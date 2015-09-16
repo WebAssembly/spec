@@ -9,7 +9,7 @@
 )
 
 (invoke "store" (i32.const 96) (i32.const 42))
-(assert_eq (invoke "load" (i32.const 96)) (i32.const 42))
+(assert_same (invoke "load" (i32.const 96)) (i32.const 42))
 (assert_trap (invoke "store" (i32.const 97) (i32.const 13)) "runtime: out of bounds memory access")
 (assert_trap (invoke "load" (i32.const 97)) "runtime: out of bounds memory access")
 (assert_trap (invoke "store" (i32.const 98) (i32.const 13)) "runtime: out of bounds memory access")

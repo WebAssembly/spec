@@ -19,7 +19,7 @@
   )
 )
 
-(assert_eq (invoke "even" (i32.const 13)) (i32.const 0))
-(assert_eq (invoke "even" (i32.const 20)) (i32.const 1))
-(assert_eq (invoke "odd" (i32.const 13)) (i32.const 1))
-(assert_eq (invoke "odd" (i32.const 20)) (i32.const 0))
+(assert_same (invoke "even" (i32.const 13)) (i32.const 0))
+(assert_same (invoke "even" (i32.const 20)) (i32.const 1))
+(assert_same (invoke "odd" (i32.const 13)) (i32.const 1))
+(assert_same (invoke "odd" (i32.const 20)) (i32.const 0))

@@ -67,7 +67,7 @@
   (export "fac-iter-named" $fac-iter)
 )
 
-(assert_eq (invoke "fac-rec" (i64.const 25)) (i64.const 7034535277573963776))
-(assert_eq (invoke "fac-iter" (i64.const 25)) (i64.const 7034535277573963776))
-(assert_eq (invoke "fac-rec-named" (i64.const 25)) (i64.const 7034535277573963776))
-(assert_eq (invoke "fac-iter-named" (i64.const 25)) (i64.const 7034535277573963776))
+(assert_same (invoke "fac-rec" (i64.const 25)) (i64.const 7034535277573963776))
+(assert_same (invoke "fac-iter" (i64.const 25)) (i64.const 7034535277573963776))
+(assert_same (invoke "fac-rec-named" (i64.const 25)) (i64.const 7034535277573963776))
+(assert_same (invoke "fac-iter-named" (i64.const 25)) (i64.const 7034535277573963776))

@@ -197,7 +197,8 @@ script: <cmd>*
 cmd:
   <module>                                             ;; define, validate, and initialize module
   ( invoke <name> <expr>* )                            ;; invoke export and print result
-  ( assert_eq (invoke <name> <expr>* ) <expr> )        ;; assert expected results of invocation
+  ( assert_same (invoke <name> <expr>* ) <expr> )      ;; assert expected result of invocation
+  ( assert_nan (invoke <name> <expr>* ))               ;; assert expected floating point nan result of invocation
   ( assert_trap (invoke <name> <expr>* ) <failure> )   ;; assert invocation traps with given failure string
   ( assert_invalid <module> <failure> )                ;; assert invalid module with given failure string
 ```
