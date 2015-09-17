@@ -31,12 +31,12 @@ let eval_args es at =
   List.map reject_none evs
 
 let assert_error f err re at =
-  match try f (); None with Error.Error (_, s) -> Some s with
-  | None ->
-    Error.error at ("expected " ^ err)
-  | Some s ->
+  match f () with
+  | exception Error.Error (_, s) ->
     if not (Str.string_match (Str.regexp re) s 0) then
       Error.error at ("failure \"" ^ s ^ "\" does not match: \"" ^ re ^ "\"")
+  | _ ->
+    Error.error at ("expected " ^ err)
 
 let run_command cmd =
   match cmd.it with
