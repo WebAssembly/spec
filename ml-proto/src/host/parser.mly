@@ -47,14 +47,12 @@ module VarMap = Map.Make(String)
 type space = {mutable map : int VarMap.t; mutable count : int}
 
 type context =
-  {funcs : space; imports : space; globals : space; locals : space;
-   labels : int VarMap.t}
+  {funcs : space; imports : space; locals : space; labels : int VarMap.t}
 
 let empty () = {map = VarMap.empty; count = 0}
 let c0 () =
   {funcs = empty (); imports = empty ();
-   globals = empty (); locals = empty ();
-   labels = VarMap.empty}
+   locals = empty (); labels = VarMap.empty}
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
@@ -66,7 +64,6 @@ let lookup category space x =
 
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
-let global c x = lookup "global" c.globals x
 let local c x = lookup "local" c.locals x
 let table c x = lookup "table" (empty ()) x
 let label c x =
@@ -81,7 +78,6 @@ let bind category space x =
 
 let bind_func c x = bind "function" c.funcs x
 let bind_import c x = bind "import" c.imports x
-let bind_global c x = bind "global" c.globals x
 let bind_local c x = bind "local" c.locals x
 let bind_label c x =
   if VarMap.mem x.it c.labels then
@@ -92,7 +88,6 @@ let anon space n = space.count <- space.count + n
 
 let anon_func c = anon c.funcs 1
 let anon_import c = anon c.imports 1
-let anon_globals c ts = anon c.globals (List.length ts)
 let anon_locals c ts = anon c.locals (List.length ts)
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %}
@@ -100,9 +95,9 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token INT FLOAT TEXT VAR TYPE LPAR RPAR
 %token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
 %token CALL CALLIMPORT CALLINDIRECT RETURN
-%token GETLOCAL SETLOCAL LOADGLOBAL STOREGLOBAL LOAD STORE
+%token GETLOCAL SETLOCAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
-%token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT GLOBAL IMPORT EXPORT TABLE
+%token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
 %token PAGESIZE MEMORYSIZE RESIZEMEMORY
 %token ASSERTINVALID ASSERTEQ ASSERTFAULT INVOKE
 %token EOF
@@ -182,8 +177,6 @@ oper :
   | RETURN expr_opt { fun c -> Return ($2 c) }
   | GETLOCAL var { fun c -> GetLocal ($2 c local) }
   | SETLOCAL var expr { fun c -> SetLocal ($2 c local, $3 c) }
-  | LOADGLOBAL var { fun c -> LoadGlobal ($2 c global) }
-  | STOREGLOBAL var expr { fun c -> StoreGlobal ($2 c global, $3 c) }
   | LOAD expr { fun c -> Load ($1, $2 c) }
   | STORE expr expr { fun c -> Store ($1, $2 c, $3 c) }
   | CONST literal { fun c -> Const (literal (ati 2) $2 $1) }
@@ -312,7 +305,7 @@ export :
 module_fields :
   | /* empty */
     { fun c ->
-      {imports = []; exports = []; globals = []; tables = []; funcs = [];
+      {imports = []; exports = []; tables = []; funcs = [];
        memory = None} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in
@@ -323,12 +316,6 @@ module_fields :
   | export module_fields
     { fun c -> let m = $2 c in
       {m with exports = $1 c :: m.exports} }
-  | LPAR GLOBAL value_type_list RPAR module_fields
-    { fun c -> anon_globals c $3; let m = $5 c in
-      {m with globals = $3 @ m.globals} }
-  | LPAR GLOBAL bind_var value_type RPAR module_fields  /* Sugar */
-    { fun c -> bind_global c $3; let m = $6 c in
-      {m with globals = $4 :: m.globals} }
   | LPAR TABLE var_list RPAR module_fields
     { fun c -> let m = $5 c in
       {m with tables = ($3 c func @@ ati 3) :: m.tables} }

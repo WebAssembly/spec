@@ -19,7 +19,6 @@ type context =
 {
   funcs : func_type list;
   imports : func_type list;
-  globals : value_type list;
   tables : func_type list;
   locals : value_type list;
   return : expr_type;
@@ -27,7 +26,7 @@ type context =
 }
 
 let c0 =
-  {funcs = []; imports = []; globals = []; tables = [];
+  {funcs = []; imports = []; tables = [];
    locals = []; return = None; labels = []}
 
 let lookup category list x =
@@ -37,7 +36,6 @@ let lookup category list x =
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
-let global c x = lookup "global" c.globals x
 let table c x = lookup "table" c.tables x
 let label c x = lookup "label" c.labels x
 
@@ -184,13 +182,6 @@ let rec check_expr c et e =
     check_expr c (Some (local c x)) e1;
     check_type None et e.at
 
-  | LoadGlobal x ->
-    check_type (Some (global c x)) et e.at
-
-  | StoreGlobal (x, e1) ->
-    check_expr c (Some (global c x)) e1;
-    check_type None et e.at
-
   | Load (loadop, e1) ->
     check_align loadop.align e.at;
     check_expr c (Some Int32Type) e1;
@@ -311,11 +302,10 @@ let check_memory memory =
   ignore (List.fold_left (check_segment memory.it.initial) 0 memory.it.segments)
 
 let check_module m =
-  let {imports; exports; globals; tables; funcs; memory} = m.it in
+  let {imports; exports; tables; funcs; memory} = m.it in
   Lib.Option.app check_memory memory;
   let c = {c0 with funcs = List.map type_func funcs;
-                 imports = List.map type_import imports;
-                 globals = List.map it globals} in
+                 imports = List.map type_import imports} in
   let c' = List.fold_left check_table c tables in
   List.iter (check_func c') funcs;
   ignore (List.fold_left (check_export c') NameSet.empty exports)

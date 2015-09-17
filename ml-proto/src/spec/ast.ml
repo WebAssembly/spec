@@ -87,8 +87,6 @@ and expr' =
   | Return of expr option
   | GetLocal of var
   | SetLocal of var * expr
-  | LoadGlobal of var
-  | StoreGlobal of var * expr
   | Load of loadop * expr
   | Store of storeop * expr * expr
   | Const of literal
@@ -151,5 +149,4 @@ and modul' =
   imports : import list;
   exports : export list;
   tables : table list;
-  globals : value_type list
 }
