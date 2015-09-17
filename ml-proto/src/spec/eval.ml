@@ -14,7 +14,7 @@ let error = Error.error
 type value = Values.value
 type func = Ast.func
 type import = value list -> value option
-type host_params = { page_size : Memory.size }
+type host_params = {page_size : Memory.size}
 
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
