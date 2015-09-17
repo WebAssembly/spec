@@ -61,7 +61,7 @@ let min x y =
   let xf = arith_of_bits x in
   let yf = arith_of_bits y in
   (* min(-0, 0) is -0 *)
-  if xf = 0.0 && yf = 0.0 then (Int64.logor x y) else
+  if xf = yf then Int64.logor x y else
   if xf < yf then x else
   if xf > yf then y else
   nondeterministic_nan
@@ -70,7 +70,7 @@ let max x y =
   let xf = arith_of_bits x in
   let yf = arith_of_bits y in
   (* max(-0, 0) is 0 *)
-  if xf = 0.0 && yf = 0.0 then (Int64.logand x y) else
+  if xf = yf then Int64.logand x y else
   if xf > yf then x else
   if xf < yf then y else
   nondeterministic_nan
