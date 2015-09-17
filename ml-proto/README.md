@@ -226,10 +226,11 @@ In order to be able to check and run modules for testing purposes, the S-express
 script: <cmd>*
 
 cmd:
-  <module>                                       ;; define, validate, and initialize module
-  ( invoke <name> <expr>* )                      ;; invoke export and print result
-  ( assert_eq (invoke <name> <expr>* ) <expr> )  ;; assert expected results of invocation
-  ( assert_invalid <module> <failure> )          ;; assert invalid module with given failure string
+  <module>                                             ;; define, validate, and initialize module
+  ( invoke <name> <expr>* )                            ;; invoke export and print result
+  ( assert_eq (invoke <name> <expr>* ) <expr> )        ;; assert expected results of invocation
+  ( assert_fault (invoke <name> <expr>* ) <failure> )  ;; assert invocation faults with given failure string
+  ( assert_invalid <module> <failure> )                ;; assert invalid module with given failure string
 ```
 
 Invocation is only possible after a module has been defined.

@@ -12,6 +12,7 @@ and command' =
   | AssertInvalid of Ast.modul * string
   | Invoke of string * Ast.expr list
   | AssertEq of string * Ast.expr list * Ast.expr
+  | AssertFault of string * Ast.expr list * string
 
 type script = command list
 
@@ -29,6 +30,14 @@ let eval_args es at =
     | None -> Error.error at "unexpected () value" in
   List.map reject_none evs
 
+let assert_error f err re at =
+  match try f (); None with Error.Error (_, s) -> Some s with
+  | None ->
+    Error.error at ("expected " ^ err)
+  | Some s ->
+    if not (Str.string_match (Str.regexp re) s 0) then
+      Error.error at ("failure \"" ^ s ^ "\" does not match: \"" ^ re ^ "\"")
+
 let run_command cmd =
   match cmd.it with
   | Define m ->
@@ -44,13 +53,7 @@ let run_command cmd =
 
   | AssertInvalid (m, re) ->
     trace "Checking invalid...";
-    (match try Check.check_module m; None with Error.Error (_, s) -> Some s with
-    | None ->
-      Error.error cmd.at "expected invalid module"
-    | Some s ->
-      if not (Str.string_match (Str.regexp re) s 0) then
-        Error.error cmd.at 
-          ("validation failure \"" ^ s ^ "\" does not match: \"" ^ re ^ "\""))
+    assert_error (fun () -> Check.check_module m) "invalid module" re cmd.at
 
   | Invoke (name, es) ->
     trace "Invoking...";
@@ -79,6 +82,15 @@ let run_command cmd =
       Error.error cmd.at "assertion failed"
     end
 
+  | AssertFault (name, es, re) ->
+    trace "Assert fault invoking...";
+    let m = match !current_module with
+      | Some m -> m
+      | None -> Error.error cmd.at "no module defined to invoke"
+    in
+    let vs = eval_args es cmd.at in
+    assert_error (fun () -> Eval.invoke m name vs) "fault" re cmd.at
+
 let dry_command cmd =
   match cmd.it with
   | Define m ->
@@ -87,6 +99,7 @@ let dry_command cmd =
   | AssertInvalid _ -> ()
   | Invoke _ -> ()
   | AssertEq _ -> ()
+  | AssertFault _ -> ()
 
 let run script =
   List.iter (if !Flags.dry then dry_command else run_command) script

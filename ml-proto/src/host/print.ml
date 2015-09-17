@@ -73,6 +73,6 @@ let print_value vo =
         (Values.string_of_value v) (Types.string_of_value_type t);
       flush_all ()
   | None ->
-      printf "()";
+      printf "()\n";
       flush_all ()
 
