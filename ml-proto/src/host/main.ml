@@ -12,7 +12,7 @@ let load file =
   let rec loop () =
     let len = input f buf 0 size in
     let source = Bytes.sub_string buf 0 len in
-    if len < size then source else source ^ loop ()
+    if len == 0 then source else source ^ loop ()
   in
   let source = loop () in
   close_in f;
