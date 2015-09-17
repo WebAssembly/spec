@@ -1,3 +1,6 @@
+module F32 = Values.F32 
+module F64 = Values.F64
+
 (* WebAssembly-compatible type conversions to f32 implementation *)
 
 let make_nan_nondeterministic x = F32.mul x (F32.of_float 1.)

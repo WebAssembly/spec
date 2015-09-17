@@ -7,7 +7,6 @@ open Source
 open Ast
 open Script
 
-
 (* Position handling *)
 
 let position_to_pos position =
@@ -36,8 +35,8 @@ let literal at s t =
     match t with
     | Types.Int32Type -> Values.Int32 (I32.of_string s) @@ at
     | Types.Int64Type -> Values.Int64 (I64.of_string s) @@ at
-    | Types.Float32Type -> Values.Float32 (F32.of_string s) @@ at
-    | Types.Float64Type -> Values.Float64 (F64.of_string s) @@ at
+    | Types.Float32Type -> Values.Float32 (Values.F32.of_string s) @@ at
+    | Types.Float64Type -> Values.Float64 (Values.F64.of_string s) @@ at
   with _ -> Error.error at "constant out of range"
 
 
