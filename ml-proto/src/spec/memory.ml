@@ -63,10 +63,9 @@ let create n =
   ref (create' n)
 
 let init_seg mem seg =
-  let mem = !mem in
   (* There currently is no way to blit from a string. *)
   for i = 0 to String.length seg.data - 1 do
-    (view mem : char_view).{seg.addr + i} <- seg.data.[i]
+    (view !mem : char_view).{seg.addr + i} <- seg.data.[i]
   done
 
 let init mem segs =
@@ -74,8 +73,7 @@ let init mem segs =
 
 
 let size mem =
-  let mem = !mem in
-  Array1.dim mem
+  Array1.dim !mem
 
 let resize mem n =
   let before = !mem in
@@ -99,11 +97,10 @@ let int64_of_int32_u i = Int64.logand (Int64.of_int32 i) int32_mask
 let buf = create' 8
 
 let load mem a memty ext =
-  let mem = !mem in
   let sz = mem_size memty in
   let open Types in
   try
-    Array1.blit (Array1.sub mem a sz) (Array1.sub buf 0 sz);
+    Array1.blit (Array1.sub !mem a sz) (Array1.sub buf 0 sz);
     match memty, ext with
     | Int8Mem, SX -> Int32 (Int32.of_int (view buf : sint8_view).{0})
     | Int8Mem, ZX -> Int32 (Int32.of_int (view buf : uint8_view).{0})
@@ -117,7 +114,6 @@ let load mem a memty ext =
   with Invalid_argument _ -> raise Bounds
 
 let store mem a memty v =
-  let mem = !mem in
   let sz = mem_size memty in
   try
     (match memty, v with
@@ -128,5 +124,5 @@ let store mem a memty v =
     | Float32Mem, Float32 x -> (view buf : float32_view).{0} <- Float32.to_bits x
     | Float64Mem, Float64 x -> (view buf : float64_view).{0} <- Float64.to_bits x
     | _ -> raise Type);
-    Array1.blit (Array1.sub buf 0 sz) (Array1.sub mem a sz)
+    Array1.blit (Array1.sub buf 0 sz) (Array1.sub !mem a sz)
   with Invalid_argument _ -> raise Bounds

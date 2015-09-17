@@ -14,10 +14,7 @@ let error = Error.error
 type value = Values.value
 type func = Ast.func
 type import = value list -> value option
-type host_params =
-{
-  page_size : Memory.size
-}
+type host_params = { page_size : Memory.size }
 
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
@@ -268,13 +265,13 @@ let init m imports host =
   assert (List.length imports = List.length m.it.Ast.imports);
   assert (host.page_size > 0);
   let {Ast.exports; globals; tables; funcs; memory; _} = m.it in
-  let memory = init_memory memory in
+  let mem = init_memory memory in
   let func x = List.nth funcs x.it in
   let export ex = ExportMap.add ex.it.name (func ex.it.func) in
   let exports = List.fold_right export exports ExportMap.empty in
   let tables = List.map (fun tab -> List.map func tab.it) tables in
   let globals = List.map eval_decl globals in
-  {funcs; imports; exports; tables; globals; memory; host}
+  {funcs; imports; exports; tables; globals; memory = mem; host}
 
 let invoke m name vs =
   let f = export m (name @@ no_region) in
