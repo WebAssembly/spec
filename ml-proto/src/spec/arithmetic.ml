@@ -33,6 +33,7 @@ sig
   val shift_right : t -> int -> t
   val shift_right_logical : t -> int -> t
   val to_int : t -> int
+  val of_int : int -> t
   val of_int32 : int32 -> t
   val of_int64 : int64 -> t
   val to_float : t -> float
@@ -42,6 +43,8 @@ sig
   val of_big_int_u : Big_int.big_int -> t
   val to_value : t -> value
   val of_value : int -> value -> t
+  val zero : t
+  val one : t
 end
 
 let to_big_int_u_for size to_big_int i =
@@ -148,11 +151,35 @@ struct
   let unsigned big_op i j = big_op (Int.to_big_int_u i) (Int.to_big_int_u j)
 
   let unop op =
+    let open Int in 
     let f = match op with
-      | Clz -> fun i -> i  (* TODO *)
-      | Ctz -> fun i -> i  (* TODO *)
-      | Popcnt -> fun i -> i  (* TODO *)
-    in fun v -> Int.to_value (f (Int.of_value 1 v))
+      | Clz -> 
+        let rec loop acc n =
+          if n = zero then 
+            size 
+          else if logand n (shift_left one (size - 1)) <> zero then 
+            acc 
+          else 
+            loop (1 + acc) (shift_left n 1) 
+        in loop 0
+      | Ctz -> 
+        let rec loop acc n =
+          if n = zero then 
+            size
+          else if logand n one = one then 
+            acc
+          else 
+            loop (1 + acc) (shift_right_logical n 1) 
+        in loop 0
+      | Popcnt -> 
+        let rec loop acc i n =
+          if n = zero then 
+            acc
+          else 
+            let acc' = if logand n one = one then acc + 1 else acc in
+            loop acc' (i - 1) (shift_right_logical n 1)
+        in loop 0 size
+    in fun v -> to_value (of_int (f (of_value 1 v)))
 
   let binop op =
     let f = match op with
