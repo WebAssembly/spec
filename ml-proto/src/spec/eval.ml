@@ -264,6 +264,7 @@ let init_memory ast =
 let init m imports host =
   assert (List.length imports = List.length m.it.Ast.imports);
   assert (host.page_size > 0);
+  assert (Lib.Int.is_power_of_two host.page_size);
   let {Ast.exports; globals; tables; funcs; memory; _} = m.it in
   let mem = init_memory memory in
   let func x = List.nth funcs x.it in
