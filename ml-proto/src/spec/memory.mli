@@ -19,6 +19,8 @@ exception Address
 
 val create : size -> memory
 val init : memory -> segment list -> unit
+val size : memory -> size
+val resize : memory -> size -> unit
 val load : memory -> address -> mem_type -> extension -> Values.value
 val store : memory -> address -> mem_type -> Values.value -> unit
 

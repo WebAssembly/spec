@@ -14,6 +14,7 @@ let error = Error.error
 type value = Values.value
 type func = Ast.func
 type import = value list -> value option
+type host_params = {page_size : Memory.size}
 
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
@@ -25,7 +26,8 @@ type instance =
   exports : export_map;
   tables : func list list;
   globals : value ref list;
-  memory : Memory.t
+  memory : Memory.t;
+  host : host_params
 }
 
 
@@ -40,6 +42,9 @@ type config =
   labels : label list;
   return : label
 }
+
+let page_size c =
+  Int32.of_int c.modul.host.page_size
 
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
@@ -204,6 +209,19 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Arithmetic.eval_cvt cvt v1)
     with Arithmetic.TypeError (_, v, t) -> type_error e1.at v t)
 
+  | PageSize ->
+    Some (Int32 (page_size c))
+
+  | MemorySize ->
+    Some (Int32 (Int32.of_int (Memory.size c.modul.memory)))
+
+  | ResizeMemory e ->
+    let i = int32 (eval_expr c e) e.at in
+    if (Int32.rem i (page_size c)) <> Int32.zero then
+      error e.at "runtime: resize_memory operand not multiple of page_size";
+    Memory.resize c.modul.memory (Int32.to_int i);
+    None
+
 and eval_expr_option c eo =
   match eo with
   | Some e -> eval_expr c e
@@ -234,31 +252,38 @@ and eval_func (m : instance) (f : func) (evs : value list) =
 
 (* Modules *)
 
-let init m imports =
+let init_memory ast =
+  match ast with
+  | None ->
+    Memory.create 0
+  | Some {it = {initial; segments; _}} ->
+    let mem = Memory.create initial in
+    Memory.init mem (List.map it segments);
+    mem
+
+let init m imports host =
   assert (List.length imports = List.length m.it.Ast.imports);
+  assert (host.page_size > 0);
+  assert (Lib.Int.is_power_of_two host.page_size);
   let {Ast.exports; globals; tables; funcs; memory; _} = m.it in
-  let mem =
-    match memory with
-    | None -> Memory.create 0
-    | Some {it = {initial; segments; _}} ->
-      let mem = Memory.create initial in
-      Memory.init mem (List.map it segments);
-      mem
-  in
+  let mem = init_memory memory in
   let func x = List.nth funcs x.it in
   let export ex = ExportMap.add ex.it.name (func ex.it.func) in
   let exports = List.fold_right export exports ExportMap.empty in
   let tables = List.map (fun tab -> List.map func tab.it) tables in
   let globals = List.map eval_decl globals in
-  {funcs; imports; exports; tables; globals; memory = mem}
+  {funcs; imports; exports; tables; globals; memory = mem; host}
 
 let invoke m name vs =
   let f = export m (name @@ no_region) in
+  assert (List.length vs = List.length f.it.params);
   eval_func m f vs
 
 let eval e =
   let f = {params = []; result = None; locals = []; body = e} @@ no_region in
   let memory = Memory.create 0 in
   let exports = ExportMap.singleton "eval" f in
-  let m = {imports = []; exports; globals = []; tables = []; funcs = [f]; memory} in
+  let host = {page_size = 1} in
+  let m = {imports = []; exports; globals = []; tables = []; funcs = [f];
+           memory; host} in
   eval_func m f []
