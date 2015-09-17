@@ -211,7 +211,7 @@ rule token = parse
 
   | "i64.extend_s/i32" { CONVERT (Values.Int64 Int64Op.ExtendSInt32) }
   | "i64.extend_u/i32" { CONVERT (Values.Int64 Int64Op.ExtendUInt32) }
-  | "i64.wrap/i64" { CONVERT (Values.Int32 Int32Op.WrapInt64) }
+  | "i32.wrap/i64" { CONVERT (Values.Int32 Int32Op.WrapInt64) }
   | (ixx as t)".trunc_s/f32"
     { CONVERT (intop t Int32Op.TruncSFloat32 Int64Op.TruncSFloat32) }
   | (ixx as t)".trunc_u/f32"
