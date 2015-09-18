@@ -36,7 +36,7 @@ module IntOp () =
 struct
   type unop = Clz | Ctz | Popcnt
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
-             | And | Or | Xor | Shl | ShrU | ShrS
+             | And | Ior | Xor | Shl | ShrU | ShrS
   type relop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type cvt = ExtendSInt32 | ExtendUInt32 | WrapInt64
            | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
