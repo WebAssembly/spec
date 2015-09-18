@@ -53,7 +53,8 @@ let nearest x =
   let d = Pervasives.floor xf in
   let um = abs_float (xf -. u) in
   let dm = abs_float (xf -. d) in
-  let u_or_d = um < dm || ((um = dm) && (mod_float u 2.0 = 0.0)) in
+  let u_or_d = um < dm ||
+               (um = dm && let h = u /. 2. in Pervasives.floor h = h) in
   let f = if u_or_d then u else d in
   bits_of_arith f
 
