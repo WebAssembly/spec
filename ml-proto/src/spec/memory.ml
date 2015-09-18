@@ -69,6 +69,7 @@ let resize mem n =
 
 open Values
 
+(* TODO: Can the conversion to int overflow? *)
 let address_of_value = function
   | Int32 i -> Int32.to_int i
   | _ -> raise Address

@@ -15,18 +15,18 @@ Misc semantics:
 
 Operator semantics:
  - test that promote/demote, sext/trunc, zext/trunc is bit-preserving if not NaN
- - test that clz/ctz handle zero
+ - ~~test that clz/ctz handle zero~~
  - test that numbers slightly outside of the int32 range round into the int32 range in floating-to-int32 conversion
  - test that neg, abs, copysign, reinterpretcast, store+load, set+get, preserve the sign bit and significand bits of NaN and don't canonicalize
- - test that shifts don't mask their shift count. 32 is particularly nice to test.
+ - ~~test that shifts don't mask their shift count. 32 is particularly nice to test.~~
  - test that `page_size` returns something sane [(power of 2?)](https://github.com/WebAssembly/design/pull/296)
  - test that arithmetic operands are evaluated left-to-right
- - test that add/sub/mul/wrap/wrapping-store silently wrap on overflow
- - test that sdiv/udiv/srem/urem trap on divide-by-zero
- - test that sdiv traps on overflow
- - test that srem doesn't trap when the corresponding sdiv would overflow
+ - ~~test that add/sub/mul/wrap/wrapping-store silently wrap on overflow~~
+ - ~~test that sdiv/udiv/srem/urem trap on divide-by-zero~~
+ - ~~test that sdiv traps on overflow~~
+ - ~~test that srem doesn't trap when the corresponding sdiv would overflow~~
  - test that float-to-integer conversion traps on overflow and invalid
- - test that unsigned operations are properly unsigned
+ - ~~test that unsigned operations are properly unsigned~~
 
 Floating point semantics:
  - test for round-to-nearest rounding

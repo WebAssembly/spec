@@ -10,7 +10,7 @@ Makefile =	Makefile
 OCB_FLAGS +=	# -use-ocamlfind
 OCB_FLAGS +=	# -cflags -w 
 OCB_FLAGS += 	# -cflags +a-4-41-42-44-45
-OCB_FLAGS += 	-libs nums,str,bigarray
+OCB_FLAGS += 	-libs str,bigarray
 OCB_FLAGS += 	-I host -I given -I spec
 OCB =		ocamlbuild $(OCB_FLAGS)
 
@@ -34,7 +34,7 @@ clean:
 check:
 		# check that we can find all relevant libraries
 		# when using ocamlfind
-		ocamlfind query str num bigarray
+		ocamlfind query str bigarray
 
 zip: 
 		git archive --format=zip --prefix=$(NAME)/ \

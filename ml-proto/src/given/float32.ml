@@ -1,8 +1,8 @@
-(* WebAssembly-compatible float32 implementation *)
+(* WebAssembly-compatible f32 implementation *)
 
 (*
- * We represent float32 as its bits in an int32 so that we can be assured that
- * all the bits of NaNs are preserved in all cases where we require them to be.
+ * We represent f32 as its bits in an int32 so that we can be assured that all
+ * the bits of NaNs are preserved in all cases where we require them to be.
  *)
 type t = int32
 type bits = int32
@@ -12,10 +12,6 @@ let nondeterministic_nan = 0x7fc0f0f0l
 
 let of_float = Int32.bits_of_float
 let to_float = Int32.float_of_bits
-
-(* TODO: OCaml's string_of_float and float_of_string are insufficient *)
-let of_string x = of_float (float_of_string x)
-let to_string x = string_of_float (to_float x)
 
 let of_bits x = x
 let to_bits x = x
@@ -93,4 +89,6 @@ let gt x y = (arith_of_bits x) >  (arith_of_bits y)
 let le x y = (arith_of_bits x) <= (arith_of_bits y)
 let ge x y = (arith_of_bits x) >= (arith_of_bits y)
 
-(* TODO: type conversion functions *)
+(* TODO: OCaml's string_of_float and float_of_string are insufficient *)
+let of_string x = of_float (float_of_string x)
+let to_string x = string_of_float (to_float x)

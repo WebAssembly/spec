@@ -11,7 +11,7 @@ export PATH=$PWD/ocaml/install/bin:$PATH
 
 cd src
 
-ocamlbuild -libs "bigarray, nums, str" -Is "given, spec, host" main.native
+ocamlbuild -libs "bigarray, str" -Is "given, spec, host" main.native
 
 cd ..
 

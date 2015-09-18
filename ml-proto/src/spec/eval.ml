@@ -79,6 +79,15 @@ let type_error at v t =
     ("runtime: type error, expected " ^ Types.string_of_value_type t ^
       ", got " ^ Types.string_of_value_type (type_of v))
 
+let numerics_error at = function
+  | Numerics.IntegerOverflow ->
+      error at "runtime: integer overflow"
+  | Numerics.IntegerDivideByZero ->
+      error at "runtime: integer divide by zero"
+  | Numerics.InvalidConversionToInteger ->
+      error at "runtime: invalid conversion to integer"
+  | exn -> raise exn
+
 let some v at =
   match v with
   | Some v -> v
@@ -176,14 +185,18 @@ let rec eval_expr (c : config) (e : expr) =
   | Unary (unop, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     (try Some (Arithmetic.eval_unop unop v1)
-    with Arithmetic.TypeError (_, v, t) -> type_error e1.at v t)
+    with
+      | Arithmetic.TypeError (_, v, t) -> type_error e1.at v t
+      | exn -> numerics_error e.at exn)
 
   | Binary (binop, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     (try Some (Arithmetic.eval_binop binop v1 v2)
-    with Arithmetic.TypeError (i, v, t) ->
-      type_error (if i = 1 then e1 else e2).at v t)
+    with
+      | Arithmetic.TypeError (i, v, t) ->
+          type_error (if i = 1 then e1 else e2).at v t
+      | exn -> numerics_error e.at exn)
 
   | Compare (relop, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
@@ -197,7 +210,9 @@ let rec eval_expr (c : config) (e : expr) =
   | Convert (cvt, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     (try Some (Arithmetic.eval_cvt cvt v1)
-    with Arithmetic.TypeError (_, v, t) -> type_error e1.at v t)
+    with
+      | Arithmetic.TypeError (_, v, t) -> type_error e1.at v t
+      | exn -> numerics_error e.at exn)
 
   | PageSize ->
     Some (Int32 (page_size c))
