@@ -178,7 +178,7 @@ rule token = parse
   | (ixx as t)".rem_s" { BINARY (intop t Int32Op.RemS Int64Op.RemS) }
   | (ixx as t)".rem_u" { BINARY (intop t Int32Op.RemU Int64Op.RemU) }
   | (ixx as t)".and" { BINARY (intop t Int32Op.And Int64Op.And) }
-  | (ixx as t)".or" { BINARY (intop t Int32Op.Or Int64Op.Or) }
+  | (ixx as t)".ior" { BINARY (intop t Int32Op.Ior Int64Op.Ior) }
   | (ixx as t)".xor" { BINARY (intop t Int32Op.Xor Int64Op.Xor) }
   | (ixx as t)".shl" { BINARY (intop t Int32Op.Shl Int64Op.Shl) }
   | (ixx as t)".shr_u" { BINARY (intop t Int32Op.ShrU Int64Op.ShrU) }

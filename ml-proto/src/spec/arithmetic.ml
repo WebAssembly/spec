@@ -164,7 +164,7 @@ struct
       | RemS -> Int.rem
       | RemU -> fun i j -> Int.of_big_int_u (unsigned mod_big_int i j)
       | And -> Int.logand
-      | Or -> Int.logor
+      | Ior -> Int.logor
       | Xor -> Int.logxor
       | Shl -> fun i j -> Int.shift_left i (Int.to_int j)
       | ShrU -> fun i j -> Int.shift_right_logical i (Int.to_int j)
