@@ -134,6 +134,8 @@ and char_at_memory_offset m base offset =
     | Int32 i -> Int32.to_int i
     | _ -> assert false
   in
+  assert (code >= 0);
+  assert (code <= 255);
   Char.chr code
 
 and memory_as_string m offset count =
