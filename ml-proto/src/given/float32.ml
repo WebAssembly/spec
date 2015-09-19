@@ -61,7 +61,7 @@ let nearest x =
 let min x y =
   let xf = arith_of_bits x in
   let yf = arith_of_bits y in
-  (* min(-0, 0) is -0 *)
+  (* min -0 0 is -0 *)
   if xf = yf then Int32.logor x y else
   if xf < yf then x else
   if xf > yf then y else
@@ -70,7 +70,7 @@ let min x y =
 let max x y =
   let xf = arith_of_bits x in
   let yf = arith_of_bits y in
-  (* max(-0, 0) is 0 *)
+  (* max -0 0 is 0 *)
   if xf = yf then Int32.logand x y else
   if xf > yf then x else
   if xf < yf then y else
