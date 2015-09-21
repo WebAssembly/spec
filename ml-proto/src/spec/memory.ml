@@ -69,9 +69,9 @@ let resize mem n =
 
 open Values
 
-(* TODO: Can the conversion to int overflow? *)
+(* TODO: The conversion to int could overflow *)
 let address_of_value = function
-  | Int32 i -> Int32.to_int i
+  | Int32 i -> Int32.to_int (I32.to_int32 i)
   | _ -> raise Address
 
 
@@ -110,10 +110,10 @@ let load mem a memty ext =
   let open Types in
   try
     match memty, ext with
-    | Int8Mem, _ -> Int32 (load8 mem a ext)
-    | Int16Mem, _ -> Int32 (load16 mem a ext)
-    | Int32Mem, NX -> Int32 (load32 mem a)
-    | Int64Mem, NX -> Int64 (load64 mem a)
+    | Int8Mem, _ -> Int32 (I32.of_int32 (load8 mem a ext))
+    | Int16Mem, _ -> Int32 (I32.of_int32 (load16 mem a ext))
+    | Int32Mem, NX -> Int32 (I32.of_int32 (load32 mem a))
+    | Int64Mem, NX -> Int64 (I64.of_int64 (load64 mem a))
     | Float32Mem, NX -> Float32 (F32.of_bits (load32 mem a))
     | Float64Mem, NX -> Float64 (F64.of_bits (load64 mem a))
     | _ -> raise Type
@@ -122,10 +122,10 @@ let load mem a memty ext =
 let store mem a memty v =
   try
     (match memty, v with
-    | Int8Mem, Int32 x -> store8 mem a x
-    | Int16Mem, Int32 x -> store16 mem a x
-    | Int32Mem, Int32 x -> store32 mem a x
-    | Int64Mem, Int64 x -> store64 mem a x
+    | Int8Mem, Int32 x -> store8 mem a (I32.to_int32 x)
+    | Int16Mem, Int32 x -> store16 mem a (I32.to_int32 x)
+    | Int32Mem, Int32 x -> store32 mem a (I32.to_int32 x)
+    | Int64Mem, Int64 x -> store64 mem a (I64.to_int64 x)
     | Float32Mem, Float32 x -> store32 mem a (F32.to_bits x)
     | Float64Mem, Float64 x -> store64 mem a (F64.to_bits x)
     | _ -> raise Type)

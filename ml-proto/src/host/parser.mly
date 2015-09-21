@@ -34,8 +34,8 @@ let parse_error s = Error.error Source.no_region s
 let literal at s t =
   try
     match t with
-    | Types.Int32Type -> Values.Int32 (Int32.of_string s) @@ at
-    | Types.Int64Type -> Values.Int64 (Int64.of_string s) @@ at
+    | Types.Int32Type -> Values.Int32 (I32.of_string s) @@ at
+    | Types.Int64Type -> Values.Int64 (I64.of_string s) @@ at
     | Types.Float32Type -> Values.Float32 (F32.of_string s) @@ at
     | Types.Float64Type -> Values.Float64 (F64.of_string s) @@ at
   with _ -> Error.error at "constant out of range"

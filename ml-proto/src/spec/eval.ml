@@ -43,7 +43,7 @@ type config =
 }
 
 let page_size c =
-  Int32.of_int c.modul.host.page_size
+  I32.of_int32 (Int32.of_int c.modul.host.page_size)
 
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
@@ -218,7 +218,7 @@ let rec eval_expr (c : config) (e : expr) =
     Some (Int32 (page_size c))
 
   | MemorySize ->
-    Some (Int32 (Int32.of_int (Memory.size c.modul.memory)))
+    Some (Int32 (I32.of_int32 (Int32.of_int (Memory.size c.modul.memory))))
 
   | ResizeMemory e ->
     let i = int32 (eval_expr c e) e.at in
