@@ -154,6 +154,7 @@ let rec eval_expr (c : config) (e : expr) =
   | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
+    (* TODO: The conversion to int could overflow. *)
     eval_func c.modul (table c x (Int32.to_int i @@ e1.at)) vs
 
   | Return eo ->
@@ -224,6 +225,7 @@ let rec eval_expr (c : config) (e : expr) =
     let i = int32 (eval_expr c e) e.at in
     if (I32.rem_u i (page_size c)) <> I32.zero then
       error e.at "runtime: resize_memory operand not multiple of page_size";
+    (* TODO: The conversion to int could overflow. *)
     Memory.resize c.modul.memory (Int32.to_int i);
     None
 
