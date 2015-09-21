@@ -49,6 +49,7 @@ Linear memory semantics:
  - test loading "uninitialized" things from aliased stack frames return what's there
  - test that loadwithoffset traps in overflow cases
  - test that newly allocated memory is zeroed
+ - test that resize_memory does a full 32-bit unsigned check for page_size divisibility
 
 Function pointer semantics:
  - test that function pointers work [correctly](https://github.com/WebAssembly/design/issues/89)

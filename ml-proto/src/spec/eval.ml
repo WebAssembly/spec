@@ -222,7 +222,7 @@ let rec eval_expr (c : config) (e : expr) =
 
   | ResizeMemory e ->
     let i = int32 (eval_expr c e) e.at in
-    if (Int32.rem i (page_size c)) <> Int32.zero then
+    if (I32.rem_u i (page_size c)) <> I32.zero then
       error e.at "runtime: resize_memory operand not multiple of page_size";
     Memory.resize c.modul.memory (Int32.to_int i);
     None
