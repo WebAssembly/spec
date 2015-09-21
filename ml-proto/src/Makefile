@@ -1,83 +1,44 @@
 #
-# (c) 2015 Andreas Rossberg
+# This Makfile assumes we can use ocamlfind to locate libraries. This
+# is the case in a typical OCaml environment that uses Opam. Use 
+#
+#	make check
+#
+# to see that relevant libraries can be found.	
 #
 
-NAME = wasm
-INCLUDES = -I host -I given -I spec
-MODULES = \
-  host/params host/flags given/lib given/source given/float32 given/float64 spec/error \
-  spec/types spec/values spec/memory spec/ast \
-  spec/check spec/arithmetic spec/eval \
-  host/print host/builtins host/script \
-  host/lexer host/parser \
-  host/main
-NOMLI = host/params host/flags spec/types spec/values spec/ast host/main
-PARSERS = host/parser
-LEXERS = host/lexer
-LIBRARIES = bigarray nums str
-SAMPLES = 
-TEXTS = 
+NAME =		wasm
+Makefile =	Makefile
 
-MLS = $(MODULES:%=%.ml)
-MLIS = $(filter-out $(NOMLI:%=%.mli), $(MODULES:%=%.mli))
-MLYS = $(PARSERS:%=%.mly)
-MLLS = $(LEXERS:%=%.mll)
-CMOS = $(MODULES:%=%.cmo)
-CMXS = $(MODULES:%=%.cmx)
-CMAS = $(LIBRARIES:%=%.cma)
-CMXAS = $(LIBRARIES:%=%.cmxa)
-TXTS = $(TEXTS:%=%.txt)
+OCB_FLAGS +=	-use-ocamlfind
+OCB_FLAGS +=	# -cflags -w 
+OCB_FLAGS += 	# -cflags +a-4-41-42-44-45
+OCB_FLAGS += 	-I host -I given -I spec
+OCB =		ocamlbuild $(OCB_FLAGS)
 
-OCAMLCOPTS =   # -w +a-4-41-42-44-45
+all:		$(NAME) unopt
 
-$(NAME): $(CMXS) Makefile
-	ocamlopt $(CMXAS) $(CMXS) $(OCAMLCOPTS) -o $@
+$(NAME):	main.native
+		mv $< $@
 
-unopt: $(CMOS) Makefile
-	ocamlc $(CMAS) $(CMOS) $(OCAMLCOPTS) -g -o $(NAME)
+unopt:		main.byte
+		mv $< $@
 
-$(filter-out $(NOMLI:%=%.cmo), $(CMOS)): %.cmo: %.cmi
-$(filter-out $(NOMLI:%=%.cmx), $(CMXS)): %.cmx: %.cmi
+main.native:	$(MAKEFILE) check
+		$(OCB) $@
 
-Makefile.depend: $(MLS) $(MLIS) Makefile
-	ocamldep $(INCLUDES) $^ >$@
-
--include Makefile.depend
-
-zip: $(MLS) $(MLIS) $(MLYS) $(MLLS) Makefile $(IMLS) $(TXTS)
-	mkdir tmp tmp/$(NAME)
-	cp $^ tmp/$(NAME)
-	rm -f $(NAME).zip
-	(cd tmp; zip -r ../$(NAME).zip $(NAME))
-	rm -r tmp
+main.byte:	$(MAKEFILE) check
+		$(OCB) $@
 
 clean:
-	rm -f given/*.cmi given/*.cmo given/*.cmx given/*.o
-	rm -f spec/*.cmi spec/*.cmo spec/*.cmx spec/*.o
-	rm -f host/*.cmi host/*.cmo host/*.cmx host/*.o host/*.output
-	rm -f *.depend *.native *.byte $(NAME) $(NAME).opt $(NAME).zip
-	rm -rf _build
-	rm -f *~
+		$(OCB) -clean
 
-distclean: clean
-	rm -f $(PARSERS:%=%.mli) $(PARSERS:%=%.ml) $(LEXERS:%=%.ml)
+check:
+		# check that we can find all relevant libraries
+		ocamlfind query str num bigarray
 
-%.cmi: %.mli
-	ocamlc -c $(INCLUDES) $(OCAMLCOPTS) $<
+zip: 
+		git archive --format=zip --prefix=$(NAME)/ \
+			-o $(NAME).zip HEAD
 
-%.cmo: %.ml
-	ocamlc -c $(INCLUDES) $(OCAMLCOPTS) -g $<
-
-%.cmx: %.ml
-	ocamlopt -c $(INCLUDES) $(OCAMLCOPTS) $<
-
-%.ml: %.mly
-	ocamlyacc -v $<
-
-%.mli: %.mly
-	ocamlyacc -v $<
-
-%.ml: %.mll
-	ocamllex $<
-
-.PRECIOUS: %.ml %.mli
+.PHONY:		all clean check zip
