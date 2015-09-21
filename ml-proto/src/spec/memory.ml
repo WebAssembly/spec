@@ -114,8 +114,8 @@ let load mem a memty ext =
     | Int16Mem, _ -> Int32 (load16 mem a ext)
     | Int32Mem, NX -> Int32 (load32 mem a)
     | Int64Mem, NX -> Int64 (load64 mem a)
-    | Float32Mem, NX -> Float32 (Float32.of_bits (load32 mem a))
-    | Float64Mem, NX -> Float64 (Float64.of_bits (load64 mem a))
+    | Float32Mem, NX -> Float32 (F32.of_bits (load32 mem a))
+    | Float64Mem, NX -> Float64 (F64.of_bits (load64 mem a))
     | _ -> raise Type
   with Invalid_argument _ -> raise Bounds
 
@@ -126,7 +126,7 @@ let store mem a memty v =
     | Int16Mem, Int32 x -> store16 mem a x
     | Int32Mem, Int32 x -> store32 mem a x
     | Int64Mem, Int64 x -> store64 mem a x
-    | Float32Mem, Float32 x -> store32 mem a (Float32.to_bits x)
-    | Float64Mem, Float64 x -> store64 mem a (Float64.to_bits x)
+    | Float32Mem, Float32 x -> store32 mem a (F32.to_bits x)
+    | Float64Mem, Float64 x -> store64 mem a (F64.to_bits x)
     | _ -> raise Type)
   with Invalid_argument _ -> raise Bounds

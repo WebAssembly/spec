@@ -161,34 +161,34 @@ struct
 
   let unop op =
     let f = match op with
-      | Neg -> Float32.neg
-      | Abs -> Float32.abs
-      | Sqrt  -> Float32.sqrt
-      | Ceil -> Float32.ceil
-      | Floor -> Float32.floor
-      | Trunc -> Float32.trunc
-      | Nearest -> Float32.nearest
+      | Neg -> F32.neg
+      | Abs -> F32.abs
+      | Sqrt  -> F32.sqrt
+      | Ceil -> F32.ceil
+      | Floor -> F32.floor
+      | Trunc -> F32.trunc
+      | Nearest -> F32.nearest
     in fun v -> Float32 (f (f32_of_value 1 v))
 
   let binop op =
     let f = match op with
-      | Add -> Float32.add
-      | Sub -> Float32.sub
-      | Mul -> Float32.mul
-      | Div -> Float32.div
-      | Min -> Float32.min
-      | Max -> Float32.max
-      | CopySign -> Float32.copysign
+      | Add -> F32.add
+      | Sub -> F32.sub
+      | Mul -> F32.mul
+      | Div -> F32.div
+      | Min -> F32.min
+      | Max -> F32.max
+      | CopySign -> F32.copysign
     in fun v1 v2 -> Float32 (f (f32_of_value 1 v1) (f32_of_value 2 v2))
 
   let relop op =
     let f = match op with
-      | Eq -> Float32.eq
-      | Ne -> Float32.ne
-      | Lt -> Float32.lt
-      | Le -> Float32.le
-      | Gt -> Float32.gt
-      | Ge -> Float32.ge
+      | Eq -> F32.eq
+      | Ne -> F32.ne
+      | Lt -> F32.lt
+      | Le -> F32.le
+      | Gt -> F32.gt
+      | Ge -> F32.ge
     in fun v1 v2 -> f (f32_of_value 1 v1) (f32_of_value 2 v2)
 
   let cvt op =
@@ -215,34 +215,34 @@ struct
 
   let unop op =
     let f = match op with
-      | Neg -> Float64.neg
-      | Abs -> Float64.abs
-      | Sqrt  -> Float64.sqrt
-      | Ceil -> Float64.ceil
-      | Floor -> Float64.floor
-      | Trunc -> Float64.trunc
-      | Nearest -> Float64.nearest
+      | Neg -> F64.neg
+      | Abs -> F64.abs
+      | Sqrt  -> F64.sqrt
+      | Ceil -> F64.ceil
+      | Floor -> F64.floor
+      | Trunc -> F64.trunc
+      | Nearest -> F64.nearest
     in fun v -> Float64 (f (f64_of_value 1 v))
 
   let binop op =
     let f = match op with
-      | Add -> Float64.add
-      | Sub -> Float64.sub
-      | Mul -> Float64.mul
-      | Div -> Float64.div
-      | Min -> Float64.min
-      | Max -> Float64.max
-      | CopySign -> Float64.copysign
+      | Add -> F64.add
+      | Sub -> F64.sub
+      | Mul -> F64.mul
+      | Div -> F64.div
+      | Min -> F64.min
+      | Max -> F64.max
+      | CopySign -> F64.copysign
     in fun v1 v2 -> Float64 (f (f64_of_value 1 v1) (f64_of_value 2 v2))
 
   let relop op =
     let f = match op with
-      | Eq -> Float64.eq
-      | Ne -> Float64.ne
-      | Lt -> Float64.lt
-      | Le -> Float64.le
-      | Gt -> Float64.gt
-      | Ge -> Float64.ge
+      | Eq -> F64.eq
+      | Ne -> F64.ne
+      | Lt -> F64.lt
+      | Le -> F64.le
+      | Gt -> F64.gt
+      | Ge -> F64.ge
     in fun v1 v2 -> f (f64_of_value 1 v1) (f64_of_value 2 v2)
 
   let cvt op =
