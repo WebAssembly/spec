@@ -24,21 +24,6 @@ type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
 type memory = memory' ref
 type t = memory
 
-type char_view = (char, int8_unsigned_elt, c_layout) Array1.t
-type sint8_view = (int, int8_signed_elt, c_layout) Array1.t
-type sint16_view = (int, int16_signed_elt, c_layout) Array1.t
-type sint32_view = (int32, int32_elt, c_layout) Array1.t
-type sint64_view = (int64, int64_elt, c_layout) Array1.t
-type uint8_view = (int, int8_unsigned_elt, c_layout) Array1.t
-type uint16_view = (int, int16_unsigned_elt, c_layout) Array1.t
-type uint32_view = (int32, int32_elt, c_layout) Array1.t
-type uint64_view = (int64, int64_elt, c_layout) Array1.t
-type float32_view = (int32, int32_elt, c_layout) Array1.t
-type float64_view = (int64, int64_elt, c_layout) Array1.t
-
-let view : memory' -> ('c, 'd, c_layout) Array1.t = Obj.magic
-
-
 (* Queries *)
 
 let mem_size = function
@@ -65,7 +50,7 @@ let create n =
 let init_seg mem seg =
   (* There currently is no way to blit from a string. *)
   for i = 0 to String.length seg.data - 1 do
-    (view !mem : char_view).{seg.addr + i} <- seg.data.[i]
+    !mem.{seg.addr + i} <- Char.code seg.data.[i]
   done
 
 let init mem segs =
@@ -91,38 +76,56 @@ let address_of_value = function
 
 (* Load and store *)
 
-let int32_mask = Int64.shift_right_logical (Int64.of_int (-1)) 32
-let int64_of_int32_u i = Int64.logand (Int64.of_int32 i) int32_mask
+let load8 mem a ext =
+  (match ext with
+  | SX -> Int32.shift_right (Int32.shift_left (Int32.of_int !mem.{a}) 24) 24
+  | _ -> Int32.of_int !mem.{a})
 
-let buf = create' 8
+let load16 mem a ext =
+  Int32.logor (load8 mem a NX) (Int32.shift_left (load8 mem (a+1) ext) 8)
+
+let load32 mem a =
+  Int32.logor (load16 mem a NX) (Int32.shift_left (load16 mem (a+2) NX) 16)
+
+let load64 mem a =
+  Int64.logor (Int64.of_int32 (load32 mem a)) (Int64.shift_left (Int64.of_int32 (load32 mem (a+4))) 32)
+
+let store8 mem a value =
+  !mem.{a} <- Int32.to_int (Int32.logand value (Int32.of_int 255))
+
+let store16 mem a value =
+  store8 mem (a+0) value;
+  store8 mem (a+1) (Int32.shift_right_logical value 8)
+
+let store32 mem a value =
+  store16 mem (a+0) value;
+  store16 mem (a+2) (Int32.shift_right_logical value 16)
+
+let store64 mem a value =
+  store32 mem (a+0) (Int64.to_int32 value);
+  store32 mem (a+4) (Int64.to_int32 (Int64.shift_right_logical value 32))
 
 let load mem a memty ext =
-  let sz = mem_size memty in
   let open Types in
   try
-    Array1.blit (Array1.sub !mem a sz) (Array1.sub buf 0 sz);
     match memty, ext with
-    | Int8Mem, SX -> Int32 (Int32.of_int (view buf : sint8_view).{0})
-    | Int8Mem, ZX -> Int32 (Int32.of_int (view buf : uint8_view).{0})
-    | Int16Mem, SX -> Int32 (Int32.of_int (view buf : sint16_view).{0})
-    | Int16Mem, ZX -> Int32 (Int32.of_int (view buf : uint16_view).{0})
-    | Int32Mem, NX -> Int32 (view buf : sint32_view).{0}
-    | Int64Mem, NX -> Int64 (view buf : sint64_view).{0}
-    | Float32Mem, NX -> Float32 (Float32.of_bits (view buf : float32_view).{0})
-    | Float64Mem, NX -> Float64 (Float64.of_bits (view buf : float64_view).{0})
+    | Int8Mem, _ -> Int32 (load8 mem a ext)
+    | Int16Mem, _ -> Int32 (load16 mem a ext)
+    | Int32Mem, NX -> Int32 (load32 mem a)
+    | Int64Mem, NX -> Int64 (load64 mem a)
+    | Float32Mem, NX -> Float32 (Float32.of_bits (load32 mem a))
+    | Float64Mem, NX -> Float64 (Float64.of_bits (load64 mem a))
     | _ -> raise Type
   with Invalid_argument _ -> raise Bounds
 
-let store mem a memty v =
-  let sz = mem_size memty in
+let store (mem : t) (a : int) (memty : mem_type) v =
   try
     (match memty, v with
-    | Int8Mem, Int32 x -> (view buf : sint8_view).{0} <- Int32.to_int x
-    | Int16Mem, Int32 x -> (view buf : sint16_view).{0} <- Int32.to_int x
-    | Int32Mem, Int32 x -> (view buf : sint32_view).{0} <- x
-    | Int64Mem, Int64 x -> (view buf : sint64_view).{0} <- x
-    | Float32Mem, Float32 x -> (view buf : float32_view).{0} <- Float32.to_bits x
-    | Float64Mem, Float64 x -> (view buf : float64_view).{0} <- Float64.to_bits x
-    | _ -> raise Type);
-    Array1.blit (Array1.sub buf 0 sz) (Array1.sub !mem a sz)
+    | Int8Mem, Int32 x -> store8 mem a x
+    | Int16Mem, Int32 x -> store16 mem a x
+    | Int32Mem, Int32 x -> store32 mem a x
+    | Int64Mem, Int64 x -> store64 mem a x
+    | Float32Mem, Float32 x -> store32 mem a (Float32.to_bits x)
+    | Float64Mem, Float64 x -> store64 mem a (Float64.to_bits x)
+    | _ -> raise Type)
   with Invalid_argument _ -> raise Bounds
