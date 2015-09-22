@@ -198,7 +198,7 @@ rule token = parse
   | (ixx as t)".gt_s" { COMPARE (intop t Int32Op.GtS Int64Op.GtS) }
   | (ixx as t)".gt_u" { COMPARE (intop t Int32Op.GtU Int64Op.GtU) }
   | (ixx as t)".ge_s" { COMPARE (intop t Int32Op.GeS Int64Op.GeS) }
-  | (ixx as t)".ge_u" { COMPARE (intop t Int32Op.GeU Int64Op.GtU) }
+  | (ixx as t)".ge_u" { COMPARE (intop t Int32Op.GeU Int64Op.GeU) }
   | (fxx as t)".eq" { COMPARE (floatop t Float32Op.Eq Float64Op.Eq) }
   | (fxx as t)".ne" { COMPARE (floatop t Float32Op.Ne Float64Op.Ne) }
   | (fxx as t)".lt" { COMPARE (floatop t Float32Op.Lt Float64Op.Lt) }
