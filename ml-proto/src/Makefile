@@ -1,18 +1,16 @@
+# vim: sw=8 ts=8 noet:
 #
-# This Makfile assumes we can use ocamlfind to locate libraries. This
-# is the case in a typical OCaml environment that uses Opam. Use 
-#
-#	make check
-#
-# to see that relevant libraries can be found.	
+# This Makefile uses ocamlbuild but does not rely on ocamlfind
+# or the Opam package manager.
 #
 
 NAME =		wasm
 Makefile =	Makefile
 
-OCB_FLAGS +=	-use-ocamlfind
+OCB_FLAGS +=	# -use-ocamlfind
 OCB_FLAGS +=	# -cflags -w 
 OCB_FLAGS += 	# -cflags +a-4-41-42-44-45
+OCB_FLAGS += 	-libs nums,str,bigarray
 OCB_FLAGS += 	-I host -I given -I spec
 OCB =		ocamlbuild $(OCB_FLAGS)
 
@@ -24,10 +22,10 @@ $(NAME):	main.native
 unopt:		main.byte
 		mv $< $@
 
-main.native:	$(MAKEFILE) check
+main.native:	$(MAKEFILE)
 		$(OCB) $@
 
-main.byte:	$(MAKEFILE) check
+main.byte:	$(MAKEFILE)
 		$(OCB) $@
 
 clean:
@@ -35,6 +33,7 @@ clean:
 
 check:
 		# check that we can find all relevant libraries
+		# when using ocamlfind
 		ocamlfind query str num bigarray
 
 zip: 
