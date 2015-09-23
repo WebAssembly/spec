@@ -12,7 +12,7 @@ and command' =
   | AssertInvalid of Ast.modul * string
   | Invoke of string * Ast.expr list
   | AssertEq of string * Ast.expr list * Ast.expr
-  | AssertFault of string * Ast.expr list * string
+  | AssertTrap of string * Ast.expr list * string
 
 type script = command list
 
@@ -83,14 +83,14 @@ let run_command cmd =
       Error.error cmd.at "assertion failed"
     end
 
-  | AssertFault (name, es, re) ->
-    trace "Assert fault invoking...";
+  | AssertTrap (name, es, re) ->
+    trace "Assert trap invoking...";
     let m = match !current_module with
       | Some m -> m
       | None -> Error.error cmd.at "no module defined to invoke"
     in
     let vs = eval_args es cmd.at in
-    assert_error (fun () -> Eval.invoke m name vs) "fault" re cmd.at
+    assert_error (fun () -> Eval.invoke m name vs) "trap" re cmd.at
 
 let dry_command cmd =
   match cmd.it with
@@ -100,7 +100,7 @@ let dry_command cmd =
   | AssertInvalid _ -> ()
   | Invoke _ -> ()
   | AssertEq _ -> ()
-  | AssertFault _ -> ()
+  | AssertTrap _ -> ()
 
 let run script =
   List.iter (if !Flags.dry then dry_command else run_command) script
