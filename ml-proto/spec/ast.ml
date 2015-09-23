@@ -75,12 +75,13 @@ type literal = value Source.phrase
 type expr = expr' Source.phrase
 and expr' =
   | Nop                                           (* do nothing *)
-  | Block of expr list                            (* execute in sequence *)
-  | If of expr * expr * expr                      (* conditional *)
-  | Loop of expr                                  (* infinite loop *)
-  | Label of expr                                 (* labelled expression *)
-  | Break of var * expr option                    (* break to n-th surrounding label *)
-  | Switch of value_type * expr * arm list * expr (* switch, latter expr is default *)
+  | Block of expr list                            (* execute in sequence, label at end *)
+  | Loop of expr list                             (* execute in sequence, label at beginning *)
+  | Br of var * expr option                       (* branch to label *)
+  | BrIf of var * expr * expr option              (* branch to label if expr is true *)
+  | BrUnless of var * expr * expr option          (* branch to label if expr is false *)
+  | BrSwitch of value_type * expr * var * (value * var) list * expr option
+                                                  (* branch to label selected by expr *)
   | Call of var * expr list                       (* call function *)
   | CallImport of var * expr list                 (* call imported function *)
   | CallIndirect of var * expr * expr list        (* call function through table *)
@@ -99,15 +100,6 @@ and expr' =
   | PageSize                                      (* return host-defined page_size *)
   | MemorySize                                    (* return current size of linear memory *)
   | ResizeMemory of expr                          (* resize linear memory *)
-
-and arm = arm' Source.phrase
-and arm' =
-{
-  value : literal;
-  expr : expr;
-  fallthru : bool
-}
-
 
 (* Functions and Modules *)
 

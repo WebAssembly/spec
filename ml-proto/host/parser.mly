@@ -95,7 +95,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %}
 
 %token INT FLOAT TEXT VAR TYPE LPAR RPAR
-%token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
+%token NOP BLOCK LOOP BR BRIF BRUNLESS BRSWITCH
 %token CALL CALLIMPORT CALLINDIRECT RETURN
 %token GETLOCAL SETLOCAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -110,7 +110,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<string> VAR
 %token<Types.value_type> TYPE
 %token<Types.value_type> CONST
-%token<Types.value_type> SWITCH
+%token<Types.value_type> BRSWITCH
 %token<Ast.unop> UNARY
 %token<Ast.binop> BINARY
 %token<Ast.relop> COMPARE
@@ -160,20 +160,23 @@ expr :
 ;
 oper :
   | NOP { fun c -> Nop }
-  | BLOCK expr expr_list { fun c -> Block ($2 c :: $3 c) }
-  | IF expr expr expr { fun c -> If ($2 c, $3 c, $4 c) }
-  | IF expr expr  /* Sugar */
-    { let at1 = ati 1 in fun c -> If ($2 c, $3 c, Nop @@ at1) }
-  | LOOP expr_block { fun c -> Loop ($2 c) }
-  | LABEL expr_block { fun c -> Label ($2 (anon_label c)) }
-  | LABEL bind_var expr_block  /* Sugar */
-    { fun c -> Label ($3 (bind_label c $2)) }
-  | BREAK var expr_opt { fun c -> Break ($2 c label, $3 c) }
-  | BREAK { let at = at() in fun c -> Break (0 @@ at, None) }  /* Sugar */
-  | SWITCH expr arms
-    { let at1 = ati 1 in
-      fun c -> let x, y = $3 c in
-        Switch ($1 @@ at1, $2 c, List.map (fun a -> a $1) x, y) }
+  | BLOCK expr_list bind_var { fun c -> Block ($2 (bind_label c $3)) }
+  /* Sugar: block with no label */
+  | BLOCK expr_list { fun c -> Block ($2 (anon_label c)) }
+  | LOOP bind_var expr_list { fun c -> Loop ($3 (bind_label c $2)) }
+  /* Sugar: loop with additional label at end */
+  | LOOP bind_var expr_list bind_var
+    { fun c -> let at = at() in
+               Loop ((fun c -> [Block ($3 (bind_label c $4)) @@ at])
+                     (bind_label c $2)) }
+  | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
+  | BRIF var expr expr_opt { fun c -> BrIf ($2 c label, $3 c, $4 c) }
+  | BRUNLESS var expr expr_opt { fun c -> BrUnless ($2 c label, $3 c, $4 c) }
+  | BRSWITCH expr var br_switch_arms expr_opt
+    { let at = at() in
+      fun c -> BrSwitch ($1 @@ at, $2 c, $3 c label,
+                         List.map (fun (x,y) -> ((literal at x $1).it, y c label)) $4,
+                         $5 c) }
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | CALLIMPORT var expr_list { fun c -> CallImport ($2 c import, $3 c) }
   | CALLINDIRECT var expr expr_list
@@ -202,31 +205,15 @@ expr_list :
   | /* empty */ { fun c -> [] }
   | expr expr_list { fun c -> $1 c :: $2 c }
 ;
-expr_block :
-  | expr { $1 }
-  | expr expr expr_list  /* Sugar */
-    { let at = at() in fun c -> Block ($1 c :: $2 c :: $3 c) @@ at }
-;
 
-fallthrough :
-  | /* empty */ { false }
-  | FALLTHROUGH { true }
-;
-arm :
-  | LPAR CASE literal expr_block fallthrough RPAR
-    { let at = at() in let at3 = ati 3 in
-      fun c t ->
-      {value = literal at3 $3 t; expr = $4 c; fallthru = $5} @@ at }
-  | LPAR CASE literal RPAR  /* Sugar */
-    { let at = at() in let at3 = ati 3 in let at4 = ati 4 in
-      fun c t ->
-      {value = literal at3 $3 t; expr = Nop @@ at4; fallthru = true} @@ at }
-;
-arms :
-  | expr { fun c -> [], $1 c }
-  | arm arms { fun c -> let x, y = $2 c in $1 c :: x, y }
-;
 
+br_switch_arm :
+  | INT var { ($1, $2) }
+;
+br_switch_arms :
+  | /* empty */ { [] }
+  | br_switch_arm br_switch_arms { $1 :: $2 }
+;
 
 /* Functions */
 
@@ -234,8 +221,9 @@ func_fields :
   | /* empty */  /* Sugar */
     { let at = at() in
       fun c -> {params = []; result = None; locals = []; body = Nop @@ at} }
-  | expr_block
-    { fun c -> {params = []; result = None; locals = []; body = $1 c} }
+  | expr_list
+    { let at = at() in
+      fun c -> {params = []; result = None; locals = []; body = Block ($1 c) @@ at} }
   | LPAR PARAM value_type_list RPAR func_fields
     { fun c -> anon_locals c $3; let f = $5 c in
       {f with params = $3 @ f.params} }

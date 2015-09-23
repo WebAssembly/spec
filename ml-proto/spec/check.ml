@@ -118,32 +118,33 @@ let rec check_expr c et e =
     check_type None et e.at
 
   | Block es ->
-    require (es <> []) e.at "invalid block";
-    let es', eN = Lib.List.split_last es in
-    List.iter (check_expr c None) es';
-    check_expr c et eN
-
-  | If (e1, e2, e3) ->
-    check_expr c (Some Int32Type) e1;
-    check_expr c et e2;
-    check_expr c et e3
-
-  | Loop e1 ->
-    check_expr c None e1
-
-  | Label e1 ->
     let c' = {c with labels = et :: c.labels} in
-    check_expr c' et e1
+    let es', eN = Lib.List.split_last es in
+    List.iter (check_expr c' None) es';
+    check_expr c' et eN;
 
-  | Break (x, eo) ->
+  | Loop es ->
+    let c' = {c with labels = et :: c.labels} in
+    let es', eN = Lib.List.split_last es in
+    List.iter (check_expr c' None) es';
+    check_expr c' et eN;
+
+  | Br (x, eo) ->
     check_expr_option c (label c x) eo e.at
 
-  | Switch (t, e1, arms, e2) ->
-    require (t.it = Int32Type || t.it = Int64Type) t.at "invalid switch type";
+  | BrIf (x, ec, eo) ->
+    check_expr c (Some Int32Type) ec;
+    check_expr_option c (label c x) eo e.at
+
+  | BrUnless (x, ec, eo) ->
+    check_expr c (Some Int32Type) ec;
+    check_expr_option c (label c x) eo e.at
+
+  | BrSwitch (t, ec, default, labels, eo) ->
     (* TODO: Check that cases are unique. *)
-    check_expr c (Some t.it) e1;
-    List.iter (check_arm c t.it et) arms;
-    check_expr c et e2
+    require (t.it = Int32Type || t.it = Int64Type) t.at "invalid br_switch type";
+    check_expr c (Some t.it) ec;
+    check_expr_option c (label c default) eo e.at
 
   | Call (x, es) ->
     let {ins; out} = func c x in
@@ -236,11 +237,6 @@ and check_expr_option c et eo at =
 
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
-
-and check_arm c t et arm =
-  let {value = l; expr = e; fallthru} = arm.it in
-  check_literal c (Some t) l;
-  check_expr c (if fallthru then None else et) e
 
 and check_load c et memop e1 at =
   check_has_memory c at;
