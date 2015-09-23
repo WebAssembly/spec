@@ -118,7 +118,7 @@ let load mem a memty ext =
     | _ -> raise Type
   with Invalid_argument _ -> raise Bounds
 
-let store (mem : t) (a : int) (memty : mem_type) v =
+let store mem a memty v =
   try
     (match memty, v with
     | Int8Mem, Int32 x -> store8 mem a x
