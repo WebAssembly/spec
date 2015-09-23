@@ -1,16 +1,7 @@
-lexer.ml
-parser.ml
-parser.mli
-*.cmi
-*.cmo
-*.cmx
-*.exe
-*.o
-*.output
-*.depend
 *.native
 *.byte
 *.opt
 *.zip
 _build
 wasm
+unopt
