@@ -90,20 +90,20 @@ let load32 mem a =
 let load64 mem a =
   Int64.logor (Int64.of_int32 (load32 mem a)) (Int64.shift_left (Int64.of_int32 (load32 mem (a+4))) 32)
 
-let store8 mem a value =
-  !mem.{a} <- Int32.to_int (Int32.logand value (Int32.of_int 255))
+let store8 mem a bits =
+  !mem.{a} <- Int32.to_int (Int32.logand bits (Int32.of_int 255))
 
-let store16 mem a value =
-  store8 mem (a+0) value;
-  store8 mem (a+1) (Int32.shift_right_logical value 8)
+let store16 mem a bits =
+  store8 mem (a+0) bits;
+  store8 mem (a+1) (Int32.shift_right_logical bits 8)
 
-let store32 mem a value =
-  store16 mem (a+0) value;
-  store16 mem (a+2) (Int32.shift_right_logical value 16)
+let store32 mem a bits =
+  store16 mem (a+0) bits;
+  store16 mem (a+2) (Int32.shift_right_logical bits 16)
 
-let store64 mem a value =
-  store32 mem (a+0) (Int64.to_int32 value);
-  store32 mem (a+4) (Int64.to_int32 (Int64.shift_right_logical value 32))
+let store64 mem a bits =
+  store32 mem (a+0) (Int64.to_int32 bits);
+  store32 mem (a+4) (Int64.to_int32 (Int64.shift_right_logical bits 32))
 
 let load mem a memty ext =
   let open Types in
