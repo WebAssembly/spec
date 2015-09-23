@@ -211,6 +211,10 @@
 (assert_eq (invoke "$f64_promote_f32" (f32.const -1.4012985e-45)) (f64.const -1.401298464324817e-45))
 (assert_eq (invoke "$f64_promote_f32" (f32.const -3.4028235e+38)) (f64.const -3.4028234663852886e+38))
 (assert_eq (invoke "$f64_promote_f32" (f32.const 3.4028235e+38)) (f64.const 3.4028234663852886e+38))
+;; Generated randomly by picking a random int and reinterpret it to float.
+(assert_eq (invoke "$f64_promote_f32" (f32.const 1.5046328e-36)) (f64.const 1.504632769052528e-36))
+;; Generated randomly by picking a random float.
+(assert_eq (invoke "$f64_promote_f32" (f32.const 6.6382537e+37)) (f64.const 6.6382536710104395e+37)) 
 
 ;; f32.demote/f64
 (assert_eq (invoke "$f32_demote_f64" (f64.const 0.0)) (f32.const 0.0))
@@ -218,8 +222,10 @@
 (assert_eq (invoke "$f32_demote_f64" (f64.const -1.0)) (f32.const -1.0))
 (assert_eq (invoke "$f32_demote_f64" (f64.const -1.401298464324817e-45)) (f32.const -1.4012985e-45))
 (assert_eq (invoke "$f32_demote_f64" (f64.const 1.401298464324817e-45)) (f32.const 1.4012985e-45))
-(assert_eq (invoke "$f32_demote_f64" (f64.const 3.4028234663852886e+38)) (f32.const 3.4028235e+38))
-(assert_eq (invoke "$f32_demote_f64" (f64.const -3.4028234663852886e+38)) (f32.const -3.4028235e+38))
+(assert_eq (invoke "$f32_demote_f64" (f64.const 3.402823466385289e+38)) (f32.const 3.4028235e+38))
+(assert_eq (invoke "$f32_demote_f64" (f64.const -3.402823466385289e+38)) (f32.const -3.4028235e+38))
+(assert_eq (invoke "$f32_demote_f64" (f64.const 1.504632769052528e-36)) (f32.const 1.5046328e-36))
+(assert_eq (invoke "$f32_demote_f64" (f64.const 6.6382536710104395e+37)) (f32.const 6.6382537e+37))
 
 ;; f32.reinterpret/i32
 (assert_eq (invoke "$f32_reinterpret_i32" (i32.const 0)) (f32.const 0.0))
@@ -230,8 +236,8 @@
 ;; f64.reinterpret/i64
 (assert_eq (invoke "$f64_reinterpret_i64" (i64.const 0)) (f64.const 0.0))
 (assert_eq (invoke "$f64_reinterpret_i64" (i64.const 1)) (f64.const 4.94066e-324))
-(assert_eq (invoke "$f64_reinterpret_i64" (i64.const 1234567890)) (f64.const 6.099575819e-315))
-(assert_eq (invoke "$f64_reinterpret_i64" (i64.const -9223372036854775807)) (f64.const -4.94066e-324))
+(assert_eq (invoke "$f64_reinterpret_i64" (i64.const 1234567890)) (f64.const 6.099575819077150e-315))
+(assert_eq (invoke "$f64_reinterpret_i64" (i64.const -9223372036854775807)) (f64.const -4.940656458412465e-324))
 
 ;; i32.reinterpret/f32
 (assert_eq (invoke "$i32_reinterpret_f32" (f32.const 0.0)) (i32.const 0))
