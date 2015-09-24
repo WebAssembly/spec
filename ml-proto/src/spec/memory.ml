@@ -3,34 +3,23 @@
  *)
 
 open Bigarray
+open Types
+open Values
 
 
 (* Types and view types *)
 
 type address = int
 type size = address
-type mem_size = int
-type extension = SX | ZX | NX
-type mem_type =
-  Int8Mem | Int16Mem | Int32Mem | Int64Mem | Float32Mem | Float64Mem
-
-type segment =
-{
-  addr : address;
-  data : string
-}
+type mem_type = Int8Mem | Int16Mem | Int32Mem
+type extension = SX | ZX
+type segment = {addr : address; data : string}
+type value_type = Types.value_type
+type value = Values.value
 
 type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
 type memory = memory' ref
 type t = memory
-
-(* Queries *)
-
-let mem_size = function
-  | Int8Mem -> 1
-  | Int16Mem -> 2
-  | Int32Mem | Float32Mem -> 4
-  | Int64Mem | Float64Mem -> 8
 
 
 (* Creation and initialization *)
@@ -77,57 +66,60 @@ let address_of_value = function
 
 (* Load and store *)
 
-let load8 mem a ext =
-  (match ext with
-  | SX -> Int32.shift_right (Int32.shift_left (Int32.of_int !mem.{a}) 24) 24
-  | _ -> Int32.of_int !mem.{a})
+let rec loadn mem n a =
+  assert (n > 0 && n <= 8);
+  let byte = try Int64.of_int !mem.{a} with Invalid_argument _ -> raise Bounds in
+  if n = 1 then
+    byte
+  else
+    Int64.logor byte (Int64.shift_left (loadn mem (n-1) (a+1)) 8)
 
-let load16 mem a ext =
-  Int32.logor (load8 mem a NX) (Int32.shift_left (load8 mem (a+1) ext) 8)
+let rec storen mem n a v =
+  assert (n > 0 && n <= 8);
+  let byte = (Int64.to_int v) land 255 in
+  (try !mem.{a} <- byte with Invalid_argument _ -> raise Bounds);
+  if (n > 1) then
+    storen mem (n-1) (a+1) (Int64.shift_right v 8)
 
-let load32 mem a =
-  Int32.logor (load16 mem a NX) (Int32.shift_left (load16 mem (a+2) NX) 16)
+let load mem a t =
+  match t with
+  | Int32Type -> Int32 (Int64.to_int32 (loadn mem 4 a))
+  | Int64Type -> Int64 (loadn mem 8 a)
+  | Float32Type -> Float32 (F32.of_bits (Int64.to_int32 (loadn mem 4 a)))
+  | Float64Type -> Float64 (F64.of_bits (loadn mem 8 a))
 
-let load64 mem a =
-  Int64.logor (Int64.of_int32 (load32 mem a)) (Int64.shift_left (Int64.of_int32 (load32 mem (a+4))) 32)
+let store mem a v =
+  match v with
+  | Int32 x -> storen mem 4 a (Int64.of_int32 x)
+  | Int64 x -> storen mem 8 a x
+  | Float32 x -> storen mem 4 a (Int64.of_int32 (F32.to_bits x))
+  | Float64 x -> storen mem 8 a (F64.to_bits x)
 
-let store8 mem a bits =
-  (* Store the lowest 8 bits of "bits" at byte index a, discarding the rest. *)
-  !mem.{a} <- Int32.to_int bits
+let loadn_sx mem n a =
+  assert (n > 0 && n <= 8);
+  let v = loadn mem n a in
+  let shift = 64 - (8 * n) in
+  Int64.shift_right (Int64.shift_left v shift) shift
 
-let store16 mem a bits =
-  store8 mem (a+0) bits;
-  store8 mem (a+1) (Int32.shift_right_logical bits 8)
+let load_extend mem a mty ext t =
+  match mty, ext, t with
+  | Int8Mem, ZX, Int32Type -> Int32 (Int64.to_int32 (loadn mem 1 a))
+  | Int8Mem, SX, Int32Type -> Int32 (Int64.to_int32 (loadn_sx mem 1 a))
+  | Int8Mem, ZX, Int64Type -> Int64 (loadn mem 1 a)
+  | Int8Mem, SX, Int64Type -> Int64 (loadn_sx mem 1 a)
+  | Int16Mem, ZX, Int32Type -> Int32 (Int64.to_int32 (loadn mem 2 a))
+  | Int16Mem, SX, Int32Type -> Int32 (Int64.to_int32 (loadn_sx mem 2 a))
+  | Int16Mem, ZX, Int64Type -> Int64 (loadn mem 2 a)
+  | Int16Mem, SX, Int64Type -> Int64 (loadn_sx mem 2 a)
+  | Int32Mem, ZX, Int64Type -> Int64 (loadn mem 4 a)
+  | Int32Mem, SX, Int64Type -> Int64 (loadn_sx mem 4 a)
+  | _ -> raise Type
 
-let store32 mem a bits =
-  store16 mem (a+0) bits;
-  store16 mem (a+2) (Int32.shift_right_logical bits 16)
-
-let store64 mem a bits =
-  store32 mem (a+0) (Int64.to_int32 bits);
-  store32 mem (a+4) (Int64.to_int32 (Int64.shift_right_logical bits 32))
-
-let load mem a memty ext =
-  let open Types in
-  try
-    match memty, ext with
-    | Int8Mem, _ -> Int32 (I32.of_int32 (load8 mem a ext))
-    | Int16Mem, _ -> Int32 (I32.of_int32 (load16 mem a ext))
-    | Int32Mem, NX -> Int32 (I32.of_int32 (load32 mem a))
-    | Int64Mem, NX -> Int64 (I64.of_int64 (load64 mem a))
-    | Float32Mem, NX -> Float32 (F32.of_bits (load32 mem a))
-    | Float64Mem, NX -> Float64 (F64.of_bits (load64 mem a))
-    | _ -> raise Type
-  with Invalid_argument _ -> raise Bounds
-
-let store mem a memty v =
-  try
-    (match memty, v with
-    | Int8Mem, Int32 x -> store8 mem a (I32.to_int32 x)
-    | Int16Mem, Int32 x -> store16 mem a (I32.to_int32 x)
-    | Int32Mem, Int32 x -> store32 mem a (I32.to_int32 x)
-    | Int64Mem, Int64 x -> store64 mem a (I64.to_int64 x)
-    | Float32Mem, Float32 x -> store32 mem a (F32.to_bits x)
-    | Float64Mem, Float64 x -> store64 mem a (F64.to_bits x)
-    | _ -> raise Type)
-  with Invalid_argument _ -> raise Bounds
+let store_trunc mem a mty v =
+  match mty, v with
+  | Int8Mem, Int32 x -> storen mem 1 a (Int64.of_int32 x)
+  | Int8Mem, Int64 x -> storen mem 1 a x
+  | Int16Mem, Int32 x -> storen mem 2 a (Int64.of_int32 x)
+  | Int16Mem, Int64 x -> storen mem 2 a x
+  | Int32Mem, Int64 x -> storen mem 4 a x
+  | _ -> raise Type

@@ -113,8 +113,10 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<Ast.binop> BINARY
 %token<Ast.relop> COMPARE
 %token<Ast.cvt> CONVERT
-%token<Ast.loadop> LOAD
-%token<Ast.storeop> STORE
+%token<Ast.memop> LOAD
+%token<Ast.memop> STORE
+%token<Ast.extendop> LOADEXTEND
+%token<Ast.truncop> STORETRUNC
 
 %start script
 %type<Script.script> script
@@ -179,7 +181,9 @@ oper :
   | SETLOCAL var expr { fun c -> SetLocal ($2 c local, $3 c) }
   | LOAD expr { fun c -> Load ($1, $2 c) }
   | STORE expr expr { fun c -> Store ($1, $2 c, $3 c) }
-  | CONST literal { fun c -> Const (literal (ati 2) $2 $1) }
+  | LOADEXTEND expr { fun c -> LoadExtend ($1, $2 c) }
+  | STORETRUNC expr expr { fun c -> StoreTrunc ($1, $2 c, $3 c) }
+  | CONST literal { let at = at() in fun c -> Const (literal at $2 $1) }
   | UNARY expr { fun c -> Unary ($1, $2 c) }
   | BINARY expr expr { fun c -> Binary ($1, $2 c, $3 c) }
   | COMPARE expr expr { fun c -> Compare ($1, $2 c, $3 c) }
