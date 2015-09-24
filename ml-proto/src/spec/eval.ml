@@ -43,7 +43,7 @@ type config =
 }
 
 let page_size c =
-  Int32.of_int c.modul.host.page_size
+  I32.of_int32 (Int32.of_int c.modul.host.page_size)
 
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
@@ -78,6 +78,15 @@ let type_error at v t =
   error at
     ("runtime: type error, expected " ^ Types.string_of_value_type t ^
       ", got " ^ Types.string_of_value_type (type_of v))
+
+let numerics_error at = function
+  | Numerics.IntegerOverflow ->
+      error at "runtime: integer overflow"
+  | Numerics.IntegerDivideByZero ->
+      error at "runtime: integer divide by zero"
+  | Numerics.InvalidConversionToInteger ->
+      error at "runtime: invalid conversion to integer"
+  | exn -> raise exn
 
 let some v at =
   match v with
@@ -145,6 +154,7 @@ let rec eval_expr (c : config) (e : expr) =
   | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
+    (* TODO: The conversion to int could overflow. *)
     eval_func c.modul (table c x (Int32.to_int i @@ e1.at)) vs
 
   | Return eo ->
@@ -176,14 +186,18 @@ let rec eval_expr (c : config) (e : expr) =
   | Unary (unop, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     (try Some (Arithmetic.eval_unop unop v1)
-    with Arithmetic.TypeError (_, v, t) -> type_error e1.at v t)
+    with
+      | Arithmetic.TypeError (_, v, t) -> type_error e1.at v t
+      | exn -> numerics_error e.at exn)
 
   | Binary (binop, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     (try Some (Arithmetic.eval_binop binop v1 v2)
-    with Arithmetic.TypeError (i, v, t) ->
-      type_error (if i = 1 then e1 else e2).at v t)
+    with
+      | Arithmetic.TypeError (i, v, t) ->
+          type_error (if i = 1 then e1 else e2).at v t
+      | exn -> numerics_error e.at exn)
 
   | Compare (relop, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
@@ -197,18 +211,21 @@ let rec eval_expr (c : config) (e : expr) =
   | Convert (cvt, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     (try Some (Arithmetic.eval_cvt cvt v1)
-    with Arithmetic.TypeError (_, v, t) -> type_error e1.at v t)
+    with
+      | Arithmetic.TypeError (_, v, t) -> type_error e1.at v t
+      | exn -> numerics_error e.at exn)
 
   | PageSize ->
     Some (Int32 (page_size c))
 
   | MemorySize ->
-    Some (Int32 (Int32.of_int (Memory.size c.modul.memory)))
+    Some (Int32 (I32.of_int32 (Int32.of_int (Memory.size c.modul.memory))))
 
   | ResizeMemory e ->
     let i = int32 (eval_expr c e) e.at in
-    if (Int32.rem i (page_size c)) <> Int32.zero then
+    if (I32.rem_u i (page_size c)) <> I32.zero then
       error e.at "runtime: resize_memory operand not multiple of page_size";
+    (* TODO: The conversion to int could overflow. *)
     Memory.resize c.modul.memory (Int32.to_int i);
     None
 

@@ -1,4 +1,4 @@
-(* WebAssembly-compatible float64 implementation *)
+(* WebAssembly-compatible f64 implementation *)
 
 type t
 type bits = int64
@@ -7,8 +7,6 @@ val of_float : float -> t
 val to_float : t -> float
 val of_bits : bits -> t
 val to_bits : t -> bits
-val of_string : string -> t
-val to_string : t -> string
 
 val zero : t
 
@@ -32,3 +30,6 @@ val lt : t -> t -> bool
 val le : t -> t -> bool
 val gt : t -> t -> bool
 val ge : t -> t -> bool
+
+val of_string : string -> t
+val to_string : t -> string

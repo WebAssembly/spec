@@ -105,16 +105,16 @@
 (assert_eq (invoke "i32.trunc_u" (f64.const 1e8)) (i32.const 100000000))
 (assert_eq (invoke "i64.trunc_u" (f64.const 1e8)) (i64.const 100000000))
 
-(assert_eq (invoke "i32.trunc_u" (f64.const 1e16)) (i32.const 0))
+(assert_trap (invoke "i32.trunc_u" (f64.const 1e16)) "runtime: integer overflow")
 (assert_eq (invoke "i64.trunc_u" (f64.const 1e16)) (i64.const 10000000000000000))
 
-(assert_eq (invoke "i32.trunc_u" (f64.const 1e30)) (i32.const 0))
-(assert_eq (invoke "i64.trunc_u" (f64.const -1)) (i64.const 0))
+(assert_trap (invoke "i32.trunc_u" (f64.const 1e30)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_u" (f64.const -1)) "runtime: integer overflow")
 
 ;; max_uint32
 (assert_eq (invoke "i32.trunc_u" (f64.const 4294967295)) (i32.const -1))
 (assert_eq (invoke "i64.trunc_u" (f64.const 4294967295)) (i64.const 4294967295))
 
 ;; max_int64+1
-(assert_eq (invoke "i32.trunc_u" (f64.const 9223372036854775808)) (i32.const 0))
+(assert_trap (invoke "i32.trunc_u" (f64.const 9223372036854775808)) "runtime: integer overflow")
 (assert_eq (invoke "i64.trunc_u" (f64.const 9223372036854775808)) (i64.const -9223372036854775808))

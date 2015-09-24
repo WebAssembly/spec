@@ -1,8 +1,8 @@
-(* WebAssembly-compatible float64 implementation *)
+(* WebAssembly-compatible f64 implementation *)
 
 (*
- * We represent float64 as its bits in an int64 so that we can be assured that
- * all the bits of NaNs are preserved in all cases where we require them to be.
+ * We represent f64 as its bits in an int64 so that we can be assured that all
+ * the bits of NaNs are preserved in all cases where we require them to be.
  *)
 type t = int64
 type bits = int64
@@ -12,10 +12,6 @@ let nondeterministic_nan = 0x7fff0f0f0f0f0f0fL
 
 let of_float = Int64.bits_of_float
 let to_float = Int64.float_of_bits
-
-(* TODO: OCaml's string_of_float and float_of_string are insufficient *)
-let of_string x = of_float (float_of_string x)
-let to_string x = string_of_float (to_float x)
 
 let of_bits x = x
 let to_bits x = x
@@ -61,7 +57,7 @@ let nearest x =
 let min x y =
   let xf = arith_of_bits x in
   let yf = arith_of_bits y in
-  (* min(-0, 0) is -0 *)
+  (* min -0 0 is -0 *)
   if xf = yf then Int64.logor x y else
   if xf < yf then x else
   if xf > yf then y else
@@ -70,7 +66,7 @@ let min x y =
 let max x y =
   let xf = arith_of_bits x in
   let yf = arith_of_bits y in
-  (* max(-0, 0) is 0 *)
+  (* max -0 0 is 0 *)
   if xf = yf then Int64.logand x y else
   if xf > yf then x else
   if xf < yf then y else
@@ -93,4 +89,6 @@ let gt x y = (arith_of_bits x) >  (arith_of_bits y)
 let le x y = (arith_of_bits x) <= (arith_of_bits y)
 let ge x y = (arith_of_bits x) >= (arith_of_bits y)
 
-(* TODO: type conversion functions *)
+(* TODO: OCaml's string_of_float and float_of_string are insufficient *)
+let of_string x = of_float (float_of_string x)
+let to_string x = string_of_float (to_float x)

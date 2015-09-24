@@ -28,7 +28,7 @@ You'll get an executable named `src/wasm`.
 Alternatively, you can also say (in `src`):
 
 ```
-ocamlbuild -Is "given, spec, host" -libs "bigarray, nums, str" main.native
+ocamlbuild -Is "given, spec, host" -libs "bigarray, str" main.native
 ```
 
 and get an executable named `src/main.native`.
