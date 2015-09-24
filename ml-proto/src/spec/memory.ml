@@ -91,7 +91,7 @@ let load64 mem a =
   Int64.logor (Int64.of_int32 (load32 mem a)) (Int64.shift_left (Int64.of_int32 (load32 mem (a+4))) 32)
 
 let store8 mem a bits =
-  (* Store "bits" at byte index a; this implicitly truncates all but the lowest 8 bits of "bits". *)
+  (* Store the lowest 8 bits of "bits" at byte index a, discarding the rest. *)
   !mem.{a} <- Int32.to_int bits
 
 let store16 mem a bits =
