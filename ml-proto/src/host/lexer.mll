@@ -85,7 +85,7 @@ let space = [' ''\t']
 let digit = ['0'-'9']
 let hexdigit = ['0'-'9''a'-'f''A'-'F']
 let letter = ['a'-'z''A'-'Z']
-let symbol = ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`']
+let symbol = ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.']
 let tick = '\''
 let escape = ['n''t''\\''\'''\"']
 let character = [^'"''\\''\n'] | '\\'escape | '\\'hexdigit hexdigit
