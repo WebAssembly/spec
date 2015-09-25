@@ -53,14 +53,6 @@ let check_func_type actual expected at =
 
 (* Type Synthesis *)
 
-let type_mem = function
-  | Memory.Int8Mem -> Int32Type
-  | Memory.Int16Mem -> Int32Type
-  | Memory.Int32Mem -> Int32Type
-  | Memory.Int64Mem -> Int64Type
-  | Memory.Float32Mem -> Float32Type
-  | Memory.Float64Mem -> Float64Type
-
 let type_value = Values.type_of
 let type_unop = Values.type_of
 let type_binop = Values.type_of
@@ -182,16 +174,19 @@ let rec check_expr c et e =
     check_expr c (Some (local c x)) e1;
     check_type None et e.at
 
-  | Load (loadop, e1) ->
-    check_align loadop.align e.at;
-    check_expr c (Some Int32Type) e1;
-    check_type (Some (type_mem loadop.mem)) et e.at
+  | Load (memop, e1) ->
+    check_load c et memop e1 e.at
 
-  | Store (storeop, e1, e2) ->
-    check_align storeop.align e.at;
-    check_expr c (Some Int32Type) e1;
-    check_expr c (Some (type_mem storeop.mem)) e2;
-    check_type None et e.at
+  | Store (memop, e1, e2) ->
+    check_store c et memop e1 e2 e.at
+
+  | LoadExtend (extendop, e1) ->
+    check_mem_type extendop.memop.ty extendop.sz e.at;
+    check_load c et extendop.memop e1 e.at
+
+  | StoreTrunc (truncop, e1, e2) ->
+    check_mem_type truncop.memop.ty truncop.sz e.at;
+    check_store c et truncop.memop e1 e2 e.at
 
   | Const v ->
     check_literal c et v
@@ -246,8 +241,23 @@ and check_arm c t et arm =
   check_literal c (Some t) l;
   check_expr c (if fallthru then None else et) e
 
+and check_load c et memop e1 at =
+  check_align memop.align at;
+  check_expr c (Some Int32Type) e1;
+  check_type (Some memop.ty) et at
+
+and check_store c et memop e1 e2 at =
+  check_align memop.align at;
+  check_expr c (Some Int32Type) e1;
+  check_expr c (Some memop.ty) e2;
+  check_type None et at
+
 and check_align align at =
-  require (Lib.Int.is_power_of_two align) at "non-power-of-two alignment"
+  Lib.Option.app (fun a ->
+    require (Lib.Int.is_power_of_two a) at "non-power-of-two alignment") align
+
+and check_mem_type ty sz at =
+  require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
 
 
 (*

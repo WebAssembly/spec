@@ -168,15 +168,31 @@ let rec eval_expr (c : config) (e : expr) =
     local c x := v1;
     None
 
-  | Load ({mem; ext; align = _}, e1) ->
+  | Load ({ty; align = _}, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
-    (try Some (Memory.load c.modul.memory (Memory.address_of_value v1) mem ext)
+    let a = Memory.address_of_value v1 in
+    (try Some (Memory.load c.modul.memory a ty)
     with exn -> memory_error e.at exn)
 
-  | Store ({mem; align = _}, e1, e2) ->
+  | Store ({ty = _; align = _}, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
-    (try Memory.store c.modul.memory (Memory.address_of_value v1) mem v2
+    let a = Memory.address_of_value v1 in
+    (try Memory.store c.modul.memory a v2
+    with exn -> memory_error e.at exn);
+    None
+
+  | LoadExtend ({memop = {ty; align = _}; sz; ext}, e1) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    let a = Memory.address_of_value v1 in
+    (try Some (Memory.load_extend c.modul.memory a sz ext ty)
+    with exn -> memory_error e.at exn)
+
+  | StoreTrunc ({memop = {ty; align = _}; sz}, e1, e2) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    let v2 = some (eval_expr c e2) e2.at in
+    let a = Memory.address_of_value v1 in
+    (try Memory.store_trunc c.modul.memory a sz v2
     with exn -> memory_error e.at exn);
     None
 

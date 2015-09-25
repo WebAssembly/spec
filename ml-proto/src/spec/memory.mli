@@ -6,12 +6,11 @@ type memory
 type t = memory
 type address = int
 type size = address
-type mem_size = int
-type extension = SX | ZX | NX
-type mem_type =
-  Int8Mem | Int16Mem | Int32Mem | Int64Mem | Float32Mem | Float64Mem
-
+type mem_size = Mem8 | Mem16 | Mem32
+type extension = SX | ZX
 type segment = {addr : address; data : string}
+type value_type = Types.value_type
+type value = Values.value
 
 exception Type
 exception Bounds
@@ -21,8 +20,9 @@ val create : size -> memory
 val init : memory -> segment list -> unit
 val size : memory -> size
 val resize : memory -> size -> unit
-val load : memory -> address -> mem_type -> extension -> Values.value
-val store : memory -> address -> mem_type -> Values.value -> unit
+val load : memory -> address -> value_type -> value
+val store : memory -> address -> value -> unit
+val load_extend : memory -> address -> mem_size -> extension -> value_type -> value
+val store_trunc : memory -> address -> mem_size -> value -> unit
 
-val mem_size : mem_type -> mem_size
 val address_of_value : Values.value -> address
