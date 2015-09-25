@@ -130,7 +130,7 @@ let rec run_command cmd =
     done;
 
 and char_at_memory_offset m base offset =
-  let code = match Memory.load m (base + offset) Int8Mem ZX with
+  let code = match Memory.load_extend m (base + offset) Mem8 ZX Int32Type with
     | Int32 i -> Int32.to_int i
     | _ -> assert false
   in
