@@ -230,23 +230,23 @@
 (assert_eq (invoke "shr_u" (i64.const -1) (i64.const 0x7fffffffffffffff)) (i64.const 0))
 (assert_eq (invoke "shr_u" (i64.const -1) (i64.const 0x8000000000000000)) (i64.const 0))
 
-(assert_eq (invoke "clz" (i64.const -1)) (i64.const 0)) ;; 0xFFFFFFFF
+(assert_eq (invoke "clz" (i64.const 0xffffffffffffffff)) (i64.const 0))
 (assert_eq (invoke "clz" (i64.const 0)) (i64.const 64))
-(assert_eq (invoke "clz" (i64.const 64768)) (i64.const 48)) ;; 0x00008000
-(assert_eq (invoke "clz" (i64.const 255)) (i64.const 56)) ;; 0xFF
-(assert_eq (invoke "clz" (i64.const -9223372036854775808)) (i64.const 0)) ;; 0x8000000000000000
+(assert_eq (invoke "clz" (i64.const 0x00008000)) (i64.const 48))
+(assert_eq (invoke "clz" (i64.const 0xff)) (i64.const 56))
+(assert_eq (invoke "clz" (i64.const 0x8000000000000000)) (i64.const 0))
 (assert_eq (invoke "clz" (i64.const 1)) (i64.const 63))
 (assert_eq (invoke "clz" (i64.const 2)) (i64.const 62))
 
 (assert_eq (invoke "ctz" (i64.const -1)) (i64.const 0))
 (assert_eq (invoke "ctz" (i64.const 0)) (i64.const 64))
-(assert_eq (invoke "ctz" (i64.const 32768)) (i64.const 15)) ;; 0x00008000
-(assert_eq (invoke "ctz" (i64.const 65536)) (i64.const 16)) ;; 0x00010000
-(assert_eq (invoke "ctz" (i64.const -9223372036854775808)) (i64.const 63)) ;; 0x8000000000000000
+(assert_eq (invoke "ctz" (i64.const 0x00008000)) (i64.const 15))
+(assert_eq (invoke "ctz" (i64.const 0x00010000)) (i64.const 16))
+(assert_eq (invoke "ctz" (i64.const 0x8000000000000000)) (i64.const 63))
 
 (assert_eq (invoke "popcnt" (i64.const -1)) (i64.const 64))
 (assert_eq (invoke "popcnt" (i64.const 0)) (i64.const 0))
-(assert_eq (invoke "popcnt" (i64.const 32768)) (i64.const 1)) ;; 0x00008000
+(assert_eq (invoke "popcnt" (i64.const 0x00008000)) (i64.const 1))
 
 (assert_eq (invoke "eq" (i64.const 0) (i64.const 0)) (i32.const 1))
 (assert_eq (invoke "eq" (i64.const 1) (i64.const 1)) (i32.const 1))
