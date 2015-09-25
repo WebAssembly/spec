@@ -182,17 +182,17 @@ let rec eval_expr (c : config) (e : expr) =
     with exn -> memory_error e.at exn);
     None
 
-  | LoadExtend ({memop = {ty; align = _}; mty; ext}, e1) ->
+  | LoadExtend ({memop = {ty; align = _}; sz; ext}, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     let a = Memory.address_of_value v1 in
-    (try Some (Memory.load_extend c.modul.memory a mty ext ty)
+    (try Some (Memory.load_extend c.modul.memory a sz ext ty)
     with exn -> memory_error e.at exn)
 
-  | StoreTrunc ({memop = {ty; align = _}; mty}, e1, e2) ->
+  | StoreTrunc ({memop = {ty; align = _}; sz}, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     let a = Memory.address_of_value v1 in
-    (try Memory.store_trunc c.modul.memory a mty v2
+    (try Memory.store_trunc c.modul.memory a sz v2
     with exn -> memory_error e.at exn);
     None
 

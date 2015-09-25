@@ -63,10 +63,10 @@ let floatop t f32 f64 =
 let memop t a =
   {ty = value_type t; align = if a = "" then None else Some (int_of_string a)}
 
-let mem_type = function
-  | "8" -> Memory.Int8Mem
-  | "16" -> Memory.Int16Mem
-  | "32" -> Memory.Int32Mem
+let mem_size = function
+  | "8" -> Memory.Mem8
+  | "16" -> Memory.Mem16
+  | "32" -> Memory.Mem32
   | _ -> assert false
 
 let extension = function
@@ -74,11 +74,11 @@ let extension = function
   | 'u' -> Memory.ZX
   | _ -> assert false
 
-let extendop t mty s a =
-  {memop = memop t a; mty = mem_type mty; ext = extension s}
+let extendop t sz s a =
+  {memop = memop t a; sz = mem_size sz; ext = extension s}
 
-let truncop t mty a =
-  {memop = memop t a; mty = mem_type mty}
+let truncop t sz a =
+  {memop = memop t a; sz = mem_size sz}
 }
 
 let space = [' ''\t']
@@ -104,7 +104,7 @@ let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
 let align = digit+
-let mem_type = "8" | "16" | "32"
+let mem_size = "8" | "16" | "32"
 
 rule token = parse
   | "(" { LPAR }
@@ -142,14 +142,14 @@ rule token = parse
   | (nxx as t)".store" { STORE (memop t "") }
   | (nxx as t)".store/"(align as a) { STORE (memop t a) }
 
-  | (ixx as t)".load"(mem_type as mty)"_"(sign as s)
-    { LOADEXTEND (extendop t mty s "") }
-  | (ixx as t)".load"(mem_type as mty)"_"(sign as s)"/"(align as a)
-    { LOADEXTEND (extendop t mty s a) }
-  | (ixx as t)".store"(mem_type as mty)
-    { STORETRUNC (truncop t mty "") }
-  | (ixx as t)".store"(mem_type as mty)"/"(align as a)
-    { STORETRUNC (truncop t mty a) }
+  | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
+    { LOADEXTEND (extendop t sz s "") }
+  | (ixx as t)".load"(mem_size as sz)"_"(sign as s)"/"(align as a)
+    { LOADEXTEND (extendop t sz s a) }
+  | (ixx as t)".store"(mem_size as sz)
+    { STORETRUNC (truncop t sz "") }
+  | (ixx as t)".store"(mem_size as sz)"/"(align as a)
+    { STORETRUNC (truncop t sz a) }
 
   | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }

@@ -11,7 +11,7 @@ open Values
 
 type address = int
 type size = address
-type mem_type = Int8Mem | Int16Mem | Int32Mem
+type mem_size = Mem8 | Mem16 | Mem32
 type extension = SX | ZX
 type segment = {addr : address; data : string}
 type value_type = Types.value_type
@@ -101,25 +101,25 @@ let loadn_sx mem n a =
   let shift = 64 - (8 * n) in
   Int64.shift_right (Int64.shift_left v shift) shift
 
-let load_extend mem a mty ext t =
-  match mty, ext, t with
-  | Int8Mem, ZX, Int32Type -> Int32 (Int64.to_int32 (loadn mem 1 a))
-  | Int8Mem, SX, Int32Type -> Int32 (Int64.to_int32 (loadn_sx mem 1 a))
-  | Int8Mem, ZX, Int64Type -> Int64 (loadn mem 1 a)
-  | Int8Mem, SX, Int64Type -> Int64 (loadn_sx mem 1 a)
-  | Int16Mem, ZX, Int32Type -> Int32 (Int64.to_int32 (loadn mem 2 a))
-  | Int16Mem, SX, Int32Type -> Int32 (Int64.to_int32 (loadn_sx mem 2 a))
-  | Int16Mem, ZX, Int64Type -> Int64 (loadn mem 2 a)
-  | Int16Mem, SX, Int64Type -> Int64 (loadn_sx mem 2 a)
-  | Int32Mem, ZX, Int64Type -> Int64 (loadn mem 4 a)
-  | Int32Mem, SX, Int64Type -> Int64 (loadn_sx mem 4 a)
+let load_extend mem a sz ext t =
+  match sz, ext, t with
+  | Mem8,  ZX, Int32Type -> Int32 (Int64.to_int32 (loadn    mem 1 a))
+  | Mem8,  SX, Int32Type -> Int32 (Int64.to_int32 (loadn_sx mem 1 a))
+  | Mem8,  ZX, Int64Type -> Int64 (loadn mem 1 a)
+  | Mem8,  SX, Int64Type -> Int64 (loadn_sx mem 1 a)
+  | Mem16, ZX, Int32Type -> Int32 (Int64.to_int32 (loadn    mem 2 a))
+  | Mem16, SX, Int32Type -> Int32 (Int64.to_int32 (loadn_sx mem 2 a))
+  | Mem16, ZX, Int64Type -> Int64 (loadn    mem 2 a)
+  | Mem16, SX, Int64Type -> Int64 (loadn_sx mem 2 a)
+  | Mem32, ZX, Int64Type -> Int64 (loadn    mem 4 a)
+  | Mem32, SX, Int64Type -> Int64 (loadn_sx mem 4 a)
   | _ -> raise Type
 
-let store_trunc mem a mty v =
-  match mty, v with
-  | Int8Mem, Int32 x -> storen mem 1 a (Int64.of_int32 x)
-  | Int8Mem, Int64 x -> storen mem 1 a x
-  | Int16Mem, Int32 x -> storen mem 2 a (Int64.of_int32 x)
-  | Int16Mem, Int64 x -> storen mem 2 a x
-  | Int32Mem, Int64 x -> storen mem 4 a x
+let store_trunc mem a sz v =
+  match sz, v with
+  | Mem8,  Int32 x -> storen mem 1 a (Int64.of_int32 x)
+  | Mem8,  Int64 x -> storen mem 1 a x
+  | Mem16, Int32 x -> storen mem 2 a (Int64.of_int32 x)
+  | Mem16, Int64 x -> storen mem 2 a x
+  | Mem32, Int64 x -> storen mem 4 a x
   | _ -> raise Type

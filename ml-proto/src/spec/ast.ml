@@ -64,8 +64,8 @@ type relop = (Int32Op.relop, Int64Op.relop, Float32Op.relop, Float64Op.relop) op
 type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
 
 type memop = {ty : Types.value_type; align : int option}
-type extendop = {memop : memop; mty : Memory.mem_type; ext : Memory.extension}
-type truncop = {memop : memop; mty : Memory.mem_type}
+type extendop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
+type truncop = {memop : memop; sz : Memory.mem_size}
 
 (* Expressions *)
 

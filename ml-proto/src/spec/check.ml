@@ -181,11 +181,11 @@ let rec check_expr c et e =
     check_store c et memop e1 e2 e.at
 
   | LoadExtend (extendop, e1) ->
-    check_mem_type extendop.memop.ty extendop.mty e.at;
+    check_mem_type extendop.memop.ty extendop.sz e.at;
     check_load c et extendop.memop e1 e.at
 
   | StoreTrunc (truncop, e1, e2) ->
-    check_mem_type truncop.memop.ty truncop.mty e.at;
+    check_mem_type truncop.memop.ty truncop.sz e.at;
     check_store c et truncop.memop e1 e2 e.at
 
   | Const v ->
@@ -256,8 +256,8 @@ and check_align align at =
   Lib.Option.app (fun a ->
     require (Lib.Int.is_power_of_two a) at "non-power-of-two alignment") align
 
-and check_mem_type ty mty at =
-  require (ty = Int64Type || mty <> Memory.Int32Mem) at "memory type too big"
+and check_mem_type ty sz at =
+  require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
 
 
 (*

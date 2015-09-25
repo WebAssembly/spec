@@ -6,7 +6,7 @@ type memory
 type t = memory
 type address = int
 type size = address
-type mem_type = Int8Mem | Int16Mem | Int32Mem
+type mem_size = Mem8 | Mem16 | Mem32
 type extension = SX | ZX
 type segment = {addr : address; data : string}
 type value_type = Types.value_type
@@ -22,7 +22,7 @@ val size : memory -> size
 val resize : memory -> size -> unit
 val load : memory -> address -> value_type -> value
 val store : memory -> address -> value -> unit
-val load_extend : memory -> address -> mem_type -> extension -> value_type -> value
-val store_trunc : memory -> address -> mem_type -> value -> unit
+val load_extend : memory -> address -> mem_size -> extension -> value_type -> value
+val store_trunc : memory -> address -> mem_size -> value -> unit
 
 val address_of_value : Values.value -> address
