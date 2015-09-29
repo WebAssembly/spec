@@ -58,7 +58,7 @@ def rebuild_interpreter(path):
     raise Exception("Interpreter has not been built. Looked for %s" % path)
 
 if __name__ == "__main__":
-  interpreterPath = os.path.abspath("./main.native")
+  interpreterPath = os.path.abspath("./wasm")
 
   try:
     os.makedirs("test/output/")
