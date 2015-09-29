@@ -11,3 +11,4 @@ val init : Ast.modul -> import list -> host_params -> instance
 val invoke : instance -> string -> value list -> value option
   (* raise Error.Error *)
 val eval : Ast.expr -> value option (* raise Error.Error *)
+val memory_for_module : instance -> Memory.t
