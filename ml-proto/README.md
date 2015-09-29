@@ -130,7 +130,7 @@ type expr =
   | StoreGlobal of var * expr               (* write global variable
   | Load of loadop * expr                   (* read memory address
   | Store of storeop * expr * expr          (* write memory address
-  | Const of value                          (* constant
+  | Literal of value                        (* literal value
   | Unary of unop * expr                    (* unary arithmetic operator
   | Binary of binop * expr * expr           (* binary arithmetic operator
   | Compare of relop * expr * expr          (* arithmetic comparison
@@ -182,7 +182,7 @@ expr:
   ( store_global <var> <expr> )
   ( <type>.load((8|16)_<sign>)?(/<align>)? <expr> )
   ( <type>.store(/<align>)? <expr> <expr> )
-  ( <type>.const <value> )
+  ( <type>.literal <value> )
   ( <type>.<unop> <expr> )
   ( <type>.<binop> <expr> <expr> )
   ( <type>.<relop> <expr> <expr> )

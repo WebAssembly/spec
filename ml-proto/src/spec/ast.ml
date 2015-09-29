@@ -91,7 +91,7 @@ and expr' =
   | Store of memop * expr * expr
   | LoadExtend of extendop * expr
   | StoreTrunc of truncop * expr * expr
-  | Const of literal
+  | Literal of literal
   | Unary of unop * expr
   | Binary of binop * expr * expr
   | Compare of relop * expr * expr

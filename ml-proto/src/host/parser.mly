@@ -38,7 +38,7 @@ let literal at s t =
     | Types.Int64Type -> Values.Int64 (I64.of_string s) @@ at
     | Types.Float32Type -> Values.Float32 (F32.of_string s) @@ at
     | Types.Float64Type -> Values.Float64 (F64.of_string s) @@ at
-  with _ -> Error.error at "constant out of range"
+  with _ -> Error.error at "literal value out of range"
 
 
 (* Symbolic variables *)
@@ -96,7 +96,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
 %token CALL CALLIMPORT CALLINDIRECT RETURN
 %token GETLOCAL SETLOCAL LOAD STORE
-%token CONST UNARY BINARY COMPARE CONVERT
+%token LITERAL UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
 %token PAGESIZE MEMORYSIZE RESIZEMEMORY
 %token ASSERTINVALID ASSERTEQ ASSERTTRAP INVOKE
@@ -107,7 +107,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<string> TEXT
 %token<string> VAR
 %token<Types.value_type> TYPE
-%token<Types.value_type> CONST
+%token<Types.value_type> LITERAL
 %token<Types.value_type> SWITCH
 %token<Ast.unop> UNARY
 %token<Ast.binop> BINARY
@@ -183,7 +183,7 @@ oper :
   | STORE expr expr { fun c -> Store ($1, $2 c, $3 c) }
   | LOADEXTEND expr { fun c -> LoadExtend ($1, $2 c) }
   | STORETRUNC expr expr { fun c -> StoreTrunc ($1, $2 c, $3 c) }
-  | CONST literal { let at = at() in fun c -> Const (literal at $2 $1) }
+  | LITERAL literal { let at = at() in fun c -> Literal (literal at $2 $1) }
   | UNARY expr { fun c -> Unary ($1, $2 c) }
   | BINARY expr expr { fun c -> Binary ($1, $2 c, $3 c) }
   | COMPARE expr expr { fun c -> Compare ($1, $2 c, $3 c) }

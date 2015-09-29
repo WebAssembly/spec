@@ -196,7 +196,7 @@ let rec eval_expr (c : config) (e : expr) =
     with exn -> memory_error e.at exn);
     None
 
-  | Const v ->
+  | Literal v ->
     Some v.it
 
   | Unary (unop, e1) ->

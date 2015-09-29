@@ -4,11 +4,11 @@
     (func $print (param $i i32)
         (call_import $print_i32 (get_local $i))
         (call_import $print_i32_f32
-            (i32.add (get_local $i) (i32.const 1))
-            (f32.const 42)
+            (i32.add (get_local $i) (i32.literal 1))
+            (f32.literal 42)
         )
     )
     (export "print" $print)
 )
 
-(invoke "print" (i32.const 13))
+(invoke "print" (i32.literal 13))
