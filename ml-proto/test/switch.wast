@@ -5,17 +5,15 @@
   (func $stmt (param $i i32) (result i32)
     (local $j i32)
     (set_local $j (i32.const 100))
-    (label
-      (i32.switch (get_local $i)
-        (case 0 (return (get_local $i)))
-        (case 1 (nop) fallthrough)
-        (case 2)  ;; implicit fallthrough
-        (case 3 (set_local $j (i32.sub (i32.const 0) (get_local $i))) (break))
-        (case 4 (break))
-        (case 5 (set_local $j (i32.const 101)))
-        (case 6 (set_local $j (i32.const 101)) fallthrough)
-        (;default;) (set_local $j (i32.const 102))
-      )
+    (i32.switch (get_local $i)
+      (case 0 (return (get_local $i)))
+      (case 1 (nop) fallthrough)
+      (case 2)  ;; implicit fallthrough
+      (case 3 (set_local $j (i32.sub (i32.const 0) (get_local $i))) (break))
+      (case 4 (break))
+      (case 5 (set_local $j (i32.const 101)))
+      (case 6 (set_local $j (i32.const 101)) fallthrough)
+      (;default;) (set_local $j (i32.const 102))
     )
     (return (get_local $j))
   )
@@ -25,16 +23,16 @@
     (local $j i64)
     (set_local $j (i64.const 100))
     (return
-      (label $l
+      (block
         (i64.switch (get_local $i)
           (case 0 (return (get_local $i)))
           (case 1 (nop) fallthrough)
           (case 2)  ;; implicit fallthrough
-          (case 3 (break $l (i64.sub (i64.const 0) (get_local $i))))
+          (case 3 (br $l (i64.sub (i64.const 0) (get_local $i))))
           (case 6 (set_local $j (i64.const 101)) fallthrough)
           (;default;) (get_local $j)
         )
-      )
+      $l)
     )
   )
 

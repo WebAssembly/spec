@@ -146,6 +146,13 @@ let rec check_expr c et e =
     check_expr c (Some t.it) ec;
     check_expr_option c (label c default) eo e.at
 
+  | Switch (t, e1, arms, e2) ->
+    require (t.it = Int32Type || t.it = Int64Type) t.at "invalid switch type";
+    (* TODO: Check that cases are unique. *)
+    check_expr c (Some t.it) e1;
+    List.iter (check_arm c t.it et) arms;
+    check_expr c et e2
+
   | Call (x, es) ->
     let {ins; out} = func c x in
     check_exprs c ins es;
@@ -237,6 +244,11 @@ and check_expr_option c et eo at =
 
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
+
+and check_arm c t et arm =
+  let {value = l; expr = e; fallthru} = arm.it in
+  check_literal c (Some t) l;
+  check_expr c (if fallthru then None else et) e
 
 and check_load c et memop e1 at =
   check_has_memory c at;

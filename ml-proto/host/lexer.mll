@@ -133,6 +133,11 @@ rule token = parse
   | "br" { BR }
   | "br_if" { BRIF }
   | "br_unless" { BRUNLESS }
+  | "if" { IF }
+  | "forever" { FOREVER }
+  | "case" { CASE }
+  | "fallthrough" { FALLTHROUGH }
+  | "break" { BREAK }
   | "call" { CALL }
   | "call_import" { CALLIMPORT }
   | "call_indirect" { CALLINDIRECT }
@@ -156,6 +161,7 @@ rule token = parse
     { STOREWRAP (wrapop t sz a) }
 
   | (nxx as t)".br_switch" { BRSWITCH (value_type t) }
+  | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
 
   | (ixx as t)".clz" { UNARY (intop t Int32Op.Clz Int64Op.Clz) }

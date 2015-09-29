@@ -168,6 +168,13 @@ let rec eval_expr (c : config) (e : expr) =
             with Not_found -> default)
            (eval_expr_option c eo))
 
+  | Switch (_t, e1, arms, e2) ->
+    let vo = some (eval_expr c e1) e1.at in
+    (match List.fold_left (eval_arm c vo) `Seek arms with
+    | `Seek | `Fallthru -> eval_expr c e2
+    | `Done vs -> vs
+    )
+
   | Call (x, es) ->
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     eval_func c.module_ (func c x) vs
@@ -273,6 +280,16 @@ and eval_expr_option c eo =
   match eo with
   | Some e -> eval_expr c e
   | None -> None
+
+and eval_arm c vo stage arm =
+  let {value; expr = e; fallthru} = arm.it in
+  match stage, vo = value.it with
+  | `Seek, true | `Fallthru, _ ->
+    if fallthru
+    then (ignore (eval_expr c e); `Fallthru)
+    else `Done (eval_expr c e)
+  | `Seek, false | `Done _, _ ->
+    stage
 
 and eval_func (m : instance) (f : func) (evs : value list) =
   let module Return = MakeLabel () in

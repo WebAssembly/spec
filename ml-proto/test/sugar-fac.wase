@@ -25,15 +25,13 @@
     (local i64 i64)
     (set_local 1 (get_local 0))
     (set_local 2 (i64.const 1))
-    (label
-      (loop
-        (if
-          (i64.eq (get_local 1) (i64.const 0))
-          (break 0)
-          (block
-            (set_local 2 (i64.mul (get_local 1) (get_local 2)))
-            (set_local 1 (i64.sub (get_local 1) (i64.const 1)))
-          )
+    (forever
+      (if
+        (i64.eq (get_local 1) (i64.const 0))
+        (break)
+        (block
+          (set_local 2 (i64.mul (get_local 1) (get_local 2)))
+          (set_local 1 (i64.sub (get_local 1) (i64.const 1)))
         )
       )
     )
@@ -46,18 +44,18 @@
     (local $res i64)
     (set_local $i (get_local $n))
     (set_local $res (i64.const 1))
-    (label $done
-      (loop
+    (block
+      (forever
         (if
           (i64.eq (get_local $i) (i64.const 0))
-          (break $done)
+          (br $done)
           (block
             (set_local $res (i64.mul (get_local $i) (get_local $res)))
             (set_local $i (i64.sub (get_local $i) (i64.const 1)))
           )
         )
       )
-    )
+      $done)
     (return (get_local $res))
   )
 

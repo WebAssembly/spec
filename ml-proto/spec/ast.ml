@@ -81,6 +81,7 @@ and expr' =
   | BrIf of var * expr * expr option              (* branch to label if expr is true *)
   | BrUnless of var * expr * expr option          (* branch to label if expr is false *)
   | BrSwitch of value_type * expr * var * (value * var) list * expr option
+  | Switch of value_type * expr * arm list * expr (* switch, latter expr is default *)
                                                   (* branch to label selected by expr *)
   | Call of var * expr list                       (* call function *)
   | CallImport of var * expr list                 (* call imported function *)
@@ -100,6 +101,15 @@ and expr' =
   | PageSize                                      (* return host-defined page_size *)
   | MemorySize                                    (* return current size of linear memory *)
   | ResizeMemory of expr                          (* resize linear memory *)
+
+and arm = arm' Source.phrase
+and arm' =
+{
+  value : literal;
+  expr : expr;
+  fallthru : bool
+}
+
 
 (* Functions and Modules *)
 
