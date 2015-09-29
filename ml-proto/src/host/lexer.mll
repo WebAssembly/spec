@@ -152,7 +152,7 @@ rule token = parse
     { STORETRUNC (truncop t sz a) }
 
   | (nxx as t)".switch" { SWITCH (value_type t) }
-  | (nxx as t)".const" { CONST (value_type t) }
+  | (nxx as t)".literal" { LITERAL (value_type t) }
 
   | (ixx as t)".clz" { UNARY (intop t Int32Op.Clz Int64Op.Clz) }
   | (ixx as t)".ctz" { UNARY (intop t Int32Op.Ctz Int64Op.Ctz) }

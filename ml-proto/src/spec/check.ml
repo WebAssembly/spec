@@ -188,7 +188,7 @@ let rec check_expr c et e =
     check_mem_type truncop.memop.ty truncop.sz e.at;
     check_store c et truncop.memop e1 e2 e.at
 
-  | Const v ->
+  | Literal v ->
     check_literal c et v
 
   | Unary (unop, e1) ->
