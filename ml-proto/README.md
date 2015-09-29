@@ -33,6 +33,17 @@ ocamlbuild -Is "given, spec, host" -libs "bigarray, str" main.native
 
 and get an executable named `src/main.native`.
 
+#### Optional: Oasis
+
+If you have oasis installed, either via `opam` or [built from source](http://oasis.forge.ocamlcore.org/), in the base directory (`ml-proto`) you can run:
+
+```
+oasis setup
+```
+
+And it will automatically generate the necessary build files, etc.
+
+Add (experimental) dependencies as you normally would, by including them in the `BuildDepends` section, but do not push back these changes to the `_oasis` file please.  See [this tutorial](https://ocaml.org/learn/tutorials/setting_up_with_oasis.html) on how to use oasis for fun and adventure.
 
 ### Building on Windows
 

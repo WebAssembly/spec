@@ -1,0 +1,5 @@
+PKG bigarray
+
+S src
+
+B _build/src

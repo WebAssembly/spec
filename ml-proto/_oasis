@@ -1,0 +1,21 @@
+OASISFormat: 0.4
+Name:        ml-proto
+Version:     0.1
+Synopsis:    This repository implements a prototypical reference interpreter
+  for WebAssembly
+Description: It is written for clarity and simplicity, not speed (although it should be reasonably fast). Hopefully, it can be useful as a playground for trying out ideas and a device for nailing down the exact semantics. For that purpose, the code is written in a fairly declarative, "speccy" way.
+Authors:     WebAssembly Authors
+License:     Apache-2.0
+Plugins:     META (0.4), DevFiles (0.4)
+
+Executable "wasm"
+  Path:       src
+  BuildTools: ocamlbuild
+  MainIs:     main.ml
+  CompiledObject: best
+  BuildDepends: 
+    bigarray
+  
+Test "all-tests"
+  Command: ./runtests.py
+  
