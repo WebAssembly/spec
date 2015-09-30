@@ -75,7 +75,7 @@ wasm [option] [file ...]
 where `file` is a script file (see below) to be run. If no file is given, you'll get into the REPL and can enter script commands interactively. You can also get into the REPL by explicitly passing `-` as a file name. You can do that in combination to giving a module file, so that you can then invoke its exports interactively, e.g.:
 
 ```
-./wasm module.wasm -
+./wasm module.wase -
 ```
 Note however that the REPL currently is too dumb to allow multi-line input. :)
 
