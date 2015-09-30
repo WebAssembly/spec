@@ -17,21 +17,21 @@ The interpreter can also be run as a REPL, allowing to enter pieces of scripts i
 
 You'll need OCaml 4.02. The best way to get this is to download the source tarball from the ocaml website ( http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.2.tar.gz ) and do the configure / make dance.  On OSX, with [Homebrew](http://brew.sh/) installed, simply `brew install ocaml`.
 
-Once you have ocaml, go to the `src` directory and simply do
+Once you have ocaml, simply do
 
 ```
 make
 ```
 
-You'll get an executable named `src/wasm`.
+You'll get an executable named `./wasm`.
 
-Alternatively, you can also say (in `src`):
+Alternatively, you can also say:
 
 ```
 ocamlbuild -Is "given, spec, host" -libs "bigarray, str" main.native
 ```
 
-and get an executable named `src/main.native`.
+and get an executable named `./main.native`.
 
 
 ### Building on Windows

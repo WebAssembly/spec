@@ -51,14 +51,14 @@ def find_interpreter(path):
 def rebuild_interpreter(path):
   print("// building %s" % path)
   sys.stdout.flush()
-  exitCode = subprocess.call(["ocamlbuild", "-libs", "bigarray, str", "-Is", "given, spec, host", "-cflags", "-g", "host/main.native"], cwd=os.path.abspath("src"))
+  exitCode = subprocess.call(["ocamlbuild", "-libs", "bigarray, str", "-Is", "given, spec, host", "-cflags", "-g", "host/main.native"])
   if (exitCode != 0):
     raise Exception("ocamlbuild failed with exit code %i" % exitCode)
   if not os.path.exists(path):
     raise Exception("Interpreter has not been built. Looked for %s" % path)
 
 if __name__ == "__main__":
-  interpreterPath = os.path.abspath("src/main.native")
+  interpreterPath = os.path.abspath("./main.native")
 
   try:
     os.makedirs("test/output/")

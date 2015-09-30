@@ -9,10 +9,6 @@ cd $(dirname ${BASH_SOURCE[0]})/..
 
 export PATH=$PWD/ocaml/install/bin:$PATH
 
-cd src
-
 ocamlbuild -libs "bigarray, str" -Is "given, spec, host" main.native
-
-cd ..
 
 ./runtests.py
