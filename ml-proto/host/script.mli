@@ -4,8 +4,8 @@
 
 type command = command' Source.phrase
 and command' =
-  | Define of Ast.modul
-  | AssertInvalid of Ast.modul * string
+  | Define of Ast.module_
+  | AssertInvalid of Ast.module_ * string
   | Invoke of string * Ast.expr list
   | AssertEq of string * Ast.expr list * Ast.expr
   | AssertTrap of string * Ast.expr list * string

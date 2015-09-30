@@ -7,7 +7,7 @@ type value = Values.value
 type import = value list -> value option
 type host_params = {page_size : Memory.size}
 
-val init : Ast.modul -> import list -> host_params -> instance
+val init : Ast.module_ -> import list -> host_params -> instance
 val invoke : instance -> string -> value list -> value option
   (* raise Error.Error *)
 val eval : Ast.expr -> value option (* raise Error.Error *)
