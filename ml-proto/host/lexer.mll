@@ -77,7 +77,7 @@ let extension = function
 let extendop t sz s a =
   {memop = memop t a; sz = mem_size sz; ext = extension s}
 
-let truncop t sz a =
+let wrapop t sz a =
   {memop = memop t a; sz = mem_size sz}
 }
 
@@ -147,9 +147,9 @@ rule token = parse
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)"/"(align as a)
     { LOADEXTEND (extendop t sz s a) }
   | (ixx as t)".store"(mem_size as sz)
-    { STORETRUNC (truncop t sz "") }
+    { STOREWRAP (wrapop t sz "") }
   | (ixx as t)".store"(mem_size as sz)"/"(align as a)
-    { STORETRUNC (truncop t sz a) }
+    { STOREWRAP (wrapop t sz a) }
 
   | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }

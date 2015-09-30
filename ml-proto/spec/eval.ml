@@ -188,11 +188,11 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Memory.load_extend c.module_.memory a sz ext ty)
     with exn -> memory_error e.at exn)
 
-  | StoreTrunc ({memop = {ty; align = _}; sz}, e1, e2) ->
+  | StoreWrap ({memop = {ty; align = _}; sz}, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     let a = Memory.address_of_value v1 in
-    (try Memory.store_trunc c.module_.memory a sz v2
+    (try Memory.store_wrap c.module_.memory a sz v2
     with exn -> memory_error e.at exn);
     None
 
