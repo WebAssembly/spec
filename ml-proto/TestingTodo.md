@@ -17,7 +17,7 @@ Operator semantics:
  - test that promote/demote, sext/trunc, zext/trunc is bit-preserving if not NaN
  - ~~test that clz/ctz handle zero~~
  - test that numbers slightly outside of the int32 range round into the int32 range in floating-to-int32 conversion
- - test that neg, abs, copysign, reinterpretcast, store+load, set+get, preserve the sign bit and significand bits of NaN and don't canonicalize
+ - ~~test that neg, abs, copysign, reinterpretcast, store+load, set+get, preserve the sign bit and significand bits of NaN and don't canonicalize~~
  - ~~test that shifts don't mask their shift count. 32 is particularly nice to test.~~
  - test that `page_size` returns something sane [(power of 2?)](https://github.com/WebAssembly/design/pull/296)
  - test that arithmetic operands are evaluated left-to-right
@@ -25,16 +25,16 @@ Operator semantics:
  - ~~test that sdiv/udiv/srem/urem trap on divide-by-zero~~
  - ~~test that sdiv traps on overflow~~
  - ~~test that srem doesn't trap when the corresponding sdiv would overflow~~
- - test that float-to-integer conversion traps on overflow and invalid
+ - ~~test that float-to-integer conversion traps on overflow and invalid~~
  - ~~test that unsigned operations are properly unsigned~~
 
 Floating point semantics:
- - test for round-to-nearest rounding
+ - ~~test for round-to-nearest rounding~~
  - test for ties-to-even rounding
- - test that all operations with floating point inputs correctly handle all their NaN, -0, 0, Infinity, and -Infinity special cases
- - test that all operations that can overflow produce Infinity and with the correct sign
- - test that all operations that can divide by zero produce Infinity with the correct sign
- - test that all operations that can have an invalid produce NaN
+ - ~~test that all operations with floating point inputs correctly handle all their NaN, -0, 0, Infinity, and -Infinity special cases~~
+ - ~~test that all operations that can overflow produce Infinity and with the correct sign~~
+ - ~~test that all operations that can divide by zero produce Infinity with the correct sign~~
+ - ~~test that all operations that can have an invalid produce NaN~~
  - test that all operations that can have underflow behave [correctly](https://github.com/WebAssembly/design/issues/148)
  - test that nearestint doesn't do JS-style Math.round or C-style round(3) rounding
  - test that signalling NaN doesn't cause weirdness
@@ -86,8 +86,8 @@ Misc x86 optimizer bait:
  - test that oeq handles NaN right in if, if-else, and setcc cases
 
 Misc x87-isms:
- - test for invalid Precision-Control-style x87 math
- - test for invalid -ffloat-store-style x87 math
+ - ~~test for invalid Precision-Control-style x87 math~~
+ - ~~test for invalid -ffloat-store-style x87 math~~
  - test for evaluating intermediate results at greater precision
  - test for loading and storing NaNs
 
