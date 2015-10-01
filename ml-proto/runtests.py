@@ -9,7 +9,7 @@ import sys
 
 class RunTests(unittest.TestCase):
   def _runTestFile(self, shortName, fileName, interpreterPath):
-    logPath = fileName.replace("test/", "test/output/").replace(".wase", ".wase.log")
+    logPath = fileName.replace("test/", "test/output/").replace(".wast", ".wast.log")
     try:
       os.remove(logPath)
     except OSError:
@@ -20,7 +20,7 @@ class RunTests(unittest.TestCase):
     self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
 
     try:
-      expected = open(fileName.replace("test/", "test/expected-output/").replace(".wase", ".wase.log"))
+      expected = open(fileName.replace("test/", "test/expected-output/").replace(".wast", ".wast.log"))
     except IOError:
       # print("// WARNING: No expected output found for %s" % fileName)
       return
@@ -72,6 +72,6 @@ if __name__ == "__main__":
   else:
     find_interpreter(interpreterPath)
 
-  testFiles = glob.glob("test/*.wase")
+  testFiles = glob.glob("test/*.wast")
   generate_test_cases(RunTests, interpreterPath, testFiles)
   unittest.main()
