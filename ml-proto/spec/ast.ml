@@ -74,31 +74,31 @@ type literal = value Source.phrase
 
 type expr = expr' Source.phrase
 and expr' =
-  | Nop
-  | Block of expr list
-  | If of expr * expr * expr
-  | Loop of expr
-  | Label of expr
-  | Break of var * expr option
-  | Switch of value_type * expr * arm list * expr
-  | Call of var * expr list
-  | CallImport of var * expr list
-  | CallIndirect of var * expr * expr list
-  | Return of expr option
-  | GetLocal of var
-  | SetLocal of var * expr
-  | Load of memop * expr
-  | Store of memop * expr * expr
+  | Nop                                           (* do nothing *)
+  | Block of expr list                            (* execute in sequence *)
+  | If of expr * expr * expr                      (* conditional *)
+  | Loop of expr                                  (* infinite loop *)
+  | Label of expr                                 (* labelled expression *)
+  | Break of var * expr option                    (* break to n-th surrounding label *)
+  | Switch of value_type * expr * arm list * expr (* switch, latter expr is default *)
+  | Call of var * expr list                       (* call function *)
+  | CallImport of var * expr list                 (* call imported function *)
+  | CallIndirect of var * expr * expr list        (* call function through table *)
+  | Return of expr option                         (* return 0 to many value *)
+  | GetLocal of var                               (* read local variable *)
+  | SetLocal of var * expr                        (* write local variable *)
+  | Load of memop * expr                          (* read memory address *)
+  | Store of memop * expr * expr                  (* write memory address *)
   | LoadExtend of extendop * expr
   | StoreTrunc of truncop * expr * expr
-  | Const of literal
-  | Unary of unop * expr
-  | Binary of binop * expr * expr
-  | Compare of relop * expr * expr
-  | Convert of cvt * expr
-  | PageSize
-  | MemorySize
-  | ResizeMemory of expr
+  | Const of literal                              (* constant *)
+  | Unary of unop * expr                          (* unary arithmetic operator *)
+  | Binary of binop * expr * expr                 (* binary arithmetic operator *)
+  | Compare of relop * expr * expr                (* arithmetic comparison *)
+  | Convert of cvt * expr                         (* conversion *)
+  | PageSize                                      (* return host-defined page_size *)
+  | MemorySize                                    (* return current size of linear memory *)
+  | ResizeMemory of expr                          (* resize linear memory *)
 
 and arm = arm' Source.phrase
 and arm' =

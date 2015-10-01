@@ -106,48 +106,13 @@ Here, the external format is S-expressions, but similar considerations would app
 
 ## Internal Syntax
 
-The core language is defined in `ast.ml`, and looks as follows:
-
-```
-type var = int
-
-type expr =
-  | Nop                                     (* do nothing
-  | Block of expr list                      (* execute in sequence
-  | If of expr * expr * expr                (* conditional
-  | Loop of expr                            (* infinite loop
-  | Label of expr                           (* labelled expression
-  | Break of int * expr option              (* break to n-th surrounding label
-  | Switch of expr * arm list * expr        (* switch, latter expr is default
-  | Call of var * expr list                 (* call function
-  | CallImport of var * expr list           (* call imported function
-  | CallIndirect of var * expr * expr list  (* call function through table
-  | Return of expr option                   (* return 0 to many value
-  | GetParam of var                         (* read parameter
-  | GetLocal of var                         (* read local variable
-  | SetLocal of var * expr                  (* write local variable
-  | LoadGlobal of var                       (* read global variable
-  | StoreGlobal of var * expr               (* write global variable
-  | Load of loadop * expr                   (* read memory address
-  | Store of storeop * expr * expr          (* write memory address
-  | Const of value                          (* constant
-  | Unary of unop * expr                    (* unary arithmetic operator
-  | Binary of binop * expr * expr           (* binary arithmetic operator
-  | Compare of relop * expr * expr          (* arithmetic comparison
-  | Convert of cvt * expr                   (* conversion
-  | PageSize                                (* return host-defined page_size
-  | MemorySize                              (* return current size of linear memory
-  | ResizeMemory                            (* resize linear memory
-
-and arm = {value : value; expr : expr; fallthru : bool}
-```
-
-See the code for more details on the auxiliary types. It also contains ASTs for functions and modules.
-
+The core language is defined in [ast.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/ast.ml).
 
 ## External Syntax
 
-The S-expression syntax is defined in `parser.mly`, the opcodes in `lexer.mll`. Here is an overview of the grammar of types, expressions, functions, and modules:
+The S-expression syntax is defined in [parser.mly](https://github.com/WebAssembly/spec/blob/master/ml-proto/host/parser.mly), the opcodes in [lexer.mll](https://github.com/WebAssembly/spec/blob/master/ml-proto/host/lexer.mll).
+
+Here is an overview of the grammar of types, expressions, functions, and modules:
 
 ```
 type: i32 | i64 | f32 | f64
@@ -178,8 +143,6 @@ expr:
   ( return <expr>? )
   ( get_local <var> )
   ( set_local <var> <expr> )
-  ( load_global <var> )
-  ( store_global <var> <expr> )
   ( <type>.load((8|16)_<sign>)?(/<align>)? <expr> )
   ( <type>.store(/<align>)? <expr> <expr> )
   ( <type>.const <value> )
