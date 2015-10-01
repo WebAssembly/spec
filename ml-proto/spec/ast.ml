@@ -11,7 +11,7 @@
  *   v : value
  *   e : expr
  *   f : func
- *   m : modul
+ *   m : module_
  *
  *   t : value_type
  *   s : func_type
@@ -143,8 +143,8 @@ and import' =
 
 type table = var list Source.phrase
 
-type modul = modul' Source.phrase
-and modul' =
+type module_ = module_' Source.phrase
+and module_' =
 {
   memory : memory option;
   funcs : func list;

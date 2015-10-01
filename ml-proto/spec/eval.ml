@@ -36,22 +36,22 @@ type label = value option -> exn
 
 type config =
 {
-  modul : instance;
+  module_ : instance;
   locals : value ref list;
   labels : label list;
   return : label
 }
 
 let page_size c =
-  I32.of_int32 (Int32.of_int c.modul.host.page_size)
+  I32.of_int32 (Int32.of_int c.module_.host.page_size)
 
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
     error x.at ("runtime: undefined " ^ category ^ " " ^ string_of_int x.it)
 
-let func c x = lookup "function" c.modul.funcs x
-let import c x = lookup "import" c.modul.imports x
-let table c x y = lookup "entry" (lookup "table" c.modul.tables x) y
+let func c x = lookup "function" c.module_.funcs x
+let import c x = lookup "import" c.module_.imports x
+let table c x y = lookup "entry" (lookup "table" c.module_.tables x) y
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
@@ -145,7 +145,7 @@ let rec eval_expr (c : config) (e : expr) =
 
   | Call (x, es) ->
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
-    eval_func c.modul (func c x) vs
+    eval_func c.module_ (func c x) vs
 
   | CallImport (x, es) ->
     let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
@@ -155,7 +155,7 @@ let rec eval_expr (c : config) (e : expr) =
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     (* TODO: The conversion to int could overflow. *)
-    eval_func c.modul (table c x (Int32.to_int i @@ e1.at)) vs
+    eval_func c.module_ (table c x (Int32.to_int i @@ e1.at)) vs
 
   | Return eo ->
     raise (c.return (eval_expr_option c eo))
@@ -171,28 +171,28 @@ let rec eval_expr (c : config) (e : expr) =
   | Load ({ty; align = _}, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     let a = Memory.address_of_value v1 in
-    (try Some (Memory.load c.modul.memory a ty)
+    (try Some (Memory.load c.module_.memory a ty)
     with exn -> memory_error e.at exn)
 
   | Store ({ty = _; align = _}, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     let a = Memory.address_of_value v1 in
-    (try Memory.store c.modul.memory a v2
+    (try Memory.store c.module_.memory a v2
     with exn -> memory_error e.at exn);
     None
 
   | LoadExtend ({memop = {ty; align = _}; sz; ext}, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     let a = Memory.address_of_value v1 in
-    (try Some (Memory.load_extend c.modul.memory a sz ext ty)
+    (try Some (Memory.load_extend c.module_.memory a sz ext ty)
     with exn -> memory_error e.at exn)
 
   | StoreTrunc ({memop = {ty; align = _}; sz}, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     let a = Memory.address_of_value v1 in
-    (try Memory.store_trunc c.modul.memory a sz v2
+    (try Memory.store_trunc c.module_.memory a sz v2
     with exn -> memory_error e.at exn);
     None
 
@@ -235,14 +235,14 @@ let rec eval_expr (c : config) (e : expr) =
     Some (Int32 (page_size c))
 
   | MemorySize ->
-    Some (Int32 (I32.of_int32 (Int32.of_int (Memory.size c.modul.memory))))
+    Some (Int32 (I32.of_int32 (Int32.of_int (Memory.size c.module_.memory))))
 
   | ResizeMemory e ->
     let i = int32 (eval_expr c e) e.at in
     if (I32.rem_u i (page_size c)) <> I32.zero then
       error e.at "runtime: resize_memory operand not multiple of page_size";
     (* TODO: The conversion to int could overflow. *)
-    Memory.resize c.modul.memory (Int32.to_int i);
+    Memory.resize c.module_.memory (Int32.to_int i);
     None
 
 and eval_expr_option c eo =
@@ -265,7 +265,7 @@ and eval_func (m : instance) (f : func) (evs : value list) =
   let args = List.map ref evs in
   let vars = List.map (fun t -> ref (default_value t.it)) f.it.locals in
   let locals = args @ vars in
-  let c = {modul = m; locals; labels = []; return = Return.label} in
+  let c = {module_ = m; locals; labels = []; return = Return.label} in
   try eval_expr c f.it.body
   with Return.Label vo -> vo
 

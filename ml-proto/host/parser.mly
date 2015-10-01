@@ -329,7 +329,7 @@ module_fields :
       | Some _ -> Error.error $1.at "more than one memory section"
       | None -> {m with memory = Some $1} }
 ;
-modul :
+module_ :
   | LPAR MODULE module_fields RPAR { $3 (c0 ()) @@ at() }
 ;
 
@@ -337,8 +337,8 @@ modul :
 /* Scripts */
 
 cmd :
-  | modul { Define $1 @@ at() }
-  | LPAR ASSERTINVALID modul TEXT RPAR { AssertInvalid ($3, $4) @@ at() }
+  | module_ { Define $1 @@ at() }
+  | LPAR ASSERTINVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at() }
   | LPAR INVOKE TEXT expr_list RPAR
     { Invoke ($3, $4 (c0 ())) @@ at() }
   | LPAR ASSERTEQ LPAR INVOKE TEXT expr_list RPAR expr RPAR

@@ -262,11 +262,11 @@ and check_mem_type ty sz at =
 
 (*
  * check_func : context -> func -> unit
- * check_module : context -> modul -> unit
+ * check_module : context -> module_ -> unit
  *
  * Conventions:
  *   c : context
- *   m : modul
+ *   m : module_
  *   f : func
  *   e : expr
  *   v : value
