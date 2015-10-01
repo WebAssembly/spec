@@ -80,8 +80,6 @@ let bind_func c x = bind "function" c.funcs x
 let bind_import c x = bind "import" c.imports x
 let bind_local c x = bind "local" c.locals x
 let bind_label c x =
-  if VarMap.mem x.it c.labels then
-    Error.error x.at ("duplicate label " ^ x.it);
   {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
 
 let anon space n = space.count <- space.count + n
@@ -159,19 +157,33 @@ expr :
 oper :
   | NOP { fun c -> Nop }
   | BLOCK expr expr_list { fun c -> Block ($2 c :: $3 c) }
+  | BLOCK bind_var expr expr_list  /* Sugar */
+    { let at = at() in
+      fun c -> let c' = bind_label c $2 in
+        Label (Block ($3 c' :: $4 c') @@ at) }
   | IF expr expr expr { fun c -> If ($2 c, $3 c, $4 c) }
   | IF expr expr  /* Sugar */
     { let at1 = ati 1 in fun c -> If ($2 c, $3 c, Nop @@ at1) }
   | LOOP expr_block { fun c -> Loop ($2 c) }
-  | LABEL expr_block { fun c -> Label ($2 (anon_label c)) }
-  | LABEL bind_var expr_block  /* Sugar */
-    { fun c -> Label ($3 (bind_label c $2)) }
+  | LOOP bind_var expr_block  /* Sugar */
+    { let at = at() in
+      fun c -> let c' = bind_label c $2 in Label (Loop ($3 c') @@ at) }
+  | LOOP bind_var bind_var expr_block  /* Sugar */
+    { let at = at() in
+      fun c -> let c' = bind_label (bind_label c $2) $3 in
+        Label (Loop (Label ($4 c') @@ at) @@ at) }
+  | LABEL expr { fun c -> let c' = anon_label c in Label ($2 c') }
+  | LABEL bind_var expr  /* Sugar */
+    { fun c -> let c' = bind_label c $2 in Label ($3 c') }
   | BREAK var expr_opt { fun c -> Break ($2 c label, $3 c) }
-  | BREAK { let at = at() in fun c -> Break (0 @@ at, None) }  /* Sugar */
   | SWITCH expr arms
     { let at1 = ati 1 in
       fun c -> let x, y = $3 c in
         Switch ($1 @@ at1, $2 c, List.map (fun a -> a $1) x, y) }
+  | SWITCH bind_var expr arms  /* Sugar */
+    { let at = at() in let at2 = ati 2 in
+      fun c -> let c' = bind_label c $2 in let x, y = $4 c' in
+        Label (Switch ($1 @@ at2, $3 c', List.map (fun a -> a $1) x, y) @@ at) }
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | CALLIMPORT var expr_list { fun c -> CallImport ($2 c import, $3 c) }
   | CALLINDIRECT var expr expr_list
