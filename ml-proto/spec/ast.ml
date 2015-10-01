@@ -84,13 +84,13 @@ and expr' =
   | Call of var * expr list                       (* call function *)
   | CallImport of var * expr list                 (* call imported function *)
   | CallIndirect of var * expr * expr list        (* call function through table *)
-  | Return of expr option                         (* return 0 to many value *)
+  | Return of expr option                         (* return, optionally with a value *)
   | GetLocal of var                               (* read local variable *)
   | SetLocal of var * expr                        (* write local variable *)
-  | Load of memop * expr                          (* read memory address *)
-  | Store of memop * expr * expr                  (* write memory address *)
-  | LoadExtend of extendop * expr
-  | StoreWrap of wrapop * expr * expr
+  | Load of memop * expr                          (* read memory at address *)
+  | Store of memop * expr * expr                  (* write memory at address *)
+  | LoadExtend of extendop * expr                 (* read memory at address and extend *)
+  | StoreWrap of wrapop * expr * expr             (* wrap and write to memory at address *)
   | Const of literal                              (* constant *)
   | Unary of unop * expr                          (* unary arithmetic operator *)
   | Binary of binop * expr * expr                 (* binary arithmetic operator *)
