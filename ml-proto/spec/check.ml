@@ -184,9 +184,9 @@ let rec check_expr c et e =
     check_mem_type extendop.memop.ty extendop.sz e.at;
     check_load c et extendop.memop e1 e.at
 
-  | StoreTrunc (truncop, e1, e2) ->
-    check_mem_type truncop.memop.ty truncop.sz e.at;
-    check_store c et truncop.memop e1 e2 e.at
+  | StoreWrap (wrapop, e1, e2) ->
+    check_mem_type wrapop.memop.ty wrapop.sz e.at;
+    check_store c et wrapop.memop e1 e2 e.at
 
   | Const v ->
     check_literal c et v

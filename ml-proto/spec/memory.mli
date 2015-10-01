@@ -23,6 +23,6 @@ val resize : memory -> size -> unit
 val load : memory -> address -> value_type -> value
 val store : memory -> address -> value -> unit
 val load_extend : memory -> address -> mem_size -> extension -> value_type -> value
-val store_trunc : memory -> address -> mem_size -> value -> unit
+val store_wrap : memory -> address -> mem_size -> value -> unit
 
 val address_of_value : Values.value -> address

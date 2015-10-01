@@ -65,7 +65,7 @@ type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
 
 type memop = {ty : Types.value_type; align : int option}
 type extendop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
-type truncop = {memop : memop; sz : Memory.mem_size}
+type wrapop = {memop : memop; sz : Memory.mem_size}
 
 (* Expressions *)
 
@@ -90,7 +90,7 @@ and expr' =
   | Load of memop * expr                          (* read memory address *)
   | Store of memop * expr * expr                  (* write memory address *)
   | LoadExtend of extendop * expr
-  | StoreTrunc of truncop * expr * expr
+  | StoreWrap of wrapop * expr * expr
   | Const of literal                              (* constant *)
   | Unary of unop * expr                          (* unary arithmetic operator *)
   | Binary of binop * expr * expr                 (* binary arithmetic operator *)

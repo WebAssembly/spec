@@ -115,7 +115,7 @@ let load_extend mem a sz ext t =
   | Mem32, SX, Int64Type -> Int64 (loadn_sx mem 4 a)
   | _ -> raise Type
 
-let store_trunc mem a sz v =
+let store_wrap mem a sz v =
   match sz, v with
   | Mem8,  Int32 x -> storen mem 1 a (Int64.of_int32 x)
   | Mem8,  Int64 x -> storen mem 1 a x
