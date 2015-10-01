@@ -84,7 +84,6 @@ and expr' =
   | Call of var * expr list
   | CallImport of var * expr list
   | CallIndirect of var * expr * expr list
-  | Return of expr option
   | GetLocal of var
   | SetLocal of var * expr
   | Load of memop * expr

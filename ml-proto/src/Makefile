@@ -14,12 +14,13 @@ OCB_FLAGS += 	-libs str,bigarray
 OCB_FLAGS += 	-I host -I given -I spec
 OCB =		ocamlbuild $(OCB_FLAGS)
 
-all:		$(NAME) unopt
+all:		$(NAME)
+unopt:		$(NAME).unopt
 
 $(NAME):	main.native
 		mv $< $@
 
-unopt:		main.byte
+$(NAME).unopt:	main.byte
 		mv $< $@
 
 main.native:	$(MAKEFILE)
@@ -40,4 +41,4 @@ zip:
 		git archive --format=zip --prefix=$(NAME)/ \
 			-o $(NAME).zip HEAD
 
-.PHONY:		all clean check zip
+.PHONY:		all unopt clean check zip
