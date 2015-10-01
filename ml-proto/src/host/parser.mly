@@ -56,7 +56,7 @@ let c0 () =
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
-  {c with locals = empty ()}
+  {c with labels = VarMap.add "return" 0 c.labels; locals = empty ()}
 
 let lookup category space x =
   try VarMap.find x.it space.map
@@ -188,7 +188,9 @@ oper :
   | CALLIMPORT var expr_list { fun c -> CallImport ($2 c import, $3 c) }
   | CALLINDIRECT var expr expr_list
     { fun c -> CallIndirect ($2 c table, $3 c, $4 c) }
-  | RETURN expr_opt { fun c -> Return ($2 c) }
+  | RETURN expr_opt  /* Sugar */
+    { let at1 = ati 1 in
+      fun c -> Break (label c ("return" @@ at1) @@ at1, $2 c) }
   | GETLOCAL var { fun c -> GetLocal ($2 c local) }
   | SETLOCAL var expr { fun c -> SetLocal ($2 c local, $3 c) }
   | LOAD expr { fun c -> Load ($1, $2 c) }
@@ -245,7 +247,9 @@ func_fields :
     { let at = at() in
       fun c -> {params = []; result = None; locals = []; body = Nop @@ at} }
   | expr_block
-    { fun c -> {params = []; result = None; locals = []; body = $1 c} }
+    { let at = at() in
+      fun c ->
+        {params = []; result = None; locals = []; body = Label ($1 c) @@ at} }
   | LPAR PARAM value_type_list RPAR func_fields
     { fun c -> anon_locals c $3; let f = $5 c in
       {f with params = $3 @ f.params} }
