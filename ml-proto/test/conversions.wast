@@ -118,6 +118,9 @@
 (assert_same (invoke "i32.trunc_s_f32" (f32.const -2147483648.0)) (i32.const -2147483648))
 (assert_trap (invoke "i32.trunc_s_f32" (f32.const 2147483648.0)) "runtime: integer overflow")
 (assert_trap (invoke "i32.trunc_s_f32" (f32.const -2147483904.0)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_s_f32" (f32.const infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_s_f32" (f32.const -infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_s_f32" (f32.const nan)) "runtime: invalid conversion to integer")
 
 (assert_same (invoke "i32.trunc_u_f32" (f32.const 0.0)) (i32.const 0))
 (assert_same (invoke "i32.trunc_u_f32" (f32.const -0.0)) (i32.const 0))
@@ -133,6 +136,9 @@
 (assert_same (invoke "i32.trunc_u_f32" (f32.const -0.9)) (i32.const 0))
 (assert_trap (invoke "i32.trunc_u_f32" (f32.const 4294967296.0)) "runtime: integer overflow")
 (assert_trap (invoke "i32.trunc_u_f32" (f32.const -1.0)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_u_f32" (f32.const infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_u_f32" (f32.const -infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_u_f32" (f32.const nan)) "runtime: invalid conversion to integer")
 
 (assert_same (invoke "i32.trunc_s_f64" (f64.const 0.0)) (i32.const 0))
 (assert_same (invoke "i32.trunc_s_f64" (f64.const -0.0)) (i32.const 0))
@@ -150,6 +156,9 @@
 (assert_same (invoke "i32.trunc_s_f64" (f64.const -2147483648.0)) (i32.const -2147483648))
 (assert_trap (invoke "i32.trunc_s_f64" (f64.const 2147483648.0)) "runtime: integer overflow")
 (assert_trap (invoke "i32.trunc_s_f64" (f64.const -2147483649.0)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_s_f64" (f64.const infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_s_f64" (f64.const -infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_s_f64" (f64.const nan)) "runtime: invalid conversion to integer")
 
 (assert_same (invoke "i32.trunc_u_f64" (f64.const 0.0)) (i32.const 0))
 (assert_same (invoke "i32.trunc_u_f64" (f64.const -0.0)) (i32.const 0))
@@ -169,6 +178,9 @@
 (assert_trap (invoke "i32.trunc_u_f64" (f64.const 1e16)) "runtime: integer overflow")
 (assert_trap (invoke "i32.trunc_u_f64" (f64.const 1e30)) "runtime: integer overflow")
 (assert_trap (invoke "i32.trunc_u_f64" (f64.const 9223372036854775808)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_u_f64" (f64.const infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_u_f64" (f64.const -infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i32.trunc_u_f64" (f64.const nan)) "runtime: invalid conversion to integer")
 
 (assert_same (invoke "i64.trunc_s_f32" (f32.const 0.0)) (i64.const 0))
 (assert_same (invoke "i64.trunc_s_f32" (f32.const -0.0)) (i64.const 0))
@@ -188,6 +200,9 @@
 (assert_same (invoke "i64.trunc_s_f32" (f32.const -9223372036854775808.0)) (i64.const -9223372036854775808))
 (assert_trap (invoke "i64.trunc_s_f32" (f32.const 9223372036854775808.0)) "runtime: integer overflow")
 (assert_trap (invoke "i64.trunc_s_f32" (f32.const -9223373136366403584.0)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_s_f32" (f32.const infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_s_f32" (f32.const -infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_s_f32" (f32.const nan)) "runtime: invalid conversion to integer")
 
 (assert_same (invoke "i64.trunc_u_f32" (f32.const 0.0)) (i64.const 0))
 (assert_same (invoke "i64.trunc_u_f32" (f32.const -0.0)) (i64.const 0))
@@ -201,6 +216,9 @@
 (assert_same (invoke "i64.trunc_u_f32" (f32.const -0.9)) (i64.const 0))
 (assert_trap (invoke "i64.trunc_u_f32" (f32.const 18446744073709551616.0)) "runtime: integer overflow")
 (assert_trap (invoke "i64.trunc_u_f32" (f32.const -1.0)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_u_f32" (f32.const infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_u_f32" (f32.const -infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_u_f32" (f32.const nan)) "runtime: invalid conversion to integer")
 
 (assert_same (invoke "i64.trunc_s_f64" (f64.const 0.0)) (i64.const 0))
 (assert_same (invoke "i64.trunc_s_f64" (f64.const -0.0)) (i64.const 0))
@@ -220,6 +238,9 @@
 (assert_same (invoke "i64.trunc_s_f64" (f64.const -9223372036854775808.0)) (i64.const -9223372036854775808))
 (assert_trap (invoke "i64.trunc_s_f64" (f64.const 9223372036854775808.0)) "runtime: integer overflow")
 (assert_trap (invoke "i64.trunc_s_f64" (f64.const -9223372036854777856.0)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_s_f64" (f64.const infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_s_f64" (f64.const -infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_s_f64" (f64.const nan)) "runtime: invalid conversion to integer")
 
 (assert_same (invoke "i64.trunc_u_f64" (f64.const 0.0)) (i64.const 0))
 (assert_same (invoke "i64.trunc_u_f64" (f64.const -0.0)) (i64.const 0))
@@ -237,6 +258,9 @@
 (assert_same (invoke "i64.trunc_u_f64" (f64.const 9223372036854775808)) (i64.const -9223372036854775808))
 (assert_trap (invoke "i64.trunc_u_f64" (f64.const 18446744073709551616.0)) "runtime: integer overflow")
 (assert_trap (invoke "i64.trunc_u_f64" (f64.const -1.0)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_u_f64" (f64.const infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_u_f64" (f64.const -infinity)) "runtime: integer overflow")
+(assert_trap (invoke "i64.trunc_u_f64" (f64.const nan)) "runtime: invalid conversion to integer")
 
 (assert_same (invoke "f32.convert_s_i32" (i32.const 1)) (f32.const 1.0))
 (assert_same (invoke "f32.convert_s_i32" (i32.const -1)) (f32.const -1.0))
@@ -305,6 +329,9 @@
 (assert_same (invoke "f64.promote_f32" (f32.const 1.5046328e-36)) (f64.const 1.504632769052528e-36))
 ;; Generated randomly by picking a random float.
 (assert_same (invoke "f64.promote_f32" (f32.const 6.6382537e+37)) (f64.const 6.6382536710104395e+37))
+(assert_same (invoke "f64.promote_f32" (f32.const infinity)) (f64.const infinity))
+(assert_same (invoke "f64.promote_f32" (f32.const -infinity)) (f64.const -infinity))
+(assert_nan (invoke "f64.promote_f32" (f32.const nan)))
 
 (assert_same (invoke "f32.demote_f64" (f64.const 0.0)) (f32.const 0.0))
 (assert_same (invoke "f32.demote_f64" (f64.const -0.0)) (f32.const -0.0))
@@ -318,6 +345,9 @@
 (assert_same (invoke "f32.demote_f64" (f64.const -3.402823466385289e+38)) (f32.const -3.4028235e+38))
 (assert_same (invoke "f32.demote_f64" (f64.const 1.504632769052528e-36)) (f32.const 1.5046328e-36))
 (assert_same (invoke "f32.demote_f64" (f64.const 6.6382536710104395e+37)) (f32.const 6.6382537e+37))
+(assert_same (invoke "f32.demote_f64" (f64.const infinity)) (f32.const infinity))
+(assert_same (invoke "f32.demote_f64" (f64.const -infinity)) (f32.const -infinity))
+(assert_nan (invoke "f32.demote_f64" (f64.const nan)))
 
 (assert_same (invoke "f32.reinterpret_i32" (i32.const 0)) (f32.const 0.0))
 (assert_same (invoke "f32.reinterpret_i32" (i32.const 0x80000000)) (f32.const -0.0))
@@ -341,6 +371,9 @@
 (assert_same (invoke "i32.reinterpret_f32" (f32.const -3.4028235e+38)) (i32.const -8388609))
 (assert_same (invoke "i32.reinterpret_f32" (f32.const 1.4012984e-45)) (i32.const 1))
 (assert_same (invoke "i32.reinterpret_f32" (f32.const -1.4012984e-45)) (i32.const -2147483647))
+(assert_same (invoke "i32.reinterpret_f32" (f32.const infinity)) (i32.const 0x7f800000))
+(assert_same (invoke "i32.reinterpret_f32" (f32.const -infinity)) (i32.const 0xff800000))
+(assert_same (invoke "i32.reinterpret_f32" (f32.const nan)) (i32.const 0x7fc00000))
 
 (assert_same (invoke "i64.reinterpret_f64" (f64.const 0.0)) (i64.const 0))
 (assert_same (invoke "i64.reinterpret_f64" (f64.const -0.0)) (i64.const 0x8000000000000000))
@@ -352,3 +385,6 @@
 (assert_same (invoke "i64.reinterpret_f64" (f64.const -1.7976931348623157e+308)) (i64.const -4503599627370497))
 (assert_same (invoke "i64.reinterpret_f64" (f64.const 4.9406565e-324)) (i64.const 1))
 (assert_same (invoke "i64.reinterpret_f64" (f64.const -4.9406565e-324)) (i64.const -9223372036854775807))
+(assert_same (invoke "i64.reinterpret_f64" (f64.const infinity)) (i64.const 0x7ff0000000000000))
+(assert_same (invoke "i64.reinterpret_f64" (f64.const -infinity)) (i64.const 0xfff0000000000000))
+(assert_same (invoke "i64.reinterpret_f64" (f64.const nan)) (i64.const 0x7ff8000000000000))
