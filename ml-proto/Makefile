@@ -19,13 +19,13 @@ all:		$(NAME) unopt
 $(NAME):	main.native
 		mv $< $@
 
-unopt:		main.byte
+unopt:		main.d.byte
 		mv $< $@
 
 main.native:	$(MAKEFILE)
 		$(OCB) $@
 
-main.byte:	$(MAKEFILE)
+main.d.byte:	$(MAKEFILE)
 		$(OCB) $@
 
 clean:
