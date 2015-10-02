@@ -47,4 +47,5 @@ zip:
 		git archive --format=zip --prefix=$(NAME)/ \
 			-o $(NAME).zip HEAD
 
+.INTERMEDIATE:  main.native main.d.byte
 .PHONY:		all opt unopt clean test check zip
