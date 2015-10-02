@@ -30,15 +30,15 @@ Operator semantics:
 
 Floating point semantics:
  - ~~test for round-to-nearest rounding~~
- - test for ties-to-even rounding
+ - ~~test for ties-to-even rounding~~
  - ~~test that all operations with floating point inputs correctly handle all their NaN, -0, 0, Infinity, and -Infinity special cases~~
  - ~~test that all operations that can overflow produce Infinity and with the correct sign~~
  - ~~test that all operations that can divide by zero produce Infinity with the correct sign~~
  - ~~test that all operations that can have an invalid produce NaN~~
  - test that all operations that can have underflow behave [correctly](https://github.com/WebAssembly/design/issues/148)
  - ~~test that nearestint doesn't do JS-style Math.round or C-style round(3) rounding~~
- - test that signalling NaN doesn't cause weirdness
- - test that signalling/quiet NaNs can have sign bits and payloads in literals
+ - ~~test that signalling NaN doesn't cause weirdness~~
+ - ~~test that signalling/quiet NaNs can have sign bits and payloads in literals~~
  - test that conversion from int32/int64 to float32 rounds correctly
 
 Linear memory semantics:

@@ -7,6 +7,9 @@
   (func $f32.abs (param $x f32) (result f32) (f32.abs (get_local $x)))
   (func $f32.neg (param $x f32) (result f32) (f32.neg (get_local $x)))
   (func $f32.copysign (param $x f32) (param $y f32) (result f32) (f32.copysign (get_local $x) (get_local $y)))
+  (func $f32.ceil (param $x f32) (result f32) (f32.ceil (get_local $x)))
+  (func $f32.floor (param $x f32) (result f32) (f32.floor (get_local $x)))
+  (func $f32.trunc (param $x f32) (result f32) (f32.trunc (get_local $x)))
   (func $f32.nearest (param $x f32) (result f32) (f32.nearest (get_local $x)))
 
   (func $f64.add (param $x f64) (param $y f64) (result f64) (f64.add (get_local $x) (get_local $y)))
@@ -17,6 +20,9 @@
   (func $f64.abs (param $x f64) (result f64) (f64.abs (get_local $x)))
   (func $f64.neg (param $x f64) (result f64) (f64.neg (get_local $x)))
   (func $f64.copysign (param $x f64) (param $y f64) (result f64) (f64.copysign (get_local $x) (get_local $y)))
+  (func $f64.ceil (param $x f64) (result f64) (f64.ceil (get_local $x)))
+  (func $f64.floor (param $x f64) (result f64) (f64.floor (get_local $x)))
+  (func $f64.trunc (param $x f64) (result f64) (f64.trunc (get_local $x)))
   (func $f64.nearest (param $x f64) (result f64) (f64.nearest (get_local $x)))
 
   (export "f32.add" $f32.add)
@@ -27,6 +33,9 @@
   (export "f32.abs" $f32.abs)
   (export "f32.neg" $f32.neg)
   (export "f32.copysign" $f32.copysign)
+  (export "f32.ceil" $f32.ceil)
+  (export "f32.floor" $f32.floor)
+  (export "f32.trunc" $f32.trunc)
   (export "f32.nearest" $f32.nearest)
 
   (export "f64.add" $f64.add)
@@ -37,12 +46,26 @@
   (export "f64.abs" $f64.abs)
   (export "f64.neg" $f64.neg)
   (export "f64.copysign" $f64.copysign)
+  (export "f64.ceil" $f64.ceil)
+  (export "f64.floor" $f64.floor)
+  (export "f64.trunc" $f64.trunc)
   (export "f64.nearest" $f64.nearest)
 )
 
 (assert_same (invoke "f32.add" (f32.const 1.1234567890) (f32.const 1.2345e-10)) (f32.const 1.123456789))
 
+;; Computations that round differently in ties-to-odd mode.
+(assert_same (invoke "f32.add" (f32.const 0x1p23) (f32.const 0x1p-1)) (f32.const 0x1p23))
+(assert_same (invoke "f32.add" (f32.const 0x1.000002p+23) (f32.const 0x1p-1)) (f32.const 0x1.000004p+23))
+
+;; Test that what some systems call signalling NaN behaves as a quiet NaN.
+(assert_nan (invoke "f32.add" (f32.const nan(0x200000)) (f32.const 1.0)))
+
 (assert_same (invoke "f64.add" (f64.const 1.1234567890) (f64.const 1.2345e-10)) (f64.const 0x1.1f9add37c11f7p+0))
+
+;; Computations that round differently in round-to-odd mode.
+(assert_same (invoke "f64.add" (f64.const 0x1p52) (f64.const 0x1p-1)) (f64.const 0x1p52))
+(assert_same (invoke "f64.add" (f64.const 0x1.0000000000001p+52) (f64.const 0x1p-1)) (f64.const 0x1.0000000000002p+52))
 
 ;; Computations that round differently in round-upward mode.
 (assert_same (invoke "f64.add" (f64.const 0x1.f33e1fbca27aap-413) (f64.const -0x1.6b192891ed61p+249)) (f64.const -0x1.6b192891ed61p+249))
@@ -92,6 +115,9 @@
 (assert_same (invoke "f64.add" (f64.const -0x1.44d9fb78bf5d3p-1021) (f64.const -0x0.02766a20d263fp-1022)) (f64.const -0x1.46153089288f2p-1021))
 (assert_same (invoke "f64.add" (f64.const 0x0.89e17f0fdc567p-1022) (f64.const -0x1.d9a93a01fd27dp-1021)) (f64.const -0x1.94b87a7a0efcap-1021))
 (assert_same (invoke "f64.add" (f64.const -0x0.3f3d1a052fa2bp-1022) (f64.const -0x1.4b78292c7d2adp-1021)) (f64.const -0x1.6b16b62f14fc2p-1021))
+
+;; Test that what some systems call signalling NaN behaves as a quiet NaN.
+(assert_nan (invoke "f64.add" (f64.const nan(0x4000000000000)) (f64.const 1.0)))
 
 ;; Computations that round differently on x87.
 (assert_same (invoke "f64.sub" (f64.const 0x1.c21151a709b6cp-78) (f64.const 0x1.0a12fff8910f6p-115)) (f64.const 0x1.c21151a701663p-78))
@@ -154,6 +180,20 @@
 (assert_same (invoke "f64.div" (f64.const 0x1.16abda1bb3cb3p-856) (f64.const 0x1.6c9c7198eb1e6p+166)) (f64.const 0x0.c3a8fd6741649p-1022))
 (assert_same (invoke "f64.div" (f64.const 0x1.7057d6ab553cap-1005) (f64.const -0x1.2abf1e98660ebp+23)) (f64.const -0x0.04ee8d8ec01cdp-1022))
 
+;; Computations that round differently when div is mul by reciprocal.
+(assert_same (invoke "f64.div" (f64.const 0x1.b2348a1c81899p+61) (f64.const -0x1.4a58aad903dd3p-861)) (f64.const -0x1.507c1e2a41b35p+922))
+(assert_same (invoke "f64.div" (f64.const 0x1.23fa5137a918ap-130) (f64.const -0x1.7268db1951263p-521)) (f64.const -0x1.93965e0d896bep+390))
+(assert_same (invoke "f64.div" (f64.const 0x1.dcb3915d82deep+669) (f64.const 0x1.50caaa1dc6b19p+638)) (f64.const 0x1.6a58ec814b09dp+31))
+(assert_same (invoke "f64.div" (f64.const -0x1.046e378c0cc46p+182) (f64.const 0x1.ac925009a922bp+773)) (f64.const -0x1.3720aa94dab18p-592))
+(assert_same (invoke "f64.div" (f64.const -0x1.8945fd69d8e11p-871) (f64.const -0x1.0a37870af809ap-646)) (f64.const 0x1.7a2e286c62382p-225))
+
+;; Computations that round differently when computed via f32.
+(assert_same (invoke "f64.div" (f64.const 0x1.82002af0ea1f3p-57) (f64.const 0x1.d0a9b0c2fa339p+0)) (f64.const 0x1.a952fbd1fc17cp-58))
+(assert_same (invoke "f64.div" (f64.const 0x1.1e12b515db471p-102) (f64.const -0x1.41fc3c94fba5p-42)) (f64.const -0x1.c6e50cccb7cb6p-61))
+(assert_same (invoke "f64.div" (f64.const 0x1.aba5adcd6f583p-41) (f64.const 0x1.17dfac639ce0fp-112)) (f64.const 0x1.872b0a008c326p+71))
+(assert_same (invoke "f64.div" (f64.const 0x1.cf82510d0ae6bp+89) (f64.const 0x1.0207d86498053p+97)) (f64.const 0x1.cbdc804e2cf14p-8))
+(assert_same (invoke "f64.div" (f64.const 0x1.4c82cbb508e21p-11) (f64.const -0x1.6b57208c2d5d5p+52)) (f64.const -0x1.d48e8b369129ap-64))
+
 ;; Computations that round differently on x87.
 (assert_same (invoke "f64.sqrt" (f64.const 0x1.0263fcc94f259p-164)) (f64.const 0x1.0131485de579fp-82))
 (assert_same (invoke "f64.sqrt" (f64.const 0x1.352dfa278c43dp+338)) (f64.const 0x1.195607dac5417p+169))
@@ -200,6 +240,22 @@
 (assert_same (invoke "f64.copysign" (f64.const nan(0x0f1e27a6b)) (f64.const -nan)) (f64.const -nan(0x0f1e27a6b)))
 (assert_same (invoke "f64.copysign" (f64.const -nan(0x0f1e27a6b)) (f64.const nan)) (f64.const nan(0x0f1e27a6b)))
 (assert_same (invoke "f64.copysign" (f64.const -nan(0x0f1e27a6b)) (f64.const -nan)) (f64.const -nan(0x0f1e27a6b)))
+
+;; Test that ceil isn't implemented as adding 0.5 and rounding to nearest.
+(assert_same (invoke "f32.ceil" (f32.const 0x1.fffffep-1)) (f32.const 1.0))
+(assert_same (invoke "f32.ceil" (f32.const 0x1p-126)) (f32.const 1.0))
+
+;; Test that ceil isn't implemented as adding 0.5 and rounding to nearest.
+(assert_same (invoke "f64.ceil" (f64.const 0x1.fffffffffffffp-1)) (f64.const 1.0))
+(assert_same (invoke "f64.ceil" (f64.const 0x1p-1022)) (f64.const 1.0))
+
+;; Test that floor isn't implemented as subtracting 0.5 and rounding to nearest.
+(assert_same (invoke "f32.floor" (f32.const -0x1.fffffep-1)) (f32.const -1.0))
+(assert_same (invoke "f32.floor" (f32.const -0x1p-126)) (f32.const -1.0))
+
+;; Test that floor isn't implemented as subtracting 0.5 and rounding to nearest.
+(assert_same (invoke "f64.floor" (f64.const -0x1.fffffffffffffp-1)) (f64.const -1.0))
+(assert_same (invoke "f64.floor" (f64.const -0x1p-1022)) (f64.const -1.0))
 
 ;; Nearest should not round halfway cases away from zero (as C's round(3) does)
 ;; or up (as JS's Math.round does).
