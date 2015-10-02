@@ -171,8 +171,9 @@ let rec check_expr c et e =
     check_type (Some (local c x)) et e.at
 
   | SetLocal (x, e1) ->
-    check_expr c (Some (local c x)) e1;
-    check_type None et e.at
+    let t = local c x in
+    check_expr c (Some t) e1;
+    check_type (Some t) et e.at
 
   | Load (memop, e1) ->
     check_load c et memop e1 e.at
@@ -250,7 +251,7 @@ and check_store c et memop e1 e2 at =
   check_align memop.align at;
   check_expr c (Some Int32Type) e1;
   check_expr c (Some memop.ty) e2;
-  check_type None et at
+  check_type (Some memop.ty) et at
 
 and check_align align at =
   Lib.Option.app (fun a ->

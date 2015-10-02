@@ -166,7 +166,7 @@ let rec eval_expr (c : config) (e : expr) =
   | SetLocal (x, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     local c x := v1;
-    None
+    Some v1
 
   | Load ({ty; align = _}, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
@@ -180,7 +180,7 @@ let rec eval_expr (c : config) (e : expr) =
     let a = Memory.address_of_value v1 in
     (try Memory.store c.module_.memory a v2
     with exn -> memory_error e.at exn);
-    None
+    Some v2
 
   | LoadExtend ({memop = {ty; align = _}; sz; ext}, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
@@ -194,7 +194,7 @@ let rec eval_expr (c : config) (e : expr) =
     let a = Memory.address_of_value v1 in
     (try Memory.store_wrap c.module_.memory a sz v2
     with exn -> memory_error e.at exn);
-    None
+    Some v2
 
   | Const v ->
     Some v.it
