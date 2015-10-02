@@ -35,29 +35,29 @@
 )
 
 ;; Test alignment annotation rules
-(module (func (i32.load8_u/2 (i32.const 0))))
-(module (func (i32.load16_u/4 (i32.const 0))))
-(module (func (i32.load/8 (i32.const 0))))
-(module (func (f32.load/8 (i32.const 0))))
+(module (memory 0) (func (i32.load8_u/2 (i32.const 0))))
+(module (memory 0) (func (i32.load16_u/4 (i32.const 0))))
+(module (memory 0) (func (i32.load/8 (i32.const 0))))
+(module (memory 0) (func (f32.load/8 (i32.const 0))))
 
 (assert_invalid
-  (module (func (i64.load/0 (i32.const 0))))
+  (module (memory 0) (func (i64.load/0 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (func (i64.load/3 (i32.const 0))))
+  (module (memory 0) (func (i64.load/3 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (func (i64.load/5 (i32.const 0))))
+  (module (memory 0) (func (i64.load/5 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (func (i64.load/6 (i32.const 0))))
+  (module (memory 0) (func (i64.load/6 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (func (i64.load/7 (i32.const 0))))
+  (module (memory 0) (func (i64.load/7 (i32.const 0))))
   "non-power-of-two alignment"
 )
 

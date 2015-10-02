@@ -22,12 +22,9 @@ type context =
   tables : func_type list;
   locals : value_type list;
   return : expr_type;
-  labels : expr_type list
+  labels : expr_type list;
+  has_memory : bool
 }
-
-let c0 =
-  {funcs = []; imports = []; tables = [];
-   locals = []; return = None; labels = []}
 
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
@@ -215,12 +212,15 @@ let rec check_expr c et e =
     check_type (Some t) et e.at
 
   | PageSize ->
+    check_has_memory c e.at;
     check_type (Some Int32Type) et e.at
 
   | MemorySize ->
+    check_has_memory c e.at;
     check_type (Some Int32Type) et e.at
 
   | ResizeMemory e ->
+    check_has_memory c e.at;
     check_expr c (Some Int32Type) e;
     check_type None et e.at
 
@@ -243,15 +243,20 @@ and check_arm c t et arm =
   check_expr c (if fallthru then None else et) e
 
 and check_load c et memop e1 at =
+  check_has_memory c at;
   check_align memop.align at;
   check_expr c (Some Int32Type) e1;
   check_type (Some memop.ty) et at
 
 and check_store c et memop e1 e2 at =
+  check_has_memory c at;
   check_align memop.align at;
   check_expr c (Some Int32Type) e1;
   check_expr c (Some memop.ty) e2;
   check_type (Some memop.ty) et at
+
+and check_has_memory c at =
+  require c.has_memory at "memory ops require a memory section";
 
 and check_align align at =
   Lib.Option.app (fun a ->
@@ -281,14 +286,15 @@ let check_func c f =
                    return = Lib.Option.map it result} in
   check_expr c' (Lib.Option.map it result) e
 
-let check_table c tab =
+let check_table funcs tables tab =
   match tab.it with
   | [] ->
     error tab.at "empty table"
   | x::xs ->
-    let s = func c x in
-    List.iter (fun xI -> check_func_type (func c xI) s xI.at) xs;
-    {c with tables = c.tables @ [s]}
+    let func x = lookup "function" funcs x in
+    let s = func x in
+    List.iter (fun xI -> check_func_type (func xI) s xI.at) xs;
+    tables @ [s]
 
 module NameSet = Set.Make(String)
 
@@ -315,8 +321,13 @@ let check_memory memory =
 let check_module m =
   let {imports; exports; tables; funcs; memory} = m.it in
   Lib.Option.app check_memory memory;
-  let c = {c0 with funcs = List.map type_func funcs;
-                 imports = List.map type_import imports} in
-  let c' = List.fold_left check_table c tables in
-  List.iter (check_func c') funcs;
-  ignore (List.fold_left (check_export c') NameSet.empty exports)
+  let func_types = List.map type_func funcs in
+  let c = {funcs = func_types;
+           imports = List.map type_import imports;
+           tables = List.fold_left (check_table func_types) [] tables;
+           locals = [];
+           return = None;
+           labels = [];
+           has_memory = memory <> None} in
+  List.iter (check_func c) funcs;
+  ignore (List.fold_left (check_export c) NameSet.empty exports)
