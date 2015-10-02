@@ -7,6 +7,7 @@
   (func $f32.abs (param $x f32) (result f32) (f32.abs (get_local $x)))
   (func $f32.neg (param $x f32) (result f32) (f32.neg (get_local $x)))
   (func $f32.copysign (param $x f32) (param $y f32) (result f32) (f32.copysign (get_local $x) (get_local $y)))
+  (func $f32.nearest (param $x f32) (result f32) (f32.nearest (get_local $x)))
 
   (func $f64.add (param $x f64) (param $y f64) (result f64) (f64.add (get_local $x) (get_local $y)))
   (func $f64.sub (param $x f64) (param $y f64) (result f64) (f64.sub (get_local $x) (get_local $y)))
@@ -16,6 +17,7 @@
   (func $f64.abs (param $x f64) (result f64) (f64.abs (get_local $x)))
   (func $f64.neg (param $x f64) (result f64) (f64.neg (get_local $x)))
   (func $f64.copysign (param $x f64) (param $y f64) (result f64) (f64.copysign (get_local $x) (get_local $y)))
+  (func $f64.nearest (param $x f64) (result f64) (f64.nearest (get_local $x)))
 
   (export "f32.add" $f32.add)
   (export "f32.sub" $f32.sub)
@@ -25,6 +27,7 @@
   (export "f32.abs" $f32.abs)
   (export "f32.neg" $f32.neg)
   (export "f32.copysign" $f32.copysign)
+  (export "f32.nearest" $f32.nearest)
 
   (export "f64.add" $f64.add)
   (export "f64.sub" $f64.sub)
@@ -34,6 +37,7 @@
   (export "f64.abs" $f64.abs)
   (export "f64.neg" $f64.neg)
   (export "f64.copysign" $f64.copysign)
+  (export "f64.nearest" $f64.nearest)
 )
 
 (assert_same (invoke "f32.add" (f32.const 1.1234567890) (f32.const 1.2345e-10)) (f32.const 1.123456789))
@@ -196,3 +200,12 @@
 (assert_same (invoke "f64.copysign" (f64.const nan(0x0f1e27a6b)) (f64.const -nan)) (f64.const -nan(0x0f1e27a6b)))
 (assert_same (invoke "f64.copysign" (f64.const -nan(0x0f1e27a6b)) (f64.const nan)) (f64.const nan(0x0f1e27a6b)))
 (assert_same (invoke "f64.copysign" (f64.const -nan(0x0f1e27a6b)) (f64.const -nan)) (f64.const -nan(0x0f1e27a6b)))
+
+;; Nearest should not round halfway cases away from zero (as C's round(3) does)
+;; or up (as JS's Math.round does).
+(assert_same (invoke "f32.nearest" (f32.const 4.5)) (f32.const 4.0))
+(assert_same (invoke "f32.nearest" (f32.const -4.5)) (f32.const -4.0))
+(assert_same (invoke "f32.nearest" (f32.const -3.5)) (f32.const -4.0))
+(assert_same (invoke "f64.nearest" (f64.const 4.5)) (f64.const 4.0))
+(assert_same (invoke "f64.nearest" (f64.const -4.5)) (f64.const -4.0))
+(assert_same (invoke "f64.nearest" (f64.const -3.5)) (f64.const -4.0))
