@@ -5,6 +5,8 @@
 #
 
 NAME =		wasm
+NAME_OPT =      $(NAME)
+NAME_UNOPT =    $(NAME).unopt
 Makefile =	Makefile
 
 OCB_FLAGS +=	# -use-ocamlfind
@@ -14,12 +16,14 @@ OCB_FLAGS += 	-libs str,bigarray
 OCB_FLAGS += 	-I host -I given -I spec
 OCB =		ocamlbuild $(OCB_FLAGS)
 
-all:		$(NAME) unopt
+opt:		$(NAME_OPT)
+unopt:		$(NAME_UNOPT)
+all:		opt unopt test
 
-$(NAME):	main.native
+$(NAME_OPT):	main.native
 		mv $< $@
 
-unopt:		main.d.byte
+$(NAME_UNOPT):	main.d.byte
 		mv $< $@
 
 main.native:	$(MAKEFILE)
@@ -27,6 +31,9 @@ main.native:	$(MAKEFILE)
 
 main.d.byte:	$(MAKEFILE)
 		$(OCB) $@
+
+test:
+		./runtests.py
 
 clean:
 		$(OCB) -clean
@@ -40,4 +47,4 @@ zip:
 		git archive --format=zip --prefix=$(NAME)/ \
 			-o $(NAME).zip HEAD
 
-.PHONY:		all clean check zip
+.PHONY:		all opt unopt clean test check zip
