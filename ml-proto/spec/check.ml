@@ -306,7 +306,8 @@ let check_export c set ex =
   NameSet.add name set
 
 let check_segment size prev_end seg =
-  let seg_end = seg.it.Memory.addr + String.length seg.it.Memory.data in
+  let seg_len = Int64.of_int (String.length seg.it.Memory.data) in
+  let seg_end = Int64.add seg.it.Memory.addr seg_len in
   require (seg.it.Memory.addr >= prev_end) seg.at
     "data segment not disjoint and ordered";
   require (size >= seg_end) seg.at
@@ -314,9 +315,12 @@ let check_segment size prev_end seg =
   seg_end
 
 let check_memory memory =
-  require (memory.it.initial <= memory.it.max) memory.at
+  let mem = memory.it in
+  require (mem.initial <= mem.max) memory.at
     "initial memory size must be less than maximum";
-  ignore (List.fold_left (check_segment memory.it.initial) 0 memory.it.segments)
+  require (mem.max <= 4294967296L) memory.at
+    "linear memory size must be less or equal to 4GiB";
+  ignore (List.fold_left (check_segment mem.initial) Int64.zero mem.segments)
 
 let check_module m =
   let {imports; exports; tables; funcs; memory} = m.it in

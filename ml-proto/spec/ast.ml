@@ -114,8 +114,8 @@ and arm' =
 type memory = memory' Source.phrase
 and memory' =
 {
-  initial : Memory.size;
-  max : Memory.size;
+  initial : int64;
+  max : int64;
   segments : segment list;
 }
 and segment = Memory.segment Source.phrase

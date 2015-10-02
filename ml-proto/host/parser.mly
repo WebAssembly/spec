@@ -269,7 +269,7 @@ func :
 
 segment :
   | LPAR SEGMENT INT TEXT RPAR
-    { {Memory.addr = int_of_string $3; Memory.data = $4} @@ at() }
+    { {Memory.addr = Int64.of_string $3; Memory.data = $4} @@ at() }
 ;
 segment_list :
   | /* empty */ { [] }
@@ -278,10 +278,10 @@ segment_list :
 
 memory :
   | LPAR MEMORY INT INT segment_list RPAR
-    { {initial = int_of_string $3; max = int_of_string $4; segments = $5 }
+    { {initial = Int64.of_string $3; max = Int64.of_string $4; segments = $5}
         @@ at() }
   | LPAR MEMORY INT segment_list RPAR
-    { {initial = int_of_string $3; max = int_of_string $3; segments = $4 }
+    { {initial = Int64.of_string $3; max = Int64.of_string $3; segments = $4}
         @@ at() }
 ;
 
