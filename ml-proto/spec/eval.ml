@@ -88,8 +88,10 @@ let numerics_error at = function
       error at "runtime: invalid conversion to integer"
   | exn -> raise exn
 
-let some_memory c =
-  match c.module_.memory with Some m -> m | _ -> assert false
+let some_memory c at =
+  match c.module_.memory with
+  | Some m -> m
+  | _ -> error at "memory operation but no memory section"
 
 let some v at =
   match v with
@@ -172,13 +174,13 @@ let rec eval_expr (c : config) (e : expr) =
     Some v1
 
   | Load ({ty; align = _}, e1) ->
-    let mem = some_memory c in
+    let mem = some_memory c e.at in
     let v1 = some (eval_expr c e1) e1.at in
     let a = Memory.address_of_value v1 in
     (try Some (Memory.load mem a ty) with exn -> memory_error e.at exn)
 
   | Store ({ty = _; align = _}, e1, e2) ->
-    let mem = some_memory c in
+    let mem = some_memory c e.at in
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     let a = Memory.address_of_value v1 in
@@ -186,13 +188,13 @@ let rec eval_expr (c : config) (e : expr) =
     Some v2
 
   | LoadExtend ({memop = {ty; align = _}; sz; ext}, e1) ->
-    let mem = some_memory c in
+    let mem = some_memory c e.at in
     let v1 = some (eval_expr c e1) e1.at in
     let a = Memory.address_of_value v1 in
     (try Some (Memory.load_extend mem a sz ext ty) with exn -> memory_error e.at exn)
 
   | StoreWrap ({memop = {ty; align = _}; sz}, e1, e2) ->
-    let mem = some_memory c in
+    let mem = some_memory c e.at in
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     let a = Memory.address_of_value v1 in
@@ -238,11 +240,11 @@ let rec eval_expr (c : config) (e : expr) =
     Some (Int32 (page_size c))
 
   | MemorySize ->
-    let mem = some_memory c in
+    let mem = some_memory c e.at in
     Some (Int32 (I32.of_int32 (Int32.of_int (Memory.size mem))))
 
   | ResizeMemory e ->
-    let mem = some_memory c in
+    let mem = some_memory c e.at in
     let i = int32 (eval_expr c e) e.at in
     if (I32.rem_u i (page_size c)) <> I32.zero then
       error e.at "runtime: resize_memory operand not multiple of page_size";
