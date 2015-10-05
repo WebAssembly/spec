@@ -253,8 +253,8 @@ rule token = parse
   | "table" { TABLE }
 
   | "assert_invalid" { ASSERTINVALID }
-  | "assert_same" { ASSERTSAME }
-  | "assert_nan" { ASSERTNAN }
+  | "assert_return" { ASSERTRETURN }
+  | "assert_return_nan" { ASSERTRETURNNAN }
   | "assert_trap" { ASSERTTRAP }
   | "invoke" { INVOKE }
 

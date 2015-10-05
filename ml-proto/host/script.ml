@@ -11,8 +11,8 @@ and command' =
   | Define of Ast.module_
   | AssertInvalid of Ast.module_ * string
   | Invoke of string * Ast.expr list
-  | AssertSame of string * Ast.expr list * Ast.expr
-  | AssertNaN of string * Ast.expr list
+  | AssertReturn of string * Ast.expr list * Ast.expr
+  | AssertReturnNaN of string * Ast.expr list
   | AssertTrap of string * Ast.expr list * string
 
 type script = command list
@@ -82,9 +82,9 @@ let run_command cmd =
     let v = Eval.invoke m name vs in
     if v <> None then Print.print_value v
 
-  | AssertSame (name, arg_es, expect_e) ->
+  | AssertReturn (name, arg_es, expect_e) ->
     let open Values in
-    trace "AssertSame invoking...";
+    trace "AssertReturn invoking...";
     let m = get_module cmd.at in
     let arg_vs = eval_args arg_es cmd.at in
     let got_v = Eval.invoke m name arg_vs in
@@ -93,33 +93,33 @@ let run_command cmd =
      | Some Int32 got_i32, Some Int32 expect_i32 ->
        if got_i32 <> expect_i32 then begin
          show_result_expect got_v expect_v;
-         Error.error cmd.at "assert_same i32 operands are not equal"
+         Error.error cmd.at "assert_return i32 operands are not equal"
        end
      | Some Int64 got_i64, Some Int64 expect_i64 ->
        if got_i64 <> expect_i64 then begin
          show_result_expect got_v expect_v;
-         Error.error cmd.at "assert_same i64 operands are not equal"
+         Error.error cmd.at "assert_return i64 operands are not equal"
        end
      | Some Float32 got_f32, Some Float32 expect_f32 ->
        if (F32.to_bits got_f32) <> (F32.to_bits expect_f32) then begin
          show_result_expect got_v expect_v;
          Error.error cmd.at
-                     "assert_same f32 operands have different bit patterns"
+                     "assert_return f32 operands have different bit patterns"
        end
      | Some Float64 got_f64, Some Float64 expect_f64 ->
        if (F64.to_bits got_f64) <> (F64.to_bits expect_f64) then begin
          show_result_expect got_v expect_v;
          Error.error cmd.at
-                     "assert_same f64 operands have different bit patterns"
+                     "assert_return f64 operands have different bit patterns"
        end
      | _, _ -> begin
          show_result_expect got_v expect_v;
-         Error.error cmd.at "assert_same operands must be the same type"
+         Error.error cmd.at "assert_return operands must be the same type"
        end)
 
-  | AssertNaN (name, arg_es) ->
+  | AssertReturnNaN (name, arg_es) ->
     let open Values in
-    trace "AssertNaN invoking...";
+    trace "AssertReturnNaN invoking...";
     let m = get_module cmd.at in
     let arg_vs = eval_args arg_es cmd.at in
     let got_v = Eval.invoke m name arg_vs in
@@ -127,16 +127,16 @@ let run_command cmd =
      | Some Float32 got_f32 ->
        if (F32.eq got_f32 got_f32) then begin
          show_result got_v;
-         Error.error cmd.at "assert_nan f32 operand is not a NaN"
+         Error.error cmd.at "assert_return_nan f32 operand is not a NaN"
        end
      | Some Float64 got_f64 ->
        if (F64.eq got_f64 got_f64) then begin
          show_result got_v;
-         Error.error cmd.at "assert_nan f64 operand is not a NaN"
+         Error.error cmd.at "assert_return_nan f64 operand is not a NaN"
        end
      | _ -> begin
          show_result got_v;
-         Error.error cmd.at "assert_nan operand must be f32 or f64"
+         Error.error cmd.at "assert_return_nan operand must be f32 or f64"
        end)
 
   | AssertTrap (name, es, re) ->
@@ -152,8 +152,8 @@ let dry_command cmd =
     if !Flags.print_sig then Print.print_module_sig m
   | AssertInvalid _ -> ()
   | Invoke _ -> ()
-  | AssertSame _ -> ()
-  | AssertNaN _ -> ()
+  | AssertReturn _ -> ()
+  | AssertReturnNaN _ -> ()
   | AssertTrap _ -> ()
 
 let run script =
