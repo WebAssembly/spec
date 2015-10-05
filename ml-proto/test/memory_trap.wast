@@ -1,11 +1,11 @@
 (module
     (memory 100)
 
-	(export "store" $store)
-	(func $store (param $i i32) (param $v i32) (i32.store (i32.add (memory_size) (get_local $i)) (get_local $v)))
-	
-	(export "load" $load)
-	(func $load (param $i i32) (result i32) (i32.load (i32.add (memory_size) (get_local $i))))
+    (export "store" $store)
+    (func $store (param $i i32) (param $v i32) (i32.store (i32.add (memory_size) (get_local $i)) (get_local $v)))
+  
+    (export "load" $load)
+    (func $load (param $i i32) (result i32) (i32.load (i32.add (memory_size) (get_local $i))))
 )
 
 (invoke "store" (i32.const -4) (i32.const 42))
