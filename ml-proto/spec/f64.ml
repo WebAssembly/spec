@@ -8,6 +8,7 @@ type t = int64
 type bits = int64
 
 (* TODO: Do something meaningful with nondeterminism *)
+let bare_nan = 0x7ff0000000000000L
 let nondeterministic_nan = 0x7fff0f0f0f0f0f0fL
 
 let of_float = Int64.bits_of_float
@@ -89,6 +90,37 @@ let gt x y = (arith_of_bits x) >  (arith_of_bits y)
 let le x y = (arith_of_bits x) <= (arith_of_bits y)
 let ge x y = (arith_of_bits x) >= (arith_of_bits y)
 
-(* TODO: OCaml's string_of_float and float_of_string are insufficient *)
-let of_string x = of_float (float_of_string x)
-let to_string x = string_of_float (to_float x)
+let of_signless_string x len =
+  if x <> "nan" &&
+     (len > 7) &&
+     (String.sub x 0 6) = "nan(0x" && (String.get x (len - 1)) = ')' then
+    (let s = Int64.of_string (String.sub x 4 ((len - 5))) in
+     if s = Int64.zero then
+       raise (Failure "nan payload must not be zero")
+     else if Int64.logand s bare_nan <> Int64.zero then
+       raise (Failure "nan payload must not overlap with exponent bits")
+     else if s < Int64.zero then
+       raise (Failure "nan payload must not overlap with sign bit")
+     else
+       Int64.logor s bare_nan)
+  else
+    (* TODO: OCaml's float_of_string is insufficient *)
+    of_float (float_of_string x)
+
+let of_string x =
+  let len = String.length x in
+  if len > 0 && (String.get x 0) = '-' then
+    neg (of_signless_string (String.sub x 1 (len - 1)) (len - 1))
+  else if len > 0 && (String.get x 0) = '+' then
+    of_signless_string (String.sub x 1 (len - 1)) (len - 1)
+  else
+    of_signless_string x len
+
+let to_string x =
+  (if x < Int64.zero then "-" else "") ^ let a = abs x in
+  let af = arith_of_bits a in
+  if af <> af then
+   ("nan(0x" ^ (Printf.sprintf "%Lx" (abs (Int64.logxor bare_nan a))) ^ ")")
+  else
+    (* TODO: OCaml's string_of_float is insufficient *)
+    string_of_float (to_float a)

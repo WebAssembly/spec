@@ -19,4 +19,4 @@
   (export "e" $f)
 )
 
-(assert_eq (invoke "e" (i32.const 42)) (i32.const 43))
+(assert_return (invoke "e" (i32.const 42)) (i32.const 43))

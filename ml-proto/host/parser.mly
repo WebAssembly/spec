@@ -38,7 +38,9 @@ let literal at s t =
     | Types.Int64Type -> Values.Int64 (I64.of_string s) @@ at
     | Types.Float32Type -> Values.Float32 (F32.of_string s) @@ at
     | Types.Float64Type -> Values.Float64 (F64.of_string s) @@ at
-  with _ -> Error.error at "constant out of range"
+  with
+    | Failure reason -> Error.error at ("constant out of range: " ^ reason)
+    | _ -> Error.error at "constant out of range"
 
 
 (* Symbolic variables *)
@@ -99,7 +101,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
 %token PAGESIZE MEMORYSIZE RESIZEMEMORY
-%token ASSERTINVALID ASSERTEQ ASSERTTRAP INVOKE
+%token ASSERTINVALID ASSERTRETURN ASSERTRETURNNAN ASSERTTRAP INVOKE
 %token EOF
 
 %token<string> INT
@@ -341,8 +343,10 @@ cmd :
   | LPAR ASSERTINVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at() }
   | LPAR INVOKE TEXT expr_list RPAR
     { Invoke ($3, $4 (c0 ())) @@ at() }
-  | LPAR ASSERTEQ LPAR INVOKE TEXT expr_list RPAR expr RPAR
-    { AssertEq ($5, $6 (c0 ()), $8 (c0 ())) @@ at() }
+  | LPAR ASSERTRETURN LPAR INVOKE TEXT expr_list RPAR expr RPAR
+    { AssertReturn ($5, $6 (c0 ()), $8 (c0 ())) @@ at() }
+  | LPAR ASSERTRETURNNAN LPAR INVOKE TEXT expr_list RPAR RPAR
+    { AssertReturnNaN ($5, $6 (c0 ())) @@ at() }
   | LPAR ASSERTTRAP LPAR INVOKE TEXT expr_list RPAR TEXT RPAR
     { AssertTrap ($5, $6 (c0 ()), $8) @@ at() }
 ;
