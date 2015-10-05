@@ -1,3 +1,6 @@
+module F32 = Values.F32
+module F64 = Values.F64
+
 (* WebAssembly-compatible type conversions to i64 implementation *)
 
 let extend_s_i32 x = Int64.of_int32 x

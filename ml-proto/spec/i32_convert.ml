@@ -1,3 +1,6 @@
+module F32 = Values.F32
+module F64 = Values.F64
+
 (* WebAssembly-compatible type conversions to i32 implementation *)
 
 let wrap_i64 x = Int64.to_int32 x

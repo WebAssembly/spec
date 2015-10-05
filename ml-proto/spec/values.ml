@@ -10,8 +10,23 @@ open Types
 type ('i32, 'i64, 'f32, 'f64) op =
   Int32 of 'i32 | Int64 of 'i64 | Float32 of 'f32 | Float64 of 'f64
 
-type value = (I32.t, I64.t, F32.t, F64.t) op
+module F32 =
+  Float.FloatPrims(
+      struct
+	include Int32
+	let nondeterministic_nan = 0x7fc0f0f0l
+	let size = 32
+      end)
 
+module F64 =
+  Float.FloatPrims(
+      struct
+        include Int64
+        let nondeterministic_nan = 0x7fff0f0f0f0f0f0fL
+        let size = 64
+      end)
+
+type value = (I32.t, I64.t, F32.t, F64.t) op
 
 (* Typing *)
 
