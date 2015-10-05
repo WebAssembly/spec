@@ -5,8 +5,8 @@
 #
 
 NAME =		wasm
-NAME_OPT =      $(NAME)
-NAME_UNOPT =    $(NAME).unopt
+NAME_OPT =      $(NAME).opt
+NAME_UNOPT =    $(NAME)
 Makefile =	Makefile
 
 OCB_FLAGS +=	# -use-ocamlfind
@@ -16,8 +16,8 @@ OCB_FLAGS += 	-libs str,bigarray
 OCB_FLAGS += 	-I host -I given -I spec
 OCB =		ocamlbuild $(OCB_FLAGS)
 
-opt:		$(NAME_OPT)
 unopt:		$(NAME_UNOPT)
+opt:		$(NAME_OPT)
 all:		opt unopt test
 
 $(NAME_OPT):	main.native
