@@ -87,7 +87,7 @@ Misc optimizer bait:
  - ~~test that the impl doesn't constant-fold away or DCE away or speculate operations that should trap, such as `1/0u`, `1/0`, `1%0u`, `1%0, convertToInt(NaN)`, `INT_MIN/-1` and so on.~~
  - test that likely constant folding uses the correct rounding mode
  - test that the scheduler doesn't move a trapping div past a call which may not return
- - test that redundant-load elimination, dead-store elimination, and/or store+load forwarding correctly respect interfering stores of different types (aka no TBAA)
+ - ~~test that redundant-load elimination, dead-store elimination, and/or store+load forwarding correctly respect interfering stores of different types (aka no TBAA)~~
  - test that linearized multidimensional array accesses can have overindexing in interesting ways
  - test that 32-bit loop induction variables that wrap aren't promoted to 64-bit
  - test that functions with C standard library names aren't assumed to have C standarad library semantics
