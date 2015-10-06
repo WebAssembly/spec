@@ -25,7 +25,7 @@ type instance =
   imports : import list;
   exports : export_map;
   tables : func list list;
-  memory : Memory.t;
+  memory : Memory.t option;
   host : host_params
 }
 
@@ -87,6 +87,11 @@ let numerics_error at = function
   | Numerics.InvalidConversionToInteger ->
       error at "runtime: invalid conversion to integer"
   | exn -> raise exn
+
+let some_memory c at =
+  match c.module_.memory with
+  | Some m -> m
+  | _ -> error at "memory operation but no memory section"
 
 let some v at =
   match v with
@@ -169,31 +174,31 @@ let rec eval_expr (c : config) (e : expr) =
     Some v1
 
   | Load ({ty; align = _}, e1) ->
+    let mem = some_memory c e.at in
     let v1 = some (eval_expr c e1) e1.at in
     let a = Memory.address_of_value v1 in
-    (try Some (Memory.load c.module_.memory a ty)
-    with exn -> memory_error e.at exn)
+    (try Some (Memory.load mem a ty) with exn -> memory_error e.at exn)
 
   | Store ({ty = _; align = _}, e1, e2) ->
+    let mem = some_memory c e.at in
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     let a = Memory.address_of_value v1 in
-    (try Memory.store c.module_.memory a v2
-    with exn -> memory_error e.at exn);
+    (try Memory.store mem a v2 with exn -> memory_error e.at exn);
     Some v2
 
   | LoadExtend ({memop = {ty; align = _}; sz; ext}, e1) ->
+    let mem = some_memory c e.at in
     let v1 = some (eval_expr c e1) e1.at in
     let a = Memory.address_of_value v1 in
-    (try Some (Memory.load_extend c.module_.memory a sz ext ty)
-    with exn -> memory_error e.at exn)
+    (try Some (Memory.load_extend mem a sz ext ty) with exn -> memory_error e.at exn)
 
   | StoreWrap ({memop = {ty; align = _}; sz}, e1, e2) ->
+    let mem = some_memory c e.at in
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     let a = Memory.address_of_value v1 in
-    (try Memory.store_wrap c.module_.memory a sz v2
-    with exn -> memory_error e.at exn);
+    (try Memory.store_wrap mem a sz v2 with exn -> memory_error e.at exn);
     Some v2
 
   | Const v ->
@@ -235,14 +240,16 @@ let rec eval_expr (c : config) (e : expr) =
     Some (Int32 (page_size c))
 
   | MemorySize ->
-    Some (Int32 (I32.of_int32 (Int32.of_int (Memory.size c.module_.memory))))
+    let mem = some_memory c e.at in
+    Some (Int32 (I32.of_int32 (Int32.of_int (Memory.size mem))))
 
   | ResizeMemory e ->
+    let mem = some_memory c e.at in
     let i = int32 (eval_expr c e) e.at in
     if (I32.rem_u i (page_size c)) <> I32.zero then
       error e.at "runtime: resize_memory operand not multiple of page_size";
     (* TODO: The conversion to int could overflow. *)
-    Memory.resize c.module_.memory (Int32.to_int i);
+    Memory.resize mem (Int32.to_int i);
     None
 
 and eval_expr_option c eo =
@@ -272,36 +279,32 @@ and eval_func (m : instance) (f : func) (evs : value list) =
 
 (* Modules *)
 
-let init_memory ast =
-  match ast with
-  | None ->
-    Memory.create 0
-  | Some {it = {initial; segments; _}} ->
-    let mem = Memory.create initial in
-    Memory.init mem (List.map it segments);
-    mem
+let init_memory {it = {initial; segments; _}} =
+  let mem = Memory.create initial in
+  Memory.init mem (List.map it segments);
+  mem
 
 let init m imports host =
   assert (List.length imports = List.length m.it.Ast.imports);
   assert (host.page_size > 0);
   assert (Lib.Int.is_power_of_two host.page_size);
   let {Ast.exports; tables; funcs; memory; _} = m.it in
-  let mem = init_memory memory in
+  let memory' = Lib.Option.map init_memory memory in
   let func x = List.nth funcs x.it in
   let export ex = ExportMap.add ex.it.name (func ex.it.func) in
   let exports = List.fold_right export exports ExportMap.empty in
   let tables = List.map (fun tab -> List.map func tab.it) tables in
-  {funcs; imports; exports; tables; memory = mem; host}
+  {funcs; imports; exports; tables; memory = memory'; host}
 
 let invoke m name vs =
   let f = export m (name @@ no_region) in
   assert (List.length vs = List.length f.it.params);
   eval_func m f vs
 
-let eval e =
+(* This function is not part of the spec. *)
+let host_eval e =
   let f = {params = []; result = None; locals = []; body = e} @@ no_region in
-  let memory = Memory.create 0 in
   let exports = ExportMap.singleton "eval" f in
   let host = {page_size = 1} in
-  let m = {imports = []; exports; tables = []; funcs = [f]; memory; host} in
+  let m = {imports = []; exports; tables = []; funcs = [f]; memory = None; host} in
   eval_func m f []

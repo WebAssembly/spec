@@ -25,7 +25,7 @@ let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 let current_module : Eval.instance option ref = ref None
 
 let eval_args es at =
-  let evs = List.map Eval.eval es in
+  let evs = List.map Eval.host_eval es in
   let reject_none = function
     | Some v -> v
     | None -> Error.error at "unexpected () value" in
@@ -88,7 +88,7 @@ let run_command cmd =
     let m = get_module cmd.at in
     let arg_vs = eval_args arg_es cmd.at in
     let got_v = Eval.invoke m name arg_vs in
-    let expect_v = Eval.eval expect_e in
+    let expect_v = Eval.host_eval expect_e in
     (match got_v, expect_v with
      | Some Int32 got_i32, Some Int32 expect_i32 ->
        if got_i32 <> expect_i32 then begin
