@@ -72,7 +72,7 @@ Expression optimizer bait:
  - ~~test that `x != x` is not folded to false, `x == x` is not folded to true, `x < x` is not folded to false, etc.~~
  - ~~test that signed integer div of negative by constant power of 2 is not ashr~~
  - ~~test unsigned and signed division by 3, 5, 7~~
- - test that floating-point division by immediate 0 and -0 is defined
+ - ~~test that floating-point division by immediate 0 and -0 is defined~~
  - ~~test that floating-point (x*y)/y isn't folded to x~~
  - ~~test that floating-point (x+y)-y isn't folded to x~~
  - test that ueq/one/etc aren't folded to oeq/une/etc.

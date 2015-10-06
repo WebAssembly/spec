@@ -241,3 +241,57 @@
 (assert_return (invoke "f64.no_reassociate_mul" (f64.const 0x1.73881a52e0401p-501) (f64.const -0x1.1b68dd9efb1a7p+788) (f64.const 0x1.d1c5e6a3eb27cp-762) (f64.const -0x1.56cb2fcc7546fp+88)) (f64.const 0x1.f508db92c34efp-386))
 (assert_return (invoke "f64.no_reassociate_mul" (f64.const 0x1.2efa87859987cp+692) (f64.const 0x1.68e4373e241p-423) (f64.const 0x1.4e2d0fb383a57p+223) (f64.const -0x1.301d3265c737bp-23)) (f64.const -0x1.4b2b6c393f30cp+470))
 (assert_return (invoke "f64.no_reassociate_mul" (f64.const 0x1.1013f7498b95fp-234) (f64.const 0x1.d2d1c36fff138p-792) (f64.const -0x1.cbf1824ea7bfdp+728) (f64.const -0x1.440da9c8b836dp-599)) (f64.const 0x1.1a16512881c91p-895))
+
+;; Test that x/0 is not folded away.
+
+(module
+  (func $f32.no_fold_div_0 (param $x f32) (result f32)
+    (f32.div (get_local $x) (f32.const 0.0)))
+  (export "f32.no_fold_div_0" $f32.no_fold_div_0)
+
+  (func $f64.no_fold_div_0 (param $x f64) (result f64)
+    (f64.div (get_local $x) (f64.const 0.0)))
+  (export "f64.no_fold_div_0" $f64.no_fold_div_0)
+)
+
+(assert_return (invoke "f32.no_fold_div_0" (f32.const 1.0)) (f32.const infinity))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const -1.0)) (f32.const -infinity))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const infinity)) (f32.const infinity))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const -infinity)) (f32.const -infinity))
+(assert_return_nan (invoke "f32.no_fold_div_0" (f32.const 0)))
+(assert_return_nan (invoke "f32.no_fold_div_0" (f32.const -0)))
+(assert_return_nan (invoke "f32.no_fold_div_0" (f32.const nan)))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const 1.0)) (f64.const infinity))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const -1.0)) (f64.const -infinity))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const infinity)) (f64.const infinity))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const -infinity)) (f64.const -infinity))
+(assert_return_nan (invoke "f64.no_fold_div_0" (f64.const 0)))
+(assert_return_nan (invoke "f64.no_fold_div_0" (f64.const -0)))
+(assert_return_nan (invoke "f64.no_fold_div_0" (f64.const nan)))
+
+;; Test that x/-0 is not folded away.
+
+(module
+  (func $f32.no_fold_div_0 (param $x f32) (result f32)
+    (f32.div (get_local $x) (f32.const -0.0)))
+  (export "f32.no_fold_div_0" $f32.no_fold_div_0)
+
+  (func $f64.no_fold_div_0 (param $x f64) (result f64)
+    (f64.div (get_local $x) (f64.const -0.0)))
+  (export "f64.no_fold_div_0" $f64.no_fold_div_0)
+)
+
+(assert_return (invoke "f32.no_fold_div_0" (f32.const 1.0)) (f32.const -infinity))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const -1.0)) (f32.const infinity))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const infinity)) (f32.const -infinity))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const -infinity)) (f32.const infinity))
+(assert_return_nan (invoke "f32.no_fold_div_0" (f32.const 0)))
+(assert_return_nan (invoke "f32.no_fold_div_0" (f32.const -0)))
+(assert_return_nan (invoke "f32.no_fold_div_0" (f32.const nan)))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const 1.0)) (f64.const -infinity))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const -1.0)) (f64.const infinity))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const infinity)) (f64.const -infinity))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const -infinity)) (f64.const infinity))
+(assert_return_nan (invoke "f64.no_fold_div_0" (f64.const 0)))
+(assert_return_nan (invoke "f64.no_fold_div_0" (f64.const -0)))
+(assert_return_nan (invoke "f64.no_fold_div_0" (f64.const nan)))
