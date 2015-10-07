@@ -5,7 +5,7 @@ have a link to an open issue/PR, or be obvious. Comments/corrections/additions
 welcome.
 
 Misc semantics:
- - test that linear memory is little-endian for all integers and floats
+ - ~~test that linear memory is little-endian for all integers and floats~~
  - test that unaligned and misaligned accesses work, even if slow
  - test that runaway recursion traps
  - test that too-big linear memory resize fails appropriately
