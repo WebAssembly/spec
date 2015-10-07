@@ -14,7 +14,7 @@ let error = Error.error
 type value = Values.value
 type func = Ast.func
 type import = value list -> value option
-type host_params = {page_size : int}
+type host_params = {page_size : Memory.size}
 
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
@@ -235,7 +235,7 @@ let rec eval_expr (c : config) (e : expr) =
       | exn -> numerics_error e.at exn)
 
   | PageSize ->
-    Some (Int32 (Int32.of_int c.module_.host.page_size))
+    Some (Int32 (Int64.to_int32 c.module_.host.page_size))
 
   | MemorySize ->
     let mem = some_memory c e.at in
@@ -246,7 +246,7 @@ let rec eval_expr (c : config) (e : expr) =
   | ResizeMemory e ->
     let mem = some_memory c e.at in
     let sz = mem_size (eval_expr c e) e.at in
-    if (Int64.rem sz (Int64.of_int c.module_.host.page_size)) <> 0L then
+    if (Int64.rem sz c.module_.host.page_size) <> 0L then
       error e.at "runtime: resize_memory operand not multiple of page_size";
     Memory.resize mem sz;
     None
@@ -285,8 +285,8 @@ let init_memory {it = {initial; segments; _}} =
 
 let init m imports host =
   assert (List.length imports = List.length m.it.Ast.imports);
-  assert (host.page_size > 0);
-  assert (Lib.Int.is_power_of_two host.page_size);
+  assert (host.page_size > 0L);
+  assert (Lib.Int64.is_power_of_two host.page_size);
   let {Ast.exports; tables; funcs; memory; _} = m.it in
   let memory' = Lib.Option.map init_memory memory in
   let func x = List.nth funcs x.it in
@@ -304,6 +304,6 @@ let invoke m name vs =
 let host_eval e =
   let f = {params = []; result = None; locals = []; body = e} @@ no_region in
   let exports = ExportMap.singleton "eval" f in
-  let host = {page_size = 1} in
+  let host = {page_size = 1L} in
   let m = {imports = []; exports; tables = []; funcs = [f]; memory = None; host} in
   eval_func m f []
