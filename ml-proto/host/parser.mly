@@ -6,6 +6,7 @@
 open Source
 open Ast
 open Sugar
+open Types
 open Script
 
 
@@ -35,10 +36,10 @@ let parse_error s = Error.error Source.no_region s
 let literal s t =
   try
     match t with
-    | Types.Int32Type -> Values.Int32 (I32.of_string s.it) @@ s.at
-    | Types.Int64Type -> Values.Int64 (I64.of_string s.it) @@ s.at
-    | Types.Float32Type -> Values.Float32 (F32.of_string s.it) @@ s.at
-    | Types.Float64Type -> Values.Float64 (F64.of_string s.it) @@ s.at
+    | Int32Type -> Values.Int32 (I32.of_string s.it) @@ s.at
+    | Int64Type -> Values.Int64 (I64.of_string s.it) @@ s.at
+    | Float32Type -> Values.Float32 (F32.of_string s.it) @@ s.at
+    | Float64Type -> Values.Float64 (F64.of_string s.it) @@ s.at
   with
     | Failure reason -> Error.error s.at ("constant out of range: " ^ reason)
     | _ -> Error.error s.at "constant out of range"
@@ -47,19 +48,31 @@ let literal s t =
 (* Symbolic variables *)
 
 module VarMap = Map.Make(String)
+
 type space = {mutable map : int VarMap.t; mutable count : int}
+let empty () = {map = VarMap.empty; count = 0}
+
+type types = {mutable tmap : int VarMap.t; mutable tlist : Types.func_type list}
+let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
-  {funcs : space; imports : space; locals : space; labels : int VarMap.t}
+  {types : types; funcs : space; imports : space; locals : space;
+   labels : int VarMap.t}
 
-let empty () = {map = VarMap.empty; count = 0}
 let c0 () =
-  {funcs = empty (); imports = empty ();
+  {types = empty_types (); funcs = empty (); imports = empty ();
    locals = empty (); labels = VarMap.empty}
 
-let enter_func c =
+let do_func c ftype f at =
   assert (VarMap.is_empty c.labels);
-  {c with labels = VarMap.add "return" 0 c.labels; locals = empty ()}
+  let c' = {c with labels = VarMap.add "return" 0 c.labels; locals = empty ()} in
+  let func = f c' in
+  assert (VarMap.is_empty c.labels);
+  {func with ftype} @@ at
+
+let lookup_type c x =
+  try VarMap.find x.it c.types.tmap
+  with Not_found -> Error.error x.at ("unknown type " ^ x.it)
 
 let lookup category space x =
   try VarMap.find x.it space.map
@@ -73,6 +86,12 @@ let label c x =
   try VarMap.find x.it c.labels
   with Not_found -> Error.error x.at ("unknown label " ^ x.it)
 
+let bind_type c x ty =
+  if VarMap.mem x.it c.types.tmap then
+    Error.error x.at ("duplicate type " ^ x.it);
+  c.types.tmap <- VarMap.add x.it (List.length c.types.tlist) c.types.tmap;
+  c.types.tlist <- c.types.tlist @ [ty]
+
 let bind category space x =
   if VarMap.mem x.it space.map then
     Error.error x.at ("duplicate " ^ category ^ " " ^ x.it);
@@ -85,20 +104,41 @@ let bind_local c x = bind "local" c.locals x
 let bind_label c x =
   {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
 
+let anon_type c ty =
+  c.types.tlist <- c.types.tlist @ [ty]
+
 let anon space n = space.count <- space.count + n
 
 let anon_func c = anon c.funcs 1
 let anon_import c = anon c.imports 1
 let anon_locals c ts = anon c.locals (List.length ts)
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
+
+let empty_type = {ins = []; out = None}
+
+let explicit_decl c name t at =
+  let i = name c lookup_type in
+  if i.it < List.length c.types.tlist &&
+     t <> empty_type &&
+     t <> List.nth c.types.tlist i.it then
+    Error.error at "signature mismatch";
+  i
+
+let implicit_decl c t at =
+  match Lib.List.index_of t c.types.tlist with
+  | None -> let i = List.length c.types.tlist in anon_type c t; i @@ at
+  | Some i -> i @@ at
+
+
 %}
 
-%token INT FLOAT TEXT VAR TYPE LPAR RPAR
+%token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
 %token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
-%token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
+%token FUNC TYPE PARAM RESULT LOCAL
+%token MODULE MEMORY TYPES SEGMENT IMPORT EXPORT TABLE
 %token PAGE_SIZE MEMORY_SIZE GROW_MEMORY
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token EOF
@@ -107,7 +147,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<string> FLOAT
 %token<string> TEXT
 %token<string> VAR
-%token<Types.value_type> TYPE
+%token<Types.value_type> VALUE_TYPE
 %token<Types.value_type> CONST
 %token<Types.value_type> SWITCH
 %token<Ast.unop> UNARY
@@ -129,12 +169,19 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 /* Types */
 
-value_type :
-  | TYPE { $1 @@ at () }
-;
 value_type_list :
   | /* empty */ { [] }
-  | value_type value_type_list { $1 :: $2 }
+  | VALUE_TYPE value_type_list { $1 :: $2 }
+;
+func_params :
+  | LPAR PARAM value_type_list RPAR { $3 }
+;
+func_result :
+  | /* empty */ { None }
+  | LPAR RESULT VALUE_TYPE RPAR { Some $3 }
+;
+func_type :
+  | func_params func_result { {ins = $1; out = $2} }
 ;
 
 
@@ -182,9 +229,8 @@ expr1 :
     { let at1 = ati 1 in
       fun c -> return (label c ("return" @@ at1) @@ at1, $2 c) }
   | SWITCH labeling expr cases
-    { let at1 = ati 1 in
-      fun c -> let c', l = $2 c in let cs, e = $4 c' in
-      switch (l, $1 @@ at1, $3 c', List.map (fun a -> a $1) cs, e) }
+    { fun c -> let c', l = $2 c in let cs, e = $4 c' in
+      switch (l, $1, $3 c', List.map (fun a -> a $1) cs, e) }
   | CALL var expr_list { fun c -> call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
@@ -238,35 +284,49 @@ cases :
 func_fields :
   | expr_list
     { let at = at () in
-      fun c ->
-      {params = []; result = None; locals = [];
-       body = Sugar.func_body ($1 c) @@ at} }
+      empty_type,
+      fun c -> let body = Sugar.func_body ($1 c) @@ at in
+        {ftype = -1 @@ at; locals = []; body} }
   | LPAR PARAM value_type_list RPAR func_fields
-    { fun c -> anon_locals c $3; let f = $5 c in
-      {f with params = $3 @ f.params} }
-  | LPAR PARAM bind_var value_type RPAR func_fields  /* Sugar */
-    { fun c -> bind_local c $3; let f = $6 c in
-      {f with params = $4 :: f.params} }
-  | LPAR RESULT value_type RPAR func_fields
-    { let at = at () in
-      fun c -> let f = $5 c in
-      match f.result with
-      | Some _ -> Error.error at "more than one return type"
-      | None -> {f with result = Some $3} }
+    { {(fst $5) with ins = $3 @ (fst $5).ins},
+      fun c -> anon_locals c $3; (snd $5) c }
+  | LPAR PARAM bind_var VALUE_TYPE RPAR func_fields  /* Sugar */
+    { {(fst $6) with ins = $4 :: (fst $6).ins},
+      fun c -> bind_local c $3; (snd $6) c }
+  | LPAR RESULT VALUE_TYPE RPAR func_fields
+    { if (fst $5).out <> None then
+        Error.error (at ()) "more than one return type";
+      {(fst $5) with out = Some $3},
+      fun c -> (snd $5) c }
   | LPAR LOCAL value_type_list RPAR func_fields
-    { fun c -> anon_locals c $3; let f = $5 c in
-      {f with locals = $3 @ f.locals} }
-  | LPAR LOCAL bind_var value_type RPAR func_fields  /* Sugar */
-    { fun c -> bind_local c $3; let f = $6 c in
-      {f with locals = $4 :: f.locals} }
+    { fst $5,
+      fun c -> anon_locals c $3; let f = (snd $5) c in
+        {f with locals = $3 @ f.locals} }
+  | LPAR LOCAL bind_var VALUE_TYPE RPAR func_fields  /* Sugar */
+    { fst $6,
+      fun c -> bind_local c $3; let f = (snd $6) c in
+        {f with locals = $4 :: f.locals} }
+;
+type_decl :
+  | LPAR TYPE var RPAR { $3 }
 ;
 func :
-  | LPAR FUNC func_fields RPAR
+  | LPAR FUNC type_decl func_fields RPAR
     { let at = at () in
-      fun c -> anon_func c; fun () -> $3 (enter_func c) @@ at }
+      fun c -> anon_func c; let t = explicit_decl c $3 (fst $4) at in
+        fun () -> do_func c t (snd $4) at }
+  | LPAR FUNC bind_var type_decl func_fields RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> bind_func c $3; let t = explicit_decl c $4 (fst $5) at in
+        fun () -> do_func c t (snd $5) at }
+  | LPAR FUNC func_fields RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> anon_func c; let t = implicit_decl c (fst $3) at in
+        fun () -> do_func c t (snd $3) at }
   | LPAR FUNC bind_var func_fields RPAR  /* Sugar */
     { let at = at () in
-      fun c -> bind_func c $3; fun () -> $4 (enter_func c) @@ at }
+      fun c -> bind_func c $3; let t = implicit_decl c (fst $4) at in
+        fun () -> do_func c t (snd $4) at }
 ;
 
 
@@ -290,22 +350,32 @@ memory :
         @@ at () }
 ;
 
-func_params :
-  | LPAR PARAM value_type_list RPAR { $3 }
+type_list :
+  | /* empty */
+    { fun c -> () }
+  | LPAR FUNC func_type RPAR type_list
+    { fun c -> anon_type c $3; $5 c }
+  | LPAR FUNC bind_var func_type RPAR type_list /* Sugar */
+    { fun c -> bind_type c $3 $4; $6 c }
 ;
-func_result :
-  | /* empty */ { None }
-  | LPAR RESULT value_type RPAR { Some $3 }
-;
+
 import :
-  | LPAR IMPORT bind_var TEXT TEXT func_params func_result RPAR
-    { let at = at () in fun c -> bind_import c $3;
-      {module_name = $4; func_name = $5; func_params = $6; func_result = $7 }
-        @@ at }
-  | LPAR IMPORT TEXT TEXT func_params func_result RPAR  /* Sugar */
-    { let at = at () in fun c -> anon_import c;
-      {module_name = $3; func_name = $4; func_params = $5; func_result = $6 }
-        @@ at }
+  | LPAR IMPORT TEXT TEXT type_decl RPAR
+    { let at = at () in
+      fun c -> anon_import c; let itype = explicit_decl c $5 empty_type at in
+        {itype; module_name = $3; func_name = $4} @@ at }
+  | LPAR IMPORT bind_var TEXT TEXT type_decl RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> bind_import c $3; let itype = explicit_decl c $6 empty_type at in
+        {itype; module_name = $4; func_name = $5} @@ at }
+  | LPAR IMPORT TEXT TEXT func_type RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> anon_import c; let itype = implicit_decl c $5 at in
+        {itype; module_name = $3; func_name = $4} @@ at }
+  | LPAR IMPORT bind_var TEXT TEXT func_type RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> bind_import c $3; let itype = implicit_decl c $6 at in
+        {itype; module_name = $4; func_name = $5} @@ at }
 ;
 
 export :
@@ -316,8 +386,8 @@ export :
 module_fields :
   | /* empty */
     { fun c ->
-      {imports = []; exports = []; tables = []; funcs = [];
-       memory = None} }
+      {memory = None; types = c.types.tlist; funcs = []; imports = [];
+       exports = []; tables = []} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in
       {m with funcs = f () :: m.funcs} }
@@ -330,6 +400,8 @@ module_fields :
   | LPAR TABLE var_list RPAR module_fields
     { fun c -> let m = $5 c in
       {m with tables = ($3 c func @@ ati 3) :: m.tables} }
+  | LPAR TYPES type_list RPAR module_fields
+    { fun c -> $3 c; $5 c }
   | memory module_fields
     { fun c -> let m = $2 c in
       match m.memory with

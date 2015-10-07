@@ -11,6 +11,8 @@ sig
 
   val last : 'a list -> 'a (* raise Failure *)
   val split_last : 'a list -> 'a list * 'a (* raise Failure *)
+
+  val index_of : 'a -> 'a list -> int option
 end
 
 module Option :
