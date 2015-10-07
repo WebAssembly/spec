@@ -4,7 +4,7 @@
 
 type memory
 type t = memory
-type address = int
+type address = int64
 type size = address
 type mem_size = Mem8 | Mem16 | Mem32
 type extension = SX | ZX
@@ -24,5 +24,3 @@ val load : memory -> address -> value_type -> value
 val store : memory -> address -> value -> unit
 val load_extend : memory -> address -> mem_size -> extension -> value_type -> value
 val store_wrap : memory -> address -> mem_size -> value -> unit
-
-val address_of_value : Values.value -> address

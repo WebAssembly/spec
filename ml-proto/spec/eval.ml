@@ -42,9 +42,6 @@ type config =
   return : label
 }
 
-let page_size c =
-  I32.of_int32 (Int32.of_int c.module_.host.page_size)
-
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
     error x.at ("runtime: undefined " ^ category ^ " " ^ string_of_int x.it)
@@ -102,6 +99,11 @@ let int32 v at =
   match some v at with
   | Int32 i -> i
   | v -> type_error at v Types.Int32Type
+
+let mem_size v at =
+  let i32 = int32 v at in
+  let i64 = Int64.of_int32 i32 in
+  Int64.shift_right_logical (Int64.shift_left i64 32) 32
 
 
 (* Evaluation *)
@@ -175,30 +177,26 @@ let rec eval_expr (c : config) (e : expr) =
 
   | Load ({ty; align = _}, e1) ->
     let mem = some_memory c e.at in
-    let v1 = some (eval_expr c e1) e1.at in
-    let a = Memory.address_of_value v1 in
-    (try Some (Memory.load mem a ty) with exn -> memory_error e.at exn)
+    let v1 = mem_size (eval_expr c e1) e1.at in
+    (try Some (Memory.load mem v1 ty) with exn -> memory_error e.at exn)
 
   | Store ({ty = _; align = _}, e1, e2) ->
     let mem = some_memory c e.at in
-    let v1 = some (eval_expr c e1) e1.at in
+    let v1 = mem_size (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
-    let a = Memory.address_of_value v1 in
-    (try Memory.store mem a v2 with exn -> memory_error e.at exn);
+    (try Memory.store mem v1 v2 with exn -> memory_error e.at exn);
     Some v2
 
   | LoadExtend ({memop = {ty; align = _}; sz; ext}, e1) ->
     let mem = some_memory c e.at in
-    let v1 = some (eval_expr c e1) e1.at in
-    let a = Memory.address_of_value v1 in
-    (try Some (Memory.load_extend mem a sz ext ty) with exn -> memory_error e.at exn)
+    let v1 = mem_size (eval_expr c e1) e1.at in
+    (try Some (Memory.load_extend mem v1 sz ext ty) with exn -> memory_error e.at exn)
 
   | StoreWrap ({memop = {ty; align = _}; sz}, e1, e2) ->
     let mem = some_memory c e.at in
-    let v1 = some (eval_expr c e1) e1.at in
+    let v1 = mem_size (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
-    let a = Memory.address_of_value v1 in
-    (try Memory.store_wrap mem a sz v2 with exn -> memory_error e.at exn);
+    (try Memory.store_wrap mem v1 sz v2 with exn -> memory_error e.at exn);
     Some v2
 
   | Const v ->
@@ -237,19 +235,20 @@ let rec eval_expr (c : config) (e : expr) =
       | exn -> numerics_error e.at exn)
 
   | PageSize ->
-    Some (Int32 (page_size c))
+    Some (Int32 (Int64.to_int32 c.module_.host.page_size))
 
   | MemorySize ->
     let mem = some_memory c e.at in
-    Some (Int32 (I32.of_int32 (Int32.of_int (Memory.size mem))))
+    let i64 = Memory.size mem in
+    assert (i64 < Int64.of_int32 (Int32.max_int));
+    Some (Int32 (Int64.to_int32 i64))
 
   | ResizeMemory e ->
     let mem = some_memory c e.at in
-    let i = int32 (eval_expr c e) e.at in
-    if (I32.rem_u i (page_size c)) <> I32.zero then
+    let sz = mem_size (eval_expr c e) e.at in
+    if (Int64.rem sz c.module_.host.page_size) <> 0L then
       error e.at "runtime: resize_memory operand not multiple of page_size";
-    (* TODO: The conversion to int could overflow. *)
-    Memory.resize mem (Int32.to_int i);
+    Memory.resize mem sz;
     None
 
 and eval_expr_option c eo =
@@ -286,8 +285,8 @@ let init_memory {it = {initial; segments; _}} =
 
 let init m imports host =
   assert (List.length imports = List.length m.it.Ast.imports);
-  assert (host.page_size > 0);
-  assert (Lib.Int.is_power_of_two host.page_size);
+  assert (host.page_size > 0L);
+  assert (Lib.Int64.is_power_of_two host.page_size);
   let {Ast.exports; tables; funcs; memory; _} = m.it in
   let memory' = Lib.Option.map init_memory memory in
   let func x = List.nth funcs x.it in
@@ -305,6 +304,6 @@ let invoke m name vs =
 let host_eval e =
   let f = {params = []; result = None; locals = []; body = e} @@ no_region in
   let exports = ExportMap.singleton "eval" f in
-  let host = {page_size = 1} in
+  let host = {page_size = 1L} in
   let m = {imports = []; exports; tables = []; funcs = [f]; memory = None; host} in
   eval_func m f []

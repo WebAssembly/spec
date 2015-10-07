@@ -44,3 +44,10 @@ struct
     if x < 0 then failwith "is_power_of_two";
     x <> 0 && (x land (x - 1)) = 0
 end
+
+module Int64 =
+struct
+  let is_power_of_two x =
+    if x < 0L then failwith "is_power_of_two";
+    x <> 0L && (Int64.logand x (Int64.sub x 1L)) = 0L
+end
