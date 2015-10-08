@@ -7,7 +7,7 @@ welcome.
 Misc semantics:
  - test that linear memory is little-endian for all integers and floats
  - test that unaligned and misaligned accesses work, even if slow
- - test that runaway recursion traps
+ - ~~test that runaway recursion traps~~
  - test that too-big linear memory resize fails appropriately
  - test that too-big linear memory initial allocation fails
  - test that function addresses are monotonic indices, and not actual addresses.

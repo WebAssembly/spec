@@ -105,6 +105,9 @@ let mem_size v at =
   let i64 = Int64.of_int32 i32 in
   Int64.shift_right_logical (Int64.shift_left i64 32) 32
 
+let callstack_exhaustion at =
+  error at ("runtime: callstack exhausted")
+
 
 (* Evaluation *)
 
@@ -296,9 +299,11 @@ let init m imports host =
   {funcs; imports; exports; tables; memory = memory'; host}
 
 let invoke m name vs =
-  let f = export m (name @@ no_region) in
-  assert (List.length vs = List.length f.it.params);
-  eval_func m f vs
+  try
+    let f = export m (name @@ no_region) in
+    assert (List.length vs = List.length f.it.params);
+    eval_func m f vs
+  with Stack_overflow -> callstack_exhaustion no_region
 
 (* This function is not part of the spec. *)
 let host_eval e =
