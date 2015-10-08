@@ -7,15 +7,17 @@
 NAME =		wasm
 NAME_OPT =      $(NAME).opt
 NAME_UNOPT =    $(NAME)
-Makefile =	Makefile
+DIRS =		given host spec
+LIBS =		str bigarray
 
 OCB_FLAGS +=	# -use-ocamlfind
 OCB_FLAGS +=	# -cflags -w 
 OCB_FLAGS += 	# -cflags +a-4-41-42-44-45
-OCB_FLAGS += 	-libs str,bigarray
-OCB_FLAGS += 	-I host -I given -I spec
+OCB_FLAGS += 	$(DIRS:%=-I %)
+OCB_FLAGS += 	$(LIBS:%=-libs %)
 OCB =		ocamlbuild $(OCB_FLAGS)
 
+.PHONY:		all opt unopt
 unopt:		$(NAME_UNOPT)
 opt:		$(NAME_OPT)
 all:		opt unopt test
@@ -26,26 +28,29 @@ $(NAME_OPT):	main.native
 $(NAME_UNOPT):	main.d.byte
 		mv $< $@
 
-main.native:	$(MAKEFILE)
+.PHONY:		main.native
+main.native:
 		$(OCB) $@
 
-main.d.byte:	$(MAKEFILE)
+.PHONY:		main.d.byte
+main.d.byte:
 		$(OCB) $@
 
+.PHONY:		test
 test:
 		./runtests.py
 
-clean:
-		$(OCB) -clean
-
-check:
-		# check that we can find all relevant libraries
-		# when using ocamlfind
-		ocamlfind query str bigarray
-
+.PHONY:		zip
 zip: 
 		git archive --format=zip --prefix=$(NAME)/ \
 			-o $(NAME).zip HEAD
 
-.INTERMEDIATE:  main.native main.d.byte
-.PHONY:		all opt unopt clean test check zip
+.PHONY:		clean
+clean:
+		$(OCB) -clean
+
+.PHONY:		check
+check:
+		# check that we can find all relevant libraries
+		# when using ocamlfind
+		ocamlfind query str bigarray
