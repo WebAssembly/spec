@@ -100,7 +100,7 @@ Misc x87-isms:
  - ~~test for invalid Precision-Control-style x87 math~~
  - ~~test for invalid -ffloat-store-style x87 math~~
  - ~~test for evaluating intermediate results at greater precision~~
- - test for loading and storing NaNs
+ - ~~test for loading and storing NaNs~~
 
 Control flow:
  - test that continue goes to the right place in `do_while` and `forever`
