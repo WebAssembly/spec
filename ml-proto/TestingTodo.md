@@ -78,7 +78,7 @@ Expression optimizer bait:
  - test that ueq/one/etc aren't folded to oeq/une/etc.
  - ~~test that floating point add/mul aren't reassociated even when tempting~~
  - ~~test that floating point mul+add isn't folded to fma even when tempting~~
- - test that floating point sqrt(x*x+y*y) isn't folded to hypot even when tempting
+ - ~~test that floating point sqrt(x*x+y*y) isn't folded to hypot even when tempting~~
  - test that 1/x isn't translated into reciprocal-approximate
  - test that 1/sqrt(x) isn't approximated either
  - ~~test that fp division by non-power-2 constant gets full precision (isn't a multiply-by-reciprocal deal)?~~
