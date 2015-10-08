@@ -2,6 +2,7 @@ open Ast
 
 val labelled_block : Source.region -> expr list -> expr'
 val if_only : expr * expr -> expr'
+val return : var * expr option -> expr'
 val loop_seq : Source.region -> expr list -> expr'
 val labelled_loop_seq : Source.region -> expr list -> expr'
 val labelled_loop_seq2 : Source.region -> expr list -> expr'

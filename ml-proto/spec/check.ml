@@ -161,9 +161,6 @@ let rec check_expr c et e =
     check_exprs c ins es;
     check_type out et e.at
 
-  | Return eo ->
-    check_expr_option c c.return eo e.at
-
   | GetLocal x ->
     check_type (Some (local c x)) et e.at
 

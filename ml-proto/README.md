@@ -142,7 +142,7 @@ expr:
   ( call <var> <expr>* )
   ( call_import <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
-  ( return <expr>? )
+  ( return <expr>? )                             ;; = (break <current_depth> <expr>?)
   ( get_local <var> )
   ( set_local <var> <expr> )
   ( <type>.load((8|16)_<sign>)?(/<align>)? <expr> )

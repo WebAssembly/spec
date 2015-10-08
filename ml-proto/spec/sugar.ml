@@ -15,6 +15,9 @@ let labelled_block at es =
 let if_only (e1, e2) =
   If (e1, e2, Nop @@ Source.after e2.at)
 
+let return (x, eo) =
+  Break (x, eo)
+
 let loop_seq at es =
   Loop (expr_seq es)
 
@@ -36,5 +39,5 @@ let case_only l =
 
 
 let func_body es =
-  (expr_seq es).it
+  Label (expr_seq es)
 

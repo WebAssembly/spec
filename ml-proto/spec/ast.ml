@@ -84,7 +84,6 @@ and expr' =
   | Call of var * expr list                       (* call function *)
   | CallImport of var * expr list                 (* call imported function *)
   | CallIndirect of var * expr * expr list        (* call function through table *)
-  | Return of expr option                         (* return, optionally with a value *)
   | GetLocal of var                               (* read local variable *)
   | SetLocal of var * expr                        (* write local variable *)
   | Load of memop * expr                          (* read memory at address *)

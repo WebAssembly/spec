@@ -38,8 +38,7 @@ type config =
 {
   module_ : instance;
   locals : value ref list;
-  labels : label list;
-  return : label
+  labels : label list
 }
 
 let lookup category list x =
@@ -167,9 +166,6 @@ let rec eval_expr (c : config) (e : expr) =
     (* TODO: The conversion to int could overflow. *)
     eval_func c.module_ (table c x (Int32.to_int i @@ e1.at)) vs
 
-  | Return eo ->
-    raise (c.return (eval_expr_option c eo))
-
   | GetLocal x ->
     Some !(local c x)
 
@@ -270,13 +266,11 @@ and eval_arm c vo stage arm =
     stage
 
 and eval_func (m : instance) (f : func) (evs : value list) =
-  let module Return = MakeLabel () in
   let args = List.map ref evs in
   let vars = List.map (fun t -> ref (default_value t.it)) f.it.locals in
   let locals = args @ vars in
-  let c = {module_ = m; locals; labels = []; return = Return.label} in
-  try eval_expr c f.it.body
-  with Return.Label vo -> vo
+  let c = {module_ = m; locals; labels = []} in
+  eval_expr c f.it.body
 
 
 (* Modules *)
