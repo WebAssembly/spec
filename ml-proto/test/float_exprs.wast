@@ -320,3 +320,45 @@
 (assert_return (invoke "f64.no_fold_to_hypot" (f64.const 0x1.76777f44ff40bp-536) (f64.const -0x1.c3896e4dc1fbp-766)) (f64.const 0x1.8p-536))
 (assert_return (invoke "f64.no_fold_to_hypot" (f64.const -0x1.889ac72cc6b5dp-521) (f64.const 0x1.8d7084e659f3bp-733)) (f64.const 0x1.889ac72ca843ap-521))
 (assert_return (invoke "f64.no_fold_to_hypot" (f64.const 0x1.5ee588c02cb08p-670) (f64.const -0x1.05ce25788d9ecp-514)) (f64.const 0x1.05ce25788d9dfp-514))
+
+;; Test that 1.0/x isn't approximated.
+
+(module
+  (func $f32.no_approximate_reciprocal (param $x f32) (param $y f32) (result f32)
+    (f32.div (f32.const 1.0) (get_local $x)))
+  (export "f32.no_approximate_reciprocal" $f32.no_approximate_reciprocal)
+)
+
+(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const -0x1.2900b6p-10) (f32.const 0x1.d427e8p+56)) (f32.const -0x1.b950d4p+9))
+(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const 0x1.e7212p+127) (f32.const -0x1.55832ap+44)) (f32.const 0x1.0d11f8p-128))
+(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const -0x1.42a466p-93) (f32.const 0x1.7b62d8p+36)) (f32.const -0x1.963ee6p+92))
+(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const 0x1.5d0c32p+76) (f32.const 0x1.d14dccp-74)) (f32.const 0x1.778362p-77))
+(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const -0x1.601de2p-82) (f32.const -0x1.3c7abap+42)) (f32.const -0x1.743d7ep+81))
+
+;; Test that 1.0/sqrt(x) isn't approximated.
+
+(module
+  (func $f32.no_approximate_reciprocal_sqrt (param $x f32) (param $y f32) (result f32)
+    (f32.div (f32.const 1.0) (f32.sqrt (get_local $x))))
+  (export "f32.no_approximate_reciprocal_sqrt" $f32.no_approximate_reciprocal_sqrt)
+)
+
+(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.6af12ap-43) (f32.const 0x1.b2113ap-14)) (f32.const 0x1.300ed4p+21))
+(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.e82fc6p-8) (f32.const -0x1.56a382p-126)) (f32.const 0x1.72c376p+3))
+(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.b9fa9cp-66) (f32.const -0x1.35394cp+35)) (f32.const 0x1.85a9bap+32))
+(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.f4f546p-44) (f32.const -0x1.c92ecep+122)) (f32.const 0x1.6e01c2p+21))
+(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.5da7aap-86) (f32.const -0x1.665652p+119)) (f32.const 0x1.b618cap+42))
+
+;; Test that sqrt(1.0/x) isn't approximated.
+
+(module
+  (func $f32.no_approximate_sqrt_reciprocal (param $x f32) (param $y f32) (result f32)
+    (f32.sqrt (f32.div (f32.const 1.0) (get_local $x))))
+  (export "f32.no_approximate_sqrt_reciprocal" $f32.no_approximate_sqrt_reciprocal)
+)
+
+(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.a4c986p+60) (f32.const -0x1.04e29cp-72)) (f32.const 0x1.8f5ac6p-31))
+(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.50511ep-9) (f32.const -0x1.39228ep-32)) (f32.const 0x1.3bdd46p+4))
+(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.125ec2p+69) (f32.const -0x1.a7f42ep+92)) (f32.const 0x1.5db572p-35))
+(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.ba4c5p+13) (f32.const 0x1.947784p-72)) (f32.const 0x1.136f16p-7))
+(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.4a5be2p+104) (f32.const 0x1.a7b718p-19)) (f32.const 0x1.c2b5bp-53))
