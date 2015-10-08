@@ -20,7 +20,7 @@ Operator semantics:
  - ~~test that neg, abs, copysign, reinterpretcast, store+load, set+get, preserve the sign bit and significand bits of NaN and don't canonicalize~~
  - ~~test that shifts don't mask their shift count. 32 is particularly nice to test.~~
  - test that `page_size` returns something sane [(power of 2?)](https://github.com/WebAssembly/design/pull/296)
- - test that arithmetic operands are evaluated left-to-right
+ - ~~test that arithmetic operands are evaluated left-to-right~~
  - ~~test that add/sub/mul/wrap/wrapping-store silently wrap on overflow~~
  - ~~test that sdiv/udiv/srem/urem trap on divide-by-zero~~
  - ~~test that sdiv traps on overflow~~
