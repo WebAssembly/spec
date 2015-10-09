@@ -73,6 +73,10 @@
 ;; section 3.3.1: A typical problem: "double rounding"
 (assert_return (invoke "f64.add" (f64.const 0x1p+63) (f64.const 1024.25)) (f64.const 0x1.0000000000001p+63))
 
+;; Test a case that was "tricky" on MMIX.
+;; http://mmix.cs.hm.edu/bugs/bug_rounding.html
+(assert_return (invoke "f64.add" (f64.const -0x1p-1008) (f64.const 0x0.0000000001716p-1022)) (f64.const -0x1.fffffffffffffp-1009))
+
 ;; Test adding the greatest value to 1.0 that rounds back to 1.0, and the
 ;; least that rounds to something greater.
 (assert_return (invoke "f64.add" (f64.const 1.0) (f64.const 0x1p-53)) (f64.const 0x1.0p+0))
