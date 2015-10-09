@@ -129,12 +129,15 @@ rule token = parse
 
   | "nop" { NOP }
   | "block" { BLOCK }
-  | "if" { IF }
   | "loop" { LOOP }
-  | "label" { LABEL }
-  | "break" { BREAK }
+  | "br" { BR }
+  | "br_if" { BRIF }
+  | "br_unless" { BRUNLESS }
+  | "if" { IF }
+  | "forever" { FOREVER }
   | "case" { CASE }
   | "fallthrough" { FALLTHROUGH }
+  | "break" { BREAK }
   | "call" { CALL }
   | "call_import" { CALLIMPORT }
   | "call_indirect" { CALLINDIRECT }
@@ -157,6 +160,7 @@ rule token = parse
   | (ixx as t)".store"(mem_size as sz)"/"(align as a)
     { STOREWRAP (wrapop t sz a) }
 
+  | (nxx as t)".br_switch" { BRSWITCH (value_type t) }
   | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
 

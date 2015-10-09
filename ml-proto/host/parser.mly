@@ -86,6 +86,12 @@ let bind_label c x =
     Error.error x.at ("duplicate label " ^ x.it);
   {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
 
+let sugar_label c =
+  (label c ("(syntax sugar)" @@ at())) @@ at()
+
+let bind_sugar_label c =
+  {c with labels = VarMap.add "(syntax sugar)" 0 (VarMap.map ((+) 1) c.labels)}
+
 let anon space n = space.count <- space.count + n
 
 let anon_func c = anon c.funcs 1
@@ -95,13 +101,14 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %}
 
 %token INT FLOAT TEXT VAR TYPE LPAR RPAR
-%token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
+%token NOP BLOCK LOOP BR BRIF BRUNLESS BRSWITCH
 %token CALL CALLIMPORT CALLINDIRECT RETURN
 %token GETLOCAL SETLOCAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
 %token PAGESIZE MEMORYSIZE RESIZEMEMORY
 %token ASSERTINVALID ASSERTRETURN ASSERTRETURNNAN ASSERTTRAP INVOKE
+%token IF FOREVER SWITCH CASE FALLTHROUGH BREAK
 %token EOF
 
 %token<string> INT
@@ -110,6 +117,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<string> VAR
 %token<Types.value_type> TYPE
 %token<Types.value_type> CONST
+%token<Types.value_type> BRSWITCH
 %token<Types.value_type> SWITCH
 %token<Ast.unop> UNARY
 %token<Ast.binop> BINARY
@@ -160,20 +168,50 @@ expr :
 ;
 oper :
   | NOP { fun c -> Nop }
-  | BLOCK expr expr_list { fun c -> Block ($2 c :: $3 c) }
-  | IF expr expr expr { fun c -> If ($2 c, $3 c, $4 c) }
-  | IF expr expr  /* Sugar */
-    { let at1 = ati 1 in fun c -> If ($2 c, $3 c, Nop @@ at1) }
-  | LOOP expr_block { fun c -> Loop ($2 c) }
-  | LABEL expr_block { fun c -> Label ($2 (anon_label c)) }
-  | LABEL bind_var expr_block  /* Sugar */
-    { fun c -> Label ($3 (bind_label c $2)) }
-  | BREAK var expr_opt { fun c -> Break ($2 c label, $3 c) }
-  | BREAK { let at = at() in fun c -> Break (0 @@ at, None) }  /* Sugar */
+  | BLOCK expr_list bind_var { fun c -> Block ($2 (bind_label c $3)) }
+  /* Sugar: block with no label */
+  | BLOCK expr_list { fun c -> Block ($2 (anon_label c)) }
+  | LOOP bind_var expr_list { fun c -> Loop ($3 (bind_label c $2)) }
+  /* Sugar: loop with additional label at end */
+  | LOOP bind_var expr_list bind_var
+    { fun c -> let at = at() in
+               Loop ((fun c -> [Block ($3 (bind_label c $4)) @@ at])
+                     (bind_label c $2)) }
+  | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
+  | BRIF var expr expr_opt { fun c -> BrIf ($2 c label, $3 c, $4 c) }
+  | BRUNLESS var expr expr_opt { fun c -> BrUnless ($2 c label, $3 c, $4 c) }
+  | BRSWITCH expr var br_switch_arms expr_opt
+    { let at = at() in
+      fun c -> BrSwitch ($1 @@ at, $2 c, $3 c label,
+                         List.map (fun (x,y) -> ((literal at x $1).it, y c label)) $4,
+                         $5 c) }
+  /* Sugar: if statements */
+  | IF expr expr
+    { fun c -> let at = at() in
+               let c' = (anon_label c) in
+               Block [BrUnless (0 @@ at, $2 c', None) @@ at; $3 c'] }
+  /* Sugar: if-else statements */
+  | IF expr expr expr
+    { fun c -> let at = at() in
+               let c' = (anon_label c) in
+               Block [Block [BrUnless (0 @@ at, $2 c', None) @@ at;
+                             Br (1 @@ at, Some ($3 (anon_label c'))) @@ at] @@ at;
+                     $4 c'] }
+  /* Sugar: forever-loop statements */
+  | FOREVER expr_list
+    { fun c -> let at = at() in
+               let c' = (bind_sugar_label c) in
+               let c'' = (anon_label c') in
+               Block [Loop (List.append ($2 c'') [Br (0 @@ at, None) @@ at]) @@ at]
+    }
+  /* Sugar: switch statements */
   | SWITCH expr arms
     { let at1 = ati 1 in
-      fun c -> let x, y = $3 c in
-        Switch ($1 @@ at1, $2 c, List.map (fun a -> a $1) x, y) }
+      fun c -> let c' = (bind_sugar_label c) in
+               let x, y = $3 c' in
+               Block [Switch ($1 @@ at1, $2 c', List.map (fun a -> a $1) x, y) @@ at1] }
+  /* Sugar: break statements */
+  | BREAK expr_opt { fun c -> Br (sugar_label c, $2 c) }
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | CALLIMPORT var expr_list { fun c -> CallImport ($2 c import, $3 c) }
   | CALLINDIRECT var expr expr_list
@@ -202,12 +240,12 @@ expr_list :
   | /* empty */ { fun c -> [] }
   | expr expr_list { fun c -> $1 c :: $2 c }
 ;
+
 expr_block :
   | expr { $1 }
   | expr expr expr_list  /* Sugar */
     { let at = at() in fun c -> Block ($1 c :: $2 c :: $3 c) @@ at }
 ;
-
 fallthrough :
   | /* empty */ { false }
   | FALLTHROUGH { true }
@@ -225,8 +263,14 @@ arm :
 arms :
   | expr { fun c -> [], $1 c }
   | arm arms { fun c -> let x, y = $2 c in $1 c :: x, y }
-;
 
+br_switch_arm :
+  | INT var { ($1, $2) }
+;
+br_switch_arms :
+  | /* empty */ { [] }
+  | br_switch_arm br_switch_arms { $1 :: $2 }
+;
 
 /* Functions */
 
@@ -234,8 +278,9 @@ func_fields :
   | /* empty */  /* Sugar */
     { let at = at() in
       fun c -> {params = []; result = None; locals = []; body = Nop @@ at} }
-  | expr_block
-    { fun c -> {params = []; result = None; locals = []; body = $1 c} }
+  | expr_list
+    { let at = at() in
+      fun c -> {params = []; result = None; locals = []; body = Block ($1 c) @@ at} }
   | LPAR PARAM value_type_list RPAR func_fields
     { fun c -> anon_locals c $3; let f = $5 c in
       {f with params = $3 @ f.params} }

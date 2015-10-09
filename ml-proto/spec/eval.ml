@@ -126,25 +126,47 @@ let rec eval_expr (c : config) (e : expr) =
     None
 
   | Block es ->
-    let es', eN = Lib.List.split_last es in
-    List.iter (fun eI -> ignore (eval_expr c eI)) es';
-    eval_expr c eN
-
-  | If (e1, e2, e3) ->
-    let i = int32 (eval_expr c e1) e1.at in
-    eval_expr c (if i <> Int32.zero then e2 else e3)
-
-  | Loop e1 ->
-    ignore (eval_expr c e1);
-    eval_expr c e
-
-  | Label e1 ->
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
-    (try eval_expr c' e1 with L.Label vo -> vo)
+    (try
+      (let es', eN = Lib.List.split_last es in
+       List.iter (fun eI -> ignore (eval_expr c' eI)) es';
+       eval_expr c' eN)
+     with L.Label vo -> vo)
 
-  | Break (x, eo) ->
+  | Loop es ->
+    let module L = MakeLabel () in
+    let c' = {c with labels = L.label :: c.labels} in
+    (try
+      (let es', eN = Lib.List.split_last es in
+       List.iter (fun eI -> ignore (eval_expr c' eI)) es';
+       eval_expr c' eN)
+     with L.Label _ -> eval_expr c e)
+
+  | Br (x, eo) ->
     raise (label c x (eval_expr_option c eo))
+
+  | BrIf (x, ec, eo) ->
+    let i = int32 (eval_expr c ec) ec.at in
+    if i <> Int32.zero then
+      raise (label c x (eval_expr_option c eo))
+    else
+      None
+
+  | BrUnless (x, ec, eo) ->
+    let i = int32 (eval_expr c ec) ec.at in
+    if i = Int32.zero then
+      raise (label c x (eval_expr_option c eo))
+    else
+      None
+
+  | BrSwitch (_t, ec, default, labels, eo) ->
+    let e = some (eval_expr c ec) ec.at in
+    raise (label c
+           (try
+              let i, l = List.find (fun (i, l) -> i = e) labels in l
+            with Not_found -> default)
+           (eval_expr_option c eo))
 
   | Switch (_t, e1, arms, e2) ->
     let vo = some (eval_expr c e1) e1.at in
