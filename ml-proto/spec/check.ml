@@ -90,10 +90,17 @@ let type_cvt at = function
     | DemoteFloat64 -> error at "invalid conversion"
     ), Float64Type
 
+type type_hostop_type = {
+  hostop_ins : value_type list;
+  hostop_out : expr_type;
+  hostop_hasmem : bool
+}
+
 let type_hostop = function
-  | PageSize -> {ins = []; out = Some Int32Type}
-  | MemorySize -> {ins = []; out = Some Int32Type}
-  | GrowMemory -> {ins = [Int32Type]; out = None}
+  | PageSize -> {hostop_ins = []; hostop_out = Some Int32Type; hostop_hasmem = true}
+  | MemorySize -> {hostop_ins = []; hostop_out = Some Int32Type; hostop_hasmem = true}
+  | GrowMemory -> {hostop_ins = [Int32Type]; hostop_out = None; hostop_hasmem = true}
+  | HasFeature str -> {hostop_ins = []; hostop_out = Some Int32Type; hostop_hasmem = false}
 
 
 (* Type Analysis *)
@@ -207,10 +214,11 @@ let rec check_expr c et e =
     check_type (Some t) et e.at
 
   | Host (hostop, es) ->
-    check_has_memory c e.at;
-    let {ins; out} = type_hostop hostop in
-    check_exprs c ins es;
-    check_type out et e.at
+    let {hostop_ins; hostop_out; hostop_hasmem} = type_hostop hostop in
+    if hostop_hasmem then
+      check_has_memory c e.at;
+    check_exprs c hostop_ins es;
+    check_type hostop_out et e.at
 
 and check_exprs c ts es =
   let ets = List.map (fun x -> Some x) ts in

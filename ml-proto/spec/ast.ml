@@ -66,9 +66,10 @@ type memop = {ty : value_type; align : int option}
 type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
 type wrapop = {memop : memop; sz : Memory.mem_size}
 type hostop =
-  | PageSize           (* inquire host-defined page size *)
-  | MemorySize         (* inquire current size of linear memory *)
-  | GrowMemory         (* grow linear memory *)
+  | PageSize             (* inquire host-defined page size *)
+  | MemorySize           (* inquire current size of linear memory *)
+  | GrowMemory           (* grow linear memory *)
+  | HasFeature of string (* test for feature availability *)
 
 
 (* Expressions *)

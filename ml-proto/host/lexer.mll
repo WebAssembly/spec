@@ -240,6 +240,7 @@ rule token = parse
   | "page_size" { PAGE_SIZE }
   | "memory_size" { MEMORY_SIZE }
   | "grow_memory" { GROW_MEMORY }
+  | "has_feature" { HAS_FEATURE }
 
   | "type" { TYPE }
   | "func" { FUNC }
