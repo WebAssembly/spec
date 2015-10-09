@@ -119,8 +119,8 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<Ast.extop> LOADEXTEND
 %token<Ast.wrapop> STOREWRAP
 
-%nonassoc VAR
 %nonassoc LOW
+%nonassoc VAR
 
 %start script
 %type<Script.script> script
