@@ -13,13 +13,13 @@ let error = Error.error
 
 type value = Values.value
 type func = Ast.func
-type import = value list -> value option
 type host_params = {page_size : Memory.size}
 
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
 
-type instance =
+type import = instance -> value list -> value option
+and  instance =
 {
   funcs : func list;
   imports : import list;
@@ -159,7 +159,7 @@ let rec eval_expr (c : config) (e : expr) =
 
   | CallImport (x, es) ->
     let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
-    (import c x) vs
+    (import c x) c.module_ vs
 
   | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
@@ -312,3 +312,10 @@ let host_eval e =
   let host = {page_size = 1L} in
   let m = {imports = []; exports; tables = []; funcs = [f]; memory = None; host} in
   eval_func m f []
+
+let get_module_memory at m =
+  match m.memory with
+  | Some mem ->
+    mem
+  | _ ->
+    error at "Module has no memory";
