@@ -54,6 +54,11 @@
 
 (assert_return (invoke "f32.add" (f32.const 1.1234567890) (f32.const 1.2345e-10)) (f32.const 1.123456789))
 
+;; Test adding the greatest value to 1.0 that rounds back to 1.0, and the
+;; least that rounds to something greater.
+(assert_return (invoke "f32.add" (f32.const 1.0) (f32.const 0x1p-24)) (f32.const 0x1.0p+0))
+(assert_return (invoke "f32.add" (f32.const 1.0) (f32.const 0x1.000002p-24)) (f32.const 0x1.000002p+0))
+
 ;; Computations that round differently in ties-to-odd mode.
 (assert_return (invoke "f32.add" (f32.const 0x1p23) (f32.const 0x1p-1)) (f32.const 0x1p23))
 (assert_return (invoke "f32.add" (f32.const 0x1.000002p+23) (f32.const 0x1p-1)) (f32.const 0x1.000004p+23))
@@ -67,6 +72,11 @@
 ;; http://perso.ens-lyon.fr/jean-michel.muller/Handbook.html
 ;; section 3.3.1: A typical problem: "double rounding"
 (assert_return (invoke "f64.add" (f64.const 0x1p+63) (f64.const 1024.25)) (f64.const 0x1.0000000000001p+63))
+
+;; Test adding the greatest value to 1.0 that rounds back to 1.0, and the
+;; least that rounds to something greater.
+(assert_return (invoke "f64.add" (f64.const 1.0) (f64.const 0x1p-53)) (f64.const 0x1.0p+0))
+(assert_return (invoke "f64.add" (f64.const 1.0) (f64.const 0x1.0000000000001p-53)) (f64.const 0x1.0000000000001p+0))
 
 ;; Computations that round differently in round-to-odd mode.
 (assert_return (invoke "f64.add" (f64.const 0x1p52) (f64.const 0x1p-1)) (f64.const 0x1p52))
@@ -131,6 +141,16 @@
 ;; Test for a historic spreadsheet bug.
 ;; https://blogs.office.com/2007/09/25/calculation-issue-update/
 (assert_return (invoke "f64.sub" (f64.const 65536.0) (f64.const 0x1p-37)) (f64.const 0x1.fffffffffffffp+15))
+
+;; Test subtracting the greatest value from 1.0 that rounds back to 1.0, and the
+;; least that rounds to something less.
+(assert_return (invoke "f32.sub" (f32.const 1.0) (f32.const 0x1p-25)) (f32.const 0x1.0p+0))
+(assert_return (invoke "f32.sub" (f32.const 1.0) (f32.const 0x1.000002p-25)) (f32.const 0x1.fffffep-1))
+
+;; Test subtracting the greatest value from 1.0 that rounds back to 1.0, and the
+;; least that rounds to something less.
+(assert_return (invoke "f64.sub" (f64.const 1.0) (f64.const 0x1p-54)) (f64.const 0x1.0p+0))
+(assert_return (invoke "f64.sub" (f64.const 1.0) (f64.const 0x1.0000000000001p-54)) (f64.const 0x1.fffffffffffffp-1))
 
 ;; Computations that round differently on x87.
 (assert_return (invoke "f64.sub" (f64.const 0x1.c21151a709b6cp-78) (f64.const 0x1.0a12fff8910f6p-115)) (f64.const 0x1.c21151a701663p-78))
