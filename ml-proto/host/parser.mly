@@ -200,9 +200,9 @@ expr1 :
   | BINARY expr expr { fun c -> binary ($1, $2 c, $3 c) }
   | COMPARE expr expr { fun c -> compare ($1, $2 c, $3 c) }
   | CONVERT expr { fun c -> convert ($1, $2 c) }
-  | PAGESIZE { fun c -> page_size }
-  | MEMORYSIZE { fun c -> memory_size }
-  | RESIZEMEMORY expr { fun c -> resize_memory ($2 c) }
+  | PAGESIZE { fun c -> host (PageSize, []) }
+  | MEMORYSIZE { fun c -> host (MemorySize, []) }
+  | RESIZEMEMORY expr { fun c -> host (ResizeMemory, [$2 c]) }
 ;
 expr_opt :
   | /* empty */ { fun c -> None }

@@ -89,6 +89,12 @@ let type_cvt at = function
     | DemoteFloat64 -> error at "invalid conversion"
     ), Float64Type
 
+let type_hostop = function
+  | PageSize -> {ins = []; out = Some Int32Type}
+  | MemorySize -> {ins = []; out = Some Int32Type}
+  | ResizeMemory -> {ins = [Int32Type]; out = None}
+
+
 let type_func f =
   let {params; result; _} = f.it in
   {ins = List.map it params; out = Lib.Option.map it result}
@@ -136,7 +142,7 @@ let rec check_expr c et e =
     check_expr c' et e1
 
   | Break (x, eo) ->
-    check_expr_option c (label c x) eo e.at
+    check_expr_opt c (label c x) eo e.at
 
   | Switch (t, e1, cs, e2) ->
     require (t.it = Int32Type || t.it = Int64Type) t.at "invalid switch type";
@@ -208,25 +214,18 @@ let rec check_expr c et e =
     check_expr c (Some t1) e1;
     check_type (Some t) et e.at
 
-  | PageSize ->
+  | Host (hostop, es) ->
     check_has_memory c e.at;
-    check_type (Some Int32Type) et e.at
-
-  | MemorySize ->
-    check_has_memory c e.at;
-    check_type (Some Int32Type) et e.at
-
-  | ResizeMemory e ->
-    check_has_memory c e.at;
-    check_expr c (Some Int32Type) e;
-    check_type None et e.at
+    let {ins; out} = type_hostop hostop in
+    check_exprs c ins es;
+    check_type out et e.at
 
 and check_exprs c ts es =
   let ets = List.map (fun x -> Some x) ts in
   try List.iter2 (check_expr c) ets es
   with Invalid_argument _ -> error (Source.ats es) "arity mismatch"
 
-and check_expr_option c et eo at =
+and check_expr_opt c et eo at =
   match eo with
   | Some e -> check_expr c et e
   | None -> check_type None et at
@@ -253,7 +252,7 @@ and check_store c et memop e1 e2 at =
   check_type (Some memop.ty) et at
 
 and check_has_memory c at =
-  require c.has_memory at "memory ops require a memory section";
+  require c.has_memory at "memory operators require a memory section"
 
 and check_align align at =
   Lib.Option.app (fun a ->

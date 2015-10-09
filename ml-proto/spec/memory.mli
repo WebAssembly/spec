@@ -22,5 +22,6 @@ val size : memory -> size
 val resize : memory -> size -> unit
 val load : memory -> address -> value_type -> value
 val store : memory -> address -> value -> unit
-val load_extend : memory -> address -> mem_size -> extension -> value_type -> value
+val load_extend :
+  memory -> address -> mem_size -> extension -> value_type -> value
 val store_wrap : memory -> address -> mem_size -> value -> unit
