@@ -5,6 +5,7 @@
 %{
 open Source
 open Ast
+open Sugar
 open Script
 
 
@@ -31,16 +32,16 @@ let parse_error s = Error.error Source.no_region s
 
 (* Literals *)
 
-let literal at s t =
+let literal s t =
   try
     match t with
-    | Types.Int32Type -> Values.Int32 (I32.of_string s) @@ at
-    | Types.Int64Type -> Values.Int64 (I64.of_string s) @@ at
-    | Types.Float32Type -> Values.Float32 (F32.of_string s) @@ at
-    | Types.Float64Type -> Values.Float64 (F64.of_string s) @@ at
+    | Types.Int32Type -> Values.Int32 (I32.of_string s.it) @@ s.at
+    | Types.Int64Type -> Values.Int64 (I64.of_string s.it) @@ s.at
+    | Types.Float32Type -> Values.Float32 (F32.of_string s.it) @@ s.at
+    | Types.Float64Type -> Values.Float64 (F64.of_string s.it) @@ s.at
   with
-    | Failure reason -> Error.error at ("constant out of range: " ^ reason)
-    | _ -> Error.error at "constant out of range"
+    | Failure reason -> Error.error s.at ("constant out of range: " ^ reason)
+    | _ -> Error.error s.at "constant out of range"
 
 
 (* Symbolic variables *)
@@ -115,8 +116,11 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<Ast.cvt> CONVERT
 %token<Ast.memop> LOAD
 %token<Ast.memop> STORE
-%token<Ast.extendop> LOADEXTEND
+%token<Ast.extop> LOADEXTEND
 %token<Ast.wrapop> STOREWRAP
+
+%nonassoc VAR
+%nonassoc LOW
 
 %start script
 %type<Script.script> script
@@ -137,8 +141,8 @@ value_type_list :
 /* Expressions */
 
 literal :
-  | INT { $1 }
-  | FLOAT { $1 }
+  | INT { $1 @@ at () }
+  | FLOAT { $1 @@ at () }
 ;
 
 var :
@@ -153,61 +157,52 @@ bind_var :
   | VAR { $1 @@ at () }
 ;
 
-expr :
-  | LPAR oper RPAR { let at = at () in fun c -> $2 c @@ at }
+labeling :
+  | /* empty */ %prec LOW { let at = at () in fun c -> c, Unlabelled @@ at }
+  | bind_var { let at = at () in fun c -> bind_label c $1, Labelled @@ at }
 ;
-oper :
-  | NOP { fun c -> Nop }
-  | BLOCK expr expr_list { fun c -> Block ($2 c :: $3 c) }
-  | BLOCK bind_var expr expr_list  /* Sugar */
-    { let at = at () in
-      fun c -> let c' = bind_label c $2 in
-      Sugar.labelled_block at ($3 c' :: $4 c) }
-  | IF expr expr expr { fun c -> If ($2 c, $3 c, $4 c) }
-  | IF expr expr  /* Sugar */
-    { fun c -> Sugar.if_only ($2 c, $3 c) }
-  | LOOP expr_list { let at = at () in fun c -> Sugar.loop_seq at ($2 c) }
-  | LOOP bind_var expr_list  /* Sugar */
-    { let at = at () in
-      fun c -> let c' = bind_label c $2 in
-      Sugar.labelled_loop_seq at ($3 c') }
-  | LOOP bind_var bind_var expr_list  /* Sugar */
-    { let at = at () in
-      fun c -> let c' = bind_label (bind_label c $2) $3 in
-      Sugar.labelled_loop_seq2 at ($4 c') }
-  | LABEL expr { fun c -> let c' = anon_label c in Label ($2 c') }
-  | LABEL bind_var expr  /* Sugar */
-    { fun c -> let c' = bind_label c $2 in Label ($3 c') }
-  | BREAK var expr_opt { fun c -> Break ($2 c label, $3 c) }
-  | SWITCH expr arms
+
+expr :
+  | LPAR expr1 RPAR { let at = at () in fun c -> $2 c @@ at }
+;
+expr1 :
+  | NOP { fun c -> nop }
+  | BLOCK labeling expr expr_list
+    { fun c -> let c', l = $2 c in block (l, $3 c' :: $4 c') }
+  | IF expr expr expr_opt { fun c -> if_ ($2 c, $3 c, $4 c) }
+  | LOOP labeling labeling expr_list
+    { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
+      loop (l1, l2, $4 c'') }
+  | LABEL labeling expr
+    { fun c -> let c', l = $2 c in
+      let c'' = if l.it = Unlabelled then anon_label c' else c' in
+      Sugar.label ($3 c'') }
+  | BREAK var expr_opt { fun c -> break ($2 c label, $3 c) }
+  | RETURN expr_opt
     { let at1 = ati 1 in
-      fun c -> let arms, e = $3 c in
-      Switch ($1 @@ at1, $2 c, List.map (fun a -> a $1) arms, e) }
-  | SWITCH bind_var expr arms  /* Sugar */
-    { let at = at () in let at2 = ati 2 in
-      fun c -> let c' = bind_label c $2 in let arms, e = $4 c' in
-      Sugar.labelled_switch at ($1 @@ at2, $3 c', List.map (fun a -> a $1) arms, e) }
-  | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
-  | CALLIMPORT var expr_list { fun c -> CallImport ($2 c import, $3 c) }
+      fun c -> return (label c ("return" @@ at1) @@ at1, $2 c) }
+  | SWITCH labeling expr cases
+    { let at1 = ati 1 in
+      fun c -> let c', l = $2 c in let cs, e = $4 c' in
+      switch (l, $1 @@ at1, $3 c', List.map (fun a -> a $1) cs, e) }
+  | CALL var expr_list { fun c -> call ($2 c func, $3 c) }
+  | CALLIMPORT var expr_list { fun c -> call_import ($2 c import, $3 c) }
   | CALLINDIRECT var expr expr_list
-    { fun c -> CallIndirect ($2 c table, $3 c, $4 c) }
-  | RETURN expr_opt  /* Sugar */
-    { let at1 = ati 1 in
-      fun c -> Sugar.return (label c ("return" @@ at1) @@ at1, $2 c) }
-  | GETLOCAL var { fun c -> GetLocal ($2 c local) }
-  | SETLOCAL var expr { fun c -> SetLocal ($2 c local, $3 c) }
-  | LOAD expr { fun c -> Load ($1, $2 c) }
-  | STORE expr expr { fun c -> Store ($1, $2 c, $3 c) }
-  | LOADEXTEND expr { fun c -> LoadExtend ($1, $2 c) }
-  | STOREWRAP expr expr { fun c -> StoreWrap ($1, $2 c, $3 c) }
-  | CONST literal { let at = at () in fun c -> Const (literal at $2 $1) }
-  | UNARY expr { fun c -> Unary ($1, $2 c) }
-  | BINARY expr expr { fun c -> Binary ($1, $2 c, $3 c) }
-  | COMPARE expr expr { fun c -> Compare ($1, $2 c, $3 c) }
-  | CONVERT expr { fun c -> Convert ($1, $2 c) }
-  | PAGESIZE { fun c -> PageSize }
-  | MEMORYSIZE { fun c -> MemorySize }
-  | RESIZEMEMORY expr { fun c -> ResizeMemory ($2 c) }
+    { fun c -> call_indirect ($2 c table, $3 c, $4 c) }
+  | GETLOCAL var { fun c -> get_local ($2 c local) }
+  | SETLOCAL var expr { fun c -> set_local ($2 c local, $3 c) }
+  | LOAD expr { fun c -> load ($1, $2 c) }
+  | STORE expr expr { fun c -> store ($1, $2 c, $3 c) }
+  | LOADEXTEND expr { fun c -> load_extend ($1, $2 c) }
+  | STOREWRAP expr expr { fun c -> store_wrap ($1, $2 c, $3 c) }
+  | CONST literal { fun c -> const (literal $2 $1) }
+  | UNARY expr { fun c -> unary ($1, $2 c) }
+  | BINARY expr expr { fun c -> binary ($1, $2 c, $3 c) }
+  | COMPARE expr expr { fun c -> compare ($1, $2 c, $3 c) }
+  | CONVERT expr { fun c -> convert ($1, $2 c) }
+  | PAGESIZE { fun c -> page_size }
+  | MEMORYSIZE { fun c -> memory_size }
+  | RESIZEMEMORY expr { fun c -> resize_memory ($2 c) }
 ;
 expr_opt :
   | /* empty */ { fun c -> None }
@@ -222,17 +217,19 @@ fallthrough :
   | /* empty */ { false }
   | FALLTHROUGH { true }
 ;
-arm :
-  | LPAR CASE literal expr expr_list fallthrough RPAR
-    { let at = at () in let at3 = ati 3 in
-      fun c t -> Sugar.case_seq (literal at3 $3 t, $4 c :: $5 c, $6) @@ at }
-  | LPAR CASE literal RPAR  /* Sugar */
-    { let at = at () in let at3 = ati 3 in
-      fun c t -> Sugar.case_only (literal at3 $3 t) @@ at }
+
+case :
+  | LPAR case1 RPAR { let at = at () in fun c t -> $2 c t @@ at }
 ;
-arms :
+case1 :
+  | CASE literal expr expr_list fallthrough
+    { fun c t -> case (literal $2 t, Some ($3 c :: $4 c, $5)) }
+  | CASE literal
+    { fun c t -> case (literal $2 t, None) }
+;
+cases :
   | expr { fun c -> [], $1 c }
-  | arm arms { fun c -> let x, y = $2 c in $1 c :: x, y }  /* Sugar */
+  | case cases { fun c -> let x, y = $2 c in $1 c :: x, y }
 ;
 
 

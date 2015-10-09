@@ -145,9 +145,9 @@ let rec eval_expr (c : config) (e : expr) =
   | Break (x, eo) ->
     raise (label c x (eval_expr_option c eo))
 
-  | Switch (_t, e1, arms, e2) ->
+  | Switch (_t, e1, cs, e2) ->
     let vo = some (eval_expr c e1) e1.at in
-    (match List.fold_left (eval_arm c vo) `Seek arms with
+    (match List.fold_left (eval_case c vo) `Seek cs with
     | `Seek | `Fallthru -> eval_expr c e2
     | `Done vs -> vs
     )
@@ -255,8 +255,8 @@ and eval_expr_option c eo =
   | Some e -> eval_expr c e
   | None -> None
 
-and eval_arm c vo stage arm =
-  let {value; expr = e; fallthru} = arm.it in
+and eval_case c vo stage case =
+  let {value; expr = e; fallthru} = case.it in
   match stage, vo = value.it with
   | `Seek, true | `Fallthru, _ ->
     if fallthru

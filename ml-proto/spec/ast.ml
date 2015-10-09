@@ -64,7 +64,7 @@ type relop = (Int32Op.relop, Int64Op.relop, Float32Op.relop, Float64Op.relop) op
 type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
 
 type memop = {ty : Types.value_type; align : int option}
-type extendop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
+type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
 type wrapop = {memop : memop; sz : Memory.mem_size}
 
 (* Expressions *)
@@ -74,33 +74,33 @@ type literal = value Source.phrase
 
 type expr = expr' Source.phrase
 and expr' =
-  | Nop                                           (* do nothing *)
-  | Block of expr list                            (* execute in sequence *)
-  | If of expr * expr * expr                      (* conditional *)
-  | Loop of expr                                  (* infinite loop *)
-  | Label of expr                                 (* labelled expression *)
-  | Break of var * expr option                    (* break to n-th surrounding label *)
-  | Switch of value_type * expr * arm list * expr (* switch, latter expr is default *)
-  | Call of var * expr list                       (* call function *)
-  | CallImport of var * expr list                 (* call imported function *)
-  | CallIndirect of var * expr * expr list        (* call function through table *)
-  | GetLocal of var                               (* read local variable *)
-  | SetLocal of var * expr                        (* write local variable *)
-  | Load of memop * expr                          (* read memory at address *)
-  | Store of memop * expr * expr                  (* write memory at address *)
-  | LoadExtend of extendop * expr                 (* read memory at address and extend *)
-  | StoreWrap of wrapop * expr * expr             (* wrap and write to memory at address *)
-  | Const of literal                              (* constant *)
-  | Unary of unop * expr                          (* unary arithmetic operator *)
-  | Binary of binop * expr * expr                 (* binary arithmetic operator *)
-  | Compare of relop * expr * expr                (* arithmetic comparison *)
-  | Convert of cvt * expr                         (* conversion *)
-  | PageSize                                      (* return host-defined page_size *)
-  | MemorySize                                    (* return current size of linear memory *)
-  | ResizeMemory of expr                          (* resize linear memory *)
+  | Nop                                            (* do nothing *)
+  | Block of expr list                             (* execute in sequence *)
+  | If of expr * expr * expr                       (* conditional *)
+  | Loop of expr                                   (* infinite loop *)
+  | Label of expr                                  (* labelled expression *)
+  | Break of var * expr option                     (* break to n-th surrounding label *)
+  | Switch of value_type * expr * case list * expr (* switch, latter expr is default *)
+  | Call of var * expr list                        (* call function *)
+  | CallImport of var * expr list                  (* call imported function *)
+  | CallIndirect of var * expr * expr list         (* call function through table *)
+  | GetLocal of var                                (* read local variable *)
+  | SetLocal of var * expr                         (* write local variable *)
+  | Load of memop * expr                           (* read memory at address *)
+  | Store of memop * expr * expr                   (* write memory at address *)
+  | LoadExtend of extop * expr                     (* read memory at address and extend *)
+  | StoreWrap of wrapop * expr * expr              (* wrap and write to memory at address *)
+  | Const of literal                               (* constant *)
+  | Unary of unop * expr                           (* unary arithmetic operator *)
+  | Binary of binop * expr * expr                  (* binary arithmetic operator *)
+  | Compare of relop * expr * expr                 (* arithmetic comparison *)
+  | Convert of cvt * expr                          (* conversion *)
+  | PageSize                                       (* return host-defined page_size *)
+  | MemorySize                                     (* return current size of linear memory *)
+  | ResizeMemory of expr                           (* resize linear memory *)
 
-and arm = arm' Source.phrase
-and arm' =
+and case = case' Source.phrase
+and case' =
 {
   value : literal;
   expr : expr;
