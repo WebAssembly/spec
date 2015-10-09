@@ -138,11 +138,11 @@ let rec check_expr c et e =
   | Break (x, eo) ->
     check_expr_option c (label c x) eo e.at
 
-  | Switch (t, e1, arms, e2) ->
+  | Switch (t, e1, cs, e2) ->
     require (t.it = Int32Type || t.it = Int64Type) t.at "invalid switch type";
     (* TODO: Check that cases are unique. *)
     check_expr c (Some t.it) e1;
-    List.iter (check_arm c t.it et) arms;
+    List.iter (check_case c t.it et) cs;
     check_expr c et e2
 
   | Call (x, es) ->
@@ -160,9 +160,6 @@ let rec check_expr c et e =
     check_expr c (Some Int32Type) e1;
     check_exprs c ins es;
     check_type out et e.at
-
-  | Return eo ->
-    check_expr_option c c.return eo e.at
 
   | GetLocal x ->
     check_type (Some (local c x)) et e.at
@@ -237,8 +234,8 @@ and check_expr_option c et eo at =
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
 
-and check_arm c t et arm =
-  let {value = l; expr = e; fallthru} = arm.it in
+and check_case c t et case =
+  let {value = l; expr = e; fallthru} = case.it in
   check_literal c (Some t) l;
   check_expr c (if fallthru then None else et) e
 

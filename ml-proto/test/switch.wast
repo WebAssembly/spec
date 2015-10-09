@@ -10,8 +10,8 @@
         (case 0 (return (get_local $i)))
         (case 1 (nop) fallthrough)
         (case 2)  ;; implicit fallthrough
-        (case 3 (set_local $j (i32.sub (i32.const 0) (get_local $i))) (break))
-        (case 4 (break))
+        (case 3 (set_local $j (i32.sub (i32.const 0) (get_local $i))) (break 0))
+        (case 4 (break 0))
         (case 5 (set_local $j (i32.const 101)))
         (case 6 (set_local $j (i32.const 101)) fallthrough)
         (;default;) (set_local $j (i32.const 102))

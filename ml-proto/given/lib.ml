@@ -29,6 +29,11 @@ end
 
 module Option =
 struct
+  let get o x =
+    match o with
+    | Some y -> y
+    | None -> x
+
   let map f = function
     | Some x -> Some (f x)
     | None -> None

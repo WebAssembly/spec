@@ -38,8 +38,7 @@ type config =
 {
   module_ : instance;
   locals : value ref list;
-  labels : label list;
-  return : label
+  labels : label list
 }
 
 let lookup category list x =
@@ -146,9 +145,9 @@ let rec eval_expr (c : config) (e : expr) =
   | Break (x, eo) ->
     raise (label c x (eval_expr_option c eo))
 
-  | Switch (_t, e1, arms, e2) ->
+  | Switch (_t, e1, cs, e2) ->
     let vo = some (eval_expr c e1) e1.at in
-    (match List.fold_left (eval_arm c vo) `Seek arms with
+    (match List.fold_left (eval_case c vo) `Seek cs with
     | `Seek | `Fallthru -> eval_expr c e2
     | `Done vs -> vs
     )
@@ -166,9 +165,6 @@ let rec eval_expr (c : config) (e : expr) =
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     (* TODO: The conversion to int could overflow. *)
     eval_func c.module_ (table c x (Int32.to_int i @@ e1.at)) vs
-
-  | Return eo ->
-    raise (c.return (eval_expr_option c eo))
 
   | GetLocal x ->
     Some !(local c x)
@@ -259,8 +255,8 @@ and eval_expr_option c eo =
   | Some e -> eval_expr c e
   | None -> None
 
-and eval_arm c vo stage arm =
-  let {value; expr = e; fallthru} = arm.it in
+and eval_case c vo stage case =
+  let {value; expr = e; fallthru} = case.it in
   match stage, vo = value.it with
   | `Seek, true | `Fallthru, _ ->
     if fallthru
@@ -270,13 +266,11 @@ and eval_arm c vo stage arm =
     stage
 
 and eval_func (m : instance) (f : func) (evs : value list) =
-  let module Return = MakeLabel () in
   let args = List.map ref evs in
   let vars = List.map (fun t -> ref (default_value t.it)) f.it.locals in
   let locals = args @ vars in
-  let c = {module_ = m; locals; labels = []; return = Return.label} in
-  try eval_expr c f.it.body
-  with Return.Label vo -> vo
+  let c = {module_ = m; locals; labels = []} in
+  eval_expr c f.it.body
 
 
 (* Modules *)
