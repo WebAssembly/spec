@@ -4,13 +4,13 @@
 (module
   (memory 4 4)
 
-  (func $store_i32 (param $x i32)
+  (func $store_i32 (param $x i32) (result i32)
     (i32.store (i32.const 0) (get_local $x)))
 
   (func $load_i32 (result i32)
     (i32.load (i32.const 0)))
 
-  (func $store_f32 (param $x f32)
+  (func $store_f32 (param $x f32) (result f32)
     (f32.store (i32.const 0) (get_local $x)))
 
   (func $load_f32 (result f32)
@@ -22,14 +22,14 @@
   (export "load_f32" $load_f32)
 )
 
-(invoke "store_i32" (i32.const 0x7f800001))
+(assert_return (invoke "store_i32" (i32.const 0x7f800001)) (i32.const 0x7f800001))
 (assert_return (invoke "load_f32") (f32.const nan(0x000001)))
-(invoke "store_i32" (i32.const 0x80000000))
+(assert_return (invoke "store_i32" (i32.const 0x80000000)) (i32.const 0x80000000))
 (assert_return (invoke "load_f32") (f32.const -0.0))
 
-(invoke "store_f32" (f32.const nan(0x000001)))
+(assert_return (invoke "store_f32" (f32.const nan(0x000001))) (f32.const nan(0x000001)))
 (assert_return (invoke "load_i32") (i32.const 0x7f800001))
-(invoke "store_f32" (f32.const -0.0))
+(assert_return (invoke "store_f32" (f32.const -0.0)) (f32.const -0.0))
 (assert_return (invoke "load_i32") (i32.const 0x80000000))
 
 (module
@@ -53,12 +53,12 @@
   (export "load_f64" $load_f64)
 )
 
-(invoke "store_i64" (i64.const 0x7ff0000000000001))
+(assert_return (invoke "store_i64" (i64.const 0x7ff0000000000001)) (i64.const 0x7ff0000000000001))
 (assert_return (invoke "load_f64") (f64.const nan(0x0000000000001)))
-(invoke "store_i64" (i64.const 0x8000000000000000))
+(assert_return (invoke "store_i64" (i64.const 0x8000000000000000)) (i64.const 0x8000000000000000))
 (assert_return (invoke "load_f64") (f64.const -0.0))
 
-(invoke "store_f64" (f64.const nan(0x0000000000001)))
+(assert_return (invoke "store_f64" (f64.const nan(0x0000000000001))) (f64.const nan(0x0000000000001)))
 (assert_return (invoke "load_i64") (i64.const 0x7ff0000000000001))
-(invoke "store_f64" (f64.const -0.0))
+(assert_return (invoke "store_f64" (f64.const -0.0)) (f64.const -0.0))
 (assert_return (invoke "load_i64") (i64.const 0x8000000000000000))
