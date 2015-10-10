@@ -148,6 +148,10 @@
 ;; section 3.3.1: A typical problem: "double rounding"
 (assert_return (invoke "f32.mul" (f32.const 1848874880.0) (f32.const 19954563072.0)) (f32.const 0x1.000002p+65))
 
+;; Test for a historic spreadsheet bug.
+;; http://www.joelonsoftware.com/items/2007/09/26b.html
+(assert_return (invoke "f32.mul" (f32.const 77.1) (f32.const 850)) (f32.const 65535))
+
 (assert_return (invoke "f64.mul" (f64.const 1e15) (f64.const 1e15)) (f64.const 0x1.93e5939a08ceap+99))
 (assert_return (invoke "f64.mul" (f64.const 1e20) (f64.const 1e20)) (f64.const 0x1.d6329f1c35ca5p+132))
 (assert_return (invoke "f64.mul" (f64.const 1e25) (f64.const 1e25)) (f64.const 0x1.11b0ec57e649bp+166))
@@ -156,6 +160,10 @@
 ;; http://perso.ens-lyon.fr/jean-michel.muller/Handbook.html
 ;; section 3.3.1: A typical problem: "double rounding"
 (assert_return (invoke "f64.mul" (f64.const 1848874847.0) (f64.const 19954562207.0)) (f64.const 3.6893488147419111424e+19))
+
+;; Test for a historic spreadsheet bug.
+;; http://www.joelonsoftware.com/items/2007/09/26b.html
+(assert_return (invoke "f64.mul" (f64.const 77.1) (f64.const 850)) (f64.const 65534.99999999999272404))
 
 ;; Computations that round differently on x87.
 (assert_return (invoke "f64.mul" (f64.const 0x1.f99fb602c89b7p-341) (f64.const 0x1.6caab46a31a2ep-575)) (f64.const 0x1.68201f986e9d7p-915))
