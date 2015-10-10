@@ -63,6 +63,11 @@
 
 (assert_return (invoke "f64.add" (f64.const 1.1234567890) (f64.const 1.2345e-10)) (f64.const 0x1.1f9add37c11f7p+0))
 
+;; Test for a case of double rounding, example from:
+;; http://perso.ens-lyon.fr/jean-michel.muller/Handbook.html
+;; section 3.3.1: A typical problem: "double rounding"
+(assert_return (invoke "f64.add" (f64.const 0x1p+63) (f64.const 1024.25)) (f64.const 0x1.0000000000001p+63))
+
 ;; Computations that round differently in round-to-odd mode.
 (assert_return (invoke "f64.add" (f64.const 0x1p52) (f64.const 0x1p-1)) (f64.const 0x1p52))
 (assert_return (invoke "f64.add" (f64.const 0x1.0000000000001p+52) (f64.const 0x1p-1)) (f64.const 0x1.0000000000002p+52))
@@ -119,6 +124,14 @@
 ;; Test that what some systems call signalling NaN behaves as a quiet NaN.
 (assert_return_nan (invoke "f64.add" (f64.const nan(0x4000000000000)) (f64.const 1.0)))
 
+;; Test for a historic spreadsheet bug.
+;; https://blogs.office.com/2007/09/25/calculation-issue-update/
+(assert_return (invoke "f32.sub" (f32.const 65536.0) (f32.const 0x1p-37)) (f32.const 65536.0))
+
+;; Test for a historic spreadsheet bug.
+;; https://blogs.office.com/2007/09/25/calculation-issue-update/
+(assert_return (invoke "f64.sub" (f64.const 65536.0) (f64.const 0x1p-37)) (f64.const 0x1.fffffffffffffp+15))
+
 ;; Computations that round differently on x87.
 (assert_return (invoke "f64.sub" (f64.const 0x1.c21151a709b6cp-78) (f64.const 0x1.0a12fff8910f6p-115)) (f64.const 0x1.c21151a701663p-78))
 (assert_return (invoke "f64.sub" (f64.const 0x1.c57912aae2f64p-982) (f64.const 0x1.dbfbd4800b7cfp-1010)) (f64.const 0x1.c579128d2338fp-982))
@@ -130,9 +143,19 @@
 (assert_return (invoke "f32.mul" (f32.const 1e20) (f32.const 1e20)) (f32.const infinity))
 (assert_return (invoke "f32.mul" (f32.const 1e25) (f32.const 1e25)) (f32.const infinity))
 
+;; Test for a case of double rounding, example from:
+;; http://perso.ens-lyon.fr/jean-michel.muller/Handbook.html
+;; section 3.3.1: A typical problem: "double rounding"
+(assert_return (invoke "f32.mul" (f32.const 1848874880.0) (f32.const 19954563072.0)) (f32.const 0x1.000002p+65))
+
 (assert_return (invoke "f64.mul" (f64.const 1e15) (f64.const 1e15)) (f64.const 0x1.93e5939a08ceap+99))
 (assert_return (invoke "f64.mul" (f64.const 1e20) (f64.const 1e20)) (f64.const 0x1.d6329f1c35ca5p+132))
 (assert_return (invoke "f64.mul" (f64.const 1e25) (f64.const 1e25)) (f64.const 0x1.11b0ec57e649bp+166))
+
+;; Test for a case of double rounding, example from:
+;; http://perso.ens-lyon.fr/jean-michel.muller/Handbook.html
+;; section 3.3.1: A typical problem: "double rounding"
+(assert_return (invoke "f64.mul" (f64.const 1848874847.0) (f64.const 19954562207.0)) (f64.const 3.6893488147419111424e+19))
 
 ;; Computations that round differently on x87.
 (assert_return (invoke "f64.mul" (f64.const 0x1.f99fb602c89b7p-341) (f64.const 0x1.6caab46a31a2ep-575)) (f64.const 0x1.68201f986e9d7p-915))
