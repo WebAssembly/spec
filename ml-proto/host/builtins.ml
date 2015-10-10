@@ -14,7 +14,7 @@ let match_import i =
       Error.error i.at "stdio.print has no result";
     print
   | _ ->
-    Error.error i.at ("no stdio." ^ func_name ^ "\"")
+    Error.error i.at ("no \"stdio." ^ func_name ^ "\"")
 
 let match_imports (is : Ast.import list) =
   List.map match_import is
