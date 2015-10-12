@@ -302,10 +302,3 @@ let invoke m name vs =
     eval_func m f vs
   with Stack_overflow -> callstack_exhaustion no_region
 
-(* This function is not part of the spec. *)
-let host_eval e =
-  let f = {params = []; result = None; locals = []; body = e} @@ no_region in
-  let exports = ExportMap.singleton "eval" f in
-  let host = {page_size = 1L} in
-  let m = {imports = []; exports; tables = []; funcs = [f]; memory = None; host} in
-  eval_func m f []
