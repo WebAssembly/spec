@@ -313,7 +313,7 @@ let host_eval e =
   let m = {imports = []; exports; tables = []; funcs = [f]; memory = None; host} in
   eval_func m f []
 
-let get_module_memory at m =
+let memory_for_module at m =
   match m.memory with
   | Some mem ->
     mem

@@ -11,7 +11,7 @@ let stdout_write at m vs =
   if List.length vs != 2 then
     Error.error at "stdio.write expects 2 arguments (offset, count)";
 
-  let mem = Eval.get_module_memory at m in
+  let mem = Eval.memory_for_module at m in
   let offset_arg = List.nth vs 0 in
   let offset = match offset_arg with
     | Values.Int32 i ->
@@ -31,7 +31,7 @@ let stdout_write at m vs =
     let load_result = Memory.load_extend mem (Int64.of_int (offset + i)) Mem8 ZX Int32Type in
     match load_result with
     | Values.Int32 i ->
-      print_char (Char.chr (Int32.to_int i));
+      print_bytes (Bytes.make 1 (Char.chr (Int32.to_int i)));
     | _ ->
       Error.error at "load_extend returned wrong type";
 
