@@ -58,6 +58,8 @@
 
 (assert_return (invoke "add" (i64.const 1) (i64.const 1)) (i64.const 2))
 (assert_return (invoke "add" (i64.const 1) (i64.const 0)) (i64.const 1))
+(assert_return (invoke "add" (i64.const -1) (i64.const -1)) (i64.const -2))
+(assert_return (invoke "add" (i64.const -1) (i64.const 1)) (i64.const 0))
 (assert_return (invoke "add" (i64.const 0x7fffffffffffffff) (i64.const 1)) (i64.const 0x8000000000000000))
 (assert_return (invoke "add" (i64.const 0x8000000000000000) (i64.const -1)) (i64.const 0x7fffffffffffffff))
 (assert_return (invoke "add" (i64.const 0x8000000000000000) (i64.const 0x8000000000000000)) (i64.const 0))
@@ -65,6 +67,7 @@
 
 (assert_return (invoke "sub" (i64.const 1) (i64.const 1)) (i64.const 0))
 (assert_return (invoke "sub" (i64.const 1) (i64.const 0)) (i64.const 1))
+(assert_return (invoke "sub" (i64.const -1) (i64.const -1)) (i64.const 0))
 (assert_return (invoke "sub" (i64.const 0x7fffffffffffffff) (i64.const -1)) (i64.const 0x8000000000000000))
 (assert_return (invoke "sub" (i64.const 0x8000000000000000) (i64.const 1)) (i64.const 0x7fffffffffffffff))
 (assert_return (invoke "sub" (i64.const 0x8000000000000000) (i64.const 0x8000000000000000)) (i64.const 0))
@@ -97,7 +100,6 @@
 (assert_return (invoke "div_s" (i64.const -7) (i64.const -3)) (i64.const 2))
 (assert_return (invoke "div_s" (i64.const 11) (i64.const 5)) (i64.const 2))
 (assert_return (invoke "div_s" (i64.const 17) (i64.const 7)) (i64.const 2))
-
 
 (assert_trap (invoke "div_u" (i64.const 1) (i64.const 0)) "runtime: integer divide by zero")
 (assert_trap (invoke "div_u" (i64.const 0) (i64.const 0)) "runtime: integer divide by zero")
