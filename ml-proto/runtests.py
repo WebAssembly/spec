@@ -9,7 +9,7 @@ import sys
 
 class RunTests(unittest.TestCase):
   def _runTestFile(self, shortName, fileName, interpreterPath):
-    logPath = fileName.replace("test/", "test/output/").replace(".wast", ".wast.log")
+    logPath = fileName.replace("../testsuite/", "../testsuite/output/").replace(".wast", ".wast.log")
     try:
       os.remove(logPath)
     except OSError:
@@ -20,7 +20,7 @@ class RunTests(unittest.TestCase):
     self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
 
     try:
-      expected = open(fileName.replace("test/", "test/expected-output/").replace(".wast", ".wast.log"))
+      expected = open(fileName.replace("../testsuite/", "../testsuite/expected-output/").replace(".wast", ".wast.log"))
     except IOError:
       # print("// WARNING: No expected output found for %s" % fileName)
       return
@@ -39,7 +39,9 @@ def generate_test_case(rec):
 
 def generate_test_cases(cls, interpreterPath, files):
   for fileName in files:
-    attrName = fileName
+    # The test harness needs test names to begin with "test/" regardless of
+    # their actual path.
+    attrName = fileName.replace("../testsuite", "test/")
     rec = (attrName, fileName, interpreterPath)
     testCase = generate_test_case(rec)
     setattr(cls, attrName, testCase)
@@ -61,7 +63,7 @@ if __name__ == "__main__":
   interpreterPath = os.path.abspath("./wasm")
 
   try:
-    os.makedirs("test/output/")
+    os.makedirs("../testsuite/output/")
   except OSError:
     pass
 
@@ -72,6 +74,6 @@ if __name__ == "__main__":
   else:
     find_interpreter(interpreterPath)
 
-  testFiles = glob.glob("test/*.wast")
+  testFiles = glob.glob("../testsuite/*.wast")
   generate_test_cases(RunTests, interpreterPath, testFiles)
   unittest.main()
