@@ -265,12 +265,15 @@ and eval_case c vo stage case =
   | `Seek, false | `Done _, _ ->
     stage
 
-and eval_func (m : instance) (f : func) (evs : value list) =
-  let args = List.map ref evs in
+and eval_func (m : instance) f vs =
+  let args = List.map ref vs in
   let vars = List.map (fun t -> ref (default_value t.it)) f.it.locals in
   let locals = args @ vars in
   let c = {module_ = m; locals; labels = []} in
-  eval_expr c f.it.body
+  coerce f.it.result (eval_expr c f.it.body)
+
+and coerce et vo =
+  if et = None then None else vo
 
 
 (* Modules *)

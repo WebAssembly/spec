@@ -345,18 +345,30 @@ module_ :
 
 cmd :
   | module_ { Define $1 @@ at () }
+  | LPAR INVOKE TEXT const_list RPAR { Invoke ($3, $4) @@ at () }
   | LPAR ASSERTINVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at () }
-  | LPAR INVOKE TEXT expr_list RPAR { Invoke ($3, $4 (c0 ())) @@ at () }
-  | LPAR ASSERTRETURN LPAR INVOKE TEXT expr_list RPAR expr RPAR
-    { AssertReturn ($5, $6 (c0 ()), $8 (c0 ())) @@ at () }
-  | LPAR ASSERTRETURNNAN LPAR INVOKE TEXT expr_list RPAR RPAR
-    { AssertReturnNaN ($5, $6 (c0 ())) @@ at () }
-  | LPAR ASSERTTRAP LPAR INVOKE TEXT expr_list RPAR TEXT RPAR
-    { AssertTrap ($5, $6 (c0 ()), $8) @@ at () }
+  | LPAR ASSERTRETURN LPAR INVOKE TEXT const_list RPAR const_opt RPAR
+    { AssertReturn ($5, $6, $8) @@ at () }
+  | LPAR ASSERTRETURNNAN LPAR INVOKE TEXT const_list RPAR RPAR
+    { AssertReturnNaN ($5, $6) @@ at () }
+  | LPAR ASSERTTRAP LPAR INVOKE TEXT const_list RPAR TEXT RPAR
+    { AssertTrap ($5, $6, $8) @@ at () }
 ;
 cmd_list :
   | /* empty */ { [] }
   | cmd cmd_list { $1 :: $2 }
+;
+
+const :
+  | LPAR CONST literal RPAR { literal $3 $2 }
+;
+const_opt :
+  | /* empty */ { None }
+  | const { Some $1 }
+;
+const_list :
+  | /* empty */ { [] }
+  | const const_list { $1 :: $2 }
 ;
 
 script :
