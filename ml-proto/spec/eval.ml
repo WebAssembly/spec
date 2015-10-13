@@ -36,7 +36,7 @@ type label = value option -> exn
 
 type config =
 {
-  module_ : instance;
+  instance : instance;
   locals : value ref list;
   labels : label list
 }
@@ -45,9 +45,9 @@ let lookup category list x =
   try List.nth list x.it with Failure _ ->
     error x.at ("runtime: undefined " ^ category ^ " " ^ string_of_int x.it)
 
-let func c x = lookup "function" c.module_.funcs x
-let import c x = lookup "import" c.module_.imports x
-let table c x y = lookup "entry" (lookup "table" c.module_.tables x) y
+let func c x = lookup "function" c.instance.funcs x
+let import c x = lookup "import" c.instance.imports x
+let table c x y = lookup "entry" (lookup "table" c.instance.tables x) y
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
@@ -85,7 +85,7 @@ let numerics_error at = function
   | exn -> raise exn
 
 let some_memory c at =
-  match c.module_.memory with
+  match c.instance.memory with
   | Some m -> m
   | _ -> error at "memory operation but no memory section"
 
@@ -143,7 +143,7 @@ let rec eval_expr (c : config) (e : expr) =
     (try eval_expr c' e1 with L.Label vo -> vo)
 
   | Break (x, eo) ->
-    raise (label c x (eval_expr_option c eo))
+    raise (label c x (eval_expr_opt c eo))
 
   | Switch (_t, e1, cs, e2) ->
     let vo = some (eval_expr c e1) e1.at in
@@ -154,7 +154,7 @@ let rec eval_expr (c : config) (e : expr) =
 
   | Call (x, es) ->
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
-    eval_func c.module_ (func c x) vs
+    eval_func c.instance (func c x) vs
 
   | CallImport (x, es) ->
     let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
@@ -164,7 +164,7 @@ let rec eval_expr (c : config) (e : expr) =
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     (* TODO: The conversion to int could overflow. *)
-    eval_func c.module_ (table c x (Int32.to_int i @@ e1.at)) vs
+    eval_func c.instance (table c x (Int32.to_int i @@ e1.at)) vs
 
   | GetLocal x ->
     Some !(local c x)
@@ -189,7 +189,8 @@ let rec eval_expr (c : config) (e : expr) =
   | LoadExtend ({memop = {ty; align = _}; sz; ext}, e1) ->
     let mem = some_memory c e.at in
     let v1 = mem_size (eval_expr c e1) e1.at in
-    (try Some (Memory.load_extend mem v1 sz ext ty) with exn -> memory_error e.at exn)
+    (try Some (Memory.load_extend mem v1 sz ext ty)
+      with exn -> memory_error e.at exn)
 
   | StoreWrap ({memop = {ty; align = _}; sz}, e1, e2) ->
     let mem = some_memory c e.at in
@@ -233,25 +234,12 @@ let rec eval_expr (c : config) (e : expr) =
       | Arithmetic.TypeError (_, v, t) -> type_error e1.at v t
       | exn -> numerics_error e.at exn)
 
-  | PageSize ->
-    Some (Int32 (Int64.to_int32 c.module_.host.page_size))
-
-  | MemorySize ->
+  | Host (hostop, es) ->
+    let vs = List.map (eval_expr c) es in
     let mem = some_memory c e.at in
-    let i64 = Memory.size mem in
-    assert (i64 < Int64.of_int32 (Int32.max_int));
-    Some (Int32 (Int64.to_int32 i64))
+    eval_hostop c.instance.host mem hostop vs e.at
 
-  | ResizeMemory e ->
-    let mem = some_memory c e.at in
-    let sz = mem_size (eval_expr c e) e.at in
-    if (Int64.rem sz c.module_.host.page_size) <> 0L then
-      error e.at "runtime: resize_memory operand not multiple of page_size";
-    Memory.resize mem sz;
-    None
-
-and eval_expr_option c eo =
-  match eo with
+and eval_expr_opt c = function
   | Some e -> eval_expr c e
   | None -> None
 
@@ -269,11 +257,33 @@ and eval_func (m : instance) f vs =
   let args = List.map ref vs in
   let vars = List.map (fun t -> ref (default_value t.it)) f.it.locals in
   let locals = args @ vars in
-  let c = {module_ = m; locals; labels = []} in
+  let c = {instance = m; locals; labels = []} in
   coerce f.it.result (eval_expr c f.it.body)
 
 and coerce et vo =
   if et = None then None else vo
+
+
+(* Host operators *)
+
+and eval_hostop host mem hostop vs at =
+  match hostop, vs with
+  | PageSize, [] ->
+    Some (Int32 (Int64.to_int32 host.page_size))
+
+  | MemorySize, [] ->
+    assert (Memory.size mem < Int64.of_int32 Int32.max_int);
+    Some (Int32 (Int64.to_int32 (Memory.size mem)))
+
+  | ResizeMemory, [v] ->
+    let sz = mem_size v at in
+    if Int64.rem sz host.page_size <> 0L then
+      error at "runtime: resize_memory operand not multiple of page_size";
+    Memory.resize mem sz;
+    None
+
+  | _, _ ->
+    error at "runtime: invalid invocation of host operator"
 
 
 (* Modules *)

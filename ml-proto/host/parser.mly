@@ -95,12 +95,12 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 %token INT FLOAT TEXT VAR TYPE LPAR RPAR
 %token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
-%token CALL CALLIMPORT CALLINDIRECT RETURN
-%token GETLOCAL SETLOCAL LOAD STORE
+%token CALL CALL_IMPORT CALL_INDIRECT RETURN
+%token GET_LOCAL SET_LOCAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
-%token PAGESIZE MEMORYSIZE RESIZEMEMORY
-%token ASSERTINVALID ASSERTRETURN ASSERTRETURNNAN ASSERTTRAP INVOKE
+%token PAGE_SIZE MEMORY_SIZE RESIZE_MEMORY
+%token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token EOF
 
 %token<string> INT
@@ -116,8 +116,8 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<Ast.cvt> CONVERT
 %token<Ast.memop> LOAD
 %token<Ast.memop> STORE
-%token<Ast.extop> LOADEXTEND
-%token<Ast.wrapop> STOREWRAP
+%token<Ast.extop> LOAD_EXTEND
+%token<Ast.wrapop> STORE_WRAP
 
 %nonassoc LOW
 %nonassoc VAR
@@ -186,23 +186,23 @@ expr1 :
       fun c -> let c', l = $2 c in let cs, e = $4 c' in
       switch (l, $1 @@ at1, $3 c', List.map (fun a -> a $1) cs, e) }
   | CALL var expr_list { fun c -> call ($2 c func, $3 c) }
-  | CALLIMPORT var expr_list { fun c -> call_import ($2 c import, $3 c) }
-  | CALLINDIRECT var expr expr_list
+  | CALL_IMPORT var expr_list { fun c -> call_import ($2 c import, $3 c) }
+  | CALL_INDIRECT var expr expr_list
     { fun c -> call_indirect ($2 c table, $3 c, $4 c) }
-  | GETLOCAL var { fun c -> get_local ($2 c local) }
-  | SETLOCAL var expr { fun c -> set_local ($2 c local, $3 c) }
+  | GET_LOCAL var { fun c -> get_local ($2 c local) }
+  | SET_LOCAL var expr { fun c -> set_local ($2 c local, $3 c) }
   | LOAD expr { fun c -> load ($1, $2 c) }
   | STORE expr expr { fun c -> store ($1, $2 c, $3 c) }
-  | LOADEXTEND expr { fun c -> load_extend ($1, $2 c) }
-  | STOREWRAP expr expr { fun c -> store_wrap ($1, $2 c, $3 c) }
+  | LOAD_EXTEND expr { fun c -> load_extend ($1, $2 c) }
+  | STORE_WRAP expr expr { fun c -> store_wrap ($1, $2 c, $3 c) }
   | CONST literal { fun c -> const (literal $2 $1) }
   | UNARY expr { fun c -> unary ($1, $2 c) }
   | BINARY expr expr { fun c -> binary ($1, $2 c, $3 c) }
   | COMPARE expr expr { fun c -> compare ($1, $2 c, $3 c) }
   | CONVERT expr { fun c -> convert ($1, $2 c) }
-  | PAGESIZE { fun c -> page_size }
-  | MEMORYSIZE { fun c -> memory_size }
-  | RESIZEMEMORY expr { fun c -> resize_memory ($2 c) }
+  | PAGE_SIZE { fun c -> host (PageSize, []) }
+  | MEMORY_SIZE { fun c -> host (MemorySize, []) }
+  | RESIZE_MEMORY expr { fun c -> host (ResizeMemory, [$2 c]) }
 ;
 expr_opt :
   | /* empty */ { fun c -> None }
@@ -346,12 +346,12 @@ module_ :
 cmd :
   | module_ { Define $1 @@ at () }
   | LPAR INVOKE TEXT const_list RPAR { Invoke ($3, $4) @@ at () }
-  | LPAR ASSERTINVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at () }
-  | LPAR ASSERTRETURN LPAR INVOKE TEXT const_list RPAR const_opt RPAR
+  | LPAR ASSERT_INVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at () }
+  | LPAR ASSERT_RETURN LPAR INVOKE TEXT const_list RPAR const_opt RPAR
     { AssertReturn ($5, $6, $8) @@ at () }
-  | LPAR ASSERTRETURNNAN LPAR INVOKE TEXT const_list RPAR RPAR
+  | LPAR ASSERT_RETURN_NAN LPAR INVOKE TEXT const_list RPAR RPAR
     { AssertReturnNaN ($5, $6) @@ at () }
-  | LPAR ASSERTTRAP LPAR INVOKE TEXT const_list RPAR TEXT RPAR
+  | LPAR ASSERT_TRAP LPAR INVOKE TEXT const_list RPAR TEXT RPAR
     { AssertTrap ($5, $6, $8) @@ at () }
 ;
 cmd_list :

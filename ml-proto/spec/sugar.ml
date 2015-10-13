@@ -85,14 +85,8 @@ let compare (relop, e1, e2) =
 let convert (cvt, e) =
   Convert (cvt, e)
 
-let page_size =
-  PageSize
-
-let memory_size =
-  MemorySize
-
-let resize_memory e =
-  ResizeMemory e
+let host (hostop, es) =
+  Host (hostop, es)
 
 
 let case (c, br) =

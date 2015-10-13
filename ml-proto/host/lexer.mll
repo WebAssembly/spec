@@ -136,12 +136,12 @@ rule token = parse
   | "case" { CASE }
   | "fallthrough" { FALLTHROUGH }
   | "call" { CALL }
-  | "call_import" { CALLIMPORT }
-  | "call_indirect" { CALLINDIRECT }
+  | "call_import" { CALL_IMPORT }
+  | "call_indirect" { CALL_INDIRECT }
   | "return" { RETURN }
 
-  | "get_local" { GETLOCAL }
-  | "set_local" { SETLOCAL }
+  | "get_local" { GET_LOCAL }
+  | "set_local" { SET_LOCAL }
 
   | (nxx as t)".load" { LOAD (memop t "") }
   | (nxx as t)".load/"(align as a) { LOAD (memop t a) }
@@ -149,13 +149,13 @@ rule token = parse
   | (nxx as t)".store/"(align as a) { STORE (memop t a) }
 
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
-    { LOADEXTEND (extendop t sz s "") }
+    { LOAD_EXTEND (extendop t sz s "") }
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)"/"(align as a)
-    { LOADEXTEND (extendop t sz s a) }
+    { LOAD_EXTEND (extendop t sz s a) }
   | (ixx as t)".store"(mem_size as sz)
-    { STOREWRAP (wrapop t sz "") }
+    { STORE_WRAP (wrapop t sz "") }
   | (ixx as t)".store"(mem_size as sz)"/"(align as a)
-    { STOREWRAP (wrapop t sz a) }
+    { STORE_WRAP (wrapop t sz a) }
 
   | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
@@ -237,9 +237,9 @@ rule token = parse
   | "i32.reinterpret/f32" { CONVERT (Values.Int32 Int32Op.ReinterpretFloat) }
   | "i64.reinterpret/f64" { CONVERT (Values.Int64 Int64Op.ReinterpretFloat) }
 
-  | "page_size" { PAGESIZE }
-  | "memory_size" { MEMORYSIZE }
-  | "resize_memory" { RESIZEMEMORY }
+  | "page_size" { PAGE_SIZE }
+  | "memory_size" { MEMORY_SIZE }
+  | "resize_memory" { RESIZE_MEMORY }
 
   | "func" { FUNC }
   | "param" { PARAM }
@@ -252,10 +252,10 @@ rule token = parse
   | "export" { EXPORT }
   | "table" { TABLE }
 
-  | "assert_invalid" { ASSERTINVALID }
-  | "assert_return" { ASSERTRETURN }
-  | "assert_return_nan" { ASSERTRETURNNAN }
-  | "assert_trap" { ASSERTTRAP }
+  | "assert_invalid" { ASSERT_INVALID }
+  | "assert_return" { ASSERT_RETURN }
+  | "assert_return_nan" { ASSERT_RETURN_NAN }
+  | "assert_trap" { ASSERT_TRAP }
   | "invoke" { INVOKE }
 
   | name as s { VAR s }
