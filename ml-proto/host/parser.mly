@@ -95,6 +95,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 %token INT FLOAT TEXT VAR TYPE LPAR RPAR
 %token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
+%token BR_IF BR_SWITCH
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -110,6 +111,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token<Types.value_type> TYPE
 %token<Types.value_type> CONST
 %token<Types.value_type> SWITCH
+%token<Types.value_type> BR_SWITCH
 %token<Ast.unop> UNARY
 %token<Ast.binop> BINARY
 %token<Ast.relop> COMPARE
@@ -185,6 +187,12 @@ expr1 :
     { let at1 = ati 1 in
       fun c -> let c', l = $2 c in let cs, e = $4 c' in
       switch (l, $1 @@ at1, $3 c', List.map (fun a -> a $1) cs, e) }
+  | BR_IF var expr expr_opt { fun c -> br_if ($2 c label, $3 c, $4 c) }
+  | BR_SWITCH expr var br_switch_arms expr_opt
+    { let at1 = ati 1 in
+      let t = $1 in
+      fun c -> br_switch (t @@ at1, $2 c, $3 c label,
+                          List.map (fun (s, a) -> (literal s t, a c label)) $4, $5 c) }
   | CALL var expr_list { fun c -> call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
@@ -230,6 +238,11 @@ case1 :
 cases :
   | expr { fun c -> [], $1 c }
   | case cases { fun c -> let x, y = $2 c in $1 c :: x, y }
+;
+
+br_switch_arms :
+  | /* empty */ { [] }
+  | INT var br_switch_arms { let at = at () in ($1 @@ at, $2) :: $3 }
 ;
 
 

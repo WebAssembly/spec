@@ -43,6 +43,17 @@ let return (x, eo) =
 let switch (l, t, e1, cs, e2) =
   labeling l (Switch (t, e1, cs, e2))
 
+let br_if (x, e1, e2) =
+  if_ (e1, break (x, e2) @@ Source.no_region, Some (nop @@ Source.no_region))
+
+let br_switch (t, e1, x, xs, e2) =
+  switch (Unlabelled @@ Source.no_region, t, e1,
+          List.map (fun (i, x) -> {value = i;
+                                   expr = break (x, e2) @@ Source.no_region;
+                                   fallthru = true} @@ Source.no_region)
+                   xs,
+          (break (x, e2) @@ Source.no_region))
+
 let call (x, es) =
   Call (x, es)
 
