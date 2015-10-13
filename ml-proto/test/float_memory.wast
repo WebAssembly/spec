@@ -35,13 +35,13 @@
 (module
   (memory 8 8)
 
-  (func $store_i64 (param $x i64)
+  (func $store_i64 (param $x i64) (result i64)
     (i64.store (i32.const 0) (get_local $x)))
 
   (func $load_i64 (result i64)
     (i64.load (i32.const 0)))
 
-  (func $store_f64 (param $x f64)
+  (func $store_f64 (param $x f64) (result f64)
     (f64.store (i32.const 0) (get_local $x)))
 
   (func $load_f64 (result f64)

@@ -5,11 +5,11 @@
 type command = command' Source.phrase
 and command' =
   | Define of Ast.module_
+  | Invoke of string * Ast.literal list
   | AssertInvalid of Ast.module_ * string
-  | Invoke of string * Ast.expr list
-  | AssertReturn of string * Ast.expr list * Ast.expr
-  | AssertReturnNaN of string * Ast.expr list
-  | AssertTrap of string * Ast.expr list * string
+  | AssertReturn of string * Ast.literal list * Ast.literal option
+  | AssertReturnNaN of string * Ast.literal list
+  | AssertTrap of string * Ast.literal list * string
 
 type script = command list
 

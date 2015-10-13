@@ -253,12 +253,15 @@ and eval_case c vo stage case =
   | `Seek, false | `Done _, _ ->
     stage
 
-and eval_func (m : instance) (f : func) (evs : value list) =
-  let args = List.map ref evs in
+and eval_func (m : instance) f vs =
+  let args = List.map ref vs in
   let vars = List.map (fun t -> ref (default_value t.it)) f.it.locals in
   let locals = args @ vars in
   let c = {instance = m; locals; labels = []} in
-  eval_expr c f.it.body
+  coerce f.it.result (eval_expr c f.it.body)
+
+and coerce et vo =
+  if et = None then None else vo
 
 
 (* Host operators *)
@@ -309,10 +312,3 @@ let invoke m name vs =
     eval_func m f vs
   with Stack_overflow -> callstack_exhaustion no_region
 
-(* This function is not part of the spec. *)
-let host_eval e =
-  let f = {params = []; result = None; locals = []; body = e} @@ no_region in
-  let exports = ExportMap.singleton "eval" f in
-  let host = {page_size = 1L} in
-  let m = {imports = []; exports; tables = []; funcs = [f]; memory = None; host}
-  in eval_func m f []
