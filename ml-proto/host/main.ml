@@ -22,11 +22,16 @@ let parse name source =
   let lexbuf = Lexing.from_string source in
   lexbuf.Lexing.lex_curr_p <-
     {lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = name};
-  try Parser.script Lexer.token lexbuf with Error.Error (region, s) ->
+  try Parser.script Lexer.token lexbuf with Script.Syntax (region, s) ->
     let region' = if region <> Source.no_region then region else
       {Source.left = Lexer.convert_pos lexbuf.Lexing.lex_start_p;
        Source.right = Lexer.convert_pos lexbuf.Lexing.lex_curr_p} in
-    raise (Error.Error (region', s))
+    raise (Script.Syntax (region', s))
+
+let error at category msg =
+  Script.trace ("Error (" ^ category ^ "): ");
+  prerr_endline (Source.string_of_region at ^ ": " ^ msg);
+  false
 
 let process file source =
   try
@@ -35,10 +40,13 @@ let process file source =
     Script.trace "Running...";
     Script.run script;
     true
-  with Error.Error (at, s) ->
-    Script.trace "Error:";
-    prerr_endline (Source.string_of_region at ^ ": " ^ s);
-    false
+  with
+  | Script.Syntax (at, msg) -> error at "syntax error" msg
+  | Script.AssertFailure (at, msg) -> error at "assertion failure" msg
+  | Check.Invalid (at, msg) -> error at "invalid module" msg
+  | Eval.Trap (at, msg) -> error at "runtime trap" msg
+  | Eval.Crash (at, msg) -> error at "runtime crash" msg
+  | Builtins.Unknown (at, msg) -> error at "unknown built-in" msg
 
 let process_file file =
   Script.trace ("Loading (" ^ file ^ ")...");

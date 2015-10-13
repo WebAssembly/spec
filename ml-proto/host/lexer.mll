@@ -17,10 +17,10 @@ let region lexbuf =
   let right = convert_pos (Lexing.lexeme_end_p lexbuf) in 
   {Source.left = left; Source.right = right}
 
-let error lexbuf m = Error.error (region lexbuf) m
-let error_nest start lexbuf m =
+let error lexbuf msg = raise (Script.Syntax (region lexbuf, msg))
+let error_nest start lexbuf msg =
   lexbuf.Lexing.lex_start_p <- start;
-  error lexbuf m
+  error lexbuf msg
 
 let convert_text s =
   let b = Buffer.create (String.length s) in

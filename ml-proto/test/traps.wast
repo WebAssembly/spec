@@ -17,10 +17,10 @@
   (export "no_dce.i64.div_u" $no_dce.i64.div_u)
 )
 
-(assert_trap (invoke "no_dce.i32.div_s" (i32.const 1) (i32.const 0)) "runtime: integer divide by zero")
-(assert_trap (invoke "no_dce.i32.div_u" (i32.const 1) (i32.const 0)) "runtime: integer divide by zero")
-(assert_trap (invoke "no_dce.i64.div_s" (i64.const 1) (i64.const 0)) "runtime: integer divide by zero")
-(assert_trap (invoke "no_dce.i64.div_u" (i64.const 1) (i64.const 0)) "runtime: integer divide by zero")
+(assert_trap (invoke "no_dce.i32.div_s" (i32.const 1) (i32.const 0)) "integer divide by zero")
+(assert_trap (invoke "no_dce.i32.div_u" (i32.const 1) (i32.const 0)) "integer divide by zero")
+(assert_trap (invoke "no_dce.i64.div_s" (i64.const 1) (i64.const 0)) "integer divide by zero")
+(assert_trap (invoke "no_dce.i64.div_u" (i64.const 1) (i64.const 0)) "integer divide by zero")
 
 (module
   (func $no_dce.i32.rem_s (param $x i32) (param $y i32)
@@ -37,10 +37,10 @@
   (export "no_dce.i64.rem_u" $no_dce.i64.rem_u)
 )
 
-(assert_trap (invoke "no_dce.i32.rem_s" (i32.const 1) (i32.const 0)) "runtime: integer divide by zero")
-(assert_trap (invoke "no_dce.i32.rem_u" (i32.const 1) (i32.const 0)) "runtime: integer divide by zero")
-(assert_trap (invoke "no_dce.i64.rem_s" (i64.const 1) (i64.const 0)) "runtime: integer divide by zero")
-(assert_trap (invoke "no_dce.i64.rem_u" (i64.const 1) (i64.const 0)) "runtime: integer divide by zero")
+(assert_trap (invoke "no_dce.i32.rem_s" (i32.const 1) (i32.const 0)) "integer divide by zero")
+(assert_trap (invoke "no_dce.i32.rem_u" (i32.const 1) (i32.const 0)) "integer divide by zero")
+(assert_trap (invoke "no_dce.i64.rem_s" (i64.const 1) (i64.const 0)) "integer divide by zero")
+(assert_trap (invoke "no_dce.i64.rem_u" (i64.const 1) (i64.const 0)) "integer divide by zero")
 
 (module
   (func $no_dce.i32.trunc_s_f32 (param $x f32) (i32.trunc_s/f32 (get_local $x)))
@@ -62,14 +62,14 @@
   (export "no_dce.i64.trunc_u_f64" $no_dce.i64.trunc_u_f64)
 )
 
-(assert_trap (invoke "no_dce.i32.trunc_s_f32" (f32.const nan)) "runtime: invalid conversion to integer")
-(assert_trap (invoke "no_dce.i32.trunc_u_f32" (f32.const nan)) "runtime: invalid conversion to integer")
-(assert_trap (invoke "no_dce.i32.trunc_s_f64" (f64.const nan)) "runtime: invalid conversion to integer")
-(assert_trap (invoke "no_dce.i32.trunc_u_f64" (f64.const nan)) "runtime: invalid conversion to integer")
-(assert_trap (invoke "no_dce.i64.trunc_s_f32" (f32.const nan)) "runtime: invalid conversion to integer")
-(assert_trap (invoke "no_dce.i64.trunc_u_f32" (f32.const nan)) "runtime: invalid conversion to integer")
-(assert_trap (invoke "no_dce.i64.trunc_s_f64" (f64.const nan)) "runtime: invalid conversion to integer")
-(assert_trap (invoke "no_dce.i64.trunc_u_f64" (f64.const nan)) "runtime: invalid conversion to integer")
+(assert_trap (invoke "no_dce.i32.trunc_s_f32" (f32.const nan)) "invalid conversion to integer")
+(assert_trap (invoke "no_dce.i32.trunc_u_f32" (f32.const nan)) "invalid conversion to integer")
+(assert_trap (invoke "no_dce.i32.trunc_s_f64" (f64.const nan)) "invalid conversion to integer")
+(assert_trap (invoke "no_dce.i32.trunc_u_f64" (f64.const nan)) "invalid conversion to integer")
+(assert_trap (invoke "no_dce.i64.trunc_s_f32" (f32.const nan)) "invalid conversion to integer")
+(assert_trap (invoke "no_dce.i64.trunc_u_f32" (f32.const nan)) "invalid conversion to integer")
+(assert_trap (invoke "no_dce.i64.trunc_s_f64" (f64.const nan)) "invalid conversion to integer")
+(assert_trap (invoke "no_dce.i64.trunc_u_f64" (f64.const nan)) "invalid conversion to integer")
 
 (module
     (memory 8)
@@ -84,7 +84,7 @@
     (func $f64.load (param $i i32) (f64.load (get_local $i)))
 )
 
-(assert_trap (invoke "i32.load" (i32.const 8)) "runtime: out of bounds memory access")
-(assert_trap (invoke "i64.load" (i32.const 8)) "runtime: out of bounds memory access")
-(assert_trap (invoke "f32.load" (i32.const 8)) "runtime: out of bounds memory access")
-(assert_trap (invoke "f64.load" (i32.const 8)) "runtime: out of bounds memory access")
+(assert_trap (invoke "i32.load" (i32.const 8)) "out of bounds memory access")
+(assert_trap (invoke "i64.load" (i32.const 8)) "out of bounds memory access")
+(assert_trap (invoke "f32.load" (i32.const 8)) "out of bounds memory access")
+(assert_trap (invoke "f64.load" (i32.const 8)) "out of bounds memory access")

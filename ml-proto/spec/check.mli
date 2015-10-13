@@ -2,4 +2,6 @@
  * (c) 2015 Andreas Rossberg
  *)
 
-val check_module : Ast.module_ -> unit (* raise Error *)
+exception Invalid of Source.region * string
+
+val check_module : Ast.module_ -> unit (* raise Invalid *)

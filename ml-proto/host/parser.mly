@@ -10,6 +10,13 @@ open Types
 open Script
 
 
+(* Error handling *)
+
+let error at msg = raise (Script.Syntax (at, msg))
+
+let parse_error msg = error Source.no_region msg
+
+
 (* Position handling *)
 
 let position_to_pos position =
@@ -28,8 +35,6 @@ let at () =
 let ati i =
   positions_to_region (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos i)
 
-let parse_error s = Error.error Source.no_region s
-
 
 (* Literals *)
 
@@ -41,8 +46,8 @@ let literal s t =
     | Float32Type -> Values.Float32 (F32.of_string s.it) @@ s.at
     | Float64Type -> Values.Float64 (F64.of_string s.it) @@ s.at
   with
-    | Failure reason -> Error.error s.at ("constant out of range: " ^ reason)
-    | _ -> Error.error s.at "constant out of range"
+    | Failure msg -> error s.at ("constant out of range: " ^ msg)
+    | _ -> error s.at "constant out of range"
 
 
 (* Memory operands *)
@@ -87,28 +92,28 @@ let enter_func c =
 
 let type_ c x =
   try VarMap.find x.it c.types.tmap
-  with Not_found -> Error.error x.at ("unknown type " ^ x.it)
+  with Not_found -> error x.at ("unknown type " ^ x.it)
 
 let lookup category space x =
   try VarMap.find x.it space.map
-  with Not_found -> Error.error x.at ("unknown " ^ category ^ " " ^ x.it)
+  with Not_found -> error x.at ("unknown " ^ category ^ " " ^ x.it)
 
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
 let label c x =
   try VarMap.find x.it c.labels
-  with Not_found -> Error.error x.at ("unknown label " ^ x.it)
+  with Not_found -> error x.at ("unknown label " ^ x.it)
 
 let bind_type c x ty =
   if VarMap.mem x.it c.types.tmap then
-    Error.error x.at ("duplicate type " ^ x.it);
+    error x.at ("duplicate type " ^ x.it);
   c.types.tmap <- VarMap.add x.it (List.length c.types.tlist) c.types.tmap;
   c.types.tlist <- c.types.tlist @ [ty]
 
 let bind category space x =
   if VarMap.mem x.it space.map then
-    Error.error x.at ("duplicate " ^ category ^ " " ^ x.it);
+    error x.at ("duplicate " ^ category ^ " " ^ x.it);
   space.map <- VarMap.add x.it space.count space.map;
   space.count <- space.count + 1
 
@@ -132,10 +137,12 @@ let empty_type = {ins = []; out = None}
 
 let explicit_decl c name t at =
   let x = name c type_ in
-  if x.it < List.length c.types.tlist &&
-     t <> empty_type &&
-     t <> List.nth c.types.tlist x.it then
-    Error.error at "signature mismatch";
+  if
+    x.it < List.length c.types.tlist &&
+    t <> empty_type &&
+    t <> List.nth c.types.tlist x.it
+  then
+    error at "signature mismatch";
   x
 
 let implicit_decl c t at =
@@ -322,8 +329,7 @@ func_fields :
     { {(fst $6) with ins = $4 :: (fst $6).ins},
       fun c -> bind_local c $3; (snd $6) c }
   | LPAR RESULT VALUE_TYPE RPAR func_fields
-    { if (fst $5).out <> None then
-        Error.error (at ()) "more than one return type";
+    { if (fst $5).out <> None then error (at ()) "multiple return types";
       {(fst $5) with out = Some $3},
       fun c -> (snd $5) c }
   | LPAR LOCAL value_type_list RPAR func_fields
@@ -436,7 +442,7 @@ module_fields :
   | memory module_fields
     { fun c -> let m = $2 c in
       match m.memory with
-      | Some _ -> Error.error $1.at "more than one memory section"
+      | Some _ -> error $1.at "multiple memory sections"
       | None -> {m with memory = Some $1} }
 ;
 module_ :

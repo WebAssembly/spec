@@ -21,35 +21,20 @@ type script = command list
 
 (* Execution *)
 
+module Syntax = Error.Make ()
+module AssertFailure = Error.Make ()
+
+exception Syntax = Syntax.Error
+exception AssertFailure = AssertFailure.Error
+
 let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 
 let current_module : Eval.instance option ref = ref None
 
 let get_module at = match !current_module with
   | Some m -> m
-  | None -> Error.error at "no module defined to invoke"
+  | None -> raise (Eval.Crash (at, "no module defined to invoke"))
 
-let show_value label v = begin
-  print_string (label ^ ": ");
-  Print.print_value v
-end
-
-let show_result got_v = begin
-  show_value "Result" got_v
-end
-
-let show_result_expect got_v expect_v = begin
-  show_result got_v;
-  show_value "Expect" expect_v
-end
-
-let assert_error f err re at =
-  match f () with
-  | exception Error.Error (_, s) ->
-    if not (Str.string_match (Str.regexp re) s 0) then
-      Error.error at ("failure \"" ^ s ^ "\" does not match: \"" ^ re ^ "\"")
-  | _ ->
-    Error.error at ("expected " ^ err)
 
 let run_command cmd =
   match cmd.it with
@@ -73,73 +58,56 @@ let run_command cmd =
 
   | AssertInvalid (m, re) ->
     trace "Asserting invalid...";
-    assert_error (fun () -> Check.check_module m) "invalid module" re cmd.at
+    (match Check.check_module m with
+    | exception Check.Invalid (_, msg) ->
+      if not (Str.string_match (Str.regexp re) msg 0) then begin
+        print_endline ("Result: \"" ^ msg ^ "\"");
+        print_endline ("Expect: \"" ^ re ^ "\"");
+        AssertFailure.error cmd.at "wrong validation error"
+      end
+    | _ ->
+      AssertFailure.error cmd.at "expected validation error"
+    )
 
   | AssertReturn (name, es, expect_e) ->
-    let open Values in
     trace "Asserting return...";
     let m = get_module cmd.at in
     let got_v = Eval.invoke m name (List.map it es) in
     let expect_v = Lib.Option.map it expect_e in
-    (match got_v, expect_v with
-    | None, None -> ()
-    | Some (Int32 got_i32), Some (Int32 expect_i32) ->
-      if got_i32 <> expect_i32 then begin
-        show_result_expect got_v expect_v;
-        Error.error cmd.at "assert_return i32 operands are not equal"
-      end
-    | Some (Int64 got_i64), Some (Int64 expect_i64) ->
-      if got_i64 <> expect_i64 then begin
-        show_result_expect got_v expect_v;
-        Error.error cmd.at "assert_return i64 operands are not equal"
-      end
-    | Some (Float32 got_f32), Some (Float32 expect_f32) ->
-      if (F32.to_bits got_f32) <> (F32.to_bits expect_f32) then begin
-        show_result_expect got_v expect_v;
-        Error.error cmd.at
-          "assert_return f32 operands have different bit patterns"
-      end
-    | Some (Float64 got_f64), Some (Float64 expect_f64) ->
-      if (F64.to_bits got_f64) <> (F64.to_bits expect_f64) then begin
-        show_result_expect got_v expect_v;
-        Error.error cmd.at
-          "assert_return f64 operands have different bit patterns"
-      end
-    | _, _ ->
-      begin
-        show_result_expect got_v expect_v;
-        Error.error cmd.at "assert_return operands must be the same type"
-      end
-    )
+    if got_v <> expect_v then begin
+      print_string "Result: "; Print.print_value got_v;
+      print_string "Expect: "; Print.print_value expect_v;
+      AssertFailure.error cmd.at "wrong return value"
+    end
 
   | AssertReturnNaN (name, es) ->
-    let open Values in
     trace "Asserting return...";
     let m = get_module cmd.at in
     let got_v = Eval.invoke m name (List.map it es) in
-    (match got_v with
-    | Some (Float32 got_f32) ->
-      if (F32.eq got_f32 got_f32) then begin
-        show_result got_v;
-        Error.error cmd.at "assert_return_nan f32 operand is not a NaN"
-      end
-    | Some (Float64 got_f64) ->
-      if (F64.eq got_f64 got_f64) then begin
-        show_result got_v;
-        Error.error cmd.at "assert_return_nan f64 operand is not a NaN"
-      end
-    | _ ->
-      begin
-        show_result got_v;
-        Error.error cmd.at "assert_return_nan operand must be f32 or f64"
-      end
-    )
+    if
+      match got_v with
+      | Some (Values.Float32 got_f32) -> F32.eq got_f32 got_f32
+      | Some (Values.Float64 got_f64) -> F64.eq got_f64 got_f64
+      | _ -> true
+    then begin
+      print_string "Result: "; Print.print_value got_v;
+      print_string "Expect: "; print_endline "nan";
+      AssertFailure.error cmd.at "wrong return value"
+    end
 
   | AssertTrap (name, es, re) ->
     trace "Asserting trap...";
     let m = get_module cmd.at in
-    assert_error (fun () -> Eval.invoke m name (List.map it es))
-      "trap" re cmd.at
+    (match Eval.invoke m name (List.map it es) with
+    | exception Eval.Trap (_, msg) ->
+      if not (Str.string_match (Str.regexp re) msg 0) then begin
+        print_endline ("Result: \"" ^ msg ^ "\"");
+        print_endline ("Expect: \"" ^ re ^ "\"");
+        AssertFailure.error cmd.at "wrong runtime trap"
+      end
+    | _ ->
+      AssertFailure.error cmd.at "expected runtime trap"
+    )
 
 let dry_command cmd =
   match cmd.it with

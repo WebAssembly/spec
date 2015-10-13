@@ -9,7 +9,10 @@ open Types
 
 (* Errors *)
 
-let error = Error.error
+module Invalid = Error.Make ()
+exception Invalid = Invalid.Error
+
+let error = Invalid.error
 let require b at s = if not b then error at s
 
 
