@@ -11,6 +11,8 @@
     (func $two (type $T) (i32.add (get_local 0) (i32.const 1)))
     (export "two" $two)
 
+    ;; Both signature and parameters are allowed (and required to match)
+    ;; since this allows the naming of parameters.
     (func $three (type $T) (param $a i32) (result i32) (i32.sub (get_local 0) (i32.const 2)))
     (export "three" $three)
 
