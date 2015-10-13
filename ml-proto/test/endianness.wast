@@ -197,12 +197,12 @@
 (assert_return (invoke "f32_load" (f32.const -1)) (f32.const -1))
 (assert_return (invoke "f32_load" (f32.const 1234e-5)) (f32.const 1234e-5))
 (assert_return (invoke "f32_load" (f32.const 4242.4242)) (f32.const 4242.4242))
-(assert_return (invoke "f32_load" (f32.const 3.4028e+38)) (f32.const 3.4028e+38))
+(assert_return (invoke "f32_load" (f32.const 0x1.fffffep+127)) (f32.const 0x1.fffffep+127))
 
 (assert_return (invoke "f64_load" (f64.const -1)) (f64.const -1))
 (assert_return (invoke "f64_load" (f64.const 123456789e-5)) (f64.const 123456789e-5))
 (assert_return (invoke "f64_load" (f64.const 424242.424242)) (f64.const 424242.424242))
-(assert_return (invoke "f64_load" (f64.const 1.7976e+308)) (f64.const 1.7976e+308))
+(assert_return (invoke "f64_load" (f64.const 0x1.fffffffffffffp+1023)) (f64.const 0x1.fffffffffffffp+1023))
 
 
 (assert_return (invoke "i32_store16" (i32.const -1)) (i32.const 0xFFFF))
@@ -233,9 +233,9 @@
 (assert_return (invoke "f32_store" (f32.const -1)) (f32.const -1))
 (assert_return (invoke "f32_store" (f32.const 1234e-5)) (f32.const 1234e-5))
 (assert_return (invoke "f32_store" (f32.const 4242.4242)) (f32.const 4242.4242))
-(assert_return (invoke "f32_store" (f32.const 3.4028e+38)) (f32.const 3.4028e+38))
+(assert_return (invoke "f32_store" (f32.const 0x1.fffffep+127)) (f32.const 0x1.fffffep+127))
 
 (assert_return (invoke "f64_store" (f64.const -1)) (f64.const -1))
 (assert_return (invoke "f64_store" (f64.const 123456789e-5)) (f64.const 123456789e-5))
 (assert_return (invoke "f64_store" (f64.const 424242.424242)) (f64.const 424242.424242))
-(assert_return (invoke "f64_store" (f64.const 1.7976e+308)) (f64.const 1.7976e+308))
+(assert_return (invoke "f64_store" (f64.const 0x1.fffffffffffffp+1023)) (f64.const 0x1.fffffffffffffp+1023))
