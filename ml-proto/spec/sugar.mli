@@ -25,9 +25,7 @@ val unary : unop * expr -> expr'
 val binary : binop * expr * expr -> expr'
 val compare : relop * expr * expr -> expr'
 val convert : cvt * expr -> expr'
-val page_size : expr'
-val memory_size : expr'
-val resize_memory : expr -> expr'
+val host : hostop * expr list -> expr'
 
 val case : literal * (expr list * bool) option -> case'
 

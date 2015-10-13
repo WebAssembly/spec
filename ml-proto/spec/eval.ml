@@ -143,7 +143,7 @@ let rec eval_expr (c : config) (e : expr) =
     (try eval_expr c' e1 with L.Label vo -> vo)
 
   | Break (x, eo) ->
-    raise (label c x (eval_expr_option c eo))
+    raise (label c x (eval_expr_opt c eo))
 
   | Switch (_t, e1, cs, e2) ->
     let vo = some (eval_expr c e1) e1.at in
@@ -189,7 +189,8 @@ let rec eval_expr (c : config) (e : expr) =
   | LoadExtend ({memop = {ty; align = _}; sz; ext}, e1) ->
     let mem = some_memory c e.at in
     let v1 = mem_size (eval_expr c e1) e1.at in
-    (try Some (Memory.load_extend mem v1 sz ext ty) with exn -> memory_error e.at exn)
+    (try Some (Memory.load_extend mem v1 sz ext ty)
+      with exn -> memory_error e.at exn)
 
   | StoreWrap ({memop = {ty; align = _}; sz}, e1, e2) ->
     let mem = some_memory c e.at in
@@ -233,25 +234,12 @@ let rec eval_expr (c : config) (e : expr) =
       | Arithmetic.TypeError (_, v, t) -> type_error e1.at v t
       | exn -> numerics_error e.at exn)
 
-  | PageSize ->
-    Some (Int32 (Int64.to_int32 c.instance.host.page_size))
-
-  | MemorySize ->
+  | Host (hostop, es) ->
+    let vs = List.map (eval_expr c) es in
     let mem = some_memory c e.at in
-    let i64 = Memory.size mem in
-    assert (i64 < Int64.of_int32 (Int32.max_int));
-    Some (Int32 (Int64.to_int32 i64))
+    eval_hostop c.instance.host mem hostop vs e.at
 
-  | ResizeMemory e ->
-    let mem = some_memory c e.at in
-    let sz = mem_size (eval_expr c e) e.at in
-    if (Int64.rem sz c.instance.host.page_size) <> 0L then
-      error e.at "runtime: resize_memory operand not multiple of page_size";
-    Memory.resize mem sz;
-    None
-
-and eval_expr_option c eo =
-  match eo with
+and eval_expr_opt c = function
   | Some e -> eval_expr c e
   | None -> None
 
@@ -271,6 +259,28 @@ and eval_func (m : instance) (f : func) (evs : value list) =
   let locals = args @ vars in
   let c = {instance = m; locals; labels = []} in
   eval_expr c f.it.body
+
+
+(* Host operators *)
+
+and eval_hostop host mem hostop vs at =
+  match hostop, vs with
+  | PageSize, [] ->
+    Some (Int32 (Int64.to_int32 host.page_size))
+
+  | MemorySize, [] ->
+    assert (Memory.size mem < Int64.of_int32 Int32.max_int);
+    Some (Int32 (Int64.to_int32 (Memory.size mem)))
+
+  | ResizeMemory, [v] ->
+    let sz = mem_size v at in
+    if Int64.rem sz host.page_size <> 0L then
+      error at "runtime: resize_memory operand not multiple of page_size";
+    Memory.resize mem sz;
+    None
+
+  | _, _ ->
+    error at "runtime: invalid invocation of host operator"
 
 
 (* Modules *)
@@ -304,5 +314,5 @@ let host_eval e =
   let f = {params = []; result = None; locals = []; body = e} @@ no_region in
   let exports = ExportMap.singleton "eval" f in
   let host = {page_size = 1L} in
-  let m = {imports = []; exports; tables = []; funcs = [f]; memory = None; host} in
-  eval_func m f []
+  let m = {imports = []; exports; tables = []; funcs = [f]; memory = None; host}
+  in eval_func m f []
