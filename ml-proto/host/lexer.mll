@@ -135,6 +135,7 @@ rule token = parse
   | "break" { BREAK }
   | "case" { CASE }
   | "fallthrough" { FALLTHROUGH }
+  | "br_if" { BR_IF }
   | "call" { CALL }
   | "call_import" { CALL_IMPORT }
   | "call_indirect" { CALL_INDIRECT }
@@ -159,6 +160,7 @@ rule token = parse
 
   | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
+  | (nxx as t)".br_switch" { BR_SWITCH (value_type t) }
 
   | (ixx as t)".clz" { UNARY (intop t Int32Op.Clz Int64Op.Clz) }
   | (ixx as t)".ctz" { UNARY (intop t Int32Op.Ctz Int64Op.Ctz) }
