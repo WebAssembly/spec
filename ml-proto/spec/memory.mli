@@ -14,7 +14,7 @@ type value = Values.value
 
 exception Type
 exception Bounds
-exception AddressOverflow
+exception SizeOverflow
 
 val create : size -> memory
 val init : memory -> segment list -> unit
