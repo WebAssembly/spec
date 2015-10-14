@@ -20,7 +20,6 @@ type t = memory
 
 exception Type
 exception Bounds
-exception Address
 exception AddressOverflow
 
 

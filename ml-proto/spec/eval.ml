@@ -68,7 +68,6 @@ end
 let memory_error at = function
   | Memory.Bounds -> error at "runtime: out of bounds memory access"
   | Memory.AddressOverflow -> error at "runtime: memory address overflow"
-  | Memory.Address -> error at "runtime: illegal address value"
   | exn -> raise exn
 
 let type_error at v t =
