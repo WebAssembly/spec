@@ -239,7 +239,7 @@ rule token = parse
 
   | "page_size" { PAGE_SIZE }
   | "memory_size" { MEMORY_SIZE }
-  | "resize_memory" { RESIZE_MEMORY }
+  | "grow_memory" { GROW_MEMORY }
 
   | "func" { FUNC }
   | "param" { PARAM }

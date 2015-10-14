@@ -275,11 +275,11 @@ and eval_hostop host mem hostop vs at =
     assert (Memory.size mem < Int64.of_int32 Int32.max_int);
     Some (Int32 (Int64.to_int32 (Memory.size mem)))
 
-  | ResizeMemory, [v] ->
+  | GrowMemory, [v] ->
     let sz = mem_size v at in
     if Int64.rem sz host.page_size <> 0L then
-      error at "runtime: resize_memory operand not multiple of page_size";
-    Memory.resize mem sz;
+      error at "runtime: grow_memory operand not multiple of page_size";
+    Memory.grow mem sz;
     None
 
   | _, _ ->

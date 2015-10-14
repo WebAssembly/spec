@@ -154,7 +154,7 @@ expr:
   ( <type>.<cvtop>/<type> <expr> )
   ( page_size )
   ( memory_size )
-  ( resize_memory <expr> )
+  ( grow_memory <expr> )
 
 case:
   ( case <value> <expr>* fallthrough? )  ;; = (case <int> (block <expr>*) fallthrough?)

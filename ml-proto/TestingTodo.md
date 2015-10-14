@@ -55,7 +55,7 @@ Linear memory semantics:
  - test loading "uninitialized" things from aliased stack frames return what's there
  - test that loadwithoffset traps in overflow cases
  - test that newly allocated memory is zeroed
- - test that resize_memory does a full 32-bit unsigned check for page_size divisibility
+ - test that grow_memory does a full 32-bit unsigned check for page_size divisibility
  - test that load/store addreses are full int32 (or int64), and not OCaml int
  - test that when allocating 4GiB, accessing index -1 fails
 
