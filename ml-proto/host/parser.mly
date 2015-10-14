@@ -135,7 +135,7 @@ let implicit_decl c t at =
 %token GET_LOCAL SET_LOCAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC TYPE PARAM RESULT LOCAL
-%token MODULE MEMORY TYPES SEGMENT IMPORT EXPORT TABLE
+%token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
 %token PAGE_SIZE MEMORY_SIZE GROW_MEMORY
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token EOF
@@ -304,15 +304,15 @@ func_fields :
       fun c -> bind_local c $3; let f = (snd $6) c in
         {f with locals = $4 :: f.locals} }
 ;
-type_decl :
+type_use :
   | LPAR TYPE var RPAR { $3 }
 ;
 func :
-  | LPAR FUNC type_decl func_fields RPAR
+  | LPAR FUNC type_use func_fields RPAR
     { let at = at () in
       fun c -> anon_func c; let t = explicit_decl c $3 (fst $4) at in
         fun () -> {((snd $4) (enter_func c)) with ftype = t} @@ at }
-  | LPAR FUNC bind_var type_decl func_fields RPAR  /* Sugar */
+  | LPAR FUNC bind_var type_use func_fields RPAR  /* Sugar */
     { let at = at () in
       fun c -> bind_func c $3; let t = explicit_decl c $4 (fst $5) at in
         fun () -> {((snd $5) (enter_func c)) with ftype = t} @@ at }
@@ -347,21 +347,19 @@ memory :
         @@ at () }
 ;
 
-type_list :
-  | /* empty */
-    { fun c -> () }
-  | LPAR FUNC func_type RPAR type_list
-    { fun c -> anon_type c $3; $5 c }
-  | LPAR FUNC bind_var func_type RPAR type_list /* Sugar */
-    { fun c -> bind_type c $3 $4; $6 c }
+type_def :
+  | LPAR TYPE LPAR FUNC func_type RPAR RPAR
+    { fun c -> anon_type c $5 }
+  | LPAR TYPE bind_var LPAR FUNC func_type RPAR RPAR
+    { fun c -> bind_type c $3 $6 }
 ;
 
 import :
-  | LPAR IMPORT TEXT TEXT type_decl RPAR
+  | LPAR IMPORT TEXT TEXT type_use RPAR
     { let at = at () in
       fun c -> anon_import c; let itype = explicit_decl c $5 empty_type at in
         {itype; module_name = $3; func_name = $4} @@ at }
-  | LPAR IMPORT bind_var TEXT TEXT type_decl RPAR  /* Sugar */
+  | LPAR IMPORT bind_var TEXT TEXT type_use RPAR  /* Sugar */
     { let at = at () in
       fun c -> bind_import c $3; let itype = explicit_decl c $6 empty_type at in
         {itype; module_name = $4; func_name = $5} @@ at }
@@ -397,8 +395,8 @@ module_fields :
   | LPAR TABLE var_list RPAR module_fields
     { fun c -> let m = $5 c in
       {m with tables = ($3 c func @@ ati 3) :: m.tables} }
-  | LPAR TYPES type_list RPAR module_fields
-    { fun c -> $3 c; $5 c }
+  | type_def module_fields
+    { fun c -> $1 c; $2 c }
   | memory module_fields
     { fun c -> let m = $2 c in
       match m.memory with

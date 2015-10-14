@@ -242,7 +242,6 @@ rule token = parse
   | "grow_memory" { GROW_MEMORY }
 
   | "type" { TYPE }
-  | "types" { TYPES }
   | "func" { FUNC }
   | "param" { PARAM }
   | "result" { RESULT }
