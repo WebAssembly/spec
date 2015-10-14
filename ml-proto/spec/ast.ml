@@ -140,8 +140,6 @@ and import' =
   func_name : string;
 }
 
-type table = var list Source.phrase
-
 type module_ = module_' Source.phrase
 and module_' =
 {
@@ -150,5 +148,5 @@ and module_' =
   funcs : func list;
   imports : import list;
   exports : export list;
-  tables : table list;
+  table : var list;
 }

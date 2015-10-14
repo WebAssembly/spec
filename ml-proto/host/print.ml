@@ -28,8 +28,8 @@ let print_func_sig m prefix i f =
 let print_export_sig m prefix n f =
   printf "%s \"%s\" : %s\n" prefix n (string_of_func_type (func_type m f))
 
-let print_table_sig prefix i t_opt =
-  printf "%s %d : %s\n" prefix i (string_of_table_type t_opt)
+let print_table_elem i x =
+  printf "table [%d] = func %d\n" i x.it
 
 
 (* Ast *)
@@ -40,19 +40,11 @@ let print_func m i f =
 let print_export m i ex =
   print_export_sig m "export" ex.it.name (List.nth m.it.funcs ex.it.func.it)
 
-let print_table m i tab =
-  let t_opt =
-    match tab.it with
-    | [] -> None
-    | x::_ -> Some (func_type m (List.nth m.it.funcs x.it))
-  in print_table_sig "table" i t_opt
-
-
 let print_module m =
-  let {funcs; exports; tables} = m.it in
+  let {funcs; exports; table} = m.it in
   List.iteri (print_func m) funcs;
   List.iteri (print_export m) exports;
-  List.iteri (print_table m) tables;
+  List.iteri print_table_elem table;
   flush_all ()
 
 let print_module_sig m =

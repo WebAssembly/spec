@@ -20,7 +20,6 @@ type context =
   types : func_type list;
   funcs : func_type list;
   imports : func_type list;
-  tables : func_type list;
   locals : value_type list;
   return : expr_type;
   labels : expr_type list;
@@ -31,10 +30,10 @@ let lookup category list x =
   try List.nth list x.it with Failure _ ->
     error x.at ("unknown " ^ category ^ " " ^ string_of_int x.it)
 
+let type_ types x = lookup "function type" types x
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
-let table c x = lookup "table" c.tables x
 let label c x = lookup "label" c.labels x
 
 
@@ -44,9 +43,6 @@ let check_type actual expected at =
   require (expected = None || actual = expected) at
     ("type mismatch: expression has type " ^ string_of_expr_type actual ^
      " but the context requires " ^ string_of_expr_type expected)
-
-let check_func_type actual expected at =
-  require (actual = expected) at "inconsistent function type in table"
 
 
 (* Type Synthesis *)
@@ -154,7 +150,7 @@ let rec check_expr c et e =
     check_type out et e.at
 
   | CallIndirect (x, e1, es) ->
-    let {ins; out} = table c x in
+    let {ins; out} = type_ c.types x in
     check_expr c (Some Int32Type) e1;
     check_exprs c ins es;
     check_type out et e.at
@@ -268,25 +264,15 @@ and check_mem_type ty sz at =
  *   s : func_type
  *)
 
-let get_type types t =
-  require (t.it < List.length types) t.at "type index out of bounds";
-  List.nth types t.it
-
 let check_func c f =
   let {ftype; locals; body} = f.it in
-  let s = get_type c.types ftype in
+  let s = type_ c.types ftype in
   let c' = {c with locals = s.ins @ locals; return = s.out} in
   check_expr c' s.out body
 
-let check_table funcs tables tab =
-  match tab.it with
-  | [] ->
-    error tab.at "empty table"
-  | x::xs ->
-    let func x = lookup "function" funcs x in
-    let s = func x in
-    List.iter (fun xI -> check_func_type (func xI) s xI.at) xs;
-    tables @ [s]
+let check_elem c x =
+  require (x.it >= 0 && x.it < List.length c.funcs) x.at
+    "table elem index out of bounds"
 
 module NameSet = Set.Make(String)
 
@@ -315,16 +301,15 @@ let check_memory memory =
   ignore (List.fold_left (check_segment mem.initial) Int64.zero mem.segments)
 
 let check_module m =
-  let {memory; types; funcs; imports; exports; tables} = m.it in
+  let {memory; types; funcs; imports; exports; table} = m.it in
   Lib.Option.app check_memory memory;
-  let func_types = List.map (fun f -> get_type types f.it.ftype) funcs in
   let c = {types;
-           funcs = func_types;
-           imports = List.map (fun i -> get_type types i.it.itype) imports;
-           tables = List.fold_left (check_table func_types) [] tables;
+           funcs = List.map (fun f -> type_ types f.it.ftype) funcs;
+           imports = List.map (fun i -> type_ types i.it.itype) imports;
            locals = [];
            return = None;
            labels = [];
            has_memory = memory <> None} in
   List.iter (check_func c) funcs;
+  List.iter (check_elem c) table;
   ignore (List.fold_left (check_export c) NameSet.empty exports)

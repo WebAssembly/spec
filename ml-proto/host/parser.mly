@@ -67,7 +67,7 @@ let enter_func c =
   assert (VarMap.is_empty c.labels);
   {c with labels = VarMap.add "return" 0 c.labels; locals = empty ()}
 
-let lookup_type c x =
+let type_ c x =
   try VarMap.find x.it c.types.tmap
   with Not_found -> Error.error x.at ("unknown type " ^ x.it)
 
@@ -78,7 +78,6 @@ let lookup category space x =
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
-let table c x = lookup "table" (empty ()) x
 let label c x =
   try VarMap.find x.it c.labels
   with Not_found -> Error.error x.at ("unknown label " ^ x.it)
@@ -114,7 +113,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 let empty_type = {ins = []; out = None}
 
 let explicit_decl c name t at =
-  let x = name c lookup_type in
+  let x = name c type_ in
   if x.it < List.length c.types.tlist &&
      t <> empty_type &&
      t <> List.nth c.types.tlist x.it then
@@ -125,7 +124,6 @@ let implicit_decl c t at =
   match Lib.List.index_of t c.types.tlist with
   | None -> let i = List.length c.types.tlist in anon_type c t; i @@ at
   | Some i -> i @@ at
-
 
 %}
 
@@ -231,7 +229,7 @@ expr1 :
   | CALL var expr_list { fun c -> call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
-    { fun c -> call_indirect ($2 c table, $3 c, $4 c) }
+    { fun c -> call_indirect ($2 c type_, $3 c, $4 c) }
   | GET_LOCAL var { fun c -> get_local ($2 c local) }
   | SET_LOCAL var expr { fun c -> set_local ($2 c local, $3 c) }
   | LOAD expr { fun c -> load ($1, $2 c) }
@@ -354,6 +352,11 @@ type_def :
     { fun c -> bind_type c $3 $6 }
 ;
 
+table :
+  | LPAR TABLE var_list RPAR
+    { fun c -> $3 c func }
+;
+
 import :
   | LPAR IMPORT TEXT TEXT type_use RPAR
     { let at = at () in
@@ -382,7 +385,7 @@ module_fields :
   | /* empty */
     { fun c ->
       {memory = None; types = c.types.tlist; funcs = []; imports = [];
-       exports = []; tables = []} }
+       exports = []; table = []} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in
       {m with funcs = f () :: m.funcs} }
@@ -392,9 +395,9 @@ module_fields :
   | export module_fields
     { fun c -> let m = $2 c in
       {m with exports = $1 c :: m.exports} }
-  | LPAR TABLE var_list RPAR module_fields
-    { fun c -> let m = $5 c in
-      {m with tables = ($3 c func @@ ati 3) :: m.tables} }
+  | table module_fields
+    { fun c -> let m = $2 c in
+      {m with table = ($1 c) @ m.table} }
   | type_def module_fields
     { fun c -> $1 c; $2 c }
   | memory module_fields
