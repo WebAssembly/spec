@@ -6,6 +6,14 @@
   
     (export "load" $load)
     (func $load (param $i i32) (result i32) (i32.load (i32.add (memory_size) (get_local $i))))
+
+    (export "grow_memory" $grow_memory)
+    (func $grow_memory (param $i i32) (grow_memory (get_local $i)))
+
+    (export "overflow_memory_size" $overflow_memory_size)
+    (func $overflow_memory_size
+      (grow_memory (i32.xor (i32.const -1) (i32.sub (page_size) (i32.const 1))))
+    )
 )
 
 (assert_return (invoke "store" (i32.const -4) (i32.const 42)) (i32.const 42))
@@ -18,3 +26,7 @@
 (assert_trap (invoke "load" (i32.const -1)) "runtime: out of bounds memory access")
 (assert_trap (invoke "store" (i32.const 0) (i32.const 13)) "runtime: out of bounds memory access")
 (assert_trap (invoke "load" (i32.const 0)) "runtime: out of bounds memory access")
+(assert_trap (invoke "store" (i32.const 0x80000000) (i32.const 13)) "runtime: out of bounds memory access")
+(assert_trap (invoke "load" (i32.const 0x80000000)) "runtime: out of bounds memory access")
+(assert_trap (invoke "grow_memory" (i32.const 3)) "runtime: grow_memory operand not multiple of page_size")
+(assert_trap (invoke "overflow_memory_size") "runtime: grow_memory overflow")

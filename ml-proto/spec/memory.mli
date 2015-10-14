@@ -14,12 +14,12 @@ type value = Values.value
 
 exception Type
 exception Bounds
-exception Address
+exception SizeOverflow
 
 val create : size -> memory
 val init : memory -> segment list -> unit
 val size : memory -> size
-val resize : memory -> size -> unit
+val grow : memory -> size -> unit
 val load : memory -> address -> value_type -> value
 val store : memory -> address -> value -> unit
 val load_extend :

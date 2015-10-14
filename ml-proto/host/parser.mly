@@ -99,7 +99,7 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 %token GET_LOCAL SET_LOCAL LOAD STORE
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC PARAM RESULT LOCAL MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
-%token PAGE_SIZE MEMORY_SIZE RESIZE_MEMORY
+%token PAGE_SIZE MEMORY_SIZE GROW_MEMORY
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token EOF
 
@@ -202,7 +202,7 @@ expr1 :
   | CONVERT expr { fun c -> convert ($1, $2 c) }
   | PAGE_SIZE { fun c -> host (PageSize, []) }
   | MEMORY_SIZE { fun c -> host (MemorySize, []) }
-  | RESIZE_MEMORY expr { fun c -> host (ResizeMemory, [$2 c]) }
+  | GROW_MEMORY expr { fun c -> host (GrowMemory, [$2 c]) }
 ;
 expr_opt :
   | /* empty */ { fun c -> None }

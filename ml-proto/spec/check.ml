@@ -92,7 +92,7 @@ let type_cvt at = function
 let type_hostop = function
   | PageSize -> {ins = []; out = Some Int32Type}
   | MemorySize -> {ins = []; out = Some Int32Type}
-  | ResizeMemory -> {ins = [Int32Type]; out = None}
+  | GrowMemory -> {ins = [Int32Type]; out = None}
 
 
 let type_func f =
