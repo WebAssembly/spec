@@ -185,29 +185,32 @@ let rec eval_expr (c : config) (e : expr) =
     local c x := v1;
     Some v1
 
-  | Load ({ty; align = _}, e1) ->
+  | Load ({ty; offset; align = _}, e1) ->
     let mem = some_memory c e.at in
     let v1 = mem_size (eval_expr c e1) e1.at in
-    (try Some (Memory.load mem v1 ty) with exn -> memory_error e.at exn)
-
-  | Store ({ty = _; align = _}, e1, e2) ->
-    let mem = some_memory c e.at in
-    let v1 = mem_size (eval_expr c e1) e1.at in
-    let v2 = some (eval_expr c e2) e2.at in
-    (try Memory.store mem v1 v2 with exn -> memory_error e.at exn);
-    Some v2
-
-  | LoadExtend ({memop = {ty; align = _}; sz; ext}, e1) ->
-    let mem = some_memory c e.at in
-    let v1 = mem_size (eval_expr c e1) e1.at in
-    (try Some (Memory.load_extend mem v1 sz ext ty)
+    (try Some (Memory.load mem v1 offset ty)
       with exn -> memory_error e.at exn)
 
-  | StoreWrap ({memop = {ty; align = _}; sz}, e1, e2) ->
+  | Store ({ty = _; offset; align = _}, e1, e2) ->
     let mem = some_memory c e.at in
     let v1 = mem_size (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
-    (try Memory.store_wrap mem v1 sz v2 with exn -> memory_error e.at exn);
+    (try Memory.store mem v1 offset v2
+      with exn -> memory_error e.at exn);
+    Some v2
+
+  | LoadExtend ({memop = {ty; offset; align = _}; sz; ext}, e1) ->
+    let mem = some_memory c e.at in
+    let v1 = mem_size (eval_expr c e1) e1.at in
+    (try Some (Memory.load_extend mem v1 offset sz ext ty)
+      with exn -> memory_error e.at exn)
+
+  | StoreWrap ({memop = {ty; offset; align = _}; sz}, e1, e2) ->
+    let mem = some_memory c e.at in
+    let v1 = mem_size (eval_expr c e1) e1.at in
+    let v2 = some (eval_expr c e2) e2.at in
+    (try Memory.store_wrap mem v1 offset sz v2
+      with exn -> memory_error e.at exn);
     Some v2
 
   | Const v ->

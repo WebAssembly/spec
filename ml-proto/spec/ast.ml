@@ -62,7 +62,7 @@ type binop = (Int32Op.binop, Int64Op.binop, Float32Op.binop, Float64Op.binop) op
 type relop = (Int32Op.relop, Int64Op.relop, Float32Op.relop, Float64Op.relop) op
 type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
 
-type memop = {ty : value_type; align : int option}
+type memop = {ty : value_type; offset : Memory.offset; align : int option}
 type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
 type wrapop = {memop : memop; sz : Memory.mem_size}
 type hostop =

@@ -124,6 +124,7 @@ unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
 relop: eq | ne | lt | ...
 sign: s|u
+offset: offset=<uint>
 align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
@@ -145,8 +146,8 @@ expr:
   ( return <expr>? )                             ;; = (break <current_depth> <expr>?)
   ( get_local <var> )
   ( set_local <var> <expr> )
-  ( <type>.load((8|16)_<sign>)? <align>? <expr> )
-  ( <type>.store <align>? <expr> <expr> )
+  ( <type>.load((8|16)_<sign>)? <offset>? <align>? <expr> )
+  ( <type>.store <offset>? <align>? <expr> <expr> )
   ( <type>.const <value> )
   ( <type>.<unop> <expr> )
   ( <type>.<binop> <expr> <expr> )
