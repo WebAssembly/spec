@@ -67,6 +67,7 @@ end
 
 let memory_error at = function
   | Memory.Bounds -> error at "runtime: out of bounds memory access"
+  | Memory.AddressOverflow -> error at "runtime: memory address overflow"
   | Memory.Address -> error at "runtime: illegal address value"
   | exn -> raise exn
 
@@ -103,6 +104,13 @@ let mem_size v at =
   let i32 = int32 v at in
   let i64 = Int64.of_int32 i32 in
   Int64.shift_right_logical (Int64.shift_left i64 32) 32
+
+(*
+ * Test whether x has a value which is an overflow in the memory type. Since
+ * we currently only support i32, just test that.
+ *)
+let mem_overflow x =
+  I64.gt_u x (Int64.of_int32 Int32.max_int)
 
 let callstack_exhaustion at =
   error at ("runtime: callstack exhausted")
@@ -269,18 +277,23 @@ and coerce et vo =
 and eval_hostop host mem hostop vs at =
   match hostop, vs with
   | PageSize, [] ->
+    assert (I64.lt_u host.page_size (Int64.of_int32 Int32.max_int));
     Some (Int32 (Int64.to_int32 host.page_size))
 
   | MemorySize, [] ->
-    assert (Memory.size mem < Int64.of_int32 Int32.max_int);
+    assert (I64.lt_u (Memory.size mem) (Int64.of_int32 Int32.max_int));
     Some (Int32 (Int64.to_int32 (Memory.size mem)))
 
   | GrowMemory, [v] ->
-    let sz = mem_size v at in
-    if Int64.rem sz host.page_size <> 0L then
+    let delta = mem_size v at in
+    if I64.rem_u delta host.page_size <> 0L then
       error at "runtime: grow_memory operand not multiple of page_size";
-    Memory.grow mem sz;
-    None
+    if I64.lt_u (Int64.add (Memory.size mem) delta) (Memory.size mem) then
+      error at "runtime: grow_memory overflow";
+    if mem_overflow (Int64.add (Memory.size mem) delta) then
+      error at "runtime: grow_memory overflow";
+    Memory.grow mem delta;
+    None;
 
   | _, _ ->
     error at "runtime: invalid invocation of host operator"

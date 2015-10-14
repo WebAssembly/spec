@@ -21,6 +21,7 @@ type t = memory
 exception Type
 exception Bounds
 exception Address
+exception AddressOverflow
 
 
 (*
@@ -73,7 +74,7 @@ let size mem =
 let grow mem n =
   let old_size = size mem in
   let new_size = Int64.add old_size n in
-  if old_size > new_size then raise Out_of_memory else
+  if I64.gt_u old_size new_size then raise AddressOverflow else
   let after = create' new_size in
   let host_old_size = host_size_of_int64 old_size in
   Array1.blit (Array1.sub !mem 0 host_old_size) (Array1.sub after 0 host_old_size);
