@@ -114,12 +114,12 @@ let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 let empty_type = {ins = []; out = None}
 
 let explicit_decl c name t at =
-  let i = name c lookup_type in
-  if i.it < List.length c.types.tlist &&
+  let x = name c lookup_type in
+  if x.it < List.length c.types.tlist &&
      t <> empty_type &&
-     t <> List.nth c.types.tlist i.it then
+     t <> List.nth c.types.tlist x.it then
     Error.error at "signature mismatch";
-  i
+  x
 
 let implicit_decl c t at =
   match Lib.List.index_of t c.types.tlist with
@@ -170,15 +170,15 @@ value_type_list :
   | /* empty */ { [] }
   | VALUE_TYPE value_type_list { $1 :: $2 }
 ;
-func_params :
-  | LPAR PARAM value_type_list RPAR { $3 }
-;
-func_result :
-  | /* empty */ { None }
-  | LPAR RESULT VALUE_TYPE RPAR { Some $3 }
-;
 func_type :
-  | func_params func_result { {ins = $1; out = $2} }
+  | /* empty */
+    { {ins = []; out = None} }
+  | LPAR PARAM value_type_list RPAR
+    { {ins = $3; out = None} }
+  | LPAR PARAM value_type_list RPAR LPAR RESULT VALUE_TYPE RPAR
+    { {ins = $3; out = Some $7} }
+  | LPAR RESULT VALUE_TYPE RPAR
+    { {ins = []; out = Some $3} }
 ;
 
 

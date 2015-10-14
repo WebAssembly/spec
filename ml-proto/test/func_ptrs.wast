@@ -1,11 +1,15 @@
 (module
     (types
-        (func (param) (result i32))
-        (func $T (param i32) (result i32))
-        (func $U (param i32))
+        (func)                                  ;; 0: void -> void
+        (func $A)                               ;; 1: void -> void
+        (func (param))                          ;; 2: void -> void
+        (func (result i32))                     ;; 3: void -> i32
+        (func (param) (result i32))             ;; 4: void -> i32
+        (func $T (param i32) (result i32))      ;; 5: i32 -> i32
+        (func $U (param i32))                   ;; 6: i32 -> void
     )
 
-    (func $one (type 0) (i32.const 13))
+    (func $one (type 4) (i32.const 13))
     (export "one" $one)
 
     (func $two (type $T) (i32.add (get_local 0) (i32.const 1)))
@@ -16,9 +20,12 @@
     (func $three (type $T) (param $a i32) (result i32) (i32.sub (get_local 0) (i32.const 2)))
     (export "three" $three)
 
-    (import $print "stdio" "print" (type 2))
+    (import $print "stdio" "print" (type 6))
     (func $four (type $U) (call_import $print (get_local 0)))
     (export "four" $four)
+
+    (func (type 0))
+    (func (type $A))
 )
 (assert_return (invoke "one") (i32.const 13))
 (assert_return (invoke "two" (i32.const 13)) (i32.const 14))

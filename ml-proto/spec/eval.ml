@@ -21,7 +21,7 @@ type export_map = func ExportMap.t
 
 type instance =
 {
-  m : module_;
+  module_ : module_;
   imports : import list;
   exports : export_map;
   tables : func list list;
@@ -45,7 +45,7 @@ let lookup category list x =
   try List.nth list x.it with Failure _ ->
     error x.at ("runtime: undefined " ^ category ^ " " ^ string_of_int x.it)
 
-let func c x = lookup "function" c.instance.m.it.funcs x
+let func c x = lookup "function" c.instance.module_.it.funcs x
 let import c x = lookup "import" c.instance.imports x
 let table c x y = lookup "entry" (lookup "table" c.instance.tables x) y
 let local c x = lookup "local" c.locals x
@@ -115,8 +115,8 @@ let callstack_exhaustion at =
   error at ("runtime: callstack exhausted")
 
 let func_type instance f =
-  assert (f.it.ftype.it < List.length instance.m.it.types);
-  List.nth instance.m.it.types f.it.ftype.it
+  assert (f.it.ftype.it < List.length instance.module_.it.types);
+  List.nth instance.module_.it.types f.it.ftype.it
 
 
 (* Evaluation *)
@@ -319,7 +319,7 @@ let init m imports host =
   let export ex = ExportMap.add ex.it.name (func ex.it.func) in
   let exports = List.fold_right export exports ExportMap.empty in
   let tables = List.map (fun tab -> List.map func tab.it) tables in
-  {m; imports; exports; tables; memory = memory'; host}
+  {module_ = m; imports; exports; tables; memory = memory'; host}
 
 let invoke instance name vs =
   try
