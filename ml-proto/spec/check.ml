@@ -271,8 +271,7 @@ let check_func c f =
   check_expr c' s.out body
 
 let check_elem c x =
-  require (x.it >= 0 && x.it < List.length c.funcs) x.at
-    "table elem index out of bounds"
+  ignore (func c x)
 
 module NameSet = Set.Make(String)
 

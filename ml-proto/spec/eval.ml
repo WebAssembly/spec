@@ -50,6 +50,12 @@ let import c x = lookup "import" c.instance.imports x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
+let table_elem c i at =
+  if i < 0l || i <> Int32.of_int (Int32.to_int i) then
+    error at ("runtime: undefined table element " ^ Int32.to_string i);
+  let x = (Int32.to_int i) @@ at in
+  lookup "table element" c.instance.module_.it.table x
+
 let export m x =
   try ExportMap.find x.it m.exports
   with Not_found ->
@@ -169,9 +175,7 @@ let rec eval_expr (c : config) (e : expr) =
   | CallIndirect (ftype, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
-    if i < 0l || i >= Int32.of_int (List.length c.instance.module_.it.table) then
-      error e1.at "runtime: table index out of bounds";
-    let f = func c (List.nth c.instance.module_.it.table (Int32.to_int i)) in
+    let f = func c (table_elem c i e1.at) in
     if ftype.it <> f.it.ftype.it then
       error e1.at "runtime: indirect call signature mismatch";
     eval_func c.instance f vs
