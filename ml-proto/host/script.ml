@@ -61,7 +61,7 @@ let run_command cmd =
       Print.print_module_sig m
     end;
     trace "Initializing...";
-    let imports = Builtins.match_imports m.it.Ast.imports in
+    let imports = Builtins.match_imports m in
     let host_params = {Eval.page_size = Params.page_size} in
     current_module := Some (Eval.init m imports host_params)
 

@@ -122,10 +122,10 @@ rule token = parse
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
-  | "i32" { TYPE Types.Int32Type }
-  | "i64" { TYPE Types.Int64Type }
-  | "f32" { TYPE Types.Float32Type }
-  | "f64" { TYPE Types.Float64Type }
+  | "i32" { VALUE_TYPE Types.Int32Type }
+  | "i64" { VALUE_TYPE Types.Int64Type }
+  | "f32" { VALUE_TYPE Types.Float32Type }
+  | "f64" { VALUE_TYPE Types.Float64Type }
 
   | "nop" { NOP }
   | "block" { BLOCK }
@@ -241,6 +241,7 @@ rule token = parse
   | "memory_size" { MEMORY_SIZE }
   | "grow_memory" { GROW_MEMORY }
 
+  | "type" { TYPE }
   | "func" { FUNC }
   | "param" { PARAM }
   | "result" { RESULT }

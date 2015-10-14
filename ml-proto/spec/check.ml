@@ -17,6 +17,7 @@ let require b at s = if not b then error at s
 
 type context =
 {
+  types : func_type list;
   funcs : func_type list;
   imports : func_type list;
   tables : func_type list;
@@ -95,15 +96,6 @@ let type_hostop = function
   | GrowMemory -> {ins = [Int32Type]; out = None}
 
 
-let type_func f =
-  let {params; result; _} = f.it in
-  {ins = List.map it params; out = Lib.Option.map it result}
-
-let type_import f =
-  let {func_params; func_result; _} = f.it in
-  {ins = List.map it func_params; out = Lib.Option.map it func_result}
-
-
 (* Type Analysis *)
 
 (*
@@ -145,10 +137,10 @@ let rec check_expr c et e =
     check_expr_opt c (label c x) eo e.at
 
   | Switch (t, e1, cs, e2) ->
-    require (t.it = Int32Type || t.it = Int64Type) t.at "invalid switch type";
+    require (t = Int32Type || t = Int64Type) e.at "invalid switch type";
     (* TODO: Check that cases are unique. *)
-    check_expr c (Some t.it) e1;
-    List.iter (check_case c t.it et) cs;
+    check_expr c (Some t) e1;
+    List.iter (check_case c t et) cs;
     check_expr c et e2
 
   | Call (x, es) ->
@@ -276,11 +268,15 @@ and check_mem_type ty sz at =
  *   s : func_type
  *)
 
+let get_type types t =
+  require (t.it < List.length types) t.at "type index out of bounds";
+  List.nth types t.it
+
 let check_func c f =
-  let {params; result; locals; body = e} = f.it in
-  let c' = {c with locals = List.map it params @ List.map it locals;
-                   return = Lib.Option.map it result} in
-  check_expr c' (Lib.Option.map it result) e
+  let {ftype; locals; body} = f.it in
+  let s = get_type c.types ftype in
+  let c' = {c with locals = s.ins @ locals; return = s.out} in
+  check_expr c' s.out body
 
 let check_table funcs tables tab =
   match tab.it with
@@ -319,11 +315,12 @@ let check_memory memory =
   ignore (List.fold_left (check_segment mem.initial) Int64.zero mem.segments)
 
 let check_module m =
-  let {imports; exports; tables; funcs; memory} = m.it in
+  let {memory; types; funcs; imports; exports; tables} = m.it in
   Lib.Option.app check_memory memory;
-  let func_types = List.map type_func funcs in
-  let c = {funcs = func_types;
-           imports = List.map type_import imports;
+  let func_types = List.map (fun f -> get_type types f.it.ftype) funcs in
+  let c = {types;
+           funcs = func_types;
+           imports = List.map (fun i -> get_type types i.it.itype) imports;
            tables = List.fold_left (check_table func_types) [] tables;
            locals = [];
            return = None;

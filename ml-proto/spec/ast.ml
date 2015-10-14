@@ -26,8 +26,7 @@ open Values
 
 (* Types *)
 
-type value_type = Types.value_type Source.phrase
-type expr_type = value_type option
+type value_type = Types.value_type
 
 
 (* Operators *)
@@ -63,7 +62,7 @@ type binop = (Int32Op.binop, Int64Op.binop, Float32Op.binop, Float64Op.binop) op
 type relop = (Int32Op.relop, Int64Op.relop, Float32Op.relop, Float64Op.relop) op
 type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
 
-type memop = {ty : Types.value_type; align : int option}
+type memop = {ty : value_type; align : int option}
 type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
 type wrapop = {memop : memop; sz : Memory.mem_size}
 type hostop =
@@ -125,10 +124,9 @@ and segment = Memory.segment Source.phrase
 type func = func' Source.phrase
 and func' =
 {
-  params : value_type list;
-  result : expr_type;
+  ftype : var;
   locals : value_type list;
-  body : expr
+  body : expr;
 }
 
 type export = export' Source.phrase
@@ -137,10 +135,9 @@ and export' = {name : string; func : var}
 type import = import' Source.phrase
 and import' =
 {
+  itype : var;
   module_name : string;
   func_name : string;
-  func_params : value_type list;
-  func_result : expr_type;
 }
 
 type table = var list Source.phrase
@@ -149,6 +146,7 @@ type module_ = module_' Source.phrase
 and module_' =
 {
   memory : memory option;
+  types : Types.func_type list;
   funcs : func list;
   imports : import list;
   exports : export list;
