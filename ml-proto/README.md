@@ -160,12 +160,14 @@ case:
   ( case <value> <expr>* fallthrough? )  ;; = (case <int> (block <expr>*) fallthrough?)
   ( case <value> )                       ;; = (case <int> (nop) fallthrough)
 
-func:   ( func <name>? <param>* <result>? <local>* <expr>* )
+func:   ( func <name>? <type>? <param>* <result>? <local>* <expr>* )
+type:   ( type <var> )
 param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type> )
 local:  ( local <type>* ) | ( local <name> <type> )
 
-module:  ( module <func>* <global>* <import>* <export>* <table>* <memory>? )
+module:  ( module <type>* <func>* <global>* <import>* <export>* <table>* <memory>? )
+type:    ( type <name>? ( func <param>* <result>? ) )
 import:  ( import <name>? "<module_name>" "<func_name>" (param <type>* ) (result <type>)* )
 export:  ( export "<char>*" <var> )
 global:  ( global <type>* ) | ( global <name> <type> )
