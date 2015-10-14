@@ -63,12 +63,9 @@ let c0 () =
   {types = empty_types (); funcs = empty (); imports = empty ();
    locals = empty (); labels = VarMap.empty}
 
-let do_func c ftype f at =
+let enter_func c =
   assert (VarMap.is_empty c.labels);
-  let c' = {c with labels = VarMap.add "return" 0 c.labels; locals = empty ()} in
-  let func = f c' in
-  assert (VarMap.is_empty c.labels);
-  {func with ftype} @@ at
+  {c with labels = VarMap.add "return" 0 c.labels; locals = empty ()}
 
 let lookup_type c x =
   try VarMap.find x.it c.types.tmap
@@ -314,19 +311,19 @@ func :
   | LPAR FUNC type_decl func_fields RPAR
     { let at = at () in
       fun c -> anon_func c; let t = explicit_decl c $3 (fst $4) at in
-        fun () -> do_func c t (snd $4) at }
+        fun () -> {((snd $4) (enter_func c)) with ftype = t} @@ at }
   | LPAR FUNC bind_var type_decl func_fields RPAR  /* Sugar */
     { let at = at () in
       fun c -> bind_func c $3; let t = explicit_decl c $4 (fst $5) at in
-        fun () -> do_func c t (snd $5) at }
+        fun () -> {((snd $5) (enter_func c)) with ftype = t} @@ at }
   | LPAR FUNC func_fields RPAR  /* Sugar */
     { let at = at () in
       fun c -> anon_func c; let t = implicit_decl c (fst $3) at in
-        fun () -> do_func c t (snd $3) at }
+        fun () -> {((snd $3) (enter_func c)) with ftype = t} @@ at }
   | LPAR FUNC bind_var func_fields RPAR  /* Sugar */
     { let at = at () in
       fun c -> bind_func c $3; let t = implicit_decl c (fst $4) at in
-        fun () -> do_func c t (snd $4) at }
+        fun () -> {((snd $4) (enter_func c)) with ftype = t} @@ at }
 ;
 
 
