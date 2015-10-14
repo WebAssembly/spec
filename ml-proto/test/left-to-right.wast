@@ -45,6 +45,7 @@
   (func $i32_store (result i32) (call $reset) (i32.store (call $i32_left) (call $i32_right)) (call $get))
   (func $i32_store8 (result i32) (call $reset) (i32.store8 (call $i32_left) (call $i32_right)) (call $get))
   (func $i32_store16 (result i32) (call $reset) (i32.store16 (call $i32_left) (call $i32_right)) (call $get))
+  (func $i32_call (result i32) (call $reset) (call $i32_dummy (call $i32_left) (call $i32_right)) (call $get))
 
   (func $i64_add (result i32) (call $reset) (i64.add (call $i64_left) (call $i64_right)) (call $get))
   (func $i64_sub (result i32) (call $reset) (i64.sub (call $i64_left) (call $i64_right)) (call $get))
@@ -73,6 +74,7 @@
   (func $i64_store8 (result i32) (call $reset) (i64.store8 (call $i32_left) (call $i64_right)) (call $get))
   (func $i64_store16 (result i32) (call $reset) (i64.store16 (call $i32_left) (call $i64_right)) (call $get))
   (func $i64_store32 (result i32) (call $reset) (i64.store32 (call $i32_left) (call $i64_right)) (call $get))
+  (func $i64_call (result i32) (call $reset) (call $i64_dummy (call $i64_left) (call $i64_right)) (call $get))
 
 
   (func $f32_add (result i32) (call $reset) (f32.add (call $f32_left) (call $f32_right)) (call $get))
@@ -89,6 +91,7 @@
   (func $f32_min (result i32) (call $reset) (f32.min (call $f32_left) (call $f32_right)) (call $get))
   (func $f32_max (result i32) (call $reset) (f32.max (call $f32_left) (call $f32_right)) (call $get))
   (func $f32_store (result i32) (call $reset) (f32.store (call $i32_left) (call $f32_right)) (call $get))
+  (func $f32_call (result i32) (call $reset) (call $f32_dummy (call $f32_left) (call $f32_right)) (call $get))
 
   (func $f64_add (result i32) (call $reset) (f64.add (call $f64_left) (call $f64_right)) (call $get))
   (func $f64_sub (result i32) (call $reset) (f64.sub (call $f64_left) (call $f64_right)) (call $get))
@@ -104,6 +107,7 @@
   (func $f64_min (result i32) (call $reset) (f64.min (call $f64_left) (call $f64_right)) (call $get))
   (func $f64_max (result i32) (call $reset) (f64.max (call $f64_left) (call $f64_right)) (call $get))
   (func $f64_store (result i32) (call $reset) (f64.store (call $i32_left) (call $f64_right)) (call $get))
+  (func $f64_call (result i32) (call $reset) (call $f64_dummy (call $f64_left) (call $f64_right)) (call $get))
 
 
   (export "i32_add" $i32_add)                        (export "i64_add" $i64_add) 
@@ -130,9 +134,10 @@
   (export "i32_gt_u" $i32_gt_u)                      (export "i64_gt_u" $i64_gt_u) 
   (export "i32_ge_u" $i32_ge_u)                      (export "i64_ge_u" $i64_ge_u) 
   (export "i32_store" $i32_store)                    (export "i64_store" $i64_store)
-  (export "i32_store8" $i32_store)                   (export "i64_store8" $i64_store8)
-  (export "i32_store16" $i32_store)                  (export "i64_store16" $i64_store16)
+  (export "i32_store8" $i32_store8)                  (export "i64_store8" $i64_store8)
+  (export "i32_store16" $i32_store16)                (export "i64_store16" $i64_store16)
   (export "i64_store32" $i64_store32)
+  (export "i32_call" $i32_call)                      (export "i64_call" $i64_call)
 
   (export "f32_add" $f32_add)                        (export "f64_add" $f64_add) 
   (export "f32_sub" $f32_sub)                        (export "f64_sub" $f64_sub) 
@@ -148,6 +153,7 @@
   (export "f32_min" $f32_min)                        (export "f64_min" $f64_min) 
   (export "f32_max" $f32_max)                        (export "f64_max" $f64_max) 
   (export "f32_store" $f32_store)                    (export "f64_store" $f64_store)
+  (export "f32_call" $f32_call)                      (export "f64_call" $f64_call)
 )
 
 (assert_return (invoke "i32_add") (i32.const 2))     (assert_return (invoke "i64_add") (i32.const 2))
@@ -177,6 +183,7 @@
 (assert_return (invoke "i32_store8") (i32.const 2))  (assert_return (invoke "i64_store8") (i32.const 2))
 (assert_return (invoke "i32_store16") (i32.const 2)) (assert_return (invoke "i64_store16") (i32.const 2))
 (assert_return (invoke "i64_store32") (i32.const 2))
+(assert_return (invoke "i32_call") (i32.const 2))    (assert_return (invoke "i64_call") (i32.const 2))
 
 (assert_return (invoke "f32_add") (i32.const 2))     (assert_return (invoke "f64_add") (i32.const 2))
 (assert_return (invoke "f32_sub") (i32.const 2))     (assert_return (invoke "f64_sub") (i32.const 2))
@@ -192,3 +199,4 @@
 (assert_return (invoke "f32_min") (i32.const 2))     (assert_return (invoke "f64_min") (i32.const 2))
 (assert_return (invoke "f32_max") (i32.const 2))     (assert_return (invoke "f64_max") (i32.const 2))
 (assert_return (invoke "f32_store") (i32.const 2))   (assert_return (invoke "f64_store") (i32.const 2))
+(assert_return (invoke "f32_call") (i32.const 2))    (assert_return (invoke "f64_call") (i32.const 2))
