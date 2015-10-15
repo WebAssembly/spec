@@ -81,8 +81,9 @@ let grow mem n =
   mem := after
 
 let effective_address a o =
-  if (Int64.sub Int64.max_int a) < o then raise Bounds;
-  Int64.add a o
+  let ea = Int64.add a o in
+  if I64.lt_u ea a then raise Bounds;
+  ea
 
 let rec loadn mem n ea =
   assert (n > 0 && n <= 8);
