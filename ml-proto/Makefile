@@ -37,7 +37,7 @@ main.d.byte:
 		$(OCB) $@
 
 .PHONY:		test
-test:
+test:		$(NAME)
 		./runtests.py
 
 .PHONY:		zip
