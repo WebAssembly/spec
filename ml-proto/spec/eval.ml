@@ -24,7 +24,6 @@ type instance =
   module_ : module_;
   imports : import list;
   exports : export_map;
-  tables : func list list;
   memory : Memory.t option;
   host : host_params
 }
@@ -45,11 +44,17 @@ let lookup category list x =
   try List.nth list x.it with Failure _ ->
     error x.at ("runtime: undefined " ^ category ^ " " ^ string_of_int x.it)
 
+let type_ c x = lookup "type" c.instance.module_.it.types x
 let func c x = lookup "function" c.instance.module_.it.funcs x
 let import c x = lookup "import" c.instance.imports x
-let table c x y = lookup "entry" (lookup "table" c.instance.tables x) y
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
+
+let table_elem c i at =
+  if i < 0l || i <> Int32.of_int (Int32.to_int i) then
+    error at ("runtime: undefined table element " ^ Int32.to_string i);
+  let x = (Int32.to_int i) @@ at in
+  lookup "table element" c.instance.module_.it.table x
 
 let export m x =
   try ExportMap.find x.it m.exports
@@ -114,10 +119,6 @@ let mem_overflow x =
 let callstack_exhaustion at =
   error at ("runtime: callstack exhausted")
 
-let func_type instance f =
-  assert (f.it.ftype.it < List.length instance.module_.it.types);
-  List.nth instance.module_.it.types f.it.ftype.it
-
 
 (* Evaluation *)
 
@@ -171,11 +172,13 @@ let rec eval_expr (c : config) (e : expr) =
     let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
     (import c x) vs
 
-  | CallIndirect (x, e1, es) ->
+  | CallIndirect (ftype, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
-    (* TODO: The conversion to int could overflow. *)
-    eval_func c.instance (table c x (Int32.to_int i @@ e1.at)) vs
+    let f = func c (table_elem c i e1.at) in
+    if ftype.it <> f.it.ftype.it then
+      error e1.at "runtime: indirect call signature mismatch";
+    eval_func c.instance f vs
 
   | GetLocal x ->
     Some !(local c x)
@@ -269,7 +272,7 @@ and eval_func instance f vs =
   let vars = List.map (fun t -> ref (default_value t)) f.it.locals in
   let locals = args @ vars in
   let c = {instance; locals; labels = []} in
-  coerce (func_type instance f).out (eval_expr c f.it.body)
+  coerce (type_ c f.it.ftype).out (eval_expr c f.it.body)
 
 and coerce et vo =
   if et = None then None else vo
@@ -309,22 +312,22 @@ let init_memory {it = {initial; segments; _}} =
   Memory.init mem (List.map it segments);
   mem
 
+let add_export funcs ex =
+  ExportMap.add ex.it.name (List.nth funcs ex.it.func.it)
+
 let init m imports host =
   assert (List.length imports = List.length m.it.Ast.imports);
   assert (host.page_size > 0L);
   assert (Lib.Int64.is_power_of_two host.page_size);
-  let {memory; funcs; exports; tables; _} = m.it in
-  let memory' = Lib.Option.map init_memory memory in
-  let func x = List.nth funcs x.it in
-  let export ex = ExportMap.add ex.it.name (func ex.it.func) in
-  let exports = List.fold_right export exports ExportMap.empty in
-  let tables = List.map (fun tab -> List.map func tab.it) tables in
-  {module_ = m; imports; exports; tables; memory = memory'; host}
+  let {memory; funcs; exports; _} = m.it in
+  {module_ = m;
+   imports;
+   exports = List.fold_right (add_export funcs) exports ExportMap.empty;
+   memory = Lib.Option.map init_memory memory;
+   host}
 
 let invoke instance name vs =
   try
-    let f = export instance (name @@ no_region) in
-    assert (List.length vs = List.length (func_type instance f).ins);
-    eval_func instance f vs
+    eval_func instance (export instance (name @@ no_region)) vs
   with Stack_overflow -> callstack_exhaustion no_region
 
