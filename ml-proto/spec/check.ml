@@ -90,17 +90,16 @@ let type_cvt at = function
     | DemoteFloat64 -> error at "invalid conversion"
     ), Float64Type
 
-type type_hostop_type = {
-  hostop_ins : value_type list;
-  hostop_out : expr_type;
-  hostop_hasmem : bool
-}
-
+(*
+ * This function returns a tuple of a func_type and a bool, with the bool
+ * indicating whether the given function requires a memory declaration to be
+ * present in the module.
+ *)
 let type_hostop = function
-  | PageSize -> {hostop_ins = []; hostop_out = Some Int32Type; hostop_hasmem = true}
-  | MemorySize -> {hostop_ins = []; hostop_out = Some Int32Type; hostop_hasmem = true}
-  | GrowMemory -> {hostop_ins = [Int32Type]; hostop_out = None; hostop_hasmem = true}
-  | HasFeature str -> {hostop_ins = []; hostop_out = Some Int32Type; hostop_hasmem = false}
+  | PageSize -> ({ins = []; out = Some Int32Type}, true)
+  | MemorySize -> ({ins = []; out = Some Int32Type}, true)
+  | GrowMemory -> ({ins = [Int32Type]; out = None}, true)
+  | HasFeature str -> ({ins = []; out = Some Int32Type}, false)
 
 
 (* Type Analysis *)
@@ -214,11 +213,11 @@ let rec check_expr c et e =
     check_type (Some t) et e.at
 
   | Host (hostop, es) ->
-    let {hostop_ins; hostop_out; hostop_hasmem} = type_hostop hostop in
-    if hostop_hasmem then
+    let ({ins; out}, hasmem) = type_hostop hostop in
+    if hasmem then
       check_has_memory c e.at;
-    check_exprs c hostop_ins es;
-    check_type hostop_out et e.at
+    check_exprs c ins es;
+    check_type out et e.at
 
 and check_exprs c ts es =
   let ets = List.map (fun x -> Some x) ts in
