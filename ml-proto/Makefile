@@ -15,7 +15,7 @@ OCB_FLAGS +=	# -cflags -w
 OCB_FLAGS += 	# -cflags +a-4-41-42-44-45
 OCB_FLAGS += 	$(DIRS:%=-I %)
 OCB_FLAGS += 	$(LIBS:%=-libs %)
-OCB =		ocamlbuild $(OCB_FLAGS)
+OCB =		ocamlbuild -quiet $(OCB_FLAGS)
 
 .PHONY:		all opt unopt
 unopt:		$(NAME_UNOPT)
@@ -37,7 +37,7 @@ main.d.byte:
 		$(OCB) $@
 
 .PHONY:		test
-test:
+test:		$(NAME)
 		./runtests.py
 
 .PHONY:		zip
@@ -53,4 +53,4 @@ clean:
 check:
 		# check that we can find all relevant libraries
 		# when using ocamlfind
-		ocamlfind query str bigarray
+		ocamlfind query $(LIBS)
