@@ -2,10 +2,10 @@
   (memory 9)
   
   ;; The idea is: We reset the memory, then the arithmetic instruction calls $*_left and $*_right.
-  ;; $*_left stores the number 1, and $*_right stores the number 2 (both at address 0)
-  ;; Then we read the value at address 0. If it's 0, the VM did an unwanted optimzation.
+  ;; $*_left stores the number 1, and $*_right stores the number 2 (both at address 8)
+  ;; Then we read the value at address 8. If it's 0, the VM did an unwanted optimzation.
   ;; If it's 1, then $*_right was called before $*_left. If it's 2, then everything's fine.
-  (func $reset (i32.store8 (i32.const 8)(i32.const 0)))
+  (func $reset (i32.store8 (i32.const 8) (i32.const 0)))
   (func $get (result i32) (i32.load8_u (i32.const 8)))
   (func $i32_left (result i32) (i32.store8 (i32.const 8) (i32.const 1)) (i32.const 0))
   (func $i32_right (result i32) (i32.store8 (i32.const 8) (i32.const 2)) (i32.const 1))
