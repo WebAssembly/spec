@@ -45,6 +45,24 @@ let literal s t =
     | _ -> Error.error s.at "constant out of range"
 
 
+(* Memory operands *)
+
+let memop m offset align =
+  assert (m.offset = 0L);
+  assert (m.align = None);
+  {m with offset; align}
+
+let extop (e : extop) offset align =
+  assert (e.memop.offset = 0L);
+  assert (e.memop.align = None);
+  {e with memop = {e.memop with offset; align}}
+
+let wrapop (w : wrapop) offset align =
+  assert (w.memop.offset = 0L);
+  assert (w.memop.align = None);
+  {w with memop = {w.memop with offset; align}}
+
+
 (* Symbolic variables *)
 
 module VarMap = Map.Make(String)
@@ -130,7 +148,7 @@ let implicit_decl c t at =
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
 %token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
-%token GET_LOCAL SET_LOCAL LOAD STORE
+%token GET_LOCAL SET_LOCAL LOAD STORE LOAD_EXTEND STORE_WRAP OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC TYPE PARAM RESULT LOCAL
 %token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
@@ -153,6 +171,8 @@ let implicit_decl c t at =
 %token<Ast.memop> STORE
 %token<Ast.extop> LOAD_EXTEND
 %token<Ast.wrapop> STORE_WRAP
+%token<Memory.offset> OFFSET
+%token<int> ALIGN
 
 %nonassoc LOW
 %nonassoc VAR
@@ -204,6 +224,15 @@ labeling :
   | bind_var { let at = at () in fun c -> bind_label c $1, Labelled @@ at }
 ;
 
+offset :
+  | /* empty */ { 0L }
+  | OFFSET { $1 }
+;
+align :
+  | /* empty */ { None }
+  | ALIGN { Some $1 }
+;
+
 expr :
   | LPAR expr1 RPAR { let at = at () in fun c -> $2 c @@ at }
 ;
@@ -232,10 +261,14 @@ expr1 :
     { fun c -> call_indirect ($2 c type_, $3 c, $4 c) }
   | GET_LOCAL var { fun c -> get_local ($2 c local) }
   | SET_LOCAL var expr { fun c -> set_local ($2 c local, $3 c) }
-  | LOAD expr { fun c -> load ($1, $2 c) }
-  | STORE expr expr { fun c -> store ($1, $2 c, $3 c) }
-  | LOAD_EXTEND expr { fun c -> load_extend ($1, $2 c) }
-  | STORE_WRAP expr expr { fun c -> store_wrap ($1, $2 c, $3 c) }
+  | LOAD offset align expr
+    { fun c -> load (memop $1 $2 $3, $4 c) }
+  | STORE offset align expr expr
+    { fun c -> store (memop $1 $2 $3, $4 c, $5 c) }
+  | LOAD_EXTEND offset align expr
+    { fun c -> load_extend (extop $1 $2 $3, $4 c) }
+  | STORE_WRAP offset align expr expr
+    { fun c -> store_wrap (wrapop $1 $2 $3, $4 c, $5 c) }
   | CONST literal { fun c -> const (literal $2 $1) }
   | UNARY expr { fun c -> unary ($1, $2 c) }
   | BINARY expr expr { fun c -> binary ($1, $2 c, $3 c) }

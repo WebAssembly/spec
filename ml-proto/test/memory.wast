@@ -35,29 +35,29 @@
 )
 
 ;; Test alignment annotation rules
-(module (memory 0) (func (i32.load8_u/2 (i32.const 0))))
-(module (memory 0) (func (i32.load16_u/4 (i32.const 0))))
-(module (memory 0) (func (i32.load/8 (i32.const 0))))
-(module (memory 0) (func (f32.load/8 (i32.const 0))))
+(module (memory 0) (func (i32.load8_u align=2 (i32.const 0))))
+(module (memory 0) (func (i32.load16_u align=4 (i32.const 0))))
+(module (memory 0) (func (i32.load align=8 (i32.const 0))))
+(module (memory 0) (func (f32.load align=8 (i32.const 0))))
 
 (assert_invalid
-  (module (memory 0) (func (i64.load/0 (i32.const 0))))
+  (module (memory 0) (func (i64.load align=0 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (memory 0) (func (i64.load/3 (i32.const 0))))
+  (module (memory 0) (func (i64.load align=3 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (memory 0) (func (i64.load/5 (i32.const 0))))
+  (module (memory 0) (func (i64.load align=5 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (memory 0) (func (i64.load/6 (i32.const 0))))
+  (module (memory 0) (func (i64.load align=6 (i32.const 0))))
   "non-power-of-two alignment"
 )
 (assert_invalid
-  (module (memory 0) (func (i64.load/7 (i32.const 0))))
+  (module (memory 0) (func (i64.load align=7 (i32.const 0))))
   "non-power-of-two alignment"
 )
 
@@ -124,8 +124,8 @@
           (break 0)
         )
         (set_local 2 (f64.convert_s/i32 (get_local 0)))
-        (f64.store/1 (get_local 0) (get_local 2))
-        (set_local 1 (f64.load/1 (get_local 0)))
+        (f64.store align=1 (get_local 0) (get_local 2))
+        (set_local 1 (f64.load align=1 (get_local 0)))
         (if
           (f64.ne (get_local 2) (get_local 1))
           (return (i32.const 0))
@@ -146,9 +146,9 @@
       )
       (return (f64.const 0))
     )
-    (i64.store/1 (i32.const 9) (i64.const 0))
-    (i32.store16/1 (i32.const 15) (i32.const 16453))
-    (return (f64.load/1 (i32.const 9)))
+    (i64.store align=1 (i32.const 9) (i64.const 0))
+    (i32.store16 align=1 (i32.const 15) (i32.const 16453))
+    (return (f64.load align=1 (i32.const 9)))
   )
 
   ;; Sign and zero extending memory loads

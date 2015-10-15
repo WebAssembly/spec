@@ -60,8 +60,8 @@ let floatop t f32 f64 =
   | "f64" -> Values.Float64 f64
   | _ -> assert false
 
-let memop t a =
-  {ty = value_type t; align = if a = "" then None else Some (int_of_string a)}
+let memop t =
+  {ty = value_type t; offset = 0L; align = None}
 
 let mem_size = function
   | "8" -> Memory.Mem8
@@ -74,11 +74,11 @@ let extension = function
   | 'u' -> Memory.ZX
   | _ -> assert false
 
-let extendop t sz s a =
-  {memop = memop t a; sz = mem_size sz; ext = extension s}
+let extop t sz s =
+  {memop = memop t; sz = mem_size sz; ext = extension s}
 
-let wrapop t sz a =
-  {memop = memop t a; sz = mem_size sz}
+let wrapop t sz =
+  {memop = memop t; sz = mem_size sz}
 }
 
 let space = [' ''\t']
@@ -109,7 +109,7 @@ let nxx = ixx | fxx
 let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
-let align = digit+
+let digits = digit+
 let mem_size = "8" | "16" | "32"
 
 rule token = parse
@@ -143,19 +143,16 @@ rule token = parse
   | "get_local" { GET_LOCAL }
   | "set_local" { SET_LOCAL }
 
-  | (nxx as t)".load" { LOAD (memop t "") }
-  | (nxx as t)".load/"(align as a) { LOAD (memop t a) }
-  | (nxx as t)".store" { STORE (memop t "") }
-  | (nxx as t)".store/"(align as a) { STORE (memop t a) }
+  | (nxx as t)".load" { LOAD (memop t) }
+  | (nxx as t)".store" { STORE (memop t) }
 
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
-    { LOAD_EXTEND (extendop t sz s "") }
-  | (ixx as t)".load"(mem_size as sz)"_"(sign as s)"/"(align as a)
-    { LOAD_EXTEND (extendop t sz s a) }
+    { LOAD_EXTEND (extop t sz s) }
   | (ixx as t)".store"(mem_size as sz)
-    { STORE_WRAP (wrapop t sz "") }
-  | (ixx as t)".store"(mem_size as sz)"/"(align as a)
-    { STORE_WRAP (wrapop t sz a) }
+    { STORE_WRAP (wrapop t sz) }
+
+  | "offset="(digits as s) { OFFSET (Int64.of_string s) }
+  | "align="(digits as s) { ALIGN (int_of_string s) }
 
   | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
