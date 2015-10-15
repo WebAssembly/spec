@@ -305,7 +305,7 @@ and eval_hostop host mem_opt hostop vs at =
     None;
 
   | HasFeature str, [] ->
-    Some (Int32 (if (host.has_feature str) then 1l else 0l))
+    Some (Int32 (if host.has_feature str then 1l else 0l))
 
   | _, _ ->
     error at "runtime: invalid invocation of host operator"
