@@ -15,7 +15,7 @@ The interpreter can also be run as a REPL, allowing to enter pieces of scripts i
 
 ## Building
 
-You'll need OCaml 4.02. The best way to get this is to download the source tarball from the ocaml website ( http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.2.tar.gz ) and do the configure / make dance.  On OSX, with [Homebrew](http://brew.sh/) installed, simply `brew install ocaml`.
+You'll need OCaml 4.02. The best way to get this is to download the source tarball from the ocaml website ( https://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.2.tar.gz ) and do the configure / make dance.  On OSX, with [Homebrew](http://brew.sh/) installed, simply `brew install ocaml`.
 
 Once you have ocaml, simply do
 
@@ -36,7 +36,7 @@ and get an executable named `./main.native`.
 
 ### Building on Windows
 
-Install OCaml for Windows from the github page: http://protz.github.io/ocaml-installer/
+Install OCaml for Windows from the github page: https://protz.github.io/ocaml-installer/
 
 The installer will automatically install core cygwin packages. Contrary to the directions, however, you need a set of additional packages for ocaml & ocamlbuild to work, so select them in the cygwin installer (or run cygwinsetup manually to add them after the fact):
 
