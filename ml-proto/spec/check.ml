@@ -86,10 +86,16 @@ let type_cvt at = function
     | DemoteFloat64 -> error at "invalid conversion"
     ), Float64Type
 
+(*
+ * This function returns a tuple of a func_type and a bool, with the bool
+ * indicating whether the given function requires a memory declaration to be
+ * present in the module.
+ *)
 let type_hostop = function
-  | PageSize -> {ins = []; out = Some Int32Type}
-  | MemorySize -> {ins = []; out = Some Int32Type}
-  | GrowMemory -> {ins = [Int32Type]; out = None}
+  | PageSize -> ({ins = []; out = Some Int32Type}, true)
+  | MemorySize -> ({ins = []; out = Some Int32Type}, true)
+  | GrowMemory -> ({ins = [Int32Type]; out = None}, true)
+  | HasFeature str -> ({ins = []; out = Some Int32Type}, false)
 
 
 (* Type Analysis *)
@@ -203,8 +209,9 @@ let rec check_expr c et e =
     check_type (Some t) et e.at
 
   | Host (hostop, es) ->
-    check_has_memory c e.at;
-    let {ins; out} = type_hostop hostop in
+    let ({ins; out}, hasmem) = type_hostop hostop in
+    if hasmem then
+      check_has_memory c e.at;
     check_exprs c ins es;
     check_type out et e.at
 
