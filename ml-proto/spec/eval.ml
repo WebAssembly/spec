@@ -250,8 +250,8 @@ let rec eval_expr (c : config) (e : expr) =
 
   | Host (hostop, es) ->
     let vs = List.map (eval_expr c) es in
-    let mem = c.instance.memory in
-    eval_hostop c.instance.host mem hostop vs e.at
+    let mem_opt = c.instance.memory in
+    eval_hostop c.instance.host mem_opt hostop vs e.at
 
 and eval_expr_opt c = function
   | Some e -> eval_expr c e
