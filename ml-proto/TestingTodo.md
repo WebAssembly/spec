@@ -22,7 +22,8 @@ Operator semantics:
  - ~~test that shifts don't mask their shift count. 32 is particularly nice to test.~~
  - test that `page_size` returns a power of 2
  - ~~test that arithmetic operands are evaluated left-to-right~~
- - test that call and store operands are evaluated left-to-right too
+ - ~~test that call and store operands are evaluated left-to-right too~~
+ - test that call and argument operands of call_indirect are evaluated left-to-right, too
  - ~~test that add/sub/mul/wrap/wrapping-store silently wrap on overflow~~
  - ~~test that sdiv/udiv/srem/urem trap on divide-by-zero~~
  - ~~test that sdiv traps on overflow~~

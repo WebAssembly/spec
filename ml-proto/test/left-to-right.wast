@@ -1,20 +1,22 @@
 (module
-  (memory 1)
+  (memory 9)
   
   ;; The idea is: We reset the memory, then the arithmetic instruction calls $*_left and $*_right.
-  ;; $*_left stores the number 1, and $*_right stores the number 2 (both at address 0)
-  ;; Then we read the value at address 0. If it's 0, the VM did an unwanted optimzation.
+  ;; $*_left stores the number 1, and $*_right stores the number 2 (both at address 8)
+  ;; Then we read the value at address 8. If it's 0, the VM did an unwanted optimzation.
   ;; If it's 1, then $*_right was called before $*_left. If it's 2, then everything's fine.
-  (func $reset (i32.store8 (i32.const 0)(i32.const 0)))
-  (func $get (result i32) (i32.load8_u (i32.const 0)))
-  (func $i32_left (result i32) (i32.store8 (i32.const 0) (i32.const 1)) (i32.const 127))
-  (func $i32_right (result i32) (i32.store8 (i32.const 0) (i32.const 2)) (i32.const 141))
-  (func $i64_left (result i64) (i32.store8 (i32.const 0) (i32.const 1)) (i64.const 163))
-  (func $i64_right (result i64) (i32.store8 (i32.const 0) (i32.const 2)) (i64.const 155))
-  (func $f32_left (result f32) (i32.store8 (i32.const 0) (i32.const 1)) (f32.const 124))
-  (func $f32_right (result f32) (i32.store8 (i32.const 0) (i32.const 2)) (f32.const 145))
-  (func $f64_left (result f64) (i32.store8 (i32.const 0) (i32.const 1)) (f64.const 163))
-  (func $f64_right (result f64) (i32.store8 (i32.const 0) (i32.const 2)) (f64.const 164))
+  (func $reset (i32.store8 (i32.const 8) (i32.const 0)))
+  (func $get (result i32) (i32.load8_u (i32.const 8)))
+  (func $i32_left (result i32) (i32.store8 (i32.const 8) (i32.const 1)) (i32.const 0))
+  (func $i32_right (result i32) (i32.store8 (i32.const 8) (i32.const 2)) (i32.const 1))
+  (func $i64_left (result i64) (i32.store8 (i32.const 8) (i32.const 1)) (i64.const 0))
+  (func $i64_right (result i64) (i32.store8 (i32.const 8) (i32.const 2)) (i64.const 1))
+  (func $f32_left (result f32) (i32.store8 (i32.const 8) (i32.const 1)) (f32.const 0))
+  (func $f32_right (result f32) (i32.store8 (i32.const 8) (i32.const 2)) (f32.const 1))
+  (func $f64_left (result f64) (i32.store8 (i32.const 8) (i32.const 1)) (f64.const 0))
+  (func $f64_right (result f64) (i32.store8 (i32.const 8) (i32.const 2)) (f64.const 1))
+  (func $i32_dummy (param i32 i32))                  (func $i64_dummy (param i64 i64))
+  (func $f32_dummy (param f32 f32))                  (func $f64_dummy (param f64 f64))
 
 
   (func $i32_add (result i32) (call $reset) (i32.add (call $i32_left) (call $i32_right)) (call $get))
@@ -40,6 +42,10 @@
   (func $i32_ge_s (result i32) (call $reset) (i32.ge_s (call $i32_left) (call $i32_right)) (call $get))
   (func $i32_gt_u (result i32) (call $reset) (i32.gt_u (call $i32_left) (call $i32_right)) (call $get))
   (func $i32_ge_u (result i32) (call $reset) (i32.ge_u (call $i32_left) (call $i32_right)) (call $get))
+  (func $i32_store (result i32) (call $reset) (i32.store (call $i32_left) (call $i32_right)) (call $get))
+  (func $i32_store8 (result i32) (call $reset) (i32.store8 (call $i32_left) (call $i32_right)) (call $get))
+  (func $i32_store16 (result i32) (call $reset) (i32.store16 (call $i32_left) (call $i32_right)) (call $get))
+  (func $i32_call (result i32) (call $reset) (call $i32_dummy (call $i32_left) (call $i32_right)) (call $get))
 
   (func $i64_add (result i32) (call $reset) (i64.add (call $i64_left) (call $i64_right)) (call $get))
   (func $i64_sub (result i32) (call $reset) (i64.sub (call $i64_left) (call $i64_right)) (call $get))
@@ -64,6 +70,11 @@
   (func $i64_ge_s (result i32) (call $reset) (i64.ge_s (call $i64_left) (call $i64_right)) (call $get))
   (func $i64_gt_u (result i32) (call $reset) (i64.gt_u (call $i64_left) (call $i64_right)) (call $get))
   (func $i64_ge_u (result i32) (call $reset) (i64.ge_u (call $i64_left) (call $i64_right)) (call $get))
+  (func $i64_store (result i32) (call $reset) (i64.store (call $i32_left) (call $i64_right)) (call $get))
+  (func $i64_store8 (result i32) (call $reset) (i64.store8 (call $i32_left) (call $i64_right)) (call $get))
+  (func $i64_store16 (result i32) (call $reset) (i64.store16 (call $i32_left) (call $i64_right)) (call $get))
+  (func $i64_store32 (result i32) (call $reset) (i64.store32 (call $i32_left) (call $i64_right)) (call $get))
+  (func $i64_call (result i32) (call $reset) (call $i64_dummy (call $i64_left) (call $i64_right)) (call $get))
 
 
   (func $f32_add (result i32) (call $reset) (f32.add (call $f32_left) (call $f32_right)) (call $get))
@@ -79,6 +90,8 @@
   (func $f32_ge (result i32) (call $reset) (f32.ge (call $f32_left) (call $f32_right)) (call $get))
   (func $f32_min (result i32) (call $reset) (f32.min (call $f32_left) (call $f32_right)) (call $get))
   (func $f32_max (result i32) (call $reset) (f32.max (call $f32_left) (call $f32_right)) (call $get))
+  (func $f32_store (result i32) (call $reset) (f32.store (call $i32_left) (call $f32_right)) (call $get))
+  (func $f32_call (result i32) (call $reset) (call $f32_dummy (call $f32_left) (call $f32_right)) (call $get))
 
   (func $f64_add (result i32) (call $reset) (f64.add (call $f64_left) (call $f64_right)) (call $get))
   (func $f64_sub (result i32) (call $reset) (f64.sub (call $f64_left) (call $f64_right)) (call $get))
@@ -93,6 +106,8 @@
   (func $f64_ge (result i32) (call $reset) (f64.ge (call $f64_left) (call $f64_right)) (call $get))
   (func $f64_min (result i32) (call $reset) (f64.min (call $f64_left) (call $f64_right)) (call $get))
   (func $f64_max (result i32) (call $reset) (f64.max (call $f64_left) (call $f64_right)) (call $get))
+  (func $f64_store (result i32) (call $reset) (f64.store (call $i32_left) (call $f64_right)) (call $get))
+  (func $f64_call (result i32) (call $reset) (call $f64_dummy (call $f64_left) (call $f64_right)) (call $get))
 
 
   (export "i32_add" $i32_add)                        (export "i64_add" $i64_add) 
@@ -118,6 +133,11 @@
   (export "i32_ge_s" $i32_ge_s)                      (export "i64_ge_s" $i64_ge_s) 
   (export "i32_gt_u" $i32_gt_u)                      (export "i64_gt_u" $i64_gt_u) 
   (export "i32_ge_u" $i32_ge_u)                      (export "i64_ge_u" $i64_ge_u) 
+  (export "i32_store" $i32_store)                    (export "i64_store" $i64_store)
+  (export "i32_store8" $i32_store8)                  (export "i64_store8" $i64_store8)
+  (export "i32_store16" $i32_store16)                (export "i64_store16" $i64_store16)
+  (export "i64_store32" $i64_store32)
+  (export "i32_call" $i32_call)                      (export "i64_call" $i64_call)
 
   (export "f32_add" $f32_add)                        (export "f64_add" $f64_add) 
   (export "f32_sub" $f32_sub)                        (export "f64_sub" $f64_sub) 
@@ -132,6 +152,8 @@
   (export "f32_ge" $f32_ge)                          (export "f64_ge" $f64_ge) 
   (export "f32_min" $f32_min)                        (export "f64_min" $f64_min) 
   (export "f32_max" $f32_max)                        (export "f64_max" $f64_max) 
+  (export "f32_store" $f32_store)                    (export "f64_store" $f64_store)
+  (export "f32_call" $f32_call)                      (export "f64_call" $f64_call)
 )
 
 (assert_return (invoke "i32_add") (i32.const 2))     (assert_return (invoke "i64_add") (i32.const 2))
@@ -157,6 +179,11 @@
 (assert_return (invoke "i32_ge_s") (i32.const 2))    (assert_return (invoke "i64_ge_s") (i32.const 2))
 (assert_return (invoke "i32_gt_u") (i32.const 2))    (assert_return (invoke "i64_gt_u") (i32.const 2))
 (assert_return (invoke "i32_ge_u") (i32.const 2))    (assert_return (invoke "i64_ge_u") (i32.const 2))
+(assert_return (invoke "i32_store") (i32.const 2))   (assert_return (invoke "i64_store") (i32.const 2))
+(assert_return (invoke "i32_store8") (i32.const 2))  (assert_return (invoke "i64_store8") (i32.const 2))
+(assert_return (invoke "i32_store16") (i32.const 2)) (assert_return (invoke "i64_store16") (i32.const 2))
+(assert_return (invoke "i64_store32") (i32.const 2))
+(assert_return (invoke "i32_call") (i32.const 2))    (assert_return (invoke "i64_call") (i32.const 2))
 
 (assert_return (invoke "f32_add") (i32.const 2))     (assert_return (invoke "f64_add") (i32.const 2))
 (assert_return (invoke "f32_sub") (i32.const 2))     (assert_return (invoke "f64_sub") (i32.const 2))
@@ -171,3 +198,5 @@
 (assert_return (invoke "f32_ge") (i32.const 2))      (assert_return (invoke "f64_ge") (i32.const 2))
 (assert_return (invoke "f32_min") (i32.const 2))     (assert_return (invoke "f64_min") (i32.const 2))
 (assert_return (invoke "f32_max") (i32.const 2))     (assert_return (invoke "f64_max") (i32.const 2))
+(assert_return (invoke "f32_store") (i32.const 2))   (assert_return (invoke "f64_store") (i32.const 2))
+(assert_return (invoke "f32_call") (i32.const 2))    (assert_return (invoke "f64_call") (i32.const 2))
