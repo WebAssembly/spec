@@ -20,7 +20,7 @@ Operator semantics:
  - ~~test that numbers slightly outside of the int32 range round into the int32 range in floating-to-int32 conversion~~
  - ~~test that neg, abs, copysign, reinterpretcast, store+load, set+get, preserve the sign bit and significand bits of NaN and don't canonicalize~~
  - ~~test that shifts don't mask their shift count. 32 is particularly nice to test.~~
- - test that `page_size` returns a power of 2
+ - ~~test that `page_size` returns a power of 2~~
  - ~~test that arithmetic operands are evaluated left-to-right~~
  - ~~test that call and store operands are evaluated left-to-right too~~
  - test that call and argument operands of call_indirect are evaluated left-to-right, too
