@@ -66,8 +66,8 @@ Function pointer semantics:
 Expression optimizer bait:
  - ~~test that `a+1<b+1` isn't folded to `a<b`~~
  - test that that demote-promote, wrap+sext, wrap+zext, shl+ashr, shl+lshr, div+mul, mul+div aren't folded away
- - test that converting int32 to float and back isn't folded away
- - test that converting int64 to double and back isn't folded away
+ - ~~test that converting int32 to float and back isn't folded away~~
+ - ~~test that converting int64 to double and back isn't folded away~~
  - test that `float(double(float(x))+double(y))` is not `float(x)+float(y)` (and so on for other operators)
  - ~~test that `x*0.0` is not folded to `0.0`~~
  - ~~test that `0.0/x` is not folded to `0.0`~~
