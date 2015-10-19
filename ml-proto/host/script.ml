@@ -25,7 +25,7 @@ module Syntax = Error.Make ()
 module AssertFailure = Error.Make ()
 
 exception Syntax = Syntax.Error
-exception AssertFailure = AssertFailure.Error
+exception AssertFailure = AssertFailure.Error  (* assert command failure *)
 
 let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 

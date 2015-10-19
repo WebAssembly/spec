@@ -34,6 +34,8 @@ module Crash = Error.Make ()
 
 exception Trap = Trap.Error
 exception Crash = Crash.Error
+  (* A crash is an execution failure that cannot legally happen in checked
+   * code; it indicates an internal inconsistency in the spec. *)
 
 let memory_error at = function
   | Memory.Bounds -> Trap.error at "out of bounds memory access"
@@ -45,9 +47,9 @@ let type_error at v t =
     ("type error, expected " ^ Types.string_of_value_type t ^
       ", got " ^ Types.string_of_value_type (type_of v))
 
-let arithmetic_error at at1 at2 = function
+let arithmetic_error at at_op1 at_op2 = function
   | Arithmetic.TypeError (i, v, t) ->
-    type_error (if i = 1 then at1 else at2) v t
+    type_error (if i = 1 then at_op1 else at_op2) v t
   | Numerics.IntegerOverflow ->
     Trap.error at "integer overflow"
   | Numerics.IntegerDivideByZero ->

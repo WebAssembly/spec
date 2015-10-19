@@ -3,7 +3,7 @@ open Types
 open Ast
 
 module Unknown = Error.Make ()
-exception Unknown = Unknown.Error
+exception Unknown = Unknown.Error  (* indicates unknown import name *)
 
 let print vs =
   List.iter Print.print_value (List.map (fun v -> Some v) vs);
