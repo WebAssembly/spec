@@ -88,18 +88,20 @@ let letter = ['a'-'z''A'-'Z']
 let symbol = ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.']
 let tick = '\''
 let escape = ['n''t''\\''\'''\"']
-let character = [^'"''\\''\n'] | '\\'escape | '\\'hexdigit hexdigit
+let character =
+  [^'"''\\''\x00'-'\x1f''\x7f'] | '\\'escape | '\\'hexdigit hexdigit
 
 let sign = ('+' | '-')?
 let num = sign digit+
 let hexnum = sign "0x" hexdigit+
 let int = num | hexnum
-let float = (num '.' digit+)
-          | num ('.' digit+)? ('e' | 'E') num
-          | sign "0x" hexdigit+ '.'? hexdigit* 'p' sign digit+
-          | sign "infinity"
-          | sign "nan"
-          | sign "nan(0x" hexdigit+ ")"
+let float =
+    (num '.' digit+)
+  | num ('.' digit+)? ('e' | 'E') num
+  | sign "0x" hexdigit+ '.'? hexdigit* 'p' sign digit+
+  | sign "infinity"
+  | sign "nan"
+  | sign "nan(0x" hexdigit+ ")"
 let text = '"' character* '"'
 let name = '$' (letter | digit | '_' | tick | symbol)+
 
@@ -119,6 +121,8 @@ rule token = parse
   | float as s { FLOAT s }
   | text as s { TEXT (convert_text s) }
   | '"'character*('\n'|eof) { error lexbuf "unclosed text literal" }
+  | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
+    { error lexbuf "illegal control character in text literal" }
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
