@@ -50,6 +50,8 @@ sig
   val shl : t -> t -> t
   val shr_s : t -> t -> t
   val shr_u : t -> t -> t
+  val rotl : t -> t -> t
+  val rotr : t -> t -> t
   val clz : t -> t
   val ctz : t -> t
   val popcnt : t -> t
@@ -133,7 +135,7 @@ struct
   let or_ = Rep.logor
   let xor = Rep.logxor
 
-  (* WebAssembly's shifts mask the shift count to according to the bitwidth. *)
+  (* WebAssembly's shifts mask the shift count according to the bitwidth. *)
   let shift f x y =
     f x (Rep.to_int (Rep.logand y (Rep.of_int (Rep.bitwidth - 1))))
 
@@ -145,6 +147,18 @@ struct
 
   let shr_u x y =
     shift Rep.shift_right_logical x y
+
+  (* We must mask the count to implement rotates via shifts. *)
+  let clamp_rotate_count n =
+    Rep.to_int (Rep.logand n (Rep.of_int (Rep.bitwidth - 1)))
+
+  let rotl x y =
+    let n = clamp_rotate_count y in
+    or_ (Rep.shift_left x n) (Rep.shift_right_logical x (Rep.bitwidth - n))
+
+  let rotr x y =
+    let n = clamp_rotate_count y in
+    or_ (Rep.shift_right_logical x n) (Rep.shift_left x (Rep.bitwidth - n))
 
   (* clz is defined for all values, including all-zeros. *)
   let clz x =
