@@ -135,6 +135,7 @@ let callstack_exhaustion at =
  *)
 
 let rec eval_expr (c : config) (e : expr) =
+  let result_value = (
   match e.it with
   | Nop ->
     None
@@ -258,6 +259,14 @@ let rec eval_expr (c : config) (e : expr) =
     let vs = List.map (eval_expr c) es in
     let mem_opt = c.instance.memory in
     eval_hostop c.instance.host mem_opt hostop vs e.at
+
+  ) in
+
+  let value_str = match result_value with
+                  | Some v -> string_of_value v
+                  | None   -> "no value" in
+  Printf.printf "trace: %s: %s\n" (string_of_region e.at) value_str;
+  result_value
 
 and eval_expr_opt c = function
   | Some e -> eval_expr c e
