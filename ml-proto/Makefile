@@ -15,7 +15,8 @@ OCB_FLAGS +=	# -cflags -w
 OCB_FLAGS += 	# -cflags +a-4-41-42-44-45
 OCB_FLAGS += 	$(DIRS:%=-I %)
 OCB_FLAGS += 	$(LIBS:%=-libs %)
-OCB =		ocamlbuild -quiet $(OCB_FLAGS)
+OCB_FLAGS += 	-quiet
+OCB =		ocamlbuild $(OCB_FLAGS)
 
 .PHONY:		all opt unopt
 unopt:		$(NAME_UNOPT)
@@ -28,12 +29,10 @@ $(NAME_OPT):	main.native
 $(NAME_UNOPT):	main.d.byte
 		mv $< $@
 
-.PHONY:		main.native
-main.native:
+%.native:
 		$(OCB) $@
 
-.PHONY:		main.d.byte
-main.d.byte:
+%.byte:
 		$(OCB) $@
 
 .PHONY:		test
