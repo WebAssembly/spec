@@ -140,6 +140,7 @@ expr:
   ( label <var>? <expr> )
   ( break <var> <expr>? )
   ( switch <expr> <case>+ )
+  ( switch <var>? <expr> <case>+ )               ;; = (label <var> (switch <expr> <case>+))
   ( call <var> <expr>* )
   ( call_import <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
