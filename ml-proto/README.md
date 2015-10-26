@@ -134,12 +134,12 @@ expr:
   ( block <var> <expr>+ )                        ;; = (label <var> (block <expr>+))
   ( if <expr> <expr> <expr> )
   ( if <expr> <expr> )                           ;; = (if <expr> <expr> (nop))
+  ( if_break <expr> <var> )                      ;; = (if <expr> (break <var>) (nop))
   ( loop <expr>* )                               ;; = (loop (block <expr>*))
   ( loop <var> <var>? <expr>* )                  ;; = (label <var> (loop (block <var>? <expr>*)))
   ( label <var>? <expr> )
   ( break <var> <expr>? )
-  ( <type>.switch <expr> <case>* <expr> )
-  ( <type>.switch <var> <expr> <case>* <expr> )  ;; = (label <var> (<type>.switch <expr> <case>* <expr>))
+  ( switch <expr> <case>+ )
   ( call <var> <expr>* )
   ( call_import <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
@@ -158,8 +158,10 @@ expr:
   ( grow_memory <expr> )
 
 case:
-  ( case <value> <expr>* fallthrough? )  ;; = (case <int> (block <expr>*) fallthrough?)
-  ( case <value> )                       ;; = (case <int> (nop) fallthrough)
+  ( case <int> <expr>* )                         ;; = (case <int> (block <expr>*))
+  ( case_break <int> <var> )                     ;; = (case <int> (break <var>))
+  ( default <expr>* )                            ;; = (default (block <expr>*))
+  ( default_break <var> )                        ;; = (default (break <var>))
 
 func:   ( func <name>? <type>? <param>* <result>? <local>* <expr>* )
 type:   ( type <var> )

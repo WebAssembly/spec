@@ -44,6 +44,11 @@ let literal s t =
     | Failure reason -> Error.error s.at ("constant out of range: " ^ reason)
     | _ -> Error.error s.at "constant out of range"
 
+let int32 s =
+  try I32.of_string s.it with
+    | Failure reason -> Error.error s.at ("constant out of range: " ^ reason)
+    | _ -> Error.error s.at "constant out of range"
+
 
 (* Memory operands *)
 
@@ -146,7 +151,8 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
+%token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE DEFAULT
+%token IF_BREAK CASE_BREAK DEFAULT_BREAK
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE LOAD_EXTEND STORE_WRAP OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -162,7 +168,6 @@ let implicit_decl c t at =
 %token<string> VAR
 %token<Types.value_type> VALUE_TYPE
 %token<Types.value_type> CONST
-%token<Types.value_type> SWITCH
 %token<Ast.unop> UNARY
 %token<Ast.binop> BINARY
 %token<Ast.relop> COMPARE
@@ -241,6 +246,7 @@ expr1 :
   | BLOCK labeling expr expr_list
     { fun c -> let c', l = $2 c in block (l, $3 c' :: $4 c') }
   | IF expr expr expr_opt { fun c -> if_ ($2 c, $3 c, $4 c) }
+  | IF_BREAK expr var { fun c -> if_break ($2 c, $3 c label) }
   | LOOP labeling labeling expr_list
     { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
       loop (l1, l2, $4 c'') }
@@ -252,9 +258,8 @@ expr1 :
   | RETURN expr_opt
     { let at1 = ati 1 in
       fun c -> return (label c ("return" @@ at1) @@ at1, $2 c) }
-  | SWITCH labeling expr cases
-    { fun c -> let c', l = $2 c in let cs, e = $4 c' in
-      switch (l, $1, $3 c', List.map (fun a -> a $1) cs, e) }
+  | SWITCH labeling expr case_list
+    { fun c -> let c', l = $2 c in switch (l, $3 c', $4 c') }
   | CALL var expr_list { fun c -> call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
@@ -288,23 +293,18 @@ expr_list :
   | expr expr_list { fun c -> $1 c :: $2 c }
 ;
 
-fallthrough :
-  | /* empty */ { false }
-  | FALLTHROUGH { true }
-;
-
 case :
-  | LPAR case1 RPAR { let at = at () in fun c t -> $2 c t @@ at }
+  | LPAR case1 RPAR { let at = at () in fun c -> $2 c @@ at }
 ;
 case1 :
-  | CASE literal expr expr_list fallthrough
-    { fun c t -> case (literal $2 t, Some ($3 c :: $4 c, $5)) }
-  | CASE literal
-    { fun c t -> case (literal $2 t, None) }
+  | CASE literal expr_list { fun c -> case (Some (int32 $2), $3 c) }
+  | DEFAULT expr_list { fun c -> case (None, $2 c) }
+  | CASE_BREAK literal var { fun c -> case_break (Some (int32 $2), $3 c label) }
+  | DEFAULT_BREAK var { fun c -> case_break (None, $2 c label) }
 ;
-cases :
-  | expr { fun c -> [], $1 c }
-  | case cases { fun c -> let x, y = $2 c in $1 c :: x, y }
+case_list :
+  | case { fun c -> [$1 c] }
+  | case case_list { fun c -> $1 c :: $2 c }
 ;
 
 

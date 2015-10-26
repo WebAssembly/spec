@@ -79,35 +79,34 @@ type literal = value Source.phrase
 
 type expr = expr' Source.phrase
 and expr' =
-  | Nop                                            (* do nothing *)
-  | Block of expr list                             (* execute in sequence *)
-  | If of expr * expr * expr                       (* conditional *)
-  | Loop of expr                                   (* infinite loop *)
-  | Label of expr                                  (* labelled expression *)
-  | Break of var * expr option                     (* break to n-th surrounding label *)
-  | Switch of value_type * expr * case list * expr (* switch, latter expr is default *)
-  | Call of var * expr list                        (* call function *)
-  | CallImport of var * expr list                  (* call imported function *)
-  | CallIndirect of var * expr * expr list         (* call function through table *)
-  | GetLocal of var                                (* read local variable *)
-  | SetLocal of var * expr                         (* write local variable *)
-  | Load of memop * expr                           (* read memory at address *)
-  | Store of memop * expr * expr                   (* write memory at address *)
-  | LoadExtend of extop * expr                     (* read memory at address and extend *)
-  | StoreWrap of wrapop * expr * expr              (* wrap and write to memory at address *)
-  | Const of literal                               (* constant *)
-  | Unary of unop * expr                           (* unary arithmetic operator *)
-  | Binary of binop * expr * expr                  (* binary arithmetic operator *)
-  | Compare of relop * expr * expr                 (* arithmetic comparison *)
-  | Convert of cvt * expr                          (* conversion *)
-  | Host of hostop * expr list                     (* host interaction *)
+  | Nop                                     (* do nothing *)
+  | Block of expr list                      (* execute in sequence *)
+  | If of expr * expr * expr                (* conditional *)
+  | Loop of expr                            (* infinite loop *)
+  | Label of expr                           (* labelled expression *)
+  | Break of var * expr option              (* break to n-th surrounding label *)
+  | Switch of expr * case list              (* table switch *)
+  | Call of var * expr list                 (* call function *)
+  | CallImport of var * expr list           (* call imported function *)
+  | CallIndirect of var * expr * expr list  (* call function through table *)
+  | GetLocal of var                         (* read local variable *)
+  | SetLocal of var * expr                  (* write local variable *)
+  | Load of memop * expr                    (* read memory at address *)
+  | Store of memop * expr * expr            (* write memory at address *)
+  | LoadExtend of extop * expr              (* read memory at address and extend *)
+  | StoreWrap of wrapop * expr * expr       (* wrap and write to memory at address *)
+  | Const of literal                        (* constant *)
+  | Unary of unop * expr                    (* unary arithmetic operator *)
+  | Binary of binop * expr * expr           (* binary arithmetic operator *)
+  | Compare of relop * expr * expr          (* arithmetic comparison *)
+  | Convert of cvt * expr                   (* conversion *)
+  | Host of hostop * expr list              (* host interaction *)
 
 and case = case' Source.phrase
 and case' =
 {
-  value : literal;
+  value : I32.t option;
   expr : expr;
-  fallthru : bool
 }
 
 
