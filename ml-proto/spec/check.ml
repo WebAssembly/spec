@@ -39,6 +39,12 @@ let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
+module CaseSet = Set.Make(
+  struct
+    type t = I32.t option
+    let compare = Lib.Option.compare I32.compare_u
+  end)
+
 
 (* Type comparison *)
 
@@ -53,8 +59,8 @@ let check_type actual expected at =
 let type_value = Values.type_of
 let type_unop = Values.type_of
 let type_binop = Values.type_of
+let type_selop = Values.type_of
 let type_relop = Values.type_of
-let type_selectop = Values.type_of
 
 let type_cvt at = function
   | Values.Int32 cvt ->
@@ -133,7 +139,8 @@ let rec check_expr c et e =
     check_expr c et e3
 
   | Loop e1 ->
-    check_expr c None e1
+    let c' = {c with labels = None :: c.labels} in
+    check_expr c' et e1
 
   | Label e1 ->
     let c' = {c with labels = et :: c.labels} in
@@ -142,12 +149,11 @@ let rec check_expr c et e =
   | Break (x, eo) ->
     check_expr_opt c (label c x) eo e.at
 
-  | Switch (t, e1, cs, e2) ->
-    require (t = Int32Type || t = Int64Type) e.at "invalid switch type";
-    (* TODO: Check that cases are unique. *)
-    check_expr c (Some t) e1;
-    List.iter (check_case c t et) cs;
-    check_expr c et e2
+  | Switch (e1, xs, x, es) ->
+    List.iter (fun x -> require (x.it < List.length es) x.at "invalid target")
+      (x :: xs);
+    check_expr c (Some Int32Type) e1;
+    ignore (List.fold_right (fun e et -> check_expr c et e; None) es et)
 
   | Call (x, es) ->
     let {ins; out} = func c x in
@@ -201,6 +207,12 @@ let rec check_expr c et e =
     check_expr c (Some t) e2;
     check_type (Some t) et e.at
 
+  | Select (selop, e1, e2, e3) ->
+    let t = type_selop selop in
+    check_expr c (Some Int32Type) e1;
+    check_expr c (Some t) e2;
+    check_expr c (Some t) e3
+
   | Compare (relop, e1, e2) ->
     let t = type_relop relop in
     check_expr c (Some t) e1;
@@ -211,12 +223,6 @@ let rec check_expr c et e =
     let t1, t = type_cvt e.at cvt in
     check_expr c (Some t1) e1;
     check_type (Some t) et e.at
-
-  | Select (selectop, e1, e2, e3) ->
-    let t = type_selectop selectop in
-    check_expr c (Some Int32Type) e1;
-    check_expr c (Some t) e2;
-    check_expr c (Some t) e3
 
   | Host (hostop, es) ->
     let ({ins; out}, hasmem) = type_hostop hostop in
@@ -237,11 +243,6 @@ and check_expr_opt c et eo at =
 
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
-
-and check_case c t et case =
-  let {value = l; expr = e; fallthru} = case.it in
-  check_literal c (Some t) l;
-  check_expr c (if fallthru then None else et) e
 
 and check_load c et memop e1 at =
   check_has_memory c at;
