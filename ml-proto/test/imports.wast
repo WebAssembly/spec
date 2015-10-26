@@ -17,7 +17,7 @@
             (f64.const 53)
         )
     )
-    (func $init
+    (func $main
         (call $print32 (i32.const 13))
         (call $print64 (i64.const 24))
     )
