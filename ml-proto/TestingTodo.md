@@ -20,7 +20,7 @@ Operator semantics:
  - ~~test that numbers slightly outside of the int32 range round into the int32 range in floating-to-int32 conversion~~
  - ~~test that neg, abs, copysign, reinterpretcast, store+load, set+get, preserve the sign bit and significand bits of NaN and don't canonicalize~~
  - ~~test that shifts don't mask their shift count. 32 is particularly nice to test.~~
- - test that `page_size` returns a power of 2
+ - ~~test that `page_size` returns a power of 2~~
  - ~~test that arithmetic operands are evaluated left-to-right~~
  - ~~test that call and store operands are evaluated left-to-right too~~
  - test that call and argument operands of call_indirect are evaluated left-to-right, too
@@ -66,8 +66,8 @@ Function pointer semantics:
 Expression optimizer bait:
  - ~~test that `a+1<b+1` isn't folded to `a<b`~~
  - test that that demote-promote, wrap+sext, wrap+zext, shl+ashr, shl+lshr, div+mul, mul+div aren't folded away
- - test that converting int32 to float and back isn't folded away
- - test that converting int64 to double and back isn't folded away
+ - ~~test that converting int32 to float and back isn't folded away~~
+ - ~~test that converting int64 to double and back isn't folded away~~
  - test that `float(double(float(x))+double(y))` is not `float(x)+float(y)` (and so on for other operators)
  - ~~test that `x*0.0` is not folded to `0.0`~~
  - ~~test that `0.0/x` is not folded to `0.0`~~

@@ -5,7 +5,10 @@
 type instance
 type value = Values.value
 type import = value list -> value option
-type host_params = {page_size : Memory.size}
+type host_params = {
+  page_size : Memory.size;
+  has_feature : string -> bool
+}
 
 exception Trap of Source.region * string
 exception Crash of Source.region * string

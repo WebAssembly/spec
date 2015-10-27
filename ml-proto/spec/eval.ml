@@ -12,7 +12,10 @@ open Source
 
 type value = Values.value
 type import = value list -> value option
-type host_params = {page_size : Memory.size}
+type host_params = {
+  page_size : Memory.size;
+  has_feature : string -> bool
+}
 
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
@@ -243,8 +246,7 @@ let rec eval_expr (c : config) (e : expr) =
 
   | Host (hostop, es) ->
     let vs = List.map (eval_expr c) es in
-    let mem = memory c e.at in
-    eval_hostop c.instance.host mem hostop vs e.at
+    eval_hostop c hostop vs e.at
 
 and eval_expr_opt c = function
   | Some e -> eval_expr c e
@@ -273,17 +275,20 @@ and coerce et vo =
 
 (* Host operators *)
 
-and eval_hostop host mem hostop vs at =
+and eval_hostop c hostop vs at =
+  let host = c.instance.host in
   match hostop, vs with
   | PageSize, [] ->
     assert (I64.lt_u host.page_size (Int64.of_int32 Int32.max_int));
     Some (Int32 (Int64.to_int32 host.page_size))
 
   | MemorySize, [] ->
+    let mem = memory c at in
     assert (I64.lt_u (Memory.size mem) (Int64.of_int32 Int32.max_int));
     Some (Int32 (Int64.to_int32 (Memory.size mem)))
 
   | GrowMemory, [v] ->
+    let mem = memory c at in
     let delta = address32 v at in
     if I64.rem_u delta host.page_size <> 0L then
       Trap.error at "growing memory by non-multiple of page size";
@@ -296,6 +301,9 @@ and eval_hostop host mem hostop vs at =
       Trap.error at "memory size exceeds implementation limit";
     Memory.grow mem delta;
     None
+
+  | HasFeature str, [] ->
+    Some (Int32 (if host.has_feature str then 1l else 0l))
 
   | _, _ ->
     Crash.error at "invalid invocation of host operator"
@@ -326,4 +334,3 @@ let invoke instance name vs =
   try
     eval_func instance (export instance (name @@ no_region)) vs
   with Stack_overflow -> Trap.error Source.no_region "call stack exhausted"
-

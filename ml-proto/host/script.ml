@@ -47,7 +47,10 @@ let run_command cmd =
     end;
     trace "Initializing...";
     let imports = Builtins.match_imports m in
-    let host_params = {Eval.page_size = Params.page_size} in
+    let host_params = {
+      Eval.page_size = Params.page_size;
+      Eval.has_feature = Params.has_feature
+    } in
     current_module := Some (Eval.init m imports host_params)
 
   | Invoke (name, es) ->

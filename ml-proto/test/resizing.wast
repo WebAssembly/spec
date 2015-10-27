@@ -1,6 +1,11 @@
 (module
     (memory 0)
 
+    (export "power_of_two" $power_of_two)
+    (func $power_of_two (result i32)
+      (i32.popcnt (page_size))
+    )
+    
     (export "round_up_to_page" $round_up_to_page)
     (func $round_up_to_page (param i32) (result i32)
       (i32.and (i32.add (get_local 0) (i32.sub (page_size) (i32.const 1)))
@@ -31,6 +36,7 @@
     (func $size (result i32) (memory_size))
 )
 
+(assert_return (invoke "power_of_two") (i32.const 1))
 (assert_return (invoke "size") (i32.const 0))
 (assert_return (invoke "size_at_least" (i32.const 0)) (i32.const 1))
 (assert_trap (invoke "store_at_zero") "out of bounds memory access")

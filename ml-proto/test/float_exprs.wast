@@ -362,3 +362,39 @@
 (assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.125ec2p+69) (f32.const -0x1.a7f42ep+92)) (f32.const 0x1.5db572p-35))
 (assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.ba4c5p+13) (f32.const 0x1.947784p-72)) (f32.const 0x1.136f16p-7))
 (assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.4a5be2p+104) (f32.const 0x1.a7b718p-19)) (f32.const 0x1.c2b5bp-53))
+
+;; Test that converting i32/i64 to f32/f64 and back isn't folded away
+
+(module
+  (func $i32.no_fold_f32_s (param i32) (result i32)
+    (i32.trunc_s/f32 (f32.convert_s/i32 (get_local 0))))
+  (export "i32.no_fold_f32_s" $i32.no_fold_f32_s)
+  
+  (func $i32.no_fold_f32_u (param i32) (result i32)
+    (i32.trunc_u/f32 (f32.convert_u/i32 (get_local 0))))
+  (export "i32.no_fold_f32_u" $i32.no_fold_f32_u)
+  
+  (func $i64.no_fold_f64_s (param i64) (result i64)
+    (i64.trunc_s/f64 (f64.convert_s/i64 (get_local 0))))
+  (export "i64.no_fold_f64_s" $i64.no_fold_f64_s)
+  
+  (func $i64.no_fold_f64_u (param i64) (result i64)
+    (i64.trunc_u/f64 (f64.convert_u/i64 (get_local 0))))
+  (export "i64.no_fold_f64_u" $i64.no_fold_f64_u)
+)
+
+(assert_return (invoke "i32.no_fold_f32_s" (i32.const 0x1000000)) (i32.const 0x1000000))
+(assert_return (invoke "i32.no_fold_f32_s" (i32.const 0x1000001)) (i32.const 0x1000000))
+(assert_return (invoke "i32.no_fold_f32_s" (i32.const 0xf0000010)) (i32.const 0xf0000010))
+
+(assert_return (invoke "i32.no_fold_f32_u" (i32.const 0x1000000)) (i32.const 0x1000000))
+(assert_return (invoke "i32.no_fold_f32_u" (i32.const 0x1000001)) (i32.const 0x1000000))
+(assert_return (invoke "i32.no_fold_f32_u" (i32.const 0xf0000010)) (i32.const 0xf0000000))
+
+(assert_return (invoke "i64.no_fold_f64_s" (i64.const 0x20000000000000)) (i64.const 0x20000000000000))
+(assert_return (invoke "i64.no_fold_f64_s" (i64.const 0x20000000000001)) (i64.const 0x20000000000000))
+(assert_return (invoke "i64.no_fold_f64_s" (i64.const 0xf000000000000400)) (i64.const 0xf000000000000400))
+
+(assert_return (invoke "i64.no_fold_f64_u" (i64.const 0x20000000000000)) (i64.const 0x20000000000000))
+(assert_return (invoke "i64.no_fold_f64_u" (i64.const 0x20000000000001)) (i64.const 0x20000000000000))
+(assert_return (invoke "i64.no_fold_f64_u" (i64.const 0xf000000000000400)) (i64.const 0xf000000000000000))
