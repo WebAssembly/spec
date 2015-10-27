@@ -293,7 +293,7 @@ and eval_hostop host mem hostop vs at =
     (* Test whether the new size overflows the memory type.
      * Since we currently only support i32, just test that. *)
     if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
-      Trap.error at "growing memory out of bounds";
+      Trap.error at "memory size exceeds implementation limit";
     Memory.grow mem delta;
     None
 

@@ -29,4 +29,4 @@
 (assert_trap (invoke "store" (i32.const 0x80000000) (i32.const 13)) "out of bounds memory access")
 (assert_trap (invoke "load" (i32.const 0x80000000)) "out of bounds memory access")
 (assert_trap (invoke "grow_memory" (i32.const 3)) "growing memory by non-multiple of page size")
-(assert_trap (invoke "overflow_memory_size") "growing memory out of bounds")
+(assert_trap (invoke "overflow_memory_size") "memory size exceeds implementation limit")
