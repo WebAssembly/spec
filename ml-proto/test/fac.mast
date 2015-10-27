@@ -1,0 +1,21 @@
+(module
+  ;; Factorial function computed using a while loop, implemented in the
+  ;; macro-assembler.
+  (func $fac-while (param $n i64) (result i64)
+    (local $i i64)
+    (local $res i64)
+    (set_local $i (get_local $n))
+    (set_local $res (i64.const 1))
+    (while (i64.ne (get_local $i) (i64.const 0))
+      (block
+        (set_local $res (i64.mul (get_local $i) (get_local $res)))
+        (set_local $i (i64.sub (get_local $i) (i64.const 1)))
+      )
+    )
+    (return (get_local $res))
+  )
+
+  (export "fac-while" $fac-while)
+)
+
+(assert_return (invoke "fac-while" (i64.const 25)) (i64.const 7034535277573963776))

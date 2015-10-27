@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+
+# Standalone command-line interface for running the macro-assembler.
+
+import sys
+import masm
+
+for arg in sys.argv[1:]:
+    masm.transform_file(arg, arg.replace('.mast', '.generated.wast'))
