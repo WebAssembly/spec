@@ -50,7 +50,7 @@ sig
   val le : t -> t -> bool
   val gt : t -> t -> bool
   val ge : t -> t -> bool
-  val zero: t
+  val zero : t
 end
 
 module Make(Rep : RepresentationType) : S with type bits = Rep.t =

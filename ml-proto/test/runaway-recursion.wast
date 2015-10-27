@@ -13,5 +13,5 @@
   (export "mutual_runaway" $a)
 )
 
-(assert_trap (invoke "runaway") "runtime: callstack exhausted")
-(assert_trap (invoke "mutual_runaway") "runtime: callstack exhausted")
+(assert_trap (invoke "runaway") "call stack exhausted")
+(assert_trap (invoke "mutual_runaway") "call stack exhausted")

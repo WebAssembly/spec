@@ -10,7 +10,10 @@ type host_params = {
   has_feature : string -> bool
 }
 
+exception Trap of Source.region * string
+exception Crash of Source.region * string
+
 val init : Ast.module_ -> import list -> host_params -> instance
 val invoke : instance -> string -> value list -> value option
-  (* raise Error.Error *)
+  (* raises Trap, Crash *)
 
