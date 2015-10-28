@@ -136,8 +136,8 @@ rule token = parse
   | "if" { IF }
   | "loop" { LOOP }
   | "label" { LABEL }
-  | "break" { BREAK }
-  | "switch" { SWITCH }
+  | "br" { BRANCH }
+  | "tableswitch" { SWITCH }
   | "case" { CASE }
   | "default" { DEFAULT }
   | "call" { CALL }
@@ -145,9 +145,9 @@ rule token = parse
   | "call_indirect" { CALL_INDIRECT }
   | "return" { RETURN }
 
-  | "if_break" { IF_BREAK }
-  | "case_break" { CASE_BREAK }
-  | "default_break" { DEFAULT_BREAK }
+  | "if_br" { IF_BRANCH }
+  | "case_br" { CASE_BRANCH }
+  | "default_br" { DEFAULT_BRANCH }
 
   | "get_local" { GET_LOCAL }
   | "set_local" { SET_LOCAL }

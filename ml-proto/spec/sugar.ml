@@ -27,8 +27,8 @@ let if_ (e1, e2, eo) =
   let e3 = Lib.Option.get eo (Nop @@ Source.after e2.at) in
   If (e1, e2, e3)
 
-let if_break (e, x) =
-  if_ (e, Break (x, None) @@ x.at, None)
+let if_branch (e, x) =
+  if_ (e, Branch (x, None) @@ x.at, None)
 
 let loop (l1, l2, es) =
   let e = expr_seq es in
@@ -37,11 +37,11 @@ let loop (l1, l2, es) =
 let label e =
   Label e
 
-let break (x, e) =
-  Break (x, e)
+let branch (x, e) =
+  Branch (x, e)
 
 let return (x, eo) =
-  Break (x, eo)
+  Branch (x, eo)
 
 let switch (l, e, cs) =
   labeling l (Switch (e, cs))
@@ -95,8 +95,8 @@ let host (hostop, es) =
 let case (c, es) =
   {value = c; expr = expr_seq es}
 
-let case_break (c, x) =
-  {value = c; expr = Break (x, None) @@ x.at}
+let case_branch (c, x) =
+  {value = c; expr = Branch (x, None) @@ x.at}
 
 
 let func_body es =

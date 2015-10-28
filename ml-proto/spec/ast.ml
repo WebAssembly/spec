@@ -84,7 +84,7 @@ and expr' =
   | If of expr * expr * expr                (* conditional *)
   | Loop of expr                            (* infinite loop *)
   | Label of expr                           (* labelled expression *)
-  | Break of var * expr option              (* break to n-th surrounding label *)
+  | Branch of var * expr option             (* branch to n-th surrounding label *)
   | Switch of expr * case list              (* table switch *)
   | Call of var * expr list                 (* call function *)
   | CallImport of var * expr list           (* call imported function *)

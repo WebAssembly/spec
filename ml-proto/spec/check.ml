@@ -141,7 +141,7 @@ let rec check_expr c et e =
     let c' = {c with labels = et :: c.labels} in
     check_expr c' et e1
 
-  | Break (x, eo) ->
+  | Branch (x, eo) ->
     check_expr_opt c (label c x) eo e.at
 
   | Switch (e1, cs) ->

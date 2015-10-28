@@ -151,8 +151,8 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE DEFAULT
-%token IF_BREAK CASE_BREAK DEFAULT_BREAK
+%token NOP BLOCK IF LOOP LABEL BRANCH SWITCH CASE DEFAULT
+%token IF_BRANCH CASE_BRANCH DEFAULT_BRANCH
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE LOAD_EXTEND STORE_WRAP OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -246,7 +246,7 @@ expr1 :
   | BLOCK labeling expr expr_list
     { fun c -> let c', l = $2 c in block (l, $3 c' :: $4 c') }
   | IF expr expr expr_opt { fun c -> if_ ($2 c, $3 c, $4 c) }
-  | IF_BREAK expr var { fun c -> if_break ($2 c, $3 c label) }
+  | IF_BRANCH expr var { fun c -> if_branch ($2 c, $3 c label) }
   | LOOP labeling labeling expr_list
     { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
       loop (l1, l2, $4 c'') }
@@ -254,7 +254,7 @@ expr1 :
     { fun c -> let c', l = $2 c in
       let c'' = if l.it = Unlabelled then anon_label c' else c' in
       Sugar.label ($3 c'') }
-  | BREAK var expr_opt { fun c -> break ($2 c label, $3 c) }
+  | BRANCH var expr_opt { fun c -> branch ($2 c label, $3 c) }
   | RETURN expr_opt
     { let at1 = ati 1 in
       fun c -> return (label c ("return" @@ at1) @@ at1, $2 c) }
@@ -299,8 +299,9 @@ case :
 case1 :
   | CASE literal expr_list { fun c -> case (Some (int32 $2), $3 c) }
   | DEFAULT expr_list { fun c -> case (None, $2 c) }
-  | CASE_BREAK literal var { fun c -> case_break (Some (int32 $2), $3 c label) }
-  | DEFAULT_BREAK var { fun c -> case_break (None, $2 c label) }
+  | CASE_BRANCH literal var
+    { fun c -> case_branch (Some (int32 $2), $3 c label) }
+  | DEFAULT_BRANCH var { fun c -> case_branch (None, $2 c label) }
 ;
 case_list :
   | case { fun c -> [$1 c] }

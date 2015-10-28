@@ -157,7 +157,7 @@ let rec eval_expr (c : config) (e : expr) =
     let c' = {c with labels = L.label :: c.labels} in
     (try eval_expr c' e1 with L.Label vo -> vo)
 
-  | Break (x, eo) ->
+  | Branch (x, eo) ->
     raise (label c x (eval_expr_opt c eo))
 
   | Switch (e1, cs) ->

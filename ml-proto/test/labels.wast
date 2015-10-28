@@ -1,7 +1,7 @@
 (module
   (func $block (result i32)
     (block $exit
-      (break $exit (i32.const 1))
+      (br $exit (i32.const 1))
       (i32.const 0)
     )
   )
@@ -12,7 +12,7 @@
     (loop $exit
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
       (if (i32.eq (get_local $i) (i32.const 5))
-        (break $exit (get_local $i))
+        (br $exit (get_local $i))
       )
     )
   )
@@ -23,10 +23,10 @@
     (loop $exit $cont
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
       (if (i32.eq (get_local $i) (i32.const 5))
-        (break $cont (i32.const -1))
+        (br $cont (i32.const -1))
       )
       (if (i32.eq (get_local $i) (i32.const 8))
-        (break $exit (get_local $i))
+        (br $exit (get_local $i))
       )
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
     )
@@ -35,10 +35,10 @@
   (func $switch (param i32) (result i32)
     (label $ret
       (i32.mul (i32.const 10)
-        (switch $exit (get_local 0)
+        (tableswitch $exit (get_local 0)
           (case 1 (i32.const 1))
-          (case 2 (break $exit (i32.const 2)))
-          (case 3 (break $ret (i32.const 3)))
+          (case 2 (br $exit (i32.const 2)))
+          (case 3 (br $ret (i32.const 3)))
           (default (i32.const 4))
           (case 0 (i32.const 5))
         )
@@ -47,7 +47,7 @@
   )
 
   (func $return (param i32) (result i32)
-    (switch (get_local 0)
+    (tableswitch (get_local 0)
       (case 0 (return (i32.const 0)))
       (case 1 (i32.const 1))
       (default (i32.const 2))
