@@ -3,7 +3,7 @@
 (module
   ;; Recursive factorial
   (func (param i64) (result i64)
-    (if (i64.eq (get_local 0) (i64.const 0))
+    (if_else (i64.eq (get_local 0) (i64.const 0))
       (i64.const 1)
       (i64.mul (get_local 0) (call 0 (i64.sub (get_local 0) (i64.const 1))))
     )
@@ -11,7 +11,7 @@
 
   ;; Recursive factorial named
   (func $fac-rec (param $n i64) (result i64)
-    (if (i64.eq (get_local $n) (i64.const 0))
+    (if_else (i64.eq (get_local $n) (i64.const 0))
       (i64.const 1)
       (i64.mul
         (get_local $n)
@@ -27,7 +27,7 @@
     (set_local 2 (i64.const 1))
     (label
       (loop
-        (if
+        (if_else
           (i64.eq (get_local 1) (i64.const 0))
           (br 0)
           (block
@@ -48,7 +48,7 @@
     (set_local $res (i64.const 1))
     (label $done
       (loop
-        (if
+        (if_else
           (i64.eq (get_local $i) (i64.const 0))
           (br $done)
           (block

@@ -23,12 +23,14 @@ let nop =
 let block (l, es) =
  labeling l (Block es)
 
-let if_ (e1, e2, eo) =
-  let e3 = Lib.Option.get eo (Nop @@ Source.after e2.at) in
+let if_else (e1, e2, e3) =
   If (e1, e2, e3)
 
+let if_ (e1, e2) =
+  If (e1, e2, Nop @@ Source.after e2.at)
+
 let if_branch (e, x) =
-  if_ (e, Branch (x, None) @@ x.at, None)
+  if_ (e, Branch (x, None) @@ x.at)
 
 let loop (l1, l2, es) =
   let e = expr_seq es in

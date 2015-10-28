@@ -134,6 +134,7 @@ rule token = parse
   | "nop" { NOP }
   | "block" { BLOCK }
   | "if" { IF }
+  | "if_else" { IF_ELSE }
   | "loop" { LOOP }
   | "label" { LABEL }
   | "br" { BRANCH }

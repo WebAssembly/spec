@@ -5,7 +5,8 @@ and labeling' = Unlabelled | Labelled
 
 val nop : expr'
 val block : labeling * expr list -> expr'
-val if_ : expr * expr * expr option -> expr'
+val if_else : expr * expr * expr -> expr'
+val if_ : expr * expr -> expr'
 val if_branch : expr * var -> expr'
 val loop : labeling * labeling * expr list -> expr'
 val label : expr -> expr'

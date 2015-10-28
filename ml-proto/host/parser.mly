@@ -151,7 +151,7 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF LOOP LABEL BRANCH SWITCH CASE DEFAULT
+%token NOP BLOCK IF IF_ELSE LOOP LABEL BRANCH SWITCH CASE DEFAULT
 %token IF_BRANCH CASE_BRANCH DEFAULT_BRANCH
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE LOAD_EXTEND STORE_WRAP OFFSET ALIGN
@@ -245,7 +245,8 @@ expr1 :
   | NOP { fun c -> nop }
   | BLOCK labeling expr expr_list
     { fun c -> let c', l = $2 c in block (l, $3 c' :: $4 c') }
-  | IF expr expr expr_opt { fun c -> if_ ($2 c, $3 c, $4 c) }
+  | IF_ELSE expr expr expr { fun c -> if_else ($2 c, $3 c, $4 c) }
+  | IF expr expr { fun c -> if_ ($2 c, $3 c) }
   | IF_BRANCH expr var { fun c -> if_branch ($2 c, $3 c label) }
   | LOOP labeling labeling expr_list
     { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
