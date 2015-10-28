@@ -158,8 +158,8 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF IF_ELSE LOOP LABEL BRANCH SWITCH CASE DEFAULT
-%token IF_BRANCH CASE_BRANCH DEFAULT_BRANCH
+%token NOP BLOCK IF IF_ELSE LOOP LABEL BR TABLESWITCH CASE DEFAULT
+%token BR_IF CASE_BR DEFAULT_BR
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE LOAD_EXTEND STORE_WRAP OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -254,7 +254,7 @@ expr1 :
     { fun c -> let c', l = $2 c in block (l, $3 c' :: $4 c') }
   | IF_ELSE expr expr expr { fun c -> if_else ($2 c, $3 c, $4 c) }
   | IF expr expr { fun c -> if_ ($2 c, $3 c) }
-  | IF_BRANCH expr var { fun c -> if_branch ($2 c, $3 c label) }
+  | BR_IF expr var { fun c -> br_if ($2 c, $3 c label) }
   | LOOP labeling labeling expr_list
     { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
       let c''' = if l1.it = Unlabelled then anon_label c'' else c'' in
@@ -263,12 +263,12 @@ expr1 :
     { fun c -> let c', l = $2 c in
       let c'' = if l.it = Unlabelled then anon_label c' else c' in
       Sugar.label ($3 c'') }
-  | BRANCH var expr_opt { fun c -> branch ($2 c label, $3 c) }
+  | BR var expr_opt { fun c -> br ($2 c label, $3 c) }
   | RETURN expr_opt
     { let at1 = ati 1 in
       fun c -> return (label c ("return" @@ at1) @@ at1, $2 c) }
-  | SWITCH labeling expr case_list
-    { fun c -> let c', l = $2 c in switch (l, $3 c', $4 c') }
+  | TABLESWITCH labeling expr case_list
+    { fun c -> let c', l = $2 c in tableswitch (l, $3 c', $4 c') }
   | CALL var expr_list { fun c -> call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
@@ -306,11 +306,11 @@ case :
   | LPAR case1 RPAR { let at = at () in fun c -> $2 c @@ at }
 ;
 case1 :
-  | CASE literal expr_list { fun c -> case (Some (int32 $2), $3 c) }
-  | DEFAULT expr_list { fun c -> case (None, $2 c) }
-  | CASE_BRANCH literal var
-    { fun c -> case_branch (Some (int32 $2), $3 c label) }
-  | DEFAULT_BRANCH var { fun c -> case_branch (None, $2 c label) }
+  | CASE literal expr_list { fun c -> case (int32 $2, $3 c) }
+  | DEFAULT expr_list { fun c -> default ($2 c) }
+  | CASE_BR literal var
+    { fun c -> case_br (int32 $2, $3 c label) }
+  | DEFAULT_BR var { fun c -> default_br ($2 c label) }
 ;
 case_list :
   | case { fun c -> [$1 c] }

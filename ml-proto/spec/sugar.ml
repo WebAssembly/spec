@@ -29,7 +29,7 @@ let if_else (e1, e2, e3) =
 let if_ (e1, e2) =
   If (e1, e2, Nop @@ Source.after e2.at)
 
-let if_branch (e, x) =
+let br_if (e, x) =
   if_ (e, Branch (x, None) @@ x.at)
 
 let loop (l1, l2, es) =
@@ -39,13 +39,13 @@ let loop (l1, l2, es) =
 let label e =
   Label e
 
-let branch (x, e) =
+let br (x, e) =
   Branch (x, e)
 
 let return (x, eo) =
   Branch (x, eo)
 
-let switch (l, e, cs) =
+let tableswitch (l, e, cs) =
   labeling l (Switch (e, cs))
 
 let call (x, es) =
@@ -95,10 +95,16 @@ let host (hostop, es) =
 
 
 let case (c, es) =
-  {value = c; expr = expr_seq es}
+  {value = Some c; expr = expr_seq es}
 
-let case_branch (c, x) =
-  {value = c; expr = Branch (x, None) @@ x.at}
+let case_br (c, x) =
+  {value = Some c; expr = Branch (x, None) @@ x.at}
+
+let default (es) =
+  {value = None; expr = expr_seq es}
+
+let default_br (x) =
+  {value = None; expr = Branch (x, None) @@ x.at}
 
 
 let func_body es =
