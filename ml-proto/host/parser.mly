@@ -250,7 +250,8 @@ expr1 :
   | IF_BRANCH expr var { fun c -> if_branch ($2 c, $3 c label) }
   | LOOP labeling labeling expr_list
     { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
-      loop (l1, l2, $4 c'') }
+      let c''' = if l1.it = Unlabelled then anon_label c'' else c'' in
+      loop (l1, l2, $4 c''') }
   | LABEL labeling expr
     { fun c -> let c', l = $2 c in
       let c'' = if l.it = Unlabelled then anon_label c' else c' in

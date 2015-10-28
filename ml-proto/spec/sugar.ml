@@ -34,7 +34,7 @@ let if_branch (e, x) =
 
 let loop (l1, l2, es) =
   let e = expr_seq es in
-  labeling l1 (Loop (labeling l2 e.it @@ e.at))
+  if l2.it = Unlabelled then Loop e else labeling l1 (Loop e)
 
 let label e =
   Label e

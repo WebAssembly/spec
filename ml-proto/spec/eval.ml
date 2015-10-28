@@ -149,8 +149,9 @@ let rec eval_expr (c : config) (e : expr) =
     eval_expr c (if i <> Int32.zero then e2 else e3)
 
   | Loop e1 ->
-    ignore (eval_expr c e1);
-    eval_expr c e
+    let module L = MakeLabel () in
+    let c' = {c with labels = L.label :: c.labels} in
+    (try eval_expr c' e1 with L.Label _ -> eval_expr c e)
 
   | Label e1 ->
     let module L = MakeLabel () in

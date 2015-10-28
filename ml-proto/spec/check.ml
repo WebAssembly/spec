@@ -135,7 +135,8 @@ let rec check_expr c et e =
     check_expr c et e3
 
   | Loop e1 ->
-    check_expr c None e1
+    let c' = {c with labels = None :: c.labels} in
+    check_expr c' et e1
 
   | Label e1 ->
     let c' = {c with labels = et :: c.labels} in

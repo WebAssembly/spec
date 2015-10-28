@@ -29,12 +29,13 @@
       (loop
         (if_else
           (i64.eq (get_local 1) (i64.const 0))
-          (br 0)
+          (br 1)
           (block
             (set_local 2 (i64.mul (get_local 1) (get_local 2)))
             (set_local 1 (i64.sub (get_local 1) (i64.const 1)))
           )
         )
+        (br 0)
       )
     )
     (return (get_local 2))
@@ -47,7 +48,7 @@
     (set_local $i (get_local $n))
     (set_local $res (i64.const 1))
     (label $done
-      (loop
+      (loop $loop
         (if_else
           (i64.eq (get_local $i) (i64.const 0))
           (br $done)
@@ -56,6 +57,7 @@
             (set_local $i (i64.sub (get_local $i) (i64.const 1)))
           )
         )
+        (br $loop)
       )
     )
     (return (get_local $res))

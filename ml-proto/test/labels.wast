@@ -9,11 +9,12 @@
   (func $loop1 (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
-    (loop $exit
+    (loop $exit $cont
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
       (if (i32.eq (get_local $i) (i32.const 5))
         (br $exit (get_local $i))
       )
+      (br $cont)
     )
   )
 
@@ -29,6 +30,7 @@
         (br $exit (get_local $i))
       )
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
+      (br $cont)
     )
   )
 
