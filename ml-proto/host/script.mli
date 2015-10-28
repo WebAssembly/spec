@@ -13,5 +13,10 @@ and command' =
 
 type script = command list
 
-val run : script -> unit (* raises Error.Error *)
+exception Syntax of Source.region * string
+exception AssertFailure of Source.region * string
+
+val run : script -> unit
+  (* raises Check.Invalid, Eval.Trap, Eval.Crash, Failure *)
+
 val trace : string -> unit
