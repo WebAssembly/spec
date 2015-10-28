@@ -168,7 +168,7 @@ let rec eval_expr (c : config) (e : expr) =
       then None else Some i
     in
     (match List.fold_left (eval_case c l) `Seek cs with
-    | `Seek -> error e.at "runtime crash: switch failed"
+    | `Seek -> Crash.error e.at "switch failed"
     | `Found vo -> vo
     )
 

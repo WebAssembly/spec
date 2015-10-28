@@ -51,8 +51,8 @@ let literal s t =
 
 let int32 s =
   try I32.of_string s.it with
-    | Failure reason -> Error.error s.at ("constant out of range: " ^ reason)
-    | _ -> Error.error s.at "constant out of range"
+    | Failure reason -> error s.at ("constant out of range: " ^ reason)
+    | _ -> error s.at "constant out of range"
 
 
 (* Memory operands *)
