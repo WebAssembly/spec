@@ -121,7 +121,7 @@ expr:
   ( block <var> <expr>+ )                        ;; = (label <var> (block <expr>+))
   ( if_else <expr> <expr> <expr> )
   ( if <expr> <expr> )                           ;; = (if_else <expr> <expr> (nop))
-  ( br_if <expr> <var> )                         ;; = (if <expr> (br <var>) (nop))
+  ( br_if <expr> <var> )                         ;; = (if_else <expr> (br <var>) (nop))
   ( loop <var>? <expr>* )                        ;; = (loop <var>? (block <expr>*))
   ( loop <var> <var> <expr>* )                   ;; = (label <var> (loop <var> (block <expr>*)))
   ( label <var>? <expr> )
