@@ -149,22 +149,27 @@ let rec eval_expr (c : config) (e : expr) =
     eval_expr c (if i <> Int32.zero then e2 else e3)
 
   | Loop e1 ->
-    ignore (eval_expr c e1);
-    eval_expr c e
+    let module L = MakeLabel () in
+    let c' = {c with labels = L.label :: c.labels} in
+    (try eval_expr c' e1 with L.Label _ -> eval_expr c e)
 
   | Label e1 ->
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
     (try eval_expr c' e1 with L.Label vo -> vo)
 
-  | Break (x, eo) ->
+  | Branch (x, eo) ->
     raise (label c x (eval_expr_opt c eo))
 
-  | Switch (_t, e1, cs, e2) ->
-    let vo = some (eval_expr c e1) e1.at in
-    (match List.fold_left (eval_case c vo) `Seek cs with
-    | `Seek | `Fallthru -> eval_expr c e2
-    | `Done vs -> vs
+  | Switch (e1, cs) ->
+    let i = int32 (eval_expr c e1) e1.at in
+    let l =
+      if List.length cs = 1 || I32.gt_u i (I32.of_int (List.length cs - 2))
+      then None else Some i
+    in
+    (match List.fold_left (eval_case c l) `Seek cs with
+    | `Seek -> Crash.error e.at "switch failed"
+    | `Found vo -> vo
     )
 
   | Call (x, es) ->
@@ -252,15 +257,9 @@ and eval_expr_opt c = function
   | Some e -> eval_expr c e
   | None -> None
 
-and eval_case c vo stage case =
-  let {value; expr = e; fallthru} = case.it in
-  match stage, vo = value.it with
-  | `Seek, true | `Fallthru, _ ->
-    if fallthru
-    then (ignore (eval_expr c e); `Fallthru)
-    else `Done (eval_expr c e)
-  | `Seek, false | `Done _, _ ->
-    stage
+and eval_case c l phase case =
+  let {value; expr = e} = case.it in
+  if phase = `Seek && l <> value then `Seek else `Found (eval_expr c e)
 
 and eval_func instance f vs =
   let args = List.map ref vs in

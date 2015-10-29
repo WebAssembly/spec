@@ -23,25 +23,30 @@ let nop =
 let block (l, es) =
  labeling l (Block es)
 
-let if_ (e1, e2, eo) =
-  let e3 = Lib.Option.get eo (Nop @@ Source.after e2.at) in
+let if_else (e1, e2, e3) =
   If (e1, e2, e3)
+
+let if_ (e1, e2) =
+  If (e1, e2, Nop @@ Source.after e2.at)
+
+let br_if (e, x) =
+  if_ (e, Branch (x, None) @@ x.at)
 
 let loop (l1, l2, es) =
   let e = expr_seq es in
-  labeling l1 (Loop (labeling l2 e.it @@ e.at))
+  if l2.it = Unlabelled then Loop e else labeling l1 (Loop e)
 
 let label e =
   Label e
 
-let break (x, e) =
-  Break (x, e)
+let br (x, e) =
+  Branch (x, e)
 
 let return (x, eo) =
-  Break (x, eo)
+  Branch (x, eo)
 
-let switch (l, t, e1, cs, e2) =
-  labeling l (Switch (t, e1, cs, e2))
+let tableswitch (l, e, cs) =
+  labeling l (Switch (e, cs))
 
 let call (x, es) =
   Call (x, es)
@@ -88,10 +93,18 @@ let convert (cvt, e) =
 let host (hostop, es) =
   Host (hostop, es)
 
-let case (c, br) =
-  match br with
-  | Some (es, fallthru) -> {value = c; expr = expr_seq es; fallthru}
-  | None -> {value = c; expr = Nop @@ Source.after c.at; fallthru = true}
+
+let case (c, es) =
+  {value = Some c; expr = expr_seq es}
+
+let case_br (c, x) =
+  {value = Some c; expr = Branch (x, None) @@ x.at}
+
+let default (es) =
+  {value = None; expr = expr_seq es}
+
+let default_br (x) =
+  {value = None; expr = Branch (x, None) @@ x.at}
 
 
 let func_body es =

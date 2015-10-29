@@ -134,15 +134,21 @@ rule token = parse
   | "nop" { NOP }
   | "block" { BLOCK }
   | "if" { IF }
+  | "if_else" { IF_ELSE }
   | "loop" { LOOP }
   | "label" { LABEL }
-  | "break" { BREAK }
+  | "br" { BR }
+  | "tableswitch" { TABLESWITCH }
   | "case" { CASE }
-  | "fallthrough" { FALLTHROUGH }
+  | "default" { DEFAULT }
   | "call" { CALL }
   | "call_import" { CALL_IMPORT }
   | "call_indirect" { CALL_INDIRECT }
   | "return" { RETURN }
+
+  | "br_if" { BR_IF }
+  | "case_br" { CASE_BR }
+  | "default_br" { DEFAULT_BR }
 
   | "get_local" { GET_LOCAL }
   | "set_local" { SET_LOCAL }
@@ -158,7 +164,6 @@ rule token = parse
   | "offset="(digits as s) { OFFSET (Int64.of_string s) }
   | "align="(digits as s) { ALIGN (int_of_string s) }
 
-  | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
 
   | (ixx as t)".clz" { UNARY (intop t Int32Op.Clz Int64Op.Clz) }

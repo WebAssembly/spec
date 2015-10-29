@@ -39,6 +39,12 @@ let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
+module CaseSet = Set.Make(
+  struct
+    type t = I32.t option
+    let compare = Lib.Option.compare I32.compare_u
+  end)
+
 
 (* Type comparison *)
 
@@ -132,21 +138,23 @@ let rec check_expr c et e =
     check_expr c et e3
 
   | Loop e1 ->
-    check_expr c None e1
+    let c' = {c with labels = None :: c.labels} in
+    check_expr c' et e1
 
   | Label e1 ->
     let c' = {c with labels = et :: c.labels} in
     check_expr c' et e1
 
-  | Break (x, eo) ->
+  | Branch (x, eo) ->
     check_expr_opt c (label c x) eo e.at
 
-  | Switch (t, e1, cs, e2) ->
-    require (t = Int32Type || t = Int64Type) e.at "invalid switch type";
-    (* TODO: Check that cases are unique. *)
-    check_expr c (Some t) e1;
-    List.iter (check_case c t et) cs;
-    check_expr c et e2
+  | Switch (e1, cs) ->
+    check_expr c (Some Int32Type) e1;
+    let cc, _ = List.fold_right (check_case c) cs (CaseSet.empty, et) in
+    let max = CaseSet.max_elt cc in
+    require (CaseSet.mem None cc) e.at "switch is missing default case";
+    require (max = None || max = Some (I32.of_int (CaseSet.cardinal cc - 2)))
+      e.at "switch is not dense"
 
   | Call (x, es) ->
     let {ins; out} = func c x in
@@ -231,10 +239,11 @@ and check_expr_opt c et eo at =
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
 
-and check_case c t et case =
-  let {value = l; expr = e; fallthru} = case.it in
-  check_literal c (Some t) l;
-  check_expr c (if fallthru then None else et) e
+and check_case c case (cc, et) =
+  let {value = l; expr = e} = case.it in
+  require (not (CaseSet.mem l cc)) case.at "duplicate case";
+  check_expr c et e;
+  (CaseSet.add l cc, None)
 
 and check_load c et memop e1 at =
   check_has_memory c at;

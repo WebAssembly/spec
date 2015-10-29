@@ -82,24 +82,11 @@ Note however that the REPL currently is too dumb to allow multi-line input. :)
 See `wasm -h` for (the few) options.
 
 
-## Language
-
-For most part, the language understood by the interpreter is based on Ben's V8 prototype, but I took the liberty to try out a few simplifications and generalisations:
-
-* *Expression Language.* There is no distinction between statements and expressions, everything is an expression. Some have an empty return type. Consequently, there is no need for a comma operator or ternary operator.
-
-* *Simple Loops*. Like in Ben's prototype, there is only one sort of loop, the infinite one, which can only be terminated by an explicit `break`. In such a language, a `continue` statement actually is completely redundant, because it equivalent to a `break` to a label on the loop's *body*. So I dropped `continue`.
-
-* *Break with Arguments.* In the spirit of a true expression language, `break` can carry arguments, which then become the result of the labelled expression it cuts to.
-
-* *Switch with Explicit Fallthru*. By default, a switch arm is well-behaved in that it does *not* fall through to the next case. However, it can be marked as fallthru explicitly.
-
-
 ## Core Language vs External Language
 
 The implementation tries to separate the concern of what is the language (and its semantics) from what is its external encoding. In that spirit, the actual AST is regular and minimal, while certain abbreviations are considered "syntactic sugar" of an external representation optimised for compactness.
 
-For example, `if` always has an else-branch in the AST, but in the external format an else-less conditional is allowed as an abbreviation for one with `nop`. Similarly, blocks can sometimes be left implicit in sub-expressions. Furthermore, fallthru is a flag on each `switch` arm in the AST, but an explicit "opcode" in the external form.
+For example, `if` always has an else-branch in the AST, but in the external format an else-less conditional is allowed as an abbreviation for one with `nop`. Similarly, blocks can sometimes be left implicit in sub-expressions.
 
 Here, the external format is S-expressions, but similar considerations would apply to a binary encoding. That is, there would be codes for certain abbreviations, but these are just a matter of the encoding.
 
@@ -132,18 +119,19 @@ expr:
   ( nop )
   ( block <expr>+ )
   ( block <var> <expr>+ )                        ;; = (label <var> (block <expr>+))
-  ( if <expr> <expr> <expr> )
-  ( if <expr> <expr> )                           ;; = (if <expr> <expr> (nop))
-  ( loop <expr>* )                               ;; = (loop (block <expr>*))
-  ( loop <var> <var>? <expr>* )                  ;; = (label <var> (loop (block <var>? <expr>*)))
+  ( if_else <expr> <expr> <expr> )
+  ( if <expr> <expr> )                           ;; = (if_else <expr> <expr> (nop))
+  ( br_if <expr> <var> )                         ;; = (if_else <expr> (br <var>) (nop))
+  ( loop <var>? <expr>* )                        ;; = (loop <var>? (block <expr>*))
+  ( loop <var> <var> <expr>* )                   ;; = (label <var> (loop <var> (block <expr>*)))
   ( label <var>? <expr> )
-  ( break <var> <expr>? )
-  ( <type>.switch <expr> <case>* <expr> )
-  ( <type>.switch <var> <expr> <case>* <expr> )  ;; = (label <var> (<type>.switch <expr> <case>* <expr>))
+  ( br <var> <expr>? )
+  ( return <expr>? )                             ;; = (br <current_depth> <expr>?)
+  ( tableswitch <expr> <case>+ )
+  ( tableswitch <var> <expr> <case>+ )           ;; = (label <var> (tableswitch <expr> <case>+))
   ( call <var> <expr>* )
   ( call_import <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
-  ( return <expr>? )                             ;; = (break <current_depth> <expr>?)
   ( get_local <var> )
   ( set_local <var> <expr> )
   ( <type>.load((8|16)_<sign>)? <offset>? <align>? <expr> )
@@ -158,8 +146,10 @@ expr:
   ( grow_memory <expr> )
 
 case:
-  ( case <value> <expr>* fallthrough? )  ;; = (case <int> (block <expr>*) fallthrough?)
-  ( case <value> )                       ;; = (case <int> (nop) fallthrough)
+  ( case <int> <expr>* )                         ;; = (case <int> (block <expr>*))
+  ( case_br <int> <var> )                        ;; = (case <int> (br <var>))
+  ( default <expr>* )                            ;; = (default (block <expr>*))
+  ( default_br <var> )                           ;; = (default (br <var>))
 
 func:   ( func <name>? <type>? <param>* <result>? <local>* <expr>* )
 type:   ( type <var> )
@@ -225,7 +215,7 @@ The implementation consists of the following parts:
 
 * *Validator* (`check.ml[i]`). Does a recursive walk of the AST, passing down the *expected* type for expressions (or rather, a list thereof, because of multi-values), and checking each expression against that. An expected empty list of types can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
 
-* *Evaluator* (`eval.ml[i]`, `values.ml`, `arithmetic.ml[i]`, `memory.ml[i]`). Evaluation of control transfer (`break` and `return`) is implemented using local exceptions as "labels". While these are allocated dynamically in the code and addressed via a stack, that is merely to simplify the code. In reality, these would be static jumps.
+* *Evaluator* (`eval.ml[i]`, `values.ml`, `arithmetic.ml[i]`, `memory.ml[i]`). Evaluation of control transfer (`br` and `return`) is implemented using local exceptions as "labels". While these are allocated dynamically in the code and addressed via a stack, that is merely to simplify the code. In reality, these would be static jumps.
 
 * *Driver* (`main.ml`, `script.ml[i]`, `error.ml`, `print.ml[i]`, `flags.ml`). Executes scripts, reports results or errors, etc.
 
