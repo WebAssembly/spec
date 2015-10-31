@@ -34,7 +34,7 @@ class SExp(object):
         self.end = -1
 
 def isspace(c):
-    return c == ' ' or c == '\t' or c == '\n'
+    return c == ' ' or c == '\t' or c == '\n' or c == '\r'
 
 def isdigit(c):
     return c >= '0' and c <= '9'
