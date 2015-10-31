@@ -1,0 +1,19 @@
+;; Tests foreach and define
+(define $number (apply 0 1 2 42 1024))
+
+(module
+    (import $_print "stdio" "print" (param i32))
+    (func $eq (param i32) (result i32)
+        (get_local 0)
+    )
+    (func $print (param i32)
+        (call_import $_print (get_local 0))
+    )
+    (export "eq" $eq)
+    (export "print" $print)
+)
+
+(foreach $n $number
+    (invoke "print" (i32.const $n))
+    (assert_return (invoke "eq" (i32.const $n)) (i32.const $n))
+)
