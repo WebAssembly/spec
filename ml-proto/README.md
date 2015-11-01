@@ -82,20 +82,20 @@ Note however that the REPL currently is too dumb to allow multi-line input. :)
 See `wasm -h` for (the few) options.
 
 
-## Core Language vs External Language
+## Official Language Specification vs Internal Kernel Language
 
-The implementation tries to separate the concern of what is the language (and its semantics) from what is its external encoding. In that spirit, the actual AST is regular and minimal, while certain abbreviations are considered "syntactic sugar" of an external representation optimised for compactness.
+The implementation serves as a language specification, so it aims to document the official language. At the same time, to simplify its internals, it lowers some constructs from the official language to produce a reduced "kernel" language which is simpler to validate (check.ml) and evaluate (eval.ml) in this implementation's chosen style. This is purely an implementation detail, and does not reflect any semantic property of the official language itself.
 
-For example, `if` always has an else-branch in the AST, but in the external format an else-less conditional is allowed as an abbreviation for one with `nop`. Similarly, blocks can sometimes be left implicit in sub-expressions.
+For example, `if` in the official language does not have an else arm, but in the internal kernel language it is given an else arm containing a `nop`. Similarly, blocks can sometimes be left implicit in sub-expressions in the official language, and are made explicit in the internal kernel language.
 
-Here, the external format is S-expressions, but similar considerations would apply to a binary encoding. That is, there would be codes for certain abbreviations, but these are just a matter of the encoding.
+Here, the specified language is represented as S-expressions, but similar considerations would apply to a binary encoding. That is, there would be codes which this specification would internally lower into other forms to simplify its own code.
 
 
-## Internal Syntax
+## Internal Kernel Language
 
-The core language is defined in [ast.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/ast.ml).
+The internal kernel language is defined in [ast.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/ast.ml).
 
-## External Syntax
+## Official S-expression Syntax
 
 The S-expression syntax is defined in [parser.mly](https://github.com/WebAssembly/spec/blob/master/ml-proto/host/parser.mly), the opcodes in [lexer.mll](https://github.com/WebAssembly/spec/blob/master/ml-proto/host/lexer.mll).
 
