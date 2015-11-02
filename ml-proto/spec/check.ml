@@ -221,9 +221,8 @@ let rec check_expr c et e =
     ()
 
   | Host (hostop, es) ->
-    let ({ins; out}, hasmem) = type_hostop hostop in
-    if hasmem then
-      check_has_memory c e.at;
+    let {ins; out}, has_mem = type_hostop hostop in
+    if has_mem then check_has_memory c e.at;
     check_exprs c ins es;
     check_type out et e.at
 

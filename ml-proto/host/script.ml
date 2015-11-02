@@ -7,16 +7,31 @@ open Source
 
 (* Script representation *)
 
-type command = command' phrase
-and command' =
-  | Define of Kernel.module_
+type 'm command = 'm command' Source.phrase
+and 'm command' =
+  | Define of 'm
   | Invoke of string * Kernel.literal list
-  | AssertInvalid of Kernel.module_ * string
+  | AssertInvalid of 'm * string
   | AssertReturn of string * Kernel.literal list * Kernel.literal option
   | AssertReturnNaN of string * Kernel.literal list
   | AssertTrap of string * Kernel.literal list * string
 
-type script = command list
+type script = Ast.module_ command list
+type script' = Kernel.module_ command list
+
+
+(* Desugaring *)
+
+let rec desugar_cmd c = desugar_cmd' c.it @@ c.at
+and desugar_cmd' = function
+  | Define m -> Define (Desugar.desugar m)
+  | Invoke (s, ls) -> Invoke (s, ls)
+  | AssertInvalid (m, r) -> AssertInvalid (Desugar.desugar m, r)
+  | AssertReturn (s, ls, lo) -> AssertReturn (s, ls, lo)
+  | AssertReturnNaN (s, ls) -> AssertReturnNaN (s, ls)
+  | AssertTrap (s, ls, r) -> AssertTrap (s, ls, r)
+
+let desugar = List.map desugar_cmd
 
 
 (* Execution *)
@@ -36,7 +51,7 @@ let get_module at = match !current_module with
   | None -> raise (Eval.Crash (at, "no module defined to invoke"))
 
 
-let run_command cmd =
+let run_cmd cmd =
   match cmd.it with
   | Define m ->
     trace "Checking...";
@@ -111,7 +126,7 @@ let run_command cmd =
       AssertFailure.error cmd.at "expected runtime trap"
     )
 
-let dry_command cmd =
+let dry_cmd cmd =
   match cmd.it with
   | Define m ->
     Check.check_module m;
@@ -123,4 +138,4 @@ let dry_command cmd =
   | AssertTrap _ -> ()
 
 let run script =
-  List.iter (if !Flags.dry then dry_command else run_command) script
+  List.iter (if !Flags.dry then dry_cmd else run_cmd) script

@@ -37,8 +37,10 @@ let process file source =
   try
     Script.trace "Parsing...";
     let script = parse file source in
+    Script.trace "Desugaring...";
+    let script' = Script.desugar script in
     Script.trace "Running...";
-    Script.run script;
+    Script.run script';
     true
   with
   | Script.Syntax (at, msg) -> error at "syntax error" msg

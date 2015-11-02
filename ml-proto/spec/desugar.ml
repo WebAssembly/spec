@@ -1,118 +1,78 @@
 open Source
-open Kernel
+
+module A = Ast
+module K = Kernel
 
 
-type labeling = labeling' phrase
-and labeling' = Unlabelled | Labelled
+(* Expressions *)
 
-type case = case' phrase
-and case' = Case of var | Case_br of var
-
-
-let labeling l e =
+let labeling l e' =
   match l.it with
-  | Unlabelled -> e
-  | Labelled -> Label (e @@ l.at)
-
-let expr_seq es =
-  match es with
-  | [] -> Nop @@ Source.no_region
-  | [e] -> e
-  | es -> Block es @@@ List.map Source.at es
+  | A.Unlabelled -> e'
+  | A.Labelled -> K.Label (e' @@ l.at)
 
 
-let nop =
-  Nop
+let rec expr e = expr' e.it @@ e.at
+and expr' = function
+  | A.Nop -> K.Nop
+  | A.Block (l, es) -> labeling l (K.Block (List.map expr es))
+  | A.If (e1, e2) -> K.If (expr e1, expr e2, K.Nop @@ Source.after e2.at)
+  | A.If_else (e1, e2, e3) -> K.If (expr e1, expr e2, expr e3)
+  | A.Br_if (e, x) -> expr' (A.If (e, A.Br (x, None) @@ x.at))
+  | A.Loop (l1, l2, es) when l2.it = A.Unlabelled -> K.Loop (seq es)
+  | A.Loop (l1, l2, es) -> labeling l1 (K.Loop (seq es))
+  | A.Label e -> K.Label (expr e)
+  | A.Br (x, eo) -> K.Break (x, Lib.Option.map expr eo)
+  | A.Return (x, eo) -> K.Break (x, Lib.Option.map expr eo)
+  | A.Tableswitch (l, e, ts, t, es) ->
+    let target t (xs, es') =
+      match t.it with
+      | A.Case x -> x :: xs, es'
+      | A.Case_br x ->
+        (List.length es' @@ t.at) :: xs, (K.Break (x, None) @@ t.at) :: es'
+    in
+    let xs, es' = List.fold_right target (t :: ts) ([], []) in
+    let es'' = List.map seq es in
+    let n = List.length es' in
+    let sh x = (if x.it >= n then x.it + n else x.it) @@ x.at in
+    labeling l
+      (K.Switch (expr e, List.map sh (List.tl xs), sh (List.hd xs), es' @ es''))
+  | A.Call (x, es) -> K.Call (x, List.map expr es)
+  | A.Call_import (x, es) -> K.CallImport (x, List.map expr es)
+  | A.Call_indirect (x, e, es) -> K.CallIndirect (x, expr e, List.map expr es)
+  | A.Get_local x -> K.GetLocal x
+  | A.Set_local (x, e) -> K.SetLocal (x, expr e)
+  | A.Load (memop, e) -> K.Load (memop, expr e)
+  | A.Store (memop, e1, e2) -> K.Store (memop, expr e1, expr e2)
+  | A.Load_extend (extop, e) -> K.LoadExtend (extop, expr e)
+  | A.Store_wrap (wrapop, e1, e2) -> K.StoreWrap (wrapop, expr e1, expr e2)
+  | A.Const c -> K.Const c
+  | A.Unary (unop, e) -> K.Unary (unop, expr e)
+  | A.Binary (binop, e1, e2) -> K.Binary (binop, expr e1, expr e2)
+  | A.Select (selop, e1, e2, e3) -> K.Select (selop, expr e1, expr e2, expr e3)
+  | A.Compare (relop, e1, e2) -> K.Compare (relop, expr e1, expr e2)
+  | A.Convert (cvt, e) -> K.Convert (cvt, expr e)
+  | A.Unreachable -> K.Unreachable
+  | A.Host (hostop, es) -> K.Host (hostop, List.map expr es)
 
-let block (l, es) =
- labeling l (Block es)
-
-let if_else (e1, e2, e3) =
-  If (e1, e2, e3)
-
-let if_ (e1, e2) =
-  If (e1, e2, Nop @@ Source.after e2.at)
-
-let br_if (e, x) =
-  if_ (e, Break (x, None) @@ x.at)
-
-let loop (l1, l2, es) =
-  let e = expr_seq es in
-  if l2.it = Unlabelled then Loop e else labeling l1 (Loop e)
-
-let label e =
-  Label e
-
-let br (x, e) =
-  Break (x, e)
-
-let return (x, eo) =
-  Break (x, eo)
-
-let tableswitch (l, e, ts, t, es) =
-  let translate_target t (xs, es') =
-    match t.it with
-    | Case x -> x :: xs, es'
-    | Case_br x ->
-      (List.length es' @@ t.at) :: xs, (Break (x, None) @@ t.at) :: es'
-  in
-  let xs, es' = List.fold_right translate_target (t :: ts) ([], []) in
-  let es'' = List.map expr_seq es in
-  let n = List.length es' in
-  let sh x = (if x.it >= n then x.it + n else x.it) @@ x.at in
-  labeling l (Switch (e, List.map sh (List.tl xs), sh (List.hd xs), es' @ es''))
-
-let call (x, es) =
-  Call (x, es)
-
-let call_import (x, es) =
-  CallImport (x, es)
-
-let call_indirect (x, e, es) =
-  CallIndirect (x, e, es)
-
-let get_local x =
-  GetLocal x
-
-let set_local (x, e) =
-  SetLocal (x, e)
-
-let load (memop, e) =
-  Load (memop, e)
-
-let store (memop, e1, e2) =
-  Store (memop, e1, e2)
-
-let load_extend (extop, e) =
-  LoadExtend (extop, e)
-
-let store_wrap (wrapop, e1, e2) =
-  StoreWrap (wrapop, e1, e2)
-
-let const c =
-  Const c
-
-let unary (unop, e) =
-  Unary (unop, e)
-
-let binary (binop, e1, e2) =
-  Binary (binop, e1, e2)
-
-let select (selop, cond, e1, e2) =
-  Select (selop, cond, e1, e2)
-
-let compare (relop, e1, e2) =
-  Compare (relop, e1, e2)
-
-let convert (cvt, e) =
-  Convert (cvt, e)
-
-let unreachable =
-  Unreachable
-
-let host (hostop, es) =
-  Host (hostop, es)
+and seq = function
+  | [] -> K.Nop @@ Source.no_region
+  | [e] -> expr e
+  | es -> K.Block (List.map expr es) @@@ List.map Source.at es
 
 
-let func_body es =
-  Label (expr_seq es)
+(* Functions and Modules *)
+
+let rec func f = func' f.it @@ f.at
+and func' = function
+  | {A.body = []; ftype; locals} ->
+    {K.body = K.Nop @@ no_region; ftype; locals}
+  | {A.body = es; ftype; locals} ->
+    {K.body = K.Label (seq es) @@@ List.map at es; ftype; locals}
+
+let rec module_ m = module' m.it @@ m.at
+and module' = function
+  | {A.funcs = fs; memory; types; imports; exports; table} ->
+    {K.funcs = List.map func fs; memory; types; imports; exports; table}
+
+let desugar = module_

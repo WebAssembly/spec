@@ -4,9 +4,9 @@
 
 %{
 open Source
-open Kernel
-open Desugar
 open Types
+open Kernel
+open Ast
 open Script
 
 
@@ -250,52 +250,52 @@ expr :
   | LPAR expr1 RPAR { let at = at () in fun c -> $2 c @@ at }
 ;
 expr1 :
-  | NOP { fun c -> nop }
+  | NOP { fun c -> Nop }
   | BLOCK labeling expr expr_list
-    { fun c -> let c', l = $2 c in block (l, $3 c' :: $4 c') }
-  | IF_ELSE expr expr expr { fun c -> if_else ($2 c, $3 c, $4 c) }
-  | IF expr expr { fun c -> if_ ($2 c, $3 c) }
-  | BR_IF expr var { fun c -> br_if ($2 c, $3 c label) }
+    { fun c -> let c', l = $2 c in Block (l, $3 c' :: $4 c') }
+  | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
+  | IF expr expr { fun c -> If ($2 c, $3 c) }
+  | BR_IF expr var { fun c -> Br_if ($2 c, $3 c label) }
   | LOOP labeling labeling expr_list
     { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
       let c''' = if l1.it = Unlabelled then anon_label c'' else c'' in
-      loop (l1, l2, $4 c''') }
+      Loop (l1, l2, $4 c''') }
   | LABEL labeling expr
     { fun c -> let c', l = $2 c in
       let c'' = if l.it = Unlabelled then anon_label c' else c' in
-      Desugar.label ($3 c'') }
-  | BR var expr_opt { fun c -> br ($2 c label, $3 c) }
+      Label ($3 c'') }
+  | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
   | RETURN expr_opt
     { let at1 = ati 1 in
-      fun c -> return (label c ("return" @@ at1) @@ at1, $2 c) }
+      fun c -> Return (label c ("return" @@ at1) @@ at1, $2 c) }
   | TABLESWITCH labeling expr LPAR TABLE target_list RPAR target case_list
     { fun c -> let c', l = $2 c in let e = $3 c' in
       let c'' = enter_switch c' in let es = $9 c'' in
-      tableswitch (l, e, $6 c'', $8 c'', es) }
-  | CALL var expr_list { fun c -> call ($2 c func, $3 c) }
-  | CALL_IMPORT var expr_list { fun c -> call_import ($2 c import, $3 c) }
+      Tableswitch (l, e, $6 c'', $8 c'', es) }
+  | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
+  | CALL_IMPORT var expr_list { fun c -> Call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
-    { fun c -> call_indirect ($2 c type_, $3 c, $4 c) }
-  | GET_LOCAL var { fun c -> get_local ($2 c local) }
-  | SET_LOCAL var expr { fun c -> set_local ($2 c local, $3 c) }
+    { fun c -> Call_indirect ($2 c type_, $3 c, $4 c) }
+  | GET_LOCAL var { fun c -> Get_local ($2 c local) }
+  | SET_LOCAL var expr { fun c -> Set_local ($2 c local, $3 c) }
   | LOAD offset align expr
-    { fun c -> load (memop $1 $2 $3, $4 c) }
+    { fun c -> Load (memop $1 $2 $3, $4 c) }
   | STORE offset align expr expr
-    { fun c -> store (memop $1 $2 $3, $4 c, $5 c) }
+    { fun c -> Store (memop $1 $2 $3, $4 c, $5 c) }
   | LOAD_EXTEND offset align expr
-    { fun c -> load_extend (extop $1 $2 $3, $4 c) }
+    { fun c -> Load_extend (extop $1 $2 $3, $4 c) }
   | STORE_WRAP offset align expr expr
-    { fun c -> store_wrap (wrapop $1 $2 $3, $4 c, $5 c) }
-  | CONST literal { fun c -> const (literal $2 $1) }
-  | UNARY expr { fun c -> unary ($1, $2 c) }
-  | BINARY expr expr { fun c -> binary ($1, $2 c, $3 c) }
-  | SELECT expr expr expr { fun c -> select ($1, $2 c, $3 c, $4 c) }
-  | COMPARE expr expr { fun c -> compare ($1, $2 c, $3 c) }
-  | CONVERT expr { fun c -> convert ($1, $2 c) }
-  | UNREACHABLE { fun c -> unreachable }
-  | MEMORY_SIZE { fun c -> host (MemorySize, []) }
-  | GROW_MEMORY expr { fun c -> host (GrowMemory, [$2 c]) }
-  | HAS_FEATURE TEXT { fun c -> host (HasFeature $2, []) }
+    { fun c -> Store_wrap (wrapop $1 $2 $3, $4 c, $5 c) }
+  | CONST literal { fun c -> Const (literal $2 $1) }
+  | UNARY expr { fun c -> Unary ($1, $2 c) }
+  | BINARY expr expr { fun c -> Binary ($1, $2 c, $3 c) }
+  | SELECT expr expr expr { fun c -> Select ($1, $2 c, $3 c, $4 c) }
+  | COMPARE expr expr { fun c -> Compare ($1, $2 c, $3 c) }
+  | CONVERT expr { fun c -> Convert ($1, $2 c) }
+  | UNREACHABLE { fun c -> Unreachable }
+  | MEMORY_SIZE { fun c -> Host (MemorySize, []) }
+  | GROW_MEMORY expr { fun c -> Host (GrowMemory, [$2 c]) }
+  | HAS_FEATURE TEXT { fun c -> Host (HasFeature $2, []) }
 ;
 expr_opt :
   | /* empty */ { fun c -> None }
@@ -328,10 +328,8 @@ case_list :
 
 func_fields :
   | expr_list
-    { let at = at () in
-      empty_type,
-      fun c -> let body = func_body ($1 c) @@ at in
-        {ftype = -1 @@ at; locals = []; body} }
+    { empty_type,
+      fun c -> {ftype = -1 @@ at(); locals = []; body = $1 c} }
   | LPAR PARAM value_type_list RPAR func_fields
     { {(fst $5) with ins = $3 @ (fst $5).ins},
       fun c -> anon_locals c $3; (snd $5) c }
