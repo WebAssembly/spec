@@ -4,7 +4,7 @@
 
 {
 open Parser
-open Ast
+open Kernel
 
 let convert_pos pos =
   { Source.file = pos.Lexing.pos_fname;

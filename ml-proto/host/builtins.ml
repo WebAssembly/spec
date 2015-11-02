@@ -1,6 +1,6 @@
 open Source
+open Kernel
 open Types
-open Ast
 
 module Unknown = Error.Make ()
 exception Unknown = Unknown.Error  (* indicates unknown import name *)

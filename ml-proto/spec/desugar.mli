@@ -1,4 +1,4 @@
-open Ast
+open Kernel
 
 type labeling = labeling' Source.phrase
 and labeling' = Unlabelled | Labelled

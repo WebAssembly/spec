@@ -103,7 +103,7 @@ and expr' =
   | Select of selop * expr * expr * expr    (* branchless conditional *)
   | Compare of relop * expr * expr          (* arithmetic comparison *)
   | Convert of cvt * expr                   (* conversion *)
-  | Unreachable                                    (* trap *)
+  | Unreachable                             (* trap *)
   | Host of hostop * expr list              (* host interaction *)
 
 

@@ -2,7 +2,7 @@
  * (c) 2015 Andreas Rossberg
  *)
 
-open Ast
+open Kernel
 open Source
 open Types
 

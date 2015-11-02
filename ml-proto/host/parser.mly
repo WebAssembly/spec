@@ -4,8 +4,8 @@
 
 %{
 open Source
-open Ast
-open Sugar
+open Kernel
+open Desugar
 open Types
 open Script
 
@@ -175,15 +175,15 @@ let implicit_decl c t at =
 %token<string> VAR
 %token<Types.value_type> VALUE_TYPE
 %token<Types.value_type> CONST
-%token<Ast.unop> UNARY
-%token<Ast.binop> BINARY
-%token<Ast.selop> SELECT
-%token<Ast.relop> COMPARE
-%token<Ast.cvt> CONVERT
-%token<Ast.memop> LOAD
-%token<Ast.memop> STORE
-%token<Ast.extop> LOAD_EXTEND
-%token<Ast.wrapop> STORE_WRAP
+%token<Kernel.unop> UNARY
+%token<Kernel.binop> BINARY
+%token<Kernel.selop> SELECT
+%token<Kernel.relop> COMPARE
+%token<Kernel.cvt> CONVERT
+%token<Kernel.memop> LOAD
+%token<Kernel.memop> STORE
+%token<Kernel.extop> LOAD_EXTEND
+%token<Kernel.wrapop> STORE_WRAP
 %token<Memory.offset> OFFSET
 %token<int> ALIGN
 
@@ -263,7 +263,7 @@ expr1 :
   | LABEL labeling expr
     { fun c -> let c', l = $2 c in
       let c'' = if l.it = Unlabelled then anon_label c' else c' in
-      Sugar.label ($3 c'') }
+      Desugar.label ($3 c'') }
   | BR var expr_opt { fun c -> br ($2 c label, $3 c) }
   | RETURN expr_opt
     { let at1 = ati 1 in
@@ -330,7 +330,7 @@ func_fields :
   | expr_list
     { let at = at () in
       empty_type,
-      fun c -> let body = Sugar.func_body ($1 c) @@ at in
+      fun c -> let body = func_body ($1 c) @@ at in
         {ftype = -1 @@ at; locals = []; body} }
   | LPAR PARAM value_type_list RPAR func_fields
     { {(fst $5) with ins = $3 @ (fst $5).ins},
