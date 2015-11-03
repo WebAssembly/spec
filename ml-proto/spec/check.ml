@@ -95,7 +95,6 @@ let type_cvt at = function
  * present in the module.
  *)
 let type_hostop = function
-  | PageSize -> ({ins = []; out = Some Int32Type}, true)
   | MemorySize -> ({ins = []; out = Some Int32Type}, true)
   | GrowMemory -> ({ins = [Int32Type]; out = None}, true)
   | HasFeature str -> ({ins = []; out = Some Int32Type}, false)

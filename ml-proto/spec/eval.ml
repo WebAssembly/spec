@@ -278,10 +278,6 @@ and coerce et vo =
 and eval_hostop c hostop vs at =
   let host = c.instance.host in
   match hostop, vs with
-  | PageSize, [] ->
-    assert (I64.lt_u host.page_size (Int64.of_int32 Int32.max_int));
-    Some (Int32 (Int64.to_int32 host.page_size))
-
   | MemorySize, [] ->
     let mem = memory c at in
     assert (I64.lt_u (Memory.size mem) (Int64.of_int32 Int32.max_int));

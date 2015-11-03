@@ -153,7 +153,6 @@ expr:
   ( <type>.<binop> <expr> <expr> )
   ( <type>.<relop> <expr> <expr> )
   ( <type>.<cvtop>/<type> <expr> )
-  ( page_size )
   ( memory_size )
   ( grow_memory <expr> )
 

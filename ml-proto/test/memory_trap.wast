@@ -12,7 +12,7 @@
 
     (export "overflow_memory_size" $overflow_memory_size)
     (func $overflow_memory_size
-      (grow_memory (i32.xor (i32.const -1) (i32.sub (page_size) (i32.const 1))))
+      (grow_memory (i32.xor (i32.const -1) (i32.sub (i32.const 0x10000) (i32.const 1))))
     )
 )
 
