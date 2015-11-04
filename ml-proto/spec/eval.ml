@@ -13,7 +13,6 @@ open Source
 type value = Values.value
 type import = value list -> value option
 type host_params = {
-  page_size : Memory.size;
   has_feature : string -> bool
 }
 
@@ -286,7 +285,7 @@ and eval_hostop c hostop vs at =
   | GrowMemory, [v] ->
     let mem = memory c at in
     let delta = address32 v at in
-    if I64.rem_u delta host.page_size <> 0L then
+    if Int64.logand delta 0xffffL <> 0L then
       Trap.error at "growing memory by non-multiple of page size";
     let new_size = Int64.add (Memory.size mem) delta in
     if I64.lt_u new_size (Memory.size mem) then
@@ -317,8 +316,6 @@ let add_export funcs ex =
 
 let init m imports host =
   assert (List.length imports = List.length m.it.Ast.imports);
-  assert (host.page_size > 0L);
-  assert (Lib.Int64.is_power_of_two host.page_size);
   let {memory; funcs; exports; _} = m.it in
   {module_ = m;
    imports;
