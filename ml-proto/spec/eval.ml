@@ -244,6 +244,12 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Arithmetic.eval_cvt cvt v1)
       with exn -> arithmetic_error e.at e1.at e1.at exn)
 
+  | Select (selectop, e1, e2, e3) ->
+    let cond = int32 (eval_expr c e1) e1.at in
+    let v1 = some (eval_expr c e2) e2.at in
+    let v2 = some (eval_expr c e3) e3.at in
+    Some (if cond <> Int32.zero then v1 else v2)
+
   | Host (hostop, es) ->
     let vs = List.map (eval_expr c) es in
     eval_hostop c hostop vs e.at

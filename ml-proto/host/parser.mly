@@ -174,6 +174,7 @@ let implicit_decl c t at =
 %token<Ast.binop> BINARY
 %token<Ast.relop> COMPARE
 %token<Ast.cvt> CONVERT
+%token<Ast.selectop> SELECT
 %token<Ast.memop> LOAD
 %token<Ast.memop> STORE
 %token<Ast.extop> LOAD_EXTEND
@@ -281,6 +282,7 @@ expr1 :
   | BINARY expr expr { fun c -> binary ($1, $2 c, $3 c) }
   | COMPARE expr expr { fun c -> compare ($1, $2 c, $3 c) }
   | CONVERT expr { fun c -> convert ($1, $2 c) }
+  | SELECT expr expr expr { fun c -> select ($1, $2 c, $3 c, $4 c) }
   | PAGE_SIZE { fun c -> host (PageSize, []) }
   | MEMORY_SIZE { fun c -> host (MemorySize, []) }
   | GROW_MEMORY expr { fun c -> host (GrowMemory, [$2 c]) }

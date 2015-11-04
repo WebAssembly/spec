@@ -85,6 +85,9 @@ let compare (relop, e1, e2) =
 let convert (cvt, e) =
   Convert (cvt, e)
 
+let select (selectop, cond, e1, e2) =
+  Select(selectop, cond, e1, e2)
+
 let host (hostop, es) =
   Host (hostop, es)
 

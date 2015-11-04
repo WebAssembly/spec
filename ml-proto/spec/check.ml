@@ -54,6 +54,7 @@ let type_value = Values.type_of
 let type_unop = Values.type_of
 let type_binop = Values.type_of
 let type_relop = Values.type_of
+let type_selectop = Values.type_of
 
 let type_cvt at = function
   | Values.Int32 cvt ->
@@ -210,6 +211,12 @@ let rec check_expr c et e =
     let t1, t = type_cvt e.at cvt in
     check_expr c (Some t1) e1;
     check_type (Some t) et e.at
+
+  | Select (selectop, e1, e2, e3) ->
+    let t = type_selectop selectop in
+    check_expr c (Some Int32Type) e1;
+    check_expr c (Some t) e2;
+    check_expr c (Some t) e3;
 
   | Host (hostop, es) ->
     let ({ins; out}, hasmem) = type_hostop hostop in

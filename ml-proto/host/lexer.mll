@@ -231,6 +231,8 @@ rule token = parse
     { CONVERT (floatop t Float32Op.ConvertSInt64 Float64Op.ConvertSInt64) }
   | (fxx as t)".convert_u/i64"
     { CONVERT (floatop t Float32Op.ConvertUInt64 Float64Op.ConvertUInt64) }
+  | (ixx as t)".select" { SELECT ( intop t Int32Op.Select Int64Op.Select) }
+  | (fxx as t)".select" { SELECT ( floatop t Float32Op.Select Float64Op.Select) }
   | "f64.promote/f32" { CONVERT (Values.Float64 Float64Op.PromoteFloat32) }
   | "f32.demote/f64" { CONVERT (Values.Float32 Float32Op.DemoteFloat64) }
   | "f32.reinterpret/i32" { CONVERT (Values.Float32 Float32Op.ReinterpretInt) }
