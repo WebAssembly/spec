@@ -216,7 +216,7 @@ let rec check_expr c et e =
     let t = type_selectop selectop in
     check_expr c (Some Int32Type) e1;
     check_expr c (Some t) e2;
-    check_expr c (Some t) e3;
+    check_expr c (Some t) e3
 
   | Host (hostop, es) ->
     let ({ins; out}, hasmem) = type_hostop hostop in
