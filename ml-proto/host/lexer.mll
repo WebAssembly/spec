@@ -238,6 +238,9 @@ rule token = parse
   | "i32.reinterpret/f32" { CONVERT (Values.Int32 Int32Op.ReinterpretFloat) }
   | "i64.reinterpret/f64" { CONVERT (Values.Int64 Int64Op.ReinterpretFloat) }
 
+  | (ixx as t)".select" { SELECT ( intop t Int32Op.Select Int64Op.Select) }
+  | (fxx as t)".select" { SELECT ( floatop t Float32Op.Select Float64Op.Select) }
+
   | "page_size" { PAGE_SIZE }
   | "memory_size" { MEMORY_SIZE }
   | "grow_memory" { GROW_MEMORY }
