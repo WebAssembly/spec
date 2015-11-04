@@ -77,8 +77,6 @@ def parse_number_literal(s, i):
     t = s[i:j]
     if t.find('.') == -1:
         x = int(t)
-    elif t.startswith('0x'):
-        x = float(t)
     else:
         x = float(t)
     return (SExp(x, i, j), j)
