@@ -35,7 +35,7 @@
   )
 
   (func $switch (param i32) (result i32)
-    (label $ret
+    (block $ret
       (i32.mul (i32.const 10)
         (tableswitch $exit (get_local 0)
           (table (case $0) (case $1) (case $2) (case $3)) (case $default)

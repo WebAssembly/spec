@@ -1,42 +1,201 @@
 (* Expressions *)
 
-type var = Kernel.var
-
-type labeling = labeling' Source.phrase
-and labeling' = Unlabelled | Labelled
+type var = int Source.phrase
 
 type target = target' Source.phrase
 and target' = Case of var | Case_br of var
 
 type expr = expr' Source.phrase
 and expr' =
+  (* Constants *)
+  | I32_const of I32.t Source.phrase
+  | I64_const of I64.t Source.phrase
+  | F32_const of F32.t Source.phrase
+  | F64_const of F64.t Source.phrase
+
+  (* Control *)
   | Nop
-  | Block of labeling * expr list
+  | Block of expr list
+  | Loop of expr list
+  | Br of var * expr option
+  | Return of var * expr option
   | If of expr * expr
   | If_else of expr * expr * expr
   | Br_if of expr * var * expr option
-  | Loop of labeling * labeling * expr list
-  | Label of expr
-  | Br of var * expr option
-  | Return of var * expr option
-  | Tableswitch of labeling * expr * target list * target * expr list list
+  | Tableswitch of expr * target list * target * expr list list
   | Call of var * expr list
   | Call_import of var * expr list
   | Call_indirect of var * expr * expr list
+
+  (* Locals *)
   | Get_local of var
   | Set_local of var * expr
-  | Load of Kernel.memop * expr
-  | Store of Kernel.memop * expr * expr
-  | Load_extend of Kernel.extop * expr
-  | Store_wrap of Kernel.wrapop * expr * expr
-  | Const of Kernel.literal
-  | Unary of Kernel.unop * expr
-  | Binary of Kernel.binop * expr * expr
-  | Select of Kernel.selop * expr * expr * expr
-  | Compare of Kernel.relop * expr * expr
-  | Convert of Kernel.cvt * expr
+
+  (* Memory access *)
+  | I32_load of Memory.offset * int option * expr
+  | I64_load of Memory.offset * int option * expr
+  | F32_load of Memory.offset * int option * expr
+  | F64_load of Memory.offset * int option * expr
+  | I32_store of Memory.offset * int option * expr * expr
+  | I64_store of Memory.offset * int option * expr * expr
+  | F32_store of Memory.offset * int option * expr * expr
+  | F64_store of Memory.offset * int option * expr * expr
+  | I32_load8_s of Memory.offset * int option * expr
+  | I32_load8_u of Memory.offset * int option * expr
+  | I32_load16_s of Memory.offset * int option * expr
+  | I32_load16_u of Memory.offset * int option * expr
+  | I32_load32_s of Memory.offset * int option * expr
+  | I32_load32_u of Memory.offset * int option * expr
+  | I64_load8_s of Memory.offset * int option * expr
+  | I64_load8_u of Memory.offset * int option * expr
+  | I64_load16_s of Memory.offset * int option * expr
+  | I64_load16_u of Memory.offset * int option * expr
+  | I64_load32_s of Memory.offset * int option * expr
+  | I64_load32_u of Memory.offset * int option * expr
+  | I32_store8 of Memory.offset * int option * expr * expr
+  | I32_store16 of Memory.offset * int option * expr * expr
+  | I32_store32 of Memory.offset * int option * expr * expr
+  | I64_store8 of Memory.offset * int option * expr * expr
+  | I64_store16 of Memory.offset * int option * expr * expr
+  | I64_store32 of Memory.offset * int option * expr * expr
+
+  (* Unary arithmetic *)
+  | I32_clz of expr
+  | I32_ctz of expr
+  | I32_popcnt of expr
+  | I64_clz of expr
+  | I64_ctz of expr
+  | I64_popcnt of expr
+  | F32_neg of expr
+  | F32_abs of expr
+  | F32_sqrt of expr
+  | F32_ceil of expr
+  | F32_floor of expr
+  | F32_trunc of expr
+  | F32_nearest of expr
+  | F64_neg of expr
+  | F64_abs of expr
+  | F64_sqrt of expr
+  | F64_ceil of expr
+  | F64_floor of expr
+  | F64_trunc of expr
+  | F64_nearest of expr
+
+  (* Binary arithmetic *)
+  | I32_add of expr * expr
+  | I32_sub of expr * expr
+  | I32_mul of expr * expr
+  | I32_div_s of expr * expr
+  | I32_div_u of expr * expr
+  | I32_rem_s of expr * expr
+  | I32_rem_u of expr * expr
+  | I32_and of expr * expr
+  | I32_or of expr * expr
+  | I32_xor of expr * expr
+  | I32_shl of expr * expr
+  | I32_shr_s of expr * expr
+  | I32_shr_u of expr * expr
+  | I64_add of expr * expr
+  | I64_sub of expr * expr
+  | I64_mul of expr * expr
+  | I64_div_s of expr * expr
+  | I64_div_u of expr * expr
+  | I64_rem_s of expr * expr
+  | I64_rem_u of expr * expr
+  | I64_and of expr * expr
+  | I64_or of expr * expr
+  | I64_xor of expr * expr
+  | I64_shl of expr * expr
+  | I64_shr_s of expr * expr
+  | I64_shr_u of expr * expr
+  | F32_add of expr * expr
+  | F32_sub of expr * expr
+  | F32_mul of expr * expr
+  | F32_div of expr * expr
+  | F32_min of expr * expr
+  | F32_max of expr * expr
+  | F32_copysign of expr * expr
+  | F64_add of expr * expr
+  | F64_sub of expr * expr
+  | F64_mul of expr * expr
+  | F64_div of expr * expr
+  | F64_min of expr * expr
+  | F64_max of expr * expr
+  | F64_copysign of expr * expr
+
+  (* Select *)
+  | I32_select of expr * expr * expr
+  | I64_select of expr * expr * expr
+  | F32_select of expr * expr * expr
+  | F64_select of expr * expr * expr
+
+  (* Comparisons *)
+  | I32_eq of expr * expr
+  | I32_ne of expr * expr
+  | I32_lt_s of expr * expr
+  | I32_lt_u of expr * expr
+  | I32_le_s of expr * expr
+  | I32_le_u of expr * expr
+  | I32_gt_s of expr * expr
+  | I32_gt_u of expr * expr
+  | I32_ge_s of expr * expr
+  | I32_ge_u of expr * expr
+  | I64_eq of expr * expr
+  | I64_ne of expr * expr
+  | I64_lt_s of expr * expr
+  | I64_lt_u of expr * expr
+  | I64_le_s of expr * expr
+  | I64_le_u of expr * expr
+  | I64_gt_s of expr * expr
+  | I64_gt_u of expr * expr
+  | I64_ge_s of expr * expr
+  | I64_ge_u of expr * expr
+  | F32_eq of expr * expr
+  | F32_ne of expr * expr
+  | F32_lt of expr * expr
+  | F32_le of expr * expr
+  | F32_gt of expr * expr
+  | F32_ge of expr * expr
+  | F64_eq of expr * expr
+  | F64_ne of expr * expr
+  | F64_lt of expr * expr
+  | F64_le of expr * expr
+  | F64_gt of expr * expr
+  | F64_ge of expr * expr
+
+  (* Conversions *)
+  | I32_wrap_i64 of expr
+  | I32_trunc_s_f32 of expr
+  | I32_trunc_u_f32 of expr
+  | I32_trunc_s_f64 of expr
+  | I32_trunc_u_f64 of expr
+  | I64_extend_s_i32 of expr
+  | I64_extend_u_i32 of expr
+  | I64_trunc_s_f32 of expr
+  | I64_trunc_u_f32 of expr
+  | I64_trunc_s_f64 of expr
+  | I64_trunc_u_f64 of expr
+  | F32_convert_s_i32 of expr
+  | F32_convert_u_i32 of expr
+  | F32_convert_s_i64 of expr
+  | F32_convert_u_i64 of expr
+  | F32_demote_f64 of expr
+  | F64_convert_s_i32 of expr
+  | F64_convert_u_i32 of expr
+  | F64_convert_s_i64 of expr
+  | F64_convert_u_i64 of expr
+  | F64_promote_f32 of expr
+  | I32_reinterpret_f32 of expr
+  | I64_reinterpret_f64 of expr
+  | F32_reinterpret_i32 of expr
+  | F64_reinterpret_i64 of expr
+
+  (* Host queries *)
   | Unreachable
-  | Host of Kernel.hostop * expr list
+
+  | Memory_size
+  | Grow_memory of expr
+  | Has_feature of string
 
 
 (* Functions *)

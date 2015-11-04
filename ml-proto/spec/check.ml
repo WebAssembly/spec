@@ -54,7 +54,7 @@ let type_relop = Values.type_of
 
 let type_cvt at = function
   | Values.Int32 cvt ->
-    let open Int32Op in
+    let open I32Op in
     (match cvt with
     | ExtendSInt32 | ExtendUInt32 -> error at "invalid conversion"
     | WrapInt64 -> Int64Type
@@ -62,7 +62,7 @@ let type_cvt at = function
     | TruncSFloat64 | TruncUFloat64 -> Float64Type
     ), Int32Type
   | Values.Int64 cvt ->
-    let open Int64Op in
+    let open I64Op in
     (match cvt with
     | ExtendSInt32 | ExtendUInt32 -> Int32Type
     | WrapInt64 -> error at "invalid conversion"
@@ -70,7 +70,7 @@ let type_cvt at = function
     | TruncSFloat64 | TruncUFloat64 | ReinterpretFloat -> Float64Type
     ), Int64Type
   | Values.Float32 cvt ->
-    let open Float32Op in
+    let open F32Op in
     (match cvt with
     | ConvertSInt32 | ConvertUInt32 | ReinterpretInt -> Int32Type
     | ConvertSInt64 | ConvertUInt64 -> Int64Type
@@ -78,7 +78,7 @@ let type_cvt at = function
     | DemoteFloat64 -> Float64Type
     ), Float32Type
   | Values.Float64 cvt ->
-    let open Float64Op in
+    let open F64Op in
     (match cvt with
     | ConvertSInt32 | ConvertUInt32 -> Int32Type
     | ConvertSInt64 | ConvertUInt64 | ReinterpretInt -> Int64Type
@@ -119,24 +119,21 @@ let rec check_expr c et e =
   | Block es ->
     require (es <> []) e.at "invalid block";
     let es', eN = Lib.List.split_last es in
-    List.iter (check_expr c None) es';
-    check_expr c et eN
-
-  | If (e1, e2, e3) ->
-    check_expr c (Some Int32Type) e1;
-    check_expr c et e2;
-    check_expr c et e3
+    let c' = {c with labels = et :: c.labels} in
+    List.iter (check_expr c' None) es';
+    check_expr c' et eN
 
   | Loop e1 ->
     let c' = {c with labels = None :: c.labels} in
     check_expr c' et e1
 
-  | Label e1 ->
-    let c' = {c with labels = et :: c.labels} in
-    check_expr c' et e1
-
   | Break (x, eo) ->
     check_expr_opt c (label c x) eo e.at
+
+  | If (e1, e2, e3) ->
+    check_expr c (Some Int32Type) e1;
+    check_expr c et e2;
+    check_expr c et e3
 
   | Switch (e1, xs, x, es) ->
     List.iter (fun x -> require (x.it < List.length es) x.at "invalid target")
