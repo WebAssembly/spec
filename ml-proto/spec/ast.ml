@@ -40,6 +40,7 @@ struct
   type cvt = ExtendSInt32 | ExtendUInt32 | WrapInt64
            | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
            | ReinterpretFloat
+  type selectop = Select
 end
 
 module FloatOp () =
@@ -50,6 +51,7 @@ struct
   type cvt = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
            | PromoteFloat32 | DemoteFloat64
            | ReinterpretInt
+  type selectop = Select
 end
 
 module Int32Op = IntOp ()
@@ -61,6 +63,7 @@ type unop = (Int32Op.unop, Int64Op.unop, Float32Op.unop, Float64Op.unop) op
 type binop = (Int32Op.binop, Int64Op.binop, Float32Op.binop, Float64Op.binop) op
 type relop = (Int32Op.relop, Int64Op.relop, Float32Op.relop, Float64Op.relop) op
 type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
+type selectop = (Int32Op.selectop, Int64Op.selectop, Float32Op.selectop, Float64Op.selectop) op
 
 type memop = {ty : value_type; offset : Memory.offset; align : int option}
 type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
@@ -99,6 +102,7 @@ and expr' =
   | Binary of binop * expr * expr                  (* binary arithmetic operator *)
   | Compare of relop * expr * expr                 (* arithmetic comparison *)
   | Convert of cvt * expr                          (* conversion *)
+  | Select of selectop * expr * expr * expr        (* branchless conditional *)
   | Host of hostop * expr list                     (* host interaction *)
 
 and case = case' Source.phrase
