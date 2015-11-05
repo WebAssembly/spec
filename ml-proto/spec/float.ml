@@ -143,9 +143,9 @@ struct
 
   let of_signless_string x len =
     if x <> "nan" &&
-         (len > 7) &&
-           (String.sub x 0 6) = "nan(0x" && (String.get x (len - 1)) = ')' then
-      (let s = Rep.of_string (String.sub x 4 ((len - 5))) in
+         (len > 6) &&
+           (String.sub x 0 6) = "nan:0x" then
+      (let s = Rep.of_string (String.sub x 4 ((len - 4))) in
        if s = Rep.zero then
          raise (Failure "nan payload must not be zero")
        else if Rep.logand s bare_nan <> Rep.zero then
@@ -172,7 +172,7 @@ struct
       let a = abs x in
       let af = arith_of_bits a in
       if af <> af then
-        ("nan(0x" ^ Rep.print_nan_significand_digits a ^ ")")
+        ("nan:0x" ^ Rep.print_nan_significand_digits a)
       else
         (* TODO: OCaml's string_of_float is insufficient *)
         string_of_float (to_float a)

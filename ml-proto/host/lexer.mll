@@ -101,7 +101,7 @@ let float =
   | sign "0x" hexdigit+ '.'? hexdigit* 'p' sign digit+
   | sign "infinity"
   | sign "nan"
-  | sign "nan(0x" hexdigit+ ")"
+  | sign "nan:0x" hexdigit+
 let text = '"' character* '"'
 let name = '$' (letter | digit | '_' | tick | symbol)+
 
