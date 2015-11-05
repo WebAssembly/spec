@@ -46,7 +46,8 @@ let return (x, eo) =
   Branch (x, eo)
 
 let tableswitch (l, e, cs) =
-  labeling l (Switch (e, cs))
+  let cs1, cs2 = List.partition (fun c -> snd c.it) cs in
+  labeling l (Switch (e, List.map (fun c -> fst c.it @@ c.at) (cs1 @ cs2)))
 
 let call (x, es) =
   Call (x, es)
@@ -95,16 +96,16 @@ let host (hostop, es) =
 
 
 let case (c, es) =
-  {value = Some c; expr = expr_seq es}
+  {value = Some c; expr = expr_seq es}, false
 
 let case_br (c, x) =
-  {value = Some c; expr = Branch (x, None) @@ x.at}
+  {value = Some c; expr = Branch (x, None) @@ x.at}, true
 
 let default (es) =
-  {value = None; expr = expr_seq es}
+  {value = None; expr = expr_seq es}, false
 
 let default_br (x) =
-  {value = None; expr = Branch (x, None) @@ x.at}
+  {value = None; expr = Branch (x, None) @@ x.at}, true
 
 
 let func_body es =
