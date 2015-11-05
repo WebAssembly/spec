@@ -12,7 +12,7 @@ val loop : labeling * labeling * expr list -> expr'
 val label : expr -> expr'
 val br : var * expr option -> expr'
 val return : var * expr option -> expr'
-val tableswitch : labeling * expr * (case' * bool) Source.phrase list -> expr'
+val tableswitch : labeling * expr * case list -> expr'
 val call : var * expr list -> expr'
 val call_import : var * expr list -> expr'
 val call_indirect : var * expr * expr list -> expr'
@@ -29,9 +29,9 @@ val compare : relop * expr * expr -> expr'
 val convert : cvt * expr -> expr'
 val host : hostop * expr list -> expr'
 
-val case : I32.t * expr list -> case' * bool
-val case_br : I32.t * var -> case' * bool
-val default : expr list -> case' * bool
-val default_br : var -> case' * bool
+val case : I32.t * expr list -> case'
+val case_br : I32.t * var -> case'
+val default : expr list -> case'
+val default_br : var -> case'
 
 val func_body : expr list -> expr'

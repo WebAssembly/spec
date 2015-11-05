@@ -69,12 +69,6 @@
       (default_br $l)
       (case 0 (set_local $x (i32.add (get_local $x) (i32.const 2))))
     )
-    (tableswitch $l (i32.const 0)
-      (case 0)
-      (case_br 1 $l)
-      (default_br $l)
-      (case 2 (set_local $x (i32.add (get_local $x) (i32.const 4))))
-    )
     (get_local $x)
   )
 
@@ -103,15 +97,15 @@
 (assert_return (invoke "expr" (i64.const -10)) (i64.const 100))
 
 (assert_return (invoke "corner") (i32.const 7))
-(assert_return (invoke "branch") (i32.const 4))
+(assert_return (invoke "branch") (i32.const 0))
 
+(assert_invalid (module (func (tableswitch (i32.const 0)))) "switch is missing default case")
 (assert_invalid (module (func (tableswitch (i32.const 0) (case 0)))) "switch is missing default case")
 (assert_invalid (module (func (tableswitch (i32.const 0) (default) (case 1)))) "switch is not dense")
 (assert_invalid (module (func (tableswitch (i32.const 0) (default) (case 0) (case 3)))) "switch is not dense")
 (assert_invalid (module (func (tableswitch (i32.const 0) (default) (default)))) "duplicate case")
 (assert_invalid (module (func (tableswitch $l (i32.const 0) (default_br $l) (default_br $l)))) "duplicate case")
-(assert_invalid (module (func (tableswitch $l (i32.const 0) (default) (default_br $l)))) "duplicate case")
+(assert_invalid (module (func (tableswitch $l (i32.const 0) (default_br $l) (default)))) "duplicate case")
 (assert_invalid (module (func (tableswitch (i32.const 0) (case 0) (case 0) (default)))) "duplicate case")
 (assert_invalid (module (func (tableswitch $l (i32.const 0) (case_br 0 $l) (case_br 0 $l) (default)))) "duplicate case")
-(assert_invalid (module (func (tableswitch $l (i32.const 0) (case 0) (case_br 0 $l) (default)))) "duplicate case")
-
+(assert_invalid (module (func (tableswitch $l (i32.const 0) (case_br 0 $l) (case 0) (default)))) "duplicate case")

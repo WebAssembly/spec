@@ -305,16 +305,24 @@ expr_list :
 case :
   | LPAR case1 RPAR { let at = at () in fun c -> $2 c @@ at }
 ;
+casebr :
+  | LPAR casebr1 RPAR { let at = at () in fun c -> $2 c @@ at }
+;
+casebr1 :
+  | CASE_BR literal var { fun c -> case_br (int32 $2, $3 c label) }
+  | DEFAULT_BR var { fun c -> default_br ($2 c label) }
+;
 case1 :
   | CASE literal expr_list { fun c -> case (int32 $2, $3 c) }
   | DEFAULT expr_list { fun c -> default ($2 c) }
-  | CASE_BR literal var
-    { fun c -> case_br (int32 $2, $3 c label) }
-  | DEFAULT_BR var { fun c -> default_br ($2 c label) }
 ;
 case_list :
-  | case { fun c -> [$1 c] }
-  | case case_list { fun c -> $1 c :: $2 c }
+  | case_list1 { $1 }
+  | casebr case_list { fun c -> $1 c :: $2 c }
+;
+case_list1 :
+  | /* empty */ { fun c -> [] }
+  | case case_list1 { fun c -> $1 c :: $2 c }
 ;
 
 

@@ -151,8 +151,8 @@ let rec check_expr c et e =
   | Switch (e1, cs) ->
     check_expr c (Some Int32Type) e1;
     let cc, _ = List.fold_right (check_case c) cs (CaseSet.empty, et) in
-    let max = CaseSet.max_elt cc in
     require (CaseSet.mem None cc) e.at "switch is missing default case";
+    let max = CaseSet.max_elt cc in
     require (max = None || max = Some (I32.of_int (CaseSet.cardinal cc - 2)))
       e.at "switch is not dense"
 
