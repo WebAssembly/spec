@@ -272,29 +272,29 @@
 ;; Test that x/-0 is not folded away.
 
 (module
-  (func $f32.no_fold_div_0 (param $x f32) (result f32)
+  (func $f32.no_fold_div_neg_0 (param $x f32) (result f32)
     (f32.div (get_local $x) (f32.const -0.0)))
-  (export "f32.no_fold_div_0" $f32.no_fold_div_0)
+  (export "f32.no_fold_div_neg_0" $f32.no_fold_div_neg_0)
 
-  (func $f64.no_fold_div_0 (param $x f64) (result f64)
+  (func $f64.no_fold_div_neg_0 (param $x f64) (result f64)
     (f64.div (get_local $x) (f64.const -0.0)))
-  (export "f64.no_fold_div_0" $f64.no_fold_div_0)
+  (export "f64.no_fold_div_neg_0" $f64.no_fold_div_neg_0)
 )
 
-(assert_return (invoke "f32.no_fold_div_0" (f32.const 1.0)) (f32.const -infinity))
-(assert_return (invoke "f32.no_fold_div_0" (f32.const -1.0)) (f32.const infinity))
-(assert_return (invoke "f32.no_fold_div_0" (f32.const infinity)) (f32.const -infinity))
-(assert_return (invoke "f32.no_fold_div_0" (f32.const -infinity)) (f32.const infinity))
-(assert_return_nan (invoke "f32.no_fold_div_0" (f32.const 0)))
-(assert_return_nan (invoke "f32.no_fold_div_0" (f32.const -0)))
-(assert_return_nan (invoke "f32.no_fold_div_0" (f32.const nan)))
-(assert_return (invoke "f64.no_fold_div_0" (f64.const 1.0)) (f64.const -infinity))
-(assert_return (invoke "f64.no_fold_div_0" (f64.const -1.0)) (f64.const infinity))
-(assert_return (invoke "f64.no_fold_div_0" (f64.const infinity)) (f64.const -infinity))
-(assert_return (invoke "f64.no_fold_div_0" (f64.const -infinity)) (f64.const infinity))
-(assert_return_nan (invoke "f64.no_fold_div_0" (f64.const 0)))
-(assert_return_nan (invoke "f64.no_fold_div_0" (f64.const -0)))
-(assert_return_nan (invoke "f64.no_fold_div_0" (f64.const nan)))
+(assert_return (invoke "f32.no_fold_div_neg_0" (f32.const 1.0)) (f32.const -infinity))
+(assert_return (invoke "f32.no_fold_div_neg_0" (f32.const -1.0)) (f32.const infinity))
+(assert_return (invoke "f32.no_fold_div_neg_0" (f32.const infinity)) (f32.const -infinity))
+(assert_return (invoke "f32.no_fold_div_neg_0" (f32.const -infinity)) (f32.const infinity))
+(assert_return_nan (invoke "f32.no_fold_div_neg_0" (f32.const 0)))
+(assert_return_nan (invoke "f32.no_fold_div_neg_0" (f32.const -0)))
+(assert_return_nan (invoke "f32.no_fold_div_neg_0" (f32.const nan)))
+(assert_return (invoke "f64.no_fold_div_neg_0" (f64.const 1.0)) (f64.const -infinity))
+(assert_return (invoke "f64.no_fold_div_neg_0" (f64.const -1.0)) (f64.const infinity))
+(assert_return (invoke "f64.no_fold_div_neg_0" (f64.const infinity)) (f64.const -infinity))
+(assert_return (invoke "f64.no_fold_div_neg_0" (f64.const -infinity)) (f64.const infinity))
+(assert_return_nan (invoke "f64.no_fold_div_neg_0" (f64.const 0)))
+(assert_return_nan (invoke "f64.no_fold_div_neg_0" (f64.const -0)))
+(assert_return_nan (invoke "f64.no_fold_div_neg_0" (f64.const nan)))
 
 ;; Test that sqrt(x*x+y*y) is not folded to hypot.
 
