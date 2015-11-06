@@ -104,6 +104,7 @@ and expr' =
   | Compare of relop * expr * expr                 (* arithmetic comparison *)
   | Convert of cvt * expr                          (* conversion *)
   | Select of selectop * expr * expr * expr        (* branchless conditional *)
+  | Unreachable                                    (* trap *)
   | Host of hostop * expr list                     (* host interaction *)
 
 and case = case' Source.phrase

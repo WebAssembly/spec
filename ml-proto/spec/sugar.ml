@@ -88,6 +88,9 @@ let convert (cvt, e) =
 let select (selectop, cond, e1, e2) =
   Select (selectop, cond, e1, e2)
 
+let unreachable =
+  Unreachable
+
 let host (hostop, es) =
   Host (hostop, es)
 

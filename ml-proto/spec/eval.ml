@@ -250,6 +250,9 @@ let rec eval_expr (c : config) (e : expr) =
     let v2 = some (eval_expr c e3) e3.at in
     Some (if cond <> Int32.zero then v1 else v2)
 
+  | Unreachable ->
+    Trap.error e.at "unreachable executed"
+
   | Host (hostop, es) ->
     let vs = List.map (eval_expr c) es in
     eval_hostop c hostop vs e.at

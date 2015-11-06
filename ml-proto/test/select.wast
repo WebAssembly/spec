@@ -13,9 +13,9 @@
 
   ;; Check that both sides of the select are evaluated
   (func $select_trap_l (param $cond i32) (result i32)
-   (i32.select (get_local $cond) (i32.div_s (i32.const 1)(i32.const 0)) (i32.const 0)))
+   (i32.select (get_local $cond) (unreachable) (i32.const 0)))
   (func $select_trap_r (param $cond i32) (result i32)
-   (i32.select (get_local $cond) (i32.const 0) (i32.div_s (i32.const 1)(i32.const 0))))
+   (i32.select (get_local $cond) (i32.const 0) (unreachable)))
 
   (export "select_i32" $select_i32)
   (export "select_i64" $select_i64)
@@ -41,7 +41,7 @@
 (assert_return_nan (invoke "select_f64" (i32.const 1) (f64.const nan) (f64.const 1)))
 (assert_return_nan (invoke "select_f64" (i32.const 0) (f64.const 2) (f64.const nan)))
 
-(assert_trap (invoke "select_trap_l" (i32.const 1)) "integer divide by zero")
-(assert_trap (invoke "select_trap_l" (i32.const 0)) "integer divide by zero")
-(assert_trap (invoke "select_trap_r" (i32.const 1)) "integer divide by zero")
-(assert_trap (invoke "select_trap_r" (i32.const 0)) "integer divide by zero")
+(assert_trap (invoke "select_trap_l" (i32.const 1)) "unreachable executed")
+(assert_trap (invoke "select_trap_l" (i32.const 0)) "unreachable executed")
+(assert_trap (invoke "select_trap_r" (i32.const 1)) "unreachable executed")
+(assert_trap (invoke "select_trap_r" (i32.const 0)) "unreachable executed")
