@@ -64,9 +64,6 @@ sig
   val ge_s : t -> t -> bool
   val ge_u : t -> t -> bool
 
-  val compare_s : t -> t -> int
-  val compare_u : t -> t -> int
-
   val of_int : int -> t
   val of_string : string -> t
   val to_string : t -> string
@@ -197,7 +194,4 @@ struct
   let to_string = Rep.to_string
 
   let of_int = Rep.of_int
-
-  let compare_s = compare
-  let compare_u x y = compare (Rep.add x Rep.min_int) (Rep.add y Rep.min_int)
 end

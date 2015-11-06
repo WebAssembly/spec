@@ -39,12 +39,6 @@ let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
-module CaseSet = Set.Make(
-  struct
-    type t = I32.t option
-    let compare = Lib.Option.compare I32.compare_u
-  end)
-
 
 (* Type comparison *)
 

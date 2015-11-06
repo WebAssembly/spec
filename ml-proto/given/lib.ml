@@ -50,13 +50,6 @@ struct
   let app f = function
     | Some x -> f x
     | None -> ()
-
-  let compare cmp_a o1 o2 =
-    match o1, o2 with
-    | None, None -> 0
-    | None, Some _ -> -1
-    | Some _, None -> 1
-    | Some x1, Some x2 -> cmp_a x1 x2
 end
 
 module Int =

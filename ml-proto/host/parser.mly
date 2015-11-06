@@ -49,11 +49,6 @@ let literal s t =
     | Failure msg -> error s.at ("constant out of range: " ^ msg)
     | _ -> error s.at "constant out of range"
 
-let int32 s =
-  try I32.of_string s.it with
-    | Failure msg -> error s.at ("constant out of range: " ^ msg)
-    | _ -> error s.at "constant out of range"
-
 
 (* Memory operands *)
 

@@ -20,7 +20,6 @@ sig
   val get : 'a option -> 'a -> 'a
   val map : ('a -> 'b) -> 'a option -> 'b option
   val app : ('a -> unit) -> 'a option -> unit
-  val compare : ('a -> 'a -> int) -> 'a option -> 'a option -> int
 end
 
 module Int :
