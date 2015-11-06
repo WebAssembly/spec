@@ -64,7 +64,7 @@
 (assert_return (invoke "f32.add" (f32.const 0x1.000002p+23) (f32.const 0x1p-1)) (f32.const 0x1.000004p+23))
 
 ;; Test that what some systems call signalling NaN behaves as a quiet NaN.
-(assert_return_nan (invoke "f32.add" (f32.const nan(0x200000)) (f32.const 1.0)))
+(assert_return_nan (invoke "f32.add" (f32.const nan:0x200000) (f32.const 1.0)))
 
 (assert_return (invoke "f64.add" (f64.const 1.1234567890) (f64.const 1.2345e-10)) (f64.const 0x1.1f9add37c11f7p+0))
 
@@ -136,7 +136,7 @@
 (assert_return (invoke "f64.add" (f64.const -0x0.3f3d1a052fa2bp-1022) (f64.const -0x1.4b78292c7d2adp-1021)) (f64.const -0x1.6b16b62f14fc2p-1021))
 
 ;; Test that what some systems call signalling NaN behaves as a quiet NaN.
-(assert_return_nan (invoke "f64.add" (f64.const nan(0x4000000000000)) (f64.const 1.0)))
+(assert_return_nan (invoke "f64.add" (f64.const nan:0x4000000000000) (f64.const 1.0)))
 
 ;; Test for a historic spreadsheet bug.
 ;; https://blogs.office.com/2007/09/25/calculation-issue-update/
@@ -260,41 +260,41 @@
 
 (assert_return (invoke "f32.abs" (f32.const nan)) (f32.const nan))
 (assert_return (invoke "f32.abs" (f32.const -nan)) (f32.const nan))
-(assert_return (invoke "f32.abs" (f32.const nan(0x0f1e2))) (f32.const nan(0x0f1e2)))
-(assert_return (invoke "f32.abs" (f32.const -nan(0x0f1e2))) (f32.const nan(0x0f1e2)))
+(assert_return (invoke "f32.abs" (f32.const nan:0x0f1e2)) (f32.const nan:0x0f1e2))
+(assert_return (invoke "f32.abs" (f32.const -nan:0x0f1e2)) (f32.const nan:0x0f1e2))
 
 (assert_return (invoke "f64.abs" (f64.const nan)) (f64.const nan))
 (assert_return (invoke "f64.abs" (f64.const -nan)) (f64.const nan))
-(assert_return (invoke "f64.abs" (f64.const nan(0x0f1e27a6b))) (f64.const nan(0x0f1e27a6b)))
-(assert_return (invoke "f64.abs" (f64.const -nan(0x0f1e27a6b))) (f64.const nan(0x0f1e27a6b)))
+(assert_return (invoke "f64.abs" (f64.const nan:0x0f1e27a6b)) (f64.const nan:0x0f1e27a6b))
+(assert_return (invoke "f64.abs" (f64.const -nan:0x0f1e27a6b)) (f64.const nan:0x0f1e27a6b))
 
 (assert_return (invoke "f32.neg" (f32.const nan)) (f32.const -nan))
 (assert_return (invoke "f32.neg" (f32.const -nan)) (f32.const nan))
-(assert_return (invoke "f32.neg" (f32.const nan(0x0f1e2))) (f32.const -nan(0x0f1e2)))
-(assert_return (invoke "f32.neg" (f32.const -nan(0x0f1e2))) (f32.const nan(0x0f1e2)))
+(assert_return (invoke "f32.neg" (f32.const nan:0x0f1e2)) (f32.const -nan:0x0f1e2))
+(assert_return (invoke "f32.neg" (f32.const -nan:0x0f1e2)) (f32.const nan:0x0f1e2))
 
 (assert_return (invoke "f64.neg" (f64.const nan)) (f64.const -nan))
 (assert_return (invoke "f64.neg" (f64.const -nan)) (f64.const nan))
-(assert_return (invoke "f64.neg" (f64.const nan(0x0f1e27a6b))) (f64.const -nan(0x0f1e27a6b)))
-(assert_return (invoke "f64.neg" (f64.const -nan(0x0f1e27a6b))) (f64.const nan(0x0f1e27a6b)))
+(assert_return (invoke "f64.neg" (f64.const nan:0x0f1e27a6b)) (f64.const -nan:0x0f1e27a6b))
+(assert_return (invoke "f64.neg" (f64.const -nan:0x0f1e27a6b)) (f64.const nan:0x0f1e27a6b))
 
 (assert_return (invoke "f32.copysign" (f32.const nan) (f32.const nan)) (f32.const nan))
 (assert_return (invoke "f32.copysign" (f32.const nan) (f32.const -nan)) (f32.const -nan))
 (assert_return (invoke "f32.copysign" (f32.const -nan) (f32.const nan)) (f32.const nan))
 (assert_return (invoke "f32.copysign" (f32.const -nan) (f32.const -nan)) (f32.const -nan))
-(assert_return (invoke "f32.copysign" (f32.const nan(0x0f1e2)) (f32.const nan)) (f32.const nan(0x0f1e2)))
-(assert_return (invoke "f32.copysign" (f32.const nan(0x0f1e2)) (f32.const -nan)) (f32.const -nan(0x0f1e2)))
-(assert_return (invoke "f32.copysign" (f32.const -nan(0x0f1e2)) (f32.const nan)) (f32.const nan(0x0f1e2)))
-(assert_return (invoke "f32.copysign" (f32.const -nan(0x0f1e2)) (f32.const -nan)) (f32.const -nan(0x0f1e2)))
+(assert_return (invoke "f32.copysign" (f32.const nan:0x0f1e2) (f32.const nan)) (f32.const nan:0x0f1e2))
+(assert_return (invoke "f32.copysign" (f32.const nan:0x0f1e2) (f32.const -nan)) (f32.const -nan:0x0f1e2))
+(assert_return (invoke "f32.copysign" (f32.const -nan:0x0f1e2) (f32.const nan)) (f32.const nan:0x0f1e2))
+(assert_return (invoke "f32.copysign" (f32.const -nan:0x0f1e2) (f32.const -nan)) (f32.const -nan:0x0f1e2))
 
 (assert_return (invoke "f64.copysign" (f64.const nan) (f64.const nan)) (f64.const nan))
 (assert_return (invoke "f64.copysign" (f64.const nan) (f64.const -nan)) (f64.const -nan))
 (assert_return (invoke "f64.copysign" (f64.const -nan) (f64.const nan)) (f64.const nan))
 (assert_return (invoke "f64.copysign" (f64.const -nan) (f64.const -nan)) (f64.const -nan))
-(assert_return (invoke "f64.copysign" (f64.const nan(0x0f1e27a6b)) (f64.const nan)) (f64.const nan(0x0f1e27a6b)))
-(assert_return (invoke "f64.copysign" (f64.const nan(0x0f1e27a6b)) (f64.const -nan)) (f64.const -nan(0x0f1e27a6b)))
-(assert_return (invoke "f64.copysign" (f64.const -nan(0x0f1e27a6b)) (f64.const nan)) (f64.const nan(0x0f1e27a6b)))
-(assert_return (invoke "f64.copysign" (f64.const -nan(0x0f1e27a6b)) (f64.const -nan)) (f64.const -nan(0x0f1e27a6b)))
+(assert_return (invoke "f64.copysign" (f64.const nan:0x0f1e27a6b) (f64.const nan)) (f64.const nan:0x0f1e27a6b))
+(assert_return (invoke "f64.copysign" (f64.const nan:0x0f1e27a6b) (f64.const -nan)) (f64.const -nan:0x0f1e27a6b))
+(assert_return (invoke "f64.copysign" (f64.const -nan:0x0f1e27a6b) (f64.const nan)) (f64.const nan:0x0f1e27a6b))
+(assert_return (invoke "f64.copysign" (f64.const -nan:0x0f1e27a6b) (f64.const -nan)) (f64.const -nan:0x0f1e27a6b))
 
 ;; Test that ceil isn't implemented as adding 0.5 and rounding to nearest.
 (assert_return (invoke "f32.ceil" (f32.const 0x1.fffffep-1)) (f32.const 1.0))
