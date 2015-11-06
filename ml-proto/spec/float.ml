@@ -145,7 +145,7 @@ struct
     if x <> "nan" &&
          (len > 6) &&
            (String.sub x 0 6) = "nan:0x" then
-      (let s = Rep.of_string (String.sub x 4 ((len - 4))) in
+      (let s = Rep.of_string (String.sub x 4 (len - 4)) in
        if s = Rep.zero then
          raise (Failure "nan payload must not be zero")
        else if Rep.logand s bare_nan <> Rep.zero then
