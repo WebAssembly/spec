@@ -291,7 +291,7 @@ and eval_hostop c hostop vs at =
   | GrowMemory, [v] ->
     let mem = memory c at in
     let delta = address32 v at in
-    if Int64.logand delta 0xffffL <> 0L then
+    if I64.rem_u delta Memory.page_size <> 0L then
       Trap.error at "growing memory by non-multiple of page size";
     let new_size = Int64.add (Memory.size mem) delta in
     if I64.lt_u new_size (Memory.size mem) then

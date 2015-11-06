@@ -17,6 +17,8 @@ exception Type
 exception Bounds
 exception SizeOverflow
 
+val page_size : size
+
 val create : size -> memory
 val init : memory -> segment list -> unit
 val size : memory -> size
