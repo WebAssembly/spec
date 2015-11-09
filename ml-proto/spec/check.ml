@@ -219,7 +219,7 @@ let rec check_expr c et e =
     check_expr c (Some t) e3
 
   | Unreachable ->
-    check_type None None e.at
+    ()
 
   | Host (hostop, es) ->
     let ({ins; out}, hasmem) = type_hostop hostop in
