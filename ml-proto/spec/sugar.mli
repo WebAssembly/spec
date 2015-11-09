@@ -31,6 +31,7 @@ val binary : binop * expr * expr -> expr'
 val select : selop * expr * expr * expr -> expr'
 val compare : relop * expr * expr -> expr'
 val convert : cvt * expr -> expr'
+val unreachable : expr'
 val host : hostop * expr list -> expr'
 
 val func_body : expr list -> expr'

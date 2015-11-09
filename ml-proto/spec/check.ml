@@ -218,6 +218,9 @@ let rec check_expr c et e =
     check_expr c (Some t1) e1;
     check_type (Some t) et e.at
 
+  | Unreachable ->
+    ()
+
   | Host (hostop, es) ->
     let ({ins; out}, hasmem) = type_hostop hostop in
     if hasmem then

@@ -107,6 +107,9 @@ let compare (relop, e1, e2) =
 let convert (cvt, e) =
   Convert (cvt, e)
 
+let unreachable =
+  Unreachable
+
 let host (hostop, es) =
   Host (hostop, es)
 

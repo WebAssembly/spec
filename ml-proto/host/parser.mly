@@ -165,7 +165,7 @@ let implicit_decl c t at =
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC TYPE PARAM RESULT LOCAL
 %token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
-%token PAGE_SIZE MEMORY_SIZE GROW_MEMORY HAS_FEATURE
+%token UNREACHABLE PAGE_SIZE MEMORY_SIZE GROW_MEMORY HAS_FEATURE
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token EOF
 
@@ -292,6 +292,7 @@ expr1 :
   | SELECT expr expr expr { fun c -> select ($1, $2 c, $3 c, $4 c) }
   | COMPARE expr expr { fun c -> compare ($1, $2 c, $3 c) }
   | CONVERT expr { fun c -> convert ($1, $2 c) }
+  | UNREACHABLE { fun c -> unreachable }
   | PAGE_SIZE { fun c -> host (PageSize, []) }
   | MEMORY_SIZE { fun c -> host (MemorySize, []) }
   | GROW_MEMORY expr { fun c -> host (GrowMemory, [$2 c]) }

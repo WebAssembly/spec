@@ -253,6 +253,9 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Arithmetic.eval_cvt cvt v1)
       with exn -> arithmetic_error e.at e1.at e1.at exn)
 
+  | Unreachable ->
+    Trap.error e.at "unreachable executed"
+
   | Host (hostop, es) ->
     let vs = List.map (eval_expr c) es in
     eval_hostop c hostop vs e.at
