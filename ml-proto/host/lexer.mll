@@ -241,6 +241,7 @@ rule token = parse
   | (ixx as t)".select" { SELECT ( intop t Int32Op.Select Int64Op.Select) }
   | (fxx as t)".select" { SELECT ( floatop t Float32Op.Select Float64Op.Select) }
 
+  | "unreachable" { UNREACHABLE }
   | "page_size" { PAGE_SIZE }
   | "memory_size" { MEMORY_SIZE }
   | "grow_memory" { GROW_MEMORY }

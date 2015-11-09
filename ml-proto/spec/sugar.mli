@@ -26,6 +26,7 @@ val binary : binop * expr * expr -> expr'
 val compare : relop * expr * expr -> expr'
 val convert : cvt * expr -> expr'
 val select : selectop * expr * expr * expr -> expr'
+val unreachable : expr'
 val host : hostop * expr list -> expr'
 
 val case : literal * (expr list * bool) option -> case'
