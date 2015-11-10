@@ -6,13 +6,14 @@ welcome.
 
 Misc semantics:
  - ~~test that linear memory is little-endian for all integers and floats~~
- - test that 8-bit, 16-bit, and 32-bit atomic operations are lock-free (is this possible?)
  - test that unaligned and misaligned accesses work, even if slow
  - ~~test that runaway recursion traps~~
- - test that too-big linear memory resize fails appropriately
+ - test that too-big `grow_memory` fails appropriately
  - test that too-big linear memory initial allocation fails
  - test that function addresses are monotonic indices, and not actual addresses.
- - test that one can clobber the entire contents of the linear memory without corrupting: call stack, local variables, program execution.
+ - test that non-pagesize `grow_memory` fails
+ - test that non-pagesize initial linear memory allocation fails
+ - test that one can clobber the entire contents of the linear memory without corrupting: call stack, global variables, local variables, program execution.
 
 Operator semantics:
  - test that promote/demote, sext/trunc, zext/trunc is bit-preserving if not NaN
@@ -61,6 +62,7 @@ Linear memory semantics:
  - test that when allocating 4GiB, accessing index -1 fails
 
 Function pointer semantics:
+ - test that function addresses are monotonic indices, and not actual addresses.
  - test that function pointers work [correctly](https://github.com/WebAssembly/design/issues/89)
 
 Expression optimizer bait:
@@ -124,3 +126,5 @@ SIMD (post-MVP):
 
 Threads (post-MVP):
  - test that thread-local variables are actually thread-local
+ - test that 8-bit, 16-bit, 32-bit, and 64-bit (on wasm64) atomic operations
+   are lock-free (is this possible?)
