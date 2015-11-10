@@ -98,7 +98,7 @@
       (loop
         (if
           (i32.eq (get_local 0) (i32.const 0))
-          (break 0)
+          (br 1)
         )
         (set_local 2 (i32.mul (get_local 0) (i32.const 4)))
         (i32.store (get_local 2) (get_local 0))
@@ -108,6 +108,7 @@
           (return (i32.const 0))
         )
         (set_local 0 (i32.sub (get_local 0) (i32.const 1)))
+        (br 0)
       )
     )
     (return (i32.const 1))
@@ -121,7 +122,7 @@
       (loop
         (if
           (i32.eq (get_local 0) (i32.const 0))
-          (break 0)
+          (br 1)
         )
         (set_local 2 (f64.convert_s/i32 (get_local 0)))
         (f64.store align=1 (get_local 0) (get_local 2))
@@ -131,6 +132,7 @@
           (return (i32.const 0))
         )
         (set_local 0 (i32.sub (get_local 0) (i32.const 1)))
+        (br 0)
       )
     )
     (return (i32.const 1))
