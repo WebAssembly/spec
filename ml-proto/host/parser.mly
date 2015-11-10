@@ -80,15 +80,18 @@ let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
   {types : types; funcs : space; imports : space; locals : space;
-   labels : int VarMap.t}
+   labels : int VarMap.t; cases : space}
 
-let c0 () =
+let empty_context () =
   {types = empty_types (); funcs = empty (); imports = empty ();
-   locals = empty (); labels = VarMap.empty}
+   locals = empty (); labels = VarMap.empty; cases = empty ()}
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
   {c with labels = VarMap.add "return" 0 c.labels; locals = empty ()}
+
+let enter_switch c =
+  {c with cases = empty ()}
 
 let type_ c x =
   try VarMap.find x.it c.types.tmap
@@ -101,6 +104,7 @@ let lookup category space x =
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
+let case c x = lookup "case" c.cases x
 let label c x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
@@ -120,6 +124,7 @@ let bind category space x =
 let bind_func c x = bind "function" c.funcs x
 let bind_import c x = bind "import" c.imports x
 let bind_local c x = bind "local" c.locals x
+let bind_case c x = bind "case" c.cases x
 let bind_label c x =
   {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
 
@@ -131,6 +136,7 @@ let anon space n = space.count <- space.count + n
 let anon_func c = anon c.funcs 1
 let anon_import c = anon c.imports 1
 let anon_locals c ts = anon c.locals (List.length ts)
+let anon_case c = anon c.cases 1
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 let empty_type = {ins = []; out = None}
@@ -153,13 +159,13 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF LOOP LABEL BREAK SWITCH CASE FALLTHROUGH
+%token NOP BLOCK IF IF_ELSE LOOP LABEL BR BR_IF TABLESWITCH CASE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE LOAD_EXTEND STORE_WRAP OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC TYPE PARAM RESULT LOCAL
 %token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
-%token MEMORY_SIZE GROW_MEMORY HAS_FEATURE
+%token UNREACHABLE MEMORY_SIZE GROW_MEMORY HAS_FEATURE
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token EOF
 
@@ -169,12 +175,11 @@ let implicit_decl c t at =
 %token<string> VAR
 %token<Types.value_type> VALUE_TYPE
 %token<Types.value_type> CONST
-%token<Types.value_type> SWITCH
 %token<Ast.unop> UNARY
 %token<Ast.binop> BINARY
+%token<Ast.selop> SELECT
 %token<Ast.relop> COMPARE
 %token<Ast.cvt> CONVERT
-%token<Ast.selectop> SELECT
 %token<Ast.memop> LOAD
 %token<Ast.memop> STORE
 %token<Ast.extop> LOAD_EXTEND
@@ -248,21 +253,25 @@ expr1 :
   | NOP { fun c -> nop }
   | BLOCK labeling expr expr_list
     { fun c -> let c', l = $2 c in block (l, $3 c' :: $4 c') }
-  | IF expr expr expr_opt { fun c -> if_ ($2 c, $3 c, $4 c) }
+  | IF_ELSE expr expr expr { fun c -> if_else ($2 c, $3 c, $4 c) }
+  | IF expr expr { fun c -> if_ ($2 c, $3 c) }
+  | BR_IF expr var { fun c -> br_if ($2 c, $3 c label) }
   | LOOP labeling labeling expr_list
     { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
-      loop (l1, l2, $4 c'') }
+      let c''' = if l1.it = Unlabelled then anon_label c'' else c'' in
+      loop (l1, l2, $4 c''') }
   | LABEL labeling expr
     { fun c -> let c', l = $2 c in
       let c'' = if l.it = Unlabelled then anon_label c' else c' in
       Sugar.label ($3 c'') }
-  | BREAK var expr_opt { fun c -> break ($2 c label, $3 c) }
+  | BR var expr_opt { fun c -> br ($2 c label, $3 c) }
   | RETURN expr_opt
     { let at1 = ati 1 in
       fun c -> return (label c ("return" @@ at1) @@ at1, $2 c) }
-  | SWITCH labeling expr cases
-    { fun c -> let c', l = $2 c in let cs, e = $4 c' in
-      switch (l, $1, $3 c', List.map (fun a -> a $1) cs, e) }
+  | TABLESWITCH labeling expr LPAR TABLE case_list RPAR case target_list
+    { fun c -> let c', l = $2 c in let e = $3 c' in
+      let c'' = enter_switch c' in let es = $9 c'' in
+      tableswitch (l, e, $6 c'', $8 c'', es) }
   | CALL var expr_list { fun c -> call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
@@ -280,9 +289,10 @@ expr1 :
   | CONST literal { fun c -> const (literal $2 $1) }
   | UNARY expr { fun c -> unary ($1, $2 c) }
   | BINARY expr expr { fun c -> binary ($1, $2 c, $3 c) }
+  | SELECT expr expr expr { fun c -> select ($1, $2 c, $3 c, $4 c) }
   | COMPARE expr expr { fun c -> compare ($1, $2 c, $3 c) }
   | CONVERT expr { fun c -> convert ($1, $2 c) }
-  | SELECT expr expr expr { fun c -> select ($1, $2 c, $3 c, $4 c) }
+  | UNREACHABLE { fun c -> unreachable }
   | MEMORY_SIZE { fun c -> host (MemorySize, []) }
   | GROW_MEMORY expr { fun c -> host (GrowMemory, [$2 c]) }
   | HAS_FEATURE TEXT { fun c -> host (HasFeature $2, []) }
@@ -296,23 +306,21 @@ expr_list :
   | expr expr_list { fun c -> $1 c :: $2 c }
 ;
 
-fallthrough :
-  | /* empty */ { false }
-  | FALLTHROUGH { true }
-;
-
 case :
-  | LPAR case1 RPAR { let at = at () in fun c t -> $2 c t @@ at }
+  | LPAR CASE var RPAR { let at = at () in fun c -> Case ($3 c case) @@ at }
+  | LPAR BR var RPAR { let at = at () in fun c -> Case_br ($3 c label) @@ at }
 ;
-case1 :
-  | CASE literal expr expr_list fallthrough
-    { fun c t -> case (literal $2 t, Some ($3 c :: $4 c, $5)) }
-  | CASE literal
-    { fun c t -> case (literal $2 t, None) }
+case_list :
+  | /* empty */ { fun c -> [] }
+  | case case_list { fun c -> $1 c :: $2 c }
 ;
-cases :
-  | expr { fun c -> [], $1 c }
-  | case cases { fun c -> let x, y = $2 c in $1 c :: x, y }
+target :
+  | LPAR CASE expr_list RPAR { fun c -> anon_case c; $3 c }
+  | LPAR CASE bind_var expr_list RPAR { fun c -> bind_case c $3; $4 c }
+;
+target_list :
+  | /* empty */ { fun c -> [] }
+  | target target_list { fun c -> let e = $1 c in let es = $2 c in e :: es }
 ;
 
 
@@ -448,7 +456,7 @@ module_fields :
       | None -> {m with memory = Some $1} }
 ;
 module_ :
-  | LPAR MODULE module_fields RPAR { $3 (c0 ()) @@ at () }
+  | LPAR MODULE module_fields RPAR { $3 (empty_context ()) @@ at () }
 ;
 
 

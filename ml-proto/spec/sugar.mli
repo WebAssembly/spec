@@ -3,14 +3,19 @@ open Ast
 type labeling = labeling' Source.phrase
 and labeling' = Unlabelled | Labelled
 
+type case = case' Source.phrase
+and case' = Case of var | Case_br of var
+
 val nop : expr'
 val block : labeling * expr list -> expr'
-val if_ : expr * expr * expr option -> expr'
+val if_else : expr * expr * expr -> expr'
+val if_ : expr * expr -> expr'
+val br_if : expr * var -> expr'
 val loop : labeling * labeling * expr list -> expr'
 val label : expr -> expr'
-val break : var * expr option -> expr'
+val br : var * expr option -> expr'
 val return : var * expr option -> expr'
-val switch : labeling * value_type * expr * case list * expr -> expr'
+val tableswitch : labeling * expr * case list * case * expr list list -> expr'
 val call : var * expr list -> expr'
 val call_import : var * expr list -> expr'
 val call_indirect : var * expr * expr list -> expr'
@@ -23,11 +28,10 @@ val store_wrap : wrapop * expr * expr -> expr'
 val const : literal -> expr'
 val unary : unop * expr -> expr'
 val binary : binop * expr * expr -> expr'
+val select : selop * expr * expr * expr -> expr'
 val compare : relop * expr * expr -> expr'
 val convert : cvt * expr -> expr'
-val select : selectop * expr * expr * expr -> expr'
+val unreachable : expr'
 val host : hostop * expr list -> expr'
-
-val case : literal * (expr list * bool) option -> case'
 
 val func_body : expr list -> expr'

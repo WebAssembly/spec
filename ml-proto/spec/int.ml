@@ -24,7 +24,7 @@ sig
   val of_string : string -> t
   val to_string : t -> string
 
-  val bitwidth : int 
+  val bitwidth : int
 end
 
 module type S =

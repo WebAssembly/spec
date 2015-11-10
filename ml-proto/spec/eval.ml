@@ -145,11 +145,12 @@ let rec eval_expr (c : config) (e : expr) =
 
   | If (e1, e2, e3) ->
     let i = int32 (eval_expr c e1) e1.at in
-    eval_expr c (if i <> Int32.zero then e2 else e3)
+    eval_expr c (if i <> 0l then e2 else e3)
 
   | Loop e1 ->
-    ignore (eval_expr c e1);
-    eval_expr c e
+    let module L = MakeLabel () in
+    let c' = {c with labels = L.label :: c.labels} in
+    (try eval_expr c' e1 with L.Label _ -> eval_expr c e)
 
   | Label e1 ->
     let module L = MakeLabel () in
@@ -159,12 +160,14 @@ let rec eval_expr (c : config) (e : expr) =
   | Break (x, eo) ->
     raise (label c x (eval_expr_opt c eo))
 
-  | Switch (_t, e1, cs, e2) ->
-    let vo = some (eval_expr c e1) e1.at in
-    (match List.fold_left (eval_case c vo) `Seek cs with
-    | `Seek | `Fallthru -> eval_expr c e2
-    | `Done vs -> vs
-    )
+  | Switch (e1, xs, x, es) ->
+    let i = int32 (eval_expr c e1) e1.at in
+    let x' =
+      if I32.ge_u i (Int32.of_int (List.length xs)) then x
+      else List.nth xs (Int32.to_int i)
+    in
+    if x'.it >= List.length es then Crash.error e.at "invalid switch target";
+    List.fold_left (fun vo e -> eval_expr c e) None (Lib.List.drop x'.it es)
 
   | Call (x, es) ->
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
@@ -232,6 +235,12 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Arithmetic.eval_binop binop v1 v2)
       with exn -> arithmetic_error e.at e1.at e2.at exn)
 
+  | Select (selop, e1, e2, e3) ->
+    let cond = int32 (eval_expr c e1) e1.at in
+    let v1 = some (eval_expr c e2) e2.at in
+    let v2 = some (eval_expr c e3) e3.at in
+    Some (if cond <> 0l then v1 else v2)
+
   | Compare (relop, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
@@ -243,11 +252,8 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Arithmetic.eval_cvt cvt v1)
       with exn -> arithmetic_error e.at e1.at e1.at exn)
 
-  | Select (selectop, e1, e2, e3) ->
-    let cond = int32 (eval_expr c e1) e1.at in
-    let v1 = some (eval_expr c e2) e2.at in
-    let v2 = some (eval_expr c e3) e3.at in
-    Some (if cond <> Int32.zero then v1 else v2)
+  | Unreachable ->
+    Trap.error e.at "unreachable executed"
 
   | Host (hostop, es) ->
     let vs = List.map (eval_expr c) es in
@@ -256,16 +262,6 @@ let rec eval_expr (c : config) (e : expr) =
 and eval_expr_opt c = function
   | Some e -> eval_expr c e
   | None -> None
-
-and eval_case c vo stage case =
-  let {value; expr = e; fallthru} = case.it in
-  match stage, vo = value.it with
-  | `Seek, true | `Fallthru, _ ->
-    if fallthru
-    then (ignore (eval_expr c e); `Fallthru)
-    else `Done (eval_expr c e)
-  | `Seek, false | `Done _, _ ->
-    stage
 
 and eval_func instance f vs =
   let args = List.map ref vs in

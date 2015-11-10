@@ -101,7 +101,7 @@ let float =
   | sign "0x" hexdigit+ '.'? hexdigit* 'p' sign digit+
   | sign "infinity"
   | sign "nan"
-  | sign "nan(0x" hexdigit+ ")"
+  | sign "nan:0x" hexdigit+
 let text = '"' character* '"'
 let name = '$' (letter | digit | '_' | tick | symbol)+
 
@@ -134,11 +134,13 @@ rule token = parse
   | "nop" { NOP }
   | "block" { BLOCK }
   | "if" { IF }
+  | "if_else" { IF_ELSE }
   | "loop" { LOOP }
   | "label" { LABEL }
-  | "break" { BREAK }
+  | "br" { BR }
+  | "br_if" { BR_IF }
+  | "tableswitch" { TABLESWITCH }
   | "case" { CASE }
-  | "fallthrough" { FALLTHROUGH }
   | "call" { CALL }
   | "call_import" { CALL_IMPORT }
   | "call_indirect" { CALL_INDIRECT }
@@ -158,7 +160,6 @@ rule token = parse
   | "offset="(digits as s) { OFFSET (Int64.of_string s) }
   | "align="(digits as s) { ALIGN (int_of_string s) }
 
-  | (nxx as t)".switch" { SWITCH (value_type t) }
   | (nxx as t)".const" { CONST (value_type t) }
 
   | (ixx as t)".clz" { UNARY (intop t Int32Op.Clz Int64Op.Clz) }
@@ -241,6 +242,7 @@ rule token = parse
   | (ixx as t)".select" { SELECT ( intop t Int32Op.Select Int64Op.Select) }
   | (fxx as t)".select" { SELECT ( floatop t Float32Op.Select Float64Op.Select) }
 
+  | "unreachable" { UNREACHABLE }
   | "memory_size" { MEMORY_SIZE }
   | "grow_memory" { GROW_MEMORY }
   | "has_feature" { HAS_FEATURE }
