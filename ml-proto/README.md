@@ -84,7 +84,7 @@ See `wasm -h` for (the few) options.
 
 ## WebAssembly Language Specification vs Internal Kernel Language
 
-This implementation serves as a specification and documentation of the WebAssembly language. At the same time, to simplify its internals, it internally lowers some WebAssembly language constructs to produce a reduced "kernel" language (ast.ml) which is simpler to validate (check.ml) and evaluate (eval.ml) in this implementation's chosen style. The distinction between WebAssembly and the internal kernel language is purely an implementation detail, and does not reflect any semantic property of WebAssembly itself.
+This implementation serves as a specification and documentation of the WebAssembly language. At the same time, to simplify its internals, it internally lowers some WebAssembly language constructs to produce a reduced "kernel" language (ast.ml) which is simpler to validate (check.ml) and evaluate (eval.ml) in this implementation's chosen style. While this internal kernel language's behavior contributes a significant part of the overall specification, its particular structure, abstractions, and vocabulary and are purely implementation details.
 
 For example, WebAssembly has separate `if` and `if_else` opcodes, but in the internal kernel language one construct handles both, using a `nop` to indicate the absence of an else arm. Similarly, the internal kernel language sometimes requires explicit blocks in places where they aren't required in WebAssembly itself.
 
