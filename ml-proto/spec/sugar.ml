@@ -21,9 +21,6 @@ let expr_seq es =
   | es -> Block es @@@ List.map Source.at es
 
 
-let nop =
-  Nop
-
 let block (l, es) =
  labeling l (Block es)
 
