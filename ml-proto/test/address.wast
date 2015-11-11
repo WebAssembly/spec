@@ -20,8 +20,6 @@
     )
     (export "good" $good)
 
-    (func $bad1 (param $i i32) (i32.load offset=4294967296 (get_local $i)))
-    (export "bad1" $bad1)
     (func $bad2 (param $i i32) (i32.load offset=4294967295 (get_local $i)))
     (export "bad2" $bad2)
 )
@@ -29,7 +27,7 @@
 (assert_return (invoke "good" (i32.const 0)))
 (assert_return (invoke "good" (i32.const 995)))
 (assert_trap (invoke "good" (i32.const 996)) "out of bounds memory access")
-(assert_trap (invoke "bad1" (i32.const 0)) "out of bounds memory access")
-(assert_trap (invoke "bad1" (i32.const 1)) "out of bounds memory access")
 (assert_trap (invoke "bad2" (i32.const 0)) "out of bounds memory access")
 (assert_trap (invoke "bad2" (i32.const 1)) "out of bounds memory access")
+
+(assert_invalid (module (memory 1024) (func $bad1 (param $i i32) (i32.load offset=4294967296 (get_local $i))) ) "offset too large")
