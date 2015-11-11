@@ -159,7 +159,7 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF IF_ELSE LOOP LABEL BR BR_IF TABLESWITCH CASE
+%token BLOCK IF IF_ELSE LOOP LABEL BR BR_IF TABLESWITCH CASE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE LOAD_EXTEND STORE_WRAP OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -250,7 +250,6 @@ expr :
   | LPAR expr1 RPAR { let at = at () in fun c -> $2 c @@ at }
 ;
 expr1 :
-  | NOP { fun c -> nop }
   | BLOCK labeling expr expr_list
     { fun c -> let c', l = $2 c in block (l, $3 c' :: $4 c') }
   | IF_ELSE expr expr expr { fun c -> if_else ($2 c, $3 c, $4 c) }

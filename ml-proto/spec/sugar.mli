@@ -6,7 +6,6 @@ and labeling' = Unlabelled | Labelled
 type case = case' Source.phrase
 and case' = Case of var | Case_br of var
 
-val nop : expr'
 val block : labeling * expr list -> expr'
 val if_else : expr * expr * expr -> expr'
 val if_ : expr * expr -> expr'

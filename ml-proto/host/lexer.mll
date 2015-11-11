@@ -131,7 +131,6 @@ rule token = parse
   | "f32" { VALUE_TYPE Types.Float32Type }
   | "f64" { VALUE_TYPE Types.Float64Type }
 
-  | "nop" { NOP }
   | "block" { BLOCK }
   | "if" { IF }
   | "if_else" { IF_ELSE }
