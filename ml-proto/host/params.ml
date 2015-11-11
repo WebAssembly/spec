@@ -1,5 +1,3 @@
-let page_size = 4096L
-
 let has_feature = fun str -> match str with
   (* We always support this feature :-). *)
   | "wasm" -> true

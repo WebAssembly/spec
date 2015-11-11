@@ -23,6 +23,7 @@ exception Type
 exception Bounds
 exception SizeOverflow
 
+let page_size = 0x10000L (* 64 KiB *)
 
 (*
  * These limitations should be considered part of the host environment and not
