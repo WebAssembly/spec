@@ -258,6 +258,7 @@ and check_has_memory c at =
 
 and check_memop memop at =
   require (memop.offset >= 0L) at "negative offset";
+  require (memop.offset <= 0xffffffffL) at "offset too large";
   Lib.Option.app
     (fun a -> require (Lib.Int.is_power_of_two a) at "non-power-of-two alignment")
     memop.align
