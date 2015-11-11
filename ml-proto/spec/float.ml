@@ -2,7 +2,7 @@ module type RepresentationType =
 sig
   type t
 
-  val nondeterministic_nan : t
+  val default_nan : t
   val bits_of_float : float -> t
   val float_of_bits : t -> float
   val of_string : string -> t
@@ -58,8 +58,7 @@ struct
   type t = Rep.t
   type bits = Rep.t
 
-  (* TODO: Do something meaningful with nondeterminism *)
-  let nondeterministic_nan = Rep.nondeterministic_nan
+  let default_nan = Rep.default_nan
   let bare_nan = Rep.bare_nan
 
   let of_float = Rep.bits_of_float
@@ -68,32 +67,71 @@ struct
   let of_bits x = x
   let to_bits x = x
 
-  (* Most arithmetic ops that return NaN return a nondeterministic NaN *)
-  let arith_of_bits = to_float
-  let bits_of_arith f = if f <> f then Rep.nondeterministic_nan else of_float f
+  let is_nan x =
+    let xf = Rep.float_of_bits x in xf <> xf
+
+  (*
+   * When the result of an arithmetic operation is NaN, the most significant
+   * bit of the significand field is set.
+   *)
+  let canonicalize_nan x =
+    Rep.logor x Rep.default_nan
+
+  (*
+   * When the result of a binary operation is NaN, the resulting NaN is computed
+   * from one of the NaN inputs, if there is one. If both are NaN, one is
+   * selected nondeterminstically. If neither, we use a default NaN value.
+   *)
+  let determine_binary_nan x y =
+    (* TODO: Do something with the nondeterminism instead of just picking x. *)
+    let nan = (if is_nan x then x else
+               if is_nan y then y else
+               Rep.default_nan) in
+    canonicalize_nan nan
+
+  (*
+   * When the result of a unary operation is NaN, the resulting NaN is computed
+   * from one of the NaN input, if there it is NaN. Otherwise, we use a default
+   * NaN value.
+   *)
+  let determine_unary_nan x =
+    let nan = (if is_nan x then x else
+               Rep.default_nan) in
+    canonicalize_nan nan
+
+  let binary x op y =
+    let xf = to_float x in
+    let yf = to_float y in
+    let t = op xf yf in
+    if t = t then of_float t else determine_binary_nan x y
+
+  let unary op x =
+    let t = op (to_float x) in
+    if t = t then of_float t else determine_unary_nan x
 
   let zero = of_float 0.0
 
-  let add x y = bits_of_arith ((arith_of_bits x) +. (arith_of_bits y))
-  let sub x y = bits_of_arith ((arith_of_bits x) -. (arith_of_bits y))
-  let mul x y = bits_of_arith ((arith_of_bits x) *. (arith_of_bits y))
-  let div x y = bits_of_arith ((arith_of_bits x) /. (arith_of_bits y))
+  let add x y = binary x (+.) y
+  let sub x y = binary x (-.) y
+  let mul x y = binary x ( *.) y
+  let div x y = binary x (/.) y
 
-  let sqrt  x = bits_of_arith (Pervasives.sqrt (arith_of_bits x))
+  let sqrt  x = unary Pervasives.sqrt x
 
-  let ceil  x = bits_of_arith (Pervasives.ceil  (arith_of_bits x))
-  let floor x = bits_of_arith (Pervasives.floor (arith_of_bits x))
+  let ceil  x = unary Pervasives.ceil x
+  let floor x = unary Pervasives.floor x
 
   let trunc x =
-    let xf = arith_of_bits x in
+    let xf = to_float x in
     (* preserve the sign of zero *)
     if xf = 0.0 then x else
     (* trunc is either ceil or floor depending on which one is toward zero *)
     let f = if xf < 0.0 then Pervasives.ceil xf else Pervasives.floor xf in
-    bits_of_arith f
+    let result = of_float f in
+    if is_nan result then determine_unary_nan result else result
 
   let nearest x =
-    let xf = arith_of_bits x in
+    let xf = to_float x in
     (* preserve the sign of zero *)
     if xf = 0.0 then x else
       (* nearest is either ceil or floor depending on which is nearest or even *)
@@ -104,25 +142,26 @@ struct
     let u_or_d = um < dm ||
                  (um = dm && let h = u /. 2. in Pervasives.floor h = h) in
     let f = if u_or_d then u else d in
-    bits_of_arith f
+    let result = of_float f in
+    if is_nan result then determine_unary_nan result else result
 
   let min x y =
-    let xf = arith_of_bits x in
-    let yf = arith_of_bits y in
+    let xf = to_float x in
+    let yf = to_float y in
     (* min -0 0 is -0 *)
     if xf = yf then Rep.logor x y else
     if xf < yf then x else
 	if xf > yf then y else
-	nondeterministic_nan
+	determine_binary_nan x y
 
   let max x y =
-    let xf = arith_of_bits x in
-    let yf = arith_of_bits y in
+    let xf = to_float x in
+    let yf = to_float y in
     (* max -0 0 is 0 *)
     if xf = yf then Rep.logand x y else
     if xf > yf then x else
 	if xf < yf then y else
-	nondeterministic_nan
+	determine_binary_nan x y
 
   (* abs, neg, and copysign are purely bitwise operations, even on NaN values *)
   let abs x =
@@ -134,12 +173,12 @@ struct
   let copysign x y =
     Rep.logor (abs x) (Rep.logand y Rep.min_int)
 
-  let eq x y = (arith_of_bits x) =  (arith_of_bits y)
-  let ne x y = (arith_of_bits x) <> (arith_of_bits y)
-  let lt x y = (arith_of_bits x) <  (arith_of_bits y)
-  let gt x y = (arith_of_bits x) >  (arith_of_bits y)
-  let le x y = (arith_of_bits x) <= (arith_of_bits y)
-  let ge x y = (arith_of_bits x) >= (arith_of_bits y)
+  let eq x y = (to_float x) =  (to_float y)
+  let ne x y = (to_float x) <> (to_float y)
+  let lt x y = (to_float x) <  (to_float y)
+  let gt x y = (to_float x) >  (to_float y)
+  let le x y = (to_float x) <= (to_float y)
+  let ge x y = (to_float x) >= (to_float y)
 
   let of_signless_string x len =
     if x <> "nan" &&
@@ -170,8 +209,7 @@ struct
   let to_string x =
     (if x < Rep.zero then "-" else "") ^
       let a = abs x in
-      let af = arith_of_bits a in
-      if af <> af then
+      if is_nan a then
         ("nan:0x" ^ Rep.print_nan_significand_digits a)
       else
         (* TODO: OCaml's string_of_float is insufficient *)

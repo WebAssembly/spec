@@ -1,26 +1,30 @@
 (* WebAssembly-compatible type conversions to f32 implementation *)
 
-let make_nan_nondeterministic x = F32.mul x (F32.of_float 1.)
-
 let demote_f64 x =
-  make_nan_nondeterministic (F32.of_float (F64.to_float x))
+  let xf = F64.to_float x in
+  if xf = xf then F32.of_float xf else
+  let nan64bits = F64.to_bits x in
+  let sign_field = Int64.shift_left (Int64.shift_right_logical nan64bits 63) 31 in
+  let significand_field = Int64.shift_right_logical (Int64.shift_left nan64bits 12) 41 in
+  let fields = Int64.logor sign_field significand_field in
+  let nan32bits = Int32.logor 0x7fc00000l (I32_convert.wrap_i64 fields) in
+  F32.of_bits nan32bits
 
 let convert_s_i32 x =
-  make_nan_nondeterministic (F32.of_float (Int32.to_float x))
+  F32.of_float (Int32.to_float x)
 
 (*
  * Similar to convert_u_i64 below, the high half of the i32 range are beyond
  * the range where f32 can represent odd numbers.
  *)
 let convert_u_i32 x =
-  make_nan_nondeterministic
-    (F32.of_float (if x >= Int32.zero then
-       Int32.to_float x
-     else
-       Int32.to_float (Int32.shift_right_logical x 1) *. 2.))
+  F32.of_float (if x >= Int32.zero then
+    Int32.to_float x
+  else
+    Int32.to_float (Int32.shift_right_logical x 1) *. 2.)
 
 let convert_s_i64 x =
-  make_nan_nondeterministic (F32.of_float (Int64.to_float x))
+  F32.of_float (Int64.to_float x)
 
 (*
  * Values in the low half of the int64 range can be converted with a signed
@@ -29,10 +33,9 @@ let convert_s_i64 x =
  * back up, without worrying about losing the least-significant digit.
  *)
 let convert_u_i64 x =
-  make_nan_nondeterministic
-    (F32.of_float (if x >= Int64.zero then
-       Int64.to_float x
-     else
-       Int64.to_float (Int64.shift_right_logical x 1) *. 2.))
+  F32.of_float (if x >= Int64.zero then
+    Int64.to_float x
+  else
+    Int64.to_float (Int64.shift_right_logical x 1) *. 2.)
 
 let reinterpret_i32 = F32.of_bits
