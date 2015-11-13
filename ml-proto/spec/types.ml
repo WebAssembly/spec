@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 (* Types *)
 
 type value_type = Int32Type | Int64Type | Float32Type | Float64Type

@@ -1,7 +1,3 @@
-(*
- * (c) 2014 Andreas Rossberg
- *)
-
 (* Things that should be in the OCaml library... *)
 
 module List :

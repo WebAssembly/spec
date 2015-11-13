@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 type pos = {file : string; line : int; column : int}
 type region = {left : pos; right : pos}
 type 'a phrase = { at : region; it : 'a}

@@ -1,5 +1,3 @@
-;; (c) 2015 Andreas Rossberg
-
 (module
   (export "even" $even)
   (export "odd" $odd)

@@ -1,7 +1,3 @@
-/*
- * (c) 2015 Andreas Rossberg
- */
-
 %{
 open Source
 open Ast

@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 open Values
 
 exception TypeError of int * value * Types.value_type

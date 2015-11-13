@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 type memory
 type t = memory
 type address = int64
