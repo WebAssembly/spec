@@ -1,5 +1,3 @@
-;; (c) 2015 Andreas Rossberg
-
 ;; Test memory section structure
 (module (memory 0 0))
 (module (memory 0 1))

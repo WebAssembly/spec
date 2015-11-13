@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 open Types
 
 
@@ -11,6 +7,7 @@ type ('i32, 'i64, 'f32, 'f64) op =
   Int32 of 'i32 | Int64 of 'i64 | Float32 of 'f32 | Float64 of 'f64
 
 type value = (I32.t, I64.t, F32.t, F64.t) op
+
 
 (* Typing *)
 

@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 type command = command' Source.phrase
 and command' =
   | Define of Ast.module_
