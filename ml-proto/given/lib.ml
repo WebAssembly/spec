@@ -1,7 +1,3 @@
-(*
- * (c) 2014 Andreas Rossberg
- *)
-
 module List =
 struct
   let rec take n xs =

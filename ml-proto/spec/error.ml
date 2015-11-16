@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 module Make () =
 struct
   exception Error of Source.region * string

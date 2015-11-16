@@ -1,5 +1,3 @@
-;; (c) 2015 Andreas Rossberg
-
 (module
   ;; Statement switch
   (func $stmt (param $i i32) (result i32)

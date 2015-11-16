@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 type 'm command = 'm command' Source.phrase
 and 'm command' =
   | Define of 'm

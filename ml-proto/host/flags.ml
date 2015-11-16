@@ -1,9 +1,5 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 let name = "wasm"
-let version = "0.1"
+let version = "0.2"
 
 let interactive = ref false
 let trace = ref false

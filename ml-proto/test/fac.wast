@@ -1,5 +1,3 @@
-;; (c) 2015 Andreas Rossberg
-
 (module
   ;; Recursive factorial
   (func (param i64) (result i64)

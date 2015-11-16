@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 module Make () :
 sig
   exception Error of Source.region * string

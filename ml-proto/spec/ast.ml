@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 (* Expressions *)
 
 type var = Kernel.var

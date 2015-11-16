@@ -1,7 +1,3 @@
-(*
- * (c) 2015 Andreas Rossberg
- *)
-
 type instance
 type value = Values.value
 type import = value list -> value option
