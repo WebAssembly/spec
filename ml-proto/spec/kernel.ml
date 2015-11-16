@@ -1,8 +1,4 @@
 (*
- * (c) 2015 Andreas Rossberg
- *)
-
-(*
  * Throughout the implementation we use consistent naming conventions for
  * syntactic elements, associated with the types defined here and in a few
  * other places:
