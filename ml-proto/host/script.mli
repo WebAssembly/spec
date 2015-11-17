@@ -1,18 +1,21 @@
-type command = command' Source.phrase
-and command' =
-  | Define of Ast.module_
-  | Invoke of string * Ast.literal list
-  | AssertInvalid of Ast.module_ * string
-  | AssertReturn of string * Ast.literal list * Ast.literal option
-  | AssertReturnNaN of string * Ast.literal list
-  | AssertTrap of string * Ast.literal list * string
+type 'm command = 'm command' Source.phrase
+and 'm command' =
+  | Define of 'm
+  | Invoke of string * Kernel.literal list
+  | AssertInvalid of 'm * string
+  | AssertReturn of string * Kernel.literal list * Kernel.literal option
+  | AssertReturnNaN of string * Kernel.literal list
+  | AssertTrap of string * Kernel.literal list * string
 
-type script = command list
+type script = Ast.module_ command list
+type script' = Kernel.module_ command list
+
+val desugar : script -> script'
 
 exception Syntax of Source.region * string
 exception AssertFailure of Source.region * string
 
-val run : script -> unit
+val run : script' -> unit
   (* raises Check.Invalid, Eval.Trap, Eval.Crash, Failure *)
 
 val trace : string -> unit

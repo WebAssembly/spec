@@ -8,7 +8,7 @@ type host_params = {
 exception Trap of Source.region * string
 exception Crash of Source.region * string
 
-val init : Ast.module_ -> import list -> host_params -> instance
+val init : Kernel.module_ -> import list -> host_params -> instance
 val invoke : instance -> string -> value list -> value option
   (* raises Trap, Crash *)
 

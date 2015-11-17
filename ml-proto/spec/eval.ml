@@ -1,6 +1,6 @@
 open Values
 open Types
-open Ast
+open Kernel
 open Source
 
 
@@ -313,7 +313,7 @@ let add_export funcs ex =
   ExportMap.add ex.it.name (List.nth funcs ex.it.func.it)
 
 let init m imports host =
-  assert (List.length imports = List.length m.it.Ast.imports);
+  assert (List.length imports = List.length m.it.Kernel.imports);
   let {memory; funcs; exports; _} = m.it in
   {module_ = m;
    imports;
