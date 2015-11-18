@@ -1,4 +1,4 @@
-(module 
+(module
     (import $print_i32 "stdio" "print" (param i32))
     (import $print_i64 "stdio" "print" (param i64))
     (import $print_i32_f32 "stdio" "print" (param i32 f32))
