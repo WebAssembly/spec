@@ -12,7 +12,7 @@
         (case $2)  ;; fallthrough
         (case $3 (set_local $j (i32.sub (i32.const 0) (get_local $i))) (br 0))
         (case $4 (br 0))
-        (case $5 (br 0 (set_local $j (i32.const 101))))
+        (case $5 (set_local $j (i32.const 101)) (br 0))
         (case $6 (set_local $j (i32.const 101)))  ;; fallthrough
         (case $default (set_local $j (i32.const 102)))
         (case $7)
