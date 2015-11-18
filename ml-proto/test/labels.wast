@@ -24,7 +24,7 @@
     (loop $exit $cont
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
       (if (i32.eq (get_local $i) (i32.const 5))
-        (br $cont (i32.const -1))
+        (br $cont)
       )
       (if (i32.eq (get_local $i) (i32.const 8))
         (br $exit (get_local $i))
