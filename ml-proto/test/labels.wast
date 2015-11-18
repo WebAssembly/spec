@@ -6,12 +6,12 @@
     )
   )
 
-  (func $loop1 (result i32)
+  (func $loop1 (param $max i32) (result i32)
     (local $i i32)
-    (set_local $i (i32.const 0))
+    (set_local $i (i32.const 1))
     (loop $exit $cont
-      (set_local $i (i32.add (get_local $i) (i32.const 1)))
-      (if (i32.eq (get_local $i) (i32.const 5))
+      (set_local $i (i32.add (get_local $i) (get_local $i)))
+      (if (i32.gt (get_local $i) (get_local $max))
         (br $exit (get_local $i))
       )
       (br $cont)
@@ -66,7 +66,7 @@
 )
 
 (assert_return (invoke "block") (i32.const 1))
-(assert_return (invoke "loop1") (i32.const 5))
+(assert_return (invoke "loop1" (i32.const 8)) (i32.const 16))
 (assert_return (invoke "loop2") (i32.const 8))
 (assert_return (invoke "switch" (i32.const 0)) (i32.const 50))
 (assert_return (invoke "switch" (i32.const 1)) (i32.const 20))
