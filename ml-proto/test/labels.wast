@@ -78,3 +78,4 @@
 (assert_return (invoke "return" (i32.const 1)) (i32.const 2))
 (assert_return (invoke "return" (i32.const 2)) (i32.const 2))
 
+(assert_invalid (module (func (loop $l (br $l (i32.const 0))))) "arity mismatch")
