@@ -58,11 +58,29 @@
     )
   )
 
+  (func $br_if (result i32)
+    (local $i i32)
+    (set_local $i (i32.const 0))
+    (block $outer
+      (block $inner
+        (br_if (i32.const 0) $inner)
+        (set_local $i (i32.add (get_local $i) (i32.const 1)))
+        (br_if (i32.const 1) $inner)
+        (set_local $i (i32.add (get_local $i) (i32.const 2)))
+      )
+      (br_if (i32.const 0) $outer (get_local $i))
+      (set_local $i (i32.add (get_local $i) (i32.const 4)))
+      (br_if (i32.const 1) $outer (get_local $i))
+      (set_local $i (i32.add (get_local $i) (i32.const 8)))
+    )
+  )
+
   (export "block" $block)
   (export "loop1" $loop1)
   (export "loop2" $loop2)
   (export "switch" $switch)
   (export "return" $return)
+  (export "br_if" $br_if)
 )
 
 (assert_return (invoke "block") (i32.const 1))
@@ -77,5 +95,6 @@
 (assert_return (invoke "return" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "return" (i32.const 1)) (i32.const 2))
 (assert_return (invoke "return" (i32.const 2)) (i32.const 2))
+(assert_return (invoke "br_if") (i32.const 5))
 
 (assert_invalid (module (func (loop $l (br $l (i32.const 0))))) "arity mismatch")

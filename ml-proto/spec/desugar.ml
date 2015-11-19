@@ -18,7 +18,7 @@ and expr' = function
   | A.Block (l, es) -> labeling l (K.Block (List.map expr es))
   | A.If (e1, e2) -> K.If (expr e1, expr e2, K.Nop @@ Source.after e2.at)
   | A.If_else (e1, e2, e3) -> K.If (expr e1, expr e2, expr e3)
-  | A.Br_if (e, x) -> expr' (A.If (e, A.Br (x, None) @@ x.at))
+  | A.Br_if (e, x, eo) -> expr' (A.If (e, A.Br (x, eo) @@ x.at))
   | A.Loop (l1, l2, es) when l2.it = A.Unlabelled -> K.Loop (seq es)
   | A.Loop (l1, l2, es) -> labeling l1 (K.Loop (seq es))
   | A.Label e -> K.Label (expr e)
