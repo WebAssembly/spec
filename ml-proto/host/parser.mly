@@ -251,7 +251,7 @@ expr1 :
     { fun c -> let c', l = $2 c in Block (l, $3 c' :: $4 c') }
   | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
   | IF expr expr { fun c -> If ($2 c, $3 c) }
-  | BR_IF expr var { fun c -> Br_if ($2 c, $3 c label) }
+  | BR_IF expr var expr_opt { fun c -> Br_if ($2 c, $3 c label, $4 c) }
   | LOOP labeling labeling expr_list
     { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
       let c''' = if l1.it = Unlabelled then anon_label c'' else c'' in

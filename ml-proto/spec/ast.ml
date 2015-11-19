@@ -14,7 +14,7 @@ and expr' =
   | Block of labeling * expr list
   | If of expr * expr
   | If_else of expr * expr * expr
-  | Br_if of expr * var
+  | Br_if of expr * var * expr option
   | Loop of labeling * labeling * expr list
   | Label of expr
   | Br of var * expr option
