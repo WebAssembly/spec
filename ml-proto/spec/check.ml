@@ -228,9 +228,10 @@ and check_exprs c ts es =
   with Invalid_argument _ -> error (Source.ats es) "arity mismatch"
 
 and check_expr_opt c et eo at =
-  match eo with
-  | Some e -> check_expr c et e
-  | None -> check_type None et at
+  match et, eo with
+  | Some t, Some e -> check_expr c et e
+  | None, None -> ()
+  | _ -> error at "arity mismatch"
 
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
