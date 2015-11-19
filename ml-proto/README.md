@@ -202,7 +202,6 @@ local:  ( local <type>* ) | ( local <name> <type> )
 
 module: ( module <func>* <global>* <export>* <table>* <memory>? <data>* )
 export: ( export "<char>*" <var> )
-global: ( global <type>* ) | ( global <name> <type> )
 table:  ( table <var>* )
 memory: ( memory <int> <int>? )
 data:   ( data "<char>*" )
