@@ -64,14 +64,14 @@
     (block $outer
       (block $inner
         (br_if (i32.const 0) $inner)
-        (set_local $i (i32.add (get_local $i) (i32.const 1)))
+        (set_local $i (i32.or (get_local $i) (i32.const 0x1)))
         (br_if (i32.const 1) $inner)
-        (set_local $i (i32.add (get_local $i) (i32.const 2)))
+        (set_local $i (i32.or (get_local $i) (i32.const 0x2)))
       )
-      (br_if (i32.const 0) $outer (get_local $i))
-      (set_local $i (i32.add (get_local $i) (i32.const 4)))
-      (br_if (i32.const 1) $outer (get_local $i))
-      (set_local $i (i32.add (get_local $i) (i32.const 8)))
+      (br_if (i32.const 0) $outer (set_local $i (i32.or (get_local $i) (i32.const 0x4))))
+      (set_local $i (i32.or (get_local $i) (i32.const 0x8)))
+      (br_if (i32.const 1) $outer (set_local $i (i32.or (get_local $i) (i32.const 0x10))))
+      (set_local $i (i32.or (get_local $i) (i32.const 0x20)))
     )
   )
 
@@ -95,6 +95,6 @@
 (assert_return (invoke "return" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "return" (i32.const 1)) (i32.const 2))
 (assert_return (invoke "return" (i32.const 2)) (i32.const 2))
-(assert_return (invoke "br_if") (i32.const 5))
+(assert_return (invoke "br_if") (i32.const 0x1d))
 
 (assert_invalid (module (func (loop $l (br $l (i32.const 0))))) "arity mismatch")
