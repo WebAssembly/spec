@@ -98,3 +98,6 @@
 (assert_return (invoke "br_if") (i32.const 0x1d))
 
 (assert_invalid (module (func (loop $l (br $l (i32.const 0))))) "arity mismatch")
+(assert_invalid (module (func (block $l (f32.neg (br_if (i32.const 1) $l)) (nop)))) "type mismatch")
+(assert_invalid (module (func (result f32) (block $l (br_if (i32.const 1) $l (f32.const 0))))) "type mismatch")
+
