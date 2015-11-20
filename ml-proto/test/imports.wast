@@ -17,9 +17,9 @@
             (f64.const 53)
         )
     )
-    (export "print32" $print32)
-    (export "print64" $print64)
+    (func $main
+        (call $print32 (i32.const 13))
+        (call $print64 (i64.const 24))
+    )
 )
 
-(invoke "print32" (i32.const 13))
-(invoke "print64" (i64.const 24))
