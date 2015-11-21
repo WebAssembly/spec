@@ -229,8 +229,8 @@ bind_var :
 ;
 
 labeling :
-  | /* empty */ %prec LOW { let at = at () in fun c -> c, Unlabelled @@ at }
-  | bind_var { let at = at () in fun c -> bind_label c $1, Labelled @@ at }
+  | /* empty */ %prec LOW { let at = at () in fun c -> anon_label c, () @@ at }
+  | bind_var { let at = at () in fun c -> bind_label c $1, () @@ at }
 ;
 
 offset :
@@ -254,12 +254,10 @@ expr1 :
   | BR_IF expr var expr_opt { fun c -> Br_if ($2 c, $3 c label, $4 c) }
   | LOOP labeling labeling expr_list
     { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
-      let c''' = if l1.it = Unlabelled then anon_label c'' else c'' in
-      Loop (l1, l2, $4 c''') }
+      Loop (l1, l2, $4 c'') }
   | LABEL labeling expr
     { fun c -> let c', l = $2 c in
-      let c'' = if l.it = Unlabelled then anon_label c' else c' in
-      Label ($3 c'') }
+      Label ($3 c') }
   | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
   | RETURN expr_opt
     { let at1 = ati 1 in
