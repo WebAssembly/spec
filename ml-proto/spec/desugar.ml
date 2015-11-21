@@ -6,11 +6,7 @@ module K = Kernel
 
 (* Expressions *)
 
-let labeling l e' =
-  match l.it with
-  | A.Unlabelled -> e'
-  | A.Labelled -> K.Label (e' @@ l.at)
-
+let labeling l e' = K.Label (e' @@ l.at)
 
 let rec expr e = expr' e.it @@ e.at
 and expr' = function
@@ -20,7 +16,6 @@ and expr' = function
   | A.If_else (e1, e2, e3) -> K.If (expr e1, expr e2, expr e3)
   | A.Br_if (e, x, eo) ->
     K.If (expr e, K.Break (x, Lib.Option.map expr eo) @@ x.at, opt eo)
-  | A.Loop (l1, l2, es) when l2.it = A.Unlabelled -> K.Loop (seq es)
   | A.Loop (l1, l2, es) -> labeling l1 (K.Loop (seq es))
   | A.Label e -> K.Label (expr e)
   | A.Br (x, eo) -> K.Break (x, Lib.Option.map expr eo)

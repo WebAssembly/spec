@@ -3,20 +3,18 @@
   (func $stmt (param $i i32) (result i32)
     (local $j i32)
     (set_local $j (i32.const 100))
-    (label
-      (tableswitch (get_local $i)
-        (table (case $0) (case $1) (case $2) (case $3) (case $4)
-               (case $5) (case $6) (case $7)) (case $default)
-        (case $0 (return (get_local $i)))
-        (case $1 (nop))  ;; fallthrough
-        (case $2)  ;; fallthrough
-        (case $3 (set_local $j (i32.sub (i32.const 0) (get_local $i))) (br 0))
-        (case $4 (br 0))
-        (case $5 (set_local $j (i32.const 101)) (br 0))
-        (case $6 (set_local $j (i32.const 101)))  ;; fallthrough
-        (case $default (set_local $j (i32.const 102)))
-        (case $7)
-      )
+    (tableswitch (get_local $i)
+      (table (case $0) (case $1) (case $2) (case $3) (case $4)
+             (case $5) (case $6) (case $7)) (case $default)
+      (case $0 (return (get_local $i)))
+      (case $1 (nop))  ;; fallthrough
+      (case $2)  ;; fallthrough
+      (case $3 (set_local $j (i32.sub (i32.const 0) (get_local $i))) (br 0))
+      (case $4 (br 0))
+      (case $5 (set_local $j (i32.const 101)) (br 0))
+      (case $6 (set_local $j (i32.const 101)))  ;; fallthrough
+      (case $default (set_local $j (i32.const 102)))
+      (case $7)
     )
     (return (get_local $j))
   )
@@ -26,20 +24,18 @@
     (local $j i64)
     (set_local $j (i64.const 100))
     (return
-      (label $l
-        (tableswitch (i32.wrap/i64 (get_local $i))
-          (table (case $0) (case $1) (case $2) (case $3) (case $4)
-                 (case $5) (case $6) (case $7)) (case $default)
-          (case $0 (return (get_local $i)))
-          (case $1 (nop))  ;; fallthrough
-          (case $2)  ;; fallthrough
-          (case $3 (br $l (i64.sub (i64.const 0) (get_local $i))))
-          (case $6 (set_local $j (i64.const 101)))  ;; fallthrough
-          (case $4)  ;; fallthrough
-          (case $5)  ;; fallthrough
-          (case $default (br $l (get_local $j)))
-          (case $7 (i64.const -5))
-        )
+      (tableswitch $l (i32.wrap/i64 (get_local $i))
+        (table (case $0) (case $1) (case $2) (case $3) (case $4)
+               (case $5) (case $6) (case $7)) (case $default)
+        (case $0 (return (get_local $i)))
+        (case $1 (nop))  ;; fallthrough
+        (case $2)  ;; fallthrough
+        (case $3 (br $l (i64.sub (i64.const 0) (get_local $i))))
+        (case $6 (set_local $j (i64.const 101)))  ;; fallthrough
+        (case $4)  ;; fallthrough
+        (case $5)  ;; fallthrough
+        (case $default (br $l (get_local $j)))
+        (case $7 (i64.const -5))
       )
     )
   )

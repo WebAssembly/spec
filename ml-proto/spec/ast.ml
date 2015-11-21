@@ -2,8 +2,7 @@
 
 type var = Kernel.var
 
-type labeling = labeling' Source.phrase
-and labeling' = Unlabelled | Labelled
+type labeling = unit Source.phrase
 
 type target = target' Source.phrase
 and target' = Case of var | Case_br of var
