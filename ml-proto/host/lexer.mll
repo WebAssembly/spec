@@ -335,8 +335,8 @@ rule token = parse
   | "grow_memory" { GROW_MEMORY }
   | "has_feature" { HAS_FEATURE }
 
-  | "type" { TYPE }
   | "func" { FUNC }
+  | "func_type" { FUNC_TYPE }
   | "param" { PARAM }
   | "result" { RESULT }
   | "local" { LOCAL }

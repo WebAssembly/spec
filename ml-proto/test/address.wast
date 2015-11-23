@@ -1,6 +1,6 @@
 (module
     (memory 1024 (segment 0 "abcdefghijklmnopqrstuvwxyz"))
-    (import $print "spectest" "print" (param i32))
+    (import $print "spectest" "print" (func_type (param i32)))
 
     (func $good (param $i i32)
         (call_import $print (i32.load8_u offset=0 (get_local $i)))  ;; 97 'a'

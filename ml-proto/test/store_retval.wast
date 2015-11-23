@@ -1,10 +1,10 @@
 (module
     (memory 100)
 
-    (import $print_i32 "spectest" "print" (param i32))
-    (import $print_i64 "spectest" "print" (param i64))
-    (import $print_f32 "spectest" "print" (param f32))
-    (import $print_f64 "spectest" "print" (param f64))
+    (import $print_i32 "spectest" "print" (func_type (param i32)))
+    (import $print_i64 "spectest" "print" (func_type (param i64)))
+    (import $print_f32 "spectest" "print" (func_type (param f32)))
+    (import $print_f64 "spectest" "print" (func_type (param f64)))
 
     (func $run
         (local $i32 i32) (local $i64 i64) (local $f32 f32) (local $f64 f64)

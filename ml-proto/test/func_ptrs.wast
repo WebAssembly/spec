@@ -1,28 +1,15 @@
 (module
-    (type    (func))                           ;; 0: void -> void
-    (type $S (func))                           ;; 1: void -> void
-    (type    (func (param)))                   ;; 2: void -> void
-    (type    (func (result i32)))              ;; 3: void -> i32
-    (type    (func (param) (result i32)))      ;; 4: void -> i32
-    (type $T (func (param i32) (result i32)))  ;; 5: i32 -> i32
-    (type $U (func (param i32)))               ;; 6: i32 -> void
-
-    (func (type 0))
-    (func (type $S))
-
-    (func $one (type 4) (i32.const 13))
+    (func $one (result i32) (i32.const 13))
     (export "one" $one)
 
-    (func $two (type $T) (i32.add (get_local 0) (i32.const 1)))
+    (func $two (param i32) (result i32) (i32.add (get_local 0) (i32.const 1)))
     (export "two" $two)
 
-    ;; Both signature and parameters are allowed (and required to match)
-    ;; since this allows the naming of parameters.
-    (func $three (type $T) (param $a i32) (result i32) (i32.sub (get_local 0) (i32.const 2)))
+    (func $three (param $a i32) (result i32) (i32.sub (get_local 0) (i32.const 2)))
     (export "three" $three)
 
-    (import $print "spectest" "print" (type 6))
-    (func $four (type $U) (call_import $print (get_local 0)))
+    (import $print "spectest" "print" (func_type (param i32)))
+    (func $four (param i32) (call_import $print (get_local 0)))
     (export "four" $four)
 )
 (assert_return (invoke "one") (i32.const 13))
@@ -30,27 +17,22 @@
 (assert_return (invoke "three" (i32.const 13)) (i32.const 11))
 (invoke "four" (i32.const 83))
 
-(assert_invalid (module (func (type 42))) "unknown function type 42")
-(assert_invalid (module (import "spectest" "print" (type 43))) "unknown function type 43")
-
 (module
-    (type $T (func (param) (result i32)))
-    (type $U (func (param) (result i32)))
     (table $t1 $t2 $t3 $u1 $u2 $t1 $t3)
 
-    (func $t1 (type $T) (i32.const 1))
-    (func $t2 (type $T) (i32.const 2))
-    (func $t3 (type $T) (i32.const 3))
-    (func $u1 (type $U) (i32.const 4))
-    (func $u2 (type $U) (i32.const 5))
+    (func $t1 (result i32) (i32.const 1))
+    (func $t2 (result i32) (i32.const 2))
+    (func $t3 (result i32) (i32.const 3))
+    (func $u1 (result i64) (i64.const 4))
+    (func $u2 (result i64) (i64.const 5))
 
     (func $callt (param $i i32) (result i32)
-        (call_indirect $T (get_local $i))
+        (call_indirect (func_type (param) (result i32)) (get_local $i))
     )
     (export "callt" $callt)
 
-    (func $callu (param $i i32) (result i32)
-        (call_indirect $U (get_local $i))
+    (func $callu (param $i i32) (result i64)
+        (call_indirect (func_type (param) (result i64)) (get_local $i))
     )
     (export "callu" $callu)
 )
@@ -69,8 +51,8 @@
 (assert_trap   (invoke "callu" (i32.const 0)) "indirect call signature mismatch")
 (assert_trap   (invoke "callu" (i32.const 1)) "indirect call signature mismatch")
 (assert_trap   (invoke "callu" (i32.const 2)) "indirect call signature mismatch")
-(assert_return (invoke "callu" (i32.const 3)) (i32.const 4))
-(assert_return (invoke "callu" (i32.const 4)) (i32.const 5))
+(assert_return (invoke "callu" (i32.const 3)) (i64.const 4))
+(assert_return (invoke "callu" (i32.const 4)) (i64.const 5))
 (assert_trap   (invoke "callu" (i32.const 5)) "indirect call signature mismatch")
 (assert_trap   (invoke "callu" (i32.const 6)) "indirect call signature mismatch")
 (assert_trap   (invoke "callu" (i32.const 7)) "undefined table index 7")
