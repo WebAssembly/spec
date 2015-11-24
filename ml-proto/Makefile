@@ -10,7 +10,6 @@ NAME_UNOPT =    $(NAME)
 DIRS =		given host spec
 LIBS =		str bigarray
 
-OCB_FLAGS += 	-quiet
 OCB_FLAGS +=	# -use-ocamlfind
 OCB_FLAGS +=	# -cflags -w 
 OCB_FLAGS += 	# -cflags +a-4-41-42-44-45
@@ -21,7 +20,7 @@ OCB =		ocamlbuild $(OCB_FLAGS)
 .PHONY:		all opt unopt
 unopt:		$(NAME_UNOPT)
 opt:		$(NAME_OPT)
-all:		opt unopt test
+all:		winmake.bat opt unopt test
 
 $(NAME_OPT):	main.native
 		mv $< $@
@@ -31,18 +30,29 @@ $(NAME_UNOPT):	main.d.byte
 
 .PHONY:		main.native
 main.native:
-		$(OCB) $@
+		$(OCB) -quiet $@
 
 .PHONY:		main.d.byte
 main.d.byte:
-		$(OCB) $@
+		$(OCB) -quiet $@
 
 .PHONY:		test
 test:		$(NAME)
 		./runtests.py
 
+winmake.bat:	clean
+		echo rem Auto-generated from Makefile! >$@
+		echo set NAME=$(NAME).exe >>$@
+		echo if \'%1\' neq \'\' set NAME=%1 >>$@
+		$(OCB) main.d.byte \
+		| grep -v ocamldep \
+		| grep -v mkdir \
+		| sed s:`which ocaml`:ocaml:g \
+		| sed s:host/main.d.byte:%NAME%: \
+		>>$@
+
 .PHONY:		zip
-zip: 
+zip: 	winmake.bat
 		git archive --format=zip --prefix=$(NAME)/ \
 			-o $(NAME).zip HEAD
 
