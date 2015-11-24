@@ -82,20 +82,20 @@ Note however that the REPL currently is too dumb to allow multi-line input. :)
 See `wasm -h` for (the few) options.
 
 
-## Core Language vs External Language
+## WebAssembly Language Specification vs Internal Kernel Language
 
-The implementation tries to separate the concern of what is the language (and its semantics) from what is its external encoding. In that spirit, the actual AST is regular and minimal, while certain abbreviations are considered "syntactic sugar" of an external representation optimised for compactness.
+This implementation serves as a specification and documentation of the WebAssembly language. At the same time, to simplify its internals, it internally lowers some WebAssembly language constructs to produce a reduced "kernel" language (ast.ml) which is simpler to validate (check.ml) and evaluate (eval.ml) in this implementation's chosen style. While this internal kernel language's behavior contributes a significant part of the overall specification, its particular structure, abstractions, and vocabulary and are purely implementation details.
 
-For example, `if` always has an else-branch in the AST, but in the external format an else-less conditional is allowed as an abbreviation for one with `nop`. Similarly, blocks can sometimes be left implicit in sub-expressions.
+For example, WebAssembly has separate `if` and `if_else` opcodes, but in the internal kernel language one construct handles both, using a `nop` to indicate the absence of an else arm. Similarly, the internal kernel language sometimes requires explicit blocks in places where they aren't required in WebAssembly itself.
 
-Here, the external format is S-expressions, but similar considerations would apply to a binary encoding. That is, there would be codes for certain abbreviations, but these are just a matter of the encoding.
+Here, the specified language is represented as S-expressions, but similar considerations would apply to a binary encoding. That is, there would be codes which this specification would internally lower into other forms to simplify its own code.
 
 
-## Internal Syntax
+## Internal Kernel Language
 
-The core language is defined in [ast.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/ast.ml).
+The internal kernel language is defined in [ast.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/ast.ml).
 
-## External Syntax
+## WebAssembly S-expression Syntax
 
 The S-expression syntax is defined in [parser.mly](https://github.com/WebAssembly/spec/blob/master/ml-proto/host/parser.mly), the opcodes in [lexer.mll](https://github.com/WebAssembly/spec/blob/master/ml-proto/host/lexer.mll).
 
