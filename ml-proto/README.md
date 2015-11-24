@@ -103,14 +103,14 @@ cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
 expr:
   ( nop )
-  ( block <var>? <expr>+ )
+  ( block <name>? <expr>+ )
   ( if_else <expr> <expr> <expr> )
   ( if <expr> <expr> )                           ;; = (if_else <expr> <expr> (nop))
   ( br_if <expr> <var> <expr>?)                  ;; = (if_else <expr> (br <var> <expr>?) (block <expr>? (nop)))
-  ( loop <var>? <var>? <expr>* )                 ;; = (block <var>? (loop <var>? (block <expr>*)))
+  ( loop <name1>? <name2>? <expr>* )             ;; = (block <name1>? (loop <name2>? (block <expr>*)))
   ( br <var> <expr>? )
   ( return <expr>? )                             ;; = (br <current_depth> <expr>?)
-  ( tableswitch <var>? <expr> <switch> ( table <target>* ) <case>* )
+  ( tableswitch <name>? <expr> <switch> ( table <target>* ) <case>* )
   ( call <var> <expr>* )
   ( call_import <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
@@ -130,10 +130,10 @@ expr:
 
 target:
   ( case <var> )
-  ( br <var> )                                   ;; = (case <var'>) with (case <var'> (br <var>))
+  ( br <var> )                                   ;; = (case <name>) with (case <name> (br <var>))
 
 case:
-  ( case <var>? <expr>* )                        ;; = (case <var>? (block <expr>*))
+  ( case <name>? <expr>* )                       ;; = (case <var>? (block <expr>*))
 
 func:   ( func <name>? <type>? <param>* <result>? <local>* <expr>* )
 type:   ( type <var> )
@@ -151,9 +151,11 @@ memory:  ( memory <int> <int>? <segment>* )
 segment: ( segment <int> "<char>*" )
 ```
 
-Here, productions marked with respective comments are abbreviation forms for equivalent expansions.
+Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).
 
-The segment string is used to initialize the memory at the given offset.
+Any form of naming via `<name>` and `<var>` (including expression labels) is merely notational convenience of this text format. The actual AST has no names, and all bindings are referred to via ordered numeric indices; consequently, names are immediately resolved in the parser and replaced by indices. Indices can also be used directly in the text format.
+
+The segment string in the memory field is used to initialize the memory at the given offset.
 
 Comments can be written in one of two ways:
 
