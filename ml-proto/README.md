@@ -38,33 +38,17 @@ make all
 
 #### Building on Windows
 
-Install OCaml for Windows. We recommend [a pre-built installer](https://protz.github.io/ocaml-installer/).
+We recommend a pre-built installer. With [this one](https://protz.github.io/ocaml-installer/) you have two options:
 
-If you just want to build the interpreter and don't care about modifying it, it should be sufficient to run
+1. Bare OCaml. If you just want to build the interpreter and don't care about modifying it, you don't need to install the Cygwin core that comes with the installer. Just install OCaml itself and run
 ```
 winmake.bat
 ```
-which creates `wasm.exe`. Note that this will be a byte code executable only.
+in a Windows shell, which creates `wasm.exe`. Note that this will be a byte code executable only, i.e., somewhat slower.
 
-If you want a native code executable, or want to hack on the interpreter, then you need to use the core Cygwin shell that the OCaml installer includes and build using `make`, as described above. Contrary to the [installer directions](https://protz.github.io/ocaml-installer/), however, you need a set of additional packages for `ocamlbuild` to work, so select them in the Cygwin installer (or run `cygwin-setup` manually to add them after the fact):
-```
-make
-mingw64-i686-binutils
-            -gcc-core
-            -gcc-g++
-            -headers
-            -runtime
-            -windows-default-manifest
-            -winpthreads
-mingw64-x86_64-binutils
-              -gcc-core
-              -gcc-g++
-              -headers
-              -runtime
-              -windows-default-manifest
-              -winpthreads
-```
-The set of packages may be different on 32-bit Windows.
+2. Cygwin. If you want to build a native code executable, or want to hack on the interpreter, then you need to install the Cygwin core that is included with the OCaml installer. Then you can build the interpreter using `make` in the Cygwin terminal, as described above.
+
+Either way, in order to run the test suite you'll need to have Python installed.
 
 
 ## Synopsis

@@ -52,7 +52,7 @@ winmake.bat:	clean
 		>>$@
 
 .PHONY:		zip
-zip: 	winmake.bat
+zip: 		winmake.bat
 		git archive --format=zip --prefix=$(NAME)/ \
 			-o $(NAME).zip HEAD
 
