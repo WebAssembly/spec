@@ -46,9 +46,9 @@ winmake.bat
 ```
 in a Windows shell, which creates `wasm.exe`. Note that this will be a byte code executable only, i.e., somewhat slower.
 
-2. Cygwin. If you want to build a native code executable, or want to hack on the interpreter, then you need to install the Cygwin core that is included with the OCaml installer. Then you can build the interpreter using `make` in the Cygwin terminal, as described above.
+2. OCaml + Cygwin. If you want to build a native code executable, or want to hack on the interpreter (i.e., use incremental compilation), then you need to install the Cygwin core that is included with the OCaml installer. Then you can build the interpreter using `make` in the Cygwin terminal, as described above.
 
-Either way, in order to run the test suite you'll need to have Python installed.
+Either way, in order to run the test suite you'll need to have Python installed. If you used Option 1, you can invoke the test runner `runtests.py` directly instead of doing it through `make`.
 
 
 ## Synopsis
