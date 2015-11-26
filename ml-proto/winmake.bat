@@ -1,5 +1,5 @@
 rem Auto-generated from Makefile!
-set NAME=wasm.exe
+set NAME=wasm
 if '%1' neq '' set NAME=%1
 ocamlc.opt -c -bin-annot -I spec -I host -I given -o spec/float.cmo spec/float.ml
 ocamlc.opt -c -bin-annot -I spec -I host -I given -o spec/numerics.cmi spec/numerics.mli

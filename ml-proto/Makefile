@@ -42,7 +42,7 @@ test:		$(NAME)
 
 winmake.bat:	clean
 		echo rem Auto-generated from Makefile! >$@
-		echo set NAME=$(NAME).exe >>$@
+		echo set NAME=$(NAME) >>$@
 		echo if \'%1\' neq \'\' set NAME=%1 >>$@
 		$(OCB) main.d.byte \
 		| grep -v ocamldep \

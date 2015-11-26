@@ -44,7 +44,7 @@ We recommend a pre-built installer. With [this one](https://protz.github.io/ocam
 ```
 winmake.bat
 ```
-in a Windows shell, which creates `wasm.exe`. Note that this will be a byte code executable only, i.e., somewhat slower.
+in a Windows shell, which creates a program named `wasm`. Note that this will be a byte code executable only, i.e., somewhat slower.
 
 2. OCaml + Cygwin. If you want to build a native code executable, or want to hack on the interpreter (i.e., use incremental compilation), then you need to install the Cygwin core that is included with the OCaml installer. Then you can build the interpreter using `make` in the Cygwin terminal, as described above.
 
