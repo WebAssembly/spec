@@ -1,24 +1,13 @@
 let name = "wasm"
-let version = "0.1"
+let version = "0.2"
 
-let load file =
-  let f = open_in file in
-  let size = in_channel_length f + 1 in
-  let buf = Bytes.create size in
-  let rec loop () =
-    let len = input f buf 0 size in
-    let source = Bytes.sub_string buf 0 len in
-    if len == 0 then source else source ^ loop ()
-  in
-  let source = loop () in
-  close_in f;
-  source
+let banner () =
+  print_endline (name ^ " " ^ version ^ " spec interpreter")
 
-let parse name source =
-  let lexbuf = Lexing.from_string source in
+let parse name lexbuf start =
   lexbuf.Lexing.lex_curr_p <-
     {lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = name};
-  try Parser.script Lexer.token lexbuf with Script.Syntax (region, s) ->
+  try start Lexer.token lexbuf with Script.Syntax (region, s) ->
     let region' = if region <> Source.no_region then region else
       {Source.left = Lexer.convert_pos lexbuf.Lexing.lex_start_p;
        Source.right = Lexer.convert_pos lexbuf.Lexing.lex_curr_p} in
@@ -29,10 +18,9 @@ let error at category msg =
   prerr_endline (Source.string_of_region at ^ ": " ^ msg);
   false
 
-let process file source =
+let process file lexbuf start =
   try
-    Script.trace "Parsing...";
-    let script = parse file source in
+    let script = parse file lexbuf start in
     Script.trace "Desugaring...";
     let script' = Script.desugar script in
     Script.trace "Running...";
@@ -48,21 +36,43 @@ let process file source =
 
 let process_file file =
   Script.trace ("Loading (" ^ file ^ ")...");
-  let source = load file in
-  if not (process file source) then exit 1
+  let ic = open_in file in
+  try
+    let lexbuf = Lexing.from_channel ic in
+    Script.trace "Parsing...";
+    let success = process file lexbuf Parser.script in
+    close_in ic;
+    if not success then exit 1
+  with exn -> close_in ic; raise exn
+
+let continuing = ref false
+
+let lexbuf_stdin buf len =
+  let prompt = if !continuing then "  " else "> " in
+  print_string prompt; flush_all ();
+  continuing := true;
+  let rec loop i =
+    if i = len then i else
+    let ch = input_char stdin in
+    Bytes.set buf i ch;
+    if ch = '\n' then i + 1 else loop (i + 1)
+  in
+  let n = loop 0 in
+  if n = 1 then continuing := false else Script.trace "Parsing...";
+  n
 
 let rec process_stdin () =
-  print_string (name ^ "> "); flush_all ();
-  match try Some (input_line stdin) with End_of_file -> None with
-  | None ->
+  banner ();
+  let lexbuf = Lexing.from_function lexbuf_stdin in
+  let rec loop () =
+    continuing := false;
+    let success = process "stdin" lexbuf Parser.script1 in
+    if not success then Lexing.flush_input lexbuf;
+    loop ()
+  in
+  try loop () with End_of_file ->
     print_endline "";
     Script.trace "Bye."
-  | Some source ->
-    ignore (process "stdin" source);
-    process_stdin ()
-
-let greet () =
-  print_endline ("Version " ^ version)
 
 let usage = "Usage: " ^ name ^ " [option] [file ...]"
 let argspec = Arg.align
@@ -72,7 +82,7 @@ let argspec = Arg.align
   "-s", Arg.Set Flags.print_sig, " show module signatures";
   "-d", Arg.Set Flags.dry, " dry, do not run program";
   "-t", Arg.Set Flags.trace, " trace execution";
-  "-v", Arg.Unit greet, " show version"
+  "-v", Arg.Unit banner, " show version"
 ]
 
 let () =
@@ -84,7 +94,7 @@ let () =
     List.iter process_file !files;
     if !Flags.interactive then process_stdin ()
   with exn ->
-    flush stdout;
+    flush_all ();
     prerr_endline
       (Sys.argv.(0) ^ ": uncaught exception " ^ Printexc.to_string exn);
     Printexc.print_backtrace stderr;

@@ -186,8 +186,9 @@ let implicit_decl c t at =
 %nonassoc LOW
 %nonassoc VAR
 
-%start script
+%start script script1
 %type<Script.script> script
+%type<Script.script> script1
 
 %%
 
@@ -487,5 +488,7 @@ const_list :
 script :
   | cmd_list EOF { $1 }
 ;
-
+script1 :
+  | cmd { [$1] }
+;
 %%
