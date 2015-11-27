@@ -65,9 +65,10 @@ let rec process_stdin () =
   banner ();
   let lexbuf = Lexing.from_function lexbuf_stdin in
   let rec loop () =
-    continuing := false;
     let success = process "stdin" lexbuf Parser.script1 in
     if not success then Lexing.flush_input lexbuf;
+    if Lexing.(lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len - 1) then
+      continuing := false;
     loop ()
   in
   try loop () with End_of_file ->
