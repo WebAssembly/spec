@@ -21,7 +21,7 @@
     (func $three (type $T) (param $a i32) (result i32) (i32.sub (get_local 0) (i32.const 2)))
     (export "three" $three)
 
-    (import $print "stdio" "print" (type 6))
+    (import $print "spectest" "print" (type 6))
     (func $four (type $U) (call_import $print (get_local 0)))
     (export "four" $four)
 )
@@ -31,7 +31,7 @@
 (invoke "four" (i32.const 83))
 
 (assert_invalid (module (func (type 42))) "unknown function type 42")
-(assert_invalid (module (import "stdio" "print" (type 43))) "unknown function type 43")
+(assert_invalid (module (import "spectest" "print" (type 43))) "unknown function type 43")
 
 (module
     (type $T (func (param) (result i32)))

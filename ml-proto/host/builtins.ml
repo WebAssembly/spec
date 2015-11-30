@@ -12,15 +12,15 @@ let print vs =
 let match_import m i =
   let {module_name; func_name; itype} = i.it in
   let {ins; out} = List.nth m.it.types itype.it in
-  if module_name <> "stdio" then
+  if module_name <> "spectest" then
     Unknown.error i.at ("no module \"" ^ module_name ^ "\"");
   match func_name with
   | "print" ->
     if out <> None then
-      Unknown.error i.at "stdio.print has no result";
+      Unknown.error i.at "spectest.print has no result";
     print
   | _ ->
-    Unknown.error i.at ("no function \"stdio." ^ func_name ^ "\"")
+    Unknown.error i.at ("no function \"spectest." ^ func_name ^ "\"")
 
 let match_imports m =
   List.map (match_import m) m.it.imports
