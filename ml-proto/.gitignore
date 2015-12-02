@@ -2,6 +2,7 @@
 *.byte
 *.opt
 *.zip
+*.pyc
 _build
 wasm
 unopt

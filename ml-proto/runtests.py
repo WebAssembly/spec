@@ -6,9 +6,20 @@ import unittest
 import subprocess
 import glob
 import sys
+import masm
 
 class RunTests(unittest.TestCase):
   def _runTestFile(self, shortName, fileName, interpreterPath):
+    if fileName.endswith('.mast'):
+      wastPath = fileName.replace(".mast", ".generated.wast")
+      try:
+        os.remove(wastPath)
+      except OSError:
+        pass
+
+      masm.transform_file(fileName, wastPath)
+      fileName = wastPath
+
     logPath = fileName.replace("test/", "test/output/").replace(".wast", ".wast.log")
     try:
       os.remove(logPath)
@@ -72,6 +83,10 @@ if __name__ == "__main__":
   else:
     find_interpreter(interpreterPath)
 
+  for generated in glob.glob("test/*.generated.wast"):
+    os.remove(generated)
+
   testFiles = glob.glob("test/*.wast")
+  testFiles += glob.glob("test/*.mast")
   generate_test_cases(RunTests, interpreterPath, testFiles)
   unittest.main()
