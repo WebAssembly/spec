@@ -2,25 +2,25 @@
 
 module type RepresentationType =
 sig
-  type t  
+  type t
   val add : t -> t -> t
   val min_int : t
   val zero : t
   val one : t
-  val minus_one : t                        
+  val minus_one : t
   val shift_left : t -> int -> t
   val shift_right : t -> int -> t
   val logand : t -> t -> t
   val lognot : t -> t
   val logor : t -> t -> t
-  val logxor : t -> t -> t                    
+  val logxor : t -> t -> t
   val sub : t -> t -> t
   val div : t -> t -> t
   val mul : t -> t -> t
-  val rem : t -> t -> t                        
+  val rem : t -> t -> t
   val shift_right_logical : t -> int -> t
   val of_int : int -> t
-  val to_int : t -> int                        
+  val to_int : t -> int
   val of_string : string -> t
   val to_string : t -> string
 
@@ -30,7 +30,7 @@ end
 module type S =
 sig
   type t
-  type bits 
+  type bits
 
   val of_bits : bits -> t
   val to_bits : t -> bits
@@ -68,7 +68,7 @@ sig
   val of_string : string -> t
   val to_string : t -> string
 end
-    
+
 module Make(Rep : RepresentationType) : S with type bits = Rep.t and type t = Rep.t =
 struct
   (*

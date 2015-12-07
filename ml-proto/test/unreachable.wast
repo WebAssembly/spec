@@ -7,7 +7,7 @@
   (func $if (param i32) (result f32)
    (if_else (get_local 0) (unreachable) (f32.const 0)))
 
-  (func $block 
+  (func $block
    (block (i32.const 1) (unreachable) (i32.const 2)))
 
   (func $return_i64 (result i64)
