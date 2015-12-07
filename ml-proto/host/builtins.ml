@@ -15,9 +15,8 @@ end
 let match_import m i =
   let {module_name; func_name; itype} = i.it in
   let {ins; out} = List.nth m.it.types itype.it in
-  (* TODO: Ignore module name for now, as long as LLVM can't generate it. *)
   match module_name, func_name, ins, out with
-  | _, "print", _, None -> Stdio.print
+  | "spectest", "print", _, None -> Stdio.print
   | _ ->
     Unknown.error i.at
       ("no import \"" ^ module_name ^ "." ^ func_name ^ "\" of requested type")
