@@ -34,6 +34,7 @@ To do everything (advisable before committing changes),
 ```
 make all
 ```
+Be sure to run the latter before you upload a patch.
 
 
 #### Building on Windows
