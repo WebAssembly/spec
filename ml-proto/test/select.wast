@@ -35,11 +35,11 @@
 (assert_return (invoke "select_i64" (i32.const -1) (i64.const 2) (i64.const 1)) (i64.const 2))
 (assert_return (invoke "select_i64" (i32.const 0xf0f0f0f0) (i64.const 2) (i64.const 1)) (i64.const 2))
 
-(assert_return_nan (invoke "select_f32" (i32.const 1) (f32.const nan) (f32.const 1)))
-(assert_return_nan (invoke "select_f32" (i32.const 0) (f32.const 2) (f32.const nan)))
+(assert_return (invoke "select_f32" (i32.const 1) (f32.const nan) (f32.const 1)) (f32.const nan))
+(assert_return (invoke "select_f32" (i32.const 0) (f32.const 2) (f32.const nan)) (f32.const nan))
 
-(assert_return_nan (invoke "select_f64" (i32.const 1) (f64.const nan) (f64.const 1)))
-(assert_return_nan (invoke "select_f64" (i32.const 0) (f64.const 2) (f64.const nan)))
+(assert_return (invoke "select_f64" (i32.const 1) (f64.const nan) (f64.const 1)) (f64.const nan))
+(assert_return (invoke "select_f64" (i32.const 0) (f64.const 2) (f64.const nan)) (f64.const nan))
 
 (assert_trap (invoke "select_trap_l" (i32.const 1)) "unreachable executed")
 (assert_trap (invoke "select_trap_l" (i32.const 0)) "unreachable executed")
