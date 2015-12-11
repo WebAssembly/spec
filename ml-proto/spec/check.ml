@@ -52,34 +52,34 @@ let type_binop = Values.type_of
 let type_selop = Values.type_of
 let type_relop = Values.type_of
 
-let type_cvt at = function
-  | Values.Int32 cvt ->
+let type_cvtop at = function
+  | Values.Int32 cvtop ->
     let open I32Op in
-    (match cvt with
+    (match cvtop with
     | ExtendSInt32 | ExtendUInt32 -> error at "invalid conversion"
     | WrapInt64 -> Int64Type
     | TruncSFloat32 | TruncUFloat32 | ReinterpretFloat -> Float32Type
     | TruncSFloat64 | TruncUFloat64 -> Float64Type
     ), Int32Type
-  | Values.Int64 cvt ->
+  | Values.Int64 cvtop ->
     let open I64Op in
-    (match cvt with
+    (match cvtop with
     | ExtendSInt32 | ExtendUInt32 -> Int32Type
     | WrapInt64 -> error at "invalid conversion"
     | TruncSFloat32 | TruncUFloat32 -> Float32Type
     | TruncSFloat64 | TruncUFloat64 | ReinterpretFloat -> Float64Type
     ), Int64Type
-  | Values.Float32 cvt ->
+  | Values.Float32 cvtop ->
     let open F32Op in
-    (match cvt with
+    (match cvtop with
     | ConvertSInt32 | ConvertUInt32 | ReinterpretInt -> Int32Type
     | ConvertSInt64 | ConvertUInt64 -> Int64Type
     | PromoteFloat32 -> error at "invalid conversion"
     | DemoteFloat64 -> Float64Type
     ), Float32Type
-  | Values.Float64 cvt ->
+  | Values.Float64 cvtop ->
     let open F64Op in
-    (match cvt with
+    (match cvtop with
     | ConvertSInt32 | ConvertUInt32 -> Int32Type
     | ConvertSInt64 | ConvertUInt64 | ReinterpretInt -> Int64Type
     | PromoteFloat32 -> Float32Type
@@ -115,6 +115,9 @@ let rec check_expr c et e =
   match e.it with
   | Nop ->
     check_type None et e.at
+
+  | Unreachable ->
+    ()
 
   | Block es ->
     require (es <> []) e.at "invalid block";
@@ -205,13 +208,10 @@ let rec check_expr c et e =
     check_expr c (Some t) e2;
     check_type (Some Int32Type) et e.at
 
-  | Convert (cvt, e1) ->
-    let t1, t = type_cvt e.at cvt in
+  | Convert (cvtop, e1) ->
+    let t1, t = type_cvtop e.at cvtop in
     check_expr c (Some t1) e1;
     check_type (Some t) et e.at
-
-  | Unreachable ->
-    ()
 
   | Host (hostop, es) ->
     let {ins; out}, has_mem = type_hostop hostop in

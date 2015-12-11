@@ -134,6 +134,9 @@ let rec eval_expr (c : config) (e : expr) =
   | Nop ->
     None
 
+  | Unreachable ->
+    Trap.error e.at "unreachable executed"
+
   | Block es ->
     let es', eN = Lib.List.split_last es in
     let module L = MakeLabel () in
@@ -242,13 +245,10 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Int32 (if Arithmetic.eval_relop relop v1 v2 then 1l else 0l))
       with exn -> arithmetic_error e.at e1.at e2.at exn)
 
-  | Convert (cvt, e1) ->
+  | Convert (cvtop, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
-    (try Some (Arithmetic.eval_cvt cvt v1)
+    (try Some (Arithmetic.eval_cvtop cvtop v1)
       with exn -> arithmetic_error e.at e1.at e1.at exn)
-
-  | Unreachable ->
-    Trap.error e.at "unreachable executed"
 
   | Host (hostop, es) ->
     let vs = List.map (eval_expr c) es in

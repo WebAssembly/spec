@@ -138,18 +138,19 @@ rule token = parse
     }
 
   | "nop" { NOP }
+  | "unreachable" { UNREACHABLE }
   | "block" { BLOCK }
-  | "if" { IF }
-  | "if_else" { IF_ELSE }
   | "loop" { LOOP }
   | "br" { BR }
   | "br_if" { BR_IF }
+  | "return" { RETURN }
+  | "if" { IF }
+  | "if_else" { IF_ELSE }
   | "tableswitch" { TABLESWITCH }
   | "case" { CASE }
   | "call" { CALL }
   | "call_import" { CALL_IMPORT }
   | "call_indirect" { CALL_INDIRECT }
-  | "return" { RETURN }
 
   | "get_local" { GET_LOCAL }
   | "set_local" { SET_LOCAL }
@@ -330,7 +331,6 @@ rule token = parse
   | "i32.reinterpret/f32" { CONVERT (fun e -> I32_reinterpret_f32 e) }
   | "i64.reinterpret/f64" { CONVERT (fun e -> I64_reinterpret_f64 e) }
 
-  | "unreachable" { UNREACHABLE }
   | "memory_size" { MEMORY_SIZE }
   | "grow_memory" { GROW_MEMORY }
   | "has_feature" { HAS_FEATURE }

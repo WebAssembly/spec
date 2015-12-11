@@ -15,13 +15,14 @@ and expr' =
 
   (* Control *)
   | Nop
+  | Unreachable
   | Block of expr list
   | Loop of expr list
   | Br of var * expr option
+  | Br_if of expr * var * expr option
   | Return of var * expr option
   | If of expr * expr
   | If_else of expr * expr * expr
-  | Br_if of expr * var * expr option
   | Tableswitch of expr * target list * target * expr list list
   | Call of var * expr list
   | Call_import of var * expr list
@@ -191,8 +192,6 @@ and expr' =
   | F64_reinterpret_i64 of expr
 
   (* Host queries *)
-  | Unreachable
-
   | Memory_size
   | Grow_memory of expr
   | Has_feature of string

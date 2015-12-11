@@ -11,6 +11,7 @@ let rec label e = shift 0 e
 and shift n e = shift' n e.it @@ e.at
 and shift' n = function
   | Nop -> Nop
+  | Unreachable -> Unreachable
   | Block es -> Block (List.map (shift (n + 1)) es)
   | Loop e -> Loop (shift (n + 1) e)
   | Break (x, eo) ->
@@ -35,7 +36,6 @@ and shift' n = function
     Select (selop, shift n e1, shift n e2, shift n e3)
   | Compare (relop, e1, e2) -> Compare (relop, shift n e1, shift n e2)
   | Convert (cvtop, e) -> Convert (cvtop, shift n e)
-  | Unreachable -> Unreachable
   | Host (hostop, es) -> Host (hostop, List.map (shift n) es)
 
 
@@ -49,14 +49,15 @@ and expr' at = function
   | Ast.F64_const n -> Const (Float64 n.it @@ n.at)
 
   | Ast.Nop -> Nop
+  | Ast.Unreachable -> Unreachable
   | Ast.Block es -> Block (List.map expr es)
   | Ast.Loop es -> Block [Loop (seq es) @@ at]
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
+  | Ast.Br_if (e, x, eo) ->
+    If (expr e, Break (x, Lib.Option.map expr eo) @@ at, opt eo)
   | Ast.Return (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.If (e1, e2) -> If (expr e1, expr e2, Nop @@ Source.after e2.at)
   | Ast.If_else (e1, e2, e3) -> If (expr e1, expr e2, expr e3)
-  | Ast.Br_if (e, x, eo) ->
-    If (expr e, Break (x, Lib.Option.map expr eo) @@ at, opt eo)
   | Ast.Call (x, es) -> Call (x, List.map expr es)
   | Ast.Call_import (x, es) -> CallImport (x, List.map expr es)
   | Ast.Call_indirect (x, e, es) -> CallIndirect (x, expr e, List.map expr es)
@@ -280,8 +281,6 @@ and expr' at = function
   | Ast.I64_reinterpret_f64 e -> Convert (Int64 I64Op.ReinterpretFloat, expr e)
   | Ast.F32_reinterpret_i32 e -> Convert (Float32 F32Op.ReinterpretInt, expr e)
   | Ast.F64_reinterpret_i64 e -> Convert (Float64 F64Op.ReinterpretInt, expr e)
-
-  | Ast.Unreachable -> Unreachable
 
   | Ast.Memory_size -> Host (MemorySize, [])
   | Ast.Grow_memory e -> Host (GrowMemory, [expr e])

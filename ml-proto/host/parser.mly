@@ -224,19 +224,20 @@ expr :
 ;
 expr1 :
   | NOP { fun c -> Nop }
+  | UNREACHABLE { fun c -> Unreachable }
   | BLOCK labeling expr expr_list
     { fun c -> let c' = $2 c in Block ($3 c' :: $4 c') }
-  | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
-  | IF expr expr { fun c -> If ($2 c, $3 c) }
-  | BR_IF expr var expr_opt { fun c -> Br_if ($2 c, $3 c label, $4 c) }
   | LOOP labeling expr_list
     { fun c -> let c' = anon_label c in let c'' = $2 c' in Loop ($3 c'') }
   | LOOP labeling1 labeling1 expr_list
     { fun c -> let c' = $2 c in let c'' = $3 c' in Loop ($4 c'') }
   | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
+  | BR_IF expr var expr_opt { fun c -> Br_if ($2 c, $3 c label, $4 c) }
   | RETURN expr_opt
     { let at1 = ati 1 in
       fun c -> Return (label c ("return" @@ at1) @@ at1, $2 c) }
+  | IF expr expr { fun c -> If ($2 c, $3 c) }
+  | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
   | TABLESWITCH labeling expr LPAR TABLE target_list RPAR target case_list
     { fun c -> let c' = $2 c in let e = $3 c' in
       let c'' = enter_switch c' in let es = $9 c'' in
@@ -255,7 +256,6 @@ expr1 :
   | SELECT expr expr expr { fun c -> $1 ($2 c, $3 c, $4 c) }
   | COMPARE expr expr { fun c -> $1 ($2 c, $3 c) }
   | CONVERT expr { fun c -> $1 ($2 c) }
-  | UNREACHABLE { fun c -> Unreachable }
   | MEMORY_SIZE { fun c -> Memory_size }
   | GROW_MEMORY expr { fun c -> Grow_memory ($2 c) }
   | HAS_FEATURE TEXT { fun c -> Has_feature $2 }
