@@ -60,7 +60,7 @@ mingw64-x86_64-binutils
               -winpthreads
 ```
 
-The set of packages may be different on 32-bit Windows. 
+The set of packages may be different on 32-bit Windows.
 
 The current set of prototypes does not rely on opam or ocaml packages, but be aware that opam does not work on Windows.
 

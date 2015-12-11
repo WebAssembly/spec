@@ -1,8 +1,8 @@
-(module 
-    (import $print_i32 "stdio" "print" (param i32))
-    (import $print_i64 "stdio" "print" (param i64))
-    (import $print_i32_f32 "stdio" "print" (param i32 f32))
-    (import $print_i64_f64 "stdio" "print" (param i64 f64))
+(module
+    (import $print_i32 "spectest" "print" (param i32))
+    (import $print_i64 "spectest" "print" (param i64))
+    (import $print_i32_f32 "spectest" "print" (param i32 f32))
+    (import $print_i64_f64 "spectest" "print" (param i64 f64))
     (func $print32 (param $i i32)
         (call_import $print_i32 (get_local $i))
         (call_import $print_i32_f32
@@ -23,3 +23,4 @@
 
 (invoke "print32" (i32.const 13))
 (invoke "print64" (i64.const 24))
+
