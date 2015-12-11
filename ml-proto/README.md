@@ -82,24 +82,9 @@ Note however that the REPL currently is too dumb to allow multi-line input. :)
 See `wasm -h` for (the few) options.
 
 
-## Core Language vs External Language
+## S-Expression Syntax
 
-The implementation tries to separate the concern of what is the language (and its semantics) from what is its external encoding. In that spirit, the actual AST is regular and minimal, while certain abbreviations are considered "syntactic sugar" of an external representation optimised for compactness.
-
-For example, `if` always has an else-branch in the AST, but in the external format an else-less conditional is allowed as an abbreviation for one with `nop`. Similarly, blocks can sometimes be left implicit in sub-expressions.
-
-Here, the external format is S-expressions, but similar considerations would apply to a binary encoding. That is, there would be codes for certain abbreviations, but these are just a matter of the encoding.
-
-
-## Internal Syntax
-
-The core language is defined in [ast.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/ast.ml).
-
-## External Syntax
-
-The S-expression syntax is defined in [parser.mly](https://github.com/WebAssembly/spec/blob/master/ml-proto/host/parser.mly), the opcodes in [lexer.mll](https://github.com/WebAssembly/spec/blob/master/ml-proto/host/lexer.mll).
-
-Here is an overview of the grammar of types, expressions, functions, and modules:
+The implementation consumes a WebAssemlby AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/master/AstSemantics.md):
 
 ```
 type: i32 | i64 | f32 | f64
@@ -109,6 +94,7 @@ var: <int> | $<name>
 
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
+selop: select
 relop: eq | ne | lt | ...
 sign: s|u
 offset: offset=<uint>
@@ -117,42 +103,37 @@ cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
 expr:
   ( nop )
-  ( block <expr>+ )
-  ( block <var> <expr>+ )                        ;; = (label <var> (block <expr>+))
+  ( block <name>? <expr>+ )
   ( if_else <expr> <expr> <expr> )
   ( if <expr> <expr> )                           ;; = (if_else <expr> <expr> (nop))
-  ( br_if <expr> <var> )                         ;; = (if_else <expr> (br <var>) (nop))
-  ( loop <var>? <expr>* )                        ;; = (loop <var>? (block <expr>*))
-  ( loop <var> <var> <expr>* )                   ;; = (label <var> (loop <var> (block <expr>*)))
-  ( label <var>? <expr> )
+  ( br_if <expr> <var> <expr>?)                  ;; = (if_else <expr> (br <var> <expr>?) (block <expr>? (nop)))
+  ( loop <name1>? <name2>? <expr>* )             ;; = (block <name1>? (loop <name2>? (block <expr>*)))
   ( br <var> <expr>? )
   ( return <expr>? )                             ;; = (br <current_depth> <expr>?)
-  ( tableswitch <expr> <switch> <target> <case>* )
-  ( tableswitch <var> <expr> <switch> <target> <case>* )  ;; = (label <var> (tableswitch <expr> <switch> <target> <case>*))
+  ( tableswitch <name>? <expr> <switch> ( table <target>* ) <case>* )
   ( call <var> <expr>* )
   ( call_import <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
   ( get_local <var> )
   ( set_local <var> <expr> )
-  ( <type>.load((8|16)_<sign>)? <offset>? <align>? <expr> )
-  ( <type>.store <offset>? <align>? <expr> <expr> )
+  ( <type>.load((8|16|32)_<sign>)? <offset>? <align>? <expr> )
+  ( <type>.store(8|16|32)? <offset>? <align>? <expr> <expr> )
   ( <type>.const <value> )
   ( <type>.<unop> <expr> )
   ( <type>.<binop> <expr> <expr> )
+  ( <type>.<selop> <expr> <expr> <expr> )
   ( <type>.<relop> <expr> <expr> )
   ( <type>.<cvtop>/<type> <expr> )
+  ( unreachable )
   ( memory_size )
   ( grow_memory <expr> )
 
-switch:
-  ( table <target>* )
-
 target:
   ( case <var> )
-  ( br <var> )                                   ;; = (case <var'>) with (case <var'> (br <var>))
+  ( br <var> )                                   ;; = (case <name>) with (case <name> (br <var>))
 
 case:
-  ( case <var>? <expr>* )                        ;; = (case <var>? (block <expr>*))
+  ( case <name>? <expr>* )                       ;; = (case <var>? (block <expr>*))
 
 func:   ( func <name>? <type>? <param>* <result>? <local>* <expr>* )
 type:   ( type <var> )
@@ -160,19 +141,20 @@ param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type> )
 local:  ( local <type>* ) | ( local <name> <type> )
 
-module:  ( module <type>* <func>* <global>* <import>* <export>* <table>* <memory>? )
+module:  ( module <type>* <func>* <import>* <export>* <table>* <memory>? )
 type:    ( type <name>? ( func <param>* <result>? ) )
 import:  ( import <name>? "<module_name>" "<func_name>" (param <type>* ) (result <type>)* )
 export:  ( export "<char>*" <var> )
-global:  ( global <type>* ) | ( global <name> <type> )
 table:   ( table <var>* )
 memory:  ( memory <int> <int>? <segment>* )
 segment: ( segment <int> "<char>*" )
 ```
 
-Here, productions marked with respective comments are abbreviation forms for equivalent expansions.
+Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).
 
-The segment string is used to initialize the memory at the given offset.
+Any form of naming via `<name>` and `<var>` (including expression labels) is merely notational convenience of this text format. The actual AST has no names, and all bindings are referred to via ordered numeric indices; consequently, names are immediately resolved in the parser and replaced by indices. Indices can also be used directly in the text format.
+
+The segment string in the memory field is used to initialize the memory at the given offset.
 
 Comments can be written in one of two ways:
 
@@ -208,17 +190,26 @@ Again, this is only a meta-level for testing, and not a part of the language pro
 The interpreter also supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, `invoke` commands are ignored (and not needed).
 
 
+## Abstract Syntax and Kernel Syntax
+
+The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/master/AstSemantics.md), is defined in [ast.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/ast.ml).
+
+However, to simplify the implementation, this AST representation is first "desugared" into a more minimal <i>kernel</i> language that is a subset of the full language. For example, conditionals with no else-branch are desugared into conditionals with `nop` for their else-branch, such that in the kernel language, all conditionals have two branches. The desugaring rules are sketched in the comments of the S-expression grammar given above.
+
+The representation for that kernel language AST is defined in [kernel.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/kernel.ml). Besides having fewer constructs, it also raises the level of abstraction further, e.g., by grouping related operators, or decomposing the syntactic structure of operators themselves.
+
+
 ## Implementation
 
 The implementation consists of the following parts:
 
-* *Abstract Syntax* (`ast.ml`, `types.ml`, `source.ml[i]`). Notably, the `phrase` wrapper type around each AST node carries the source position information.
+* *Abstract Syntax* (`ast.ml`, `kernel.ml`, `types.ml`, `source.ml[i]`). Notably, the `phrase` wrapper type around each AST node carries the source position information.
 
-* *Parser* (`lexer.mll`, `parser.mly`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing.
+* *Parser* (`lexer.mll`, `parser.mly`, `desguar.ml[i]`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing. The parser generates a full AST that is desugared into the kernel AST in a separate pass.
 
-* *Validator* (`check.ml[i]`). Does a recursive walk of the AST, passing down the *expected* type for expressions (or rather, a list thereof, because of multi-values), and checking each expression against that. An expected empty list of types can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
+* *Validator* (`check.ml[i]`). Does a recursive walk of the kernel AST, passing down the *expected* type for expressions, and checking each expression against that. An expected empty type can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
 
-* *Evaluator* (`eval.ml[i]`, `values.ml`, `arithmetic.ml[i]`, `memory.ml[i]`). Evaluation of control transfer (`br` and `return`) is implemented using local exceptions as "labels". While these are allocated dynamically in the code and addressed via a stack, that is merely to simplify the code. In reality, these would be static jumps.
+* *Evaluator* (`eval.ml[i]`, `values.ml`, `arithmetic.ml[i]`, `int.ml`, `float.ml`, `memory.ml[i]`, and a few more). Evaluation of control transfer (`br` and `return`) is implemented using local exceptions as "labels". While these are allocated dynamically in the code and addressed via a stack, that is merely to simplify the code. In reality, these would be static jumps.
 
 * *Driver* (`main.ml`, `script.ml[i]`, `error.ml`, `print.ml[i]`, `flags.ml`). Executes scripts, reports results or errors, etc.
 
@@ -229,14 +220,6 @@ In typical FP convention (and for better readability), the code tends to use sin
 
 ## What Next?
 
-* TODOs: unsigned and accurate float32 arithmetics.
-
-* Tests.
-
-* Growable memory.
-
-* Module imports.
+* Binary format as input and output.
 
 * Compilation to JS/asm.js.
-
-* Binary format as input or output?

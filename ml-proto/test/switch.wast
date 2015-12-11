@@ -3,7 +3,7 @@
   (func $stmt (param $i i32) (result i32)
     (local $j i32)
     (set_local $j (i32.const 100))
-    (label
+    (block
       (tableswitch (get_local $i)
         (table (case $0) (case $1) (case $2) (case $3) (case $4)
                (case $5) (case $6) (case $7)) (case $default)
@@ -26,7 +26,7 @@
     (local $j i64)
     (set_local $j (i64.const 100))
     (return
-      (label $l
+      (block $l
         (tableswitch (i32.wrap/i64 (get_local $i))
           (table (case $0) (case $1) (case $2) (case $3) (case $4)
                  (case $5) (case $6) (case $7)) (case $default)

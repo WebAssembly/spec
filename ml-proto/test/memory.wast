@@ -92,7 +92,7 @@
   (func $aligned (result i32)
     (local i32 i32 i32)
     (set_local 0 (i32.const 10))
-    (label
+    (block
       (loop
         (if
           (i32.eq (get_local 0) (i32.const 0))
@@ -116,7 +116,7 @@
   (func $unaligned (result i32)
     (local i32 f64 f64)
     (set_local 0 (i32.const 10))
-    (label
+    (block
       (loop
         (if
           (i32.eq (get_local 0) (i32.const 0))

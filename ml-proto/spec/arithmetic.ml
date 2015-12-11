@@ -26,7 +26,7 @@ let f64_of_value n =
 
 module Int32Op =
 struct
-  open Kernel.Int32Op
+  open Kernel.I32Op
 
   let unop op =
     let f = match op with
@@ -66,7 +66,7 @@ struct
       | GeU -> I32.ge_u
     in fun v1 v2 -> f (i32_of_value 1 v1) (i32_of_value 2 v2)
 
-  let cvt op =
+  let cvtop op =
     match op with
       | WrapInt64 ->
           fun v -> Int32   (I32_convert.wrap_i64        (i64_of_value 1 v))
@@ -88,7 +88,7 @@ end
 
 module Int64Op =
 struct
-  open Kernel.Int64Op
+  open Kernel.I64Op
 
   let unop op =
     let f = match op with
@@ -128,7 +128,7 @@ struct
       | GeU -> I64.ge_u
     in fun v1 v2 -> f (i64_of_value 1 v1) (i64_of_value 2 v2)
 
-  let cvt op =
+  let cvtop op =
     match op with
       | ExtendSInt32 ->
           fun v -> Int64   (I64_convert.extend_s_i32    (i32_of_value 1 v))
@@ -153,7 +153,7 @@ end
 
 module Float32Op =
 struct
-  open Kernel.Float32Op
+  open Kernel.F32Op
 
   let unop op =
     let f = match op with
@@ -187,7 +187,7 @@ struct
       | Ge -> F32.ge
     in fun v1 v2 -> f (f32_of_value 1 v1) (f32_of_value 2 v2)
 
-  let cvt op =
+  let cvtop op =
     match op with
       | DemoteFloat64 ->
           fun v -> Float32 (F32_convert.demote_f64      (f64_of_value 1 v))
@@ -207,7 +207,7 @@ end
 
 module Float64Op =
 struct
-  open Kernel.Float64Op
+  open Kernel.F64Op
 
   let unop op =
     let f = match op with
@@ -241,7 +241,7 @@ struct
       | Ge -> F64.ge
     in fun v1 v2 -> f (f64_of_value 1 v1) (f64_of_value 2 v2)
 
-  let cvt op =
+  let cvtop op =
     match op with
       | PromoteFloat32 ->
           fun v -> Float64 (F64_convert.promote_f32     (f32_of_value 1 v))
@@ -271,4 +271,4 @@ let op i32 i64 f32 f64 = function
 let eval_unop = op Int32Op.unop Int64Op.unop Float32Op.unop Float64Op.unop
 let eval_binop = op Int32Op.binop Int64Op.binop Float32Op.binop Float64Op.binop
 let eval_relop = op Int32Op.relop Int64Op.relop Float32Op.relop Float64Op.relop
-let eval_cvt = op Int32Op.cvt Int64Op.cvt Float32Op.cvt Float64Op.cvt
+let eval_cvtop = op Int32Op.cvtop Int64Op.cvtop Float32Op.cvtop Float64Op.cvtop

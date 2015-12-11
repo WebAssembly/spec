@@ -34,9 +34,9 @@ struct
              | And | Or | Xor | Shl | ShrU | ShrS
   type selop = Select
   type relop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
-  type cvt = ExtendSInt32 | ExtendUInt32 | WrapInt64
-           | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
-           | ReinterpretFloat
+  type cvtop = ExtendSInt32 | ExtendUInt32 | WrapInt64
+             | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
+             | ReinterpretFloat
 end
 
 module FloatOp () =
@@ -45,21 +45,21 @@ struct
   type binop = Add | Sub | Mul | Div | CopySign | Min | Max
   type selop = Select
   type relop = Eq | Ne | Lt | Le | Gt | Ge
-  type cvt = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
-           | PromoteFloat32 | DemoteFloat64
-           | ReinterpretInt
+  type cvtop = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
+             | PromoteFloat32 | DemoteFloat64
+             | ReinterpretInt
 end
 
-module Int32Op = IntOp ()
-module Int64Op = IntOp ()
-module Float32Op = FloatOp ()
-module Float64Op = FloatOp ()
+module I32Op = IntOp ()
+module I64Op = IntOp ()
+module F32Op = FloatOp ()
+module F64Op = FloatOp ()
 
-type unop = (Int32Op.unop, Int64Op.unop, Float32Op.unop, Float64Op.unop) op
-type binop = (Int32Op.binop, Int64Op.binop, Float32Op.binop, Float64Op.binop) op
-type selop = (Int32Op.selop, Int64Op.selop, Float32Op.selop, Float64Op.selop) op
-type relop = (Int32Op.relop, Int64Op.relop, Float32Op.relop, Float64Op.relop) op
-type cvt = (Int32Op.cvt, Int64Op.cvt, Float32Op.cvt, Float64Op.cvt) op
+type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop) op
+type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) op
+type selop = (I32Op.selop, I64Op.selop, F32Op.selop, F64Op.selop) op
+type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) op
+type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) op
 
 type memop = {ty : value_type; offset : Memory.offset; align : int option}
 type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
@@ -78,11 +78,11 @@ type literal = value Source.phrase
 type expr = expr' Source.phrase
 and expr' =
   | Nop                                     (* do nothing *)
+  | Unreachable                             (* trap *)
   | Block of expr list                      (* execute in sequence *)
-  | If of expr * expr * expr                (* conditional *)
-  | Loop of expr                            (* infinite loop *)
-  | Label of expr                           (* labelled expression *)
+  | Loop of expr                            (* loop header *)
   | Break of var * expr option              (* break to n-th surrounding label *)
+  | If of expr * expr * expr                (* conditional *)
   | Switch of expr * var list * var * expr list   (* table switch *)
   | Call of var * expr list                 (* call function *)
   | CallImport of var * expr list           (* call imported function *)
@@ -98,12 +98,22 @@ and expr' =
   | Binary of binop * expr * expr           (* binary arithmetic operator *)
   | Select of selop * expr * expr * expr    (* branchless conditional *)
   | Compare of relop * expr * expr          (* arithmetic comparison *)
-  | Convert of cvt * expr                   (* conversion *)
-  | Unreachable                             (* trap *)
+  | Convert of cvtop * expr                 (* conversion *)
   | Host of hostop * expr list              (* host interaction *)
 
 
-(* Functions and Modules *)
+(* Functions *)
+
+type func = func' Source.phrase
+and func' =
+{
+  ftype : var;
+  locals : value_type list;
+  body : expr;
+}
+
+
+(* Modules *)
 
 type memory = memory' Source.phrase
 and memory' =
@@ -113,14 +123,6 @@ and memory' =
   segments : segment list;
 }
 and segment = Memory.segment Source.phrase
-
-type func = func' Source.phrase
-and func' =
-{
-  ftype : var;
-  locals : value_type list;
-  body : expr;
-}
 
 type export = export' Source.phrase
 and export' = {name : string; func : var}
