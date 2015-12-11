@@ -94,7 +94,6 @@ let type_cvtop at = function
 let type_hostop = function
   | MemorySize -> ({ins = []; out = Some Int32Type}, true)
   | GrowMemory -> ({ins = [Int32Type]; out = None}, true)
-  | HasFeature str -> ({ins = []; out = Some Int32Type}, false)
 
 
 (* Type Analysis *)

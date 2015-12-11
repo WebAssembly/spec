@@ -8,9 +8,6 @@ open Source
 
 type value = Values.value
 type import = value list -> value option
-type host_params = {
-  has_feature : string -> bool
-}
 
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
@@ -20,8 +17,7 @@ type instance =
   module_ : module_;
   imports : import list;
   exports : export_map;
-  memory : Memory.t option;
-  host : host_params
+  memory : Memory.t option
 }
 
 
@@ -272,7 +268,6 @@ and coerce et vo =
 (* Host operators *)
 
 and eval_hostop c hostop vs at =
-  let host = c.instance.host in
   match hostop, vs with
   | MemorySize, [] ->
     let mem = memory c at in
@@ -294,9 +289,6 @@ and eval_hostop c hostop vs at =
     Memory.grow mem delta;
     None
 
-  | HasFeature str, [] ->
-    Some (Int32 (if host.has_feature str then 1l else 0l))
-
   | _, _ ->
     Crash.error at "invalid invocation of host operator"
 
@@ -311,14 +303,13 @@ let init_memory {it = {initial; segments; _}} =
 let add_export funcs ex =
   ExportMap.add ex.it.name (List.nth funcs ex.it.func.it)
 
-let init m imports host =
+let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
   let {memory; funcs; exports; _} = m.it in
   {module_ = m;
    imports;
    exports = List.fold_right (add_export funcs) exports ExportMap.empty;
-   memory = Lib.Option.map init_memory memory;
-   host}
+   memory = Lib.Option.map init_memory memory}
 
 let invoke instance name vs =
   try

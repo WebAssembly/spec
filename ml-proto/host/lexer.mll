@@ -333,7 +333,6 @@ rule token = parse
 
   | "memory_size" { MEMORY_SIZE }
   | "grow_memory" { GROW_MEMORY }
-  | "has_feature" { HAS_FEATURE }
 
   | "type" { TYPE }
   | "func" { FUNC }
