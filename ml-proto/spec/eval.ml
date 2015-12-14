@@ -134,27 +134,29 @@ let rec eval_expr (c : config) (e : expr) =
   | Nop ->
     None
 
+  | Unreachable ->
+    Trap.error e.at "unreachable executed"
+
   | Block es ->
     let es', eN = Lib.List.split_last es in
-    List.iter (fun eI -> ignore (eval_expr c eI)) es';
-    eval_expr c eN
-
-  | If (e1, e2, e3) ->
-    let i = int32 (eval_expr c e1) e1.at in
-    eval_expr c (if i <> 0l then e2 else e3)
+    let module L = MakeLabel () in
+    let c' = {c with labels = L.label :: c.labels} in
+    (try
+      List.iter (fun eI -> ignore (eval_expr c' eI)) es';
+      eval_expr c' eN
+    with L.Label vo -> vo)
 
   | Loop e1 ->
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
     (try eval_expr c' e1 with L.Label _ -> eval_expr c e)
 
-  | Label e1 ->
-    let module L = MakeLabel () in
-    let c' = {c with labels = L.label :: c.labels} in
-    (try eval_expr c' e1 with L.Label vo -> vo)
-
   | Break (x, eo) ->
     raise (label c x (eval_expr_opt c eo))
+
+  | If (e1, e2, e3) ->
+    let i = int32 (eval_expr c e1) e1.at in
+    eval_expr c (if i <> 0l then e2 else e3)
 
   | Switch (e1, xs, x, es) ->
     let i = int32 (eval_expr c e1) e1.at in
@@ -243,13 +245,10 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Int32 (if Arithmetic.eval_relop relop v1 v2 then 1l else 0l))
       with exn -> arithmetic_error e.at e1.at e2.at exn)
 
-  | Convert (cvt, e1) ->
+  | Convert (cvtop, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
-    (try Some (Arithmetic.eval_cvt cvt v1)
+    (try Some (Arithmetic.eval_cvtop cvtop v1)
       with exn -> arithmetic_error e.at e1.at e1.at exn)
-
-  | Unreachable ->
-    Trap.error e.at "unreachable executed"
 
   | Host (hostop, es) ->
     let vs = List.map (eval_expr c) es in

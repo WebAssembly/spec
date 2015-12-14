@@ -46,8 +46,20 @@
     )
   )
 
+  (func $loop4 (param $max i32) (result i32)
+    (local $i i32)
+    (set_local $i (i32.const 1))
+    (loop $exit $cont
+      (set_local $i (i32.add (get_local $i) (get_local $i)))
+      (if (i32.gt_u (get_local $i) (get_local $max))
+        (br $exit (get_local $i))
+      )
+      (br $cont)
+    )
+  )
+
   (func $switch (param i32) (result i32)
-    (label $ret
+    (block $ret
       (i32.mul (i32.const 10)
         (tableswitch $exit (get_local 0)
           (table (case $0) (case $1) (case $2) (case $3)) (case $default)
@@ -91,6 +103,7 @@
   (export "loop1" $loop1)
   (export "loop2" $loop2)
   (export "loop3" $loop3)
+  (export "loop4" $loop4)
   (export "switch" $switch)
   (export "return" $return)
   (export "br_if" $br_if)
@@ -100,6 +113,7 @@
 (assert_return (invoke "loop1") (i32.const 5))
 (assert_return (invoke "loop2") (i32.const 8))
 (assert_return (invoke "loop3") (i32.const 1))
+(assert_return (invoke "loop4" (i32.const 8)) (i32.const 16))
 (assert_return (invoke "switch" (i32.const 0)) (i32.const 50))
 (assert_return (invoke "switch" (i32.const 1)) (i32.const 20))
 (assert_return (invoke "switch" (i32.const 2)) (i32.const 20))

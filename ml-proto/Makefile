@@ -11,7 +11,7 @@ DIRS =		given host spec
 LIBS =		str bigarray
 
 OCB_FLAGS +=	# -use-ocamlfind
-OCB_FLAGS +=	# -cflags -w 
+OCB_FLAGS +=	# -cflags -w
 OCB_FLAGS += 	# -cflags +a-4-41-42-44-45
 OCB_FLAGS += 	$(DIRS:%=-I %)
 OCB_FLAGS += 	$(LIBS:%=-libs %)

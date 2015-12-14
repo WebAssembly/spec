@@ -1,9 +1,7 @@
 type instance
 type value = Values.value
 type import = value list -> value option
-type host_params = {
-  has_feature : string -> bool
-}
+type host_params = {has_feature : string -> bool}
 
 exception Trap of Source.region * string
 exception Crash of Source.region * string

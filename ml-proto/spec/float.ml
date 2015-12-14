@@ -214,6 +214,5 @@ struct
       else
         (* TODO: OCaml's string_of_float is insufficient *)
         string_of_float (to_float a)
-
 end
 

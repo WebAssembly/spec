@@ -34,34 +34,10 @@ let ati i =
 
 (* Literals *)
 
-let literal s t =
-  try
-    match t with
-    | Int32Type -> Values.Int32 (I32.of_string s.it) @@ s.at
-    | Int64Type -> Values.Int64 (I64.of_string s.it) @@ s.at
-    | Float32Type -> Values.Float32 (F32.of_string s.it) @@ s.at
-    | Float64Type -> Values.Float64 (F64.of_string s.it) @@ s.at
-  with
-    | Failure msg -> error s.at ("constant out of range: " ^ msg)
-    | _ -> error s.at "constant out of range"
-
-
-(* Memory operands *)
-
-let memop m offset align =
-  assert (m.offset = 0L);
-  assert (m.align = None);
-  {m with offset; align}
-
-let extop (e : extop) offset align =
-  assert (e.memop.offset = 0L);
-  assert (e.memop.align = None);
-  {e with memop = {e.memop with offset; align}}
-
-let wrapop (w : wrapop) offset align =
-  assert (w.memop.offset = 0L);
-  assert (w.memop.align = None);
-  {w with memop = {w.memop with offset; align}}
+let literal f s =
+  try f s with
+  | Failure msg -> error s.at ("constant out of range: " ^ msg)
+  | _ -> error s.at "constant out of range"
 
 
 (* Symbolic variables *)
@@ -155,9 +131,9 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF IF_ELSE LOOP LABEL BR BR_IF TABLESWITCH CASE
+%token NOP BLOCK IF IF_ELSE LOOP BR BR_IF TABLESWITCH CASE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
-%token GET_LOCAL SET_LOCAL LOAD STORE LOAD_EXTEND STORE_WRAP OFFSET ALIGN
+%token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC TYPE PARAM RESULT LOCAL
 %token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
@@ -170,24 +146,23 @@ let implicit_decl c t at =
 %token<string> TEXT
 %token<string> VAR
 %token<Types.value_type> VALUE_TYPE
-%token<Types.value_type> CONST
-%token<Kernel.unop> UNARY
-%token<Kernel.binop> BINARY
-%token<Kernel.selop> SELECT
-%token<Kernel.relop> COMPARE
-%token<Kernel.cvt> CONVERT
-%token<Kernel.memop> LOAD
-%token<Kernel.memop> STORE
-%token<Kernel.extop> LOAD_EXTEND
-%token<Kernel.wrapop> STORE_WRAP
+%token<string Source.phrase -> Ast.expr' * Values.value> CONST
+%token<Ast.expr -> Ast.expr'> UNARY
+%token<Ast.expr * Ast.expr -> Ast.expr'> BINARY
+%token<Ast.expr * Ast.expr * Ast.expr -> Ast.expr'> SELECT
+%token<Ast.expr * Ast.expr -> Ast.expr'> COMPARE
+%token<Ast.expr -> Ast.expr'> CONVERT
+%token<Memory.offset * int option * Ast.expr -> Ast.expr'> LOAD
+%token<Memory.offset * int option * Ast.expr * Ast.expr -> Ast.expr'> STORE
 %token<Memory.offset> OFFSET
 %token<int> ALIGN
 
 %nonassoc LOW
 %nonassoc VAR
 
-%start script
+%start script script1
 %type<Script.script> script
+%type<Script.script> script1
 
 %%
 
@@ -229,8 +204,11 @@ bind_var :
 ;
 
 labeling :
-  | /* empty */ %prec LOW { let at = at () in fun c -> c, Unlabelled @@ at }
-  | bind_var { let at = at () in fun c -> bind_label c $1, Labelled @@ at }
+  | /* empty */ %prec LOW { fun c -> anon_label c }
+  | labeling1 { $1 }
+;
+labeling1 :
+  | bind_var { fun c -> bind_label c $1 }
 ;
 
 offset :
@@ -247,51 +225,41 @@ expr :
 ;
 expr1 :
   | NOP { fun c -> Nop }
+  | UNREACHABLE { fun c -> Unreachable }
   | BLOCK labeling expr expr_list
-    { fun c -> let c', l = $2 c in Block (l, $3 c' :: $4 c') }
-  | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
-  | IF expr expr { fun c -> If ($2 c, $3 c) }
-  | BR_IF expr var expr_opt { fun c -> Br_if ($2 c, $3 c label, $4 c) }
-  | LOOP labeling labeling expr_list
-    { fun c -> let c', l1 = $2 c in let c'', l2 = $3 c' in
-      let c''' = if l1.it = Unlabelled then anon_label c'' else c'' in
-      Loop (l1, l2, $4 c''') }
-  | LABEL labeling expr
-    { fun c -> let c', l = $2 c in
-      let c'' = if l.it = Unlabelled then anon_label c' else c' in
-      Label ($3 c'') }
+    { fun c -> let c' = $2 c in Block ($3 c' :: $4 c') }
+  | LOOP labeling expr_list
+    { fun c -> let c' = anon_label c in let c'' = $2 c' in Loop ($3 c'') }
+  | LOOP labeling1 labeling1 expr_list
+    { fun c -> let c' = $2 c in let c'' = $3 c' in Loop ($4 c'') }
   | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
+  | BR_IF expr var expr_opt { fun c -> Br_if ($2 c, $3 c label, $4 c) }
   | RETURN expr_opt
     { let at1 = ati 1 in
       fun c -> Return (label c ("return" @@ at1) @@ at1, $2 c) }
+  | IF expr expr { fun c -> If ($2 c, $3 c) }
+  | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
   | TABLESWITCH labeling expr LPAR TABLE target_list RPAR target case_list
-    { fun c -> let c', l = $2 c in let e = $3 c' in
+    { fun c -> let c' = $2 c in let e = $3 c' in
       let c'' = enter_switch c' in let es = $9 c'' in
-      Tableswitch (l, e, $6 c'', $8 c'', es) }
+      Tableswitch (e, $6 c'', $8 c'', es) }
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> Call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
     { fun c -> Call_indirect ($2 c type_, $3 c, $4 c) }
   | GET_LOCAL var { fun c -> Get_local ($2 c local) }
   | SET_LOCAL var expr { fun c -> Set_local ($2 c local, $3 c) }
-  | LOAD offset align expr
-    { fun c -> Load (memop $1 $2 $3, $4 c) }
-  | STORE offset align expr expr
-    { fun c -> Store (memop $1 $2 $3, $4 c, $5 c) }
-  | LOAD_EXTEND offset align expr
-    { fun c -> Load_extend (extop $1 $2 $3, $4 c) }
-  | STORE_WRAP offset align expr expr
-    { fun c -> Store_wrap (wrapop $1 $2 $3, $4 c, $5 c) }
-  | CONST literal { fun c -> Const (literal $2 $1) }
-  | UNARY expr { fun c -> Unary ($1, $2 c) }
-  | BINARY expr expr { fun c -> Binary ($1, $2 c, $3 c) }
-  | SELECT expr expr expr { fun c -> Select ($1, $2 c, $3 c, $4 c) }
-  | COMPARE expr expr { fun c -> Compare ($1, $2 c, $3 c) }
-  | CONVERT expr { fun c -> Convert ($1, $2 c) }
-  | UNREACHABLE { fun c -> Unreachable }
-  | MEMORY_SIZE { fun c -> Host (MemorySize, []) }
-  | GROW_MEMORY expr { fun c -> Host (GrowMemory, [$2 c]) }
-  | HAS_FEATURE TEXT { fun c -> Host (HasFeature $2, []) }
+  | LOAD offset align expr { fun c -> $1 ($2, $3, $4 c) }
+  | STORE offset align expr expr { fun c -> $1 ($2, $3, $4 c, $5 c) }
+  | CONST literal { fun c -> fst (literal $1 $2) }
+  | UNARY expr { fun c -> $1 ($2 c) }
+  | BINARY expr expr { fun c -> $1 ($2 c, $3 c) }
+  | SELECT expr expr expr { fun c -> $1 ($2 c, $3 c, $4 c) }
+  | COMPARE expr expr { fun c -> $1 ($2 c, $3 c) }
+  | CONVERT expr { fun c -> $1 ($2 c) }
+  | MEMORY_SIZE { fun c -> Memory_size }
+  | GROW_MEMORY expr { fun c -> Grow_memory ($2 c) }
+  | HAS_FEATURE TEXT { fun c -> Has_feature $2 }
 ;
 expr_opt :
   | /* empty */ { fun c -> None }
@@ -473,7 +441,7 @@ cmd_list :
 ;
 
 const :
-  | LPAR CONST literal RPAR { literal $3 $2 }
+  | LPAR CONST literal RPAR { snd (literal $2 $3) @@ ati 3 }
 ;
 const_opt :
   | /* empty */ { None }
@@ -487,5 +455,7 @@ const_list :
 script :
   | cmd_list EOF { $1 }
 ;
-
+script1 :
+  | cmd { [$1] }
+;
 %%

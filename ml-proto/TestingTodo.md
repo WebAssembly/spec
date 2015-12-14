@@ -12,7 +12,7 @@ Misc semantics:
  - test that too-big linear memory resize fails appropriately
  - test that too-big linear memory initial allocation fails
  - test that function addresses are monotonic indices, and not actual addresses.
- - test that one can clobber the entire contents of the linear memory without corrupting: call stack, global variables, local variables, program execution.
+ - test that one can clobber the entire contents of the linear memory without corrupting: call stack, local variables, program execution.
 
 Operator semantics:
  - test that promote/demote, sext/trunc, zext/trunc is bit-preserving if not NaN
