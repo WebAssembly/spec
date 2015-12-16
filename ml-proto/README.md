@@ -15,54 +15,42 @@ The interpreter can also be run as a REPL, allowing to enter pieces of scripts i
 
 ## Building
 
-You'll need OCaml 4.02. The best way to get this is to download the source tarball from our mirror of the ocaml website ( https://wasm.storage.googleapis.com/ocaml-4.02.2.tar.gz ) and do the configure / make dance.  On OSX, with [Homebrew](http://brew.sh/) installed, simply `brew install ocaml`.
+You'll need OCaml 4.02. The best way to get this is to download the [source tarball from our mirror of the ocaml website](https://wasm.storage.googleapis.com/ocaml-4.02.2.tar.gz) and do the configure / make dance.  On OSX, with [Homebrew](http://brew.sh/) installed, simply `brew install ocaml`.
 
-Once you have ocaml, simply do
-
-```
-make
-```
-
-You'll get an executable named `./wasm`.
-
-Alternatively, you can also say:
-
-```
-ocamlbuild -Is "given, spec, host" -libs "bigarray, str" main.native
-```
-
-and get an executable named `./main.native`.
-
-
-### Building on Windows
-
-Install OCaml for Windows from the github page: https://protz.github.io/ocaml-installer/
-
-The installer will automatically install core cygwin packages. Contrary to the directions, however, you need a set of additional packages for ocaml & ocamlbuild to work, so select them in the cygwin installer (or run cygwinsetup manually to add them after the fact):
+Once you have OCaml, simply do
 
 ```
 make
-
-mingw64-i686-binutils
-            -gcc-core
-            -gcc-g++
-            -headers
-            -runtime
-            -windows-default-manifest
-            -winpthreads
-
-mingw64-x86_64-binutils
-              -gcc-core
-              -gcc-g++
-              -headers
-              -runtime
-              -windows-default-manifest
-              -winpthreads
 ```
+You'll get an executable named `./wasm`. This is a byte code executable. If you want a (faster) native code executable, do
+```
+make opt
+```
+To run the test suite,
+```
+make test
+```
+To do everything (advisable before committing changes),
+```
+make all
+```
+Be sure to run the latter before you upload a patch.
 
-The set of packages may be different on 32-bit Windows.
 
-The current set of prototypes does not rely on opam or ocaml packages, but be aware that opam does not work on Windows.
+#### Building on Windows
+
+We recommend a pre-built installer. With [this one](https://protz.github.io/ocaml-installer/) you have two options:
+
+1. Bare OCaml. If you just want to build the interpreter and don't care about modifying it, you don't need to install the Cygwin core that comes with the installer. Just install OCaml itself and run
+```
+winmake.bat
+```
+in a Windows shell, which creates a program named `wasm`. Note that this will be a byte code executable only, i.e., somewhat slower.
+
+2. OCaml + Cygwin. If you want to build a native code executable, or want to hack on the interpreter (i.e., use incremental compilation), then you need to install the Cygwin core that is included with the OCaml installer. Then you can build the interpreter using `make` in the Cygwin terminal, as described above.
+
+Either way, in order to run the test suite you'll need to have Python installed. If you used Option 1, you can invoke the test runner `runtests.py` directly instead of doing it through `make`.
+
 
 ## Synopsis
 
