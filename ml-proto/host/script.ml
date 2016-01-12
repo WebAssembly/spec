@@ -99,8 +99,10 @@ let run_cmd cmd =
     let got_v = Eval.invoke m name (List.map it es) in
     if
       match got_v with
-      | Some (Values.Float32 got_f32) -> F32.eq got_f32 got_f32
-      | Some (Values.Float64 got_f64) -> F64.eq got_f64 got_f64
+      | Some (Values.Float32 got_f32) ->
+              got_f32 <> F32.default_nan && got_f32 <> F32.alternate_nan
+      | Some (Values.Float64 got_f64) ->
+              got_f64 <> F64.default_nan && got_f64 <> F64.alternate_nan
       | _ -> true
     then begin
       print_string "Result: "; Print.print_value got_v;
