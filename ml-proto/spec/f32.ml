@@ -1,3 +1,8 @@
+(*
+ * OCaml lacks 32-bit floats, however we can emulate all the basic operations
+ * using 64-bit floats, as described in the paper
+ * "When is double rounding innocuous?" by Samuel A. Figueroa.
+ *)
 include Float.Make(struct
                      include Int32
                      let default_nan = 0x7fc00000l

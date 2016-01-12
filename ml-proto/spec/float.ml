@@ -134,7 +134,7 @@ struct
     let xf = to_float x in
     (* preserve the sign of zero *)
     if xf = 0.0 then x else
-      (* nearest is either ceil or floor depending on which is nearest or even *)
+    (* nearest is either ceil or floor depending on which is nearest or even *)
     let u = Pervasives.ceil xf in
     let d = Pervasives.floor xf in
     let um = abs_float (xf -. u) in
