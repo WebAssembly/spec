@@ -2,8 +2,8 @@ module type RepresentationType =
 sig
   type t
 
-  val default_nan : t
-  val alternate_nan : t
+  val pos_nan : t
+  val neg_nan : t
   val bits_of_float : float -> t
   val float_of_bits : t -> float
   val of_string : string -> t
@@ -25,8 +25,8 @@ module type S =
 sig
   type t
   type bits
-  val default_nan : t
-  val alternate_nan : t
+  val pos_nan : t
+  val neg_nan : t
   val of_float : float -> t
   val to_float : t -> float
   val of_string : string -> t
@@ -61,8 +61,8 @@ struct
   type t = Rep.t
   type bits = Rep.t
 
-  let default_nan = Rep.default_nan
-  let alternate_nan = Rep.alternate_nan
+  let pos_nan = Rep.pos_nan
+  let neg_nan = Rep.neg_nan
   let bare_nan = Rep.bare_nan
 
   let of_float = Rep.bits_of_float
@@ -79,7 +79,7 @@ struct
    * bit of the significand field is set.
    *)
   let canonicalize_nan x =
-    Rep.logor x Rep.default_nan
+    Rep.logor x Rep.pos_nan
 
   (*
    * When the result of a binary operation is NaN, the resulting NaN is computed
@@ -91,11 +91,11 @@ struct
      * TODO: There are two nondeterministic things we could do here. When both
      * x and y are NaN, we can nondeterministically pick which to return. And
      * when neither is NaN, we can nondeterministically pick whether to return
-     * default_nan or alternate_nan.
+     * pos_nan or neg_nan.
      *)
     let nan = (if is_nan x then x else
                if is_nan y then y else
-               Rep.default_nan) in
+               Rep.pos_nan) in
     canonicalize_nan nan
 
   (*
@@ -107,10 +107,10 @@ struct
     (*
      * TODO: There is one nondeterministic thing we could do here. When the
      * operand is not NaN, we can nondeterministically pick whether to return
-     * default_nan or alternate_nan.
+     * pos_nan or neg_nan.
      *)
     let nan = (if is_nan x then x else
-               Rep.default_nan) in
+               Rep.pos_nan) in
     canonicalize_nan nan
 
   let binary x op y =
