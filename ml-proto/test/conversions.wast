@@ -329,7 +329,7 @@
 (assert_return (invoke "f64.promote_f32" (f32.const 0x1.8f867ep+125)) (f64.const 6.6382536710104395e+37))
 (assert_return (invoke "f64.promote_f32" (f32.const infinity)) (f64.const infinity))
 (assert_return (invoke "f64.promote_f32" (f32.const -infinity)) (f64.const -infinity))
-(assert_return_nan (invoke "f64.promote_f32" (f32.const nan)))
+(assert_return (invoke "f64.promote_f32" (f32.const nan)) (f64.const nan))
 
 (assert_return (invoke "f32.demote_f64" (f64.const 0.0)) (f32.const 0.0))
 (assert_return (invoke "f32.demote_f64" (f64.const -0.0)) (f32.const -0.0))
@@ -354,7 +354,7 @@
 (assert_return (invoke "f32.demote_f64" (f64.const 0x1.cb98354d521ffp-127)) (f32.const 0x1.cb9834p-127))
 (assert_return (invoke "f32.demote_f64" (f64.const -0x1.6972b30cfb562p+1)) (f32.const -0x1.6972b4p+1))
 (assert_return (invoke "f32.demote_f64" (f64.const -0x1.bedbe4819d4c4p+112)) (f32.const -0x1.bedbe4p+112))
-(assert_return_nan (invoke "f32.demote_f64" (f64.const nan)))
+(assert_return (invoke "f32.demote_f64" (f64.const nan)) (f32.const nan))
 
 (assert_return (invoke "f32.reinterpret_i32" (i32.const 0)) (f32.const 0.0))
 (assert_return (invoke "f32.reinterpret_i32" (i32.const 0x80000000)) (f32.const -0.0))

@@ -64,7 +64,7 @@
 (assert_return (invoke "f32.add" (f32.const 0x1.000002p+23) (f32.const 0x1p-1)) (f32.const 0x1.000004p+23))
 
 ;; Test that what some systems call signalling NaN behaves as a quiet NaN.
-(assert_return_nan (invoke "f32.add" (f32.const nan:0x200000) (f32.const 1.0)))
+(assert_return (invoke "f32.add" (f32.const nan:0x200000) (f32.const 1.0)) (f32.const nan:0x600000))
 
 (assert_return (invoke "f64.add" (f64.const 1.1234567890) (f64.const 1.2345e-10)) (f64.const 0x1.1f9add37c11f7p+0))
 
@@ -136,7 +136,7 @@
 (assert_return (invoke "f64.add" (f64.const -0x0.3f3d1a052fa2bp-1022) (f64.const -0x1.4b78292c7d2adp-1021)) (f64.const -0x1.6b16b62f14fc2p-1021))
 
 ;; Test that what some systems call signalling NaN behaves as a quiet NaN.
-(assert_return_nan (invoke "f64.add" (f64.const nan:0x4000000000000) (f64.const 1.0)))
+(assert_return (invoke "f64.add" (f64.const nan:0x4000000000000) (f64.const 1.0)) (f64.const nan:0xc000000000000))
 
 ;; Test for a historic spreadsheet bug.
 ;; https://blogs.office.com/2007/09/25/calculation-issue-update/
