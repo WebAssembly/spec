@@ -72,7 +72,7 @@
 (assert_trap (invoke "no_dce.i64.trunc_u_f64" (f64.const nan)) "invalid conversion to integer")
 
 (module
-    (memory 8)
+    (memory 1)
 
     (export "no_dce.i32.load" $no_dce.i32.load)
     (func $no_dce.i32.load (param $i i32) (i32.load (get_local $i)))
@@ -84,7 +84,7 @@
     (func $no_dce.f64.load (param $i i32) (f64.load (get_local $i)))
 )
 
-(assert_trap (invoke "no_dce.i32.load" (i32.const 8)) "out of bounds memory access")
-(assert_trap (invoke "no_dce.i64.load" (i32.const 8)) "out of bounds memory access")
-(assert_trap (invoke "no_dce.f32.load" (i32.const 8)) "out of bounds memory access")
-(assert_trap (invoke "no_dce.f64.load" (i32.const 8)) "out of bounds memory access")
+(assert_trap (invoke "no_dce.i32.load" (i32.const 65536)) "out of bounds memory access")
+(assert_trap (invoke "no_dce.i64.load" (i32.const 65536)) "out of bounds memory access")
+(assert_trap (invoke "no_dce.f32.load" (i32.const 65536)) "out of bounds memory access")
+(assert_trap (invoke "no_dce.f64.load" (i32.const 65536)) "out of bounds memory access")

@@ -1,5 +1,5 @@
 (module
-  (memory 8)
+  (memory 1)
 
   ;; Stores an i16 value in little-endian-format
   (func $i16_store_little (param $address i32) (param $value i32)

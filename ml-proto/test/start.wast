@@ -17,7 +17,7 @@
   "start function must be nullary"
 )
 (module
-  (memory 1024 (segment 0 "A"))
+  (memory 1 (segment 0 "A"))
   (func $inc
     (i32.store8
       (i32.const 0)
@@ -46,7 +46,7 @@
 (assert_return (invoke "get") (i32.const 70))
 
 (module
-  (memory 1024 (segment 0 "A"))
+  (memory 1 (segment 0 "A"))
   (func $inc
     (i32.store8
       (i32.const 0)

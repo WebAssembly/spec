@@ -12,7 +12,6 @@ Misc semantics:
  - test that too-big linear memory initial allocation fails
  - test that function addresses are monotonic indices, and not actual addresses.
  - ~~test that non-pagesize `grow_memory` fails~~
- - test that non-pagesize initial linear memory allocation fails
  - test that one can clobber the entire contents of the linear memory without corrupting: call stack, local variables, program execution.
 
 Operator semantics:

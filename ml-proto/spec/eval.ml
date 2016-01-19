@@ -289,7 +289,7 @@ and eval_hostop c hostop vs at =
      * Since we currently only support i32, just test that. *)
     if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
       Trap.error at "memory size exceeds implementation limit";
-    Memory.grow mem delta;
+    Memory.grow mem (Int64.div delta Memory.page_size);
     Some (Int32 (Int64.to_int32 old_size))
 
   | _, _ ->

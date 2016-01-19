@@ -46,7 +46,7 @@ let host_index_of_int64 a n =
 
 
 let create' n =
-  let sz = host_size_of_int64 n in
+  let sz = host_size_of_int64 (Int64.mul n page_size) in
   let mem = Array1.create Int8_unsigned C_layout sz in
   Array1.fill mem 0;
   mem
@@ -68,9 +68,9 @@ let init mem segs =
 let size mem =
   int64_of_host_size (Array1.dim !mem)
 
-let grow mem n =
-  let old_size = size mem in
-  let new_size = Int64.add old_size n in
+let grow mem pages =
+  let old_size = Int64.div (size mem) page_size in
+  let new_size = Int64.add old_size pages in
   if I64.gt_u old_size new_size then raise SizeOverflow else
   let after = create' new_size in
   let host_old_size = host_size_of_int64 old_size in

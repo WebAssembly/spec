@@ -1,34 +1,34 @@
 ;; Test memory section structure
 (module (memory 0 0))
 (module (memory 0 1))
-(module (memory 4096 16777216))
+(module (memory 1 256))
 (module (memory 0 0 (segment 0 "")))
 (module (memory 1 1 (segment 0 "a")))
-(module (memory 100 1000 (segment 0 "a") (segment 99 "b")))
-(module (memory 100 1000 (segment 0 "a") (segment 1 "b") (segment 2 "c")))
+(module (memory 1 2 (segment 0 "a") (segment 65535 "b")))
+(module (memory 1 2 (segment 0 "a") (segment 1 "b") (segment 2 "c")))
 
 (assert_invalid
   (module (memory 1 0))
-  "initial memory size must be less than maximum"
+  "initial memory pages must be less than or equal to the maximum"
 )
 (assert_invalid
   (module (memory 0 0 (segment 0 "a")))
   "data segment does not fit memory"
 )
 (assert_invalid
-  (module (memory 100 1000 (segment 0 "a") (segment 500 "b")))
+  (module (memory 1 2 (segment 0 "a") (segment 98304 "b")))
   "data segment does not fit memory"
 )
 (assert_invalid
-  (module (memory 100 1000 (segment 0 "abc") (segment 0 "def")))
+  (module (memory 1 2 (segment 0 "abc") (segment 0 "def")))
   "data segment not disjoint and ordered"
 )
 (assert_invalid
-  (module (memory 100 1000 (segment 3 "ab") (segment 0 "de")))
+  (module (memory 1 2 (segment 3 "ab") (segment 0 "de")))
   "data segment not disjoint and ordered"
 )
 (assert_invalid
-  (module (memory 100 1000 (segment 0 "a") (segment 2 "b") (segment 1 "c")))
+  (module (memory 1 2 (segment 0 "a") (segment 2 "b") (segment 1 "c")))
   "data segment not disjoint and ordered"
 )
 
@@ -60,7 +60,7 @@
 )
 
 (module
-  (memory 1024 (segment 0 "ABC\a7D") (segment 20 "WASM"))
+  (memory 1 (segment 0 "ABC\a7D") (segment 20 "WASM"))
 
   ;; Data section
   (func $data (result i32)
