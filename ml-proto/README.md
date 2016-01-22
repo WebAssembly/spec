@@ -98,7 +98,7 @@ expr:
   ( loop <name1>? <name2>? <expr>* )             ;; = (block <name1>? (loop <name2>? (block <expr>*)))
   ( br <var> <expr>? )
   ( return <expr>? )                             ;; = (br <current_depth> <expr>?)
-  ( tableswitch <name>? <expr> <switch> ( table <target>* ) <case>* )
+  ( tableswitch <name>? <expr> ( table <target>* ) <case>* )
   ( call <var> <expr>* )
   ( call_import <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
