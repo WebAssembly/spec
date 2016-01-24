@@ -14,14 +14,14 @@ and relabel' f n = function
   | Block (es, e) ->
     Block (List.map (relabel f (n + 1)) es, relabel f (n + 1) e)
   | Loop e -> Loop (relabel f (n + 1) e)
-  | Break (x, eo) ->
-    Break (relabel_var f n x, Lib.Option.map (relabel f n) eo)
-  | BreakIf (x, eo, e) ->
-    BreakIf (relabel_var f n x, Lib.Option.map (relabel f n) eo, relabel f n e)
-  | BreakTable (xs, x, eo, e) ->
+  | Break (x, e) ->
+    Break (relabel_var f n x, relabel f n e)
+  | BreakIf (x, e1, e2) ->
+    BreakIf (relabel_var f n x, relabel f n e1, relabel f n e2)
+  | BreakTable (xs, x, e1, e2) ->
     BreakTable
       (List.map (relabel_var f n) xs, relabel_var f n x,
-       Lib.Option.map (relabel f n) eo, relabel f n e)
+       relabel f n e1, relabel f n e2)
   | If (e1, e2, e3) -> If (relabel f n e1, relabel f n e2, relabel f n e3)
   | Select (e1, e2, e3) ->
     Select (relabel f n e1, relabel f n e2, relabel f n e3)
@@ -65,14 +65,18 @@ and expr' at = function
   | Ast.Block es ->
     let es', e = Lib.List.split_last es in Block (List.map expr es', expr e)
   | Ast.Loop es -> Block ([], Loop (block es) @@ at)
-  | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
-  | Ast.Br_if (x, eo, e) -> BreakIf (x, Lib.Option.map expr eo, expr e)
-  | Ast.Br_table (xs, x, eo, e) ->
-    BreakTable (xs, x, Lib.Option.map expr eo, expr e)
-  | Ast.Return eo -> Break (-1 @@ at, Lib.Option.map expr eo)
+  | Ast.Br (x, e) -> Break (x, expr e)
+  | Ast.Br0 (x) -> Break (x, Nop @@ Source.no_region)
+  | Ast.Br_if (x, e1, e2) -> BreakIf (x, expr e1, expr e2)
+  | Ast.Br0_if (x, e) -> BreakIf (x, Nop @@ Source.no_region, expr e)
+  | Ast.Br_table (xs, x, e1, e2) ->
+    BreakTable (xs, x, expr e1, expr e2)
+  | Ast.Br0_table (xs, x, e) ->
+    BreakTable (xs, x, Nop @@ Source.no_region, expr e)
+  | Ast.Return e -> Break (-1 @@ at, expr e)
+  | Ast.Return0 -> Break (-1 @@ at, Nop @@ Source.no_region)
   | Ast.If (e, es1, es2) -> If (expr e, seq es1, seq es2)
   | Ast.Select (e1, e2, e3) -> Select (expr e1, expr e2, expr e3)
-
   | Ast.Call (x, es) -> Call (x, List.map expr es)
   | Ast.Call_import (x, es) -> CallImport (x, List.map expr es)
   | Ast.Call_indirect (x, e, es) -> CallIndirect (x, expr e, List.map expr es)

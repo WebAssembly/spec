@@ -142,9 +142,13 @@ rule token = parse
   | "block" { BLOCK }
   | "loop" { LOOP }
   | "br" { BR }
+  | "br0" { BR0 }
   | "br_if" { BR_IF }
+  | "br0_if" { BR0_IF }
   | "br_table" { BR_TABLE }
+  | "br0_table" { BR0_TABLE }
   | "return" { RETURN }
+  | "return0" { RETURN0 }
   | "if" { IF }
   | "then" { THEN }
   | "else" { ELSE }

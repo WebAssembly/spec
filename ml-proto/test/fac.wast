@@ -26,13 +26,13 @@
     (loop
       (if
         (i64.eq (get_local 1) (i64.const 0))
-        (br 2)
+        (br0 2)
         (block
           (set_local 2 (i64.mul (get_local 1) (get_local 2)))
           (set_local 1 (i64.sub (get_local 1) (i64.const 1)))
         )
       )
-      (br 0)
+      (br0 0)
     )
     (get_local 2)
   )
@@ -46,13 +46,13 @@
     (loop $done $loop
       (if
         (i64.eq (get_local $i) (i64.const 0))
-        (br $done)
+        (br0 $done)
         (block
           (set_local $res (i64.mul (get_local $i) (get_local $res)))
           (set_local $i (i64.sub (get_local $i) (i64.const 1)))
         )
       )
-      (br $loop)
+      (br0 $loop)
     )
     (get_local $res)
   )
@@ -62,11 +62,11 @@
     (local i64)
     (set_local 1 (i64.const 1))
     (block
-      (br_if 0 (i64.lt_s (get_local 0) (i64.const 2)))
+      (br0_if 0 (i64.lt_s (get_local 0) (i64.const 2)))
       (loop
         (set_local 1 (i64.mul (get_local 1) (get_local 0)))
         (set_local 0 (i64.add (get_local 0) (i64.const -1)))
-        (br_if 0 (i64.gt_s (get_local 0) (i64.const 1)))
+        (br0_if 0 (i64.gt_s (get_local 0) (i64.const 1)))
       )
     )
     (get_local 1)
