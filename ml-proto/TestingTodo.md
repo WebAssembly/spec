@@ -43,7 +43,7 @@ Floating point semantics:
  - ~~test that all operations that can overflow produce Infinity and with the correct sign~~
  - ~~test that all operations that can divide by zero produce Infinity with the correct sign~~
  - ~~test that all operations that can have an invalid produce NaN~~
- - test that all operations that can have underflow behave [correctly](https://github.com/WebAssembly/design/issues/148)
+ - ~~test that all operations that can have underflow behave correctly~~
  - ~~test that nearestint doesn't do JS-style Math.round or C-style round(3) rounding~~
  - ~~test that signalling NaN doesn't cause weirdness~~
  - ~~test that signalling/quiet NaNs can have sign bits and payloads in literals~~
@@ -68,10 +68,10 @@ Function pointer semantics:
 
 Expression optimizer bait:
  - ~~test that `a+1<b+1` isn't folded to `a<b`~~
- - test that that demote-promote, wrap+sext, wrap+zext, shl+ashr, shl+lshr, div+mul, mul+div aren't folded away
+ - ~~test that that demote-promote, wrap+sext, wrap+zext, shl+ashr, shl+lshr, div+mul, mul+div aren't folded away~~
  - ~~test that converting int32 to float and back isn't folded away~~
  - ~~test that converting int64 to double and back isn't folded away~~
- - test that `float(double(float(x))+double(y))` is not `float(x)+float(y)` (and so on for other operators)
+ - ~~test that `float(double(float(x))+double(y))` is not `float(x)+float(y)` (and so on for other operators)~~
  - ~~test that `x*0.0` is not folded to `0.0`~~
  - ~~test that `0.0/x` is not folded to `0.0`~~
  - ~~test that `x != x` is not folded to false, `x == x` is not folded to true, `x < x` is not folded to false, etc.~~
@@ -80,7 +80,7 @@ Expression optimizer bait:
  - ~~test that floating-point division by immediate 0 and -0 is defined~~
  - ~~test that floating-point (x*y)/y isn't folded to x~~
  - ~~test that floating-point (x+y)-y isn't folded to x~~
- - test that ueq/one/etc aren't folded to oeq/une/etc.
+ - test that ult/ugt/etc (formed with a not operator) aren't folded to oge/ole/etc.
  - ~~test that floating point add/mul aren't reassociated even when tempting~~
  - ~~test that floating point mul+add isn't folded to fma even when tempting~~
  - ~~test that floating point sqrt(x*x+y*y) isn't folded to hypot even when tempting~~

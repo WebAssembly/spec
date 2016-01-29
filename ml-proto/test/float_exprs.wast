@@ -398,3 +398,151 @@
 (assert_return (invoke "i64.no_fold_f64_u" (i64.const 0x20000000000000)) (i64.const 0x20000000000000))
 (assert_return (invoke "i64.no_fold_f64_u" (i64.const 0x20000000000001)) (i64.const 0x20000000000000))
 (assert_return (invoke "i64.no_fold_f64_u" (i64.const 0xf000000000000400)) (i64.const 0xf000000000000000))
+
+;; Test that x+y-y is not folded to x.
+
+(module
+  (func $f32.no_fold_add_sub (param $x f32) (param $y f32) (result f32)
+    (f32.sub (f32.add (get_local $x) (get_local $y)) (get_local $y)))
+  (export "f32.no_fold_add_sub" $f32.no_fold_add_sub)
+
+  (func $f64.no_fold_add_sub (param $x f64) (param $y f64) (result f64)
+    (f64.sub (f64.add (get_local $x) (get_local $y)) (get_local $y)))
+  (export "f64.no_fold_add_sub" $f64.no_fold_add_sub)
+)
+
+(assert_return (invoke "f32.no_fold_add_sub" (f32.const 0x1.b553e4p-47) (f32.const -0x1.67db2cp-26)) (f32.const 0x1.cp-47))
+(assert_return (invoke "f32.no_fold_add_sub" (f32.const -0x1.a884dp-23) (f32.const 0x1.f2ae1ep-19)) (f32.const -0x1.a884ep-23))
+(assert_return (invoke "f32.no_fold_add_sub" (f32.const -0x1.fc04fp+82) (f32.const -0x1.65403ap+101)) (f32.const -0x1p+83))
+(assert_return (invoke "f32.no_fold_add_sub" (f32.const 0x1.870fa2p-78) (f32.const 0x1.c54916p-56)) (f32.const 0x1.8p-78))
+(assert_return (invoke "f32.no_fold_add_sub" (f32.const -0x1.17e966p-108) (f32.const -0x1.5fa61ap-84)) (f32.const -0x1p-107))
+
+(assert_return (invoke "f64.no_fold_add_sub" (f64.const -0x1.1053ea172dba8p-874) (f64.const 0x1.113c413408ac8p-857)) (f64.const -0x1.1053ea172p-874))
+(assert_return (invoke "f64.no_fold_add_sub" (f64.const 0x1.e377d54807972p-546) (f64.const 0x1.040a0a4d1ff7p-526)) (f64.const 0x1.e377d548p-546))
+(assert_return (invoke "f64.no_fold_add_sub" (f64.const -0x1.75f53cd926b62p-30) (f64.const -0x1.66b176e602bb5p-3)) (f64.const -0x1.75f53dp-30))
+(assert_return (invoke "f64.no_fold_add_sub" (f64.const -0x1.c450ff28332ap-341) (f64.const 0x1.15a5855023baep-305)) (f64.const -0x1.c451p-341))
+(assert_return (invoke "f64.no_fold_add_sub" (f64.const -0x1.1ad4a596d3ea8p-619) (f64.const -0x1.17d81a41c0ea8p-588)) (f64.const -0x1.1ad4a8p-619))
+
+;; Test that x-y+y is not folded to x.
+
+(module
+  (func $f32.no_fold_sub_add (param $x f32) (param $y f32) (result f32)
+    (f32.add (f32.sub (get_local $x) (get_local $y)) (get_local $y)))
+  (export "f32.no_fold_sub_add" $f32.no_fold_sub_add)
+
+  (func $f64.no_fold_sub_add (param $x f64) (param $y f64) (result f64)
+    (f64.add (f64.sub (get_local $x) (get_local $y)) (get_local $y)))
+  (export "f64.no_fold_sub_add" $f64.no_fold_sub_add)
+)
+
+(assert_return (invoke "f32.no_fold_sub_add" (f32.const -0x1.523cb8p+9) (f32.const 0x1.93096cp+8)) (f32.const -0x1.523cbap+9))
+(assert_return (invoke "f32.no_fold_sub_add" (f32.const -0x1.a31a1p-111) (f32.const 0x1.745efp-95)) (f32.const -0x1.a4p-111))
+(assert_return (invoke "f32.no_fold_sub_add" (f32.const 0x1.3d5328p+26) (f32.const 0x1.58567p+35)) (f32.const 0x1.3d54p+26))
+(assert_return (invoke "f32.no_fold_sub_add" (f32.const 0x1.374e26p-39) (f32.const -0x1.66a5p-27)) (f32.const 0x1.374p-39))
+(assert_return (invoke "f32.no_fold_sub_add" (f32.const 0x1.320facp-3) (f32.const -0x1.ac069ap+14)) (f32.const 0x1.34p-3))
+
+(assert_return (invoke "f64.no_fold_sub_add" (f64.const 0x1.8f92aad2c9b8dp+255) (f64.const -0x1.08cd4992266cbp+259)) (f64.const 0x1.8f92aad2c9b9p+255))
+(assert_return (invoke "f64.no_fold_sub_add" (f64.const 0x1.5aaff55742c8bp-666) (f64.const 0x1.8f5f47181f46dp-647)) (f64.const 0x1.5aaff5578p-666))
+(assert_return (invoke "f64.no_fold_sub_add" (f64.const 0x1.21bc52967a98dp+251) (f64.const -0x1.fcffaa32d0884p+300)) (f64.const 0x1.2p+251))
+(assert_return (invoke "f64.no_fold_sub_add" (f64.const 0x1.9c78361f47374p-26) (f64.const -0x1.69d69f4edc61cp-13)) (f64.const 0x1.9c78361f48p-26))
+(assert_return (invoke "f64.no_fold_sub_add" (f64.const 0x1.4dbe68e4afab2p-367) (f64.const -0x1.dc24e5b39cd02p-361)) (f64.const 0x1.4dbe68e4afacp-367))
+
+;; Test that x*y/y is not folded to x.
+
+(module
+  (func $f32.no_fold_mul_div (param $x f32) (param $y f32) (result f32)
+    (f32.div (f32.mul (get_local $x) (get_local $y)) (get_local $y)))
+  (export "f32.no_fold_mul_div" $f32.no_fold_mul_div)
+
+  (func $f64.no_fold_mul_div (param $x f64) (param $y f64) (result f64)
+    (f64.div (f64.mul (get_local $x) (get_local $y)) (get_local $y)))
+  (export "f64.no_fold_mul_div" $f64.no_fold_mul_div)
+)
+
+(assert_return (invoke "f32.no_fold_mul_div" (f32.const -0x1.cd859ap+54) (f32.const 0x1.6ca936p-47)) (f32.const -0x1.cd8598p+54))
+(assert_return (invoke "f32.no_fold_mul_div" (f32.const -0x1.0b56b8p-26) (f32.const 0x1.48264cp-106)) (f32.const -0x1.0b56a4p-26))
+(assert_return (invoke "f32.no_fold_mul_div" (f32.const -0x1.e7555cp-48) (f32.const -0x1.9161cp+48)) (f32.const -0x1.e7555ap-48))
+(assert_return (invoke "f32.no_fold_mul_div" (f32.const 0x1.aaa50ep+52) (f32.const -0x1.dfb39ep+60)) (f32.const 0x1.aaa50cp+52))
+(assert_return (invoke "f32.no_fold_mul_div" (f32.const -0x1.2b7dfap-92) (f32.const -0x1.7c4ca6p-37)) (f32.const -0x1.2b7dfep-92))
+
+(assert_return (invoke "f64.no_fold_mul_div" (f64.const -0x1.3d79ff4118a1ap-837) (f64.const -0x1.b8b5dda31808cp-205)) (f64.const -0x1.3d79ff412263ep-837))
+(assert_return (invoke "f64.no_fold_mul_div" (f64.const 0x1.f894d1ee6b3a4p+384) (f64.const 0x1.8c2606d03d58ap+585)) (f64.const 0x1.f894d1ee6b3a5p+384))
+(assert_return (invoke "f64.no_fold_mul_div" (f64.const -0x1.a022260acc993p+238) (f64.const -0x1.5fbc128fc8e3cp-552)) (f64.const -0x1.a022260acc992p+238))
+(assert_return (invoke "f64.no_fold_mul_div" (f64.const 0x1.9d4b8ed174f54p-166) (f64.const 0x1.ee3d467aeeac6p-906)) (f64.const 0x1.8dcc95a053b2bp-166))
+(assert_return (invoke "f64.no_fold_mul_div" (f64.const -0x1.e95ea897cdcd4p+660) (f64.const -0x1.854d5df085f2ep-327)) (f64.const -0x1.e95ea897cdcd5p+660))
+
+;; Test that x/y*y is not folded to x.
+
+(module
+  (func $f32.no_fold_div_mul (param $x f32) (param $y f32) (result f32)
+    (f32.mul (f32.div (get_local $x) (get_local $y)) (get_local $y)))
+  (export "f32.no_fold_div_mul" $f32.no_fold_div_mul)
+
+  (func $f64.no_fold_div_mul (param $x f64) (param $y f64) (result f64)
+    (f64.mul (f64.div (get_local $x) (get_local $y)) (get_local $y)))
+  (export "f64.no_fold_div_mul" $f64.no_fold_div_mul)
+)
+
+(assert_return (invoke "f32.no_fold_div_mul" (f32.const -0x1.dc6364p+38) (f32.const 0x1.d630ecp+29)) (f32.const -0x1.dc6362p+38))
+(assert_return (invoke "f32.no_fold_div_mul" (f32.const -0x1.1f9836p-52) (f32.const -0x1.16c4e4p-18)) (f32.const -0x1.1f9838p-52))
+(assert_return (invoke "f32.no_fold_div_mul" (f32.const 0x1.c5972cp-126) (f32.const -0x1.d6659ep+7)) (f32.const 0x1.c5980ep-126))
+(assert_return (invoke "f32.no_fold_div_mul" (f32.const -0x1.2e3a9ep-74) (f32.const -0x1.353994p+59)) (f32.const -0x1.2e3a4p-74))
+(assert_return (invoke "f32.no_fold_div_mul" (f32.const 0x1.d96b82p-98) (f32.const 0x1.95d908p+27)) (f32.const 0x1.d96b84p-98))
+
+(assert_return (invoke "f64.no_fold_div_mul" (f64.const 0x1.d01f913a52481p-876) (f64.const -0x1.2cd0668b28344p+184)) (f64.const 0x1.d020daf71cdcp-876))
+(assert_return (invoke "f64.no_fold_div_mul" (f64.const -0x1.81cb7d400918dp-714) (f64.const 0x1.7caa643586d6ep-53)) (f64.const -0x1.81cb7d400918ep-714))
+(assert_return (invoke "f64.no_fold_div_mul" (f64.const -0x1.66904c97b5c8ep-145) (f64.const 0x1.5c3481592ad4cp+428)) (f64.const -0x1.66904c97b5c8dp-145))
+(assert_return (invoke "f64.no_fold_div_mul" (f64.const -0x1.e75859d2f0765p-278) (f64.const -0x1.5f19b6ab497f9p+283)) (f64.const -0x1.e75859d2f0764p-278))
+(assert_return (invoke "f64.no_fold_div_mul" (f64.const -0x1.515fe9c3b5f5p+620) (f64.const 0x1.36be869c99f7ap+989)) (f64.const -0x1.515fe9c3b5f4fp+620))
+
+;; Test that promote(demote(x)) is not folded to x.
+
+(module
+  (func $no_fold_demote_promote (param $x f64) (result f64)
+    (f64.promote/f32 (f32.demote/f64 (get_local $x))))
+  (export "no_fold_demote_promote" $no_fold_demote_promote)
+)
+
+(assert_return (invoke "no_fold_demote_promote" (f64.const -0x1.dece272390f5dp-133)) (f64.const -0x1.decep-133))
+(assert_return (invoke "no_fold_demote_promote" (f64.const -0x1.19e6c79938a6fp-85)) (f64.const -0x1.19e6c8p-85))
+(assert_return (invoke "no_fold_demote_promote" (f64.const 0x1.49b297ec44dc1p+107)) (f64.const 0x1.49b298p+107))
+(assert_return (invoke "no_fold_demote_promote" (f64.const -0x1.74f5bd865163p-88)) (f64.const -0x1.74f5bep-88))
+(assert_return (invoke "no_fold_demote_promote" (f64.const 0x1.26d675662367ep+104)) (f64.const 0x1.26d676p+104))
+
+;; Test that demote(x+promote(y)) is not folded to demote(x)+y.
+
+(module
+  (func $no_demote_mixed_add (param $x f64) (param $y f32) (result f32)
+    (f32.demote/f64 (f64.add (get_local $x) (f64.promote/f32 (get_local $y)))))
+  (export "no_demote_mixed_add" $no_demote_mixed_add)
+
+  (func $no_demote_mixed_add_commuted (param $y f32) (param $x f64) (result f32)
+    (f32.demote/f64 (f64.add (f64.promote/f32 (get_local $y)) (get_local $x))))
+  (export "no_demote_mixed_add_commuted" $no_demote_mixed_add_commuted)
+)
+
+(assert_return (invoke "no_demote_mixed_add" (f64.const 0x1.f51a9d04854f9p-95) (f32.const 0x1.3f4e9cp-119)) (f32.const 0x1.f51a9ep-95))
+(assert_return (invoke "no_demote_mixed_add" (f64.const 0x1.065b3d81ad8dp+37) (f32.const 0x1.758cd8p+38)) (f32.const 0x1.f8ba76p+38))
+(assert_return (invoke "no_demote_mixed_add" (f64.const 0x1.626c80963bd17p-119) (f32.const -0x1.9bbf86p-121)) (f32.const 0x1.f6f93ep-120))
+(assert_return (invoke "no_demote_mixed_add" (f64.const -0x1.0d5110e3385bbp-20) (f32.const 0x1.096f4ap-29)) (f32.const -0x1.0ccc5ap-20))
+(assert_return (invoke "no_demote_mixed_add" (f64.const -0x1.73852db4e5075p-20) (f32.const -0x1.24e474p-41)) (f32.const -0x1.738536p-20))
+
+(assert_return (invoke "no_demote_mixed_add_commuted" (f32.const 0x1.3f4e9cp-119) (f64.const 0x1.f51a9d04854f9p-95)) (f32.const 0x1.f51a9ep-95))
+(assert_return (invoke "no_demote_mixed_add_commuted" (f32.const 0x1.758cd8p+38) (f64.const 0x1.065b3d81ad8dp+37)) (f32.const 0x1.f8ba76p+38))
+(assert_return (invoke "no_demote_mixed_add_commuted" (f32.const -0x1.9bbf86p-121) (f64.const 0x1.626c80963bd17p-119)) (f32.const 0x1.f6f93ep-120))
+(assert_return (invoke "no_demote_mixed_add_commuted" (f32.const 0x1.096f4ap-29) (f64.const -0x1.0d5110e3385bbp-20)) (f32.const -0x1.0ccc5ap-20))
+(assert_return (invoke "no_demote_mixed_add_commuted" (f32.const -0x1.24e474p-41) (f64.const -0x1.73852db4e5075p-20)) (f32.const -0x1.738536p-20))
+
+;; Test that demote(x-promote(y)) is not folded to demote(x)-y.
+
+(module
+  (func $no_demote_mixed_sub (param $x f64) (param $y f32) (result f32)
+    (f32.demote/f64 (f64.sub (get_local $x) (f64.promote/f32 (get_local $y)))))
+  (export "no_demote_mixed_sub" $no_demote_mixed_sub)
+)
+
+(assert_return (invoke "no_demote_mixed_sub" (f64.const 0x1.a0a183220e9b1p+82) (f32.const 0x1.c5acf8p+61)) (f32.const 0x1.a0a174p+82))
+(assert_return (invoke "no_demote_mixed_sub" (f64.const -0x1.6e2c5ac39f63ep+30) (f32.const 0x1.d48ca4p+17)) (f32.const -0x1.6e3bp+30))
+(assert_return (invoke "no_demote_mixed_sub" (f64.const -0x1.98c74350dde6ap+6) (f32.const 0x1.9d69bcp-12)) (f32.const -0x1.98c7aap+6))
+(assert_return (invoke "no_demote_mixed_sub" (f64.const 0x1.0459f34091dbfp-54) (f32.const 0x1.61ad08p-71)) (f32.const 0x1.045942p-54))
+(assert_return (invoke "no_demote_mixed_sub" (f64.const 0x1.a7498dca3fdb7p+14) (f32.const 0x1.ed21c8p+15)) (f32.const -0x1.197d02p+15))
