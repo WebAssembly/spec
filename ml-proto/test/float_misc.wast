@@ -1,3 +1,14 @@
+;; Platforms intended to run WebAssembly must support IEEE 754 arithmetic.
+;; This testsuite is not currently sufficient for full IEEE 754 conformance
+;; testing; platforms are currently expected to meet these requirements in
+;; their own way (widely-used hardware platforms already do this).
+;;
+;; What this testsuite does test is that (a) the platform is basically IEEE 754
+;; rather than something else entirely, (b) it's configured correctly for
+;; WebAssembly (rounding direction, exception masks, precision level, subnormal
+;; mode, etc.), and (c) the WebAssembly implementation doesn't perform any
+;; common value-changing optimizations.
+
 (module
   (func $f32.add (param $x f32) (param $y f32) (result f32) (f32.add (get_local $x) (get_local $y)))
   (func $f32.sub (param $x f32) (param $y f32) (result f32) (f32.sub (get_local $x) (get_local $y)))

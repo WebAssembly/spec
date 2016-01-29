@@ -53,6 +53,14 @@
   ;; Test that we can use names beginning with an at sign.
   (func (result f32) (f32.const 0x2.00p+2))
   (export "@" 9)
+
+  ;; Test that we can use names that have special meaning in JS.
+  (func $NaN (result f32) (f32.const 0x2.01p+2))
+  (func $Infinity (result f32) (f32.const 0x2.02p+2))
+  (func $if (result f32) (f32.const 0x2.03p+2))
+  (export "NaN" $NaN)
+  (export "Infinity" $Infinity)
+  (export "if" $if)
 )
 
 (assert_return (invoke "") (f32.const 0x1.91p+2))
@@ -64,3 +72,6 @@
 (assert_return (invoke "_") (f32.const 0x1.98p+2))
 (assert_return (invoke "$") (f32.const 0x1.99p+2))
 (assert_return (invoke "@") (f32.const 0x2.00p+2))
+(assert_return (invoke "NaN") (f32.const 0x2.01p+2))
+(assert_return (invoke "Infinity") (f32.const 0x2.02p+2))
+(assert_return (invoke "if") (f32.const 0x2.03p+2))
