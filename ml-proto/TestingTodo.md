@@ -33,6 +33,7 @@ Operator semantics:
  - ~~test that unsigned operations are properly unsigned~~
  - ~~test that signed integer div rounds toward zero~~
  - ~~test that signed integer mod has the sign of the dividend~~
+ - test that select preserves all NaN bits
 
 Floating point semantics:
  - ~~test for round-to-nearest rounding~~
