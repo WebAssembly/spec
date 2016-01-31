@@ -57,14 +57,31 @@
     (get_local $res)
   )
 
+  ;; More-realistically optimized factorial.
+  (func $fac-opt (param i64) (result i64)
+    (local i64)
+    (set_local 1 (i64.const 1))
+    (block
+      (br_if (i64.lt_s (get_local 0) (i64.const 2)) 0)
+      (loop
+        (set_local 1 (i64.mul (get_local 1) (get_local 0)))
+        (set_local 0 (i64.add (get_local 0) (i64.const -1)))
+        (br_if (i64.gt_s (get_local 0) (i64.const 1)) 0)
+      )
+    )
+    (get_local 1)
+  )
+
   (export "fac-rec" 0)
   (export "fac-iter" 2)
   (export "fac-rec-named" $fac-rec)
   (export "fac-iter-named" $fac-iter)
+  (export "fac-opt" $fac-opt)
 )
 
 (assert_return (invoke "fac-rec" (i64.const 25)) (i64.const 7034535277573963776))
 (assert_return (invoke "fac-iter" (i64.const 25)) (i64.const 7034535277573963776))
 (assert_return (invoke "fac-rec-named" (i64.const 25)) (i64.const 7034535277573963776))
 (assert_return (invoke "fac-iter-named" (i64.const 25)) (i64.const 7034535277573963776))
+(assert_return (invoke "fac-opt" (i64.const 25)) (i64.const 7034535277573963776))
 (assert_trap (invoke "fac-rec" (i64.const 1073741824)) "call stack exhausted")
