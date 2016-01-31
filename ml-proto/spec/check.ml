@@ -198,9 +198,9 @@ let rec check_expr c et e =
 
   | Select (selop, e1, e2, e3) ->
     let t = type_selop selop in
-    check_expr c (Some Int32Type) e1;
+    check_expr c (Some t) e1;
     check_expr c (Some t) e2;
-    check_expr c (Some t) e3
+    check_expr c (Some Int32Type) e3
 
   | Compare (relop, e1, e2) ->
     let t = type_relop relop in

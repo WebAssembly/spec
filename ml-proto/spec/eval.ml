@@ -234,9 +234,9 @@ let rec eval_expr (c : config) (e : expr) =
       with exn -> arithmetic_error e.at e1.at e2.at exn)
 
   | Select (selop, e1, e2, e3) ->
-    let cond = int32 (eval_expr c e1) e1.at in
-    let v1 = some (eval_expr c e2) e2.at in
-    let v2 = some (eval_expr c e3) e3.at in
+    let v1 = some (eval_expr c e1) e1.at in
+    let v2 = some (eval_expr c e2) e2.at in
+    let cond = int32 (eval_expr c e3) e3.at in
     Some (if cond <> 0l then v1 else v2)
 
   | Compare (relop, e1, e2) ->
