@@ -82,6 +82,7 @@ and expr' =
   | Block of expr list                      (* execute in sequence *)
   | Loop of expr                            (* loop header *)
   | Break of var * expr option              (* break to n-th surrounding label *)
+  | Br_if of expr option * expr * var       (* conditional break *)
   | If of expr * expr * expr                (* conditional *)
   | Switch of expr * var list * var * expr list   (* table switch *)
   | Call of var * expr list                 (* call function *)

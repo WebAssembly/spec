@@ -154,6 +154,11 @@ let rec eval_expr (c : config) (e : expr) =
   | Break (x, eo) ->
     raise (label c x (eval_expr_opt c eo))
 
+  | Br_if (eo, e, x) ->
+    let i = int32 (eval_expr c e) e.at in
+    let v = eval_expr_opt c eo in
+    if i <> 0l then raise (label c x (eval_expr_opt c eo)) else v
+
   | If (e1, e2, e3) ->
     let i = int32 (eval_expr c e1) e1.at in
     eval_expr c (if i <> 0l then e2 else e3)

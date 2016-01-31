@@ -17,6 +17,9 @@ and shift' n = function
   | Break (x, eo) ->
     let x' = if x.it < n then x else (x.it + 1) @@ x.at in
     Break (x', Lib.Option.map (shift n) eo)
+  | Br_if (eo, e, x) ->
+    let x' = if x.it < n then x else (x.it + 1) @@ x.at in
+    Br_if (Lib.Option.map (shift n) eo, shift n e, x')
   | If (e1, e2, e3) -> If (shift n e1, shift n e2, shift n e3)
   | Switch (e, xs, x, es) -> Switch (shift n e, xs, x, List.map (shift n) es)
   | Call (x, es) -> Call (x, List.map (shift n) es)
@@ -53,8 +56,7 @@ and expr' at = function
   | Ast.Block es -> Block (List.map expr es)
   | Ast.Loop es -> Block [Loop (seq es) @@ at]
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
-  | Ast.Br_if (e, x, eo) ->
-    If (expr e, Break (x, Lib.Option.map expr eo) @@ at, opt eo)
+  | Ast.Br_if (eo, e, x) -> Br_if (Lib.Option.map expr eo, expr e, x)
   | Ast.Return (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.If (e1, e2) -> If (expr e1, expr e2, Nop @@ Source.after e2.at)
   | Ast.If_else (e1, e2, e3) -> If (expr e1, expr e2, expr e3)
