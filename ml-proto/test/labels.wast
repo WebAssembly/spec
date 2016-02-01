@@ -58,6 +58,14 @@
     )
   )
 
+  (func $loop5 (result i32)
+    (i32.add (loop $l0 $l1
+               (i32.const 1)
+             )
+             (i32.const 1)
+    )
+  )
+
   (func $switch (param i32) (result i32)
     (block $ret
       (i32.mul (i32.const 10)
@@ -99,14 +107,25 @@
     )
   )
 
+  (func $misc1 (result i32)
+   (block $l1 (i32.xor (br $l1 (i32.const 1)) (i32.const 2)))
+  )
+
+  (func $misc2 (result i32)
+   (i32.xor (return (i32.const 1)) (i32.const 2))
+  )
+
   (export "block" $block)
   (export "loop1" $loop1)
   (export "loop2" $loop2)
   (export "loop3" $loop3)
   (export "loop4" $loop4)
+  (export "loop5" $loop5)
   (export "switch" $switch)
   (export "return" $return)
   (export "br_if" $br_if)
+  (export "misc1" $misc1)
+  (export "misc2" $misc2)
 )
 
 (assert_return (invoke "block") (i32.const 1))
@@ -114,6 +133,7 @@
 (assert_return (invoke "loop2") (i32.const 8))
 (assert_return (invoke "loop3") (i32.const 1))
 (assert_return (invoke "loop4" (i32.const 8)) (i32.const 16))
+(assert_return (invoke "loop5") (i32.const 2))
 (assert_return (invoke "switch" (i32.const 0)) (i32.const 50))
 (assert_return (invoke "switch" (i32.const 1)) (i32.const 20))
 (assert_return (invoke "switch" (i32.const 2)) (i32.const 20))
@@ -124,6 +144,8 @@
 (assert_return (invoke "return" (i32.const 1)) (i32.const 2))
 (assert_return (invoke "return" (i32.const 2)) (i32.const 2))
 (assert_return (invoke "br_if") (i32.const 0x1d))
+(assert_return (invoke "misc1") (i32.const 1))
+(assert_return (invoke "misc2") (i32.const 1))
 
 (assert_invalid (module (func (loop $l (br $l (i32.const 0))))) "arity mismatch")
 (assert_invalid (module (func (block $l (f32.neg (br_if (i32.const 1) $l)) (nop)))) "type mismatch")

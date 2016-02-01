@@ -18,12 +18,17 @@
    (call $return_i32)
    (unreachable))
 
+  (func $misc1 (result i32)
+    (i32.xor (unreachable) (i32.const 10))
+  )
+
   (export "return_i32" $return_i32)
   (export "return_f64" $return_f64)
   (export "if" $if)
   (export "block" $block)
   (export "return_i64" $return_i64)
   (export "call" $call)
+  (export "misc1" $misc1)
 )
 
 (assert_trap (invoke "return_i32") "unreachable executed")
@@ -33,3 +38,4 @@
 (assert_trap (invoke "block") "unreachable executed")
 (assert_return (invoke "return_i64") (i64.const 1))
 (assert_trap (invoke "call") "unreachable executed")
+(assert_trap (invoke "misc1") "unreachable executed")
