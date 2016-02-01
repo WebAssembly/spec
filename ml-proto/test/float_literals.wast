@@ -18,7 +18,8 @@
   (func $f32.hexadecimal (result i32) (i32.reinterpret/f32 (f32.const 0x1.921fb6p+2)))
   (func $f32.min_positive (result i32) (i32.reinterpret/f32 (f32.const 0x1p-149)))
   (func $f32.max_finite (result i32) (i32.reinterpret/f32 (f32.const 0x1.fffffep+127)))
-  (func $f32.trailing_dot (result i32) (i32.reinterpret/f32 (f32.const 0x1.p4)))
+  (func $f32.trailing_dot (result i32) (i32.reinterpret/f32 (f32.const 1.e10)))
+  (func $f32.hex_trailing_dot (result i32) (i32.reinterpret/f32 (f32.const 0x1.p4)))
   (func $f32.max_subnormal (result i32) (i32.reinterpret/f32 (f32.const 1.1754942106924410e-38)))
 
   (func $f64.nan (result i64) (i64.reinterpret/f64 (f64.const nan)))
@@ -40,7 +41,8 @@
   (func $f64.hexadecimal (result i64) (i64.reinterpret/f64 (f64.const 0x1.921fb54442d18p+2)))
   (func $f64.min_positive (result i64) (i64.reinterpret/f64 (f64.const 0x0.0000000000001p-1022)))
   (func $f64.max_finite (result i64) (i64.reinterpret/f64 (f64.const 0x1.fffffffffffffp+1023)))
-  (func $f64.trailing_dot (result i64) (i64.reinterpret/f64 (f64.const 0x1.p4)))
+  (func $f64.trailing_dot (result i64) (i64.reinterpret/f64 (f64.const 1.e100)))
+  (func $f64.hex_trailing_dot (result i64) (i64.reinterpret/f64 (f64.const 0x1.p4)))
   (func $f64.max_subnormal (result i64) (i64.reinterpret/f64 (f64.const 2.2250738585072011e-308)))
   (export "f32.nan" $f32.nan)
   (export "f32.positive_nan" $f32.positive_nan)
@@ -62,6 +64,7 @@
   (export "f32.min_positive" $f32.min_positive)
   (export "f32.max_finite" $f32.max_finite)
   (export "f32.trailing_dot" $f32.trailing_dot)
+  (export "f32.hex_trailing_dot" $f32.hex_trailing_dot)
   (export "f32.max_subnormal" $f32.max_subnormal)
 
   (export "f64.nan" $f64.nan)
@@ -84,6 +87,7 @@
   (export "f64.min_positive" $f64.min_positive)
   (export "f64.max_finite" $f64.max_finite)
   (export "f64.trailing_dot" $f64.trailing_dot)
+  (export "f64.hex_trailing_dot" $f64.hex_trailing_dot)
   (export "f64.max_subnormal" $f64.max_subnormal)
 )
 
@@ -106,7 +110,8 @@
 (assert_return (invoke "f32.hexadecimal") (i32.const 0x40c90fdb))
 (assert_return (invoke "f32.min_positive") (i32.const 1))
 (assert_return (invoke "f32.max_finite") (i32.const 0x7f7fffff))
-(assert_return (invoke "f32.trailing_dot") (i32.const 0x41800000))
+(assert_return (invoke "f32.trailing_dot") (i32.const 0x501502f9))
+(assert_return (invoke "f32.hex_trailing_dot") (i32.const 0x41800000))
 (assert_return (invoke "f32.max_subnormal") (i32.const 0x7fffff))
 
 (assert_return (invoke "f64.nan") (i64.const 0x7ff8000000000000))
@@ -128,5 +133,6 @@
 (assert_return (invoke "f64.hexadecimal") (i64.const 0x401921fb54442d18))
 (assert_return (invoke "f64.min_positive") (i64.const 1))
 (assert_return (invoke "f64.max_finite") (i64.const 0x7fefffffffffffff))
-(assert_return (invoke "f64.trailing_dot") (i64.const 0x4030000000000000))
+(assert_return (invoke "f64.trailing_dot") (i64.const 0x54b249ad2594c37d))
+(assert_return (invoke "f64.hex_trailing_dot") (i64.const 0x4030000000000000))
 (assert_return (invoke "f64.max_subnormal") (i64.const 0xfffffffffffff))
