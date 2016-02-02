@@ -11,9 +11,9 @@ Misc semantics:
  - test that too-big `grow_memory` fails appropriately
  - test that too-big linear memory initial allocation fails
  - test that function addresses are monotonic indices, and not actual addresses.
- - test that non-pagesize `grow_memory` fails
+ - ~~test that non-pagesize `grow_memory` fails~~
  - test that non-pagesize initial linear memory allocation fails
- - test that one can clobber the entire contents of the linear memory without corrupting: call stack, global variables, local variables, program execution.
+ - test that one can clobber the entire contents of the linear memory without corrupting: call stack, local variables, program execution.
 
 Operator semantics:
  - test that promote/demote, sext/trunc, zext/trunc is bit-preserving if not NaN
@@ -24,7 +24,10 @@ Operator semantics:
  - ~~test that `page_size` returns a power of 2~~
  - ~~test that arithmetic operands are evaluated left-to-right~~
  - ~~test that call and store operands are evaluated left-to-right too~~
- - test that call and argument operands of call_indirect are evaluated left-to-right, too
+ - ~~test that call and argument operands of call_indirect are evaluated left-to-right, too~~
+ - ~~test that select arguments are evaluated left-to-right, too~~
+ - test that br_if arguments are evaluated left-to-right, too
+ - test that tableswitch arguments are evaluated left-to-right, too
  - ~~test that add/sub/mul/wrap/wrapping-store silently wrap on overflow~~
  - ~~test that sdiv/udiv/srem/urem trap on divide-by-zero~~
  - ~~test that sdiv traps on overflow~~
@@ -33,7 +36,7 @@ Operator semantics:
  - ~~test that unsigned operations are properly unsigned~~
  - ~~test that signed integer div rounds toward zero~~
  - ~~test that signed integer mod has the sign of the dividend~~
- - test that select preserves all NaN bits
+ - ~~test that select preserves all NaN bits~~
 
 Floating point semantics:
  - ~~test for round-to-nearest rounding~~
