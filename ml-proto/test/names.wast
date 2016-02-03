@@ -75,3 +75,17 @@
 (assert_return (invoke "NaN") (f32.const 0x2.01p+2))
 (assert_return (invoke "Infinity") (f32.const 0x2.02p+2))
 (assert_return (invoke "if") (f32.const 0x2.03p+2))
+
+(module
+  ;; Test that we can use indices instead of names to reference imports, 
+  ;; functions and parameters.
+  (import "spectest" "print" (param i32))
+  (import "spectest" "print" (param i32))
+  (func (param i32) (param i32)
+    (call_import 0 (get_local 0))
+    (call_import 1 (get_local 1))
+  )
+  (export "print32" 0)
+)
+
+(invoke "print32" (i32.const 42) (i32.const 123))
