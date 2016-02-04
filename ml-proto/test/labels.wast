@@ -107,9 +107,6 @@
     )
   )
 
-  (func $br_if1 (param i32) (result f32)
-    (block $l (f32.neg (block $i (br_if (f32.const 3) (get_local 0) $l)))))
-
   (func $misc1 (result i32)
    (block $l1 (i32.xor (br $l1 (i32.const 1)) (i32.const 2)))
   )
@@ -127,7 +124,6 @@
   (export "switch" $switch)
   (export "return" $return)
   (export "br_if0" $br_if0)
-  (export "br_if1" $br_if1)
   (export "misc1" $misc1)
   (export "misc2" $misc2)
 )
@@ -148,12 +144,13 @@
 (assert_return (invoke "return" (i32.const 1)) (i32.const 2))
 (assert_return (invoke "return" (i32.const 2)) (i32.const 2))
 (assert_return (invoke "br_if0") (i32.const 0x1d))
-(assert_return (invoke "br_if1" (i32.const 0)) (f32.const -3))
-(assert_return (invoke "br_if1" (i32.const 1)) (f32.const 3))
 (assert_return (invoke "misc1") (i32.const 1))
 (assert_return (invoke "misc2") (i32.const 1))
 
 (assert_invalid (module (func (loop $l (br $l (i32.const 0))))) "arity mismatch")
 (assert_invalid (module (func (block $l (f32.neg (br_if (i32.const 1) $l)) (nop)))) "type mismatch")
+
+(assert_invalid (module (func (result f32) (block $l (br_if (f32.const 0) (i32.const 1) $l)))) "type mismatch")
 (assert_invalid (module (func (result i32) (block $l (br_if (f32.const 0) (i32.const 1) $l)))) "type mismatch")
+(assert_invalid (module (func (block $l (f32.neg (br_if (f32.const 0) (i32.const 1) $l))))) "arity mismatch")
 (assert_invalid (module (func (param i32) (result i32) (block $l (f32.neg (br_if (f32.const 0) (get_local 0) $l))))) "type mismatch")
