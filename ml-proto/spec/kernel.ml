@@ -61,7 +61,7 @@ type selop = (I32Op.selop, I64Op.selop, F32Op.selop, F64Op.selop) op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) op
 
-type memop = {ty : value_type; offset : Memory.offset; align : int option}
+type memop = {ty : value_type; offset : Memory.offset; align : int}
 type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
 type wrapop = {memop : memop; sz : Memory.mem_size}
 type hostop =
