@@ -120,6 +120,16 @@
             (br $l1 (i32.const 1)))))
       (i32.const 1)))
 
+  (func $br_if3 (result i32)
+    (local $i1 i32)
+    (i32.add (block $l0
+               (br_if (set_local $i1 (i32.const 1))
+                      (set_local $i1 (i32.const 2))
+                      $l0)
+               (i32.const 0))
+             (i32.const 0))
+    (get_local $i1))
+
   (func $misc1 (result i32)
    (block $l1 (i32.xor (br $l1 (i32.const 1)) (i32.const 2)))
   )
@@ -139,6 +149,7 @@
   (export "br_if0" $br_if0)
   (export "br_if1" $br_if1)
   (export "br_if2" $br_if2)
+  (export "br_if3" $br_if3)
   (export "misc1" $misc1)
   (export "misc2" $misc2)
 )
@@ -161,6 +172,7 @@
 (assert_return (invoke "br_if0") (i32.const 0x1d))
 (assert_return (invoke "br_if1") (i32.const 1))
 (assert_return (invoke "br_if2") (i32.const 1))
+(assert_return (invoke "br_if3") (i32.const 2))
 (assert_return (invoke "misc1") (i32.const 1))
 (assert_return (invoke "misc2") (i32.const 1))
 
