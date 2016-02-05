@@ -107,6 +107,11 @@
     )
   )
 
+  (func $br_if1 (result i32)
+    (block $l0
+      (br_if (block $l1 (br $l1 (i32.const 1))) (i32.const 1) $l0)
+      (i32.const 1)))
+
   (func $misc1 (result i32)
    (block $l1 (i32.xor (br $l1 (i32.const 1)) (i32.const 2)))
   )
@@ -124,6 +129,7 @@
   (export "switch" $switch)
   (export "return" $return)
   (export "br_if0" $br_if0)
+  (export "br_if1" $br_if1)
   (export "misc1" $misc1)
   (export "misc2" $misc2)
 )
@@ -144,6 +150,7 @@
 (assert_return (invoke "return" (i32.const 1)) (i32.const 2))
 (assert_return (invoke "return" (i32.const 2)) (i32.const 2))
 (assert_return (invoke "br_if0") (i32.const 0x1d))
+(assert_return (invoke "br_if1") (i32.const 1))
 (assert_return (invoke "misc1") (i32.const 1))
 (assert_return (invoke "misc2") (i32.const 1))
 
