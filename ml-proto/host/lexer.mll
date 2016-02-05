@@ -337,6 +337,7 @@ rule token = parse
 
   | "type" { TYPE }
   | "func" { FUNC }
+  | "start" { START }
   | "param" { PARAM }
   | "result" { RESULT }
   | "local" { LOCAL }

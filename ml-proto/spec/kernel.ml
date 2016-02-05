@@ -141,6 +141,7 @@ and module_' =
   memory : memory option;
   types : Types.func_type list;
   funcs : func list;
+  start : var option;
   imports : import list;
   exports : export list;
   table : var list;

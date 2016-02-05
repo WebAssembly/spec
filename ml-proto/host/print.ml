@@ -27,6 +27,10 @@ let print_export_sig m prefix n f =
 let print_table_elem i x =
   printf "table [%d] = func %d\n" i x.it
 
+let print_start start =
+  match start with
+  | Some x -> printf "start = func %d\n" x.it
+  | None -> printf "there is no start\n"
 
 (* Ast *)
 
@@ -37,10 +41,11 @@ let print_export m i ex =
   print_export_sig m "export" ex.it.name (List.nth m.it.funcs ex.it.func.it)
 
 let print_module m =
-  let {funcs; exports; table} = m.it in
+  let {funcs; start; exports; table} = m.it in
   List.iteri (print_func m) funcs;
   List.iteri (print_export m) exports;
   List.iteri print_table_elem table;
+  print_start start;
   flush_all ()
 
 let print_module_sig m =

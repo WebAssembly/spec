@@ -135,7 +135,7 @@ let implicit_decl c t at =
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
-%token FUNC TYPE PARAM RESULT LOCAL
+%token FUNC START TYPE PARAM RESULT LOCAL
 %token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
 %token UNREACHABLE MEMORY_SIZE GROW_MEMORY HAS_FEATURE
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
@@ -338,6 +338,10 @@ func :
 
 /* Modules */
 
+start :
+  | LPAR START var RPAR
+    { fun c -> $3 c func }
+
 segment :
   | LPAR SEGMENT INT TEXT RPAR
     { {Memory.addr = Int64.of_string $3; Memory.data = $4} @@ at () }
@@ -395,7 +399,7 @@ export :
 module_fields :
   | /* empty */
     { fun c ->
-      {memory = None; types = c.types.tlist; funcs = []; imports = [];
+      {memory = None; types = c.types.tlist; funcs = []; start = None; imports = [];
        exports = []; table = []} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in
@@ -416,6 +420,9 @@ module_fields :
       match m.memory with
       | Some _ -> error $1.at "multiple memory sections"
       | None -> {m with memory = Some $1} }
+  | start module_fields
+    { fun c -> let m = $2 c in
+      {m with start = Some ($1 c)} }
 ;
 module_ :
   | LPAR MODULE module_fields RPAR { $3 (empty_context ()) @@ at () }
