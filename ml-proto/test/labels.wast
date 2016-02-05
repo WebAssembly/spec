@@ -154,3 +154,6 @@
 (assert_invalid (module (func (result i32) (block $l (br_if (f32.const 0) (i32.const 1) $l)))) "type mismatch")
 (assert_invalid (module (func (block $l (f32.neg (br_if (f32.const 0) (i32.const 1) $l))))) "arity mismatch")
 (assert_invalid (module (func (param i32) (result i32) (block $l (f32.neg (br_if (f32.const 0) (get_local 0) $l))))) "type mismatch")
+(assert_invalid (module (func (param i32) (result f32)
+  (block $l (f32.neg (block $i (br_if (f32.const 3) (get_local 0) $l))))))
+  "type mismatch")
