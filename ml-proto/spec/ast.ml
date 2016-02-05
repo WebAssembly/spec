@@ -19,7 +19,7 @@ and expr' =
   | Block of expr list
   | Loop of expr list
   | Br of var * expr option
-  | Br_if of expr option * expr * var
+  | Br_if of var * expr option * expr
   | Return of var * expr option
   | If of expr * expr
   | If_else of expr * expr * expr
