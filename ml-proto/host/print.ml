@@ -28,9 +28,7 @@ let print_table_elem i x =
   printf "table [%d] = func %d\n" i x.it
 
 let print_start start =
-  match start with
-  | Some x -> printf "start = func %d\n" x.it
-  | None -> ()
+  Lib.Option.app (fun x -> printf "start = func %d\n" x.it) start
 
 (* Ast *)
 
