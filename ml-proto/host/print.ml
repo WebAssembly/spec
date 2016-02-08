@@ -30,7 +30,7 @@ let print_table_elem i x =
 let print_start start =
   match start with
   | Some x -> printf "start = func %d\n" x.it
-  | None -> printf "there is no start\n"
+  | None -> ()
 
 (* Ast *)
 

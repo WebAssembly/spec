@@ -321,9 +321,7 @@ let init m imports host =
      memory = Lib.Option.map init_memory memory;
      host}
   in
-  ignore (match start with
-    | Some x -> eval_func instance (lookup "function" funcs x) []
-    | None -> None);
+  Lib.Option.app (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;
   instance
 
 let invoke instance name vs =
