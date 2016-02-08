@@ -134,9 +134,9 @@ let rec check_expr c et e =
     check_expr_opt c (label c x) eo e.at
 
   | Br_if (x, eo, e) ->
-    check_expr_opt c (label c x) eo e.at;
+    check_expr_opt c et eo e.at;
     check_expr c (Some Int32Type) e;
-    check_type None et e.at
+    check_type (label c x) et e.at
 
   | If (e1, e2, e3) ->
     check_expr c (Some Int32Type) e1;
@@ -231,7 +231,7 @@ and check_exprs c ts es =
 
 and check_expr_opt c et eo at =
   match et, eo with
-  | Some t, Some e -> check_expr c et e
+  | _, Some e -> check_expr c et e
   | None, None -> ()
   | _ -> error at "arity mismatch"
 
