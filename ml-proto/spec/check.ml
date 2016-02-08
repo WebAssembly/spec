@@ -133,6 +133,11 @@ let rec check_expr c et e =
   | Break (x, eo) ->
     check_expr_opt c (label c x) eo e.at
 
+  | Br_if (x, eo, e) ->
+    check_expr_opt c (label c x) eo e.at;
+    check_expr c (Some Int32Type) e;
+    check_type None et e.at
+
   | If (e1, e2, e3) ->
     check_expr c (Some Int32Type) e1;
     check_expr c et e2;

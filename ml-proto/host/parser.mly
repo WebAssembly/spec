@@ -233,7 +233,8 @@ expr1 :
   | LOOP labeling1 labeling1 expr_list
     { fun c -> let c' = $2 c in let c'' = $3 c' in Loop ($4 c'') }
   | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
-  | BR_IF expr var expr_opt { fun c -> Br_if ($2 c, $3 c label, $4 c) }
+  | BR_IF var expr { fun c -> Br_if ($2 c label, None, $3 c) }
+  | BR_IF var expr expr { fun c -> Br_if ($2 c label, Some ($3 c), $4 c) }
   | RETURN expr_opt
     { let at1 = ati 1 in
       fun c -> Return (label c ("return" @@ at1) @@ at1, $2 c) }
