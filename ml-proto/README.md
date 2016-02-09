@@ -101,7 +101,7 @@ expr:
   ( tableswitch <name>? <expr> ( table <target>* ) <target> <case>* )
   ( call <var> <expr>* )
   ( call_import <var> <expr>* )
-  ( call_indirect <var> <expr> <expr>* )
+  ( call_indirect <func_type> <expr> <expr>* )
   ( get_local <var> )
   ( set_local <var> <expr> )
   ( <type>.load((8|16|32)_<sign>)? <offset>? <align>? <expr> )
@@ -123,15 +123,14 @@ target:
 case:
   ( case <name>? <expr>* )                       ;; = (case <var>? (block <expr>*))
 
-func:   ( func <name>? <type>? <param>* <result>? <local>* <expr>* )
-type:   ( type <var> )
+func:   ( func <name>? <param>* <result>? <local>* <expr>* )
 param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type> )
 local:  ( local <type>* ) | ( local <name> <type> )
 
 module:  ( module <type>* <func>* <import>* <export>* <table>* <memory>? )
-type:    ( type <name>? ( func <param>* <result>? ) )
-import:  ( import <name>? "<module_name>" "<func_name>" (param <type>* ) (result <type>)* )
+func_type: ( func_type <param>* <result>? )
+import:  ( import <name>? "<module_name>" "<func_name>" <func_type> )
 export:  ( export "<char>*" <var> )
 table:   ( table <var>* )
 memory:  ( memory <int> <int>? <segment>* )
