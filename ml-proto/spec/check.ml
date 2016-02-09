@@ -231,7 +231,7 @@ and check_exprs c ts es =
 
 and check_expr_opt c et eo at =
   match et, eo with
-  | _, Some e -> check_expr c et e
+  | Some t, Some e -> check_expr c et e
   | None, None -> ()
   | _ -> error at "arity mismatch"
 
