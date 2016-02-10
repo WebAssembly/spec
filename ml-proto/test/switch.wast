@@ -80,10 +80,35 @@
     (get_local $x)
   )
 
+  ;; Index Break
+  (func $index_break (result i32)
+    (local $x i32)
+    (tableswitch (i32.const 0)
+      (table (case 0)) (case 0)
+      (case (set_local $x (i32.add (get_local $x) (i32.const 1))))
+    )
+    (tableswitch (i32.const 1)
+      (table (case 0)) (case 0)
+      (case (set_local $x (i32.add (get_local $x) (i32.const 2))))
+    )
+    (tableswitch (i32.const 0)
+      (table (br 0)) (br 0)
+      (case (set_local $x (i32.add (get_local $x) (i32.const 3)))) ;; unreachable
+    )
+    (block
+      (tableswitch (i32.const 9)
+        (table (br 0)) (br 1)
+      )
+      (set_local $x (i32.add (get_local $x) (i32.const 4))) ;; unreachable
+    )
+    (get_local $x)
+  )
+
   (export "stmt" $stmt)
   (export "expr" $expr)
   (export "corner" $corner)
   (export "break" $break)
+  (export "index_break" $index_break)
 )
 
 (assert_return (invoke "stmt" (i32.const 0)) (i32.const 0))
@@ -106,6 +131,7 @@
 
 (assert_return (invoke "corner") (i32.const 7))
 (assert_return (invoke "break") (i32.const 0))
+(assert_return (invoke "index_break") (i32.const 3))
 
 (assert_invalid (module (func (tableswitch (i32.const 0) (table) (case 0)))) "invalid target")
 (assert_invalid (module (func (tableswitch (i32.const 0) (table) (case 1) (case)))) "invalid target")
