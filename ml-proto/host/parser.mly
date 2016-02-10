@@ -131,7 +131,7 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF IF_ELSE LOOP BR BR_IF TABLESWITCH CASE
+%token NOP BLOCK IF IF_ELSE LOOP BR BR_IF TABLESWITCH CASE DEFAULT
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -240,10 +240,10 @@ expr1 :
       fun c -> Return (label c ("return" @@ at1) @@ at1, $2 c) }
   | IF expr expr { fun c -> If ($2 c, $3 c) }
   | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
-  | TABLESWITCH labeling expr LPAR TABLE target_list RPAR target case_list
+  | TABLESWITCH labeling expr LPAR TABLE target_list RPAR LPAR DEFAULT target RPAR case_list
     { fun c -> let c' = $2 c in let e = $3 c' in
-      let c'' = enter_switch c' in let es = $9 c'' in
-      Tableswitch (e, $6 c'', $8 c'', es) }
+      let c'' = enter_switch c' in let es = $12 c'' in
+      Tableswitch (e, $6 c'', $10 c'', es) }
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> Call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list

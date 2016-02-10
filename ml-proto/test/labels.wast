@@ -70,7 +70,8 @@
     (block $ret
       (i32.mul (i32.const 10)
         (tableswitch $exit (get_local 0)
-          (table (case $0) (case $1) (case $2) (case $3)) (case $default)
+          (table (case $0) (case $1) (case $2) (case $3))
+          (default (case $default))
           (case $1 (i32.const 1))
           (case $2 (br $exit (i32.const 2)))
           (case $3 (br $ret (i32.const 3)))
@@ -83,7 +84,8 @@
 
   (func $return (param i32) (result i32)
     (tableswitch (get_local 0)
-      (table (case $0) (case $1)) (case $default)
+      (table (case $0) (case $1))
+      (default (case $default))
       (case $0 (return (i32.const 0)))
       (case $1 (i32.const 1))
       (case $default (i32.const 2))

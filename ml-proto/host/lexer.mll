@@ -148,6 +148,7 @@ rule token = parse
   | "if_else" { IF_ELSE }
   | "tableswitch" { TABLESWITCH }
   | "case" { CASE }
+  | "default" { DEFAULT }
   | "call" { CALL }
   | "call_import" { CALL_IMPORT }
   | "call_indirect" { CALL_INDIRECT }
