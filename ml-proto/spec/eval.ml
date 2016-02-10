@@ -318,12 +318,16 @@ let add_export funcs ex =
 
 let init m imports host =
   assert (List.length imports = List.length m.it.Kernel.imports);
-  let {memory; funcs; exports; _} = m.it in
-  {module_ = m;
-   imports;
-   exports = List.fold_right (add_export funcs) exports ExportMap.empty;
-   memory = Lib.Option.map init_memory memory;
-   host}
+  let {memory; funcs; exports; start; _} = m.it in
+  let instance =
+    {module_ = m;
+     imports;
+     exports = List.fold_right (add_export funcs) exports ExportMap.empty;
+     memory = Lib.Option.map init_memory memory;
+     host}
+  in
+  Lib.Option.app (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;
+  instance
 
 let invoke instance name vs =
   try
