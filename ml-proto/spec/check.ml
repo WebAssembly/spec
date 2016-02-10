@@ -292,6 +292,15 @@ let check_export c set ex =
     "duplicate export name";
   NameSet.add name set
 
+let check_start c start =
+  Lib.Option.app (fun x ->
+    let start_type = func c x in
+    require (List.length start_type.ins = 0) x.at
+      "start function must be nullary";
+    require (start_type.out = None) x.at
+      "start function must not return anything";
+  ) start
+
 let check_segment size prev_end seg =
   let seg_len = Int64.of_int (String.length seg.it.Memory.data) in
   let seg_end = Int64.add seg.it.Memory.addr seg_len in
@@ -310,7 +319,7 @@ let check_memory memory =
   ignore (List.fold_left (check_segment mem.initial) Int64.zero mem.segments)
 
 let check_module m =
-  let {memory; types; funcs; imports; exports; table} = m.it in
+  let {memory; types; funcs; start; imports; exports; table} = m.it in
   Lib.Option.app check_memory memory;
   let c = {types;
            funcs = List.map (fun f -> type_ types f.it.ftype) funcs;
@@ -321,4 +330,5 @@ let check_module m =
            has_memory = memory <> None} in
   List.iter (check_func c) funcs;
   List.iter (check_elem c) table;
-  ignore (List.fold_left (check_export c) NameSet.empty exports)
+  ignore (List.fold_left (check_export c) NameSet.empty exports);
+  check_start c start

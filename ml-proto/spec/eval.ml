@@ -313,7 +313,7 @@ let add_export funcs ex =
 
 let init m imports host =
   assert (List.length imports = List.length m.it.Kernel.imports);
-  let {memory; types; funcs; exports; start; _} = m.it in
+  let {memory; funcs; exports; start; _} = m.it in
   let instance =
     {module_ = m;
      imports;
@@ -321,12 +321,7 @@ let init m imports host =
      memory = Lib.Option.map init_memory memory;
      host}
   in
-  Lib.Option.app (fun x -> 
-    let start_func = lookup "function" funcs x in
-    let start_func_type  = lookup "type" types start_func.it.ftype in
-    assert (List.length start_func_type.ins = 0 && start_func_type.out = None);
-    ignore (eval_func instance start_func [])
-  ) start;
+  Lib.Option.app (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;
   instance
 
 let invoke instance name vs =
