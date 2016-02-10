@@ -295,7 +295,7 @@ let check_export c set ex =
 let check_start c start =
   Lib.Option.app (fun x ->
     let start_type = func c x in
-    require (List.length start_type.ins = 0) x.at
+    require (start_type.ins = []) x.at
       "start function must be nullary";
     require (start_type.out = None) x.at
       "start function must not return anything";
