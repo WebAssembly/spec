@@ -17,6 +17,9 @@
         (call_import $print (i32.load offset=1 align=1 (get_local $i)))  ;; 1701077858 'bcde'
         (call_import $print (i32.load offset=2 align=2 (get_local $i)))  ;; 1717920867 'cdef'
         (call_import $print (i32.load offset=25 align=1 (get_local $i))) ;; 122 'z\0\0\0'
+
+        ;; allow align and offset to be specified in either order
+        (call_import $print (i32.load align=1 offset=25 (get_local $i))) ;; 122 'z\0\0\0'
     )
     (export "good" $good)
 

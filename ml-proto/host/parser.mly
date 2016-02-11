@@ -211,13 +211,12 @@ labeling1 :
   | bind_var { fun c -> bind_label c $1 }
 ;
 
-offset :
-  | /* empty */ { 0L }
-  | OFFSET { $1 }
-;
-align :
-  | /* empty */ { None }
-  | ALIGN { Some $1 }
+offset_align :
+  | /* empty */ { (0L, None) }
+  | OFFSET { ($1, None) }
+  | ALIGN { (0L, Some $1) }
+  | OFFSET ALIGN { ($1, Some $2) }
+  | ALIGN OFFSET { ($2, Some $1) }
 ;
 
 expr :
@@ -250,8 +249,8 @@ expr1 :
     { fun c -> Call_indirect ($2 c type_, $3 c, $4 c) }
   | GET_LOCAL var { fun c -> Get_local ($2 c local) }
   | SET_LOCAL var expr { fun c -> Set_local ($2 c local, $3 c) }
-  | LOAD offset align expr { fun c -> $1 ($2, $3, $4 c) }
-  | STORE offset align expr expr { fun c -> $1 ($2, $3, $4 c, $5 c) }
+  | LOAD offset_align expr { fun c -> $1 (fst $2, snd $2, $3 c) }
+  | STORE offset_align expr expr { fun c -> $1 (fst $2, snd $2, $3 c, $4 c) }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | UNARY expr { fun c -> $1 ($2 c) }
   | BINARY expr expr { fun c -> $1 ($2 c, $3 c) }
