@@ -80,10 +80,29 @@
     (get_local $x)
   )
 
+  ;; Nested break
+  (func $nested (param i32) (result i32)
+    (block
+      (block
+        (block
+          (tableswitch (get_local 0)
+            (table (br 0) (br 1) (br 2))
+            (br 3)
+          )
+          (return (i32.const 1))
+        )
+        (return (i32.const 2))
+      )
+      (return (i32.const 3))
+    )
+    (return (i32.const 4))
+  )
+
   (export "stmt" $stmt)
   (export "expr" $expr)
   (export "corner" $corner)
   (export "break" $break)
+  (export "nested" $nested)
 )
 
 (assert_return (invoke "stmt" (i32.const 0)) (i32.const 0))
@@ -106,6 +125,12 @@
 
 (assert_return (invoke "corner") (i32.const 7))
 (assert_return (invoke "break") (i32.const 0))
+
+(assert_return (invoke "nested" (i32.const 0)) (i32.const 1))
+(assert_return (invoke "nested" (i32.const 1)) (i32.const 2))
+(assert_return (invoke "nested" (i32.const 2)) (i32.const 3))
+(assert_return (invoke "nested" (i32.const 3)) (i32.const 4))
+(assert_return (invoke "nested" (i32.const 4)) (i32.const 4))
 
 (assert_invalid (module (func (tableswitch (i32.const 0) (table) (case 0)))) "invalid target")
 (assert_invalid (module (func (tableswitch (i32.const 0) (table) (case 1) (case)))) "invalid target")

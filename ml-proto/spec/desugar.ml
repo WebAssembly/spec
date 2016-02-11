@@ -76,7 +76,8 @@ and expr' at = function
     let n = List.length es' in
     let sh x = (if x.it >= n then x.it + n else x.it) @@ x.at in
     Block [Switch
-      (expr e, List.map sh (List.tl xs), sh (List.hd xs), es' @ es'') @@ at]
+      (expr e, List.map sh (List.tl xs), sh (List.hd xs), List.rev es' @ es'')
+      @@ at]
 
   | Ast.Get_local x -> GetLocal x
   | Ast.Set_local (x, e) -> SetLocal (x, expr e)
