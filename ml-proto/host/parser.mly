@@ -394,7 +394,9 @@ import :
 
 export :
   | LPAR EXPORT TEXT var RPAR
-    { let at = at () in fun c -> {name = $3; func = $4 c func} @@ at }
+    { let at = at () in fun c -> ExportFunc ($3, ($4 c func)) @@ at }
+  | LPAR EXPORT TEXT MEMORY RPAR
+    { let at = at () in fun c -> ExportMemory $3 @@ at }
 ;
 
 module_fields :
