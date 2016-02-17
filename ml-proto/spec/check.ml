@@ -151,18 +151,18 @@ let rec check_expr c et e =
 
   | Call (x, es) ->
     let {ins; out} = func c x in
-    check_exprs c ins es;
+    check_exprs c ins es e.at;
     check_type out et e.at
 
   | CallImport (x, es) ->
     let {ins; out} = import c x in
-    check_exprs c ins es;
+    check_exprs c ins es e.at;
     check_type out et e.at
 
   | CallIndirect (x, e1, es) ->
     let {ins; out} = type_ c.types x in
     check_expr c (Some Int32Type) e1;
-    check_exprs c ins es;
+    check_exprs c ins es e.at;
     check_type out et e.at
 
   | GetLocal x ->
@@ -221,13 +221,13 @@ let rec check_expr c et e =
   | Host (hostop, es) ->
     let {ins; out}, has_mem = type_hostop hostop in
     if has_mem then check_has_memory c e.at;
-    check_exprs c ins es;
+    check_exprs c ins es e.at;
     check_type out et e.at
 
-and check_exprs c ts es =
+and check_exprs c ts es at =
   let ets = List.map (fun x -> Some x) ts in
   try List.iter2 (check_expr c) ets es
-  with Invalid_argument _ -> error (Source.ats es) "arity mismatch"
+  with Invalid_argument _ -> error at "arity mismatch"
 
 and check_expr_opt c et eo at =
   match et, eo with

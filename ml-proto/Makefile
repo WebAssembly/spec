@@ -8,7 +8,7 @@ NAME =		wasm
 NAME_OPT =      $(NAME).opt
 NAME_UNOPT =    $(NAME)
 DIRS =		given host spec
-LIBS =		str bigarray
+LIBS =		str bigarray unix
 
 OCB_FLAGS +=	# -use-ocamlfind
 OCB_FLAGS +=	# -cflags -w
