@@ -57,7 +57,7 @@ let run_cmd cmd =
       Print.print_module_sig m
     end;
     trace "Initializing...";
-    let imports = Builtins.match_imports m in
+    let imports = Import.link m in
     let host_params = {
       Eval.has_feature = Params.has_feature
     } in
