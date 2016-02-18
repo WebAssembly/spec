@@ -341,6 +341,8 @@
 (assert_return (invoke "f32.demote_f64" (f64.const 0x1p-149)) (f32.const 0x1p-149))
 (assert_return (invoke "f32.demote_f64" (f64.const 0x1.fffffep+127)) (f32.const 0x1.fffffep+127))
 (assert_return (invoke "f32.demote_f64" (f64.const -0x1.fffffep+127)) (f32.const -0x1.fffffep+127))
+(assert_return (invoke "f32.demote_f64" (f64.const 0x1.ffffffp+127)) (f32.const infinity))
+(assert_return (invoke "f32.demote_f64" (f64.const -0x1.ffffffp+127)) (f32.const -infinity))
 (assert_return (invoke "f32.demote_f64" (f64.const 0x1p-119)) (f32.const 0x1p-119))
 (assert_return (invoke "f32.demote_f64" (f64.const 0x1.8f867ep+125)) (f32.const 0x1.8f867ep+125))
 (assert_return (invoke "f32.demote_f64" (f64.const infinity)) (f32.const infinity))
