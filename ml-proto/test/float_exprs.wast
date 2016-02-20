@@ -546,3 +546,107 @@
 (assert_return (invoke "no_demote_mixed_sub" (f64.const -0x1.98c74350dde6ap+6) (f32.const 0x1.9d69bcp-12)) (f32.const -0x1.98c7aap+6))
 (assert_return (invoke "no_demote_mixed_sub" (f64.const 0x1.0459f34091dbfp-54) (f32.const 0x1.61ad08p-71)) (f32.const 0x1.045942p-54))
 (assert_return (invoke "no_demote_mixed_sub" (f64.const 0x1.a7498dca3fdb7p+14) (f32.const 0x1.ed21c8p+15)) (f32.const -0x1.197d02p+15))
+
+;; Test that converting between integer and float and back isn't folded away.
+
+(module
+  (func $f32.i32.no_fold_trunc_s_convert_s (param $x f32) (result f32)
+    (f32.convert_s/i32 (i32.trunc_s/f32 (get_local $x))))
+  (export "f32.i32.no_fold_trunc_s_convert_s" $f32.i32.no_fold_trunc_s_convert_s)
+
+  (func $f32.i32.no_fold_trunc_u_convert_s (param $x f32) (result f32)
+    (f32.convert_s/i32 (i32.trunc_u/f32 (get_local $x))))
+  (export "f32.i32.no_fold_trunc_u_convert_s" $f32.i32.no_fold_trunc_u_convert_s)
+
+  (func $f32.i32.no_fold_trunc_s_convert_u (param $x f32) (result f32)
+    (f32.convert_u/i32 (i32.trunc_s/f32 (get_local $x))))
+  (export "f32.i32.no_fold_trunc_s_convert_u" $f32.i32.no_fold_trunc_s_convert_u)
+
+  (func $f32.i32.no_fold_trunc_u_convert_u (param $x f32) (result f32)
+    (f32.convert_u/i32 (i32.trunc_u/f32 (get_local $x))))
+  (export "f32.i32.no_fold_trunc_u_convert_u" $f32.i32.no_fold_trunc_u_convert_u)
+
+  (func $f64.i32.no_fold_trunc_s_convert_s (param $x f64) (result f64)
+    (f64.convert_s/i32 (i32.trunc_s/f64 (get_local $x))))
+  (export "f64.i32.no_fold_trunc_s_convert_s" $f64.i32.no_fold_trunc_s_convert_s)
+
+  (func $f64.i32.no_fold_trunc_u_convert_s (param $x f64) (result f64)
+    (f64.convert_s/i32 (i32.trunc_u/f64 (get_local $x))))
+  (export "f64.i32.no_fold_trunc_u_convert_s" $f64.i32.no_fold_trunc_u_convert_s)
+
+  (func $f64.i32.no_fold_trunc_s_convert_u (param $x f64) (result f64)
+    (f64.convert_u/i32 (i32.trunc_s/f64 (get_local $x))))
+  (export "f64.i32.no_fold_trunc_s_convert_u" $f64.i32.no_fold_trunc_s_convert_u)
+
+  (func $f64.i32.no_fold_trunc_u_convert_u (param $x f64) (result f64)
+    (f64.convert_u/i32 (i32.trunc_u/f64 (get_local $x))))
+  (export "f64.i32.no_fold_trunc_u_convert_u" $f64.i32.no_fold_trunc_u_convert_u)
+
+  (func $f32.i64.no_fold_trunc_s_convert_s (param $x f32) (result f32)
+    (f32.convert_s/i64 (i64.trunc_s/f32 (get_local $x))))
+  (export "f32.i64.no_fold_trunc_s_convert_s" $f32.i64.no_fold_trunc_s_convert_s)
+
+  (func $f32.i64.no_fold_trunc_u_convert_s (param $x f32) (result f32)
+    (f32.convert_s/i64 (i64.trunc_u/f32 (get_local $x))))
+  (export "f32.i64.no_fold_trunc_u_convert_s" $f32.i64.no_fold_trunc_u_convert_s)
+
+  (func $f32.i64.no_fold_trunc_s_convert_u (param $x f32) (result f32)
+    (f32.convert_u/i64 (i64.trunc_s/f32 (get_local $x))))
+  (export "f32.i64.no_fold_trunc_s_convert_u" $f32.i64.no_fold_trunc_s_convert_u)
+
+  (func $f32.i64.no_fold_trunc_u_convert_u (param $x f32) (result f32)
+    (f32.convert_u/i64 (i64.trunc_u/f32 (get_local $x))))
+  (export "f32.i64.no_fold_trunc_u_convert_u" $f32.i64.no_fold_trunc_u_convert_u)
+
+  (func $f64.i64.no_fold_trunc_s_convert_s (param $x f64) (result f64)
+    (f64.convert_s/i64 (i64.trunc_s/f64 (get_local $x))))
+  (export "f64.i64.no_fold_trunc_s_convert_s" $f64.i64.no_fold_trunc_s_convert_s)
+
+  (func $f64.i64.no_fold_trunc_u_convert_s (param $x f64) (result f64)
+    (f64.convert_s/i64 (i64.trunc_u/f64 (get_local $x))))
+  (export "f64.i64.no_fold_trunc_u_convert_s" $f64.i64.no_fold_trunc_u_convert_s)
+
+  (func $f64.i64.no_fold_trunc_s_convert_u (param $x f64) (result f64)
+    (f64.convert_u/i64 (i64.trunc_s/f64 (get_local $x))))
+  (export "f64.i64.no_fold_trunc_s_convert_u" $f64.i64.no_fold_trunc_s_convert_u)
+
+  (func $f64.i64.no_fold_trunc_u_convert_u (param $x f64) (result f64)
+    (f64.convert_u/i64 (i64.trunc_u/f64 (get_local $x))))
+  (export "f64.i64.no_fold_trunc_u_convert_u" $f64.i64.no_fold_trunc_u_convert_u)
+)
+
+(assert_return (invoke "f32.i32.no_fold_trunc_s_convert_s" (f32.const 1.5)) (f32.const 1.0))
+(assert_return (invoke "f32.i32.no_fold_trunc_s_convert_s" (f32.const -1.5)) (f32.const -1.0))
+(assert_return (invoke "f32.i32.no_fold_trunc_u_convert_s" (f32.const 1.5)) (f32.const 1.0))
+(assert_return (invoke "f32.i32.no_fold_trunc_u_convert_s" (f32.const -0.5)) (f32.const 0.0))
+(assert_return (invoke "f32.i32.no_fold_trunc_s_convert_u" (f32.const 1.5)) (f32.const 1.0))
+(assert_return (invoke "f32.i32.no_fold_trunc_s_convert_u" (f32.const -1.5)) (f32.const 0x1p+32))
+(assert_return (invoke "f32.i32.no_fold_trunc_u_convert_u" (f32.const 1.5)) (f32.const 1.0))
+(assert_return (invoke "f32.i32.no_fold_trunc_u_convert_u" (f32.const -0.5)) (f32.const 0.0))
+
+(assert_return (invoke "f64.i32.no_fold_trunc_s_convert_s" (f64.const 1.5)) (f64.const 1.0))
+(assert_return (invoke "f64.i32.no_fold_trunc_s_convert_s" (f64.const -1.5)) (f64.const -1.0))
+(assert_return (invoke "f64.i32.no_fold_trunc_u_convert_s" (f64.const 1.5)) (f64.const 1.0))
+(assert_return (invoke "f64.i32.no_fold_trunc_u_convert_s" (f64.const -0.5)) (f64.const 0.0))
+(assert_return (invoke "f64.i32.no_fold_trunc_s_convert_u" (f64.const 1.5)) (f64.const 1.0))
+(assert_return (invoke "f64.i32.no_fold_trunc_s_convert_u" (f64.const -1.5)) (f64.const 0x1.fffffffep+31))
+(assert_return (invoke "f64.i32.no_fold_trunc_u_convert_u" (f64.const 1.5)) (f64.const 1.0))
+(assert_return (invoke "f64.i32.no_fold_trunc_u_convert_u" (f64.const -0.5)) (f64.const 0.0))
+
+(assert_return (invoke "f32.i64.no_fold_trunc_s_convert_s" (f32.const 1.5)) (f32.const 1.0))
+(assert_return (invoke "f32.i64.no_fold_trunc_s_convert_s" (f32.const -1.5)) (f32.const -1.0))
+(assert_return (invoke "f32.i64.no_fold_trunc_u_convert_s" (f32.const 1.5)) (f32.const 1.0))
+(assert_return (invoke "f32.i64.no_fold_trunc_u_convert_s" (f32.const -0.5)) (f32.const 0.0))
+(assert_return (invoke "f32.i64.no_fold_trunc_s_convert_u" (f32.const 1.5)) (f32.const 1.0))
+(assert_return (invoke "f32.i64.no_fold_trunc_s_convert_u" (f32.const -1.5)) (f32.const 0x1p+64))
+(assert_return (invoke "f32.i64.no_fold_trunc_u_convert_u" (f32.const 1.5)) (f32.const 1.0))
+(assert_return (invoke "f32.i64.no_fold_trunc_u_convert_u" (f32.const -0.5)) (f32.const 0.0))
+
+(assert_return (invoke "f64.i64.no_fold_trunc_s_convert_s" (f64.const 1.5)) (f64.const 1.0))
+(assert_return (invoke "f64.i64.no_fold_trunc_s_convert_s" (f64.const -1.5)) (f64.const -1.0))
+(assert_return (invoke "f64.i64.no_fold_trunc_u_convert_s" (f64.const 1.5)) (f64.const 1.0))
+(assert_return (invoke "f64.i64.no_fold_trunc_u_convert_s" (f64.const -0.5)) (f64.const 0.0))
+(assert_return (invoke "f64.i64.no_fold_trunc_s_convert_u" (f64.const 1.5)) (f64.const 1.0))
+(assert_return (invoke "f64.i64.no_fold_trunc_s_convert_u" (f64.const -1.5)) (f64.const 0x1p+64))
+(assert_return (invoke "f64.i64.no_fold_trunc_u_convert_u" (f64.const 1.5)) (f64.const 1.0))
+(assert_return (invoke "f64.i64.no_fold_trunc_u_convert_u" (f64.const -0.5)) (f64.const 0.0))
