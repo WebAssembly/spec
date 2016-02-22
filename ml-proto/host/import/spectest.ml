@@ -1,3 +1,7 @@
+(*
+ * Simple collection of functions useful for writing test cases.
+ *)
+
 open Types
 
 

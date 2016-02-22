@@ -1,3 +1,7 @@
+(*
+ * A subset of the `env` module as used by Binaryen.
+ *)
+
 open Values
 open Types
 
