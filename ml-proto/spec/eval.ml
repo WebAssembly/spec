@@ -178,7 +178,7 @@ let rec eval_expr (c : config) (e : expr) =
 
   | CallImport (x, es) ->
     let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
-    (import c x) vs
+    (try (import c x) vs with Crash (_, msg) -> Crash.error e.at msg)
 
   | CallIndirect (ftype, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in

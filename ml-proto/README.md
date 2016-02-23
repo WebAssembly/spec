@@ -190,6 +190,14 @@ The representation for that kernel language AST is defined in [kernel.ml](https:
 
 ## Implementation
 
+The implementation is split into three directories:
+
+* `spec`: the part of the implementation that corresponds to the actual language specification.
+
+* `host`: infrastructure for loading and running scripts, parsing S-expressions, and defining host environment modules.
+
+* `given`: auxiliary libraries.
+
 The implementation consists of the following parts:
 
 * *Abstract Syntax* (`ast.ml`, `kernel.ml`, `types.ml`, `source.ml[i]`). Notably, the `phrase` wrapper type around each AST node carries the source position information.
