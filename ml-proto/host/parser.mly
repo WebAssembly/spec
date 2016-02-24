@@ -60,7 +60,7 @@ let empty_context () =
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
-  {c with labels = VarMap.add "return" 0 c.labels; locals = empty ()}
+  {c with labels = VarMap.empty; locals = empty ()}
 
 let enter_switch c =
   {c with cases = empty ()}
@@ -235,9 +235,7 @@ expr1 :
   | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
   | BR_IF var expr { fun c -> Br_if ($2 c label, None, $3 c) }
   | BR_IF var expr expr { fun c -> Br_if ($2 c label, Some ($3 c), $4 c) }
-  | RETURN expr_opt
-    { let at1 = ati 1 in
-      fun c -> Return (label c ("return" @@ at1) @@ at1, $2 c) }
+  | RETURN expr_opt { fun c -> Return ($2 c) }
   | IF expr expr { fun c -> If ($2 c, $3 c) }
   | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
   | TABLESWITCH labeling expr LPAR TABLE target_list RPAR target case_list
@@ -293,7 +291,8 @@ case_list :
 func_fields :
   | expr_list
     { empty_type,
-      fun c -> {ftype = -1 @@ at(); locals = []; body = $1 c} }
+      fun c -> let c' = anon_label c in
+      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
   | LPAR PARAM value_type_list RPAR func_fields
     { {(fst $5) with ins = $3 @ (fst $5).ins},
       fun c -> anon_locals c $3; (snd $5) c }

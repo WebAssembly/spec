@@ -20,7 +20,7 @@ and expr' =
   | Loop of expr list
   | Br of var * expr option
   | Br_if of var * expr option * expr
-  | Return of var * expr option
+  | Return of expr option
   | If of expr * expr
   | If_else of expr * expr * expr
   | Tableswitch of expr * target list * target * expr list list

@@ -7,39 +7,41 @@ open Kernel
 
 (* Labels *)
 
-let rec label e = shift 0 e
-and shift n e = shift' n e.it @@ e.at
-and shift' n = function
+let rec relabel f n e = relabel' f n e.it @@ e.at
+and relabel' f n = function
   | Nop -> Nop
   | Unreachable -> Unreachable
-  | Block es -> Block (List.map (shift (n + 1)) es)
-  | Loop e -> Loop (shift (n + 1) e)
+  | Block es -> Block (List.map (relabel f (n + 1)) es)
+  | Loop e -> Loop (relabel f (n + 1) e)
   | Break (x, eo) ->
-    let x' = if x.it < n then x else (x.it + 1) @@ x.at in
-    Break (x', Lib.Option.map (shift n) eo)
+    Break (f n x.it @@ x.at, Lib.Option.map (relabel f n) eo)
   | Br_if (x, eo, e) ->
-    let x' = if x.it < n then x else (x.it + 1) @@ x.at in
-    Br_if (x', Lib.Option.map (shift n) eo, shift n e)
-  | If (e1, e2, e3) -> If (shift n e1, shift n e2, shift n e3)
-  | Switch (e, xs, x, es) -> Switch (shift n e, xs, x, List.map (shift n) es)
-  | Call (x, es) -> Call (x, List.map (shift n) es)
-  | CallImport (x, es) -> CallImport (x, List.map (shift n) es)
+    Br_if (f n x.it @@ x.at, Lib.Option.map (relabel f n) eo, relabel f n e)
+  | If (e1, e2, e3) -> If (relabel f n e1, relabel f n e2, relabel f n e3)
+  | Switch (e, xs, x, es) ->
+    Switch (relabel f n e, xs, x, List.map (relabel f n) es)
+  | Call (x, es) -> Call (x, List.map (relabel f n) es)
+  | CallImport (x, es) -> CallImport (x, List.map (relabel f n) es)
   | CallIndirect (x, e, es) ->
-    CallIndirect (x, shift n e, List.map (shift n) es)
+    CallIndirect (x, relabel f n e, List.map (relabel f n) es)
   | GetLocal x -> GetLocal x
-  | SetLocal (x, e) -> SetLocal (x, shift n e)
-  | Load (memop, e) -> Load (memop, shift n e)
-  | Store (memop, e1, e2) -> Store (memop, shift n e1, shift n e2)
-  | LoadExtend (extop, e) -> LoadExtend (extop, shift n e)
-  | StoreWrap (wrapop, e1, e2) -> StoreWrap (wrapop, shift n e1, shift n e2)
+  | SetLocal (x, e) -> SetLocal (x, relabel f n e)
+  | Load (memop, e) -> Load (memop, relabel f n e)
+  | Store (memop, e1, e2) -> Store (memop, relabel f n e1, relabel f n e2)
+  | LoadExtend (extop, e) -> LoadExtend (extop, relabel f n e)
+  | StoreWrap (wrapop, e1, e2) ->
+    StoreWrap (wrapop, relabel f n e1, relabel f n e2)
   | Const c -> Const c
-  | Unary (unop, e) -> Unary (unop, shift n e)
-  | Binary (binop, e1, e2) -> Binary (binop, shift n e1, shift n e2)
+  | Unary (unop, e) -> Unary (unop, relabel f n e)
+  | Binary (binop, e1, e2) -> Binary (binop, relabel f n e1, relabel f n e2)
   | Select (selop, e1, e2, e3) ->
-    Select (selop, shift n e1, shift n e2, shift n e3)
-  | Compare (relop, e1, e2) -> Compare (relop, shift n e1, shift n e2)
-  | Convert (cvtop, e) -> Convert (cvtop, shift n e)
-  | Host (hostop, es) -> Host (hostop, List.map (shift n) es)
+    Select (selop, relabel f n e1, relabel f n e2, relabel f n e3)
+  | Compare (relop, e1, e2) -> Compare (relop, relabel f n e1, relabel f n e2)
+  | Convert (cvtop, e) -> Convert (cvtop, relabel f n e)
+  | Host (hostop, es) -> Host (hostop, List.map (relabel f n) es)
+
+let label e = relabel (fun n i -> if i < n then i else i + 1) 0 e
+let return e = relabel (fun n i -> if i = -1 then n else i) (-1) e
 
 
 (* Expressions *)
@@ -57,7 +59,7 @@ and expr' at = function
   | Ast.Loop es -> Block [Loop (seq es) @@ at]
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.Br_if (x, eo, e) -> Br_if (x, Lib.Option.map expr eo, expr e)
-  | Ast.Return (x, eo) -> Break (x, Lib.Option.map expr eo)
+  | Ast.Return eo -> Break (-1 @@ Source.no_region, Lib.Option.map expr eo)
   | Ast.If (e1, e2) -> If (expr e1, expr e2, Nop @@ Source.after e2.at)
   | Ast.If_else (e1, e2, e3) -> If (expr e1, expr e2, expr e3)
   | Ast.Call (x, es) -> Call (x, List.map expr es)
@@ -294,10 +296,6 @@ and seq = function
   | es ->
     Block (List.map label (List.map expr es)) @@@ List.map Source.at es
 
-and opt = function
-  | None -> Nop @@ Source.no_region
-  | Some e -> Block [label (expr e); Nop @@ e.at] @@ e.at
-
 
 (* Functions and Modules *)
 
@@ -306,7 +304,7 @@ and func' = function
   | {Ast.body = []; ftype; locals} ->
     {body = Nop @@ no_region; ftype; locals}
   | {Ast.body = es; ftype; locals} ->
-    {body = Block [seq es] @@@ List.map at es; ftype; locals}
+    {body = return (Block [seq es] @@@ List.map at es); ftype; locals}
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function
