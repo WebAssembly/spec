@@ -90,7 +90,7 @@ align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
 expr:
-  ( nop )
+  ( nop )                                        ;; = (block)
   ( block <name>? <expr>+ )
   ( if_else <expr> <expr> <expr> )
   ( if <expr> <expr> )                           ;; = (if_else <expr> <expr> (nop))

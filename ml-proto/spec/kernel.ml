@@ -79,7 +79,7 @@ type expr = expr' Source.phrase
 and expr' =
   | Nop                                     (* do nothing *)
   | Unreachable                             (* trap *)
-  | Block of expr list                      (* execute in sequence *)
+  | Block of expr list * expr               (* execute in sequence *)
   | Loop of expr                            (* loop header *)
   | Break of var * expr option              (* break to n-th surrounding label *)
   | Br_if of var * expr option * expr       (* conditional break *)
