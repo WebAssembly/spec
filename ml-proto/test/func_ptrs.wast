@@ -75,3 +75,20 @@
 (assert_trap   (invoke "callu" (i32.const 6)) "indirect call signature mismatch")
 (assert_trap   (invoke "callu" (i32.const 7)) "undefined table index 7")
 (assert_trap   (invoke "callu" (i32.const -1)) "undefined table index -1")
+
+(module
+    (type $T (func (result i32)))
+    (table 0 1)
+
+    (import $print_i32 "spectest" "print" (param i32))
+
+    (func $t1 (type $T) (i32.const 1))
+    (func $t2 (type $T) (i32.const 2))
+
+    (func $callt (param $i i32) (result i32)
+        (call_indirect $T (get_local $i)))
+    (export "callt" $callt)
+)
+
+(assert_return (invoke "callt" (i32.const 0)) (i32.const 1))
+(assert_return (invoke "callt" (i32.const 1)) (i32.const 2))
