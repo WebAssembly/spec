@@ -97,10 +97,10 @@ cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
 expr:
   ( nop )
-  ( block <name>? <expr>+ )
-  ( if_else <expr> <expr> <expr> )
-  ( if <expr> <expr> )                           ;; = (if_else <expr> <expr> (nop))
-  ( br_if <expr> <var> <expr>?)                  ;; = (if_else <expr> (br <var> <expr>?) (block <expr>? (nop)))
+  ( block <name>? <expr>* )
+  ( if <expr> ( then <name>? <expr>* ) ( else <name>? <expr>* )? )
+  ( if <expr1> <expr2> <expr3>? )                ;; = (if <expr1> (then <expr2>) (else <expr3>))
+  ( br_if <expr> <var> <expr>? )
   ( loop <name1>? <name2>? <expr>* )             ;; = (block <name1>? (loop <name2>? (block <expr>*)))
   ( br <var> <expr>? )
   ( return <expr>? )                             ;; = (br <current_depth> <expr>?)
