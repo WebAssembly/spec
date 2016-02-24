@@ -315,7 +315,9 @@ let init_memory {it = {initial; segments; _}} =
   mem
 
 let add_export funcs ex =
-  ExportMap.add ex.it.name (List.nth funcs ex.it.func.it)
+  match ex.it with
+  | ExportFunc (n, x) -> ExportMap.add n (List.nth funcs x.it)
+  | ExportMemory n -> fun x -> x
 
 let init m imports host =
   assert (List.length imports = List.length m.it.Kernel.imports);

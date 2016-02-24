@@ -126,7 +126,9 @@ and memory' =
 and segment = Memory.segment Source.phrase
 
 type export = export' Source.phrase
-and export' = {name : string; func : var}
+and export' =
+  | ExportFunc of string * var
+  | ExportMemory of string
 
 type import = import' Source.phrase
 and import' =

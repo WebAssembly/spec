@@ -289,8 +289,9 @@ let check_elem c x =
 module NameSet = Set.Make(String)
 
 let check_export c set ex =
-  let {name; func = x} = ex.it in
-  ignore (func c x);
+  let name = match ex.it with
+  | ExportFunc (n, x) -> ignore (func c x); n
+  | ExportMemory n -> require (c.has_memory) ex.at "no memory to export"; n in
   require (not (NameSet.mem name set)) ex.at
     "duplicate export name";
   NameSet.add name set
