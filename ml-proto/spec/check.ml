@@ -49,7 +49,6 @@ let check_type actual expected at =
 let type_value = Values.type_of
 let type_unop = Values.type_of
 let type_binop = Values.type_of
-let type_selop = Values.type_of
 let type_relop = Values.type_of
 
 let type_cvtop at = function
@@ -143,6 +142,11 @@ let rec check_expr c et e =
     check_expr c et e2;
     check_expr c et e3
 
+  | Select (e1, e2, e3) ->
+    check_expr c et e1;
+    check_expr c et e2;
+    check_expr c (Some Int32Type) e3
+
   | Switch (e1, xs, x, es) ->
     List.iter (fun x -> require (x.it < List.length es) x.at "invalid target")
       (x :: xs);
@@ -200,12 +204,6 @@ let rec check_expr c et e =
     check_expr c (Some t) e1;
     check_expr c (Some t) e2;
     check_type (Some t) et e.at
-
-  | Select (selop, e1, e2, e3) ->
-    let t = type_selop selop in
-    check_expr c (Some t) e1;
-    check_expr c (Some t) e2;
-    check_expr c (Some Int32Type) e3
 
   | Compare (relop, e1, e2) ->
     let t = type_relop relop in

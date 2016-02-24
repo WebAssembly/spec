@@ -23,6 +23,7 @@ and expr' =
   | Return of var * expr option
   | If of expr * expr
   | If_else of expr * expr * expr
+  | Select of expr * expr * expr
   | Tableswitch of expr * target list * target * expr list list
   | Call of var * expr list
   | Call_import of var * expr list
@@ -123,12 +124,6 @@ and expr' =
   | F64_min of expr * expr
   | F64_max of expr * expr
   | F64_copysign of expr * expr
-
-  (* Select *)
-  | I32_select of expr * expr * expr
-  | I64_select of expr * expr * expr
-  | F32_select of expr * expr * expr
-  | F64_select of expr * expr * expr
 
   (* Comparisons *)
   | I32_eq of expr * expr

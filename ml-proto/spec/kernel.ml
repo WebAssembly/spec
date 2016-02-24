@@ -32,7 +32,6 @@ struct
   type unop = Clz | Ctz | Popcnt
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
              | And | Or | Xor | Shl | ShrU | ShrS
-  type selop = Select
   type relop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type cvtop = ExtendSInt32 | ExtendUInt32 | WrapInt64
              | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
@@ -43,7 +42,6 @@ module FloatOp () =
 struct
   type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
   type binop = Add | Sub | Mul | Div | CopySign | Min | Max
-  type selop = Select
   type relop = Eq | Ne | Lt | Le | Gt | Ge
   type cvtop = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
              | PromoteFloat32 | DemoteFloat64
@@ -57,7 +55,6 @@ module F64Op = FloatOp ()
 
 type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop) op
 type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) op
-type selop = (I32Op.selop, I64Op.selop, F32Op.selop, F64Op.selop) op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) op
 
@@ -84,6 +81,7 @@ and expr' =
   | Break of var * expr option              (* break to n-th surrounding label *)
   | Br_if of var * expr option * expr       (* conditional break *)
   | If of expr * expr * expr                (* conditional *)
+  | Select of expr * expr * expr            (* branchless conditional *)
   | Switch of expr * var list * var * expr list   (* table switch *)
   | Call of var * expr list                 (* call function *)
   | CallImport of var * expr list           (* call imported function *)
@@ -97,7 +95,6 @@ and expr' =
   | Const of literal                        (* constant *)
   | Unary of unop * expr                    (* unary arithmetic operator *)
   | Binary of binop * expr * expr           (* binary arithmetic operator *)
-  | Select of selop * expr * expr * expr    (* branchless conditional *)
   | Compare of relop * expr * expr          (* arithmetic comparison *)
   | Convert of cvtop * expr                 (* conversion *)
   | Host of hostop * expr list              (* host interaction *)

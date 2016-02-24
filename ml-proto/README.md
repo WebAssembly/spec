@@ -82,7 +82,6 @@ var: <int> | $<name>
 
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
-selop: select
 relop: eq | ne | lt | ...
 sign: s|u
 offset: offset=<uint>
@@ -92,6 +91,7 @@ cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 expr:
   ( nop )
   ( block <name>? <expr>+ )
+  ( select <expr> <expr> <expr> )
   ( if_else <expr> <expr> <expr> )
   ( if <expr> <expr> )                           ;; = (if_else <expr> <expr> (nop))
   ( br_if <expr> <var> <expr>?)                  ;; = (if_else <expr> (br <var> <expr>?) (block <expr>? (nop)))
@@ -109,7 +109,6 @@ expr:
   ( <type>.const <value> )
   ( <type>.<unop> <expr> )
   ( <type>.<binop> <expr> <expr> )
-  ( <type>.<selop> <expr> <expr> <expr> )
   ( <type>.<relop> <expr> <expr> )
   ( <type>.<cvtop>/<type> <expr> )
   ( unreachable )
