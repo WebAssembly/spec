@@ -92,13 +92,13 @@ cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 expr:
   ( nop )
   ( block <name>? <expr>+ )
+  ( loop <name1>? <name2>? <expr>* )          ;; = (block <name1>? (loop <name2>? (block <expr>*)))
   ( if_else <expr> <expr> <expr> )
-  ( if <expr> <expr> )                           ;; = (if_else <expr> <expr> (nop))
-  ( br_if <expr> <var> <expr>?)                  ;; = (if_else <expr> (br <var> <expr>?) (block <expr>? (nop)))
-  ( loop <name1>? <name2>? <expr>* )             ;; = (block <name1>? (loop <name2>? (block <expr>*)))
+  ( if <expr> <expr> )                        ;; = (if_else <expr> <expr> (nop))
   ( br <var> <expr>? )
-  ( return <expr>? )                             ;; = (br <current_depth> <expr>?)
-  ( tableswitch <name>? <expr> ( table <target>* ) <target> <case>* )
+  ( br_if <var> <expr>? <expr> )
+  ( br_table <var>* <expr>? <expr> )
+  ( return <expr>? )                          ;; = (br <current_depth> <expr>?)
   ( call <var> <expr>* )
   ( call_import <var> <expr>* )
   ( call_indirect <var> <expr> <expr>* )
@@ -115,13 +115,6 @@ expr:
   ( unreachable )
   ( memory_size )
   ( grow_memory <expr> )
-
-target:
-  ( case <var> )
-  ( br <var> )                                   ;; = (case <name>) with (case <name> (br <var>))
-
-case:
-  ( case <name>? <expr>* )                       ;; = (case <var>? (block <expr>*))
 
 func:   ( func <name>? <type>? <param>* <result>? <local>* <expr>* )
 type:   ( type <var> )

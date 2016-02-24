@@ -2,9 +2,6 @@
 
 type var = int Source.phrase
 
-type target = target' Source.phrase
-and target' = Case of var | Case_br of var
-
 type expr = expr' Source.phrase
 and expr' =
   (* Constants *)
@@ -20,10 +17,10 @@ and expr' =
   | Loop of expr list
   | Br of var * expr option
   | Br_if of var * expr option * expr
+  | Br_table of var list * expr option * expr
   | Return of var * expr option
   | If of expr * expr
   | If_else of expr * expr * expr
-  | Tableswitch of expr * target list * target * expr list list
   | Call of var * expr list
   | Call_import of var * expr list
   | Call_indirect of var * expr * expr list

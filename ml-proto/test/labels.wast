@@ -69,25 +69,41 @@
   (func $switch (param i32) (result i32)
     (block $ret
       (i32.mul (i32.const 10)
-        (tableswitch $exit (get_local 0)
-          (table (case $0) (case $1) (case $2) (case $3)) (case $default)
-          (case $1 (i32.const 1))
-          (case $2 (br $exit (i32.const 2)))
-          (case $3 (br $ret (i32.const 3)))
-          (case $default (i32.const 4))
-          (case $0 (i32.const 5))
+        (block $exit
+          (block $0
+            (block $default
+              (block $3
+                (block $2
+                  (block $1
+                    (br_table $0 $1 $2 $3 (get_local 0))
+                    (br $default)
+                  ) ;; 1
+                  (i32.const 1)
+                ) ;; 2
+                (br $exit (i32.const 2))
+              ) ;; 3
+              (br $ret (i32.const 3))
+            ) ;; default
+            (i32.const 4)
+          ) ;; 0
+          (i32.const 5)
         )
       )
     )
   )
 
   (func $return (param i32) (result i32)
-    (tableswitch (get_local 0)
-      (table (case $0) (case $1)) (case $default)
-      (case $0 (return (i32.const 0)))
-      (case $1 (i32.const 1))
-      (case $default (i32.const 2))
-    )
+    (block $default
+      (block $1
+        (block $0
+          (br_table $0 $1 (get_local 0))
+          (br $default)
+        ) ;; 0
+        (return (i32.const 0))
+      ) ;; 1
+      (i32.const 1)
+    ) ;; default
+    (i32.const 2)
   )
 
   (func $br_if0 (result i32)

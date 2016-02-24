@@ -8,20 +8,20 @@ open Kernel
 (* Labels *)
 
 let rec label e = shift 0 e
+
 and shift n e = shift' n e.it @@ e.at
 and shift' n = function
   | Nop -> Nop
   | Unreachable -> Unreachable
   | Block es -> Block (List.map (shift (n + 1)) es)
   | Loop e -> Loop (shift (n + 1) e)
-  | Break (x, eo) ->
-    let x' = if x.it < n then x else (x.it + 1) @@ x.at in
-    Break (x', Lib.Option.map (shift n) eo)
-  | Br_if (x, eo, e) ->
-    let x' = if x.it < n then x else (x.it + 1) @@ x.at in
-    Br_if (x', Lib.Option.map (shift n) eo, shift n e)
+  | Break (x, eo) -> Break (shift_var n x, Lib.Option.map (shift n) eo)
+  | Break_if (x, eo, e) ->
+    Break_if (shift_var n x, Lib.Option.map (shift n) eo, shift n e)
+  | Break_table (xs, eo, e) ->
+    Break_table
+      (List.map (shift_var n) xs, Lib.Option.map (shift n) eo, shift n e)
   | If (e1, e2, e3) -> If (shift n e1, shift n e2, shift n e3)
-  | Switch (e, xs, x, es) -> Switch (shift n e, xs, x, List.map (shift n) es)
   | Call (x, es) -> Call (x, List.map (shift n) es)
   | CallImport (x, es) -> CallImport (x, List.map (shift n) es)
   | CallIndirect (x, e, es) ->
@@ -41,6 +41,8 @@ and shift' n = function
   | Convert (cvtop, e) -> Convert (cvtop, shift n e)
   | Host (hostop, es) -> Host (hostop, List.map (shift n) es)
 
+and shift_var n x = if x.it < n then x else (x.it + 1) @@ x.at
+
 
 (* Expressions *)
 
@@ -56,28 +58,14 @@ and expr' at = function
   | Ast.Block es -> Block (List.map expr es)
   | Ast.Loop es -> Block [Loop (seq es) @@ at]
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
-  | Ast.Br_if (x, eo, e) -> Br_if (x, Lib.Option.map expr eo, expr e)
+  | Ast.Br_if (x, eo, e) -> Break_if (x, Lib.Option.map expr eo, expr e)
+  | Ast.Br_table (xs, eo, e) -> Break_table (xs, Lib.Option.map expr eo, expr e)
   | Ast.Return (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.If (e1, e2) -> If (expr e1, expr e2, Nop @@ Source.after e2.at)
   | Ast.If_else (e1, e2, e3) -> If (expr e1, expr e2, expr e3)
   | Ast.Call (x, es) -> Call (x, List.map expr es)
   | Ast.Call_import (x, es) -> CallImport (x, List.map expr es)
   | Ast.Call_indirect (x, e, es) -> CallIndirect (x, expr e, List.map expr es)
-
-  | Ast.Tableswitch (e, ts, t, es) ->
-    let target t (xs, es') =
-      match t.it with
-      | Ast.Case x -> x :: xs, es'
-      | Ast.Case_br x ->
-        (List.length es' @@ t.at) :: xs, (Break (x, None) @@ t.at) :: es'
-    in
-    let xs, es' = List.fold_right target (t :: ts) ([], []) in
-    let es'' = List.map seq es in
-    let n = List.length es' in
-    let sh x = (if x.it >= n then x.it + n else x.it) @@ x.at in
-    Block [Switch
-      (expr e, List.map sh (List.tl xs), sh (List.hd xs), List.rev es' @ es'')
-      @@ at]
 
   | Ast.Get_local x -> GetLocal x
   | Ast.Set_local (x, e) -> SetLocal (x, expr e)
