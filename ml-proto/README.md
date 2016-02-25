@@ -30,11 +30,15 @@ To run the test suite,
 ```
 make test
 ```
-To do everything (advisable before committing changes),
+To do everything:
 ```
 make all
 ```
-Be sure to run the latter before you upload a patch.
+Before committing changes, you should do
+```
+make land
+```
+That builds `all`, plus updates `winmake.bat`.
 
 
 #### Building on Windows
