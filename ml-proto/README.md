@@ -150,7 +150,6 @@ Comments can be written in one of two ways:
 ```
 comment:
   ;; <character>* <eol>
-  (; (<character> | <comment>)* ;)
 ```
 
 In particular, comments of the latter form nest properly.

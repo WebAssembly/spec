@@ -368,15 +368,12 @@ rule token = parse
 
   | ";;"[^'\n']*eof { EOF }
   | ";;"[^'\n']*'\n' { Lexing.new_line lexbuf; token lexbuf }
-  | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
   | space { token lexbuf }
   | '\n' { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
   | _ { error lexbuf "unknown opcode" }
 
 and comment start = parse
-  | ";)" { () }
-  | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; comment start lexbuf }
   | '\n' { Lexing.new_line lexbuf; comment start lexbuf }
   | eof { error_nest start lexbuf "unclosed comment" }
   | _ { comment start lexbuf }
