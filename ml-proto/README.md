@@ -75,10 +75,12 @@ See `wasm -h` for (the few) options.
 The implementation consumes a WebAssemlby AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/master/AstSemantics.md):
 
 ```
-type: i32 | i64 | f32 | f64
-
 value: <int> | <float>
 var: <int> | $<name>
+name: (<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
+string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex>)*"
+
+type: i32 | i64 | f32 | f64
 
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
@@ -131,12 +133,12 @@ local:  ( local <type>* ) | ( local <name> <type> )
 
 module:  ( module <type>* <func>* <import>* <export>* <table>* <memory>? <start>? )
 type:    ( type <name>? ( func <param>* <result>? ) )
-import:  ( import <name>? "<module_name>" "<func_name>" (param <type>* ) (result <type>)* )
-export:  ( export "<char>*" <var> ) | ( export "<char>*" memory)
+import:  ( import <name>? <string> <string> (param <type>* ) (result <type>)* )
+export:  ( export <string> <var> ) | ( export <string> memory)
 start:   ( start <var> )
 table:   ( table <var>* )
 memory:  ( memory <int> <int>? <segment>* )
-segment: ( segment <int> "<char>*" )
+segment: ( segment <int> <string> )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).
@@ -149,8 +151,8 @@ Comments can be written in one of two ways:
 
 ```
 comment:
-  ;; <character>* <eol>
-  (; (<character> | <comment>)* ;)
+  ;; <char>* <eol>
+  (; (<char> | <comment>)* ;)
 ```
 
 In particular, comments of the latter form nest properly.
