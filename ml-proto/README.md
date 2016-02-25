@@ -99,7 +99,7 @@ expr:
   ( nop )
   ( block <name>? <expr>* )
   ( if <expr> ( then <name>? <expr>* ) ( else <name>? <expr>* )? )
-  ( if <expr1> <expr2> <expr3>? )                ;; = (if <expr1> (then <expr2>) (else <expr3>))
+  ( if <expr1> <expr2> <expr3>? )                ;; = (if <expr1> (then <expr2>) (else <expr3>?))
   ( br_if <expr> <var> <expr>? )
   ( loop <name1>? <name2>? <expr>* )             ;; = (block <name1>? (loop <name2>? (block <expr>*)))
   ( br <var> <expr>? )
