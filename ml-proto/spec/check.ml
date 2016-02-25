@@ -93,7 +93,7 @@ let type_cvtop at = function
  *)
 let type_hostop = function
   | MemorySize -> ({ins = []; out = Some Int32Type}, true)
-  | GrowMemory -> ({ins = [Int32Type]; out = None}, true)
+  | GrowMemory -> ({ins = [Int32Type]; out = Some Int32Type}, true)
 
 
 (* Type Analysis *)
@@ -132,6 +132,11 @@ let rec check_expr c et e =
   | Break (x, eo) ->
     check_expr_opt c (label c x) eo e.at
 
+  | Br_if (x, eo, e) ->
+    check_expr_opt c (label c x) eo e.at;
+    check_expr c (Some Int32Type) e;
+    check_type None et e.at
+
   | If (e1, e2, e3) ->
     check_expr c (Some Int32Type) e1;
     check_expr c et e2;
@@ -145,18 +150,18 @@ let rec check_expr c et e =
 
   | Call (x, es) ->
     let {ins; out} = func c x in
-    check_exprs c ins es;
+    check_exprs c ins es e.at;
     check_type out et e.at
 
   | CallImport (x, es) ->
     let {ins; out} = import c x in
-    check_exprs c ins es;
+    check_exprs c ins es e.at;
     check_type out et e.at
 
   | CallIndirect (x, e1, es) ->
     let {ins; out} = type_ c.types x in
     check_expr c (Some Int32Type) e1;
-    check_exprs c ins es;
+    check_exprs c ins es e.at;
     check_type out et e.at
 
   | GetLocal x ->
@@ -197,9 +202,9 @@ let rec check_expr c et e =
 
   | Select (selop, e1, e2, e3) ->
     let t = type_selop selop in
-    check_expr c (Some Int32Type) e1;
+    check_expr c (Some t) e1;
     check_expr c (Some t) e2;
-    check_expr c (Some t) e3
+    check_expr c (Some Int32Type) e3
 
   | Compare (relop, e1, e2) ->
     let t = type_relop relop in
@@ -215,13 +220,13 @@ let rec check_expr c et e =
   | Host (hostop, es) ->
     let {ins; out}, has_mem = type_hostop hostop in
     if has_mem then check_has_memory c e.at;
-    check_exprs c ins es;
+    check_exprs c ins es e.at;
     check_type out et e.at
 
-and check_exprs c ts es =
+and check_exprs c ts es at =
   let ets = List.map (fun x -> Some x) ts in
   try List.iter2 (check_expr c) ets es
-  with Invalid_argument _ -> error (Source.ats es) "arity mismatch"
+  with Invalid_argument _ -> error at "arity mismatch"
 
 and check_expr_opt c et eo at =
   match et, eo with
@@ -251,9 +256,7 @@ and check_has_memory c at =
 and check_memop memop at =
   require (memop.offset >= 0L) at "negative offset";
   require (memop.offset <= 0xffffffffL) at "offset too large";
-  Lib.Option.app
-    (fun a -> require (Lib.Int.is_power_of_two a) at "non-power-of-two alignment")
-    memop.align
+  require (Lib.Int.is_power_of_two memop.align) at "non-power-of-two alignment";
 
 and check_mem_type ty sz at =
   require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
@@ -285,11 +288,21 @@ let check_elem c x =
 module NameSet = Set.Make(String)
 
 let check_export c set ex =
-  let {name; func = x} = ex.it in
-  ignore (func c x);
+  let name = match ex.it with
+  | ExportFunc (n, x) -> ignore (func c x); n
+  | ExportMemory n -> require (c.has_memory) ex.at "no memory to export"; n in
   require (not (NameSet.mem name set)) ex.at
     "duplicate export name";
   NameSet.add name set
+
+let check_start c start =
+  Lib.Option.app (fun x ->
+    let start_type = func c x in
+    require (start_type.ins = []) x.at
+      "start function must be nullary";
+    require (start_type.out = None) x.at
+      "start function must not return anything";
+  ) start
 
 let check_segment size prev_end seg =
   let seg_len = Int64.of_int (String.length seg.it.Memory.data) in
@@ -309,7 +322,7 @@ let check_memory memory =
   ignore (List.fold_left (check_segment mem.initial) Int64.zero mem.segments)
 
 let check_module m =
-  let {memory; types; funcs; imports; exports; table} = m.it in
+  let {memory; types; funcs; start; imports; exports; table} = m.it in
   Lib.Option.app check_memory memory;
   let c = {types;
            funcs = List.map (fun f -> type_ types f.it.ftype) funcs;
@@ -320,4 +333,5 @@ let check_module m =
            has_memory = memory <> None} in
   List.iter (check_func c) funcs;
   List.iter (check_elem c) table;
-  ignore (List.fold_left (check_export c) NameSet.empty exports)
+  ignore (List.fold_left (check_export c) NameSet.empty exports);
+  check_start c start

@@ -150,6 +150,11 @@ let rec eval_expr (c : config) (e : expr) =
   | Break (x, eo) ->
     raise (label c x (eval_expr_opt c eo))
 
+  | Br_if (x, eo, e) ->
+    let v = eval_expr_opt c eo in
+    let i = int32 (eval_expr c e) e.at in
+    if i <> 0l then raise (label c x v) else None
+
   | If (e1, e2, e3) ->
     let i = int32 (eval_expr c e1) e1.at in
     eval_expr c (if i <> 0l then e2 else e3)
@@ -169,7 +174,7 @@ let rec eval_expr (c : config) (e : expr) =
 
   | CallImport (x, es) ->
     let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
-    (import c x) vs
+    (try (import c x) vs with Crash (_, msg) -> Crash.error e.at msg)
 
   | CallIndirect (ftype, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
@@ -230,9 +235,9 @@ let rec eval_expr (c : config) (e : expr) =
       with exn -> arithmetic_error e.at e1.at e2.at exn)
 
   | Select (selop, e1, e2, e3) ->
-    let cond = int32 (eval_expr c e1) e1.at in
-    let v1 = some (eval_expr c e2) e2.at in
-    let v2 = some (eval_expr c e3) e3.at in
+    let v1 = some (eval_expr c e1) e1.at in
+    let v2 = some (eval_expr c e2) e2.at in
+    let cond = int32 (eval_expr c e3) e3.at in
     Some (if cond <> 0l then v1 else v2)
 
   | Compare (relop, e1, e2) ->
@@ -279,15 +284,16 @@ and eval_hostop c hostop vs at =
     let delta = address32 v at in
     if I64.rem_u delta Memory.page_size <> 0L then
       Trap.error at "growing memory by non-multiple of page size";
-    let new_size = Int64.add (Memory.size mem) delta in
-    if I64.lt_u new_size (Memory.size mem) then
+    let old_size = (Memory.size mem) in
+    let new_size = Int64.add old_size delta in
+    if I64.lt_u new_size old_size then
       Trap.error at "memory size overflow";
     (* Test whether the new size overflows the memory type.
      * Since we currently only support i32, just test that. *)
     if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
       Trap.error at "memory size exceeds implementation limit";
     Memory.grow mem delta;
-    None
+    Some (Int32 (Int64.to_int32 old_size))
 
   | _, _ ->
     Crash.error at "invalid invocation of host operator"
@@ -301,15 +307,22 @@ let init_memory {it = {initial; segments; _}} =
   mem
 
 let add_export funcs ex =
-  ExportMap.add ex.it.name (List.nth funcs ex.it.func.it)
+  match ex.it with
+  | ExportFunc (n, x) -> ExportMap.add n (List.nth funcs x.it)
+  | ExportMemory n -> fun x -> x
 
 let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
-  let {memory; funcs; exports; _} = m.it in
-  {module_ = m;
-   imports;
-   exports = List.fold_right (add_export funcs) exports ExportMap.empty;
-   memory = Lib.Option.map init_memory memory}
+  let {memory; funcs; exports; start; _} = m.it in
+  let instance =
+    {module_ = m;
+     imports;
+     exports = List.fold_right (add_export funcs) exports ExportMap.empty;
+     memory = Lib.Option.map init_memory memory}
+  in
+  Lib.Option.app
+    (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;
+  instance
 
 let invoke instance name vs =
   try

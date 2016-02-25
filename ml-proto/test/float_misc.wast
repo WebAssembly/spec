@@ -1,3 +1,14 @@
+;; Platforms intended to run WebAssembly must support IEEE 754 arithmetic.
+;; This testsuite is not currently sufficient for full IEEE 754 conformance
+;; testing; platforms are currently expected to meet these requirements in
+;; their own way (widely-used hardware platforms already do this).
+;;
+;; What this testsuite does test is that (a) the platform is basically IEEE 754
+;; rather than something else entirely, (b) it's configured correctly for
+;; WebAssembly (rounding direction, exception masks, precision level, subnormal
+;; mode, etc.), and (c) the WebAssembly implementation doesn't perform any
+;; common value-changing optimizations.
+
 (module
   (func $f32.add (param $x f32) (param $y f32) (result f32) (f32.add (get_local $x) (get_local $y)))
   (func $f32.sub (param $x f32) (param $y f32) (result f32) (f32.sub (get_local $x) (get_local $y)))
@@ -64,7 +75,7 @@
 (assert_return (invoke "f32.add" (f32.const 0x1.000002p+23) (f32.const 0x1p-1)) (f32.const 0x1.000004p+23))
 
 ;; Test that what some systems call signalling NaN behaves as a quiet NaN.
-(assert_return_nan (invoke "f32.add" (f32.const nan:0x200000) (f32.const 1.0)))
+(assert_return (invoke "f32.add" (f32.const nan:0x200000) (f32.const 1.0)) (f32.const nan:0x600000))
 
 (assert_return (invoke "f64.add" (f64.const 1.1234567890) (f64.const 1.2345e-10)) (f64.const 0x1.1f9add37c11f7p+0))
 
@@ -136,7 +147,7 @@
 (assert_return (invoke "f64.add" (f64.const -0x0.3f3d1a052fa2bp-1022) (f64.const -0x1.4b78292c7d2adp-1021)) (f64.const -0x1.6b16b62f14fc2p-1021))
 
 ;; Test that what some systems call signalling NaN behaves as a quiet NaN.
-(assert_return_nan (invoke "f64.add" (f64.const nan:0x4000000000000) (f64.const 1.0)))
+(assert_return (invoke "f64.add" (f64.const nan:0x4000000000000) (f64.const 1.0)) (f64.const nan:0xc000000000000))
 
 ;; Test for a historic spreadsheet bug.
 ;; https://blogs.office.com/2007/09/25/calculation-issue-update/

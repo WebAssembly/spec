@@ -1,6 +1,10 @@
 let name = "wasm"
 let version = "0.2"
 
+let configure () =
+  Import.register "spectest" Spectest.lookup;
+  Import.register "env" Env.lookup
+
 let banner () =
   print_endline (name ^ " " ^ version ^ " spec interpreter")
 
@@ -32,7 +36,7 @@ let process file lexbuf start =
   | Check.Invalid (at, msg) -> error at "invalid module" msg
   | Eval.Trap (at, msg) -> error at "runtime trap" msg
   | Eval.Crash (at, msg) -> error at "runtime crash" msg
-  | Builtins.Unknown (at, msg) -> error at "unknown built-in" msg
+  | Import.Unknown (at, msg) -> error at "unknown import" msg
 
 let process_file file =
   Script.trace ("Loading (" ^ file ^ ")...");
@@ -89,6 +93,7 @@ let argspec = Arg.align
 let () =
   Printexc.record_backtrace true;
   try
+    configure ();
     let files = ref [] in
     Arg.parse argspec (fun file -> files := !files @ [file]) usage;
     if !files = [] then Flags.interactive := true;

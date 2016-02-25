@@ -1,4 +1,4 @@
-(; i64 operations ;)
+;; i64 operations
 
 (module
   (func $add (param $x i64) (param $y i64) (result i64) (i64.add (get_local $x) (get_local $y)))

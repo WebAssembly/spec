@@ -6,12 +6,13 @@ welcome.
 
 Misc semantics:
  - ~~test that linear memory is little-endian for all integers and floats~~
- - test that 8-bit, 16-bit, and 32-bit atomic operations are lock-free (is this possible?)
  - test that unaligned and misaligned accesses work, even if slow
  - ~~test that runaway recursion traps~~
- - test that too-big linear memory resize fails appropriately
+ - test that too-big `grow_memory` fails appropriately
  - test that too-big linear memory initial allocation fails
  - test that function addresses are monotonic indices, and not actual addresses.
+ - ~~test that non-pagesize `grow_memory` fails~~
+ - test that non-pagesize initial linear memory allocation fails
  - test that one can clobber the entire contents of the linear memory without corrupting: call stack, local variables, program execution.
 
 Operator semantics:
@@ -23,7 +24,10 @@ Operator semantics:
  - ~~test that `page_size` returns a power of 2~~
  - ~~test that arithmetic operands are evaluated left-to-right~~
  - ~~test that call and store operands are evaluated left-to-right too~~
- - test that call and argument operands of call_indirect are evaluated left-to-right, too
+ - ~~test that call and argument operands of call_indirect are evaluated left-to-right, too~~
+ - ~~test that select arguments are evaluated left-to-right, too~~
+ - test that br_if arguments are evaluated left-to-right, too
+ - test that tableswitch arguments are evaluated left-to-right, too
  - ~~test that add/sub/mul/wrap/wrapping-store silently wrap on overflow~~
  - ~~test that sdiv/udiv/srem/urem trap on divide-by-zero~~
  - ~~test that sdiv traps on overflow~~
@@ -32,6 +36,7 @@ Operator semantics:
  - ~~test that unsigned operations are properly unsigned~~
  - ~~test that signed integer div rounds toward zero~~
  - ~~test that signed integer mod has the sign of the dividend~~
+ - ~~test that select preserves all NaN bits~~
 
 Floating point semantics:
  - ~~test for round-to-nearest rounding~~
@@ -41,7 +46,7 @@ Floating point semantics:
  - ~~test that all operations that can overflow produce Infinity and with the correct sign~~
  - ~~test that all operations that can divide by zero produce Infinity with the correct sign~~
  - ~~test that all operations that can have an invalid produce NaN~~
- - test that all operations that can have underflow behave [correctly](https://github.com/WebAssembly/design/issues/148)
+ - ~~test that all operations that can have underflow behave correctly~~
  - ~~test that nearestint doesn't do JS-style Math.round or C-style round(3) rounding~~
  - ~~test that signalling NaN doesn't cause weirdness~~
  - ~~test that signalling/quiet NaNs can have sign bits and payloads in literals~~
@@ -61,14 +66,15 @@ Linear memory semantics:
  - test that when allocating 4GiB, accessing index -1 fails
 
 Function pointer semantics:
+ - test that function addresses are monotonic indices, and not actual addresses.
  - test that function pointers work [correctly](https://github.com/WebAssembly/design/issues/89)
 
 Expression optimizer bait:
  - ~~test that `a+1<b+1` isn't folded to `a<b`~~
- - test that that demote-promote, wrap+sext, wrap+zext, shl+ashr, shl+lshr, div+mul, mul+div aren't folded away
+ - ~~test that that demote-promote, wrap+sext, wrap+zext, shl+ashr, shl+lshr, div+mul, mul+div aren't folded away~~
  - ~~test that converting int32 to float and back isn't folded away~~
  - ~~test that converting int64 to double and back isn't folded away~~
- - test that `float(double(float(x))+double(y))` is not `float(x)+float(y)` (and so on for other operators)
+ - ~~test that `float(double(float(x))+double(y))` is not `float(x)+float(y)` (and so on for other operators)~~
  - ~~test that `x*0.0` is not folded to `0.0`~~
  - ~~test that `0.0/x` is not folded to `0.0`~~
  - ~~test that `x != x` is not folded to false, `x == x` is not folded to true, `x < x` is not folded to false, etc.~~
@@ -77,7 +83,7 @@ Expression optimizer bait:
  - ~~test that floating-point division by immediate 0 and -0 is defined~~
  - ~~test that floating-point (x*y)/y isn't folded to x~~
  - ~~test that floating-point (x+y)-y isn't folded to x~~
- - test that ueq/one/etc aren't folded to oeq/une/etc.
+ - test that ult/ugt/etc (formed with a not operator) aren't folded to oge/ole/etc.
  - ~~test that floating point add/mul aren't reassociated even when tempting~~
  - ~~test that floating point mul+add isn't folded to fma even when tempting~~
  - ~~test that floating point sqrt(x*x+y*y) isn't folded to hypot even when tempting~~
@@ -124,3 +130,5 @@ SIMD (post-MVP):
 
 Threads (post-MVP):
  - test that thread-local variables are actually thread-local
+ - test that 8-bit, 16-bit, 32-bit, and 64-bit (on wasm64) atomic operations
+   are lock-free (is this possible?)

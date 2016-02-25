@@ -101,10 +101,12 @@ struct
 
   let zero = Rep.zero
 
+  (* add, sub, and mul are sign-agnostic and do not trap on overflow. *)
   let add = Rep.add
   let sub = Rep.sub
   let mul = Rep.mul
 
+  (* result is truncated toward zero *)
   let div_s x y =
     if y = Rep.zero then
       raise Numerics.IntegerDivideByZero
@@ -113,9 +115,11 @@ struct
     else
       Rep.div x y
 
+  (* result is floored (which is the same as truncating, for unsigned values) *)
   let div_u x y =
     let q, r = divrem_u x y in q
 
+  (* result has the sign of the dividend *)
   let rem_s x y =
     if y = Rep.zero then
       raise Numerics.IntegerDivideByZero
@@ -142,6 +146,7 @@ struct
   let shr_u x y =
     shift Rep.shift_right_logical x y
 
+  (* clz is defined for all values, including all-zeros. *)
   let clz x =
     Rep.of_int
       (let rec loop acc n =
@@ -153,6 +158,7 @@ struct
            loop (1 + acc) (Rep.shift_left n 1)
        in loop 0 x)
 
+  (* ctz is defined for all values, including all-zeros. *)
   let ctz x =
     Rep.of_int
       (let rec loop acc n =

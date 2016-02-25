@@ -93,8 +93,8 @@ let num = sign digit+
 let hexnum = sign "0x" hexdigit+
 let int = num | hexnum
 let float =
-    (num '.' digit+)
-  | num ('.' digit+)? ('e' | 'E') num
+    (num '.' digit*)
+  | num ('.' digit*)? ('e' | 'E') num
   | sign "0x" hexdigit+ '.'? hexdigit* 'p' sign digit+
   | sign "infinity"
   | sign "nan"
@@ -157,34 +157,44 @@ rule token = parse
 
   | (nxx as t)".load"
     { LOAD (fun (o, a, e) ->
-        numop t (I32_load (o, a, e)) (I64_load (o, a, e))
-                (F32_load (o, a, e)) (F64_load (o, a, e))) }
+        numop t (I32_load (o, (Lib.Option.get a 4), e))
+                (I64_load (o, (Lib.Option.get a 8), e))
+                (F32_load (o, (Lib.Option.get a 4), e))
+                (F64_load (o, (Lib.Option.get a 8), e))) }
   | (nxx as t)".store"
     { STORE (fun (o, a, e1, e2) ->
-        numop t (I32_store (o, a, e1, e2)) (I64_store (o, a, e1, e2))
-                (F32_store (o, a, e1, e2)) (F64_store (o, a, e1, e2))) }
+        numop t (I32_store (o, (Lib.Option.get a 4), e1, e2))
+                (I64_store (o, (Lib.Option.get a 8), e1, e2))
+                (F32_store (o, (Lib.Option.get a 4), e1, e2))
+                (F64_store (o, (Lib.Option.get a 8), e1, e2))) }
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
     { LOAD (fun (o, a, e) ->
         intop t
           (memsz sz
-            (ext s (I32_load8_s (o, a, e)) (I32_load8_u (o, a, e)))
-            (ext s (I32_load16_s (o, a, e)) (I32_load16_u (o, a, e)))
-            (ext s (I32_load32_s (o, a, e)) (I32_load32_u (o, a, e))))
+            (ext s (I32_load8_s (o, (Lib.Option.get a 1), e))
+                   (I32_load8_u (o, (Lib.Option.get a 1), e)))
+            (ext s (I32_load16_s (o, (Lib.Option.get a 2), e))
+                   (I32_load16_u (o, (Lib.Option.get a 2), e)))
+            (ext s (I32_load32_s (o, (Lib.Option.get a 4), e))
+                   (I32_load32_u (o, (Lib.Option.get a 4), e))))
           (memsz sz
-            (ext s (I64_load8_s (o, a, e)) (I64_load8_u (o, a, e)))
-            (ext s (I64_load16_s (o, a, e)) (I64_load16_u (o, a, e)))
-            (ext s (I64_load32_s (o, a, e)) (I64_load32_u (o, a, e))))) }
+            (ext s (I64_load8_s (o, (Lib.Option.get a 1), e))
+                   (I64_load8_u (o, (Lib.Option.get a 1), e)))
+            (ext s (I64_load16_s (o, (Lib.Option.get a 2), e))
+                   (I64_load16_u (o, (Lib.Option.get a 2), e)))
+            (ext s (I64_load32_s (o, (Lib.Option.get a 4), e))
+                   (I64_load32_u (o, (Lib.Option.get a 4), e))))) }
   | (ixx as t)".store"(mem_size as sz)
     { STORE (fun (o, a, e1, e2) ->
         intop t
           (memsz sz
-            (I32_store8 (o, a, e1, e2))
-            (I32_store16 (o, a, e1, e2))
-            (I32_store32 (o, a, e1, e2)))
+            (I32_store8 (o, (Lib.Option.get a 1), e1, e2))
+            (I32_store16 (o, (Lib.Option.get a 2), e1, e2))
+            (I32_store32 (o, (Lib.Option.get a 4), e1, e2)))
           (memsz sz
-            (I64_store8 (o, a, e1, e2))
-            (I64_store16 (o, a, e1, e2))
-            (I64_store32 (o, a, e1, e2)))
+            (I64_store8 (o, (Lib.Option.get a 1), e1, e2))
+            (I64_store16 (o, (Lib.Option.get a 2), e1, e2))
+            (I64_store32 (o, (Lib.Option.get a 4), e1, e2)))
         ) }
 
   | "offset="(digits as s) { OFFSET (Int64.of_string s) }
@@ -336,6 +346,7 @@ rule token = parse
 
   | "type" { TYPE }
   | "func" { FUNC }
+  | "start" { START }
   | "param" { PARAM }
   | "result" { RESULT }
   | "local" { LOCAL }

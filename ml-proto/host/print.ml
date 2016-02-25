@@ -21,12 +21,17 @@ let print_var_sig prefix i t =
 let print_func_sig m prefix i f =
   printf "%s %d : %s\n" prefix i (string_of_func_type (func_type m f))
 
-let print_export_sig m prefix n f =
-  printf "%s \"%s\" : %s\n" prefix n (string_of_func_type (func_type m f))
+let print_export_sig m n f =
+  printf "export \"%s\" : %s\n" n (string_of_func_type (func_type m f))
+
+let print_export_mem n =
+  printf "export \"%s\" : memory\n" n
 
 let print_table_elem i x =
   printf "table [%d] = func %d\n" i x.it
 
+let print_start start =
+  Lib.Option.app (fun x -> printf "start = func %d\n" x.it) start
 
 (* Ast *)
 
@@ -34,13 +39,16 @@ let print_func m i f =
   print_func_sig m "func" i f
 
 let print_export m i ex =
-  print_export_sig m "export" ex.it.name (List.nth m.it.funcs ex.it.func.it)
+  match ex.it with
+  | ExportFunc (n, x) -> print_export_sig m n (List.nth m.it.funcs x.it)
+  | ExportMemory n -> print_export_mem n
 
 let print_module m =
-  let {funcs; exports; table} = m.it in
+  let {funcs; start; exports; table} = m.it in
   List.iteri (print_func m) funcs;
   List.iteri (print_export m) exports;
   List.iteri print_table_elem table;
+  print_start start;
   flush_all ()
 
 let print_module_sig m =

@@ -19,7 +19,7 @@ and expr' =
   | Block of expr list
   | Loop of expr list
   | Br of var * expr option
-  | Br_if of expr * var * expr option
+  | Br_if of var * expr option * expr
   | Return of var * expr option
   | If of expr * expr
   | If_else of expr * expr * expr
@@ -33,32 +33,32 @@ and expr' =
   | Set_local of var * expr
 
   (* Memory access *)
-  | I32_load of Memory.offset * int option * expr
-  | I64_load of Memory.offset * int option * expr
-  | F32_load of Memory.offset * int option * expr
-  | F64_load of Memory.offset * int option * expr
-  | I32_store of Memory.offset * int option * expr * expr
-  | I64_store of Memory.offset * int option * expr * expr
-  | F32_store of Memory.offset * int option * expr * expr
-  | F64_store of Memory.offset * int option * expr * expr
-  | I32_load8_s of Memory.offset * int option * expr
-  | I32_load8_u of Memory.offset * int option * expr
-  | I32_load16_s of Memory.offset * int option * expr
-  | I32_load16_u of Memory.offset * int option * expr
-  | I32_load32_s of Memory.offset * int option * expr
-  | I32_load32_u of Memory.offset * int option * expr
-  | I64_load8_s of Memory.offset * int option * expr
-  | I64_load8_u of Memory.offset * int option * expr
-  | I64_load16_s of Memory.offset * int option * expr
-  | I64_load16_u of Memory.offset * int option * expr
-  | I64_load32_s of Memory.offset * int option * expr
-  | I64_load32_u of Memory.offset * int option * expr
-  | I32_store8 of Memory.offset * int option * expr * expr
-  | I32_store16 of Memory.offset * int option * expr * expr
-  | I32_store32 of Memory.offset * int option * expr * expr
-  | I64_store8 of Memory.offset * int option * expr * expr
-  | I64_store16 of Memory.offset * int option * expr * expr
-  | I64_store32 of Memory.offset * int option * expr * expr
+  | I32_load of Memory.offset * int * expr
+  | I64_load of Memory.offset * int * expr
+  | F32_load of Memory.offset * int * expr
+  | F64_load of Memory.offset * int * expr
+  | I32_store of Memory.offset * int * expr * expr
+  | I64_store of Memory.offset * int * expr * expr
+  | F32_store of Memory.offset * int * expr * expr
+  | F64_store of Memory.offset * int * expr * expr
+  | I32_load8_s of Memory.offset * int * expr
+  | I32_load8_u of Memory.offset * int * expr
+  | I32_load16_s of Memory.offset * int * expr
+  | I32_load16_u of Memory.offset * int * expr
+  | I32_load32_s of Memory.offset * int * expr
+  | I32_load32_u of Memory.offset * int * expr
+  | I64_load8_s of Memory.offset * int * expr
+  | I64_load8_u of Memory.offset * int * expr
+  | I64_load16_s of Memory.offset * int * expr
+  | I64_load16_u of Memory.offset * int * expr
+  | I64_load32_s of Memory.offset * int * expr
+  | I64_load32_u of Memory.offset * int * expr
+  | I32_store8 of Memory.offset * int * expr * expr
+  | I32_store16 of Memory.offset * int * expr * expr
+  | I32_store32 of Memory.offset * int * expr * expr
+  | I64_store8 of Memory.offset * int * expr * expr
+  | I64_store16 of Memory.offset * int * expr * expr
+  | I64_store32 of Memory.offset * int * expr * expr
 
   (* Unary arithmetic *)
   | I32_clz of expr
@@ -215,6 +215,7 @@ and module' =
   memory : Kernel.memory option;
   types : Types.func_type list;
   funcs : func list;
+  start : var option;
   imports : Kernel.import list;
   exports : Kernel.export list;
   table : var list;

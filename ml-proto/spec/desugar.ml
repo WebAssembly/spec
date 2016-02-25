@@ -17,6 +17,9 @@ and shift' n = function
   | Break (x, eo) ->
     let x' = if x.it < n then x else (x.it + 1) @@ x.at in
     Break (x', Lib.Option.map (shift n) eo)
+  | Br_if (x, eo, e) ->
+    let x' = if x.it < n then x else (x.it + 1) @@ x.at in
+    Br_if (x', Lib.Option.map (shift n) eo, shift n e)
   | If (e1, e2, e3) -> If (shift n e1, shift n e2, shift n e3)
   | Switch (e, xs, x, es) -> Switch (shift n e, xs, x, List.map (shift n) es)
   | Call (x, es) -> Call (x, List.map (shift n) es)
@@ -53,8 +56,7 @@ and expr' at = function
   | Ast.Block es -> Block (List.map expr es)
   | Ast.Loop es -> Block [Loop (seq es) @@ at]
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
-  | Ast.Br_if (e, x, eo) ->
-    If (expr e, Break (x, Lib.Option.map expr eo) @@ at, opt eo)
+  | Ast.Br_if (x, eo, e) -> Br_if (x, Lib.Option.map expr eo, expr e)
   | Ast.Return (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.If (e1, e2) -> If (expr e1, expr e2, Nop @@ Source.after e2.at)
   | Ast.If_else (e1, e2, e3) -> If (expr e1, expr e2, expr e3)
@@ -74,7 +76,8 @@ and expr' at = function
     let n = List.length es' in
     let sh x = (if x.it >= n then x.it + n else x.it) @@ x.at in
     Block [Switch
-      (expr e, List.map sh (List.tl xs), sh (List.hd xs), es' @ es'') @@ at]
+      (expr e, List.map sh (List.tl xs), sh (List.hd xs), List.rev es' @ es'')
+      @@ at]
 
   | Ast.Get_local x -> GetLocal x
   | Ast.Set_local (x, e) -> SetLocal (x, expr e)
@@ -307,7 +310,7 @@ and func' = function
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function
-  | {Ast.funcs = fs; memory; types; imports; exports; table} ->
-    {funcs = List.map func fs; memory; types; imports; exports; table}
+  | {Ast.funcs = fs; start; memory; types; imports; exports; table} ->
+    {funcs = List.map func fs; start; memory; types; imports; exports; table}
 
 let desugar = module_

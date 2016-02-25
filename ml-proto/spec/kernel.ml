@@ -61,7 +61,7 @@ type selop = (I32Op.selop, I64Op.selop, F32Op.selop, F64Op.selop) op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) op
 
-type memop = {ty : value_type; offset : Memory.offset; align : int option}
+type memop = {ty : value_type; offset : Memory.offset; align : int}
 type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
 type wrapop = {memop : memop; sz : Memory.mem_size}
 type hostop =
@@ -81,6 +81,7 @@ and expr' =
   | Block of expr list                      (* execute in sequence *)
   | Loop of expr                            (* loop header *)
   | Break of var * expr option              (* break to n-th surrounding label *)
+  | Br_if of var * expr option * expr       (* conditional break *)
   | If of expr * expr * expr                (* conditional *)
   | Switch of expr * var list * var * expr list   (* table switch *)
   | Call of var * expr list                 (* call function *)
@@ -124,7 +125,9 @@ and memory' =
 and segment = Memory.segment Source.phrase
 
 type export = export' Source.phrase
-and export' = {name : string; func : var}
+and export' =
+  | ExportFunc of string * var
+  | ExportMemory of string
 
 type import = import' Source.phrase
 and import' =
@@ -140,6 +143,7 @@ and module_' =
   memory : memory option;
   types : Types.func_type list;
   funcs : func list;
+  start : var option;
   imports : import list;
   exports : export list;
   table : var list;
