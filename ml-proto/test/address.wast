@@ -24,8 +24,8 @@
     (export "bad2" $bad2)
 )
 
-(assert_return (invoke "good" (i32.const 0)))
-(assert_return (invoke "good" (i32.const 995)))
+(invoke "good" (i32.const 0))
+(invoke "good" (i32.const 995))
 (assert_trap (invoke "good" (i32.const 996)) "out of bounds memory access")
 (assert_trap (invoke "bad2" (i32.const 0)) "out of bounds memory access")
 (assert_trap (invoke "bad2" (i32.const 1)) "out of bounds memory access")
