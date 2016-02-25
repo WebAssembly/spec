@@ -138,6 +138,14 @@
    (i32.xor (return (i32.const 1)) (i32.const 2))
   )
 
+  (func $redefinition (result i32)
+    (block $l1
+      (i32.add (block $l1
+                 (i32.const 2))
+               (block $l1
+                 (br $l1 (i32.const 3)))))
+  )
+
   (export "block" $block)
   (export "loop1" $loop1)
   (export "loop2" $loop2)
@@ -152,6 +160,7 @@
   (export "br_if3" $br_if3)
   (export "misc1" $misc1)
   (export "misc2" $misc2)
+  (export "redefinition" $redefinition)
 )
 
 (assert_return (invoke "block") (i32.const 1))
@@ -175,6 +184,7 @@
 (assert_return (invoke "br_if3") (i32.const 2))
 (assert_return (invoke "misc1") (i32.const 1))
 (assert_return (invoke "misc2") (i32.const 1))
+(assert_return (invoke "redefinition") (i32.const 5))
 
 (assert_invalid (module (func (loop $l (br $l (i32.const 0))))) "arity mismatch")
 (assert_invalid (module (func (block $l (f32.neg (br_if $l (i32.const 1))) (nop)))) "type mismatch")
