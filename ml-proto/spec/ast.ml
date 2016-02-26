@@ -17,7 +17,7 @@ and expr' =
   | Loop of expr list
   | Br of var * expr option
   | Br_if of var * expr option * expr
-  | Br_table of var list * expr option * expr
+  | Br_table of var list * var * expr option * expr
   | Return of var * expr option
   | If of expr * expr
   | If_else of expr * expr * expr

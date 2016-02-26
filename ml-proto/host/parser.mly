@@ -229,9 +229,12 @@ expr1 :
   | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
   | BR_IF var expr { fun c -> Br_if ($2 c label, None, $3 c) }
   | BR_IF var expr expr { fun c -> Br_if ($2 c label, Some ($3 c), $4 c) }
-  | BR_TABLE var_list expr { fun c -> Br_table ($2 c label, None, $3 c) }
-  | BR_TABLE var_list expr expr
-    { fun c -> Br_table ($2 c label, Some ($3 c), $4 c) }
+  | BR_TABLE var var_list expr
+    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
+      Br_table (xs, x, None, $4 c) }
+  | BR_TABLE var var_list expr expr
+    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
+      Br_table (xs, x, Some ($4 c), $5 c) }
   | RETURN expr_opt
     { let at1 = ati 1 in
       fun c -> Return (label c ("return" @@ at1) @@ at1, $2 c) }

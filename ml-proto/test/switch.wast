@@ -13,8 +13,9 @@
                   (block $2
                     (block $1
                       (block $0
-                        (br_table $0 $1 $2 $3 $4 $5 $6 $7 (get_local $i))
-                        (br $default)
+                        (br_table $0 $1 $2 $3 $4 $5 $6 $7 $default
+                          (get_local $i)
+                        )
                       ) ;; 0
                       (return (get_local $i))
                     ) ;; 1
@@ -56,10 +57,9 @@
                     (block $2
                       (block $1
                         (block $0
-                          (br_table $0 $1 $2 $3 $4 $5 $6 $7
+                          (br_table $0 $1 $2 $3 $4 $5 $6 $7 $default
                             (i32.wrap/i64 (get_local $i))
                           )
-                          (br $default)
                         ) ;; 0
                         (return (get_local $i))
                       ) ;; 1
@@ -92,11 +92,14 @@
           (block $1
             (i32.add (i32.const 100)
               (block $0
-                (br_table $0 $1 $2
-                  (i32.mul (i32.const 2) (get_local $i))
-                  (i32.and (i32.const 3) (get_local $i))
+                (i32.add (i32.const 1000)
+                  (block $default
+                    (br_table $0 $1 $2 $default
+                      (i32.mul (i32.const 2) (get_local $i))
+                      (i32.and (i32.const 3) (get_local $i))
+                    )
+                  )
                 )
-                (i32.add (i32.const 1000) (get_local $i))
               )
             )
           )
@@ -107,7 +110,9 @@
 
   ;; Corner cases
   (func $corner (result i32)
-    (br_table (i32.const 0))
+    (block
+      (br_table 0 (i32.const 0))
+    )
     (i32.const 1)
   )
 
@@ -138,11 +143,11 @@
 (assert_return (invoke "arg" (i32.const 0)) (i32.const 110))
 (assert_return (invoke "arg" (i32.const 1)) (i32.const 12))
 (assert_return (invoke "arg" (i32.const 2)) (i32.const 4))
-(assert_return (invoke "arg" (i32.const 3)) (i32.const 1113))
+(assert_return (invoke "arg" (i32.const 3)) (i32.const 1116))
 (assert_return (invoke "arg" (i32.const 4)) (i32.const 118))
 (assert_return (invoke "arg" (i32.const 5)) (i32.const 20))
 (assert_return (invoke "arg" (i32.const 6)) (i32.const 12))
-(assert_return (invoke "arg" (i32.const 7)) (i32.const 1117))
+(assert_return (invoke "arg" (i32.const 7)) (i32.const 1124))
 (assert_return (invoke "arg" (i32.const 8)) (i32.const 126))
 
 (assert_return (invoke "corner") (i32.const 1))

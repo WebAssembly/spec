@@ -83,7 +83,7 @@ and expr' =
   | Loop of expr                            (* loop header *)
   | Break of var * expr option              (* break to n-th surrounding label *)
   | Break_if of var * expr option * expr    (* conditional break *)
-  | Break_table of var list * expr option * expr  (* indexed break *)
+  | Break_table of var list * var * expr option * expr  (* indexed break *)
   | If of expr * expr * expr                (* conditional *)
   | Call of var * expr list                 (* call function *)
   | CallImport of var * expr list           (* call imported function *)

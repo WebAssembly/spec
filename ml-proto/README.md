@@ -97,7 +97,7 @@ expr:
   ( if <expr> <expr> )                        ;; = (if_else <expr> <expr> (nop))
   ( br <var> <expr>? )
   ( br_if <var> <expr>? <expr> )
-  ( br_table <var>* <expr>? <expr> )
+  ( br_table <var>+ <expr>? <expr> )
   ( return <expr>? )                          ;; = (br <current_depth> <expr>?)
   ( call <var> <expr>* )
   ( call_import <var> <expr>* )

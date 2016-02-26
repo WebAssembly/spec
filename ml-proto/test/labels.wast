@@ -75,8 +75,7 @@
               (block $3
                 (block $2
                   (block $1
-                    (br_table $0 $1 $2 $3 (get_local 0))
-                    (br $default)
+                    (br_table $0 $1 $2 $3 $default (get_local 0))
                   ) ;; 1
                   (i32.const 1)
                 ) ;; 2

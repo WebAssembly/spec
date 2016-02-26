@@ -18,9 +18,10 @@ and shift' n = function
   | Break (x, eo) -> Break (shift_var n x, Lib.Option.map (shift n) eo)
   | Break_if (x, eo, e) ->
     Break_if (shift_var n x, Lib.Option.map (shift n) eo, shift n e)
-  | Break_table (xs, eo, e) ->
+  | Break_table (xs, x, eo, e) ->
     Break_table
-      (List.map (shift_var n) xs, Lib.Option.map (shift n) eo, shift n e)
+      (List.map (shift_var n) xs, shift_var n x,
+       Lib.Option.map (shift n) eo, shift n e)
   | If (e1, e2, e3) -> If (shift n e1, shift n e2, shift n e3)
   | Call (x, es) -> Call (x, List.map (shift n) es)
   | CallImport (x, es) -> CallImport (x, List.map (shift n) es)
@@ -59,7 +60,8 @@ and expr' at = function
   | Ast.Loop es -> Block [Loop (seq es) @@ at]
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.Br_if (x, eo, e) -> Break_if (x, Lib.Option.map expr eo, expr e)
-  | Ast.Br_table (xs, eo, e) -> Break_table (xs, Lib.Option.map expr eo, expr e)
+  | Ast.Br_table (xs, x, eo, e) ->
+    Break_table (xs, x, Lib.Option.map expr eo, expr e)
   | Ast.Return (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.If (e1, e2) -> If (expr e1, expr e2, Nop @@ Source.after e2.at)
   | Ast.If_else (e1, e2, e3) -> If (expr e1, expr e2, expr e3)
