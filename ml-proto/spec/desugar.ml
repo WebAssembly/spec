@@ -279,7 +279,6 @@ and expr' at = function
 
   | Ast.Memory_size -> Host (MemorySize, [])
   | Ast.Grow_memory e -> Host (GrowMemory, [expr e])
-  | Ast.Has_feature s -> Host (HasFeature s, [])
 
 and seq = function
   | [] -> Nop @@ Source.no_region

@@ -17,10 +17,11 @@ OCB_FLAGS += 	$(DIRS:%=-I %)
 OCB_FLAGS += 	$(LIBS:%=-libs %)
 OCB =		ocamlbuild $(OCB_FLAGS)
 
-.PHONY:		all opt unopt
+.PHONY:		opt unopt all land
 unopt:		$(NAME_UNOPT)
 opt:		$(NAME_OPT)
-all:		winmake.bat opt unopt test
+all:		opt unopt test
+land:		all winmake.bat
 
 $(NAME_OPT):	main.native
 		mv $< $@

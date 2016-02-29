@@ -189,7 +189,6 @@ and expr' =
   (* Host queries *)
   | Memory_size
   | Grow_memory of expr
-  | Has_feature of string
 
 
 (* Functions *)
