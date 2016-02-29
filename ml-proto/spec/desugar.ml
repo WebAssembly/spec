@@ -21,6 +21,7 @@ and shift' n = function
     let x' = if x.it < n then x else (x.it + 1) @@ x.at in
     Br_if (x', Lib.Option.map (shift n) eo, shift n e)
   | If (e1, e2, e3) -> If (shift n e1, shift n e2, shift n e3)
+  | Select (e1, e2, e3) -> Select (shift n e1, shift n e2, shift n e3)
   | Switch (e, xs, x, es) -> Switch (shift n e, xs, x, List.map (shift n) es)
   | Call (x, es) -> Call (x, List.map (shift n) es)
   | CallImport (x, es) -> CallImport (x, List.map (shift n) es)
@@ -35,8 +36,6 @@ and shift' n = function
   | Const c -> Const c
   | Unary (unop, e) -> Unary (unop, shift n e)
   | Binary (binop, e1, e2) -> Binary (binop, shift n e1, shift n e2)
-  | Select (selop, e1, e2, e3) ->
-    Select (selop, shift n e1, shift n e2, shift n e3)
   | Compare (relop, e1, e2) -> Compare (relop, shift n e1, shift n e2)
   | Convert (cvtop, e) -> Convert (cvtop, shift n e)
   | Host (hostop, es) -> Host (hostop, List.map (shift n) es)
@@ -60,6 +59,8 @@ and expr' at = function
   | Ast.Return (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.If (e1, e2) -> If (expr e1, expr e2, Nop @@ Source.after e2.at)
   | Ast.If_else (e1, e2, e3) -> If (expr e1, expr e2, expr e3)
+  | Ast.Select (e1, e2, e3) -> Select (expr e1, expr e2, expr e3)
+
   | Ast.Call (x, es) -> Call (x, List.map expr es)
   | Ast.Call_import (x, es) -> CallImport (x, List.map expr es)
   | Ast.Call_indirect (x, e, es) -> CallIndirect (x, expr e, List.map expr es)
@@ -216,15 +217,6 @@ and expr' at = function
   | Ast.F64_max (e1, e2) -> Binary (Float64 F64Op.Max, expr e1, expr e2)
   | Ast.F64_copysign (e1, e2) ->
     Binary (Float64 F64Op.CopySign, expr e1, expr e2)
-
-  | Ast.I32_select (e1, e2, e3) ->
-    Select (Int32 I32Op.Select, expr e1, expr e2, expr e3)
-  | Ast.I64_select (e1, e2, e3) ->
-    Select (Int64 I64Op.Select, expr e1, expr e2, expr e3)
-  | Ast.F32_select (e1, e2, e3) ->
-    Select (Float32 F32Op.Select, expr e1, expr e2, expr e3)
-  | Ast.F64_select (e1, e2, e3) ->
-    Select (Float64 F64Op.Select, expr e1, expr e2, expr e3)
 
   | Ast.I32_eq (e1, e2) -> Compare (Int32 I32Op.Eq, expr e1, expr e2)
   | Ast.I32_ne (e1, e2) -> Compare (Int32 I32Op.Ne, expr e1, expr e2)
