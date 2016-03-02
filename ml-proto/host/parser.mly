@@ -60,7 +60,7 @@ let empty_context () =
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
-  {c with labels = VarMap.add "return" 0 c.labels; locals = empty ()}
+  {c with labels = VarMap.empty; locals = empty ()}
 
 let enter_switch c =
   {c with cases = empty ()}
@@ -131,7 +131,7 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF IF_ELSE SELECT LOOP BR BR_IF TABLESWITCH CASE
+%token NOP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF TABLESWITCH CASE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -233,11 +233,14 @@ expr1 :
   | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
   | BR_IF var expr { fun c -> Br_if ($2 c label, None, $3 c) }
   | BR_IF var expr expr { fun c -> Br_if ($2 c label, Some ($3 c), $4 c) }
-  | RETURN expr_opt
-    { let at1 = ati 1 in
-      fun c -> Return (label c ("return" @@ at1) @@ at1, $2 c) }
-  | IF expr expr { fun c -> If ($2 c, $3 c) }
-  | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
+  | RETURN expr_opt { fun c -> Return ($2 c) }
+  | IF expr expr { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], []) }
+  | IF expr expr expr
+    { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], [$4 c']) }
+  | IF expr LPAR THEN labeling expr_list RPAR
+    { fun c -> let c' = $5 c in If ($2 c, $6 c', []) }
+  | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
+    { fun c -> let c1 = $5 c in let c2 = $10 c in If ($2 c, $6 c1, $11 c2) }
   | SELECT expr expr expr { fun c -> Select ($2 c, $3 c, $4 c) }
   | TABLESWITCH labeling expr LPAR TABLE target_list RPAR target case_list
     { fun c -> let c' = $2 c in let e = $3 c' in
@@ -291,7 +294,8 @@ case_list :
 func_fields :
   | expr_list
     { empty_type,
-      fun c -> {ftype = -1 @@ at(); locals = []; body = $1 c} }
+      fun c -> let c' = anon_label c in
+      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
   | LPAR PARAM value_type_list RPAR func_fields
     { {(fst $5) with ins = $3 @ (fst $5).ins},
       fun c -> anon_locals c $3; (snd $5) c }
