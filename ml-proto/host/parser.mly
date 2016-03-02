@@ -131,7 +131,7 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF IF_ELSE LOOP BR BR_IF TABLESWITCH CASE
+%token NOP BLOCK IF IF_ELSE SELECT LOOP BR BR_IF TABLESWITCH CASE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -149,7 +149,6 @@ let implicit_decl c t at =
 %token<string Source.phrase -> Ast.expr' * Values.value> CONST
 %token<Ast.expr -> Ast.expr'> UNARY
 %token<Ast.expr * Ast.expr -> Ast.expr'> BINARY
-%token<Ast.expr * Ast.expr * Ast.expr -> Ast.expr'> SELECT
 %token<Ast.expr * Ast.expr -> Ast.expr'> COMPARE
 %token<Ast.expr -> Ast.expr'> CONVERT
 %token<Memory.offset * int option * Ast.expr -> Ast.expr'> LOAD
@@ -226,8 +225,7 @@ expr :
 expr1 :
   | NOP { fun c -> Nop }
   | UNREACHABLE { fun c -> Unreachable }
-  | BLOCK labeling expr expr_list
-    { fun c -> let c' = $2 c in Block ($3 c' :: $4 c') }
+  | BLOCK labeling expr_list { fun c -> let c' = $2 c in Block ($3 c') }
   | LOOP labeling expr_list
     { fun c -> let c' = anon_label c in let c'' = $2 c' in Loop ($3 c'') }
   | LOOP labeling1 labeling1 expr_list
@@ -238,6 +236,7 @@ expr1 :
   | RETURN expr_opt { fun c -> Return ($2 c) }
   | IF expr expr { fun c -> If ($2 c, $3 c) }
   | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
+  | SELECT expr expr expr { fun c -> Select ($2 c, $3 c, $4 c) }
   | TABLESWITCH labeling expr LPAR TABLE target_list RPAR target case_list
     { fun c -> let c' = $2 c in let e = $3 c' in
       let c'' = enter_switch c' in let es = $9 c'' in
@@ -253,7 +252,6 @@ expr1 :
   | CONST literal { fun c -> fst (literal $1 $2) }
   | UNARY expr { fun c -> $1 ($2 c) }
   | BINARY expr expr { fun c -> $1 ($2 c, $3 c) }
-  | SELECT expr expr expr { fun c -> $1 ($2 c, $3 c, $4 c) }
   | COMPARE expr expr { fun c -> $1 ($2 c, $3 c) }
   | CONVERT expr { fun c -> $1 ($2 c) }
   | MEMORY_SIZE { fun c -> Memory_size }

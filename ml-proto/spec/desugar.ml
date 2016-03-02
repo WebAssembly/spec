@@ -11,13 +11,16 @@ let rec relabel f n e = relabel' f n e.it @@ e.at
 and relabel' f n = function
   | Nop -> Nop
   | Unreachable -> Unreachable
-  | Block es -> Block (List.map (relabel f (n + 1)) es)
+  | Block (es, e) ->
+    Block (List.map (relabel f (n + 1)) es, relabel f (n + 1) e)
   | Loop e -> Loop (relabel f (n + 1) e)
   | Break (x, eo) ->
     Break (f n x.it @@ x.at, Lib.Option.map (relabel f n) eo)
   | Br_if (x, eo, e) ->
     Br_if (f n x.it @@ x.at, Lib.Option.map (relabel f n) eo, relabel f n e)
   | If (e1, e2, e3) -> If (relabel f n e1, relabel f n e2, relabel f n e3)
+  | Select (e1, e2, e3) ->
+    Select (relabel f n e1, relabel f n e2, relabel f n e3)
   | Switch (e, xs, x, es) ->
     Switch (relabel f n e, xs, x, List.map (relabel f n) es)
   | Call (x, es) -> Call (x, List.map (relabel f n) es)
@@ -34,8 +37,6 @@ and relabel' f n = function
   | Const c -> Const c
   | Unary (unop, e) -> Unary (unop, relabel f n e)
   | Binary (binop, e1, e2) -> Binary (binop, relabel f n e1, relabel f n e2)
-  | Select (selop, e1, e2, e3) ->
-    Select (selop, relabel f n e1, relabel f n e2, relabel f n e3)
   | Compare (relop, e1, e2) -> Compare (relop, relabel f n e1, relabel f n e2)
   | Convert (cvtop, e) -> Convert (cvtop, relabel f n e)
   | Host (hostop, es) -> Host (hostop, List.map (relabel f n) es)
@@ -55,13 +56,17 @@ and expr' at = function
 
   | Ast.Nop -> Nop
   | Ast.Unreachable -> Unreachable
-  | Ast.Block es -> Block (List.map expr es)
-  | Ast.Loop es -> Block [Loop (seq es) @@ at]
+  | Ast.Block [] -> Nop
+  | Ast.Block es ->
+    let es', e = Lib.List.split_last es in Block (List.map expr es', expr e)
+  | Ast.Loop es -> Block ([], Loop (seq es) @@ at)
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.Br_if (x, eo, e) -> Br_if (x, Lib.Option.map expr eo, expr e)
   | Ast.Return eo -> Break (-1 @@ Source.no_region, Lib.Option.map expr eo)
   | Ast.If (e1, e2) -> If (expr e1, expr e2, Nop @@ Source.after e2.at)
   | Ast.If_else (e1, e2, e3) -> If (expr e1, expr e2, expr e3)
+  | Ast.Select (e1, e2, e3) -> Select (expr e1, expr e2, expr e3)
+
   | Ast.Call (x, es) -> Call (x, List.map expr es)
   | Ast.Call_import (x, es) -> CallImport (x, List.map expr es)
   | Ast.Call_indirect (x, e, es) -> CallIndirect (x, expr e, List.map expr es)
@@ -77,9 +82,9 @@ and expr' at = function
     let es'' = List.map seq es in
     let n = List.length es' in
     let sh x = (if x.it >= n then x.it + n else x.it) @@ x.at in
-    Block [Switch
+    Block ([], Switch
       (expr e, List.map sh (List.tl xs), sh (List.hd xs), List.rev es' @ es'')
-      @@ at]
+      @@ at)
 
   | Ast.Get_local x -> GetLocal x
   | Ast.Set_local (x, e) -> SetLocal (x, expr e)
@@ -219,15 +224,6 @@ and expr' at = function
   | Ast.F64_copysign (e1, e2) ->
     Binary (Float64 F64Op.CopySign, expr e1, expr e2)
 
-  | Ast.I32_select (e1, e2, e3) ->
-    Select (Int32 I32Op.Select, expr e1, expr e2, expr e3)
-  | Ast.I64_select (e1, e2, e3) ->
-    Select (Int64 I64Op.Select, expr e1, expr e2, expr e3)
-  | Ast.F32_select (e1, e2, e3) ->
-    Select (Float32 F32Op.Select, expr e1, expr e2, expr e3)
-  | Ast.F64_select (e1, e2, e3) ->
-    Select (Float64 F64Op.Select, expr e1, expr e2, expr e3)
-
   | Ast.I32_eq (e1, e2) -> Compare (Int32 I32Op.Eq, expr e1, expr e2)
   | Ast.I32_ne (e1, e2) -> Compare (Int32 I32Op.Ne, expr e1, expr e2)
   | Ast.I32_lt_s (e1, e2) -> Compare (Int32 I32Op.LtS, expr e1, expr e2)
@@ -294,7 +290,9 @@ and seq = function
   | [] -> Nop @@ Source.no_region
   | [e] -> expr e
   | es ->
-    Block (List.map label (List.map expr es)) @@@ List.map Source.at es
+    let es', e = Lib.List.split_last es in
+    Block (List.map label (List.map expr es'), label (expr e))
+      @@@ List.map Source.at es
 
 
 (* Functions and Modules *)
@@ -304,7 +302,7 @@ and func' = function
   | {Ast.body = []; ftype; locals} ->
     {body = Nop @@ no_region; ftype; locals}
   | {Ast.body = es; ftype; locals} ->
-    {body = return (Block [seq es] @@@ List.map at es); ftype; locals}
+    {body = return (Block ([], seq es) @@@ List.map at es); ftype; locals}
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function

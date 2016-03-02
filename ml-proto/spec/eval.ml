@@ -133,13 +133,12 @@ let rec eval_expr (c : config) (e : expr) =
   | Unreachable ->
     Trap.error e.at "unreachable executed"
 
-  | Block es ->
-    let es', eN = Lib.List.split_last es in
+  | Block (es, e) ->
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
     (try
-      List.iter (fun eI -> ignore (eval_expr c' eI)) es';
-      eval_expr c' eN
+      List.iter (fun eI -> ignore (eval_expr c' eI)) es;
+      eval_expr c' e
     with L.Label vo -> vo)
 
   | Loop e1 ->
@@ -158,6 +157,12 @@ let rec eval_expr (c : config) (e : expr) =
   | If (e1, e2, e3) ->
     let i = int32 (eval_expr c e1) e1.at in
     eval_expr c (if i <> 0l then e2 else e3)
+
+  | Select (e1, e2, e3) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    let v2 = some (eval_expr c e2) e2.at in
+    let cond = int32 (eval_expr c e3) e3.at in
+    Some (if cond <> 0l then v1 else v2)
 
   | Switch (e1, xs, x, es) ->
     let i = int32 (eval_expr c e1) e1.at in
@@ -233,12 +238,6 @@ let rec eval_expr (c : config) (e : expr) =
     let v2 = some (eval_expr c e2) e2.at in
     (try Some (Arithmetic.eval_binop binop v1 v2)
       with exn -> arithmetic_error e.at e1.at e2.at exn)
-
-  | Select (selop, e1, e2, e3) ->
-    let v1 = some (eval_expr c e1) e1.at in
-    let v2 = some (eval_expr c e2) e2.at in
-    let cond = int32 (eval_expr c e3) e3.at in
-    Some (if cond <> 0l then v1 else v2)
 
   | Compare (relop, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in

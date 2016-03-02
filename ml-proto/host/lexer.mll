@@ -146,6 +146,7 @@ rule token = parse
   | "return" { RETURN }
   | "if" { IF }
   | "if_else" { IF_ELSE }
+  | "select" { SELECT }
   | "tableswitch" { TABLESWITCH }
   | "case" { CASE }
   | "call" { CALL }
@@ -268,11 +269,6 @@ rule token = parse
   | (fxx as t)".copysign"
     { BINARY (fun (e1, e2) ->
         floatop t (F32_copysign (e1, e2)) (F64_copysign (e1, e2))) }
-
-  | (nxx as t)".select"
-    { SELECT (fun (e1, e2, e3) ->
-        numop t (I32_select (e1, e2, e3)) (I64_select (e1, e2, e3))
-                (F32_select (e1, e2, e3)) (F64_select (e1, e2, e3))) }
 
   | (ixx as t)".eq"
     { COMPARE (fun (e1, e2) -> intop t (I32_eq (e1, e2)) (I64_eq (e1, e2))) }
