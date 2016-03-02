@@ -16,10 +16,10 @@ and shift' n = function
   | Block es -> Block (List.map (shift (n + 1)) es)
   | Loop e -> Loop (shift (n + 1) e)
   | Break (x, eo) -> Break (shift_var n x, Lib.Option.map (shift n) eo)
-  | Break_if (x, eo, e) ->
-    Break_if (shift_var n x, Lib.Option.map (shift n) eo, shift n e)
-  | Break_table (xs, x, eo, e) ->
-    Break_table
+  | BreakIf (x, eo, e) ->
+    BreakIf (shift_var n x, Lib.Option.map (shift n) eo, shift n e)
+  | BreakTable (xs, x, eo, e) ->
+    BreakTable
       (List.map (shift_var n) xs, shift_var n x,
        Lib.Option.map (shift n) eo, shift n e)
   | If (e1, e2, e3) -> If (shift n e1, shift n e2, shift n e3)
@@ -59,9 +59,9 @@ and expr' at = function
   | Ast.Block es -> Block (List.map expr es)
   | Ast.Loop es -> Block [Loop (seq es) @@ at]
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
-  | Ast.Br_if (x, eo, e) -> Break_if (x, Lib.Option.map expr eo, expr e)
+  | Ast.Br_if (x, eo, e) -> BreakIf (x, Lib.Option.map expr eo, expr e)
   | Ast.Br_table (xs, x, eo, e) ->
-    Break_table (xs, x, Lib.Option.map expr eo, expr e)
+    BreakTable (xs, x, Lib.Option.map expr eo, expr e)
   | Ast.Return (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.If (e1, e2) -> If (expr e1, expr e2, Nop @@ Source.after e2.at)
   | Ast.If_else (e1, e2, e3) -> If (expr e1, expr e2, expr e3)

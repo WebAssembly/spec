@@ -133,12 +133,12 @@ let rec check_expr c et e =
   | Break (x, eo) ->
     check_expr_opt c (label c x) eo e.at
 
-  | Break_if (x, eo, e1) ->
+  | BreakIf (x, eo, e1) ->
     check_expr_opt c (label c x) eo e.at;
     check_expr c (Some Int32Type) e1;
     check_type None et e.at
 
-  | Break_table (xs, x, eo, e1) ->
+  | BreakTable (xs, x, eo, e1) ->
     List.iter (fun x -> check_expr_opt c (label c x) eo e.at) xs;
     check_expr_opt c (label c x) eo e.at;
     check_expr c (Some Int32Type) e1
