@@ -117,12 +117,10 @@ let rec check_expr c et e =
   | Unreachable ->
     ()
 
-  | Block es ->
-    require (es <> []) e.at "invalid block";
-    let es', eN = Lib.List.split_last es in
+  | Block (es, e) ->
     let c' = {c with labels = et :: c.labels} in
-    List.iter (check_expr c' None) es';
-    check_expr c' et eN
+    List.iter (check_expr c' None) es;
+    check_expr c' et e
 
   | Loop e1 ->
     let c' = {c with labels = None :: c.labels} in

@@ -12,7 +12,7 @@ and shift n e = shift' n e.it @@ e.at
 and shift' n = function
   | Nop -> Nop
   | Unreachable -> Unreachable
-  | Block es -> Block (List.map (shift (n + 1)) es)
+  | Block (es, e) -> Block (List.map (shift (n + 1)) es, shift (n + 1) e)
   | Loop e -> Loop (shift (n + 1) e)
   | Break (x, eo) ->
     let x' = if x.it < n then x else (x.it + 1) @@ x.at in
@@ -52,8 +52,10 @@ and expr' at = function
 
   | Ast.Nop -> Nop
   | Ast.Unreachable -> Unreachable
-  | Ast.Block es -> Block (List.map expr es)
-  | Ast.Loop es -> Block [Loop (seq es) @@ at]
+  | Ast.Block [] -> Nop
+  | Ast.Block es ->
+    let es', e = Lib.List.split_last es in Block (List.map expr es', expr e)
+  | Ast.Loop es -> Block ([], Loop (seq es) @@ at)
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.Br_if (x, eo, e) -> Br_if (x, Lib.Option.map expr eo, expr e)
   | Ast.Return (x, eo) -> Break (x, Lib.Option.map expr eo)
@@ -76,9 +78,9 @@ and expr' at = function
     let es'' = List.map seq es in
     let n = List.length es' in
     let sh x = (if x.it >= n then x.it + n else x.it) @@ x.at in
-    Block [Switch
+    Block ([], Switch
       (expr e, List.map sh (List.tl xs), sh (List.hd xs), List.rev es' @ es'')
-      @@ at]
+      @@ at)
 
   | Ast.Get_local x -> GetLocal x
   | Ast.Set_local (x, e) -> SetLocal (x, expr e)
@@ -284,11 +286,13 @@ and seq = function
   | [] -> Nop @@ Source.no_region
   | [e] -> expr e
   | es ->
-    Block (List.map label (List.map expr es)) @@@ List.map Source.at es
+    let es', e = Lib.List.split_last es in
+    Block (List.map label (List.map expr es'), label (expr e))
+      @@@ List.map Source.at es
 
 and opt = function
   | None -> Nop @@ Source.no_region
-  | Some e -> Block [label (expr e); Nop @@ e.at] @@ e.at
+  | Some e -> Block ([label (expr e)], Nop @@ e.at) @@ e.at
 
 
 (* Functions and Modules *)
@@ -298,7 +302,7 @@ and func' = function
   | {Ast.body = []; ftype; locals} ->
     {body = Nop @@ no_region; ftype; locals}
   | {Ast.body = es; ftype; locals} ->
-    {body = Block [seq es] @@@ List.map at es; ftype; locals}
+    {body = Block ([], seq es) @@@ List.map at es; ftype; locals}
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function

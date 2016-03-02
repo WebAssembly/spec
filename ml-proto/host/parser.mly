@@ -225,8 +225,7 @@ expr :
 expr1 :
   | NOP { fun c -> Nop }
   | UNREACHABLE { fun c -> Unreachable }
-  | BLOCK labeling expr expr_list
-    { fun c -> let c' = $2 c in Block ($3 c' :: $4 c') }
+  | BLOCK labeling expr_list { fun c -> let c' = $2 c in Block ($3 c') }
   | LOOP labeling expr_list
     { fun c -> let c' = anon_label c in let c'' = $2 c' in Loop ($3 c'') }
   | LOOP labeling1 labeling1 expr_list

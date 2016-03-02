@@ -133,13 +133,12 @@ let rec eval_expr (c : config) (e : expr) =
   | Unreachable ->
     Trap.error e.at "unreachable executed"
 
-  | Block es ->
-    let es', eN = Lib.List.split_last es in
+  | Block (es, e) ->
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
     (try
-      List.iter (fun eI -> ignore (eval_expr c' eI)) es';
-      eval_expr c' eN
+      List.iter (fun eI -> ignore (eval_expr c' eI)) es;
+      eval_expr c' e
     with L.Label vo -> vo)
 
   | Loop e1 ->
