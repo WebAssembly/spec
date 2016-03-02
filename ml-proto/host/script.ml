@@ -58,10 +58,7 @@ let run_cmd cmd =
     end;
     trace "Initializing...";
     let imports = Import.link m in
-    let host_params = {
-      Eval.has_feature = Params.has_feature
-    } in
-    current_module := Some (Eval.init m imports host_params)
+    current_module := Some (Eval.init m imports)
 
   | Invoke (name, es) ->
     trace "Invoking...";

@@ -67,7 +67,6 @@ type wrapop = {memop : memop; sz : Memory.mem_size}
 type hostop =
   | MemorySize           (* inquire current size of linear memory *)
   | GrowMemory           (* grow linear memory *)
-  | HasFeature of string (* test for feature availability *)
 
 
 (* Expressions *)
@@ -126,7 +125,9 @@ and memory' =
 and segment = Memory.segment Source.phrase
 
 type export = export' Source.phrase
-and export' = {name : string; func : var}
+and export' =
+  | ExportFunc of string * var
+  | ExportMemory of string
 
 type import = import' Source.phrase
 and import' =

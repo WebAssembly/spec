@@ -20,3 +20,7 @@
 )
 
 (assert_return (invoke "e" (i32.const 42)) (i32.const 43))
+
+(module (memory 0 0) (export "a" memory))
+(module (memory 0 0) (export "a" memory) (export "b" memory))
+(assert_invalid (module (export "a" memory)) "no memory to export")
