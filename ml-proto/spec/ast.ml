@@ -21,8 +21,7 @@ and expr' =
   | Br of var * expr option
   | Br_if of var * expr option * expr
   | Return of expr option
-  | If of expr * expr
-  | If_else of expr * expr * expr
+  | If of expr * expr list * expr list
   | Tableswitch of expr * target list * target * expr list list
   | Call of var * expr list
   | Call_import of var * expr list

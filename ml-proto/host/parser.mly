@@ -131,7 +131,7 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF IF_ELSE LOOP BR BR_IF TABLESWITCH CASE
+%token NOP BLOCK IF THEN ELSE LOOP BR BR_IF TABLESWITCH CASE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -236,8 +236,13 @@ expr1 :
   | BR_IF var expr { fun c -> Br_if ($2 c label, None, $3 c) }
   | BR_IF var expr expr { fun c -> Br_if ($2 c label, Some ($3 c), $4 c) }
   | RETURN expr_opt { fun c -> Return ($2 c) }
-  | IF expr expr { fun c -> If ($2 c, $3 c) }
-  | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
+  | IF expr expr { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], []) }
+  | IF expr expr expr
+    { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], [$4 c']) }
+  | IF expr LPAR THEN labeling expr_list RPAR
+    { fun c -> let c' = $5 c in If ($2 c, $6 c', []) }
+  | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
+    { fun c -> let c1 = $5 c in let c2 = $10 c in If ($2 c, $6 c1, $11 c2) }
   | TABLESWITCH labeling expr LPAR TABLE target_list RPAR target case_list
     { fun c -> let c' = $2 c in let e = $3 c' in
       let c'' = enter_switch c' in let es = $9 c'' in
