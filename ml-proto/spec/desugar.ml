@@ -59,12 +59,11 @@ and expr' at = function
   | Ast.Block [] -> Nop
   | Ast.Block es ->
     let es', e = Lib.List.split_last es in Block (List.map expr es', expr e)
-  | Ast.Loop es -> Block ([], Loop (seq es) @@ at)
+  | Ast.Loop es -> Block ([], Loop (block es) @@ at)
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.Br_if (x, eo, e) -> Br_if (x, Lib.Option.map expr eo, expr e)
   | Ast.Return eo -> Break (-1 @@ Source.no_region, Lib.Option.map expr eo)
-  | Ast.If (e1, e2) -> If (expr e1, expr e2, Nop @@ Source.after e2.at)
-  | Ast.If_else (e1, e2, e3) -> If (expr e1, expr e2, expr e3)
+  | Ast.If (e, es1, es2) -> If (expr e, seq es1, seq es2)
   | Ast.Select (e1, e2, e3) -> Select (expr e1, expr e2, expr e3)
 
   | Ast.Call (x, es) -> Call (x, List.map expr es)
@@ -79,7 +78,7 @@ and expr' at = function
         (List.length es' @@ t.at) :: xs, (Break (x, None) @@ t.at) :: es'
     in
     let xs, es' = List.fold_right target (t :: ts) ([], []) in
-    let es'' = List.map seq es in
+    let es'' = List.map block es in
     let n = List.length es' in
     let sh x = (if x.it >= n then x.it + n else x.it) @@ x.at in
     Block ([], Switch
@@ -288,7 +287,12 @@ and expr' at = function
 
 and seq = function
   | [] -> Nop @@ Source.no_region
-  | [e] -> expr e
+  | es ->
+    let es', e = Lib.List.split_last es in
+    Block (List.map expr es', expr e) @@@ List.map Source.at es
+
+and block = function
+  | [] -> Nop @@ Source.no_region
   | es ->
     let es', e = Lib.List.split_last es in
     Block (List.map label (List.map expr es'), label (expr e))
@@ -299,10 +303,7 @@ and seq = function
 
 let rec func f = func' f.it @@ f.at
 and func' = function
-  | {Ast.body = []; ftype; locals} ->
-    {body = Nop @@ no_region; ftype; locals}
-  | {Ast.body = es; ftype; locals} ->
-    {body = return (Block ([], seq es) @@@ List.map at es); ftype; locals}
+  | {Ast.body = es; ftype; locals} -> {body = return (seq es); ftype; locals}
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function

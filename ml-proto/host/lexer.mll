@@ -145,7 +145,8 @@ rule token = parse
   | "br_if" { BR_IF }
   | "return" { RETURN }
   | "if" { IF }
-  | "if_else" { IF_ELSE }
+  | "then" { THEN }
+  | "else" { ELSE }
   | "select" { SELECT }
   | "tableswitch" { TABLESWITCH }
   | "case" { CASE }
