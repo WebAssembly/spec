@@ -129,10 +129,15 @@ let rec check_expr c et e =
   | Break (x, eo) ->
     check_expr_opt c (label c x) eo e.at
 
-  | Br_if (x, eo, e) ->
+  | BreakIf (x, eo, e1) ->
     check_expr_opt c (label c x) eo e.at;
-    check_expr c (Some Int32Type) e;
+    check_expr c (Some Int32Type) e1;
     check_type None et e.at
+
+  | BreakTable (xs, x, eo, e1) ->
+    List.iter (fun x -> check_expr_opt c (label c x) eo e.at) xs;
+    check_expr_opt c (label c x) eo e.at;
+    check_expr c (Some Int32Type) e1
 
   | If (e1, e2, e3) ->
     check_expr c (Some Int32Type) e1;
@@ -143,12 +148,6 @@ let rec check_expr c et e =
     check_expr c et e1;
     check_expr c et e2;
     check_expr c (Some Int32Type) e3
-
-  | Switch (e1, xs, x, es) ->
-    List.iter (fun x -> require (x.it < List.length es) x.at "invalid target")
-      (x :: xs);
-    check_expr c (Some Int32Type) e1;
-    ignore (List.fold_right (fun e et -> check_expr c et e; None) es et)
 
   | Call (x, es) ->
     let {ins; out} = func c x in

@@ -51,19 +51,16 @@ type types = {mutable tmap : int VarMap.t; mutable tlist : Types.func_type list}
 let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
-  {types : types; funcs : space; imports : space; locals : space;
-   labels : int VarMap.t; cases : space}
+  {types : types; funcs : space; imports : space;
+   locals : space; labels : int VarMap.t}
 
 let empty_context () =
   {types = empty_types (); funcs = empty (); imports = empty ();
-   locals = empty (); labels = VarMap.empty; cases = empty ()}
+   locals = empty (); labels = VarMap.empty}
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
   {c with labels = VarMap.empty; locals = empty ()}
-
-let enter_switch c =
-  {c with cases = empty ()}
 
 let type_ c x =
   try VarMap.find x.it c.types.tmap
@@ -76,7 +73,6 @@ let lookup category space x =
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
-let case c x = lookup "case" c.cases x
 let label c x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
@@ -96,7 +92,6 @@ let bind category space x =
 let bind_func c x = bind "function" c.funcs x
 let bind_import c x = bind "import" c.imports x
 let bind_local c x = bind "local" c.locals x
-let bind_case c x = bind "case" c.cases x
 let bind_label c x =
   {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
 
@@ -108,7 +103,6 @@ let anon space n = space.count <- space.count + n
 let anon_func c = anon c.funcs 1
 let anon_import c = anon c.imports 1
 let anon_locals c ts = anon c.locals (List.length ts)
-let anon_case c = anon c.cases 1
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 let empty_type = {ins = []; out = None}
@@ -131,7 +125,7 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF TABLESWITCH CASE
+%token NOP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -233,6 +227,12 @@ expr1 :
   | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
   | BR_IF var expr { fun c -> Br_if ($2 c label, None, $3 c) }
   | BR_IF var expr expr { fun c -> Br_if ($2 c label, Some ($3 c), $4 c) }
+  | BR_TABLE var var_list expr
+    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
+      Br_table (xs, x, None, $4 c) }
+  | BR_TABLE var var_list expr expr
+    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
+      Br_table (xs, x, Some ($4 c), $5 c) }
   | RETURN expr_opt { fun c -> Return ($2 c) }
   | IF expr expr { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], []) }
   | IF expr expr expr
@@ -242,10 +242,6 @@ expr1 :
   | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
     { fun c -> let c1 = $5 c in let c2 = $10 c in If ($2 c, $6 c1, $11 c2) }
   | SELECT expr expr expr { fun c -> Select ($2 c, $3 c, $4 c) }
-  | TABLESWITCH labeling expr LPAR TABLE target_list RPAR target case_list
-    { fun c -> let c' = $2 c in let e = $3 c' in
-      let c'' = enter_switch c' in let es = $9 c'' in
-      Tableswitch (e, $6 c'', $8 c'', es) }
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> Call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
@@ -269,23 +265,6 @@ expr_opt :
 expr_list :
   | /* empty */ { fun c -> [] }
   | expr expr_list { fun c -> $1 c :: $2 c }
-;
-
-target :
-  | LPAR CASE var RPAR { let at = at () in fun c -> Case ($3 c case) @@ at }
-  | LPAR BR var RPAR { let at = at () in fun c -> Case_br ($3 c label) @@ at }
-;
-target_list :
-  | /* empty */ { fun c -> [] }
-  | target target_list { fun c -> $1 c :: $2 c }
-;
-case :
-  | LPAR CASE expr_list RPAR { fun c -> anon_case c; $3 c }
-  | LPAR CASE bind_var expr_list RPAR { fun c -> bind_case c $3; $4 c }
-;
-case_list :
-  | /* empty */ { fun c -> [] }
-  | case case_list { fun c -> let e = $1 c in let es = $2 c in e :: es }
 ;
 
 

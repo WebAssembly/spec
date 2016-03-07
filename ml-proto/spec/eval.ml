@@ -149,10 +149,17 @@ let rec eval_expr (c : config) (e : expr) =
   | Break (x, eo) ->
     raise (label c x (eval_expr_opt c eo))
 
-  | Br_if (x, eo, e) ->
+  | BreakIf (x, eo, e) ->
     let v = eval_expr_opt c eo in
     let i = int32 (eval_expr c e) e.at in
     if i <> 0l then raise (label c x v) else None
+
+  | BreakTable (xs, x, eo, e) ->
+    let v = eval_expr_opt c eo in
+    let i = int32 (eval_expr c e) e.at in
+    if I32.lt_u i (Int32.of_int (List.length xs))
+    then raise (label c (List.nth xs (Int32.to_int i)) v)
+    else raise (label c x v)
 
   | If (e1, e2, e3) ->
     let i = int32 (eval_expr c e1) e1.at in
@@ -163,15 +170,6 @@ let rec eval_expr (c : config) (e : expr) =
     let v2 = some (eval_expr c e2) e2.at in
     let cond = int32 (eval_expr c e3) e3.at in
     Some (if cond <> 0l then v1 else v2)
-
-  | Switch (e1, xs, x, es) ->
-    let i = int32 (eval_expr c e1) e1.at in
-    let x' =
-      if I32.ge_u i (Int32.of_int (List.length xs)) then x
-      else List.nth xs (Int32.to_int i)
-    in
-    if x'.it >= List.length es then Crash.error e.at "invalid switch target";
-    List.fold_left (fun vo e -> eval_expr c e) None (Lib.List.drop x'.it es)
 
   | Call (x, es) ->
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in

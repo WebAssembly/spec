@@ -143,13 +143,12 @@ rule token = parse
   | "loop" { LOOP }
   | "br" { BR }
   | "br_if" { BR_IF }
+  | "br_table" { BR_TABLE }
   | "return" { RETURN }
   | "if" { IF }
   | "then" { THEN }
   | "else" { ELSE }
   | "select" { SELECT }
-  | "tableswitch" { TABLESWITCH }
-  | "case" { CASE }
   | "call" { CALL }
   | "call_import" { CALL_IMPORT }
   | "call_indirect" { CALL_INDIRECT }
