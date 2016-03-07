@@ -18,9 +18,9 @@ and expr' =
   | Br of var * expr option
   | Br_if of var * expr option * expr
   | Br_table of var list * var * expr option * expr
-  | Return of var * expr option
-  | If of expr * expr
-  | If_else of expr * expr * expr
+  | Return of expr option
+  | If of expr * expr list * expr list
+  | Select of expr * expr * expr
   | Call of var * expr list
   | Call_import of var * expr list
   | Call_indirect of var * expr * expr list
@@ -121,12 +121,6 @@ and expr' =
   | F64_max of expr * expr
   | F64_copysign of expr * expr
 
-  (* Select *)
-  | I32_select of expr * expr * expr
-  | I64_select of expr * expr * expr
-  | F32_select of expr * expr * expr
-  | F64_select of expr * expr * expr
-
   (* Comparisons *)
   | I32_eq of expr * expr
   | I32_ne of expr * expr
@@ -191,7 +185,6 @@ and expr' =
   (* Host queries *)
   | Memory_size
   | Grow_memory of expr
-  | Has_feature of string
 
 
 (* Functions *)

@@ -1,21 +1,21 @@
 (module
   (func $select_i32 (param $lhs i32) (param $rhs i32) (param $cond i32) (result i32)
-   (i32.select (get_local $lhs) (get_local $rhs) (get_local $cond)))
+   (select (get_local $lhs) (get_local $rhs) (get_local $cond)))
 
   (func $select_i64 (param $lhs i64) (param $rhs i64) (param $cond i32) (result i64)
-   (i64.select (get_local $lhs) (get_local $rhs) (get_local $cond)))
+   (select (get_local $lhs) (get_local $rhs) (get_local $cond)))
 
   (func $select_f32 (param $lhs f32) (param $rhs f32) (param $cond i32) (result f32)
-   (f32.select (get_local $lhs) (get_local $rhs) (get_local $cond)))
+   (select (get_local $lhs) (get_local $rhs) (get_local $cond)))
 
   (func $select_f64 (param $lhs f64) (param $rhs f64) (param $cond i32) (result f64)
-   (f64.select (get_local $lhs) (get_local $rhs) (get_local $cond)))
+   (select (get_local $lhs) (get_local $rhs) (get_local $cond)))
 
   ;; Check that both sides of the select are evaluated
   (func $select_trap_l (param $cond i32) (result i32)
-   (i32.select (unreachable) (i32.const 0) (get_local $cond)))
+   (select (unreachable) (i32.const 0) (get_local $cond)))
   (func $select_trap_r (param $cond i32) (result i32)
-   (i32.select (i32.const 0) (unreachable) (get_local $cond)))
+   (select (i32.const 0) (unreachable) (get_local $cond)))
 
   (export "select_i32" $select_i32)
   (export "select_i64" $select_i64)

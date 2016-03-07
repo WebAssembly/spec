@@ -8,9 +8,6 @@ open Source
 
 type value = Values.value
 type import = value list -> value option
-type host_params = {
-  has_feature : string -> bool
-}
 
 module ExportMap = Map.Make(String)
 type export_map = func ExportMap.t
@@ -20,8 +17,7 @@ type instance =
   module_ : module_;
   imports : import list;
   exports : export_map;
-  memory : Memory.t option;
-  host : host_params
+  memory : Memory.t option
 }
 
 
@@ -137,13 +133,12 @@ let rec eval_expr (c : config) (e : expr) =
   | Unreachable ->
     Trap.error e.at "unreachable executed"
 
-  | Block es ->
-    let es', eN = Lib.List.split_last es in
+  | Block (es, e) ->
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
     (try
-      List.iter (fun eI -> ignore (eval_expr c' eI)) es';
-      eval_expr c' eN
+      List.iter (fun eI -> ignore (eval_expr c' eI)) es;
+      eval_expr c' e
     with L.Label vo -> vo)
 
   | Loop e1 ->
@@ -169,6 +164,12 @@ let rec eval_expr (c : config) (e : expr) =
   | If (e1, e2, e3) ->
     let i = int32 (eval_expr c e1) e1.at in
     eval_expr c (if i <> 0l then e2 else e3)
+
+  | Select (e1, e2, e3) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    let v2 = some (eval_expr c e2) e2.at in
+    let cond = int32 (eval_expr c e3) e3.at in
+    Some (if cond <> 0l then v1 else v2)
 
   | Call (x, es) ->
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
@@ -236,12 +237,6 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Arithmetic.eval_binop binop v1 v2)
       with exn -> arithmetic_error e.at e1.at e2.at exn)
 
-  | Select (selop, e1, e2, e3) ->
-    let v1 = some (eval_expr c e1) e1.at in
-    let v2 = some (eval_expr c e2) e2.at in
-    let cond = int32 (eval_expr c e3) e3.at in
-    Some (if cond <> 0l then v1 else v2)
-
   | Compare (relop, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
@@ -275,7 +270,6 @@ and coerce et vo =
 (* Host operators *)
 
 and eval_hostop c hostop vs at =
-  let host = c.instance.host in
   match hostop, vs with
   | MemorySize, [] ->
     let mem = memory c at in
@@ -298,9 +292,6 @@ and eval_hostop c hostop vs at =
     Memory.grow mem delta;
     Some (Int32 (Int64.to_int32 old_size))
 
-  | HasFeature str, [] ->
-    Some (Int32 (if host.has_feature str then 1l else 0l))
-
   | _, _ ->
     Crash.error at "invalid invocation of host operator"
 
@@ -313,19 +304,21 @@ let init_memory {it = {initial; segments; _}} =
   mem
 
 let add_export funcs ex =
-  ExportMap.add ex.it.name (List.nth funcs ex.it.func.it)
+  match ex.it with
+  | ExportFunc (n, x) -> ExportMap.add n (List.nth funcs x.it)
+  | ExportMemory n -> fun x -> x
 
-let init m imports host =
+let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
   let {memory; funcs; exports; start; _} = m.it in
   let instance =
     {module_ = m;
      imports;
      exports = List.fold_right (add_export funcs) exports ExportMap.empty;
-     memory = Lib.Option.map init_memory memory;
-     host}
+     memory = Lib.Option.map init_memory memory}
   in
-  Lib.Option.app (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;
+  Lib.Option.app
+    (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;
   instance
 
 let invoke instance name vs =

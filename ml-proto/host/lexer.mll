@@ -146,7 +146,9 @@ rule token = parse
   | "br_table" { BR_TABLE }
   | "return" { RETURN }
   | "if" { IF }
-  | "if_else" { IF_ELSE }
+  | "then" { THEN }
+  | "else" { ELSE }
+  | "select" { SELECT }
   | "call" { CALL }
   | "call_import" { CALL_IMPORT }
   | "call_indirect" { CALL_INDIRECT }
@@ -268,11 +270,6 @@ rule token = parse
     { BINARY (fun (e1, e2) ->
         floatop t (F32_copysign (e1, e2)) (F64_copysign (e1, e2))) }
 
-  | (nxx as t)".select"
-    { SELECT (fun (e1, e2, e3) ->
-        numop t (I32_select (e1, e2, e3)) (I64_select (e1, e2, e3))
-                (F32_select (e1, e2, e3)) (F64_select (e1, e2, e3))) }
-
   | (ixx as t)".eq"
     { COMPARE (fun (e1, e2) -> intop t (I32_eq (e1, e2)) (I64_eq (e1, e2))) }
   | (ixx as t)".ne"
@@ -342,7 +339,6 @@ rule token = parse
 
   | "memory_size" { MEMORY_SIZE }
   | "grow_memory" { GROW_MEMORY }
-  | "has_feature" { HAS_FEATURE }
 
   | "type" { TYPE }
   | "func" { FUNC }

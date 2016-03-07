@@ -60,7 +60,7 @@ let empty_context () =
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
-  {c with labels = VarMap.add "return" 0 c.labels; locals = empty ()}
+  {c with labels = VarMap.empty; locals = empty ()}
 
 let type_ c x =
   try VarMap.find x.it c.types.tmap
@@ -125,13 +125,13 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF IF_ELSE LOOP BR BR_IF BR_TABLE
+%token NOP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC START TYPE PARAM RESULT LOCAL
 %token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
-%token UNREACHABLE MEMORY_SIZE GROW_MEMORY HAS_FEATURE
+%token UNREACHABLE MEMORY_SIZE GROW_MEMORY
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token EOF
 
@@ -143,7 +143,6 @@ let implicit_decl c t at =
 %token<string Source.phrase -> Ast.expr' * Values.value> CONST
 %token<Ast.expr -> Ast.expr'> UNARY
 %token<Ast.expr * Ast.expr -> Ast.expr'> BINARY
-%token<Ast.expr * Ast.expr * Ast.expr -> Ast.expr'> SELECT
 %token<Ast.expr * Ast.expr -> Ast.expr'> COMPARE
 %token<Ast.expr -> Ast.expr'> CONVERT
 %token<Memory.offset * int option * Ast.expr -> Ast.expr'> LOAD
@@ -220,8 +219,7 @@ expr :
 expr1 :
   | NOP { fun c -> Nop }
   | UNREACHABLE { fun c -> Unreachable }
-  | BLOCK labeling expr expr_list
-    { fun c -> let c' = $2 c in Block ($3 c' :: $4 c') }
+  | BLOCK labeling expr_list { fun c -> let c' = $2 c in Block ($3 c') }
   | LOOP labeling expr_list
     { fun c -> let c' = anon_label c in let c'' = $2 c' in Loop ($3 c'') }
   | LOOP labeling1 labeling1 expr_list
@@ -235,11 +233,15 @@ expr1 :
   | BR_TABLE var var_list expr expr
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       Br_table (xs, x, Some ($4 c), $5 c) }
-  | RETURN expr_opt
-    { let at1 = ati 1 in
-      fun c -> Return (label c ("return" @@ at1) @@ at1, $2 c) }
-  | IF expr expr { fun c -> If ($2 c, $3 c) }
-  | IF_ELSE expr expr expr { fun c -> If_else ($2 c, $3 c, $4 c) }
+  | RETURN expr_opt { fun c -> Return ($2 c) }
+  | IF expr expr { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], []) }
+  | IF expr expr expr
+    { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], [$4 c']) }
+  | IF expr LPAR THEN labeling expr_list RPAR
+    { fun c -> let c' = $5 c in If ($2 c, $6 c', []) }
+  | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
+    { fun c -> let c1 = $5 c in let c2 = $10 c in If ($2 c, $6 c1, $11 c2) }
+  | SELECT expr expr expr { fun c -> Select ($2 c, $3 c, $4 c) }
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> Call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
@@ -251,12 +253,10 @@ expr1 :
   | CONST literal { fun c -> fst (literal $1 $2) }
   | UNARY expr { fun c -> $1 ($2 c) }
   | BINARY expr expr { fun c -> $1 ($2 c, $3 c) }
-  | SELECT expr expr expr { fun c -> $1 ($2 c, $3 c, $4 c) }
   | COMPARE expr expr { fun c -> $1 ($2 c, $3 c) }
   | CONVERT expr { fun c -> $1 ($2 c) }
   | MEMORY_SIZE { fun c -> Memory_size }
   | GROW_MEMORY expr { fun c -> Grow_memory ($2 c) }
-  | HAS_FEATURE TEXT { fun c -> Has_feature $2 }
 ;
 expr_opt :
   | /* empty */ { fun c -> None }
@@ -273,7 +273,8 @@ expr_list :
 func_fields :
   | expr_list
     { empty_type,
-      fun c -> {ftype = -1 @@ at(); locals = []; body = $1 c} }
+      fun c -> let c' = anon_label c in
+      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
   | LPAR PARAM value_type_list RPAR func_fields
     { {(fst $5) with ins = $3 @ (fst $5).ins},
       fun c -> anon_locals c $3; (snd $5) c }
@@ -373,7 +374,9 @@ import :
 
 export :
   | LPAR EXPORT TEXT var RPAR
-    { let at = at () in fun c -> {name = $3; func = $4 c func} @@ at }
+    { let at = at () in fun c -> ExportFunc ($3, ($4 c func)) @@ at }
+  | LPAR EXPORT TEXT MEMORY RPAR
+    { let at = at () in fun c -> ExportMemory $3 @@ at }
 ;
 
 module_fields :
