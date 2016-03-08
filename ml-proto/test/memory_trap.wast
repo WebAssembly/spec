@@ -1,5 +1,5 @@
 (module
-    (memory 100)
+    (memory 1)
 
     (export "store" $store)
     (func $store (param $i i32) (param $v i32) (result i32) (i32.store (i32.add (memory_size) (get_local $i)) (get_local $v)))

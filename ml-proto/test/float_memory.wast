@@ -2,7 +2,7 @@
 ;; stores don't do this.
 
 (module
-  (memory 4 4)
+  (memory 1 1)
 
   (func $store_i32 (param $x i32) (result i32)
     (i32.store (i32.const 0) (get_local $x)))
@@ -33,7 +33,7 @@
 (assert_return (invoke "load_i32") (i32.const 0x80000000))
 
 (module
-  (memory 8 8)
+  (memory 1 1)
 
   (func $store_i64 (param $x i64) (result i64)
     (i64.store (i32.const 0) (get_local $x)))

@@ -1,5 +1,5 @@
 (module
-  (memory 12)
+  (memory 1)
 
   (type $i32_T (func (param i32 i32) (result i32)))
   (type $i64_T (func (param i64 i64) (result i32)))

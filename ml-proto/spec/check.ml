@@ -299,22 +299,22 @@ let check_start c start =
       "start function must not return anything";
   ) start
 
-let check_segment size prev_end seg =
+let check_segment pages prev_end seg =
   let seg_len = Int64.of_int (String.length seg.it.Memory.data) in
   let seg_end = Int64.add seg.it.Memory.addr seg_len in
   require (seg.it.Memory.addr >= prev_end) seg.at
     "data segment not disjoint and ordered";
-  require (size >= seg_end) seg.at
+  require (Int64.mul pages Memory.page_size >= seg_end) seg.at
     "data segment does not fit memory";
   seg_end
 
 let check_memory memory =
   let mem = memory.it in
   require (mem.initial <= mem.max) memory.at
-    "initial memory size must be less than maximum";
-  require (mem.max <= 4294967296L) memory.at
-    "linear memory size must be less or equal to 4GiB";
-  ignore (List.fold_left (check_segment mem.initial) Int64.zero mem.segments)
+    "initial memory pages must be less than or equal to the maximum";
+  require (mem.max <= 65535L) memory.at
+    "linear memory pages must be less or equal to 65535 (4GiB)";
+  ignore (List.fold_left (check_segment mem.initial) 0L mem.segments)
 
 let check_module m =
   let {memory; types; funcs; start; imports; exports; table} = m.it in

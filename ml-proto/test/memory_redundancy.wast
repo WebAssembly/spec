@@ -3,7 +3,7 @@
 ;; and to non-identical addresses.
 
 (module
-  (memory 16 16)
+  (memory 1 1)
 
   (export "zero_everything" $zero_everything)
   (func $zero_everything

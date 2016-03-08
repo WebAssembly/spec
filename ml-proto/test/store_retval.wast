@@ -1,5 +1,5 @@
 (module
-    (memory 100)
+    (memory 1)
 
     (import $print_i32 "spectest" "print" (param i32))
     (import $print_i64 "spectest" "print" (param i64))
