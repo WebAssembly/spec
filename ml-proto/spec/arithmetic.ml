@@ -50,6 +50,8 @@ struct
       | Shl -> I32.shl
       | ShrU -> I32.shr_u
       | ShrS -> I32.shr_s
+      | Rotl -> I32.rotl
+      | Rotr -> I32.rotr
     in fun v1 v2 -> Int32 (f (i32_of_value 1 v1) (i32_of_value 2 v2))
 
   let relop op =
@@ -112,6 +114,8 @@ struct
       | Shl -> I64.shl
       | ShrU -> I64.shr_u
       | ShrS -> I64.shr_s
+      | Rotl -> I64.rotl
+      | Rotr -> I64.rotr
     in fun v1 v2 -> Int64 (f (i64_of_value 1 v1) (i64_of_value 2 v2))
 
   let relop op =

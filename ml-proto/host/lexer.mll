@@ -254,6 +254,12 @@ rule token = parse
   | (ixx as t)".shr_u"
     { BINARY (fun (e1, e2) ->
         intop t (I32_shr_u (e1, e2)) (I64_shr_u (e1, e2))) }
+  | (ixx as t)".rotl"
+    { BINARY (fun (e1, e2) ->
+        intop t (I32_rotl (e1, e2)) (I64_rotl (e1, e2))) }
+  | (ixx as t)".rotr"
+    { BINARY (fun (e1, e2) ->
+        intop t (I32_rotr (e1, e2)) (I64_rotr (e1, e2))) }
   | (fxx as t)".add"
     { BINARY (fun (e1, e2) -> floatop t (F32_add (e1, e2)) (F64_add (e1, e2))) }
   | (fxx as t)".sub"

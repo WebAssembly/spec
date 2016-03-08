@@ -93,6 +93,8 @@ and expr' =
   | I32_shl of expr * expr
   | I32_shr_s of expr * expr
   | I32_shr_u of expr * expr
+  | I32_rotl of expr * expr
+  | I32_rotr of expr * expr
   | I64_add of expr * expr
   | I64_sub of expr * expr
   | I64_mul of expr * expr
@@ -106,6 +108,8 @@ and expr' =
   | I64_shl of expr * expr
   | I64_shr_s of expr * expr
   | I64_shr_u of expr * expr
+  | I64_rotl of expr * expr
+  | I64_rotr of expr * expr
   | F32_add of expr * expr
   | F32_sub of expr * expr
   | F32_mul of expr * expr
