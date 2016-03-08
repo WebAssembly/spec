@@ -19,6 +19,7 @@
   (func $clz (param $x i64) (result i64) (i64.clz (get_local $x)))
   (func $ctz (param $x i64) (result i64) (i64.ctz (get_local $x)))
   (func $popcnt (param $x i64) (result i64) (i64.popcnt (get_local $x)))
+  (func $eqz (param $x i64) (result i32) (i64.eqz (get_local $x)))
   (func $eq (param $x i64) (param $y i64) (result i32) (i64.eq (get_local $x) (get_local $y)))
   (func $ne (param $x i64) (param $y i64) (result i32) (i64.ne (get_local $x) (get_local $y)))
   (func $lt_s (param $x i64) (param $y i64) (result i32) (i64.lt_s (get_local $x) (get_local $y)))
@@ -48,6 +49,7 @@
   (export "clz" $clz)
   (export "ctz" $ctz)
   (export "popcnt" $popcnt)
+  (export "eqz" $eqz)
   (export "eq" $eq)
   (export "ne" $ne)
   (export "lt_s" $lt_s)
@@ -266,6 +268,10 @@
 (assert_return (invoke "popcnt" (i64.const -1)) (i64.const 64))
 (assert_return (invoke "popcnt" (i64.const 0)) (i64.const 0))
 (assert_return (invoke "popcnt" (i64.const 0x00008000)) (i64.const 1))
+
+(assert_return (invoke "eqz" (i64.const 0)) (i32.const 1))
+(assert_return (invoke "eqz" (i64.const 1)) (i32.const 0))
+(assert_return (invoke "eqz" (i64.const 0x8000000000000000)) (i32.const 0))
 
 (assert_return (invoke "eq" (i64.const 0) (i64.const 0)) (i32.const 1))
 (assert_return (invoke "eq" (i64.const 1) (i64.const 1)) (i32.const 1))

@@ -19,6 +19,7 @@
   (func $clz (param $x i32) (result i32) (i32.clz (get_local $x)))
   (func $ctz (param $x i32) (result i32) (i32.ctz (get_local $x)))
   (func $popcnt (param $x i32) (result i32) (i32.popcnt (get_local $x)))
+  (func $eqz (param $x i32) (result i32) (i32.eqz (get_local $x)))
   (func $eq (param $x i32) (param $y i32) (result i32) (i32.eq (get_local $x) (get_local $y)))
   (func $ne (param $x i32) (param $y i32) (result i32) (i32.ne (get_local $x) (get_local $y)))
   (func $lt_s (param $x i32) (param $y i32) (result i32) (i32.lt_s (get_local $x) (get_local $y)))
@@ -48,6 +49,7 @@
   (export "clz" $clz)
   (export "ctz" $ctz)
   (export "popcnt" $popcnt)
+  (export "eqz" $eqz)
   (export "eq" $eq)
   (export "ne" $ne)
   (export "lt_s" $lt_s)
@@ -264,6 +266,10 @@
 (assert_return (invoke "popcnt" (i32.const -1)) (i32.const 32))
 (assert_return (invoke "popcnt" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "popcnt" (i32.const 0x00008000)) (i32.const 1))
+
+(assert_return (invoke "eqz" (i32.const 0)) (i32.const 1))
+(assert_return (invoke "eqz" (i32.const 1)) (i32.const 0))
+(assert_return (invoke "eqz" (i32.const 0x80000000)) (i32.const 0))
 
 (assert_return (invoke "eq" (i32.const 0) (i32.const 0)) (i32.const 1))
 (assert_return (invoke "eq" (i32.const 1) (i32.const 1)) (i32.const 1))

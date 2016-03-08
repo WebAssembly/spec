@@ -49,6 +49,7 @@ let check_type actual expected at =
 let type_value = Values.type_of
 let type_unop = Values.type_of
 let type_binop = Values.type_of
+let type_testop = Values.type_of
 let type_relop = Values.type_of
 
 let type_cvtop at = function
@@ -200,6 +201,11 @@ let rec check_expr c et e =
     check_expr c (Some t) e1;
     check_expr c (Some t) e2;
     check_type (Some t) et e.at
+
+  | Test (testop, e1) ->
+    let t = type_testop testop in
+    check_expr c (Some t) e1;
+    check_type (Some Int32Type) et e.at
 
   | Compare (relop, e1, e2) ->
     let t = type_relop relop in

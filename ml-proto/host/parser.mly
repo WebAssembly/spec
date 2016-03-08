@@ -143,6 +143,7 @@ let implicit_decl c t at =
 %token<string Source.phrase -> Ast.expr' * Values.value> CONST
 %token<Ast.expr -> Ast.expr'> UNARY
 %token<Ast.expr * Ast.expr -> Ast.expr'> BINARY
+%token<Ast.expr -> Ast.expr'> TEST
 %token<Ast.expr * Ast.expr -> Ast.expr'> COMPARE
 %token<Ast.expr -> Ast.expr'> CONVERT
 %token<Memory.offset * int option * Ast.expr -> Ast.expr'> LOAD
@@ -253,6 +254,7 @@ expr1 :
   | CONST literal { fun c -> fst (literal $1 $2) }
   | UNARY expr { fun c -> $1 ($2 c) }
   | BINARY expr expr { fun c -> $1 ($2 c, $3 c) }
+  | TEST expr { fun c -> $1 ($2 c) }
   | COMPARE expr expr { fun c -> $1 ($2 c, $3 c) }
   | CONVERT expr { fun c -> $1 ($2 c) }
   | MEMORY_SIZE { fun c -> Memory_size }

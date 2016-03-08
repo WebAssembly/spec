@@ -54,6 +54,11 @@ struct
       | Rotr -> I32.rotr
     in fun v1 v2 -> Int32 (f (i32_of_value 1 v1) (i32_of_value 2 v2))
 
+  let testop op =
+    let f = match op with
+      | Eqz -> I32.eqz
+    in fun v -> f (i32_of_value 1 v)
+
   let relop op =
     let f = match op with
       | Eq -> I32.eq
@@ -118,6 +123,11 @@ struct
       | Rotr -> I64.rotr
     in fun v1 v2 -> Int64 (f (i64_of_value 1 v1) (i64_of_value 2 v2))
 
+  let testop op =
+    let f = match op with
+      | Eqz -> I64.eqz
+    in fun v -> f (i64_of_value 1 v)
+
   let relop op =
     let f = match op with
       | Eq -> I64.eq
@@ -181,6 +191,8 @@ struct
       | CopySign -> F32.copysign
     in fun v1 v2 -> Float32 (f (f32_of_value 1 v1) (f32_of_value 2 v2))
 
+  let testop op = assert false
+
   let relop op =
     let f = match op with
       | Eq -> F32.eq
@@ -235,6 +247,8 @@ struct
       | CopySign -> F64.copysign
     in fun v1 v2 -> Float64 (f (f64_of_value 1 v1) (f64_of_value 2 v2))
 
+  let testop op = assert false
+
   let relop op =
     let f = match op with
       | Eq -> F64.eq
@@ -274,5 +288,6 @@ let op i32 i64 f32 f64 = function
 
 let eval_unop = op Int32Op.unop Int64Op.unop Float32Op.unop Float64Op.unop
 let eval_binop = op Int32Op.binop Int64Op.binop Float32Op.binop Float64Op.binop
+let eval_testop = op Int32Op.testop Int64Op.testop Float32Op.testop Float64Op.testop
 let eval_relop = op Int32Op.relop Int64Op.relop Float32Op.relop Float64Op.relop
 let eval_cvtop = op Int32Op.cvtop Int64Op.cvtop Float32Op.cvtop Float64Op.cvtop

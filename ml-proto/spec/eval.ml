@@ -237,6 +237,11 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Arithmetic.eval_binop binop v1 v2)
       with exn -> arithmetic_error e.at e1.at e2.at exn)
 
+  | Test (testop, e1) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    (try Some (Int32 (if Arithmetic.eval_testop testop v1 then 1l else 0l))
+      with exn -> arithmetic_error e.at e1.at e1.at exn)
+
   | Compare (relop, e1, e2) ->
     let v1 = some (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
