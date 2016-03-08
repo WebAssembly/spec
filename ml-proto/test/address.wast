@@ -9,6 +9,7 @@
         (call_import $print (i32.load8_u offset=25 (get_local $i))) ;; 122 'z'
 
         (call_import $print (i32.load16_u offset=0 (get_local $i)))          ;; 25185 'ab'
+        (call_import $print (i32.load16_u align=1 (get_local $i)))           ;; 25185 'ab'
         (call_import $print (i32.load16_u offset=1 align=1 (get_local $i)))  ;; 25442 'bc'
         (call_import $print (i32.load16_u offset=2 (get_local $i)))          ;; 25699 'cd'
         (call_import $print (i32.load16_u offset=25 align=1 (get_local $i))) ;; 122 'z\0'
