@@ -125,6 +125,10 @@ and expr' =
   | F64_max of expr * expr
   | F64_copysign of expr * expr
 
+  (* Predicates *)
+  | I32_eqz of expr
+  | I64_eqz of expr
+
   (* Comparisons *)
   | I32_eq of expr * expr
   | I32_ne of expr * expr

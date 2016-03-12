@@ -39,6 +39,7 @@ and relabel' f n = function
   | Const c -> Const c
   | Unary (unop, e) -> Unary (unop, relabel f n e)
   | Binary (binop, e1, e2) -> Binary (binop, relabel f n e1, relabel f n e2)
+  | Test (testop, e) -> Test (testop, relabel f n e)
   | Compare (relop, e1, e2) -> Compare (relop, relabel f n e1, relabel f n e2)
   | Convert (cvtop, e) -> Convert (cvtop, relabel f n e)
   | Host (hostop, es) -> Host (hostop, List.map (relabel f n) es)
@@ -217,6 +218,9 @@ and expr' at = function
   | Ast.F64_max (e1, e2) -> Binary (Float64 F64Op.Max, expr e1, expr e2)
   | Ast.F64_copysign (e1, e2) ->
     Binary (Float64 F64Op.CopySign, expr e1, expr e2)
+
+  | Ast.I32_eqz e -> Test (Int32 I32Op.Eqz, expr e)
+  | Ast.I64_eqz e -> Test (Int64 I64Op.Eqz, expr e)
 
   | Ast.I32_eq (e1, e2) -> Compare (Int32 I32Op.Eq, expr e1, expr e2)
   | Ast.I32_ne (e1, e2) -> Compare (Int32 I32Op.Ne, expr e1, expr e2)

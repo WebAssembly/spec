@@ -276,6 +276,8 @@ rule token = parse
     { BINARY (fun (e1, e2) ->
         floatop t (F32_copysign (e1, e2)) (F64_copysign (e1, e2))) }
 
+  | (ixx as t)".eqz" { TEST (fun e -> intop t (I32_eqz e) (I64_eqz e)) }
+
   | (ixx as t)".eq"
     { COMPARE (fun (e1, e2) -> intop t (I32_eq (e1, e2)) (I64_eq (e1, e2))) }
   | (ixx as t)".ne"
