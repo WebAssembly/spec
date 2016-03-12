@@ -1,6 +1,6 @@
 type pos = {file : string; line : int; column : int}
 type region = {left : pos; right : pos}
-type 'a phrase = { at : region; it : 'a}
+type 'a phrase = {at : region; it : 'a}
 
 
 (* Positions and regions *)
@@ -9,9 +9,14 @@ let no_pos = {file = ""; line = 0; column = 0}
 let no_region = {left = no_pos; right = no_pos}
 
 let string_of_pos pos =
-  string_of_int pos.line ^ "." ^ string_of_int (pos.column + 1)
+  if pos.line = -1 then
+    string_of_int pos.column
+  else
+    string_of_int pos.line ^ "." ^ string_of_int (pos.column + 1)
+
 let string_of_region r =
-  r.left.file ^ ":" ^ string_of_pos r.left ^ "-" ^ string_of_pos r.right
+  r.left.file ^ ":" ^ string_of_pos r.left ^
+  (if r.right = r.left then "" else "-" ^ string_of_pos r.right)
 
 let before region = {left = region.left; right = region.left}
 let after region = {left = region.right; right = region.right}

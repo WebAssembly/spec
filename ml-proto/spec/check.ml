@@ -289,11 +289,12 @@ let check_elem c x =
 module NameSet = Set.Make(String)
 
 let check_export c set ex =
-  let name = match ex.it with
-  | ExportFunc (n, x) -> ignore (func c x); n
-  | ExportMemory n -> require (c.has_memory) ex.at "no memory to export"; n in
-  require (not (NameSet.mem name set)) ex.at
-    "duplicate export name";
+  let {name; kind} = ex.it in
+  (match kind with
+  | `Func x -> ignore (func c x)
+  | `Memory -> require c.has_memory ex.at "no memory to export"
+  );
+  require (not (NameSet.mem name set)) ex.at "duplicate export name";
   NameSet.add name set
 
 let check_start c start =
@@ -316,11 +317,11 @@ let check_segment pages prev_end seg =
 
 let check_memory memory =
   let mem = memory.it in
-  require (mem.initial <= mem.max) memory.at
-    "initial memory pages must be less than or equal to the maximum";
+  require (mem.min <= mem.max) memory.at
+    "minimum memory pages must be less than or equal to the maximum";
   require (mem.max <= 65535L) memory.at
     "linear memory pages must be less or equal to 65535 (4GiB)";
-  ignore (List.fold_left (check_segment mem.initial) 0L mem.segments)
+  ignore (List.fold_left (check_segment mem.min) 0L mem.segments)
 
 let check_module m =
   let {memory; types; funcs; start; imports; exports; table} = m.it in

@@ -3,96 +3,94 @@ open Source
 
 (* Script representation *)
 
-type 'm command = 'm command' Source.phrase
-and 'm command' =
-  | Define of 'm
+type command = command' Source.phrase
+and command' =
+  | Define of Ast.module_
   | Invoke of string * Kernel.literal list
-  | AssertInvalid of 'm * string
+  | AssertInvalid of Ast.module_ * string
   | AssertReturn of string * Kernel.literal list * Kernel.literal option
   | AssertReturnNaN of string * Kernel.literal list
   | AssertTrap of string * Kernel.literal list * string
+  | Input of string
+  | Output of string
 
-type script = Ast.module_ command list
-type script' = Kernel.module_ command list
-
-
-(* Desugaring *)
-
-let rec desugar_cmd c = desugar_cmd' c.it @@ c.at
-and desugar_cmd' = function
-  | Define m -> Define (Desugar.desugar m)
-  | Invoke (s, ls) -> Invoke (s, ls)
-  | AssertInvalid (m, r) -> AssertInvalid (Desugar.desugar m, r)
-  | AssertReturn (s, ls, lo) -> AssertReturn (s, ls, lo)
-  | AssertReturnNaN (s, ls) -> AssertReturnNaN (s, ls)
-  | AssertTrap (s, ls, r) -> AssertTrap (s, ls, r)
-
-let desugar = List.map desugar_cmd
+type script = command list
 
 
 (* Execution *)
 
+module Abort = Error.Make ()
 module Syntax = Error.Make ()
-module AssertFailure = Error.Make ()
+module Assert = Error.Make ()
+module IO = Error.Make ()
 
+exception Abort = Abort.Error
 exception Syntax = Syntax.Error
-exception AssertFailure = AssertFailure.Error  (* assert command failure *)
+exception Assert = Assert.Error
+exception IO = IO.Error
 
 let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 
-let current_module : Eval.instance option ref = ref None
+let current_module : (Ast.module_ * Eval.instance) option ref = ref None
 
-let get_module at = match !current_module with
-  | Some m -> m
-  | None -> raise (Eval.Crash (at, "no module defined to invoke"))
+let get_current at = match !current_module with
+  | Some mi -> mi
+  | None -> raise (Eval.Crash (at, "no module defined"))
 
+let get_module at = fst (get_current at)
+let get_instance at = snd (get_current at)
+
+let input_file = ref (fun _ -> assert false)
+let output_file = ref (fun _ -> assert false)
 
 let run_cmd cmd =
   match cmd.it with
   | Define m ->
+    let m' = Desugar.desugar m in
     trace "Checking...";
-    Check.check_module m;
+    Check.check_module m';
     if !Flags.print_sig then begin
       trace "Signature:";
-      Print.print_module_sig m
+      Print.print_module_sig m'
     end;
     trace "Initializing...";
-    let imports = Import.link m in
-    current_module := Some (Eval.init m imports)
+    let imports = Import.link m' in
+    current_module := Some (m, Eval.init m' imports)
 
   | Invoke (name, es) ->
-    trace "Invoking...";
-    let m = get_module cmd.at in
+    trace ("Invoking \"" ^ name ^ "\"...");
+    let m = get_instance cmd.at in
     let v = Eval.invoke m name (List.map it es) in
     if v <> None then Print.print_value v
 
   | AssertInvalid (m, re) ->
     trace "Asserting invalid...";
-    (match Check.check_module m with
+    let m' = Desugar.desugar m in
+    (match Check.check_module m' with
     | exception Check.Invalid (_, msg) ->
       if not (Str.string_match (Str.regexp re) msg 0) then begin
         print_endline ("Result: \"" ^ msg ^ "\"");
         print_endline ("Expect: \"" ^ re ^ "\"");
-        AssertFailure.error cmd.at "wrong validation error"
+        Assert.error cmd.at "wrong validation error"
       end
     | _ ->
-      AssertFailure.error cmd.at "expected validation error"
+      Assert.error cmd.at "expected validation error"
     )
 
   | AssertReturn (name, es, expect_e) ->
-    trace "Asserting return...";
-    let m = get_module cmd.at in
+    trace ("Asserting return \"" ^ name ^ "\"...");
+    let m = get_instance cmd.at in
     let got_v = Eval.invoke m name (List.map it es) in
     let expect_v = Lib.Option.map it expect_e in
     if got_v <> expect_v then begin
       print_string "Result: "; Print.print_value got_v;
       print_string "Expect: "; Print.print_value expect_v;
-      AssertFailure.error cmd.at "wrong return value"
+      Assert.error cmd.at "wrong return value"
     end
 
   | AssertReturnNaN (name, es) ->
-    trace "Asserting return...";
-    let m = get_module cmd.at in
+    trace ("Asserting return \"" ^ name ^ "\"...");
+    let m = get_instance cmd.at in
     let got_v = Eval.invoke m name (List.map it es) in
     if
       match got_v with
@@ -104,33 +102,53 @@ let run_cmd cmd =
     then begin
       print_string "Result: "; Print.print_value got_v;
       print_string "Expect: "; print_endline "nan";
-      AssertFailure.error cmd.at "wrong return value"
+      Assert.error cmd.at "wrong return value"
     end
 
   | AssertTrap (name, es, re) ->
-    trace "Asserting trap...";
-    let m = get_module cmd.at in
+    trace ("Asserting trap \"" ^ name ^ "\"...");
+    let m = get_instance cmd.at in
     (match Eval.invoke m name (List.map it es) with
     | exception Eval.Trap (_, msg) ->
       if not (Str.string_match (Str.regexp re) msg 0) then begin
         print_endline ("Result: \"" ^ msg ^ "\"");
         print_endline ("Expect: \"" ^ re ^ "\"");
-        AssertFailure.error cmd.at "wrong runtime trap"
+        Assert.error cmd.at "wrong runtime trap"
       end
     | _ ->
-      AssertFailure.error cmd.at "expected runtime trap"
+      Assert.error cmd.at "expected runtime trap"
     )
+
+  | Input file ->
+    (try if not (!input_file file) then Abort.error cmd.at "aborting"
+    with Sys_error msg -> IO.error cmd.at msg)
+
+  | Output file ->
+    (try !output_file file (get_module cmd.at)
+    with Sys_error msg -> IO.error cmd.at msg)
 
 let dry_cmd cmd =
   match cmd.it with
   | Define m ->
-    Check.check_module m;
-    if !Flags.print_sig then Print.print_module_sig m
+    let m' = Desugar.desugar m in
+    trace "Checking...";
+    Check.check_module m';
+    if !Flags.print_sig then begin
+      trace "Signature:";
+      Print.print_module_sig m'
+    end
+  | Input file ->
+    (try
+      if not (!input_file file) then Abort.error cmd.at "aborting"
+    with Sys_error msg ->
+      IO.error cmd.at msg
+    )
   | Invoke _
   | AssertInvalid _
   | AssertReturn _
   | AssertReturnNaN _
-  | AssertTrap _ -> ()
+  | AssertTrap _ 
+  | Output _ -> ()
 
 let run script =
   List.iter (if !Flags.dry then dry_cmd else run_cmd) script

@@ -42,8 +42,6 @@ and expr' =
   | I32_load8_u of Memory.offset * int * expr
   | I32_load16_s of Memory.offset * int * expr
   | I32_load16_u of Memory.offset * int * expr
-  | I32_load32_s of Memory.offset * int * expr
-  | I32_load32_u of Memory.offset * int * expr
   | I64_load8_s of Memory.offset * int * expr
   | I64_load8_u of Memory.offset * int * expr
   | I64_load16_s of Memory.offset * int * expr
@@ -52,7 +50,6 @@ and expr' =
   | I64_load32_u of Memory.offset * int * expr
   | I32_store8 of Memory.offset * int * expr * expr
   | I32_store16 of Memory.offset * int * expr * expr
-  | I32_store32 of Memory.offset * int * expr * expr
   | I64_store8 of Memory.offset * int * expr * expr
   | I64_store16 of Memory.offset * int * expr * expr
   | I64_store32 of Memory.offset * int * expr * expr
@@ -201,7 +198,7 @@ type func = func' Source.phrase
 and func' =
 {
   ftype : var;
-  locals :Types.value_type list;
+  locals : Types.value_type list;
   body : expr list;
 }
 

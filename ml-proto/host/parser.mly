@@ -133,6 +133,7 @@ let implicit_decl c t at =
 %token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
 %token UNREACHABLE MEMORY_SIZE GROW_MEMORY
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
+%token INPUT OUTPUT
 %token EOF
 
 %token<string> INT
@@ -154,9 +155,10 @@ let implicit_decl c t at =
 %nonassoc LOW
 %nonassoc VAR
 
-%start script script1
+%start script script1 module1
 %type<Script.script> script
 %type<Script.script> script1
+%type<Ast.module_> module1
 
 %%
 
@@ -336,10 +338,10 @@ segment_list :
 
 memory :
   | LPAR MEMORY INT INT segment_list RPAR
-    { {initial = Int64.of_string $3; max = Int64.of_string $4; segments = $5}
+    { {min = Int64.of_string $3; max = Int64.of_string $4; segments = $5}
         @@ at () }
   | LPAR MEMORY INT segment_list RPAR
-    { {initial = Int64.of_string $3; max = Int64.of_string $3; segments = $4}
+    { {min = Int64.of_string $3; max = Int64.of_string $3; segments = $4}
         @@ at () }
 ;
 
@@ -376,9 +378,9 @@ import :
 
 export :
   | LPAR EXPORT TEXT var RPAR
-    { let at = at () in fun c -> ExportFunc ($3, ($4 c func)) @@ at }
+    { let at = at () in fun c -> {name = $3; kind = `Func ($4 c func)} @@ at }
   | LPAR EXPORT TEXT MEMORY RPAR
-    { let at = at () in fun c -> ExportMemory $3 @@ at }
+    { let at = at () in fun c -> {name = $3; kind = `Memory} @@ at }
 ;
 
 module_fields :
@@ -426,6 +428,8 @@ cmd :
     { AssertReturnNaN ($5, $6) @@ at () }
   | LPAR ASSERT_TRAP LPAR INVOKE TEXT const_list RPAR TEXT RPAR
     { AssertTrap ($5, $6, $8) @@ at () }
+  | LPAR INPUT TEXT RPAR { Input $3 @@ at () }
+  | LPAR OUTPUT TEXT RPAR { Output $3 @@ at () }
 ;
 cmd_list :
   | /* empty */ { [] }
@@ -449,5 +453,8 @@ script :
 ;
 script1 :
   | cmd { [$1] }
+;
+module1 :
+  | module_ EOF { $1 }
 ;
 %%

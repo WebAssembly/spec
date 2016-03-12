@@ -108,12 +108,6 @@ and expr' at = function
   | Ast.I32_load16_u (offset, align, e) ->
     LoadExtend
       ({memop = {ty = Int32Type; offset; align}; sz = Mem16; ext = ZX}, expr e)
-  | Ast.I32_load32_s (offset, align, e) ->
-    LoadExtend
-      ({memop = {ty = Int32Type; offset; align}; sz = Mem32; ext = SX}, expr e)
-  | Ast.I32_load32_u (offset, align, e) ->
-    LoadExtend
-      ({memop = {ty = Int32Type; offset; align}; sz = Mem32; ext = ZX}, expr e)
   | Ast.I64_load8_s (offset, align, e) ->
     LoadExtend
       ({memop = {ty = Int64Type; offset; align}; sz = Mem8; ext = SX}, expr e)
@@ -138,9 +132,6 @@ and expr' at = function
   | Ast.I32_store16 (offset, align, e1, e2) ->
     StoreWrap
       ({memop = {ty = Int32Type; offset; align}; sz = Mem16}, expr e1, expr e2)
-  | Ast.I32_store32 (offset, align, e1, e2) ->
-    StoreWrap
-      ({memop = {ty = Int32Type; offset; align}; sz = Mem32}, expr e1, expr e2)
   | Ast.I64_store8 (offset, align, e1, e2) ->
     StoreWrap
       ({memop = {ty = Int64Type; offset; align}; sz = Mem8}, expr e1, expr e2)
