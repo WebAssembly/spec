@@ -47,8 +47,8 @@ let rec vs64 s i =
 let vu32 s i = vu64 s (Int64.of_int32 i)
 let vs32 s i = vs64 s (Int64.of_int32 i)
 let vu s i = vu64 s (Int64.of_int i)
-let f32 s x = vu32 s (F32.to_bits x)
-let f64 s x = vu64 s (F64.to_bits x)
+let f32 s x = u32 s (F32.to_bits x)
+let f64 s x = u64 s (F64.to_bits x)
 
 let bool s b = u8 s (if b then 1 else 0)
 let string s bs = vu s (String.length bs); put_string s bs
