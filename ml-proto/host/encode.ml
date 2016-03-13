@@ -1,6 +1,6 @@
 (* Version *)
 
-let version = 11
+let version = 0x0b
 
 
 (* Encoding stream *)

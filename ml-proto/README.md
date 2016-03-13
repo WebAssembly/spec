@@ -11,7 +11,7 @@ Currently, it can
 * *encode* the binary format,
 * *prettyprint* the S-expression format (work in progress).
 
-The S-expression format is a (very dumb) form of *script* that cannot just define a module, but also batch a sequence of invocations, assertions, and conversions. As such it is a superset of the binary format, with the additional functionality purely intended as testing infrastructure.
+The S-expression format is a (very dumb) form of *script* that cannot just define a module, but in fact a sequence of them, and a batch of invocations, assertions, and conversions to each one. As such it is a superset of the binary format, with the additional functionality purely intended as testing infrastructure. (See [below][#scripts] for details.)
 
 The interpreter can also be run as a REPL, allowing to enter pieces of scripts interactively.
 
@@ -187,13 +187,13 @@ cmd:
   ( assert_return_nan (invoke <name> <expr>* ))        ;; assert return with floating point nan result of invocation
   ( assert_trap (invoke <name> <expr>* ) <failure> )   ;; assert invocation traps with given failure string
   ( assert_invalid <module> <failure> )                ;; assert invalid module with given failure string
-  ( input <string> )                                   ;; read script from file
+  ( input <string> )                                   ;; read script or module from file
   ( output <string> )                                  ;; output module to file
 ```
 
-Invocation, most assertions, and output is only possible after a module has been defined.
+Commands are executed in sequence. Invocation, assertions, and output apply to the most recently defined module (the _current_ module), and are only possible after a module has been defined. Note that there only ever is one current module, the different module definitions cannot interact.
 
-The input and output commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files.
+The input and output commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed.
 
 Again, this is only a meta-level for testing, and not a part of the language proper.
 
