@@ -266,7 +266,10 @@ and eval_func instance f vs =
   let vars = List.map (fun t -> ref (default_value t)) f.it.locals in
   let locals = args @ vars in
   let c = {instance; locals; labels = []} in
-  coerce (type_ c f.it.ftype).out (eval_expr c f.it.body)
+  let ft = type_ c f.it.ftype in
+  if List.length vs <> List.length ft.ins then
+    Crash.error f.at "function called with wrong number of arguments";
+  coerce ft.out (eval_expr c f.it.body)
 
 and coerce et vo =
   if et = None then None else vo

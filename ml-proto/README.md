@@ -81,7 +81,7 @@ wasm module.wasm -o module.wast
 Finally, the option `-e` allows to provide arbitrary script commands directly on the command line. For example:
 
 ```
-wasm module.wasm -e "(invoke \"foo\")"
+wasm module.wasm -e '(invoke "foo")'
 ```
 
 If neither a file nor any of the previous options is given, you'll land in the REPL and can enter script commands interactively. You can also get into the REPL by explicitly passing `-` as a file name. You can do that in combination to giving a module file, so that you can then invoke its exports interactively, e.g.:
