@@ -121,170 +121,174 @@ let encode m =
       | Ast.F64_const c -> op 0x0d; f64 c.it
 
       | Ast.Get_local x -> op 0x0e; var x
-      | Ast.Set_local (x, e) -> expr e; op 0x0f; var x
+      | Ast.Set_local (x, e) -> unary e 0x0f; var x
 
-      | Ast.Call (x, es) -> list expr es; op 0x12; arity es; var x
-      | Ast.Call_import (x, es) -> list expr es; op 0x1f; arity es; var x
-      | Ast.Call_indirect (x, e, es) ->
-        expr e; list expr es; op 0x13; arity es; var x
-      | Ast.Return eo -> vec1 expr eo; op 0x14; arity1 eo
+      | Ast.Call (x, es) -> nary es 0x12; var x
+      | Ast.Call_import (x, es) -> nary es 0x1f; var x
+      | Ast.Call_indirect (x, e, es) -> expr e; nary es 0x13; var x
+      | Ast.Return eo -> nary1 eo 0x14
       | Ast.Unreachable -> op 0x15
 
-      | I32_load8_s (o, a, e) -> expr e; op 0x20; memop o a
-      | I32_load8_u (o, a, e) -> expr e; op 0x21; memop o a
-      | I32_load16_s (o, a, e) -> expr e; op 0x22; memop o a
-      | I32_load16_u (o, a, e) -> expr e; op 0x23; memop o a
-      | I64_load8_s (o, a, e) -> expr e; op 0x24; memop o a
-      | I64_load8_u (o, a, e) -> expr e; op 0x25; memop o a
-      | I64_load16_s (o, a, e) -> expr e; op 0x26; memop o a
-      | I64_load16_u (o, a, e) -> expr e; op 0x27; memop o a
-      | I64_load32_s (o, a, e) -> expr e; op 0x28; memop o a
-      | I64_load32_u (o, a, e) -> expr e; op 0x29; memop o a
-      | I32_load (o, a, e) -> expr e; op 0x2a; memop o a
-      | I64_load (o, a, e) -> expr e; op 0x2b; memop o a
-      | F32_load (o, a, e) -> expr e; op 0x2c; memop o a
-      | F64_load (o, a, e) -> expr e; op 0x2d; memop o a
+      | I32_load8_s (o, a, e) -> unary e 0x20; memop o a
+      | I32_load8_u (o, a, e) -> unary e 0x21; memop o a
+      | I32_load16_s (o, a, e) -> unary e 0x22; memop o a
+      | I32_load16_u (o, a, e) -> unary e 0x23; memop o a
+      | I64_load8_s (o, a, e) -> unary e 0x24; memop o a
+      | I64_load8_u (o, a, e) -> unary e 0x25; memop o a
+      | I64_load16_s (o, a, e) -> unary e 0x26; memop o a
+      | I64_load16_u (o, a, e) -> unary e 0x27; memop o a
+      | I64_load32_s (o, a, e) -> unary e 0x28; memop o a
+      | I64_load32_u (o, a, e) -> unary e 0x29; memop o a
+      | I32_load (o, a, e) -> unary e 0x2a; memop o a
+      | I64_load (o, a, e) -> unary e 0x2b; memop o a
+      | F32_load (o, a, e) -> unary e 0x2c; memop o a
+      | F64_load (o, a, e) -> unary e 0x2d; memop o a
 
-      | I32_store8 (o, a, e1, e2) -> expr e1; expr e2; op 0x2e; memop o a
-      | I32_store16 (o, a, e1, e2) -> expr e1; expr e2; op 0x2f; memop o a
-      | I64_store8 (o, a, e1, e2) -> expr e1; expr e2; op 0x30; memop o a
-      | I64_store16 (o, a, e1, e2) -> expr e1; expr e2; op 0x31; memop o a
-      | I64_store32 (o, a, e1, e2) -> expr e1; expr e2; op 0x32; memop o a
-      | I32_store (o, a, e1, e2) -> expr e1; expr e2; op 0x33; memop o a
-      | I64_store (o, a, e1, e2) -> expr e1; expr e2; op 0x34; memop o a
-      | F32_store (o, a, e1, e2) -> expr e1; expr e2; op 0x35; memop o a
-      | F64_store (o, a, e1, e2) -> expr e1; expr e2; op 0x36; memop o a
+      | I32_store8 (o, a, e1, e2) -> binary e1 e2 0x2e; memop o a
+      | I32_store16 (o, a, e1, e2) -> binary e1 e2 0x2f; memop o a
+      | I64_store8 (o, a, e1, e2) -> binary e1 e2 0x30; memop o a
+      | I64_store16 (o, a, e1, e2) -> binary e1 e2 0x31; memop o a
+      | I64_store32 (o, a, e1, e2) -> binary e1 e2 0x32; memop o a
+      | I32_store (o, a, e1, e2) -> binary e1 e2 0x33; memop o a
+      | I64_store (o, a, e1, e2) -> binary e1 e2 0x34; memop o a
+      | F32_store (o, a, e1, e2) -> binary e1 e2 0x35; memop o a
+      | F64_store (o, a, e1, e2) -> binary e1 e2 0x36; memop o a
 
-      | Grow_memory e -> expr e; op 0x39
+      | Grow_memory e -> unary e 0x39
       | Memory_size -> op 0x3b
 
-      | I32_add (e1, e2) -> expr e1; expr e2; op 0x40
-      | I32_sub (e1, e2) -> expr e1; expr e2; op 0x41
-      | I32_mul (e1, e2) -> expr e1; expr e2; op 0x42
-      | I32_div_s (e1, e2) -> expr e1; expr e2; op 0x43
-      | I32_div_u (e1, e2) -> expr e1; expr e2; op 0x44
-      | I32_rem_s (e1, e2) -> expr e1; expr e2; op 0x45
-      | I32_rem_u (e1, e2) -> expr e1; expr e2; op 0x46
-      | I32_and (e1, e2) -> expr e1; expr e2; op 0x47
-      | I32_or (e1, e2) -> expr e1; expr e2; op 0x48
-      | I32_xor (e1, e2) -> expr e1; expr e2; op 0x49
-      | I32_shl (e1, e2) -> expr e1; expr e2; op 0x4a
-      | I32_shr_u (e1, e2) -> expr e1; expr e2; op 0x4b
-      | I32_shr_s (e1, e2) -> expr e1; expr e2; op 0x4c
-      | I32_rotl (e1, e2) -> expr e1; expr e2; op 0xb6
-      | I32_rotr (e1, e2) -> expr e1; expr e2; op 0xb7
-      | I32_eq (e1, e2) -> expr e1; expr e2; op 0x4d
-      | I32_ne (e1, e2) -> expr e1; expr e2; op 0x4e
-      | I32_lt_s (e1, e2) -> expr e1; expr e2; op 0x4f
-      | I32_le_s (e1, e2) -> expr e1; expr e2; op 0x50
-      | I32_lt_u (e1, e2) -> expr e1; expr e2; op 0x51
-      | I32_le_u (e1, e2) -> expr e1; expr e2; op 0x52
-      | I32_gt_s (e1, e2) -> expr e1; expr e2; op 0x53
-      | I32_ge_s (e1, e2) -> expr e1; expr e2; op 0x54
-      | I32_gt_u (e1, e2) -> expr e1; expr e2; op 0x55
-      | I32_ge_u (e1, e2) -> expr e1; expr e2; op 0x56
-      | I32_clz e -> expr e; op 0x57
-      | I32_ctz e -> expr e; op 0x58
-      | I32_popcnt e -> expr e; op 0x59
-      | I32_eqz e -> expr e; op 0x5a
+      | I32_add (e1, e2) -> binary e1 e2 0x40
+      | I32_sub (e1, e2) -> binary e1 e2 0x41
+      | I32_mul (e1, e2) -> binary e1 e2 0x42
+      | I32_div_s (e1, e2) -> binary e1 e2 0x43
+      | I32_div_u (e1, e2) -> binary e1 e2 0x44
+      | I32_rem_s (e1, e2) -> binary e1 e2 0x45
+      | I32_rem_u (e1, e2) -> binary e1 e2 0x46
+      | I32_and (e1, e2) -> binary e1 e2 0x47
+      | I32_or (e1, e2) -> binary e1 e2 0x48
+      | I32_xor (e1, e2) -> binary e1 e2 0x49
+      | I32_shl (e1, e2) -> binary e1 e2 0x4a
+      | I32_shr_u (e1, e2) -> binary e1 e2 0x4b
+      | I32_shr_s (e1, e2) -> binary e1 e2 0x4c
+      | I32_rotl (e1, e2) -> binary e1 e2 0xb6
+      | I32_rotr (e1, e2) -> binary e1 e2 0xb7
+      | I32_eq (e1, e2) -> binary e1 e2 0x4d
+      | I32_ne (e1, e2) -> binary e1 e2 0x4e
+      | I32_lt_s (e1, e2) -> binary e1 e2 0x4f
+      | I32_le_s (e1, e2) -> binary e1 e2 0x50
+      | I32_lt_u (e1, e2) -> binary e1 e2 0x51
+      | I32_le_u (e1, e2) -> binary e1 e2 0x52
+      | I32_gt_s (e1, e2) -> binary e1 e2 0x53
+      | I32_ge_s (e1, e2) -> binary e1 e2 0x54
+      | I32_gt_u (e1, e2) -> binary e1 e2 0x55
+      | I32_ge_u (e1, e2) -> binary e1 e2 0x56
+      | I32_clz e -> unary e 0x57
+      | I32_ctz e -> unary e 0x58
+      | I32_popcnt e -> unary e 0x59
+      | I32_eqz e -> unary e 0x5a
 
-      | I64_add (e1, e2) -> expr e1; expr e2; op 0x5b
-      | I64_sub (e1, e2) -> expr e1; expr e2; op 0x5c
-      | I64_mul (e1, e2) -> expr e1; expr e2; op 0x5d
-      | I64_div_s (e1, e2) -> expr e1; expr e2; op 0x5e
-      | I64_div_u (e1, e2) -> expr e1; expr e2; op 0x5f
-      | I64_rem_s (e1, e2) -> expr e1; expr e2; op 0x60
-      | I64_rem_u (e1, e2) -> expr e1; expr e2; op 0x61
-      | I64_and (e1, e2) -> expr e1; expr e2; op 0x62
-      | I64_or (e1, e2) -> expr e1; expr e2; op 0x63
-      | I64_xor (e1, e2) -> expr e1; expr e2; op 0x64
-      | I64_shl (e1, e2) -> expr e1; expr e2; op 0x65
-      | I64_shr_u (e1, e2) -> expr e1; expr e2; op 0x66
-      | I64_shr_s (e1, e2) -> expr e1; expr e2; op 0x67
-      | I64_rotl (e1, e2) -> expr e1; expr e2; op 0xb8
-      | I64_rotr (e1, e2) -> expr e1; expr e2; op 0xb9
-      | I64_eq (e1, e2) -> expr e1; expr e2; op 0x68
-      | I64_ne (e1, e2) -> expr e1; expr e2; op 0x69
-      | I64_lt_s (e1, e2) -> expr e1; expr e2; op 0x6a
-      | I64_le_s (e1, e2) -> expr e1; expr e2; op 0x6b
-      | I64_lt_u (e1, e2) -> expr e1; expr e2; op 0x6c
-      | I64_le_u (e1, e2) -> expr e1; expr e2; op 0x6d
-      | I64_gt_s (e1, e2) -> expr e1; expr e2; op 0x6e
-      | I64_ge_s (e1, e2) -> expr e1; expr e2; op 0x6f
-      | I64_gt_u (e1, e2) -> expr e1; expr e2; op 0x70
-      | I64_ge_u (e1, e2) -> expr e1; expr e2; op 0x71
-      | I64_clz e -> expr e; op 0x72
-      | I64_ctz e -> expr e; op 0x73
-      | I64_popcnt e -> expr e; op 0x74
-      | I64_eqz e -> expr e; op 0xba
+      | I64_add (e1, e2) -> binary e1 e2 0x5b
+      | I64_sub (e1, e2) -> binary e1 e2 0x5c
+      | I64_mul (e1, e2) -> binary e1 e2 0x5d
+      | I64_div_s (e1, e2) -> binary e1 e2 0x5e
+      | I64_div_u (e1, e2) -> binary e1 e2 0x5f
+      | I64_rem_s (e1, e2) -> binary e1 e2 0x60
+      | I64_rem_u (e1, e2) -> binary e1 e2 0x61
+      | I64_and (e1, e2) -> binary e1 e2 0x62
+      | I64_or (e1, e2) -> binary e1 e2 0x63
+      | I64_xor (e1, e2) -> binary e1 e2 0x64
+      | I64_shl (e1, e2) -> binary e1 e2 0x65
+      | I64_shr_u (e1, e2) -> binary e1 e2 0x66
+      | I64_shr_s (e1, e2) -> binary e1 e2 0x67
+      | I64_rotl (e1, e2) -> binary e1 e2 0xb8
+      | I64_rotr (e1, e2) -> binary e1 e2 0xb9
+      | I64_eq (e1, e2) -> binary e1 e2 0x68
+      | I64_ne (e1, e2) -> binary e1 e2 0x69
+      | I64_lt_s (e1, e2) -> binary e1 e2 0x6a
+      | I64_le_s (e1, e2) -> binary e1 e2 0x6b
+      | I64_lt_u (e1, e2) -> binary e1 e2 0x6c
+      | I64_le_u (e1, e2) -> binary e1 e2 0x6d
+      | I64_gt_s (e1, e2) -> binary e1 e2 0x6e
+      | I64_ge_s (e1, e2) -> binary e1 e2 0x6f
+      | I64_gt_u (e1, e2) -> binary e1 e2 0x70
+      | I64_ge_u (e1, e2) -> binary e1 e2 0x71
+      | I64_clz e -> unary e 0x72
+      | I64_ctz e -> unary e 0x73
+      | I64_popcnt e -> unary e 0x74
+      | I64_eqz e -> unary e 0xba
 
-      | F32_add (e1, e2) -> expr e1; expr e2; op 0x75
-      | F32_sub (e1, e2) -> expr e1; expr e2; op 0x76
-      | F32_mul (e1, e2) -> expr e1; expr e2; op 0x77
-      | F32_div (e1, e2) -> expr e1; expr e2; op 0x78
-      | F32_min (e1, e2) -> expr e1; expr e2; op 0x79
-      | F32_max (e1, e2) -> expr e1; expr e2; op 0x7a
-      | F32_abs e -> expr e; op 0x7b
-      | F32_neg e -> expr e; op 0x7c
-      | F32_copysign (e1, e2) -> expr e1; expr e2; op 0x7d
-      | F32_ceil e -> expr e; op 0x7e
-      | F32_floor e -> expr e; op 0x7f
-      | F32_trunc e -> expr e; op 0x80
-      | F32_nearest e -> expr e; op 0x81
-      | F32_sqrt e -> expr e; op 0x82
-      | F32_eq (e1, e2) -> expr e1; expr e2; op 0x83
-      | F32_ne (e1, e2) -> expr e1; expr e2; op 0x84
-      | F32_lt (e1, e2) -> expr e1; expr e2; op 0x85
-      | F32_le (e1, e2) -> expr e1; expr e2; op 0x86
-      | F32_gt (e1, e2) -> expr e1; expr e2; op 0x87
-      | F32_ge (e1, e2) -> expr e1; expr e2; op 0x88
+      | F32_add (e1, e2) -> binary e1 e2 0x75
+      | F32_sub (e1, e2) -> binary e1 e2 0x76
+      | F32_mul (e1, e2) -> binary e1 e2 0x77
+      | F32_div (e1, e2) -> binary e1 e2 0x78
+      | F32_min (e1, e2) -> binary e1 e2 0x79
+      | F32_max (e1, e2) -> binary e1 e2 0x7a
+      | F32_abs e -> unary e 0x7b
+      | F32_neg e -> unary e 0x7c
+      | F32_copysign (e1, e2) -> binary e1 e2 0x7d
+      | F32_ceil e -> unary e 0x7e
+      | F32_floor e -> unary e 0x7f
+      | F32_trunc e -> unary e 0x80
+      | F32_nearest e -> unary e 0x81
+      | F32_sqrt e -> unary e 0x82
+      | F32_eq (e1, e2) -> binary e1 e2 0x83
+      | F32_ne (e1, e2) -> binary e1 e2 0x84
+      | F32_lt (e1, e2) -> binary e1 e2 0x85
+      | F32_le (e1, e2) -> binary e1 e2 0x86
+      | F32_gt (e1, e2) -> binary e1 e2 0x87
+      | F32_ge (e1, e2) -> binary e1 e2 0x88
 
-      | F64_add (e1, e2) -> expr e1; expr e2; op 0x89
-      | F64_sub (e1, e2) -> expr e1; expr e2; op 0x8a
-      | F64_mul (e1, e2) -> expr e1; expr e2; op 0x8b
-      | F64_div (e1, e2) -> expr e1; expr e2; op 0x8c
-      | F64_min (e1, e2) -> expr e1; expr e2; op 0x8d
-      | F64_max (e1, e2) -> expr e1; expr e2; op 0x8e
-      | F64_abs e -> expr e; op 0x8f
-      | F64_neg e -> expr e; op 0x90
-      | F64_copysign (e1, e2) -> expr e1; expr e2; op 0x91
-      | F64_ceil e -> expr e; op 0x92
-      | F64_floor e -> expr e; op 0x93
-      | F64_trunc e -> expr e; op 0x94
-      | F64_nearest e -> expr e; op 0x95
-      | F64_sqrt e -> expr e; op 0x96
-      | F64_eq (e1, e2) -> expr e1; expr e2; op 0x97
-      | F64_ne (e1, e2) -> expr e1; expr e2; op 0x98
-      | F64_lt (e1, e2) -> expr e1; expr e2; op 0x99
-      | F64_le (e1, e2) -> expr e1; expr e2; op 0x9a
-      | F64_gt (e1, e2) -> expr e1; expr e2; op 0x9b
-      | F64_ge (e1, e2) -> expr e1; expr e2; op 0x9c
+      | F64_add (e1, e2) -> binary e1 e2 0x89
+      | F64_sub (e1, e2) -> binary e1 e2 0x8a
+      | F64_mul (e1, e2) -> binary e1 e2 0x8b
+      | F64_div (e1, e2) -> binary e1 e2 0x8c
+      | F64_min (e1, e2) -> binary e1 e2 0x8d
+      | F64_max (e1, e2) -> binary e1 e2 0x8e
+      | F64_abs e -> unary e 0x8f
+      | F64_neg e -> unary e 0x90
+      | F64_copysign (e1, e2) -> binary e1 e2 0x91
+      | F64_ceil e -> unary e 0x92
+      | F64_floor e -> unary e 0x93
+      | F64_trunc e -> unary e 0x94
+      | F64_nearest e -> unary e 0x95
+      | F64_sqrt e -> unary e 0x96
+      | F64_eq (e1, e2) -> binary e1 e2 0x97
+      | F64_ne (e1, e2) -> binary e1 e2 0x98
+      | F64_lt (e1, e2) -> binary e1 e2 0x99
+      | F64_le (e1, e2) -> binary e1 e2 0x9a
+      | F64_gt (e1, e2) -> binary e1 e2 0x9b
+      | F64_ge (e1, e2) -> binary e1 e2 0x9c
 
-      | I32_trunc_s_f32 e -> expr e; op 0x9d
-      | I32_trunc_s_f64 e -> expr e; op 0x9e
-      | I32_trunc_u_f32 e -> expr e; op 0x9f
-      | I32_trunc_u_f64 e -> expr e; op 0xa0
-      | I32_wrap_i64 e -> expr e; op 0xa1
-      | I64_trunc_s_f32 e -> expr e; op 0xa2
-      | I64_trunc_s_f64 e -> expr e; op 0xa3
-      | I64_trunc_u_f32 e -> expr e; op 0xa4
-      | I64_trunc_u_f64 e -> expr e; op 0xa5
-      | I64_extend_s_i32 e -> expr e; op 0xa6
-      | I64_extend_u_i32 e -> expr e; op 0xa7
-      | F32_convert_s_i32 e -> expr e; op 0xa8
-      | F32_convert_u_i32 e -> expr e; op 0xa9
-      | F32_convert_s_i64 e -> expr e; op 0xaa
-      | F32_convert_u_i64 e -> expr e; op 0xab
-      | F32_demote_f64 e -> expr e; op 0xac
-      | F32_reinterpret_i32 e -> expr e; op 0xad
-      | F64_convert_s_i32 e -> expr e; op 0xae
-      | F64_convert_u_i32 e -> expr e; op 0xaf
-      | F64_convert_s_i64 e -> expr e; op 0xb0
-      | F64_convert_u_i64 e -> expr e; op 0xb1
-      | F64_promote_f32 e -> expr e; op 0xb2
-      | F64_reinterpret_i64 e -> expr e; op 0xb3
-      | I32_reinterpret_f32 e -> expr e; op 0xb4
-      | I64_reinterpret_f64 e -> expr e; op 0xb5
+      | I32_trunc_s_f32 e -> unary e 0x9d
+      | I32_trunc_s_f64 e -> unary e 0x9e
+      | I32_trunc_u_f32 e -> unary e 0x9f
+      | I32_trunc_u_f64 e -> unary e 0xa0
+      | I32_wrap_i64 e -> unary e 0xa1
+      | I64_trunc_s_f32 e -> unary e 0xa2
+      | I64_trunc_s_f64 e -> unary e 0xa3
+      | I64_trunc_u_f32 e -> unary e 0xa4
+      | I64_trunc_u_f64 e -> unary e 0xa5
+      | I64_extend_s_i32 e -> unary e 0xa6
+      | I64_extend_u_i32 e -> unary e 0xa7
+      | F32_convert_s_i32 e -> unary e 0xa8
+      | F32_convert_u_i32 e -> unary e 0xa9
+      | F32_convert_s_i64 e -> unary e 0xaa
+      | F32_convert_u_i64 e -> unary e 0xab
+      | F32_demote_f64 e -> unary e 0xac
+      | F32_reinterpret_i32 e -> unary e 0xad
+      | F64_convert_s_i32 e -> unary e 0xae
+      | F64_convert_u_i32 e -> unary e 0xaf
+      | F64_convert_s_i64 e -> unary e 0xb0
+      | F64_convert_u_i64 e -> unary e 0xb1
+      | F64_promote_f32 e -> unary e 0xb2
+      | F64_reinterpret_i64 e -> unary e 0xb3
+      | I32_reinterpret_f32 e -> unary e 0xb4
+      | I64_reinterpret_f64 e -> unary e 0xb5
+
+    and unary e o = expr e; op o
+    and binary e1 e2 o = expr e1; expr e2; op o
+    and nary es o = list expr es; op o; arity es
+    and nary1 eo o = opt expr eo; op o; arity1 eo
 
     (* Sections *)
 
