@@ -27,8 +27,9 @@ let to_string s =
 
 let encode m =
   let s = stream () in
+
   let module E = struct
-    (* Generic types *)
+    (* Generic values *)
 
     let u8 i = put s (Char.chr (i land 0xff))
     let u16 i = u8 (i land 0xff); u8 (i lsr 8)

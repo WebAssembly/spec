@@ -11,7 +11,7 @@ Currently, it can
 * *encode* the binary format,
 * *prettyprint* the S-expression format (work in progress).
 
-The S-expression format is a (very dumb) form of *script* that cannot just define a module, but in fact a sequence of them, and a batch of invocations, assertions, and conversions to each one. As such it is a superset of the binary format, with the additional functionality purely intended as testing infrastructure. (See [below][#scripts] for details.)
+The S-expression format is a (very dumb) form of *script* that cannot just define a module, but in fact a sequence of them, and a batch of invocations, assertions, and conversions to each one. As such it is different from the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
 
 The interpreter can also be run as a REPL, allowing to enter pieces of scripts interactively.
 
@@ -76,7 +76,7 @@ wasm module.wast -o module.wasm
 wasm module.wasm -o module.wast
 ```
 
-(The second direction is work in progress.)
+In the second case, the produced script contains exactly one module definition (work in progress).
 
 Finally, the option `-e` allows to provide arbitrary script commands directly on the command line. For example:
 
