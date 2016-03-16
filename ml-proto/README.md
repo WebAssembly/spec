@@ -76,7 +76,7 @@ See `wasm -h` for (the few) options.
 
 ## S-Expression Syntax
 
-The implementation consumes a WebAssemlby AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/master/AstSemantics.md):
+The implementation consumes a WebAssembly AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/master/AstSemantics.md):
 
 ```
 value: <int> | <float>
