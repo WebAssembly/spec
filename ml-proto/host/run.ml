@@ -26,7 +26,7 @@ let run_from get_script =
     Script.run script;
     true
   with
-  (*| Decode.Code (at, msg) -> error at "decoding error" msg*)
+  | Decode.Code (at, msg) -> error at "decoding error" msg
   | Parse.Syntax (at, msg) -> error at "syntax error" msg
   | Script.Assert (at, msg) -> error at "assertion failure" msg
   | Check.Invalid (at, msg) -> error at "invalid module" msg
@@ -41,9 +41,8 @@ let run_sexpr name lexbuf start =
 
 let run_binary name buf =
   let open Source in
-  false (*TODO*)
-  (*run_from
-    (fun _ -> let m = Decode.decode name buf in [Script.Define m @@ m.at])*)
+  run_from
+    (fun _ -> let m = Decode.decode name buf in [Script.Define m @@ m.at])
 
 let run_sexpr_file file =
   Script.trace ("Loading (" ^ file ^ ")...");

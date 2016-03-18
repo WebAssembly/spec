@@ -7,8 +7,8 @@ let version = 0x0b
 
 type stream =
 {
-   buf : Buffer.t;
-   patches : (int * char) list ref
+  buf : Buffer.t;
+  patches : (int * char) list ref
 }
 
 let stream () = {buf = Buffer.create 8192; patches = ref []}
@@ -97,7 +97,7 @@ let encode m =
     let arity xs = vu (List.length xs)
     let arity1 xo = bool (xo <> None)
 
-    let memop off align = vu align; vu64 off
+    let memop off align = vu align; vu64 off  (*TODO: to be resolved*)
 
     let var x = vu x.it
     let var32 x = vu32 (Int32.of_int x.it)
@@ -114,7 +114,7 @@ let encode m =
       | Br (x, eo) -> vec1 expr eo; op 0x06; arity1 eo; var x
       | Br_if (x, eo, e) -> vec1 expr eo; expr e; op 0x07; arity1 eo; var x
       | Br_table (xs, x, eo, e) ->
-        vec1 expr eo; expr e; op 0x08; arity1 eo; list var32 xs; var32 x
+        vec1 expr eo; expr e; op 0x08; arity1 eo; vec var32 xs; var32 x
 
       | Ast.I32_const c -> op 0x0a; vs32 c.it
       | Ast.I64_const c -> op 0x0b; vs64 c.it
@@ -357,7 +357,7 @@ let encode m =
 
     let code f =
       let {locals; body; _} = f.it in
-      list local (compress locals);
+      vec local (compress locals);
       let p = gap () in
       list expr body;
       patch_gap p (pos s - p)
