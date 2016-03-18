@@ -559,6 +559,10 @@ let rec iterate f s = if f s then iterate f s
 
 let module_ s =
   trace s "begin";
+  let magic = u32 s in
+  require (magic = 0x6d736100l) s 0 "magic header not detected";
+  let version = u32 s in
+  require (version = 0x0b) s 4 "unknown binary version";
   iterate unknown_section s;
   let types = type_section s in
   iterate unknown_section s;

@@ -381,7 +381,8 @@ let encode m =
     (* Module *)
 
     let module_ m =
-      u32 0x6d736100l; u32 (Int32.of_int version);
+      u32 0x6d736100l;
+      u32 (Int32.of_int version);
       type_section m.it.types;
       import_section m.it.imports;
       func_section m.it.funcs;
