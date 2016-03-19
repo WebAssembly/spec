@@ -6,7 +6,7 @@ This repository holds the official specifications and reference implementations
 for WebAssembly.
 
 At this time, the contents of this repository are under development and known
-to be incomplet and inkorrect.
+to be incomplete and incorrect.
 
 Participation is welcome. Discussions about new features, significant semantic
 changes, or any specification change likely to generate substantial discussion
