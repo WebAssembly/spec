@@ -25,8 +25,8 @@ Operator semantics:
  - ~~test that call and store operands are evaluated left-to-right too~~
  - ~~test that call and argument operands of call_indirect are evaluated left-to-right, too~~
  - ~~test that select arguments are evaluated left-to-right, too~~
- - test that br_if arguments are evaluated left-to-right, too
- - test that tableswitch arguments are evaluated left-to-right, too
+ - ~~test that br_if arguments are evaluated left-to-right, too~~
+ - ~~test that br_table arguments are evaluated left-to-right, too~~
  - ~~test that add/sub/mul/wrap/wrapping-store silently wrap on overflow~~
  - ~~test that sdiv/udiv/srem/urem trap on divide-by-zero~~
  - ~~test that sdiv traps on overflow~~
