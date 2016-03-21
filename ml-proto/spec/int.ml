@@ -208,7 +208,19 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
-  let of_string = Rep.of_string
+  (* to_string supports unsigned decimals *)
+  let of_string x =
+    let unsigned_decimal x =
+      let l = String.length x in
+      Rep.add
+        (Rep.mul
+          (Rep.of_string (String.sub x 0 (l - 1)))
+          (Rep.of_int 10))
+        (Rep.of_string (String.sub x (l - 1) 1))
+    in
+    try Rep.of_string x with
+      Failure _ -> unsigned_decimal x;;
+      
   let to_string = Rep.to_string
 
   let of_int = Rep.of_int

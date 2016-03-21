@@ -8,6 +8,7 @@
   (func $i32.inc_smin (result i32) (return (i32.add (i32.const -0x80000000) (i32.const 1))))
   (func $i32.neg_zero (result i32) (return (i32.const -0x0)))
   (func $i32.not_octal (result i32) (return (i32.const 010)))
+  (func $i32.unsigned_decimal (result i32) (return (i32.const 4294967295)))
 
   (func $i64.test (result i64) (return (i64.const 0x0CABBA6E0ba66a6e)))
   (func $i64.umax (result i64) (return (i64.const 0xffffffffffffffff)))
@@ -18,6 +19,7 @@
   (func $i64.inc_smin (result i64) (return (i64.add (i64.const -0x8000000000000000) (i64.const 1))))
   (func $i64.neg_zero (result i64) (return (i64.const -0x0)))
   (func $i64.not_octal (result i64) (return (i64.const 010)))
+  (func $i64.unsigned_decimal (result i64) (return (i64.const 18446744073709551615)))
 
   (export "i32.test" $i32.test)
   (export "i32.umax" $i32.umax)
@@ -28,6 +30,7 @@
   (export "i32.inc_smin" $i32.inc_smin)
   (export "i32.neg_zero" $i32.neg_zero)
   (export "i32.not_octal" $i32.not_octal)
+  (export "i32.unsigned_decimal" $i32.unsigned_decimal)
 
   (export "i64.test" $i64.test)
   (export "i64.umax" $i64.umax)
@@ -38,6 +41,7 @@
   (export "i64.inc_smin" $i64.inc_smin)
   (export "i64.neg_zero" $i64.neg_zero)
   (export "i64.not_octal" $i64.not_octal)
+  (export "i64.unsigned_decimal" $i64.unsigned_decimal)
 )
 
 (assert_return (invoke "i32.test") (i32.const 195940365))
@@ -49,6 +53,7 @@
 (assert_return (invoke "i32.inc_smin") (i32.const -2147483647))
 (assert_return (invoke "i32.neg_zero") (i32.const 0))
 (assert_return (invoke "i32.not_octal") (i32.const 10))
+(assert_return (invoke "i32.unsigned_decimal") (i32.const -1))
 
 (assert_return (invoke "i64.test") (i64.const 913028331277281902))
 (assert_return (invoke "i64.umax") (i64.const -1))
@@ -59,3 +64,4 @@
 (assert_return (invoke "i64.inc_smin") (i64.const -9223372036854775807))
 (assert_return (invoke "i64.neg_zero") (i64.const 0))
 (assert_return (invoke "i64.not_octal") (i64.const 10))
+(assert_return (invoke "i64.unsigned_decimal") (i64.const -1))
