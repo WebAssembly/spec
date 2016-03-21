@@ -284,17 +284,15 @@ and eval_hostop c hostop vs at =
   | GrowMemory, [v] ->
     let mem = memory c at in
     let delta = address32 v at in
-    if I64.rem_u delta Memory.page_size <> 0L then
-      Trap.error at "growing memory by non-multiple of page size";
-    let old_size = (Memory.size mem) in
-    let new_size = Int64.add old_size delta in
+    let old_size = Memory.size mem in
+    let new_size = Int64.(add old_size (mul delta Memory.page_size)) in
     if I64.lt_u new_size old_size then
       Trap.error at "memory size overflow";
     (* Test whether the new size overflows the memory type.
      * Since we currently only support i32, just test that. *)
     if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
       Trap.error at "memory size exceeds implementation limit";
-    Memory.grow mem (Int64.div delta Memory.page_size);
+    Memory.grow mem delta;
     Some (Int32 (Int64.to_int32 old_size))
 
   | _, _ ->
