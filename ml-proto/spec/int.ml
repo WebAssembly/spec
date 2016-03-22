@@ -211,15 +211,31 @@ struct
   (* to_string supports unsigned decimals *)
   let of_string x =
     let unsigned_decimal x =
+      let ten = Rep.of_int 10 in
       let l = String.length x in
+      (* First overflow-check via String.length *)
+      if l > (if Rep.bitwidth = 32 then 10 else 20)
+        then raise (Failure "int_to_string");
+      let firstPart = Rep.of_string (String.sub x 0 (l - 1)) in
+      let secondPart = Rep.of_string (String.sub x (l - 1) 1) in
+      (* Negativity-check *)
+      if firstPart < Rep.zero
+        then raise (Failure "int_to_string");
+      (* Second overflow-check *)
+      if firstPart > (div_u Rep.minus_one ten)
+      || (firstPart = (div_u Rep.minus_one ten) && secondPart > (rem_u Rep.minus_one ten))
+        then raise (Failure "int_to_string");
       Rep.add
         (Rep.mul
-          (Rep.of_string (String.sub x 0 (l - 1)))
+          firstPart
           (Rep.of_int 10))
-        (Rep.of_string (String.sub x (l - 1) 1))
+        secondPart
     in
-    try Rep.of_string x with
-      Failure _ -> unsigned_decimal x;;
+    let l = String.length x in
+    (* OCaml doesn't like '+' in front of numbers, while host/lexer.mll allows it *)
+    let number_sans_plus = if String.get x 0 = '+' then String.sub x 1 (l - 1) else x in
+    try Rep.of_string number_sans_plus with
+      Failure _ -> unsigned_decimal number_sans_plus;;
       
   let to_string = Rep.to_string
 
