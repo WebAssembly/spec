@@ -108,13 +108,13 @@ let encode m =
       | Block es -> op 0x01; list expr es; op 0x17
       | Loop es -> op 0x02; list expr es; op 0x17
       | If (e, es1, es2) ->
-        op 0x03; list expr es1;
+        expr e; op 0x03; list expr es1;
         if es2 <> [] then op 0x04; list expr es2; op 0x17
       | Select (e1, e2, e3) -> expr e1; expr e2; expr e3; op 0x05
-      | Br (x, eo) -> vec1 expr eo; op 0x06; arity1 eo; var x
-      | Br_if (x, eo, e) -> vec1 expr eo; expr e; op 0x07; arity1 eo; var x
+      | Br (x, eo) -> opt expr eo; op 0x06; arity1 eo; var x
+      | Br_if (x, eo, e) -> opt expr eo; expr e; op 0x07; arity1 eo; var x
       | Br_table (xs, x, eo, e) ->
-        vec1 expr eo; expr e; op 0x08; arity1 eo; vec var32 xs; var32 x
+        opt expr eo; expr e; op 0x08; arity1 eo; vec var32 xs; var32 x
 
       | Ast.I32_const c -> op 0x0a; vs32 c.it
       | Ast.I64_const c -> op 0x0b; vs64 c.it
@@ -295,10 +295,11 @@ let encode m =
 
     let section id f x needed =
       if needed then begin
-        let p = gap () in
+        let g = gap () in
+        let p = pos s in
         string id;
         f x;
-        patch_gap p (pos s - p)
+        patch_gap g (pos s - p)
       end
 
     (* Type section *)
@@ -340,6 +341,8 @@ let encode m =
       ); string name
 
     let export_section exps =
+      (*TODO: pending resolution*)
+      let exps = List.filter (fun exp -> exp.it.kind <> `Memory) exps in
       section "export_table" (vec export) exps (exps <> [])
 
     (* Start section *)
@@ -358,9 +361,10 @@ let encode m =
     let code f =
       let {locals; body; _} = f.it in
       vec local (compress locals);
-      let p = gap () in
+      let g = gap () in
+      let p = pos s in
       list expr body;
-      patch_gap p (pos s - p)
+      patch_gap g (pos s - p)
 
     let code_section fs =
       section "function_bodies" (vec code) fs (fs <> [])
@@ -371,7 +375,7 @@ let encode m =
       vu64 addr; string data
 
     let data_section segs =
-      section "data_segments" (opt (list segment))
+      section "data_segments" (opt (vec segment))
         segs (segs <> None && segs <> Some [])
 
     (* End section *)

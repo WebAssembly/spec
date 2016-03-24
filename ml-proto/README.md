@@ -72,10 +72,11 @@ where `file`, depending on its extension, either should be an S-expression scrip
 A file prefixed by `-o` is taken to be an output file. Depending on its extension, this will write out the preceding module definition in either S-expression or binary format. This option can be used to convert between the two in both directions, e.g.:
 
 ```
-wasm module.wast -o module.wasm
-wasm module.wasm -o module.wast
+wasm -d module.wast -o module.wasm
+wasm -d module.wasm -o module.wast
 ```
 
+The `-d` option selects "dry mode" and ensures that the input module is not run, even if it has a start section.
 In the second case, the produced script contains exactly one module definition (work in progress).
 
 Finally, the option `-e` allows to provide arbitrary script commands directly on the command line. For example:

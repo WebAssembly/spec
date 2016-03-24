@@ -152,7 +152,7 @@ let rec args n stack s pos = args' n stack [] s pos
 and args' n stack es s pos =
   match n, stack with
   | 0, _ -> es, stack
-  | n, e::stack' -> args' (n - 1) (e::es) stack' s pos
+  | n, e::stack' -> args' (n - 1) stack' (e::es) s pos
   | _ -> error s pos "too few operands for operator"
 
 let args1 b stack s pos =
@@ -233,7 +233,7 @@ let rec expr stack s =
     let es1, es' = args (n + 1) es s pos in
     Call_indirect (x, List.hd es1, List.tl es1), es'
 
-  | 0x14, e :: es ->
+  | 0x14, es ->
     let b = arity1 s in
     let eo, es' = args1 b es s pos in
     Return eo, es'
@@ -523,7 +523,8 @@ let local s =
 
 let code s =
   let locals = List.flatten (vec local s) in
-  let body = expr_block s in
+  let size = vu s in
+  let body = expr_block (substream s (pos s + size)) in
   {locals; body; ftype = Source.((-1) @@ Source.no_region)}
 
 let code_section s =
@@ -558,7 +559,6 @@ let unknown_section s =
 let rec iterate f s = if f s then iterate f s
 
 let module_ s =
-  trace s "begin";
   let magic = u32 s in
   require (magic = 0x6d736100l) s 0 "magic header not detected";
   let version = u32 s in

@@ -31,14 +31,16 @@ exception IO = IO.Error
 
 let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 
-let current_module : (Ast.module_ * Eval.instance) option ref = ref None
+let current_module : Ast.module_ option ref = ref None
+let current_instance : Eval.instance option ref = ref None
 
-let get_current at = match !current_module with
-  | Some mi -> mi
+let get_module at = match !current_module with
+  | Some m -> m
   | None -> raise (Eval.Crash (at, "no module defined"))
 
-let get_module at = fst (get_current at)
-let get_instance at = snd (get_current at)
+let get_instance at = match !current_instance with
+  | Some m -> m
+  | None -> raise (Eval.Crash (at, "no module defined"))
 
 let input_file = ref (fun _ -> assert false)
 let output_file = ref (fun _ -> assert false)
@@ -53,9 +55,10 @@ let run_cmd cmd =
       trace "Signature:";
       Print.print_module_sig m'
     end;
+    current_module := Some m;
     trace "Initializing...";
     let imports = Import.link m' in
-    current_module := Some (m, Eval.init m' imports)
+    current_instance := Some (Eval.init m' imports)
 
   | Invoke (name, es) ->
     trace ("Invoking \"" ^ name ^ "\"...");
@@ -136,19 +139,19 @@ let dry_cmd cmd =
     if !Flags.print_sig then begin
       trace "Signature:";
       Print.print_module_sig m'
-    end
+    end;
+    current_module := Some m
   | Input file ->
-    (try
-      if not (!input_file file) then Abort.error cmd.at "aborting"
-    with Sys_error msg ->
-      IO.error cmd.at msg
-    )
+    (try if not (!input_file file) then Abort.error cmd.at "aborting"
+    with Sys_error msg -> IO.error cmd.at msg)
+  | Output file ->
+    (try !output_file file (get_module cmd.at)
+    with Sys_error msg -> IO.error cmd.at msg)
   | Invoke _
   | AssertInvalid _
   | AssertReturn _
   | AssertReturnNaN _
-  | AssertTrap _ 
-  | Output _ -> ()
+  | AssertTrap _ -> ()
 
 let run script =
   List.iter (if !Flags.dry then dry_cmd else run_cmd) script

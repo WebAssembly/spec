@@ -11,3 +11,5 @@
 (; ;; bla ;)
 (; ;; bla
 ;)
+
+(module)  ;; dummy

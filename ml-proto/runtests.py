@@ -7,14 +7,16 @@ import subprocess
 import glob
 import sys
 
-class RunTests(unittest.TestCase):
-  def _runTestFile(self, shortName, fileName, interpreterPath):
-    logPath = fileName.replace("test/", "test/output/").replace(".wast", ".wast.log")
+def tempFile(path):
     try:
-      os.remove(logPath)
+      os.remove(path)
     except OSError:
       pass
+    return path
 
+class RunTests(unittest.TestCase):
+  def _runTestFile(self, shortName, fileName, interpreterPath):
+    logPath = tempFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.log"))
     commandStr = ("%s %s > %s") % (interpreterPath, fileName, logPath)
     exitCode = subprocess.call(commandStr, shell=True)
     self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
@@ -32,6 +34,25 @@ class RunTests(unittest.TestCase):
         expectedText = expected.read()
         actualText = output.read()
         self.assertEqual(expectedText, actualText)
+
+class TranscodeTests(unittest.TestCase):
+  def _runTestFile(self, shortName, fileName, interpreterPath):
+    logPath = tempFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.log"))
+    wasmPath = tempFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm"))
+    try:
+      os.remove(wasmPath)
+    except OSError:
+      pass
+
+    commandStr = ("%s -d %s -o %s") % (interpreterPath, fileName, wasmPath)
+    exitCode = subprocess.call(commandStr, shell=True)
+    self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
+
+    commandStr = ("%s %s > %s") % (interpreterPath, wasmPath, logPath)
+    exitCode = subprocess.call(commandStr, shell=True)
+    self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
+
+    # TODO: once s-expr output works, re-encode and compare
 
 def generate_test_case(rec):
   return lambda self : self._runTestFile(*rec)
@@ -74,4 +95,5 @@ if __name__ == "__main__":
 
   testFiles = glob.glob("test/*.wast")
   generate_test_cases(RunTests, interpreterPath, testFiles)
+  generate_test_cases(TranscodeTests, interpreterPath, testFiles)
   unittest.main()
