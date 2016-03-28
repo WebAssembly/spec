@@ -268,6 +268,10 @@
 (assert_return (invoke "popcnt" (i64.const -1)) (i64.const 64))
 (assert_return (invoke "popcnt" (i64.const 0)) (i64.const 0))
 (assert_return (invoke "popcnt" (i64.const 0x00008000)) (i64.const 1))
+(assert_return (invoke "popcnt" (i64.const 0x8000800080008000)) (i64.const 4))
+(assert_return (invoke "popcnt" (i64.const 0xAAAAAAAA55555555)) (i64.const 32))
+(assert_return (invoke "popcnt" (i64.const 0x99999999AAAAAAAA)) (i64.const 32))
+(assert_return (invoke "popcnt" (i64.const 0xDEADBEEFDEADBEEF)) (i64.const 48))
 
 (assert_return (invoke "eqz" (i64.const 0)) (i32.const 1))
 (assert_return (invoke "eqz" (i64.const 1)) (i32.const 0))
