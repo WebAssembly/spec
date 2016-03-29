@@ -1,5 +1,4 @@
-let name = "wasm"
-let version = "0.2"
+open Flags
 
 let configure () =
   Import.register "spectest" Spectest.lookup;
@@ -23,6 +22,7 @@ let error at category msg =
   false
 
 let process file lexbuf start =
+  if !Flags.print_sig then print_endline ("File: " ^ file ^ "\n");
   try
     let script = parse file lexbuf start in
     Script.trace "Desugaring...";
@@ -84,7 +84,7 @@ let argspec = Arg.align
 [
   "-", Arg.Set Flags.interactive,
     " run interactively (default if no files given)";
-  "-s", Arg.Set Flags.print_sig, " show module signatures";
+  "-s", Arg.Set Flags.print_sig, " print module summary";
   "-d", Arg.Set Flags.dry, " dry, do not run program";
   "-t", Arg.Set Flags.trace, " trace execution";
   "-v", Arg.Unit banner, " show version"
