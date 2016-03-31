@@ -146,17 +146,17 @@ let rec eval_expr (c : config) (e : expr) =
     let c' = {c with labels = L.label :: c.labels} in
     (try eval_expr c' e1 with L.Label _ -> eval_expr c e)
 
-  | Break (x, eo) ->
-    raise (label c x (eval_expr_opt c eo))
+  | Break (x, e) ->
+    raise (label c x (eval_expr c e))
 
-  | BreakIf (x, eo, e) ->
-    let v = eval_expr_opt c eo in
-    let i = int32 (eval_expr c e) e.at in
+  | BreakIf (x, e1, e2) ->
+    let v = eval_expr c e1 in
+    let i = int32 (eval_expr c e2) e.at in
     if i <> 0l then raise (label c x v) else None
 
-  | BreakTable (xs, x, eo, e) ->
-    let v = eval_expr_opt c eo in
-    let i = int32 (eval_expr c e) e.at in
+  | BreakTable (xs, x, e1, e2) ->
+    let v = eval_expr c e1 in
+    let i = int32 (eval_expr c e2) e.at in
     if I32.lt_u i (Int32.of_int (List.length xs))
     then raise (label c (List.nth xs (Int32.to_int i)) v)
     else raise (label c x v)
@@ -256,10 +256,6 @@ let rec eval_expr (c : config) (e : expr) =
   | Host (hostop, es) ->
     let vs = List.map (eval_expr c) es in
     eval_hostop c hostop vs e.at
-
-and eval_expr_opt c = function
-  | Some e -> eval_expr c e
-  | None -> None
 
 and eval_func instance f vs =
   let args = List.map ref vs in

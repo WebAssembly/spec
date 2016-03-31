@@ -104,7 +104,6 @@ let type_hostop = function
  * Conventions:
  *   c  : context
  *   e  : expr
- *   eo : expr option
  *   v  : value
  *   t  : value_type
  *   et : expr_type
@@ -127,18 +126,18 @@ let rec check_expr c et e =
     let c' = {c with labels = None :: c.labels} in
     check_expr c' et e1
 
-  | Break (x, eo) ->
-    check_expr_opt c (label c x) eo e.at
+  | Break (x, e) ->
+    check_expr c (label c x) e
 
-  | BreakIf (x, eo, e1) ->
-    check_expr_opt c (label c x) eo e.at;
-    check_expr c (Some Int32Type) e1;
+  | BreakIf (x, e1, e2) ->
+    check_expr c (label c x) e1;
+    check_expr c (Some Int32Type) e2;
     check_type None et e.at
 
-  | BreakTable (xs, x, eo, e1) ->
-    List.iter (fun x -> check_expr_opt c (label c x) eo e.at) xs;
-    check_expr_opt c (label c x) eo e.at;
-    check_expr c (Some Int32Type) e1
+  | BreakTable (xs, x, e1, e2) ->
+    List.iter (fun x -> check_expr c (label c x) e1) xs;
+    check_expr c (label c x) e2;
+    check_expr c (Some Int32Type) e2
 
   | If (e1, e2, e3) ->
     check_expr c (Some Int32Type) e1;
@@ -228,12 +227,6 @@ and check_exprs c ts es at =
   let ets = List.map (fun x -> Some x) ts in
   try List.iter2 (check_expr c) ets es
   with Invalid_argument _ -> error at "arity mismatch"
-
-and check_expr_opt c et eo at =
-  match et, eo with
-  | Some t, Some e -> check_expr c et e
-  | None, None -> ()
-  | _ -> error at "arity mismatch"
 
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at

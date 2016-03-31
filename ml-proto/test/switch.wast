@@ -13,7 +13,7 @@
                   (block $2
                     (block $1
                       (block $0
-                        (br_table $0 $1 $2 $3 $4 $5 $6 $7 $default
+                        (br0_table $0 $1 $2 $3 $4 $5 $6 $7 $default
                           (get_local $i)
                         )
                       ) ;; 0
@@ -25,12 +25,12 @@
                   ;; fallthrough
                 ) ;; 3
                 (set_local $j (i32.sub (i32.const 0) (get_local $i)))
-                (br $switch)
+                (br0 $switch)
               ) ;; 4
-              (br $switch)
+              (br0 $switch)
             ) ;; 5
             (set_local $j (i32.const 101))
-            (br $switch)
+            (br0 $switch)
           ) ;; 6
           (set_local $j (i32.const 101))
           ;; fallthrough
@@ -57,7 +57,7 @@
                     (block $2
                       (block $1
                         (block $0
-                          (br_table $0 $1 $2 $3 $4 $5 $6 $7 $default
+                          (br0_table $0 $1 $2 $3 $4 $5 $6 $7 $default
                             (i32.wrap/i64 (get_local $i))
                           )
                         ) ;; 0
@@ -111,7 +111,7 @@
   ;; Corner cases
   (func $corner (result i32)
     (block
-      (br_table 0 (i32.const 0))
+      (br0_table 0 (i32.const 0))
     )
     (i32.const 1)
   )
@@ -152,4 +152,4 @@
 
 (assert_return (invoke "corner") (i32.const 1))
 
-(assert_invalid (module (func (br_table 3 (i32.const 0)))) "unknown label")
+(assert_invalid (module (func (br0_table 3 (i32.const 0)))) "unknown label")

@@ -15,10 +15,14 @@ and expr' =
   | Unreachable
   | Block of expr list
   | Loop of expr list
-  | Br of var * expr option
-  | Br_if of var * expr option * expr
-  | Br_table of var list * var * expr option * expr
-  | Return of expr option
+  | Br of var * expr
+  | Br0 of var
+  | Br_if of var * expr * expr
+  | Br0_if of var * expr
+  | Br_table of var list * var * expr * expr
+  | Br0_table of var list * var * expr
+  | Return of expr
+  | Return0
   | If of expr * expr list * expr list
   | Select of expr * expr * expr
   | Call of var * expr list

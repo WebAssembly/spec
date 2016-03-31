@@ -125,8 +125,8 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
-%token CALL CALL_IMPORT CALL_INDIRECT RETURN
+%token NOP BLOCK IF THEN ELSE SELECT LOOP BR BR0 BR_IF BR0_IF BR_TABLE BR0_TABLE
+%token CALL CALL_IMPORT CALL_INDIRECT RETURN RETURN0
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
 %token FUNC START TYPE PARAM RESULT LOCAL
@@ -225,16 +225,18 @@ expr1 :
     { fun c -> let c' = anon_label c in let c'' = $2 c' in Loop ($3 c'') }
   | LOOP labeling1 labeling1 expr_list
     { fun c -> let c' = $2 c in let c'' = $3 c' in Loop ($4 c'') }
-  | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
-  | BR_IF var expr { fun c -> Br_if ($2 c label, None, $3 c) }
-  | BR_IF var expr expr { fun c -> Br_if ($2 c label, Some ($3 c), $4 c) }
-  | BR_TABLE var var_list expr
+  | BR var expr { fun c -> Br ($2 c label, $3 c) }
+  | BR0 var { fun c -> Br0 ($2 c label) }
+  | BR_IF var expr expr { fun c -> Br_if ($2 c label, $3 c, $4 c) }
+  | BR0_IF var expr { fun c -> Br0_if ($2 c label, $3 c) }
+  | BR0_TABLE var var_list expr
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      Br_table (xs, x, None, $4 c) }
+      Br0_table (xs, x, $4 c) }
   | BR_TABLE var var_list expr expr
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      Br_table (xs, x, Some ($4 c), $5 c) }
-  | RETURN expr_opt { fun c -> Return ($2 c) }
+      Br_table (xs, x, $4 c, $5 c) }
+  | RETURN expr { fun c -> Return ($2 c) }
+  | RETURN0 { fun c -> Return0 }
   | IF expr expr { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], []) }
   | IF expr expr expr
     { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], [$4 c']) }
