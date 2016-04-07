@@ -32,7 +32,7 @@
 (assert_return (invoke "load_at_zero") (i32.const 2))
 (assert_trap (invoke "store_at_page_size") "out of bounds memory access")
 (assert_trap (invoke "load_at_page_size") "out of bounds memory access")
-(assert_return (invoke "grow" (i32.const 4)) (i32.const 0x10000))
+(assert_return (invoke "grow" (i32.const 4)) (i32.const 1))
 (assert_return (invoke "size") (i32.const 0x50000))
 (assert_return (invoke "load_at_zero") (i32.const 2))
 (assert_return (invoke "store_at_zero") (i32.const 2))
