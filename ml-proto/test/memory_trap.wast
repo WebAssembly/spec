@@ -1,19 +1,23 @@
 (module
     (memory 1)
 
+    (func $addr_limit (result i32)
+      (i32.mul (memory_size) (i32.const 0x10000))
+    )
+
     (export "store" $store)
     (func $store (param $i i32) (param $v i32) (result i32)
-      (i32.store (i32.add (memory_size) (get_local $i)) (get_local $v))
+      (i32.store (i32.add (call $addr_limit) (get_local $i)) (get_local $v))
     )
 
     (export "load" $load)
     (func $load (param $i i32) (result i32)
-      (i32.load (i32.add (memory_size) (get_local $i)))
+      (i32.load (i32.add (call $addr_limit) (get_local $i)))
     )
 
-    (export "overflow_memory_size" $overflow_memory_size)
-    (func $overflow_memory_size
-      (grow_memory (i32.xor (i32.const -1) (i32.sub (i32.const 0x10000) (i32.const 1))))
+    (export "grow_memory" $grow_memory)
+    (func $grow_memory (param i32)
+      (grow_memory (get_local 0))
     )
 )
 
@@ -29,4 +33,5 @@
 (assert_trap (invoke "load" (i32.const 0)) "out of bounds memory access")
 (assert_trap (invoke "store" (i32.const 0x80000000) (i32.const 13)) "out of bounds memory access")
 (assert_trap (invoke "load" (i32.const 0x80000000)) "out of bounds memory access")
-(assert_trap (invoke "overflow_memory_size") "memory size exceeds implementation limit")
+(assert_return (invoke "grow_memory" (i32.const 0x10000)))
+(assert_trap (invoke "grow_memory" (i32.const 0x80000000)) "memory size exceeds implementation limit")

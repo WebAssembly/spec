@@ -278,7 +278,7 @@ and eval_hostop c hostop vs at =
   match hostop, vs with
   | MemorySize, [] ->
     let mem = memory c at in
-    let size = Int64.mul (Memory.size mem) Memory.page_size in
+    let size = Memory.size mem in
     assert (I64.lt_u size (Int64.of_int32 Int32.max_int));
     Some (Int32 (Int64.to_int32 size))
 
