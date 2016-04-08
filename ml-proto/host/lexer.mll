@@ -345,7 +345,7 @@ rule token = parse
   | "i32.reinterpret/f32" { CONVERT (fun e -> I32_reinterpret_f32 e) }
   | "i64.reinterpret/f64" { CONVERT (fun e -> I64_reinterpret_f64 e) }
 
-  | "memory_size" { MEMORY_SIZE }
+  | "current_memory" { CURRENT_MEMORY }
   | "grow_memory" { GROW_MEMORY }
 
   | "type" { TYPE }

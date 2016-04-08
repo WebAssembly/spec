@@ -281,7 +281,7 @@ and expr' at = function
   | Ast.F32_reinterpret_i32 e -> Convert (Float32 F32Op.ReinterpretInt, expr e)
   | Ast.F64_reinterpret_i64 e -> Convert (Float64 F64Op.ReinterpretInt, expr e)
 
-  | Ast.Memory_size -> Host (MemorySize, [])
+  | Ast.Current_memory -> Host (CurrentMemory, [])
   | Ast.Grow_memory e -> Host (GrowMemory, [expr e])
 
 and seq = function

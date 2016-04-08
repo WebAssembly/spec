@@ -129,9 +129,9 @@ let implicit_decl c t at =
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
+%token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL
 %token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
-%token UNREACHABLE MEMORY_SIZE GROW_MEMORY
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token EOF
 
@@ -257,7 +257,7 @@ expr1 :
   | TEST expr { fun c -> $1 ($2 c) }
   | COMPARE expr expr { fun c -> $1 ($2 c, $3 c) }
   | CONVERT expr { fun c -> $1 ($2 c) }
-  | MEMORY_SIZE { fun c -> Memory_size }
+  | CURRENT_MEMORY { fun c -> Current_memory }
   | GROW_MEMORY expr { fun c -> Grow_memory ($2 c) }
 ;
 expr_opt :

@@ -92,7 +92,7 @@ let type_cvtop at = function
  * present in the module.
  *)
 let type_hostop = function
-  | MemorySize -> ({ins = []; out = Some Int32Type}, true)
+  | CurrentMemory -> ({ins = []; out = Some Int32Type}, true)
   | GrowMemory -> ({ins = [Int32Type]; out = Some Int32Type}, true)
 
 

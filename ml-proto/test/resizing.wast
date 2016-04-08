@@ -17,7 +17,7 @@
     (func $grow (param $sz i32) (result i32) (grow_memory (get_local $sz)))
 
     (export "size" $size)
-    (func $size (result i32) (memory_size))
+    (func $size (result i32) (current_memory))
 )
 
 (assert_return (invoke "size") (i32.const 0))

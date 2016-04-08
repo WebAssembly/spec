@@ -276,7 +276,7 @@ and coerce et vo =
 
 and eval_hostop c hostop vs at =
   match hostop, vs with
-  | MemorySize, [] ->
+  | CurrentMemory, [] ->
     let mem = memory c at in
     let size = Memory.size mem in
     assert (I64.lt_u size (Int64.of_int32 Int32.max_int));

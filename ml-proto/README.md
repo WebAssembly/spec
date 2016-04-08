@@ -118,7 +118,7 @@ expr:
   ( <type>.<relop> <expr> <expr> )
   ( <type>.<cvtop>/<type> <expr> )
   ( unreachable )
-  ( memory_size )
+  ( current_memory )
   ( grow_memory <expr> )
 
 func:   ( func <name>? <type>? <param>* <result>? <local>* <expr>* )
