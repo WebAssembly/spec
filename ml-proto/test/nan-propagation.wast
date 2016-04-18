@@ -1,3 +1,5 @@
+;; Test that NaN values are propagated through arithmetic operators properly.
+
 (module
   (func $add (param $x f32) (param $y f32) (result f32) (f32.add (get_local $x) (get_local $y)))
   (func $sub (param $x f32) (param $y f32) (result f32) (f32.sub (get_local $x) (get_local $y)))

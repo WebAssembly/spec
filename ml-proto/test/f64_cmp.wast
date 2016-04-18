@@ -1,3 +1,6 @@
+;; Test all the f64 comparison operators on major boundary values and all
+;; special values.
+
 (module
   (func $eq (param $x f64) (param $y f64) (result i32) (f64.eq (get_local $x) (get_local $y)))
   (func $ne (param $x f64) (param $y f64) (result i32) (f64.ne (get_local $x) (get_local $y)))

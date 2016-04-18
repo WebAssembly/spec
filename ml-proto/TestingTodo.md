@@ -49,8 +49,8 @@ Floating point semantics:
  - ~~test that nearestint doesn't do JS-style Math.round or C-style round(3) rounding~~
  - ~~test that signalling NaN doesn't cause weirdness~~
  - ~~test that signalling/quiet NaNs can have sign bits and payloads in literals~~
- - test that conversion from int32/int64 to float32 rounds correctly
- - test that [relaxed optimizations](https://gcc.gnu.org/wiki/FloatingPointMath) are not done
+ - ~~test that conversion from int32/int64 to float32 rounds correctly~~
+ - ~~test that [relaxed optimizations](https://gcc.gnu.org/wiki/FloatingPointMath) are not done~~
 
 Linear memory semantics:
  - test that loading from null works
@@ -82,13 +82,14 @@ Expression optimizer bait:
  - ~~test that floating-point division by immediate 0 and -0 is defined~~
  - ~~test that floating-point (x*y)/y isn't folded to x~~
  - ~~test that floating-point (x+y)-y isn't folded to x~~
- - test that ult/ugt/etc (formed with a not operator) aren't folded to oge/ole/etc.
+ - ~~test that ult/ugt/etc (formed with a not operator) aren't folded to oge/ole/etc.~~
  - ~~test that floating point add/mul aren't reassociated even when tempting~~
  - ~~test that floating point mul+add isn't folded to fma even when tempting~~
  - ~~test that floating point sqrt(x*x+y*y) isn't folded to hypot even when tempting~~
  - ~~test that 1/x isn't translated into reciprocal-approximate~~
  - ~~test that 1/sqrt(x) isn't approximated either~~
  - ~~test that fp division by non-power-2 constant gets full precision (isn't a multiply-by-reciprocal deal)?~~
+ - ~~test that x<y?x:y is not folded to min, etc.~~
 
 Misc optimizer bait:
  - ~~test that the impl doesn't constant-fold away or DCE away or speculate operations that should trap, such as `1/0u`, `1/0`, `1%0u`, `1%0, convertToInt(NaN)`, `INT_MIN/-1` and so on.~~
@@ -108,11 +109,6 @@ Misc x87-isms:
  - ~~test for invalid -ffloat-store-style x87 math~~
  - ~~test for evaluating intermediate results at greater precision~~
  - ~~test for loading and storing NaNs~~
-
-Control flow:
- - test that continue goes to the right place in `do_while` and `forever`
- - test that break goes to the right place in all cases where it can appear
- - test devious switch case patterns
 
 Validation errors:
  - load/store or variables with type void/bool/funcptr/etc.

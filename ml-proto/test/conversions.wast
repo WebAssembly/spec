@@ -268,6 +268,11 @@
 (assert_return (invoke "f32.convert_s_i32" (i32.const 2147483647)) (f32.const 2147483648))
 (assert_return (invoke "f32.convert_s_i32" (i32.const -2147483648)) (f32.const -2147483648))
 (assert_return (invoke "f32.convert_s_i32" (i32.const 1234567890)) (f32.const 0x1.26580cp+30))
+;; Test rounding directions.
+(assert_return (invoke "f32.convert_s_i32" (i32.const 16777217)) (f32.const 16777216.0))
+(assert_return (invoke "f32.convert_s_i32" (i32.const -16777217)) (f32.const -16777216.0))
+(assert_return (invoke "f32.convert_s_i32" (i32.const 16777219)) (f32.const 16777220.0))
+(assert_return (invoke "f32.convert_s_i32" (i32.const -16777219)) (f32.const -16777220.0))
 
 (assert_return (invoke "f32.convert_s_i64" (i64.const 1)) (f32.const 1.0))
 (assert_return (invoke "f32.convert_s_i64" (i64.const -1)) (f32.const -1.0))
@@ -275,6 +280,11 @@
 (assert_return (invoke "f32.convert_s_i64" (i64.const 9223372036854775807)) (f32.const 9223372036854775807))
 (assert_return (invoke "f32.convert_s_i64" (i64.const -9223372036854775808)) (f32.const -9223372036854775808))
 (assert_return (invoke "f32.convert_s_i64" (i64.const 314159265358979)) (f32.const 0x1.1db9e8p+48)) ;; PI
+;; Test rounding directions.
+(assert_return (invoke "f32.convert_s_i64" (i64.const 16777217)) (f32.const 16777216.0))
+(assert_return (invoke "f32.convert_s_i64" (i64.const -16777217)) (f32.const -16777216.0))
+(assert_return (invoke "f32.convert_s_i64" (i64.const 16777219)) (f32.const 16777220.0))
+(assert_return (invoke "f32.convert_s_i64" (i64.const -16777219)) (f32.const -16777220.0))
 
 (assert_return (invoke "f64.convert_s_i32" (i32.const 1)) (f64.const 1.0))
 (assert_return (invoke "f64.convert_s_i32" (i32.const -1)) (f64.const -1.0))
@@ -289,6 +299,11 @@
 (assert_return (invoke "f64.convert_s_i64" (i64.const 9223372036854775807)) (f64.const 9223372036854775807))
 (assert_return (invoke "f64.convert_s_i64" (i64.const -9223372036854775808)) (f64.const -9223372036854775808))
 (assert_return (invoke "f64.convert_s_i64" (i64.const 4669201609102990)) (f64.const 4669201609102990)) ;; Feigenbaum
+;; Test rounding directions.
+(assert_return (invoke "f64.convert_s_i64" (i64.const 9007199254740993)) (f64.const 9007199254740992))
+(assert_return (invoke "f64.convert_s_i64" (i64.const -9007199254740993)) (f64.const -9007199254740992))
+(assert_return (invoke "f64.convert_s_i64" (i64.const 9007199254740995)) (f64.const 9007199254740996))
+(assert_return (invoke "f64.convert_s_i64" (i64.const -9007199254740995)) (f64.const -9007199254740996))
 
 (assert_return (invoke "f32.convert_u_i32" (i32.const 1)) (f32.const 1.0))
 (assert_return (invoke "f32.convert_u_i32" (i32.const 0)) (f32.const 0.0))
@@ -296,12 +311,18 @@
 (assert_return (invoke "f32.convert_u_i32" (i32.const -2147483648)) (f32.const 2147483648))
 (assert_return (invoke "f32.convert_u_i32" (i32.const 0x12345678)) (f32.const 0x1.234568p+28))
 (assert_return (invoke "f32.convert_u_i32" (i32.const 0xffffffff)) (f32.const 4294967296.0))
+;; Test rounding directions.
+(assert_return (invoke "f32.convert_u_i32" (i32.const 16777217)) (f32.const 16777216.0))
+(assert_return (invoke "f32.convert_u_i32" (i32.const 16777219)) (f32.const 16777220.0))
 
 (assert_return (invoke "f32.convert_u_i64" (i64.const 1)) (f32.const 1.0))
 (assert_return (invoke "f32.convert_u_i64" (i64.const 0)) (f32.const 0.0))
 (assert_return (invoke "f32.convert_u_i64" (i64.const 9223372036854775807)) (f32.const 9223372036854775807))
 (assert_return (invoke "f32.convert_u_i64" (i64.const -9223372036854775808)) (f32.const 9223372036854775808))
 (assert_return (invoke "f32.convert_u_i64" (i64.const 0xffffffffffffffff)) (f32.const 18446744073709551616.0))
+;; Test rounding directions.
+(assert_return (invoke "f32.convert_u_i64" (i64.const 16777217)) (f32.const 16777216.0))
+(assert_return (invoke "f32.convert_u_i64" (i64.const 16777219)) (f32.const 16777220.0))
 
 (assert_return (invoke "f64.convert_u_i32" (i32.const 1)) (f64.const 1.0))
 (assert_return (invoke "f64.convert_u_i32" (i32.const 0)) (f64.const 0.0))
@@ -314,6 +335,9 @@
 (assert_return (invoke "f64.convert_u_i64" (i64.const 9223372036854775807)) (f64.const 9223372036854775807))
 (assert_return (invoke "f64.convert_u_i64" (i64.const -9223372036854775808)) (f64.const 9223372036854775808))
 (assert_return (invoke "f64.convert_u_i64" (i64.const 0xffffffffffffffff)) (f64.const 18446744073709551616.0))
+;; Test rounding directions.
+(assert_return (invoke "f64.convert_u_i64" (i64.const 9007199254740993)) (f64.const 9007199254740992))
+(assert_return (invoke "f64.convert_u_i64" (i64.const 9007199254740995)) (f64.const 9007199254740996))
 
 (assert_return (invoke "f64.promote_f32" (f32.const 0.0)) (f64.const 0.0))
 (assert_return (invoke "f64.promote_f32" (f32.const -0.0)) (f64.const -0.0))
