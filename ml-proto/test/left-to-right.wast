@@ -166,10 +166,8 @@
   (func $br_table (result i32)
     (block $a
       (call $reset)
-      (i32.eqz  ;; Remove this hack, when #227 is solved
-        (block $b
-          (br_table $a $b (call $i32_left) (call $i32_right))
-        )
+      (block $b
+        (br_table $a $b (call $i32_left) (call $i32_right))
       )
       (call $get)
     )
