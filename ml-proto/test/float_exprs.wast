@@ -1247,3 +1247,15 @@
 (assert_return (invoke "thepast0" (f64.const 0x1p-1021) (f64.const 0x1.fffffffffffffp-1) (f64.const 0x1p1) (f64.const 0x1p-1)) (f64.const 0x1.fffffffffffffp-1022))
 (assert_return (invoke "thepast1" (f64.const 0x1p-54) (f64.const 0x1.fffffffffffffp-1) (f64.const 0x1p-54)) (f64.const -0x1p-107))
 (assert_return (invoke "thepast2" (f32.const 0x1p-125) (f32.const 0x1p-1) (f32.const 0x1p0)) (f32.const 0x1p-126))
+
+;; Test for floating point tolerances observed in some GPUs.
+;; https://community.amd.com/thread/145582
+
+(module
+  (func $inverse (param $x f32) (result f32)
+    (f32.div (f32.const 1.0) (get_local $x))
+  )
+  (export "inverse" $inverse)
+)
+
+(assert_return (invoke "inverse" (f32.const 96.0)) (f32.const 0x1.555556p-7))
