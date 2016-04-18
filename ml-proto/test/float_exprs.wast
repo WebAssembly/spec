@@ -1218,3 +1218,32 @@
 )
 
 (assert_return (invoke "llvm_pr27153" (i32.const 33554434)) (f32.const 25165824.000000))
+
+;; Test for bugs in old versions of historic IEEE 754 platforms as reported in:
+;;
+;; N. L. Schryer. 1981. A Test of a Computer's Floating-Point Arithmetic Unit.
+;; Tech. Rep. Computer Science Technical Report 89, AT&T Bell Laboratories, Feb.
+;;
+;; specifically, the appendices describing IEEE systems with "The Past" sections
+;; describing specific bugs. The 0 < 0 bug is omitted here due to being already
+;; covered elsewhere.
+(module
+  (func $thepast0 (param $a f64) (param $b f64) (param $c f64) (param $d f64) (result f64)
+    (f64.div (f64.mul (get_local $a) (get_local $b)) (f64.mul (get_local $c) (get_local $d)))
+  )
+  (export "thepast0" $thepast0)
+
+  (func $thepast1 (param $a f64) (param $b f64) (param $c f64) (result f64)
+    (f64.sub (f64.mul (get_local $a) (get_local $b)) (get_local $c))
+  )
+  (export "thepast1" $thepast1)
+
+  (func $thepast2 (param $a f32) (param $b f32) (param $c f32) (result f32)
+    (f32.mul (f32.mul (get_local $a) (get_local $b)) (get_local $c))
+  )
+  (export "thepast2" $thepast2)
+)
+
+(assert_return (invoke "thepast0" (f64.const 0x1p-1021) (f64.const 0x1.fffffffffffffp-1) (f64.const 0x1p1) (f64.const 0x1p-1)) (f64.const 0x1.fffffffffffffp-1022))
+(assert_return (invoke "thepast1" (f64.const 0x1p-54) (f64.const 0x1.fffffffffffffp-1) (f64.const 0x1p-54)) (f64.const -0x1p-107))
+(assert_return (invoke "thepast2" (f32.const 0x1p-125) (f32.const 0x1p-1) (f32.const 0x1p0)) (f32.const 0x1p-126))
