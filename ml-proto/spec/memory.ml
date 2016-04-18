@@ -28,7 +28,7 @@ let page_size = 0x10000L (* 64 KiB *)
  *)
 
 let host_size_of_int64 n =
-  if n < Int64.zero || n > (Int64.of_int max_int) then raise Out_of_memory;
+  if n < 0L || n > Int64.of_int max_int then raise Out_of_memory;
   Int64.to_int n
 
 let int64_of_host_size n =
@@ -66,14 +66,14 @@ let init mem segs =
   try List.iter (init_seg mem) segs with Invalid_argument _ -> raise Bounds
 
 let size mem =
-  int64_of_host_size (Array1.dim !mem)
+  Int64.div (int64_of_host_size (Array1.dim !mem)) page_size
 
 let grow mem pages =
-  let old_size = Int64.div (size mem) page_size in
+  let host_old_size = Array1.dim !mem in
+  let old_size = size mem in
   let new_size = Int64.add old_size pages in
   if I64.gt_u old_size new_size then raise SizeOverflow else
   let after = create' new_size in
-  let host_old_size = host_size_of_int64 old_size in
   Array1.blit (Array1.sub !mem 0 host_old_size) (Array1.sub after 0 host_old_size);
   mem := after
 

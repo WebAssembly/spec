@@ -276,16 +276,17 @@ and coerce et vo =
 
 and eval_hostop c hostop vs at =
   match hostop, vs with
-  | MemorySize, [] ->
+  | CurrentMemory, [] ->
     let mem = memory c at in
-    assert (I64.lt_u (Memory.size mem) (Int64.of_int32 Int32.max_int));
-    Some (Int32 (Int64.to_int32 (Memory.size mem)))
+    let size = Memory.size mem in
+    assert (I64.lt_u size (Int64.of_int32 Int32.max_int));
+    Some (Int32 (Int64.to_int32 size))
 
   | GrowMemory, [v] ->
     let mem = memory c at in
     let delta = address32 v at in
     let old_size = Memory.size mem in
-    let new_size = Int64.(add old_size (mul delta Memory.page_size)) in
+    let new_size = Int64.add old_size delta in
     if I64.lt_u new_size old_size then
       Trap.error at "memory size overflow";
     (* Test whether the new size overflows the memory type.
