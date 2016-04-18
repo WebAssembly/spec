@@ -519,6 +519,16 @@
 (assert_return (invoke "f64.floor" (f64.const -0x1.fffffffffffffp-1)) (f64.const -1.0))
 (assert_return (invoke "f64.floor" (f64.const -0x1p-1022)) (f64.const -1.0))
 
+;; Test that nearest isn't implemented naively.
+;; http://blog.frama-c.com/index.php?post/2013/05/02/nearbyintf1
+;; http://blog.frama-c.com/index.php?post/2013/05/04/nearbyintf3
+(assert_return (invoke "f32.nearest" (f32.const 0x1.000002p+23)) (f32.const 0x1.000002p+23))
+(assert_return (invoke "f32.nearest" (f32.const 0x1.000004p+23)) (f32.const 0x1.000004p+23))
+(assert_return (invoke "f32.nearest" (f32.const 0x1.fffffep-2)) (f32.const 0.0))
+(assert_return (invoke "f64.nearest" (f64.const 0x1.0000000000001p+52)) (f64.const 0x1.0000000000001p+52))
+(assert_return (invoke "f64.nearest" (f64.const 0x1.0000000000002p+52)) (f64.const 0x1.0000000000002p+52))
+(assert_return (invoke "f64.nearest" (f64.const 0x1.fffffffffffffp-2)) (f64.const 0.0))
+
 ;; Nearest should not round halfway cases away from zero (as C's round(3) does)
 ;; or up (as JS's Math.round does).
 (assert_return (invoke "f32.nearest" (f32.const 4.5)) (f32.const 4.0))
