@@ -432,15 +432,15 @@ let trace s name =
 
 let id s =
   match string s with
-  | "signatures" -> `TypeSection
-  | "import_table" -> `ImportSection
-  | "function_signatures" -> `FuncSection
-  | "function_table" -> `TableSection
+  | "type" -> `TypeSection
+  | "import" -> `ImportSection
+  | "function" -> `FuncSection
+  | "table" -> `TableSection
   | "memory" -> `MemorySection
-  | "export_table" -> `ExportSection
-  | "start_function" -> `StartSection
-  | "function_bodies" -> `CodeSection
-  | "data_segments" -> `DataSection
+  | "export" -> `ExportSection
+  | "start" -> `StartSection
+  | "code" -> `CodeSection
+  | "data" -> `DataSection
   | "end" -> `EndSection
   | _ -> `UnknownSection
 

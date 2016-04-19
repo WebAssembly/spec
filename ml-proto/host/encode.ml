@@ -304,7 +304,7 @@ let encode m =
 
     (* Type section *)
     let type_section ts =
-      section "signatures" (vec func_type) ts (ts <> [])
+      section "type" (vec func_type) ts (ts <> [])
 
     (* Import section *)
     let import imp =
@@ -312,17 +312,17 @@ let encode m =
       var itype; string module_name; string func_name
 
     let import_section imps =
-      section "import_table" (vec import) imps (imps <> [])
+      section "import" (vec import) imps (imps <> [])
 
     (* Function section *)
     let func f = var f.it.ftype
 
     let func_section fs =
-      section "function_signatures" (vec func) fs (fs <> [])
+      section "function" (vec func) fs (fs <> [])
 
     (* Table section *)
     let table_section tab =
-      section "function_table" (vec var) tab (tab <> [])
+      section "table" (vec var) tab (tab <> [])
 
     (* Memory section *)
     let memory mem =
@@ -343,11 +343,11 @@ let encode m =
     let export_section exps =
       (*TODO: pending resolution*)
       let exps = List.filter (fun exp -> exp.it.kind <> `Memory) exps in
-      section "export_table" (vec export) exps (exps <> [])
+      section "export" (vec export) exps (exps <> [])
 
     (* Start section *)
     let start_section xo =
-      section "start_function" (opt var) xo (xo <> None)
+      section "start" (opt var) xo (xo <> None)
 
     (* Code section *)
     let compress locals =
@@ -367,7 +367,7 @@ let encode m =
       patch_gap g (pos s - p)
 
     let code_section fs =
-      section "function_bodies" (vec code) fs (fs <> [])
+      section "code" (vec code) fs (fs <> [])
 
     (* Data section *)
     let segment seg =
@@ -375,7 +375,7 @@ let encode m =
       vu64 addr; string data
 
     let data_section segs =
-      section "data_segments" (opt (vec segment))
+      section "data" (opt (vec segment))
         segs (segs <> None && segs <> Some [])
 
     (* End section *)
