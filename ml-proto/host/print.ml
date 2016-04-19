@@ -7,54 +7,81 @@ open Printf
 
 open Types
 
-let func_type m f =
-  List.nth m.it.types f.it.ftype.it
+module ImportMap = Map.Make(String)
 
-let string_of_table_type = function
-  | None -> "()"
-  | Some t -> "(" ^ string_of_func_type t ^ ")*"
+let module_count = ref 0
 
+let prepare_func_names funcs exports =
+  let func_names =
+    Array.init (List.length funcs) (fun i -> ("$" ^ string_of_int i)) in
+  let rename_function e =
+    match e.it with
+    | ExportFunc (name, func) ->
+      Array.set func_names func.it ("\"" ^ name ^ "\"")
+    | ExportMemory _ -> ()
+  in
+  List.iter rename_function exports;
+  func_names
 
-let print_var_sig prefix i t =
-  printf "%s %d : %s\n" prefix i (string_of_value_type t.it)
+let print_memory_info = function
+  | Some mem ->
+    printf "  Memory:\n    Initial: %d\n    Maximum: %d\n"
+      (Int64.to_int mem.it.initial) (Int64.to_int mem.it.max)
+  | None -> ()
 
-let print_func_sig m prefix i f =
-  printf "%s %d : %s\n" prefix i (string_of_func_type (func_type m f))
+let print_funcs types funcs start func_names =
+  let is_start i =
+    match start with
+    | Some s -> (s.it = i)
+    | None -> false
+  in
+  let print_func i func =
+    printf "    %s : %s %s\n"
+      (Array.get func_names i)
+      (string_of_func_type (Array.get types func.it.ftype.it))
+      (if is_start i then "[ENTRY]" else "")
+  in
+  printf "  Functions:\n";
+  List.iteri print_func funcs
 
-let print_export_sig m n f =
-  printf "export \"%s\" : %s\n" n (string_of_func_type (func_type m f))
+let print_imports types imports =
+  let add_import map i =
+    try
+      ImportMap.add i.it.module_name
+        (List.append (ImportMap.find i.it.module_name map) [i.it]) map
+    with
+      Not_found -> ImportMap.add i.it.module_name [i.it] map
+  in
+  let print_import_line s =
+    printf "      %s : %s\n" s.func_name
+      (string_of_func_type (Array.get types s.itype.it))
+  in
+  let print_import module_name import_list =
+    printf "    %s\n" module_name;
+    List.iter print_import_line import_list
+  in
+  let import_Map = List.fold_left add_import ImportMap.empty imports in
+  printf "  Imports:\n";
+  ImportMap.iter print_import import_Map
 
-let print_export_mem n =
-  printf "export \"%s\" : memory\n" n
-
-let print_table_elem i x =
-  printf "table [%d] = func %d\n" i x.it
-
-let print_start start =
-  Lib.Option.app (fun x -> printf "start = func %d\n" x.it) start
-
-(* Ast *)
-
-let print_func m i f =
-  print_func_sig m "func" i f
-
-let print_export m i ex =
-  match ex.it with
-  | ExportFunc (n, x) -> print_export_sig m n (List.nth m.it.funcs x.it)
-  | ExportMemory n -> print_export_mem n
+let print_table table func_names =
+  let print_import_line i t =
+    printf "    [%d] : %s\n" i (Array.get func_names t.it)
+  in
+  printf "  Table:\n";
+  List.iteri print_import_line table
 
 let print_module m =
-  let {funcs; start; exports; table} = m.it in
-  List.iteri (print_func m) funcs;
-  List.iteri (print_export m) exports;
-  List.iteri print_table_elem table;
-  print_start start;
-  flush_all ()
-
-let print_module_sig m =
-  List.iteri (print_export m) m.it.exports;
-  flush_all ()
-
+  let {memory; funcs; start; imports; exports; table} = m.it in
+  let types = Array.of_list m.it.types in (* Because Array.get is O(1) *)
+  let func_names = prepare_func_names funcs exports in
+  printf "Module #%d\n" !module_count;
+  print_memory_info memory;
+  if (List.length funcs) <> 0 then print_funcs types funcs start func_names;
+  if (List.length imports) <> 0 then print_imports types imports;
+  if (List.length table) <> 0 then print_table table func_names;
+  printf "\n";
+  module_count := !module_count + 1
 
 let print_value vo =
   match vo with
@@ -66,4 +93,3 @@ let print_value vo =
   | None ->
       printf "()\n";
       flush_all ()
-

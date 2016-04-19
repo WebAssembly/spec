@@ -54,7 +54,7 @@ let run_cmd cmd =
     Check.check_module m;
     if !Flags.print_sig then begin
       trace "Signature:";
-      Print.print_module_sig m
+      Print.print_module m
     end;
     trace "Initializing...";
     let imports = Import.link m in
@@ -125,7 +125,7 @@ let dry_cmd cmd =
   match cmd.it with
   | Define m ->
     Check.check_module m;
-    if !Flags.print_sig then Print.print_module_sig m
+    if !Flags.print_sig then Print.print_module m
   | Invoke _
   | AssertInvalid _
   | AssertReturn _
