@@ -169,15 +169,15 @@ rule token = parse
                 (F32_store (o, (Lib.Option.get a 4), e1, e2))
                 (F64_store (o, (Lib.Option.get a 8), e1, e2))) }
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
-    { LOAD (fun (o, a, e) ->
+    { if t = "i32" && sz = "32" then error lexbuf "unknown opcode";
+      LOAD (fun (o, a, e) ->
         intop t
           (memsz sz
             (ext s (I32_load8_s (o, (Lib.Option.get a 1), e))
                    (I32_load8_u (o, (Lib.Option.get a 1), e)))
             (ext s (I32_load16_s (o, (Lib.Option.get a 2), e))
                    (I32_load16_u (o, (Lib.Option.get a 2), e)))
-            (ext s (I32_load32_s (o, (Lib.Option.get a 4), e))
-                   (I32_load32_u (o, (Lib.Option.get a 4), e))))
+            Unreachable)
           (memsz sz
             (ext s (I64_load8_s (o, (Lib.Option.get a 1), e))
                    (I64_load8_u (o, (Lib.Option.get a 1), e)))
@@ -186,12 +186,13 @@ rule token = parse
             (ext s (I64_load32_s (o, (Lib.Option.get a 4), e))
                    (I64_load32_u (o, (Lib.Option.get a 4), e))))) }
   | (ixx as t)".store"(mem_size as sz)
-    { STORE (fun (o, a, e1, e2) ->
+    { if t = "i32" && sz = "32" then error lexbuf "unknown opcode";
+      STORE (fun (o, a, e1, e2) ->
         intop t
           (memsz sz
             (I32_store8 (o, (Lib.Option.get a 1), e1, e2))
             (I32_store16 (o, (Lib.Option.get a 2), e1, e2))
-            (I32_store32 (o, (Lib.Option.get a 4), e1, e2)))
+            Unreachable)
           (memsz sz
             (I64_store8 (o, (Lib.Option.get a 1), e1, e2))
             (I64_store16 (o, (Lib.Option.get a 2), e1, e2))
@@ -366,6 +367,8 @@ rule token = parse
   | "assert_return_nan" { ASSERT_RETURN_NAN }
   | "assert_trap" { ASSERT_TRAP }
   | "invoke" { INVOKE }
+  | "input" { INPUT }
+  | "output" { OUTPUT }
 
   | name as s { VAR s }
 

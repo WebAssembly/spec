@@ -5,10 +5,13 @@ This repository implements a prototypical reference interpreter for WebAssembly.
 Currently, it can
 
 * *parse* a simple S-expression format,
+* *decode* the binary format (work in progress),
 * *validate* modules defined in it,
-* *execute* invocations to functions exported by a module.
+* *execute* invocations to functions exported by a module,
+* *encode* the binary format,
+* *prettyprint* the S-expression format (work in progress).
 
-The file format is a (very dumb) form of *script* that cannot just define a module, but also batch a sequence of invocations.
+The S-expression format is a (very dumb) form of *script* that cannot just define a module, but in fact a sequence of them, and a batch of invocations, assertions, and conversions to each one. As such it is different from the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
 
 The interpreter can also be run as a REPL, allowing to enter pieces of scripts interactively.
 
@@ -61,17 +64,33 @@ Either way, in order to run the test suite you'll need to have Python installed.
 You can call the executable with
 
 ```
-wasm [option] [file ...]
+wasm [option | file ...]
 ```
 
-where `file` is a script file (see below) to be run. If no file is given, you'll get into the REPL and can enter script commands interactively. You can also get into the REPL by explicitly passing `-` as a file name. You can do that in combination to giving a module file, so that you can then invoke its exports interactively, e.g.:
+where `file`, depending on its extension, either should be an S-expression script file (see below) to be run, or a binary module file to be loaded.
+
+A file prefixed by `-o` is taken to be an output file. Depending on its extension, this will write out the preceding module definition in either S-expression or binary format. This option can be used to convert between the two in both directions, e.g.:
 
 ```
-./wasm module.wast -
+wasm module.wast -o module.wasm
+wasm module.wasm -o module.wast
 ```
-Note however that the REPL currently is too dumb to allow multi-line input. :)
 
-See `wasm -h` for (the few) options.
+In the second case, the produced script contains exactly one module definition (work in progress).
+
+Finally, the option `-e` allows to provide arbitrary script commands directly on the command line. For example:
+
+```
+wasm module.wasm -e '(invoke "foo")'
+```
+
+If neither a file nor any of the previous options is given, you'll land in the REPL and can enter script commands interactively. You can also get into the REPL by explicitly passing `-` as a file name. You can do that in combination to giving a module file, so that you can then invoke its exports interactively, e.g.:
+
+```
+wasm module.wast -
+```
+
+See `wasm -h` for (the few) additional options.
 
 
 ## S-Expression Syntax
@@ -168,9 +187,13 @@ cmd:
   ( assert_return_nan (invoke <name> <expr>* ))        ;; assert return with floating point nan result of invocation
   ( assert_trap (invoke <name> <expr>* ) <failure> )   ;; assert invocation traps with given failure string
   ( assert_invalid <module> <failure> )                ;; assert invalid module with given failure string
+  ( input <string> )                                   ;; read script or module from file
+  ( output <string> )                                  ;; output module to file
 ```
 
-Invocation is only possible after a module has been defined.
+Commands are executed in sequence. Invocation, assertions, and output apply to the most recently defined module (the _current_ module), and are only possible after a module has been defined. Note that there only ever is one current module, the different module definitions cannot interact.
+
+The input and output commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed.
 
 Again, this is only a meta-level for testing, and not a part of the language proper.
 
@@ -202,11 +225,15 @@ The implementation consists of the following parts:
 
 * *Parser* (`lexer.mll`, `parser.mly`, `desguar.ml[i]`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing. The parser generates a full AST that is desugared into the kernel AST in a separate pass.
 
+* *Pretty Printer* (`prettyprint.ml[i]`). Turns a module AST back into the textual S-expression format. (Work in progress)
+
+* *Decoder*/*Encoder* (`decode.ml[i]`, `encode.ml[i]`). The former (work in progress) parses the binary format and turns it into an AST, the latter does the inverse.
+
 * *Validator* (`check.ml[i]`). Does a recursive walk of the kernel AST, passing down the *expected* type for expressions, and checking each expression against that. An expected empty type can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
 
 * *Evaluator* (`eval.ml[i]`, `values.ml`, `arithmetic.ml[i]`, `int.ml`, `float.ml`, `memory.ml[i]`, and a few more). Evaluation of control transfer (`br` and `return`) is implemented using local exceptions as "labels". While these are allocated dynamically in the code and addressed via a stack, that is merely to simplify the code. In reality, these would be static jumps.
 
-* *Driver* (`main.ml`, `script.ml[i]`, `error.ml`, `print.ml[i]`, `flags.ml`). Executes scripts, reports results or errors, etc.
+* *Driver* (`main.ml`, `run.ml[i]`, `script.ml[i]`, `error.ml`, `print.ml[i]`, `flags.ml`). Executes scripts, reports results or errors, etc.
 
 The most relevant pieces are probably the validator (`check.ml`) and the evaluator (`eval.ml`). They are written to look as much like a "specification" as possible. Hopefully, the code is fairly self-explanatory, at least for those with a passing familiarity with functional programming.
 
@@ -215,6 +242,6 @@ In typical FP convention (and for better readability), the code tends to use sin
 
 ## What Next?
 
-* Binary format as input and output.
+* More tests.
 
-* Compilation to JS/asm.js.
+* Compilation to JS/asm.js?

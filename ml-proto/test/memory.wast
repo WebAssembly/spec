@@ -9,7 +9,7 @@
 
 (assert_invalid
   (module (memory 1 0))
-  "initial memory pages must be less than or equal to the maximum"
+  "minimum memory pages must be less than or equal to the maximum"
 )
 (assert_invalid
   (module (memory 0 0 (segment 0 "a")))

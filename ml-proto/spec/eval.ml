@@ -266,7 +266,10 @@ and eval_func instance f vs =
   let vars = List.map (fun t -> ref (default_value t)) f.it.locals in
   let locals = args @ vars in
   let c = {instance; locals; labels = []} in
-  coerce (type_ c f.it.ftype).out (eval_expr c f.it.body)
+  let ft = type_ c f.it.ftype in
+  if List.length vs <> List.length ft.ins then
+    Crash.error f.at "function called with wrong number of arguments";
+  coerce ft.out (eval_expr c f.it.body)
 
 and coerce et vo =
   if et = None then None else vo
@@ -302,15 +305,16 @@ and eval_hostop c hostop vs at =
 
 (* Modules *)
 
-let init_memory {it = {initial; segments; _}} =
-  let mem = Memory.create initial in
+let init_memory {it = {min; segments; _}} =
+  let mem = Memory.create min in
   Memory.init mem (List.map it segments);
   mem
 
 let add_export funcs ex =
-  match ex.it with
-  | ExportFunc (n, x) -> ExportMap.add n (List.nth funcs x.it)
-  | ExportMemory n -> fun x -> x
+  let {name; kind} = ex.it in
+  match kind with
+  | `Func x -> ExportMap.add name (List.nth funcs x.it)
+  | `Memory -> fun x -> x
 
 let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
