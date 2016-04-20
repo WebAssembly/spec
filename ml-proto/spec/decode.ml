@@ -416,6 +416,7 @@ let rec expr stack s =
 
 and expr_block s = List.rev (expr_block' [] s)
 and expr_block' stack s =
+  if eos s then stack else
   match peek s with
   | None | Some (0x04 | 0x16 | 0x17) -> stack
   | _ ->
@@ -441,10 +442,10 @@ let id s =
   | "start" -> `StartSection
   | "code" -> `CodeSection
   | "data" -> `DataSection
-  | "end" -> `EndSection
   | _ -> `UnknownSection
 
 let section tag f default s =
+  if eos s then default else
   let start_pos = pos s in
   let size = vu s in
   let id_pos = pos s in
@@ -542,12 +543,6 @@ let data_section s =
   section `DataSection (vec (at segment)) [] s
 
 
-(* End section *)
-
-let end_section s =
-  section `EndSection ignore () s
-
-
 (* Unknown section *)
 
 let unknown_section s =
@@ -581,9 +576,10 @@ let module_ s =
   let func_bodies = code_section s in
   iterate unknown_section s;
   let segments = data_section s in
+  iterate unknown_section s;
   (*TODO: name section*)
-  end_section s;
-  require (pos s = len s) s (len s) "junk after end section";
+  iterate unknown_section s;
+  require (pos s = len s) s (len s) "junk after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
   require (memory_limits <> None || segments = [])

@@ -378,10 +378,6 @@ let encode m =
       section "data" (opt (vec segment))
         segs (segs <> None && segs <> Some [])
 
-    (* End section *)
-    let end_section () =
-      section "end" ignore () true
-
     (* Module *)
 
     let module_ m =
@@ -395,7 +391,6 @@ let encode m =
       export_section m.it.exports;
       start_section m.it.start;
       code_section m.it.funcs;
-      data_section (Lib.Option.map (fun mem -> mem.it.segments) m.it.memory);
-      end_section ()
+      data_section (Lib.Option.map (fun mem -> mem.it.segments) m.it.memory)
   end
   in E.module_ m; to_string s
