@@ -156,7 +156,7 @@ let encode m =
       | F64_store (o, a, e1, e2) -> binary e1 e2 0x36; memop o a
 
       | Grow_memory e -> unary e 0x39
-      | Memory_size -> op 0x3b
+      | Current_memory -> op 0x3b
 
       | I32_add (e1, e2) -> binary e1 e2 0x40
       | I32_sub (e1, e2) -> binary e1 e2 0x41

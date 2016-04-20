@@ -279,7 +279,7 @@ let rec expr stack s =
   | 0x37 | 0x38 as b, _ -> illegal s pos b
   | 0x39, e :: es -> Grow_memory e, es
   | 0x3a as b, _ -> illegal s pos b
-  | 0x3b, es -> Memory_size, es
+  | 0x3b, es -> Current_memory, es
 
   | 0x40, e2 :: e1 :: es -> I32_add (e1, e2), es
   | 0x41, e2 :: e1 :: es -> I32_sub (e1, e2), es
