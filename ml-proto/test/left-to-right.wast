@@ -156,6 +156,22 @@
   (func $f64_call_indirect (result i32) (call $reset) (call_indirect $f64_T (call $f64_callee) (call $f64_right) (call $f64_another)) (call $get))
   (func $f64_select (result i32) (call $reset) (select (call $f64_left) (call $f64_right) (call $f64_bool)) (call $get))
 
+  (func $br_if (result i32)
+    (block
+      (call $reset)
+      (br_if 0 (call $i32_left) (i32.and (call $i32_right) (i32.const 0)))
+      (call $get)
+    )
+  )
+  (func $br_table (result i32)
+    (block $a
+      (call $reset)
+      (block $b
+        (br_table $a $b (call $i32_left) (call $i32_right))
+      )
+      (call $get)
+    )
+  )
 
   (export "i32_add" $i32_add)                        (export "i64_add" $i64_add)
   (export "i32_sub" $i32_sub)                        (export "i64_sub" $i64_sub)
@@ -205,6 +221,9 @@
   (export "f32_call" $f32_call)                      (export "f64_call" $f64_call)
   (export "f32_call_indirect" $f32_call_indirect)    (export "f64_call_indirect" $f64_call_indirect)
   (export "f32_select" $f32_select)                  (export "f64_select" $f64_select)
+  
+  (export "br_if" $br_if)
+  (export "br_table" $br_table)
 )
 
 (assert_return (invoke "i32_add") (i32.const 0x0102))     (assert_return (invoke "i64_add") (i32.const 0x0102))
@@ -257,3 +276,6 @@
 (assert_return (invoke "f32_call_indirect") (i32.const 0x040203))
 (assert_return (invoke "f64_call_indirect") (i32.const 0x040203))
 (assert_return (invoke "f32_select") (i32.const 0x010205))  (assert_return (invoke "f64_select") (i32.const 0x010205))
+
+(assert_return (invoke "br_if") (i32.const 0x0102))
+(assert_return (invoke "br_table") (i32.const 0x0102))

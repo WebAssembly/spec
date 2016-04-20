@@ -188,7 +188,7 @@ and expr' =
   | F64_reinterpret_i64 of expr
 
   (* Host queries *)
-  | Memory_size
+  | Current_memory
   | Grow_memory of expr
 
 

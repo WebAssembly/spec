@@ -65,7 +65,7 @@ type memop = {ty : value_type; offset : Memory.offset; align : int}
 type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
 type wrapop = {memop : memop; sz : Memory.mem_size}
 type hostop =
-  | MemorySize           (* inquire current size of linear memory *)
+  | CurrentMemory        (* inquire current size of linear memory *)
   | GrowMemory           (* grow linear memory *)
 
 

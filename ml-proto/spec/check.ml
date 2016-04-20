@@ -92,7 +92,7 @@ let type_cvtop at = function
  * present in the module.
  *)
 let type_hostop = function
-  | MemorySize -> ({ins = []; out = Some Int32Type}, true)
+  | CurrentMemory -> ({ins = []; out = Some Int32Type}, true)
   | GrowMemory -> ({ins = [Int32Type]; out = Some Int32Type}, true)
 
 
@@ -230,10 +230,9 @@ and check_exprs c ts es at =
   with Invalid_argument _ -> error at "arity mismatch"
 
 and check_expr_opt c et eo at =
-  match et, eo with
-  | Some t, Some e -> check_expr c et e
-  | None, None -> ()
-  | _ -> error at "arity mismatch"
+  match eo with
+  | Some e -> check_expr c et e
+  | None -> check_type None et at
 
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
