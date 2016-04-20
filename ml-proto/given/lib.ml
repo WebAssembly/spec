@@ -1,5 +1,8 @@
 module List =
 struct
+  let rec make n x =
+    if n = 0 then [] else x :: make (n - 1) x
+
   let rec take n xs =
     match n, xs with
     | 0, _ -> []

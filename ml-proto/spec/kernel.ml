@@ -119,7 +119,7 @@ and func' =
 type memory = memory' Source.phrase
 and memory' =
 {
-  initial : Memory.size;
+  min : Memory.size;
   max : Memory.size;
   segments : segment list;
 }
@@ -127,8 +127,10 @@ and segment = Memory.segment Source.phrase
 
 type export = export' Source.phrase
 and export' =
-  | ExportFunc of string * var
-  | ExportMemory of string
+{
+  name : string;
+  kind : [`Func of var | `Memory]
+}
 
 type import = import' Source.phrase
 and import' =
