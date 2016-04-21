@@ -1,3 +1,6 @@
+;; Test all the f32 comparison operators on major boundary values and all
+;; special values.
+
 (module
   (func $eq (param $x f32) (param $y f32) (result i32) (f32.eq (get_local $x) (get_local $y)))
   (func $ne (param $x f32) (param $y f32) (result i32) (f32.ne (get_local $x) (get_local $y)))

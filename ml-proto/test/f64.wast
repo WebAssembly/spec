@@ -1,3 +1,6 @@
+;; Test all the f64 operators on major boundary values and all special
+;; values (except comparison operators, which are tested in f64_cmp.wast).
+
 (module
   (func $add (param $x f64) (param $y f64) (result f64) (f64.add (get_local $x) (get_local $y)))
   (func $sub (param $x f64) (param $y f64) (result f64) (f64.sub (get_local $x) (get_local $y)))

@@ -1,3 +1,6 @@
+;; Test interesting integer "expressions". These tests contain code
+;; patterns which tempt common value-changing optimizations.
+
 ;; Test that x+1<y+1 is not folded to x<y
 
 (module

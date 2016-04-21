@@ -1,3 +1,5 @@
+;; Test floating-point literal parsing.
+
 (module
   ;; f32 special values
   (func $f32.nan (result i32) (i32.reinterpret/f32 (f32.const nan)))
