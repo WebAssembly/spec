@@ -5,11 +5,11 @@ This repository implements a prototypical reference interpreter for WebAssembly.
 Currently, it can
 
 * *parse* a simple S-expression format,
-* *decode* the binary format (work in progress),
+* *decode* the binary format,
 * *validate* modules defined in it,
 * *execute* invocations to functions exported by a module,
 * *encode* the binary format,
-* *prettyprint* the S-expression format (work in progress).
+* *prettyprint* the S-expression format.
 
 The S-expression format is a (very dumb) form of *script* that cannot just define a module, but in fact a sequence of them, and a batch of invocations, assertions, and conversions to each one. As such it is different from the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
 
@@ -77,7 +77,7 @@ wasm -d module.wasm -o module.wast
 ```
 
 The `-d` option selects "dry mode" and ensures that the input module is not run, even if it has a start section.
-In the second case, the produced script contains exactly one module definition (work in progress).
+In the second case, the produced script contains exactly one module definition.
 
 Finally, the option `-e` allows to provide arbitrary script commands directly on the command line. For example:
 
@@ -226,9 +226,9 @@ The implementation consists of the following parts:
 
 * *Parser* (`lexer.mll`, `parser.mly`, `desguar.ml[i]`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing. The parser generates a full AST that is desugared into the kernel AST in a separate pass.
 
-* *Pretty Printer* (`prettyprint.ml[i]`). Turns a module AST back into the textual S-expression format. (Work in progress)
+* *Pretty Printer* (`format.ml[i]`, `sexpr.ml[i]`). Turns a module AST back into the textual S-expression format.
 
-* *Decoder*/*Encoder* (`decode.ml[i]`, `encode.ml[i]`). The former (work in progress) parses the binary format and turns it into an AST, the latter does the inverse.
+* *Decoder*/*Encoder* (`decode.ml[i]`, `encode.ml[i]`). The former parses the binary format and turns it into an AST, the latter does the inverse.
 
 * *Validator* (`check.ml[i]`). Does a recursive walk of the kernel AST, passing down the *expected* type for expressions, and checking each expression against that. An expected empty type can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
 
@@ -242,6 +242,8 @@ In typical FP convention (and for better readability), the code tends to use sin
 
 
 ## What Next?
+
+* Clean-ups.
 
 * More tests.
 

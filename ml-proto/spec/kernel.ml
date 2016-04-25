@@ -27,11 +27,11 @@ type value_type = Types.value_type
 
 (* Operators *)
 
-module IntOp () =
+module IntOp =
 struct
   type unop = Clz | Ctz | Popcnt
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
-             | And | Or | Xor | Shl | ShrU | ShrS | Rotl | Rotr
+             | And | Or | Xor | Shl | ShrS | ShrU | Rotl | Rotr
   type testop = Eqz
   type relop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type cvtop = ExtendSInt32 | ExtendUInt32 | WrapInt64
@@ -39,10 +39,10 @@ struct
              | ReinterpretFloat
 end
 
-module FloatOp () =
+module FloatOp =
 struct
   type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
-  type binop = Add | Sub | Mul | Div | CopySign | Min | Max
+  type binop = Add | Sub | Mul | Div | Min | Max | CopySign
   type testop
   type relop = Eq | Ne | Lt | Le | Gt | Ge
   type cvtop = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
@@ -50,10 +50,10 @@ struct
              | ReinterpretInt
 end
 
-module I32Op = IntOp ()
-module I64Op = IntOp ()
-module F32Op = FloatOp ()
-module F64Op = FloatOp ()
+module I32Op = IntOp
+module I64Op = IntOp
+module F32Op = FloatOp
+module F64Op = FloatOp
 
 type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop) op
 type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) op

@@ -7,7 +7,7 @@ import subprocess
 import glob
 import sys
 
-def tempFile(path):
+def auxFile(path):
     try:
       os.remove(path)
     except OSError:
@@ -15,44 +15,48 @@ def tempFile(path):
     return path
 
 class RunTests(unittest.TestCase):
-  def _runTestFile(self, shortName, fileName, interpreterPath):
-    logPath = tempFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.log"))
-    commandStr = ("%s %s > %s") % (interpreterPath, fileName, logPath)
-    exitCode = subprocess.call(commandStr, shell=True)
+  def _runCommand(self, command):
+    exitCode = subprocess.call(command, shell=True)
     self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
 
-    try:
-      expected = open(fileName.replace("test/", "test/expected-output/").replace(".wast", ".wast.log"))
-    except IOError:
-      # print("// WARNING: No expected output found for %s" % fileName)
-      return
-
-    output = open(logPath)
-
-    with expected:
-      with output:
+  def _compareFile(self, expectedFile, actualFile):
+    with open(expectedFile) as expected:
+      with open(actualFile) as actual:
         expectedText = expected.read()
-        actualText = output.read()
+        actualText = actual.read()
         self.assertEqual(expectedText, actualText)
 
-class TranscodeTests(unittest.TestCase):
-  def _runTestFile(self, shortName, fileName, interpreterPath):
-    logPath = tempFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.log"))
-    wasmPath = tempFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm"))
+  def _compareLog(self, fileName, logPath):
     try:
-      os.remove(wasmPath)
-    except OSError:
+      self._compareFile(fileName.replace("test/", "test/expected-output/").replace(".wast", ".wast.log"), logPath)
+    except IOError:
       pass
 
-    commandStr = ("%s -d %s -o %s") % (interpreterPath, fileName, wasmPath)
-    exitCode = subprocess.call(commandStr, shell=True)
-    self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
+  def _runTestFile(self, shortName, fileName, interpreterPath):
+    # Run original file
+    logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.log"))
+    self._runCommand(("%s %s > %s") % (interpreterPath, fileName, logPath))
+    self._compareLog(fileName, logPath)
 
-    commandStr = ("%s %s > %s") % (interpreterPath, wasmPath, logPath)
-    exitCode = subprocess.call(commandStr, shell=True)
-    self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
+    # Convert to binary and run again
+    wasmPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm"))
+    logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.log"))
+    self._runCommand(("%s -d %s -o %s") % (interpreterPath, fileName, wasmPath))
+    self._runCommand(("%s %s > %s") % (interpreterPath, wasmPath, logPath))
 
-    # TODO: once s-expr output works, re-encode and compare
+    # Convert back to text and run again
+    wastPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast"))
+    logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast.log"))
+    self._runCommand(("%s -d %s -o %s") % (interpreterPath, wasmPath, wastPath))
+    self._runCommand(("%s %s > %s") % (interpreterPath, wastPath, logPath))
+
+    #return
+    # Convert back to binary once more and compare
+    wasm2Path = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast.wasm"))
+    self._runCommand(("%s -d %s -o %s") % (interpreterPath, wastPath, wasm2Path))
+    self._runCommand(("%s %s > %s") % (interpreterPath, wasm2Path, logPath))
+    # TODO: Ultimately, the binary should stay the same, but currently desugaring gets in the way.
+    # self._compareFile(wasmPath, wasm2Path)
 
 def generate_test_case(rec):
   return lambda self : self._runTestFile(*rec)
@@ -95,5 +99,4 @@ if __name__ == "__main__":
 
   testFiles = glob.glob("test/*.wast")
   generate_test_cases(RunTests, interpreterPath, testFiles)
-  generate_test_cases(TranscodeTests, interpreterPath, testFiles)
   unittest.main()

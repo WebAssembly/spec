@@ -114,7 +114,14 @@ let rec run_stdin () =
 (* Output *)
 
 let create_sexpr_file file m =
-  () (*TODO: pretty-print*)
+  Script.trace ("Formatting (" ^ file ^ ")...");
+  let sexpr = Format.module_ (Desugar.desugar m) in
+  let oc = open_out file in
+  try
+    Script.trace "Writing...";
+    Sexpr.output oc !Flags.width sexpr;
+    close_out oc
+  with exn -> close_out oc; raise exn
 
 let create_binary_file file m =
   Script.trace ("Encoding (" ^ file ^ ")...");
