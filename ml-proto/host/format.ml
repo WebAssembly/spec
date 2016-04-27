@@ -29,6 +29,7 @@ let string s =
 let list_of_opt = function None -> [] | Some x -> [x]
 
 let list f xs = List.map f xs
+let listi f xs = List.mapi f xs
 let opt f xo = list f (list_of_opt xo)
 
 let tab head f xs = if xs = [] then [] else [Node (head, list f xs)]
@@ -235,9 +236,9 @@ and block e =
 
 (* Functions *)
 
-let func f =
+let func i f =
   let {ftype; locals; body} = f.it in
-  Node ("func",
+  Node ("func $" ^ string_of_int i,
     [Node ("type " ^ var ftype, [])] @
     decls "local" locals @
     block body
@@ -262,13 +263,15 @@ let memory mem =
 
 (* Modules *)
 
-let typedef t =
-  Node ("type", [struct_type t])
+let typedef i t =
+  Node ("type $" ^ string_of_int i, [struct_type t])
 
-let import im =
+let import i im =
   let {itype; module_name; func_name} = im.it in
   let ty = Node ("type " ^ var itype, []) in
-  Node ("import", [atom string module_name; atom string func_name; ty])
+  Node ("import $" ^ string_of_int i,
+    [atom string module_name; atom string func_name; ty]
+  )
 
 let export ex =
   let {name; kind} = ex.it in
@@ -280,9 +283,9 @@ let export ex =
 
 let module_ m =
   Node ("module",
-    list typedef m.it.types @
-    list import m.it.imports @
-    list func m.it.funcs @
+    listi typedef m.it.types @
+    listi import m.it.imports @
+    listi func m.it.funcs @
     table m.it.table @
     opt memory m.it.memory @
     list export m.it.exports @
