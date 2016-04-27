@@ -3,16 +3,21 @@ open Source
 
 (* Script representation *)
 
+type definition = definition' Source.phrase
+and definition' =
+  | Textual of Ast.module_
+  | Binary of string
+
 type command = command' Source.phrase
 and command' =
-  | Define of Ast.module_
+  | Define of definition
   | Invoke of string * Kernel.literal list
-  | AssertInvalid of Ast.module_ * string
+  | AssertInvalid of definition * string
   | AssertReturn of string * Kernel.literal list * Kernel.literal option
   | AssertReturnNaN of string * Kernel.literal list
   | AssertTrap of string * Kernel.literal list * string
   | Input of string
-  | Output of string
+  | Output of string option
 
 type script = command list
 
@@ -44,10 +49,19 @@ let get_instance at = match !current_instance with
 
 let input_file = ref (fun _ -> assert false)
 let output_file = ref (fun _ -> assert false)
+let output_stdout = ref (fun _ -> assert false)
+
+let run_def def =
+  match def.it with
+  | Textual m -> m
+  | Binary bs ->
+    trace "Decoding...";
+    Decode.decode "binary" bs 
 
 let run_cmd cmd =
   match cmd.it with
-  | Define m ->
+  | Define def ->
+    let m = run_def def in
     let m' = Desugar.desugar m in
     trace "Checking...";
     Check.check_module m';
@@ -66,11 +80,14 @@ let run_cmd cmd =
     let v = Eval.invoke m name (List.map it es) in
     if v <> None then Print.print_value v
 
-  | AssertInvalid (m, re) ->
+  | AssertInvalid (def, re) ->
     trace "Asserting invalid...";
-    let m' = Desugar.desugar m in
-    (match Check.check_module m' with
-    | exception Check.Invalid (_, msg) ->
+    (match
+      let m = run_def def in
+      let m' = Desugar.desugar m in
+      Check.check_module m'
+    with
+    | exception (Decode.Code (_, msg) | Check.Invalid (_, msg)) ->
       if not (Str.string_match (Str.regexp re) msg 0) then begin
         print_endline ("Result: \"" ^ msg ^ "\"");
         print_endline ("Expect: \"" ^ re ^ "\"");
@@ -126,13 +143,25 @@ let run_cmd cmd =
     (try if not (!input_file file) then Abort.error cmd.at "aborting"
     with Sys_error msg -> IO.error cmd.at msg)
 
-  | Output file ->
+  | Output (Some file) ->
     (try !output_file file (get_module cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
 
+  | Output None ->
+    (try !output_stdout (get_module cmd.at)
+    with Sys_error msg -> IO.error cmd.at msg)
+
+let dry_def def =
+  match def.it with
+  | Textual m -> m
+  | Binary bs ->
+    trace "Decoding...";
+    Decode.decode "binary" bs 
+
 let dry_cmd cmd =
   match cmd.it with
-  | Define m ->
+  | Define def ->
+    let m = dry_def def in
     let m' = Desugar.desugar m in
     trace "Checking...";
     Check.check_module m';
@@ -144,8 +173,11 @@ let dry_cmd cmd =
   | Input file ->
     (try if not (!input_file file) then Abort.error cmd.at "aborting"
     with Sys_error msg -> IO.error cmd.at msg)
-  | Output file ->
+  | Output (Some file) ->
     (try !output_file file (get_module cmd.at)
+    with Sys_error msg -> IO.error cmd.at msg)
+  | Output None ->
+    (try !output_stdout (get_module cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
   | Invoke _
   | AssertInvalid _
