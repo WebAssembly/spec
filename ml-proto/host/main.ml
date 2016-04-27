@@ -22,6 +22,8 @@ let argspec = Arg.align
     " read script from file";
   "-o", Arg.String (fun file -> add_arg ("(output \"" ^ file ^ "\")")),
     " write module to file";
+  "-w", Arg.Int (fun n -> Flags.width := n),
+    " configure output width (default is 80)";
   "-s", Arg.Set Flags.print_sig, " show module signatures";
   "-d", Arg.Set Flags.dry, " dry, do not run program";
   "-t", Arg.Set Flags.trace, " trace execution";

@@ -96,6 +96,7 @@ let float =
     (num '.' digit*)
   | num ('.' digit*)? ('e' | 'E') num
   | sign "0x" hexdigit+ '.'? hexdigit* 'p' sign digit+
+  | sign "inf"
   | sign "infinity"
   | sign "nan"
   | sign "nan:0x" hexdigit+
