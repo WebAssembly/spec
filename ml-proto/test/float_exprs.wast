@@ -1712,3 +1712,27 @@
 (assert_return (invoke "f64.no_fold_div_sqrts" (f64.const 0x1.ac83451b08989p+523) (f64.const 0x1.8da575c6d12b8p-109)) (f64.const 0x1.09c003991ce17p+316))
 (assert_return (invoke "f64.no_fold_div_sqrts" (f64.const 0x1.bab7836456417p-810) (f64.const 0x1.1ff60d03ba607p+291)) (f64.const 0x1.c0e6c833bf657p-551))
 (assert_return (invoke "f64.no_fold_div_sqrts" (f64.const 0x1.a957816ad9515p-789) (f64.const 0x1.8c18a3a222ab1p+945)) (f64.const 0x1.0948539781e92p-867))
+
+;; Test that (x*sqrt(y))/y is not optimized to x/sqrt(y).
+
+(module
+  (func $f32.no_fold_mul_sqrt_div (param $x f32) (param $y f32) (result f32)
+    (f32.div (f32.mul (get_local $x) (f32.sqrt (get_local $y))) (get_local $y)))
+  (export "f32.no_fold_mul_sqrt_div" $f32.no_fold_mul_sqrt_div)
+
+  (func $f64.no_fold_mul_sqrt_div (param $x f64) (param $y f64) (result f64)
+    (f64.div (f64.mul (get_local $x) (f64.sqrt (get_local $y))) (get_local $y)))
+  (export "f64.no_fold_mul_sqrt_div" $f64.no_fold_mul_sqrt_div)
+)
+
+(assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const -0x1.f4a7cap+81) (f32.const 0x1.c09adep+92)) (f32.const -infinity))
+(assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const -0x1.90bf1cp-120) (f32.const 0x1.8dbe88p-97)) (f32.const -0x0p+0))
+(assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const 0x1.8570e8p+29) (f32.const 0x1.217d3p-128)) (f32.const 0x1.6e391ap+93))
+(assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const -0x1.5b4652p+43) (f32.const 0x1.a9d71cp+112)) (f32.const -0x1.0d423ap-13))
+(assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const -0x1.910604p+8) (f32.const 0x1.0ca912p+7)) (f32.const -0x1.14cdecp+5))
+
+(assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const 0x1.1dcdeb857305fp+698) (f64.const 0x1.a066171c40eb9p+758)) (f64.const infinity))
+(assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const -0x1.8b4f1c218e2abp-827) (f64.const 0x1.5e1ee65953b0bp-669)) (f64.const -0x0p+0))
+(assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const 0x1.74ee531ddba38p-425) (f64.const 0x1.f370f758857f3p+560)) (f64.const 0x1.0aff34269583ep-705))
+(assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const -0x1.27f216b0da6c5p+352) (f64.const 0x1.8e0b4e0b9fd7ep-483)) (f64.const -0x1.4fa558aad514ep+593))
+(assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const 0x1.4c6955df9912bp+104) (f64.const 0x1.0cca42c9d371ep+842)) (f64.const 0x1.4468072f54294p-317))
