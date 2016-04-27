@@ -1503,3 +1503,25 @@
 (assert_return (invoke "f64.no_fold_neg_sub" (f64.const 0.0) (f64.const -0.0)) (f64.const -0.0))
 (assert_return (invoke "f64.no_fold_neg_sub" (f64.const -0.0) (f64.const 0.0)) (f64.const 0.0))
 (assert_return (invoke "f64.no_fold_neg_sub" (f64.const 0.0) (f64.const -0.0)) (f64.const -0.0))
+
+;; Test that -x + x is not folded to 0.0.
+
+(module
+  (func $f32.no_fold_add_neg (param $x f32) (result f32)
+    (f32.add (f32.neg (get_local $x)) (get_local $x)))
+  (export "f32.no_fold_add_neg" $f32.no_fold_add_neg)
+
+  (func $f64.no_fold_add_neg (param $x f64) (result f64)
+    (f64.add (f64.neg (get_local $x)) (get_local $x)))
+  (export "f64.no_fold_add_neg" $f64.no_fold_add_neg)
+)
+
+(assert_return (invoke "f32.no_fold_add_neg" (f32.const 0.0)) (f32.const 0.0))
+(assert_return (invoke "f32.no_fold_add_neg" (f32.const -0.0)) (f32.const 0.0))
+(assert_return_nan (invoke "f32.no_fold_add_neg" (f32.const infinity)))
+(assert_return_nan (invoke "f32.no_fold_add_neg" (f32.const -infinity)))
+
+(assert_return (invoke "f64.no_fold_add_neg" (f64.const 0.0)) (f64.const 0.0))
+(assert_return (invoke "f64.no_fold_add_neg" (f64.const -0.0)) (f64.const 0.0))
+(assert_return_nan (invoke "f64.no_fold_add_neg" (f64.const infinity)))
+(assert_return_nan (invoke "f64.no_fold_add_neg" (f64.const -infinity)))
