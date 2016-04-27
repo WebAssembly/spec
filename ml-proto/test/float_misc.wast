@@ -26,6 +26,8 @@
   (func $f32.floor (param $x f32) (result f32) (f32.floor (get_local $x)))
   (func $f32.trunc (param $x f32) (result f32) (f32.trunc (get_local $x)))
   (func $f32.nearest (param $x f32) (result f32) (f32.nearest (get_local $x)))
+  (func $f32.min (param $x f32) (param $y f32) (result f32) (f32.min (get_local $x) (get_local $y)))
+  (func $f32.max (param $x f32) (param $y f32) (result f32) (f32.max (get_local $x) (get_local $y)))
 
   (func $f64.add (param $x f64) (param $y f64) (result f64) (f64.add (get_local $x) (get_local $y)))
   (func $f64.sub (param $x f64) (param $y f64) (result f64) (f64.sub (get_local $x) (get_local $y)))
@@ -39,6 +41,8 @@
   (func $f64.floor (param $x f64) (result f64) (f64.floor (get_local $x)))
   (func $f64.trunc (param $x f64) (result f64) (f64.trunc (get_local $x)))
   (func $f64.nearest (param $x f64) (result f64) (f64.nearest (get_local $x)))
+  (func $f64.min (param $x f64) (param $y f64) (result f64) (f64.min (get_local $x) (get_local $y)))
+  (func $f64.max (param $x f64) (param $y f64) (result f64) (f64.max (get_local $x) (get_local $y)))
 
   (export "f32.add" $f32.add)
   (export "f32.sub" $f32.sub)
@@ -52,6 +56,8 @@
   (export "f32.floor" $f32.floor)
   (export "f32.trunc" $f32.trunc)
   (export "f32.nearest" $f32.nearest)
+  (export "f32.min" $f32.min)
+  (export "f32.max" $f32.max)
 
   (export "f64.add" $f64.add)
   (export "f64.sub" $f64.sub)
@@ -65,6 +71,8 @@
   (export "f64.floor" $f64.floor)
   (export "f64.trunc" $f64.trunc)
   (export "f64.nearest" $f64.nearest)
+  (export "f64.min" $f64.min)
+  (export "f64.max" $f64.max)
 )
 
 (assert_return (invoke "f32.add" (f32.const 1.1234567890) (f32.const 1.2345e-10)) (f32.const 1.123456789))
@@ -547,3 +555,13 @@
 (assert_return (invoke "f64.nearest" (f64.const 4.5)) (f64.const 4.0))
 (assert_return (invoke "f64.nearest" (f64.const -4.5)) (f64.const -4.0))
 (assert_return (invoke "f64.nearest" (f64.const -3.5)) (f64.const -4.0))
+
+;; Test that min and max behave properly with signaling NaNs.
+(assert_return (invoke "f32.min" (f32.const 0.0) (f32.const nan:0x200000)) (f32.const nan:0x600000))
+(assert_return (invoke "f32.min" (f32.const nan:0x200000) (f32.const 0.0)) (f32.const nan:0x600000))
+(assert_return (invoke "f32.max" (f32.const 0.0) (f32.const nan:0x200000)) (f32.const nan:0x600000))
+(assert_return (invoke "f32.max" (f32.const nan:0x200000) (f32.const 0.0)) (f32.const nan:0x600000))
+(assert_return (invoke "f64.min" (f64.const 0.0) (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
+(assert_return (invoke "f64.min" (f64.const nan:0x4000000000000) (f64.const 0.0)) (f64.const nan:0xc000000000000))
+(assert_return (invoke "f64.max" (f64.const 0.0) (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
+(assert_return (invoke "f64.max" (f64.const nan:0x4000000000000) (f64.const 0.0)) (f64.const nan:0xc000000000000))
