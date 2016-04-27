@@ -429,6 +429,12 @@
 (assert_return (invoke "f64.div" (f64.const 0x1.fffffffffffffp-52) (f64.const 0x1.fffffffffffffp+1023)) (f64.const 0x0p+0))
 (assert_return (invoke "f64.div" (f64.const 0x1p-51) (f64.const 0x1.fffffffffffffp+1023)) (f64.const 0x0.0000000000001p-1022))
 
+;; Test the least value with a finite reciprocal.
+(assert_return (invoke "f32.div" (f32.const 1.0) (f32.const 0x1p-128)) (f32.const infinity))
+(assert_return (invoke "f32.div" (f32.const 1.0) (f32.const 0x1.000008p-128)) (f32.const 0x1.fffffp+127))
+(assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4p-1022)) (f64.const infinity))
+(assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4000000000001p-1022)) (f64.const 0x1.ffffffffffff8p+1023))
+
 ;; Test for bugs found in an early RISC-V implementation.
 ;; https://github.com/riscv/riscv-tests/pull/8
 (assert_return (invoke "f32.sqrt" (f32.const 0x1.56p+7)) (f32.const 0x1.a2744cp+3))
