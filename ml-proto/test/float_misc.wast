@@ -415,6 +415,10 @@
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.518c8e68cb753p-37)) (f64.const 0x1.9fb8ef1ad5bfdp-19))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.86d8b6518078ep-370)) (f64.const 0x1.3c5142a48fcadp-185))
 
+;; Test another sqrt case on x87.
+;; https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52593
+(assert_return (invoke "f64.sqrt" (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.fffffffffffffp-1))
+
 ;; Test for bugs found in an early RISC-V implementation.
 ;; https://github.com/riscv/riscv-tests/pull/8
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.56p+7)) (f64.const 0x1.a2744ce9674f5p+3))
