@@ -1481,3 +1481,25 @@
 
 (assert_return (invoke "f64.kahan_sum" (i32.const 0) (i32.const 256)) (f64.const 0x1.dd7cb2a5ffc88p+998))
 (assert_return (invoke "f64.plain_sum" (i32.const 0) (i32.const 256)) (f64.const 0x1.dd7cb2a63fc87p+998))
+
+;; Test that -(x - y) is not folded to y - x.
+
+(module
+  (func $f32.no_fold_neg_sub (param $x f32) (param $y f32) (result f32)
+    (f32.neg (f32.sub (get_local $x) (get_local $y))))
+  (export "f32.no_fold_neg_sub" $f32.no_fold_neg_sub)
+
+  (func $f64.no_fold_neg_sub (param $x f64) (param $y f64) (result f64)
+    (f64.neg (f64.sub (get_local $x) (get_local $y))))
+  (export "f64.no_fold_neg_sub" $f64.no_fold_neg_sub)
+)
+
+(assert_return (invoke "f32.no_fold_neg_sub" (f32.const -0.0) (f32.const -0.0)) (f32.const -0.0))
+(assert_return (invoke "f32.no_fold_neg_sub" (f32.const 0.0) (f32.const -0.0)) (f32.const -0.0))
+(assert_return (invoke "f32.no_fold_neg_sub" (f32.const -0.0) (f32.const 0.0)) (f32.const 0.0))
+(assert_return (invoke "f32.no_fold_neg_sub" (f32.const 0.0) (f32.const -0.0)) (f32.const -0.0))
+
+(assert_return (invoke "f64.no_fold_neg_sub" (f64.const -0.0) (f64.const -0.0)) (f64.const -0.0))
+(assert_return (invoke "f64.no_fold_neg_sub" (f64.const 0.0) (f64.const -0.0)) (f64.const -0.0))
+(assert_return (invoke "f64.no_fold_neg_sub" (f64.const -0.0) (f64.const 0.0)) (f64.const 0.0))
+(assert_return (invoke "f64.no_fold_neg_sub" (f64.const 0.0) (f64.const -0.0)) (f64.const -0.0))
