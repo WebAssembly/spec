@@ -1525,3 +1525,33 @@
 (assert_return (invoke "f64.no_fold_add_neg" (f64.const -0.0)) (f64.const 0.0))
 (assert_return_nan (invoke "f64.no_fold_add_neg" (f64.const infinity)))
 (assert_return_nan (invoke "f64.no_fold_add_neg" (f64.const -infinity)))
+
+;; Test that x+x+x+x+x+x+x is not folded to x * 7.
+
+(module
+  (func $f32.no_fold_7x_via_add (param $x f32) (result f32)
+    (f32.add (f32.add (f32.add (f32.add (f32.add (f32.add
+    (get_local $x)
+    (get_local $x)) (get_local $x)) (get_local $x))
+    (get_local $x)) (get_local $x)) (get_local $x)))
+  (export "f32.no_fold_7x_via_add" $f32.no_fold_7x_via_add)
+
+  (func $f64.no_fold_7x_via_add (param $x f64) (result f64)
+    (f64.add (f64.add (f64.add (f64.add (f64.add (f64.add
+    (get_local $x)
+    (get_local $x)) (get_local $x)) (get_local $x))
+    (get_local $x)) (get_local $x)) (get_local $x)))
+  (export "f64.no_fold_7x_via_add" $f64.no_fold_7x_via_add)
+)
+
+(assert_return (invoke "f32.no_fold_7x_via_add" (f32.const -0x1.30f15cp+21)) (f32.const -0x1.0ad332p+24))
+(assert_return (invoke "f32.no_fold_7x_via_add" (f32.const 0x1.a51c14p+11)) (f32.const 0x1.70789p+14))
+(assert_return (invoke "f32.no_fold_7x_via_add" (f32.const 0x1.f03e64p-116)) (f32.const 0x1.b23696p-113))
+(assert_return (invoke "f32.no_fold_7x_via_add" (f32.const -0x1.f15fecp-85)) (f32.const -0x1.b333fp-82))
+(assert_return (invoke "f32.no_fold_7x_via_add" (f32.const -0x1.1a38aep-71)) (f32.const -0x1.ede332p-69))
+
+(assert_return (invoke "f64.no_fold_7x_via_add" (f64.const -0x1.07899efbf7601p+404)) (f64.const -0x1.cd30d638f0e81p+406))
+(assert_return (invoke "f64.no_fold_7x_via_add" (f64.const -0x1.0f4ae73f5f74bp-412)) (f64.const -0x1.dac314aee70c4p-410))
+(assert_return (invoke "f64.no_fold_7x_via_add" (f64.const -0x1.1eb6bb5682abap+554)) (f64.const -0x1.f5bfc7d764ac4p+556))
+(assert_return (invoke "f64.no_fold_7x_via_add" (f64.const 0x1.5c23a99615d72p+65)) (f64.const 0x1.309f3463531c3p+68))
+(assert_return (invoke "f64.no_fold_7x_via_add" (f64.const 0x1.cc7846ee11dd4p+397)) (f64.const 0x1.92e93e104fa18p+400))
