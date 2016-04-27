@@ -1616,3 +1616,27 @@
 (assert_return (invoke "f64.no_fold_mul_divs" (f64.const -0x1.9a747c8d4b541p+308) (f64.const -0x1.99092ad6bbdc8p+192) (f64.const -0x1.cb23755c20101p-140) (f64.const -0x1.de8716f6b0b6ap+732)) (f64.const 0x1.ecf584c8466a5p-757))
 (assert_return (invoke "f64.no_fold_mul_divs" (f64.const -0x1.c424b2ece903dp+129) (f64.const -0x1.568ce281db37fp-347) (f64.const 0x1.53900b99fd3dp-957) (f64.const 0x1.5c33952254dadp+223)) (f64.const 0x0p+0))
 (assert_return (invoke "f64.no_fold_mul_divs" (f64.const 0x1.a8ec2cecb32a9p-18) (f64.const 0x1.58acab0051851p-277) (f64.const 0x1.35e87c9077f7fp-620) (f64.const -0x1.925ee37ffb386p+352)) (f64.const -0x1.e6286970b31bfp-714))
+
+;; Test that (x/z)+(y/z) is not optimized to (x+y)/z.
+
+(module
+  (func $f32.no_fold_add_divs (param $x f32) (param $y f32) (param $z f32) (result f32)
+    (f32.add (f32.div (get_local $x) (get_local $z)) (f32.div (get_local $y) (get_local $z))))
+  (export "f32.no_fold_add_divs" $f32.no_fold_add_divs)
+
+  (func $f64.no_fold_add_divs (param $x f64) (param $y f64) (param $z f64) (result f64)
+    (f64.add (f64.div (get_local $x) (get_local $z)) (f64.div (get_local $y) (get_local $z))))
+  (export "f64.no_fold_add_divs" $f64.no_fold_add_divs)
+)
+
+(assert_return (invoke "f32.no_fold_add_divs" (f32.const 0x1.795e7p+8) (f32.const -0x1.48a5eep-5) (f32.const -0x1.9a244cp+126)) (f32.const -0x1.d709b6p-119))
+(assert_return (invoke "f32.no_fold_add_divs" (f32.const -0x1.ae89e8p-63) (f32.const -0x1.e9903ep-49) (f32.const -0x1.370a8cp+47)) (f32.const 0x1.92f3f6p-96))
+(assert_return (invoke "f32.no_fold_add_divs" (f32.const -0x1.626408p-46) (f32.const 0x1.2ee5b2p-64) (f32.const -0x1.ecefaap+48)) (f32.const 0x1.701864p-95))
+(assert_return (invoke "f32.no_fold_add_divs" (f32.const -0x1.061d3p-101) (f32.const 0x1.383492p-98) (f32.const -0x1.1d92d2p+88)) (f32.const 0x0p+0))
+(assert_return (invoke "f32.no_fold_add_divs" (f32.const 0x1.1ea39ep-10) (f32.const 0x1.a7fffep-3) (f32.const 0x1.6fc574p-123)) (f32.const 0x1.28b2dep+120))
+
+(assert_return (invoke "f64.no_fold_add_divs" (f64.const -0x1.c5fcc3273b136p+430) (f64.const 0x1.892a09eed8f6fp+434) (f64.const 0x1.8258b71e64397p+911)) (f64.const 0x1.e36eb9706ad82p-478))
+(assert_return (invoke "f64.no_fold_add_divs" (f64.const -0x1.2215d4061b5b3p+53) (f64.const 0x1.fb6184d97f27cp+5) (f64.const -0x1.f3bb59dacc0ebp-957)) (f64.const 0x1.2934eb0118be3p+1009))
+(assert_return (invoke "f64.no_fold_add_divs" (f64.const -0x1.e7a4533741d8ep-967) (f64.const 0x1.a519bb7feb802p-976) (f64.const 0x1.1f8a43454e51ap+504)) (f64.const 0x0p+0))
+(assert_return (invoke "f64.no_fold_add_divs" (f64.const 0x1.991c6cf93e2b4p+313) (f64.const -0x1.f2f7432698d11p+329) (f64.const 0x1.0d8c1b2453617p-126)) (f64.const -0x1.d9e1d84ddd1d4p+455))
+(assert_return (invoke "f64.no_fold_add_divs" (f64.const -0x1.d436849dc1271p-728) (f64.const 0x1.19d1c1450e52dp-755) (f64.const 0x1.fa1be69ea06fep-70)) (f64.const -0x1.d9a9b1c2f5623p-659))
