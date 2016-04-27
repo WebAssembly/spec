@@ -403,6 +403,12 @@
 (assert_return (invoke "f64.div" (f64.const 0x1.cf82510d0ae6bp+89) (f64.const 0x1.0207d86498053p+97)) (f64.const 0x1.cbdc804e2cf14p-8))
 (assert_return (invoke "f64.div" (f64.const 0x1.4c82cbb508e21p-11) (f64.const -0x1.6b57208c2d5d5p+52)) (f64.const -0x1.d48e8b369129ap-64))
 
+;; Division involving the maximum subnormal value and the minimum normal value.
+(assert_return (invoke "f32.div" (f32.const 0x1p-126) (f32.const 0x1.fffffcp-127)) (f32.const 0x1.000002p+0))
+(assert_return (invoke "f32.div" (f32.const 0x1.fffffcp-127) (f32.const 0x1p-126)) (f32.const 0x1.fffffcp-1))
+(assert_return (invoke "f64.div" (f64.const 0x1p-1022) (f64.const 0x0.fffffffffffffp-1022)) (f64.const 0x1.0000000000001p+0))
+(assert_return (invoke "f64.div" (f64.const 0x0.fffffffffffffp-1022) (f64.const 0x1p-1022)) (f64.const 0x1.ffffffffffffep-1))
+
 ;; Test for bugs found in an early RISC-V implementation.
 ;; https://github.com/riscv/riscv-tests/pull/8
 (assert_return (invoke "f32.sqrt" (f32.const 0x1.56p+7)) (f32.const 0x1.a2744cp+3))
