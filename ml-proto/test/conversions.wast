@@ -134,6 +134,7 @@
 (assert_return (invoke "i32.trunc_u_f32" (f32.const 2147483648)) (i32.const -2147483648)) ;; 0x1.00000p+31 -> 8000 0000
 (assert_return (invoke "i32.trunc_u_f32" (f32.const 4294967040.0)) (i32.const -256))
 (assert_return (invoke "i32.trunc_u_f32" (f32.const -0x1.ccccccp-1)) (i32.const 0))
+(assert_return (invoke "i32.trunc_u_f32" (f32.const -0x1.fffffep-1)) (i32.const 0))
 (assert_trap (invoke "i32.trunc_u_f32" (f32.const 4294967296.0)) "integer overflow")
 (assert_trap (invoke "i32.trunc_u_f32" (f32.const -1.0)) "integer overflow")
 (assert_trap (invoke "i32.trunc_u_f32" (f32.const infinity)) "integer overflow")
@@ -172,6 +173,7 @@
 (assert_return (invoke "i32.trunc_u_f64" (f64.const 2147483648)) (i32.const -2147483648)) ;; 0x1.00000p+31 -> 8000 0000
 (assert_return (invoke "i32.trunc_u_f64" (f64.const 4294967295.0)) (i32.const -1))
 (assert_return (invoke "i32.trunc_u_f64" (f64.const -0x1.ccccccccccccdp-1)) (i32.const 0))
+(assert_return (invoke "i32.trunc_u_f64" (f64.const -0x1.fffffffffffffp-1)) (i32.const 0))
 (assert_return (invoke "i32.trunc_u_f64" (f64.const 1e8)) (i32.const 100000000))
 (assert_trap (invoke "i32.trunc_u_f64" (f64.const 4294967296.0)) "integer overflow")
 (assert_trap (invoke "i32.trunc_u_f64" (f64.const -1.0)) "integer overflow")
@@ -214,6 +216,7 @@
 (assert_return (invoke "i64.trunc_u_f32" (f32.const 4294967296)) (i64.const 4294967296))
 (assert_return (invoke "i64.trunc_u_f32" (f32.const 18446742974197923840.0)) (i64.const -1099511627776))
 (assert_return (invoke "i64.trunc_u_f32" (f32.const -0x1.ccccccp-1)) (i64.const 0))
+(assert_return (invoke "i64.trunc_u_f32" (f32.const -0x1.fffffep-1)) (i64.const 0))
 (assert_trap (invoke "i64.trunc_u_f32" (f32.const 18446744073709551616.0)) "integer overflow")
 (assert_trap (invoke "i64.trunc_u_f32" (f32.const -1.0)) "integer overflow")
 (assert_trap (invoke "i64.trunc_u_f32" (f32.const infinity)) "integer overflow")
@@ -253,6 +256,7 @@
 (assert_return (invoke "i64.trunc_u_f64" (f64.const 4294967296)) (i64.const 0x100000000))
 (assert_return (invoke "i64.trunc_u_f64" (f64.const 18446744073709549568.0)) (i64.const -2048))
 (assert_return (invoke "i64.trunc_u_f64" (f64.const -0x1.ccccccccccccdp-1)) (i64.const 0))
+(assert_return (invoke "i64.trunc_u_f64" (f64.const -0x1.fffffffffffffp-1)) (i64.const 0))
 (assert_return (invoke "i64.trunc_u_f64" (f64.const 1e8)) (i64.const 100000000))
 (assert_return (invoke "i64.trunc_u_f64" (f64.const 1e16)) (i64.const 10000000000000000))
 (assert_return (invoke "i64.trunc_u_f64" (f64.const 9223372036854775808)) (i64.const -9223372036854775808))
