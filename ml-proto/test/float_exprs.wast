@@ -1261,6 +1261,19 @@
 
 (assert_return (invoke "llvm_pr27153" (i32.const 33554434)) (f32.const 25165824.000000))
 
+;; Test that (float)x + (float)y is not optimzied to (float)(x + y) when unsafe.
+;; https://llvm.org/bugs/show_bug.cgi?id=27036
+
+(module
+  (func $llvm_pr27036 (param $x i32) (param $y i32) (result f32)
+    (f32.add (f32.convert_s/i32 (i32.or (get_local $x) (i32.const -25034805)))
+             (f32.convert_s/i32 (i32.and (get_local $y) (i32.const 14942208))))
+  )
+  (export "llvm_pr27936" $llvm_pr27036)
+)
+
+(assert_return (invoke "llvm_pr27936" (i32.const -25034805) (i32.const 14942208)) (f32.const -0x1.340068p+23))
+
 ;; Test for bugs in old versions of historic IEEE 754 platforms as reported in:
 ;;
 ;; N. L. Schryer. 1981. A Test of a Computer's Floating-Point Arithmetic Unit.
