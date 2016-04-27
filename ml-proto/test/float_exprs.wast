@@ -685,6 +685,16 @@
 (assert_return (invoke "no_fold_demote_promote" (f64.const -0x1.74f5bd865163p-88)) (f64.const -0x1.74f5bep-88))
 (assert_return (invoke "no_fold_demote_promote" (f64.const 0x1.26d675662367ep+104)) (f64.const 0x1.26d676p+104))
 
+;; Test that demote(promote(x)) is not folded to x.
+
+(module
+  (func $no_fold_promote_demote (param $x f32) (result f32)
+    (f32.demote/f64 (f64.promote/f32 (get_local $x))))
+  (export "no_fold_promote_demote" $no_fold_promote_demote)
+)
+
+(assert_return (invoke "no_fold_promote_demote" (f32.const nan:0x200000)) (f32.const nan:0x600000))
+
 ;; Test that demote(x+promote(y)) is not folded to demote(x)+y.
 
 (module
