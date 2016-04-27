@@ -1640,3 +1640,27 @@
 (assert_return (invoke "f64.no_fold_add_divs" (f64.const -0x1.e7a4533741d8ep-967) (f64.const 0x1.a519bb7feb802p-976) (f64.const 0x1.1f8a43454e51ap+504)) (f64.const 0x0p+0))
 (assert_return (invoke "f64.no_fold_add_divs" (f64.const 0x1.991c6cf93e2b4p+313) (f64.const -0x1.f2f7432698d11p+329) (f64.const 0x1.0d8c1b2453617p-126)) (f64.const -0x1.d9e1d84ddd1d4p+455))
 (assert_return (invoke "f64.no_fold_add_divs" (f64.const -0x1.d436849dc1271p-728) (f64.const 0x1.19d1c1450e52dp-755) (f64.const 0x1.fa1be69ea06fep-70)) (f64.const -0x1.d9a9b1c2f5623p-659))
+
+;; Test that sqrt(x*x) is not optimized to abs(x).
+
+(module
+  (func $f32.no_fold_sqrt_square (param $x f32) (result f32)
+    (f32.sqrt (f32.mul (get_local $x) (get_local $x))))
+  (export "f32.no_fold_sqrt_square" $f32.no_fold_sqrt_square)
+
+  (func $f64.no_fold_sqrt_square (param $x f64) (result f64)
+    (f64.sqrt (f64.mul (get_local $x) (get_local $x))))
+  (export "f64.no_fold_sqrt_square" $f64.no_fold_sqrt_square)
+)
+
+(assert_return (invoke "f32.no_fold_sqrt_square" (f32.const -0x1.5cb316p-66)) (f32.const 0x1.5cb322p-66))
+(assert_return (invoke "f32.no_fold_sqrt_square" (f32.const -0x1.b0f9e4p-73)) (f32.const 0x1.b211b2p-73))
+(assert_return (invoke "f32.no_fold_sqrt_square" (f32.const -0x1.de417cp-71)) (f32.const 0x1.de65b8p-71))
+(assert_return (invoke "f32.no_fold_sqrt_square" (f32.const 0x1.64c872p-86)) (f32.const 0x0p+0))
+(assert_return (invoke "f32.no_fold_sqrt_square" (f32.const 0x1.e199e4p+108)) (f32.const infinity))
+
+(assert_return (invoke "f64.no_fold_sqrt_square" (f64.const 0x1.1759d657203fdp-529)) (f64.const 0x1.1759dd57545f3p-529))
+(assert_return (invoke "f64.no_fold_sqrt_square" (f64.const -0x1.4c68de1c78d83p-514)) (f64.const 0x1.4c68de1c78d81p-514))
+(assert_return (invoke "f64.no_fold_sqrt_square" (f64.const -0x1.214736edb6e1ep-521)) (f64.const 0x1.214736ed9cf8dp-521))
+(assert_return (invoke "f64.no_fold_sqrt_square" (f64.const -0x1.0864b9f68457p-616)) (f64.const 0x0p+0))
+(assert_return (invoke "f64.no_fold_sqrt_square" (f64.const 0x1.b2a9855995abap+856)) (f64.const infinity))
