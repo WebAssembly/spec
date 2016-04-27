@@ -39,6 +39,7 @@
 (assert_return (invoke "f64.no_fma" (f64.const 0x1.7e2c44058a799p+52) (f64.const 0x1.c73b71765b8b2p+685) (f64.const -0x1.16c641df0b108p+690)) (f64.const 0x1.53ccb53de0bd1p+738))
 
 ;; Test that x+0.0 is not folded to x.
+;; See IEEE 754-2008 10.4 "Literal meaning and value-changing optimizations".
 
 (module
   (func $f32.no_fold_add_zero (param $x f32) (result f32)
@@ -52,6 +53,8 @@
 
 (assert_return (invoke "f32.no_fold_add_zero" (f32.const -0.0)) (f32.const 0.0))
 (assert_return (invoke "f64.no_fold_add_zero" (f64.const -0.0)) (f64.const 0.0))
+(assert_return (invoke "f32.no_fold_add_zero" (f32.const nan:0x200000)) (f32.const nan:0x600000))
+(assert_return (invoke "f64.no_fold_add_zero" (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
 
 ;; Test that 0.0 - x is not folded to -x.
 
@@ -70,6 +73,21 @@
 (assert_return (invoke "f32.no_fold_zero_sub" (f32.const nan:0x200000)) (f32.const nan:0x600000))
 (assert_return (invoke "f64.no_fold_zero_sub" (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
 
+;; Test that x - 0.0 is not folded to x.
+
+(module
+  (func $f32.no_fold_sub_zero (param $x f32) (result f32)
+    (f32.sub (get_local $x) (f32.const 0.0)))
+  (export "f32.no_fold_sub_zero" $f32.no_fold_sub_zero)
+
+  (func $f64.no_fold_sub_zero (param $x f64) (result f64)
+    (f64.sub (get_local $x) (f64.const 0.0)))
+  (export "f64.no_fold_sub_zero" $f64.no_fold_sub_zero)
+)
+
+(assert_return (invoke "f32.no_fold_sub_zero" (f32.const nan:0x200000)) (f32.const nan:0x600000))
+(assert_return (invoke "f64.no_fold_sub_zero" (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
+
 ;; Test that x*0.0 is not folded to 0.0.
 
 (module
@@ -85,9 +103,27 @@
 (assert_return (invoke "f32.no_fold_mul_zero" (f32.const -0.0)) (f32.const -0.0))
 (assert_return (invoke "f32.no_fold_mul_zero" (f32.const -1.0)) (f32.const -0.0))
 (assert_return (invoke "f32.no_fold_mul_zero" (f32.const -2.0)) (f32.const -0.0))
+(assert_return (invoke "f32.no_fold_mul_zero" (f32.const nan:0x200000)) (f32.const nan:0x600000))
 (assert_return (invoke "f64.no_fold_mul_zero" (f64.const -0.0)) (f64.const -0.0))
 (assert_return (invoke "f64.no_fold_mul_zero" (f64.const -1.0)) (f64.const -0.0))
 (assert_return (invoke "f64.no_fold_mul_zero" (f64.const -2.0)) (f64.const -0.0))
+(assert_return (invoke "f64.no_fold_mul_zero" (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
+
+;; Test that x*1.0 is not folded to x.
+;; See IEEE 754-2008 10.4 "Literal meaning and value-changing optimizations".
+
+(module
+  (func $f32.no_fold_mul_one (param $x f32) (result f32)
+    (f32.mul (get_local $x) (f32.const 1.0)))
+  (export "f32.no_fold_mul_one" $f32.no_fold_mul_one)
+
+  (func $f64.no_fold_mul_one (param $x f64) (result f64)
+    (f64.mul (get_local $x) (f64.const 1.0)))
+  (export "f64.no_fold_mul_one" $f64.no_fold_mul_one)
+)
+
+(assert_return (invoke "f32.no_fold_mul_one" (f32.const nan:0x200000)) (f32.const nan:0x600000))
+(assert_return (invoke "f64.no_fold_mul_one" (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
 
 ;; Test that 0.0/x is not folded to 0.0.
 
@@ -104,9 +140,11 @@
 (assert_return_nan (invoke "f32.no_fold_zero_div" (f32.const 0.0)))
 (assert_return_nan (invoke "f32.no_fold_zero_div" (f32.const -0.0)))
 (assert_return (invoke "f32.no_fold_zero_div" (f32.const nan)) (f32.const nan))
+(assert_return (invoke "f32.no_fold_zero_div" (f32.const nan:0x200000)) (f32.const nan:0x600000))
 (assert_return_nan (invoke "f64.no_fold_zero_div" (f64.const 0.0)))
 (assert_return_nan (invoke "f64.no_fold_zero_div" (f64.const -0.0)))
 (assert_return (invoke "f64.no_fold_zero_div" (f64.const nan)) (f64.const nan))
+(assert_return (invoke "f64.no_fold_zero_div" (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
 
 ;; Test that x/1.0 is not folded to x.
 
@@ -394,6 +432,7 @@
 (assert_return (invoke "f32.no_fold_div_0" (f32.const -infinity)) (f32.const -infinity))
 (assert_return_nan (invoke "f32.no_fold_div_0" (f32.const 0)))
 (assert_return_nan (invoke "f32.no_fold_div_0" (f32.const -0)))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const nan:0x200000)) (f32.const nan:0x600000))
 (assert_return (invoke "f32.no_fold_div_0" (f32.const nan)) (f32.const nan))
 (assert_return (invoke "f64.no_fold_div_0" (f64.const 1.0)) (f64.const infinity))
 (assert_return (invoke "f64.no_fold_div_0" (f64.const -1.0)) (f64.const -infinity))
@@ -402,6 +441,7 @@
 (assert_return_nan (invoke "f64.no_fold_div_0" (f64.const 0)))
 (assert_return_nan (invoke "f64.no_fold_div_0" (f64.const -0)))
 (assert_return (invoke "f64.no_fold_div_0" (f64.const nan)) (f64.const nan))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
 
 ;; Test that x/-0 is not folded away.
 
@@ -421,6 +461,7 @@
 (assert_return (invoke "f32.no_fold_div_neg0" (f32.const -infinity)) (f32.const infinity))
 (assert_return_nan (invoke "f32.no_fold_div_neg0" (f32.const 0)))
 (assert_return_nan (invoke "f32.no_fold_div_neg0" (f32.const -0)))
+(assert_return (invoke "f32.no_fold_div_neg0" (f32.const nan:0x200000)) (f32.const nan:0x600000))
 (assert_return (invoke "f32.no_fold_div_neg0" (f32.const nan)) (f32.const nan))
 (assert_return (invoke "f64.no_fold_div_neg0" (f64.const 1.0)) (f64.const -infinity))
 (assert_return (invoke "f64.no_fold_div_neg0" (f64.const -1.0)) (f64.const infinity))
@@ -429,6 +470,7 @@
 (assert_return_nan (invoke "f64.no_fold_div_neg0" (f64.const 0)))
 (assert_return_nan (invoke "f64.no_fold_div_neg0" (f64.const -0)))
 (assert_return (invoke "f64.no_fold_div_neg0" (f64.const nan)) (f64.const nan))
+(assert_return (invoke "f64.no_fold_div_neg0" (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
 
 ;; Test that sqrt(x*x+y*y) is not folded to hypot.
 
