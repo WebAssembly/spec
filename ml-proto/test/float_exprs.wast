@@ -1314,3 +1314,21 @@
 )
 
 (assert_return (invoke "inverse" (f32.const 96.0)) (f32.const 0x1.555556p-7))
+
+;; Test for incorrect rounding on sqrt(4.0).
+;; http://www.askvg.com/microsoft-windows-calculator-bug/
+
+(module
+  (func $f32_sqrt_minus_2 (param $x f32) (result f32)
+    (f32.sub (f32.sqrt (get_local $x)) (f32.const 2.0))
+  )
+  (export "f32_sqrt_minus_2" $f32_sqrt_minus_2)
+
+  (func $f64_sqrt_minus_2 (param $x f64) (result f64)
+    (f64.sub (f64.sqrt (get_local $x)) (f64.const 2.0))
+  )
+  (export "f64_sqrt_minus_2" $f64_sqrt_minus_2)
+)
+
+(assert_return (invoke "f32_sqrt_minus_2" (f32.const 4.0)) (f32.const 0.0))
+(assert_return (invoke "f64_sqrt_minus_2" (f64.const 4.0)) (f64.const 0.0))
