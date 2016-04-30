@@ -8,6 +8,7 @@ sig
   val zero : t
   val one : t
   val minus_one : t
+  val neg : t -> t
   val shift_left : t -> int -> t
   val shift_right : t -> int -> t
   val logand : t -> t -> t
@@ -21,7 +22,6 @@ sig
   val shift_right_logical : t -> int -> t
   val of_int : int -> t
   val to_int : t -> int
-  val of_string : string -> t
   val to_string : t -> string
 
   val bitwidth : int
@@ -208,7 +208,54 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
-  let of_string = Rep.of_string
+  (* This implementation allows leading signs and unsigned values *)
+  let of_string x =
+    let len = String.length x in
+    let power_of_two n = (Rep.shift_left Rep.one n) in
+    let ten = (Rep.of_int 10) in
+    let parse_hexdigit c =
+      int_of_char c -
+        if '0' <= c && '9' >= c then 0x30
+        else if 'a' <= c && 'f' >= c then (0x61 - 10)
+        else if 'A' <= c && 'F' >= c then (0x41 - 10)
+        else assert false
+    in
+    let parse_hex offset sign =
+      let num = ref Rep.zero in
+      for i = offset to (len - 1) do
+        assert (lt_u !num (power_of_two (Rep.bitwidth - 4)));
+        num := Rep.logor (Rep.shift_left !num 4) (Rep.of_int (parse_hexdigit x.[i]));
+      done;
+      assert (sign || (le_u !num (power_of_two (Rep.bitwidth - 1))));
+      !num
+    in
+    let parse_dec offset sign =
+      let max_upper, max_lower =
+        if sign then
+          divrem_u Rep.minus_one ten
+        else
+          divrem_u (power_of_two (Rep.bitwidth - 1)) ten
+      in
+      let num = ref Rep.zero in
+      for i = offset to (len - 1) do
+        assert ('0' <= x.[i] && '9' >= x.[i]);
+        let new_digit = (Rep.of_int (int_of_char x.[i] - 0x30)) in
+        assert ((lt_u !num max_upper) || ((!num = max_upper) && (le_u new_digit max_lower)));
+        num := (Rep.add (Rep.mul !num ten) new_digit)
+      done;
+      !num
+    in
+    let parse_int offset sign =
+      if offset + 3 <= len && (String.sub x offset 2) = "0x" then
+        parse_hex (offset + 2) sign
+      else
+        parse_dec offset sign
+    in
+    match x.[0] with
+      | '+' -> parse_int 1 true
+      | '-' -> Rep.neg (parse_int 1 false)
+      | _ -> parse_int 0 true
+
   let to_string = Rep.to_string
 
   let of_int = Rep.of_int
