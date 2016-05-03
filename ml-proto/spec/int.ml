@@ -211,18 +211,18 @@ struct
   (* This implementation allows leading signs and unsigned values *)
   let of_string x =
     let len = String.length x in
-    let power_of_two n = (Rep.shift_left Rep.one n) in
-    let ten = (Rep.of_int 10) in
+    let power_of_two n = Rep.shift_left Rep.one n in
+    let ten = Rep.of_int 10 in
     let parse_hexdigit c =
       int_of_char c -
         if '0' <= c && '9' >= c then 0x30
-        else if 'a' <= c && 'f' >= c then (0x61 - 10)
-        else if 'A' <= c && 'F' >= c then (0x41 - 10)
+        else if 'a' <= c && 'f' >= c then 0x61 - 10
+        else if 'A' <= c && 'F' >= c then 0x41 - 10
         else assert false
     in
     let parse_hex offset sign =
       let num = ref Rep.zero in
-      for i = offset to (len - 1) do
+      for i = offset to len - 1 do
         assert (lt_u !num (power_of_two (Rep.bitwidth - 4)));
         num := Rep.logor (Rep.shift_left !num 4) (Rep.of_int (parse_hexdigit x.[i]));
       done;
@@ -237,24 +237,26 @@ struct
           divrem_u (power_of_two (Rep.bitwidth - 1)) ten
       in
       let num = ref Rep.zero in
-      for i = offset to (len - 1) do
+      for i = offset to len - 1 do
         assert ('0' <= x.[i] && '9' >= x.[i]);
-        let new_digit = (Rep.of_int (int_of_char x.[i] - 0x30)) in
+        let new_digit = Rep.of_int (int_of_char x.[i] - 0x30) in
         assert ((lt_u !num max_upper) || ((!num = max_upper) && (le_u new_digit max_lower)));
-        num := (Rep.add (Rep.mul !num ten) new_digit)
+        num := Rep.add (Rep.mul !num ten) new_digit
       done;
       !num
     in
     let parse_int offset sign =
-      if offset + 3 <= len && (String.sub x offset 2) = "0x" then
+      if offset + 3 <= len && String.sub x offset 2 = "0x" then
         parse_hex (offset + 2) sign
       else
         parse_dec offset sign
     in
-    match x.[0] with
-      | '+' -> parse_int 1 true
-      | '-' -> Rep.neg (parse_int 1 false)
-      | _ -> parse_int 0 true
+    try
+      match x.[0] with
+        | '+' -> parse_int 1 true
+        | '-' -> Rep.neg (parse_int 1 false)
+        | _ -> parse_int 0 true
+    with _ -> failwith "int_to_string"
 
   let to_string = Rep.to_string
 
