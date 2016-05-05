@@ -1271,7 +1271,7 @@
 
 (assert_return (invoke "llvm_pr27153" (i32.const 33554434)) (f32.const 25165824.000000))
 
-;; Test that (float)x + (float)y is not optimzied to (float)(x + y) when unsafe.
+;; Test that (float)x + (float)y is not optimized to (float)(x + y) when unsafe.
 ;; https://llvm.org/bugs/show_bug.cgi?id=27036
 
 (module
