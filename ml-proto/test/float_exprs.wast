@@ -1279,10 +1279,10 @@
     (f32.add (f32.convert_s/i32 (i32.or (get_local $x) (i32.const -25034805)))
              (f32.convert_s/i32 (i32.and (get_local $y) (i32.const 14942208))))
   )
-  (export "llvm_pr27936" $llvm_pr27036)
+  (export "llvm_pr27036" $llvm_pr27036)
 )
 
-(assert_return (invoke "llvm_pr27936" (i32.const -25034805) (i32.const 14942208)) (f32.const -0x1.340068p+23))
+(assert_return (invoke "llvm_pr27036" (i32.const -25034805) (i32.const 14942208)) (f32.const -0x1.340068p+23))
 
 ;; Test for bugs in old versions of historic IEEE 754 platforms as reported in:
 ;;
