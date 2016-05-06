@@ -70,6 +70,76 @@
 (assert_return (invoke "i64.load") (i64.const 0x7ff4000000000000))
 (assert_return (invoke "f64.load") (f64.const nan:0x4000000000000))
 
+;; Test that unaligned load and store do not canonicalize NaNs.
+
+(module
+  (memory 1 1 (segment 1 "\00\00\a0\7f"))
+
+  (func $f32.load (result f32) (f32.load (i32.const 1)))
+  (export "f32.load" $f32.load)
+
+  (func $i32.load (result i32) (i32.load (i32.const 1)))
+  (export "i32.load" $i32.load)
+
+  (func $f32.store (f32.store (i32.const 1) (f32.const nan:0x200000)))
+  (export "f32.store" $f32.store)
+
+  (func $i32.store (i32.store (i32.const 1) (i32.const 0x7fa00000)))
+  (export "i32.store" $i32.store)
+
+  (func $reset (i32.store (i32.const 1) (i32.const 0)))
+  (export "reset" $reset)
+)
+
+(assert_return (invoke "i32.load") (i32.const 0x7fa00000))
+(assert_return (invoke "f32.load") (f32.const nan:0x200000))
+(invoke "reset")
+(assert_return (invoke "i32.load") (i32.const 0x0))
+(assert_return (invoke "f32.load") (f32.const 0.0))
+(invoke "f32.store")
+(assert_return (invoke "i32.load") (i32.const 0x7fa00000))
+(assert_return (invoke "f32.load") (f32.const nan:0x200000))
+(invoke "reset")
+(assert_return (invoke "i32.load") (i32.const 0x0))
+(assert_return (invoke "f32.load") (f32.const 0.0))
+(invoke "i32.store")
+(assert_return (invoke "i32.load") (i32.const 0x7fa00000))
+(assert_return (invoke "f32.load") (f32.const nan:0x200000))
+
+(module
+  (memory 1 1 (segment 1 "\00\00\00\00\00\00\f4\7f"))
+
+  (func $f64.load (result f64) (f64.load (i32.const 1)))
+  (export "f64.load" $f64.load)
+
+  (func $i64.load (result i64) (i64.load (i32.const 1)))
+  (export "i64.load" $i64.load)
+
+  (func $f64.store (f64.store (i32.const 1) (f64.const nan:0x4000000000000)))
+  (export "f64.store" $f64.store)
+
+  (func $i64.store (i64.store (i32.const 1) (i64.const 0x7ff4000000000000)))
+  (export "i64.store" $i64.store)
+
+  (func $reset (i64.store (i32.const 1) (i64.const 0)))
+  (export "reset" $reset)
+)
+
+(assert_return (invoke "i64.load") (i64.const 0x7ff4000000000000))
+(assert_return (invoke "f64.load") (f64.const nan:0x4000000000000))
+(invoke "reset")
+(assert_return (invoke "i64.load") (i64.const 0x0))
+(assert_return (invoke "f64.load") (f64.const 0.0))
+(invoke "f64.store")
+(assert_return (invoke "i64.load") (i64.const 0x7ff4000000000000))
+(assert_return (invoke "f64.load") (f64.const nan:0x4000000000000))
+(invoke "reset")
+(assert_return (invoke "i64.load") (i64.const 0x0))
+(assert_return (invoke "f64.load") (f64.const 0.0))
+(invoke "i64.store")
+(assert_return (invoke "i64.load") (i64.const 0x7ff4000000000000))
+(assert_return (invoke "f64.load") (f64.const nan:0x4000000000000))
+
 ;; Test that load and store do not canonicalize NaNs as some JS engines do.
 
 (module
