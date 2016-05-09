@@ -9,7 +9,7 @@
   )
 
   (func $multi (result i32)
-    (block (i32.const 5) (i32.const 6) (i32.const 7) (i32.const 8))
+    (block (drop (i32.const 5)) (nop) (drop (i32.const 7)) (i32.const 8))
   )
 
   (func $effects (result i32)

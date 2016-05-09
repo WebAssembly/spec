@@ -1,15 +1,19 @@
-(module (func (i32.const 1)) (export "a" 0))
-(module (func (i32.const 1)) (export "a" 0) (export "b" 0))
-(module (func (i32.const 1)) (func (i32.const 2)) (export "a" 0) (export "b" 1))
+(module (func) (export "a" 0))
+(module (func) (export "a" 0) (export "b" 0))
+(module (func) (func) (export "a" 0) (export "b" 1))
+
 (assert_invalid
-  (module (func (i32.const 1)) (export "a" 1))
-  "unknown function 1")
+  (module (func) (export "a" 1))
+  "unknown function 1"
+)
 (assert_invalid
-  (module (func (i32.const 1)) (func (i32.const 2)) (export "a" 0) (export "a" 1))
-  "duplicate export name")
+  (module (func) (func) (export "a" 0) (export "a" 1))
+  "duplicate export name"
+)
 (assert_invalid
-  (module (func (i32.const 1)) (export "a" 0) (export "a" 0))
-  "duplicate export name")
+  (module (func) (export "a" 0) (export "a" 0))
+  "duplicate export name"
+)
 
 (module
   (func $f (param $n i32) (result i32)

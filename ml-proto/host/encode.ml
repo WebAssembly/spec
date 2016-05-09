@@ -116,6 +116,8 @@ let encode m =
       | Br_table (xs, x, eo, e) ->
         opt expr eo; expr e; op 0x08; arity1 eo; vec var32 xs; var32 x
 
+      | Ast.Drop e -> unary e 0x09
+
       | Ast.I32_const c -> op 0x0a; vs32 c.it
       | Ast.I64_const c -> op 0x0b; vs64 c.it
       | Ast.F32_const c -> op 0x0c; f32 c.it

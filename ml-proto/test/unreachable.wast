@@ -1,22 +1,24 @@
 (module
-  (func $return_i32 (result i32)
-    (unreachable))
-  (func $return_f64 (result f64)
-    (unreachable))
+  (func $return_i32 (result i32) (unreachable))
+  (func $return_f64 (result f64) (unreachable))
 
   (func $if (param i32) (result f32)
-   (if (get_local 0) (unreachable) (f32.const 0)))
+    (if (get_local 0) (unreachable) (f32.const 0))
+  )
 
-  (func $block
-   (block (i32.const 1) (unreachable) (i32.const 2)))
+  (func $block (result i32)
+    (block (unreachable) (i32.const 2))
+  )
 
   (func $return_i64 (result i64)
-   (return (i64.const 1))
-   (unreachable))
+    (return (i64.const 1))
+    (unreachable)
+  )
 
   (func $call (result f64)
-   (call $return_i32)
-   (unreachable))
+    (drop (call $return_i32))
+    (unreachable)
+  )
 
   (func $misc1 (result i32)
     (i32.xor (unreachable) (i32.const 10))

@@ -133,6 +133,10 @@ let rec eval_expr (c : config) (e : expr) =
   | Unreachable ->
     Trap.error e.at "unreachable executed"
 
+  | Drop e ->
+    eval_expr c e;
+    None
+
   | Block (es, e) ->
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
@@ -193,7 +197,7 @@ let rec eval_expr (c : config) (e : expr) =
   | SetLocal (x, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     local c x := v1;
-    Some v1
+    None
 
   | Load ({ty; offset; align = _}, e1) ->
     let mem = memory c e.at in
@@ -207,7 +211,7 @@ let rec eval_expr (c : config) (e : expr) =
     let v2 = some (eval_expr c e2) e2.at in
     (try Memory.store mem v1 offset v2
       with exn -> memory_error e.at exn);
-    Some v2
+    None
 
   | LoadExtend ({memop = {ty; offset; align = _}; sz; ext}, e1) ->
     let mem = memory c e.at in
@@ -221,7 +225,7 @@ let rec eval_expr (c : config) (e : expr) =
     let v2 = some (eval_expr c e2) e2.at in
     (try Memory.store_wrap mem v1 offset sz v2
       with exn -> memory_error e.at exn);
-    Some v2
+    None
 
   | Const v ->
     Some v.it
@@ -269,10 +273,7 @@ and eval_func instance f vs =
   let ft = type_ c f.it.ftype in
   if List.length vs <> List.length ft.ins then
     Crash.error f.at "function called with wrong number of arguments";
-  coerce ft.out (eval_expr c f.it.body)
-
-and coerce et vo =
-  if et = None then None else vo
+  eval_expr c f.it.body
 
 
 (* Host operators *)

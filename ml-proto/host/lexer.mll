@@ -140,6 +140,7 @@ rule token = parse
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }
+  | "drop" { DROP }
   | "block" { BLOCK }
   | "loop" { LOOP }
   | "br" { BR }

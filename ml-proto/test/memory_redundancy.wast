@@ -22,7 +22,7 @@
 
   (export "test_redundant_load" $test_redundant_load)
   (func $test_redundant_load (result i32)
-    (i32.load (i32.const 8))
+    (drop (i32.load (i32.const 8)))
     (f32.store (i32.const 5) (f32.const -0.0))
     (i32.load (i32.const 8))
   )

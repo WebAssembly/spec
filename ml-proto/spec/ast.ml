@@ -13,6 +13,7 @@ and expr' =
   (* Control *)
   | Nop
   | Unreachable
+  | Drop of expr
   | Block of expr list
   | Loop of expr list
   | Br of var * expr option

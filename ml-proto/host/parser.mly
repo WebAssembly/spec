@@ -125,7 +125,7 @@ let implicit_decl c t at =
 %}
 
 %token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
+%token NOP DROP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -222,6 +222,7 @@ expr :
 expr1 :
   | NOP { fun c -> Nop }
   | UNREACHABLE { fun c -> Unreachable }
+  | DROP expr { fun c -> Drop ($2 c) }
   | BLOCK labeling expr_list { fun c -> let c' = $2 c in Block ($3 c') }
   | LOOP labeling expr_list
     { fun c -> let c' = anon_label c in let c'' = $2 c' in Loop ($3 c'') }

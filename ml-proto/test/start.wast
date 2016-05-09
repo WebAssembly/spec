@@ -1,5 +1,5 @@
 (assert_invalid
-  (module (func (i32.const 1)) (start 1))
+  (module (func) (start 1))
   "unknown function 1"
 )
 (assert_invalid

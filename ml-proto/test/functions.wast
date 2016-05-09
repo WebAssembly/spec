@@ -5,13 +5,13 @@
   (func $result-nop (nop))
   (export "result-nop" $result-nop)
 
-  (func $result-drop (i32.const 1))
+  (func $result-drop (drop (i32.const 1)))
   (export "result-drop" $result-drop)
 
-  (func $result-block-nop (block (i32.const 1) (nop)))
+  (func $result-block-nop (block (drop (i32.const 1)) (nop)))
   (export "result-block-nop" $result-block-nop)
 
-  (func $result-block-drop (block (nop) (i32.const 1)))
+  (func $result-block-drop (block (nop) (drop (i32.const 1))))
   (export "result-block-drop" $result-block-drop)
 
   (func $return (return))
@@ -20,13 +20,13 @@
   (func $return-nop (return (nop)))
   (export "return-nop" $return-nop)
 
-  (func $return-drop (return (i32.const 1)))
+  (func $return-drop (return (drop (i32.const 1))))
   (export "return-drop" $return-drop)
 
-  (func $return-block-nop (return (block (i32.const 1) (nop))))
+  (func $return-block-nop (return (block (drop (i32.const 1)) (nop))))
   (export "return-block-nop" $return-block-nop)
 
-  (func $return-block-drop (return (block (nop) (i32.const 1))))
+  (func $return-block-drop (return (block (nop) (drop (i32.const 1)))))
   (export "return-block-drop" $return-block-drop)
 )
 

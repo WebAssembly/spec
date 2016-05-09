@@ -11,6 +11,7 @@ let rec relabel f n e = relabel' f n e.it @@ e.at
 and relabel' f n = function
   | Nop -> Nop
   | Unreachable -> Unreachable
+  | Drop e -> Drop (relabel f n e)
   | Block (es, e) ->
     Block (List.map (relabel f (n + 1)) es, relabel f (n + 1) e)
   | Loop e -> Loop (relabel f (n + 1) e)
@@ -61,6 +62,7 @@ and expr' at = function
 
   | Ast.Nop -> Nop
   | Ast.Unreachable -> Unreachable
+  | Ast.Drop e -> Drop (expr e)
   | Ast.Block [] -> Nop
   | Ast.Block es ->
     let es', e = Lib.List.split_last es in Block (List.map expr es', expr e)

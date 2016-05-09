@@ -206,7 +206,7 @@ let rec expr stack s =
     let eo, es' = args1 b es s pos in
     Br_table (xs, x, eo, e), es'
 
-  | 0x09 as b, es -> illegal s pos b
+  | 0x09, e :: es -> Drop e, es
 
   | 0x0a, es -> I32_const (at vs32 s), es
   | 0x0b, es -> I64_const (at vs64 s), es
