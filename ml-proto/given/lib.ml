@@ -64,3 +64,12 @@ struct
     if x < 0L then failwith "is_power_of_two";
     x <> 0L && (Int64.logand x (Int64.sub x 1L)) = 0L
 end
+
+module String =
+struct
+  let breakup s n =
+    let rec loop i =
+      let len = min n (String.length s - i) in
+      if len = 0 then [] else String.sub s i len :: loop (i + len)
+    in loop 0
+end

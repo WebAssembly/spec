@@ -42,7 +42,9 @@ let run_sexpr name lexbuf start =
 let run_binary name buf =
   let open Source in
   run_from
-    (fun _ -> let m = Decode.decode name buf in [Script.Define m @@ m.at])
+    (fun _ ->
+      let m = Decode.decode name buf in
+      [Script.Define (Script.Textual m @@ m.at) @@ m.at])
 
 let run_sexpr_file file =
   Script.trace ("Loading (" ^ file ^ ")...");
@@ -113,6 +115,12 @@ let rec run_stdin () =
 
 (* Output *)
 
+let print_stdout m =
+  Script.trace "Formatting...";
+  let sexpr = Format.module_ (Desugar.desugar m) in
+  Script.trace "Printing...";
+  Sexpr.output stdout !Flags.width sexpr
+
 let create_sexpr_file file m =
   Script.trace ("Formatting (" ^ file ^ ")...");
   let sexpr = Format.module_ (Desugar.desugar m) in
@@ -134,4 +142,6 @@ let create_binary_file file m =
   with exn -> close_out oc; raise exn
 
 let create_file = dispatch_file_ext create_sexpr_file create_binary_file
+
 let () = Script.output_file := create_file
+let () = Script.output_stdout := print_stdout

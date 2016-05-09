@@ -158,9 +158,16 @@ let implicit_decl c t at =
 %start script script1 module1
 %type<Script.script> script
 %type<Script.script> script1
-%type<Ast.module_> module1
+%type<Script.definition> module1
 
 %%
+
+/* Auxiliaries */
+
+text_list :
+  | TEXT { $1 }
+  | text_list TEXT { $1 ^ $2 }
+;
 
 /* Types */
 
@@ -328,7 +335,7 @@ start :
     { fun c -> $3 c func }
 
 segment :
-  | LPAR SEGMENT INT TEXT RPAR
+  | LPAR SEGMENT INT text_list RPAR
     { {Memory.addr = Int64.of_string $3; Memory.data = $4} @@ at () }
 ;
 segment_list :
@@ -412,7 +419,9 @@ module_fields :
       {m with start = Some ($1 c)} }
 ;
 module_ :
-  | LPAR MODULE module_fields RPAR { $3 (empty_context ()) @@ at () }
+  | LPAR MODULE module_fields RPAR
+    { Textual ($3 (empty_context ()) @@ at ()) @@ at() }
+  | LPAR MODULE text_list RPAR { Binary $3 @@ at() }
 ;
 
 
@@ -429,7 +438,8 @@ cmd :
   | LPAR ASSERT_TRAP LPAR INVOKE TEXT const_list RPAR TEXT RPAR
     { AssertTrap ($5, $6, $8) @@ at () }
   | LPAR INPUT TEXT RPAR { Input $3 @@ at () }
-  | LPAR OUTPUT TEXT RPAR { Output $3 @@ at () }
+  | LPAR OUTPUT TEXT RPAR { Output (Some $3) @@ at () }
+  | LPAR OUTPUT RPAR { Output None @@ at () }
 ;
 cmd_list :
   | /* empty */ { [] }
