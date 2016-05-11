@@ -2,8 +2,13 @@
 
 # spec
 
-This repository holds the official specifications and reference implementations
-for WebAssembly.
+This repository holds a prototypical reference implementation for WebAssembly,
+which is currently serving as the official specification. Eventually, we expect
+to produce a specification either written in human-readable prose or in a formal
+specification language.
+
+It also holds the WebAssembly testsuite, which tests numerous aspects of
+conformance to the spec.
 
 At this time, the contents of this repository are under development and known
 to be "incomplet and inkorrect".
