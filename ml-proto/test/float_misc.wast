@@ -440,6 +440,11 @@
 (assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4p-1022)) (f64.const infinity))
 (assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4000000000001p-1022)) (f64.const 0x1.ffffffffffff8p+1023))
 
+;; Test the minimum positive normal number divided by the minimum positive
+;; subnormal number.
+(assert_return (invoke "f32.div" (f32.const 0x1p-126) (f32.const 0x1p-149)) (f32.const 0x1p+23))
+(assert_return (invoke "f64.div" (f64.const 0x1p-1022) (f64.const 0x0.0000000000001p-1022)) (f64.const 0x1p+52))
+
 ;; Test for bugs found in an early RISC-V implementation.
 ;; https://github.com/riscv/riscv-tests/pull/8
 (assert_return (invoke "f32.sqrt" (f32.const 0x1.56p+7)) (f32.const 0x1.a2744cp+3))
