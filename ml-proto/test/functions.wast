@@ -2,43 +2,23 @@
   (func $empty)
   (export "empty" $empty)
 
-  (func $result-nop (nop))
-  (export "result-nop" $result-nop)
+  (func $nop (nop))
+  (export "nop" $nop)
 
-  (func $result-drop (drop (i32.const 1)))
-  (export "result-drop" $result-drop)
+  (func $drop (drop (i32.const 1)))
+  (export "drop" $drop)
 
-  (func $result-block-nop (block (drop (i32.const 1)) (nop)))
-  (export "result-block-nop" $result-block-nop)
-
-  (func $result-block-drop (block (nop) (drop (i32.const 1))))
-  (export "result-block-drop" $result-block-drop)
-
-  (func $return (return))
+  (func $return (return) (unreachable))
   (export "return" $return)
-
-  (func $return-nop (return (nop)))
-  (export "return-nop" $return-nop)
-
-  (func $return-drop (return (drop (i32.const 1))))
-  (export "return-drop" $return-drop)
-
-  (func $return-block-nop (return (block (drop (i32.const 1)) (nop))))
-  (export "return-block-nop" $return-block-nop)
-
-  (func $return-block-drop (return (block (nop) (drop (i32.const 1)))))
-  (export "return-block-drop" $return-block-drop)
 )
 
 (assert_return (invoke "empty"))
-(assert_return (invoke "result-nop"))
-(assert_return (invoke "result-drop"))
-(assert_return (invoke "result-block-nop"))
-(assert_return (invoke "result-block-drop"))
-
+(assert_return (invoke "nop"))
+(assert_return (invoke "drop"))
 (assert_return (invoke "return"))
-(assert_return (invoke "return-nop"))
-(assert_return (invoke "return-drop"))
-(assert_return (invoke "return-block-nop"))
-(assert_return (invoke "return-block-drop"))
+
+(assert_invalid
+  (module (func (return (nop))))
+  "arity mismatch"
+)
 

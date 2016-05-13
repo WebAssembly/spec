@@ -190,10 +190,6 @@
     (get_local $i1)
   )
 
-  (func $br_if4
-    (block $l0 (br_if $l0 (nop) (i32.const 1)))
-  )
-
   (func $br (result i32)
     (block $l0
       (if (i32.const 1)
@@ -234,7 +230,6 @@
   (export "br_if1" $br_if1)
   (export "br_if2" $br_if2)
   (export "br_if3" $br_if3)
-  (export "br_if4" $br_if4)
   (export "br" $br)
   (export "misc1" $misc1)
   (export "misc2" $misc2)
@@ -261,7 +256,6 @@
 (assert_return (invoke "br_if1") (i32.const 1))
 (assert_return (invoke "br_if2") (i32.const 1))
 (assert_return (invoke "br_if3") (i32.const 2))
-(assert_return (invoke "br_if4"))
 (assert_return (invoke "br") (i32.const 1))
 (assert_return (invoke "misc1") (i32.const 1))
 (assert_return (invoke "misc2") (i32.const 1))
@@ -281,7 +275,7 @@
 )
 (assert_invalid
   (module (func (block $l (f32.neg (br_if $l (f32.const 0) (i32.const 1))))))
-  "type mismatch"
+  "arity mismatch"
 )
 (assert_invalid
   (module

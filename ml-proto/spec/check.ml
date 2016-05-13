@@ -40,18 +40,21 @@ let label c x = lookup "label" c.labels x
 
 (* Type Unification *)
 
-let known_of = function `Known et -> et | `Unknown -> assert false
+let string_of_guess = function
+  | `Known et -> string_of_expr_type et
+  | `Unknown -> "<value_type>"
 
 let check_type actual expected at =
-  if !expected = `Unknown then expected := `Known actual;
+  if !expected = `Unknown && actual <> None then expected := `Known actual;
   require (!expected = `Known actual) at
     ("type mismatch: expression has type " ^ string_of_expr_type actual ^
-     " but the context requires " ^ string_of_expr_type (known_of !expected))
+     " but the context requires " ^ string_of_guess !expected)
 
 let unknown () = ref `Unknown
 let known et = ref (`Known et)
 let none = known None
 let some t = known (Some t)
+let is_some et = !et <> `Known None
 
 
 (* Type Synthesis *)
@@ -242,9 +245,10 @@ and check_exprs c ts es at =
   with Invalid_argument _ -> error at "arity mismatch"
 
 and check_expr_opt c et eo at =
-  match eo with
-  | Some e -> check_expr c et e
-  | None -> check_type None et at
+  match is_some et, eo with
+  | false, None -> ()
+  | true, Some e -> check_expr c et e
+  | _ -> error at "arity mismatch"
 
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
