@@ -1,0 +1,1 @@
+test/if_label_scope.fail.wast:6.19-6.21: unknown label $l
