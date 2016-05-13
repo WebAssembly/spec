@@ -75,14 +75,19 @@
   (func "drop-last"
     (block (call $nop) (call $fx) (nop) (i32.const 8))
   )
+  (func "drop-br-void"
+    (block (br 0 (nop)))
+    (block (br 0 (call $nop)))
+  )
   (func "drop-br-value"
     (block (br 0 (i32.const 8)))
   )
   (func "drop-br-value-heterogeneous"
     (block (br 0 (i32.const 8)) (br 0 (f64.const 8)) (br 0 (f32.const 8)))
     (block (br 0 (i32.const 8)) (br 0) (br 0 (f64.const 8)))
+    (block (br 0 (i32.const 8)) (br 0 (call $nop)) (br 0 (f64.const 8)))
     (block (br 0 (i32.const 8)) (br 0) (br 0 (f32.const 8)) (i64.const 3))
-    (block (br 0) (br 0 (i32.const 8)) (br 0 (f64.const 8)))
+    (block (br 0) (br 0 (i32.const 8)) (br 0 (f64.const 8)) (br 0 (nop)))
     (block (br 0) (br 0 (i32.const 8)) (br 0 (f32.const 8)) (i64.const 3))
     (block (block (br 0) (br 1 (i32.const 8))) (br 0 (f32.const 8)) (i64.const 3))
   )
@@ -119,6 +124,7 @@
 
 (assert_return (invoke "drop-inner") (i32.const 8))
 (assert_return (invoke "drop-last"))
+(assert_return (invoke "drop-br-void"))
 (assert_return (invoke "drop-br-value"))
 (assert_return (invoke "drop-br-value-heterogeneous"))
 
