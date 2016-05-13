@@ -2,6 +2,7 @@
 (module (memory 0 0))
 (module (memory 0 1))
 (module (memory 1 256))
+(module (memory 0 65535))
 (module (memory 0 0 (segment 0 "")))
 (module (memory 1 1 (segment 0 "a")))
 (module (memory 1 2 (segment 0 "a") (segment 65535 "b")))
@@ -30,6 +31,10 @@
 (assert_invalid
   (module (memory 1 2 (segment 0 "a") (segment 2 "b") (segment 1 "c")))
   "data segment not disjoint and ordered"
+)
+(assert_invalid
+  (module (memory 0 65536))
+  "linear memory pages must be less or equal to 65535 (4GiB)"
 )
 
 ;; Test alignment annotation rules
