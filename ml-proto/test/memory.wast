@@ -36,6 +36,14 @@
   (module (memory 0 65536))
   "linear memory pages must be less or equal to 65535 (4GiB)"
 )
+(assert_invalid
+  (module (memory 0 2147483648))
+  "linear memory pages must be less or equal to 65535 (4GiB)"
+)
+(assert_invalid
+  (module (memory 0 4294967296))
+  "linear memory pages must be less or equal to 65535 (4GiB)"
+)
 
 ;; Test alignment annotation rules
 (module (memory 0) (func (i32.load8_u align=2 (i32.const 0))))
