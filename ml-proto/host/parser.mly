@@ -309,22 +309,32 @@ type_use :
   | LPAR TYPE var RPAR { $3 }
 ;
 func :
-  | LPAR FUNC type_use func_fields RPAR
+  | LPAR FUNC export_opt type_use func_fields RPAR
     { let at = at () in
-      fun c -> anon_func c; let t = explicit_decl c $3 (fst $4) at in
-        fun () -> {((snd $4) (enter_func c)) with ftype = t} @@ at }
-  | LPAR FUNC bind_var type_use func_fields RPAR  /* Sugar */
+      fun c -> anon_func c; let t = explicit_decl c $4 (fst $5) at in
+        let exs = $3 c in
+        fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at, exs }
+  | LPAR FUNC export_opt bind_var type_use func_fields RPAR  /* Sugar */
     { let at = at () in
-      fun c -> bind_func c $3; let t = explicit_decl c $4 (fst $5) at in
-        fun () -> {((snd $5) (enter_func c)) with ftype = t} @@ at }
-  | LPAR FUNC func_fields RPAR  /* Sugar */
+      fun c -> bind_func c $4; let t = explicit_decl c $5 (fst $6) at in
+        let exs = $3 c in
+        fun () -> {(snd $6 (enter_func c)) with ftype = t} @@ at, exs }
+  | LPAR FUNC export_opt func_fields RPAR  /* Sugar */
     { let at = at () in
-      fun c -> anon_func c; let t = implicit_decl c (fst $3) at in
-        fun () -> {((snd $3) (enter_func c)) with ftype = t} @@ at }
-  | LPAR FUNC bind_var func_fields RPAR  /* Sugar */
+      fun c -> anon_func c; let t = implicit_decl c (fst $4) at in
+        let exs = $3 c in
+        fun () -> {(snd $4 (enter_func c)) with ftype = t} @@ at, exs }
+  | LPAR FUNC export_opt bind_var func_fields RPAR  /* Sugar */
     { let at = at () in
-      fun c -> bind_func c $3; let t = implicit_decl c (fst $4) at in
-        fun () -> {((snd $4) (enter_func c)) with ftype = t} @@ at }
+      fun c -> bind_func c $4; let t = implicit_decl c (fst $5) at in
+        let exs = $3 c in
+        fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at, exs }
+;
+export_opt :
+  | /* empty */ { fun c -> [] }
+  | TEXT
+    { let at = at () in
+      fun c -> [{name = $1; kind = `Func (c.funcs.count - 1 @@ at)} @@ at] }
 ;
 
 
@@ -396,8 +406,8 @@ module_fields :
       {memory = None; types = c.types.tlist; funcs = []; start = None; imports = [];
        exports = []; table = []} }
   | func module_fields
-    { fun c -> let f = $1 c in let m = $2 c in
-      {m with funcs = f () :: m.funcs} }
+    { fun c -> let f = $1 c in let m = $2 c in let func, exs = f () in
+      {m with funcs = func :: m.funcs; exports = exs @ m.exports} }
   | import module_fields
     { fun c -> let i = $1 c in let m = $2 c in
       {m with imports = i :: m.imports} }
