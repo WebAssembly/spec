@@ -333,6 +333,11 @@
 (assert_return (invoke "f64.mul" (f64.const 0x1.6a09e667f3bccp-538) (f64.const 0x1.6a09e667f3bccp-538)) (f64.const 0x0p+0))
 (assert_return (invoke "f64.mul" (f64.const 0x1.6a09e667f3bcdp-538) (f64.const 0x1.6a09e667f3bcdp-538)) (f64.const 0x0.0000000000001p-1022))
 
+;; Test MIN * EPSILON.
+;; http://www.mpfr.org/mpfr-2.0.1/patch2
+(assert_return (invoke "f32.mul" (f32.const 0x1p-126) (f32.const 0x1p-23)) (f32.const 0x1p-149))
+(assert_return (invoke "f64.mul" (f64.const 0x1p-1022) (f64.const 0x1p-52)) (f64.const 0x0.0000000000001p-1022))
+
 (assert_return (invoke "f32.div" (f32.const 1.123456789) (f32.const 100)) (f32.const 0x1.702264p-7))
 (assert_return (invoke "f32.div" (f32.const 8391667.0) (f32.const 12582905.0)) (f32.const 0x1.55754p-1))
 (assert_return (invoke "f32.div" (f32.const 65536.0) (f32.const 0x1p-37)) (f32.const 0x1p+53))
@@ -434,6 +439,11 @@
 (assert_return (invoke "f32.div" (f32.const 1.0) (f32.const 0x1.000008p-128)) (f32.const 0x1.fffffp+127))
 (assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4p-1022)) (f64.const infinity))
 (assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4000000000001p-1022)) (f64.const 0x1.ffffffffffff8p+1023))
+
+;; Test the minimum positive normal number divided by the minimum positive
+;; subnormal number.
+(assert_return (invoke "f32.div" (f32.const 0x1p-126) (f32.const 0x1p-149)) (f32.const 0x1p+23))
+(assert_return (invoke "f64.div" (f64.const 0x1p-1022) (f64.const 0x0.0000000000001p-1022)) (f64.const 0x1p+52))
 
 ;; Test for bugs found in an early RISC-V implementation.
 ;; https://github.com/riscv/riscv-tests/pull/8
@@ -561,9 +571,12 @@
 (assert_return (invoke "f32.nearest" (f32.const 0x1.000002p+23)) (f32.const 0x1.000002p+23))
 (assert_return (invoke "f32.nearest" (f32.const 0x1.000004p+23)) (f32.const 0x1.000004p+23))
 (assert_return (invoke "f32.nearest" (f32.const 0x1.fffffep-2)) (f32.const 0.0))
+(assert_return (invoke "f32.nearest" (f32.const 0x1.fffffep+47)) (f32.const 0x1.fffffep+47))
+
 (assert_return (invoke "f64.nearest" (f64.const 0x1.0000000000001p+52)) (f64.const 0x1.0000000000001p+52))
 (assert_return (invoke "f64.nearest" (f64.const 0x1.0000000000002p+52)) (f64.const 0x1.0000000000002p+52))
 (assert_return (invoke "f64.nearest" (f64.const 0x1.fffffffffffffp-2)) (f64.const 0.0))
+(assert_return (invoke "f64.nearest" (f64.const 0x1.fffffffffffffp+105)) (f64.const 0x1.fffffffffffffp+105))
 
 ;; Nearest should not round halfway cases away from zero (as C's round(3) does)
 ;; or up (as JS's Math.round does).

@@ -1736,3 +1736,19 @@
 (assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const 0x1.74ee531ddba38p-425) (f64.const 0x1.f370f758857f3p+560)) (f64.const 0x1.0aff34269583ep-705))
 (assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const -0x1.27f216b0da6c5p+352) (f64.const 0x1.8e0b4e0b9fd7ep-483)) (f64.const -0x1.4fa558aad514ep+593))
 (assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const 0x1.4c6955df9912bp+104) (f64.const 0x1.0cca42c9d371ep+842)) (f64.const 0x1.4468072f54294p-317))
+
+;; Test that subnormals are not flushed even in an intermediate value in an
+;; expression with a normal result.
+
+(module
+  (func $f32.no_flush_intermediate_subnormal (param $x f32) (param $y f32) (param $z f32) (result f32)
+    (f32.mul (f32.mul (get_local $x) (get_local $y)) (get_local $z)))
+  (export "f32.no_flush_intermediate_subnormal" $f32.no_flush_intermediate_subnormal)
+
+  (func $f64.no_flush_intermediate_subnormal (param $x f64) (param $y f64) (param $z f64) (result f64)
+    (f64.mul (f64.mul (get_local $x) (get_local $y)) (get_local $z)))
+  (export "f64.no_flush_intermediate_subnormal" $f64.no_flush_intermediate_subnormal)
+)
+
+(assert_return (invoke "f32.no_flush_intermediate_subnormal" (f32.const 0x1p-126) (f32.const 0x1p-23) (f32.const 0x1p23)) (f32.const 0x1p-126))
+(assert_return (invoke "f64.no_flush_intermediate_subnormal" (f64.const 0x1p-1022) (f64.const 0x1p-52) (f64.const 0x1p52)) (f64.const 0x1p-1022))
