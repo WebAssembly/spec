@@ -282,25 +282,28 @@ expr_list :
 /* Functions */
 
 func_fields :
-  | expr_list
-    { empty_type,
-      fun c -> let c' = anon_label c in
-      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
+  | func_body { $1 }
+  | LPAR RESULT VALUE_TYPE RPAR func_body
+    { if (fst $5).out <> None then error (at ()) "multiple return types";
+      {(fst $5) with out = Some $3},
+      fun c -> (snd $5) c }
   | LPAR PARAM value_type_list RPAR func_fields
     { {(fst $5) with ins = $3 @ (fst $5).ins},
       fun c -> anon_locals c $3; (snd $5) c }
   | LPAR PARAM bind_var VALUE_TYPE RPAR func_fields  /* Sugar */
     { {(fst $6) with ins = $4 :: (fst $6).ins},
       fun c -> bind_local c $3; (snd $6) c }
-  | LPAR RESULT VALUE_TYPE RPAR func_fields
-    { if (fst $5).out <> None then error (at ()) "multiple return types";
-      {(fst $5) with out = Some $3},
-      fun c -> (snd $5) c }
-  | LPAR LOCAL value_type_list RPAR func_fields
+;
+func_body :
+  | expr_list
+    { empty_type,
+      fun c -> let c' = anon_label c in
+      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
+  | LPAR LOCAL value_type_list RPAR func_body
     { fst $5,
       fun c -> anon_locals c $3; let f = (snd $5) c in
         {f with locals = $3 @ f.locals} }
-  | LPAR LOCAL bind_var VALUE_TYPE RPAR func_fields  /* Sugar */
+  | LPAR LOCAL bind_var VALUE_TYPE RPAR func_body  /* Sugar */
     { fst $6,
       fun c -> bind_local c $3; let f = (snd $6) c in
         {f with locals = $4 :: f.locals} }
