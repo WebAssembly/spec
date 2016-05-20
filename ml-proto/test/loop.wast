@@ -87,8 +87,6 @@
     (get_local 0)
   )
 
-  ;; TODO: tests of actual looping
-
   (func "drop-mid" (result i32)
     (loop (call $fx) (i32.const 7) (call $nop) (i32.const 8))
   )
@@ -158,6 +156,50 @@
     )
     (i32.eq (get_local 0) (i32.const -14))
   )
+
+  (func "while" (param i64) (result i64)
+    (local i64)
+    (set_local 1 (i64.const 1))
+    (loop
+      (br_if 1 (i64.eqz (get_local 0)))
+      (set_local 1 (i64.mul (get_local 0) (get_local 1)))
+      (set_local 0 (i64.sub (get_local 0) (i64.const 1)))
+      (br 0)
+    )
+    (get_local 1)
+  )
+
+  (func "for" (param i64) (result i64)
+    (local i64 i64)
+    (set_local 1 (i64.const 1))
+    (set_local 2 (i64.const 2))
+    (loop
+      (br_if 1 (i64.gt_u (get_local 2) (get_local 0)))
+      (set_local 1 (i64.mul (get_local 1) (get_local 2)))
+      (set_local 2 (i64.add (get_local 2) (i64.const 1)))
+      (br 0)
+    )
+    (get_local 1)
+  )
+
+  (func "nesting" (param f32 f32) (result f32)
+    (local f32 f32)
+    (loop
+      (br_if 1 (f32.eq (get_local 0) (f32.const 0)))
+      (set_local 2 (get_local 1))
+      (loop
+        (br_if 1 (f32.eq (get_local 2) (f32.const 0)))
+        (br_if 3 (f32.lt (get_local 2) (f32.const 0)))
+        (set_local 3 (f32.add (get_local 3) (get_local 2)))
+        (set_local 2 (f32.sub (get_local 2) (f32.const 2)))
+        (br 0)
+      )
+      (set_local 3 (f32.div (get_local 3) (get_local 0)))
+      (set_local 0 (f32.sub (get_local 0) (f32.const 1)))
+      (br 0)
+    )
+    (get_local 3)
+  )
 )
 
 (assert_return (invoke "empty"))
@@ -183,6 +225,37 @@
 (assert_return (invoke "drop-break-value-heterogeneous"))
 
 (assert_return (invoke "effects") (i32.const 1))
+
+(assert_return (invoke "while" (i64.const 0)) (i64.const 1))
+(assert_return (invoke "while" (i64.const 1)) (i64.const 1))
+(assert_return (invoke "while" (i64.const 2)) (i64.const 2))
+(assert_return (invoke "while" (i64.const 3)) (i64.const 6))
+(assert_return (invoke "while" (i64.const 5)) (i64.const 120))
+(assert_return (invoke "while" (i64.const 20)) (i64.const 2432902008176640000))
+
+(assert_return (invoke "for" (i64.const 0)) (i64.const 1))
+(assert_return (invoke "for" (i64.const 1)) (i64.const 1))
+(assert_return (invoke "for" (i64.const 2)) (i64.const 2))
+(assert_return (invoke "for" (i64.const 3)) (i64.const 6))
+(assert_return (invoke "for" (i64.const 5)) (i64.const 120))
+(assert_return (invoke "for" (i64.const 20)) (i64.const 2432902008176640000))
+
+(assert_return (invoke "nesting" (f32.const 0) (f32.const 7)) (f32.const 0))
+(assert_return (invoke "nesting" (f32.const 7) (f32.const 0)) (f32.const 0))
+(assert_return (invoke "nesting" (f32.const 1) (f32.const 1)) (f32.const 1))
+(assert_return (invoke "nesting" (f32.const 1) (f32.const 2)) (f32.const 2))
+(assert_return (invoke "nesting" (f32.const 1) (f32.const 3)) (f32.const 4))
+(assert_return (invoke "nesting" (f32.const 1) (f32.const 4)) (f32.const 6))
+(assert_return (invoke "nesting" (f32.const 1) (f32.const 100)) (f32.const 2550))
+(assert_return (invoke "nesting" (f32.const 1) (f32.const 101)) (f32.const 2601))
+(assert_return (invoke "nesting" (f32.const 2) (f32.const 1)) (f32.const 1))
+(assert_return (invoke "nesting" (f32.const 3) (f32.const 1)) (f32.const 1))
+(assert_return (invoke "nesting" (f32.const 10) (f32.const 1)) (f32.const 1))
+(assert_return (invoke "nesting" (f32.const 2) (f32.const 2)) (f32.const 3))
+(assert_return (invoke "nesting" (f32.const 2) (f32.const 3)) (f32.const 4))
+(assert_return (invoke "nesting" (f32.const 7) (f32.const 4)) (f32.const 10.3095235825))
+(assert_return (invoke "nesting" (f32.const 7) (f32.const 100)) (f32.const 4381.54785156))
+(assert_return (invoke "nesting" (f32.const 7) (f32.const 101)) (f32.const 2601))
 
 (assert_invalid
   (module (func (result i32) (loop)))
