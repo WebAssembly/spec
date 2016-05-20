@@ -14,7 +14,7 @@ let require b at s = if not b then error at s
 
 (* Context *)
 
-type expr_type_guess = [`Known of expr_type | `Unknown] ref
+type expr_type_future = [`Known of expr_type | `SomeUnknown] ref
 
 type context =
 {
@@ -23,7 +23,7 @@ type context =
   imports : func_type list;
   locals : value_type list;
   return : expr_type;
-  labels : expr_type_guess list;
+  labels : expr_type_future list;
   has_memory : bool
 }
 
@@ -42,15 +42,15 @@ let label c x = lookup "label" c.labels x
 
 let string_of_guess = function
   | `Known et -> string_of_expr_type et
-  | `Unknown -> "<value_type>"
+  | `SomeUnknown -> "<value_type>"
 
 let check_type actual expected at =
-  if !expected = `Unknown && actual <> None then expected := `Known actual;
+  if !expected = `SomeUnknown && actual <> None then expected := `Known actual;
   require (!expected = `Known actual) at
     ("type mismatch: expression has type " ^ string_of_expr_type actual ^
      " but the context requires " ^ string_of_guess !expected)
 
-let unknown () = ref `Unknown
+let some_unknown () = ref `SomeUnknown
 let known et = ref (`Known et)
 let none = known None
 let some t = known (Some t)
@@ -132,7 +132,7 @@ let rec check_expr c et e =
     ()
 
   | Drop e ->
-    check_expr c (unknown ()) e
+    check_expr c (some_unknown ()) e
 
   | Block (es, e) ->
     let c' = {c with labels = et :: c.labels} in
