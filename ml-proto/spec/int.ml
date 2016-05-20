@@ -103,6 +103,8 @@ struct
   let to_bits x = x
 
   let zero = Rep.zero
+  let ten = Rep.of_int 10
+  let max_upper, max_lower = divrem_u Rep.minus_one ten
 
   (* add, sub, and mul are sign-agnostic and do not trap on overflow. *)
   let add = Rep.add
@@ -208,54 +210,48 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
+  let parse_hexdigit c =
+    int_of_char c -
+      if '0' <= c && '9' >= c then 0x30
+      else if 'a' <= c && 'f' >= c then 0x61 - 10
+      else if 'A' <= c && 'F' >= c then 0x41 - 10
+      else failwith "unexpected digit"
+
+  let neg_safe x =
+    if lt_s (sub x Rep.one) Rep.minus_one then raise Numerics.IntegerOverflow;
+    Rep.neg x
+
   (* This implementation allows leading signs and unsigned values *)
   let of_string x =
+    let open Rep in
     let len = String.length x in
-    let power_of_two n = Rep.shift_left Rep.one n in
-    let ten = Rep.of_int 10 in
-    let fail () = failwith "int_of_string" in
-    let parse_hexdigit c =
-      int_of_char c -
-        if '0' <= c && '9' >= c then 0x30
-        else if 'a' <= c && 'f' >= c then 0x61 - 10
-        else if 'A' <= c && 'F' >= c then 0x41 - 10
-        else fail ()
+    let require b = if not b then failwith "of_int" in
+    let rec parse_hex i num =
+      if i = len then num
+      else begin
+        require (le_u num (shr_u minus_one (of_int 4)));
+        parse_hex (i + 1) (logor (shift_left num 4) (of_int (parse_hexdigit x.[i])))
+      end
     in
-    let parse_hex offset sign =
-      let num = ref Rep.zero in
-      for i = offset to len - 1 do
-        if ge_u !num (power_of_two (Rep.bitwidth - 4)) then fail ();
-        num := Rep.logor (Rep.shift_left !num 4) (Rep.of_int (parse_hexdigit x.[i]));
-      done;
-      if sign && gt_u !num (power_of_two (Rep.bitwidth - 1)) then fail ();
-      !num
+    let rec parse_dec i num =
+      if i = len then num
+      else begin
+        require ('0' <= x.[i] && '9' >= x.[i]);
+        let new_digit = of_int (int_of_char x.[i] - 0x30) in
+        require (le_u num max_upper && (num <> max_upper || le_u new_digit max_lower));
+        parse_dec (i + 1) (add (mul num ten) new_digit)
+      end
     in
-    let parse_dec offset sign =
-      let max_upper, max_lower =
-        if sign then
-          divrem_u (power_of_two (Rep.bitwidth - 1)) ten
-        else
-          divrem_u Rep.minus_one ten
-      in
-      let num = ref Rep.zero in
-      for i = offset to len - 1 do
-        if '0' > x.[i] || '9' < x.[i] then fail ();
-        let new_digit = Rep.of_int (int_of_char x.[i] - 0x30) in
-        if gt_u !num max_upper || (!num = max_upper && gt_u new_digit max_lower) then fail ();
-        num := Rep.add (Rep.mul !num ten) new_digit
-      done;
-      !num
-    in
-    let parse_int offset sign =
-      if offset + 3 <= len && String.sub x offset 2 = "0x" then
-        parse_hex (offset + 2) sign
+    let parse_int i =
+      if i + 3 <= len && x.[i] = '0' && x.[i + 1] = 'x' then
+        parse_hex (i + 2) zero
       else
-        parse_dec offset sign
+        parse_dec i zero
     in
     match x.[0] with
-      | '+' -> parse_int 1 false
-      | '-' -> Rep.neg (parse_int 1 true)
-      | _ -> parse_int 0 false
+      | '+' -> parse_int 1
+      | '-' -> neg_safe (parse_int 1)
+      | _ -> parse_int 0
 
   let to_string = Rep.to_string
 
