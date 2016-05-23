@@ -40,7 +40,7 @@ let label c x = lookup "label" c.labels x
 
 (* Type Unification *)
 
-let string_of_guess = function
+let string_of_future = function
   | `Known et -> string_of_expr_type et
   | `SomeUnknown -> "<value_type>"
 
@@ -48,7 +48,7 @@ let check_type actual expected at =
   if !expected = `SomeUnknown && actual <> None then expected := `Known actual;
   require (!expected = `Known actual) at
     ("type mismatch: expression has type " ^ string_of_expr_type actual ^
-     " but the context requires " ^ string_of_guess !expected)
+     " but the context requires " ^ string_of_future !expected)
 
 let some_unknown () = ref `SomeUnknown
 let known et = ref (`Known et)
@@ -112,7 +112,7 @@ let type_hostop = function
 (* Type Analysis *)
 
 (*
- * check_expr : context -> expr_type_guess -> expr -> unit
+ * check_expr : context -> expr_type_future -> expr -> unit
  *
  * Conventions:
  *   c  : context
@@ -120,7 +120,7 @@ let type_hostop = function
  *   eo : expr option
  *   v  : value
  *   t  : value_type
- *   et : expr_type_guess
+ *   et : expr_type_future
  *)
 
 let rec check_expr c et e =
