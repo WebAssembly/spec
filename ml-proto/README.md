@@ -141,15 +141,16 @@ expr:
   ( current_memory )
   ( grow_memory <expr> )
 
-func:   ( func <name>? <type>? <param>* <result>? <local>* <expr>* )
-type:   ( type <var> )
+func:   ( func <name>? <sig> <local>* <expr>* )
+        ( func <string> <name>? <sig> <local>* <expr>* )  ;; = (export <string> <N>) (func <name>? <sig> <local>* <expr>*)
+sig:    ( type <var> ) | <param>* <result>?
 param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type> )
 local:  ( local <type>* ) | ( local <name> <type> )
 
-module:  ( module <type>* <func>* <import>* <export>* <table>* <memory>? <start>? ) | (module <string>+)
-type:    ( type <name>? ( func <param>* <result>? ) )
-import:  ( import <name>? <string> <string> (param <type>* ) (result <type>)* )
+module:  ( module <typedef>* <func>* <import>* <export>* <table>* <memory>? <start>? ) | (module <string>+)
+typedef: ( type <name>? ( func <param>* <result>? ) )
+import:  ( import <name>? <string> <string> <sig> )
 export:  ( export <string> <var> ) | ( export <string> memory)
 start:   ( start <var> )
 table:   ( table <var>* )
