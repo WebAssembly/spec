@@ -285,6 +285,10 @@
   "unknown label"
 )
 (assert_invalid
+  (module (func $negative-label (br_if -1 (i32.const 1))))
+  "unknown label"
+)
+(assert_invalid
   (module (func $large-label (br_if 0x100000001 (i32.const 1))))
   "unknown label"
 )

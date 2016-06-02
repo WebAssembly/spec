@@ -26,7 +26,7 @@ type context =
 }
 
 let lookup category list x =
-  try List.nth list x.it with Failure _ ->
+  try List.nth list x.it with Failure _ | Invalid_argument _ ->
     error x.at ("unknown " ^ category ^ " " ^ string_of_int x.it)
 
 let type_ types x = lookup "function type" types x
@@ -225,9 +225,9 @@ let rec check_expr c et e =
     check_type out et e.at
 
 and check_exprs c ts es at =
+  require (List.length ts = List.length es) at "arity mismatch";
   let ets = List.map (fun x -> Some x) ts in
-  try List.iter2 (check_expr c) ets es
-  with Invalid_argument _ -> error at "arity mismatch"
+  List.iter2 (check_expr c) ets es
 
 and check_expr_opt c et eo at =
   match eo with

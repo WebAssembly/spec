@@ -3,6 +3,8 @@
 (module
   (func $dummy)
 
+  ;; Typing of result
+
   (func "empty")
   (func "value-void" (call $dummy))
   (func "value-drop" (i32.const 1))
@@ -23,7 +25,9 @@
   (func "return-f64" (result f64) (return (f64.const 78.78)))
   (func "return-block-void" (return (block (i32.const 1) (call $dummy))))
   (func "return-block-drop" (return (block (call $dummy) (i32.const 1))))
-  (func "return-block-i32" (result i32) (return (block (call $dummy) (i32.const 77))))
+  (func "return-block-i32" (result i32)
+    (return (block (call $dummy) (i32.const 77)))
+  )
 
   (func "break-nullary" (br 0))
   (func "break-void" (br 0 (call $dummy)))
@@ -34,7 +38,40 @@
   (func "break-f64" (result f64) (br 0 (f64.const 79.79)))
   (func "break-block-void" (br 0 (block (i32.const 1) (call $dummy))))
   (func "break-block-drop" (br 0 (block (call $dummy) (i32.const 1))))
-  (func "break-block-i32" (result i32) (br 0 (block (call $dummy) (i32.const 77))))
+  (func "break-block-i32" (result i32)
+    (br 0 (block (call $dummy) (i32.const 77)))
+  )
+
+  (func "break-br_if-nullary" (param i32)
+    (br_if 0 (get_local 0))
+  )
+  (func "break-br_if-void" (param i32)
+    (br_if 0 (call $dummy) (get_local 0))
+  )
+  (func "break-br_if-num" (param i32) (result i32)
+    (br_if 0 (i32.const 50) (get_local 0)) (i32.const 51)
+  )
+
+  (func "break-br_table-nullary" (param i32)
+    (br_table 0 0 0 (get_local 0))
+  )
+  (func "break-br_table-void" (param i32)
+    (br_table 0 0 (call $dummy) (get_local 0))
+  )
+  (func "break-br_table-num" (param i32) (result i32)
+    (br_table 0 0 (i32.const 50) (get_local 0)) (i32.const 51)
+  )
+  (func "break-br_table-nested-nullary" (param i32)
+    (block (br_table 0 1 0 (get_local 0)))
+  )
+  (func "break-br_table-nested-num" (param i32) (result i32)
+    (i32.add
+      (block (br_table 0 1 0 (i32.const 50) (get_local 0)) (i32.const 51))
+      (i32.const 2)
+    )
+  )
+
+  ;; Typing of parameters
 
   (func "param-first-i32" (param i32 i32) (result i32) (get_local 0))
   (func "param-first-i64" (param i64 i64) (result i64) (get_local 0))
@@ -44,9 +81,9 @@
   (func "param-second-i64" (param i64 i64) (result i64) (get_local 1))
   (func "param-second-f32" (param f32 f32) (result f32) (get_local 1))
   (func "param-second-f64" (param f64 f64) (result f64) (get_local 1))
-  (func "param-mixed" (param f32 i32 i64 i32 f64 i32) (result f64) (get_local 4))
-
-  ;; TODO: param typing, call, call typing, recursion, mutual recursion
+  (func "param-mixed" (param f32 i32 i64 i32 f64 i32) (result f64)
+    (get_local 4)
+  )
 )
 
 (assert_return (invoke "empty"))
@@ -82,21 +119,77 @@
 (assert_return (invoke "break-block-drop"))
 (assert_return (invoke "break-block-i32") (i32.const 77))
 
-(assert_return (invoke "param-first-i32" (i32.const 2) (i32.const 3)) (i32.const 2))
-(assert_return (invoke "param-first-i64" (i64.const 2) (i64.const 3)) (i64.const 2))
-(assert_return (invoke "param-first-f32" (f32.const 2) (f32.const 3)) (f32.const 2))
-(assert_return (invoke "param-first-f64" (f64.const 2) (f64.const 3)) (f64.const 2))
-(assert_return (invoke "param-second-i32" (i32.const 2) (i32.const 3)) (i32.const 3))
-(assert_return (invoke "param-second-i64" (i64.const 2) (i64.const 3)) (i64.const 3))
-(assert_return (invoke "param-second-f32" (f32.const 2) (f32.const 3)) (f32.const 3))
-(assert_return (invoke "param-second-f64" (f64.const 2) (f64.const 3)) (f64.const 3))
+(assert_return
+  (invoke "param-first-i32" (i32.const 2) (i32.const 3)) (i32.const 2)
+)
+(assert_return
+  (invoke "param-first-i64" (i64.const 2) (i64.const 3)) (i64.const 2)
+)
+(assert_return
+  (invoke "param-first-f32" (f32.const 2) (f32.const 3)) (f32.const 2)
+)
+(assert_return
+  (invoke "param-first-f64" (f64.const 2) (f64.const 3)) (f64.const 2)
+)
+(assert_return
+  (invoke "param-second-i32" (i32.const 2) (i32.const 3)) (i32.const 3)
+)
+(assert_return
+  (invoke "param-second-i64" (i64.const 2) (i64.const 3)) (i64.const 3)
+)
+(assert_return
+  (invoke "param-second-f32" (f32.const 2) (f32.const 3)) (f32.const 3)
+)
+(assert_return
+  (invoke "param-second-f64" (f64.const 2) (f64.const 3)) (f64.const 3)
+)
 
 (assert_return
   (invoke "param-mixed"
-    (f32.const 1) (i32.const 2) (i64.const 3) (i32.const 4) (f64.const 5.5) (i32.const 6)
+    (f32.const 1) (i32.const 2) (i64.const 3)
+    (i32.const 4) (f64.const 5.5) (i32.const 6)
   )
   (f64.const 5.5)
 )
+
+(assert_return (invoke "break-br_if-nullary" (i32.const 0)))
+(assert_return (invoke "break-br_if-nullary" (i32.const 2)))
+(assert_return (invoke "break-br_if-void" (i32.const 0)))
+(assert_return (invoke "break-br_if-void" (i32.const -1)))
+(assert_return (invoke "break-br_if-num" (i32.const 0)) (i32.const 51))
+(assert_return (invoke "break-br_if-num" (i32.const 1)) (i32.const 50))
+
+(assert_return (invoke "break-br_table-nullary" (i32.const 0)))
+(assert_return (invoke "break-br_table-nullary" (i32.const 1)))
+(assert_return (invoke "break-br_table-nullary" (i32.const 5)))
+(assert_return (invoke "break-br_table-nullary" (i32.const -1)))
+(assert_return (invoke "break-br_table-void" (i32.const 0)))
+(assert_return (invoke "break-br_table-void" (i32.const 1)))
+(assert_return (invoke "break-br_table-void" (i32.const 2)))
+(assert_return (invoke "break-br_table-void" (i32.const -100)))
+(assert_return (invoke "break-br_table-num" (i32.const 0)) (i32.const 50))
+(assert_return (invoke "break-br_table-num" (i32.const 1)) (i32.const 50))
+(assert_return (invoke "break-br_table-num" (i32.const 10)) (i32.const 50))
+(assert_return (invoke "break-br_table-num" (i32.const -100)) (i32.const 50))
+(assert_return (invoke "break-br_table-nested-nullary" (i32.const 0)))
+(assert_return (invoke "break-br_table-nested-nullary" (i32.const 1)))
+(assert_return (invoke "break-br_table-nested-nullary" (i32.const 3)))
+(assert_return (invoke "break-br_table-nested-nullary" (i32.const -2)))
+(assert_return
+  (invoke "break-br_table-nested-num" (i32.const 0)) (i32.const 52)
+)
+(assert_return
+  (invoke "break-br_table-nested-num" (i32.const 1)) (i32.const 50)
+)
+(assert_return
+  (invoke "break-br_table-nested-num" (i32.const 2)) (i32.const 52)
+)
+(assert_return
+  (invoke "break-br_table-nested-num" (i32.const -3)) (i32.const 52)
+)
+
+
+;; Invalid typing of result
 
 (assert_invalid
   (module (func $type-empty-i32 (result i32)))
@@ -227,3 +320,18 @@
   "type mismatch"
 )
 
+
+;; Invalid typing of parameters
+
+(assert_invalid
+  (module (func $type-param-num-vs-num (param i32) (result i64) (get_local 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-param-num-vs-num (param f32) (i32.eqz (get_local 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-param-num-vs-num (param f64 i64) (f64.neg (get_local 1))))
+  "type mismatch"
+)

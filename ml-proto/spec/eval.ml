@@ -65,7 +65,7 @@ type config =
 }
 
 let lookup category list x =
-  try List.nth list x.it with Failure _ ->
+  try List.nth list x.it with Failure _ | Invalid_argument _ ->
     Crash.error x.at ("undefined " ^ category ^ " " ^ string_of_int x.it)
 
 let type_ c x = lookup "type" c.instance.module_.it.types x
