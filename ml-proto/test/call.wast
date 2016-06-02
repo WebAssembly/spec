@@ -1,6 +1,7 @@
 ;; Test `call` operator
 
 (module
+  ;; Auxiliary definitions
   (func $const-i32 (result i32) (i32.const 0x132))
   (func $const-i64 (result i64) (i64.const 0x164))
   (func $const-f32 (result f32) (f32.const 0xf32))
