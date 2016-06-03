@@ -141,6 +141,10 @@
 )
 
 (assert_invalid
+  (module (func $type-local-arg-void-vs-num (local i32) (set_local 0 (nop))))
+  "type mismatch"
+)
+(assert_invalid
   (module (func $type-local-arg-num-vs-num (local i32) (set_local 0 (f32.const 0))))
   "type mismatch"
 )
@@ -169,6 +173,10 @@
   "type mismatch"
 )
 
+(assert_invalid
+  (module (func $type-param-arg-void-vs-num (param i32) (set_local 0 (nop))))
+  "type mismatch"
+)
 (assert_invalid
   (module (func $type-param-arg-num-vs-num (param i32) (set_local 0 (f32.const 0))))
   "type mismatch"
