@@ -46,6 +46,10 @@
   (func "type-f32" (result f32) (call_indirect $out-f32 (i32.const 2)))
   (func "type-f64" (result f64) (call_indirect $out-f64 (i32.const 3)))
 
+  (func "type-index" (result i64)
+    (call_indirect $over-i64 (i32.const 5) (i64.const 100))
+  )
+
   (func "type-first-i32" (result i32)
     (call_indirect $over-i32 (i32.const 4) (i32.const 32))
   )
@@ -72,7 +76,11 @@
     (call_indirect $i64-f64 (i32.const 11) (i64.const 64) (f64.const 64.1))
   )
 
-  ;; TODO: Dispatch, traps
+  ;; Dispatch
+
+  (func "dispatch" (param i32 i64) (result i64)
+    (call_indirect $over-i64 (get_local 0) (get_local 1))
+  )
 
   ;; Recursion
 
@@ -139,6 +147,8 @@
 (assert_return (invoke "type-f32") (f32.const 0xf32))
 (assert_return (invoke "type-f64") (f64.const 0xf64))
 
+(assert_return (invoke "type-index") (i64.const 100))
+
 (assert_return (invoke "type-first-i32") (i32.const 32))
 (assert_return (invoke "type-first-i64") (i64.const 64))
 (assert_return (invoke "type-first-f32") (f32.const 1.32))
@@ -148,6 +158,16 @@
 (assert_return (invoke "type-second-i64") (i64.const 64))
 (assert_return (invoke "type-second-f32") (f32.const 32))
 (assert_return (invoke "type-second-f64") (f64.const 64.1))
+
+(assert_return (invoke "dispatch" (i32.const 5) (i64.const 2)) (i64.const 2))
+(assert_return (invoke "dispatch" (i32.const 5) (i64.const 5)) (i64.const 5))
+(assert_return (invoke "dispatch" (i32.const 12) (i64.const 5)) (i64.const 120))
+(assert_return (invoke "dispatch" (i32.const 13) (i64.const 5)) (i64.const 8))
+(assert_trap (invoke "dispatch" (i32.const 0) (i64.const 2)) "indirect call signature mismatch")
+(assert_trap (invoke "dispatch" (i32.const 15) (i64.const 2)) "indirect call signature mismatch")
+(assert_trap (invoke "dispatch" (i32.const 20) (i64.const 2)) "undefined table index")
+(assert_trap (invoke "dispatch" (i32.const -1) (i64.const 2)) "undefined table index")
+(assert_trap (invoke "dispatch" (i32.const 1213432423) (i64.const 2)) "undefined table index")
 
 (assert_return (invoke "fac" (i64.const 0)) (i64.const 1))
 (assert_return (invoke "fac" (i64.const 1)) (i64.const 1))

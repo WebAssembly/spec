@@ -1,7 +1,22 @@
 ;; Test `func` declarations, i.e. functions
 
 (module
+  ;; Auxiliary definition
   (func $dummy)
+
+  ;; Typing of parameters
+
+  (func "param-first-i32" (param i32 i32) (result i32) (get_local 0))
+  (func "param-first-i64" (param i64 i64) (result i64) (get_local 0))
+  (func "param-first-f32" (param f32 f32) (result f32) (get_local 0))
+  (func "param-first-f64" (param i64 i64) (result i64) (get_local 0))
+  (func "param-second-i32" (param i32 i32) (result i32) (get_local 1))
+  (func "param-second-i64" (param i64 i64) (result i64) (get_local 1))
+  (func "param-second-f32" (param f32 f32) (result f32) (get_local 1))
+  (func "param-second-f64" (param f64 f64) (result f64) (get_local 1))
+  (func "param-mixed" (param f32 i32 i64 i32 f64 i32) (result f64)
+    (get_local 4)
+  )
 
   ;; Typing of result
 
@@ -70,20 +85,39 @@
       (i32.const 2)
     )
   )
+)
 
-  ;; Typing of parameters
+(assert_return
+  (invoke "param-first-i32" (i32.const 2) (i32.const 3)) (i32.const 2)
+)
+(assert_return
+  (invoke "param-first-i64" (i64.const 2) (i64.const 3)) (i64.const 2)
+)
+(assert_return
+  (invoke "param-first-f32" (f32.const 2) (f32.const 3)) (f32.const 2)
+)
+(assert_return
+  (invoke "param-first-f64" (f64.const 2) (f64.const 3)) (f64.const 2)
+)
+(assert_return
+  (invoke "param-second-i32" (i32.const 2) (i32.const 3)) (i32.const 3)
+)
+(assert_return
+  (invoke "param-second-i64" (i64.const 2) (i64.const 3)) (i64.const 3)
+)
+(assert_return
+  (invoke "param-second-f32" (f32.const 2) (f32.const 3)) (f32.const 3)
+)
+(assert_return
+  (invoke "param-second-f64" (f64.const 2) (f64.const 3)) (f64.const 3)
+)
 
-  (func "param-first-i32" (param i32 i32) (result i32) (get_local 0))
-  (func "param-first-i64" (param i64 i64) (result i64) (get_local 0))
-  (func "param-first-f32" (param f32 f32) (result f32) (get_local 0))
-  (func "param-first-f64" (param i64 i64) (result i64) (get_local 0))
-  (func "param-second-i32" (param i32 i32) (result i32) (get_local 1))
-  (func "param-second-i64" (param i64 i64) (result i64) (get_local 1))
-  (func "param-second-f32" (param f32 f32) (result f32) (get_local 1))
-  (func "param-second-f64" (param f64 f64) (result f64) (get_local 1))
-  (func "param-mixed" (param f32 i32 i64 i32 f64 i32) (result f64)
-    (get_local 4)
+(assert_return
+  (invoke "param-mixed"
+    (f32.const 1) (i32.const 2) (i64.const 3)
+    (i32.const 4) (f64.const 5.5) (i32.const 6)
   )
+  (f64.const 5.5)
 )
 
 (assert_return (invoke "empty"))
@@ -119,39 +153,6 @@
 (assert_return (invoke "break-block-drop"))
 (assert_return (invoke "break-block-i32") (i32.const 77))
 
-(assert_return
-  (invoke "param-first-i32" (i32.const 2) (i32.const 3)) (i32.const 2)
-)
-(assert_return
-  (invoke "param-first-i64" (i64.const 2) (i64.const 3)) (i64.const 2)
-)
-(assert_return
-  (invoke "param-first-f32" (f32.const 2) (f32.const 3)) (f32.const 2)
-)
-(assert_return
-  (invoke "param-first-f64" (f64.const 2) (f64.const 3)) (f64.const 2)
-)
-(assert_return
-  (invoke "param-second-i32" (i32.const 2) (i32.const 3)) (i32.const 3)
-)
-(assert_return
-  (invoke "param-second-i64" (i64.const 2) (i64.const 3)) (i64.const 3)
-)
-(assert_return
-  (invoke "param-second-f32" (f32.const 2) (f32.const 3)) (f32.const 3)
-)
-(assert_return
-  (invoke "param-second-f64" (f64.const 2) (f64.const 3)) (f64.const 3)
-)
-
-(assert_return
-  (invoke "param-mixed"
-    (f32.const 1) (i32.const 2) (i64.const 3)
-    (i32.const 4) (f64.const 5.5) (i32.const 6)
-  )
-  (f64.const 5.5)
-)
-
 (assert_return (invoke "break-br_if-nullary" (i32.const 0)))
 (assert_return (invoke "break-br_if-nullary" (i32.const 2)))
 (assert_return (invoke "break-br_if-void" (i32.const 0)))
@@ -186,6 +187,22 @@
 )
 (assert_return
   (invoke "break-br_table-nested-num" (i32.const -3)) (i32.const 52)
+)
+
+
+;; Invalid typing of parameters
+
+(assert_invalid
+  (module (func $type-param-num-vs-num (param i32) (result i64) (get_local 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-param-num-vs-num (param f32) (i32.eqz (get_local 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-param-num-vs-num (param f64 i64) (f64.neg (get_local 1))))
+  "type mismatch"
 )
 
 
@@ -320,18 +337,3 @@
   "type mismatch"
 )
 
-
-;; Invalid typing of parameters
-
-(assert_invalid
-  (module (func $type-param-num-vs-num (param i32) (result i64) (get_local 0)))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-param-num-vs-num (param f32) (i32.eqz (get_local 0))))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-param-num-vs-num (param f64 i64) (f64.neg (get_local 1))))
-  "type mismatch"
-)
