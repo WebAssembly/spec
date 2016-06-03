@@ -329,10 +329,6 @@
   "unknown function type"
 )
 (assert_invalid
-  (module (func $negative-type (call_indirect -1 (i32.const 0))))
-  "unknown function type"
-)
-(assert_invalid
   (module (func $large-type (call_indirect 10001232130000 (i32.const 0))))
   "unknown function type"
 )

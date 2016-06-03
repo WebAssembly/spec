@@ -250,10 +250,6 @@
   "unknown function"
 )
 (assert_invalid
-  (module (func $negative-func (call -1)))
-  "unknown function"
-)
-(assert_invalid
   (module (func $large-func (call 10001232130000)))
   "unknown function"
 )

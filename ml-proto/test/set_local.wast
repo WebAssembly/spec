@@ -190,10 +190,6 @@
   "unknown local"
 )
 (assert_invalid
-  (module (func $negative-local (local i32 i64) (get_local -1)))
-  "unknown local"
-)
-(assert_invalid
   (module (func $large-local (local i32 i64) (get_local 14324343)))
   "unknown local"
 )
@@ -203,20 +199,12 @@
   "unknown local"
 )
 (assert_invalid
-  (module (func $negative-param (param i32 i64) (get_local -2)))
-  "unknown local"
-)
-(assert_invalid
   (module (func $large-param (local i32 i64) (get_local 714324343)))
   "unknown local"
 )
 
 (assert_invalid
   (module (func $unbound-mixed (param i32) (local i32 i64) (get_local 3)))
-  "unknown local"
-)
-(assert_invalid
-  (module (func $negative-mixed (param f32 f64) (local i32 i64) (get_local -1)))
   "unknown local"
 )
 (assert_invalid
