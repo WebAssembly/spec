@@ -2,6 +2,7 @@
 
 (module
   ;; Auxiliary definition
+  (type $sig (func))
   (func $dummy)
 
   ;; Syntax
@@ -27,12 +28,20 @@
 
   (func (result i32) (unreachable))
 
-  (func
+  (func (type $sig))
+
+  (func $complex
     (param i32 f32) (param $x i64) (param) (param i32)
     (result i32)
     (local f32) (local $y i32) (local i64 i32) (local) (local f64 i32)
     (unreachable) (unreachable)
   )
+  (func $complex-sig
+    (type $sig)
+    (local f32) (local $y i32) (local i64 i32) (local) (local f64 i32)
+    (unreachable) (unreachable)
+  )
+
 
   ;; Typing of locals
 
