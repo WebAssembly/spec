@@ -80,7 +80,8 @@ and expr' at = function
   | Ast.Call_indirect (x, e, es) -> CallIndirect (x, expr e, List.map expr es)
 
   | Ast.Get_local x -> GetLocal x
-  | Ast.Set_local (x, e) -> SetLocal (x, expr e)
+  | Ast.Set_local (x, e) -> Drop (SetLocal (x, expr e) @@ at)
+  | Ast.Tee_local (x, e) -> SetLocal (x, expr e)
 
   | Ast.I32_load (offset, align, e) ->
     Load ({ty = Int32Type; offset; align}, expr e)

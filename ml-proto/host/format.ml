@@ -200,7 +200,7 @@ let rec expr e =
     | CallImport (x, es) -> "call_import " ^ var x, list expr es
     | CallIndirect (x, e, es) -> "call_indirect " ^ var x, list expr (e::es)
     | GetLocal x -> "get_local " ^ var x, []
-    | SetLocal (x, e) -> "set_local " ^ var x, [expr e]
+    | SetLocal (x, e) -> "tee_local " ^ var x, [expr e]
     | Load (op, e) -> memop "load" op, [expr e]
     | Store (op, e1, e2) -> memop "store" op, [expr e1; expr e2]
     | LoadExtend (op, e) -> extop op, [expr e]

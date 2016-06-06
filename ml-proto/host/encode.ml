@@ -125,6 +125,7 @@ let encode m =
 
       | Ast.Get_local x -> op 0x0e; var x
       | Ast.Set_local (x, e) -> unary e 0x0f; var x
+      | Ast.Tee_local (x, e) -> unary e 0x10; var x
 
       | Ast.Call (x, es) -> nary es 0x12; var x
       | Ast.Call_import (x, es) -> nary es 0x1f; var x

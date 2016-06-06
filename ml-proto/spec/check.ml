@@ -132,7 +132,8 @@ let rec check_expr c et e =
     ()
 
   | Drop e ->
-    check_expr c (some_unknown ()) e
+    check_expr c (some_unknown ()) e;
+    check_type None et e.at
 
   | Block (es, e) ->
     let c' = {c with labels = et :: c.labels} in
@@ -187,7 +188,7 @@ let rec check_expr c et e =
 
   | SetLocal (x, e1) ->
     check_expr c (some (local c x)) e1;
-    check_type None et e.at
+    check_type (Some (local c x)) et e.at
 
   | Load (memop, e1) ->
     check_load c et memop e1 e.at

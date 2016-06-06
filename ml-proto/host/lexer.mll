@@ -157,6 +157,7 @@ rule token = parse
 
   | "get_local" { GET_LOCAL }
   | "set_local" { SET_LOCAL }
+  | "tee_local" { TEE_LOCAL }
 
   | (nxx as t)".load"
     { LOAD (fun (o, a, e) ->

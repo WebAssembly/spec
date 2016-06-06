@@ -219,8 +219,11 @@ let rec expr stack s =
   | 0x0f, e :: es ->
     let x = at var s in
     Set_local (x, e), es
+  | 0x10, e :: es ->
+    let x = at var s in
+    Tee_local (x, e), es
 
-  | 0x10 | 0x11 as b, _ -> illegal s pos b
+  | 0x11 as b, _ -> illegal s pos b
 
   | 0x12, es ->
     let n = arity s in

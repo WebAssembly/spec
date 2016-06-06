@@ -29,6 +29,7 @@ and expr' =
   (* Locals *)
   | Get_local of var
   | Set_local of var * expr
+  | Tee_local of var * expr
 
   (* Memory access *)
   | I32_load of Memory.offset * int * expr
