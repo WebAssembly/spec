@@ -49,7 +49,7 @@ contexts, it's common to use these names for exactly opposite purposes.
 To perform a pop from the type stack:
  - If the type stack's size is less than the control flow stack's top's depth
    value, return `void`.
- - Otherwise pop a valid from the type stack and return that.
+ - Otherwise pop a type from the type stack and return that.
 
 #### Control Flow Stack Type Merge
 
