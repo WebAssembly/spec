@@ -11,13 +11,171 @@
 
 ## Module
 
-TODO: describe the contents of a module
+0. [Module Types](#module-types)
+0. [Module Contents](#module-contents)
 
-### Positions within a function body
+### Module Types
 
-Function bodies contain a sequence of instructions. A *position* within a
-function refers to an element of the sequence, or to an additional
-*return position* which is sequenced after the end of the function body.
+These types describe various data structures present in WebAssembly modules:
+
+0. [Index](#index)
+0. [Array](#array)
+0. [String](#string)
+
+> These types are not used to describe values at runtime.
+
+#### Index
+
+An *index* is an `i32` value which is interpreted as an unsigned integer.
+
+#### Array
+
+An *array* is an [index] indicating a number of elements, plus a sequence of
+that many elements.
+
+#### String
+
+A *string* is an [array] of bytes.
+
+> Strings in this context may contain arbitrary bytes and are not required to be
+valid UTF-8 or any other format.
+
+### Module Contents
+
+Modules contain a version [index]. Currently this number is `0xb`. The initial
+stable release of wasm will set it to `0x0`.
+
+Modues also contain a sequence of sections. Each section has a [string] *name*
+and associated data.
+
+There are several *known sections*:
+
+0. [Type Section](#type-section)
+0. [Import Section](#import-section)
+0. [Function Section](#function-section)
+0. [Table Section](#table-section)
+0. [Memory Section](#memory-section)
+0. [Export Section](#export-section)
+0. [Start Section](#start-section)
+0. [Code Section](#code-section)
+0. [Data Section](#data-section)
+0. [Name Section](#name-section)
+
+#### Type Section
+
+**Name**: `type`.
+
+The Type Section contains an [array] of all function signatures that will be used
+in the module.
+
+Each function signature contains a *parameter list*, an [array] of
+[types](#types), and a *return list*, also an [array] of [types](#types).
+
+> In the future, this section may contain other forms of type entries as well.
+
+#### Import Section
+
+**Name**: `import`
+
+The Import Section contains an [array] of all imports that will be used in the
+module.
+
+Each import contains:
+ - a *signature index*, identifying a signature in the
+   [Type Section](#type-section).
+ - a *module string*, identifying a module to import from.
+ - a *function string*, identifying a function inside that module to import.
+
+#### Function Section
+
+**Name**: `function`
+
+The Function Section contains an [array] with elements directly corresponding to
+functions defined in the [Code Section](#code-section)), each containing the
+index in the [Type Section](#type-section) of the signature of the function.
+
+#### Memory Section
+
+**Name**: `memory`
+
+The Memory Section contains:
+ - An *initial size*, which is an unsigned `iPTR` value, in units of [pages].
+ - A *maximum size*, which is an unsigned `iPTR` value, in units of [pages]. See
+   the [`grow_memory`](#grow-memory) instruction for further information on this
+   field.
+ - An *exported* flag, which is a boolean indicating whether the memory is
+   visible outside the module.
+
+#### Export Section
+
+**Name**: `export`
+
+The Export Section contains an [array] of exports from the module.
+
+An export contains:
+ - the [index] of a function to export
+ - a *function string*, which is the [string] name to export the indexed
+   function as.
+
+#### Start Section
+
+**Name**: `start`
+
+The Start Section contains a function [index]. See
+[Module Execution](#module-execution) for further information.
+
+#### Code Section
+
+**Name**: `code`
+
+The Code Section contains an [array] of [function bodies](#function-bodies).
+
+#### Data Section
+
+**Name**: `data`
+
+The Data Section contains an [array] of [string] and offset pairs before
+[Execution](#execution).
+
+#### Name Section
+
+**Name**: `name`
+
+The Names Section does not change execution semantics and a validation error in
+this section does not cause validation for the whole module to fail and is
+instead treated as if the section was absent.
+
+The Names Section contains an [array] of function name descriptors, which each
+describe names for the function with the corresponding index in the module, and
+which contain:
+ - The function name, a [string].
+ - The names of the locals in the function, an [array] of [strings].
+
+> Name data is represented as an explicit section in the binary format, however
+in the text format it may be represented as an integrated part of the syntax for
+functions rather than as a discrete section.
+
+> The expectation is that, when a binary WebAssembly module is viewed in a
+browser or other development environment, the names in this section will be used
+as the names of functions and locals in the [text format](TextFormat.md).
+
+### Unknown Sections
+
+Modules may also contain unknown sections, with names other than those
+corresponding to known sections above. They have no semantic effect.
+
+### Function Bodies
+
+Function bodies contain an [array] of types, which are declarations for locals,
+and a sequence of instructions.
+
+##### Positions within a function body
+
+A *position* within a function refers to an element of the sequence, or to an
+additional *return position* which is sequenced after the end of the function body.
+
+> In the binary encoding, positions are represented as byte offsets; in the text
+format, positions are represented with a special syntax.
 
 
 ## Validation
@@ -37,8 +195,8 @@ are created:
  - A *type stack*.
  - A *current position*.
 
-During validation, if either stack is empty when an element is to be popped
-from it, validation fails.
+During validation, if either stack is empty when an element is to be popped from
+it, validation fails.
 
 > `any` is effectively serving as a kind of bottom type, and `void` is
 effectively serving as a kind of top type. Note that in some type theory
@@ -98,10 +256,13 @@ successful.
 Before any code in a module can be executed, the whole module must first be
 [validated](#validation).
 
+The contents of the [Data Section](#data-section) are loaded into linear
+memory. Each [string] is loaded into linear memory at its associated offset.
+
 ### Module Execution
 
-If the module contains a `start` declaration, the referenced function is
-[executed](#function-execution).
+If the module contains a [Start Section](#start-section), the referenced
+function is [executed](#function-execution).
 
 ### Function Execution
 
@@ -1691,3 +1852,7 @@ memory space, as an unsigned value in units of [pages].
 [accessed bytes]: #accessed-bytes
 [pop]: #type-stack-pop
 [merge]: #control-flow-stack-type-merge
+[index]: Index
+[array]: Array
+[string]: String
+[strings]: String
