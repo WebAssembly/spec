@@ -124,7 +124,7 @@ let implicit_decl c t at =
 
 %}
 
-%token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
+%token NAT INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
 %token NOP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
@@ -136,6 +136,7 @@ let implicit_decl c t at =
 %token INPUT OUTPUT
 %token EOF
 
+%token<string> NAT
 %token<string> INT
 %token<string> FLOAT
 %token<string> TEXT
@@ -190,12 +191,13 @@ func_type :
 /* Expressions */
 
 literal :
+  | NAT { $1 @@ at () }
   | INT { $1 @@ at () }
   | FLOAT { $1 @@ at () }
 ;
 
 var :
-  | INT { let at = at () in fun c lookup -> int_of_string $1 @@ at }
+  | NAT { let at = at () in fun c lookup -> int_of_string $1 @@ at }
   | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
 ;
 var_list :
@@ -348,7 +350,7 @@ start :
     { fun c -> $3 c func }
 
 segment :
-  | LPAR SEGMENT INT text_list RPAR
+  | LPAR SEGMENT NAT text_list RPAR
     { {Memory.addr = Int64.of_string $3; Memory.data = $4} @@ at () }
 ;
 segment_list :
@@ -357,10 +359,10 @@ segment_list :
 ;
 
 memory :
-  | LPAR MEMORY INT INT segment_list RPAR
+  | LPAR MEMORY NAT NAT segment_list RPAR
     { {min = Int64.of_string $3; max = Int64.of_string $4; segments = $5}
         @@ at () }
-  | LPAR MEMORY INT segment_list RPAR
+  | LPAR MEMORY NAT segment_list RPAR
     { {min = Int64.of_string $3; max = Int64.of_string $3; segments = $4}
         @@ at () }
 ;

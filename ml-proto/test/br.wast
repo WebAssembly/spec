@@ -362,4 +362,3 @@
   (module (func $large-label (br 0x100000001)))
   "unknown label"
 )
-
