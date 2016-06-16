@@ -6,6 +6,19 @@
   (func "type-f32" (result f64) (unreachable))
   (func "type-f64" (result f64) (unreachable))
 
+  (func "first" (result i32)
+    (unreachable) (i32.const -1)
+  )
+  (func "mid" (result i32)
+    (f32.const 1) (unreachable) (i32.const -1)
+  )
+  (func "last"
+    (i64.const 8) (unreachable)
+  )
+  (func "value" (result i32)
+    (i64.const 8) (unreachable)
+  )
+
   (func "block-first" (result i32)
     (block (unreachable) (i32.const 2))
   )
@@ -38,6 +51,7 @@
   (func "br-value" (result i32)
     (block (br 0 (unreachable)))
   )
+
   (func "br_if-cond"
     (block (br_if 0 (unreachable)))
   )
@@ -47,6 +61,7 @@
   (func "br_if-value-cond" (result i32)
     (block (br_if 0 (i32.const 6) (unreachable)) (i32.const 7))
   )
+
   (func "br_table-index"
     (block (br_table 0 0 0 (unreachable)))
   )
@@ -180,6 +195,11 @@
 (assert_trap (invoke "type-f32") "unreachable")
 (assert_trap (invoke "type-f64") "unreachable")
 
+(assert_trap (invoke "first") "unreachable")
+(assert_trap (invoke "mid") "unreachable")
+(assert_trap (invoke "last") "unreachable")
+(assert_trap (invoke "value") "unreachable")
+
 (assert_trap (invoke "block-first") "unreachable")
 (assert_trap (invoke "block-mid") "unreachable")
 (assert_trap (invoke "block-last") "unreachable")
@@ -201,6 +221,8 @@
 (assert_trap (invoke "br_table-value") "unreachable")
 (assert_trap (invoke "br_table-value-index") "unreachable")
 
+(assert_trap (invoke "return-value") "unreachable")
+
 (assert_trap (invoke "if-cond") "unreachable")
 (assert_trap (invoke "if-then" (i32.const 1) (i32.const 6)) "unreachable")
 (assert_return (invoke "if-then" (i32.const 0) (i32.const 6)) (i32.const 6))
@@ -212,8 +234,6 @@
 (assert_trap (invoke "select-second" (i32.const 0) (i32.const 6)) "unreachable")
 (assert_trap (invoke "select-second" (i32.const 1) (i32.const 6)) "unreachable")
 (assert_trap (invoke "select-cond") "unreachable")
-
-(assert_trap (invoke "return-value") "unreachable")
 
 (assert_trap (invoke "call-first") "unreachable")
 (assert_trap (invoke "call-mid") "unreachable")

@@ -46,43 +46,62 @@
     (f32.gt (block (call $nop) (f32.const 3)) (block (call $nop) (f32.const 3)))
   )
 
-  (func "br-bare" (result i32)
+  (func "break-bare" (result i32)
     (block (br 0) (unreachable))
+    (block (br_if 0 (i32.const 1)) (unreachable))
+    (block (br_table 0 (i32.const 0)) (unreachable))
+    (block (br_table 0 0 0 (i32.const 1)) (unreachable))
     (i32.const 19)
   )
-  (func "br-value" (result i32)
+  (func "break-value" (result i32)
     (block (br 0 (i32.const 18)) (i32.const 19))
   )
-  (func "br-repeated" (result i32)
+  (func "break-repeated" (result i32)
     (block
       (br 0 (i32.const 18))
       (br 0 (i32.const 19))
-      (br 0 (i32.const 20))
+      (br_if 0 (i32.const 20) (i32.const 0))
+      (br_if 0 (i32.const 20) (i32.const 1))
+      (br 0 (i32.const 21))
+      (br_table 0 (i32.const 22) (i32.const 4))
+      (br_table 0 0 0 (i32.const 23) (i32.const 1))
       (i32.const 21)
     )
   )
-  (func "br-inner" (result i32)
-    (block
-      (block (br 1 (i32.const 22)))
-      (block (br 0))
-      (i32.const 21)
-    )
+  (func "break-inner" (result i32)
+    (local i32)
+    (set_local 0 (i32.const 0))
+    (set_local 0 (i32.add (get_local 0) (block (block (br 1 (i32.const 0x1))))))
+    (set_local 0 (i32.add (get_local 0) (block (block (br 0)) (i32.const 0x2))))
+    (set_local 0 (i32.add (get_local 0) (block (i32.ctz (br 0 (i32.const 0x4))))))
+    (set_local 0 (i32.add (get_local 0) (block (i32.ctz (block (br 1 (i32.const 0x8)))))))
+    (get_local 0)
   )
 
-  (func "drop-inner" (result i32)
+  (func "drop-mid" (result i32)
     (block (call $fx) (i32.const 7) (call $nop) (i32.const 8))
   )
   (func "drop-last"
     (block (call $nop) (call $fx) (nop) (i32.const 8))
   )
-  (func "drop-br-void"
+  (func "drop-break-void"
     (block (br 0 (nop)))
     (block (br 0 (call $nop)))
+    (block (br_if 0 (nop) (i32.const 0)))
+    (block (br_if 0 (nop) (i32.const 1)))
+    (block (br_if 0 (call $nop) (i32.const 0)))
+    (block (br_if 0 (call $nop) (i32.const 1)))
+    (block (br_table 0 (nop) (i32.const 3)))
+    (block (br_table 0 0 0 (nop) (i32.const 2)))
   )
-  (func "drop-br-value"
-    (block (br 0 (i32.const 8)))
+  (func "drop-break-value"
+    (block (br 0 (i32.const 12)))
+    (block (br_if 0 (i32.const 11) (i32.const 0)))
+    (block (br_if 0 (i32.const 10) (i32.const 1)))
+    (block (br_table 0 (i32.const 9) (i32.const 5)))
+    (block (br_table 0 0 0 (i32.const 8) (i32.const 1)))
   )
-  (func "drop-br-value-heterogeneous"
+  (func "drop-break-value-heterogeneous"
     (block (br 0 (i32.const 8)) (br 0 (f64.const 8)) (br 0 (f32.const 8)))
     (block (br 0 (i32.const 8)) (br 0) (br 0 (f64.const 8)))
     (block (br 0 (i32.const 8)) (br 0 (call $nop)) (br 0 (f64.const 8)))
@@ -117,16 +136,16 @@
 (assert_return (invoke "test-operand") (i32.const 0))
 (assert_return (invoke "compare-operand") (i32.const 0))
 
-(assert_return (invoke "br-bare") (i32.const 19))
-(assert_return (invoke "br-value") (i32.const 18))
-(assert_return (invoke "br-repeated") (i32.const 18))
-(assert_return (invoke "br-inner") (i32.const 22))
+(assert_return (invoke "break-bare") (i32.const 19))
+(assert_return (invoke "break-value") (i32.const 18))
+(assert_return (invoke "break-repeated") (i32.const 18))
+(assert_return (invoke "break-inner") (i32.const 0xf))
 
-(assert_return (invoke "drop-inner") (i32.const 8))
+(assert_return (invoke "drop-mid") (i32.const 8))
 (assert_return (invoke "drop-last"))
-(assert_return (invoke "drop-br-void"))
-(assert_return (invoke "drop-br-value"))
-(assert_return (invoke "drop-br-value-heterogeneous"))
+(assert_return (invoke "drop-break-void"))
+(assert_return (invoke "drop-break-value"))
+(assert_return (invoke "drop-break-value-heterogeneous"))
 
 (assert_return (invoke "effects") (i32.const 1))
 
@@ -160,6 +179,14 @@
 )
 (assert_invalid
   (module (func (result i32) (block (block (br 1 (i64.const 1))) (br 0 (i32.const 1)))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (result i32) (block (br 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (result i32) (i32.ctz (block (br 0)))))
   "type mismatch"
 )
 

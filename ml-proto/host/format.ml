@@ -195,8 +195,9 @@ let rec expr e =
     match e.it with
     | Nop -> "nop", []
     | Unreachable -> "unreachable", []
+    | Block ([], {it = Loop e; _}) -> "loop", [expr e]
     | Block (es, e) -> "block", list expr (es @ [e])
-    | Loop e -> "loop", [expr e]
+    | Loop e -> assert false
     | Break (x, eo) -> "br " ^ var x, opt expr eo
     | BreakIf (x, eo, e) -> "br_if " ^ var x, opt expr eo @ [expr e]
     | BreakTable (xs, x, eo, e) ->

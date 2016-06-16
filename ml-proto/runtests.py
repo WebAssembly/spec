@@ -18,8 +18,11 @@ class RunTests(unittest.TestCase):
   def _runCommand(self, command, logPath = None, expectedExitCode = 0):
     out = None if logPath is None else file(logPath, 'w+')
 
-    exitCode = subprocess.call(command, shell=True, stdout=out, stderr=subprocess.STDOUT)
-    self.assertEqual(expectedExitCode, exitCode, "test runner failed with exit code %i, expected %i" % (exitCode, expectedExitCode))
+    try:
+      exitCode = subprocess.call(command, shell=True, stdout=out, stderr=subprocess.STDOUT)
+      self.assertEqual(expectedExitCode, exitCode, "test runner failed with exit code %i, expected %i" % (exitCode, expectedExitCode))
+    except:
+      print(("# Failure running %s") % command)
 
     if logPath is not None:
       out.close()
