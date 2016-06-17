@@ -68,10 +68,13 @@ There are several *known sections*:
 The Type Section contains an [array] of all function signatures that will be used
 in the module.
 
-Each function signature contains a *parameter list*, an [array] of
-[types](#types), and a *return list*, also an [array] of [types](#types).
+Each function signature contains a *parameter list*, an [array] of [types], and
+a *return list*, also an [array] of [types].
 
-> In the future, this section may contain other forms of type entries as well.
+The return list must have at most one element.
+
+> In the future, this section may contain other forms of type entries as well,
+and support for signatures with multiple return types.
 
 #### Import Section
 
@@ -166,8 +169,8 @@ corresponding to known sections above. They have no semantic effect.
 
 ### Function Bodies
 
-Function bodies contain an [array] of types, which are declarations for locals,
-and a sequence of instructions.
+Function bodies contain an [array] of [types], which are declarations for
+locals, and a sequence of instructions.
 
 ##### Positions within a function body
 
@@ -188,40 +191,39 @@ TODO: describe module validation
 
 For the duration of the validation of a function body, several data structures
 are created:
- - A *control flow stack*, with entries containing:
-      - Either a [type](#types), `any` which satisfies any type check, or `void`
-        which satisfies no type check.
-      - A *depth* value.
- - A *type stack*.
+ - A *control-flow stack*, with entries containing
+    - A [control-flow type](#control-flow-type).
+    - A *depth* value.
+ - A *[type] stack*.
  - A *current position*.
 
 During validation, if either stack is empty when an element is to be popped from
 it, validation fails.
 
+#### Control Flow Type
+
+A *control-flow type* is either a [type](#types), `any`, which satisfies any
+type check, or `void`, which satisfies no check.
+
 > `any` is effectively serving as a kind of bottom type, and `void` is
 effectively serving as a kind of top type. Note that in some type theory
 contexts, it's common to use these names for exactly opposite purposes.
 
-#### Type Stack Pop
+#### Control Flow Type Merge
 
-To perform a pop from the type stack:
- - If the type stack's size is less than the control flow stack's top's depth
-   value, return `void`.
- - Otherwise pop a type from the type stack and return that.
-
-#### Control Flow Stack Type Merge
-
-To merge two control-flow stack type values:
- - If either type is `any`, the result is the other type.
- - Otherwise, if the types are the same, the result is that type.
+To merge two [control-flow types]:
+ - If either control-flow type is `any`, the result is the other control flow
+   type.
+ - Otherwise, if the control-flow types are the same, the result is that control
+   flow type.
  - Otherwise, validation fails with a type error.
 
 #### Function Validation Initialization
 
 The current position starts at the first position. The type stack begins empty.
-The control flow stack starts with one entry. This entry's type is the first
-return type of the function, if there are any, or `void` otherwise. Its block
-depth is zero.
+The control-flow stack starts with one entry. This entry's control-flow type is
+the first return type of the function, if it has any, or `void` otherwise. Its
+block depth is zero.
 
 #### Function Body Validation
 
@@ -236,19 +238,24 @@ instruction is validated as follows.
 If the instruction has a **Validation** clause, that clause describes its
 validation. Otherwise, the following generic validation is performed:
 
-For each operand type in the instruction's signature, a type is popped from the
-type stack and checked to be the same as the corresponding operand type. Each
-return type of the instruction's signature is then pushed onto the type stack.
+For each operand [type] in the instruction's signature, a type is popped from
+the type stack and checked to be the same as the corresponding operand type.
+Each return type of the instruction's signature is then pushed onto the type
+stack.
+
+If the instruction's signature has no return types, and the size of the value
+stack is greater than the control-flow stack's top's depth, validation fails
+with a type error.
 
 Then, [validation](#function-body-validation) is resumed.
 
 #### Function Return Validation
 
-When a *return* is prompted, one type for each type in the function signature's
-return type is popped from the type stack and type-checked against its
-corresponding return type. The type stack is then checked to be empty. If there
-are sufficient stack elements and all checks have passed, function validation is
-successful.
+When a *return* is prompted, one [type] for each type in the function
+signature's return type is popped from the type stack and type-checked against
+its corresponding return type. The type stack is then checked to be empty. If
+there are sufficient stack elements and all checks have passed, function
+validation is successful.
 
 
 ## Execution
@@ -271,17 +278,17 @@ or by the embedding environment.
 
 The input to execution of a function consists of:
  - The function to be executed.
- - The incoming argument values, one for each argument type of the function.
+ - The incoming argument values, one for each argument [type] of the function.
  - A *depth* value.
 
 For the duration of the execution of a function body, several data structures
 are created:
- - A *control flow stack*, which holds label identifiers for reference from
+ - A *control-flow stack*, which holds label identifiers for reference from
    branch instructions.
  - A *value stack*, which carries values between instructions.
  - A *locals* array, containing an element for each argument of the function in
-   the argument's type, as well as an element for each local declaration in the
-   function.
+   the argument's [type], as well as an element for each local declaration in
+   the function.
  - A *current position*.
 
 TODO: define labels and binding
@@ -305,15 +312,15 @@ position is incremented to point to the instruction following it, or if there
 are no instructions following it, to the return position. Then the remembered
 instruction is executed as follows.
 
-For each operand type in the instruction's signature, a value is popped from the
-value stack and provided as the corresponding operand value. The instruction is
-then executed as described in [the Instructions section](#instructions) entry
+For each operand [type] in the instruction's signature, a value is popped from
+the value stack and provided as the corresponding operand value. The instruction
+is then executed as described in [the Instructions section](#instructions) entry
 describing it. Instructions may inspect and/or modify the current position, the
 label stack, the locals or other state. They may evoke side effects or trigger a
 trap (see below).
 
 If they don't trap or otherwise terminate execution of the module, they produce
-a value for each return type in the instruction's signature. Each return value
+a value for each return [type] in the instruction's signature. Each return value
 is then pushed onto the value stack, and [execution](#function-body-execution)
 is resumed.
 
@@ -325,10 +332,10 @@ environment.
 
 #### Function Return Execution
 
-When a *return* is prompted, one value for each type in the function signature's
-return type is popped from the value stack. If the function execution was
-prompted by a call instruction, these values are provided as the call's return
-value. Otherwise, they are provided to the embedding environment.
+When a *return* is prompted, one value for each [type] in the function
+signature's return type is popped from the value stack. If the function
+execution was prompted by a call instruction, these values are provided as the
+call's return value. Otherwise, they are provided to the embedding environment.
 
 
 ## Types
@@ -477,6 +484,15 @@ position.
 > In practice, implementations may precompute the destinations of branches so
 that they don't literally need to scan in this manner.
 
+#### Forwarding Control-Flow Type
+
+To obtain the *forwarding control-flow type*:
+ - If the type stack's size is one greater than the control-flow stack's top's
+   depth, pop a type from the type stack.
+ - If the type stack's size is equal to the control-flow stack's top's depth,
+   use `void`.
+ - Otherwise, validation fails with a type error.
+
 ### L: Call Instruction Family
 
 #### Calling
@@ -618,8 +634,8 @@ They correspond to the "Sign bit operations" in IEEE 754-2008.
 The `block` instruction pushes an unbound label onto the control-flow stack.
 
 **Validation:**
- - An entry is pushed onto the control flow stack containing the type `any`
-   and a depth of the current size of the type stack.
+ - An entry is pushed onto the control-flow stack containing `any` and a depth
+   of the current size of the type stack.
 
 #### Loop
 
@@ -631,8 +647,8 @@ The `loop` instruction binds a label to the current position and pushes
 it onto the control-flow stack.
 
 **Validation:**
- - An entry is pushed onto the control flow stack containing the type `any`
-   and a depth of the current size of the type stack.
+ - An entry is pushed onto the control-flow stack containing the `any` and a
+   depth of the current size of the type stack.
 
 #### If
 
@@ -657,12 +673,16 @@ TODO: Describe `else`.
 | `br`        | <$depth: i32> (T?) : (T?)   | [B]      | 0x06
 
 The `br` instruction performs an unconditional branch. It reads the control flow
-stack entry at depth `$depth` in the stack and [branches](#branching) to it.
-Its return value is the values of its operand.
+stack entry at depth `$depth` from the top and [branches](#branching) to it. Its
+return value is the values of its operand.
+
+If the instruction's signature has no return types, and the size of the value
+stack is greater than the control-flow stack's top's depth, validation fails
+with a type error.
 
 **Validation**:
- - [Pop] a type from the type stack. [Merge] it with with the type of the
-   control flow stack at entry at depth `$depth`.
+ - [Merge] the [forwarding control-flow type] into the the control-flow type of
+   the control-flow stack entry at depth `$depth` from the top.
 
 #### Conditional Branch
 
@@ -671,14 +691,15 @@ Its return value is the values of its operand.
 | `br_if`     | <$depth: i32> (T?, $condition: i32) : (T?)   | [B]      | 0x07
 
 The `br_if` instruction performs a conditional branch. If `$condition` is
-[true], it reads the control flow stack entry at depth `$depth` in the stack and
+[true], it reads the control-flow stack entry at depth `$depth` from the top and
 [branches](#branching) to it. Otherwise, it does nothing. Its return value is
-the values of its first operand.
+the value of its first operand.
 
 **Validation**:
- - [Pop] a type from the type stack. If it is not `void`, push it back onto
-   the type stack. [Merge] it with with the type of the control flow stack at
-   entry at depth `$depth`.
+ - Obtain the [forwarding control-flow type].
+ - [Merge] it into the the control-flow type of the control-flow stack entry at
+   depth `$depth` from the top.
+ - If it is not `void`, push it onto the value stack.
 
 #### Branch Table
 
@@ -692,13 +713,13 @@ First, `br_table` selects a depth to use. If `$index` is within the bounds of
 the table, the depth is the value of the indexed table element. Otherwise, the
 depth is `$default`.
 
-Then, `br_table` reads the control flow stack at that depth in the stack and
+Then, `br_table` reads the control-flow stack at that depth in the stack and
 [branches](#branching) to it. Its return value is the value of its first
 operand.
 
 **Validation**:
- - [Pop] a type from the type stack. For each depth in the table and `$default`,
-   [Merge] it with with the type of the control flow stack at that depth.
+ - [Merge] the [forwarding control-flow type] into the the control-flow type of
+   the control-flow stack entry at depth `$depth` from the top.
 
 > This instruction serves the role of what is sometimes called a "jump table" in
 other languages. "Branch" is used here instead to emphasize the commonality with
@@ -714,8 +735,8 @@ The `return` instruction sets the current position to the return position. Its
 return values are the values of its operands.
 
 **Validation**:
- - [Pop] a type from the type stack. [Merge] it with with the type of the control
-   flow type stack at entry at depth zero.
+ - [Merge] the [forwarding control-flow type] into the the control-flow type of
+   the control-flow stack entry at depth zero.
 
 #### Unreachable
 
@@ -743,7 +764,7 @@ is the value of its operand.
 
 **Validation**:
  - [Pop] a type from the type stack. [Merge] it with with the type of the [top]
-   of the control flow stack. If the result is not `void`, push it onto the type
+   of the control-flow stack. If the result is not `void`, push it onto the type
    stack.
 
 ### Basic Instructions
@@ -1851,8 +1872,13 @@ memory space, as an unsigned value in units of [pages].
 [little-endian byte order]: https://en.wikipedia.org/wiki/Endianness#Little.
 [accessed bytes]: #accessed-bytes
 [pop]: #type-stack-pop
-[merge]: #control-flow-stack-type-merge
+[merge]: #control-flow-type-merge
 [index]: Index
 [array]: Array
 [string]: String
 [strings]: String
+[type]: #types
+[types]: #types
+[control-flow type]: #control-flow-types
+[control-flow types]: #control-flow-types
+[forwarding control-flow type]: #forwarding-control-flow-type
