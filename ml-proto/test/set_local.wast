@@ -3,10 +3,10 @@
 (module
   ;; Typing
 
-  (func "type-local-i32" (local i32) (result i32) (set_local 0 (i32.const 0)))
-  (func "type-local-i64" (local i64) (result i64) (set_local 0 (i64.const 0)))
-  (func "type-local-f32" (local f32) (result f32) (set_local 0 (f32.const 0)))
-  (func "type-local-f64" (local f64) (result f64) (set_local 0 (f64.const 0)))
+  (func "type-local-i32" (result i32) (local i32) (set_local 0 (i32.const 0)))
+  (func "type-local-i64" (result i64) (local i64) (set_local 0 (i64.const 0)))
+  (func "type-local-f32" (result f32) (local f32) (set_local 0 (f32.const 0)))
+  (func "type-local-f64" (result f64) (local f64) (set_local 0 (f64.const 0)))
 
   (func "type-param-i32" (param i32) (result i32) (set_local 0 (i32.const 10)))
   (func "type-param-i64" (param i64) (result i64) (set_local 0 (i64.const 11)))
@@ -27,7 +27,8 @@
 
   ;; Writing
 
-  (func "write" (param i64 f32 f64 i32 i32) (local f32 i64 i64 f64) (result i64)
+  (func "write" (param i64 f32 f64 i32 i32) (result i64)
+    (local f32 i64 i64 f64)
     (set_local 1 (f32.const -0.3))
     (set_local 3 (i32.const 40))
     (set_local 4 (i32.const -7))
@@ -65,7 +66,8 @@
 
   ;; Result
 
-  (func "result" (param i64 f32 f64 i32 i32) (local f32 i64 i64 f64) (result f64)
+  (func "result" (param i64 f32 f64 i32 i32) (result f64)
+    (local f32 i64 i64 f64)
     (f64.add
       (f64.convert_u/i64 (set_local 0 (i64.const 1)))
       (f64.add
@@ -128,7 +130,7 @@
 ;; Invalid typing of access to locals
 
 (assert_invalid
-  (module (func $type-local-num-vs-num (local i32) (result i64) (set_local 0 (i32.const 0))))
+  (module (func $type-local-num-vs-num (result i64) (local i32) (set_local 0 (i32.const 0))))
   "type mismatch"
 )
 (assert_invalid

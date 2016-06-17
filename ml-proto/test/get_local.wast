@@ -3,17 +3,18 @@
 (module
   ;; Typing
 
-  (func "type-local-i32" (local i32) (result i32) (get_local 0))
-  (func "type-local-i64" (local i64) (result i64) (get_local 0))
-  (func "type-local-f32" (local f32) (result f32) (get_local 0))
-  (func "type-local-f64" (local f64) (result f64) (get_local 0))
+  (func "type-local-i32" (result i32) (local i32) (get_local 0))
+  (func "type-local-i64" (result i64) (local i64) (get_local 0))
+  (func "type-local-f32" (result f32) (local f32) (get_local 0))
+  (func "type-local-f64" (result f64) (local f64) (get_local 0))
 
   (func "type-param-i32" (param i32) (result i32) (get_local 0))
   (func "type-param-i64" (param i64) (result i64) (get_local 0))
   (func "type-param-f32" (param f32) (result f32) (get_local 0))
   (func "type-param-f64" (param f64) (result f64) (get_local 0))
 
-  (func "type-mixed" (param i64 f32 f64 i32 i32) (local f32 i64 i64 f64) (result f64)
+  (func "type-mixed" (param i64 f32 f64 i32 i32) (result f64)
+    (local f32 i64 i64 f64)
     (i64.eqz (get_local 0))
     (f32.neg (get_local 1))
     (f64.neg (get_local 2))
@@ -27,7 +28,8 @@
 
   ;; Reading
 
-  (func "read" (param i64 f32 f64 i32 i32) (local f32 i64 i64 f64) (result f64)
+  (func "read" (param i64 f32 f64 i32 i32) (result f64)
+    (local f32 i64 i64 f64)
     (set_local 5 (f32.const 5.5))
     (set_local 6 (i64.const 6))
     (set_local 8 (f64.const 8))
@@ -87,7 +89,7 @@
 ;; Invalid typing of access to locals
 
 (assert_invalid
-  (module (func $type-local-num-vs-num (local i32) (result i64) (get_local 0)))
+  (module (func $type-local-num-vs-num (result i64) (local i32) (get_local 0)))
   "type mismatch"
 )
 (assert_invalid

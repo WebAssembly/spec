@@ -45,15 +45,15 @@
 
   ;; Typing of locals
 
-  (func "local-first-i32" (local i32 i32) (result i32) (get_local 0))
-  (func "local-first-i64" (local i64 i64) (result i64) (get_local 0))
-  (func "local-first-f32" (local f32 f32) (result f32) (get_local 0))
-  (func "local-first-f64" (local f64 f64) (result f64) (get_local 0))
-  (func "local-second-i32" (local i32 i32) (result i32) (get_local 1))
-  (func "local-second-i64" (local i64 i64) (result i64) (get_local 1))
-  (func "local-second-f32" (local f32 f32) (result f32) (get_local 1))
-  (func "local-second-f64" (local f64 f64) (result f64) (get_local 1))
-  (func "local-mixed" (local f32) (local $x i32) (local i64 i32) (local) (local f64 i32) (result f64)
+  (func "local-first-i32" (result i32) (local i32 i32) (get_local 0))
+  (func "local-first-i64" (result i64) (local i64 i64) (get_local 0))
+  (func "local-first-f32" (result f32) (local f32 f32) (get_local 0))
+  (func "local-first-f64" (result f64) (local f64 f64) (get_local 0))
+  (func "local-second-i32" (result i32) (local i32 i32) (get_local 1))
+  (func "local-second-i64" (result i64) (local i64 i64) (get_local 1))
+  (func "local-second-f32" (result f32) (local f32 f32) (get_local 1))
+  (func "local-second-f64" (result f64) (local f64 f64) (get_local 1))
+  (func "local-mixed" (result f64) (local f32) (local $x i32) (local i64 i32) (local) (local f64 i32)
     (f32.neg (get_local 0))
     (i32.eqz (get_local 1))
     (i64.eqz (get_local 2))
@@ -153,10 +153,10 @@
 
   ;; Default initialization of locals
 
-  (func "init-local-i32" (local i32) (result i32) (get_local 0))
-  (func "init-local-i64" (local i64) (result i64) (get_local 0))
-  (func "init-local-f32" (local f32) (result f32) (get_local 0))
-  (func "init-local-f64" (local f64) (result f64) (get_local 0))
+  (func "init-local-i32" (result i32) (local i32) (get_local 0))
+  (func "init-local-i64" (result i64) (local i64) (get_local 0))
+  (func "init-local-f32" (result f32) (local f32) (get_local 0))
+  (func "init-local-f64" (result f64) (local f64) (get_local 0))
 )
 
 (assert_return (invoke "local-first-i32") (i32.const 0))
@@ -280,7 +280,7 @@
 ;; Invalid typing of locals
 
 (assert_invalid
-  (module (func $type-local-num-vs-num (local i32) (result i64) (get_local 0)))
+  (module (func $type-local-num-vs-num (result i64) (local i32) (get_local 0)))
   "type mismatch"
 )
 (assert_invalid
