@@ -26,7 +26,7 @@ These types describe various data structures present in WebAssembly modules:
 
 #### Index
 
-An *index* is an `i32` value which is interpreted as an unsigned integer.
+An *index* is an `i32` value which is interpreted as unsigned.
 
 #### Array
 
@@ -43,9 +43,9 @@ valid UTF-8 or any other format.
 ### Module Contents
 
 Modules contain a version [index]. Currently this number is `0xb`. The initial
-stable release of wasm will set it to `0x0`.
+stable release of WebAssembly will set it to `0x0`.
 
-Modues also contain a sequence of sections. Each section has a [string] *name*
+Modules also contain a sequence of sections. Each section has a [string] *name*
 and associated data.
 
 There are several *known sections*:
@@ -63,7 +63,7 @@ There are several *known sections*:
 
 #### Type Section
 
-**Name**: `type`.
+**Name:** `type`.
 
 The Type Section contains an [array] of all function signatures that will be used
 in the module.
@@ -78,7 +78,7 @@ and support for signatures with multiple return types.
 
 #### Import Section
 
-**Name**: `import`
+**Name:** `import`
 
 The Import Section contains an [array] of all imports that will be used in the
 module.
@@ -91,7 +91,7 @@ Each import contains:
 
 #### Function Section
 
-**Name**: `function`
+**Name:** `function`
 
 The Function Section contains an [array] with elements directly corresponding to
 functions defined in the [Code Section](#code-section)), each containing the
@@ -99,7 +99,7 @@ index in the [Type Section](#type-section) of the signature of the function.
 
 #### Memory Section
 
-**Name**: `memory`
+**Name:** `memory`
 
 The Memory Section contains:
  - An *initial size*, which is an unsigned `iPTR` value, in units of [pages].
@@ -111,7 +111,7 @@ The Memory Section contains:
 
 #### Export Section
 
-**Name**: `export`
+**Name:** `export`
 
 The Export Section contains an [array] of exports from the module.
 
@@ -122,30 +122,31 @@ An export contains:
 
 #### Start Section
 
-**Name**: `start`
+**Name:** `start`
 
 The Start Section contains a function [index]. See
 [Module Execution](#module-execution) for further information.
 
 #### Code Section
 
-**Name**: `code`
+**Name:** `code`
 
 The Code Section contains an [array] of [function bodies](#function-bodies).
 
 #### Data Section
 
-**Name**: `data`
+**Name:** `data`
 
-The Data Section contains an [array] of [string] and offset pairs before
+The Data Section contains an [array] of [string] and offset pairs describing
+data to be loaded into linear memory before
 [Execution](#execution).
 
 #### Name Section
 
-**Name**: `name`
+**Name:** `name`
 
-The Names Section does not change execution semantics and a validation error in
-this section does not cause validation for the whole module to fail and is
+The Names Section does not change execution semantics and a validation failure
+in this section does not cause validation for the whole module to fail and is
 instead treated as if the section was absent.
 
 The Names Section contains an [array] of function name descriptors, which each
@@ -175,7 +176,10 @@ locals, and a sequence of instructions.
 ##### Positions within a function body
 
 A *position* within a function refers to an element of the sequence, or to an
-additional *return position* which is sequenced after the end of the function body.
+additional *return position* which is sequenced after the end of the function
+body.
+
+TODO: Add an implicit `end` at the return position.
 
 > In the binary encoding, positions are represented as byte offsets; in the text
 format, positions are represented with a special syntax.
@@ -185,7 +189,7 @@ format, positions are represented with a special syntax.
 
 ### Module Validation
 
-TODO: describe module validation
+TODO: Describe module validation.
 
 ### Function Validation
 
@@ -193,12 +197,15 @@ For the duration of the validation of a function body, several data structures
 are created:
  - A *control-flow stack*, with entries containing
     - A [control-flow type](#control-flow-type).
-    - A *depth* value.
+    - A *limit* value.
  - A *[type] stack*.
  - A *current position*.
 
 During validation, if either stack is empty when an element is to be popped from
-it, validation fails.
+it, or an element is accessed by index less than zero or not less than the
+stack's length, validation fails. If a value is popped from the type stack such
+that the length of the type stack becomes less than the control-flow stack top's
+limit value, validation fails.
 
 #### Control Flow Type
 
@@ -216,46 +223,46 @@ To merge two [control-flow types]:
    type.
  - Otherwise, if the control-flow types are the same, the result is that control
    flow type.
- - Otherwise, validation fails with a type error.
+ - Otherwise, validation fails.
 
 #### Function Validation Initialization
 
 The current position starts at the first position. The type stack begins empty.
 The control-flow stack starts with one entry. This entry's control-flow type is
 the first return type of the function, if it has any, or `void` otherwise. Its
-block depth is zero.
+limit value is zero.
 
 #### Function Body Validation
 
-If the current position is the return position, function return validation is
-prompted and validation of the function is thereafter complete.
+If the current position is the return position,
+[function return validation](#function-return-validation) is prompted and
+validation of the function is thereafter complete.
 
-Otherwise, the instruction at the current position is remembered, the current
-position is incremented to point to the instruction following it, or if there
-are no instructions following it, to the return position. Then the remembered
-instruction is validated as follows.
+Otherwise, the instruction at the current position is remembered, and the
+current position is incremented to point to the position following it. Then the
+remembered instruction is validated as follows.
 
 If the instruction has a **Validation** clause, that clause describes its
 validation. Otherwise, the following generic validation is performed:
 
-For each operand [type] in the instruction's signature, a type is popped from
-the type stack and checked to be the same as the corresponding operand type.
-Each return type of the instruction's signature is then pushed onto the type
-stack.
+For each operand [type] in the instruction's signature in reverse order, a type
+is popped from the type stack and checked to match it. Each return type of the
+instruction's signature is then pushed onto the type stack.
 
-If the instruction's signature has no return types, and the size of the value
-stack is greater than the control-flow stack's top's depth, validation fails
-with a type error.
+If the instruction's signature has no return types, and the length of the type
+stack is greater than the control-flow stack top's limit value, validation
+fails.
 
-Then, [validation](#function-body-validation) is resumed.
+Otherwise, [validation](#function-body-validation) is resumed.
 
 #### Function Return Validation
 
-When a *return* is prompted, one [type] for each type in the function
-signature's return type is popped from the type stack and type-checked against
-its corresponding return type. The type stack is then checked to be empty. If
-there are sufficient stack elements and all checks have passed, function
-validation is successful.
+When a *return* is prompted, if the function signature has any return types, a
+type is popped from the type stack and checked to match the first return type.
+The type stack is then checked to be empty. If no failures were detected,
+function validation is successful.
+
+TODO: Require the control-flow stack to be empty too.
 
 
 ## Execution
@@ -273,13 +280,13 @@ function is [executed](#function-execution).
 
 ### Function Execution
 
-Function execution can be prompted by a call instruction, by module execution,
-or by the embedding environment.
+Function execution can be prompted by a [call-family instruction][L], by
+[module execution](#module-execution), or by the embedding environment.
 
 The input to execution of a function consists of:
  - The function to be executed.
  - The incoming argument values, one for each argument [type] of the function.
- - A *depth* value.
+ - A *recursion depth* value.
 
 For the duration of the execution of a function body, several data structures
 are created:
@@ -291,7 +298,10 @@ are created:
    the function.
  - A *current position*.
 
-TODO: define labels and binding
+TODO: Define labels and binding.
+
+> Implementations need not create a literal array to store the locals, or
+literal stacks to manage values at runtime.
 
 #### Function Execution Initialization
 
@@ -305,24 +315,24 @@ bit-pattern values.
 
 #### Function Body Execution
 
-If the current position is the return position, a function return is prompted.
+If the current position is the return position,
+[function return execution](#function-return-execution) is prompted and
+execution of the function is thereafter complete.
 
-Otherwise, the instruction at the current position is remembered, the current
-position is incremented to point to the instruction following it, or if there
-are no instructions following it, to the return position. Then the remembered
-instruction is executed as follows.
+Otherwise, the instruction at the current position is remembered, and the
+current position is incremented to point to the position following it. Then the
+remembered instruction is executed as follows.
 
-For each operand [type] in the instruction's signature, a value is popped from
-the value stack and provided as the corresponding operand value. The instruction
-is then executed as described in [the Instructions section](#instructions) entry
-describing it. Instructions may inspect and/or modify the current position, the
-label stack, the locals or other state. They may evoke side effects or trigger a
-trap (see below).
+For each operand [type] in the instruction's signature in reverse order, a value
+is popped from the value stack and provided as the corresponding operand value.
+The instruction is then executed as described in
+the [Instructions Section](#instructions) entry describing it. Instructions may
+inspect and/or modify the current position, the label stack, the locals or other
+state. They may evoke side effects or trigger a [trap].
 
-If they don't trap or otherwise terminate execution of the module, they produce
-a value for each return [type] in the instruction's signature. Each return value
-is then pushed onto the value stack, and [execution](#function-body-execution)
-is resumed.
+They produce a value for each return [type] in the instruction's signature. Each
+return value is then pushed onto the value stack, and
+[execution](#function-body-execution) is resumed.
 
 #### Instruction Traps
 
@@ -332,8 +342,8 @@ environment.
 
 #### Function Return Execution
 
-When a *return* is prompted, one value for each [type] in the function
-signature's return type is popped from the value stack. If the function
+When a *return* is prompted, one value for each return [type] in the function
+signature in reverse order is popped from the value stack. If the function
 execution was prompted by a call instruction, these values are provided as the
 call's return value. Otherwise, they are provided to the embedding environment.
 
@@ -374,18 +384,19 @@ the values `0` and `1` for false and true.
 | `f64` | 64
 
 `f32` is the IEEE 754-2008
-[`binary32`](https://en.wikipedia.org/wiki/Single-precision_floating-point_format)
+[binary32](https://en.wikipedia.org/wiki/Single-precision_floating-point_format)
 type, commonly known as "Single Precision".
 
 `f64` is the IEEE 754-2008
-[`binary64`](https://en.wikipedia.org/wiki/Double-precision_floating-point_format)
+[binary64](https://en.wikipedia.org/wiki/Double-precision_floating-point_format)
 type, commonly known as "Double Precision".
 
 > Unlike with
 [Numbers in ECMAScript](https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type),
 [NaN](https://en.wikipedia.org/wiki/NaN) values in WebAssembly have sign bits
-and payloads which may be observed and manipulated (though most instructions
-ignore them).
+and significant fields which may be observed and manipulated (though they are
+usually unimportant).
+
 
 ## Signatures
 
@@ -398,25 +409,25 @@ or
 
 `<` immediates `>` `(` arguments `)` `:` `(` returns `)`
 
-TODO: describe signatures, and shorthand: iPTR, "...", <immediates>, TABLE, T,
-*args*, and *returns*.
+TODO: Describe signatures, and shorthand: iPTR, `<immediates>`, TABLE, T, T?,
+`*args*`, and `*returns*`.
 
 
 ## Instruction Families
 
 WebAssembly instructions may belong to several families:
 
-0. M: [Memory-Access Instruction Family][M]
-0. R: [Memory-Resize Instruction Family][R]
-0. B: [Branch Instruction Family][B]
-0. L: [Call Instruction Family][L]
-0. C: [Comparison Instruction Family][C]
-0. T: [Shift Instruction Family][T]
-0. G: [Generic Integer Instruction Family][G]
-0. S: [Signed Integer Instruction Family][S]
-0. U: [Unsigned Integer Instruction Family][U]
-0. F: [Floating-Point Instruction Family][F]
-0. Z: [Floating-Point Bitwise Instruction Family][Z]
+0. [M: Memory-Access Instruction Family][M]
+0. [R: Memory-Resize Instruction Family][R]
+0. [B: Branch Instruction Family][B]
+0. [L: Call Instruction Family][L]
+0. [C: Comparison Instruction Family][C]
+0. [T: Shift Instruction Family][T]
+0. [G: Generic Integer Instruction Family][G]
+0. [S: Signed Integer Instruction Family][S]
+0. [U: Unsigned Integer Instruction Family][U]
+0. [F: Floating-Point Instruction Family][F]
+0. [Z: Floating-Point Bitwise Instruction Family][Z]
 
 ### M: Memory-Access Instruction Family
 
@@ -429,16 +440,15 @@ are the addressing unit of linear memory spaces.
 
 #### Effective Address
 
-The *effective address* of a memory access is computed by adding `$base` with
-`$offset` immediate at infinite precision, so that there is no need for
-wrapping.
+The *effective address* of a linear memory access is computed by adding `$base`
+with `$offset` at infinite precision, so that there is no overflow.
 
 #### Alignment
 
-If the effective address is not a multiple of `$align`, the access is
+**Slow:** If the effective address is not a multiple of `$align`, the access is
 *misaligned*, and the instruction may execute very slowly.
 
-> When the `$align` value is equal to the size of the access, the access has
+> When `$align` is equal to the size of the access, the access has
 *natural alignment*. When it is less, the access is *unaligned*.
 
 > There is no other semantic effect associated with `$align`; misaligned and
@@ -454,8 +464,8 @@ beyond the end of the accessed linear memory space.
 
 #### Loading
 
-For a load access, a value with the bit pattern of the [accessed bytes],
-interpreted in [little-endian byte order], is returned.
+For a load access, a value is read from the [accessed bytes], in
+[little-endian byte order], and returned.
 
 #### Storing
 
@@ -473,13 +483,17 @@ resizing.
 
 #### Branching
 
-When a label is to be branched to, if it is bound to a position, the current
-position is set to that position.
+In a branch according to a given control-flow stack entry, first the value stack
+is resized to the entry's limit value.
 
-Otherwise, the position to bind the label to is found by scanning forward
-through the instructions, executing just `block`, `loop`, and `end`
-instructions, until the label is bound. Then the current position to that
-position.
+Then, if the entry's label is bound to a position, the current position is set
+to that position. Otherwise, the position to bind the label to is found by
+scanning forward through the instructions, executing just `block`, `loop`, and
+`end` instructions, until the label is bound. Then the current position is set
+to that position.
+
+Then, control-flow stack entries are popped until the given control-flow stack
+entry is popped.
 
 > In practice, implementations may precompute the destinations of branches so
 that they don't literally need to scan in this manner.
@@ -487,11 +501,11 @@ that they don't literally need to scan in this manner.
 #### Forwarding Control-Flow Type
 
 To obtain the *forwarding control-flow type*:
- - If the type stack's size is one greater than the control-flow stack's top's
-   depth, pop a type from the type stack.
- - If the type stack's size is equal to the control-flow stack's top's depth,
-   use `void`.
- - Otherwise, validation fails with a type error.
+ - If the type stack's length is one greater than the control-flow stack top's
+   limit value, pop a type from the type stack.
+ - If the type stack's length is equal to the control-flow stack top's limit
+   value, use `void`.
+ - Otherwise, validation fails.
 
 ### L: Call Instruction Family
 
@@ -499,12 +513,14 @@ To obtain the *forwarding control-flow type*:
 
 The called function &mdash; the *callee* &mdash; is
 [executed](#function-execution), with the `*args*` operands passed to it as its
-incoming arguments, and the current depth plus some implementation-defined
-finite amount as its depth value. The return value of the call is defined by the
-execution.
+incoming arguments, and the current recursion depth value plus some
+implementation-defined positive amount as its recursion depth value. The return
+value of the call is defined by the execution.
 
-**Trap:** Call stack overflow, if the depth value is greater than some
-implementation-defined limit,
+TODO: Define implementation-defined.
+
+**Trap:** Call stack overflow, if the recursion depth value is greater than some
+implementation-defined limit.
 
 > This means that implementations are not permitted to perform implicit
 opportunistic tail-call elimination.
@@ -513,6 +529,9 @@ opportunistic tail-call elimination.
 during the call, and the execution of the called function is performed
 independently. In this way, calls form a stack-like data structure called the
 *call stack*.
+
+> Implementations need not pass a literal argument to represent the recursion
+depth.
 
 ### C: Comparison Instruction Family
 
@@ -537,6 +556,9 @@ first operand.
 5 bits of the second operand affect the result, and in `i64` instructions only
 the least-significant 6 bits of the second operand affect the result.
 
+> The shift count is interpreted as unsigned even in otherwise signed
+instructions such as [`shr_s`](#integer-shift-right-signed].
+
 ### G: Generic Integer Instruction Family
 
 Except where otherwise specified, these instructions do not specifically
@@ -546,14 +568,14 @@ do not have an inherent concept of overflow.
 ### S: Signed Integer Instruction Family
 
 Except where otherwise specified, these instructions interpret their operands as
-signed, return result values interpreted as signed, and trap when the result
+signed, return result values interpreted as signed, and [trap] when the result
 value can not be represented as such.
 
 ### U: Unsigned Integer Instruction Family
 
 Except where otherwise specified, these instructions interpret their operands as
-unsigned, return result values interpreted as unsigned, and trap when the result
-value can not be represented as such.
+unsigned, return result values interpreted as unsigned, and [trap] when the
+result value can not be represented as such.
 
 ### F: Floating-Point Instruction Family
 
@@ -562,10 +584,8 @@ Instructions in this family follow the [IEEE 754-2008] standard, except that:
  - They support only "non-stop" mode, and floating-point exceptions are not
    otherwise observable. In particular, neither alternate floating-point
    exception handling attributes nor the non-computational operators on status
-   flags are supported. There is no observable difference between quiet and
-   signalling NaN. However, positive infinity, negative infinity, and NaN are
-   still always produced as result values to indicate overflow, invalid, and
-   divide-by-zero conditions, as specified by IEEE 754-2008.
+   flags are supported.
+
  - They use the round-to-nearest ties-to-even rounding attribute, except where
    otherwise specified. Non-default directed rounding attributes are not
    supported.
@@ -589,13 +609,18 @@ Implementations are permitted to further implement the IEEE 754-2008 section
 their operands, however it is not required.
 
 > All computations are correctly rounded, subnormal values are fully supported,
-and negative zero, NaNs, and infinities all have their standard behavior. All
-numeric results are deterministic.
+and negative zero, NaNs, and infinities are all produced as result values to
+indicate overflow, invalid, and divide-by-zero exceptional conditions, and
+interpreted appropriately when they appear as operands. All numeric results are
+deterministic.
+
+> There is no observable difference between quiet and signaling NaN other than
+the difference in the bit pattern.
 
 ### Z: Floating-Point Bitwise Instruction Family
 
 These instructions operate on floating-point values, but do so in purely bitwise
-ways, including in how they operate on NaN values.
+ways, including in how they operate on NaN and zero values.
 
 They correspond to the "Sign bit operations" in IEEE 754-2008.
 
@@ -620,7 +645,7 @@ They correspond to the "Sign bit operations" in IEEE 754-2008.
 0. [Else](#else)
 0. [Unconditional Branch](#unconditional-branch)
 0. [Conditional Branch](#conditional-branch)
-0. [Branch Table](#branch-table)
+0. [Table Branch](#table-branch)
 0. [Return](#return)
 0. [Unreachable](#unreachable)
 0. [End](#end)
@@ -629,32 +654,32 @@ They correspond to the "Sign bit operations" in IEEE 754-2008.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `block`     | () : ()                     |          | 0x01
+| `block`     | `() : ()`                   |          | 0x01
 
 The `block` instruction pushes an unbound label onto the control-flow stack.
 
 **Validation:**
- - An entry is pushed onto the control-flow stack containing `any` and a depth
-   of the current size of the type stack.
+ - An entry is pushed onto the control-flow stack containing `any` and a limit
+   value of the current length of the type stack.
 
 #### Loop
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `loop`      | () : ()                     |          | 0x02
+| `loop`      | `() : ()`                   |          | 0x02
 
 The `loop` instruction binds a label to the current position and pushes
 it onto the control-flow stack.
 
 **Validation:**
- - An entry is pushed onto the control-flow stack containing the `any` and a
-   depth of the current size of the type stack.
+ - An entry is pushed onto the control-flow stack containing `any` and a limit
+   value of the current length of the type stack.
 
 #### If
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `if`        | (i32) : ()                  |          | 0x03
+| `if`        | `(i32) : ()`                |          | 0x03
 
 TODO: Describe `if`.
 
@@ -662,7 +687,7 @@ TODO: Describe `if`.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `else`      | () : ()                     |          | 0x04
+| `else`      | `() : ()`                   |          | 0x04
 
 TODO: Describe `else`.
 
@@ -670,56 +695,57 @@ TODO: Describe `else`.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `br`        | <$depth: i32> (T?) : (T?)   | [B]      | 0x06
+| `br`        | `<$depth: i32> (T?) : (T?)` | [B]      | 0x06
 
-The `br` instruction performs an unconditional branch. It reads the control flow
-stack entry at depth `$depth` from the top and [branches](#branching) to it. Its
-return value is the values of its operand.
+The `br` instruction [branches](#branching) according to the control flow stack
+entry `$depth` from the top. Its return value is the value of its operand, if it
+has one.
 
-If the instruction's signature has no return types, and the size of the value
-stack is greater than the control-flow stack's top's depth, validation fails
-with a type error.
+TODO: Branch arity immediates.
 
-**Validation**:
- - [Merge] the [forwarding control-flow type] into the the control-flow type of
-   the control-flow stack entry at depth `$depth` from the top.
+**Validation:**
+ - [Merge] the [forwarding control-flow type] into the control-flow type of the
+   control-flow stack entry `$depth` from the top.
 
 #### Conditional Branch
 
 | Name        | Signature                                    | Families | Opcode
 | ----        | ---------                                    | -------- | ------
-| `br_if`     | <$depth: i32> (T?, $condition: i32) : (T?)   | [B]      | 0x07
+| `br_if`     | `<$depth: i32> (T?, $condition: i32) : (T?)` | [B]      | 0x07
 
-The `br_if` instruction performs a conditional branch. If `$condition` is
-[true], it reads the control-flow stack entry at depth `$depth` from the top and
-[branches](#branching) to it. Otherwise, it does nothing. Its return value is
-the value of its first operand.
+If `$condition` is [true], the `br_if` instruction [branches](#branching)
+according to the control flow stack entry `$depth` from the top. Otherwise, it
+does nothing. Its return value is the value of its first operand, if it has more
+than one.
 
-**Validation**:
- - Obtain the [forwarding control-flow type].
- - [Merge] it into the the control-flow type of the control-flow stack entry at
-   depth `$depth` from the top.
- - If it is not `void`, push it onto the value stack.
+**Validation:**
+ - Pop a type from the type stack and check that it is `i32`.
+ - Determine the [forwarding control-flow type].
+ - [Merge] it into the control-flow type of the control-flow stack entry
+   `$depth` from the top.
+ - If it is not `void`, push it onto the type stack.
+ - If it is `void`, and the length of the type stack is greater than the
+   control-flow stack top's limit value, validation fails.
 
-#### Branch Table
+#### Table Branch
 
 | Name        | Signature                                         | Families | Opcode
 | ----        | ---------                                         | -------- | ------
-| `br_table`  | <TABLE, $default: i32> (T?, $index: i32) : (T?)   | [B]      | 0x08
+| `br_table`  | `<TABLE, $default: i32> (T?, $index: i32) : (T?)` | [B]      | 0x08
 
-The `br_table` instruction branches to a destination indexed in a table.
+First, the `br_table` instruction selects a depth to use. If `$index` is within
+the bounds of the table, the depth is the value of the indexed table element.
+Otherwise, the depth is `$default`.
 
-First, `br_table` selects a depth to use. If `$index` is within the bounds of
-the table, the depth is the value of the indexed table element. Otherwise, the
-depth is `$default`.
+Then, it [branches](#branching) according to the control-flow stack entry that
+depth from the top. Its return value is the value of its first operand, if it
+has more than one.
 
-Then, `br_table` reads the control-flow stack at that depth in the stack and
-[branches](#branching) to it. Its return value is the value of its first
-operand.
-
-**Validation**:
- - [Merge] the [forwarding control-flow type] into the the control-flow type of
-   the control-flow stack entry at depth `$depth` from the top.
+**Validation:**
+ - Pop a type from the type stack and check that it is `i32`.
+ - For each depth in the table and `$default`, [merge] the
+   [forwarding control-flow type] control-flow type into the control-flow type
+   of the control-flow stack entry that depth from the top.
 
 > This instruction serves the role of what is sometimes called a "jump table" in
 other languages. "Branch" is used here instead to emphasize the commonality with
@@ -729,43 +755,48 @@ the other branch instructions.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `return`    | (...) : (...)               | [B]      | 0x09
+| `return`    | `(T?) : (T?)`               | [B]      | 0x09
 
-The `return` instruction sets the current position to the return position. Its
-return values are the values of its operands.
+The `return` instruction [branches](#branching) according to the control-flow
+stack bottom. Its return value is the value of its operand, if it has one.
 
-**Validation**:
- - [Merge] the [forwarding control-flow type] into the the control-flow type of
-   the control-flow stack entry at depth zero.
+**Validation:**
+ - [Merge] the [forwarding control-flow type] into the control-flow type of the
+   control-flow stack bottom.
+
+> Implementations need not literally perform a branch before performing the
+actual function return.
 
 #### Unreachable
 
 | Name          | Signature                 | Families | Opcode
 | ----          | ---------                 | -------- | ------
-| `unreachable` | () : ()                   |          | 0x0a
-
-The `unreachable` instruction is meant to represent code that is not meant
-to be executed except in the case of a bug in the application.
+| `unreachable` | `() : ()`                 |          | 0x0a
 
 **Trap:** Unreachable, always.
 
-TODO: In other variants of the spec, this, `br`, `return`, and `br_table`
-return `any`.
+> The `unreachable` instruction is meant to represent code that is not meant
+to be executed except in the case of a bug in the application.
+
+TODO: `unreachable`, `br`, `return`, and `br_table` return type validation.
 
 #### End
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `end`       | (T?) : (T?)                 |          | 0x0f
+| `end`       | `(T?) : (T?)`               | [B]      | 0x0f
 
-The `end` instruction pops an entry from the control-flow stack. If it is an
-unbound label, the label is bound to the current location. Its return value
-is the value of its operand.
+The `end` instruction pops an entry from the control-flow stack. If the entry's
+label is unbound, the label is bound to the current location. Its return value
+is the value of its operand, if it has one.
 
-**Validation**:
- - [Pop] a type from the type stack. [Merge] it with with the type of the [top]
-   of the control-flow stack. If the result is not `void`, push it onto the type
-   stack.
+**Validation:**
+ - Determine the [forwarding control-flow type].
+ - [Merge] it into the control-flow type of the control-flow stack top, and then
+   pop the control-flow stack top.
+ - If it is not `void`, push it onto the type stack.
+ - If it is `void`, and the length of the type stack is greater than the (new)
+   control-flow stack top's limit value, validation fails.
 
 ### Basic Instructions
 
@@ -774,6 +805,7 @@ is the value of its operand.
 0. [Constant](#constant)
 0. [Get Local](#get-local)
 0. [Set Local](#set-local)
+0. [Tee Local](#tee-local)
 0. [Select](#select)
 0. [Call](#call)
 0. [Indirect Call](#indirect-call)
@@ -782,7 +814,7 @@ is the value of its operand.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `nop`       | () : ()                     |          | 0x00
+| `nop`       | `() : ()`                   |          | 0x00
 
 The `nop` instruction does nothing.
 
@@ -790,11 +822,12 @@ The `nop` instruction does nothing.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `drop`      | (T) : ()                    |          | TODO
+| `drop`      | `(T) : ()`                  |          | TODO
 
-The `drop` instruction has no effect.
+The `drop` instruction does nothing.
 
-> This can be used to effectively unneeded values from the value stack.
+> This differs from `nop` in that it has an operand, so it can be used to
+discard unneeded values from the value stack.
 
 #### Constant
 
@@ -805,26 +838,34 @@ The `drop` instruction has no effect.
 | `f32.const` | `<f32> () : (f32)`          | [F]      | 0x12
 | `f64.const` | `<f64> () : (f64)`          | [F]      | 0x13
 
-These instructions return the value of their immediate.
+The `const` instruction returns the value of its immediate.
 
 #### Get Local
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `get_local` | <i32> () : (T)              |          | 0x14
+| `get_local` | `<$id: i32> () : (T)`       |          | 0x14
 
-The `get_local` instruction returns the value in the locals array at the
-index given in the immediate operand.
+The `get_local` instruction returns the value in the locals array at index
+`$id`.
 
 #### Set Local
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `set_local` | <i32> (T) : ()              |          | 0x15
+| `set_local` | `<$id: i32> (T) : ()`       |          | 0x15
 
-The `set_local` instruction sets the value in the locals array at the
-index given in the immediate operand to the value given in the
-non-immediate operand.
+The `set_local` instruction sets the value in the locals array at index `$id` to
+the value given in the operand.
+
+#### Tee Local
+
+| Name        | Signature                   | Families | Opcode
+| ----        | ---------                   | -------- | ------
+| `tee_local` | `<$id: i32> (T) : (T)`      |          | TODO
+
+The `tee_local` instruction sets the value in the locals array at index `$id` to
+to the value given in the operand. Its return value is the value of its operand.
 
 #### Select
 
@@ -839,7 +880,7 @@ The `select` instruction returns its first operand if `$condition` is
 
 | Name        | Signature                               | Families | Opcode
 | ----        | ---------                               | -------- | ------
-| `call`      | <$callee: i32> `(*args*) : (*returns*)` | [L]      | 0x16
+| `call`      | `<$callee: i32> (*args*) : (*returns*)` | [L]      | 0x16
 
 The `call` instruction performs a [call](#calling) to the function with
 index `$callee`.
@@ -927,8 +968,7 @@ this instruction can be used to multiply either signed or unsigned values.
 | `i64.div_s` | `(i64, i64) : (i64)`        | [S]      | 0x5e   | `/s` (14)
 
 The `div_s` instruction returns the signed quotient of its operands, interpreted
-as signed integers. The quotient is silently rounded to the nearest integer
-toward zero.
+as signed. The quotient is silently rounded to the nearest integer toward zero.
 
 **Trap:** Signed overflow, when the [minimum signed integer value] is divided by
 `-1`.
@@ -943,8 +983,8 @@ toward zero.
 | `i64.div_u` | `(i64, i64) : (i64)`        | [U]      | 0x5f   | `/u` (14)
 
 The `div_u` instruction returns the unsigned quotient of its operands,
-interpreted as unsigned integers. The quotient is silently rounded to the
-nearest integer toward zero.
+interpreted as unsigned. The quotient is silently rounded to the nearest integer
+toward zero.
 
 **Trap:** Division by zero, when the right operand (the divisor) is zero.
 
@@ -956,8 +996,8 @@ nearest integer toward zero.
 | `i64.rem_s` | `(i64, i64) : (i64)`        | [S]      | 0x60   | `%s` (14)
 
 The `rem_s` instruction returns the signed remainder from a division of its
-operands interpreted as signed integers, with the result having the same sign as
-the left operand (the dividend).
+operands interpreted as signed, with the result having the same sign as the left
+operand (the dividend).
 
 **Trap:** Division by zero, when the right operand (the divisor) is zero.
 
@@ -977,7 +1017,7 @@ handling of negative numbers.
 | `i64.rem_u` | `(i64, i64) : (i64)`        | [U]      | 0x61   | `%u` (14)
 
 The `rem_u` instruction returns the unsigned remainder from a division of its
-operands interpreted as unsigned integers.
+operands interpreted as unsigned.
 
 **Trap:** Division by zero, when the right operand (the divisor) is zero.
 
@@ -1025,6 +1065,9 @@ operand, an operation sometimes called "one's complement" in other languages.
 The `shl` instruction returns the value of the first operand [shifted] to the
 left by the [shift count].
 
+> This instruction effectively performs a multiplication by two to the power
+of the shift count.
+
 #### Integer Shift Right, Signed
 
 | Name        | Signature                   | Families | Opcode | Syntax
@@ -1055,6 +1098,9 @@ right by the [shift count].
 
 > This instruction corresponds to what is sometimes called
 "logical right shift" in other languages.
+
+> This instruction effectively performs an unsigned division by two to the power
+of the shift count.
 
 #### Integer Rotate Left
 
@@ -1121,7 +1167,7 @@ number of bits in the operand type.
 
 The `popcnt` instruction returns the number of 1-bits in its operand.
 
-> This instruction is fully defined when all bits are zero; it returns 0.
+> This instruction is fully defined when all bits are zero; it returns `0`.
 
 > This instruction corresponds to what is sometimes called a
 ["hamming weight"][hamming weight] in other languages.
@@ -1236,7 +1282,7 @@ negative zero and NaN values.
 | `f32.max`   | `(f32, f32) : (f32)`        | [F]      | 0x7a
 | `f64.max`   | `(f64, f64) : (f64)`        | [F]      | 0x8e
 
-The `max` instruction returns the maximum value among its operands. For the this
+The `max` instruction returns the maximum value among its operands. For this
 instruction, negative zero is considered less than zero, and NaN values are
 considered greater than any other value.
 
@@ -1255,7 +1301,7 @@ zero and NaN values.
 | `f64.ceil`  | `(f64) : (f64)`             | [F]      | 0x92
 
 The `ceil` instruction returns the value of the operand rounded up to the
-nearest integer value.
+nearest integer.
 
 This performs the IEEE 754-2008 `roundToIntegralTowardPositive` operation.
 
@@ -1269,7 +1315,7 @@ This performs the IEEE 754-2008 `roundToIntegralTowardPositive` operation.
 | `f64.floor` | `(f64) : (f64)`             | [F]      | 0x93
 
 The `floor` instruction returns the value of the operand rounded down to the
-nearest integer value.
+nearest integer.
 
 This performs the IEEE 754-2008 `roundToIntegralTowardNegative` operation.
 
@@ -1283,7 +1329,7 @@ This performs the IEEE 754-2008 `roundToIntegralTowardNegative` operation.
 | `f64.trunc` | `(f64) : (f64)`             | [F]      | 0x94
 
 The `trunc` instruction returns the value of the operand rounded towards
-zero to the nearest integer value.
+zero to the nearest integer.
 
 This performs the IEEE 754-2008 `roundToIntegralTowardZero` operation.
 
@@ -1295,7 +1341,7 @@ This performs the IEEE 754-2008 `roundToIntegralTowardZero` operation.
 | `f64.nearest` | `(f64) : (f64)`           | [F]      | 0x95
 
 The `nearest` instruction returns the value of the operand
-[rounded to the nearest integer value](https://en.wikipedia.org/wiki/Nearest_integer_function).
+[rounded to the nearest integer](https://en.wikipedia.org/wiki/Nearest_integer_function).
 
 This performs the IEEE 754-2008 `roundToIntegralTiesToEven` operation.
 
@@ -1317,7 +1363,7 @@ ties away from zero.
 The `abs` instruction returns the absolute value of the operand.
 
 This is a bitwise instruction, so it just sets the sign bit to zero and
-preserves all other bits, even when the operand is a NaN.
+preserves all other bits, even when the operand is a NaN or a zero.
 
 This performs the IEEE 754-2008 `abs` operation.
 
@@ -1335,7 +1381,7 @@ The `neg` instruction returns the value of the operand with the sign bit
 reversed.
 
 This is a bitwise instruction, so it just inverts the sign bit and preserves all
-other bits, even when the operand is a NaN.
+other bits, even when the operand is a NaN or a zero.
 
 This performs the IEEE 754-2008 `negate` operation.
 
@@ -1389,6 +1435,9 @@ The `eq` instruction tests whether the operands are equal.
 
 The `ne` instruction tests whether the operands are not equal.
 
+> This instruction corresponds to what is sometimes called "differs" in other
+languages.
+
 #### Integer Less Than, Signed
 
 | Name        | Signature                   | Families | Opcode | Syntax
@@ -1397,7 +1446,7 @@ The `ne` instruction tests whether the operands are not equal.
 | `i64.lt_s`  | `(i64, i64) : (i32)`        | [C], [S] | 0x6a   | `<s` (11)
 
 The `lt_s` instruction tests whether the left operand is less than the right
-operand, interpreting the operands as signed values.
+operand, interpreting the operands as signed.
 
 #### Integer Less Than, Unsigned
 
@@ -1407,7 +1456,7 @@ operand, interpreting the operands as signed values.
 | `i64.lt_u`  | `(i64, i64) : (i32)`        | [C], [U] | 0x6c   | `<u` (11)
 
 The `lt_u` instruction tests whether the left operand is less than the right
-operand, interpreting the operands as unsigned values.
+operand, interpreting the operands as unsigned.
 
 #### Integer Less Than Or Equal To, Signed
 
@@ -1417,7 +1466,7 @@ operand, interpreting the operands as unsigned values.
 | `i64.le_s`  | `(i64, i64) : (i32)`        | [C], [S] | 0x6b   | `<=s` (11)
 
 The `le_s` instruction tests whether the left operand is less than or equal
-to the right operand, interpreting the operands as signed values.
+to the right operand, interpreting the operands as signed.
 
 > This instruction corresponds to what is sometimes called "at most" in other
 languages.
@@ -1430,7 +1479,7 @@ languages.
 | `i64.le_u`  | `(i64, i64) : (i32)`        | [C], [U] | 0x6d   | `<=u` (11)
 
 The `le_u` instruction tests whether the left operand is less than or equal
-to the right operand, interpreting the operands as unsigned values.
+to the right operand, interpreting the operands as unsigned.
 
 > This instruction corresponds to what is sometimes called "at most" in other
 languages.
@@ -1443,7 +1492,7 @@ languages.
 | `i64.gt_s`  | `(i64, i64) : (i32)`        | [C], [S] | 0x6e   | `>s` (11)
 
 The `gt_s` instruction tests whether the left operand is greater than the right
-operand, interpreting the operands as signed values.
+operand, interpreting the operands as signed.
 
 #### Integer Greater Than, Unsigned
 
@@ -1453,7 +1502,7 @@ operand, interpreting the operands as signed values.
 | `i64.gt_u`  | `(i64, i64) : (i32)`        | [C], [U] | 0x70   | `>u` (11)
 
 The `gt_u` instruction tests whether the left operand is greater than the right
-operand, interpreting the operands as unsigned values.
+operand, interpreting the operands as unsigned.
 
 #### Integer Greater Than Or Equal To, Signed
 
@@ -1463,7 +1512,7 @@ operand, interpreting the operands as unsigned values.
 | `i64.ge_s`  | `(i64, i64) : (i32)`        | [C], [S] | 0x6f   | `>=s` (11)
 
 The `ge_s` instruction tests whether the left operand is greater than or equal
-to the right operand, interpreting the operands as signed values.
+to the right operand, interpreting the operands as signed.
 
 > This instruction corresponds to what is sometimes called "at least" in other
 languages.
@@ -1476,7 +1525,7 @@ languages.
 | `i64.ge_u`  | `(i64, i64) : (i32)`        | [C], [U] | 0x71   | `>=u` (11)
 
 The `ge_u` instruction tests whether the left operand is greater than or equal
-to the right operand, interpreting the operands as unsigned values.
+to the right operand, interpreting the operands as unsigned.
 
 > This instruction corresponds to what is sometimes called "at least" in other
 languages.
@@ -1567,12 +1616,12 @@ This performs the IEEE 754-2008 `compareQuietGreaterEqual` operation.
 0. [Integer Wrap](#integer-wrap)
 0. [Integer Extend, Signed](#integer-extend-signed)
 0. [Integer Extend, Unsigned](#integer-extend-unsigned)
-0. [Floating-Point Truncate to Integer, Signed](#floating-point-truncate-to-integer-signed)
-0. [Floating-Point Truncate to Integer, Unsigned](#floating-point-truncate-to-integer-unsigned)
+0. [Truncate Floating-Point to Integer, Signed](#truncate-floating-point-to-integer-signed)
+0. [Truncate Floating-Point to Integer, Unsigned](#truncate-floating-point-to-integer-unsigned)
 0. [Floating-Point Demote](#floating-point demote)
 0. [Floating-Point Promote](#floating-point promote)
-0. [Integer Convert To Floating-Point, Signed](#integer-convert-to-floating-point-signed)
-0. [Integer Convert To Floating-Point, Unsigned](#integer-convert-to-floating-point-unsigned)
+0. [Convert Integer To Floating-Point, Signed](#convert-integer-to-floating-point-signed)
+0. [Convert Integer To Floating-Point, Unsigned](#convert-integer-to-floating-point-unsigned)
 0. [Reinterpret](#reinterpret)
 
 #### Integer Wrap
@@ -1586,8 +1635,9 @@ result type. Wrapping means reducing the value modulo the number of unique
 values in the result type.
 
 > This instruction corresponds to what is sometimes called an integer "truncate"
-in other languages, however WebAssembly uses "truncate" to mean discarding the
-least significant bits, while "wrap" means discarding the most significant bits.
+in other languages, however WebAssembly uses "truncate" to mean effectively
+discarding the least significant bits, while "wrap" means effectively discarding
+the most significant bits.
 
 #### Integer Extend, Signed
 
@@ -1607,7 +1657,7 @@ result type.
 The `extend_u` instruction returns the value of its operand zero-extended to its
 result type.
 
-#### Floating-Point Truncate to Integer, Signed
+#### Truncate Floating-Point to Integer, Signed
 
 | Name              | Signature             | Families | Opcode
 | ----              | ---------             | -------- | ------
@@ -1616,8 +1666,8 @@ result type.
 | `i64.trunc_s/f32` | `(f32) : (i64)`       | [F], [S] | 0xa2
 | `i64.trunc_s/f64` | `(f64) : (i64)`       | [F], [S] | 0xa3
 
-The `trunc_u` instruction returns the value of its operand, interpreted as a
-signed value, rounded toward zero to the nearest integer.
+The `trunc_s` instruction returns the value of its operand rounded toward zero
+to the nearest integer that can be represented as signed in the result type.
 
 **Trap:** Invalid Conversion, when a floating-point Invalid condition occurs,
 due to the operand being outside the range that can be converted (including NaN
@@ -1625,7 +1675,7 @@ values and infinities).
 
 This performs the IEEE 754-2008 `convertToIntegerTowardZero` operation.
 
-#### Floating-Point Truncate to Integer, Unsigned
+#### Truncate Floating-Point to Integer, Unsigned
 
 | Name              | Signature             | Families | Opcode
 | ----              | ---------             | -------- | ------
@@ -1634,8 +1684,8 @@ This performs the IEEE 754-2008 `convertToIntegerTowardZero` operation.
 | `i64.trunc_u/f32` | `(f32) : (i64)`       | [F], [U] | 0xa4
 | `i64.trunc_u/f64` | `(f64) : (i64)`       | [F], [U] | 0xa5
 
-The `trunc_u` instruction returns the value of its operand, interpreted as an
-unsigned value, rounded toward zero to the nearest integer.
+The `trunc_u` instruction returns the value of its operand rounded toward zero
+to the nearest integer that can be represented as unsigned in the result type.
 
 **Trap:** Invalid Conversion, when an Invalid condition occurs, due to the
 operand being outside the range that can be converted (including NaN values and
@@ -1667,33 +1717,33 @@ This performs the IEEE 754-2008 `convertFormat` operation.
 
 > This instruction never needs to perform rounding.
 
-#### Integer Convert To Floating-Point, Signed
+#### Convert Integer To Floating-Point, Signed
 
 | Name                | Signature           | Families | Opcode
 | ----                | ---------           | -------- | ------
-| `f32.convert_s/i32` | (i32) : (f32)       | [F], [S] | 0xa8
-| `f32.convert_s/i64` | (i64) : (f32)       | [F], [S] | 0xaa
-| `f64.convert_s/i32` | (i32) : (f64)       | [F], [S] | 0xae
-| `f64.convert_s/i64` | (i64) : (f64)       | [F], [S] | 0xb0
+| `f32.convert_s/i32` | `(i32) : (f32)`     | [F], [S] | 0xa8
+| `f32.convert_s/i64` | `(i64) : (f32)`     | [F], [S] | 0xaa
+| `f64.convert_s/i32` | `(i32) : (f64)`     | [F], [S] | 0xae
+| `f64.convert_s/i64` | `(i64) : (f64)`     | [F], [S] | 0xb0
 
-The `convert_s` instruction returns the value of its operand, interpreted as a
-signed integer, converted to the result type, rounded to the nearest
-representable value.
+The `convert_s` instruction returns the value of its operand, interpreted as
+signed, converted to the result type, rounded to the nearest representable
+value.
 
 This performs the IEEE 754-2008 `convertFromInt` operation.
 
-#### Integer Convert To Floating-Point, Unsigned
+#### Convert Integer To Floating-Point, Unsigned
 
 | Name                | Signature           | Families | Opcode
 | ----                | ---------           | -------- | ------
-| `f32.convert_u/i32` | (i32) : (f32)       | [F], [U] | 0xa9
-| `f32.convert_u/i64` | (i64) : (f32)       | [F], [U] | 0xab
-| `f64.convert_u/i32` | (i32) : (f64)       | [F], [U] | 0xaf
-| `f64.convert_u/i64` | (i64) : (f64)       | [F], [U] | 0xb1
+| `f32.convert_u/i32` | `(i32) : (f32)`     | [F], [U] | 0xa9
+| `f32.convert_u/i64` | `(i64) : (f32)`     | [F], [U] | 0xab
+| `f64.convert_u/i32` | `(i32) : (f64)`     | [F], [U] | 0xaf
+| `f64.convert_u/i64` | `(i64) : (f64)`     | [F], [U] | 0xb1
 
-The `convert_u` instruction returns the value of its operand, interpreted as an
-unsigned integer, converted to the result type, rounded to the nearest
-representable value.
+The `convert_u` instruction returns the value of its operand, interpreted as
+unsigned, converted to the result type, rounded to the nearest representable
+value.
 
 This performs the IEEE 754-2008 `convertFromInt` operation.
 
@@ -1701,10 +1751,10 @@ This performs the IEEE 754-2008 `convertFromInt` operation.
 
 | Name                  | Signature         | Families | Opcode
 | ----                  | ---------         | -------- | ------
-| `i32.reinterpret/f32` | (f32) : (i32)     |          | 0xb4
-| `i64.reinterpret/f64` | (f64) : (i64)     |          | 0xb5
-| `f32.reinterpret/i32` | (i32) : (f32)     |          | 0xad
-| `f64.reinterpret/i64` | (i64) : (f64)     |          | 0xb3
+| `i32.reinterpret/f32` | `(f32) : (i32)`   |          | 0xb4
+| `i64.reinterpret/f64` | `(f64) : (i64)`   |          | 0xb5
+| `f32.reinterpret/i32` | `(i32) : (f32)`   |          | 0xad
+| `f64.reinterpret/i64` | `(i64) : (f64)`   |          | 0xb3
 
 The `reinterpret` instruction returns a value which has the same bit-pattern as
 its operand value, in its result type.
@@ -1722,12 +1772,12 @@ instruction is always exact.
 
 #### Load
 
-| Name        | Signature                                           | Families | Opcode
-| ----        | ---------                                           | -------- | ------
-| `i32.load`  | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32) | [M], [G] | 0x2a
-| `i64.load`  | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64) | [M], [G] | 0x2b
-| `f32.load`  | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32) | [M], [Z] | 0x2c
-| `f64.load`  | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64) | [M], [Z] | 0x2d
+| Name        | Signature                                             | Families | Opcode
+| ----        | ---------                                             | -------- | ------
+| `i32.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [G] | 0x2a
+| `i64.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [G] | 0x2b
+| `f32.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [Z] | 0x2c
+| `f64.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [Z] | 0x2d
 
 The `load` instruction performs a [load](#loading) of the same size as its type.
 
@@ -1736,12 +1786,12 @@ IEEE 754-2008 `copy` operation.
 
 #### Store
 
-| Name        | Signature                                                     | Families | Opcode
-| ----        | ---------                                                     | -------- | ------
-| `i32.store` | <$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : () | [M], [G] | 0x33
-| `i64.store` | <$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : () | [M], [G] | 0x34
-| `f32.store` | <$offset: iPTR, $align: iPTR> ($base: iPTR, $value: f32) : () | [M], [F] | 0x35
-| `f64.store` | <$offset: iPTR, $align: iPTR> ($base: iPTR, $value: f64) : () | [M], [F] | 0x36
+| Name        | Signature                                                       | Families | Opcode
+| ----        | ---------                                                       | -------- | ------
+| `i32.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : ()` | [M], [G] | 0x33
+| `i64.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : ()` | [M], [G] | 0x34
+| `f32.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: f32) : ()` | [M], [F] | 0x35
+| `f64.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: f64) : ()` | [M], [F] | 0x36
 
 The `store` instruction performs a [store](#storing) of `$value` of the same
 size as its type.
@@ -1751,14 +1801,14 @@ IEEE 754-2008 `copy` operation.
 
 #### Extending Load, Signed
 
-| Name           | Signature                                           | Families | Opcode
-| ----           | ---------                                           | -------- | ------
-| `i32.load8_s`  | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32) | [M], [S] | 0x20
-| `i32.load16_s` | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32) | [M], [S] | 0x22
-|                |                                                     |          |
-| `i64.load8_s`  | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64) | [M], [S] | 0x24
-| `i64.load16_s` | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64) | [M], [S] | 0x26
-| `i64.load32_s` | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64) | [M], [S] | 0x28
+| Name           | Signature                                             | Families | Opcode
+| ----           | ---------                                             | -------- | ------
+| `i32.load8_s`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [S] | 0x20
+| `i32.load16_s` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [S] | 0x22
+|                |                                                       |          |
+| `i64.load8_s`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [S] | 0x24
+| `i64.load16_s` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [S] | 0x26
+| `i64.load32_s` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [S] | 0x28
 
 The signed extending load instructions perform a [load](#loading) of narrower
 width than their type, and return the value [sign-extended] to their type.
@@ -1768,34 +1818,34 @@ width than their type, and return the value [sign-extended] to their type.
 
 #### Extending Load, Unsigned
 
-| Name           | Signature                                           | Families | Opcode
-| ----           | ---------                                           | -------- | ------
-| `i32.load8_u`  | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32) | [M], [U] | 0x21
-| `i32.load16_u` | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32) | [M], [U] | 0x23
-|                |                                                     |          |
-| `i64.load8_u`  | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64) | [M], [U] | 0x25
-| `i64.load16_u` | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64) | [M], [U] | 0x27
-| `i64.load32_u` | <$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64) | [M], [U] | 0x29
+| Name           | Signature                                             | Families | Opcode
+| ----           | ---------                                             | -------- | ------
+| `i32.load8_u`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [U] | 0x21
+| `i32.load16_u` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [U] | 0x23
+|                |                                                       |          |
+| `i64.load8_u`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [U] | 0x25
+| `i64.load16_u` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [U] | 0x27
+| `i64.load32_u` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [U] | 0x29
 
 The unsigned extending load instructions perform a [load](#loading) of narrower
-width than their type, and return the value [zero-extended] to their type.
+width than their type, and return the value zero-extended to their type.
  - `load8_u` loads an 8-bit value.
  - `load16_u` loads a 16-bit value.
  - `load32_u` loads a 32-bit value.
 
 #### Wrapping Store
 
-| Name          | Signature                                                     | Families | Opcode
-| ----          | ---------                                                     | -------- | ------
-| `i32.store8`  | <$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : () | [M], [G] | 0x2e
-| `i32.store16` | <$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : () | [M], [G] | 0x2f
-|               |                                                               |          |
-| `i64.store8`  | <$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : () | [M], [G] | 0x30
-| `i64.store16` | <$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : () | [M], [G] | 0x31
-| `i64.store32` | <$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : () | [M], [G] | 0x32
+| Name          | Signature                                                       | Families | Opcode
+| ----          | ---------                                                       | -------- | ------
+| `i32.store8`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : ()` | [M], [G] | 0x2e
+| `i32.store16` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : ()` | [M], [G] | 0x2f
+|               |                                                                 |          |
+| `i64.store8`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : ()` | [M], [G] | 0x30
+| `i64.store16` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : ()` | [M], [G] | 0x31
+| `i64.store32` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : ()` | [M], [G] | 0x32
 
 The wrapping store instructions performs a [store](#storing) of `$value`
-silently wrapped to a narrower type.
+silently wrapped to a narrower width.
  - `store8` stores an 8-bit value.
  - `store16` stores a 16-bit value.
  - `store32` stores a 32-bit value.
@@ -1812,7 +1862,7 @@ name "wrap".
 
 | Name          | Signature                 | Families | Opcode
 | ----          | ---------                 | -------- | ------
-| `grow_memory` | (iPTR) : (iPTR)           | [R]      | 0x39
+| `grow_memory` | `(iPTR) : (iPTR)`         | [R]      | 0x39
 
 The `grow_memory` instruction increases the size of the referenced linear memory
 space by a given unsigned delta, in units of [pages]. It returns the previous
@@ -1831,7 +1881,7 @@ memory size.
 
 | Name             | Signature              | Families | Opcode
 | ----             | ---------              | -------- | ------
-| `current_memory` | () : (iPTR)            | [R]      | 0x3b
+| `current_memory` | `() : (iPTR)`          | [R]      | 0x3b
 
 The `current_memory` instruction returns the size of the referenced linear
 memory space, as an unsigned value in units of [pages].
@@ -1882,3 +1932,4 @@ memory space, as an unsigned value in units of [pages].
 [control-flow type]: #control-flow-types
 [control-flow types]: #control-flow-types
 [forwarding control-flow type]: #forwarding-control-flow-type
+[trap]: #instruction-traps
