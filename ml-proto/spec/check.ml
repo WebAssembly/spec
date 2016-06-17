@@ -241,9 +241,9 @@ let rec check_expr c et e =
     check_type out et e.at
 
 and check_exprs c ts es at =
+  require (List.length ts = List.length es) at "arity mismatch";
   let ets = List.map some ts in
-  try List.iter2 (check_expr c) ets es
-  with Invalid_argument _ -> error at "arity mismatch"
+  List.iter2 (check_expr c) ets es
 
 and check_expr_opt c et eo at =
   match is_some et, eo with

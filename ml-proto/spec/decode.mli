@@ -1,3 +1,3 @@
 exception Code of Source.region * string
 
-val decode : string -> bytes -> Ast.module_ (* raise Code *)
+val decode : string -> string -> Ast.module_ (* raise Code *)

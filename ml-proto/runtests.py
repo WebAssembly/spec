@@ -15,9 +15,17 @@ def auxFile(path):
     return path
 
 class RunTests(unittest.TestCase):
-  def _runCommand(self, command):
-    exitCode = subprocess.call(command, shell=True)
-    self.assertEqual(0, exitCode, "test runner failed with exit code %i" % exitCode)
+  def _runCommand(self, command, logPath = None, expectedExitCode = 0):
+    out = None if logPath is None else file(logPath, 'w+')
+
+    try:
+      exitCode = subprocess.call(command, shell=True, stdout=out, stderr=subprocess.STDOUT)
+      self.assertEqual(expectedExitCode, exitCode, "test runner failed with exit code %i, expected %i" % (exitCode, expectedExitCode))
+    except:
+      print(("# Failure running %s") % command)
+
+    if logPath is not None:
+      out.close()
 
   def _compareFile(self, expectedFile, actualFile):
     with open(expectedFile) as expected:
@@ -33,28 +41,34 @@ class RunTests(unittest.TestCase):
       pass
 
   def _runTestFile(self, shortName, fileName, interpreterPath):
+
+    expectedExitCode = 1 if ".fail." in fileName else 0
+
     # Run original file
     logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.log"))
-    self._runCommand(("%s %s > %s") % (interpreterPath, fileName, logPath))
+    self._runCommand(("%s %s") % (interpreterPath, fileName), logPath, expectedExitCode)
     self._compareLog(fileName, logPath)
+
+    if expectedExitCode != 0:
+      return
 
     # Convert to binary and run again
     wasmPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm"))
     logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.log"))
     self._runCommand(("%s -d %s -o %s") % (interpreterPath, fileName, wasmPath))
-    self._runCommand(("%s %s > %s") % (interpreterPath, wasmPath, logPath))
+    self._runCommand(("%s %s") % (interpreterPath, wasmPath), logPath)
 
     # Convert back to text and run again
     wastPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast"))
     logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast.log"))
     self._runCommand(("%s -d %s -o %s") % (interpreterPath, wasmPath, wastPath))
-    self._runCommand(("%s %s > %s") % (interpreterPath, wastPath, logPath))
+    self._runCommand(("%s %s ") % (interpreterPath, wastPath), logPath)
 
     #return
     # Convert back to binary once more and compare
     wasm2Path = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast.wasm"))
     self._runCommand(("%s -d %s -o %s") % (interpreterPath, wastPath, wasm2Path))
-    self._runCommand(("%s %s > %s") % (interpreterPath, wasm2Path, logPath))
+    self._runCommand(("%s %s") % (interpreterPath, wasm2Path), logPath)
     # TODO: Ultimately, the binary should stay the same, but currently desugaring gets in the way.
     # self._compareFile(wasmPath, wasm2Path)
 

@@ -1,5 +1,5 @@
 type 'a start =
-  | Module : Ast.module_ start
+  | Module : Script.definition start
   | Script : Script.script start
   | Script1 : Script.script start
 

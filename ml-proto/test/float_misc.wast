@@ -26,6 +26,8 @@
   (func $f32.floor (param $x f32) (result f32) (f32.floor (get_local $x)))
   (func $f32.trunc (param $x f32) (result f32) (f32.trunc (get_local $x)))
   (func $f32.nearest (param $x f32) (result f32) (f32.nearest (get_local $x)))
+  (func $f32.min (param $x f32) (param $y f32) (result f32) (f32.min (get_local $x) (get_local $y)))
+  (func $f32.max (param $x f32) (param $y f32) (result f32) (f32.max (get_local $x) (get_local $y)))
 
   (func $f64.add (param $x f64) (param $y f64) (result f64) (f64.add (get_local $x) (get_local $y)))
   (func $f64.sub (param $x f64) (param $y f64) (result f64) (f64.sub (get_local $x) (get_local $y)))
@@ -39,6 +41,8 @@
   (func $f64.floor (param $x f64) (result f64) (f64.floor (get_local $x)))
   (func $f64.trunc (param $x f64) (result f64) (f64.trunc (get_local $x)))
   (func $f64.nearest (param $x f64) (result f64) (f64.nearest (get_local $x)))
+  (func $f64.min (param $x f64) (param $y f64) (result f64) (f64.min (get_local $x) (get_local $y)))
+  (func $f64.max (param $x f64) (param $y f64) (result f64) (f64.max (get_local $x) (get_local $y)))
 
   (export "f32.add" $f32.add)
   (export "f32.sub" $f32.sub)
@@ -52,6 +56,8 @@
   (export "f32.floor" $f32.floor)
   (export "f32.trunc" $f32.trunc)
   (export "f32.nearest" $f32.nearest)
+  (export "f32.min" $f32.min)
+  (export "f32.max" $f32.max)
 
   (export "f64.add" $f64.add)
   (export "f64.sub" $f64.sub)
@@ -65,6 +71,8 @@
   (export "f64.floor" $f64.floor)
   (export "f64.trunc" $f64.trunc)
   (export "f64.nearest" $f64.nearest)
+  (export "f64.min" $f64.min)
+  (export "f64.max" $f64.max)
 )
 
 (assert_return (invoke "f32.add" (f32.const 1.1234567890) (f32.const 1.2345e-10)) (f32.const 1.123456789))
@@ -319,6 +327,17 @@
 (assert_return (invoke "f64.mul" (f64.const 0x1.e4d235961d543p-373) (f64.const 0x1.bc56f20ef9a48p-205)) (f64.const 0x1.a4c09efcb71d6p-577))
 (assert_return (invoke "f64.mul" (f64.const -0x1.b9612e66faba8p+77) (f64.const 0x1.e2bc6aa782273p-348)) (f64.const -0x1.a026ea4f81db1p-270))
 
+;; Test the least value with a positive square.
+(assert_return (invoke "f32.mul" (f32.const 0x1p-75) (f32.const 0x1p-75)) (f32.const 0x0p+0))
+(assert_return (invoke "f32.mul" (f32.const 0x1.000002p-75) (f32.const 0x1.000002p-75)) (f32.const 0x1p-149))
+(assert_return (invoke "f64.mul" (f64.const 0x1.6a09e667f3bccp-538) (f64.const 0x1.6a09e667f3bccp-538)) (f64.const 0x0p+0))
+(assert_return (invoke "f64.mul" (f64.const 0x1.6a09e667f3bcdp-538) (f64.const 0x1.6a09e667f3bcdp-538)) (f64.const 0x0.0000000000001p-1022))
+
+;; Test MIN * EPSILON.
+;; http://www.mpfr.org/mpfr-2.0.1/patch2
+(assert_return (invoke "f32.mul" (f32.const 0x1p-126) (f32.const 0x1p-23)) (f32.const 0x1p-149))
+(assert_return (invoke "f64.mul" (f64.const 0x1p-1022) (f64.const 0x1p-52)) (f64.const 0x0.0000000000001p-1022))
+
 (assert_return (invoke "f32.div" (f32.const 1.123456789) (f32.const 100)) (f32.const 0x1.702264p-7))
 (assert_return (invoke "f32.div" (f32.const 8391667.0) (f32.const 12582905.0)) (f32.const 0x1.55754p-1))
 (assert_return (invoke "f32.div" (f32.const 65536.0) (f32.const 0x1p-37)) (f32.const 0x1p+53))
@@ -403,6 +422,29 @@
 (assert_return (invoke "f64.div" (f64.const 0x1.cf82510d0ae6bp+89) (f64.const 0x1.0207d86498053p+97)) (f64.const 0x1.cbdc804e2cf14p-8))
 (assert_return (invoke "f64.div" (f64.const 0x1.4c82cbb508e21p-11) (f64.const -0x1.6b57208c2d5d5p+52)) (f64.const -0x1.d48e8b369129ap-64))
 
+;; Division involving the maximum subnormal value and the minimum normal value.
+(assert_return (invoke "f32.div" (f32.const 0x1p-126) (f32.const 0x1.fffffcp-127)) (f32.const 0x1.000002p+0))
+(assert_return (invoke "f32.div" (f32.const 0x1.fffffcp-127) (f32.const 0x1p-126)) (f32.const 0x1.fffffcp-1))
+(assert_return (invoke "f64.div" (f64.const 0x1p-1022) (f64.const 0x0.fffffffffffffp-1022)) (f64.const 0x1.0000000000001p+0))
+(assert_return (invoke "f64.div" (f64.const 0x0.fffffffffffffp-1022) (f64.const 0x1p-1022)) (f64.const 0x1.ffffffffffffep-1))
+
+;; Test the least value with a positive quotient with the maximum value.
+(assert_return (invoke "f32.div" (f32.const 0x1.fffffep-23) (f32.const 0x1.fffffep+127)) (f32.const 0x0p+0))
+(assert_return (invoke "f32.div" (f32.const 0x1p-22) (f32.const 0x1.fffffep+127)) (f32.const 0x1p-149))
+(assert_return (invoke "f64.div" (f64.const 0x1.fffffffffffffp-52) (f64.const 0x1.fffffffffffffp+1023)) (f64.const 0x0p+0))
+(assert_return (invoke "f64.div" (f64.const 0x1p-51) (f64.const 0x1.fffffffffffffp+1023)) (f64.const 0x0.0000000000001p-1022))
+
+;; Test the least value with a finite reciprocal.
+(assert_return (invoke "f32.div" (f32.const 1.0) (f32.const 0x1p-128)) (f32.const infinity))
+(assert_return (invoke "f32.div" (f32.const 1.0) (f32.const 0x1.000008p-128)) (f32.const 0x1.fffffp+127))
+(assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4p-1022)) (f64.const infinity))
+(assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4000000000001p-1022)) (f64.const 0x1.ffffffffffff8p+1023))
+
+;; Test the minimum positive normal number divided by the minimum positive
+;; subnormal number.
+(assert_return (invoke "f32.div" (f32.const 0x1p-126) (f32.const 0x1p-149)) (f32.const 0x1p+23))
+(assert_return (invoke "f64.div" (f64.const 0x1p-1022) (f64.const 0x0.0000000000001p-1022)) (f64.const 0x1p+52))
+
 ;; Test for bugs found in an early RISC-V implementation.
 ;; https://github.com/riscv/riscv-tests/pull/8
 (assert_return (invoke "f32.sqrt" (f32.const 0x1.56p+7)) (f32.const 0x1.a2744cp+3))
@@ -414,6 +456,10 @@
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.b15daa23924fap+402)) (f64.const 0x1.4d143db561493p+201))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.518c8e68cb753p-37)) (f64.const 0x1.9fb8ef1ad5bfdp-19))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.86d8b6518078ep-370)) (f64.const 0x1.3c5142a48fcadp-185))
+
+;; Test another sqrt case on x87.
+;; https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52593
+(assert_return (invoke "f64.sqrt" (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.fffffffffffffp-1))
 
 ;; Test for bugs found in an early RISC-V implementation.
 ;; https://github.com/riscv/riscv-tests/pull/8
@@ -525,9 +571,12 @@
 (assert_return (invoke "f32.nearest" (f32.const 0x1.000002p+23)) (f32.const 0x1.000002p+23))
 (assert_return (invoke "f32.nearest" (f32.const 0x1.000004p+23)) (f32.const 0x1.000004p+23))
 (assert_return (invoke "f32.nearest" (f32.const 0x1.fffffep-2)) (f32.const 0.0))
+(assert_return (invoke "f32.nearest" (f32.const 0x1.fffffep+47)) (f32.const 0x1.fffffep+47))
+
 (assert_return (invoke "f64.nearest" (f64.const 0x1.0000000000001p+52)) (f64.const 0x1.0000000000001p+52))
 (assert_return (invoke "f64.nearest" (f64.const 0x1.0000000000002p+52)) (f64.const 0x1.0000000000002p+52))
 (assert_return (invoke "f64.nearest" (f64.const 0x1.fffffffffffffp-2)) (f64.const 0.0))
+(assert_return (invoke "f64.nearest" (f64.const 0x1.fffffffffffffp+105)) (f64.const 0x1.fffffffffffffp+105))
 
 ;; Nearest should not round halfway cases away from zero (as C's round(3) does)
 ;; or up (as JS's Math.round does).
@@ -537,3 +586,13 @@
 (assert_return (invoke "f64.nearest" (f64.const 4.5)) (f64.const 4.0))
 (assert_return (invoke "f64.nearest" (f64.const -4.5)) (f64.const -4.0))
 (assert_return (invoke "f64.nearest" (f64.const -3.5)) (f64.const -4.0))
+
+;; Test that min and max behave properly with signaling NaNs.
+(assert_return (invoke "f32.min" (f32.const 0.0) (f32.const nan:0x200000)) (f32.const nan:0x600000))
+(assert_return (invoke "f32.min" (f32.const nan:0x200000) (f32.const 0.0)) (f32.const nan:0x600000))
+(assert_return (invoke "f32.max" (f32.const 0.0) (f32.const nan:0x200000)) (f32.const nan:0x600000))
+(assert_return (invoke "f32.max" (f32.const nan:0x200000) (f32.const 0.0)) (f32.const nan:0x600000))
+(assert_return (invoke "f64.min" (f64.const 0.0) (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
+(assert_return (invoke "f64.min" (f64.const nan:0x4000000000000) (f64.const 0.0)) (f64.const nan:0xc000000000000))
+(assert_return (invoke "f64.max" (f64.const 0.0) (f64.const nan:0x4000000000000)) (f64.const nan:0xc000000000000))
+(assert_return (invoke "f64.max" (f64.const nan:0x4000000000000) (f64.const 0.0)) (f64.const nan:0xc000000000000))

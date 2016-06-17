@@ -124,7 +124,7 @@ let implicit_decl c t at =
 
 %}
 
-%token INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
+%token NAT INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
 %token NOP DROP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL TEE_LOCAL LOAD STORE OFFSET ALIGN
@@ -136,6 +136,7 @@ let implicit_decl c t at =
 %token INPUT OUTPUT
 %token EOF
 
+%token<string> NAT
 %token<string> INT
 %token<string> FLOAT
 %token<string> TEXT
@@ -158,9 +159,16 @@ let implicit_decl c t at =
 %start script script1 module1
 %type<Script.script> script
 %type<Script.script> script1
-%type<Ast.module_> module1
+%type<Script.definition> module1
 
 %%
+
+/* Auxiliaries */
+
+text_list :
+  | TEXT { $1 }
+  | text_list TEXT { $1 ^ $2 }
+;
 
 /* Types */
 
@@ -183,12 +191,13 @@ func_type :
 /* Expressions */
 
 literal :
+  | NAT { $1 @@ at () }
   | INT { $1 @@ at () }
   | FLOAT { $1 @@ at () }
 ;
 
 var :
-  | INT { let at = at () in fun c lookup -> int_of_string $1 @@ at }
+  | NAT { let at = at () in fun c lookup -> int_of_string $1 @@ at }
   | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
 ;
 var_list :
@@ -277,25 +286,28 @@ expr_list :
 /* Functions */
 
 func_fields :
-  | expr_list
-    { empty_type,
-      fun c -> let c' = anon_label c in
-      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
+  | func_body { $1 }
+  | LPAR RESULT VALUE_TYPE RPAR func_body
+    { if (fst $5).out <> None then error (at ()) "multiple return types";
+      {(fst $5) with out = Some $3},
+      fun c -> (snd $5) c }
   | LPAR PARAM value_type_list RPAR func_fields
     { {(fst $5) with ins = $3 @ (fst $5).ins},
       fun c -> anon_locals c $3; (snd $5) c }
   | LPAR PARAM bind_var VALUE_TYPE RPAR func_fields  /* Sugar */
     { {(fst $6) with ins = $4 :: (fst $6).ins},
       fun c -> bind_local c $3; (snd $6) c }
-  | LPAR RESULT VALUE_TYPE RPAR func_fields
-    { if (fst $5).out <> None then error (at ()) "multiple return types";
-      {(fst $5) with out = Some $3},
-      fun c -> (snd $5) c }
-  | LPAR LOCAL value_type_list RPAR func_fields
+;
+func_body :
+  | expr_list
+    { empty_type,
+      fun c -> let c' = anon_label c in
+      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
+  | LPAR LOCAL value_type_list RPAR func_body
     { fst $5,
       fun c -> anon_locals c $3; let f = (snd $5) c in
         {f with locals = $3 @ f.locals} }
-  | LPAR LOCAL bind_var VALUE_TYPE RPAR func_fields  /* Sugar */
+  | LPAR LOCAL bind_var VALUE_TYPE RPAR func_body  /* Sugar */
     { fst $6,
       fun c -> bind_local c $3; let f = (snd $6) c in
         {f with locals = $4 :: f.locals} }
@@ -304,22 +316,32 @@ type_use :
   | LPAR TYPE var RPAR { $3 }
 ;
 func :
-  | LPAR FUNC type_use func_fields RPAR
+  | LPAR FUNC export_opt type_use func_fields RPAR
     { let at = at () in
-      fun c -> anon_func c; let t = explicit_decl c $3 (fst $4) at in
-        fun () -> {((snd $4) (enter_func c)) with ftype = t} @@ at }
-  | LPAR FUNC bind_var type_use func_fields RPAR  /* Sugar */
+      fun c -> anon_func c; let t = explicit_decl c $4 (fst $5) at in
+        let exs = $3 c in
+        fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at, exs }
+  | LPAR FUNC export_opt bind_var type_use func_fields RPAR  /* Sugar */
     { let at = at () in
-      fun c -> bind_func c $3; let t = explicit_decl c $4 (fst $5) at in
-        fun () -> {((snd $5) (enter_func c)) with ftype = t} @@ at }
-  | LPAR FUNC func_fields RPAR  /* Sugar */
+      fun c -> bind_func c $4; let t = explicit_decl c $5 (fst $6) at in
+        let exs = $3 c in
+        fun () -> {(snd $6 (enter_func c)) with ftype = t} @@ at, exs }
+  | LPAR FUNC export_opt func_fields RPAR  /* Sugar */
     { let at = at () in
-      fun c -> anon_func c; let t = implicit_decl c (fst $3) at in
-        fun () -> {((snd $3) (enter_func c)) with ftype = t} @@ at }
-  | LPAR FUNC bind_var func_fields RPAR  /* Sugar */
+      fun c -> anon_func c; let t = implicit_decl c (fst $4) at in
+        let exs = $3 c in
+        fun () -> {(snd $4 (enter_func c)) with ftype = t} @@ at, exs }
+  | LPAR FUNC export_opt bind_var func_fields RPAR  /* Sugar */
     { let at = at () in
-      fun c -> bind_func c $3; let t = implicit_decl c (fst $4) at in
-        fun () -> {((snd $4) (enter_func c)) with ftype = t} @@ at }
+      fun c -> bind_func c $4; let t = implicit_decl c (fst $5) at in
+        let exs = $3 c in
+        fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at, exs }
+;
+export_opt :
+  | /* empty */ { fun c -> [] }
+  | TEXT
+    { let at = at () in
+      fun c -> [{name = $1; kind = `Func (c.funcs.count - 1 @@ at)} @@ at] }
 ;
 
 
@@ -330,7 +352,7 @@ start :
     { fun c -> $3 c func }
 
 segment :
-  | LPAR SEGMENT INT TEXT RPAR
+  | LPAR SEGMENT NAT text_list RPAR
     { {Memory.addr = Int64.of_string $3; Memory.data = $4} @@ at () }
 ;
 segment_list :
@@ -339,10 +361,10 @@ segment_list :
 ;
 
 memory :
-  | LPAR MEMORY INT INT segment_list RPAR
+  | LPAR MEMORY NAT NAT segment_list RPAR
     { {min = Int64.of_string $3; max = Int64.of_string $4; segments = $5}
         @@ at () }
-  | LPAR MEMORY INT segment_list RPAR
+  | LPAR MEMORY NAT segment_list RPAR
     { {min = Int64.of_string $3; max = Int64.of_string $3; segments = $4}
         @@ at () }
 ;
@@ -391,8 +413,8 @@ module_fields :
       {memory = None; types = c.types.tlist; funcs = []; start = None; imports = [];
        exports = []; table = []} }
   | func module_fields
-    { fun c -> let f = $1 c in let m = $2 c in
-      {m with funcs = f () :: m.funcs} }
+    { fun c -> let f = $1 c in let m = $2 c in let func, exs = f () in
+      {m with funcs = func :: m.funcs; exports = exs @ m.exports} }
   | import module_fields
     { fun c -> let i = $1 c in let m = $2 c in
       {m with imports = i :: m.imports} }
@@ -414,7 +436,9 @@ module_fields :
       {m with start = Some ($1 c)} }
 ;
 module_ :
-  | LPAR MODULE module_fields RPAR { $3 (empty_context ()) @@ at () }
+  | LPAR MODULE module_fields RPAR
+    { Textual ($3 (empty_context ()) @@ at ()) @@ at() }
+  | LPAR MODULE text_list RPAR { Binary $3 @@ at() }
 ;
 
 
@@ -431,7 +455,8 @@ cmd :
   | LPAR ASSERT_TRAP LPAR INVOKE TEXT const_list RPAR TEXT RPAR
     { AssertTrap ($5, $6, $8) @@ at () }
   | LPAR INPUT TEXT RPAR { Input $3 @@ at () }
-  | LPAR OUTPUT TEXT RPAR { Output $3 @@ at () }
+  | LPAR OUTPUT TEXT RPAR { Output (Some $3) @@ at () }
+  | LPAR OUTPUT RPAR { Output None @@ at () }
 ;
 cmd_list :
   | /* empty */ { [] }

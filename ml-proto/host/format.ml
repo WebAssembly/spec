@@ -10,11 +10,26 @@ open Sexpr
 let int = string_of_int
 let int32 = Int32.to_string
 let int64 = Int64.to_string
-let string s = "\"" ^ String.escaped s ^ "\""
+
+let string s =
+  let buf = Buffer.create (String.length s + 2) in
+  Buffer.add_char buf '\"';
+  for i = 0 to String.length s - 1 do
+    let c = s.[i] in
+    if c = '\"' then
+      Buffer.add_string buf "\\\""
+    else if '\x20' <= c && c < '\x7f' then
+      Buffer.add_char buf c
+    else
+      Buffer.add_string buf (Printf.sprintf "\\%02x" (Char.code c));
+  done;
+  Buffer.add_char buf '\"';
+  Buffer.contents buf
 
 let list_of_opt = function None -> [] | Some x -> [x]
 
 let list f xs = List.map f xs
+let listi f xs = List.mapi f xs
 let opt f xo = list f (list_of_opt xo)
 
 let tab head f xs = if xs = [] then [] else [Node (head, list f xs)]
@@ -181,7 +196,7 @@ let rec expr e =
     | Nop -> "nop", []
     | Unreachable -> "unreachable", []
     | Drop e -> "drop", [expr e]
-    | Block ([], {it = Loop e}) -> "loop", [expr e]
+    | Block ([], {it = Loop e; _}) -> "loop", [expr e]
     | Block (es, e) -> "block", list expr (es @ [e])
     | Loop e -> assert false
     | Break (x, eo) -> "br " ^ var x, opt expr eo
@@ -223,12 +238,10 @@ and block e =
 
 (* Functions *)
 
-let func m f =
+let func i f =
   let {ftype; locals; body} = f.it in
-  let {ins; out} = List.nth m.it.types ftype.it in
-  Node ("func",
-    decls "param" ins @
-    decls "result" (list_of_opt out) @
+  Node ("func $" ^ string_of_int i,
+    [Node ("type " ^ var ftype, [])] @
     decls "local" locals @
     block body
   )
@@ -242,7 +255,8 @@ let table xs = tab "table" (atom var) xs
 
 let segment seg =
   let {Memory.addr; data} = seg.it in
-  Node ("segment " ^ int64 addr, [atom string data])
+  let ss = Lib.String.breakup data (!Flags.width / 2) in
+  Node ("segment " ^ int64 addr, list (atom string) ss)
 
 let memory mem =
   let {min; max; segments} = mem.it in
@@ -251,13 +265,15 @@ let memory mem =
 
 (* Modules *)
 
-let typedef t =
-  Node ("type", [struct_type t])
+let typedef i t =
+  Node ("type $" ^ string_of_int i, [struct_type t])
 
-let import im =
+let import i im =
   let {itype; module_name; func_name} = im.it in
   let ty = Node ("type " ^ var itype, []) in
-  Node ("import", [atom string module_name; atom string func_name; ty])
+  Node ("import $" ^ string_of_int i,
+    [atom string module_name; atom string func_name; ty]
+  )
 
 let export ex =
   let {name; kind} = ex.it in
@@ -269,12 +285,12 @@ let export ex =
 
 let module_ m =
   Node ("module",
-    list typedef m.it.types @
-    list import m.it.imports @
-    list export m.it.exports @
-    list (func m) m.it.funcs @
-    opt start m.it.start @
+    listi typedef m.it.types @
+    listi import m.it.imports @
+    listi func m.it.funcs @
     table m.it.table @
-    opt memory m.it.memory
+    opt memory m.it.memory @
+    list export m.it.exports @
+    opt start m.it.start
   )
 

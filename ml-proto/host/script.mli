@@ -1,13 +1,18 @@
+type definition = definition' Source.phrase
+and definition' =
+  | Textual of Ast.module_
+  | Binary of string
+
 type command = command' Source.phrase
 and command' =
-  | Define of Ast.module_
+  | Define of definition
   | Invoke of string * Kernel.literal list
-  | AssertInvalid of Ast.module_ * string
+  | AssertInvalid of definition * string
   | AssertReturn of string * Kernel.literal list * Kernel.literal option
   | AssertReturnNaN of string * Kernel.literal list
   | AssertTrap of string * Kernel.literal list * string
   | Input of string
-  | Output of string
+  | Output of string option
 
 type script = command list
 
@@ -23,3 +28,4 @@ val trace : string -> unit
 
 val input_file : (string -> bool) ref
 val output_file : (string -> Ast.module_ -> unit) ref
+val output_stdout : (Ast.module_ -> unit) ref

@@ -103,6 +103,43 @@
     (get_local $i)
   )
 
+  (func $if2 (result i32)
+    (local $i i32)
+    (set_local $i (i32.const 0))
+    (block
+      (if
+        (i32.const 1)
+        (then (br 0) (set_local $i (i32.const 666)))
+      )
+      (set_local $i (i32.add (get_local $i) (i32.const 1)))
+      (if
+        (i32.const 1)
+        (then (br 0) (set_local $i (i32.const 666)))
+        (else (set_local $i (i32.const 888)))
+      )
+      (set_local $i (i32.add (get_local $i) (i32.const 1)))
+      (if
+        (i32.const 1)
+        (then (br 0) (set_local $i (i32.const 666)))
+        (else (set_local $i (i32.const 888)))
+      )
+      (set_local $i (i32.add (get_local $i) (i32.const 1)))
+      (if
+        (i32.const 0)
+        (then (set_local $i (i32.const 888)))
+        (else (br 0) (set_local $i (i32.const 666)))
+      )
+      (set_local $i (i32.add (get_local $i) (i32.const 1)))
+      (if
+        (i32.const 0)
+        (then (set_local $i (i32.const 888)))
+        (else (br 0) (set_local $i (i32.const 666)))
+      )
+      (set_local $i (i32.add (get_local $i) (i32.const 1)))
+    )
+    (get_local $i)
+  )
+
   (func $switch (param i32) (result i32)
     (block $ret
       (i32.mul (i32.const 10)
@@ -224,6 +261,7 @@
   (export "loop4" $loop4)
   (export "loop5" $loop5)
   (export "if" $if)
+  (export "if2" $if2)
   (export "switch" $switch)
   (export "return" $return)
   (export "br_if0" $br_if0)
@@ -243,6 +281,7 @@
 (assert_return (invoke "loop4" (i32.const 8)) (i32.const 16))
 (assert_return (invoke "loop5") (i32.const 2))
 (assert_return (invoke "if") (i32.const 5))
+(assert_return (invoke "if2") (i32.const 5))
 (assert_return (invoke "switch" (i32.const 0)) (i32.const 50))
 (assert_return (invoke "switch" (i32.const 1)) (i32.const 20))
 (assert_return (invoke "switch" (i32.const 2)) (i32.const 20))

@@ -88,18 +88,19 @@ let escape = ['n''t''\\''\'''\"']
 let character =
   [^'"''\\''\x00'-'\x1f''\x7f'] | '\\'escape | '\\'hexdigit hexdigit
 
-let sign = ('+' | '-')?
-let num = sign digit+
-let hexnum = sign "0x" hexdigit+
-let int = num | hexnum
+let sign = ('+' | '-')
+let num = digit+
+let hexnum = "0x" hexdigit+
+let nat = num | hexnum
+let int = sign nat
 let float =
-    (num '.' digit*)
-  | num ('.' digit*)? ('e' | 'E') num
-  | sign "0x" hexdigit+ '.'? hexdigit* 'p' sign digit+
-  | sign "inf"
-  | sign "infinity"
-  | sign "nan"
-  | sign "nan:0x" hexdigit+
+    sign? num '.' digit*
+  | sign? num ('.' digit*)? ('e' | 'E') sign? num
+  | sign? "0x" hexdigit+ '.'? hexdigit* 'p' sign? digit+
+  | sign? "inf"
+  | sign? "infinity"
+  | sign? "nan"
+  | sign? "nan:0x" hexdigit+
 let text = '"' character* '"'
 let name = '$' (letter | digit | '_' | tick | symbol)+
 
@@ -115,6 +116,7 @@ let mem_size = "8" | "16" | "32"
 rule token = parse
   | "(" { LPAR }
   | ")" { RPAR }
+  | nat as s { NAT s }
   | int as s { INT s }
   | float as s { FLOAT s }
   | text as s { TEXT (text s) }

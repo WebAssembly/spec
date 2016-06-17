@@ -141,27 +141,30 @@ expr:
   ( current_memory )
   ( grow_memory <expr> )
 
-func:   ( func <name>? <type>? <param>* <result>? <local>* <expr>* )
-type:   ( type <var> )
+func:   ( func <name>? <sig> <local>* <expr>* )
+        ( func <string> <name>? <sig> <local>* <expr>* )  ;; = (export <string> <N>) (func <name>? <sig> <local>* <expr>*)
+sig:    ( type <var> ) | <param>* <result>?
 param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type> )
 local:  ( local <type>* ) | ( local <name> <type> )
 
-module:  ( module <type>* <func>* <import>* <export>* <table>* <memory>? <start>? )
-type:    ( type <name>? ( func <param>* <result>? ) )
-import:  ( import <name>? <string> <string> (param <type>* ) (result <type>)* )
+module:  ( module <typedef>* <func>* <import>* <export>* <table>* <memory>? <start>? ) | (module <string>+)
+typedef: ( type <name>? ( func <param>* <result>? ) )
+import:  ( import <name>? <string> <string> <sig> )
 export:  ( export <string> <var> ) | ( export <string> memory)
 start:   ( start <var> )
 table:   ( table <var>* )
 memory:  ( memory <int> <int>? <segment>* )
-segment: ( segment <int> <string> )
+segment: ( segment <int> <string>+ )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).
 
 Any form of naming via `<name>` and `<var>` (including expression labels) is merely notational convenience of this text format. The actual AST has no names, and all bindings are referred to via ordered numeric indices; consequently, names are immediately resolved in the parser and replaced by indices. Indices can also be used directly in the text format.
 
-The segment string in the memory field is used to initialize the memory at the given offset.
+A module of the form `(module <string>+)` is given in binary form and will be decoded from the (concatenation of the) strings.
+
+The segment strings in the memory field are used to initialize the consecutive memory at the given offset.
 
 Comments can be written in one of two ways:
 
@@ -189,7 +192,7 @@ cmd:
   ( assert_trap (invoke <name> <expr>* ) <failure> )   ;; assert invocation traps with given failure string
   ( assert_invalid <module> <failure> )                ;; assert invalid module with given failure string
   ( input <string> )                                   ;; read script or module from file
-  ( output <string> )                                  ;; output module to file
+  ( output <string>? )                                 ;; output module to stout or file
 ```
 
 Commands are executed in sequence. Invocation, assertions, and output apply to the most recently defined module (the _current_ module), and are only possible after a module has been defined. Note that there only ever is one current module, the different module definitions cannot interact.
