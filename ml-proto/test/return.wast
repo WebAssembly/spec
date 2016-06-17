@@ -1,10 +1,13 @@
 ;; Test `return` operator
 
 (module
-  (func "type-i32" (i32.ctz (return)))
-  (func "type-i64" (i64.ctz (return)))
-  (func "type-f32" (f32.neg (return)))
-  (func "type-f64" (f64.neg (return)))
+  ;; Auxiliary definition
+  (func $dummy)
+
+  (func "type-i32" (drop (i32.ctz (return))))
+  (func "type-i64" (drop (i64.ctz (return))))
+  (func "type-f32" (drop (f32.neg (return))))
+  (func "type-f64" (drop (f64.neg (return))))
 
   (func "nullary" (return))
   (func "unary" (result f64) (return (f64.const 3.1)))
@@ -13,36 +16,36 @@
     (return (i32.const 1)) (i32.const 2)
   )
   (func "as-func-mid" (result i32)
-    (i32.const 1) (return (i32.const 2)) (i32.const 3)
+    (call $dummy) (return (i32.const 2)) (i32.const 3)
   )
   (func "as-func-last"
-    (nop) (i32.const 1) (return)
+    (nop) (call $dummy) (return)
   )
   (func "as-func-value" (result i32)
-    (nop) (i32.const 1) (return (i32.const 3))
+    (nop) (call $dummy) (return (i32.const 3))
   )
 
   (func "as-block-first"
-    (block (return) (i32.const 2))
+    (block (return) (call $dummy))
   )
   (func "as-block-mid"
-    (block (i32.const 1) (return) (i32.const 2))
+    (block (call $dummy) (return) (call $dummy))
   )
   (func "as-block-last"
-    (block (nop) (i32.const 1) (return))
+    (block (nop) (call $dummy) (return))
   )
   (func "as-block-value" (result i32)
-    (block (nop) (i32.const 1) (return (i32.const 2)))
+    (block (nop) (call $dummy) (return (i32.const 2)))
   )
 
   (func "as-loop-first" (result i32)
     (loop (return (i32.const 3)) (i32.const 2))
   )
   (func "as-loop-mid" (result i32)
-    (loop (i32.const 1) (return (i32.const 4)) (i32.const 2))
+    (loop (call $dummy) (return (i32.const 4)) (i32.const 2))
   )
   (func "as-loop-last" (result i32)
-    (loop (nop) (i32.const 1) (return (i32.const 5)))
+    (loop (nop) (call $dummy) (return (i32.const 5)))
   )
 
   (func "as-br-value" (result i32)
@@ -271,7 +274,19 @@
 (assert_return (invoke "as-grow_memory-size") (i32.const 40))
 
 (assert_invalid
-  (module (func $type-value-void-vs-num (result f64) (return)))
+  (module (func $type-value-void-vs-empty (return (nop))))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-value-num-vs-empty (return (i32.const 0))))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-value-empty-vs-num (result f64) (return)))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-value-void-vs-num (result f64) (return (nop))))
   "type mismatch"
 )
 (assert_invalid

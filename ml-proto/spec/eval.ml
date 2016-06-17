@@ -134,7 +134,7 @@ let rec eval_expr (c : config) (e : expr) =
     Trap.error e.at "unreachable executed"
 
   | Drop e ->
-    eval_expr c e;
+    ignore (eval_expr c e);
     None
 
   | Block (es, e) ->

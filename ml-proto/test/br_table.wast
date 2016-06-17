@@ -1,15 +1,26 @@
 ;; Test `br_table` operator
 
 (module
-  (func "type-i32" (block (i32.ctz (br_table 0 0 (i32.const 0)))))
-  (func "type-i64" (block (i64.ctz (br_table 0 0 (i32.const 0)))))
-  (func "type-f32" (block (f32.neg (br_table 0 0 (i32.const 0)))))
-  (func "type-f64" (block (f64.neg (br_table 0 0 (i32.const 0)))))
+  ;; Auxiliary definition
+  (func $dummy)
 
-  (func "type-i32-value" (result i32) (block (i32.ctz (br_table 0 0 (i32.const 1) (i32.const 0)))))
-  (func "type-i64-value" (result i64) (block (i64.ctz (br_table 0 0 (i64.const 2) (i32.const 0)))))
-  (func "type-f32-value" (result f32) (block (f32.neg (br_table 0 0 (f32.const 3) (i32.const 0)))))
-  (func "type-f64-value" (result f64) (block (f64.neg (br_table 0 0 (f64.const 4) (i32.const 0)))))
+  (func "type-i32" (block (drop (i32.ctz (br_table 0 0 (i32.const 0))))))
+  (func "type-i64" (block (drop (i64.ctz (br_table 0 0 (i32.const 0))))))
+  (func "type-f32" (block (drop (f32.neg (br_table 0 0 (i32.const 0))))))
+  (func "type-f64" (block (drop (f64.neg (br_table 0 0 (i32.const 0))))))
+
+  (func "type-i32-value" (result i32)
+    (block (i32.ctz (br_table 0 0 (i32.const 1) (i32.const 0))))
+  )
+  (func "type-i64-value" (result i64)
+    (block (i64.ctz (br_table 0 0 (i64.const 2) (i32.const 0))))
+  )
+  (func "type-f32-value" (result f32)
+    (block (f32.neg (br_table 0 0 (f32.const 3) (i32.const 0))))
+  )
+  (func "type-f64-value" (result f64)
+    (block (f64.neg (br_table 0 0 (f64.const 4) (i32.const 0))))
+  )
 
   (func "empty" (param i32) (result i32)
     (block (br_table 0 (get_local 0)) (return (i32.const 21)))
@@ -32,9 +43,11 @@
 
   (func "singleton-value" (param i32) (result i32)
     (block
-      (block
-        (br_table 0 1 (i32.const 33) (get_local 0))
-        (return (i32.const 31))
+      (drop
+        (block
+          (br_table 0 1 (i32.const 33) (get_local 0))
+          (return (i32.const 31))
+        )
       )
       (i32.const 32)
     )
@@ -819,26 +832,30 @@
   )
 
   (func "as-block-first"
-    (block (br_table 0 0 0 (i32.const 0)) (i32.const 2))
+    (block (br_table 0 0 0 (i32.const 0)) (call $dummy))
   )
   (func "as-block-mid"
-    (block (i32.const 1) (br_table 0 0 0 (i32.const 0)) (i32.const 2))
+    (block (call $dummy) (br_table 0 0 0 (i32.const 0)) (call $dummy))
   )
   (func "as-block-last"
-    (block (nop) (i32.const 1) (br_table 0 0 0 (i32.const 0)))
+    (block (nop) (call $dummy) (br_table 0 0 0 (i32.const 0)))
   )
   (func "as-block-value" (result i32)
-    (block (nop) (i32.const 1) (br_table 0 0 0 (i32.const 2) (i32.const 0)))
+    (block (nop) (call $dummy) (br_table 0 0 0 (i32.const 2) (i32.const 0)))
   )
 
   (func "as-loop-first" (result i32)
-    (loop (br_table 1 0 (i32.const 3) (i32.const 0)) (i32.const 1))
+    (loop (br_table 1 1 (i32.const 3) (i32.const 0)) (i32.const 1))
   )
   (func "as-loop-mid" (result i32)
-    (loop (i32.const 1) (br_table 1 0 1 (i32.const 4) (i32.const -1)) (i32.const 2))
+    (loop
+      (call $dummy)
+      (br_table 1 1 1 (i32.const 4) (i32.const -1))
+      (i32.const 2)
+    )
   )
   (func "as-loop-last" (result i32)
-    (loop (nop) (i32.const 1) (br_table 0 1 0 (i32.const 5) (i32.const 1)))
+    (loop (nop) (call $dummy) (br_table 1 1 1 (i32.const 5) (i32.const 1)))
   )
 
   (func "as-br-value" (result i32)
@@ -984,15 +1001,18 @@
 
   (func "nested-block-value" (param i32) (result i32)
     (block
-      (i32.const -1)
+      (drop (i32.const -1))
       (i32.add
         (i32.const 1)
         (block
           (i32.add
             (i32.const 2)
             (block
-              (i32.const 4)
-              (i32.add (i32.const 8) (br_table 0 1 2 (i32.const 16) (get_local 0)))
+              (drop (i32.const 4))
+              (i32.add
+                (i32.const 8)
+                (br_table 0 1 2 (i32.const 16) (get_local 0))
+              )
             )
           )
         )
@@ -1005,10 +1025,12 @@
       (i32.add
         (i32.const 1)
         (block
-          (i32.const 2)
-          (block
-            (i32.const 4)
-            (br 0 (br_table 2 1 0 (i32.const 8) (get_local 0)))
+          (drop (i32.const 2))
+          (drop
+            (block
+              (drop (i32.const 4))
+              (br 0 (br_table 2 1 0 (i32.const 8) (get_local 0)))
+            )
           )
           (i32.const 16)
         )
@@ -1021,10 +1043,13 @@
       (i32.add
         (i32.const 1)
         (block
-          (i32.const 2)
-          (block
-            (i32.const 4)
-            (br_if 0 (br_table 0 1 2 (i32.const 8) (get_local 0)) (i32.const 1))
+          (drop (i32.const 2))
+          (drop
+            (block
+              (drop (i32.const 4))
+              (br_if 0 (br_table 0 1 2 (i32.const 8) (get_local 0)) (i32.const 1))
+              (i32.const 32)
+            )
           )
           (i32.const 16)
         )
@@ -1037,7 +1062,7 @@
       (i32.add
         (i32.const 1)
         (block
-          (i32.const 2)
+          (drop (i32.const 2))
           (br_if 0 (i32.const 4) (br_table 0 1 0 (i32.const 8) (get_local 0)))
           (i32.const 16)
         )
@@ -1050,10 +1075,13 @@
       (i32.add
         (i32.const 1)
         (block
-          (i32.const 2)
-          (block
-            (i32.const 4)
-            (br_table 0 (br_table 0 1 2 (i32.const 8) (get_local 0)) (i32.const 1))
+          (drop (i32.const 2))
+          (drop
+            (block
+              (drop (i32.const 4))
+              (br_table 0 (br_table 0 1 2 (i32.const 8) (get_local 0)) (i32.const 1))
+              (i32.const 32)
+            )
           )
           (i32.const 16)
         )
@@ -1066,7 +1094,7 @@
       (i32.add
         (i32.const 1)
         (block
-          (i32.const 2)
+          (drop (i32.const 2))
           (br_table 0 (i32.const 4) (br_table 0 1 0 (i32.const 8) (get_local 0)))
           (i32.const 16)
         )
@@ -1257,8 +1285,33 @@
 (assert_return (invoke "nested-br_table-value-index" (i32.const 9423975)) (i32.const 9))
 
 (assert_invalid
-  (module (func $type-arg-void-vs-num (result i32)
+  (module (func $type-arg-empty-vs-num (result i32)
     (block (br_table 0 (i32.const 1)) (i32.const 1))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-arg-void-vs-empty
+    (block (br_table 0 (nop) (i32.const 1)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-arg-num-vs-empty
+    (block (br_table 0 (i32.const 0) (i32.const 1)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-arg-poly-vs-empty
+    (block (br_table 0 (unreachable) (i32.const 1)))
+  ))
+  "arity mismatch"
+)
+
+(assert_invalid
+  (module (func $type-arg-void-vs-num (result i32)
+    (block (br_table 0 (nop) (i32.const 1)) (i32.const 1))
   ))
   "type mismatch"
 )

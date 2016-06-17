@@ -174,7 +174,7 @@ rule token = parse
                 (F32_store (o, (Lib.Option.get a 4), e1, e2))
                 (F64_store (o, (Lib.Option.get a 8), e1, e2))) }
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
-    { if t = "i32" && sz = "32" then error lexbuf "unknown opcode";
+    { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
       LOAD (fun (o, a, e) ->
         intop t
           (memsz sz
@@ -191,7 +191,7 @@ rule token = parse
             (ext s (I64_load32_s (o, (Lib.Option.get a 4), e))
                    (I64_load32_u (o, (Lib.Option.get a 4), e))))) }
   | (ixx as t)".store"(mem_size as sz)
-    { if t = "i32" && sz = "32" then error lexbuf "unknown opcode";
+    { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
       STORE (fun (o, a, e1, e2) ->
         intop t
           (memsz sz
@@ -383,7 +383,7 @@ rule token = parse
   | space { token lexbuf }
   | '\n' { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
-  | _ { error lexbuf "unknown opcode" }
+  | _ { error lexbuf "unknown operator" }
 
 and comment start = parse
   | ";)" { () }
