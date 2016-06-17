@@ -210,22 +210,22 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
-  let parse_hexdigit c =
-    int_of_char c -
-      if '0' <= c && '9' >= c then 0x30
-      else if 'a' <= c && 'f' >= c then 0x61 - 10
-      else if 'A' <= c && 'F' >= c then 0x41 - 10
-      else failwith "unexpected digit"
+  let parse_hexdigit = function
+    | '0' .. '9' as c ->  Char.code c - Char.code '0'
+    | 'a' .. 'f' as c ->  0xa + Char.code c - Char.code 'a'
+    | 'A' .. 'F' as c ->  0xa + Char.code c - Char.code 'A'
+    | _ ->  failwith "unexpected digit"
 
-  let neg_safe x =
-    if lt_s (sub x Rep.one) Rep.minus_one then raise Numerics.IntegerOverflow;
-    Rep.neg x
+  let parse_decdigit c =
+    if '0' > c || '9' < c then failwith "unexpected digit";
+    Rep.of_int (int_of_char c - Char.code '0')
+
+  let require b = if not b then failwith "of_string"
 
   (* This implementation allows leading signs and unsigned values *)
   let of_string x =
     let open Rep in
     let len = String.length x in
-    let require b = if not b then failwith "of_int" in
     let rec parse_hex i num =
       if i = len then num
       else begin
@@ -236,8 +236,7 @@ struct
     let rec parse_dec i num =
       if i = len then num
       else begin
-        require ('0' <= x.[i] && '9' >= x.[i]);
-        let new_digit = of_int (int_of_char x.[i] - 0x30) in
+        let new_digit = parse_decdigit x.[i] in
         require (le_u num max_upper && (num <> max_upper || le_u new_digit max_lower));
         parse_dec (i + 1) (add (mul num ten) new_digit)
       end
@@ -250,7 +249,12 @@ struct
     in
     match x.[0] with
       | '+' -> parse_int 1
-      | '-' -> neg_safe (parse_int 1)
+      | '-' ->
+        begin
+          let y = (parse_int 1) in
+          require (ge_s (sub y one) minus_one);
+          neg y
+        end
       | _ -> parse_int 0
 
   let to_string = Rep.to_string
