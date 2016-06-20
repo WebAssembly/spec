@@ -188,6 +188,10 @@ let rec check_expr c et e =
 
   | SetLocal (x, e1) ->
     check_expr c (some (local c x)) e1;
+    check_type None et e.at
+
+  | TeeLocal (x, e1) ->
+    check_expr c (some (local c x)) e1;
     check_type (Some (local c x)) et e.at
 
   | Load (memop, e1) ->

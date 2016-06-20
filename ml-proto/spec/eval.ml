@@ -197,6 +197,11 @@ let rec eval_expr (c : config) (e : expr) =
   | SetLocal (x, e1) ->
     let v1 = some (eval_expr c e1) e1.at in
     local c x := v1;
+    None
+
+  | TeeLocal (x, e1) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    local c x := v1;
     Some v1
 
   | Load ({ty; offset; align = _}, e1) ->

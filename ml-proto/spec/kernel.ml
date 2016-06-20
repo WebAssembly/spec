@@ -91,6 +91,7 @@ and expr' =
   | CallIndirect of var * expr * expr list  (* call function through table *)
   | GetLocal of var                         (* read local variable *)
   | SetLocal of var * expr                  (* write local variable *)
+  | TeeLocal of var * expr                  (* write local variable and keep value *)
   | Load of memop * expr                    (* read memory at address *)
   | Store of memop * expr * expr            (* write memory at address *)
   | LoadExtend of extop * expr              (* read memory at address and extend *)
