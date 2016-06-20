@@ -214,10 +214,10 @@ struct
     | '0' .. '9' as c ->  Char.code c - Char.code '0'
     | 'a' .. 'f' as c ->  0xa + Char.code c - Char.code 'a'
     | 'A' .. 'F' as c ->  0xa + Char.code c - Char.code 'A'
-    | _ ->  failwith "unexpected digit"
+    | _ ->  failwith "of_string"
 
   let parse_decdigit c =
-    if '0' > c || '9' < c then failwith "unexpected digit";
+    if '0' > c || '9' < c then failwith "of_string";
     Rep.of_int (int_of_char c - Char.code '0')
 
   let require b = if not b then failwith "of_string"
@@ -250,11 +250,9 @@ struct
     match x.[0] with
       | '+' -> parse_int 1
       | '-' ->
-        begin
-          let y = (parse_int 1) in
-          require (ge_s (sub y one) minus_one);
-          neg y
-        end
+        let y = (parse_int 1) in
+        require (ge_s (sub y one) minus_one);
+        neg y
       | _ -> parse_int 0
 
   let to_string = Rep.to_string
