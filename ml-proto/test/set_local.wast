@@ -27,7 +27,8 @@
 
   ;; Writing
 
-  (func "write" (param i64 f32 f64 i32 i32) (result i64) (local f32 i64 i64 f64)
+  (func "write" (param i64 f32 f64 i32 i32) (result i64)
+    (local f32 i64 i64 f64)
     (set_local 1 (f32.const -0.3))
     (set_local 3 (i32.const 40))
     (set_local 4 (i32.const -7))
