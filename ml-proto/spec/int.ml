@@ -8,6 +8,7 @@ sig
   val zero : t
   val one : t
   val minus_one : t
+  val neg : t -> t
   val shift_left : t -> int -> t
   val shift_right : t -> int -> t
   val logand : t -> t -> t
@@ -21,7 +22,6 @@ sig
   val shift_right_logical : t -> int -> t
   val of_int : int -> t
   val to_int : t -> int
-  val of_string : string -> t
   val to_string : t -> string
 
   val bitwidth : int
@@ -103,6 +103,8 @@ struct
   let to_bits x = x
 
   let zero = Rep.zero
+  let ten = Rep.of_int 10
+  let max_upper, max_lower = divrem_u Rep.minus_one ten
 
   (* add, sub, and mul are sign-agnostic and do not trap on overflow. *)
   let add = Rep.add
@@ -208,7 +210,51 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
-  let of_string = Rep.of_string
+  let parse_hexdigit = function
+    | '0' .. '9' as c ->  Char.code c - Char.code '0'
+    | 'a' .. 'f' as c ->  0xa + Char.code c - Char.code 'a'
+    | 'A' .. 'F' as c ->  0xa + Char.code c - Char.code 'A'
+    | _ ->  failwith "of_string"
+
+  let parse_decdigit c =
+    if '0' > c || '9' < c then failwith "of_string";
+    Rep.of_int (int_of_char c - Char.code '0')
+
+  let require b = if not b then failwith "of_string"
+
+  (* This implementation allows leading signs and unsigned values *)
+  let of_string x =
+    let open Rep in
+    let len = String.length x in
+    let rec parse_hex i num =
+      if i = len then num
+      else begin
+        require (le_u num (shr_u minus_one (of_int 4)));
+        parse_hex (i + 1) (logor (shift_left num 4) (of_int (parse_hexdigit x.[i])))
+      end
+    in
+    let rec parse_dec i num =
+      if i = len then num
+      else begin
+        let new_digit = parse_decdigit x.[i] in
+        require (le_u num max_upper && (num <> max_upper || le_u new_digit max_lower));
+        parse_dec (i + 1) (add (mul num ten) new_digit)
+      end
+    in
+    let parse_int i =
+      if i + 3 <= len && x.[i] = '0' && x.[i + 1] = 'x' then
+        parse_hex (i + 2) zero
+      else
+        parse_dec i zero
+    in
+    match x.[0] with
+      | '+' -> parse_int 1
+      | '-' ->
+        let y = (parse_int 1) in
+        require (ge_s (sub y one) minus_one);
+        neg y
+      | _ -> parse_int 0
+
   let to_string = Rep.to_string
 
   let of_int = Rep.of_int
