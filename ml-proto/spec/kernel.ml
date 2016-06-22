@@ -84,6 +84,7 @@ and expr' =
   | Break of var * expr option              (* break to n-th surrounding label *)
   | BreakIf of var * expr option * expr     (* conditional break *)
   | BreakTable of var list * var * expr option * expr  (* indexed break *)
+  | Return of expr option                   (* break from function body *)
   | If of expr * expr list * expr list      (* conditional *)
   | Select of expr * expr * expr            (* branchless conditional *)
   | Call of var * expr list                 (* call function *)

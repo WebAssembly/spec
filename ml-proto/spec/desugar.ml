@@ -5,56 +5,6 @@ open Memory
 open Kernel
 
 
-(* Labels *)
-
-let rec relabel f n e = relabel' f n e.it @@ e.at
-and relabel' f n = function
-  | Nop -> Nop
-  | Unreachable -> Unreachable
-  | Drop e -> Drop (relabel f n e)
-  | Block es -> Block (List.map (relabel f (n + 1)) es)
-  | Loop es -> Loop (List.map (relabel f (n + 1)) es)
-  | Break (x, eo) ->
-    Break (relabel_var f n x, Lib.Option.map (relabel f n) eo)
-  | BreakIf (x, eo, e) ->
-    BreakIf (relabel_var f n x, Lib.Option.map (relabel f n) eo, relabel f n e)
-  | BreakTable (xs, x, eo, e) ->
-    BreakTable
-      (List.map (relabel_var f n) xs, relabel_var f n x,
-       Lib.Option.map (relabel f n) eo, relabel f n e)
-  | If (e1, es1, es2) ->
-    If
-      (relabel f n e1,
-       List.map (relabel f (n + 1)) es1,
-       List.map (relabel f (n + 1)) es2)
-  | Select (e1, e2, e3) ->
-    Select (relabel f n e1, relabel f n e2, relabel f n e3)
-  | Call (x, es) -> Call (x, List.map (relabel f n) es)
-  | CallImport (x, es) -> CallImport (x, List.map (relabel f n) es)
-  | CallIndirect (x, e, es) ->
-    CallIndirect (x, relabel f n e, List.map (relabel f n) es)
-  | GetLocal x -> GetLocal x
-  | SetLocal (x, e) -> SetLocal (x, relabel f n e)
-  | TeeLocal (x, e) -> TeeLocal (x, relabel f n e)
-  | Load (memop, e) -> Load (memop, relabel f n e)
-  | Store (memop, e1, e2) -> Store (memop, relabel f n e1, relabel f n e2)
-  | LoadExtend (extop, e) -> LoadExtend (extop, relabel f n e)
-  | StoreWrap (wrapop, e1, e2) ->
-    StoreWrap (wrapop, relabel f n e1, relabel f n e2)
-  | Const c -> Const c
-  | Unary (unop, e) -> Unary (unop, relabel f n e)
-  | Binary (binop, e1, e2) -> Binary (binop, relabel f n e1, relabel f n e2)
-  | Test (testop, e) -> Test (testop, relabel f n e)
-  | Compare (relop, e1, e2) -> Compare (relop, relabel f n e1, relabel f n e2)
-  | Convert (cvtop, e) -> Convert (cvtop, relabel f n e)
-  | Host (hostop, es) -> Host (hostop, List.map (relabel f n) es)
-
-and relabel_var f n x = f n x.it @@ x.at
-
-let label e = relabel (fun n i -> if i < n then i else i + 1) 0 e
-let return e = relabel (fun n i -> if i = -1 then n else i) 0 e
-
-
 (* Expressions *)
 
 let rec expr e = expr' e.at e.it @@ e.at
@@ -73,7 +23,7 @@ and expr' at = function
   | Ast.Br_if (x, eo, e) -> BreakIf (x, Lib.Option.map expr eo, expr e)
   | Ast.Br_table (xs, x, eo, e) ->
     BreakTable (xs, x, Lib.Option.map expr eo, expr e)
-  | Ast.Return eo -> Break (-1 @@ at, Lib.Option.map expr eo)
+  | Ast.Return eo -> Return (Lib.Option.map expr eo)
   | Ast.If (e, es1, es2) -> If (expr e, List.map expr es1, List.map expr es2)
   | Ast.Select (e1, e2, e3) -> Select (expr e1, expr e2, expr e3)
 
@@ -286,7 +236,7 @@ and expr' at = function
 let rec func f = func' f.it @@ f.at
 and func' = function
   | {Ast.body = es; ftype; locals} ->
-    {body = List.map return (List.map expr es); ftype; locals}
+    {body = List.map expr es; ftype; locals}
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function

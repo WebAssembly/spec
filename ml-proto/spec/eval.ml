@@ -162,6 +162,9 @@ let rec eval_expr (c : config) (e : expr) =
     then raise (label c (List.nth xs (Int32.to_int i)) v)
     else raise (label c x v)
 
+  | Return eo ->
+    raise (Lib.List.last c.labels (eval_expr_opt c eo))
+
   | If (e1, es1, es2) ->
     let i = int32 (eval_expr c e1) e1.at in
     let module L = MakeLabel () in

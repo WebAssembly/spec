@@ -203,6 +203,7 @@ let rec expr e =
     | BreakIf (x, eo, e) -> "br_if " ^ var x, opt expr eo @ [expr e]
     | BreakTable (xs, x, eo, e) ->
       "br_table", list (atom var) (xs @ [x]) @ opt expr eo @ [expr e]
+    | Return eo -> "return", opt expr eo
     | If (e1, es1, es2) ->
       (match list expr es1, list expr es2 with
       | [sx2], [] -> "if", [expr e1; sx2]

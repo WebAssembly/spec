@@ -156,6 +156,9 @@ let rec check_expr c et e =
     check_expr_opt c (label c x) eo e.at;
     check_expr c (some Int32Type) e1
 
+  | Return eo ->
+    check_expr_opt c (known c.return) eo e.at
+
   | If (e1, es1, es2) ->
     check_expr c (some Int32Type) e1;
     let c' = {c with labels = et :: c.labels} in
