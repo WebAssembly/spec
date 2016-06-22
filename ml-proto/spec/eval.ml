@@ -137,11 +137,15 @@ let rec eval_expr (c : config) (e : expr) =
     ignore (eval_expr c e);
     None
 
-  | Block (es, e) ->
+  | Block [] ->
+    None
+
+  | Block es ->
+    let es', e = Lib.List.split_last es in 
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
     (try
-      List.iter (fun eI -> ignore (eval_expr c' eI)) es;
+      List.iter (fun eI -> ignore (eval_expr c' eI)) es';
       eval_expr c' e
     with L.Label vo -> vo)
 

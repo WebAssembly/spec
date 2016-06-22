@@ -135,9 +135,13 @@ let rec check_expr c et e =
     check_expr c (some_unknown ()) e;
     check_type None et e.at
 
-  | Block (es, e) ->
+  | Block [] ->
+    check_type None et e.at
+
+  | Block es ->
+    let es', e = Lib.List.split_last es in 
     let c' = {c with labels = et :: c.labels} in
-    List.iter (check_expr c' none) es;
+    List.iter (check_expr c' none) es';
     check_expr c' et e
 
   | Loop e1 ->

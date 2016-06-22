@@ -12,8 +12,7 @@ and relabel' f n = function
   | Nop -> Nop
   | Unreachable -> Unreachable
   | Drop e -> Drop (relabel f n e)
-  | Block (es, e) ->
-    Block (List.map (relabel f (n + 1)) es, relabel f (n + 1) e)
+  | Block es -> Block (List.map (relabel f (n + 1)) es)
   | Loop e -> Loop (relabel f (n + 1) e)
   | Break (x, eo) ->
     Break (relabel_var f n x, Lib.Option.map (relabel f n) eo)
@@ -64,10 +63,8 @@ and expr' at = function
   | Ast.Nop -> Nop
   | Ast.Unreachable -> Unreachable
   | Ast.Drop e -> Drop (expr e)
-  | Ast.Block [] -> Nop
-  | Ast.Block es ->
-    let es', e = Lib.List.split_last es in Block (List.map expr es', expr e)
-  | Ast.Loop es -> Block ([], Loop (block es) @@ at)
+  | Ast.Block es -> Block (List.map expr es)
+  | Ast.Loop es -> Block ([Loop (block es) @@ at])
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.Br_if (x, eo, e) -> BreakIf (x, Lib.Option.map expr eo, expr e)
   | Ast.Br_table (xs, x, eo, e) ->
@@ -281,16 +278,11 @@ and expr' at = function
 
 and seq = function
   | [] -> Nop @@ Source.no_region
-  | es ->
-    let es', e = Lib.List.split_last es in
-    Block (List.map expr es', expr e) @@@ List.map Source.at es
+  | es -> Block (List.map expr es) @@@ List.map Source.at es
 
 and block = function
   | [] -> Nop @@ Source.no_region
-  | es ->
-    let es', e = Lib.List.split_last es in
-    Block (List.map label (List.map expr es'), label (expr e))
-      @@@ List.map Source.at es
+  | es -> Block (List.map label (List.map expr es)) @@@ List.map Source.at es
 
 
 (* Functions and Modules *)

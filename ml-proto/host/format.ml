@@ -196,8 +196,8 @@ let rec expr e =
     | Nop -> "nop", []
     | Unreachable -> "unreachable", []
     | Drop e -> "drop", [expr e]
-    | Block ([], {it = Loop e; _}) -> "loop", [expr e]
-    | Block (es, e) -> "block", list expr (es @ [e])
+    | Block ([{it = Loop e; _}]) -> "loop", [expr e]
+    | Block es -> "block", list expr es
     | Loop e -> assert false
     | Break (x, eo) -> "br " ^ var x, opt expr eo
     | BreakIf (x, eo, e) -> "br_if " ^ var x, opt expr eo @ [expr e]
@@ -232,7 +232,7 @@ let rec expr e =
 
 and block e =
   match e.it with
-  | Block (es, e) -> list expr (es @ [e])
+  | Block es -> list expr es
   | Nop -> []
   | _ -> assert false  (* TODO *)
 

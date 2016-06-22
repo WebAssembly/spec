@@ -79,7 +79,7 @@ and expr' =
   | Nop                                     (* do nothing *)
   | Unreachable                             (* trap *)
   | Drop of expr                            (* forget a value *)
-  | Block of expr list * expr               (* execute in sequence *)
+  | Block of expr list                      (* execute in sequence *)
   | Loop of expr                            (* loop header *)
   | Break of var * expr option              (* break to n-th surrounding label *)
   | BreakIf of var * expr option * expr     (* conditional break *)
