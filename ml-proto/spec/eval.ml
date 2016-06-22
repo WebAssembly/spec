@@ -137,22 +137,15 @@ let rec eval_expr (c : config) (e : expr) =
     ignore (eval_expr c e);
     None
 
-  | Block [] ->
-    None
-
   | Block es ->
-    let es', e = Lib.List.split_last es in 
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
-    (try
-      List.iter (fun eI -> ignore (eval_expr c' eI)) es';
-      eval_expr c' e
-    with L.Label vo -> vo)
+    (try eval_block c' es with L.Label vo -> vo)
 
-  | Loop e1 ->
+  | Loop es ->
     let module L = MakeLabel () in
     let c' = {c with labels = L.label :: c.labels} in
-    (try eval_expr c' e1 with L.Label _ -> eval_expr c e)
+    (try eval_block c' es with L.Label _ -> eval_expr c e)
 
   | Break (x, eo) ->
     raise (label c x (eval_expr_opt c eo))
@@ -269,6 +262,13 @@ let rec eval_expr (c : config) (e : expr) =
   | Host (hostop, es) ->
     let vs = List.map (eval_expr c) es in
     eval_hostop c hostop vs e.at
+
+and eval_block c = function
+  | [] -> None
+  | es ->
+    let es', e = Lib.List.split_last es in 
+    List.iter (fun eI -> ignore (eval_expr c eI)) es';
+    eval_expr c e
 
 and eval_expr_opt c = function
   | Some e -> eval_expr c e

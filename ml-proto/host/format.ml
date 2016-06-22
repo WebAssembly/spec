@@ -196,7 +196,7 @@ let rec expr e =
     | Nop -> "nop", []
     | Unreachable -> "unreachable", []
     | Drop e -> "drop", [expr e]
-    | Block ([{it = Loop e; _}]) -> "loop", [expr e]
+    | Block [{it = Loop es; _}] -> "loop", list expr es
     | Block es -> "block", list expr es
     | Loop e -> assert false
     | Break (x, eo) -> "br " ^ var x, opt expr eo

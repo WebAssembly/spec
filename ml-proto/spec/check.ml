@@ -135,18 +135,13 @@ let rec check_expr c et e =
     check_expr c (some_unknown ()) e;
     check_type None et e.at
 
-  | Block [] ->
-    check_type None et e.at
-
   | Block es ->
-    let es', e = Lib.List.split_last es in 
     let c' = {c with labels = et :: c.labels} in
-    List.iter (check_expr c' none) es';
-    check_expr c' et e
+    check_block c' et es e.at
 
-  | Loop e1 ->
+  | Loop es ->
     let c' = {c with labels = none :: c.labels} in
-    check_expr c' et e1
+    check_block c' et es e.at
 
   | Break (x, eo) ->
     check_expr_opt c (label c x) eo e.at
@@ -248,6 +243,16 @@ let rec check_expr c et e =
     if has_mem then check_has_memory c e.at;
     check_exprs c ins es e.at;
     check_type out et e.at
+
+and check_block c et es at =
+  match es with
+  | [] ->
+    check_type None et at
+
+  | _ ->
+    let es', e = Lib.List.split_last es in 
+    List.iter (check_expr c none) es';
+    check_expr c et e
 
 and check_exprs c ts es at =
   require (List.length ts = List.length es) at "arity mismatch";

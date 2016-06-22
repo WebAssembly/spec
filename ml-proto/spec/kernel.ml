@@ -80,7 +80,7 @@ and expr' =
   | Unreachable                             (* trap *)
   | Drop of expr                            (* forget a value *)
   | Block of expr list                      (* execute in sequence *)
-  | Loop of expr                            (* loop header *)
+  | Loop of expr list                       (* loop header *)
   | Break of var * expr option              (* break to n-th surrounding label *)
   | BreakIf of var * expr option * expr     (* conditional break *)
   | BreakTable of var list * var * expr option * expr  (* indexed break *)
