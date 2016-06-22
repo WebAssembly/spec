@@ -52,7 +52,7 @@ and relabel' f n = function
 and relabel_var f n x = f n x.it @@ x.at
 
 let label e = relabel (fun n i -> if i < n then i else i + 1) 0 e
-let return e = relabel (fun n i -> if i = -1 then n else i) (-1) e
+let return e = relabel (fun n i -> if i = -1 then n else i) 0 e
 
 
 (* Expressions *)
@@ -280,16 +280,13 @@ and expr' at = function
   | Ast.Current_memory -> Host (CurrentMemory, [])
   | Ast.Grow_memory e -> Host (GrowMemory, [expr e])
 
-and seq = function
-  | [] -> Nop @@ Source.no_region
-  | es -> Block (List.map expr es) @@@ List.map Source.at es
-
 
 (* Functions and Modules *)
 
 let rec func f = func' f.it @@ f.at
 and func' = function
-  | {Ast.body = es; ftype; locals} -> {body = return (seq es); ftype; locals}
+  | {Ast.body = es; ftype; locals} ->
+    {body = List.map return (List.map expr es); ftype; locals}
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function

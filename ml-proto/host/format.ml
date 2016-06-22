@@ -230,12 +230,6 @@ let rec expr e =
     | Host (op, es) -> hostop op, list expr es
   in Node (head, inner)
 
-and block e =
-  match e.it with
-  | Block es -> list expr es
-  | Nop -> []
-  | _ -> assert false  (* TODO *)
-
 
 (* Functions *)
 
@@ -244,7 +238,7 @@ let func i f =
   Node ("func $" ^ string_of_int i,
     [Node ("type " ^ var ftype, [])] @
     decls "local" locals @
-    block body
+    list expr body
   )
 
 let start x = Node ("start " ^ var x, [])

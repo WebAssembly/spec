@@ -282,11 +282,12 @@ and eval_func instance f vs =
   let args = List.map ref vs in
   let vars = List.map (fun t -> ref (default_value t)) f.it.locals in
   let locals = args @ vars in
-  let c = {instance; locals; labels = []} in
+  let module L = MakeLabel () in
+  let c = {instance; locals; labels = [L.label]} in
   let ft = type_ c f.it.ftype in
   if List.length vs <> List.length ft.ins then
     Crash.error f.at "function called with wrong number of arguments";
-  eval_expr c f.it.body
+  try eval_block c f.it.body with L.Label vo -> vo
 
 
 (* Host operators *)

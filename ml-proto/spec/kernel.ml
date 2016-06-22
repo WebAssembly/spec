@@ -112,7 +112,7 @@ and func' =
 {
   ftype : var;
   locals : value_type list;
-  body : expr;
+  body : expr list;
 }
 
 

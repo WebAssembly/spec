@@ -311,8 +311,12 @@ and check_mem_type ty sz at =
 let check_func c f =
   let {ftype; locals; body} = f.it in
   let s = type_ c.types ftype in
-  let c' = {c with locals = s.ins @ locals; return = s.out} in
-  check_expr c' (known s.out) body
+  let c' =
+    {c with
+      locals = s.ins @ locals;
+      return = s.out;
+      labels = known s.out :: c.labels}
+  in check_block c' (known s.out) body f.at
 
 let check_elem c x =
   ignore (func c x)
