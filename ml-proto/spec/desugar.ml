@@ -22,7 +22,11 @@ and relabel' f n = function
     BreakTable
       (List.map (relabel_var f n) xs, relabel_var f n x,
        Lib.Option.map (relabel f n) eo, relabel f n e)
-  | If (e1, e2, e3) -> If (relabel f n e1, relabel f n e2, relabel f n e3)
+  | If (e1, es1, es2) ->
+    If
+      (relabel f n e1,
+       List.map (relabel f (n + 1)) es1,
+       List.map (relabel f (n + 1)) es2)
   | Select (e1, e2, e3) ->
     Select (relabel f n e1, relabel f n e2, relabel f n e3)
   | Call (x, es) -> Call (x, List.map (relabel f n) es)
@@ -70,7 +74,7 @@ and expr' at = function
   | Ast.Br_table (xs, x, eo, e) ->
     BreakTable (xs, x, Lib.Option.map expr eo, expr e)
   | Ast.Return eo -> Break (-1 @@ at, Lib.Option.map expr eo)
-  | Ast.If (e, es1, es2) -> If (expr e, seq es1, seq es2)
+  | Ast.If (e, es1, es2) -> If (expr e, List.map expr es1, List.map expr es2)
   | Ast.Select (e1, e2, e3) -> Select (expr e1, expr e2, expr e3)
 
   | Ast.Call (x, es) -> Call (x, List.map expr es)

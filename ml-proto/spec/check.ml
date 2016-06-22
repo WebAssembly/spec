@@ -131,8 +131,8 @@ let rec check_expr c et e =
   | Unreachable ->
     ()
 
-  | Drop e ->
-    check_expr c (some_unknown ()) e;
+  | Drop e1 ->
+    check_expr c (some_unknown ()) e1;
     check_type None et e.at
 
   | Block es ->
@@ -156,10 +156,11 @@ let rec check_expr c et e =
     check_expr_opt c (label c x) eo e.at;
     check_expr c (some Int32Type) e1
 
-  | If (e1, e2, e3) ->
+  | If (e1, es1, es2) ->
     check_expr c (some Int32Type) e1;
-    check_expr c et e2;
-    check_expr c et e3
+    let c' = {c with labels = et :: c.labels} in
+    check_block c' et es1 e.at;
+    check_block c' et es2 e.at
 
   | Select (e1, e2, e3) ->
     require (is_some et) e.at "arity mismatch";

@@ -133,8 +133,8 @@ let rec eval_expr (c : config) (e : expr) =
   | Unreachable ->
     Trap.error e.at "unreachable executed"
 
-  | Drop e ->
-    ignore (eval_expr c e);
+  | Drop e1 ->
+    ignore (eval_expr c e1);
     None
 
   | Block es ->
@@ -162,9 +162,11 @@ let rec eval_expr (c : config) (e : expr) =
     then raise (label c (List.nth xs (Int32.to_int i)) v)
     else raise (label c x v)
 
-  | If (e1, e2, e3) ->
+  | If (e1, es1, es2) ->
     let i = int32 (eval_expr c e1) e1.at in
-    eval_expr c (if i <> 0l then e2 else e3)
+    let module L = MakeLabel () in
+    let c' = {c with labels = L.label :: c.labels} in
+    (try eval_block c' (if i <> 0l then es1 else es2) with L.Label vo -> vo)
 
   | Select (e1, e2, e3) ->
     let v1 = some (eval_expr c e1) e1.at in
@@ -264,9 +266,11 @@ let rec eval_expr (c : config) (e : expr) =
     eval_hostop c hostop vs e.at
 
 and eval_block c = function
-  | [] -> None
+  | [] ->
+    None
+
   | es ->
-    let es', e = Lib.List.split_last es in 
+    let es', e = Lib.List.split_last es in
     List.iter (fun eI -> ignore (eval_expr c eI)) es';
     eval_expr c e
 
