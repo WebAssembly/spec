@@ -131,7 +131,7 @@ let rec check_expr c et e =
     check_block c' et es e.at
 
   | Loop es ->
-    let c' = {c with labels = none :: c.labels} in
+    let c' = {c with labels = none :: et :: c.labels} in
     check_block c' et es e.at
 
   | Break (x, eo) ->

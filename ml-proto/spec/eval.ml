@@ -143,9 +143,12 @@ let rec eval_expr (c : config) (e : expr) =
     (try eval_block c' es with L.Label vo -> vo)
 
   | Loop es ->
-    let module L = MakeLabel () in
-    let c' = {c with labels = L.label :: c.labels} in
-    (try eval_block c' es with L.Label _ -> eval_expr c e)
+    let module L1 = MakeLabel () in
+    let module L2 = MakeLabel () in
+    let c' = {c with labels = L2.label :: L1.label :: c.labels} in
+    (try eval_block c' es with
+    | L1.Label vo -> vo
+    | L2.Label _ -> eval_expr c e)
 
   | Break (x, eo) ->
     raise (label c x (eval_expr_opt c eo))

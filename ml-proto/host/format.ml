@@ -192,9 +192,8 @@ let rec expr e =
     | Nop -> "nop", []
     | Unreachable -> "unreachable", []
     | Drop e -> "drop", [expr e]
-    | Block [{it = Loop es; _}] -> "loop", list expr es
     | Block es -> "block", list expr es
-    | Loop e -> assert false
+    | Loop es -> "loop", list expr es
     | Break (x, eo) -> "br " ^ var x, opt expr eo
     | BreakIf (x, eo, e) -> "br_if " ^ var x, opt expr eo @ [expr e]
     | BreakTable (xs, x, eo, e) ->

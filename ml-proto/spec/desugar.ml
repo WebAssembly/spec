@@ -18,7 +18,7 @@ and expr' at = function
   | Ast.Unreachable -> Unreachable
   | Ast.Drop e -> Drop (expr e)
   | Ast.Block es -> Block (List.map expr es)
-  | Ast.Loop es -> Block [Loop (List.map expr es) @@ at]
+  | Ast.Loop es -> Loop (List.map expr es)
   | Ast.Br (x, eo) -> Break (x, Lib.Option.map expr eo)
   | Ast.Br_if (x, eo, e) -> BreakIf (x, Lib.Option.map expr eo, expr e)
   | Ast.Br_table (xs, x, eo, e) ->
