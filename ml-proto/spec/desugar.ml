@@ -227,8 +227,8 @@ and expr' at = function
   | Ast.F32_reinterpret_i32 e -> Convert (Float32 F32Op.ReinterpretInt, expr e)
   | Ast.F64_reinterpret_i64 e -> Convert (Float64 F64Op.ReinterpretInt, expr e)
 
-  | Ast.Current_memory -> Host (CurrentMemory, [])
-  | Ast.Grow_memory e -> Host (GrowMemory, [expr e])
+  | Ast.Current_memory -> CurrentMemory
+  | Ast.Grow_memory e -> GrowMemory (expr e)
 
 
 (* Functions and Modules *)

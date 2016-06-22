@@ -64,9 +64,6 @@ type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) op
 type memop = {ty : value_type; offset : Memory.offset; align : int}
 type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
 type wrapop = {memop : memop; sz : Memory.mem_size}
-type hostop =
-  | CurrentMemory        (* inquire current size of linear memory *)
-  | GrowMemory           (* grow linear memory *)
 
 
 (* Expressions *)
@@ -103,7 +100,8 @@ and expr' =
   | Test of testop * expr                   (* arithmetic test *)
   | Compare of relop * expr * expr          (* arithmetic comparison *)
   | Convert of cvtop * expr                 (* conversion *)
-  | Host of hostop * expr list              (* host interaction *)
+  | CurrentMemory                           (* size of linear memory *)
+  | GrowMemory of expr                      (* grow linear memory *)
 
 
 (* Functions *)

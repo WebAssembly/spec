@@ -179,10 +179,6 @@ let extop {memop = op; sz; ext} =
 let wrapop {memop = op; sz} =
   memop ("store" ^ mem_size sz) op
 
-let hostop = function
-  | CurrentMemory -> "current_memory"
-  | GrowMemory -> "grow_memory"
-
 
 (* Expressions *)
 
@@ -228,7 +224,8 @@ let rec expr e =
     | Test (op, e) -> testop op, [expr e]
     | Compare (op, e1, e2) -> relop op, [expr e1; expr e2]
     | Convert (op, e) -> cvtop op, [expr e]
-    | Host (op, es) -> hostop op, list expr es
+    | CurrentMemory -> "current_memory", []
+    | GrowMemory e -> "grow_memory", [expr e]
   in Node (head, inner)
 
 

@@ -99,15 +99,6 @@ let type_cvtop at = function
     | DemoteFloat64 -> error at "invalid conversion"
     ), Float64Type
 
-(*
- * This function returns a tuple of a func_type and a bool, with the bool
- * indicating whether the given function requires a memory declaration to be
- * present in the module.
- *)
-let type_hostop = function
-  | CurrentMemory -> ({ins = []; out = Some Int32Type}, true)
-  | GrowMemory -> ({ins = [Int32Type]; out = Some Int32Type}, true)
-
 
 (* Type Analysis *)
 
@@ -242,11 +233,14 @@ let rec check_expr c et e =
     check_expr c (some t1) e1;
     check_type (Some t) et e.at
 
-  | Host (hostop, es) ->
-    let {ins; out}, has_mem = type_hostop hostop in
-    if has_mem then check_has_memory c e.at;
-    check_exprs c ins es e.at;
-    check_type out et e.at
+  | CurrentMemory ->
+    check_has_memory c e.at;
+    check_type (Some Int32Type) et e.at
+
+  | GrowMemory e ->
+    check_has_memory c e.at;
+    check_expr c (some Int32Type) e;
+    check_type (Some Int32Type) et e.at
 
 and check_block c et es at =
   match es with

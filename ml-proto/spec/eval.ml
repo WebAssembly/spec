@@ -264,9 +264,25 @@ let rec eval_expr (c : config) (e : expr) =
     (try Some (Arithmetic.eval_cvtop cvtop v1)
       with exn -> arithmetic_error e.at e1.at e1.at exn)
 
-  | Host (hostop, es) ->
-    let vs = List.map (eval_expr c) es in
-    eval_hostop c hostop vs e.at
+  | CurrentMemory ->
+    let mem = memory c e.at in
+    let size = Memory.size mem in
+    assert (I64.lt_u size (Int64.of_int32 Int32.max_int));
+    Some (Int32 (Int64.to_int32 size))
+
+  | GrowMemory e1 ->
+    let mem = memory c e.at in
+    let delta = address32 (eval_expr c e1) e1.at in
+    let old_size = Memory.size mem in
+    let new_size = Int64.add old_size delta in
+    if I64.lt_u new_size old_size then
+      Trap.error e.at "memory size overflow";
+    (* Test whether the new size overflows the memory type.
+     * Since we currently only support i32, just test that. *)
+    if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
+      Trap.error e.at "memory size exceeds implementation limit";
+    Memory.grow mem delta;
+    Some (Int32 (Int64.to_int32 old_size))
 
 and eval_block c = function
   | [] ->
@@ -291,34 +307,6 @@ and eval_func instance f vs =
   if List.length vs <> List.length ft.ins then
     Crash.error f.at "function called with wrong number of arguments";
   try eval_block c f.it.body with L.Label vo -> vo
-
-
-(* Host operators *)
-
-and eval_hostop c hostop vs at =
-  match hostop, vs with
-  | CurrentMemory, [] ->
-    let mem = memory c at in
-    let size = Memory.size mem in
-    assert (I64.lt_u size (Int64.of_int32 Int32.max_int));
-    Some (Int32 (Int64.to_int32 size))
-
-  | GrowMemory, [v] ->
-    let mem = memory c at in
-    let delta = address32 v at in
-    let old_size = Memory.size mem in
-    let new_size = Int64.add old_size delta in
-    if I64.lt_u new_size old_size then
-      Trap.error at "memory size overflow";
-    (* Test whether the new size overflows the memory type.
-     * Since we currently only support i32, just test that. *)
-    if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
-      Trap.error at "memory size exceeds implementation limit";
-    Memory.grow mem delta;
-    Some (Int32 (Int64.to_int32 old_size))
-
-  | _, _ ->
-    Crash.error at "invalid invocation of host operator"
 
 
 (* Modules *)
