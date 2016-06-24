@@ -48,7 +48,7 @@ valid UTF-8 or any other format.
 
 ### Module Contents
 
-Modules contain a version [index]. Currently this number is `0xb`. The initial
+Modules contain a version [index]. Currently this number is `0xc`. The initial
 stable release of WebAssembly will set it to `0x0`.
 
 Modules also contain a sequence of sections. Each section has a [string] *name*
