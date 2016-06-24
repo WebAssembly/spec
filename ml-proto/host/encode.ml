@@ -1,6 +1,6 @@
 (* Version *)
 
-let version = 0x0b
+let version = 0x0c
 
 
 (* Encoding stream *)
@@ -85,7 +85,7 @@ let encode m =
     let expr_type t = vec1 value_type t
 
     let func_type = function
-      | {ins; out} -> u8 0x05; vec value_type ins; expr_type out
+      | {ins; out} -> u8 0x40; vec value_type ins; expr_type out
 
     (* Expressions *)
 
@@ -105,30 +105,30 @@ let encode m =
     let rec expr e =
       match e.it with
       | Nop -> op 0x00
-      | Block es -> op 0x01; list expr es; op 0x17
-      | Loop es -> op 0x02; list expr es; op 0x17
+      | Block es -> op 0x01; list expr es; op 0x0f
+      | Loop es -> op 0x02; list expr es; op 0x0f
       | If (e, es1, es2) ->
         expr e; op 0x03; list expr es1;
-        if es2 <> [] then op 0x04; list expr es2; op 0x17
+        if es2 <> [] then op 0x04; list expr es2; op 0x0f
       | Select (e1, e2, e3) -> expr e1; expr e2; expr e3; op 0x05
       | Br (x, eo) -> opt expr eo; op 0x06; arity1 eo; var x
       | Br_if (x, eo, e) -> opt expr eo; expr e; op 0x07; arity1 eo; var x
       | Br_table (xs, x, eo, e) ->
         opt expr eo; expr e; op 0x08; arity1 eo; vec var32 xs; var32 x
+      | Ast.Return eo -> nary1 eo 0x09
+      | Ast.Unreachable -> op 0x0a
 
-      | Ast.I32_const c -> op 0x0a; vs32 c.it
-      | Ast.I64_const c -> op 0x0b; vs64 c.it
-      | Ast.F32_const c -> op 0x0c; f32 c.it
-      | Ast.F64_const c -> op 0x0d; f64 c.it
+      | Ast.I32_const c -> op 0x10; vs32 c.it
+      | Ast.I64_const c -> op 0x11; vs64 c.it
+      | Ast.F32_const c -> op 0x12; f32 c.it
+      | Ast.F64_const c -> op 0x13; f64 c.it
 
-      | Ast.Get_local x -> op 0x0e; var x
-      | Ast.Set_local (x, e) -> unary e 0x0f; var x
+      | Ast.Get_local x -> op 0x14; var x
+      | Ast.Set_local (x, e) -> unary e 0x15; var x
 
-      | Ast.Call (x, es) -> nary es 0x12; var x
-      | Ast.Call_import (x, es) -> nary es 0x1f; var x
-      | Ast.Call_indirect (x, e, es) -> expr e; nary es 0x13; var x
-      | Ast.Return eo -> nary1 eo 0x14
-      | Ast.Unreachable -> op 0x15
+      | Ast.Call (x, es) -> nary es 0x16; var x
+      | Ast.Call_indirect (x, e, es) -> expr e; nary es 0x17; var x
+      | Ast.Call_import (x, es) -> nary es 0x18; var x
 
       | I32_load8_s (o, a, e) -> unary e 0x20; memop o a
       | I32_load8_u (o, a, e) -> unary e 0x21; memop o a
@@ -295,9 +295,9 @@ let encode m =
 
     let section id f x needed =
       if needed then begin
+        string id;
         let g = gap () in
         let p = pos s in
-        string id;
         f x;
         patch_gap g (pos s - p)
       end
