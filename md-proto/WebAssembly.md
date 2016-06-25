@@ -130,7 +130,7 @@ An export contains:
 **Name:** `start`
 
 The Start Section contains a function [index]. See
-[Module Execution](#module-execution) for further information.
+[Instance Execution](#instance-execution) for further information.
 
 #### Code Section
 
@@ -150,7 +150,7 @@ data to be loaded into linear memory before [Execution](#execution).
 **Name:** `name`
 
 The Names Section does not change execution semantics and a validation failure
-in this section does not cause validation for the whole module to fail and is
+in this section does not cause validation for the entire module to fail and is
 instead treated as if the section was absent.
 
 The Names Section contains an [array] of function name descriptors, which each
@@ -217,14 +217,14 @@ For the duration of the validation of a function body, several data structures
 are created:
  - A *control-flow stack*, with entries each containing
     - A [validation type](#validation-type).
-    - A *limit* value.
- - A *[type] stack*.
+    - A *limit* integer value.
+ - A *type stack*, with entries each containing a [validation type].
  - A *current position*.
 
 During function validation, if either stack is empty when an element is to be
-popped from it, or an element is accessed by index less than zero or not less
-than the stack's length, validation fails. If a [validation type] is popped from
-the type stack such that the length of the type stack becomes less than the
+popped from it, or an element is accessed by index outside the bounds of the
+stack, validation fails. Also, if a [validation type] is to be popped from the
+type stack such that the length of the type stack would become less than the
 control-flow stack top's limit value, validation fails.
 
 #### Function Validation Initialization
@@ -234,8 +234,8 @@ is not an `end`, validation fails.
 
 The current position starts at the first position. The type stack begins empty.
 The control-flow stack starts with one entry. This entry's [validation type] is
-the first return type of the function, if it has any, or `void` otherwise. Its
-limit value is zero.
+the return type of the function, if it has one, or `void` otherwise. Its limit
+value is zero.
 
 > The final `end` instruction may be implicit in some representations.
 
@@ -262,41 +262,51 @@ For each operand [type] in the instruction's signature in reverse order, a
 [validation type] is popped from the type stack and checked to match it. Each
 return type of the instruction's signature is then pushed onto the type stack.
 
-If the instruction's signture has no return types:
+If the instruction's signature has no return types:
  - If the length of the type stack is greater than the control-flow stack top's
    limit value, validation fails.
  - `void` is pushed onto the type stack.
 
+TODO: Handle unused `void` values left behind on the stack.
+
 #### Function Return Validation
 
-If the function signature has any return types, a type is popped from the type
-stack and checked to match the first return type. The type stack and the
-control-flow stack are then both checked to be empty. If no failures were
-detected anywhere in the function, function validation is successful.
+If the function signature has a return type, a type is popped from the type
+stack and checked to match the return type. The type stack and the control-flow
+stack are then both checked to be empty. If no failures were detected anywhere
+in the function, function validation is successful.
 
 
 Execution
 --------------------------------------------------------------------------------
 
-Before any code in a module can be executed, the entire module must first be
-successfully [validated](#validation).
+### Module Instantiation
 
-The contents of the [Data Section](#data-section) are loaded into linear memory.
+WebAssembly Execution requires an *instance* of a module, which contains a
+reference to the module plus additional information added during instantiation,
+which consists of the following steps:
+ - The entire module is first [validated](#validation). If there are any
+   failures, instantiation aborts and does not produce an instance.
+ - If a [Memory Section](#memory-section) is present,
+   [Linear memory is instantiated](#linear-memory-instantiation).
+ - [A recursion limit is selected](#recursion-limit).
+
+#### Linear Memory Instantiation
+
+An array of bytes with the length set to the [Memory Section](#memory-section)'s
+initial size field is added to the instance.
+
+The contents of the [Data Section](#data-section) are loaded into this array.
 Each [string] is loaded into linear memory at its associated offset.
 
-Then, the [recursion limit](#recursion-limits) values are chosen,
-[nondeterministically].
+#### Recursion Limit
 
-TODO: Describe module versus instance, and describe instantiation.
-
-### Recursion Limits
-
-The *recusion limit* is a non-negative integer value selected
-[nondeterministically] before any functions are executed.
+The *recursion limit* is a non-negative integer value selected
+[nondeterministically] during instantiation, and recorded in the instance.
 
 > This value is used by [call instructions][L].
 
-### Module Execution
+### Instance Execution
 
 If the module contains a [Start Section](#start-section), the referenced
 function is [executed](#function-execution).
@@ -304,11 +314,11 @@ function is [executed](#function-execution).
 ### Function Execution
 
 Function execution can be prompted by a [call-family instruction][L], by
-[module execution](#module-execution), or by the embedding environment.
+[instance execution](#instance-execution), or by the embedding environment.
 
 The input to execution of a function consists of:
  - The function to be executed.
- - The incoming argument values, one for each argument [type] of the function.
+ - The incoming argument values, one for each parameter [type] of the function.
  - A *recursion depth* value.
 
 For the duration of the execution of a function body, several data structures
@@ -316,9 +326,9 @@ are created:
  - A *control-flow stack*, which holds [labels] for reference from branch
    instructions.
  - A *value stack*, which carries values between instructions.
- - A *locals* array, containing an element for each argument of the function in
-   the argument's [type], as well as an element for each local declaration in
-   the function.
+ - A *locals* array, containing an element for each type in the function's
+   parameter list, followed by an element for each local declaration in the
+   function.
  - A *current position*.
 
 > Implementations need not create a literal array to store the locals, or
@@ -353,7 +363,7 @@ execution of the function is thereafter complete.
 Otherwise, [execution](#function-body-execution) is restarted with the new
 current position.
 
-**Trap:** Dynamic Resource Exhaution, if any dynamic resource used by the
+**Trap:** Dynamic Resource Exhaustion, if any dynamic resource used by the
 implementation is exhausted, at any point during function body execution.
 
 #### Labels
@@ -377,9 +387,9 @@ environment.
 #### Function Return Execution
 
 One value for each return [type] in the function signature in reverse order is
-popped from the value stack. If the function execution was prompted by a call
-instruction, these values are provided as the call's return value. Otherwise,
-they are provided to the embedding environment.
+popped from the value stack. If the function execution was prompted by a
+[call instruction][L], these values are provided as the call's return values.
+Otherwise, they are provided to the embedding environment.
 
 
 Types
@@ -439,7 +449,7 @@ Instruction Signatures
 Instruction signatures describe the explicit inputs and outputs to an
 instruction. They are described in either of the following forms:
 
- - `(` *arguments* `)` `:` `(` *returns* `)`
+ - `(` *operand types* `)` `:` `(` *returns* `)`
  - `<` *immediates* `>` `(` *operand types* `)` `:` `(` *return types* `)`
 
 *Immediates*, if present, is a list of [typed] value names, representing values
@@ -583,7 +593,7 @@ recursion depth value plus one as its recursion depth value. The return value of
 the call is defined by the execution.
 
 **Trap:** Call stack overflow, if the recursion depth value is greater than the
-[recursion limit](#recursion-limits).
+[recursion limit](#recursion-limit).
 
 > This means that implementations are not permitted to perform implicit
 opportunistic tail-call elimination.
