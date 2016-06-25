@@ -188,6 +188,25 @@ format, positions are represented with a special syntax.
 Validation
 --------------------------------------------------------------------------------
 
+### Validation Type
+
+A *validation type* is either a [type](#types), `any`, which satisfies any type
+check, or `void`, which satisfies no type check.
+
+> Validation types are only used during validation, and not during execution.
+
+> `any` is effectively serving as a kind of bottom type here, and `void` is
+effectively serving as a kind of top type here. Note that in some type theory
+contexts, it's common to use these names for exactly opposite purposes.
+
+#### Validation Type Merge
+
+To merge two validation types:
+ - If either validation type is `any`, the result is the other validation type.
+ - Otherwise, if the validation types are the same, the result is that
+   validation type.
+ - Otherwise, validation fails.
+
 ### Module Validation
 
 TODO: Describe module validation.
@@ -197,34 +216,16 @@ TODO: Describe module validation.
 For the duration of the validation of a function body, several data structures
 are created:
  - A *control-flow stack*, with entries each containing
-    - A [control-flow type](#control-flow-type).
+    - A [validation type](#validation-type).
     - A *limit* value.
  - A *[type] stack*.
  - A *current position*.
 
-During validation, if either stack is empty when an element is to be popped from
-it, or an element is accessed by index less than zero or not less than the
-stack's length, validation fails. If a value is popped from the type stack such
-that the length of the type stack becomes less than the control-flow stack top's
-limit value, validation fails.
-
-#### Control Flow Type
-
-A *control-flow type* is either a [type](#types), `any`, which satisfies any
-type check, or `void`, which satisfies no check.
-
-> `any` is effectively serving as a kind of bottom type, and `void` is
-effectively serving as a kind of top type. Note that in some type theory
-contexts, it's common to use these names for exactly opposite purposes.
-
-#### Control Flow Type Merge
-
-To merge two [control-flow types]:
- - If either control-flow type is `any`, the result is the other control flow
-   type.
- - Otherwise, if the control-flow types are the same, the result is that control
-   flow type.
- - Otherwise, validation fails.
+During function validation, if either stack is empty when an element is to be
+popped from it, or an element is accessed by index less than zero or not less
+than the stack's length, validation fails. If a [validation type] is popped from
+the type stack such that the length of the type stack becomes less than the
+control-flow stack top's limit value, validation fails.
 
 #### Function Validation Initialization
 
@@ -232,7 +233,7 @@ If the instruction sequence is empty, or if the last instruction in the sequence
 is not an `end`, validation fails.
 
 The current position starts at the first position. The type stack begins empty.
-The control-flow stack starts with one entry. This entry's control-flow type is
+The control-flow stack starts with one entry. This entry's [validation type] is
 the first return type of the function, if it has any, or `void` otherwise. Its
 limit value is zero.
 
@@ -255,17 +256,16 @@ validation of the function is thereafter complete.
 Otherwise, [validation](#function-body-validation) is restarted with the new
 current position.
 
-TODO: `unreachable`, `br`, `return`, and `br_table` return type validation.
-
 #### Generic Instruction Validation
 
-For each operand [type] in the instruction's signature in reverse order, a type
-is popped from the type stack and checked to match it. Each return type of the
-instruction's signature is then pushed onto the type stack.
+For each operand [type] in the instruction's signature in reverse order, a
+[validation type] is popped from the type stack and checked to match it. Each
+return type of the instruction's signature is then pushed onto the type stack.
 
-Then, if the instruction's signature has no return types, and the length of the
-type stack is greater than the control-flow stack top's limit value, validation
-fails.
+If the instruction's signture has no return types:
+ - If the length of the type stack is greater than the control-flow stack top's
+   limit value, validation fails.
+ - `void` is pushed onto the type stack.
 
 #### Function Return Validation
 
@@ -278,8 +278,8 @@ detected anywhere in the function, function validation is successful.
 Execution
 --------------------------------------------------------------------------------
 
-Before any code in a module can be executed, the whole module must first be
-[validated](#validation).
+Before any code in a module can be executed, the entire module must first be
+successfully [validated](#validation).
 
 The contents of the [Data Section](#data-section) are loaded into linear memory.
 Each [string] is loaded into linear memory at its associated offset.
@@ -288,9 +288,6 @@ Then, the [recursion limit](#recursion-limits) values are chosen,
 [nondeterministically].
 
 TODO: Describe module versus instance, and describe instantiation.
-
-TODO: Implementations can, nondeterministically, trap at any time, due to
-insufficient resources.
 
 ### Recursion Limits
 
@@ -443,13 +440,14 @@ Instruction signatures describe the explicit inputs and outputs to an
 instruction. They are described in either of the following forms:
 
  - `(` *arguments* `)` `:` `(` *returns* `)`
- - `<` *immediates* `>` `(` *arguments* `)` `:` `(` *returns* `)`
+ - `<` *immediates* `>` `(` *operand types* `)` `:` `(` *return types* `)`
 
 *Immediates*, if present, is a list of [typed] value names, representing values
-provided by the module itself as input to an instruction. *Arguments* is a list
-of [typed] value names representing values provided by program execution as
-input to an instruction. *Returns* is a list of [types], representing values
-computed by an instruction that are provided back to the program execution.
+provided by the module itself as input to an instruction. *Argument types* is a
+list of [typed] value names representing values provided by program execution as
+input to an instruction. *Return types* is a list of [types], representing
+values computed by an instruction that are provided back to the program
+execution.
 
 A few special constructs are used for special purposes:
  - `iPTR` is for use with a linear memory access, and signifies the integer type
@@ -557,14 +555,19 @@ entry is popped.
 > In practice, implementations may precompute the destinations of branches so
 that they don't literally need to scan in this manner.
 
-#### Forwarding Control-Flow Type
+#### Forwarding Validation Type
 
-To obtain the *forwarding control-flow type*:
- - If the type stack's length is one greater than the control-flow stack top's
-   limit value, pop a type from the type stack.
- - If the type stack's length is equal to the control-flow stack top's limit
-   value, use `void`.
- - Otherwise, validation fails.
+To obtain the *forwarding validation type*:
+ - Obtain the *forwarding arity*:
+    - If the instruction has an `$arity` immediate, use that.
+    - Otherwise, use the number of values on the stack beyond the control-flow
+      stack top's limit value.
+ - If the forwarding arity is greater than 1, validation fails.
+ - If the forwarding arity is 1, pop a [validation type] from the type stack and
+   use that.
+ - If the forwarding arity is 0, use `void`.
+ - If the new length of the type stack is not equal to the control-flow stack
+   top's limit value, validation fails.
 
 > Validation fails if there are unused entries left on the stack. The
 [`drop` instruction](#drop) can be used to discard unused values.
@@ -766,25 +769,24 @@ TODO: Describe `else`.
 
 #### Unconditional Branch
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
-| `br`        | `<$depth: i32> (T?) : (T?)` | [B]      | 0x06
+| Name        | Signature                                | Families | Opcode
+| ----        | ---------                                | -------- | ------
+| `br`        | `<$arity: i32, $depth: i32> (T?) : (T?)` | [B]      | 0x06
 
 The `br` instruction [branches](#branching) according to the control flow stack
 entry `$depth` from the top. Its return value is the value of its operand, if it
 has one.
 
-TODO: Branch arity immediates.
-
 **Validation:**
- - [Merge] the [forwarding control-flow type] into the control-flow type of the
+ - [Merge] the [forwarding validation type] into the [validation type] of the
    control-flow stack entry `$depth` from the top.
+ - Push `any` onto the type stack.
 
 #### Conditional Branch
 
-| Name        | Signature                                    | Families | Opcode
-| ----        | ---------                                    | -------- | ------
-| `br_if`     | `<$depth: i32> (T?, $condition: i32) : (T?)` | [B]      | 0x07
+| Name        | Signature                                                 | Families | Opcode
+| ----        | ---------                                                 | -------- | ------
+| `br_if`     | `<$arity: i32, $depth: i32> (T?, $condition: i32) : (T?)` | [B]      | 0x07
 
 If `$condition` is [true], the `br_if` instruction [branches](#branching)
 according to the control flow stack entry `$depth` from the top. Otherwise, it
@@ -792,19 +794,18 @@ does nothing. Its return value is the value of its first operand, if it has more
 than one.
 
 **Validation:**
- - Pop a type from the type stack and check that it is `i32`.
- - Determine the [forwarding control-flow type].
- - [Merge] it into the control-flow type of the control-flow stack entry
-   `$depth` from the top.
- - If it is not `void`, push it onto the type stack.
+ - Pop a [validation type] from the type stack and check that it is `i32`.
+ - Determine the [forwarding validation type].
+ - [Merge] it into the [validation type] of the control-flow stack entry `$depth`
+   from the top.
  - If it is `void`, and the length of the type stack is greater than the
    control-flow stack top's limit value, validation fails.
 
 #### Table Branch
 
-| Name        | Signature                                         | Families | Opcode
-| ----        | ---------                                         | -------- | ------
-| `br_table`  | `<TABLE, $default: i32> (T?, $index: i32) : (T?)` | [B]      | 0x08
+| Name        | Signature                                                      | Families | Opcode
+| ----        | ---------                                                      | -------- | ------
+| `br_table`  | `<$arity: i32, TABLE, $default: i32> (T?, $index: i32) : (T?)` | [B]      | 0x08
 
 First, the `br_table` instruction selects a depth to use. If `$index` is within
 the bounds of the table, the depth is the value of the indexed table element.
@@ -815,10 +816,11 @@ depth from the top. Its return value is the value of its first operand, if it
 has more than one.
 
 **Validation:**
- - Pop a type from the type stack and check that it is `i32`.
+ - Pop a [validation type] from the type stack and check that it is `i32`.
  - For each depth in the table and `$default`, [merge] the
-   [forwarding control-flow type] control-flow type into the control-flow type
-   of the control-flow stack entry that depth from the top.
+   [forwarding validation type] into the [validation type] of the control-flow
+   stack entry that depth from the top.
+ - Push `any` onto the type stack.
 
 > This instruction serves the role of what is sometimes called a
 ["jump table"](https://en.wikipedia.org/w/index.php?title=Jump_table) in other
@@ -829,14 +831,15 @@ other branch instructions.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `return`    | `(T?) : (T?)`               | [B]      | 0x09
+| `return`    | `<$arity: i32> (T?) : (T?)` | [B]      | 0x09
 
 The `return` instruction [branches](#branching) according to the control-flow
 stack bottom. Its return value is the value of its operand, if it has one.
 
 **Validation:**
- - [Merge] the [forwarding control-flow type] into the control-flow type of the
+ - [Merge] the [forwarding validation type] into the [validation type] of the
    control-flow stack bottom.
+ - Push `any` onto the type stack.
 
 > Implementations need not literally perform a branch before performing the
 actual function return.
@@ -848,6 +851,9 @@ actual function return.
 | `unreachable` | `() : ()`                 |          | 0x0a
 
 **Trap:** Unreachable, always.
+
+**Validation:**
+ - Push `any` onto the type stack.
 
 > The `unreachable` instruction is meant to represent code that is not meant to
 be executed except in the case of a bug in the application.
@@ -863,10 +869,9 @@ The `end` instruction pops an entry from the control-flow stack. If the entry's
 is the value of its operand, if it has one.
 
 **Validation:**
- - Determine the [forwarding control-flow type].
- - [Merge] it into the control-flow type of the control-flow stack top, and then
+ - Determine the [forwarding validation type].
+ - [Merge] it into the [validation type] of the control-flow stack top, and then
    pop the control-flow stack top.
- - If it is not `void`, push it onto the type stack.
  - If it is `void`, and the length of the type stack is greater than the (new)
    control-flow stack top's limit value, validation fails.
 
@@ -2013,7 +2018,7 @@ memory space, as an unsigned value in units of [pages].
 [little-endian byte order]: https://en.wikipedia.org/wiki/Endianness#Little.
 [accessed bytes]: #accessed-bytes
 [pop]: #type-stack-pop
-[merge]: #control-flow-type-merge
+[merge]: #validation-type-merge
 [index]: #index
 [array]: #array
 [string]: #string
@@ -2021,9 +2026,9 @@ memory space, as an unsigned value in units of [pages].
 [type]: #types
 [types]: #types
 [typed]: #types
-[control-flow type]: #control-flow-types
-[control-flow types]: #control-flow-types
-[forwarding control-flow type]: #forwarding-control-flow-type
+[validation type]: #validation-types
+[validation types]: #validation-types
+[forwarding validation type]: #forwarding-validation-type
 [trap]: #instruction-traps
 [rotated]: https://en.wikipedia.org/wiki/Bitwise_operation#Rotate_no_carry
 [nondeterministic]: #nondeterminism
