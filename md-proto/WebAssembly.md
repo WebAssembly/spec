@@ -79,7 +79,7 @@ a *return list*, also an [array] of [types].
 The return list must have at most one element.
 
 > In the future, this section may contain other forms of type entries as well,
-and support for signatures with multiple return types.
+and support for function signatures with multiple return types.
 
 #### Import Section
 
@@ -89,7 +89,7 @@ The Import Section contains an [array] of all imports that will be used in the
 module.
 
 Each import contains:
- - a *signature index*, identifying a signature in the
+ - a *signature index*, identifying a function signature in the
    [Type Section](#type-section).
  - a *module string*, identifying a module to import from.
  - a *function string*, identifying a function inside that module to import.
@@ -252,15 +252,16 @@ If the current position is now past the end of the sequence,
 [function return validation](#function-return-validation) is initiated and
 validation of the function is thereafter complete.
 
-Otherwise, [validation](#function-body-validation) is resumed.
+Otherwise, [validation](#function-body-validation) is restarted with the new
+current position.
 
 TODO: `unreachable`, `br`, `return`, and `br_table` return type validation.
 
 #### Generic Instruction Validation
 
-For each operand [type] in the instruction's signature in reverse order, a
-type is popped from the type stack and checked to match it. Each return type of
-the instruction's signature is then pushed onto the type stack.
+For each operand [type] in the instruction's signature in reverse order, a type
+is popped from the type stack and checked to match it. Each return type of the
+instruction's signature is then pushed onto the type stack.
 
 Then, if the instruction's signature has no return types, and the length of the
 type stack is greater than the control-flow stack top's limit value, validation
@@ -352,7 +353,11 @@ If the current position is now past the end of the sequence,
 [function return execution](#function-return-execution) is initiated and
 execution of the function is thereafter complete.
 
-Otherwise, [execution](#function-body-execution) is resumed.
+Otherwise, [execution](#function-body-execution) is restarted with the new
+current position.
+
+**Trap:** Dynamic Resource Exhaution, if any dynamic resource used by the
+implementation is exhausted, at any point during function body execution.
 
 #### Labels
 
@@ -577,8 +582,6 @@ the call is defined by the execution.
 **Trap:** Call stack overflow, if the recursion depth value is greater than the
 [recursion limit](#recursion-limits).
 
-TODO: Trap on `indirect_call` caller/callee type mismatch.
-
 > This means that implementations are not permitted to perform implicit
 opportunistic tail-call elimination.
 
@@ -589,6 +592,17 @@ independently. In this way, calls form a stack-like data structure called the
 
 > Implementations need not pass a literal argument to represent the recursion
 depth.
+
+#### Call Validation
+
+If the sequence of the types of the `*args*` operands, excluding `$callee` when
+present, isn't identical to the sequence of types in parameter list of the
+callee signature, validation fails.
+
+If the sequence of the types of `*returns*` isn't identical to the sequence of
+types in the return list of the callee signature, validation fails.
+
+[Generic validation](#generic-instruction-validation) is also performed.
 
 ### C: Comparison Instruction Family
 
@@ -945,18 +959,25 @@ its second operand otherwise.
 The `call` instruction performs a [call](#calling) to the function with index
 `$callee`.
 
-TODO: Validate caller/callee type match.
+Validation:
+ - [Call validation](#call-validation) is performed; the callee signature is the
+   signature of the indexed function.
 
 #### Indirect Call
 
-| Name            | Signature                              | Families | Opcode
-| ----            | ---------                              | -------- | ------
-| `call_indirect` | `($callee: i32, *args*) : (*returns*)` | [L]      | 0x17
+| Name            | Signature                                                | Families | Opcode
+| ----            | ---------                                                | -------- | ------
+| `call_indirect` | `<$signature: i32> ($callee: i32, *args*) : (*returns*)` | [L]      | 0x17
 
 The `call_indirect` instruction performs a [call](#calling) to the function with
 index `$callee`.
 
-TODO: Add the function signature immediate and validate it.
+**Trap:** Indirect Call Type Mismatch, if the signature of the function with
+index `$callee` differs from `$signature`.
+
+Validation:
+ - [Call validation](#call-validation) is performed; the callee signature is the
+   signature with index `$signature` in the [Type Section](#type-section).
 
 ### Integer Instructions
 
