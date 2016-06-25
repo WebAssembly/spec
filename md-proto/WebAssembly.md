@@ -177,7 +177,7 @@ corresponding to known sections above. They have no semantic effect.
 Function bodies contain an [array] of [types], which are declarations for
 locals, and a sequence of instructions.
 
-##### Positions Within A Function Body
+#### Positions Within A Function Body
 
 A *position* within a function refers to an element of the instruction sequence.
 
@@ -293,12 +293,10 @@ insufficient resources.
 
 ### Recursion Limits
 
-The following two values are chosen before any functions are executed:
+The *recusion limit* is a non-negative integer value selected
+[nondeterministically] before any functions are executed.
 
- - A *recursion increment*.
- - A *recursion limit*.
-
-> These values are used by [call instructions][L].
+> This value is used by [call instructions][L].
 
 ### Module Execution
 
@@ -571,13 +569,15 @@ To obtain the *forwarding control-flow type*:
 #### Calling
 
 The called function &mdash; the *callee* &mdash; is
-[executed](#function-execution), with the `*args*` operands passed to it as its
-incoming arguments, and the current recursion depth value plus the value of the
-[recursion increment](#recursion-limits) as its recursion depth value. The
-return value of the call is defined by the execution.
+[executed](#function-execution), with the `*args*` operands, excluding
+`$callee` when present, passed to it as its incoming arguments, and the current
+recursion depth value plus one as its recursion depth value. The return value of
+the call is defined by the execution.
 
 **Trap:** Call stack overflow, if the recursion depth value is greater than the
 [recursion limit](#recursion-limits).
+
+TODO: Trap on `indirect_call` caller/callee type mismatch.
 
 > This means that implementations are not permitted to perform implicit
 opportunistic tail-call elimination.
@@ -945,6 +945,8 @@ its second operand otherwise.
 The `call` instruction performs a [call](#calling) to the function with index
 `$callee`.
 
+TODO: Validate caller/callee type match.
+
 #### Indirect Call
 
 | Name            | Signature                              | Families | Opcode
@@ -953,6 +955,8 @@ The `call` instruction performs a [call](#calling) to the function with index
 
 The `call_indirect` instruction performs a [call](#calling) to the function with
 index `$callee`.
+
+TODO: Add the function signature immediate and validate it.
 
 ### Integer Instructions
 
