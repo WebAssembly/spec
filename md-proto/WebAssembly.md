@@ -15,6 +15,7 @@ Module
 
 0. [Module Types](#module-types)
 0. [Module Contents](#module-contents)
+0. [Known Sections](#known-sections)
 
 ### Module Types
 
@@ -48,11 +49,24 @@ valid UTF-8 or any other format.
 
 ### Module Contents
 
-Modules contain a version [index]. Currently this number is `0xc`. The initial
-stable release of WebAssembly will set it to `0x0`.
+Modules contain a version [index].
 
 Modules also contain a sequence of sections. Each section has a [string] *name*
 and associated data.
+
+**Validation:**
+ - The version index is checked to be equal to `0xc`.
+ - For each present [known section](#known-sections), the associated
+   **Validation** clause is performed, if present.
+ - Present known sections are checked to be ordered in the section sequence as
+   they are ordered in the [enumeration of the Known Sections](#known-sections).
+
+> Some representations do not represent some of the known sections literally;
+they may be combined with other sections or implied by specialized syntax.
+
+> The initial release of WebAssembly will use an expected version of `0x0`.
+
+### Known Sections
 
 There are several *known sections*:
 
@@ -73,10 +87,11 @@ There are several *known sections*:
 The Type Section contains an [array] of all function signatures that will be
 used in the module.
 
-Each function signature contains a *parameter list*, an [array] of [types], and
-a *return list*, also an [array] of [types].
+Each *function signature* contains a *parameter list*, an [array] of [types],
+and a *return list*, also an [array] of [types].
 
-The return list must have at most one element.
+**Validation:**
+ - The return list of each array element is checked to have at most one element.
 
 > In the future, this section may contain other forms of type entries as well,
 and support for function signatures with multiple return types.
@@ -94,13 +109,23 @@ Each import contains:
  - a *module string*, identifying a module to import from.
  - a *function string*, identifying a function inside that module to import.
 
+**Validation:**
+ - The signature index of each array element is checked to be within the bounds
+   of the [Type Section](#type-section) array.
+
 #### Function Section
 
 **Name:** `function`
 
 The Function Section contains an [array] with elements directly corresponding to
-functions defined in the [Code Section](#code-section)), each containing the
+functions defined in the [Code Section](#code-section), each containing the
 index in the [Type Section](#type-section) of the signature of the function.
+
+**Validation:**
+ - The array is checked to be the same length as the array in the
+   [Code Section](#code-section).
+ - Each array element is checked to be within the bounds of the
+   [Type Section](#type-section) array.
 
 #### Memory Section
 
@@ -114,6 +139,9 @@ The Memory Section contains:
  - An *exported* flag, which is a boolean value indicating whether the memory is
    visible outside the module.
 
+**Validation:**
+ - The maximum size is checked to be at least the initial size.
+
 #### Export Section
 
 **Name:** `export`
@@ -125,6 +153,10 @@ An export contains:
  - a *function string*, which is the [string] name to export the indexed
    function as.
 
+**Validation:**
+ - The function index of each array element is checked to be within the bounds
+   of the [Code Section](#code-section) array.
+
 #### Start Section
 
 **Name:** `start`
@@ -132,26 +164,48 @@ An export contains:
 The Start Section contains a function [index]. See
 [Instance Execution](#instance-execution) for further information.
 
+**Validation:**
+ - The index is checked to be within the bounds of the
+   [Code Section](#code-section) array.
+
 #### Code Section
 
 **Name:** `code`
 
-The Code Section contains an [array] of [function bodies](#function-bodies).
+The Code Section contains an [array] of function bodies.
+
+A *function body* contains an [array] of [types], which are declarations for
+locals, and a sequence of [instructions](#instructions).
+
+> Validation of function bodies is specified [separately](#function-validation).
+
+##### Positions Within A Function Body
+
+A *position* within a function refers to an element of the instruction sequence.
+
+> In the binary encoding, positions are represented as byte offsets; in the text
+format, positions are represented with a special syntax.
 
 #### Data Section
 
 **Name:** `data`
 
 The Data Section contains an [array] of [string] and offset pairs describing
-data to be loaded into linear memory before [Execution](#execution).
+data to be loaded into linear memory as part of
+[linear memory instantiation](#linear-memory-instantiation).
+
+**Validation:**
+ - For each element of the array, the sum of the offset and the length of the
+   string is checked to be less than the initial size declared in the
+   [Memory Section](#memory-section).
 
 #### Name Section
 
 **Name:** `name`
 
-The Names Section does not change execution semantics and a validation failure
-in this section does not cause validation for the entire module to fail and is
-instead treated as if the section was absent.
+The Names Section does not change execution semantics and malformed constructs,
+such as out-of-bounds indices, in this section cause the section to be ignored,
+and do not trigger validation failures.
 
 The Names Section contains an [array] of function name descriptors, which each
 describe names for the function with the corresponding index in the module, and
@@ -163,53 +217,25 @@ which contain:
 in the text format it may be represented as an integrated part of the syntax for
 functions rather than as a discrete section.
 
-> The expectation is that, when a binary WebAssembly module is viewed in a
-browser or other development environment, the names in this section will be used
-as the names of functions and locals in the [text format](TextFormat.md).
-
-### Unknown Sections
-
-Modules may also contain unknown sections, with names other than those
-corresponding to known sections above. They have no semantic effect.
-
-### Function Bodies
-
-Function bodies contain an [array] of [types], which are declarations for
-locals, and a sequence of instructions.
-
-#### Positions Within A Function Body
-
-A *position* within a function refers to an element of the instruction sequence.
-
-> In the binary encoding, positions are represented as byte offsets; in the text
-format, positions are represented with a special syntax.
+> The expectation is that, when a binary WebAssembly module is presented in a
+human-readable format in a browser or other development environment, the names
+in this section will be used as the names of functions and locals in the
+[text format](TextFormat.md).
 
 
 Validation
 --------------------------------------------------------------------------------
 
-### Validation Type
-
-A *validation type* is either a [type](#types), `any`, which satisfies any type
-check, or `void`, which satisfies no type check.
-
-> Validation types are only used during validation, and not during execution.
-
-> `any` is effectively serving as a kind of bottom type here, and `void` is
-effectively serving as a kind of top type here. Note that in some type theory
-contexts, it's common to use these names for exactly opposite purposes.
-
-#### Validation Type Merge
-
-To merge two validation types:
- - If either validation type is `any`, the result is the other validation type.
- - Otherwise, if the validation types are the same, the result is that
-   validation type.
- - Otherwise, validation fails.
+0. [Module Validation](#module-validation)
+0. [Function Validation](#function-validation)
 
 ### Module Validation
 
-TODO: Describe module validation.
+Validation of a module entails performing the **Validation** clause of the
+[top-level module description](#module-contents).
+
+Then, if the module contains a [Code Section](#code-section), each function body
+in the section is [validated](#function-validation).
 
 ### Function Validation
 
@@ -226,6 +252,26 @@ popped from it, or an element is accessed by index outside the bounds of the
 stack, validation fails. Also, if a [validation type] is to be popped from the
 type stack such that the length of the type stack would become less than the
 control-flow stack top's limit value, validation fails.
+
+#### Validation Type
+
+A *validation type* is either a [type](#types), `any`, which satisfies any type
+check, or `void`, which satisfies no type check.
+
+> Validation types are only used during function validation, and not during
+execution.
+
+> `any` is effectively serving as a kind of bottom type here, and `void` is
+effectively serving as a kind of top type here. Note that in some type theory
+contexts, it's common to use these names for exactly opposite purposes.
+
+##### Validation Type Merge
+
+To merge two validation types:
+ - If either validation type is `any`, the result is the other validation type.
+ - Otherwise, if the validation types are the same, the result is that
+   validation type.
+ - Otherwise, validation fails.
 
 #### Function Validation Initialization
 
@@ -282,7 +328,7 @@ Execution
 
 ### Module Instantiation
 
-WebAssembly Execution requires an *instance* of a module, which contains a
+WebAssembly code execution requires an *instance* of a module, which contains a
 reference to the module plus additional information added during instantiation,
 which consists of the following steps:
  - The entire module is first [validated](#validation). If there are any
@@ -305,6 +351,9 @@ The *recursion limit* is a non-negative integer value selected
 [nondeterministically] during instantiation, and recorded in the instance.
 
 > This value is used by [call instructions][L].
+
+> The recursion limit serves as an upper bound only; implementations may perform
+a trap as soon as they exhaust dynamic resources.
 
 ### Instance Execution
 
@@ -576,8 +625,8 @@ To obtain the *forwarding validation type*:
  - If the forwarding arity is 1, pop a [validation type] from the type stack and
    use that.
  - If the forwarding arity is 0, use `void`.
- - If the new length of the type stack is not equal to the control-flow stack
-   top's limit value, validation fails.
+ - If the new length of the type stack differs from the control-flow stack top's
+   limit value, validation fails.
 
 > Validation fails if there are unused entries left on the stack. The
 [`drop` instruction](#drop) can be used to discard unused values.
@@ -689,6 +738,8 @@ by one of the following rules, selected [nondeterministically]:
    bit, a significand field with `1` in the most significant bit and `0` in the
    remaining bits.
 
+TODO: Monitor https://github.com/WebAssembly/design/pull/713.
+
 Implementations are permitted to further implement the IEEE 754-2008 section
 "Operations with NaNs" recommendation that operations propagate NaN bits from
 their operands, however it is not required.
@@ -767,7 +818,8 @@ onto the control-flow stack.
 | ----        | ---------                   | -------- | ------
 | `if`        | `(i32) : ()`                |          | 0x03
 
-TODO: Describe `if`.
+TODO: Describe `if`. This is in part waiting on the resolution of
+https://github.com/WebAssembly/design/pull/710.
 
 #### Else
 
@@ -775,7 +827,8 @@ TODO: Describe `if`.
 | ----        | ---------                   | -------- | ------
 | `else`      | `() : ()`                   |          | 0x04
 
-TODO: Describe `else`.
+TODO: Describe `else`. This is in part waiting on the resolution of
+https://github.com/WebAssembly/design/pull/710.
 
 #### Unconditional Branch
 
@@ -788,9 +841,9 @@ entry `$depth` from the top. Its return value is the value of its operand, if it
 has one.
 
 **Validation:**
- - [Merge] the [forwarding validation type] into the [validation type] of the
-   control-flow stack entry `$depth` from the top.
- - Push `any` onto the type stack.
+ - The [forwarding validation type] is [merged] into the [validation type] of
+   the control-flow stack entry `$depth` from the top.
+ - `any` is pushed onto the type stack.
 
 #### Conditional Branch
 
@@ -804,12 +857,14 @@ does nothing. Its return value is the value of its first operand, if it has more
 than one.
 
 **Validation:**
- - Pop a [validation type] from the type stack and check that it is `i32`.
- - Determine the [forwarding validation type].
- - [Merge] it into the [validation type] of the control-flow stack entry `$depth`
-   from the top.
+ - A [validation type] is popped from the type stack and checked to be `i32`.
+ - The [forwarding validation type] is determined.
+ - It is [merged] into the [validation type] of the control-flow stack entry
+   `$depth` from the top.
  - If it is `void`, and the length of the type stack is greater than the
    control-flow stack top's limit value, validation fails.
+
+TODO: Monitor https://github.com/WebAssembly/design/pull/709.
 
 #### Table Branch
 
@@ -826,11 +881,11 @@ depth from the top. Its return value is the value of its first operand, if it
 has more than one.
 
 **Validation:**
- - Pop a [validation type] from the type stack and check that it is `i32`.
- - For each depth in the table and `$default`, [merge] the
-   [forwarding validation type] into the [validation type] of the control-flow
-   stack entry that depth from the top.
- - Push `any` onto the type stack.
+ - A [validation type] is popped from the type stack and checked to be `i32`.
+ - The [forwarding validation type] is determined.
+ - For each depth in the table and `$default`, it is merged into the
+   [validation type] of the control-flow stack entry that depth from the top.
+ - `any` is pushed onto the type stack.
 
 > This instruction serves the role of what is sometimes called a
 ["jump table"](https://en.wikipedia.org/w/index.php?title=Jump_table) in other
@@ -847,9 +902,9 @@ The `return` instruction [branches](#branching) according to the control-flow
 stack bottom. Its return value is the value of its operand, if it has one.
 
 **Validation:**
- - [Merge] the [forwarding validation type] into the [validation type] of the
+ - The [forwarding validation type] is merged into the [validation type] of the
    control-flow stack bottom.
- - Push `any` onto the type stack.
+ - `any` is pushed onto the type stack.
 
 > Implementations need not literally perform a branch before performing the
 actual function return.
@@ -863,7 +918,7 @@ actual function return.
 **Trap:** Unreachable, always.
 
 **Validation:**
- - Push `any` onto the type stack.
+ - `any` is pushed onto the type stack.
 
 > The `unreachable` instruction is meant to represent code that is not meant to
 be executed except in the case of a bug in the application.
@@ -879,9 +934,9 @@ The `end` instruction pops an entry from the control-flow stack. If the entry's
 is the value of its operand, if it has one.
 
 **Validation:**
- - Determine the [forwarding validation type].
- - [Merge] it into the [validation type] of the control-flow stack top, and then
-   pop the control-flow stack top.
+ - The [forwarding validation type] is determined.
+ - It is [merged] into the [validation type] of the control-flow stack top, and
+   then the control-flow stack top is then popped.
  - If it is `void`, and the length of the type stack is greater than the (new)
    control-flow stack top's limit value, validation fails.
 
@@ -897,7 +952,8 @@ is the value of its operand, if it has one.
 0. [Call](#call)
 0. [Indirect Call](#indirect-call)
 
-TODO: `call_table`
+TODO: `call_table` and/or `call_import`, waiting on the resolution of
+https://github.com/WebAssembly/design/pull/682
 
 #### Nop
 
@@ -922,12 +978,14 @@ discard unneeded values from the value stack.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `i32.const` | `<i32> () : (i32)`          | [G]      | 0x10
-| `i64.const` | `<i64> () : (i64)`          | [G]      | 0x11
-| `f32.const` | `<f32> () : (f32)`          | [F]      | 0x12
-| `f64.const` | `<f64> () : (f64)`          | [F]      | 0x13
+| `i32.const` | `<i32> () : (i32)`          |          | 0x10
+| `i64.const` | `<i64> () : (i64)`          |          | 0x11
+| `f32.const` | `<f32> () : (f32)`          |          | 0x12
+| `f64.const` | `<f64> () : (f64)`          |          | 0x13
 
 The `const` instruction returns the value of its immediate.
+
+> Floating-point constants can be created with arbitrary bit-patterns.
 
 #### Get Local
 
@@ -987,12 +1045,14 @@ Validation:
 The `call_indirect` instruction performs a [call](#calling) to the function with
 index `$callee`.
 
-**Trap:** Indirect Call Type Mismatch, if the signature of the function with
-index `$callee` differs from `$signature`.
+**Trap:** Indirect Call Type Mismatch, if the signature index of the function
+with index `$callee` differs from `$signature`.
 
 Validation:
  - [Call validation](#call-validation) is performed; the callee signature is the
    signature with index `$signature` in the [Type Section](#type-section).
+
+> The dynamic caller/callee signature match is nominal rather than structural.
 
 ### Integer Instructions
 
@@ -1308,7 +1368,7 @@ otherwise.
 | `f64.add`   | `(f64, f64) : (f64)`        | [F]      | 0x89   | `+` (13)
 
 The floating-point `add` instruction performs the IEEE 754-2008 `addition`
-operation according to [the general floating-point rules][F].
+operation according to the [general floating-point rules][F].
 
 #### Floating-Point Subtract
 
@@ -1318,7 +1378,7 @@ operation according to [the general floating-point rules][F].
 | `f64.sub`   | `(f64, f64) : (f64)`        | [F]      | 0x8a   | `-` (13)
 
 The floating-point `sub` instruction performs the IEEE 754-2008 `subtraction`
-operation according to [the general floating-point rules][F].
+operation according to the [general floating-point rules][F].
 
 #### Floating-Point Multiply
 
@@ -1328,7 +1388,7 @@ operation according to [the general floating-point rules][F].
 | `f64.mul`   | `(f64, f64) : (f64)`        | [F]      | 0x8b   | `*` (14)
 
 The floating-point `mul` instruction performs the IEEE 754-2008 `multiplication`
-operation according to [the general floating-point rules][F].
+operation according to the [general floating-point rules][F].
 
 #### Floating-Point Divide
 
@@ -1338,7 +1398,7 @@ operation according to [the general floating-point rules][F].
 | `f64.div`   | `(f64, f64) : (f64)`        | [F]      | 0x8c   | `/` (14)
 
 The `div` instruction performs the IEEE 754-2008 `division` operation according
-to [the general floating-point rules][F].
+to the [general floating-point rules][F].
 
 #### Floating-Point Square Root
 
@@ -1348,7 +1408,7 @@ to [the general floating-point rules][F].
 | `f64.sqrt`  | `(f64) : (f64)`             | [F]      | 0x96
 
 The `sqrt` instruction performs the IEEE 754-2008 `squareRoot` operation
-according to [the general floating-point rules][F].
+according to the [general floating-point rules][F].
 
 #### Floating-Point Minimum
 
@@ -1359,7 +1419,7 @@ according to [the general floating-point rules][F].
 
 The `min` instruction returns the minimum value among its operands. For this
 instruction, negative zero is considered less than zero. If either operand is a
-NaN, the result is a NaN determined by [the general floating-point rules][F].
+NaN, the result is a NaN determined by the [general floating-point rules][F].
 
 > This differs from the IEEE 754-2008 `minNum` operation in that it returns a
 NaN if either operand is a NaN, and in that the behavior on negative zero is
@@ -1377,7 +1437,7 @@ negative zero and NaN values.
 
 The `max` instruction returns the maximum value among its operands. For this
 instruction, negative zero is considered less than zero. If either operand is a
-NaN, the result is a NaN determined by [the general floating-point rules][F].
+NaN, the result is a NaN determined by the [general floating-point rules][F].
 
 > This differs from the IEEE 754-2008 `maxNum` operation in that it returns a
 NaN if either operand is a NaN, and in that the behavior on negative zero is
@@ -1394,8 +1454,8 @@ zero and NaN values.
 | `f64.ceil`  | `(f64) : (f64)`             | [F]      | 0x92
 
 The `ceil` instruction performs the IEEE 754-2008
-`roundToIntegralTowardPositive` operation according to
-[the general floating-point rules][F].
+`roundToIntegralTowardPositive` operation according to the
+[general floating-point rules][F].
 
 > ["Ceiling"][Floor and Ceiling Functions] describes the rounding method used
 here; the value is rounded up to the nearest integer.
@@ -1408,8 +1468,8 @@ here; the value is rounded up to the nearest integer.
 | `f64.floor` | `(f64) : (f64)`             | [F]      | 0x93
 
 The `floor` instruction performs the IEEE 754-2008
-`roundToIntegralTowardNegative` operation according to
-[the general floating-point rules][F].
+`roundToIntegralTowardNegative` operation according to the
+[general floating-point rules][F].
 
 > ["Floor"][Floor and Ceiling Functions] describes the rounding method used
 here; the value is rounded down to the nearest integer.
@@ -1422,8 +1482,8 @@ here; the value is rounded down to the nearest integer.
 | `f64.trunc` | `(f64) : (f64)`             | [F]      | 0x94
 
 The `trunc` instruction performs the IEEE 754-2008
-`roundToIntegralTowardZero` operation according to
-[the general floating-point rules][F].
+`roundToIntegralTowardZero` operation according to the
+[general floating-point rules][F].
 
 > ["Truncate"](https://en.wikipedia.org/wiki/Truncation) describes the rounding
 method used here; the fractional part of the value is discarded, effectively
@@ -1437,8 +1497,8 @@ rounding to the nearest integer toward zero.
 | `f64.nearest` | `(f64) : (f64)`           | [F]      | 0x95
 
 The `nearest` instruction performs the IEEE 754-2008
-`roundToIntegralTiesToEven` operation according to
-[the general floating-point rules][F].
+`roundToIntegralTiesToEven` operation according to the
+[general floating-point rules][F].
 
 > "Nearest" describes the rounding method used here; the value is
 [rounded to the nearest integer](https://en.wikipedia.org/wiki/Nearest_integer_function).
@@ -1640,8 +1700,8 @@ languages.
 | `f64.eq`    | `(f64, f64) : (i32)`        | [C], [F] | 0x97   | `==` (10)
 
 The floating-point `eq` instruction performs the IEEE 754-2008
-`compareQuietEqual` operation according to
-[the general floating-point rules][F].
+`compareQuietEqual` operation according to the
+[general floating-point rules][F].
 
 #### Floating-Point Inequality
 
@@ -1651,8 +1711,8 @@ The floating-point `eq` instruction performs the IEEE 754-2008
 | `f64.ne`    | `(f64, f64) : (i32)`        | [C], [F] | 0x98   | `!=` (10)
 
 The floating-point `ne` instruction performs the IEEE 754-2008
-`compareQuietNotEqual` operation according to
-[the general floating-point rules][F].
+`compareQuietNotEqual` operation according to the
+[general floating-point rules][F].
 
 > Unlike the other floating-point comparison instructions, this instruction
 returns [true] if either operand is a NaN. It is the logical inverse of the `eq`
@@ -1666,7 +1726,7 @@ instruction.
 | `f64.lt`    | `(f64, f64) : (i32)`        | [C], [F] | 0x99   | `<` (11)
 
 The `lt` instruction performs the IEEE 754-2008 `compareQuietLess` operation
-according to [the general floating-point rules][F].
+according to the [general floating-point rules][F].
 
 #### Floating-Point Less Than Or Equal To
 
@@ -1676,7 +1736,7 @@ according to [the general floating-point rules][F].
 | `f64.le`    | `(f64, f64) : (i32)`        | [C], [F] | 0x9a   | `<=` (11)
 
 The `le` instruction performs the IEEE 754-2008 `compareQuietLessEqual`
-operation according to [the general floating-point rules][F].
+operation according to the [general floating-point rules][F].
 
 #### Floating-Point Greater Than
 
@@ -1686,7 +1746,7 @@ operation according to [the general floating-point rules][F].
 | `f64.gt`    | `(f64, f64) : (i32)`        | [C], [F] | 0x9b   | `>` (11)
 
 The `gt` instruction performs the IEEE 754-2008 `compareQuietGreater` operation
-according to [the general floating-point rules][F].
+according to the [general floating-point rules][F].
 
 #### Floating-Point Greater Than Or Equal To
 
@@ -1696,7 +1756,7 @@ according to [the general floating-point rules][F].
 | `f64.ge`    | `(f64, f64) : (i32)`        | [C], [F] | 0x9c   | `>=` (11)
 
 The `ge` instruction performs the IEEE 754-2008 `compareQuietGreaterEqual`
-operation according to [the general floating-point rules][F].
+operation according to the [general floating-point rules][F].
 
 ### Conversion Instructions
 
@@ -1755,7 +1815,7 @@ result type.
 
 The `trunc_s` instruction performs the IEEE 754-2008
 `convertToIntegerTowardZero` operation, with the result value interpreted as
-signed, according to [the general floating-point rules][F].
+signed, according to the [general floating-point rules][F].
 
 **Trap:** Invalid Conversion, when a floating-point Invalid condition occurs,
 due to the operand being outside the range that can be converted (including NaN
@@ -1772,7 +1832,7 @@ values and infinities).
 
 The `trunc_u` instruction performs the IEEE 754-2008
 `convertToIntegerTowardZero` operation, with the result value interpreted as
-unsigned, according to [the general floating-point rules][F].
+unsigned, according to the [general floating-point rules][F].
 
 **Trap:** Invalid Conversion, when an Invalid condition occurs, due to the
 operand being outside the range that can be converted (including NaN values and
@@ -1789,8 +1849,8 @@ truncate up to zero.
 | `f32.demote/f64` | `(f64) : (f32)`        | [F]      | 0xac
 
 The `demote` instruction performs the IEEE 754-2008 `convertFormat` operation,
-converting from its operand type to its result type, according to
-[the general floating-point rules][F].
+converting from its operand type to its result type, according to the
+[general floating-point rules][F].
 
 > This is a narrowing conversion which may round or overflow to infinity.
 
@@ -1801,8 +1861,8 @@ converting from its operand type to its result type, according to
 | `f64.promote/f32` | `(f32) : (f64)`       | [F]      | 0xb2
 
 The `promote` instruction performs the IEEE 754-2008 `convertFormat` operation,
-converting from its operand type to its result type, according to
-[the general floating-point rules][F].
+converting from its operand type to its result type, according to the
+[general floating-point rules][F].
 
 > This is a widening conversion and is always exact.
 
@@ -1816,8 +1876,8 @@ converting from its operand type to its result type, according to
 | `f64.convert_s/i64` | `(i64) : (f64)`     | [F], [S] | 0xb0
 
 The `convert_s` instruction performs the IEEE 754-2008 `convertFromInt`
-operation, with its operand value interpreted as signed, according to
-[the general floating-point rules][F].
+operation, with its operand value interpreted as signed, according to the
+[general floating-point rules][F].
 
 #### Convert Integer To Floating-Point, Unsigned
 
@@ -1829,8 +1889,8 @@ operation, with its operand value interpreted as signed, according to
 | `f64.convert_u/i64` | `(i64) : (f64)`     | [F], [U] | 0xb1
 
 The `convert_u` instruction performs the IEEE 754-2008 `convertFromInt`
-operation, with its operand value interpreted as unsigned, according to
-[the general floating-point rules][F].
+operation, with its operand value interpreted as unsigned, according to the
+[general floating-point rules][F].
 
 #### Reinterpret
 
@@ -1910,8 +1970,8 @@ width than their type, and return the value [sign-extended] to their type.
  - `load32_s` loads a 32-bit value.
 
 **Validation:**
- - [Linear memory access validation](#linear-memory-access-validation)
-   is performed.
+ - [Linear memory access validation](#linear-memory-access-validation) is
+   performed.
 
 #### Extending Load, Unsigned
 
@@ -1931,8 +1991,8 @@ width than their type, and return the value zero-extended to their type.
  - `load32_u` loads a 32-bit value.
 
 **Validation:**
- - [Linear memory access validation](#linear-memory-access-validation)
-   is performed.
+ - [Linear memory access validation](#linear-memory-access-validation) is
+   performed.
 
 #### Wrapping Store
 
@@ -1955,8 +2015,8 @@ silently wrapped to a narrower width.
  - [Linear memory access validation](#linear-memory-access-validation)
    is performed.
 
-> See the note in the [wrap instruction](#integer-wrap) about the meaning of the
-name "wrap".
+> See the comment in the [wrap instruction](#integer-wrap) about the meaning of
+the name "wrap".
 
 ### Additional Memory-Related Instructions
 
@@ -2020,15 +2080,13 @@ memory space, as an unsigned value in units of [pages].
 [boolean]: #booleans
 [true]: #booleans
 [false]: #booleans
-[sign-extend]: https://en.wikipedia.org/wiki/Sign_extension
 [sign-extended]: https://en.wikipedia.org/wiki/Sign_extension
 [bytes]: #bytes
 [pages]: #pages
 [effective address]: #effective-address
 [little-endian byte order]: https://en.wikipedia.org/wiki/Endianness#Little.
 [accessed bytes]: #accessed-bytes
-[pop]: #type-stack-pop
-[merge]: #validation-type-merge
+[merged]: #validation-type-merge
 [index]: #index
 [array]: #array
 [string]: #string
@@ -2037,7 +2095,6 @@ memory space, as an unsigned value in units of [pages].
 [types]: #types
 [typed]: #types
 [validation type]: #validation-types
-[validation types]: #validation-types
 [forwarding validation type]: #forwarding-validation-type
 [trap]: #instruction-traps
 [rotated]: https://en.wikipedia.org/wiki/Bitwise_operation#Rotate_no_carry
