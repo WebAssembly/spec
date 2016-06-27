@@ -1,6 +1,6 @@
 (* Version *)
 
-let version = 0x0c
+let version = 0x0bl
 
 
 (* Encoding stream *)
@@ -382,7 +382,7 @@ let encode m =
 
     let module_ m =
       u32 0x6d736100l;
-      u32 (Int32.of_int version);
+      u32 version;
       type_section m.it.types;
       import_section m.it.imports;
       func_section m.it.funcs;
