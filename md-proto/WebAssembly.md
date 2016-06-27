@@ -25,7 +25,7 @@ These types describe various data structures present in WebAssembly modules:
 0. [Array](#array)
 0. [String](#string)
 
-> These types are not used to describe values at runtime.
+> These types aren't used to describe values at runtime.
 
 #### Index
 
@@ -38,13 +38,13 @@ An *index* is a 32-bit unsigned integer value.
 An *array* is an [index] indicating a number of elements, plus a sequence of
 that many elements.
 
-> Array elements need not all be the same size in some representations.
+> Array elements needn't all be the same size in some representations.
 
 #### String
 
 A *string* is an [array] of bytes.
 
-> Strings in this context may contain arbitrary bytes and are not required to be
+> Strings in this context may contain arbitrary bytes and aren't required to be
 valid UTF-8 or any other format.
 
 ### Module Contents
@@ -61,7 +61,7 @@ and associated data.
  - Present known sections are checked to be ordered in the section sequence as
    they are ordered in the [enumeration of the Known Sections](#known-sections).
 
-> Some representations do not represent some of the known sections literally;
+> Some representations don't represent some of the known sections literally;
 they may be combined with other sections or implied by specialized syntax.
 
 > The initial release of WebAssembly will use an expected version of `0x0`.
@@ -141,6 +141,8 @@ The Memory Section contains:
 
 **Validation:**
  - The maximum size is checked to be at least the initial size.
+ - If the maximum size multiplied by the [page size](#pages) would be
+   unrepresentable in an unsigned `iPTR`, validation fails.
 
 #### Export Section
 
@@ -156,6 +158,9 @@ An export contains:
 **Validation:**
  - The function index of each array element is checked to be within the bounds
    of the [Code Section](#code-section) array.
+ - If any two exports have the same function string, validation fails.
+
+TODO: Memory exports (which require the presence of a Memory Section).
 
 #### Start Section
 
@@ -167,6 +172,8 @@ The Start Section contains a function [index]. See
 **Validation:**
  - The index is checked to be within the bounds of the
    [Code Section](#code-section) array.
+ - The function signature indexed in the [Type Section](#type-section) is
+   checked to have an empty parameter list and an empty return list.
 
 #### Code Section
 
@@ -190,22 +197,26 @@ format, positions are represented with a special syntax.
 
 **Name:** `data`
 
-The Data Section contains an [array] of [string] and offset pairs describing
-data to be loaded into linear memory as part of
+The Data Section contains an [array] of data initializers.
+
+A *data initializer* consists of a [string] and an offset. It describes data to
+be loaded into linear memory as part of
 [linear memory instantiation](#linear-memory-instantiation).
 
 **Validation:**
  - For each element of the array, the sum of the offset and the length of the
    string is checked to be less than the initial size declared in the
    [Memory Section](#memory-section).
+ - If any byte of linear memory would be initialized by more than one data
+   initializer, validation fails.
 
 #### Name Section
 
 **Name:** `name`
 
-The Names Section does not change execution semantics and malformed constructs,
+The Names Section doesn't change execution semantics and malformed constructs,
 such as out-of-bounds indices, in this section cause the section to be ignored,
-and do not trigger validation failures.
+and don't trigger validation failures.
 
 The Names Section contains an [array] of function name descriptors, which each
 describe names for the function with the corresponding index in the module, and
@@ -276,7 +287,7 @@ To merge two validation types:
 #### Function Validation Initialization
 
 If the instruction sequence is empty, or if the last instruction in the sequence
-is not an `end`, validation fails.
+isn't an `end`, validation fails.
 
 The current position starts at the first position. The type stack begins empty.
 The control-flow stack starts with one entry. This entry's [validation type] is
@@ -313,7 +324,10 @@ If the instruction's signature has no return types:
    limit value, validation fails.
  - `void` is pushed onto the type stack.
 
-TODO: Handle unused `void` values left behind on the stack.
+TODO: Handle unused `void` values left behind on the stack. Or, eliminate `void`
+values from the type stack altogether.
+
+> There are no implicit type conversions in WebAssembly.
 
 #### Function Return Validation
 
@@ -332,7 +346,7 @@ WebAssembly code execution requires an *instance* of a module, which contains a
 reference to the module plus additional information added during instantiation,
 which consists of the following steps:
  - The entire module is first [validated](#validation). If there are any
-   failures, instantiation aborts and does not produce an instance.
+   failures, instantiation aborts and doesn't produce an instance.
  - If a [Memory Section](#memory-section) is present,
    [Linear memory is instantiated](#linear-memory-instantiation).
  - [A recursion limit is selected](#recursion-limit).
@@ -380,8 +394,8 @@ are created:
    function.
  - A *current position*.
 
-> Implementations need not create a literal array to store the locals, or
-literal stacks to manage values at runtime.
+> Implementations needn't create a literal array to store the locals, or literal
+stacks to manage values at runtime.
 
 #### Function Execution Initialization
 
@@ -454,12 +468,12 @@ Types
 | `i32` | 32
 | `i64` | 64
 
-Integer types are not inherently signed or unsigned. They may be interpreted as
+Integer types aren't inherently signed or unsigned. They may be interpreted as
 signed or unsigned by individual instructions. When interpreted as signed, a
 [two's complement] interpretation is used.
 
 > The [minimum signed integer value] is supported; consequently, two's
-complement signed integers are not symmetric around zero.
+complement signed integers aren't symmetric around zero.
 
 #### Booleans
 
@@ -551,11 +565,12 @@ are the addressing unit of linear memory spaces.
 #### Effective Address
 
 The *effective address* of a linear memory access is computed by adding `$base`
-and `$offset` at infinite precision, so that there is no overflow.
+and `$offset`, both interpreted as unsigned, at infinite precision, so that
+there is no overflow.
 
 #### Alignment
 
-**Slow:** If the effective address is not a multiple of `$align`, the access is
+**Slow:** If the effective address isn't a multiple of `$align`, the access is
 *misaligned*, and the instruction may execute very slowly.
 
 > When `$align` is greater than or equal to the size of the access, the access
@@ -641,10 +656,10 @@ The called function &mdash; the *callee* &mdash; is
 recursion depth value plus one as its recursion depth value. The return value of
 the call is defined by the execution.
 
-**Trap:** Call stack overflow, if the recursion depth value is greater than the
+**Trap:** Call Stack Overflow, if the recursion depth value is greater than the
 [recursion limit](#recursion-limit).
 
-> This means that implementations are not permitted to perform implicit
+> This means that implementations aren't permitted to perform implicit
 opportunistic tail-call elimination.
 
 > The execution state of the function currently being executed remains live
@@ -652,7 +667,7 @@ during the call, and the execution of the called function is performed
 independently. In this way, calls form a stack-like data structure called the
 *call stack*.
 
-> Implementations need not pass a literal argument to represent the recursion
+> Implementations needn't pass a literal argument to represent the recursion
 depth.
 
 #### Call Validation
@@ -672,8 +687,8 @@ WebAssembly comparison instructions compare two values and return a [boolean]
 result value.
 
 > In accordance with IEEE 754-2008, for the comparison instructions, negative
-zero is considered equal to zero, and NaN values are not less than, greater
-than, or equal to any other values, including themselves.
+zero is considered equal to zero, and NaN values aren't less than, greater than,
+or equal to any other values, including themselves.
 
 ### T: Shift Instruction Family
 
@@ -695,37 +710,37 @@ instructions such as [`shr_s`](#integer-shift-right-signed).
 
 ### G: Generic Integer Instruction Family
 
-Except where otherwise specified, these instructions do not specifically
-interpret their operands as explicitly signed or unsigned, and therefore do not
+Except where otherwise specified, these instructions don't specifically
+interpret their operands as explicitly signed or unsigned, and therefore don't
 have an inherent concept of overflow.
 
 ### S: Signed Integer Instruction Family
 
 Except where otherwise specified, these instructions interpret their operand
 values as signed, return result values interpreted as signed, and [trap] when
-the result value can not be represented as such.
+the result value can't be represented as such.
 
 ### U: Unsigned Integer Instruction Family
 
 Except where otherwise specified, these instructions interpret their operand
 values as unsigned, return result values interpreted as unsigned, and [trap]
-when the result value can not be represented as such.
+when the result value can't be represented as such.
 
 ### F: Floating-Point Instruction Family
 
 Instructions in this family follow the [IEEE 754-2008] standard, except that:
 
- - They support only "non-stop" mode, and floating-point exceptions are not
+ - They support only "non-stop" mode, and floating-point exceptions aren't
    otherwise observable. In particular, neither alternate floating-point
    exception handling attributes nor the non-computational operations on status
    flags are supported.
 
  - They use the IEEE 754-2008 `roundTiesToEven` rounding attribute, except where
-   otherwise specified. Non-default directed rounding attributes are not
+   otherwise specified. Non-default directed rounding attributes aren't
    supported.
 
 When the result of any instruction in this family (which excludes `neg`, `abs`,
-and `copysign`) is a NaN, the sign bit and the significand field (which does not
+and `copysign`) is a NaN, the sign bit and the significand field (which doesn't
 include the implicit leading digit of the significand) of the NaN are computed
 by one of the following rules, selected [nondeterministically]:
 
@@ -733,7 +748,7 @@ by one of the following rules, selected [nondeterministically]:
    may [nondeterministically] select any of them to be the result value, but
    with the most significant bit of the significand field overwritten to be `1`.
 
- - If the implementation does not choose to use an input NaN as a result value,
+ - If the implementation doesn't choose to use an input NaN as a result value,
    or if there are no input NaNs, the result value has a [nondeterministic] sign
    bit, a significand field with `1` in the most significant bit and `0` in the
    remaining bits.
@@ -742,7 +757,7 @@ TODO: Monitor https://github.com/WebAssembly/design/pull/713.
 
 Implementations are permitted to further implement the IEEE 754-2008 section
 "Operations with NaNs" recommendation that operations propagate NaN bits from
-their operands, however it is not required.
+their operands, however it isn't required.
 
 > All computations are correctly rounded, subnormal values are fully supported,
 and negative zero, NaNs, and infinities are all produced as result values to
@@ -906,7 +921,7 @@ stack bottom. Its return value is the value of its operand, if it has one.
    control-flow stack bottom.
  - `any` is pushed onto the type stack.
 
-> Implementations need not literally perform a branch before performing the
+> Implementations needn't literally perform a branch before performing the
 actual function return.
 
 #### Unreachable
@@ -920,7 +935,7 @@ actual function return.
 **Validation:**
  - `any` is pushed onto the type stack.
 
-> The `unreachable` instruction is meant to represent code that is not meant to
+> The `unreachable` instruction is meant to represent code that isn't meant to
 be executed except in the case of a bug in the application.
 
 #### End
@@ -1012,7 +1027,7 @@ the value given in the operand.
 | `tee_local` | `<$id: i32> (T) : (T)`      |          | 0x19
 
 The `tee_local` instruction sets the value in the locals array at index `$id` to
-to the value given in the operand. Its return value is the value of its operand.
+the value given in the operand. Its return value is the value of its operand.
 
 #### Select
 
@@ -1128,10 +1143,11 @@ this instruction can be used to multiply either signed or unsigned values.
 The `div_s` instruction returns the signed quotient of its operands, interpreted
 as signed. The quotient is silently rounded to the nearest integer toward zero.
 
-**Trap:** Signed overflow, when the [minimum signed integer value] is divided by
-`-1`.
+**Trap:** Signed Integer Overflow, when the [minimum signed integer value] is
+divided by `-1`.
 
-**Trap:** Division by zero, when the second operand (the divisor) is zero.
+**Trap:** Integer Division By Zero, when the second operand (the divisor) is
+zero.
 
 #### Integer Divide, Unsigned
 
@@ -1144,7 +1160,8 @@ The `div_u` instruction returns the unsigned quotient of its operands,
 interpreted as unsigned. The quotient is silently rounded to the nearest integer
 toward zero.
 
-**Trap:** Division by zero, when the second operand (the divisor) is zero.
+**Trap:** Integer Division By Zero, when the second operand (the divisor) is
+zero.
 
 #### Integer Remainder, Signed
 
@@ -1157,9 +1174,10 @@ The `rem_s` instruction returns the signed remainder from a division of its
 operand values interpreted as signed, with the result having the same sign as
 the first operand (the dividend).
 
-**Trap:** Division by zero, when the second operand (the divisor) is zero.
+**Trap:** Integer Division By Zero, when the second operand (the divisor) is
+zero.
 
-> This instruction does not trap when the [minimum signed integer value] is
+> This instruction doesn't trap when the [minimum signed integer value] is
 divided by `-1`; it returns `0` which is the correct remainder (even though the
 same operands to `div_s` do cause a trap).
 
@@ -1177,7 +1195,8 @@ handling of negative numbers.
 The `rem_u` instruction returns the unsigned remainder from a division of its
 operand values interpreted as unsigned.
 
-**Trap:** Division by zero, when the second operand (the divisor) is zero.
+**Trap:** Integer Division By Zero, when the second operand (the divisor) is
+zero.
 
 > This instruction corresponds to what is sometimes called "modulo" in other
 languages.
@@ -1817,9 +1836,9 @@ The `trunc_s` instruction performs the IEEE 754-2008
 `convertToIntegerTowardZero` operation, with the result value interpreted as
 signed, according to the [general floating-point rules][F].
 
-**Trap:** Invalid Conversion, when a floating-point Invalid condition occurs,
-due to the operand being outside the range that can be converted (including NaN
-values and infinities).
+**Trap:** Invalid Conversion To Integer, when a floating-point Invalid condition
+occurs, due to the operand being outside the range that can be converted
+(including NaN values and infinities).
 
 #### Truncate Floating-Point to Integer, Unsigned
 
@@ -1834,9 +1853,9 @@ The `trunc_u` instruction performs the IEEE 754-2008
 `convertToIntegerTowardZero` operation, with the result value interpreted as
 unsigned, according to the [general floating-point rules][F].
 
-**Trap:** Invalid Conversion, when an Invalid condition occurs, due to the
-operand being outside the range that can be converted (including NaN values and
-infinities).
+**Trap:** Invalid Conversion To Integer, when an Invalid condition occurs, due
+to the operand being outside the range that can be converted (including NaN
+values and infinities).
 
 > This instruction's result is unsigned, so it almost always rounds down,
 however it does round up in one place: negative values greater than negative one
@@ -2030,17 +2049,24 @@ the name "wrap".
 | `grow_memory` | `(iPTR) : (iPTR)`         | [R]      | 0x39
 
 The `grow_memory` instruction increases the size of the referenced linear memory
-space by a given unsigned delta, in units of [pages]. It returns the previous
-linear memory size, also as an unsigned value in units of pages, or `-1` on
-failure.
+space by a given unsigned delta, in units of [pages]. If the resulting size of
+the referenced linear memory space would be unrepresentable in an unsigned iPTR,
+or if allocation fails due to insufficient dynamic resources, it returns `-1`;
+otherwise it returns the previous linear memory size, also as an unsigned value
+in units of [pages].
 
 When a maximum memory size is declared in the referenced linear memory space,
 `grow_memory` fails if it would grow past the maximum. However, `grow_memory`
-may still fail before the maximum if it was not possible to reserve the space up
+may still fail before the maximum if it wasn't possible to reserve the space up
 front or if enabling the reserved memory fails.
 
-> Since the return value is in units of pages, `-1` is not otherwise a valid
-memory size.
+**Validation**:
+ - If the module doesn't contain a [Memory Section](#memory-section), validation
+   fails.
+ - [Generic validation](#generic-instruction-validation) is also performed.
+
+> Since the return value is in units of pages, `-1` isn't otherwise a valid
+linear memory size.
 
 #### Current Memory
 
@@ -2050,6 +2076,11 @@ memory size.
 
 The `current_memory` instruction returns the size of the referenced linear
 memory space, as an unsigned value in units of [pages].
+
+**Validation**:
+ - If the module doesn't contain a [Memory Section](#memory-section), validation
+   fails.
+ - [Generic validation](#generic-instruction-validation) is also performed.
 
 [M]: #m-memory-access-instruction-family
 [R]: #r-memory-resize-instruction-family
