@@ -14,11 +14,53 @@ WebAssembly Specification
 Introduction
 --------------------------------------------------------------------------------
 
-> This document specifies the structure and interpretation of WebAssembly code.
+WebAssembly is a general-purpose virtual [ISA] designed to be a compilation
+target for a wide variety of programming languages. Much of its distinct
+personality derives from its security, code compression, and decoding
+optimization features.
+
+The unit of WebAssembly code is the *module*. Modules primarily consist of a
+collection of sections. There are sections describing a WebAssembly's
+interactions with other modules ([imports](#import-section) and
+[exports](#export-section)), sections declaring [data](#data-section) and other
+implements used by the module, and sections defining [*functions*]. For more
+information, see the [Module section](#module).
+
+WebAssembly code must be validated before it can be instantiated and executed.
+WebAssembly is designed to allow validation to be performed in in a single
+linear pass through a WebAssembly module. In particular, control flow within
+each function is *structured*, and [loops are explicitly identified](#loop),
+which, for example, allows decoders to ensure that program state is consistent
+at all control flow merge points without having to see the entire function body
+first. For more information, see the [Validation section](#validation).
+
+A WebAssembly module is *instantiated* to produce a WebAssembly *instance*,
+which contains all the data structures required by the module's code.
+Instances can include [linear memory](#memory-section) to serve the purpose of
+an address space for program data. For security and determinism, linear memory
+is *sandboxed*, and the other data structures in an instance, such as the call
+stack, are allocated outside of linear memory so that they cannot be corrupted
+by errant linear memory accesses. An instance can then be executed, either by
+execution of its [start function](#start-section) or by calls to its exported
+functions. For more information, see the [Execution section](#execution).
+
+Along with their other contents, functions contain sequences of *instructions*.
+WebAssembly instructions conceptually communicate with each other via pushing
+and popping values on a stack, which allows them to have a very compact
+encoding. Use of the stack is constrained to allow implementations to statically
+verify the number and types of all entries on the stack at all times, which
+allows them to efficiently translate the code into other forms that may not use
+an actual dynamic stack. There are instructions for performing integer and
+floating-point arithmetic, coordinating control flow, marshalling data, calling
+functions, and so on. For more information, see the
+[Instructions section](#instructions).
+
 Implementations of WebAssembly [validation](#validation) and
 [execution](#execution) need not perform all the steps literally as described
 here; they need only behave ["as if"] they did so in all observable respects.
 
+[ISA]: https://en.wikipedia.org/wiki/Instruction_set
+[*functions*]: https://en.wikipedia.org/wiki/Subroutine
 ["as if"]: https://en.wikipedia.org/wiki/As-if_rule
 
 Module
@@ -66,10 +108,10 @@ Modules also contain a sequence of sections. Each section has a [string] *name*
 and associated data.
 
 **Validation:**
- - The version index is checked to be equal to `0xc`.
+ - The version index is required to be equal to `0xc`.
  - For each present [known section](#known-sections), the associated
    **Validation** clause is performed, if one is specified for the section kind.
- - Present known sections are checked to be ordered in the section sequence as
+ - Present known sections are required to be ordered in the section sequence as
    they are ordered in the [enumeration of the Known Sections](#known-sections).
 
 > Some representations don't represent some of the known sections literally;
@@ -105,7 +147,7 @@ Each *function signature* consists of:
  - a *return list*, which is also an [array] of [types].
 
 **Validation:**
- - Each return list is checked to contain at most one element.
+ - Each return list is required to contain at most one element.
 
 > In the future, this section may contain other forms of type entries as well,
 and support for function signatures with multiple return types.
@@ -123,7 +165,7 @@ An *import* consists of:
  - a *function [string]*, identifying a function inside that module to import.
 
 **Validation:**
- - The signature index of each array element is checked to be within the bounds
+ - The signature index of each array element is required to be within the bounds
    of the [Type Section](#type-section) array.
 
 TODO: Describe the semantics of imports: module name resolution, function name
@@ -140,9 +182,9 @@ to functions defined in the [Code Section](#code-section), each containing the
 index in the [Type Section](#type-section) of the signature of the function.
 
 **Validation:**
- - The array is checked to be the same length as the array in the
+ - The array is required to be the same length as the array in the
    [Code Section](#code-section).
- - Each array element is checked to be within the bounds of the
+ - Each array element is required to be within the bounds of the
    [Type Section](#type-section) array.
 
 #### Memory Section
@@ -158,9 +200,9 @@ The Memory Section consists of:
    memory space is to be visible outside the module.
 
 **Validation:**
- - If present, the maximum size is checked to be at least the initial size.
- - If present, if the maximum size multiplied by the [page size](#pages) would
-   be unrepresentable in an unsigned `iPTR`, validation fails.
+ - If present, the maximum size is required to be at least the initial size.
+ - If present, if the index of any byte in a linear memory with the maximum size
+   would be unrepresentable in an unsigned `iPTR`, validation fails.
 
 TODO: Define `iPTR` in this context. Should Memory Sections have a wasm32 vs
 wasm64 flag?
@@ -171,6 +213,11 @@ TODO: The *default flag*, per https://github.com/WebAssembly/design/pull/682
 attempt to reserve enough resources for allocating up to the maximum size up
 front. Otherwise, implementations are encouraged to allocate only enough for
 the initial size up front.
+
+> The validation rules here specifically avoid requiring the size in bytes of
+linear memory to be representable as an iPTR. For example a 32-bit module could
+request a 4 GiB linear memory; the index of every byte would be addressable,
+even though the total number of bytes would not be.
 
 #### Export Section
 
@@ -183,7 +230,7 @@ An *export* consists of:
  - a *function [string]*, which is the name to export the indexed function as.
 
 **Validation:**
- - The function index of each array element is checked to be within the bounds
+ - The function index of each array element is required to be within the bounds
    of the [Code Section](#code-section) array.
  - If any two exports have the same function string, validation fails.
 
@@ -199,10 +246,10 @@ The Start Section consists of a function [index]. See
 [Instance Execution](#instance-execution) for further information.
 
 **Validation:**
- - The index is checked to be within the bounds of the
+ - The index is required to be within the bounds of the
    [Code Section](#code-section) array.
  - The function signature indexed in the [Type Section](#type-section) is
-   checked to have an empty parameter list and an empty return list.
+   required to have an empty parameter list and an empty return list.
 
 #### Code Section
 
@@ -229,16 +276,16 @@ format, positions are represented with a special syntax.
 
 The Data Section consists of an [array] of data initializers.
 
-A *data initializer* consists of a [string] and an offset. It describes data to
-be loaded into linear memory as part of
+A *data initializer* consists of a [string] and a *start offset*. It describes
+data to be loaded into linear memory as part of
 [linear memory instantiation](#linear-memory-instantiation).
 
 **Validation:**
- - For each element of the array, the sum of the offset and the length of the
-   string is checked to be less than the initial size declared in the
+ - For each element of the array, the sum of the start offset and the length of
+   the string is required to be less than the initial size declared in the
    [Memory Section](#memory-section).
- - If any byte of linear memory would be initialized by more than one data
-   initializer, validation fails.
+ - The start offset of each element of the array is required to be greater
+   than the index of any byte initialized by elements that precede it.
 
 #### Name Section
 
@@ -263,6 +310,11 @@ human-readable format in a browser or other development environment, the names
 in this section are to be used as the names of functions and locals in the
 [text format](TextFormat.md).
 
+TODO: Should the names in this section be required to be valid UTF-8 strings?
+This section isn't used during normal validation or execution, so it's off the
+"hot path" and is only used during debugging, to present strings to humans, so
+it might make sense.
+
 
 Validation
 --------------------------------------------------------------------------------
@@ -281,7 +333,7 @@ in the section is [validated](#function-validation).
 ### Function Validation
 
 If the function's instruction sequence is empty, or if the last instruction in
-the sequence isn't an `end`, validation fails.
+the sequence isn't an [`end`](#end), validation fails.
 
 For the duration of the validation of a function body, the following data
 structures are used:
@@ -305,11 +357,17 @@ For each instruction in the body, in sequence, if the instruction has a
 [generic instruction validation](#generic-instruction-validation) is performed.
 
 Finally, if the function signature has a return type, a type is popped from the
-type stack and checked to match the return type. The type stack and the
-control-flow stack are then both checked to be empty. If no failures were
+type stack and required to match the return type. The type stack and the
+control-flow stack are then both required to be empty. If no failures were
 detected anywhere in the function, function validation is successful.
 
-> The final `end` instruction may be implicit in some representations.
+> The control-flow stack's limit values effectively mark "scope boundaries" in
+the type stack. "Scopes" are effectively nested by the nature of the
+control-flow stack, and each scope's limit value is greater than those of the
+"scopes" that enclose it. Things pushed onto the type stack outside a "scope"
+cannot be popped from within the "scope".
+
+> The final [`end`](#end) instruction may be implicit in some representations.
 
 TODO: Monitor https://github.com/WebAssembly/design/pull/666.
 
@@ -317,7 +375,7 @@ TODO: Monitor https://github.com/WebAssembly/design/pull/666.
 #### Generic Instruction Validation
 
 For each operand [type] in the instruction's signature in reverse order, a
-[validation type] is popped from the type stack and checked to match it. Each
+[validation type] is popped from the type stack and required to match it. Each
 return type of the instruction's signature is then pushed onto the type stack.
 
 If the instruction's signature has no return types:
@@ -333,7 +391,7 @@ values from the type stack altogether.
 #### Validation Type
 
 A *validation type* is either a [type](#types), `any`, which satisfies any type
-check, or `void`, which satisfies no type check.
+requirement, or `void`, which satisfies no type requirement.
 
 > Validation types are only used during function validation, and not during
 execution.
@@ -373,7 +431,7 @@ the instance. Any byte not initialized by any data initializer is initialized to
 zero.
 
 The contents of the [Data Section](#data-section) are loaded into this array.
-Each [string] is loaded into linear memory at its associated offset.
+Each [string] is loaded into linear memory at its associated start offset.
 
 **Trap:** Dynamic Resource Exhaustion, if dynamic resources are insufficient to
 support creation of the array.
@@ -418,6 +476,9 @@ stacks to manage values at runtime.
 
 > These data structures are all allocated outside any linear address space and
 are not any accessible to applications.
+
+TODO: Track the recursion depth across calls to imported functions that
+reenter the module via calls to its exports.
 
 #### Function Execution Initialization
 
@@ -468,9 +529,14 @@ completely unspecified.
 
 #### Instruction Traps
 
-Instructions may *trap*, in which case execution of the current module is
+Instructions may *trap*, in which case execution of the current instance is
 immediately terminated and abnormal termination is reported to the embedding
 environment.
+
+> Except for the call stack and the state of any executing functions, the
+contents of an instance, including the linear memory, are left intact after a
+trap. This allows inspection by debugging tools and crash reporters. It is also
+valid to call exported functions in an instance that has trapped.
 
 #### Function Return Execution
 
@@ -629,8 +695,8 @@ For a store access, the value to store is written to the [accessed bytes], in
 
 #### Linear Memory Access Validation
 
- - `$align` is checked to be a power of 2.
- - `$align` is checked to be at most the number of [accessed bytes].
+ - `$align` is required to be a power of 2.
+ - `$align` is required to be at most the number of [accessed bytes].
  - If the module doesn't contain a [Memory Section](#memory-section), validation
    fails.
  - [Generic validation](#generic-instruction-validation) is also performed.
@@ -659,9 +725,9 @@ is resized to the entry's limit value.
 
 Then, if the entry's [label] is bound, the current position is set to the bound
 position. Otherwise, the position to bind the label to is found by scanning
-forward through the instructions, executing just `block`, `loop`, and `end`
-instructions, until the label is bound. Then the current position is set to that
-position.
+forward through the instructions, executing just [`block`](#block),
+[`loop`](#loop), and [`end`](#end) instructions, until the label is bound. Then
+the current position is set to that position.
 
 Then, control-flow stack entries are popped until the given control-flow stack
 entry is popped.
@@ -686,6 +752,8 @@ To obtain the *forwarding validation type*:
 > Validation fails if there are unused entries left on the stack. The
 [`drop` instruction](#drop) can be used to discard unused values.
 
+TODO: Explain what the purpose of all this is.
+
 ### L: Call Instruction Family
 
 #### Calling
@@ -696,7 +764,7 @@ The called function &mdash; the *callee* &mdash; is
 recursion depth value plus one as its recursion depth value. The return value of
 the call is defined by the execution.
 
-**Trap:** Call Stack Overflow, if the recursion depth value is greater than the
+**Trap:** Call Stack Exhausted, if the recursion depth value is greater than the
 [recursion limit](#recursion-limit).
 
 > This means that implementations aren't permitted to perform implicit
@@ -863,6 +931,9 @@ The `block` instruction pushes an unbound [label] onto the control-flow stack.
  - An entry is pushed onto the control-flow stack containing `any` and a limit
    value of the current length of the type stack.
 
+> Each `block` needs a corresponding [`end`](#end) to pop its label from the
+stack.
+
 #### Loop
 
 | Name        | Signature                   | Families | Opcode
@@ -875,6 +946,9 @@ onto the control-flow stack.
 **Validation:**
  - An entry is pushed onto the control-flow stack containing `any` and a limit
    value of the current length of the type stack.
+
+> Each `loop` needs a corresponding [`end`](#end) to pop its label from the
+stack.
 
 > There is no requirement that loops eventually terminate or contain observable
 side effects.
@@ -906,7 +980,7 @@ does nothing. Its return value is the value of its first operand, if it has more
 than one.
 
 **Validation:**
- - A [validation type] is popped from the type stack and checked to be `i32`.
+ - A [validation type] is popped from the type stack and required to be `i32`.
  - The [forwarding validation type] is determined.
  - It is [merged] into the [validation type] of the control-flow stack entry
    `$depth` from the top.
@@ -930,7 +1004,7 @@ depth from the top. Its return value is the value of its first operand, if it
 has more than one.
 
 **Validation:**
- - A [validation type] is popped from the type stack and checked to be `i32`.
+ - A [validation type] is popped from the type stack and required to be `i32`.
  - The [forwarding validation type] is determined.
  - For each depth in the table and `$default`, it's merged into the
    [validation type] of the control-flow stack entry that depth from the top.
@@ -951,6 +1025,8 @@ with the other branch instructions.
 TODO: Describe `if`. This is in part waiting on the resolution of
 https://github.com/WebAssembly/design/pull/710.
 
+> Each `if` needs either a corresponding [`else`](#else) or [`end`](#end).
+
 #### Else
 
 | Name        | Signature                   | Families | Opcode
@@ -959,6 +1035,8 @@ https://github.com/WebAssembly/design/pull/710.
 
 TODO: Describe `else`. This is in part waiting on the resolution of
 https://github.com/WebAssembly/design/pull/710.
+
+> Each `else` needs a corresponding [`end`](#end).
 
 #### End
 
@@ -2137,11 +2215,11 @@ the name "wrap".
 | `grow_memory` | `(iPTR) : (iPTR)`         | [R]      | 0x39
 
 The `grow_memory` instruction increases the size of the referenced linear memory
-space by a given unsigned amount, in units of [pages]. If the resulting size in
-bytes of the referenced linear memory space would be unrepresentable in an
-unsigned iPTR, or if allocation fails due to insufficient dynamic resources, it
-returns `-1`; otherwise it returns the previous linear memory size, also as an
-unsigned value in units of [pages].
+space by a given unsigned amount, in units of [pages]. If the index of any byte
+of the referenced linear memory space would be unrepresentable in an unsigned
+iPTR, or if allocation fails due to insufficient dynamic resources, it returns
+`-1`; otherwise it returns the previous linear memory size, also as an unsigned
+value in units of [pages].
 
 When a maximum size is present in the referenced linear memory space,
 `grow_memory` fails if it would grow past the maximum. However, `grow_memory`
