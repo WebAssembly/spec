@@ -1,6 +1,7 @@
 WebAssembly Specification
 ================================================================================
 
+0. [Introduction](#introduction)
 0. [Module](#module)
 0. [Validation](#validation)
 0. [Execution](#execution)
@@ -8,6 +9,16 @@ WebAssembly Specification
 0. [Instruction Signatures](#instruction-signatures)
 0. [Instruction Families](#instruction-families)
 0. [Instructions](#instructions)
+
+
+Introduction
+--------------------------------------------------------------------------------
+
+> This document specifies the structure and interpretation of WebAssembly code.
+Implementations of WebAssembly [validation](#validation) and
+[execution](#execution) need not perform all the steps literally as described
+here; they need only behave ["as if"](https://en.wikipedia.org/wiki/As-if_rule)
+they did so in all observable respects.
 
 
 Module
@@ -136,13 +147,16 @@ The Memory Section contains:
  - A *maximum size*, which is an unsigned `iPTR` value, in units of [pages]. See
    the [`grow_memory`](#grow-memory) instruction for further information on this
    field.
- - An *exported* flag, which is a boolean value indicating whether the memory is
-   visible outside the module.
+ - An *exported* flag, which is a boolean value indicating whether the linear
+   memory space is to be visible outside the module.
 
 **Validation:**
  - The maximum size is checked to be at least the initial size.
  - If the maximum size multiplied by the [page size](#pages) would be
    unrepresentable in an unsigned `iPTR`, validation fails.
+
+TODO: Define `iPTR` in this context. Should Memory Sections have a wasm32 vs
+wasm64 flag?
 
 #### Export Section
 
@@ -440,6 +454,9 @@ may perform any one of the specified alternatives.
 
 > There is no requirement that a given implementation make the same choice every
 time, even within the same program.
+
+> There is no "undefined behavior" in WebAssembly where the semantics become
+completely unspecified.
 
 #### Instruction Traps
 
@@ -826,6 +843,9 @@ onto the control-flow stack.
 **Validation:**
  - An entry is pushed onto the control-flow stack containing `any` and a limit
    value of the current length of the type stack.
+
+> There is no requirement that loops eventually terminate or contain observable
+side effects.
 
 #### If
 
@@ -1949,8 +1969,8 @@ Floating-point loads preserve all the bits of the value, performing an
 IEEE 754-2008 `copy` operation.
 
 **Validation:**
- - [Linear memory access validation](#linear-memory-access-validation)
-   is performed.
+ - [Linear memory access validation](#linear-memory-access-validation) is
+   performed.
 
 #### Store
 
@@ -1968,8 +1988,8 @@ Floating-point stores preserve all the bits of the value, performing an
 IEEE 754-2008 `copy` operation.
 
 **Validation:**
- - [Linear memory access validation](#linear-memory-access-validation)
-   is performed.
+ - [Linear memory access validation](#linear-memory-access-validation) is
+   performed.
 
 #### Extending Load, Signed
 
@@ -2031,8 +2051,8 @@ silently wrapped to a narrower width.
  - `store32` stores a 32-bit value.
 
 **Validation:**
- - [Linear memory access validation](#linear-memory-access-validation)
-   is performed.
+ - [Linear memory access validation](#linear-memory-access-validation) is
+   performed.
 
 > See the comment in the [wrap instruction](#integer-wrap) about the meaning of
 the name "wrap".
