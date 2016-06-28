@@ -17,9 +17,9 @@ Introduction
 > This document specifies the structure and interpretation of WebAssembly code.
 Implementations of WebAssembly [validation](#validation) and
 [execution](#execution) need not perform all the steps literally as described
-here; they need only behave ["as if"](https://en.wikipedia.org/wiki/As-if_rule)
-they did so in all observable respects.
+here; they need only behave ["as if"] they did so in all observable respects.
 
+["as if"]: https://en.wikipedia.org/wiki/As-if_rule
 
 Module
 --------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ and associated data.
 **Validation:**
  - The version index is checked to be equal to `0xc`.
  - For each present [known section](#known-sections), the associated
-   **Validation** clause is performed, if present.
+   **Validation** clause is performed, if one is specified for the section kind.
  - Present known sections are checked to be ordered in the section sequence as
    they are ordered in the [enumeration of the Known Sections](#known-sections).
 
@@ -95,14 +95,14 @@ There are several *known sections*:
 
 **Name:** `type`.
 
-The Type Section contains an [array] of all function signatures that will be
-used in the module.
+The Type Section consists of an [array] of function signatures.
 
-Each *function signature* contains a *parameter list*, an [array] of [types],
-and a *return list*, also an [array] of [types].
+Each *function signature* consists of:
+ - a *parameter list*, which is an [array] of [types].
+ - a *return list*, which is also an [array] of [types].
 
 **Validation:**
- - The return list of each array element is checked to have at most one element.
+ - Each return list is checked to contain at most one element.
 
 > In the future, this section may contain other forms of type entries as well,
 and support for function signatures with multiple return types.
@@ -111,25 +111,27 @@ and support for function signatures with multiple return types.
 
 **Name:** `import`
 
-The Import Section contains an [array] of all imports that will be used in the
-module.
+The Import Section consists of an [array] of imports.
 
-Each import contains:
- - a *signature index*, identifying a function signature in the
+An *import* consists of:
+ - a *signature [index]*, identifying a function signature in the
    [Type Section](#type-section).
- - a *module string*, identifying a module to import from.
- - a *function string*, identifying a function inside that module to import.
+ - a *module [string]*, identifying a module to import from.
+ - a *function [string]*, identifying a function inside that module to import.
 
 **Validation:**
  - The signature index of each array element is checked to be within the bounds
    of the [Type Section](#type-section) array.
 
+TODO: Describe the semantics of imports: module name resolution, function name
+resolution, and calls.
+
 #### Function Section
 
 **Name:** `function`
 
-The Function Section contains an [array] with elements directly corresponding to
-functions defined in the [Code Section](#code-section), each containing the
+The Function Section consists of an [array] with elements directly corresponding
+to functions defined in the [Code Section](#code-section), each containing the
 index in the [Type Section](#type-section) of the signature of the function.
 
 **Validation:**
@@ -142,37 +144,45 @@ index in the [Type Section](#type-section) of the signature of the function.
 
 **Name:** `memory`
 
-The Memory Section contains:
+The Memory Section consists of:
  - An *initial size*, which is an unsigned `iPTR` value, in units of [pages].
- - A *maximum size*, which is an unsigned `iPTR` value, in units of [pages]. See
-   the [`grow_memory`](#grow-memory) instruction for further information on this
-   field.
+ - An optional *maximum size*, which if present is an unsigned `iPTR` value, in
+   units of [pages]. See the [`grow_memory`](#grow-memory) instruction for
+   further information on this field.
  - An *exported* flag, which is a boolean value indicating whether the linear
    memory space is to be visible outside the module.
 
 **Validation:**
- - The maximum size is checked to be at least the initial size.
- - If the maximum size multiplied by the [page size](#pages) would be
-   unrepresentable in an unsigned `iPTR`, validation fails.
+ - If present, the maximum size is checked to be at least the initial size.
+ - If present, if the maximum size multiplied by the [page size](#pages) would
+   be unrepresentable in an unsigned `iPTR`, validation fails.
 
 TODO: Define `iPTR` in this context. Should Memory Sections have a wasm32 vs
 wasm64 flag?
+
+TODO: Support for creating multiple memory spaces?
+
+> When a maximum size value is present, implementations are encouraged to
+attempt to reserve enough resources for allocating up to the maximum size up
+front. Otherwise, implementations are encouraged to allocate only enough for
+the initial size up front.
 
 #### Export Section
 
 **Name:** `export`
 
-The Export Section contains an [array] of exports from the module.
+The Export Section consists of an [array] of exports from the module.
 
-An export contains:
- - the [index] of a function to export
- - a *function string*, which is the [string] name to export the indexed
-   function as.
+An *export* consists of:
+ - an [index] of a function to export
+ - a *function [string]*, which is the name to export the indexed function as.
 
 **Validation:**
  - The function index of each array element is checked to be within the bounds
    of the [Code Section](#code-section) array.
  - If any two exports have the same function string, validation fails.
+
+TODO: Describe the semantics of exports: name resolution and calls.
 
 TODO: Memory exports (which require the presence of a Memory Section).
 
@@ -180,7 +190,7 @@ TODO: Memory exports (which require the presence of a Memory Section).
 
 **Name:** `start`
 
-The Start Section contains a function [index]. See
+The Start Section consists of a function [index]. See
 [Instance Execution](#instance-execution) for further information.
 
 **Validation:**
@@ -193,10 +203,11 @@ The Start Section contains a function [index]. See
 
 **Name:** `code`
 
-The Code Section contains an [array] of function bodies.
+The Code Section consists of an [array] of function bodies.
 
-A *function body* contains an [array] of [types], which are declarations for
-locals, and a sequence of [instructions](#instructions).
+A *function body* consists of:
+ - an [array] of [types], which declare the number and types of locals.
+ - a sequence of [instructions](#instructions).
 
 > Validation of function bodies is specified [separately](#function-validation).
 
@@ -211,7 +222,7 @@ format, positions are represented with a special syntax.
 
 **Name:** `data`
 
-The Data Section contains an [array] of data initializers.
+The Data Section consists of an [array] of data initializers.
 
 A *data initializer* consists of a [string] and an offset. It describes data to
 be loaded into linear memory as part of
@@ -232,11 +243,11 @@ The Names Section doesn't change execution semantics and malformed constructs,
 such as out-of-bounds indices, in this section cause the section to be ignored,
 and don't trigger validation failures.
 
-The Names Section contains an [array] of function name descriptors, which each
-describe names for the function with the corresponding index in the module, and
-which contain:
- - The function name, a [string].
- - The names of the locals in the function, an [array] of [strings].
+The Names Section consists of an [array] of function name descriptors, which
+each describe names for the function with the corresponding index in the module,
+and which consist of:
+ - the function name, a [string].
+ - the names of the locals in the function, an [array] of [strings].
 
 > Name data is represented as an explicit section in the binary format, however
 in the text format it may be represented as an integrated part of the syntax for
@@ -244,7 +255,7 @@ functions rather than as a discrete section.
 
 > The expectation is that, when a binary WebAssembly module is presented in a
 human-readable format in a browser or other development environment, the names
-in this section will be used as the names of functions and locals in the
+in this section are to be used as the names of functions and locals in the
 [text format](TextFormat.md).
 
 
@@ -310,6 +321,8 @@ value is zero.
 
 > The final `end` instruction may be implicit in some representations.
 
+TODO: Monitor https://github.com/WebAssembly/design/pull/666.
+
 #### Function Body Validation
 
 The instruction at the current position is remembered, and the current position
@@ -317,8 +330,8 @@ is incremented to point to the position following it. Then the remembered
 instruction is validated as follows.
 
 If the instruction has a **Validation** clause, that clause describes its
-validation. Otherwise, [generic validation](#generic-instruction-validation) is
-performed.
+validation. Otherwise,
+[generic instruction validation](#generic-instruction-validation) is performed.
 
 If the current position is now past the end of the sequence,
 [function return validation](#function-return-validation) is initiated and
@@ -367,11 +380,16 @@ which consists of the following steps:
 
 #### Linear Memory Instantiation
 
-An array of bytes with the length set to the [Memory Section](#memory-section)'s
-initial size field is added to the instance.
+An array of bytes with the length being the value of the
+[Memory Section](#memory-section)'s initial size field is created and added to
+the instance. Any byte not initialized by any data initializer is initialized to
+zero.
 
 The contents of the [Data Section](#data-section) are loaded into this array.
 Each [string] is loaded into linear memory at its associated offset.
+
+**Trap:** Dynamic Resource Exhaustion, if dynamic resources are insufficient to
+support creation of the array.
 
 #### Recursion Limit
 
@@ -394,9 +412,9 @@ Function execution can be prompted by a [call-family instruction][L], by
 [instance execution](#instance-execution), or by the embedding environment.
 
 The input to execution of a function consists of:
- - The function to be executed.
- - The incoming argument values, one for each parameter [type] of the function.
- - A *recursion depth* value.
+ - the function to be executed.
+ - the incoming argument values, one for each parameter [type] of the function.
+ - a *recursion depth* value.
 
 For the duration of the execution of a function body, several data structures
 are created:
@@ -410,6 +428,9 @@ are created:
 
 > Implementations needn't create a literal array to store the locals, or literal
 stacks to manage values at runtime.
+
+> These data structures are all allocated outside any linear address space and
+are not any accessible to applications.
 
 #### Function Execution Initialization
 
@@ -494,12 +515,13 @@ complement signed integers aren't symmetric around zero.
 
 #### Booleans
 
-[Boolean](https://en.wikipedia.org/wiki/Boolean_data_type) values are
-represented as values of type `i32`. In a boolean context, any non-zero value is
-interpreted as true and `0` is interpreted as false.
+[Boolean] values are represented as values of type `i32`. In a boolean context,
+any non-zero value is interpreted as true and `0` is interpreted as false.
 
 Any instruction that produces a boolean value, such as a comparison, produces
 the values `0` and `1` for false and true.
+
+[Boolean]: https://en.wikipedia.org/wiki/Boolean_data_type
 
 ### Floating-Point Types
 
@@ -508,20 +530,20 @@ the values `0` and `1` for false and true.
 | `f32` | 32
 | `f64` | 64
 
-`f32` uses the IEEE 754-2008
-[binary32](https://en.wikipedia.org/wiki/Single-precision_floating-point_format)
-format, commonly known as "Single Precision".
+`f32` uses the IEEE 754-2008 [binary32] format, commonly known as
+"Single Precision".
 
-`f64` uses the IEEE 754-2008
-[binary64](https://en.wikipedia.org/wiki/Double-precision_floating-point_format)
-format, commonly known as "Double Precision".
+`f64` uses the IEEE 754-2008 [binary64] format, commonly known as
+"Double Precision".
 
-> Unlike with
-[Numbers in ECMAScript](https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type),
-[NaN](https://en.wikipedia.org/wiki/NaN) values in WebAssembly have sign bits
-and significand fields which may be observed and manipulated (though they are
-usually unimportant).
+> Unlike with [Numbers in ECMAScript], [NaN] values in WebAssembly have sign
+bits and significand fields which may be observed and manipulated (though they
+are usually unimportant).
 
+[binary32]: https://en.wikipedia.org/wiki/Single-precision_floating-point_format
+[binary64]: https://en.wikipedia.org/wiki/Double-precision_floating-point_format
+[Numbers in ECMAScript]: https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type
+[NaN]: https://en.wikipedia.org/wiki/NaN
 
 Instruction Signatures
 --------------------------------------------------------------------------------
@@ -576,8 +598,10 @@ These instructions load from and store to a linear memory space.
 
 #### Bytes
 
-[*Bytes*](https://en.wikipedia.org/wiki/Byte) in WebAssembly are 8-[bit], and
-are the addressing unit of linear memory spaces.
+[*Bytes*] in WebAssembly are 8-[bit], and are the addressing unit of linear
+memory spaces.
+
+[*Bytes*]: https://en.wikipedia.org/wiki/Byte
 
 #### Effective Address
 
@@ -617,9 +641,12 @@ For a store access, the value to store is written to the [accessed bytes], in
 #### Linear Memory Access Validation
 
  - `$align` is checked to be a power of 2.
+ - `$align` is checked to be at most the number of [accessed bytes].
  - If the module doesn't contain a [Memory Section](#memory-section), validation
    fails.
  - [Generic validation](#generic-instruction-validation) is also performed.
+
+TODO: Monitor https://github.com/WebAssembly/design/issues/584.
 
 ### R: Linear Memory-Resize Instruction Family
 
@@ -693,6 +720,9 @@ independently. In this way, calls form a stack-like data structure called the
 
 > Implementations needn't pass a literal argument to represent the recursion
 depth.
+
+> Data associated with the call stack is stored outside any linear address space
+and is not directly accessible to applications.
 
 #### Call Validation
 
@@ -792,6 +822,8 @@ deterministic.
 > There is no observable difference between quiet and signaling NaN other than
 the difference in the bit pattern.
 
+[IEEE 754-2008]: https://en.wikipedia.org/wiki/IEEE_floating_point
+
 ### Z: Floating-Point Bitwise Instruction Family
 
 These instructions operate on floating-point values, but do so in purely bitwise
@@ -805,8 +837,8 @@ Instructions
 
 0. [Control Flow Instructions](#control-flow-instructions)
 0. [Basic Instructions](#basic-instructions)
-0. [Integer Instructions](#integer-instructions)
-0. [Floating-Point Instructions](#floating-point-instructions)
+0. [Integer Arithmetic Instructions](#integer-arithmetic-instructions)
+0. [Floating-Point Arithmetic Instructions](#floating-point-arithmetic-instructions)
 0. [Integer Comparison Instructions](#integer-comparison-instructions)
 0. [Floating-Point Comparison Instructions](#floating-point-comparison-instructions)
 0. [Conversion Instructions](#conversion-instructions)
@@ -929,10 +961,11 @@ has more than one.
    [validation type] of the control-flow stack entry that depth from the top.
  - `any` is pushed onto the type stack.
 
-> This instruction serves the role of what is sometimes called a
-["jump table"](https://en.wikipedia.org/w/index.php?title=Jump_table) in other
-languages. "Branch" is used here instead to emphasize the commonality with the
-other branch instructions.
+> This instruction serves the role of what is sometimes called a ["jump table"]
+in other languages. "Branch" is used here instead to emphasize the commonality
+with the other branch instructions.
+
+["jump table"]: https://en.wikipedia.org/w/index.php?title=Jump_table
 
 #### Return
 
@@ -1047,6 +1080,8 @@ The `get_local` instruction returns the value in the locals array at index
 The `set_local` instruction sets the value in the locals array at index `$id` to
 the value given in the operand.
 
+> `set_local` is equivalent to a similar `tee_local` followed by a `drop`.
+
 #### Tee Local
 
 | Name        | Signature                   | Families | Opcode
@@ -1056,6 +1091,11 @@ the value given in the operand.
 The `tee_local` instruction sets the value in the locals array at index `$id` to
 the value given in the operand. Its return value is the value of its operand.
 
+> This instruction's name is inspired by the ["tee" command] in other languages,
+since it forwards the value of its operand value to two places.
+
+["tee" command]: https://en.wikipedia.org/wiki/Tee_(command)
+
 #### Select
 
 | Name        | Signature                       | Families | Opcode
@@ -1064,6 +1104,9 @@ the value given in the operand. Its return value is the value of its operand.
 
 The `select` instruction returns its first operand if `$condition` is [true], or
 its second operand otherwise.
+
+> This instruction differs from the conditional or ternary operator, eg.
+`x?y:z`, in some languages, in that it is not short-circuiting.
 
 #### Call
 
@@ -1096,7 +1139,7 @@ Validation:
 
 > The dynamic caller/callee signature match is nominal rather than structural.
 
-### Integer Instructions
+### Integer Arithmetic Instructions
 
 0. [Integer Add](#integer-add)
 0. [Integer Subtract](#integer-subtract)
@@ -1208,9 +1251,13 @@ zero.
 divided by `-1`; it returns `0` which is the correct remainder (even though the
 same operands to `div_s` do cause a trap).
 
-> This instruction differs from what is often called a
-["modulo" operation](https://en.wikipedia.org/wiki/Modulo_operation) in its
-handling of negative numbers.
+> This instruction differs from what is often called a ["modulo" operation] in
+its handling of negative numbers.
+
+> This instruction has some [common pitfalls].
+
+["modulo" operation]: https://en.wikipedia.org/wiki/Modulo_operation
+[common pitfalls]: https://en.wikipedia.org/wiki/Modulo_operation#Common_pitfalls
 
 #### Integer Remainder, Unsigned
 
@@ -1237,6 +1284,8 @@ languages.
 
 The `and` instruction returns the [bitwise and] of its operands.
 
+[bitwise and]: https://en.wikipedia.org/wiki/Bitwise_operation#AND
+
 #### Integer Bitwise Or
 
 | Name        | Signature                   | Families | Opcode | Syntax
@@ -1245,6 +1294,8 @@ The `and` instruction returns the [bitwise and] of its operands.
 | `i64.or`    | `(i64, i64) : (i64)`        | [G]      | 0x63   | `|` (7)
 
 The `or` instruction returns the [bitwise inclusive-or] of its operands.
+
+[bitwise inclusive-or]: https://en.wikipedia.org/wiki/Bitwise_operation#OR
 
 #### Integer Bitwise Exclusive-Or
 
@@ -1255,9 +1306,12 @@ The `or` instruction returns the [bitwise inclusive-or] of its operands.
 
 The `xor` instruction returns the [bitwise exclusive-or] of its operands.
 
-> A [bitwise negate](https://en.wikipedia.org/wiki/Bitwise_operation#NOT)
-operation can be performed by a `xor` instruction with negative one as the first
-operand, an operation sometimes called "one's complement" in other languages.
+> A [bitwise negate] operation can be performed by a `xor` instruction with
+negative one as the first operand, an operation sometimes called
+"one's complement" in other languages.
+
+[bitwise exclusive-or]: https://en.wikipedia.org/wiki/Bitwise_operation#XOR
+[bitwise negate]: https://en.wikipedia.org/wiki/Bitwise_operation#NOT
 
 #### Integer Shift Left
 
@@ -1373,8 +1427,10 @@ The `popcnt` instruction returns the number of 1-bits in its operand.
 
 > This instruction is fully defined when all bits are zero; it returns `0`.
 
-> This instruction corresponds to what is sometimes called a
-["hamming weight"][hamming weight] in other languages.
+> This instruction corresponds to what is sometimes called a ["hamming weight"]
+in other languages.
+
+["hamming weight"]: https://en.wikipedia.org/wiki/Hamming_weight
 
 #### Integer Equal To Zero
 
@@ -1389,7 +1445,7 @@ otherwise.
 > This serves as a form of "logical not" operation which can be used to invert
 [boolean] values.
 
-### Floating-Point Instructions
+### Floating-Point Arithmetic Instructions
 
 0. [Floating-Point Add](#floating-point-add)
 0. [Floating-Point Subtract](#floating-point-subtract)
@@ -1531,9 +1587,10 @@ The `trunc` instruction performs the IEEE 754-2008
 `roundToIntegralTowardZero` operation according to the
 [general floating-point rules][F].
 
-> ["Truncate"](https://en.wikipedia.org/wiki/Truncation) describes the rounding
-method used here; the fractional part of the value is discarded, effectively
-rounding to the nearest integer toward zero.
+> ["Truncate"] describes the rounding method used here; the fractional part of
+the value is discarded, effectively rounding to the nearest integer toward zero.
+
+["Truncate"]: https://en.wikipedia.org/wiki/Truncation
 
 #### Floating-Point Nearest Integer
 
@@ -1547,15 +1604,17 @@ The `nearest` instruction performs the IEEE 754-2008
 [general floating-point rules][F].
 
 > "Nearest" describes the rounding method used here; the value is
-[rounded to the nearest integer](https://en.wikipedia.org/wiki/Nearest_integer_function).
+[rounded to the nearest integer], with ties rounded toward the value with an
+even least-significant digit.
 
-> This instruction differs from
-[`Math.round` in ECMAScript](https://tc39.github.io/ecma262/#sec-math.round)
-which rounds ties up.
+> This instruction differs from [`Math.round` in ECMAScript] which rounds ties
+up.
 
-> This instruction differs from
-[`round` in C](http://en.cppreference.com/w/c/numeric/math/round) which rounds
-ties away from zero.
+> This instruction differs from [`round` in C] which rounds ties away from zero.
+
+[rounded to the nearest integer]: https://en.wikipedia.org/wiki/Nearest_integer_function
+[`Math.round` in ECMAScript]: https://tc39.github.io/ecma262/#sec-math.round
+[`round` in C]: http://en.cppreference.com/w/c/numeric/math/round
 
 #### Floating-Point Absolute Value
 
@@ -2076,13 +2135,13 @@ the name "wrap".
 | `grow_memory` | `(iPTR) : (iPTR)`         | [R]      | 0x39
 
 The `grow_memory` instruction increases the size of the referenced linear memory
-space by a given unsigned delta, in units of [pages]. If the resulting size of
-the referenced linear memory space would be unrepresentable in an unsigned iPTR,
-or if allocation fails due to insufficient dynamic resources, it returns `-1`;
-otherwise it returns the previous linear memory size, also as an unsigned value
-in units of [pages].
+space by a given unsigned amount, in units of [pages]. If the resulting size in
+bytes of the referenced linear memory space would be unrepresentable in an
+unsigned iPTR, or if allocation fails due to insufficient dynamic resources, it
+returns `-1`; otherwise it returns the previous linear memory size, also as an
+unsigned value in units of [pages].
 
-When a maximum memory size is declared in the referenced linear memory space,
+When a maximum size is present in the referenced linear memory space,
 `grow_memory` fails if it would grow past the maximum. However, `grow_memory`
 may still fail before the maximum if it wasn't possible to reserve the space up
 front or if enabling the reserved memory fails.
@@ -2118,17 +2177,12 @@ memory space, as an unsigned value in units of [pages].
 [U]: #u-unsigned-integer-instruction-family
 [F]: #f-floating-point-instruction-family
 [Z]: #z-floating-point-bitwise-instruction-family
-[hamming weight]: https://en.wikipedia.org/wiki/Hamming_weight
 [shifted]: https://en.wikipedia.org/wiki/Logical_shift
 [shift count]: #shift-count
 [two's complement sum]: https://en.wikipedia.org/wiki/Two%27s_complement#Addition
 [two's complement difference]: https://en.wikipedia.org/wiki/Two%27s_complement#Subtraction
 [two's complement product]: https://en.wikipedia.org/wiki/Two%27s_complement#Multiplication
-[bitwise and]: https://en.wikipedia.org/wiki/Bitwise_operation#AND
-[bitwise inclusive-or]: https://en.wikipedia.org/wiki/Bitwise_operation#OR
-[bitwise exclusive-or]: https://en.wikipedia.org/wiki/Bitwise_operation#XOR
 [Floor and Ceiling Functions]: https://en.wikipedia.org/wiki/Floor_and_ceiling_functions
-[IEEE 754-2008]: https://en.wikipedia.org/wiki/IEEE_floating_point
 [two's complement]: https://en.wikipedia.org/wiki/Two%27s_complement
 [minimum signed integer value]: https://en.wikipedia.org/wiki/Two%27s_complement#Most_negative_number
 [KiB]: https://en.wikipedia.org/wiki/Kibibyte
