@@ -616,16 +616,23 @@ For a store access, the value to store is written to the [accessed bytes], in
 
 #### Linear Memory Access Validation
 
-`$align` is checked to be a power of 2.
+ - `$align` is checked to be a power of 2.
+ - If the module doesn't contain a [Memory Section](#memory-section), validation
+   fails.
+ - [Generic validation](#generic-instruction-validation) is also performed.
 
-[Generic validation](#generic-instruction-validation) is also performed.
-
-### R: Memory-Resize Instruction Family
+### R: Linear Memory-Resize Instruction Family
 
 #### Pages
 
 *Pages* in WebAssembly are 64 [KiB], and are the units used in linear memory
 resizing.
+
+#### Linear Memory-Resize Validation
+
+ - If the module doesn't contain a [Memory Section](#memory-section), validation
+   fails.
+ - [Generic validation](#generic-instruction-validation) is also performed.
 
 ### B: Branch Instruction Family
 
@@ -2081,9 +2088,8 @@ may still fail before the maximum if it wasn't possible to reserve the space up
 front or if enabling the reserved memory fails.
 
 **Validation**:
- - If the module doesn't contain a [Memory Section](#memory-section), validation
-   fails.
- - [Generic validation](#generic-instruction-validation) is also performed.
+ - [Linear memory-resize validation](#linear-memory-resize-validation) is
+   performed.
 
 > Since the return value is in units of pages, `-1` isn't otherwise a valid
 linear memory size.
@@ -2098,9 +2104,8 @@ The `current_memory` instruction returns the size of the referenced linear
 memory space, as an unsigned value in units of [pages].
 
 **Validation**:
- - If the module doesn't contain a [Memory Section](#memory-section), validation
-   fails.
- - [Generic validation](#generic-instruction-validation) is also performed.
+ - [Linear memory-resize validation](#linear-memory-resize-validation) is
+   performed.
 
 [M]: #m-memory-access-instruction-family
 [R]: #r-memory-resize-instruction-family
