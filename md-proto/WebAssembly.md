@@ -515,13 +515,14 @@ complement signed integers aren't symmetric around zero.
 
 #### Booleans
 
-[Boolean] values are represented as values of type `i32`. In a boolean context,
-any non-zero value is interpreted as true and `0` is interpreted as false.
+[Boolean][actual boolean] values are represented as values of type `i32`. In a
+boolean context, such as a `br_if` condition, any non-zero value is interpreted
+as true and `0` is interpreted as false.
 
 Any instruction that produces a boolean value, such as a comparison, produces
 the values `0` and `1` for false and true.
 
-[Boolean]: https://en.wikipedia.org/wiki/Boolean_data_type
+[actual boolean]: https://en.wikipedia.org/wiki/Boolean_data_type
 
 ### Floating-Point Types
 
