@@ -91,6 +91,9 @@ There are several *known sections*:
 0. [Data Section](#data-section)
 0. [Name Section](#name-section)
 
+TODO: Global Section, Table Section, Elements Section, the various Index Spaces,
+and Initializer Expressions, per https://github.com/WebAssembly/design/pull/682
+
 #### Type Section
 
 **Name:** `type`.
@@ -126,6 +129,8 @@ An *import* consists of:
 TODO: Describe the semantics of imports: module name resolution, function name
 resolution, and calls.
 
+TODO: Memory imports, global imports, table imports
+
 #### Function Section
 
 **Name:** `function`
@@ -160,7 +165,7 @@ The Memory Section consists of:
 TODO: Define `iPTR` in this context. Should Memory Sections have a wasm32 vs
 wasm64 flag?
 
-TODO: Support for creating multiple memory spaces?
+TODO: The *default flag*, per https://github.com/WebAssembly/design/pull/682
 
 > When a maximum size value is present, implementations are encouraged to
 attempt to reserve enough resources for allocating up to the maximum size up
@@ -571,7 +576,8 @@ A few special constructs are used for special purposes:
  - `T?` is used in type-generic instructions to denote either a type parameter
    or no type.
  - `*args*` is used in [call instructions][L] and indicates a sequence of typed
-   value names providing the values for the arguments in the call.
+   value names, with length `$arity`, providing the values for the arguments in
+   the call.
  - `*returns*` is also used in [call instructions][L] and indicates a sequence
    of types, describing the function's return types.
 
@@ -616,7 +622,7 @@ there is no overflow.
 *misaligned*, and the instruction may execute very slowly.
 
 > When `$align` is greater than or equal to the size of the access, the access
-is *naturally aligned*. When it is less, the access is *unaligned*.
+is *naturally aligned*. When it's less, the access is *unaligned*.
 
 > There is no other semantic effect associated with `$align`; misaligned and
 unaligned loads and stores still function normally.
@@ -725,6 +731,8 @@ depth.
 > Data associated with the call stack is stored outside any linear address space
 and is not directly accessible to applications.
 
+TODO: Utilize `$arity`.
+
 #### Call Validation
 
 If the sequence of the types of the `*args*` operands, excluding `$callee` when
@@ -735,6 +743,8 @@ If the sequence of the types of `*returns*` isn't identical to the sequence of
 types in the return list of the callee signature, validation fails.
 
 [Generic validation](#generic-instruction-validation) is also performed.
+
+TODO: Validate `$arity`.
 
 ### C: Comparison Instruction Family
 
@@ -850,14 +860,14 @@ Instructions
 
 0. [Block](#block)
 0. [Loop](#loop)
-0. [If](#if)
-0. [Else](#else)
 0. [Unconditional Branch](#unconditional-branch)
 0. [Conditional Branch](#conditional-branch)
 0. [Table Branch](#table-branch)
+0. [If](#if)
+0. [Else](#else)
+0. [End](#end)
 0. [Return](#return)
 0. [Unreachable](#unreachable)
-0. [End](#end)
 
 #### Block
 
@@ -886,24 +896,6 @@ onto the control-flow stack.
 
 > There is no requirement that loops eventually terminate or contain observable
 side effects.
-
-#### If
-
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
-| `if`        | `(i32) : ()`                |          | 0x03
-
-TODO: Describe `if`. This is in part waiting on the resolution of
-https://github.com/WebAssembly/design/pull/710.
-
-#### Else
-
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
-| `else`      | `() : ()`                   |          | 0x04
-
-TODO: Describe `else`. This is in part waiting on the resolution of
-https://github.com/WebAssembly/design/pull/710.
 
 #### Unconditional Branch
 
@@ -936,7 +928,7 @@ than one.
  - The [forwarding validation type] is determined.
  - It is [merged] into the [validation type] of the control-flow stack entry
    `$depth` from the top.
- - If it is `void`, and the length of the type stack is greater than the
+ - If it's `void`, and the length of the type stack is greater than the
    control-flow stack top's limit value, validation fails.
 
 TODO: Monitor https://github.com/WebAssembly/design/pull/709.
@@ -958,7 +950,7 @@ has more than one.
 **Validation:**
  - A [validation type] is popped from the type stack and checked to be `i32`.
  - The [forwarding validation type] is determined.
- - For each depth in the table and `$default`, it is merged into the
+ - For each depth in the table and `$default`, it's merged into the
    [validation type] of the control-flow stack entry that depth from the top.
  - `any` is pushed onto the type stack.
 
@@ -967,6 +959,41 @@ in other languages. "Branch" is used here instead to emphasize the commonality
 with the other branch instructions.
 
 ["jump table"]: https://en.wikipedia.org/w/index.php?title=Jump_table
+
+#### If
+
+| Name        | Signature                   | Families | Opcode
+| ----        | ---------                   | -------- | ------
+| `if`        | `(i32) : ()`                |          | 0x03
+
+TODO: Describe `if`. This is in part waiting on the resolution of
+https://github.com/WebAssembly/design/pull/710.
+
+#### Else
+
+| Name        | Signature                   | Families | Opcode
+| ----        | ---------                   | -------- | ------
+| `else`      | `() : ()`                   |          | 0x04
+
+TODO: Describe `else`. This is in part waiting on the resolution of
+https://github.com/WebAssembly/design/pull/710.
+
+#### End
+
+| Name        | Signature                   | Families | Opcode
+| ----        | ---------                   | -------- | ------
+| `end`       | `(T?) : (T?)`               | [B]      | 0x0f
+
+The `end` instruction pops an entry from the control-flow stack. If the entry's
+[label] is unbound, the label is bound to the current position. Its return value
+is the value of its operand, if it has one.
+
+**Validation:**
+ - The [forwarding validation type] is determined.
+ - It is [merged] into the [validation type] of the control-flow stack top, and
+   then the control-flow stack top is then popped.
+ - If it's `void`, and the length of the type stack is greater than the (new)
+   control-flow stack top's limit value, validation fails.
 
 #### Return
 
@@ -999,23 +1026,6 @@ actual function return.
 > The `unreachable` instruction is meant to represent code that isn't meant to
 be executed except in the case of a bug in the application.
 
-#### End
-
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
-| `end`       | `(T?) : (T?)`               | [B]      | 0x0f
-
-The `end` instruction pops an entry from the control-flow stack. If the entry's
-[label] is unbound, the label is bound to the current position. Its return value
-is the value of its operand, if it has one.
-
-**Validation:**
- - The [forwarding validation type] is determined.
- - It is [merged] into the [validation type] of the control-flow stack top, and
-   then the control-flow stack top is then popped.
- - If it is `void`, and the length of the type stack is greater than the (new)
-   control-flow stack top's limit value, validation fails.
-
 ### Basic Instructions
 
 0. [Nop](#nop)
@@ -1028,8 +1038,7 @@ is the value of its operand, if it has one.
 0. [Call](#call)
 0. [Indirect Call](#indirect-call)
 
-TODO: `call_table` and/or `call_import`, waiting on the resolution of
-https://github.com/WebAssembly/design/pull/682
+TODO: `set_global`, `get_global`, per https://github.com/WebAssembly/design/pull/682
 
 #### Nop
 
@@ -1107,13 +1116,13 @@ The `select` instruction returns its first operand if `$condition` is [true], or
 its second operand otherwise.
 
 > This instruction differs from the conditional or ternary operator, eg.
-`x?y:z`, in some languages, in that it is not short-circuiting.
+`x?y:z`, in some languages, in that it's not short-circuiting.
 
 #### Call
 
-| Name        | Signature                               | Families | Opcode
-| ----        | ---------                               | -------- | ------
-| `call`      | `<$callee: i32> (*args*) : (*returns*)` | [L]      | 0x16
+| Name        | Signature                                            | Families | Opcode
+| ----        | ---------                                            | -------- | ------
+| `call`      | `<$arity: i32, $callee: i32> (*args*) : (*returns*)` | [L]      | 0x16
 
 The `call` instruction performs a [call](#calling) to the function with index
 `$callee`.
@@ -1122,11 +1131,16 @@ Validation:
  - [Call validation](#call-validation) is performed; the callee signature is the
    signature of the indexed function.
 
+TODO: Describe `$arity`.
+
+TODO: Update index space, per
+https://github.com/WebAssembly/design/pull/682
+
 #### Indirect Call
 
-| Name            | Signature                                                | Families | Opcode
-| ----            | ---------                                                | -------- | ------
-| `call_indirect` | `<$signature: i32> ($callee: i32, *args*) : (*returns*)` | [L]      | 0x17
+| Name            | Signature                                                             | Families | Opcode
+| ----            | ---------                                                             | -------- | ------
+| `call_indirect` | `<$arity: i32, $signature: i32> ($callee: i32, *args*) : (*returns*)` | [L]      | 0x17
 
 The `call_indirect` instruction performs a [call](#calling) to the function with
 index `$callee`.
@@ -1139,6 +1153,11 @@ Validation:
    signature with index `$signature` in the [Type Section](#type-section).
 
 > The dynamic caller/callee signature match is nominal rather than structural.
+
+TODO: Describe `$arity`.
+
+TODO: Update signature matching and index space, per
+https://github.com/WebAssembly/design/pull/682
 
 ### Integer Arithmetic Instructions
 
