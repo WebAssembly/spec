@@ -280,19 +280,55 @@ in the section is [validated](#function-validation).
 
 ### Function Validation
 
-For the duration of the validation of a function body, several data structures
-are created:
+If the function's instruction sequence is empty, or if the last instruction in
+the sequence isn't an `end`, validation fails.
+
+For the duration of the validation of a function body, the following data
+structures are used:
  - A *control-flow stack*, with entries each containing
     - A [validation type](#validation-type).
     - A *limit* integer value.
  - A *type stack*, with entries each containing a [validation type].
- - A *current position*.
 
-During function validation, if either stack is empty when an element is to be
-popped from it, or an element is accessed by index outside the bounds of the
-stack, validation fails. Also, if a [validation type] is to be popped from the
-type stack such that the length of the type stack would become less than the
-control-flow stack top's limit value, validation fails.
+The type stack begins empty. The control-flow stack begins with one entry, with
+the [validation type] being the return type of the function, if it has one, or
+`void` otherwise, and with the limit value being zero.
+
+If at any time, either stack is empty when an element is to be popped from it,
+or an element is accessed by index outside the bounds of the stack, validation
+fails. Also, if a [validation type] is to be popped from the type stack such
+that the length of the type stack would become less than the control-flow stack
+top's limit value, validation fails.
+
+For each instruction in the body, in sequence, if the instruction has a
+**Validation** clause, it is validated according to that clause, otherwise
+[generic instruction validation](#generic-instruction-validation) is performed.
+
+Finally, if the function signature has a return type, a type is popped from the
+type stack and checked to match the return type. The type stack and the
+control-flow stack are then both checked to be empty. If no failures were
+detected anywhere in the function, function validation is successful.
+
+> The final `end` instruction may be implicit in some representations.
+
+TODO: Monitor https://github.com/WebAssembly/design/pull/666.
+
+
+#### Generic Instruction Validation
+
+For each operand [type] in the instruction's signature in reverse order, a
+[validation type] is popped from the type stack and checked to match it. Each
+return type of the instruction's signature is then pushed onto the type stack.
+
+If the instruction's signature has no return types:
+ - If the length of the type stack is greater than the control-flow stack top's
+   limit value, validation fails.
+ - `void` is pushed onto the type stack.
+
+TODO: Handle unused `void` values left behind on the stack. Or, eliminate `void`
+values from the type stack altogether.
+
+> There are no implicit type conversions in WebAssembly.
 
 #### Validation Type
 
@@ -313,60 +349,6 @@ To merge two validation types:
  - Otherwise, if the validation types are the same, the result is that
    validation type.
  - Otherwise, validation fails.
-
-#### Function Validation Initialization
-
-If the instruction sequence is empty, or if the last instruction in the sequence
-isn't an `end`, validation fails.
-
-The current position starts at the first position. The type stack begins empty.
-The control-flow stack starts with one entry. This entry's [validation type] is
-the return type of the function, if it has one, or `void` otherwise. Its limit
-value is zero.
-
-> The final `end` instruction may be implicit in some representations.
-
-TODO: Monitor https://github.com/WebAssembly/design/pull/666.
-
-#### Function Body Validation
-
-The instruction at the current position is remembered, and the current position
-is incremented to point to the position following it. Then the remembered
-instruction is validated as follows.
-
-If the instruction has a **Validation** clause, that clause describes its
-validation. Otherwise,
-[generic instruction validation](#generic-instruction-validation) is performed.
-
-If the current position is now past the end of the sequence,
-[function return validation](#function-return-validation) is initiated and
-validation of the function is thereafter complete.
-
-Otherwise, [validation](#function-body-validation) is restarted with the new
-current position.
-
-#### Generic Instruction Validation
-
-For each operand [type] in the instruction's signature in reverse order, a
-[validation type] is popped from the type stack and checked to match it. Each
-return type of the instruction's signature is then pushed onto the type stack.
-
-If the instruction's signature has no return types:
- - If the length of the type stack is greater than the control-flow stack top's
-   limit value, validation fails.
- - `void` is pushed onto the type stack.
-
-TODO: Handle unused `void` values left behind on the stack. Or, eliminate `void`
-values from the type stack altogether.
-
-> There are no implicit type conversions in WebAssembly.
-
-#### Function Return Validation
-
-If the function signature has a return type, a type is popped from the type
-stack and checked to match the return type. The type stack and the control-flow
-stack are then both checked to be empty. If no failures were detected anywhere
-in the function, function validation is successful.
 
 
 Execution
