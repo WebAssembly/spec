@@ -171,7 +171,8 @@ An *import* consists of:
 TODO: Describe the semantics of imports: module name resolution, function name
 resolution, and calls.
 
-TODO: Memory imports, global imports, table imports
+TODO: Memory imports, global imports, table imports, per
+https://github.com/WebAssembly/design/pull/682
 
 #### Function Section
 
@@ -332,25 +333,47 @@ in the section is [validated](#function-validation).
 
 ### Function Validation
 
-If the function's instruction sequence is empty, or if the last instruction in
-the sequence isn't an [`end`](#end), validation fails.
+The major requirements for function validation are:
+ - Control-flow constructs must form properly nested *regions*. `loop`, `block`,
+   and the function entry pair with `end`, and `if` can pair with `end` or
+   `else`, which is then paired with `end`.
+ - The number and types of all elements that can be on the value stack at
+   execution of each instruction is required be the same for all control-flow
+   paths to that instruction.
+ - The types of the operands passed to each instruction is required to conform
+   to the instruction's signature's argument types.
+ - At each instruction, all values that will be popped from the value stack at
+   that instruction are required to have been pushed within the same region.
 
-For the duration of the validation of a function body, the following data
-structures are used:
+The requirements can be validated in a single linear pass as follows:
+
+The following data structures are created:
+ - A *type stack*, with entries each containing a [validation type], for
+   tracking the number and types of values that will be on the value stack at
+   execution time.
  - A *control-flow stack*, with entries each containing
-    - A [validation type](#validation-type).
-    - A *limit* integer value.
- - A *type stack*, with entries each containing a [validation type].
+    - A *limit* integer value, which is an index into the type stack indicating
+      the boundary between values pushed before the current region and values
+      pushed inside the current region.
+    - A [validation type](#validation-type), which is used to check that all
+      exits from the current region leave the same number and types of elements
+      on the type stack.
+
+The following invariants are required to be preserved:
+ - Whenever an element of either stack is to be popped, that stack is required
+   to be non-empty.
+ - Whenever an element of either stack is to be accessed by index, the index is
+   required to be within the bounds of that stack.
+ - When a [validation type] is to be popped from the type stack, the length of
+   the type stack is required to be greater than the control-flow stack top's
+   limit value.
 
 The type stack begins empty. The control-flow stack begins with one entry, with
 the [validation type] being the return type of the function, if it has one, or
 `void` otherwise, and with the limit value being zero.
 
-If at any time, either stack is empty when an element is to be popped from it,
-or an element is accessed by index outside the bounds of the stack, validation
-fails. Also, if a [validation type] is to be popped from the type stack such
-that the length of the type stack would become less than the control-flow stack
-top's limit value, validation fails.
+If the function's instruction sequence is empty, or if the last instruction in
+the sequence isn't an [`end`](#end), validation fails.
 
 For each instruction in the body, in sequence, if the instruction has a
 **Validation** clause, it is validated according to that clause, otherwise
@@ -361,16 +384,15 @@ type stack and required to match the return type. The type stack and the
 control-flow stack are then both required to be empty. If no failures were
 detected anywhere in the function, function validation is successful.
 
-> The control-flow stack's limit values effectively mark "scope boundaries" in
-the type stack. "Scopes" are effectively nested by the nature of the
-control-flow stack, and each scope's limit value is greater than those of the
-"scopes" that enclose it. Things pushed onto the type stack outside a "scope"
-cannot be popped from within the "scope".
+> The control-flow stack's limit values effectively mark region boundaries in
+the type stack. Regions are required to be nested, and each region's limit value
+is greater than those of the regions that enclose it. Things pushed onto the
+type stack outside a region cannot be popped from within the region.
 
 > The final [`end`](#end) instruction may be implicit in some representations.
 
-TODO: Monitor https://github.com/WebAssembly/design/pull/666.
-
+TODO: Will the `end` be made explicit? Monitor
+https://github.com/WebAssembly/design/pull/666.
 
 #### Generic Instruction Validation
 
@@ -421,7 +443,8 @@ which consists of the following steps:
    failures, instantiation aborts and doesn't produce an instance.
  - If a [Memory Section](#memory-section) is present,
    [Linear memory is instantiated](#linear-memory-instantiation).
- - [A recursion limit is selected](#recursion-limit).
+ - A finite quantity of [call-stack resources](#call-stack-resources) are
+   allocated.
 
 #### Linear Memory Instantiation
 
@@ -436,15 +459,16 @@ Each [string] is loaded into linear memory at its associated start offset.
 **Trap:** Dynamic Resource Exhaustion, if dynamic resources are insufficient to
 support creation of the array.
 
-#### Recursion Limit
+#### Call Stack Resources
 
-The *recursion limit* is a non-negative integer value selected
-[nondeterministically] during instantiation, and recorded in the instance.
+Call stack resources are an abstract quantity, with discrete units, of which a
+[nondeterministic] amount is allocated during instantiation, belonging to
+an instance.
 
-> This value is used by [call instructions][L].
+> This is used by [call instructions][L].
 
-> The recursion limit serves as an upper bound only; implementations may perform
-a trap as soon as they exhaust dynamic resources.
+> The specific resource limit serves as an upper bound only; implementations may
+perform a trap sooner if they exhaust other dynamic resources.
 
 ### Instance Execution
 
@@ -477,8 +501,8 @@ stacks to manage values at runtime.
 > These data structures are all allocated outside any linear address space and
 are not any accessible to applications.
 
-TODO: Track the recursion depth across calls to imported functions that
-reenter the module via calls to its exports.
+TODO: Track the recursion depth across calls to imported functions that reenter
+the module via calls to its exports.
 
 #### Function Execution Initialization
 
@@ -629,6 +653,10 @@ A few special constructs are used for special purposes:
  - `*returns*` is also used in [call instructions][L] and indicates a sequence
    of types, describing the function's return types.
 
+TODO: Describe these in more detail.
+
+TODO: Explain the Opcode and Syntax fields of instruction descriptions.
+
 
 Instruction Families
 --------------------------------------------------------------------------------
@@ -701,7 +729,8 @@ For a store access, the value to store is written to the [accessed bytes], in
    fails.
  - [Generic validation](#generic-instruction-validation) is also performed.
 
-TODO: Monitor https://github.com/WebAssembly/design/issues/584.
+TODO: Will offsets be encoded as signed? Monitor
+https://github.com/WebAssembly/design/issues/584.
 
 ### R: Linear Memory-Resize Instruction Family
 
@@ -760,12 +789,14 @@ TODO: Explain what the purpose of all this is.
 
 The called function &mdash; the *callee* &mdash; is
 [executed](#function-execution), with the `*args*` operands, excluding
-`$callee` when present, passed to it as its incoming arguments, and the current
-recursion depth value plus one as its recursion depth value. The return value of
-the call is defined by the execution.
+`$callee` when present, passed to it as its incoming arguments. The return value
+of the call is defined by the execution.
 
-**Trap:** Call Stack Exhausted, if the recursion depth value is greater than the
-[recursion limit](#recursion-limit).
+A unit of [call stack resources](#call-stack-resources) is consumed the
+execution of the callee, and released when it completes.
+
+**Trap:** Call Stack Exhausted, if the instance has insufficient
+[call stack resources](#call-stack-resources).
 
 > This means that implementations aren't permitted to perform implicit
 opportunistic tail-call elimination.
@@ -868,7 +899,8 @@ by one of the following rules, selected [nondeterministically]:
    bit, a significand field with `1` in the most significant bit and `0` in the
    remaining bits.
 
-TODO: Monitor https://github.com/WebAssembly/design/pull/713.
+TODO: How does NaN propagation work? Monitor
+https://github.com/WebAssembly/design/pull/713.
 
 Implementations are permitted to further implement the IEEE 754-2008 section
 "Operations with NaNs" recommendation that operations propagate NaN bits from
@@ -953,6 +985,9 @@ stack.
 > There is no requirement that loops eventually terminate or contain observable
 side effects.
 
+TODO: Does loop have an exit label? Monitor
+https://github.com/WebAssembly/design/pull/710
+
 #### Unconditional Branch
 
 | Name        | Signature                                | Families | Opcode
@@ -967,6 +1002,9 @@ has one.
  - The [forwarding validation type] is [merged] into the [validation type] of
    the control-flow stack entry `$depth` from the top.
  - `any` is pushed onto the type stack.
+
+TODO: If the control-flow stack entry `$depth` from the top is for a `loop`
+we can't forward a value to it. Same for `br_if` and `br_table`.
 
 #### Conditional Branch
 
@@ -1604,8 +1642,8 @@ instruction, negative zero is considered less than zero. If either operand is a
 NaN, the result is a NaN determined by the [general floating-point rules][F].
 
 > This differs from the IEEE 754-2008 `minNum` operation in that it returns a
-NaN if either operand is a NaN, and in that the behavior on negative zero is
-fully specified.
+NaN if either operand is a NaN, and in that the behavior when the operands are
+zeros of differing signs is fully specified.
 
 > This differs from the common `x<y?x:y` expansion in its handling of
 negative zero and NaN values.
@@ -1622,8 +1660,8 @@ instruction, negative zero is considered less than zero. If either operand is a
 NaN, the result is a NaN determined by the [general floating-point rules][F].
 
 > This differs from the IEEE 754-2008 `maxNum` operation in that it returns a
-NaN if either operand is a NaN, and in that the behavior on negative zero is
-fully specified.
+NaN if either operand is a NaN, and in that the behavior when the operands are
+zeros of differing signs is fully specified.
 
 > This differs from the common `x>y?x:y` expansion in its handling of negative
 zero and NaN values.
