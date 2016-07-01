@@ -34,25 +34,25 @@ which, for example, allows decoders to ensure that program state is consistent
 at all control flow merge points without having to see the entire function body
 first. For more information, see the [Validation section](#validation).
 
-A WebAssembly module is *instantiated* to produce a WebAssembly *instance*,
-which contains all the data structures required by the module's code.
-Instances can include [linear memory](#memory-section) to serve the purpose of
-an address space for program data. For security and determinism, linear memory
-is *sandboxed*, and the other data structures in an instance, such as the call
+A WebAssembly module can be *instantiated* to produce a WebAssembly *instance*,
+which contains all the data structures required by the module's code. Instances
+can include [linear memory](#memory-section) to serve the purpose of an address
+space for program data. For security and determinism, linear memory is
+*sandboxed*, and the other data structures in an instance, such as the call
 stack, are allocated outside of linear memory so that they cannot be corrupted
 by errant linear memory accesses. An instance can then be executed, either by
 execution of its [start function](#start-section) or by calls to its exported
 functions. For more information, see the [Execution section](#execution).
 
-Along with their other contents, functions contain sequences of *instructions*.
-WebAssembly instructions conceptually communicate with each other via pushing
-and popping values on a stack, which allows them to have a very compact
-encoding. Use of the stack is constrained to allow implementations to statically
-verify the number and types of all entries on the stack at all times, which
-allows them to efficiently translate the code into other forms that may not use
-an actual dynamic stack. There are instructions for performing integer and
-floating-point arithmetic, coordinating control flow, marshalling data, calling
-functions, and so on. For more information, see the
+Along with their other contents, each function contains a sequence of
+*instructions*. WebAssembly instructions conceptually communicate with each
+other primarily via pushing and popping values on a stack, which allows them to
+have a very compact encoding. Use of the stack is constrained to allow
+implementations to statically verify the number and types of all entries on the
+stack at all times, which allows them to efficiently translate the code into
+other forms that may not use an actual dynamic stack. There are instructions for
+performing integer and floating-point arithmetic, coordinating control flow,
+marshalling data, calling functions, and so on. For more information, see the
 [Instructions section](#instructions).
 
 Implementations of WebAssembly [validation](#validation) and
@@ -62,6 +62,7 @@ here; they need only behave ["as if"] they did so in all observable respects.
 [ISA]: https://en.wikipedia.org/wiki/Instruction_set
 [*functions*]: https://en.wikipedia.org/wiki/Subroutine
 ["as if"]: https://en.wikipedia.org/wiki/As-if_rule
+
 
 Module
 --------------------------------------------------------------------------------
@@ -623,6 +624,7 @@ are usually unimportant).
 [Numbers in ECMAScript]: https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type
 [NaN]: https://en.wikipedia.org/wiki/NaN
 
+
 Instruction Signatures
 --------------------------------------------------------------------------------
 
@@ -750,7 +752,7 @@ resizing.
 #### Branching
 
 In a branch according to a given control-flow stack entry, first the value stack
-is resized to the entry's limit value.
+is resized down to the entry's limit value.
 
 Then, if the entry's [label] is bound, the current position is set to the bound
 position. Otherwise, the position to bind the label to is found by scanning
@@ -1722,15 +1724,14 @@ The `nearest` instruction performs the IEEE 754-2008
 [general floating-point rules][F].
 
 > "Nearest" describes the rounding method used here; the value is
-[rounded to the nearest integer], with ties rounded toward the value with an
-even least-significant digit.
+[rounded to the nearest integer], with
+[ties rounded toward the value with an even least-significant digit].
 
 > This instruction differs from [`Math.round` in ECMAScript] which rounds ties
-up.
-
-> This instruction differs from [`round` in C] which rounds ties away from zero.
+up, and it differs from [`round` in C] which rounds ties away from zero.
 
 [rounded to the nearest integer]: https://en.wikipedia.org/wiki/Nearest_integer_function
+[ties rounded toward the value with an even least-significant digit]: https://en.wikipedia.org/wiki/Rounding#Round_half_to_even
 [`Math.round` in ECMAScript]: https://tc39.github.io/ecma262/#sec-math.round
 [`round` in C]: http://en.cppreference.com/w/c/numeric/math/round
 
