@@ -484,7 +484,6 @@ Function execution can be prompted by a [call-family instruction][L], by
 The input to execution of a function consists of:
  - the function to be executed.
  - the incoming argument values, one for each parameter [type] of the function.
- - a *recursion depth* value.
 
 For the duration of the execution of a function body, several data structures
 are created:
@@ -501,9 +500,6 @@ stacks to manage values at runtime.
 
 > These data structures are all allocated outside any linear address space and
 are not any accessible to applications.
-
-TODO: Track the recursion depth across calls to imported functions that reenter
-the module via calls to its exports.
 
 #### Function Execution Initialization
 
@@ -807,9 +803,6 @@ opportunistic tail-call elimination.
 during the call, and the execution of the called function is performed
 independently. In this way, calls form a stack-like data structure called the
 *call stack*.
-
-> Implementations needn't pass a literal argument to represent the recursion
-depth.
 
 > Data associated with the call stack is stored outside any linear address space
 and is not directly accessible to applications.
