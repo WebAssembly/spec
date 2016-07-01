@@ -27,33 +27,33 @@ implements used by the module, and sections defining [*functions*]. For more
 information, see the [Module section](#module).
 
 WebAssembly code must be validated before it can be instantiated and executed.
-WebAssembly is designed to allow validation to be performed in in a single
-linear pass through a WebAssembly module. In particular, control flow within
-each function is *structured*, and [loops are explicitly identified](#loop),
-which, for example, allows decoders to ensure that program state is consistent
-at all control flow merge points without having to see the entire function body
-first. For more information, see the [Validation section](#validation).
+WebAssembly is designed to allow validation to be performed in a single linear
+pass through a WebAssembly module. In particular, control flow within each
+function is *structured*, and [loops are explicitly identified](#loop), which,
+for example, allows decoders to ensure that program state is consistent at all
+control flow merge points without having to see the entire function body first.
+For more information, see the [Validation section](#validation).
 
-A WebAssembly module can be *instantiated* to produce a WebAssembly *instance*,
+A WebAssembly module can be [*instantiated*] to produce a WebAssembly instance,
 which contains all the data structures required by the module's code. Instances
 can include [linear memory](#memory-section) to serve the purpose of an address
 space for program data. For security and determinism, linear memory is
-*sandboxed*, and the other data structures in an instance, such as the call
+*sandboxed*, and the other data structures in an instance, including the call
 stack, are allocated outside of linear memory so that they cannot be corrupted
 by errant linear memory accesses. An instance can then be executed, either by
 execution of its [start function](#start-section) or by calls to its exported
-functions. For more information, see the [Execution section](#execution).
+functions.
 
-Along with their other contents, each function contains a sequence of
+Along with the other contents, each function contains a sequence of
 *instructions*. WebAssembly instructions conceptually communicate with each
-other primarily via pushing and popping values on a stack, which allows them to
-have a very compact encoding. Use of the stack is constrained to allow
-implementations to statically verify the number and types of all entries on the
-stack at all times, which allows them to efficiently translate the code into
-other forms that may not use an actual dynamic stack. There are instructions for
-performing integer and floating-point arithmetic, coordinating control flow,
-marshalling data, calling functions, and so on. For more information, see the
-[Instructions section](#instructions).
+other primarily via pushing and popping values on a virtual stack, which allows
+them to have a very compact encoding. For more information, see the
+[Execution section](#execution).
+
+WebAssembly has instructions for performing integer and floating-point
+arithmetic, directing control flow, loading and storing to linear memory (as a
+[load-store architecture]), calling functions, and more. For more information,
+see the [Instructions section](#instructions).
 
 Implementations of WebAssembly [validation](#validation) and
 [execution](#execution) need not perform all the steps literally as described
@@ -61,6 +61,8 @@ here; they need only behave ["as if"] they did so in all observable respects.
 
 [ISA]: https://en.wikipedia.org/wiki/Instruction_set
 [*functions*]: https://en.wikipedia.org/wiki/Subroutine
+[*instantiated*]: #module-instantiation
+[load-store architecture]: https://en.wikipedia.org/wiki/Load/store_architecture
 ["as if"]: https://en.wikipedia.org/wiki/As-if_rule
 
 
@@ -99,7 +101,7 @@ that many elements.
 A *string* is an [array] of bytes.
 
 > Strings in this context may contain arbitrary bytes and aren't required to be
-valid UTF-8 or any other format.
+valid UTF-8 or any other format, and aren't required to be NUL-terminated.
 
 ### Module Contents
 
@@ -127,15 +129,18 @@ There are several *known sections*:
 0. [Type Section](#type-section)
 0. [Import Section](#import-section)
 0. [Function Section](#function-section)
+0. [Table Section](#table-section)
 0. [Memory Section](#memory-section)
 0. [Export Section](#export-section)
 0. [Start Section](#start-section)
 0. [Code Section](#code-section)
 0. [Data Section](#data-section)
+0. [Global Section](#global-section)
+0. [Elements Section](#elements-section)
 0. [Name Section](#name-section)
 
-TODO: Global Section, Table Section, Elements Section, the various Index Spaces,
-and Initializer Expressions, per https://github.com/WebAssembly/design/pull/682
+TODO: The various Index Spaces, and Initializer Expressions, per
+https://github.com/WebAssembly/design/pull/682
 
 #### Type Section
 
@@ -188,6 +193,23 @@ index in the [Type Section](#type-section) of the signature of the function.
    [Code Section](#code-section).
  - Each array element is required to be within the bounds of the
    [Type Section](#type-section) array.
+
+#### Table Section
+
+**Name:** `table`
+
+The Table Section consists of an [array] of tables.
+
+A *table* consists of:
+ - A *default* flag.
+ - An *element type*, for which currently the only valid value is `"function"`.
+ - An *initial length*.
+ - A *maximum length*.
+
+**Validation:**
+ - The top-level array is required to contain at most one table.
+ - Exactly one table is required to have the default flag set to true.
+ - Each table's maximum length is required to be at least its initial length.
 
 #### Memory Section
 
@@ -289,6 +311,14 @@ data to be loaded into linear memory as part of
  - The start offset of each element of the array is required to be greater
    than the index of any byte initialized by elements that precede it.
 
+#### Global Section
+
+TODO: Describe the Global Section (and decide its position in the sequence).
+
+#### Elements Section
+
+TODO: Describe the Elements Section (and decide its position in the sequence).
+
 #### Name Section
 
 **Name:** `name`
@@ -335,23 +365,23 @@ in the section is [validated](#function-validation).
 ### Function Validation
 
 The major requirements for function validation are:
- - Control-flow constructs must form properly nested *regions*. `loop`, `block`,
-   and the function entry pair with `end`, and `if` can pair with `end` or
-   `else`, which is then paired with `end`.
- - The number and types of all elements that can be on the value stack at
-   execution of each instruction is required be the same for all control-flow
-   paths to that instruction.
- - The types of the operands passed to each instruction is required to conform
+ - Control-flow constructs are required to form properly nested *regions*.
+   `loop`, `block`, and the function entry pair with `end`, and `if` can pair
+   with `end` or `else`, which is then paired with `end`.
+ - The sequence of values on the value stack at execution of each instruction is
+   required be the same for all control-flow paths to that instruction.
+ - The types of the operands passed to each instruction are required to conform
    to the instruction's signature's argument types.
  - At each instruction, all values that will be popped from the value stack at
    that instruction are required to have been pushed within the same region.
 
-The requirements can be validated in a single linear pass as follows:
+The requirements, plus the various minor requirements, can be validated in a
+single linear pass as follows:
 
 The following data structures are created:
  - A *type stack*, with entries each containing a [validation type], for
-   tracking the number and types of values that will be on the value stack at
-   execution time.
+   tracking the sequence of values that will be on the value stack at execution
+   time.
  - A *control-flow stack*, with entries each containing
     - A *limit* integer value, which is an index into the type stack indicating
       the boundary between values pushed before the current region and values
@@ -391,6 +421,9 @@ is greater than those of the regions that enclose it. Things pushed onto the
 type stack outside a region cannot be popped from within the region.
 
 > The final [`end`](#end) instruction may be implicit in some representations.
+
+TODO: Permit control-flow merges with conflicting types when the resulting
+value will ultimately be unused?
 
 TODO: Will the `end` be made explicit? Monitor
 https://github.com/WebAssembly/design/pull/666.
@@ -905,12 +938,18 @@ their operands, however it isn't required.
 and negative zero, NaNs, and infinities are all produced as result values to
 indicate overflow, invalid, and divide-by-zero exceptional conditions, and
 interpreted appropriately when they appear as operands. All numeric results are
-deterministic.
+deterministic, as are the rules for how NaNs are handled as operands and for
+when NaNs are to be generated as results. The only floating-point nondeterminism
+is in the specific bit-patterns of NaN result values.
+
+> In IEEE 754-1985, subnormal numbers are called ["denormal numbers"];
+WebAssembly follows IEEE 754-2008, which calls them "subnormal numbers".
 
 > There is no observable difference between quiet and signaling NaN other than
 the difference in the bit pattern.
 
 [IEEE 754-2008]: https://en.wikipedia.org/wiki/IEEE_floating_point
+["denormal numbers"]: https://en.wikipedia.org/wiki/Denormal_number
 
 ### Z: Floating-Point Bitwise Instruction Family
 
@@ -973,6 +1012,9 @@ onto the control-flow stack.
 **Validation:**
  - An entry is pushed onto the control-flow stack containing `any` and a limit
    value of the current length of the type stack.
+
+> The `loop` instruction does not perform a loop by itself. It merely introduces
+label that may be used by a branch to form an actual loop.
 
 > Each `loop` needs a corresponding [`end`](#end) to pop its label from the
 stack.
@@ -1127,11 +1169,12 @@ be executed except in the case of a bug in the application.
 0. [Get Local](#get-local)
 0. [Set Local](#set-local)
 0. [Tee Local](#tee-local)
+0. [Get Global](#get-global)
+0. [Set Global](#set-global)
 0. [Select](#select)
 0. [Call](#call)
 0. [Indirect Call](#indirect-call)
 
-TODO: `set_global`, `get_global`, per https://github.com/WebAssembly/design/pull/682
 
 #### Nop
 
@@ -1198,6 +1241,28 @@ the value given in the operand. Its return value is the value of its operand.
 since it forwards the value of its operand value to two places.
 
 ["tee" command]: https://en.wikipedia.org/wiki/Tee_(command)
+
+#### Get Global
+
+| Name         | Signature                  | Families | Opcode
+| ----         | ---------                  | -------- | ------
+| `get_global` | `<$id: i32> () : (T)`      |          | TODO
+
+The `get_global` instruction returns the value in the globals array at index
+`$id`.
+
+#### Set Global
+
+| Name         | Signature                   | Families | Opcode
+| ----         | ---------                   | -------- | ------
+| `set_global` | `<$id: i32> (T) : ()`       |          | TODO
+
+The `set_global` instruction sets the value in the globals array at index `$id` to
+the value given in the operand.
+
+**Validation:**
+ - If the indexed global is declared immutable, validation fails.
+ - [Generic validation](#generic-instruction-validation) is also performed.
 
 #### Select
 
