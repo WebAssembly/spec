@@ -823,8 +823,8 @@ The called function &mdash; the *callee* &mdash; is
 `$callee` when present, passed to it as its incoming arguments. The return value
 of the call is defined by the execution.
 
-A unit of [call stack resources](#call-stack-resources) is consumed the
-execution of the callee, and released when it completes.
+At least one unit of [call stack resources](#call-stack-resources) is consumed
+during the execution of the callee, and released when it completes.
 
 **Trap:** Call Stack Exhausted, if the instance has insufficient
 [call stack resources](#call-stack-resources).
