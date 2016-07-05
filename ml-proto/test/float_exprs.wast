@@ -500,44 +500,54 @@
 ;; Test that 1.0/x isn't approximated.
 
 (module
-  (func $f32.no_approximate_reciprocal (param $x f32) (param $y f32) (result f32)
+  (func $f32.no_approximate_reciprocal (param $x f32) (result f32)
     (f32.div (f32.const 1.0) (get_local $x)))
   (export "f32.no_approximate_reciprocal" $f32.no_approximate_reciprocal)
 )
 
-(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const -0x1.2900b6p-10) (f32.const 0x1.d427e8p+56)) (f32.const -0x1.b950d4p+9))
-(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const 0x1.e7212p+127) (f32.const -0x1.55832ap+44)) (f32.const 0x1.0d11f8p-128))
-(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const -0x1.42a466p-93) (f32.const 0x1.7b62d8p+36)) (f32.const -0x1.963ee6p+92))
-(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const 0x1.5d0c32p+76) (f32.const 0x1.d14dccp-74)) (f32.const 0x1.778362p-77))
-(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const -0x1.601de2p-82) (f32.const -0x1.3c7abap+42)) (f32.const -0x1.743d7ep+81))
+(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const -0x1.2900b6p-10)) (f32.const -0x1.b950d4p+9))
+(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const 0x1.e7212p+127)) (f32.const 0x1.0d11f8p-128))
+(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const -0x1.42a466p-93)) (f32.const -0x1.963ee6p+92))
+(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const 0x1.5d0c32p+76)) (f32.const 0x1.778362p-77))
+(assert_return (invoke "f32.no_approximate_reciprocal" (f32.const -0x1.601de2p-82)) (f32.const -0x1.743d7ep+81))
 
-;; Test that 1.0/sqrt(x) isn't approximated.
+;; Test that 1.0/sqrt(x) isn't approximated or fused.
 
 (module
-  (func $f32.no_approximate_reciprocal_sqrt (param $x f32) (param $y f32) (result f32)
+  (func $f32.no_approximate_reciprocal_sqrt (param $x f32) (result f32)
     (f32.div (f32.const 1.0) (f32.sqrt (get_local $x))))
   (export "f32.no_approximate_reciprocal_sqrt" $f32.no_approximate_reciprocal_sqrt)
+
+  (func $f64.no_fuse_reciprocal_sqrt (param $x f64) (result f64)
+    (f64.div (f64.const 1.0) (f64.sqrt (get_local $x))))
+  (export "f64.no_fuse_reciprocal_sqrt" $f64.no_fuse_reciprocal_sqrt)
 )
 
-(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.6af12ap-43) (f32.const 0x1.b2113ap-14)) (f32.const 0x1.300ed4p+21))
-(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.e82fc6p-8) (f32.const -0x1.56a382p-126)) (f32.const 0x1.72c376p+3))
-(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.b9fa9cp-66) (f32.const -0x1.35394cp+35)) (f32.const 0x1.85a9bap+32))
-(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.f4f546p-44) (f32.const -0x1.c92ecep+122)) (f32.const 0x1.6e01c2p+21))
-(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.5da7aap-86) (f32.const -0x1.665652p+119)) (f32.const 0x1.b618cap+42))
+(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.6af12ap-43)) (f32.const 0x1.300ed4p+21))
+(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.e82fc6p-8)) (f32.const 0x1.72c376p+3))
+(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.b9fa9cp-66)) (f32.const 0x1.85a9bap+32))
+(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.f4f546p-44)) (f32.const 0x1.6e01c2p+21))
+(assert_return (invoke "f32.no_approximate_reciprocal_sqrt" (f32.const 0x1.5da7aap-86)) (f32.const 0x1.b618cap+42))
+
+(assert_return (invoke "f64.no_fuse_reciprocal_sqrt" (f64.const 0x1.1568a63b55fa3p+889)) (f64.const 0x1.5bc9c74c9952p-445))
+(assert_return (invoke "f64.no_fuse_reciprocal_sqrt" (f64.const 0x1.239fcd0939cafp+311)) (f64.const 0x1.5334a922b4818p-156))
+(assert_return (invoke "f64.no_fuse_reciprocal_sqrt" (f64.const 0x1.6e36a24e11054p+104)) (f64.const 0x1.ac13f20977f29p-53))
+(assert_return (invoke "f64.no_fuse_reciprocal_sqrt" (f64.const 0x1.23ee173219f83p+668)) (f64.const 0x1.df753e055862dp-335))
+(assert_return (invoke "f64.no_fuse_reciprocal_sqrt" (f64.const 0x1.b30f74caf9babp+146)) (f64.const 0x1.88bfc3d1764a9p-74))
 
 ;; Test that sqrt(1.0/x) isn't approximated.
 
 (module
-  (func $f32.no_approximate_sqrt_reciprocal (param $x f32) (param $y f32) (result f32)
+  (func $f32.no_approximate_sqrt_reciprocal (param $x f32) (result f32)
     (f32.sqrt (f32.div (f32.const 1.0) (get_local $x))))
   (export "f32.no_approximate_sqrt_reciprocal" $f32.no_approximate_sqrt_reciprocal)
 )
 
-(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.a4c986p+60) (f32.const -0x1.04e29cp-72)) (f32.const 0x1.8f5ac6p-31))
-(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.50511ep-9) (f32.const -0x1.39228ep-32)) (f32.const 0x1.3bdd46p+4))
-(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.125ec2p+69) (f32.const -0x1.a7f42ep+92)) (f32.const 0x1.5db572p-35))
-(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.ba4c5p+13) (f32.const 0x1.947784p-72)) (f32.const 0x1.136f16p-7))
-(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.4a5be2p+104) (f32.const 0x1.a7b718p-19)) (f32.const 0x1.c2b5bp-53))
+(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.a4c986p+60)) (f32.const 0x1.8f5ac6p-31))
+(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.50511ep-9)) (f32.const 0x1.3bdd46p+4))
+(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.125ec2p+69)) (f32.const 0x1.5db572p-35))
+(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.ba4c5p+13)) (f32.const 0x1.136f16p-7))
+(assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.4a5be2p+104)) (f32.const 0x1.c2b5bp-53))
 
 ;; Test that converting i32/i64 to f32/f64 and back isn't folded away
 
@@ -685,7 +695,8 @@
 (assert_return (invoke "no_fold_demote_promote" (f64.const -0x1.74f5bd865163p-88)) (f64.const -0x1.74f5bep-88))
 (assert_return (invoke "no_fold_demote_promote" (f64.const 0x1.26d675662367ep+104)) (f64.const 0x1.26d676p+104))
 
-;; Test that demote(promote(x)) is not folded to x.
+;; Test that demote(promote(x)) is not folded to x, and aside from NaN is
+;; bit-preserving.
 
 (module
   (func $no_fold_promote_demote (param $x f32) (result f32)
@@ -694,6 +705,18 @@
 )
 
 (assert_return (invoke "no_fold_promote_demote" (f32.const nan:0x200000)) (f32.const nan:0x600000))
+(assert_return (invoke "no_fold_promote_demote" (f32.const 0x0p+0)) (f32.const 0x0p+0))
+(assert_return (invoke "no_fold_promote_demote" (f32.const -0x0p+0)) (f32.const -0x0p+0))
+(assert_return (invoke "no_fold_promote_demote" (f32.const 0x1p-149)) (f32.const 0x1p-149))
+(assert_return (invoke "no_fold_promote_demote" (f32.const -0x1p-149)) (f32.const -0x1p-149))
+(assert_return (invoke "no_fold_promote_demote" (f32.const 0x1.fffffcp-127)) (f32.const 0x1.fffffcp-127))
+(assert_return (invoke "no_fold_promote_demote" (f32.const -0x1.fffffcp-127)) (f32.const -0x1.fffffcp-127))
+(assert_return (invoke "no_fold_promote_demote" (f32.const 0x1p-126)) (f32.const 0x1p-126))
+(assert_return (invoke "no_fold_promote_demote" (f32.const -0x1p-126)) (f32.const -0x1p-126))
+(assert_return (invoke "no_fold_promote_demote" (f32.const 0x1.fffffep+127)) (f32.const 0x1.fffffep+127))
+(assert_return (invoke "no_fold_promote_demote" (f32.const -0x1.fffffep+127)) (f32.const -0x1.fffffep+127))
+(assert_return (invoke "no_fold_promote_demote" (f32.const infinity)) (f32.const infinity))
+(assert_return (invoke "no_fold_promote_demote" (f32.const -infinity)) (f32.const -infinity))
 
 ;; Test that demote(x+promote(y)) is not folded to demote(x)+y.
 
@@ -1361,11 +1384,21 @@
 (assert_return (invoke "f32.no_fold_recip_recip" (f32.const -0x1.e66982p+4)) (f32.const -0x1.e66984p+4))
 (assert_return (invoke "f32.no_fold_recip_recip" (f32.const 0x1.f99916p+70)) (f32.const 0x1.f99914p+70))
 
+(assert_return (invoke "f32.no_fold_recip_recip" (f32.const -0x0p+0)) (f32.const -0x0p+0))
+(assert_return (invoke "f32.no_fold_recip_recip" (f32.const 0x0p+0)) (f32.const 0x0p+0))
+(assert_return (invoke "f32.no_fold_recip_recip" (f32.const -infinity)) (f32.const -infinity))
+(assert_return (invoke "f32.no_fold_recip_recip" (f32.const infinity)) (f32.const infinity))
+
 (assert_return (invoke "f64.no_fold_recip_recip" (f64.const -0x1.d81248dda63dp+148)) (f64.const -0x1.d81248dda63d1p+148))
 (assert_return (invoke "f64.no_fold_recip_recip" (f64.const -0x1.f4750312039e3p+66)) (f64.const -0x1.f4750312039e2p+66))
 (assert_return (invoke "f64.no_fold_recip_recip" (f64.const 0x1.fa50630eec7f6p+166)) (f64.const 0x1.fa50630eec7f5p+166))
 (assert_return (invoke "f64.no_fold_recip_recip" (f64.const 0x1.db0598617ba92p-686)) (f64.const 0x1.db0598617ba91p-686))
 (assert_return (invoke "f64.no_fold_recip_recip" (f64.const 0x1.85f1638a0c82bp+902)) (f64.const 0x1.85f1638a0c82ap+902))
+
+(assert_return (invoke "f64.no_fold_recip_recip" (f64.const -0x0p+0)) (f64.const -0x0p+0))
+(assert_return (invoke "f64.no_fold_recip_recip" (f64.const 0x0p+0)) (f64.const 0x0p+0))
+(assert_return (invoke "f64.no_fold_recip_recip" (f64.const -infinity)) (f64.const -infinity))
+(assert_return (invoke "f64.no_fold_recip_recip" (f64.const infinity)) (f64.const infinity))
 
 ;; Test that (x+y) * (x-y) is not optimized to x*x - y*y.
 
@@ -1507,12 +1540,12 @@
 (assert_return (invoke "f32.no_fold_neg_sub" (f32.const -0.0) (f32.const -0.0)) (f32.const -0.0))
 (assert_return (invoke "f32.no_fold_neg_sub" (f32.const 0.0) (f32.const -0.0)) (f32.const -0.0))
 (assert_return (invoke "f32.no_fold_neg_sub" (f32.const -0.0) (f32.const 0.0)) (f32.const 0.0))
-(assert_return (invoke "f32.no_fold_neg_sub" (f32.const 0.0) (f32.const -0.0)) (f32.const -0.0))
+(assert_return (invoke "f32.no_fold_neg_sub" (f32.const 0.0) (f32.const 0.0)) (f32.const -0.0))
 
 (assert_return (invoke "f64.no_fold_neg_sub" (f64.const -0.0) (f64.const -0.0)) (f64.const -0.0))
 (assert_return (invoke "f64.no_fold_neg_sub" (f64.const 0.0) (f64.const -0.0)) (f64.const -0.0))
 (assert_return (invoke "f64.no_fold_neg_sub" (f64.const -0.0) (f64.const 0.0)) (f64.const 0.0))
-(assert_return (invoke "f64.no_fold_neg_sub" (f64.const 0.0) (f64.const -0.0)) (f64.const -0.0))
+(assert_return (invoke "f64.no_fold_neg_sub" (f64.const 0.0) (f64.const 0.0)) (f64.const -0.0))
 
 ;; Test that -x + x is not folded to 0.0.
 
@@ -1752,3 +1785,234 @@
 
 (assert_return (invoke "f32.no_flush_intermediate_subnormal" (f32.const 0x1p-126) (f32.const 0x1p-23) (f32.const 0x1p23)) (f32.const 0x1p-126))
 (assert_return (invoke "f64.no_flush_intermediate_subnormal" (f64.const 0x1p-1022) (f64.const 0x1p-52) (f64.const 0x1p52)) (f64.const 0x1p-1022))
+
+;; Test corner cases of John Hauser's microarchitectural recoding scheme.
+;; https://github.com/riscv/riscv-tests/blob/695b86a6fcbe06ffbed8891af7e6fe7bf2062543/isa/rv64uf/recoding.S
+
+(module
+  (func $f32.recoding_eq (param $x f32) (param $y f32) (result i32)
+    (f32.eq (f32.mul (get_local $x) (get_local $y)) (get_local $x)))
+  (export "f32.recoding_eq" $f32.recoding_eq)
+
+  (func $f32.recoding_le (param $x f32) (param $y f32) (result i32)
+    (f32.le (f32.mul (get_local $x) (get_local $y)) (get_local $x)))
+  (export "f32.recoding_le" $f32.recoding_le)
+
+  (func $f32.recoding_lt (param $x f32) (param $y f32) (result i32)
+    (f32.lt (f32.mul (get_local $x) (get_local $y)) (get_local $x)))
+  (export "f32.recoding_lt" $f32.recoding_lt)
+
+  (func $f64.recoding_eq (param $x f64) (param $y f64) (result i32)
+    (f64.eq (f64.mul (get_local $x) (get_local $y)) (get_local $x)))
+  (export "f64.recoding_eq" $f64.recoding_eq)
+
+  (func $f64.recoding_le (param $x f64) (param $y f64) (result i32)
+    (f64.le (f64.mul (get_local $x) (get_local $y)) (get_local $x)))
+  (export "f64.recoding_le" $f64.recoding_le)
+
+  (func $f64.recoding_lt (param $x f64) (param $y f64) (result i32)
+    (f64.lt (f64.mul (get_local $x) (get_local $y)) (get_local $x)))
+  (export "f64.recoding_lt" $f64.recoding_lt)
+
+  (func $recoding_demote (param $x f64) (param $y f32) (result f32)
+    (f32.mul (f32.demote/f64 (get_local $x)) (get_local $y)))
+  (export "recoding_demote" $recoding_demote)
+)
+
+(assert_return (invoke "f32.recoding_eq" (f32.const -infinity) (f32.const 3.0)) (i32.const 1))
+(assert_return (invoke "f32.recoding_le" (f32.const -infinity) (f32.const 3.0)) (i32.const 1))
+(assert_return (invoke "f32.recoding_lt" (f32.const -infinity) (f32.const 3.0)) (i32.const 0))
+
+(assert_return (invoke "f32.recoding_eq" (f32.const 0x0p+0) (f32.const 0x1p+0)) (i32.const 1))
+(assert_return (invoke "f32.recoding_le" (f32.const 0x0p+0) (f32.const 0x1p+0)) (i32.const 1))
+(assert_return (invoke "f32.recoding_lt" (f32.const 0x0p+0) (f32.const 0x1p+0)) (i32.const 0))
+
+(assert_return (invoke "f64.recoding_eq" (f64.const -infinity) (f64.const 3.0)) (i32.const 1))
+(assert_return (invoke "f64.recoding_le" (f64.const -infinity) (f64.const 3.0)) (i32.const 1))
+(assert_return (invoke "f64.recoding_lt" (f64.const -infinity) (f64.const 3.0)) (i32.const 0))
+
+(assert_return (invoke "f64.recoding_eq" (f64.const 0x0p+0) (f64.const 0x1p+0)) (i32.const 1))
+(assert_return (invoke "f64.recoding_le" (f64.const 0x0p+0) (f64.const 0x1p+0)) (i32.const 1))
+(assert_return (invoke "f64.recoding_lt" (f64.const 0x0p+0) (f64.const 0x1p+0)) (i32.const 0))
+
+(assert_return (invoke "recoding_demote" (f64.const 0x1.4c8f8p-132) (f32.const 1221)) (f32.const 0x1.8c8a1cp-122))
+
+;; Test that division is not done as on an extended-base system.
+;; http://www.ucbtest.org/goldberg/addendum.html
+
+(module
+  (func $f32.no_extended_precision_div (param $x f32) (param $y f32) (param $z f32) (result i32)
+    (f32.eq (f32.div (get_local $x) (get_local $y)) (get_local $z)))
+  (export "f32.no_extended_precision_div" $f32.no_extended_precision_div)
+
+  (func $f64.no_extended_precision_div (param $x f64) (param $y f64) (param $z f64) (result i32)
+    (f64.eq (f64.div (get_local $x) (get_local $y)) (get_local $z)))
+  (export "f64.no_extended_precision_div" $f64.no_extended_precision_div)
+)
+
+(assert_return (invoke "f32.no_extended_precision_div" (f32.const 3.0) (f32.const 7.0) (f32.const 0x1.b6db6ep-2)) (i32.const 1))
+(assert_return (invoke "f64.no_extended_precision_div" (f64.const 3.0) (f64.const 7.0) (f64.const 0x1.b6db6db6db6dbp-2)) (i32.const 1))
+
+;; a*x + b*x == (a+b)*x for all x only if the operations a*x, b*x, and (a+b)
+;; are all exact operations, which is true only if a and b are exact powers of
+;; 2. Even then, if a==-b and x==-0, then a*x+b*x==0.0, (a+b)*x==-0.0.
+;; https://dlang.org/d-floating-point.html
+
+(module
+  (func $f32.no_distribute_exact (param $x f32) (result f32)
+    (f32.add (f32.mul (f32.const -8.0) (get_local $x)) (f32.mul (f32.const 8.0) (get_local $x))))
+  (export "f32.no_distribute_exact" $f32.no_distribute_exact)
+
+  (func $f64.no_distribute_exact (param $x f64) (result f64)
+    (f64.add (f64.mul (f64.const -8.0) (get_local $x)) (f64.mul (f64.const 8.0) (get_local $x))))
+  (export "f64.no_distribute_exact" $f64.no_distribute_exact)
+)
+
+(assert_return (invoke "f32.no_distribute_exact" (f32.const -0.0)) (f32.const 0.0))
+(assert_return (invoke "f64.no_distribute_exact" (f64.const -0.0)) (f64.const 0.0))
+
+;; Test various approximations of sqrt(2), sqrt(3), and sqrt(5).
+;; https://xkcd.com/1047/
+(module
+  (func $f32.sqrt (param f32) (result f32)
+    (f32.sqrt (get_local 0)))
+  (export "f32.sqrt" $f32.sqrt)
+
+  (func $f32.xkcd_sqrt_2 (param f32) (param f32) (param f32) (param f32) (result f32)
+    (f32.add (f32.div (get_local 0) (get_local 1)) (f32.div (get_local 2) (f32.sub (get_local 3) (get_local 2)))))
+  (export "f32.xkcd_sqrt_2" $f32.xkcd_sqrt_2)
+
+  (func $f32.xkcd_sqrt_3 (param f32) (param f32) (param f32) (result f32)
+    (f32.div (f32.mul (get_local 0) (get_local 1)) (get_local 2)))
+  (export "f32.xkcd_sqrt_3" $f32.xkcd_sqrt_3)
+
+  (func $f32.xkcd_sqrt_5 (param f32) (param f32) (param f32) (result f32)
+    (f32.add (f32.div (get_local 0) (get_local 1)) (f32.div (get_local 2) (get_local 0))))
+  (export "f32.xkcd_sqrt_5" $f32.xkcd_sqrt_5)
+
+  (func $f32.xkcd_better_sqrt_5 (param f32) (param f32) (param f32) (param f32) (result f32)
+    (f32.div (f32.add (get_local 0) (f32.mul (get_local 1) (get_local 2))) (f32.sub (get_local 3) (f32.mul (get_local 1) (get_local 2)))))
+  (export "f32.xkcd_better_sqrt_5" $f32.xkcd_better_sqrt_5)
+
+  (func $f64.sqrt (param f64) (result f64)
+    (f64.sqrt (get_local 0)))
+  (export "f64.sqrt" $f64.sqrt)
+
+  (func $f64.xkcd_sqrt_2 (param f64) (param f64) (param f64) (param f64) (result f64)
+    (f64.add (f64.div (get_local 0) (get_local 1)) (f64.div (get_local 2) (f64.sub (get_local 3) (get_local 2)))))
+  (export "f64.xkcd_sqrt_2" $f64.xkcd_sqrt_2)
+
+  (func $f64.xkcd_sqrt_3 (param f64) (param f64) (param f64) (result f64)
+    (f64.div (f64.mul (get_local 0) (get_local 1)) (get_local 2)))
+  (export "f64.xkcd_sqrt_3" $f64.xkcd_sqrt_3)
+
+  (func $f64.xkcd_sqrt_5 (param f64) (param f64) (param f64) (result f64)
+    (f64.add (f64.div (get_local 0) (get_local 1)) (f64.div (get_local 2) (get_local 0))))
+  (export "f64.xkcd_sqrt_5" $f64.xkcd_sqrt_5)
+
+  (func $f64.xkcd_better_sqrt_5 (param f64) (param f64) (param f64) (param f64) (result f64)
+    (f64.div (f64.add (get_local 0) (f64.mul (get_local 1) (get_local 2))) (f64.sub (get_local 3) (f64.mul (get_local 1) (get_local 2)))))
+  (export "f64.xkcd_better_sqrt_5" $f64.xkcd_better_sqrt_5)
+)
+
+(assert_return (invoke "f32.sqrt" (f32.const 2.0)) (f32.const 0x1.6a09e6p+0))
+(assert_return (invoke "f32.xkcd_sqrt_2" (f32.const 3.0) (f32.const 5.0) (f32.const 0x1.921fb6p+1) (f32.const 7.0)) (f32.const 0x1.6a0a54p+0))
+(assert_return (invoke "f32.sqrt" (f32.const 3.0)) (f32.const 0x1.bb67aep+0))
+(assert_return (invoke "f32.xkcd_sqrt_3" (f32.const 2.0) (f32.const 0x1.5bf0a8p+1) (f32.const 0x1.921fb6p+1)) (f32.const 0x1.bb02d4p+0))
+(assert_return (invoke "f32.sqrt" (f32.const 5.0)) (f32.const 0x1.1e377ap+1))
+(assert_return (invoke "f32.xkcd_sqrt_5" (f32.const 2.0) (f32.const 0x1.5bf0a8p+1) (f32.const 3.0)) (f32.const 0x1.1e2d58p+1))
+(assert_return (invoke "f32.xkcd_better_sqrt_5" (f32.const 13.0) (f32.const 4.0) (f32.const 0x1.921fb6p+1) (f32.const 24.0)) (f32.const 0x1.1e377ap+1))
+
+(assert_return (invoke "f64.sqrt" (f64.const 2.0)) (f64.const 0x1.6a09e667f3bcdp+0))
+(assert_return (invoke "f64.xkcd_sqrt_2" (f64.const 3.0) (f64.const 5.0) (f64.const 0x1.921fb54442d18p+1) (f64.const 7.0)) (f64.const 0x1.6a0a5362b055fp+0))
+(assert_return (invoke "f64.sqrt" (f64.const 3.0)) (f64.const 0x1.bb67ae8584caap+0))
+(assert_return (invoke "f64.xkcd_sqrt_3" (f64.const 2.0) (f64.const 0x1.5bf0a8b145769p+1) (f64.const 0x1.921fb54442d18p+1)) (f64.const 0x1.bb02d4eca8f95p+0))
+(assert_return (invoke "f64.sqrt" (f64.const 5.0)) (f64.const 0x1.1e3779b97f4a8p+1))
+(assert_return (invoke "f64.xkcd_sqrt_5" (f64.const 2.0) (f64.const 0x1.5bf0a8b145769p+1) (f64.const 3.0)) (f64.const 0x1.1e2d58d8b3bcep+1))
+(assert_return (invoke "f64.xkcd_better_sqrt_5" (f64.const 13.0) (f64.const 4.0) (f64.const 0x1.921fb54442d18p+1) (f64.const 24.0)) (f64.const 0x1.1e3778509a5a3p+1))
+
+;; Compute the floating-point radix.
+;; M. A. Malcom. Algorithms to reveal properties of floating-point arithmetic.
+;; Communications of the ACM, 15(11):949-951, November 1972.
+(module
+  (func $f32.compute_radix (param $0 f32) (param $1 f32) (result f32)
+    (loop $label$0
+      (br_if $label$0
+        (f32.eq
+          (f32.add
+            (f32.sub
+              (f32.add
+                (set_local $0 (f32.add (get_local $0) (get_local $0)))
+                (f32.const 1)
+              )
+              (get_local $0)
+            )
+            (f32.const -1)
+          )
+          (f32.const 0)
+        )
+      )
+    )
+    (loop $label$2
+      (br_if $label$2
+        (f32.ne
+          (f32.sub
+            (f32.sub
+              (f32.add
+                (get_local $0)
+                (set_local $1 (f32.add (get_local $1) (f32.const 1)))
+              )
+              (get_local $0)
+            )
+            (get_local $1)
+          )
+          (f32.const 0)
+        )
+      )
+    )
+    (get_local $1)
+  )
+  (export "f32.compute_radix" $f32.compute_radix)
+
+  (func $f64.compute_radix (param $0 f64) (param $1 f64) (result f64)
+    (loop $label$0
+      (br_if $label$0
+        (f64.eq
+          (f64.add
+            (f64.sub
+              (f64.add
+                (set_local $0 (f64.add (get_local $0) (get_local $0)))
+                (f64.const 1)
+              )
+              (get_local $0)
+            )
+            (f64.const -1)
+          )
+          (f64.const 0)
+        )
+      )
+    )
+    (loop $label$2
+      (br_if $label$2
+        (f64.ne
+          (f64.sub
+            (f64.sub
+              (f64.add
+                (get_local $0)
+                (set_local $1 (f64.add (get_local $1) (f64.const 1)))
+              )
+              (get_local $0)
+            )
+            (get_local $1)
+          )
+          (f64.const 0)
+        )
+      )
+    )
+    (get_local $1)
+  )
+  (export "f64.compute_radix" $f64.compute_radix)
+)
+
+(assert_return (invoke "f32.compute_radix" (f32.const 1.0) (f32.const 1.0)) (f32.const 2.0))
+(assert_return (invoke "f64.compute_radix" (f64.const 1.0) (f64.const 1.0)) (f64.const 2.0))

@@ -15,7 +15,7 @@ Misc semantics:
  - test that one can clobber the entire contents of the linear memory without corrupting: call stack, local variables, program execution.
 
 Operator semantics:
- - test that promote/demote, sext/trunc, zext/trunc is bit-preserving if not NaN
+ - ~~test that promote/demote is bit-preserving if not NaN~~
  - ~~test that clz/ctz handle zero~~
  - ~~test that numbers slightly outside of the int32 range round into the int32 range in floating-to-int32 conversion~~
  - ~~test that neg, abs, copysign, reinterpretcast, store+load, set+get, preserve the sign bit and significand bits of NaN and don't canonicalize~~
