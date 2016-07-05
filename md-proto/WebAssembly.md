@@ -422,9 +422,6 @@ type stack outside a region cannot be popped from within the region.
 
 > The final [`end`](#end) instruction may be implicit in some representations.
 
-TODO: Permit control-flow merges with conflicting types when the resulting
-value will ultimately be unused?
-
 TODO: Will the `end` be made explicit? Monitor
 https://github.com/WebAssembly/design/pull/666.
 
