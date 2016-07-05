@@ -7,7 +7,7 @@
 ;; if arms
 (assert_invalid
   (module
-    (func $foo (param $x i32) (param $y f32) (param $cond f32)
+    (func $foo (param $x i32) (param $y f32) (param $cond i32)
       (drop
         (if (get_local $cond)
           (get_local $y)
