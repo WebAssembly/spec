@@ -20,12 +20,10 @@ class RunTests(unittest.TestCase):
 
     try:
       exitCode = subprocess.call(command, shell=True, stdout=out, stderr=subprocess.STDOUT)
-      self.assertEqual(expectedExitCode, exitCode, "test runner failed with exit code %i, expected %i" % (exitCode, expectedExitCode))
-    except:
-      print(("# Failure running %s") % command)
-
-    if logPath is not None:
-      out.close()
+      self.assertEqual(expectedExitCode, exitCode, "failed with exit code %i (expected %i) for %s" % (exitCode, expectedExitCode, command))
+    finally:
+      if logPath is not None:
+        out.close()
 
   def _compareFile(self, expectedFile, actualFile):
     with open(expectedFile) as expected:
