@@ -163,6 +163,7 @@ let rec check_expr c et e =
     check_expr c et e3
 
   | Select (e1, e2, e3) ->
+    require (is_some et) e.at "arity mismatch";
     check_expr c et e1;
     check_expr c et e2;
     check_expr c (some Int32Type) e3
