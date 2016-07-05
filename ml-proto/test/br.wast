@@ -418,7 +418,7 @@
   "unknown label"
 )
 
-;; Test that the value operand of br_if matches the result type of the block
+;; Test that the value operand of br matches the result type of the block
 ;; it branches to, even if the result of the block is dropped.
 (assert_invalid
   (module
