@@ -4,6 +4,16 @@
 ;; if condition
 (assert_invalid (module (func (if (f32.const 0) (nop) (nop)))) "type mismatch")
 
+;; if arms
+(assert_invalid
+  (module
+    (func $foo (param $x i32) (param $y f32) (param $cond f32)
+      (drop
+        (if (get_local $cond)
+          (get_local $y)
+          (get_local $x)))))
+  "type mismatch")
+
 ;; br_if condition
 (assert_invalid (module (func (block (br_if 0 (f32.const 0))))) "type mismatch")
 
