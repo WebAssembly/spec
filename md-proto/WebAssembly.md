@@ -2,12 +2,13 @@ WebAssembly Specification
 ================================================================================
 
 0. [Introduction](#introduction)
+0. [Basics](#basics)
 0. [Module](#module)
+0. [Binary Format](#binary-format)
+0. [Text Format](#text-format)
 0. [Validation](#validation)
 0. [Execution](#execution)
-0. [Types](#types)
-0. [Instruction Signatures](#instruction-signatures)
-0. [Instruction Families](#instruction-families)
+0. [Instruction Descriptions](#instruction-descriptions)
 0. [Instructions](#instructions)
 
 
@@ -25,6 +26,10 @@ interactions with other modules ([imports](#import-section) and
 [exports](#export-section)), sections declaring [data](#data-section) and other
 implements used by the module, and sections defining [*functions*]. For more
 information, see the [Module section](#module).
+
+WebAssembly modules can be encoded either in [binary format] for size and
+decoding efficiency or in [text format] for readability, and can be translated
+from either format to the other.
 
 WebAssembly code must be validated before it can be instantiated and executed.
 WebAssembly is designed to allow validation to be performed in a single linear
@@ -53,7 +58,9 @@ them to have a very compact encoding. For more information, see the
 WebAssembly has instructions for performing integer and floating-point
 arithmetic, directing control flow, loading and storing to linear memory (as a
 [load-store architecture]), calling functions, and more. For more information,
-see the [Instructions section](#instructions).
+see the [Instructions section](#instructions). The
+[Instruction Descriptions section](#instruction-descriptions) explains on how
+instructions are described here.
 
 Implementations of WebAssembly [validation](#validation) and
 [execution](#execution) need not perform all the steps literally as described
@@ -64,6 +71,77 @@ here; they need only behave ["as if"] they did so in all observable respects.
 [*instantiated*]: #module-instantiation
 [load-store architecture]: https://en.wikipedia.org/wiki/Load/store_architecture
 ["as if"]: https://en.wikipedia.org/wiki/As-if_rule
+
+
+Basics
+--------------------------------------------------------------------------------
+
+### Bytes
+
+[*Bytes*] in WebAssembly are 8-[bit], and are the addressing unit of linear
+memory accesses.
+
+[*Bytes*]: https://en.wikipedia.org/wiki/Byte
+
+### Pages
+
+*Pages* in WebAssembly are 64 [KiB], and are the units used in linear memory
+sizes and resizing.
+
+### Types
+
+0. [Integer Types](#integer-types)
+0. [Floating-Point Types](#floating-point-types)
+
+#### Integer Types
+
+| Name  | Bits
+| ----  | ----
+| `i32` | 32
+| `i64` | 64
+
+Integer types in WebAssembly aren't inherently signed or unsigned. They may be
+interpreted as signed or unsigned by individual operations. When interpreted as
+signed, a [two's complement] interpretation is used.
+
+> The [minimum signed integer value] is supported; consequently, two's
+complement signed integers aren't symmetric around zero.
+
+##### Booleans
+
+[Boolean][actual boolean] values in WebAssembly are represented as values of
+type `i32`. In a boolean context, such as a `br_if` condition, any non-zero
+value is interpreted as true and `0` is interpreted as false.
+
+Any operation that produces a boolean value, such as a comparison, produces the
+values `0` and `1` for false and true.
+
+[actual boolean]: https://en.wikipedia.org/wiki/Boolean_data_type
+
+> The [binary format] often uses alternate encodings for integers and boolean
+values, rather than using the literal encodings described here.
+
+#### Floating-Point Types
+
+| Name  | Bits
+| ----  | ----
+| `f32` | 32
+| `f64` | 64
+
+`f32` in WebAssembly uses the IEEE 754-2008 [binary32] format, commonly known as
+"Single Precision".
+
+`f64` in WebAssembly uses the IEEE 754-2008 [binary64] format, commonly known as
+"Double Precision".
+
+> Unlike with [Numbers in ECMAScript], [NaN] values in WebAssembly have sign
+bits and significand fields which may be observed and manipulated (though they
+are usually unimportant).
+
+[binary32]: https://en.wikipedia.org/wiki/Single-precision_floating-point_format
+[binary64]: https://en.wikipedia.org/wiki/Double-precision_floating-point_format
+[Numbers in ECMAScript]: https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type
+[NaN]: https://en.wikipedia.org/wiki/NaN
 
 
 Module
@@ -174,8 +252,7 @@ An *import* consists of:
  - The signature index of each array element is required to be within the bounds
    of the [Type Section](#type-section) array.
 
-TODO: Describe the semantics of imports: module name resolution, function name
-resolution, and calls.
+TODO: Describe the semantics of imports: module and function name resolution.
 
 TODO: Memory imports, global imports, table imports, per
 https://github.com/WebAssembly/design/pull/682
@@ -247,7 +324,10 @@ even though the total number of bytes would not be.
 
 **Name:** `export`
 
-The Export Section consists of an [array] of exports from the module.
+The Export Section consists of an [array] of exports from the module. Exports
+make functions available to be called from outside the module, either by other
+WebAssembly modules or through other mechanism specific to the embedding
+environment.
 
 An *export* consists of:
  - an [index] of a function to export
@@ -257,8 +337,6 @@ An *export* consists of:
  - The function index of each export is required to be within the bounds of the
    [Code Section](#code-section) array.
  - Each export's name is required to be unique among all the exports' names.
-
-TODO: Describe the semantics of exports: name resolution and calls.
 
 TODO: Memory exports (which require the presence of a Memory Section).
 
@@ -285,14 +363,15 @@ A *function body* consists of:
  - an [array] of [types], which declare the number and types of locals.
  - a sequence of [instructions](#instructions).
 
-> Validation of function bodies is specified [separately](#function-validation).
+> Validation of function bodies is performed
+[separately](#function-body-validation).
 
 ##### Positions Within A Function Body
 
 A *position* within a function refers to an element of the instruction sequence.
 
-> In the binary encoding, positions are represented as byte offsets; in the text
-format, positions are represented with a special syntax.
+> In the [binary format], positions are represented as byte offsets; in the
+[text format], positions are represented with a special syntax.
 
 #### Data Section
 
@@ -333,14 +412,14 @@ and which consist of:
  - the function name, a [string].
  - the names of the locals in the function, an [array] of [strings].
 
-> Name data is represented as an explicit section in the binary format, however
-in the text format it may be represented as an integrated part of the syntax for
-functions rather than as a discrete section.
+> Name data is represented as an explicit section in the [binary format],
+however in the [text format] it may be represented as an integrated part of the
+syntax for functions rather than as a discrete section.
 
 > The expectation is that, when a binary WebAssembly module is presented in a
 human-readable format in a browser or other development environment, the names
 in this section are to be used as the names of functions and locals in the
-[text format](TextFormat.md).
+[text format].
 
 TODO: Should the names in this section be required to be valid UTF-8 strings?
 This section isn't used during normal validation or execution, so it's off the
@@ -348,23 +427,48 @@ This section isn't used during normal validation or execution, so it's off the
 it might make sense.
 
 
+Binary Format
+--------------------------------------------------------------------------------
+
+TODO: Describe the binary format. The high-level ideas are:
+ - A module starts with a magic cookie, consisting of the 4-byte-sequence
+   NUL, 'a', 's', 'm', followed by the [version](#module-contents) [index],
+   followed by the encodings of the sections.
+ - Most module [indices] values are encoded with [LEB128].
+ - Module [arrays] values are encoded as the length [index] followed by the
+   encodings of the elements.
+ - Every [instruction](#instructions) is encoded as its Opcode value, followed
+   by its immediate operand values.
+ - Most immediate operand values are encoded with [LEB128], though there are
+   several special cases.
+
+[LEB128]: https://en.wikipedia.org/wiki/LEB128
+
+
+Text Format
+--------------------------------------------------------------------------------
+
+TODO: What will the text format look like? Monitor at least
+https://github.com/WebAssembly/design/pull/704
+
+
 Validation
 --------------------------------------------------------------------------------
 
 0. [Module Validation](#module-validation)
-0. [Function Validation](#function-validation)
+0. [Function Body Validation](#function-body-validation)
 
 ### Module Validation
 
 Validation of a module requires the requirements of the **Validation** clause of
 the [top-level module description](#module-contents).
 
-Then, if the module contains a [Code Section](#code-section), each function body
-in the section is [validated](#function-validation).
+Then, if the module contains a [Code Section](#code-section), each function
+body in the section is [validated](#function-body-validation).
 
-### Function Validation
+### Function Body Validation
 
-The major requirements for function validation are:
+The major requirements for function body validation are:
  - Control-flow constructs are required to form properly nested *regions*.
    `loop`, `block`, and the function entry pair with `end`, and `if` can pair
    with `end` or `else`, which is then paired with `end`.
@@ -431,7 +535,7 @@ For each instruction in the body, in sequence order:
 Finally, for each type in the function's return list, a type is popped from the
 type stack and required be the same. The type stack and the control-flow stack
 are then both required to be empty. If all requirements were met, function
-validation is successful.
+body validation is successful.
 
 > The control-flow stack's limit values effectively mark region boundaries in
 the type stack. Regions are required to be nested, and each region's limit value
@@ -465,9 +569,11 @@ which consists of the following steps:
  - The entire module is first [validated](#validation). If there are any
    failures, instantiation aborts and doesn't produce an instance.
  - If a [Memory Section](#memory-section) is present,
-   [Linear memory is instantiated](#linear-memory-instantiation).
- - A finite quantity of [call-stack resources](#call-stack-resources) are
-   allocated.
+   [linear memory is instantiated](#linear-memory-instantiation).
+ - A finite quantity of [call-stack resources] are allocated.
+ - A *globals array* is allocated, which is a heterogeneous array of values
+   containing an element for each element in the module's
+   [Global Section](#global-section).
 
 > The contents of the Module, including functions and their bodies, are outside
 any linear address space and not any accessible to applications. WebAssembly is
@@ -491,9 +597,9 @@ Each [string] is loaded into linear memory at its associated start offset.
 **Trap:** Dynamic Resource Exhaustion, if dynamic resources are insufficient to
 support creation of the array.
 
-#### Call Stack Resources
+#### Call-Stack Resources
 
-Call stack resources are an abstract quantity, with discrete units, of which a
+Call-stack resources are an abstract quantity, with discrete units, of which a
 [nondeterministic] amount is allocated during instantiation, belonging to an
 instance.
 
@@ -521,9 +627,9 @@ are created:
  - A *control-flow stack*, which holds [labels] for reference from branch
    instructions.
  - A *value stack*, which carries values between instructions.
- - A *locals* array, containing an element for each type in the function's
-   parameter list, followed by an element for each local declaration in the
-   function.
+ - A *locals* array, a heterogeneous array of values containing an element for
+   each type in the function's parameter list, followed by an element for each
+   local declaration in the function.
  - A *current position*.
 
 > Implementations needn't create a literal array to store the locals, or literal
@@ -598,62 +704,21 @@ popped from the value stack. If the function execution was prompted by a
 Otherwise, they are provided to the embedding environment.
 
 
-Types
+Instruction Descriptions
 --------------------------------------------------------------------------------
 
-0. [Integer Types](#integer-types)
-0. [Floating-Point Types](#floating-point-types)
+Instructions in the [Instructions](#instructions) section are introduced with
+tables giving a concise description of several of their attributes, followed
+by additional content.
 
-### Integer Types
+0. [Instruction Signature Field](#instruction-signature-field)
+0. [Instruction Families Field](#instruction-families-field)
+0. [Instruction Opcode Field](#instruction-opcode-field)
+0. [Instruction Syntax Field](#instruction-syntax-field)
+0. [Instruction Semantics](#instruction-semantics)
+0. [Instruction Special Validation Rules](#instruction-special-validation-rules)
 
-| Name  | Bits
-| ----  | ----
-| `i32` | 32
-| `i64` | 64
-
-Integer types aren't inherently signed or unsigned. They may be interpreted as
-signed or unsigned by individual instructions. When interpreted as signed, a
-[two's complement] interpretation is used.
-
-> The [minimum signed integer value] is supported; consequently, two's
-complement signed integers aren't symmetric around zero.
-
-#### Booleans
-
-[Boolean][actual boolean] values are represented as values of type `i32`. In a
-boolean context, such as a `br_if` condition, any non-zero value is interpreted
-as true and `0` is interpreted as false.
-
-Any instruction that produces a boolean value, such as a comparison, produces
-the values `0` and `1` for false and true.
-
-[actual boolean]: https://en.wikipedia.org/wiki/Boolean_data_type
-
-### Floating-Point Types
-
-| Name  | Bits
-| ----  | ----
-| `f32` | 32
-| `f64` | 64
-
-`f32` uses the IEEE 754-2008 [binary32] format, commonly known as
-"Single Precision".
-
-`f64` uses the IEEE 754-2008 [binary64] format, commonly known as
-"Double Precision".
-
-> Unlike with [Numbers in ECMAScript], [NaN] values in WebAssembly have sign
-bits and significand fields which may be observed and manipulated (though they
-are usually unimportant).
-
-[binary32]: https://en.wikipedia.org/wiki/Single-precision_floating-point_format
-[binary64]: https://en.wikipedia.org/wiki/Double-precision_floating-point_format
-[Numbers in ECMAScript]: https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type
-[NaN]: https://en.wikipedia.org/wiki/NaN
-
-
-Instruction Signatures
---------------------------------------------------------------------------------
+### Instruction Signature Field
 
 Instruction signatures describe the explicit inputs and outputs to an
 instruction. They are described in either of the following forms:
@@ -687,13 +752,10 @@ A few special constructs are used for special purposes:
    the above named values, an immediate operand, or a literal value, and
    signifies the length.
 
-TODO: Explain the Opcode and Syntax fields of instruction descriptions.
+### Instruction Families Field
 
-
-Instruction Families
---------------------------------------------------------------------------------
-
-WebAssembly instructions may belong to several families:
+WebAssembly instructions may belong to several families, indicated in the tables
+by their family letter:
 
 0. [M: Memory-Access Instruction Family][M]
 0. [R: Memory-Resize Instruction Family][R]
@@ -708,24 +770,17 @@ WebAssembly instructions may belong to several families:
 0. [Z: Floating-Point Bitwise Instruction Family][Z]
 0. [Q: Control-Flow Barrier Instruction Family][Q]
 
-### M: Memory-Access Instruction Family
+#### M: Memory-Access Instruction Family
 
 These instructions load from and store to a linear memory space.
 
-#### Bytes
-
-[*Bytes*] in WebAssembly are 8-[bit], and are the addressing unit of linear
-memory spaces.
-
-[*Bytes*]: https://en.wikipedia.org/wiki/Byte
-
-#### Effective Address
+##### Effective Address
 
 The *effective address* of a linear memory access is computed by adding `$base`
 and `$offset`, both interpreted as unsigned, at infinite precision, so that
 there is no overflow.
 
-#### Alignment
+##### Alignment
 
 **Slow:** If the effective address isn't a multiple of `$align`, the access is
 *misaligned*, and the instruction may execute very slowly.
@@ -736,7 +791,7 @@ is *naturally aligned*. When it's less, the access is *unaligned*.
 > There is no other semantic effect associated with `$align`; misaligned and
 unaligned loads and stores still function normally.
 
-#### Accessed Bytes
+##### Accessed Bytes
 
 The *accessed bytes* consist of a contiguous sequence of [bytes] starting at the
 [effective address], with a length implied by the accessing instruction.
@@ -744,17 +799,17 @@ The *accessed bytes* consist of a contiguous sequence of [bytes] starting at the
 **Trap:** Out Of Bounds, if any of the accessed bytes are beyond the end of the
 accessed linear memory space.
 
-#### Loading
+##### Loading
 
 For a load access, a value is read from the [accessed bytes], in
 [little-endian byte order], and returned.
 
-#### Storing
+##### Storing
 
 For a store access, the value to store is written to the [accessed bytes], in
 [little-endian byte order].
 
-#### Linear Memory Access Validation
+##### Linear Memory Access Validation
 
  - `$align` is required to be a [power of 2].
  - `$align` is required to be at most the number of [accessed bytes].
@@ -765,20 +820,15 @@ https://github.com/WebAssembly/design/issues/584
 
 [power of 2]: https://en.wikipedia.org/wiki/Power_of_two
 
-### R: Linear Memory-Resize Instruction Family
+#### R: Linear Memory-Resize Instruction Family
 
-#### Pages
-
-*Pages* in WebAssembly are 64 [KiB], and are the units used in linear memory
-resizing.
-
-#### Linear Memory-Resize Validation
+##### Linear Memory-Resize Validation
 
  - The module is required to contain a [Memory Section](#memory-section).
 
-### B: Branch Instruction Family
+#### B: Branch Instruction Family
 
-#### Branching
+##### Branching
 
 In a branch according to a given control-flow stack entry, first the value stack
 is resized down to the entry's limit value.
@@ -795,20 +845,21 @@ entry is popped.
 > In practice, implementations may precompute the destinations of branches so
 that they don't literally need to scan in this manner.
 
-### L: Call Instruction Family
+#### L: Call Instruction Family
 
-#### Calling
+##### Calling
 
-The called function &mdash; the *callee* &mdash; is
-[executed](#function-execution), with the `$args` operands, excluding `$callee`
-when present, passed to it as its incoming arguments. The return value of the
-call is defined by the execution.
+If the called function&mdash;the *callee*&mdash;is a function in the module, it
+is [executed](#function-execution). Otherwise the callee is an imported
+function which is executed according to its own semantics. The `$args` operands,
+excluding `$callee` when present, are passed as the incoming arguments. The
+return value of the call is defined by the execution.
 
-At least one unit of [call stack resources](#call-stack-resources) is consumed
-during the execution of the callee, and released when it completes.
+At least one unit of [call-stack resources] is consumed during the execution of
+the callee, and released when it completes.
 
 **Trap:** Call Stack Exhausted, if the instance has insufficient
-[call stack resources](#call-stack-resources).
+[call-stack resources].
 
 > This means that implementations aren't permitted to perform implicit
 opportunistic tail-call elimination.
@@ -821,14 +872,14 @@ independently. In this way, calls form a stack-like data structure called the
 > Data associated with the call stack is stored outside any linear address space
 and is not directly accessible to applications.
 
-#### Call Validation
+##### Call Validation
 
 `$arity` is required to be equal to `$args`.
 
 > The `$arity` immediate operand has no effect other than the requirement that
 it be validated.
 
-### C: Comparison Instruction Family
+#### C: Comparison Instruction Family
 
 WebAssembly comparison instructions compare two values and return a [boolean]
 result value.
@@ -837,12 +888,12 @@ result value.
 zero is considered equal to zero, and NaN values aren't less than, greater than,
 or equal to any other values, including themselves.
 
-### T: Shift Instruction Family
+#### T: Shift Instruction Family
 
 In the shift and rotate instructions, *left* means in the direction of greater
 significance, and *right* means in the direction of lesser significance.
 
-#### Shift Count
+##### Shift Count
 
 The second operand in shift and rotate instructions specifies a *shift count*,
 which is interpreted as an unsigned quantity modulo the number of bits in the
@@ -855,25 +906,25 @@ least-significant 6 bits of the second operand affect the result.
 > The shift count is interpreted as unsigned even in otherwise signed
 instructions such as [`shr_s`](#integer-shift-right-signed).
 
-### G: Generic Integer Instruction Family
+#### G: Generic Integer Instruction Family
 
 Except where otherwise specified, these instructions don't specifically
 interpret their operands as explicitly signed or unsigned, and therefore don't
 have an inherent concept of overflow.
 
-### S: Signed Integer Instruction Family
+#### S: Signed Integer Instruction Family
 
 Except where otherwise specified, these instructions interpret their operand
 values as signed, return result values interpreted as signed, and [trap] when
 the result value can't be represented as such.
 
-### U: Unsigned Integer Instruction Family
+#### U: Unsigned Integer Instruction Family
 
 Except where otherwise specified, these instructions interpret their operand
 values as unsigned, return result values interpreted as unsigned, and [trap]
 when the result value can't be represented as such.
 
-### F: Floating-Point Instruction Family
+#### F: Floating-Point Instruction Family
 
 Instructions in this family follow the [IEEE 754-2008] standard, except that:
 
@@ -910,31 +961,56 @@ their operands, however it isn't required.
 > All computations are correctly rounded, subnormal values are fully supported,
 and negative zero, NaNs, and infinities are all produced as result values to
 indicate overflow, invalid, and divide-by-zero exceptional conditions, and
-interpreted appropriately when they appear as operands. All numeric results are
-deterministic, as are the rules for how NaNs are handled as operands and for
-when NaNs are to be generated as results. The only floating-point nondeterminism
-is in the specific bit-patterns of NaN result values.
+interpreted appropriately when they appear as operands. Compiler optimizations
+that introduce changes to the effective precision, rounding, or range of any
+computation are not permitted. All numeric results are deterministic, as are the
+rules for how NaNs are handled as operands and for when NaNs are to be generated
+as results. The only floating-point nondeterminism is in the specific
+bit-patterns of NaN result values.
 
-> In IEEE 754-1985, subnormal numbers are called ["denormal numbers"];
+> In IEEE 754-1985, ["subnormal numbers"] are called "denormal numbers";
 WebAssembly follows IEEE 754-2008, which calls them "subnormal numbers".
 
 > There is no observable difference between quiet and signaling NaN other than
 the difference in the bit pattern.
 
 [IEEE 754-2008]: https://en.wikipedia.org/wiki/IEEE_floating_point
-["denormal numbers"]: https://en.wikipedia.org/wiki/Denormal_number
+["subnormal numbers"]: https://en.wikipedia.org/wiki/Subnormal_number
 
-### Z: Floating-Point Bitwise Instruction Family
+#### Z: Floating-Point Bitwise Instruction Family
 
 These instructions operate on floating-point values, but do so in purely bitwise
 ways, including in how they operate on NaN and zero values.
 
 They correspond to the "Sign bit operations" in IEEE 754-2008.
 
-### Q: Control-Flow Barrier Instruction Family
+#### Q: Control-Flow Barrier Instruction Family
 
-These instructions either trap or assign a new current position, such that
+These instructions either trap or reassign the current position, such that
 execution does not proceed to the instruction that lexically follows them.
+
+### Instruction Opcode Field
+
+These values are used in the [binary format](#binary-format) to encode
+instruction [opcodes].
+
+[opcodes]: https://en.wikipedia.org/wiki/Opcode
+
+### Instruction Syntax Field
+
+TODO: These are suggested operator names for use in the [text format]. A
+parenthesized number is given for each operator name giving a suggested operator
+[precedence] value when binary operators use infix notation and unary operators
+use prefix notation.
+
+[precedence]: https://en.wikipedia.org/wiki/Order_of_operations
+
+### Instruction Description
+
+Instruction semantics are described for use in the context of
+[function body execution](#function-body-execution). Some instructions also have
+a special validation clause, introduced by "**Validation:**", which are for use
+in the context of [function body validation](#function-body-validation).
 
 
 Instructions
@@ -1082,7 +1158,7 @@ The `if` instruction pushes an unbound [label] onto the control-flow stack. If
  - An entry is pushed onto the control-flow stack containing no type sequence,
    and a limit value of the current length of the type stack.
 
-TODO: Do `if`/`else` have labels? Monitor
+TODO: Do `if`/`else` have labels? Monitor at least
 https://github.com/WebAssembly/design/pull/710
 
 > Each `if` needs either a corresponding [`else`](#else) or [`end`](#end).
@@ -1210,6 +1286,9 @@ https://github.com/WebAssembly/design/pull/696
 The `get_local` instruction returns the value in the locals array at index
 `$id`.
 
+**Validation:**
+ - `$id` is required to be within the bounds of the locals array.
+
 #### Set Local
 
 | Name        | Signature                   | Families | Opcode
@@ -1218,6 +1297,9 @@ The `get_local` instruction returns the value in the locals array at index
 
 The `set_local` instruction sets the value in the locals array at index `$id` to
 the value given in the operand.
+
+**Validation:**
+ - `$id` is required to be within the bounds of the locals array.
 
 > `set_local` is equivalent to a similar `tee_local` followed by a `drop`.
 
@@ -1229,6 +1311,9 @@ the value given in the operand.
 
 The `tee_local` instruction sets the value in the locals array at index `$id` to
 the value given in the operand. Its return value is the value of its operand.
+
+**Validation:**
+ - `$id` is required to be within the bounds of the locals array.
 
 > This instruction's name is inspired by the ["tee" command] in other languages,
 since it forwards the value of its operand to two places.
@@ -1244,6 +1329,9 @@ since it forwards the value of its operand to two places.
 The `get_global` instruction returns the value in the globals array at index
 `$id`.
 
+**Validation:**
+ - `$id` is required to be within the bounds of the globals array.
+
 #### Set Global
 
 | Name         | Signature                  | Families | Opcode
@@ -1254,6 +1342,7 @@ The `set_global` instruction sets the value in the globals array at index `$id`
 to the value given in the operand.
 
 **Validation:**
+ - `$id` is required to be within the bounds of the globals array.
  - The indexed global is required to be declared not immutable.
 
 #### Select
@@ -2374,9 +2463,14 @@ memory space, as an unsigned value in units of [pages].
 [accessed bytes]: #accessed-bytes
 [merged]: #type-sequence-merge
 [index]: #index
+[indices]: #index
 [array]: #array
+[arrays]: #array
+[binary format]: #binary-format
+[call-stack resources]: #call-stack-resources
 [string]: #string
 [strings]: #string
+[text format]: #text-format
 [type]: #types
 [types]: #types
 [typed]: #types
