@@ -112,8 +112,8 @@ and associated data.
 
 **Validation:**
  - The version index is required to be equal to `0xc`.
- - For each present [known section](#known-sections), the associated
-   **Validation** clause is performed, if one is specified for the section kind.
+ - For each present [known section](#known-sections), the requirements of its
+   **Validation** clause are required, if one is specified for the section kind.
  - Present known sections are required to be ordered in the section sequence as
    they are ordered in the [enumeration of the Known Sections](#known-sections).
 
@@ -356,8 +356,8 @@ Validation
 
 ### Module Validation
 
-Validation of a module entails performing the **Validation** clause of the
-[top-level module description](#module-contents).
+Validation of a module requires the requirements of the **Validation** clause of
+the [top-level module description](#module-contents).
 
 Then, if the module contains a [Code Section](#code-section), each function body
 in the section is [validated](#function-validation).
@@ -1255,7 +1255,7 @@ The `call` instruction performs a [call](#calling) to the function with index
 `$callee`.
 
 Validation:
- - [Call validation](#call-validation) is performed; the callee signature is the
+ - [Call validation](#call-validation) is required; the callee signature is the
    signature of the indexed function.
 
 TODO: Update index space, per
@@ -1274,7 +1274,7 @@ index `$callee`.
 with index `$callee` differs from `$signature`.
 
 Validation:
- - [Call validation](#call-validation) is performed; the callee signature is the
+ - [Call validation](#call-validation) is required; the callee signature is the
    signature with index `$signature` in the [Type Section](#type-section).
 
 > The dynamic caller/callee signature match is nominal rather than structural.
@@ -2180,7 +2180,7 @@ IEEE 754-2008 `copy` operation.
 
 **Validation:**
  - [Linear memory access validation](#linear-memory-access-validation) is
-   performed.
+   required.
 
 #### Store
 
@@ -2199,7 +2199,7 @@ IEEE 754-2008 `copy` operation.
 
 **Validation:**
  - [Linear memory access validation](#linear-memory-access-validation) is
-   performed.
+   required.
 
 #### Extending Load, Signed
 
@@ -2220,7 +2220,7 @@ width than their type, and return the value [sign-extended] to their type.
 
 **Validation:**
  - [Linear memory access validation](#linear-memory-access-validation) is
-   performed.
+   required.
 
 #### Extending Load, Unsigned
 
@@ -2241,7 +2241,7 @@ width than their type, and return the value zero-extended to their type.
 
 **Validation:**
  - [Linear memory access validation](#linear-memory-access-validation) is
-   performed.
+   required.
 
 #### Wrapping Store
 
@@ -2262,7 +2262,7 @@ silently wrapped to a narrower width.
 
 **Validation:**
  - [Linear memory access validation](#linear-memory-access-validation) is
-   performed.
+   required.
 
 > See the comment in the [wrap instruction](#integer-wrap) about the meaning of
 the name "wrap".
@@ -2292,7 +2292,7 @@ front or if enabling the reserved memory fails.
 
 **Validation**:
  - [Linear memory-resize validation](#linear-memory-resize-validation) is
-   performed.
+   required.
 
 > Since the return value is in units of pages, `-1` isn't otherwise a valid
 linear memory size.
@@ -2308,7 +2308,7 @@ memory space, as an unsigned value in units of [pages].
 
 **Validation**:
  - [Linear memory-resize validation](#linear-memory-resize-validation) is
-   performed.
+   required.
 
 [M]: #m-memory-access-instruction-family
 [R]: #r-memory-resize-instruction-family
