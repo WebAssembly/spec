@@ -682,9 +682,9 @@ A few special constructs are used for special purposes:
    associated with addresses within the accessed linear memory space.
  - `TABLE` indicates a branch table, which is a sequence of immediate integer
    values for use in the [table branch](#table-branch) instruction.
- - `T[x]` is used in type-generic instructions to denote a heterogeneous list
-   of type parameters, where `T` is the name of the list, and `x` is either one
-   of the above named values, an immediate operand, or a literal value, and
+ - `T[x]` is used in type-generic instructions to denote a heterogeneous list of
+   type parameters, where `T` is the name of the list, and `x` is either one of
+   the above named values, an immediate operand, or a literal value, and
    signifies the length.
 
 TODO: Explain the Opcode and Syntax fields of instruction descriptions.
@@ -800,9 +800,9 @@ that they don't literally need to scan in this manner.
 #### Calling
 
 The called function &mdash; the *callee* &mdash; is
-[executed](#function-execution), with the `$args` operands, excluding
-`$callee` when present, passed to it as its incoming arguments. The return value
-of the call is defined by the execution.
+[executed](#function-execution), with the `$args` operands, excluding `$callee`
+when present, passed to it as its incoming arguments. The return value of the
+call is defined by the execution.
 
 At least one unit of [call stack resources](#call-stack-resources) is consumed
 during the execution of the callee, and released when it completes.
@@ -1072,7 +1072,7 @@ with the other branch instructions.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `if`        | `($condition: i32) : ()`    |          | 0x03
+| `if`        | `($condition: i32) : ()`    | [B]      | 0x03
 
 The `if` instruction pushes an unbound [label] onto the control-flow stack. If
 `$condition` is [false], it then [branches](#branching) to this label.
@@ -1090,7 +1090,7 @@ https://github.com/WebAssembly/design/pull/710.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `else`      | `(T[$any]) : (T[$any])`     |          | 0x04
+| `else`      | `(T[$any]) : (T[$any])`     | [B]      | 0x04
 
 The `else` instruction binds the control-flow stack top's [label] to the current
 position, pops an entry from the control-flow stack, pushes a new unbound
@@ -2051,9 +2051,9 @@ result type. Wrapping means reducing the value modulo the number of unique
 values in the result type.
 
 > This instruction corresponds to what is sometimes called an integer "truncate"
-in other languages, however WebAssembly uses "truncate" to mean effectively
-discarding the least significant bits, while "wrap" means effectively discarding
-the most significant bits.
+in other languages, however WebAssembly uses the word "truncate" to mean
+effectively discarding the least significant digits, and the word "wrap" to mean
+effectively discarding the most significant digits.
 
 #### Integer Extend, Signed
 
