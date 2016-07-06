@@ -1,7 +1,9 @@
 ;; Test `unreachable` operator
 
 (module
+  ;; Auxiliary definitions
   (func $dummy)
+  (func $dummy3 (param i32 i32 i32))
 
   (func "type-i32" (result i32) (unreachable))
   (func "type-i64" (result i32) (unreachable))
@@ -98,7 +100,6 @@
     (select (i32.const 0) (i32.const 1) (unreachable))
   )
 
-  (func $dummy3 (param i32 i32 i32))
   (func "as-call-first"
     (call $dummy3 (unreachable) (i32.const 2) (i32.const 3))
   )

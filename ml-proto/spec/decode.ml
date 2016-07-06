@@ -168,25 +168,25 @@ let rec expr stack s =
     Nop, es
   | 0x01, es ->
     let es' = expr_block s in
-    expect 0x17 s "end opcode expected";
+    expect 0x0f s "END opcode expected";
     Block es', es
   | 0x02, es ->
     let es' = expr_block s in
-    expect 0x17 s "end opcode expected";
+    expect 0x0f s "END opcode expected";
     Loop es', es
   | 0x03, e :: es ->
     let es1 = expr_block s in
     if peek s = Some 0x04 then begin
-      expect 0x04 s "else or end opcode expected";
+      expect 0x04 s "ELSE or END opcode expected";
       let es2 = expr_block s in
-      expect 0x17 s "end opcode expected";
+      expect 0x0f s "END opcode expected";
       If (e, es1, es2), es
     end else begin
-      expect 0x17 s "end opcode expected";
+      expect 0x0f s "END opcode expected";
       If (e, es1, []), es
     end
   | 0x04, _ ->
-    assert false (* else *)
+    error s pos "misplaced ELSE opcode"
   | 0x05, e3 :: e2 :: e1 :: es ->
     Select (e1, e2, e3), es
   | 0x06, es ->
@@ -205,51 +205,53 @@ let rec expr stack s =
     let x = at var s in
     let eo, es' = args1 b es s pos in
     Br_table (xs, x, eo, e), es'
+  | 0x09, es ->
+    let b = arity1 s in
+    let eo, es' = args1 b es s pos in
+    Return eo, es'
+  | 0x0a, es ->
+    Unreachable, es
+  | 0x0b, e :: es ->
+    Drop e, es
+  | 0x0c | 0x0d | 0x0e as b, _ ->
+    illegal s pos b
+  | 0x0f, _ ->
+    error s pos "misplaced END opcode"
 
-  | 0x09 as b, es -> illegal s pos b
+  | 0x10, es -> I32_const (at vs32 s), es
+  | 0x11, es -> I64_const (at vs64 s), es
+  | 0x12, es -> F32_const (at f32 s), es
+  | 0x13, es -> F64_const (at f64 s), es
 
-  | 0x0a, es -> I32_const (at vs32 s), es
-  | 0x0b, es -> I64_const (at vs64 s), es
-  | 0x0c, es -> F32_const (at f32 s), es
-  | 0x0d, es -> F64_const (at f64 s), es
-
-  | 0x0e, es ->
+  | 0x14, es ->
     let x = at var s in
     Get_local x, es
-  | 0x0f, e :: es ->
+  | 0x15, e :: es ->
     let x = at var s in
     Set_local (x, e), es
 
-  | 0x10 | 0x11 as b, _ -> illegal s pos b
-
-  | 0x12, es ->
+  | 0x16, es ->
     let n = arity s in
     let x = at var s in
     let es1, es' = args n es s pos in
     Call (x, es1), es'
-  | 0x13, es ->
+  | 0x17, es ->
     let n = arity s in
     let x = at var s in
     let es1, es' = args (n + 1) es s pos in
     Call_indirect (x, List.hd es1, List.tl es1), es'
-
-  | 0x14, es ->
-    let b = arity1 s in
-    let eo, es' = args1 b es s pos in
-    Return eo, es'
-  | 0x15, es ->
-    Unreachable, es
-
-  | 0x16, _ -> assert false (* next *)
-  | 0x17, _ -> assert false (* end *)
-  | 0x18 | 0x19 | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e as b, _ ->
-    illegal s pos b
-
-  | 0x1f, es ->
+  | 0x18, es ->
     let n = arity s in
     let x = at var s in
     let es1, es' = args n es s pos in
     Call_import (x, es1), es'
+
+  | 0x19, e :: es ->
+    let x = at var s in
+    Tee_local (x, e), es
+
+  | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e | 0x1f as b, _ ->
+    illegal s pos b
 
   | 0x20, e :: es -> let o, a = memop s in I32_load8_s (o, a, e), es
   | 0x21, e :: es -> let o, a = memop s in I32_load8_u (o, a, e), es
@@ -277,9 +279,12 @@ let rec expr stack s =
   | 0x36, e2 :: e1 :: es -> let o, a = memop s in F64_store (o, a, e1, e2), es
 
   | 0x37 | 0x38 as b, _ -> illegal s pos b
+
   | 0x39, e :: es -> Grow_memory e, es
   | 0x3a as b, _ -> illegal s pos b
   | 0x3b, es -> Current_memory, es
+
+  | 0x3c | 0x3d | 0x3e | 0x3f as b, _ -> illegal s pos b
 
   | 0x40, e2 :: e1 :: es -> I32_add (e1, e2), es
   | 0x41, e2 :: e1 :: es -> I32_sub (e1, e2), es
@@ -418,7 +423,7 @@ and expr_block s = List.rev (expr_block' [] s)
 and expr_block' stack s =
   if eos s then stack else
   match peek s with
-  | None | Some (0x04 | 0x16 | 0x17) -> stack
+  | None | Some (0x04 | 0x0f) -> stack
   | _ ->
     let pos = pos s in
     let e', stack' = expr stack s in

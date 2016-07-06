@@ -14,6 +14,8 @@ let require b at s = if not b then error at s
 
 (* Context *)
 
+type expr_type_future = [`Known of expr_type | `SomeUnknown] ref
+
 type context =
 {
   types : func_type list;
@@ -21,7 +23,7 @@ type context =
   imports : func_type list;
   locals : value_type list;
   return : expr_type;
-  labels : expr_type list;
+  labels : expr_type_future list;
   has_memory : bool
 }
 
@@ -36,12 +38,23 @@ let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
 
-(* Type comparison *)
+(* Type Unification *)
+
+let string_of_future = function
+  | `Known et -> string_of_expr_type et
+  | `SomeUnknown -> "<value_type>"
 
 let check_type actual expected at =
-  require (expected = None || actual = expected) at
+  if !expected = `SomeUnknown && actual <> None then expected := `Known actual;
+  require (!expected = `Known actual) at
     ("type mismatch: expression has type " ^ string_of_expr_type actual ^
-     " but the context requires " ^ string_of_expr_type expected)
+     " but the context requires " ^ string_of_future !expected)
+
+let some_unknown () = ref `SomeUnknown
+let known et = ref (`Known et)
+let none = known None
+let some t = known (Some t)
+let is_some et = !et <> `Known None
 
 
 (* Type Synthesis *)
@@ -99,7 +112,7 @@ let type_hostop = function
 (* Type Analysis *)
 
 (*
- * check_expr : context -> expr_type -> expr -> unit
+ * check_expr : context -> expr_type_future -> expr -> unit
  *
  * Conventions:
  *   c  : context
@@ -107,7 +120,7 @@ let type_hostop = function
  *   eo : expr option
  *   v  : value
  *   t  : value_type
- *   et : expr_type
+ *   et : expr_type_future
  *)
 
 let rec check_expr c et e =
@@ -118,13 +131,17 @@ let rec check_expr c et e =
   | Unreachable ->
     ()
 
+  | Drop e ->
+    check_expr c (some_unknown ()) e;
+    check_type None et e.at
+
   | Block (es, e) ->
     let c' = {c with labels = et :: c.labels} in
-    List.iter (check_expr c' None) es;
+    List.iter (check_expr c' none) es;
     check_expr c' et e
 
   | Loop e1 ->
-    let c' = {c with labels = None :: c.labels} in
+    let c' = {c with labels = none :: c.labels} in
     check_expr c' et e1
 
   | Break (x, eo) ->
@@ -132,23 +149,24 @@ let rec check_expr c et e =
 
   | BreakIf (x, eo, e1) ->
     check_expr_opt c (label c x) eo e.at;
-    check_expr c (Some Int32Type) e1;
+    check_expr c (some Int32Type) e1;
     check_type None et e.at
 
   | BreakTable (xs, x, eo, e1) ->
     List.iter (fun x -> check_expr_opt c (label c x) eo e.at) xs;
     check_expr_opt c (label c x) eo e.at;
-    check_expr c (Some Int32Type) e1
+    check_expr c (some Int32Type) e1
 
   | If (e1, e2, e3) ->
-    check_expr c (Some Int32Type) e1;
+    check_expr c (some Int32Type) e1;
     check_expr c et e2;
     check_expr c et e3
 
   | Select (e1, e2, e3) ->
+    require (is_some et) e.at "arity mismatch";
     check_expr c et e1;
     check_expr c et e2;
-    check_expr c (Some Int32Type) e3
+    check_expr c (some Int32Type) e3
 
   | Call (x, es) ->
     let {ins; out} = func c x in
@@ -162,7 +180,7 @@ let rec check_expr c et e =
 
   | CallIndirect (x, e1, es) ->
     let {ins; out} = type_ c.types x in
-    check_expr c (Some Int32Type) e1;
+    check_expr c (some Int32Type) e1;
     check_exprs c ins es e.at;
     check_type out et e.at
 
@@ -170,9 +188,12 @@ let rec check_expr c et e =
     check_type (Some (local c x)) et e.at
 
   | SetLocal (x, e1) ->
-    let t = local c x in
-    check_expr c (Some t) e1;
-    check_type (Some t) et e.at
+    check_expr c (some (local c x)) e1;
+    check_type None et e.at
+
+  | TeeLocal (x, e1) ->
+    check_expr c (some (local c x)) e1;
+    check_type (Some (local c x)) et e.at
 
   | Load (memop, e1) ->
     check_load c et memop e1 e.at
@@ -193,29 +214,29 @@ let rec check_expr c et e =
 
   | Unary (unop, e1) ->
     let t = type_unop unop in
-    check_expr c (Some t) e1;
+    check_expr c (some t) e1;
     check_type (Some t) et e.at
 
   | Binary (binop, e1, e2) ->
     let t = type_binop binop in
-    check_expr c (Some t) e1;
-    check_expr c (Some t) e2;
+    check_expr c (some t) e1;
+    check_expr c (some t) e2;
     check_type (Some t) et e.at
 
   | Test (testop, e1) ->
     let t = type_testop testop in
-    check_expr c (Some t) e1;
+    check_expr c (some t) e1;
     check_type (Some Int32Type) et e.at
 
   | Compare (relop, e1, e2) ->
     let t = type_relop relop in
-    check_expr c (Some t) e1;
-    check_expr c (Some t) e2;
+    check_expr c (some t) e1;
+    check_expr c (some t) e2;
     check_type (Some Int32Type) et e.at
 
   | Convert (cvtop, e1) ->
     let t1, t = type_cvtop e.at cvtop in
-    check_expr c (Some t1) e1;
+    check_expr c (some t1) e1;
     check_type (Some t) et e.at
 
   | Host (hostop, es) ->
@@ -226,13 +247,14 @@ let rec check_expr c et e =
 
 and check_exprs c ts es at =
   require (List.length ts = List.length es) at "arity mismatch";
-  let ets = List.map (fun x -> Some x) ts in
+  let ets = List.map some ts in
   List.iter2 (check_expr c) ets es
 
 and check_expr_opt c et eo at =
-  match eo with
-  | Some e -> check_expr c et e
-  | None -> check_type None et at
+  match is_some et, eo with
+  | false, None -> ()
+  | true, Some e -> check_expr c et e
+  | _ -> error at "arity mismatch"
 
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
@@ -240,15 +262,15 @@ and check_literal c et l =
 and check_load c et memop e1 at =
   check_has_memory c at;
   check_memop memop at;
-  check_expr c (Some Int32Type) e1;
+  check_expr c (some Int32Type) e1;
   check_type (Some memop.ty) et at
 
 and check_store c et memop e1 e2 at =
   check_has_memory c at;
   check_memop memop at;
-  check_expr c (Some Int32Type) e1;
-  check_expr c (Some memop.ty) e2;
-  check_type (Some memop.ty) et at
+  check_expr c (some Int32Type) e1;
+  check_expr c (some memop.ty) e2;
+  check_type None et at
 
 and check_has_memory c at =
   require c.has_memory at "memory operators require a memory section"
@@ -280,7 +302,7 @@ let check_func c f =
   let {ftype; locals; body} = f.it in
   let s = type_ c.types ftype in
   let c' = {c with locals = s.ins @ locals; return = s.out} in
-  check_expr c' s.out body
+  check_expr c' (known s.out) body
 
 let check_elem c x =
   ignore (func c x)

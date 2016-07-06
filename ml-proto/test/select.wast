@@ -57,3 +57,8 @@
 (assert_trap (invoke "select_trap_l" (i32.const 0)) "unreachable executed")
 (assert_trap (invoke "select_trap_r" (i32.const 1)) "unreachable executed")
 (assert_trap (invoke "select_trap_r" (i32.const 0)) "unreachable executed")
+
+(assert_invalid
+  (module (func $arity-0 (select (nop) (nop) (i32.const 1))))
+  "arity mismatch"
+)

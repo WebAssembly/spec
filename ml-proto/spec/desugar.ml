@@ -11,6 +11,7 @@ let rec relabel f n e = relabel' f n e.it @@ e.at
 and relabel' f n = function
   | Nop -> Nop
   | Unreachable -> Unreachable
+  | Drop e -> Drop (relabel f n e)
   | Block (es, e) ->
     Block (List.map (relabel f (n + 1)) es, relabel f (n + 1) e)
   | Loop e -> Loop (relabel f (n + 1) e)
@@ -31,6 +32,7 @@ and relabel' f n = function
     CallIndirect (x, relabel f n e, List.map (relabel f n) es)
   | GetLocal x -> GetLocal x
   | SetLocal (x, e) -> SetLocal (x, relabel f n e)
+  | TeeLocal (x, e) -> TeeLocal (x, relabel f n e)
   | Load (memop, e) -> Load (memop, relabel f n e)
   | Store (memop, e1, e2) -> Store (memop, relabel f n e1, relabel f n e2)
   | LoadExtend (extop, e) -> LoadExtend (extop, relabel f n e)
@@ -61,6 +63,7 @@ and expr' at = function
 
   | Ast.Nop -> Nop
   | Ast.Unreachable -> Unreachable
+  | Ast.Drop e -> Drop (expr e)
   | Ast.Block [] -> Nop
   | Ast.Block es ->
     let es', e = Lib.List.split_last es in Block (List.map expr es', expr e)
@@ -79,6 +82,7 @@ and expr' at = function
 
   | Ast.Get_local x -> GetLocal x
   | Ast.Set_local (x, e) -> SetLocal (x, expr e)
+  | Ast.Tee_local (x, e) -> TeeLocal (x, expr e)
 
   | Ast.I32_load (offset, align, e) ->
     Load ({ty = Int32Type; offset; align}, expr e)

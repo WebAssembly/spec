@@ -195,6 +195,7 @@ let rec expr e =
     match e.it with
     | Nop -> "nop", []
     | Unreachable -> "unreachable", []
+    | Drop e -> "drop", [expr e]
     | Block ([], {it = Loop e; _}) -> "loop", [expr e]
     | Block (es, e) -> "block", list expr (es @ [e])
     | Loop e -> assert false
@@ -215,6 +216,7 @@ let rec expr e =
     | CallIndirect (x, e, es) -> "call_indirect " ^ var x, list expr (e::es)
     | GetLocal x -> "get_local " ^ var x, []
     | SetLocal (x, e) -> "set_local " ^ var x, [expr e]
+    | TeeLocal (x, e) -> "tee_local " ^ var x, [expr e]
     | Load (op, e) -> memop "load" op, [expr e]
     | Store (op, e1, e2) -> memop "store" op, [expr e1; expr e2]
     | LoadExtend (op, e) -> extop op, [expr e]

@@ -33,20 +33,6 @@
     (loop (call $dummy) (nop))
   )
 
-  (func "as-br-value"
-    (block (br 0 (nop)))
-  )
-  (func "as-br_if-value" (param i32)
-    (block (br_if 0 (nop) (get_local 0)))
-  )
-  (func "as-br_table-value" (param i32)
-    (block (br_table 0 0 0 (nop) (get_local 0)))
-  )
-
-  (func "as-return-value"
-    (block (return (nop)))
-  )
-
   (func "as-if-then" (param i32)
     (block (if (get_local 0) (nop) (call $dummy)))
   )
@@ -66,17 +52,6 @@
 (assert_return (invoke "as-loop-first") (i32.const 2))
 (assert_return (invoke "as-loop-mid") (i32.const 2))
 (assert_return (invoke "as-loop-last"))
-
-(assert_return (invoke "as-br-value"))
-
-(assert_return (invoke "as-br_if-value" (i32.const 0)))
-(assert_return (invoke "as-br_if-value" (i32.const 10)))
-
-(assert_return (invoke "as-br_table-value" (i32.const 0)))
-(assert_return (invoke "as-br_table-value" (i32.const 1)))
-(assert_return (invoke "as-br_table-value" (i32.const 10)))
-
-(assert_return (invoke "as-return-value"))
 
 (assert_return (invoke "as-if-then" (i32.const 0)))
 (assert_return (invoke "as-if-then" (i32.const 4)))

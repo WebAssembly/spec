@@ -88,63 +88,6 @@
     (get_local 0)
   )
 
-  (func "drop-mid" (result i32)
-    (loop (call $fx) (i32.const 7) (call $dummy) (i32.const 8))
-  )
-  (func "drop-last"
-    (loop (call $dummy) (call $fx) (nop) (i32.const 8))
-  )
-  (func "drop-break-void"
-    (loop (br 1 (nop)))
-    (loop (br 1 (call $dummy)))
-    (loop (br_if 1 (nop) (i32.const 0)))
-    (loop (br_if 1 (nop) (i32.const 1)))
-    (loop (br_if 1 (call $dummy) (i32.const 0)))
-    (loop (br_if 1 (call $dummy) (i32.const 1)))
-    (loop (br_table 1 (nop) (i32.const 3)))
-    (loop (br_table 1 1 1 (nop) (i32.const 1)))
-  )
-  (func "drop-break-value"
-    (loop (br 1 (i32.const 8)))
-    (loop (br_if 1 (i32.const 11) (i32.const 0)))
-    (loop (br_if 1 (i32.const 10) (i32.const 1)))
-    (loop (br_table 1 (i32.const 9) (i32.const 5)))
-    (loop (br_table 1 1 1 (i32.const 8) (i32.const 1)))
-  )
-  (func "drop-cont-void"
-    (loop (br 0 (nop)))
-    (loop (br 0 (call $dummy)))
-    (loop (br_if 0 (nop) (i32.const 0)))
-    (loop (br_if 0 (nop) (i32.const 1)))
-    (loop (br_if 0 (call $dummy) (i32.const 0)))
-    (loop (br_if 0 (call $dummy) (i32.const 1)))
-    (loop (br_table 0 (nop) (i32.const 3)))
-    (loop (br_table 0 1 1 (nop) (i32.const 1)))
-  )
-  (func "drop-cont-value"
-    (loop (br 0 (i32.const 8)))
-    (loop (br_if 0 (i32.const 11) (i32.const 0)))
-    (loop (br_if 0 (i32.const 10) (i32.const 1)))
-    (loop (br_table 0 (i32.const 9) (i32.const 5)))
-    (loop (br_table 0 0 1 (i32.const 8) (i32.const 1)))
-  )
-  (func "drop-break-value-heterogeneous"
-    (loop (br 1 (i32.const 8)) (br 1 (f64.const 8)) (br 1 (f32.const 8)))
-    (loop (br 1 (i32.const 8)) (br 1) (br 1 (f64.const 8)))
-    (loop (br 1 (i32.const 8)) (br 1) (br 1 (f32.const 8)) (i64.const 3))
-    (loop (br 1) (br 1 (i32.const 8)) (br 1 (f64.const 8)))
-    (loop (br 1) (br 1 (i32.const 8)) (br 1 (f32.const 8)) (i64.const 3))
-    (loop (loop (br 1) (br 3 (i32.const 8))) (br 1 (f32.const 8)) (block (br 2 (f64.const 7))) (i64.const 3))
-  )
-  (func "drop-cont-value-heterogeneous"
-    (loop (br 0 (i32.const 8)) (br 0 (f64.const 8)) (br 1 (f32.const 8)))
-    (loop (br 0 (i32.const 8)) (br 0) (br 0 (f64.const 8)))
-    (loop (br 0 (i32.const 8)) (br 0) (br 0 (f32.const 8)) (i64.const 3))
-    (loop (br 0) (br 0 (i32.const 8)) (br 0 (f64.const 8)))
-    (loop (br 0) (br 0 (i32.const 8)) (br 0 (f32.const 8)) (i64.const 3))
-    (loop (loop (br 1) (br 2 (i32.const 8))) (br 0 (f32.const 8)) (block (br 1 (f64.const 7))) (i64.const 3))
-  )
-
   (func "effects" $fx (result i32)
     (local i32)
     (loop
@@ -218,12 +161,6 @@
 (assert_return (invoke "break-value") (i32.const 18))
 (assert_return (invoke "break-repeated") (i32.const 18))
 (assert_return (invoke "break-inner") (i32.const 0x1f))
-
-(assert_return (invoke "drop-mid") (i32.const 8))
-(assert_return (invoke "drop-last"))
-(assert_return (invoke "drop-break-void"))
-(assert_return (invoke "drop-break-value"))
-(assert_return (invoke "drop-break-value-heterogeneous"))
 
 (assert_return (invoke "effects") (i32.const 1))
 
@@ -301,14 +238,51 @@
 )
 
 (assert_invalid
-  (module (func $type-break-last-void-vs-num (result i32)
+  (module (func $type-break-last-void-vs-empty
+    (loop (br 1 (nop)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-break-last-num-vs-empty
+    (loop (br 1 (i32.const 0)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-break-last-empty-vs-num (result i32)
     (loop (br 1))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-break-last-void-vs-num (result i32)
+    (loop (br 1 (nop)))
   ))
   "type mismatch"
 )
+
+(assert_invalid
+  (module (func $type-break-void-vs-empty
+    (loop (br 1 (nop)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-break-num-vs-empty
+    (loop (br 1 (i32.const 0)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-break-empty-vs-num (result i32)
+    (loop (br 1) (i32.const 1))
+  ))
+  "arity mismatch"
+)
 (assert_invalid
   (module (func $type-break-void-vs-num (result i32)
-    (loop (br 1) (i32.const 1))
+    (loop (br 1 (nop)) (i32.const 1))
   ))
   "type mismatch"
 )
@@ -332,8 +306,26 @@
 )
 
 (assert_invalid
-  (module (func $type-break-nested-void-vs-num (result i32)
+  (module (func $type-break-nested-void-vs-empty
+    (loop (loop (br 3 (nop))) (br 1))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-break-nested-num-vs-empty
+    (loop (loop (br 3 (i32.const 1))) (br 1))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-break-nested-empty-vs-num (result i32)
     (loop (loop (br 3)) (br 1 (i32.const 1)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-break-nested-void-vs-num (result i32)
+    (loop (loop (br 3 (nop))) (br 1 (i32.const 1)))
   ))
   "type mismatch"
 )
@@ -343,9 +335,16 @@
   ))
   "type mismatch"
 )
+
+(assert_invalid
+  (module (func $type-break-operand-empty-vs-num (result i32)
+    (i32.ctz (loop (br 1)))
+  ))
+  "arity mismatch"
+)
 (assert_invalid
   (module (func $type-break-operand-void-vs-num (result i32)
-    (i32.ctz (loop (br 1)))
+    (i32.ctz (loop (br 1 (nop))))
   ))
   "type mismatch"
 )
@@ -356,3 +355,41 @@
   "type mismatch"
 )
 
+(assert_invalid
+  (module (func $type-cont-last-void-vs-empty (result i32)
+    (loop (br 0 (nop)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-cont-last-num-vs-empty (result i32)
+    (loop (br 0 (i32.const 0)))
+  ))
+  "arity mismatch"
+)
+
+(assert_invalid
+  (module (func $type-cont-void-vs-empty (result i32)
+    (loop (br 0 (nop)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-break-num-vs-empty (result i32)
+    (loop (br 0 (i32.const 0)))
+  ))
+  "arity mismatch"
+)
+
+(assert_invalid
+  (module (func $type-cont-nested-void-vs-empty
+    (loop (loop (br 2 (nop))) (br 1))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-cont-nested-num-vs-empty
+    (loop (loop (br 2 (i32.const 1))) (br 1))
+  ))
+  "arity mismatch"
+)

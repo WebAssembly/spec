@@ -151,13 +151,11 @@
                   (block $1
                     (br_table $0 $1 $2 $3 $default (get_local 0))
                   ) ;; 1
-                  (i32.const 1)
                 ) ;; 2
                 (br $exit (i32.const 2))
               ) ;; 3
               (br $ret (i32.const 3))
             ) ;; default
-            (i32.const 4)
           ) ;; 0
           (i32.const 5)
         )
@@ -174,7 +172,6 @@
         ) ;; 0
         (return (i32.const 0))
       ) ;; 1
-      (i32.const 1)
     ) ;; default
     (i32.const 2)
   )
@@ -190,13 +187,13 @@
         (set_local $i (i32.or (get_local $i) (i32.const 0x2)))
       )
       (br_if $outer
-        (set_local $i (i32.or (get_local $i) (i32.const 0x4))) (i32.const 0)
+        (block (set_local $i (i32.or (get_local $i) (i32.const 0x4))) (get_local $i)) (i32.const 0)
       )
       (set_local $i (i32.or (get_local $i) (i32.const 0x8)))
       (br_if $outer
-        (set_local $i (i32.or (get_local $i) (i32.const 0x10))) (i32.const 1)
+        (block (set_local $i (i32.or (get_local $i) (i32.const 0x10))) (get_local $i)) (i32.const 1)
       )
-      (set_local $i (i32.or (get_local $i) (i32.const 0x20)))
+      (set_local $i (i32.or (get_local $i) (i32.const 0x20))) (get_local $i)
     )
   )
 
@@ -215,25 +212,26 @@
 
   (func $br_if3 (result i32)
     (local $i1 i32)
-    (i32.add
-      (block $l0
-        (br_if $l0 (set_local $i1 (i32.const 1)) (set_local $i1 (i32.const 2)))
+    (drop
+      (i32.add
+        (block $l0
+          (br_if $l0
+            (block (set_local $i1 (i32.const 1)) (get_local $i1))
+            (block (set_local $i1 (i32.const 2)) (get_local $i1))
+          )
+          (i32.const 0)
+        )
         (i32.const 0)
       )
-      (i32.const 0)
     )
     (get_local $i1)
-  )
-
-  (func $br_if4
-    (block $l0 (br_if $l0 (nop) (i32.const 1)))
   )
 
   (func $br (result i32)
     (block $l0
       (if (i32.const 1)
         (br $l0 (block $l1 (br $l1 (i32.const 1))))
-        (block (block $l1 (br $l1 (i32.const 1))) (nop))
+        (block (drop (block $l1 (br $l1 (i32.const 1)))))
       )
       (i32.const 1)
     )
@@ -249,10 +247,11 @@
 
   (func $redefinition (result i32)
     (block $l1
-      (i32.add (block $l1
-                 (i32.const 2))
-               (block $l1
-                 (br $l1 (i32.const 3)))))
+      (i32.add
+        (block $l1 (i32.const 2))
+        (block $l1 (br $l1 (i32.const 3)))
+      )
+    )
   )
 
   (export "block" $block)
@@ -269,7 +268,6 @@
   (export "br_if1" $br_if1)
   (export "br_if2" $br_if2)
   (export "br_if3" $br_if3)
-  (export "br_if4" $br_if4)
   (export "br" $br)
   (export "misc1" $misc1)
   (export "misc2" $misc2)
@@ -297,7 +295,6 @@
 (assert_return (invoke "br_if1") (i32.const 1))
 (assert_return (invoke "br_if2") (i32.const 1))
 (assert_return (invoke "br_if3") (i32.const 2))
-(assert_return (invoke "br_if4"))
 (assert_return (invoke "br") (i32.const 1))
 (assert_return (invoke "misc1") (i32.const 1))
 (assert_return (invoke "misc2") (i32.const 1))
@@ -317,7 +314,7 @@
 )
 (assert_invalid
   (module (func (block $l (f32.neg (br_if $l (f32.const 0) (i32.const 1))))))
-  "type mismatch"
+  "arity mismatch"
 )
 (assert_invalid
   (module

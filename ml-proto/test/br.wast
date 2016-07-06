@@ -1,10 +1,13 @@
 ;; Test `br` operator
 
 (module
-  (func "type-i32" (block (i32.ctz (br 0))))
-  (func "type-i64" (block (i64.ctz (br 0))))
-  (func "type-f32" (block (f32.neg (br 0))))
-  (func "type-f64" (block (f64.neg (br 0))))
+  ;; Auxiliary definition
+  (func $dummy)
+
+  (func "type-i32" (block (drop (i32.ctz (br 0)))))
+  (func "type-i64" (block (drop (i64.ctz (br 0)))))
+  (func "type-f32" (block (drop (f32.neg (br 0)))))
+  (func "type-f64" (block (drop (f64.neg (br 0)))))
 
   (func "type-i32-value" (result i32) (block (i32.ctz (br 0 (i32.const 1)))))
   (func "type-i64-value" (result i64) (block (i64.ctz (br 0 (i64.const 2)))))
@@ -12,26 +15,26 @@
   (func "type-f64-value" (result f64) (block (f64.neg (br 0 (f64.const 4)))))
 
   (func "as-block-first"
-    (block (br 0) (i32.const 2))
+    (block (br 0) (call $dummy))
   )
   (func "as-block-mid"
-    (block (i32.const 1) (br 0) (i32.const 2))
+    (block (call $dummy) (br 0) (call $dummy))
   )
   (func "as-block-last"
-    (block (nop) (i32.const 1) (br 0))
+    (block (nop) (call $dummy) (br 0))
   )
   (func "as-block-value" (result i32)
-    (block (nop) (i32.const 1) (br 0 (i32.const 2)))
+    (block (nop) (call $dummy) (br 0 (i32.const 2)))
   )
 
   (func "as-loop-first" (result i32)
     (loop (br 1 (i32.const 3)) (i32.const 2))
   )
   (func "as-loop-mid" (result i32)
-    (loop (i32.const 1) (br 1 (i32.const 4)) (i32.const 2))
+    (loop (call $dummy) (br 1 (i32.const 4)) (i32.const 2))
   )
   (func "as-loop-last" (result i32)
-    (loop (nop) (i32.const 1) (br 1 (i32.const 5)))
+    (loop (nop) (call $dummy) (br 1 (i32.const 5)))
   )
 
   (func "as-br-value" (result i32)
@@ -107,16 +110,36 @@
   (type $sig (func (param i32 i32 i32) (result i32)))
   (table $f)
   (func "as-call_indirect-func" (result i32)
-    (block (call_indirect $sig (br 0 (i32.const 20)) (i32.const 1) (i32.const 2) (i32.const 3)))
+    (block
+      (call_indirect $sig
+        (br 0 (i32.const 20))
+        (i32.const 1) (i32.const 2) (i32.const 3)
+      )
+    )
   )
   (func "as-call_indirect-first" (result i32)
-    (block (call_indirect $sig (i32.const 0) (br 0 (i32.const 21)) (i32.const 2) (i32.const 3)))
+    (block
+      (call_indirect $sig
+        (i32.const 0)
+        (br 0 (i32.const 21)) (i32.const 2) (i32.const 3)
+      )
+    )
   )
   (func "as-call_indirect-mid" (result i32)
-    (block (call_indirect $sig (i32.const 0) (i32.const 1) (br 0 (i32.const 22)) (i32.const 3)))
+    (block
+      (call_indirect $sig
+        (i32.const 0)
+        (i32.const 1) (br 0 (i32.const 22)) (i32.const 3)
+      )
+    )
   )
   (func "as-call_indirect-last" (result i32)
-    (block (call_indirect $sig (i32.const 0) (i32.const 1) (i32.const 2) (br 0 (i32.const 23))))
+    (block
+      (call_indirect $sig
+        (i32.const 0)
+        (i32.const 1) (i32.const 2) (br 0 (i32.const 23))
+      )
+    )
   )
 
   (func "as-set_local-value" (result i32) (local f32)
@@ -179,7 +202,7 @@
     (i32.add
       (i32.const 1)
       (block
-        (i32.const 2)
+        (call $dummy)
         (i32.add (i32.const 4) (br 0 (i32.const 8)))
       )
     )
@@ -189,10 +212,12 @@
     (i32.add
       (i32.const 1)
       (block
-        (i32.const 2)
-        (block
-          (i32.const 4)
-          (br 0 (br 1 (i32.const 8)))
+        (drop (i32.const 2))
+        (drop
+          (block
+            (drop (i32.const 4))
+            (br 0 (br 1 (i32.const 8)))
+          )
         )
         (i32.const 16)
       )
@@ -203,10 +228,13 @@
     (i32.add
       (i32.const 1)
       (block
-        (i32.const 2)
-        (block
-          (i32.const 4)
-          (br_if 0 (br 1 (i32.const 8)) (i32.const 1))
+        (drop (i32.const 2))
+        (drop
+          (block
+            (drop (i32.const 4))
+            (br_if 0 (br 1 (i32.const 8)) (i32.const 1))
+            (i32.const 32)
+          )
         )
         (i32.const 16)
       )
@@ -217,7 +245,7 @@
     (i32.add
       (i32.const 1)
       (block
-        (i32.const 2)
+        (drop (i32.const 2))
         (br_if 0 (i32.const 4) (br 0 (i32.const 8)))
         (i32.const 16)
       )
@@ -228,10 +256,12 @@
     (i32.add
       (i32.const 1)
       (block
-        (i32.const 2)
-        (block
-          (i32.const 4)
-          (br_table 0 (br 1 (i32.const 8)) (i32.const 1))
+        (drop (i32.const 2))
+        (drop
+          (block
+            (drop (i32.const 4))
+            (br_table 0 (br 1 (i32.const 8)) (i32.const 1))
+          )
         )
         (i32.const 16)
       )
@@ -242,7 +272,7 @@
     (i32.add
       (i32.const 1)
       (block
-        (i32.const 2)
+        (drop (i32.const 2))
         (br_table 0 (i32.const 4) (br 0 (i32.const 8)))
         (i32.const 16)
       )
@@ -338,8 +368,33 @@
 (assert_return (invoke "nested-br_table-value-index") (i32.const 9))
 
 (assert_invalid
-  (module (func $type-arg-void-vs-num (result i32)
+  (module (func $type-arg-empty-vs-num (result i32)
     (block (br 0) (i32.const 1))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-arg-void-vs-empty
+    (block (br 0 (nop)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-arg-num-vs-empty
+    (block (br 0 (i32.const 0)))
+  ))
+  "arity mismatch"
+)
+(assert_invalid
+  (module (func $type-arg-poly-vs-empty
+    (block (br 0 (unreachable)))
+  ))
+  "arity mismatch"
+)
+
+(assert_invalid
+  (module (func $type-arg-void-vs-num (result i32)
+    (block (br 0 (nop)) (i32.const 1))
   ))
   "type mismatch"
 )
@@ -362,3 +417,26 @@
   (module (func $large-label (br 0x100000001)))
   "unknown label"
 )
+
+;; Test that the value operand of br matches the result type of the block
+;; it branches to, even if the result of the block is dropped.
+(assert_invalid
+  (module
+    (func $bar (param $x i32) (param $y f32)
+      (drop
+        (block $green
+          (br $green (get_local $x))
+          (get_local $y)))))
+  "type mismatch")
+
+;; Test that the value operand of br matches the result type of other
+;; branches to the same block, even if the result of the block is dropped.
+(assert_invalid
+  (module
+    (func $bar (param $x i32) (param $y f32)
+      (drop
+        (block $green
+          (br $green (get_local $x))
+          (br $green (get_local $y))
+          (get_local $x)))))
+  "type mismatch")

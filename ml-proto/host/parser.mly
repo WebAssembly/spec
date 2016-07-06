@@ -125,9 +125,9 @@ let implicit_decl c t at =
 %}
 
 %token NAT INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
+%token NOP DROP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
-%token GET_LOCAL SET_LOCAL LOAD STORE OFFSET ALIGN
+%token GET_LOCAL SET_LOCAL TEE_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL
@@ -231,6 +231,7 @@ expr :
 expr1 :
   | NOP { fun c -> Nop }
   | UNREACHABLE { fun c -> Unreachable }
+  | DROP expr { fun c -> Drop ($2 c) }
   | BLOCK labeling expr_list { fun c -> let c' = $2 c in Block ($3 c') }
   | LOOP labeling expr_list
     { fun c -> let c' = anon_label c in let c'' = $2 c' in Loop ($3 c'') }
@@ -260,6 +261,7 @@ expr1 :
     { fun c -> Call_indirect ($2 c type_, $3 c, $4 c) }
   | GET_LOCAL var { fun c -> Get_local ($2 c local) }
   | SET_LOCAL var expr { fun c -> Set_local ($2 c local, $3 c) }
+  | TEE_LOCAL var expr { fun c -> Tee_local ($2 c local, $3 c) }
   | LOAD offset align expr { fun c -> $1 ($2, $3, $4 c) }
   | STORE offset align expr expr { fun c -> $1 ($2, $3, $4 c, $5 c) }
   | CONST literal { fun c -> fst (literal $1 $2) }
