@@ -308,8 +308,8 @@ data to be loaded into linear memory as part of
  - For each element of the array, the sum of the start offset and the length of
    the string is required to be less than the initial size declared in the
    [Memory Section](#memory-section).
- - The start offset of each element of the array is required to be greater
-   than the index of any byte initialized by elements that precede it.
+ - The start offset of each element of the array is required to be greater than
+   the index of any byte initialized by elements that precede it.
 
 #### Global Section
 
@@ -408,9 +408,9 @@ instruction in the sequence is required to be an [`end`](#end).
 For each instruction in the body, in sequence order:
  - For each construct in the instruction's signature's operands in reverse
    order:
-    - If the element is a [type], a type is popped from the type stack and
+    - If the construct is a [type], a type is popped from the type stack and
       required to be the same.
-    - If the element is a list of type parameters, and the parameters are not
+    - If the construct is a list of type parameters, and the parameters are not
       yet bound, a type for each type parameter in the list in reverse order is
       popped from the type stack and bound to it.
     - Otherwise, a type for each type in the list in reverse order is popped
@@ -418,8 +418,8 @@ For each instruction in the body, in sequence order:
    The popped types in reverse (again) order form the *operand sequence*.
  - Unless the instruction is a [control-flow barrier][Q], then for each
    construct in the instruction's signature's returns:
-    - If the element is a [type], a type is pushed onto the type stack.
-    - If the element is a list of type parameters, they are required to be
+    - If the construct is a [type], a type is pushed onto the type stack.
+    - If the construct is a list of type parameters, they are required to be
       bound, and the type bound to each type parameter is pushed onto the type
       stack.
  - If the instruction has a **Validation** clause, its requirements are
@@ -443,7 +443,7 @@ type stack outside a region cannot be popped from within the region.
 > There are no implicit type conversions in WebAssembly.
 
 TODO: Will the `end` be made explicit? Monitor
-https://github.com/WebAssembly/design/pull/666.
+https://github.com/WebAssembly/design/pull/666
 
 #### Type-Sequence Merge
 
@@ -494,8 +494,8 @@ support creation of the array.
 #### Call Stack Resources
 
 Call stack resources are an abstract quantity, with discrete units, of which a
-[nondeterministic] amount is allocated during instantiation, belonging to
-an instance.
+[nondeterministic] amount is allocated during instantiation, belonging to an
+instance.
 
 > This is used by [call instructions][L].
 
@@ -546,7 +546,7 @@ bit-pattern values.
 
 The instruction at the current position is remembered, and the current position
 is incremented to point to the position following it. Then the remembered
-instruction is executed as follows.
+instruction is executed as follows:
 
 For each operand [type] in the instruction's signature in reverse order, a value
 is popped from the value stack and provided as the corresponding operand value.
@@ -761,7 +761,7 @@ For a store access, the value to store is written to the [accessed bytes], in
  - The module is required to contain a [Memory Section](#memory-section).
 
 TODO: Will offsets be encoded as signed? Monitor
-https://github.com/WebAssembly/design/issues/584.
+https://github.com/WebAssembly/design/issues/584
 
 [power of 2]: https://en.wikipedia.org/wiki/Power_of_two
 
@@ -785,7 +785,7 @@ is resized down to the entry's limit value.
 
 Then, if the entry's [label] is bound, the current position is set to the bound
 position. Otherwise, the position to bind the label to is found by scanning
-forward through the instructions, executing just [`block`](#block),
+forward through the instructions, as if executing just [`block`](#block),
 [`loop`](#loop), and [`end`](#end) instructions, until the label is bound. Then
 the current position is set to that position.
 
@@ -901,7 +901,7 @@ by one of the following rules, selected [nondeterministically]:
    remaining bits.
 
 TODO: How does NaN propagation work? Monitor
-https://github.com/WebAssembly/design/pull/713.
+https://github.com/WebAssembly/design/pull/713
 
 Implementations are permitted to further implement the IEEE 754-2008 section
 "Operations with NaNs" recommendation that operations propagate NaN bits from
@@ -988,11 +988,14 @@ The `loop` instruction binds a [label] to the current position and pushes it
 onto the control-flow stack.
 
 **Validation:**
- - An entry is pushed onto the control-flow stack containing no type sequence,
-   and a limit value of the current length of the type stack.
+ - An entry is pushed onto the control-flow stack containing an empty type
+   sequence, and a limit value of the current length of the type stack.
 
 > The `loop` instruction does not perform a loop by itself. It merely introduces
-label that may be used by a branch to form an actual loop.
+a label that may be used by a branch to form an actual loop.
+
+> Since `loop`'s control-flow stack entry starts with an empty type sequence,
+branches to the top of the loop must not have any result values.
 
 > Each `loop` needs a corresponding [`end`](#end) to pop its label from the
 stack.
@@ -1017,9 +1020,6 @@ entry `$depth` from the top. It returns the values of its operands.
  - The operand sequence is [merged] into the control-flow stack entry `$depth`
    from the top.
 
-TODO: If the control-flow stack entry `$depth` from the top is for a `loop` we
-can't forward a value to it. Same for `br_if` and `br_table`.
-
 TODO: This is currently anticipating a proposal to make `br`, `br_table`,
 `return`, and `unreachable` return "void" rather than "any".
 
@@ -1041,7 +1041,8 @@ does nothing. It returns the values of its operands, except `$condition`.
 > This instruction's `$arity` has a different constraint than others; this is
 intentional and possibly temporary.
 
-TODO: Monitor https://github.com/WebAssembly/design/pull/709.
+TODO: Will `br_if`'s `$arity` be changed? Monitor
+https://github.com/WebAssembly/design/pull/709
 
 #### Table Branch
 
@@ -1082,7 +1083,7 @@ The `if` instruction pushes an unbound [label] onto the control-flow stack. If
    and a limit value of the current length of the type stack.
 
 TODO: Do `if`/`else` have labels? Monitor
-https://github.com/WebAssembly/design/pull/710.
+https://github.com/WebAssembly/design/pull/710
 
 > Each `if` needs either a corresponding [`else`](#else) or [`end`](#end).
 
@@ -1102,8 +1103,8 @@ label. It returns the values of its operands.
    from the top.
  - An entry is popped off the control-flow stack.
  - A new entry is pushed onto the control-flow stack containing the operand
-   sequence as its type sequence, and a limit value of the current length of
-   the type stack.
+   sequence as its type sequence, and a limit value of the current length of the
+   type stack.
 
 > Each `else` needs a corresponding [`end`](#end).
 
@@ -1165,7 +1166,6 @@ be executed except in the case of a bug in the application.
 0. [Call](#call)
 0. [Indirect Call](#indirect-call)
 
-
 #### Nop
 
 | Name        | Signature                   | Families | Opcode
@@ -1197,6 +1197,9 @@ discard unneeded values from the value stack.
 The `const` instruction returns the value of its immediate.
 
 > Floating-point constants can be created with arbitrary bit-patterns.
+
+TODO: This anticipates sanitizing `f32.const`'s opcode. Monitor
+https://github.com/WebAssembly/design/pull/696
 
 #### Get Local
 
@@ -1257,7 +1260,7 @@ to the value given in the operand.
 
 | Name        | Signature                                | Families | Opcode
 | ----        | ---------                                | -------- | ------
-| `select`    | `(T[1], T[1], $condition: i32) : (T[1])` |          | 0x05
+| `select`    | `(T[1], T[1], $condition: i32) : (T[1])` |          | 0x16
 
 The `select` instruction returns its first operand if `$condition` is [true], or
 its second operand otherwise.
@@ -1265,11 +1268,14 @@ its second operand otherwise.
 > This instruction differs from the conditional or ternary operator, eg.
 `x?y:z`, in some languages, in that it's not short-circuiting.
 
+TODO: This anticipates sanitizing `select`'s opcode. Monitor
+https://github.com/WebAssembly/design/pull/695
+
 #### Call
 
 | Name        | Signature                                                | Families | Opcode
 | ----        | ---------                                                | -------- | ------
-| `call`      | `<$arity: i32, $callee: i32> (T[$args]) : (T[$returns])` | [L]      | 0x16
+| `call`      | `<$arity: i32, $callee: i32> (T[$args]) : (T[$returns])` | [L]      | 0x17
 
 The `call` instruction performs a [call](#calling) to the function with index
 `$callee`.
@@ -1281,11 +1287,14 @@ Validation:
 TODO: Update index space, per
 https://github.com/WebAssembly/design/pull/682
 
+TODO: This anticipates sanitizing `select`'s opcode. Monitor
+https://github.com/WebAssembly/design/pull/695
+
 #### Indirect Call
 
 | Name            | Signature                                                                 | Families | Opcode
 | ----            | ---------                                                                 | -------- | ------
-| `call_indirect` | `<$arity: i32, $signature: i32> ($callee: i32, T[$args]) : (T[$returns])` | [L]      | 0x17
+| `call_indirect` | `<$arity: i32, $signature: i32> ($callee: i32, T[$args]) : (T[$returns])` | [L]      | 0x18
 
 The `call_indirect` instruction performs a [call](#calling) to the function with
 index `$callee`.
@@ -1299,10 +1308,12 @@ Validation:
 
 > The dynamic caller/callee signature match is nominal rather than structural.
 
-TODO: Update signature matching and index space, per
-https://github.com/WebAssembly/design/pull/682
+TODO: Update signature matching and index space, comment that indices can
+effectively be used as function pointers, and change signature matching to
+structural, per https://github.com/WebAssembly/design/pull/682
 
-TODO: Comment that indices can effectively be used as function pointers.
+TODO: This anticipates sanitizing `select`'s opcode. Monitor
+https://github.com/WebAssembly/design/pull/695
 
 ### Integer Arithmetic Instructions
 
@@ -1789,8 +1800,8 @@ up, and it differs from [`round` in C] which rounds ties away from zero.
 
 The `abs` instruction performs the IEEE 754-2008 `abs` operation.
 
-> This is a bitwise instruction; it just sets the sign bit to zero and preserves
-all other bits, even when the operand is a NaN or a zero.
+> This is a bitwise instruction; it sets the sign bit to zero and preserves all
+other bits, even when the operand is a NaN or a zero.
 
 > This differs from comparing whether the operand value is less than zero and
 negating it, because comparisons treat negative zero as equal to zero, and NaN
@@ -1805,8 +1816,8 @@ values as not less than zero.
 
 The `neg` instruction performs the IEEE 754-2008 `negate` operation.
 
-> This is a bitwise instruction; it just inverts the sign bit and preserves all
-other bits, even when the operand is a NaN or a zero.
+> This is a bitwise instruction; it inverts the sign bit and preserves all other
+bits, even when the operand is a NaN or a zero.
 
 > This differs from subtracting the operand value from negative zero or
 multiplying it by negative one, because subtraction and multiplication follow
@@ -1822,7 +1833,7 @@ values.
 
 The `copysign` instruction performs the IEEE 754-2008 `copySign` operation.
 
-> This is a bitwise instruction; it just takes the sign bit from the second
+> This is a bitwise instruction; it combines the sign bit from the second
 operand with all bits other than the sign bit from the first operand, even if
 either operand is a NaN or a zero.
 
