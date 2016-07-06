@@ -394,9 +394,9 @@ The following invariants are required to be preserved:
    to be non-empty.
  - Whenever an element of either stack is to be accessed by index, the index is
    required to be within the bounds of that stack.
- - When a [type] is to be popped from the type stack, the length of the type
-   stack is required to be greater than the control-flow stack top's limit
-   value.
+ - Whenever the control-flow stack is non-empty, as it is everywhere except
+   after the `end` at the end of the function, the type stack must be longer
+   than the control-flow stack top's limit value.
 
 The type stack begins empty. The control-flow stack begins with one entry, with
 the [type] sequence consisting of the return types of the function, and with the
