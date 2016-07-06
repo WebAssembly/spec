@@ -306,3 +306,25 @@
   "unknown label"
 )
 
+;; Test that the value operand of br_if matches the result type of the block
+;; it branches to, even if the result of the block is dropped.
+(assert_invalid
+  (module
+    (func $bar (param $x i32) (param $y f32) (param $cond i32)
+      (drop
+        (block $green
+          (br_if $green (get_local $x) (get_local $cond))
+          (get_local $y)))))
+  "type mismatch")
+
+;; Test that the value operand of br_if matches the result type of other
+;; branches to the same block, even if the result of the block is dropped.
+(assert_invalid
+  (module
+    (func $bar (param $x i32) (param $y f32) (param $cond i32)
+      (drop
+        (block $green
+          (br_if $green (get_local $x) (get_local $cond))
+          (br_if $green (get_local $y) (get_local $cond))
+          (get_local $x)))))
+  "type mismatch")
