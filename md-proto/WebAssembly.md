@@ -371,7 +371,7 @@ The major requirements for function validation are:
  - The sequence of values on the value stack at execution of each instruction is
    required be the same for all control-flow paths to that instruction.
  - The types of the operands passed to each instruction are required to conform
-   to the instruction's signature's argument types.
+   to the instruction's signature's operand types.
  - At each instruction, all values that will be popped from the value stack at
    that instruction are required to have been pushed within the same region,
    including regions nested inside it.
@@ -452,6 +452,7 @@ To merge a new type sequence into a control flow stack entry:
    sequence.
  - Otherwise, the entry's type sequence is required to be the same as the new
    sequence.
+
 
 Execution
 --------------------------------------------------------------------------------
@@ -755,12 +756,14 @@ For a store access, the value to store is written to the [accessed bytes], in
 
 #### Linear Memory Access Validation
 
- - `$align` is required to be a power of 2.
+ - `$align` is required to be a [power of 2].
  - `$align` is required to be at most the number of [accessed bytes].
  - The module is required to contain a [Memory Section](#memory-section).
 
 TODO: Will offsets be encoded as signed? Monitor
 https://github.com/WebAssembly/design/issues/584.
+
+[power of 2]: https://en.wikipedia.org/wiki/Power_of_two
 
 ### R: Linear Memory-Resize Instruction Family
 
@@ -1014,8 +1017,8 @@ entry `$depth` from the top. It returns the values of its operands.
  - The operand sequence is [merged] into the control-flow stack entry `$depth`
    from the top.
 
-TODO: If the control-flow stack entry `$depth` from the top is for a `loop`
-we can't forward a value to it. Same for `br_if` and `br_table`.
+TODO: If the control-flow stack entry `$depth` from the top is for a `loop` we
+can't forward a value to it. Same for `br_if` and `br_table`.
 
 TODO: This is currently anticipating a proposal to make `br`, `br_table`,
 `return`, and `unreachable` return "void" rather than "any".
@@ -1069,9 +1072,16 @@ with the other branch instructions.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `if`        | `(i32) : ()`                |          | 0x03
+| `if`        | `($condition: i32) : ()`    |          | 0x03
 
-TODO: Describe `if`. This is in part waiting on the resolution of
+The `if` instruction pushes an unbound [label] onto the control-flow stack. If
+`$condition` is [false], it then [branches](#branching) to this label.
+
+**Validation:**
+ - An entry is pushed onto the control-flow stack containing no type sequence,
+   and a limit value of the current length of the type stack.
+
+TODO: Do `if`/`else` have labels? Monitor
 https://github.com/WebAssembly/design/pull/710.
 
 > Each `if` needs either a corresponding [`else`](#else) or [`end`](#end).
@@ -1082,8 +1092,18 @@ https://github.com/WebAssembly/design/pull/710.
 | ----        | ---------                   | -------- | ------
 | `else`      | `(T[$any]) : (T[$any])`     |          | 0x04
 
-TODO: Describe `else`. This is in part waiting on the resolution of
-https://github.com/WebAssembly/design/pull/710.
+The `else` instruction binds the control-flow stack top's [label] to the current
+position, pops an entry from the control-flow stack, pushes a new unbound
+[label] onto the control-flow stack, and then [branches](#branching) to the new
+label. It returns the values of its operands.
+
+**Validation:**
+ - The operand sequence is [merged] into the control-flow stack entry `$depth`
+   from the top.
+ - An entry is popped off the control-flow stack.
+ - A new entry is pushed onto the control-flow stack containing the operand
+   sequence as its type sequence, and a limit value of the current length of
+   the type stack.
 
 > Each `else` needs a corresponding [`end`](#end).
 
@@ -1091,7 +1111,7 @@ https://github.com/WebAssembly/design/pull/710.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `end`       | `(T[$any]) : (T[$any])`     | [B]      | 0x0f
+| `end`       | `(T[$any]) : (T[$any])`     |          | 0x0f
 
 The `end` instruction pops an entry from the control-flow stack. If the entry's
 [label] is unbound, the label is bound to the current position. It returns the
@@ -1223,9 +1243,9 @@ The `get_global` instruction returns the value in the globals array at index
 
 #### Set Global
 
-| Name         | Signature                   | Families | Opcode
-| ----         | ---------                   | -------- | ------
-| `set_global` | `<$id: i32> (T) : ()`       |          | TODO
+| Name         | Signature                  | Families | Opcode
+| ----         | ---------                  | -------- | ------
+| `set_global` | `<$id: i32> (T) : ()`      |          | TODO
 
 The `set_global` instruction sets the value in the globals array at index `$id`
 to the value given in the operand.
