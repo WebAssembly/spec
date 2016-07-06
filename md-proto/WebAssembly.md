@@ -458,6 +458,9 @@ which consists of the following steps:
  - A finite quantity of [call-stack resources](#call-stack-resources) are
    allocated.
 
+TODO: Will validation of the entire module be required? Monitor
+https://github.com/WebAssembly/design/pull/719
+
 #### Linear Memory Instantiation
 
 An array of bytes with the length being the value of the
