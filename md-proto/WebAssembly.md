@@ -225,8 +225,8 @@ The Memory Section consists of:
 
 **Validation:**
  - If present, the maximum size is required to be at least the initial size.
- - If present, if the index of any byte in a linear memory with the maximum size
-   would be unrepresentable in an unsigned `iPTR`, validation fails.
+ - If present, the index of every byte in a linear memory with the maximum size
+   is required to be representable in an unsigned `iPTR`.
 
 TODO: Define `iPTR` in this context. Should Memory Sections have a wasm32 vs
 wasm64 flag?
@@ -254,9 +254,9 @@ An *export* consists of:
  - a *function [string]*, which is the name to export the indexed function as.
 
 **Validation:**
- - The function index of each array element is required to be within the bounds
-   of the [Code Section](#code-section) array.
- - If any two exports have the same function string, validation fails.
+ - The function index of each export is required to be within the bounds of the
+   [Code Section](#code-section) array.
+ - Each export's name is required to be unique among all the exports' names.
 
 TODO: Describe the semantics of exports: name resolution and calls.
 
@@ -373,7 +373,8 @@ The major requirements for function validation are:
  - The types of the operands passed to each instruction are required to conform
    to the instruction's signature's argument types.
  - At each instruction, all values that will be popped from the value stack at
-   that instruction are required to have been pushed within the same region.
+   that instruction are required to have been pushed within the same region,
+   including regions nested inside it.
 
 The requirements, plus the various minor requirements, can be validated in a
 single linear pass as follows:
@@ -401,17 +402,36 @@ The type stack begins empty. The control-flow stack begins with one entry, with
 the [type] sequence consisting of the return types of the function, and with the
 limit value being zero.
 
-If the function's instruction sequence is empty, or if the last instruction in
-the sequence isn't an [`end`](#end), validation fails.
+The function's instruction sequence is required to be non-empty, and the last
+instruction in the sequence is required to be an [`end`](#end).
 
-For each instruction in the body, in sequence, if the instruction has a
-**Validation** clause, it is validated according to that clause, otherwise
-[generic instruction validation](#generic-instruction-validation) is performed.
+For each instruction in the body, in sequence order:
+ - For each construct in the instruction's signature's operands in reverse
+   order:
+    - If the element is a [type], a type is popped from the type stack and
+      required to be the same.
+    - If the element is a list of type parameters, and the parameters are not
+      yet bound, a type for each type parameter in the list in reverse order is
+      popped from the type stack and bound to it.
+    - Otherwise, a type for each type in the list in reverse order is popped
+      from the type stack and required to be the same.
+   The popped types in reverse (again) order form the *operand sequence*.
+ - Unless the instruction is a [control-flow barrier][Q], then for each
+   construct in the instruction's signature's returns:
+    - If the element is a [type], a type is pushed onto the type stack.
+    - If the element is a list of type parameters, they are required to be
+      bound, and the type bound to each type parameter is pushed onto the type
+      stack.
+ - If the instruction has a **Validation** clause, its requirements are
+   required.
+ - If the instruction's signature has no return types, or it is a
+   [control-flow barrier][Q], the new length of the type stack is required to be
+   at most the control-flow stack top's limit value.
 
 Finally, for each type in the function's return list, a type is popped from the
 type stack and required be the same. The type stack and the control-flow stack
-are then both required to be empty. If no failures were detected anywhere in the
-function, function validation is successful.
+are then both required to be empty. If all requirements were met, function
+validation is successful.
 
 > The control-flow stack's limit values effectively mark region boundaries in
 the type stack. Regions are required to be nested, and each region's limit value
@@ -420,28 +440,18 @@ type stack outside a region cannot be popped from within the region.
 
 > The final [`end`](#end) instruction may be implicit in some representations.
 
+> There are no implicit type conversions in WebAssembly.
+
 TODO: Will the `end` be made explicit? Monitor
 https://github.com/WebAssembly/design/pull/666.
-
-#### Generic Instruction Validation
-
-For each operand [type] in the instruction's signature in reverse order, a
-[type] is popped from the type stack and required to match it. Each return type
-of the instruction's signature is then pushed onto the type stack.
-
-If the instruction's signature has no return types:
- - If the length of the type stack is greater than the control-flow stack top's
-   limit value, validation fails.
-
-> There are no implicit type conversions in WebAssembly.
 
 #### Type-Sequence Merge
 
 To merge a new type sequence into a control flow stack entry:
  - If the entry's optional type sequence is absent, it is set to be the new
    sequence.
- - Otherwise, if the entry's type sequence differs from the new sequence,
-   validation fails.
+ - Otherwise, the entry's type sequence is required to be the same as the new
+   sequence.
 
 Execution
 --------------------------------------------------------------------------------
@@ -458,8 +468,14 @@ which consists of the following steps:
  - A finite quantity of [call-stack resources](#call-stack-resources) are
    allocated.
 
+> The contents of the Module, including functions and their bodies, are outside
+any linear address space and not any accessible to applications. WebAssembly is
+therefore conceptually a [Harvard Architecture].
+
 TODO: Will validation of the entire module be required? Monitor
 https://github.com/WebAssembly/design/pull/719
+
+[Harvard Architecture]: https://en.wikipedia.org/wiki/Harvard_architecture
 
 #### Linear Memory Instantiation
 
@@ -641,8 +657,8 @@ Instruction Signatures
 Instruction signatures describe the explicit inputs and outputs to an
 instruction. They are described in either of the following forms:
 
- - `(` *operand types* `)` `:` `(` *return types* `)`
- - `<` *immediates* `>` `(` *operand types* `)` `:` `(` *return types* `)`
+ - `(` *operands* `)` `:` `(` *returns* `)`
+ - `<` *immediates* `>` `(` *operands* `)` `:` `(` *returns* `)`
 
 *Immediates*, if present, is a list of [typed] value names, representing values
 provided by the module itself as input to an instruction. *Argument types* is a
@@ -651,24 +667,24 @@ input to an instruction. *Return types* is a list of [types], representing
 values computed by an instruction that are provided back to the program
 execution.
 
+The following named values are defined:
+ - `$args` is defined in [call instructions][L] and indicates the length of the
+   callee signature parameter list.
+ - `$returns` is also defined in [call instructions][L] and indicates the length
+   of callee signature return list.
+ - `$any` during validation indicates the number of elements on the type stack
+   past the control-flow stack top's limit value, and during execution indicates
+   the number of values on the value stack.
+
 A few special constructs are used for special purposes:
  - `iPTR` is for use with a linear memory access, and signifies the integer type
    associated with addresses within the accessed linear memory space.
  - `TABLE` indicates a branch table, which is a sequence of immediate integer
    values for use in the [table branch](#table-branch) instruction.
- - `T` is used in type-generic instructions to denote a type parameter.
- - `T[$arity]` is used in type-generic instructions to denote a list of types
-   with length `$arity`.
- - `T[*]` is used in type-generic instructions to denote a list of types
-   with length determined by the number of values on the stack beyond the current
-   control-flow stack top's limit value.
- - `*args*` is used in [call instructions][L] and indicates a list of typed
-   value names, with length `$arity`, providing the values for the arguments in
-   the call.
- - `*returns*` is also used in [call instructions][L] and indicates a list of
-   types, describing the function's return types.
-
-TODO: Describe these in more detail.
+ - `T[x]` is used in type-generic instructions to denote a heterogeneous list
+   of type parameters, where `T` is the name of the list, and `x` is either one
+   of the above named values, an immediate operand, or a literal value, and
+   signifies the length.
 
 TODO: Explain the Opcode and Syntax fields of instruction descriptions.
 
@@ -689,6 +705,7 @@ WebAssembly instructions may belong to several families:
 0. [U: Unsigned Integer Instruction Family][U]
 0. [F: Floating-Point Instruction Family][F]
 0. [Z: Floating-Point Bitwise Instruction Family][Z]
+0. [Q: Control-Flow Barrier Instruction Family][Q]
 
 ### M: Memory-Access Instruction Family
 
@@ -740,9 +757,7 @@ For a store access, the value to store is written to the [accessed bytes], in
 
  - `$align` is required to be a power of 2.
  - `$align` is required to be at most the number of [accessed bytes].
- - If the module doesn't contain a [Memory Section](#memory-section), validation
-   fails.
- - [Generic validation](#generic-instruction-validation) is also performed.
+ - The module is required to contain a [Memory Section](#memory-section).
 
 TODO: Will offsets be encoded as signed? Monitor
 https://github.com/WebAssembly/design/issues/584.
@@ -756,9 +771,7 @@ resizing.
 
 #### Linear Memory-Resize Validation
 
- - If the module doesn't contain a [Memory Section](#memory-section), validation
-   fails.
- - [Generic validation](#generic-instruction-validation) is also performed.
+ - The module is required to contain a [Memory Section](#memory-section).
 
 ### B: Branch Instruction Family
 
@@ -784,7 +797,7 @@ that they don't literally need to scan in this manner.
 #### Calling
 
 The called function &mdash; the *callee* &mdash; is
-[executed](#function-execution), with the `*args*` operands, excluding
+[executed](#function-execution), with the `$args` operands, excluding
 `$callee` when present, passed to it as its incoming arguments. The return value
 of the call is defined by the execution.
 
@@ -807,17 +820,10 @@ and is not directly accessible to applications.
 
 #### Call Validation
 
-`$arity` is required to be identical to the length of the callee signature's
-parameter list.
+`$arity` is required to be equal to `$args`.
 
-If the sequence of the types of the `*args*` operands, excluding `$callee` when
-present, isn't identical to the sequence of types in parameter list of the
-callee signature, validation fails.
-
-If the sequence of the types of `*returns*` isn't identical to the sequence of
-types in the return list of the callee signature, validation fails.
-
-[Generic validation](#generic-instruction-validation) is also performed.
+> The `$arity` immediate operand has no effect other than the requirement that
+it be validated.
 
 ### C: Comparison Instruction Family
 
@@ -922,6 +928,11 @@ ways, including in how they operate on NaN and zero values.
 
 They correspond to the "Sign bit operations" in IEEE 754-2008.
 
+### Q: Control-Flow Barrier Instruction Family
+
+These instructions either trap or assign a new current position, such that
+execution does not proceed to the instruction that lexically follows them.
+
 
 Instructions
 --------------------------------------------------------------------------------
@@ -993,21 +1004,15 @@ https://github.com/WebAssembly/design/pull/710
 
 | Name        | Signature                                              | Families | Opcode
 | ----        | ---------                                              | -------- | ------
-| `br`        | `<$arity: i32, $depth: i32> (T[$arity]) : (T[$arity])` | [B]      | 0x06
+| `br`        | `<$arity: i32, $depth: i32> (T[$arity]) : (T[$arity])` | [B] [Q]  | 0x06
 
 The `br` instruction [branches](#branching) according to the control flow stack
 entry `$depth` from the top. It returns the values of its operands.
 
 **Validation:**
  - `$arity` is required to be at most 1.
- - A sequence of `$arity` types are popped from the type stack, and the sequence
-   is [merged] into the control-flow stack entry `$depth` from the top.
- - If the length of the type stack is greater than the control-flow stack top's
-   limit value, validation fails.
-
-> The return types are not pushed on the stack during validation, because
-control-flow does not "fall through" this instruction, so from the perspective
-of code immediately after it, it doesn't return anything.
+ - The operand sequence is [merged] into the control-flow stack entry `$depth`
+   from the top.
 
 TODO: If the control-flow stack entry `$depth` from the top is for a `loop`
 we can't forward a value to it. Same for `br_if` and `br_table`.
@@ -1026,12 +1031,12 @@ according to the control flow stack entry `$depth` from the top. Otherwise, it
 does nothing. It returns the values of its operands, except `$condition`.
 
 **Validation:**
- - A type is popped from the type stack and required to be `i32`.
  - `$arity` is required to be at most 0.
- - A sequence of `$arity` types are popped from the type stack, and the sequence
-   is [merged] into the control-flow stack entry `$depth` from the top.
- - If the length of the type stack is greater than the control-flow stack top's
-   limit value, validation fails.
+ - The sequence of the all but the last type in the operand sequence is [merged]
+   into the control-flow stack entry `$depth` from the top.
+
+> This instruction's `$arity` has a different constraint than others; this is
+intentional and possibly temporary.
 
 TODO: Monitor https://github.com/WebAssembly/design/pull/709.
 
@@ -1039,7 +1044,7 @@ TODO: Monitor https://github.com/WebAssembly/design/pull/709.
 
 | Name        | Signature                                                                    | Families | Opcode
 | ----        | ---------                                                                    | -------- | ------
-| `br_table`  | `<$arity: i32, TABLE, $default: i32> (T[$arity], $index: i32) : (T[$arity])` | [B]      | 0x08
+| `br_table`  | `<$arity: i32, TABLE, $default: i32> (T[$arity], $index: i32) : (T[$arity])` | [B] [Q]  | 0x08
 
 First, the `br_table` instruction selects a depth to use. If `$index` is within
 the bounds of the table, the depth is the value of the indexed table element.
@@ -1049,17 +1054,10 @@ Then, it [branches](#branching) according to the control-flow stack entry that
 depth from the top. It returns the values of its operands, except `$index`.
 
 **Validation:**
- - A type is popped from the type stack and required to be `i32`.
  - `$arity` is required to be at most 1.
- - A sequence of `$arity` types are popped from the type stack.
- - For each depth in the table and `$default`, the sequence is [merged] into the
-   control-flow stack entry `$depth` from the top.
- - If the length of the type stack is greater than the control-flow stack top's
-   limit value, validation fails.
-
-> The return types are not pushed on the stack during validation, because
-control-flow does not "fall through" this instruction, so from the perspective
-of code immediately after it, it doesn't return anything.
+ - For each depth in the table and `$default`, the sequence of all but the last
+   type in the operand sequence is [merged] into the control-flow stack entry
+   that depth from the top.
 
 > This instruction serves the role of what is sometimes called a ["jump table"]
 in other languages. "Branch" is used here instead to emphasize the commonality
@@ -1082,7 +1080,7 @@ https://github.com/WebAssembly/design/pull/710.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `else`      | `(T[*]) : (T[*])`           |          | 0x04
+| `else`      | `(T[$any]) : (T[$any])`     |          | 0x04
 
 TODO: Describe `else`. This is in part waiting on the resolution of
 https://github.com/WebAssembly/design/pull/710.
@@ -1093,40 +1091,31 @@ https://github.com/WebAssembly/design/pull/710.
 
 | Name        | Signature                   | Families | Opcode
 | ----        | ---------                   | -------- | ------
-| `end`       | `(T[*]) : (T[*])`           | [B]      | 0x0f
+| `end`       | `(T[$any]) : (T[$any])`     | [B]      | 0x0f
 
 The `end` instruction pops an entry from the control-flow stack. If the entry's
 [label] is unbound, the label is bound to the current position. It returns the
 values of its operands.
 
 **Validation:**
- - The sequence of types pushed on the type stack beyond the control-flow stack
-   top's limit value are popped from the type stack, and the sequence is
-   [merged] into the control-flow stack top entry.
- - The sequence is required to have length at most 1.
+ - `$any` is required to be at most 1.
+ - The operand sequence is [merged] into the control-flow stack top.
  - The control-flow stack top entry is popped.
- - If the type sequence was empty, and the length of the type stack is greater
-   than the (new) control-flow stack top's limit value, validation fails.
 
 #### Return
 
 | Name        | Signature                                 | Families | Opcode
 | ----        | ---------                                 | -------- | ------
-| `return`    | `<$arity: i32> (T[$arity]) : (T[$arity])` | [B]      | 0x09
+| `return`    | `<$arity: i32> (T[$arity]) : (T[$arity])` | [B] [Q]  | 0x09
 
 The `return` instruction [branches](#branching) according to the control-flow
 stack bottom. It returns the values of its operands.
 
 **Validation:**
  - `$arity` is required to be at most 1.
- - A sequence of `$arity` types are popped from the type stack, and the sequence
-   is [merged] into the control-flow stack bottom.
- - If the length of the type stack is greater than the control-flow stack top's
-   limit value, validation fails.
+ - The operand sequence is [merged] into the control-flow stack bottom.
 
-> The return types are not pushed on the stack during validation, because
-control-flow does not "fall through" this instruction, so from the perspective
-of code immediately after it, it doesn't return anything.
+> `return` is equivalent to a `br` to the outermost control region.
 
 > Implementations needn't literally perform a branch before performing the
 actual function return.
@@ -1135,13 +1124,9 @@ actual function return.
 
 | Name          | Signature                 | Families | Opcode
 | ----          | ---------                 | -------- | ------
-| `unreachable` | `() : ()`                 |          | 0x0a
+| `unreachable` | `() : ()`                 | [Q]      | 0x0a
 
 **Trap:** Unreachable, always.
-
-> The return types are not pushed on the stack during validation, because
-control-flow does not "fall through" this instruction, so from the perspective
-of code immediately after it, it doesn't return anything.
 
 > The `unreachable` instruction is meant to represent code that isn't meant to
 be executed except in the case of a bug in the application.
@@ -1223,7 +1208,7 @@ The `tee_local` instruction sets the value in the locals array at index `$id` to
 the value given in the operand. Its return value is the value of its operand.
 
 > This instruction's name is inspired by the ["tee" command] in other languages,
-since it forwards the value of its operand value to two places.
+since it forwards the value of its operand to two places.
 
 ["tee" command]: https://en.wikipedia.org/wiki/Tee_(command)
 
@@ -1242,18 +1227,17 @@ The `get_global` instruction returns the value in the globals array at index
 | ----         | ---------                   | -------- | ------
 | `set_global` | `<$id: i32> (T) : ()`       |          | TODO
 
-The `set_global` instruction sets the value in the globals array at index `$id` to
-the value given in the operand.
+The `set_global` instruction sets the value in the globals array at index `$id`
+to the value given in the operand.
 
 **Validation:**
- - If the indexed global is declared immutable, validation fails.
- - [Generic validation](#generic-instruction-validation) is also performed.
+ - The indexed global is required to be declared not immutable.
 
 #### Select
 
-| Name        | Signature                       | Families | Opcode
-| ----        | ---------                       | -------- | ------
-| `select`    | `(T, T, $condition: i32) : (T)` |          | 0x05
+| Name        | Signature                                | Families | Opcode
+| ----        | ---------                                | -------- | ------
+| `select`    | `(T[1], T[1], $condition: i32) : (T[1])` |          | 0x05
 
 The `select` instruction returns its first operand if `$condition` is [true], or
 its second operand otherwise.
@@ -1263,9 +1247,9 @@ its second operand otherwise.
 
 #### Call
 
-| Name        | Signature                                        | Families | Opcode
-| ----        | ---------                                        | -------- | ------
-| `call`      | `<$arity: i32, $callee: i32> *args* : *returns*` | [L]      | 0x16
+| Name        | Signature                                                | Families | Opcode
+| ----        | ---------                                                | -------- | ------
+| `call`      | `<$arity: i32, $callee: i32> (T[$args]) : (T[$returns])` | [L]      | 0x16
 
 The `call` instruction performs a [call](#calling) to the function with index
 `$callee`.
@@ -1279,9 +1263,9 @@ https://github.com/WebAssembly/design/pull/682
 
 #### Indirect Call
 
-| Name            | Signature                                                            | Families | Opcode
-| ----            | ---------                                                            | -------- | ------
-| `call_indirect` | `<$arity: i32, $signature: i32> ($callee: i32) + *args* : *returns*` | [L]      | 0x17
+| Name            | Signature                                                                 | Families | Opcode
+| ----            | ---------                                                                 | -------- | ------
+| `call_indirect` | `<$arity: i32, $signature: i32> ($callee: i32, T[$args]) : (T[$returns])` | [L]      | 0x17
 
 The `call_indirect` instruction performs a [call](#calling) to the function with
 index `$callee`.
@@ -1297,6 +1281,8 @@ Validation:
 
 TODO: Update signature matching and index space, per
 https://github.com/WebAssembly/design/pull/682
+
+TODO: Comment that indices can effectively be used as function pointers.
 
 ### Integer Arithmetic Instructions
 
@@ -2335,6 +2321,7 @@ memory space, as an unsigned value in units of [pages].
 [U]: #u-unsigned-integer-instruction-family
 [F]: #f-floating-point-instruction-family
 [Z]: #z-floating-point-bitwise-instruction-family
+[Q]: #q-control-flow-barrier-instruction-family
 [shifted]: https://en.wikipedia.org/wiki/Logical_shift
 [shift count]: #shift-count
 [two's complement sum]: https://en.wikipedia.org/wiki/Two%27s_complement#Addition
