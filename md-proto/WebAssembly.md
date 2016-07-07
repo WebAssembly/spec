@@ -22,10 +22,9 @@ optimization features.
 
 The unit of WebAssembly code is the *module*. Modules primarily consist of a
 collection of sections. There are sections describing a WebAssembly's
-interactions with other modules ([imports](#import-section) and
-[exports](#export-section)), sections declaring [data](#data-section) and other
-implements used by the module, and sections defining [*functions*]. For more
-information, see the [Module section](#module).
+interactions with other modules ([imports] and [exports]), sections declaring
+[data](#data-section) and other implements used by the module, and sections
+defining [*functions*]. For more information, see the [Module section].
 
 WebAssembly modules can be encoded either in [binary format] for size and
 decoding efficiency or in [text format] for readability, and can be translated
@@ -58,23 +57,34 @@ them to have a very compact encoding. For more information, see the
 WebAssembly has instructions for performing integer and floating-point
 arithmetic, directing control flow, loading and storing to linear memory (as a
 [load-store architecture]), calling functions, and more. For more information,
-see the [Instructions section](#instructions). The
-[Instruction Descriptions section](#instruction-descriptions) explains on how
-instructions are described here.
+see the [Instructions section]. The [Instruction Descriptions section] provides
+more information on how instructions are described.
 
-Implementations of WebAssembly [validation](#validation) and
-[execution](#execution) need not perform all the steps literally as described
-here; they need only behave ["as if"] they did so in all observable respects.
+Implementations of WebAssembly [validation] and [execution] need not perform all
+the steps literally as described here; they need only behave ["as if"] they did
+so in all observable respects.
 
 [ISA]: https://en.wikipedia.org/wiki/Instruction_set
+[imports]: #import-section
+[exports]: #export-section
 [*functions*]: https://en.wikipedia.org/wiki/Subroutine
+[Module section]: #module
 [*instantiated*]: #module-instantiation
 [load-store architecture]: https://en.wikipedia.org/wiki/Load/store_architecture
+[Instructions section]: #instructions
+[Instruction Descriptions section]: #instruction-descriptions
+[validation]: #validation
+[execution]: #execution
 ["as if"]: https://en.wikipedia.org/wiki/As-if_rule
 
 
 Basics
 --------------------------------------------------------------------------------
+
+0. [Bytes](#bytes)
+0. [Pages](#pages)
+0. [Types](#types)
+0. [Nondeterminism](#nondeterminism)
 
 ### Bytes
 
@@ -86,7 +96,7 @@ memory accesses.
 ### Pages
 
 [*Pages*] in WebAssembly are 64 [KiB], and are the units used in linear memory
-size declarations and resize operations.
+size declarations and size operations.
 
 [*Pages*]: https://en.wikipedia.org/wiki/Page_(computer_memory)
 
@@ -110,7 +120,7 @@ signed, a [two's complement] interpretation is used.
 complement signed integers aren't symmetric around zero.
 
 > When used as linear memory indices or function table indices, integer types
-are sometimes referred to as "pointers".
+may play the role of "pointers".
 
 ##### Booleans
 
@@ -147,6 +157,20 @@ are usually unimportant).
 [binary64]: https://en.wikipedia.org/wiki/Double-precision_floating-point_format
 [Numbers in ECMAScript]: https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type
 [NaN]: https://en.wikipedia.org/wiki/NaN
+
+### Nondeterminism
+
+When semantics are specified as *nondeterministic*, a WebAssembly implementation
+may perform any one of the specified alternatives.
+
+> All instances of nondeterminism in WebAssembly are explicitly described as
+such with a link to this section.
+
+> There is no "undefined behavior" in WebAssembly where the semantics become
+completely unspecified.
+
+> There is no requirement that a given implementation make the same choice every
+time, even within the same instance of a module.
 
 
 Module
@@ -258,6 +282,8 @@ An *import* consists of:
    of the [Type Section](#type-section) array.
 
 TODO: Describe the semantics of imports: module and function name resolution.
+Imports may be resolved to the exports of other modules or may be resolved in
+embedding-specific ways.
 
 TODO: Memory imports, global imports, table imports, per
 https://github.com/WebAssembly/design/pull/682
@@ -437,10 +463,10 @@ Binary Format
 --------------------------------------------------------------------------------
 
 TODO: Describe the binary format. The high-level ideas are:
- - A module starts with a magic cookie, consisting of the 4-byte-sequence
-   NUL, 'a', 's', 'm', followed by the [version](#module-contents) [index],
+ - A module starts with a *magic cookie*, consisting of the 4-byte-sequence
+   0x00, 0x61, 0x73, 0x6d, followed by the [version](#module-contents) [index],
    followed by the encodings of the sections.
- - Most module [indices] values are encoded with [LEB128].
+ - Most module [indices] values are typically encoded with [LEB128].
  - Module [arrays] values are encoded as the length [index] followed by the
    encodings of the elements.
  - Every [instruction](#instructions) is encoded as its Opcode value, followed
@@ -449,6 +475,10 @@ TODO: Describe the binary format. The high-level ideas are:
    several special cases.
 
 [LEB128]: https://en.wikipedia.org/wiki/LEB128
+
+> The magic cookie bytes begin with a NUL, indicating to tools that the ensuing
+contents are not generally "text", followed by the UTF-8 encoding of the string
+"asm".
 
 
 Text Format
@@ -469,8 +499,8 @@ Validation
 Validation of a module requires the requirements of the **Validation** clause of
 the [top-level module description](#module-contents).
 
-Then, if the module contains a [Code Section](#code-section), each function
-body in the section is [validated](#function-body-validation).
+Then, if the module contains a [Code Section](#code-section), each function body
+in the section is [validated](#function-body-validation).
 
 ### Function Body Validation
 
@@ -482,16 +512,18 @@ body in the section is [validated](#function-body-validation).
 The requirements for function body validation are:
  - The instruction sequence is required to be non-empty, and the last
    instruction in the sequence is required to be an [`end`](#end).
- - Control-flow constructs are required to form properly nested *regions*.
-   Each `loop`, `block`, and the function entry begin a region required to be
+ - Control-flow constructs are required to form properly nested *regions*. Each
+   `loop`, `block`, and the function entry begin a region required to be
    terminated with an `end`. Each `if` begins a region terminated with either an
    `end` or an `else`. Each `else` begins a region terminated with an `end`.
    Each `end` and each `else` terminates exactly one region.
+ - Branches to labels must be from within the region bounded by the instruction
+   that binds the label.
  - The sequence of values that would be on the value stack at execution of each
    instruction is required be the same for all possible control-flow paths to
    that instruction.
- - The types of the operands passed to each instruction are required to conform
-   to the instruction's signature's operands.
+ - The [types] of the operands passed to each instruction are required to
+   conform to the instruction's signature's operands.
  - At each instruction, all values that will be popped from the value stack at
    that instruction are required to have been pushed within the same region (or
    within an region nested inside it).
@@ -499,6 +531,10 @@ The requirements for function body validation are:
    associated instruction description are required.
 
 > The final [`end`](#end) instruction may be implicit in some representations.
+
+> These requirements are sufficient to ensure that WebAssembly has
+*reducible control flow*, which essentially means that all loops have exactly
+one entry point.
 
 > There are no implicit type conversions in WebAssembly.
 
@@ -560,8 +596,8 @@ For each instruction in the body, in sequence order:
 
 Finally, for each type in the function's return list, a type is popped from the
 type stack and required be the same. The type stack and the control-flow stack
-are then both required to be empty. If all requirements were met, function
-body validation is successful.
+are then both required to be empty. If all requirements were met, function body
+validation is successful.
 
 > Implementations need not perform this exact algorithm; they need only validate
 that the [requirements](#function-body-validation-requirements) are met.
@@ -625,10 +661,11 @@ Call-stack resources are an abstract quantity, with discrete units, of which a
 [nondeterministic] amount is allocated during instantiation, belonging to an
 instance.
 
-> This is used by [call instructions][L].
+> These resources is used by [call instructions][L].
 
 > The specific resource limit serves as an upper bound only; implementations may
-perform a trap sooner if they exhaust other dynamic resources.
+[nondeterministically] perform a trap sooner if they exhaust other dynamic
+resources.
 
 ### Instance Execution
 
@@ -696,17 +733,6 @@ implementation is exhausted, at any point during function body execution.
 
 A label is a value which is either *unbound*, or *bound* to a specific position.
 
-#### Nondeterminism
-
-When semantics are specified as *nondeterministic*, a WebAssembly implementation
-may perform any one of the specified alternatives.
-
-> There is no requirement that a given implementation make the same choice every
-time, even within the same program.
-
-> There is no "undefined behavior" in WebAssembly where the semantics become
-completely unspecified.
-
 #### Instruction Traps
 
 Instructions may *trap*, in which case execution of the current instance is
@@ -730,14 +756,24 @@ Instruction Descriptions
 --------------------------------------------------------------------------------
 
 Instructions in the [Instructions](#instructions) section are introduced with
-tables giving a concise description of several of their attributes, followed
-by additional content.
+tables giving a concise description of several of their attributes, followed by
+additional content.
 
+0. [Instruction Mnemonic Field](#instruction-mnemonic-field)
 0. [Instruction Signature Field](#instruction-signature-field)
 0. [Instruction Families Field](#instruction-families-field)
 0. [Instruction Opcode Field](#instruction-opcode-field)
 0. [Instruction Syntax Field](#instruction-syntax-field)
 0. [Instruction Description](#instruction-description)
+
+### Instruction Mnemonic Field
+
+Instruction [mnemonics] are short names identifying specific instructions. Many
+instructions have type-specific behavior, in which case there is a unique
+mnemonic for each type, formed by prepending a *type prefix*, such as `i32.` or
+`f64.`, to the base instruction mnemonic.
+
+[mnemonics]: https://en.wikipedia.org/wiki/Assembly_language#Opcode_mnemonics_and_extended_mnemonics
 
 ### Instruction Signature Field
 
@@ -759,9 +795,10 @@ The following named values are defined:
    callee signature parameter list.
  - `$returns` is also defined in [call instructions][L] and indicates the length
    of callee signature return list.
- - `$any` during validation indicates the number of elements on the type stack
-   past the control-flow stack top's limit value, and during execution indicates
-   the number of values on the value stack.
+ - `$any` indicates the number of values on the value stack pushed within the
+   enclosing region. Within the validation algorithm, this is the difference
+   between the length of the type stack and the control-flow stack top's limit
+   value.
 
 A few special constructs are used for special purposes:
  - `iPTR` is for use with a linear memory access, and signifies the integer type
@@ -773,13 +810,18 @@ A few special constructs are used for special purposes:
    the above named values, an immediate operand, or a literal value, and
    signifies the length.
 
+*Type parameters* are initially *unbound*. They may appear multiple times in a
+signature; the first time is always in the operands section, where they become
+*bound* to the types of the values passed to them. Thereafter, they act as the
+types they are bound to.
+
 ### Instruction Families Field
 
 WebAssembly instructions may belong to several families, indicated in the tables
 by their family letter:
 
-0. [M: Memory-Access Instruction Family][M]
-0. [R: Memory-Resize Instruction Family][R]
+0. [M: Linear Memory Access Instruction Family][M]
+0. [R: Linear Memory Size Instruction Family][R]
 0. [B: Branch Instruction Family][B]
 0. [L: Call Instruction Family][L]
 0. [C: Comparison Instruction Family][C]
@@ -791,7 +833,7 @@ by their family letter:
 0. [Z: Floating-Point Bitwise Instruction Family][Z]
 0. [Q: Control-Flow Barrier Instruction Family][Q]
 
-#### M: Memory-Access Instruction Family
+#### M: Linear Memory Access Instruction Family
 
 These instructions load from and store to a linear memory space.
 
@@ -810,7 +852,7 @@ there is no overflow.
 is *naturally aligned*. When it's less, the access is *unaligned*.
 
 > There is no other semantic effect associated with `$align`; misaligned and
-unaligned loads and stores still function normally.
+unaligned loads and stores still behave normally.
 
 ##### Accessed Bytes
 
@@ -841,9 +883,9 @@ https://github.com/WebAssembly/design/issues/584
 
 [power of 2]: https://en.wikipedia.org/wiki/Power_of_two
 
-#### R: Linear Memory-Resize Instruction Family
+#### R: Linear Memory Size Instruction Family
 
-##### Linear Memory-Resize Validation
+##### Linear Memory Size Validation
 
  - The module is required to contain a [Memory Section](#memory-section).
 
@@ -871,8 +913,8 @@ that they don't literally need to scan in this manner.
 ##### Calling
 
 If the called function&mdash;the *callee*&mdash;is a function in the module, it
-is [executed](#function-execution). Otherwise the callee is an imported
-function which is executed according to its own semantics. The `$args` operands,
+is [executed](#function-execution). Otherwise the callee is an imported function
+which is executed according to its own semantics. The `$args` operands,
 excluding `$callee` when present, are passed as the incoming arguments. The
 return value of the call is defined by the execution.
 
@@ -897,8 +939,8 @@ and is not directly accessible to applications.
 
  - `$arity` is required to be equal to `$args`.
 
-> The `$arity` immediate operand has no effect other than its validation
-requirement.
+> The `$arity` immediate operand provides no semantic content other than its
+validation requirement.
 
 #### C: Comparison Instruction Family
 
@@ -920,9 +962,9 @@ The second operand in shift and rotate instructions specifies a *shift count*,
 which is interpreted as an unsigned quantity modulo the number of bits in the
 first operand.
 
-> As a result of the modulo, in `i32` instructions, only the least-significant 5
-bits of the second operand affect the result, and in `i64` instructions only the
-least-significant 6 bits of the second operand affect the result.
+> As a result of the modulo, in `i32.` instructions, only the least-significant
+5 bits of the second operand affect the result, and in `i64.` instructions only
+the least-significant 6 bits of the second operand affect the result.
 
 > The shift count is interpreted as unsigned even in otherwise signed
 instructions such as [`shr_s`](#integer-shift-right-signed).
@@ -979,6 +1021,9 @@ Implementations are permitted to further implement the IEEE 754-2008 section
 "Operations with NaNs" recommendation that operations propagate NaN bits from
 their operands, however it isn't required.
 
+> The exception and rounding behavior specified here are the default behavior on
+most contemporary software environments.
+
 > All computations are correctly rounded, subnormal values are fully supported,
 and negative zero, NaNs, and infinities are all produced as result values to
 indicate overflow, invalid, and divide-by-zero exceptional conditions, and
@@ -1033,8 +1078,9 @@ Instruction semantics are described for use in the context of
 a special validation clause, introduced by "**Validation:**", which are for use
 in the context of [function body validation](#function-body-validation), and
 special validation algorithm clauses, introduced by "**Validation Algorithm:**",
-for use by the
-[function body validation algorithm](#function-body-validation-algorithm).
+for use by the [function body validation algorithm].
+
+[function body validation algorithm]: #function-body-validation-algorithm
 
 
 Instructions
@@ -1065,8 +1111,8 @@ Instructions
 
 #### Block
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `block`     | `() : ()`                   |          | 0x01
 
 The `block` instruction pushes an unbound [label] onto the control-flow stack.
@@ -1080,8 +1126,8 @@ stack.
 
 #### Loop
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `loop`      | `() : ()`                   |          | 0x02
 
 The `loop` instruction binds a [label] to the current position and pushes it
@@ -1108,8 +1154,8 @@ https://github.com/WebAssembly/design/pull/710
 
 #### Unconditional Branch
 
-| Name        | Signature                                              | Families | Opcode
-| ----        | ---------                                              | -------- | ------
+| Mnemonic    | Signature                                              | Families | Opcode
+| --------    | ---------                                              | -------- | ------
 | `br`        | `<$arity: i32, $depth: i32> (T[$arity]) : (T[$arity])` | [B] [Q]  | 0x06
 
 The `br` instruction [branches](#branching) according to the control flow stack
@@ -1127,8 +1173,8 @@ TODO: This is currently anticipating a proposal to make `br`, `br_table`,
 
 #### Conditional Branch
 
-| Name        | Signature                                                               | Families | Opcode
-| ----        | ---------                                                               | -------- | ------
+| Mnemonic    | Signature                                                               | Families | Opcode
+| --------    | ---------                                                               | -------- | ------
 | `br_if`     | `<$arity: i32, $depth: i32> (T[$arity], $condition: i32) : (T[$arity])` | [B]      | 0x07
 
 If `$condition` is [true], the `br_if` instruction [branches](#branching)
@@ -1150,8 +1196,8 @@ https://github.com/WebAssembly/design/pull/709
 
 #### Table Branch
 
-| Name        | Signature                                                                    | Families | Opcode
-| ----        | ---------                                                                    | -------- | ------
+| Mnemonic    | Signature                                                                    | Families | Opcode
+| --------    | ---------                                                                    | -------- | ------
 | `br_table`  | `<$arity: i32, TABLE, $default: i32> (T[$arity], $index: i32) : (T[$arity])` | [B] [Q]  | 0x08
 
 First, the `br_table` instruction selects a depth to use. If `$index` is within
@@ -1177,8 +1223,8 @@ with the other branch instructions.
 
 #### If
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `if`        | `($condition: i32) : ()`    | [B]      | 0x03
 
 The `if` instruction pushes an unbound [label] onto the control-flow stack. If
@@ -1195,8 +1241,8 @@ https://github.com/WebAssembly/design/pull/710
 
 #### Else
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `else`      | `(T[$any]) : (T[$any])`     | [B]      | 0x04
 
 The `else` instruction binds the control-flow stack top's [label] to the current
@@ -1216,8 +1262,8 @@ label. It returns the values of its operands.
 
 #### End
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `end`       | `(T[$any]) : (T[$any])`     |          | 0x0f
 
 The `end` instruction pops an entry from the control-flow stack. If the entry's
@@ -1231,10 +1277,13 @@ values of its operands.
  - The operand sequence is [merged] into the control-flow stack top.
  - The control-flow stack top entry is popped.
 
+> Each `end` ends a region begun by a corresponding `block`, `loop`, `if`,
+`else`, or the function entry.
+
 #### Return
 
-| Name        | Signature                                 | Families | Opcode
-| ----        | ---------                                 | -------- | ------
+| Mnemonic    | Signature                                 | Families | Opcode
+| --------    | ---------                                 | -------- | ------
 | `return`    | `<$arity: i32> (T[$arity]) : (T[$arity])` | [B] [Q]  | 0x09
 
 The `return` instruction [branches](#branching) according to the control-flow
@@ -1246,15 +1295,15 @@ stack bottom. It returns the values of its operands.
 **Validation Algorithm:**
  - The operand sequence is [merged] into the control-flow stack bottom.
 
-> `return` is equivalent to a `br` to the outermost control region.
+> `return` is semantically equivalent to a `br` to the outermost control region.
 
 > Implementations needn't literally perform a branch before performing the
 actual function return.
 
 #### Unreachable
 
-| Name          | Signature                 | Families | Opcode
-| ----          | ---------                 | -------- | ------
+| Mnemonic      | Signature                 | Families | Opcode
+| --------      | ---------                 | -------- | ------
 | `unreachable` | `() : ()`                 | [Q]      | 0x0a
 
 **Trap:** Unreachable, always.
@@ -1278,16 +1327,16 @@ be executed except in the case of a bug in the application.
 
 #### Nop
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `nop`       | `() : ()`                   |          | 0x00
 
 The `nop` instruction does nothing.
 
 #### Drop
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `drop`      | `(T) : ()`                  |          | 0x0b
 
 The `drop` instruction does nothing.
@@ -1297,8 +1346,8 @@ discard unneeded values from the value stack.
 
 #### Constant
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `i32.const` | `<i32> () : (i32)`          |          | 0x10
 | `i64.const` | `<i64> () : (i64)`          |          | 0x11
 | `f32.const` | `<f32> () : (f32)`          |          | 0x12
@@ -1313,8 +1362,8 @@ https://github.com/WebAssembly/design/pull/696
 
 #### Get Local
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `get_local` | `<$id: i32> () : (T)`       |          | 0x14
 
 The `get_local` instruction returns the value in the locals array at index
@@ -1325,8 +1374,8 @@ The `get_local` instruction returns the value in the locals array at index
 
 #### Set Local
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `set_local` | `<$id: i32> (T) : ()`       |          | 0x15
 
 The `set_local` instruction sets the value in the locals array at index `$id` to
@@ -1335,12 +1384,13 @@ the value given in the operand.
 **Validation:**
  - `$id` is required to be within the bounds of the locals array.
 
-> `set_local` is equivalent to a similar `tee_local` followed by a `drop`.
+> `set_local` is semantically equivalent to a similar `tee_local` followed by a
+`drop`.
 
 #### Tee Local
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `tee_local` | `<$id: i32> (T) : (T)`      |          | 0x19
 
 The `tee_local` instruction sets the value in the locals array at index `$id` to
@@ -1350,14 +1400,15 @@ the value given in the operand. Its return value is the value of its operand.
  - `$id` is required to be within the bounds of the locals array.
 
 > This instruction's name is inspired by the ["tee" command] in other languages,
-since it forwards the value of its operand to two places.
+since it forwards the value of its operand to two places, the local and the
+return value.
 
 ["tee" command]: https://en.wikipedia.org/wiki/Tee_(command)
 
 #### Get Global
 
-| Name         | Signature                  | Families | Opcode
-| ----         | ---------                  | -------- | ------
+| Mnemonic     | Signature                  | Families | Opcode
+| --------     | ---------                  | -------- | ------
 | `get_global` | `<$id: i32> () : (T)`      |          | TODO
 
 The `get_global` instruction returns the value in the globals array at index
@@ -1368,8 +1419,8 @@ The `get_global` instruction returns the value in the globals array at index
 
 #### Set Global
 
-| Name         | Signature                  | Families | Opcode
-| ----         | ---------                  | -------- | ------
+| Mnemonic     | Signature                  | Families | Opcode
+| --------     | ---------                  | -------- | ------
 | `set_global` | `<$id: i32> (T) : ()`      |          | TODO
 
 The `set_global` instruction sets the value in the globals array at index `$id`
@@ -1381,8 +1432,8 @@ to the value given in the operand.
 
 #### Select
 
-| Name        | Signature                                | Families | Opcode
-| ----        | ---------                                | -------- | ------
+| Mnemonic    | Signature                                | Families | Opcode
+| --------    | ---------                                | -------- | ------
 | `select`    | `(T[1], T[1], $condition: i32) : (T[1])` |          | 0x16
 
 The `select` instruction returns its first operand if `$condition` is [true], or
@@ -1396,14 +1447,14 @@ https://github.com/WebAssembly/design/pull/695
 
 #### Call
 
-| Name        | Signature                                                | Families | Opcode
-| ----        | ---------                                                | -------- | ------
+| Mnemonic    | Signature                                                | Families | Opcode
+| --------    | ---------                                                | -------- | ------
 | `call`      | `<$arity: i32, $callee: i32> (T[$args]) : (T[$returns])` | [L]      | 0x17
 
 The `call` instruction performs a [call](#calling) to the function with index
 `$callee`.
 
-Validation:
+**Validation:**
  - [Call validation](#call-validation) is required; the callee signature is the
    signature of the indexed function.
 
@@ -1415,8 +1466,8 @@ https://github.com/WebAssembly/design/pull/695
 
 #### Indirect Call
 
-| Name            | Signature                                                                 | Families | Opcode
-| ----            | ---------                                                                 | -------- | ------
+| Mnemonic        | Signature                                                                 | Families | Opcode
+| --------        | ---------                                                                 | -------- | ------
 | `call_indirect` | `<$arity: i32, $signature: i32> ($callee: i32, T[$args]) : (T[$returns])` | [L]      | 0x18
 
 The `call_indirect` instruction performs a [call](#calling) to the function with
@@ -1425,7 +1476,7 @@ index `$callee`.
 **Trap:** Indirect Call Type Mismatch, if the signature index of the function
 with index `$callee` differs from `$signature`.
 
-Validation:
+**Validation:**
  - [Call validation](#call-validation) is required; the callee signature is the
    signature with index `$signature` in the [Type Section](#type-section).
 
@@ -1462,8 +1513,8 @@ https://github.com/WebAssembly/design/pull/695
 
 #### Integer Add
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.add`   | `(i32, i32) : (i32)`        | [G]      | 0x40   | `+` (13)
 | `i64.add`   | `(i64, i64) : (i64)`        | [G]      | 0x5b   | `+` (13)
 
@@ -1475,8 +1526,8 @@ this instruction can be used to add either signed or unsigned values.
 
 #### Integer Subtract
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.sub`   | `(i32, i32) : (i32)`        | [G]      | 0x41   | `-` (13)
 | `i64.sub`   | `(i64, i64) : (i64)`        | [G]      | 0x5c   | `-` (13)
 
@@ -1491,8 +1542,8 @@ as the first operand.
 
 #### Integer Multiply
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.mul`   | `(i32, i32) : (i32)`        | [G]      | 0x42   | `*` (14)
 | `i64.mul`   | `(i64, i64) : (i64)`        | [G]      | 0x5d   | `*` (14)
 
@@ -1504,8 +1555,8 @@ this instruction can be used to multiply either signed or unsigned values.
 
 #### Integer Divide, Signed
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.div_s` | `(i32, i32) : (i32)`        | [S]      | 0x43   | `/s` (14)
 | `i64.div_s` | `(i64, i64) : (i64)`        | [S]      | 0x5e   | `/s` (14)
 
@@ -1520,8 +1571,8 @@ zero.
 
 #### Integer Divide, Unsigned
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.div_u` | `(i32, i32) : (i32)`        | [U]      | 0x44   | `/u` (14)
 | `i64.div_u` | `(i64, i64) : (i64)`        | [U]      | 0x5f   | `/u` (14)
 
@@ -1534,8 +1585,8 @@ zero.
 
 #### Integer Remainder, Signed
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.rem_s` | `(i32, i32) : (i32)`        | [S]      | 0x45   | `%s` (14)
 | `i64.rem_s` | `(i64, i64) : (i64)`        | [S]      | 0x60   | `%s` (14)
 
@@ -1560,8 +1611,8 @@ its handling of negative numbers.
 
 #### Integer Remainder, Unsigned
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.rem_u` | `(i32, i32) : (i32)`        | [U]      | 0x46   | `%u` (14)
 | `i64.rem_u` | `(i64, i64) : (i64)`        | [U]      | 0x61   | `%u` (14)
 
@@ -1576,8 +1627,8 @@ languages.
 
 #### Integer Bitwise And
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.and`   | `(i32, i32) : (i32)`        | [G]      | 0x47   | `&` (9)
 | `i64.and`   | `(i64, i64) : (i64)`        | [G]      | 0x62   | `&` (9)
 
@@ -1587,8 +1638,8 @@ The `and` instruction returns the [bitwise and] of its operands.
 
 #### Integer Bitwise Or
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.or`    | `(i32, i32) : (i32)`        | [G]      | 0x48   | `|` (7)
 | `i64.or`    | `(i64, i64) : (i64)`        | [G]      | 0x63   | `|` (7)
 
@@ -1598,8 +1649,8 @@ The `or` instruction returns the [bitwise inclusive-or] of its operands.
 
 #### Integer Bitwise Exclusive-Or
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.xor`   | `(i32, i32) : (i32)`        | [G]      | 0x49   | `^` (8)
 | `i64.xor`   | `(i64, i64) : (i64)`        | [G]      | 0x64   | `^` (8)
 
@@ -1614,8 +1665,8 @@ negative one as the first operand, an operation sometimes called
 
 #### Integer Shift Left
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.shl`   | `(i32, i32) : (i32)`        | [T], [G] | 0x4a   | `<<` (12)
 | `i64.shl`   | `(i64, i64) : (i64)`        | [T], [G] | 0x65   | `<<` (12)
 
@@ -1627,8 +1678,8 @@ the shift count.
 
 #### Integer Shift Right, Signed
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.shr_s` | `(i32, i32) : (i32)`        | [T], [S] | 0x4c   | `>>s` (12)
 | `i64.shr_s` | `(i64, i64) : (i64)`        | [T], [S] | 0x67   | `>>s` (12)
 
@@ -1645,8 +1696,8 @@ rounding of negative values is different. `shr_s` effectively rounds down, while
 
 #### Integer Shift Right, Unsigned
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.shr_u` | `(i32, i32) : (i32)`        | [T], [U] | 0x4b   | `>>u` (12)
 | `i64.shr_u` | `(i64, i64) : (i64)`        | [T], [U] | 0x66   | `>>u` (12)
 
@@ -1661,8 +1712,8 @@ of the shift count.
 
 #### Integer Rotate Left
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `i32.rotl`  | `(i32, i32) : (i32)`        | [T], [G] | 0xb7
 | `i64.rotl`  | `(i64, i64) : (i64)`        | [T], [G] | 0xb9
 
@@ -1675,8 +1726,8 @@ conceptually "rotate back around".
 
 #### Integer Rotate Right
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `i32.rotr`  | `(i32, i32) : (i32)`        | [T], [G] | 0xb6
 | `i64.rotr`  | `(i64, i64) : (i64)`        | [T], [G] | 0xb8
 
@@ -1689,8 +1740,8 @@ bits conceptually "rotate back around".
 
 #### Integer Count Leading Zeros
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `i32.clz`   | `(i32) : (i32)`             | [G]      | 0x57
 | `i64.clz`   | `(i64) : (i64)`             | [G]      | 0x72
 
@@ -1703,8 +1754,8 @@ number of bits in the operand type.
 
 #### Integer Count Trailing Zeros
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `i32.ctz`   | `(i32) : (i32)`             | [G]      | 0x58
 | `i64.ctz`   | `(i64) : (i64)`             | [G]      | 0x73
 
@@ -1717,8 +1768,8 @@ number of bits in the operand type.
 
 #### Integer Population Count
 
-| Name         | Signature                  | Families | Opcode
-| ----         | ---------                  | -------- | ------
+| Mnemonic     | Signature                  | Families | Opcode
+| --------     | ---------                  | -------- | ------
 | `i32.popcnt` | `(i32) : (i32)`            | [G]      | 0x59
 | `i64.popcnt` | `(i64) : (i64)`            | [G]      | 0x74
 
@@ -1733,8 +1784,8 @@ in other languages.
 
 #### Integer Equal To Zero
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.eqz`   | `(i32) : (i32)`             | [G]      | 0x5a   | `!` (15)
 | `i64.eqz`   | `(i64) : (i32)`             | [G]      | 0xba   | `!` (15)
 
@@ -1763,8 +1814,8 @@ otherwise.
 
 #### Floating-Point Add
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.add`   | `(f32, f32) : (f32)`        | [F]      | 0x75   | `+` (13)
 | `f64.add`   | `(f64, f64) : (f64)`        | [F]      | 0x89   | `+` (13)
 
@@ -1773,8 +1824,8 @@ operation according to the [general floating-point rules][F].
 
 #### Floating-Point Subtract
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.sub`   | `(f32, f32) : (f32)`        | [F]      | 0x76   | `-` (13)
 | `f64.sub`   | `(f64, f64) : (f64)`        | [F]      | 0x8a   | `-` (13)
 
@@ -1783,8 +1834,8 @@ operation according to the [general floating-point rules][F].
 
 #### Floating-Point Multiply
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.mul`   | `(f32, f32) : (f32)`        | [F]      | 0x77   | `*` (14)
 | `f64.mul`   | `(f64, f64) : (f64)`        | [F]      | 0x8b   | `*` (14)
 
@@ -1793,8 +1844,8 @@ operation according to the [general floating-point rules][F].
 
 #### Floating-Point Divide
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.div`   | `(f32, f32) : (f32)`        | [F]      | 0x78   | `/` (14)
 | `f64.div`   | `(f64, f64) : (f64)`        | [F]      | 0x8c   | `/` (14)
 
@@ -1803,8 +1854,8 @@ to the [general floating-point rules][F].
 
 #### Floating-Point Square Root
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `f32.sqrt`  | `(f32) : (f32)`             | [F]      | 0x82
 | `f64.sqrt`  | `(f64) : (f64)`             | [F]      | 0x96
 
@@ -1813,8 +1864,8 @@ according to the [general floating-point rules][F].
 
 #### Floating-Point Minimum
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `f32.min`   | `(f32, f32) : (f32)`        | [F]      | 0x79
 | `f64.min`   | `(f64, f64) : (f64)`        | [F]      | 0x8d
 
@@ -1831,8 +1882,8 @@ negative zero and NaN values.
 
 #### Floating-Point Maximum
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `f32.max`   | `(f32, f32) : (f32)`        | [F]      | 0x7a
 | `f64.max`   | `(f64, f64) : (f64)`        | [F]      | 0x8e
 
@@ -1849,8 +1900,8 @@ zero and NaN values.
 
 #### Floating-Point Ceiling
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `f32.ceil`  | `(f32) : (f32)`             | [F]      | 0x7e
 | `f64.ceil`  | `(f64) : (f64)`             | [F]      | 0x92
 
@@ -1863,8 +1914,8 @@ here; the value is rounded up to the nearest integer.
 
 #### Floating-Point Floor
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `f32.floor` | `(f32) : (f32)`             | [F]      | 0x7f
 | `f64.floor` | `(f64) : (f64)`             | [F]      | 0x93
 
@@ -1877,8 +1928,8 @@ here; the value is rounded down to the nearest integer.
 
 #### Floating-Point Truncate
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `f32.trunc` | `(f32) : (f32)`             | [F]      | 0x80
 | `f64.trunc` | `(f64) : (f64)`             | [F]      | 0x94
 
@@ -1893,8 +1944,8 @@ the value is discarded, effectively rounding to the nearest integer toward zero.
 
 #### Floating-Point Nearest Integer
 
-| Name          | Signature                 | Families | Opcode
-| ----          | ---------                 | -------- | ------
+| Mnemonic      | Signature                 | Families | Opcode
+| --------      | ---------                 | -------- | ------
 | `f32.nearest` | `(f32) : (f32)`           | [F]      | 0x81
 | `f64.nearest` | `(f64) : (f64)`           | [F]      | 0x95
 
@@ -1916,8 +1967,8 @@ up, and it differs from [`round` in C] which rounds ties away from zero.
 
 #### Floating-Point Absolute Value
 
-| Name        | Signature                   | Families | Opcode
-| ----        | ---------                   | -------- | ------
+| Mnemonic    | Signature                   | Families | Opcode
+| --------    | ---------                   | -------- | ------
 | `f32.abs`   | `(f32) : (f32)`             | [Z]      | 0x7b
 | `f64.abs`   | `(f64) : (f64)`             | [Z]      | 0x8f
 
@@ -1932,8 +1983,8 @@ values as not less than zero.
 
 #### Floating-Point Negate
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.neg`   | `(f32) : (f32)`             | [Z]      | 0x7c   | `-` (15)
 | `f64.neg`   | `(f64) : (f64)`             | [Z]      | 0x90   | `-` (15)
 
@@ -1949,8 +2000,8 @@ values.
 
 #### Floating-Point CopySign
 
-| Name           | Signature                | Families | Opcode
-| ----           | ---------                | -------- | ------
+| Mnemonic       | Signature                | Families | Opcode
+| --------       | ---------                | -------- | ------
 | `f32.copysign` | `(f32, f32) : (f32)`     | [Z]      | 0x7d
 | `f64.copysign` | `(f64, f64) : (f64)`     | [Z]      | 0x91
 
@@ -1975,8 +2026,8 @@ either operand is a NaN or a zero.
 
 #### Integer Equality
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.eq`    | `(i32, i32) : (i32)`        | [C], [G] | 0x4d   | `==` (10)
 | `i64.eq`    | `(i64, i64) : (i32)`        | [C], [G] | 0x68   | `==` (10)
 
@@ -1984,8 +2035,8 @@ The integer `eq` instruction tests whether the operands are equal.
 
 #### Integer Inequality
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.ne`    | `(i32, i32) : (i32)`        | [C], [G] | 0x4e   | `!=` (10)
 | `i64.ne`    | `(i64, i64) : (i32)`        | [C], [G] | 0x69   | `!=` (10)
 
@@ -1996,8 +2047,8 @@ languages.
 
 #### Integer Less Than, Signed
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.lt_s`  | `(i32, i32) : (i32)`        | [C], [S] | 0x4f   | `<s` (11)
 | `i64.lt_s`  | `(i64, i64) : (i32)`        | [C], [S] | 0x6a   | `<s` (11)
 
@@ -2006,8 +2057,8 @@ operand, interpreting the operands as signed.
 
 #### Integer Less Than, Unsigned
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.lt_u`  | `(i32, i32) : (i32)`        | [C], [U] | 0x51   | `<u` (11)
 | `i64.lt_u`  | `(i64, i64) : (i32)`        | [C], [U] | 0x6c   | `<u` (11)
 
@@ -2016,8 +2067,8 @@ operand, interpreting the operands as unsigned.
 
 #### Integer Less Than Or Equal To, Signed
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.le_s`  | `(i32, i32) : (i32)`        | [C], [S] | 0x50   | `<=s` (11)
 | `i64.le_s`  | `(i64, i64) : (i32)`        | [C], [S] | 0x6b   | `<=s` (11)
 
@@ -2029,8 +2080,8 @@ languages.
 
 #### Integer Less Than Or Equal To, Unsigned
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.le_u`  | `(i32, i32) : (i32)`        | [C], [U] | 0x52   | `<=u` (11)
 | `i64.le_u`  | `(i64, i64) : (i32)`        | [C], [U] | 0x6d   | `<=u` (11)
 
@@ -2042,8 +2093,8 @@ languages.
 
 #### Integer Greater Than, Signed
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.gt_s`  | `(i32, i32) : (i32)`        | [C], [S] | 0x53   | `>s` (11)
 | `i64.gt_s`  | `(i64, i64) : (i32)`        | [C], [S] | 0x6e   | `>s` (11)
 
@@ -2052,8 +2103,8 @@ second operand, interpreting the operands as signed.
 
 #### Integer Greater Than, Unsigned
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.gt_u`  | `(i32, i32) : (i32)`        | [C], [U] | 0x55   | `>u` (11)
 | `i64.gt_u`  | `(i64, i64) : (i32)`        | [C], [U] | 0x70   | `>u` (11)
 
@@ -2062,8 +2113,8 @@ second operand, interpreting the operands as unsigned.
 
 #### Integer Greater Than Or Equal To, Signed
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.ge_s`  | `(i32, i32) : (i32)`        | [C], [S] | 0x54   | `>=s` (11)
 | `i64.ge_s`  | `(i64, i64) : (i32)`        | [C], [S] | 0x6f   | `>=s` (11)
 
@@ -2075,8 +2126,8 @@ languages.
 
 #### Integer Greater Than Or Equal To, Unsigned
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `i32.ge_u`  | `(i32, i32) : (i32)`        | [C], [U] | 0x56   | `>=u` (11)
 | `i64.ge_u`  | `(i64, i64) : (i32)`        | [C], [U] | 0x71   | `>=u` (11)
 
@@ -2097,8 +2148,8 @@ languages.
 
 #### Floating-Point Equality
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.eq`    | `(f32, f32) : (i32)`        | [C], [F] | 0x83   | `==` (10)
 | `f64.eq`    | `(f64, f64) : (i32)`        | [C], [F] | 0x97   | `==` (10)
 
@@ -2108,8 +2159,8 @@ The floating-point `eq` instruction performs the IEEE 754-2008
 
 #### Floating-Point Inequality
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.ne`    | `(f32, f32) : (i32)`        | [C], [F] | 0x84   | `!=` (10)
 | `f64.ne`    | `(f64, f64) : (i32)`        | [C], [F] | 0x98   | `!=` (10)
 
@@ -2123,8 +2174,8 @@ instruction.
 
 #### Floating-Point Less Than
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.lt`    | `(f32, f32) : (i32)`        | [C], [F] | 0x85   | `<` (11)
 | `f64.lt`    | `(f64, f64) : (i32)`        | [C], [F] | 0x99   | `<` (11)
 
@@ -2133,8 +2184,8 @@ according to the [general floating-point rules][F].
 
 #### Floating-Point Less Than Or Equal To
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.le`    | `(f32, f32) : (i32)`        | [C], [F] | 0x86   | `<=` (11)
 | `f64.le`    | `(f64, f64) : (i32)`        | [C], [F] | 0x9a   | `<=` (11)
 
@@ -2143,8 +2194,8 @@ operation according to the [general floating-point rules][F].
 
 #### Floating-Point Greater Than
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.gt`    | `(f32, f32) : (i32)`        | [C], [F] | 0x87   | `>` (11)
 | `f64.gt`    | `(f64, f64) : (i32)`        | [C], [F] | 0x9b   | `>` (11)
 
@@ -2153,8 +2204,8 @@ according to the [general floating-point rules][F].
 
 #### Floating-Point Greater Than Or Equal To
 
-| Name        | Signature                   | Families | Opcode | Syntax
-| ----        | ---------                   | -------- | ------ | ------
+| Mnemonic    | Signature                   | Families | Opcode | Syntax
+| --------    | ---------                   | -------- | ------ | ------
 | `f32.ge`    | `(f32, f32) : (i32)`        | [C], [F] | 0x88   | `>=` (11)
 | `f64.ge`    | `(f64, f64) : (i32)`        | [C], [F] | 0x9c   | `>=` (11)
 
@@ -2176,8 +2227,8 @@ operation according to the [general floating-point rules][F].
 
 #### Integer Wrap
 
-| Name           | Signature                | Families | Opcode
-| ----           | ---------                | -------- | ------
+| Mnemonic       | Signature                | Families | Opcode
+| --------       | ---------                | -------- | ------
 | `i32.wrap/i64` | `(i64) : (i32)`          | [G]      | 0xa1
 
 The `wrap` instruction returns the value of its operand silently wrapped to its
@@ -2191,8 +2242,8 @@ effectively discarding the most significant digits.
 
 #### Integer Extend, Signed
 
-| Name               | Signature            | Families | Opcode
-| ----               | ---------            | -------- | ------
+| Mnemonic           | Signature            | Families | Opcode
+| --------           | ---------            | -------- | ------
 | `i64.extend_s/i32` | `(i32) : (i64)`      | [S]      | 0xa6
 
 The `extend_s` instruction returns the value of its operand [sign-extended] to
@@ -2200,8 +2251,8 @@ its result type.
 
 #### Integer Extend, Unsigned
 
-| Name               | Signature            | Families | Opcode
-| ----               | ---------            | -------- | ------
+| Mnemonic           | Signature            | Families | Opcode
+| --------           | ---------            | -------- | ------
 | `i64.extend_u/i32` | `(i32) : (i64)`      | [U]      | 0xa7
 
 The `extend_u` instruction returns the value of its operand zero-extended to its
@@ -2209,8 +2260,8 @@ result type.
 
 #### Truncate Floating-Point to Integer, Signed
 
-| Name              | Signature             | Families | Opcode
-| ----              | ---------             | -------- | ------
+| Mnemonic          | Signature             | Families | Opcode
+| --------          | ---------             | -------- | ------
 | `i32.trunc_s/f32` | `(f32) : (i32)`       | [F], [S] | 0x9d
 | `i32.trunc_s/f64` | `(f64) : (i32)`       | [F], [S] | 0x9e
 | `i64.trunc_s/f32` | `(f32) : (i64)`       | [F], [S] | 0xa2
@@ -2226,8 +2277,8 @@ occurs, due to the operand being outside the range that can be converted
 
 #### Truncate Floating-Point to Integer, Unsigned
 
-| Name              | Signature             | Families | Opcode
-| ----              | ---------             | -------- | ------
+| Mnemonic          | Signature             | Families | Opcode
+| --------          | ---------             | -------- | ------
 | `i32.trunc_u/f32` | `(f32) : (i32)`       | [F], [U] | 0x9f
 | `i32.trunc_u/f64` | `(f64) : (i32)`       | [F], [U] | 0xa0
 | `i64.trunc_u/f32` | `(f32) : (i64)`       | [F], [U] | 0xa4
@@ -2247,8 +2298,8 @@ truncate up to zero.
 
 #### Floating-Point Demote
 
-| Name             | Signature              | Families | Opcode
-| ----             | ---------              | -------- | ------
+| Mnemonic         | Signature              | Families | Opcode
+| --------         | ---------              | -------- | ------
 | `f32.demote/f64` | `(f64) : (f32)`        | [F]      | 0xac
 
 The `demote` instruction performs the IEEE 754-2008 `convertFormat` operation,
@@ -2259,8 +2310,8 @@ converting from its operand type to its result type, according to the
 
 #### Floating-Point Promote
 
-| Name              | Signature             | Families | Opcode
-| ----              | ---------             | -------- | ------
+| Mnemonic          | Signature             | Families | Opcode
+| --------          | ---------             | -------- | ------
 | `f64.promote/f32` | `(f32) : (f64)`       | [F]      | 0xb2
 
 The `promote` instruction performs the IEEE 754-2008 `convertFormat` operation,
@@ -2271,8 +2322,8 @@ converting from its operand type to its result type, according to the
 
 #### Convert Integer To Floating-Point, Signed
 
-| Name                | Signature           | Families | Opcode
-| ----                | ---------           | -------- | ------
+| Mnemonic            | Signature           | Families | Opcode
+| --------            | ---------           | -------- | ------
 | `f32.convert_s/i32` | `(i32) : (f32)`     | [F], [S] | 0xa8
 | `f32.convert_s/i64` | `(i64) : (f32)`     | [F], [S] | 0xaa
 | `f64.convert_s/i32` | `(i32) : (f64)`     | [F], [S] | 0xae
@@ -2284,8 +2335,8 @@ operation, with its operand value interpreted as signed, according to the
 
 #### Convert Integer To Floating-Point, Unsigned
 
-| Name                | Signature           | Families | Opcode
-| ----                | ---------           | -------- | ------
+| Mnemonic            | Signature           | Families | Opcode
+| --------            | ---------           | -------- | ------
 | `f32.convert_u/i32` | `(i32) : (f32)`     | [F], [U] | 0xa9
 | `f32.convert_u/i64` | `(i64) : (f32)`     | [F], [U] | 0xab
 | `f64.convert_u/i32` | `(i32) : (f64)`     | [F], [U] | 0xaf
@@ -2297,8 +2348,8 @@ operation, with its operand value interpreted as unsigned, according to the
 
 #### Reinterpret
 
-| Name                  | Signature         | Families | Opcode
-| ----                  | ---------         | -------- | ------
+| Mnemonic              | Signature         | Families | Opcode
+| --------              | ---------         | -------- | ------
 | `i32.reinterpret/f32` | `(f32) : (i32)`   |          | 0xb4
 | `i64.reinterpret/f64` | `(f64) : (i64)`   |          | 0xb5
 | `f32.reinterpret/i32` | `(i32) : (f32)`   |          | 0xad
@@ -2320,8 +2371,8 @@ instruction is always exact.
 
 #### Load
 
-| Name        | Signature                                             | Families | Opcode
-| ----        | ---------                                             | -------- | ------
+| Mnemonic    | Signature                                             | Families | Opcode
+| --------    | ---------                                             | -------- | ------
 | `i32.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [G] | 0x2a
 | `i64.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [G] | 0x2b
 | `f32.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [Z] | 0x2c
@@ -2338,8 +2389,8 @@ IEEE 754-2008 `copy` operation.
 
 #### Store
 
-| Name        | Signature                                                       | Families | Opcode
-| ----        | ---------                                                       | -------- | ------
+| Mnemonic    | Signature                                                       | Families | Opcode
+| --------    | ---------                                                       | -------- | ------
 | `i32.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : ()` | [M], [G] | 0x33
 | `i64.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : ()` | [M], [G] | 0x34
 | `f32.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: f32) : ()` | [M], [F] | 0x35
@@ -2357,8 +2408,8 @@ IEEE 754-2008 `copy` operation.
 
 #### Extending Load, Signed
 
-| Name           | Signature                                             | Families | Opcode
-| ----           | ---------                                             | -------- | ------
+| Mnemonic       | Signature                                             | Families | Opcode
+| --------       | ---------                                             | -------- | ------
 | `i32.load8_s`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [S] | 0x20
 | `i32.load16_s` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [S] | 0x22
 |                |                                                       |          |
@@ -2378,8 +2429,8 @@ width than their type, and return the value [sign-extended] to their type.
 
 #### Extending Load, Unsigned
 
-| Name           | Signature                                             | Families | Opcode
-| ----           | ---------                                             | -------- | ------
+| Mnemonic       | Signature                                             | Families | Opcode
+| --------       | ---------                                             | -------- | ------
 | `i32.load8_u`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [U] | 0x21
 | `i32.load16_u` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [U] | 0x23
 |                |                                                       |          |
@@ -2399,8 +2450,8 @@ width than their type, and return the value zero-extended to their type.
 
 #### Wrapping Store
 
-| Name          | Signature                                                       | Families | Opcode
-| ----          | ---------                                                       | -------- | ------
+| Mnemonic      | Signature                                                       | Families | Opcode
+| --------      | ---------                                                       | -------- | ------
 | `i32.store8`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : ()` | [M], [G] | 0x2e
 | `i32.store16` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : ()` | [M], [G] | 0x2f
 |               |                                                                 |          |
@@ -2428,8 +2479,8 @@ the name "wrap".
 
 #### Grow Memory
 
-| Name          | Signature                 | Families | Opcode
-| ----          | ---------                 | -------- | ------
+| Mnemonic      | Signature                 | Families | Opcode
+| --------      | ---------                 | -------- | ------
 | `grow_memory` | `(iPTR) : (iPTR)`         | [R]      | 0x39
 
 The `grow_memory` instruction increases the size of the referenced linear memory
@@ -2445,27 +2496,25 @@ may still fail before the maximum if it wasn't possible to reserve the space up
 front or if enabling the reserved memory fails.
 
 **Validation**:
- - [Linear memory-resize validation](#linear-memory-resize-validation) is
-   required.
+ - [Linear memory size validation](#linear-memory-size-validation) is required.
 
 > Since the return value is in units of pages, `-1` isn't otherwise a valid
 linear memory size.
 
 #### Current Memory
 
-| Name             | Signature              | Families | Opcode
-| ----             | ---------              | -------- | ------
+| Mnemonic         | Signature              | Families | Opcode
+| --------         | ---------              | -------- | ------
 | `current_memory` | `() : (iPTR)`          | [R]      | 0x3b
 
 The `current_memory` instruction returns the size of the referenced linear
 memory space, as an unsigned value in units of [pages].
 
 **Validation**:
- - [Linear memory-resize validation](#linear-memory-resize-validation) is
-   required.
+ - [Linear memory size validation](#linear-memory-size-validation) is required.
 
-[M]: #m-memory-access-instruction-family
-[R]: #r-memory-resize-instruction-family
+[M]: #m-linear-memory-access-instruction-family
+[R]: #r-linear-memory-size-instruction-family
 [B]: #b-branch-instruction-family
 [L]: #l-call-instruction-family
 [C]: #c-comparison-instruction-family
@@ -2476,41 +2525,41 @@ memory space, as an unsigned value in units of [pages].
 [F]: #f-floating-point-instruction-family
 [Z]: #z-floating-point-bitwise-instruction-family
 [Q]: #q-control-flow-barrier-instruction-family
-[shifted]: https://en.wikipedia.org/wiki/Logical_shift
-[shift count]: #shift-count
-[two's complement sum]: https://en.wikipedia.org/wiki/Two%27s_complement#Addition
-[two's complement difference]: https://en.wikipedia.org/wiki/Two%27s_complement#Subtraction
-[two's complement product]: https://en.wikipedia.org/wiki/Two%27s_complement#Multiplication
-[Floor and Ceiling Functions]: https://en.wikipedia.org/wiki/Floor_and_ceiling_functions
-[two's complement]: https://en.wikipedia.org/wiki/Two%27s_complement
-[minimum signed integer value]: https://en.wikipedia.org/wiki/Two%27s_complement#Most_negative_number
-[KiB]: https://en.wikipedia.org/wiki/Kibibyte
-[bit]: https://en.wikipedia.org/wiki/Bit
-[boolean]: #booleans
-[true]: #booleans
-[false]: #booleans
-[sign-extended]: https://en.wikipedia.org/wiki/Sign_extension
-[bytes]: #bytes
-[pages]: #pages
-[effective address]: #effective-address
-[little-endian byte order]: https://en.wikipedia.org/wiki/Endianness#Little
 [accessed bytes]: #accessed-bytes
-[merged]: #type-sequence-merge
-[index]: #index
-[indices]: #index
 [array]: #array
 [arrays]: #array
 [binary format]: #binary-format
+[bit]: https://en.wikipedia.org/wiki/Bit
+[boolean]: #booleans
+[bytes]: #bytes
 [call-stack resources]: #call-stack-resources
+[effective address]: #effective-address
+[false]: #booleans
+[Floor and Ceiling Functions]: https://en.wikipedia.org/wiki/Floor_and_ceiling_functions
+[index]: #index
+[indices]: #index
+[KiB]: https://en.wikipedia.org/wiki/Kibibyte
+[label]: #labels
+[labels]: #labels
+[little-endian byte order]: https://en.wikipedia.org/wiki/Endianness#Little
+[merged]: #type-sequence-merge
+[minimum signed integer value]: https://en.wikipedia.org/wiki/Two%27s_complement#Most_negative_number
+[nondeterministic]: #nondeterminism
+[nondeterministically]: #nondeterminism
+[pages]: #pages
+[rotated]: https://en.wikipedia.org/wiki/Bitwise_operation#Rotate_no_carry
+[shift count]: #shift-count
+[shifted]: https://en.wikipedia.org/wiki/Logical_shift
+[sign-extended]: https://en.wikipedia.org/wiki/Sign_extension
 [string]: #string
 [strings]: #string
 [text format]: #text-format
+[true]: #booleans
 [type]: #types
 [types]: #types
 [typed]: #types
 [trap]: #instruction-traps
-[rotated]: https://en.wikipedia.org/wiki/Bitwise_operation#Rotate_no_carry
-[nondeterministic]: #nondeterminism
-[nondeterministically]: #nondeterminism
-[label]: #labels
-[labels]: #labels
+[two's complement]: https://en.wikipedia.org/wiki/Two%27s_complement
+[two's complement difference]: https://en.wikipedia.org/wiki/Two%27s_complement#Subtraction
+[two's complement product]: https://en.wikipedia.org/wiki/Two%27s_complement#Multiplication
+[two's complement sum]: https://en.wikipedia.org/wiki/Two%27s_complement#Addition
