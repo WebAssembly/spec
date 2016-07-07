@@ -40,14 +40,14 @@ control flow merge points without having to see the entire function body first.
 For more information, see the [Validation section](#validation).
 
 A WebAssembly module can be [*instantiated*] to produce a WebAssembly instance,
-which contains all the data structures required by the module's code. Instances
-can include [linear memory](#memory-section) to serve the purpose of an address
-space for program data. For security and determinism, linear memory is
-*sandboxed*, and the other data structures in an instance, including the call
-stack, are allocated outside of linear memory so that they cannot be corrupted
-by errant linear memory accesses. An instance can then be executed, either by
-execution of its [start function](#start-section) or by calls to its exported
-functions.
+which contains all the data structures required by the module's code for
+execution. Instances can include [linear memory](#memory-section), which can
+serve the purpose of an address space for program data. For security and
+determinism, linear memory is *sandboxed*, and the other data structures in an
+instance, including the call stack, are allocated outside of linear memory so
+that they cannot be corrupted by errant linear memory accesses. An instance can
+then be executed, either by execution of its [start function](#start-section) or
+by calls to its exported functions.
 
 Along with the other contents, each function contains a sequence of
 *instructions*. WebAssembly instructions conceptually communicate with each
@@ -85,8 +85,10 @@ memory accesses.
 
 ### Pages
 
-*Pages* in WebAssembly are 64 [KiB], and are the units used in linear memory
-sizes and resizing.
+[*Pages*] in WebAssembly are 64 [KiB], and are the units used in linear memory
+size declarations and resize operations.
+
+[*Pages*]: https://en.wikipedia.org/wiki/Page_(computer_memory)
 
 ### Types
 
@@ -106,6 +108,9 @@ signed, a [two's complement] interpretation is used.
 
 > The [minimum signed integer value] is supported; consequently, two's
 complement signed integers aren't symmetric around zero.
+
+> When used as linear memory indices or function table indices, integer types
+are sometimes referred to as "pointers".
 
 ##### Booleans
 
@@ -316,9 +321,10 @@ front. Otherwise, implementations are encouraged to allocate only enough for
 the initial size up front.
 
 > The validation rules here specifically avoid requiring the size in bytes of
-linear memory to be representable as an iPTR. For example a 32-bit module could
-request a 4 GiB linear memory; the index of every byte would be addressable,
-even though the total number of bytes would not be.
+linear memory to be representable as an unsigned `iPTR`. For example a 32-bit
+linear address space could theoretically be resized to 4 GiB if the
+implementation has sufficient resources; the index of every byte would be
+addressable, even though the total number of bytes would not be.
 
 #### Export Section
 
@@ -363,7 +369,7 @@ A *function body* consists of:
  - an [array] of [types], which declare the number and types of locals.
  - a sequence of [instructions](#instructions).
 
-> Validation of function bodies is performed
+> Validation of function bodies is described
 [separately](#function-body-validation).
 
 ##### Positions Within A Function Body
@@ -468,25 +474,45 @@ body in the section is [validated](#function-body-validation).
 
 ### Function Body Validation
 
-The major requirements for function body validation are:
- - Control-flow constructs are required to form properly nested *regions*.
-   `loop`, `block`, and the function entry pair with `end`, and `if` can pair
-   with `end` or `else`, which is then paired with `end`.
- - The sequence of values on the value stack at execution of each instruction is
-   required be the same for all control-flow paths to that instruction.
- - The types of the operands passed to each instruction are required to conform
-   to the instruction's signature's operand types.
- - At each instruction, all values that will be popped from the value stack at
-   that instruction are required to have been pushed within the same region,
-   including regions nested inside it.
+0. [Function Body Validation Requirements](#function-body-validation-requirements)
+0. [Function Body Validation Algorithm](#function-body-validation-algorithm)
 
-The requirements, plus the various minor requirements, can be validated in a
-single linear pass as follows:
+#### Function Body Validation Requirements
+
+The requirements for function body validation are:
+ - The instruction sequence is required to be non-empty, and the last
+   instruction in the sequence is required to be an [`end`](#end).
+ - Control-flow constructs are required to form properly nested *regions*.
+   Each `loop`, `block`, and the function entry begin a region required to be
+   terminated with an `end`. Each `if` begins a region terminated with either an
+   `end` or an `else`. Each `else` begins a region terminated with an `end`.
+   Each `end` and each `else` terminates exactly one region.
+ - The sequence of values that would be on the value stack at execution of each
+   instruction is required be the same for all possible control-flow paths to
+   that instruction.
+ - The types of the operands passed to each instruction are required to conform
+   to the instruction's signature's operands.
+ - At each instruction, all values that will be popped from the value stack at
+   that instruction are required to have been pushed within the same region (or
+   within an region nested inside it).
+ - For each instruction, the requirements of the **Validation** clause in the
+   associated instruction description are required.
+
+> The final [`end`](#end) instruction may be implicit in some representations.
+
+> There are no implicit type conversions in WebAssembly.
+
+TODO: Will the `end` be made explicit? Monitor
+https://github.com/WebAssembly/design/pull/666
+
+#### Function Body Validation Algorithm
+
+Function body validation can be performed in a single linear pass as follows:
 
 The following data structures are created:
  - A *type stack*, with entries each containing a [type], for tracking the
    sequence of values that will be on the value stack at execution time.
- - A *control-flow stack*, with entries each containing
+ - A *control-flow stack*, with entries each containing:
     - A *limit* integer value, which is an index into the type stack indicating
       the boundary between values pushed before the current region and values
       pushed inside the current region.
@@ -506,19 +532,17 @@ The type stack begins empty. The control-flow stack begins with one entry, with
 the [type] sequence consisting of the return types of the function, and with the
 limit value being zero.
 
-The function's instruction sequence is required to be non-empty, and the last
-instruction in the sequence is required to be an [`end`](#end).
-
 For each instruction in the body, in sequence order:
  - For each construct in the instruction's signature's operands in reverse
    order:
     - If the construct is a [type], a type is popped from the type stack and
       required to be the same.
-    - If the construct is a list of type parameters, and the parameters are not
-      yet bound, a type for each type parameter in the list in reverse order is
-      popped from the type stack and bound to it.
-    - Otherwise, a type for each type in the list in reverse order is popped
-      from the type stack and required to be the same.
+    - If the construct is a list of type parameters:
+        - If the parameters are not yet bound, a type for each type parameter in
+          the list in reverse order is popped from the type stack and bound to
+          it.
+        - Otherwise, a type for each type in the list in reverse order is popped
+          from the type stack and required to be the same.
    The popped types in reverse (again) order form the *operand sequence*.
  - Unless the instruction is a [control-flow barrier][Q], then for each
    construct in the instruction's signature's returns:
@@ -528,6 +552,8 @@ For each instruction in the body, in sequence order:
       stack.
  - If the instruction has a **Validation** clause, its requirements are
    required.
+ - If the instruction has a **Validation Algorithm** clause, its contents are
+   performed.
  - If the instruction's signature has no return types, or it is a
    [control-flow barrier][Q], the new length of the type stack is required to be
    at most the control-flow stack top's limit value.
@@ -537,19 +563,15 @@ type stack and required be the same. The type stack and the control-flow stack
 are then both required to be empty. If all requirements were met, function
 body validation is successful.
 
+> Implementations need not perform this exact algorithm; they need only validate
+that the [requirements](#function-body-validation-requirements) are met.
+
 > The control-flow stack's limit values effectively mark region boundaries in
 the type stack. Regions are required to be nested, and each region's limit value
 is greater than those of the regions that enclose it. Things pushed onto the
 type stack outside a region cannot be popped from within the region.
 
-> The final [`end`](#end) instruction may be implicit in some representations.
-
-> There are no implicit type conversions in WebAssembly.
-
-TODO: Will the `end` be made explicit? Monitor
-https://github.com/WebAssembly/design/pull/666
-
-#### Type-Sequence Merge
+##### Type-Sequence Merge
 
 To merge a new type sequence into a control flow stack entry:
  - If the entry's optional type sequence is absent, it is set to be the new
@@ -715,8 +737,7 @@ by additional content.
 0. [Instruction Families Field](#instruction-families-field)
 0. [Instruction Opcode Field](#instruction-opcode-field)
 0. [Instruction Syntax Field](#instruction-syntax-field)
-0. [Instruction Semantics](#instruction-semantics)
-0. [Instruction Special Validation Rules](#instruction-special-validation-rules)
+0. [Instruction Description](#instruction-description)
 
 ### Instruction Signature Field
 
@@ -874,10 +895,10 @@ and is not directly accessible to applications.
 
 ##### Call Validation
 
-`$arity` is required to be equal to `$args`.
+ - `$arity` is required to be equal to `$args`.
 
-> The `$arity` immediate operand has no effect other than the requirement that
-it be validated.
+> The `$arity` immediate operand has no effect other than its validation
+requirement.
 
 #### C: Comparison Instruction Family
 
@@ -1010,7 +1031,10 @@ use prefix notation.
 Instruction semantics are described for use in the context of
 [function body execution](#function-body-execution). Some instructions also have
 a special validation clause, introduced by "**Validation:**", which are for use
-in the context of [function body validation](#function-body-validation).
+in the context of [function body validation](#function-body-validation), and
+special validation algorithm clauses, introduced by "**Validation Algorithm:**",
+for use by the
+[function body validation algorithm](#function-body-validation-algorithm).
 
 
 Instructions
@@ -1047,7 +1071,7 @@ Instructions
 
 The `block` instruction pushes an unbound [label] onto the control-flow stack.
 
-**Validation:**
+**Validation Algorithm:**
  - An entry is pushed onto the control-flow stack containing no type sequence,
    and a limit value of the current length of the type stack.
 
@@ -1063,7 +1087,7 @@ stack.
 The `loop` instruction binds a [label] to the current position and pushes it
 onto the control-flow stack.
 
-**Validation:**
+**Validation Algorithm:**
  - An entry is pushed onto the control-flow stack containing an empty type
    sequence, and a limit value of the current length of the type stack.
 
@@ -1093,6 +1117,8 @@ entry `$depth` from the top. It returns the values of its operands.
 
 **Validation:**
  - `$arity` is required to be at most 1.
+
+**Validation Algorithm:**
  - The operand sequence is [merged] into the control-flow stack entry `$depth`
    from the top.
 
@@ -1111,6 +1137,8 @@ does nothing. It returns the values of its operands, except `$condition`.
 
 **Validation:**
  - `$arity` is required to be at most 0.
+
+**Validation Algorithm:**
  - The sequence of the all but the last type in the operand sequence is [merged]
    into the control-flow stack entry `$depth` from the top.
 
@@ -1135,6 +1163,8 @@ depth from the top. It returns the values of its operands, except `$index`.
 
 **Validation:**
  - `$arity` is required to be at most 1.
+
+**Validation Algorithm:**
  - For each depth in the table and `$default`, the sequence of all but the last
    type in the operand sequence is [merged] into the control-flow stack entry
    that depth from the top.
@@ -1154,7 +1184,7 @@ with the other branch instructions.
 The `if` instruction pushes an unbound [label] onto the control-flow stack. If
 `$condition` is [false], it then [branches](#branching) to this label.
 
-**Validation:**
+**Validation Algorithm:**
  - An entry is pushed onto the control-flow stack containing no type sequence,
    and a limit value of the current length of the type stack.
 
@@ -1174,7 +1204,7 @@ position, pops an entry from the control-flow stack, pushes a new unbound
 [label] onto the control-flow stack, and then [branches](#branching) to the new
 label. It returns the values of its operands.
 
-**Validation:**
+**Validation Algorithm:**
  - The operand sequence is [merged] into the control-flow stack entry `$depth`
    from the top.
  - An entry is popped off the control-flow stack.
@@ -1196,6 +1226,8 @@ values of its operands.
 
 **Validation:**
  - `$any` is required to be at most 1.
+
+**Validation Algorithm:**
  - The operand sequence is [merged] into the control-flow stack top.
  - The control-flow stack top entry is popped.
 
@@ -1210,6 +1242,8 @@ stack bottom. It returns the values of its operands.
 
 **Validation:**
  - `$arity` is required to be at most 1.
+
+**Validation Algorithm:**
  - The operand sequence is [merged] into the control-flow stack bottom.
 
 > `return` is equivalent to a `br` to the outermost control region.
@@ -2401,7 +2435,7 @@ the name "wrap".
 The `grow_memory` instruction increases the size of the referenced linear memory
 space by a given unsigned amount, in units of [pages]. If the index of any byte
 of the referenced linear memory space would be unrepresentable in an unsigned
-iPTR, or if allocation fails due to insufficient dynamic resources, it returns
+`iPTR`, or if allocation fails due to insufficient dynamic resources, it returns
 `-1`; otherwise it returns the previous linear memory size, also as an unsigned
 value in units of [pages].
 
@@ -2459,7 +2493,7 @@ memory space, as an unsigned value in units of [pages].
 [bytes]: #bytes
 [pages]: #pages
 [effective address]: #effective-address
-[little-endian byte order]: https://en.wikipedia.org/wiki/Endianness#Little.
+[little-endian byte order]: https://en.wikipedia.org/wiki/Endianness#Little
 [accessed bytes]: #accessed-bytes
 [merged]: #type-sequence-merge
 [index]: #index
