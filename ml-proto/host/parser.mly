@@ -125,7 +125,7 @@ let implicit_decl c t at =
 %}
 
 %token NAT INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
-%token NOP DROP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
+%token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL TEE_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
@@ -190,6 +190,10 @@ func_type :
 
 /* Expressions */
 
+nat :
+  | NAT { int_of_string $1 }
+;
+
 literal :
   | NAT { $1 @@ at () }
   | INT { $1 @@ at () }
@@ -226,8 +230,50 @@ align :
 ;
 
 expr :
+  | op
+    { let at = at () in fun c -> [$1 c @@ at] }
   | LPAR expr1 RPAR
     { let at = at () in fun c -> let es, e' = $2 c in es @ [e' @@ at] }
+;
+op :
+  | NOP { fun c -> Nop }
+  | UNREACHABLE { fun c -> Unreachable }
+  | DROP { fun c -> Drop }
+  | BLOCK labeling expr_list END
+    { fun c -> let c' = $2 c in Block (snd ($3 c')) }
+  | LOOP labeling expr_list END
+    { fun c -> let c' = anon_label c in let c'' = $2 c' in
+      Loop (snd ($3 c'')) }
+  | LOOP labeling1 labeling1 expr_list END
+    { fun c -> let c' = $2 c in let c'' = $3 c' in Loop (snd ($4 c'')) }
+  | BR nat var { fun c -> Br ($2, $3 c label) }
+  | BR_IF nat var { fun c -> Br_if ($2, $3 c label) }
+  | BR_TABLE nat var var_list
+    { fun c -> let xs, x = Lib.List.split_last ($3 c label :: $4 c label) in
+      Br_table ($2, xs, x) }
+  | RETURN nat { fun c -> Return $2 }
+  | IF labeling expr_list END
+    { fun c -> let c' = $2 c in If (snd ($3 c'), []) }
+  | IF labeling expr_list ELSE labeling expr_list END
+    { fun c -> let c1 = $2 c in let c2 = $5 c in
+      If (snd ($3 c1), snd ($6 c2)) }
+  | SELECT { fun c -> Select }
+  | CALL nat var { fun c -> Call ($2, $3 c func) }
+  | CALL_IMPORT nat var { fun c -> Call_import ($2, $3 c import) }
+  | CALL_INDIRECT nat var { fun c -> Call_indirect ($2, $3 c type_) }
+  | GET_LOCAL var { fun c -> Get_local ($2 c local) }
+  | SET_LOCAL var { fun c -> Set_local ($2 c local) }
+  | TEE_LOCAL var { fun c -> Tee_local ($2 c local) }
+  | LOAD offset align { fun c -> $1 ($2, $3) }
+  | STORE offset align { fun c -> $1 ($2, $3) }
+  | CONST literal { fun c -> fst (literal $1 $2) }
+  | UNARY { fun c -> $1 }
+  | BINARY { fun c -> $1 }
+  | TEST { fun c -> $1 }
+  | COMPARE { fun c -> $1 }
+  | CONVERT { fun c -> $1 }
+  | CURRENT_MEMORY { fun c -> Current_memory }
+  | GROW_MEMORY { fun c -> Grow_memory }
 ;
 expr1 :
   | NOP { fun c -> [], Nop }

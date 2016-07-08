@@ -147,6 +147,7 @@ rule token = parse
   | "drop" { DROP }
   | "block" { BLOCK }
   | "loop" { LOOP }
+  | "end" { END }
   | "br" { BR }
   | "br_if" { BR_IF }
   | "br_table" { BR_TABLE }

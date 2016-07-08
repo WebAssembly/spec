@@ -187,46 +187,44 @@ let value v = string_of_value v.it
 let constop v = value_type (type_of v.it) ^ ".const"
 
 let rec expr e =
-  let head, inner =
     match e.it with
-    | Nop -> "nop", []
-    | Unreachable -> "unreachable", []
-    | Drop -> "drop", []
-    | Block es -> "block", list expr es
-    | Loop es -> "loop", list expr es
-    | Break (n, x) -> "br" ^ int n ^ " " ^ var x, []
-    | BreakIf (n, x) -> "br_if" ^ int n ^ " " ^ var x, []
+    | Nop -> Atom "nop"
+    | Unreachable -> Atom "unreachable"
+    | Drop -> Atom "drop"
+    | Block es -> Node ("block", list expr es)
+    | Loop es -> Node ("loop", list expr es)
+    | Break (n, x) -> Atom ("br " ^ int n ^ " " ^ var x)
+    | BreakIf (n, x) -> Atom ("br_if " ^ int n ^ " " ^ var x)
     | BreakTable (n, xs, x) ->
-      "br_table" ^ int n ^ " ", list (atom var) (xs @ [x])
-    | Return n -> "return" ^ int n, []
+      Atom ("br_table " ^ int n ^ " " ^ String.concat " " (list var (xs @ [x])))
+    | Return n -> Atom ("return " ^ int n)
     | If (es1, es2) ->
       (match list expr es1, list expr es2 with
-      | [sx2], [] -> "if", [sx2]
-      | [sx2], [sx3] -> "if", [sx2; sx3]
-      | sxs2, [] -> "if", [Node ("then", sxs2)]
-      | sxs2, sxs3 -> "if", [Node ("then", sxs2); Node ("else", sxs3)]
+      | [sx2], [] -> Node ("if", [sx2])
+      | [sx2], [sx3] -> Node ("if", [sx2; sx3])
+      | sxs2, [] -> Node ("if", [Node ("then", sxs2)])
+      | sxs2, sxs3 -> Node ("if", [Node ("then", sxs2); Node ("else", sxs3)])
       )
-    | Select -> "select", []
-    | Call (n, x) -> "call " ^ var x, []
-    | CallImport (n, x) -> "call_import " ^ var x, []
-    | CallIndirect (n, x) -> "call_indirect " ^ var x, []
-    | GetLocal x -> "get_local " ^ var x, []
-    | SetLocal x -> "set_local " ^ var x, []
-    | TeeLocal x -> "tee_local " ^ var x, []
-    | Load op -> memop "load" op, []
-    | Store op -> memop "store" op, []
-    | LoadPacked op -> extop op, []
-    | StorePacked op -> wrapop op, []
-    | Const lit -> constop lit, [atom value lit]
-    | Unary op -> unop op, []
-    | Binary op -> binop op, []
-    | Test op -> testop op, []
-    | Compare op -> relop op, []
-    | Convert op -> cvtop op, []
-    | CurrentMemory -> "current_memory", []
-    | GrowMemory -> "grow_memory", []
+    | Select -> Atom "select"
+    | Call (n, x) -> Atom ("call " ^ int n ^ " " ^ var x)
+    | CallImport (n, x) -> Atom ("call_import " ^ int n ^ " " ^ var x)
+    | CallIndirect (n, x) -> Atom ("call_indirect " ^ int n ^ " " ^ var x)
+    | GetLocal x -> Atom ("get_local " ^ var x)
+    | SetLocal x -> Atom ("set_local " ^ var x)
+    | TeeLocal x -> Atom ("tee_local " ^ var x)
+    | Load op -> Atom (memop "load" op)
+    | Store op -> Atom (memop "store" op)
+    | LoadPacked op -> Atom (extop op)
+    | StorePacked op -> Atom (wrapop op)
+    | Const lit -> Atom (constop lit ^ " " ^ value lit)
+    | Unary op -> Atom (unop op)
+    | Binary op -> Atom (binop op)
+    | Test op -> Atom (testop op)
+    | Compare op -> Atom (relop op)
+    | Convert op -> Atom (cvtop op)
+    | CurrentMemory -> Atom "current_memory"
+    | GrowMemory -> Atom "grow_memory"
     | Label _ -> assert false
-  in Node (head, inner)
 
 
 (* Functions *)
