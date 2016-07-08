@@ -268,6 +268,14 @@
 (assert_return (invoke "f64.sub" (f64.const 400000000000002) (f64.const 400000000000001)) (f64.const 1.0))
 (assert_return (invoke "f64.sub" (f64.const 400000000000002) (f64.const 400000000000000)) (f64.const 2.0))
 
+;; Min normal - min subnormal = max subnornmal.
+(assert_return (invoke "f32.sub" (f32.const 0x1p-126) (f32.const 0x1p-149)) (f32.const 0x1.fffffcp-127))
+(assert_return (invoke "f64.sub" (f64.const 0x1p-1022) (f64.const 0x0.0000000000001p-1022)) (f64.const 0x0.fffffffffffffp-1022))
+
+;; Min normal - max subnormal = min subnornmal.
+(assert_return (invoke "f32.sub" (f32.const 0x1p-126) (f32.const 0x1.fffffcp-127)) (f32.const 0x1p-149))
+(assert_return (invoke "f64.sub" (f64.const 0x1p-1022) (f64.const 0x0.fffffffffffffp-1022)) (f64.const 0x0.0000000000001p-1022))
+
 (assert_return (invoke "f32.mul" (f32.const 1e15) (f32.const 1e15)) (f32.const 0x1.93e592p+99))
 (assert_return (invoke "f32.mul" (f32.const 1e20) (f32.const 1e20)) (f32.const infinity))
 (assert_return (invoke "f32.mul" (f32.const 1e25) (f32.const 1e25)) (f32.const infinity))
