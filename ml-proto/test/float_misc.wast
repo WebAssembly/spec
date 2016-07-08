@@ -76,6 +76,7 @@
   (export "f64.max" $f64.max)
 )
 
+;; Miscellaneous values.
 (assert_return (invoke "f32.add" (f32.const 1.1234567890) (f32.const 1.2345e-10)) (f32.const 1.123456789))
 (assert_return (invoke "f64.add" (f64.const 1.1234567890) (f64.const 1.2345e-10)) (f64.const 0x1.1f9add37c11f7p+0))
 
@@ -276,6 +277,7 @@
 (assert_return (invoke "f32.sub" (f32.const 0x1p-126) (f32.const 0x1.fffffcp-127)) (f32.const 0x1p-149))
 (assert_return (invoke "f64.sub" (f64.const 0x1p-1022) (f64.const 0x0.fffffffffffffp-1022)) (f64.const 0x0.0000000000001p-1022))
 
+;; Miscellaneous values.
 (assert_return (invoke "f32.mul" (f32.const 1e15) (f32.const 1e15)) (f32.const 0x1.93e592p+99))
 (assert_return (invoke "f32.mul" (f32.const 1e20) (f32.const 1e20)) (f32.const infinity))
 (assert_return (invoke "f32.mul" (f32.const 1e25) (f32.const 1e25)) (f32.const infinity))
@@ -368,6 +370,7 @@
 (assert_return (invoke "f32.mul" (f32.const 0x1p-126) (f32.const 0x1p-23)) (f32.const 0x1p-149))
 (assert_return (invoke "f64.mul" (f64.const 0x1p-1022) (f64.const 0x1p-52)) (f64.const 0x0.0000000000001p-1022))
 
+;; Miscellaneous values.
 (assert_return (invoke "f32.div" (f32.const 1.123456789) (f32.const 100)) (f32.const 0x1.702264p-7))
 (assert_return (invoke "f32.div" (f32.const 8391667.0) (f32.const 12582905.0)) (f32.const 0x1.55754p-1))
 (assert_return (invoke "f32.div" (f32.const 65536.0) (f32.const 0x1p-37)) (f32.const 0x1p+53))
