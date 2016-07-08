@@ -40,8 +40,8 @@ For more information, see the [Validation section](#validation).
 
 A WebAssembly module can be [*instantiated*] to produce a WebAssembly instance,
 which contains all the data structures required by the module's code for
-execution. Instances can include [linear memory](#memory-section), which can
-serve the purpose of an address space for program data. For security and
+execution. Instances can include [linear memory](#linear-memory-section), which
+can serve the purpose of an address space for program data. For security and
 determinism, linear memory is *sandboxed*, and the other data structures in an
 instance, including the call stack, are allocated outside of linear memory so
 that they cannot be corrupted by errant linear memory accesses. An instance can
@@ -119,7 +119,7 @@ signed, a [two's complement] interpretation is used.
 > The [minimum signed integer value] is supported; consequently, two's
 complement signed integers aren't symmetric around zero.
 
-> When used as linear memory indices or function table indices, integer types
+> When used as linear-memory indices or function table indices, integer types
 may play the role of "pointers".
 
 ##### Booleans
@@ -177,8 +177,10 @@ Module
 --------------------------------------------------------------------------------
 
 0. [Module Types](#module-types)
+0. [Instantiation-Time Initializers](#instantiation-time-initializers)
 0. [Module Contents](#module-contents)
 0. [Known Sections](#known-sections)
+0. [Module Index Spaces](#module-index-spaces)
 
 ### Module Types
 
@@ -210,6 +212,21 @@ A *string* is an [array] of bytes.
 > Strings in this context may contain arbitrary bytes and aren't required to be
 valid UTF-8 or any other format, and aren't required to be NUL-terminated.
 
+### Instantiation-Time Initializers
+
+An *instantiation-time initializer* is a single [instruction](#instructions),
+which must be one of the following:
+ - `const` (with any type prefix)
+ - `get_global`
+
+The value produced by a module initializer is the value that such an instruction
+would produce if it were executed within a function body.
+
+**Validation:**
+ - If the instruction is a `get_global`, the global index is required to be
+   within the bounds of the [Global Index Space](#global-index-space), and the
+   indexed global is required to be an immutable import.
+
 ### Module Contents
 
 Modules contain a version [index].
@@ -237,17 +254,20 @@ There are several *known sections*:
 0. [Import Section](#import-section)
 0. [Function Section](#function-section)
 0. [Table Section](#table-section)
-0. [Memory Section](#memory-section)
+0. [Linear-Memory Section](#linear-memory-section)
 0. [Export Section](#export-section)
 0. [Start Section](#start-section)
 0. [Code Section](#code-section)
 0. [Data Section](#data-section)
 0. [Global Section](#global-section)
-0. [Elements Section](#elements-section)
+0. [Element Section](#element-section)
 0. [Name Section](#name-section)
 
-TODO: The various Index Spaces, and Initializer Expressions, per
-https://github.com/WebAssembly/design/pull/682
+TODO: Determine the official names and positions in the sequence of the Global
+and Element sections.
+
+TODO: "Element Section" vs. "Elements Section". Most of the other sections use
+the singular, though "Data" is plural.
 
 #### Type Section
 
@@ -323,7 +343,11 @@ A *table* consists of:
 
 **Name:** `memory`
 
-The Memory Section consists of:
+The Memory Section consists of an array of linear-memory declarations.
+
+A *linear-memory declaration* contains:
+ - An *index bitwidth* [index]. Within the context of this linear-memory, `iPTR`
+   refers to an integer type with this bitwidth.
  - An *initial size*, which is an unsigned `iPTR` value, in units of [pages].
  - An optional *maximum size*, which if present is an unsigned `iPTR` value, in
    units of [pages]. See the [`grow_memory`](#grow-memory) instruction for
@@ -335,11 +359,11 @@ The Memory Section consists of:
  - If present, the maximum size is required to be at least the initial size.
  - If present, the index of every byte in a linear memory with the maximum size
    is required to be representable in an unsigned `iPTR`.
-
-TODO: Define `iPTR` in this context. Should Memory Sections have a wasm32 vs
-wasm64 flag?
+ - The index bitwidth is currently required to be `32`.
 
 TODO: The *default flag*, per https://github.com/WebAssembly/design/pull/682
+
+TODO: The index bitwidth field anticipates a proposal to add this flag.
 
 > When a maximum size value is present, implementations are encouraged to
 attempt to reserve enough resources for allocating up to the maximum size up
@@ -362,7 +386,7 @@ WebAssembly modules or through other mechanism specific to the embedding
 environment.
 
 An *export* consists of:
- - an [index] of a function to export
+ - an [index] of a function to export.
  - a *function [string]*, which is the name to export the indexed function as.
 
 **Validation:**
@@ -411,24 +435,76 @@ A *position* within a function refers to an element of the instruction sequence.
 
 The Data Section consists of an [array] of data initializers.
 
-A *data initializer* consists of a [string] and a *start offset*. It describes
-data to be loaded into linear memory as part of
-[linear memory instantiation](#linear-memory-instantiation).
+A *data initializer* consists of:
+ - a linear-memory index.
+ - a *start offset* which is an
+   [instantiation-time initializer](#instantiation-time-initializers).
+ - a [string] of data.
+
+It describes data to be loaded into linear memory identified by the index in the
+[linear-memory index space](#linear-memory-index-space) during
+[linear-memory instantiation](#linear-memory-instantiation).
 
 **Validation:**
- - For each element of the array, the sum of the start offset and the length of
-   the string is required to be less than the initial size declared in the
-   [Memory Section](#memory-section).
- - The start offset of each element of the array is required to be greater than
-   the index of any byte initialized by elements that precede it.
+ - For each element of the array:
+    - The linear-memory index is required to be within the bounds of the
+      linear-memory index space.
+    - A linear-memory space is identified by the linear-memory index in the
+      linear-memory space and:
+       - The sum of the start offset and the length of the string is required to
+         be less than the initial size declared for the linear-memory space.
+       - The start offset is required to be greater than the index of any byte
+         in the linear-memory space that will be initialized by a prior
+         initializer.
 
 #### Global Section
 
-TODO: Describe the Global Section (and decide its position in the sequence).
+**Name:** `global`
 
-#### Elements Section
+The Global Section consists of an [array] of global declarations.
 
-TODO: Describe the Elements Section (and decide its position in the sequence).
+A *global declaration* consists of:
+ - A [type].
+ - An *immutable flag*.
+ - An *initializer*, which is an
+   [instantiation-time initializer](#instantiation-time-initializer).
+
+#### Element Section
+
+**Name:** `element`
+
+The Element Section consists of an [array] of table initializers.
+
+A *table initializer* consists of:
+ - a table index.
+ - a *start offset* which is an
+   [instantiation-time initializer](#instantiation-time-initializers).
+ - an [array] of table element initializers.
+
+A *table element initializer* consists of:
+ - an index-space selector, which conceptually identifies an index space and for
+   which currently the only valid value is "the Function Index Space".
+ - an index into the selected space.
+
+**Validation:**
+ - For each element of the array:
+    - The table index is required to be within the bounds of the table index
+      space.
+    - A table is identified by the table index in the table space and:
+       - The sum of the start offset and the length of
+         the element initializer array is required to be less than the initial
+         size declared for the table.
+       - The start offset is required to be greater than the index of any
+         element in the table that will be initialized by a prior initializer.
+       - For each element of the indexed table element initializer:
+          - The type of the elements of the selected index space are required to
+            be compatible with the type of the table to be initialized.
+          - The index is required to be within the bounds of the selected index
+            space.
+
+> The Element Sections is to the [Table Section](#table-section) as the
+[Data Section](#data-section) is to the
+[Linear-Memory Section](#linear-memory-section).
 
 #### Name Section
 
@@ -457,6 +533,55 @@ TODO: Should the names in this section be required to be valid UTF-8 strings?
 This section isn't used during normal validation or execution, so it's off the
 "hot path" and is only used during debugging, to present strings to humans, so
 it might make sense.
+
+### Module Index Spaces
+
+0. [Function Index Space](#function-index-space)
+0. [Global Index Space](#global-index-space)
+0. [Linear-Memory Index Space](#linear-memory-index-space)
+0. [Table Index Space](#table-index-space)
+
+#### Function Index Space
+
+The *function index space* begins with an index for each function in the
+[Function Section](#function-section), in the order of that section, followed by
+an index for each imported function, in the order the imports appear in the
+[Import Section](#import-section).
+
+> The function index space is used by [`call` instructions](#call) to identify
+the callee of a direct call.
+
+#### Global Index Space
+
+The *function index space* begins with an index for each global in the
+[Global Section](#global-section), in the order of that section, followed by
+an index for each imported global, in the order the imports appear in the
+[Import Section](#import-section).
+
+> The global index space is used by:
+ - the [`get_global`](#get-global) and [`set_global`](#set-global) instructions.
+ - the [Data Section](#data-section), to define the offset of a data segment
+   (in linear memory) as the value of a global variable.
+
+#### Linear-Memory Index Space
+
+The *linear-memory index space* begins with an index for each linear memory
+space defined in the [Linear-Memory Section](#linear-memory-section), in the
+order of that section, followed by an index for each imported linear memory, in
+the order the imports appear in the [Import Section](#import-section).
+
+> The linear-memory index space is currently only used by the
+[Data Section](#data-section).
+
+#### Table Index Space
+
+The *table index space* begins with an index for each table defined in the
+[Table Section](#table-section), in the order of that section, followed by an
+index for each imported table, in the order the imports appear in the
+[Import Section](#import-section).
+
+> The table index space is currently only used by the
+[Element Section](#element-section).
 
 
 Binary Format
@@ -626,12 +751,15 @@ reference to the module plus additional information added during instantiation,
 which consists of the following steps:
  - The entire module is first [validated](#validation). If there are any
    failures, instantiation aborts and doesn't produce an instance.
- - If a [Memory Section](#memory-section) is present,
+ - If a [Memory Section](#linear-memory-section) is present,
    [linear memory is instantiated](#linear-memory-instantiation).
+ - If a [Table Section](#table-section) is present,
+   [tables are instantiated](#table-instantiation).
  - A finite quantity of [call-stack resources] are allocated.
  - A *globals array* is allocated, which is a heterogeneous array of values
    containing an element for each element in the module's
-   [Global Section](#global-section).
+   [Global Section](#global-section), and initialized with the values of their
+   initializers.
 
 > The contents of the Module, including functions and their bodies, are outside
 any linear address space and not any accessible to applications. WebAssembly is
@@ -642,18 +770,37 @@ https://github.com/WebAssembly/design/pull/719
 
 [Harvard Architecture]: https://en.wikipedia.org/wiki/Harvard_architecture
 
-#### Linear Memory Instantiation
+#### Linear-Memory Instantiation
 
 An array of bytes with the length being the value of the
-[Memory Section](#memory-section)'s initial size field is created and added to
-the instance. Any byte not initialized by any data initializer is initialized to
-zero.
+[Memory Section](#linear-memory-section)'s initial size field is created and
+added to the instance. Any byte not initialized by any data initializer is
+initialized to zero.
 
 The contents of the [Data Section](#data-section) are loaded into this array.
 Each [string] is loaded into linear memory at its associated start offset.
 
 **Trap:** Dynamic Resource Exhaustion, if dynamic resources are insufficient to
 support creation of the array.
+
+#### Table Instantiation
+
+For each table in the [Table Section](#table-section):
+ - An array of elements is created with the table's initial length, with
+   elements of the table's element type.
+
+For each table initializer in the [Element Section](#element-section), for the
+table identified by the table index in the table index space:
+ - A contiguous of elements in the table starting at the table initializer's
+   start offset is initialized according to the elements of the table element
+   initializers array, which specify an indexed element in their selected index
+   space.
+
+Any element not initialized by any table initializer is initialized to a special
+"null" value.
+
+**Trap:** Dynamic Resource Exhaustion, if dynamic resources are insufficient to
+support creation of any of the tables.
 
 #### Call-Stack Resources
 
@@ -802,7 +949,7 @@ The following named values are defined:
 
 A few special constructs are used for special purposes:
  - `iPTR` is for use with a linear memory access, and signifies the integer type
-   associated with addresses within the accessed linear memory space.
+   associated with addresses within the accessed linear-memory space.
  - `TABLE` indicates a branch table, which is a sequence of immediate integer
    values for use in the [table branch](#table-branch) instruction.
  - `T[x]` is used in type-generic instructions to denote a heterogeneous list of
@@ -820,8 +967,8 @@ types they are bound to.
 WebAssembly instructions may belong to several families, indicated in the tables
 by their family letter:
 
-0. [M: Linear Memory Access Instruction Family][M]
-0. [R: Linear Memory Size Instruction Family][R]
+0. [M: Linear-Memory Access Instruction Family][M]
+0. [R: Linear-Memory Size Instruction Family][R]
 0. [B: Branch Instruction Family][B]
 0. [L: Call Instruction Family][L]
 0. [C: Comparison Instruction Family][C]
@@ -833,9 +980,9 @@ by their family letter:
 0. [Z: Floating-Point Bitwise Instruction Family][Z]
 0. [Q: Control-Flow Barrier Instruction Family][Q]
 
-#### M: Linear Memory Access Instruction Family
+#### M: Linear-Memory Access Instruction Family
 
-These instructions load from and store to a linear memory space.
+These instructions load from and store to a linear-memory space.
 
 ##### Effective Address
 
@@ -860,7 +1007,7 @@ The *accessed bytes* consist of a contiguous sequence of [bytes] starting at the
 [effective address], with a length implied by the accessing instruction.
 
 **Trap:** Out Of Bounds, if any of the accessed bytes are beyond the end of the
-accessed linear memory space.
+accessed linear-memory space.
 
 ##### Loading
 
@@ -872,22 +1019,22 @@ For a load access, a value is read from the [accessed bytes], in
 For a store access, the value to store is written to the [accessed bytes], in
 [little-endian byte order].
 
-##### Linear Memory Access Validation
+##### Linear-Memory Access Validation
 
  - `$align` is required to be a [power of 2].
  - `$align` is required to be at most the number of [accessed bytes].
- - The module is required to contain a [Memory Section](#memory-section).
+ - The module is required to contain a [Memory Section](#linear-memory-section).
 
 TODO: Will offsets be encoded as signed? Monitor
 https://github.com/WebAssembly/design/issues/584
 
 [power of 2]: https://en.wikipedia.org/wiki/Power_of_two
 
-#### R: Linear Memory Size Instruction Family
+#### R: Linear-Memory Size Instruction Family
 
-##### Linear Memory Size Validation
+##### Linear-Memory Size Validation
 
- - The module is required to contain a [Memory Section](#memory-section).
+ - The module is required to contain a [Memory Section](#linear-memory-section).
 
 #### B: Branch Instruction Family
 
@@ -1411,11 +1558,11 @@ return value.
 | --------     | ---------                  | -------- | ------
 | `get_global` | `<$id: i32> () : (T)`      |          | TODO
 
-The `get_global` instruction returns the value in the globals array at index
-`$id`.
+The `get_global` instruction returns the value in the global identified by index
+`$id` in the [Global Index Space](#global-index-space).
 
 **Validation:**
- - `$id` is required to be within the bounds of the globals array.
+ - `$id` is required to be within the bounds of the Global Index Space.
 
 #### Set Global
 
@@ -1423,11 +1570,12 @@ The `get_global` instruction returns the value in the globals array at index
 | --------     | ---------                  | -------- | ------
 | `set_global` | `<$id: i32> (T) : ()`      |          | TODO
 
-The `set_global` instruction sets the value in the globals array at index `$id`
-to the value given in the operand.
+The `set_global` instruction sets the value in the global identified by index
+`$id` in the [Global Index Space](#global-index-space) to the value given in the
+operand.
 
 **Validation:**
- - `$id` is required to be within the bounds of the globals array.
+ - `$id` is required to be within the bounds of the Global Index Space.
  - The indexed global is required to be declared not immutable.
 
 #### Select
@@ -1452,14 +1600,11 @@ https://github.com/WebAssembly/design/pull/695
 | `call`      | `<$arity: i32, $callee: i32> (T[$args]) : (T[$returns])` | [L]      | 0x17
 
 The `call` instruction performs a [call](#calling) to the function with index
-`$callee`.
+`$callee` in the [Function Index Space](#function-index-space).
 
 **Validation:**
  - [Call validation](#call-validation) is required; the callee signature is the
    signature of the indexed function.
-
-TODO: Update index space, per
-https://github.com/WebAssembly/design/pull/682
 
 TODO: This anticipates sanitizing `select`'s opcode. Monitor
 https://github.com/WebAssembly/design/pull/695
@@ -1470,21 +1615,24 @@ https://github.com/WebAssembly/design/pull/695
 | --------        | ---------                                                                 | -------- | ------
 | `call_indirect` | `<$arity: i32, $signature: i32> ($callee: i32, T[$args]) : (T[$returns])` | [L]      | 0x18
 
-The `call_indirect` instruction performs a [call](#calling) to the function with
-index `$callee`.
+The `call_indirect` instruction performs a [call](#calling) to the function in
+the default table with index `$callee`.
 
-**Trap:** Indirect Call Type Mismatch, if the signature index of the function
-with index `$callee` differs from `$signature`.
+**Trap:** Indirect Callee Absent, if the indexed table element is the special
+"null" value.
+
+**Trap:** Indirect Call Type Mismatch, if the signature of the function with
+index `$callee` differs from the signature in the [Type Section](#type-section)
+with index `$signature`.
 
 **Validation:**
  - [Call validation](#call-validation) is required; the callee signature is the
    signature with index `$signature` in the [Type Section](#type-section).
 
-> The dynamic caller/callee signature match is nominal rather than structural.
+> The dynamic caller/callee signature match is structural rather than nominal.
 
-TODO: Update signature matching and index space, comment that indices can
-effectively be used as function pointers, and change signature matching to
-structural, per https://github.com/WebAssembly/design/pull/682
+> Indices in the default table can provide applications with the functionality
+of function pointers.
 
 TODO: This anticipates sanitizing `select`'s opcode. Monitor
 https://github.com/WebAssembly/design/pull/695
@@ -2485,12 +2633,12 @@ the name "wrap".
 
 The `grow_memory` instruction increases the size of the referenced linear memory
 space by a given unsigned amount, in units of [pages]. If the index of any byte
-of the referenced linear memory space would be unrepresentable in an unsigned
+of the referenced linear-memory space would be unrepresentable in an unsigned
 `iPTR`, or if allocation fails due to insufficient dynamic resources, it returns
 `-1`; otherwise it returns the previous linear memory size, also as an unsigned
 value in units of [pages].
 
-When a maximum size is present in the referenced linear memory space,
+When a maximum size is present in the referenced linear-memory space,
 `grow_memory` fails if it would grow past the maximum. However, `grow_memory`
 may still fail before the maximum if it wasn't possible to reserve the space up
 front or if enabling the reserved memory fails.
