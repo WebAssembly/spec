@@ -137,7 +137,6 @@ open Ast
 
 let op s = u8 s
 let arity s = vu s
-let arity1 s = bool s
 
 let memop s =
   let align = vu s in
@@ -161,273 +160,258 @@ let args1 b stack s pos =
   | [e], stack' -> Some e, stack'
   | _ -> assert false
 
-let rec expr stack s =
+let rec expr s =
   let pos = pos s in
-  match op s, stack with
-  | 0x00, es ->
-    Nop, es
-  | 0x01, es ->
+  match op s with
+  | 0x00 -> Nop
+  | 0x01 ->
     let es' = expr_block s in
     expect 0x0f s "END opcode expected";
-    Block es', es
-  | 0x02, es ->
+    Block es'
+  | 0x02 ->
     let es' = expr_block s in
     expect 0x0f s "END opcode expected";
-    Loop es', es
-  | 0x03, e :: es ->
+    Loop es'
+  | 0x03 ->
     let es1 = expr_block s in
     if peek s = Some 0x04 then begin
       expect 0x04 s "ELSE or END opcode expected";
       let es2 = expr_block s in
       expect 0x0f s "END opcode expected";
-      If (e, es1, es2), es
+      If (es1, es2)
     end else begin
       expect 0x0f s "END opcode expected";
-      If (e, es1, []), es
+      If (es1, [])
     end
-  | 0x04, _ ->
-    error s pos "misplaced ELSE opcode"
-  | 0x05, e3 :: e2 :: e1 :: es ->
-    Select (e1, e2, e3), es
-  | 0x06, es ->
-    let b = arity1 s in
+  | 0x04 -> error s pos "misplaced ELSE opcode"
+  | 0x05 -> Select
+  | 0x06 ->
+    let n = arity s in
     let x = at var s in
-    let eo, es' = args1 b es s pos in
-    Br (x, eo), es'
-  | 0x07, e :: es ->
-    let b = arity1 s in
+    Br (n, x)
+  | 0x07 ->
+    let n = arity s in
     let x = at var s in
-    let eo, es' = args1 b es s pos in
-    Br_if (x, eo, e), es'
-  | 0x08, e :: es ->
-    let b = arity1 s in
+    Br_if (n, x)
+  | 0x08 ->
+    let n = arity s in
     let xs = vec (at var) s in
     let x = at var s in
-    let eo, es' = args1 b es s pos in
-    Br_table (xs, x, eo, e), es'
-  | 0x09, es ->
-    let b = arity1 s in
-    let eo, es' = args1 b es s pos in
-    Return eo, es'
-  | 0x0a, es ->
-    Unreachable, es
-  | 0x0b, e :: es ->
-    Drop e, es
-  | 0x0c | 0x0d | 0x0e as b, _ ->
-    illegal s pos b
-  | 0x0f, _ ->
-    error s pos "misplaced END opcode"
+    Br_table (n, xs, x)
+  | 0x09 ->
+    let n = arity s in
+    Return n
+  | 0x0a -> Unreachable
+  | 0x0b -> Drop
+  | 0x0c | 0x0d | 0x0e as b -> illegal s pos b
+  | 0x0f -> error s pos "misplaced END opcode"
 
-  | 0x10, es -> I32_const (at vs32 s), es
-  | 0x11, es -> I64_const (at vs64 s), es
-  | 0x12, es -> F32_const (at f32 s), es
-  | 0x13, es -> F64_const (at f64 s), es
+  | 0x10 -> I32_const (at vs32 s)
+  | 0x11 -> I64_const (at vs64 s)
+  | 0x12 -> F32_const (at f32 s)
+  | 0x13 -> F64_const (at f64 s)
 
-  | 0x14, es ->
+  | 0x14 ->
     let x = at var s in
-    Get_local x, es
-  | 0x15, e :: es ->
+    Get_local x
+  | 0x15 ->
     let x = at var s in
-    Set_local (x, e), es
+    Set_local x
 
-  | 0x16, es ->
+  | 0x16 ->
     let n = arity s in
     let x = at var s in
-    let es1, es' = args n es s pos in
-    Call (x, es1), es'
-  | 0x17, es ->
+    Call (n, x)
+  | 0x17 ->
     let n = arity s in
     let x = at var s in
-    let es1, es' = args (n + 1) es s pos in
-    Call_indirect (x, List.hd es1, List.tl es1), es'
-  | 0x18, es ->
+    Call_indirect (n, x)
+  | 0x18 ->
     let n = arity s in
     let x = at var s in
-    let es1, es' = args n es s pos in
-    Call_import (x, es1), es'
+    Call_import (n, x)
 
-  | 0x19, e :: es ->
+  | 0x19 ->
     let x = at var s in
-    Tee_local (x, e), es
+    Tee_local x
 
-  | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e | 0x1f as b, _ ->
-    illegal s pos b
+  | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
 
-  | 0x20, e :: es -> let o, a = memop s in I32_load8_s (o, a, e), es
-  | 0x21, e :: es -> let o, a = memop s in I32_load8_u (o, a, e), es
-  | 0x22, e :: es -> let o, a = memop s in I32_load16_s (o, a, e), es
-  | 0x23, e :: es -> let o, a = memop s in I32_load16_u (o, a, e), es
-  | 0x24, e :: es -> let o, a = memop s in I64_load8_s (o, a, e), es
-  | 0x25, e :: es -> let o, a = memop s in I64_load8_u (o, a, e), es
-  | 0x26, e :: es -> let o, a = memop s in I64_load16_s (o, a, e), es
-  | 0x27, e :: es -> let o, a = memop s in I64_load16_u (o, a, e), es
-  | 0x28, e :: es -> let o, a = memop s in I64_load32_s (o, a, e), es
-  | 0x29, e :: es -> let o, a = memop s in I64_load32_u (o, a, e), es
-  | 0x2a, e :: es -> let o, a = memop s in I32_load (o, a, e), es
-  | 0x2b, e :: es -> let o, a = memop s in I64_load (o, a, e), es
-  | 0x2c, e :: es -> let o, a = memop s in F32_load (o, a, e), es
-  | 0x2d, e :: es -> let o, a = memop s in F64_load (o, a, e), es
+  | 0x20 -> let o, a = memop s in I32_load8_s (o, a)
+  | 0x21 -> let o, a = memop s in I32_load8_u (o, a)
+  | 0x22 -> let o, a = memop s in I32_load16_s (o, a)
+  | 0x23 -> let o, a = memop s in I32_load16_u (o, a)
+  | 0x24 -> let o, a = memop s in I64_load8_s (o, a)
+  | 0x25 -> let o, a = memop s in I64_load8_u (o, a)
+  | 0x26 -> let o, a = memop s in I64_load16_s (o, a)
+  | 0x27 -> let o, a = memop s in I64_load16_u (o, a)
+  | 0x28 -> let o, a = memop s in I64_load32_s (o, a)
+  | 0x29 -> let o, a = memop s in I64_load32_u (o, a)
+  | 0x2a -> let o, a = memop s in I32_load (o, a)
+  | 0x2b -> let o, a = memop s in I64_load (o, a)
+  | 0x2c -> let o, a = memop s in F32_load (o, a)
+  | 0x2d -> let o, a = memop s in F64_load (o, a)
 
-  | 0x2e, e2 :: e1 :: es -> let o, a = memop s in I32_store8 (o, a, e1, e2), es
-  | 0x2f, e2 :: e1 :: es -> let o, a = memop s in I32_store16 (o, a, e1, e2), es
-  | 0x30, e2 :: e1 :: es -> let o, a = memop s in I64_store8 (o, a, e1, e2), es
-  | 0x31, e2 :: e1 :: es -> let o, a = memop s in I64_store16 (o, a, e1, e2), es
-  | 0x32, e2 :: e1 :: es -> let o, a = memop s in I64_store32 (o, a, e1, e2), es
-  | 0x33, e2 :: e1 :: es -> let o, a = memop s in I32_store (o, a, e1, e2), es
-  | 0x34, e2 :: e1 :: es -> let o, a = memop s in I64_store (o, a, e1, e2), es
-  | 0x35, e2 :: e1 :: es -> let o, a = memop s in F32_store (o, a, e1, e2), es
-  | 0x36, e2 :: e1 :: es -> let o, a = memop s in F64_store (o, a, e1, e2), es
+  | 0x2e -> let o, a = memop s in I32_store8 (o, a)
+  | 0x2f -> let o, a = memop s in I32_store16 (o, a)
+  | 0x30 -> let o, a = memop s in I64_store8 (o, a)
+  | 0x31 -> let o, a = memop s in I64_store16 (o, a)
+  | 0x32 -> let o, a = memop s in I64_store32 (o, a)
+  | 0x33 -> let o, a = memop s in I32_store (o, a)
+  | 0x34 -> let o, a = memop s in I64_store (o, a)
+  | 0x35 -> let o, a = memop s in F32_store (o, a)
+  | 0x36 -> let o, a = memop s in F64_store (o, a)
 
-  | 0x37 | 0x38 as b, _ -> illegal s pos b
+  | 0x37 | 0x38 as b -> illegal s pos b
 
-  | 0x39, e :: es -> Grow_memory e, es
-  | 0x3a as b, _ -> illegal s pos b
-  | 0x3b, es -> Current_memory, es
+  | 0x39 -> Grow_memory
+  | 0x3a as b -> illegal s pos b
+  | 0x3b -> Current_memory
 
-  | 0x3c | 0x3d | 0x3e | 0x3f as b, _ -> illegal s pos b
+  | 0x3c | 0x3d | 0x3e | 0x3f as b -> illegal s pos b
 
-  | 0x40, e2 :: e1 :: es -> I32_add (e1, e2), es
-  | 0x41, e2 :: e1 :: es -> I32_sub (e1, e2), es
-  | 0x42, e2 :: e1 :: es -> I32_mul (e1, e2), es
-  | 0x43, e2 :: e1 :: es -> I32_div_s (e1, e2), es
-  | 0x44, e2 :: e1 :: es -> I32_div_u (e1, e2), es
-  | 0x45, e2 :: e1 :: es -> I32_rem_s (e1, e2), es
-  | 0x46, e2 :: e1 :: es -> I32_rem_u (e1, e2), es
-  | 0x47, e2 :: e1 :: es -> I32_and (e1, e2), es
-  | 0x48, e2 :: e1 :: es -> I32_or (e1, e2), es
-  | 0x49, e2 :: e1 :: es -> I32_xor (e1, e2), es
-  | 0x4a, e2 :: e1 :: es -> I32_shl (e1, e2), es
-  | 0x4b, e2 :: e1 :: es -> I32_shr_u (e1, e2), es
-  | 0x4c, e2 :: e1 :: es -> I32_shr_s (e1, e2), es
-  | 0x4d, e2 :: e1 :: es -> I32_eq (e1, e2), es
-  | 0x4e, e2 :: e1 :: es -> I32_ne (e1, e2), es
-  | 0x4f, e2 :: e1 :: es -> I32_lt_s (e1, e2), es
-  | 0x50, e2 :: e1 :: es -> I32_le_s (e1, e2), es
-  | 0x51, e2 :: e1 :: es -> I32_lt_u (e1, e2), es
-  | 0x52, e2 :: e1 :: es -> I32_le_u (e1, e2), es
-  | 0x53, e2 :: e1 :: es -> I32_gt_s (e1, e2), es
-  | 0x54, e2 :: e1 :: es -> I32_ge_s (e1, e2), es
-  | 0x55, e2 :: e1 :: es -> I32_gt_u (e1, e2), es
-  | 0x56, e2 :: e1 :: es -> I32_ge_u (e1, e2), es
-  | 0x57, e :: es -> I32_clz e, es
-  | 0x58, e :: es -> I32_ctz e, es
-  | 0x59, e :: es -> I32_popcnt e, es
-  | 0x5a, e :: es -> I32_eqz e, es
+  | 0x40 -> I32_add
+  | 0x41 -> I32_sub
+  | 0x42 -> I32_mul
+  | 0x43 -> I32_div_s
+  | 0x44 -> I32_div_u
+  | 0x45 -> I32_rem_s
+  | 0x46 -> I32_rem_u
+  | 0x47 -> I32_and
+  | 0x48 -> I32_or
+  | 0x49 -> I32_xor
+  | 0x4a -> I32_shl
+  | 0x4b -> I32_shr_u
+  | 0x4c -> I32_shr_s
+  | 0x4d -> I32_eq
+  | 0x4e -> I32_ne
+  | 0x4f -> I32_lt_s
+  | 0x50 -> I32_le_s
+  | 0x51 -> I32_lt_u
+  | 0x52 -> I32_le_u
+  | 0x53 -> I32_gt_s
+  | 0x54 -> I32_ge_s
+  | 0x55 -> I32_gt_u
+  | 0x56 -> I32_ge_u
+  | 0x57 -> I32_clz
+  | 0x58 -> I32_ctz
+  | 0x59 -> I32_popcnt
+  | 0x5a -> I32_eqz
 
-  | 0x5b, e2 :: e1 :: es -> I64_add (e1, e2), es
-  | 0x5c, e2 :: e1 :: es -> I64_sub (e1, e2), es
-  | 0x5d, e2 :: e1 :: es -> I64_mul (e1, e2), es
-  | 0x5e, e2 :: e1 :: es -> I64_div_s (e1, e2), es
-  | 0x5f, e2 :: e1 :: es -> I64_div_u (e1, e2), es
-  | 0x60, e2 :: e1 :: es -> I64_rem_s (e1, e2), es
-  | 0x61, e2 :: e1 :: es -> I64_rem_u (e1, e2), es
-  | 0x62, e2 :: e1 :: es -> I64_and (e1, e2), es
-  | 0x63, e2 :: e1 :: es -> I64_or (e1, e2), es
-  | 0x64, e2 :: e1 :: es -> I64_xor (e1, e2), es
-  | 0x65, e2 :: e1 :: es -> I64_shl (e1, e2), es
-  | 0x66, e2 :: e1 :: es -> I64_shr_u (e1, e2), es
-  | 0x67, e2 :: e1 :: es -> I64_shr_s (e1, e2), es
-  | 0x68, e2 :: e1 :: es -> I64_eq (e1, e2), es
-  | 0x69, e2 :: e1 :: es -> I64_ne (e1, e2), es
-  | 0x6a, e2 :: e1 :: es -> I64_lt_s (e1, e2), es
-  | 0x6b, e2 :: e1 :: es -> I64_le_s (e1, e2), es
-  | 0x6c, e2 :: e1 :: es -> I64_lt_u (e1, e2), es
-  | 0x6d, e2 :: e1 :: es -> I64_le_u (e1, e2), es
-  | 0x6e, e2 :: e1 :: es -> I64_gt_s (e1, e2), es
-  | 0x6f, e2 :: e1 :: es -> I64_ge_s (e1, e2), es
-  | 0x70, e2 :: e1 :: es -> I64_gt_u (e1, e2), es
-  | 0x71, e2 :: e1 :: es -> I64_ge_u (e1, e2), es
-  | 0x72, e :: es -> I64_clz e, es
-  | 0x73, e :: es -> I64_ctz e, es
-  | 0x74, e :: es -> I64_popcnt e, es
+  | 0x5b -> I64_add
+  | 0x5c -> I64_sub
+  | 0x5d -> I64_mul
+  | 0x5e -> I64_div_s
+  | 0x5f -> I64_div_u
+  | 0x60 -> I64_rem_s
+  | 0x61 -> I64_rem_u
+  | 0x62 -> I64_and
+  | 0x63 -> I64_or
+  | 0x64 -> I64_xor
+  | 0x65 -> I64_shl
+  | 0x66 -> I64_shr_u
+  | 0x67 -> I64_shr_s
+  | 0x68 -> I64_eq
+  | 0x69 -> I64_ne
+  | 0x6a -> I64_lt_s
+  | 0x6b -> I64_le_s
+  | 0x6c -> I64_lt_u
+  | 0x6d -> I64_le_u
+  | 0x6e -> I64_gt_s
+  | 0x6f -> I64_ge_s
+  | 0x70 -> I64_gt_u
+  | 0x71 -> I64_ge_u
+  | 0x72 -> I64_clz
+  | 0x73 -> I64_ctz
+  | 0x74 -> I64_popcnt
 
-  | 0x75, e2 :: e1 :: es -> F32_add (e1, e2), es
-  | 0x76, e2 :: e1 :: es -> F32_sub (e1, e2), es
-  | 0x77, e2 :: e1 :: es -> F32_mul (e1, e2), es
-  | 0x78, e2 :: e1 :: es -> F32_div (e1, e2), es
-  | 0x79, e2 :: e1 :: es -> F32_min (e1, e2), es
-  | 0x7a, e2 :: e1 :: es -> F32_max (e1, e2), es
-  | 0x7b, e :: es -> F32_abs e, es
-  | 0x7c, e :: es -> F32_neg e, es
-  | 0x7d, e2 :: e1 :: es -> F32_copysign (e1, e2), es
-  | 0x7e, e :: es -> F32_ceil e, es
-  | 0x7f, e :: es -> F32_floor e, es
-  | 0x80, e :: es -> F32_trunc e, es
-  | 0x81, e :: es -> F32_nearest e, es
-  | 0x82, e :: es -> F32_sqrt e, es
-  | 0x83, e2 :: e1 :: es -> F32_eq (e1, e2), es
-  | 0x84, e2 :: e1 :: es -> F32_ne (e1, e2), es
-  | 0x85, e2 :: e1 :: es -> F32_lt (e1, e2), es
-  | 0x86, e2 :: e1 :: es -> F32_le (e1, e2), es
-  | 0x87, e2 :: e1 :: es -> F32_gt (e1, e2), es
-  | 0x88, e2 :: e1 :: es -> F32_ge (e1, e2), es
+  | 0x75 -> F32_add
+  | 0x76 -> F32_sub
+  | 0x77 -> F32_mul
+  | 0x78 -> F32_div
+  | 0x79 -> F32_min
+  | 0x7a -> F32_max
+  | 0x7b -> F32_abs
+  | 0x7c -> F32_neg
+  | 0x7d -> F32_copysign
+  | 0x7e -> F32_ceil
+  | 0x7f -> F32_floor
+  | 0x80 -> F32_trunc
+  | 0x81 -> F32_nearest
+  | 0x82 -> F32_sqrt
+  | 0x83 -> F32_eq
+  | 0x84 -> F32_ne
+  | 0x85 -> F32_lt
+  | 0x86 -> F32_le
+  | 0x87 -> F32_gt
+  | 0x88 -> F32_ge
 
-  | 0x89, e2 :: e1 :: es -> F64_add (e1, e2), es
-  | 0x8a, e2 :: e1 :: es -> F64_sub (e1, e2), es
-  | 0x8b, e2 :: e1 :: es -> F64_mul (e1, e2), es
-  | 0x8c, e2 :: e1 :: es -> F64_div (e1, e2), es
-  | 0x8d, e2 :: e1 :: es -> F64_min (e1, e2), es
-  | 0x8e, e2 :: e1 :: es -> F64_max (e1, e2), es
-  | 0x8f, e :: es -> F64_abs e, es
-  | 0x90, e :: es -> F64_neg e, es
-  | 0x91, e2 :: e1 :: es -> F64_copysign (e1, e2), es
-  | 0x92, e :: es -> F64_ceil e, es
-  | 0x93, e :: es -> F64_floor e, es
-  | 0x94, e :: es -> F64_trunc e, es
-  | 0x95, e :: es -> F64_nearest e, es
-  | 0x96, e :: es -> F64_sqrt e, es
-  | 0x97, e2 :: e1 :: es -> F64_eq (e1, e2), es
-  | 0x98, e2 :: e1 :: es -> F64_ne (e1, e2), es
-  | 0x99, e2 :: e1 :: es -> F64_lt (e1, e2), es
-  | 0x9a, e2 :: e1 :: es -> F64_le (e1, e2), es
-  | 0x9b, e2 :: e1 :: es -> F64_gt (e1, e2), es
-  | 0x9c, e2 :: e1 :: es -> F64_ge (e1, e2), es
+  | 0x89 -> F64_add
+  | 0x8a -> F64_sub
+  | 0x8b -> F64_mul
+  | 0x8c -> F64_div
+  | 0x8d -> F64_min
+  | 0x8e -> F64_max
+  | 0x8f -> F64_abs
+  | 0x90 -> F64_neg
+  | 0x91 -> F64_copysign
+  | 0x92 -> F64_ceil
+  | 0x93 -> F64_floor
+  | 0x94 -> F64_trunc
+  | 0x95 -> F64_nearest
+  | 0x96 -> F64_sqrt
+  | 0x97 -> F64_eq
+  | 0x98 -> F64_ne
+  | 0x99 -> F64_lt
+  | 0x9a -> F64_le
+  | 0x9b -> F64_gt
+  | 0x9c -> F64_ge
 
-  | 0x9d, e :: es -> I32_trunc_s_f32 e, es
-  | 0x9e, e :: es -> I32_trunc_s_f64 e, es
-  | 0x9f, e :: es -> I32_trunc_u_f32 e, es
-  | 0xa0, e :: es -> I32_trunc_u_f64 e, es
-  | 0xa1, e :: es -> I32_wrap_i64 e, es
-  | 0xa2, e :: es -> I64_trunc_s_f32 e, es
-  | 0xa3, e :: es -> I64_trunc_s_f64 e, es
-  | 0xa4, e :: es -> I64_trunc_u_f32 e, es
-  | 0xa5, e :: es -> I64_trunc_u_f64 e, es
-  | 0xa6, e :: es -> I64_extend_s_i32 e, es
-  | 0xa7, e :: es -> I64_extend_u_i32 e, es
-  | 0xa8, e :: es -> F32_convert_s_i32 e, es
-  | 0xa9, e :: es -> F32_convert_u_i32 e, es
-  | 0xaa, e :: es -> F32_convert_s_i64 e, es
-  | 0xab, e :: es -> F32_convert_u_i64 e, es
-  | 0xac, e :: es -> F32_demote_f64 e, es
-  | 0xad, e :: es -> F32_reinterpret_i32 e, es
-  | 0xae, e :: es -> F64_convert_s_i32 e, es
-  | 0xaf, e :: es -> F64_convert_u_i32 e, es
-  | 0xb0, e :: es -> F64_convert_s_i64 e, es
-  | 0xb1, e :: es -> F64_convert_u_i64 e, es
-  | 0xb2, e :: es -> F64_promote_f32 e, es
-  | 0xb3, e :: es -> F64_reinterpret_i64 e, es
-  | 0xb4, e :: es -> I32_reinterpret_f32 e, es
-  | 0xb5, e :: es -> I64_reinterpret_f64 e, es
+  | 0x9d -> I32_trunc_s_f32
+  | 0x9e -> I32_trunc_s_f64
+  | 0x9f -> I32_trunc_u_f32
+  | 0xa0 -> I32_trunc_u_f64
+  | 0xa1 -> I32_wrap_i64
+  | 0xa2 -> I64_trunc_s_f32
+  | 0xa3 -> I64_trunc_s_f64
+  | 0xa4 -> I64_trunc_u_f32
+  | 0xa5 -> I64_trunc_u_f64
+  | 0xa6 -> I64_extend_s_i32
+  | 0xa7 -> I64_extend_u_i32
+  | 0xa8 -> F32_convert_s_i32
+  | 0xa9 -> F32_convert_u_i32
+  | 0xaa -> F32_convert_s_i64
+  | 0xab -> F32_convert_u_i64
+  | 0xac -> F32_demote_f64
+  | 0xad -> F32_reinterpret_i32
+  | 0xae -> F64_convert_s_i32
+  | 0xaf -> F64_convert_u_i32
+  | 0xb0 -> F64_convert_s_i64
+  | 0xb1 -> F64_convert_u_i64
+  | 0xb2 -> F64_promote_f32
+  | 0xb3 -> F64_reinterpret_i64
+  | 0xb4 -> I32_reinterpret_f32
+  | 0xb5 -> I64_reinterpret_f64
 
-  | 0xb6, e2 :: e1 :: es -> I32_rotl (e1, e2), es
-  | 0xb7, e2 :: e1 :: es -> I32_rotr (e1, e2), es
-  | 0xb8, e2 :: e1 :: es -> I64_rotl (e1, e2), es
-  | 0xb9, e2 :: e1 :: es -> I64_rotr (e1, e2), es
-  | 0xba, e :: es -> I64_eqz e, es
+  | 0xb6 -> I32_rotl
+  | 0xb7 -> I32_rotr
+  | 0xb8 -> I64_rotl
+  | 0xb9 -> I64_rotr
+  | 0xba -> I64_eqz
 
-  | b, _ when b > 0xba -> illegal s pos b
+  | b when b > 0xba -> illegal s pos b
 
-  | b, _ -> error s pos "too few operands for operator"
+  | b -> error s pos "too few operands for operator"
 
-and expr_block s = List.rev (expr_block' [] s)
-and expr_block' stack s =
-  if eos s then stack else
+and expr_block s = List.rev (expr_block' s [])
+and expr_block' s es =
+  if eos s then es else
   match peek s with
-  | None | Some (0x04 | 0x0f) -> stack
+  | None | Some (0x04 | 0x0f) -> es
   | _ ->
     let pos = pos s in
-    let e', stack' = expr stack s in
-    expr_block' (Source.(e' @@ region s pos pos) :: stack') s
+    let e' = expr s in
+    expr_block' s (Source.(e' @@ region s pos pos) :: es)
 
 
 (* Sections *)

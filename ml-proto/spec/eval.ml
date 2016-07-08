@@ -16,7 +16,7 @@ type 'a map = 'a Map.t
 type instance =
 {
   module_ : module_;
-  imports : (func_type * import) list;
+  imports : import list;
   exports : func map;
   memory : Memory.t option
 }
@@ -158,19 +158,20 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
   | Select, Int32 i :: v2 :: v1 :: vs' ->
     v1 :: vs', []
 
-  | Call x, vs ->
-    eval_func c.instance vs (func c.instance x), []
+  | Call (n, x), vs ->
+    eval_func c.instance vs n (func c.instance x), []
 
-  | CallImport x, vs ->
-    let FuncType (ins, out), f = import c.instance x in
-    (try List.rev (f (List.rev (keep (List.length ins) vs e.at))), []
+  | CallImport (n, x), vs ->
+    (try
+      let vs' = List.rev (import c.instance x (List.rev (keep n vs e.at))) in
+      drop n vs e.at @ vs', []
     with Crash (_, msg) -> Crash.error e.at msg)
 
-  | CallIndirect ftype, Int32 i :: vs ->
+  | CallIndirect (n, x), Int32 i :: vs ->
     let f = func c.instance (table_elem c.instance i e.at) in
-    if ftype.it <> f.it.ftype.it then
+    if x.it <> f.it.ftype.it then
       Trap.error e.at "indirect call signature mismatch";
-    eval_func c.instance vs f, []
+    eval_func c.instance vs n f, []
 
   | GetLocal x, vs ->
     !(local c x) :: vs, []
@@ -266,13 +267,11 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
   | _, _ ->
     Crash.error e.at "type error: missing or ill-typed operand on stack"
 
-and eval_func (inst : instance) (vs : value stack) (f : func) : value stack =
-  let FuncType (ins, out) = type_ inst f.it.ftype in
-  let args = List.map ref (List.rev (keep (List.length ins) vs f.at)) in
+and eval_func (inst : instance) (vs : value stack) n (f : func) : value stack =
+  let args = List.map ref (List.rev (keep n vs f.at)) in
   let vars = List.map (fun t -> ref (default_value t)) f.it.locals in
   let c = {instance = inst; locals = args @ vars} in
-  eval_body c [] [Label (Nop @@ f.at, [], f.it.body) @@ f.at]
-    @ Lib.List.drop (List.length ins) vs
+  eval_body c [] [Label (Nop @@ f.at, [], f.it.body) @@ f.at] @ drop n vs f.at
 
 and eval_body (c : config) (vs : value stack) (es : expr list) : value stack =
   match es with
@@ -351,20 +350,18 @@ let add_export funcs ex =
   | `Memory -> fun x -> x
 
 let init (m : module_) imports =
-  let sigs =
-    List.map (fun im -> lookup "type" m.it.types im.it.itype) m.it.imports in
-  if (List.length sigs <> List.length imports) then
+  if (List.length m.it.imports <> List.length imports) then
     Crash.error m.at "mismatch in number of imports";
   let {memory; funcs; exports; start; _} = m.it in
   let inst =
     {module_ = m;
-     imports = List.combine sigs imports;
+     imports;
      exports = List.fold_right (add_export funcs) exports Map.empty;
      memory = Lib.Option.map init_memory memory}
   in
-  Lib.Option.app (fun x -> ignore (eval_func inst [] (func inst x))) start;
+  Lib.Option.app (fun x -> ignore (eval_func inst [] 0 (func inst x))) start;
   inst
 
 let invoke (inst : instance) name (vs : value list) : value list =
-  try List.rev (eval_func inst (List.rev vs) (export inst (name @@ no_region)))
+  try List.rev (eval_func inst (List.rev vs) (List.length vs) (export inst (name @@ no_region)))
   with Stack_overflow -> Trap.error Source.no_region "call stack exhausted"

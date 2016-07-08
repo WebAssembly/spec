@@ -219,16 +219,19 @@ let rec check_expr (c : context) (e : expr) : op_type =
     let t = var () in
     [t; t; fix Int32Type] --> fix [t]
 
-  | Call x ->
+  | Call (n, x) ->
     let FuncType (ins, out) = func c x in
+    require (List.length ins = n) e.at "arity mismatch";
     fix_list ins --> fix (fix_list out)
 
-  | CallImport x ->
+  | CallImport (n, x) ->
     let FuncType (ins, out) = import c x in
+    require (List.length ins = n) e.at "arity mismatch";
     fix_list ins --> fix (fix_list out)
 
-  | CallIndirect x ->
+  | CallIndirect (n, x) ->
     let FuncType (ins, out) = type_ c.types x in
+    require (List.length ins = n) e.at "arity mismatch";
     fix_list (ins @ [Int32Type]) --> fix (fix_list out)
 
   | GetLocal x ->

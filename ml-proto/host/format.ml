@@ -207,9 +207,9 @@ let rec expr e =
       | sxs2, sxs3 -> "if", [Node ("then", sxs2); Node ("else", sxs3)]
       )
     | Select -> "select", []
-    | Call x -> "call " ^ var x, []
-    | CallImport x -> "call_import " ^ var x, []
-    | CallIndirect x -> "call_indirect " ^ var x, []
+    | Call (n, x) -> "call " ^ var x, []
+    | CallImport (n, x) -> "call_import " ^ var x, []
+    | CallIndirect (n, x) -> "call_indirect " ^ var x, []
     | GetLocal x -> "get_local " ^ var x, []
     | SetLocal x -> "set_local " ^ var x, []
     | TeeLocal x -> "tee_local " ^ var x, []

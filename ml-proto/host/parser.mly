@@ -143,13 +143,13 @@ let implicit_decl c t at =
 %token<string> VAR
 %token<Types.value_type> VALUE_TYPE
 %token<string Source.phrase -> Ast.expr' * Values.value> CONST
-%token<Ast.expr -> Ast.expr'> UNARY
-%token<Ast.expr * Ast.expr -> Ast.expr'> BINARY
-%token<Ast.expr -> Ast.expr'> TEST
-%token<Ast.expr * Ast.expr -> Ast.expr'> COMPARE
-%token<Ast.expr -> Ast.expr'> CONVERT
-%token<Memory.offset * int option * Ast.expr -> Ast.expr'> LOAD
-%token<Memory.offset * int option * Ast.expr * Ast.expr -> Ast.expr'> STORE
+%token<Ast.expr'> UNARY
+%token<Ast.expr'> BINARY
+%token<Ast.expr'> TEST
+%token<Ast.expr'> COMPARE
+%token<Ast.expr'> CONVERT
+%token<Memory.offset * int option -> Ast.expr'> LOAD
+%token<Memory.offset * int option -> Ast.expr'> STORE
 %token<Memory.offset> OFFSET
 %token<int> ALIGN
 
@@ -226,62 +226,63 @@ align :
 ;
 
 expr :
-  | LPAR expr1 RPAR { let at = at () in fun c -> $2 c @@ at }
+  | LPAR expr1 RPAR
+    { let at = at () in fun c -> let es, e' = $2 c in es @ [e' @@ at] }
 ;
 expr1 :
-  | NOP { fun c -> Nop }
-  | UNREACHABLE { fun c -> Unreachable }
-  | DROP expr { fun c -> Drop ($2 c) }
-  | BLOCK labeling expr_list { fun c -> let c' = $2 c in Block ($3 c') }
+  | NOP { fun c -> [], Nop }
+  | UNREACHABLE { fun c -> [], Unreachable }
+  | DROP expr { fun c -> $2 c, Drop }
+  | BLOCK labeling expr_list
+    { fun c -> let c' = $2 c in [], Block (snd ($3 c')) }
   | LOOP labeling expr_list
-    { fun c -> let c' = anon_label c in let c'' = $2 c' in Loop ($3 c'') }
+    { fun c -> let c' = anon_label c in let c'' = $2 c' in [], Loop (snd ($3 c'')) }
   | LOOP labeling1 labeling1 expr_list
-    { fun c -> let c' = $2 c in let c'' = $3 c' in Loop ($4 c'') }
-  | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
-  | BR_IF var expr { fun c -> Br_if ($2 c label, None, $3 c) }
-  | BR_IF var expr expr { fun c -> Br_if ($2 c label, Some ($3 c), $4 c) }
+    { fun c -> let c' = $2 c in let c'' = $3 c' in [], Loop (snd ($4 c'')) }
+  | BR var { fun c -> [], Br (0, $2 c label) }
+  | BR var expr { fun c -> $3 c, Br (1, $2 c label) }
+  | BR_IF var expr { fun c -> $3 c, Br_if (0, $2 c label) }
+  | BR_IF var expr expr { fun c -> $3 c @ $4 c, Br_if (1, $2 c label) }
   | BR_TABLE var var_list expr
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      Br_table (xs, x, None, $4 c) }
+      $4 c, Br_table (0, xs, x) }
   | BR_TABLE var var_list expr expr
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      Br_table (xs, x, Some ($4 c), $5 c) }
-  | RETURN expr_opt { fun c -> Return ($2 c) }
-  | IF expr expr { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], []) }
+      $4 c @ $5 c, Br_table (1, xs, x) }
+  | RETURN { fun c -> [], Return 0 }
+  | RETURN expr { fun c -> $2 c, Return 1 }
+  | IF expr expr { fun c -> let c' = anon_label c in $2 c, If ($3 c', []) }
   | IF expr expr expr
-    { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], [$4 c']) }
+    { fun c -> let c' = anon_label c in $2 c, If ($3 c', $4 c') }
   | IF expr LPAR THEN labeling expr_list RPAR
-    { fun c -> let c' = $5 c in If ($2 c, $6 c', []) }
+    { fun c -> let c' = $5 c in $2 c, If (snd ($6 c'), []) }
   | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
-    { fun c -> let c1 = $5 c in let c2 = $10 c in If ($2 c, $6 c1, $11 c2) }
-  | SELECT expr expr expr { fun c -> Select ($2 c, $3 c, $4 c) }
-  | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
-  | CALL_IMPORT var expr_list { fun c -> Call_import ($2 c import, $3 c) }
+    { fun c -> let c1 = $5 c in let c2 = $10 c in
+      $2 c, If (snd ($6 c1), snd ($11 c2)) }
+  | SELECT expr expr expr { fun c -> $2 c @ $3 c @ $4 c, Select }
+  | CALL var expr_list { fun c -> let n, es = $3 c in es, Call (n, $2 c func) }
+  | CALL_IMPORT var expr_list
+    { fun c -> let n, es = $3 c in es, Call_import (n, $2 c import) }
   | CALL_INDIRECT var expr expr_list
     { fun c ->
-      let es, e = Lib.List.split_last ($3 c :: $4 c) in
-      Call_indirect ($2 c type_, e, es) }
-  | GET_LOCAL var { fun c -> Get_local ($2 c local) }
-  | SET_LOCAL var expr { fun c -> Set_local ($2 c local, $3 c) }
-  | TEE_LOCAL var expr { fun c -> Tee_local ($2 c local, $3 c) }
-  | LOAD offset align expr { fun c -> $1 ($2, $3, $4 c) }
-  | STORE offset align expr expr { fun c -> $1 ($2, $3, $4 c, $5 c) }
-  | CONST literal { fun c -> fst (literal $1 $2) }
-  | UNARY expr { fun c -> $1 ($2 c) }
-  | BINARY expr expr { fun c -> $1 ($2 c, $3 c) }
-  | TEST expr { fun c -> $1 ($2 c) }
-  | COMPARE expr expr { fun c -> $1 ($2 c, $3 c) }
-  | CONVERT expr { fun c -> $1 ($2 c) }
-  | CURRENT_MEMORY { fun c -> Current_memory }
-  | GROW_MEMORY expr { fun c -> Grow_memory ($2 c) }
-;
-expr_opt :
-  | /* empty */ { fun c -> None }
-  | expr { fun c -> Some ($1 c) }
+      let e = $3 c and n, es = $4 c in e @ es, Call_indirect (n, $2 c type_) }
+  | GET_LOCAL var { fun c -> [], Get_local ($2 c local) }
+  | SET_LOCAL var expr { fun c -> $3 c, Set_local ($2 c local) }
+  | TEE_LOCAL var expr { fun c -> $3 c, Tee_local ($2 c local) }
+  | LOAD offset align expr { fun c -> $4 c, $1 ($2, $3) }
+  | STORE offset align expr expr { fun c -> $4 c @ $5 c, $1 ($2, $3) }
+  | CONST literal { fun c -> [], fst (literal $1 $2) }
+  | UNARY expr { fun c -> $2 c, $1 }
+  | BINARY expr expr { fun c -> $2 c @ $3 c, $1 }
+  | TEST expr { fun c -> $2 c, $1 }
+  | COMPARE expr expr { fun c -> $2 c @ $3 c, $1 }
+  | CONVERT expr { fun c -> $2 c, $1 }
+  | CURRENT_MEMORY { fun c -> [], Current_memory }
+  | GROW_MEMORY expr { fun c -> $2 c, Grow_memory }
 ;
 expr_list :
-  | /* empty */ { fun c -> [] }
-  | expr expr_list { fun c -> $1 c :: $2 c }
+  | /* empty */ { fun c -> 0, [] }
+  | expr expr_list { fun c -> let e = $1 c and n, es = $2 c in n + 1, e @ es }
 ;
 
 
@@ -304,7 +305,7 @@ func_body :
   | expr_list
     { empty_type,
       fun c -> let c' = anon_label c in
-      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
+      {ftype = -1 @@ at(); locals = []; body = snd ($1 c')} }
   | LPAR LOCAL value_type_list RPAR func_body
     { fst $5,
       fun c -> anon_locals c $3; let f = (snd $5) c in
