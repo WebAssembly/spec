@@ -6,11 +6,11 @@ open Types
 
 
 let print vs =
-  List.iter Print.print_value (List.map (fun v -> Some v) vs);
-  None
+  List.iter Print.print_result (List.map (fun v -> [v]) vs);
+  []
 
 
-let lookup name ty =
-  match name, ty.ins, ty.out with
-  | "print", _, None -> print
+let lookup name (FuncType (ins, out)) =
+  match name, ins, out with
+  | "print", _, [] -> print
   | _ -> raise Not_found

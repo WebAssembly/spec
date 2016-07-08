@@ -54,14 +54,10 @@ let print_module_sig m =
   flush_all ()
 
 
-let print_value vo =
-  match vo with
-  | Some v ->
-      let t = Values.type_of v in
-      printf "%s : %s\n"
-        (Values.string_of_value v) (Types.string_of_value_type t);
-      flush_all ()
-  | None ->
-      printf "()\n";
-      flush_all ()
+(* Values *)
 
+let print_result vs =
+  let ts = List.map Values.type_of vs in
+  printf "%s : %s\n"
+    (Values.string_of_values vs) (Types.string_of_stack_type ts);
+  flush_all ()

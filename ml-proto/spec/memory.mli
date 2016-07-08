@@ -22,7 +22,7 @@ val grow : memory -> size -> unit
 
 val load : memory -> address -> offset -> value_type -> value
 val store : memory -> address -> offset -> value -> unit
-val load_extend :
+val load_packed :
   memory -> address -> offset -> mem_size -> extension -> value_type -> value
-val store_wrap : memory -> address -> offset -> mem_size -> value -> unit
+val store_packed : memory -> address -> offset -> mem_size -> value -> unit
 

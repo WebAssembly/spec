@@ -42,8 +42,8 @@ let value_type t = string_of_value_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
-let func_type {ins; out} =
-  Node ("func", decls "param" ins @ decls "result" (list_of_opt out))
+let func_type (FuncType (ins, out)) =
+  Node ("func", decls "param" ins @ decls "result" out)
 
 let struct_type = func_type
 
@@ -191,40 +191,41 @@ let rec expr e =
     match e.it with
     | Nop -> "nop", []
     | Unreachable -> "unreachable", []
-    | Drop e -> "drop", [expr e]
+    | Drop -> "drop", []
     | Block es -> "block", list expr es
     | Loop es -> "loop", list expr es
-    | Break (x, eo) -> "br " ^ var x, opt expr eo
-    | BreakIf (x, eo, e) -> "br_if " ^ var x, opt expr eo @ [expr e]
-    | BreakTable (xs, x, eo, e) ->
-      "br_table", list (atom var) (xs @ [x]) @ opt expr eo @ [expr e]
-    | Return eo -> "return", opt expr eo
-    | If (e1, es1, es2) ->
+    | Break (n, x) -> "br" ^ int n ^ " " ^ var x, []
+    | BreakIf (n, x) -> "br_if" ^ int n ^ " " ^ var x, []
+    | BreakTable (n, xs, x) ->
+      "br_table" ^ int n ^ " ", list (atom var) (xs @ [x])
+    | Return n -> "return" ^ int n, []
+    | If (es1, es2) ->
       (match list expr es1, list expr es2 with
-      | [sx2], [] -> "if", [expr e1; sx2]
-      | [sx2], [sx3] -> "if", [expr e1; sx2; sx3]
-      | sxs2, [] -> "if", [expr e1; Node ("then", sxs2)]
-      | sxs2, sxs3 -> "if", [expr e1; Node ("then", sxs2); Node ("else", sxs3)]
+      | [sx2], [] -> "if", [sx2]
+      | [sx2], [sx3] -> "if", [sx2; sx3]
+      | sxs2, [] -> "if", [Node ("then", sxs2)]
+      | sxs2, sxs3 -> "if", [Node ("then", sxs2); Node ("else", sxs3)]
       )
-    | Select (e1, e2, e3) -> "select", [expr e1; expr e2; expr e3]
-    | Call (x, es) -> "call " ^ var x, list expr es
-    | CallImport (x, es) -> "call_import " ^ var x, list expr es
-    | CallIndirect (x, e, es) -> "call_indirect " ^ var x, list expr (e::es)
+    | Select -> "select", []
+    | Call x -> "call " ^ var x, []
+    | CallImport x -> "call_import " ^ var x, []
+    | CallIndirect x -> "call_indirect " ^ var x, []
     | GetLocal x -> "get_local " ^ var x, []
-    | SetLocal (x, e) -> "set_local " ^ var x, [expr e]
-    | TeeLocal (x, e) -> "tee_local " ^ var x, [expr e]
-    | Load (op, e) -> memop "load" op, [expr e]
-    | Store (op, e1, e2) -> memop "store" op, [expr e1; expr e2]
-    | LoadExtend (op, e) -> extop op, [expr e]
-    | StoreWrap (op, e1, e2) -> wrapop op, [expr e1; expr e2]
+    | SetLocal x -> "set_local " ^ var x, []
+    | TeeLocal x -> "tee_local " ^ var x, []
+    | Load op -> memop "load" op, []
+    | Store op -> memop "store" op, []
+    | LoadPacked op -> extop op, []
+    | StorePacked op -> wrapop op, []
     | Const lit -> constop lit, [atom value lit]
-    | Unary (op, e) -> unop op, [expr e]
-    | Binary (op, e1, e2) -> binop op, [expr e1; expr e2]
-    | Test (op, e) -> testop op, [expr e]
-    | Compare (op, e1, e2) -> relop op, [expr e1; expr e2]
-    | Convert (op, e) -> cvtop op, [expr e]
+    | Unary op -> unop op, []
+    | Binary op -> binop op, []
+    | Test op -> testop op, []
+    | Compare op -> relop op, []
+    | Convert op -> cvtop op, []
     | CurrentMemory -> "current_memory", []
-    | GrowMemory e -> "grow_memory", [expr e]
+    | GrowMemory -> "grow_memory", []
+    | Label _ -> assert false
   in Node (head, inner)
 
 

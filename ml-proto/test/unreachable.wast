@@ -49,7 +49,7 @@
     (loop (nop) (call $dummy) (unreachable))
   )
   (func "as-loop-broke" (result i32)
-    (loop (call $dummy) (br 1 (i32.const 1)) (unreachable))
+    (block (loop (call $dummy) (br 1 (i32.const 1)) (unreachable)))
   )
 
   (func "as-br-value" (result i32)

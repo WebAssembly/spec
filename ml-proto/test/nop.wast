@@ -34,10 +34,10 @@
   )
 
   (func "as-if-then" (param i32)
-    (block (if (get_local 0) (nop) (call $dummy)))
+    (if (get_local 0) (nop) (call $dummy))
   )
   (func "as-if-else" (param i32)
-    (block (if (get_local 0) (call $dummy) (nop)))
+    (if (get_local 0) (call $dummy) (nop))
   )
 )
 
@@ -60,17 +60,17 @@
 
 (assert_invalid
   (module (func $type-i32 (result i32) (nop)))
-  "type mismatch"
+  "arity mismatch"
 )
 (assert_invalid
   (module (func $type-i64 (result i64) (nop)))
-  "type mismatch"
+  "arity mismatch"
 )
 (assert_invalid
   (module (func $type-f32 (result f32) (nop)))
-  "type mismatch"
+  "arity mismatch"
 )
 (assert_invalid
   (module (func $type-f64 (result f64) (nop)))
-  "type mismatch"
+  "arity mismatch"
 )

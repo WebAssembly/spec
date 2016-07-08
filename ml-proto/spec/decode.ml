@@ -127,7 +127,7 @@ let func_type s =
   expect 0x05 s "invalid function type";
   let ins = vec value_type s in
   let out = expr_type s in
-  {ins; out}
+  FuncType (ins, match out with None -> [] | Some t -> [t])
 
 
 (* Decode expressions *)

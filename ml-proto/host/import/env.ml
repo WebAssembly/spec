@@ -38,8 +38,8 @@ let exit vs =
   exit (int (single vs))
 
 
-let lookup name ty =
-  match name, ty.ins, ty.out with
-  | "abort", [], None -> abort
-  | "exit", [Int32Type], None -> exit
+let lookup name (FuncType (ins, out)) =
+  match name, ins, out with
+  | "abort", [], [] -> abort
+  | "exit", [Int32Type], [] -> exit
   | _ -> raise Not_found

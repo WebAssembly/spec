@@ -1,10 +1,11 @@
 type instance
+type 'a stack = 'a list
 type value = Values.value
-type import = value list -> value option
+type import = value stack -> value stack
 
 exception Trap of Source.region * string
 exception Crash of Source.region * string
 
 val init : Kernel.module_ -> import list -> instance
-val invoke : instance -> string -> value list -> value option
+val invoke : instance -> string -> value list -> value list
   (* raises Trap, Crash *)

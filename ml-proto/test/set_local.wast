@@ -95,19 +95,19 @@
   (module (func $type-local-num-vs-num (result i64) (local i32)
     (set_local 0 (i32.const 0))
   ))
-  "type mismatch"
+  "arity mismatch"
 )
 (assert_invalid
   (module (func $type-local-num-vs-num (local f32)
     (i32.eqz (set_local 0 (f32.const 0)))
   ))
-  "type mismatch"
+  "arity mismatch"
 )
 (assert_invalid
   (module (func $type-local-num-vs-num (local f64 i64)
     (f64.neg (set_local 1 (i64.const 0)))
   ))
-  "type mismatch"
+  "arity mismatch"
 )
 
 (assert_invalid

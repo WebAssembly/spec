@@ -105,7 +105,7 @@ let anon_import c = anon c.imports 1
 let anon_locals c ts = anon c.locals (List.length ts)
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
-let empty_type = {ins = []; out = None}
+let empty_type = FuncType ([], [])
 
 let explicit_decl c name t at =
   let x = name c type_ in
@@ -178,13 +178,13 @@ value_type_list :
 ;
 func_type :
   | /* empty */
-    { {ins = []; out = None} }
+    { FuncType ([], []) }
   | LPAR PARAM value_type_list RPAR
-    { {ins = $3; out = None} }
+    { FuncType ($3, []) }
   | LPAR PARAM value_type_list RPAR LPAR RESULT VALUE_TYPE RPAR
-    { {ins = $3; out = Some $7} }
+    { FuncType ($3, [$7]) }
   | LPAR RESULT VALUE_TYPE RPAR
-    { {ins = []; out = Some $3} }
+    { FuncType ([], [$3]) }
 ;
 
 
@@ -258,7 +258,9 @@ expr1 :
   | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
   | CALL_IMPORT var expr_list { fun c -> Call_import ($2 c import, $3 c) }
   | CALL_INDIRECT var expr expr_list
-    { fun c -> Call_indirect ($2 c type_, $3 c, $4 c) }
+    { fun c ->
+      let es, e = Lib.List.split_last ($3 c :: $4 c) in
+      Call_indirect ($2 c type_, e, es) }
   | GET_LOCAL var { fun c -> Get_local ($2 c local) }
   | SET_LOCAL var expr { fun c -> Set_local ($2 c local, $3 c) }
   | TEE_LOCAL var expr { fun c -> Tee_local ($2 c local, $3 c) }
@@ -288,15 +290,15 @@ expr_list :
 func_fields :
   | func_body { $1 }
   | LPAR RESULT VALUE_TYPE RPAR func_body
-    { if (fst $5).out <> None then error (at ()) "multiple return types";
-      {(fst $5) with out = Some $3},
-      fun c -> (snd $5) c }
+    { let FuncType (ins, out) = fst $5 in
+      if out <> [] then error (at ()) "multiple return types";
+      FuncType (ins, [$3]), fun c -> (snd $5) c }
   | LPAR PARAM value_type_list RPAR func_fields
-    { {(fst $5) with ins = $3 @ (fst $5).ins},
-      fun c -> anon_locals c $3; (snd $5) c }
+    { let FuncType (ins, out) = fst $5 in
+      FuncType ($3 @ ins, out), fun c -> anon_locals c $3; (snd $5) c }
   | LPAR PARAM bind_var VALUE_TYPE RPAR func_fields  /* Sugar */
-    { {(fst $6) with ins = $4 :: (fst $6).ins},
-      fun c -> bind_local c $3; (snd $6) c }
+    { let FuncType (ins, out) = fst $6 in
+      FuncType ($4 :: ins, out), fun c -> bind_local c $3; (snd $6) c }
 ;
 func_body :
   | expr_list
@@ -448,7 +450,7 @@ cmd :
   | module_ { Define $1 @@ at () }
   | LPAR INVOKE TEXT const_list RPAR { Invoke ($3, $4) @@ at () }
   | LPAR ASSERT_INVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at () }
-  | LPAR ASSERT_RETURN LPAR INVOKE TEXT const_list RPAR const_opt RPAR
+  | LPAR ASSERT_RETURN LPAR INVOKE TEXT const_list RPAR const_list RPAR
     { AssertReturn ($5, $6, $8) @@ at () }
   | LPAR ASSERT_RETURN_NAN LPAR INVOKE TEXT const_list RPAR RPAR
     { AssertReturnNaN ($5, $6) @@ at () }
@@ -465,10 +467,6 @@ cmd_list :
 
 const :
   | LPAR CONST literal RPAR { snd (literal $2 $3) @@ ati 3 }
-;
-const_opt :
-  | /* empty */ { None }
-  | const { Some $1 }
 ;
 const_list :
   | /* empty */ { [] }

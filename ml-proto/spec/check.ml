@@ -12,9 +12,47 @@ let error = Invalid.error
 let require b at s = if not b then error at s
 
 
+(* Type variables *)
+
+type 'a var' = Fix of 'a | Var | Fwd of 'a var
+and 'a var = 'a var' ref
+
+let var _ = ref Var
+let fix x = ref (Fix x)
+let fix_list = List.map fix
+
+let rec is_fix v =
+  match !v with
+  | Fix _ -> true
+  | Var -> false
+  | Fwd v' -> is_fix v'
+
+let rec content v =
+  match !v with
+  | Fix x -> x
+  | Var -> assert false
+  | Fwd v' -> content v'
+
+let rec unify f v1 v2 =
+  if v1 != v2 then
+  match !v1, !v2 with
+  | Fwd v1', _ -> unify f v1' v2
+  | _, Fwd v2' -> unify f v1 v2'
+  | Var, _ -> v1 := Fwd v2
+  | _, Var -> v2 := Fwd v1
+  | Fix x1, Fix x2 -> f x1 x2
+
+let rec string_of_var string_of name v =
+  match !v with
+  | Fix x -> string_of x
+  | Var -> name
+  | Fwd v' -> string_of_var string_of name v'
+
+
 (* Context *)
 
-type expr_type_future = [`Known of expr_type | `SomeUnknown] ref
+type stack_type = value_type var list
+type op_type = stack_type * stack_type var
 
 type context =
 {
@@ -22,8 +60,8 @@ type context =
   funcs : func_type list;
   imports : func_type list;
   locals : value_type list;
-  return : expr_type;
-  labels : expr_type_future list;
+  return : value_type list;
+  labels : stack_type var list;
   has_memory : bool
 }
 
@@ -40,21 +78,23 @@ let label c x = lookup "label" c.labels x
 
 (* Type Unification *)
 
-let string_of_future = function
-  | `Known et -> string_of_expr_type et
-  | `SomeUnknown -> "<value_type>"
+let string_of_value_type_var = string_of_var string_of_value_type "?"
+let string_of_stack_type = function
+  | [t] -> string_of_value_type_var t
+  | ts -> "(" ^ String.concat " " (List.map string_of_value_type_var ts) ^ ")"
 
-let check_type actual expected at =
-  if !expected = `SomeUnknown && actual <> None then expected := `Known actual;
-  require (!expected = `Known actual) at
-    ("type mismatch: expression has type " ^ string_of_expr_type actual ^
-     " but the context requires " ^ string_of_future !expected)
 
-let some_unknown () = ref `SomeUnknown
-let known et = ref (`Known et)
-let none = known None
-let some t = known (Some t)
-let is_some et = !et <> `Known None
+exception Unify
+
+let unify_value_type vt1 vt2 =
+  unify (fun t1 t2 -> if t1 <> t2 then raise Unify) vt1 vt2
+
+let unify_stack_type vts1 vts2 at =
+  try unify (List.iter2 unify_value_type) vts1 vts2
+  with Unify | Invalid_argument _ ->
+    error at
+      ("stack mismatch: required " ^ string_of_stack_type (content vts1) ^
+       " but have " ^ string_of_stack_type (content vts2))
 
 
 (* Type Synthesis *)
@@ -108,186 +148,172 @@ let type_cvtop at = function
  * Conventions:
  *   c  : context
  *   e  : expr
- *   eo : expr option
+ *   es : expr list
  *   v  : value
- *   t  : value_type
- *   et : expr_type_future
+ *   t  : value_type var
+ *   ts : stack_type
  *)
 
-let rec check_expr c et e =
+let (-->) ts1 ts2 = ts1, ts2
+
+let rec check_expr (c : context) (e : expr) : op_type =
   match e.it with
-  | Nop ->
-    check_type None et e.at
-
   | Unreachable ->
-    ()
+    [] --> var ()
 
-  | Drop e1 ->
-    check_expr c (some_unknown ()) e1;
-    check_type None et e.at
+  | Nop ->
+    [] --> fix []
+
+  | Drop ->
+    [var ()] --> fix []
 
   | Block es ->
-    let c' = {c with labels = et :: c.labels} in
-    check_block c' et es e.at
+    let ts = var () in
+    let c' = {c with labels = ts :: c.labels} in
+    let ts' = check_block c' es e.at in
+    unify_stack_type ts ts' e.at;
+    [] --> ts'
 
   | Loop es ->
-    let c' = {c with labels = none :: et :: c.labels} in
-    check_block c' et es e.at
+    let c' = {c with labels = fix [] :: c.labels} in
+    let ts = check_block c' es e.at in
+    [] --> ts
 
-  | Break (x, eo) ->
-    check_expr_opt c (label c x) eo e.at
+  | Label (e0, vs, es) ->
+    let ts = var () in
+    let c' = {c with labels = ts :: c.labels} in
+    let ts1 = check_block c' [e0] e.at in
+    let ts2 = check_block c'
+      (List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) @ es) e.at in
+    unify_stack_type ts ts1 e.at;
+    unify_stack_type ts ts2 e.at;
+    [] --> ts
 
-  | BreakIf (x, eo, e1) ->
-    check_expr_opt c (label c x) eo e.at;
-    check_expr c (some Int32Type) e1;
-    check_type None et e.at
+  | Break (n, x) ->
+    let ts = Lib.List.table n var in
+    unify_stack_type (label c x) (fix ts) e.at;
+    ts --> var ()
 
-  | BreakTable (xs, x, eo, e1) ->
-    List.iter (fun x -> check_expr_opt c (label c x) eo e.at) xs;
-    check_expr_opt c (label c x) eo e.at;
-    check_expr c (some Int32Type) e1
+  | BreakIf (n, x) ->
+    let ts = Lib.List.table n var in
+    unify_stack_type (label c x) (fix ts) e.at;
+    (ts @ [fix Int32Type]) --> fix []
 
-  | Return eo ->
-    check_expr_opt c (known c.return) eo e.at
+  | BreakTable (n, xs, x) ->
+    let ts = Lib.List.table n var in
+    unify_stack_type (label c x) (fix ts) e.at;
+    List.iter (fun x -> unify_stack_type (label c x) (fix ts) e.at) xs;
+    (ts @ [fix Int32Type]) --> var ()
 
-  | If (e1, es1, es2) ->
-    check_expr c (some Int32Type) e1;
-    let c' = {c with labels = et :: c.labels} in
-    check_block c' et es1 e.at;
-    check_block c' et es2 e.at
+  | Return n ->
+    require (List.length c.return = n) e.at "arity mismatch";
+    fix_list c.return --> var ()
 
-  | Select (e1, e2, e3) ->
-    require (is_some et) e.at "arity mismatch";
-    check_expr c et e1;
-    check_expr c et e2;
-    check_expr c (some Int32Type) e3
+  | If (es1, es2) ->
+    let ts1 = check_block c es1 e.at in
+    let ts2 = check_block c es2 e.at in
+    unify_stack_type ts1 ts2 e.at;
+    [fix Int32Type] --> ts1
 
-  | Call (x, es) ->
-    let {ins; out} = func c x in
-    check_exprs c ins es e.at;
-    check_type out et e.at
+  | Select ->
+    let t = var () in
+    [t; t; fix Int32Type] --> fix [t]
 
-  | CallImport (x, es) ->
-    let {ins; out} = import c x in
-    check_exprs c ins es e.at;
-    check_type out et e.at
+  | Call x ->
+    let FuncType (ins, out) = func c x in
+    fix_list ins --> fix (fix_list out)
 
-  | CallIndirect (x, e1, es) ->
-    let {ins; out} = type_ c.types x in
-    check_expr c (some Int32Type) e1;
-    check_exprs c ins es e.at;
-    check_type out et e.at
+  | CallImport x ->
+    let FuncType (ins, out) = import c x in
+    fix_list ins --> fix (fix_list out)
+
+  | CallIndirect x ->
+    let FuncType (ins, out) = type_ c.types x in
+    fix_list (ins @ [Int32Type]) --> fix (fix_list out)
 
   | GetLocal x ->
-    check_type (Some (local c x)) et e.at
+    [] --> fix [fix (local c x)]
 
-  | SetLocal (x, e1) ->
-    check_expr c (some (local c x)) e1;
-    check_type None et e.at
+  | SetLocal x ->
+    [fix (local c x)] --> fix []
 
-  | TeeLocal (x, e1) ->
-    check_expr c (some (local c x)) e1;
-    check_type (Some (local c x)) et e.at
+  | TeeLocal x ->
+    [fix (local c x)] --> fix [fix (local c x)]
 
-  | Load (memop, e1) ->
-    check_load c et memop e1 e.at
+  | Load memop ->
+    check_memop c memop e.at;
+    [fix Int32Type] --> fix [fix memop.ty]
 
-  | Store (memop, e1, e2) ->
-    check_store c et memop e1 e2 e.at
+  | Store memop ->
+    check_memop c memop e.at;
+    [fix Int32Type; fix memop.ty] --> fix []
 
-  | LoadExtend (extendop, e1) ->
-    check_mem_type extendop.memop.ty extendop.sz e.at;
-    check_load c et extendop.memop e1 e.at
+  | LoadPacked {memop; sz; _} ->
+    check_memop c memop e.at;
+    check_mem_size memop.ty sz e.at;
+    [fix Int32Type] --> fix [fix memop.ty]
 
-  | StoreWrap (wrapop, e1, e2) ->
-    check_mem_type wrapop.memop.ty wrapop.sz e.at;
-    check_store c et wrapop.memop e1 e2 e.at
+  | StorePacked {memop; sz} ->
+    check_memop c memop e.at;
+    check_mem_size memop.ty sz e.at;
+    [fix Int32Type; fix memop.ty] --> fix []
 
   | Const v ->
-    check_literal c et v
+    [] --> fix [fix (type_value v.it)]
 
-  | Unary (unop, e1) ->
+  | Unary unop ->
     let t = type_unop unop in
-    check_expr c (some t) e1;
-    check_type (Some t) et e.at
+    [fix t] --> fix [fix t]
 
-  | Binary (binop, e1, e2) ->
+  | Binary binop ->
     let t = type_binop binop in
-    check_expr c (some t) e1;
-    check_expr c (some t) e2;
-    check_type (Some t) et e.at
+    [fix t; fix t] --> fix [fix t]
 
-  | Test (testop, e1) ->
+  | Test testop ->
     let t = type_testop testop in
-    check_expr c (some t) e1;
-    check_type (Some Int32Type) et e.at
+    [fix t] --> fix [fix Int32Type]
 
-  | Compare (relop, e1, e2) ->
+  | Compare relop ->
     let t = type_relop relop in
-    check_expr c (some t) e1;
-    check_expr c (some t) e2;
-    check_type (Some Int32Type) et e.at
+    [fix t; fix t] --> fix [fix Int32Type]
 
-  | Convert (cvtop, e1) ->
-    let t1, t = type_cvtop e.at cvtop in
-    check_expr c (some t1) e1;
-    check_type (Some t) et e.at
+  | Convert cvtop ->
+    let t1, t2 = type_cvtop e.at cvtop in
+    [fix t1] --> fix [fix t2]
 
   | CurrentMemory ->
-    check_has_memory c e.at;
-    check_type (Some Int32Type) et e.at
+    [] --> fix [fix Int32Type]
 
-  | GrowMemory e ->
-    check_has_memory c e.at;
-    check_expr c (some Int32Type) e;
-    check_type (Some Int32Type) et e.at
+  | GrowMemory ->
+    [fix Int32Type] --> fix [fix Int32Type]
 
-and check_block c et es at =
+and check_block (c : context) (es : expr list) at : stack_type var =
   match es with
   | [] ->
-    check_type None et at
+    fix []
 
   | _ ->
     let es', e = Lib.List.split_last es in 
-    List.iter (check_expr c none) es';
-    check_expr c et e
+    let vts0 = check_block c es' at in
+    if not (is_fix vts0) then var () else
+    let ts0 = content vts0 in
+    let ts2, vts3 = check_expr c e in
+    let n1 = max (List.length ts0 - List.length ts2) 0 in
+    let ts1 = Lib.List.take n1 ts0 in
+    let ts2' = Lib.List.drop n1 ts0 in
+    unify_stack_type (fix ts2) (fix ts2') at;
+    if not (is_fix vts3) then var () else
+    let ts3 = content vts3 in
+    fix (ts1 @ ts3)
 
-and check_exprs c ts es at =
-  require (List.length ts = List.length es) at "arity mismatch";
-  let ets = List.map some ts in
-  List.iter2 (check_expr c) ets es
 
-and check_expr_opt c et eo at =
-  match is_some et, eo with
-  | false, None -> ()
-  | true, Some e -> check_expr c et e
-  | _ -> error at "arity mismatch"
-
-and check_literal c et l =
-  check_type (Some (type_value l.it)) et l.at
-
-and check_load c et memop e1 at =
-  check_has_memory c at;
-  check_memop memop at;
-  check_expr c (some Int32Type) e1;
-  check_type (Some memop.ty) et at
-
-and check_store c et memop e1 e2 at =
-  check_has_memory c at;
-  check_memop memop at;
-  check_expr c (some Int32Type) e1;
-  check_expr c (some memop.ty) e2;
-  check_type None et at
-
-and check_has_memory c at =
-  require c.has_memory at "memory operators require a memory section"
-
-and check_memop memop at =
+and check_memop c memop at =
+  require c.has_memory at "memory operator require a memory section";
   require (memop.offset >= 0L) at "negative offset";
   require (memop.offset <= 0xffffffffL) at "offset too large";
   require (Lib.Int.is_power_of_two memop.align) at "non-power-of-two alignment";
 
-and check_mem_type ty sz at =
+and check_mem_size ty sz at =
   require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
 
 
@@ -307,13 +333,10 @@ and check_mem_type ty sz at =
 
 let check_func c f =
   let {ftype; locals; body} = f.it in
-  let s = type_ c.types ftype in
-  let c' =
-    {c with
-      locals = s.ins @ locals;
-      return = s.out;
-      labels = known s.out :: c.labels}
-  in check_block c' (known s.out) body f.at
+  let FuncType (ins, out) = type_ c.types ftype in
+  let c' = {c with locals = ins @ locals; return = out; labels = []} in
+  let ts = check_block c' body f.at in
+  unify_stack_type (fix (fix_list out)) ts f.at
 
 let check_elem c x =
   ignore (func c x)
@@ -324,18 +347,15 @@ let check_export c set ex =
   let {name; kind} = ex.it in
   (match kind with
   | `Func x -> ignore (func c x)
-  | `Memory -> require c.has_memory ex.at "no memory to export"
+  | `Memory ->
+    require c.has_memory ex.at "memory export requires a memory section"
   );
   require (not (NameSet.mem name set)) ex.at "duplicate export name";
   NameSet.add name set
 
 let check_start c start =
   Lib.Option.app (fun x ->
-    let start_type = func c x in
-    require (start_type.ins = []) x.at
-      "start function must be nullary";
-    require (start_type.out = None) x.at
-      "start function must not return anything";
+    require (func c x = FuncType ([], [])) x.at "start function must be nullary"
   ) start
 
 let check_segment pages prev_end seg =
@@ -362,7 +382,7 @@ let check_module m =
            funcs = List.map (fun f -> type_ types f.it.ftype) funcs;
            imports = List.map (fun i -> type_ types i.it.itype) imports;
            locals = [];
-           return = None;
+           return = [];
            labels = [];
            has_memory = memory <> None} in
   List.iter (check_func c) funcs;

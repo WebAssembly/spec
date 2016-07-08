@@ -7,7 +7,6 @@ type ('i32, 'i64, 'f32, 'f64) op =
   Int32 of 'i32 | Int64 of 'i64 | Float32 of 'f32 | Float64 of 'f64
 
 type value = (I32.t, I64.t, F32.t, F64.t) op
-type func = value list -> value option
 
 
 (* Typing *)
@@ -25,7 +24,9 @@ let default_value = function
   | Float64Type -> Float64 F64.zero
 
 
-(* String conversion *)
+(* Conversion *)
+
+let value_of_bool b = Int32 (if b then 1l else 0l)
 
 let string_of_value = function
   | Int32 i -> I32.to_string i

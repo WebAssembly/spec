@@ -85,7 +85,7 @@ let encode m =
     let expr_type t = vec1 value_type t
 
     let func_type = function
-      | {ins; out} -> u8 0x05; vec value_type ins; expr_type out
+      | FuncType (ins, out) -> u8 0x05; vec value_type ins; vec value_type out
 
     (* Expressions *)
 

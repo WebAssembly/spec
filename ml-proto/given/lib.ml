@@ -3,6 +3,10 @@ struct
   let rec make n x =
     if n = 0 then [] else x :: make (n - 1) x
 
+  let rec table n f = table' 0 n f
+  and table' i n f =
+    if i = n then [] else f i :: table' (i + 1) n f
+
   let rec take n xs =
     match n, xs with
     | 0, _ -> []
@@ -25,9 +29,7 @@ struct
     | x::xs -> let ys, y = split_last xs in x::ys, y
     | [] -> failwith "split_last"
 
-  let rec index_of x xs =
-    index_of' x xs 0
-
+  let rec index_of x xs = index_of' x xs 0
   and index_of' x xs i =
     match xs with
     | [] -> None
