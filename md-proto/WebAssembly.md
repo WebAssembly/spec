@@ -692,7 +692,7 @@ Validation
 --------------------------------------------------------------------------------
 
 0. [Module Validation](#module-validation)
-0. [Function Body Validation](#function-body-validation)
+0. [Function-Body Validation](#function-body-validation)
 
 ### Module Validation
 
@@ -702,14 +702,14 @@ the [top-level module description](#module-contents).
 Then, if the module contains a [Code Section], each function body in the section
 is [validated](#function-body-validation).
 
-### Function Body Validation
+### Function-Body Validation
 
-0. [Function Body Validation Requirements](#function-body-validation-requirements)
-0. [Function Body Validation Algorithm](#function-body-validation-algorithm)
+0. [Function-Body Validation Requirements](#function-body-validation-requirements)
+0. [Function-Body Validation Algorithm](#function-body-validation-algorithm)
 
-#### Function Body Validation Requirements
+#### Function-Body Validation Requirements
 
-The requirements for function body validation are:
+The requirements for function-body validation are:
  - The instruction sequence is required to be non-empty, and the last
    instruction in the sequence is required to be an [`end`](#end).
  - Control-flow constructs are required to form properly nested *regions*. Each
@@ -739,9 +739,9 @@ one entry point.
 
 > There are no implicit type conversions in WebAssembly.
 
-#### Function Body Validation Algorithm
+#### Function-Body Validation Algorithm
 
-Function body validation can be performed in a single linear pass as follows:
+Function-body validation can be performed in a single linear pass as follows:
 
 The following data structures are created:
  - A *type stack*, with entries each containing a [type], for tracking the
@@ -795,7 +795,7 @@ For each instruction in the body, in sequence order:
 
 Finally, for each type in the function's return list, a type is popped from the
 type stack and required be the same. The type stack and the control-flow stack
-are then both required to be empty. If all requirements were met, function body
+are then both required to be empty. If all requirements were met, function-body
 validation is successful.
 
 > Implementations need not perform this exact algorithm; they need only validate
@@ -907,8 +907,10 @@ The input to execution of a function consists of:
 
 For the duration of the execution of a function body, several data structures
 are created:
- - A *control-flow stack*, which holds [labels] for reference from branch
-   instructions.
+ - A *control-flow stack*, with each entry containing
+    - a [label] for reference from branch instructions.
+    - a *limit* integer value, which is an index into the value stack indicating
+      where to reset it to on a branch to that label.
  - A *value stack*, which carries values between instructions.
  - A *locals* array, a heterogeneous array of values containing an element for
    each type in the function's parameter list, followed by an element for each
@@ -925,13 +927,14 @@ are not any accessible to applications.
 
 The current position starts at the first instruction in the function body. The
 value stack begins empty. The control-flow stack begins with an entry holding a
-[label] bound to the last instruction in the instruction sequence.
+[label] bound to the last instruction in the instruction sequence and a limit
+value of zero.
 
 The value of each incoming argument is copied to the local with the
 corresponding index, and the rest of the locals are initialized to all-zeros
 bit-pattern values.
 
-#### Function Body Execution
+#### Function-Body Execution
 
 The instruction at the current position is remembered, and the current position
 is incremented to point to the position following it. Then the remembered
@@ -951,7 +954,7 @@ Otherwise, [execution](#function-body-execution) is restarted with the new
 current position.
 
 **Trap:** Dynamic Resource Exhaustion, if any dynamic resource used by the
-implementation is exhausted, at any point during function body execution.
+implementation is exhausted, at any point during function-body execution.
 
 #### Labels
 
@@ -1336,13 +1339,13 @@ use prefix notation.
 ### Instruction Description
 
 Instruction semantics are described for use in the context of
-[function body execution](#function-body-execution). Some instructions also have
+[function-body execution](#function-body-execution). Some instructions also have
 a special validation clause, introduced by "**Validation:**", which are for use
-in the context of [function body validation](#function-body-validation), and
+in the context of [function-body validation](#function-body-validation), and
 special validation algorithm clauses, introduced by "**Validation Algorithm:**",
-for use by the [function body validation algorithm].
+for use by the [function-body validation algorithm].
 
-[function body validation algorithm]: #function-body-validation-algorithm
+[function-body validation algorithm]: #function-body-validation-algorithm
 
 
 Instructions
@@ -1377,7 +1380,8 @@ Instructions
 | ----------- | --------------------------- | -------- | ------ |
 | `block`     | `() : ()`                   |          | 0x01   |
 
-The `block` instruction pushes an unbound [label] onto the control-flow stack.
+The `block` instruction pushes an entry onto the control-flow stack containing
+an unbound [label] and a limit value of the current length of the value stack.
 
 **Validation Algorithm:**
  - An entry is pushed onto the control-flow stack containing no type sequence, a
@@ -1393,8 +1397,9 @@ stack.
 | ----------- | --------------------------- | -------- | ------ |
 | `loop`      | `() : ()`                   |          | 0x02   |
 
-The `loop` instruction binds a [label] to the current position and pushes it
-onto the control-flow stack.
+The `loop` instruction binds a [label] to the current position, and pushes an
+entry onto the control-flow stack containing that label and a limit value of the
+current length of the value stack.
 
 **Validation Algorithm:**
  - An entry is pushed onto the control-flow stack containing an empty type
@@ -1491,7 +1496,8 @@ with the other branch instructions.
 | ----------- | --------------------------- | -------- | ------ |
 | `if`        | `($condition: i32) : ()`    | [B]      | 0x03   |
 
-The `if` instruction pushes an unbound [label] onto the control-flow stack. If
+The `if` instruction pushes an entry onto the control-flow stack containing an
+unbound [label] and a limit value of the current length of the value stack. If
 `$condition` is [false], it then [branches](#branching) to this label.
 
 **Validation Algorithm:**
@@ -1511,9 +1517,10 @@ https://github.com/WebAssembly/design/pull/710
 | `else`      | `($T[$any]) : ($T[$any])`     | [B]      | 0x04   |
 
 The `else` instruction binds the control-flow stack top's [label] to the current
-position, pops an entry from the control-flow stack, pushes a new unbound
-[label] onto the control-flow stack, and then [branches](#branching) to the new
-label. It returns the values of its operands.
+position, pops an entry from the control-flow stack, pushes a new entry onto the
+control-flow stack containing an unbound [label] and the length of the current
+value stack, and then [branches](#branching) to the new label. It returns the
+values of its operands.
 
 **Validation Algorithm:**
  - The operand sequence is [merged] into the control-flow stack top.
