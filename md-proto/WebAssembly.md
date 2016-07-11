@@ -270,7 +270,7 @@ There are several *known sections*:
 0. [Element Section]
 0. [Name Section]
 
-TODO: What shall the names and positions of the Global and Element sections be?
+TODO: What should the names and positions of the Global and Element sections be?
 
 TODO: Reorder the known sections strategically?
 
@@ -409,14 +409,14 @@ All exports contain:
 An *function export* additionally contains:
  - an [index] of a function in the [function index space] to export.
 
-A *linear-memory export* consists of:
+A *linear-memory export* additionally contains:
  - an [index] of a linear-memory space in the [linear-memory index space] to
    export.
 
-A *global export* consists of:
+A *global export* additionally contains:
  - an [index] of a global in the [global index space] to export.
 
-A *table export* consists of:
+A *table export* additionally contains:
  - an [index] of a table in the [table index space] to export.
 
 The meaning of the module string and name string are determined by the embedding
@@ -551,15 +551,15 @@ TODO: Rename this to the Table Initializer Section?
 
 **Name:** `name`
 
-The Names Section doesn't change execution semantics and malformed constructs,
-such as out-of-bounds indices, in this section cause the section to be ignored,
-and don't trigger validation failures.
-
 The Names Section consists of an [array] of function name descriptors, which
 each describe names for the function with the corresponding index in the module,
 and which consist of:
  - the function name, a [string].
  - the names of the locals in the function, an [array] of [strings].
+
+The Names Section doesn't change execution semantics and malformed constructs,
+such as out-of-bounds indices, in this section cause the section to be ignored,
+and don't trigger validation failures.
 
 > Name data is represented as an explicit section in the [binary format],
 however in the [text format] it may be represented as an integrated part of the
@@ -983,6 +983,7 @@ tables giving a concise description of several of their attributes, followed by
 additional content.
 
 0. [Instruction Mnemonic Field](#instruction-mnemonic-field)
+0. [Instruction Immediates Field](#instruction-immediates-field)
 0. [Instruction Signature Field](#instruction-signature-field)
 0. [Instruction Families Field](#instruction-families-field)
 0. [Instruction Opcode Field](#instruction-opcode-field)
@@ -1001,25 +1002,54 @@ Conversion instructions have additional type-specific behavior; their mnemonic
 additionally has a *type suffix* appended, such as `/i32` or `/f64`, indicating
 the input type.
 
-The base menomics for [Signed][S] and [unsigned][U] instructions have the
+The base mnemonics for [signed][S] and [unsigned][U] instructions have the
 convention of ending in "_s" and "_u" respectively.
 
 [mnemonics]: https://en.wikipedia.org/wiki/Assembly_language#Opcode_mnemonics_and_extended_mnemonics
 
+### Instruction Immediates Field
+
+Immediates, if present, is a list of [typed] value names, representing values
+provided by the module itself as input to an instruction.
+
+As a special case, an immediate field can also contain `TABLE`, which signifies
+a branch table, which is a sequence of immediate integer values. This is for use
+in the [`br_table`](#table-branch) instruction.
+
 ### Instruction Signature Field
 
 Instruction signatures describe the explicit inputs and outputs to an
-instruction. They are described in either of the following forms:
+instruction. They are described in the following form:
 
- - `(` *operands* `)` `:` `(` *returns* `)`
- - `<` *immediates* `>` `(` *operands* `)` `:` `(` *returns* `)`
+`(` *operands* `)` `:` `(` *returns* `)`
 
-*Immediates*, if present, is a list of [typed] value names, representing values
-provided by the module itself as input to an instruction. *Argument types* is a
-list of [typed] value names representing values provided by program execution as
-input to an instruction. *Return types* is a list of [types], representing
-values computed by an instruction that are provided back to the program
-execution.
+*Operands* describes a list of [types] for values provided by program execution
+as input to an instruction. *returns* describes a list of [types] for values
+computed by the instruction that are provided back to the program execution.
+
+Within the signature for a [linear-memory access instruction][M], `iPTR` refers
+an integer [type] with the index bitwidth of the accessed linear-memory space.
+
+Besides literal [types], descriptions of [types] can be from the following
+mechanisms:
+ - A [typed] value name of the form
+
+   *name*`:` *type*
+
+   where *name* just provides an identifier for use in
+   [instruction descriptions](#instruction-description). It is replaced by
+   *type*.
+ - A type parameter list of the form
+
+   *name*`[` *length* `]`
+
+   where *name* identifies the list, and *length* gives the length of the list.
+   The length may be a literal value, an immediate operand value, or one of the
+   named values defined below. Each type parameter in the list may be *bound* to
+   a type as described in the instruction's description, or it may be inferred
+   from the type of a corresponding operand value. The parameter list is
+   replaced by the types bound to its parameters. If the list appears multiple
+   times in a signature, it is replaced by the same types at each appearance.
 
 The following named values are defined:
  - `$args` is defined in [call instructions][L] and indicates the length of the
@@ -1031,39 +1061,194 @@ The following named values are defined:
    between the length of the type stack and the control-flow stack top's limit
    value.
 
-A few special constructs are used for special purposes:
- - `iPTR` is for use with a linear-memory access, and signifies the integer type
-   associated with addresses within the accessed linear-memory space.
- - `TABLE` indicates a branch table, which is a sequence of immediate integer
-   values for use in the [table branch](#table-branch) instruction.
- - `T[x]` is used in type-generic instructions to denote a heterogeneous list of
-   type parameters, where `T` is the name of the list, and `x` is either one of
-   the above named values, an immediate operand, or a literal value, and
-   signifies the length.
-
-*Type parameters* are initially *unbound*. They may be *bound* to a type by the
-instruction's semantics, or if their first reference in a signature is in the
-operands section, they are bound to the types of the values passed to them. Once
-bound, subsequent references to them act as direct references to the types they
-are bound to.
-
 ### Instruction Families Field
 
 WebAssembly instructions may belong to several families, indicated in the tables
 by their family letter:
 
-0. [M: Linear-Memory Access Instruction Family][M]
-0. [R: Linear-Memory Size Instruction Family][R]
 0. [B: Branch Instruction Family][B]
+0. [Q: Control-Flow Barrier Instruction Family][Q]
 0. [L: Call Instruction Family][L]
-0. [C: Comparison Instruction Family][C]
-0. [T: Shift Instruction Family][T]
 0. [G: Generic Integer Instruction Family][G]
 0. [S: Signed Integer Instruction Family][S]
 0. [U: Unsigned Integer Instruction Family][U]
+0. [T: Shift Instruction Family][T]
 0. [F: Floating-Point Instruction Family][F]
 0. [Z: Floating-Point Bitwise Instruction Family][Z]
-0. [Q: Control-Flow Barrier Instruction Family][Q]
+0. [C: Comparison Instruction Family][C]
+0. [M: Linear-Memory Access Instruction Family][M]
+0. [R: Linear-Memory Size Instruction Family][R]
+
+#### B: Branch Instruction Family
+
+##### Branching
+
+In a branch according to a given control-flow stack entry, first the value stack
+is resized down to the entry's limit value.
+
+Then, if the entry's [label] is bound, the current position is set to the bound
+position. Otherwise, the position to bind the label to is found by scanning
+forward through the instructions, as if executing just [`block`](#block),
+[`loop`](#loop), and [`end`](#end) instructions, until the label is bound. Then
+the current position is set to that position.
+
+Then, control-flow stack entries are popped until the given control-flow stack
+entry is popped.
+
+> In practice, implementations may precompute the destinations of branches so
+that they don't literally need to scan in this manner.
+
+> Branching is sometimes called "jumping" in other languages.
+
+#### Q: Control-Flow Barrier Instruction Family
+
+These instructions either trap or reassign the current position, such that
+execution does not proceed to the instruction that lexically follows them.
+
+#### L: Call Instruction Family
+
+##### Calling
+
+If the called function&mdash;the *callee*&mdash;is a function in the module, it
+is [executed](#function-execution). Otherwise the callee is an imported function
+which is executed according to its own semantics. The `$args` operands,
+excluding `$callee` when present, are passed as the incoming arguments. The
+return value of the call is defined by the execution.
+
+At least one unit of [call-stack resources] is consumed during the execution of
+the callee, and released when it completes.
+
+**Trap:** Call Stack Exhausted, if the instance has insufficient
+[call-stack resources].
+
+> This means that implementations aren't permitted to perform implicit
+opportunistic tail-call elimination.
+
+> The execution state of the function currently being executed remains live
+during the call, and the execution of the called function is performed
+independently. In this way, calls form a stack-like data structure called the
+*call stack*.
+
+> Data associated with the call stack is stored outside any linear address space
+and is not directly accessible to applications.
+
+##### Call Validation
+
+ - The members of `$T[$args]` are bound to the operand types of the callee
+   signature, and the members of `$T[$returns]` are bound to the return types of
+   the callee signature.
+ - `$arity` is required to be equal to `$args`.
+
+> The `$arity` immediate operand provides no semantic content other than its
+validation requirement.
+
+#### G: Generic Integer Instruction Family
+
+Except where otherwise specified, these instructions don't specifically
+interpret their operands as explicitly signed or unsigned, and therefore don't
+have an inherent concept of overflow.
+
+#### S: Signed Integer Instruction Family
+
+Except where otherwise specified, these instructions interpret their operand
+values as signed, return result values interpreted as signed, and [trap] when
+the result value can't be represented as such.
+
+#### U: Unsigned Integer Instruction Family
+
+Except where otherwise specified, these instructions interpret their operand
+values as unsigned, return result values interpreted as unsigned, and [trap]
+when the result value can't be represented as such.
+
+#### T: Shift Instruction Family
+
+In the shift and rotate instructions, *left* means in the direction of greater
+significance, and *right* means in the direction of lesser significance.
+
+##### Shift Count
+
+The second operand in shift and rotate instructions specifies a *shift count*,
+which is interpreted as an unsigned quantity modulo the number of bits in the
+first operand.
+
+> As a result of the modulo, in `i32.` instructions, only the least-significant
+5 bits of the second operand affect the result, and in `i64.` instructions only
+the least-significant 6 bits of the second operand affect the result.
+
+> The shift count is interpreted as unsigned even in otherwise signed
+instructions such as [`shr_s`](#integer-shift-right-signed).
+
+#### F: Floating-Point Instruction Family
+
+Instructions in this family follow the [IEEE 754-2008] standard, except that:
+
+ - They support only "non-stop" mode, and floating-point exceptions aren't
+   otherwise observable. In particular, neither alternate floating-point
+   exception handling attributes nor the non-computational operations on status
+   flags are supported.
+
+ - They use the IEEE 754-2008 `roundTiesToEven` rounding attribute, except where
+   otherwise specified. Non-default directed rounding attributes aren't
+   supported.
+
+When the result of any instruction in this family (which excludes `neg`, `abs`,
+and `copysign`) is a NaN, the sign bit and the significand field (which doesn't
+include the implicit leading digit of the significand) of the NaN are computed
+by one of the following rules, selected [nondeterministically]:
+
+ - If the instructions has any NaN non-immediate operand values, implementations
+   may [nondeterministically] select any of them to be the result value, but
+   with the most significant bit of the significand field overwritten to be `1`.
+
+ - If the implementation doesn't choose to use an input NaN as a result value,
+   or if there are no input NaNs, the result value has a [nondeterministic] sign
+   bit, a significand field with `1` in the most significant bit and `0` in the
+   remaining bits.
+
+TODO: How does NaN propagation work? Monitor
+https://github.com/WebAssembly/design/pull/713
+
+Implementations are permitted to further implement the IEEE 754-2008 section
+"Operations with NaNs" recommendation that operations propagate NaN bits from
+their operands, however it isn't required.
+
+> The exception and rounding behavior specified here are the default behavior on
+most contemporary software environments.
+
+> All computations are correctly rounded, subnormal values are fully supported,
+and negative zero, NaNs, and infinities are all produced as result values to
+indicate overflow, invalid, and divide-by-zero exceptional conditions, and
+interpreted appropriately when they appear as operands. Compiler optimizations
+that introduce changes to the effective precision, rounding, or range of any
+computation are not permitted. All numeric results are deterministic, as are the
+rules for how NaNs are handled as operands and for when NaNs are to be generated
+as results. The only floating-point nondeterminism is in the specific
+bit-patterns of NaN result values.
+
+> In IEEE 754-1985, ["subnormal numbers"] are called "denormal numbers";
+WebAssembly follows IEEE 754-2008, which calls them "subnormal numbers".
+
+> There is no observable difference between quiet and signaling NaN other than
+the difference in the bit pattern.
+
+[IEEE 754-2008]: https://en.wikipedia.org/wiki/IEEE_floating_point
+["subnormal numbers"]: https://en.wikipedia.org/wiki/Subnormal_number
+
+#### Z: Floating-Point Bitwise Instruction Family
+
+These instructions operate on floating-point values, but do so in purely bitwise
+ways, including in how they operate on NaN and zero values.
+
+They correspond to the "Sign bit operations" in IEEE 754-2008.
+
+#### C: Comparison Instruction Family
+
+WebAssembly comparison instructions compare two values and return a [boolean]
+result value.
+
+> In accordance with IEEE 754-2008, for the comparison instructions, negative
+zero is considered equal to zero, and NaN values aren't less than, greater than,
+or equal to any other values, including themselves.
 
 #### M: Linear-Memory Access Instruction Family
 
@@ -1130,174 +1315,6 @@ TODO: Should linear-memory accesses have a linear-memory-space immediate?
 
 TODO: Should linear-memory size instructions have a linear-memory-space
 immediate?
-
-#### B: Branch Instruction Family
-
-##### Branching
-
-In a branch according to a given control-flow stack entry, first the value stack
-is resized down to the entry's limit value.
-
-Then, if the entry's [label] is bound, the current position is set to the bound
-position. Otherwise, the position to bind the label to is found by scanning
-forward through the instructions, as if executing just [`block`](#block),
-[`loop`](#loop), and [`end`](#end) instructions, until the label is bound. Then
-the current position is set to that position.
-
-Then, control-flow stack entries are popped until the given control-flow stack
-entry is popped.
-
-> In practice, implementations may precompute the destinations of branches so
-that they don't literally need to scan in this manner.
-
-> Branching is sometimes called "jumping" in other languages.
-
-#### L: Call Instruction Family
-
-##### Calling
-
-If the called function&mdash;the *callee*&mdash;is a function in the module, it
-is [executed](#function-execution). Otherwise the callee is an imported function
-which is executed according to its own semantics. The `$args` operands,
-excluding `$callee` when present, are passed as the incoming arguments. The
-return value of the call is defined by the execution.
-
-At least one unit of [call-stack resources] is consumed during the execution of
-the callee, and released when it completes.
-
-**Trap:** Call Stack Exhausted, if the instance has insufficient
-[call-stack resources].
-
-> This means that implementations aren't permitted to perform implicit
-opportunistic tail-call elimination.
-
-> The execution state of the function currently being executed remains live
-during the call, and the execution of the called function is performed
-independently. In this way, calls form a stack-like data structure called the
-*call stack*.
-
-> Data associated with the call stack is stored outside any linear address space
-and is not directly accessible to applications.
-
-##### Call Validation
-
- - `$arity` is required to be equal to `$args`.
-
-> The `$arity` immediate operand provides no semantic content other than its
-validation requirement.
-
-#### C: Comparison Instruction Family
-
-WebAssembly comparison instructions compare two values and return a [boolean]
-result value.
-
-> In accordance with IEEE 754-2008, for the comparison instructions, negative
-zero is considered equal to zero, and NaN values aren't less than, greater than,
-or equal to any other values, including themselves.
-
-#### T: Shift Instruction Family
-
-In the shift and rotate instructions, *left* means in the direction of greater
-significance, and *right* means in the direction of lesser significance.
-
-##### Shift Count
-
-The second operand in shift and rotate instructions specifies a *shift count*,
-which is interpreted as an unsigned quantity modulo the number of bits in the
-first operand.
-
-> As a result of the modulo, in `i32.` instructions, only the least-significant
-5 bits of the second operand affect the result, and in `i64.` instructions only
-the least-significant 6 bits of the second operand affect the result.
-
-> The shift count is interpreted as unsigned even in otherwise signed
-instructions such as [`shr_s`](#integer-shift-right-signed).
-
-#### G: Generic Integer Instruction Family
-
-Except where otherwise specified, these instructions don't specifically
-interpret their operands as explicitly signed or unsigned, and therefore don't
-have an inherent concept of overflow.
-
-#### S: Signed Integer Instruction Family
-
-Except where otherwise specified, these instructions interpret their operand
-values as signed, return result values interpreted as signed, and [trap] when
-the result value can't be represented as such.
-
-#### U: Unsigned Integer Instruction Family
-
-Except where otherwise specified, these instructions interpret their operand
-values as unsigned, return result values interpreted as unsigned, and [trap]
-when the result value can't be represented as such.
-
-#### F: Floating-Point Instruction Family
-
-Instructions in this family follow the [IEEE 754-2008] standard, except that:
-
- - They support only "non-stop" mode, and floating-point exceptions aren't
-   otherwise observable. In particular, neither alternate floating-point
-   exception handling attributes nor the non-computational operations on status
-   flags are supported.
-
- - They use the IEEE 754-2008 `roundTiesToEven` rounding attribute, except where
-   otherwise specified. Non-default directed rounding attributes aren't
-   supported.
-
-When the result of any instruction in this family (which excludes `neg`, `abs`,
-and `copysign`) is a NaN, the sign bit and the significand field (which doesn't
-include the implicit leading digit of the significand) of the NaN are computed
-by one of the following rules, selected [nondeterministically]:
-
- - If the instructions has any NaN non-immediate operand values, implementations
-   may [nondeterministically] select any of them to be the result value, but
-   with the most significant bit of the significand field overwritten to be `1`.
-
- - If the implementation doesn't choose to use an input NaN as a result value,
-   or if there are no input NaNs, the result value has a [nondeterministic] sign
-   bit, a significand field with `1` in the most significant bit and `0` in the
-   remaining bits.
-
-TODO: How does NaN propagation work? Monitor
-https://github.com/WebAssembly/design/pull/713
-
-Implementations are permitted to further implement the IEEE 754-2008 section
-"Operations with NaNs" recommendation that operations propagate NaN bits from
-their operands, however it isn't required.
-
-> The exception and rounding behavior specified here are the default behavior on
-most contemporary software environments.
-
-> All computations are correctly rounded, subnormal values are fully supported,
-and negative zero, NaNs, and infinities are all produced as result values to
-indicate overflow, invalid, and divide-by-zero exceptional conditions, and
-interpreted appropriately when they appear as operands. Compiler optimizations
-that introduce changes to the effective precision, rounding, or range of any
-computation are not permitted. All numeric results are deterministic, as are the
-rules for how NaNs are handled as operands and for when NaNs are to be generated
-as results. The only floating-point nondeterminism is in the specific
-bit-patterns of NaN result values.
-
-> In IEEE 754-1985, ["subnormal numbers"] are called "denormal numbers";
-WebAssembly follows IEEE 754-2008, which calls them "subnormal numbers".
-
-> There is no observable difference between quiet and signaling NaN other than
-the difference in the bit pattern.
-
-[IEEE 754-2008]: https://en.wikipedia.org/wiki/IEEE_floating_point
-["subnormal numbers"]: https://en.wikipedia.org/wiki/Subnormal_number
-
-#### Z: Floating-Point Bitwise Instruction Family
-
-These instructions operate on floating-point values, but do so in purely bitwise
-ways, including in how they operate on NaN and zero values.
-
-They correspond to the "Sign bit operations" in IEEE 754-2008.
-
-#### Q: Control-Flow Barrier Instruction Family
-
-These instructions either trap or reassign the current position, such that
-execution does not proceed to the instruction that lexically follows them.
 
 ### Instruction Opcode Field
 
@@ -1398,9 +1415,9 @@ https://github.com/WebAssembly/design/pull/710
 
 #### Unconditional Branch
 
-| Mnemonic    | Signature                                              | Families | Opcode |
-| ----------- | ------------------------------------------------------ | -------- | ------ |
-| `br`        | `<$arity: i32, $depth: i32> (T[$arity]) : (T[$arity])` | [B] [Q]  | 0x06   |
+| Mnemonic    | Immediates                 | Signature                     | Families | Opcode |
+| ----------- | -------------------------- | ----------------------------- | -------- | ------ |
+| `br`        | `$arity: i32, $depth: i32` | `($T[$arity]) : ($T[$arity])` | [B] [Q]  | 0x06   |
 
 The `br` instruction [branches](#branching) according to the control flow stack
 entry `$depth` from the top. It returns the values of its operands.
@@ -1417,9 +1434,9 @@ TODO: This anticipates a proposal to make `br`, `br_table`, `return`, and
 
 #### Conditional Branch
 
-| Mnemonic    | Signature                                                               | Families | Opcode |
-| ----------- | ----------------------------------------------------------------------- | -------- | ------ |
-| `br_if`     | `<$arity: i32, $depth: i32> (T[$arity], $condition: i32) : (T[$arity])` | [B]      | 0x07   |
+| Mnemonic    | Immediates                 | Signature                                      | Families | Opcode |
+| ----------- | -------------------------- | ---------------------------------------------- | -------- | ------ |
+| `br_if`     | `$arity: i32, $depth: i32` | `($T[$arity], $condition: i32) : ($T[$arity])` | [B]      | 0x07   |
 
 If `$condition` is [true], the `br_if` instruction [branches](#branching)
 according to the control flow stack entry `$depth` from the top. Otherwise, it
@@ -1440,9 +1457,9 @@ https://github.com/WebAssembly/design/pull/709
 
 #### Table Branch
 
-| Mnemonic    | Signature                                                                    | Families | Opcode |
-| ----------- | ---------------------------------------------------------------------------- | -------- | ------ |
-| `br_table`  | `<$arity: i32, TABLE, $default: i32> (T[$arity], $index: i32) : (T[$arity])` | [B] [Q]  | 0x08   |
+| Mnemonic    | Immediates                          | Signature                                  | Families | Opcode |
+| ----------- | ----------------------------------- | ------------------------------------------ | -------- | ------ |
+| `br_table`  | `$arity: i32, TABLE, $default: i32` | `($T[$arity], $index: i32) : ($T[$arity])` | [B] [Q]  | 0x08   |
 
 First, the `br_table` instruction selects a depth to use. If `$index` is within
 the bounds of the table, the depth is the value of the indexed table element.
@@ -1485,9 +1502,9 @@ https://github.com/WebAssembly/design/pull/710
 
 #### Else
 
-| Mnemonic    | Signature                   | Families | Opcode |
-| ----------- | --------------------------- | -------- | ------ |
-| `else`      | `(T[$any]) : (T[$any])`     | [B]      | 0x04   |
+| Mnemonic    | Signature                     | Families | Opcode |
+| ----------- | ----------------------------- | -------- | ------ |
+| `else`      | `($T[$any]) : ($T[$any])`     | [B]      | 0x04   |
 
 The `else` instruction binds the control-flow stack top's [label] to the current
 position, pops an entry from the control-flow stack, pushes a new unbound
@@ -1506,9 +1523,9 @@ label. It returns the values of its operands.
 
 #### End
 
-| Mnemonic    | Signature                   | Families | Opcode |
-| ----------- | --------------------------- | -------- | ------ |
-| `end`       | `(T[$any]) : (T[$any])`     |          | 0x0f   |
+| Mnemonic    | Signature                     | Families | Opcode |
+| ----------- | ----------------------------- | -------- | ------ |
+| `end`       | `($T[$any]) : ($T[$any])`     |          | 0x0f   |
 
 The `end` instruction pops an entry from the control-flow stack. If the entry's
 [label] is unbound, the label is bound to the current position. It returns the
@@ -1526,9 +1543,9 @@ values of its operands.
 
 #### Return
 
-| Mnemonic    | Signature                                 | Families | Opcode |
-| ----------- | ----------------------------------------- | -------- | ------ |
-| `return`    | `<$arity: i32> (T[$arity]) : (T[$arity])` | [B] [Q]  | 0x09   |
+| Mnemonic    | Immediates    | Signature                     | Families | Opcode |
+| ----------- | ------------- | ----------------------------- | -------- | ------ |
+| `return`    | `$arity: i32` | `($T[$arity]) : ($T[$arity])` | [B] [Q]  | 0x09   |
 
 The `return` instruction [branches](#branching) according to the control-flow
 stack bottom. It returns the values of its operands.
@@ -1579,9 +1596,9 @@ The `nop` instruction does nothing.
 
 #### Drop
 
-| Mnemonic    | Signature                   | Families | Opcode |
-| ----------- | --------------------------- | -------- | ------ |
-| `drop`      | `(T[1]) : ()`               |          | 0x0b   |
+| Mnemonic    | Signature                    | Families | Opcode |
+| ----------- | ---------------------------- | -------- | ------ |
+| `drop`      | `($T[1]) : ()`               |          | 0x0b   |
 
 The `drop` instruction does nothing.
 
@@ -1590,14 +1607,14 @@ discard unneeded values from the value stack.
 
 #### Constant
 
-| Mnemonic    | Signature                   | Families | Opcode |
-| ----------- | --------------------------- | -------- | ------ |
-| `i32.const` | `<i32> () : (i32)`          |          | 0x10   |
-| `i64.const` | `<i64> () : (i64)`          |          | 0x11   |
-| `f32.const` | `<f32> () : (f32)`          |          | 0x12   |
-| `f64.const` | `<f64> () : (f64)`          |          | 0x13   |
+| Mnemonic    | Immediates    | Signature    | Families | Opcode |
+| ----------- | ------------- | ------------ | -------- | ------ |
+| `i32.const` | `$value: i32` | `() : (i32)` |          | 0x10   |
+| `i64.const` | `$value: i64` | `() : (i64)` |          | 0x11   |
+| `f32.const` | `$value: f32` | `() : (f32)` |          | 0x12   |
+| `f64.const` | `$value: f64` | `() : (f64)` |          | 0x13   |
 
-The `const` instruction returns the value of its immediate.
+The `const` instruction returns the value of `$value`.
 
 > Floating-point constants can be created with arbitrary bit-patterns.
 
@@ -1606,9 +1623,9 @@ https://github.com/WebAssembly/design/pull/696
 
 #### Get Local
 
-| Mnemonic    | Signature                   | Families | Opcode |
-| ----------- | --------------------------- | -------- | ------ |
-| `get_local` | `<$id: i32> () : (T[1])`    |          | 0x14   |
+| Mnemonic    | Immediates | Signature      | Families | Opcode |
+| ----------- | ---------- | -------------- | -------- | ------ |
+| `get_local` | `$id: i32` | `() : ($T[1])` |          | 0x14   |
 
 The `get_local` instruction returns the value of the local at index `$id` in the
 locals array. The type parameter is bound to the type of the local.
@@ -1618,9 +1635,9 @@ locals array. The type parameter is bound to the type of the local.
 
 #### Set Local
 
-| Mnemonic    | Signature                   | Families | Opcode |
-| ----------- | --------------------------- | -------- | ------ |
-| `set_local` | `<$id: i32> (T[1]) : ()`    |          | 0x15   |
+| Mnemonic    | Immediates | Signature      | Families | Opcode |
+| ----------- | ---------- | -------------- | -------- | ------ |
+| `set_local` | `$id: i32` | `($T[1]) : ()` |          | 0x15   |
 
 The `set_local` instruction sets the value of the local at index `$id` in the
 locals array to the value given in the operand. The type parameter is bound to
@@ -1634,9 +1651,9 @@ the type of the local.
 
 #### Tee Local
 
-| Mnemonic    | Signature                    | Families | Opcode |
-| ----------- | ---------------------------- | -------- | ------ |
-| `tee_local` | `<$id: i32> (T[1]) : (T[1])` |          | 0x19   |
+| Mnemonic    | Immediates | Signature           | Families | Opcode |
+| ----------- | ---------- | ------------------- | -------- | ------ |
+| `tee_local` | `$id: i32` | `($T[1]) : ($T[1])` |          | 0x19   |
 
 The `tee_local` instruction sets the value of the locals at index `$id` in the
 locals array to the value given in the operand. Its return value is the value of
@@ -1653,9 +1670,9 @@ return value.
 
 #### Get Global
 
-| Mnemonic     | Signature                  | Families | Opcode |
-| ------------ | -------------------------- | -------- | ------ |
-| `get_global` | `<$id: i32> () : (T[1])`   |          | TODO   |
+| Mnemonic     | Immediates | Signature      | Families | Opcode |
+| ------------ | ---------- | -------------- | -------- | ------ |
+| `get_global` | `$id: i32` | `() : ($T[1])` |          | TODO   |
 
 The `get_global` instruction returns the value of the global identified by index
 `$id` in the [global index space]. The type parameter is bound to the type of
@@ -1666,9 +1683,9 @@ the global.
 
 #### Set Global
 
-| Mnemonic     | Signature                  | Families | Opcode |
-| ------------ | -------------------------- | -------- | ------ |
-| `set_global` | `<$id: i32> (T[1]) : ()`   |          | TODO   |
+| Mnemonic     | Immediates | Signature      | Families | Opcode |
+| ------------ | ---------- | -------------- | -------- | ------ |
+| `set_global` | `$id: i32` | `($T[1]) : ()` |          | TODO   |
 
 The `set_global` instruction sets the value of the global identified by index
 `$id` in the [global index space] to the value given in the operand. The type
@@ -1680,9 +1697,9 @@ parameter is bound to the type of the global.
 
 #### Select
 
-| Mnemonic    | Signature                                | Families | Opcode |
-| ----------- | ---------------------------------------- | -------- | ------ |
-| `select`    | `(T[1], T[1], $condition: i32) : (T[1])` |          | 0x16   |
+| Mnemonic    | Signature                                   | Families | Opcode |
+| ----------- | ------------------------------------------- | -------- | ------ |
+| `select`    | `($T[1], $T[1], $condition: i32) : ($T[1])` |          | 0x16   |
 
 The `select` instruction returns its first operand if `$condition` is [true], or
 its second operand otherwise.
@@ -1695,9 +1712,9 @@ https://github.com/WebAssembly/design/pull/695
 
 #### Call
 
-| Mnemonic    | Signature                                                | Families | Opcode |
-| ----------- | -------------------------------------------------------- | -------- | ------ |
-| `call`      | `<$arity: i32, $callee: i32> (T[$args]) : (T[$returns])` | [L]      | 0x17   |
+| Mnemonic    | Immediates                  | Signature                      | Families | Opcode |
+| ----------- | --------------------------- | ------------------------------ | -------- | ------ |
+| `call`      | `$arity: i32, $callee: i32` | `($T[$args]) : ($T[$returns])` | [L]      | 0x17   |
 
 The `call` instruction performs a [call](#calling) to the function with index
 `$callee` in the [function index space].
@@ -1712,9 +1729,9 @@ https://github.com/WebAssembly/design/pull/695
 
 #### Indirect Call
 
-| Mnemonic        | Signature                                                                 | Families | Opcode |
-| --------------- | ------------------------------------------------------------------------- | -------- | ------ |
-| `call_indirect` | `<$arity: i32, $signature: i32> ($callee: i32, T[$args]) : (T[$returns])` | [L]      | 0x18   |
+| Mnemonic        | Immediates                     | Signature                                    | Families | Opcode |
+| --------------- | ------------------------------ | -------------------------------------------- | -------- | ------ |
+| `call_indirect` | `$arity: i32, $signature: i32` | `($callee: i32, $T[$args]) : ($T[$returns])` | [L]      | 0x18   |
 
 The `call_indirect` instruction performs a [call](#calling) to the function in
 the default table with index `$callee`.
@@ -2624,12 +2641,12 @@ instruction is always exact.
 
 #### Load
 
-| Mnemonic    | Signature                                             | Families | Opcode |
-| ----------- | ----------------------------------------------------- | -------- | ------ |
-| `i32.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [G] | 0x2a   |
-| `i64.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [G] | 0x2b   |
-| `f32.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (f32)` | [M], [Z] | 0x2c   |
-| `f64.load`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (f64)` | [M], [Z] | 0x2d   |
+| Mnemonic    | Immediates                    | Signature               | Families | Opcode |
+| ----------- | ----------------------------- | ----------------------- | -------- | ------ |
+| `i32.load`  | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i32)` | [M], [G] | 0x2a   |
+| `i64.load`  | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i64)` | [M], [G] | 0x2b   |
+| `f32.load`  | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (f32)` | [M], [Z] | 0x2c   |
+| `f64.load`  | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (f64)` | [M], [Z] | 0x2d   |
 
 The `load` instruction performs a [load](#loading) of the same size as its type.
 
@@ -2641,12 +2658,12 @@ IEEE 754-2008 `copy` operation.
 
 #### Store
 
-| Mnemonic    | Signature                                                       | Families | Opcode |
-| ----------- | --------------------------------------------------------------- | -------- | ------ |
-| `i32.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : ()` | [M], [G] | 0x33   |
-| `i64.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : ()` | [M], [G] | 0x34   |
-| `f32.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: f32) : ()` | [M], [F] | 0x35   |
-| `f64.store` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: f64) : ()` | [M], [F] | 0x36   |
+| Mnemonic    | Immediates                    | Signature                         | Families | Opcode |
+| ----------- | ----------------------------- | --------------------------------- | -------- | ------ |
+| `i32.store` | `$offset: iPTR, $align: iPTR` | `($base: iPTR, $value: i32) : ()` | [M], [G] | 0x33   |
+| `i64.store` | `$offset: iPTR, $align: iPTR` | `($base: iPTR, $value: i64) : ()` | [M], [G] | 0x34   |
+| `f32.store` | `$offset: iPTR, $align: iPTR` | `($base: iPTR, $value: f32) : ()` | [M], [F] | 0x35   |
+| `f64.store` | `$offset: iPTR, $align: iPTR` | `($base: iPTR, $value: f64) : ()` | [M], [F] | 0x36   |
 
 The `store` instruction performs a [store](#storing) of `$value` of the same
 size as its type.
@@ -2659,14 +2676,14 @@ IEEE 754-2008 `copy` operation.
 
 #### Extending Load, Signed
 
-| Mnemonic       | Signature                                             | Families | Opcode |
-| -------------- | ----------------------------------------------------- | -------- | ------ |
-| `i32.load8_s`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [S] | 0x20   |
-| `i32.load16_s` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [S] | 0x22   |
-|                |                                                       |          |
-| `i64.load8_s`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [S] | 0x24   |
-| `i64.load16_s` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [S] | 0x26   |
-| `i64.load32_s` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [S] | 0x28   |
+| Mnemonic       | Immediates                    | Signature               | Families | Opcode |
+| -------------- | ----------------------------- | ----------------------- | -------- | ------ |
+| `i32.load8_s`  | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i32)` | [M], [S] | 0x20   |
+| `i32.load16_s` | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i32)` | [M], [S] | 0x22   |
+|                |                               |                         |          |        |
+| `i64.load8_s`  | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i64)` | [M], [S] | 0x24   |
+| `i64.load16_s` | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i64)` | [M], [S] | 0x26   |
+| `i64.load32_s` | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i64)` | [M], [S] | 0x28   |
 
 The signed extending load instructions perform a [load](#loading) of narrower
 width than their type, and return the value [sign-extended] to their type.
@@ -2679,14 +2696,14 @@ width than their type, and return the value [sign-extended] to their type.
 
 #### Extending Load, Unsigned
 
-| Mnemonic       | Signature                                             | Families | Opcode |
-| -------------- | ----------------------------------------------------- | -------- | ------ |
-| `i32.load8_u`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [U] | 0x21   |
-| `i32.load16_u` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i32)` | [M], [U] | 0x23   |
-|                |                                                       |          |        |
-| `i64.load8_u`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [U] | 0x25   |
-| `i64.load16_u` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [U] | 0x27   |
-| `i64.load32_u` | `<$offset: iPTR, $align: iPTR> ($base: iPTR) : (i64)` | [M], [U] | 0x29   |
+| Mnemonic       | Immediates                    | Signature               | Families | Opcode |
+| -------------- | ----------------------------- | ----------------------- | -------- | ------ |
+| `i32.load8_u`  | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i32)` | [M], [U] | 0x21   |
+| `i32.load16_u` | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i32)` | [M], [U] | 0x23   |
+|                |                               |                         |          |        |
+| `i64.load8_u`  | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i64)` | [M], [U] | 0x25   |
+| `i64.load16_u` | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i64)` | [M], [U] | 0x27   |
+| `i64.load32_u` | `$offset: iPTR, $align: iPTR` | `($base: iPTR) : (i64)` | [M], [U] | 0x29   |
 
 The unsigned extending load instructions perform a [load](#loading) of narrower
 width than their type, and return the value zero-extended to their type.
@@ -2699,14 +2716,14 @@ width than their type, and return the value zero-extended to their type.
 
 #### Wrapping Store
 
-| Mnemonic      | Signature                                                       | Families | Opcode |
-| ------------- | --------------------------------------------------------------- | -------- | ------ |
-| `i32.store8`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : ()` | [M], [G] | 0x2e   |
-| `i32.store16` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i32) : ()` | [M], [G] | 0x2f   |
-|               |                                                                 |          |        |
-| `i64.store8`  | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : ()` | [M], [G] | 0x30   |
-| `i64.store16` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : ()` | [M], [G] | 0x31   |
-| `i64.store32` | `<$offset: iPTR, $align: iPTR> ($base: iPTR, $value: i64) : ()` | [M], [G] | 0x32   |
+| Mnemonic      | Immediates                    | Signature                         | Families | Opcode |
+| ------------- | ----------------------------- | --------------------------------- | -------- | ------ |
+| `i32.store8`  | `$offset: iPTR, $align: iPTR` | `($base: iPTR, $value: i32) : ()` | [M], [G] | 0x2e   |
+| `i32.store16` | `$offset: iPTR, $align: iPTR` | `($base: iPTR, $value: i32) : ()` | [M], [G] | 0x2f   |
+|               |                               |                                   |          |        |
+| `i64.store8`  | `$offset: iPTR, $align: iPTR` | `($base: iPTR, $value: i64) : ()` | [M], [G] | 0x30   |
+| `i64.store16` | `$offset: iPTR, $align: iPTR` | `($base: iPTR, $value: i64) : ()` | [M], [G] | 0x31   |
+| `i64.store32` | `$offset: iPTR, $align: iPTR` | `($base: iPTR, $value: i64) : ()` | [M], [G] | 0x32   |
 
 The wrapping store instructions performs a [store](#storing) of `$value`
 silently wrapped to a narrower width.
@@ -2762,18 +2779,18 @@ linear-memory space, as an unsigned value in units of [pages].
 **Validation**:
  - [Linear-memory size validation](#linear-memory-size-validation) is required.
 
-[M]: #m-linear-memory-access-instruction-family
-[R]: #r-linear-memory-size-instruction-family
 [B]: #b-branch-instruction-family
+[Q]: #q-control-flow-barrier-instruction-family
 [L]: #l-call-instruction-family
-[C]: #c-comparison-instruction-family
-[T]: #t-shift-instruction-family
 [G]: #g-generic-integer-instruction-family
 [S]: #s-signed-integer-instruction-family
 [U]: #u-unsigned-integer-instruction-family
+[T]: #t-shift-instruction-family
 [F]: #f-floating-point-instruction-family
 [Z]: #z-floating-point-bitwise-instruction-family
-[Q]: #q-control-flow-barrier-instruction-family
+[C]: #c-comparison-instruction-family
+[M]: #m-linear-memory-access-instruction-family
+[R]: #r-linear-memory-size-instruction-family
 [Type Section]: #type-section
 [Import Section]: #import-section
 [Function Section]: #function-section
