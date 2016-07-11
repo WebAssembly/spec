@@ -1294,11 +1294,11 @@ Instructions
 | ----------- | --------------------------- | -------- | ------ |
 | `block`     | `() : ()`                   |          | 0x01   |
 
-The `block` instruction pushes an entry onto the control-flow stack containing
-an unbound [label] and a limit value of the current length of the value stack.
+The `block` instruction pushes an entry onto the control-flow stack. The entry
+contains an unbound [label] and the current length of the value stack.
 
-> Each `block` needs a corresponding [`end`](#end) to pop its label from the
-stack.
+> Each `block` needs a corresponding [`end`](#end) to bind its label and pop
+its control-flow stack entry.
 
 #### Loop
 
@@ -1307,8 +1307,8 @@ stack.
 | `loop`      | `() : ()`                   |          | 0x02   |
 
 The `loop` instruction binds a [label] to the current position, and pushes an
-entry onto the control-flow stack containing that label and a limit value of the
-current length of the value stack.
+entry onto the control-flow stack. The entry contains that label and the current
+length of the value stack.
 
 > The `loop` instruction does not perform a loop by itself. It merely introduces
 a label that may be used by a branch to form an actual loop.
@@ -1316,8 +1316,8 @@ a label that may be used by a branch to form an actual loop.
 > Since `loop`'s control-flow stack entry starts with an empty type sequence,
 branches to the top of the loop must not have any result values.
 
-> Each `loop` needs a corresponding [`end`](#end) to pop its label from the
-stack.
+> Each `loop` needs a corresponding [`end`](#end) to pop its control-flow stack
+entry.
 
 > There is no requirement that loops eventually terminate or contain observable
 side effects.
@@ -1331,7 +1331,7 @@ https://github.com/WebAssembly/design/pull/710
 | ----------- | -------------------------- | ----------------------------- | -------- | ------ |
 | `br`        | `$arity: i32, $depth: i32` | `($T[$arity]) : ($T[$arity])` | [B] [Q]  | 0x06   |
 
-The `br` instruction [branches](#branching) according to the control flow stack
+The `br` instruction [branches](#branching) according to the control-flow stack
 entry `$depth` from the top. It returns the values of its operands.
 
 **Validation:**
@@ -1347,7 +1347,7 @@ TODO: This anticipates a proposal to make `br`, `br_table`, `return`, and
 | `br_if`     | `$arity: i32, $depth: i32` | `($T[$arity], $condition: i32) : ($T[$arity])` | [B]      | 0x07   |
 
 If `$condition` is [true], the `br_if` instruction [branches](#branching)
-according to the control flow stack entry `$depth` from the top. Otherwise, it
+according to the control-flow stack entry `$depth` from the top. Otherwise, it
 does nothing. It returns the values of its operands, except `$condition`.
 
 **Validation:**
@@ -1387,14 +1387,15 @@ with the other branch instructions.
 | ----------- | --------------------------- | -------- | ------ |
 | `if`        | `($condition: i32) : ()`    | [B]      | 0x03   |
 
-The `if` instruction pushes an entry onto the control-flow stack containing an
-unbound [label] and a limit value of the current length of the value stack. If
+The `if` instruction pushes an entry onto the control-flow stack. The entry
+contains an unbound [label] and the current length of the value stack. If
 `$condition` is [false], it then [branches](#branching) to this label.
 
 TODO: Do `if` and `else` have labels? Monitor at least
 https://github.com/WebAssembly/design/pull/710
 
-> Each `if` needs either a corresponding [`else`](#else) or [`end`](#end).
+> Each `if` needs either a corresponding [`else`](#else) or [`end`](#end) to
+bind its label and pop its control-flow stack entry.
 
 #### Else
 
@@ -1408,7 +1409,8 @@ control-flow stack containing an unbound [label] and the length of the current
 value stack, and then [branches](#branching) to the new label. It returns the
 values of its operands.
 
-> Each `else` needs a corresponding [`end`](#end).
+> Each `else` needs a corresponding [`end`](#end) to bind its label and pop its
+control-flow stack entry.
 
 #### End
 
