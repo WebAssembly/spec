@@ -752,6 +752,7 @@ The following data structures are created:
       pushed inside the current region.
     - An optional [type] sequence, which is used to check that all exits from
       the current region leave the same sequence of types on the type stack.
+    - An *isThisAnIf* flag, indicating whether the entry was pushed for an `if`.
 
 The following invariants are required to be preserved:
  - Whenever an element of either stack is to be popped, that stack is required
@@ -763,8 +764,8 @@ The following invariants are required to be preserved:
    than the control-flow stack top's limit value.
 
 The type stack begins empty. The control-flow stack begins with one entry, with
-the [type] sequence consisting of the return types of the function, and with the
-limit value being zero.
+the [type] sequence consisting of the return types of the function, with the
+limit value being zero, and the isThisAnIf flag being false.
 
 For each instruction in the body, in sequence order:
  - For each construct in the instruction's signature's operands in reverse
@@ -1379,8 +1380,9 @@ Instructions
 The `block` instruction pushes an unbound [label] onto the control-flow stack.
 
 **Validation Algorithm:**
- - An entry is pushed onto the control-flow stack containing no type sequence,
-   and a limit value of the current length of the type stack.
+ - An entry is pushed onto the control-flow stack containing no type sequence, a
+   limit value of the current length of the type stack, and an isThisAnIf value
+   of false.
 
 > Each `block` needs a corresponding [`end`](#end) to pop its label from the
 stack.
@@ -1396,7 +1398,8 @@ onto the control-flow stack.
 
 **Validation Algorithm:**
  - An entry is pushed onto the control-flow stack containing an empty type
-   sequence, and a limit value of the current length of the type stack.
+   sequence, a limit value of the current length of the type stack, and an
+   isThisAnIf value of false.
 
 > The `loop` instruction does not perform a loop by itself. It merely introduces
 a label that may be used by a branch to form an actual loop.
@@ -1493,7 +1496,8 @@ The `if` instruction pushes an unbound [label] onto the control-flow stack. If
 
 **Validation Algorithm:**
  - An entry is pushed onto the control-flow stack containing no type sequence,
-   and a limit value of the current length of the type stack.
+   a limit value of the current length of the type stack, and an isThisAnIf
+   value of true.
 
 TODO: Do `if` and `else` have labels? Monitor at least
 https://github.com/WebAssembly/design/pull/710
@@ -1512,12 +1516,12 @@ position, pops an entry from the control-flow stack, pushes a new unbound
 label. It returns the values of its operands.
 
 **Validation Algorithm:**
- - The operand sequence is [merged] into the control-flow stack entry `$depth`
-   from the top.
+ - The operand sequence is [merged] into the control-flow stack top.
+ - The control-flow stack top's isThisAnIf value is required to be true.
  - An entry is popped off the control-flow stack.
  - A new entry is pushed onto the control-flow stack containing the operand
-   sequence as its type sequence, and a limit value of the current length of the
-   type stack.
+   sequence as its type sequence, a limit value of the current length of the
+   type stack, and an isThisAnIf value of true.
 
 > Each `else` needs a corresponding [`end`](#end).
 
