@@ -117,13 +117,13 @@ let rec run_stdin () =
 
 let print_stdout m =
   Script.trace "Formatting...";
-  let sexpr = Format.module_ (Desugar.desugar m) in
+  let sexpr = Arrange.module_ (Desugar.desugar m) in
   Script.trace "Printing...";
   Sexpr.output stdout !Flags.width sexpr
 
 let create_sexpr_file file m =
   Script.trace ("Formatting (" ^ file ^ ")...");
-  let sexpr = Format.module_ (Desugar.desugar m) in
+  let sexpr = Arrange.module_ (Desugar.desugar m) in
   let oc = open_out file in
   try
     Script.trace "Writing...";
