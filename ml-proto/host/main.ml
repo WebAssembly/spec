@@ -1,5 +1,5 @@
-let name = "wasm"
-let version = "0.3"
+let name = "Wasm-" ^ Printf.sprintf "0x%02lx" Encode.version
+let version = "0.4"
 
 let configure () =
   Import.register "spectest" Spectest.lookup;

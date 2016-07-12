@@ -562,7 +562,7 @@ let module_ s =
   let magic = u32 s in
   require (magic = 0x6d736100l) s 0 "magic header not detected";
   let version = u32 s in
-  require (version = 0x0bl) s 4 "unknown binary version";
+  require (version = Encode.version) s 4 "unknown binary version";
   iterate unknown_section s;
   let types = type_section s in
   iterate unknown_section s;
