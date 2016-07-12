@@ -6,6 +6,6 @@ type import = value stack -> value stack
 exception Trap of Source.region * string
 exception Crash of Source.region * string
 
-val init : Kernel.module_ -> import list -> instance
+val init : Ast.module_ -> import list -> instance
 val invoke : instance -> string -> value list -> value list
   (* raises Trap, Crash *)

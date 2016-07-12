@@ -26,7 +26,7 @@ let f64_of_value n =
 
 module Int32Op =
 struct
-  open Kernel.I32Op
+  open Ast.I32Op
 
   let unop op =
     let f = match op with
@@ -95,7 +95,7 @@ end
 
 module Int64Op =
 struct
-  open Kernel.I64Op
+  open Ast.I64Op
 
   let unop op =
     let f = match op with
@@ -167,7 +167,7 @@ end
 
 module Float32Op =
 struct
-  open Kernel.F32Op
+  open Ast.F32Op
 
   let unop op =
     let f = match op with
@@ -223,7 +223,7 @@ end
 
 module Float64Op =
 struct
-  open Kernel.F64Op
+  open Ast.F64Op
 
   let unop op =
     let f = match op with

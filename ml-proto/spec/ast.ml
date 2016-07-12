@@ -1,197 +1,108 @@
+(*
+ * Throughout the implementation we use consistent naming conventions for
+ * syntactic elements, associated with the types defined here and in a few
+ * other places:
+ *
+ *   x : var
+ *   v : value
+ *   e : expr
+ *   f : func
+ *   m : module_
+ *
+ *   t : value_type
+ *   s : func_type
+ *   c : context / config
+ *
+ * These conventions mostly follow standard practice in language semantics.
+ *)
+
+
+open Values
+
+
+(* Types *)
+
+type value_type = Types.value_type
+
+
+(* Operators *)
+
+module IntOp =
+struct
+  type unop = Clz | Ctz | Popcnt
+  type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
+             | And | Or | Xor | Shl | ShrS | ShrU | Rotl | Rotr
+  type testop = Eqz
+  type relop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
+  type cvtop = ExtendSInt32 | ExtendUInt32 | WrapInt64
+             | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
+             | ReinterpretFloat
+end
+
+module FloatOp =
+struct
+  type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
+  type binop = Add | Sub | Mul | Div | Min | Max | CopySign
+  type testop
+  type relop = Eq | Ne | Lt | Le | Gt | Ge
+  type cvtop = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
+             | PromoteFloat32 | DemoteFloat64
+             | ReinterpretInt
+end
+
+module I32Op = IntOp
+module I64Op = IntOp
+module F32Op = FloatOp
+module F64Op = FloatOp
+
+type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop) op
+type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) op
+type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) op
+type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) op
+type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) op
+
+type memop = {ty : value_type; align : int; offset : Memory.offset}
+type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
+type wrapop = {memop : memop; sz : Memory.mem_size}
+
+
 (* Expressions *)
 
 type var = int Source.phrase
+type literal = value Source.phrase
 
 type expr = expr' Source.phrase
 and expr' =
-  (* Constants *)
-  | I32_const of I32.t Source.phrase
-  | I64_const of I64.t Source.phrase
-  | F32_const of F32.t Source.phrase
-  | F64_const of F64.t Source.phrase
-
-  (* Control *)
-  | Nop
-  | Unreachable
-  | Drop
-  | Block of expr list
-  | Loop of expr list
-  | Br of int * var
-  | Br_if of int * var
-  | Br_table of int * var list * var
-  | Return of int
-  | If of expr list * expr list
-  | Select
-  | Call of int * var
-  | Call_import of int * var
-  | Call_indirect of int * var
-
-  (* Locals *)
-  | Get_local of var
-  | Set_local of var
-  | Tee_local of var
-
-  (* Memory access *)
-  | I32_load of Memory.offset * int
-  | I64_load of Memory.offset * int
-  | F32_load of Memory.offset * int
-  | F64_load of Memory.offset * int
-  | I32_store of Memory.offset * int
-  | I64_store of Memory.offset * int
-  | F32_store of Memory.offset * int
-  | F64_store of Memory.offset * int
-  | I32_load8_s of Memory.offset * int
-  | I32_load8_u of Memory.offset * int
-  | I32_load16_s of Memory.offset * int
-  | I32_load16_u of Memory.offset * int
-  | I64_load8_s of Memory.offset * int
-  | I64_load8_u of Memory.offset * int
-  | I64_load16_s of Memory.offset * int
-  | I64_load16_u of Memory.offset * int
-  | I64_load32_s of Memory.offset * int
-  | I64_load32_u of Memory.offset * int
-  | I32_store8 of Memory.offset * int
-  | I32_store16 of Memory.offset * int
-  | I64_store8 of Memory.offset * int
-  | I64_store16 of Memory.offset * int
-  | I64_store32 of Memory.offset * int
-
-  (* Unary arithmetic *)
-  | I32_clz
-  | I32_ctz
-  | I32_popcnt
-  | I64_clz
-  | I64_ctz
-  | I64_popcnt
-  | F32_neg
-  | F32_abs
-  | F32_sqrt
-  | F32_ceil
-  | F32_floor
-  | F32_trunc
-  | F32_nearest
-  | F64_neg
-  | F64_abs
-  | F64_sqrt
-  | F64_ceil
-  | F64_floor
-  | F64_trunc
-  | F64_nearest
-
-  (* Binary arithmetic *)
-  | I32_add
-  | I32_sub
-  | I32_mul
-  | I32_div_s
-  | I32_div_u
-  | I32_rem_s
-  | I32_rem_u
-  | I32_and
-  | I32_or
-  | I32_xor
-  | I32_shl
-  | I32_shr_s
-  | I32_shr_u
-  | I32_rotl
-  | I32_rotr
-  | I64_add
-  | I64_sub
-  | I64_mul
-  | I64_div_s
-  | I64_div_u
-  | I64_rem_s
-  | I64_rem_u
-  | I64_and
-  | I64_or
-  | I64_xor
-  | I64_shl
-  | I64_shr_s
-  | I64_shr_u
-  | I64_rotl
-  | I64_rotr
-  | F32_add
-  | F32_sub
-  | F32_mul
-  | F32_div
-  | F32_min
-  | F32_max
-  | F32_copysign
-  | F64_add
-  | F64_sub
-  | F64_mul
-  | F64_div
-  | F64_min
-  | F64_max
-  | F64_copysign
-
-  (* Predicates *)
-  | I32_eqz
-  | I64_eqz
-
-  (* Comparisons *)
-  | I32_eq
-  | I32_ne
-  | I32_lt_s
-  | I32_lt_u
-  | I32_le_s
-  | I32_le_u
-  | I32_gt_s
-  | I32_gt_u
-  | I32_ge_s
-  | I32_ge_u
-  | I64_eq
-  | I64_ne
-  | I64_lt_s
-  | I64_lt_u
-  | I64_le_s
-  | I64_le_u
-  | I64_gt_s
-  | I64_gt_u
-  | I64_ge_s
-  | I64_ge_u
-  | F32_eq
-  | F32_ne
-  | F32_lt
-  | F32_le
-  | F32_gt
-  | F32_ge
-  | F64_eq
-  | F64_ne
-  | F64_lt
-  | F64_le
-  | F64_gt
-  | F64_ge
-
-  (* Conversions *)
-  | I32_wrap_i64
-  | I32_trunc_s_f32
-  | I32_trunc_u_f32
-  | I32_trunc_s_f64
-  | I32_trunc_u_f64
-  | I64_extend_s_i32
-  | I64_extend_u_i32
-  | I64_trunc_s_f32
-  | I64_trunc_u_f32
-  | I64_trunc_s_f64
-  | I64_trunc_u_f64
-  | F32_convert_s_i32
-  | F32_convert_u_i32
-  | F32_convert_s_i64
-  | F32_convert_u_i64
-  | F32_demote_f64
-  | F64_convert_s_i32
-  | F64_convert_u_i32
-  | F64_convert_s_i64
-  | F64_convert_u_i64
-  | F64_promote_f32
-  | I32_reinterpret_f32
-  | I64_reinterpret_f64
-  | F32_reinterpret_i32
-  | F64_reinterpret_i64
-
-  (* Host queries *)
-  | Current_memory
-  | Grow_memory
+  | Unreachable                        (* trap *)
+  | Nop                                (* do nothing *)
+  | Drop                               (* forget a value *)
+  | Select                             (* branchless conditional *)
+  | Block of expr list                 (* execute in sequence *)
+  | Loop of expr list                  (* loop header *)
+  | Br of int * var                    (* break to n-th surrounding label *)
+  | BrIf of int * var                  (* conditional break *)
+  | BrTable of int * var list * var    (* indexed break *)
+  | Return of int                      (* break from function body *)
+  | If of expr list * expr list        (* conditional *)
+  | Call of int * var                  (* call function *)
+  | CallImport of int * var            (* call imported function *)
+  | CallIndirect of int * var          (* call function through table *)
+  | GetLocal of var                    (* read local variable *)
+  | SetLocal of var                    (* write local variable *)
+  | TeeLocal of var                    (* write local variable and keep value *)
+  | Load of memop                      (* read memory at address *)
+  | Store of memop                     (* write memory at address *)
+  | LoadPacked of extop                (* read memory at address and extend *)
+  | StorePacked of wrapop              (* wrap and write to memory at address *)
+  | Const of literal                   (* constant *)
+  | Unary of unop                      (* unary arithmetic operator *)
+  | Binary of binop                    (* binary arithmetic operator *)
+  | Test of testop                     (* arithmetic test *)
+  | Compare of relop                   (* arithmetic comparison *)
+  | Convert of cvtop                   (* conversion *)
+  | CurrentMemory                      (* size of linear memory *)
+  | GrowMemory                         (* grow linear memory *)
+  | Label of expr * value list * expr list  (* control stack *)
 
 
 (* Functions *)
@@ -200,21 +111,45 @@ type func = func' Source.phrase
 and func' =
 {
   ftype : var;
-  locals : Types.value_type list;
+  locals : value_type list;
   body : expr list;
 }
 
 
 (* Modules *)
 
-type module_ = module' Source.phrase
-and module' =
+type memory = memory' Source.phrase
+and memory' =
 {
-  memory : Kernel.memory option;
+  min : Memory.size;
+  max : Memory.size;
+  segments : segment list;
+}
+and segment = Memory.segment Source.phrase
+
+type export = export' Source.phrase
+and export' =
+{
+  name : string;
+  kind : [`Func of var | `Memory]
+}
+
+type import = import' Source.phrase
+and import' =
+{
+  itype : var;
+  module_name : string;
+  func_name : string;
+}
+
+type module_ = module_' Source.phrase
+and module_' =
+{
+  memory : memory option;
   types : Types.func_type list;
   funcs : func list;
   start : var option;
-  imports : Kernel.import list;
-  exports : Kernel.export list;
+  imports : import list;
+  exports : export list;
   table : var list;
 }

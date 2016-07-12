@@ -1,6 +1,6 @@
 open Values
 open Types
-open Kernel
+open Ast
 open Source
 
 
@@ -128,20 +128,20 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
   | Loop es, vs ->
     vs, [Label (e, [], es) @@ e.at]
 
-  | Break (n, x), vs ->
+  | Br (n, x), vs ->
     assert false  (* abrupt *)
 
-  | BreakIf (n, x), Int32 0l :: vs' ->
+  | BrIf (n, x), Int32 0l :: vs' ->
     drop n vs' e.at, []
 
-  | BreakIf (n, x), Int32 i :: vs' ->
-    vs', [Break (n, x) @@ e.at]
+  | BrIf (n, x), Int32 i :: vs' ->
+    vs', [Br (n, x) @@ e.at]
 
-  | BreakTable (n, xs, x), Int32 i :: vs' when I32.ge_u i (length32 xs) ->
-    vs', [Break (n, x) @@ e.at]
+  | BrTable (n, xs, x), Int32 i :: vs' when I32.ge_u i (length32 xs) ->
+    vs', [Br (n, x) @@ e.at]
 
-  | BreakTable (n, xs, x), Int32 i :: vs' ->
-    vs', [Break (n, List.nth xs (Int32.to_int i)) @@ e.at]
+  | BrTable (n, xs, x), Int32 i :: vs' ->
+    vs', [Br (n, List.nth xs (Int32.to_int i)) @@ e.at]
 
   | Return n, vs ->
     assert false  (* abrupt *)
@@ -254,11 +254,11 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
   | Label (e_cont, vs', []), vs ->
     vs' @ vs, []
 
-  | Label (e_cont, vs', {it = Break (n, i); _} :: es), vs when i.it = 0 ->
+  | Label (e_cont, vs', {it = Br (n, i); _} :: es), vs when i.it = 0 ->
     keep n vs' e.at @ vs, [e_cont]
 
-  | Label (e_cont, vs', {it = Break (n, i); at} :: es), vs ->
-    keep n vs' e.at @ vs, [Break (n, (i.it-1) @@ i.at) @@ e.at]
+  | Label (e_cont, vs', {it = Br (n, i); at} :: es), vs ->
+    keep n vs' e.at @ vs, [Br (n, (i.it-1) @@ i.at) @@ e.at]
 
   | Label (e_cont, vs', {it = Return n; at} :: es), vs ->
     keep n vs' e.at @ vs, [Return n @@ at]
@@ -283,10 +283,10 @@ and eval_body (c : config) (vs : value stack) (es : expr list) : value stack =
   match es with
   | [] -> vs
   | [{it = Return n}] -> assert (List.length vs = n); vs
-  | [{it = Unreachable; at}] -> Trap.error at "unreachable executed" (*TODO*)
-  | [{it = Break (n, i); at}] -> Crash.error at "unknown label"
+  | [{it = Unreachable; at}] -> Trap.error at "unreachable executed"
+  | [{it = Br (n, i); at}] -> Crash.error at "unknown label"
   | e :: es ->
-    let vs', es' = step_expr c [] e in
+    let vs', es' = step_expr c vs e in
     eval_body c vs' (es' @ es)
 
 (*TODO: Small-step calls
@@ -308,7 +308,7 @@ type expr = ... | Func of value ref list * expr list
     assert (vs = []);
     [], [e]
 
-  | Func (locals, [{it = Break (n, i); at} ]), vs ->
+  | Func (locals, [{it = Br (n, i); at} ]), vs ->
     Crash.error at "unknown label"
 
   | Func (locals, e :: es), vs ->
@@ -334,7 +334,7 @@ type expr = ... | Func of value ref list * value stack * expr list
   | Func (locals, vs', {it = Unreachable} as e :: es), vs ->
     [], [e]
 
-  | Func (locals, vs', {it = Break (n, i); at} :: es), vs ->
+  | Func (locals, vs', {it = Br (n, i); at} :: es), vs ->
     Crash.error at "unknown label"
 
   | Func (locals, vs', e :: es), vs ->

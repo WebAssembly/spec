@@ -158,7 +158,7 @@ memory:  ( memory <int> <int>? <segment>* )
 segment: ( segment <int> <string>+ )
 ```
 
-Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).
+Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the AST below).
 
 Any form of naming via `<name>` and `<var>` (including expression labels) is merely notational convenience of this text format. The actual AST has no names, and all bindings are referred to via ordered numeric indices; consequently, names are immediately resolved in the parser and replaced by indices. Indices can also be used directly in the text format.
 
@@ -204,13 +204,11 @@ Again, this is only a meta-level for testing, and not a part of the language pro
 The interpreter also supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, `invoke` commands are ignored (and not needed).
 
 
-## Abstract Syntax and Kernel Syntax
+## Abstract Syntax
 
 The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/master/AstSemantics.md), is defined in [ast.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/ast.ml).
 
-However, to simplify the implementation, this AST representation is first "desugared" into a more minimal <i>kernel</i> language that is a subset of the full language. For example, conditionals with no else-branch are desugared into conditionals with `nop` for their else-branch, such that in the kernel language, all conditionals have two branches. The desugaring rules are sketched in the comments of the S-expression grammar given above.
-
-The representation for that kernel language AST is defined in [kernel.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/kernel.ml). Besides having fewer constructs, it also raises the level of abstraction further, e.g., by grouping related operators, or decomposing the syntactic structure of operators themselves.
+However, to simplify the implementation, this AST representation represents some of the inner structure of the operators more explicitly. The mapping from the operators as given in the design doc to their structured form is defined in [operators.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/operators.ml).
 
 
 ## Implementation
@@ -225,15 +223,15 @@ The implementation is split into three directories:
 
 The implementation consists of the following parts:
 
-* *Abstract Syntax* (`ast.ml`, `kernel.ml`, `types.ml`, `source.ml[i]`). Notably, the `phrase` wrapper type around each AST node carries the source position information.
+* *Abstract Syntax* (`ast.ml`, `operators.ml`, `types.ml`, `source.ml[i]`). Notably, the `phrase` wrapper type around each AST node carries the source position information.
 
-* *Parser* (`lexer.mll`, `parser.mly`, `desguar.ml[i]`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing. The parser generates a full AST that is desugared into the kernel AST in a separate pass.
+* *Parser* (`lexer.mll`, `parser.mly`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing.
 
 * *Pretty Printer* (`arrange.ml[i]`, `sexpr.ml[i]`). Turns a module AST back into the textual S-expression format.
 
 * *Decoder*/*Encoder* (`decode.ml[i]`, `encode.ml[i]`). The former parses the binary format and turns it into an AST, the latter does the inverse.
 
-* *Validator* (`check.ml[i]`). Does a recursive walk of the kernel AST, passing down the *expected* type for expressions, and checking each expression against that. An expected empty type can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
+* *Validator* (`check.ml[i]`). Does a recursive walk of the AST, passing down the *expected* type for expressions, and checking each expression against that. An expected empty type can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
 
 * *Evaluator* (`eval.ml[i]`, `values.ml`, `arithmetic.ml[i]`, `int.ml`, `float.ml`, `memory.ml[i]`, and a few more). Evaluation of control transfer (`br` and `return`) is implemented using local exceptions as "labels". While these are allocated dynamically in the code and addressed via a stack, that is merely to simplify the code. In reality, these would be static jumps.
 

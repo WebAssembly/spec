@@ -11,11 +11,11 @@ and definition' =
 type command = command' Source.phrase
 and command' =
   | Define of definition
-  | Invoke of string * Kernel.literal list
+  | Invoke of string * Ast.literal list
   | AssertInvalid of definition * string
-  | AssertReturn of string * Kernel.literal list * Kernel.literal list
-  | AssertReturnNaN of string * Kernel.literal list
-  | AssertTrap of string * Kernel.literal list * string
+  | AssertReturn of string * Ast.literal list * Ast.literal list
+  | AssertReturnNaN of string * Ast.literal list
+  | AssertTrap of string * Ast.literal list * string
   | Input of string
   | Output of string option
 
@@ -62,17 +62,16 @@ let run_cmd cmd =
   match cmd.it with
   | Define def ->
     let m = run_def def in
-    let m' = Desugar.desugar m in
     trace "Checking...";
-    Check.check_module m';
+    Check.check_module m;
     if !Flags.print_sig then begin
       trace "Signature:";
-      Print.print_module_sig m'
+      Print.print_module_sig m
     end;
     current_module := Some m;
     trace "Initializing...";
-    let imports = Import.link m' in
-    current_instance := Some (Eval.init m' imports)
+    let imports = Import.link m in
+    current_instance := Some (Eval.init m imports)
 
   | Invoke (name, es) ->
     trace ("Invoking \"" ^ name ^ "\"...");
@@ -84,8 +83,7 @@ let run_cmd cmd =
     trace "Asserting invalid...";
     (match
       let m = run_def def in
-      let m' = Desugar.desugar m in
-      Check.check_module m'
+      Check.check_module m
     with
     | exception (Decode.Code (_, msg) | Check.Invalid (_, msg)) ->
       if not (Str.string_match (Str.regexp re) msg 0) then begin
@@ -162,12 +160,11 @@ let dry_cmd cmd =
   match cmd.it with
   | Define def ->
     let m = dry_def def in
-    let m' = Desugar.desugar m in
     trace "Checking...";
-    Check.check_module m';
+    Check.check_module m;
     if !Flags.print_sig then begin
       trace "Signature:";
-      Print.print_module_sig m'
+      Print.print_module_sig m
     end;
     current_module := Some m
   | Input file ->

@@ -1,8 +1,8 @@
 %{
 open Source
 open Types
-open Kernel
 open Ast
+open Operators
 open Script
 
 
@@ -148,8 +148,8 @@ let implicit_decl c t at =
 %token<Ast.expr'> TEST
 %token<Ast.expr'> COMPARE
 %token<Ast.expr'> CONVERT
-%token<Memory.offset * int option -> Ast.expr'> LOAD
-%token<Memory.offset * int option -> Ast.expr'> STORE
+%token<int option -> Memory.offset -> Ast.expr'> LOAD
+%token<int option -> Memory.offset -> Ast.expr'> STORE
 %token<Memory.offset> OFFSET
 %token<int> ALIGN
 
@@ -236,98 +236,98 @@ expr :
     { let at = at () in fun c -> let es, e' = $2 c in es @ [e' @@ at] }
 ;
 op :
-  | NOP { fun c -> Nop }
-  | UNREACHABLE { fun c -> Unreachable }
-  | DROP { fun c -> Drop }
+  | NOP { fun c -> nop }
+  | UNREACHABLE { fun c -> unreachable }
+  | DROP { fun c -> drop }
   | BLOCK labeling expr_list END
-    { fun c -> let c' = $2 c in Block (snd ($3 c')) }
+    { fun c -> let c' = $2 c in block (snd ($3 c')) }
   | LOOP labeling expr_list END
-    { fun c -> let c' = $2 c in Loop (snd ($3 c')) }
+    { fun c -> let c' = $2 c in loop (snd ($3 c')) }
   | LOOP labeling1 labeling1 expr_list END
     { let at = at () in
       fun c -> let c' = $2 c in let c'' = $3 c' in
-      Block [Loop (snd ($4 c'')) @@ at] }
-  | BR nat var { fun c -> Br ($2, $3 c label) }
-  | BR_IF nat var { fun c -> Br_if ($2, $3 c label) }
+      block [loop (snd ($4 c'')) @@ at] }
+  | BR nat var { fun c -> br $2 ($3 c label) }
+  | BR_IF nat var { fun c -> br_if $2 ($3 c label) }
   | BR_TABLE nat var var_list
     { fun c -> let xs, x = Lib.List.split_last ($3 c label :: $4 c label) in
-      Br_table ($2, xs, x) }
-  | RETURN nat { fun c -> Return $2 }
+      br_table $2 xs x }
+  | RETURN nat { fun c -> return $2 }
   | IF labeling expr_list END
-    { fun c -> let c' = $2 c in If (snd ($3 c'), []) }
+    { fun c -> let c' = $2 c in if_ (snd ($3 c')) [] }
   | IF labeling expr_list ELSE labeling expr_list END
     { fun c -> let c1 = $2 c in let c2 = $5 c in
-      If (snd ($3 c1), snd ($6 c2)) }
-  | SELECT { fun c -> Select }
-  | CALL nat var { fun c -> Call ($2, $3 c func) }
-  | CALL_IMPORT nat var { fun c -> Call_import ($2, $3 c import) }
-  | CALL_INDIRECT nat var { fun c -> Call_indirect ($2, $3 c type_) }
-  | GET_LOCAL var { fun c -> Get_local ($2 c local) }
-  | SET_LOCAL var { fun c -> Set_local ($2 c local) }
-  | TEE_LOCAL var { fun c -> Tee_local ($2 c local) }
-  | LOAD offset align { fun c -> $1 ($2, $3) }
-  | STORE offset align { fun c -> $1 ($2, $3) }
+      if_ (snd ($3 c1)) (snd ($6 c2)) }
+  | SELECT { fun c -> select }
+  | CALL nat var { fun c -> call $2 ($3 c func) }
+  | CALL_IMPORT nat var { fun c -> call_import $2 ($3 c import) }
+  | CALL_INDIRECT nat var { fun c -> call_indirect $2 ($3 c type_) }
+  | GET_LOCAL var { fun c -> get_local ($2 c local) }
+  | SET_LOCAL var { fun c -> set_local ($2 c local) }
+  | TEE_LOCAL var { fun c -> tee_local ($2 c local) }
+  | LOAD offset align { fun c -> $1 $3 $2 }
+  | STORE offset align { fun c -> $1 $3 $2 }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
   | CONVERT { fun c -> $1 }
-  | CURRENT_MEMORY { fun c -> Current_memory }
-  | GROW_MEMORY { fun c -> Grow_memory }
+  | CURRENT_MEMORY { fun c -> current_memory }
+  | GROW_MEMORY { fun c -> grow_memory }
 ;
 expr1 :
-  | NOP { fun c -> [], Nop }
-  | UNREACHABLE { fun c -> [], Unreachable }
-  | DROP expr { fun c -> $2 c, Drop }
+  | NOP { fun c -> [], nop }
+  | UNREACHABLE { fun c -> [], unreachable }
+  | DROP expr { fun c -> $2 c, drop }
   | BLOCK labeling expr_list
-    { fun c -> let c' = $2 c in [], Block (snd ($3 c')) }
+    { fun c -> let c' = $2 c in [], block (snd ($3 c')) }
   | LOOP labeling expr_list
-    { fun c -> let c' = $2 c in [], Loop (snd ($3 c')) }
+    { fun c -> let c' = $2 c in [], loop (snd ($3 c')) }
   | LOOP labeling1 labeling1 expr_list
     { let at = at () in
       fun c -> let c' = $2 c in let c'' = $3 c' in
-      [], Block [Loop (snd ($4 c'')) @@ at] }
-  | BR var { fun c -> [], Br (0, $2 c label) }
-  | BR var expr { fun c -> $3 c, Br (1, $2 c label) }
-  | BR_IF var expr { fun c -> $3 c, Br_if (0, $2 c label) }
-  | BR_IF var expr expr { fun c -> $3 c @ $4 c, Br_if (1, $2 c label) }
+      [], block [loop (snd ($4 c'')) @@ at] }
+  | BR var { fun c -> [], br 0 ($2 c label) }
+  | BR var expr { fun c -> $3 c, br 1 ($2 c label) }
+  | BR_IF var expr { fun c -> $3 c, br_if 0 ($2 c label) }
+  | BR_IF var expr expr { fun c -> $3 c @ $4 c, br_if 1 ($2 c label) }
   | BR_TABLE var var_list expr
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      $4 c, Br_table (0, xs, x) }
+      $4 c, br_table 0 xs x }
   | BR_TABLE var var_list expr expr
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      $4 c @ $5 c, Br_table (1, xs, x) }
-  | RETURN { fun c -> [], Return 0 }
-  | RETURN expr { fun c -> $2 c, Return 1 }
-  | IF expr expr { fun c -> let c' = anon_label c in $2 c, If ($3 c', []) }
+      $4 c @ $5 c, br_table 1 xs x }
+  | RETURN { fun c -> [], return 0 }
+  | RETURN expr { fun c -> $2 c, return 1 }
+  | IF expr expr { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') [] }
   | IF expr expr expr
-    { fun c -> let c' = anon_label c in $2 c, If ($3 c', $4 c') }
+    { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') ($4 c') }
   | IF expr LPAR THEN labeling expr_list RPAR
-    { fun c -> let c' = $5 c in $2 c, If (snd ($6 c'), []) }
+    { fun c -> let c' = $5 c in $2 c, if_ (snd ($6 c')) [] }
   | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
     { fun c -> let c1 = $5 c in let c2 = $10 c in
-      $2 c, If (snd ($6 c1), snd ($11 c2)) }
-  | SELECT expr expr expr { fun c -> $2 c @ $3 c @ $4 c, Select }
-  | CALL var expr_list { fun c -> let n, es = $3 c in es, Call (n, $2 c func) }
+      $2 c, if_ (snd ($6 c1)) (snd ($11 c2)) }
+  | SELECT expr expr expr { fun c -> $2 c @ $3 c @ $4 c, select }
+  | CALL var expr_list { fun c -> let n, es = $3 c in es, call n ($2 c func) }
   | CALL_IMPORT var expr_list
-    { fun c -> let n, es = $3 c in es, Call_import (n, $2 c import) }
+    { fun c -> let n, es = $3 c in es, call_import n ($2 c import) }
   | CALL_INDIRECT var expr expr_list
     { fun c ->
-      let e = $3 c and n, es = $4 c in e @ es, Call_indirect (n, $2 c type_) }
-  | GET_LOCAL var { fun c -> [], Get_local ($2 c local) }
-  | SET_LOCAL var expr { fun c -> $3 c, Set_local ($2 c local) }
-  | TEE_LOCAL var expr { fun c -> $3 c, Tee_local ($2 c local) }
-  | LOAD offset align expr { fun c -> $4 c, $1 ($2, $3) }
-  | STORE offset align expr expr { fun c -> $4 c @ $5 c, $1 ($2, $3) }
+      let e = $3 c and n, es = $4 c in e @ es, call_indirect n ($2 c type_) }
+  | GET_LOCAL var { fun c -> [], get_local ($2 c local) }
+  | SET_LOCAL var expr { fun c -> $3 c, set_local ($2 c local) }
+  | TEE_LOCAL var expr { fun c -> $3 c, tee_local ($2 c local) }
+  | LOAD offset align expr { fun c -> $4 c, $1 $3 $2 }
+  | STORE offset align expr expr { fun c -> $4 c @ $5 c, $1 $3 $2 }
   | CONST literal { fun c -> [], fst (literal $1 $2) }
   | UNARY expr { fun c -> $2 c, $1 }
   | BINARY expr expr { fun c -> $2 c @ $3 c, $1 }
   | TEST expr { fun c -> $2 c, $1 }
   | COMPARE expr expr { fun c -> $2 c @ $3 c, $1 }
   | CONVERT expr { fun c -> $2 c, $1 }
-  | CURRENT_MEMORY { fun c -> [], Current_memory }
-  | GROW_MEMORY expr { fun c -> $2 c, Grow_memory }
+  | CURRENT_MEMORY { fun c -> [], current_memory }
+  | GROW_MEMORY expr { fun c -> $2 c, grow_memory }
 ;
 expr_list :
   | /* empty */ { fun c -> 0, [] }

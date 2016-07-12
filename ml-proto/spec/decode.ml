@@ -132,8 +132,8 @@ let func_type s =
 
 (* Decode expressions *)
 
-open Kernel
 open Ast
+open Operators
 
 let op s = u8 s
 let arity s = vu s
@@ -142,7 +142,7 @@ let memop s =
   let align = vu s in
   (*TODO: check flag bits*)
   let offset = vu64 s in
-  offset, align
+  align, offset
 
 let var s = vu s
 let var32 s = Int32.to_int (vu32 s)
@@ -163,241 +163,241 @@ let args1 b stack s pos =
 let rec expr s =
   let pos = pos s in
   match op s with
-  | 0x00 -> Nop
+  | 0x00 -> nop
   | 0x01 ->
     let es' = expr_block s in
     expect 0x0f s "END opcode expected";
-    Block es'
+    block es'
   | 0x02 ->
     let es' = expr_block s in
     expect 0x0f s "END opcode expected";
-    Loop es'
+    loop es'
   | 0x03 ->
     let es1 = expr_block s in
     if peek s = Some 0x04 then begin
       expect 0x04 s "ELSE or END opcode expected";
       let es2 = expr_block s in
       expect 0x0f s "END opcode expected";
-      If (es1, es2)
+      if_ es1 es2
     end else begin
       expect 0x0f s "END opcode expected";
-      If (es1, [])
+      if_ es1 []
     end
   | 0x04 -> error s pos "misplaced ELSE opcode"
-  | 0x05 -> Select
+  | 0x05 -> select
   | 0x06 ->
     let n = arity s in
     let x = at var s in
-    Br (n, x)
+    br n x
   | 0x07 ->
     let n = arity s in
     let x = at var s in
-    Br_if (n, x)
+    br_if n x
   | 0x08 ->
     let n = arity s in
     let xs = vec (at var) s in
     let x = at var s in
-    Br_table (n, xs, x)
+    br_table n xs x
   | 0x09 ->
     let n = arity s in
-    Return n
-  | 0x0a -> Unreachable
-  | 0x0b -> Drop
+    return n
+  | 0x0a -> unreachable
+  | 0x0b -> drop
   | 0x0c | 0x0d | 0x0e as b -> illegal s pos b
   | 0x0f -> error s pos "misplaced END opcode"
 
-  | 0x10 -> I32_const (at vs32 s)
-  | 0x11 -> I64_const (at vs64 s)
-  | 0x12 -> F32_const (at f32 s)
-  | 0x13 -> F64_const (at f64 s)
+  | 0x10 -> i32_const (at vs32 s)
+  | 0x11 -> i64_const (at vs64 s)
+  | 0x12 -> f32_const (at f32 s)
+  | 0x13 -> f64_const (at f64 s)
 
   | 0x14 ->
     let x = at var s in
-    Get_local x
+    get_local x
   | 0x15 ->
     let x = at var s in
-    Set_local x
+    set_local x
 
   | 0x16 ->
     let n = arity s in
     let x = at var s in
-    Call (n, x)
+    call n x
   | 0x17 ->
     let n = arity s in
     let x = at var s in
-    Call_indirect (n, x)
+    call_indirect n x
   | 0x18 ->
     let n = arity s in
     let x = at var s in
-    Call_import (n, x)
+    call_import n x
 
   | 0x19 ->
     let x = at var s in
-    Tee_local x
+    tee_local x
 
   | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
 
-  | 0x20 -> let o, a = memop s in I32_load8_s (o, a)
-  | 0x21 -> let o, a = memop s in I32_load8_u (o, a)
-  | 0x22 -> let o, a = memop s in I32_load16_s (o, a)
-  | 0x23 -> let o, a = memop s in I32_load16_u (o, a)
-  | 0x24 -> let o, a = memop s in I64_load8_s (o, a)
-  | 0x25 -> let o, a = memop s in I64_load8_u (o, a)
-  | 0x26 -> let o, a = memop s in I64_load16_s (o, a)
-  | 0x27 -> let o, a = memop s in I64_load16_u (o, a)
-  | 0x28 -> let o, a = memop s in I64_load32_s (o, a)
-  | 0x29 -> let o, a = memop s in I64_load32_u (o, a)
-  | 0x2a -> let o, a = memop s in I32_load (o, a)
-  | 0x2b -> let o, a = memop s in I64_load (o, a)
-  | 0x2c -> let o, a = memop s in F32_load (o, a)
-  | 0x2d -> let o, a = memop s in F64_load (o, a)
+  | 0x20 -> let a, o = memop s in i32_load8_s a o
+  | 0x21 -> let a, o = memop s in i32_load8_u a o
+  | 0x22 -> let a, o = memop s in i32_load16_s a o
+  | 0x23 -> let a, o = memop s in i32_load16_u a o
+  | 0x24 -> let a, o = memop s in i64_load8_s a o
+  | 0x25 -> let a, o = memop s in i64_load8_u a o
+  | 0x26 -> let a, o = memop s in i64_load16_s a o
+  | 0x27 -> let a, o = memop s in i64_load16_u a o
+  | 0x28 -> let a, o = memop s in i64_load32_s a o
+  | 0x29 -> let a, o = memop s in i64_load32_u a o
+  | 0x2a -> let a, o = memop s in i32_load a o
+  | 0x2b -> let a, o = memop s in i64_load a o
+  | 0x2c -> let a, o = memop s in f32_load a o
+  | 0x2d -> let a, o = memop s in f64_load a o
 
-  | 0x2e -> let o, a = memop s in I32_store8 (o, a)
-  | 0x2f -> let o, a = memop s in I32_store16 (o, a)
-  | 0x30 -> let o, a = memop s in I64_store8 (o, a)
-  | 0x31 -> let o, a = memop s in I64_store16 (o, a)
-  | 0x32 -> let o, a = memop s in I64_store32 (o, a)
-  | 0x33 -> let o, a = memop s in I32_store (o, a)
-  | 0x34 -> let o, a = memop s in I64_store (o, a)
-  | 0x35 -> let o, a = memop s in F32_store (o, a)
-  | 0x36 -> let o, a = memop s in F64_store (o, a)
+  | 0x2e -> let a, o = memop s in i32_store8 a o
+  | 0x2f -> let a, o = memop s in i32_store16 a o
+  | 0x30 -> let a, o = memop s in i64_store8 a o
+  | 0x31 -> let a, o = memop s in i64_store16 a o
+  | 0x32 -> let a, o = memop s in i64_store32 a o
+  | 0x33 -> let a, o = memop s in i32_store a o
+  | 0x34 -> let a, o = memop s in i64_store a o
+  | 0x35 -> let a, o = memop s in f32_store a o
+  | 0x36 -> let a, o = memop s in f64_store a o
 
   | 0x37 | 0x38 as b -> illegal s pos b
 
-  | 0x39 -> Grow_memory
+  | 0x39 -> grow_memory
   | 0x3a as b -> illegal s pos b
-  | 0x3b -> Current_memory
+  | 0x3b -> current_memory
 
   | 0x3c | 0x3d | 0x3e | 0x3f as b -> illegal s pos b
 
-  | 0x40 -> I32_add
-  | 0x41 -> I32_sub
-  | 0x42 -> I32_mul
-  | 0x43 -> I32_div_s
-  | 0x44 -> I32_div_u
-  | 0x45 -> I32_rem_s
-  | 0x46 -> I32_rem_u
-  | 0x47 -> I32_and
-  | 0x48 -> I32_or
-  | 0x49 -> I32_xor
-  | 0x4a -> I32_shl
-  | 0x4b -> I32_shr_u
-  | 0x4c -> I32_shr_s
-  | 0x4d -> I32_eq
-  | 0x4e -> I32_ne
-  | 0x4f -> I32_lt_s
-  | 0x50 -> I32_le_s
-  | 0x51 -> I32_lt_u
-  | 0x52 -> I32_le_u
-  | 0x53 -> I32_gt_s
-  | 0x54 -> I32_ge_s
-  | 0x55 -> I32_gt_u
-  | 0x56 -> I32_ge_u
-  | 0x57 -> I32_clz
-  | 0x58 -> I32_ctz
-  | 0x59 -> I32_popcnt
-  | 0x5a -> I32_eqz
+  | 0x40 -> i32_add
+  | 0x41 -> i32_sub
+  | 0x42 -> i32_mul
+  | 0x43 -> i32_div_s
+  | 0x44 -> i32_div_u
+  | 0x45 -> i32_rem_s
+  | 0x46 -> i32_rem_u
+  | 0x47 -> i32_and
+  | 0x48 -> i32_or
+  | 0x49 -> i32_xor
+  | 0x4a -> i32_shl
+  | 0x4b -> i32_shr_u
+  | 0x4c -> i32_shr_s
+  | 0x4d -> i32_eq
+  | 0x4e -> i32_ne
+  | 0x4f -> i32_lt_s
+  | 0x50 -> i32_le_s
+  | 0x51 -> i32_lt_u
+  | 0x52 -> i32_le_u
+  | 0x53 -> i32_gt_s
+  | 0x54 -> i32_ge_s
+  | 0x55 -> i32_gt_u
+  | 0x56 -> i32_ge_u
+  | 0x57 -> i32_clz
+  | 0x58 -> i32_ctz
+  | 0x59 -> i32_popcnt
+  | 0x5a -> i32_eqz
 
-  | 0x5b -> I64_add
-  | 0x5c -> I64_sub
-  | 0x5d -> I64_mul
-  | 0x5e -> I64_div_s
-  | 0x5f -> I64_div_u
-  | 0x60 -> I64_rem_s
-  | 0x61 -> I64_rem_u
-  | 0x62 -> I64_and
-  | 0x63 -> I64_or
-  | 0x64 -> I64_xor
-  | 0x65 -> I64_shl
-  | 0x66 -> I64_shr_u
-  | 0x67 -> I64_shr_s
-  | 0x68 -> I64_eq
-  | 0x69 -> I64_ne
-  | 0x6a -> I64_lt_s
-  | 0x6b -> I64_le_s
-  | 0x6c -> I64_lt_u
-  | 0x6d -> I64_le_u
-  | 0x6e -> I64_gt_s
-  | 0x6f -> I64_ge_s
-  | 0x70 -> I64_gt_u
-  | 0x71 -> I64_ge_u
-  | 0x72 -> I64_clz
-  | 0x73 -> I64_ctz
-  | 0x74 -> I64_popcnt
+  | 0x5b -> i64_add
+  | 0x5c -> i64_sub
+  | 0x5d -> i64_mul
+  | 0x5e -> i64_div_s
+  | 0x5f -> i64_div_u
+  | 0x60 -> i64_rem_s
+  | 0x61 -> i64_rem_u
+  | 0x62 -> i64_and
+  | 0x63 -> i64_or
+  | 0x64 -> i64_xor
+  | 0x65 -> i64_shl
+  | 0x66 -> i64_shr_u
+  | 0x67 -> i64_shr_s
+  | 0x68 -> i64_eq
+  | 0x69 -> i64_ne
+  | 0x6a -> i64_lt_s
+  | 0x6b -> i64_le_s
+  | 0x6c -> i64_lt_u
+  | 0x6d -> i64_le_u
+  | 0x6e -> i64_gt_s
+  | 0x6f -> i64_ge_s
+  | 0x70 -> i64_gt_u
+  | 0x71 -> i64_ge_u
+  | 0x72 -> i64_clz
+  | 0x73 -> i64_ctz
+  | 0x74 -> i64_popcnt
 
-  | 0x75 -> F32_add
-  | 0x76 -> F32_sub
-  | 0x77 -> F32_mul
-  | 0x78 -> F32_div
-  | 0x79 -> F32_min
-  | 0x7a -> F32_max
-  | 0x7b -> F32_abs
-  | 0x7c -> F32_neg
-  | 0x7d -> F32_copysign
-  | 0x7e -> F32_ceil
-  | 0x7f -> F32_floor
-  | 0x80 -> F32_trunc
-  | 0x81 -> F32_nearest
-  | 0x82 -> F32_sqrt
-  | 0x83 -> F32_eq
-  | 0x84 -> F32_ne
-  | 0x85 -> F32_lt
-  | 0x86 -> F32_le
-  | 0x87 -> F32_gt
-  | 0x88 -> F32_ge
+  | 0x75 -> f32_add
+  | 0x76 -> f32_sub
+  | 0x77 -> f32_mul
+  | 0x78 -> f32_div
+  | 0x79 -> f32_min
+  | 0x7a -> f32_max
+  | 0x7b -> f32_abs
+  | 0x7c -> f32_neg
+  | 0x7d -> f32_copysign
+  | 0x7e -> f32_ceil
+  | 0x7f -> f32_floor
+  | 0x80 -> f32_trunc
+  | 0x81 -> f32_nearest
+  | 0x82 -> f32_sqrt
+  | 0x83 -> f32_eq
+  | 0x84 -> f32_ne
+  | 0x85 -> f32_lt
+  | 0x86 -> f32_le
+  | 0x87 -> f32_gt
+  | 0x88 -> f32_ge
 
-  | 0x89 -> F64_add
-  | 0x8a -> F64_sub
-  | 0x8b -> F64_mul
-  | 0x8c -> F64_div
-  | 0x8d -> F64_min
-  | 0x8e -> F64_max
-  | 0x8f -> F64_abs
-  | 0x90 -> F64_neg
-  | 0x91 -> F64_copysign
-  | 0x92 -> F64_ceil
-  | 0x93 -> F64_floor
-  | 0x94 -> F64_trunc
-  | 0x95 -> F64_nearest
-  | 0x96 -> F64_sqrt
-  | 0x97 -> F64_eq
-  | 0x98 -> F64_ne
-  | 0x99 -> F64_lt
-  | 0x9a -> F64_le
-  | 0x9b -> F64_gt
-  | 0x9c -> F64_ge
+  | 0x89 -> f64_add
+  | 0x8a -> f64_sub
+  | 0x8b -> f64_mul
+  | 0x8c -> f64_div
+  | 0x8d -> f64_min
+  | 0x8e -> f64_max
+  | 0x8f -> f64_abs
+  | 0x90 -> f64_neg
+  | 0x91 -> f64_copysign
+  | 0x92 -> f64_ceil
+  | 0x93 -> f64_floor
+  | 0x94 -> f64_trunc
+  | 0x95 -> f64_nearest
+  | 0x96 -> f64_sqrt
+  | 0x97 -> f64_eq
+  | 0x98 -> f64_ne
+  | 0x99 -> f64_lt
+  | 0x9a -> f64_le
+  | 0x9b -> f64_gt
+  | 0x9c -> f64_ge
 
-  | 0x9d -> I32_trunc_s_f32
-  | 0x9e -> I32_trunc_s_f64
-  | 0x9f -> I32_trunc_u_f32
-  | 0xa0 -> I32_trunc_u_f64
-  | 0xa1 -> I32_wrap_i64
-  | 0xa2 -> I64_trunc_s_f32
-  | 0xa3 -> I64_trunc_s_f64
-  | 0xa4 -> I64_trunc_u_f32
-  | 0xa5 -> I64_trunc_u_f64
-  | 0xa6 -> I64_extend_s_i32
-  | 0xa7 -> I64_extend_u_i32
-  | 0xa8 -> F32_convert_s_i32
-  | 0xa9 -> F32_convert_u_i32
-  | 0xaa -> F32_convert_s_i64
-  | 0xab -> F32_convert_u_i64
-  | 0xac -> F32_demote_f64
-  | 0xad -> F32_reinterpret_i32
-  | 0xae -> F64_convert_s_i32
-  | 0xaf -> F64_convert_u_i32
-  | 0xb0 -> F64_convert_s_i64
-  | 0xb1 -> F64_convert_u_i64
-  | 0xb2 -> F64_promote_f32
-  | 0xb3 -> F64_reinterpret_i64
-  | 0xb4 -> I32_reinterpret_f32
-  | 0xb5 -> I64_reinterpret_f64
+  | 0x9d -> i32_trunc_s_f32
+  | 0x9e -> i32_trunc_s_f64
+  | 0x9f -> i32_trunc_u_f32
+  | 0xa0 -> i32_trunc_u_f64
+  | 0xa1 -> i32_wrap_i64
+  | 0xa2 -> i64_trunc_s_f32
+  | 0xa3 -> i64_trunc_s_f64
+  | 0xa4 -> i64_trunc_u_f32
+  | 0xa5 -> i64_trunc_u_f64
+  | 0xa6 -> i64_extend_s_i32
+  | 0xa7 -> i64_extend_u_i32
+  | 0xa8 -> f32_convert_s_i32
+  | 0xa9 -> f32_convert_u_i32
+  | 0xaa -> f32_convert_s_i64
+  | 0xab -> f32_convert_u_i64
+  | 0xac -> f32_demote_f64
+  | 0xad -> f32_reinterpret_i32
+  | 0xae -> f64_convert_s_i32
+  | 0xaf -> f64_convert_u_i32
+  | 0xb0 -> f64_convert_s_i64
+  | 0xb1 -> f64_convert_u_i64
+  | 0xb2 -> f64_promote_f32
+  | 0xb3 -> f64_reinterpret_i64
+  | 0xb4 -> i32_reinterpret_f32
+  | 0xb5 -> i64_reinterpret_f64
 
-  | 0xb6 -> I32_rotl
-  | 0xb7 -> I32_rotr
-  | 0xb8 -> I64_rotl
-  | 0xb9 -> I64_rotr
-  | 0xba -> I64_eqz
+  | 0xb6 -> i32_rotl
+  | 0xb7 -> i32_rotr
+  | 0xb8 -> i64_rotl
+  | 0xb9 -> i64_rotr
+  | 0xba -> i64_eqz
 
   | b when b > 0xba -> illegal s pos b
 

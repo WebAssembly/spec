@@ -6,11 +6,11 @@ and definition' =
 type command = command' Source.phrase
 and command' =
   | Define of definition
-  | Invoke of string * Kernel.literal list
+  | Invoke of string * Ast.literal list
   | AssertInvalid of definition * string
-  | AssertReturn of string * Kernel.literal list * Kernel.literal list
-  | AssertReturnNaN of string * Kernel.literal list
-  | AssertTrap of string * Kernel.literal list * string
+  | AssertReturn of string * Ast.literal list * Ast.literal list
+  | AssertReturnNaN of string * Ast.literal list
+  | AssertTrap of string * Ast.literal list * string
   | Input of string
   | Output of string option
 

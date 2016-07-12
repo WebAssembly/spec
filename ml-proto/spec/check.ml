@@ -1,4 +1,4 @@
-open Kernel
+open Ast
 open Source
 open Types
 
@@ -189,17 +189,17 @@ let rec check_expr (c : context) (e : expr) : op_type =
     unify_stack_type ts ts2 e.at;
     [] --> ts
 
-  | Break (n, x) ->
+  | Br (n, x) ->
     let ts = Lib.List.table n var in
     unify_stack_type (label c x) (fix ts) e.at;
     ts --> var ()
 
-  | BreakIf (n, x) ->
+  | BrIf (n, x) ->
     let ts = Lib.List.table n var in
     unify_stack_type (label c x) (fix ts) e.at;
     (ts @ [fix Int32Type]) --> fix []
 
-  | BreakTable (n, xs, x) ->
+  | BrTable (n, xs, x) ->
     let ts = Lib.List.table n var in
     unify_stack_type (label c x) (fix ts) e.at;
     List.iter (fun x -> unify_stack_type (label c x) (fix ts) e.at) xs;
@@ -351,7 +351,7 @@ and check_mem_size ty sz at =
 let check_func c f =
   let {ftype; locals; body} = f.it in
   let FuncType (ins, out) = type_ c.types ftype in
-  let c' = {c with locals = ins @ locals; return = out; labels = []} in
+  let c' = {c with locals = ins @ locals; return = out; labels = [fix (fix_list out)]} in
   let ts = check_block c' body in
   unify_stack_type (fix (fix_list out)) ts f.at
 

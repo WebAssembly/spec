@@ -90,8 +90,8 @@ let encode m =
     (* Expressions *)
 
     open Source
-    open Kernel
     open Ast
+    open Values
 
     let op n = u8 n
     let memop off align = vu align; vu64 off  (*TODO: to be resolved*)
@@ -110,25 +110,25 @@ let encode m =
         list expr es2; op 0x0f
       | Select -> op 0x05
       | Br (n, x) -> op 0x06; vu n; var x
-      | Br_if (n, x) -> op 0x07; vu n; var x
-      | Br_table (n, xs, x) -> op 0x08; vu n; vec var32 xs; var32 x
-      | Ast.Return n -> op 0x09; vu n
-      | Ast.Unreachable -> op 0x0a
-      | Ast.Drop -> op 0x0b
+      | BrIf (n, x) -> op 0x07; vu n; var x
+      | BrTable (n, xs, x) -> op 0x08; vu n; vec var32 xs; var32 x
+      | Return n -> op 0x09; vu n
+      | Unreachable -> op 0x0a
+      | Drop -> op 0x0b
 
-      | Ast.I32_const c -> op 0x10; vs32 c.it
-      | Ast.I64_const c -> op 0x11; vs64 c.it
-      | Ast.F32_const c -> op 0x12; f32 c.it
-      | Ast.F64_const c -> op 0x13; f64 c.it
+      | Const {it = Int32 c} -> op 0x10; vs32 c
+      | Const {it = Int64 c} -> op 0x11; vs64 c
+      | Const {it = Float32 c} -> op 0x12; f32 c
+      | Const {it = Float64 c} -> op 0x13; f64 c
 
-      | Ast.Get_local x -> op 0x14; var x
-      | Ast.Set_local x -> op 0x15; var x
-      | Ast.Tee_local x -> op 0x19; var x
+      | GetLocal x -> op 0x14; var x
+      | SetLocal x -> op 0x15; var x
+      | TeeLocal x -> op 0x19; var x
 
-      | Ast.Call (n, x) -> op 0x16; vu n; var x
-      | Ast.Call_indirect (n, x) -> op 0x17; vu n; var x
-      | Ast.Call_import (n, x) -> op 0x18; vu n; var x
-
+      | Call (n, x) -> op 0x16; vu n; var x
+      | CallIndirect (n, x) -> op 0x17; vu n; var x
+      | CallImport (n, x) -> op 0x18; vu n; var x
+(*
       | I32_load8_s (o, a) -> op 0x20; memop o a
       | I32_load8_u (o, a) -> op 0x21; memop o a
       | I32_load16_s (o, a) -> op 0x22; memop o a
@@ -154,8 +154,8 @@ let encode m =
       | F32_store (o, a) -> op 0x35; memop o a
       | F64_store (o, a) -> op 0x36; memop o a
 
-      | Grow_memory -> op 0x39
-      | Current_memory -> op 0x3b
+      | GrowMemory -> op 0x39
+      | CurrentMemory -> op 0x3b
 
       | I32_add -> op 0x40
       | I32_sub -> op 0x41
@@ -284,6 +284,7 @@ let encode m =
       | F64_reinterpret_i64 -> op 0xb3
       | I32_reinterpret_f32 -> op 0xb4
       | I64_reinterpret_f64 -> op 0xb5
+*)| _ -> ()
 
     (* Sections *)
 
@@ -328,7 +329,7 @@ let encode m =
 
     (* Export section *)
     let export exp =
-      let {Kernel.name; kind} = exp.it in
+      let {Ast.name; kind} = exp.it in
       (match kind with
       | `Func x -> var x
       | `Memory -> () (*TODO: pending resolution*)

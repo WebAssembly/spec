@@ -1,5 +1,5 @@
 open Source
-open Kernel
+open Ast
 open Values
 open Types
 open Sexpr
@@ -52,7 +52,7 @@ let struct_type = func_type
 
 module IntOp =
 struct
-  open Kernel.IntOp
+  open Ast.IntOp
 
   let unop xx = function
     | Clz -> "clz"
@@ -104,7 +104,7 @@ end
 
 module FloatOp =
 struct
-  open Kernel.FloatOp
+  open Ast.FloatOp
 
   let unop xx = function
     | Neg -> "neg"
@@ -159,7 +159,7 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let memop name {ty; offset; align} =
+let memop name {ty; align; offset} =
   value_type ty ^ "." ^ name ^
   (if offset = 0L then "" else " offset=" ^ int64 offset) ^
   (if align = 1 then "" else " align=" ^ int align)
@@ -193,9 +193,9 @@ let rec expr e =
     | Drop -> Atom "drop"
     | Block es -> Node ("block", list expr es)
     | Loop es -> Node ("loop", list expr es)
-    | Break (n, x) -> Atom ("br " ^ int n ^ " " ^ var x)
-    | BreakIf (n, x) -> Atom ("br_if " ^ int n ^ " " ^ var x)
-    | BreakTable (n, xs, x) ->
+    | Br (n, x) -> Atom ("br " ^ int n ^ " " ^ var x)
+    | BrIf (n, x) -> Atom ("br_if " ^ int n ^ " " ^ var x)
+    | BrTable (n, xs, x) ->
       Atom ("br_table " ^ int n ^ " " ^ String.concat " " (list var (xs @ [x])))
     | Return n -> Atom ("return " ^ int n)
     | If (es1, es2) ->
@@ -224,7 +224,9 @@ let rec expr e =
     | Convert op -> Atom (cvtop op)
     | CurrentMemory -> Atom "current_memory"
     | GrowMemory -> Atom "grow_memory"
-    | Label _ -> assert false
+    | Label (e, vs, es) ->
+      let ves = List.map (fun v -> Const (v @@ e.at) @@ e.at) (List.rev vs) in
+      Node ("label", list expr (ves @ es))
 
 
 (* Functions *)
