@@ -306,8 +306,8 @@ An *import* is one of the following:
  - a table import.
 
 All imports contain:
- - a *module [string]*, identifying a module to import from.
- - a *name [string]*, identifying an export in that module to import.
+ - a *module [string]*.
+ - a *name [string]*.
 
 A *function import* additionally contains:
  - a function declaration, as described in the [Function Section].
@@ -336,6 +336,10 @@ defined in this spec.
  - Embedding-specific validation may be performed on each import.
 
 > Global imports may be permitted to be mutable in the future.
+
+> The module string will often identify a module to import from, and the name
+string an export in that module to import, but embedding environments may
+provide other mechanisms for resolving imports as well.
 
 #### Function Section
 
@@ -584,10 +588,10 @@ it might make sense.
 
 #### Function Index Space
 
-The *function index space* begins with an index for each function in the
-[Function Section], if present, in the order of that section, followed by an
-index for each imported function, in the order the imports appear in the
-[Import Section].
+The *function index space* begins with an index for each imported function, in
+the order the imports appear in the [Import Section], if present, followed by an
+index for each function in the [Function Section], if present, in the order of
+that section.
 
 **Validation:**
  - For each element in the index space, the type index is required to be within
@@ -598,10 +602,10 @@ the callee of a direct call.
 
 #### Global Index Space
 
-The *global index space* begins with an index for each global in the
-[Global Section], if present, in the order of that section, followed by an index
-for each imported global, in the order the imports appear in the
-[Import Section].
+The *global index space* begins with an index for each imported global, in the
+order the imports appear in the [Import Section], if present, followed by an
+index for each global in the [Global Section], if present, in the order of that
+section.
 
 > The global index space is used by:
  - the [`get_global`](#get-global) and [`set_global`](#set-global) instructions.
@@ -610,10 +614,10 @@ for each imported global, in the order the imports appear in the
 
 #### Linear-Memory Index Space
 
-The *linear-memory index space* begins with an index for each linear-memory
-space defined in the [Linear-Memory Section], if present, in the order of that
-section, followed by an index for each imported linear memory, in the order the
-imports appear in the [Import Section].
+The *linear-memory index space* begins with an index for each imported linear
+memory, in the order the imports appear in the [Import Section], if present,
+followed by an index for each linear-memory space in the
+[Linear-Memory Section], if present, in the order of that section.
 
 **Validation:**
  - The index space is required to have at most one element.
@@ -640,10 +644,10 @@ addressable, even though the total number of bytes would not be.
 
 #### Table Index Space
 
-The *table index space* begins with an index for each table defined in the
-[Table Section], in the order of that section, if present, followed by an index
-for each imported table, in the order the imports appear in the
-[Import Section].
+The *table index space* begins with an index for each imported table, in the
+order the imports appear in the [Import Section], if present, followed by an
+index for each table in the [Table Section], if present, in the order of that
+section.
 
 **Validation:**
  - The index space is required to contain at most one table.

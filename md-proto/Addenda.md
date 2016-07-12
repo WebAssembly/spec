@@ -1,4 +1,4 @@
-WebAssembly Addenda
+WebAssembly Specification Addenda
 ================================================================================
 
 0. [Introduction](#introduction)
