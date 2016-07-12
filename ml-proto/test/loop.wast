@@ -48,55 +48,59 @@
   )
 
   (func "break-bare" (result i32)
-    (loop (br 1) (br 0) (unreachable))
-    (loop (br_if 1 (i32.const 1)) (unreachable))
-    (loop (br_table 1 (i32.const 0)) (unreachable))
-    (loop (br_table 1 1 1 (i32.const 1)) (unreachable))
+    (block (loop (br 1) (br 0) (unreachable)))
+    (block (loop (br_if 1 (i32.const 1)) (unreachable)))
+    (block (loop (br_table 1 (i32.const 0)) (unreachable)))
+    (block (loop (br_table 1 1 1 (i32.const 1)) (unreachable)))
     (i32.const 19)
   )
   (func "break-value" (result i32)
-    (loop (br 1 (i32.const 18)) (br 0) (i32.const 19))
+    (block (loop (br 1 (i32.const 18)) (br 0) (i32.const 19)))
   )
   (func "break-repeated" (result i32)
-    (loop
-      (br 1 (i32.const 18))
-      (br 1 (i32.const 19))
-      (br_if 1 (i32.const 20) (i32.const 0))
-      (br_if 1 (i32.const 20) (i32.const 1))
-      (br 1 (i32.const 21))
-      (br_table 1 (i32.const 22) (i32.const 0))
-      (br_table 1 1 1 (i32.const 23) (i32.const 1))
-      (i32.const 21)
+    (block
+      (loop
+        (br 1 (i32.const 18))
+        (br 1 (i32.const 19))
+        (br_if 1 (i32.const 20) (i32.const 0))
+        (br_if 1 (i32.const 20) (i32.const 1))
+        (br 1 (i32.const 21))
+        (br_table 1 (i32.const 22) (i32.const 0))
+        (br_table 1 1 1 (i32.const 23) (i32.const 1))
+        (i32.const 21)
+      )
     )
   )
   (func "break-inner" (result i32)
     (local i32)
     (set_local 0 (i32.const 0))
-    (set_local 0 (i32.add (get_local 0) (loop (block (br 2 (i32.const 0x1))))))
-    (set_local 0 (i32.add (get_local 0) (loop (loop (br 3 (i32.const 0x2))))))
-    (set_local 0 (i32.add (get_local 0) (loop (loop (br 1 (i32.const 0x4))))))
-    (set_local 0 (i32.add (get_local 0) (loop (i32.ctz (br 1 (i32.const 0x8))))))
-    (set_local 0 (i32.add (get_local 0) (loop (i32.ctz (loop (br 3 (i32.const 0x10)))))))
+    (set_local 0 (i32.add (get_local 0) (block (loop (block (br 2 (i32.const 0x1)))))))
+    (set_local 0 (i32.add (get_local 0) (block (loop (loop (br 2 (i32.const 0x2)))))))
+    (set_local 0 (i32.add (get_local 0) (block (loop (block (loop (br 1 (i32.const 0x4))))))))
+    (set_local 0 (i32.add (get_local 0) (block (loop (i32.ctz (br 1 (i32.const 0x8)))))))
+    (set_local 0 (i32.add (get_local 0) (block (loop (i32.ctz (loop (br 2 (i32.const 0x10))))))))
     (get_local 0)
   )
   (func "cont-inner" (result i32)
     (local i32)
     (set_local 0 (i32.const 0))
-    (set_local 0 (i32.add (get_local 0) (loop (loop (br 2)))))
+    (set_local 0 (i32.add (get_local 0) (loop (loop (br 1)))))
     (set_local 0 (i32.add (get_local 0) (loop (i32.ctz (br 0)))))
-    (set_local 0 (i32.add (get_local 0) (loop (i32.ctz (loop (br 2))))))
+    (set_local 0 (i32.add (get_local 0) (loop (i32.ctz (loop (br 1))))))
     (get_local 0)
   )
 
   (func "effects" $fx (result i32)
     (local i32)
-    (loop
-      (set_local 0 (i32.const 1))
-      (set_local 0 (i32.mul (get_local 0) (i32.const 3)))
-      (set_local 0 (i32.sub (get_local 0) (i32.const 5)))
-      (set_local 0 (i32.mul (get_local 0) (i32.const 7)))
-      (br 1)
-      (set_local 0 (i32.mul (get_local 0) (i32.const 100)))
+    (block 
+      (loop
+        (set_local 0 (i32.const 1))
+        (set_local 0 (i32.mul (get_local 0) (i32.const 3)))
+        (set_local 0 (i32.sub (get_local 0) (i32.const 5)))
+        (set_local 0 (i32.mul (get_local 0) (i32.const 7)))
+        (br 1)
+        (set_local 0 (i32.mul (get_local 0) (i32.const 100)))
+      )
     )
     (i32.eq (get_local 0) (i32.const -14))
   )
@@ -104,11 +108,13 @@
   (func "while" (param i64) (result i64)
     (local i64)
     (set_local 1 (i64.const 1))
-    (loop
-      (br_if 1 (i64.eqz (get_local 0)))
-      (set_local 1 (i64.mul (get_local 0) (get_local 1)))
-      (set_local 0 (i64.sub (get_local 0) (i64.const 1)))
-      (br 0)
+    (block
+      (loop
+        (br_if 1 (i64.eqz (get_local 0)))
+        (set_local 1 (i64.mul (get_local 0) (get_local 1)))
+        (set_local 0 (i64.sub (get_local 0) (i64.const 1)))
+        (br 0)
+      )
     )
     (get_local 1)
   )
@@ -117,30 +123,36 @@
     (local i64 i64)
     (set_local 1 (i64.const 1))
     (set_local 2 (i64.const 2))
-    (loop
-      (br_if 1 (i64.gt_u (get_local 2) (get_local 0)))
-      (set_local 1 (i64.mul (get_local 1) (get_local 2)))
-      (set_local 2 (i64.add (get_local 2) (i64.const 1)))
-      (br 0)
+    (block
+      (loop
+        (br_if 1 (i64.gt_u (get_local 2) (get_local 0)))
+        (set_local 1 (i64.mul (get_local 1) (get_local 2)))
+        (set_local 2 (i64.add (get_local 2) (i64.const 1)))
+        (br 0)
+      )
     )
     (get_local 1)
   )
 
   (func "nesting" (param f32 f32) (result f32)
     (local f32 f32)
-    (loop
-      (br_if 1 (f32.eq (get_local 0) (f32.const 0)))
-      (set_local 2 (get_local 1))
+    (block
       (loop
-        (br_if 1 (f32.eq (get_local 2) (f32.const 0)))
-        (br_if 3 (f32.lt (get_local 2) (f32.const 0)))
-        (set_local 3 (f32.add (get_local 3) (get_local 2)))
-        (set_local 2 (f32.sub (get_local 2) (f32.const 2)))
+        (br_if 1 (f32.eq (get_local 0) (f32.const 0)))
+        (set_local 2 (get_local 1))
+        (block
+          (loop
+            (br_if 1 (f32.eq (get_local 2) (f32.const 0)))
+            (br_if 3 (f32.lt (get_local 2) (f32.const 0)))
+            (set_local 3 (f32.add (get_local 3) (get_local 2)))
+            (set_local 2 (f32.sub (get_local 2) (f32.const 2)))
+            (br 0)
+          )
+        )
+        (set_local 3 (f32.div (get_local 3) (get_local 0)))
+        (set_local 0 (f32.sub (get_local 0) (f32.const 1)))
         (br 0)
       )
-      (set_local 3 (f32.div (get_local 3) (get_local 0)))
-      (set_local 0 (f32.sub (get_local 0) (f32.const 1)))
-      (br 0)
     )
     (get_local 3)
   )
@@ -241,126 +253,6 @@
 ;)
 
 (assert_invalid
-  (module (func $type-break-last-void-vs-empty
-    (loop (br 1 (nop)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-last-num-vs-empty
-    (loop (br 1 (i32.const 0)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-last-empty-vs-num (result i32)
-    (loop (br 1))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-last-void-vs-num (result i32)
-    (loop (br 1 (nop)))
-  ))
-  "type mismatch"
-)
-
-(assert_invalid
-  (module (func $type-break-void-vs-empty
-    (loop (br 1 (nop)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-num-vs-empty
-    (loop (br 1 (i32.const 0)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-empty-vs-num (result i32)
-    (loop (br 1) (i32.const 1))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-void-vs-num (result i32)
-    (loop (br 1 (nop)) (i32.const 1))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-num-vs-num (result i32)
-    (loop (br 1 (i64.const 1)) (i32.const 1))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-first-num-vs-num (result i32)
-    (loop (br 1 (i64.const 1)) (br 1 (i32.const 1)))
-  ))
-  "type mismatch"
-)
-(; TODO(stack): Should this become legal?
-(assert_invalid
-  (module (func $type-break-second-num-vs-num (result i32)
-    (loop (br 1 (i32.const 1)) (br 1 (f64.const 1)))
-  ))
-  "type mismatch"
-)
-;)
-
-(assert_invalid
-  (module (func $type-break-nested-void-vs-empty
-    (loop (loop (br 3 (nop))) (br 1))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-nested-num-vs-empty
-    (loop (loop (br 3 (i32.const 1))) (br 1))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-nested-empty-vs-num (result i32)
-    (loop (loop (br 3)) (br 1 (i32.const 1)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-nested-void-vs-num (result i32)
-    (loop (loop (br 3 (nop))) (br 1 (i32.const 1)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-nested-num-vs-num (result i32)
-    (loop (loop (br 3 (i64.const 1))) (br 1 (i32.const 1)))
-  ))
-  "type mismatch"
-)
-
-(assert_invalid
-  (module (func $type-break-operand-empty-vs-num (result i32)
-    (i32.ctz (loop (br 1)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-operand-void-vs-num (result i32)
-    (i32.ctz (loop (br 1 (nop))))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-operand-num-vs-num (result i32)
-    (i64.ctz (loop (br 1 (i64.const 9))))
-  ))
-  "type mismatch"
-)
-
-(assert_invalid
   (module (func $type-cont-last-void-vs-empty (result i32)
     (loop (br 0 (nop)))
   ))
@@ -380,7 +272,7 @@
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-break-num-vs-empty (result i32)
+  (module (func $type-cont-num-vs-empty (result i32)
     (loop (br 0 (i32.const 0)))
   ))
   "type mismatch"
@@ -388,13 +280,13 @@
 
 (assert_invalid
   (module (func $type-cont-nested-void-vs-empty
-    (loop (loop (br 2 (nop))) (br 1))
+    (block (loop (loop (br 0 (nop))) (br 1)))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-cont-nested-num-vs-empty
-    (loop (loop (br 2 (i32.const 1))) (br 1))
+    (block (loop (loop (br 0 (i32.const 1))) (br 1)))
   ))
   "type mismatch"
 )

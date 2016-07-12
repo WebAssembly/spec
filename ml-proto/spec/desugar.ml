@@ -18,7 +18,7 @@ and expr' at = function
   | Ast.Unreachable -> Unreachable
   | Ast.Drop -> Drop
   | Ast.Block es -> Block (expr_list es)
-  | Ast.Loop es -> Block [Loop (expr_list es) @@ at]
+  | Ast.Loop es -> Loop (expr_list es)
   | Ast.Br (n, x) -> Break (n, x)
   | Ast.Br_if (n, x) -> BreakIf (n, x)
   | Ast.Br_table (n, xs, x) -> BreakTable (n, xs, x)

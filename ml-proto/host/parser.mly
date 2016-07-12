@@ -242,10 +242,11 @@ op :
   | BLOCK labeling expr_list END
     { fun c -> let c' = $2 c in Block (snd ($3 c')) }
   | LOOP labeling expr_list END
-    { fun c -> let c' = anon_label c in let c'' = $2 c' in
-      Loop (snd ($3 c'')) }
+    { fun c -> let c' = $2 c in Loop (snd ($3 c')) }
   | LOOP labeling1 labeling1 expr_list END
-    { fun c -> let c' = $2 c in let c'' = $3 c' in Loop (snd ($4 c'')) }
+    { let at = at () in
+      fun c -> let c' = $2 c in let c'' = $3 c' in
+      Block [Loop (snd ($4 c'')) @@ at] }
   | BR nat var { fun c -> Br ($2, $3 c label) }
   | BR_IF nat var { fun c -> Br_if ($2, $3 c label) }
   | BR_TABLE nat var var_list
@@ -282,9 +283,11 @@ expr1 :
   | BLOCK labeling expr_list
     { fun c -> let c' = $2 c in [], Block (snd ($3 c')) }
   | LOOP labeling expr_list
-    { fun c -> let c' = anon_label c in let c'' = $2 c' in [], Loop (snd ($3 c'')) }
+    { fun c -> let c' = $2 c in [], Loop (snd ($3 c')) }
   | LOOP labeling1 labeling1 expr_list
-    { fun c -> let c' = $2 c in let c'' = $3 c' in [], Loop (snd ($4 c'')) }
+    { let at = at () in
+      fun c -> let c' = $2 c in let c'' = $3 c' in
+      [], Block [Loop (snd ($4 c'')) @@ at] }
   | BR var { fun c -> [], Br (0, $2 c label) }
   | BR var expr { fun c -> $3 c, Br (1, $2 c label) }
   | BR_IF var expr { fun c -> $3 c, Br_if (0, $2 c label) }

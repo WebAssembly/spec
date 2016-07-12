@@ -23,16 +23,18 @@
     (local i64 i64)
     (set_local 1 (get_local 0))
     (set_local 2 (i64.const 1))
-    (loop
-      (if
-        (i64.eq (get_local 1) (i64.const 0))
-        (br 2)
-        (block
-          (set_local 2 (i64.mul (get_local 1) (get_local 2)))
-          (set_local 1 (i64.sub (get_local 1) (i64.const 1)))
+    (block
+      (loop
+        (if
+          (i64.eq (get_local 1) (i64.const 0))
+          (br 2)
+          (block
+            (set_local 2 (i64.mul (get_local 1) (get_local 2)))
+            (set_local 1 (i64.sub (get_local 1) (i64.const 1)))
+          )
         )
+        (br 0)
       )
-      (br 0)
     )
     (get_local 2)
   )
@@ -43,21 +45,23 @@
     (local $res i64)
     (set_local $i (get_local $n))
     (set_local $res (i64.const 1))
-    (loop $done $loop
-      (if
-        (i64.eq (get_local $i) (i64.const 0))
-        (br $done)
-        (block
-          (set_local $res (i64.mul (get_local $i) (get_local $res)))
-          (set_local $i (i64.sub (get_local $i) (i64.const 1)))
+    (block $done
+      (loop $loop
+        (if
+          (i64.eq (get_local $i) (i64.const 0))
+          (br $done)
+          (block
+            (set_local $res (i64.mul (get_local $i) (get_local $res)))
+            (set_local $i (i64.sub (get_local $i) (i64.const 1)))
+          )
         )
+        (br $loop)
       )
-      (br $loop)
     )
     (get_local $res)
   )
 
-  ;; More-realistically optimized factorial.
+  ;; Optimized factorial
   (func $fac-opt (param i64) (result i64)
     (local i64)
     (set_local 1 (i64.const 1))

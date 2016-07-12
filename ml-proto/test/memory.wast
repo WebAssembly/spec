@@ -105,20 +105,22 @@
   (func $aligned (result i32)
     (local i32 i32 i32)
     (set_local 0 (i32.const 10))
-    (loop
-      (if
-        (i32.eq (get_local 0) (i32.const 0))
-        (br 2)
+    (block
+      (loop
+        (if
+          (i32.eq (get_local 0) (i32.const 0))
+          (br 2)
+        )
+        (set_local 2 (i32.mul (get_local 0) (i32.const 4)))
+        (i32.store (get_local 2) (get_local 0))
+        (set_local 1 (i32.load (get_local 2)))
+        (if
+          (i32.ne (get_local 0) (get_local 1))
+          (return (i32.const 0))
+        )
+        (set_local 0 (i32.sub (get_local 0) (i32.const 1)))
+        (br 0)
       )
-      (set_local 2 (i32.mul (get_local 0) (i32.const 4)))
-      (i32.store (get_local 2) (get_local 0))
-      (set_local 1 (i32.load (get_local 2)))
-      (if
-        (i32.ne (get_local 0) (get_local 1))
-        (return (i32.const 0))
-      )
-      (set_local 0 (i32.sub (get_local 0) (i32.const 1)))
-      (br 0)
     )
     (i32.const 1)
   )
@@ -127,20 +129,22 @@
   (func $unaligned (result i32)
     (local i32 f64 f64)
     (set_local 0 (i32.const 10))
-    (loop
-      (if
-        (i32.eq (get_local 0) (i32.const 0))
-        (br 2)
+    (block
+      (loop
+        (if
+          (i32.eq (get_local 0) (i32.const 0))
+          (br 2)
+        )
+        (set_local 2 (f64.convert_s/i32 (get_local 0)))
+        (f64.store align=1 (get_local 0) (get_local 2))
+        (set_local 1 (f64.load align=1 (get_local 0)))
+        (if
+          (f64.ne (get_local 2) (get_local 1))
+          (return (i32.const 0))
+        )
+        (set_local 0 (i32.sub (get_local 0) (i32.const 1)))
+        (br 0)
       )
-      (set_local 2 (f64.convert_s/i32 (get_local 0)))
-      (f64.store align=1 (get_local 0) (get_local 2))
-      (set_local 1 (f64.load align=1 (get_local 0)))
-      (if
-        (f64.ne (get_local 2) (get_local 1))
-        (return (i32.const 0))
-      )
-      (set_local 0 (i32.sub (get_local 0) (i32.const 1)))
-      (br 0)
     )
     (i32.const 1)
   )
