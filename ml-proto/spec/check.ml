@@ -332,15 +332,15 @@ let check_segment pages prev_end seg =
   let seg_end = Int64.add seg.it.Memory.addr seg_len in
   require (seg.it.Memory.addr >= prev_end) seg.at
     "data segment not disjoint and ordered";
-  require (Int64.mul pages Memory.page_size >= seg_end) seg.at
+  require (Int64.mul (Int64.of_int32 pages) Memory.page_size >= seg_end) seg.at
     "data segment does not fit memory";
   seg_end
 
 let check_memory memory =
   let mem = memory.it in
-  require (mem.min <= mem.max) memory.at
+  require (I32.le_u mem.min mem.max) memory.at
     "minimum memory pages must be less than or equal to the maximum";
-  require (mem.max <= 65535L) memory.at
+  require (I32.le_u mem.max 65535l) memory.at
     "linear memory pages must be less or equal to 65535 (4GiB)";
   ignore (List.fold_left (check_segment mem.min) 0L mem.segments)
 

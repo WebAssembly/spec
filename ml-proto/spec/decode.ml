@@ -494,8 +494,8 @@ let table_section s =
 (* Memory section *)
 
 let memory s =
-  let min = vu64 s in
-  let max = vu64 s in
+  let min = vu32 s in
+  let max = vu32 s in
   let _ = bool s in (*TODO: pending change*)
   {min; max; segments = []}
 

@@ -2,9 +2,9 @@ open Bigarray
 open Types
 open Values
 
+type size = int32  (* number of pages *)
 type address = int64
-type size = address
-type offset = address
+type offset = int64
 type mem_size = Mem8 | Mem16 | Mem32
 type extension = SX | ZX
 type segment = {addr : address; data : string}
@@ -18,6 +18,7 @@ type t = memory
 exception Type
 exception Bounds
 exception SizeOverflow
+exception OutOfMemory
 
 let page_size = 0x10000L (* 64 KiB *)
 
@@ -46,10 +47,13 @@ let host_index_of_int64 a n =
 
 
 let create' n =
-  let sz = host_size_of_int64 (Int64.mul n page_size) in
-  let mem = Array1.create Int8_unsigned C_layout sz in
-  Array1.fill mem 0;
-  mem
+  if I32.gt_u n 0x10000l then raise SizeOverflow else
+  try
+    let sz = host_size_of_int64 (Int64.mul (Int64.of_int32 n) page_size) in
+    let mem = Array1.create Int8_unsigned C_layout sz in
+    Array1.fill mem 0;
+    mem
+  with Out_of_memory -> raise OutOfMemory
 
 let create n =
   ref (create' n)
@@ -66,13 +70,13 @@ let init mem segs =
   try List.iter (init_seg mem) segs with Invalid_argument _ -> raise Bounds
 
 let size mem =
-  Int64.div (int64_of_host_size (Array1.dim !mem)) page_size
+  Int64.to_int32 (Int64.div (int64_of_host_size (Array1.dim !mem)) page_size)
 
 let grow mem pages =
   let host_old_size = Array1.dim !mem in
   let old_size = size mem in
-  let new_size = Int64.add old_size pages in
-  if I64.gt_u old_size new_size then raise SizeOverflow else
+  let new_size = Int32.add old_size pages in
+  if I32.gt_u old_size new_size then raise SizeOverflow else
   let after = create' new_size in
   Array1.blit (Array1.sub !mem 0 host_old_size) (Array1.sub after 0 host_old_size);
   mem := after
