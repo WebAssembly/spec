@@ -170,21 +170,21 @@ let rec check_expr (c : context) (e : expr) : op_type =
   | Block es ->
     let ts = var () in
     let c' = {c with labels = ts :: c.labels} in
-    let ts' = check_block c' es e.at in
+    let ts' = check_block c' es in
     unify_stack_type ts ts' e.at;
     [] --> ts'
 
   | Loop es ->
     let c' = {c with labels = fix [] :: c.labels} in
-    let ts = check_block c' es e.at in
+    let ts = check_block c' es in
     [] --> ts
 
   | Label (e0, vs, es) ->
     let ts = var () in
     let c' = {c with labels = ts :: c.labels} in
-    let ts1 = check_block c' [e0] e.at in
-    let ts2 = check_block c'
-      (List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) @ es) e.at in
+    let ts1 = check_block c' [e0] in
+    let ves = List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) in
+    let ts2 = check_block c' (ves @ es) in
     unify_stack_type ts ts1 e.at;
     unify_stack_type ts ts2 e.at;
     [] --> ts
@@ -210,10 +210,19 @@ let rec check_expr (c : context) (e : expr) : op_type =
     fix_list c.return --> var ()
 
   | If (es1, es2) ->
-    let ts1 = check_block c es1 e.at in
-    let ts2 = check_block c es2 e.at in
+    (* TODO(stack): remove if labels
+    let ts1 = check_block c es1 in
+    let ts2 = check_block c es2 in
     unify_stack_type ts1 ts2 e.at;
     [fix Int32Type] --> ts1
+    *)
+    let ts = var () in
+    let c' = {c with labels = ts :: c.labels} in
+    let ts1 = check_block c' es1 in
+    let ts2 = check_block c' es2 in
+    unify_stack_type ts ts1 e.at;
+    unify_stack_type ts ts2 e.at;
+    [fix Int32Type] --> ts
 
   | Select ->
     let t = var () in
@@ -290,21 +299,21 @@ let rec check_expr (c : context) (e : expr) : op_type =
   | GrowMemory ->
     [fix Int32Type] --> fix [fix Int32Type]
 
-and check_block (c : context) (es : expr list) at : stack_type var =
+and check_block (c : context) (es : expr list) : stack_type var =
   match es with
   | [] ->
     fix []
 
   | _ ->
     let es', e = Lib.List.split_last es in 
-    let vts0 = check_block c es' at in
+    let vts0 = check_block c es' in
+    let ts2, vts3 = check_expr c e in
     if not (is_fix vts0) then var () else
     let ts0 = content vts0 in
-    let ts2, vts3 = check_expr c e in
     let n1 = max (List.length ts0 - List.length ts2) 0 in
     let ts1 = Lib.List.take n1 ts0 in
     let ts2' = Lib.List.drop n1 ts0 in
-    unify_stack_type (fix ts2) (fix ts2') at;
+    unify_stack_type (fix ts2) (fix ts2') e.at;
     if not (is_fix vts3) then var () else
     let ts3 = content vts3 in
     fix (ts1 @ ts3)
@@ -343,7 +352,7 @@ let check_func c f =
   let {ftype; locals; body} = f.it in
   let FuncType (ins, out) = type_ c.types ftype in
   let c' = {c with locals = ins @ locals; return = out; labels = []} in
-  let ts = check_block c' body f.at in
+  let ts = check_block c' body in
   unify_stack_type (fix (fix_list out)) ts f.at
 
 let check_elem c x =

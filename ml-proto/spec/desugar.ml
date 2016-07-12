@@ -23,8 +23,7 @@ and expr' at = function
   | Ast.Br_if (n, x) -> BreakIf (n, x)
   | Ast.Br_table (n, xs, x) -> BreakTable (n, xs, x)
   | Ast.Return n -> Return n
-  | Ast.If (es1, es2) ->
-    If ([Block (expr_list es1) @@ at], [Block (expr_list es2) @@ at])
+  | Ast.If (es1, es2) -> If (expr_list es1, expr_list es2)
   | Ast.Select -> Select
 
   | Ast.Call (n, x) -> Call (n, x)

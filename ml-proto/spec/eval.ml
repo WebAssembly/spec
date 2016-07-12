@@ -147,10 +147,16 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     assert false  (* abrupt *)
 
   | If (es1, es2), Int32 0l :: vs' ->
+    (* TODO(stack): remove if labels
     vs', es2
+    *)
+    vs', [Block es2 @@ e.at]
 
   | If (es1, es2), Int32 i :: vs' ->
+    (* TODO(stack): remove if labels
     vs', es1
+    *)
+    vs', [Block es1 @@ e.at]
 
   | Select, Int32 0l :: v2 :: v1 :: vs' ->
     v2 :: vs', []
