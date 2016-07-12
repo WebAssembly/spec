@@ -124,7 +124,7 @@ let value_type s =
 let expr_type s = vec1 value_type s
 
 let func_type s =
-  expect 0x05 s "invalid function type";
+  expect 0x40 s "invalid function type";
   let ins = vec value_type s in
   let out = expr_type s in
   {ins; out}
@@ -168,25 +168,25 @@ let rec expr stack s =
     Nop, es
   | 0x01, es ->
     let es' = expr_block s in
-    expect 0x17 s "end opcode expected";
+    expect 0x0f s "`end` opcode expected";
     Block es', es
   | 0x02, es ->
     let es' = expr_block s in
-    expect 0x17 s "end opcode expected";
+    expect 0x0f s "`end` opcode expected";
     Loop es', es
   | 0x03, e :: es ->
     let es1 = expr_block s in
     if peek s = Some 0x04 then begin
-      expect 0x04 s "else or end opcode expected";
+      expect 0x04 s "`else` or `end` opcode expected";
       let es2 = expr_block s in
-      expect 0x17 s "end opcode expected";
+      expect 0x0f s "`end` opcode expected";
       If (e, es1, es2), es
     end else begin
-      expect 0x17 s "end opcode expected";
+      expect 0x0f s "`end` opcode expected";
       If (e, es1, []), es
     end
   | 0x04, _ ->
-    assert false (* else *)
+    error s pos "misplaced `else` opcode"
   | 0x05, e3 :: e2 :: e1 :: es ->
     Select (e1, e2, e3), es
   | 0x06, es ->
@@ -205,51 +205,48 @@ let rec expr stack s =
     let x = at var s in
     let eo, es' = args1 b es s pos in
     Br_table (xs, x, eo, e), es'
+  | 0x09, es ->
+    let b = arity1 s in
+    let eo, es' = args1 b es s pos in
+    Return eo, es'
+  | 0x0a, es ->
+    Unreachable, es
 
-  | 0x09 as b, es -> illegal s pos b
+  | 0x0b | 0x0c | 0x0d | 0x0e as b, _ ->
+    illegal s pos b
+  | 0x0f, _ ->
+    error s pos "misplaced `end` opcode"
 
-  | 0x0a, es -> I32_const (at vs32 s), es
-  | 0x0b, es -> I64_const (at vs64 s), es
-  | 0x0c, es -> F32_const (at f32 s), es
-  | 0x0d, es -> F64_const (at f64 s), es
+  | 0x10, es -> I32_const (at vs32 s), es
+  | 0x11, es -> I64_const (at vs64 s), es
+  | 0x12, es -> F32_const (at f32 s), es
+  | 0x13, es -> F64_const (at f64 s), es
 
-  | 0x0e, es ->
+  | 0x14, es ->
     let x = at var s in
     Get_local x, es
-  | 0x0f, e :: es ->
+  | 0x15, e :: es ->
     let x = at var s in
     Set_local (x, e), es
 
-  | 0x10 | 0x11 as b, _ -> illegal s pos b
-
-  | 0x12, es ->
+  | 0x16, es ->
     let n = arity s in
     let x = at var s in
     let es1, es' = args n es s pos in
     Call (x, es1), es'
-  | 0x13, es ->
+  | 0x17, es ->
     let n = arity s in
     let x = at var s in
     let es1, es' = args (n + 1) es s pos in
     Call_indirect (x, List.hd es1, List.tl es1), es'
-
-  | 0x14, es ->
-    let b = arity1 s in
-    let eo, es' = args1 b es s pos in
-    Return eo, es'
-  | 0x15, es ->
-    Unreachable, es
-
-  | 0x16, _ -> assert false (* next *)
-  | 0x17, _ -> assert false (* end *)
-  | 0x18 | 0x19 | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e as b, _ ->
-    illegal s pos b
-
-  | 0x1f, es ->
+  | 0x18, es ->
     let n = arity s in
     let x = at var s in
     let es1, es' = args n es s pos in
     Call_import (x, es1), es'
+
+  | 0x19 | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e | 0x1f as b, _ ->
+    illegal s pos b
 
   | 0x20, e :: es -> let o, a = memop s in I32_load8_s (o, a, e), es
   | 0x21, e :: es -> let o, a = memop s in I32_load8_u (o, a, e), es
@@ -280,6 +277,8 @@ let rec expr stack s =
   | 0x39, e :: es -> Grow_memory e, es
   | 0x3a as b, _ -> illegal s pos b
   | 0x3b, es -> Current_memory, es
+
+  | 0x3c | 0x3d | 0x3e | 0x3f as b, _ -> illegal s pos b
 
   | 0x40, e2 :: e1 :: es -> I32_add (e1, e2), es
   | 0x41, e2 :: e1 :: es -> I32_sub (e1, e2), es
@@ -418,7 +417,7 @@ and expr_block s = List.rev (expr_block' [] s)
 and expr_block' stack s =
   if eos s then stack else
   match peek s with
-  | None | Some (0x04 | 0x16 | 0x17) -> stack
+  | None | Some (0x04 | 0x0f) -> stack
   | _ ->
     let pos = pos s in
     let e', stack' = expr stack s in
@@ -447,10 +446,10 @@ let id s =
 let section tag f default s =
   if eos s then default else
   let start_pos = pos s in
-  let size = vu s in
-  let id_pos = pos s in
   if id s <> tag then (rewind start_pos s; default) else
-  let s' = substream s (id_pos + size) in
+  let size = vu s in
+  let content_pos = pos s in
+  let s' = substream s (content_pos + size) in
   let x = f s' in
   require (eos s') s' (pos s') "junk at end of section";
   x
@@ -557,7 +556,7 @@ let module_ s =
   let magic = u32 s in
   require (magic = 0x6d736100l) s 0 "magic header not detected";
   let version = u32 s in
-  require (version = 0x0bl) s 4 "unknown binary version";
+  require (version = Encode.version) s 4 "unknown binary version";
   iterate unknown_section s;
   let types = type_section s in
   iterate unknown_section s;
