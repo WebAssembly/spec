@@ -85,17 +85,19 @@ Basics
 0. [Pages](#pages)
 0. [Types](#types)
 0. [Nondeterminism](#nondeterminism)
+0. [Linear Memory](#linear-memory)
+0. [Tables](#tables)
 
 ### Bytes
 
 [*Bytes*] in WebAssembly are 8-[bit], and are the addressing unit of
-linear-memory accesses.
+[linear-memory] accesses.
 
 [*Bytes*]: https://en.wikipedia.org/wiki/Byte
 
 ### Pages
 
-[*Pages*] in WebAssembly are 64 [KiB], and are the units used in linear-memory
+[*Pages*] in WebAssembly are 64 [KiB], and are the units used in [linear-memory]
 size declarations and size operations.
 
 [*Pages*]: https://en.wikipedia.org/wiki/Page_(computer_memory)
@@ -172,6 +174,30 @@ completely unspecified.
 > There is no requirement that a given implementation make the same choice every
 time, even for successive executions of the same instruction within the same
 instance of a module.
+
+### Linear Memory
+
+A *linear memory space* is a contiguous, [byte]-addressable, readable and
+writeable range of memory spanning from offset `0` and extending up to a
+*linear-memory size*, allocated as part of a WebAssembly instance. The size of a
+linear memory is always a multiple of the [page] size and may be increased
+dynamically (with the [`grow_memory`](#grow-memory) instruction).
+
+Linear-memory spaces can either be [defined by a module](#linear-memory-section)
+or [imported](#import-section).
+
+### Tables
+
+A *table* is similar to a linear memory whose elements, instead of being bytes,
+are opaque values of a particular *table element type*. Currently the only valid
+element type is "anyfunc", meaning a function with any signature. A table of
+"anyfunc" is used as the index space for [indirect calls](#call-indirect).
+
+Tables can be [defined by a module](#table-section) or
+[imported](#import-section).
+
+> In the future, tables are expected to be generalized to hold a wide variety
+of opaque values and serve a wide variety of purposes.
 
 
 Module
@@ -358,7 +384,7 @@ A *function declaration* consists of:
 
 **Name:** `table`
 
-The Table Section consists of an [array] of table declarations.
+The Table Section consists of an [array] of [table] declarations.
 
 A *table declaration* consists of:
  - A *default* flag.
@@ -374,7 +400,7 @@ Tables with an element type of "anyfunc" hold function references of any type.
 
 **Name:** `memory`
 
-The Memory Section consists of an array of linear-memory declarations.
+The Memory Section consists of an array of [linear-memory] declarations.
 
 A *linear-memory declaration* contains:
  - An *index bitwidth* [index]. Within the context of this linear memory, `iPTR`
@@ -625,7 +651,7 @@ followed by an index for each linear-memory space in the
 **Validation:**
  - The index space is required to have at most one element.
  - For each linear-memory declaration in the index space:
-    - If a maximum size is present, it is required to be at least the initial
+    - If a maximum size is present, it's required to be at least the initial
       size.
     - The index of every byte in a linear memory with the initial size is
       required to be representable in an unsigned `iPTR`.
@@ -729,7 +755,7 @@ The requirements for function-body validation are:
    conform to the instruction's signature's operands.
  - At each instruction, all values that will be popped from the value stack at
    that instruction are required to have been pushed within the same region (or
-   within an region nested inside it).
+   within a region nested inside it).
  - For each instruction, the requirements of the **Validation** clause in the
    associated instruction description are required.
 
@@ -739,7 +765,8 @@ The requirements for function-body validation are:
 *reducible control flow*, which essentially means that all loops have exactly
 one entry point.
 
-> There are no implicit type conversions in WebAssembly.
+> There are no implicit type conversions, subtyping, or function overloading in
+WebAssembly.
 
 
 Execution
@@ -1032,7 +1059,7 @@ that they don't literally need to scan in this manner.
 #### Q: Control-Flow Barrier Instruction Family
 
 These instructions either trap or reassign the current position, such that
-execution does not proceed to the instruction that lexically follows them.
+execution doesn't proceed to the instruction that lexically follows them.
 
 #### L: Call Instruction Family
 
@@ -1059,7 +1086,7 @@ independently. In this way, calls form a stack-like data structure called the
 *call stack*.
 
 > Data associated with the call stack is stored outside any linear address space
-and is not directly accessible to applications.
+and isn't directly accessible to applications.
 
 ##### Call Validation
 
@@ -1210,6 +1237,12 @@ The *accessed bytes* consist of a contiguous sequence of [bytes] starting at the
 **Trap:** Out Of Bounds, if any of the accessed bytes are beyond the end of the
 accessed linear-memory space.
 
+> Linear-memory accesses trap on an out-of-bound access, which differs from
+[TypedArrays in ECMAScript] where storing out of bounds silently does nothing
+and loading out of bounds silently returns `undefined`.
+
+[TypedArrays in ECMAScript]: https://tc39.github.io/ecma262/#sec-typedarray-objects
+
 ##### Loading
 
 For a load access, a value is read from the [accessed bytes], in
@@ -1317,7 +1350,7 @@ The `loop` instruction binds a [label] to the current position, and pushes an
 entry onto the control-flow stack. The entry contains that label and the current
 length of the value stack.
 
-> The `loop` instruction does not perform a loop by itself. It merely introduces
+> The `loop` instruction doesn't perform a loop by itself. It merely introduces
 a label that may be used by a branch to form an actual loop.
 
 > Since `loop`'s control-flow stack entry starts with an empty type sequence,
@@ -2704,6 +2737,7 @@ linear-memory space, as an unsigned value in units of [pages].
 [binary format]: #binary-format
 [bit]: https://en.wikipedia.org/wiki/Bit
 [boolean]: #booleans
+[byte]: #bytes
 [bytes]: #bytes
 [call-stack resources]: #call-stack-resources
 [effective address]: #effective-address
@@ -2714,12 +2748,14 @@ linear-memory space, as an unsigned value in units of [pages].
 [KiB]: https://en.wikipedia.org/wiki/Kibibyte
 [label]: #labels
 [labels]: #labels
+[linear-memory]: #linear-memory
 [linear-memory access validation]: #linear-memory-access-validation
 [little-endian byte order]: https://en.wikipedia.org/wiki/Endianness#Little
 [merged]: #type-sequence-merge
 [minimum signed integer value]: https://en.wikipedia.org/wiki/Two%27s_complement#Most_negative_number
 [nondeterministic]: #nondeterminism
 [nondeterministically]: #nondeterminism
+[page]: #pages
 [pages]: #pages
 [rotated]: https://en.wikipedia.org/wiki/Bitwise_operation#Rotate_no_carry
 [shift count]: #shift-count
@@ -2727,6 +2763,7 @@ linear-memory space, as an unsigned value in units of [pages].
 [sign-extended]: https://en.wikipedia.org/wiki/Sign_extension
 [string]: #string
 [strings]: #string
+[table]: #tables
 [text format]: #text-format
 [true]: #booleans
 [type]: #types
