@@ -581,6 +581,9 @@ it might make sense.
 
 ### Module Index Spaces
 
+Module Index Spaces are abstract mappings from indices, starting from zero, to
+various types of elements.
+
 0. [Function Index Space]
 0. [Global Index Space]
 0. [Linear-Memory Index Space]
