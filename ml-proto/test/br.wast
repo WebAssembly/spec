@@ -371,26 +371,28 @@
   (module (func $type-arg-empty-vs-num (result i32)
     (block (br 0) (i32.const 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-arg-void-vs-empty
     (block (br 0 (nop)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-arg-num-vs-empty
     (block (br 0 (i32.const 0)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
+(; TODO(stack): Should this become legal?
 (assert_invalid
   (module (func $type-arg-poly-vs-empty
     (block (br 0 (unreachable)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
+;)
 
 (assert_invalid
   (module (func $type-arg-void-vs-num (result i32)

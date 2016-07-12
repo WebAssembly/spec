@@ -4,7 +4,7 @@
 
 (assert_invalid
   (module (func) (export "a" 1))
-  "unknown function 1"
+  "unknown function"
 )
 (assert_invalid
   (module (func) (func) (export "a" 0) (export "a" 1))
@@ -27,4 +27,4 @@
 
 (module (memory 0 0) (export "a" memory))
 (module (memory 0 0) (export "a" memory) (export "b" memory))
-(assert_invalid (module (export "a" memory)) "no memory to export")
+(assert_invalid (module (export "a" memory)) "memory export requires a memory section")

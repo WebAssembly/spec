@@ -15,16 +15,16 @@
 
 (assert_invalid
   (module (func (block (br 0 (nop)))))
-  "arity mismatch"
+  "type mismatch"
 )
 
 (assert_invalid
   (module (func (block (br_if 0 (nop) (i32.const 0)))))
-  "arity mismatch"
+  "type mismatch"
 )
 
 (assert_invalid
   (module (func (block (br_table 0 (nop) (i32.const 0)))))
-  "arity mismatch"
+  "type mismatch"
 )
 

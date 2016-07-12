@@ -173,6 +173,7 @@
   ))
   "type mismatch"
 )
+(; TODO(stack): Should these become legal?
 (assert_invalid
   (module (func $type-value-num-vs-void-after-break
     (block (br 0) (i32.const 1))
@@ -191,43 +192,44 @@
   ))
   "type mismatch"
 )
+;)
 
 (assert_invalid
   (module (func $type-break-last-void-vs-empty
     (block (br 0 (nop)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-last-num-vs-empty
     (block (br 0 (i32.const 66)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-last-empty-vs-num (result i32)
     (block (br 0))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 
 (assert_invalid
   (module (func $type-break-void-vs-empty
     (block (br 0 (nop)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-num-vs-empty
     (block (br 0 (i32.const 1)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-empty-vs-num (result i32)
     (block (br 0) (i32.const 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 
 (assert_invalid
@@ -254,6 +256,7 @@
   ))
   "type mismatch"
 )
+(; TODO(stack): Should these become legal?
 (assert_invalid
   (module (func $type-break-second-void-vs-num (result i32)
     (block (br 0 (i32.const 1)) (br 0 (nop)))
@@ -266,24 +269,25 @@
   ))
   "type mismatch"
 )
+;)
 
 (assert_invalid
   (module (func $type-break-nested-void-vs-empty
     (block (block (br 1 (nop))) (br 0))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-nested-num-vs-empty
     (block (block (br 1 (i32.const 1))) (br 0))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-nested-empty-vs-num (result i32)
     (block (block (br 1)) (br 0 (i32.const 1)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 
 (assert_invalid
@@ -303,7 +307,7 @@
   (module (func $type-break-operand-empty-vs-num (result i32)
     (i32.ctz (block (br 0)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 
 (assert_invalid

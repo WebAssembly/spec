@@ -79,9 +79,8 @@ let label c x = lookup "label" c.labels x
 (* Type Unification *)
 
 let string_of_value_type_var = string_of_var string_of_value_type "?"
-let string_of_stack_type = function
-  | [t] -> string_of_value_type_var t
-  | ts -> "(" ^ String.concat " " (List.map string_of_value_type_var ts) ^ ")"
+let string_of_stack_type ts =
+  "(" ^ String.concat " " (List.map string_of_value_type_var ts) ^ ")"
 
 
 exception Unify
@@ -93,8 +92,9 @@ let unify_stack_type vts1 vts2 at =
   try unify (List.iter2 unify_value_type) vts1 vts2
   with Unify | Invalid_argument _ ->
     error at
-      ("stack mismatch: required " ^ string_of_stack_type (content vts1) ^
-       " but have " ^ string_of_stack_type (content vts2))
+      ("type mismatch:" ^
+       " operator requires " ^ string_of_stack_type (content vts1) ^
+       " but stack has " ^ string_of_stack_type (content vts2))
 
 
 (* Type Synthesis *)
@@ -206,7 +206,7 @@ let rec check_expr (c : context) (e : expr) : op_type =
     (ts @ [fix Int32Type]) --> var ()
 
   | Return n ->
-    require (List.length c.return = n) e.at "arity mismatch";
+    check_arity c.return n e.at;
     fix_list c.return --> var ()
 
   | If (es1, es2) ->
@@ -221,17 +221,17 @@ let rec check_expr (c : context) (e : expr) : op_type =
 
   | Call (n, x) ->
     let FuncType (ins, out) = func c x in
-    require (List.length ins = n) e.at "arity mismatch";
+    check_arity ins n e.at;
     fix_list ins --> fix (fix_list out)
 
   | CallImport (n, x) ->
     let FuncType (ins, out) = import c x in
-    require (List.length ins = n) e.at "arity mismatch";
+    check_arity ins n e.at;
     fix_list ins --> fix (fix_list out)
 
   | CallIndirect (n, x) ->
     let FuncType (ins, out) = type_ c.types x in
-    require (List.length ins = n) e.at "arity mismatch";
+    check_arity ins n e.at;
     fix_list (ins @ [Int32Type]) --> fix (fix_list out)
 
   | GetLocal x ->
@@ -309,6 +309,11 @@ and check_block (c : context) (es : expr list) at : stack_type var =
     let ts3 = content vts3 in
     fix (ts1 @ ts3)
 
+and check_arity ts n at =
+  require (List.length ts = n) at
+    ("arity mismatch:" ^
+     " function requires " ^ string_of_int (List.length ts) ^
+     " but operator has " ^ string_of_int n)
 
 and check_memop c memop at =
   require c.has_memory at "memory operator require a memory section";

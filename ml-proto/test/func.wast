@@ -316,6 +316,8 @@
   ))
   "type mismatch"
 )
+
+(; TODO(stack): Should these become legal?
 (assert_invalid
   (module (func $type-value-void-vs-num-after-return (result i32)
     (return (i32.const 1)) (nop)
@@ -338,8 +340,9 @@
   (module (func $type-value-num-vs-num-after-break (result i32)
     (br 0 (i32.const 1)) (f32.const 0)
   ))
-  "type mismatch"
+  "arity mismatch"
 )
+;)
 
 (assert_invalid
   (module (func $type-return-last-void-vs-enpty
@@ -407,30 +410,32 @@
   ))
   "type mismatch"
 )
+(; TODO(stack): Should this become legal?
 (assert_invalid
   (module (func $type-return-second-num-vs-num (result i32)
     (return (i32.const 1)) (return (f64.const 1))
   ))
   "type mismatch"
 )
+;)
 
 (assert_invalid
   (module (func $type-break-last-void-vs-empty
     (br 0 (nop))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-last-num-vs-empty
     (br 0 (i32.const 0))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-last-empty-vs-num (result i32)
     (br 0)
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-last-void-vs-num (result i32)
@@ -448,19 +453,19 @@
   (module (func $type-break-void-vs-empty
     (br 0 (i64.const 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-num-vs-empty
     (br 0 (i64.const 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-empty-vs-num (result i32)
     (br 0) (i32.const 1)
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-void-vs-num (result i32)
@@ -480,18 +485,20 @@
   ))
   "type mismatch"
 )
+(; TODO(stack): Should this become legal?
 (assert_invalid
   (module (func $type-break-second-num-vs-num (result i32)
     (br 0 (i32.const 1)) (br 0 (f64.const 1))
   ))
   "type mismatch"
 )
+;)
 
 (assert_invalid
   (module (func $type-break-nested-empty-vs-num (result i32)
     (block (br 1)) (br 0 (i32.const 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-nested-void-vs-num (result i32)

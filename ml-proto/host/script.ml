@@ -88,13 +88,12 @@ let run_cmd cmd =
       Check.check_module m'
     with
     | exception (Decode.Code (_, msg) | Check.Invalid (_, msg)) ->
-      if false (*TODO*)&& not (Str.string_match (Str.regexp re) msg 0) then begin
+      if not (Str.string_match (Str.regexp re) msg 0) then begin
         print_endline ("Result: \"" ^ msg ^ "\"");
         print_endline ("Expect: \"" ^ re ^ "\"");
         Assert.error cmd.at "wrong validation error"
       end
     | _ ->
-if false then(*TODO*)
       Assert.error cmd.at "expected validation error"
     )
 

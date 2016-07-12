@@ -314,7 +314,7 @@
 )
 (assert_invalid
   (module (func (block $l (f32.neg (br_if $l (f32.const 0) (i32.const 1))))))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module

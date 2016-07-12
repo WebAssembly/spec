@@ -198,50 +198,52 @@
   (module (func $type-false-arg-empty-vs-num (result i32)
     (block (br_if 0 (i32.const 0)) (i32.const 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-true-arg-empty-vs-num (result i32)
     (block (br_if 0 (i32.const 1)) (i32.const 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-false-arg-void-vs-empty
     (block (br_if 0 (nop) (i32.const 0)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-true-arg-void-vs-empty
     (block (br_if 0 (nop) (i32.const 1)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-false-arg-num-vs-empty
     (block (br_if 0 (i32.const 0) (i32.const 0)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-true-arg-num-vs-empty
     (block (br_if 0 (i32.const 0) (i32.const 1)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
+(; TODO(stack): Should these become legal?
 (assert_invalid
   (module (func $type-false-arg-poly-vs-empty
     (block (br_if 0 (unreachable) (i32.const 0)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-true-arg-poly-vs-empty
     (block (br_if 0 (unreachable) (i32.const 1)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
+;)
 
 (assert_invalid
   (module (func $type-false-arg-void-vs-num (result i32)

@@ -59,5 +59,5 @@ let print_module_sig m =
 let print_result vs =
   let ts = List.map Values.type_of vs in
   printf "%s : %s\n"
-    (Values.string_of_values vs) (Types.string_of_stack_type ts);
+    (Values.string_of_values vs) (Types.string_of_value_types ts);
   flush_all ()

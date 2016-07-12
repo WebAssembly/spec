@@ -13,9 +13,12 @@ let string_of_value_type = function
   | Float32Type -> "f32"
   | Float64Type -> "f64"
 
-let string_of_stack_type = function
+let string_of_value_types = function
   | [t] -> string_of_value_type t
   | ts -> "(" ^ String.concat " " (List.map string_of_value_type ts) ^ ")"
+
+let string_of_stack_type ts =
+  "(" ^ String.concat " " (List.map string_of_value_type ts) ^ ")"
 
 let string_of_func_type (FuncType (ins, out)) =
   string_of_stack_type ins ^ " -> " ^ string_of_stack_type out

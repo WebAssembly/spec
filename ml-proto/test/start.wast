@@ -1,13 +1,13 @@
 (assert_invalid
   (module (func) (start 1))
-  "unknown function 1"
+  "unknown function"
 )
 (assert_invalid
   (module
     (func $main (result i32) (return (i32.const 0)))
     (start $main)
   )
-  "start function must not return anything"
+  "start function must be nullary"
 )
 (assert_invalid
   (module

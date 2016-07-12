@@ -224,6 +224,8 @@
   ))
   "type mismatch"
 )
+
+(; TODO(stack): Should these become legal?
 (assert_invalid
   (module (func $type-value-void-vs-num-after-break (result i32)
     (loop (br 1 (i32.const 1)) (nop))
@@ -236,24 +238,25 @@
   ))
   "type mismatch"
 )
+;)
 
 (assert_invalid
   (module (func $type-break-last-void-vs-empty
     (loop (br 1 (nop)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-last-num-vs-empty
     (loop (br 1 (i32.const 0)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-last-empty-vs-num (result i32)
     (loop (br 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-last-void-vs-num (result i32)
@@ -266,19 +269,19 @@
   (module (func $type-break-void-vs-empty
     (loop (br 1 (nop)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-num-vs-empty
     (loop (br 1 (i32.const 0)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-empty-vs-num (result i32)
     (loop (br 1) (i32.const 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-void-vs-num (result i32)
@@ -298,30 +301,32 @@
   ))
   "type mismatch"
 )
+(; TODO(stack): Should this become legal?
 (assert_invalid
   (module (func $type-break-second-num-vs-num (result i32)
     (loop (br 1 (i32.const 1)) (br 1 (f64.const 1)))
   ))
   "type mismatch"
 )
+;)
 
 (assert_invalid
   (module (func $type-break-nested-void-vs-empty
     (loop (loop (br 3 (nop))) (br 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-nested-num-vs-empty
     (loop (loop (br 3 (i32.const 1))) (br 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-nested-empty-vs-num (result i32)
     (loop (loop (br 3)) (br 1 (i32.const 1)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-nested-void-vs-num (result i32)
@@ -340,7 +345,7 @@
   (module (func $type-break-operand-empty-vs-num (result i32)
     (i32.ctz (loop (br 1)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-operand-void-vs-num (result i32)
@@ -359,37 +364,37 @@
   (module (func $type-cont-last-void-vs-empty (result i32)
     (loop (br 0 (nop)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-cont-last-num-vs-empty (result i32)
     (loop (br 0 (i32.const 0)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 
 (assert_invalid
   (module (func $type-cont-void-vs-empty (result i32)
     (loop (br 0 (nop)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-break-num-vs-empty (result i32)
     (loop (br 0 (i32.const 0)))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 
 (assert_invalid
   (module (func $type-cont-nested-void-vs-empty
     (loop (loop (br 2 (nop))) (br 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-cont-nested-num-vs-empty
     (loop (loop (br 2 (i32.const 1))) (br 1))
   ))
-  "arity mismatch"
+  "type mismatch"
 )
