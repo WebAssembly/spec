@@ -107,18 +107,18 @@ and storen' mem n i v =
 let load mem a o t =
   let ea = effective_address a o in
   match t with
-  | Int32Type -> Int32 (Int64.to_int32 (loadn mem 4 ea))
-  | Int64Type -> Int64 (loadn mem 8 ea)
-  | Float32Type -> Float32 (F32.of_bits (Int64.to_int32 (loadn mem 4 ea)))
-  | Float64Type -> Float64 (F64.of_bits (loadn mem 8 ea))
+  | I32Type -> I32 (Int64.to_int32 (loadn mem 4 ea))
+  | I64Type -> I64 (loadn mem 8 ea)
+  | F32Type -> F32 (F32.of_bits (Int64.to_int32 (loadn mem 4 ea)))
+  | F64Type -> F64 (F64.of_bits (loadn mem 8 ea))
 
 let store mem a o v =
   let ea = effective_address a o in
   match v with
-  | Int32 x -> storen mem 4 ea (Int64.of_int32 x)
-  | Int64 x -> storen mem 8 ea x
-  | Float32 x -> storen mem 4 ea (Int64.of_int32 (F32.to_bits x))
-  | Float64 x -> storen mem 8 ea (F64.to_bits x)
+  | I32 x -> storen mem 4 ea (Int64.of_int32 x)
+  | I64 x -> storen mem 8 ea x
+  | F32 x -> storen mem 4 ea (Int64.of_int32 (F32.to_bits x))
+  | F64 x -> storen mem 8 ea (F64.to_bits x)
 
 let loadn_sx mem n ea =
   assert (n > 0 && n <= 8);
@@ -129,24 +129,24 @@ let loadn_sx mem n ea =
 let load_packed mem a o sz ext t =
   let ea = effective_address a o in
   match sz, ext, t with
-  | Mem8,  ZX, Int32Type -> Int32 (Int64.to_int32 (loadn    mem 1 ea))
-  | Mem8,  SX, Int32Type -> Int32 (Int64.to_int32 (loadn_sx mem 1 ea))
-  | Mem8,  ZX, Int64Type -> Int64 (loadn mem 1 ea)
-  | Mem8,  SX, Int64Type -> Int64 (loadn_sx mem 1 ea)
-  | Mem16, ZX, Int32Type -> Int32 (Int64.to_int32 (loadn    mem 2 ea))
-  | Mem16, SX, Int32Type -> Int32 (Int64.to_int32 (loadn_sx mem 2 ea))
-  | Mem16, ZX, Int64Type -> Int64 (loadn    mem 2 ea)
-  | Mem16, SX, Int64Type -> Int64 (loadn_sx mem 2 ea)
-  | Mem32, ZX, Int64Type -> Int64 (loadn    mem 4 ea)
-  | Mem32, SX, Int64Type -> Int64 (loadn_sx mem 4 ea)
+  | Mem8,  ZX, I32Type -> I32 (Int64.to_int32 (loadn    mem 1 ea))
+  | Mem8,  SX, I32Type -> I32 (Int64.to_int32 (loadn_sx mem 1 ea))
+  | Mem8,  ZX, I64Type -> I64 (loadn mem 1 ea)
+  | Mem8,  SX, I64Type -> I64 (loadn_sx mem 1 ea)
+  | Mem16, ZX, I32Type -> I32 (Int64.to_int32 (loadn    mem 2 ea))
+  | Mem16, SX, I32Type -> I32 (Int64.to_int32 (loadn_sx mem 2 ea))
+  | Mem16, ZX, I64Type -> I64 (loadn    mem 2 ea)
+  | Mem16, SX, I64Type -> I64 (loadn_sx mem 2 ea)
+  | Mem32, ZX, I64Type -> I64 (loadn    mem 4 ea)
+  | Mem32, SX, I64Type -> I64 (loadn_sx mem 4 ea)
   | _ -> raise Type
 
 let store_packed mem a o sz v =
   let ea = effective_address a o in
   match sz, v with
-  | Mem8,  Int32 x -> storen mem 1 ea (Int64.of_int32 x)
-  | Mem8,  Int64 x -> storen mem 1 ea x
-  | Mem16, Int32 x -> storen mem 2 ea (Int64.of_int32 x)
-  | Mem16, Int64 x -> storen mem 2 ea x
-  | Mem32, Int64 x -> storen mem 4 ea x
+  | Mem8,  I32 x -> storen mem 1 ea (Int64.of_int32 x)
+  | Mem8,  I64 x -> storen mem 1 ea x
+  | Mem16, I32 x -> storen mem 2 ea (Int64.of_int32 x)
+  | Mem16, I64 x -> storen mem 2 ea x
+  | Mem32, I64 x -> storen mem 4 ea x
   | _ -> raise Type

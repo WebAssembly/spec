@@ -92,13 +92,13 @@ struct
     | GeU -> "ge_u"
 
   let cvtop xx = function
-    | ExtendSInt32 -> "extend_s/i32"
-    | ExtendUInt32 -> "extend_u/i32"
-    | WrapInt64 -> "wrap/i64"
-    | TruncSFloat32 -> "trunc_s/f32"
-    | TruncUFloat32 -> "trunc_u/f32"
-    | TruncSFloat64 -> "trunc_s/f64"
-    | TruncUFloat64 -> "trunc_u/f64"
+    | ExtendSI32 -> "extend_s/i32"
+    | ExtendUI32 -> "extend_u/i32"
+    | WrapI64 -> "wrap/i64"
+    | TruncSF32 -> "trunc_s/f32"
+    | TruncUF32 -> "trunc_u/f32"
+    | TruncSF64 -> "trunc_s/f64"
+    | TruncUF64 -> "trunc_u/f64"
     | ReinterpretFloat -> "reinterpret/f" ^ xx
 end
 
@@ -135,22 +135,22 @@ struct
     | Ge -> "ge"
 
   let cvtop xx = function
-    | ConvertSInt32 -> "convert_s/i32"
-    | ConvertUInt32 -> "convert_u/i32"
-    | ConvertSInt64 -> "convert_s/i64"
-    | ConvertUInt64 -> "convert_u/i64"
-    | PromoteFloat32 -> "promote/f32"
-    | DemoteFloat64 -> "demote/f64"
+    | ConvertSI32 -> "convert_s/i32"
+    | ConvertUI32 -> "convert_u/i32"
+    | ConvertSI64 -> "convert_s/i64"
+    | ConvertUI64 -> "convert_u/i64"
+    | PromoteF32 -> "promote/f32"
+    | DemoteF64 -> "demote/f64"
     | ReinterpretInt -> "reinterpret/i" ^ xx
 end
 
 let oper (intop, floatop) op =
   value_type (type_of op) ^ "." ^
   (match op with
-  | Int32 o -> intop "32" o
-  | Int64 o -> intop "64" o
-  | Float32 o -> floatop "32" o
-  | Float64 o -> floatop "64" o
+  | I32 o -> intop "32" o
+  | I64 o -> intop "64" o
+  | F32 o -> floatop "32" o
+  | F64 o -> floatop "64" o
   )
 
 let unop = oper (IntOp.unop, FloatOp.unop)

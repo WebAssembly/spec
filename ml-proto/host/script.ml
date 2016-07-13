@@ -112,9 +112,9 @@ let run_cmd cmd =
     let got_vs = Eval.invoke m name (List.map it es) in
     if
       match got_vs with
-      | [Values.Float32 got_f32] ->
+      | [Values.F32 got_f32] ->
         got_f32 <> F32.pos_nan && got_f32 <> F32.neg_nan
-      | [Values.Float64 got_f64] ->
+      | [Values.F64 got_f64] ->
         got_f64 <> F64.pos_nan && got_f64 <> F64.neg_nan
       | _ -> true
     then begin

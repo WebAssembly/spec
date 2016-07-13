@@ -131,37 +131,37 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
   | Br (n, x), vs ->
     assert false  (* abrupt *)
 
-  | BrIf (n, x), Int32 0l :: vs' ->
+  | BrIf (n, x), I32 0l :: vs' ->
     drop n vs' e.at, []
 
-  | BrIf (n, x), Int32 i :: vs' ->
+  | BrIf (n, x), I32 i :: vs' ->
     vs', [Br (n, x) @@ e.at]
 
-  | BrTable (n, xs, x), Int32 i :: vs' when I32.ge_u i (length32 xs) ->
+  | BrTable (n, xs, x), I32 i :: vs' when I32.ge_u i (length32 xs) ->
     vs', [Br (n, x) @@ e.at]
 
-  | BrTable (n, xs, x), Int32 i :: vs' ->
+  | BrTable (n, xs, x), I32 i :: vs' ->
     vs', [Br (n, List.nth xs (Int32.to_int i)) @@ e.at]
 
   | Return n, vs ->
     assert false  (* abrupt *)
 
-  | If (es1, es2), Int32 0l :: vs' ->
+  | If (es1, es2), I32 0l :: vs' ->
     (* TODO(stack): remove if labels
     vs', es2
     *)
     vs', [Block es2 @@ e.at]
 
-  | If (es1, es2), Int32 i :: vs' ->
+  | If (es1, es2), I32 i :: vs' ->
     (* TODO(stack): remove if labels
     vs', es1
     *)
     vs', [Block es1 @@ e.at]
 
-  | Select, Int32 0l :: v2 :: v1 :: vs' ->
+  | Select, I32 0l :: v2 :: v1 :: vs' ->
     v2 :: vs', []
 
-  | Select, Int32 i :: v2 :: v1 :: vs' ->
+  | Select, I32 i :: v2 :: v1 :: vs' ->
     v1 :: vs', []
 
   | Call (n, x), vs ->
@@ -173,7 +173,7 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
       drop n vs e.at @ vs', []
     with Crash (_, msg) -> Crash.error e.at msg)
 
-  | CallIndirect (n, x), Int32 i :: vs ->
+  | CallIndirect (n, x), I32 i :: vs ->
     let f = func c.instance (table_elem c.instance i e.at) in
     if x.it <> f.it.ftype.it then
       Trap.error e.at "indirect call signature mismatch";
@@ -190,22 +190,22 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     local c x := v;
     v :: vs', []
 
-  | Load {offset; ty; _}, Int32 i :: vs' ->
+  | Load {offset; ty; _}, I32 i :: vs' ->
     let addr = I64_convert.extend_u_i32 i in
     (try Memory.load (memory c e.at) addr offset ty :: vs', []
     with exn -> memory_error e.at exn)
 
-  | Store {offset; _}, v :: Int32 i :: vs' ->
+  | Store {offset; _}, v :: I32 i :: vs' ->
     let addr = I64_convert.extend_u_i32 i in
     (try Memory.store (memory c e.at) addr offset v; vs', []
     with exn -> memory_error e.at exn);
 
-  | LoadPacked {memop = {offset; ty; _}; sz; ext}, Int32 i :: vs' ->
+  | LoadPacked {memop = {offset; ty; _}; sz; ext}, I32 i :: vs' ->
     let addr = I64_convert.extend_u_i32 i in
     (try Memory.load_packed (memory c e.at) addr offset sz ext ty :: vs', []
     with exn -> memory_error e.at exn)
 
-  | StorePacked {memop = {offset; _}; sz}, v :: Int32 i :: vs' ->
+  | StorePacked {memop = {offset; _}; sz}, v :: I32 i :: vs' ->
     let addr = I64_convert.extend_u_i32 i in
     (try Memory.store_packed (memory c e.at) addr offset sz v; vs', []
     with exn -> memory_error e.at exn)
@@ -235,9 +235,9 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
 
   | CurrentMemory, vs ->
     let size = Memory.size (memory c e.at) in
-    Int32 (Int64.to_int32 size) :: vs, []
+    I32 (Int64.to_int32 size) :: vs, []
 
-  | GrowMemory, Int32 i :: vs' ->
+  | GrowMemory, I32 i :: vs' ->
     let mem = memory c e.at in
     let delta = I64_convert.extend_u_i32 i in
     let old_size = Memory.size mem in
@@ -249,7 +249,7 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
       Trap.error e.at "memory size exceeds implementation limit";
     Memory.grow mem delta;
-    Int32 (Int64.to_int32 old_size) :: vs', []
+    I32 (Int64.to_int32 old_size) :: vs', []
 
   | Label (e_cont, vs', []), vs ->
     vs' @ vs, []

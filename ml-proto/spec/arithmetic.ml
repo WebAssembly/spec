@@ -10,16 +10,16 @@ exception TypeError of int * value * value_type
 (* Value unpacking *)
 
 let i32_of_value n =
-  function Int32 i -> i | v -> raise (TypeError (n, v, Int32Type))
+  function I32 i -> i | v -> raise (TypeError (n, v, I32Type))
 
 let i64_of_value n =
-  function Int64 i -> i | v -> raise (TypeError (n, v, Int64Type))
+  function I64 i -> i | v -> raise (TypeError (n, v, I64Type))
 
 let f32_of_value n =
-  function Float32 z -> z | v -> raise (TypeError (n, v, Float32Type))
+  function F32 z -> z | v -> raise (TypeError (n, v, F32Type))
 
 let f64_of_value n =
-  function Float64 z -> z | v -> raise (TypeError (n, v, Float64Type))
+  function F64 z -> z | v -> raise (TypeError (n, v, F64Type))
 
 
 (* Int operators *)
@@ -33,7 +33,7 @@ struct
       | Clz -> I32.clz
       | Ctz -> I32.ctz
       | Popcnt -> I32.popcnt
-    in fun v -> Int32 (f (i32_of_value 1 v))
+    in fun v -> I32 (f (i32_of_value 1 v))
 
   let binop op =
     let f = match op with
@@ -52,7 +52,7 @@ struct
       | ShrS -> I32.shr_s
       | Rotl -> I32.rotl
       | Rotr -> I32.rotr
-    in fun v1 v2 -> Int32 (f (i32_of_value 1 v1) (i32_of_value 2 v2))
+    in fun v1 v2 -> I32 (f (i32_of_value 1 v1) (i32_of_value 2 v2))
 
   let testop op =
     let f = match op with
@@ -75,22 +75,22 @@ struct
 
   let cvtop op =
     match op with
-      | WrapInt64 ->
-          fun v -> Int32   (I32_convert.wrap_i64        (i64_of_value 1 v))
-      | TruncSFloat32 ->
-          fun v -> Int32   (I32_convert.trunc_s_f32     (f32_of_value 1 v))
-      | TruncUFloat32 ->
-          fun v -> Int32   (I32_convert.trunc_u_f32     (f32_of_value 1 v))
-      | TruncSFloat64 ->
-          fun v -> Int32   (I32_convert.trunc_s_f64     (f64_of_value 1 v))
-      | TruncUFloat64 ->
-          fun v -> Int32   (I32_convert.trunc_u_f64     (f64_of_value 1 v))
+      | WrapI64 ->
+          fun v -> I32 (I32_convert.wrap_i64 (i64_of_value 1 v))
+      | TruncSF32 ->
+          fun v -> I32 (I32_convert.trunc_s_f32 (f32_of_value 1 v))
+      | TruncUF32 ->
+          fun v -> I32 (I32_convert.trunc_u_f32 (f32_of_value 1 v))
+      | TruncSF64 ->
+          fun v -> I32 (I32_convert.trunc_s_f64 (f64_of_value 1 v))
+      | TruncUF64 ->
+          fun v -> I32 (I32_convert.trunc_u_f64 (f64_of_value 1 v))
       | ReinterpretFloat ->
-          fun v -> Int32   (I32_convert.reinterpret_f32 (f32_of_value 1 v))
-      | ExtendSInt32 ->
-          fun v -> raise (TypeError (1, v, Int32Type))
-      | ExtendUInt32 ->
-          fun v -> raise (TypeError (1, v, Int32Type))
+          fun v -> I32 (I32_convert.reinterpret_f32 (f32_of_value 1 v))
+      | ExtendSI32 ->
+          fun v -> raise (TypeError (1, v, I32Type))
+      | ExtendUI32 ->
+          fun v -> raise (TypeError (1, v, I32Type))
 end
 
 module Int64Op =
@@ -102,7 +102,7 @@ struct
       | Clz -> I64.clz
       | Ctz -> I64.ctz
       | Popcnt -> I64.popcnt
-    in fun v -> Int64 (f (i64_of_value 1 v))
+    in fun v -> I64 (f (i64_of_value 1 v))
 
   let binop op =
     let f = match op with
@@ -121,7 +121,7 @@ struct
       | ShrS -> I64.shr_s
       | Rotl -> I64.rotl
       | Rotr -> I64.rotr
-    in fun v1 v2 -> Int64 (f (i64_of_value 1 v1) (i64_of_value 2 v2))
+    in fun v1 v2 -> I64 (f (i64_of_value 1 v1) (i64_of_value 2 v2))
 
   let testop op =
     let f = match op with
@@ -144,22 +144,22 @@ struct
 
   let cvtop op =
     match op with
-      | ExtendSInt32 ->
-          fun v -> Int64   (I64_convert.extend_s_i32    (i32_of_value 1 v))
-      | ExtendUInt32 ->
-          fun v -> Int64   (I64_convert.extend_u_i32    (i32_of_value 1 v))
-      | TruncSFloat32 ->
-          fun v -> Int64   (I64_convert.trunc_s_f32     (f32_of_value 1 v))
-      | TruncUFloat32 ->
-          fun v -> Int64   (I64_convert.trunc_u_f32     (f32_of_value 1 v))
-      | TruncSFloat64 ->
-          fun v -> Int64   (I64_convert.trunc_s_f64     (f64_of_value 1 v))
-      | TruncUFloat64 ->
-          fun v -> Int64   (I64_convert.trunc_u_f64     (f64_of_value 1 v))
+      | ExtendSI32 ->
+          fun v -> I64 (I64_convert.extend_s_i32 (i32_of_value 1 v))
+      | ExtendUI32 ->
+          fun v -> I64 (I64_convert.extend_u_i32 (i32_of_value 1 v))
+      | TruncSF32 ->
+          fun v -> I64 (I64_convert.trunc_s_f32 (f32_of_value 1 v))
+      | TruncUF32 ->
+          fun v -> I64 (I64_convert.trunc_u_f32 (f32_of_value 1 v))
+      | TruncSF64 ->
+          fun v -> I64 (I64_convert.trunc_s_f64 (f64_of_value 1 v))
+      | TruncUF64 ->
+          fun v -> I64 (I64_convert.trunc_u_f64 (f64_of_value 1 v))
       | ReinterpretFloat ->
-          fun v -> Int64   (I64_convert.reinterpret_f64 (f64_of_value 1 v))
-      | WrapInt64 ->
-          fun v -> raise (TypeError (1, v, Int64Type))
+          fun v -> I64 (I64_convert.reinterpret_f64 (f64_of_value 1 v))
+      | WrapI64 ->
+          fun v -> raise (TypeError (1, v, I64Type))
 end
 
 
@@ -178,7 +178,7 @@ struct
       | Floor -> F32.floor
       | Trunc -> F32.trunc
       | Nearest -> F32.nearest
-    in fun v -> Float32 (f (f32_of_value 1 v))
+    in fun v -> F32 (f (f32_of_value 1 v))
 
   let binop op =
     let f = match op with
@@ -189,7 +189,7 @@ struct
       | Min -> F32.min
       | Max -> F32.max
       | CopySign -> F32.copysign
-    in fun v1 v2 -> Float32 (f (f32_of_value 1 v1) (f32_of_value 2 v2))
+    in fun v1 v2 -> F32 (f (f32_of_value 1 v1) (f32_of_value 2 v2))
 
   let testop op = assert false
 
@@ -205,20 +205,20 @@ struct
 
   let cvtop op =
     match op with
-      | DemoteFloat64 ->
-          fun v -> Float32 (F32_convert.demote_f64      (f64_of_value 1 v))
-      | ConvertSInt32 ->
-          fun v -> Float32 (F32_convert.convert_s_i32   (i32_of_value 1 v))
-      | ConvertUInt32 ->
-          fun v -> Float32 (F32_convert.convert_u_i32   (i32_of_value 1 v))
-      | ConvertSInt64 ->
-          fun v -> Float32 (F32_convert.convert_s_i64   (i64_of_value 1 v))
-      | ConvertUInt64 ->
-          fun v -> Float32 (F32_convert.convert_u_i64   (i64_of_value 1 v))
+      | DemoteF64 ->
+          fun v -> F32 (F32_convert.demote_f64 (f64_of_value 1 v))
+      | ConvertSI32 ->
+          fun v -> F32 (F32_convert.convert_s_i32 (i32_of_value 1 v))
+      | ConvertUI32 ->
+          fun v -> F32 (F32_convert.convert_u_i32 (i32_of_value 1 v))
+      | ConvertSI64 ->
+          fun v -> F32 (F32_convert.convert_s_i64 (i64_of_value 1 v))
+      | ConvertUI64 ->
+          fun v -> F32 (F32_convert.convert_u_i64 (i64_of_value 1 v))
       | ReinterpretInt ->
-          fun v -> Float32 (F32_convert.reinterpret_i32 (i32_of_value 1 v))
-      | PromoteFloat32 ->
-          fun v -> raise (TypeError (1, v, Float32Type))
+          fun v -> F32 (F32_convert.reinterpret_i32 (i32_of_value 1 v))
+      | PromoteF32 ->
+          fun v -> raise (TypeError (1, v, F32Type))
 end
 
 module Float64Op =
@@ -234,7 +234,7 @@ struct
       | Floor -> F64.floor
       | Trunc -> F64.trunc
       | Nearest -> F64.nearest
-    in fun v -> Float64 (f (f64_of_value 1 v))
+    in fun v -> F64 (f (f64_of_value 1 v))
 
   let binop op =
     let f = match op with
@@ -245,7 +245,7 @@ struct
       | Min -> F64.min
       | Max -> F64.max
       | CopySign -> F64.copysign
-    in fun v1 v2 -> Float64 (f (f64_of_value 1 v1) (f64_of_value 2 v2))
+    in fun v1 v2 -> F64 (f (f64_of_value 1 v1) (f64_of_value 2 v2))
 
   let testop op = assert false
 
@@ -261,30 +261,30 @@ struct
 
   let cvtop op =
     match op with
-      | PromoteFloat32 ->
-          fun v -> Float64 (F64_convert.promote_f32     (f32_of_value 1 v))
-      | ConvertSInt32 ->
-          fun v -> Float64 (F64_convert.convert_s_i32   (i32_of_value 1 v))
-      | ConvertUInt32 ->
-          fun v -> Float64 (F64_convert.convert_u_i32   (i32_of_value 1 v))
-      | ConvertSInt64 ->
-          fun v -> Float64 (F64_convert.convert_s_i64   (i64_of_value 1 v))
-      | ConvertUInt64 ->
-          fun v -> Float64 (F64_convert.convert_u_i64   (i64_of_value 1 v))
+      | PromoteF32 ->
+          fun v -> F64 (F64_convert.promote_f32 (f32_of_value 1 v))
+      | ConvertSI32 ->
+          fun v -> F64 (F64_convert.convert_s_i32 (i32_of_value 1 v))
+      | ConvertUI32 ->
+          fun v -> F64 (F64_convert.convert_u_i32 (i32_of_value 1 v))
+      | ConvertSI64 ->
+          fun v -> F64 (F64_convert.convert_s_i64 (i64_of_value 1 v))
+      | ConvertUI64 ->
+          fun v -> F64 (F64_convert.convert_u_i64 (i64_of_value 1 v))
       | ReinterpretInt ->
-          fun v -> Float64 (F64_convert.reinterpret_i64 (i64_of_value 1 v))
-      | DemoteFloat64 ->
-          fun v -> raise (TypeError (1, v, Float64Type))
+          fun v -> F64 (F64_convert.reinterpret_i64 (i64_of_value 1 v))
+      | DemoteF64 ->
+          fun v -> raise (TypeError (1, v, F64Type))
 end
 
 
 (* Dispatch *)
 
 let op i32 i64 f32 f64 = function
-  | Int32 x -> i32 x
-  | Int64 x -> i64 x
-  | Float32 x -> f32 x
-  | Float64 x -> f64 x
+  | I32 x -> i32 x
+  | I64 x -> i64 x
+  | F32 x -> f32 x
+  | F64 x -> f64 x
 
 let eval_unop = op Int32Op.unop Int64Op.unop Float32Op.unop Float64Op.unop
 let eval_binop = op Int32Op.binop Int64Op.binop Float32Op.binop Float64Op.binop

@@ -77,10 +77,10 @@ let encode m =
     open Types
 
     let value_type = function
-      | Int32Type -> u8 0x01
-      | Int64Type -> u8 0x02
-      | Float32Type -> u8 0x03
-      | Float64Type -> u8 0x04
+      | I32Type -> u8 0x01
+      | I64Type -> u8 0x02
+      | F32Type -> u8 0x03
+      | F64Type -> u8 0x04
 
     let expr_type t = vec1 value_type t
 
@@ -116,10 +116,10 @@ let encode m =
       | Unreachable -> op 0x0a
       | Drop -> op 0x0b
 
-      | Const {it = Int32 c} -> op 0x10; vs32 c
-      | Const {it = Int64 c} -> op 0x11; vs64 c
-      | Const {it = Float32 c} -> op 0x12; f32 c
-      | Const {it = Float64 c} -> op 0x13; f64 c
+      | Const {it = I32 c} -> op 0x10; vs32 c
+      | Const {it = I64 c} -> op 0x11; vs64 c
+      | Const {it = F32 c} -> op 0x12; f32 c
+      | Const {it = F64 c} -> op 0x13; f64 c
 
       | GetLocal x -> op 0x14; var x
       | SetLocal x -> op 0x15; var x

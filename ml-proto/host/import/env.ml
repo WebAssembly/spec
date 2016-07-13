@@ -25,8 +25,8 @@ let single = function
   | vs -> error "type error, too many arguments"
 
 let int = function
-  | Int32 i -> Int32.to_int i
-  | v -> type_error v Int32Type
+  | I32 i -> Int32.to_int i
+  | v -> type_error v I32Type
 
 
 let abort vs =
@@ -41,5 +41,5 @@ let exit vs =
 let lookup name (FuncType (ins, out)) =
   match name, ins, out with
   | "abort", [], [] -> abort
-  | "exit", [Int32Type], [] -> exit
+  | "exit", [I32Type], [] -> exit
   | _ -> raise Not_found

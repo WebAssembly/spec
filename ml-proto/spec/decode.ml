@@ -115,10 +115,10 @@ open Types
 
 let value_type s =
   match get s with
-  | 0x01 -> Int32Type
-  | 0x02 -> Int64Type
-  | 0x03 -> Float32Type
-  | 0x04 -> Float64Type
+  | 0x01 -> I32Type
+  | 0x02 -> I64Type
+  | 0x03 -> F32Type
+  | 0x04 -> F64Type
   | _ -> error s (pos s - 1) "invalid value type"
 
 let expr_type s = vec1 value_type s

@@ -38,10 +38,10 @@ let text s =
   Buffer.contents b
 
 let value_type = function
-  | "i32" -> Types.Int32Type
-  | "i64" -> Types.Int64Type
-  | "f32" -> Types.Float32Type
-  | "f64" -> Types.Float64Type
+  | "i32" -> Types.I32Type
+  | "i64" -> Types.I64Type
+  | "f32" -> Types.F32Type
+  | "f64" -> Types.F64Type
   | _ -> assert false
 
 let intop t i32 i64 =
@@ -133,13 +133,13 @@ rule token = parse
     { let open Source in
       CONST (numop t
         (fun s -> let n = I32.of_string s.it in
-          i32_const (n @@ s.at), Values.Int32 n)
+          i32_const (n @@ s.at), Values.I32 n)
         (fun s -> let n = I64.of_string s.it in
-          i64_const (n @@ s.at), Values.Int64 n)
+          i64_const (n @@ s.at), Values.I64 n)
         (fun s -> let n = F32.of_string s.it in
-          f32_const (n @@ s.at), Values.Float32 n)
+          f32_const (n @@ s.at), Values.F32 n)
         (fun s -> let n = F64.of_string s.it in
-          f64_const (n @@ s.at), Values.Float64 n))
+          f64_const (n @@ s.at), Values.F64 n))
     }
 
   | "nop" { NOP }

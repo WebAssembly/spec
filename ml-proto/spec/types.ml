@@ -1,6 +1,6 @@
 (* Types *)
 
-type value_type = Int32Type | Int64Type | Float32Type | Float64Type
+type value_type = I32Type | I64Type | F32Type | F64Type
 type stack_type = value_type list
 type func_type = FuncType of stack_type * stack_type
 
@@ -8,10 +8,10 @@ type func_type = FuncType of stack_type * stack_type
 (* String conversion *)
 
 let string_of_value_type = function
-  | Int32Type -> "i32"
-  | Int64Type -> "i64"
-  | Float32Type -> "f32"
-  | Float64Type -> "f64"
+  | I32Type -> "i32"
+  | I64Type -> "i64"
+  | F32Type -> "f32"
+  | F64Type -> "f64"
 
 let string_of_value_types = function
   | [t] -> string_of_value_type t

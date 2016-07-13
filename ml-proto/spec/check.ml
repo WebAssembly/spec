@@ -106,38 +106,38 @@ let type_testop = Values.type_of
 let type_relop = Values.type_of
 
 let type_cvtop at = function
-  | Values.Int32 cvtop ->
+  | Values.I32 cvtop ->
     let open I32Op in
     (match cvtop with
-    | ExtendSInt32 | ExtendUInt32 -> error at "invalid conversion"
-    | WrapInt64 -> Int64Type
-    | TruncSFloat32 | TruncUFloat32 | ReinterpretFloat -> Float32Type
-    | TruncSFloat64 | TruncUFloat64 -> Float64Type
-    ), Int32Type
-  | Values.Int64 cvtop ->
+    | ExtendSI32 | ExtendUI32 -> error at "invalid conversion"
+    | WrapI64 -> I64Type
+    | TruncSF32 | TruncUF32 | ReinterpretFloat -> F32Type
+    | TruncSF64 | TruncUF64 -> F64Type
+    ), I32Type
+  | Values.I64 cvtop ->
     let open I64Op in
     (match cvtop with
-    | ExtendSInt32 | ExtendUInt32 -> Int32Type
-    | WrapInt64 -> error at "invalid conversion"
-    | TruncSFloat32 | TruncUFloat32 -> Float32Type
-    | TruncSFloat64 | TruncUFloat64 | ReinterpretFloat -> Float64Type
-    ), Int64Type
-  | Values.Float32 cvtop ->
+    | ExtendSI32 | ExtendUI32 -> I32Type
+    | WrapI64 -> error at "invalid conversion"
+    | TruncSF32 | TruncUF32 -> F32Type
+    | TruncSF64 | TruncUF64 | ReinterpretFloat -> F64Type
+    ), I64Type
+  | Values.F32 cvtop ->
     let open F32Op in
     (match cvtop with
-    | ConvertSInt32 | ConvertUInt32 | ReinterpretInt -> Int32Type
-    | ConvertSInt64 | ConvertUInt64 -> Int64Type
-    | PromoteFloat32 -> error at "invalid conversion"
-    | DemoteFloat64 -> Float64Type
-    ), Float32Type
-  | Values.Float64 cvtop ->
+    | ConvertSI32 | ConvertUI32 | ReinterpretInt -> I32Type
+    | ConvertSI64 | ConvertUI64 -> I64Type
+    | PromoteF32 -> error at "invalid conversion"
+    | DemoteF64 -> F64Type
+    ), F32Type
+  | Values.F64 cvtop ->
     let open F64Op in
     (match cvtop with
-    | ConvertSInt32 | ConvertUInt32 -> Int32Type
-    | ConvertSInt64 | ConvertUInt64 | ReinterpretInt -> Int64Type
-    | PromoteFloat32 -> Float32Type
-    | DemoteFloat64 -> error at "invalid conversion"
-    ), Float64Type
+    | ConvertSI32 | ConvertUI32 -> I32Type
+    | ConvertSI64 | ConvertUI64 | ReinterpretInt -> I64Type
+    | PromoteF32 -> F32Type
+    | DemoteF64 -> error at "invalid conversion"
+    ), F64Type
 
 
 (* Type Analysis *)
@@ -197,13 +197,13 @@ let rec check_expr (c : context) (e : expr) : op_type =
   | BrIf (n, x) ->
     let ts = Lib.List.table n var in
     unify_stack_type (label c x) (fix ts) e.at;
-    (ts @ [fix Int32Type]) --> fix []
+    (ts @ [fix I32Type]) --> fix []
 
   | BrTable (n, xs, x) ->
     let ts = Lib.List.table n var in
     unify_stack_type (label c x) (fix ts) e.at;
     List.iter (fun x -> unify_stack_type (label c x) (fix ts) e.at) xs;
-    (ts @ [fix Int32Type]) --> var ()
+    (ts @ [fix I32Type]) --> var ()
 
   | Return n ->
     check_arity c.return n e.at;
@@ -222,11 +222,11 @@ let rec check_expr (c : context) (e : expr) : op_type =
     let ts2 = check_block c' es2 in
     unify_stack_type ts ts1 e.at;
     unify_stack_type ts ts2 e.at;
-    [fix Int32Type] --> ts
+    [fix I32Type] --> ts
 
   | Select ->
     let t = var () in
-    [t; t; fix Int32Type] --> fix [t]
+    [t; t; fix I32Type] --> fix [t]
 
   | Call (n, x) ->
     let FuncType (ins, out) = func c x in
@@ -241,7 +241,7 @@ let rec check_expr (c : context) (e : expr) : op_type =
   | CallIndirect (n, x) ->
     let FuncType (ins, out) = type_ c.types x in
     check_arity ins n e.at;
-    fix_list (ins @ [Int32Type]) --> fix (fix_list out)
+    fix_list (ins @ [I32Type]) --> fix (fix_list out)
 
   | GetLocal x ->
     [] --> fix [fix (local c x)]
@@ -254,21 +254,21 @@ let rec check_expr (c : context) (e : expr) : op_type =
 
   | Load memop ->
     check_memop c memop e.at;
-    [fix Int32Type] --> fix [fix memop.ty]
+    [fix I32Type] --> fix [fix memop.ty]
 
   | Store memop ->
     check_memop c memop e.at;
-    [fix Int32Type; fix memop.ty] --> fix []
+    [fix I32Type; fix memop.ty] --> fix []
 
   | LoadPacked {memop; sz; _} ->
     check_memop c memop e.at;
     check_mem_size memop.ty sz e.at;
-    [fix Int32Type] --> fix [fix memop.ty]
+    [fix I32Type] --> fix [fix memop.ty]
 
   | StorePacked {memop; sz} ->
     check_memop c memop e.at;
     check_mem_size memop.ty sz e.at;
-    [fix Int32Type; fix memop.ty] --> fix []
+    [fix I32Type; fix memop.ty] --> fix []
 
   | Const v ->
     [] --> fix [fix (type_value v.it)]
@@ -283,21 +283,21 @@ let rec check_expr (c : context) (e : expr) : op_type =
 
   | Test testop ->
     let t = type_testop testop in
-    [fix t] --> fix [fix Int32Type]
+    [fix t] --> fix [fix I32Type]
 
   | Compare relop ->
     let t = type_relop relop in
-    [fix t; fix t] --> fix [fix Int32Type]
+    [fix t; fix t] --> fix [fix I32Type]
 
   | Convert cvtop ->
     let t1, t2 = type_cvtop e.at cvtop in
     [fix t1] --> fix [fix t2]
 
   | CurrentMemory ->
-    [] --> fix [fix Int32Type]
+    [] --> fix [fix I32Type]
 
   | GrowMemory ->
-    [fix Int32Type] --> fix [fix Int32Type]
+    [fix I32Type] --> fix [fix I32Type]
 
 and check_block (c : context) (es : expr list) : stack_type var =
   match es with
@@ -331,7 +331,7 @@ and check_memop c memop at =
   require (Lib.Int.is_power_of_two memop.align) at "non-power-of-two alignment";
 
 and check_mem_size ty sz at =
-  require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
+  require (ty = I64Type || sz <> Memory.Mem32) at "memory size too big"
 
 
 (*

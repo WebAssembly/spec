@@ -34,8 +34,8 @@ struct
              | And | Or | Xor | Shl | ShrS | ShrU | Rotl | Rotr
   type testop = Eqz
   type relop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
-  type cvtop = ExtendSInt32 | ExtendUInt32 | WrapInt64
-             | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
+  type cvtop = ExtendSI32 | ExtendUI32 | WrapI64
+             | TruncSF32 | TruncUF32 | TruncSF64 | TruncUF64
              | ReinterpretFloat
 end
 
@@ -45,8 +45,8 @@ struct
   type binop = Add | Sub | Mul | Div | Min | Max | CopySign
   type testop
   type relop = Eq | Ne | Lt | Le | Gt | Ge
-  type cvtop = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
-             | PromoteFloat32 | DemoteFloat64
+  type cvtop = ConvertSI32 | ConvertUI32 | ConvertSI64 | ConvertUI64
+             | PromoteF32 | DemoteF64
              | ReinterpretInt
 end
 
