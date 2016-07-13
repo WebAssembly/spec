@@ -47,8 +47,6 @@ class RunTests(unittest.TestCase):
     self._runCommand(("%s %s") % (interpreterPath, fileName), logPath, expectedExitCode)
     self._compareLog(fileName, logPath)
 
-    return # TODO(stack)
-
     if expectedExitCode != 0:
       return
 

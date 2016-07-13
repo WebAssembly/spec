@@ -92,9 +92,10 @@ let encode m =
     open Source
     open Ast
     open Values
+    open Memory
 
     let op n = u8 n
-    let memop off align = vu align; vu64 off  (*TODO: to be resolved*)
+    let memop {align; offset; _} = vu align; vu64 offset  (*TODO: to be resolved*)
 
     let var x = vu x.it
     let var32 x = vu32 (Int32.of_int x.it)
@@ -128,163 +129,208 @@ let encode m =
       | Call (n, x) -> op 0x16; vu n; var x
       | CallIndirect (n, x) -> op 0x17; vu n; var x
       | CallImport (n, x) -> op 0x18; vu n; var x
-(*
-      | I32_load8_s (o, a) -> op 0x20; memop o a
-      | I32_load8_u (o, a) -> op 0x21; memop o a
-      | I32_load16_s (o, a) -> op 0x22; memop o a
-      | I32_load16_u (o, a) -> op 0x23; memop o a
-      | I64_load8_s (o, a) -> op 0x24; memop o a
-      | I64_load8_u (o, a) -> op 0x25; memop o a
-      | I64_load16_s (o, a) -> op 0x26; memop o a
-      | I64_load16_u (o, a) -> op 0x27; memop o a
-      | I64_load32_s (o, a) -> op 0x28; memop o a
-      | I64_load32_u (o, a) -> op 0x29; memop o a
-      | I32_load (o, a) -> op 0x2a; memop o a
-      | I64_load (o, a) -> op 0x2b; memop o a
-      | F32_load (o, a) -> op 0x2c; memop o a
-      | F64_load (o, a) -> op 0x2d; memop o a
 
-      | I32_store8 (o, a) -> op 0x2e; memop o a
-      | I32_store16 (o, a) -> op 0x2f; memop o a
-      | I64_store8 (o, a) -> op 0x30; memop o a
-      | I64_store16 (o, a) -> op 0x31; memop o a
-      | I64_store32 (o, a) -> op 0x32; memop o a
-      | I32_store (o, a) -> op 0x33; memop o a
-      | I64_store (o, a) -> op 0x34; memop o a
-      | F32_store (o, a) -> op 0x35; memop o a
-      | F64_store (o, a) -> op 0x36; memop o a
+      | Load ({ty = I32Type; _} as mo) -> op 0x2a; memop mo
+      | Load ({ty = I64Type; _} as mo) -> op 0x2b; memop mo
+      | Load ({ty = F32Type; _} as mo) -> op 0x2c; memop mo
+      | Load ({ty = F64Type; _} as mo) -> op 0x2d; memop mo
+
+      | Store ({ty = I32Type; _} as mo) -> op 0x33; memop mo
+      | Store ({ty = I64Type; _} as mo) -> op 0x34; memop mo
+      | Store ({ty = F32Type; _} as mo) -> op 0x35; memop mo
+      | Store ({ty = F64Type; _} as mo) -> op 0x36; memop mo
+
+      | LoadPacked {memop = {ty = I32Type; _} as mo; sz = Mem8; ext = SX} ->
+        op 0x20; memop mo
+      | LoadPacked {memop = {ty = I32Type; _} as mo; sz = Mem8; ext = ZX} ->
+        op 0x21; memop mo
+      | LoadPacked {memop = {ty = I32Type; _} as mo; sz = Mem16; ext = SX} ->
+        op 0x22; memop mo
+      | LoadPacked {memop = {ty = I32Type; _} as mo; sz = Mem16; ext = ZX} ->
+        op 0x23; memop mo
+      | LoadPacked {memop = {ty = I32Type; _}; sz = Mem32; _} ->
+        assert false
+      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem8; ext = SX} ->
+        op 0x24; memop mo
+      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem8; ext = ZX} ->
+        op 0x25; memop mo
+      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem16; ext = SX} ->
+        op 0x26; memop mo
+      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem16; ext = ZX} ->
+        op 0x27; memop mo
+      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem32; ext = SX} ->
+        op 0x28; memop mo
+      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem32; ext = ZX} ->
+        op 0x29; memop mo
+      | LoadPacked {memop = {ty = F32Type | F64Type; _}; _} ->
+        assert false
+
+      | StorePacked {memop = {ty = I32Type; _} as mo; sz = Mem8} ->
+        op 0x2e; memop mo
+      | StorePacked {memop = {ty = I32Type; _} as mo; sz = Mem16} ->
+        op 0x2f; memop mo
+      | StorePacked {memop = {ty = I32Type; _}; sz = Mem32} ->
+        assert false
+      | StorePacked {memop = {ty = I64Type; _} as mo; sz = Mem8} ->
+        op 0x30; memop mo
+      | StorePacked {memop = {ty = I64Type; _} as mo; sz = Mem16} ->
+        op 0x31; memop mo
+      | StorePacked {memop = {ty = I64Type; _} as mo; sz = Mem32} ->
+        op 0x32; memop mo
+      | StorePacked {memop = {ty = F32Type | F64Type; _}; _} ->
+        assert false
 
       | GrowMemory -> op 0x39
       | CurrentMemory -> op 0x3b
 
-      | I32_add -> op 0x40
-      | I32_sub -> op 0x41
-      | I32_mul -> op 0x42
-      | I32_div_s -> op 0x43
-      | I32_div_u -> op 0x44
-      | I32_rem_s -> op 0x45
-      | I32_rem_u -> op 0x46
-      | I32_and -> op 0x47
-      | I32_or -> op 0x48
-      | I32_xor -> op 0x49
-      | I32_shl -> op 0x4a
-      | I32_shr_u -> op 0x4b
-      | I32_shr_s -> op 0x4c
-      | I32_rotl -> op 0xb6
-      | I32_rotr -> op 0xb7
-      | I32_eq -> op 0x4d
-      | I32_ne -> op 0x4e
-      | I32_lt_s -> op 0x4f
-      | I32_le_s -> op 0x50
-      | I32_lt_u -> op 0x51
-      | I32_le_u -> op 0x52
-      | I32_gt_s -> op 0x53
-      | I32_ge_s -> op 0x54
-      | I32_gt_u -> op 0x55
-      | I32_ge_u -> op 0x56
-      | I32_clz -> op 0x57
-      | I32_ctz -> op 0x58
-      | I32_popcnt -> op 0x59
-      | I32_eqz -> op 0x5a
+      | Unary (I32 I32Op.Clz) -> op 0x57
+      | Unary (I32 I32Op.Ctz) -> op 0x58
+      | Unary (I32 I32Op.Popcnt) -> op 0x59
 
-      | I64_add -> op 0x5b
-      | I64_sub -> op 0x5c
-      | I64_mul -> op 0x5d
-      | I64_div_s -> op 0x5e
-      | I64_div_u -> op 0x5f
-      | I64_rem_s -> op 0x60
-      | I64_rem_u -> op 0x61
-      | I64_and -> op 0x62
-      | I64_or -> op 0x63
-      | I64_xor -> op 0x64
-      | I64_shl -> op 0x65
-      | I64_shr_u -> op 0x66
-      | I64_shr_s -> op 0x67
-      | I64_rotl -> op 0xb8
-      | I64_rotr -> op 0xb9
-      | I64_eq -> op 0x68
-      | I64_ne -> op 0x69
-      | I64_lt_s -> op 0x6a
-      | I64_le_s -> op 0x6b
-      | I64_lt_u -> op 0x6c
-      | I64_le_u -> op 0x6d
-      | I64_gt_s -> op 0x6e
-      | I64_ge_s -> op 0x6f
-      | I64_gt_u -> op 0x70
-      | I64_ge_u -> op 0x71
-      | I64_clz -> op 0x72
-      | I64_ctz -> op 0x73
-      | I64_popcnt -> op 0x74
-      | I64_eqz -> op 0xba
+      | Unary (I64 I64Op.Clz) -> op 0x72
+      | Unary (I64 I64Op.Ctz) -> op 0x73
+      | Unary (I64 I64Op.Popcnt) -> op 0x74
 
-      | F32_add -> op 0x75
-      | F32_sub -> op 0x76
-      | F32_mul -> op 0x77
-      | F32_div -> op 0x78
-      | F32_min -> op 0x79
-      | F32_max -> op 0x7a
-      | F32_abs -> op 0x7b
-      | F32_neg -> op 0x7c
-      | F32_copysign -> op 0x7d
-      | F32_ceil -> op 0x7e
-      | F32_floor -> op 0x7f
-      | F32_trunc -> op 0x80
-      | F32_nearest -> op 0x81
-      | F32_sqrt -> op 0x82
-      | F32_eq -> op 0x83
-      | F32_ne -> op 0x84
-      | F32_lt -> op 0x85
-      | F32_le -> op 0x86
-      | F32_gt -> op 0x87
-      | F32_ge -> op 0x88
+      | Unary (F32 F32Op.Neg) -> op 0x7c
+      | Unary (F32 F32Op.Abs) -> op 0x7b
+      | Unary (F32 F32Op.Ceil) -> op 0x7e
+      | Unary (F32 F32Op.Floor) -> op 0x7f
+      | Unary (F32 F32Op.Trunc) -> op 0x80
+      | Unary (F32 F32Op.Nearest) -> op 0x81
+      | Unary (F32 F32Op.Sqrt) -> op 0x82
 
-      | F64_add -> op 0x89
-      | F64_sub -> op 0x8a
-      | F64_mul -> op 0x8b
-      | F64_div -> op 0x8c
-      | F64_min -> op 0x8d
-      | F64_max -> op 0x8e
-      | F64_abs -> op 0x8f
-      | F64_neg -> op 0x90
-      | F64_copysign -> op 0x91
-      | F64_ceil -> op 0x92
-      | F64_floor -> op 0x93
-      | F64_trunc -> op 0x94
-      | F64_nearest -> op 0x95
-      | F64_sqrt -> op 0x96
-      | F64_eq -> op 0x97
-      | F64_ne -> op 0x98
-      | F64_lt -> op 0x99
-      | F64_le -> op 0x9a
-      | F64_gt -> op 0x9b
-      | F64_ge -> op 0x9c
+      | Unary (F64 F64Op.Neg) -> op 0x90
+      | Unary (F64 F64Op.Abs) -> op 0x8f
+      | Unary (F64 F64Op.Ceil) -> op 0x92
+      | Unary (F64 F64Op.Floor) -> op 0x93
+      | Unary (F64 F64Op.Trunc) -> op 0x94
+      | Unary (F64 F64Op.Nearest) -> op 0x95
+      | Unary (F64 F64Op.Sqrt) -> op 0x96
 
-      | I32_trunc_s_f32 -> op 0x9d
-      | I32_trunc_s_f64 -> op 0x9e
-      | I32_trunc_u_f32 -> op 0x9f
-      | I32_trunc_u_f64 -> op 0xa0
-      | I32_wrap_i64 -> op 0xa1
-      | I64_trunc_s_f32 -> op 0xa2
-      | I64_trunc_s_f64 -> op 0xa3
-      | I64_trunc_u_f32 -> op 0xa4
-      | I64_trunc_u_f64 -> op 0xa5
-      | I64_extend_s_i32 -> op 0xa6
-      | I64_extend_u_i32 -> op 0xa7
-      | F32_convert_s_i32 -> op 0xa8
-      | F32_convert_u_i32 -> op 0xa9
-      | F32_convert_s_i64 -> op 0xaa
-      | F32_convert_u_i64 -> op 0xab
-      | F32_demote_f64 -> op 0xac
-      | F32_reinterpret_i32 -> op 0xad
-      | F64_convert_s_i32 -> op 0xae
-      | F64_convert_u_i32 -> op 0xaf
-      | F64_convert_s_i64 -> op 0xb0
-      | F64_convert_u_i64 -> op 0xb1
-      | F64_promote_f32 -> op 0xb2
-      | F64_reinterpret_i64 -> op 0xb3
-      | I32_reinterpret_f32 -> op 0xb4
-      | I64_reinterpret_f64 -> op 0xb5
-*)| _ -> ()
+      | Binary (I32 I32Op.Add) -> op 0x40
+      | Binary (I32 I32Op.Sub) -> op 0x41
+      | Binary (I32 I32Op.Mul) -> op 0x42
+      | Binary (I32 I32Op.DivS) -> op 0x43
+      | Binary (I32 I32Op.DivU) -> op 0x44
+      | Binary (I32 I32Op.RemS) -> op 0x45
+      | Binary (I32 I32Op.RemU) -> op 0x46
+      | Binary (I32 I32Op.And) -> op 0x47
+      | Binary (I32 I32Op.Or) -> op 0x48
+      | Binary (I32 I32Op.Xor) -> op 0x49
+      | Binary (I32 I32Op.Shl) -> op 0x4a
+      | Binary (I32 I32Op.ShrS) -> op 0x4c
+      | Binary (I32 I32Op.ShrU) -> op 0x4b
+      | Binary (I32 I32Op.Rotl) -> op 0xb6
+      | Binary (I32 I32Op.Rotr) -> op 0xb7
+
+      | Binary (I64 I64Op.Add) -> op 0x5b
+      | Binary (I64 I64Op.Sub) -> op 0x5c
+      | Binary (I64 I64Op.Mul) -> op 0x5d
+      | Binary (I64 I64Op.DivS) -> op 0x5e
+      | Binary (I64 I64Op.DivU) -> op 0x5f
+      | Binary (I64 I64Op.RemS) -> op 0x60
+      | Binary (I64 I64Op.RemU) -> op 0x61
+      | Binary (I64 I64Op.And) -> op 0x62
+      | Binary (I64 I64Op.Or) -> op 0x63
+      | Binary (I64 I64Op.Xor) -> op 0x64
+      | Binary (I64 I64Op.Shl) -> op 0x65
+      | Binary (I64 I64Op.ShrS) -> op 0x67
+      | Binary (I64 I64Op.ShrU) -> op 0x66
+      | Binary (I64 I64Op.Rotl) -> op 0xb8
+      | Binary (I64 I64Op.Rotr) -> op 0xb9
+
+      | Binary (F32 F32Op.Add) -> op 0x75
+      | Binary (F32 F32Op.Sub) -> op 0x76
+      | Binary (F32 F32Op.Mul) -> op 0x77
+      | Binary (F32 F32Op.Div) -> op 0x78
+      | Binary (F32 F32Op.Min) -> op 0x79
+      | Binary (F32 F32Op.Max) -> op 0x7a
+      | Binary (F32 F32Op.CopySign) -> op 0x7d
+
+      | Binary (F64 F64Op.Add) -> op 0x89
+      | Binary (F64 F64Op.Sub) -> op 0x8a
+      | Binary (F64 F64Op.Mul) -> op 0x8b
+      | Binary (F64 F64Op.Div) -> op 0x8c
+      | Binary (F64 F64Op.Min) -> op 0x8d
+      | Binary (F64 F64Op.Max) -> op 0x8e
+      | Binary (F64 F64Op.CopySign) -> op 0x91
+
+      | Test (I32 I32Op.Eqz) -> op 0x5a
+      | Test (I64 I64Op.Eqz) -> op 0xba
+      | Test (F32 _) -> assert false
+      | Test (F64 _) -> assert false
+
+      | Compare (I32 I32Op.Eq) -> op 0x4d
+      | Compare (I32 I32Op.Ne) -> op 0x4e
+      | Compare (I32 I32Op.LtS) -> op 0x4f
+      | Compare (I32 I32Op.LtU) -> op 0x51
+      | Compare (I32 I32Op.LeS) -> op 0x50
+      | Compare (I32 I32Op.LeU) -> op 0x52
+      | Compare (I32 I32Op.GtS) -> op 0x53
+      | Compare (I32 I32Op.GtU) -> op 0x55
+      | Compare (I32 I32Op.GeS) -> op 0x54
+      | Compare (I32 I32Op.GeU) -> op 0x56
+
+      | Compare (I64 I64Op.Eq) -> op 0x68
+      | Compare (I64 I64Op.Ne) -> op 0x69
+      | Compare (I64 I64Op.LtS) -> op 0x6a
+      | Compare (I64 I64Op.LtU) -> op 0x6c
+      | Compare (I64 I64Op.LeS) -> op 0x6b
+      | Compare (I64 I64Op.LeU) -> op 0x6d
+      | Compare (I64 I64Op.GtS) -> op 0x6e
+      | Compare (I64 I64Op.GtU) -> op 0x70
+      | Compare (I64 I64Op.GeS) -> op 0x6f
+      | Compare (I64 I64Op.GeU) -> op 0x71
+
+      | Compare (F32 F32Op.Eq) -> op 0x83
+      | Compare (F32 F32Op.Ne) -> op 0x84
+      | Compare (F32 F32Op.Lt) -> op 0x85
+      | Compare (F32 F32Op.Le) -> op 0x86
+      | Compare (F32 F32Op.Gt) -> op 0x87
+      | Compare (F32 F32Op.Ge) -> op 0x88
+
+      | Compare (F64 F64Op.Eq) -> op 0x97
+      | Compare (F64 F64Op.Ne) -> op 0x98
+      | Compare (F64 F64Op.Lt) -> op 0x99
+      | Compare (F64 F64Op.Le) -> op 0x9a
+      | Compare (F64 F64Op.Gt) -> op 0x9b
+      | Compare (F64 F64Op.Ge) -> op 0x9c
+
+      | Convert (I32 I32Op.TruncSF32) -> op 0x9d
+      | Convert (I32 I32Op.TruncSF64) -> op 0x9e
+      | Convert (I32 I32Op.TruncUF32) -> op 0x9f
+      | Convert (I32 I32Op.TruncUF64) -> op 0xa0
+      | Convert (I32 I32Op.WrapI64) -> op 0xa1
+      | Convert (I32 I32Op.ExtendSI32) -> assert false
+      | Convert (I32 I32Op.ExtendUI32) -> assert false
+      | Convert (I32 I32Op.ReinterpretFloat) -> op 0xb4
+
+      | Convert (I64 I64Op.TruncSF32) -> op 0xa2
+      | Convert (I64 I64Op.TruncSF64) -> op 0xa3
+      | Convert (I64 I64Op.TruncUF32) -> op 0xa4
+      | Convert (I64 I64Op.TruncUF64) -> op 0xa5
+      | Convert (I64 I64Op.WrapI64) -> assert false
+      | Convert (I64 I64Op.ExtendSI32) -> op 0xa6
+      | Convert (I64 I64Op.ExtendUI32) -> op 0xa7
+      | Convert (I64 I64Op.ReinterpretFloat) -> op 0xb5
+
+      | Convert (F32 F32Op.ConvertSI32) -> op 0xa8
+      | Convert (F32 F32Op.ConvertUI32) -> op 0xa9
+      | Convert (F32 F32Op.ConvertSI64) -> op 0xaa
+      | Convert (F32 F32Op.ConvertUI64) -> op 0xab
+      | Convert (F32 F32Op.PromoteF32) -> assert false
+      | Convert (F32 F32Op.DemoteF64) -> op 0xac
+      | Convert (F32 F32Op.ReinterpretInt) -> op 0xad
+
+      | Convert (F64 F64Op.ConvertSI32) -> op 0xae
+      | Convert (F64 F64Op.ConvertUI32) -> op 0xaf
+      | Convert (F64 F64Op.ConvertSI64) -> op 0xb0
+      | Convert (F64 F64Op.ConvertUI64) -> op 0xb1
+      | Convert (F64 F64Op.PromoteF32) -> op 0xb2
+      | Convert (F64 F64Op.DemoteF64) -> assert false
+      | Convert (F64 F64Op.ReinterpretInt) -> op 0xb3
+
+      | Label _ -> assert false
 
     (* Sections *)
 
