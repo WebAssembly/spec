@@ -11,13 +11,20 @@ WebAssembly Specification
 0. [Instruction Descriptions](#instruction-descriptions)
 0. [Instructions](#instructions)
 
+![WebAssembly Logo][logo]
+
+[logo]: https://cloud.githubusercontent.com/assets/298127/7970689/95aefe64-09f4-11e5-87c8-b67d25f46901.png "WebAssembly Logo"
+
+TODO: What will the real logo be? Monitor
+https://github.com/WebAssembly/design/issues/112
+
 
 Introduction
 --------------------------------------------------------------------------------
 
-WebAssembly is a general-purpose virtual [ISA] designed to be a compilation
-target for a wide variety of programming languages. Much of its distinct
-personality derives from its security, code compression, and decoding
+WebAssembly, or "wasm" for short, is a general-purpose virtual [ISA] designed to
+be a compilation target for a wide variety of programming languages. Much of its
+distinct personality derives from its security, code compression, and decoding
 optimization features.
 
 The unit of WebAssembly code is the *module*. Modules primarily consist of a
@@ -197,8 +204,8 @@ or [imported](#import-section).
 
 A *table* is similar to a [linear-memory] space whose elements, instead of being
 bytes, are opaque values of a particular *table element type*. Currently the
-only valid element type is "anyfunc", meaning a function with any signature. A
-table of "anyfunc" is used as the index space for
+only valid element type is `"anyfunc"`, meaning a function with any signature. A
+table of `"anyfunc"` is used as the index space for
 [indirect calls](#call-indirect).
 
 Tables can be [defined by a module](#table-section) or
@@ -359,10 +366,10 @@ The meaning of the module string and name string are determined by the embedding
 environment.
 
 Imports provide access to constructs, defined and allocated by external entities
-outside the scope of this specification (though they may be other WebAssembly
-modules), but which have behavior consistent with their corresponding concepts
-defined in this spec. They can be accessed through their respective
-[module index spaces](#module-index-spaces).
+outside the scope of this specification (though they may be exports provided by
+other WebAssembly modules), but which have behavior consistent with their
+corresponding concepts defined in this spec. They can be accessed through their
+respective [module index spaces](#module-index-spaces).
 
 **Validation:**
  - All global imports must be immutable.
@@ -401,7 +408,7 @@ A *table declaration* consists of:
  - An *initial length*.
  - A *maximum length*.
 
-Tables with an element type of "anyfunc" hold function references of any type.
+Tables with an element type of `"anyfunc"` hold function references of any type.
 
 > Additional elements types may be added in the future.
 
@@ -478,7 +485,7 @@ re-export their imports.
 
 **Name:** `start`
 
-The Start Section consists of a function [index]. See
+The Start Section consists of an [index] into the [function index space]. See
 [Instance Execution](#instance-execution) for further information.
 
 **Validation:**
@@ -591,8 +598,8 @@ TODO: Rename this to the Table Initializer Section?
 **Name:** `name`
 
 The Names Section consists of an [array] of function name descriptors, which
-each describe names for the function with the corresponding index in the module,
-and which consist of:
+each describe names for the function with the corresponding index in the
+[function index space] and which consist of:
  - the function name, a [string].
  - the names of the locals in the function, an [array] of [strings].
 
@@ -2736,7 +2743,7 @@ linear-memory space, as an unsigned value in units of [pages].
 [Global Section]: #global-section
 [Element Section]: #element-section
 [Name Section]: #name-section
-[function Index space]: #function-index-space
+[function index space]: #function-index-space
 [global index space]: #global-index-space
 [linear-memory index space]: #linear-memory-index-space
 [table index space]: #table-index-space
