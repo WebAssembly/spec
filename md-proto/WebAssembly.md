@@ -40,13 +40,15 @@ For more information, see the [Validation section](#validation).
 
 A WebAssembly module can be [*instantiated*] to produce a WebAssembly instance,
 which contains all the data structures required by the module's code for
-execution. Instances can include [linear memory](#linear-memory-section), which
-can serve the purpose of an address space for program data. For security and
+execution. Instances can include [linear memory](#linear-memory), which can
+serve the purpose of an address space for program data. For security and
 determinism, linear memory is *sandboxed*, and the other data structures in an
 instance, including the call stack, are allocated outside of linear memory so
-that they cannot be corrupted by errant linear-memory accesses. An instance can
-then be executed, either by execution of its [start function](#start-section) or
-by calls to its exported functions.
+that they cannot be corrupted by errant linear-memory accesses. Instances can
+also include [tables](#tables), which can serve the purpose of an address space
+for indirect function calls, among other things. An instance can then be
+executed, either by execution of its [start function](#start-section) or by
+calls to its exported functions.
 
 Along with the other contents, each function contains a sequence of
 *instructions*. WebAssembly instructions conceptually communicate with each
@@ -168,36 +170,42 @@ may perform any one of the specified alternatives.
 > All instances of nondeterminism in WebAssembly are explicitly described as
 such with a link to this section.
 
-> There is no "undefined behavior" in WebAssembly where the semantics become
+> There is no ["undefined behavior"] in WebAssembly where the semantics become
 completely unspecified.
 
 > There is no requirement that a given implementation make the same choice every
 time, even for successive executions of the same instruction within the same
 instance of a module.
 
+["undefined behavior"]: https://en.wikipedia.org/wiki/Undefined_behavior
+
 ### Linear Memory
 
 A *linear memory space* is a contiguous, [byte]-addressable, readable and
-writeable range of memory spanning from offset `0` and extending up to a
+writable range of memory spanning from offset `0` and extending up to a
 *linear-memory size*, allocated as part of a WebAssembly instance. The size of a
 linear memory is always a multiple of the [page] size and may be increased
-dynamically (with the [`grow_memory`](#grow-memory) instruction).
+dynamically (with the [`grow_memory`](#grow-memory) instruction). Linear memory
+spaces are sandboxed, so they don't overlap with each other or with other parts
+of a WebAssembly instance, including the call stack, globals, and tables, and
+their bounds are enforced.
 
 Linear-memory spaces can either be [defined by a module](#linear-memory-section)
 or [imported](#import-section).
 
 ### Tables
 
-A *table* is similar to a linear memory whose elements, instead of being bytes,
-are opaque values of a particular *table element type*. Currently the only valid
-element type is "anyfunc", meaning a function with any signature. A table of
-"anyfunc" is used as the index space for [indirect calls](#call-indirect).
+A *table* is similar to a [linear-memory] space whose elements, instead of being
+bytes, are opaque values of a particular *table element type*. Currently the
+only valid element type is "anyfunc", meaning a function with any signature. A
+table of "anyfunc" is used as the index space for
+[indirect calls](#call-indirect).
 
 Tables can be [defined by a module](#table-section) or
 [imported](#import-section).
 
-> In the future, tables are expected to be generalized to hold a wide variety
-of opaque values and serve a wide variety of purposes.
+> In the future, tables are expected to be generalized to hold a wide variety of
+opaque values and serve a wide variety of purposes.
 
 
 Module
@@ -353,7 +361,8 @@ environment.
 Imports provide access to constructs, defined and allocated by external entities
 outside the scope of this specification (though they may be other WebAssembly
 modules), but which have behavior consistent with their corresponding concepts
-defined in this spec.
+defined in this spec. They can be accessed through their respective
+[module index spaces](#module-index-spaces).
 
 **Validation:**
  - All global imports must be immutable.
