@@ -206,7 +206,7 @@ A *table* is similar to a [linear-memory] space whose elements, instead of being
 bytes, are opaque values of a particular *table element type*. Currently the
 only valid element type is `"anyfunc"`, meaning a function with any signature. A
 table of `"anyfunc"` is used as the index space for
-[indirect calls](#call-indirect).
+[indirect calls](#indirect-call).
 
 Tables can be [defined by a module](#table-section) or
 [imported](#import-section).
