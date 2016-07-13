@@ -5,6 +5,13 @@ type stack_type = value_type list
 type func_type = FuncType of stack_type * stack_type
 
 
+(* Attributes *)
+
+let size = function
+  | I32Type | F32Type -> 4
+  | I64Type | F64Type -> 8
+
+
 (* String conversion *)
 
 let string_of_value_type = function

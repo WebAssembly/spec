@@ -162,7 +162,7 @@ let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 let memop name {ty; align; offset} =
   value_type ty ^ "." ^ name ^
   (if offset = 0L then "" else " offset=" ^ int64 offset) ^
-  (if align = 1 then "" else " align=" ^ int align)
+  (if align = size ty then "" else " align=" ^ int align)
 
 let mem_size = function
   | Memory.Mem8 -> "8"
@@ -199,12 +199,7 @@ let rec expr e =
       Atom ("br_table " ^ int n ^ " " ^ String.concat " " (list var (xs @ [x])))
     | Return n -> Atom ("return " ^ int n)
     | If (es1, es2) ->
-      (match list expr es1, list expr es2 with
-      | [sx2], [] -> Node ("if", [sx2])
-      | [sx2], [sx3] -> Node ("if", [sx2; sx3])
-      | sxs2, [] -> Node ("if", [Node ("then", sxs2)])
-      | sxs2, sxs3 -> Node ("if", [Node ("then", sxs2); Node ("else", sxs3)])
-      )
+      Node ("if", list expr es1 @ [Atom "else"] @ list expr es2)
     | Select -> Atom "select"
     | Call (n, x) -> Atom ("call " ^ int n ^ " " ^ var x)
     | CallImport (n, x) -> Atom ("call_import " ^ int n ^ " " ^ var x)

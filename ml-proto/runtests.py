@@ -56,8 +56,6 @@ class RunTests(unittest.TestCase):
     self._runCommand(("%s -d %s -o %s") % (interpreterPath, fileName, wasmPath))
     self._runCommand(("%s %s") % (interpreterPath, wasmPath), logPath)
 
-    return # TODO(stack)
-
     # Convert back to text and run again
     wastPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast"))
     logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast.log"))
@@ -68,7 +66,8 @@ class RunTests(unittest.TestCase):
     wasm2Path = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast.wasm"))
     self._runCommand(("%s -d %s -o %s") % (interpreterPath, wastPath, wasm2Path))
     self._runCommand(("%s %s") % (interpreterPath, wasm2Path), logPath)
-    # TODO: Ultimately, the binary should stay the same, but currently desugaring gets in the way.
+    # TODO: The binary should stay the same, but OCaml's float-string conversions are inaccurate.
+    # Once we upgrade to OCaml 4.03, use sprintf "%s" for printing floats.
     # self._compareFile(wasmPath, wasm2Path)
 
 def generate_test_case(rec):

@@ -98,7 +98,7 @@ let int = sign nat
 let float =
     sign? num '.' digit*
   | sign? num ('.' digit*)? ('e' | 'E') sign? num
-  | sign? "0x" hexdigit+ '.'? hexdigit* 'p' sign? digit+
+  | sign? "0x" hexdigit+ '.'? hexdigit* ('e' | 'E' | 'p') sign? digit+
   | sign? "inf"
   | sign? "infinity"
   | sign? "nan"

@@ -71,15 +71,13 @@ struct
   let of_bits x = x
   let to_bits x = x
 
-  let is_nan x =
-    let xf = Rep.float_of_bits x in xf <> xf
+  let is_nan x = let xf = Rep.float_of_bits x in xf <> xf
 
   (*
    * When the result of an arithmetic operation is NaN, the most significant
    * bit of the significand field is set.
    *)
-  let canonicalize_nan x =
-    Rep.logor x Rep.pos_nan
+  let canonicalize_nan x = Rep.logor x Rep.pos_nan
 
   (*
    * When the result of a binary operation is NaN, the resulting NaN is computed
@@ -93,10 +91,10 @@ struct
      * when neither is NaN, we can nondeterministically pick whether to return
      * pos_nan or neg_nan.
      *)
-    let nan = (if is_nan x then x else
-               if is_nan y then y else
-               Rep.pos_nan) in
-    canonicalize_nan nan
+    let nan =
+      if is_nan x then x else
+      if is_nan y then y else Rep.pos_nan
+    in canonicalize_nan nan
 
   (*
    * When the result of a unary operation is NaN, the resulting NaN is computed
@@ -109,8 +107,7 @@ struct
      * operand is not NaN, we can nondeterministically pick whether to return
      * pos_nan or neg_nan.
      *)
-    let nan = (if is_nan x then x else
-               Rep.pos_nan) in
+    let nan = if is_nan x then x else Rep.pos_nan in
     canonicalize_nan nan
 
   let binary x op y =
@@ -153,8 +150,10 @@ struct
     let d = Pervasives.floor xf in
     let um = abs_float (xf -. u) in
     let dm = abs_float (xf -. d) in
-    let u_or_d = um < dm ||
-                 (um = dm && let h = u /. 2. in Pervasives.floor h = h) in
+    let u_or_d =
+      um < dm ||
+      um = dm && let h = u /. 2. in Pervasives.floor h = h
+    in
     let f = if u_or_d then u else d in
     let result = of_float f in
     if is_nan result then determine_unary_nan result else result
@@ -165,8 +164,8 @@ struct
     (* min -0 0 is -0 *)
     if xf = yf then Rep.logor x y else
     if xf < yf then x else
-	if xf > yf then y else
-	determine_binary_nan x y
+    if xf > yf then y else
+    determine_binary_nan x y
 
   let max x y =
     let xf = to_float x in
@@ -174,8 +173,8 @@ struct
     (* max -0 0 is 0 *)
     if xf = yf then Rep.logand x y else
     if xf > yf then x else
-	if xf < yf then y else
-	determine_binary_nan x y
+    if xf < yf then y else
+    determine_binary_nan x y
 
   (* abs, neg, and copysign are purely bitwise operations, even on NaN values *)
   let abs x =
@@ -187,35 +186,33 @@ struct
   let copysign x y =
     Rep.logor (abs x) (Rep.logand y Rep.min_int)
 
-  let eq x y = (to_float x) =  (to_float y)
-  let ne x y = (to_float x) <> (to_float y)
-  let lt x y = (to_float x) <  (to_float y)
-  let gt x y = (to_float x) >  (to_float y)
-  let le x y = (to_float x) <= (to_float y)
-  let ge x y = (to_float x) >= (to_float y)
+  let eq x y = (to_float x = to_float y)
+  let ne x y = (to_float x <> to_float y)
+  let lt x y = (to_float x < to_float y)
+  let gt x y = (to_float x > to_float y)
+  let le x y = (to_float x <= to_float y)
+  let ge x y = (to_float x >= to_float y)
 
   let of_signless_string x len =
-    if x <> "nan" &&
-         (len > 6) &&
-           (String.sub x 0 6) = "nan:0x" then
-      (let s = Rep.of_string (String.sub x 4 (len - 4)) in
-       if s = Rep.zero then
-         raise (Failure "nan payload must not be zero")
-       else if Rep.logand s bare_nan <> Rep.zero then
-         raise (Failure "nan payload must not overlap with exponent bits")
-       else if s < Rep.zero then
-         raise (Failure "nan payload must not overlap with sign bit")
-       else
-         Rep.logor s bare_nan)
+    if x <> "nan" && len > 6 && String.sub x 0 6 = "nan:0x" then
+      let s = Rep.of_string (String.sub x 4 (len - 4)) in
+      if s = Rep.zero then
+        raise (Failure "nan payload must not be zero")
+      else if Rep.logand s bare_nan <> Rep.zero then
+        raise (Failure "nan payload must not overlap with exponent bits")
+      else if s < Rep.zero then
+        raise (Failure "nan payload must not overlap with sign bit")
+      else
+        Rep.logor s bare_nan
     else
       (* TODO: OCaml's float_of_string is insufficient *)
       of_float (float_of_string x)
 
   let of_string x =
     let len = String.length x in
-    if len > 0 && (String.get x 0) = '-' then
+    if len > 0 && x.[0] = '-' then
       neg (of_signless_string (String.sub x 1 (len - 1)) (len - 1))
-    else if len > 0 && (String.get x 0) = '+' then
+    else if len > 0 && x.[0] = '+' then
       of_signless_string (String.sub x 1 (len - 1)) (len - 1)
     else
       of_signless_string x len
@@ -224,9 +221,9 @@ struct
     (if x < Rep.zero then "-" else "") ^
       let a = abs x in
       if is_nan a then
-        ("nan:0x" ^ Rep.print_nan_significand_digits a)
+        "nan:0x" ^ Rep.print_nan_significand_digits a
       else
-        (* TODO: OCaml's string_of_float is insufficient *)
+        (* TODO: use sprintf "%h" once we have upgraded to OCaml 4.03 *)
         string_of_float (to_float a)
 end
 

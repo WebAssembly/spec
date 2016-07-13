@@ -308,6 +308,8 @@ expr1 :
   | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
     { fun c -> let c1 = $5 c in let c2 = $10 c in
       $2 c, if_ (snd ($6 c1)) (snd ($11 c2)) }
+  | IF expr_list ELSE expr_list
+    { fun c -> let c' = anon_label c in [],  if_ (snd ($2 c')) (snd ($4 c')) }
   | SELECT expr expr expr { fun c -> $2 c @ $3 c @ $4 c, select }
   | CALL var expr_list { fun c -> let n, es = $3 c in es, call n ($2 c func) }
   | CALL_IMPORT var expr_list

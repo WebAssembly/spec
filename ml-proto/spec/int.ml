@@ -106,7 +106,6 @@ struct
 
   let zero = Rep.zero
   let ten = Rep.of_int 10
-  let max_upper, max_lower = divrem_u Rep.minus_one ten
 
   (* add, sub, and mul are sign-agnostic and do not trap on overflow. *)
   let add = Rep.add
@@ -167,37 +166,34 @@ struct
 
   (* clz is defined for all values, including all-zeros. *)
   let clz x =
-    Rep.of_int
-      (let rec loop acc n =
-         if n = Rep.zero then
-           Rep.bitwidth
-         else if and_ n (Rep.shift_left Rep.one (Rep.bitwidth - 1)) <> Rep.zero then
-           acc
-         else
-           loop (1 + acc) (Rep.shift_left n 1)
-       in loop 0 x)
+    let rec loop acc n =
+      if n = Rep.zero then
+        Rep.bitwidth
+      else if and_ n (Rep.shift_left Rep.one (Rep.bitwidth - 1)) <> Rep.zero then
+        acc
+      else
+        loop (1 + acc) (Rep.shift_left n 1)
+    in Rep.of_int (loop 0 x)
 
   (* ctz is defined for all values, including all-zeros. *)
   let ctz x =
-    Rep.of_int
-      (let rec loop acc n =
-         if n = Rep.zero then
-           Rep.bitwidth
-         else if and_ n Rep.one = Rep.one then
-           acc
-         else
-           loop (1 + acc) (Rep.shift_right_logical n 1)
-       in loop 0 x)
+    let rec loop acc n =
+      if n = Rep.zero then
+        Rep.bitwidth
+      else if and_ n Rep.one = Rep.one then
+        acc
+      else
+        loop (1 + acc) (Rep.shift_right_logical n 1)
+    in Rep.of_int (loop 0 x)
 
   let popcnt x =
-    Rep.of_int
-      (let rec loop acc i n =
-         if n = Rep.zero then
-           acc
-         else
-           let acc' = if and_ n Rep.one = Rep.one then acc + 1 else acc in
-           loop acc' (i - 1) (Rep.shift_right_logical n 1)
-       in loop 0 Rep.bitwidth x)
+    let rec loop acc i n =
+      if n = Rep.zero then
+        acc
+      else
+        let acc' = if and_ n Rep.one = Rep.one then acc + 1 else acc in
+        loop acc' (i - 1) (Rep.shift_right_logical n 1)
+    in Rep.of_int (loop 0 Rep.bitwidth x)
 
   let eqz x = x = Rep.zero
 
@@ -212,52 +208,50 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
-  let parse_hexdigit = function
+  let of_int = Rep.of_int
+  let to_string = Rep.to_string
+
+  (* String conversion that allows leading signs and unsigned values *)
+
+  let require b = if not b then failwith "of_string"
+
+  let dec_digit = function
+    | '0' .. '9' as c -> Char.code c - Char.code '0'
+    | _ -> failwith "of_string"
+
+  let hex_digit = function
     | '0' .. '9' as c ->  Char.code c - Char.code '0'
     | 'a' .. 'f' as c ->  0xa + Char.code c - Char.code 'a'
     | 'A' .. 'F' as c ->  0xa + Char.code c - Char.code 'A'
     | _ ->  failwith "of_string"
 
-  let parse_decdigit c =
-    if '0' > c || '9' < c then failwith "of_string";
-    Rep.of_int (int_of_char c - Char.code '0')
+  let max_upper, max_lower = divrem_u Rep.minus_one ten
 
-  let require b = if not b then failwith "of_string"
-
-  (* This implementation allows leading signs and unsigned values *)
-  let of_string x =
+  let of_string s =
     let open Rep in
-    let len = String.length x in
+    let len = String.length s in
     let rec parse_hex i num =
-      if i = len then num
-      else begin
-        require (le_u num (shr_u minus_one (of_int 4)));
-        parse_hex (i + 1) (logor (shift_left num 4) (of_int (parse_hexdigit x.[i])))
-      end
+      if i = len then num else
+      let digit = of_int (hex_digit s.[i]) in
+      require (le_u num (shr_u minus_one (of_int 4)));
+      parse_hex (i + 1) (logor (shift_left num 4) digit)
     in
     let rec parse_dec i num =
-      if i = len then num
-      else begin
-        let new_digit = parse_decdigit x.[i] in
-        require (le_u num max_upper && (num <> max_upper || le_u new_digit max_lower));
-        parse_dec (i + 1) (add (mul num ten) new_digit)
-      end
+      if i = len then num else
+      let digit = of_int (dec_digit s.[i]) in
+      require (lt_u num max_upper || num = max_upper && le_u digit max_lower);
+      parse_dec (i + 1) (add (mul num ten) digit)
     in
     let parse_int i =
-      if i + 3 <= len && x.[i] = '0' && x.[i + 1] = 'x' then
-        parse_hex (i + 2) zero
-      else
-        parse_dec i zero
+      if i + 2 <= len && s.[i] = '0' && s.[i + 1] = 'x'
+      then parse_hex (i + 2) zero
+      else parse_dec i zero
     in
-    match x.[0] with
-      | '+' -> parse_int 1
-      | '-' ->
-        let y = (parse_int 1) in
-        require (ge_s (sub y one) minus_one);
-        neg y
-      | _ -> parse_int 0
-
-  let to_string = Rep.to_string
-
-  let of_int = Rep.of_int
+    match s.[0] with
+    | '+' -> parse_int 1
+    | '-' ->
+      let n = parse_int 1 in
+      require (ge_s (sub n one) minus_one);
+      neg n
+    | _ -> parse_int 0
 end

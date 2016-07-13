@@ -10,7 +10,7 @@
   (func "type-f64" (drop (f64.neg (return))))
 
   (func "nullary" (return))
-  (func "unary" (result f64) (return (f64.const 3.1)))
+  (func "unary" (result f64) (return (f64.const 3)))
 
   (func "as-func-first" (result i32)
     (return (i32.const 1)) (i32.const 2)
@@ -196,7 +196,7 @@
 (assert_return (invoke "type-f64"))
 
 (assert_return (invoke "nullary"))
-(assert_return (invoke "unary") (f64.const 3.1))
+(assert_return (invoke "unary") (f64.const 3))
 
 (assert_return (invoke "as-func-first") (i32.const 1))
 (assert_return (invoke "as-func-mid") (i32.const 2))
