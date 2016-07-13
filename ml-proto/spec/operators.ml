@@ -38,36 +38,37 @@ let i32_store align offset = Store {ty = I32Type; align; offset}
 let i64_store align offset = Store {ty = I64Type; align; offset}
 let f32_store align offset = Store {ty = F32Type; align; offset}
 let f64_store align offset = Store {ty = F64Type; align; offset}
+
 let i32_load8_s align offset =
-    LoadPacked {memop = {ty = I32Type; align; offset}; sz = Mem8; ext = SX}
+  LoadPacked {memop = {ty = I32Type; align; offset}; sz = Mem8; ext = SX}
 let i32_load8_u align offset =
-    LoadPacked {memop = {ty = I32Type; align; offset}; sz = Mem8; ext = ZX}
+  LoadPacked {memop = {ty = I32Type; align; offset}; sz = Mem8; ext = ZX}
 let i32_load16_s align offset =
-    LoadPacked {memop = {ty = I32Type; align; offset}; sz = Mem16; ext = SX}
+  LoadPacked {memop = {ty = I32Type; align; offset}; sz = Mem16; ext = SX}
 let i32_load16_u align offset =
-    LoadPacked {memop = {ty = I32Type; align; offset}; sz = Mem16; ext = ZX}
+  LoadPacked {memop = {ty = I32Type; align; offset}; sz = Mem16; ext = ZX}
 let i64_load8_s align offset =
-    LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem8; ext = SX}
+  LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem8; ext = SX}
 let i64_load8_u align offset =
-    LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem8; ext = ZX}
+  LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem8; ext = ZX}
 let i64_load16_s align offset =
-    LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem16; ext = SX}
+  LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem16; ext = SX}
 let i64_load16_u align offset =
-    LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem16; ext = ZX}
+  LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem16; ext = ZX}
 let i64_load32_s align offset =
-    LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem32; ext = SX}
+  LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem32; ext = SX}
 let i64_load32_u align offset =
-    LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem32; ext = ZX}
+  LoadPacked {memop = {ty = I64Type; align; offset}; sz = Mem32; ext = ZX}
 let i32_store8 align offset =
-    StorePacked {memop = {ty = I32Type; align; offset}; sz = Mem8}
+  StorePacked {memop = {ty = I32Type; align; offset}; sz = Mem8}
 let i32_store16 align offset =
-    StorePacked {memop = {ty = I32Type; align; offset}; sz = Mem16}
+  StorePacked {memop = {ty = I32Type; align; offset}; sz = Mem16}
 let i64_store8 align offset =
-    StorePacked {memop = {ty = I64Type; align; offset}; sz = Mem8}
+  StorePacked {memop = {ty = I64Type; align; offset}; sz = Mem8}
 let i64_store16 align offset =
-    StorePacked {memop = {ty = I64Type; align; offset}; sz = Mem16}
+  StorePacked {memop = {ty = I64Type; align; offset}; sz = Mem16}
 let i64_store32 align offset =
-    StorePacked {memop = {ty = I64Type; align; offset}; sz = Mem32}
+  StorePacked {memop = {ty = I64Type; align; offset}; sz = Mem32}
 
 let i32_clz = Unary (I32 I32Op.Clz)
 let i32_ctz = Unary (I32 I32Op.Ctz)

@@ -1,4 +1,4 @@
-module type RepresentationType =
+module type RepType =
 sig
   type t
 
@@ -56,7 +56,7 @@ sig
   val zero : t
 end
 
-module Make(Rep : RepresentationType) : S with type bits = Rep.t =
+module Make (Rep : RepType) : S with type bits = Rep.t =
 struct
   type t = Rep.t
   type bits = Rep.t

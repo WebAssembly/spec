@@ -1,25 +1,27 @@
-(* WebAssembly-compatible int operations implementation *)
-
-module type RepresentationType =
+module type RepType =
 sig
   type t
-  val add : t -> t -> t
-  val min_int : t
+
   val zero : t
   val one : t
   val minus_one : t
+  val min_int : t
+
   val neg : t -> t
-  val shift_left : t -> int -> t
-  val shift_right : t -> int -> t
+  val add : t -> t -> t
+  val sub : t -> t -> t
+  val mul : t -> t -> t
+  val div : t -> t -> t (* raises Division_by_zero *)
+  val rem : t -> t -> t (* raises Division_by_zero *)
+
   val logand : t -> t -> t
   val lognot : t -> t
   val logor : t -> t -> t
   val logxor : t -> t -> t
-  val sub : t -> t -> t
-  val div : t -> t -> t
-  val mul : t -> t -> t
-  val rem : t -> t -> t
+  val shift_left : t -> int -> t
+  val shift_right : t -> int -> t
   val shift_right_logical : t -> int -> t
+
   val of_int : int -> t
   val to_int : t -> int
   val to_string : t -> string
@@ -40,10 +42,10 @@ sig
   val add : t -> t -> t
   val sub : t -> t -> t
   val mul : t -> t -> t
-  val div_s : t -> t -> t
-  val div_u : t -> t -> t
-  val rem_s : t -> t -> t
-  val rem_u : t -> t -> t
+  val div_s : t -> t -> t (* raises IntegerDivideByZero, IntegerOverflow *)
+  val div_u : t -> t -> t (* raises IntegerDivideByZero *)
+  val rem_s : t -> t -> t (* raises IntegerDivideByZero *)
+  val rem_u : t -> t -> t (* raises IntegerDivideByZero *)
   val and_ : t -> t -> t
   val or_ : t -> t -> t
   val xor : t -> t -> t
@@ -72,7 +74,7 @@ sig
   val to_string : t -> string
 end
 
-module Make(Rep : RepresentationType) : S with type bits = Rep.t and type t = Rep.t =
+module Make (Rep : RepType) : S with type bits = Rep.t and type t = Rep.t =
 struct
   (*
    * Unsigned comparison in terms of signed comparison.
@@ -86,7 +88,7 @@ struct
    * "Unsigned Short Division from Signed Division".
    *)
   let divrem_u n d =
-    if d = Rep.zero then raise Numerics.IntegerDivideByZero else
+    if d = Rep.zero then raise Numeric_error.IntegerDivideByZero else
       let t = Rep.shift_right d (Rep.bitwidth - 1) in
       let n' = Rep.logand n (Rep.lognot t) in
       let q = Rep.shift_left (Rep.div (Rep.shift_right_logical n' 1) d) 1 in
@@ -114,9 +116,9 @@ struct
   (* result is truncated toward zero *)
   let div_s x y =
     if y = Rep.zero then
-      raise Numerics.IntegerDivideByZero
+      raise Numeric_error.IntegerDivideByZero
     else if x = Rep.min_int && y = Rep.minus_one then
-      raise Numerics.IntegerOverflow
+      raise Numeric_error.IntegerOverflow
     else
       Rep.div x y
 
@@ -127,7 +129,7 @@ struct
   (* result has the sign of the dividend *)
   let rem_s x y =
     if y = Rep.zero then
-      raise Numerics.IntegerDivideByZero
+      raise Numeric_error.IntegerDivideByZero
     else
       Rep.rem x y
 

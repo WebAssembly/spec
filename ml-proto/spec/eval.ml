@@ -37,16 +37,16 @@ let memory_error at = function
   | Memory.SizeOverflow -> Trap.error at "memory size overflow"
   | exn -> raise exn
 
-let arithmetic_error at = function
-  | Arithmetic.TypeError (i, v, t) ->
+let numeric_error at = function
+  | Eval_numeric.TypeError (i, v, t) ->
     Crash.error at
       ("type error, expected " ^ Types.string_of_value_type t ^ " as operand " ^
        string_of_int i ^ ", got " ^ Types.string_of_value_type (type_of v))
-  | Numerics.IntegerOverflow ->
+  | Numeric_error.IntegerOverflow ->
     Trap.error at "integer overflow"
-  | Numerics.IntegerDivideByZero ->
+  | Numeric_error.IntegerDivideByZero ->
     Trap.error at "integer divide by zero"
-  | Numerics.InvalidConversionToInteger ->
+  | Numeric_error.InvalidConversionToInteger ->
     Trap.error at "invalid conversion to integer"
   | exn -> raise exn
 
@@ -197,8 +197,9 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
 
   | Store {offset; _}, v :: I32 i :: vs' ->
     let addr = I64_convert.extend_u_i32 i in
-    (try Memory.store (memory c e.at) addr offset v; vs', []
+    (try Memory.store (memory c e.at) addr offset v
     with exn -> memory_error e.at exn);
+    vs', []
 
   | LoadPacked {memop = {offset; ty; _}; sz; ext}, I32 i :: vs' ->
     let addr = I64_convert.extend_u_i32 i in
@@ -207,31 +208,32 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
 
   | StorePacked {memop = {offset; _}; sz}, v :: I32 i :: vs' ->
     let addr = I64_convert.extend_u_i32 i in
-    (try Memory.store_packed (memory c e.at) addr offset sz v; vs', []
-    with exn -> memory_error e.at exn)
+    (try Memory.store_packed (memory c e.at) addr offset sz v
+    with exn -> memory_error e.at exn);
+    vs', []
 
   | Const v, vs ->
     v.it :: vs, []
 
   | Unary unop, v :: vs' ->
-    (try Arithmetic.eval_unop unop v :: vs', []
-    with exn -> arithmetic_error e.at exn)
+    (try Eval_numeric.eval_unop unop v :: vs', []
+    with exn -> numeric_error e.at exn)
 
   | Binary binop, v2 :: v1 :: vs' ->
-    (try Arithmetic.eval_binop binop v1 v2 :: vs', []
-    with exn -> arithmetic_error e.at exn)
+    (try Eval_numeric.eval_binop binop v1 v2 :: vs', []
+    with exn -> numeric_error e.at exn)
 
   | Test testop, v :: vs' ->
-    (try value_of_bool (Arithmetic.eval_testop testop v) :: vs', []
-    with exn -> arithmetic_error e.at exn)
+    (try value_of_bool (Eval_numeric.eval_testop testop v) :: vs', []
+    with exn -> numeric_error e.at exn)
 
   | Compare relop, v2 :: v1 :: vs' ->
-    (try value_of_bool (Arithmetic.eval_relop relop v1 v2) :: vs', []
-    with exn -> arithmetic_error e.at exn)
+    (try value_of_bool (Eval_numeric.eval_relop relop v1 v2) :: vs', []
+    with exn -> numeric_error e.at exn)
 
   | Convert cvtop, v :: vs' ->
-    (try Arithmetic.eval_cvtop cvtop v :: vs', []
-    with exn -> arithmetic_error e.at exn)
+    (try Eval_numeric.eval_cvtop cvtop v :: vs', []
+    with exn -> numeric_error e.at exn)
 
   | CurrentMemory, vs ->
     let size = Memory.size (memory c e.at) in
