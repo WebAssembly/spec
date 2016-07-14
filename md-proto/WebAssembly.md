@@ -375,13 +375,13 @@ respective [module index spaces](#module-index-spaces).
  - All global imports must be immutable.
  - Each global import with an initializer is required to be mutable.
  - Each import is required to be resolved by the embedder.
- - A linear-memory import's initial size is required to be at least the imported
+ - A linear-memory import's initial size is required to be at most the imported
    linear-memory space's initial size.
- - A linear-memory import's maximum size is required to be at most the imported
+ - A linear-memory import's maximum size is required to be at least the imported
    linear-memory space's maximum size.
- - A table import's initial length is required to be at least the imported
+ - A table import's initial length is required to be at most the imported
    table's initial length.
- - A table import's maximum length is required to be at most the imported
+ - A table import's maximum length is required to be at least the imported
    table's maximum length.
  - Embedding-specific validation may be performed on each import.
 
@@ -827,18 +827,11 @@ instantiated as follows:
 For a linear-memory definition in the [Linear-Memory Section], as opposed to a
 [linear-memory import](#import-section), an array of [bytes] with the length
 being the value of the linear-memory space's initial size field is created,
-added to the instance, and initialized to all zeros.
-
-For a linear-memory import, storage for the array is already allocated. It is
-resized up to the import's initial size, with any additional bytes initialized
-to all zeros, and its maximum size is set to the lesser of its existing maximum
-size and the import's maximum size.
+added to the instance, and initialized to all zeros. For a linear-memory import,
+storage for the array is already allocated.
 
 The contents of the [Data Section] are loaded into the byte array. Each [string]
 is loaded into linear memory starting at its associated start offset value.
-
-**Trap:** Incompatible Import, if a linear-memory import's maximum size is less
-than the size of the imported linear-memory space.
 
 **Trap:** Dynamic Resource Exhaustion, if dynamic resources are insufficient to
 support creation of the array.
@@ -850,12 +843,8 @@ A table declared in the [table index space] may be instantiated as follows:
 For a table definition in the [Table Section], as opposed to a
 [table import](#import-section), an array of elements is created with the
 table's initial length, with elements of the table's element type, and
-initialized to all special "null" values specific to the element type.
-
-For a table import, storage for the table is already allocated. It is resized up
-to the import's initial length, with any additional elements initialized to the
-element type's "null" value, and its maximum length is set to the lesser of its
-existing maximum length and the import's maximum length.
+initialized to all special "null" values specific to the element type. For a
+table import, storage for the table is already allocated.
 
 For each table initializer in the [Element Section], for the table identified by
 the table index in the [table index space]:
@@ -863,9 +852,6 @@ the table index in the [table index space]:
    start offset is initialized according to the elements of the table element
    initializers array, which specify an indexed element in their selected index
    space.
-
-**Trap:** Incompatible Import, if a table import's maximum length is less than
-the size of the imported table.
 
 **Trap:** Dynamic Resource Exhaustion, if dynamic resources are insufficient to
 support creation of any of the tables.
