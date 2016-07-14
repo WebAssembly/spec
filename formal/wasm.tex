@@ -154,7 +154,9 @@ $$
   \KK{if}~e_1^\ast~\KK{else}~e_2^\ast~\KK{end} ~|~ \\&&&
   \KK{br}_n~i ~|~
   \KK{br\_if}_n~i ~|~
-  \KK{br\_table}_n~i^+ \\
+  \KK{br\_table}_n~i^+ ~|~
+  \KK{call}_n~i ~|~
+  \KK{return}_n \\
 \end{array}
 $$
 
@@ -295,7 +297,7 @@ $$
 \frac{
   (C_{\f{label}}(i) = [t^n])^+
 }{
-  C \vdash \KK{br\_table}_n~i^+ : [t^n~\K{i32}] \to \poly{t_0^n}
+  C \vdash \KK{br\_table}_n~i^+ : [t^n~\K{i32}] \to \poly{t_0^?}
 }
 %$$
 \qquad
@@ -303,6 +305,22 @@ $$
 \frac{
 }{
   C \vdash \KK{unreachable} : [] \to \poly{t^?}
+}
+$$
+
+$$
+\frac{
+  C_{\f{func}}(i) = [t_1^n] \to [t_2^?]
+}{
+  C \vdash \KK{call}_n~i^+ : [t_1^n] \to [t_2^?]
+}
+%$$
+\qquad
+%$$
+\frac{
+  C_{\f{return}} = [t^n]
+}{
+  C \vdash \KK{return}_n : [t^n] \to \poly{t_0^?}
 }
 $$
 
@@ -347,22 +365,36 @@ $$
   t\KK{.const}~c \\
 \text{(administrative operators)} & e &::=&
   \dots ~|~
-  \KK{label}[e^\ast]~e^\ast~\KK{end} \\
-%\text{(evaluation contexts)} & E &::=&
-%  [] ~|~
-%  \KK{block}~v^\ast~E~e^\ast~\KK{end} \\
+  \KK{trap} ~|~
+  \KK{label}[e^\ast]~e^\ast~\KK{end} ~|~
+  \KK{local}[v^\ast]~e^\ast~\KK{end} \\
+\text{(local contexts)} & L &::=&
+  [] ~|~
+  v^\ast~L~e^\ast ~|~
+  \KK{label}[e^\ast]~L~\KK{end} \\
+\text{(evaluation contexts)} & E &::=&
+  [] ~|~
+  v^\ast~E~e^\ast ~|~
+  \KK{label}[e^\ast]~E~\KK{end} ~|~
+  \KK{local}[v^\ast]~E~\KK{end} \\
 \end{array}
 $$
 
-\void{
 $$
 \frac{
   S;~e^\ast \evalto S';~{e'}^\ast
 }{
   S;~E[e^\ast] \evalto S';~E[{e'}^\ast]
 }
-$$
+%$$
+\qquad
+%$$
+\frac{
+}{
+  S;~E[\KK{trap}] \evalto S;~\KK{trap}
 }
+$$
+
 
 $$
 \begin{array}{rcl}
@@ -375,6 +407,8 @@ $$
 (t.\KK{const}~c_1)~(t.\KK{const}~c_2)~t\KK{.}\x{binop} &\evalto&
   \KK{i32.const}~t.\x{relop}(c_1, c_2) \\
 [1ex]
+\KK{unreachable} &\evalto&
+  \KK{trap} \\
 \KK{nop} &\evalto&
   \epsilon \\
 v~\KK{drop} &\evalto&
@@ -383,13 +417,6 @@ v_1~v_2~(\KK{i32.const}~0)~\KK{select} &\evalto&
   v_2 \\
 v_1~v_2~(\KK{i32.const}~i+1)~\KK{select} &\evalto&
   v_1 \\
-[1ex]
-S;~ (\KK{get}~i) &\evalto&
-  S;~ S_{\f{local}}(i) \\
-S;~ v~(\KK{set}~i) &\evalto&
-  S,i=v;~ \epsilon \\
-v~(\KK{tee}~i) &\evalto&
-  v~v~(\KK{set}~i) \\
 [1ex]
 \void{
 \KK{block}~v^\ast~\KK{end} &\evalto&
@@ -407,19 +434,15 @@ v~(\KK{tee}~i) &\evalto&
   e_2^\ast \\
 (\KK{i32.const}~i+1)~\KK{if}~e_1^\ast~\KK{else}~e_2^\ast~\KK{end} &\evalto&
   e_1^\ast \\
-\end{array}
-$$
-\vspace{2em}
-$$
-\begin{array}{rcl}
-(\KK{i32.const}~0)~\KK{br\_if}_n~i &\evalto&
+[2ex]
+(\KK{i32.const}~0)~(\KK{br\_if}_n~i) &\evalto&
   \epsilon \\
-(\KK{i32.const}~j+1)~\KK{br\_if}_n~i &\evalto&
+(\KK{i32.const}~j+1)~(\KK{br\_if}_n~i) &\evalto&
   \KK{br}_n~i \\
-(\KK{i32.const}~k)~\KK{br\_table}_n~i_1^{k-1}~i~i_2^\ast &\evalto&
+(\KK{i32.const}~k)~(\KK{br\_table}_n~i_1^k~i~i_2^\ast) &\evalto&
   \KK{br}_n~i \\
-(\KK{i32.const}~k+j)~\KK{br\_table}_n~i^k~i' &\evalto&
-  \KK{br}_n~i' \\
+(\KK{i32.const}~k+j)~(\KK{br\_table}_n~i_1^k~i) &\evalto&
+  \KK{br}_n~i \\
 [1ex]
 \KK{block}~e^\ast~\KK{end} &\evalto&
   \KK{label}[]~e^\ast~\KK{end} \\
@@ -431,26 +454,73 @@ $$
 \KK{label}[e_0^\ast]~v^\ast~v^n~(\KK{br}_n~0)~e^\ast~\KK{end} &\evalto&
   v^n~e_0^\ast \\
 \KK{label}[e_0^\ast]~v^\ast~v^n~(\KK{br}_n~i+1)~e^\ast~\KK{end} &\evalto&
- v^n~(\KK{br}_n~i) \\
-\KK{label}[e_0^\ast]~v^\ast~v^n~\KK{unreachable}~e^\ast~\KK{end} &\evalto&
- \KK{unreachable} \\
+  v^n~(\KK{br}_n~i) \\
+%\KK{label}[e_0^\ast]~v^\ast~v^n~\KK{return}_n~e^\ast~\KK{end} &\evalto&
+%  v^n~\KK{return}_n \\
+%\KK{label}[e_0^\ast]~v^\ast~\KK{unreachable}~e^\ast~\KK{end} &\evalto&
+%  \KK{unreachable} \\
+[1ex]
+S;~ v^n~\KK{call}_n~i &\evalto&
+  S;~ \KK{local}[v^n~S_{\f{func}}(i).{\f{locals}}]~S_{\f{func}}(i).{\f{body}}~\KK{end} \\
+\KK{local}[v_l^\ast]~v^\ast~\KK{end} &\evalto&
+  v^\ast \\
+%\KK{local}[v_l^\ast]~v^\ast~v^n~\KK{return}_n~e^\ast~\KK{end} &\evalto&
+%  v^n \\
+\KK{local}[v_l^\ast]~L[v^n~\KK{return}_n]~\KK{end} &\evalto&
+  v^n \\
+%\KK{local}[v_l^\ast]~v^\ast~\KK{unreachable}~e^\ast~\KK{end} &\evalto&
+%  \KK{unreachable} \\
+[2ex]
+\void{
+S;~ (\KK{get}~i) &\evalto&
+  S;~ S_{\f{local}}(i) \\
+S;~ v~(\KK{set}~i) &\evalto&
+  S,i=v;~ \epsilon \\
+v~(\KK{tee}~i) &\evalto&
+  v~v~(\KK{set}~i) \\
+[1ex]
+}
+\KK{local}[v_1^i~v~v_2^\ast]~L[\KK{get}~i]~\KK{end} &\evalto&
+  \KK{local}[v_1^i~v~v_2^\ast]~L[v]~\KK{end} \\
+\KK{local}[v_1^i~v~v_2^\ast]~L[v'~(\KK{set}~i)]~\KK{end} &\evalto&
+  \KK{local}[v_1^i~v'~v_2^\ast]~L[\epsilon]~\KK{end} \\
+v~(\KK{tee}~i) &\evalto&
+  v~v~(\KK{set}~i) \\
 [1ex]
 \end{array}
 $$
 
-\void{
+{
 $$
 \frac{
-  C \vdash e_0^\ast : [t^\ast]/\bot
-  \qquad
-  C \vdash e^\ast : [t^\ast]/\bot
 }{
-  C \vdash \KK{label}[e_0^\ast]~e^\ast~\KK{end} : [] \to [t^\ast]/\bot
+  C \vdash \KK{trap} : [] \to \poly{t^\ast}
+}
+%$$
+\qquad
+%$$
+\frac{
+  C \vdash e_0^\ast : [t^\ast]\orbot
+  \qquad
+  C \vdash e^\ast : [t^\ast]\orbot
+}{
+  C \vdash \KK{label}[e_0^\ast]~e^\ast~\KK{end} : [] \to [t^\ast]\orbot
+}
+%$$
+\qquad
+%$$
+\frac{
+  (\vdash v : t_v)^\ast
+  \qquad
+  C,_{\f{local}}t_v^\ast \vdash e^\ast : [t^\ast]\orbot
+}{
+  C \vdash \KK{local}[v^\ast]~e^\ast~\KK{end} : [] \to [t^\ast]\orbot
 }
 $$
 }
 
 \end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \void{
 \subsection*{Evaluating Expressions \hfill $\boxed{[c^\ast]~e \too r}$}
