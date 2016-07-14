@@ -192,10 +192,10 @@ A *linear memory space* is a contiguous, [byte]-addressable, readable and
 writable range of memory spanning from offset `0` and extending up to a
 *linear-memory size*, allocated as part of a WebAssembly instance. The size of a
 linear memory is always a multiple of the [page] size and may be increased
-dynamically (with the [`grow_memory`](#grow-memory) instruction). Linear memory
-spaces are sandboxed, so they don't overlap with each other or with other parts
-of a WebAssembly instance, including the call stack, globals, and tables, and
-their bounds are enforced.
+dynamically (with the [`grow_memory`](#grow-memory) instruction) up to a
+declared *maximum size*. Linear memory spaces are sandboxed, so they don't
+overlap with each other or with other parts of a WebAssembly instance, including
+the call stack, globals, and tables, and their bounds are enforced.
 
 Linear-memory spaces can either be [defined by a module](#linear-memory-section)
 or [imported](#import-section).
@@ -375,6 +375,14 @@ respective [module index spaces](#module-index-spaces).
  - All global imports must be immutable.
  - Each global import with an initializer is required to be mutable.
  - Each import is required to be resolved by the embedder.
+ - A linear-memory import's initial size is required to be at least the imported
+   linear-memory space's initial size.
+ - A linear-memory import's maximum size is required to be at most the imported
+   linear-memory space's maximum size.
+ - A table import's initial length is required to be at least the imported
+   table's initial length.
+ - A table import's maximum length is required to be at most the imported
+   table's maximum length.
  - Embedding-specific validation may be performed on each import.
 
 > Global imports may be permitted to be mutable in the future.
@@ -422,9 +430,9 @@ A *linear-memory declaration* contains:
  - An *index bitwidth* [index]. Within the context of this linear memory, `iPTR`
    refers to an integer type with this bitwidth.
  - An *initial size*, which is an unsigned `iPTR` value, in units of [pages].
- - An optional *maximum size*, which if present is an unsigned `iPTR` value, in
-   units of [pages]. See the [`grow_memory`](#grow-memory) instruction for
-   further information on this field.
+ - A *maximum size*, which is an unsigned `iPTR` value, in units of [pages]. See
+   the [`grow_memory`](#grow-memory) instruction for further information on this
+   field.
  - A *default* flag, which is a boolean value indicating whether the
    linear-memory space is to be the default linear-memory space for the module.
 
@@ -432,10 +440,9 @@ TODO: The index bitwidth field anticipates a proposal to add this flag.
 
 TODO: Change the **Name** to be "linear-memory"?
 
-> When a maximum size value is present, implementations are encouraged to
-attempt to reserve enough resources for allocating up to the maximum size up
-front. Otherwise, implementations are encouraged to allocate only enough for
-the initial size up front.
+> Implementations are encouraged to attempt to reserve enough resources for
+allocating up to the maximum size up front. Otherwise, implementations are
+encouraged to allocate only enough for the initial size up front.
 
 #### Export Section
 
@@ -530,7 +537,7 @@ the [linear-memory index space] during
 [linear-memory instantiation](#linear-memory-instantiation).
 
 **Validation:**
- - For each element of the array:
+ - For each element in the array:
     - The linear-memory index is required to be within the bounds of the
       linear-memory index space.
     - A linear-memory space is identified by the linear-memory index in the
@@ -538,8 +545,8 @@ the [linear-memory index space] during
        - The sum of the start offset and the length of the string is required to
          be less than the initial size declared for the linear-memory space.
        - The start offset is required to be greater than the index of any byte
-         in the linear-memory space that will be initialized by a prior
-         initializer.
+         in the linear-memory space that will be initialized by a prior element
+         in the array.
 
 #### Global Section
 
@@ -571,7 +578,7 @@ A *table element initializer* consists of:
  - an index into the selected space.
 
 **Validation:**
- - For each element of the array:
+ - For each element in the array:
     - The table index is required to be within the bounds of the table index
       space.
     - A table is identified by the table index in the table space and:
@@ -579,7 +586,8 @@ A *table element initializer* consists of:
          the element initializer array is required to be less than the initial
          size declared for the table.
        - The start offset is required to be greater than the index of any
-         element in the table that will be initialized by a prior initializer.
+         element in the table that will be initialized by a prior element in the
+         array.
        - For each element of the indexed table element initializer:
           - The type of the elements of the selected index space are required to
             be compatible with the type of the table to be initialized.
@@ -667,13 +675,9 @@ followed by an index for each linear-memory space in the
 **Validation:**
  - The index space is required to have at most one element.
  - For each linear-memory declaration in the index space:
-    - If a maximum size is present, it's required to be at least the initial
-      size.
-    - The index of every byte in a linear memory with the initial size is
+    - The maximum size is required to be at least the initial size.
+    - The index of every byte in a linear memory with the maximum size is
       required to be representable in an unsigned `iPTR`.
-    - If a maximum size is present, the index of every byte in a linear memory
-      with the maximum size is required to be representable in an unsigned
-      `iPTR`.
     - The index bitwidth is required to be `32`.
     - The default flag is required to be true.
 
@@ -817,24 +821,41 @@ https://github.com/WebAssembly/design/pull/719
 
 #### Linear-Memory Instantiation
 
-A linear-memory declaration in the [Linear-Memory Section] may be instantiated
-as follows:
+A linear-memory space declared in the [linear-memory index space] may be
+instantiated as follows:
 
-An array of [bytes] with the length being the value of the linear-memory space's
-initial size field is created and added to the instance. Any byte not
-initialized by any data initializer is initialized to zero.
+For a linear-memory definition in the [Linear-Memory Section], as opposed to a
+[linear-memory import](#import-section), an array of [bytes] with the length
+being the value of the linear-memory space's initial size field is created,
+added to the instance, and initialized to all zeros.
 
-The contents of the [Data Section] are loaded into this array. Each [string] is
-loaded into linear memory at its associated start offset.
+For a linear-memory import, storage for the array is already allocated. It is
+resized up to the import's initial size, with any additional bytes initialized
+to all zeros, and its maximum size is set to the lesser of its existing maximum
+size and the import's maximum size.
+
+The contents of the [Data Section] are loaded into the byte array. Each [string]
+is loaded into linear memory starting at its associated start offset value.
+
+**Trap:** Incompatible Import, if a linear-memory import's maximum size is less
+than the size of the imported linear-memory space.
 
 **Trap:** Dynamic Resource Exhaustion, if dynamic resources are insufficient to
 support creation of the array.
 
 #### Table Instantiation
 
-For each table in the [Table Section]:
- - An array of elements is created with the table's initial length, with
-   elements of the table's element type.
+A table declared in the [table index space] may be instantiated as follows:
+
+For a table definition in the [Table Section], as opposed to a
+[table import](#import-section), an array of elements is created with the
+table's initial length, with elements of the table's element type, and
+initialized to all special "null" values specific to the element type.
+
+For a table import, storage for the table is already allocated. It is resized up
+to the import's initial length, with any additional elements initialized to the
+element type's "null" value, and its maximum length is set to the lesser of its
+existing maximum length and the import's maximum length.
 
 For each table initializer in the [Element Section], for the table identified by
 the table index in the [table index space]:
@@ -843,8 +864,8 @@ the table index in the [table index space]:
    initializers array, which specify an indexed element in their selected index
    space.
 
-Any element not initialized by any table initializer is initialized to a special
-"null" value.
+**Trap:** Incompatible Import, if a table import's maximum length is less than
+the size of the imported table.
 
 **Trap:** Dynamic Resource Exhaustion, if dynamic resources are insufficient to
 support creation of any of the tables.
@@ -2691,16 +2712,16 @@ the name "wrap".
 The `grow_memory` instruction increases the size of the referenced linear-memory
 space by a given unsigned amount, in units of [pages]. If the index of any byte
 of the referenced linear-memory space would be unrepresentable in an unsigned
-`iPTR`, or if allocation fails due to insufficient dynamic resources, or if the
-referenced linear-memory space has a maximum size that the linear-memory size
-would exceed, it returns `-1`; otherwise it returns the previous linear-memory
-size, also as an unsigned value in units of [pages].
+`iPTR`, if allocation fails due to insufficient dynamic resources, or if the
+linear-memory size would exceed the linear-memory space's maximum size, it
+returns `-1`; otherwise it returns the previous linear-memory size, also as an
+unsigned value in units of [pages]. Newly allocated bytes are initialized to
+all zeros.
 
 **Validation**:
  - [Linear-memory size validation](#linear-memory-size-validation) is required.
 
-> This instruction can fail even when a maximum size is present and not yet
-reached.
+> This instruction can fail even when the maximum size is not yet reached.
 
 > Since the return value is in units of pages, `-1` isn't otherwise a valid
 linear-memory size.
