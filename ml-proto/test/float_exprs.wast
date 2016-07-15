@@ -2121,3 +2121,43 @@
 
 (assert_return (invoke "f32.epsilon") (f32.const -0x1p-23))
 (assert_return (invoke "f64.epsilon") (f64.const 0x1p-52))
+
+;; Test that floating-point numbers are not optimized as if they form a
+;; trichotomy.
+
+(module
+  (func $f32.no_trichotomy_lt (param $x f32) (param $y f32) (result i32)
+    (i32.or (f32.lt (get_local $x) (get_local $y)) (f32.ge (get_local $x) (get_local $y))))
+  (export "f32.no_trichotomy_lt" $f32.no_trichotomy_lt)
+  (func $f32.no_trichotomy_le (param $x f32) (param $y f32) (result i32)
+    (i32.or (f32.le (get_local $x) (get_local $y)) (f32.gt (get_local $x) (get_local $y))))
+  (export "f32.no_trichotomy_le" $f32.no_trichotomy_le)
+  (func $f32.no_trichotomy_gt (param $x f32) (param $y f32) (result i32)
+    (i32.or (f32.gt (get_local $x) (get_local $y)) (f32.le (get_local $x) (get_local $y))))
+  (export "f32.no_trichotomy_gt" $f32.no_trichotomy_gt)
+  (func $f32.no_trichotomy_ge (param $x f32) (param $y f32) (result i32)
+    (i32.or (f32.ge (get_local $x) (get_local $y)) (f32.lt (get_local $x) (get_local $y))))
+  (export "f32.no_trichotomy_ge" $f32.no_trichotomy_ge)
+
+  (func $f64.no_trichotomy_lt (param $x f64) (param $y f64) (result i32)
+    (i32.or (f64.lt (get_local $x) (get_local $y)) (f64.ge (get_local $x) (get_local $y))))
+  (export "f64.no_trichotomy_lt" $f64.no_trichotomy_lt)
+  (func $f64.no_trichotomy_le (param $x f64) (param $y f64) (result i32)
+    (i32.or (f64.le (get_local $x) (get_local $y)) (f64.gt (get_local $x) (get_local $y))))
+  (export "f64.no_trichotomy_le" $f64.no_trichotomy_le)
+  (func $f64.no_trichotomy_gt (param $x f64) (param $y f64) (result i32)
+    (i32.or (f64.gt (get_local $x) (get_local $y)) (f64.le (get_local $x) (get_local $y))))
+  (export "f64.no_trichotomy_gt" $f64.no_trichotomy_gt)
+  (func $f64.no_trichotomy_ge (param $x f64) (param $y f64) (result i32)
+    (i32.or (f64.ge (get_local $x) (get_local $y)) (f64.lt (get_local $x) (get_local $y))))
+  (export "f64.no_trichotomy_ge" $f64.no_trichotomy_ge)
+)
+
+(assert_return (invoke "f32.no_trichotomy_lt" (f32.const 0.0) (f32.const nan)) (i32.const 0))
+(assert_return (invoke "f32.no_trichotomy_le" (f32.const 0.0) (f32.const nan)) (i32.const 0))
+(assert_return (invoke "f32.no_trichotomy_gt" (f32.const 0.0) (f32.const nan)) (i32.const 0))
+(assert_return (invoke "f32.no_trichotomy_ge" (f32.const 0.0) (f32.const nan)) (i32.const 0))
+(assert_return (invoke "f64.no_trichotomy_lt" (f64.const 0.0) (f64.const nan)) (i32.const 0))
+(assert_return (invoke "f64.no_trichotomy_le" (f64.const 0.0) (f64.const nan)) (i32.const 0))
+(assert_return (invoke "f64.no_trichotomy_gt" (f64.const 0.0) (f64.const nan)) (i32.const 0))
+(assert_return (invoke "f64.no_trichotomy_ge" (f64.const 0.0) (f64.const nan)) (i32.const 0))
