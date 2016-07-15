@@ -537,16 +537,16 @@ the [linear-memory index space] during
 [linear-memory instantiation](#linear-memory-instantiation).
 
 **Validation:**
- - For each element in the array:
+ - For each data initializer in the array:
     - The linear-memory index is required to be within the bounds of the
       linear-memory index space.
     - A linear-memory space is identified by the linear-memory index in the
       linear-memory index space and:
        - The sum of the start offset and the length of the string is required to
-         be less than the initial size declared for the linear-memory space.
+         be at most the initial size declared for the linear-memory space.
        - The start offset is required to be greater than the index of any byte
-         in the linear-memory space that will be initialized by a prior element
-         in the array.
+         in the linear-memory space that will be initialized by a prior
+         data initializer in the array.
 
 #### Global Section
 
@@ -578,16 +578,16 @@ A *table element initializer* consists of:
  - an index into the selected space.
 
 **Validation:**
- - For each element in the array:
+ - For each table initializer in the array:
     - The table index is required to be within the bounds of the table index
       space.
     - A table is identified by the table index in the table space and:
        - The sum of the start offset and the length of
-         the element initializer array is required to be less than the initial
+         the element initializer array is required to be at most the initial
          size declared for the table.
        - The start offset is required to be greater than the index of any
-         element in the table that will be initialized by a prior element in the
-         array.
+         element in the table that will be initialized by a prior table
+         initializer in the array.
        - For each element of the indexed table element initializer:
           - The type of the elements of the selected index space are required to
             be compatible with the type of the table to be initialized.
