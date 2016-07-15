@@ -2032,3 +2032,29 @@
 
 (assert_return (invoke "f32.no_fold_sub1_mul_add" (f32.const 0x1p-32) (f32.const 1.0)) (f32.const 0x0p+0))
 (assert_return (invoke "f64.no_fold_sub1_mul_add" (f64.const 0x1p-64) (f64.const 1.0)) (f64.const 0x0p+0))
+
+;; Test that x+z >= y+z is not optimized to x >= y (monotonicity).
+;; http://cs.nyu.edu/courses/spring13/CSCI-UA.0201-003/lecture6.pdf
+
+(module
+  (func $f32.no_fold_add_le_monotonicity (param $x f32) (param $y f32) (param $z f32) (result i32)
+    (f32.le (f32.add (get_local $x) (get_local $z)) (f32.add (get_local $y) (get_local $z))))
+  (export "f32.no_fold_add_le_monotonicity" $f32.no_fold_add_le_monotonicity)
+
+  (func $f32.no_fold_add_ge_monotonicity (param $x f32) (param $y f32) (param $z f32) (result i32)
+    (f32.ge (f32.add (get_local $x) (get_local $z)) (f32.add (get_local $y) (get_local $z))))
+  (export "f32.no_fold_add_ge_monotonicity" $f32.no_fold_add_ge_monotonicity)
+
+  (func $f64.no_fold_add_le_monotonicity (param $x f64) (param $y f64) (param $z f64) (result i32)
+    (f64.le (f64.add (get_local $x) (get_local $z)) (f64.add (get_local $y) (get_local $z))))
+  (export "f64.no_fold_add_le_monotonicity" $f64.no_fold_add_le_monotonicity)
+
+  (func $f64.no_fold_add_ge_monotonicity (param $x f64) (param $y f64) (param $z f64) (result i32)
+    (f64.ge (f64.add (get_local $x) (get_local $z)) (f64.add (get_local $y) (get_local $z))))
+  (export "f64.no_fold_add_ge_monotonicity" $f64.no_fold_add_ge_monotonicity)
+)
+
+(assert_return (invoke "f32.no_fold_add_le_monotonicity" (f32.const 0.0) (f32.const 0.0) (f32.const nan)) (i32.const 0))
+(assert_return (invoke "f32.no_fold_add_le_monotonicity" (f32.const infinity) (f32.const -infinity) (f32.const infinity)) (i32.const 0))
+(assert_return (invoke "f64.no_fold_add_le_monotonicity" (f64.const 0.0) (f64.const 0.0) (f64.const nan)) (i32.const 0))
+(assert_return (invoke "f64.no_fold_add_le_monotonicity" (f64.const infinity) (f64.const -infinity) (f64.const infinity)) (i32.const 0))
