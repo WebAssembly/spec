@@ -2016,3 +2016,19 @@
 
 (assert_return (invoke "f32.compute_radix" (f32.const 1.0) (f32.const 1.0)) (f32.const 2.0))
 (assert_return (invoke "f64.compute_radix" (f64.const 1.0) (f64.const 1.0)) (f64.const 2.0))
+
+;; Test that (x - 1) * y + y is not optimized to x * y.
+;; http://blog.frama-c.com/index.php?post/2013/05/14/Contrarianism
+
+(module
+  (func $f32.no_fold_sub1_mul_add (param $x f32) (param $y f32) (result f32)
+    (f32.add (f32.mul (f32.sub (get_local $x) (f32.const 1.0)) (get_local $y)) (get_local $y)))
+  (export "f32.no_fold_sub1_mul_add" $f32.no_fold_sub1_mul_add)
+
+  (func $f64.no_fold_sub1_mul_add (param $x f64) (param $y f64) (result f64)
+    (f64.add (f64.mul (f64.sub (get_local $x) (f64.const 1.0)) (get_local $y)) (get_local $y)))
+  (export "f64.no_fold_sub1_mul_add" $f64.no_fold_sub1_mul_add)
+)
+
+(assert_return (invoke "f32.no_fold_sub1_mul_add" (f32.const 0x1p-32) (f32.const 1.0)) (f32.const 0x0p+0))
+(assert_return (invoke "f64.no_fold_sub1_mul_add" (f64.const 0x1p-64) (f64.const 1.0)) (f64.const 0x0p+0))
