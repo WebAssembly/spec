@@ -2103,3 +2103,20 @@
 (assert_return (invoke "f64.not_le" (f64.const nan) (f64.const 0.0)) (i32.const 1))
 (assert_return (invoke "f64.not_gt" (f64.const nan) (f64.const 0.0)) (i32.const 1))
 (assert_return (invoke "f64.not_ge" (f64.const nan) (f64.const 0.0)) (i32.const 1))
+
+;; Test that a method for approximating a "machine epsilon" produces the expected
+;; approximation.
+;; http://blogs.mathworks.com/cleve/2014/07/07/floating-point-numbers/#24cb4f4d-b8a9-4c19-b22b-9d2a9f7f3812
+
+(module
+  (func $f32.epsilon (result f32)
+    (f32.sub (f32.const 1.0) (f32.mul (f32.const 3.0) (f32.sub (f32.div (f32.const 4.0) (f32.const 3.0)) (f32.const 1.0)))))
+  (export "f32.epsilon" $f32.epsilon)
+
+  (func $f64.epsilon (result f64)
+    (f64.sub (f64.const 1.0) (f64.mul (f64.const 3.0) (f64.sub (f64.div (f64.const 4.0) (f64.const 3.0)) (f64.const 1.0)))))
+  (export "f64.epsilon" $f64.epsilon)
+)
+
+(assert_return (invoke "f32.epsilon") (f32.const -0x1p-23))
+(assert_return (invoke "f64.epsilon") (f64.const 0x1p-52))
