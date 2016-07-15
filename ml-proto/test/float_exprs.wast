@@ -1871,7 +1871,8 @@
 (assert_return (invoke "f32.no_distribute_exact" (f32.const -0.0)) (f32.const 0.0))
 (assert_return (invoke "f64.no_distribute_exact" (f64.const -0.0)) (f64.const 0.0))
 
-;; Test various approximations of sqrt(2), sqrt(3), and sqrt(5).
+;; Test that various approximations of sqrt(2), sqrt(3), and sqrt(5) compute the
+;; expected approximation.
 ;; https://xkcd.com/1047/
 (module
   (func $f32.sqrt (param f32) (result f32)
