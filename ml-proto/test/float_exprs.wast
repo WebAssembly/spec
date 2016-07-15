@@ -2058,3 +2058,48 @@
 (assert_return (invoke "f32.no_fold_add_le_monotonicity" (f32.const infinity) (f32.const -infinity) (f32.const infinity)) (i32.const 0))
 (assert_return (invoke "f64.no_fold_add_le_monotonicity" (f64.const 0.0) (f64.const 0.0) (f64.const nan)) (i32.const 0))
 (assert_return (invoke "f64.no_fold_add_le_monotonicity" (f64.const infinity) (f64.const -infinity) (f64.const infinity)) (i32.const 0))
+
+;; Test that !(x < y) and friends are not optimized to x >= y and friends.
+
+(module
+  (func $f32.not_lt (param $x f32) (param $y f32) (result i32)
+    (i32.eqz (f32.lt (get_local $x) (get_local $y))))
+  (export "f32.not_lt" $f32.not_lt)
+
+  (func $f32.not_le (param $x f32) (param $y f32) (result i32)
+    (i32.eqz (f32.le (get_local $x) (get_local $y))))
+  (export "f32.not_le" $f32.not_le)
+
+  (func $f32.not_gt (param $x f32) (param $y f32) (result i32)
+    (i32.eqz (f32.gt (get_local $x) (get_local $y))))
+  (export "f32.not_gt" $f32.not_gt)
+
+  (func $f32.not_ge (param $x f32) (param $y f32) (result i32)
+    (i32.eqz (f32.ge (get_local $x) (get_local $y))))
+  (export "f32.not_ge" $f32.not_ge)
+
+  (func $f64.not_lt (param $x f64) (param $y f64) (result i32)
+    (i32.eqz (f64.lt (get_local $x) (get_local $y))))
+  (export "f64.not_lt" $f64.not_lt)
+
+  (func $f64.not_le (param $x f64) (param $y f64) (result i32)
+    (i32.eqz (f64.le (get_local $x) (get_local $y))))
+  (export "f64.not_le" $f64.not_le)
+
+  (func $f64.not_gt (param $x f64) (param $y f64) (result i32)
+    (i32.eqz (f64.gt (get_local $x) (get_local $y))))
+  (export "f64.not_gt" $f64.not_gt)
+
+  (func $f64.not_ge (param $x f64) (param $y f64) (result i32)
+    (i32.eqz (f64.ge (get_local $x) (get_local $y))))
+  (export "f64.not_ge" $f64.not_ge)
+)
+
+(assert_return (invoke "f32.not_lt" (f32.const nan) (f32.const 0.0)) (i32.const 1))
+(assert_return (invoke "f32.not_le" (f32.const nan) (f32.const 0.0)) (i32.const 1))
+(assert_return (invoke "f32.not_gt" (f32.const nan) (f32.const 0.0)) (i32.const 1))
+(assert_return (invoke "f32.not_ge" (f32.const nan) (f32.const 0.0)) (i32.const 1))
+(assert_return (invoke "f64.not_lt" (f64.const nan) (f64.const 0.0)) (i32.const 1))
+(assert_return (invoke "f64.not_le" (f64.const nan) (f64.const 0.0)) (i32.const 1))
+(assert_return (invoke "f64.not_gt" (f64.const nan) (f64.const 0.0)) (i32.const 1))
+(assert_return (invoke "f64.not_ge" (f64.const nan) (f64.const 0.0)) (i32.const 1))
