@@ -17,7 +17,7 @@ type instance =
 {
   module_ : module_;
   imports : import list;
-  exports : func map;
+  exports : int map;
   memory : Memory.t option
 }
 
@@ -28,9 +28,7 @@ module Trap = Error.Make ()
 module Crash = Error.Make ()
 
 exception Trap = Trap.Error
-exception Crash = Crash.Error
-  (* A crash is an execution failure that cannot legally happen in checked
-   * code; it indicates an internal inconsistency in the spec. *)
+exception Crash = Crash.Error (* failure that cannot happen in valid code *)
 
 let memory_error at = function
   | Memory.Bounds -> Trap.error at "out of bounds memory access"
@@ -56,8 +54,11 @@ let numeric_error at = function
 type config =
 {
   instance : instance;
-  locals : value ref list
+  locals : value ref list;
+  resources : int
 }
+
+let resource_limit = 1000
 
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
@@ -114,7 +115,7 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
   : value stack * expr list =
   match e.it, vs with
   | Unreachable, vs ->
-    assert false  (* abrupt *)
+    vs, [Trapping "unreachable executed" @@ e.at]
 
   | Nop, vs ->
     vs, []
@@ -123,10 +124,10 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     vs', []
 
   | Block es, vs ->
-    vs, [Label (Nop @@ e.at, [], es) @@ e.at]
+    vs, [Label ([], [], es) @@ e.at]
 
   | Loop es, vs ->
-    vs, [Label (e, [], es) @@ e.at]
+    vs, [Label ([e], [], es) @@ e.at]
 
   | Br (n, x), vs ->
     assert false  (* abrupt *)
@@ -165,7 +166,11 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     v1 :: vs', []
 
   | Call (n, x), vs ->
-    eval_func c.instance vs n (func c.instance x), []
+    if c.resources = 0 then Trap.error e.at "call stack exhausted";
+    let f = func c.instance x in
+    let args = List.rev (keep n vs e.at) in
+    let locals = List.map default_value f.it.locals in
+    drop n vs e.at, [Local (args @ locals, [], f.it.body) @@ e.at]
 
   | CallImport (n, x), vs ->
     (try
@@ -177,7 +182,7 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     let f = func c.instance (table_elem c.instance i e.at) in
     if x.it <> f.it.ftype.it then
       Trap.error e.at "indirect call signature mismatch";
-    eval_func c.instance vs n f, []
+    vs, [Call (n, table_elem c.instance i e.at) @@ e.at]
 
   | GetLocal x, vs ->
     !(local c x) :: vs, []
@@ -253,96 +258,63 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     Memory.grow mem delta;
     I32 (Int64.to_int32 old_size) :: vs', []
 
-  | Label (e_cont, vs', []), vs ->
+  | Trapping msg, vs ->
+    assert false (* abrupt *)
+
+  | Label (es_cont, vs', []), vs ->
     vs' @ vs, []
 
-  | Label (e_cont, vs', {it = Br (n, i); _} :: es), vs when i.it = 0 ->
-    keep n vs' e.at @ vs, [e_cont]
+  | Label (es_cont, vs', {it = Br (n, i); _} :: es), vs when i.it = 0 ->
+    keep n vs' e.at @ vs, es_cont
 
-  | Label (e_cont, vs', {it = Br (n, i); at} :: es), vs ->
+  | Label (es_cont, vs', {it = Br (n, i); at} :: es), vs ->
     keep n vs' e.at @ vs, [Br (n, (i.it-1) @@ i.at) @@ e.at]
 
-  | Label (e_cont, vs', {it = Return n; at} :: es), vs ->
+  | Label (es_cont, vs', {it = Return n; at} :: es), vs ->
     keep n vs' e.at @ vs, [Return n @@ at]
 
-  | Label (e_cont, vs', {it = Unreachable; at} :: es), vs ->
-    [], [Unreachable @@ at]
+  | Label (es_cont, vs', {it = Trapping msg; at} :: es), vs ->
+    [], [Trapping msg @@ at]
 
-  | Label (e_cont, vs', e :: es), vs ->
+  | Label (es_cont, vs', e :: es), vs ->
     let vs'', es' = step_expr c vs' e in
-    vs, [Label (e_cont, vs'', es' @ es) @@ e.at]
+    vs, [Label (es_cont, vs'', es' @ es) @@ e.at]
+
+  | Local (vs_local, vs', []), vs ->
+    vs' @ vs, []
+
+  | Local (vs_local, vs', {it = Br (n, i); _} :: es), vs when i.it = 0 ->
+    (* TODO(stack): remove function label? *)
+    keep n vs' e.at @ vs, []
+
+  | Local (vs_local, vs', {it = Return n; at} :: es), vs ->
+    keep n vs' e.at @ vs, []
+
+  | Local (vs_local, vs', {it = Trapping msg; at} :: es), vs ->
+    [], [Trapping msg @@ at]
+
+  | Local (vs_local, vs', e :: es), vs ->
+    let c' = {c with locals = List.map ref vs_local; resources = c.resources - 1} in
+    let vs'', es' = step_expr c' vs' e in
+    vs, [Local (List.map (!) c'.locals, vs'', es' @ es) @@ e.at]
 
   | _, _ ->
     Crash.error e.at "type error: missing or ill-typed operand on stack"
 
-and eval_func (inst : instance) (vs : value stack) n (f : func) : value stack =
-  let args = List.map ref (List.rev (keep n vs f.at)) in
-  let vars = List.map (fun t -> ref (default_value t)) f.it.locals in
-  let c = {instance = inst; locals = args @ vars} in
-  eval_body c [] [Label (Nop @@ f.at, [], f.it.body) @@ f.at] @ drop n vs f.at
 
-and eval_body (c : config) (vs : value stack) (es : expr list) : value stack =
-  match es with
-  | [] -> vs
-  | [{it = Return n}] -> assert (List.length vs = n); vs
-  | [{it = Unreachable; at}] -> Trap.error at "unreachable executed"
-  | [{it = Br (n, i); at}] -> Crash.error at "unknown label"
-  | e :: es ->
-    let vs', es' = step_expr c vs e in
-    eval_body c vs' (es' @ es)
+(* Functions *)
 
-(*TODO: Small-step calls
-type expr = ... | Func of value ref list * expr list
+let eval_func (inst : instance) (vs : value list) (x : var) : value list =
+  let c = {instance = inst; locals = []; resources = resource_limit} in
+  let rec loop vs es =
+    match es with
+    | [] -> vs
+    | [{it = Trapping msg; at}] -> Trap.error at msg
+    | e :: es ->
+      let vs', es' = step_expr c vs e in
+      loop vs' (es' @ es)
+  in List.rev (loop (List.rev vs) [Call (List.length vs, x) @@ x.at])
 
-  | Call x, vs ->
-    let f = ... in
-    let locals = ... in
-    vs, [Func (locals, [Label (Nop @@ e.at, [], f.it.body)]) @@ e.at]
-
-  | Func (locals, []), vs ->
-    vs, []
-
-  | Func (locals, [{it = Return n}]), vs ->
-    assert (List.length vs >= n);
-    vs, []
-
-  | Func (locals, [{it = Unreachable} as e]), vs ->
-    assert (vs = []);
-    [], [e]
-
-  | Func (locals, [{it = Br (n, i); at} ]), vs ->
-    Crash.error at "unknown label"
-
-  | Func (locals, e :: es), vs ->
-    assert (es = []);
-    let vs', es' = step_expr c [] e in
-    vs' @ vs, [Func (locals, es' @ es) @@ e.at]
-
-OR
-
-type expr = ... | Func of value ref list * value stack * expr list
-
-  | Call x, vs ->
-    let f = ... in
-    let locals = ... in
-    vs, [Func (locals, [], f.it.body) @@ e.at]
-
-  | Func (locals, vs', []), vs ->
-    vs' @ vs, []
-
-  | Func (locals, vs', {it = Return n; at} :: es), vs ->
-    keep n vs' at @ vs, []
-
-  | Func (locals, vs', {it = Unreachable} as e :: es), vs ->
-    [], [e]
-
-  | Func (locals, vs', {it = Br (n, i); at} :: es), vs ->
-    Crash.error at "unknown label"
-
-  | Func (locals, vs', e :: es), vs ->
-    let vs'', es' = step_expr {c with locals} vs' e in
-    vs, [Func (locals, vs'', es' @ es) @@ e.at]
-*)
 
 (* Modules *)
 
@@ -351,10 +323,10 @@ let init_memory {it = {min; segments; _}} =
   Memory.init mem (List.map it segments);
   mem
 
-let add_export funcs ex =
+let add_export ex =
   let {name; kind} = ex.it in
   match kind with
-  | `Func x -> Map.add name (List.nth funcs x.it)
+  | `Func x -> Map.add name x.it
   | `Memory -> fun x -> x
 
 let init (m : module_) imports =
@@ -364,12 +336,11 @@ let init (m : module_) imports =
   let inst =
     {module_ = m;
      imports;
-     exports = List.fold_right (add_export funcs) exports Map.empty;
+     exports = List.fold_right add_export exports Map.empty;
      memory = Lib.Option.map init_memory memory}
   in
-  Lib.Option.app (fun x -> ignore (eval_func inst [] 0 (func inst x))) start;
+  Lib.Option.app (fun x -> ignore (eval_func inst [] x)) start;
   inst
 
 let invoke (inst : instance) name (vs : value list) : value list =
-  try List.rev (eval_func inst (List.rev vs) (List.length vs) (export inst (name @@ no_region)))
-  with Stack_overflow -> Trap.error Source.no_region "call stack exhausted"
+  eval_func inst vs (export inst (name @@ no_region) @@ no_region)

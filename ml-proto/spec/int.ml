@@ -89,14 +89,14 @@ struct
    *)
   let divrem_u n d =
     if d = Rep.zero then raise Numeric_error.IntegerDivideByZero else
-      let t = Rep.shift_right d (Rep.bitwidth - 1) in
-      let n' = Rep.logand n (Rep.lognot t) in
-      let q = Rep.shift_left (Rep.div (Rep.shift_right_logical n' 1) d) 1 in
-      let r = Rep.sub n (Rep.mul q d) in
-      if cmp_u r (<) d then
-        q, r
-      else
-        Rep.add q Rep.one, Rep.sub r d
+    let t = Rep.shift_right d (Rep.bitwidth - 1) in
+    let n' = Rep.logand n (Rep.lognot t) in
+    let q = Rep.shift_left (Rep.div (Rep.shift_right_logical n' 1) d) 1 in
+    let r = Rep.sub n (Rep.mul q d) in
+    if cmp_u r (<) d then
+      q, r
+    else
+      Rep.add q Rep.one, Rep.sub r d
 
   type t = Rep.t
   type bits = Rep.t
@@ -105,7 +105,6 @@ struct
   let to_bits x = x
 
   let zero = Rep.zero
-  let ten = Rep.of_int 10
 
   (* add, sub, and mul are sign-agnostic and do not trap on overflow. *)
   let add = Rep.add
@@ -121,7 +120,7 @@ struct
     else
       Rep.div x y
 
-  (* result is floored (which is the same as truncating, for unsigned values) *)
+  (* result is floored (which is the same as truncating for unsigned values) *)
   let div_u x y =
     let q, r = divrem_u x y in q
 
@@ -225,6 +224,7 @@ struct
     | 'A' .. 'F' as c ->  0xa + Char.code c - Char.code 'A'
     | _ ->  failwith "of_string"
 
+  let ten = Rep.of_int 10
   let max_upper, max_lower = divrem_u Rep.minus_one ten
 
   let of_string s =

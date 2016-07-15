@@ -179,16 +179,6 @@ let rec check_expr (c : context) (e : expr) : op_type =
     let ts = check_block c' es in
     [] --> ts
 
-  | Label (e0, vs, es) ->
-    let ts = var () in
-    let c' = {c with labels = ts :: c.labels} in
-    let ts1 = check_block c' [e0] in
-    let ves = List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) in
-    let ts2 = check_block c' (ves @ es) in
-    unify_stack_type ts ts1 e.at;
-    unify_stack_type ts ts2 e.at;
-    [] --> ts
-
   | Br (n, x) ->
     let ts = Lib.List.table n var in
     unify_stack_type (label c x) (fix ts) e.at;
@@ -298,6 +288,28 @@ let rec check_expr (c : context) (e : expr) : op_type =
 
   | GrowMemory ->
     [fix I32Type] --> fix [fix I32Type]
+
+  | Trapping msg ->
+    [] --> var ()
+
+  | Label (es0, vs, es) ->
+    let ts = var () in
+    let c' = {c with labels = ts :: c.labels} in
+    let ts1 = check_block c' es0 in
+    let ves = List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) in
+    let ts2 = check_block c' (ves @ es) in
+    unify_stack_type ts ts1 e.at;
+    unify_stack_type ts ts2 e.at;
+    [] --> ts
+
+  | Local (vs0, vs, es) ->
+    let ts = var () in
+    (* TODO(stack): remove function label? *)
+    let c' = {c with locals = List.map Values.type_of vs0; labels = ts :: c.labels} in
+    let ves = List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) in
+    let ts' = check_block c' (ves @ es) in
+    unify_stack_type ts ts' e.at;
+    [] --> ts
 
 and check_block (c : context) (es : expr list) : stack_type var =
   match es with

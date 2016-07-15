@@ -219,9 +219,15 @@ let rec expr e =
     | Convert op -> Atom (cvtop op)
     | CurrentMemory -> Atom "current_memory"
     | GrowMemory -> Atom "grow_memory"
-    | Label (e, vs, es) ->
+
+    | Trapping msg -> Atom ("trap[\"" ^ String.escaped msg ^ "\"]")
+    | Label (es_cont, vs, es) ->
       let ves = List.map (fun v -> Const (v @@ e.at) @@ e.at) (List.rev vs) in
-      Node ("label", list expr (ves @ es))
+      Node ("label[...]", list expr (ves @ es))
+    | Local (vs_local, vs, es) ->
+      let ves = List.map (fun v -> Const (v @@ e.at) @@ e.at) (List.rev vs) in
+      Node ("local[" ^ String.concat " " (List.map string_of_value vs_local) ^
+            "]", list expr (ves @ es))
 
 
 (* Functions *)
@@ -268,8 +274,6 @@ let export ex =
   let desc = match kind with `Func x -> var x | `Memory -> "memory" in
   Node ("export", [atom string name; Atom desc])
 
-
-(* Modules *)
 
 let module_ m =
   Node ("module",

@@ -330,7 +330,7 @@ let encode m =
       | Convert (F64 F64Op.DemoteF64) -> assert false
       | Convert (F64 F64Op.ReinterpretInt) -> op 0xb3
 
-      | Label _ -> assert false
+      | Trapping _ | Label _ | Local _ -> assert false
 
     (* Sections *)
 

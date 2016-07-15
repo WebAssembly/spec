@@ -73,7 +73,7 @@ type literal = value Source.phrase
 
 type expr = expr' Source.phrase
 and expr' =
-  | Unreachable                        (* trap *)
+  | Unreachable                        (* trap unconditionally *)
   | Nop                                (* do nothing *)
   | Drop                               (* forget a value *)
   | Select                             (* branchless conditional *)
@@ -102,7 +102,11 @@ and expr' =
   | Convert of cvtop                   (* conversion *)
   | CurrentMemory                      (* size of linear memory *)
   | GrowMemory                         (* grow linear memory *)
-  | Label of expr * value list * expr list  (* control stack *)
+
+  (* Administrative expressions *)
+  | Trapping of string                            (* trap *)
+  | Label of expr list * value list * expr list   (* control stack *)
+  | Local of value list * value list * expr list  (* call stack *)
 
 
 (* Functions *)
