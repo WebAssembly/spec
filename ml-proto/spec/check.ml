@@ -200,7 +200,7 @@ let rec check_expr (c : context) (e : expr) : op_type =
     fix_list c.return --> var ()
 
   | If (es1, es2) ->
-    (* TODO(stack): remove if labels
+    (* TODO(stack): remove `if` labels
     let ts1 = check_block c es1 in
     let ts2 = check_block c es2 in
     unify_stack_type ts1 ts2 e.at;
@@ -304,7 +304,7 @@ let rec check_expr (c : context) (e : expr) : op_type =
 
   | Local (vs0, vs, es) ->
     let ts = var () in
-    (* TODO(stack): remove function label? *)
+    (* TODO(stack): remove function labels? *)
     let c' = {c with locals = List.map Values.type_of vs0; labels = ts :: c.labels} in
     let ves = List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) in
     let ts' = check_block c' (ves @ es) in
@@ -317,7 +317,7 @@ and check_block (c : context) (es : expr list) : stack_type var =
     fix []
 
   | _ ->
-    let es', e = Lib.List.split_last es in 
+    let es', e = Lib.List.split_last es in
     let vts0 = check_block c es' in
     let ts2, vts3 = check_expr c e in
     if not (is_fix vts0) then var () else

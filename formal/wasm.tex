@@ -156,6 +156,7 @@ $$
   \KK{br\_if}_n~i ~|~
   \KK{br\_table}_n~i^+ ~|~
   \KK{call}_n~i ~|~
+  \KK{call\_indirect}_n~i ~|~
   \KK{return}_n \\
 \end{array}
 $$
@@ -312,11 +313,19 @@ $$
 \frac{
   C_{\f{func}}(i) = [t_1^n] \to [t_2^?]
 }{
-  C \vdash \KK{call}_n~i^+ : [t_1^n] \to [t_2^?]
+  C \vdash \KK{call}_n~i : [t_1^n] \to [t_2^?]
 }
 %$$
 \qquad
 %$$
+\frac{
+  C_{\f{type}}(i) = [t_1^n] \to [t_2^?]
+}{
+  C \vdash \KK{call\_indirect}_n~i : [t_1^n~\K{i32}] \to [t_2^?]
+}
+$$
+
+$$
 \frac{
   C_{\f{return}} = [t^n]
 }{
@@ -462,6 +471,13 @@ v_1~v_2~(\KK{i32.const}~i+1)~\KK{select} &\evalto&
 [1ex]
 S;~ v^n~\KK{call}_n~i &\evalto&
   S;~ \KK{local}[v^n~S_{\f{func}}(i).{\f{locals}}]~S_{\f{func}}(i).{\f{body}}~\KK{end} \\
+S;~ (\KK{i32.const} j)~\KK{call\_indirect}_n~i &\evalto&
+  S;~ \KK{trap}
+  \hfill \text{if $S_{\f{func}}(S_{\f{table}}(j)).{\f{type}} \neq S_{\f{type}}(i)$} \\
+S;~ (\KK{i32.const} j)~\KK{call\_indirect}_n~i &\evalto&
+  S;~ \KK{call}_n~S_{\f{table}}(j)
+  \hfill \text{otherwise} \\
+[2ex]
 \KK{local}[v_l^\ast]~v^\ast~\KK{end} &\evalto&
   v^\ast \\
 %\KK{local}[v_l^\ast]~v^\ast~v^n~\KK{return}_n~e^\ast~\KK{end} &\evalto&
@@ -489,35 +505,33 @@ v~(\KK{tee}~i) &\evalto&
 [1ex]
 \end{array}
 $$
-
-{
+%
 $$
 \frac{
 }{
   C \vdash \KK{trap} : [] \to \poly{t^\ast}
 }
 %$$
-\qquad
+\quad
 %$$
 \frac{
   C \vdash e_0^\ast : [t^\ast]\orbot
-  \qquad
+  \quad
   C \vdash e^\ast : [t^\ast]\orbot
 }{
   C \vdash \KK{label}[e_0^\ast]~e^\ast~\KK{end} : [] \to [t^\ast]\orbot
 }
 %$$
-\qquad
+\quad
 %$$
 \frac{
   (\vdash v : t_v)^\ast
-  \qquad
+  \quad
   C,_{\f{local}}t_v^\ast \vdash e^\ast : [t^\ast]\orbot
 }{
   C \vdash \KK{local}[v^\ast]~e^\ast~\KK{end} : [] \to [t^\ast]\orbot
 }
 $$
-}
 
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

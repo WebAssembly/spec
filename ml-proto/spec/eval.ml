@@ -148,13 +148,13 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     assert false  (* abrupt *)
 
   | If (es1, es2), I32 0l :: vs' ->
-    (* TODO(stack): remove if labels
+    (* TODO(stack): remove `if` labels
     vs', es2
     *)
     vs', [Block es2 @@ e.at]
 
   | If (es1, es2), I32 i :: vs' ->
-    (* TODO(stack): remove if labels
+    (* TODO(stack): remove `if` labels
     vs', es1
     *)
     vs', [Block es1 @@ e.at]
@@ -284,7 +284,7 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     vs' @ vs, []
 
   | Local (vs_local, vs', {it = Br (n, i); _} :: es), vs when i.it = 0 ->
-    (* TODO(stack): remove function label? *)
+    (* TODO(stack): remove function labels? *)
     keep n vs' e.at @ vs, []
 
   | Local (vs_local, vs', {it = Return n; at} :: es), vs ->
