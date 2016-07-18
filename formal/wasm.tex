@@ -124,6 +124,14 @@
 
 \section{Wasm-as-stack}
 
+\newcommand\orbot{/\bot}
+\newcommand\poly[1]{\bot}
+\newcommand\botrule[1]{#1}
+
+%\newcommand\orbot{}
+%\newcommand\poly[1]{[#1]}
+%\newcommand\botrule[1]{}
+
 
 \subsection*{Syntax}
 
@@ -135,6 +143,12 @@ $$
   \KK{f32} ~|~
   \KK{f64} \\
 [1ex]
+\void{
+\text{(result)} & t &::=&
+  [t^\ast] ~|~
+  \bot \\
+[1ex]
+}
 \text{(operators)} & e &::=&
   t\KK{.const}~c ~|~
   t\KK{.}\x{unop} ~|~
@@ -161,17 +175,10 @@ $$
 \end{array}
 $$
 
-%\newcommand\orbot{/\bot}
-%\newcommand\poly[1]{\bot}
-%\newcommand\botrule[1]{#1}
-
-\newcommand\orbot{}
-\newcommand\poly[1]{[#1]}
-\newcommand\botrule[1]{}
-
 
 \subsection*{Typing Operators \hfill $\boxed{C \vdash e : [t^\ast] \to [t^?]\orbot}$}
 
+\botrule{\vspace{-0.5\baselineskip}}
 $$
 \frac{
 }{
@@ -268,14 +275,24 @@ $$
 }
 $$
 
+%\botrule{\vspace{-1ex}}
 $$
 \frac{
-  C \vdash e_1^\ast : [t^?]\orbot
+  C \vdash e_1^\ast : [t^?]\botrule{\orbot_1}
   \qquad
-  C \vdash e_2^\ast : [t^?]\orbot
+  C \vdash e_2^\ast : [t^?]\botrule{\orbot_2}
 }{
-  C \vdash \KK{if}~e_1^\ast~\KK{else}~e_2^\ast~\KK{end} : [\K{i32}] \to [t^?]\orbot
-}
+  C \vdash \KK{if}~e_1^\ast~\KK{else}~e_2^\ast~\KK{end} : [\K{i32}] \to [t^?]\botrule{\orbot_1 \vee [t^?]\orbot_2}
+}%
+\void{\botrule{
+~~~~
+\begin{array}{rc}
+[t^\ast]\vee[t^\ast] = [t^\ast] &
+[t^\ast]\vee\bot = [t^\ast] \\
+\bot\vee[t^\ast] = [t^\ast] &
+\bot\vee\bot = \bot
+\end{array}
+}}
 $$
 
 $$
@@ -357,8 +374,8 @@ $$
 %$$
 \frac{
   C \vdash e^\ast : \bot
-  \qquad
-  C \vdash e_2 : [t_2^\ast] \to [t_3^?]/\bot
+  %\qquad
+  %C \vdash e_2 : [t_2^\ast] \to [t_3^?]/\bot
 }{
   C \vdash e^\ast~e_2 : \bot
 }
@@ -378,11 +395,11 @@ $$
   \KK{label}[e^\ast]~e^\ast~\KK{end} ~|~
   \KK{local}[v^\ast]~e^\ast~\KK{end} \\
 \text{(local contexts)} & L &::=&
-  [] ~|~
+  \{\_\} ~|~
   v^\ast~L~e^\ast ~|~
   \KK{label}[e^\ast]~L~\KK{end} \\
 \text{(evaluation contexts)} & E &::=&
-  [] ~|~
+  \{\_\} ~|~
   v^\ast~E~e^\ast ~|~
   \KK{label}[e^\ast]~E~\KK{end} ~|~
   \KK{local}[v^\ast]~E~\KK{end} \\
@@ -393,14 +410,14 @@ $$
 \frac{
   S;~e^\ast \evalto S';~{e'}^\ast
 }{
-  S;~E[e^\ast] \evalto S';~E[{e'}^\ast]
+  S;~E\{e^\ast\} \evalto S';~E\{{e'}^\ast\}
 }
 %$$
 \qquad
 %$$
 \frac{
 }{
-  S;~E[\KK{trap}] \evalto S;~\KK{trap}
+  S;~E\{\KK{trap}\} \evalto S;~\KK{trap}
 }
 $$
 
@@ -482,7 +499,7 @@ S;~ (\KK{i32.const} j)~\KK{call\_indirect}_n~i &\evalto&
   v^\ast \\
 %\KK{local}[v_l^\ast]~v^\ast~v^n~\KK{return}_n~e^\ast~\KK{end} &\evalto&
 %  v^n \\
-\KK{local}[v_l^\ast]~L[v^n~\KK{return}_n]~\KK{end} &\evalto&
+\KK{local}[v_l^\ast]~L\{v^n~\KK{return}_n\}~\KK{end} &\evalto&
   v^n \\
 %\KK{local}[v_l^\ast]~v^\ast~\KK{unreachable}~e^\ast~\KK{end} &\evalto&
 %  \KK{unreachable} \\
@@ -496,10 +513,10 @@ v~(\KK{tee}~i) &\evalto&
   v~v~(\KK{set}~i) \\
 [1ex]
 }
-\KK{local}[v_1^i~v~v_2^\ast]~L[\KK{get}~i]~\KK{end} &\evalto&
-  \KK{local}[v_1^i~v~v_2^\ast]~L[v]~\KK{end} \\
-\KK{local}[v_1^i~v~v_2^\ast]~L[v'~(\KK{set}~i)]~\KK{end} &\evalto&
-  \KK{local}[v_1^i~v'~v_2^\ast]~L[\epsilon]~\KK{end} \\
+\KK{local}[v_1^i~v~v_2^\ast]~L\{\KK{get}~i\}~\KK{end} &\evalto&
+  \KK{local}[v_1^i~v~v_2^\ast]~L\{v\}~\KK{end} \\
+\KK{local}[v_1^i~v~v_2^\ast]~L\{v'~(\KK{set}~i)\}~\KK{end} &\evalto&
+  \KK{local}[v_1^i~v'~v_2^\ast]~L\{\epsilon\}~\KK{end} \\
 v~(\KK{tee}~i) &\evalto&
   v~v~(\KK{set}~i) \\
 [1ex]
