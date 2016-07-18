@@ -124,7 +124,7 @@ let value_type s =
 let expr_type s = vec1 value_type s
 
 let func_type s =
-  expect 0x05 s "invalid function type";
+  expect 0x40 s "invalid function type";
   let ins = vec value_type s in
   let out = expr_type s in
   {ins; out}
@@ -168,25 +168,25 @@ let rec expr stack s =
     Nop, es
   | 0x01, es ->
     let es' = expr_block s in
-    expect 0x0f s "END opcode expected";
+    expect 0x0f s "`end` opcode expected";
     Block es', es
   | 0x02, es ->
     let es' = expr_block s in
-    expect 0x0f s "END opcode expected";
+    expect 0x0f s "`end` opcode expected";
     Loop es', es
   | 0x03, e :: es ->
     let es1 = expr_block s in
     if peek s = Some 0x04 then begin
-      expect 0x04 s "ELSE or END opcode expected";
+      expect 0x04 s "`else` or `end` opcode expected";
       let es2 = expr_block s in
-      expect 0x0f s "END opcode expected";
+      expect 0x0f s "`end` opcode expected";
       If (e, es1, es2), es
     end else begin
-      expect 0x0f s "END opcode expected";
+      expect 0x0f s "`end` opcode expected";
       If (e, es1, []), es
     end
   | 0x04, _ ->
-    error s pos "misplaced ELSE opcode"
+    error s pos "misplaced `else` opcode"
   | 0x05, e3 :: e2 :: e1 :: es ->
     Select (e1, e2, e3), es
   | 0x06, es ->
@@ -216,7 +216,7 @@ let rec expr stack s =
   | 0x0c | 0x0d | 0x0e as b, _ ->
     illegal s pos b
   | 0x0f, _ ->
-    error s pos "misplaced END opcode"
+    error s pos "misplaced `end` opcode"
 
   | 0x10, es -> I32_const (at vs32 s), es
   | 0x11, es -> I64_const (at vs64 s), es
@@ -452,10 +452,10 @@ let id s =
 let section tag f default s =
   if eos s then default else
   let start_pos = pos s in
-  let size = vu s in
-  let id_pos = pos s in
   if id s <> tag then (rewind start_pos s; default) else
-  let s' = substream s (id_pos + size) in
+  let size = vu s in
+  let content_pos = pos s in
+  let s' = substream s (content_pos + size) in
   let x = f s' in
   require (eos s') s' (pos s') "junk at end of section";
   x
