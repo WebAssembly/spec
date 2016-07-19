@@ -26,10 +26,12 @@ and expr' =
   | Call_import of var * expr list
   | Call_indirect of var * expr * expr list
 
-  (* Locals *)
+  (* Variables *)
   | Get_local of var
   | Set_local of var * expr
   | Tee_local of var * expr
+  | Get_global of var
+  | Set_global of var * expr
 
   (* Memory access *)
   | I32_load of Memory.offset * int * expr
@@ -212,6 +214,7 @@ and module' =
 {
   memory : Kernel.memory option;
   types : Types.func_type list;
+  globals : Types.value_type list;
   funcs : func list;
   start : var option;
   imports : Kernel.import list;

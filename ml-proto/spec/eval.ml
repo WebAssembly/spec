@@ -17,6 +17,7 @@ type instance =
   module_ : module_;
   imports : import list;
   exports : export_map;
+  globals : value ref list;
   memory : Memory.t option
 }
 
@@ -71,6 +72,7 @@ let lookup category list x =
 let type_ c x = lookup "type" c.instance.module_.it.types x
 let func c x = lookup "function" c.instance.module_.it.funcs x
 let import c x = lookup "import" c.instance.imports x
+let global c x = lookup "global" c.instance.globals x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
@@ -204,6 +206,14 @@ let rec eval_expr (c : config) (e : expr) =
     local c x := v1;
     Some v1
 
+  | GetGlobal x ->
+    Some !(global c x)
+
+  | SetGlobal (x, e1) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    global c x := v1;
+    None
+
   | Load ({ty; offset; align = _}, e1) ->
     let mem = memory c e.at in
     let v1 = address32 (eval_expr c e1) e1.at in
@@ -324,11 +334,12 @@ let add_export funcs ex =
 
 let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
-  let {memory; funcs; exports; start; _} = m.it in
+  let {memory; funcs; globals; exports; start; _} = m.it in
   let instance =
     {module_ = m;
      imports;
      exports = List.fold_right (add_export funcs) exports ExportMap.empty;
+     globals = List.map (fun t -> ref (default_value t)) globals;
      memory = Lib.Option.map init_memory memory}
   in
   Lib.Option.app

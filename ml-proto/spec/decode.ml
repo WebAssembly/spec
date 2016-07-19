@@ -249,8 +249,14 @@ let rec expr stack s =
   | 0x19, e :: es ->
     let x = at var s in
     Tee_local (x, e), es
+  | 0x1a, es ->
+    let x = at var s in
+    Get_global x, es
+  | 0x1b, e :: es ->
+    let x = at var s in
+    Set_global (x, e), es
 
-  | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e | 0x1f as b, _ ->
+  | 0x1c | 0x1d | 0x1e | 0x1f as b, _ ->
     illegal s pos b
 
   | 0x20, e :: es -> let o, a = memop s in I32_load8_s (o, a, e), es
@@ -443,6 +449,7 @@ let id s =
   | "function" -> `FuncSection
   | "table" -> `TableSection
   | "memory" -> `MemorySection
+  | "global" -> `GlobalSection
   | "export" -> `ExportSection
   | "start" -> `StartSection
   | "code" -> `CodeSection
@@ -501,6 +508,17 @@ let memory s =
 
 let memory_section s =
   section `MemorySection (opt (at memory) true) None s
+
+
+(* Global section *)
+
+let global s =
+  let n = vu s in
+  let t = value_type s in
+  Lib.List.make n t
+
+let global_section s =
+  section `GlobalSection (fun s -> List.flatten (vec global s)) [] s
 
 
 (* Export section *)
@@ -574,6 +592,8 @@ let module_ s =
   iterate unknown_section s;
   let memory_limits = memory_section s in
   iterate unknown_section s;
+  let globals = global_section s in
+  iterate unknown_section s;
   let exports = export_section s in
   iterate unknown_section s;
   let start = start_section s in
@@ -596,7 +616,7 @@ let module_ s =
     match memory_limits with
     | None -> None
     | Some memory -> Some Source.({memory.it with segments} @@ memory.at)
-  in {memory; types; funcs; imports; exports; table; start}
+  in {memory; types; globals; funcs; imports; exports; table; start}
 
 
 let decode name bs = at module_ (stream name bs)

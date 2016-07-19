@@ -127,6 +127,8 @@ let encode m =
       | Ast.Get_local x -> op 0x14; var x
       | Ast.Set_local (x, e) -> unary e 0x15; var x
       | Ast.Tee_local (x, e) -> unary e 0x19; var x
+      | Ast.Get_global x -> op 0x1a; var x
+      | Ast.Set_global (x, e) -> unary e 0x1b; var x
 
       | Ast.Call (x, es) -> nary es 0x16; var x
       | Ast.Call_indirect (x, e, es) -> expr e; nary es 0x17; var x
@@ -334,6 +336,18 @@ let encode m =
     let memory_section memo =
       section "memory" (opt memory) memo (memo <> None)
 
+    (* Global section *)
+    let compress ts =
+      let combine t = function
+        | (t', n) :: ts when t = t' -> (t, n + 1) :: ts
+        | ts -> (t, 1) :: ts
+      in List.fold_right combine ts []
+
+    let global (t, n) = vu n; value_type t
+
+    let global_section ts =
+      section "code" (vec global) (compress ts) (ts <> [])
+
     (* Export section *)
     let export exp =
       let {Kernel.name; kind} = exp.it in
@@ -352,12 +366,6 @@ let encode m =
       section "start" (opt var) xo (xo <> None)
 
     (* Code section *)
-    let compress locals =
-      let combine t = function
-        | (t', n) :: ts when t = t' -> (t, n + 1) :: ts
-        | ts -> (t, 1) :: ts
-      in List.fold_right combine locals []
-
     let local (t, n) = vu n; value_type t
 
     let code f =
@@ -390,6 +398,7 @@ let encode m =
       func_section m.it.funcs;
       table_section m.it.table;
       memory_section m.it.memory;
+      global_section m.it.globals;
       export_section m.it.exports;
       start_section m.it.start;
       code_section m.it.funcs;

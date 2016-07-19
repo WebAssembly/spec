@@ -92,6 +92,8 @@ and expr' =
   | GetLocal of var                         (* read local variable *)
   | SetLocal of var * expr                  (* write local variable *)
   | TeeLocal of var * expr                  (* write local variable and keep value *)
+  | GetGlobal of var                        (* read global variable *)
+  | SetGlobal of var * expr                 (* write global variable *)
   | Load of memop * expr                    (* read memory at address *)
   | Store of memop * expr * expr            (* write memory at address *)
   | LoadExtend of extop * expr              (* read memory at address and extend *)
@@ -147,6 +149,7 @@ and module_' =
 {
   memory : memory option;
   types : Types.func_type list;
+  globals : Types.value_type list;
   funcs : func list;
   start : var option;
   imports : import list;

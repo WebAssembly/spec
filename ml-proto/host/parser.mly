@@ -52,11 +52,11 @@ let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
   {types : types; funcs : space; imports : space;
-   locals : space; labels : int VarMap.t}
+   locals : space; globals : space; labels : int VarMap.t}
 
 let empty_context () =
   {types = empty_types (); funcs = empty (); imports = empty ();
-   locals = empty (); labels = VarMap.empty}
+   locals = empty (); globals = empty (); labels = VarMap.empty}
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
@@ -73,6 +73,7 @@ let lookup category space x =
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
+let global c x = lookup "global" c.globals x
 let label c x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
@@ -92,6 +93,7 @@ let bind category space x =
 let bind_func c x = bind "function" c.funcs x
 let bind_import c x = bind "import" c.imports x
 let bind_local c x = bind "local" c.locals x
+let bind_global c x = bind "global" c.globals x
 let bind_label c x =
   {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
 
@@ -103,6 +105,7 @@ let anon space n = space.count <- space.count + n
 let anon_func c = anon c.funcs 1
 let anon_import c = anon c.imports 1
 let anon_locals c ts = anon c.locals (List.length ts)
+let anon_globals c ts = anon c.globals (List.length ts)
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 let empty_type = {ins = []; out = None}
@@ -127,10 +130,11 @@ let implicit_decl c t at =
 %token NAT INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
 %token NOP DROP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
-%token GET_LOCAL SET_LOCAL TEE_LOCAL LOAD STORE OFFSET ALIGN
+%token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
+%token LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
-%token FUNC START TYPE PARAM RESULT LOCAL
+%token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token INPUT OUTPUT
@@ -262,6 +266,8 @@ expr1 :
   | GET_LOCAL var { fun c -> Get_local ($2 c local) }
   | SET_LOCAL var expr { fun c -> Set_local ($2 c local, $3 c) }
   | TEE_LOCAL var expr { fun c -> Tee_local ($2 c local, $3 c) }
+  | GET_GLOBAL var { fun c -> Get_global ($2 c global) }
+  | SET_GLOBAL var expr { fun c -> Set_global ($2 c global, $3 c) }
   | LOAD offset align expr { fun c -> $1 ($2, $3, $4 c) }
   | STORE offset align expr expr { fun c -> $1 ($2, $3, $4 c, $5 c) }
   | CONST literal { fun c -> fst (literal $1 $2) }
@@ -350,6 +356,14 @@ export_opt :
 start :
   | LPAR START var RPAR
     { fun c -> $3 c func }
+;
+
+global :
+  | LPAR GLOBAL value_type_list RPAR
+    { fun c -> anon_globals c $3; $3 }
+  | LPAR GLOBAL bind_var VALUE_TYPE RPAR  /* Sugar */
+    { fun c -> bind_global c $3; [$4] }
+;
 
 segment :
   | LPAR SEGMENT NAT text_list RPAR
@@ -410,11 +424,14 @@ export :
 module_fields :
   | /* empty */
     { fun c ->
-      {memory = None; types = c.types.tlist; funcs = []; start = None; imports = [];
-       exports = []; table = []} }
+      {memory = None; types = c.types.tlist; globals = []; funcs = [];
+       start = None; imports = []; exports = []; table = []} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in let func, exs = f () in
       {m with funcs = func :: m.funcs; exports = exs @ m.exports} }
+  | global module_fields
+    { fun c -> let gs = $1 c in let m = $2 c in
+      {m with globals = gs @ m.globals} }
   | import module_fields
     { fun c -> let i = $1 c in let m = $2 c in
       {m with imports = i :: m.imports} }
@@ -423,7 +440,7 @@ module_fields :
       {m with exports = $1 c :: m.exports} }
   | table module_fields
     { fun c -> let m = $2 c in
-      {m with table = ($1 c) @ m.table} }
+      {m with table = $1 c @ m.table} }
   | type_def module_fields
     { fun c -> $1 c; $2 c }
   | memory module_fields
