@@ -513,12 +513,15 @@ let memory_section s =
 (* Global section *)
 
 let global s =
-  let n = vu s in
   let t = value_type s in
-  Lib.List.make n t
+  let pos = pos s in
+  let es = expr_block s in
+  require (List.length es = 1) s pos "single expression expected";
+  expect 0x0f s "`end` opcode expected";
+  {gtype = t; init = List.hd es}
 
 let global_section s =
-  section `GlobalSection (fun s -> List.flatten (vec global s)) [] s
+  section `GlobalSection (vec (at global)) [] s
 
 
 (* Export section *)

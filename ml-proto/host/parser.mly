@@ -105,7 +105,7 @@ let anon space n = space.count <- space.count + n
 let anon_func c = anon c.funcs 1
 let anon_import c = anon c.imports 1
 let anon_locals c ts = anon c.locals (List.length ts)
-let anon_globals c ts = anon c.globals (List.length ts)
+let anon_global c = anon c.globals 1
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 let empty_type = {ins = []; out = None}
@@ -359,10 +359,12 @@ start :
 ;
 
 global :
-  | LPAR GLOBAL value_type_list RPAR
-    { fun c -> anon_globals c $3; $3 }
-  | LPAR GLOBAL bind_var VALUE_TYPE RPAR  /* Sugar */
-    { fun c -> bind_global c $3; [$4] }
+  | LPAR GLOBAL VALUE_TYPE expr RPAR
+    { let at = at () in
+      fun c -> anon_global c; fun () -> {gtype = $3; init = $4 c} @@ at }
+  | LPAR GLOBAL bind_var VALUE_TYPE expr RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> bind_global c $3; fun () -> {gtype = $4; init = $5 c} @@ at }
 ;
 
 segment :
@@ -430,8 +432,8 @@ module_fields :
     { fun c -> let f = $1 c in let m = $2 c in let func, exs = f () in
       {m with funcs = func :: m.funcs; exports = exs @ m.exports} }
   | global module_fields
-    { fun c -> let gs = $1 c in let m = $2 c in
-      {m with globals = gs @ m.globals} }
+    { fun c -> let g = $1 c in let m = $2 c in
+      {m with globals = g () :: m.globals} }
   | import module_fields
     { fun c -> let i = $1 c in let m = $2 c in
       {m with imports = i :: m.imports} }

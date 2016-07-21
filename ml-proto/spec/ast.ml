@@ -196,7 +196,14 @@ and expr' =
   | Grow_memory of expr
 
 
-(* Functions *)
+(* Globals and Functions *)
+
+type global = global' Source.phrase
+and global' =
+{
+  gtype : Types.value_type;
+  init : expr;
+}
 
 type func = func' Source.phrase
 and func' =
@@ -214,7 +221,7 @@ and module' =
 {
   memory : Kernel.memory option;
   types : Types.func_type list;
-  globals : Types.value_type list;
+  globals : global list;
   funcs : func list;
   start : var option;
   imports : Kernel.import list;

@@ -120,6 +120,13 @@ and func' =
 
 (* Modules *)
 
+type global = global' Source.phrase
+and global' =
+{
+  gtype : Types.value_type;
+  init : expr;
+}
+
 type memory = memory' Source.phrase
 and memory' =
 {
@@ -149,7 +156,7 @@ and module_' =
 {
   memory : memory option;
   types : Types.func_type list;
-  globals : Types.value_type list;
+  globals : global list;
   funcs : func list;
   start : var option;
   imports : import list;

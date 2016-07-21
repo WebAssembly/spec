@@ -278,8 +278,9 @@ let import i im =
     [atom string module_name; atom string func_name; ty]
   )
 
-let global t =
-  Node ("global", [atom value_type t])
+let global g =
+  let {gtype; init} = g.it in
+  Node ("global", [atom value_type gtype; expr init])
 
 let export ex =
   let {name; kind} = ex.it in

@@ -337,16 +337,12 @@ let encode m =
       section "memory" (opt memory) memo (memo <> None)
 
     (* Global section *)
-    let compress ts =
-      let combine t = function
-        | (t', n) :: ts when t = t' -> (t, n + 1) :: ts
-        | ts -> (t, 1) :: ts
-      in List.fold_right combine ts []
+    let global g =
+      let {gtype = t; init = e} = g.it in
+      value_type t; expr e; op 0x0f
 
-    let global (t, n) = vu n; value_type t
-
-    let global_section ts =
-      section "code" (vec global) (compress ts) (ts <> [])
+    let global_section gs =
+      section "code" (vec global) gs (gs <> [])
 
     (* Export section *)
     let export exp =
@@ -366,6 +362,12 @@ let encode m =
       section "start" (opt var) xo (xo <> None)
 
     (* Code section *)
+    let compress ts =
+      let combine t = function
+        | (t', n) :: ts when t = t' -> (t, n + 1) :: ts
+        | ts -> (t, 1) :: ts
+      in List.fold_right combine ts []
+
     let local (t, n) = vu n; value_type t
 
     let code f =

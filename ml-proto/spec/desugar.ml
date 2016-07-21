@@ -299,13 +299,18 @@ and block = function
 
 (* Functions and Modules *)
 
+let rec global g = global' g.it @@ g.at
+and global' = function
+  | {Ast.gtype = t; init = e} -> {gtype = t; init = expr e}
+
 let rec func f = func' f.it @@ f.at
 and func' = function
   | {Ast.body = es; ftype; locals} -> {body = return (seq es); ftype; locals}
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function
-  | {Ast.funcs = fs; start; globals; memory; types; imports; exports; table} ->
+  | {Ast.funcs = fs; start; globals = gs; memory; types; imports; exports; table} ->
+    let globals = List.map global gs in
     let funcs = List.map func fs in
     {funcs; start; globals; memory; types; imports; exports; table}
 

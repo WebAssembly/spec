@@ -292,6 +292,11 @@ and check_memop memop at =
 and check_mem_type ty sz at =
   require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
 
+let check_init_expr e =
+  match e.it with
+  | Const _ | GetGlobal _ -> ()
+  | _ -> error e.at "not an initialization expression"
+
 
 (*
  * check_func : context -> func -> unit
@@ -315,6 +320,11 @@ let check_func c f =
 
 let check_elem c x =
   ignore (func c x)
+
+let check_global c g =
+  let {gtype; init} = g.it in
+  check_init_expr init;
+  check_expr c (some gtype) init
 
 module NameSet = Set.Make(String)
 
@@ -359,12 +369,14 @@ let check_module m =
   let c = {types;
            funcs = List.map (fun f -> type_ types f.it.ftype) funcs;
            imports = List.map (fun i -> type_ types i.it.itype) imports;
+           globals = [];
            locals = [];
-           globals;
            return = None;
            labels = [];
            has_memory = memory <> None} in
-  List.iter (check_func c) funcs;
-  List.iter (check_elem c) table;
-  ignore (List.fold_left (check_export c) NameSet.empty exports);
-  check_start c start
+  List.iter (check_global c) globals;
+  let c' = {c with globals = List.map (fun g -> g.it.gtype) globals} in
+  List.iter (check_func c') funcs;
+  List.iter (check_elem c') table;
+  ignore (List.fold_left (check_export c') NameSet.empty exports);
+  check_start c' start
