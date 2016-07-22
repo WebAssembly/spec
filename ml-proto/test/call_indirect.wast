@@ -15,6 +15,10 @@
   (type $i32-i64 (func (param i32 i64) (result i64)))
   (type $f64-f32 (func (param f64 f32) (result f32)))
   (type $i64-f64 (func (param i64 f64) (result f64)))
+  (type $over-i32-duplicate (func (param i32) (result i32)))
+  (type $over-i64-duplicate (func (param i64) (result i64)))
+  (type $over-f32-duplicate (func (param f32) (result f32)))
+  (type $over-f64-duplicate (func (param f64) (result f64)))
 
   (func $const-i32 (type $out-i32) (i32.const 0x132))
   (func $const-i64 (type $out-i64) (i64.const 0x164))
@@ -26,10 +30,15 @@
   (func $id-f32 (type $over-f32) (get_local 0))
   (func $id-f64 (type $over-f64) (get_local 0))
 
-  (func $f32-i32 (type $f32-i32) (get_local 1))
   (func $i32-i64 (type $i32-i64) (get_local 1))
-  (func $f64-f32 (type $f64-f32) (get_local 1))
   (func $i64-f64 (type $i64-f64) (get_local 1))
+  (func $f32-i32 (type $f32-i32) (get_local 1))
+  (func $f64-f32 (type $f64-f32) (get_local 1))
+
+  (func $over-i32-duplicate (type $over-i32-duplicate) (get_local 0))
+  (func $over-i64-duplicate (type $over-i64-duplicate) (get_local 0))
+  (func $over-f32-duplicate (type $over-f32-duplicate) (get_local 0))
+  (func $over-f64-duplicate (type $over-f64-duplicate) (get_local 0))
 
   (table
     $const-i32 $const-i64 $const-f32 $const-f64
@@ -37,6 +46,8 @@
     $f32-i32 $i32-i64 $f64-f32 $i64-f64
     $fac $fib $even $odd
     $runaway $mutual-runaway1 $mutual-runaway2
+    $over-i32-duplicate $over-i64-duplicate
+    $over-f32-duplicate $over-f64-duplicate
   )
 
   ;; Typing
@@ -82,9 +93,13 @@
     (call_indirect $over-i64 (get_local 0) (get_local 1))
   )
 
+  (func "dispatch-structural" (param i32) (result i64)
+    (call_indirect $over-i64-duplicate (get_local 0) (i64.const 9))
+  )
+
   ;; Recursion
 
-  (func "fac" $fac (param i64) (result i64)
+  (func "fac" $fac (type $over-i64)
     (if (i64.eqz (get_local 0))
       (i64.const 1)
       (i64.mul
@@ -96,7 +111,7 @@
     )
   )
 
-  (func "fib" $fib (param i64) (result i64)
+  (func "fib" $fib (type $over-i64)
     (if (i64.le_u (get_local 0) (i64.const 1))
       (i64.const 1)
       (i64.add
@@ -163,11 +178,19 @@
 (assert_return (invoke "dispatch" (i32.const 5) (i64.const 5)) (i64.const 5))
 (assert_return (invoke "dispatch" (i32.const 12) (i64.const 5)) (i64.const 120))
 (assert_return (invoke "dispatch" (i32.const 13) (i64.const 5)) (i64.const 8))
+(assert_return (invoke "dispatch" (i32.const 20) (i64.const 2)) (i64.const 2))
 (assert_trap (invoke "dispatch" (i32.const 0) (i64.const 2)) "indirect call signature mismatch")
 (assert_trap (invoke "dispatch" (i32.const 15) (i64.const 2)) "indirect call signature mismatch")
-(assert_trap (invoke "dispatch" (i32.const 20) (i64.const 2)) "undefined table index")
+(assert_trap (invoke "dispatch" (i32.const 23) (i64.const 2)) "undefined table index")
 (assert_trap (invoke "dispatch" (i32.const -1) (i64.const 2)) "undefined table index")
 (assert_trap (invoke "dispatch" (i32.const 1213432423) (i64.const 2)) "undefined table index")
+
+(assert_return (invoke "dispatch-structural" (i32.const 5)) (i64.const 9))
+(assert_return (invoke "dispatch-structural" (i32.const 5)) (i64.const 9))
+(assert_return (invoke "dispatch-structural" (i32.const 12)) (i64.const 362880))
+(assert_return (invoke "dispatch-structural" (i32.const 20)) (i64.const 9))
+(assert_trap (invoke "dispatch-structural" (i32.const 11)) "indirect call signature mismatch")
+(assert_trap (invoke "dispatch-structural" (i32.const 22)) "indirect call signature mismatch")
 
 (assert_return (invoke "fac" (i64.const 0)) (i64.const 1))
 (assert_return (invoke "fac" (i64.const 1)) (i64.const 1))
