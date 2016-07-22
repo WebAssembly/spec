@@ -183,11 +183,11 @@ let rec eval_expr (c : config) (e : expr) =
     let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
     (try (import c x) vs with Crash (_, msg) -> Crash.error e.at msg)
 
-  | CallIndirect (ftype, e1, es) ->
+  | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     let f = func c (table_elem c i e1.at) in
-    if ftype.it <> f.it.ftype.it then
+    if type_ c x <> type_ c f.it.ftype then
       Trap.error e1.at "indirect call signature mismatch";
     eval_func c.instance f vs
 
