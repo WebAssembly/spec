@@ -12,12 +12,13 @@ type value_type = Types.value_type
 type value = Values.value
 
 type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
-type memory = memory' ref
+type memory = {mutable content : memory'; max : size option}
 type t = memory
 
 exception Type
 exception Bounds
 exception SizeOverflow
+exception SizeLimit
 
 let page_size = 0x10000L (* 64 KiB *)
 
@@ -44,6 +45,9 @@ let host_index_of_int64 a n =
 
 (* ========================================================================== *)
 
+let within_limits n = function
+  | None -> true
+  | Some max -> I64.le_u n max
 
 let create' n =
   let sz = host_size_of_int64 (Int64.mul n page_size) in
@@ -51,58 +55,62 @@ let create' n =
   Array1.fill mem 0;
   mem
 
-let create n =
-  ref (create' n)
+let create n max =
+  assert (within_limits n max);
+  {content = create' n; max}
 
 let init_seg mem seg =
   (* There currently is no way to blit from a string. *)
   let n = String.length seg.data in
   let base = host_index_of_int64 seg.addr n in
   for i = 0 to n - 1 do
-    !mem.{base + i} <- Char.code seg.data.[i]
+    mem.content.{base + i} <- Char.code seg.data.[i]
   done
 
 let init mem segs =
   try List.iter (init_seg mem) segs with Invalid_argument _ -> raise Bounds
 
 let size mem =
-  Int64.div (int64_of_host_size (Array1.dim !mem)) page_size
+  Int64.div (int64_of_host_size (Array1.dim mem.content)) page_size
 
 let grow mem pages =
-  let host_old_size = Array1.dim !mem in
+  let host_old_size = Array1.dim mem.content in
   let old_size = size mem in
   let new_size = Int64.add old_size pages in
   if I64.gt_u old_size new_size then raise SizeOverflow else
+  if not (within_limits new_size mem.max) then raise SizeLimit else
   let after = create' new_size in
-  Array1.blit (Array1.sub !mem 0 host_old_size) (Array1.sub after 0 host_old_size);
-  mem := after
+  Array1.blit
+    (Array1.sub mem.content 0 host_old_size)
+    (Array1.sub after 0 host_old_size);
+  mem.content <- after
 
 let effective_address a o =
   let ea = Int64.add a o in
   if I64.lt_u ea a then raise Bounds;
   ea
 
-let rec loadn mem n ea =
-  assert (n > 0 && n <= 8);
-  let i = host_index_of_int64 ea n in
-  try loadn' mem n i with Invalid_argument _ -> raise Bounds
-
-and loadn' mem n i =
-  let byte = Int64.of_int !mem.{i} in
+let rec loadn' mem n i =
+  let byte = Int64.of_int mem.content.{i} in
   if n = 1 then
     byte
   else
     Int64.logor byte (Int64.shift_left (loadn' mem (n-1) (i+1)) 8)
 
-let rec storen mem n ea v =
+let rec storen' mem n i v =
+  mem.content.{i} <- Int64.to_int v land 255;
+  if n > 1 then
+    storen' mem (n - 1) (i + 1) (Int64.shift_right v 8)
+
+let loadn mem n ea =
+  assert (n > 0 && n <= 8);
+  let i = host_index_of_int64 ea n in
+  try loadn' mem n i with Invalid_argument _ -> raise Bounds
+
+let storen mem n ea v =
   assert (n > 0 && n <= 8);
   let i = host_index_of_int64 ea n in
   try storen' mem n i v with Invalid_argument _ -> raise Bounds
-
-and storen' mem n i v =
-  !mem.{i} <- (Int64.to_int v) land 255;
-  if (n > 1) then
-    storen' mem (n-1) (i+1) (Int64.shift_right v 8)
 
 let load mem a o t =
   let ea = effective_address a o in

@@ -12,10 +12,11 @@ type value = Values.value
 exception Type
 exception Bounds
 exception SizeOverflow
+exception SizeLimit
 
 val page_size : size
 
-val create : size -> memory
+val create : size -> size option -> memory
 val init : memory -> segment list -> unit
 val size : memory -> size
 val grow : memory -> size -> unit

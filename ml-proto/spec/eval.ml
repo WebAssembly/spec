@@ -302,8 +302,10 @@ and eval_hostop c hostop vs at =
      * Since we currently only support i32, just test that. *)
     if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
       Trap.error at "memory size exceeds implementation limit";
-    Memory.grow mem delta;
-    Some (Int32 (Int64.to_int32 old_size))
+    let result =
+      try Memory.grow mem delta; Int64.to_int32 old_size
+      with Memory.SizeOverflow | Memory.SizeLimit -> -1l
+    in Some (Int32 result)
 
   | _, _ ->
     Crash.error at "invalid invocation of host operator"
@@ -312,7 +314,7 @@ and eval_hostop c hostop vs at =
 (* Modules *)
 
 let init_memory {it = {limits; segments}} =
-  let mem = Memory.create limits.it.min in
+  let mem = Memory.create limits.it.min limits.it.max in
   Memory.init mem (List.map it segments);
   mem
 
