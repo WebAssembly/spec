@@ -311,8 +311,8 @@ and eval_hostop c hostop vs at =
 
 (* Modules *)
 
-let init_memory {it = {min; segments; _}} =
-  let mem = Memory.create min in
+let init_memory {it = {limits; segments}} =
+  let mem = Memory.create limits.it.min in
   Memory.init mem (List.map it segments);
   mem
 

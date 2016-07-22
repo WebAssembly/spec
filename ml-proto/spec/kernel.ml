@@ -118,14 +118,21 @@ and func' =
 
 (* Modules *)
 
+type limits = limits' Source.phrase
+and limits' =
+{
+  min : Memory.size;
+  max : Memory.size option;
+}
+
+type segment = Memory.segment Source.phrase
+
 type memory = memory' Source.phrase
 and memory' =
 {
-  min : Memory.size;
-  max : Memory.size;
+  limits : limits;
   segments : segment list;
 }
-and segment = Memory.segment Source.phrase
 
 type export = export' Source.phrase
 and export' =

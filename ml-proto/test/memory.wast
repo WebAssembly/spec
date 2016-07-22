@@ -10,7 +10,7 @@
 
 (assert_invalid
   (module (memory 1 0))
-  "minimum memory pages must be less than or equal to the maximum"
+  "memory pages minimum must not be greater than maximum"
 )
 (assert_invalid
   (module (memory 0 0 (segment 0 "a")))
@@ -34,15 +34,15 @@
 )
 (assert_invalid
   (module (memory 0 65536))
-  "linear memory pages must be less or equal to 65535 (4GiB)"
+  "memory pages must be less or equal to 65535 (4GiB)"
 )
 (assert_invalid
   (module (memory 0 2147483648))
-  "linear memory pages must be less or equal to 65535 (4GiB)"
+  "memory pages must be less or equal to 65535 (4GiB)"
 )
 (assert_invalid
   (module (memory 0 4294967296))
-  "linear memory pages must be less or equal to 65535 (4GiB)"
+  "memory pages must be less or equal to 65535 (4GiB)"
 )
 
 ;; Test alignment annotation rules

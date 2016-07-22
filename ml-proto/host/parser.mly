@@ -350,6 +350,13 @@ export_opt :
 start :
   | LPAR START var RPAR
     { fun c -> $3 c func }
+;
+
+limits :
+  | NAT { {min = Int64.of_string $1; max = None} @@ at () }
+  | NAT NAT
+    { {min = Int64.of_string $1; max = Some (Int64.of_string $2)} @@ at () }
+;
 
 segment :
   | LPAR SEGMENT NAT text_list RPAR
@@ -361,12 +368,8 @@ segment_list :
 ;
 
 memory :
-  | LPAR MEMORY NAT NAT segment_list RPAR
-    { {min = Int64.of_string $3; max = Int64.of_string $4; segments = $5}
-        @@ at () }
-  | LPAR MEMORY NAT segment_list RPAR
-    { {min = Int64.of_string $3; max = Int64.of_string $3; segments = $4}
-        @@ at () }
+  | LPAR MEMORY limits segment_list RPAR
+    { {limits = $3; segments = $4} @@ at () }
 ;
 
 type_def :

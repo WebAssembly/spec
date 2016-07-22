@@ -254,14 +254,18 @@ let table xs = tab "table" (atom var) xs
 
 (* Memory *)
 
+let limits lim =
+  let {min; max} = lim.it in
+  String.concat " " (int64 min :: opt int64 max)
+
 let segment seg =
   let {Memory.addr; data} = seg.it in
   let ss = Lib.String.breakup data (!Flags.width / 2) in
   Node ("segment " ^ int64 addr, list (atom string) ss)
 
 let memory mem =
-  let {min; max; segments} = mem.it in
-  Node ("memory " ^ int64 min ^ " " ^ int64 max, list segment segments)
+  let {limits = lim; segments} = mem.it in
+  Node ("memory " ^ limits lim, list segment segments)
 
 
 (* Modules *)

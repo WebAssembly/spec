@@ -327,9 +327,12 @@ let encode m =
       section "table" (vec var) tab (tab <> [])
 
     (* Memory section *)
+    let limits lim =
+      let {min; max} = lim.it in
+      bool (max <> None); vu64 min; opt vu64 max
+
     let memory mem =
-      let {min; max; _} = mem.it in
-      vu64 min; vu64 max; bool true (*TODO: pending change*)
+      limits mem.it.limits
 
     let memory_section memo =
       section "memory" (opt memory) memo (memo <> None)

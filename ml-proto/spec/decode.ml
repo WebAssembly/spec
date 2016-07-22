@@ -493,11 +493,15 @@ let table_section s =
 
 (* Memory section *)
 
-let memory s =
+let limits s =
+  let has_max = bool s in
   let min = vu64 s in
-  let max = vu64 s in
-  let _ = bool s in (*TODO: pending change*)
-  {min; max; segments = []}
+  let max = opt vu64 has_max s in
+  {min; max}
+
+let memory s =
+  let lim = at limits s in
+  {limits = lim; segments = []}
 
 let memory_section s =
   section `MemorySection (opt (at memory) true) None s

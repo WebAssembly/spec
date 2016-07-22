@@ -327,6 +327,18 @@ let check_start c start =
       "start function must not return anything";
   ) start
 
+let check_limits lim =
+  let {min; max} = lim.it in
+  require (I64.le_u min 65535L) lim.at
+    "memory pages must be less or equal to 65535 (4GiB)";
+  match max with
+  | None -> ()
+  | Some max ->
+    require (I64.le_u max 65535L) lim.at
+      "memory pages must be less or equal to 65535 (4GiB)";
+    require (I64.le_u min max) lim.at
+      "memory pages minimum must not be greater than maximum"
+
 let check_segment pages prev_end seg =
   let seg_len = Int64.of_int (String.length seg.it.Memory.data) in
   let seg_end = Int64.add seg.it.Memory.addr seg_len in
@@ -336,13 +348,10 @@ let check_segment pages prev_end seg =
     "data segment does not fit memory";
   seg_end
 
-let check_memory memory =
-  let mem = memory.it in
-  require (mem.min <= mem.max) memory.at
-    "minimum memory pages must be less than or equal to the maximum";
-  require (mem.max <= 65535L) memory.at
-    "linear memory pages must be less or equal to 65535 (4GiB)";
-  ignore (List.fold_left (check_segment mem.min) 0L mem.segments)
+let check_memory mem =
+  let {limits; segments} = mem.it in
+  check_limits limits;
+  ignore (List.fold_left (check_segment limits.it.min) 0L segments)
 
 let check_module m =
   let {memory; types; funcs; start; imports; exports; table} = m.it in
