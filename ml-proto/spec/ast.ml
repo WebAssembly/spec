@@ -210,11 +210,11 @@ and func' =
 type module_ = module' Source.phrase
 and module' =
 {
+  table : Kernel.table option;
   memory : Kernel.memory option;
   types : Types.func_type list;
   funcs : func list;
   start : var option;
   imports : Kernel.import list;
   exports : Kernel.export list;
-  table : var list;
 }

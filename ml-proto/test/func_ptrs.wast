@@ -36,7 +36,7 @@
 (module
     (type $T (func (param) (result i32)))
     (type $U (func (param) (result i32)))
-    (table $t1 $t2 $t3 $u1 $u2 $t1 $t3)
+    (table (segment $t1 $t2 $t3 $u1 $u2 $t1 $t3))
 
     (func $t1 (type $T) (i32.const 1))
     (func $t2 (type $T) (i32.const 2))
@@ -62,9 +62,9 @@
 (assert_trap   (invoke "callt" (i32.const 4)) "indirect call signature mismatch")
 (assert_return (invoke "callt" (i32.const 5)) (i32.const 1))
 (assert_return (invoke "callt" (i32.const 6)) (i32.const 3))
-(assert_trap   (invoke "callt" (i32.const 7)) "undefined table index 7")
-(assert_trap   (invoke "callt" (i32.const 100)) "undefined table index 100")
-(assert_trap   (invoke "callt" (i32.const -1)) "undefined table index -1")
+(assert_trap   (invoke "callt" (i32.const 7)) "undefined element 7")
+(assert_trap   (invoke "callt" (i32.const 100)) "undefined element 100")
+(assert_trap   (invoke "callt" (i32.const -1)) "undefined element -1")
 
 (assert_trap   (invoke "callu" (i32.const 0)) "indirect call signature mismatch")
 (assert_trap   (invoke "callu" (i32.const 1)) "indirect call signature mismatch")
@@ -73,12 +73,12 @@
 (assert_return (invoke "callu" (i32.const 4)) (i32.const 5))
 (assert_trap   (invoke "callu" (i32.const 5)) "indirect call signature mismatch")
 (assert_trap   (invoke "callu" (i32.const 6)) "indirect call signature mismatch")
-(assert_trap   (invoke "callu" (i32.const 7)) "undefined table index 7")
-(assert_trap   (invoke "callu" (i32.const -1)) "undefined table index -1")
+(assert_trap   (invoke "callu" (i32.const 7)) "undefined element 7")
+(assert_trap   (invoke "callu" (i32.const -1)) "undefined element -1")
 
 (module
     (type $T (func (result i32)))
-    (table 0 1)
+    (table (segment 0 1))
 
     (import $print_i32 "spectest" "print" (param i32))
 

@@ -8,9 +8,14 @@
 (module (memory 1 2 (segment 0 "a") (segment 65535 "b")))
 (module (memory 1 2 (segment 0 "a") (segment 1 "b") (segment 2 "c")))
 
+(module (memory (segment "")) (func "memsize" (result i32) (current_memory)))
+(assert_return (invoke "memsize") (i32.const 0))
+(module (memory (segment "x")) (func "memsize" (result i32) (current_memory)))
+(assert_return (invoke "memsize") (i32.const 1))
+
 (assert_invalid
   (module (memory 1 0))
-  "memory pages minimum must not be greater than maximum"
+  "memory size minimum must not be greater than maximum"
 )
 (assert_invalid
   (module (memory 0 0 (segment 0 "a")))
@@ -34,15 +39,15 @@
 )
 (assert_invalid
   (module (memory 0 65536))
-  "memory pages must be less or equal to 65535 (4GiB)"
+  "memory size must be less than 65536 pages (4GiB)"
 )
 (assert_invalid
   (module (memory 0 2147483648))
-  "memory pages must be less or equal to 65535 (4GiB)"
+  "memory size must be less than 65536 pages (4GiB)"
 )
 (assert_invalid
   (module (memory 0 4294967296))
-  "memory pages must be less or equal to 65535 (4GiB)"
+  "memory size must be less than 65536 pages (4GiB)"
 )
 
 ;; Test alignment annotation rules

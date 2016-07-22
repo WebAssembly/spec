@@ -153,9 +153,12 @@ typedef: ( type <name>? ( func <param>* <result>? ) )
 import:  ( import <name>? <string> <string> <sig> )
 export:  ( export <string> <var> ) | ( export <string> memory)
 start:   ( start <var> )
-table:   ( table <var>* )
-memory:  ( memory <int> <int>? <segment>* )
-segment: ( segment <int> <string>+ )
+table:   ( table <int> <int>? <table-segment>* )
+         ( table ( segment <var>* ) )      ;; = (table <size> (segment 0 <var>*))
+memory:  ( memory <int> <int>? <memory-segment>* )
+         ( memory ( segment <string>+ ) )  ;; = (memory <size> (segment 0 <string>+))
+table-segment: ( segment <int> <var>* )
+memory-segment: ( segment <int> <string>+ )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).
@@ -165,6 +168,7 @@ Any form of naming via `<name>` and `<var>` (including expression labels) is mer
 A module of the form `(module <string>+)` is given in binary form and will be decoded from the (concatenation of the) strings.
 
 The segment strings in the memory field are used to initialize the consecutive memory at the given offset.
+The `<size>` in the expansion of the two short-hand forms for `table` and `memory` is the minimal size that can hold the segment: the number of `<var>`s for tables, and the accumulative length of the strings rounded up to page size for memories.
 
 Comments can be written in one of two ways:
 

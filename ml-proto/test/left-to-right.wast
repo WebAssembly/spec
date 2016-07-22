@@ -5,7 +5,9 @@
   (type $i64_T (func (param i64 i64) (result i32)))
   (type $f32_T (func (param f32 f32) (result i32)))
   (type $f64_T (func (param f64 f64) (result i32)))
-  (table $i32_t0 $i32_t1 $i64_t0 $i64_t1 $f32_t0 $f32_t1 $f64_t0 $f64_t1)
+  (table
+    (segment $i32_t0 $i32_t1 $i64_t0 $i64_t1 $f32_t0 $f32_t1 $f64_t0 $f64_t1)
+  )
 
   (func $i32_t0 (type $i32_T) (i32.const -1))
   (func $i32_t1 (type $i32_T) (i32.const -2))

@@ -17,7 +17,8 @@ type instance =
   module_ : module_;
   imports : import list;
   exports : export_map;
-  memory : Memory.t option
+  table : Table.t option;
+  memory : Memory.t option;
 }
 
 
@@ -78,13 +79,16 @@ let export m name =
   try ExportMap.find name.it m.exports with Not_found ->
     Crash.error name.at ("undefined export \"" ^ name.it ^ "\"")
 
-let table_elem c i at =
-  try
-    let j = Int32.to_int i in
-    if i < 0l || i <> Int32.of_int j then raise (Failure "");
-    List.nth c.instance.module_.it.table j
-  with Failure _ ->
-    Trap.error at ("undefined table index " ^ Int32.to_string i)
+let elem c i t at =
+  match c.instance.table with
+  | None -> Crash.error at "no table"
+  | Some tab ->
+  match Table.load tab i t with
+  | Some j -> j
+  | None ->
+    Trap.error at ("undefined element " ^ Int32.to_string i)
+  | exception Table.Bounds ->
+    Trap.error at ("undefined element " ^ Int32.to_string i)
 
 module MakeLabel () =
 struct
@@ -186,7 +190,7 @@ let rec eval_expr (c : config) (e : expr) =
   | CallIndirect (ftype, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
-    let f = func c (table_elem c i e1.at) in
+    let f = func c (elem c i AnyFuncType e1.at @@ e1.at) in
     if ftype.it <> f.it.ftype.it then
       Trap.error e1.at "indirect call signature mismatch";
     eval_func c.instance f vs
@@ -313,9 +317,18 @@ and eval_hostop c hostop vs at =
 
 (* Modules *)
 
-let init_memory {it = {limits; segments}} =
+let init_table m table =
+  let {limits; segments} = table.it in
+  let tab = Table.create limits.it.min limits.it.max in
+  let elems = List.map (fun x -> Some x.it) in
+  List.iter (fun seg -> Table.blit tab seg.it.offset (elems seg.it.data))
+    segments;
+  tab
+
+let init_memory m memory =
+  let {limits; segments} = memory.it in
   let mem = Memory.create limits.it.min limits.it.max in
-  Memory.init mem (List.map it segments);
+  List.iter (fun seg -> Memory.blit mem seg.it.offset seg.it.data) segments;
   mem
 
 let add_export funcs ex =
@@ -326,12 +339,13 @@ let add_export funcs ex =
 
 let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
-  let {memory; funcs; exports; start; _} = m.it in
+  let {table; memory; funcs; exports; start; _} = m.it in
   let instance =
     {module_ = m;
      imports;
      exports = List.fold_right (add_export funcs) exports ExportMap.empty;
-     memory = Lib.Option.map init_memory memory}
+     table = Lib.Option.map (init_table m) table;
+     memory = Lib.Option.map (init_memory m) memory}
   in
   Lib.Option.app
     (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;

@@ -82,6 +82,9 @@ let encode m =
       | Float32Type -> u8 0x03
       | Float64Type -> u8 0x04
 
+    let elem_type = function
+      | AnyFuncType -> u8 0x20
+
     let expr_type t = vec1 value_type t
 
     let func_type = function
@@ -323,16 +326,20 @@ let encode m =
       section "function" (vec func) fs (fs <> [])
 
     (* Table section *)
-    let table_section tab =
-      section "table" (vec var) tab (tab <> [])
+    let limits vu lim =
+      let {min; max} = lim.it in
+      bool (max <> None); vu min; opt vu max
+
+    let table tab =
+      elem_type AnyFuncType;
+      limits vu32 tab.it.limits
+
+    let table_section tabo =
+      section "table" (opt table) tabo (tabo <> None)
 
     (* Memory section *)
-    let limits lim =
-      let {min; max} = lim.it in
-      bool (max <> None); vu64 min; opt vu64 max
-
     let memory mem =
-      limits mem.it.limits
+      limits vu64 mem.it.limits
 
     let memory_section memo =
       section "memory" (opt memory) memo (memo <> None)
@@ -374,13 +381,24 @@ let encode m =
     let code_section fs =
       section "code" (vec code) fs (fs <> [])
 
+    (* Element section *)
+    let segment vu dat seg =
+      let {offset; data} = seg.it in
+      vu offset; dat data
+
+    let table_segment seg =
+      segment vu32 (vec var) seg
+
+    let elem_section segs =
+      section "element" (opt (vec table_segment))
+        segs (segs <> None && segs <> Some [])
+
     (* Data section *)
-    let segment seg =
-      let {Memory.addr; data} = seg.it in
-      vu64 addr; string data
+    let memory_segment seg =
+      segment vu64 string seg
 
     let data_section segs =
-      section "data" (opt (vec segment))
+      section "data" (opt (vec memory_segment))
         segs (segs <> None && segs <> Some [])
 
     (* Module *)
@@ -396,6 +414,9 @@ let encode m =
       export_section m.it.exports;
       start_section m.it.start;
       code_section m.it.funcs;
-      data_section (Lib.Option.map (fun mem -> mem.it.segments) m.it.memory)
+      elem_section
+        (Lib.Option.map (fun (tab : table) -> tab.it.segments) m.it.table);
+      data_section
+        (Lib.Option.map (fun (mem : memory) -> mem.it.segments) m.it.memory)
   end
   in E.module_ m; to_string s

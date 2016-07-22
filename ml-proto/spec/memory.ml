@@ -2,14 +2,15 @@ open Bigarray
 open Types
 open Values
 
+type size = int64
 type address = int64
-type size = address
-type offset = address
+type offset = int64
+
 type mem_size = Mem8 | Mem16 | Mem32
 type extension = SX | ZX
-type segment = {addr : address; data : string}
-type value_type = Types.value_type
+
 type value = Values.value
+type value_type = Types.value_type
 
 type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
 type memory = {mutable content : memory'; max : size option}
@@ -38,7 +39,7 @@ let int64_of_host_size n =
 let host_index_of_int64 a n =
   assert (n >= 0);
   let n' = Int64.of_int n in
-  if (a < Int64.zero) ||
+  if (a < 0L) ||
      (Int64.sub Int64.max_int a < n') ||
      (Int64.add a n' > Int64.of_int max_int) then raise Bounds;
   Int64.to_int a
@@ -59,24 +60,13 @@ let create n max =
   assert (within_limits n max);
   {content = create' n; max}
 
-let init_seg mem seg =
-  (* There currently is no way to blit from a string. *)
-  let n = String.length seg.data in
-  let base = host_index_of_int64 seg.addr n in
-  for i = 0 to n - 1 do
-    mem.content.{base + i} <- Char.code seg.data.[i]
-  done
-
-let init mem segs =
-  try List.iter (init_seg mem) segs with Invalid_argument _ -> raise Bounds
-
 let size mem =
   Int64.div (int64_of_host_size (Array1.dim mem.content)) page_size
 
-let grow mem pages =
+let grow mem delta =
   let host_old_size = Array1.dim mem.content in
   let old_size = size mem in
-  let new_size = Int64.add old_size pages in
+  let new_size = Int64.add old_size delta in
   if I64.gt_u old_size new_size then raise SizeOverflow else
   if not (within_limits new_size mem.max) then raise SizeLimit else
   let after = create' new_size in
@@ -158,3 +148,11 @@ let store_wrap mem a o sz v =
   | Mem16, Int64 x -> storen mem 2 ea x
   | Mem32, Int64 x -> storen mem 4 ea x
   | _ -> raise Type
+
+let blit mem addr data =
+  let base = host_index_of_int64 addr 1 in
+  try
+    for i = 0 to String.length data - 1 do
+      mem.content.{base + i} <- Char.code data.[i]
+    done
+  with Invalid_argument _ -> raise Bounds

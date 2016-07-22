@@ -1,6 +1,7 @@
 (* Types *)
 
 type value_type = Int32Type | Int64Type | Float32Type | Float64Type
+type elem_type = AnyFuncType
 type expr_type = value_type option
 type func_type = {ins : value_type list; out : expr_type}
 

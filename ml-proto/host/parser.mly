@@ -352,24 +352,52 @@ start :
     { fun c -> $3 c func }
 ;
 
-limits :
+table_limits :
+  | NAT { {min = Int32.of_string $1; max = None} @@ at () }
+  | NAT NAT
+    { {min = Int32.of_string $1; max = Some (Int32.of_string $2)} @@ at () }
+;
+
+table_segment :
+  | LPAR SEGMENT NAT var_list RPAR
+    { let at = at () in
+      fun c -> {offset = Int32.of_string $3; data = $4 c func} @@ at }
+;
+table_segment_list :
+  | /* empty */ { fun c -> [] }
+  | table_segment table_segment_list { fun c -> $1 c :: $2 c }
+;
+table :
+  | LPAR TABLE table_limits table_segment_list RPAR
+    { let at = at () in fun c -> {limits = $3; segments = $4 c} @@ at }
+  | LPAR TABLE LPAR SEGMENT var_list RPAR RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> let data = $5 c func in
+      {limits = {min = Int32.of_int (List.length data); max = None} @@ at;
+       segments = [{offset = 0l; data} @@ at]} @@ at }
+;
+
+memory_limits :
   | NAT { {min = Int64.of_string $1; max = None} @@ at () }
   | NAT NAT
     { {min = Int64.of_string $1; max = Some (Int64.of_string $2)} @@ at () }
 ;
-
-segment :
+memory_segment :
   | LPAR SEGMENT NAT text_list RPAR
-    { {Memory.addr = Int64.of_string $3; Memory.data = $4} @@ at () }
+    { {offset = Int64.of_string $3; data = $4} @@ at () }
 ;
-segment_list :
+memory_segment_list :
   | /* empty */ { [] }
-  | segment segment_list { $1 :: $2 }
+  | memory_segment memory_segment_list { $1 :: $2 }
 ;
-
 memory :
-  | LPAR MEMORY limits segment_list RPAR
+  | LPAR MEMORY memory_limits memory_segment_list RPAR
     { {limits = $3; segments = $4} @@ at () }
+  | LPAR MEMORY LPAR SEGMENT text_list RPAR RPAR  /* Sugar */
+    { {limits =
+        {min = Int64.(div (add (of_int (String.length $5)) 65535L) 65536L);
+         max = None} @@ at ();
+       segments = [{offset = 0L; data = $5} @@ at ()] } @@ at () }
 ;
 
 type_def :
@@ -377,11 +405,6 @@ type_def :
     { fun c -> anon_type c $5 }
   | LPAR TYPE bind_var LPAR FUNC func_type RPAR RPAR
     { fun c -> bind_type c $3 $6 }
-;
-
-table :
-  | LPAR TABLE var_list RPAR
-    { fun c -> $3 c func }
 ;
 
 import :
@@ -413,8 +436,10 @@ export :
 module_fields :
   | /* empty */
     { fun c ->
-      {memory = None; types = c.types.tlist; funcs = []; start = None; imports = [];
-       exports = []; table = []} }
+      {table = None; memory = None; types = c.types.tlist; funcs = []; start = None;
+       imports = []; exports = []} }
+  | type_def module_fields
+    { fun c -> $1 c; $2 c }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in let func, exs = f () in
       {m with funcs = func :: m.funcs; exports = exs @ m.exports} }
@@ -425,10 +450,10 @@ module_fields :
     { fun c -> let m = $2 c in
       {m with exports = $1 c :: m.exports} }
   | table module_fields
-    { fun c -> let m = $2 c in
-      {m with table = ($1 c) @ m.table} }
-  | type_def module_fields
-    { fun c -> $1 c; $2 c }
+    { fun c -> let m = $2 c in let tab = $1 c in
+      match m.table with
+      | Some _ -> error tab.at "multiple table sections"
+      | None -> {m with table = Some tab} }
   | memory module_fields
     { fun c -> let m = $2 c in
       match m.memory with

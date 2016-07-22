@@ -32,11 +32,13 @@
   (func $i64-f64 (type $i64-f64) (get_local 1))
 
   (table
-    $const-i32 $const-i64 $const-f32 $const-f64
-    $id-i32 $id-i64 $id-f32 $id-f64
-    $f32-i32 $i32-i64 $f64-f32 $i64-f64
-    $fac $fib $even $odd
-    $runaway $mutual-runaway1 $mutual-runaway2
+    (segment
+      $const-i32 $const-i64 $const-f32 $const-f64
+      $id-i32 $id-i64 $id-f32 $id-f64
+      $f32-i32 $i32-i64 $f64-f32 $i64-f64
+      $fac $fib $even $odd
+      $runaway $mutual-runaway1 $mutual-runaway2
+    )
   )
 
   ;; Typing
@@ -165,9 +167,9 @@
 (assert_return (invoke "dispatch" (i32.const 13) (i64.const 5)) (i64.const 8))
 (assert_trap (invoke "dispatch" (i32.const 0) (i64.const 2)) "indirect call signature mismatch")
 (assert_trap (invoke "dispatch" (i32.const 15) (i64.const 2)) "indirect call signature mismatch")
-(assert_trap (invoke "dispatch" (i32.const 20) (i64.const 2)) "undefined table index")
-(assert_trap (invoke "dispatch" (i32.const -1) (i64.const 2)) "undefined table index")
-(assert_trap (invoke "dispatch" (i32.const 1213432423) (i64.const 2)) "undefined table index")
+(assert_trap (invoke "dispatch" (i32.const 20) (i64.const 2)) "undefined element")
+(assert_trap (invoke "dispatch" (i32.const -1) (i64.const 2)) "undefined element")
+(assert_trap (invoke "dispatch" (i32.const 1213432423) (i64.const 2)) "undefined element")
 
 (assert_return (invoke "fac" (i64.const 0)) (i64.const 1))
 (assert_return (invoke "fac" (i64.const 1)) (i64.const 1))
@@ -198,6 +200,15 @@
 (assert_invalid
   (module
     (type (func))
+    (func $no-table (call_indirect 0 (i32.const 0)))
+  )
+  "operator requires a table section"
+)
+
+(assert_invalid
+  (module
+    (type (func))
+    (table 0)
     (func $type-void-vs-num (i32.eqz (call_indirect 0 (i32.const 0))))
   )
   "type mismatch"
@@ -205,6 +216,7 @@
 (assert_invalid
   (module
     (type (func (result i64)))
+    (table 0)
     (func $type-num-vs-num (i32.eqz (call_indirect 0 (i32.const 0))))
   )
   "type mismatch"
@@ -213,6 +225,7 @@
 (assert_invalid
   (module
     (type (func (param i32)))
+    (table 0)
     (func $arity-0-vs-1 (call_indirect 0 (i32.const 0)))
   )
   "arity mismatch"
@@ -220,6 +233,7 @@
 (assert_invalid
   (module
     (type (func (param f64 i32)))
+    (table 0)
     (func $arity-0-vs-2 (call_indirect 0 (i32.const 0)))
   )
   "arity mismatch"
@@ -227,6 +241,7 @@
 (assert_invalid
   (module
     (type (func))
+    (table 0)
     (func $arity-1-vs-0 (call_indirect 0 (i32.const 0) (i32.const 1)))
   )
   "arity mismatch"
@@ -234,6 +249,7 @@
 (assert_invalid
   (module
     (type (func))
+    (table 0)
     (func $arity-2-vs-0
       (call_indirect 0 (i32.const 0) (f64.const 2) (i32.const 1))
     )
@@ -244,6 +260,7 @@
 (assert_invalid
   (module
     (type (func (param i32 i32)))
+    (table 0)
     (func $arity-nop-first
       (call_indirect 0 (i32.const 0) (nop) (i32.const 1) (i32.const 2))
     )
@@ -253,6 +270,7 @@
 (assert_invalid
   (module
     (type (func (param i32 i32)))
+    (table 0)
     (func $arity-nop-mid
       (call_indirect 0 (i32.const 0) (i32.const 1) (nop) (i32.const 2))
     )
@@ -262,6 +280,7 @@
 (assert_invalid
   (module
     (type (func (param i32 i32)))
+    (table 0)
     (func $arity-nop-last
       (call_indirect 0 (i32.const 0) (i32.const 1) (i32.const 2) (nop))
     )
@@ -272,6 +291,7 @@
 (assert_invalid
   (module
     (type (func (param i32)))
+    (table 0)
     (func $type-func-void-vs-i32 (call_indirect 0 (nop) (i32.const 1)))
   )
   "type mismatch"
@@ -279,6 +299,7 @@
 (assert_invalid
   (module
     (type (func (param i32)))
+    (table 0)
     (func $type-func-num-vs-i32 (call_indirect 0 (i64.const 1) (i32.const 0)))
   )
   "type mismatch"
@@ -287,6 +308,7 @@
 (assert_invalid
   (module
     (type (func (param i32 i32)))
+    (table 0)
     (func $type-first-void-vs-num
       (call_indirect 0 (i32.const 0) (nop) (i32.const 1))
     )
@@ -296,6 +318,7 @@
 (assert_invalid
   (module
     (type (func (param i32 i32)))
+    (table 0)
     (func $type-second-void-vs-num
       (call_indirect 0 (i32.const 0) (i32.const 1) (nop))
     )
@@ -305,6 +328,7 @@
 (assert_invalid
   (module
     (type (func (param i32 f64)))
+    (table 0)
     (func $type-first-num-vs-num
       (call_indirect 0 (i32.const 0) (f64.const 1) (i32.const 1))
     )
@@ -314,6 +338,7 @@
 (assert_invalid
   (module
     (type (func (param f64 i32)))
+    (table 0)
     (func $type-second-num-vs-num
       (call_indirect 0 (i32.const 0) (i32.const 1) (f64.const 1))
     )
@@ -325,10 +350,12 @@
 ;; Unbound type
 
 (assert_invalid
-  (module (func $unbound-type (call_indirect 1 (i32.const 0))))
+  (module (table 0) (func $unbound-type (call_indirect 1 (i32.const 0))))
   "unknown function type"
 )
 (assert_invalid
-  (module (func $large-type (call_indirect 10001232130000 (i32.const 0))))
+  (module (table 0)
+    (func $large-type (call_indirect 10001232130000 (i32.const 0)))
+  )
   "unknown function type"
 )

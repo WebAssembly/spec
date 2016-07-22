@@ -116,23 +116,34 @@ and func' =
 }
 
 
+(* Tables & Memories *)
+
+type 'size limits = 'size limits' Source.phrase
+and 'size limits' =
+{
+  min : 'size;
+  max : 'size option;
+}
+
+type ('off, 'data) segment = ('off, 'data) segment' Source.phrase
+and ('off, 'data) segment' =
+{
+  offset : 'off;
+  data : 'data;
+}
+
+type ('size, 'off, 'data) store = ('size, 'off, 'data) store' Source.phrase
+and ('size, 'off, 'data) store' =
+{
+  limits : 'size limits;
+  segments : ('off, 'data) segment list;
+}
+
+type table = (Table.size, Table.index, var list) store
+type memory = (Memory.size, Memory.address, string) store
+
+
 (* Modules *)
-
-type limits = limits' Source.phrase
-and limits' =
-{
-  min : Memory.size;
-  max : Memory.size option;
-}
-
-type segment = Memory.segment Source.phrase
-
-type memory = memory' Source.phrase
-and memory' =
-{
-  limits : limits;
-  segments : segment list;
-}
 
 type export = export' Source.phrase
 and export' =
@@ -152,11 +163,11 @@ and import' =
 type module_ = module_' Source.phrase
 and module_' =
 {
-  memory : memory option;
   types : Types.func_type list;
+  table : table option;
+  memory : memory option;
   funcs : func list;
   start : var option;
   imports : import list;
   exports : export list;
-  table : var list;
 }

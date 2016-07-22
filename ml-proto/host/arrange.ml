@@ -252,20 +252,30 @@ let start x = Node ("start " ^ var x, [])
 let table xs = tab "table" (atom var) xs
 
 
-(* Memory *)
+(* Tables & memories *)
 
-let limits lim =
+let limits int lim =
   let {min; max} = lim.it in
-  String.concat " " (int64 min :: opt int64 max)
+  String.concat " " (int min :: opt int max)
 
-let segment seg =
-  let {Memory.addr; data} = seg.it in
-  let ss = Lib.String.breakup data (!Flags.width / 2) in
-  Node ("segment " ^ int64 addr, list (atom string) ss)
+let segment int dat seg =
+  let {offset; data} = seg.it in
+  Node ("segment " ^ int offset, dat data)
+
+let elems xs =
+  list (atom var) xs
+
+let table tab =
+  let {limits = lim; segments} = tab.it in
+  Node ("table " ^ limits int32 lim, list (segment int32 elems) segments)
+
+let data s =
+  let ss = Lib.String.breakup s (!Flags.width / 2) in
+  list (atom string) ss
 
 let memory mem =
   let {limits = lim; segments} = mem.it in
-  Node ("memory " ^ limits lim, list segment segments)
+  Node ("memory " ^ limits int64 lim, list (segment int64 data) segments)
 
 
 (* Modules *)
@@ -293,7 +303,7 @@ let module_ m =
     listi typedef m.it.types @
     listi import m.it.imports @
     listi func m.it.funcs @
-    table m.it.table @
+    opt table m.it.table @
     opt memory m.it.memory @
     list export m.it.exports @
     opt start m.it.start
