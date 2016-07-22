@@ -342,7 +342,7 @@ let encode m =
       value_type t; expr e; op 0x0f
 
     let global_section gs =
-      section "code" (vec global) gs (gs <> [])
+      section "global" (vec global) gs (gs <> [])
 
     (* Export section *)
     let export exp =
