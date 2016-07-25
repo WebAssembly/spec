@@ -157,6 +157,51 @@
   (func "init-local-i64" (result i64) (local i64) (get_local 0))
   (func "init-local-f32" (result f32) (local f32) (get_local 0))
   (func "init-local-f64" (result f64) (local f64) (get_local 0))
+
+
+  ;; Desugaring of implicit type signature
+  (func $empty-sig-1)  ;; should be assigned type $sig
+  (func $complex-sig-1 (param f64 i64 f64 i64 f64 i64 f32 i32))
+  (func $empty-sig-2)  ;; should be assigned type $sig
+  (func $complex-sig-2 (param f64 i64 f64 i64 f64 i64 f32 i32))
+  (func $complex-sig-3 (param f64 i64 f64 i64 f64 i64 f32 i32))
+
+  (type $empty-sig-duplicate (func))
+  (type $complex-sig-duplicate (func (param f64 i64 f64 i64 f64 i64 f32 i32)))
+  (table $complex-sig-3 $empty-sig-2 $complex-sig-1 $complex-sig-3 $empty-sig-1)
+
+  (func "signature-explicit-reused"
+    (call_indirect $sig (i32.const 1))
+    (call_indirect $sig (i32.const 4))
+  )
+
+  (func "signature-implicit-reused"
+    ;; The implicit index 16 in this test depends on the function and
+    ;; type definitions, and may need adapting if they change.
+    (call_indirect 16 (i32.const 0)
+      (f64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
+      (f64.const 0) (i64.const 0) (f32.const 0) (i32.const 0)
+    )
+    (call_indirect 16 (i32.const 2)
+      (f64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
+      (f64.const 0) (i64.const 0) (f32.const 0) (i32.const 0)
+    )
+    (call_indirect 16 (i32.const 3)
+      (f64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
+      (f64.const 0) (i64.const 0) (f32.const 0) (i32.const 0)
+    )
+  )
+
+  (func "signature-explicit-duplicate"
+    (call_indirect $empty-sig-duplicate (i32.const 1))
+  )
+
+  (func "signature-implicit-duplicate"
+    (call_indirect $complex-sig-duplicate (i32.const 0)
+      (f64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
+      (f64.const 0) (i64.const 0) (f32.const 0) (i32.const 0)
+    )
+  )
 )
 
 (assert_return (invoke "local-first-i32") (i32.const 0))
@@ -275,6 +320,15 @@
 (assert_return (invoke "init-local-i64") (i64.const 0))
 (assert_return (invoke "init-local-f32") (f32.const 0))
 (assert_return (invoke "init-local-f64") (f64.const 0))
+
+(assert_return (invoke "signature-explicit-reused"))
+(assert_return (invoke "signature-implicit-reused"))
+(assert_trap (invoke "signature-explicit-duplicate")
+  "indirect call signature mismatch"
+)
+(assert_trap (invoke "signature-implicit-duplicate")
+  "indirect call signature mismatch"
+)
 
 
 ;; Invalid typing of locals
