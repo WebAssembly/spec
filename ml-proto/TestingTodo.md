@@ -4,18 +4,8 @@ specified in
 have a link to an open issue/PR, or be obvious. Comments/corrections/additions
 welcome.
 
-Misc semantics:
- - ~~test that linear memory is little-endian for all integers and floats~~
- - test that unaligned and misaligned accesses work, even if slow
- - ~~test that runaway recursion traps~~
- - test that too-big `grow_memory` fails appropriately
- - test that too-big linear memory initial allocation fails
- - test that function addresses are monotonic indices, and not actual addresses.
- - ~~test that non-pagesize `grow_memory` fails~~
- - test that one can clobber the entire contents of the linear memory without corrupting: call stack, local variables, program execution.
-
 Operator semantics:
- - test that promote/demote, sext/trunc, zext/trunc is bit-preserving if not NaN
+ - ~~test that promote/demote is bit-preserving if not NaN~~
  - ~~test that clz/ctz handle zero~~
  - ~~test that numbers slightly outside of the int32 range round into the int32 range in floating-to-int32 conversion~~
  - ~~test that neg, abs, copysign, reinterpretcast, store+load, set+get, preserve the sign bit and significand bits of NaN and don't canonicalize~~
@@ -54,19 +44,27 @@ Floating point semantics:
 
 Linear memory semantics:
  - test that loading from null works
- - test that loading from constant OOB traps and is not DCE'd or folded (pending [discussion](https://github.com/WebAssembly/design/blob/master/AstSemantics.md#out-of-bounds))
+ - ~~test that loading from constant OOB traps and is not DCE'd or folded (pending [discussion](https://github.com/WebAssembly/design/blob/master/AstSemantics.md#out-of-bounds))~~
  - test that loading from "beyond the STACKPTR" succeeds
  - test that "stackptr + (linearmemptr - stackptr)" loads from linearmemptr.
  - test loading "uninitialized" things from aliased stack frames return what's there
  - test that loadwithoffset traps in overflow cases
- - test that newly allocated memory is zeroed
- - test that grow_memory does a full 32-bit unsigned check for page_size divisibility
+ - test that newly allocated memory (program start and `grow_memory`) is zeroed
+ - test that `grow_memory` does a full 32-bit unsigned check for page-size divisibility
  - test that load/store addreses are full int32 (or int64), and not OCaml int
  - test that when allocating 4GiB, accessing index -1 fails
+ - ~~test that linear memory is little-endian for all integers and floats~~
+ - test that unaligned and misaligned accesses work, even if slow
+ - ~~test that runaway recursion traps~~
+ - test that too-big `grow_memory` fails appropriately
+ - test that too-big linear memory initial allocation fails
+ - ~~test that non-pagesize `grow_memory` fails~~
+ - test that one can clobber the entire contents of the linear memory without corrupting: call stack, local variables, program execution.
+ - test that an i64 store with 4-byte alignment that's 4 bytes out of bounds traps without storing anything.
 
 Function pointer semantics:
  - test that function addresses are monotonic indices, and not actual addresses.
- - test that function pointers work [correctly](https://github.com/WebAssembly/design/issues/89)
+ - ~~test that function pointers work [correctly](https://github.com/WebAssembly/design/issues/89)~~
 
 Expression optimizer bait:
  - ~~test that `a+1<b+1` isn't folded to `a<b`~~
@@ -111,10 +109,9 @@ Misc x87-isms:
  - ~~test for loading and storing NaNs~~
 
 Validation errors:
- - load/store or variables with type void/bool/funcptr/etc.
- - sign-extend load from int64 to int32 etc.
- - fp-promote load and fp-demote store
- - alignment greater than the size of a load or store
+ - ~~sign-extend load from int64 to int32 etc.~~
+ - ~~fp-promote load and fp-demote store~~
+ - alignment greater than the size of a load or store (https://github.com/WebAssembly/spec/issues/302)
 
 SIMD (post-MVP):
  - test that SIMD insert/extract don't canonicalize NaNs
