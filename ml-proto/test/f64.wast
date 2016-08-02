@@ -1976,7 +1976,7 @@
 (assert_return_nan (invoke "max" (f64.const -nan) (f64.const -nan)))
 (assert_return_nan (invoke "max" (f64.const -nan) (f64.const nan)))
 (assert_return_nan (invoke "max" (f64.const nan) (f64.const -nan)))
-(assert_return (invoke "max" (f64.const nan) (f64.const nan)) (f64.const nan))
+(assert_return_nan (invoke "max" (f64.const nan) (f64.const nan)))
 (assert_return (invoke "copysign" (f64.const -0x0p+0) (f64.const -0x0p+0)) (f64.const -0x0p+0))
 (assert_return (invoke "copysign" (f64.const -0x0p+0) (f64.const 0x0p+0)) (f64.const 0x0p+0))
 (assert_return (invoke "copysign" (f64.const 0x0p+0) (f64.const -0x0p+0)) (f64.const -0x0p+0))
