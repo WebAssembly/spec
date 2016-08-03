@@ -301,7 +301,7 @@ and func' = function
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function
-  | {Ast.funcs = fs; start; memory; types; imports; exports; table} ->
-    {funcs = List.map func fs; start; memory; types; imports; exports; table}
+  | {Ast.funcs = fs; start; memory; types; imports; exports; table; elems; data} ->
+    {funcs = List.map func fs; start; memory; types; imports; exports; table; elems; data}
 
 let desugar = module_

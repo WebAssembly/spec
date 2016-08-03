@@ -17,6 +17,9 @@ let string_of_value_type_list = function
   | [t] -> string_of_value_type t
   | ts -> "(" ^ String.concat " " (List.map string_of_value_type ts) ^ ")"
 
+let string_of_elem_type = function
+  | AnyFuncType -> "anyfunc"
+
 let string_of_expr_type = function
   | None -> "()"
   | Some t -> string_of_value_type t

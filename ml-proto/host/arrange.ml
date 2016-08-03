@@ -35,10 +35,16 @@ let opt f xo = list f (list_of_opt xo)
 let tab head f xs = if xs = [] then [] else [Node (head, list f xs)]
 let atom f x = Atom (f x)
 
+let break_string s =
+  let ss = Lib.String.breakup s (!Flags.width / 2) in
+  list (atom string) ss
+
 
 (* Types *)
 
 let value_type t = string_of_value_type t
+
+let elem_type t = string_of_elem_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
@@ -258,24 +264,23 @@ let limits int lim =
   let {min; max} = lim.it in
   String.concat " " (int min :: opt int max)
 
-let segment int dat seg =
-  let {offset; data} = seg.it in
-  Node ("segment " ^ int offset, dat data)
-
-let elems xs =
-  list (atom var) xs
-
 let table tab =
-  let {limits = lim; segments} = tab.it in
-  Node ("table " ^ limits int32 lim, list (segment int32 elems) segments)
-
-let data s =
-  let ss = Lib.String.breakup s (!Flags.width / 2) in
-  list (atom string) ss
+  let {tlimits = lim; etype} = tab.it in
+  Node ("table " ^ limits int32 lim, [atom elem_type etype])
 
 let memory mem =
-  let {limits = lim; segments} = mem.it in
-  Node ("memory " ^ limits int64 lim, list (segment int64 data) segments)
+  let {mlimits = lim} = mem.it in
+  Node ("memory " ^ limits int64 lim, [])
+
+let segment head int dat seg =
+  let {offset; init} = seg.it in
+  Node (head ^ " " ^ int offset, dat init)
+
+let elems seg =
+  segment "elem" int32 (list (atom var)) seg
+
+let data seg =
+  segment "data" int64 break_string seg
 
 
 (* Modules *)
@@ -304,7 +309,9 @@ let module_ m =
     listi import m.it.imports @
     listi func m.it.funcs @
     opt table m.it.table @
+    list elems m.it.elems @
     opt memory m.it.memory @
+    list data m.it.data @
     list export m.it.exports @
     opt start m.it.start
   )

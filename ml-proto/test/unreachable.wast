@@ -122,7 +122,7 @@
   )
 
   (type $sig (func (param i32 i32 i32)))
-  (table (segment $dummy3))
+  (table anyfunc (elem $dummy3))
   (func "as-call_indirect-func"
     (call_indirect $sig (unreachable) (i32.const 1) (i32.const 2) (i32.const 3))
   )

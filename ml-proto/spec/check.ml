@@ -24,8 +24,8 @@ type context =
   locals : value_type list;
   return : expr_type;
   labels : expr_type_future list;
-  has_table : bool;
-  has_memory : bool;
+  table : Table.size option;
+  memory : Memory.size option;
 }
 
 let lookup category list x =
@@ -37,6 +37,14 @@ let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
+
+let size category opt at =
+  match opt with
+  | Some n -> n
+  | None -> error at ("no " ^ category ^ " defined")
+
+let table c at = size "table" c.table at
+let memory c at = size "memory" c.memory at
 
 
 (* Type Unification *)
@@ -181,7 +189,7 @@ let rec check_expr c et e =
 
   | CallIndirect (x, e1, es) ->
     let {ins; out} = type_ c.types x in
-    check_has_table c e.at;
+    ignore (table c e.at);
     check_expr c (some Int32Type) e1;
     check_exprs c ins es e.at;
     check_type out et e.at
@@ -243,7 +251,7 @@ let rec check_expr c et e =
 
   | Host (hostop, es) ->
     let {ins; out}, has_mem = type_hostop hostop in
-    if has_mem then check_has_memory c e.at;
+    if has_mem then ignore (memory c e.at);
     check_exprs c ins es e.at;
     check_type out et e.at
 
@@ -262,23 +270,17 @@ and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
 
 and check_load c et memop e1 at =
-  check_has_memory c at;
+  ignore (memory c at);
   check_memop memop at;
   check_expr c (some Int32Type) e1;
   check_type (Some memop.ty) et at
 
 and check_store c et memop e1 e2 at =
-  check_has_memory c at;
+  ignore (memory c at);
   check_memop memop at;
   check_expr c (some Int32Type) e1;
   check_expr c (some memop.ty) e2;
   check_type None et at
-
-and check_has_table c at =
-  require c.has_table at "operator requires a table section";
-
-and check_has_memory c at =
-  require c.has_memory at "operator requires a memory section"
 
 and check_memop memop at =
   require (memop.offset >= 0L) at "negative offset";
@@ -314,7 +316,7 @@ let check_func c f =
 
 (* Tables & Memories *)
 
-let check_table_limits lim =
+let check_table_limits (lim : Table.size limits) =
   let {min; max} = lim.it in
   match max with
   | None -> ()
@@ -322,22 +324,11 @@ let check_table_limits lim =
     require (I32.le_u min max) lim.at
       "table size minimum must not be greater than maximum"
 
-let check_table_segment c size prev_end seg =
-  let {offset; data} = seg.it in
-  let len = Int32.of_int (List.length data) in
-  let end_ = Int32.add seg.it.offset len in
-  require (prev_end <= offset) seg.at "table segment not disjoint and ordered";
-  require (end_ <= size) seg.at "table segment does not fit memory";
-  ignore (List.map (func c) data);
-  end_
+let check_table (c : context) (tab : table) =
+  let {tlimits = lim; etype = t} = tab.it in
+  check_table_limits lim
 
-let check_table c (tab : table) =
-  let {limits; segments} = tab.it in
-  check_table_limits limits;
-  ignore (List.fold_left (check_table_segment c limits.it.min) 0l segments)
-
-
-let check_memory_limits lim =
+let check_memory_limits (lim : Memory.size limits) =
   let {min; max} = lim.it in
   require (I64.lt_u min 65536L) lim.at
     "memory size must be less than 65536 pages (4GiB)";
@@ -349,19 +340,27 @@ let check_memory_limits lim =
     require (I64.le_u min max) lim.at
       "memory size minimum must not be greater than maximum"
 
-let check_memory_segment c pages prev_end seg =
-  let {offset; data} = seg.it in
-  let len = Int64.of_int (String.length data) in
-  let end_ = Int64.add offset len in
-  require (prev_end <= offset) seg.at "data segment not disjoint and ordered";
-  require (end_ <= Int64.mul pages Memory.page_size) seg.at
-    "data segment does not fit memory";
+let check_memory (c : context) (mem : memory) =
+  let {mlimits = lim} = mem.it in
+  check_memory_limits lim
+
+let check_table_segment c prev_end seg =
+  let {offset; init} = seg.it in
+  let len = Int32.of_int (List.length init) in
+  let end_ = Int32.add seg.it.offset len in
+  require (prev_end <= offset) seg.at "table segment not disjoint and ordered";
+  require (end_ <= table c seg.at) seg.at "table segment does not fit memory";
+  ignore (List.map (func c) init);
   end_
 
-let check_memory c (mem : memory) =
-  let {limits; segments} = mem.it in
-  check_memory_limits limits;
-  ignore (List.fold_left (check_memory_segment c limits.it.min) 0L segments)
+let check_memory_segment c prev_end seg =
+  let {offset; init} = seg.it in
+  let len = Int64.of_int (String.length init) in
+  let end_ = Int64.add offset len in
+  require (prev_end <= offset) seg.at "data segment not disjoint and ordered";
+  require (end_ <= Int64.mul (memory c seg.at) Memory.page_size) seg.at
+    "data segment does not fit memory";
+  end_
 
 
 (* Modules *)
@@ -381,13 +380,14 @@ let check_export c set ex =
   let {name; kind} = ex.it in
   (match kind with
   | `Func x -> ignore (func c x)
-  | `Memory -> require c.has_memory ex.at "no memory to export"
+  | `Memory -> ignore (memory c ex.at)
   );
   require (not (NameSet.mem name set)) ex.at "duplicate export name";
   NameSet.add name set
 
 let check_module m =
-  let {types; table; memory; funcs; start; imports; exports} = m.it in
+  let {types; table; memory; funcs; start; elems; data; imports; exports} = m.it
+  in
   let c =
     {
       types;
@@ -396,12 +396,14 @@ let check_module m =
       locals = [];
       return = None;
       labels = [];
-      has_table = table <> None;  
-      has_memory = memory <> None;
+      table = Lib.Option.map (fun tab -> tab.it.tlimits.it.min) table;  
+      memory = Lib.Option.map (fun mem -> mem.it.mlimits.it.min) memory;
     }
   in
+  List.iter (check_func c) funcs;
   Lib.Option.app (check_table c) table;
   Lib.Option.app (check_memory c) memory;
-  List.iter (check_func c) funcs;
   ignore (List.fold_left (check_export c) NameSet.empty exports);
+  ignore (List.fold_left (check_table_segment c) 0l elems);
+  ignore (List.fold_left (check_memory_segment c) 0L data);
   check_start c start

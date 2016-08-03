@@ -30,13 +30,16 @@
 (assert_return (invoke "three" (i32.const 13)) (i32.const 11))
 (invoke "four" (i32.const 83))
 
+(assert_invalid (module (elem 0)) "no table defined")
+(assert_invalid (module (elem 0 0) (func)) "no table defined")
+
 (assert_invalid (module (func (type 42))) "unknown function type 42")
 (assert_invalid (module (import "spectest" "print" (type 43))) "unknown function type 43")
 
 (module
     (type $T (func (param) (result i32)))
     (type $U (func (param) (result i32)))
-    (table (segment $t1 $t2 $t3 $u1 $u2 $t1 $t3))
+    (table anyfunc (elem $t1 $t2 $t3 $u1 $u2 $t1 $t3))
 
     (func $t1 (type $T) (i32.const 1))
     (func $t2 (type $T) (i32.const 2))
@@ -78,7 +81,7 @@
 
 (module
     (type $T (func (result i32)))
-    (table (segment 0 1))
+    (table anyfunc (elem 0 1))
 
     (import $print_i32 "spectest" "print" (param i32))
 

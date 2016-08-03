@@ -31,8 +31,8 @@
   (func $f64-f32 (type $f64-f32) (get_local 1))
   (func $i64-f64 (type $i64-f64) (get_local 1))
 
-  (table
-    (segment
+  (table anyfunc
+    (elem
       $const-i32 $const-i64 $const-f32 $const-f64
       $id-i32 $id-i64 $id-f32 $id-f64
       $f32-i32 $i32-i64 $f64-f32 $i64-f64
@@ -202,13 +202,13 @@
     (type (func))
     (func $no-table (call_indirect 0 (i32.const 0)))
   )
-  "operator requires a table section"
+  "no table"
 )
 
 (assert_invalid
   (module
     (type (func))
-    (table 0)
+    (table 0 anyfunc)
     (func $type-void-vs-num (i32.eqz (call_indirect 0 (i32.const 0))))
   )
   "type mismatch"
@@ -216,7 +216,7 @@
 (assert_invalid
   (module
     (type (func (result i64)))
-    (table 0)
+    (table 0 anyfunc)
     (func $type-num-vs-num (i32.eqz (call_indirect 0 (i32.const 0))))
   )
   "type mismatch"
@@ -225,7 +225,7 @@
 (assert_invalid
   (module
     (type (func (param i32)))
-    (table 0)
+    (table 0 anyfunc)
     (func $arity-0-vs-1 (call_indirect 0 (i32.const 0)))
   )
   "arity mismatch"
@@ -233,7 +233,7 @@
 (assert_invalid
   (module
     (type (func (param f64 i32)))
-    (table 0)
+    (table 0 anyfunc)
     (func $arity-0-vs-2 (call_indirect 0 (i32.const 0)))
   )
   "arity mismatch"
@@ -241,7 +241,7 @@
 (assert_invalid
   (module
     (type (func))
-    (table 0)
+    (table 0 anyfunc)
     (func $arity-1-vs-0 (call_indirect 0 (i32.const 0) (i32.const 1)))
   )
   "arity mismatch"
@@ -249,7 +249,7 @@
 (assert_invalid
   (module
     (type (func))
-    (table 0)
+    (table 0 anyfunc)
     (func $arity-2-vs-0
       (call_indirect 0 (i32.const 0) (f64.const 2) (i32.const 1))
     )
@@ -260,7 +260,7 @@
 (assert_invalid
   (module
     (type (func (param i32 i32)))
-    (table 0)
+    (table 0 anyfunc)
     (func $arity-nop-first
       (call_indirect 0 (i32.const 0) (nop) (i32.const 1) (i32.const 2))
     )
@@ -270,7 +270,7 @@
 (assert_invalid
   (module
     (type (func (param i32 i32)))
-    (table 0)
+    (table 0 anyfunc)
     (func $arity-nop-mid
       (call_indirect 0 (i32.const 0) (i32.const 1) (nop) (i32.const 2))
     )
@@ -280,7 +280,7 @@
 (assert_invalid
   (module
     (type (func (param i32 i32)))
-    (table 0)
+    (table 0 anyfunc)
     (func $arity-nop-last
       (call_indirect 0 (i32.const 0) (i32.const 1) (i32.const 2) (nop))
     )
@@ -291,7 +291,7 @@
 (assert_invalid
   (module
     (type (func (param i32)))
-    (table 0)
+    (table 0 anyfunc)
     (func $type-func-void-vs-i32 (call_indirect 0 (nop) (i32.const 1)))
   )
   "type mismatch"
@@ -299,7 +299,7 @@
 (assert_invalid
   (module
     (type (func (param i32)))
-    (table 0)
+    (table 0 anyfunc)
     (func $type-func-num-vs-i32 (call_indirect 0 (i64.const 1) (i32.const 0)))
   )
   "type mismatch"
@@ -308,7 +308,7 @@
 (assert_invalid
   (module
     (type (func (param i32 i32)))
-    (table 0)
+    (table 0 anyfunc)
     (func $type-first-void-vs-num
       (call_indirect 0 (i32.const 0) (nop) (i32.const 1))
     )
@@ -318,7 +318,7 @@
 (assert_invalid
   (module
     (type (func (param i32 i32)))
-    (table 0)
+    (table 0 anyfunc)
     (func $type-second-void-vs-num
       (call_indirect 0 (i32.const 0) (i32.const 1) (nop))
     )
@@ -328,7 +328,7 @@
 (assert_invalid
   (module
     (type (func (param i32 f64)))
-    (table 0)
+    (table 0 anyfunc)
     (func $type-first-num-vs-num
       (call_indirect 0 (i32.const 0) (f64.const 1) (i32.const 1))
     )
@@ -338,7 +338,7 @@
 (assert_invalid
   (module
     (type (func (param f64 i32)))
-    (table 0)
+    (table 0 anyfunc)
     (func $type-second-num-vs-num
       (call_indirect 0 (i32.const 0) (i32.const 1) (f64.const 1))
     )
@@ -350,11 +350,15 @@
 ;; Unbound type
 
 (assert_invalid
-  (module (table 0) (func $unbound-type (call_indirect 1 (i32.const 0))))
+  (module
+    (table 0 anyfunc)
+    (func $unbound-type (call_indirect 1 (i32.const 0)))
+  )
   "unknown function type"
 )
 (assert_invalid
-  (module (table 0)
+  (module
+    (table 0 anyfunc)
     (func $large-type (call_indirect 10001232130000 (i32.const 0)))
   )
   "unknown function type"

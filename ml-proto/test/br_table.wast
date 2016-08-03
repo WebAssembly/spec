@@ -929,7 +929,7 @@
   )
 
   (type $sig (func (param i32 i32 i32) (result i32)))
-  (table (segment $f))
+  (table anyfunc (elem $f))
   (func "as-call_indirect-func" (result i32)
     (block (call_indirect $sig (br_table 0 (i32.const 20) (i32.const 1)) (i32.const 1) (i32.const 2) (i32.const 3)))
   )

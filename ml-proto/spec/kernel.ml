@@ -17,12 +17,8 @@
  *)
 
 
+open Types
 open Values
-
-
-(* Types *)
-
-type value_type = Types.value_type
 
 
 (* Operators *)
@@ -125,22 +121,28 @@ and 'size limits' =
   max : 'size option;
 }
 
+type table = table' Source.phrase
+and table' =
+{
+  tlimits : Table.size limits;
+  etype : elem_type;
+}
+
+type memory = memory' Source.phrase
+and memory' =
+{
+  mlimits : Memory.size limits;
+}
+
 type ('off, 'data) segment = ('off, 'data) segment' Source.phrase
 and ('off, 'data) segment' =
 {
   offset : 'off;
-  data : 'data;
+  init : 'data;
 }
 
-type ('size, 'off, 'data) store = ('size, 'off, 'data) store' Source.phrase
-and ('size, 'off, 'data) store' =
-{
-  limits : 'size limits;
-  segments : ('off, 'data) segment list;
-}
-
-type table = (Table.size, Table.index, var list) store
-type memory = (Memory.size, Memory.address, string) store
+type table_segment = (Table.index, var list) segment
+type memory_segment = (Memory.address, string) segment
 
 
 (* Modules *)
@@ -168,6 +170,8 @@ and module_' =
   memory : memory option;
   funcs : func list;
   start : var option;
+  elems : table_segment list;
+  data : memory_segment list;
   imports : import list;
   exports : export list;
 }

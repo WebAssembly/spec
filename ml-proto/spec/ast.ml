@@ -215,6 +215,8 @@ and module' =
   types : Types.func_type list;
   funcs : func list;
   start : var option;
+  elems : Kernel.table_segment list;
+  data : Kernel.memory_segment list;
   imports : Kernel.import list;
   exports : Kernel.export list;
 }

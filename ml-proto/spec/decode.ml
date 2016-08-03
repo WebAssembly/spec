@@ -501,9 +501,8 @@ let limits vu s =
 
 let table s =
   let t = elem_type s in
-  assert (t = AnyFuncType);
   let lim = at (limits vu32) s in
-  {limits = lim; segments = []}
+  {etype = t; tlimits = lim}
 
 let table_section s =
   section `TableSection (opt (at table) true) None s
@@ -513,7 +512,7 @@ let table_section s =
 
 let memory s =
   let lim = at (limits vu64) s in
-  {limits = lim; segments = []}
+  {mlimits = lim}
 
 let memory_section s =
   section `MemorySection (opt (at memory) true) None s
@@ -557,8 +556,8 @@ let code_section s =
 
 let segment vu dat s =
   let offset = vu s in
-  let data = dat s in
-  {offset; data}
+  let init = dat s in
+  {offset; init}
 
 let table_segment s =
   segment vu32 (vec (at var)) s
@@ -598,9 +597,9 @@ let module_ s =
   iterate unknown_section s;
   let func_types = func_section s in
   iterate unknown_section s;
-  let table_limits = table_section s in
+  let table = table_section s in
   iterate unknown_section s;
-  let memory_limits = memory_section s in
+  let memory = memory_section s in
   iterate unknown_section s;
   let exports = export_section s in
   iterate unknown_section s;
@@ -608,9 +607,9 @@ let module_ s =
   iterate unknown_section s;
   let func_bodies = code_section s in
   iterate unknown_section s;
-  let table_segments = elem_section s in
+  let elems = elem_section s in
   iterate unknown_section s;
-  let memory_segments = data_section s in
+  let data = data_section s in
   iterate unknown_section s;
   (*TODO: name section*)
   iterate unknown_section s;
@@ -619,26 +618,8 @@ let module_ s =
     s (len s) "function and code section have inconsistent lengths";
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
-      func_types func_bodies in
-  let table =
-    match table_limits with
-    | None ->
-      require (table_segments = [])
-        s (len s) "element section without memory section";
-      None
-    | Some table ->
-      Some Source.({table.it with segments = table_segments} @@ table.at)
-  in
-  let memory =
-    match memory_limits with
-    | None ->
-      require (memory_segments = [])
-        s (len s) "data section without memory section";
-      None
-    | Some memory ->
-      Some Source.({memory.it with segments = memory_segments} @@ memory.at)
-  in
-  {memory; types; funcs; imports; exports; table; start}
+      func_types func_bodies
+  in {types; table; memory; funcs; imports; exports; elems; data; start}
 
 
 let decode name bs = at module_ (stream name bs)

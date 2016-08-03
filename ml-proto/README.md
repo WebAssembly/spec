@@ -105,6 +105,7 @@ name: (<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | 
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex>)*"
 
 type: i32 | i64 | f32 | f64
+elem_type: anyfunc
 
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
@@ -148,17 +149,17 @@ param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type> )
 local:  ( local <type>* ) | ( local <name> <type> )
 
-module:  ( module <typedef>* <func>* <import>* <export>* <table>* <memory>? <start>? ) | (module <string>+)
+module:  ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <elem>* <data>* <start>? ) | (module <string>+)
 typedef: ( type <name>? ( func <param>* <result>? ) )
 import:  ( import <name>? <string> <string> <sig> )
 export:  ( export <string> <var> ) | ( export <string> memory)
 start:   ( start <var> )
-table:   ( table <int> <int>? <table-segment>* )
-         ( table ( segment <var>* ) )      ;; = (table <size> (segment 0 <var>*))
-memory:  ( memory <int> <int>? <memory-segment>* )
-         ( memory ( segment <string>+ ) )  ;; = (memory <size> (segment 0 <string>+))
-table-segment: ( segment <int> <var>* )
-memory-segment: ( segment <int> <string>+ )
+table:   ( table <nat> <nat>? <elem_type> )
+         ( table <elem_type> ( elem <var>* ) )  ;; = (table <size> <size> <elem_type>) (elem 0 <var>*)
+elem:    ( elem <nat> <var>* )
+memory:  ( memory <nat> <nat>? )
+         ( memory ( data <string>* ) )          ;; = (memory <size> <size>) (data 0 <string>*)
+data:    ( data <nat> <string>* )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).

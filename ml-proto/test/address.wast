@@ -1,5 +1,6 @@
 (module
-    (memory 1 (segment 0 "abcdefghijklmnopqrstuvwxyz"))
+    (memory 1)
+    (data 0 "abcdefghijklmnopqrstuvwxyz")
     (import $print "spectest" "print" (param i32))
 
     (func $good (param $i i32)

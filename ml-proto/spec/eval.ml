@@ -317,18 +317,18 @@ and eval_hostop c hostop vs at =
 
 (* Modules *)
 
-let init_table m table =
-  let {limits; segments} = table.it in
-  let tab = Table.create limits.it.min limits.it.max in
-  let elems = List.map (fun x -> Some x.it) in
-  List.iter (fun seg -> Table.blit tab seg.it.offset (elems seg.it.data))
-    segments;
+let init_table m elems table =
+  let {tlimits = lim; _} = table.it in
+  let tab = Table.create lim.it.min lim.it.max in
+  let entries xs = List.map (fun x -> Some x.it) xs in
+  List.iter (fun seg -> Table.blit tab seg.it.offset (entries seg.it.init))
+    elems;
   tab
 
-let init_memory m memory =
-  let {limits; segments} = memory.it in
-  let mem = Memory.create limits.it.min limits.it.max in
-  List.iter (fun seg -> Memory.blit mem seg.it.offset seg.it.data) segments;
+let init_memory m data memory =
+  let {mlimits = lim} = memory.it in
+  let mem = Memory.create lim.it.min lim.it.max in
+  List.iter (fun seg -> Memory.blit mem seg.it.offset seg.it.init) data;
   mem
 
 let add_export funcs ex =
@@ -339,13 +339,13 @@ let add_export funcs ex =
 
 let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
-  let {table; memory; funcs; exports; start; _} = m.it in
+  let {table; memory; funcs; exports; elems; data; start; _} = m.it in
   let instance =
     {module_ = m;
      imports;
      exports = List.fold_right (add_export funcs) exports ExportMap.empty;
-     table = Lib.Option.map (init_table m) table;
-     memory = Lib.Option.map (init_memory m) memory}
+     table = Lib.Option.map (init_table m elems) table;
+     memory = Lib.Option.map (init_memory m data) memory}
   in
   Lib.Option.app
     (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;
