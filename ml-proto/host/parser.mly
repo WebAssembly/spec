@@ -353,9 +353,9 @@ export_opt :
 /* Tables & Memories */
 
 elem :
-  | LPAR ELEM NAT var_list RPAR
+  | LPAR ELEM expr var_list RPAR
     { let at = at () in
-      fun c -> {offset = Int32.of_string $3; init = $4 c func} @@ at }
+      fun c -> {offset = $3 c; init = $4 c func} @@ at }
 ;
 
 table_limits :
@@ -371,12 +371,12 @@ table :
       fun c -> let init = $6 c func in
       let size = Int32.of_int (List.length init) in
       {tlimits = {min = size; max = Some size} @@ at; etype = $3} @@ at,
-      [{offset = 0l; init} @@ at] }
+      [{offset = I32_const (0l @@ at) @@ at; init} @@ at] }
 ;
 
 data :
-  | LPAR DATA NAT text_list RPAR
-    { {offset = Int64.of_string $3; init = $4} @@ at () }
+  | LPAR DATA expr text_list RPAR
+    { fun c -> {offset = $3 c; init = $4} @@ at () }
 ;
 
 memory_limits :
@@ -386,11 +386,13 @@ memory_limits :
 ;
 memory :
   | LPAR MEMORY memory_limits RPAR
-    { {mlimits = $3} @@ at (), [] }
+    { fun c -> {mlimits = $3} @@ at (), [] }
   | LPAR MEMORY LPAR DATA text_list RPAR RPAR  /* Sugar */
-    { let size = Int64.(div (add (of_int (String.length $5)) 65535L) 65536L) in
-      {mlimits = {min = size; max = Some size} @@ at ()} @@ at (),
-      [{offset = 0L; init = $5} @@ at ()] }
+    { let at = at () in
+      fun c ->
+      let size = Int64.(div (add (of_int (String.length $5)) 65535L) 65536L) in
+      {mlimits = {min = size; max = Some size} @@ at} @@ at,
+      [{offset = I32_const (0l @@ at) @@ at; init = $5} @@ at] }
 ;
 
 
@@ -456,7 +458,7 @@ module_fields :
       | Some _ -> error tab.at "multiple table sections"
       | None -> {m with table = Some tab; elems = elems @ m.elems} }
   | memory module_fields
-    { fun c -> let m = $2 c in let mem, data = $1 in
+    { fun c -> let m = $2 c in let mem, data = $1 c in
       match m.memory with
       | Some _ -> error mem.at "multiple memory sections"
       | None -> {m with memory = Some mem; data = data @ m.data} }
@@ -465,7 +467,7 @@ module_fields :
       {m with elems = $1 c :: m.elems} }
   | data module_fields
     { fun c -> let m = $2 c in
-      {m with data = $1 :: m.data} }
+      {m with data = $1 c :: m.data} }
   | start module_fields
     { fun c -> let m = $2 c in let x = $1 c in
       match m.start with

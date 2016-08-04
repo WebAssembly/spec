@@ -109,6 +109,11 @@ let int32 v at =
   | Int32 i -> i
   | v -> type_error at v Int32Type
 
+let int64 v at =
+  match some v at with
+  | Int64 i -> i
+  | v -> type_error at v Int64Type
+
 let address32 v at =
   Int64.logand (Int64.of_int32 (int32 v at)) 0xffffffffL
 
@@ -317,18 +322,30 @@ and eval_hostop c hostop vs at =
 
 (* Modules *)
 
+let const m e =
+  let inst =
+    {module_ = m; imports = []; exports = ExportMap.empty;
+     table = None; memory = None}
+  in some (eval_expr {instance = inst; locals = []; labels = []} e) e.at
+
+let offset m seg =
+  int32 (Some (const m seg.it.offset)) seg.it.offset.at
+
 let init_table m elems table =
   let {tlimits = lim; _} = table.it in
   let tab = Table.create lim.it.min lim.it.max in
   let entries xs = List.map (fun x -> Some x.it) xs in
-  List.iter (fun seg -> Table.blit tab seg.it.offset (entries seg.it.init))
+  List.iter
+    (fun seg -> Table.blit tab (offset m seg) (entries seg.it.init))
     elems;
   tab
 
 let init_memory m data memory =
   let {mlimits = lim} = memory.it in
   let mem = Memory.create lim.it.min lim.it.max in
-  List.iter (fun seg -> Memory.blit mem seg.it.offset seg.it.init) data;
+  List.iter
+    (fun seg -> Memory.blit mem (Int64.of_int32 (offset m seg)) seg.it.init)
+    data;
   mem
 
 let add_export funcs ex =
@@ -340,7 +357,7 @@ let add_export funcs ex =
 let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
   let {table; memory; funcs; exports; elems; data; start; _} = m.it in
-  let instance =
+  let inst =
     {module_ = m;
      imports;
      exports = List.fold_right (add_export funcs) exports ExportMap.empty;
@@ -348,10 +365,10 @@ let init m imports =
      memory = Lib.Option.map (init_memory m data) memory}
   in
   Lib.Option.app
-    (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;
-  instance
+    (fun x -> ignore (eval_func inst (lookup "function" funcs x) [])) start;
+  inst
 
-let invoke instance name vs =
+let invoke inst name vs =
   try
-    eval_func instance (export instance (name @@ no_region)) vs
+    eval_func inst (export inst (name @@ no_region)) vs
   with Stack_overflow -> Trap.error Source.no_region "call stack exhausted"

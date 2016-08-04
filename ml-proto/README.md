@@ -155,11 +155,11 @@ import:  ( import <name>? <string> <string> <sig> )
 export:  ( export <string> <var> ) | ( export <string> memory)
 start:   ( start <var> )
 table:   ( table <nat> <nat>? <elem_type> )
-         ( table <elem_type> ( elem <var>* ) )  ;; = (table <size> <size> <elem_type>) (elem 0 <var>*)
-elem:    ( elem <nat> <var>* )
+         ( table <elem_type> ( elem <var>* ) )  ;; = (table <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
+elem:    ( elem <expr> <var>* )
 memory:  ( memory <nat> <nat>? )
-         ( memory ( data <string>* ) )          ;; = (memory <size> <size>) (data 0 <string>*)
-data:    ( data <nat> <string>* )
+         ( memory ( data <string>* ) )          ;; = (memory <size> <size>) (data (i32.const 0) <string>*)
+data:    ( data <expr> <string>* )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).

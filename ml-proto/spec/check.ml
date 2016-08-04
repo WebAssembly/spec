@@ -18,6 +18,7 @@ type expr_type_future = [`Known of expr_type | `SomeUnknown] ref
 
 type context =
 {
+  module_ : module_;
   types : func_type list;
   funcs : func_type list;
   imports : func_type list;
@@ -290,6 +291,12 @@ and check_memop memop at =
 and check_mem_type ty sz at =
   require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
 
+let check_const c et e =
+  check_expr c (some et) e;
+  match e.it with
+  | Const _ -> ()
+  | _ -> error e.at "constant expression required"
+
 
 (* Functions *)
 
@@ -346,18 +353,23 @@ let check_memory (c : context) (mem : memory) =
 
 let check_table_segment c prev_end seg =
   let {offset; init} = seg.it in
+  check_const c Int32Type offset;
+  let start = Values.int32_of_value (Eval.const c.module_ offset) in
   let len = Int32.of_int (List.length init) in
-  let end_ = Int32.add seg.it.offset len in
-  require (prev_end <= offset) seg.at "table segment not disjoint and ordered";
+  let end_ = Int32.add start len in
+  require (prev_end <= start) seg.at "table segment not disjoint and ordered";
   require (end_ <= table c seg.at) seg.at "table segment does not fit memory";
   ignore (List.map (func c) init);
   end_
 
 let check_memory_segment c prev_end seg =
   let {offset; init} = seg.it in
+  check_const c Int32Type offset;
+  let start =
+    Int64.of_int32 (Values.int32_of_value (Eval.const c.module_ offset)) in
   let len = Int64.of_int (String.length init) in
-  let end_ = Int64.add offset len in
-  require (prev_end <= offset) seg.at "data segment not disjoint and ordered";
+  let end_ = Int64.add start len in
+  require (prev_end <= start) seg.at "data segment not disjoint and ordered";
   require (end_ <= Int64.mul (memory c seg.at) Memory.page_size) seg.at
     "data segment does not fit memory";
   end_
@@ -390,6 +402,7 @@ let check_module m =
   in
   let c =
     {
+      module_ = m;
       types;
       funcs = List.map (fun f -> type_ types f.it.ftype) funcs;
       imports = List.map (fun i -> type_ types i.it.itype) imports;

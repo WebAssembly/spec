@@ -36,3 +36,13 @@ let string_of_value = function
 let string_of_values = function
   | [v] -> string_of_value v
   | vs -> "(" ^ String.concat " " (List.map string_of_value vs) ^ ")"
+
+(* TODO(stack): merge this with stack branch's additions *)
+
+let int32_of_value = function
+  | Int32 n -> n
+  | _ -> raise (Invalid_argument "int32_of_value")
+
+let int64_of_value = function
+  | Int64 n -> n
+  | _ -> raise (Invalid_argument "int64_of_value")

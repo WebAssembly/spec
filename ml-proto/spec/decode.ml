@@ -434,6 +434,13 @@ and expr_block' stack s =
     let e', stack' = expr stack s in
     expr_block' (Source.(e' @@ region s pos pos) :: stack') s
 
+let const s =
+  match expr_block s with
+  | [e] ->
+    expect 0x0f s "`end` opcode expected";
+    e
+  | _ -> error s (pos s) "too many expressions"
+
 
 (* Sections *)
 
@@ -554,13 +561,13 @@ let code_section s =
 
 (* Element section *)
 
-let segment vu dat s =
-  let offset = vu s in
+let segment dat s =
+  let offset = const s in
   let init = dat s in
   {offset; init}
 
 let table_segment s =
-  segment vu32 (vec (at var)) s
+  segment (vec (at var)) s
 
 let elem_section s =
   section `ElemSection (vec (at table_segment)) [] s
@@ -569,7 +576,7 @@ let elem_section s =
 (* Data section *)
 
 let memory_segment s =
-  segment vu64 string s
+  segment string s
 
 let data_section s =
   section `DataSection (vec (at memory_segment)) [] s

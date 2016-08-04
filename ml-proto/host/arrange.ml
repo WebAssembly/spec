@@ -272,15 +272,15 @@ let memory mem =
   let {mlimits = lim} = mem.it in
   Node ("memory " ^ limits int64 lim, [])
 
-let segment head int dat seg =
+let segment head dat seg =
   let {offset; init} = seg.it in
-  Node (head ^ " " ^ int offset, dat init)
+  Node (head, expr offset :: dat init)
 
 let elems seg =
-  segment "elem" int32 (list (atom var)) seg
+  segment "elem" (list (atom var)) seg
 
 let data seg =
-  segment "data" int64 break_string seg
+  segment "data" break_string seg
 
 
 (* Modules *)

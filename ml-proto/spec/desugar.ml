@@ -299,9 +299,13 @@ let rec func f = func' f.it @@ f.at
 and func' = function
   | {Ast.body = es; ftype; locals} -> {body = return (seq es); ftype; locals}
 
+let rec segment seg = segment' seg.it @@ seg.at
+and segment' = function
+  | {Ast.offset = e; init} -> {offset = expr e; init}
+
 let rec module_ m = module' m.it @@ m.at
 and module' = function
   | {Ast.funcs = fs; start; memory; types; imports; exports; table; elems; data} ->
-    {funcs = List.map func fs; start; memory; types; imports; exports; table; elems; data}
+    {funcs = List.map func fs; start; memory; types; imports; exports; table; elems = List.map segment elems; data = List.map segment data}
 
 let desugar = module_

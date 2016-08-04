@@ -207,6 +207,13 @@ and func' =
 
 (* Modules *)
 
+type 'data segment = 'data segment' Source.phrase
+and 'data segment' =
+{
+  offset : expr;
+  init : 'data;
+}
+
 type module_ = module' Source.phrase
 and module' =
 {
@@ -215,8 +222,8 @@ and module' =
   types : Types.func_type list;
   funcs : func list;
   start : var option;
-  elems : Kernel.table_segment list;
-  data : Kernel.memory_segment list;
+  elems : var list segment list;
+  data : string segment list;
   imports : Kernel.import list;
   exports : Kernel.export list;
 }

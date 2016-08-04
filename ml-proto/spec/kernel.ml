@@ -134,15 +134,15 @@ and memory' =
   mlimits : Memory.size limits;
 }
 
-type ('off, 'data) segment = ('off, 'data) segment' Source.phrase
-and ('off, 'data) segment' =
+type 'data segment = 'data segment' Source.phrase
+and 'data segment' =
 {
-  offset : 'off;
+  offset : expr;
   init : 'data;
 }
 
-type table_segment = (Table.index, var list) segment
-type memory_segment = (Memory.address, string) segment
+type table_segment = var list segment
+type memory_segment = string segment
 
 
 (* Modules *)

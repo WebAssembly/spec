@@ -30,8 +30,12 @@
 (assert_return (invoke "three" (i32.const 13)) (i32.const 11))
 (invoke "four" (i32.const 83))
 
-(assert_invalid (module (elem 0)) "no table defined")
-(assert_invalid (module (elem 0 0) (func)) "no table defined")
+(assert_invalid (module (elem (i32.const 0))) "no table defined")
+(assert_invalid (module (elem (i32.const 0) 0) (func)) "no table defined")
+
+(assert_invalid (module (table 1 anyfunc) (elem (nop))) "type mismatch")
+(assert_invalid (module (table 1 anyfunc) (elem (i64.const 0))) "type mismatch")
+(assert_invalid (module (table 1 anyfunc) (elem (i32.ctz (i32.const 0)))) "constant expression required")
 
 (assert_invalid (module (func (type 42))) "unknown function type 42")
 (assert_invalid (module (import "spectest" "print" (type 43))) "unknown function type 43")

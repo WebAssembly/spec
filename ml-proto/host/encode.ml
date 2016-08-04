@@ -296,6 +296,8 @@ let encode m =
     and nary es o = list expr es; op o; arity es
     and nary1 eo o = opt expr eo; op o; arity1 eo
 
+    let const e = expr e; op 0x0f
+
     (* Sections *)
 
     let section id f x needed =
@@ -384,19 +386,19 @@ let encode m =
       section "code" (vec code) fs (fs <> [])
 
     (* Element section *)
-    let segment vu dat seg =
+    let segment dat seg =
       let {offset; init} = seg.it in
-      vu offset; dat init
+      const offset; dat init
 
     let table_segment seg =
-      segment vu32 (vec var) seg
+      segment (vec var) seg
 
     let elem_section elems =
       section "element" (vec table_segment) elems (elems <> [])
 
     (* Data section *)
     let memory_segment seg =
-      segment vu64 string seg
+      segment string seg
 
     let data_section data =
       section "data" (vec memory_segment) data (data <> [])

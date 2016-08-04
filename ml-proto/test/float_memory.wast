@@ -73,8 +73,7 @@
 ;; Test that unaligned load and store do not canonicalize NaNs.
 
 (module
-  (memory 1)
-  (data 1 "\00\00\a0\7f")
+  (memory (data "\00\00\00\a0\7f"))
 
   (func $f32.load (result f32) (f32.load (i32.const 1)))
   (export "f32.load" $f32.load)
@@ -108,8 +107,7 @@
 (assert_return (invoke "f32.load") (f32.const nan:0x200000))
 
 (module
-  (memory 1)
-  (data 1 "\00\00\00\00\00\00\f4\7f")
+  (memory (data "\00\00\00\00\00\00\00\f4\7f"))
 
   (func $f64.load (result f64) (f64.load (i32.const 1)))
   (export "f64.load" $f64.load)
