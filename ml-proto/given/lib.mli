@@ -4,8 +4,8 @@ module List :
 sig
   val make : int -> 'a -> 'a list
   val table : int -> (int -> 'a) -> 'a list
-  val take : int -> 'a list -> 'a list
-  val drop : int -> 'a list -> 'a list
+  val take : int -> 'a list -> 'a list (* raise Failure *)
+  val drop : int -> 'a list -> 'a list (* raise Failure *)
 
   val last : 'a list -> 'a (* raise Failure *)
   val split_last : 'a list -> 'a list * 'a (* raise Failure *)

@@ -11,48 +11,15 @@ exception Invalid = Invalid.Error
 let error = Invalid.error
 let require b at s = if not b then error at s
 
-
-(* Type variables *)
-
-type 'a var' = Fix of 'a | Var | Fwd of 'a var
-and 'a var = 'a var' ref
-
-let var _ = ref Var
-let fix x = ref (Fix x)
-let fix_list = List.map fix
-
-let rec is_fix v =
-  match !v with
-  | Fix _ -> true
-  | Var -> false
-  | Fwd v' -> is_fix v'
-
-let rec content v =
-  match !v with
-  | Fix x -> x
-  | Var -> assert false
-  | Fwd v' -> content v'
-
-let rec unify f v1 v2 =
-  if v1 != v2 then
-  match !v1, !v2 with
-  | Fwd v1', _ -> unify f v1' v2
-  | _, Fwd v2' -> unify f v1 v2'
-  | Var, _ -> v1 := Fwd v2
-  | _, Var -> v2 := Fwd v1
-  | Fix x1, Fix x2 -> f x1 x2
-
-let rec string_of_var string_of name v =
-  match !v with
-  | Fix x -> string_of x
-  | Var -> name
-  | Fwd v' -> string_of_var string_of name v'
+let result_error at r1 r2 =
+  error at
+    ("type mismatch: operator requires " ^ string_of_result_type r1 ^
+     " but stack has " ^ string_of_result_type r2)
 
 
 (* Context *)
 
-type stack_type = value_type var list
-type op_type = stack_type * stack_type var
+type op_type = stack_type * result_type
 
 type context =
 {
@@ -61,7 +28,7 @@ type context =
   imports : func_type list;
   locals : value_type list;
   return : value_type list;
-  labels : stack_type var list;
+  labels : result_type ref list;
   has_memory : bool
 }
 
@@ -76,25 +43,17 @@ let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
 
-(* Type Unification *)
+(* Join *)
 
-let string_of_value_type_var = string_of_var string_of_value_type "?"
-let string_of_stack_type ts =
-  "(" ^ String.concat " " (List.map string_of_value_type_var ts) ^ ")"
+let join r1 r2 at =
+  match r1, r2 with
+  | Bot, r | r, Bot -> r
+  | r1, r2 when r1 = r2 -> r1
+  | _ -> result_error at r1 r2
 
-
-exception Unify
-
-let unify_value_type vt1 vt2 =
-  unify (fun t1 t2 -> if t1 <> t2 then raise Unify) vt1 vt2
-
-let unify_stack_type vts1 vts2 at =
-  try unify (List.iter2 unify_value_type) vts1 vts2
-  with Unify | Invalid_argument _ ->
-    error at
-      ("type mismatch:" ^
-       " operator requires " ^ string_of_stack_type (content vts1) ^
-       " but stack has " ^ string_of_stack_type (content vts2))
+let unknown () = ref Bot
+let known ts = ref (Stack ts)
+let unify v ts at = v := join !v (Stack ts) at
 
 
 (* Type Synthesis *)
@@ -154,181 +113,178 @@ let type_cvtop at = function
  *   ts : stack_type
  *)
 
-let (-->) ts1 ts2 = ts1, ts2
+let (-->) ts r = ts, r
 
-let rec check_expr (c : context) (e : expr) : op_type =
+let peek i ts =
+  try List.nth ts i with Failure _ -> I32Type
+
+let peek_n n ts =
+  let m = min n (List.length ts) in
+  Lib.List.take m ts @ Lib.List.make (n - m) I32Type
+
+let rec check_expr (c : context) (e : expr) (stack : stack_type) : op_type =
   match e.it with
   | Unreachable ->
-    [] --> var ()
+    [] --> Bot
 
   | Nop ->
-    [] --> fix []
+    [] --> Stack []
 
   | Drop ->
-    [var ()] --> fix []
+    [peek 0 stack] --> Stack []
 
   | Block es ->
-    let ts = var () in
-    let c' = {c with labels = ts :: c.labels} in
-    let ts' = check_block c' es in
-    unify_stack_type ts ts' e.at;
-    [] --> ts'
+    let vr = unknown () in
+    let c' = {c with labels = vr :: c.labels} in
+    let r = check_block c' es in
+    [] --> join !vr r e.at
 
   | Loop es ->
-    let c' = {c with labels = fix [] :: c.labels} in
-    let ts = check_block c' es in
-    [] --> ts
+    let c' = {c with labels = known [] :: c.labels} in
+    let r = check_block c' es in
+    [] --> r
 
   | Br (n, x) ->
-    let ts = Lib.List.table n var in
-    unify_stack_type (label c x) (fix ts) e.at;
-    ts --> var ()
+    let ts = peek_n n stack in
+    unify (label c x) ts e.at;
+    ts --> Bot
 
   | BrIf (n, x) ->
-    let ts = Lib.List.table n var in
-    unify_stack_type (label c x) (fix ts) e.at;
-    (ts @ [fix I32Type]) --> fix []
+    let ts = List.tl (peek_n (n + 1) stack) in
+    unify (label c x) ts e.at;
+    (ts @ [I32Type]) --> Stack []
 
   | BrTable (n, xs, x) ->
-    let ts = Lib.List.table n var in
-    unify_stack_type (label c x) (fix ts) e.at;
-    List.iter (fun x -> unify_stack_type (label c x) (fix ts) e.at) xs;
-    (ts @ [fix I32Type]) --> var ()
+    let ts = List.tl (peek_n (n + 1) stack) in
+    unify (label c x) ts x.at;
+    List.iter (fun x' -> unify (label c x') ts x'.at) xs;
+    (ts @ [I32Type]) --> Bot
 
   | Return n ->
     check_arity c.return n e.at;
-    fix_list c.return --> var ()
+    c.return --> Bot
 
   | If (es1, es2) ->
-    (* TODO(stack): remove `if` labels
-    let ts1 = check_block c es1 in
-    let ts2 = check_block c es2 in
-    unify_stack_type ts1 ts2 e.at;
-    [fix Int32Type] --> ts1
-    *)
-    let ts = var () in
-    let c' = {c with labels = ts :: c.labels} in
-    let ts1 = check_block c' es1 in
-    let ts2 = check_block c' es2 in
-    unify_stack_type ts ts1 e.at;
-    unify_stack_type ts ts2 e.at;
-    [fix I32Type] --> ts
+    let vr = unknown () in
+    let c' = {c with labels = vr :: c.labels} in
+    let r1 = check_block c' es1 in
+    let r2 = check_block c' es2 in
+    [I32Type] --> join !vr (join r1 r2 e.at) e.at
 
   | Select ->
-    let t = var () in
-    [t; t; fix I32Type] --> fix [t]
+    let t = peek 1 stack in
+    [t; t; I32Type] --> Stack [t]
 
   | Call (n, x) ->
     let FuncType (ins, out) = func c x in
     check_arity ins n e.at;
-    fix_list ins --> fix (fix_list out)
+    ins --> Stack out
 
   | CallImport (n, x) ->
     let FuncType (ins, out) = import c x in
     check_arity ins n e.at;
-    fix_list ins --> fix (fix_list out)
+    ins --> Stack out
 
   | CallIndirect (n, x) ->
     let FuncType (ins, out) = type_ c.types x in
     check_arity ins n e.at;
-    fix_list (ins @ [I32Type]) --> fix (fix_list out)
+    (ins @ [I32Type]) --> Stack out
 
   | GetLocal x ->
-    [] --> fix [fix (local c x)]
+    [] --> Stack [local c x]
 
   | SetLocal x ->
-    [fix (local c x)] --> fix []
+    [local c x] --> Stack []
 
   | TeeLocal x ->
-    [fix (local c x)] --> fix [fix (local c x)]
+    [local c x] --> Stack [local c x]
 
   | Load memop ->
     check_memop c memop e.at;
-    [fix I32Type] --> fix [fix memop.ty]
+    [I32Type] --> Stack [memop.ty]
 
   | Store memop ->
     check_memop c memop e.at;
-    [fix I32Type; fix memop.ty] --> fix []
+    [I32Type; memop.ty] --> Stack []
 
   | LoadPacked {memop; sz; _} ->
     check_memop c memop e.at;
     check_mem_size memop.ty sz e.at;
-    [fix I32Type] --> fix [fix memop.ty]
+    [I32Type] --> Stack [memop.ty]
 
   | StorePacked {memop; sz} ->
     check_memop c memop e.at;
     check_mem_size memop.ty sz e.at;
-    [fix I32Type; fix memop.ty] --> fix []
+    [I32Type; memop.ty] --> Stack []
 
   | Const v ->
-    [] --> fix [fix (type_value v.it)]
+    let t = type_value v.it in
+    [] --> Stack [t]
 
   | Unary unop ->
     let t = type_unop unop in
-    [fix t] --> fix [fix t]
+    [t] --> Stack [t]
 
   | Binary binop ->
     let t = type_binop binop in
-    [fix t; fix t] --> fix [fix t]
+    [t; t] --> Stack [t]
 
   | Test testop ->
     let t = type_testop testop in
-    [fix t] --> fix [fix I32Type]
+    [t] --> Stack [I32Type]
 
   | Compare relop ->
     let t = type_relop relop in
-    [fix t; fix t] --> fix [fix I32Type]
+    [t; t] --> Stack [I32Type]
 
   | Convert cvtop ->
     let t1, t2 = type_cvtop e.at cvtop in
-    [fix t1] --> fix [fix t2]
+    [t1] --> Stack [t2]
 
   | CurrentMemory ->
-    [] --> fix [fix I32Type]
+    [] --> Stack [I32Type]
 
   | GrowMemory ->
-    [fix I32Type] --> fix [fix I32Type]
+    [I32Type] --> Stack [I32Type]
 
   | Trapping msg ->
-    [] --> var ()
+    [] --> Bot
 
   | Label (es0, vs, es) ->
-    let ts = var () in
-    let c' = {c with labels = ts :: c.labels} in
-    let ts1 = check_block c' es0 in
+    let vr = unknown () in
+    let c' = {c with labels = vr :: c.labels} in
+    let r1 = check_block c' es0 in
     let ves = List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) in
-    let ts2 = check_block c' (ves @ es) in
-    unify_stack_type ts ts1 e.at;
-    unify_stack_type ts ts2 e.at;
-    [] --> ts
+    let r2 = check_block c' (ves @ es) in
+    [] --> join !vr (join r1 r2 e.at) e.at
 
   | Local (vs0, vs, es) ->
-    let ts = var () in
-    (* TODO(stack): remove function labels? *)
-    let c' = {c with locals = List.map Values.type_of vs0; labels = ts :: c.labels} in
+    let locals = List.map Values.type_of vs0 in
+    let vr = unknown () in
+    let c' = {c with locals; labels = vr :: c.labels} in
     let ves = List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) in
-    let ts' = check_block c' (ves @ es) in
-    unify_stack_type ts ts' e.at;
-    [] --> ts
+    let r = check_block c' (ves @ es) in
+    [] --> join !vr r e.at
 
-and check_block (c : context) (es : expr list) : stack_type var =
+and check_block (c : context) (es : expr list) : result_type =
   match es with
   | [] ->
-    fix []
+    Stack []
 
   | _ ->
     let es', e = Lib.List.split_last es in
-    let vts0 = check_block c es' in
-    let ts2, vts3 = check_expr c e in
-    if not (is_fix vts0) then var () else
-    let ts0 = content vts0 in
-    let n1 = max (List.length ts0 - List.length ts2) 0 in
-    let ts1 = Lib.List.take n1 ts0 in
-    let ts2' = Lib.List.drop n1 ts0 in
-    unify_stack_type (fix ts2) (fix ts2') e.at;
-    if not (is_fix vts3) then var () else
-    let ts3 = content vts3 in
-    fix (ts1 @ ts3)
+    let r1 = check_block c es' in
+    match r1 with
+    | Bot -> Bot
+    | Stack ts0 ->
+      let ts2, r2 = check_expr c e (List.rev ts0) in
+      let n1 = max (List.length ts0 - List.length ts2) 0 in
+      let ts1 = Lib.List.take n1 ts0 in
+      let ts2' = Lib.List.drop n1 ts0 in
+      if ts2 <> ts2' then result_error e.at (Stack ts2) (Stack ts2');
+      match r2 with
+      | Bot -> Bot
+      | Stack ts3 -> Stack (ts1 @ ts3)
 
 and check_arity ts n at =
   require (List.length ts = n) at
@@ -363,9 +319,10 @@ and check_mem_size ty sz at =
 let check_func c f =
   let {ftype; locals; body} = f.it in
   let FuncType (ins, out) = type_ c.types ftype in
-  let c' = {c with locals = ins @ locals; return = out; labels = [fix (fix_list out)]} in
-  let ts = check_block c' body in
-  unify_stack_type (fix (fix_list out)) ts f.at
+  let vr = known out in
+  let c' = {c with locals = ins @ locals; return = out; labels = [vr]} in
+  let r = check_block c' body in
+  ignore (join !vr r f.at)
 
 let check_elem c x =
   ignore (func c x)
