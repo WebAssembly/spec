@@ -143,16 +143,16 @@
 )
 
 (assert_invalid
-  (module (func $type-first-num-vs-void (result i32)
-    (block (i32.const 7) (nop) (i32.const 8))
+  (module (func $type-binary (result i64)
+    (block (i64.const 1) (i64.const 2)) i64.add
   ))
-  "type mismatch"
+  "invalid result arity"
 )
 (assert_invalid
-  (module (func $type-mid-num-vs-void (result i32)
-    (block (nop) (i32.const 7) (nop) (i32.const 8))
+  (module (func $type-binary-with-nop (result i32)
+    (block (nop) (i32.const 7) (nop) (i32.const 8)) i32.add
   ))
-  "type mismatch"
+  "invalid result arity"
 )
 
 (assert_invalid
@@ -322,3 +322,4 @@
   ))
   "type mismatch"
 )
+

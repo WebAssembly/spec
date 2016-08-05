@@ -220,21 +220,21 @@
     (type (func (param i32)))
     (func $arity-0-vs-1 (call_indirect 0 (i32.const 0)))
   )
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module
     (type (func (param f64 i32)))
     (func $arity-0-vs-2 (call_indirect 0 (i32.const 0)))
   )
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module
     (type (func))
     (func $arity-1-vs-0 (call_indirect 0 (i32.const 1) (i32.const 0)))
   )
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module
@@ -243,35 +243,21 @@
       (call_indirect 0 (f64.const 2) (i32.const 1) (i32.const 0))
     )
   )
-  "arity mismatch"
+  "type mismatch"
 )
 
-(assert_invalid
-  (module
-    (type (func (param i32 i32)))
-    (func $arity-nop-first
-      (call_indirect 0 (nop) (i32.const 1) (i32.const 2) (i32.const 0))
-    )
+;; TODO(stack): move these elsewhere
+(module
+  (type (func (param i32 i32)))
+  (func $arity-nop-first
+    (call_indirect 0 (nop) (i32.const 1) (i32.const 2) (i32.const 0))
   )
-  "arity mismatch"
-)
-(assert_invalid
-  (module
-    (type (func (param i32 i32)))
-    (func $arity-nop-mid
-      (call_indirect 0 (i32.const 1) (nop) (i32.const 2) (i32.const 0))
-    )
+  (func $arity-nop-mid
+    (call_indirect 0 (i32.const 1) (nop) (i32.const 2) (i32.const 0))
   )
-  "arity mismatch"
-)
-(assert_invalid
-  (module
-    (type (func (param i32 i32)))
-    (func $arity-nop-last
-      (call_indirect 0 (i32.const 1) (i32.const 2) (nop) (i32.const 0))
-    )
+  (func $arity-nop-last
+    (call_indirect 0 (i32.const 1) (i32.const 2) (nop) (i32.const 0))
   )
-  "arity mismatch"
 )
 
 (assert_invalid

@@ -188,8 +188,8 @@ let constop v = value_type (type_of v.it) ^ ".const"
 
 let rec expr e =
     match e.it with
-    | Nop -> Atom "nop"
     | Unreachable -> Atom "unreachable"
+    | Nop -> Atom "nop"
     | Drop -> Atom "drop"
     | Block es -> Node ("block", list expr es)
     | Loop es -> Node ("loop", list expr es)
@@ -197,13 +197,13 @@ let rec expr e =
     | BrIf (n, x) -> Atom ("br_if " ^ int n ^ " " ^ var x)
     | BrTable (n, xs, x) ->
       Atom ("br_table " ^ int n ^ " " ^ String.concat " " (list var (xs @ [x])))
-    | Return n -> Atom ("return " ^ int n)
+    | Return -> Atom "return"
     | If (es1, es2) ->
       Node ("if", list expr es1 @ [Atom "else"] @ list expr es2)
     | Select -> Atom "select"
-    | Call (n, x) -> Atom ("call " ^ int n ^ " " ^ var x)
-    | CallImport (n, x) -> Atom ("call_import " ^ int n ^ " " ^ var x)
-    | CallIndirect (n, x) -> Atom ("call_indirect " ^ int n ^ " " ^ var x)
+    | Call x -> Atom ("call " ^ var x)
+    | CallImport x -> Atom ("call_import " ^ var x)
+    | CallIndirect x -> Atom ("call_indirect " ^ var x)
     | GetLocal x -> Atom ("get_local " ^ var x)
     | SetLocal x -> Atom ("set_local " ^ var x)
     | TeeLocal x -> Atom ("tee_local " ^ var x)
@@ -224,9 +224,10 @@ let rec expr e =
     | Label (es_cont, vs, es) ->
       let ves = List.map (fun v -> Const (v @@ e.at) @@ e.at) (List.rev vs) in
       Node ("label[...]", list expr (ves @ es))
-    | Local (vs_local, vs, es) ->
+    | Local (n, vs_local, vs, es) ->
       let ves = List.map (fun v -> Const (v @@ e.at) @@ e.at) (List.rev vs) in
-      Node ("local[" ^ String.concat " " (List.map string_of_value vs_local) ^
+      Node ("local" ^ string_of_int n ^ "[" ^
+            String.concat " " (List.map string_of_value vs_local) ^
             "]", list expr (ves @ es))
 
 

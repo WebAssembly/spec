@@ -16,7 +16,7 @@ type 'a map = 'a Map.t
 type instance =
 {
   module_ : module_;
-  imports : import list;
+  imports : (int * import) list;
   exports : int map;
   memory : Memory.t option
 }
@@ -55,7 +55,7 @@ type config =
 {
   instance : instance;
   locals : value ref list;
-  resources : int
+  resources : int;
 }
 
 let resource_limit = 1000
@@ -144,19 +144,13 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
   | BrTable (n, xs, x), I32 i :: vs' ->
     vs', [Br (n, List.nth xs (Int32.to_int i)) @@ e.at]
 
-  | Return n, vs ->
+  | Return, vs ->
     assert false  (* abrupt *)
 
   | If (es1, es2), I32 0l :: vs' ->
-    (* TODO(stack): remove `if` labels
-    vs', es2
-    *)
     vs', [Block es2 @@ e.at]
 
   | If (es1, es2), I32 i :: vs' ->
-    (* TODO(stack): remove `if` labels
-    vs', es1
-    *)
     vs', [Block es1 @@ e.at]
 
   | Select, I32 0l :: v2 :: v1 :: vs' ->
@@ -165,24 +159,30 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
   | Select, I32 i :: v2 :: v1 :: vs' ->
     v1 :: vs', []
 
-  | Call (n, x), vs ->
+  | Call x, vs ->
     if c.resources = 0 then Trap.error e.at "call stack exhausted";
     let f = func c.instance x in
+    let FuncType (ins, out) = type_ c.instance f.it.ftype in
+    let n = List.length ins in
+    let m = List.length out in
     let args = List.rev (keep n vs e.at) in
     let locals = List.map default_value f.it.locals in
-    drop n vs e.at, [Local (args @ locals, [], f.it.body) @@ e.at]
+    drop n vs e.at, [Local (m, args @ locals, [], f.it.body) @@ e.at]
 
-  | CallImport (n, x), vs ->
+  | CallImport x, vs ->
+    let x, f = import c.instance x in
+    let FuncType (ins, out) = type_ c.instance (x @@ e.at) in
+    let n = List.length ins in
     (try
-      let vs' = List.rev (import c.instance x (List.rev (keep n vs e.at))) in
+      let vs' = List.rev (f (List.rev (keep n vs e.at))) in
       drop n vs e.at @ vs', []
     with Crash (_, msg) -> Crash.error e.at msg)
 
-  | CallIndirect (n, x), I32 i :: vs ->
+  | CallIndirect x, I32 i :: vs ->
     let f = func c.instance (table_elem c.instance i e.at) in
     if x.it <> f.it.ftype.it then
       Trap.error e.at "indirect call signature mismatch";
-    vs, [Call (n, table_elem c.instance i e.at) @@ e.at]
+    vs, [Call (table_elem c.instance i e.at) @@ e.at]
 
   | GetLocal x, vs ->
     !(local c x) :: vs, []
@@ -268,10 +268,10 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     keep n vs' e.at @ vs, es_cont
 
   | Label (es_cont, vs', {it = Br (n, i); at} :: es), vs ->
-    keep n vs' e.at @ vs, [Br (n, (i.it-1) @@ i.at) @@ e.at]
+    vs', [Br (n, (i.it - 1) @@ i.at) @@ e.at]
 
-  | Label (es_cont, vs', {it = Return n; at} :: es), vs ->
-    keep n vs' e.at @ vs, [Return n @@ at]
+  | Label (es_cont, vs', {it = Return; at} :: es), vs ->
+    vs', [Return @@ at]
 
   | Label (es_cont, vs', {it = Trapping msg; at} :: es), vs ->
     [], [Trapping msg @@ at]
@@ -280,23 +280,23 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     let vs'', es' = step_expr c vs' e in
     vs, [Label (es_cont, vs'', es' @ es) @@ e.at]
 
-  | Local (vs_local, vs', []), vs ->
+  | Local (n, vs_local, vs', []), vs ->
     vs' @ vs, []
 
-  | Local (vs_local, vs', {it = Br (n, i); _} :: es), vs when i.it = 0 ->
-    (* TODO(stack): remove function labels? *)
-    keep n vs' e.at @ vs, []
+  | Local (n, vs_local, vs', {it = Br (n', i); at} :: es), vs when i.it = 0 ->
+    if n <> n' then Crash.error at "inconsistent result arity";
+    keep n vs' at @ vs, []
 
-  | Local (vs_local, vs', {it = Return n; at} :: es), vs ->
-    keep n vs' e.at @ vs, []
+  | Local (n, vs_local, vs', {it = Return; at} :: es), vs ->
+    keep n vs' at @ vs, []
 
-  | Local (vs_local, vs', {it = Trapping msg; at} :: es), vs ->
+  | Local (n, vs_local, vs', {it = Trapping msg; at} :: es), vs ->
     [], [Trapping msg @@ at]
 
-  | Local (vs_local, vs', e :: es), vs ->
+  | Local (n, vs_local, vs', e :: es), vs ->
     let c' = {c with locals = List.map ref vs_local; resources = c.resources - 1} in
     let vs'', es' = step_expr c' vs' e in
-    vs, [Local (List.map (!) c'.locals, vs'', es' @ es) @@ e.at]
+    vs, [Local (n, List.map (!) c'.locals, vs'', es' @ es) @@ e.at]
 
   | _, _ ->
     Crash.error e.at "type error: missing or ill-typed operand on stack"
@@ -313,7 +313,7 @@ let eval_func (inst : instance) (vs : value list) (x : var) : value list =
     | e :: es ->
       let vs', es' = step_expr c vs e in
       loop vs' (es' @ es)
-  in List.rev (loop (List.rev vs) [Call (List.length vs, x) @@ x.at])
+  in List.rev (loop (List.rev vs) [Call x @@ x.at])
 
 
 (* Modules *)
@@ -335,7 +335,7 @@ let init (m : module_) imports =
   let {memory; funcs; exports; start; _} = m.it in
   let inst =
     {module_ = m;
-     imports;
+     imports = List.combine (List.map (fun imp -> imp.it.itype.it) m.it.imports) imports;
      exports = List.fold_right add_export exports Map.empty;
      memory = Lib.Option.map init_memory memory}
   in

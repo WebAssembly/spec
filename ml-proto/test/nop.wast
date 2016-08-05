@@ -112,24 +112,24 @@
   )
 
   (func "as-return-last" (param i32) (result i32)
-    (get_local 0) (nop) return 1
+    (get_local 0) (nop) return
   )
   (func "as-return-everywhere" (param i32) (result i32)
-    (nop) (nop) (get_local 0) (nop) (nop) return 1
+    (nop) (nop) (get_local 0) (nop) (nop) return
   )
 
   (func "as-call-mid1" (param i32 i32 i32) (result i32)
-    (get_local 0) (nop) (get_local 1) (get_local 2) call 3 $3-ary
+    (get_local 0) (nop) (get_local 1) (get_local 2) call $3-ary
   )
   (func "as-call-mid2" (param i32 i32 i32) (result i32)
-    (get_local 0) (get_local 1) (nop) (get_local 2) call 3 $3-ary
+    (get_local 0) (get_local 1) (nop) (get_local 2) call $3-ary
   )
   (func "as-call-last" (param i32 i32 i32) (result i32)
-    (get_local 0) (get_local 1) (get_local 2) (nop) call 3 $3-ary
+    (get_local 0) (get_local 1) (get_local 2) (nop) call $3-ary
   )
   (func "as-call-everywhere" (param i32 i32 i32) (result i32)
     (nop) (nop) (get_local 0) (nop) (nop) (get_local 1)
-    (nop) (nop) (get_local 2) (nop) (nop) call 3 $3-ary
+    (nop) (nop) (get_local 2) (nop) (nop) call $3-ary
   )
 
   ;; TODO(stack): call_indirect, *_local, load*, store*

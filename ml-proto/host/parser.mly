@@ -181,10 +181,10 @@ func_type :
     { FuncType ([], []) }
   | LPAR PARAM value_type_list RPAR
     { FuncType ($3, []) }
-  | LPAR PARAM value_type_list RPAR LPAR RESULT VALUE_TYPE RPAR
-    { FuncType ($3, [$7]) }
-  | LPAR RESULT VALUE_TYPE RPAR
-    { FuncType ([], [$3]) }
+  | LPAR PARAM value_type_list RPAR LPAR RESULT value_type_list RPAR
+    { FuncType ($3, $7) }
+  | LPAR RESULT value_type_list RPAR
+    { FuncType ([], $3) }
 ;
 
 
@@ -232,36 +232,35 @@ align :
 expr :
   | op
     { let at = at () in fun c -> [$1 c @@ at] }
-  | LPAR expr1 RPAR
+  | LPAR expr1 RPAR  /* Sugar */
     { let at = at () in fun c -> let es, e' = $2 c in es @ [e' @@ at] }
 ;
 op :
-  | NOP { fun c -> nop }
   | UNREACHABLE { fun c -> unreachable }
+  | NOP { fun c -> nop }
   | DROP { fun c -> drop }
   | BLOCK labeling expr_list END
-    { fun c -> let c' = $2 c in block (snd ($3 c')) }
+    { fun c -> let c' = $2 c in block ($3 c') }
   | LOOP labeling expr_list END
-    { fun c -> let c' = $2 c in loop (snd ($3 c')) }
+    { fun c -> let c' = $2 c in loop ($3 c') }
   | LOOP labeling1 labeling1 expr_list END
     { let at = at () in
       fun c -> let c' = $2 c in let c'' = $3 c' in
-      block [loop (snd ($4 c'')) @@ at] }
+      block [loop ($4 c'') @@ at] }
   | BR nat var { fun c -> br $2 ($3 c label) }
   | BR_IF nat var { fun c -> br_if $2 ($3 c label) }
   | BR_TABLE nat var var_list
     { fun c -> let xs, x = Lib.List.split_last ($3 c label :: $4 c label) in
       br_table $2 xs x }
-  | RETURN nat { fun c -> return $2 }
+  | RETURN { fun c -> return }
   | IF labeling expr_list END
-    { fun c -> let c' = $2 c in if_ (snd ($3 c')) [] }
+    { fun c -> let c' = $2 c in if_ ($3 c') [] }
   | IF labeling expr_list ELSE labeling expr_list END
-    { fun c -> let c1 = $2 c in let c2 = $5 c in
-      if_ (snd ($3 c1)) (snd ($6 c2)) }
+    { fun c -> let c1 = $2 c in let c2 = $5 c in if_ ($3 c1) ($6 c2) }
   | SELECT { fun c -> select }
-  | CALL nat var { fun c -> call $2 ($3 c func) }
-  | CALL_IMPORT nat var { fun c -> call_import $2 ($3 c import) }
-  | CALL_INDIRECT nat var { fun c -> call_indirect $2 ($3 c type_) }
+  | CALL var { fun c -> call ($2 c func) }
+  | CALL_IMPORT var { fun c -> call_import ($2 c import) }
+  | CALL_INDIRECT var { fun c -> call_indirect ($2 c type_) }
   | GET_LOCAL var { fun c -> get_local ($2 c local) }
   | SET_LOCAL var { fun c -> set_local ($2 c local) }
   | TEE_LOCAL var { fun c -> tee_local ($2 c local) }
@@ -276,18 +275,18 @@ op :
   | CURRENT_MEMORY { fun c -> current_memory }
   | GROW_MEMORY { fun c -> grow_memory }
 ;
-expr1 :
-  | NOP { fun c -> [], nop }
+expr1 :  /* Sugar */
   | UNREACHABLE { fun c -> [], unreachable }
+  | NOP { fun c -> [], nop }
   | DROP expr { fun c -> $2 c, drop }
   | BLOCK labeling expr_list
-    { fun c -> let c' = $2 c in [], block (snd ($3 c')) }
+    { fun c -> let c' = $2 c in [], block ($3 c') }
   | LOOP labeling expr_list
-    { fun c -> let c' = $2 c in [], loop (snd ($3 c')) }
+    { fun c -> let c' = $2 c in [], loop ($3 c') }
   | LOOP labeling1 labeling1 expr_list
     { let at = at () in
       fun c -> let c' = $2 c in let c'' = $3 c' in
-      [], block [loop (snd ($4 c'')) @@ at] }
+      [], block [loop ($4 c'') @@ at] }
   | BR var { fun c -> [], br 0 ($2 c label) }
   | BR var expr { fun c -> $3 c, br 1 ($2 c label) }
   | BR_IF var expr { fun c -> $3 c, br_if 0 ($2 c label) }
@@ -298,25 +297,21 @@ expr1 :
   | BR_TABLE var var_list expr expr
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       $4 c @ $5 c, br_table 1 xs x }
-  | RETURN { fun c -> [], return 0 }
-  | RETURN expr { fun c -> $2 c, return 1 }
+  | RETURN expr_list { fun c -> $2 c, return }
   | IF expr expr { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') [] }
   | IF expr expr expr
     { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') ($4 c') }
   | IF expr LPAR THEN labeling expr_list RPAR
-    { fun c -> let c' = $5 c in $2 c, if_ (snd ($6 c')) [] }
+    { fun c -> let c' = $5 c in $2 c, if_ ($6 c') [] }
   | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
-    { fun c -> let c1 = $5 c in let c2 = $10 c in
-      $2 c, if_ (snd ($6 c1)) (snd ($11 c2)) }
+    { fun c -> let c1 = $5 c in let c2 = $10 c in $2 c, if_ ($6 c1) ($11 c2) }
   | IF expr_list ELSE expr_list
-    { fun c -> let c' = anon_label c in [],  if_ (snd ($2 c')) (snd ($4 c')) }
+    { fun c -> let c' = anon_label c in [],  if_ ($2 c') ($4 c') }
   | SELECT expr expr expr { fun c -> $2 c @ $3 c @ $4 c, select }
-  | CALL var expr_list { fun c -> let n, es = $3 c in es, call n ($2 c func) }
-  | CALL_IMPORT var expr_list
-    { fun c -> let n, es = $3 c in es, call_import n ($2 c import) }
+  | CALL var expr_list { fun c -> $3 c, call ($2 c func) }
+  | CALL_IMPORT var expr_list { fun c -> $3 c, call_import ($2 c import) }
   | CALL_INDIRECT var expr expr_list
-    { fun c ->
-      let e = $3 c and n, es = $4 c in e @ es, call_indirect n ($2 c type_) }
+    { fun c -> $3 c @ $4 c, call_indirect ($2 c type_) }
   | GET_LOCAL var { fun c -> [], get_local ($2 c local) }
   | SET_LOCAL var expr { fun c -> $3 c, set_local ($2 c local) }
   | TEE_LOCAL var expr { fun c -> $3 c, tee_local ($2 c local) }
@@ -332,8 +327,8 @@ expr1 :
   | GROW_MEMORY expr { fun c -> $2 c, grow_memory }
 ;
 expr_list :
-  | /* empty */ { fun c -> 0, [] }
-  | expr expr_list { fun c -> let e = $1 c and n, es = $2 c in n + 1, e @ es }
+  | /* empty */ { fun c -> [] }
+  | expr expr_list { fun c -> $1 c @ $2 c }
 ;
 
 
@@ -341,10 +336,9 @@ expr_list :
 
 func_fields :
   | func_body { $1 }
-  | LPAR RESULT VALUE_TYPE RPAR func_body
+  | LPAR RESULT value_type_list RPAR func_body
     { let FuncType (ins, out) = fst $5 in
-      if out <> [] then error (at ()) "multiple return types";
-      FuncType (ins, [$3]), fun c -> (snd $5) c }
+      FuncType (ins, $3 @ out), fun c -> snd $5 c }
   | LPAR PARAM value_type_list RPAR func_fields
     { let FuncType (ins, out) = fst $5 in
       FuncType ($3 @ ins, out), fun c -> anon_locals c $3; (snd $5) c }
@@ -356,7 +350,7 @@ func_body :
   | expr_list
     { empty_type,
       fun c -> let c' = anon_label c in
-      {ftype = -1 @@ at(); locals = []; body = snd ($1 c')} }
+      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
   | LPAR LOCAL value_type_list RPAR func_body
     { fst $5,
       fun c -> anon_locals c $3; let f = (snd $5) c in

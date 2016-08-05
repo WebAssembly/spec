@@ -137,31 +137,35 @@ let rec check_expr (c : context) (e : expr) (stack : stack_type) : op_type =
     let vr = unknown () in
     let c' = {c with labels = vr :: c.labels} in
     let r = check_block c' es in
+    check_result_arity r e.at;
     [] --> join !vr r e.at
 
   | Loop es ->
     let c' = {c with labels = known [] :: c.labels} in
     let r = check_block c' es in
+    check_result_arity r e.at;
     [] --> r
 
   | Br (n, x) ->
+    check_arity n e.at;
     let ts = peek_n n stack in
     unify (label c x) ts e.at;
     ts --> Bot
 
   | BrIf (n, x) ->
+    check_arity n e.at;
     let ts = List.tl (peek_n (n + 1) stack) in
     unify (label c x) ts e.at;
     (ts @ [I32Type]) --> Stack []
 
   | BrTable (n, xs, x) ->
+    check_arity n e.at;
     let ts = List.tl (peek_n (n + 1) stack) in
     unify (label c x) ts x.at;
     List.iter (fun x' -> unify (label c x') ts x'.at) xs;
     (ts @ [I32Type]) --> Bot
 
-  | Return n ->
-    check_arity c.return n e.at;
+  | Return ->
     c.return --> Bot
 
   | If (es1, es2) ->
@@ -169,25 +173,24 @@ let rec check_expr (c : context) (e : expr) (stack : stack_type) : op_type =
     let c' = {c with labels = vr :: c.labels} in
     let r1 = check_block c' es1 in
     let r2 = check_block c' es2 in
-    [I32Type] --> join !vr (join r1 r2 e.at) e.at
+    let r = join r1 r2 e.at in
+    check_result_arity r e.at;
+    [I32Type] --> join !vr r e.at
 
   | Select ->
     let t = peek 1 stack in
     [t; t; I32Type] --> Stack [t]
 
-  | Call (n, x) ->
+  | Call x ->
     let FuncType (ins, out) = func c x in
-    check_arity ins n e.at;
     ins --> Stack out
 
-  | CallImport (n, x) ->
+  | CallImport x ->
     let FuncType (ins, out) = import c x in
-    check_arity ins n e.at;
     ins --> Stack out
 
-  | CallIndirect (n, x) ->
+  | CallIndirect x ->
     let FuncType (ins, out) = type_ c.types x in
-    check_arity ins n e.at;
     (ins @ [I32Type]) --> Stack out
 
   | GetLocal x ->
@@ -258,13 +261,16 @@ let rec check_expr (c : context) (e : expr) (stack : stack_type) : op_type =
     let r2 = check_block c' (ves @ es) in
     [] --> join !vr (join r1 r2 e.at) e.at
 
-  | Local (vs0, vs, es) ->
+  | Local (n, vs0, vs, es) ->
     let locals = List.map Values.type_of vs0 in
     let vr = unknown () in
     let c' = {c with locals; labels = vr :: c.labels} in
     let ves = List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) in
     let r = check_block c' (ves @ es) in
-    [] --> join !vr r e.at
+    match join !vr r e.at with
+    | Stack ts when List.length ts <> n ->
+      error e.at "arity mismatch for local result"
+    | r' -> [] --> r'
 
 and check_block (c : context) (es : expr list) : result_type =
   match es with
@@ -286,12 +292,6 @@ and check_block (c : context) (es : expr list) : result_type =
       | Bot -> Bot
       | Stack ts3 -> Stack (ts1 @ ts3)
 
-and check_arity ts n at =
-  require (List.length ts = n) at
-    ("arity mismatch:" ^
-     " function requires " ^ string_of_int (List.length ts) ^
-     " but operator has " ^ string_of_int n)
-
 and check_memop c memop at =
   require c.has_memory at "memory operator require a memory section";
   require (memop.offset >= 0L) at "negative offset";
@@ -300,6 +300,14 @@ and check_memop c memop at =
 
 and check_mem_size ty sz at =
   require (ty = I64Type || sz <> Memory.Mem32) at "memory size too big"
+
+and check_arity n at =
+  require (n <= 1) at "invalid result arity, larger than 1 is not (yet) allowed"
+
+and check_result_arity r at =
+  match r with
+  | Stack ts -> check_arity (List.length ts) at
+  | Bot -> ()
 
 
 (*
@@ -319,6 +327,7 @@ and check_mem_size ty sz at =
 let check_func c f =
   let {ftype; locals; body} = f.it in
   let FuncType (ins, out) = type_ c.types ftype in
+  check_arity (List.length out) f.at;
   let vr = known out in
   let c' = {c with locals = ins @ locals; return = out; labels = [vr]} in
   let r = check_block c' body in

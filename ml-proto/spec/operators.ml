@@ -18,13 +18,13 @@ let loop es = Loop es
 let br n x = Br (n, x)
 let br_if n x = BrIf (n, x)
 let br_table n xs x = BrTable (n, xs, x)
-let return n = Return n
+let return = Return
 let if_ es1 es2 = If (es1, es2)
 let select = Select
 
-let call n x = Call (n, x)
-let call_import n x = CallImport (n, x)
-let call_indirect n x = CallIndirect (n, x)
+let call x = Call x
+let call_import x = CallImport x
+let call_indirect x = CallIndirect x
 
 let get_local x = GetLocal x
 let set_local x = SetLocal x

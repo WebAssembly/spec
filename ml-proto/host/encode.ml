@@ -102,7 +102,7 @@ let encode m =
 
     let rec expr e =
       match e.it with
-      | Nop -> op 0x00
+      | Unreachable -> op 0x00
       | Block es -> op 0x01; list expr es; op 0x0f
       | Loop es -> op 0x02; list expr es; op 0x0f
       | If (es1, es2) ->
@@ -113,8 +113,8 @@ let encode m =
       | Br (n, x) -> op 0x06; vu n; var x
       | BrIf (n, x) -> op 0x07; vu n; var x
       | BrTable (n, xs, x) -> op 0x08; vu n; vec var32 xs; var32 x
-      | Return n -> op 0x09; vu n
-      | Unreachable -> op 0x0a
+      | Return -> op 0x09
+      | Nop -> op 0x0a
       | Drop -> op 0x0b
 
       | Const {it = I32 c} -> op 0x10; vs32 c
@@ -126,9 +126,9 @@ let encode m =
       | SetLocal x -> op 0x15; var x
       | TeeLocal x -> op 0x19; var x
 
-      | Call (n, x) -> op 0x16; vu n; var x
-      | CallIndirect (n, x) -> op 0x17; vu n; var x
-      | CallImport (n, x) -> op 0x18; vu n; var x
+      | Call x -> op 0x16; var x
+      | CallIndirect x -> op 0x17; var x
+      | CallImport x -> op 0x18; var x
 
       | Load ({ty = I32Type; _} as mo) -> op 0x2a; memop mo
       | Load ({ty = I64Type; _} as mo) -> op 0x2b; memop mo

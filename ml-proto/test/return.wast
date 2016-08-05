@@ -273,17 +273,13 @@
 
 (assert_return (invoke "as-grow_memory-size") (i32.const 40))
 
-(assert_invalid
-  (module (func $type-value-void-vs-empty (return (nop))))
-  "arity mismatch"
-)
-(assert_invalid
-  (module (func $type-value-num-vs-empty (return (i32.const 0))))
-  "arity mismatch"
-)
+;; TODO(stack): move these somewhere else
+(module (func $type-value-void-vs-empty (return (nop))))
+(module (func $type-value-num-vs-empty (return (i32.const 0))))
+
 (assert_invalid
   (module (func $type-value-empty-vs-num (result f64) (return)))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-value-void-vs-num (result f64) (return (nop))))

@@ -163,7 +163,7 @@ let args1 b stack s pos =
 let rec expr s =
   let pos = pos s in
   match op s with
-  | 0x00 -> nop
+  | 0x00 -> unreachable
   | 0x01 ->
     let es' = expr_block s in
     expect 0x0f s "END opcode expected";
@@ -198,10 +198,8 @@ let rec expr s =
     let xs = vec (at var) s in
     let x = at var s in
     br_table n xs x
-  | 0x09 ->
-    let n = arity s in
-    return n
-  | 0x0a -> unreachable
+  | 0x09 -> return
+  | 0x0a -> nop
   | 0x0b -> drop
   | 0x0c | 0x0d | 0x0e as b -> illegal s pos b
   | 0x0f -> error s pos "misplaced END opcode"
@@ -211,29 +209,14 @@ let rec expr s =
   | 0x12 -> f32_const (at f32 s)
   | 0x13 -> f64_const (at f64 s)
 
-  | 0x14 ->
-    let x = at var s in
-    get_local x
-  | 0x15 ->
-    let x = at var s in
-    set_local x
+  | 0x14 -> get_local (at var s)
+  | 0x15 -> set_local (at var s)
 
-  | 0x16 ->
-    let n = arity s in
-    let x = at var s in
-    call n x
-  | 0x17 ->
-    let n = arity s in
-    let x = at var s in
-    call_indirect n x
-  | 0x18 ->
-    let n = arity s in
-    let x = at var s in
-    call_import n x
+  | 0x16 -> call (at var s)
+  | 0x17 -> call_indirect (at var s)
+  | 0x18 -> call_import (at var s)
 
-  | 0x19 ->
-    let x = at var s in
-    tee_local x
+  | 0x19 -> tee_local (at var s)
 
   | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
 

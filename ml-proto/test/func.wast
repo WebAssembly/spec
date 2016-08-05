@@ -13,6 +13,7 @@
   (func "g" $h)
 
   (func (local))
+  (func (local) (local))
   (func (local i32))
   (func (local $x i32))
   (func (local i32 f64 i64))
@@ -20,6 +21,7 @@
   (func (local i32 f32) (local $x i64) (local) (local i32 f64))
 
   (func (param))
+  (func (param) (param))
   (func (param i32))
   (func (param $x i32))
   (func (param i32 f64 i64))
@@ -282,6 +284,19 @@
 ;; Invalid typing of result
 
 (assert_invalid
+  (module (func $type-multiple-result (result i32 i32) (unreachable)))
+  "invalid result arity"
+)
+(assert_invalid
+  (module
+    (type (func (result i32 i32)))
+    (func $type-multiple-result (type 0) (unreachable))
+  )
+  "invalid result arity"
+)
+
+
+(assert_invalid
   (module (func $type-empty-i32 (result i32)))
   "type mismatch"
 )
@@ -344,23 +359,15 @@
 )
 ;)
 
-(assert_invalid
-  (module (func $type-return-last-void-vs-enpty
-    (return (nop))
-  ))
-  "arity mismatch"
-)
-(assert_invalid
-  (module (func $type-return-last-num-vs-enpty
-    (return (i32.const 0))
-  ))
-  "arity mismatch"
-)
+;; TODO(stack): move these somewhere else
+(module (func $type-return-void-vs-enpty (return (nop))))
+(module (func $type-return-num-vs-enpty (return (i32.const 0))))
+
 (assert_invalid
   (module (func $type-return-last-empty-vs-num (result i32)
     (return)
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-return-last-void-vs-num (result i32)
@@ -374,23 +381,12 @@
   ))
   "type mismatch"
 )
-(assert_invalid
-  (module (func $type-return-void-vs-empty
-    (return (nop))
-  ))
-  "arity mismatch"
-)
-(assert_invalid
-  (module (func $type-return-num-vs-empty
-    (return (i32.const 0))
-  ))
-  "arity mismatch"
-)
+
 (assert_invalid
   (module (func $type-return-empty-vs-num (result i32)
     (return) (i32.const 1)
   ))
-  "arity mismatch"
+  "type mismatch"
 )
 (assert_invalid
   (module (func $type-return-void-vs-num (result i32)
