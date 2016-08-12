@@ -249,12 +249,6 @@ let rec expr stack s =
   | 0x19, e :: es ->
     let x = at var s in
     Tee_local (x, e), es
-  | 0x1a, es ->
-    let x = at var s in
-    Get_global x, es
-  | 0x1b, e :: es ->
-    let x = at var s in
-    Set_global (x, e), es
 
   | 0x1c | 0x1d | 0x1e | 0x1f as b, _ ->
     illegal s pos b
@@ -421,7 +415,14 @@ let rec expr stack s =
   | 0xb9, e2 :: e1 :: es -> I64_rotr (e1, e2), es
   | 0xba, e :: es -> I64_eqz e, es
 
-  | b, _ when b > 0xba -> illegal s pos b
+  | 0xbb, es ->
+    let x = at var s in
+    Get_global x, es
+  | 0xbc, e :: es ->
+    let x = at var s in
+    Set_global (x, e), es
+
+  | b, _ when b > 0xbc -> illegal s pos b
 
   | b, _ -> error s pos "too few operands for operator"
 

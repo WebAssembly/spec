@@ -127,8 +127,8 @@ let encode m =
       | Ast.Get_local x -> op 0x14; var x
       | Ast.Set_local (x, e) -> unary e 0x15; var x
       | Ast.Tee_local (x, e) -> unary e 0x19; var x
-      | Ast.Get_global x -> op 0x1a; var x
-      | Ast.Set_global (x, e) -> unary e 0x1b; var x
+      | Ast.Get_global x -> op 0xbb; var x
+      | Ast.Set_global (x, e) -> unary e 0xbc; var x
 
       | Ast.Call (x, es) -> nary es 0x16; var x
       | Ast.Call_indirect (x, e, es) -> expr e; nary es 0x17; var x
