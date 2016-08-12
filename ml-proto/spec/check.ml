@@ -22,6 +22,7 @@ type context =
   funcs : func_type list;
   imports : func_type list;
   locals : value_type list;
+  globals : value_type list;
   return : expr_type;
   labels : expr_type_future list;
   has_memory : bool
@@ -35,6 +36,7 @@ let type_ types x = lookup "function type" types x
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
+let global c x = lookup "global" c.globals x
 let label c x = lookup "label" c.labels x
 
 
@@ -195,6 +197,13 @@ let rec check_expr c et e =
     check_expr c (some (local c x)) e1;
     check_type (Some (local c x)) et e.at
 
+  | GetGlobal x ->
+    check_type (Some (global c x)) et e.at
+
+  | SetGlobal (x, e1) ->
+    check_expr c (some (global c x)) e1;
+    check_type None et e.at
+
   | Load (memop, e1) ->
     check_load c et memop e1 e.at
 
@@ -283,6 +292,11 @@ and check_memop memop at =
 and check_mem_type ty sz at =
   require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
 
+let check_init_expr e =
+  match e.it with
+  | Const _ | GetGlobal _ -> ()
+  | _ -> error e.at "not an initialization expression"
+
 
 (*
  * check_func : context -> func -> unit
@@ -306,6 +320,11 @@ let check_func c f =
 
 let check_elem c x =
   ignore (func c x)
+
+let check_global c g =
+  let {gtype; init} = g.it in
+  check_init_expr init;
+  check_expr c (some gtype) init
 
 module NameSet = Set.Make(String)
 
@@ -345,16 +364,19 @@ let check_memory memory =
   ignore (List.fold_left (check_segment mem.min) 0L mem.segments)
 
 let check_module m =
-  let {memory; types; funcs; start; imports; exports; table} = m.it in
+  let {memory; types; globals; funcs; start; imports; exports; table} = m.it in
   Lib.Option.app check_memory memory;
   let c = {types;
            funcs = List.map (fun f -> type_ types f.it.ftype) funcs;
            imports = List.map (fun i -> type_ types i.it.itype) imports;
+           globals = [];
            locals = [];
            return = None;
            labels = [];
            has_memory = memory <> None} in
-  List.iter (check_func c) funcs;
-  List.iter (check_elem c) table;
-  ignore (List.fold_left (check_export c) NameSet.empty exports);
-  check_start c start
+  List.iter (check_global c) globals;
+  let c' = {c with globals = List.map (fun g -> g.it.gtype) globals} in
+  List.iter (check_func c') funcs;
+  List.iter (check_elem c') table;
+  ignore (List.fold_left (check_export c') NameSet.empty exports);
+  check_start c' start

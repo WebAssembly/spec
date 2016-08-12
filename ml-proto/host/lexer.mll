@@ -160,6 +160,8 @@ rule token = parse
   | "get_local" { GET_LOCAL }
   | "set_local" { SET_LOCAL }
   | "tee_local" { TEE_LOCAL }
+  | "get_global" { GET_GLOBAL }
+  | "set_global" { SET_GLOBAL }
 
   | (nxx as t)".load"
     { LOAD (fun (o, a, e) ->
@@ -360,6 +362,7 @@ rule token = parse
   | "param" { PARAM }
   | "result" { RESULT }
   | "local" { LOCAL }
+  | "global" { GLOBAL }
   | "module" { MODULE }
   | "memory" { MEMORY }
   | "segment" { SEGMENT }

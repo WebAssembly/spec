@@ -250,7 +250,7 @@ let rec expr stack s =
     let x = at var s in
     Tee_local (x, e), es
 
-  | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e | 0x1f as b, _ ->
+  | 0x1c | 0x1d | 0x1e | 0x1f as b, _ ->
     illegal s pos b
 
   | 0x20, e :: es -> let o, a = memop s in I32_load8_s (o, a, e), es
@@ -415,7 +415,14 @@ let rec expr stack s =
   | 0xb9, e2 :: e1 :: es -> I64_rotr (e1, e2), es
   | 0xba, e :: es -> I64_eqz e, es
 
-  | b, _ when b > 0xba -> illegal s pos b
+  | 0xbb, es ->
+    let x = at var s in
+    Get_global x, es
+  | 0xbc, e :: es ->
+    let x = at var s in
+    Set_global (x, e), es
+
+  | b, _ when b > 0xbc -> illegal s pos b
 
   | b, _ -> error s pos "too few operands for operator"
 
@@ -443,6 +450,7 @@ let id s =
   | "function" -> `FuncSection
   | "table" -> `TableSection
   | "memory" -> `MemorySection
+  | "global" -> `GlobalSection
   | "export" -> `ExportSection
   | "start" -> `StartSection
   | "code" -> `CodeSection
@@ -501,6 +509,20 @@ let memory s =
 
 let memory_section s =
   section `MemorySection (opt (at memory) true) None s
+
+
+(* Global section *)
+
+let global s =
+  let t = value_type s in
+  let pos = pos s in
+  let es = expr_block s in
+  require (List.length es = 1) s pos "single expression expected";
+  expect 0x0f s "`end` opcode expected";
+  {gtype = t; init = List.hd es}
+
+let global_section s =
+  section `GlobalSection (vec (at global)) [] s
 
 
 (* Export section *)
@@ -574,6 +596,8 @@ let module_ s =
   iterate unknown_section s;
   let memory_limits = memory_section s in
   iterate unknown_section s;
+  let globals = global_section s in
+  iterate unknown_section s;
   let exports = export_section s in
   iterate unknown_section s;
   let start = start_section s in
@@ -596,7 +620,7 @@ let module_ s =
     match memory_limits with
     | None -> None
     | Some memory -> Some Source.({memory.it with segments} @@ memory.at)
-  in {memory; types; funcs; imports; exports; table; start}
+  in {memory; types; globals; funcs; imports; exports; table; start}
 
 
 let decode name bs = at module_ (stream name bs)

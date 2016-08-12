@@ -17,6 +17,7 @@ type instance =
   module_ : module_;
   imports : import list;
   exports : export_map;
+  globals : value ref list;
   memory : Memory.t option
 }
 
@@ -71,6 +72,7 @@ let lookup category list x =
 let type_ c x = lookup "type" c.instance.module_.it.types x
 let func c x = lookup "function" c.instance.module_.it.funcs x
 let import c x = lookup "import" c.instance.imports x
+let global c x = lookup "global" c.instance.globals x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
@@ -125,7 +127,7 @@ let memory c at =
  *   vo : value option
  *)
 
-let rec eval_expr (c : config) (e : expr) =
+let rec eval_expr (c : config) (e : expr) : value option =
   match e.it with
   | Nop ->
     None
@@ -203,6 +205,14 @@ let rec eval_expr (c : config) (e : expr) =
     let v1 = some (eval_expr c e1) e1.at in
     local c x := v1;
     Some v1
+
+  | GetGlobal x ->
+    Some !(global c x)
+
+  | SetGlobal (x, e1) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    global c x := v1;
+    None
 
   | Load ({ty; offset; align = _}, e1) ->
     let mem = memory c e.at in
@@ -311,9 +321,13 @@ and eval_hostop c hostop vs at =
 
 (* Modules *)
 
-let init_memory {it = {min; segments; _}} =
-  let mem = Memory.create min in
-  Memory.init mem (List.map it segments);
+let init_global inst r g =
+  let c = {instance = inst; locals = []; labels = []} in
+  r := some (eval_expr c g.it.init) g.it.init.at
+
+let init_memory m =
+  let mem = Memory.create m.it.min in
+  Memory.init mem (List.map it m.it.segments);
   mem
 
 let add_export funcs ex =
@@ -324,16 +338,18 @@ let add_export funcs ex =
 
 let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
-  let {memory; funcs; exports; start; _} = m.it in
-  let instance =
+  let {memory; funcs; globals; exports; start; _} = m.it in
+  let inst =
     {module_ = m;
      imports;
      exports = List.fold_right (add_export funcs) exports ExportMap.empty;
+     globals = List.map (fun g -> ref (default_value g.it.gtype)) globals;
      memory = Lib.Option.map init_memory memory}
   in
+  List.iter2 (init_global inst) inst.globals globals;
   Lib.Option.app
-    (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;
-  instance
+    (fun x -> ignore (eval_func inst (lookup "function" funcs x) [])) start;
+  inst
 
 let invoke instance name vs =
   try
