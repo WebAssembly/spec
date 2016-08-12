@@ -34,12 +34,12 @@
 
 (assert_invalid
   (module (global f32 (f32.neg (f32.const 0))))
-  "not an initialization expression"
+  "constant expression required"
 )
 
 (assert_invalid
   (module (global f32 (get_local 0)))
-  "not an initialization expression"
+  "constant expression required"
 )
 
 (assert_invalid

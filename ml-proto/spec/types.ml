@@ -1,6 +1,7 @@
 (* Types *)
 
 type value_type = Int32Type | Int64Type | Float32Type | Float64Type
+type elem_type = AnyFuncType
 type expr_type = value_type option
 type func_type = {ins : value_type list; out : expr_type}
 
@@ -15,6 +16,9 @@ let string_of_value_type = function
 let string_of_value_type_list = function
   | [t] -> string_of_value_type t
   | ts -> "(" ^ String.concat " " (List.map string_of_value_type ts) ^ ")"
+
+let string_of_elem_type = function
+  | AnyFuncType -> "anyfunc"
 
 let string_of_expr_type = function
   | None -> "()"

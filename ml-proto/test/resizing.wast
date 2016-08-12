@@ -40,3 +40,28 @@
 (assert_return (invoke "load_at_page_size") (i32.const 0))
 (assert_return (invoke "store_at_page_size"))
 (assert_return (invoke "load_at_page_size") (i32.const 3))
+
+
+(module
+  (memory 0)
+  (func "grow" (param i32) (result i32) (grow_memory (get_local 0)))
+)
+
+(assert_return (invoke "grow" (i32.const 0)) (i32.const 0))
+(assert_return (invoke "grow" (i32.const 1)) (i32.const 0))
+(assert_return (invoke "grow" (i32.const 0)) (i32.const 1))
+(assert_return (invoke "grow" (i32.const 2)) (i32.const 1))
+(assert_return (invoke "grow" (i32.const 10000)) (i32.const 3))
+
+(module
+  (memory 0 10)
+  (func "grow" (param i32) (result i32) (grow_memory (get_local 0)))
+)
+
+(assert_return (invoke "grow" (i32.const 0)) (i32.const 0))
+(assert_return (invoke "grow" (i32.const 1)) (i32.const 0))
+(assert_return (invoke "grow" (i32.const 1)) (i32.const 1))
+(assert_return (invoke "grow" (i32.const 2)) (i32.const 2))
+(assert_return (invoke "grow" (i32.const 6)) (i32.const 4))
+(assert_return (invoke "grow" (i32.const 0)) (i32.const 10))
+(assert_return (invoke "grow" (i32.const 1)) (i32.const -1))

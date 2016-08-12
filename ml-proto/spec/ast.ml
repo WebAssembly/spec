@@ -202,7 +202,7 @@ type global = global' Source.phrase
 and global' =
 {
   gtype : Types.value_type;
-  init : expr;
+  value : expr;
 }
 
 type func = func' Source.phrase
@@ -216,15 +216,24 @@ and func' =
 
 (* Modules *)
 
+type 'data segment = 'data segment' Source.phrase
+and 'data segment' =
+{
+  offset : expr;
+  init : 'data;
+}
+
 type module_ = module' Source.phrase
 and module' =
 {
-  memory : Kernel.memory option;
   types : Types.func_type list;
   globals : global list;
+  table : Kernel.table option;
+  memory : Kernel.memory option;
   funcs : func list;
   start : var option;
+  elems : var list segment list;
+  data : string segment list;
   imports : Kernel.import list;
   exports : Kernel.export list;
-  table : var list;
 }

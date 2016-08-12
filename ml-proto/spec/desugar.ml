@@ -301,17 +301,23 @@ and block = function
 
 let rec global g = global' g.it @@ g.at
 and global' = function
-  | {Ast.gtype = t; init = e} -> {gtype = t; init = expr e}
+  | {Ast.gtype = t; value = e} -> {gtype = t; value = expr e}
 
 let rec func f = func' f.it @@ f.at
 and func' = function
   | {Ast.body = es; ftype; locals} -> {body = return (seq es); ftype; locals}
 
+let rec segment seg = segment' seg.it @@ seg.at
+and segment' = function
+  | {Ast.offset = e; init} -> {offset = expr e; init}
+
 let rec module_ m = module' m.it @@ m.at
 and module' = function
-  | {Ast.funcs = fs; start; globals = gs; memory; types; imports; exports; table} ->
+  | {Ast.funcs = fs; start; globals = gs; memory; types; imports; exports; table; elems; data} ->
     let globals = List.map global gs in
+    let elems = List.map segment elems in
     let funcs = List.map func fs in
-    {funcs; start; globals; memory; types; imports; exports; table}
+    let data = List.map segment data in
+    {funcs; start; globals; memory; types; imports; exports; table; elems; data}
 
 let desugar = module_

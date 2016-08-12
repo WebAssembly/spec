@@ -17,8 +17,9 @@ type instance =
   module_ : module_;
   imports : import list;
   exports : export_map;
+  table : Table.t option;
+  memory : Memory.t option;
   globals : value ref list;
-  memory : Memory.t option
 }
 
 
@@ -80,13 +81,16 @@ let export m name =
   try ExportMap.find name.it m.exports with Not_found ->
     Crash.error name.at ("undefined export \"" ^ name.it ^ "\"")
 
-let table_elem c i at =
-  try
-    let j = Int32.to_int i in
-    if i < 0l || i <> Int32.of_int j then raise (Failure "");
-    List.nth c.instance.module_.it.table j
-  with Failure _ ->
-    Trap.error at ("undefined table index " ^ Int32.to_string i)
+let elem c i t at =
+  match c.instance.table with
+  | None -> Crash.error at "no table"
+  | Some tab ->
+  match Table.load tab i t with
+  | Some j -> j
+  | None ->
+    Trap.error at ("undefined element " ^ Int32.to_string i)
+  | exception Table.Bounds ->
+    Trap.error at ("undefined element " ^ Int32.to_string i)
 
 module MakeLabel () =
 struct
@@ -106,6 +110,11 @@ let int32 v at =
   match some v at with
   | Int32 i -> i
   | v -> type_error at v Int32Type
+
+let int64 v at =
+  match some v at with
+  | Int64 i -> i
+  | v -> type_error at v Int64Type
 
 let address32 v at =
   Int64.logand (Int64.of_int32 (int32 v at)) 0xffffffffL
@@ -188,7 +197,7 @@ let rec eval_expr (c : config) (e : expr) : value option =
   | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
-    let f = func c (table_elem c i e1.at) in
+    let f = func c (elem c i AnyFuncType e1.at @@ e1.at) in
     if type_ c x <> type_ c f.it.ftype then
       Trap.error e1.at "indirect call signature mismatch";
     eval_func c.instance f vs
@@ -312,8 +321,10 @@ and eval_hostop c hostop vs at =
      * Since we currently only support i32, just test that. *)
     if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
       Trap.error at "memory size exceeds implementation limit";
-    Memory.grow mem delta;
-    Some (Int32 (Int64.to_int32 old_size))
+    let result =
+      try Memory.grow mem delta; Int64.to_int32 old_size
+      with Memory.SizeOverflow | Memory.SizeLimit -> -1l
+    in Some (Int32 result)
 
   | _, _ ->
     Crash.error at "invalid invocation of host operator"
@@ -321,14 +332,37 @@ and eval_hostop c hostop vs at =
 
 (* Modules *)
 
-let init_global inst r g =
-  let c = {instance = inst; locals = []; labels = []} in
-  r := some (eval_expr c g.it.init) g.it.init.at
+let const m e =
+  (* TODO: allow referring to earlier glboals *)
+  let inst =
+    { module_ = m; imports = []; exports = ExportMap.empty;
+      table = None; memory = None; globals = [] }
+  in some (eval_expr {instance = inst; locals = []; labels = []} e) e.at
 
-let init_memory m =
-  let mem = Memory.create m.it.min in
-  Memory.init mem (List.map it m.it.segments);
+let offset m seg =
+  int32 (Some (const m seg.it.offset)) seg.it.offset.at
+
+let init_table m elems table =
+  let {tlimits = lim; _} = table.it in
+  let tab = Table.create lim.it.min lim.it.max in
+  let entries xs = List.map (fun x -> Some x.it) xs in
+  List.iter
+    (fun seg -> Table.blit tab (offset m seg) (entries seg.it.init))
+    elems;
+  tab
+
+let init_memory m data memory =
+  let {mlimits = lim} = memory.it in
+  let mem = Memory.create lim.it.min lim.it.max in
+  List.iter
+    (fun seg -> Memory.blit mem (Int64.of_int32 (offset m seg)) seg.it.init)
+    data;
   mem
+
+let init_global inst ref global =
+  let {value = e; _} = global.it in
+  let c = {instance = inst; locals = []; labels = []} in
+  ref := some (eval_expr c e) e.at
 
 let add_export funcs ex =
   let {name; kind} = ex.it in
@@ -338,20 +372,22 @@ let add_export funcs ex =
 
 let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
-  let {memory; funcs; globals; exports; start; _} = m.it in
+  let {table; memory; globals; funcs; exports; elems; data; start; _} = m.it in
   let inst =
-    {module_ = m;
-     imports;
-     exports = List.fold_right (add_export funcs) exports ExportMap.empty;
-     globals = List.map (fun g -> ref (default_value g.it.gtype)) globals;
-     memory = Lib.Option.map init_memory memory}
+    { module_ = m;
+      imports;
+      exports = List.fold_right (add_export funcs) exports ExportMap.empty;
+      table = Lib.Option.map (init_table m elems) table;
+      memory = Lib.Option.map (init_memory m data) memory;
+      globals = List.map (fun g -> ref (default_value g.it.gtype)) globals;
+    }
   in
   List.iter2 (init_global inst) inst.globals globals;
   Lib.Option.app
     (fun x -> ignore (eval_func inst (lookup "function" funcs x) [])) start;
   inst
 
-let invoke instance name vs =
+let invoke inst name vs =
   try
-    eval_func instance (export instance (name @@ no_region)) vs
+    eval_func inst (export inst (name @@ no_region)) vs
   with Stack_overflow -> Trap.error Source.no_region "call stack exhausted"
