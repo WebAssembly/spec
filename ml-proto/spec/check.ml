@@ -256,7 +256,8 @@ and check_has_memory c at =
 and check_memop memop at =
   require (memop.offset >= 0L) at "negative offset";
   require (memop.offset <= 0xffffffffL) at "offset too large";
-  require (Lib.Int.is_power_of_two memop.align) at "non-power-of-two alignment";
+  require (Lib.Int.is_power_of_two memop.align) at "alignment must be a power of two";
+  require (memop.align <= size memop.ty) at "alignment must not be larger than natural"
 
 and check_mem_type ty sz at =
   require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
