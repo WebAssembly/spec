@@ -23,6 +23,7 @@ type context =
   funcs : func_type list;
   imports : func_type list;
   locals : value_type list;
+  globals : value_type list;
   return : expr_type;
   labels : expr_type_future list;
   table : Table.size option;
@@ -37,6 +38,7 @@ let type_ types x = lookup "function type" types x
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
+let global c x = lookup "global" c.globals x
 let label c x = lookup "label" c.labels x
 
 let size category opt at =
@@ -206,6 +208,13 @@ let rec check_expr c et e =
     check_expr c (some (local c x)) e1;
     check_type (Some (local c x)) et e.at
 
+  | GetGlobal x ->
+    check_type (Some (global c x)) et e.at
+
+  | SetGlobal (x, e1) ->
+    check_expr c (some (global c x)) e1;
+    check_type None et e.at
+
   | Load (memop, e1) ->
     check_load c et memop e1 e.at
 
@@ -292,9 +301,8 @@ and check_mem_type ty sz at =
   require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
 
 let check_const c et e =
-  check_expr c (some et) e;
   match e.it with
-  | Const _ -> ()
+  | Const _ | GetGlobal _ -> check_expr c (some et) e
   | _ -> error e.at "constant expression required"
 
 
@@ -377,6 +385,10 @@ let check_memory_segment c prev_end seg =
 
 (* Modules *)
 
+let check_global c g =
+  let {gtype; value} = g.it in
+  check_const c gtype value
+
 let check_start c start =
   Lib.Option.app (fun x ->
     let start_type = func c x in
@@ -398,14 +410,16 @@ let check_export c set ex =
   NameSet.add name set
 
 let check_module m =
-  let {types; table; memory; funcs; start; elems; data; imports; exports} = m.it
-  in
+  let
+    {types; table; memory; globals; funcs; start; elems; data;
+     imports; exports} = m.it in
   let c =
     {
       module_ = m;
       types;
       funcs = List.map (fun f -> type_ types f.it.ftype) funcs;
       imports = List.map (fun i -> type_ types i.it.itype) imports;
+      globals = [];
       locals = [];
       return = None;
       labels = [];
@@ -413,10 +427,13 @@ let check_module m =
       memory = Lib.Option.map (fun mem -> mem.it.mlimits.it.min) memory;
     }
   in
-  List.iter (check_func c) funcs;
-  Lib.Option.app (check_table c) table;
-  Lib.Option.app (check_memory c) memory;
-  ignore (List.fold_left (check_export c) NameSet.empty exports);
-  ignore (List.fold_left (check_table_segment c) 0l elems);
-  ignore (List.fold_left (check_memory_segment c) 0L data);
-  check_start c start
+  List.iter (check_global c) globals;
+  let c' = {c with globals = List.map (fun g -> g.it.gtype) globals} in
+  List.iter (check_func c') funcs;
+  Lib.Option.app (check_table c') table;
+  Lib.Option.app (check_memory c') memory;
+  ignore (List.fold_left (check_export c') NameSet.empty exports);
+  ignore (List.fold_left (check_table_segment c') 0l elems);
+  ignore (List.fold_left (check_memory_segment c') 0L data);
+  check_start c' start
+

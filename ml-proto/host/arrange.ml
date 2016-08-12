@@ -223,6 +223,8 @@ let rec expr e =
     | GetLocal x -> "get_local " ^ var x, []
     | SetLocal (x, e) -> "set_local " ^ var x, [expr e]
     | TeeLocal (x, e) -> "tee_local " ^ var x, [expr e]
+    | GetGlobal x -> "get_global " ^ var x, []
+    | SetGlobal (x, e) -> "set_global " ^ var x, [expr e]
     | Load (op, e) -> memop "load" op, [expr e]
     | Store (op, e1, e2) -> memop "store" op, [expr e1; expr e2]
     | LoadExtend (op, e) -> extop op, [expr e]
@@ -295,6 +297,10 @@ let import i im =
     [atom string module_name; atom string func_name; ty]
   )
 
+let global g =
+  let {gtype; value} = g.it in
+  Node ("global", [atom value_type gtype; expr value])
+
 let export ex =
   let {name; kind} = ex.it in
   let desc = match kind with `Func x -> var x | `Memory -> "memory" in
@@ -307,12 +313,13 @@ let module_ m =
   Node ("module",
     listi typedef m.it.types @
     listi import m.it.imports @
-    listi func m.it.funcs @
     opt table m.it.table @
-    list elems m.it.elems @
     opt memory m.it.memory @
-    list data m.it.data @
+    list global m.it.globals @
+    listi func m.it.funcs @
     list export m.it.exports @
-    opt start m.it.start
+    opt start m.it.start @
+    list elems m.it.elems @
+    list data m.it.data
   )
 

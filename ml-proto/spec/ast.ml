@@ -26,10 +26,12 @@ and expr' =
   | Call_import of var * expr list
   | Call_indirect of var * expr * expr list
 
-  (* Locals *)
+  (* Variables *)
   | Get_local of var
   | Set_local of var * expr
   | Tee_local of var * expr
+  | Get_global of var
+  | Set_global of var * expr
 
   (* Memory access *)
   | I32_load of Memory.offset * int * expr
@@ -194,7 +196,14 @@ and expr' =
   | Grow_memory of expr
 
 
-(* Functions *)
+(* Globals and Functions *)
+
+type global = global' Source.phrase
+and global' =
+{
+  gtype : Types.value_type;
+  value : expr;
+}
 
 type func = func' Source.phrase
 and func' =
@@ -217,9 +226,10 @@ and 'data segment' =
 type module_ = module' Source.phrase
 and module' =
 {
+  types : Types.func_type list;
+  globals : global list;
   table : Kernel.table option;
   memory : Kernel.memory option;
-  types : Types.func_type list;
   funcs : func list;
   start : var option;
   elems : var list segment list;

@@ -33,6 +33,8 @@ and relabel' f n = function
   | GetLocal x -> GetLocal x
   | SetLocal (x, e) -> SetLocal (x, relabel f n e)
   | TeeLocal (x, e) -> TeeLocal (x, relabel f n e)
+  | GetGlobal x -> GetGlobal x
+  | SetGlobal (x, e) -> SetGlobal (x, relabel f n e)
   | Load (memop, e) -> Load (memop, relabel f n e)
   | Store (memop, e1, e2) -> Store (memop, relabel f n e1, relabel f n e2)
   | LoadExtend (extop, e) -> LoadExtend (extop, relabel f n e)
@@ -83,6 +85,8 @@ and expr' at = function
   | Ast.Get_local x -> GetLocal x
   | Ast.Set_local (x, e) -> SetLocal (x, expr e)
   | Ast.Tee_local (x, e) -> TeeLocal (x, expr e)
+  | Ast.Get_global x -> GetGlobal x
+  | Ast.Set_global (x, e) -> SetGlobal (x, expr e)
 
   | Ast.I32_load (offset, align, e) ->
     Load ({ty = Int32Type; offset; align}, expr e)
@@ -295,6 +299,10 @@ and block = function
 
 (* Functions and Modules *)
 
+let rec global g = global' g.it @@ g.at
+and global' = function
+  | {Ast.gtype = t; value = e} -> {gtype = t; value = expr e}
+
 let rec func f = func' f.it @@ f.at
 and func' = function
   | {Ast.body = es; ftype; locals} -> {body = return (seq es); ftype; locals}
@@ -305,7 +313,11 @@ and segment' = function
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function
-  | {Ast.funcs = fs; start; memory; types; imports; exports; table; elems; data} ->
-    {funcs = List.map func fs; start; memory; types; imports; exports; table; elems = List.map segment elems; data = List.map segment data}
+  | {Ast.funcs = fs; start; globals = gs; memory; types; imports; exports; table; elems; data} ->
+    let globals = List.map global gs in
+    let elems = List.map segment elems in
+    let funcs = List.map func fs in
+    let data = List.map segment data in
+    {funcs; start; globals; memory; types; imports; exports; table; elems; data}
 
 let desugar = module_

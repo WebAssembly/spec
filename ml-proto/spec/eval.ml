@@ -19,6 +19,7 @@ type instance =
   exports : export_map;
   table : Table.t option;
   memory : Memory.t option;
+  globals : value ref list;
 }
 
 
@@ -72,6 +73,7 @@ let lookup category list x =
 let type_ c x = lookup "type" c.instance.module_.it.types x
 let func c x = lookup "function" c.instance.module_.it.funcs x
 let import c x = lookup "import" c.instance.imports x
+let global c x = lookup "global" c.instance.globals x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
@@ -134,7 +136,7 @@ let memory c at =
  *   vo : value option
  *)
 
-let rec eval_expr (c : config) (e : expr) =
+let rec eval_expr (c : config) (e : expr) : value option =
   match e.it with
   | Nop ->
     None
@@ -192,11 +194,11 @@ let rec eval_expr (c : config) (e : expr) =
     let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
     (try (import c x) vs with Crash (_, msg) -> Crash.error e.at msg)
 
-  | CallIndirect (ftype, e1, es) ->
+  | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     let f = func c (elem c i AnyFuncType e1.at @@ e1.at) in
-    if ftype.it <> f.it.ftype.it then
+    if type_ c x <> type_ c f.it.ftype then
       Trap.error e1.at "indirect call signature mismatch";
     eval_func c.instance f vs
 
@@ -212,6 +214,14 @@ let rec eval_expr (c : config) (e : expr) =
     let v1 = some (eval_expr c e1) e1.at in
     local c x := v1;
     Some v1
+
+  | GetGlobal x ->
+    Some !(global c x)
+
+  | SetGlobal (x, e1) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    global c x := v1;
+    None
 
   | Load ({ty; offset; align = _}, e1) ->
     let mem = memory c e.at in
@@ -323,9 +333,10 @@ and eval_hostop c hostop vs at =
 (* Modules *)
 
 let const m e =
+  (* TODO: allow referring to earlier glboals *)
   let inst =
-    {module_ = m; imports = []; exports = ExportMap.empty;
-     table = None; memory = None}
+    { module_ = m; imports = []; exports = ExportMap.empty;
+      table = None; memory = None; globals = [] }
   in some (eval_expr {instance = inst; locals = []; labels = []} e) e.at
 
 let offset m seg =
@@ -348,6 +359,11 @@ let init_memory m data memory =
     data;
   mem
 
+let init_global inst ref global =
+  let {value = e; _} = global.it in
+  let c = {instance = inst; locals = []; labels = []} in
+  ref := some (eval_expr c e) e.at
+
 let add_export funcs ex =
   let {name; kind} = ex.it in
   match kind with
@@ -356,14 +372,17 @@ let add_export funcs ex =
 
 let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
-  let {table; memory; funcs; exports; elems; data; start; _} = m.it in
+  let {table; memory; globals; funcs; exports; elems; data; start; _} = m.it in
   let inst =
-    {module_ = m;
-     imports;
-     exports = List.fold_right (add_export funcs) exports ExportMap.empty;
-     table = Lib.Option.map (init_table m elems) table;
-     memory = Lib.Option.map (init_memory m data) memory}
+    { module_ = m;
+      imports;
+      exports = List.fold_right (add_export funcs) exports ExportMap.empty;
+      table = Lib.Option.map (init_table m elems) table;
+      memory = Lib.Option.map (init_memory m data) memory;
+      globals = List.map (fun g -> ref (default_value g.it.gtype)) globals;
+    }
   in
+  List.iter2 (init_global inst) inst.globals globals;
   Lib.Option.app
     (fun x -> ignore (eval_func inst (lookup "function" funcs x) [])) start;
   inst
