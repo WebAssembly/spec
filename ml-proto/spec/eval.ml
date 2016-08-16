@@ -307,23 +307,15 @@ and eval_hostop c hostop vs at =
   | CurrentMemory, [] ->
     let mem = memory c at in
     let size = Memory.size mem in
-    assert (I64.lt_u size (Int64.of_int32 Int32.max_int));
-    Some (Int32 (Int64.to_int32 size))
+    Some (Int32 size)
 
   | GrowMemory, [v] ->
     let mem = memory c at in
-    let delta = address32 v at in
+    let delta = int32 v at in
     let old_size = Memory.size mem in
-    let new_size = Int64.add old_size delta in
-    if I64.lt_u new_size old_size then
-      Trap.error at "memory size overflow";
-    (* Test whether the new size overflows the memory type.
-     * Since we currently only support i32, just test that. *)
-    if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
-      Trap.error at "memory size exceeds implementation limit";
     let result =
-      try Memory.grow mem delta; Int64.to_int32 old_size
-      with Memory.SizeOverflow | Memory.SizeLimit -> -1l
+      try Memory.grow mem delta; old_size
+      with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
     in Some (Int32 result)
 
   | _, _ ->

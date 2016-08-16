@@ -345,7 +345,7 @@ let encode m =
     (* Memory section *)
     let memory mem =
       let {mlimits} = mem.it in
-      limits vu64 mlimits
+      limits vu32 mlimits
 
     let memory_section memo =
       section "memory" (opt memory) memo (memo <> None)

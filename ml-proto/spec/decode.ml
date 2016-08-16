@@ -526,7 +526,7 @@ let table_section s =
 (* Memory section *)
 
 let memory s =
-  let lim = at (limits vu64) s in
+  let lim = at (limits vu32) s in
   {mlimits = lim}
 
 let memory_section s =

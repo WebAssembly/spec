@@ -1,8 +1,8 @@
 %{
 open Source
 open Types
-open Kernel
 open Ast
+open Operators
 open Script
 
 
@@ -39,18 +39,6 @@ let literal f s =
   | Failure msg -> error s.at ("constant out of range: " ^ msg)
   | _ -> error s.at "constant out of range"
 
-let int s at =
-  try int_of_string s with Failure _ ->
-    error at "int constant out of range"
-
-let int32 s at =
-  try I32.of_string s with Failure _ ->
-    error at "i32 constant out of range"
-
-let int64 s at =
-  try I64.of_string s with Failure _ ->
-    error at "i64 constant out of range"
-
 
 (* Symbolic variables *)
 
@@ -64,11 +52,11 @@ let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
   {types : types; funcs : space; imports : space;
-   locals : space; globals : space; labels : int VarMap.t}
+   locals : space; labels : int VarMap.t}
 
 let empty_context () =
   {types = empty_types (); funcs = empty (); imports = empty ();
-   locals = empty (); globals = empty (); labels = VarMap.empty}
+   locals = empty (); labels = VarMap.empty}
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
@@ -85,7 +73,6 @@ let lookup category space x =
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
-let global c x = lookup "global" c.globals x
 let label c x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
@@ -105,7 +92,6 @@ let bind category space x =
 let bind_func c x = bind "function" c.funcs x
 let bind_import c x = bind "import" c.imports x
 let bind_local c x = bind "local" c.locals x
-let bind_global c x = bind "global" c.globals x
 let bind_label c x =
   {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
 
@@ -117,10 +103,9 @@ let anon space n = space.count <- space.count + n
 let anon_func c = anon c.funcs 1
 let anon_import c = anon c.imports 1
 let anon_locals c ts = anon c.locals (List.length ts)
-let anon_global c = anon c.globals 1
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
-let empty_type = {ins = []; out = None}
+let empty_type = FuncType ([], [])
 
 let explicit_decl c name t at =
   let x = name c type_ in
@@ -139,15 +124,14 @@ let implicit_decl c t at =
 
 %}
 
-%token NAT INT FLOAT TEXT VAR VALUE_TYPE ANYFUNC LPAR RPAR
-%token NOP DROP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
+%token NAT INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
+%token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
-%token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
-%token LOAD STORE OFFSET ALIGN
+%token GET_LOCAL SET_LOCAL TEE_LOCAL LOAD STORE OFFSET ALIGN
 %token CONST UNARY BINARY COMPARE CONVERT
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
-%token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
-%token MODULE TABLE ELEM MEMORY DATA IMPORT EXPORT TABLE
+%token FUNC START TYPE PARAM RESULT LOCAL
+%token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token INPUT OUTPUT
 %token EOF
@@ -159,13 +143,13 @@ let implicit_decl c t at =
 %token<string> VAR
 %token<Types.value_type> VALUE_TYPE
 %token<string Source.phrase -> Ast.expr' * Values.value> CONST
-%token<Ast.expr -> Ast.expr'> UNARY
-%token<Ast.expr * Ast.expr -> Ast.expr'> BINARY
-%token<Ast.expr -> Ast.expr'> TEST
-%token<Ast.expr * Ast.expr -> Ast.expr'> COMPARE
-%token<Ast.expr -> Ast.expr'> CONVERT
-%token<Memory.offset * int option * Ast.expr -> Ast.expr'> LOAD
-%token<Memory.offset * int option * Ast.expr * Ast.expr -> Ast.expr'> STORE
+%token<Ast.expr'> UNARY
+%token<Ast.expr'> BINARY
+%token<Ast.expr'> TEST
+%token<Ast.expr'> COMPARE
+%token<Ast.expr'> CONVERT
+%token<int option -> Memory.offset -> Ast.expr'> LOAD
+%token<int option -> Memory.offset -> Ast.expr'> STORE
 %token<Memory.offset> OFFSET
 %token<int> ALIGN
 
@@ -182,7 +166,7 @@ let implicit_decl c t at =
 /* Auxiliaries */
 
 text_list :
-  | /* empty */ { "" }
+  | TEXT { $1 }
   | text_list TEXT { $1 ^ $2 }
 ;
 
@@ -192,24 +176,23 @@ value_type_list :
   | /* empty */ { [] }
   | VALUE_TYPE value_type_list { $1 :: $2 }
 ;
-
-elem_type :
-  | ANYFUNC { AnyFuncType }
-;
-
 func_type :
   | /* empty */
-    { {ins = []; out = None} }
+    { FuncType ([], []) }
   | LPAR PARAM value_type_list RPAR
-    { {ins = $3; out = None} }
-  | LPAR PARAM value_type_list RPAR LPAR RESULT VALUE_TYPE RPAR
-    { {ins = $3; out = Some $7} }
-  | LPAR RESULT VALUE_TYPE RPAR
-    { {ins = []; out = Some $3} }
+    { FuncType ($3, []) }
+  | LPAR PARAM value_type_list RPAR LPAR RESULT value_type_list RPAR
+    { FuncType ($3, $7) }
+  | LPAR RESULT value_type_list RPAR
+    { FuncType ([], $3) }
 ;
 
 
 /* Expressions */
+
+nat :
+  | NAT { int_of_string $1 }
+;
 
 literal :
   | NAT { $1 @@ at () }
@@ -218,7 +201,7 @@ literal :
 ;
 
 var :
-  | NAT { let at = at () in fun c lookup -> int $1 at @@ at }
+  | NAT { let at = at () in fun c lookup -> int_of_string $1 @@ at }
   | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
 ;
 var_list :
@@ -247,62 +230,84 @@ align :
 ;
 
 expr :
-  | LPAR expr1 RPAR { let at = at () in fun c -> $2 c @@ at }
+  | op
+    { let at = at () in fun c -> [$1 c @@ at] }
+  | LPAR expr1 RPAR  /* Sugar */
+    { let at = at () in fun c -> let es, e' = $2 c in es @ [e' @@ at] }
 ;
-expr1 :
-  | NOP { fun c -> Nop }
-  | UNREACHABLE { fun c -> Unreachable }
-  | DROP expr { fun c -> Drop ($2 c) }
-  | BLOCK labeling expr_list { fun c -> let c' = $2 c in Block ($3 c') }
-  | LOOP labeling expr_list
-    { fun c -> let c' = anon_label c in let c'' = $2 c' in Loop ($3 c'') }
-  | LOOP labeling1 labeling1 expr_list
-    { fun c -> let c' = $2 c in let c'' = $3 c' in Loop ($4 c'') }
-  | BR var expr_opt { fun c -> Br ($2 c label, $3 c) }
-  | BR_IF var expr { fun c -> Br_if ($2 c label, None, $3 c) }
-  | BR_IF var expr expr { fun c -> Br_if ($2 c label, Some ($3 c), $4 c) }
-  | BR_TABLE var var_list expr
-    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      Br_table (xs, x, None, $4 c) }
-  | BR_TABLE var var_list expr expr
-    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      Br_table (xs, x, Some ($4 c), $5 c) }
-  | RETURN expr_opt { fun c -> Return ($2 c) }
-  | IF expr expr { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], []) }
-  | IF expr expr expr
-    { fun c -> let c' = anon_label c in If ($2 c, [$3 c'], [$4 c']) }
-  | IF expr LPAR THEN labeling expr_list RPAR
-    { fun c -> let c' = $5 c in If ($2 c, $6 c', []) }
-  | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
-    { fun c -> let c1 = $5 c in let c2 = $10 c in If ($2 c, $6 c1, $11 c2) }
-  | SELECT expr expr expr { fun c -> Select ($2 c, $3 c, $4 c) }
-  | CALL var expr_list { fun c -> Call ($2 c func, $3 c) }
-  | CALL_IMPORT var expr_list { fun c -> Call_import ($2 c import, $3 c) }
-  | CALL_INDIRECT var expr expr_list
-    { fun c -> Call_indirect ($2 c type_, $3 c, $4 c) }
-  | GET_LOCAL var { fun c -> Get_local ($2 c local) }
-  | SET_LOCAL var expr { fun c -> Set_local ($2 c local, $3 c) }
-  | TEE_LOCAL var expr { fun c -> Tee_local ($2 c local, $3 c) }
-  | GET_GLOBAL var { fun c -> Get_global ($2 c global) }
-  | SET_GLOBAL var expr { fun c -> Set_global ($2 c global, $3 c) }
-  | LOAD offset align expr { fun c -> $1 ($2, $3, $4 c) }
-  | STORE offset align expr expr { fun c -> $1 ($2, $3, $4 c, $5 c) }
+op :
+  | plain_op { $1 }
+  | arity_op { $1 }
+  | block_op END { $1 }
+  | if_op END { $1 }
+;
+plain_op :
+  | UNREACHABLE { fun c -> unreachable }
+  | NOP { fun c -> nop }
+  | DROP { fun c -> drop }
+  | SELECT { fun c -> select }
+  | RETURN { fun c -> return }
+  | CALL var { fun c -> call ($2 c func) }
+  | CALL_IMPORT var { fun c -> call_import ($2 c import) }
+  | CALL_INDIRECT var { fun c -> call_indirect ($2 c type_) }
+  | GET_LOCAL var { fun c -> get_local ($2 c local) }
+  | SET_LOCAL var { fun c -> set_local ($2 c local) }
+  | TEE_LOCAL var { fun c -> tee_local ($2 c local) }
+  | LOAD offset align { fun c -> $1 $3 $2 }
+  | STORE offset align { fun c -> $1 $3 $2 }
   | CONST literal { fun c -> fst (literal $1 $2) }
-  | UNARY expr { fun c -> $1 ($2 c) }
-  | BINARY expr expr { fun c -> $1 ($2 c, $3 c) }
-  | TEST expr { fun c -> $1 ($2 c) }
-  | COMPARE expr expr { fun c -> $1 ($2 c, $3 c) }
-  | CONVERT expr { fun c -> $1 ($2 c) }
-  | CURRENT_MEMORY { fun c -> Current_memory }
-  | GROW_MEMORY expr { fun c -> Grow_memory ($2 c) }
+  | UNARY { fun c -> $1 }
+  | BINARY { fun c -> $1 }
+  | TEST { fun c -> $1 }
+  | COMPARE { fun c -> $1 }
+  | CONVERT { fun c -> $1 }
+  | CURRENT_MEMORY { fun c -> current_memory }
+  | GROW_MEMORY { fun c -> grow_memory }
 ;
-expr_opt :
-  | /* empty */ { fun c -> None }
-  | expr { fun c -> Some ($1 c) }
+arity_op :
+  | BR nat var { fun c -> br $2 ($3 c label) }
+  | BR_IF nat var { fun c -> br_if $2 ($3 c label) }
+  | BR_TABLE nat var var_list
+    { fun c -> let xs, x = Lib.List.split_last ($3 c label :: $4 c label) in
+      br_table $2 xs x }
+;
+block_op :
+  | BLOCK labeling expr_list
+    { fun c -> let c' = $2 c in block ($3 c') }
+  | LOOP labeling expr_list
+    { fun c -> let c' = $2 c in loop ($3 c') }
+  | LOOP labeling1 labeling1 expr_list
+    { let at = at () in
+      fun c -> let c' = $2 c in let c'' = $3 c' in
+      block [loop ($4 c'') @@ at] }
+;
+if_op :
+  | IF labeling expr_list
+    { fun c -> let c' = $2 c in if_ ($3 c') [] }
+  | IF labeling expr_list ELSE labeling expr_list
+    { fun c -> let c1 = $2 c in let c2 = $5 c in if_ ($3 c1) ($6 c2) }
+;
+expr1 :  /* Sugar */
+  | plain_op expr_list { fun c -> $2 c, $1 c }
+  | block_op { fun c -> [], $1 c }
+  | BR var expr_list { fun c -> $3 c, br 1 ($2 c label) }
+  | BR_IF var expr_list { fun c -> $3 c, br_if 0 ($2 c label) }
+  | BR_TABLE var var_list expr_list
+    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
+      $4 c, br_table 0 xs x }
+  | IF expr expr { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') [] }
+  | IF expr expr expr
+    { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') ($4 c') }
+  | IF expr LPAR THEN labeling expr_list RPAR
+    { fun c -> let c' = $5 c in $2 c, if_ ($6 c') [] }
+  | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
+    { fun c -> let c1 = $5 c in let c2 = $10 c in $2 c, if_ ($6 c1) ($11 c2) }
+  | IF labeling expr_list ELSE labeling expr_list  /* TODO(stack): remove? */
+    { fun c -> let c1 = $2 c in let c2 = $5 c in [], if_ ($3 c1) ($6 c2) }
 ;
 expr_list :
   | /* empty */ { fun c -> [] }
-  | expr expr_list { fun c -> $1 c :: $2 c }
+  | expr expr_list { fun c -> $1 c @ $2 c }
 ;
 
 
@@ -310,16 +315,15 @@ expr_list :
 
 func_fields :
   | func_body { $1 }
-  | LPAR RESULT VALUE_TYPE RPAR func_body
-    { if (fst $5).out <> None then error (at ()) "multiple return types";
-      {(fst $5) with out = Some $3},
-      fun c -> (snd $5) c }
+  | LPAR RESULT value_type_list RPAR func_body
+    { let FuncType (ins, out) = fst $5 in
+      FuncType (ins, $3 @ out), fun c -> snd $5 c }
   | LPAR PARAM value_type_list RPAR func_fields
-    { {(fst $5) with ins = $3 @ (fst $5).ins},
-      fun c -> anon_locals c $3; (snd $5) c }
+    { let FuncType (ins, out) = fst $5 in
+      FuncType ($3 @ ins, out), fun c -> anon_locals c $3; (snd $5) c }
   | LPAR PARAM bind_var VALUE_TYPE RPAR func_fields  /* Sugar */
-    { {(fst $6) with ins = $4 :: (fst $6).ins},
-      fun c -> bind_local c $3; (snd $6) c }
+    { let FuncType (ins, out) = fst $6 in
+      FuncType ($4 :: ins, out), fun c -> bind_local c $3; (snd $6) c }
 ;
 func_body :
   | expr_list
@@ -368,59 +372,40 @@ export_opt :
 ;
 
 
-/* Tables & Memories */
-
-elem :
-  | LPAR ELEM expr var_list RPAR
-    { let at = at () in
-      fun c -> {offset = $3 c; init = $4 c func} @@ at }
-;
-
-table_limits :
-  | NAT { {min = int32 $1 (ati 1); max = None} @@ at () }
-  | NAT NAT
-    { {min = int32 $1 (ati 1); max = Some (int32 $2 (ati 2))} @@ at () }
-;
-table :
-  | LPAR TABLE table_limits elem_type RPAR
-    { let at = at () in fun c -> {tlimits = $3; etype = $4} @@ at, [] }
-  | LPAR TABLE elem_type LPAR ELEM var_list RPAR RPAR  /* Sugar */
-    { let at = at () in
-      fun c -> let init = $6 c func in
-      let size = Int32.of_int (List.length init) in
-      {tlimits = {min = size; max = Some size} @@ at; etype = $3} @@ at,
-      [{offset = I32_const (0l @@ at) @@ at; init} @@ at] }
-;
-
-data :
-  | LPAR DATA expr text_list RPAR
-    { fun c -> {offset = $3 c; init = $4} @@ at () }
-;
-
-memory_limits :
-  | NAT { {min = int32 $1 (ati 1); max = None} @@ at () }
-  | NAT NAT
-    { {min = int32 $1 (ati 1); max = Some (int32 $2 (ati 2))} @@ at () }
-;
-memory :
-  | LPAR MEMORY memory_limits RPAR
-    { fun c -> {mlimits = $3} @@ at (), [] }
-  | LPAR MEMORY LPAR DATA text_list RPAR RPAR  /* Sugar */
-    { let at = at () in
-      fun c ->
-      let size = Int32.(div (add (of_int (String.length $5)) 65535l) 65536l) in
-      {mlimits = {min = size; max = Some size} @@ at} @@ at,
-      [{offset = I32_const (0l @@ at) @@ at; init = $5} @@ at] }
-;
-
-
 /* Modules */
+
+start :
+  | LPAR START var RPAR
+    { fun c -> $3 c func }
+
+segment :
+  | LPAR SEGMENT NAT text_list RPAR
+    { {Memory.addr = Int64.of_string $3; Memory.data = $4} @@ at () }
+;
+segment_list :
+  | /* empty */ { [] }
+  | segment segment_list { $1 :: $2 }
+;
+
+memory :
+  | LPAR MEMORY NAT NAT segment_list RPAR
+    { {min = Int64.of_string $3; max = Int64.of_string $4; segments = $5}
+        @@ at () }
+  | LPAR MEMORY NAT segment_list RPAR
+    { {min = Int64.of_string $3; max = Int64.of_string $3; segments = $4}
+        @@ at () }
+;
 
 type_def :
   | LPAR TYPE LPAR FUNC func_type RPAR RPAR
     { fun c -> anon_type c $5 }
   | LPAR TYPE bind_var LPAR FUNC func_type RPAR RPAR
     { fun c -> bind_type c $3 $6 }
+;
+
+table :
+  | LPAR TABLE var_list RPAR
+    { fun c -> $3 c func }
 ;
 
 import :
@@ -449,75 +434,38 @@ export :
     { let at = at () in fun c -> {name = $3; kind = `Memory} @@ at }
 ;
 
-global :
-  | LPAR GLOBAL VALUE_TYPE expr RPAR
-    { let at = at () in
-      fun c -> anon_global c; fun () -> {gtype = $3; value = $4 c} @@ at }
-  | LPAR GLOBAL bind_var VALUE_TYPE expr RPAR  /* Sugar */
-    { let at = at () in
-      fun c -> bind_global c $3; fun () -> {gtype = $4; value = $5 c} @@ at }
-;
-
-start :
-  | LPAR START var RPAR
-    { fun c -> $3 c func }
-;
-
 module_fields :
   | /* empty */
     { fun c ->
-      {
-        types = c.types.tlist;
-        globals = [];
-        table = None;
-        memory = None;
-        funcs = [];
-        elems = [];
-        data = [];
-        start = None;
-        imports = [];
-        exports = []
-      } }
-  | type_def module_fields
-    { fun c -> $1 c; $2 c }
-  | global module_fields
-    { fun c -> let g = $1 c in let m = $2 c in
-      {m with globals = g () :: m.globals} }
-  | table module_fields
-    { fun c -> let m = $2 c in let tab, elems = $1 c in
-      match m.table with
-      | Some _ -> error tab.at "multiple table sections"
-      | None -> {m with table = Some tab; elems = elems @ m.elems} }
-  | memory module_fields
-    { fun c -> let m = $2 c in let mem, data = $1 c in
-      match m.memory with
-      | Some _ -> error mem.at "multiple memory sections"
-      | None -> {m with memory = Some mem; data = data @ m.data} }
+      {memory = None; types = c.types.tlist; funcs = []; start = None; imports = [];
+       exports = []; table = []} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in let func, exs = f () in
       {m with funcs = func :: m.funcs; exports = exs @ m.exports} }
-  | elem module_fields
-    { fun c -> let m = $2 c in
-      {m with elems = $1 c :: m.elems} }
-  | data module_fields
-    { fun c -> let m = $2 c in
-      {m with data = $1 c :: m.data} }
-  | start module_fields
-    { fun c -> let m = $2 c in let x = $1 c in
-      match m.start with
-      | Some _ -> error x.at "multiple start sections"
-      | None -> {m with start = Some x} }
   | import module_fields
     { fun c -> let i = $1 c in let m = $2 c in
       {m with imports = i :: m.imports} }
   | export module_fields
     { fun c -> let m = $2 c in
       {m with exports = $1 c :: m.exports} }
+  | table module_fields
+    { fun c -> let m = $2 c in
+      {m with table = ($1 c) @ m.table} }
+  | type_def module_fields
+    { fun c -> $1 c; $2 c }
+  | memory module_fields
+    { fun c -> let m = $2 c in
+      match m.memory with
+      | Some _ -> error $1.at "multiple memory sections"
+      | None -> {m with memory = Some $1} }
+  | start module_fields
+    { fun c -> let m = $2 c in
+      {m with start = Some ($1 c)} }
 ;
 module_ :
   | LPAR MODULE module_fields RPAR
     { Textual ($3 (empty_context ()) @@ at ()) @@ at() }
-  | LPAR MODULE TEXT text_list RPAR { Binary ($3 ^ $4) @@ at() }
+  | LPAR MODULE text_list RPAR { Binary $3 @@ at() }
 ;
 
 
@@ -527,7 +475,7 @@ cmd :
   | module_ { Define $1 @@ at () }
   | LPAR INVOKE TEXT const_list RPAR { Invoke ($3, $4) @@ at () }
   | LPAR ASSERT_INVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at () }
-  | LPAR ASSERT_RETURN LPAR INVOKE TEXT const_list RPAR const_opt RPAR
+  | LPAR ASSERT_RETURN LPAR INVOKE TEXT const_list RPAR const_list RPAR
     { AssertReturn ($5, $6, $8) @@ at () }
   | LPAR ASSERT_RETURN_NAN LPAR INVOKE TEXT const_list RPAR RPAR
     { AssertReturnNaN ($5, $6) @@ at () }
@@ -544,10 +492,6 @@ cmd_list :
 
 const :
   | LPAR CONST literal RPAR { snd (literal $2 $3) @@ ati 3 }
-;
-const_opt :
-  | /* empty */ { None }
-  | const { Some $1 }
 ;
 const_list :
   | /* empty */ { [] }
