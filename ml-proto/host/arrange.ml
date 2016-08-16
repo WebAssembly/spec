@@ -35,10 +35,16 @@ let opt f xo = list f (list_of_opt xo)
 let tab head f xs = if xs = [] then [] else [Node (head, list f xs)]
 let atom f x = Atom (f x)
 
+let break_string s =
+  let ss = Lib.String.breakup s (!Flags.width / 2) in
+  list (atom string) ss
+
 
 (* Types *)
 
 let value_type t = string_of_value_type t
+
+let elem_type t = string_of_elem_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
@@ -207,6 +213,8 @@ let rec expr e =
     | GetLocal x -> Atom ("get_local " ^ var x)
     | SetLocal x -> Atom ("set_local " ^ var x)
     | TeeLocal x -> Atom ("tee_local " ^ var x)
+    | GetGlobal x -> Atom ("get_global " ^ var x)
+    | SetGlobal x -> Atom ("set_global " ^ var x)
     | Load op -> Atom (memop "load" op)
     | Store op -> Atom (memop "store" op)
     | LoadPacked op -> Atom (extop op)
@@ -230,6 +238,9 @@ let rec expr e =
             String.concat " " (List.map string_of_value vs_local) ^
             "]", list expr (ves @ es))
 
+let const c =
+  list expr c.it
+
 
 (* Functions *)
 
@@ -246,16 +257,29 @@ let start x = Node ("start " ^ var x, [])
 let table xs = tab "table" (atom var) xs
 
 
-(* Memory *)
+(* Tables & memories *)
 
-let segment seg =
-  let {Memory.addr; data} = seg.it in
-  let ss = Lib.String.breakup data (!Flags.width / 2) in
-  Node ("segment " ^ int64 addr, list (atom string) ss)
+let limits int lim =
+  let {min; max} = lim.it in
+  String.concat " " (int min :: opt int max)
+
+let table tab =
+  let {tlimits = lim; etype} = tab.it in
+  Node ("table " ^ limits int32 lim, [atom elem_type etype])
 
 let memory mem =
-  let {min; max; segments} = mem.it in
-  Node ("memory " ^ int64 min ^ " " ^ int64 max, list segment segments)
+  let {mlimits = lim} = mem.it in
+  Node ("memory " ^ limits int64 lim, [])
+
+let segment head dat seg =
+  let {offset; init} = seg.it in
+  Node (head, Node ("offset", const offset) :: dat init)
+
+let elems seg =
+  segment "elem" (list (atom var)) seg
+
+let data seg =
+  segment "data" break_string seg
 
 
 (* Modules *)
@@ -270,6 +294,10 @@ let import i im =
     [atom string module_name; atom string func_name; ty]
   )
 
+let global g =
+  let {gtype; value} = g.it in
+  Node ("global", atom value_type gtype :: const value)
+
 let export ex =
   let {name; kind} = ex.it in
   let desc = match kind with `Func x -> var x | `Memory -> "memory" in
@@ -280,10 +308,13 @@ let module_ m =
   Node ("module",
     listi typedef m.it.types @
     listi import m.it.imports @
-    listi func m.it.funcs @
-    table m.it.table @
+    opt table m.it.table @
     opt memory m.it.memory @
+    list global m.it.globals @
+    listi func m.it.funcs @
     list export m.it.exports @
-    opt start m.it.start
+    opt start m.it.start @
+    list elems m.it.elems @
+    list data m.it.data
   )
 

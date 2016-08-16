@@ -1,6 +1,7 @@
 (* Types *)
 
 type value_type = I32Type | I64Type | F32Type | F64Type
+type elem_type = AnyFuncType
 type stack_type = value_type list
 type result_type = Stack of stack_type | Bot
 type func_type = FuncType of stack_type * stack_type
@@ -24,6 +25,9 @@ let string_of_value_type = function
 let string_of_value_types = function
   | [t] -> string_of_value_type t
   | ts -> "(" ^ String.concat " " (List.map string_of_value_type ts) ^ ")"
+
+let string_of_elem_type = function
+  | AnyFuncType -> "anyfunc"
 
 let string_of_stack_type ts =
   "(" ^ String.concat " " (List.map string_of_value_type ts) ^ ")"

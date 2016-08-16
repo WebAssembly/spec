@@ -112,7 +112,6 @@ let nxx = ixx | fxx
 let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
-let digits = digit+
 let mem_size = "8" | "16" | "32"
 
 rule token = parse
@@ -141,6 +140,7 @@ rule token = parse
         (fun s -> let n = F64.of_string s.it in
           f64_const (n @@ s.at), Values.F64 n))
     }
+  | "anyfunc" { ANYFUNC }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }
@@ -163,6 +163,8 @@ rule token = parse
   | "get_local" { GET_LOCAL }
   | "set_local" { SET_LOCAL }
   | "tee_local" { TEE_LOCAL }
+  | "get_global" { GET_GLOBAL }
+  | "set_global" { SET_GLOBAL }
 
   | (nxx as t)".load"
     { LOAD (fun a o ->
@@ -197,8 +199,8 @@ rule token = parse
             (i64_store16 (opt a 2))
             (i64_store32 (opt a 4)) o)) }
 
-  | "offset="(digits as s) { OFFSET (Int64.of_string s) }
-  | "align="(digits as s) { ALIGN (int_of_string s) }
+  | "offset="(nat as s) { OFFSET_EQ_NAT (Int64.of_string s) }
+  | "align="(nat as s) { ALIGN_EQ_NAT (int_of_string s) }
 
   | (ixx as t)".clz" { UNARY (intop t i32_clz i64_clz) }
   | (ixx as t)".ctz" { UNARY (intop t i32_ctz i64_ctz) }
@@ -288,12 +290,15 @@ rule token = parse
   | "param" { PARAM }
   | "result" { RESULT }
   | "local" { LOCAL }
+  | "global" { GLOBAL }
   | "module" { MODULE }
+  | "table" { TABLE }
   | "memory" { MEMORY }
-  | "segment" { SEGMENT }
+  | "elem" { ELEM }
+  | "data" { DATA }
+  | "offset" { OFFSET }
   | "import" { IMPORT }
   | "export" { EXPORT }
-  | "table" { TABLE }
 
   | "assert_invalid" { ASSERT_INVALID }
   | "assert_return" { ASSERT_RETURN }

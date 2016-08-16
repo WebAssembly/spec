@@ -23,13 +23,16 @@ type op_type = stack_type * result_type
 
 type context =
 {
+  module_ : module_;
   types : func_type list;
   funcs : func_type list;
   imports : func_type list;
   locals : value_type list;
+  globals : value_type list;
   return : value_type list;
   labels : result_type ref list;
-  has_memory : bool
+  table : Table.size option;
+  memory : Memory.size option;
 }
 
 let lookup category list x =
@@ -40,7 +43,16 @@ let type_ types x = lookup "function type" types x
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
+let global c x = lookup "global" c.globals x
 let label c x = lookup "label" c.labels x
+
+let size category opt at =
+  match opt with
+  | Some n -> n
+  | None -> error at ("no " ^ category ^ " defined")
+
+let table c at = size "table" c.table at
+let memory c at = size "memory" c.memory at
 
 
 (* Join *)
@@ -99,7 +111,7 @@ let type_cvtop at = function
     ), F64Type
 
 
-(* Type Analysis *)
+(* Expressions *)
 
 (*
  * check_expr : context -> expr_type_future -> expr -> unit
@@ -190,6 +202,7 @@ let rec check_expr (c : context) (e : expr) (stack : stack_type) : op_type =
     ins --> Stack out
 
   | CallIndirect x ->
+    ignore (table c e.at);
     let FuncType (ins, out) = type_ c.types x in
     (ins @ [I32Type]) --> Stack out
 
@@ -201,6 +214,12 @@ let rec check_expr (c : context) (e : expr) (stack : stack_type) : op_type =
 
   | TeeLocal x ->
     [local c x] --> Stack [local c x]
+
+  | GetGlobal x ->
+    [] --> Stack [global c x]
+
+  | SetGlobal x ->
+    [global c x] --> Stack []
 
   | Load memop ->
     check_memop c memop e.at;
@@ -245,9 +264,11 @@ let rec check_expr (c : context) (e : expr) (stack : stack_type) : op_type =
     [t1] --> Stack [t2]
 
   | CurrentMemory ->
+    ignore (memory c e.at);
     [] --> Stack [I32Type]
 
   | GrowMemory ->
+    ignore (memory c e.at);
     [I32Type] --> Stack [I32Type]
 
   | Trapping msg ->
@@ -293,7 +314,7 @@ and check_block (c : context) (es : expr list) : result_type =
       | Stack ts3 -> Stack (ts1 @ ts3)
 
 and check_memop c memop at =
-  require c.has_memory at "memory operator require a memory section";
+  ignore (memory c at);
   require (memop.offset >= 0L) at "negative offset";
   require (memop.offset <= 0xffffffffL) at "offset too large";
   require (Lib.Int.is_power_of_two memop.align) at "non-power-of-two alignment";
@@ -310,6 +331,8 @@ and check_result_arity r at =
   | Bot -> ()
 
 
+(* Functions & Constants *)
+
 (*
  * check_func : context -> func -> unit
  * check_module : context -> module_ -> unit
@@ -324,7 +347,7 @@ and check_result_arity r at =
  *   s : func_type
  *)
 
-let check_func c f =
+let check_func (c : context) (f : func) =
   let {ftype; locals; body} = f.it in
   let FuncType (ins, out) = type_ c.types ftype in
   check_arity (List.length out) f.at;
@@ -333,8 +356,83 @@ let check_func c f =
   let r = check_block c' body in
   ignore (join !vr r f.at)
 
-let check_elem c x =
-  ignore (func c x)
+
+let is_const e =
+  match e.it with
+  | Const _ | GetGlobal _ -> true
+  | _ -> false
+
+let check_const (c : context) (const : const) (t : value_type) =
+  require (List.for_all is_const const.it) const.at "constant expression required";
+  match check_block c const.it with
+  | Stack [t'] when t = t' -> ()
+  | r -> result_error const.at (Stack [t]) r
+
+
+(* Tables & Memories *)
+
+let check_table_limits (lim : Table.size limits) =
+  let {min; max} = lim.it in
+  match max with
+  | None -> ()
+  | Some max ->
+    require (I32.le_u min max) lim.at
+      "table size minimum must not be greater than maximum"
+
+let check_table (c : context) (tab : table) =
+  let {tlimits = lim; etype = t} = tab.it in
+  check_table_limits lim
+
+let check_memory_limits (lim : Memory.size limits) =
+  let {min; max} = lim.it in
+  require (I64.lt_u min 65536L) lim.at
+    "memory size must be less than 65536 pages (4GiB)";
+  match max with
+  | None -> ()
+  | Some max ->
+    require (I64.lt_u max 65536L) lim.at
+      "memory size must be less than 65536 pages (4GiB)";
+    require (I64.le_u min max) lim.at
+      "memory size minimum must not be greater than maximum"
+
+let check_memory (c : context) (mem : memory) =
+  let {mlimits = lim} = mem.it in
+  check_memory_limits lim
+
+let check_table_segment c prev_end seg =
+  let {offset; init} = seg.it in
+  check_const c offset I32Type;
+  let start = Values.I32Value.of_value (Eval.const c.module_ offset) in
+  let len = Int32.of_int (List.length init) in
+  let end_ = Int32.add start len in
+  require (prev_end <= start) seg.at "table segment not disjoint and ordered";
+  require (end_ <= table c seg.at) seg.at "table segment does not fit memory";
+  ignore (List.map (func c) init);
+  end_
+
+let check_memory_segment c prev_end seg =
+  let {offset; init} = seg.it in
+  check_const c offset I32Type;
+  let start =
+    Int64.of_int32 (Values.I32Value.of_value (Eval.const c.module_ offset)) in
+  let len = Int64.of_int (String.length init) in
+  let end_ = Int64.add start len in
+  require (prev_end <= start) seg.at "data segment not disjoint and ordered";
+  require (end_ <= Int64.mul (memory c seg.at) Memory.page_size) seg.at
+    "data segment does not fit memory";
+  end_
+
+
+(* Modules *)
+
+let check_global c g =
+  let {gtype; value} = g.it in
+  check_const c value gtype
+
+let check_start c start =
+  Lib.Option.app (fun x ->
+    require (func c x = FuncType ([], [])) x.at "start function must be nullary"
+  ) start
 
 module NameSet = Set.Make(String)
 
@@ -342,45 +440,36 @@ let check_export c set ex =
   let {name; kind} = ex.it in
   (match kind with
   | `Func x -> ignore (func c x)
-  | `Memory ->
-    require c.has_memory ex.at "memory export requires a memory section"
+  | `Memory -> ignore (memory c ex.at)
   );
   require (not (NameSet.mem name set)) ex.at "duplicate export name";
   NameSet.add name set
 
-let check_start c start =
-  Lib.Option.app (fun x ->
-    require (func c x = FuncType ([], [])) x.at "start function must be nullary"
-  ) start
-
-let check_segment pages prev_end seg =
-  let seg_len = Int64.of_int (String.length seg.it.Memory.data) in
-  let seg_end = Int64.add seg.it.Memory.addr seg_len in
-  require (seg.it.Memory.addr >= prev_end) seg.at
-    "data segment not disjoint and ordered";
-  require (Int64.mul pages Memory.page_size >= seg_end) seg.at
-    "data segment does not fit memory";
-  seg_end
-
-let check_memory memory =
-  let mem = memory.it in
-  require (mem.min <= mem.max) memory.at
-    "minimum memory pages must be less than or equal to the maximum";
-  require (mem.max <= 65535L) memory.at
-    "linear memory pages must be less or equal to 65535 (4GiB)";
-  ignore (List.fold_left (check_segment mem.min) 0L mem.segments)
-
 let check_module m =
-  let {memory; types; funcs; start; imports; exports; table} = m.it in
-  Lib.Option.app check_memory memory;
-  let c = {types;
-           funcs = List.map (fun f -> type_ types f.it.ftype) funcs;
-           imports = List.map (fun i -> type_ types i.it.itype) imports;
-           locals = [];
-           return = [];
-           labels = [];
-           has_memory = memory <> None} in
-  List.iter (check_func c) funcs;
-  List.iter (check_elem c) table;
-  ignore (List.fold_left (check_export c) NameSet.empty exports);
-  check_start c start
+  let
+    {types; table; memory; globals; funcs; start; elems; data;
+     imports; exports} = m.it in
+  let c =
+    {
+      module_ = m;
+      types;
+      funcs = List.map (fun f -> type_ types f.it.ftype) funcs;
+      imports = List.map (fun i -> type_ types i.it.itype) imports;
+      globals = [];
+      locals = [];
+      return = [];
+      labels = [];
+      table = Lib.Option.map (fun tab -> tab.it.tlimits.it.min) table;  
+      memory = Lib.Option.map (fun mem -> mem.it.mlimits.it.min) memory;
+    }
+  in
+  List.iter (check_global c) globals;
+  let c' = {c with globals = List.map (fun g -> g.it.gtype) globals} in
+  List.iter (check_func c') funcs;
+  Lib.Option.app (check_table c') table;
+  Lib.Option.app (check_memory c') memory;
+  ignore (List.fold_left (check_export c') NameSet.empty exports);
+  ignore (List.fold_left (check_table_segment c') 0l elems);
+  ignore (List.fold_left (check_memory_segment c') 0L data);
+  check_start c' start
+

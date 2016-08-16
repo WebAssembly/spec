@@ -3,7 +3,7 @@
 ;; Test that load and store do not canonicalize NaNs as x87 does.
 
 (module
-  (memory 1 1 (segment 0 "\00\00\a0\7f"))
+  (memory (data "\00\00\a0\7f"))
 
   (func $f32.load (result f32) (f32.load (i32.const 0)))
   (export "f32.load" $f32.load)
@@ -37,7 +37,7 @@
 (assert_return (invoke "f32.load") (f32.const nan:0x200000))
 
 (module
-  (memory 1 1 (segment 0 "\00\00\00\00\00\00\f4\7f"))
+  (memory (data "\00\00\00\00\00\00\f4\7f"))
 
   (func $f64.load (result f64) (f64.load (i32.const 0)))
   (export "f64.load" $f64.load)
@@ -73,7 +73,7 @@
 ;; Test that unaligned load and store do not canonicalize NaNs.
 
 (module
-  (memory 1 1 (segment 1 "\00\00\a0\7f"))
+  (memory (data "\00\00\00\a0\7f"))
 
   (func $f32.load (result f32) (f32.load (i32.const 1)))
   (export "f32.load" $f32.load)
@@ -107,7 +107,7 @@
 (assert_return (invoke "f32.load") (f32.const nan:0x200000))
 
 (module
-  (memory 1 1 (segment 1 "\00\00\00\00\00\00\f4\7f"))
+  (memory (data "\00\00\00\00\00\00\00\f4\7f"))
 
   (func $f64.load (result f64) (f64.load (i32.const 1)))
   (export "f64.load" $f64.load)
@@ -143,7 +143,7 @@
 ;; Test that load and store do not canonicalize NaNs as some JS engines do.
 
 (module
-  (memory 1 1 (segment 0 "\01\00\d0\7f"))
+  (memory (data "\01\00\d0\7f"))
 
   (func $f32.load (result f32) (f32.load (i32.const 0)))
   (export "f32.load" $f32.load)
@@ -177,7 +177,7 @@
 (assert_return (invoke "f32.load") (f32.const nan:0x500001))
 
 (module
-  (memory 1 1 (segment 0 "\01\00\00\00\00\00\fc\7f"))
+  (memory (data "\01\00\00\00\00\00\fc\7f"))
 
   (func $f64.load (result f64) (f64.load (i32.const 0)))
   (export "f64.load" $f64.load)

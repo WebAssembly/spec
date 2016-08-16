@@ -52,11 +52,11 @@ let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
   {types : types; funcs : space; imports : space;
-   locals : space; labels : int VarMap.t}
+   locals : space; globals : space; labels : int VarMap.t}
 
 let empty_context () =
   {types = empty_types (); funcs = empty (); imports = empty ();
-   locals = empty (); labels = VarMap.empty}
+   locals = empty (); globals = empty (); labels = VarMap.empty}
 
 let enter_func c =
   assert (VarMap.is_empty c.labels);
@@ -73,6 +73,7 @@ let lookup category space x =
 let func c x = lookup "function" c.funcs x
 let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
+let global c x = lookup "global" c.globals x
 let label c x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
@@ -92,6 +93,7 @@ let bind category space x =
 let bind_func c x = bind "function" c.funcs x
 let bind_import c x = bind "import" c.imports x
 let bind_local c x = bind "local" c.locals x
+let bind_global c x = bind "global" c.globals x
 let bind_label c x =
   {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
 
@@ -103,6 +105,7 @@ let anon space n = space.count <- space.count + n
 let anon_func c = anon c.funcs 1
 let anon_import c = anon c.imports 1
 let anon_locals c ts = anon c.locals (List.length ts)
+let anon_global c = anon c.globals 1
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 let empty_type = FuncType ([], [])
@@ -124,14 +127,15 @@ let implicit_decl c t at =
 
 %}
 
-%token NAT INT FLOAT TEXT VAR VALUE_TYPE LPAR RPAR
+%token NAT INT FLOAT TEXT VAR VALUE_TYPE ANYFUNC LPAR RPAR
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_IMPORT CALL_INDIRECT RETURN
-%token GET_LOCAL SET_LOCAL TEE_LOCAL LOAD STORE OFFSET ALIGN
+%token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
+%token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY COMPARE CONVERT
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
-%token FUNC START TYPE PARAM RESULT LOCAL
-%token MODULE MEMORY SEGMENT IMPORT EXPORT TABLE
+%token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
+%token MODULE TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
 %token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token INPUT OUTPUT
 %token EOF
@@ -150,8 +154,8 @@ let implicit_decl c t at =
 %token<Ast.expr'> CONVERT
 %token<int option -> Memory.offset -> Ast.expr'> LOAD
 %token<int option -> Memory.offset -> Ast.expr'> STORE
-%token<Memory.offset> OFFSET
-%token<int> ALIGN
+%token<Memory.offset> OFFSET_EQ_NAT
+%token<int> ALIGN_EQ_NAT
 
 %nonassoc LOW
 %nonassoc VAR
@@ -166,7 +170,7 @@ let implicit_decl c t at =
 /* Auxiliaries */
 
 text_list :
-  | TEXT { $1 }
+  | /* empty */ { "" }
   | text_list TEXT { $1 ^ $2 }
 ;
 
@@ -176,6 +180,11 @@ value_type_list :
   | /* empty */ { [] }
   | VALUE_TYPE value_type_list { $1 :: $2 }
 ;
+
+elem_type :
+  | ANYFUNC { AnyFuncType }
+;
+
 func_type :
   | /* empty */
     { FuncType ([], []) }
@@ -220,13 +229,13 @@ labeling1 :
   | bind_var { fun c -> bind_label c $1 }
 ;
 
-offset :
+offset_opt :
   | /* empty */ { 0L }
-  | OFFSET { $1 }
+  | OFFSET_EQ_NAT { $1 }
 ;
-align :
+align_opt :
   | /* empty */ { None }
-  | ALIGN { Some $1 }
+  | ALIGN_EQ_NAT { Some $1 }
 ;
 
 expr :
@@ -264,8 +273,10 @@ op :
   | GET_LOCAL var { fun c -> get_local ($2 c local) }
   | SET_LOCAL var { fun c -> set_local ($2 c local) }
   | TEE_LOCAL var { fun c -> tee_local ($2 c local) }
-  | LOAD offset align { fun c -> $1 $3 $2 }
-  | STORE offset align { fun c -> $1 $3 $2 }
+  | GET_GLOBAL var { fun c -> get_global ($2 c global) }
+  | SET_GLOBAL var { fun c -> set_global ($2 c global) }
+  | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
+  | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
@@ -315,8 +326,10 @@ expr1 :  /* Sugar */
   | GET_LOCAL var { fun c -> [], get_local ($2 c local) }
   | SET_LOCAL var expr { fun c -> $3 c, set_local ($2 c local) }
   | TEE_LOCAL var expr { fun c -> $3 c, tee_local ($2 c local) }
-  | LOAD offset align expr { fun c -> $4 c, $1 $3 $2 }
-  | STORE offset align expr expr { fun c -> $4 c @ $5 c, $1 $3 $2 }
+  | GET_GLOBAL var { fun c -> [], get_global ($2 c global) }
+  | SET_GLOBAL var expr { fun c -> $3 c, set_global ($2 c global) }
+  | LOAD offset_opt align_opt expr { fun c -> $4 c, $1 $3 $2 }
+  | STORE offset_opt align_opt expr expr { fun c -> $4 c @ $5 c, $1 $3 $2 }
   | CONST literal { fun c -> [], fst (literal $1 $2) }
   | UNARY expr { fun c -> $2 c, $1 }
   | BINARY expr expr { fun c -> $2 c @ $3 c, $1 }
@@ -326,9 +339,14 @@ expr1 :  /* Sugar */
   | CURRENT_MEMORY { fun c -> [], current_memory }
   | GROW_MEMORY expr { fun c -> $2 c, grow_memory }
 ;
+
 expr_list :
   | /* empty */ { fun c -> [] }
   | expr expr_list { fun c -> $1 c @ $2 c }
+;
+
+const_expr :
+  | expr_list { let at = at () in fun c -> $1 c @@ at }
 ;
 
 
@@ -393,40 +411,65 @@ export_opt :
 ;
 
 
-/* Modules */
+/* Tables & Memories */
 
-start :
-  | LPAR START var RPAR
-    { fun c -> $3 c func }
-
-segment :
-  | LPAR SEGMENT NAT text_list RPAR
-    { {Memory.addr = Int64.of_string $3; Memory.data = $4} @@ at () }
-;
-segment_list :
-  | /* empty */ { [] }
-  | segment segment_list { $1 :: $2 }
+offset :
+  | LPAR OFFSET const_expr RPAR { $3 }
+  | LPAR expr1 RPAR  /* Sugar */
+    { let at = at () in fun c -> let es, e' = $2 c in (es @ [e' @@ at]) @@ at }
 ;
 
+elem :
+  | LPAR ELEM offset var_list RPAR
+    { let at = at () in
+      fun c -> {offset = $3 c; init = $4 c func} @@ at }
+;
+
+table_limits :
+  | NAT { {min = Int32.of_string $1; max = None} @@ at () }
+  | NAT NAT
+    { {min = Int32.of_string $1; max = Some (Int32.of_string $2)} @@ at () }
+;
+table :
+  | LPAR TABLE table_limits elem_type RPAR
+    { let at = at () in fun c -> {tlimits = $3; etype = $4} @@ at, [] }
+  | LPAR TABLE elem_type LPAR ELEM var_list RPAR RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> let init = $6 c func in
+      let size = Int32.of_int (List.length init) in
+      {tlimits = {min = size; max = Some size} @@ at; etype = $3} @@ at,
+      [{offset = [i32_const (0l @@ at) @@ at] @@ at; init} @@ at] }
+;
+
+data :
+  | LPAR DATA offset text_list RPAR
+    { fun c -> {offset = $3 c; init = $4} @@ at () }
+;
+
+memory_limits :
+  | NAT { {min = Int64.of_string $1; max = None} @@ at () }
+  | NAT NAT
+    { {min = Int64.of_string $1; max = Some (Int64.of_string $2)} @@ at () }
+;
 memory :
-  | LPAR MEMORY NAT NAT segment_list RPAR
-    { {min = Int64.of_string $3; max = Int64.of_string $4; segments = $5}
-        @@ at () }
-  | LPAR MEMORY NAT segment_list RPAR
-    { {min = Int64.of_string $3; max = Int64.of_string $3; segments = $4}
-        @@ at () }
+  | LPAR MEMORY memory_limits RPAR
+    { fun c -> {mlimits = $3} @@ at (), [] }
+  | LPAR MEMORY LPAR DATA text_list RPAR RPAR  /* Sugar */
+    { let at = at () in
+      fun c ->
+      let size = Int64.(div (add (of_int (String.length $5)) 65535L) 65536L) in
+      {mlimits = {min = size; max = Some size} @@ at} @@ at,
+      [{offset = [i32_const (0l @@ at) @@ at] @@ at; init = $5} @@ at] }
 ;
+
+
+/* Modules */
 
 type_def :
   | LPAR TYPE LPAR FUNC func_type RPAR RPAR
     { fun c -> anon_type c $5 }
   | LPAR TYPE bind_var LPAR FUNC func_type RPAR RPAR
     { fun c -> bind_type c $3 $6 }
-;
-
-table :
-  | LPAR TABLE var_list RPAR
-    { fun c -> $3 c func }
 ;
 
 import :
@@ -455,38 +498,75 @@ export :
     { let at = at () in fun c -> {name = $3; kind = `Memory} @@ at }
 ;
 
+global :
+  | LPAR GLOBAL VALUE_TYPE const_expr RPAR
+    { let at = at () in
+      fun c -> anon_global c; fun () -> {gtype = $3; value = $4 c} @@ at }
+  | LPAR GLOBAL bind_var VALUE_TYPE const_expr RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> bind_global c $3; fun () -> {gtype = $4; value = $5 c} @@ at }
+;
+
+start :
+  | LPAR START var RPAR
+    { fun c -> $3 c func }
+;
+
 module_fields :
   | /* empty */
     { fun c ->
-      {memory = None; types = c.types.tlist; funcs = []; start = None; imports = [];
-       exports = []; table = []} }
+      {
+        types = c.types.tlist;
+        globals = [];
+        table = None;
+        memory = None;
+        funcs = [];
+        elems = [];
+        data = [];
+        start = None;
+        imports = [];
+        exports = []
+      } }
+  | type_def module_fields
+    { fun c -> $1 c; $2 c }
+  | global module_fields
+    { fun c -> let g = $1 c in let m = $2 c in
+      {m with globals = g () :: m.globals} }
+  | table module_fields
+    { fun c -> let m = $2 c in let tab, elems = $1 c in
+      match m.table with
+      | Some _ -> error tab.at "multiple table sections"
+      | None -> {m with table = Some tab; elems = elems @ m.elems} }
+  | memory module_fields
+    { fun c -> let m = $2 c in let mem, data = $1 c in
+      match m.memory with
+      | Some _ -> error mem.at "multiple memory sections"
+      | None -> {m with memory = Some mem; data = data @ m.data} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in let func, exs = f () in
       {m with funcs = func :: m.funcs; exports = exs @ m.exports} }
+  | elem module_fields
+    { fun c -> let m = $2 c in
+      {m with elems = $1 c :: m.elems} }
+  | data module_fields
+    { fun c -> let m = $2 c in
+      {m with data = $1 c :: m.data} }
+  | start module_fields
+    { fun c -> let m = $2 c in let x = $1 c in
+      match m.start with
+      | Some _ -> error x.at "multiple start sections"
+      | None -> {m with start = Some x} }
   | import module_fields
     { fun c -> let i = $1 c in let m = $2 c in
       {m with imports = i :: m.imports} }
   | export module_fields
     { fun c -> let m = $2 c in
       {m with exports = $1 c :: m.exports} }
-  | table module_fields
-    { fun c -> let m = $2 c in
-      {m with table = ($1 c) @ m.table} }
-  | type_def module_fields
-    { fun c -> $1 c; $2 c }
-  | memory module_fields
-    { fun c -> let m = $2 c in
-      match m.memory with
-      | Some _ -> error $1.at "multiple memory sections"
-      | None -> {m with memory = Some $1} }
-  | start module_fields
-    { fun c -> let m = $2 c in
-      {m with start = Some ($1 c)} }
 ;
 module_ :
   | LPAR MODULE module_fields RPAR
     { Textual ($3 (empty_context ()) @@ at ()) @@ at() }
-  | LPAR MODULE text_list RPAR { Binary $3 @@ at() }
+  | LPAR MODULE TEXT text_list RPAR { Binary ($3 ^ $4) @@ at() }
 ;
 
 

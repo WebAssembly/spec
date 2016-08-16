@@ -3,46 +3,85 @@
 (module (memory 0 1))
 (module (memory 1 256))
 (module (memory 0 65535))
-(module (memory 0 0 (segment 0 "")))
-(module (memory 1 1 (segment 0 "a")))
-(module (memory 1 2 (segment 0 "a") (segment 65535 "b")))
-(module (memory 1 2 (segment 0 "a") (segment 1 "b") (segment 2 "c")))
+(module (memory 0 0) (data (i32.const 0)))
+(module (memory 0 0) (data (i32.const 0) ""))
+(module (memory 1 1) (data (i32.const 0) "a"))
+(module (memory 1 2) (data (i32.const 0) "a") (data (i32.const 65535) "b"))
+(module (memory 1 2)
+  (data (i32.const 0) "a") (data (i32.const 1) "b") (data (i32.const 2) "c")
+)
+
+(module (memory (data)) (func "memsize" (result i32) (current_memory)))
+(assert_return (invoke "memsize") (i32.const 0))
+(module (memory (data "")) (func "memsize" (result i32) (current_memory)))
+(assert_return (invoke "memsize") (i32.const 0))
+(module (memory (data "x")) (func "memsize" (result i32) (current_memory)))
+(assert_return (invoke "memsize") (i32.const 1))
+
+(assert_invalid
+  (module (data (i32.const 0)))
+  "no memory defined"
+)
+(assert_invalid
+  (module (data (i32.const 0) ""))
+  "no memory defined"
+)
+(assert_invalid
+  (module (data (i32.const 0) "x"))
+  "no memory defined"
+)
+
+(assert_invalid
+  (module (memory 1) (data (i64.const 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (data (i32.ctz (i32.const 0))))
+  "constant expression required"
+)
+(assert_invalid
+  (module (memory 1) (data (nop)))
+  "constant expression required"
+)
 
 (assert_invalid
   (module (memory 1 0))
-  "minimum memory pages must be less than or equal to the maximum"
+  "memory size minimum must not be greater than maximum"
 )
 (assert_invalid
-  (module (memory 0 0 (segment 0 "a")))
+  (module (memory 0 0) (data (i32.const 0) "a"))
   "data segment does not fit memory"
 )
 (assert_invalid
-  (module (memory 1 2 (segment 0 "a") (segment 98304 "b")))
+  (module (memory 1 2) (data (i32.const 0) "a") (data (i32.const 98304) "b"))
   "data segment does not fit memory"
 )
 (assert_invalid
-  (module (memory 1 2 (segment 0 "abc") (segment 0 "def")))
+  (module (memory 1 2) (data (i32.const 0) "abc") (data (i32.const 0) "def"))
   "data segment not disjoint and ordered"
 )
 (assert_invalid
-  (module (memory 1 2 (segment 3 "ab") (segment 0 "de")))
+  (module (memory 1 2) (data (i32.const 3) "ab") (data (i32.const 0) "de"))
   "data segment not disjoint and ordered"
 )
 (assert_invalid
-  (module (memory 1 2 (segment 0 "a") (segment 2 "b") (segment 1 "c")))
+  (module
+    (memory 1 2)
+    (data (i32.const 0) "a") (data (i32.const 2) "b") (data (i32.const 1) "c")
+  )
   "data segment not disjoint and ordered"
 )
 (assert_invalid
   (module (memory 0 65536))
-  "linear memory pages must be less or equal to 65535 (4GiB)"
+  "memory size must be less than 65536 pages (4GiB)"
 )
 (assert_invalid
   (module (memory 0 2147483648))
-  "linear memory pages must be less or equal to 65535 (4GiB)"
+  "memory size must be less than 65536 pages (4GiB)"
 )
 (assert_invalid
   (module (memory 0 4294967296))
-  "linear memory pages must be less or equal to 65535 (4GiB)"
+  "memory size must be less than 65536 pages (4GiB)"
 )
 
 ;; Test alignment annotation rules
@@ -73,7 +112,8 @@
 )
 
 (module
-  (memory 1 (segment 0 "ABC\a7D") (segment 20 "WASM"))
+  (memory 1)
+  (data (i32.const 0) "ABC\a7D") (data (i32.const 20) "WASM")
 
   ;; Data section
   (func $data (result i32)

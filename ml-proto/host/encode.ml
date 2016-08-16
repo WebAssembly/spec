@@ -82,10 +82,13 @@ let encode m =
       | F32Type -> u8 0x03
       | F64Type -> u8 0x04
 
+    let elem_type = function
+      | AnyFuncType -> u8 0x20
+
     let expr_type t = vec1 value_type t
 
     let func_type = function
-      | FuncType (ins, out) -> u8 0x05; vec value_type ins; vec value_type out
+      | FuncType (ins, out) -> u8 0x40; vec value_type ins; vec value_type out
 
     (* Expressions *)
 
@@ -125,6 +128,8 @@ let encode m =
       | GetLocal x -> op 0x14; var x
       | SetLocal x -> op 0x15; var x
       | TeeLocal x -> op 0x19; var x
+      | GetGlobal x -> op 0xbb; var x
+      | SetGlobal x -> op 0xbc; var x
 
       | Call x -> op 0x16; var x
       | CallIndirect x -> op 0x17; var x
@@ -332,13 +337,17 @@ let encode m =
 
       | Trapping _ | Label _ | Local _ -> assert false
 
+    let const c =
+      list expr c.it; op 0x0f
+
+
     (* Sections *)
 
     let section id f x needed =
       if needed then begin
+        string id;
         let g = gap () in
         let p = pos s in
-        string id;
         f x;
         patch_gap g (pos s - p)
       end
@@ -362,16 +371,32 @@ let encode m =
       section "function" (vec func) fs (fs <> [])
 
     (* Table section *)
-    let table_section tab =
-      section "table" (vec var) tab (tab <> [])
+    let limits vu lim =
+      let {min; max} = lim.it in
+      bool (max <> None); vu min; opt vu max
+
+    let table tab =
+      let {etype; tlimits} = tab.it in
+      elem_type etype; limits vu32 tlimits
+
+    let table_section tabo =
+      section "table" (opt table) tabo (tabo <> None)
 
     (* Memory section *)
     let memory mem =
-      let {min; max; _} = mem.it in
-      vu64 min; vu64 max; bool true (*TODO: pending change*)
+      let {mlimits} = mem.it in
+      limits vu64 mlimits
 
     let memory_section memo =
       section "memory" (opt memory) memo (memo <> None)
+
+    (* Global section *)
+    let global g =
+      let {gtype; value} = g.it in
+      value_type gtype; const value
+
+    let global_section gs =
+      section "global" (vec global) gs (gs <> [])
 
     (* Export section *)
     let export exp =
@@ -391,11 +416,11 @@ let encode m =
       section "start" (opt var) xo (xo <> None)
 
     (* Code section *)
-    let compress locals =
+    let compress ts =
       let combine t = function
         | (t', n) :: ts when t = t' -> (t, n + 1) :: ts
         | ts -> (t, 1) :: ts
-      in List.fold_right combine locals []
+      in List.fold_right combine ts []
 
     let local (t, n) = vu n; value_type t
 
@@ -410,14 +435,23 @@ let encode m =
     let code_section fs =
       section "code" (vec code) fs (fs <> [])
 
-    (* Data section *)
-    let segment seg =
-      let {Memory.addr; data} = seg.it in
-      vu64 addr; string data
+    (* Element section *)
+    let segment dat seg =
+      let {offset; init} = seg.it in
+      const offset; dat init
 
-    let data_section segs =
-      section "data" (opt (vec segment))
-        segs (segs <> None && segs <> Some [])
+    let table_segment seg =
+      segment (vec var) seg
+
+    let elem_section elems =
+      section "element" (vec table_segment) elems (elems <> [])
+
+    (* Data section *)
+    let memory_segment seg =
+      segment string seg
+
+    let data_section data =
+      section "data" (vec memory_segment) data (data <> [])
 
     (* Module *)
 
@@ -429,9 +463,11 @@ let encode m =
       func_section m.it.funcs;
       table_section m.it.table;
       memory_section m.it.memory;
+      global_section m.it.globals;
       export_section m.it.exports;
       start_section m.it.start;
       code_section m.it.funcs;
-      data_section (Lib.Option.map (fun mem -> mem.it.segments) m.it.memory)
+      elem_section m.it.elems;
+      data_section m.it.data
   end
   in E.module_ m; to_string s

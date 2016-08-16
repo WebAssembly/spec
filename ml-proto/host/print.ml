@@ -29,9 +29,6 @@ let print_export m i ex =
     | `Memory -> "memory"
   in printf "export \"%s\" : %s\n" name ascription
 
-let print_table_elem i x =
-  printf "table [%d] = func %d\n" i x.it
-
 let print_start start =
   Lib.Option.app (fun x -> printf "start = func %d\n" x.it) start
 
@@ -42,10 +39,10 @@ let print_func m i f =
   print_func_sig m "func" i f
 
 let print_module m =
-  let {funcs; start; exports; table} = m.it in
+  (* TODO: more complete print function *)
+  let {funcs; start; exports; table; _} = m.it in
   List.iteri (print_func m) funcs;
   List.iteri (print_export m) exports;
-  List.iteri print_table_elem table;
   print_start start;
   flush_all ()
 

@@ -27,4 +27,6 @@
 
 (module (memory 0 0) (export "a" memory))
 (module (memory 0 0) (export "a" memory) (export "b" memory))
-(assert_invalid (module (export "a" memory)) "memory export requires a memory section")
+
+(assert_invalid (module (export "a" memory)) "no memory")
+

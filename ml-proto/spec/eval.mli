@@ -9,3 +9,4 @@ exception Crash of Source.region * string
 val init : Ast.module_ -> import list -> instance
 val invoke : instance -> string -> value list -> value list
   (* raises Trap, Crash *)
+val const : Ast.module_ -> Ast.const -> value

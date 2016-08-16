@@ -29,6 +29,8 @@ let call_indirect x = CallIndirect x
 let get_local x = GetLocal x
 let set_local x = SetLocal x
 let tee_local x = TeeLocal x
+let get_global x = GetGlobal x
+let set_global x = SetGlobal x
 
 let i32_load align offset = Load {ty = I32Type; align; offset}
 let i64_load align offset = Load {ty = I64Type; align; offset}

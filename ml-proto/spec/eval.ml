@@ -18,7 +18,9 @@ type instance =
   module_ : module_;
   imports : (int * import) list;
   exports : int map;
-  memory : Memory.t option
+  table : Table.t option;
+  memory : Memory.t option;
+  globals : value ref list;
 }
 
 
@@ -33,6 +35,8 @@ exception Crash = Crash.Error (* failure that cannot happen in valid code *)
 let memory_error at = function
   | Memory.Bounds -> Trap.error at "out of bounds memory access"
   | Memory.SizeOverflow -> Trap.error at "memory size overflow"
+  | Memory.SizeLimit -> Trap.error at "memory size limit reached"
+  | Memory.Type -> Crash.error at "type mismatch at memory access"
   | exn -> raise exn
 
 let numeric_error at = function
@@ -64,30 +68,33 @@ let lookup category list x =
   try List.nth list x.it with Failure _ ->
     Crash.error x.at ("undefined " ^ category ^ " " ^ string_of_int x.it)
 
-let type_ inst x = lookup "type" inst.module_.it.types x
-let func inst x = lookup "function" inst.module_.it.funcs x
-let import inst x = lookup "import" inst.imports x
+let type_ c x = lookup "type" c.instance.module_.it.types x
+let func c x = lookup "function" c.instance.module_.it.funcs x
+let import c x = lookup "import" c.instance.imports x
+let global c x = lookup "global" c.instance.globals x
 let local c x = lookup "local" c.locals x
 
-let export m name =
-  try Map.find name.it m.exports with Not_found ->
+let export inst name =
+  try Map.find name.it inst.exports with Not_found ->
     Crash.error name.at ("undefined export \"" ^ name.it ^ "\"")
 
-let table_elem inst i at =
-  try
-    let j = Int32.to_int i in
-    if i < 0l || i <> Int32.of_int j then raise (Failure "");
-    List.nth inst.module_.it.table j
-  with Failure _ ->
-    Trap.error at ("undefined table index " ^ Int32.to_string i)
-
-
-(* Type conversions *)
+let table c at =
+  match c.instance.table with
+  | Some tab -> tab
+  | _ -> Crash.error at "no table"
 
 let memory c at =
   match c.instance.memory with
-  | Some m -> m
-  | _ -> Trap.error at "memory operation with no memory"
+  | Some mem -> mem
+  | _ -> Crash.error at "no memory"
+
+let elem c i t at =
+  match Table.load (table c at) i t with
+  | Some j -> j
+  | None ->
+    Trap.error at ("undefined element " ^ Int32.to_string i)
+  | exception Table.Bounds ->
+    Trap.error at ("undefined element " ^ Int32.to_string i)
 
 
 (* Evaluation *)
@@ -161,8 +168,8 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
 
   | Call x, vs ->
     if c.resources = 0 then Trap.error e.at "call stack exhausted";
-    let f = func c.instance x in
-    let FuncType (ins, out) = type_ c.instance f.it.ftype in
+    let f = func c x in
+    let FuncType (ins, out) = type_ c f.it.ftype in
     let n = List.length ins in
     let m = List.length out in
     let args = List.rev (keep n vs e.at) in
@@ -170,8 +177,8 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     drop n vs e.at, [Local (m, args @ locals, [], f.it.body) @@ e.at]
 
   | CallImport x, vs ->
-    let x, f = import c.instance x in
-    let FuncType (ins, out) = type_ c.instance (x @@ e.at) in
+    let x, f = import c x in
+    let FuncType (ins, out) = type_ c (x @@ e.at) in
     let n = List.length ins in
     (try
       let vs' = List.rev (f (List.rev (keep n vs e.at))) in
@@ -179,10 +186,10 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     with Crash (_, msg) -> Crash.error e.at msg)
 
   | CallIndirect x, I32 i :: vs ->
-    let f = func c.instance (table_elem c.instance i e.at) in
-    if x.it <> f.it.ftype.it then
+    let y = elem c i AnyFuncType e.at @@ e.at in
+    if type_ c x <> type_ c (func c y).it.ftype then
       Trap.error e.at "indirect call signature mismatch";
-    vs, [Call (table_elem c.instance i e.at) @@ e.at]
+    vs, [Call y @@ e.at]
 
   | GetLocal x, vs ->
     !(local c x) :: vs, []
@@ -194,6 +201,13 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
   | TeeLocal x, v :: vs' ->
     local c x := v;
     v :: vs', []
+
+  | GetGlobal x, vs ->
+    !(global c x) :: vs, []
+
+  | SetGlobal x, v :: vs' ->
+    global c x := v;
+    vs', []
 
   | Load {offset; ty; _}, I32 i :: vs' ->
     let addr = I64_convert.extend_u_i32 i in
@@ -255,7 +269,7 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
      * Since we currently only support i32, just test that. *)
     if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
       Trap.error e.at "memory size exceeds implementation limit";
-    Memory.grow mem delta;
+    (try Memory.grow mem delta with exn -> memory_error e.at exn);
     I32 (Int64.to_int32 old_size) :: vs', []
 
   | Trapping msg, vs ->
@@ -302,26 +316,63 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     Crash.error e.at "type error: missing or ill-typed operand on stack"
 
 
-(* Functions *)
+let rec eval_block (c : config) (vs : value stack) (es : expr list) : value stack =
+  match es with
+  | [] -> vs
+  | [{it = Trapping msg; at}] -> Trap.error at msg
+  | e :: es ->
+    let vs', es' = step_expr c vs e in
+    eval_block c vs' (es' @ es)
+
+
+(* Functions & Constants *)
 
 let eval_func (inst : instance) (vs : value list) (x : var) : value list =
   let c = {instance = inst; locals = []; resources = resource_limit} in
-  let rec loop vs es =
-    match es with
-    | [] -> vs
-    | [{it = Trapping msg; at}] -> Trap.error at msg
-    | e :: es ->
-      let vs', es' = step_expr c vs e in
-      loop vs' (es' @ es)
-  in List.rev (loop (List.rev vs) [Call x @@ x.at])
+  List.rev (eval_block c (List.rev vs) [Call x @@ x.at])
+
+let eval_const inst const =
+  let c = {instance = inst; locals = []; resources = resource_limit} in
+  match eval_block c [] const.it with
+  | [v] -> v
+  | _ -> Crash.error const.at "type error: wrong number of values on stack"
+
+let const (m : module_) const =
+  let inst = 
+    { module_ = m; imports = []; exports = Map.empty;
+      table = None; memory = None; globals = [] }
+  in eval_const inst const
 
 
 (* Modules *)
 
-let init_memory {it = {min; segments; _}} =
-  let mem = Memory.create min in
-  Memory.init mem (List.map it segments);
+let offset m seg =
+  (* TODO: allow referring to globals *)
+  let {offset; _} = seg.it in
+  try I32Value.of_value (const m offset) with Value _ ->
+    Crash.error offset.at "type error: ill-typed value on stack"
+
+let init_table m elems table =
+  let {tlimits = lim; _} = table.it in
+  let tab = Table.create lim.it.min lim.it.max in
+  let entries xs = List.map (fun x -> Some x.it) xs in
+  List.iter
+    (fun seg -> Table.blit tab (offset m seg) (entries seg.it.init))
+    elems;
+  tab
+
+let init_memory m data memory =
+  let {mlimits = lim} = memory.it in
+  let mem = Memory.create lim.it.min lim.it.max in
+  List.iter
+    (fun seg -> Memory.blit mem (Int64.of_int32 (offset m seg)) seg.it.init)
+    data;
   mem
+
+let init_global inst ref global =
+  let {value; _} = global.it in
+  (* TODO: allow referring to earlier globals *)
+  ref := eval_const inst value
 
 let add_export ex =
   let {name; kind} = ex.it in
@@ -330,17 +381,24 @@ let add_export ex =
   | `Memory -> fun x -> x
 
 let init (m : module_) imports =
-  if (List.length m.it.imports <> List.length imports) then
+  if (List.length imports <> List.length m.it.imports) then
     Crash.error m.at "mismatch in number of imports";
-  let {memory; funcs; exports; start; _} = m.it in
+  let {table; memory; globals; funcs; exports; elems; data; start; _} = m.it in
   let inst =
-    {module_ = m;
-     imports = List.combine (List.map (fun imp -> imp.it.itype.it) m.it.imports) imports;
-     exports = List.fold_right add_export exports Map.empty;
-     memory = Lib.Option.map init_memory memory}
+    { module_ = m;
+      imports =
+        List.combine (List.map (fun imp -> imp.it.itype.it) m.it.imports)
+          imports;
+      exports = List.fold_right add_export exports Map.empty;
+      table = Lib.Option.map (init_table m elems) table;
+      memory = Lib.Option.map (init_memory m data) memory;
+      globals = List.map (fun g -> ref (default_value g.it.gtype)) globals;
+    }
   in
+  List.iter2 (init_global inst) inst.globals globals;
   Lib.Option.app (fun x -> ignore (eval_func inst [] x)) start;
   inst
 
 let invoke (inst : instance) name (vs : value list) : value list =
   eval_func inst vs (export inst (name @@ no_region) @@ no_region)
+

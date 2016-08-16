@@ -17,13 +17,8 @@
  *)
 
 
+open Types
 open Values
-
-
-(* Types *)
-
-type value_type = Types.value_type
-type elem_type = Types.elem_type
 
 
 (* Operators *)
@@ -35,8 +30,8 @@ struct
              | And | Or | Xor | Shl | ShrS | ShrU | Rotl | Rotr
   type testop = Eqz
   type relop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
-  type cvtop = ExtendSI32 | ExtendUI32 | WrapI64
-             | TruncSF32 | TruncUF32 | TruncSF64 | TruncUF64
+  type cvtop = ExtendSInt32 | ExtendUInt32 | WrapInt64
+             | TruncSFloat32 | TruncUFloat32 | TruncSFloat64 | TruncUFloat64
              | ReinterpretFloat
 end
 
@@ -46,8 +41,8 @@ struct
   type binop = Add | Sub | Mul | Div | Min | Max | CopySign
   type testop
   type relop = Eq | Ne | Lt | Le | Gt | Ge
-  type cvtop = ConvertSI32 | ConvertUI32 | ConvertSI64 | ConvertUI64
-             | PromoteF32 | DemoteF64
+  type cvtop = ConvertSInt32 | ConvertUInt32 | ConvertSInt64 | ConvertUInt64
+             | PromoteFloat32 | DemoteFloat64
              | ReinterpretInt
 end
 
@@ -62,9 +57,12 @@ type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) op
 
-type memop = {ty : value_type; align : int; offset : Memory.offset}
+type memop = {ty : value_type; offset : Memory.offset; align : int}
 type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
 type wrapop = {memop : memop; sz : Memory.mem_size}
+type hostop =
+  | CurrentMemory        (* inquire current size of linear memory *)
+  | GrowMemory           (* grow linear memory *)
 
 
 (* Expressions *)
@@ -74,53 +72,44 @@ type literal = value Source.phrase
 
 type expr = expr' Source.phrase
 and expr' =
-  | Unreachable                       (* trap unconditionally *)
-  | Nop                               (* do nothing *)
-  | Drop                              (* forget a value *)
-  | Select                            (* branchless conditional *)
-  | Block of expr list                (* execute in sequence *)
-  | Loop of expr list                 (* loop header *)
-  | Br of int * var                   (* break to n-th surrounding label *)
-  | BrIf of int * var                 (* conditional break *)
-  | BrTable of int * var list * var   (* indexed break *)
-  | Return                            (* break from function body *)
-  | If of expr list * expr list       (* conditional *)
-  | Call of var                       (* call function *)
-  | CallImport of var                 (* call imported function *)
-  | CallIndirect of var               (* call function through table *)
-  | GetLocal of var                   (* read local variable *)
-  | SetLocal of var                   (* write local variable *)
-  | TeeLocal of var                   (* write local variable and keep value *)
-  | GetGlobal of var                  (* read global variable *)
-  | SetGlobal of var                  (* write global variable *)
-  | Load of memop                     (* read memory at address *)
-  | Store of memop                    (* write memory at address *)
-  | LoadPacked of extop               (* read memory at address and extend *)
-  | StorePacked of wrapop             (* wrap and write to memory at address *)
-  | Const of literal                  (* constant *)
-  | Unary of unop                     (* unary numeric operator *)
-  | Binary of binop                   (* binary numeric operator *)
-  | Test of testop                    (* numeric test *)
-  | Compare of relop                  (* numeric comparison *)
-  | Convert of cvtop                  (* conversion *)
-  | CurrentMemory                     (* size of linear memory *)
-  | GrowMemory                        (* grow linear memory *)
-
-  (* Administrative expressions *)
-  | Trapping of string                                  (* trap *)
-  | Label of expr list * value list * expr list         (* control stack *)
-  | Local of int * value list * value list * expr list  (* call stack *)
+  | Nop                                     (* do nothing *)
+  | Unreachable                             (* trap *)
+  | Drop of expr                            (* forget a value *)
+  | Block of expr list * expr               (* execute in sequence *)
+  | Loop of expr                            (* loop header *)
+  | Break of var * expr option              (* break to n-th surrounding label *)
+  | BreakIf of var * expr option * expr     (* conditional break *)
+  | BreakTable of var list * var * expr option * expr  (* indexed break *)
+  | If of expr * expr * expr                (* conditional *)
+  | Select of expr * expr * expr            (* branchless conditional *)
+  | Call of var * expr list                 (* call function *)
+  | CallImport of var * expr list           (* call imported function *)
+  | CallIndirect of var * expr * expr list  (* call function through table *)
+  | GetLocal of var                         (* read local variable *)
+  | SetLocal of var * expr                  (* write local variable *)
+  | TeeLocal of var * expr                  (* write local variable and keep value *)
+  | GetGlobal of var                        (* read global variable *)
+  | SetGlobal of var * expr                 (* write global variable *)
+  | Load of memop * expr                    (* read memory at address *)
+  | Store of memop * expr * expr            (* write memory at address *)
+  | LoadExtend of extop * expr              (* read memory at address and extend *)
+  | StoreWrap of wrapop * expr * expr       (* wrap and write to memory at address *)
+  | Const of literal                        (* constant *)
+  | Unary of unop * expr                    (* unary arithmetic operator *)
+  | Binary of binop * expr * expr           (* binary arithmetic operator *)
+  | Test of testop * expr                   (* arithmetic test *)
+  | Compare of relop * expr * expr          (* arithmetic comparison *)
+  | Convert of cvtop * expr                 (* conversion *)
+  | Host of hostop * expr list              (* host interaction *)
 
 
-(* Globals & Functions *)
-
-type const = expr list Source.phrase
+(* Globals and Functions *)
 
 type global = global' Source.phrase
 and global' =
 {
   gtype : Types.value_type;
-  value : const;
+  value : expr;
 }
 
 type func = func' Source.phrase
@@ -128,7 +117,7 @@ and func' =
 {
   ftype : var;
   locals : value_type list;
-  body : expr list;
+  body : expr;
 }
 
 
@@ -157,7 +146,7 @@ and memory' =
 type 'data segment = 'data segment' Source.phrase
 and 'data segment' =
 {
-  offset : const;
+  offset : expr;
   init : 'data;
 }
 
@@ -191,8 +180,8 @@ and module_' =
   memory : memory option;
   funcs : func list;
   start : var option;
-  elems : var list segment list;
-  data : string segment list;
+  elems : table_segment list;
+  data : memory_segment list;
   imports : import list;
   exports : export list;
 }
