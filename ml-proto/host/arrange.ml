@@ -269,7 +269,7 @@ let table tab =
 
 let memory mem =
   let {mlimits = lim} = mem.it in
-  Node ("memory " ^ limits int64 lim, [])
+  Node ("memory " ^ limits int32 lim, [])
 
 let segment head dat seg =
   let {offset; init} = seg.it in

@@ -256,21 +256,15 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
 
   | CurrentMemory, vs ->
     let size = Memory.size (memory c e.at) in
-    I32 (Int64.to_int32 size) :: vs, []
+    I32 size :: vs, []
 
-  | GrowMemory, I32 i :: vs' ->
+  | GrowMemory, I32 delta :: vs' ->
     let mem = memory c e.at in
-    let delta = I64_convert.extend_u_i32 i in
     let old_size = Memory.size mem in
-    let new_size = Int64.add old_size delta in
-    if I64.lt_u new_size old_size then
-      Trap.error e.at "memory size overflow";
-    (* Test whether the new size overflows the memory type.
-     * Since we currently only support i32, just test that. *)
-    if I64.gt_u new_size (Int64.of_int32 Int32.max_int) then
-      Trap.error e.at "memory size exceeds implementation limit";
-    (try Memory.grow mem delta with exn -> memory_error e.at exn);
-    I32 (Int64.to_int32 old_size) :: vs', []
+    let result =
+      try Memory.grow mem delta; old_size
+      with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
+    in I32 result :: vs', []
 
   | Trapping msg, vs ->
     assert false (* abrupt *)

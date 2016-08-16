@@ -46,13 +46,13 @@ let local c x = lookup "local" c.locals x
 let global c x = lookup "global" c.globals x
 let label c x = lookup "label" c.labels x
 
-let size category opt at =
+let lookup_size category opt at =
   match opt with
   | Some n -> n
   | None -> error at ("no " ^ category ^ " defined")
 
-let table c at = size "table" c.table at
-let memory c at = size "memory" c.memory at
+let table c at = lookup_size "table" c.table at
+let memory c at = lookup_size "memory" c.memory at
 
 
 (* Join *)
@@ -317,7 +317,8 @@ and check_memop c memop at =
   ignore (memory c at);
   require (memop.offset >= 0L) at "negative offset";
   require (memop.offset <= 0xffffffffL) at "offset too large";
-  require (Lib.Int.is_power_of_two memop.align) at "non-power-of-two alignment";
+  require (Lib.Int.is_power_of_two memop.align) at "alignment must be a power of two";
+  require (memop.align <= size memop.ty) at "alignment must not be larger than natural"
 
 and check_mem_size ty sz at =
   require (ty = I64Type || sz <> Memory.Mem32) at "memory size too big"
@@ -385,14 +386,14 @@ let check_table (c : context) (tab : table) =
 
 let check_memory_limits (lim : Memory.size limits) =
   let {min; max} = lim.it in
-  require (I64.lt_u min 65536L) lim.at
+  require (I32.lt_u min 65536l) lim.at
     "memory size must be less than 65536 pages (4GiB)";
   match max with
   | None -> ()
   | Some max ->
-    require (I64.lt_u max 65536L) lim.at
+    require (I32.lt_u max 65536l) lim.at
       "memory size must be less than 65536 pages (4GiB)";
-    require (I64.le_u min max) lim.at
+    require (I32.le_u min max) lim.at
       "memory size minimum must not be greater than maximum"
 
 let check_memory (c : context) (mem : memory) =
@@ -405,8 +406,10 @@ let check_table_segment c prev_end seg =
   let start = Values.I32Value.of_value (Eval.const c.module_ offset) in
   let len = Int32.of_int (List.length init) in
   let end_ = Int32.add start len in
-  require (prev_end <= start) seg.at "table segment not disjoint and ordered";
-  require (end_ <= table c seg.at) seg.at "table segment does not fit memory";
+  require (I32.le_u prev_end start) seg.at
+    "table segment not disjoint and ordered";
+  require (I32.le_u end_ (table c seg.at)) seg.at
+    "table segment does not fit memory";
   ignore (List.map (func c) init);
   end_
 
@@ -417,8 +420,10 @@ let check_memory_segment c prev_end seg =
     Int64.of_int32 (Values.I32Value.of_value (Eval.const c.module_ offset)) in
   let len = Int64.of_int (String.length init) in
   let end_ = Int64.add start len in
-  require (prev_end <= start) seg.at "data segment not disjoint and ordered";
-  require (end_ <= Int64.mul (memory c seg.at) Memory.page_size) seg.at
+  let limit = Int64.mul (Int64.of_int32 (memory c seg.at)) Memory.page_size in
+  require (I64.le_u prev_end start) seg.at
+    "data segment not disjoint and ordered";
+  require (I64.le_u end_ limit) seg.at
     "data segment does not fit memory";
   end_
 

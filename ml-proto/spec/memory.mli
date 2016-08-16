@@ -1,7 +1,7 @@
 type memory
 type t = memory
 
-type size = int64
+type size = int32  (* number of pages *)
 type address = int64
 type offset = int64
 
@@ -15,12 +15,13 @@ exception Type
 exception Bounds
 exception SizeOverflow
 exception SizeLimit
+exception OutOfMemory
 
-val page_size : size
+val page_size : offset
 
-val create : size -> size option -> memory
+val create : size -> size option -> memory (* raise SizeOverflow, OutOfMemory *)
 val size : memory -> size
-val grow : memory -> size -> unit
+val grow : memory -> size -> unit (* raise SizeOverflow, OutOfMemory *)
 
 val load : memory -> address -> offset -> value_type -> value
 val store : memory -> address -> offset -> value -> unit
