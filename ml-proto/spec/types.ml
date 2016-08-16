@@ -5,6 +5,14 @@ type elem_type = AnyFuncType
 type expr_type = value_type option
 type func_type = {ins : value_type list; out : expr_type}
 
+
+(* Attributes *)
+
+let size = function
+  | Int32Type | Float32Type -> 4
+  | Int64Type | Float64Type -> 8
+
+
 (* String conversion *)
 
 let string_of_value_type = function

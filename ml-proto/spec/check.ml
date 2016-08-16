@@ -41,13 +41,13 @@ let local c x = lookup "local" c.locals x
 let global c x = lookup "global" c.globals x
 let label c x = lookup "label" c.labels x
 
-let size category opt at =
+let lookup_size category opt at =
   match opt with
   | Some n -> n
   | None -> error at ("no " ^ category ^ " defined")
 
-let table c at = size "table" c.table at
-let memory c at = size "memory" c.memory at
+let table c at = lookup_size "table" c.table at
+let memory c at = lookup_size "memory" c.memory at
 
 
 (* Type Unification *)
@@ -295,7 +295,8 @@ and check_store c et memop e1 e2 at =
 and check_memop memop at =
   require (memop.offset >= 0L) at "negative offset";
   require (memop.offset <= 0xffffffffL) at "offset too large";
-  require (Lib.Int.is_power_of_two memop.align) at "non-power-of-two alignment";
+  require (Lib.Int.is_power_of_two memop.align) at "alignment must be a power of two";
+  require (memop.align <= size memop.ty) at "alignment must not be larger than natural"
 
 and check_mem_type ty sz at =
   require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"

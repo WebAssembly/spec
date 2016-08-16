@@ -22,9 +22,12 @@
 
   (export "test_redundant_load" $test_redundant_load)
   (func $test_redundant_load (result i32)
-    (drop (i32.load (i32.const 8)))
-    (f32.store (i32.const 5) (f32.const -0.0))
-    (i32.load (i32.const 8))
+    (local $t i32)
+    (local $s i32)
+    (set_local $t (i32.load (i32.const 8)))
+    (i32.store (i32.const 5) (i32.const 0x80000000))
+    (set_local $s (i32.load (i32.const 8)))
+    (i32.add (get_local $t) (get_local $s))
   )
 
   (export "test_dead_store" $test_dead_store)
