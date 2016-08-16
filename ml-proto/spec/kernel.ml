@@ -17,12 +17,8 @@
  *)
 
 
+open Types
 open Values
-
-
-(* Types *)
-
-type value_type = Types.value_type
 
 
 (* Operators *)
@@ -92,6 +88,8 @@ and expr' =
   | GetLocal of var                         (* read local variable *)
   | SetLocal of var * expr                  (* write local variable *)
   | TeeLocal of var * expr                  (* write local variable and keep value *)
+  | GetGlobal of var                        (* read global variable *)
+  | SetGlobal of var * expr                 (* write global variable *)
   | Load of memop * expr                    (* read memory at address *)
   | Store of memop * expr * expr            (* write memory at address *)
   | LoadExtend of extop * expr              (* read memory at address and extend *)
@@ -105,7 +103,14 @@ and expr' =
   | Host of hostop * expr list              (* host interaction *)
 
 
-(* Functions *)
+(* Globals and Functions *)
+
+type global = global' Source.phrase
+and global' =
+{
+  gtype : Types.value_type;
+  value : expr;
+}
 
 type func = func' Source.phrase
 and func' =
@@ -116,16 +121,40 @@ and func' =
 }
 
 
-(* Modules *)
+(* Tables & Memories *)
+
+type 'size limits = 'size limits' Source.phrase
+and 'size limits' =
+{
+  min : 'size;
+  max : 'size option;
+}
+
+type table = table' Source.phrase
+and table' =
+{
+  tlimits : Table.size limits;
+  etype : elem_type;
+}
 
 type memory = memory' Source.phrase
 and memory' =
 {
-  min : Memory.size;
-  max : Memory.size;
-  segments : segment list;
+  mlimits : Memory.size limits;
 }
-and segment = Memory.segment Source.phrase
+
+type 'data segment = 'data segment' Source.phrase
+and 'data segment' =
+{
+  offset : expr;
+  init : 'data;
+}
+
+type table_segment = var list segment
+type memory_segment = string segment
+
+
+(* Modules *)
 
 type export = export' Source.phrase
 and export' =
@@ -145,11 +174,14 @@ and import' =
 type module_ = module_' Source.phrase
 and module_' =
 {
-  memory : memory option;
   types : Types.func_type list;
+  globals : global list;
+  table : table option;
+  memory : memory option;
   funcs : func list;
   start : var option;
+  elems : table_segment list;
+  data : memory_segment list;
   imports : import list;
   exports : export list;
-  table : var list;
 }

@@ -139,6 +139,7 @@ rule token = parse
         (fun s -> let n = F64.of_string s.it in
           F64_const (n @@ s.at), Values.Float64 n))
     }
+  | "anyfunc" { ANYFUNC }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }
@@ -160,6 +161,8 @@ rule token = parse
   | "get_local" { GET_LOCAL }
   | "set_local" { SET_LOCAL }
   | "tee_local" { TEE_LOCAL }
+  | "get_global" { GET_GLOBAL }
+  | "set_global" { SET_GLOBAL }
 
   | (nxx as t)".load"
     { LOAD (fun (o, a, e) ->
@@ -360,12 +363,14 @@ rule token = parse
   | "param" { PARAM }
   | "result" { RESULT }
   | "local" { LOCAL }
+  | "global" { GLOBAL }
   | "module" { MODULE }
+  | "table" { TABLE }
   | "memory" { MEMORY }
-  | "segment" { SEGMENT }
+  | "elem" { ELEM }
+  | "data" { DATA }
   | "import" { IMPORT }
   | "export" { EXPORT }
-  | "table" { TABLE }
 
   | "assert_invalid" { ASSERT_INVALID }
   | "assert_return" { ASSERT_RETURN }

@@ -105,6 +105,7 @@ name: (<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | 
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex>)*"
 
 type: i32 | i64 | f32 | f64
+elem_type: anyfunc
 
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
@@ -148,14 +149,17 @@ param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type> )
 local:  ( local <type>* ) | ( local <name> <type> )
 
-module:  ( module <typedef>* <func>* <import>* <export>* <table>* <memory>? <start>? ) | (module <string>+)
+module:  ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <elem>* <data>* <start>? ) | (module <string>+)
 typedef: ( type <name>? ( func <param>* <result>? ) )
 import:  ( import <name>? <string> <string> <sig> )
 export:  ( export <string> <var> ) | ( export <string> memory)
 start:   ( start <var> )
-table:   ( table <var>* )
-memory:  ( memory <int> <int>? <segment>* )
-segment: ( segment <int> <string>+ )
+table:   ( table <nat> <nat>? <elem_type> )
+         ( table <elem_type> ( elem <var>* ) )  ;; = (table <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
+elem:    ( elem <expr> <var>* )
+memory:  ( memory <nat> <nat>? )
+         ( memory ( data <string>* ) )          ;; = (memory <size> <size>) (data (i32.const 0) <string>*)
+data:    ( data <expr> <string>* )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).
@@ -165,6 +169,7 @@ Any form of naming via `<name>` and `<var>` (including expression labels) is mer
 A module of the form `(module <string>+)` is given in binary form and will be decoded from the (concatenation of the) strings.
 
 The segment strings in the memory field are used to initialize the consecutive memory at the given offset.
+The `<size>` in the expansion of the two short-hand forms for `table` and `memory` is the minimal size that can hold the segment: the number of `<var>`s for tables, and the accumulative length of the strings rounded up to page size for memories.
 
 Comments can be written in one of two ways:
 
@@ -229,7 +234,7 @@ The implementation consists of the following parts:
 
 * *Parser* (`lexer.mll`, `parser.mly`, `desguar.ml[i]`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing. The parser generates a full AST that is desugared into the kernel AST in a separate pass.
 
-* *Pretty Printer* (`format.ml[i]`, `sexpr.ml[i]`). Turns a module AST back into the textual S-expression format.
+* *Pretty Printer* (`arrange.ml[i]`, `sexpr.ml[i]`). Turns a module AST back into the textual S-expression format.
 
 * *Decoder*/*Encoder* (`decode.ml[i]`, `encode.ml[i]`). The former parses the binary format and turns it into an AST, the latter does the inverse.
 

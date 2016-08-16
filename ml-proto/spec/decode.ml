@@ -121,10 +121,15 @@ let value_type s =
   | 0x04 -> Float64Type
   | _ -> error s (pos s - 1) "invalid value type"
 
+let elem_type s =
+  match get s with
+  | 0x20 -> AnyFuncType
+  | _ -> error s (pos s - 1) "invalid element type"
+
 let expr_type s = vec1 value_type s
 
 let func_type s =
-  expect 0x05 s "invalid function type";
+  expect 0x40 s "invalid function type";
   let ins = vec value_type s in
   let out = expr_type s in
   {ins; out}
@@ -168,25 +173,25 @@ let rec expr stack s =
     Nop, es
   | 0x01, es ->
     let es' = expr_block s in
-    expect 0x0f s "END opcode expected";
+    expect 0x0f s "`end` opcode expected";
     Block es', es
   | 0x02, es ->
     let es' = expr_block s in
-    expect 0x0f s "END opcode expected";
+    expect 0x0f s "`end` opcode expected";
     Loop es', es
   | 0x03, e :: es ->
     let es1 = expr_block s in
     if peek s = Some 0x04 then begin
-      expect 0x04 s "ELSE or END opcode expected";
+      expect 0x04 s "`else` or `end` opcode expected";
       let es2 = expr_block s in
-      expect 0x0f s "END opcode expected";
+      expect 0x0f s "`end` opcode expected";
       If (e, es1, es2), es
     end else begin
-      expect 0x0f s "END opcode expected";
+      expect 0x0f s "`end` opcode expected";
       If (e, es1, []), es
     end
   | 0x04, _ ->
-    error s pos "misplaced ELSE opcode"
+    error s pos "misplaced `else` opcode"
   | 0x05, e3 :: e2 :: e1 :: es ->
     Select (e1, e2, e3), es
   | 0x06, es ->
@@ -216,7 +221,7 @@ let rec expr stack s =
   | 0x0c | 0x0d | 0x0e as b, _ ->
     illegal s pos b
   | 0x0f, _ ->
-    error s pos "misplaced END opcode"
+    error s pos "misplaced `end` opcode"
 
   | 0x10, es -> I32_const (at vs32 s), es
   | 0x11, es -> I64_const (at vs64 s), es
@@ -250,7 +255,7 @@ let rec expr stack s =
     let x = at var s in
     Tee_local (x, e), es
 
-  | 0x1a | 0x1b | 0x1c | 0x1d | 0x1e | 0x1f as b, _ ->
+  | 0x1c | 0x1d | 0x1e | 0x1f as b, _ ->
     illegal s pos b
 
   | 0x20, e :: es -> let o, a = memop s in I32_load8_s (o, a, e), es
@@ -415,7 +420,14 @@ let rec expr stack s =
   | 0xb9, e2 :: e1 :: es -> I64_rotr (e1, e2), es
   | 0xba, e :: es -> I64_eqz e, es
 
-  | b, _ when b > 0xba -> illegal s pos b
+  | 0xbb, es ->
+    let x = at var s in
+    Get_global x, es
+  | 0xbc, e :: es ->
+    let x = at var s in
+    Set_global (x, e), es
+
+  | b, _ when b > 0xbc -> illegal s pos b
 
   | b, _ -> error s pos "too few operands for operator"
 
@@ -428,6 +440,13 @@ and expr_block' stack s =
     let pos = pos s in
     let e', stack' = expr stack s in
     expr_block' (Source.(e' @@ region s pos pos) :: stack') s
+
+let const s =
+  match expr_block s with
+  | [e] ->
+    expect 0x0f s "`end` opcode expected";
+    e
+  | _ -> error s (pos s) "too many expressions"
 
 
 (* Sections *)
@@ -443,19 +462,21 @@ let id s =
   | "function" -> `FuncSection
   | "table" -> `TableSection
   | "memory" -> `MemorySection
+  | "global" -> `GlobalSection
   | "export" -> `ExportSection
   | "start" -> `StartSection
   | "code" -> `CodeSection
+  | "element" -> `ElemSection
   | "data" -> `DataSection
   | _ -> `UnknownSection
 
 let section tag f default s =
   if eos s then default else
   let start_pos = pos s in
-  let size = vu s in
-  let id_pos = pos s in
   if id s <> tag then (rewind start_pos s; default) else
-  let s' = substream s (id_pos + size) in
+  let size = vu s in
+  let content_pos = pos s in
+  let s' = substream s (content_pos + size) in
   let x = f s' in
   require (eos s') s' (pos s') "junk at end of section";
   x
@@ -487,20 +508,43 @@ let func_section s =
 
 (* Table section *)
 
+let limits vu s =
+  let has_max = bool s in
+  let min = vu s in
+  let max = opt vu has_max s in
+  {min; max}
+
+let table s =
+  let t = elem_type s in
+  let lim = at (limits vu32) s in
+  {etype = t; tlimits = lim}
+
 let table_section s =
-  section `TableSection (vec (at var)) [] s
+  section `TableSection (opt (at table) true) None s
 
 
 (* Memory section *)
 
 let memory s =
-  let min = vu32 s in
-  let max = vu32 s in
-  let _ = bool s in (*TODO: pending change*)
-  {min; max; segments = []}
+  let lim = at (limits vu32) s in
+  {mlimits = lim}
 
 let memory_section s =
   section `MemorySection (opt (at memory) true) None s
+
+
+(* Global section *)
+
+let global s =
+  let t = value_type s in
+  let pos = pos s in
+  let es = expr_block s in
+  require (List.length es = 1) s pos "single expression expected";
+  expect 0x0f s "`end` opcode expected";
+  {gtype = t; value = List.hd es}
+
+let global_section s =
+  section `GlobalSection (vec (at global)) [] s
 
 
 (* Export section *)
@@ -537,15 +581,27 @@ let code_section s =
   section `CodeSection (vec (at code)) [] s
 
 
+(* Element section *)
+
+let segment dat s =
+  let offset = const s in
+  let init = dat s in
+  {offset; init}
+
+let table_segment s =
+  segment (vec (at var)) s
+
+let elem_section s =
+  section `ElemSection (vec (at table_segment)) [] s
+
+
 (* Data section *)
 
-let segment s =
-  let addr = vu64 s in
-  let data = string s in
-  {Memory.addr; data}
+let memory_segment s =
+  segment string s
 
 let data_section s =
-  section `DataSection (vec (at segment)) [] s
+  section `DataSection (vec (at memory_segment)) [] s
 
 
 (* Unknown section *)
@@ -572,7 +628,9 @@ let module_ s =
   iterate unknown_section s;
   let table = table_section s in
   iterate unknown_section s;
-  let memory_limits = memory_section s in
+  let memory = memory_section s in
+  iterate unknown_section s;
+  let globals = global_section s in
   iterate unknown_section s;
   let exports = export_section s in
   iterate unknown_section s;
@@ -580,23 +638,19 @@ let module_ s =
   iterate unknown_section s;
   let func_bodies = code_section s in
   iterate unknown_section s;
-  let segments = data_section s in
+  let elems = elem_section s in
+  iterate unknown_section s;
+  let data = data_section s in
   iterate unknown_section s;
   (*TODO: name section*)
   iterate unknown_section s;
   require (pos s = len s) s (len s) "junk after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
-  require (memory_limits <> None || segments = [])
-    s (len s) "data section without memory section";
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
-      func_types func_bodies in
-  let memory =
-    match memory_limits with
-    | None -> None
-    | Some memory -> Some Source.({memory.it with segments} @@ memory.at)
-  in {memory; types; funcs; imports; exports; table; start}
+      func_types func_bodies
+  in {types; table; memory; globals; funcs; imports; exports; elems; data; start}
 
 
 let decode name bs = at module_ (stream name bs)

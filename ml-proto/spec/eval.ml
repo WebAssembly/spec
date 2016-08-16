@@ -17,7 +17,9 @@ type instance =
   module_ : module_;
   imports : import list;
   exports : export_map;
-  memory : Memory.t option
+  table : Table.t option;
+  memory : Memory.t option;
+  globals : value ref list;
 }
 
 
@@ -71,6 +73,7 @@ let lookup category list x =
 let type_ c x = lookup "type" c.instance.module_.it.types x
 let func c x = lookup "function" c.instance.module_.it.funcs x
 let import c x = lookup "import" c.instance.imports x
+let global c x = lookup "global" c.instance.globals x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
@@ -78,13 +81,16 @@ let export m name =
   try ExportMap.find name.it m.exports with Not_found ->
     Crash.error name.at ("undefined export \"" ^ name.it ^ "\"")
 
-let table_elem c i at =
-  try
-    let j = Int32.to_int i in
-    if i < 0l || i <> Int32.of_int j then raise (Failure "");
-    List.nth c.instance.module_.it.table j
-  with Failure _ ->
-    Trap.error at ("undefined table index " ^ Int32.to_string i)
+let elem c i t at =
+  match c.instance.table with
+  | None -> Crash.error at "no table"
+  | Some tab ->
+  match Table.load tab i t with
+  | Some j -> j
+  | None ->
+    Trap.error at ("undefined element " ^ Int32.to_string i)
+  | exception Table.Bounds ->
+    Trap.error at ("undefined element " ^ Int32.to_string i)
 
 module MakeLabel () =
 struct
@@ -104,6 +110,11 @@ let int32 v at =
   match some v at with
   | Int32 i -> i
   | v -> type_error at v Int32Type
+
+let int64 v at =
+  match some v at with
+  | Int64 i -> i
+  | v -> type_error at v Int64Type
 
 let address32 v at =
   Int64.logand (Int64.of_int32 (int32 v at)) 0xffffffffL
@@ -125,7 +136,7 @@ let memory c at =
  *   vo : value option
  *)
 
-let rec eval_expr (c : config) (e : expr) =
+let rec eval_expr (c : config) (e : expr) : value option =
   match e.it with
   | Nop ->
     None
@@ -183,11 +194,11 @@ let rec eval_expr (c : config) (e : expr) =
     let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
     (try (import c x) vs with Crash (_, msg) -> Crash.error e.at msg)
 
-  | CallIndirect (ftype, e1, es) ->
+  | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
-    let f = func c (table_elem c i e1.at) in
-    if ftype.it <> f.it.ftype.it then
+    let f = func c (elem c i AnyFuncType e1.at @@ e1.at) in
+    if type_ c x <> type_ c f.it.ftype then
       Trap.error e1.at "indirect call signature mismatch";
     eval_func c.instance f vs
 
@@ -203,6 +214,14 @@ let rec eval_expr (c : config) (e : expr) =
     let v1 = some (eval_expr c e1) e1.at in
     local c x := v1;
     Some v1
+
+  | GetGlobal x ->
+    Some !(global c x)
+
+  | SetGlobal (x, e1) ->
+    let v1 = some (eval_expr c e1) e1.at in
+    global c x := v1;
+    None
 
   | Load ({ty; offset; align = _}, e1) ->
     let mem = memory c e.at in
@@ -296,7 +315,7 @@ and eval_hostop c hostop vs at =
     let old_size = Memory.size mem in
     let result =
       try Memory.grow mem delta; old_size
-      with Memory.SizeOverflow | Memory.OutOfMemory -> -1l
+      with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
     in Some (Int32 result)
 
   | _, _ ->
@@ -305,10 +324,37 @@ and eval_hostop c hostop vs at =
 
 (* Modules *)
 
-let init_memory {it = {min; segments; _}} =
-  let mem = Memory.create min in
-  Memory.init mem (List.map it segments);
+let const m e =
+  (* TODO: allow referring to earlier glboals *)
+  let inst =
+    { module_ = m; imports = []; exports = ExportMap.empty;
+      table = None; memory = None; globals = [] }
+  in some (eval_expr {instance = inst; locals = []; labels = []} e) e.at
+
+let offset m seg =
+  int32 (Some (const m seg.it.offset)) seg.it.offset.at
+
+let init_table m elems table =
+  let {tlimits = lim; _} = table.it in
+  let tab = Table.create lim.it.min lim.it.max in
+  let entries xs = List.map (fun x -> Some x.it) xs in
+  List.iter
+    (fun seg -> Table.blit tab (offset m seg) (entries seg.it.init))
+    elems;
+  tab
+
+let init_memory m data memory =
+  let {mlimits = lim} = memory.it in
+  let mem = Memory.create lim.it.min lim.it.max in
+  List.iter
+    (fun seg -> Memory.blit mem (Int64.of_int32 (offset m seg)) seg.it.init)
+    data;
   mem
+
+let init_global inst ref global =
+  let {value = e; _} = global.it in
+  let c = {instance = inst; locals = []; labels = []} in
+  ref := some (eval_expr c e) e.at
 
 let add_export funcs ex =
   let {name; kind} = ex.it in
@@ -318,18 +364,22 @@ let add_export funcs ex =
 
 let init m imports =
   assert (List.length imports = List.length m.it.Kernel.imports);
-  let {memory; funcs; exports; start; _} = m.it in
-  let instance =
-    {module_ = m;
-     imports;
-     exports = List.fold_right (add_export funcs) exports ExportMap.empty;
-     memory = Lib.Option.map init_memory memory}
+  let {table; memory; globals; funcs; exports; elems; data; start; _} = m.it in
+  let inst =
+    { module_ = m;
+      imports;
+      exports = List.fold_right (add_export funcs) exports ExportMap.empty;
+      table = Lib.Option.map (init_table m elems) table;
+      memory = Lib.Option.map (init_memory m data) memory;
+      globals = List.map (fun g -> ref (default_value g.it.gtype)) globals;
+    }
   in
+  List.iter2 (init_global inst) inst.globals globals;
   Lib.Option.app
-    (fun x -> ignore (eval_func instance (lookup "function" funcs x) [])) start;
-  instance
+    (fun x -> ignore (eval_func inst (lookup "function" funcs x) [])) start;
+  inst
 
-let invoke instance name vs =
+let invoke inst name vs =
   try
-    eval_func instance (export instance (name @@ no_region)) vs
+    eval_func inst (export inst (name @@ no_region)) vs
   with Stack_overflow -> Trap.error Source.no_region "call stack exhausted"
