@@ -21,6 +21,11 @@ exception SizeOverflow
 
 let page_size = 0x10000L (* 64 KiB *)
 
+let mem_size = function
+  | Mem8 -> 1
+  | Mem16 -> 2
+  | Mem32 -> 4
+
 (*
  * These limitations should be considered part of the host environment and not
  * part of the spec defined by this file.

@@ -15,6 +15,8 @@ exception SizeOverflow
 
 val page_size : size
 
+val mem_size : mem_size -> int
+
 val create : size -> memory
 val init : memory -> segment list -> unit
 val size : memory -> size
