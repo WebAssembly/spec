@@ -19,6 +19,8 @@ exception OutOfMemory
 
 val page_size : offset
 
+val mem_size : mem_size -> int
+
 val create : size -> size option -> memory (* raise SizeOverflow, OutOfMemory *)
 val size : memory -> size
 val grow : memory -> size -> unit (* raise SizeOverflow, OutOfMemory *)
