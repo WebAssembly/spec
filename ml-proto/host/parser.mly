@@ -250,34 +250,16 @@ align_opt :
   | ALIGN_EQ_NAT { Some $1 }
 ;
 
-expr :
-  | op
-    { let at = at () in fun c -> [$1 c @@ at] }
-  | LPAR expr1 RPAR  /* Sugar */
-    { let at = at () in fun c -> let es, e' = $2 c in es @ [e' @@ at] }
+instr :
+  | plain_instr { let at = at () in fun c -> [$1 c @@ at] }
+  | ctrl_instr { let at = at () in fun c -> [$1 c @@ at] }
+  | expr { $1 } /* Sugar */
 ;
-op :
+plain_instr :
   | UNREACHABLE { fun c -> unreachable }
   | NOP { fun c -> nop }
   | DROP { fun c -> drop }
-  | BLOCK labeling expr_list END
-    { fun c -> let c' = $2 c in block ($3 c') }
-  | LOOP labeling expr_list END
-    { fun c -> let c' = $2 c in loop ($3 c') }
-  | LOOP labeling1 labeling1 expr_list END
-    { let at = at () in
-      fun c -> let c' = $2 c in let c'' = $3 c' in
-      block [loop ($4 c'') @@ at] }
-  | BR nat var { fun c -> br $2 ($3 c label) }
-  | BR_IF nat var { fun c -> br_if $2 ($3 c label) }
-  | BR_TABLE nat var var_list
-    { fun c -> let xs, x = Lib.List.split_last ($3 c label :: $4 c label) in
-      br_table $2 xs x }
   | RETURN { fun c -> return }
-  | IF labeling expr_list END
-    { fun c -> let c' = $2 c in if_ ($3 c') [] }
-  | IF labeling expr_list ELSE labeling expr_list END
-    { fun c -> let c1 = $2 c in let c2 = $5 c in if_ ($3 c1) ($6 c2) }
   | SELECT { fun c -> select }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_IMPORT var { fun c -> call_import ($2 c import) }
@@ -298,67 +280,72 @@ op :
   | CURRENT_MEMORY { fun c -> current_memory }
   | GROW_MEMORY { fun c -> grow_memory }
 ;
+ctrl_instr :
+  | BR nat var { fun c -> br $2 ($3 c label) }
+  | BR_IF nat var { fun c -> br_if $2 ($3 c label) }
+  | BR_TABLE nat var var_list
+    { fun c -> let xs, x = Lib.List.split_last ($3 c label :: $4 c label) in
+      br_table $2 xs x }
+  | BLOCK labeling instr_list END
+    { fun c -> let c' = $2 c in block ($3 c') }
+  | LOOP labeling instr_list END
+    { fun c -> let c' = $2 c in loop ($3 c') }
+  | LOOP labeling1 labeling1 instr_list END
+    { let at = at () in
+      fun c -> let c' = $2 c in let c'' = $3 c' in
+      block [loop ($4 c'') @@ at] }
+  | IF labeling instr_list END
+    { fun c -> let c' = $2 c in if_ ($3 c') [] }
+  | IF labeling instr_list ELSE labeling instr_list END
+    { fun c -> let c1 = $2 c in let c2 = $5 c in if_ ($3 c1) ($6 c2) }
+;
+
+expr :  /* Sugar */
+  | LPAR expr1 RPAR
+    { let at = at () in fun c -> let es, e' = $2 c in es @ [e' @@ at] }
+;
 expr1 :  /* Sugar */
-  | UNREACHABLE { fun c -> [], unreachable }
-  | NOP { fun c -> [], nop }
-  | DROP expr { fun c -> $2 c, drop }
-  | BLOCK labeling expr_list
+  | plain_instr expr_list { fun c -> snd ($2 c), $1 c }
+  | BR var expr_list { fun c -> let n, es = $3 c in es, br n ($2 c label) }
+  | BR_IF var expr expr_list
+    { fun c ->
+      let es1 = $3 c and n, es2 = $4 c in es1 @ es2, br_if n ($2 c label) }
+  | BR_TABLE var var_list expr expr_list
+    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
+      let es1 = $4 c and n, es2 = $5 c in es1 @ es2, br_table n xs x }
+  | BLOCK labeling instr_list
     { fun c -> let c' = $2 c in [], block ($3 c') }
-  | LOOP labeling expr_list
+  | LOOP labeling instr_list
     { fun c -> let c' = $2 c in [], loop ($3 c') }
-  | LOOP labeling1 labeling1 expr_list
+  | LOOP labeling1 labeling1 instr_list
     { let at = at () in
       fun c -> let c' = $2 c in let c'' = $3 c' in
       [], block [loop ($4 c'') @@ at] }
-  | BR var { fun c -> [], br 0 ($2 c label) }
-  | BR var expr { fun c -> $3 c, br 1 ($2 c label) }
-  | BR_IF var expr { fun c -> $3 c, br_if 0 ($2 c label) }
-  | BR_IF var expr expr { fun c -> $3 c @ $4 c, br_if 1 ($2 c label) }
-  | BR_TABLE var var_list expr
-    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      $4 c, br_table 0 xs x }
-  | BR_TABLE var var_list expr expr
-    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      $4 c @ $5 c, br_table 1 xs x }
-  | RETURN expr_list { fun c -> $2 c, return }
   | IF expr expr { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') [] }
   | IF expr expr expr
     { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') ($4 c') }
-  | IF expr LPAR THEN labeling expr_list RPAR
+  | IF expr LPAR THEN labeling instr_list RPAR
     { fun c -> let c' = $5 c in $2 c, if_ ($6 c') [] }
-  | IF expr LPAR THEN labeling expr_list RPAR LPAR ELSE labeling expr_list RPAR
+  | IF expr LPAR THEN labeling instr_list RPAR LPAR ELSE labeling instr_list RPAR
     { fun c -> let c1 = $5 c in let c2 = $10 c in $2 c, if_ ($6 c1) ($11 c2) }
-  | IF expr_list ELSE expr_list
-    { fun c -> let c' = anon_label c in [],  if_ ($2 c') ($4 c') }
-  | SELECT expr expr expr { fun c -> $2 c @ $3 c @ $4 c, select }
-  | CALL var expr_list { fun c -> $3 c, call ($2 c func) }
-  | CALL_IMPORT var expr_list { fun c -> $3 c, call_import ($2 c import) }
-  | CALL_INDIRECT var expr expr_list
-    { fun c -> $3 c @ $4 c, call_indirect ($2 c type_) }
-  | GET_LOCAL var { fun c -> [], get_local ($2 c local) }
-  | SET_LOCAL var expr { fun c -> $3 c, set_local ($2 c local) }
-  | TEE_LOCAL var expr { fun c -> $3 c, tee_local ($2 c local) }
-  | GET_GLOBAL var { fun c -> [], get_global ($2 c global) }
-  | SET_GLOBAL var expr { fun c -> $3 c, set_global ($2 c global) }
-  | LOAD offset_opt align_opt expr { fun c -> $4 c, $1 $3 $2 }
-  | STORE offset_opt align_opt expr expr { fun c -> $4 c @ $5 c, $1 $3 $2 }
-  | CONST literal { fun c -> [], fst (literal $1 $2) }
-  | UNARY expr { fun c -> $2 c, $1 }
-  | BINARY expr expr { fun c -> $2 c @ $3 c, $1 }
-  | TEST expr { fun c -> $2 c, $1 }
-  | COMPARE expr expr { fun c -> $2 c @ $3 c, $1 }
-  | CONVERT expr { fun c -> $2 c, $1 }
-  | CURRENT_MEMORY { fun c -> [], current_memory }
-  | GROW_MEMORY expr { fun c -> $2 c, grow_memory }
+  | IF LPAR THEN labeling instr_list RPAR
+    { fun c -> let c' = $4 c in [], if_ ($5 c') [] }
+  | IF LPAR THEN labeling instr_list RPAR LPAR ELSE labeling instr_list RPAR
+    { fun c -> let c1 = $4 c in let c2 = $9 c in [], if_ ($5 c1) ($10 c2) }
 ;
 
-expr_list :
+instr_list :
   | /* empty */ { fun c -> [] }
-  | expr expr_list { fun c -> $1 c @ $2 c }
+  | instr instr_list { fun c -> $1 c @ $2 c }
+;
+expr_list :
+  | /* empty */ { fun c -> 0, [] }
+  | expr expr_list
+    { fun c -> let es1 = $1 c and n, es2 = $2 c in n + 1, es1 @ es2 }
 ;
 
 const_expr :
-  | expr_list { let at = at () in fun c -> $1 c @@ at }
+  | instr_list { let at = at () in fun c -> $1 c @@ at }
 ;
 
 
@@ -377,7 +364,7 @@ func_fields :
       FuncType ($4 :: ins, out), fun c -> bind_local c $3; (snd $6) c }
 ;
 func_body :
-  | expr_list
+  | instr_list
     { empty_type,
       fun c -> let c' = anon_label c in
       {ftype = -1 @@ at(); locals = []; body = $1 c'} }
@@ -427,8 +414,7 @@ export_opt :
 
 offset :
   | LPAR OFFSET const_expr RPAR { $3 }
-  | LPAR expr1 RPAR  /* Sugar */
-    { let at = at () in fun c -> let es, e' = $2 c in (es @ [e' @@ at]) @@ at }
+  | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
 ;
 
 elem :

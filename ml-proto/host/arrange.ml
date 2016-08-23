@@ -205,7 +205,7 @@ let rec expr e =
       Atom ("br_table " ^ int n ^ " " ^ String.concat " " (list var (xs @ [x])))
     | Return -> Atom "return"
     | If (es1, es2) ->
-      Node ("if", list expr es1 @ [Atom "else"] @ list expr es2)
+      Node ("if", [Node ("then", list expr es1); Node ("else", list expr es2)])
     | Select -> Atom "select"
     | Call x -> Atom ("call " ^ var x)
     | CallImport x -> Atom ("call_import " ^ var x)
