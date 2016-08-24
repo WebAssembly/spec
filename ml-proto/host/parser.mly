@@ -235,9 +235,6 @@ bind_var :
 
 labeling :
   | /* empty */ %prec LOW { fun c -> anon_label c }
-  | labeling1 { $1 }
-;
-labeling1 :
   | bind_var { fun c -> bind_label c $1 }
 ;
 
@@ -290,10 +287,6 @@ ctrl_instr :
     { fun c -> let c' = $2 c in block ($3 c') }
   | LOOP labeling instr_list END
     { fun c -> let c' = $2 c in loop ($3 c') }
-  | LOOP labeling1 labeling1 instr_list END
-    { let at = at () in
-      fun c -> let c' = $2 c in let c'' = $3 c' in
-      block [loop ($4 c'') @@ at] }
   | IF labeling instr_list END
     { fun c -> let c' = $2 c in if_ ($3 c') [] }
   | IF labeling instr_list ELSE labeling instr_list END
@@ -317,10 +310,6 @@ expr1 :  /* Sugar */
     { fun c -> let c' = $2 c in [], block ($3 c') }
   | LOOP labeling instr_list
     { fun c -> let c' = $2 c in [], loop ($3 c') }
-  | LOOP labeling1 labeling1 instr_list
-    { let at = at () in
-      fun c -> let c' = $2 c in let c'' = $3 c' in
-      [], block [loop ($4 c'') @@ at] }
   | IF expr expr { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') [] }
   | IF expr expr expr
     { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') ($4 c') }

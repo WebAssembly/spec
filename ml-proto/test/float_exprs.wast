@@ -871,10 +871,15 @@
 
   (func $run (param $n i32) (param $z f32)
     (local $i i32)
-    (loop $exit $cont
-      (f32.store (get_local $i) (f32.div (f32.load (get_local $i)) (get_local $z)))
-      (set_local $i (i32.add (get_local $i) (i32.const 4)))
-      (br_if $cont (i32.lt_u (get_local $i) (get_local $n)))
+    (block $exit
+      (loop $cont
+        (f32.store
+          (get_local $i)
+          (f32.div (f32.load (get_local $i)) (get_local $z))
+        )
+        (set_local $i (i32.add (get_local $i) (i32.const 4)))
+        (br_if $cont (i32.lt_u (get_local $i) (get_local $n)))
+      )
     )
   )
   (export "run" $run)
@@ -904,10 +909,15 @@
 
   (func $run (param $n i32) (param $z f64)
     (local $i i32)
-    (loop $exit $cont
-      (f64.store (get_local $i) (f64.div (f64.load (get_local $i)) (get_local $z)))
-      (set_local $i (i32.add (get_local $i) (i32.const 8)))
-      (br_if $cont (i32.lt_u (get_local $i) (get_local $n)))
+    (block $exit
+      (loop $cont
+        (f64.store
+          (get_local $i)
+          (f64.div (f64.load (get_local $i)) (get_local $z))
+        )
+        (set_local $i (i32.add (get_local $i) (i32.const 8)))
+        (br_if $cont (i32.lt_u (get_local $i) (get_local $n)))
+      )
     )
   )
   (export "run" $run)
@@ -1506,11 +1516,28 @@
     (local $sum f32)
     (local $c f32)
     (local $t f32)
-    (loop $exit $top
-      (set_local $t (f32.sub (f32.sub (tee_local $sum (f32.add (get_local $c) (tee_local $t (f32.sub (f32.load (get_local $p)) (get_local $t))))) (get_local $c)) (get_local $t)))
-      (set_local $p (i32.add (get_local $p) (i32.const 4)))
-      (set_local $c (get_local $sum))
-      (br_if $top (tee_local $n (i32.add (get_local $n) (i32.const -1))))
+    (block $exit
+      (loop $top
+        (set_local $t
+          (f32.sub
+            (f32.sub
+              (tee_local $sum
+                (f32.add
+                  (get_local $c)
+                  (tee_local $t
+                    (f32.sub (f32.load (get_local $p)) (get_local $t))
+                  )
+                )
+              )
+              (get_local $c)
+            )
+            (get_local $t)
+          )
+        )
+        (set_local $p (i32.add (get_local $p) (i32.const 4)))
+        (set_local $c (get_local $sum))
+        (br_if $top (tee_local $n (i32.add (get_local $n) (i32.const -1))))
+      )
     )
     (get_local $sum)
   )
@@ -1518,11 +1545,13 @@
 
   (func $f32.plain_sum (param $p i32) (param $n i32) (result f32)
     (local $sum f32)
-    (loop $exit $top
-      (set_local $sum (f32.add (get_local $sum) (f32.load (get_local $p))))
-      (set_local $p (i32.add (get_local $p) (i32.const 4)))
-      (set_local $n (i32.add (get_local $n) (i32.const -1)))
-      (br_if $top (get_local $n))
+    (block $exit
+      (loop $top
+        (set_local $sum (f32.add (get_local $sum) (f32.load (get_local $p))))
+        (set_local $p (i32.add (get_local $p) (i32.const 4)))
+        (set_local $n (i32.add (get_local $n) (i32.const -1)))
+        (br_if $top (get_local $n))
+      )
     )
     (get_local $sum)
   )
@@ -1540,11 +1569,28 @@
     (local $sum f64)
     (local $c f64)
     (local $t f64)
-    (loop $exit $top
-      (set_local $t (f64.sub (f64.sub (tee_local $sum (f64.add (get_local $c) (tee_local $t (f64.sub (f64.load (get_local $p)) (get_local $t))))) (get_local $c)) (get_local $t)))
-      (set_local $p (i32.add (get_local $p) (i32.const 8)))
-      (set_local $c (get_local $sum))
-      (br_if $top (tee_local $n (i32.add (get_local $n) (i32.const -1))))
+    (block $exit
+      (loop $top
+        (set_local $t
+          (f64.sub
+            (f64.sub
+              (tee_local $sum
+                (f64.add
+                  (get_local $c)
+                  (tee_local $t
+                    (f64.sub (f64.load (get_local $p)) (get_local $t))
+                  )
+                )
+              )
+              (get_local $c)
+            )
+            (get_local $t)
+          )
+        )
+        (set_local $p (i32.add (get_local $p) (i32.const 8)))
+        (set_local $c (get_local $sum))
+        (br_if $top (tee_local $n (i32.add (get_local $n) (i32.const -1))))
+      )
     )
     (get_local $sum)
   )
@@ -1552,11 +1598,13 @@
 
   (func $f64.plain_sum (param $p i32) (param $n i32) (result f64)
     (local $sum f64)
-    (loop $exit $top
-      (set_local $sum (f64.add (get_local $sum) (f64.load (get_local $p))))
-      (set_local $p (i32.add (get_local $p) (i32.const 8)))
-      (set_local $n (i32.add (get_local $n) (i32.const -1)))
-      (br_if $top (get_local $n))
+    (block $exit
+      (loop $top
+        (set_local $sum (f64.add (get_local $sum) (f64.load (get_local $p))))
+        (set_local $p (i32.add (get_local $p) (i32.const 8)))
+        (set_local $n (i32.add (get_local $n) (i32.const -1)))
+        (br_if $top (get_local $n))
+      )
     )
     (get_local $sum)
   )

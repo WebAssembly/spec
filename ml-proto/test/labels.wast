@@ -9,60 +9,67 @@
   (func $loop1 (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
-    (loop $exit $cont
-      (set_local $i (i32.add (get_local $i) (i32.const 1)))
-      (if (i32.eq (get_local $i) (i32.const 5))
-        (br $exit (get_local $i))
+    (block $exit
+      (loop $cont
+        (set_local $i (i32.add (get_local $i) (i32.const 1)))
+        (if (i32.eq (get_local $i) (i32.const 5))
+          (br $exit (get_local $i))
+        )
+        (br $cont)
       )
-      (br $cont)
     )
   )
 
   (func $loop2 (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
-    (loop $exit $cont
-      (set_local $i (i32.add (get_local $i) (i32.const 1)))
-      (if (i32.eq (get_local $i) (i32.const 5))
+    (block $exit
+      (loop $cont
+        (set_local $i (i32.add (get_local $i) (i32.const 1)))
+        (if (i32.eq (get_local $i) (i32.const 5))
+          (br $cont)
+        )
+        (if (i32.eq (get_local $i) (i32.const 8))
+          (br $exit (get_local $i))
+        )
+        (set_local $i (i32.add (get_local $i) (i32.const 1)))
         (br $cont)
       )
-      (if (i32.eq (get_local $i) (i32.const 8))
-        (br $exit (get_local $i))
-      )
-      (set_local $i (i32.add (get_local $i) (i32.const 1)))
-      (br $cont)
     )
   )
 
   (func $loop3 (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
-    (loop $exit $cont
-      (set_local $i (i32.add (get_local $i) (i32.const 1)))
-      (if (i32.eq (get_local $i) (i32.const 5))
-        (br $exit (get_local $i))
+    (block $exit
+      (loop $cont
+        (set_local $i (i32.add (get_local $i) (i32.const 1)))
+        (if (i32.eq (get_local $i) (i32.const 5))
+          (br $exit (get_local $i))
+        )
+        (get_local $i)
       )
-      (get_local $i)
     )
   )
 
   (func $loop4 (param $max i32) (result i32)
     (local $i i32)
     (set_local $i (i32.const 1))
-    (loop $exit $cont
-      (set_local $i (i32.add (get_local $i) (get_local $i)))
-      (if (i32.gt_u (get_local $i) (get_local $max))
-        (br $exit (get_local $i))
+    (block $exit
+      (loop $cont
+        (set_local $i (i32.add (get_local $i) (get_local $i)))
+        (if (i32.gt_u (get_local $i) (get_local $max))
+          (br $exit (get_local $i))
+        )
+        (br $cont)
       )
-      (br $cont)
     )
   )
 
   (func $loop5 (result i32)
-    (i32.add (loop $l0 $l1
-               (i32.const 1)
-             )
-             (i32.const 1)
+    (i32.add
+      (loop $l (i32.const 1))
+      (i32.const 1)
     )
   )
 

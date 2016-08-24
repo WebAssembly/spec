@@ -115,35 +115,48 @@ offset: offset=<uint>
 align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
-expr:
-  ( nop )
-  ( block <name>? <expr>* )
-  ( loop <name1>? <name2>? <expr>* )          ;; = (block <name1>? (loop <name2>? (block <expr>*)))
-  ( select <expr> <expr> <expr> )
-  ( if <expr> ( then <name>? <expr>* ) ( else <name>? <expr>* )? )
-  ( if <expr1> <expr2> <expr3>? )             ;; = (if <expr1> (then <expr2>) (else <expr3>?))
-  ( br <var> <expr>? )
-  ( br_if <var> <expr>? <expr> )
-  ( br_table <var> <var> <expr>? <expr> )
-  ( return <expr>? )                          ;; = (br <current_depth> <expr>?)
-  ( call <var> <expr>* )
-  ( call_import <var> <expr>* )
-  ( call_indirect <var> <expr> <expr>* )
-  ( get_local <var> )
-  ( set_local <var> <expr> )
-  ( <type>.load((8|16|32)_<sign>)? <offset>? <align>? <expr> )
-  ( <type>.store(8|16|32)? <offset>? <align>? <expr> <expr> )
-  ( <type>.const <value> )
-  ( <type>.<unop> <expr> )
-  ( <type>.<binop> <expr> <expr> )
-  ( <type>.<relop> <expr> <expr> )
-  ( <type>.<cvtop>/<type> <expr> )
-  ( unreachable )
-  ( current_memory )
-  ( grow_memory <expr> )
+instr:
+  <op>
+  block <name>? <instr>* end
+  loop <name>? <instr>* end
+  if <name1>? <instr>* else <name2>? <instr>* end
+  if <name>? <instr>* end             ;; = if <name>? <instr>* else end
+  <expr>
 
-func:   ( func <name>? <sig> <local>* <expr>* )
-        ( func <string> <name>? <sig> <local>* <expr>* )  ;; = (export <string> <N>) (func <name>? <sig> <local>* <expr>*)
+op:
+  unreachable
+  nop
+  drop
+  select
+  br <var>
+  br_if <var>
+  br_table <var>+
+  return
+  call <var>
+  call_indirect <var>
+  get_local <var>
+  set_local <var>
+  tee_local <var>
+  <type>.const <value>
+  <type>.<unop>
+  <type>.<binop>
+  <type>.<testop>
+  <type>.<relop>
+  <type>.<cvtop>/<type>
+  <type>.load((8|16|32)_<sign>)? <offset>? <align>?
+  <type>.store(8|16|32)? <offset>? <align>?
+  current_memory
+  grow_memory <expr>
+
+expr:
+  ( <op> <expr>* )                 ;; = <expr>* <op>
+  ( block <name>? <instr>* )       ;; = block <name>? <instr>* end
+  ( loop <name>? <instr>* )        ;; = loop <name>? <instr>* end
+  ( if <expr1> <expr2> <expr3>? )  ;; = <expr1> if <expr2> else <expr3>? end
+  ( if <expr>? ( then <name1>? <instr1>* ) ( else <name2>? <instr2>* )? )  ;; = <expr>? if <name1>? <instr1>* else <name2>? <instr2>* end
+
+func:   ( func <name>? <sig> <local>* <instr>* )
+        ( func <string> <name>? <sig> <local>* <instr>* )  ;; = (export <string> <N>) (func <name>? <sig> <local>* <instr>*)
 sig:    ( type <var> ) | <param>* <result>?
 param:  ( param <type>* ) | ( param <name> <type> )
 result: ( result <type> )
@@ -156,13 +169,16 @@ export:  ( export <string> <var> ) | ( export <string> memory)
 start:   ( start <var> )
 table:   ( table <nat> <nat>? <elem_type> )
          ( table <elem_type> ( elem <var>* ) )  ;; = (table <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
-elem:    ( elem <expr> <var>* )
+elem:    ( elem ( offset <instr> ) <var>* )
+         ( elem <expr> <var>* )                 ;; = (elem (offset <expr>) <var>*)
 memory:  ( memory <nat> <nat>? )
          ( memory ( data <string>* ) )          ;; = (memory <size> <size>) (data (i32.const 0) <string>*)
-data:    ( data <expr> <string>* )
+data:    ( data ( offset <instr>* ) <string>* )
+         ( data <expr> <string>* )              ;; = (data (offset <expr>) <var>*)
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the AST below).
+WebAssembly is a stack machine, so all expressions are merely abbreviations of a corresponding post-order sequence of instructions.
 
 Any form of naming via `<name>` and `<var>` (including expression labels) is merely notational convenience of this text format. The actual AST has no names, and all bindings are referred to via ordered numeric indices; consequently, names are immediately resolved in the parser and replaced by indices. Indices can also be used directly in the text format.
 

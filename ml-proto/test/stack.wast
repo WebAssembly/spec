@@ -4,16 +4,18 @@
     (local $res i64)
     (set_local $i (get_local $n))
     (set_local $res (i64.const 1))
-    (loop $done $loop
-      (if
-        (i64.eq (get_local $i) (i64.const 0))
-        (br $done)
-        (block
-          (set_local $res (i64.mul (get_local $i) (get_local $res)))
-          (set_local $i (i64.sub (get_local $i) (i64.const 1)))
+    (block $done
+      (loop $loop
+        (if
+          (i64.eq (get_local $i) (i64.const 0))
+          (br $done)
+          (block
+            (set_local $res (i64.mul (get_local $i) (get_local $res)))
+            (set_local $i (i64.sub (get_local $i) (i64.const 1)))
+          )
         )
+        (br $loop)
       )
-      (br $loop)
     )
     (get_local $res)
   )
@@ -25,23 +27,25 @@
     set_local $i
     i64.const 1
     set_local $res
-    loop $done $loop
-      get_local $i
-      i64.const 0
-      i64.eq
-      if
-        br 0 $done
-      else
+    block $done
+      loop $loop
         get_local $i
-        get_local $res
-        i64.mul
-        set_local $res
-        get_local $i
-        i64.const 1
-        i64.sub
-        set_local $i
+        i64.const 0
+        i64.eq
+        if
+          br 0 $done
+        else
+          get_local $i
+          get_local $res
+          i64.mul
+          set_local $res
+          get_local $i
+          i64.const 1
+          i64.sub
+          set_local $i
+        end
+        br 0 $loop
       end
-      br 0 $loop
     end
     get_local $res
   )
@@ -51,17 +55,19 @@
     (local $res i64)
     (set_local $i (get_local $n))
     (set_local $res (i64.const 1))
-    loop $done $loop
-      (i64.eq (get_local $i) (i64.const 0))
-      if
-        br 0 $done
-      else
-        (i64.mul (get_local $i) (get_local $res))
-        set_local $res
-        (i64.sub (get_local $i) (i64.const 1))
-        set_local $i
+    block $done
+      loop $loop
+        (i64.eq (get_local $i) (i64.const 0))
+        if
+          br 0 $done
+        else
+          (i64.mul (get_local $i) (get_local $res))
+          set_local $res
+          (i64.sub (get_local $i) (i64.const 1))
+          set_local $i
+        end
+        br 0 $loop
       end
-      br 0 $loop
     end
     get_local $res
   )
