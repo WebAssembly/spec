@@ -178,7 +178,7 @@ data:    ( data ( offset <instr>* ) <string>* )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the AST below).
-WebAssembly is a stack machine, so all expressions are merely abbreviations of a corresponding post-order sequence of instructions.
+In particular, WebAssembly is a stack machine, so that all expressions `<expr>` are merely abbreviations of a corresponding post-order sequence of instructions.
 
 Any form of naming via `<name>` and `<var>` (including expression labels) is merely notational convenience of this text format. The actual AST has no names, and all bindings are referred to via ordered numeric indices; consequently, names are immediately resolved in the parser and replaced by indices. Indices can also be used directly in the text format.
 
