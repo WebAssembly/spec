@@ -85,8 +85,6 @@ let encode m =
     let elem_type = function
       | AnyFuncType -> u8 0x20
 
-    let expr_type t = vec1 value_type t
-
     let func_type = function
       | FuncType (ins, out) -> u8 0x40; vec value_type ins; vec value_type out
 
@@ -103,15 +101,15 @@ let encode m =
     let var x = vu x.it
     let var32 x = vu32 (Int32.of_int x.it)
 
-    let rec expr e =
+    let rec instr e =
       match e.it with
       | Unreachable -> op 0x00
-      | Block es -> op 0x01; list expr es; op 0x0f
-      | Loop es -> op 0x02; list expr es; op 0x0f
+      | Block es -> op 0x01; list instr es; op 0x0f
+      | Loop es -> op 0x02; list instr es; op 0x0f
       | If (es1, es2) ->
-        op 0x03; list expr es1;
+        op 0x03; list instr es1;
         if es2 <> [] then op 0x04;
-        list expr es2; op 0x0f
+        list instr es2; op 0x0f
       | Select -> op 0x05
       | Br (n, x) -> op 0x06; vu n; var x
       | BrIf (n, x) -> op 0x07; vu n; var x
@@ -329,7 +327,7 @@ let encode m =
       | Trapping _ | Label _ | Local _ -> assert false
 
     let const c =
-      list expr c.it; op 0x0f
+      list instr c.it; op 0x0f
 
 
     (* Sections *)
@@ -420,7 +418,7 @@ let encode m =
       vec local (compress locals);
       let g = gap () in
       let p = pos s in
-      list expr body;
+      list instr body;
       patch_gap g (pos s - p)
 
     let code_section fs =

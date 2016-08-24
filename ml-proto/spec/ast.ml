@@ -5,7 +5,7 @@
  *
  *   x : var
  *   v : value
- *   e : expr
+ *   e : instrr
  *   f : func
  *   m : module_
  *
@@ -73,19 +73,19 @@ type storeop = Memory.mem_size memop
 type var = int Source.phrase
 type literal = value Source.phrase
 
-type expr = expr' Source.phrase
-and expr' =
+type instr = instr' Source.phrase
+and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
   | Drop                              (* forget a value *)
   | Select                            (* branchless conditional *)
-  | Block of expr list                (* execute in sequence *)
-  | Loop of expr list                 (* loop header *)
+  | Block of instr list               (* execute in sequence *)
+  | Loop of instr list                (* loop header *)
   | Br of int * var                   (* break to n-th surrounding label *)
   | BrIf of int * var                 (* conditional break *)
   | BrTable of int * var list * var   (* indexed break *)
   | Return                            (* break from function body *)
-  | If of expr list * expr list       (* conditional *)
+  | If of instr list * instr list     (* conditional *)
   | Call of var                       (* call function *)
   | CallImport of var                 (* call imported function *)
   | CallIndirect of var               (* call function through table *)
@@ -106,14 +106,14 @@ and expr' =
   | GrowMemory                        (* grow linear memory *)
 
   (* Administrative expressions *)
-  | Trapping of string                                  (* trap *)
-  | Label of expr list * value list * expr list         (* control stack *)
-  | Local of int * value list * value list * expr list  (* call stack *)
+  | Trapping of string                                   (* trap *)
+  | Label of instr list * value list * instr list        (* control stack *)
+  | Local of int * value list * value list * instr list  (* call stack *)
 
 
 (* Globals & Functions *)
 
-type const = expr list Source.phrase
+type const = instr list Source.phrase
 
 type global = global' Source.phrase
 and global' =
@@ -127,7 +127,7 @@ and func' =
 {
   ftype : var;
   locals : value_type list;
-  body : expr list;
+  body : instr list;
 }
 
 

@@ -102,9 +102,9 @@ let elem c i t at =
 (*
  * Conventions:
  *   c  : config
- *   e  : expr
+ *   e  : instr
  *   v  : value
- *   es : expr list
+ *   es : instr list
  *   vs : value list
  *)
 
@@ -118,8 +118,8 @@ let drop n (vs : value stack) at =
   try Lib.List.drop n vs with Failure _ ->
     Crash.error at "stack underflow"
 
-let rec step_expr (c : config) (vs : value stack) (e : expr)
-  : value stack * expr list =
+let rec step_instr (c : config) (vs : value stack) (e : instr)
+  : value stack * instr list =
   match e.it, vs with
   | Unreachable, vs ->
     vs, [Trapping "unreachable executed" @@ e.at]
@@ -283,7 +283,7 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     [], [Trapping msg @@ at]
 
   | Label (es_cont, vs', e :: es), vs ->
-    let vs'', es' = step_expr c vs' e in
+    let vs'', es' = step_instr c vs' e in
     vs, [Label (es_cont, vs'', es' @ es) @@ e.at]
 
   | Local (n, vs_local, vs', []), vs ->
@@ -301,19 +301,19 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
 
   | Local (n, vs_local, vs', e :: es), vs ->
     let c' = {c with locals = List.map ref vs_local; resources = c.resources - 1} in
-    let vs'', es' = step_expr c' vs' e in
+    let vs'', es' = step_instr c' vs' e in
     vs, [Local (n, List.map (!) c'.locals, vs'', es' @ es) @@ e.at]
 
   | _, _ ->
     Crash.error e.at "type error: missing or ill-typed operand on stack"
 
 
-let rec eval_block (c : config) (vs : value stack) (es : expr list) : value stack =
+let rec eval_block (c : config) (vs : value stack) (es : instr list) : value stack =
   match es with
   | [] -> vs
   | [{it = Trapping msg; at}] -> Trap.error at msg
   | e :: es ->
-    let vs', es' = step_expr c vs e in
+    let vs', es' = step_instr c vs e in
     eval_block c vs' (es' @ es)
 
 

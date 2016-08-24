@@ -134,12 +134,12 @@ let check_result_arity r at =
   | Bot -> ()
 
 (*
- * check_expr : context -> expr_type_future -> expr -> unit
+ * check_instr : context -> instr -> stack_type -> unit
  *
  * Conventions:
  *   c  : context
- *   e  : expr
- *   es : expr list
+ *   e  : instr
+ *   es : instr list
  *   v  : value
  *   t  : value_type var
  *   ts : stack_type
@@ -154,7 +154,7 @@ let peek_n n ts =
   let m = min n (List.length ts) in
   Lib.List.take m ts @ Lib.List.make (n - m) I32Type
 
-let rec check_expr (c : context) (e : expr) (stack : stack_type) : op_type =
+let rec check_instr (c : context) (e : instr) (stack : stack_type) : op_type =
   match e.it with
   | Unreachable ->
     [] --> Bot
@@ -303,7 +303,7 @@ let rec check_expr (c : context) (e : expr) (stack : stack_type) : op_type =
       error e.at "arity mismatch for local result"
     | r' -> [] --> r'
 
-and check_block (c : context) (es : expr list) : result_type =
+and check_block (c : context) (es : instr list) : result_type =
   match es with
   | [] ->
     Stack []
@@ -314,7 +314,7 @@ and check_block (c : context) (es : expr list) : result_type =
     match r1 with
     | Bot -> Bot
     | Stack ts0 ->
-      let ts2, r2 = check_expr c e (List.rev ts0) in
+      let ts2, r2 = check_instr c e (List.rev ts0) in
       let n1 = max (List.length ts0 - List.length ts2) 0 in
       let ts1 = Lib.List.take n1 ts0 in
       let ts2' = Lib.List.drop n1 ts0 in
@@ -334,7 +334,7 @@ and check_block (c : context) (es : expr list) : result_type =
  *   c : context
  *   m : module_
  *   f : func
- *   e : expr
+ *   e : instr
  *   v : value
  *   t : value_type
  *   s : func_type
@@ -356,7 +356,8 @@ let is_const e =
   | _ -> false
 
 let check_const (c : context) (const : const) (t : value_type) =
-  require (List.for_all is_const const.it) const.at "constant expression required";
+  require (List.for_all is_const const.it) const.at
+    "constant expression required";
   match check_block c const.it with
   | Stack [t'] when t = t' -> ()
   | r -> result_error const.at (Stack [t]) r

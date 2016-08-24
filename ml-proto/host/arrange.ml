@@ -196,20 +196,20 @@ let var x = string_of_int x.it
 let value v = string_of_value v.it
 let constop v = value_type (type_of v.it) ^ ".const"
 
-let rec expr e =
+let rec instr e =
     match e.it with
     | Unreachable -> Atom "unreachable"
     | Nop -> Atom "nop"
     | Drop -> Atom "drop"
-    | Block es -> Node ("block", list expr es)
-    | Loop es -> Node ("loop", list expr es)
+    | Block es -> Node ("block", list instr es)
+    | Loop es -> Node ("loop", list instr es)
     | Br (n, x) -> Atom ("br " ^ int n ^ " " ^ var x)
     | BrIf (n, x) -> Atom ("br_if " ^ int n ^ " " ^ var x)
     | BrTable (n, xs, x) ->
       Atom ("br_table " ^ int n ^ " " ^ String.concat " " (list var (xs @ [x])))
     | Return -> Atom "return"
     | If (es1, es2) ->
-      Node ("if", [Node ("then", list expr es1); Node ("else", list expr es2)])
+      Node ("if", [Node ("then", list instr es1); Node ("else", list instr es2)])
     | Select -> Atom "select"
     | Call x -> Atom ("call " ^ var x)
     | CallImport x -> Atom ("call_import " ^ var x)
@@ -233,15 +233,15 @@ let rec expr e =
     | Trapping msg -> Atom ("trap[\"" ^ String.escaped msg ^ "\"]")
     | Label (es_cont, vs, es) ->
       let ves = List.map (fun v -> Const (v @@ e.at) @@ e.at) (List.rev vs) in
-      Node ("label[...]", list expr (ves @ es))
+      Node ("label[...]", list instr (ves @ es))
     | Local (n, vs_local, vs, es) ->
       let ves = List.map (fun v -> Const (v @@ e.at) @@ e.at) (List.rev vs) in
       Node ("local" ^ string_of_int n ^ "[" ^
             String.concat " " (List.map string_of_value vs_local) ^
-            "]", list expr (ves @ es))
+            "]", list instr (ves @ es))
 
 let const c =
-  list expr c.it
+  list instr c.it
 
 
 (* Functions *)
@@ -251,7 +251,7 @@ let func i f =
   Node ("func $" ^ string_of_int i,
     [Node ("type " ^ var ftype, [])] @
     decls "local" locals @
-    list expr body
+    list instr body
   )
 
 let start x = Node ("start " ^ var x, [])

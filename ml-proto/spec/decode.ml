@@ -126,16 +126,14 @@ let elem_type s =
   | 0x20 -> AnyFuncType
   | _ -> error s (pos s - 1) "invalid element type"
 
-let expr_type s = vec1 value_type s
-
 let func_type s =
   expect 0x40 s "invalid function type";
   let ins = vec value_type s in
-  let out = expr_type s in
-  FuncType (ins, match out with None -> [] | Some t -> [t])
+  let out = vec value_type s in
+  FuncType (ins, out)
 
 
-(* Decode expressions *)
+(* Decode instructions *)
 
 open Ast
 open Operators
@@ -165,23 +163,23 @@ let args1 b stack s pos =
   | [e], stack' -> Some e, stack'
   | _ -> assert false
 
-let rec expr s =
+let rec instr s =
   let pos = pos s in
   match op s with
   | 0x00 -> unreachable
   | 0x01 ->
-    let es' = expr_block s in
+    let es' = instr_block s in
     expect 0x0f s "END opcode expected";
     block es'
   | 0x02 ->
-    let es' = expr_block s in
+    let es' = instr_block s in
     expect 0x0f s "END opcode expected";
     loop es'
   | 0x03 ->
-    let es1 = expr_block s in
+    let es1 = instr_block s in
     if peek s = Some 0x04 then begin
       expect 0x04 s "`else` or `end` opcode expected";
-      let es2 = expr_block s in
+      let es2 = instr_block s in
       expect 0x0f s "END opcode expected";
       if_ es1 es2
     end else begin
@@ -394,18 +392,18 @@ let rec expr s =
 
   | b -> error s pos "too few operands for operator"
 
-and expr_block s = List.rev (expr_block' s [])
-and expr_block' s es =
+and instr_block s = List.rev (instr_block' s [])
+and instr_block' s es =
   if eos s then es else
   match peek s with
   | None | Some (0x04 | 0x0f) -> es
   | _ ->
     let pos = pos s in
-    let e' = expr s in
-    expr_block' s (Source.(e' @@ region s pos pos) :: es)
+    let e' = instr s in
+    instr_block' s (Source.(e' @@ region s pos pos) :: es)
 
 let const s =
-  let c = at expr_block s in
+  let c = at instr_block s in
   expect 0x0f s "`end` opcode expected";
   c
 
@@ -532,7 +530,7 @@ let local s =
 let code s =
   let locals = List.flatten (vec local s) in
   let size = vu s in
-  let body = expr_block (substream s (pos s + size)) in
+  let body = instr_block (substream s (pos s + size)) in
   {locals; body; ftype = Source.((-1) @@ Source.no_region)}
 
 let code_section s =

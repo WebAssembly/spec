@@ -158,14 +158,14 @@ let implicit_decl c t at =
 %token<string> TEXT
 %token<string> VAR
 %token<Types.value_type> VALUE_TYPE
-%token<string Source.phrase -> Ast.expr' * Values.value> CONST
-%token<Ast.expr'> UNARY
-%token<Ast.expr'> BINARY
-%token<Ast.expr'> TEST
-%token<Ast.expr'> COMPARE
-%token<Ast.expr'> CONVERT
-%token<int option -> Memory.offset -> Ast.expr'> LOAD
-%token<int option -> Memory.offset -> Ast.expr'> STORE
+%token<string Source.phrase -> Ast.instr' * Values.value> CONST
+%token<Ast.instr'> UNARY
+%token<Ast.instr'> BINARY
+%token<Ast.instr'> TEST
+%token<Ast.instr'> COMPARE
+%token<Ast.instr'> CONVERT
+%token<int option -> Memory.offset -> Ast.instr'> LOAD
+%token<int option -> Memory.offset -> Ast.instr'> STORE
 %token<Memory.offset> OFFSET_EQ_NAT
 %token<int> ALIGN_EQ_NAT
 
