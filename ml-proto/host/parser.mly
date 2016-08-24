@@ -256,8 +256,8 @@ plain_instr :
   | UNREACHABLE { fun c -> unreachable }
   | NOP { fun c -> nop }
   | DROP { fun c -> drop }
-  | RETURN { fun c -> return }
   | SELECT { fun c -> select }
+  | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_IMPORT var { fun c -> call_import ($2 c import) }
   | CALL_INDIRECT var { fun c -> call_indirect ($2 c type_) }
@@ -278,6 +278,7 @@ plain_instr :
   | GROW_MEMORY { fun c -> grow_memory }
 ;
 ctrl_instr :
+  /* TODO: move branches to plain_instr once arities are gone */
   | BR nat var { fun c -> br $2 ($3 c label) }
   | BR_IF nat var { fun c -> br_if $2 ($3 c label) }
   | BR_TABLE nat var var_list
@@ -299,6 +300,7 @@ expr :  /* Sugar */
 ;
 expr1 :  /* Sugar */
   | plain_instr expr_list { fun c -> snd ($2 c), $1 c }
+  /* TODO: remove special-casing of branches here once arities are gone */
   | BR var expr_list { fun c -> let n, es = $3 c in es, br n ($2 c label) }
   | BR_IF var expr expr_list
     { fun c ->
