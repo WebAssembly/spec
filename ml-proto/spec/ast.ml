@@ -62,9 +62,10 @@ type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) op
 
-type memop = {ty : value_type; align : int; offset : Memory.offset}
-type extop = {memop : memop; sz : Memory.mem_size; ext : Memory.extension}
-type wrapop = {memop : memop; sz : Memory.mem_size}
+type 'a memop =
+  {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}
+type loadop = (Memory.mem_size * Memory.extension) memop
+type storeop = Memory.mem_size memop
 
 
 (* Expressions *)
@@ -93,10 +94,8 @@ and expr' =
   | TeeLocal of var                   (* write local variable and keep value *)
   | GetGlobal of var                  (* read global variable *)
   | SetGlobal of var                  (* write global variable *)
-  | Load of memop                     (* read memory at address *)
-  | Store of memop                    (* write memory at address *)
-  | LoadPacked of extop               (* read memory at address and extend *)
-  | StorePacked of wrapop             (* wrap and write to memory at address *)
+  | Load of loadop                    (* read memory at address *)
+  | Store of storeop                  (* write memory at address *)
   | Const of literal                  (* constant *)
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)

@@ -135,55 +135,46 @@ let encode m =
       | CallIndirect x -> op 0x17; var x
       | CallImport x -> op 0x18; var x
 
-      | Load ({ty = I32Type; _} as mo) -> op 0x2a; memop mo
-      | Load ({ty = I64Type; _} as mo) -> op 0x2b; memop mo
-      | Load ({ty = F32Type; _} as mo) -> op 0x2c; memop mo
-      | Load ({ty = F64Type; _} as mo) -> op 0x2d; memop mo
-
-      | Store ({ty = I32Type; _} as mo) -> op 0x33; memop mo
-      | Store ({ty = I64Type; _} as mo) -> op 0x34; memop mo
-      | Store ({ty = F32Type; _} as mo) -> op 0x35; memop mo
-      | Store ({ty = F64Type; _} as mo) -> op 0x36; memop mo
-
-      | LoadPacked {memop = {ty = I32Type; _} as mo; sz = Mem8; ext = SX} ->
+      | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x2a; memop mo
+      | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x2b; memop mo
+      | Load ({ty = F32Type; sz = None; _} as mo) -> op 0x2c; memop mo
+      | Load ({ty = F64Type; sz = None; _} as mo) -> op 0x2d; memop mo
+      | Load ({ty = I32Type; sz = Some (Mem8, SX); _} as mo) ->
         op 0x20; memop mo
-      | LoadPacked {memop = {ty = I32Type; _} as mo; sz = Mem8; ext = ZX} ->
+      | Load ({ty = I32Type; sz = Some (Mem8, ZX); _} as mo) ->
         op 0x21; memop mo
-      | LoadPacked {memop = {ty = I32Type; _} as mo; sz = Mem16; ext = SX} ->
+      | Load ({ty = I32Type; sz = Some (Mem16, SX); _} as mo) ->
         op 0x22; memop mo
-      | LoadPacked {memop = {ty = I32Type; _} as mo; sz = Mem16; ext = ZX} ->
+      | Load ({ty = I32Type; sz = Some (Mem16, ZX); _} as mo) ->
         op 0x23; memop mo
-      | LoadPacked {memop = {ty = I32Type; _}; sz = Mem32; _} ->
+      | Load {ty = I32Type; sz = Some (Mem32, _); _} ->
         assert false
-      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem8; ext = SX} ->
+      | Load ({ty = I64Type; sz = Some (Mem8, SX); _} as mo) ->
         op 0x24; memop mo
-      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem8; ext = ZX} ->
+      | Load ({ty = I64Type; sz = Some (Mem8, ZX); _} as mo) ->
         op 0x25; memop mo
-      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem16; ext = SX} ->
+      | Load ({ty = I64Type; sz = Some (Mem16, SX); _} as mo) ->
         op 0x26; memop mo
-      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem16; ext = ZX} ->
+      | Load ({ty = I64Type; sz = Some (Mem16, ZX); _} as mo) ->
         op 0x27; memop mo
-      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem32; ext = SX} ->
+      | Load ({ty = I64Type; sz = Some (Mem32, SX); _} as mo) ->
         op 0x28; memop mo
-      | LoadPacked {memop = {ty = I64Type; _} as mo; sz = Mem32; ext = ZX} ->
+      | Load ({ty = I64Type; sz = Some (Mem32, ZX); _} as mo) ->
         op 0x29; memop mo
-      | LoadPacked {memop = {ty = F32Type | F64Type; _}; _} ->
+      | Load {ty = F32Type | F64Type; sz = Some _; _} ->
         assert false
 
-      | StorePacked {memop = {ty = I32Type; _} as mo; sz = Mem8} ->
-        op 0x2e; memop mo
-      | StorePacked {memop = {ty = I32Type; _} as mo; sz = Mem16} ->
-        op 0x2f; memop mo
-      | StorePacked {memop = {ty = I32Type; _}; sz = Mem32} ->
-        assert false
-      | StorePacked {memop = {ty = I64Type; _} as mo; sz = Mem8} ->
-        op 0x30; memop mo
-      | StorePacked {memop = {ty = I64Type; _} as mo; sz = Mem16} ->
-        op 0x31; memop mo
-      | StorePacked {memop = {ty = I64Type; _} as mo; sz = Mem32} ->
-        op 0x32; memop mo
-      | StorePacked {memop = {ty = F32Type | F64Type; _}; _} ->
-        assert false
+      | Store ({ty = I32Type; sz = None; _} as mo) -> op 0x33; memop mo
+      | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x34; memop mo
+      | Store ({ty = F32Type; sz = None; _} as mo) -> op 0x35; memop mo
+      | Store ({ty = F64Type; sz = None; _} as mo) -> op 0x36; memop mo
+      | Store ({ty = I32Type; sz = Some Mem8; _} as mo) -> op 0x2e; memop mo
+      | Store ({ty = I32Type; sz = Some Mem16; _} as mo) -> op 0x2f; memop mo
+      | Store {ty = I32Type; sz = Some Mem32; _} -> assert false
+      | Store ({ty = I64Type; sz = Some Mem8; _} as mo) -> op 0x30; memop mo
+      | Store ({ty = I64Type; sz = Some Mem16; _} as mo) -> op 0x31; memop mo
+      | Store ({ty = I64Type; sz = Some Mem32; _} as mo) -> op 0x32; memop mo
+      | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
 
       | GrowMemory -> op 0x39
       | CurrentMemory -> op 0x3b

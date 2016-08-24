@@ -165,11 +165,6 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let memop name {ty; align; offset} =
-  value_type ty ^ "." ^ name ^
-  (if offset = 0L then "" else " offset=" ^ int64 offset) ^
-  (if align = size ty then "" else " align=" ^ int align)
-
 let mem_size = function
   | Memory.Mem8 -> "8"
   | Memory.Mem16 -> "16"
@@ -179,11 +174,20 @@ let extension = function
   | Memory.SX -> "_s"
   | Memory.ZX -> "_u"
 
-let extop {memop = op; sz; ext} =
-  memop ("load" ^ mem_size sz ^ extension ext) op
+let memop name {ty; align; offset; _} =
+  value_type ty ^ "." ^ name ^
+  (if offset = 0L then "" else " offset=" ^ int64 offset) ^
+  (if align = size ty then "" else " align=" ^ int align)
 
-let wrapop {memop = op; sz} =
-  memop ("store" ^ mem_size sz) op
+let loadop op =
+  match op.sz with
+  | None -> memop "load" op
+  | Some (sz, ext) -> memop ("load" ^ mem_size sz ^ extension ext) op
+
+let storeop op =
+  match op.sz with
+  | None -> memop "store" op
+  | Some sz -> memop ("store" ^ mem_size sz) op
 
 
 (* Expressions *)
@@ -215,10 +219,8 @@ let rec expr e =
     | TeeLocal x -> Atom ("tee_local " ^ var x)
     | GetGlobal x -> Atom ("get_global " ^ var x)
     | SetGlobal x -> Atom ("set_global " ^ var x)
-    | Load op -> Atom (memop "load" op)
-    | Store op -> Atom (memop "store" op)
-    | LoadPacked op -> Atom (extop op)
-    | StorePacked op -> Atom (wrapop op)
+    | Load op -> Atom (loadop op)
+    | Store op -> Atom (storeop op)
     | Const lit -> Atom (constop lit ^ " " ^ value lit)
     | Unary op -> Atom (unop op)
     | Binary op -> Atom (binop op)

@@ -209,25 +209,23 @@ let rec step_expr (c : config) (vs : value stack) (e : expr)
     global c x := v;
     vs', []
 
-  | Load {offset; ty; _}, I32 i :: vs' ->
+  | Load {offset; ty; sz; _}, I32 i :: vs' ->
     let addr = I64_convert.extend_u_i32 i in
-    (try Memory.load (memory c e.at) addr offset ty :: vs', []
-    with exn -> memory_error e.at exn)
+    let v =
+      try
+        match sz with
+        | None -> Memory.load (memory c e.at) addr offset ty
+        | Some (sz, ext) ->
+          Memory.load_packed sz ext (memory c e.at) addr offset ty
+      with exn -> memory_error e.at exn
+    in v :: vs', []
 
-  | Store {offset; _}, v :: I32 i :: vs' ->
+  | Store {offset; sz; _}, v :: I32 i :: vs' ->
     let addr = I64_convert.extend_u_i32 i in
-    (try Memory.store (memory c e.at) addr offset v
-    with exn -> memory_error e.at exn);
-    vs', []
-
-  | LoadPacked {memop = {offset; ty; _}; sz; ext}, I32 i :: vs' ->
-    let addr = I64_convert.extend_u_i32 i in
-    (try Memory.load_packed (memory c e.at) addr offset sz ext ty :: vs', []
-    with exn -> memory_error e.at exn)
-
-  | StorePacked {memop = {offset; _}; sz}, v :: I32 i :: vs' ->
-    let addr = I64_convert.extend_u_i32 i in
-    (try Memory.store_packed (memory c e.at) addr offset sz v
+    (try
+      match sz with
+      | None -> Memory.store (memory c e.at) addr offset v
+      | Some sz -> Memory.store_packed sz (memory c e.at) addr offset v
     with exn -> memory_error e.at exn);
     vs', []
 

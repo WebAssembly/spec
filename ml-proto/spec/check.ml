@@ -113,6 +113,26 @@ let type_cvtop at = function
 
 (* Expressions *)
 
+let check_memop (c : context) (memop : 'a memop) get_sz at =
+  ignore (memory c at);
+  require (memop.offset >= 0L) at "negative offset";
+  require (memop.offset <= 0xffffffffL) at "offset too large";
+  require (Lib.Int.is_power_of_two memop.align) at
+    "alignment must be a power of two";
+  require (memop.align <= size memop.ty) at
+    "alignment must not be larger than natural";
+  let sz = get_sz memop.sz in
+  require (sz = None || memop.ty = I64Type || sz <> Some Memory.Mem32) at
+    "memory size too big"
+
+let check_arity n at =
+  require (n <= 1) at "invalid result arity, larger than 1 is not (yet) allowed"
+
+let check_result_arity r at =
+  match r with
+  | Stack ts -> check_arity (List.length ts) at
+  | Bot -> ()
+
 (*
  * check_expr : context -> expr_type_future -> expr -> unit
  *
@@ -222,21 +242,11 @@ let rec check_expr (c : context) (e : expr) (stack : stack_type) : op_type =
     [global c x] --> Stack []
 
   | Load memop ->
-    check_memop c memop e.at;
+    check_memop c memop (Lib.Option.map fst) e.at;
     [I32Type] --> Stack [memop.ty]
 
   | Store memop ->
-    check_memop c memop e.at;
-    [I32Type; memop.ty] --> Stack []
-
-  | LoadPacked {memop; sz; _} ->
-    check_memop c memop e.at;
-    check_mem_size memop.ty sz e.at;
-    [I32Type] --> Stack [memop.ty]
-
-  | StorePacked {memop; sz} ->
-    check_memop c memop e.at;
-    check_mem_size memop.ty sz e.at;
+    check_memop c memop (fun sz -> sz) e.at;
     [I32Type; memop.ty] --> Stack []
 
   | Const v ->
@@ -312,24 +322,6 @@ and check_block (c : context) (es : expr list) : result_type =
       match r2 with
       | Bot -> Bot
       | Stack ts3 -> Stack (ts1 @ ts3)
-
-and check_memop c memop at =
-  ignore (memory c at);
-  require (memop.offset >= 0L) at "negative offset";
-  require (memop.offset <= 0xffffffffL) at "offset too large";
-  require (Lib.Int.is_power_of_two memop.align) at "alignment must be a power of two";
-  require (memop.align <= size memop.ty) at "alignment must not be larger than natural"
-
-and check_mem_size ty sz at =
-  require (ty = I64Type || sz <> Memory.Mem32) at "memory size too big"
-
-and check_arity n at =
-  require (n <= 1) at "invalid result arity, larger than 1 is not (yet) allowed"
-
-and check_result_arity r at =
-  match r with
-  | Stack ts -> check_arity (List.length ts) at
-  | Bot -> ()
 
 
 (* Functions & Constants *)

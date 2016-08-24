@@ -129,7 +129,7 @@ let loadn_sx mem n ea =
   let shift = 64 - (8 * n) in
   Int64.shift_right (Int64.shift_left v shift) shift
 
-let load_packed mem a o sz ext t =
+let load_packed sz ext mem a o t =
   let ea = effective_address a o in
   match sz, ext, t with
   | Mem8,  ZX, I32Type -> I32 (Int64.to_int32 (loadn    mem 1 ea))
@@ -144,7 +144,7 @@ let load_packed mem a o sz ext t =
   | Mem32, SX, I64Type -> I64 (loadn_sx mem 4 ea)
   | _ -> raise Type
 
-let store_packed mem a o sz v =
+let store_packed sz mem a o v =
   let ea = effective_address a o in
   match sz, v with
   | Mem8,  I32 x -> storen mem 1 ea (Int64.of_int32 x)
