@@ -119,11 +119,15 @@ let check_memop (c : context) (memop : 'a memop) get_sz at =
   require (memop.offset <= 0xffffffffL) at "offset too large";
   require (Lib.Int.is_power_of_two memop.align) at
     "alignment must be a power of two";
-  require (memop.align <= size memop.ty) at
-    "alignment must not be larger than natural";
-  let sz = get_sz memop.sz in
-  require (sz = None || memop.ty = I64Type || sz <> Some Memory.Mem32) at
-    "memory size too big"
+  let size =
+    match get_sz memop.sz with
+    | None -> size memop.ty
+    | Some sz ->
+      require (memop.ty = I64Type || sz <> Memory.Mem32) at
+        "memory size too big";
+      Memory.mem_size sz
+  in
+  require (memop.align <= size) at "alignment must not be larger than natural"
 
 let check_arity n at =
   require (n <= 1) at "invalid result arity, larger than 1 is not (yet) allowed"
