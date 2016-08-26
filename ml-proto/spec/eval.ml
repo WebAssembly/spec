@@ -1,26 +1,8 @@
 open Values
 open Types
 open Kernel
+open Instance
 open Source
-
-
-(* Module Instances *)
-
-type value = Values.value
-type import = value list -> value option
-
-module ExportMap = Map.Make(String)
-type export_map = func ExportMap.t
-
-type instance =
-{
-  module_ : module_;
-  imports : import list;
-  exports : export_map;
-  table : Table.t option;
-  memory : Memory.t option;
-  globals : value ref list;
-}
 
 
 (* Errors *)
@@ -66,31 +48,35 @@ type config =
   labels : label list
 }
 
+let empty_config inst = {instance = inst; locals = []; labels = []}
+
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
     Crash.error x.at ("undefined " ^ category ^ " " ^ string_of_int x.it)
 
 let type_ c x = lookup "type" c.instance.module_.it.types x
-let func c x = lookup "function" c.instance.module_.it.funcs x
-let import c x = lookup "import" c.instance.imports x
+let func c x = lookup "function" c.instance.funcs x
+let table c x = lookup "table" c.instance.tables x
+let memory c x = lookup "memory" c.instance.memories x
 let global c x = lookup "global" c.instance.globals x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
-let export m name =
-  try ExportMap.find name.it m.exports with Not_found ->
+let export inst name =
+  try ExportMap.find name.it inst.exports with Not_found ->
     Crash.error name.at ("undefined export \"" ^ name.it ^ "\"")
 
-let elem c i t at =
-  match c.instance.table with
-  | None -> Crash.error at "no table"
-  | Some tab ->
-  match Table.load tab i t with
+let elem c x i t at =
+  match Table.load (table c x) i t with
   | Some j -> j
   | None ->
     Trap.error at ("undefined element " ^ Int32.to_string i)
   | exception Table.Bounds ->
     Trap.error at ("undefined element " ^ Int32.to_string i)
+
+let func_type_of = function
+  | AstFunc (inst, f) -> lookup "type" (!inst).module_.it.types f.it.ftype
+  | HostFunc (t, _) -> t
 
 module MakeLabel () =
 struct
@@ -118,11 +104,6 @@ let int64 v at =
 
 let address32 v at =
   Int64.logand (Int64.of_int32 (int32 v at)) 0xffffffffL
-
-let memory c at =
-  match c.instance.memory with
-  | Some m -> m
-  | _ -> Trap.error at "memory operation with no memory"
 
 
 (* Evaluation *)
@@ -188,19 +169,15 @@ let rec eval_expr (c : config) (e : expr) : value option =
 
   | Call (x, es) ->
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
-    eval_func c.instance (func c x) vs
-
-  | CallImport (x, es) ->
-    let vs = List.map (fun ev -> some (eval_expr c ev) ev.at) es in
-    (try (import c x) vs with Crash (_, msg) -> Crash.error e.at msg)
+    eval_func (func c x) vs e.at
 
   | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
-    let f = func c (elem c i AnyFuncType e1.at @@ e1.at) in
-    if type_ c x <> type_ c f.it.ftype then
+    let f = func c (elem c (0 @@ e.at) i AnyFuncType e1.at @@ e1.at) in
+    if type_ c x <> func_type_of f then
       Trap.error e1.at "indirect call signature mismatch";
-    eval_func c.instance f vs
+    eval_func f vs e.at
 
   | GetLocal x ->
     Some !(local c x)
@@ -224,13 +201,13 @@ let rec eval_expr (c : config) (e : expr) : value option =
     None
 
   | Load ({ty; offset; align = _}, e1) ->
-    let mem = memory c e.at in
+    let mem = memory c (0 @@ e.at) in
     let v1 = address32 (eval_expr c e1) e1.at in
     (try Some (Memory.load mem v1 offset ty)
       with exn -> memory_error e.at exn)
 
   | Store ({ty = _; offset; align = _}, e1, e2) ->
-    let mem = memory c e.at in
+    let mem = memory c (0 @@ e.at) in
     let v1 = address32 (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     (try Memory.store mem v1 offset v2
@@ -238,13 +215,13 @@ let rec eval_expr (c : config) (e : expr) : value option =
     None
 
   | LoadExtend ({memop = {ty; offset; align = _}; sz; ext}, e1) ->
-    let mem = memory c e.at in
+    let mem = memory c (0 @@ e.at) in
     let v1 = address32 (eval_expr c e1) e1.at in
     (try Some (Memory.load_extend mem v1 offset sz ext ty)
       with exn -> memory_error e.at exn)
 
   | StoreWrap ({memop = {ty; offset; align = _}; sz}, e1, e2) ->
-    let mem = memory c e.at in
+    let mem = memory c (0 @@ e.at) in
     let v1 = address32 (eval_expr c e1) e1.at in
     let v2 = some (eval_expr c e2) e2.at in
     (try Memory.store_wrap mem v1 offset sz v2
@@ -289,15 +266,18 @@ and eval_expr_opt c = function
   | Some e -> eval_expr c e
   | None -> None
 
-and eval_func instance f vs =
-  let args = List.map ref vs in
-  let vars = List.map (fun t -> ref (default_value t)) f.it.locals in
-  let locals = args @ vars in
-  let c = {instance; locals; labels = []} in
-  let ft = type_ c f.it.ftype in
-  if List.length vs <> List.length ft.ins then
-    Crash.error f.at "function called with wrong number of arguments";
-  eval_expr c f.it.body
+and eval_func func vs at =
+  if List.length vs <> List.length (func_type_of func).ins then
+    Crash.error at "function called with wrong number of arguments";
+  match func with
+  | AstFunc (inst, f) ->
+    let args = List.map ref vs in
+    let vars = List.map (fun t -> ref (default_value t)) f.it.locals in
+    let locals = args @ vars in
+    eval_expr {(empty_config !inst) with locals} f.it.body
+
+  | HostFunc (_, f) ->
+    try f vs with Crash (_, msg) -> Crash.error at msg
 
 
 (* Host operators *)
@@ -305,12 +285,12 @@ and eval_func instance f vs =
 and eval_hostop c hostop vs at =
   match hostop, vs with
   | CurrentMemory, [] ->
-    let mem = memory c at in
+    let mem = memory c (0 @@ at) in
     let size = Memory.size mem in
     Some (Int32 size)
 
   | GrowMemory, [v] ->
-    let mem = memory c at in
+    let mem = memory c (0 @@ at) in
     let delta = int32 v at in
     let old_size = Memory.size mem in
     let result =
@@ -324,62 +304,91 @@ and eval_hostop c hostop vs at =
 
 (* Modules *)
 
-let const m e =
-  (* TODO: allow referring to earlier glboals *)
-  let inst =
-    { module_ = m; imports = []; exports = ExportMap.empty;
-      table = None; memory = None; globals = [] }
-  in some (eval_expr {instance = inst; locals = []; labels = []} e) e.at
+let create_func m f =
+  AstFunc (ref (instance m), f)
 
-let offset m seg =
-  int32 (Some (const m seg.it.offset)) seg.it.offset.at
+let create_table tab =
+  let {tlimits = lim; _} = tab.it in
+  Table.create lim.it.min lim.it.max
 
-let init_table m elems table =
-  let {tlimits = lim; _} = table.it in
-  let tab = Table.create lim.it.min lim.it.max in
-  let entries xs = List.map (fun x -> Some x.it) xs in
-  List.iter
-    (fun seg -> Table.blit tab (offset m seg) (entries seg.it.init))
-    elems;
-  tab
+let create_memory mem =
+  let {mlimits = lim} = mem.it in
+  Memory.create lim.it.min lim.it.max
 
-let init_memory m data memory =
-  let {mlimits = lim} = memory.it in
-  let mem = Memory.create lim.it.min lim.it.max in
-  List.iter
-    (fun seg -> Memory.blit mem (Int64.of_int32 (offset m seg)) seg.it.init)
-    data;
-  mem
+let create_global glob =
+  let {gtype = t; _} = glob.it in
+  ref (default_value t)
 
-let init_global inst ref global =
-  let {value = e; _} = global.it in
-  let c = {instance = inst; locals = []; labels = []} in
+let init_func c f =
+  match f with
+  | AstFunc (inst, _) -> inst := c.instance
+  | _ -> assert false
+
+let init_table c seg =
+  let {index; offset = e; init} = seg.it in
+  let tab = table c index in
+  let offset = int32 (eval_expr c e) e.at in
+  Table.blit tab offset (List.map (fun x -> Some x.it) init)
+
+let init_memory c seg =
+  let {index; offset = e; init} = seg.it in
+  let mem = memory c index in
+  let offset = Int64.of_int32 (int32 (eval_expr c e) e.at) in
+  Memory.blit mem offset init
+
+let init_global c ref glob =
+  let {value = e; _} = glob.it in
   ref := some (eval_expr c e) e.at
 
-let add_export funcs ex =
-  let {name; kind} = ex.it in
-  match kind with
-  | `Func x -> ExportMap.add name (List.nth funcs x.it)
-  | `Memory -> fun x -> x
+let add_import (ext : extern) (imp : import) (inst : instance) : instance =
+  match ext, imp.it.ikind.it with
+  | ExternalFunc f, FuncImport x -> {inst with funcs = f :: inst.funcs}
+  | ExternalTable t, TableImport _ -> {inst with tables = t :: inst.tables}
+  | ExternalMemory m, MemoryImport _ -> {inst with memories = m :: inst.memories}
+  | ExternalGlobal g, GlobalImport _ -> {inst with globals = g :: inst.globals}
+  | _ -> assert false  (* TODO: better exception? *)
 
-let init m imports =
-  assert (List.length imports = List.length m.it.Kernel.imports);
-  let {table; memory; globals; funcs; exports; elems; data; start; _} = m.it in
-  let inst =
-    { module_ = m;
-      imports;
-      exports = List.fold_right (add_export funcs) exports ExportMap.empty;
-      table = Lib.Option.map (init_table m elems) table;
-      memory = Lib.Option.map (init_memory m data) memory;
-      globals = List.map (fun g -> ref (default_value g.it.gtype)) globals;
-    }
+let add_export c ex map =
+  let {name; ekind; item} = ex.it in
+  let ext =
+    match ekind.it with
+    | FuncExport -> ExternalFunc (func c item)
+    | TableExport -> ExternalTable (table c item)
+    | MemoryExport -> ExternalMemory (memory c item)
+    | GlobalExport -> ExternalGlobal (global c item)
+  in ExportMap.add name ext map
+
+let init m externals =
+  let
+    { imports; tables; memories; globals; funcs;
+      exports; elems; data; start } = m.it
   in
-  List.iter2 (init_global inst) inst.globals globals;
-  Lib.Option.app
-    (fun x -> ignore (eval_func inst (lookup "function" funcs x) [])) start;
-  inst
+  assert (List.length externals = List.length imports);  (* TODO: better exception? *)
+  let fs = List.map (create_func m) funcs in
+  let inst =
+    List.fold_right2 add_import externals imports
+      { (instance m) with
+        funcs = fs;
+        tables = List.map create_table tables;
+        memories = List.map create_memory memories;
+        globals = List.map create_global globals;
+      }
+  in
+  let c = empty_config inst in
+  List.iter (init_func c) fs;
+  List.iter (init_table c) elems;
+  List.iter (init_memory c) data;
+  List.iter2 (init_global c) inst.globals globals;
+  Lib.Option.app (fun x -> ignore (eval_func (func c x) [] x.at)) start;
+  {inst with exports = List.fold_right (add_export c) exports inst.exports}
 
 let invoke inst name vs =
-  try
-    eval_func inst (export inst (name @@ no_region)) vs
-  with Stack_overflow -> Trap.error Source.no_region "call stack exhausted"
+  match export inst (name @@ no_region) with
+  | ExternalFunc f ->
+    (try eval_func f vs no_region
+    with Stack_overflow -> Trap.error no_region "call stack exhausted")
+  | _ ->
+    Crash.error no_region ("export \"" ^ name ^ "\" is not a function")
+
+let const m e =
+  some (eval_expr (empty_config (instance m)) e) e.at

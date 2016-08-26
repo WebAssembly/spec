@@ -7,6 +7,8 @@
   (type $T (func (param i32) (result i32)))  ;; 5: i32 -> i32
   (type $U (func (param i32)))               ;; 6: i32 -> void
 
+  (import $print "spectest" "print" (func (type 6)))
+
   (func (type 0))
   (func (type $S))
 
@@ -19,16 +21,15 @@
     (i32.sub (get_local 0) (i32.const 2))
   )
 
-  (import $print "spectest" "print" (type 6))
-  (func "four" (type $U) (call_import $print (get_local 0)))
+  (func "four" (type $U) (call $print (get_local 0)))
 )
 (assert_return (invoke "one") (i32.const 13))
 (assert_return (invoke "two" (i32.const 13)) (i32.const 14))
 (assert_return (invoke "three" (i32.const 13)) (i32.const 11))
 (invoke "four" (i32.const 83))
 
-(assert_invalid (module (elem (i32.const 0))) "no table defined")
-(assert_invalid (module (elem (i32.const 0) 0) (func)) "no table defined")
+(assert_invalid (module (elem (i32.const 0))) "unknown table")
+(assert_invalid (module (elem (i32.const 0) 0) (func)) "unknown table")
 
 (assert_invalid
   (module (table 1 anyfunc) (elem (i64.const 0)))
@@ -43,8 +44,8 @@
   "constant expression required"
 )
 
-(assert_invalid (module (func (type 42))) "unknown function type 42")
-(assert_invalid (module (import "spectest" "print" (type 43))) "unknown function type 43")
+(assert_invalid (module (func (type 42))) "unknown type")
+(assert_invalid (module (import "spectest" "print" (func (type 43)))) "unknown type")
 
 (module
   (type $T (func (param) (result i32)))
@@ -91,8 +92,6 @@
 (module
   (type $T (func (result i32)))
   (table anyfunc (elem 0 1))
-
-  (import $print_i32 "spectest" "print" (param i32))
 
   (func $t1 (type $T) (i32.const 1))
   (func $t2 (type $T) (i32.const 2))

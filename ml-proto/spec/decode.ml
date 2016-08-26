@@ -114,7 +114,7 @@ let vec1 f s = let b = bool s in opt f b s
 open Types
 
 let value_type s =
-  match get s with
+  match u8 s with
   | 0x01 -> Int32Type
   | 0x02 -> Int64Type
   | 0x03 -> Float32Type
@@ -122,7 +122,7 @@ let value_type s =
   | _ -> error s (pos s - 1) "invalid value type"
 
 let elem_type s =
-  match get s with
+  match u8 s with
   | 0x20 -> AnyFuncType
   | _ -> error s (pos s - 1) "invalid element type"
 
@@ -245,11 +245,6 @@ let rec expr stack s =
     let x = at var s in
     let es1, es' = args (n + 1) es s pos in
     Call_indirect (x, List.hd es1, List.tl es1), es'
-  | 0x18, es ->
-    let n = arity s in
-    let x = at var s in
-    let es1, es' = args n es s pos in
-    Call_import (x, es1), es'
 
   | 0x19, e :: es ->
     let x = at var s in
@@ -490,11 +485,34 @@ let type_section s =
 
 (* Import section *)
 
+let limits vu s =
+  let has_max = bool s in
+  let min = vu s in
+  let max = opt vu has_max s in
+  {min; max}
+
+let import_kind s =
+  match u8 s with
+  | 0x00 ->
+    let x = at var s in
+    FuncImport x
+  | 0x01 ->
+    let t = elem_type s in
+    let lim = at (limits vu32) s in
+    TableImport (lim, t)
+  | 0x02 ->
+    let lim = at (limits vu32) s in
+    MemoryImport lim
+  | 0x03 ->
+    let t = value_type s in
+    GlobalImport t (* TODO: mutability *)
+  | _ -> error s (pos s - 1) "invalid import kind"
+
 let import s =
-  let itype = at var s in
   let module_name = string s in
-  let func_name = string s in
-  {itype; module_name; func_name}
+  let item_name = string s in
+  let ikind = at import_kind s in
+  {module_name; item_name; ikind}
 
 let import_section s =
   section `ImportSection (vec (at import)) [] s
@@ -508,19 +526,13 @@ let func_section s =
 
 (* Table section *)
 
-let limits vu s =
-  let has_max = bool s in
-  let min = vu s in
-  let max = opt vu has_max s in
-  {min; max}
-
 let table s =
   let t = elem_type s in
   let lim = at (limits vu32) s in
   {etype = t; tlimits = lim}
 
 let table_section s =
-  section `TableSection (opt (at table) true) None s
+  section `TableSection (vec (at table)) [] s
 
 
 (* Memory section *)
@@ -530,7 +542,7 @@ let memory s =
   {mlimits = lim}
 
 let memory_section s =
-  section `MemorySection (opt (at memory) true) None s
+  section `MemorySection (vec (at memory)) [] s
 
 
 (* Global section *)
@@ -549,10 +561,19 @@ let global_section s =
 
 (* Export section *)
 
+let export_kind s =
+  match u8 s with
+  | 0x00 -> FuncExport
+  | 0x01 -> TableExport
+  | 0x02 -> MemoryExport
+  | 0x03 -> GlobalExport
+  | _ -> error s (pos s - 1) "invalid export kind"
+
 let export s =
-  let x = at var s in
   let name = string s in
-  {name; kind = `Func x} (*TODO: pending resolution*)
+  let ekind = at export_kind s in
+  let item = at var s in
+  {name; ekind; item}
 
 let export_section s =
   section `ExportSection (vec (at export)) [] s
@@ -584,9 +605,10 @@ let code_section s =
 (* Element section *)
 
 let segment dat s =
+  let index = at var s in
   let offset = const s in
   let init = dat s in
-  {offset; init}
+  {index; offset; init}
 
 let table_segment s =
   segment (vec (at var)) s
@@ -626,9 +648,9 @@ let module_ s =
   iterate unknown_section s;
   let func_types = func_section s in
   iterate unknown_section s;
-  let table = table_section s in
+  let tables = table_section s in
   iterate unknown_section s;
-  let memory = memory_section s in
+  let memories = memory_section s in
   iterate unknown_section s;
   let globals = global_section s in
   iterate unknown_section s;
@@ -650,7 +672,7 @@ let module_ s =
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
       func_types func_bodies
-  in {types; table; memory; globals; funcs; imports; exports; elems; data; start}
+  in {types; tables; memories; globals; funcs; imports; exports; elems; data; start}
 
 
 let decode name bs = at module_ (stream name bs)

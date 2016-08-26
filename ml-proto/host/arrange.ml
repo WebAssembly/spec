@@ -218,7 +218,6 @@ let rec expr e =
       )
     | Select (e1, e2, e3) -> "select", [expr e1; expr e2; expr e3]
     | Call (x, es) -> "call " ^ var x, list expr es
-    | CallImport (x, es) -> "call_import " ^ var x, list expr es
     | CallIndirect (x, e, es) -> "call_indirect " ^ var x, list expr (e::es)
     | GetLocal x -> "get_local " ^ var x, []
     | SetLocal (x, e) -> "set_local " ^ var x, [expr e]
@@ -247,9 +246,9 @@ and block e =
 
 (* Functions *)
 
-let func i f =
+let func off i f =
   let {ftype; locals; body} = f.it in
-  Node ("func $" ^ string_of_int i,
+  Node ("func $" ^ string_of_int (off + i),
     [Node ("type " ^ var ftype, [])] @
     decls "local" locals @
     block body
@@ -266,17 +265,19 @@ let limits int lim =
   let {min; max} = lim.it in
   String.concat " " (int min :: opt int max)
 
-let table tab =
+let table off i tab =
+  (* TODO: print index *)
   let {tlimits = lim; etype} = tab.it in
   Node ("table " ^ limits int32 lim, [atom elem_type etype])
 
-let memory mem =
+let memory off i mem =
+  (* TODO: print index *)
   let {mlimits = lim} = mem.it in
   Node ("memory " ^ limits int32 lim, [])
 
 let segment head dat seg =
-  let {offset; init} = seg.it in
-  Node (head, expr offset :: dat init)
+  let {index; offset; init} = seg.it in
+  Node (head, atom var index :: expr offset :: dat init)
 
 let elems seg =
   segment "elem" (list (atom var)) seg
@@ -290,33 +291,68 @@ let data seg =
 let typedef i t =
   Node ("type $" ^ string_of_int i, [struct_type t])
 
+let import_kind k =
+  match k.it with
+  | FuncImport x ->
+    Node ("func", [Node ("type", [atom var x])])
+  | TableImport (lim, t) ->
+    Node ("table " ^ limits int32 lim, [atom elem_type t])
+  | MemoryImport lim ->
+    Node ("memory " ^ limits int32 lim, [])
+  | GlobalImport t ->
+    Node ("global", [atom value_type t])
+
 let import i im =
-  let {itype; module_name; func_name} = im.it in
-  let ty = Node ("type " ^ var itype, []) in
+  let {module_name; item_name; ikind} = im.it in
   Node ("import $" ^ string_of_int i,
-    [atom string module_name; atom string func_name; ty]
+    [atom string module_name; atom string item_name; import_kind ikind]
   )
 
-let global g =
-  let {gtype; value} = g.it in
-  Node ("global", [atom value_type gtype; expr value])
+let export_kind k =
+  match k.it with
+  | FuncExport -> "func"
+  | TableExport -> "table"
+  | MemoryExport -> "memory"
+  | GlobalExport -> "global"
 
 let export ex =
-  let {name; kind} = ex.it in
-  let desc = match kind with `Func x -> var x | `Memory -> "memory" in
-  Node ("export", [atom string name; Atom desc])
+  let {name; ekind; item} = ex.it in
+  Node ("export", [atom string name; Node (export_kind ekind, [atom var item])])
+
+let global off i g =
+  (* TODO: print index *)
+  let {gtype; value} = g.it in
+  Node ("global $" ^ string_of_int (off + i),
+    [atom value_type gtype; expr value]
+  )
 
 
 (* Modules *)
 
+let is_func_import im =
+  match im.it.ikind.it with FuncImport _ -> true | _ -> false
+let is_table_import im =
+  match im.it.ikind.it with TableImport _ -> true | _ -> false
+let is_memory_import im =
+  match im.it.ikind.it with MemoryImport _ -> true | _ -> false
+let is_global_import im =
+  match im.it.ikind.it with GlobalImport _ -> true | _ -> false
+
 let module_ m =
+  let func_imports = List.filter is_func_import m.it.imports in
+  let table_imports = List.filter is_table_import m.it.imports in
+  let memory_imports = List.filter is_memory_import m.it.imports in
+  let global_imports = List.filter is_global_import m.it.imports in
   Node ("module",
     listi typedef m.it.types @
-    listi import m.it.imports @
-    opt table m.it.table @
-    opt memory m.it.memory @
-    list global m.it.globals @
-    listi func m.it.funcs @
+    listi import table_imports @
+    listi import memory_imports @
+    listi import global_imports @
+    listi import func_imports @
+    listi (table (List.length table_imports)) m.it.tables @
+    listi (memory (List.length memory_imports)) m.it.memories @
+    listi (global (List.length global_imports)) m.it.globals @
+    listi (func (List.length func_imports)) m.it.funcs @
     list export m.it.exports @
     opt start m.it.start @
     list elems m.it.elems @

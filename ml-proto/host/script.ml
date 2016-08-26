@@ -37,7 +37,7 @@ exception IO = IO.Error
 let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 
 let current_module : Ast.module_ option ref = ref None
-let current_instance : Eval.instance option ref = ref None
+let current_instance : Instance.instance option ref = ref None
 
 let get_module at = match !current_module with
   | Some m -> m
@@ -63,11 +63,13 @@ let run_cmd cmd =
   | Define def ->
     let m = run_def def in
     let m' = Desugar.desugar m in
-    trace "Checking...";
-    Check.check_module m';
-    if !Flags.print_sig then begin
-      trace "Signature:";
-      Print.print_module_sig m'
+    if not !Flags.unchecked then begin
+      trace "Checking...";
+      Check.check_module m';
+      if !Flags.print_sig then begin
+        trace "Signature:";
+        Print.print_module_sig m'
+      end
     end;
     current_module := Some m;
     trace "Initializing...";
@@ -163,11 +165,13 @@ let dry_cmd cmd =
   | Define def ->
     let m = dry_def def in
     let m' = Desugar.desugar m in
-    trace "Checking...";
-    Check.check_module m';
-    if !Flags.print_sig then begin
-      trace "Signature:";
-      Print.print_module_sig m'
+    if not !Flags.unchecked then begin
+      trace "Checking...";
+      Check.check_module m';
+      if !Flags.print_sig then begin
+        trace "Signature:";
+        Print.print_module_sig m'
+      end
     end;
     current_module := Some m
   | Input file ->

@@ -110,17 +110,6 @@
     (call $dummy3 (i32.const 1) (i32.const 2) (unreachable))
   )
 
-  (import "spectest" "print" (param i32 i32 i32))
-  (func "as-call_import-first"
-    (call_import 0 (unreachable) (i32.const 2) (i32.const 3))
-  )
-  (func "as-call_import-mid"
-    (call_import 0 (i32.const 1) (unreachable) (i32.const 3))
-  )
-  (func "as-call_import-last"
-    (call_import 0 (i32.const 1) (i32.const 2) (unreachable))
-  )
-
   (type $sig (func (param i32 i32 i32)))
   (table anyfunc (elem $dummy3))
   (func "as-call_indirect-func"
@@ -241,10 +230,6 @@
 (assert_trap (invoke "as-call-first") "unreachable")
 (assert_trap (invoke "as-call-mid") "unreachable")
 (assert_trap (invoke "as-call-last") "unreachable")
-
-(assert_trap (invoke "as-call_import-first") "unreachable")
-(assert_trap (invoke "as-call_import-mid") "unreachable")
-(assert_trap (invoke "as-call_import-last") "unreachable")
 
 (assert_trap (invoke "as-call_indirect-func") "unreachable")
 (assert_trap (invoke "as-call_indirect-first") "unreachable")

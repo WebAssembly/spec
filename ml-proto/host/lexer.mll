@@ -155,7 +155,6 @@ rule token = parse
   | "else" { ELSE }
   | "select" { SELECT }
   | "call" { CALL }
-  | "call_import" { CALL_IMPORT }
   | "call_indirect" { CALL_INDIRECT }
 
   | "get_local" { GET_LOCAL }

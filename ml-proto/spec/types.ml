@@ -5,6 +5,12 @@ type elem_type = AnyFuncType
 type expr_type = value_type option
 type func_type = {ins : value_type list; out : expr_type}
 
+type external_type =
+  | ExternalFuncType of func_type
+  | ExternalTableType of elem_type
+  | ExternalMemoryType
+  | ExternalGlobalType of value_type (* TODO: mutability *)
+
 
 (* Attributes *)
 

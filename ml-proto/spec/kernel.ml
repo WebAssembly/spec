@@ -83,7 +83,6 @@ and expr' =
   | If of expr * expr * expr                (* conditional *)
   | Select of expr * expr * expr            (* branchless conditional *)
   | Call of var * expr list                 (* call function *)
-  | CallImport of var * expr list           (* call imported function *)
   | CallIndirect of var * expr * expr list  (* call function through table *)
   | GetLocal of var                         (* read local variable *)
   | SetLocal of var * expr                  (* write local variable *)
@@ -146,6 +145,7 @@ and memory' =
 type 'data segment = 'data segment' Source.phrase
 and 'data segment' =
 {
+  index : var;
   offset : expr;
   init : 'data;
 }
@@ -156,19 +156,30 @@ type memory_segment = string segment
 
 (* Modules *)
 
+type export_kind = export_kind' Source.phrase
+and export_kind' = FuncExport | TableExport | MemoryExport | GlobalExport
+
 type export = export' Source.phrase
 and export' =
 {
   name : string;
-  kind : [`Func of var | `Memory]
+  ekind : export_kind;
+  item : var;
 }
+
+type import_kind = import_kind' Source.phrase
+and import_kind' =
+  | FuncImport of var
+  | TableImport of Table.size limits * elem_type
+  | MemoryImport of Memory.size limits
+  | GlobalImport of value_type (* TODO: mutability *)
 
 type import = import' Source.phrase
 and import' =
 {
-  itype : var;
   module_name : string;
-  func_name : string;
+  item_name : string;
+  ikind : import_kind;
 }
 
 type module_ = module_' Source.phrase
@@ -176,8 +187,8 @@ and module_' =
 {
   types : Types.func_type list;
   globals : global list;
-  table : table option;
-  memory : memory option;
+  tables : table list;
+  memories : memory list;
   funcs : func list;
   start : var option;
   elems : table_segment list;

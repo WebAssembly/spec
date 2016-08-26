@@ -63,14 +63,15 @@ let encode m =
     let vec f xs = vu (List.length xs); list f xs
     let vec1 f xo = bool (xo <> None); opt f xo
 
-    let gap () = let p = pos s in u32 0l; p
+    let gap () = let p = pos s in u32 0l; u8 0; p
     let patch_gap p n =
       assert (n <= 0x0fff_ffff); (* Strings cannot excess 2G anyway *)
       let lsb i = Char.chr (i land 0xff) in
       patch s p (lsb (n lor 0x80));
       patch s (p + 1) (lsb ((n lsr 7) lor 0x80));
       patch s (p + 2) (lsb ((n lsr 14) lor 0x80));
-      patch s (p + 3) (lsb (n lsr 21))
+      patch s (p + 3) (lsb ((n lsr 21) lor 0x80));
+      patch s (p + 4) (lsb (n lsr 28))
 
     (* Types *)
 
@@ -135,7 +136,6 @@ let encode m =
 
       | Ast.Call (x, es) -> nary es 0x16; var x
       | Ast.Call_indirect (x, e, es) -> expr e; nary es 0x17; var x
-      | Ast.Call_import (x, es) -> nary es 0x18; var x
 
       | I32_load8_s (o, a, e) -> unary e 0x20; memop o a
       | I32_load8_u (o, a, e) -> unary e 0x21; memop o a
@@ -311,14 +311,25 @@ let encode m =
         patch_gap g (pos s - p)
       end
 
+    let limits vu lim =
+      let {min; max} = lim.it in
+      bool (max <> None); vu min; opt vu max
+
     (* Type section *)
     let type_section ts =
       section "type" (vec func_type) ts (ts <> [])
 
     (* Import section *)
+    let import_kind k =
+      match k.it with
+      | FuncImport x -> u8 0x00; var x
+      | TableImport (lim, t) -> u8 0x01; elem_type t; limits vu32 lim
+      | MemoryImport lim -> u8 0x02; limits vu32 lim
+      | GlobalImport t -> u8 0x03; value_type t (* TODO: mutability *)
+
     let import imp =
-      let {itype; module_name; func_name} = imp.it in
-      var itype; string module_name; string func_name
+      let {module_name; item_name; ikind} = imp.it in
+      string module_name; string item_name; import_kind ikind
 
     let import_section imps =
       section "import" (vec import) imps (imps <> [])
@@ -330,45 +341,43 @@ let encode m =
       section "function" (vec func) fs (fs <> [])
 
     (* Table section *)
-    let limits vu lim =
-      let {min; max} = lim.it in
-      bool (max <> None); vu min; opt vu max
-
     let table tab =
       let {etype; tlimits} = tab.it in
       elem_type etype;
       limits vu32 tlimits
 
-    let table_section tabo =
-      section "table" (opt table) tabo (tabo <> None)
+    let table_section tabs =
+      section "table" (vec table) tabs (tabs <> [])
 
     (* Memory section *)
     let memory mem =
       let {mlimits} = mem.it in
       limits vu32 mlimits
 
-    let memory_section memo =
-      section "memory" (opt memory) memo (memo <> None)
+    let memory_section mems =
+      section "memory" (vec memory) mems (mems <> [])
 
     (* Global section *)
     let global g =
-      let {gtype = t; value = e} = g.it in
-      value_type t; expr e; op 0x0f
+      let {gtype; value} = g.it in
+      value_type gtype; expr value; op 0x0f
 
     let global_section gs =
       section "global" (vec global) gs (gs <> [])
 
     (* Export section *)
+    let export_kind k =
+      match k.it with
+      | FuncExport -> u8 0
+      | TableExport -> u8 1
+      | MemoryExport -> u8 2
+      | GlobalExport -> u8 3
+
     let export exp =
-      let {Kernel.name; kind} = exp.it in
-      (match kind with
-      | `Func x -> var x
-      | `Memory -> () (*TODO: pending resolution*)
-      ); string name
+      let {name; ekind; item} = exp.it in
+      string name; export_kind ekind; var item
 
     let export_section exps =
-      (*TODO: pending resolution*)
-      let exps = List.filter (fun exp -> exp.it.kind <> `Memory) exps in
       section "export" (vec export) exps (exps <> [])
 
     (* Start section *)
@@ -397,8 +406,8 @@ let encode m =
 
     (* Element section *)
     let segment dat seg =
-      let {offset; init} = seg.it in
-      const offset; dat init
+      let {index; offset; init} = seg.it in
+      var index; const offset; dat init
 
     let table_segment seg =
       segment (vec var) seg
@@ -421,8 +430,8 @@ let encode m =
       type_section m.it.types;
       import_section m.it.imports;
       func_section m.it.funcs;
-      table_section m.it.table;
-      memory_section m.it.memory;
+      table_section m.it.tables;
+      memory_section m.it.memories;
       global_section m.it.globals;
       export_section m.it.exports;
       start_section m.it.start;

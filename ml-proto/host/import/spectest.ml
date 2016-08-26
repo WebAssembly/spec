@@ -10,7 +10,10 @@ let print vs =
   None
 
 
-let lookup name ty =
-  match name, ty.ins, ty.out with
-  | "print", _, None -> print
+open Instance
+
+let lookup name t =
+  match name, t with
+  | "print", ExternalFuncType ({ins = _; out = None} as ft) ->
+    ExternalFunc (HostFunc (ft, print))
   | _ -> raise Not_found

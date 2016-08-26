@@ -38,8 +38,12 @@ let exit vs =
   exit (int (single vs))
 
 
-let lookup name ty =
-  match name, ty.ins, ty.out with
-  | "abort", [], None -> abort
-  | "exit", [Int32Type], None -> exit
+open Instance
+
+let lookup name t =
+  match name, t with
+  | "abort", ExternalFuncType ({ins = []; out = None} as ft) ->
+    ExternalFunc (HostFunc (ft, abort))
+  | "exit", ExternalFuncType ({ins = [Int32Type]; out = None} as ft) ->
+    ExternalFunc (HostFunc (ft, exit))
   | _ -> raise Not_found

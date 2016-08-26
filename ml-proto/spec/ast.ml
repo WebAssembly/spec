@@ -23,7 +23,6 @@ and expr' =
   | If of expr * expr list * expr list
   | Select of expr * expr * expr
   | Call of var * expr list
-  | Call_import of var * expr list
   | Call_indirect of var * expr * expr list
 
   (* Variables *)
@@ -219,6 +218,7 @@ and func' =
 type 'data segment = 'data segment' Source.phrase
 and 'data segment' =
 {
+  index : var;
   offset : expr;
   init : 'data;
 }
@@ -228,8 +228,8 @@ and module' =
 {
   types : Types.func_type list;
   globals : global list;
-  table : Kernel.table option;
-  memory : Kernel.memory option;
+  tables : Kernel.table list;
+  memories : Kernel.memory list;
   funcs : func list;
   start : var option;
   elems : var list segment list;
