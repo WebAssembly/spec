@@ -266,14 +266,14 @@ let limits int lim =
   String.concat " " (int min :: opt int max)
 
 let table off i tab =
-  (* TODO: print index *)
   let {tlimits = lim; etype} = tab.it in
-  Node ("table " ^ limits int32 lim, [atom elem_type etype])
+  Node ("table $" ^ string_of_int (off + i) ^ " " ^ limits int32 lim,
+    [atom elem_type etype]
+  )
 
 let memory off i mem =
-  (* TODO: print index *)
   let {mlimits = lim} = mem.it in
-  Node ("memory " ^ limits int32 lim, [])
+  Node ("memory $" ^ string_of_int (off + i) ^ " " ^ limits int32 lim, [])
 
 let segment head dat seg =
   let {index; offset; init} = seg.it in
@@ -317,10 +317,11 @@ let export_kind k =
 
 let export ex =
   let {name; ekind; item} = ex.it in
-  Node ("export", [atom string name; Node (export_kind ekind, [atom var item])])
+  Node ("export",
+    [atom string name; Node (export_kind ekind, [atom var item])]
+  )
 
 let global off i g =
-  (* TODO: print index *)
   let {gtype; value} = g.it in
   Node ("global $" ^ string_of_int (off + i),
     [atom value_type gtype; expr value]

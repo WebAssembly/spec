@@ -503,7 +503,7 @@ start :
     { fun c -> $3 c func }
 ;
 
-module_fields :  /* TODO: enforce imports before else */
+module_fields :
   | /* empty */
     { fun c ->
       {
@@ -522,15 +522,23 @@ module_fields :  /* TODO: enforce imports before else */
     { fun c -> $1 c; $2 c }
   | global module_fields
     { fun c -> let g = $1 c in let m = $2 c in
+      if m.imports <> [] then
+        error (List.hd m.imports).at "import after global definition";
       {m with globals = g () :: m.globals} }
   | table module_fields
     { fun c -> let m = $2 c in let tab, elems = $1 c in
+      if m.imports <> [] then
+        error (List.hd m.imports).at "import after table definition";
       {m with tables = tab :: m.tables; elems = elems @ m.elems} }
   | memory module_fields
     { fun c -> let m = $2 c in let mem, data = $1 c in
+      if m.imports <> [] then
+        error (List.hd m.imports).at "import after memory definition";
       {m with memories = mem :: m.memories; data = data @ m.data} }
   | func module_fields
     { fun c -> let f = $1 c in let m = $2 c in let func, exs = f () in
+      if m.imports <> [] then
+        error (List.hd m.imports).at "import after function definition";
       {m with funcs = func :: m.funcs; exports = exs @ m.exports} }
   | elem module_fields
     { fun c -> let m = $2 c in
