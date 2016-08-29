@@ -1,17 +1,17 @@
-(module (func) (export "a" 0))
-(module (func) (export "a" 0) (export "b" 0))
-(module (func) (func) (export "a" 0) (export "b" 1))
+(module (func) (export "a" (func 0)))
+(module (func) (export "a" (func 0)) (export "b" (func 0)))
+(module (func) (func) (export "a" (func 0)) (export "b" (func 1)))
 
 (assert_invalid
-  (module (func) (export "a" 1))
+  (module (func) (export "a" (func 1)))
   "unknown function 1"
 )
 (assert_invalid
-  (module (func) (func) (export "a" 0) (export "a" 1))
+  (module (func) (func) (export "a" (func 0)) (export "a" (func 1)))
   "duplicate export name"
 )
 (assert_invalid
-  (module (func) (export "a" 0) (export "a" 0))
+  (module (func) (export "a" (func 0)) (export "a" (func 0)))
   "duplicate export name"
 )
 
@@ -20,11 +20,11 @@
     (return (i32.add (get_local $n) (i32.const 1)))
   )
 
-  (export "e" $f)
+  (export "e" (func $f))
 )
 
 (assert_return (invoke "e" (i32.const 42)) (i32.const 43))
 
-(module (memory 0 0) (export "a" memory))
-(module (memory 0 0) (export "a" memory) (export "b" memory))
-(assert_invalid (module (export "a" memory)) "no memory")
+(module (memory 0 0) (export "a" (memory 0)))
+(module (memory 0 0) (export "a" (memory 0)) (export "b" (memory 0)))
+(assert_invalid (module (export "a" (memory 0))) "unknown memory")

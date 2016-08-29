@@ -225,7 +225,7 @@
     (type (func))
     (func $no-table (call_indirect 0 (i32.const 0)))
   )
-  "no table"
+  "unknown table"
 )
 
 (assert_invalid
@@ -377,12 +377,12 @@
     (table 0 anyfunc)
     (func $unbound-type (call_indirect 1 (i32.const 0)))
   )
-  "unknown function type"
+  "unknown type"
 )
 (assert_invalid
   (module
     (table 0 anyfunc)
     (func $large-type (call_indirect 10001232130000 (i32.const 0)))
   )
-  "unknown function type"
+  "unknown type"
 )

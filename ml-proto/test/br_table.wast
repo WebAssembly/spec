@@ -917,17 +917,6 @@
     (block (call $f (i32.const 1) (i32.const 2) (br_table 0 (i32.const 14) (i32.const 1))))
   )
 
-  (import "spectest" "print" (param i32 i32 i32))
-  (func "as-call_import-first"
-    (block (call_import 0 (br_table 0 (i32.const 1)) (i32.const 2) (i32.const 3)))
-  )
-  (func "as-call_import-mid"
-    (block (call_import 0 (i32.const 1) (br_table 0 (i32.const 1)) (i32.const 3)))
-  )
-  (func "as-call_import-last"
-    (block (call_import 0 (i32.const 1) (i32.const 2) (br_table 0 (i32.const 1))))
-  )
-
   (type $sig (func (param i32 i32 i32) (result i32)))
   (table anyfunc (elem $f))
   (func "as-call_indirect-func" (result i32)
@@ -1208,10 +1197,6 @@
 (assert_return (invoke "as-call-first") (i32.const 12))
 (assert_return (invoke "as-call-mid") (i32.const 13))
 (assert_return (invoke "as-call-last") (i32.const 14))
-
-(assert_return (invoke "as-call_import-first"))
-(assert_return (invoke "as-call_import-mid"))
-(assert_return (invoke "as-call_import-last"))
 
 (assert_return (invoke "as-call_indirect-func") (i32.const 20))
 (assert_return (invoke "as-call_indirect-first") (i32.const 21))
