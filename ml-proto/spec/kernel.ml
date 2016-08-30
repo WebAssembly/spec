@@ -122,13 +122,6 @@ and func' =
 
 (* Tables & Memories *)
 
-type 'size limits = 'size limits' Source.phrase
-and 'size limits' =
-{
-  min : 'size;
-  max : 'size option;
-}
-
 type table = table' Source.phrase
 and table' =
 {

@@ -13,6 +13,7 @@ and command' =
   | Define of definition
   | Invoke of string * Kernel.literal list
   | AssertInvalid of definition * string
+  | AssertUnlinkable of definition * string
   | AssertReturn of string * Kernel.literal list * Kernel.literal option
   | AssertReturnNaN of string * Kernel.literal list
   | AssertTrap of string * Kernel.literal list * string
@@ -71,9 +72,9 @@ let run_cmd cmd =
         Print.print_module_sig m'
       end
     end;
-    current_module := Some m;
     trace "Initializing...";
     let imports = Import.link m' in
+    current_module := Some m;
     current_instance := Some (Eval.init m' imports)
 
   | Invoke (name, es) ->
@@ -97,6 +98,25 @@ let run_cmd cmd =
       end
     | _ ->
       Assert.error cmd.at "expected validation error"
+    )
+
+  | AssertUnlinkable (def, re) ->
+    trace "Asserting unlinkable...";
+    let m = run_def def in
+    let m' = Desugar.desugar m in
+    if not !Flags.unchecked then Check.check_module m';
+    (match
+      let imports = Import.link m' in
+      ignore (Eval.init m' imports)
+    with
+    | exception (Import.Unknown (_, msg) | Eval.Link (_, msg)) ->
+      if not (Str.string_match (Str.regexp re) msg 0) then begin
+        print_endline ("Result: \"" ^ msg ^ "\"");
+        print_endline ("Expect: \"" ^ re ^ "\"");
+        Assert.error cmd.at "wrong linking error"
+      end
+    | _ ->
+      Assert.error cmd.at "expected linking error"
     )
 
   | AssertReturn (name, es, expect_e) ->
@@ -185,6 +205,7 @@ let dry_cmd cmd =
     with Sys_error msg -> IO.error cmd.at msg)
   | Invoke _
   | AssertInvalid _
+  | AssertUnlinkable _
   | AssertReturn _
   | AssertReturnNaN _
   | AssertTrap _ -> ()

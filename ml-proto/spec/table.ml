@@ -6,6 +6,7 @@ type index = int32
 
 type elem = int option
 type elem_type = Types.elem_type
+type 'a limits = 'a Types.limits
 
 type table' = elem array
 type table = {mutable content : table'; max : size option}
@@ -41,12 +42,15 @@ let within_limits size = function
 let create' size =
   Array.make (host_size_of_int32 size) None
 
-let create size max =
-  assert (within_limits size max);
-  {content = create' size; max}
+let create {min; max} =
+  assert (within_limits min max);
+  {content = create' min; max}
 
 let size tab =
   int32_of_host_size (Array.length tab.content)
+
+let limits tab =
+  {min = size tab; max = tab.max}
 
 let grow tab delta =
   let old_size = size tab in

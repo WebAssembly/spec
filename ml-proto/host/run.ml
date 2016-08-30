@@ -30,6 +30,7 @@ let run_from get_script =
   | Parse.Syntax (at, msg) -> error at "syntax error" msg
   | Script.Assert (at, msg) -> error at "assertion failure" msg
   | Check.Invalid (at, msg) -> error at "invalid module" msg
+  | Eval.Link (at, msg) -> error at "linking failure" ("link failure: " ^ msg)
   | Eval.Trap (at, msg) -> error at "runtime trap" ("trap: " ^ msg)
   | Eval.Crash (at, msg) -> error at "runtime crash" ("crash: " ^ msg)
   | Import.Unknown (at, msg) -> error at "unknown import" msg

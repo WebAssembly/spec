@@ -12,7 +12,7 @@ and extern =
   | ExternalFunc of func
   | ExternalTable of Table.t
   | ExternalMemory of Memory.t
-  | ExternalGlobal of global
+  | ExternalGlobal of value
 
 and instance =
 {

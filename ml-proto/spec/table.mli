@@ -6,13 +6,15 @@ type index = int32
 
 type elem = int option
 type elem_type = Types.elem_type
+type 'a limits = 'a Types.limits
 
 exception Bounds
 exception SizeOverflow
 exception SizeLimit
 
-val create : size -> size option -> table
+val create : size limits -> table
 val size : table -> size
+val limits : table -> size limits
 val grow : table -> size -> unit
 
 val load : table -> index -> elem_type -> elem

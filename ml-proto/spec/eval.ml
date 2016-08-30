@@ -7,9 +7,11 @@ open Source
 
 (* Errors *)
 
+module Link = Error.Make ()
 module Trap = Error.Make ()
 module Crash = Error.Make ()
 
+exception Link = Link.Error
 exception Trap = Trap.Error
 exception Crash = Crash.Error
   (* A crash is an execution failure that cannot legally happen in checked
@@ -23,7 +25,7 @@ let memory_error at = function
 let type_error at v t =
   Crash.error at
     ("type error, expected " ^ Types.string_of_value_type t ^
-      ", got " ^ Types.string_of_value_type (type_of v))
+     ", got " ^ Types.string_of_value_type (type_of v))
 
 let arithmetic_error at at_op1 at_op2 = function
   | Arithmetic.TypeError (i, v, t) ->
@@ -54,7 +56,7 @@ let lookup category list x =
   try List.nth list x.it with Failure _ ->
     Crash.error x.at ("undefined " ^ category ^ " " ^ string_of_int x.it)
 
-let type_ c x = lookup "type" c.instance.module_.it.types x
+let type_ inst x = lookup "type" inst.module_.it.types x
 let func c x = lookup "function" c.instance.funcs x
 let table c x = lookup "table" c.instance.tables x
 let memory c x = lookup "memory" c.instance.memories x
@@ -70,7 +72,7 @@ let elem c x i t at =
   match Table.load (table c x) i t with
   | Some j -> j
   | None ->
-    Trap.error at ("undefined element " ^ Int32.to_string i)
+    Trap.error at ("uninitialized element " ^ Int32.to_string i)
   | exception Table.Bounds ->
     Trap.error at ("undefined element " ^ Int32.to_string i)
 
@@ -175,7 +177,7 @@ let rec eval_expr (c : config) (e : expr) : value option =
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     let f = func c (elem c (0 @@ e.at) i AnyFuncType e1.at @@ e1.at) in
-    if type_ c x <> func_type_of f then
+    if type_ c.instance x <> func_type_of f then
       Trap.error e1.at "indirect call signature mismatch";
     eval_func f vs e.at
 
@@ -309,11 +311,11 @@ let create_func m f =
 
 let create_table tab =
   let {tlimits = lim; _} = tab.it in
-  Table.create lim.it.min lim.it.max
+  Table.create lim
 
 let create_memory mem =
   let {mlimits = lim} = mem.it in
-  Memory.create lim.it.min lim.it.max
+  Memory.create lim
 
 let create_global glob =
   let {gtype = t; _} = glob.it in
@@ -340,13 +342,34 @@ let init_global c ref glob =
   let {value = e; _} = glob.it in
   ref := some (eval_expr c e) e.at
 
+let check_limits actual expected at =
+  if I32.lt_u actual.min expected.min then
+    Link.error at "actual size smaller than declared";
+  if
+    match actual.max, expected.max with
+    | _, None -> false
+    | None, Some _ -> true
+    | Some i, Some j -> I32.gt_u i j
+  then Link.error at "maximum size larger than declared"
+
 let add_import (ext : extern) (imp : import) (inst : instance) : instance =
   match ext, imp.it.ikind.it with
-  | ExternalFunc f, FuncImport x -> {inst with funcs = f :: inst.funcs}
-  | ExternalTable t, TableImport _ -> {inst with tables = t :: inst.tables}
-  | ExternalMemory m, MemoryImport _ -> {inst with memories = m :: inst.memories}
-  | ExternalGlobal g, GlobalImport _ -> {inst with globals = g :: inst.globals}
-  | _ -> assert false  (* TODO: better exception? *)
+  | ExternalFunc f, FuncImport x ->
+    if func_type_of f <> type_ inst x then
+      Link.error imp.it.ikind.at "type mismatch";
+    {inst with funcs = f :: inst.funcs}
+  | ExternalTable t, TableImport (lim, _) ->
+    (* TODO: no checking of element type? *)
+    check_limits (Table.limits t) lim imp.it.ikind.at;
+    {inst with tables = t :: inst.tables}
+  | ExternalMemory m, MemoryImport lim ->
+    check_limits (Memory.limits m) lim imp.it.ikind.at;
+    {inst with memories = m :: inst.memories}
+  | ExternalGlobal g, GlobalImport _ ->
+    (* TODO: no checking of value type? *)
+    {inst with globals = ref g :: inst.globals}
+  | _ ->
+    Link.error imp.it.ikind.at "type mismatch"
 
 let add_export c ex map =
   let {name; ekind; item} = ex.it in
@@ -355,7 +378,7 @@ let add_export c ex map =
     | FuncExport -> ExternalFunc (func c item)
     | TableExport -> ExternalTable (table c item)
     | MemoryExport -> ExternalMemory (memory c item)
-    | GlobalExport -> ExternalGlobal (global c item)
+    | GlobalExport -> ExternalGlobal !(global c item)
   in ExportMap.add name ext map
 
 let init m externals =
@@ -365,20 +388,21 @@ let init m externals =
   in
   assert (List.length externals = List.length imports);  (* TODO: better exception? *)
   let fs = List.map (create_func m) funcs in
+  let gs = List.map create_global globals in
   let inst =
     List.fold_right2 add_import externals imports
       { (instance m) with
         funcs = fs;
         tables = List.map create_table tables;
         memories = List.map create_memory memories;
-        globals = List.map create_global globals;
+        globals = gs;
       }
   in
   let c = empty_config inst in
   List.iter (init_func c) fs;
   List.iter (init_table c) elems;
   List.iter (init_memory c) data;
-  List.iter2 (init_global c) inst.globals globals;
+  List.iter2 (init_global c) gs globals;
   Lib.Option.app (fun x -> ignore (eval_func (func c x) [] x.at)) start;
   {inst with exports = List.fold_right (add_export c) exports inst.exports}
 

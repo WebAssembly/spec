@@ -91,6 +91,10 @@ let encode m =
     let func_type = function
       | {ins; out} -> u8 0x40; vec value_type ins; expr_type out
 
+    let limits vu {min; max} =
+      bool (max <> None); vu min; opt vu max
+
+
     (* Expressions *)
 
     open Source
@@ -310,10 +314,6 @@ let encode m =
         f x;
         patch_gap g (pos s - p)
       end
-
-    let limits vu lim =
-      let {min; max} = lim.it in
-      bool (max <> None); vu min; opt vu max
 
     (* Type section *)
     let type_section ts =

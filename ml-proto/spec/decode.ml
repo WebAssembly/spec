@@ -134,6 +134,12 @@ let func_type s =
   let out = expr_type s in
   {ins; out}
 
+let limits vu s =
+  let has_max = bool s in
+  let min = vu s in
+  let max = opt vu has_max s in
+  {min; max}
+
 
 (* Decode expressions *)
 
@@ -485,12 +491,6 @@ let type_section s =
 
 (* Import section *)
 
-let limits vu s =
-  let has_max = bool s in
-  let min = vu s in
-  let max = opt vu has_max s in
-  {min; max}
-
 let import_kind s =
   match u8 s with
   | 0x00 ->
@@ -498,10 +498,10 @@ let import_kind s =
     FuncImport x
   | 0x01 ->
     let t = elem_type s in
-    let lim = at (limits vu32) s in
+    let lim = limits vu32 s in
     TableImport (lim, t)
   | 0x02 ->
-    let lim = at (limits vu32) s in
+    let lim = limits vu32 s in
     MemoryImport lim
   | 0x03 ->
     let t = value_type s in
@@ -528,7 +528,7 @@ let func_section s =
 
 let table s =
   let t = elem_type s in
-  let lim = at (limits vu32) s in
+  let lim = limits vu32 s in
   {etype = t; tlimits = lim}
 
 let table_section s =
@@ -538,7 +538,7 @@ let table_section s =
 (* Memory section *)
 
 let memory s =
-  let lim = at (limits vu32) s in
+  let lim = limits vu32 s in
   {mlimits = lim}
 
 let memory_section s =

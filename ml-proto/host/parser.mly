@@ -151,7 +151,8 @@ let inline_type c t at =
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token MODULE TABLE ELEM MEMORY DATA IMPORT EXPORT TABLE
-%token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
+%token ASSERT_INVALID ASSERT_UNLINKABLE
+%token ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
 %token INPUT OUTPUT
 %token EOF
 
@@ -213,6 +214,12 @@ func_type :
 
 type_use :
   | LPAR TYPE var RPAR { $3 }
+;
+
+limits :
+  | NAT { {min = int32 $1 (ati 1); max = None} }
+  | NAT NAT
+    { {min = int32 $1 (ati 1); max = Some (int32 $2 (ati 2))} }
 ;
 
 
@@ -378,12 +385,6 @@ func :
 
 /* Tables & Memories */
 
-limits :
-  | NAT { {min = int32 $1 (ati 1); max = None} @@ at () }
-  | NAT NAT
-    { {min = int32 $1 (ati 1); max = Some (int32 $2 (ati 2))} @@ at () }
-;
-
 elem :
   | LPAR ELEM var expr var_list RPAR
     { let at = at () in
@@ -402,7 +403,7 @@ table :
     { let at = at () in
       fun c -> $3 c anon_table bind_table;
       let init = $8 c func in let size = Int32.of_int (List.length init) in
-      {tlimits = {min = size; max = Some size} @@ at; etype = $5} @@ at,
+      {tlimits = {min = size; max = Some size}; etype = $5} @@ at,
       [{index = c.tables.count - 1 @@ at; offset = I32_const (0l @@ at) @@ at; init} @@ at],
       $4 TableExport c.tables.count c }
 ;
@@ -424,7 +425,7 @@ memory :
     { let at = at () in
       fun c -> $3 c anon_memory bind_memory;
       let size = Int32.(div (add (of_int (String.length $7)) 65535l) 65536l) in
-      {mlimits = {min = size; max = Some size} @@ at} @@ at,
+      {mlimits = {min = size; max = Some size}} @@ at,
       [{index = c.memories.count - 1 @@ at; offset = I32_const (0l @@ at) @@ at; init = $7} @@ at],
       $4 MemoryExport c.memories.count c }
   /* Need to duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
@@ -432,7 +433,7 @@ memory :
     { let at = at () in
       fun c -> $3 c anon_memory bind_memory;
       let size = Int32.(div (add (of_int (String.length $6)) 65535l) 65536l) in
-      {mlimits = {min = size; max = Some size} @@ at} @@ at,
+      {mlimits = {min = size; max = Some size}} @@ at,
       [{index = c.memories.count - 1 @@ at; offset = I32_const (0l @@ at) @@ at; init = $6} @@ at],
       [] }
 ;
@@ -598,6 +599,7 @@ cmd :
   | module_ { Define $1 @@ at () }
   | LPAR INVOKE TEXT const_list RPAR { Invoke ($3, $4) @@ at () }
   | LPAR ASSERT_INVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at () }
+  | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR { AssertUnlinkable ($3, $4) @@ at () }
   | LPAR ASSERT_RETURN LPAR INVOKE TEXT const_list RPAR const_opt RPAR
     { AssertReturn ($5, $6, $8) @@ at () }
   | LPAR ASSERT_RETURN_NAN LPAR INVOKE TEXT const_list RPAR RPAR

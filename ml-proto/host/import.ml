@@ -14,8 +14,8 @@ let register name lookup = registry := Registry.add name lookup !registry
 let external_type_of_import_kind m ikind =
   match ikind.it with
   | FuncImport x -> ExternalFuncType (List.nth m.it.types x.it)
-  | TableImport (_, t) -> ExternalTableType t
-  | MemoryImport _ -> ExternalMemoryType
+  | TableImport (lim, t) -> ExternalTableType (lim, t)
+  | MemoryImport lim -> ExternalMemoryType lim
   | GlobalImport t -> ExternalGlobalType t
 
 let lookup (m : module_) (imp : import) : Instance.extern =
@@ -23,6 +23,6 @@ let lookup (m : module_) (imp : import) : Instance.extern =
   let ty = external_type_of_import_kind m ikind in
   try Registry.find module_name !registry item_name ty with Not_found ->
     Unknown.error imp.at
-      ("no item \"" ^ module_name ^ "." ^ item_name ^ "\" of requested kind")
+      ("unknown import \"" ^ module_name ^ "." ^ item_name ^ "\"")
 
 let link m = List.map (lookup m) m.it.imports

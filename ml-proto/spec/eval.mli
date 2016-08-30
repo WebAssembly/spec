@@ -1,6 +1,7 @@
 open Values
 open Instance
 
+exception Link of Source.region * string
 exception Trap of Source.region * string
 exception Crash of Source.region * string
 

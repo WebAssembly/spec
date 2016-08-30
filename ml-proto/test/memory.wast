@@ -41,11 +41,11 @@
 )
 (assert_invalid
   (module (memory 0 0) (data (i32.const 0) "a"))
-  "data segment does not fit memory"
+  "data segment does not fit"
 )
 (assert_invalid
   (module (memory 1 2) (data (i32.const 0) "a") (data (i32.const 98304) "b"))
-  "data segment does not fit memory"
+  "data segment does not fit"
 )
 (assert_invalid
   (module (memory 1 2) (data (i32.const 0) "abc") (data (i32.const 0) "def"))

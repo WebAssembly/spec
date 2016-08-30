@@ -5,10 +5,11 @@ type elem_type = AnyFuncType
 type expr_type = value_type option
 type func_type = {ins : value_type list; out : expr_type}
 
+type 'a limits = {min : 'a; max : 'a option}
 type external_type =
   | ExternalFuncType of func_type
-  | ExternalTableType of elem_type
-  | ExternalMemoryType
+  | ExternalTableType of Int32.t limits * elem_type
+  | ExternalMemoryType of Int32.t limits
   | ExternalGlobalType of value_type (* TODO: mutability *)
 
 

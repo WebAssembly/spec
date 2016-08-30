@@ -13,7 +13,7 @@ let error msg = raise (Eval.Crash (Source.no_region, msg))
 let type_error v t =
   error
     ("type error, expected " ^ string_of_value_type t ^
-    ", got " ^ string_of_value_type (type_of v))
+     ", got " ^ string_of_value_type (type_of v))
 
 let empty = function
   | [] -> ()
@@ -41,9 +41,7 @@ let exit vs =
 open Instance
 
 let lookup name t =
-  match name, t with
-  | "abort", ExternalFuncType ({ins = []; out = None} as ft) ->
-    ExternalFunc (HostFunc (ft, abort))
-  | "exit", ExternalFuncType ({ins = [Int32Type]; out = None} as ft) ->
-    ExternalFunc (HostFunc (ft, exit))
+  match name with
+  | "abort" -> ExternalFunc (HostFunc ({ins = []; out = None}, abort))
+  | "exit" -> ExternalFunc (HostFunc ({ins = [Int32Type]; out = None}, exit))
   | _ -> raise Not_found

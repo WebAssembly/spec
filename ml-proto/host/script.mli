@@ -8,6 +8,7 @@ and command' =
   | Define of definition
   | Invoke of string * Kernel.literal list
   | AssertInvalid of definition * string
+  | AssertUnlinkable of definition * string
   | AssertReturn of string * Kernel.literal list * Kernel.literal option
   | AssertReturnNaN of string * Kernel.literal list
   | AssertTrap of string * Kernel.literal list * string

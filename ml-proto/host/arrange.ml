@@ -53,6 +53,9 @@ let func_type {ins; out} =
 
 let struct_type = func_type
 
+let limits int {min; max} =
+  String.concat " " (int min :: opt int max)
+
 
 (* Operators *)
 
@@ -260,10 +263,6 @@ let table xs = tab "table" (atom var) xs
 
 
 (* Tables & memories *)
-
-let limits int lim =
-  let {min; max} = lim.it in
-  String.concat " " (int min :: opt int max)
 
 let table off i tab =
   let {tlimits = lim; etype} = tab.it in
