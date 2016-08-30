@@ -118,10 +118,10 @@ cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 expr:
   ( nop )
   ( block <name>? <expr>* )
-  ( loop <name1>? <name2>? <expr>* )          ;; = (block <name1>? (loop <name2>? (block <expr>*)))
+  ( loop <name>? <name>? <expr>* )          ;; = (block <name>? (loop <name>? (block <expr>*)))
   ( select <expr> <expr> <expr> )
   ( if <expr> ( then <name>? <expr>* ) ( else <name>? <expr>* )? )
-  ( if <expr1> <expr2> <expr3>? )             ;; = (if <expr1> (then <expr2>) (else <expr3>?))
+  ( if <expr> <expr> <expr>? )             ;; = (if <expr> (then <expr>) (else <expr>?))
   ( br <var> <expr>? )
   ( br_if <var> <expr>? <expr> )
   ( br_table <var> <var> <expr>? <expr> )
@@ -142,24 +142,49 @@ expr:
   ( current_memory )
   ( grow_memory <expr> )
 
-func:   ( func <name>? <sig> <local>* <expr>* )
-        ( func <string> <name>? <sig> <local>* <expr>* )  ;; = (export <string> <N>) (func <name>? <sig> <local>* <expr>*)
-sig:    ( type <var> ) | <param>* <result>?
-param:  ( param <type>* ) | ( param <name> <type> )
-result: ( result <type> )
-local:  ( local <type>* ) | ( local <name> <type> )
+func:    ( func <name>? <func_sig> <local>* <expr>* )
+         ( func <name>? (export <string>) <func_sig> <local>* <expr>* )  ;; = (export <string> (func <N>) (func <name>? <func_sig> <local>* <expr>*)
+         ( func <name>? (import <string> <string>) <func_sig>)      ;; = (import <name>? <string> <string> (func <func_sig>))
+param:   ( param <type>* ) | ( param <name> <type> )
+result:  ( result <type> )
+local:   ( local <type>* ) | ( local <name> <type> )
 
-module:  ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <elem>* <data>* <start>? ) | (module <string>+)
-typedef: ( type <name>? ( func <param>* <result>? ) )
-import:  ( import <name>? <string> <string> <sig> )
-export:  ( export <string> <var> ) | ( export <string> memory)
-start:   ( start <var> )
-table:   ( table <nat> <nat>? <elem_type> )
-         ( table <elem_type> ( elem <var>* ) )  ;; = (table <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
+func_sig:   ( type <var> ) | <param>* <result>?
+global_sig: <type>
+table_sig:  <nat> <nat>? <elem_type>
+memory_sig: <nat> <nat>?
+
+global:  ( global <name>? <global_sig> )
+         ( global <name>? ( export <string> ) <global_sig> )          ;; = (export <string> (global <N>)) (global <name>? <global_sig>)
+         ( global <name>? ( import <string> <string> ) <global_sig> ) ;; = (import <name>? <string> <string> (global <global_sig>))
+table:   ( table <name>? <table_sig> )
+         ( table <name>? ( export <string> ) <table_sig> )            ;; = (export <string> (table <N>)) (table <name>? <table_sig>)
+         ( table <name>? ( import <string> <string> ) <table_sig> )   ;; = (import <name>? <string> <string> (table <table_sig>))
+         ( table <name>? <elem_type> ( elem <var>* ) )                ;; = (table <name>? <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
 elem:    ( elem <expr> <var>* )
-memory:  ( memory <nat> <nat>? )
-         ( memory ( data <string>* ) )          ;; = (memory <size> <size>) (data (i32.const 0) <string>*)
+memory:  ( memory <name>? <memory_sig> )
+         ( memory <name>? ( export <string> ) <memory_sig> )          ;; = (export <string> (memory <N>)) (memory <name>? <memory_sig>)
+         ( memory <name>? ( import <string> <string> ) <memory_sig> ) ;; = (import <name>? <string> <string> (memory <memory_sig>))
+         ( memory <name>? ( data <string>* ) )                        ;; = (memory <name>? <size> <size>) (data (i32.const 0) <string>*)
 data:    ( data <expr> <string>* )
+
+start:   ( start <var> )
+
+typedef: ( type <name>? ( func <funcsig> ) )
+
+import:  ( import <name>? <string> <string> <imkind> )
+imkind:  ( func <func_sig> )
+         ( global <global_sig> )
+         ( table <table_sig> )
+         ( memory <memory_sig> )
+export:  ( export <string> <exkind> )
+exkind:  ( func <var> )
+         ( global <var> )
+         ( table <var> )
+         ( memory <var> )
+
+module:  ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <elem>* <data>* <start>? )
+         ( module <string>+ )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).
