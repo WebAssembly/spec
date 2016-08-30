@@ -4,8 +4,8 @@
 (module (func) (export "a" (func 0)) (export "b" (func 0)))
 (module (func) (func) (export "a" (func 0)) (export "b" (func 1)))
 
-(module (func "a"))
-(module (func "a" $a))
+(module (func (export "a")))
+(module (func $a (export "a")))
 
 (assert_invalid
   (module (func) (export "a" (func 1)))
@@ -49,8 +49,8 @@
 (module (global i32 (i32.const 0)) (export "a" (global 0)) (export "b" (global 0)))
 (module (global i32 (i32.const 0)) (global i32 (i32.const 0)) (export "a" (global 0)) (export "b" (global 1)))
 
-(module (global "a" i32 (i32.const 0)))
-(module (global "a" $a i32 (i32.const 0)))
+(module (global (export "a") i32 (i32.const 0)))
+(module (global $a (export "a") i32 (i32.const 0)))
 
 (assert_invalid
   (module (global i32 (i32.const 0)) (export "a" (global 1)))
@@ -87,10 +87,10 @@
 ;; No multiple tables yet.
 ;; (module (table 0 anyfunc) (table 0 anyfunc) (export "a" (table 0)) (export "b" (table 1)))
 
-(module (table "a" 0 anyfunc))
-(module (table "a" 0 1 anyfunc))
-(module (table "a" $a 0 anyfunc))
-(module (table "a" $a 0 1 anyfunc))
+(module (table (export "a") 0 anyfunc))
+(module (table (export "a") 0 1 anyfunc))
+(module (table $a (export "a") 0 anyfunc))
+(module (table $a (export "a") 0 1 anyfunc))
 
 (assert_invalid
   (module (table 0 anyfunc) (export "a" (table 1)))
@@ -128,10 +128,10 @@
 ;; No multiple memories yet.
 ;; (module (memory 0) (memory 0) (export "a" (memory 0)) (export "b" (memory 1)))
 
-(module (memory "a" 0))
-(module (memory "a" 0 1))
-(module (memory "a" $a 0))
-(module (memory "a" $a 0 1))
+(module (memory (export "a") 0))
+(module (memory (export "a") 0 1))
+(module (memory $a (export "a") 0))
+(module (memory $a (export "a") 0 1))
 
 (assert_invalid
   (module (memory 0) (export "a" (memory 1)))

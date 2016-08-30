@@ -76,15 +76,13 @@
 (assert_return (invoke "get") (i32.const 70))
 
 (module
- (import $print_i32 "spectest" "print" (func (param i32)))
- (func $main
-   (call $print_i32 (i32.const 1)))
- (start 1)
+  (func $print_i32 (import "spectest" "print") (param i32))
+  (func $main (call $print_i32 (i32.const 1)))
+  (start 1)
 )
 
 (module
- (import $print_i32 "spectest" "print" (func (param i32)))
- (func $main
-   (call $print_i32 (i32.const 2)))
- (start $main)
+  (func $print_i32 (import "spectest" "print") (param i32))
+  (func $main (call $print_i32 (i32.const 2)))
+  (start $main)
 )

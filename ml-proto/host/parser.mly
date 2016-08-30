@@ -347,18 +347,32 @@ func_body :
         {f with locals = $4 :: f.locals} }
 ;
 func :
-  | LPAR FUNC export_name_opt bind_var_opt type_use func_fields RPAR
+  | LPAR FUNC bind_var_opt inline_export type_use func_fields RPAR
     { let at = at () in
-      fun c -> $4 c anon_func bind_func;
+      fun c -> $3 c anon_func bind_func;
       let t = explicit_sig c $5 (fst $6) at in
       (fun () -> {(snd $6 (enter_func c)) with ftype = t} @@ at),
-      $3 FuncExport c.funcs.count c }
-  | LPAR FUNC export_name_opt bind_var_opt func_fields RPAR  /* Sugar */
+      $4 FuncExport c.funcs.count c }
+  /* Need to duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
+  | LPAR FUNC bind_var_opt type_use func_fields RPAR
     { let at = at () in
-      fun c -> $4 c anon_func bind_func;
+      fun c -> $3 c anon_func bind_func;
+      let t = explicit_sig c $4 (fst $5) at in
+      (fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at),
+      [] }
+  | LPAR FUNC bind_var_opt inline_export func_fields RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_func bind_func;
       let t = inline_type c (fst $5) at in
       (fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at),
-      $3 FuncExport c.funcs.count c }
+      $4 FuncExport c.funcs.count c }
+  /* Need to duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
+  | LPAR FUNC bind_var_opt func_fields RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_func bind_func;
+      let t = inline_type c (fst $4) at in
+      (fun () -> {(snd $4 (enter_func c)) with ftype = t} @@ at),
+      [] }
 ;
 
 
@@ -380,17 +394,17 @@ elem :
 ;
 
 table :
-  | LPAR TABLE export_name_opt bind_var_opt limits elem_type RPAR
+  | LPAR TABLE bind_var_opt inline_export_opt limits elem_type RPAR
     { let at = at () in
-      fun c -> $4 c anon_table bind_table;
-      {tlimits = $5; etype = $6} @@ at, [], $3 TableExport c.tables.count c }
-  | LPAR TABLE export_name_opt bind_var_opt elem_type LPAR ELEM var_list RPAR RPAR  /* Sugar */
+      fun c -> $3 c anon_table bind_table;
+      {tlimits = $5; etype = $6} @@ at, [], $4 TableExport c.tables.count c }
+  | LPAR TABLE bind_var_opt inline_export_opt elem_type LPAR ELEM var_list RPAR RPAR  /* Sugar */
     { let at = at () in
-      fun c -> $4 c anon_table bind_table;
+      fun c -> $3 c anon_table bind_table;
       let init = $8 c func in let size = Int32.of_int (List.length init) in
       {tlimits = {min = size; max = Some size} @@ at; etype = $5} @@ at,
       [{index = c.tables.count - 1 @@ at; offset = I32_const (0l @@ at) @@ at; init} @@ at],
-      $3 TableExport c.tables.count c }
+      $4 TableExport c.tables.count c }
 ;
 
 data :
@@ -403,16 +417,24 @@ data :
 ;
 
 memory :
-  | LPAR MEMORY export_name_opt bind_var_opt limits RPAR
-    { fun c -> $4 c anon_memory bind_memory;
-      {mlimits = $5} @@ at (), [], $3 MemoryExport c.memories.count c }
-  | LPAR MEMORY export_name_opt bind_var_opt LPAR DATA text_list RPAR RPAR  /* Sugar */
+  | LPAR MEMORY bind_var_opt inline_export_opt limits RPAR
+    { fun c -> $3 c anon_memory bind_memory;
+      {mlimits = $5} @@ at (), [], $4 MemoryExport c.memories.count c }
+  | LPAR MEMORY bind_var_opt inline_export LPAR DATA text_list RPAR RPAR  /* Sugar */
     { let at = at () in
-      fun c -> $4 c anon_memory bind_memory;
+      fun c -> $3 c anon_memory bind_memory;
       let size = Int32.(div (add (of_int (String.length $7)) 65535l) 65536l) in
       {mlimits = {min = size; max = Some size} @@ at} @@ at,
       [{index = c.memories.count - 1 @@ at; offset = I32_const (0l @@ at) @@ at; init = $7} @@ at],
-      $3 MemoryExport c.memories.count c }
+      $4 MemoryExport c.memories.count c }
+  /* Need to duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
+  | LPAR MEMORY bind_var_opt LPAR DATA text_list RPAR RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_memory bind_memory;
+      let size = Int32.(div (add (of_int (String.length $6)) 65535l) 65536l) in
+      {mlimits = {min = size; max = Some size} @@ at} @@ at,
+      [{index = c.memories.count - 1 @@ at; offset = I32_const (0l @@ at) @@ at; init = $6} @@ at],
+      [] }
 ;
 
 
@@ -436,6 +458,30 @@ import :
     { let at = at () and at6 = ati 6 in
       fun c -> let bind, anon, k = $6 c in
       $3 c anon bind; {module_name = $4; item_name = $5; ikind = k @@ at6} @@ at }
+  | LPAR FUNC bind_var_opt inline_import type_use RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_func bind_func;
+      {module_name = fst $4; item_name = snd $4; ikind = FuncImport ($5 c type_) @@ at} @@ at }
+  | LPAR FUNC bind_var_opt inline_import func_type RPAR  /* Sugar */
+    { let at = at () and at5 = ati 5 in
+      fun c -> $3 c anon_func bind_func;
+      {module_name = fst $4; item_name = snd $4; ikind = FuncImport (inline_type c $5 at5) @@ at} @@ at }
+  | LPAR TABLE bind_var_opt inline_import limits elem_type RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_table bind_table;
+      {module_name = fst $4; item_name = snd $4; ikind = TableImport ($5, $6) @@ at} @@ at }
+  | LPAR MEMORY bind_var_opt inline_import limits RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_memory bind_memory;
+      {module_name = fst $4; item_name = snd $4; ikind = MemoryImport $5 @@ at} @@ at }
+  | LPAR GLOBAL bind_var_opt inline_import VALUE_TYPE RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_global bind_global;
+      {module_name = fst $4; item_name = snd $4; ikind = GlobalImport $5 @@ at} @@ at }
+;
+
+inline_import :
+  | LPAR IMPORT TEXT TEXT RPAR { $3, $4 }
 ;
 
 export_kind :
@@ -451,11 +497,14 @@ export :
       {name = $3; ekind = k @@ at4; item = x} @@ at }
 ;
 
-export_name_opt :
+inline_export_opt :
   | /* empty */ { fun k count c -> [] }
-  | TEXT
+  | inline_export { $1 }
+;
+inline_export :
+  | LPAR EXPORT TEXT RPAR
     { let at = at () in
-      fun k count c -> [{name = $1; ekind = k @@ at; item = count - 1 @@ at} @@ at] }
+      fun k count c -> [{name = $3; ekind = k @@ at; item = count - 1 @@ at} @@ at] }
 ;
 
 
@@ -469,11 +518,11 @@ type_def :
 ;
 
 global :
-  | LPAR GLOBAL export_name_opt bind_var_opt VALUE_TYPE expr RPAR
+  | LPAR GLOBAL bind_var_opt inline_export_opt VALUE_TYPE expr RPAR
     { let at = at () in
-      fun c -> $4 c anon_global bind_global;
+      fun c -> $3 c anon_global bind_global;
       (fun () -> {gtype = $5; value = $6 c} @@ at),
-      $3 GlobalExport c.globals.count c }
+      $4 GlobalExport c.globals.count c }
 ;
 
 start :

@@ -3,26 +3,26 @@
 (module
   (func $dummy)
 
-  (func "empty"
+  (func (export "empty")
     (loop)
     (loop $l)
   )
 
-  (func "singular" (result i32)
+  (func (export "singular") (result i32)
     (loop (nop))
     (loop (i32.const 7))
   )
 
-  (func "multi" (result i32)
+  (func (export "multi") (result i32)
     (loop (call $dummy) (call $dummy) (call $dummy) (call $dummy))
     (loop (call $dummy) (call $dummy) (call $dummy) (i32.const 8))
   )
 
-  (func "nested" (result i32)
+  (func (export "nested") (result i32)
     (loop (loop (call $dummy) (block) (nop)) (loop (call $dummy) (i32.const 9)))
   )
 
-  (func "deep" (result i32)
+  (func (export "deep") (result i32)
     (loop (block (loop (block (loop (block (loop (block (loop (block
       (loop (block (loop (block (loop (block (loop (block (loop (block
         (loop (block (loop (block (loop (block (loop (block (loop (block
@@ -34,30 +34,30 @@
     ))))))))))
   )
 
-  (func "as-unary-operand" (result i32)
+  (func (export "as-unary-operand") (result i32)
     (i32.ctz (loop (call $dummy) (i32.const 13)))
   )
-  (func "as-binary-operand" (result i32)
+  (func (export "as-binary-operand") (result i32)
     (i32.mul (loop (call $dummy) (i32.const 3)) (loop (call $dummy) (i32.const 4)))
   )
-  (func "as-test-operand" (result i32)
+  (func (export "as-test-operand") (result i32)
     (i32.eqz (loop (call $dummy) (i32.const 13)))
   )
-  (func "as-compare-operand" (result i32)
+  (func (export "as-compare-operand") (result i32)
     (f32.gt (loop (call $dummy) (f32.const 3)) (loop (call $dummy) (f32.const 3)))
   )
 
-  (func "break-bare" (result i32)
+  (func (export "break-bare") (result i32)
     (loop (br 1) (br 0) (unreachable))
     (loop (br_if 1 (i32.const 1)) (unreachable))
     (loop (br_table 1 (i32.const 0)) (unreachable))
     (loop (br_table 1 1 1 (i32.const 1)) (unreachable))
     (i32.const 19)
   )
-  (func "break-value" (result i32)
+  (func (export "break-value") (result i32)
     (loop (br 1 (i32.const 18)) (br 0) (i32.const 19))
   )
-  (func "break-repeated" (result i32)
+  (func (export "break-repeated") (result i32)
     (loop
       (br 1 (i32.const 18))
       (br 1 (i32.const 19))
@@ -69,7 +69,7 @@
       (i32.const 21)
     )
   )
-  (func "break-inner" (result i32)
+  (func (export "break-inner") (result i32)
     (local i32)
     (set_local 0 (i32.const 0))
     (set_local 0 (i32.add (get_local 0) (loop (block (br 2 (i32.const 0x1))))))
@@ -79,7 +79,7 @@
     (set_local 0 (i32.add (get_local 0) (loop (i32.ctz (loop (br 3 (i32.const 0x10)))))))
     (get_local 0)
   )
-  (func "cont-inner" (result i32)
+  (func (export "cont-inner") (result i32)
     (local i32)
     (set_local 0 (i32.const 0))
     (set_local 0 (i32.add (get_local 0) (loop (loop (br 2)))))
@@ -88,7 +88,7 @@
     (get_local 0)
   )
 
-  (func "effects" $fx (result i32)
+  (func $fx (export "effects") (result i32)
     (local i32)
     (loop
       (set_local 0 (i32.const 1))
@@ -101,7 +101,7 @@
     (i32.eq (get_local 0) (i32.const -14))
   )
 
-  (func "while" (param i64) (result i64)
+  (func (export "while") (param i64) (result i64)
     (local i64)
     (set_local 1 (i64.const 1))
     (loop
@@ -113,7 +113,7 @@
     (get_local 1)
   )
 
-  (func "for" (param i64) (result i64)
+  (func (export "for") (param i64) (result i64)
     (local i64 i64)
     (set_local 1 (i64.const 1))
     (set_local 2 (i64.const 2))
@@ -126,7 +126,7 @@
     (get_local 1)
   )
 
-  (func "nesting" (param f32 f32) (result f32)
+  (func (export "nesting") (param f32 f32) (result f32)
     (local f32 f32)
     (loop
       (br_if 1 (f32.eq (get_local 0) (f32.const 0)))

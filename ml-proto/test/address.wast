@@ -4,7 +4,7 @@
     (memory 1)
     (data (i32.const 0) "abcdefghijklmnopqrstuvwxyz")
 
-    (func "good" (param $i i32)
+    (func (export "good") (param $i i32)
         (call $print (i32.load8_u offset=0 (get_local $i)))  ;; 97 'a'
         (call $print (i32.load8_u offset=1 (get_local $i)))  ;; 98 'b'
         (call $print (i32.load8_u offset=2 (get_local $i)))  ;; 99 'c'
@@ -22,7 +22,7 @@
         (call $print (i32.load offset=25 align=1 (get_local $i))) ;; 122 'z\0\0\0'
     )
 
-    (func "bad" (param $i i32) (drop (i32.load offset=4294967295 (get_local $i))))
+    (func (export "bad") (param $i i32) (drop (i32.load offset=4294967295 (get_local $i))))
 )
 
 (invoke "good" (i32.const 0))
