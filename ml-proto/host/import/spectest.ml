@@ -14,7 +14,6 @@ let global = function
 
 let table = Table.create {min = 10l; max = Some 20l}
 let memory = Memory.create {min = 1l; max = Some 2l}
-let func _ = None
 
 let print out vs =
   List.iter Print.print_value (List.map (fun v -> Some v) vs);
@@ -25,9 +24,8 @@ open Instance
 
 let lookup name t =
   match name, t with
-  | "print", ExternalFuncType t -> ExternalFunc (HostFunc (t, print t.out))
-  | "print", _ -> ExternalFunc (HostFunc ({ins = []; out = None}, print None))
-  | "func", _ -> ExternalFunc (HostFunc ({ins = []; out = None}, func))
+  | "print", ExternalFuncType ft -> ExternalFunc (HostFunc (print ft.out))
+  | "print", _ -> ExternalFunc (HostFunc (print None))
   | "global", ExternalGlobalType t -> ExternalGlobal (global t)
   | "global", _ -> ExternalGlobal (global Int32Type)
   | "table", _ -> ExternalTable table

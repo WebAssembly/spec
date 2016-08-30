@@ -44,6 +44,8 @@
   (module (import "spectest" "table" (func)))
   "type mismatch"
 )
+
+(; TODO: check linking against other Wasm module
 (assert_unlinkable
   (module (import "spectest" "func" (func (param i32))))
   "type mismatch"
@@ -51,6 +53,12 @@
 (assert_unlinkable
   (module (import "spectest" "func" (func (result i32))))
   "type mismatch"
+)
+;)
+
+(assert_unlinkable
+  (module (import "spectest" "print" (func)) (table anyfunc (elem 0)))
+  "invalid use of host function"
 )
 
 
@@ -85,7 +93,7 @@
   "unknown import"
 )
 (assert_unlinkable
-  (module (import "spectest" "func" (global i32)))
+  (module (import "spectest" "print" (global i32)))
   "type mismatch"
 )
 
@@ -135,7 +143,7 @@
   "unknown import"
 )
 (assert_unlinkable
-  (module (import "spectest" "func" (table 10 anyfunc)))
+  (module (import "spectest" "print" (table 10 anyfunc)))
   "type mismatch"
 )
 (assert_unlinkable
@@ -180,7 +188,7 @@
   "unknown import"
 )
 (assert_unlinkable
-  (module (import "spectest" "func" (memory 1)))
+  (module (import "spectest" "print" (memory 1)))
   "type mismatch"
 )
 (assert_unlinkable

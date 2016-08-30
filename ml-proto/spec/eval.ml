@@ -76,9 +76,10 @@ let elem c x i t at =
   | exception Table.Bounds ->
     Trap.error at ("undefined element " ^ Int32.to_string i)
 
-let func_type_of = function
+let func_type_of t at =
+  match t with
   | AstFunc (inst, f) -> lookup "type" (!inst).module_.it.types f.it.ftype
-  | HostFunc (t, _) -> t
+  | HostFunc _ -> Link.error at "invalid use of host function"
 
 module MakeLabel () =
 struct
@@ -177,7 +178,7 @@ let rec eval_expr (c : config) (e : expr) : value option =
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
     let f = func c (elem c (0 @@ e.at) i AnyFuncType e1.at @@ e1.at) in
-    if type_ c.instance x <> func_type_of f then
+    if type_ c.instance x <> func_type_of f e1.at then
       Trap.error e1.at "indirect call signature mismatch";
     eval_func f vs e.at
 
@@ -269,16 +270,16 @@ and eval_expr_opt c = function
   | None -> None
 
 and eval_func func vs at =
-  if List.length vs <> List.length (func_type_of func).ins then
-    Crash.error at "function called with wrong number of arguments";
   match func with
   | AstFunc (inst, f) ->
+    if List.length vs <> List.length (func_type_of func at).ins then
+      Crash.error at "function called with wrong number of arguments";
     let args = List.map ref vs in
     let vars = List.map (fun t -> ref (default_value t)) f.it.locals in
     let locals = args @ vars in
     eval_expr {(empty_config !inst) with locals} f.it.body
 
-  | HostFunc (_, f) ->
+  | HostFunc f ->
     try f vs with Crash (_, msg) -> Crash.error at msg
 
 
@@ -326,11 +327,15 @@ let init_func c f =
   | AstFunc (inst, _) -> inst := c.instance
   | _ -> assert false
 
+let non_host_func c x =
+  ignore (func_type_of (func c x) x.at);
+  Some x.it
+
 let init_table c seg =
   let {index; offset = e; init} = seg.it in
   let tab = table c index in
   let offset = int32 (eval_expr c e) e.at in
-  Table.blit tab offset (List.map (fun x -> Some x.it) init)
+  Table.blit tab offset (List.map (non_host_func c) init)
 
 let init_memory c seg =
   let {index; offset = e; init} = seg.it in
@@ -355,8 +360,11 @@ let check_limits actual expected at =
 let add_import (ext : extern) (imp : import) (inst : instance) : instance =
   match ext, imp.it.ikind.it with
   | ExternalFunc f, FuncImport x ->
-    if func_type_of f <> type_ inst x then
+    (match f with
+    | AstFunc _ when func_type_of f x.at <> type_ inst x ->
       Link.error imp.it.ikind.at "type mismatch";
+    | _ -> ()
+    );
     {inst with funcs = f :: inst.funcs}
   | ExternalTable t, TableImport (lim, _) ->
     (* TODO: no checking of element type? *)

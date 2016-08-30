@@ -6,7 +6,7 @@ type global = value ref
 
 type func =
   | AstFunc of instance ref * Kernel.func
-  | HostFunc of Types.func_type * (value list -> value option)
+  | HostFunc of (value list -> value option)
 
 and extern =
   | ExternalFunc of func

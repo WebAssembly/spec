@@ -42,6 +42,6 @@ open Instance
 
 let lookup name t =
   match name with
-  | "abort" -> ExternalFunc (HostFunc ({ins = []; out = None}, abort))
-  | "exit" -> ExternalFunc (HostFunc ({ins = [Int32Type]; out = None}, exit))
+  | "abort" -> ExternalFunc (HostFunc abort)
+  | "exit" -> ExternalFunc (HostFunc exit)
   | _ -> raise Not_found
