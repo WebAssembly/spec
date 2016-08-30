@@ -7,14 +7,14 @@
     (func $main (result i32) (return (i32.const 0)))
     (start $main)
   )
-  "start function must be nullary"
+  "start function"
 )
 (assert_invalid
   (module
     (func $main (param $a i32))
     (start $main)
   )
-  "start function must be nullary"
+  "start function"
 )
 (module
   (memory (data "A"))

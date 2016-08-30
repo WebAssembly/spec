@@ -433,7 +433,8 @@ let check_global c g =
 
 let check_start c start =
   Lib.Option.app (fun x ->
-    require (func c x = FuncType ([], [])) x.at "start function must be nullary"
+    require (func c x = FuncType ([], [])) x.at
+      "start function must not have parameters or results"
   ) start
 
 module NameSet = Set.Make(String)
