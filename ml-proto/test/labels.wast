@@ -1,12 +1,12 @@
 (module
-  (func (export "block") (result i32)
+  (export "block" (func (result i32)
     (block $exit
       (br $exit (i32.const 1))
       (i32.const 0)
     )
-  )
+  ))
 
-  (func (export "loop1") (result i32)
+  (export "loop1" (func (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
     (loop $exit $cont
@@ -16,9 +16,9 @@
       )
       (br $cont)
     )
-  )
+  ))
 
-  (func (export "loop2") (result i32)
+  (export "loop2" (func (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
     (loop $exit $cont
@@ -32,9 +32,9 @@
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
       (br $cont)
     )
-  )
+  ))
 
-  (func (export "loop3") (result i32)
+  (export "loop3" (func (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
     (loop $exit $cont
@@ -44,9 +44,9 @@
       )
       (get_local $i)
     )
-  )
+  ))
 
-  (func (export "loop4") (param $max i32) (result i32)
+  (export "loop4" (func (param $max i32) (result i32)
     (local $i i32)
     (set_local $i (i32.const 1))
     (loop $exit $cont
@@ -56,17 +56,17 @@
       )
       (br $cont)
     )
-  )
+  ))
 
-  (func (export "loop5") (result i32)
+  (export "loop5" (func (result i32)
     (i32.add (loop $l0 $l1
                (i32.const 1)
              )
              (i32.const 1)
     )
-  )
+  ))
 
-  (func (export "if") (result i32)
+  (export "if" (func (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
     (block
@@ -101,9 +101,9 @@
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
     )
     (get_local $i)
-  )
+  ))
 
-  (func (export "if2") (result i32)
+  (export "if2" (func (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
     (block
@@ -138,9 +138,9 @@
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
     )
     (get_local $i)
-  )
+  ))
 
-  (func (export "switch") (param i32) (result i32)
+  (export "switch" (func (param i32) (result i32)
     (block $ret
       (i32.mul (i32.const 10)
         (block $exit
@@ -161,9 +161,9 @@
         )
       )
     )
-  )
+  ))
 
-  (func (export "return") (param i32) (result i32)
+  (export "return" (func (param i32) (result i32)
     (block $default
       (block $1
         (block $0
@@ -174,9 +174,9 @@
       ) ;; 1
     ) ;; default
     (i32.const 2)
-  )
+  ))
 
-  (func (export "br_if0") (result i32)
+  (export "br_if0" (func (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
     (block $outer
@@ -195,22 +195,22 @@
       )
       (set_local $i (i32.or (get_local $i) (i32.const 0x20))) (get_local $i)
     )
-  )
+  ))
 
-  (func (export "br_if1") (result i32)
+  (export "br_if1" (func (result i32)
     (block $l0
       (br_if $l0 (block $l1 (br $l1 (i32.const 1))) (i32.const 1))
-      (i32.const 1)))
+      (i32.const 1))))
 
-  (func (export "br_if2") (result i32)
+  (export "br_if2" (func (result i32)
     (block $l0
       (if (i32.const 1)
         (br $l0
           (block $l1
             (br $l1 (i32.const 1)))))
-      (i32.const 1)))
+      (i32.const 1))))
 
-  (func (export "br_if3") (result i32)
+  (export "br_if3" (func (result i32)
     (local $i1 i32)
     (drop
       (i32.add
@@ -225,9 +225,9 @@
       )
     )
     (get_local $i1)
-  )
+  ))
 
-  (func (export "br") (result i32)
+  (export "br" (func (result i32)
     (block $l0
       (if (i32.const 1)
         (br $l0 (block $l1 (br $l1 (i32.const 1))))
@@ -235,20 +235,20 @@
       )
       (i32.const 1)
     )
-  )
+  ))
 
-  (func (export "shadowing") (result i32)
+  (export "shadowing" (func (result i32)
    (block $l1 (i32.xor (br $l1 (i32.const 1)) (i32.const 2)))
-  )
+  ))
 
-  (func (export "redefinition") (result i32)
+  (export "redefinition" (func (result i32)
     (block $l1
       (i32.add
         (block $l1 (i32.const 2))
         (block $l1 (br $l1 (i32.const 3)))
       )
     )
-  )
+  ))
 )
 
 (assert_return (invoke "block") (i32.const 1))

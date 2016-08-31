@@ -143,8 +143,6 @@ expr:
   ( grow_memory <expr> )
 
 func:    ( func <name>? <func_sig> <local>* <expr>* )
-         ( func <name>? (export <string>) <func_sig> <local>* <expr>* )  ;; = (export <string> (func <N>) (func <name>? <func_sig> <local>* <expr>*)
-         ( func <name>? (import <string> <string>) <func_sig>)      ;; = (import <name>? <string> <string> (func <func_sig>))
 param:   ( param <type>* ) | ( param <name> <type> )
 result:  ( result <type> )
 local:   ( local <type>* ) | ( local <name> <type> )
@@ -155,17 +153,11 @@ table_sig:  <nat> <nat>? <elem_type>
 memory_sig: <nat> <nat>?
 
 global:  ( global <name>? <global_sig> )
-         ( global <name>? ( export <string> ) <global_sig> )          ;; = (export <string> (global <N>)) (global <name>? <global_sig>)
-         ( global <name>? ( import <string> <string> ) <global_sig> ) ;; = (import <name>? <string> <string> (global <global_sig>))
 table:   ( table <name>? <table_sig> )
-         ( table <name>? ( export <string> ) <table_sig> )            ;; = (export <string> (table <N>)) (table <name>? <table_sig>)
-         ( table <name>? ( import <string> <string> ) <table_sig> )   ;; = (import <name>? <string> <string> (table <table_sig>))
-         ( table <name>? <elem_type> ( elem <var>* ) )                ;; = (table <name>? <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
+         ( table <name>? <elem_type> ( elem <var>* ) )  ;; = (table <name>? <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
 elem:    ( elem <expr> <var>* )
 memory:  ( memory <name>? <memory_sig> )
-         ( memory <name>? ( export <string> ) <memory_sig> )          ;; = (export <string> (memory <N>)) (memory <name>? <memory_sig>)
-         ( memory <name>? ( import <string> <string> ) <memory_sig> ) ;; = (import <name>? <string> <string> (memory <memory_sig>))
-         ( memory <name>? ( data <string>* ) )                        ;; = (memory <name>? <size> <size>) (data (i32.const 0) <string>*)
+         ( memory <name>? ( data <string>* ) )          ;; = (memory <name>? <size> <size>) (data (i32.const 0) <string>*)
 data:    ( data <expr> <string>* )
 
 start:   ( start <var> )
@@ -177,11 +169,12 @@ imkind:  ( func <name>? <func_sig> )
          ( global <name>? <global_sig> )
          ( table <name>? <table_sig> )
          ( memory <name>? <memory_sig> )
-export:  ( export <string> <exkind> )
-exkind:  ( func <var> )
-         ( global <var> )
-         ( table <var> )
-         ( memory <var> )
+export:  ( export <string> <exkind> <var> )
+         ( export <string> <func> )         ;; = (export <string> func <N>) <func>
+         ( export <string> <table> )        ;; = (export <string> table <N>) <table>
+         ( export <string> <memory> )       ;; = (export <string> memory <N>) <memory>
+         ( export <string> <global> )       ;; = (export <string> global <N>) <global>
+exkind:  func | global | table | memory
 
 module:  ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <elem>* <data>* <start>? )
          ( module <string>+ )

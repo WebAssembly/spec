@@ -1,14 +1,14 @@
 (module
   ;; Recursive factorial
-  (func (export "fac-rec") (param i64) (result i64)
+  (export "fac-rec" (func (param i64) (result i64)
     (if (i64.eq (get_local 0) (i64.const 0))
       (i64.const 1)
       (i64.mul (get_local 0) (call 0 (i64.sub (get_local 0) (i64.const 1))))
     )
-  )
+  ))
 
   ;; Recursive factorial named
-  (func $fac-rec-named (export "fac-rec-named") (param $n i64) (result i64)
+  (export "fac-rec-named" (func $fac-rec-named (param $n i64) (result i64)
     (if (i64.eq (get_local $n) (i64.const 0))
       (i64.const 1)
       (i64.mul
@@ -16,10 +16,10 @@
         (call $fac-rec-named (i64.sub (get_local $n) (i64.const 1)))
       )
     )
-  )
+  ))
 
   ;; Iterative factorial
-  (func (export "fac-iter") (param i64) (result i64)
+  (export "fac-iter" (func (param i64) (result i64)
     (local i64 i64)
     (set_local 1 (get_local 0))
     (set_local 2 (i64.const 1))
@@ -35,10 +35,10 @@
       (br 0)
     )
     (get_local 2)
-  )
+  ))
 
   ;; Iterative factorial named
-  (func $fac-iter-named (export "fac-iter-named") (param $n i64) (result i64)
+  (export "fac-iter-named" (func $fac-iter-named (param $n i64) (result i64)
     (local $i i64)
     (local $res i64)
     (set_local $i (get_local $n))
@@ -55,10 +55,10 @@
       (br $loop)
     )
     (get_local $res)
-  )
+  ))
 
   ;; Optimized factorial.
-  (func (export "fac-optimised") (param i64) (result i64)
+  (export "fac-optimised" (func (param i64) (result i64)
     (local i64)
     (set_local 1 (i64.const 1))
     (block
@@ -70,7 +70,7 @@
       )
     )
     (get_local 1)
-  )
+  ))
 )
 
 (assert_return (invoke "fac-rec" (i64.const 25)) (i64.const 7034535277573963776))

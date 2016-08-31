@@ -19,39 +19,39 @@
 
   ;; Typing
 
-  (func (export "type-i32") (result i32) (call $const-i32))
-  (func (export "type-i64") (result i64) (call $const-i64))
-  (func (export "type-f32") (result f32) (call $const-f32))
-  (func (export "type-f64") (result f64) (call $const-f64))
+  (export "type-i32" (func (result i32) (call $const-i32)))
+  (export "type-i64" (func (result i64) (call $const-i64)))
+  (export "type-f32" (func (result f32) (call $const-f32)))
+  (export "type-f64" (func (result f64) (call $const-f64)))
 
-  (func (export "type-first-i32") (result i32) (call $id-i32 (i32.const 32)))
-  (func (export "type-first-i64") (result i64) (call $id-i64 (i64.const 64)))
-  (func (export "type-first-f32") (result f32) (call $id-f32 (f32.const 1.32)))
-  (func (export "type-first-f64") (result f64) (call $id-f64 (f64.const 1.64)))
+  (export "type-first-i32" (func (result i32) (call $id-i32 (i32.const 32))))
+  (export "type-first-i64" (func (result i64) (call $id-i64 (i64.const 64))))
+  (export "type-first-f32" (func (result f32) (call $id-f32 (f32.const 1.32))))
+  (export "type-first-f64" (func (result f64) (call $id-f64 (f64.const 1.64))))
 
-  (func (export "type-second-i32") (result i32)
+  (export "type-second-i32" (func (result i32)
     (call $f32-i32 (f32.const 32.1) (i32.const 32))
-  )
-  (func (export "type-second-i64") (result i64)
+  ))
+  (export "type-second-i64" (func (result i64)
     (call $i32-i64 (i32.const 32) (i64.const 64))
-  )
-  (func (export "type-second-f32") (result f32)
+  ))
+  (export "type-second-f32" (func (result f32)
     (call $f64-f32 (f64.const 64) (f32.const 32))
-  )
-  (func (export "type-second-f64") (result f64)
+  ))
+  (export "type-second-f64" (func (result f64)
     (call $i64-f64 (i64.const 64) (f64.const 64.1))
-  )
+  ))
 
   ;; Recursion
 
-  (func $fac (export "fac") (param i64) (result i64)
+  (export "fac" (func $fac (param i64) (result i64)
     (if (i64.eqz (get_local 0))
       (i64.const 1)
       (i64.mul (get_local 0) (call $fac (i64.sub (get_local 0) (i64.const 1))))
     )
-  )
+  ))
 
-  (func $fac-acc (export "fac-acc") (param i64 i64) (result i64)
+  (export "fac-acc" (func $fac-acc (param i64 i64) (result i64)
     (if (i64.eqz (get_local 0))
       (get_local 1)
       (call $fac-acc
@@ -59,9 +59,9 @@
         (i64.mul (get_local 0) (get_local 1))
       )
     )
-  )
+  ))
 
-  (func $fib (export "fib") (param i64) (result i64)
+  (export "fib" (func $fib (param i64) (result i64)
     (if (i64.le_u (get_local 0) (i64.const 1))
       (i64.const 1)
       (i64.add
@@ -69,20 +69,20 @@
         (call $fib (i64.sub (get_local 0) (i64.const 1)))
       )
     )
-  )
+  ))
 
-  (func $even (export "even") (param i64) (result i32)
+  (export "even" (func $even (param i64) (result i32)
     (if (i64.eqz (get_local 0))
       (i32.const 44)
       (call $odd (i64.sub (get_local 0) (i64.const 1)))
     )
-  )
-  (func $odd (export "odd") (param i64) (result i32)
+  ))
+  (export "odd" (func $odd (param i64) (result i32)
     (if (i64.eqz (get_local 0))
       (i32.const 99)
       (call $even (i64.sub (get_local 0) (i64.const 1)))
     )
-  )
+  ))
 
   ;; Stack exhaustion
 
@@ -93,9 +93,9 @@
   ;; implementations and be incompatible with implementations that don't do
   ;; it (or don't do it under the same circumstances).
 
-  (func $runaway (export "runaway") (call $runaway))
+  (export "runaway" (func $runaway (call $runaway)))
 
-  (func $mutual-runaway1 (export "mutual-runaway") (call $mutual-runaway2))
+  (export "mutual-runaway" (func $mutual-runaway1 (call $mutual-runaway2)))
   (func $mutual-runaway2 (call $mutual-runaway1))
 )
 
