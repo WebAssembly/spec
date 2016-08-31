@@ -37,6 +37,16 @@ let string_of_value_type_list = function
 let string_of_elem_type = function
   | AnyFuncType -> "anyfunc"
 
+let string_of_limits {min; max} =
+  I32.to_string min ^
+  (match max with None -> "" | Some n -> I32.to_string n)
+
+let string_of_memory_type = function
+  | MemoryType lim -> string_of_limits lim
+
+let string_of_table_type = function
+  | TableType (lim, t) -> string_of_limits lim ^ " " ^ string_of_elem_type t
+
 let string_of_expr_type = function
   | None -> "()"
   | Some t -> string_of_value_type t

@@ -311,11 +311,11 @@ let create_func m f =
   AstFunc (ref (instance m), f)
 
 let create_table tab =
-  let {tlimits = lim; _} = tab.it in
-  Table.create lim
+  let {ttype = TableType (lim, t)} = tab.it in
+  Table.create lim  (* TODO: elem_type *)
 
 let create_memory mem =
-  let {mlimits = lim} = mem.it in
+  let {mtype = MemoryType lim} = mem.it in
   Memory.create lim
 
 let create_global glob =
@@ -366,16 +366,16 @@ let add_import (ext : extern) (imp : import) (inst : instance) : instance =
     | _ -> ()
     );
     {inst with funcs = f :: inst.funcs}
-  | ExternalTable t, TableImport tab ->
+  | ExternalTable tab, TableImport (TableType (lim, _)) ->
     (* TODO: no checking of element type? *)
-    check_limits (Table.limits t) tab.it.tlimits tab.at;
-    {inst with tables = t :: inst.tables}
-  | ExternalMemory m, MemoryImport mem ->
-    check_limits (Memory.limits m) mem .it.mlimits mem.at;
-    {inst with memories = m :: inst.memories}
-  | ExternalGlobal g, GlobalImport _ ->
+    check_limits (Table.limits tab) lim imp.it.ikind.at;
+    {inst with tables = tab :: inst.tables}
+  | ExternalMemory mem, MemoryImport (MemoryType lim) ->
+    check_limits (Memory.limits mem) lim imp.it.ikind.at;
+    {inst with memories = mem :: inst.memories}
+  | ExternalGlobal glob, GlobalImport _ ->
     (* TODO: no checking of value type? *)
-    {inst with globals = ref g :: inst.globals}
+    {inst with globals = ref glob :: inst.globals}
   | _ ->
     Link.error imp.it.ikind.at "type mismatch"
 

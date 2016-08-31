@@ -107,7 +107,7 @@ and expr' =
 type global = global' Source.phrase
 and global' =
 {
-  gtype : Types.value_type;
+  gtype : value_type;
   value : expr;
 }
 
@@ -125,14 +125,13 @@ and func' =
 type table = table' Source.phrase
 and table' =
 {
-  tlimits : Table.size limits;
-  etype : elem_type;
+  ttype : table_type;
 }
 
 type memory = memory' Source.phrase
 and memory' =
 {
-  mlimits : Memory.size limits;
+  mtype : memory_type;
 }
 
 type 'data segment = 'data segment' Source.phrase
@@ -163,8 +162,8 @@ and export' =
 type import_kind = import_kind' Source.phrase
 and import_kind' =
   | FuncImport of var
-  | TableImport of table
-  | MemoryImport of memory
+  | TableImport of table_type
+  | MemoryImport of memory_type
   | GlobalImport of value_type
 
 type import = import' Source.phrase

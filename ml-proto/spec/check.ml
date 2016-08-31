@@ -25,8 +25,8 @@ type context =
   globals : value_type list;
   return : expr_type;
   labels : expr_type_future list;
-  tables : Table.size limits list;
-  memories : Memory.size limits list;
+  tables : table_type list;
+  memories : memory_type list;
 }
 
 let empty_context m =
@@ -324,8 +324,8 @@ let check_func c f =
 
 (* Tables & Memories *)
 
-let check_table_limits (lim : Table.size limits) at =
-  let {min; max} = lim in
+let check_table_type (t : table_type) at =
+  let TableType ({min; max}, _) = t in
   match max with
   | None -> ()
   | Some max ->
@@ -333,11 +333,11 @@ let check_table_limits (lim : Table.size limits) at =
       "table size minimum must not be greater than maximum"
 
 let check_table (c : context) (tab : table) =
-  let {tlimits = lim; etype = t} = tab.it in
-  check_table_limits lim tab.at
+  let {ttype} = tab.it in
+  check_table_type ttype tab.at
 
-let check_memory_limits (lim : Memory.size limits) at =
-  let {min; max} = lim in
+let check_memory_type (t : memory_type) at =
+  let MemoryType {min; max} = t in
   require (I32.lt_u min 65536l) at
     "memory size must be less than 65536 pages (4GiB)";
   match max with
@@ -349,8 +349,8 @@ let check_memory_limits (lim : Memory.size limits) at =
       "memory size minimum must not be greater than maximum"
 
 let check_memory (c : context) (mem : memory) =
-  let {mlimits = lim} = mem.it in
-  check_memory_limits lim mem.at
+  let {mtype} = mem.it in
+  check_memory_type mtype mem.at
 
 let check_table_segment c prev_end seg =
   let {index; offset; init} = seg.it in
@@ -358,10 +358,10 @@ let check_table_segment c prev_end seg =
   let start = Values.int32_of_value (Eval.const c.module_ offset) in
   let len = Int32.of_int (List.length init) in
   let end_ = Int32.add start len in
-  let limit = (table c index).min in
+  let TableType (lim, _) = table c index in
   require (I32.le_u prev_end start) seg.at
     "table segment not disjoint and ordered";
-  require (I32.le_u end_ limit) seg.at
+  require (I32.le_u end_ lim.min) seg.at
     "table segment does not fit into table";
   ignore (List.map (func c) init);
   end_
@@ -373,7 +373,8 @@ let check_memory_segment c prev_end seg =
     Int64.of_int32 (Values.int32_of_value (Eval.const c.module_ offset)) in
   let len = Int64.of_int (String.length init) in
   let end_ = Int64.add start len in
-  let limit = Int64.mul (Int64.of_int32 (memory c index).min) Memory.page_size in
+  let MemoryType lim = memory c index in
+  let limit = Int64.mul (Int64.of_int32 lim.min) Memory.page_size in
   require (I64.le_u prev_end start) seg.at
     "data segment not disjoint and ordered";
   require (I64.le_u end_ limit) seg.at
@@ -402,12 +403,10 @@ let check_import im c =
   match ikind.it with
   | FuncImport x ->
     {c with funcs = type_ c x :: c.funcs}
-  | TableImport tab ->
-    check_table c tab;
-    {c with tables = tab.it.tlimits :: c.tables}
-  | MemoryImport mem ->
-    check_memory c mem;
-    {c with memories = mem.it.mlimits :: c.memories}
+  | TableImport t ->
+    check_table_type t ikind.at; {c with tables = t :: c.tables}
+  | MemoryImport t ->
+    check_memory_type t ikind.at; {c with memories = t :: c.memories}
   | GlobalImport t ->
     {c with globals = t :: c.globals}
 
@@ -432,8 +431,8 @@ let check_module m =
   let c' =
     { (List.fold_left check_global c globals) with
       funcs = c.funcs @ List.map (fun f -> type_ c f.it.ftype) funcs;
-      tables = c.tables @ List.map (fun tab -> tab.it.tlimits) tables;  
-      memories = c.memories @ List.map (fun mem -> mem.it.mlimits) memories;
+      tables = c.tables @ List.map (fun tab -> tab.it.ttype) tables;  
+      memories = c.memories @ List.map (fun mem -> mem.it.mtype) memories;
     }
   in
   require (List.length c'.tables <= 1) m.at "at most one table allowed";

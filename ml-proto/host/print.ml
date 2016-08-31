@@ -13,12 +13,15 @@ let print_no_sig prefix i =
 let print_var_sig prefix i t =
   printf "%s %d : %s\n" prefix i (string_of_value_type t)
 
-let print_elem_sig prefix i t =
-  printf "%s %d : %s\n" prefix i (string_of_elem_type t)
-
 let print_func_sig m prefix i x =
   let t = List.nth m.it.types x.it in
   printf "%s %d : %s\n" prefix i (string_of_func_type t)
+
+let print_table_sig prefix i t =
+  printf "%s %d : %s\n" prefix i (string_of_table_type t)
+
+let print_memory_sig prefix i t =
+  printf "%s %d : %s\n" prefix i (string_of_memory_type t)
 
 let print_export m i ex =
   let {name; ekind; item} = ex.it in
@@ -43,10 +46,10 @@ let print_global m i glob =
   print_var_sig "global" i glob.it.gtype
 
 let print_table m i tab =
-  print_elem_sig "table" i tab.it.etype
+  print_table_sig "table" i tab.it.ttype
 
 let print_memory m i mem =
-  print_no_sig "memory" i
+  print_memory_sig "memory" i mem.it.mtype
 
 let print_module m =
   (* TODO: more complete print function *)

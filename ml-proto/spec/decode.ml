@@ -140,6 +140,15 @@ let limits vu s =
   let max = opt vu has_max s in
   {min; max}
 
+let table_type s =
+  let t = elem_type s in
+  let lim = limits vu32 s in
+  TableType (lim, t)
+
+let memory_type s =
+  let lim = limits vu32 s in
+  MemoryType lim
+
 
 (* Decode expressions *)
 
@@ -489,6 +498,26 @@ let type_section s =
   section `TypeSection (vec func_type) [] s
 
 
+(* Import section *)
+
+let import_kind s =
+  match u8 s with
+  | 0x00 -> FuncImport (at var s)
+  | 0x01 -> TableImport (table_type s)
+  | 0x02 -> MemoryImport (memory_type s)
+  | 0x03 -> GlobalImport (value_type s)
+  | _ -> error s (pos s - 1) "invalid import kind"
+
+let import s =
+  let module_name = string s in
+  let item_name = string s in
+  let ikind = at import_kind s in
+  {module_name; item_name; ikind}
+
+let import_section s =
+  section `ImportSection (vec (at import)) [] s
+
+
 (* Function section *)
 
 let func_section s =
@@ -498,9 +527,8 @@ let func_section s =
 (* Table section *)
 
 let table s =
-  let t = elem_type s in
-  let lim = limits vu32 s in
-  {etype = t; tlimits = lim}
+  let ttype = table_type s in
+  {ttype}
 
 let table_section s =
   section `TableSection (vec (at table)) [] s
@@ -509,8 +537,8 @@ let table_section s =
 (* Memory section *)
 
 let memory s =
-  let lim = limits vu32 s in
-  {mlimits = lim}
+  let mtype = memory_type s in
+  {mtype}
 
 let memory_section s =
   section `MemorySection (vec (at memory)) [] s
@@ -528,26 +556,6 @@ let global s =
 
 let global_section s =
   section `GlobalSection (vec (at global)) [] s
-
-
-(* Import section *)
-
-let import_kind s =
-  match u8 s with
-  | 0x00 -> FuncImport (at var s)
-  | 0x01 -> TableImport (at table s)
-  | 0x02 -> MemoryImport (at memory s)
-  | 0x03 -> GlobalImport (value_type s)
-  | _ -> error s (pos s - 1) "invalid import kind"
-
-let import s =
-  let module_name = string s in
-  let item_name = string s in
-  let ikind = at import_kind s in
-  {module_name; item_name; ikind}
-
-let import_section s =
-  section `ImportSection (vec (at import)) [] s
 
 
 (* Export section *)

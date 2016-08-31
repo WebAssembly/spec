@@ -217,10 +217,10 @@ func_sig :
 ;
 
 table_sig :
-  | limits elem_type { {tlimits = $1; etype = $2} @@ at () }
+  | limits elem_type { TableType ($1, $2) }
 ;
 memory_sig :
-  | limits { {mlimits = $1} @@ at () }
+  | limits { MemoryType $1 }
 ;
 limits :
   | NAT { {min = int32 $1 (ati 1); max = None} }
@@ -406,13 +406,14 @@ elem :
 
 table :
   | LPAR TABLE bind_var_opt inline_export_opt table_sig RPAR
-    { fun c -> $3 c anon_table bind_table;
-      $5, [], $4 TableExport c.tables.count c }
+    { let at = at () in
+      fun c -> $3 c anon_table bind_table;
+      {ttype = $5} @@ at, [], $4 TableExport c.tables.count c }
   | LPAR TABLE bind_var_opt inline_export_opt elem_type LPAR ELEM var_list RPAR RPAR  /* Sugar */
     { let at = at () in
       fun c -> $3 c anon_table bind_table;
       let init = $8 c func in let size = Int32.of_int (List.length init) in
-      {tlimits = {min = size; max = Some size}; etype = $5} @@ at,
+      {ttype = TableType ({min = size; max = Some size}, $5)} @@ at,
       [{index = c.tables.count - 1 @@ at; offset = I32_const (0l @@ at) @@ at; init} @@ at],
       $4 TableExport c.tables.count c }
 ;
@@ -428,13 +429,14 @@ data :
 
 memory :
   | LPAR MEMORY bind_var_opt inline_export_opt memory_sig RPAR
-    { fun c -> $3 c anon_memory bind_memory;
-      $5, [], $4 MemoryExport c.memories.count c }
+    { let at = at () in
+      fun c -> $3 c anon_memory bind_memory;
+      {mtype = $5} @@ at, [], $4 MemoryExport c.memories.count c }
   | LPAR MEMORY bind_var_opt inline_export LPAR DATA text_list RPAR RPAR  /* Sugar */
     { let at = at () in
       fun c -> $3 c anon_memory bind_memory;
       let size = Int32.(div (add (of_int (String.length $7)) 65535l) 65536l) in
-      {mlimits = {min = size; max = Some size}} @@ at,
+      {mtype = MemoryType {min = size; max = Some size}} @@ at,
       [{index = c.memories.count - 1 @@ at; offset = I32_const (0l @@ at) @@ at; init = $7} @@ at],
       $4 MemoryExport c.memories.count c }
   /* Need to duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
@@ -442,7 +444,7 @@ memory :
     { let at = at () in
       fun c -> $3 c anon_memory bind_memory;
       let size = Int32.(div (add (of_int (String.length $6)) 65535l) 65536l) in
-      {mlimits = {min = size; max = Some size}} @@ at,
+      {mtype = MemoryType {min = size; max = Some size}} @@ at,
       [{index = c.memories.count - 1 @@ at; offset = I32_const (0l @@ at) @@ at; init = $6} @@ at],
       [] }
 ;

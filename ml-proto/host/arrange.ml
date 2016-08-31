@@ -265,13 +265,13 @@ let table xs = tab "table" (atom var) xs
 (* Tables & memories *)
 
 let table off i tab =
-  let {tlimits = lim; etype} = tab.it in
+  let {ttype = TableType (lim, t)} = tab.it in
   Node ("table $" ^ string_of_int (off + i) ^ " " ^ limits int32 lim,
-    [atom elem_type etype]
+    [atom elem_type t]
   )
 
 let memory off i mem =
-  let {mlimits = lim} = mem.it in
+  let {mtype = MemoryType lim} = mem.it in
   Node ("memory $" ^ string_of_int (off + i) ^ " " ^ limits int32 lim, [])
 
 let segment head dat seg =
@@ -294,8 +294,8 @@ let import_kind i k =
   match k.it with
   | FuncImport x ->
     Node ("func $" ^ string_of_int i, [Node ("type", [atom var x])])
-  | TableImport tab -> table 0 i tab
-  | MemoryImport mem -> memory 0 i mem
+  | TableImport t -> table 0 i ({ttype = t} @@ k.at)
+  | MemoryImport t -> memory 0 i ({mtype = t} @@ k.at)
   | GlobalImport t ->
     Node ("global $" ^ string_of_int i, [atom value_type t])
 

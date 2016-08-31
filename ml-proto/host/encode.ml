@@ -94,6 +94,12 @@ let encode m =
     let limits vu {min; max} =
       bool (max <> None); vu min; opt vu max
 
+    let table_type = function
+      | TableType (lim, t) -> elem_type t; limits vu32 lim
+
+    let memory_type = function
+      | MemoryType lim -> limits vu32 lim
+
     (* Expressions *)
 
     open Source
@@ -318,37 +324,12 @@ let encode m =
     let type_section ts =
       section "type" (vec func_type) ts (ts <> [])
 
-    (* Table section *)
-    let table tab =
-      let {etype; tlimits} = tab.it in
-      elem_type etype;
-      limits vu32 tlimits
-
-    let table_section tabs =
-      section "table" (vec table) tabs (tabs <> [])
-
-    (* Memory section *)
-    let memory mem =
-      let {mlimits} = mem.it in
-      limits vu32 mlimits
-
-    let memory_section mems =
-      section "memory" (vec memory) mems (mems <> [])
-
-    (* Global section *)
-    let global g =
-      let {gtype; value} = g.it in
-      value_type gtype; expr value; op 0x0f
-
-    let global_section gs =
-      section "global" (vec global) gs (gs <> [])
-
     (* Import section *)
     let import_kind k =
       match k.it with
       | FuncImport x -> u8 0x00; var x
-      | TableImport tab -> u8 0x01; table tab
-      | MemoryImport mem -> u8 0x02; memory mem
+      | TableImport t -> u8 0x01; table_type t
+      | MemoryImport t -> u8 0x02; memory_type t
       | GlobalImport t -> u8 0x03; value_type t
 
     let import imp =
@@ -363,6 +344,30 @@ let encode m =
 
     let func_section fs =
       section "function" (vec func) fs (fs <> [])
+
+    (* Table section *)
+    let table tab =
+      let {ttype} = tab.it in
+      table_type ttype
+
+    let table_section tabs =
+      section "table" (vec table) tabs (tabs <> [])
+
+    (* Memory section *)
+    let memory mem =
+      let {mtype} = mem.it in
+      memory_type mtype
+
+    let memory_section mems =
+      section "memory" (vec memory) mems (mems <> [])
+
+    (* Global section *)
+    let global g =
+      let {gtype; value} = g.it in
+      value_type gtype; expr value; op 0x0f
+
+    let global_section gs =
+      section "global" (vec global) gs (gs <> [])
 
     (* Export section *)
     let export_kind k =
