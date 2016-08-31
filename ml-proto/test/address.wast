@@ -1,5 +1,5 @@
 (module
-    (import $print "spectest" "print" (func (param i32)))
+    (import "spectest" "print" (func $print (param i32)))
 
     (memory 1)
     (data (i32.const 0) "abcdefghijklmnopqrstuvwxyz")

@@ -4,10 +4,10 @@
   (import "spectest" "print" (func (param i32)))
   (func (import "spectest" "print") (param i64))
 
-  (import $print_i32 "spectest" "print" (func (param i32)))
-  (import $print_i64 "spectest" "print" (func (param i64)))
-  (import $print_i32_f32 "spectest" "print" (func (param i32 f32)))
-  (import $print_i64_f64 "spectest" "print" (func (param i64 f64)))
+  (import "spectest" "print" (func $print_i32 (param i32)))
+  (import "spectest" "print" (func $print_i64 (param i64)))
+  (import "spectest" "print" (func $print_i32_f32 (param i32 f32)))
+  (import "spectest" "print" (func $print_i64_f64 (param i64 f64)))
 
   (func $print_i32-2 (import "spectest" "print") (param i32))
   (func $print_i64-2 (import "spectest" "print") (param i64))
@@ -68,7 +68,7 @@
   (import "spectest" "global" (global i32))
   (global (import "spectest" "global") i32)
 
-  (import $x "spectest" "global" (global i32))
+  (import "spectest" "global" (global $x i32))
   (global $y (import "spectest" "global") i32)
 
   (func (export "get-0") (result i32) (get_global 0))

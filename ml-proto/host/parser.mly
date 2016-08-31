@@ -442,23 +442,22 @@ memory :
 /* Imports & Exports */
 
 import_kind :
-  | LPAR FUNC type_use RPAR
-    { fun c -> bind_func, anon_func, FuncImport ($3 c type_) }
-  | LPAR FUNC func_type RPAR  /* Sugar */
-    { let at3 = ati 3 in
-      fun c -> bind_func, anon_func, FuncImport (inline_type c $3 at3) }
-  | LPAR TABLE limits elem_type RPAR
-    { fun c -> bind_table, anon_table, TableImport ($3, $4) }
-  | LPAR MEMORY limits RPAR
-    { fun c -> bind_memory, anon_memory, MemoryImport $3 }
-  | LPAR GLOBAL VALUE_TYPE RPAR
-    { fun c -> bind_global, anon_global, GlobalImport $3 }
+  | LPAR FUNC bind_var_opt type_use RPAR
+    { fun c -> $3 c anon_func bind_func; FuncImport ($4 c type_) }
+  | LPAR FUNC bind_var_opt func_type RPAR  /* Sugar */
+    { let at4 = ati 4 in
+      fun c -> $3 c anon_func bind_func; FuncImport (inline_type c $4 at4) }
+  | LPAR TABLE bind_var_opt limits elem_type RPAR
+    { fun c -> $3 c anon_table bind_table; TableImport ($4, $5) }
+  | LPAR MEMORY bind_var_opt limits RPAR
+    { fun c -> $3 c anon_memory bind_memory; MemoryImport $4 }
+  | LPAR GLOBAL bind_var_opt VALUE_TYPE RPAR
+    { fun c -> $3 c anon_global bind_global; GlobalImport $4 }
 ;
 import :
-  | LPAR IMPORT bind_var_opt TEXT TEXT import_kind RPAR
-    { let at = at () and at6 = ati 6 in
-      fun c -> let bind, anon, k = $6 c in
-      $3 c anon bind; {module_name = $4; item_name = $5; ikind = k @@ at6} @@ at }
+  | LPAR IMPORT TEXT TEXT import_kind RPAR
+    { let at = at () and at5 = ati 5 in
+      fun c -> {module_name = $3; item_name = $4; ikind = $5 c @@ at5} @@ at }
   | LPAR FUNC bind_var_opt inline_import type_use RPAR  /* Sugar */
     { let at = at () in
       fun c -> $3 c anon_func bind_func;

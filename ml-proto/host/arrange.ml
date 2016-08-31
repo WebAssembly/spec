@@ -290,21 +290,21 @@ let data seg =
 let typedef i t =
   Node ("type $" ^ string_of_int i, [struct_type t])
 
-let import_kind k =
+let import_kind i k =
   match k.it with
   | FuncImport x ->
-    Node ("func", [Node ("type", [atom var x])])
+    Node ("func $" ^ string_of_int i, [Node ("type", [atom var x])])
   | TableImport (lim, t) ->
-    Node ("table " ^ limits int32 lim, [atom elem_type t])
+    Node ("table $" ^ string_of_int i ^ " " ^ limits int32 lim, [atom elem_type t])
   | MemoryImport lim ->
-    Node ("memory " ^ limits int32 lim, [])
+    Node ("memory $" ^ string_of_int i ^ " " ^ limits int32 lim, [])
   | GlobalImport t ->
-    Node ("global", [atom value_type t])
+    Node ("global $" ^ string_of_int i, [atom value_type t])
 
 let import i im =
   let {module_name; item_name; ikind} = im.it in
-  Node ("import $" ^ string_of_int i,
-    [atom string module_name; atom string item_name; import_kind ikind]
+  Node ("import",
+    [atom string module_name; atom string item_name; import_kind i ikind]
   )
 
 let export_kind k =
