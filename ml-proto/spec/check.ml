@@ -435,8 +435,8 @@ let check_module m =
       memories = c.memories @ List.map (fun mem -> mem.it.mtype) memories;
     }
   in
-  require (List.length c'.tables <= 1) m.at "at most one table allowed";
-  require (List.length c'.memories <= 1) m.at "at most one memory allowed";
+  require (List.length c'.tables <= 1) m.at "multiple tables";
+  require (List.length c'.memories <= 1) m.at "multiple memories";
   List.iter (check_func c') funcs;
   List.iter (check_table c') tables;
   List.iter (check_memory c') memories;
