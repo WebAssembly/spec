@@ -76,8 +76,8 @@
 )
 
 ;; Test alignment annotation rules
-(module (memory 0) (func (drop (i32.load8_u align=2 (i32.const 0)))))
-(module (memory 0) (func (drop (i32.load16_u align=4 (i32.const 0)))))
+(module (memory 0) (func (drop (i32.load8_u align=1 (i32.const 0)))))
+(module (memory 0) (func (drop (i32.load16_u align=2 (i32.const 0)))))
 (module (memory 0) (func (drop (i32.load align=4 (i32.const 0)))))
 (module (memory 0) (func (drop (f32.load align=4 (i32.const 0)))))
 
@@ -103,15 +103,39 @@
 )
 
 (assert_invalid
-  (module (memory 0) (func (i64.load align=16 (i32.const 0))))
+  (module (memory 0) (func (drop (i64.load align=16 (i32.const 0)))))
   "alignment must not be larger than natural"
 )
 (assert_invalid
-  (module (memory 0) (func (i64.load align=32 (i32.const 0))))
+  (module (memory 0) (func (drop (i64.load align=32 (i32.const 0)))))
   "alignment must not be larger than natural"
 )
 (assert_invalid
-  (module (memory 0) (func (i32.load align=8 (i32.const 0))))
+  (module (memory 0) (func (drop (i32.load align=8 (i32.const 0)))))
+  "alignment must not be larger than natural"
+)
+(assert_invalid
+  (module (memory 0) (func (drop (i32.load16_u align=4 (i32.const 0)))))
+  "alignment must not be larger than natural"
+)
+(assert_invalid
+  (module (memory 0) (func (drop (i32.load8_u align=2 (i32.const 0)))))
+  "alignment must not be larger than natural"
+)
+(assert_invalid
+  (module (memory 0) (func (i32.store8 align=2 (i32.const 0) (i32.const 0))))
+  "alignment must not be larger than natural"
+)
+(assert_invalid
+  (module (memory 0) (func (i32.load16_u align=4 (i32.const 0))))
+  "alignment must not be larger than natural"
+)
+(assert_invalid
+  (module (memory 0) (func (i32.load8_u align=2 (i32.const 0))))
+  "alignment must not be larger than natural"
+)
+(assert_invalid
+  (module (memory 0) (func (i32.store8 align=2 (i32.const 0) (i32.const 0))))
   "alignment must not be larger than natural"
 )
 

@@ -208,18 +208,18 @@ let rec check_expr c et e =
     check_type None et e.at
 
   | Load (memop, e1) ->
-    check_load c et memop e1 e.at
+    check_load c et memop (size memop.ty) e1 e.at
 
   | Store (memop, e1, e2) ->
-    check_store c et memop e1 e2 e.at
+    check_store c et memop (size memop.ty) e1 e2 e.at
 
   | LoadExtend (extendop, e1) ->
     check_mem_type extendop.memop.ty extendop.sz e.at;
-    check_load c et extendop.memop e1 e.at
+    check_load c et extendop.memop (Memory.mem_size extendop.sz) e1 e.at
 
   | StoreWrap (wrapop, e1, e2) ->
     check_mem_type wrapop.memop.ty wrapop.sz e.at;
-    check_store c et wrapop.memop e1 e2 e.at
+    check_store c et wrapop.memop (Memory.mem_size wrapop.sz) e1 e2 e.at
 
   | Const v ->
     check_literal c et v
@@ -271,24 +271,24 @@ and check_expr_opt c et eo at =
 and check_literal c et l =
   check_type (Some (type_value l.it)) et l.at
 
-and check_load c et memop e1 at =
+and check_load c et memop mem_size e1 at =
   ignore (memory c (0 @@ at));
-  check_memop memop at;
+  check_memop memop mem_size at;
   check_expr c (some Int32Type) e1;
   check_type (Some memop.ty) et at
 
-and check_store c et memop e1 e2 at =
+and check_store c et memop mem_size e1 e2 at =
   ignore (memory c (0 @@ at));
-  check_memop memop at;
+  check_memop memop mem_size at;
   check_expr c (some Int32Type) e1;
   check_expr c (some memop.ty) e2;
   check_type None et at
 
-and check_memop memop at =
+and check_memop memop mem_size at =
   require (memop.offset >= 0L) at "negative offset";
   require (memop.offset <= 0xffffffffL) at "offset too large";
   require (Lib.Int.is_power_of_two memop.align) at "alignment must be a power of two";
-  require (memop.align <= size memop.ty) at "alignment must not be larger than natural"
+  require (memop.align <= mem_size) at "alignment must not be larger than natural"
 
 and check_mem_type ty sz at =
   require (ty = Int64Type || sz <> Memory.Mem32) at "memory size too big"
