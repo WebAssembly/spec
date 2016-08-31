@@ -163,9 +163,9 @@ and export' =
 type import_kind = import_kind' Source.phrase
 and import_kind' =
   | FuncImport of var
-  | TableImport of Table.size limits * elem_type
-  | MemoryImport of Memory.size limits
-  | GlobalImport of value_type (* TODO: mutability *)
+  | TableImport of table
+  | MemoryImport of memory
+  | GlobalImport of value_type
 
 type import = import' Source.phrase
 and import' =

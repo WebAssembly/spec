@@ -202,24 +202,34 @@ elem_type :
 ;
 
 func_type :
-  | /* empty */
-    { {ins = []; out = None} }
-  | LPAR PARAM value_type_list RPAR
-    { {ins = $3; out = None} }
-  | LPAR PARAM value_type_list RPAR LPAR RESULT VALUE_TYPE RPAR
-    { {ins = $3; out = Some $7} }
-  | LPAR RESULT VALUE_TYPE RPAR
-    { {ins = []; out = Some $3} }
+  | LPAR FUNC func_sig RPAR { $3 }
 ;
 
-type_use :
-  | LPAR TYPE var RPAR { $3 }
+func_sig :
+  | /* empty */ { {ins = []; out = None} }
+  | LPAR RESULT VALUE_TYPE RPAR func_sig
+    { if $5.out <> None then error (at ()) "multiple return types";
+      {$5 with out = Some $3} }
+  | LPAR PARAM value_type_list RPAR func_sig
+    { {$5 with ins = $3 @ $5.ins} }
+  | LPAR PARAM bind_var VALUE_TYPE RPAR func_sig  /* Sugar */
+    { {$6 with ins = $4 :: $6.ins} }
 ;
 
+table_sig :
+  | limits elem_type { {tlimits = $1; etype = $2} @@ at () }
+;
+memory_sig :
+  | limits { {mlimits = $1} @@ at () }
+;
 limits :
   | NAT { {min = int32 $1 (ati 1); max = None} }
   | NAT NAT
     { {min = int32 $1 (ati 1); max = Some (int32 $2 (ati 2))} }
+;
+
+type_use :
+  | LPAR TYPE var RPAR { $3 }
 ;
 
 
@@ -395,10 +405,9 @@ elem :
 ;
 
 table :
-  | LPAR TABLE bind_var_opt inline_export_opt limits elem_type RPAR
-    { let at = at () in
-      fun c -> $3 c anon_table bind_table;
-      {tlimits = $5; etype = $6} @@ at, [], $4 TableExport c.tables.count c }
+  | LPAR TABLE bind_var_opt inline_export_opt table_sig RPAR
+    { fun c -> $3 c anon_table bind_table;
+      $5, [], $4 TableExport c.tables.count c }
   | LPAR TABLE bind_var_opt inline_export_opt elem_type LPAR ELEM var_list RPAR RPAR  /* Sugar */
     { let at = at () in
       fun c -> $3 c anon_table bind_table;
@@ -418,9 +427,9 @@ data :
 ;
 
 memory :
-  | LPAR MEMORY bind_var_opt inline_export_opt limits RPAR
+  | LPAR MEMORY bind_var_opt inline_export_opt memory_sig RPAR
     { fun c -> $3 c anon_memory bind_memory;
-      {mlimits = $5} @@ at (), [], $4 MemoryExport c.memories.count c }
+      $5, [], $4 MemoryExport c.memories.count c }
   | LPAR MEMORY bind_var_opt inline_export LPAR DATA text_list RPAR RPAR  /* Sugar */
     { let at = at () in
       fun c -> $3 c anon_memory bind_memory;
@@ -444,12 +453,12 @@ memory :
 import_kind :
   | LPAR FUNC bind_var_opt type_use RPAR
     { fun c -> $3 c anon_func bind_func; FuncImport ($4 c type_) }
-  | LPAR FUNC bind_var_opt func_type RPAR  /* Sugar */
+  | LPAR FUNC bind_var_opt func_sig RPAR  /* Sugar */
     { let at4 = ati 4 in
       fun c -> $3 c anon_func bind_func; FuncImport (inline_type c $4 at4) }
-  | LPAR TABLE bind_var_opt limits elem_type RPAR
-    { fun c -> $3 c anon_table bind_table; TableImport ($4, $5) }
-  | LPAR MEMORY bind_var_opt limits RPAR
+  | LPAR TABLE bind_var_opt table_sig RPAR
+    { fun c -> $3 c anon_table bind_table; TableImport $4 }
+  | LPAR MEMORY bind_var_opt memory_sig RPAR
     { fun c -> $3 c anon_memory bind_memory; MemoryImport $4 }
   | LPAR GLOBAL bind_var_opt VALUE_TYPE RPAR
     { fun c -> $3 c anon_global bind_global; GlobalImport $4 }
@@ -462,15 +471,15 @@ import :
     { let at = at () in
       fun c -> $3 c anon_func bind_func;
       {module_name = fst $4; item_name = snd $4; ikind = FuncImport ($5 c type_) @@ at} @@ at }
-  | LPAR FUNC bind_var_opt inline_import func_type RPAR  /* Sugar */
+  | LPAR FUNC bind_var_opt inline_import func_sig RPAR  /* Sugar */
     { let at = at () and at5 = ati 5 in
       fun c -> $3 c anon_func bind_func;
       {module_name = fst $4; item_name = snd $4; ikind = FuncImport (inline_type c $5 at5) @@ at} @@ at }
-  | LPAR TABLE bind_var_opt inline_import limits elem_type RPAR  /* Sugar */
+  | LPAR TABLE bind_var_opt inline_import table_sig RPAR  /* Sugar */
     { let at = at () in
       fun c -> $3 c anon_table bind_table;
-      {module_name = fst $4; item_name = snd $4; ikind = TableImport ($5, $6) @@ at} @@ at }
-  | LPAR MEMORY bind_var_opt inline_import limits RPAR  /* Sugar */
+      {module_name = fst $4; item_name = snd $4; ikind = TableImport $5 @@ at} @@ at }
+  | LPAR MEMORY bind_var_opt inline_import memory_sig RPAR  /* Sugar */
     { let at = at () in
       fun c -> $3 c anon_memory bind_memory;
       {module_name = fst $4; item_name = snd $4; ikind = MemoryImport $5 @@ at} @@ at }
@@ -511,10 +520,10 @@ inline_export :
 /* Modules */
 
 type_def :
-  | LPAR TYPE LPAR FUNC func_type RPAR RPAR
-    { fun c -> anon_type c $5 }
-  | LPAR TYPE bind_var LPAR FUNC func_type RPAR RPAR  /* Sugar */
-    { fun c -> bind_type c $3 $6 }
+  | LPAR TYPE func_type RPAR
+    { fun c -> anon_type c $3 }
+  | LPAR TYPE bind_var func_type RPAR  /* Sugar */
+    { fun c -> bind_type c $3 $4 }
 ;
 
 global :

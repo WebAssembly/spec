@@ -366,12 +366,12 @@ let add_import (ext : extern) (imp : import) (inst : instance) : instance =
     | _ -> ()
     );
     {inst with funcs = f :: inst.funcs}
-  | ExternalTable t, TableImport (lim, _) ->
+  | ExternalTable t, TableImport tab ->
     (* TODO: no checking of element type? *)
-    check_limits (Table.limits t) lim imp.it.ikind.at;
+    check_limits (Table.limits t) tab.it.tlimits tab.at;
     {inst with tables = t :: inst.tables}
-  | ExternalMemory m, MemoryImport lim ->
-    check_limits (Memory.limits m) lim imp.it.ikind.at;
+  | ExternalMemory m, MemoryImport mem ->
+    check_limits (Memory.limits m) mem .it.mlimits mem.at;
     {inst with memories = m :: inst.memories}
   | ExternalGlobal g, GlobalImport _ ->
     (* TODO: no checking of value type? *)

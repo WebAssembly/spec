@@ -294,10 +294,8 @@ let import_kind i k =
   match k.it with
   | FuncImport x ->
     Node ("func $" ^ string_of_int i, [Node ("type", [atom var x])])
-  | TableImport (lim, t) ->
-    Node ("table $" ^ string_of_int i ^ " " ^ limits int32 lim, [atom elem_type t])
-  | MemoryImport lim ->
-    Node ("memory $" ^ string_of_int i ^ " " ^ limits int32 lim, [])
+  | TableImport tab -> table 0 i tab
+  | MemoryImport mem -> memory 0 i mem
   | GlobalImport t ->
     Node ("global $" ^ string_of_int i, [atom value_type t])
 

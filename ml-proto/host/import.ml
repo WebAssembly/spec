@@ -14,8 +14,8 @@ let register name lookup = registry := Registry.add name lookup !registry
 let external_type_of_import_kind m ikind =
   match ikind.it with
   | FuncImport x -> ExternalFuncType (List.nth m.it.types x.it)
-  | TableImport (lim, t) -> ExternalTableType (lim, t)
-  | MemoryImport lim -> ExternalMemoryType lim
+  | TableImport tab -> ExternalTableType (TableType (tab.it.tlimits, tab.it.etype))
+  | MemoryImport mem -> ExternalMemoryType (MemoryType mem.it.mlimits)
   | GlobalImport t -> ExternalGlobalType t
 
 let lookup (m : module_) (imp : import) : Instance.extern =

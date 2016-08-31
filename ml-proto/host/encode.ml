@@ -94,7 +94,6 @@ let encode m =
     let limits vu {min; max} =
       bool (max <> None); vu min; opt vu max
 
-
     (* Expressions *)
 
     open Source
@@ -319,27 +318,6 @@ let encode m =
     let type_section ts =
       section "type" (vec func_type) ts (ts <> [])
 
-    (* Import section *)
-    let import_kind k =
-      match k.it with
-      | FuncImport x -> u8 0x00; var x
-      | TableImport (lim, t) -> u8 0x01; elem_type t; limits vu32 lim
-      | MemoryImport lim -> u8 0x02; limits vu32 lim
-      | GlobalImport t -> u8 0x03; value_type t (* TODO: mutability *)
-
-    let import imp =
-      let {module_name; item_name; ikind} = imp.it in
-      string module_name; string item_name; import_kind ikind
-
-    let import_section imps =
-      section "import" (vec import) imps (imps <> [])
-
-    (* Function section *)
-    let func f = var f.it.ftype
-
-    let func_section fs =
-      section "function" (vec func) fs (fs <> [])
-
     (* Table section *)
     let table tab =
       let {etype; tlimits} = tab.it in
@@ -364,6 +342,27 @@ let encode m =
 
     let global_section gs =
       section "global" (vec global) gs (gs <> [])
+
+    (* Import section *)
+    let import_kind k =
+      match k.it with
+      | FuncImport x -> u8 0x00; var x
+      | TableImport tab -> u8 0x01; table tab
+      | MemoryImport mem -> u8 0x02; memory mem
+      | GlobalImport t -> u8 0x03; value_type t
+
+    let import imp =
+      let {module_name; item_name; ikind} = imp.it in
+      string module_name; string item_name; import_kind ikind
+
+    let import_section imps =
+      section "import" (vec import) imps (imps <> [])
+
+    (* Function section *)
+    let func f = var f.it.ftype
+
+    let func_section fs =
+      section "function" (vec func) fs (fs <> [])
 
     (* Export section *)
     let export_kind k =

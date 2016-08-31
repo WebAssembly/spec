@@ -489,35 +489,6 @@ let type_section s =
   section `TypeSection (vec func_type) [] s
 
 
-(* Import section *)
-
-let import_kind s =
-  match u8 s with
-  | 0x00 ->
-    let x = at var s in
-    FuncImport x
-  | 0x01 ->
-    let t = elem_type s in
-    let lim = limits vu32 s in
-    TableImport (lim, t)
-  | 0x02 ->
-    let lim = limits vu32 s in
-    MemoryImport lim
-  | 0x03 ->
-    let t = value_type s in
-    GlobalImport t (* TODO: mutability *)
-  | _ -> error s (pos s - 1) "invalid import kind"
-
-let import s =
-  let module_name = string s in
-  let item_name = string s in
-  let ikind = at import_kind s in
-  {module_name; item_name; ikind}
-
-let import_section s =
-  section `ImportSection (vec (at import)) [] s
-
-
 (* Function section *)
 
 let func_section s =
@@ -557,6 +528,26 @@ let global s =
 
 let global_section s =
   section `GlobalSection (vec (at global)) [] s
+
+
+(* Import section *)
+
+let import_kind s =
+  match u8 s with
+  | 0x00 -> FuncImport (at var s)
+  | 0x01 -> TableImport (at table s)
+  | 0x02 -> MemoryImport (at memory s)
+  | 0x03 -> GlobalImport (value_type s)
+  | _ -> error s (pos s - 1) "invalid import kind"
+
+let import s =
+  let module_name = string s in
+  let item_name = string s in
+  let ikind = at import_kind s in
+  {module_name; item_name; ikind}
+
+let import_section s =
+  section `ImportSection (vec (at import)) [] s
 
 
 (* Export section *)

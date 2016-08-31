@@ -402,12 +402,12 @@ let check_import im c =
   match ikind.it with
   | FuncImport x ->
     {c with funcs = type_ c x :: c.funcs}
-  | TableImport (lim, t) ->
-    check_table_limits lim ikind.at;
-    {c with tables = lim :: c.tables}
-  | MemoryImport lim ->
-    check_memory_limits lim ikind.at;
-    {c with memories = lim :: c.memories}
+  | TableImport tab ->
+    check_table c tab;
+    {c with tables = tab.it.tlimits :: c.tables}
+  | MemoryImport mem ->
+    check_memory c mem;
+    {c with memories = mem.it.mlimits :: c.memories}
   | GlobalImport t ->
     {c with globals = t :: c.globals}
 
