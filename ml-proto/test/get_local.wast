@@ -3,17 +3,17 @@
 (module
   ;; Typing
 
-  (export "type-local-i32" (func (result i32) (local i32) (get_local 0)))
-  (export "type-local-i64" (func (result i64) (local i64) (get_local 0)))
-  (export "type-local-f32" (func (result f32) (local f32) (get_local 0)))
-  (export "type-local-f64" (func (result f64) (local f64) (get_local 0)))
+  (func (export "type-local-i32") (result i32) (local i32) (get_local 0))
+  (func (export "type-local-i64") (result i64) (local i64) (get_local 0))
+  (func (export "type-local-f32") (result f32) (local f32) (get_local 0))
+  (func (export "type-local-f64") (result f64) (local f64) (get_local 0))
 
-  (export "type-param-i32" (func (param i32) (result i32) (get_local 0)))
-  (export "type-param-i64" (func (param i64) (result i64) (get_local 0)))
-  (export "type-param-f32" (func (param f32) (result f32) (get_local 0)))
-  (export "type-param-f64" (func (param f64) (result f64) (get_local 0)))
+  (func (export "type-param-i32") (param i32) (result i32) (get_local 0))
+  (func (export "type-param-i64") (param i64) (result i64) (get_local 0))
+  (func (export "type-param-f32") (param f32) (result f32) (get_local 0))
+  (func (export "type-param-f64") (param f64) (result f64) (get_local 0))
 
-  (export "type-mixed" (func (param i64 f32 f64 i32 i32)
+  (func (export "type-mixed") (param i64 f32 f64 i32 i32)
     (local f32 i64 i64 f64)
     (drop (i64.eqz (get_local 0)))
     (drop (f32.neg (get_local 1)))
@@ -24,11 +24,11 @@
     (drop (i64.eqz (get_local 6)))
     (drop (i64.eqz (get_local 7)))
     (drop (f64.neg (get_local 8)))
-  ))
+  )
 
   ;; Reading
 
-  (export "read" (func (param i64 f32 f64 i32 i32) (result f64)
+  (func (export "read") (param i64 f32 f64 i32 i32) (result f64)
     (local f32 i64 i64 f64)
     (set_local 5 (f32.const 5.5))
     (set_local 6 (i64.const 6))
@@ -59,7 +59,7 @@
       )
     )
   )
-))
+)
 
 (assert_return (invoke "type-local-i32") (i32.const 0))
 (assert_return (invoke "type-local-i64") (i64.const 0))

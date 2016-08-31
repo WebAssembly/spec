@@ -5,11 +5,11 @@
 (module
   (memory (data "\00\00\a0\7f"))
 
-  (export "f32.load" (func (result f32) (f32.load (i32.const 0))))
-  (export "i32.load" (func (result i32) (i32.load (i32.const 0))))
-  (export "f32.store" (func (f32.store (i32.const 0) (f32.const nan:0x200000))))
-  (export "i32.store" (func (i32.store (i32.const 0) (i32.const 0x7fa00000))))
-  (export "reset" (func (i32.store (i32.const 0) (i32.const 0))))
+  (func (export "f32.load") (result f32) (f32.load (i32.const 0)))
+  (func (export "i32.load") (result i32) (i32.load (i32.const 0)))
+  (func (export "f32.store") (f32.store (i32.const 0) (f32.const nan:0x200000)))
+  (func (export "i32.store") (i32.store (i32.const 0) (i32.const 0x7fa00000)))
+  (func (export "reset") (i32.store (i32.const 0) (i32.const 0)))
 )
 
 (assert_return (invoke "i32.load") (i32.const 0x7fa00000))
@@ -30,11 +30,11 @@
 (module
   (memory (data "\00\00\00\00\00\00\f4\7f"))
 
-  (export "f64.load" (func (result f64) (f64.load (i32.const 0))))
-  (export "i64.load" (func (result i64) (i64.load (i32.const 0))))
-  (export "f64.store" (func (f64.store (i32.const 0) (f64.const nan:0x4000000000000))))
-  (export "i64.store" (func (i64.store (i32.const 0) (i64.const 0x7ff4000000000000))))
-  (export "reset" (func (i64.store (i32.const 0) (i64.const 0))))
+  (func (export "f64.load") (result f64) (f64.load (i32.const 0)))
+  (func (export "i64.load") (result i64) (i64.load (i32.const 0)))
+  (func (export "f64.store") (f64.store (i32.const 0) (f64.const nan:0x4000000000000)))
+  (func (export "i64.store") (i64.store (i32.const 0) (i64.const 0x7ff4000000000000)))
+  (func (export "reset") (i64.store (i32.const 0) (i64.const 0)))
 )
 
 (assert_return (invoke "i64.load") (i64.const 0x7ff4000000000000))
@@ -57,11 +57,11 @@
 (module
   (memory (data "\00\00\00\a0\7f"))
 
-  (export "f32.load" (func (result f32) (f32.load (i32.const 1))))
-  (export "i32.load" (func (result i32) (i32.load (i32.const 1))))
-  (export "f32.store" (func (f32.store (i32.const 1) (f32.const nan:0x200000))))
-  (export "i32.store" (func (i32.store (i32.const 1) (i32.const 0x7fa00000))))
-  (export "reset" (func (i32.store (i32.const 1) (i32.const 0))))
+  (func (export "f32.load") (result f32) (f32.load (i32.const 1)))
+  (func (export "i32.load") (result i32) (i32.load (i32.const 1)))
+  (func (export "f32.store") (f32.store (i32.const 1) (f32.const nan:0x200000)))
+  (func (export "i32.store") (i32.store (i32.const 1) (i32.const 0x7fa00000)))
+  (func (export "reset") (i32.store (i32.const 1) (i32.const 0)))
 )
 
 (assert_return (invoke "i32.load") (i32.const 0x7fa00000))
@@ -82,11 +82,11 @@
 (module
   (memory (data "\00\00\00\00\00\00\00\f4\7f"))
 
-  (export "f64.load" (func (result f64) (f64.load (i32.const 1))))
-  (export "i64.load" (func (result i64) (i64.load (i32.const 1))))
-  (export "f64.store" (func (f64.store (i32.const 1) (f64.const nan:0x4000000000000))))
-  (export "i64.store" (func (i64.store (i32.const 1) (i64.const 0x7ff4000000000000))))
-  (export "reset" (func (i64.store (i32.const 1) (i64.const 0))))
+  (func (export "f64.load") (result f64) (f64.load (i32.const 1)))
+  (func (export "i64.load") (result i64) (i64.load (i32.const 1)))
+  (func (export "f64.store") (f64.store (i32.const 1) (f64.const nan:0x4000000000000)))
+  (func (export "i64.store") (i64.store (i32.const 1) (i64.const 0x7ff4000000000000)))
+  (func (export "reset") (i64.store (i32.const 1) (i64.const 0)))
 )
 
 (assert_return (invoke "i64.load") (i64.const 0x7ff4000000000000))
@@ -109,11 +109,11 @@
 (module
   (memory (data "\01\00\d0\7f"))
 
-  (export "f32.load" (func (result f32) (f32.load (i32.const 0))))
-  (export "i32.load" (func (result i32) (i32.load (i32.const 0))))
-  (export "f32.store" (func (f32.store (i32.const 0) (f32.const nan:0x500001))))
-  (export "i32.store" (func (i32.store (i32.const 0) (i32.const 0x7fd00001))))
-  (export "reset" (func (i32.store (i32.const 0) (i32.const 0))))
+  (func (export "f32.load") (result f32) (f32.load (i32.const 0)))
+  (func (export "i32.load") (result i32) (i32.load (i32.const 0)))
+  (func (export "f32.store") (f32.store (i32.const 0) (f32.const nan:0x500001)))
+  (func (export "i32.store") (i32.store (i32.const 0) (i32.const 0x7fd00001)))
+  (func (export "reset") (i32.store (i32.const 0) (i32.const 0)))
 )
 
 (assert_return (invoke "i32.load") (i32.const 0x7fd00001))
@@ -134,11 +134,11 @@
 (module
   (memory (data "\01\00\00\00\00\00\fc\7f"))
 
-  (export "f64.load" (func (result f64) (f64.load (i32.const 0))))
-  (export "i64.load" (func (result i64) (i64.load (i32.const 0))))
-  (export "f64.store" (func (f64.store (i32.const 0) (f64.const nan:0xc000000000001))))
-  (export "i64.store" (func (i64.store (i32.const 0) (i64.const 0x7ffc000000000001))))
-  (export "reset" (func (i64.store (i32.const 0) (i64.const 0))))
+  (func (export "f64.load") (result f64) (f64.load (i32.const 0)))
+  (func (export "i64.load") (result i64) (i64.load (i32.const 0)))
+  (func (export "f64.store") (f64.store (i32.const 0) (f64.const nan:0xc000000000001)))
+  (func (export "i64.store") (i64.store (i32.const 0) (i64.const 0x7ffc000000000001)))
+  (func (export "reset") (i64.store (i32.const 0) (i64.const 0)))
 )
 
 (assert_return (invoke "i64.load") (i64.const 0x7ffc000000000001))

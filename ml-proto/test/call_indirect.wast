@@ -54,54 +54,54 @@
 
   ;; Typing
 
-  (export "type-i32" (func (result i32) (call_indirect $out-i32 (i32.const 0))))
-  (export "type-i64" (func (result i64) (call_indirect $out-i64 (i32.const 1))))
-  (export "type-f32" (func (result f32) (call_indirect $out-f32 (i32.const 2))))
-  (export "type-f64" (func (result f64) (call_indirect $out-f64 (i32.const 3))))
+  (func (export "type-i32") (result i32) (call_indirect $out-i32 (i32.const 0)))
+  (func (export "type-i64") (result i64) (call_indirect $out-i64 (i32.const 1)))
+  (func (export "type-f32") (result f32) (call_indirect $out-f32 (i32.const 2)))
+  (func (export "type-f64") (result f64) (call_indirect $out-f64 (i32.const 3)))
 
-  (export "type-index" (func (result i64)
+  (func (export "type-index") (result i64)
     (call_indirect $over-i64 (i32.const 5) (i64.const 100))
-  ))
+  )
 
-  (export "type-first-i32" (func (result i32)
+  (func (export "type-first-i32") (result i32)
     (call_indirect $over-i32 (i32.const 4) (i32.const 32))
-  ))
-  (export "type-first-i64" (func (result i64)
+  )
+  (func (export "type-first-i64") (result i64)
     (call_indirect $over-i64 (i32.const 5) (i64.const 64))
-  ))
-  (export "type-first-f32" (func (result f32)
+  )
+  (func (export "type-first-f32") (result f32)
     (call_indirect $over-f32 (i32.const 6) (f32.const 1.32))
-  ))
-  (export "type-first-f64" (func (result f64)
+  )
+  (func (export "type-first-f64") (result f64)
     (call_indirect $over-f64 (i32.const 7) (f64.const 1.64))
-  ))
+  )
 
-  (export "type-second-i32" (func (result i32)
+  (func (export "type-second-i32") (result i32)
     (call_indirect $f32-i32 (i32.const 8) (f32.const 32.1) (i32.const 32))
-  ))
-  (export "type-second-i64" (func (result i64)
+  )
+  (func (export "type-second-i64") (result i64)
     (call_indirect $i32-i64 (i32.const 9) (i32.const 32) (i64.const 64))
-  ))
-  (export "type-second-f32" (func (result f32)
+  )
+  (func (export "type-second-f32") (result f32)
     (call_indirect $f64-f32 (i32.const 10) (f64.const 64) (f32.const 32))
-  ))
-  (export "type-second-f64" (func (result f64)
+  )
+  (func (export "type-second-f64") (result f64)
     (call_indirect $i64-f64 (i32.const 11) (i64.const 64) (f64.const 64.1))
-  ))
+  )
 
   ;; Dispatch
 
-  (export "dispatch" (func (param i32 i64) (result i64)
+  (func (export "dispatch") (param i32 i64) (result i64)
     (call_indirect $over-i64 (get_local 0) (get_local 1))
-  ))
+  )
 
-  (export "dispatch-structural" (func (param i32) (result i64)
+  (func (export "dispatch-structural") (param i32) (result i64)
     (call_indirect $over-i64-duplicate (get_local 0) (i64.const 9))
-  ))
+  )
 
   ;; Recursion
 
-  (export "fac" (func $fac (type $over-i64)
+  (func $fac (export "fac") (type $over-i64)
     (if (i64.eqz (get_local 0))
       (i64.const 1)
       (i64.mul
@@ -111,9 +111,9 @@
         )
       )
     )
-  ))
+  )
 
-  (export "fib" (func $fib (type $over-i64)
+  (func $fib (export "fib") (type $over-i64)
     (if (i64.le_u (get_local 0) (i64.const 1))
       (i64.const 1)
       (i64.add
@@ -125,24 +125,24 @@
         )
       )
     )
-  ))
+  )
 
-  (export "even" (func $even (param i32) (result i32)
+  (func $even (export "even") (param i32) (result i32)
     (if (i32.eqz (get_local 0))
       (i32.const 44)
       (call_indirect $over-i32 (i32.const 15)
         (i32.sub (get_local 0) (i32.const 1))
       )
     )
-  ))
-  (export "odd" (func $odd (param i32) (result i32)
+  )
+  (func $odd (export "odd") (param i32) (result i32)
     (if (i32.eqz (get_local 0))
       (i32.const 99)
       (call_indirect $over-i32 (i32.const 14)
         (i32.sub (get_local 0) (i32.const 1))
       )
     )
-  ))
+  )
 
   ;; Stack exhaustion
 
@@ -153,9 +153,9 @@
   ;; implementations and be incompatible with implementations that don't do
   ;; it (or don't do it under the same circumstances).
 
-  (export "runaway" (func $runaway (call_indirect $proc (i32.const 16))))
+  (func $runaway (export "runaway") (call_indirect $proc (i32.const 16)))
 
-  (export "mutual-runaway" (func $mutual-runaway1 (call_indirect $proc (i32.const 18))))
+  (func $mutual-runaway1 (export "mutual-runaway") (call_indirect $proc (i32.const 18)))
   (func $mutual-runaway2 (call_indirect $proc (i32.const 17)))
 )
 

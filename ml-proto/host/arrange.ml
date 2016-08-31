@@ -315,7 +315,7 @@ let export_kind k =
 let export ex =
   let {name; ekind; item} = ex.it in
   Node ("export",
-    [atom string name; Atom (export_kind ekind ^ " " ^ var item)]
+    [atom string name; Node (export_kind ekind, [atom var item])]
   )
 
 let global off i g =

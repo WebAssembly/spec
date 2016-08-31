@@ -11,11 +11,11 @@
   (data (i32.const 0) "a") (data (i32.const 1) "b") (data (i32.const 2) "c")
 )
 
-(module (memory (data)) (export "memsize" (func (result i32) (current_memory))))
+(module (memory (data)) (func (export "memsize") (result i32) (current_memory)))
 (assert_return (invoke "memsize") (i32.const 0))
-(module (memory (data "")) (export "memsize" (func (result i32) (current_memory))))
+(module (memory (data "")) (func (export "memsize") (result i32) (current_memory)))
 (assert_return (invoke "memsize") (i32.const 0))
-(module (memory (data "x")) (export "memsize" (func (result i32) (current_memory))))
+(module (memory (data "x")) (func (export "memsize") (result i32) (current_memory)))
 (assert_return (invoke "memsize") (i32.const 1))
 
 (assert_invalid (module (data (i32.const 0))) "unknown memory")
@@ -144,7 +144,7 @@
   (data (i32.const 0) "ABC\a7D") (data (i32.const 20) "WASM")
 
   ;; Data section
-  (export "data" (func (result i32)
+  (func (export "data") (result i32)
     (i32.and
       (i32.and
         (i32.and
@@ -167,10 +167,10 @@
         )
       )
     )
-  ))
+  )
 
   ;; Aligned read/write
-  (export "aligned" (func (result i32)
+  (func (export "aligned") (result i32)
     (local i32 i32 i32)
     (set_local 0 (i32.const 10))
     (loop
@@ -189,10 +189,10 @@
       (br 0)
     )
     (i32.const 1)
-  ))
+  )
 
   ;; Unaligned read/write
-  (export "unaligned" (func (result i32)
+  (func (export "unaligned") (result i32)
     (local i32 f64 f64)
     (set_local 0 (i32.const 10))
     (loop
@@ -211,10 +211,10 @@
       (br 0)
     )
     (i32.const 1)
-  ))
+  )
 
   ;; Memory cast
-  (export "cast" (func (result f64)
+  (func (export "cast") (result f64)
     (i64.store (i32.const 8) (i64.const -12345))
     (if
       (f64.eq
@@ -226,49 +226,49 @@
     (i64.store align=1 (i32.const 9) (i64.const 0))
     (i32.store16 align=1 (i32.const 15) (i32.const 16453))
     (f64.load align=1 (i32.const 9))
-  ))
+  )
 
   ;; Sign and zero extending memory loads
-  (export "i32_load8_s" (func (param $i i32) (result i32)
+  (func (export "i32_load8_s") (param $i i32) (result i32)
 	(i32.store8 (i32.const 8) (get_local $i))
 	(i32.load8_s (i32.const 8))
-  ))
-  (export "i32_load8_u" (func (param $i i32) (result i32)
+  )
+  (func (export "i32_load8_u") (param $i i32) (result i32)
 	(i32.store8 (i32.const 8) (get_local $i))
 	(i32.load8_u (i32.const 8))
-  ))
-  (export "i32_load16_s" (func (param $i i32) (result i32)
+  )
+  (func (export "i32_load16_s") (param $i i32) (result i32)
 	(i32.store16 (i32.const 8) (get_local $i))
 	(i32.load16_s (i32.const 8))
-  ))
-  (export "i32_load16_u" (func (param $i i32) (result i32)
+  )
+  (func (export "i32_load16_u") (param $i i32) (result i32)
 	(i32.store16 (i32.const 8) (get_local $i))
 	(i32.load16_u (i32.const 8))
-  ))
-  (export "i64_load8_s" (func (param $i i64) (result i64)
+  )
+  (func (export "i64_load8_s") (param $i i64) (result i64)
 	(i64.store8 (i32.const 8) (get_local $i))
 	(i64.load8_s (i32.const 8))
-  ))
-  (export "i64_load8_u" (func (param $i i64) (result i64)
+  )
+  (func (export "i64_load8_u") (param $i i64) (result i64)
 	(i64.store8 (i32.const 8) (get_local $i))
 	(i64.load8_u (i32.const 8))
-  ))
-  (export "i64_load16_s" (func (param $i i64) (result i64)
+  )
+  (func (export "i64_load16_s") (param $i i64) (result i64)
 	(i64.store16 (i32.const 8) (get_local $i))
 	(i64.load16_s (i32.const 8))
-  ))
-  (export "i64_load16_u" (func (param $i i64) (result i64)
+  )
+  (func (export "i64_load16_u") (param $i i64) (result i64)
 	(i64.store16 (i32.const 8) (get_local $i))
 	(i64.load16_u (i32.const 8))
-  ))
-  (export "i64_load32_s" (func (param $i i64) (result i64)
+  )
+  (func (export "i64_load32_s") (param $i i64) (result i64)
 	(i64.store32 (i32.const 8) (get_local $i))
 	(i64.load32_s (i32.const 8))
-  ))
-  (export "i64_load32_u" (func (param $i i64) (result i64)
+  )
+  (func (export "i64_load32_u") (param $i i64) (result i64)
 	(i64.store32 (i32.const 8) (get_local $i))
 	(i64.load32_u (i32.const 8))
-  ))
+  )
 )
 
 (assert_return (invoke "data") (i32.const 1))

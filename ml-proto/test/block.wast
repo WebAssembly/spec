@@ -4,29 +4,29 @@
   ;; Auxiliary definition
   (func $dummy)
 
-  (export "empty" (func
+  (func (export "empty")
     (block)
     (block $l)
-  ))
+  )
 
-  (export "singular" (func (result i32)
+  (func (export "singular") (result i32)
     (block (nop))
     (block (i32.const 7))
-  ))
+  )
 
-  (export "multi" (func (result i32)
+  (func (export "multi") (result i32)
     (block (call $dummy) (call $dummy) (call $dummy) (call $dummy))
     (block (call $dummy) (call $dummy) (call $dummy) (i32.const 8))
-  ))
+  )
 
-  (export "nested" (func (result i32)
+  (func (export "nested") (result i32)
     (block
       (block (call $dummy) (block) (nop))
       (block (call $dummy) (i32.const 9))
     )
-  ))
+  )
 
-  (export "deep" (func (result i32)
+  (func (export "deep") (result i32)
     (block (block (block (block (block (block (block (block (block (block
       (block (block (block (block (block (block (block (block (block (block
         (block (block (block (block (block (block (block (block (block (block
@@ -36,38 +36,38 @@
         ))))))))))
       ))))))))))
     ))))))))))
-  ))
+  )
 
-  (export "as-unary-operand" (func (result i32)
+  (func (export "as-unary-operand") (result i32)
     (i32.ctz (block (call $dummy) (i32.const 13)))
-  ))
-  (export "as-binary-operand" (func (result i32)
+  )
+  (func (export "as-binary-operand") (result i32)
     (i32.mul
       (block (call $dummy) (i32.const 3))
       (block (call $dummy) (i32.const 4))
     )
-  ))
-  (export "as-test-operand" (func (result i32)
+  )
+  (func (export "as-test-operand") (result i32)
     (i32.eqz (block (call $dummy) (i32.const 13)))
-  ))
-  (export "as-compare-operand" (func (result i32)
+  )
+  (func (export "as-compare-operand") (result i32)
     (f32.gt
       (block (call $dummy) (f32.const 3))
       (block (call $dummy) (f32.const 3))
     )
-  ))
+  )
 
-  (export "break-bare" (func (result i32)
+  (func (export "break-bare") (result i32)
     (block (br 0) (unreachable))
     (block (br_if 0 (i32.const 1)) (unreachable))
     (block (br_table 0 (i32.const 0)) (unreachable))
     (block (br_table 0 0 0 (i32.const 1)) (unreachable))
     (i32.const 19)
-  ))
-  (export "break-value" (func (result i32)
+  )
+  (func (export "break-value") (result i32)
     (block (br 0 (i32.const 18)) (i32.const 19))
-  ))
-  (export "break-repeated" (func (result i32)
+  )
+  (func (export "break-repeated") (result i32)
     (block
       (br 0 (i32.const 18))
       (br 0 (i32.const 19))
@@ -78,8 +78,8 @@
       (br_table 0 0 0 (i32.const 23) (i32.const 1))
       (i32.const 21)
     )
-  ))
-  (export "break-inner" (func (result i32)
+  )
+  (func (export "break-inner") (result i32)
     (local i32)
     (set_local 0 (i32.const 0))
     (set_local 0 (i32.add (get_local 0) (block (block (br 1 (i32.const 0x1))))))
@@ -91,9 +91,9 @@
       (i32.add (get_local 0) (block (i32.ctz (block (br 1 (i32.const 0x8))))))
     )
     (get_local 0)
-  ))
+  )
 
-  (export "effects" (func (result i32)
+  (func (export "effects") (result i32)
     (local i32)
     (block
       (set_local 0 (i32.const 1))
@@ -104,7 +104,7 @@
       (set_local 0 (i32.mul (get_local 0) (i32.const 100)))
     )
     (i32.eq (get_local 0) (i32.const -14))
-  ))
+  )
 )
 
 (assert_return (invoke "empty"))
