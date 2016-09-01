@@ -154,7 +154,7 @@ let inline_type c t at =
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token MODULE TABLE ELEM MEMORY DATA IMPORT EXPORT TABLE
-%token INVOKE GET
+%token REGISTER INVOKE GET
 %token ASSERT_INVALID ASSERT_UNLINKABLE
 %token ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP
 %token INPUT OUTPUT
@@ -623,6 +623,7 @@ action :
 cmd :
   | module_ { Define (fst $1, snd $1) @@ at () }
   | action { Action $1 @@ at () }
+  | LPAR REGISTER TEXT module_var_opt RPAR { Register ($3, $4) @@ at () }
   | LPAR ASSERT_INVALID module_ TEXT RPAR
     { AssertInvalid (snd $3, $4) @@ at () }
   | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR

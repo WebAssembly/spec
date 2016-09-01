@@ -371,6 +371,7 @@ rule token = parse
   | "import" { IMPORT }
   | "export" { EXPORT }
 
+  | "register" { REGISTER }
   | "invoke" { INVOKE }
   | "get" { GET }
   | "assert_invalid" { ASSERT_INVALID }

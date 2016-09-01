@@ -13,6 +13,7 @@ and action' =
 type command = command' Source.phrase
 and command' =
   | Define of var option * definition
+  | Register of string * var option
   | Action of action
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string

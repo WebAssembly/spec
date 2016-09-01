@@ -24,6 +24,8 @@ and instance =
   exports : extern ExportMap.t;
 }
 
+exception Func of func
+
 let instance m =
   { module_ = m; funcs = []; tables = []; memories = []; globals = [];
     exports = ExportMap.empty }

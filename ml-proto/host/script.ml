@@ -19,6 +19,7 @@ and action' =
 type command = command' Source.phrase
 and command' =
   | Define of var option * definition
+  | Register of string * var option
   | Action of action
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string
@@ -46,6 +47,13 @@ exception IO = IO.Error
 let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 
 module Map = Map.Make(String)
+
+let registry : Instance.instance Map.t ref = ref Map.empty
+
+let lookup module_name item_name _t =
+  match Instance.export (Map.find module_name !registry) item_name with
+  | Some ext -> ext
+  | None -> raise Not_found
 
 let modules : Ast.module_ Map.t ref = ref Map.empty
 let instances : Instance.instance Map.t ref = ref Map.empty
@@ -123,6 +131,12 @@ let run_cmd cmd =
     current_instance := Some inst;
     bind modules x_opt m;
     bind instances x_opt inst
+
+  | Register (name, x_opt) ->
+    trace ("Registering module \"" ^ name ^ "\"...");
+    let inst = get_instance x_opt cmd.at in
+    registry := Map.add name inst !registry;
+    Import.register name (lookup name)
 
   | Action act ->
     let v = run_action act in
@@ -246,6 +260,7 @@ let dry_cmd cmd =
   | Output (x_opt, None) ->
     (try !output_stdout (get_module x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
+  | Register _
   | Action _
   | AssertInvalid _
   | AssertUnlinkable _
