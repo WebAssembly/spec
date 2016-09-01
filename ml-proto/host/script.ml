@@ -1,4 +1,5 @@
 open Source
+open Instance
 
 
 (* Script representation *)
@@ -11,6 +12,7 @@ and definition' =
 type action = action' Source.phrase
 and action' =
   | Invoke of string * Kernel.literal list
+  | Get of string
 
 type command = command' Source.phrase
 and command' =
@@ -64,11 +66,22 @@ let run_def def =
     Decode.decode "binary" bs 
 
 let run_action act =
+ let inst = get_instance act.at in
   match act.it with
   | Invoke (name, es) ->
-    trace ("Invoking \"" ^ name ^ "\"...");
-    let m = get_instance act.at in
-    Eval.invoke m name (List.map it es)
+    trace ("Invoking function \"" ^ name ^ "\"...");
+    (match Instance.export inst name with
+    | Some (ExternalFunc f) -> Eval.invoke f (List.map it es)
+    | Some _ -> Assert.error act.at "export is not a function"
+    | None -> Assert.error act.at "undefined export"
+    )
+ | Get name ->
+    trace ("Getting global \"" ^ name ^ "\"...");
+    (match Instance.export inst name with
+    | Some (ExternalGlobal v) -> Some v
+    | Some _ -> Assert.error act.at "export is not a global"
+    | None -> Assert.error act.at "undefined export"
+    )
 
 let run_cmd cmd =
   match cmd.it with

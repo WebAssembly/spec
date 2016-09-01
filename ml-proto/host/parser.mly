@@ -151,8 +151,9 @@ let inline_type c t at =
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token MODULE TABLE ELEM MEMORY DATA IMPORT EXPORT TABLE
+%token INVOKE GET
 %token ASSERT_INVALID ASSERT_UNLINKABLE
-%token ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
+%token ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP
 %token INPUT OUTPUT
 %token EOF
 
@@ -607,6 +608,7 @@ module_ :
 
 action :
   | LPAR INVOKE TEXT const_list RPAR { Invoke ($3, $4) @@ at () }
+  | LPAR GET TEXT RPAR { Get $3 @@ at() }
 
 cmd :
   | module_ { Define $1 @@ at () }

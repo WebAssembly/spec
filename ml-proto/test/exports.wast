@@ -33,11 +33,10 @@
 )
 
 (module
+  (export "e" (func $f))
   (func $f (param $n i32) (result i32)
     (return (i32.add (get_local $n) (i32.const 1)))
   )
-
-  (export "e" (func $f))
 )
 
 (assert_return (invoke "e" (i32.const 42)) (i32.const 43))
@@ -77,7 +76,12 @@
   "duplicate export name"
 )
 
-(; TODO: get global value ;)
+(module
+  (export "e" (global $g))
+  (global $g i32 (i32.const 42))
+)
+
+(assert_return (get "e") (i32.const 42))
 
 
 ;; Tables

@@ -64,10 +64,6 @@ let global c x = lookup "global" c.instance.globals x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
-let export inst name =
-  try ExportMap.find name.it inst.exports with Not_found ->
-    Crash.error name.at ("undefined export \"" ^ name.it ^ "\"")
-
 let elem c x i t at =
   match Table.load (table c x) i t with
   | Some j -> j
@@ -414,13 +410,9 @@ let init m externals =
   Lib.Option.app (fun x -> ignore (eval_func (func c x) [] x.at)) start;
   {inst with exports = List.fold_right (add_export c) exports inst.exports}
 
-let invoke inst name vs =
-  match export inst (name @@ no_region) with
-  | ExternalFunc f ->
-    (try eval_func f vs no_region
-    with Stack_overflow -> Trap.error no_region "call stack exhausted")
-  | _ ->
-    Crash.error no_region ("export \"" ^ name ^ "\" is not a function")
+let invoke func vs =
+  (try eval_func func vs no_region
+  with Stack_overflow -> Trap.error no_region "call stack exhausted")
 
 let const m e =
   some (eval_expr (empty_config (instance m)) e) e.at

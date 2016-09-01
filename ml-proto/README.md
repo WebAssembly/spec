@@ -226,7 +226,8 @@ cmd:
   ( output <string>? )                      ;; output module to stout or file
 
 action:
-  ( invoke <name> <expr>* )                 ;; invoke export
+  ( invoke <name> <expr>* )                 ;; invoke function export
+  ( get <name> )                            ;; get global export
 ```
 
 Commands are executed in sequence. Invocation, assertions, and output apply to the most recently defined module (the _current_ module), and are only possible after a module has been defined. Note that there only ever is one current module, the different module definitions cannot interact.

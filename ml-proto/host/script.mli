@@ -6,6 +6,7 @@ and definition' =
 type action = action' Source.phrase
 and action' =
   | Invoke of string * Kernel.literal list
+  | Get of string
 
 type command = command' Source.phrase
 and command' =

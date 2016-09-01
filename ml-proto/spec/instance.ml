@@ -27,3 +27,6 @@ and instance =
 let instance m =
   { module_ = m; funcs = []; tables = []; memories = []; globals = [];
     exports = ExportMap.empty }
+
+let export inst name =
+  try Some (ExportMap.find name inst.exports) with Not_found -> None
