@@ -45,7 +45,7 @@ let run_binary name buf =
   run_from
     (fun _ ->
       let m = Decode.decode name buf in
-      [Script.Define (Script.Textual m @@ m.at) @@ m.at])
+      [Script.Define (None, Script.Textual m @@ m.at) @@ m.at])
 
 let run_sexpr_file file =
   Script.trace ("Loading (" ^ file ^ ")...");

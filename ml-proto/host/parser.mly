@@ -63,15 +63,15 @@ type types = {mutable tmap : int VarMap.t; mutable tlist : Types.func_type list}
 let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
-  {types : types; tables : space; memories : space; funcs : space;
-   locals : space; globals : space; labels : int VarMap.t}
+  { types : types; tables : space; memories : space;
+    funcs : space; locals : space; globals : space; labels : int VarMap.t }
 
 let empty_context () =
-  {types = empty_types (); tables = empty (); memories = empty ();
-   funcs = empty (); locals = empty (); globals = empty (); labels = VarMap.empty}
+  { types = empty_types (); tables = empty (); memories = empty ();
+    funcs = empty (); locals = empty (); globals = empty ();
+    labels = VarMap.empty }
 
 let enter_func c =
-  assert (VarMap.is_empty c.labels);
   {c with labels = VarMap.empty; locals = empty ()}
 
 let type_ c x =
@@ -91,10 +91,16 @@ let label c x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
 
+let bind_module () x = Some x
+let anon_module () = None
+
 let bind_type c x ty =
   if VarMap.mem x.it c.types.tmap then
     error x.at ("duplicate type " ^ x.it);
   c.types.tmap <- VarMap.add x.it (List.length c.types.tlist) c.types.tmap;
+  c.types.tlist <- c.types.tlist @ [ty]
+
+let anon_type c ty =
   c.types.tlist <- c.types.tlist @ [ty]
 
 let bind category space x =
@@ -110,9 +116,6 @@ let bind_table c x = bind "table" c.tables x
 let bind_memory c x = bind "memory" c.memories x
 let bind_label c x =
   {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
-
-let anon_type c ty =
-  c.types.tlist <- c.types.tlist @ [ty]
 
 let anon space n = space.count <- space.count + n
 
@@ -598,29 +601,38 @@ module_fields :
       {m with exports = $1 c :: m.exports} }
 ;
 module_ :
-  | LPAR MODULE module_fields RPAR
-    { Textual ($3 (empty_context ()) @@ at ()) @@ at() }
-  | LPAR MODULE TEXT text_list RPAR { Binary ($3 ^ $4) @@ at() }
+  | LPAR MODULE module_var_opt module_fields RPAR
+    { $3, Textual ($4 (empty_context ()) @@ at ()) @@ at () }
+  | LPAR MODULE module_var_opt TEXT text_list RPAR
+    { $3, Binary ($4 ^ $5) @@ at() }
 ;
 
 
 /* Scripts */
 
+module_var_opt :
+  | /* empty */ { None }
+  | VAR { Some ($1 @@ at ()) }  /* Sugar */
+;
 action :
-  | LPAR INVOKE TEXT const_list RPAR { Invoke ($3, $4) @@ at () }
-  | LPAR GET TEXT RPAR { Get $3 @@ at() }
-
+  | LPAR INVOKE module_var_opt TEXT const_list RPAR
+    { Invoke ($3, $4, $5) @@ at () }
+  | LPAR GET module_var_opt TEXT RPAR
+    { Get ($3, $4) @@ at() }
+;
 cmd :
-  | module_ { Define $1 @@ at () }
+  | module_ { Define (fst $1, snd $1) @@ at () }
   | action { Action $1 @@ at () }
-  | LPAR ASSERT_INVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at () }
-  | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR { AssertUnlinkable ($3, $4) @@ at () }
+  | LPAR ASSERT_INVALID module_ TEXT RPAR
+    { AssertInvalid (snd $3, $4) @@ at () }
+  | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR
+    { AssertUnlinkable (snd $3, $4) @@ at () }
   | LPAR ASSERT_RETURN action const_opt RPAR { AssertReturn ($3, $4) @@ at () }
   | LPAR ASSERT_RETURN_NAN action RPAR { AssertReturnNaN $3 @@ at () }
   | LPAR ASSERT_TRAP action TEXT RPAR { AssertTrap ($3, $4) @@ at () }
   | LPAR INPUT TEXT RPAR { Input $3 @@ at () }
-  | LPAR OUTPUT TEXT RPAR { Output (Some $3) @@ at () }
-  | LPAR OUTPUT RPAR { Output None @@ at () }
+  | LPAR OUTPUT module_var_opt TEXT RPAR { Output ($3, Some $4) @@ at () }
+  | LPAR OUTPUT module_var_opt RPAR { Output ($3, None) @@ at () }
 ;
 cmd_list :
   | /* empty */ { [] }
@@ -646,6 +658,6 @@ script1 :
   | cmd { [$1] }
 ;
 module1 :
-  | module_ EOF { $1 }
+  | module_ EOF { snd $1 }
 ;
 %%

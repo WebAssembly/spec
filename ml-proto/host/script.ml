@@ -4,6 +4,8 @@ open Instance
 
 (* Script representation *)
 
+type var = string Source.phrase
+
 type definition = definition' Source.phrase
 and definition' =
   | Textual of Ast.module_
@@ -11,12 +13,12 @@ and definition' =
 
 type action = action' Source.phrase
 and action' =
-  | Invoke of string * Kernel.literal list
-  | Get of string
+  | Invoke of var option * string * Kernel.literal list
+  | Get of var option * string
 
 type command = command' Source.phrase
 and command' =
-  | Define of definition
+  | Define of var option * definition
   | Action of action
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string
@@ -24,7 +26,7 @@ and command' =
   | AssertReturnNaN of action
   | AssertTrap of action * string
   | Input of string
-  | Output of string option
+  | Output of var option * string option
 
 type script = command list
 
@@ -43,16 +45,33 @@ exception IO = IO.Error
 
 let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 
+module Map = Map.Make(String)
+
+let modules : Ast.module_ Map.t ref = ref Map.empty
+let instances : Instance.instance Map.t ref = ref Map.empty
 let current_module : Ast.module_ option ref = ref None
 let current_instance : Instance.instance option ref = ref None
 
-let get_module at = match !current_module with
-  | Some m -> m
-  | None -> raise (Eval.Crash (at, "no module defined"))
+let bind map x_opt y =
+  match x_opt with
+  | None -> ()
+  | Some x -> map := Map.add x.it y !map
 
-let get_instance at = match !current_instance with
-  | Some m -> m
-  | None -> raise (Eval.Crash (at, "no module defined"))
+let get_module x_opt at =
+  match x_opt, !current_module with
+  | None, Some m -> m
+  | None, None -> raise (Eval.Crash (at, "no module defined"))
+  | Some x, _ ->
+    try Map.find x.it !modules with Not_found ->
+      raise (Eval.Crash (x.at, "unknown module " ^ x.it))
+
+let get_instance x_opt at =
+  match x_opt, !current_instance with
+  | None, Some inst -> inst
+  | None, None -> raise (Eval.Crash (at, "no module defined"))
+  | Some x, _ ->
+    try Map.find x.it !instances with Not_found ->
+      raise (Eval.Crash (x.at, "unknown module " ^ x.it))
 
 let input_file = ref (fun _ -> assert false)
 let output_file = ref (fun _ -> assert false)
@@ -66,17 +85,18 @@ let run_def def =
     Decode.decode "binary" bs 
 
 let run_action act =
- let inst = get_instance act.at in
   match act.it with
-  | Invoke (name, es) ->
+  | Invoke (x_opt, name, es) ->
     trace ("Invoking function \"" ^ name ^ "\"...");
+    let inst = get_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (ExternalFunc f) -> Eval.invoke f (List.map it es)
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"
     )
- | Get name ->
+ | Get (x_opt, name) ->
     trace ("Getting global \"" ^ name ^ "\"...");
+    let inst = get_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (ExternalGlobal v) -> Some v
     | Some _ -> Assert.error act.at "export is not a global"
@@ -85,7 +105,7 @@ let run_action act =
 
 let run_cmd cmd =
   match cmd.it with
-  | Define def ->
+  | Define (x_opt, def) ->
     let m = run_def def in
     let m' = Desugar.desugar m in
     if not !Flags.unchecked then begin
@@ -98,8 +118,11 @@ let run_cmd cmd =
     end;
     trace "Initializing...";
     let imports = Import.link m' in
+    let inst = Eval.init m' imports in
     current_module := Some m;
-    current_instance := Some (Eval.init m' imports)
+    current_instance := Some inst;
+    bind modules x_opt m;
+    bind instances x_opt inst
 
   | Action act ->
     let v = run_action act in
@@ -184,12 +207,12 @@ let run_cmd cmd =
     (try if not (!input_file file) then Abort.error cmd.at "aborting"
     with Sys_error msg -> IO.error cmd.at msg)
 
-  | Output (Some file) ->
-    (try !output_file file (get_module cmd.at)
+  | Output (x_opt, Some file) ->
+    (try !output_file file (get_module x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
 
-  | Output None ->
-    (try !output_stdout (get_module cmd.at)
+  | Output (x_opt, None) ->
+    (try !output_stdout (get_module x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
 
 let dry_def def =
@@ -201,7 +224,7 @@ let dry_def def =
 
 let dry_cmd cmd =
   match cmd.it with
-  | Define def ->
+  | Define (x_opt, def) ->
     let m = dry_def def in
     let m' = Desugar.desugar m in
     if not !Flags.unchecked then begin
@@ -212,15 +235,16 @@ let dry_cmd cmd =
         Print.print_module_sig m'
       end
     end;
-    current_module := Some m
+    current_module := Some m;
+    bind modules x_opt m
   | Input file ->
     (try if not (!input_file file) then Abort.error cmd.at "aborting"
     with Sys_error msg -> IO.error cmd.at msg)
-  | Output (Some file) ->
-    (try !output_file file (get_module cmd.at)
+  | Output (x_opt, Some file) ->
+    (try !output_file file (get_module x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
-  | Output None ->
-    (try !output_stdout (get_module cmd.at)
+  | Output (x_opt, None) ->
+    (try !output_stdout (get_module x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
   | Action _
   | AssertInvalid _

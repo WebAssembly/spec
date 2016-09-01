@@ -1,3 +1,9 @@
+module Fun =
+struct
+  let rec repeat n f x =
+    if n = 0 then () else (f x; repeat (n - 1) f x)
+end
+
 module List =
 struct
   let rec make n x =

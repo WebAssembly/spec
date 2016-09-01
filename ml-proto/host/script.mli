@@ -1,3 +1,5 @@
+type var = string Source.phrase
+
 type definition = definition' Source.phrase
 and definition' =
   | Textual of Ast.module_
@@ -5,12 +7,12 @@ and definition' =
 
 type action = action' Source.phrase
 and action' =
-  | Invoke of string * Kernel.literal list
-  | Get of string
+  | Invoke of var option * string * Kernel.literal list
+  | Get of var option * string
 
 type command = command' Source.phrase
 and command' =
-  | Define of definition
+  | Define of var option * definition
   | Action of action
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string
@@ -18,7 +20,7 @@ and command' =
   | AssertReturnNaN of action
   | AssertTrap of action * string
   | Input of string
-  | Output of string option
+  | Output of var option * string option
 
 type script = command list
 
