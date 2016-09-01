@@ -194,16 +194,6 @@
 (assert_return (invoke "load" (i32.const 8)) (i32.const 0x100000))
 (assert_trap (invoke "load" (i32.const 1000000)) "out of bounds memory access")
 
-(module
-  (import "spectest" "memory" (memory 0 3))  ;; actual has max size 2
-  (func (export "grow") (param i32) (result i32) (grow_memory (get_local 0)))
-)
-(assert_return (invoke "grow" (i32.const 0)) (i32.const 1))
-(assert_return (invoke "grow" (i32.const 1)) (i32.const 1))
-(assert_return (invoke "grow" (i32.const 0)) (i32.const 2))
-(assert_return (invoke "grow" (i32.const 1)) (i32.const -1))
-(assert_return (invoke "grow" (i32.const 0)) (i32.const 2))
-
 (assert_invalid
   (module (import "" "" (memory 1)) (import "" "" (memory 1)))
   "multiple memories"
@@ -233,3 +223,13 @@
   (module (import "spectest" "memory" (memory 1 1)))
   "maximum size larger than declared"
 )
+
+(module
+  (import "spectest" "memory" (memory 0 3))  ;; actual has max size 2
+  (func (export "grow") (param i32) (result i32) (grow_memory (get_local 0)))
+)
+(assert_return (invoke "grow" (i32.const 0)) (i32.const 1))
+(assert_return (invoke "grow" (i32.const 1)) (i32.const 1))
+(assert_return (invoke "grow" (i32.const 0)) (i32.const 2))
+(assert_return (invoke "grow" (i32.const 1)) (i32.const -1))
+(assert_return (invoke "grow" (i32.const 0)) (i32.const 2))
