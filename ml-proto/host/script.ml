@@ -8,15 +8,19 @@ and definition' =
   | Textual of Ast.module_
   | Binary of string
 
+type action = action' Source.phrase
+and action' =
+  | Invoke of string * Kernel.literal list
+
 type command = command' Source.phrase
 and command' =
   | Define of definition
-  | Invoke of string * Kernel.literal list
+  | Action of action
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string
-  | AssertReturn of string * Kernel.literal list * Kernel.literal option
-  | AssertReturnNaN of string * Kernel.literal list
-  | AssertTrap of string * Kernel.literal list * string
+  | AssertReturn of action * Kernel.literal option
+  | AssertReturnNaN of action
+  | AssertTrap of action * string
   | Input of string
   | Output of string option
 
@@ -59,6 +63,13 @@ let run_def def =
     trace "Decoding...";
     Decode.decode "binary" bs 
 
+let run_action act =
+  match act.it with
+  | Invoke (name, es) ->
+    trace ("Invoking \"" ^ name ^ "\"...");
+    let m = get_instance act.at in
+    Eval.invoke m name (List.map it es)
+
 let run_cmd cmd =
   match cmd.it with
   | Define def ->
@@ -77,10 +88,8 @@ let run_cmd cmd =
     current_module := Some m;
     current_instance := Some (Eval.init m' imports)
 
-  | Invoke (name, es) ->
-    trace ("Invoking \"" ^ name ^ "\"...");
-    let m = get_instance cmd.at in
-    let v = Eval.invoke m name (List.map it es) in
+  | Action act ->
+    let v = run_action act in
     if v <> None then Print.print_value v
 
   | AssertInvalid (def, re) ->
@@ -119,21 +128,19 @@ let run_cmd cmd =
       Assert.error cmd.at "expected linking error"
     )
 
-  | AssertReturn (name, es, expect_e) ->
-    trace ("Asserting return \"" ^ name ^ "\"...");
-    let m = get_instance cmd.at in
-    let got_v = Eval.invoke m name (List.map it es) in
-    let expect_v = Lib.Option.map it expect_e in
+  | AssertReturn (act, expect) ->
+    trace ("Asserting return...");
+    let got_v = run_action act in
+    let expect_v = Lib.Option.map it expect in
     if got_v <> expect_v then begin
       print_string "Result: "; Print.print_value got_v;
       print_string "Expect: "; Print.print_value expect_v;
       Assert.error cmd.at "wrong return value"
     end
 
-  | AssertReturnNaN (name, es) ->
-    trace ("Asserting return \"" ^ name ^ "\"...");
-    let m = get_instance cmd.at in
-    let got_v = Eval.invoke m name (List.map it es) in
+  | AssertReturnNaN act ->
+    trace ("Asserting return...");
+    let got_v = run_action act in
     if
       match got_v with
       | Some (Values.Float32 got_f32) ->
@@ -147,10 +154,9 @@ let run_cmd cmd =
       Assert.error cmd.at "wrong return value"
     end
 
-  | AssertTrap (name, es, re) ->
-    trace ("Asserting trap \"" ^ name ^ "\"...");
-    let m = get_instance cmd.at in
-    (match Eval.invoke m name (List.map it es) with
+  | AssertTrap (act, re) ->
+    trace ("Asserting trap...");
+    (match run_action act with
     | exception Eval.Trap (_, msg) ->
       if not (Str.string_match (Str.regexp re) msg 0) then begin
         print_endline ("Result: \"" ^ msg ^ "\"");
@@ -203,7 +209,7 @@ let dry_cmd cmd =
   | Output None ->
     (try !output_stdout (get_module cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
-  | Invoke _
+  | Action _
   | AssertInvalid _
   | AssertUnlinkable _
   | AssertReturn _

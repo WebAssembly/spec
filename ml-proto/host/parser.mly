@@ -605,17 +605,17 @@ module_ :
 
 /* Scripts */
 
+action :
+  | LPAR INVOKE TEXT const_list RPAR { Invoke ($3, $4) @@ at () }
+
 cmd :
   | module_ { Define $1 @@ at () }
-  | LPAR INVOKE TEXT const_list RPAR { Invoke ($3, $4) @@ at () }
+  | action { Action $1 @@ at () }
   | LPAR ASSERT_INVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at () }
   | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR { AssertUnlinkable ($3, $4) @@ at () }
-  | LPAR ASSERT_RETURN LPAR INVOKE TEXT const_list RPAR const_opt RPAR
-    { AssertReturn ($5, $6, $8) @@ at () }
-  | LPAR ASSERT_RETURN_NAN LPAR INVOKE TEXT const_list RPAR RPAR
-    { AssertReturnNaN ($5, $6) @@ at () }
-  | LPAR ASSERT_TRAP LPAR INVOKE TEXT const_list RPAR TEXT RPAR
-    { AssertTrap ($5, $6, $8) @@ at () }
+  | LPAR ASSERT_RETURN action const_opt RPAR { AssertReturn ($3, $4) @@ at () }
+  | LPAR ASSERT_RETURN_NAN action RPAR { AssertReturnNaN $3 @@ at () }
+  | LPAR ASSERT_TRAP action TEXT RPAR { AssertTrap ($3, $4) @@ at () }
   | LPAR INPUT TEXT RPAR { Input $3 @@ at () }
   | LPAR OUTPUT TEXT RPAR { Output (Some $3) @@ at () }
   | LPAR OUTPUT RPAR { Output None @@ at () }

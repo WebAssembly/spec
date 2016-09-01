@@ -3,15 +3,19 @@ and definition' =
   | Textual of Ast.module_
   | Binary of string
 
+type action = action' Source.phrase
+and action' =
+  | Invoke of string * Kernel.literal list
+
 type command = command' Source.phrase
 and command' =
   | Define of definition
-  | Invoke of string * Kernel.literal list
+  | Action of action
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string
-  | AssertReturn of string * Kernel.literal list * Kernel.literal option
-  | AssertReturnNaN of string * Kernel.literal list
-  | AssertTrap of string * Kernel.literal list * string
+  | AssertReturn of action * Kernel.literal option
+  | AssertReturnNaN of action
+  | AssertTrap of action * string
   | Input of string
   | Output of string option
 

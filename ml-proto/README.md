@@ -215,14 +215,18 @@ In order to be able to check and run modules for testing purposes, the S-express
 script: <cmd>*
 
 cmd:
-  <module>                                             ;; define, validate, and initialize module
-  ( invoke <name> <expr>* )                            ;; invoke export and print result
-  ( assert_return (invoke <name> <expr>* ) <expr> )    ;; assert return with expected result of invocation
-  ( assert_return_nan (invoke <name> <expr>* ))        ;; assert return with floating point nan result of invocation
-  ( assert_trap (invoke <name> <expr>* ) <failure> )   ;; assert invocation traps with given failure string
-  ( assert_invalid <module> <failure> )                ;; assert invalid module with given failure string
-  ( input <string> )                                   ;; read script or module from file
-  ( output <string>? )                                 ;; output module to stout or file
+  <module>                                  ;; define, validate, and initialize module
+  <action>                                  ;; perform action and print results
+  ( assert_return <action> <expr>? )        ;; assert action has expected results
+  ( assert_return_nan <action> )            ;; assert action results in NaN
+  ( assert_trap <action> <failure> )        ;; assert action traps with given failure string
+  ( assert_invalid <module> <failure> )     ;; assert module is invalid with given failure string
+  ( assert_unlinkable <module> <failure> )  ;; assert module fails to link module with given failure string
+  ( input <string> )                        ;; read script or module from file
+  ( output <string>? )                      ;; output module to stout or file
+
+action:
+  ( invoke <name> <expr>* )                 ;; invoke export
 ```
 
 Commands are executed in sequence. Invocation, assertions, and output apply to the most recently defined module (the _current_ module), and are only possible after a module has been defined. Note that there only ever is one current module, the different module definitions cannot interact.
