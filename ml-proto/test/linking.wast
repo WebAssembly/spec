@@ -54,6 +54,7 @@
   (table (export "tab") 10 anyfunc)
   (elem (i32.const 2) $g $g $g $g)
   (func $g (result i32) (i32.const 4))
+  (func (export "h") (result i32) (i32.const -4))
 
   (func (export "call") (param i32) (result i32)
     (call_indirect 0 (get_local 0))
@@ -66,8 +67,9 @@
   (type (func (result i32)))
 
   (func $f (import "M" "call") (param i32) (result i32))
+  (func $h (import "M" "h") (result i32))
 
-  (table anyfunc (elem $g $g $g))
+  (table anyfunc (elem $g $g $g $h $f))
   (func $g (result i32) (i32.const 5))
 
   (export "M.call" (func $f))
@@ -96,15 +98,19 @@
 
 (assert_trap (invoke $M "call" (i32.const 20)) "undefined")
 (assert_trap (invoke $N "M.call" (i32.const 20)) "undefined")
-(assert_trap (invoke $N "call" (i32.const 4)) "undefined")
+(assert_trap (invoke $N "call" (i32.const 7)) "undefined")
 (assert_trap (invoke $N "call M.call" (i32.const 20)) "undefined")
+
+(assert_return (invoke $N "call" (i32.const 3)) (i32.const -4))
+(assert_trap (invoke $N "call" (i32.const 4)) "indirect call")
 
 (module $O
   (type (func (result i32)))
 
+  (func $h (import "M" "h") (result i32))
   (table (import "M" "tab") 5 anyfunc)
-  (elem (i32.const 1) $h $h)
-  (func $h (result i32) (i32.const 6))
+  (elem (i32.const 1) $i $h)
+  (func $i (result i32) (i32.const 6))
 
   (func (export "call") (param i32) (result i32)
     (call_indirect 0 (get_local 0))
@@ -116,11 +122,11 @@
 (assert_return (invoke $N "call M.call" (i32.const 3)) (i32.const 4))
 (assert_return (invoke $O "call" (i32.const 3)) (i32.const 4))
 
-(assert_return (invoke $M "call" (i32.const 2)) (i32.const 6))
-(assert_return (invoke $N "M.call" (i32.const 2)) (i32.const 6))
+(assert_return (invoke $M "call" (i32.const 2)) (i32.const -4))
+(assert_return (invoke $N "M.call" (i32.const 2)) (i32.const -4))
 (assert_return (invoke $N "call" (i32.const 2)) (i32.const 5))
-(assert_return (invoke $N "call M.call" (i32.const 2)) (i32.const 6))
-(assert_return (invoke $O "call" (i32.const 2)) (i32.const 6))
+(assert_return (invoke $N "call M.call" (i32.const 2)) (i32.const -4))
+(assert_return (invoke $O "call" (i32.const 2)) (i32.const -4))
 
 (assert_return (invoke $M "call" (i32.const 1)) (i32.const 6))
 (assert_return (invoke $N "M.call" (i32.const 1)) (i32.const 6))
