@@ -192,7 +192,7 @@ let rec check_instr (c : context) (e : instr) (stack : stack_type) : op_type =
     check_arity n e.at;
     let ts = List.tl (peek_n (n + 1) stack) in
     unify (label c x) ts e.at;
-    (ts @ [I32Type]) --> Stack []
+    (ts @ [I32Type]) --> Stack ts
 
   | BrTable (n, xs, x) ->
     check_arity n e.at;

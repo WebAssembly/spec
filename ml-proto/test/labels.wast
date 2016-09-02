@@ -193,39 +193,44 @@
         (br_if $inner (i32.const 1))
         (set_local $i (i32.or (get_local $i) (i32.const 0x2)))
       )
-      (br_if $outer
-        (block (set_local $i (i32.or (get_local $i) (i32.const 0x4))) (get_local $i)) (i32.const 0)
-      )
+      (drop (br_if $outer
+        (block (set_local $i (i32.or (get_local $i) (i32.const 0x4))) (get_local $i))
+        (i32.const 0)
+      ))
       (set_local $i (i32.or (get_local $i) (i32.const 0x8)))
-      (br_if $outer
-        (block (set_local $i (i32.or (get_local $i) (i32.const 0x10))) (get_local $i)) (i32.const 1)
-      )
+      (drop (br_if $outer
+        (block (set_local $i (i32.or (get_local $i) (i32.const 0x10))) (get_local $i))
+        (i32.const 1)
+      ))
       (set_local $i (i32.or (get_local $i) (i32.const 0x20))) (get_local $i)
     )
   )
 
   (func $br_if1 (result i32)
     (block $l0
-      (br_if $l0 (block $l1 (br $l1 (i32.const 1))) (i32.const 1))
-      (i32.const 1)))
+      (drop (br_if $l0 (block $l1 (br $l1 (i32.const 1))) (i32.const 1)))
+      (i32.const 1)
+    )
+  )
 
   (func $br_if2 (result i32)
     (block $l0
       (if (i32.const 1)
-        (br $l0
-          (block $l1
-            (br $l1 (i32.const 1)))))
-      (i32.const 1)))
+        (br $l0 (block $l1 (br $l1 (i32.const 1))))
+      )
+      (i32.const 1)
+    )
+  )
 
   (func $br_if3 (result i32)
     (local $i1 i32)
     (drop
       (i32.add
         (block $l0
-          (br_if $l0
+          (drop (br_if $l0
             (block (set_local $i1 (i32.const 1)) (get_local $i1))
             (block (set_local $i1 (i32.const 2)) (get_local $i1))
-          )
+          ))
           (i32.const 0)
         )
         (i32.const 0)
@@ -312,30 +317,10 @@
   "type mismatch"
 )
 (assert_invalid
-  (module (func (result f32) (block $l (br_if $l (f32.const 0) (i32.const 1)))))
+  (module (func (block $l (br_if $l (f32.const 0) (i32.const 1)))))
   "type mismatch"
 )
 (assert_invalid
-  (module (func (result i32) (block $l (br_if $l (f32.const 0) (i32.const 1)))))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func (block $l (f32.neg (br_if $l (f32.const 0) (i32.const 1))))))
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func (param i32) (result i32)
-      (block $l (f32.neg (br_if $l (f32.const 0) (get_local 0))))
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func (param i32) (result f32)
-      (block $l (f32.neg (block $i (br_if $l (f32.const 3) (get_local 0)))))
-    )
-  )
+  (module (func (block $l (br_if $l (f32.const 0) (i32.const 1)))))
   "type mismatch"
 )
