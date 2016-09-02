@@ -593,9 +593,9 @@ let module_ s =
   iterate user_section s;
   let start = start_section s in
   iterate user_section s;
-  let func_bodies = code_section s in
-  iterate user_section s;
   let elems = elem_section s in
+  iterate user_section s;
+  let func_bodies = code_section s in
   iterate user_section s;
   let data = data_section s in
   iterate user_section s;

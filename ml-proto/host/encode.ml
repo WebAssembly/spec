@@ -455,8 +455,8 @@ let encode m =
       global_section m.it.globals;
       export_section m.it.exports;
       start_section m.it.start;
-      code_section m.it.funcs;
       elem_section m.it.elems;
+      code_section m.it.funcs;
       data_section m.it.data
   end
   in E.module_ m; to_string s
