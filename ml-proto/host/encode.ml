@@ -415,10 +415,11 @@ let encode m =
 
     let code f =
       let {locals; body; _} = f.it in
-      vec local (compress locals);
       let g = gap () in
       let p = pos s in
+      vec local (compress locals);
       list instr body;
+      u8 0x0f;
       patch_gap g (pos s - p)
 
     let code_section fs =

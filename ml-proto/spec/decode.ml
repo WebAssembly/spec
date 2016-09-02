@@ -5,21 +5,18 @@ type stream =
   name : string;
   bytes : string;
   pos : int ref;
-  len : int
 }
 
 exception EOS
 
-let stream name bs = {name; bytes = bs; pos = ref 0; len = String.length bs}
-let substream s end_ = {s with len = end_}
+let stream name bs = {name; bytes = bs; pos = ref 0}
 
-let len s = s.len
+let len s = String.length s.bytes
 let pos s = !(s.pos)
 let eos s = (pos s = len s)
 
 let check n s = if pos s + n > len s then raise EOS
 let skip n s = check n s; s.pos := !(s.pos) + n
-let rewind p s = s.pos := p
 
 let read s = Char.code (s.bytes.[!(s.pos)])
 let peek s = if eos s then None else Some (read s)
@@ -107,6 +104,13 @@ let rec list f n s = if n = 0 then [] else let x = f s in x :: list f (n - 1) s
 let opt f b s = if b then Some (f s) else None
 let vec f s = let n = vu s in list f n s
 let vec1 f s = let b = bool s in opt f b s
+
+let sized f s =
+  let size = vu s in
+  let start = pos s in
+  let x = f s in
+  require (pos s = start + size) s start "section size mismatch";
+  x
 
 
 (* Types *)
@@ -404,7 +408,7 @@ and instr_block' s es =
 
 let const s =
   let c = at instr_block s in
-  expect 0x0f s "`end` opcode expected";
+  expect 0x0f s "END opcode expected";
   c
 
 
@@ -415,31 +419,28 @@ let trace s name =
     (name ^ " @ " ^ string_of_int (pos s) ^ " = " ^ string_of_byte (read s))
 
 let id s =
-  match u8 s with
-  | 0 -> `UserSection
-  | 1 -> `TypeSection
-  | 2 -> `ImportSection
-  | 3 -> `FuncSection
-  | 4 -> `TableSection
-  | 5 -> `MemorySection
-  | 6 -> `GlobalSection
-  | 7 -> `ExportSection
-  | 8 -> `StartSection
-  | 9 -> `CodeSection
-  | 10 -> `ElemSection
-  | 11 -> `DataSection
-  | _ -> error s (pos s - 1) "invalid section id"
+  let bo = peek s in
+  Lib.Option.map
+    (function
+    | 0 -> `UserSection
+    | 1 -> `TypeSection
+    | 2 -> `ImportSection
+    | 3 -> `FuncSection
+    | 4 -> `TableSection
+    | 5 -> `MemorySection
+    | 6 -> `GlobalSection
+    | 7 -> `ExportSection
+    | 8 -> `StartSection
+    | 9 -> `CodeSection
+    | 10 -> `ElemSection
+    | 11 -> `DataSection
+    | _ -> error s (pos s) "invalid section id"
+    ) bo
 
 let section tag f default s =
-  if eos s then default else
-  let start_pos = pos s in
-  if id s <> tag then (rewind start_pos s; default) else
-  let size = vu s in
-  let content_pos = pos s in
-  let s' = substream s (content_pos + size) in
-  let x = f s' in
-  require (eos s') s' (pos s') "junk at end of section";
-  x
+  match id s with
+  | Some tag' when tag' = tag -> ignore (get s); sized f s
+  | _ -> default
 
 
 (* Type section *)
@@ -530,12 +531,12 @@ let local s =
 
 let code s =
   let locals = List.flatten (vec local s) in
-  let size = vu s in
-  let body = instr_block (substream s (pos s + size)) in
+  let body = instr_block s in
+  expect 0x0f s "END opcode expected";
   {locals; body; ftype = Source.((-1) @@ Source.no_region)}
 
 let code_section s =
-  section `CodeSection (vec (at code)) [] s
+  section `CodeSection (vec (at (sized code))) [] s
 
 
 (* Element section *)
