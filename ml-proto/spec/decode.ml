@@ -415,19 +415,20 @@ let trace s name =
     (name ^ " @ " ^ string_of_int (pos s) ^ " = " ^ string_of_byte (read s))
 
 let id s =
-  match string s with
-  | "type" -> `TypeSection
-  | "import" -> `ImportSection
-  | "function" -> `FuncSection
-  | "table" -> `TableSection
-  | "memory" -> `MemorySection
-  | "global" -> `GlobalSection
-  | "export" -> `ExportSection
-  | "start" -> `StartSection
-  | "code" -> `CodeSection
-  | "element" -> `ElemSection
-  | "data" -> `DataSection
-  | _ -> `UnknownSection
+  match u8 s with
+  | 0 -> `UserSection
+  | 1 -> `TypeSection
+  | 2 -> `ImportSection
+  | 3 -> `FuncSection
+  | 4 -> `TableSection
+  | 5 -> `MemorySection
+  | 6 -> `GlobalSection
+  | 7 -> `ExportSection
+  | 8 -> `StartSection
+  | 9 -> `CodeSection
+  | 10 -> `ElemSection
+  | 11 -> `DataSection
+  | _ -> error s (pos s - 1) "invalid section id"
 
 let section tag f default s =
   if eos s then default else
@@ -560,10 +561,10 @@ let data_section s =
   section `DataSection (vec (at memory_segment)) [] s
 
 
-(* Unknown section *)
+(* User section *)
 
-let unknown_section s =
-  section `UnknownSection (fun s -> skip (len s - pos s) s; true) false s
+let user_section s =
+  section `UserSection (fun s -> skip (len s - pos s) s; true) false s
 
 
 (* Modules *)
@@ -575,31 +576,29 @@ let module_ s =
   require (magic = 0x6d736100l) s 0 "magic header not detected";
   let version = u32 s in
   require (version = Encode.version) s 4 "unknown binary version";
-  iterate unknown_section s;
+  iterate user_section s;
   let types = type_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let imports = import_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let func_types = func_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let table = table_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let memory = memory_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let globals = global_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let exports = export_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let start = start_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let func_bodies = code_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let elems = elem_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let data = data_section s in
-  iterate unknown_section s;
-  (*TODO: name section*)
-  iterate unknown_section s;
+  iterate user_section s;
   require (pos s = len s) s (len s) "junk after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";

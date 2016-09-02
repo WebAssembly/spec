@@ -334,7 +334,7 @@ let encode m =
 
     let section id f x needed =
       if needed then begin
-        string id;
+        u8 id;
         let g = gap () in
         let p = pos s in
         f x;
@@ -343,7 +343,7 @@ let encode m =
 
     (* Type section *)
     let type_section ts =
-      section "type" (vec func_type) ts (ts <> [])
+      section 1 (vec func_type) ts (ts <> [])
 
     (* Import section *)
     let import imp =
@@ -351,13 +351,13 @@ let encode m =
       var itype; string module_name; string func_name
 
     let import_section imps =
-      section "import" (vec import) imps (imps <> [])
+      section 2 (vec import) imps (imps <> [])
 
     (* Function section *)
     let func f = var f.it.ftype
 
     let func_section fs =
-      section "function" (vec func) fs (fs <> [])
+      section 3 (vec func) fs (fs <> [])
 
     (* Table section *)
     let limits vu lim =
@@ -369,7 +369,7 @@ let encode m =
       elem_type etype; limits vu32 tlimits
 
     let table_section tabo =
-      section "table" (opt table) tabo (tabo <> None)
+      section 4 (opt table) tabo (tabo <> None)
 
     (* Memory section *)
     let memory mem =
@@ -377,7 +377,7 @@ let encode m =
       limits vu32 mlimits
 
     let memory_section memo =
-      section "memory" (opt memory) memo (memo <> None)
+      section 5 (opt memory) memo (memo <> None)
 
     (* Global section *)
     let global g =
@@ -385,7 +385,7 @@ let encode m =
       value_type gtype; const value
 
     let global_section gs =
-      section "global" (vec global) gs (gs <> [])
+      section 6 (vec global) gs (gs <> [])
 
     (* Export section *)
     let export exp =
@@ -398,11 +398,11 @@ let encode m =
     let export_section exps =
       (*TODO: pending resolution*)
       let exps = List.filter (fun exp -> exp.it.kind <> `Memory) exps in
-      section "export" (vec export) exps (exps <> [])
+      section 7 (vec export) exps (exps <> [])
 
     (* Start section *)
     let start_section xo =
-      section "start" (opt var) xo (xo <> None)
+      section 8 (opt var) xo (xo <> None)
 
     (* Code section *)
     let compress ts =
@@ -422,7 +422,7 @@ let encode m =
       patch_gap g (pos s - p)
 
     let code_section fs =
-      section "code" (vec code) fs (fs <> [])
+      section 9 (vec code) fs (fs <> [])
 
     (* Element section *)
     let segment dat seg =
@@ -433,14 +433,14 @@ let encode m =
       segment (vec var) seg
 
     let elem_section elems =
-      section "element" (vec table_segment) elems (elems <> [])
+      section 10 (vec table_segment) elems (elems <> [])
 
     (* Data section *)
     let memory_segment seg =
       segment string seg
 
     let data_section data =
-      section "data" (vec memory_segment) data (data <> [])
+      section 11 (vec memory_segment) data (data <> [])
 
     (* Module *)
 
