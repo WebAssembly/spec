@@ -145,7 +145,7 @@ let inline_type c t at =
 
 %}
 
-%token NAT INT FLOAT TEXT VAR VALUE_TYPE ANYFUNC LPAR RPAR
+%token NAT INT FLOAT TEXT VAR VALUE_TYPE ANYFUNC MUT LPAR RPAR
 %token NOP DROP BLOCK IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
@@ -203,6 +203,11 @@ value_type_list :
 
 elem_type :
   | ANYFUNC { AnyFuncType }
+;
+
+global_type :
+  | VALUE_TYPE { GlobalType ($1, Immutable) }
+  | LPAR MUT VALUE_TYPE RPAR { GlobalType ($3, Mutable) }
 ;
 
 func_type :
@@ -397,7 +402,7 @@ func :
 ;
 
 
-/* Tables & Memories */
+/* Tables, Memories & Globals */
 
 elem :
   | LPAR ELEM var expr var_list RPAR
@@ -453,6 +458,19 @@ memory :
       [] }
 ;
 
+global :
+  | LPAR GLOBAL bind_var_opt inline_export global_type expr RPAR
+    { let at = at () in
+      fun c -> $3 c anon_global bind_global;
+      (fun () -> {gtype = $5; value = $6 c} @@ at),
+      $4 GlobalExport c.globals.count c }
+  /* Need to duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
+  | LPAR GLOBAL bind_var_opt global_type expr RPAR
+    { let at = at () in
+      fun c -> $3 c anon_global bind_global;
+      (fun () -> {gtype = $4; value = $5 c} @@ at), [] }
+;
+
 
 /* Imports & Exports */
 
@@ -466,7 +484,7 @@ import_kind :
     { fun c -> $3 c anon_table bind_table; TableImport $4 }
   | LPAR MEMORY bind_var_opt memory_sig RPAR
     { fun c -> $3 c anon_memory bind_memory; MemoryImport $4 }
-  | LPAR GLOBAL bind_var_opt VALUE_TYPE RPAR
+  | LPAR GLOBAL bind_var_opt global_type RPAR
     { fun c -> $3 c anon_global bind_global; GlobalImport $4 }
 ;
 import :
@@ -489,7 +507,7 @@ import :
     { let at = at () in
       fun c -> $3 c anon_memory bind_memory;
       {module_name = fst $4; item_name = snd $4; ikind = MemoryImport $5 @@ at} @@ at }
-  | LPAR GLOBAL bind_var_opt inline_import VALUE_TYPE RPAR  /* Sugar */
+  | LPAR GLOBAL bind_var_opt inline_import global_type RPAR  /* Sugar */
     { let at = at () in
       fun c -> $3 c anon_global bind_global;
       {module_name = fst $4; item_name = snd $4; ikind = GlobalImport $5 @@ at} @@ at }
@@ -530,14 +548,6 @@ type_def :
     { fun c -> anon_type c $3 }
   | LPAR TYPE bind_var func_type RPAR  /* Sugar */
     { fun c -> bind_type c $3 $4 }
-;
-
-global :
-  | LPAR GLOBAL bind_var_opt inline_export_opt VALUE_TYPE expr RPAR
-    { let at = at () in
-      fun c -> $3 c anon_global bind_global;
-      (fun () -> {gtype = $5; value = $6 c} @@ at),
-      $4 GlobalExport c.globals.count c }
 ;
 
 start :

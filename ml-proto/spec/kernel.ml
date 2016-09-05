@@ -107,7 +107,7 @@ and expr' =
 type global = global' Source.phrase
 and global' =
 {
-  gtype : value_type;
+  gtype : global_type;
   value : expr;
 }
 
@@ -164,7 +164,7 @@ and import_kind' =
   | FuncImport of var
   | TableImport of table_type
   | MemoryImport of memory_type
-  | GlobalImport of value_type
+  | GlobalImport of global_type
 
 type import = import' Source.phrase
 and import' =

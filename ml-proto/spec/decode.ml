@@ -149,6 +149,17 @@ let memory_type s =
   let lim = limits vu32 s in
   MemoryType lim
 
+let mutability s =
+  match u8 s with
+  | 0 -> Immutable
+  | 1 -> Mutable
+  | _ -> error s (pos s - 1) "invalid mutability"
+
+let global_type s =
+  let t = value_type s in
+  let mut = mutability s in
+  GlobalType (t, mut)
+
 
 (* Decode expressions *)
 
@@ -505,7 +516,7 @@ let import_kind s =
   | 0x00 -> FuncImport (at var s)
   | 0x01 -> TableImport (table_type s)
   | 0x02 -> MemoryImport (memory_type s)
-  | 0x03 -> GlobalImport (value_type s)
+  | 0x03 -> GlobalImport (global_type s)
   | _ -> error s (pos s - 1) "invalid import kind"
 
 let import s =
@@ -547,7 +558,7 @@ let memory_section s =
 (* Global section *)
 
 let global s =
-  let t = value_type s in
+  let t = global_type s in
   let pos = pos s in
   let es = expr_block s in
   require (List.length es = 1) s pos "single expression expected";

@@ -22,7 +22,7 @@ type context =
   types : func_type list;
   funcs : func_type list;
   locals : value_type list;
-  globals : value_type list;
+  globals : global_type list;
   return : expr_type;
   labels : expr_type_future list;
   tables : table_type list;
@@ -201,10 +201,13 @@ let rec check_expr c et e =
     check_type (Some (local c x)) et e.at
 
   | GetGlobal x ->
-    check_type (Some (global c x)) et e.at
+    let GlobalType (t, mut) = global c x in
+    check_type (Some t) et e.at
 
   | SetGlobal (x, e1) ->
-    check_expr c (some (global c x)) e1;
+    let GlobalType (t, mut) = global c x in
+    require (mut = Mutable) x.at "global is immutable";
+    check_expr c (some t) e1;
     check_type None et e.at
 
   | Load (memop, e1) ->
@@ -322,7 +325,7 @@ let check_func c f =
   check_expr c' (known s.out) body
 
 
-(* Tables & Memories *)
+(* Tables, Memories, & Globals *)
 
 let check_table_type (t : table_type) at =
   let TableType ({min; max}, _) = t in
@@ -381,13 +384,14 @@ let check_memory_segment c prev_end seg =
     "data segment does not fit into memory";
   end_
 
-
-(* Modules *)
-
 let check_global c glob =
   let {gtype; value} = glob.it in
-  check_const c gtype value;
+  let GlobalType (t, mut) = gtype in
+  check_const c t value;
   {c with globals = c.globals @ [gtype]}
+
+
+(* Modules *)
 
 let check_start c start =
   Lib.Option.app (fun x ->
@@ -408,6 +412,8 @@ let check_import im c =
   | MemoryImport t ->
     check_memory_type t ikind.at; {c with memories = t :: c.memories}
   | GlobalImport t ->
+    let GlobalType (_, mut) = t in
+    require (mut = Immutable) ikind.at "mutable globals cannot be imported (yet)";
     {c with globals = t :: c.globals}
 
 module NameSet = Set.Make(String)
@@ -418,7 +424,9 @@ let check_export c set ex =
   | FuncExport -> ignore (func c item)
   | TableExport -> ignore (table c item)
   | MemoryExport -> ignore (memory c item)
-  | GlobalExport -> ignore (global c item)
+  | GlobalExport ->
+    let GlobalType (_, mut) = global c item in
+    require (mut = Immutable) ekind.at "mutable globals cannot be exported (yet)"
   );
   require (not (NameSet.mem name set)) ex.at "duplicate export name";
   NameSet.add name set

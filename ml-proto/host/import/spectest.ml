@@ -26,7 +26,7 @@ let lookup name t =
   match name, t with
   | "print", ExternalFuncType ft -> ExternalFunc (HostFunc (print ft.out))
   | "print", _ -> ExternalFunc (HostFunc (print None))
-  | "global", ExternalGlobalType t -> ExternalGlobal (global t)
+  | "global", ExternalGlobalType (GlobalType (t, _)) -> ExternalGlobal (global t)
   | "global", _ -> ExternalGlobal (global Int32Type)
   | "table", _ -> ExternalTable table
   | "memory", _ -> ExternalMemory memory
