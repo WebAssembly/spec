@@ -13,7 +13,7 @@ let register name lookup = registry := Registry.add name lookup !registry
 
 let lookup m import =
   let {module_name; func_name; itype} = import.it in
-  let ty = List.nth m.it.types itype.it in
+  let ty = Lib.List.nth32 m.it.types itype.it in
   try Registry.find module_name !registry func_name ty with Not_found ->
     Unknown.error import.at
       ("no function \"" ^ module_name ^ "." ^ func_name ^

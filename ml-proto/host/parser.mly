@@ -51,15 +51,15 @@ let int64 s at =
 
 module VarMap = Map.Make(String)
 
-type space = {mutable map : int VarMap.t; mutable count : int}
-let empty () = {map = VarMap.empty; count = 0}
+type space = {mutable map : int32 VarMap.t; mutable count : int32}
+let empty () = {map = VarMap.empty; count = 0l}
 
-type types = {mutable tmap : int VarMap.t; mutable tlist : Types.func_type list}
+type types = {mutable tmap : int32 VarMap.t; mutable tlist : Types.func_type list}
 let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
   {types : types; funcs : space; imports : space;
-   locals : space; globals : space; labels : int VarMap.t}
+   locals : space; globals : space; labels : int32 VarMap.t}
 
 let empty_context () =
   {types = empty_types (); funcs = empty (); imports = empty ();
@@ -88,49 +88,50 @@ let label c x =
 let bind_type c x ty =
   if VarMap.mem x.it c.types.tmap then
     error x.at ("duplicate type " ^ x.it);
-  c.types.tmap <- VarMap.add x.it (List.length c.types.tlist) c.types.tmap;
+  c.types.tmap <-
+    VarMap.add x.it (Lib.List.length32 c.types.tlist) c.types.tmap;
   c.types.tlist <- c.types.tlist @ [ty]
 
 let bind category space x =
   if VarMap.mem x.it space.map then
     error x.at ("duplicate " ^ category ^ " " ^ x.it);
   space.map <- VarMap.add x.it space.count space.map;
-  space.count <- space.count + 1
+  space.count <- Int32.add space.count 1l
 
 let bind_func c x = bind "function" c.funcs x
 let bind_import c x = bind "import" c.imports x
 let bind_local c x = bind "local" c.locals x
 let bind_global c x = bind "global" c.globals x
 let bind_label c x =
-  {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
+  {c with labels = VarMap.add x.it 0l (VarMap.map (Int32.add 1l) c.labels)}
 
 let anon_type c ty =
   c.types.tlist <- c.types.tlist @ [ty]
 
-let anon space n = space.count <- space.count + n
+let anon space n = space.count <- Int32.add space.count n
 
-let anon_func c = anon c.funcs 1
-let anon_import c = anon c.imports 1
-let anon_locals c ts = anon c.locals (List.length ts)
-let anon_global c = anon c.globals 1
-let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
+let anon_func c = anon c.funcs 1l
+let anon_import c = anon c.imports 1l
+let anon_locals c ts = anon c.locals (Lib.List.length32 ts)
+let anon_global c = anon c.globals 1l
+let anon_label c = {c with labels = VarMap.map (Int32.add 1l) c.labels}
 
 let empty_type = FuncType ([], [])
 
 let explicit_decl c name t at =
   let x = name c type_ in
   if
-    x.it < List.length c.types.tlist &&
+    x.it < Lib.List.length32 c.types.tlist &&
     t <> empty_type &&
-    t <> List.nth c.types.tlist x.it
+    t <> Lib.List.nth32 c.types.tlist x.it
   then
     error at "signature mismatch";
   x
 
 let implicit_decl c t at =
   match Lib.List.index_of t c.types.tlist with
-  | None -> let i = List.length c.types.tlist in anon_type c t; i @@ at
-  | Some i -> i @@ at
+  | None -> let i = Lib.List.length32 c.types.tlist in anon_type c t; i @@ at
+  | Some i -> Int32.of_int i @@ at
 
 %}
 
@@ -217,7 +218,7 @@ literal :
 ;
 
 var :
-  | NAT { let at = at () in fun c lookup -> int $1 at @@ at }
+  | NAT { let at = at () in fun c lookup -> int32 $1 at @@ at }
   | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
 ;
 var_list :
@@ -353,7 +354,7 @@ func_body :
   | instr_list
     { empty_type,
       fun c -> let c' = anon_label c in
-      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
+      {ftype = -1l @@ at(); locals = []; body = $1 c'} }
   | LPAR LOCAL value_type_list RPAR func_body
     { fst $5,
       fun c -> anon_locals c $3; let f = (snd $5) c in
@@ -392,7 +393,8 @@ export_opt :
   | /* empty */ { fun c -> [] }
   | TEXT
     { let at = at () in
-      fun c -> [{name = $1; kind = `Func (c.funcs.count - 1 @@ at)} @@ at] }
+      fun c ->
+      [{name = $1; kind = `Func (Int32.sub c.funcs.count 1l @@ at)} @@ at] }
 ;
 
 

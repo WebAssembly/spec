@@ -4,7 +4,7 @@ open Values
 type size = int32
 type index = int32
 
-type elem = int option
+type elem = int32 option
 type elem_type = Types.elem_type
 
 type table' = elem array

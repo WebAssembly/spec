@@ -16,8 +16,8 @@ type 'a map = 'a Map.t
 type instance =
 {
   module_ : module_;
-  imports : (int * import) list;
-  exports : int map;
+  imports : (int32 * import) list;
+  exports : int32 map;
   table : Table.t option;
   memory : Memory.t option;
   globals : value ref list;
@@ -65,8 +65,8 @@ type config =
 let resource_limit = 1000
 
 let lookup category list x =
-  try List.nth list x.it with Failure _ ->
-    Crash.error x.at ("undefined " ^ category ^ " " ^ string_of_int x.it)
+  try Lib.List.nth32 list x.it with Failure _ ->
+    Crash.error x.at ("undefined " ^ category ^ " " ^ Int32.to_string x.it)
 
 let type_ c x = lookup "type" c.instance.module_.it.types x
 let func c x = lookup "function" c.instance.module_.it.funcs x
@@ -270,11 +270,11 @@ let rec step_instr (c : config) (vs : value stack) (e : instr)
   | Label (es_cont, vs', []), vs ->
     vs' @ vs, []
 
-  | Label (es_cont, vs', {it = Br (n, i); _} :: es), vs when i.it = 0 ->
+  | Label (es_cont, vs', {it = Br (n, i); _} :: es), vs when i.it = 0l ->
     keep n vs' e.at @ vs, es_cont
 
   | Label (es_cont, vs', {it = Br (n, i); at} :: es), vs ->
-    vs', [Br (n, (i.it - 1) @@ i.at) @@ e.at]
+    vs', [Br (n, (Int32.sub i.it 1l) @@ i.at) @@ e.at]
 
   | Label (es_cont, vs', {it = Return; at} :: es), vs ->
     vs', [Return @@ at]
@@ -289,7 +289,7 @@ let rec step_instr (c : config) (vs : value stack) (e : instr)
   | Local (n, vs_local, vs', []), vs ->
     vs' @ vs, []
 
-  | Local (n, vs_local, vs', {it = Br (n', i); at} :: es), vs when i.it = 0 ->
+  | Local (n, vs_local, vs', {it = Br (n', i); at} :: es), vs when i.it = 0l ->
     if n <> n' then Crash.error at "inconsistent result arity";
     keep n vs' at @ vs, []
 

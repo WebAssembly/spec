@@ -36,8 +36,8 @@ type context =
 }
 
 let lookup category list x =
-  try List.nth list x.it with Failure _ ->
-    error x.at ("unknown " ^ category ^ " " ^ string_of_int x.it)
+  try Lib.List.nth32 list x.it with Failure _ ->
+    error x.at ("unknown " ^ category ^ " " ^ Int32.to_string x.it)
 
 let type_ types x = lookup "function type" types x
 let func c x = lookup "function" c.funcs x

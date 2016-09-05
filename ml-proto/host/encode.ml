@@ -99,8 +99,7 @@ let encode m =
     let op n = u8 n
     let memop {align; offset; _} = vu align; vu64 offset  (*TODO: to be resolved*)
 
-    let var x = vu x.it
-    let var32 x = vu32 (Int32.of_int x.it)
+    let var x = vu32 x.it
 
     let rec instr e =
       match e.it with
@@ -114,7 +113,7 @@ let encode m =
       | Select -> op 0x05
       | Br (n, x) -> op 0x06; vu n; var x
       | BrIf (n, x) -> op 0x07; vu n; var x
-      | BrTable (n, xs, x) -> op 0x08; vu n; vec var32 xs; var32 x
+      | BrTable (n, xs, x) -> op 0x08; vu n; vec var xs; var x
       | Return -> op 0x09
       | Nop -> op 0x0a
       | Drop -> op 0x0b

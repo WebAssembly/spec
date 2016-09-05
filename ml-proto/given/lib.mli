@@ -7,6 +7,9 @@ sig
   val take : int -> 'a list -> 'a list (* raise Failure *)
   val drop : int -> 'a list -> 'a list (* raise Failure *)
 
+  val length32 : 'a list -> int32
+  val nth32 : 'a list -> int32 -> 'a (* raise Failure *)
+
   val last : 'a list -> 'a (* raise Failure *)
   val split_last : 'a list -> 'a list * 'a (* raise Failure *)
 

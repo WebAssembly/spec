@@ -429,6 +429,6 @@
   "unknown label"
 )
 (assert_invalid
-  (module (func $large-label (br 0x100000001)))
+  (module (func $large-label (br 0x10000001)))
   "unknown label"
 )

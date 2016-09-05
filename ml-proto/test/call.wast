@@ -236,6 +236,6 @@
   "unknown function"
 )
 (assert_invalid
-  (module (func $large-func (call 10001232130000)))
+  (module (func $large-func (call 1012321300)))
   "unknown function"
 )

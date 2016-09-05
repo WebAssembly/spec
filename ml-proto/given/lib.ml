@@ -19,6 +19,14 @@ struct
     | n, _::xs' when n > 0 -> drop (n - 1) xs'
     | _ -> failwith "drop"
 
+  let length32 xs = Int32.of_int (List.length xs)
+
+  let rec nth32 xs n =
+  match n, xs with
+    | 0l, x::_ -> x
+    | n, _::xs' when n > 0l -> nth32 xs' (Int32.sub n 1l)
+    | _ -> failwith "nth32"
+
   let rec last = function
     | x::[] -> x
     | _::xs -> last xs

@@ -8,7 +8,7 @@ open Printf
 open Types
 
 let func_type m f =
-  List.nth m.it.types f.it.ftype.it
+  Lib.List.nth32 m.it.types f.it.ftype.it
 
 let string_of_table_type = function
   | None -> "()"
@@ -25,12 +25,12 @@ let print_export m i ex =
   let {name; kind} = ex.it in
   let ascription =
     match kind with
-    | `Func x -> string_of_func_type (func_type m (List.nth m.it.funcs x.it))
+    | `Func x -> string_of_func_type (func_type m (Lib.List.nth32 m.it.funcs x.it))
     | `Memory -> "memory"
   in printf "export \"%s\" : %s\n" name ascription
 
 let print_start start =
-  Lib.Option.app (fun x -> printf "start = func %d\n" x.it) start
+  Lib.Option.app (fun x -> printf "start = func %ld\n" x.it) start
 
 
 (* Ast *)

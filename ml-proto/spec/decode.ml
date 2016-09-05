@@ -163,7 +163,7 @@ let memop s =
   let offset = vu64 s in
   align, offset
 
-let var s = len32 s
+let var s = vu32 s
 
 let rec args n stack s pos = args' n stack [] s pos
 and args' n stack es s pos =
@@ -544,7 +544,7 @@ let code s =
   let locals = List.flatten (vec local s) in
   let body = instr_block s in
   expect 0x0f s "END opcode expected";
-  {locals; body; ftype = Source.((-1) @@ Source.no_region)}
+  {locals; body; ftype = Source.((-1l) @@ Source.no_region)}
 
 let code_section s =
   section `CodeSection (vec (at (sized code))) [] s

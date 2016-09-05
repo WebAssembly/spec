@@ -70,7 +70,7 @@ type storeop = Memory.mem_size memop
 
 (* Expressions *)
 
-type var = int Source.phrase
+type var = int32 Source.phrase
 type literal = value Source.phrase
 
 type instr = instr' Source.phrase
