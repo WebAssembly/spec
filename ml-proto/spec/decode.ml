@@ -77,24 +77,31 @@ let u64 s =
   let hi = Int64.of_int32 (u32 s) in
   Int64.(add lo (shift_left hi 32))
 
-let rec vu64 s =
+let rec vuN n s =
+  require (n > 0) s (pos s) "integer representation too long";
   let b = u8 s in
+  require (n >= 7 || b land 0x7f < 1 lsl n) s (pos s - 1) "integer out of range";
   let x = Int64.of_int (b land 0x7f) in
-  if b land 0x80 = 0 then x
-  else Int64.(logor x (shift_left (vu64 s) 7))
-  (*TODO: check for overflow*)
+  if b land 0x80 = 0 then x else Int64.(logor x (shift_left (vuN (n - 7) s) 7))
 
-let rec vs64 s =
+let rec vsN n s =
+  require (n > 0) s (pos s) "integer representation too long";
   let b = u8 s in
+  let mask = (-1 lsl n) land 0x7f in
+  require (n >= 7 || b land mask = 0 || b land mask = mask) s (pos s - 1)
+    "integer too large";
   let x = Int64.of_int (b land 0x7f) in
   if b land 0x80 = 0
   then (if b land 0x40 = 0 then x else Int64.(logor x (logxor (-1L) 0x7fL)))
-  else Int64.(logor x (shift_left (vs64 s) 7))
-  (*TODO: check for overflow*)
+  else Int64.(logor x (shift_left (vsN (n - 7) s) 7))
 
-let vu32 s = Int64.to_int32 (vu64 s)  (*TODO:check overflow*)
-let vs32 s = Int64.to_int32 (vs64 s)  (*TODO:check overflow*)
-let vu s = Int64.to_int (vu64 s)  (*TODO:check overflow*)
+let vu1 s = Int64.to_int (vuN 1 s)
+let vu7 s = Int64.to_int (vuN 7 s)
+let vu s = Int64.to_int (vuN 31 s)
+let vu32 s = Int64.to_int32 (vuN 32 s)
+let vs32 s = Int64.to_int32 (vsN 32 s)
+let vu64 s = vuN 64 s
+let vs64 s = vsN 64 s
 let f32 s = F32.of_bits (u32 s)
 let f64 s = F64.of_bits (u64 s)
 

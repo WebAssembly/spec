@@ -35,21 +35,16 @@ let ati i =
 (* Literals *)
 
 let literal f s =
-  try f s with
-  | Failure msg -> error s.at ("constant out of range: " ^ msg)
-  | _ -> error s.at "constant out of range"
+  try f s with Failure _ -> error s.at ("constant out of range")
 
 let int s at =
-  try int_of_string s with Failure _ ->
-    error at "int constant out of range"
+  try int_of_string s with Failure _ -> error at "int constant out of range"
 
 let int32 s at =
-  try I32.of_string s with Failure _ ->
-    error at "i32 constant out of range"
+  try I32.of_string s with Failure _ -> error at "i32 constant out of range"
 
 let int64 s at =
-  try I64.of_string s with Failure _ ->
-    error at "i64 constant out of range"
+  try I64.of_string s with Failure _ -> error at "i64 constant out of range"
 
 
 (* Symbolic variables *)

@@ -63,14 +63,15 @@ let encode m =
     let vec f xs = vu (List.length xs); list f xs
     let vec1 f xo = bool (xo <> None); opt f xo
 
-    let gap () = let p = pos s in u32 0l; p
-    let patch_gap p n =
+    let gap32 () = let p = pos s in u32 0l; u8 0; p
+    let patch_gap32 p n =
       assert (n <= 0x0fff_ffff); (* Strings cannot excess 2G anyway *)
       let lsb i = Char.chr (i land 0xff) in
       patch s p (lsb (n lor 0x80));
       patch s (p + 1) (lsb ((n lsr 7) lor 0x80));
       patch s (p + 2) (lsb ((n lsr 14) lor 0x80));
-      patch s (p + 3) (lsb (n lsr 21))
+      patch s (p + 3) (lsb ((n lsr 21) lor 0x80));
+      patch s (p + 4) (lsb (n lsr 28))
 
     (* Types *)
 
@@ -335,10 +336,10 @@ let encode m =
     let section id f x needed =
       if needed then begin
         u8 id;
-        let g = gap () in
+        let g = gap32 () in
         let p = pos s in
         f x;
-        patch_gap g (pos s - p)
+        patch_gap32 g (pos s - p)
       end
 
     (* Type section *)
@@ -415,12 +416,12 @@ let encode m =
 
     let code f =
       let {locals; body; _} = f.it in
-      let g = gap () in
+      let g = gap32 () in
       let p = pos s in
       vec local (compress locals);
       list instr body;
       u8 0x0f;
-      patch_gap g (pos s - p)
+      patch_gap32 g (pos s - p)
 
     let code_section fs =
       section 9 (vec code) fs (fs <> [])
