@@ -320,7 +320,7 @@ let create_memory mem =
   Memory.create lim
 
 let create_global glob =
-  let {gtype = t; _} = glob.it in
+  let {gtype = GlobalType (t, _); _} = glob.it in
   ref (default_value t)
 
 let init_func c f =
@@ -369,15 +369,13 @@ let add_import (ext : extern) (imp : import) (inst : instance) : instance =
     );
     {inst with funcs = f :: inst.funcs}
   | ExternalTable tab, TableImport (TableType (lim, _)) ->
-    (* TODO: no checking of element type? *)
     check_limits (Table.limits tab) lim imp.it.ikind.at;
     {inst with tables = tab :: inst.tables}
   | ExternalMemory mem, MemoryImport (MemoryType lim) ->
     check_limits (Memory.limits mem) lim imp.it.ikind.at;
     {inst with memories = mem :: inst.memories}
-  | ExternalGlobal glob, GlobalImport _ ->
-    (* TODO: no checking of value type? *)
-    {inst with globals = ref glob :: inst.globals}
+  | ExternalGlobal v, GlobalImport (GlobalType _) ->
+    {inst with globals = ref v :: inst.globals}
   | _ ->
     Link.error imp.it.ikind.at "type mismatch"
 

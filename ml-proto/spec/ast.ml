@@ -200,7 +200,7 @@ and expr' =
 type global = global' Source.phrase
 and global' =
 {
-  gtype : Types.value_type;
+  gtype : Types.global_type;
   value : expr;
 }
 
