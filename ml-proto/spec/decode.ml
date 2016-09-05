@@ -97,7 +97,6 @@ let rec vsN n s =
 
 let vu1 s = Int64.to_int (vuN 1 s)
 let vu7 s = Int64.to_int (vuN 7 s)
-let vu s = Int64.to_int (vuN 31 s)
 let vu32 s = Int64.to_int32 (vuN 32 s)
 let vs32 s = Int64.to_int32 (vsN 32 s)
 let vu64 s = vuN 64 s
@@ -105,15 +104,21 @@ let vs64 s = vsN 64 s
 let f32 s = F32.of_bits (u32 s)
 let f64 s = F64.of_bits (u64 s)
 
-let bool s = match get s with 0 | 1 as n -> n <> 0 | _ -> error s (pos s - 1) "invalid boolean"
-let string s = let n = vu s in get_string n s
+let len32 s =
+  let pos = pos s in
+  let n = vu32 s in
+  if n <= Int32.of_int (len s) then Int32.to_int n else
+    error s pos "length out of bounds"
+
+let bool s = (vu1 s = 1)
+let string s = let n = len32 s in get_string n s
 let rec list f n s = if n = 0 then [] else let x = f s in x :: list f (n - 1) s
 let opt f b s = if b then Some (f s) else None
-let vec f s = let n = vu s in list f n s
+let vec f s = let n = len32 s in list f n s
 let vec1 f s = let b = bool s in opt f b s
 
 let sized f s =
-  let size = vu s in
+  let size = len32 s in
   let start = pos s in
   let x = f s in
   require (pos s = start + size) s start "section size mismatch";
@@ -150,16 +155,15 @@ open Ast
 open Operators
 
 let op s = u8 s
-let arity s = vu s
+let arity s = u8 s
 
 let memop s =
-  let align = vu s in
+  let align = len32 s in
   (*TODO: check flag bits*)
   let offset = vu64 s in
   align, offset
 
-let var s = vu s
-let var32 s = Int32.to_int (vu32 s)
+let var s = len32 s
 
 let rec args n stack s pos = args' n stack [] s pos
 and args' n stack es s pos =
@@ -532,7 +536,7 @@ let start_section s =
 (* Code section *)
 
 let local s =
-  let n = vu s in
+  let n = len32 s in
   let t = value_type s in
   Lib.List.make n t
 
