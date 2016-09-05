@@ -24,9 +24,12 @@ ocamlc.opt -c -bin-annot -I host/import -I spec -I given -I host -o host/import/
 ocamlc.opt -c -bin-annot -I host -I spec -I given -I host/import -o host/main.cmo host/main.ml
 ocamlc.opt -c -g -bin-annot -I host -I spec -I given -I host/import -o host/main.d.cmo host/main.ml
 ocamlc.opt -c -bin-annot -I spec -I given -I host -I host/import -o spec/error.cmi spec/error.mli
+ocamlc.opt -c -bin-annot -I host -I spec -I given -I host/import -o host/sexpr.cmi host/sexpr.mli
 ocamlc.opt -c -bin-annot -I host -I spec -I given -I host/import -o host/script.cmi host/script.mli
+ocamlc.opt -c -bin-annot -I host -I spec -I given -I host/import -o host/arrange.cmi host/arrange.mli
 ocamlc.opt -c -bin-annot -I spec -I given -I host -I host/import -o spec/check.cmi spec/check.mli
 ocamlc.opt -c -bin-annot -I spec -I given -I host -I host/import -o spec/decode.cmi spec/decode.mli
+ocamlc.opt -c -bin-annot -I spec -I given -I host -I host/import -o spec/desugar.cmi spec/desugar.mli
 ocamlc.opt -c -bin-annot -I host -I spec -I given -I host/import -o host/encode.cmi host/encode.mli
 ocamlc.opt -c -bin-annot -I host -I spec -I given -I host/import -o host/parse.cmi host/parse.mli
 ocamlc.opt -c -g -bin-annot -I host/import -I spec -I given -I host -o host/import/env.d.cmo host/import/env.ml
@@ -63,16 +66,17 @@ ocamlc.opt -c -g -bin-annot -I spec -I given -I host -I host/import -o spec/int.
 ocamlyacc host/parser.mly
 ocamlc.opt -c -bin-annot -I host -I spec -I given -I host/import -o host/parser.cmi host/parser.mli
 ocamlc.opt -c -bin-annot -I host -I spec -I given -I host/import -o host/lexer.cmi host/lexer.mli
-ocamlc.opt -c -bin-annot -I spec -I given -I host -I host/import -o spec/desugar.cmi spec/desugar.mli
+ocamlc.opt -c -g -bin-annot -I host -I spec -I given -I host/import -o host/arrange.d.cmo host/arrange.ml
 ocamlc.opt -c -g -bin-annot -I spec -I given -I host -I host/import -o spec/check.d.cmo spec/check.ml
 ocamlc.opt -c -g -bin-annot -I spec -I given -I host -I host/import -o spec/decode.d.cmo spec/decode.ml
+ocamlc.opt -c -g -bin-annot -I spec -I given -I host -I host/import -o spec/desugar.d.cmo spec/desugar.ml
 ocamlc.opt -c -g -bin-annot -I host -I spec -I given -I host/import -o host/encode.d.cmo host/encode.ml
 ocamlc.opt -c -g -bin-annot -I host -I spec -I given -I host/import -o host/parse.d.cmo host/parse.ml
 ocamlc.opt -c -g -bin-annot -I host -I spec -I given -I host/import -o host/script.d.cmo host/script.ml
+ocamlc.opt -c -g -bin-annot -I host -I spec -I given -I host/import -o host/sexpr.d.cmo host/sexpr.ml
 ocamlc.opt -c -g -bin-annot -I spec -I given -I host -I host/import -o spec/ast.d.cmo spec/ast.ml
 ocamllex.opt -q host/lexer.mll
 ocamlc.opt -c -g -bin-annot -I host -I spec -I given -I host/import -o host/lexer.d.cmo host/lexer.ml
 ocamlc.opt -c -g -bin-annot -I host -I spec -I given -I host/import -o host/parser.d.cmo host/parser.ml
-ocamlc.opt -c -g -bin-annot -I spec -I given -I host -I host/import -o spec/desugar.d.cmo spec/desugar.ml
 ocamlc.opt -c -g -bin-annot -I host -I spec -I given -I host/import -o host/print.d.cmo host/print.ml
-ocamlc.opt str.cma bigarray.cma -g host/flags.d.cmo given/source.d.cmo spec/error.d.cmo given/lib.d.cmo spec/float.d.cmo spec/f32.d.cmo spec/f64.d.cmo spec/numerics.d.cmo spec/int.d.cmo spec/i32.d.cmo spec/i64.d.cmo spec/i32_convert.d.cmo spec/f32_convert.d.cmo spec/i64_convert.d.cmo spec/f64_convert.d.cmo spec/types.d.cmo spec/values.d.cmo spec/memory.d.cmo spec/kernel.d.cmo spec/arithmetic.d.cmo spec/eval.d.cmo host/import.d.cmo host/import/env.d.cmo host/print.d.cmo host/import/spectest.d.cmo spec/ast.d.cmo host/encode.d.cmo spec/check.d.cmo spec/desugar.d.cmo host/script.d.cmo host/parser.d.cmo host/lexer.d.cmo host/parse.d.cmo spec/decode.d.cmo host/run.d.cmo host/main.d.cmo -o %NAME%
+ocamlc.opt str.cma bigarray.cma -g host/flags.d.cmo given/source.d.cmo spec/error.d.cmo given/lib.d.cmo spec/float.d.cmo spec/f32.d.cmo spec/f64.d.cmo spec/numerics.d.cmo spec/int.d.cmo spec/i32.d.cmo spec/i64.d.cmo spec/i32_convert.d.cmo spec/f32_convert.d.cmo spec/i64_convert.d.cmo spec/f64_convert.d.cmo spec/types.d.cmo spec/values.d.cmo spec/memory.d.cmo spec/kernel.d.cmo spec/arithmetic.d.cmo spec/eval.d.cmo host/import.d.cmo host/import/env.d.cmo host/print.d.cmo host/import/spectest.d.cmo host/sexpr.d.cmo host/arrange.d.cmo spec/ast.d.cmo host/encode.d.cmo spec/check.d.cmo spec/decode.d.cmo spec/desugar.d.cmo host/script.d.cmo host/parser.d.cmo host/lexer.d.cmo host/parse.d.cmo host/run.d.cmo host/main.d.cmo -o %NAME%

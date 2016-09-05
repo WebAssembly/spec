@@ -25,6 +25,7 @@ let argspec = Arg.align
   "-w", Arg.Int (fun n -> Flags.width := n),
     " configure output width (default is 80)";
   "-s", Arg.Set Flags.print_sig, " show module signatures";
+  "-u", Arg.Set Flags.unchecked, " unchecked, do not perform validation";
   "-d", Arg.Set Flags.dry, " dry, do not run program";
   "-t", Arg.Set Flags.trace, " trace execution";
   "-v", Arg.Unit banner, " show version"
