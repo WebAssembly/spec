@@ -140,10 +140,10 @@ let arity s = vu s
 let arity1 s = bool s
 
 let memop s =
-  let align = vu s in
-  (*TODO: check flag bits*)
+  let align = vu32 s in
+  require (I32.lt_u align 32l) s (pos s - 1) "invalid memop flags";
   let offset = vu64 s in
-  offset, align
+  offset, 1 lsl Int32.to_int align
 
 let var s = vu s
 let var32 s = Int32.to_int (vu32 s)

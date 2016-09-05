@@ -110,7 +110,6 @@ let nxx = ixx | fxx
 let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
-let digits = digit+
 let mem_size = "8" | "16" | "32"
 
 rule token = parse
@@ -202,8 +201,8 @@ rule token = parse
             (I64_store32 (o, (Lib.Option.get a 4), e1, e2)))
         ) }
 
-  | "offset="(digits as s) { OFFSET (Int64.of_string s) }
-  | "align="(digits as s) { ALIGN (int_of_string s) }
+  | "offset="(nat as s) { OFFSET (Int64.of_string s) }
+  | "align="(nat as s) { ALIGN (int_of_string s) }
 
   | (ixx as t)".clz"
     { UNARY (fun e -> intop t (I32_clz e) (I64_clz e)) }
