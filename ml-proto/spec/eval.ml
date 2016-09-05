@@ -64,17 +64,18 @@ let global c x = lookup "global" c.instance.globals x
 let local c x = lookup "local" c.locals x
 let label c x = lookup "label" c.labels x
 
-let export inst name =
-  try ExportMap.find name.it inst.exports with Not_found ->
-    Crash.error name.at ("undefined export \"" ^ name.it ^ "\"")
-
 let elem c x i t at =
   match Table.load (table c x) i t with
-  | Some j -> j
+  | Some item -> item
   | None ->
     Trap.error at ("uninitialized element " ^ Int32.to_string i)
   | exception Table.Bounds ->
     Trap.error at ("undefined element " ^ Int32.to_string i)
+
+let func_elem c x i at =
+  match elem c x i AnyFuncType at with
+  | Func f -> f
+  | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
 
 let func_type_of t at =
   match t with
@@ -177,7 +178,7 @@ let rec eval_expr (c : config) (e : expr) : value option =
   | CallIndirect (x, e1, es) ->
     let i = int32 (eval_expr c e1) e1.at in
     let vs = List.map (fun vo -> some (eval_expr c vo) vo.at) es in
-    let f = func c (elem c (0 @@ e.at) i AnyFuncType e1.at @@ e1.at) in
+    let f = func_elem c (0 @@ e.at) i e1.at in
     if type_ c.instance x <> func_type_of f e1.at then
       Trap.error e1.at "indirect call signature mismatch";
     eval_func f vs e.at
@@ -328,8 +329,9 @@ let init_func c f =
   | _ -> assert false
 
 let non_host_func c x =
-  ignore (func_type_of (func c x) x.at);
-  Some x.it
+  let f = func c x in
+  ignore (func_type_of f x.at);
+  Some (Func f)
 
 let init_table c seg =
   let {index; offset = e; init} = seg.it in
@@ -414,13 +416,9 @@ let init m externals =
   Lib.Option.app (fun x -> ignore (eval_func (func c x) [] x.at)) start;
   {inst with exports = List.fold_right (add_export c) exports inst.exports}
 
-let invoke inst name vs =
-  match export inst (name @@ no_region) with
-  | ExternalFunc f ->
-    (try eval_func f vs no_region
-    with Stack_overflow -> Trap.error no_region "call stack exhausted")
-  | _ ->
-    Crash.error no_region ("export \"" ^ name ^ "\" is not a function")
+let invoke func vs =
+  (try eval_func func vs no_region
+  with Stack_overflow -> Trap.error no_region "call stack exhausted")
 
 let const m e =
   some (eval_expr (empty_config (instance m)) e) e.at

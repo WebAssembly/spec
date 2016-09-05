@@ -188,8 +188,8 @@ exkind:  ( func <var> )
          ( table <var> )
          ( memory <var> )
 
-module:  ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <elem>* <data>* <start>? )
-         ( module <string>+ )
+module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <elem>* <data>* <start>? )
+         ( module <name>? <string>+ )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the kernel AST below).
@@ -220,17 +220,25 @@ In order to be able to check and run modules for testing purposes, the S-express
 script: <cmd>*
 
 cmd:
-  <module>                                             ;; define, validate, and initialize module
-  ( invoke <name> <expr>* )                            ;; invoke export and print result
-  ( assert_return (invoke <name> <expr>* ) <expr> )    ;; assert return with expected result of invocation
-  ( assert_return_nan (invoke <name> <expr>* ))        ;; assert return with floating point nan result of invocation
-  ( assert_trap (invoke <name> <expr>* ) <failure> )   ;; assert invocation traps with given failure string
-  ( assert_invalid <module> <failure> )                ;; assert invalid module with given failure string
-  ( input <string> )                                   ;; read script or module from file
-  ( output <string>? )                                 ;; output module to stout or file
+  <module>                                  ;; define, validate, and initialize module
+  <action>                                  ;; perform action and print results
+  ( register <string> <name>? )             ;; register module for imports
+  ( assert_return <action> <expr>? )        ;; assert action has expected results
+  ( assert_return_nan <action> )            ;; assert action results in NaN
+  ( assert_trap <action> <failure> )        ;; assert action traps with given failure string
+  ( assert_invalid <module> <failure> )     ;; assert module is invalid with given failure string
+  ( assert_unlinkable <module> <failure> )  ;; assert module fails to link module with given failure string
+  ( input <string> )                        ;; read script or module from file
+  ( output <name>? <string>? )              ;; output module to stout or file
+
+action:
+  ( invoke <name>? <string> <expr>* )       ;; invoke function export
+  ( get <name>? <string> )                  ;; get global export
 ```
 
-Commands are executed in sequence. Invocation, assertions, and output apply to the most recently defined module (the _current_ module), and are only possible after a module has been defined. Note that there only ever is one current module, the different module definitions cannot interact.
+Commands are executed in sequence. Commands taking an optional module name refer to the most recently defined module if no name is given. They are only possible after a module has been defined.
+
+After a module is _registered_ under a string name it is available for importing in other modules.
 
 The input and output commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed.
 

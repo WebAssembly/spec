@@ -1,5 +1,10 @@
 (* Things that should be in the OCaml library... *)
 
+module Fun :
+sig
+  val repeat : int -> ('a -> unit) -> 'a -> unit
+end
+
 module List :
 sig
   val make : int -> 'a -> 'a list

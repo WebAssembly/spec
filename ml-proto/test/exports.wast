@@ -7,6 +7,18 @@
 (module (func (export "a")))
 (module (func $a (export "a")))
 
+(module $Func
+  (export "e" (func $f))
+  (func $f (param $n i32) (result i32)
+    (return (i32.add (get_local $n) (i32.const 1)))
+  )
+)
+(assert_return (invoke "e" (i32.const 42)) (i32.const 43))
+(assert_return (invoke $Func "e" (i32.const 42)) (i32.const 43))
+(module)
+(module $Other)
+(assert_return (invoke $Func "e" (i32.const 42)) (i32.const 43))
+
 (assert_invalid
   (module (func) (export "a" (func 1)))
   "unknown function"
@@ -32,16 +44,6 @@
   "duplicate export name"
 )
 
-(module
-  (func $f (param $n i32) (result i32)
-    (return (i32.add (get_local $n) (i32.const 1)))
-  )
-
-  (export "e" (func $f))
-)
-
-(assert_return (invoke "e" (i32.const 42)) (i32.const 43))
-
 
 ;; Globals
 
@@ -51,6 +53,16 @@
 
 (module (global (export "a") i32 (i32.const 0)))
 (module (global $a (export "a") i32 (i32.const 0)))
+
+(module $Global
+  (export "e" (global $g))
+  (global $g i32 (i32.const 42))
+)
+(assert_return (get "e") (i32.const 42))
+(assert_return (get $Global "e") (i32.const 42))
+(module)
+(module $Other)
+(assert_return (get $Global "e") (i32.const 42))
 
 (assert_invalid
   (module (global i32 (i32.const 0)) (export "a" (global 1)))
@@ -77,8 +89,6 @@
   "duplicate export name"
 )
 
-(; TODO: get global value ;)
-
 
 ;; Tables
 
@@ -91,6 +101,8 @@
 (module (table (export "a") 0 1 anyfunc))
 (module (table $a (export "a") 0 anyfunc))
 (module (table $a (export "a") 0 1 anyfunc))
+
+(; TODO: access table ;)
 
 (assert_invalid
   (module (table 0 anyfunc) (export "a" (table 1)))
@@ -118,8 +130,6 @@
   "duplicate export name"
 )
 
-(; TODO: access table ;)
-
 
 ;; Memories
 
@@ -132,6 +142,8 @@
 (module (memory (export "a") 0 1))
 (module (memory $a (export "a") 0))
 (module (memory $a (export "a") 0 1))
+
+(; TODO: access memory ;)
 
 (assert_invalid
   (module (memory 0) (export "a" (memory 1)))
@@ -158,6 +170,3 @@
   (module (memory 0) (table 0 anyfunc) (export "a" (memory 0)) (export "a" (table 0)))
   "duplicate export name"
 )
-
-(; TODO: access memory ;)
-
