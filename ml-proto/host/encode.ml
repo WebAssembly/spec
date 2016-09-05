@@ -100,7 +100,7 @@ let encode m =
     let arity xs = vu (List.length xs)
     let arity1 xo = bool (xo <> None)
 
-    let memop off align = vu align; vu64 off  (*TODO: to be resolved*)
+    let memop off align = vu32 (I32.ctz (Int32.of_int align)); vu64 off
 
     let var x = vu x.it
     let var32 x = vu32 (Int32.of_int x.it)
