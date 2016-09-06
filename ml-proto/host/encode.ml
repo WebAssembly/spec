@@ -327,7 +327,7 @@ let encode m =
     (* Memory section *)
     let memory mem =
       let {min; max; _} = mem.it in
-      vu64 min; vu64 max; bool true (*TODO: pending change*)
+      vu32 min; vu32 max; bool true (*TODO: pending change*)
 
     let memory_section memo =
       section "memory" (opt memory) memo (memo <> None)

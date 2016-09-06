@@ -259,7 +259,7 @@ let segment seg =
 
 let memory mem =
   let {min; max; segments} = mem.it in
-  Node ("memory " ^ int64 min ^ " " ^ int64 max, list segment segments)
+  Node ("memory " ^ int32 min ^ " " ^ int32 max, list segment segments)
 
 
 (* Modules *)

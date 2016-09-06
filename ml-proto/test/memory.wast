@@ -41,7 +41,7 @@
   "linear memory pages must be less or equal to 65535 (4GiB)"
 )
 (assert_invalid
-  (module (memory 0 4294967296))
+  (module (memory 0 4294967295))
   "linear memory pages must be less or equal to 65535 (4GiB)"
 )
 

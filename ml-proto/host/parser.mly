@@ -35,9 +35,16 @@ let ati i =
 (* Literals *)
 
 let literal f s =
-  try f s with
-  | Failure msg -> error s.at ("constant out of range: " ^ msg)
-  | _ -> error s.at "constant out of range"
+  try f s with Failure _ -> error s.at "constant out of range"
+
+let int s at =
+  try int_of_string s with Failure _ -> error at "int constant out of range"
+
+let int32 s at =
+  try I32.of_string s with Failure _ -> error at "i32 constant out of range"
+
+let int64 s at =
+  try I64.of_string s with Failure _ -> error at "i64 constant out of range"
 
 
 (* Symbolic variables *)
@@ -197,7 +204,7 @@ literal :
 ;
 
 var :
-  | NAT { let at = at () in fun c lookup -> int_of_string $1 @@ at }
+  | NAT { let at = at () in fun c lookup -> int $1 at @@ at }
   | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
 ;
 var_list :
@@ -351,7 +358,7 @@ start :
 
 segment :
   | LPAR SEGMENT NAT text_list RPAR
-    { {Memory.addr = Int64.of_string $3; Memory.data = $4} @@ at () }
+    { {Memory.addr = int64 $3 (ati 3); Memory.data = $4} @@ at () }
 ;
 segment_list :
   | /* empty */ { [] }
@@ -360,11 +367,9 @@ segment_list :
 
 memory :
   | LPAR MEMORY NAT NAT segment_list RPAR
-    { {min = Int64.of_string $3; max = Int64.of_string $4; segments = $5}
-        @@ at () }
+    { {min = int32 $3 (ati 3); max = int32 $4 (ati 4); segments = $5} @@ at () }
   | LPAR MEMORY NAT segment_list RPAR
-    { {min = Int64.of_string $3; max = Int64.of_string $3; segments = $4}
-        @@ at () }
+    { {min = int32 $3 (ati 3); max = int32 $3 (ati 3); segments = $4} @@ at () }
 ;
 
 type_def :

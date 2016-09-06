@@ -1,7 +1,7 @@
 type memory
 type t = memory
 type address = int64
-type size = int64
+type size = int32  (* number of pages *)
 type offset = int64
 type mem_size = Mem8 | Mem16 | Mem32
 type extension = SX | ZX
@@ -12,15 +12,16 @@ type value = Values.value
 exception Type
 exception Bounds
 exception SizeOverflow
+exception OutOfMemory
 
-val page_size : size
+val page_size : offset
 
 val mem_size : mem_size -> int
 
-val create : size -> memory
+val create : size -> memory (* raise SizeOverflow, OutOfMemory *)
 val init : memory -> segment list -> unit
 val size : memory -> size
-val grow : memory -> size -> unit
+val grow : memory -> size -> unit (* raise SizeOverflow, OutOfMemory *)
 
 val load : memory -> address -> offset -> value_type -> value
 val store : memory -> address -> offset -> value -> unit
