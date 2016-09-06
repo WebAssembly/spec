@@ -46,18 +46,6 @@ let int32 s at =
 let int64 s at =
   try I64.of_string s with Failure _ -> error at "i64 constant out of range"
 
-let int s at =
-  try int_of_string s with Failure _ ->
-    error at "int constant out of range"
-
-let int32 s at =
-  try I32.of_string s with Failure _ ->
-    error at "i32 constant out of range"
-
-let int64 s at =
-  try I64.of_string s with Failure _ ->
-    error at "i64 constant out of range"
-
 
 (* Symbolic variables *)
 
