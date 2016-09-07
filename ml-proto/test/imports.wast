@@ -45,17 +45,6 @@
   "type mismatch"
 )
 
-(; TODO: check linking against other Wasm module
-(assert_unlinkable
-  (module (import "spectest" "func" (func (param i32))))
-  "type mismatch"
-)
-(assert_unlinkable
-  (module (import "spectest" "func" (func (result i32))))
-  "type mismatch"
-)
-;)
-
 (assert_unlinkable
   (module (import "spectest" "print" (func)) (table anyfunc (elem 0)))
   "invalid use of host function"

@@ -328,16 +328,15 @@ let init_func c f =
   | AstFunc (inst, _) -> inst := c.instance
   | _ -> assert false
 
-let non_host_func c x =
-  let f = func c x in
-  ignore (func_type_of f x.at);
-  Some (Func f)
+let check_elem c seg =
+  let {init; _} = seg.it in
+  List.iter (fun x -> ignore (func_type_of (func c x) x.at)) init
 
 let init_table c seg =
   let {index; offset = e; init} = seg.it in
   let tab = table c index in
   let offset = int32 (eval_expr c e) e.at in
-  Table.blit tab offset (List.map (non_host_func c) init)
+  Table.blit tab offset (List.map (fun x -> Some (Func (func c x))) init)
 
 let init_memory c seg =
   let {index; offset = e; init} = seg.it in
@@ -369,14 +368,12 @@ let add_import (ext : extern) (imp : import) (inst : instance) : instance =
     );
     {inst with funcs = f :: inst.funcs}
   | ExternalTable tab, TableImport (TableType (lim, _)) ->
-    (* TODO: no checking of element type? *)
     check_limits (Table.limits tab) lim imp.it.ikind.at;
     {inst with tables = tab :: inst.tables}
   | ExternalMemory mem, MemoryImport (MemoryType lim) ->
     check_limits (Memory.limits mem) lim imp.it.ikind.at;
     {inst with memories = mem :: inst.memories}
   | ExternalGlobal glob, GlobalImport _ ->
-    (* TODO: no checking of value type? *)
     {inst with globals = ref glob :: inst.globals}
   | _ ->
     Link.error imp.it.ikind.at "type mismatch"
@@ -410,6 +407,7 @@ let init m externals =
   in
   let c = empty_config inst in
   List.iter (init_func c) fs;
+  List.iter (check_elem c) elems;
   List.iter (init_table c) elems;
   List.iter (init_memory c) data;
   List.iter2 (init_global c) gs globals;
