@@ -406,9 +406,9 @@ let encode m =
 
     let code f =
       let {locals; body; _} = f.it in
-      vec local (compress locals);
       let g = gap () in
       let p = pos s in
+      vec local (compress locals);
       list expr body;
       patch_gap g (pos s - p)
 

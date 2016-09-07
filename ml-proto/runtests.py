@@ -44,7 +44,7 @@ class RunTests(unittest.TestCase):
 
     # Run original file
     logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.log"))
-    self._runCommand(("%s %s") % (interpreterPath, fileName), logPath, expectedExitCode)
+    self._runCommand(("'%s' '%s'") % (interpreterPath, fileName), logPath, expectedExitCode)
     self._compareLog(fileName, logPath)
 
     if expectedExitCode != 0:
@@ -53,20 +53,20 @@ class RunTests(unittest.TestCase):
     # Convert to binary and validate again
     wasmPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm"))
     logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.log"))
-    self._runCommand(("%s -d %s -o %s") % (interpreterPath, fileName, wasmPath))
-    self._runCommand(("%s -d %s") % (interpreterPath, wasmPath), logPath)
+    self._runCommand(("'%s' -d '%s' -o '%s'") % (interpreterPath, fileName, wasmPath))
+    self._runCommand(("'%s' -d '%s'") % (interpreterPath, wasmPath), logPath)
 
     # Convert back to text and validate again
     wastPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast"))
     logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast.log"))
-    self._runCommand(("%s -d %s -o %s") % (interpreterPath, wasmPath, wastPath))
-    self._runCommand(("%s -d %s ") % (interpreterPath, wastPath), logPath)
+    self._runCommand(("'%s' -d '%s' -o '%s'") % (interpreterPath, wasmPath, wastPath))
+    self._runCommand(("'%s' -d '%s' ") % (interpreterPath, wastPath), logPath)
 
     #return
     # Convert back to binary once more and compare
     wasm2Path = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.wasm.wast.wasm"))
-    self._runCommand(("%s -d %s -o %s") % (interpreterPath, wastPath, wasm2Path))
-    self._runCommand(("%s -d %s") % (interpreterPath, wasm2Path), logPath)
+    self._runCommand(("'%s' -d '%s' -o '%s'") % (interpreterPath, wastPath, wasm2Path))
+    self._runCommand(("'%s' -d '%s'") % (interpreterPath, wasm2Path), logPath)
     # TODO: Ultimately, the binary should stay the same, but currently desugaring gets in the way.
     # self._compareFile(wasmPath, wasm2Path)
 

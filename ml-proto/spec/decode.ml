@@ -603,9 +603,10 @@ let local s =
   Lib.List.make n t
 
 let code s =
-  let locals = List.flatten (vec local s) in
   let size = vu s in
-  let body = expr_block (substream s (pos s + size)) in
+  let p = pos s in
+  let locals = List.flatten (vec local s) in
+  let body = expr_block (substream s (p + size)) in
   {locals; body; ftype = Source.((-1) @@ Source.no_region)}
 
 let code_section s =
