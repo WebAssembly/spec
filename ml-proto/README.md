@@ -69,6 +69,10 @@ wasm [option | file ...]
 
 where `file`, depending on its extension, either should be an S-expression script file (see below) to be run, or a binary module file to be loaded.
 
+By default, the interpreter validates all modules.
+The `-u` option selects "unchecked mode", which skips validation and runs code as is.
+Runtime type errors will be captured and reported appropriately.
+
 A file prefixed by `-o` is taken to be an output file. Depending on its extension, this will write out the preceding module definition in either S-expression or binary format. This option can be used to convert between the two in both directions, e.g.:
 
 ```
@@ -76,8 +80,9 @@ wasm -d module.wast -o module.wasm
 wasm -d module.wasm -o module.wast
 ```
 
-The `-d` option selects "dry mode" and ensures that the input module is not run, even if it has a start section.
 In the second case, the produced script contains exactly one module definition.
+The `-d` option selects "dry mode" and ensures that the input module is not run, even if it has a start section.
+In addition, the `-u` option for "unchecked mode" can be used to convert even modules that do not validate.
 
 Finally, the option `-e` allows to provide arbitrary script commands directly on the command line. For example:
 
