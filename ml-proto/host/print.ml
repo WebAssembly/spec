@@ -1,27 +1,25 @@
 open Kernel
 open Source
 open Printf
-
-
-(* Types *)
-
 open Types
 
-let print_no_sig prefix i =
-  printf "%s %d\n" prefix i
 
-let print_var_sig prefix i t =
-  printf "%s %d : %s\n" prefix i (string_of_value_type t)
+(* Ast *)
 
-let print_func_sig m prefix i x =
-  let t = List.nth m.it.types x.it in
-  printf "%s %d : %s\n" prefix i (string_of_func_type t)
+let print_sig prefix i string_of_type t =
+  printf "%s %d : %s\n" prefix i (string_of_type t)
 
-let print_table_sig prefix i t =
-  printf "%s %d : %s\n" prefix i (string_of_table_type t)
+let print_func m i f =
+  print_sig "func" i string_of_func_type (List.nth m.it.types f.it.ftype.it)
 
-let print_memory_sig prefix i t =
-  printf "%s %d : %s\n" prefix i (string_of_memory_type t)
+let print_table m i tab =
+  print_sig "table" i string_of_table_type tab.it.ttype
+
+let print_memory m i mem =
+  print_sig "memory" i string_of_memory_type mem.it.mtype
+
+let print_global m i glob =
+  print_sig "global" i string_of_global_type glob.it.gtype
 
 let print_export m i ex =
   let {name; ekind; item} = ex.it in
@@ -35,21 +33,6 @@ let print_export m i ex =
 
 let print_start start =
   Lib.Option.app (fun x -> printf "start = func %d\n" x.it) start
-
-
-(* Ast *)
-
-let print_func m i f =
-  print_func_sig m "func" i f.it.ftype
-
-let print_global m i glob =
-  print_var_sig "global" i glob.it.gtype
-
-let print_table m i tab =
-  print_table_sig "table" i tab.it.ttype
-
-let print_memory m i mem =
-  print_memory_sig "memory" i mem.it.mtype
 
 let print_module m =
   (* TODO: more complete print function *)
@@ -77,4 +60,3 @@ let print_value vo =
   | None ->
       printf "()\n";
       flush_all ()
-

@@ -320,7 +320,7 @@ let create_memory mem =
   Memory.create lim
 
 let create_global glob =
-  let {gtype = t; _} = glob.it in
+  let {gtype = GlobalType (t, _); _} = glob.it in
   ref (default_value t)
 
 let init_func c f =
@@ -373,8 +373,8 @@ let add_import (ext : extern) (imp : import) (inst : instance) : instance =
   | ExternalMemory mem, MemoryImport (MemoryType lim) ->
     check_limits (Memory.limits mem) lim imp.it.ikind.at;
     {inst with memories = mem :: inst.memories}
-  | ExternalGlobal glob, GlobalImport _ ->
-    {inst with globals = ref glob :: inst.globals}
+  | ExternalGlobal v, GlobalImport (GlobalType _) ->
+    {inst with globals = ref v :: inst.globals}
   | _ ->
     Link.error imp.it.ikind.at "type mismatch"
 

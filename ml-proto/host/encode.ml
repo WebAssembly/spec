@@ -100,6 +100,13 @@ let encode m =
     let memory_type = function
       | MemoryType lim -> limits vu32 lim
 
+    let mutability = function
+      | Immutable -> u8 0
+      | Mutable -> u8 1
+
+    let global_type = function
+      | GlobalType (t, mut) -> value_type t; mutability mut
+
     (* Expressions *)
 
     open Source
@@ -330,7 +337,7 @@ let encode m =
       | FuncImport x -> u8 0x00; var x
       | TableImport t -> u8 0x01; table_type t
       | MemoryImport t -> u8 0x02; memory_type t
-      | GlobalImport t -> u8 0x03; value_type t
+      | GlobalImport t -> u8 0x03; global_type t
 
     let import imp =
       let {module_name; item_name; ikind} = imp.it in
@@ -364,7 +371,7 @@ let encode m =
     (* Global section *)
     let global g =
       let {gtype; value} = g.it in
-      value_type gtype; expr value; op 0x0f
+      global_type gtype; expr value; op 0x0f
 
     let global_section gs =
       section "global" (vec global) gs (gs <> [])

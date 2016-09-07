@@ -56,6 +56,10 @@ let struct_type = func_type
 let limits int {min; max} =
   String.concat " " (int min :: opt int max)
 
+let global_type = function
+  | GlobalType (t, Immutable) -> atom string_of_value_type t
+  | GlobalType (t, Mutable) -> Node ("mut", [atom string_of_value_type t])
+
 
 (* Operators *)
 
@@ -296,8 +300,7 @@ let import_kind i k =
     Node ("func $" ^ string_of_int i, [Node ("type", [atom var x])])
   | TableImport t -> table 0 i ({ttype = t} @@ k.at)
   | MemoryImport t -> memory 0 i ({mtype = t} @@ k.at)
-  | GlobalImport t ->
-    Node ("global $" ^ string_of_int i, [atom value_type t])
+  | GlobalImport t -> Node ("global $" ^ string_of_int i, [global_type t])
 
 let import i im =
   let {module_name; item_name; ikind} = im.it in
@@ -320,9 +323,7 @@ let export ex =
 
 let global off i g =
   let {gtype; value} = g.it in
-  Node ("global $" ^ string_of_int (off + i),
-    [atom value_type gtype; expr value]
-  )
+  Node ("global $" ^ string_of_int (off + i), [global_type gtype; expr value])
 
 
 (* Modules *)

@@ -139,6 +139,7 @@ rule token = parse
           F64_const (n @@ s.at), Values.Float64 n))
     }
   | "anyfunc" { ANYFUNC }
+  | "mut" { MUT }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }

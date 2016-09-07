@@ -155,7 +155,7 @@ result:  ( result <type> )
 local:   ( local <type>* ) | ( local <name> <type> )
 
 func_sig:   ( type <var> ) | <param>* <result>?
-global_sig: <type>
+global_sig: <type> | ( mut <type> )
 table_sig:  <nat> <nat>? <elem_type>
 memory_sig: <nat> <nat>?
 
