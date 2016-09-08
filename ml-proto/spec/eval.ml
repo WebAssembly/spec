@@ -55,12 +55,36 @@ let numeric_error at = function
 
 (* Configurations *)
 
-type config =
-{
-  instance : instance;
-  locals : value ref list;
-  resources : int;
-}
+(*
+ * Execution is defined by how instructions transform a program configuration.
+ * Configurations are given in the form of evaluation contexts that are split up
+ * into four parts:
+ *
+ * es : instr list  - the remaining instructions (in the current block)
+ * vs : value stack - the operand stack (local to the current block)
+ * bs : block stack - the control stack (local to the current function call)
+ * cs : call stack  - the activation stack
+ *
+ * This organisation allows to easy indexing into the control stack, in
+ * particular. An instruction may modify each of the three stacks.
+ *
+ * Blocks and call frames do not only hold information relevant to the
+ * respective block or function (such as locals and result arity), they also
+ * save the previous instruction list, value stack, and for calls, block stack,
+ * which are restored once the block or function terminates. A real interpreter
+ * would typically use one contiguous stack for each part and rather save
+ * only stack heights on block or function entry. Saving the entire stacks
+ * instead avoids computing stack heights in the semantics.
+ *)
+
+type eval_context = instr list * value stack * block stack * call stack
+and  call_context = instr list * value stack * block stack
+and block_context = instr list * value stack
+
+and block = {target : instr list; bcontext : block_context}
+and call = {locals : value list; arity : int; ccontext : call_context}
+
+type config = {instance : instance}
 
 let resource_limit = 1000
 
@@ -68,11 +92,18 @@ let lookup category list x =
   try List.nth list x.it with Failure _ ->
     Crash.error x.at ("undefined " ^ category ^ " " ^ string_of_int x.it)
 
+let update category list x y =
+  try Lib.List.take x.it list @ [y] @ Lib.List.drop (x.it + 1) list
+  with Failure _ ->
+    Crash.error x.at ("undefined " ^ category ^ " " ^ string_of_int x.it)
+
 let type_ c x = lookup "type" c.instance.module_.it.types x
 let func c x = lookup "function" c.instance.module_.it.funcs x
 let import c x = lookup "import" c.instance.imports x
 let global c x = lookup "global" c.instance.globals x
+
 let local c x = lookup "local" c.locals x
+let update_local c x v = {c with locals = update "local" c.locals x v}
 
 let export inst name =
   try Map.find name.it inst.exports with Not_found ->
@@ -96,6 +127,14 @@ let elem c i t at =
   | exception Table.Bounds ->
     Trap.error at ("undefined element " ^ Int32.to_string i)
 
+let take n (vs : 'a stack) at =
+  try Lib.List.take n vs with Failure _ ->
+    Crash.error at "stack underflow"
+
+let drop n (vs : 'a stack) at =
+  try Lib.List.drop n vs with Failure _ ->
+    Crash.error at "stack underflow"
+
 
 (* Evaluation *)
 
@@ -109,107 +148,103 @@ let elem c i t at =
  *)
 
 let length32 xs = Int32.of_int (List.length xs)
+let nth32 xs n = List.nth xs (Int32.to_int n)
 
-let keep n (vs : value stack) at =
-  try Lib.List.take n vs with Failure _ ->
-    Crash.error at "stack underflow"
+let eval_call (c : config) (f : func) (es, vs, bs, cs : eval_context) at =
+  if List.length cs = resource_limit then Trap.error at "call stack exhausted";
+  let FuncType (ins, out) = type_ c f.it.ftype in
+  let n = List.length ins in
+  let m = List.length out in
+  let args = List.rev (take n vs at) in
+  let locals = args @ List.map default_value f.it.locals in
+  [Block f.it.body @@ f.at], [], [],
+    {locals; arity = m; ccontext = es, drop n vs at, bs} :: cs
 
-let drop n (vs : value stack) at =
-  try Lib.List.drop n vs with Failure _ ->
-    Crash.error at "stack underflow"
+let eval_instr (c : config) (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
+  match e.it, vs, bs, cs with
+  | Unreachable, _, _, _ ->
+    Trap.error e.at "unreachable executed"
 
-let rec step_instr (c : config) (vs : value stack) (e : instr)
-  : value stack * instr list =
-  match e.it, vs with
-  | Unreachable, vs ->
-    vs, [Trapping "unreachable executed" @@ e.at]
+  | Nop, _, _, _ ->
+    es, vs, bs, cs
 
-  | Nop, vs ->
-    vs, []
+  | Drop, v :: vs', _, _ ->
+    es, vs', bs, cs
 
-  | Drop, v :: vs' ->
-    vs', []
+  | Block es', vs, bs, _ ->
+    es', [], {target = []; bcontext = es, vs} :: bs, cs
 
-  | Block es, vs ->
-    vs, [Label ([], [], es) @@ e.at]
+  | Loop es', vs, bs, _ ->
+    es', [], {target = [e]; bcontext = es, vs} :: bs, cs
 
-  | Loop es, vs ->
-    vs, [Label ([e], [], es) @@ e.at]
+  | Br (n, x), vs, bs, _ ->
+    let b = List.hd (take 1 (drop x.it bs e.at) e.at) in
+    let es', vs' = b.bcontext in
+    b.target @ es', take n vs e.at @ vs', drop (x.it + 1) bs e.at, cs
 
-  | Br (n, x), vs ->
-    assert false  (* abrupt *)
+  | BrIf (n, x), I32 0l :: vs', _, _ ->
+    es, drop n vs' e.at, bs, cs
 
-  | BrIf (n, x), I32 0l :: vs' ->
-    drop n vs' e.at, []
+  | BrIf (n, x), I32 i :: vs', _, _ ->
+    (Br (n, x) @@ e.at) :: es, vs', bs, cs
 
-  | BrIf (n, x), I32 i :: vs' ->
-    vs', [Br (n, x) @@ e.at]
+  | BrTable (n, xs, x), I32 i :: vs', _, _ when I32.ge_u i (length32 xs) ->
+    (Br (n, x) @@ e.at) :: es, vs', bs, cs
 
-  | BrTable (n, xs, x), I32 i :: vs' when I32.ge_u i (length32 xs) ->
-    vs', [Br (n, x) @@ e.at]
+  | BrTable (n, xs, x), I32 i :: vs', _, _ ->
+    (Br (n, nth32 xs i) @@ e.at) :: es, vs', bs, cs
 
-  | BrTable (n, xs, x), I32 i :: vs' ->
-    vs', [Br (n, List.nth xs (Int32.to_int i)) @@ e.at]
+  | Return, vs, _, c :: cs' ->
+    let es', vs', bs' = c.ccontext in
+    es', take c.arity vs e.at @ vs', bs', cs'
 
-  | Return, vs ->
-    assert false  (* abrupt *)
+  | If (es1, es2), I32 0l :: vs', _, _ ->
+    (Block es2 @@ e.at) :: es, vs', bs, cs
 
-  | If (es1, es2), I32 0l :: vs' ->
-    vs', [Block es2 @@ e.at]
+  | If (es1, es2), I32 i :: vs', _, _ ->
+    (Block es1 @@ e.at) :: es, vs', bs, cs
 
-  | If (es1, es2), I32 i :: vs' ->
-    vs', [Block es1 @@ e.at]
+  | Select, I32 0l :: v2 :: v1 :: vs', _, _ ->
+    es, v2 :: vs', bs, cs
 
-  | Select, I32 0l :: v2 :: v1 :: vs' ->
-    v2 :: vs', []
+  | Select, I32 i :: v2 :: v1 :: vs', _, _ ->
+    es, v1 :: vs', bs, cs
 
-  | Select, I32 i :: v2 :: v1 :: vs' ->
-    v1 :: vs', []
+  | Call x, _, _, _ ->
+    eval_call c (func c x) (es, vs, bs, cs) e.at
 
-  | Call x, vs ->
-    if c.resources = 0 then Trap.error e.at "call stack exhausted";
-    let f = func c x in
-    let FuncType (ins, out) = type_ c f.it.ftype in
-    let n = List.length ins in
-    let m = List.length out in
-    let args = List.rev (keep n vs e.at) in
-    let locals = List.map default_value f.it.locals in
-    drop n vs e.at, [Local (m, args @ locals, [], f.it.body) @@ e.at]
-
-  | CallImport x, vs ->
+  | CallImport x, vs, _, _ ->
     let x, f = import c x in
     let FuncType (ins, out) = type_ c (x @@ e.at) in
     let n = List.length ins in
     (try
-      let vs' = List.rev (f (List.rev (keep n vs e.at))) in
-      drop n vs e.at @ vs', []
+      let vs' = List.rev (f (List.rev (take n vs e.at))) in
+      es, drop n vs e.at @ vs', bs, cs
     with Crash (_, msg) -> Crash.error e.at msg)
 
-  | CallIndirect x, I32 i :: vs ->
-    let y = elem c i AnyFuncType e.at @@ e.at in
-    if type_ c x <> type_ c (func c y).it.ftype then
+  | CallIndirect x, I32 i :: vs, _, _ ->
+    let f = func c (elem c i AnyFuncType e.at @@ e.at) in
+    if type_ c x <> type_ c f.it.ftype then
       Trap.error e.at "indirect call signature mismatch";
-    vs, [Call y @@ e.at]
+    eval_call c f (es, vs, bs, cs) e.at
 
-  | GetLocal x, vs ->
-    !(local c x) :: vs, []
+  | GetLocal x, vs, _, c :: _ ->
+    es, (local c x) :: vs, bs, cs
 
-  | SetLocal x, v :: vs' ->
-    local c x := v;
-    vs', []
+  | SetLocal x, v :: vs', _, c :: cs' ->
+    es, vs', bs, update_local c x v :: cs'
 
-  | TeeLocal x, v :: vs' ->
-    local c x := v;
-    v :: vs', []
+  | TeeLocal x, v :: vs', _, c :: cs' ->
+    es, v :: vs', bs, update_local c x v :: cs'
 
-  | GetGlobal x, vs ->
-    !(global c x) :: vs, []
+  | GetGlobal x, vs, _, _ ->
+    es, !(global c x) :: vs, bs, cs
 
-  | SetGlobal x, v :: vs' ->
+  | SetGlobal x, v :: vs', _, _ ->
     global c x := v;
-    vs', []
+    es, vs', bs, cs
 
-  | Load {offset; ty; sz; _}, I32 i :: vs' ->
+  | Load {offset; ty; sz; _}, I32 i :: vs', _, _ ->
     let addr = I64_convert.extend_u_i32 i in
     let v =
       try
@@ -218,114 +253,79 @@ let rec step_instr (c : config) (vs : value stack) (e : instr)
         | Some (sz, ext) ->
           Memory.load_packed sz ext (memory c e.at) addr offset ty
       with exn -> memory_error e.at exn
-    in v :: vs', []
+    in es, v :: vs', bs, cs
 
-  | Store {offset; sz; _}, v :: I32 i :: vs' ->
+  | Store {offset; sz; _}, v :: I32 i :: vs', _, _ ->
     let addr = I64_convert.extend_u_i32 i in
     (try
       match sz with
       | None -> Memory.store (memory c e.at) addr offset v
       | Some sz -> Memory.store_packed sz (memory c e.at) addr offset v
     with exn -> memory_error e.at exn);
-    vs', []
+    es, vs', bs, cs
 
-  | Const v, vs ->
-    v.it :: vs, []
+  | Const v, vs, _, _ ->
+    es, v.it :: vs, bs, cs
 
-  | Unary unop, v :: vs' ->
-    (try Eval_numeric.eval_unop unop v :: vs', []
+  | Unary unop, v :: vs', _, _ ->
+    (try es, Eval_numeric.eval_unop unop v :: vs', bs, cs
     with exn -> numeric_error e.at exn)
 
-  | Binary binop, v2 :: v1 :: vs' ->
-    (try Eval_numeric.eval_binop binop v1 v2 :: vs', []
+  | Binary binop, v2 :: v1 :: vs', _, _ ->
+    (try es, Eval_numeric.eval_binop binop v1 v2 :: vs', bs, cs
     with exn -> numeric_error e.at exn)
 
-  | Test testop, v :: vs' ->
-    (try value_of_bool (Eval_numeric.eval_testop testop v) :: vs', []
+  | Test testop, v :: vs', _, _ ->
+    (try es, value_of_bool (Eval_numeric.eval_testop testop v) :: vs', bs, cs
     with exn -> numeric_error e.at exn)
 
-  | Compare relop, v2 :: v1 :: vs' ->
-    (try value_of_bool (Eval_numeric.eval_relop relop v1 v2) :: vs', []
+  | Compare relop, v2 :: v1 :: vs', _, _ ->
+    (try es, value_of_bool (Eval_numeric.eval_relop relop v1 v2) :: vs', bs, cs
     with exn -> numeric_error e.at exn)
 
-  | Convert cvtop, v :: vs' ->
-    (try Eval_numeric.eval_cvtop cvtop v :: vs', []
+  | Convert cvtop, v :: vs', _, _ ->
+    (try es, Eval_numeric.eval_cvtop cvtop v :: vs', bs, cs
     with exn -> numeric_error e.at exn)
 
-  | CurrentMemory, vs ->
+  | CurrentMemory, vs, _, _ ->
     let size = Memory.size (memory c e.at) in
-    I32 size :: vs, []
+    es, I32 size :: vs, bs, cs
 
-  | GrowMemory, I32 delta :: vs' ->
+  | GrowMemory, I32 delta :: vs', _, _ ->
     let mem = memory c e.at in
     let old_size = Memory.size mem in
     let result =
       try Memory.grow mem delta; old_size
       with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
-    in I32 result :: vs', []
+    in es, I32 result :: vs', bs, cs
 
-  | Trapping msg, vs ->
-    assert false (* abrupt *)
-
-  | Label (es_cont, vs', []), vs ->
-    vs' @ vs, []
-
-  | Label (es_cont, vs', {it = Br (n, i); _} :: es), vs when i.it = 0 ->
-    keep n vs' e.at @ vs, es_cont
-
-  | Label (es_cont, vs', {it = Br (n, i); at} :: es), vs ->
-    vs', [Br (n, (i.it - 1) @@ i.at) @@ e.at]
-
-  | Label (es_cont, vs', {it = Return; at} :: es), vs ->
-    vs', [Return @@ at]
-
-  | Label (es_cont, vs', {it = Trapping msg; at} :: es), vs ->
-    [], [Trapping msg @@ at]
-
-  | Label (es_cont, vs', e :: es), vs ->
-    let vs'', es' = step_instr c vs' e in
-    vs, [Label (es_cont, vs'', es' @ es) @@ e.at]
-
-  | Local (n, vs_local, vs', []), vs ->
-    vs' @ vs, []
-
-  | Local (n, vs_local, vs', {it = Br (n', i); at} :: es), vs when i.it = 0 ->
-    if n <> n' then Crash.error at "inconsistent result arity";
-    keep n vs' at @ vs, []
-
-  | Local (n, vs_local, vs', {it = Return; at} :: es), vs ->
-    keep n vs' at @ vs, []
-
-  | Local (n, vs_local, vs', {it = Trapping msg; at} :: es), vs ->
-    [], [Trapping msg @@ at]
-
-  | Local (n, vs_local, vs', e :: es), vs ->
-    let c' = {c with locals = List.map ref vs_local; resources = c.resources - 1} in
-    let vs'', es' = step_instr c' vs' e in
-    vs, [Local (n, List.map (!) c'.locals, vs'', es' @ es) @@ e.at]
-
-  | _, _ ->
+  | _ ->
     Crash.error e.at "type error: missing or ill-typed operand on stack"
 
+let rec eval_seq (conf : config) (es, vs, bs, cs : eval_context) =
+  match es, bs, cs with
+  | e :: es', _, _ ->
+    eval_seq conf (eval_instr conf e (es', vs, bs, cs))
 
-let rec eval_block (c : config) (vs : value stack) (es : instr list) : value stack =
-  match es with
-  | [] -> vs
-  | [{it = Trapping msg; at}] -> Trap.error at msg
-  | e :: es ->
-    let vs', es' = step_instr c vs e in
-    eval_block c vs' (es' @ es)
+  | [], b :: bs', _ ->
+    let es', vs' = b.bcontext in
+    eval_seq conf (es', vs @ vs', bs', cs)
+
+  | [], [], c :: cs' ->
+    let es', vs', bs' = c.ccontext in
+    eval_seq conf (es', vs @ vs', bs', cs')
+
+  | [], [], [] ->
+    vs
 
 
 (* Functions & Constants *)
 
 let eval_func (inst : instance) (vs : value list) (x : var) : value list =
-  let c = {instance = inst; locals = []; resources = resource_limit} in
-  List.rev (eval_block c (List.rev vs) [Call x @@ x.at])
+  List.rev (eval_seq {instance = inst} ([Call x @@ x.at], List.rev vs, [], []))
 
 let eval_const inst const =
-  let c = {instance = inst; locals = []; resources = resource_limit} in
-  match eval_block c [] const.it with
+  match eval_seq {instance = inst} (const.it, [], [], []) with
   | [v] -> v
   | _ -> Crash.error const.at "type error: wrong number of values on stack"
 

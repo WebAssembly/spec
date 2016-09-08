@@ -285,28 +285,6 @@ let rec check_instr (c : context) (e : instr) (stack : stack_type) : op_type =
     ignore (memory c e.at);
     [I32Type] --> Stack [I32Type]
 
-  | Trapping msg ->
-    [] --> Bot
-
-  | Label (es0, vs, es) ->
-    let vr = unknown () in
-    let c' = {c with labels = vr :: c.labels} in
-    let r1 = check_block c' es0 in
-    let ves = List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) in
-    let r2 = check_block c' (ves @ es) in
-    [] --> join !vr (join r1 r2 e.at) e.at
-
-  | Local (n, vs0, vs, es) ->
-    let locals = List.map Values.type_of vs0 in
-    let vr = unknown () in
-    let c' = {c with locals; labels = vr :: c.labels} in
-    let ves = List.rev (List.map (fun v -> Const (v @@ e.at) @@ e.at) vs) in
-    let r = check_block c' (ves @ es) in
-    match join !vr r e.at with
-    | Stack ts when List.length ts <> n ->
-      error e.at "arity mismatch for local result"
-    | r' -> [] --> r'
-
 and check_block (c : context) (es : instr list) : result_type =
   match es with
   | [] ->

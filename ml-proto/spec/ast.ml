@@ -105,11 +105,6 @@ and instr' =
   | CurrentMemory                     (* size of linear memory *)
   | GrowMemory                        (* grow linear memory *)
 
-  (* Administrative expressions *)
-  | Trapping of string                                   (* trap *)
-  | Label of instr list * value list * instr list        (* control stack *)
-  | Local of int * value list * value list * instr list  (* call stack *)
-
 
 (* Globals & Functions *)
 

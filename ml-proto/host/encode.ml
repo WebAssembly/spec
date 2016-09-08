@@ -324,8 +324,6 @@ let encode m =
       | Convert (F64 F64Op.DemoteF64) -> assert false
       | Convert (F64 F64Op.ReinterpretInt) -> op 0xb3
 
-      | Trapping _ | Label _ | Local _ -> assert false
-
     let const c =
       list instr c.it; op 0x0f
 

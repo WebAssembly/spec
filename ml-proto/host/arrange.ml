@@ -230,16 +230,6 @@ let rec instr e =
     | CurrentMemory -> Atom "current_memory"
     | GrowMemory -> Atom "grow_memory"
 
-    | Trapping msg -> Atom ("trap[\"" ^ String.escaped msg ^ "\"]")
-    | Label (es_cont, vs, es) ->
-      let ves = List.map (fun v -> Const (v @@ e.at) @@ e.at) (List.rev vs) in
-      Node ("label[...]", list instr (ves @ es))
-    | Local (n, vs_local, vs, es) ->
-      let ves = List.map (fun v -> Const (v @@ e.at) @@ e.at) (List.rev vs) in
-      Node ("local" ^ string_of_int n ^ "[" ^
-            String.concat " " (List.map string_of_value vs_local) ^
-            "]", list instr (ves @ es))
-
 let const c =
   list instr c.it
 
