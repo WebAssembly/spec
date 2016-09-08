@@ -140,7 +140,7 @@ let rec step_instr (c : config) (vs : value stack) (e : instr)
     assert false  (* abrupt *)
 
   | BrIf (n, x), I32 0l :: vs' ->
-    drop n vs' e.at, []
+    vs', []
 
   | BrIf (n, x), I32 i :: vs' ->
     vs', [Br (n, x) @@ e.at]

@@ -86,15 +86,14 @@
   )
 
   (func "as-br_if-mid" (param i32) (result i32)
-    block (get_local 0) (nop) (get_local 0) br_if 1 0 (i32.const 0) end
+    block (get_local 0) (nop) (get_local 0) br_if 1 0 end
   )
   (func "as-br_if-last" (param i32) (result i32)
-    block (get_local 0) (get_local 0) (nop) br_if 1 0 (i32.const 0) end
+    block (get_local 0) (get_local 0) (nop) br_if 1 0 end
   )
   (func "as-br_if-everywhere" (param i32) (result i32)
     block
      (nop) (nop) (get_local 0) (nop) (nop) (get_local 0) (nop) (nop) br_if 1 0
-     (i32.const 0) 
     end
   )
 
