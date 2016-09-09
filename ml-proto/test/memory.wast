@@ -2,7 +2,7 @@
 (module (memory 0 0))
 (module (memory 0 1))
 (module (memory 1 256))
-(module (memory 0 65535))
+(module (memory 0 65536))
 (module (memory 0 0) (data (i32.const 0)))
 (module (memory 0 0) (data (i32.const 0) ""))
 (module (memory 1 1) (data (i32.const 0) "a"))
@@ -63,16 +63,28 @@
   "data segment not disjoint and ordered"
 )
 (assert_invalid
-  (module (memory 0 65536))
-  "memory size must be less than 65536 pages (4GiB)"
+  (module (memory 65537))
+  "memory size must be at most 65536 pages (4GiB)"
+)
+(assert_invalid
+  (module (memory 2147483648))
+  "memory size must be at most 65536 pages (4GiB)"
+)
+(assert_invalid
+  (module (memory 4294967295))
+  "memory size must be at most 65536 pages (4GiB)"
+)
+(assert_invalid
+  (module (memory 0 65537))
+  "memory size must be at most 65536 pages (4GiB)"
 )
 (assert_invalid
   (module (memory 0 2147483648))
-  "memory size must be less than 65536 pages (4GiB)"
+  "memory size must be at most 65536 pages (4GiB)"
 )
 (assert_invalid
   (module (memory 0 4294967295))
-  "memory size must be less than 65536 pages (4GiB)"
+  "memory size must be at most 65536 pages (4GiB)"
 )
 
 ;; Test alignment annotation rules

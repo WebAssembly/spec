@@ -354,13 +354,13 @@ let check_table (c : context) (tab : table) =
 
 let check_memory_type (t : memory_type) at =
   let MemoryType {min; max} = t in
-  require (I32.lt_u min 65536l) at
-    "memory size must be less than 65536 pages (4GiB)";
+  require (I32.le_u min 65536l) at
+    "memory size must be at most 65536 pages (4GiB)";
   match max with
   | None -> ()
   | Some max ->
-    require (I32.lt_u max 65536l) at
-      "memory size must be less than 65536 pages (4GiB)";
+    require (I32.le_u max 65536l) at
+      "memory size must be at most 65536 pages (4GiB)";
     require (I32.le_u min max) at
       "memory size minimum must not be greater than maximum"
 
@@ -453,8 +453,10 @@ let check_module (m : module_) =
       memories = c.memories @ List.map (fun mem -> mem.it.mtype) memories;
     }
   in
-  require (List.length c'.tables <= 1) m.at "multiple tables";
-  require (List.length c'.memories <= 1) m.at "multiple memories";
+  require (List.length c'.tables <= 1) m.at
+    "multiple tables are not allowed (yet)";
+  require (List.length c'.memories <= 1) m.at
+    "multiple memories are not allowed (yet)";
   List.iter (check_func c') funcs;
   List.iter (check_table c') tables;
   List.iter (check_memory c') memories;
