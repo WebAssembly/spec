@@ -182,7 +182,7 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     b.target @ es', take n vs e.at @ vs', drop 1 bs' e.at, cs
 
   | BrIf (n, x), I32 0l :: vs', _, _ ->
-    es, drop n vs' e.at, bs, cs
+    es, vs', bs, cs
 
   | BrIf (n, x), I32 i :: vs', _, _ ->
     (Br (n, x) @@ e.at) :: es, vs', bs, cs

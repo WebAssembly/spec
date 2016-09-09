@@ -161,7 +161,7 @@
   (func (export "br_if") (result i32)
     (block
       (call $reset)
-      (br_if 0 (call $i32_left) (i32.and (call $i32_right) (i32.const 0)))
+      (drop (br_if 0 (call $i32_left) (i32.and (call $i32_right) (i32.const 0))))
       (call $get)
     )
   )
