@@ -175,7 +175,7 @@ and import' =
 type module_ = module_' Source.phrase
 and module_' =
 {
-  types : Types.func_type list;
+  types : func_type list;
   globals : global list;
   tables : table list;
   memories : memory list;

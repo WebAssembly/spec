@@ -101,6 +101,9 @@ let bind_type c x ty =
 let anon_type c ty =
   c.types.tlist <- c.types.tlist @ [ty]
 
+let anon_type c ty =
+  c.types.tlist <- c.types.tlist @ [ty]
+
 let bind category space x =
   if VarMap.mem x.it space.map then
     error x.at ("duplicate " ^ category ^ " " ^ x.it);

@@ -105,6 +105,22 @@ let encode m =
     let global_type = function
       | GlobalType (t, mut) -> value_type t; mutability mut
 
+    let limits vu {min; max} =
+      bool (max <> None); vu min; opt vu max
+
+    let table_type = function
+      | TableType (lim, t) -> elem_type t; limits vu32 lim
+
+    let memory_type = function
+      | MemoryType lim -> limits vu32 lim
+
+    let mutability = function
+      | Immutable -> u8 0
+      | Mutable -> u8 1
+
+    let global_type = function
+      | GlobalType (t, mut) -> value_type t; mutability mut
+
     (* Expressions *)
 
     open Source
@@ -117,7 +133,8 @@ let encode m =
 
     let op n = u8 n
     let memop {align; offset; _} =
-      vu32 (I32.ctz (Int32.of_int align)); vu64 offset
+      vu32 (I32.ctz (Int32.of_int align));
+      vu64 offset
 
     let var x = vu32 x.it
 

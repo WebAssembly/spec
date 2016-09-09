@@ -1,8 +1,6 @@
 open Values
 open Instance
 
-type 'a stack = 'a list
-
 exception Link of Source.region * string
 exception Trap of Source.region * string
 exception Crash of Source.region * string

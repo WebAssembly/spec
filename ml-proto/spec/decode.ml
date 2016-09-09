@@ -174,6 +174,32 @@ let global_type s =
   let mut = mutability s in
   GlobalType (t, mut)
 
+let limits vu s =
+  let has_max = bool s in
+  let min = vu s in
+  let max = opt vu has_max s in
+  {min; max}
+
+let table_type s =
+  let t = elem_type s in
+  let lim = limits vu32 s in
+  TableType (lim, t)
+
+let memory_type s =
+  let lim = limits vu32 s in
+  MemoryType lim
+
+let mutability s =
+  match u8 s with
+  | 0 -> Immutable
+  | 1 -> Mutable
+  | _ -> error s (pos s - 1) "invalid mutability"
+
+let global_type s =
+  let t = value_type s in
+  let mut = mutability s in
+  GlobalType (t, mut)
+
 
 (* Decode instructions *)
 
@@ -434,7 +460,6 @@ let rec instr s =
 
 and instr_block s = List.rev (instr_block' s [])
 and instr_block' s es =
-  if eos s then es else
   match peek s with
   | None | Some (0x04 | 0x0f) -> es
   | _ ->
@@ -616,8 +641,8 @@ let data_section s =
 
 let user size s =
   let start = pos s in
-  let id = string s in
-  skip (size - (pos s - start));
+  let _id = string s in
+  skip (size - (pos s - start)) s;
   true
 
 let user_section s =
