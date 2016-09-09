@@ -8,9 +8,9 @@
   ;; Syntax
 
   (func)
-  (func "f")
+  (func (export "f"))
   (func $f)
-  (func "g" $h)
+  (func $h (export "g"))
 
   (func (local))
   (func (local) (local))
@@ -47,15 +47,15 @@
 
   ;; Typing of locals
 
-  (func "local-first-i32" (result i32) (local i32 i32) (get_local 0))
-  (func "local-first-i64" (result i64) (local i64 i64) (get_local 0))
-  (func "local-first-f32" (result f32) (local f32 f32) (get_local 0))
-  (func "local-first-f64" (result f64) (local f64 f64) (get_local 0))
-  (func "local-second-i32" (result i32) (local i32 i32) (get_local 1))
-  (func "local-second-i64" (result i64) (local i64 i64) (get_local 1))
-  (func "local-second-f32" (result f32) (local f32 f32) (get_local 1))
-  (func "local-second-f64" (result f64) (local f64 f64) (get_local 1))
-  (func "local-mixed" (result f64)
+  (func (export "local-first-i32") (result i32) (local i32 i32) (get_local 0))
+  (func (export "local-first-i64") (result i64) (local i64 i64) (get_local 0))
+  (func (export "local-first-f32") (result f32) (local f32 f32) (get_local 0))
+  (func (export "local-first-f64") (result f64) (local f64 f64) (get_local 0))
+  (func (export "local-second-i32") (result i32) (local i32 i32) (get_local 1))
+  (func (export "local-second-i64") (result i64) (local i64 i64) (get_local 1))
+  (func (export "local-second-f32") (result f32) (local f32 f32) (get_local 1))
+  (func (export "local-second-f64") (result f64) (local f64 f64) (get_local 1))
+  (func (export "local-mixed") (result f64)
     (local f32) (local $x i32) (local i64 i32) (local) (local f64 i32)
     (drop (f32.neg (get_local 0)))
     (drop (i32.eqz (get_local 1)))
@@ -68,15 +68,15 @@
 
   ;; Typing of parameters
 
-  (func "param-first-i32" (param i32 i32) (result i32) (get_local 0))
-  (func "param-first-i64" (param i64 i64) (result i64) (get_local 0))
-  (func "param-first-f32" (param f32 f32) (result f32) (get_local 0))
-  (func "param-first-f64" (param f64 f64) (result f64) (get_local 0))
-  (func "param-second-i32" (param i32 i32) (result i32) (get_local 1))
-  (func "param-second-i64" (param i64 i64) (result i64) (get_local 1))
-  (func "param-second-f32" (param f32 f32) (result f32) (get_local 1))
-  (func "param-second-f64" (param f64 f64) (result f64) (get_local 1))
-  (func "param-mixed" (param f32 i32) (param) (param $x i64) (param i32 f64 i32)
+  (func (export "param-first-i32") (param i32 i32) (result i32) (get_local 0))
+  (func (export "param-first-i64") (param i64 i64) (result i64) (get_local 0))
+  (func (export "param-first-f32") (param f32 f32) (result f32) (get_local 0))
+  (func (export "param-first-f64") (param f64 f64) (result f64) (get_local 0))
+  (func (export "param-second-i32") (param i32 i32) (result i32) (get_local 1))
+  (func (export "param-second-i64") (param i64 i64) (result i64) (get_local 1))
+  (func (export "param-second-f32") (param f32 f32) (result f32) (get_local 1))
+  (func (export "param-second-f64") (param f64 f64) (result f64) (get_local 1))
+  (func (export "param-mixed") (param f32 i32) (param) (param $x i64) (param i32 f64 i32)
     (result f64)
     (drop (f32.neg (get_local 0)))
     (drop (i32.eqz (get_local 1)))
@@ -89,50 +89,50 @@
 
   ;; Typing of result
 
-  (func "empty")
-  (func "value-void" (call $dummy))
-  (func "value-i32" (result i32) (i32.const 77))
-  (func "value-i64" (result i64) (i64.const 7777))
-  (func "value-f32" (result f32) (f32.const 77.7))
-  (func "value-f64" (result f64) (f64.const 77.77))
-  (func "value-block-void" (block (call $dummy) (call $dummy)))
-  (func "value-block-i32" (result i32) (block (call $dummy) (i32.const 77)))
+  (func (export "empty"))
+  (func (export "value-void") (call $dummy))
+  (func (export "value-i32") (result i32) (i32.const 77))
+  (func (export "value-i64") (result i64) (i64.const 7777))
+  (func (export "value-f32") (result f32) (f32.const 77.7))
+  (func (export "value-f64") (result f64) (f64.const 77.77))
+  (func (export "value-block-void") (block (call $dummy) (call $dummy)))
+  (func (export "value-block-i32") (result i32) (block (call $dummy) (i32.const 77)))
 
-  (func "return-empty" (return))
-  (func "return-i32" (result i32) (return (i32.const 78)))
-  (func "return-i64" (result i64) (return (i64.const 7878)))
-  (func "return-f32" (result f32) (return (f32.const 78.7)))
-  (func "return-f64" (result f64) (return (f64.const 78.78)))
-  (func "return-block-i32" (result i32)
+  (func (export "return-empty") (return))
+  (func (export "return-i32") (result i32) (return (i32.const 78)))
+  (func (export "return-i64") (result i64) (return (i64.const 7878)))
+  (func (export "return-f32") (result f32) (return (f32.const 78.7)))
+  (func (export "return-f64") (result f64) (return (f64.const 78.78)))
+  (func (export "return-block-i32") (result i32)
     (return (block (call $dummy) (i32.const 77)))
   )
 
-  (func "break-empty" (br 0))
-  (func "break-i32" (result i32) (br 0 (i32.const 79)))
-  (func "break-i64" (result i64) (br 0 (i64.const 7979)))
-  (func "break-f32" (result f32) (br 0 (f32.const 79.9)))
-  (func "break-f64" (result f64) (br 0 (f64.const 79.79)))
-  (func "break-block-i32" (result i32)
+  (func (export "break-empty") (br 0))
+  (func (export "break-i32") (result i32) (br 0 (i32.const 79)))
+  (func (export "break-i64") (result i64) (br 0 (i64.const 7979)))
+  (func (export "break-f32") (result f32) (br 0 (f32.const 79.9)))
+  (func (export "break-f64") (result f64) (br 0 (f64.const 79.79)))
+  (func (export "break-block-i32") (result i32)
     (br 0 (block (call $dummy) (i32.const 77)))
   )
 
-  (func "break-br_if-empty" (param i32)
+  (func (export "break-br_if-empty") (param i32)
     (br_if 0 (get_local 0))
   )
-  (func "break-br_if-num" (param i32) (result i32)
+  (func (export "break-br_if-num") (param i32) (result i32)
     (br_if 0 (i32.const 50) (get_local 0)) (i32.const 51)
   )
 
-  (func "break-br_table-empty" (param i32)
+  (func (export "break-br_table-empty") (param i32)
     (br_table 0 0 0 (get_local 0))
   )
-  (func "break-br_table-num" (param i32) (result i32)
+  (func (export "break-br_table-num") (param i32) (result i32)
     (br_table 0 0 (i32.const 50) (get_local 0)) (i32.const 51)
   )
-  (func "break-br_table-nested-empty" (param i32)
+  (func (export "break-br_table-nested-empty") (param i32)
     (block (br_table 0 1 0 (get_local 0)))
   )
-  (func "break-br_table-nested-num" (param i32) (result i32)
+  (func (export "break-br_table-nested-num") (param i32) (result i32)
     (i32.add
       (block (br_table 0 1 0 (i32.const 50) (get_local 0)) (i32.const 51))
       (i32.const 2)
@@ -141,10 +141,10 @@
 
   ;; Default initialization of locals
 
-  (func "init-local-i32" (result i32) (local i32) (get_local 0))
-  (func "init-local-i64" (result i64) (local i64) (get_local 0))
-  (func "init-local-f32" (result f32) (local f32) (get_local 0))
-  (func "init-local-f64" (result f64) (local f64) (get_local 0))
+  (func (export "init-local-i32") (result i32) (local i32) (get_local 0))
+  (func (export "init-local-i64") (result i64) (local i64) (get_local 0))
+  (func (export "init-local-f32") (result f32) (local f32) (get_local 0))
+  (func (export "init-local-f64") (result f64) (local f64) (get_local 0))
 
 
   ;; Desugaring of implicit type signature
@@ -162,12 +162,12 @@
     )
   )
 
-  (func "signature-explicit-reused"
+  (func (export "signature-explicit-reused")
     (call_indirect $sig (i32.const 1))
     (call_indirect $sig (i32.const 4))
   )
 
-  (func "signature-implicit-reused"
+  (func (export "signature-implicit-reused")
     ;; The implicit index 16 in this test depends on the function and
     ;; type definitions, and may need adapting if they change.
     (call_indirect 16
@@ -187,11 +187,11 @@
     )
   )
 
-  (func "signature-explicit-duplicate"
+  (func (export "signature-explicit-duplicate")
     (call_indirect $empty-sig-duplicate (i32.const 1))
   )
 
-  (func "signature-implicit-duplicate"
+  (func (export "signature-implicit-duplicate")
     (call_indirect $complex-sig-duplicate
       (f64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
       (f64.const 0) (i64.const 0) (f32.const 0) (i32.const 0)

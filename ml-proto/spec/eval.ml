@@ -1,34 +1,17 @@
 open Values
 open Types
+open Instance
 open Ast
 open Source
 
 
-(* Module Instances *)
-
-type 'a stack = 'a list
-type value = Values.value
-type import = value stack -> value stack
-
-module Map = Map.Make(String)
-type 'a map = 'a Map.t
-
-type instance =
-{
-  module_ : module_;
-  imports : (int * import) list;
-  exports : int map;
-  table : Table.t option;
-  memory : Memory.t option;
-  globals : value ref list;
-}
-
-
 (* Errors *)
 
+module Link = Error.Make ()
 module Trap = Error.Make ()
 module Crash = Error.Make ()
 
+exception Link = Link.Error
 exception Trap = Trap.Error
 exception Crash = Crash.Error (* failure that cannot happen in valid code *)
 
@@ -77,16 +60,17 @@ let numeric_error at = function
  * instead avoids computing stack heights in the semantics.
  *)
 
+type 'a stack = 'a list
+
 type eval_context = instr list * value stack * block stack * call stack
 and  call_context = instr list * value stack * block stack
 and block_context = instr list * value stack
 
 and block = {target : instr list; bcontext : block_context}
-and call = {locals : value list; arity : int; ccontext : call_context}
+and call = {instance : instance; locals : value list; arity : int;
+  ccontext : call_context}
 
-type config = {instance : instance}
-
-let resource_limit = 1000
+let resource_limit = 100
 
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
@@ -97,35 +81,32 @@ let update category list x y =
   with Failure _ ->
     Crash.error x.at ("undefined " ^ category ^ " " ^ string_of_int x.it)
 
-let type_ c x = lookup "type" c.instance.module_.it.types x
-let func c x = lookup "function" c.instance.module_.it.funcs x
-let import c x = lookup "import" c.instance.imports x
-let global c x = lookup "global" c.instance.globals x
-
 let local c x = lookup "local" c.locals x
 let update_local c x v = {c with locals = update "local" c.locals x v}
 
-let export inst name =
-  try Map.find name.it inst.exports with Not_found ->
-    Crash.error name.at ("undefined export \"" ^ name.it ^ "\"")
+let type_ inst x = lookup "type" inst.module_.it.types x
+let func inst x = lookup "function" inst.Instance.funcs x
+let table inst x = lookup "table" inst.Instance.tables x
+let memory inst x = lookup "memory" inst.Instance.memories x
+let global inst x = lookup "global" inst.Instance.globals x
 
-let table c at =
-  match c.instance.table with
-  | Some tab -> tab
-  | _ -> Crash.error at "no table"
-
-let memory c at =
-  match c.instance.memory with
-  | Some mem -> mem
-  | _ -> Crash.error at "no memory"
-
-let elem c i t at =
-  match Table.load (table c at) i t with
+let elem inst x i t at =
+  match Table.load (table inst x) i t with
   | Some j -> j
   | None ->
-    Trap.error at ("undefined element " ^ Int32.to_string i)
+    Trap.error at ("uninitialized element " ^ Int32.to_string i)
   | exception Table.Bounds ->
     Trap.error at ("undefined element " ^ Int32.to_string i)
+
+let func_elem inst x i at =
+  match elem inst x i AnyFuncType at with
+  | Func f -> f
+  | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
+
+let func_type_of t at =
+  match t with
+  | AstFunc (inst, f) -> lookup "type" (!inst).module_.it.types f.it.ftype
+  | HostFunc _ -> Link.error at "invalid use of host function"
 
 let take n (vs : 'a stack) at =
   try Lib.List.take n vs with Failure _ ->
@@ -140,27 +121,37 @@ let drop n (vs : 'a stack) at =
 
 (*
  * Conventions:
- *   c  : config
  *   e  : instr
  *   v  : value
  *   es : instr list
- *   vs : value list
+ *   vs : value stack
+ *   bs : block stack
+ *   cs : call stack
  *)
 
-let length32 xs = Int32.of_int (List.length xs)
-let nth32 xs n = List.nth xs (Int32.to_int n)
+let i32 v at =
+  match v with
+  | I32 i -> i
+  | _ -> Crash.error at "type error: i32 value expected"
 
-let eval_call (c : config) (f : func) (es, vs, bs, cs : eval_context) at =
+let eval_call (clos : closure) (es, vs, bs, cs : eval_context) at =
   if List.length cs = resource_limit then Trap.error at "call stack exhausted";
-  let FuncType (ins, out) = type_ c f.it.ftype in
-  let n = List.length ins in
-  let m = List.length out in
-  let args = List.rev (take n vs at) in
-  let locals = args @ List.map default_value f.it.locals in
-  [Block f.it.body @@ f.at], [], [],
-    {locals; arity = m; ccontext = es, drop n vs at, bs} :: cs
+  match clos with
+  | AstFunc (inst, f) ->
+    let FuncType (ins, out) = func_type_of clos at in
+    let n = List.length ins in
+    let m = List.length out in
+    let args = List.rev (take n vs at) in
+    let locals = args @ List.map default_value f.it.locals in
+    [Block f.it.body @@ f.at], [], [],
+      {instance = !inst; locals; arity = m; ccontext = es, drop n vs at, bs}
+        :: cs
 
-let eval_instr (c : config) (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
+  | HostFunc f ->
+    try es, f vs, bs, cs  (* TODO: consider import signature *)
+    with Crash (_, msg) -> Crash.error at msg
+
+let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
   match e.it, vs, bs, cs with
   | Unreachable, _, _, _ ->
     Trap.error e.at "unreachable executed"
@@ -188,11 +179,12 @@ let eval_instr (c : config) (e : instr) (es, vs, bs, cs : eval_context) : eval_c
   | BrIf (n, x), I32 i :: vs', _, _ ->
     (Br (n, x) @@ e.at) :: es, vs', bs, cs
 
-  | BrTable (n, xs, x), I32 i :: vs', _, _ when I32.ge_u i (length32 xs) ->
+  | BrTable (n, xs, x), I32 i :: vs', _, _
+      when I32.ge_u i (Lib.List.length32 xs) ->
     (Br (n, x) @@ e.at) :: es, vs', bs, cs
 
   | BrTable (n, xs, x), I32 i :: vs', _, _ ->
-    (Br (n, nth32 xs i) @@ e.at) :: es, vs', bs, cs
+    (Br (n, Lib.List.nth32 xs i) @@ e.at) :: es, vs', bs, cs
 
   | Return, vs, _, c :: cs' ->
     let es', vs', bs' = c.ccontext in
@@ -210,23 +202,14 @@ let eval_instr (c : config) (e : instr) (es, vs, bs, cs : eval_context) : eval_c
   | Select, I32 i :: v2 :: v1 :: vs', _, _ ->
     es, v1 :: vs', bs, cs
 
-  | Call x, _, _, _ ->
-    eval_call c (func c x) (es, vs, bs, cs) e.at
+  | Call x, _, _, c :: _ ->
+    eval_call (func c.instance x) (es, vs, bs, cs) e.at
 
-  | CallImport x, vs, _, _ ->
-    let x, f = import c x in
-    let FuncType (ins, out) = type_ c (x @@ e.at) in
-    let n = List.length ins in
-    (try
-      let vs' = List.rev (f (List.rev (take n vs e.at))) in
-      es, drop n vs e.at @ vs', bs, cs
-    with Crash (_, msg) -> Crash.error e.at msg)
-
-  | CallIndirect x, I32 i :: vs, _, _ ->
-    let f = func c (elem c i AnyFuncType e.at @@ e.at) in
-    if type_ c x <> type_ c f.it.ftype then
+  | CallIndirect x, I32 i :: vs, _, c :: _ ->
+    let func = func_elem c.instance (0 @@ e.at) i e.at in
+    if type_ c.instance x <> func_type_of func e.at then
       Trap.error e.at "indirect call signature mismatch";
-    eval_call c f (es, vs, bs, cs) e.at
+    eval_call func (es, vs, bs, cs) e.at
 
   | GetLocal x, vs, _, c :: _ ->
     es, (local c x) :: vs, bs, cs
@@ -237,30 +220,31 @@ let eval_instr (c : config) (e : instr) (es, vs, bs, cs : eval_context) : eval_c
   | TeeLocal x, v :: vs', _, c :: cs' ->
     es, v :: vs', bs, update_local c x v :: cs'
 
-  | GetGlobal x, vs, _, _ ->
-    es, !(global c x) :: vs, bs, cs
+  | GetGlobal x, vs, _, c :: _ ->
+    es, !(global c.instance x) :: vs, bs, cs
 
-  | SetGlobal x, v :: vs', _, _ ->
-    global c x := v;
+  | SetGlobal x, v :: vs', _, c :: _ ->
+    global c.instance x := v;
     es, vs', bs, cs
 
-  | Load {offset; ty; sz; _}, I32 i :: vs', _, _ ->
+  | Load {offset; ty; sz; _}, I32 i :: vs', _, c :: _ ->
+    let mem = memory c.instance (0 @@ e.at) in
     let addr = I64_convert.extend_u_i32 i in
     let v =
       try
         match sz with
-        | None -> Memory.load (memory c e.at) addr offset ty
-        | Some (sz, ext) ->
-          Memory.load_packed sz ext (memory c e.at) addr offset ty
+        | None -> Memory.load mem addr offset ty
+        | Some (sz, ext) -> Memory.load_packed sz ext mem addr offset ty
       with exn -> memory_error e.at exn
     in es, v :: vs', bs, cs
 
-  | Store {offset; sz; _}, v :: I32 i :: vs', _, _ ->
+  | Store {offset; sz; _}, v :: I32 i :: vs', _, c :: _ ->
+    let mem = memory c.instance (0 @@ e.at) in
     let addr = I64_convert.extend_u_i32 i in
     (try
       match sz with
-      | None -> Memory.store (memory c e.at) addr offset v
-      | Some sz -> Memory.store_packed sz (memory c e.at) addr offset v
+      | None -> Memory.store mem addr offset v
+      | Some sz -> Memory.store_packed sz mem addr offset v
     with exn -> memory_error e.at exn);
     es, vs', bs, cs
 
@@ -287,12 +271,12 @@ let eval_instr (c : config) (e : instr) (es, vs, bs, cs : eval_context) : eval_c
     (try es, Eval_numeric.eval_cvtop cvtop v :: vs', bs, cs
     with exn -> numeric_error e.at exn)
 
-  | CurrentMemory, vs, _, _ ->
-    let size = Memory.size (memory c e.at) in
-    es, I32 size :: vs, bs, cs
+  | CurrentMemory, vs, _, c :: _ ->
+    let mem = memory c.instance (0 @@ e.at) in
+    es, I32 (Memory.size mem) :: vs, bs, cs
 
-  | GrowMemory, I32 delta :: vs', _, _ ->
-    let mem = memory c e.at in
+  | GrowMemory, I32 delta :: vs', _, c :: _ ->
+    let mem = memory c.instance (0 @@ e.at) in
     let old_size = Memory.size mem in
     let result =
       try Memory.grow mem delta; old_size
@@ -302,18 +286,20 @@ let eval_instr (c : config) (e : instr) (es, vs, bs, cs : eval_context) : eval_c
   | _ ->
     Crash.error e.at "type error: missing or ill-typed operand on stack"
 
-let rec eval_seq (conf : config) (es, vs, bs, cs : eval_context) =
+let rec eval_seq (es, vs, bs, cs : eval_context) =
   match es, bs, cs with
   | e :: es', _, _ ->
-    eval_seq conf (eval_instr conf e (es', vs, bs, cs))
+    eval_seq (eval_instr e (es', vs, bs, cs))
 
   | [], b :: bs', _ ->
     let es', vs' = b.bcontext in
-    eval_seq conf (es', vs @ vs', bs', cs)
+    eval_seq (es', vs @ vs', bs', cs)
 
   | [], [], c :: cs' ->
+    if List.length vs <> c.arity then
+      Crash.error no_region "type error: wrong number of values on stack";
     let es', vs', bs' = c.ccontext in
-    eval_seq conf (es', vs @ vs', bs', cs')
+    eval_seq (es', vs @ vs', bs', cs')
 
   | [], [], [] ->
     vs
@@ -321,76 +307,124 @@ let rec eval_seq (conf : config) (es, vs, bs, cs : eval_context) =
 
 (* Functions & Constants *)
 
-let eval_func (inst : instance) (vs : value list) (x : var) : value list =
-  List.rev (eval_seq {instance = inst} ([Call x @@ x.at], List.rev vs, [], []))
+let eval_func (clos : closure) (vs : value list) at : value list =
+  List.rev (eval_seq (eval_call clos ([], List.rev vs, [], []) at))
 
 let eval_const inst const =
-  match eval_seq {instance = inst} (const.it, [], [], []) with
-  | [v] -> v
-  | _ -> Crash.error const.at "type error: wrong number of values on stack"
+  let c = {instance = inst; locals = []; arity = 1; ccontext = [], [], []} in
+  List.hd (eval_seq (const.it, [], [], [c]))
 
 let const (m : module_) const =
-  let inst = 
-    { module_ = m; imports = []; exports = Map.empty;
-      table = None; memory = None; globals = [] }
-  in eval_const inst const
+  eval_const (instance m) const
 
 
 (* Modules *)
 
-let offset m seg =
-  (* TODO: allow referring to globals *)
-  let {offset; _} = seg.it in
-  try I32Value.of_value (const m offset) with Value _ ->
-    Crash.error offset.at "type error: ill-typed value on stack"
+let create_closure m f =
+  AstFunc (ref (instance m), f)
 
-let init_table m elems table =
-  let {tlimits = lim; _} = table.it in
-  let tab = Table.create lim.it.min lim.it.max in
-  let entries xs = List.map (fun x -> Some x.it) xs in
-  List.iter
-    (fun seg -> Table.blit tab (offset m seg) (entries seg.it.init))
-    elems;
-  tab
+let create_table tab =
+  let {ttype = TableType (lim, t)} = tab.it in
+  Table.create lim  (* TODO: elem_type *)
 
-let init_memory m data memory =
-  let {mlimits = lim} = memory.it in
-  let mem = Memory.create lim.it.min lim.it.max in
-  List.iter
-    (fun seg -> Memory.blit mem (Int64.of_int32 (offset m seg)) seg.it.init)
-    data;
-  mem
+let create_memory mem =
+  let {mtype = MemoryType lim} = mem.it in
+  Memory.create lim
 
-let init_global inst ref global =
-  let {value; _} = global.it in
-  (* TODO: allow referring to earlier globals *)
-  ref := eval_const inst value
+let create_global glob =
+  let {gtype = GlobalType (t, _); _} = glob.it in
+  ref (default_value t)
 
-let add_export ex =
-  let {name; kind} = ex.it in
-  match kind with
-  | `Func x -> Map.add name x.it
-  | `Memory -> fun x -> x
+let init_closure inst clos =
+  match clos with
+  | AstFunc (inst_ref, _) -> inst_ref := inst
+  | _ -> assert false
 
-let init (m : module_) imports =
-  if (List.length imports <> List.length m.it.imports) then
-    Crash.error m.at "mismatch in number of imports";
-  let {table; memory; globals; funcs; exports; elems; data; start; _} = m.it in
-  let inst =
-    { module_ = m;
-      imports =
-        List.combine (List.map (fun imp -> imp.it.itype.it) m.it.imports)
-          imports;
-      exports = List.fold_right add_export exports Map.empty;
-      table = Lib.Option.map (init_table m elems) table;
-      memory = Lib.Option.map (init_memory m data) memory;
-      globals = List.map (fun g -> ref (default_value g.it.gtype)) globals;
-    }
+let check_elem inst seg =
+  let {init; _} = seg.it in
+  List.iter (fun x -> ignore (func_type_of (func inst x) x.at)) init
+
+let init_table inst seg =
+  let {index; offset = e; init} = seg.it in
+  let tab = table inst index in
+  let offset = i32 (eval_const inst e) e.at in
+  Table.blit tab offset (List.map (fun x -> Some (Func (func inst x))) init)
+
+let init_memory inst seg =
+  let {index; offset = e; init} = seg.it in
+  let mem = memory inst index in
+  let offset = Int64.of_int32 (i32 (eval_const inst e) e.at) in
+  Memory.blit mem offset init
+
+let init_global inst ref glob =
+  let {value = e; _} = glob.it in
+  ref := eval_const inst e
+
+let check_limits actual expected at =
+  if I32.lt_u actual.min expected.min then
+    Link.error at "actual size smaller than declared";
+  if
+    match actual.max, expected.max with
+    | _, None -> false
+    | None, Some _ -> true
+    | Some i, Some j -> I32.gt_u i j
+  then Link.error at "maximum size larger than declared"
+
+let add_import (ext : extern) (imp : import) (inst : instance) : instance =
+  match ext, imp.it.ikind.it with
+  | ExternalFunc clos, FuncImport x ->
+    (match clos with
+    | AstFunc _ when func_type_of clos x.at <> type_ inst x ->
+      Link.error imp.it.ikind.at "type mismatch";
+    | _ -> ()
+    );
+    {inst with funcs = clos :: inst.funcs}
+  | ExternalTable tab, TableImport (TableType (lim, _)) ->
+    check_limits (Table.limits tab) lim imp.it.ikind.at;
+    {inst with tables = tab :: inst.tables}
+  | ExternalMemory mem, MemoryImport (MemoryType lim) ->
+    check_limits (Memory.limits mem) lim imp.it.ikind.at;
+    {inst with memories = mem :: inst.memories}
+  | ExternalGlobal v, GlobalImport (GlobalType _) ->
+    {inst with globals = ref v :: inst.globals}
+  | _ ->
+    Link.error imp.it.ikind.at "type mismatch"
+
+let add_export inst ex map =
+  let {name; ekind; item} = ex.it in
+  let ext =
+    match ekind.it with
+    | FuncExport -> ExternalFunc (func inst item)
+    | TableExport -> ExternalTable (table inst item)
+    | MemoryExport -> ExternalMemory (memory inst item)
+    | GlobalExport -> ExternalGlobal !(global inst item)
+  in ExportMap.add name ext map
+
+let init m externals =
+  let
+    { imports; tables; memories; globals; funcs;
+      exports; elems; data; start } = m.it
   in
-  List.iter2 (init_global inst) inst.globals globals;
-  Lib.Option.app (fun x -> ignore (eval_func inst [] x)) start;
-  inst
+  assert (List.length externals = List.length imports);  (* TODO: better exception? *)
+  let fs = List.map (create_closure m) funcs in
+  let gs = List.map create_global globals in
+  let inst =
+    List.fold_right2 add_import externals imports
+      { (instance m) with
+        funcs = fs;
+        tables = List.map create_table tables;
+        memories = List.map create_memory memories;
+        globals = gs;
+      }
+  in
+  List.iter (init_closure inst) fs;
+  List.iter (check_elem inst) elems;
+  List.iter (init_table inst) elems;
+  List.iter (init_memory inst) data;
+  List.iter2 (init_global inst) gs globals;
+  Lib.Option.app (fun x -> ignore (eval_func (func inst x) [] x.at)) start;
+  {inst with exports = List.fold_right (add_export inst) exports inst.exports}
 
-let invoke (inst : instance) name (vs : value list) : value list =
-  eval_func inst vs (export inst (name @@ no_region) @@ no_region)
-
+let invoke clos vs =
+  (try eval_func clos vs no_region
+  with Stack_overflow -> Trap.error no_region "call stack exhausted")

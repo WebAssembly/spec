@@ -1,6 +1,6 @@
 (module
   ;; Statement switch
-  (func $stmt (param $i i32) (result i32)
+  (func (export "stmt") (param $i i32) (result i32)
     (local $j i32)
     (set_local $j (i32.const 100))
     (block $switch
@@ -43,7 +43,7 @@
   )
 
   ;; Expression switch
-  (func $expr (param $i i64) (result i64)
+  (func (export "expr") (param $i i64) (result i64)
     (local $j i64)
     (set_local $j (i64.const 100))
     (return
@@ -85,7 +85,7 @@
   )
 
   ;; Argument switch
-  (func $arg (param $i i32) (result i32)
+  (func (export "arg") (param $i i32) (result i32)
     (return
       (block $2
         (i32.add (i32.const 10)
@@ -109,17 +109,12 @@
   )
 
   ;; Corner cases
-  (func $corner (result i32)
+  (func (export "corner") (result i32)
     (block
       (br_table 0 (i32.const 0))
     )
     (i32.const 1)
   )
-
-  (export "stmt" $stmt)
-  (export "expr" $expr)
-  (export "arg" $arg)
-  (export "corner" $corner)
 )
 
 (assert_return (invoke "stmt" (i32.const 0)) (i32.const 0))

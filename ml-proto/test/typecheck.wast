@@ -239,7 +239,6 @@
 
 ;; call params
 (assert_invalid (module (func (param i32)) (func (call 0 (f32.const 0)))) "type mismatch")
-(assert_invalid (module (import "a" "b" (param i32)) (func (call_import 0 (f32.const 0)))) "type mismatch")
 (assert_invalid
   (module
     (type (func (param i32)))

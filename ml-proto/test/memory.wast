@@ -11,25 +11,16 @@
   (data (i32.const 0) "a") (data (i32.const 1) "b") (data (i32.const 2) "c")
 )
 
-(module (memory (data)) (func "memsize" (result i32) (current_memory)))
+(module (memory (data)) (func (export "memsize") (result i32) (current_memory)))
 (assert_return (invoke "memsize") (i32.const 0))
-(module (memory (data "")) (func "memsize" (result i32) (current_memory)))
+(module (memory (data "")) (func (export "memsize") (result i32) (current_memory)))
 (assert_return (invoke "memsize") (i32.const 0))
-(module (memory (data "x")) (func "memsize" (result i32) (current_memory)))
+(module (memory (data "x")) (func (export "memsize") (result i32) (current_memory)))
 (assert_return (invoke "memsize") (i32.const 1))
 
-(assert_invalid
-  (module (data (i32.const 0)))
-  "no memory defined"
-)
-(assert_invalid
-  (module (data (i32.const 0) ""))
-  "no memory defined"
-)
-(assert_invalid
-  (module (data (i32.const 0) "x"))
-  "no memory defined"
-)
+(assert_invalid (module (data (i32.const 0))) "unknown memory")
+(assert_invalid (module (data (i32.const 0) "")) "unknown memory")
+(assert_invalid (module (data (i32.const 0) "x")) "unknown memory")
 
 (assert_invalid
   (module (memory 1) (data (i64.const 0)))
@@ -50,11 +41,11 @@
 )
 (assert_invalid
   (module (memory 0 0) (data (i32.const 0) "a"))
-  "data segment does not fit memory"
+  "data segment does not fit"
 )
 (assert_invalid
   (module (memory 1 2) (data (i32.const 0) "a") (data (i32.const 98304) "b"))
-  "data segment does not fit memory"
+  "data segment does not fit"
 )
 (assert_invalid
   (module (memory 1 2) (data (i32.const 0) "abc") (data (i32.const 0) "def"))
@@ -153,7 +144,7 @@
   (data (i32.const 0) "ABC\a7D") (data (i32.const 20) "WASM")
 
   ;; Data section
-  (func $data (result i32)
+  (func (export "data") (result i32)
     (i32.and
       (i32.and
         (i32.and
@@ -179,7 +170,7 @@
   )
 
   ;; Aligned read/write
-  (func $aligned (result i32)
+  (func (export "aligned") (result i32)
     (local i32 i32 i32)
     (set_local 0 (i32.const 10))
     (block
@@ -203,7 +194,7 @@
   )
 
   ;; Unaligned read/write
-  (func $unaligned (result i32)
+  (func (export "unaligned") (result i32)
     (local i32 f64 f64)
     (set_local 0 (i32.const 10))
     (block
@@ -227,7 +218,7 @@
   )
 
   ;; Memory cast
-  (func $cast (result f64)
+  (func (export "cast") (result f64)
     (i64.store (i32.const 8) (i64.const -12345))
     (if
       (f64.eq
@@ -242,61 +233,46 @@
   )
 
   ;; Sign and zero extending memory loads
-  (func $i32_load8_s (param $i i32) (result i32)
+  (func (export "i32_load8_s") (param $i i32) (result i32)
 	(i32.store8 (i32.const 8) (get_local $i))
 	(i32.load8_s (i32.const 8))
   )
-  (func $i32_load8_u (param $i i32) (result i32)
+  (func (export "i32_load8_u") (param $i i32) (result i32)
 	(i32.store8 (i32.const 8) (get_local $i))
 	(i32.load8_u (i32.const 8))
   )
-  (func $i32_load16_s (param $i i32) (result i32)
+  (func (export "i32_load16_s") (param $i i32) (result i32)
 	(i32.store16 (i32.const 8) (get_local $i))
 	(i32.load16_s (i32.const 8))
   )
-  (func $i32_load16_u (param $i i32) (result i32)
+  (func (export "i32_load16_u") (param $i i32) (result i32)
 	(i32.store16 (i32.const 8) (get_local $i))
 	(i32.load16_u (i32.const 8))
   )
-  (func $i64_load8_s (param $i i64) (result i64)
+  (func (export "i64_load8_s") (param $i i64) (result i64)
 	(i64.store8 (i32.const 8) (get_local $i))
 	(i64.load8_s (i32.const 8))
   )
-  (func $i64_load8_u (param $i i64) (result i64)
+  (func (export "i64_load8_u") (param $i i64) (result i64)
 	(i64.store8 (i32.const 8) (get_local $i))
 	(i64.load8_u (i32.const 8))
   )
-  (func $i64_load16_s (param $i i64) (result i64)
+  (func (export "i64_load16_s") (param $i i64) (result i64)
 	(i64.store16 (i32.const 8) (get_local $i))
 	(i64.load16_s (i32.const 8))
   )
-  (func $i64_load16_u (param $i i64) (result i64)
+  (func (export "i64_load16_u") (param $i i64) (result i64)
 	(i64.store16 (i32.const 8) (get_local $i))
 	(i64.load16_u (i32.const 8))
   )
-  (func $i64_load32_s (param $i i64) (result i64)
+  (func (export "i64_load32_s") (param $i i64) (result i64)
 	(i64.store32 (i32.const 8) (get_local $i))
 	(i64.load32_s (i32.const 8))
   )
-  (func $i64_load32_u (param $i i64) (result i64)
+  (func (export "i64_load32_u") (param $i i64) (result i64)
 	(i64.store32 (i32.const 8) (get_local $i))
 	(i64.load32_u (i32.const 8))
   )
-
-  (export "data" $data)
-  (export "aligned" $aligned)
-  (export "unaligned" $unaligned)
-  (export "cast" $cast)
-  (export "i32_load8_s" $i32_load8_s)
-  (export "i32_load8_u" $i32_load8_u)
-  (export "i32_load16_s" $i32_load16_s)
-  (export "i32_load16_u" $i32_load16_u)
-  (export "i64_load8_s" $i64_load8_s)
-  (export "i64_load8_u" $i64_load8_u)
-  (export "i64_load16_s" $i64_load16_s)
-  (export "i64_load16_u" $i64_load16_u)
-  (export "i64_load32_s" $i64_load32_s)
-  (export "i64_load32_u" $i64_load32_u)
 )
 
 (assert_return (invoke "data") (i32.const 1))

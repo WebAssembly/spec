@@ -8,171 +8,172 @@
   )
   (memory 1)
 
-  (func "as-func-first" (result i32)
+  (func (export "as-func-first") (result i32)
     (nop) (i32.const 1)
   )
-  (func "as-func-mid" (result i32)
+  (func (export "as-func-mid") (result i32)
     (call $dummy) (nop) (i32.const 2)
   )
-  (func "as-func-last" (result i32)
+  (func (export "as-func-last") (result i32)
     (call $dummy) (i32.const 3) (nop)
   )
-  (func "as-func-everywhere" (result i32)
+  (func (export "as-func-everywhere") (result i32)
     (nop) (nop) (call $dummy) (nop) (i32.const 4) (nop) (nop)
   )
 
-  (func "as-drop-last" (param i32)
-    (get_local 0) (nop) drop
+  (func (export "as-drop-last") (param i32)
+    (get_local 0) (nop) (drop)
   )
-  (func "as-drop-everywhere" (param i32)
-    (nop) (nop) (get_local 0) (nop) (nop) drop
+  (func (export "as-drop-everywhere") (param i32)
+    (nop) (nop) (get_local 0) (nop) (nop) (drop)
   )
 
-  (func "as-select-mid1" (param i32) (result i32)
-    (get_local 0) (nop) (get_local 0) (get_local 0) select
+  (func (export "as-select-mid1") (param i32) (result i32)
+    (get_local 0) (nop) (get_local 0) (get_local 0) (select)
   )
-  (func "as-select-mid2" (param i32) (result i32)
-    (get_local 0) (get_local 0) (nop) (get_local 0) select
+  (func (export "as-select-mid2") (param i32) (result i32)
+    (get_local 0) (get_local 0) (nop) (get_local 0) (select)
   )
-  (func "as-select-last" (param i32) (result i32)
-    (get_local 0) (get_local 0) (get_local 0) (nop) select
+  (func (export "as-select-last") (param i32) (result i32)
+    (get_local 0) (get_local 0) (get_local 0) (nop) (select)
   )
-  (func "as-select-everywhere" (param i32) (result i32)
+  (func (export "as-select-everywhere") (param i32) (result i32)
     (nop) (get_local 0) (nop) (nop) (get_local 0)
-    (nop) (nop) (get_local 0) (nop) (nop) select
+    (nop) (nop) (get_local 0) (nop) (nop) (select)
   )
 
-  (func "as-block-first" (result i32)
+  (func (export "as-block-first") (result i32)
     (block (nop) (i32.const 2))
   )
-  (func "as-block-mid" (result i32)
+  (func (export "as-block-mid") (result i32)
     (block (call $dummy) (nop) (i32.const 2))
   )
-  (func "as-block-last" (result i32)
+  (func (export "as-block-last") (result i32)
     (block (nop) (call $dummy) (i32.const 3) (nop))
   )
-  (func "as-block-everywhere" (result i32)
+  (func (export "as-block-everywhere") (result i32)
     (block (nop) (nop) (call $dummy) (nop) (i32.const 4) (nop) (nop))
   )
 
-  (func "as-loop-first" (result i32)
+  (func (export "as-loop-first") (result i32)
     (loop (nop) (i32.const 2))
   )
-  (func "as-loop-mid" (result i32)
+  (func (export "as-loop-mid") (result i32)
     (loop (call $dummy) (nop) (i32.const 2))
   )
-  (func "as-loop-last" (result i32)
+  (func (export "as-loop-last") (result i32)
     (loop (call $dummy) (i32.const 3) (nop))
   )
-  (func "as-loop-everywhere" (result i32)
+  (func (export "as-loop-everywhere") (result i32)
     (loop (nop) (nop) (call $dummy) (nop) (i32.const 4) (nop) (nop))
   )
 
-  (func "as-if-condition" (param i32)
-    (get_local 0) (nop) if (call $dummy) end
+  (func (export "as-if-condition") (param i32)
+    (get_local 0) (nop) (if (then (call $dummy)))
   )
-  (func "as-if-then" (param i32)
+  (func (export "as-if-then") (param i32)
     (if (get_local 0) (nop) (call $dummy))
   )
-  (func "as-if-else" (param i32)
+  (func (export "as-if-else") (param i32)
     (if (get_local 0) (call $dummy) (nop))
   )
 
-  (func "as-br-last" (param i32) (result i32)
-    block (get_local 0) (nop) br 1 0 end
+  (func (export "as-br-last") (param i32) (result i32)
+    (block (get_local 0) (nop) (br 1 0))
   )
-  (func "as-br-everywhere" (param i32) (result i32)
-    block (nop) (nop) (get_local 0) (nop) (nop) br 1 0 end
-  )
-
-  (func "as-br_if-mid" (param i32) (result i32)
-    block (get_local 0) (nop) (get_local 0) br_if 1 0 (i32.const 0) end
-  )
-  (func "as-br_if-last" (param i32) (result i32)
-    block (get_local 0) (get_local 0) (nop) br_if 1 0 (i32.const 0) end
-  )
-  (func "as-br_if-everywhere" (param i32) (result i32)
-    block
-     (nop) (nop) (get_local 0) (nop) (nop) (get_local 0) (nop) (nop) br_if 1 0
-     (i32.const 0) 
-    end
+  (func (export "as-br-everywhere") (param i32) (result i32)
+    (block (nop) (nop) (get_local 0) (nop) (nop) (br 1 0))
   )
 
-  (func "as-br_table-mid" (param i32) (result i32)
-    block (get_local 0) (nop) (get_local 0) br_table 1 0 0 end
+  (func (export "as-br_if-mid") (param i32) (result i32)
+    (block (get_local 0) (nop) (get_local 0) (br_if 1 0) (i32.const 0))
   )
-  (func "as-br_table-last" (param i32) (result i32)
-    block (get_local 0) (get_local 0) (nop) br_table 1 0 0 end
+  (func (export "as-br_if-last") (param i32) (result i32)
+    (block (get_local 0) (get_local 0) (nop) (br_if 1 0) (i32.const 0))
   )
-  (func "as-br_table-everywhere" (param i32) (result i32)
-    block
-     (nop) (nop) (get_local 0) (nop) (nop) (get_local 0) (nop) (nop)
-     br_table 1 0 0
-    end
-  )
-
-  (func "as-return-last" (param i32) (result i32)
-    (get_local 0) (nop) return
-  )
-  (func "as-return-everywhere" (param i32) (result i32)
-    (nop) (nop) (get_local 0) (nop) (nop) return
+  (func (export "as-br_if-everywhere") (param i32) (result i32)
+    (block
+      (nop) (nop) (get_local 0) (nop) (nop) (get_local 0) (nop) (nop)
+      (br_if 1 0)
+      (i32.const 0)
+    )
   )
 
-  (func "as-call-mid1" (param i32 i32 i32) (result i32)
-    (get_local 0) (nop) (get_local 1) (get_local 2) call $3-ary
+  (func (export "as-br_table-mid") (param i32) (result i32)
+    (block (get_local 0) (nop) (get_local 0) (br_table 1 0 0))
   )
-  (func "as-call-mid2" (param i32 i32 i32) (result i32)
-    (get_local 0) (get_local 1) (nop) (get_local 2) call $3-ary
+  (func (export "as-br_table-last") (param i32) (result i32)
+    (block (get_local 0) (get_local 0) (nop) (br_table 1 0 0))
   )
-  (func "as-call-last" (param i32 i32 i32) (result i32)
-    (get_local 0) (get_local 1) (get_local 2) (nop) call $3-ary
+  (func (export "as-br_table-everywhere") (param i32) (result i32)
+    (block
+      (nop) (nop) (get_local 0) (nop) (nop) (get_local 0) (nop) (nop)
+      (br_table 1 0 0)
+    )
   )
-  (func "as-call-everywhere" (param i32 i32 i32) (result i32)
+
+  (func (export "as-return-last") (param i32) (result i32)
+    (get_local 0) (nop) (return)
+  )
+  (func (export "as-return-everywhere") (param i32) (result i32)
+    (nop) (nop) (get_local 0) (nop) (nop) (return)
+  )
+
+  (func (export "as-call-mid1") (param i32 i32 i32) (result i32)
+    (get_local 0) (nop) (get_local 1) (get_local 2) (call $3-ary)
+  )
+  (func (export "as-call-mid2") (param i32 i32 i32) (result i32)
+    (get_local 0) (get_local 1) (nop) (get_local 2) (call $3-ary)
+  )
+  (func (export "as-call-last") (param i32 i32 i32) (result i32)
+    (get_local 0) (get_local 1) (get_local 2) (nop) (call $3-ary)
+  )
+  (func (export "as-call-everywhere") (param i32 i32 i32) (result i32)
     (nop) (nop) (get_local 0) (nop) (nop) (get_local 1)
-    (nop) (nop) (get_local 2) (nop) (nop) call $3-ary
+    (nop) (nop) (get_local 2) (nop) (nop) (call $3-ary)
   )
 
   ;; TODO(stack): call_indirect, *_local, load*, store*
 
-  (func "as-unary-last" (param i32) (result i32)
-    (get_local 0) (nop) i32.ctz
+  (func (export "as-unary-last") (param i32) (result i32)
+    (get_local 0) (nop) (i32.ctz)
   )
-  (func "as-unary-everywhere" (param i32) (result i32)
-    (nop) (nop) (get_local 0) (nop) (nop) i32.ctz
-  )
-
-  (func "as-binary-mid" (param i32) (result i32)
-    (get_local 0) (nop) (get_local 0) i32.add
-  )
-  (func "as-binary-last" (param i32) (result i32)
-    (get_local 0) (get_local 0) (nop) i32.add
-  )
-  (func "as-binary-everywhere" (param i32) (result i32)
-    (nop) (get_local 0) (nop) (nop) (get_local 0) (nop) (nop) i32.add
+  (func (export "as-unary-everywhere") (param i32) (result i32)
+    (nop) (nop) (get_local 0) (nop) (nop) (i32.ctz)
   )
 
-  (func "as-test-last" (param i32) (result i32)
-    (get_local 0) (nop) i32.eqz
+  (func (export "as-binary-mid") (param i32) (result i32)
+    (get_local 0) (nop) (get_local 0) (i32.add)
   )
-  (func "as-test-everywhere" (param i32) (result i32)
+  (func (export "as-binary-last") (param i32) (result i32)
+    (get_local 0) (get_local 0) (nop) (i32.add)
+  )
+  (func (export "as-binary-everywhere") (param i32) (result i32)
+    (nop) (get_local 0) (nop) (nop) (get_local 0) (nop) (nop) (i32.add)
+  )
+
+  (func (export "as-test-last") (param i32) (result i32)
+    (get_local 0) (nop) (i32.eqz)
+  )
+  (func (export "as-test-everywhere") (param i32) (result i32)
     (nop) (nop) (get_local 0) (nop) (nop) i32.eqz
   )
 
-  (func "as-compare-mid" (param i32) (result i32)
-    (get_local 0) (nop) (get_local 0) i32.ne
+  (func (export "as-compare-mid") (param i32) (result i32)
+    (get_local 0) (nop) (get_local 0) (i32.ne)
   )
-  (func "as-compare-last" (param i32) (result i32)
-    (get_local 0) (get_local 0) (nop) i32.lt_u
+  (func (export "as-compare-last") (param i32) (result i32)
+    (get_local 0) (get_local 0) (nop) (i32.lt_u)
   )
-  (func "as-compare-everywhere" (param i32) (result i32)
-    (nop) (get_local 0) (nop) (nop) (get_local 0) (nop) (nop) i32.le_s
+  (func (export "as-compare-everywhere") (param i32) (result i32)
+    (nop) (get_local 0) (nop) (nop) (get_local 0) (nop) (nop) (i32.le_s)
   )
 
-  (func "as-grow_memory-last" (param i32) (result i32)
-    (get_local 0) (nop) grow_memory
+  (func (export "as-grow_memory-last") (param i32) (result i32)
+    (get_local 0) (nop) (grow_memory)
   )
-  (func "as-grow_memory-everywhere" (param i32) (result i32)
-    (nop) (nop) (get_local 0) (nop) (nop) grow_memory
+  (func (export "as-grow_memory-everywhere") (param i32) (result i32)
+    (nop) (nop) (get_local 0) (nop) (nop) (grow_memory)
   )
 )
 

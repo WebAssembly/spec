@@ -5,18 +5,15 @@
       (i32.mul (current_memory) (i32.const 0x10000))
     )
 
-    (export "store" $store)
-    (func $store (param $i i32) (param $v i32)
+    (func (export "store") (param $i i32) (param $v i32)
       (i32.store (i32.add (call $addr_limit) (get_local $i)) (get_local $v))
     )
 
-    (export "load" $load)
-    (func $load (param $i i32) (result i32)
+    (func (export "load") (param $i i32) (result i32)
       (i32.load (i32.add (call $addr_limit) (get_local $i)))
     )
 
-    (export "grow_memory" $grow_memory)
-    (func $grow_memory (param i32) (result i32)
+    (func (export "grow_memory") (param i32) (result i32)
       (grow_memory (get_local 0))
     )
 )

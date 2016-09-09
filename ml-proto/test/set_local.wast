@@ -3,17 +3,17 @@
 (module
   ;; Typing
 
-  (func "type-local-i32" (local i32) (set_local 0 (i32.const 0)))
-  (func "type-local-i64" (local i64) (set_local 0 (i64.const 0)))
-  (func "type-local-f32" (local f32) (set_local 0 (f32.const 0)))
-  (func "type-local-f64" (local f64) (set_local 0 (f64.const 0)))
+  (func (export "type-local-i32") (local i32) (set_local 0 (i32.const 0)))
+  (func (export "type-local-i64") (local i64) (set_local 0 (i64.const 0)))
+  (func (export "type-local-f32") (local f32) (set_local 0 (f32.const 0)))
+  (func (export "type-local-f64") (local f64) (set_local 0 (f64.const 0)))
 
-  (func "type-param-i32" (param i32) (set_local 0 (i32.const 10)))
-  (func "type-param-i64" (param i64) (set_local 0 (i64.const 11)))
-  (func "type-param-f32" (param f32) (set_local 0 (f32.const 11.1)))
-  (func "type-param-f64" (param f64) (set_local 0 (f64.const 12.2)))
+  (func (export "type-param-i32") (param i32) (set_local 0 (i32.const 10)))
+  (func (export "type-param-i64") (param i64) (set_local 0 (i64.const 11)))
+  (func (export "type-param-f32") (param f32) (set_local 0 (f32.const 11.1)))
+  (func (export "type-param-f64") (param f64) (set_local 0 (f64.const 12.2)))
 
-  (func "type-mixed" (param i64 f32 f64 i32 i32) (local f32 i64 i64 f64)
+  (func (export "type-mixed") (param i64 f32 f64 i32 i32) (local f32 i64 i64 f64)
     (set_local 0 (i64.const 0))
     (set_local 1 (f32.const 0))
     (set_local 2 (f64.const 0))
@@ -27,7 +27,7 @@
 
   ;; Writing
 
-  (func "write" (param i64 f32 f64 i32 i32) (result i64)
+  (func (export "write") (param i64 f32 f64 i32 i32) (result i64)
     (local f32 i64 i64 f64)
     (set_local 1 (f32.const -0.3))
     (set_local 3 (i32.const 40))

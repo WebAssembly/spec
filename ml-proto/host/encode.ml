@@ -63,14 +63,15 @@ let encode m =
     let vec f xs = vu (List.length xs); list f xs
     let vec1 f xo = bool (xo <> None); opt f xo
 
-    let gap () = let p = pos s in u32 0l; p
+    let gap () = let p = pos s in u32 0l; u8 0; p
     let patch_gap p n =
       assert (n <= 0x0fff_ffff); (* Strings cannot excess 2G anyway *)
       let lsb i = Char.chr (i land 0xff) in
       patch s p (lsb (n lor 0x80));
       patch s (p + 1) (lsb ((n lsr 7) lor 0x80));
       patch s (p + 2) (lsb ((n lsr 14) lor 0x80));
-      patch s (p + 3) (lsb (n lsr 21))
+      patch s (p + 3) (lsb ((n lsr 21) lor 0x80));
+      patch s (p + 4) (lsb (n lsr 28))
 
     (* Types *)
 
@@ -88,6 +89,22 @@ let encode m =
     let func_type = function
       | FuncType (ins, out) -> u8 0x40; vec value_type ins; vec value_type out
 
+    let limits vu {min; max} =
+      bool (max <> None); vu min; opt vu max
+
+    let table_type = function
+      | TableType (lim, t) -> elem_type t; limits vu32 lim
+
+    let memory_type = function
+      | MemoryType lim -> limits vu32 lim
+
+    let mutability = function
+      | Immutable -> u8 0
+      | Mutable -> u8 1
+
+    let global_type = function
+      | GlobalType (t, mut) -> value_type t; mutability mut
+
     (* Expressions *)
 
     open Source
@@ -95,8 +112,12 @@ let encode m =
     open Values
     open Memory
 
+    let arity xs = vu (List.length xs)
+    let arity1 xo = bool (xo <> None)
+
     let op n = u8 n
-    let memop {align; offset; _} = vu align; vu64 offset  (*TODO: to be resolved*)
+    let memop {align; offset; _} =
+      vu32 (I32.ctz (Int32.of_int align)); vu64 offset
 
     let var x = vu x.it
     let var32 x = vu32 (Int32.of_int x.it)
@@ -131,7 +152,6 @@ let encode m =
 
       | Call x -> op 0x16; var x
       | CallIndirect x -> op 0x17; var x
-      | CallImport x -> op 0x18; var x
 
       | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x2a; memop mo
       | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x2b; memop mo
@@ -327,7 +347,6 @@ let encode m =
     let const c =
       list instr c.it; op 0x0f
 
-
     (* Sections *)
 
     let section id f x needed =
@@ -344,9 +363,16 @@ let encode m =
       section "type" (vec func_type) ts (ts <> [])
 
     (* Import section *)
+    let import_kind k =
+      match k.it with
+      | FuncImport x -> u8 0x00; var x
+      | TableImport t -> u8 0x01; table_type t
+      | MemoryImport t -> u8 0x02; memory_type t
+      | GlobalImport t -> u8 0x03; global_type t
+
     let import imp =
-      let {itype; module_name; func_name} = imp.it in
-      var itype; string module_name; string func_name
+      let {module_name; item_name; ikind} = imp.it in
+      string module_name; string item_name; import_kind ikind
 
     let import_section imps =
       section "import" (vec import) imps (imps <> [])
@@ -358,44 +384,42 @@ let encode m =
       section "function" (vec func) fs (fs <> [])
 
     (* Table section *)
-    let limits vu lim =
-      let {min; max} = lim.it in
-      bool (max <> None); vu min; opt vu max
-
     let table tab =
-      let {etype; tlimits} = tab.it in
-      elem_type etype; limits vu32 tlimits
+      let {ttype} = tab.it in
+      table_type ttype
 
-    let table_section tabo =
-      section "table" (opt table) tabo (tabo <> None)
+    let table_section tabs =
+      section "table" (vec table) tabs (tabs <> [])
 
     (* Memory section *)
     let memory mem =
-      let {mlimits} = mem.it in
-      limits vu32 mlimits
+      let {mtype} = mem.it in
+      memory_type mtype
 
-    let memory_section memo =
-      section "memory" (opt memory) memo (memo <> None)
+    let memory_section mems =
+      section "memory" (vec memory) mems (mems <> [])
 
     (* Global section *)
     let global g =
       let {gtype; value} = g.it in
-      value_type gtype; const value
+      global_type gtype; const value; op 0x0f
 
     let global_section gs =
       section "global" (vec global) gs (gs <> [])
 
     (* Export section *)
+    let export_kind k =
+      match k.it with
+      | FuncExport -> u8 0
+      | TableExport -> u8 1
+      | MemoryExport -> u8 2
+      | GlobalExport -> u8 3
+
     let export exp =
-      let {Ast.name; kind} = exp.it in
-      (match kind with
-      | `Func x -> var x
-      | `Memory -> () (*TODO: pending resolution*)
-      ); string name
+      let {name; ekind; item} = exp.it in
+      string name; export_kind ekind; var item
 
     let export_section exps =
-      (*TODO: pending resolution*)
-      let exps = List.filter (fun exp -> exp.it.kind <> `Memory) exps in
       section "export" (vec export) exps (exps <> [])
 
     (* Start section *)
@@ -413,9 +437,9 @@ let encode m =
 
     let code f =
       let {locals; body; _} = f.it in
-      vec local (compress locals);
       let g = gap () in
       let p = pos s in
+      vec local (compress locals);
       list instr body;
       patch_gap g (pos s - p)
 
@@ -424,8 +448,8 @@ let encode m =
 
     (* Element section *)
     let segment dat seg =
-      let {offset; init} = seg.it in
-      const offset; dat init
+      let {index; offset; init} = seg.it in
+      var index; const offset; dat init
 
     let table_segment seg =
       segment (vec var) seg
@@ -448,8 +472,8 @@ let encode m =
       type_section m.it.types;
       import_section m.it.imports;
       func_section m.it.funcs;
-      table_section m.it.table;
-      memory_section m.it.memory;
+      table_section m.it.tables;
+      memory_section m.it.memories;
       global_section m.it.globals;
       export_section m.it.exports;
       start_section m.it.start;

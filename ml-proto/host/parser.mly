@@ -35,21 +35,16 @@ let ati i =
 (* Literals *)
 
 let literal f s =
-  try f s with
-  | Failure msg -> error s.at ("constant out of range: " ^ msg)
-  | _ -> error s.at "constant out of range"
+  try f s with Failure _ -> error s.at "constant out of range"
 
 let int s at =
-  try int_of_string s with Failure _ ->
-    error at "int constant out of range"
+  try int_of_string s with Failure _ -> error at "int constant out of range"
 
 let int32 s at =
-  try I32.of_string s with Failure _ ->
-    error at "i32 constant out of range"
+  try I32.of_string s with Failure _ -> error at "i32 constant out of range"
 
 let int64 s at =
-  try I64.of_string s with Failure _ ->
-    error at "i64 constant out of range"
+  try I64.of_string s with Failure _ -> error at "i64 constant out of range"
 
 
 (* Symbolic variables *)
@@ -63,15 +58,15 @@ type types = {mutable tmap : int VarMap.t; mutable tlist : Types.func_type list}
 let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
-  {types : types; funcs : space; imports : space;
-   locals : space; globals : space; labels : int VarMap.t}
+  { types : types; tables : space; memories : space;
+    funcs : space; locals : space; globals : space; labels : int VarMap.t }
 
 let empty_context () =
-  {types = empty_types (); funcs = empty (); imports = empty ();
-   locals = empty (); globals = empty (); labels = VarMap.empty}
+  { types = empty_types (); tables = empty (); memories = empty ();
+    funcs = empty (); locals = empty (); globals = empty ();
+    labels = VarMap.empty }
 
 let enter_func c =
-  assert (VarMap.is_empty c.labels);
   {c with labels = VarMap.empty; locals = empty ()}
 
 let type_ c x =
@@ -83,17 +78,24 @@ let lookup category space x =
   with Not_found -> error x.at ("unknown " ^ category ^ " " ^ x.it)
 
 let func c x = lookup "function" c.funcs x
-let import c x = lookup "import" c.imports x
 let local c x = lookup "local" c.locals x
 let global c x = lookup "global" c.globals x
+let table c x = lookup "table" c.tables x
+let memory c x = lookup "memory" c.memories x
 let label c x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
+
+let bind_module () x = Some x
+let anon_module () = None
 
 let bind_type c x ty =
   if VarMap.mem x.it c.types.tmap then
     error x.at ("duplicate type " ^ x.it);
   c.types.tmap <- VarMap.add x.it (List.length c.types.tlist) c.types.tmap;
+  c.types.tlist <- c.types.tlist @ [ty]
+
+let anon_type c ty =
   c.types.tlist <- c.types.tlist @ [ty]
 
 let bind category space x =
@@ -103,27 +105,26 @@ let bind category space x =
   space.count <- space.count + 1
 
 let bind_func c x = bind "function" c.funcs x
-let bind_import c x = bind "import" c.imports x
 let bind_local c x = bind "local" c.locals x
 let bind_global c x = bind "global" c.globals x
+let bind_table c x = bind "table" c.tables x
+let bind_memory c x = bind "memory" c.memories x
 let bind_label c x =
   {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
-
-let anon_type c ty =
-  c.types.tlist <- c.types.tlist @ [ty]
 
 let anon space n = space.count <- space.count + n
 
 let anon_func c = anon c.funcs 1
-let anon_import c = anon c.imports 1
 let anon_locals c ts = anon c.locals (List.length ts)
 let anon_global c = anon c.globals 1
+let anon_table c = anon c.tables 1
+let anon_memory c = anon c.memories 1
 let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
 
 let empty_type = FuncType ([], [])
 
-let explicit_decl c name t at =
-  let x = name c type_ in
+let explicit_sig c var t at =
+  let x = var c type_ in
   if
     x.it < List.length c.types.tlist &&
     t <> empty_type &&
@@ -132,23 +133,25 @@ let explicit_decl c name t at =
     error at "signature mismatch";
   x
 
-let implicit_decl c t at =
+let inline_type c t at =
   match Lib.List.index_of t c.types.tlist with
   | None -> let i = List.length c.types.tlist in anon_type c t; i @@ at
   | Some i -> i @@ at
 
 %}
 
-%token NAT INT FLOAT TEXT VAR VALUE_TYPE ANYFUNC LPAR RPAR
+%token NAT INT FLOAT TEXT VAR VALUE_TYPE ANYFUNC MUT LPAR RPAR
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
-%token CALL CALL_IMPORT CALL_INDIRECT RETURN
+%token CALL CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY COMPARE CONVERT
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token MODULE TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
-%token ASSERT_INVALID ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP INVOKE
+%token REGISTER INVOKE GET
+%token ASSERT_INVALID ASSERT_UNLINKABLE
+%token ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP
 %token INPUT OUTPUT
 %token EOF
 
@@ -197,15 +200,43 @@ elem_type :
   | ANYFUNC { AnyFuncType }
 ;
 
+global_type :
+  | VALUE_TYPE { GlobalType ($1, Immutable) }
+  | LPAR MUT VALUE_TYPE RPAR { GlobalType ($3, Mutable) }
+;
+
 func_type :
+  | LPAR FUNC func_sig RPAR { $3 }
+;
+
+func_sig :
   | /* empty */
     { FuncType ([], []) }
-  | LPAR PARAM value_type_list RPAR
-    { FuncType ($3, []) }
-  | LPAR PARAM value_type_list RPAR LPAR RESULT value_type_list RPAR
-    { FuncType ($3, $7) }
-  | LPAR RESULT value_type_list RPAR
-    { FuncType ([], $3) }
+  | LPAR RESULT VALUE_TYPE RPAR func_sig
+    { let FuncType (ins, out) = $5 in
+      if ins <> [] then error (at ()) "result before parameter";
+      if out <> [] then
+        error (at ()) "multiple return types are not supported (yet)";
+      FuncType (ins, [$3]) }
+  | LPAR PARAM value_type_list RPAR func_sig
+    { let FuncType (ins, out) = $5 in FuncType ($3 @ ins, out) }
+  | LPAR PARAM bind_var VALUE_TYPE RPAR func_sig  /* Sugar */
+    { let FuncType (ins, out) = $6 in FuncType ($4 :: ins, out) }
+;
+
+table_sig :
+  | limits elem_type { TableType ($1, $2) }
+;
+memory_sig :
+  | limits { MemoryType $1 }
+;
+limits :
+  | NAT { {min = int32 $1 (ati 1); max = None} }
+  | NAT NAT { {min = int32 $1 (ati 1); max = Some (int32 $2 (ati 2))} }
+;
+
+type_use :
+  | LPAR TYPE var RPAR { $3 }
 ;
 
 
@@ -229,11 +260,16 @@ var_list :
   | /* empty */ { fun c lookup -> [] }
   | var var_list { fun c lookup -> $1 c lookup :: $2 c lookup }
 ;
+
+bind_var_opt :
+  | /* empty */ { fun c anon bind -> anon c }
+  | bind_var { fun c anon bind -> bind c $1 }  /* Sugar */
+;
 bind_var :
   | VAR { $1 @@ at () }
 ;
 
-labeling :
+labeling_opt :
   | /* empty */ %prec LOW { fun c -> anon_label c }
   | bind_var { fun c -> bind_label c $1 }
 ;
@@ -257,9 +293,15 @@ plain_instr :
   | NOP { fun c -> nop }
   | DROP { fun c -> drop }
   | SELECT { fun c -> select }
+  | BR nat var { fun c -> br $2 ($3 c label) }
+  | BR_IF nat var { fun c -> br_if $2 ($3 c label) }
+  | BR_TABLE var /*nat*/ var var_list
+    { fun c -> let xs, x = Lib.List.split_last ($3 c label :: $4 c label) in
+      (* TODO: remove hack once arities are gone *)
+      let n = $2 c (fun _ -> error x.at "syntax error") in
+      br_table n.it xs x }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
-  | CALL_IMPORT var { fun c -> call_import ($2 c import) }
   | CALL_INDIRECT var { fun c -> call_indirect ($2 c type_) }
   | GET_LOCAL var { fun c -> get_local ($2 c local) }
   | SET_LOCAL var { fun c -> set_local ($2 c local) }
@@ -278,19 +320,13 @@ plain_instr :
   | GROW_MEMORY { fun c -> grow_memory }
 ;
 ctrl_instr :
-  /* TODO: move branches to plain_instr once arities are gone */
-  | BR nat var { fun c -> br $2 ($3 c label) }
-  | BR_IF nat var { fun c -> br_if $2 ($3 c label) }
-  | BR_TABLE nat var var_list
-    { fun c -> let xs, x = Lib.List.split_last ($3 c label :: $4 c label) in
-      br_table $2 xs x }
-  | BLOCK labeling instr_list END
+  | BLOCK labeling_opt instr_list END
     { fun c -> let c' = $2 c in block ($3 c') }
-  | LOOP labeling instr_list END
+  | LOOP labeling_opt instr_list END
     { fun c -> let c' = $2 c in loop ($3 c') }
-  | IF labeling instr_list END
+  | IF labeling_opt instr_list END
     { fun c -> let c' = $2 c in if_ ($3 c') [] }
-  | IF labeling instr_list ELSE labeling instr_list END
+  | IF labeling_opt instr_list ELSE labeling_opt instr_list END
     { fun c -> let c1 = $2 c in let c2 = $5 c in if_ ($3 c1) ($6 c2) }
 ;
 
@@ -308,20 +344,22 @@ expr1 :  /* Sugar */
   | BR_TABLE var var_list expr expr_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       let es1 = $4 c and n, es2 = $5 c in es1 @ es2, br_table n xs x }
-  | BLOCK labeling instr_list
+  | BLOCK labeling_opt instr_list
     { fun c -> let c' = $2 c in [], block ($3 c') }
-  | LOOP labeling instr_list
+  | LOOP labeling_opt instr_list
     { fun c -> let c' = $2 c in [], loop ($3 c') }
   | IF expr expr { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') [] }
   | IF expr expr expr
     { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') ($4 c') }
-  | IF expr LPAR THEN labeling instr_list RPAR
+  | IF expr LPAR THEN labeling_opt instr_list RPAR
     { fun c -> let c' = $5 c in $2 c, if_ ($6 c') [] }
-  | IF expr LPAR THEN labeling instr_list RPAR LPAR ELSE labeling instr_list RPAR
+  | IF expr LPAR THEN labeling_opt instr_list RPAR LPAR
+    ELSE labeling_opt instr_list RPAR
     { fun c -> let c1 = $5 c in let c2 = $10 c in $2 c, if_ ($6 c1) ($11 c2) }
-  | IF LPAR THEN labeling instr_list RPAR
+  | IF LPAR THEN labeling_opt instr_list RPAR
     { fun c -> let c' = $4 c in [], if_ ($5 c') [] }
-  | IF LPAR THEN labeling instr_list RPAR LPAR ELSE labeling instr_list RPAR
+  | IF LPAR THEN labeling_opt instr_list RPAR
+       LPAR ELSE labeling_opt instr_list RPAR
     { fun c -> let c1 = $4 c in let c2 = $9 c in [], if_ ($5 c1) ($10 c2) }
 ;
 
@@ -368,40 +406,37 @@ func_body :
       fun c -> bind_local c $3; let f = (snd $6) c in
         {f with locals = $4 :: f.locals} }
 ;
-type_use :
-  | LPAR TYPE var RPAR { $3 }
-;
 func :
-  | LPAR FUNC export_opt type_use func_fields RPAR
+  | LPAR FUNC bind_var_opt inline_export type_use func_fields RPAR
     { let at = at () in
-      fun c -> anon_func c; let t = explicit_decl c $4 (fst $5) at in
-        let exs = $3 c in
-        fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at, exs }
-  | LPAR FUNC export_opt bind_var type_use func_fields RPAR  /* Sugar */
+      fun c -> $3 c anon_func bind_func;
+      let t = explicit_sig c $5 (fst $6) at in
+      (fun () -> {(snd $6 (enter_func c)) with ftype = t} @@ at),
+      $4 FuncExport c.funcs.count c }
+  /* Duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
+  | LPAR FUNC bind_var_opt type_use func_fields RPAR
     { let at = at () in
-      fun c -> bind_func c $4; let t = explicit_decl c $5 (fst $6) at in
-        let exs = $3 c in
-        fun () -> {(snd $6 (enter_func c)) with ftype = t} @@ at, exs }
-  | LPAR FUNC export_opt func_fields RPAR  /* Sugar */
+      fun c -> $3 c anon_func bind_func;
+      let t = explicit_sig c $4 (fst $5) at in
+      (fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at),
+      [] }
+  | LPAR FUNC bind_var_opt inline_export func_fields RPAR  /* Sugar */
     { let at = at () in
-      fun c -> anon_func c; let t = implicit_decl c (fst $4) at in
-        let exs = $3 c in
-        fun () -> {(snd $4 (enter_func c)) with ftype = t} @@ at, exs }
-  | LPAR FUNC export_opt bind_var func_fields RPAR  /* Sugar */
+      fun c -> $3 c anon_func bind_func;
+      let t = inline_type c (fst $5) at in
+      (fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at),
+      $4 FuncExport c.funcs.count c }
+  /* Duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
+  | LPAR FUNC bind_var_opt func_fields RPAR  /* Sugar */
     { let at = at () in
-      fun c -> bind_func c $4; let t = implicit_decl c (fst $5) at in
-        let exs = $3 c in
-        fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at, exs }
-;
-export_opt :
-  | /* empty */ { fun c -> [] }
-  | TEXT
-    { let at = at () in
-      fun c -> [{name = $1; kind = `Func (c.funcs.count - 1 @@ at)} @@ at] }
+      fun c -> $3 c anon_func bind_func;
+      let t = inline_type c (fst $4) at in
+      (fun () -> {(snd $4 (enter_func c)) with ftype = t} @@ at),
+      [] }
 ;
 
 
-/* Tables & Memories */
+/* Tables, Memories & Globals */
 
 offset :
   | LPAR OFFSET const_expr RPAR { $3 }
@@ -409,91 +444,155 @@ offset :
 ;
 
 elem :
-  | LPAR ELEM offset var_list RPAR
+  | LPAR ELEM var offset var_list RPAR
     { let at = at () in
-      fun c -> {offset = $3 c; init = $4 c func} @@ at }
+      fun c -> {index = $3 c table; offset = $4 c; init = $5 c func} @@ at }
+  | LPAR ELEM offset var_list RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> {index = 0 @@ at; offset = $3 c; init = $4 c func} @@ at }
 ;
 
-table_limits :
-  | NAT { {min = int32 $1 (ati 1); max = None} @@ at () }
-  | NAT NAT
-    { {min = int32 $1 (ati 1); max = Some (int32 $2 (ati 2))} @@ at () }
-;
 table :
-  | LPAR TABLE table_limits elem_type RPAR
-    { let at = at () in fun c -> {tlimits = $3; etype = $4} @@ at, [] }
-  | LPAR TABLE elem_type LPAR ELEM var_list RPAR RPAR  /* Sugar */
+  | LPAR TABLE bind_var_opt inline_export_opt table_sig RPAR
     { let at = at () in
-      fun c -> let init = $6 c func in
-      let size = Int32.of_int (List.length init) in
-      {tlimits = {min = size; max = Some size} @@ at; etype = $3} @@ at,
-      [{offset = [i32_const (0l @@ at) @@ at] @@ at; init} @@ at] }
+      fun c -> $3 c anon_table bind_table;
+      {ttype = $5} @@ at, [], $4 TableExport c.tables.count c }
+  | LPAR TABLE bind_var_opt inline_export_opt elem_type
+      LPAR ELEM var_list RPAR RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_table bind_table;
+      let init = $8 c func in let size = Int32.of_int (List.length init) in
+      {ttype = TableType ({min = size; max = Some size}, $5)} @@ at,
+      [{index = c.tables.count - 1 @@ at;
+        offset = [i32_const (0l @@ at) @@ at] @@ at; init} @@ at],
+      $4 TableExport c.tables.count c }
 ;
 
 data :
-  | LPAR DATA offset text_list RPAR
-    { fun c -> {offset = $3 c; init = $4} @@ at () }
+  | LPAR DATA var offset text_list RPAR
+    { let at = at () in
+      fun c -> {index = $3 c memory; offset = $4 c; init = $5} @@ at }
+  | LPAR DATA offset text_list RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> {index = 0 @@ at; offset = $3 c; init = $4} @@ at }
 ;
 
-memory_limits :
-  | NAT { {min = int32 $1 (ati 1); max = None} @@ at () }
-  | NAT NAT
-    { {min = int32 $1 (ati 1); max = Some (int32 $2 (ati 2))} @@ at () }
-;
 memory :
-  | LPAR MEMORY memory_limits RPAR
-    { fun c -> {mlimits = $3} @@ at (), [] }
-  | LPAR MEMORY LPAR DATA text_list RPAR RPAR  /* Sugar */
+  | LPAR MEMORY bind_var_opt inline_export_opt memory_sig RPAR
     { let at = at () in
-      fun c ->
-      let size = Int32.(div (add (of_int (String.length $5)) 65535l) 65536l) in
-      {mlimits = {min = size; max = Some size} @@ at} @@ at,
-      [{offset = [i32_const (0l @@ at) @@ at] @@ at; init = $5} @@ at] }
+      fun c -> $3 c anon_memory bind_memory;
+      {mtype = $5} @@ at, [], $4 MemoryExport c.memories.count c }
+  | LPAR MEMORY bind_var_opt inline_export LPAR DATA text_list RPAR RPAR
+      /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_memory bind_memory;
+      let size = Int32.(div (add (of_int (String.length $7)) 65535l) 65536l) in
+      {mtype = MemoryType {min = size; max = Some size}} @@ at,
+      [{index = c.memories.count - 1 @@ at;
+        offset = [i32_const (0l @@ at) @@ at] @@ at; init = $7} @@ at],
+      $4 MemoryExport c.memories.count c }
+  /* Duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
+  | LPAR MEMORY bind_var_opt LPAR DATA text_list RPAR RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_memory bind_memory;
+      let size = Int32.(div (add (of_int (String.length $6)) 65535l) 65536l) in
+      {mtype = MemoryType {min = size; max = Some size}} @@ at,
+      [{index = c.memories.count - 1 @@ at;
+        offset = [i32_const (0l @@ at) @@ at] @@ at; init = $6} @@ at],
+      [] }
+;
+
+global :
+  | LPAR GLOBAL bind_var_opt inline_export global_type const_expr RPAR
+    { let at = at () in
+      fun c -> $3 c anon_global bind_global;
+      (fun () -> {gtype = $5; value = $6 c} @@ at),
+      $4 GlobalExport c.globals.count c }
+  /* Duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
+  | LPAR GLOBAL bind_var_opt global_type const_expr RPAR
+    { let at = at () in
+      fun c -> $3 c anon_global bind_global;
+      (fun () -> {gtype = $4; value = $5 c} @@ at), [] }
+;
+
+
+/* Imports & Exports */
+
+import_kind :
+  | LPAR FUNC bind_var_opt type_use RPAR
+    { fun c -> $3 c anon_func bind_func; FuncImport ($4 c type_) }
+  | LPAR FUNC bind_var_opt func_sig RPAR  /* Sugar */
+    { let at4 = ati 4 in
+      fun c -> $3 c anon_func bind_func; FuncImport (inline_type c $4 at4) }
+  | LPAR TABLE bind_var_opt table_sig RPAR
+    { fun c -> $3 c anon_table bind_table; TableImport $4 }
+  | LPAR MEMORY bind_var_opt memory_sig RPAR
+    { fun c -> $3 c anon_memory bind_memory; MemoryImport $4 }
+  | LPAR GLOBAL bind_var_opt global_type RPAR
+    { fun c -> $3 c anon_global bind_global; GlobalImport $4 }
+;
+import :
+  | LPAR IMPORT TEXT TEXT import_kind RPAR
+    { let at = at () and at5 = ati 5 in
+      fun c -> {module_name = $3; item_name = $4; ikind = $5 c @@ at5} @@ at }
+  | LPAR FUNC bind_var_opt inline_import type_use RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_func bind_func;
+      {module_name = fst $4; item_name = snd $4; ikind = FuncImport ($5 c type_) @@ at} @@ at }
+  | LPAR FUNC bind_var_opt inline_import func_sig RPAR  /* Sugar */
+    { let at = at () and at5 = ati 5 in
+      fun c -> $3 c anon_func bind_func;
+      {module_name = fst $4; item_name = snd $4; ikind = FuncImport (inline_type c $5 at5) @@ at} @@ at }
+  | LPAR TABLE bind_var_opt inline_import table_sig RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_table bind_table;
+      {module_name = fst $4; item_name = snd $4; ikind = TableImport $5 @@ at} @@ at }
+  | LPAR MEMORY bind_var_opt inline_import memory_sig RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_memory bind_memory;
+      {module_name = fst $4; item_name = snd $4; ikind = MemoryImport $5 @@ at} @@ at }
+  | LPAR GLOBAL bind_var_opt inline_import global_type RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> $3 c anon_global bind_global;
+      {module_name = fst $4; item_name = snd $4; ikind = GlobalImport $5 @@ at} @@ at }
+;
+
+inline_import :
+  | LPAR IMPORT TEXT TEXT RPAR { $3, $4 }
+;
+
+export_kind :
+  | LPAR FUNC var RPAR { fun c -> FuncExport, $3 c func }
+  | LPAR TABLE var RPAR { fun c -> TableExport, $3 c table }
+  | LPAR MEMORY var RPAR { fun c -> MemoryExport, $3 c memory }
+  | LPAR GLOBAL var RPAR { fun c -> GlobalExport, $3 c global }
+;
+export :
+  | LPAR EXPORT TEXT export_kind RPAR
+    { let at = at () and at4 = ati 4 in
+      fun c -> let k, x = $4 c in
+      {name = $3; ekind = k @@ at4; item = x} @@ at }
+;
+
+inline_export_opt :
+  | /* empty */ { fun k count c -> [] }
+  | inline_export { $1 }
+;
+inline_export :
+  | LPAR EXPORT TEXT RPAR
+    { let at = at () in
+      fun k count c ->
+      [{name = $3; ekind = k @@ at; item = count - 1 @@ at} @@ at] }
 ;
 
 
 /* Modules */
 
 type_def :
-  | LPAR TYPE LPAR FUNC func_type RPAR RPAR
-    { fun c -> anon_type c $5 }
-  | LPAR TYPE bind_var LPAR FUNC func_type RPAR RPAR
-    { fun c -> bind_type c $3 $6 }
-;
-
-import :
-  | LPAR IMPORT TEXT TEXT type_use RPAR
-    { let at = at () in
-      fun c -> anon_import c; let itype = explicit_decl c $5 empty_type at in
-        {itype; module_name = $3; func_name = $4} @@ at }
-  | LPAR IMPORT bind_var TEXT TEXT type_use RPAR  /* Sugar */
-    { let at = at () in
-      fun c -> bind_import c $3; let itype = explicit_decl c $6 empty_type at in
-        {itype; module_name = $4; func_name = $5} @@ at }
-  | LPAR IMPORT TEXT TEXT func_type RPAR  /* Sugar */
-    { let at = at () in
-      fun c -> anon_import c; let itype = implicit_decl c $5 at in
-        {itype; module_name = $3; func_name = $4} @@ at }
-  | LPAR IMPORT bind_var TEXT TEXT func_type RPAR  /* Sugar */
-    { let at = at () in
-      fun c -> bind_import c $3; let itype = implicit_decl c $6 at in
-        {itype; module_name = $4; func_name = $5} @@ at }
-;
-
-export :
-  | LPAR EXPORT TEXT var RPAR
-    { let at = at () in fun c -> {name = $3; kind = `Func ($4 c func)} @@ at }
-  | LPAR EXPORT TEXT MEMORY RPAR
-    { let at = at () in fun c -> {name = $3; kind = `Memory} @@ at }
-;
-
-global :
-  | LPAR GLOBAL VALUE_TYPE const_expr RPAR
-    { let at = at () in
-      fun c -> anon_global c; fun () -> {gtype = $3; value = $4 c} @@ at }
-  | LPAR GLOBAL bind_var VALUE_TYPE const_expr RPAR  /* Sugar */
-    { let at = at () in
-      fun c -> bind_global c $3; fun () -> {gtype = $4; value = $5 c} @@ at }
+  | LPAR TYPE func_type RPAR
+    { fun c -> anon_type c $3 }
+  | LPAR TYPE bind_var func_type RPAR  /* Sugar */
+    { fun c -> bind_type c $3 $4 }
 ;
 
 start :
@@ -507,8 +606,8 @@ module_fields :
       {
         types = c.types.tlist;
         globals = [];
-        table = None;
-        memory = None;
+        tables = [];
+        memories = [];
         funcs = [];
         elems = [];
         data = [];
@@ -519,20 +618,24 @@ module_fields :
   | type_def module_fields
     { fun c -> $1 c; $2 c }
   | global module_fields
-    { fun c -> let g = $1 c in let m = $2 c in
-      {m with globals = g () :: m.globals} }
+    { fun c -> let g, exs = $1 c in let m = $2 c in
+      if m.imports <> [] then
+        error (List.hd m.imports).at "import after global definition";
+      {m with globals = g () :: m.globals; exports = exs @ m.exports} }
   | table module_fields
-    { fun c -> let m = $2 c in let tab, elems = $1 c in
-      match m.table with
-      | Some _ -> error tab.at "multiple table sections"
-      | None -> {m with table = Some tab; elems = elems @ m.elems} }
+    { fun c -> let m = $2 c in let tab, elems, exs = $1 c in
+      if m.imports <> [] then
+        error (List.hd m.imports).at "import after table definition";
+      {m with tables = tab :: m.tables; elems = elems @ m.elems; exports = exs @ m.exports} }
   | memory module_fields
-    { fun c -> let m = $2 c in let mem, data = $1 c in
-      match m.memory with
-      | Some _ -> error mem.at "multiple memory sections"
-      | None -> {m with memory = Some mem; data = data @ m.data} }
+    { fun c -> let m = $2 c in let mem, data, exs = $1 c in
+      if m.imports <> [] then
+        error (List.hd m.imports).at "import after memory definition";
+      {m with memories = mem :: m.memories; data = data @ m.data; exports = exs @ m.exports} }
   | func module_fields
-    { fun c -> let f = $1 c in let m = $2 c in let func, exs = f () in
+    { fun c -> let f, exs = $1 c in let m = $2 c in let func = f () in
+      if m.imports <> [] then
+        error (List.hd m.imports).at "import after function definition";
       {m with funcs = func :: m.funcs; exports = exs @ m.exports} }
   | elem module_fields
     { fun c -> let m = $2 c in
@@ -553,27 +656,39 @@ module_fields :
       {m with exports = $1 c :: m.exports} }
 ;
 module_ :
-  | LPAR MODULE module_fields RPAR
-    { Textual ($3 (empty_context ()) @@ at ()) @@ at() }
-  | LPAR MODULE TEXT text_list RPAR { Binary ($3 ^ $4) @@ at() }
+  | LPAR MODULE module_var_opt module_fields RPAR
+    { $3, Textual ($4 (empty_context ()) @@ at ()) @@ at () }
+  | LPAR MODULE module_var_opt TEXT text_list RPAR
+    { $3, Binary ($4 ^ $5) @@ at() }
 ;
 
 
 /* Scripts */
 
+module_var_opt :
+  | /* empty */ { None }
+  | VAR { Some ($1 @@ at ()) }  /* Sugar */
+;
+action :
+  | LPAR INVOKE module_var_opt TEXT const_list RPAR
+    { Invoke ($3, $4, $5) @@ at () }
+  | LPAR GET module_var_opt TEXT RPAR
+    { Get ($3, $4) @@ at() }
+;
 cmd :
-  | module_ { Define $1 @@ at () }
-  | LPAR INVOKE TEXT const_list RPAR { Invoke ($3, $4) @@ at () }
-  | LPAR ASSERT_INVALID module_ TEXT RPAR { AssertInvalid ($3, $4) @@ at () }
-  | LPAR ASSERT_RETURN LPAR INVOKE TEXT const_list RPAR const_list RPAR
-    { AssertReturn ($5, $6, $8) @@ at () }
-  | LPAR ASSERT_RETURN_NAN LPAR INVOKE TEXT const_list RPAR RPAR
-    { AssertReturnNaN ($5, $6) @@ at () }
-  | LPAR ASSERT_TRAP LPAR INVOKE TEXT const_list RPAR TEXT RPAR
-    { AssertTrap ($5, $6, $8) @@ at () }
+  | module_ { Define (fst $1, snd $1) @@ at () }
+  | action { Action $1 @@ at () }
+  | LPAR REGISTER TEXT module_var_opt RPAR { Register ($3, $4) @@ at () }
+  | LPAR ASSERT_INVALID module_ TEXT RPAR
+    { AssertInvalid (snd $3, $4) @@ at () }
+  | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR
+    { AssertUnlinkable (snd $3, $4) @@ at () }
+  | LPAR ASSERT_RETURN action const_list RPAR { AssertReturn ($3, $4) @@ at () }
+  | LPAR ASSERT_RETURN_NAN action RPAR { AssertReturnNaN $3 @@ at () }
+  | LPAR ASSERT_TRAP action TEXT RPAR { AssertTrap ($3, $4) @@ at () }
   | LPAR INPUT TEXT RPAR { Input $3 @@ at () }
-  | LPAR OUTPUT TEXT RPAR { Output (Some $3) @@ at () }
-  | LPAR OUTPUT RPAR { Output None @@ at () }
+  | LPAR OUTPUT module_var_opt TEXT RPAR { Output ($3, Some $4) @@ at () }
+  | LPAR OUTPUT module_var_opt RPAR { Output ($3, None) @@ at () }
 ;
 cmd_list :
   | /* empty */ { [] }
@@ -595,6 +710,6 @@ script1 :
   | cmd { [$1] }
 ;
 module1 :
-  | module_ EOF { $1 }
+  | module_ EOF { snd $1 }
 ;
 %%

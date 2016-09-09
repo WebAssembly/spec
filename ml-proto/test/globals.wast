@@ -1,36 +1,75 @@
-;; TODO: more tests
+;; Test globals
 
 (module
-  (global $x i32 (i32.const -2))
-  (global f32 (f32.const -3))
-  (global f64 (f64.const -4))
-  (global $y i64 (i64.const -5))
+  (global $a i32 (i32.const -2))
+  (global (;1;) f32 (f32.const -3))
+  (global (;2;) f64 (f64.const -4))
+  (global $b i64 (i64.const -5))
 
-  (func "get-x" (result i32) (get_global $x))
-  (func "get-y" (result i64) (get_global $y))
-  (func "set-x" (param i32) (set_global $x (get_local 0)))
-  (func "set-y" (param i64) (set_global $y (get_local 0)))
+  (global $x (mut i32) (i32.const -12))
+  (global (;5;) (mut f32) (f32.const -13))
+  (global (;6;) (mut f64) (f64.const -14))
+  (global $y (mut i64) (i64.const -15))
 
-  (func "get-1" (result f32) (get_global 1))
-  (func "get-2" (result f64) (get_global 2))
-  (func "set-1" (param f32) (set_global 1 (get_local 0)))
-  (func "set-2" (param f64) (set_global 2 (get_local 0)))
+  (func (export "get-a") (result i32) (get_global $a))
+  (func (export "get-b") (result i64) (get_global $b))
+  (func (export "get-x") (result i32) (get_global $x))
+  (func (export "get-y") (result i64) (get_global $y))
+  (func (export "set-x") (param i32) (set_global $x (get_local 0)))
+  (func (export "set-y") (param i64) (set_global $y (get_local 0)))
+
+  (func (export "get-1") (result f32) (get_global 1))
+  (func (export "get-2") (result f64) (get_global 2))
+  (func (export "get-5") (result f32) (get_global 5))
+  (func (export "get-6") (result f64) (get_global 6))
+  (func (export "set-5") (param f32) (set_global 5 (get_local 0)))
+  (func (export "set-6") (param f64) (set_global 6 (get_local 0)))
 )
 
-(assert_return (invoke "get-x") (i32.const -2))
-(assert_return (invoke "get-y") (i64.const -5))
+(assert_return (invoke "get-a") (i32.const -2))
+(assert_return (invoke "get-b") (i64.const -5))
+(assert_return (invoke "get-x") (i32.const -12))
+(assert_return (invoke "get-y") (i64.const -15))
+
 (assert_return (invoke "get-1") (f32.const -3))
 (assert_return (invoke "get-2") (f64.const -4))
+(assert_return (invoke "get-5") (f32.const -13))
+(assert_return (invoke "get-6") (f64.const -14))
 
 (assert_return (invoke "set-x" (i32.const 6)))
 (assert_return (invoke "set-y" (i64.const 7)))
-(assert_return (invoke "set-1" (f32.const 8)))
-(assert_return (invoke "set-2" (f64.const 9)))
+(assert_return (invoke "set-5" (f32.const 8)))
+(assert_return (invoke "set-6" (f64.const 9)))
 
 (assert_return (invoke "get-x") (i32.const 6))
 (assert_return (invoke "get-y") (i64.const 7))
-(assert_return (invoke "get-1") (f32.const 8))
-(assert_return (invoke "get-2") (f64.const 9))
+(assert_return (invoke "get-5") (f32.const 8))
+(assert_return (invoke "get-6") (f64.const 9))
+
+(assert_invalid
+  (module (global f32 (f32.const 0)) (func (set_global 0 (i32.const 1))))
+  "global is immutable"
+)
+
+(assert_invalid
+  (module (import "m" "a" (global (mut i32))))
+  "mutable globals cannot be imported"
+)
+
+(assert_invalid
+  (module (global (import "m" "a") (mut i32)))
+  "mutable globals cannot be imported"
+)
+
+(assert_invalid
+  (module (global (mut f32) (f32.const 0)) (export "a" (global 0)))
+  "mutable globals cannot be exported"
+)
+
+(assert_invalid
+  (module (global (export "a") (mut f32) (f32.const 0)))
+  "mutable globals cannot be exported"
+)
 
 (assert_invalid
   (module (global f32 (f32.neg (f32.const 0))))

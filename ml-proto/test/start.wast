@@ -35,9 +35,10 @@
     (call $inc)
     (call $inc)
   )
+
   (start $main)
-  (export "inc" $inc)
-  (export "get" $get)
+  (export "inc" (func $inc))
+  (export "get" (func $get))
 )
 (assert_return (invoke "get") (i32.const 68))
 (invoke "inc")
@@ -65,8 +66,8 @@
     (call $inc)
   )
   (start 2)
-  (export "inc" $inc)
-  (export "get" $get)
+  (export "inc" (func $inc))
+  (export "get" (func $get))
 )
 (assert_return (invoke "get") (i32.const 68))
 (invoke "inc")
@@ -75,15 +76,13 @@
 (assert_return (invoke "get") (i32.const 70))
 
 (module
- (import $print_i32 "spectest" "print" (param i32))
- (func $main
-   (call_import $print_i32 (i32.const 1)))
- (start 0)
+  (func $print_i32 (import "spectest" "print") (param i32))
+  (func $main (call $print_i32 (i32.const 1)))
+  (start 1)
 )
 
 (module
- (import $print_i32 "spectest" "print" (param i32))
- (func $main
-   (call_import $print_i32 (i32.const 2)))
- (start $main)
+  (func $print_i32 (import "spectest" "print") (param i32))
+  (func $main (call $print_i32 (i32.const 2)))
+  (start $main)
 )

@@ -11,6 +11,7 @@ type extension = SX | ZX
 
 type value = Values.value
 type value_type = Types.value_type
+type 'a limits = 'a Types.limits
 
 type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
 type memory = {mutable content : memory'; max : size option}
@@ -65,13 +66,16 @@ let create' n =
     mem
   with Out_of_memory -> raise OutOfMemory
 
-let create n max =
-  assert (within_limits n max);
-  {content = create' n; max}
+let create {min; max} =
+  assert (within_limits min max);
+  {content = create' min; max}
 
 let size mem =
   Int64.to_int32
     (Int64.div (int64_of_host_size (Array1.dim mem.content)) page_size)
+
+let limits mem =
+  {min = size mem; max = mem.max}
 
 let grow mem delta =
   let host_old_size = Array1.dim mem.content in

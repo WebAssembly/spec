@@ -1,18 +1,27 @@
+type var = string Source.phrase
+
 type definition = definition' Source.phrase
 and definition' =
   | Textual of Ast.module_
   | Binary of string
 
+type action = action' Source.phrase
+and action' =
+  | Invoke of var option * string * Ast.literal list
+  | Get of var option * string
+
 type command = command' Source.phrase
 and command' =
-  | Define of definition
-  | Invoke of string * Ast.literal list
+  | Define of var option * definition
+  | Register of string * var option
+  | Action of action
   | AssertInvalid of definition * string
-  | AssertReturn of string * Ast.literal list * Ast.literal list
-  | AssertReturnNaN of string * Ast.literal list
-  | AssertTrap of string * Ast.literal list * string
+  | AssertUnlinkable of definition * string
+  | AssertReturn of action * Ast.literal list
+  | AssertReturnNaN of action
+  | AssertTrap of action * string
   | Input of string
-  | Output of string option
+  | Output of var option * string option
 
 type script = command list
 

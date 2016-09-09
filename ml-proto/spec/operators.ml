@@ -23,7 +23,6 @@ let if_ es1 es2 = If (es1, es2)
 let select = Select
 
 let call x = Call x
-let call_import x = CallImport x
 let call_indirect x = CallIndirect x
 
 let get_local x = GetLocal x

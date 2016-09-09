@@ -18,7 +18,7 @@ The interpreter can also be run as a REPL, allowing to enter pieces of scripts i
 
 ## Building
 
-You'll need OCaml 4.02. The best way to get this is to download the [source tarball from our mirror of the ocaml website](https://wasm.storage.googleapis.com/ocaml-4.02.2.tar.gz) and do the configure / make dance.  On OSX, with [Homebrew](http://brew.sh/) installed, simply `brew install ocaml`.
+You'll need OCaml 4.02. The best way to get this is to download the [source tarball from our mirror of the ocaml website](https://wasm.storage.googleapis.com/ocaml-4.02.2.tar.gz) and do the configure / make dance.  On OSX, with [Homebrew](http://brew.sh/) installed, simply `brew install ocaml ocamlbuild`.
 
 Once you have OCaml, simply do
 
@@ -69,6 +69,10 @@ wasm [option | file ...]
 
 where `file`, depending on its extension, either should be an S-expression script file (see below) to be run, or a binary module file to be loaded.
 
+By default, the interpreter validates all modules.
+The `-u` option selects "unchecked mode", which skips validation and runs code as is.
+Runtime type errors will be captured and reported appropriately.
+
 A file prefixed by `-o` is taken to be an output file. Depending on its extension, this will write out the preceding module definition in either S-expression or binary format. This option can be used to convert between the two in both directions, e.g.:
 
 ```
@@ -76,8 +80,9 @@ wasm -d module.wast -o module.wasm
 wasm -d module.wasm -o module.wast
 ```
 
-The `-d` option selects "dry mode" and ensures that the input module is not run, even if it has a start section.
 In the second case, the produced script contains exactly one module definition.
+The `-d` option selects "dry mode" and ensures that the input module is not run, even if it has a start section.
+In addition, the `-u` option for "unchecked mode" can be used to convert even modules that do not validate.
 
 Finally, the option `-e` allows to provide arbitrary script commands directly on the command line. For example:
 
@@ -115,13 +120,22 @@ offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
+expr:
+  ( <op> )
+  ( <op> <expr>+ )                                                   ;; = <expr>+ (<op>)
+  ( block <name>? <instr>* )
+  ( loop <name>? <instr>* )
+  ( if ( then <name>? <instr>* ) ( else <name>? <instr>* )? )
+  ( if <expr> ( then <name>? <instr>* ) ( else <name>? <instr>* )? ) ;; = (if <expr> (then <name>? <instr>*) (else <name>? <instr>*)?)
+  ( if <expr> <expr> <expr>? )                                       ;; = (if <expr> (then <expr>) (else <expr>?))
+
 instr:
-  <op>
-  block <name>? <instr>* end
-  loop <name>? <instr>* end
-  if <name1>? <instr>* else <name2>? <instr>* end
-  if <name>? <instr>* end             ;; = if <name>? <instr>* else end
   <expr>
+  <op>                                                               ;; = (<op>)
+  block <name>? <instr>* end                                         ;; = (block <name>? <instr>*)
+  loop <name>? <instr>* end                                          ;; = (loop <name>? <instr>*)
+  if <name>? <instr>* end                                            ;; = (if (then <name>? <instr>*))
+  if <name>? <instr>* else <name>? <instr>* end                      ;; = (if (then <name>? instr>*) (else <name>? <instr>*))
 
 op:
   unreachable
@@ -146,39 +160,58 @@ op:
   <type>.load((8|16|32)_<sign>)? <offset>? <align>?
   <type>.store(8|16|32)? <offset>? <align>?
   current_memory
-  grow_memory <expr>
+  grow_memory
 
-expr:
-  ( <op> <expr>* )                 ;; = <expr>* <op>
-  ( block <name>? <instr>* )       ;; = block <name>? <instr>* end
-  ( loop <name>? <instr>* )        ;; = loop <name>? <instr>* end
-  ( if <expr1> <expr2> <expr3>? )  ;; = <expr1> if <expr2> else <expr3>? end
-  ( if <expr>? ( then <name1>? <instr1>* ) ( else <name2>? <instr2>* )? )  ;; = <expr>? if <name1>? <instr1>* else <name2>? <instr2>* end
+func:    ( func <name>? <func_sig> <local>* <instr>* )
+         ( func <name>? ( export <string> ) <func_sig> <local>* <instrr>* ) ;; = (export <string> (func <N>) (func <name>? <func_sig> <local>* <instr>*)
+         ( func <name>? ( import <string> <string> ) <func_sig>)            ;; = (import <name>? <string> <string> (func <func_sig>))
+param:   ( param <type>* ) | ( param <name> <type> )
+result:  ( result <type> )
+local:   ( local <type>* ) | ( local <name> <type> )
 
-func:   ( func <name>? <sig> <local>* <instr>* )
-        ( func <string> <name>? <sig> <local>* <instr>* )  ;; = (export <string> <N>) (func <name>? <sig> <local>* <instr>*)
-sig:    ( type <var> ) | <param>* <result>?
-param:  ( param <type>* ) | ( param <name> <type> )
-result: ( result <type> )
-local:  ( local <type>* ) | ( local <name> <type> )
+func_sig:   ( type <var> ) | <param>* <result>?
+global_sig: <type> | ( mut <type> )
+table_sig:  <nat> <nat>? <elem_type>
+memory_sig: <nat> <nat>?
 
-module:  ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <elem>* <data>* <start>? ) | (module <string>+)
-typedef: ( type <name>? ( func <param>* <result>? ) )
-import:  ( import <name>? <string> <string> <sig> )
-export:  ( export <string> <var> ) | ( export <string> memory)
-start:   ( start <var> )
-table:   ( table <nat> <nat>? <elem_type> )
-         ( table <elem_type> ( elem <var>* ) )  ;; = (table <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
-elem:    ( elem ( offset <instr> ) <var>* )
-         ( elem <expr> <var>* )                 ;; = (elem (offset <expr>) <var>*)
-memory:  ( memory <nat> <nat>? )
-         ( memory ( data <string>* ) )          ;; = (memory <size> <size>) (data (i32.const 0) <string>*)
+global:  ( global <name>? <global_sig> )
+         ( global <name>? ( export <string> ) <global_sig> )                ;; = (export <string> (global <N>)) (global <name>? <global_sig>)
+         ( global <name>? ( import <string> <string> ) <global_sig> )       ;; = (import <name>? <string> <string> (global <global_sig>))
+table:   ( table <name>? <table_sig> )
+         ( table <name>? ( export <string> ) <table_sig> )                  ;; = (export <string> (table <N>)) (table <name>? <table_sig>)
+         ( table <name>? ( import <string> <string> ) <table_sig> )         ;; = (import <name>? <string> <string> (table <table_sig>))
+         ( table <name>? ( export <string> )? <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )? <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
+elem:    ( elem (offset <instr>* ) <var>* )
+         ( elem <expr> <var>* )                                             ;; = (elem (offset <expr>) <var>*)
+memory:  ( memory <name>? <memory_sig> )
+         ( memory <name>? ( export <string> ) <memory_sig> )                ;; = (export <string> (memory <N>)) (memory <name>? <memory_sig>)
+         ( memory <name>? ( import <string> <string> ) <memory_sig> )       ;; = (import <name>? <string> <string> (memory <memory_sig>))
+         ( memory <name>? ( export <string> )? ( data <string>* )           ;; = (memory <name>? ( export <string> )? <size> <size>) (data (i32.const 0) <string>*)
 data:    ( data ( offset <instr>* ) <string>* )
-         ( data <expr> <string>* )              ;; = (data (offset <expr>) <var>*)
+         ( data <expr> <string>* )                                          ;; = (data (offset <expr>) <string>*)
+
+start:   ( start <var> )
+
+typedef: ( type <name>? ( func <funcsig> ) )
+
+import:  ( import <string> <string> <imkind> )
+imkind:  ( func <name>? <func_sig> )
+         ( global <name>? <global_sig> )
+         ( table <name>? <table_sig> )
+         ( memory <name>? <memory_sig> )
+export:  ( export <string> <exkind> )
+exkind:  ( func <var> )
+         ( global <var> )
+         ( table <var> )
+         ( memory <var> )
+
+module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <elem>* <data>* <start>? )
+         ( module <name>? <string>+ )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the AST below).
-In particular, WebAssembly is a stack machine, so that all expressions `<expr>` are merely abbreviations of a corresponding post-order sequence of instructions.
+In particular, WebAssembly is a stack machine, so that all expressions of the form `(<op> <expr>+)` are merely abbreviations of a corresponding post-order sequence of instructions.
+For raw instructions, the syntax allows omitting the parentheses around the operator name and its immediate operands. In the case of control operators (`block`, `loop`, `if`), this requires marking the end of the nested sequence with an explicit `end` keyword.
 
 Any form of naming via `<name>` and `<var>` (including expression labels) is merely notational convenience of this text format. The actual AST has no names, and all bindings are referred to via ordered numeric indices; consequently, names are immediately resolved in the parser and replaced by indices. Indices can also be used directly in the text format.
 
@@ -206,17 +239,25 @@ In order to be able to check and run modules for testing purposes, the S-express
 script: <cmd>*
 
 cmd:
-  <module>                                             ;; define, validate, and initialize module
-  ( invoke <name> <expr>* )                            ;; invoke export and print result
-  ( assert_return (invoke <name> <expr>* ) <expr> )    ;; assert return with expected result of invocation
-  ( assert_return_nan (invoke <name> <expr>* ))        ;; assert return with floating point nan result of invocation
-  ( assert_trap (invoke <name> <expr>* ) <failure> )   ;; assert invocation traps with given failure string
-  ( assert_invalid <module> <failure> )                ;; assert invalid module with given failure string
-  ( input <string> )                                   ;; read script or module from file
-  ( output <string>? )                                 ;; output module to stout or file
+  <module>                                  ;; define, validate, and initialize module
+  <action>                                  ;; perform action and print results
+  ( register <string> <name>? )             ;; register module for imports
+  ( assert_return <action> <expr>* )        ;; assert action has expected results
+  ( assert_return_nan <action> )            ;; assert action results in NaN
+  ( assert_trap <action> <failure> )        ;; assert action traps with given failure string
+  ( assert_invalid <module> <failure> )     ;; assert module is invalid with given failure string
+  ( assert_unlinkable <module> <failure> )  ;; assert module fails to link module with given failure string
+  ( input <string> )                        ;; read script or module from file
+  ( output <name>? <string>? )              ;; output module to stout or file
+
+action:
+  ( invoke <name>? <string> <expr>* )       ;; invoke function export
+  ( get <name>? <string> )                  ;; get global export
 ```
 
-Commands are executed in sequence. Invocation, assertions, and output apply to the most recently defined module (the _current_ module), and are only possible after a module has been defined. Note that there only ever is one current module, the different module definitions cannot interact.
+Commands are executed in sequence. Commands taking an optional module name refer to the most recently defined module if no name is given. They are only possible after a module has been defined.
+
+After a module is _registered_ under a string name it is available for importing in other modules.
 
 The input and output commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed.
 

@@ -114,7 +114,7 @@ let vec1 f s = let b = bool s in opt f b s
 open Types
 
 let value_type s =
-  match get s with
+  match u8 s with
   | 0x01 -> I32Type
   | 0x02 -> I64Type
   | 0x03 -> F32Type
@@ -122,7 +122,7 @@ let value_type s =
   | _ -> error s (pos s - 1) "invalid value type"
 
 let elem_type s =
-  match get s with
+  match u8 s with
   | 0x20 -> AnyFuncType
   | _ -> error s (pos s - 1) "invalid element type"
 
@@ -131,6 +131,32 @@ let func_type s =
   let ins = vec value_type s in
   let out = vec value_type s in
   FuncType (ins, out)
+
+let limits vu s =
+  let has_max = bool s in
+  let min = vu s in
+  let max = opt vu has_max s in
+  {min; max}
+
+let table_type s =
+  let t = elem_type s in
+  let lim = limits vu32 s in
+  TableType (lim, t)
+
+let memory_type s =
+  let lim = limits vu32 s in
+  MemoryType lim
+
+let mutability s =
+  match u8 s with
+  | 0 -> Immutable
+  | 1 -> Mutable
+  | _ -> error s (pos s - 1) "invalid mutability"
+
+let global_type s =
+  let t = value_type s in
+  let mut = mutability s in
+  GlobalType (t, mut)
 
 
 (* Decode instructions *)
@@ -142,10 +168,10 @@ let op s = u8 s
 let arity s = vu s
 
 let memop s =
-  let align = vu s in
-  (*TODO: check flag bits*)
+  let align = vu32 s in
+  require (I32.lt_u align 32l) s (pos s - 1) "invalid memop flags";
   let offset = vu64 s in
-  align, offset
+  1 lsl Int32.to_int align, offset
 
 let var s = vu s
 let var32 s = Int32.to_int (vu32 s)
@@ -217,7 +243,6 @@ let rec instr s =
 
   | 0x16 -> call (at var s)
   | 0x17 -> call_indirect (at var s)
-  | 0x18 -> call_import (at var s)
 
   | 0x19 -> tee_local (at var s)
 
@@ -404,7 +429,7 @@ and instr_block' s es =
 
 let const s =
   let c = at instr_block s in
-  expect 0x0f s "`end` opcode expected";
+  expect 0x0f s "END opcode expected";
   c
 
 
@@ -449,11 +474,19 @@ let type_section s =
 
 (* Import section *)
 
+let import_kind s =
+  match u8 s with
+  | 0x00 -> FuncImport (at var s)
+  | 0x01 -> TableImport (table_type s)
+  | 0x02 -> MemoryImport (memory_type s)
+  | 0x03 -> GlobalImport (global_type s)
+  | _ -> error s (pos s - 1) "invalid import kind"
+
 let import s =
-  let itype = at var s in
   let module_name = string s in
-  let func_name = string s in
-  {itype; module_name; func_name}
+  let item_name = string s in
+  let ikind = at import_kind s in
+  {module_name; item_name; ikind}
 
 let import_section s =
   section `ImportSection (vec (at import)) [] s
@@ -467,35 +500,28 @@ let func_section s =
 
 (* Table section *)
 
-let limits vu s =
-  let has_max = bool s in
-  let min = vu s in
-  let max = opt vu has_max s in
-  {min; max}
-
 let table s =
-  let t = elem_type s in
-  let lim = at (limits vu32) s in
-  {etype = t; tlimits = lim}
+  let ttype = table_type s in
+  {ttype}
 
 let table_section s =
-  section `TableSection (opt (at table) true) None s
+  section `TableSection (vec (at table)) [] s
 
 
 (* Memory section *)
 
 let memory s =
-  let lim = at (limits vu32) s in
-  {mlimits = lim}
+  let mtype = memory_type s in
+  {mtype}
 
 let memory_section s =
-  section `MemorySection (opt (at memory) true) None s
+  section `MemorySection (vec (at memory)) [] s
 
 
 (* Global section *)
 
 let global s =
-  let gtype = value_type s in
+  let gtype = global_type s in
   let value = const s in
   {gtype; value}
 
@@ -505,10 +531,19 @@ let global_section s =
 
 (* Export section *)
 
+let export_kind s =
+  match u8 s with
+  | 0x00 -> FuncExport
+  | 0x01 -> TableExport
+  | 0x02 -> MemoryExport
+  | 0x03 -> GlobalExport
+  | _ -> error s (pos s - 1) "invalid export kind"
+
 let export s =
-  let x = at var s in
   let name = string s in
-  {name; kind = `Func x} (*TODO: pending resolution*)
+  let ekind = at export_kind s in
+  let item = at var s in
+  {name; ekind; item}
 
 let export_section s =
   section `ExportSection (vec (at export)) [] s
@@ -528,9 +563,10 @@ let local s =
   Lib.List.make n t
 
 let code s =
-  let locals = List.flatten (vec local s) in
   let size = vu s in
-  let body = instr_block (substream s (pos s + size)) in
+  let pos = pos s in
+  let locals = List.flatten (vec local s) in
+  let body = instr_block (substream s (pos + size)) in
   {locals; body; ftype = Source.((-1) @@ Source.no_region)}
 
 let code_section s =
@@ -540,9 +576,10 @@ let code_section s =
 (* Element section *)
 
 let segment dat s =
+  let index = at var s in
   let offset = const s in
   let init = dat s in
-  {offset; init}
+  {index; offset; init}
 
 let table_segment s =
   segment (vec (at var)) s
@@ -582,9 +619,9 @@ let module_ s =
   iterate unknown_section s;
   let func_types = func_section s in
   iterate unknown_section s;
-  let table = table_section s in
+  let tables = table_section s in
   iterate unknown_section s;
-  let memory = memory_section s in
+  let memories = memory_section s in
   iterate unknown_section s;
   let globals = global_section s in
   iterate unknown_section s;
@@ -606,7 +643,7 @@ let module_ s =
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
       func_types func_bodies
-  in {types; table; memory; globals; funcs; imports; exports; elems; data; start}
+  in {types; tables; memories; globals; funcs; imports; exports; elems; data; start}
 
 
 let decode name bs = at module_ (stream name bs)

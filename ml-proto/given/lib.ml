@@ -1,3 +1,9 @@
+module Fun =
+struct
+  let rec repeat n f x =
+    if n = 0 then () else (f x; repeat (n - 1) f x)
+end
+
 module List =
 struct
   let rec make n x =
@@ -18,6 +24,13 @@ struct
     | 0, _ -> xs
     | n, _::xs' when n > 0 -> drop (n - 1) xs'
     | _ -> failwith "drop"
+
+  let length32 xs = Int32.of_int (List.length xs)
+  let rec nth32 xs n =
+    match n, xs with
+    | 0l, x::xs -> x
+    | n, x::xs' when n > 0l -> nth32 xs' (Int32.sub n 1l)
+    | _ -> failwith "nth32"
 
   let rec last = function
     | x::[] -> x

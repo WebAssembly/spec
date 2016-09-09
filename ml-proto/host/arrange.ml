@@ -53,6 +53,13 @@ let func_type (FuncType (ins, out)) =
 
 let struct_type = func_type
 
+let limits int {min; max} =
+  String.concat " " (int min :: opt int max)
+
+let global_type = function
+  | GlobalType (t, Immutable) -> atom string_of_value_type t
+  | GlobalType (t, Mutable) -> Node ("mut", [atom string_of_value_type t])
+
 
 (* Operators *)
 
@@ -197,38 +204,39 @@ let value v = string_of_value v.it
 let constop v = value_type (type_of v.it) ^ ".const"
 
 let rec instr e =
+  let head, inner =
     match e.it with
-    | Unreachable -> Atom "unreachable"
-    | Nop -> Atom "nop"
-    | Drop -> Atom "drop"
-    | Block es -> Node ("block", list instr es)
-    | Loop es -> Node ("loop", list instr es)
-    | Br (n, x) -> Atom ("br " ^ int n ^ " " ^ var x)
-    | BrIf (n, x) -> Atom ("br_if " ^ int n ^ " " ^ var x)
+    | Unreachable -> "unreachable", []
+    | Nop -> "nop", []
+    | Drop -> "drop", []
+    | Block es -> "block", list instr es
+    | Loop es -> "loop", list instr es
+    | Br (n, x) -> "br " ^ int n ^ " " ^ var x, []
+    | BrIf (n, x) -> "br_if " ^ int n ^ " " ^ var x, []
     | BrTable (n, xs, x) ->
-      Atom ("br_table " ^ int n ^ " " ^ String.concat " " (list var (xs @ [x])))
-    | Return -> Atom "return"
+      "br_table " ^ int n ^ " " ^ String.concat " " (list var (xs @ [x])), []
+    | Return -> "return", []
     | If (es1, es2) ->
-      Node ("if", [Node ("then", list instr es1); Node ("else", list instr es2)])
-    | Select -> Atom "select"
-    | Call x -> Atom ("call " ^ var x)
-    | CallImport x -> Atom ("call_import " ^ var x)
-    | CallIndirect x -> Atom ("call_indirect " ^ var x)
-    | GetLocal x -> Atom ("get_local " ^ var x)
-    | SetLocal x -> Atom ("set_local " ^ var x)
-    | TeeLocal x -> Atom ("tee_local " ^ var x)
-    | GetGlobal x -> Atom ("get_global " ^ var x)
-    | SetGlobal x -> Atom ("set_global " ^ var x)
-    | Load op -> Atom (loadop op)
-    | Store op -> Atom (storeop op)
-    | Const lit -> Atom (constop lit ^ " " ^ value lit)
-    | Unary op -> Atom (unop op)
-    | Binary op -> Atom (binop op)
-    | Test op -> Atom (testop op)
-    | Compare op -> Atom (relop op)
-    | Convert op -> Atom (cvtop op)
-    | CurrentMemory -> Atom "current_memory"
-    | GrowMemory -> Atom "grow_memory"
+      "if", [Node ("then", list instr es1); Node ("else", list instr es2)]
+    | Select -> "select", []
+    | Call x -> "call " ^ var x, []
+    | CallIndirect x -> "call_indirect " ^ var x, []
+    | GetLocal x -> "get_local " ^ var x, []
+    | SetLocal x -> "set_local " ^ var x, []
+    | TeeLocal x -> "tee_local " ^ var x, []
+    | GetGlobal x -> "get_global " ^ var x, []
+    | SetGlobal x -> "set_global " ^ var x, []
+    | Load op -> loadop op, []
+    | Store op -> storeop op, []
+    | Const lit -> constop lit ^ " " ^ value lit, []
+    | Unary op -> unop op, []
+    | Binary op -> binop op, []
+    | Test op -> testop op, []
+    | Compare op -> relop op, []
+    | Convert op -> cvtop op, []
+    | CurrentMemory -> "current_memory", []
+    | GrowMemory -> "grow_memory", []
+  in Node (head, inner)
 
 let const c =
   list instr c.it
@@ -236,9 +244,9 @@ let const c =
 
 (* Functions *)
 
-let func i f =
+let func off i f =
   let {ftype; locals; body} = f.it in
-  Node ("func $" ^ string_of_int i,
+  Node ("func $" ^ string_of_int (off + i),
     [Node ("type " ^ var ftype, [])] @
     decls "local" locals @
     list instr body
@@ -251,21 +259,19 @@ let table xs = tab "table" (atom var) xs
 
 (* Tables & memories *)
 
-let limits int lim =
-  let {min; max} = lim.it in
-  String.concat " " (int min :: opt int max)
+let table off i tab =
+  let {ttype = TableType (lim, t)} = tab.it in
+  Node ("table $" ^ string_of_int (off + i) ^ " " ^ limits int32 lim,
+    [atom elem_type t]
+  )
 
-let table tab =
-  let {tlimits = lim; etype} = tab.it in
-  Node ("table " ^ limits int32 lim, [atom elem_type etype])
-
-let memory mem =
-  let {mlimits = lim} = mem.it in
-  Node ("memory " ^ limits int32 lim, [])
+let memory off i mem =
+  let {mtype = MemoryType lim} = mem.it in
+  Node ("memory $" ^ string_of_int (off + i) ^ " " ^ limits int32 lim, [])
 
 let segment head dat seg =
-  let {offset; init} = seg.it in
-  Node (head, Node ("offset", const offset) :: dat init)
+  let {index; offset; init} = seg.it in
+  Node (head, atom var index :: Node ("offset", const offset) :: dat init)
 
 let elems seg =
   segment "elem" (list (atom var)) seg
@@ -279,31 +285,64 @@ let data seg =
 let typedef i t =
   Node ("type $" ^ string_of_int i, [struct_type t])
 
+let import_kind i k =
+  match k.it with
+  | FuncImport x ->
+    Node ("func $" ^ string_of_int i, [Node ("type", [atom var x])])
+  | TableImport t -> table 0 i ({ttype = t} @@ k.at)
+  | MemoryImport t -> memory 0 i ({mtype = t} @@ k.at)
+  | GlobalImport t -> Node ("global $" ^ string_of_int i, [global_type t])
+
 let import i im =
-  let {itype; module_name; func_name} = im.it in
-  let ty = Node ("type " ^ var itype, []) in
-  Node ("import $" ^ string_of_int i,
-    [atom string module_name; atom string func_name; ty]
+  let {module_name; item_name; ikind} = im.it in
+  Node ("import",
+    [atom string module_name; atom string item_name; import_kind i ikind]
   )
 
-let global g =
-  let {gtype; value} = g.it in
-  Node ("global", atom value_type gtype :: const value)
+let export_kind k =
+  match k.it with
+  | FuncExport -> "func"
+  | TableExport -> "table"
+  | MemoryExport -> "memory"
+  | GlobalExport -> "global"
 
 let export ex =
-  let {name; kind} = ex.it in
-  let desc = match kind with `Func x -> var x | `Memory -> "memory" in
-  Node ("export", [atom string name; Atom desc])
+  let {name; ekind; item} = ex.it in
+  Node ("export",
+    [atom string name; Node (export_kind ekind, [atom var item])]
+  )
 
+let global off i g =
+  let {gtype; value} = g.it in
+  Node ("global $" ^ string_of_int (off + i), global_type gtype :: const value)
+
+
+(* Modules *)
+
+let is_func_import im =
+  match im.it.ikind.it with FuncImport _ -> true | _ -> false
+let is_table_import im =
+  match im.it.ikind.it with TableImport _ -> true | _ -> false
+let is_memory_import im =
+  match im.it.ikind.it with MemoryImport _ -> true | _ -> false
+let is_global_import im =
+  match im.it.ikind.it with GlobalImport _ -> true | _ -> false
 
 let module_ m =
+  let func_imports = List.filter is_func_import m.it.imports in
+  let table_imports = List.filter is_table_import m.it.imports in
+  let memory_imports = List.filter is_memory_import m.it.imports in
+  let global_imports = List.filter is_global_import m.it.imports in
   Node ("module",
     listi typedef m.it.types @
-    listi import m.it.imports @
-    opt table m.it.table @
-    opt memory m.it.memory @
-    list global m.it.globals @
-    listi func m.it.funcs @
+    listi import table_imports @
+    listi import memory_imports @
+    listi import global_imports @
+    listi import func_imports @
+    listi (table (List.length table_imports)) m.it.tables @
+    listi (memory (List.length memory_imports)) m.it.memories @
+    listi (global (List.length global_imports)) m.it.globals @
+    listi (func (List.length func_imports)) m.it.funcs @
     list export m.it.exports @
     opt start m.it.start @
     list elems m.it.elems @

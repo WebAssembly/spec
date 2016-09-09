@@ -10,6 +10,7 @@ type extension = SX | ZX
 
 type value = Values.value
 type value_type = Types.value_type
+type 'a limits = 'a Types.limits
 
 exception Type
 exception Bounds
@@ -18,11 +19,11 @@ exception SizeLimit
 exception OutOfMemory
 
 val page_size : offset
-
 val mem_size : mem_size -> int
 
-val create : size -> size option -> memory (* raise SizeOverflow, OutOfMemory *)
+val create : size limits -> memory (* raise SizeOverflow, OutOfMemory *)
 val size : memory -> size
+val limits : memory -> size limits
 val grow : memory -> size -> unit (* raise SizeOverflow, OutOfMemory *)
 
 val load : memory -> address -> offset -> value_type -> value

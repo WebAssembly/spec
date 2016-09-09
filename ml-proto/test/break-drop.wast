@@ -1,12 +1,7 @@
 (module
-  (func $br (block (br 0)))
-  (export "br" $br)
-
-  (func $br_if (block (br_if 0 (i32.const 1))))
-  (export "br_if" $br_if)
-
-  (func $br_table (block (br_table 0 (i32.const 0))))
-  (export "br_table" $br_table)
+  (func (export "br") (block (br 0)))
+  (func (export "br_if") (block (br_if 0 (i32.const 1))))
+  (func (export "br_table") (block (br_table 0 (i32.const 0))))
 )
 
 (assert_return (invoke "br"))

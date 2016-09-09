@@ -141,6 +141,7 @@ rule token = parse
           f64_const (n @@ s.at), Values.F64 n))
     }
   | "anyfunc" { ANYFUNC }
+  | "mut" { MUT }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }
@@ -157,7 +158,6 @@ rule token = parse
   | "else" { ELSE }
   | "select" { SELECT }
   | "call" { CALL }
-  | "call_import" { CALL_IMPORT }
   | "call_indirect" { CALL_INDIRECT }
 
   | "get_local" { GET_LOCAL }
@@ -300,11 +300,14 @@ rule token = parse
   | "import" { IMPORT }
   | "export" { EXPORT }
 
+  | "register" { REGISTER }
+  | "invoke" { INVOKE }
+  | "get" { GET }
   | "assert_invalid" { ASSERT_INVALID }
+  | "assert_unlinkable" { ASSERT_UNLINKABLE }
   | "assert_return" { ASSERT_RETURN }
   | "assert_return_nan" { ASSERT_RETURN_NAN }
   | "assert_trap" { ASSERT_TRAP }
-  | "invoke" { INVOKE }
   | "input" { INPUT }
   | "output" { OUTPUT }
 

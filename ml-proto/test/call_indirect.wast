@@ -54,54 +54,54 @@
 
   ;; Typing
 
-  (func "type-i32" (result i32) (call_indirect $out-i32 (i32.const 0)))
-  (func "type-i64" (result i64) (call_indirect $out-i64 (i32.const 1)))
-  (func "type-f32" (result f32) (call_indirect $out-f32 (i32.const 2)))
-  (func "type-f64" (result f64) (call_indirect $out-f64 (i32.const 3)))
+  (func (export "type-i32") (result i32) (call_indirect $out-i32 (i32.const 0)))
+  (func (export "type-i64") (result i64) (call_indirect $out-i64 (i32.const 1)))
+  (func (export "type-f32") (result f32) (call_indirect $out-f32 (i32.const 2)))
+  (func (export "type-f64") (result f64) (call_indirect $out-f64 (i32.const 3)))
 
-  (func "type-index" (result i64)
+  (func (export "type-index") (result i64)
     (call_indirect $over-i64 (i64.const 100) (i32.const 5))
   )
 
-  (func "type-first-i32" (result i32)
+  (func (export "type-first-i32") (result i32)
     (call_indirect $over-i32 (i32.const 32) (i32.const 4))
   )
-  (func "type-first-i64" (result i64)
+  (func (export "type-first-i64") (result i64)
     (call_indirect $over-i64 (i64.const 64) (i32.const 5))
   )
-  (func "type-first-f32" (result f32)
+  (func (export "type-first-f32") (result f32)
     (call_indirect $over-f32 (f32.const 1.32) (i32.const 6))
   )
-  (func "type-first-f64" (result f64)
+  (func (export "type-first-f64") (result f64)
     (call_indirect $over-f64 (f64.const 1.64) (i32.const 7))
   )
 
-  (func "type-second-i32" (result i32)
+  (func (export "type-second-i32") (result i32)
     (call_indirect $f32-i32 (f32.const 32.1) (i32.const 32) (i32.const 8))
   )
-  (func "type-second-i64" (result i64)
+  (func (export "type-second-i64") (result i64)
     (call_indirect $i32-i64 (i32.const 32) (i64.const 64) (i32.const 9))
   )
-  (func "type-second-f32" (result f32)
+  (func (export "type-second-f32") (result f32)
     (call_indirect $f64-f32 (f64.const 64) (f32.const 32) (i32.const 10))
   )
-  (func "type-second-f64" (result f64)
+  (func (export "type-second-f64") (result f64)
     (call_indirect $i64-f64 (i64.const 64) (f64.const 64.1) (i32.const 11))
   )
 
   ;; Dispatch
 
-  (func "dispatch" (param i32 i64) (result i64)
+  (func (export "dispatch") (param i32 i64) (result i64)
     (call_indirect $over-i64 (get_local 1) (get_local 0))
   )
 
-  (func "dispatch-structural" (param i32) (result i64)
+  (func (export "dispatch-structural") (param i32) (result i64)
     (call_indirect $over-i64-duplicate (i64.const 9) (get_local 0))
   )
 
   ;; Recursion
 
-  (func "fac" $fac (type $over-i64)
+  (func $fac (export "fac") (type $over-i64)
     (if (i64.eqz (get_local 0))
       (i64.const 1)
       (i64.mul
@@ -114,7 +114,7 @@
     )
   )
 
-  (func "fib" $fib (type $over-i64)
+  (func $fib (export "fib") (type $over-i64)
     (if (i64.le_u (get_local 0) (i64.const 1))
       (i64.const 1)
       (i64.add
@@ -130,7 +130,7 @@
     )
   )
 
-  (func "even" $even (param i32) (result i32)
+  (func $even (export "even") (param i32) (result i32)
     (if (i32.eqz (get_local 0))
       (i32.const 44)
       (call_indirect $over-i32
@@ -139,7 +139,7 @@
       )
     )
   )
-  (func "odd" $odd (param i32) (result i32)
+  (func $odd (export "odd") (param i32) (result i32)
     (if (i32.eqz (get_local 0))
       (i32.const 99)
       (call_indirect $over-i32
@@ -158,9 +158,9 @@
   ;; implementations and be incompatible with implementations that don't do
   ;; it (or don't do it under the same circumstances).
 
-  (func "runaway" $runaway (call_indirect $proc (i32.const 16)))
+  (func $runaway (export "runaway") (call_indirect $proc (i32.const 16)))
 
-  (func "mutual-runaway" $mutual-runaway1 (call_indirect $proc (i32.const 18)))
+  (func $mutual-runaway1 (export "mutual-runaway") (call_indirect $proc (i32.const 18)))
   (func $mutual-runaway2 (call_indirect $proc (i32.const 17)))
 )
 
@@ -230,7 +230,7 @@
     (type (func))
     (func $no-table (call_indirect 0 (i32.const 0)))
   )
-  "no table"
+  "unknown table"
 )
 
 (assert_invalid
@@ -366,12 +366,12 @@
     (table 0 anyfunc)
     (func $unbound-type (call_indirect 1 (i32.const 0)))
   )
-  "unknown function type"
+  "unknown type"
 )
 (assert_invalid
   (module
     (table 0 anyfunc)
     (func $large-type (call_indirect 10001232130000 (i32.const 0)))
   )
-  "unknown function type"
+  "unknown type"
 )

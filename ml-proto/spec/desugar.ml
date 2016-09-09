@@ -27,7 +27,6 @@ and relabel' f n = function
   | Select (e1, e2, e3) ->
     Select (relabel f n e1, relabel f n e2, relabel f n e3)
   | Call (x, es) -> Call (x, List.map (relabel f n) es)
-  | CallImport (x, es) -> CallImport (x, List.map (relabel f n) es)
   | CallIndirect (x, e, es) ->
     CallIndirect (x, relabel f n e, List.map (relabel f n) es)
   | GetLocal x -> GetLocal x
@@ -79,7 +78,6 @@ and expr' at = function
   | Ast.Select (e1, e2, e3) -> Select (expr e1, expr e2, expr e3)
 
   | Ast.Call (x, es) -> Call (x, List.map expr es)
-  | Ast.Call_import (x, es) -> CallImport (x, List.map expr es)
   | Ast.Call_indirect (x, e, es) -> CallIndirect (x, expr e, List.map expr es)
 
   | Ast.Get_local x -> GetLocal x
@@ -309,15 +307,15 @@ and func' = function
 
 let rec segment seg = segment' seg.it @@ seg.at
 and segment' = function
-  | {Ast.offset = e; init} -> {offset = expr e; init}
+  | {index; Ast.offset = e; init} -> {index; offset = expr e; init}
 
 let rec module_ m = module' m.it @@ m.at
 and module' = function
-  | {Ast.funcs = fs; start; globals = gs; memory; types; imports; exports; table; elems; data} ->
+  | {Ast.funcs = fs; start; globals = gs; memories; types; imports; exports; tables; elems; data} ->
     let globals = List.map global gs in
     let elems = List.map segment elems in
     let funcs = List.map func fs in
     let data = List.map segment data in
-    {funcs; start; globals; memory; types; imports; exports; table; elems; data}
+    {funcs; start; globals; memories; types; imports; exports; tables; elems; data}
 
 let desugar = module_

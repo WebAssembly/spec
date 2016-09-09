@@ -3,40 +3,40 @@
 (module
   (func $dummy)
 
-  (func "as-block-first" (param i32) (result i32)
+  (func (export "as-block-first") (param i32) (result i32)
     (block (br_if 0 (get_local 0)) (return (i32.const 2))) (i32.const 3)
   )
-  (func "as-block-mid" (param i32) (result i32)
+  (func (export "as-block-mid") (param i32) (result i32)
     (block (call $dummy) (br_if 0 (get_local 0)) (return (i32.const 2))) (i32.const 3)
   )
-  (func "as-block-last" (param i32)
+  (func (export "as-block-last") (param i32)
     (block (call $dummy) (call $dummy) (br_if 0 (get_local 0)))
   )
-  (func "as-block-first-value" (param i32) (result i32)
+  (func (export "as-block-first-value") (param i32) (result i32)
     (block (br_if 0 (i32.const 10) (get_local 0)) (i32.const 11))
   )
-  (func "as-block-mid-value" (param i32) (result i32)
+  (func (export "as-block-mid-value") (param i32) (result i32)
     (block (call $dummy) (br_if 0 (i32.const 20) (get_local 0)) (i32.const 21))
   )
 
-  (func "as-loop-first" (param i32) (result i32)
+  (func (export "as-loop-first") (param i32) (result i32)
     (loop (br_if 1 (i32.const 3) (get_local 0)) (i32.const 2))
   )
-  (func "as-loop-mid" (param i32) (result i32)
+  (func (export "as-loop-mid") (param i32) (result i32)
     (loop (call $dummy) (br_if 1 (i32.const 4) (get_local 0)) (i32.const 2))
   )
-  (func "as-loop-last" (param i32)
+  (func (export "as-loop-last") (param i32)
     (loop (call $dummy) (br_if 1 (get_local 0)))
   )
 
-  (func "as-if-then" (param i32 i32)
+  (func (export "as-if-then") (param i32 i32)
     (block (if (get_local 0) (br_if 1 (get_local 1)) (call $dummy)))
   )
-  (func "as-if-else" (param i32 i32)
+  (func (export "as-if-else") (param i32 i32)
     (block (if (get_local 0) (call $dummy) (br_if 1 (get_local 1))))
   )
 
-  (func "nested-block-value" (param i32) (result i32)
+  (func (export "nested-block-value") (param i32) (result i32)
     (i32.add
       (i32.const 1)
       (block
@@ -49,7 +49,7 @@
     )
   )
 
-  (func "nested-br-value" (param i32) (result i32)
+  (func (export "nested-br-value") (param i32) (result i32)
     (i32.add
       (i32.const 1)
       (block
@@ -62,7 +62,7 @@
     )
   )
 
-  (func "nested-br_if-value" (param i32) (result i32)
+  (func (export "nested-br_if-value") (param i32) (result i32)
     (i32.add
       (i32.const 1)
       (block
@@ -76,7 +76,7 @@
     )
   )
 
-  (func "nested-br_if-value-cond" (param i32) (result i32)
+  (func (export "nested-br_if-value-cond") (param i32) (result i32)
     (i32.add
       (i32.const 1)
       (block
@@ -90,7 +90,7 @@
     )
   )
 
-  (func "nested-br_table-value" (param i32) (result i32)
+  (func (export "nested-br_table-value") (param i32) (result i32)
     (i32.add
       (i32.const 1)
       (block
@@ -104,7 +104,7 @@
     )
   )
 
-  (func "nested-br_table-value-index" (param i32) (result i32)
+  (func (export "nested-br_table-value-index") (param i32) (result i32)
     (i32.add
       (i32.const 1)
       (block
