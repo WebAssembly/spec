@@ -5,21 +5,18 @@ type stream =
   name : string;
   bytes : string;
   pos : int ref;
-  len : int
 }
 
 exception EOS
 
-let stream name bs = {name; bytes = bs; pos = ref 0; len = String.length bs}
-let substream s end_ = {s with len = end_}
+let stream name bs = {name; bytes = bs; pos = ref 0}
 
-let len s = s.len
+let len s = String.length s.bytes
 let pos s = !(s.pos)
 let eos s = (pos s = len s)
 
 let check n s = if pos s + n > len s then raise EOS
 let skip n s = check n s; s.pos := !(s.pos) + n
-let rewind p s = s.pos := p
 
 let read s = Char.code (s.bytes.[!(s.pos)])
 let peek s = if eos s then None else Some (read s)
@@ -80,33 +77,52 @@ let u64 s =
   let hi = Int64.of_int32 (u32 s) in
   Int64.(add lo (shift_left hi 32))
 
-let rec vu64 s =
+let rec vuN n s =
+  require (n > 0) s (pos s) "integer representation too long";
   let b = u8 s in
+  require (n >= 7 || b land 0x7f < 1 lsl n) s (pos s - 1) "integer out of range";
   let x = Int64.of_int (b land 0x7f) in
-  if b land 0x80 = 0 then x
-  else Int64.(logor x (shift_left (vu64 s) 7))
-  (*TODO: check for overflow*)
+  if b land 0x80 = 0 then x else Int64.(logor x (shift_left (vuN (n - 7) s) 7))
 
-let rec vs64 s =
+let rec vsN n s =
+  require (n > 0) s (pos s) "integer representation too long";
   let b = u8 s in
+  let mask = (-1 lsl n) land 0x7f in
+  require (n >= 7 || b land mask = 0 || b land mask = mask) s (pos s - 1)
+    "integer too large";
   let x = Int64.of_int (b land 0x7f) in
   if b land 0x80 = 0
   then (if b land 0x40 = 0 then x else Int64.(logor x (logxor (-1L) 0x7fL)))
-  else Int64.(logor x (shift_left (vs64 s) 7))
-  (*TODO: check for overflow*)
+  else Int64.(logor x (shift_left (vsN (n - 7) s) 7))
 
-let vu32 s = Int64.to_int32 (vu64 s)  (*TODO:check overflow*)
-let vs32 s = Int64.to_int32 (vs64 s)  (*TODO:check overflow*)
-let vu s = Int64.to_int (vu64 s)  (*TODO:check overflow*)
+let vu1 s = Int64.to_int (vuN 1 s)
+let vu7 s = Int64.to_int (vuN 7 s)
+let vu32 s = Int64.to_int32 (vuN 32 s)
+let vs32 s = Int64.to_int32 (vsN 32 s)
+let vu64 s = vuN 64 s
+let vs64 s = vsN 64 s
 let f32 s = F32.of_bits (u32 s)
 let f64 s = F64.of_bits (u64 s)
 
-let bool s = match get s with 0 | 1 as n -> n <> 0 | _ -> error s (pos s - 1) "invalid boolean"
-let string s = let n = vu s in get_string n s
+let len32 s =
+  let pos = pos s in
+  let n = vu32 s in
+  if n <= Int32.of_int (len s) then Int32.to_int n else
+    error s pos "length out of bounds"
+
+let bool s = (vu1 s = 1)
+let string s = let n = len32 s in get_string n s
 let rec list f n s = if n = 0 then [] else let x = f s in x :: list f (n - 1) s
 let opt f b s = if b then Some (f s) else None
-let vec f s = let n = vu s in list f n s
+let vec f s = let n = len32 s in list f n s
 let vec1 f s = let b = bool s in opt f b s
+
+let sized f s =
+  let size = len32 s in
+  let start = pos s in
+  let x = f size s in
+  require (pos s = start + size) s start "section size mismatch";
+  x
 
 
 (* Types *)
@@ -165,7 +181,7 @@ open Ast
 open Operators
 
 let op s = u8 s
-let arity s = vu s
+let arity s = u8 s
 
 let memop s =
   let align = vu32 s in
@@ -173,8 +189,7 @@ let memop s =
   let offset = vu64 s in
   1 lsl Int32.to_int align, offset
 
-let var s = vu s
-let var32 s = Int32.to_int (vu32 s)
+let var s = vu32 s
 
 let rec args n stack s pos = args' n stack [] s pos
 and args' n stack es s pos =
@@ -440,30 +455,31 @@ let trace s name =
     (name ^ " @ " ^ string_of_int (pos s) ^ " = " ^ string_of_byte (read s))
 
 let id s =
-  match string s with
-  | "type" -> `TypeSection
-  | "import" -> `ImportSection
-  | "function" -> `FuncSection
-  | "table" -> `TableSection
-  | "memory" -> `MemorySection
-  | "global" -> `GlobalSection
-  | "export" -> `ExportSection
-  | "start" -> `StartSection
-  | "code" -> `CodeSection
-  | "element" -> `ElemSection
-  | "data" -> `DataSection
-  | _ -> `UnknownSection
+  let bo = peek s in
+  Lib.Option.map
+    (function
+    | 0 -> `UserSection
+    | 1 -> `TypeSection
+    | 2 -> `ImportSection
+    | 3 -> `FuncSection
+    | 4 -> `TableSection
+    | 5 -> `MemorySection
+    | 6 -> `GlobalSection
+    | 7 -> `ExportSection
+    | 8 -> `StartSection
+    | 9 -> `CodeSection
+    | 10 -> `ElemSection
+    | 11 -> `DataSection
+    | _ -> error s (pos s) "invalid section id"
+    ) bo
+
+let section_with_size tag f default s =
+  match id s with
+  | Some tag' when tag' = tag -> ignore (get s); sized f s
+  | _ -> default
 
 let section tag f default s =
-  if eos s then default else
-  let start_pos = pos s in
-  if id s <> tag then (rewind start_pos s; default) else
-  let size = vu s in
-  let content_pos = pos s in
-  let s' = substream s (content_pos + size) in
-  let x = f s' in
-  require (eos s') s' (pos s') "junk at end of section";
-  x
+  section_with_size tag (fun _ -> f) default s
 
 
 (* Type section *)
@@ -558,19 +574,18 @@ let start_section s =
 (* Code section *)
 
 let local s =
-  let n = vu s in
+  let n = len32 s in
   let t = value_type s in
   Lib.List.make n t
 
-let code s =
-  let size = vu s in
-  let pos = pos s in
+let code _ s =
   let locals = List.flatten (vec local s) in
-  let body = instr_block (substream s (pos + size)) in
-  {locals; body; ftype = Source.((-1) @@ Source.no_region)}
+  let body = instr_block s in
+  expect 0x0f s "END opcode expected";
+  {locals; body; ftype = Source.((-1l) @@ Source.no_region)}
 
 let code_section s =
-  section `CodeSection (vec (at code)) [] s
+  section `CodeSection (vec (at (sized code))) [] s
 
 
 (* Element section *)
@@ -597,10 +612,16 @@ let data_section s =
   section `DataSection (vec (at memory_segment)) [] s
 
 
-(* Unknown section *)
+(* User section *)
 
-let unknown_section s =
-  section `UnknownSection (fun s -> skip (len s - pos s) s; true) false s
+let user size s =
+  let start = pos s in
+  let id = string s in
+  skip (size - (pos s - start));
+  true
+
+let user_section s =
+  section_with_size `UserSection user false s
 
 
 (* Modules *)
@@ -612,31 +633,29 @@ let module_ s =
   require (magic = 0x6d736100l) s 0 "magic header not detected";
   let version = u32 s in
   require (version = Encode.version) s 4 "unknown binary version";
-  iterate unknown_section s;
+  iterate user_section s;
   let types = type_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let imports = import_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let func_types = func_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let tables = table_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let memories = memory_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let globals = global_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let exports = export_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let start = start_section s in
-  iterate unknown_section s;
-  let func_bodies = code_section s in
-  iterate unknown_section s;
+  iterate user_section s;
   let elems = elem_section s in
-  iterate unknown_section s;
+  iterate user_section s;
+  let func_bodies = code_section s in
+  iterate user_section s;
   let data = data_section s in
-  iterate unknown_section s;
-  (*TODO: name section*)
-  iterate unknown_section s;
+  iterate user_section s;
   require (pos s = len s) s (len s) "junk after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";

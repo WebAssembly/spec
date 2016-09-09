@@ -63,8 +63,8 @@ let encode m =
     let vec f xs = vu (List.length xs); list f xs
     let vec1 f xo = bool (xo <> None); opt f xo
 
-    let gap () = let p = pos s in u32 0l; u8 0; p
-    let patch_gap p n =
+    let gap32 () = let p = pos s in u32 0l; u8 0; p
+    let patch_gap32 p n =
       assert (n <= 0x0fff_ffff); (* Strings cannot excess 2G anyway *)
       let lsb i = Char.chr (i land 0xff) in
       patch s p (lsb (n lor 0x80));
@@ -119,8 +119,7 @@ let encode m =
     let memop {align; offset; _} =
       vu32 (I32.ctz (Int32.of_int align)); vu64 offset
 
-    let var x = vu x.it
-    let var32 x = vu32 (Int32.of_int x.it)
+    let var x = vu32 x.it
 
     let rec instr e =
       match e.it with
@@ -134,7 +133,7 @@ let encode m =
       | Select -> op 0x05
       | Br (n, x) -> op 0x06; vu n; var x
       | BrIf (n, x) -> op 0x07; vu n; var x
-      | BrTable (n, xs, x) -> op 0x08; vu n; vec var32 xs; var32 x
+      | BrTable (n, xs, x) -> op 0x08; vu n; vec var xs; var x
       | Return -> op 0x09
       | Nop -> op 0x0a
       | Drop -> op 0x0b
@@ -351,16 +350,16 @@ let encode m =
 
     let section id f x needed =
       if needed then begin
-        string id;
-        let g = gap () in
+        u8 id;
+        let g = gap32 () in
         let p = pos s in
         f x;
-        patch_gap g (pos s - p)
+        patch_gap32 g (pos s - p)
       end
 
     (* Type section *)
     let type_section ts =
-      section "type" (vec func_type) ts (ts <> [])
+      section 1 (vec func_type) ts (ts <> [])
 
     (* Import section *)
     let import_kind k =
@@ -375,13 +374,13 @@ let encode m =
       string module_name; string item_name; import_kind ikind
 
     let import_section imps =
-      section "import" (vec import) imps (imps <> [])
+      section 2 (vec import) imps (imps <> [])
 
     (* Function section *)
     let func f = var f.it.ftype
 
     let func_section fs =
-      section "function" (vec func) fs (fs <> [])
+      section 3 (vec func) fs (fs <> [])
 
     (* Table section *)
     let table tab =
@@ -389,7 +388,7 @@ let encode m =
       table_type ttype
 
     let table_section tabs =
-      section "table" (vec table) tabs (tabs <> [])
+      section 4 (vec table) tabs (tabs <> [])
 
     (* Memory section *)
     let memory mem =
@@ -397,7 +396,7 @@ let encode m =
       memory_type mtype
 
     let memory_section mems =
-      section "memory" (vec memory) mems (mems <> [])
+      section 5 (vec memory) mems (mems <> [])
 
     (* Global section *)
     let global g =
@@ -405,7 +404,7 @@ let encode m =
       global_type gtype; const value
 
     let global_section gs =
-      section "global" (vec global) gs (gs <> [])
+      section 6 (vec global) gs (gs <> [])
 
     (* Export section *)
     let export_kind k =
@@ -420,11 +419,11 @@ let encode m =
       string name; export_kind ekind; var item
 
     let export_section exps =
-      section "export" (vec export) exps (exps <> [])
+      section 7 (vec export) exps (exps <> [])
 
     (* Start section *)
     let start_section xo =
-      section "start" (opt var) xo (xo <> None)
+      section 8 (opt var) xo (xo <> None)
 
     (* Code section *)
     let compress ts =
@@ -437,14 +436,15 @@ let encode m =
 
     let code f =
       let {locals; body; _} = f.it in
-      let g = gap () in
+      let g = gap32 () in
       let p = pos s in
       vec local (compress locals);
       list instr body;
-      patch_gap g (pos s - p)
+      u8 0x0f;
+      patch_gap32 g (pos s - p)
 
     let code_section fs =
-      section "code" (vec code) fs (fs <> [])
+      section 9 (vec code) fs (fs <> [])
 
     (* Element section *)
     let segment dat seg =
@@ -455,14 +455,14 @@ let encode m =
       segment (vec var) seg
 
     let elem_section elems =
-      section "element" (vec table_segment) elems (elems <> [])
+      section 10 (vec table_segment) elems (elems <> [])
 
     (* Data section *)
     let memory_segment seg =
       segment string seg
 
     let data_section data =
-      section "data" (vec memory_segment) data (data <> [])
+      section 11 (vec memory_segment) data (data <> [])
 
     (* Module *)
 
@@ -477,8 +477,8 @@ let encode m =
       global_section m.it.globals;
       export_section m.it.exports;
       start_section m.it.start;
-      code_section m.it.funcs;
       elem_section m.it.elems;
+      code_section m.it.funcs;
       data_section m.it.data
   end
   in E.module_ m; to_string s

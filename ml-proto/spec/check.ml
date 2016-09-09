@@ -39,8 +39,8 @@ let context m =
     globals = []; locals = []; results = []; labels = [] }
 
 let lookup category list x =
-  try List.nth list x.it with Failure _ ->
-    error x.at ("unknown " ^ category ^ " " ^ string_of_int x.it)
+  try Lib.List32.nth list x.it with Failure _ ->
+    error x.at ("unknown " ^ category ^ " " ^ Int32.to_string x.it)
 
 let type_ c x = lookup "type" c.types x
 let func c x = lookup "function" c.funcs x
@@ -111,7 +111,7 @@ let type_cvtop at = function
 (* Expressions *)
 
 let check_memop (c : context) (memop : 'a memop) get_sz at =
-  ignore (memory c (0 @@ at));
+  ignore (memory c (0l @@ at));
   require (memop.offset >= 0L) at "negative offset";
   require (memop.offset <= 0xffffffffL) at "offset too large";
   require (Lib.Int.is_power_of_two memop.align) at
@@ -219,7 +219,7 @@ let rec check_instr (c : context) (e : instr) (stack : stack_type) : op_type =
     ins --> Stack out
 
   | CallIndirect x ->
-    ignore (table c (0 @@ e.at));
+    ignore (table c (0l @@ e.at));
     let FuncType (ins, out) = type_ c x in
     (ins @ [I32Type]) --> Stack out
 
@@ -274,11 +274,11 @@ let rec check_instr (c : context) (e : instr) (stack : stack_type) : op_type =
     [t1] --> Stack [t2]
 
   | CurrentMemory ->
-    ignore (memory c (0 @@ e.at));
+    ignore (memory c (0l @@ e.at));
     [] --> Stack [I32Type]
 
   | GrowMemory ->
-    ignore (memory c (0 @@ e.at));
+    ignore (memory c (0l @@ e.at));
     [I32Type] --> Stack [I32Type]
 
 and check_block (c : context) (es : instr list) : result_type =

@@ -371,7 +371,7 @@
 (assert_invalid
   (module
     (table 0 anyfunc)
-    (func $large-type (call_indirect 10001232130000 (i32.const 0)))
+    (func $large-type (call_indirect 1012321300 (i32.const 0)))
   )
   "unknown type"
 )

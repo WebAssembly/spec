@@ -53,15 +53,15 @@ let int64 s at =
 
 module VarMap = Map.Make(String)
 
-type space = {mutable map : int VarMap.t; mutable count : int}
-let empty () = {map = VarMap.empty; count = 0}
+type space = {mutable map : int32 VarMap.t; mutable count : int32}
+let empty () = {map = VarMap.empty; count = 0l}
 
-type types = {mutable tmap : int VarMap.t; mutable tlist : Types.func_type list}
+type types = {mutable tmap : int32 VarMap.t; mutable tlist : Types.func_type list}
 let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
   { types : types; tables : space; memories : space;
-    funcs : space; locals : space; globals : space; labels : int VarMap.t }
+    funcs : space; locals : space; globals : space; labels : int32 VarMap.t }
 
 let empty_context () =
   { types = empty_types (); tables = empty (); memories = empty ();
@@ -94,7 +94,8 @@ let anon_module () = None
 let bind_type c x ty =
   if VarMap.mem x.it c.types.tmap then
     error x.at ("duplicate type " ^ x.it);
-  c.types.tmap <- VarMap.add x.it (List.length c.types.tlist) c.types.tmap;
+  c.types.tmap <-
+    VarMap.add x.it (Lib.List32.length c.types.tlist) c.types.tmap;
   c.types.tlist <- c.types.tlist @ [ty]
 
 let anon_type c ty =
@@ -104,7 +105,9 @@ let bind category space x =
   if VarMap.mem x.it space.map then
     error x.at ("duplicate " ^ category ^ " " ^ x.it);
   space.map <- VarMap.add x.it space.count space.map;
-  space.count <- space.count + 1
+  space.count <- Int32.add space.count 1l;
+  if space.count = 0l then 
+    error x.at ("too many " ^ category ^ " bindings")
 
 let bind_func c x = bind "function" c.funcs x
 let bind_local c x = bind "local" c.locals x
@@ -112,33 +115,39 @@ let bind_global c x = bind "global" c.globals x
 let bind_table c x = bind "table" c.tables x
 let bind_memory c x = bind "memory" c.memories x
 let bind_label c x =
-  {c with labels = VarMap.add x.it 0 (VarMap.map ((+) 1) c.labels)}
+  {c with labels = VarMap.add x.it 0l (VarMap.map (Int32.add 1l) c.labels)}
 
-let anon space n = space.count <- space.count + n
+let anon_type c ty =
+  c.types.tlist <- c.types.tlist @ [ty]
 
-let anon_func c = anon c.funcs 1
-let anon_locals c ts = anon c.locals (List.length ts)
-let anon_global c = anon c.globals 1
-let anon_table c = anon c.tables 1
-let anon_memory c = anon c.memories 1
-let anon_label c = {c with labels = VarMap.map ((+) 1) c.labels}
+let anon category space n =
+  space.count <- Int32.add space.count n;
+  if I32.lt_u space.count n then
+    error no_region ("too many " ^ category ^ " bindings")
+
+let anon_func c = anon "function" c.funcs 1l
+let anon_locals c ts = anon "local" c.locals (Lib.List32.length ts)
+let anon_global c = anon "global" c.globals 1l
+let anon_table c = anon "table" c.tables 1l
+let anon_memory c = anon "memory" c.memories 1l
+let anon_label c = {c with labels = VarMap.map (Int32.add 1l) c.labels}
 
 let empty_type = FuncType ([], [])
 
 let explicit_sig c var t at =
   let x = var c type_ in
   if
-    x.it < List.length c.types.tlist &&
+    x.it < Lib.List32.length c.types.tlist &&
     t <> empty_type &&
-    t <> List.nth c.types.tlist x.it
+    t <> Lib.List32.nth c.types.tlist x.it
   then
     error at "signature mismatch";
   x
 
 let inline_type c t at =
   match Lib.List.index_of t c.types.tlist with
-  | None -> let i = List.length c.types.tlist in anon_type c t; i @@ at
-  | Some i -> i @@ at
+  | None -> let i = Lib.List32.length c.types.tlist in anon_type c t; i @@ at
+  | Some i -> Int32.of_int i @@ at
 
 %}
 
@@ -253,7 +262,7 @@ literal :
 ;
 
 var :
-  | NAT { let at = at () in fun c lookup -> int $1 at @@ at }
+  | NAT { let at = at () in fun c lookup -> int32 $1 at @@ at }
   | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
 ;
 var_list :
@@ -299,7 +308,7 @@ plain_instr :
     { fun c -> let xs, x = Lib.List.split_last ($3 c label :: $4 c label) in
       (* TODO: remove hack once arities are gone *)
       let n = $2 c (fun _ -> error x.at "syntax error") in
-      br_table n.it xs x }
+      br_table (Int32.to_int n.it) xs x }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_INDIRECT var { fun c -> call_indirect ($2 c type_) }
@@ -396,7 +405,7 @@ func_body :
   | instr_list
     { empty_type,
       fun c -> let c' = anon_label c in
-      {ftype = -1 @@ at(); locals = []; body = $1 c'} }
+      {ftype = -1l @@ at(); locals = []; body = $1 c'} }
   | LPAR LOCAL value_type_list RPAR func_body
     { fst $5,
       fun c -> anon_locals c $3; let f = (snd $5) c in
@@ -449,7 +458,7 @@ elem :
       fun c -> {index = $3 c table; offset = $4 c; init = $5 c func} @@ at }
   | LPAR ELEM offset var_list RPAR  /* Sugar */
     { let at = at () in
-      fun c -> {index = 0 @@ at; offset = $3 c; init = $4 c func} @@ at }
+      fun c -> {index = 0l @@ at; offset = $3 c; init = $4 c func} @@ at }
 ;
 
 table :
@@ -460,10 +469,10 @@ table :
   | LPAR TABLE bind_var_opt inline_export_opt elem_type
       LPAR ELEM var_list RPAR RPAR  /* Sugar */
     { let at = at () in
-      fun c -> $3 c anon_table bind_table;
+      fun c -> let i = c.tables.count in $3 c anon_table bind_table;
       let init = $8 c func in let size = Int32.of_int (List.length init) in
       {ttype = TableType ({min = size; max = Some size}, $5)} @@ at,
-      [{index = c.tables.count - 1 @@ at;
+      [{index = i @@ at;
         offset = [i32_const (0l @@ at) @@ at] @@ at; init} @@ at],
       $4 TableExport c.tables.count c }
 ;
@@ -474,7 +483,7 @@ data :
       fun c -> {index = $3 c memory; offset = $4 c; init = $5} @@ at }
   | LPAR DATA offset text_list RPAR  /* Sugar */
     { let at = at () in
-      fun c -> {index = 0 @@ at; offset = $3 c; init = $4} @@ at }
+      fun c -> {index = 0l @@ at; offset = $3 c; init = $4} @@ at }
 ;
 
 memory :
@@ -485,19 +494,19 @@ memory :
   | LPAR MEMORY bind_var_opt inline_export LPAR DATA text_list RPAR RPAR
       /* Sugar */
     { let at = at () in
-      fun c -> $3 c anon_memory bind_memory;
+      fun c -> let i = c.memories.count in $3 c anon_memory bind_memory;
       let size = Int32.(div (add (of_int (String.length $7)) 65535l) 65536l) in
       {mtype = MemoryType {min = size; max = Some size}} @@ at,
-      [{index = c.memories.count - 1 @@ at;
+      [{index = i @@ at;
         offset = [i32_const (0l @@ at) @@ at] @@ at; init = $7} @@ at],
       $4 MemoryExport c.memories.count c }
   /* Duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
   | LPAR MEMORY bind_var_opt LPAR DATA text_list RPAR RPAR  /* Sugar */
     { let at = at () in
-      fun c -> $3 c anon_memory bind_memory;
+      fun c -> let i = c.memories.count in $3 c anon_memory bind_memory;
       let size = Int32.(div (add (of_int (String.length $6)) 65535l) 65536l) in
       {mtype = MemoryType {min = size; max = Some size}} @@ at,
-      [{index = c.memories.count - 1 @@ at;
+      [{index = i @@ at;
         offset = [i32_const (0l @@ at) @@ at] @@ at; init = $6} @@ at],
       [] }
 ;
@@ -582,7 +591,7 @@ inline_export :
   | LPAR EXPORT TEXT RPAR
     { let at = at () in
       fun k count c ->
-      [{name = $3; ekind = k @@ at; item = count - 1 @@ at} @@ at] }
+      [{name = $3; ekind = k @@ at; item = Int32.sub count 1l @@ at} @@ at] }
 ;
 
 

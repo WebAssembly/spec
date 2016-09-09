@@ -12,13 +12,18 @@ sig
   val take : int -> 'a list -> 'a list (* raise Failure *)
   val drop : int -> 'a list -> 'a list (* raise Failure *)
 
-  val length32 : 'a list -> int32
-  val nth32 : 'a list -> int32 -> 'a (* raise Failure *)
-
   val last : 'a list -> 'a (* raise Failure *)
   val split_last : 'a list -> 'a list * 'a (* raise Failure *)
 
   val index_of : 'a -> 'a list -> int option
+end
+
+module List32 :
+sig
+  val length : 'a list -> int32
+  val nth : 'a list -> int32 -> 'a (* raise Failure *)
+  val take : int32 -> 'a list -> 'a list (* raise Failure *)
+  val drop : int32 -> 'a list -> 'a list (* raise Failure *)
 end
 
 module Option :

@@ -10,7 +10,8 @@ let print_sig prefix i string_of_type t =
   printf "%s %d : %s\n" prefix i (string_of_type t)
 
 let print_func m i f =
-  print_sig "func" i string_of_func_type (List.nth m.it.types f.it.ftype.it)
+  let t = Lib.List32.nth m.it.types f.it.ftype.it in
+  print_sig "func" i string_of_func_type t
 
 let print_table m i tab =
   print_sig "table" i string_of_table_type tab.it.ttype
@@ -29,10 +30,10 @@ let print_export m i ex =
     | TableExport -> "table"
     | MemoryExport -> "memory"
     | GlobalExport -> "global"
-  in printf "export \"%s\" = %s %d\n" name kind item.it
+  in printf "export \"%s\" = %s %ld\n" name kind item.it
 
 let print_start start =
-  Lib.Option.app (fun x -> printf "start = func %d\n" x.it) start
+  Lib.Option.app (fun x -> printf "start = func %ld\n" x.it) start
 
 let print_module m =
   (* TODO: more complete print function *)

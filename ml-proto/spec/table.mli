@@ -4,7 +4,7 @@ type t = table
 type size = int32
 type index = int32
 
-type elem = exn option
+type elem = exn option  (* exn as extensible type *)
 type elem_type = Types.elem_type
 type 'a limits = 'a Types.limits
 

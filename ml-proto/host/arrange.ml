@@ -199,7 +199,7 @@ let storeop op =
 
 (* Expressions *)
 
-let var x = string_of_int x.it
+let var x = Int32.to_string x.it
 let value v = string_of_value v.it
 let constop v = value_type (type_of v.it) ^ ".const"
 

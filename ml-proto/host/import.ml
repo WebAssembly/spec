@@ -13,7 +13,7 @@ let register name lookup = registry := Registry.add name lookup !registry
 
 let external_type_of_import_kind m ikind =
   match ikind.it with
-  | FuncImport x -> ExternalFuncType (List.nth m.it.types x.it)
+  | FuncImport x -> ExternalFuncType (Lib.List32.nth m.it.types x.it)
   | TableImport t -> ExternalTableType t
   | MemoryImport t -> ExternalMemoryType t
   | GlobalImport t -> ExternalGlobalType t

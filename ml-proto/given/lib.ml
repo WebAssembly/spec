@@ -17,20 +17,13 @@ struct
     match n, xs with
     | 0, _ -> []
     | n, x::xs' when n > 0 -> x :: take (n - 1) xs'
-    | _ -> failwith "drop"
+    | _ -> failwith "take"
 
   let rec drop n xs =
     match n, xs with
     | 0, _ -> xs
     | n, _::xs' when n > 0 -> drop (n - 1) xs'
     | _ -> failwith "drop"
-
-  let length32 xs = Int32.of_int (List.length xs)
-  let rec nth32 xs n =
-    match n, xs with
-    | 0l, x::xs -> x
-    | n, x::xs' when n > 0l -> nth32 xs' (Int32.sub n 1l)
-    | _ -> failwith "nth32"
 
   let rec last = function
     | x::[] -> x
@@ -48,6 +41,34 @@ struct
     | [] -> None
     | y::xs' when x = y -> Some i
     | y::xs' -> index_of' x xs' (i+1)
+end
+
+module List32 =
+struct
+  let rec length xs = length' xs 0l
+  and length' xs n =
+    match xs with
+    | [] -> n
+    | _::xs' when n < Int32.max_int -> length' xs' (Int32.add n 1l)
+    | _ -> failwith "length"
+
+  let rec nth xs n =
+    match n, xs with
+    | 0l, x::_ -> x
+    | n, _::xs' when n > 0l -> nth xs' (Int32.sub n 1l)
+    | _ -> failwith "nth"
+
+  let rec take n xs =
+    match n, xs with
+    | 0l, _ -> []
+    | n, x::xs' when n > 0l -> x :: take (Int32.sub n 1l) xs'
+    | _ -> failwith "take"
+
+  let rec drop n xs =
+    match n, xs with
+    | 0l, _ -> xs
+    | n, _::xs' when n > 0l -> drop (Int32.sub n 1l) xs'
+    | _ -> failwith "drop"
 end
 
 module Option =

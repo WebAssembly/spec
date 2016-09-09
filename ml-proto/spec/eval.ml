@@ -73,13 +73,13 @@ and call = {instance : instance; locals : value list; arity : int;
 let resource_limit = 1000
 
 let lookup category list x =
-  try List.nth list x.it with Failure _ ->
-    Crash.error x.at ("undefined " ^ category ^ " " ^ string_of_int x.it)
+  try Lib.List32.nth list x.it with Failure _ ->
+    Crash.error x.at ("undefined " ^ category ^ " " ^ Int32.to_string x.it)
 
 let update category list x y =
-  try Lib.List.take x.it list @ [y] @ Lib.List.drop (x.it + 1) list
+  try Lib.List32.take x.it list @ y :: Lib.List32.drop (Int32.add x.it 1l) list
   with Failure _ ->
-    Crash.error x.at ("undefined " ^ category ^ " " ^ string_of_int x.it)
+    Crash.error x.at ("undefined " ^ category ^ " " ^ Int32.to_string x.it)
 
 let local c x = lookup "local" c.locals x
 let update_local c x v = {c with locals = update "local" c.locals x v}
@@ -114,6 +114,14 @@ let take n (vs : 'a stack) at =
 
 let drop n (vs : 'a stack) at =
   try Lib.List.drop n vs with Failure _ ->
+    Crash.error at "stack underflow"
+
+let take32 n (vs : 'a stack) at =
+  try Lib.List32.take n vs with Failure _ ->
+    Crash.error at "stack underflow"
+
+let drop32 n (vs : 'a stack) at =
+  try Lib.List32.drop n vs with Failure _ ->
     Crash.error at "stack underflow"
 
 
@@ -168,9 +176,10 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     es', [], {target = [e]; bcontext = es, vs} :: bs, cs
 
   | Br (n, x), vs, bs, _ ->
-    let b = List.hd (take 1 (drop x.it bs e.at) e.at) in
+    let bs' = drop32 x.it bs e.at in
+    let b = List.hd (take 1 bs' e.at) in
     let es', vs' = b.bcontext in
-    b.target @ es', take n vs e.at @ vs', drop (x.it + 1) bs e.at, cs
+    b.target @ es', take n vs e.at @ vs', drop 1 bs' e.at, cs
 
   | BrIf (n, x), I32 0l :: vs', _, _ ->
     es, drop n vs' e.at, bs, cs
@@ -179,11 +188,11 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     (Br (n, x) @@ e.at) :: es, vs', bs, cs
 
   | BrTable (n, xs, x), I32 i :: vs', _, _
-      when I32.ge_u i (Lib.List.length32 xs) ->
+      when I32.ge_u i (Lib.List32.length xs) ->
     (Br (n, x) @@ e.at) :: es, vs', bs, cs
 
   | BrTable (n, xs, x), I32 i :: vs', _, _ ->
-    (Br (n, Lib.List.nth32 xs i) @@ e.at) :: es, vs', bs, cs
+    (Br (n, Lib.List32.nth xs i) @@ e.at) :: es, vs', bs, cs
 
   | Return, vs, _, c :: cs' ->
     let es', vs', bs' = c.ccontext in
@@ -205,7 +214,7 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     eval_call (func c.instance x) (es, vs, bs, cs) e.at
 
   | CallIndirect x, I32 i :: vs, _, c :: _ ->
-    let clos = func_elem c.instance (0 @@ e.at) i e.at in
+    let clos = func_elem c.instance (0l @@ e.at) i e.at in
     if type_ c.instance x <> func_type_of clos then
       Trap.error e.at "indirect call signature mismatch";
     eval_call clos (es, vs, bs, cs) e.at
@@ -227,7 +236,7 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     es, vs', bs, cs
 
   | Load {offset; ty; sz; _}, I32 i :: vs', _, c :: _ ->
-    let mem = memory c.instance (0 @@ e.at) in
+    let mem = memory c.instance (0l @@ e.at) in
     let addr = I64_convert.extend_u_i32 i in
     let v =
       try
@@ -238,7 +247,7 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     in es, v :: vs', bs, cs
 
   | Store {offset; sz; _}, v :: I32 i :: vs', _, c :: _ ->
-    let mem = memory c.instance (0 @@ e.at) in
+    let mem = memory c.instance (0l @@ e.at) in
     let addr = I64_convert.extend_u_i32 i in
     (try
       match sz with
@@ -271,11 +280,11 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     with exn -> numeric_error e.at exn)
 
   | CurrentMemory, vs, _, c :: _ ->
-    let mem = memory c.instance (0 @@ e.at) in
+    let mem = memory c.instance (0l @@ e.at) in
     es, I32 (Memory.size mem) :: vs, bs, cs
 
   | GrowMemory, I32 delta :: vs', _, c :: _ ->
-    let mem = memory c.instance (0 @@ e.at) in
+    let mem = memory c.instance (0l @@ e.at) in
     let old_size = Memory.size mem in
     let result =
       try Memory.grow mem delta; old_size
@@ -283,7 +292,7 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     in es, I32 result :: vs', bs, cs
 
   | _ ->
-    Crash.error e.at "type error: missing or ill-typed operand on stack"
+    Crash.error e.at "missing or ill-typed operand on stack"
 
 let rec eval_seq (es, vs, bs, cs : eval_context) =
   match es, bs, cs with
@@ -295,8 +304,8 @@ let rec eval_seq (es, vs, bs, cs : eval_context) =
     eval_seq (es', vs @ vs', bs', cs)
 
   | [], [], c :: cs' ->
-    if List.length vs <> c.arity then
-      Crash.error no_region "type error: wrong number of values on stack";
+(*    if List.length vs <> c.arity then
+      Crash.error no_region "wrong number of values on stack";*)
     let es', vs', bs' = c.ccontext in
     eval_seq (es', vs @ vs', bs', cs')
 
