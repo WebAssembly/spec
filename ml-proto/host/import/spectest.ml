@@ -18,14 +18,15 @@ let table = Table.create {min = 10l; max = Some 20l}
 let memory = Memory.create {min = 1l; max = Some 2l}
 
 let print (FuncType (_, out)) vs =
-  Print.print_result vs;
+  List.iter Print.print_result (List.map (fun v -> [v]) vs);
   List.map default_value out
 
 
 let lookup name t =
   match name, t with
-  | "print", ExternalFuncType t -> ExternalFunc (HostFunc (print t))
-  | "print", _ -> ExternalFunc (HostFunc (print (FuncType ([], []))))
+  | "print", ExternalFuncType t -> ExternalFunc (HostFunc (t, print t))
+  | "print", _ ->
+    let t = FuncType ([], []) in ExternalFunc (HostFunc (t, print t))
   | "global", ExternalGlobalType t -> ExternalGlobal (global t)
   | "global", _ -> ExternalGlobal (global (GlobalType (I32Type, Immutable)))
   | "table", _ -> ExternalTable table

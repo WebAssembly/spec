@@ -6,7 +6,7 @@ type global = value ref
 
 type closure =
   | AstFunc of instance ref * Ast.func
-  | HostFunc of (value list -> value list)
+  | HostFunc of Types.func_type * (value list -> value list)
 
 and extern =
   | ExternalFunc of closure

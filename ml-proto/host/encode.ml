@@ -402,7 +402,7 @@ let encode m =
     (* Global section *)
     let global g =
       let {gtype; value} = g.it in
-      global_type gtype; const value; op 0x0f
+      global_type gtype; const value
 
     let global_section gs =
       section "global" (vec global) gs (gs <> [])

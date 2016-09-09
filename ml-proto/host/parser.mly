@@ -10,7 +10,9 @@ open Script
 
 let error at msg = raise (Script.Syntax (at, msg))
 
-let parse_error msg = error Source.no_region msg
+let parse_error msg =
+  error Source.no_region
+    (if msg = "syntax error" then "unexpected token" else msg)
 
 
 (* Position handling *)
@@ -212,12 +214,10 @@ func_type :
 func_sig :
   | /* empty */
     { FuncType ([], []) }
-  | LPAR RESULT VALUE_TYPE RPAR func_sig
+  | LPAR RESULT value_type_list RPAR func_sig
     { let FuncType (ins, out) = $5 in
       if ins <> [] then error (at ()) "result before parameter";
-      if out <> [] then
-        error (at ()) "multiple return types are not supported (yet)";
-      FuncType (ins, [$3]) }
+      FuncType (ins, $3 @ out) }
   | LPAR PARAM value_type_list RPAR func_sig
     { let FuncType (ins, out) = $5 in FuncType ($3 @ ins, out) }
   | LPAR PARAM bind_var VALUE_TYPE RPAR func_sig  /* Sugar */

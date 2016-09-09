@@ -70,7 +70,7 @@ and block = {target : instr list; bcontext : block_context}
 and call = {instance : instance; locals : value list; arity : int;
   ccontext : call_context}
 
-let resource_limit = 100
+let resource_limit = 1000
 
 let lookup category list x =
   try List.nth list x.it with Failure _ ->
@@ -103,10 +103,10 @@ let func_elem inst x i at =
   | Func f -> f
   | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
 
-let func_type_of t at =
+let func_type_of t =
   match t with
   | AstFunc (inst, f) -> lookup "type" (!inst).module_.it.types f.it.ftype
-  | HostFunc _ -> Link.error at "invalid use of host function"
+  | HostFunc (t, _) -> t
 
 let take n (vs : 'a stack) at =
   try Lib.List.take n vs with Failure _ ->
@@ -136,19 +136,18 @@ let i32 v at =
 
 let eval_call (clos : closure) (es, vs, bs, cs : eval_context) at =
   if List.length cs = resource_limit then Trap.error at "call stack exhausted";
+  let FuncType (ins, out) = func_type_of clos in
+  let n = List.length ins in
+  let m = List.length out in
+  let args, vs' = take n vs at, drop n vs at in
   match clos with
   | AstFunc (inst, f) ->
-    let FuncType (ins, out) = func_type_of clos at in
-    let n = List.length ins in
-    let m = List.length out in
-    let args = List.rev (take n vs at) in
-    let locals = args @ List.map default_value f.it.locals in
+    let locals = List.rev args @ List.map default_value f.it.locals in
     [Block f.it.body @@ f.at], [], [],
-      {instance = !inst; locals; arity = m; ccontext = es, drop n vs at, bs}
-        :: cs
+      {instance = !inst; locals; arity = m; ccontext = es, vs', bs} :: cs
 
-  | HostFunc f ->
-    try es, f vs, bs, cs  (* TODO: consider import signature *)
+  | HostFunc (t, f) ->
+    try es, List.rev (f (List.rev args)) @ vs', bs, cs
     with Crash (_, msg) -> Crash.error at msg
 
 let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
@@ -206,10 +205,10 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     eval_call (func c.instance x) (es, vs, bs, cs) e.at
 
   | CallIndirect x, I32 i :: vs, _, c :: _ ->
-    let func = func_elem c.instance (0 @@ e.at) i e.at in
-    if type_ c.instance x <> func_type_of func e.at then
+    let clos = func_elem c.instance (0 @@ e.at) i e.at in
+    if type_ c.instance x <> func_type_of clos then
       Trap.error e.at "indirect call signature mismatch";
-    eval_call func (es, vs, bs, cs) e.at
+    eval_call clos (es, vs, bs, cs) e.at
 
   | GetLocal x, vs, _, c :: _ ->
     es, (local c x) :: vs, bs, cs
@@ -308,6 +307,9 @@ let rec eval_seq (es, vs, bs, cs : eval_context) =
 (* Functions & Constants *)
 
 let eval_func (clos : closure) (vs : value list) at : value list =
+  let FuncType (ins, out) = func_type_of clos in
+  if List.length vs <> List.length ins then
+    Crash.error at "wrong number of arguments";
   List.rev (eval_seq (eval_call clos ([], List.rev vs, [], []) at))
 
 let eval_const inst const =
@@ -342,7 +344,12 @@ let init_closure inst clos =
 
 let check_elem inst seg =
   let {init; _} = seg.it in
-  List.iter (fun x -> ignore (func_type_of (func inst x) x.at)) init
+  List.iter
+    (fun x ->
+      match func inst x with
+      | AstFunc _ -> ()
+      | HostFunc _ -> Link.error x.at "invalid use of host function"
+    ) init
 
 let init_table inst seg =
   let {index; offset = e; init} = seg.it in
@@ -373,11 +380,8 @@ let check_limits actual expected at =
 let add_import (ext : extern) (imp : import) (inst : instance) : instance =
   match ext, imp.it.ikind.it with
   | ExternalFunc clos, FuncImport x ->
-    (match clos with
-    | AstFunc _ when func_type_of clos x.at <> type_ inst x ->
+    if func_type_of clos <> type_ inst x then
       Link.error imp.it.ikind.at "type mismatch";
-    | _ -> ()
-    );
     {inst with funcs = clos :: inst.funcs}
   | ExternalTable tab, TableImport (TableType (lim, _)) ->
     check_limits (Table.limits tab) lim imp.it.ikind.at;
