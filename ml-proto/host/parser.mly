@@ -254,10 +254,6 @@ type_use :
 
 /* Expressions */
 
-nat :
-  | NAT { int_of_string $1 }
-;
-
 literal :
   | NAT { $1 @@ at () }
   | INT { $1 @@ at () }
@@ -297,7 +293,7 @@ align_opt :
 
 instr :
   | plain_instr { let at = at () in fun c -> [$1 c @@ at] }
-  | ctrl_instr { let at = at () in fun c -> [$1 c @@ at] }
+  | block_instr { let at = at () in fun c -> [$1 c @@ at] }
   | expr { $1 } /* Sugar */
 ;
 plain_instr :
@@ -305,13 +301,11 @@ plain_instr :
   | NOP { fun c -> nop }
   | DROP { fun c -> drop }
   | SELECT { fun c -> select }
-  | BR nat var { fun c -> br $2 ($3 c label) }
-  | BR_IF nat var { fun c -> br_if $2 ($3 c label) }
-  | BR_TABLE var /*nat*/ var var_list
-    { fun c -> let xs, x = Lib.List.split_last ($3 c label :: $4 c label) in
-      (* TODO: remove hack once arities are gone *)
-      let n = $2 c (fun _ -> error x.at "syntax error") in
-      br_table (Int32.to_int n.it) xs x }
+  | BR var { fun c -> br ($2 c label) }
+  | BR_IF var { fun c -> br_if ($2 c label) }
+  | BR_TABLE var var_list
+    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
+      br_table xs x }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_INDIRECT var { fun c -> call_indirect ($2 c type_) }
@@ -331,15 +325,18 @@ plain_instr :
   | CURRENT_MEMORY { fun c -> current_memory }
   | GROW_MEMORY { fun c -> grow_memory }
 ;
-ctrl_instr :
-  | BLOCK labeling_opt instr_list END
-    { fun c -> let c' = $2 c in block ($3 c') }
-  | LOOP labeling_opt instr_list END
-    { fun c -> let c' = $2 c in loop ($3 c') }
-  | IF labeling_opt instr_list END
-    { fun c -> let c' = $2 c in if_ ($3 c') [] }
-  | IF labeling_opt instr_list ELSE labeling_opt instr_list END
-    { fun c -> let c1 = $2 c in let c2 = $5 c in if_ ($3 c1) ($6 c2) }
+block_instr :
+  | BLOCK labeling_opt block END
+    { fun c -> let c' = $2 c in let ts, es = $3 c' in block ts es }
+  | LOOP labeling_opt block END
+    { fun c -> let c' = $2 c in let ts, es = $3 c' in loop ts es }
+  | IF labeling_opt block END
+    { fun c -> let c' = $2 c in let ts, es = $3 c' in if_ ts es [] }
+  | IF labeling_opt block ELSE instr_list END
+    { fun c -> let c' = $2 c in let ts, es1 = $3 c' in if_ ts es1 ($5 c') }
+;
+block :
+  | value_type_list instr_list { fun c -> $1, $2 c }
 ;
 
 expr :  /* Sugar */
@@ -348,31 +345,27 @@ expr :  /* Sugar */
 ;
 expr1 :  /* Sugar */
   | plain_instr expr_list { fun c -> snd ($2 c), $1 c }
-  /* TODO: remove special-casing of branches here once arities are gone */
-  | BR var expr_list { fun c -> let n, es = $3 c in es, br n ($2 c label) }
-  | BR_IF var expr expr_list
-    { fun c ->
-      let es1 = $3 c and n, es2 = $4 c in es1 @ es2, br_if n ($2 c label) }
-  | BR_TABLE var var_list expr expr_list
-    { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
-      let es1 = $4 c and n, es2 = $5 c in es1 @ es2, br_table n xs x }
-  | BLOCK labeling_opt instr_list
-    { fun c -> let c' = $2 c in [], block ($3 c') }
-  | LOOP labeling_opt instr_list
-    { fun c -> let c' = $2 c in [], loop ($3 c') }
-  | IF expr expr { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') [] }
-  | IF expr expr expr
-    { fun c -> let c' = anon_label c in $2 c, if_ ($3 c') ($4 c') }
-  | IF expr LPAR THEN labeling_opt instr_list RPAR
-    { fun c -> let c' = $5 c in $2 c, if_ ($6 c') [] }
-  | IF expr LPAR THEN labeling_opt instr_list RPAR LPAR
-    ELSE labeling_opt instr_list RPAR
-    { fun c -> let c1 = $5 c in let c2 = $10 c in $2 c, if_ ($6 c1) ($11 c2) }
-  | IF LPAR THEN labeling_opt instr_list RPAR
-    { fun c -> let c' = $4 c in [], if_ ($5 c') [] }
-  | IF LPAR THEN labeling_opt instr_list RPAR
-       LPAR ELSE labeling_opt instr_list RPAR
-    { fun c -> let c1 = $4 c in let c2 = $9 c in [], if_ ($5 c1) ($10 c2) }
+  | BLOCK labeling_opt block
+    { fun c -> let c' = $2 c in let ts, es = $3 c' in [], block ts es }
+  | LOOP labeling_opt block
+    { fun c -> let c' = $2 c in let ts, es = $3 c' in [], loop ts es }
+  | IF labeling_opt if_
+    { fun c -> let c' = $2 c in
+      let ts, es, es1, es2 = $3 c' in es, if_ ts es1 es2 }
+;
+if_ :
+  | value_type_list expr expr
+    { fun c -> $1, $2 c, $3 c, [] }
+  | value_type_list expr expr expr
+    { fun c -> $1, $2 c, $3 c, $4 c }
+  | value_type_list expr LPAR THEN instr_list RPAR
+    { fun c -> $1, $2 c, $5 c, [] }
+  | value_type_list expr LPAR THEN instr_list RPAR LPAR ELSE instr_list RPAR
+    { fun c -> $1, $2 c, $5 c, $9 c }
+  | value_type_list LPAR THEN instr_list RPAR
+    { fun c -> $1, [], $4 c, [] }
+  | value_type_list LPAR THEN instr_list RPAR LPAR ELSE instr_list RPAR
+    { fun c -> $1, [], $4 c, $8 c }
 ;
 
 instr_list :

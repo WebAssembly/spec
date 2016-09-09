@@ -3,6 +3,12 @@
 let version = 0x0cl
 
 
+(* Errors *)
+
+module Code = Error.Make ()
+exception Code = Code.Error
+
+
 (* Encoding stream *)
 
 type stream =
@@ -52,15 +58,20 @@ let encode m =
 
     let vu32 i = vu64 (Int64.of_int32 i)
     let vs32 i = vs64 (Int64.of_int32 i)
-    let vu i = vu64 (Int64.of_int i)
     let f32 x = u32 (F32.to_bits x)
     let f64 x = u64 (F64.to_bits x)
 
+    let len i =
+      if Int32.to_int (Int32.of_int i) <> i then
+        Code.error Source.no_region
+          "cannot encode length with more than 32 bit";
+      vu32 (Int32.of_int i)
+
     let bool b = u8 (if b then 1 else 0)
-    let string bs = vu (String.length bs); put_string s bs
+    let string bs = len (String.length bs); put_string s bs
     let list f xs = List.iter f xs
     let opt f xo = Lib.Option.app f xo
-    let vec f xs = vu (List.length xs); list f xs
+    let vec f xs = len (List.length xs); list f xs
     let vec1 f xo = bool (xo <> None); opt f xo
 
     let gap32 () = let p = pos s in u32 0l; u8 0; p
@@ -86,24 +97,15 @@ let encode m =
     let elem_type = function
       | AnyFuncType -> u8 0x20
 
+    let stack_type = function
+      | [] -> u8 0x00
+      | [t] -> value_type t
+      | _ ->
+        Code.error Source.no_region
+          "cannot encode stack type with arity > 1 (yet)"
+
     let func_type = function
       | FuncType (ins, out) -> u8 0x40; vec value_type ins; vec value_type out
-
-    let limits vu {min; max} =
-      bool (max <> None); vu min; opt vu max
-
-    let table_type = function
-      | TableType (lim, t) -> elem_type t; limits vu32 lim
-
-    let memory_type = function
-      | MemoryType lim -> limits vu32 lim
-
-    let mutability = function
-      | Immutable -> u8 0
-      | Mutable -> u8 1
-
-    let global_type = function
-      | GlobalType (t, mut) -> value_type t; mutability mut
 
     let limits vu {min; max} =
       bool (max <> None); vu min; opt vu max
@@ -128,9 +130,6 @@ let encode m =
     open Values
     open Memory
 
-    let arity xs = vu (List.length xs)
-    let arity1 xo = bool (xo <> None)
-
     let op n = u8 n
     let memop {align; offset; _} =
       vu32 (I32.ctz (Int32.of_int align));
@@ -141,16 +140,16 @@ let encode m =
     let rec instr e =
       match e.it with
       | Unreachable -> op 0x00
-      | Block es -> op 0x01; list instr es; op 0x0f
-      | Loop es -> op 0x02; list instr es; op 0x0f
-      | If (es1, es2) ->
-        op 0x03; list instr es1;
+      | Block (ts, es) -> op 0x01; stack_type ts; list instr es; op 0x0f
+      | Loop (ts, es) -> op 0x02; stack_type ts; list instr es; op 0x0f
+      | If (ts, es1, es2) ->
+        op 0x03; stack_type ts; list instr es1;
         if es2 <> [] then op 0x04;
         list instr es2; op 0x0f
       | Select -> op 0x05
-      | Br (n, x) -> op 0x06; vu n; var x
-      | BrIf (n, x) -> op 0x07; vu n; var x
-      | BrTable (n, xs, x) -> op 0x08; vu n; vec var xs; var x
+      | Br x -> op 0x06; var x
+      | BrIf x -> op 0x07; var x
+      | BrTable (xs, x) -> op 0x08; vec var xs; var x
       | Return -> op 0x09
       | Nop -> op 0x0a
       | Drop -> op 0x0b
@@ -449,7 +448,7 @@ let encode m =
         | ts -> (t, 1) :: ts
       in List.fold_right combine ts []
 
-    let local (t, n) = vu n; value_type t
+    let local (t, n) = len n; value_type t
 
     let code f =
       let {locals; body; _} = f.it in

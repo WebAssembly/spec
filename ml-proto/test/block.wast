@@ -11,49 +11,53 @@
 
   (func (export "singular") (result i32)
     (block (nop))
-    (block (i32.const 7))
+    (block i32 (i32.const 7))
   )
 
   (func (export "multi") (result i32)
     (block (call $dummy) (call $dummy) (call $dummy) (call $dummy))
-    (block (call $dummy) (call $dummy) (call $dummy) (i32.const 8))
+    (block i32 (call $dummy) (call $dummy) (call $dummy) (i32.const 8))
   )
 
   (func (export "nested") (result i32)
-    (block
+    (block i32
       (block (call $dummy) (block) (nop))
-      (block (call $dummy) (i32.const 9))
+      (block i32 (call $dummy) (i32.const 9))
     )
   )
 
   (func (export "deep") (result i32)
-    (block (block (block (block (block (block (block (block (block (block
-      (block (block (block (block (block (block (block (block (block (block
-        (block (block (block (block (block (block (block (block (block (block
-          (block (block (block (block (block (block (block (block (block (block
-            (block (block (block (block (call $dummy) (i32.const 150)))))
-          ))))))))))
-        ))))))))))
-      ))))))))))
-    ))))))))))
+    (block i32 (block i32 (block i32 (block i32 (block i32 (block i32
+      (block i32 (block i32 (block i32 (block i32 (block i32 (block i32
+        (block i32 (block i32 (block i32 (block i32 (block i32 (block i32
+          (block i32 (block i32 (block i32 (block i32 (block i32 (block i32
+            (block i32 (block i32 (block i32 (block i32 (block i32 (block i32
+              (block i32 (block i32 (block i32 (block i32 (block i32 (block i32
+                (block i32 (block i32 (call $dummy) (i32.const 150)))
+              ))))))
+            ))))))
+          ))))))
+        ))))))
+      ))))))
+    ))))))
   )
 
   (func (export "as-unary-operand") (result i32)
-    (i32.ctz (block (call $dummy) (i32.const 13)))
+    (i32.ctz (block i32 (call $dummy) (i32.const 13)))
   )
   (func (export "as-binary-operand") (result i32)
     (i32.mul
-      (block (call $dummy) (i32.const 3))
-      (block (call $dummy) (i32.const 4))
+      (block i32 (call $dummy) (i32.const 3))
+      (block i32 (call $dummy) (i32.const 4))
     )
   )
   (func (export "as-test-operand") (result i32)
-    (i32.eqz (block (call $dummy) (i32.const 13)))
+    (i32.eqz (block i32 (call $dummy) (i32.const 13)))
   )
   (func (export "as-compare-operand") (result i32)
     (f32.gt
-      (block (call $dummy) (f32.const 3))
-      (block (call $dummy) (f32.const 3))
+      (block f32 (call $dummy) (f32.const 3))
+      (block f32 (call $dummy) (f32.const 3))
     )
   )
 
@@ -65,10 +69,10 @@
     (i32.const 19)
   )
   (func (export "break-value") (result i32)
-    (block (br 0 (i32.const 18)) (i32.const 19))
+    (block i32 (br 0 (i32.const 18)) (i32.const 19))
   )
   (func (export "break-repeated") (result i32)
-    (block
+    (block i32
       (br 0 (i32.const 18))
       (br 0 (i32.const 19))
       (br_if 0 (i32.const 20) (i32.const 0))
@@ -82,13 +86,13 @@
   (func (export "break-inner") (result i32)
     (local i32)
     (set_local 0 (i32.const 0))
-    (set_local 0 (i32.add (get_local 0) (block (block (br 1 (i32.const 0x1))))))
-    (set_local 0 (i32.add (get_local 0) (block (block (br 0)) (i32.const 0x2))))
+    (set_local 0 (i32.add (get_local 0) (block i32 (block i32 (br 1 (i32.const 0x1))))))
+    (set_local 0 (i32.add (get_local 0) (block i32 (block (br 0)) (i32.const 0x2))))
     (set_local 0
-      (i32.add (get_local 0) (block (i32.ctz (br 0 (i32.const 0x4)))))
+      (i32.add (get_local 0) (block i32 (i32.ctz (br 0 (i32.const 0x4)))))
     )
     (set_local 0
-      (i32.add (get_local 0) (block (i32.ctz (block (br 1 (i32.const 0x8))))))
+      (i32.add (get_local 0) (block i32 (i32.ctz (block i32 (br 1 (i32.const 0x8))))))
     )
     (get_local 0)
   )
@@ -144,13 +148,13 @@
 
 (assert_invalid
   (module (func $type-binary (result i64)
-    (block (i64.const 1) (i64.const 2)) i64.add
+    (block i64 i64 (i64.const 1) (i64.const 2)) i64.add
   ))
   "invalid result arity"
 )
 (assert_invalid
   (module (func $type-binary-with-nop (result i32)
-    (block (nop) (i32.const 7) (nop) (i32.const 8)) i32.add
+    (block i32 i32 (nop) (i32.const 7) (nop) (i32.const 8)) i32.add
   ))
   "invalid result arity"
 )
@@ -173,7 +177,8 @@
   ))
   "type mismatch"
 )
-(; TODO(stack): Should these become legal?
+
+(; TODO(stack): soft failure
 (assert_invalid
   (module (func $type-value-num-vs-void-after-break
     (block (br 0) (i32.const 1))
@@ -182,52 +187,44 @@
 )
 (assert_invalid
   (module (func $type-value-void-vs-num-after-break (result i32)
-    (block (br 0 (i32.const 1)) (nop))
+    (block (i32.const 1) (br 0) (nop))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-value-num-vs-num-after-break (result i32)
-    (block (br 0 (i32.const 1)) (f32.const 0))
+    (block (i32.const 1) (br 0) (f32.const 0))
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-break-second-void-vs-num (result i32)
+    (block i32 (br 0 (i32.const 1)) (br 0 (nop)))
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-break-second-num-vs-num (result i32)
+    (block i32 (br 0 (i32.const 1)) (br 0 (f64.const 1)))
   ))
   "type mismatch"
 )
 ;)
 
-(assert_invalid
-  (module (func $type-break-last-void-vs-empty
-    (block (br 0 (nop)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-last-num-vs-empty
-    (block (br 0 (i32.const 66)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-last-empty-vs-num (result i32)
-    (block (br 0))
-  ))
-  "type mismatch"
-)
+;; TODO(stack): move this elsewhere
+(module (func $type-break-num-vs-void
+  (block (i32.const 66) (br 0))
+))
 
 (assert_invalid
-  (module (func $type-break-void-vs-empty
-    (block (br 0 (nop)))
+  (module (func $type-break-last-void-vs-num (result i32)
+    (block i32 (br 0))
   ))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-break-num-vs-empty
-    (block (br 0 (i32.const 1)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-empty-vs-num (result i32)
-    (block (br 0) (i32.const 1))
+  (module (func $type-break-void-vs-num (result i32)
+    (block i32 (br 0) (i32.const 1))
   ))
   "type mismatch"
 )
@@ -256,30 +253,10 @@
   ))
   "type mismatch"
 )
-(; TODO(stack): Should these become legal?
-(assert_invalid
-  (module (func $type-break-second-void-vs-num (result i32)
-    (block (br 0 (i32.const 1)) (br 0 (nop)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-second-num-vs-num (result i32)
-    (block (br 0 (i32.const 1)) (br 0 (f64.const 1)))
-  ))
-  "type mismatch"
-)
-;)
 
 (assert_invalid
-  (module (func $type-break-nested-void-vs-empty
-    (block (block (br 1 (nop))) (br 0))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-break-nested-num-vs-empty
-    (block (block (br 1 (i32.const 1))) (br 0))
+  (module (func $type-break-nested-num-vs-void
+    (block i32 (block i32 (br 1 (i32.const 1))) (br 0))
   ))
   "type mismatch"
 )

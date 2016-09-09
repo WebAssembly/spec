@@ -48,6 +48,8 @@ let elem_type t = string_of_elem_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
+let stack_type ts = list (atom value_type) ts
+
 let func_type (FuncType (ins, out)) =
   Node ("func", decls "param" ins @ decls "result" out)
 
@@ -209,15 +211,16 @@ let rec instr e =
     | Unreachable -> "unreachable", []
     | Nop -> "nop", []
     | Drop -> "drop", []
-    | Block es -> "block", list instr es
-    | Loop es -> "loop", list instr es
-    | Br (n, x) -> "br " ^ int n ^ " " ^ var x, []
-    | BrIf (n, x) -> "br_if " ^ int n ^ " " ^ var x, []
-    | BrTable (n, xs, x) ->
-      "br_table " ^ int n ^ " " ^ String.concat " " (list var (xs @ [x])), []
+    | Block (ts, es) -> "block", stack_type ts @ list instr es
+    | Loop (ts, es) -> "loop", stack_type ts @ list instr es
+    | Br x -> "br " ^ var x, []
+    | BrIf x -> "br_if " ^ var x, []
+    | BrTable (xs, x) ->
+      "br_table " ^ String.concat " " (list var (xs @ [x])), []
     | Return -> "return", []
-    | If (es1, es2) ->
-      "if", [Node ("then", list instr es1); Node ("else", list instr es2)]
+    | If (ts, es1, es2) ->
+      "if", stack_type ts @
+        [Node ("then", list instr es1); Node ("else", list instr es2)]
     | Select -> "select", []
     | Call x -> "call " ^ var x, []
     | CallIndirect x -> "call_indirect " ^ var x, []

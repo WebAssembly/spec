@@ -5,221 +5,221 @@
 
 (assert_invalid
   (module (func $type-unary-operand-missing
-    i32.eqz drop
+    (i32.eqz) (drop)
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-unary-operand-missing-in-block
     (i32.const 0)
-    block i32.eqz drop end
+    (block (i32.eqz) (drop))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-unary-operand-missing-in-loop
    (i32.const 0)
-   loop i32.eqz drop end
+   (loop (i32.eqz) (drop))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-unary-operand-missing-in-if
     (i32.const 0) (i32.const 0)
-    if i32.eqz drop end
+    (if (then (i32.eqz) (drop)))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-unary-operand-missing-in-else
     (i32.const 0) (i32.const 0)
-    if (i32.const 0) else i32.eqz end drop
+    (if i32 (then (i32.const 0)) (else (i32.eqz))) (drop)
   ))
   "type mismatch"
 )
 
 (assert_invalid
   (module (func $type-binary-1st-operand-missing
-    i32.add drop
+    (i32.add) (drop)
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-binary-2nd-operand-missing
-    (i32.const 0) i32.add drop
+    (i32.const 0) (i32.add) (drop)
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-binary-1st-operand-missing-in-block
     (i32.const 0) (i32.const 0)
-    block i32.add drop end
+    (block (i32.add) (drop))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-binary-2nd-operand-missing-in-block
     (i32.const 0)
-    block (i32.const 0) i32.add drop end
+    (block (i32.const 0) (i32.add) (drop))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-binary-1st-operand-missing-in-loop
     (i32.const 0) (i32.const 0)
-    loop i32.add drop end
+    (loop (i32.add) (drop))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-binary-2nd-operand-missing-in-loop
     (i32.const 0)
-    loop (i32.const 0) i32.add drop end
+    (loop (i32.const 0) (i32.add) (drop))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-binary-1st-operand-missing-in-if
     (i32.const 0) (i32.const 0) (i32.const 0)
-    if i32.add drop end
+    (if (i32.add) (drop))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-binary-2nd-operand-missing-in-if
     (i32.const 0) (i32.const 0)
-    if (i32.const 0) i32.add drop end
+    (if (i32.const 0) (i32.add) (drop))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-binary-1st-operand-missing-in-else
     (i32.const 0) (i32.const 0) (i32.const 0)
-    if (i32.const 0) (i32.const 0) else i32.add (i32.const 0) end
-    drop drop
+    (if i32 (then (i32.const 0)) (else (i32.add) (i32.const 0)))
+    (drop) (drop)
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-binary-2nd-operand-missing-in-else
     (i32.const 0) (i32.const 0)
-    if (i32.const 0) (i32.const 0) else i32.add end
-    drop
+    (if i32 (then (i32.const 0)) (else (i32.add)))
+    (drop)
   ))
   "type mismatch"
 )
 
 (assert_invalid
   (module (func $type-if-operand-missing
-    if end
+    (if (then))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-if-operand-missing-in-block
     (i32.const 0)
-    block if end end
+    (block (if (then)))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-if-operand-missing-in-loop
     (i32.const 0)
-    loop if end end
+    (loop (if (then)))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-if-operand-missing-in-if
     (i32.const 0) (i32.const 0)
-    if if end end
+    (if (then (if (then))))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-if-operand-missing-in-else
     (i32.const 0) (i32.const 0)
-    if (i32.const 0) else if end (i32.const 0) end
-    drop
+    (if i32 (then (i32.const 0)) (else (if (then)) (i32.const 0)))
+    (drop)
   ))
   "type mismatch"
 )
 
 (assert_invalid
   (module (func $type-br-operand-missing
-    block br 1 0 end
-    i32.eqz drop
+    (block i32 (br 0))
+    (i32.eqz) (drop)
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-br-operand-missing-in-block
     (i32.const 0)
-    block br 1 0 end
-    i32.eqz drop
+    (block i32 (br 0))
+    (i32.eqz) (drop)
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-br-operand-missing-in-loop
     (i32.const 0)
-    loop br 1 0 end
-    i32.eqz drop
+    (loop i32 (br 0))
+    (i32.eqz) (drop)
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-br-operand-missing-in-if
-    block
+    (block
       (i32.const 0) (i32.const 0)
-      if br 1 0 end
-    end
-    i32.eqz drop
+      (if i32 (then (br 0)))
+    )
+    (i32.eqz) (drop)
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-br-operand-missing-in-else
-    block
+    (block
       (i32.const 0) (i32.const 0)
-      if (i32.const 0) else br 1 0 end
-    end
-    i32.eqz drop
+      (if i32 (then (i32.const 0)) (else (br 0)))
+    )
+    (i32.eqz) (drop)
   ))
   "type mismatch"
 )
 
 (assert_invalid
   (module (func $type-return-operand-missing (result i32)
-    return
+    (return)
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-return-operand-missing-in-block (result i32)
     (i32.const 0)
-    block return end
+    (block (return))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-return-operand-missing-in-loop (result i32)
     (i32.const 0)
-    loop return end
+    (loop (return))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-return-operand-missing-in-if (result i32)
     (i32.const 0) (i32.const 0)
-    if return end
+    (if (then (return)))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-return-operand-missing-in-else (result i32)
     (i32.const 0) (i32.const 0)
-    if (i32.const 0) else return end drop
+    (if i32 (then (i32.const 0)) (else (return))) (drop)
   ))
   "type mismatch"
 )
