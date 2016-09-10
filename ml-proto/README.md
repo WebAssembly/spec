@@ -248,13 +248,11 @@ script: <cmd>*
 
 cmd:
   <module>                                  ;; define, validate, and initialize module
-  <action>                                  ;; perform action and print results
-  <assertion>                               ;; assert result of an action
   ( register <string> <name>? )             ;; register module for imports
 module with given failure string
-  ( script <name>? <script> )               ;; quote a script
-  ( input <string> )                        ;; read script or module from file
-  ( output <name>? <string>? )              ;; output module to stout or file
+  <action>                                  ;; perform action and print results
+  <assertion>                               ;; assert result of an action
+  <meta>                                    ;; meta command
 
 action:
   ( invoke <name>? <string> <expr>* )       ;; invoke function export
@@ -266,16 +264,22 @@ assertion:
   ( assert_trap <action> <failure> )        ;; assert action traps with given failure string
   ( assert_invalid <module> <failure> )     ;; assert module is invalid with given failure string
   ( assert_unlinkable <module> <failure> )  ;; assert module fails to link
+
+meta:
+  ( script <name>? <script> )               ;; name a subscript
+  ( input <name>? <string> )                ;; read script or module from file
+  ( output <name>? <string>? )              ;; output module to stout or file
 ```
 Commands are executed in sequence. Commands taking an optional module name refer to the most recently defined module if no name is given. They are only possible after a module has been defined.
 
 After a module is _registered_ under a string name it is available for importing in other modules.
 
-The `script` command is a simple quotation mechanism to name sub-scripts themselves. This is mainly useful for converting scripts.
+There are also a number of meta commands.
+The `script` command is a simple quotation mechanism to name sub-scripts themselves. This is mainly useful for converting scripts. Other meta commands inside a script will be executed eagerly (especially input) and are expanded in place to the respective scripts.
 
-The input and output commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner.
+The input and output meta commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner.
 
-Again, this is only a meta-level for testing, and not a part of the language proper.
+All script commands are only for testing, and not a part of the language proper.
 
 The interpreter also supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, `invoke` commands are ignored (and not needed).
 

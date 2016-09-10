@@ -132,7 +132,7 @@ let of_command cmd =
     of_action act ^ ";\n"
   | Assertion ass ->
     of_assertion ass ^ ";\n"
-  | Script _ | Input _ | Output _ -> assert false
+  | Meta _ -> assert false
 
 let of_script scr =
   prefix ^ String.concat "" (List.map of_command scr)

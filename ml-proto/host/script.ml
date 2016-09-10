@@ -20,13 +20,17 @@ and assertion' =
 
 type command = command' Source.phrase
 and command' =
-  | Script of var option * script
   | Module of var option * definition
   | Register of string * var option
   | Action of action
   | Assertion of assertion
-  | Input of string
+  | Meta of meta
+
+and meta = meta' Source.phrase
+and meta' =
+  | Input of var option * string
   | Output of var option * string option
+  | Script of var option * script
 
 and script = command list
 

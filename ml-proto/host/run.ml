@@ -240,15 +240,6 @@ let quote_definition def =
 
 let rec quote_command cmd =
   match cmd.it with
-  | Script (x_opt, script) ->
-    let save_quote = !quote in
-    quote := [];
-    quote_script script;
-    let script' = List.rev !quote in
-    last_script := Some script';
-    bind scripts x_opt script';
-    quote := !quote @ save_quote
-
   | Module (x_opt, def) ->
     let m = quote_definition def in
     last_script := Some [cmd];
@@ -262,10 +253,28 @@ let rec quote_command cmd =
   | Assertion _ ->
     quote := cmd :: !quote
 
-  | Input file ->
+  | Meta cmd ->
+    quote_meta cmd
+
+and quote_meta cmd =
+  match cmd.it with
+  | Script (x_opt, script) ->
+    let save_quote = !quote in
+    quote := [];
+    quote_script script;
+    let script' = List.rev !quote in
+    last_script := Some script';
+    bind scripts x_opt script';
+    quote := !quote @ save_quote
+
+  | Input (x_opt, file) ->
     (try if not (input_file file quote_script) then
       Abort.error cmd.at "aborting"
-    with Sys_error msg -> IO.error cmd.at msg)
+    with Sys_error msg -> IO.error cmd.at msg);
+    if x_opt <> None then begin
+      bind scripts x_opt (get_script None cmd.at);
+      bind modules x_opt (get_module None cmd.at)
+    end
 
   | Output (x_opt, Some file) ->
     (try output_file file (get_module x_opt cmd.at) (get_script x_opt cmd.at)
@@ -387,14 +396,6 @@ let run_assertion ass =
 
 let rec run_command cmd =
   match cmd.it with
-  | Script (x_opt, script) ->
-    assert (!quote = []);
-    quote_script script;
-    let script' = List.rev !quote in
-    quote := [];
-    last_script := Some script';
-    bind scripts x_opt script'
-
   | Module (x_opt, def) ->
     let m = run_definition def in
     if not !Flags.unchecked then begin
@@ -436,9 +437,27 @@ let rec run_command cmd =
       run_assertion ass
     end
 
-  | Input file ->
+  | Meta cmd ->
+      run_meta cmd
+
+and run_meta cmd =
+  match cmd.it with
+  | Script (x_opt, script) ->
+    assert (!quote = []);
+    quote_script script;
+    let script' = List.rev !quote in
+    quote := [];
+    last_script := Some script';
+    bind scripts x_opt script'
+
+  | Input (x_opt, file) ->
     (try if not (input_file file run_script) then Abort.error cmd.at "aborting"
-    with Sys_error msg -> IO.error cmd.at msg)
+    with Sys_error msg -> IO.error cmd.at msg);
+    if x_opt <> None then begin
+      bind scripts x_opt (get_script None cmd.at);
+      bind modules x_opt (get_module None cmd.at);
+      bind instances x_opt (get_instance None cmd.at)
+    end
 
   | Output (x_opt, Some file) ->
     (try output_file file (get_module x_opt cmd.at) (get_script x_opt cmd.at)

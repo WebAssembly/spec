@@ -702,15 +702,19 @@ cmd :
   | action { Action $1 @@ at () }
   | assertion { Assertion $1 @@ at () }
   | module_ { Module (fst $1, snd $1) @@ at () }
-  | LPAR SCRIPT script_var_opt cmd_list RPAR { Script ($3, $4) @@ at () }
   | LPAR REGISTER TEXT script_var_opt RPAR { Register ($3, $4) @@ at () }
-  | LPAR INPUT TEXT RPAR { Input $3 @@ at () }
-  | LPAR OUTPUT script_var_opt TEXT RPAR { Output ($3, Some $4) @@ at () }
-  | LPAR OUTPUT script_var_opt RPAR { Output ($3, None) @@ at () }
+  | meta { Meta $1 @@ at () }
 ;
 cmd_list :
   | /* empty */ { [] }
   | cmd cmd_list { $1 :: $2 }
+;
+
+meta :
+  | LPAR SCRIPT script_var_opt cmd_list RPAR { Script ($3, $4) @@ at () }
+  | LPAR INPUT script_var_opt TEXT RPAR { Input ($3, $4) @@ at () }
+  | LPAR OUTPUT script_var_opt TEXT RPAR { Output ($3, Some $4) @@ at () }
+  | LPAR OUTPUT script_var_opt RPAR { Output ($3, None) @@ at () }
 ;
 
 const :
