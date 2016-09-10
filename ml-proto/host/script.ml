@@ -12,6 +12,7 @@ and action' =
 
 type assertion = assertion' Source.phrase
 and assertion' =
+  | AssertMalformed of definition * string
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string
   | AssertReturn of action * Ast.literal list

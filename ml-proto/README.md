@@ -61,6 +61,8 @@ Either way, in order to run the test suite you'll need to have Python installed.
 
 ## Synopsis
 
+#### Running Modules or Scripts
+
 You can call the executable with
 
 ```
@@ -73,6 +75,8 @@ By default, the interpreter validates all modules.
 The `-u` option selects "unchecked mode", which skips validation and runs code as is.
 Runtime type errors will be captured and reported appropriately.
 
+#### Converting Modules or Scripts
+
 A file prefixed by `-o` is taken to be an output file. Depending on its extension, this will write out the preceding module definition in either S-expression or binary format. This option can be used to convert between the two in both directions, e.g.:
 
 ```
@@ -84,19 +88,28 @@ In the second case, the produced script contains exactly one module definition.
 The `-d` option selects "dry mode" and ensures that the input module is not run, even if it has a start section.
 In addition, the `-u` option for "unchecked mode" can be used to convert even modules that do not validate.
 
-The interpreter can also convert entire test script to equivalent, self-contained JavaScript test files:
+The interpreter can also convert entire test scripts:
 
 ```
+wasm -s script.wast -o script.bin.wast
+wasm -s script.wast -o script2.wast
 wasm -s script.wast -o script.js
 ```
 
+The first creates a new test scripts where all embedded modules are converted to binary, the second where all are textual, regardless of how they where given in the original script.
+
+The last invocation produces an equivalent, self-contained JavaScript test file.
 Note the `-s` necessary to instruct the interpreter to convert the whole script, not just the (last) module in it.
+
+#### Command Line Expressions
 
 Finally, the option `-e` allows to provide arbitrary script commands directly on the command line. For example:
 
 ```
 wasm module.wasm -e '(invoke "foo")'
 ```
+
+#### Interactive Mode
 
 If neither a file nor any of the previous options is given, you'll land in the REPL and can enter script commands interactively. You can also get into the REPL by explicitly passing `-` as a file name. You can do that in combination to giving a module file, so that you can then invoke its exports interactively, e.g.:
 
@@ -262,6 +275,7 @@ assertion:
   ( assert_return <action> <expr>* )        ;; assert action has expected results
   ( assert_return_nan <action> )            ;; assert action results in NaN
   ( assert_trap <action> <failure> )        ;; assert action traps with given failure string
+  ( assert_malformed <module> <failure> )   ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )     ;; assert module is invalid with given failure string
   ( assert_unlinkable <module> <failure> )  ;; assert module fails to link
 
@@ -277,7 +291,7 @@ After a module is _registered_ under a string name it is available for importing
 There are also a number of meta commands.
 The `script` command is a simple quotation mechanism to name sub-scripts themselves. This is mainly useful for converting scripts. Other meta commands inside a script will be executed eagerly (especially input) and are expanded in place to the respective scripts.
 
-The input and output meta commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner.
+The input and output meta commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a script where all modules are embedded in binary.
 
 All script commands are only for testing, and not a part of the language proper.
 

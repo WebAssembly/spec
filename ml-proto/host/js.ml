@@ -32,6 +32,11 @@ let prefix =
   "  return new WebAssembly.Instance(module(bytes), registry);\n" ^
   "}\n" ^
   "\n" ^
+  "function assert_malformed(bytes) {\n" ^
+  "  try { module(bytes) } catch (e) { return }\n" ^
+  "  throw new Error(\"Wasm decoding failure expected\");\n" ^
+  "}\n" ^
+  "\n" ^
   "function assert_invalid(bytes) {\n" ^
   "  try { module(bytes) } catch (e) { return }\n" ^
   "  throw new Error(\"Wasm validation failure expected\");\n" ^
@@ -73,13 +78,15 @@ let of_hex n =
   else Char.chr (n - 10 + Char.code 'a')
 
 let of_bytes s =
-  let buf = Buffer.create (4 * String.length s) in
+  let buf = Buffer.create (4 * String.length s + 2) in
+  Buffer.add_char buf '\"';
   for i = 0 to String.length s - 1 do
     Buffer.add_string buf "\\x";
     Buffer.add_char buf (of_hex (Char.code s.[i] / 16));
     Buffer.add_char buf (of_hex (Char.code s.[i] mod 16));
   done;
-  "\"" ^ Buffer.contents buf ^ "\""
+  Buffer.add_char buf '\"';
+  Buffer.contents buf
 
 let of_literal lit =
   match lit.it with
@@ -109,6 +116,8 @@ let of_action act =
 
 let of_assertion ass =
   match ass.it with
+  | AssertMalformed (def, _) ->
+    "assert_malformed(" ^ of_definition def ^ ")"
   | AssertInvalid (def, _) ->
     "assert_invalid(" ^ of_definition def ^ ")"
   | AssertUnlinkable (def, _) ->

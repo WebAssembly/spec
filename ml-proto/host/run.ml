@@ -18,12 +18,15 @@ let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 (* File types *)
 
 let binary_ext = "wasm"
+let binary_sexpr_ext = "bin.wast"
 let sexpr_ext = "wast"
 let js_ext = "js"
 
-let dispatch_file_ext on_binary on_sexpr on_js file =
+let dispatch_file_ext on_binary on_binary_sexpr on_sexpr on_js file =
   if Filename.check_suffix file binary_ext then
     on_binary file
+  else if Filename.check_suffix file binary_sexpr_ext then
+    on_binary_sexpr file
   else if Filename.check_suffix file sexpr_ext then
     on_sexpr file
   else if Filename.check_suffix file js_ext then
@@ -44,13 +47,13 @@ let create_binary_file file m script =
     close_out oc
   with exn -> close_out oc; raise exn
 
-let create_sexpr_file file m script =
+let create_sexpr_file mode file m script =
   trace ("Formatting (" ^ file ^ ")...");
-  let sexpr = Arrange.module_ m in
+  let sexprs = Arrange.script mode script in
   let oc = open_out file in
   try
     trace "Writing...";
-    Sexpr.output oc !Flags.width sexpr;
+    List.iter (Sexpr.output oc !Flags.width) sexprs;
     close_out oc
   with exn -> close_out oc; raise exn
 
@@ -65,13 +68,17 @@ let create_js_file file m script =
   with exn -> close_out oc; raise exn
 
 let output_file =
-  dispatch_file_ext create_binary_file create_sexpr_file create_js_file
+  dispatch_file_ext
+    create_binary_file
+    (create_sexpr_file `Binary)
+    (create_sexpr_file `Textual)
+    create_js_file
 
-let output_stdout m =
+let output_stdout script =
   trace "Formatting...";
-  let sexpr = Arrange.module_ m in
+  let sexprs = Arrange.script `Textual script in
   trace "Printing...";
-  Sexpr.output stdout !Flags.width sexpr
+  List.iter (Sexpr.output stdout !Flags.width) sexprs
 
 
 (* Input *)
@@ -107,7 +114,7 @@ let input_binary name buf run =
   input_from
     (fun _ ->
       let m = Decode.decode name buf in
-      [Script.Module (None, Script.Textual m @@ m.at) @@ m.at]
+      [Module (None, Textual m @@ m.at) @@ m.at]
     ) run
 
 let input_sexpr_file file run =
@@ -138,7 +145,12 @@ let input_js_file file run =
   raise (Sys_error (file ^ ": unrecognized input file type"))
 
 let input_file file run =
-  dispatch_file_ext input_binary_file input_sexpr_file input_js_file file run
+  dispatch_file_ext
+    input_binary_file
+    input_sexpr_file
+    input_sexpr_file
+    input_js_file
+    file run
 
 let input_string string run =
   trace ("Running (\"" ^ String.escaped string ^ "\")...");
@@ -207,26 +219,26 @@ let bind map x_opt y =
 let get_script x_opt at =
   match x_opt, !last_script with
   | None, Some m -> m
-  | None, None -> raise (Eval.Crash (at, "no script defined"))
+  | None, None -> IO.error at "no script defined"
   | Some x, _ ->
     try Map.find x.it !scripts with Not_found ->
-      raise (Eval.Crash (x.at, "unknown script " ^ x.it))
+      IO.error x.at ("unknown script " ^ x.it)
 
 let get_module x_opt at =
   match x_opt, !last_module with
   | None, Some m -> m
-  | None, None -> raise (Eval.Crash (at, "no module defined"))
+  | None, None -> IO.error at "no module defined"
   | Some x, _ ->
     try Map.find x.it !modules with Not_found ->
-      raise (Eval.Crash (x.at, "unknown module " ^ x.it))
+      IO.error x.at ("unknown module " ^ x.it)
 
 let get_instance x_opt at =
   match x_opt, !last_instance with
   | None, Some inst -> inst
-  | None, None -> raise (Eval.Crash (at, "no module defined"))
+  | None, None -> IO.error at "no module defined"
   | Some x, _ ->
     try Map.find x.it !instances with Not_found ->
-      raise (Eval.Crash (x.at, "unknown module " ^ x.it))
+      IO.error x.at ("unknown module " ^ x.it)
 
 
 (* Quoting *)
@@ -281,7 +293,7 @@ and quote_meta cmd =
     with Sys_error msg -> IO.error cmd.at msg)
 
   | Output (x_opt, None) ->
-    (try output_stdout (get_module x_opt cmd.at)
+    (try output_stdout (get_script x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
 
 and quote_script cmds =
@@ -321,13 +333,28 @@ let run_action act =
 
 let run_assertion ass =
   match ass.it with
+  | AssertMalformed (def, re) ->
+    trace "Asserting malformed...";
+    (match
+      ignore (run_definition def)
+    with
+    | exception Decode.Code (_, msg) ->
+      if not (Str.string_match (Str.regexp re) msg 0) then begin
+        print_endline ("Result: \"" ^ msg ^ "\"");
+        print_endline ("Expect: \"" ^ re ^ "\"");
+        Assert.error ass.at "wrong decoding error"
+      end
+    | _ ->
+      Assert.error ass.at "expected decoding error"
+    )
+
   | AssertInvalid (def, re) ->
     trace "Asserting invalid...";
     (match
       let m = run_definition def in
       Check.check_module m
     with
-    | exception (Decode.Code (_, msg) | Check.Invalid (_, msg)) ->
+    | exception Check.Invalid (_, msg) ->
       if not (Str.string_match (Str.regexp re) msg 0) then begin
         print_endline ("Result: \"" ^ msg ^ "\"");
         print_endline ("Expect: \"" ^ re ^ "\"");
@@ -438,7 +465,7 @@ let rec run_command cmd =
     end
 
   | Meta cmd ->
-      run_meta cmd
+    run_meta cmd
 
 and run_meta cmd =
   match cmd.it with
@@ -464,7 +491,7 @@ and run_meta cmd =
     with Sys_error msg -> IO.error cmd.at msg)
 
   | Output (x_opt, None) ->
-    (try output_stdout (get_module x_opt cmd.at)
+    (try output_stdout (get_script x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
 
 and run_script script =
