@@ -163,7 +163,7 @@ let inline_type c t at =
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token MODULE TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
-%token REGISTER INVOKE GET
+%token SCRIPT REGISTER INVOKE GET
 %token ASSERT_INVALID ASSERT_UNLINKABLE
 %token ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP
 %token INPUT OUTPUT
@@ -668,29 +668,27 @@ module_fields :
       {m with exports = $1 c :: m.exports} }
 ;
 module_ :
-  | LPAR MODULE module_var_opt module_fields RPAR
+  | LPAR MODULE script_var_opt module_fields RPAR
     { $3, Textual ($4 (empty_context ()) @@ at ()) @@ at () }
-  | LPAR MODULE module_var_opt TEXT text_list RPAR
+  | LPAR MODULE script_var_opt TEXT text_list RPAR
     { $3, Binary ($4 ^ $5) @@ at() }
 ;
 
 
 /* Scripts */
 
-module_var_opt :
+script_var_opt :
   | /* empty */ { None }
   | VAR { Some ($1 @@ at ()) }  /* Sugar */
 ;
+
 action :
-  | LPAR INVOKE module_var_opt TEXT const_list RPAR
+  | LPAR INVOKE script_var_opt TEXT const_list RPAR
     { Invoke ($3, $4, $5) @@ at () }
-  | LPAR GET module_var_opt TEXT RPAR
+  | LPAR GET script_var_opt TEXT RPAR
     { Get ($3, $4) @@ at() }
 ;
-cmd :
-  | module_ { Define (fst $1, snd $1) @@ at () }
-  | action { Action $1 @@ at () }
-  | LPAR REGISTER TEXT module_var_opt RPAR { Register ($3, $4) @@ at () }
+assertion :
   | LPAR ASSERT_INVALID module_ TEXT RPAR
     { AssertInvalid (snd $3, $4) @@ at () }
   | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR
@@ -698,9 +696,17 @@ cmd :
   | LPAR ASSERT_RETURN action const_list RPAR { AssertReturn ($3, $4) @@ at () }
   | LPAR ASSERT_RETURN_NAN action RPAR { AssertReturnNaN $3 @@ at () }
   | LPAR ASSERT_TRAP action TEXT RPAR { AssertTrap ($3, $4) @@ at () }
+;
+
+cmd :
+  | action { Action $1 @@ at () }
+  | assertion { Assertion $1 @@ at () }
+  | module_ { Module (fst $1, snd $1) @@ at () }
+  | LPAR SCRIPT script_var_opt cmd_list RPAR { Script ($3, $4) @@ at () }
+  | LPAR REGISTER TEXT script_var_opt RPAR { Register ($3, $4) @@ at () }
   | LPAR INPUT TEXT RPAR { Input $3 @@ at () }
-  | LPAR OUTPUT module_var_opt TEXT RPAR { Output ($3, Some $4) @@ at () }
-  | LPAR OUTPUT module_var_opt RPAR { Output ($3, None) @@ at () }
+  | LPAR OUTPUT script_var_opt TEXT RPAR { Output ($3, Some $4) @@ at () }
+  | LPAR OUTPUT script_var_opt RPAR { Output ($3, None) @@ at () }
 ;
 cmd_list :
   | /* empty */ { [] }

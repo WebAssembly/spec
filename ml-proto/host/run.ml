@@ -19,11 +19,11 @@ let error at category msg =
   prerr_endline (Source.string_of_region at ^ ": " ^ category ^ ": " ^ msg);
   false
 
-let run_from get_script =
+let run_from run get_script =
   try
     let script = get_script () in
     Script.trace "Running...";
-    Script.run script;
+    run script;
     true
   with
   | Decode.Code (at, msg) -> error at "decoding error" msg
@@ -37,28 +37,28 @@ let run_from get_script =
   | Script.IO (at, msg) -> error at "i/o error" msg
   | Script.Abort _ -> false
 
-let run_sexpr name lexbuf start =
-  run_from (fun _ -> Parse.parse name lexbuf start)
+let run_sexpr run name lexbuf start =
+  run_from run (fun _ -> Parse.parse name lexbuf start)
 
-let run_binary name buf =
+let run_binary run name buf =
   let open Source in
-  run_from
+  run_from run
     (fun _ ->
       let m = Decode.decode name buf in
-      [Script.Define (None, Script.Textual m @@ m.at) @@ m.at])
+      [Script.Module (None, Script.Textual m @@ m.at) @@ m.at])
 
-let run_sexpr_file file =
+let run_sexpr_file file run =
   Script.trace ("Loading (" ^ file ^ ")...");
   let ic = open_in file in
   try
     let lexbuf = Lexing.from_channel ic in
     Script.trace "Parsing...";
-    let success = run_sexpr file lexbuf Parse.Script in
+    let success = run_sexpr run file lexbuf Parse.Script in
     close_in ic;
     success
   with exn -> close_in ic; raise exn
 
-let run_binary_file file =
+let run_binary_file file run =
   Script.trace ("Loading (" ^ file ^ ")...");
   let ic = open_in_bin file in
   try
@@ -66,20 +66,21 @@ let run_binary_file file =
     let buf = Bytes.make len '\x00' in
     really_input ic buf 0 len;
     Script.trace "Decoding...";
-    let success = run_binary file buf in
+    let success = run_binary run file buf in
     close_in ic;
     success
   with exn -> close_in ic; raise exn
 
-let run_file = dispatch_file_ext run_sexpr_file run_binary_file
+let run_file file =
+  dispatch_file_ext run_sexpr_file run_binary_file file Script.run
 
 let run_string string =
   Script.trace ("Running (\"" ^ String.escaped string ^ "\")...");
   let lexbuf = Lexing.from_string string in
   Script.trace "Parsing...";
-  run_sexpr "string" lexbuf Parse.Script
+  run_sexpr Script.run "string" lexbuf Parse.Script
 
-let () = Script.input_file := run_file
+let () = Script.input_file := dispatch_file_ext run_sexpr_file run_binary_file
 
 
 (* Interactive *)
@@ -103,7 +104,7 @@ let lexbuf_stdin buf len =
 let rec run_stdin () =
   let lexbuf = Lexing.from_function lexbuf_stdin in
   let rec loop () =
-    let success = run_sexpr "stdin" lexbuf Parse.Script1 in
+    let success = run_sexpr Script.run "stdin" lexbuf Parse.Script1 in
     if not success then Lexing.flush_input lexbuf;
     if Lexing.(lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len - 1) then
       continuing := false;
@@ -112,37 +113,3 @@ let rec run_stdin () =
   try loop () with End_of_file ->
     print_endline "";
     Script.trace "Bye."
-
-
-(* Output *)
-
-let print_stdout m =
-  Script.trace "Formatting...";
-  let sexpr = Arrange.module_ m in
-  Script.trace "Printing...";
-  Sexpr.output stdout !Flags.width sexpr
-
-let create_sexpr_file file m =
-  Script.trace ("Formatting (" ^ file ^ ")...");
-  let sexpr = Arrange.module_ m in
-  let oc = open_out file in
-  try
-    Script.trace "Writing...";
-    Sexpr.output oc !Flags.width sexpr;
-    close_out oc
-  with exn -> close_out oc; raise exn
-
-let create_binary_file file m =
-  Script.trace ("Encoding (" ^ file ^ ")...");
-  let s = Encode.encode m in
-  let oc = open_out_bin file in
-  try
-    Script.trace "Writing...";
-    output_string oc s;
-    close_out oc
-  with exn -> close_out oc; raise exn
-
-let create_file = dispatch_file_ext create_sexpr_file create_binary_file
-
-let () = Script.output_file := create_file
-let () = Script.output_stdout := print_stdout

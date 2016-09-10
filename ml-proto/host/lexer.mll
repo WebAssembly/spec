@@ -300,6 +300,7 @@ rule token = parse
   | "import" { IMPORT }
   | "export" { EXPORT }
 
+  | "script" { SCRIPT }
   | "register" { REGISTER }
   | "invoke" { INVOKE }
   | "get" { GET }

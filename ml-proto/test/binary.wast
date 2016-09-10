@@ -1,7 +1,7 @@
 (module "\00asm\0c\00\00\00")
 (module "\00asm" "\0c\00\00\00")
-(module $M "\00asm\0c\00\00\00")
-(module $M "\00asm" "\0c\00\00\00")
+(module $M1 "\00asm\0c\00\00\00")
+(module $M2 "\00asm" "\0c\00\00\00")
 
 (assert_invalid (module "") "unexpected end")
 (assert_invalid (module "\01") "unexpected end")
@@ -13,4 +13,3 @@
 (assert_invalid (module "\00asm\0c") "unexpected end")
 (assert_invalid (module "\00asm\0c\00\00") "unexpected end")
 (assert_invalid (module "\00asm\10\00\00\00") "unknown binary version")
-

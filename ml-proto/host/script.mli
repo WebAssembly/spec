@@ -10,20 +10,25 @@ and action' =
   | Invoke of var option * string * Ast.literal list
   | Get of var option * string
 
-type command = command' Source.phrase
-and command' =
-  | Define of var option * definition
-  | Register of string * var option
-  | Action of action
+type assertion = assertion' Source.phrase
+and assertion' =
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string
   | AssertReturn of action * Ast.literal list
   | AssertReturnNaN of action
   | AssertTrap of action * string
+
+type command = command' Source.phrase
+and command' =
+  | Script of var option * script
+  | Module of var option * definition
+  | Register of string * var option
+  | Action of action
+  | Assertion of assertion
   | Input of string
   | Output of var option * string option
 
-type script = command list
+and script = command list
 
 exception Abort of Source.region * string
 exception Syntax of Source.region * string
@@ -34,7 +39,4 @@ val run : script -> unit
   (* raises Check.Invalid, Eval.Trap, Eval.Crash, Assert, IO *)
 
 val trace : string -> unit
-
-val input_file : (string -> bool) ref
-val output_file : (string -> Ast.module_ -> unit) ref
-val output_stdout : (Ast.module_ -> unit) ref
+val input_file : (string -> (script -> unit) -> bool) ref
