@@ -84,6 +84,14 @@ In the second case, the produced script contains exactly one module definition.
 The `-d` option selects "dry mode" and ensures that the input module is not run, even if it has a start section.
 In addition, the `-u` option for "unchecked mode" can be used to convert even modules that do not validate.
 
+The interpreter can also convert entire test script to equivalent, self-contained JavaScript test files:
+
+```
+wasm -s script.wast -o script.js
+```
+
+Note the `-s` necessary to instruct the interpreter to convert the whole script, not just the (last) module in it.
+
 Finally, the option `-e` allows to provide arbitrary script commands directly on the command line. For example:
 
 ```
@@ -241,25 +249,31 @@ script: <cmd>*
 cmd:
   <module>                                  ;; define, validate, and initialize module
   <action>                                  ;; perform action and print results
+  <assertion>                               ;; assert result of an action
   ( register <string> <name>? )             ;; register module for imports
-  ( assert_return <action> <expr>* )        ;; assert action has expected results
-  ( assert_return_nan <action> )            ;; assert action results in NaN
-  ( assert_trap <action> <failure> )        ;; assert action traps with given failure string
-  ( assert_invalid <module> <failure> )     ;; assert module is invalid with given failure string
-  ( assert_unlinkable <module> <failure> )  ;; assert module fails to link module with given failure string
+module with given failure string
+  ( script <name>? <script> )               ;; quote a script
   ( input <string> )                        ;; read script or module from file
   ( output <name>? <string>? )              ;; output module to stout or file
 
 action:
   ( invoke <name>? <string> <expr>* )       ;; invoke function export
   ( get <name>? <string> )                  ;; get global export
-```
 
+assertion:
+  ( assert_return <action> <expr>* )        ;; assert action has expected results
+  ( assert_return_nan <action> )            ;; assert action results in NaN
+  ( assert_trap <action> <failure> )        ;; assert action traps with given failure string
+  ( assert_invalid <module> <failure> )     ;; assert module is invalid with given failure string
+  ( assert_unlinkable <module> <failure> )  ;; assert module fails to link
+```
 Commands are executed in sequence. Commands taking an optional module name refer to the most recently defined module if no name is given. They are only possible after a module has been defined.
 
 After a module is _registered_ under a string name it is available for importing in other modules.
 
-The input and output commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed.
+The `script` command is a simple quotation mechanism to name sub-scripts themselves. This is mainly useful for converting scripts.
+
+The input and output commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner.
 
 Again, this is only a meta-level for testing, and not a part of the language proper.
 
