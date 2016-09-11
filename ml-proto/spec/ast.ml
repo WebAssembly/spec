@@ -186,3 +186,55 @@ and module_' =
   imports : import list;
   exports : export list;
 }
+
+
+let empty_module =
+{
+  types = [];
+  globals = [];
+  tables = [];
+  memories = [];
+  funcs = [];
+  start = None;
+  elems  = [];
+  data = [];
+  imports = [];
+  exports = [];
+}
+
+
+(* Auxiliary functions *)
+
+let import_type (m : module_) ekind (item : int32) =
+  let open Source in
+  let rec loop i imps =
+    let i' = Int32.sub i 1l in
+    match imps with
+    | [] -> i, None
+    | imp::imps' ->
+    match imp.it.ikind.it, ekind.it with
+    | FuncImport x, FuncExport ->
+      if i = 0l
+      then i, Some (ExternalFuncType (Lib.List32.nth m.it.types x.it))
+      else loop i' imps'
+    | TableImport t, TableExport ->
+      if i = 0l then i, Some (ExternalTableType t) else loop i' imps'
+    | MemoryImport t, MemoryExport ->
+      if i = 0l then i, Some (ExternalMemoryType t) else loop i' imps'
+    | GlobalImport t, GlobalExport ->
+      if i = 0l then i, Some (ExternalGlobalType t) else loop i' imps'
+    | _ -> loop i imps'
+  in loop item m.it.imports
+
+let export_type (m : module_) (exp : export) =
+  let open Source in
+  match import_type m exp.it.ekind exp.it.item.it with
+  | _, Some t -> t
+  | n, None ->
+  match exp.it.ekind.it with
+  | FuncExport ->
+    ExternalFuncType
+      (Lib.List32.nth m.it.types (Lib.List32.nth m.it.funcs n).it.ftype.it)
+  | TableExport -> ExternalTableType (Lib.List32.nth m.it.tables n).it.ttype
+  | MemoryExport -> ExternalMemoryType (Lib.List32.nth m.it.memories n).it.mtype
+  | GlobalExport -> ExternalGlobalType (Lib.List32.nth m.it.globals n).it.gtype
