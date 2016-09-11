@@ -3,7 +3,7 @@ type var = string Source.phrase
 type definition = definition' Source.phrase
 and definition' =
   | Textual of Ast.module_
-  | Binary of string
+  | Binary of string * string
 
 type action = action' Source.phrase
 and action' =

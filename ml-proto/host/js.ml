@@ -103,7 +103,7 @@ let of_definition def =
   let bs =
     match def.it with
     | Textual m -> Encode.encode m
-    | Binary bs -> bs
+    | Binary (_, bs) -> bs
   in of_bytes bs
 
 let of_action act =

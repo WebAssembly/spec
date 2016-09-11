@@ -22,6 +22,8 @@ let binary_sexpr_ext = "bin.wast"
 let sexpr_ext = "wast"
 let js_ext = "js"
 
+let is_binary_file_ext file = Filename.check_suffix file binary_ext
+
 let dispatch_file_ext on_binary on_binary_sexpr on_sexpr on_js file =
   if Filename.check_suffix file binary_ext then
     on_binary file
@@ -74,11 +76,11 @@ let output_file =
     (create_sexpr_file `Textual)
     create_js_file
 
-let output_stdout script =
+let output_stdout m =
   trace "Formatting...";
-  let sexprs = Arrange.script `Textual script in
+  let sexpr = Arrange.module_ m in
   trace "Printing...";
-  List.iter (Sexpr.output stdout !Flags.width) sexprs
+  Sexpr.output stdout !Flags.width sexpr
 
 
 (* Input *)
@@ -111,11 +113,8 @@ let input_sexpr name lexbuf start run =
 
 let input_binary name buf run =
   let open Source in
-  input_from
-    (fun _ ->
-      let m = Decode.decode name buf in
-      [Module (None, Textual m @@ m.at) @@ m.at]
-    ) run
+  input_from (fun _ ->
+    [Module (None, Binary (name, buf) @@ no_region) @@ no_region]) run
 
 let input_sexpr_file file run =
   trace ("Loading (" ^ file ^ ")...");
@@ -241,75 +240,14 @@ let get_instance x_opt at =
       IO.error x.at ("unknown module " ^ x.it)
 
 
-(* Quoting *)
-
-let quote_definition def =
-  match def.it with
-  | Textual m -> m
-  | Binary bs ->
-    trace "Decoding...";
-    Decode.decode "binary" bs
-
-let rec quote_command cmd =
-  match cmd.it with
-  | Module (x_opt, def) ->
-    let m = quote_definition def in
-    last_script := Some [cmd];
-    last_module := Some m;
-    bind scripts x_opt [cmd];
-    bind modules x_opt m;
-    quote := cmd :: !quote
-
-  | Register _
-  | Action _
-  | Assertion _ ->
-    quote := cmd :: !quote
-
-  | Meta cmd ->
-    quote_meta cmd
-
-and quote_meta cmd =
-  match cmd.it with
-  | Script (x_opt, script) ->
-    let save_quote = !quote in
-    quote := [];
-    quote_script script;
-    let script' = List.rev !quote in
-    last_script := Some script';
-    bind scripts x_opt script';
-    quote := !quote @ save_quote
-
-  | Input (x_opt, file) ->
-    (try if not (input_file file quote_script) then
-      Abort.error cmd.at "aborting"
-    with Sys_error msg -> IO.error cmd.at msg);
-    if x_opt <> None then begin
-      bind scripts x_opt (get_script None cmd.at);
-      bind modules x_opt (get_module None cmd.at)
-    end
-
-  | Output (x_opt, Some file) ->
-    (try output_file file (get_module x_opt cmd.at) (get_script x_opt cmd.at)
-    with Sys_error msg -> IO.error cmd.at msg)
-
-  | Output (x_opt, None) ->
-    (try output_stdout (get_script x_opt cmd.at)
-    with Sys_error msg -> IO.error cmd.at msg)
-
-and quote_script cmds =
-  let save_scripts = !scripts in
-  List.iter quote_command cmds;
-  scripts := save_scripts
-
-
 (* Running *)
 
 let run_definition def =
   match def.it with
   | Textual m -> m
-  | Binary bs ->
+  | Binary (name, bs) ->
     trace "Decoding...";
-    Decode.decode "binary" bs
+    Decode.decode name bs
 
 let run_action act =
   match act.it with
@@ -424,6 +362,7 @@ let run_assertion ass =
 let rec run_command cmd =
   match cmd.it with
   | Module (x_opt, def) ->
+    quote := cmd :: !quote;
     let m = run_definition def in
     if not !Flags.unchecked then begin
       trace "Checking...";
@@ -446,6 +385,7 @@ let rec run_command cmd =
     end
 
   | Register (name, x_opt) ->
+    quote := cmd :: !quote;
     if not !Flags.dry then begin
       trace ("Registering module \"" ^ name ^ "\"...");
       let inst = get_instance x_opt cmd.at in
@@ -454,12 +394,14 @@ let rec run_command cmd =
     end
 
   | Action act ->
+    quote := cmd :: !quote;
     if not !Flags.dry then begin
       let vs = run_action act in
       if vs <> [] then Print.print_result vs
     end
 
   | Assertion ass ->
+    quote := cmd :: !quote;
     if not !Flags.dry then begin
       run_assertion ass
     end
@@ -470,20 +412,19 @@ let rec run_command cmd =
 and run_meta cmd =
   match cmd.it with
   | Script (x_opt, script) ->
-    assert (!quote = []);
-    quote_script script;
-    let script' = List.rev !quote in
-    quote := [];
-    last_script := Some script';
-    bind scripts x_opt script'
+    run_quote_script script;
+    bind scripts x_opt (get_script None cmd.at)
 
   | Input (x_opt, file) ->
-    (try if not (input_file file run_script) then Abort.error cmd.at "aborting"
+    (try if not (input_file file run_quote_script) then
+      Abort.error cmd.at "aborting"
     with Sys_error msg -> IO.error cmd.at msg);
-    if x_opt <> None then begin
-      bind scripts x_opt (get_script None cmd.at);
+    bind scripts x_opt (get_script None cmd.at);
+    if !last_module <> None then begin
       bind modules x_opt (get_module None cmd.at);
-      bind instances x_opt (get_instance None cmd.at)
+      if not !Flags.dry then begin
+        bind instances x_opt (get_instance None cmd.at)
+      end
     end
 
   | Output (x_opt, Some file) ->
@@ -491,12 +432,19 @@ and run_meta cmd =
     with Sys_error msg -> IO.error cmd.at msg)
 
   | Output (x_opt, None) ->
-    (try output_stdout (get_script x_opt cmd.at)
+    (try output_stdout (get_module x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
 
 and run_script script =
   List.iter run_command script
 
+and run_quote_script script =
+  let save_quote = !quote in
+  quote := [];
+  run_script script;
+  last_script := Some (List.rev !quote);
+  quote := !quote @ save_quote
+
 let run_file file = input_file file run_script
-let run_string str = input_string str run_script
+let run_string string = input_string string run_script
 let run_stdin () = input_stdin run_script

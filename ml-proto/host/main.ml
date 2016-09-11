@@ -22,11 +22,9 @@ let argspec = Arg.align
     " read script from file";
   "-o", Arg.String (fun file -> add_arg ("(output \"" ^ file ^ "\")")),
     " write module to file";
-  "-s", Arg.String (fun file -> add_arg ("(script (input \"" ^ file ^ "\"))")),
-    " read script from file";
   "-w", Arg.Int (fun n -> Flags.width := n),
     " configure output width (default is 80)";
-  "-g", Arg.Set Flags.print_sig, " show module signatures";
+  "-s", Arg.Set Flags.print_sig, " show module signatures";
   "-u", Arg.Set Flags.unchecked, " unchecked, do not perform validation";
   "-d", Arg.Set Flags.dry, " dry, do not run program";
   "-t", Arg.Set Flags.trace, " trace execution";

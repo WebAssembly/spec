@@ -671,7 +671,7 @@ module_ :
   | LPAR MODULE script_var_opt module_fields RPAR
     { $3, Textual ($4 (empty_context ()) @@ at ()) @@ at () }
   | LPAR MODULE script_var_opt TEXT text_list RPAR
-    { $3, Binary ($4 ^ $5) @@ at() }
+    { $3, Binary ("binary", $4 ^ $5) @@ at() }
 ;
 
 

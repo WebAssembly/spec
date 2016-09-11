@@ -396,13 +396,13 @@ let definition mode x_opt def =
     let m =
       match def.it with
       | Textual m -> m
-      | Binary bs -> Decode.decode "" bs
+      | Binary (_, bs) -> Decode.decode "" bs
     in module_with_var_opt x_opt m
   | `Binary, _ | `Original, Binary _ ->
     let bs =
       match def.it with
       | Textual m -> Encode.encode m
-      | Binary bs -> bs
+      | Binary (_, bs) -> bs
     in binary_module_with_var_opt x_opt bs
 
 let access x_opt name =

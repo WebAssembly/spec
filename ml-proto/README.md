@@ -91,15 +91,14 @@ In addition, the `-u` option for "unchecked mode" can be used to convert even mo
 The interpreter can also convert entire test scripts:
 
 ```
-wasm -s script.wast -o script.bin.wast
-wasm -s script.wast -o script2.wast
-wasm -s script.wast -o script.js
+wasm -d script.wast -o script.bin.wast
+wasm -d script.wast -o script2.wast
+wasm -d script.wast -o script.js
 ```
 
-The first creates a new test scripts where all embedded modules are converted to binary, the second where all are textual, regardless of how they where given in the original script.
+The first creates a new test scripts where all embedded modules are converted to binary, the second one where all are converted to textual.
 
 The last invocation produces an equivalent, self-contained JavaScript test file.
-Note the `-s` necessary to instruct the interpreter to convert the whole script, not just the (last) module in it.
 
 #### Command Line Expressions
 
@@ -289,14 +288,12 @@ Commands are executed in sequence. Commands taking an optional module name refer
 After a module is _registered_ under a string name it is available for importing in other modules.
 
 There are also a number of meta commands.
-The `script` command is a simple quotation mechanism to name sub-scripts themselves. This is mainly useful for converting scripts. Other meta commands inside a script will be executed eagerly (especially input) and are expanded in place to the respective scripts.
+The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta are expanded in place (`input`, recursively) or elided (`output`) in the named script.
 
-The input and output meta commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a script where all modules are embedded in binary.
+The `input` and `output` meta commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a script where module definitions are in binary.
 
-All script commands are only for testing, and not a part of the language proper.
-
-The interpreter also supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, `invoke` commands are ignored (and not needed).
-
+The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
+It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.
 
 ## Abstract Syntax
 
