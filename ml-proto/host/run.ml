@@ -194,50 +194,34 @@ let rec input_stdin run =
 
 module Map = Map.Make(String)
 
-let registry : Instance.instance Map.t ref = ref Map.empty
 let quote : script ref = ref []
-
-let lookup module_name item_name _t =
-  match Instance.export (Map.find module_name !registry) item_name with
-  | Some ext -> ext
-  | None -> raise Not_found
-
 let scripts : script Map.t ref = ref Map.empty
 let modules : Ast.module_ Map.t ref = ref Map.empty
 let instances : Instance.instance Map.t ref = ref Map.empty
-
-let last_script : script option ref = ref None
-let last_module : Ast.module_ option ref = ref None
-let last_instance : Instance.instance option ref = ref None
+let registry : Instance.instance Map.t ref = ref Map.empty
 
 let bind map x_opt y =
-  match x_opt with
-  | None -> ()
-  | Some x -> map := Map.add x.it y !map
+  let map' =
+    match x_opt with
+    | None -> !map
+    | Some x -> Map.add x.it y !map
+  in map := Map.add "" y map'
 
-let get_script x_opt at =
-  match x_opt, !last_script with
-  | None, Some m -> m
-  | None, None -> IO.error at "no script defined"
-  | Some x, _ ->
-    try Map.find x.it !scripts with Not_found ->
-      IO.error x.at ("unknown script " ^ x.it)
+let lookup category map x_opt at =
+  let key = match x_opt with None -> "" | Some x -> x.it in
+  try Map.find key !map with Not_found ->
+    IO.error at
+      (if key = "" then "no " ^ category ^ " defined"
+       else "unknown " ^ category ^ " " ^ key)
 
-let get_module x_opt at =
-  match x_opt, !last_module with
-  | None, Some m -> m
-  | None, None -> IO.error at "no module defined"
-  | Some x, _ ->
-    try Map.find x.it !modules with Not_found ->
-      IO.error x.at ("unknown module " ^ x.it)
+let lookup_script = lookup "script" scripts
+let lookup_module = lookup "module" modules
+let lookup_instance = lookup "module" instances
 
-let get_instance x_opt at =
-  match x_opt, !last_instance with
-  | None, Some inst -> inst
-  | None, None -> IO.error at "no module defined"
-  | Some x, _ ->
-    try Map.find x.it !instances with Not_found ->
-      IO.error x.at ("unknown module " ^ x.it)
+let lookup_registry module_name item_name _t =
+  match Instance.export (Map.find module_name !registry) item_name with
+  | Some ext -> ext
+  | None -> raise Not_found
 
 
 (* Running *)
@@ -253,7 +237,7 @@ let run_action act =
   match act.it with
   | Invoke (x_opt, name, es) ->
     trace ("Invoking function \"" ^ name ^ "\"...");
-    let inst = get_instance x_opt act.at in
+    let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternalFunc f) -> Eval.invoke f (List.map it es)
     | Some _ -> Assert.error act.at "export is not a function"
@@ -262,7 +246,7 @@ let run_action act =
 
  | Get (x_opt, name) ->
     trace ("Getting global \"" ^ name ^ "\"...");
-    let inst = get_instance x_opt act.at in
+    let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternalGlobal v) -> [v]
     | Some _ -> Assert.error act.at "export is not a global"
@@ -372,15 +356,12 @@ let rec run_command cmd =
         Print.print_module_sig m
       end
     end;
-    last_script := Some [cmd];
-    last_module := Some m;
     bind scripts x_opt [cmd];
     bind modules x_opt m;
     if not !Flags.dry then begin
       trace "Initializing...";
       let imports = Import.link m in
       let inst = Eval.init m imports in
-      last_instance := Some inst;
       bind instances x_opt inst
     end
 
@@ -388,9 +369,9 @@ let rec run_command cmd =
     quote := cmd :: !quote;
     if not !Flags.dry then begin
       trace ("Registering module \"" ^ name ^ "\"...");
-      let inst = get_instance x_opt cmd.at in
+      let inst = lookup_instance x_opt cmd.at in
       registry := Map.add name inst !registry;
-      Import.register name (lookup name)
+      Import.register name (lookup_registry name)
     end
 
   | Action act ->
@@ -413,26 +394,27 @@ and run_meta cmd =
   match cmd.it with
   | Script (x_opt, script) ->
     run_quote_script script;
-    bind scripts x_opt (get_script None cmd.at)
+    bind scripts x_opt (lookup_script None cmd.at)
 
   | Input (x_opt, file) ->
     (try if not (input_file file run_quote_script) then
       Abort.error cmd.at "aborting"
     with Sys_error msg -> IO.error cmd.at msg);
-    bind scripts x_opt (get_script None cmd.at);
-    if !last_module <> None then begin
-      bind modules x_opt (get_module None cmd.at);
+    bind scripts x_opt (lookup_script None cmd.at);
+    if x_opt <> None then begin
+      bind modules x_opt (lookup_module None cmd.at);
       if not !Flags.dry then begin
-        bind instances x_opt (get_instance None cmd.at)
+        bind instances x_opt (lookup_instance None cmd.at)
       end
     end
 
   | Output (x_opt, Some file) ->
-    (try output_file file (get_module x_opt cmd.at) (get_script x_opt cmd.at)
+    (try
+      output_file file (lookup_module x_opt cmd.at) (lookup_script x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
 
   | Output (x_opt, None) ->
-    (try output_stdout (get_module x_opt cmd.at)
+    (try output_stdout (lookup_module x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
 
 and run_script script =
@@ -441,8 +423,8 @@ and run_script script =
 and run_quote_script script =
   let save_quote = !quote in
   quote := [];
-  run_script script;
-  last_script := Some (List.rev !quote);
+  (try run_script script with exn -> quote := save_quote; raise exn);
+  bind scripts None (List.rev !quote);
   quote := !quote @ save_quote
 
 let run_file file = input_file file run_script
