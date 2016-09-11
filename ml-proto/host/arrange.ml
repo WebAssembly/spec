@@ -12,40 +12,24 @@ let int = string_of_int
 let int32 = Int32.to_string
 let int64 = Int64.to_string
 
-let hex n =
-  assert (0 <= n && n < 16);
-  if n < 10
-  then Char.chr (n + Char.code '0')
-  else Char.chr (n - 10 + Char.code 'a')
+let add_hex_char buf c = Printf.bprintf buf "\\%02x" (Char.code c)
+let add_char buf c =
+  if c < '\x20' || c >= '\x7f' then
+    add_hex_char buf c
+  else begin
+    if c = '\"' || c = '\\' then Buffer.add_char buf '\\';
+    Buffer.add_char buf c
+  end
 
-let hexchar buf c =
-  Buffer.add_string buf "\\";
-  Buffer.add_char buf (hex (Char.code c / 16));
-  Buffer.add_char buf (hex (Char.code c mod 16))
-
-let bytes s =
+let string_with add_char s =
   let buf = Buffer.create (3 * String.length s + 2) in
   Buffer.add_char buf '\"';
-  for i = 0 to String.length s - 1 do
-    hexchar buf s.[i]
-  done;
+  String.iter (add_char buf) s;
   Buffer.add_char buf '\"';
   Buffer.contents buf
 
-let string s =
-  let buf = Buffer.create (String.length s + 2) in
-  Buffer.add_char buf '\"';
-  for i = 0 to String.length s - 1 do
-    let c = s.[i] in
-    if c = '\"' || c = '\\' then
-      (Buffer.add_char buf '\\'; Buffer.add_char buf c)
-    else if '\x20' <= c && c < '\x7f' then
-      Buffer.add_char buf c
-    else
-      hexchar buf c
-  done;
-  Buffer.add_char buf '\"';
-  Buffer.contents buf
+let bytes = string_with add_hex_char
+let string = string_with add_char
 
 let list_of_opt = function None -> [] | Some x -> [x]
 

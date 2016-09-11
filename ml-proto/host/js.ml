@@ -71,29 +71,38 @@ let prefix =
 
 (* Script conversion *)
 
-let of_hex n =
-  assert (0 <= n && n < 16);
-  if n < 10
-  then Char.chr (n + Char.code '0')
-  else Char.chr (n - 10 + Char.code 'a')
+let add_hex_char buf c = Printf.bprintf buf "\\x%02x" (Char.code c)
+let add_char buf c =
+  if c < '\x20' || c >= '\x7f' then
+    add_hex_char buf c
+  else begin
+    if c = '\"' || c = '\\' then Buffer.add_char buf '\\';
+    Buffer.add_char buf c
+  end
 
-let of_bytes s =
+let of_string_with add_char s =
   let buf = Buffer.create (4 * String.length s + 2) in
   Buffer.add_char buf '\"';
-  for i = 0 to String.length s - 1 do
-    Buffer.add_string buf "\\x";
-    Buffer.add_char buf (of_hex (Char.code s.[i] / 16));
-    Buffer.add_char buf (of_hex (Char.code s.[i] mod 16));
-  done;
+  String.iter (add_char buf) s;
   Buffer.add_char buf '\"';
   Buffer.contents buf
+
+let of_bytes = of_string_with add_hex_char
+let of_string = of_string_with add_char
+
+let of_float z =
+  match string_of_float z with
+  | "nan" -> "NaN"
+  | "inf" -> "Infinity"
+  | "-inf" -> "-Infinity"
+  | s -> s
 
 let of_literal lit =
   match lit.it with
   | Values.I32 i -> I32.to_string i
-  | Values.I64 i -> I64.to_string i  (* TODO *)
-  | Values.F32 z -> F32.to_string z
-  | Values.F64 z -> F64.to_string z
+  | Values.I64 i -> "int64(\"" ^ I64.to_string i ^ "\")"
+  | Values.F32 z -> of_float (F32.to_float z)
+  | Values.F64 z -> of_float (F64.to_float z)
 
 let of_var_opt = function
   | None -> "$$"
@@ -109,10 +118,10 @@ let of_definition def =
 let of_action act =
   match act.it with
   | Invoke (x_opt, name, lits) ->
-    of_var_opt x_opt ^ ".export[\"" ^ name ^ "\"]" ^
+    of_var_opt x_opt ^ ".export[" ^ of_string name ^ "]" ^
       "(" ^ String.concat ", " (List.map of_literal lits) ^ ")"
   | Get (x_opt, name) ->
-    of_var_opt x_opt ^ ".export[\"" ^ name ^ "\"]"
+    of_var_opt x_opt ^ ".export[" ^ of_string name ^ "]"
 
 let of_assertion ass =
   match ass.it with
@@ -136,7 +145,7 @@ let of_command cmd =
     (if x_opt <> None then "let " else "") ^
     of_var_opt x_opt ^ " = module(" ^ of_definition def ^ ");\n"
   | Register (name, x_opt) ->
-    "register(" ^ name ^ ", " ^ of_var_opt x_opt ^ ")\n"
+    "register(" ^ of_string name ^ ", " ^ of_var_opt x_opt ^ ")\n"
   | Action act ->
     of_action act ^ ";\n"
   | Assertion ass ->

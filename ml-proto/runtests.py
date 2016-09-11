@@ -71,6 +71,11 @@ class RunTests(unittest.TestCase):
     # Once we upgrade to OCaml 4.03, use sprintf "%s" for printing floats.
     # self._compareFile(wasmPath, wasm2Path)
 
+    # Convert to JavaScript
+    jsPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".js"))
+    logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".js.log"))
+    self._runCommand(("%s -d '%s' -o '%s'") % (interpreterPath, fileName, jsPath))
+
 def generate_test_case(rec):
   return lambda self : self._runTestFile(*rec)
 
