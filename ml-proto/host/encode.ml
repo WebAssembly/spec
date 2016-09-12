@@ -157,8 +157,8 @@ let encode m =
 
       | Const {it = I32 c} -> op 0x10; vs32 c
       | Const {it = I64 c} -> op 0x11; vs64 c
-      | Const {it = F32 c} -> op 0x12; f32 c
-      | Const {it = F64 c} -> op 0x13; f64 c
+      | Const {it = F32 c} -> op 0x13; f32 c
+      | Const {it = F64 c} -> op 0x12; f64 c
 
       | GetLocal x -> op 0x14; var x
       | SetLocal x -> op 0x15; var x
@@ -461,7 +461,7 @@ let encode m =
       patch_gap32 g (pos s - p)
 
     let code_section fs =
-      section 9 (vec code) fs (fs <> [])
+      section 10 (vec code) fs (fs <> [])
 
     (* Element section *)
     let segment dat seg =
@@ -472,7 +472,7 @@ let encode m =
       segment (vec var) seg
 
     let elem_section elems =
-      section 10 (vec table_segment) elems (elems <> [])
+      section 9 (vec table_segment) elems (elems <> [])
 
     (* Data section *)
     let memory_segment seg =
