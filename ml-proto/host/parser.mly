@@ -349,23 +349,23 @@ expr1 :  /* Sugar */
     { fun c -> let c' = $2 c in let ts, es = $3 c' in [], block ts es }
   | LOOP labeling_opt block
     { fun c -> let c' = $2 c in let ts, es = $3 c' in [], loop ts es }
-  | IF labeling_opt if_
+  | IF labeling_opt value_type_list if_
     { fun c -> let c' = $2 c in
-      let ts, es, es1, es2 = $3 c' in es, if_ ts es1 es2 }
+      let es, es1, es2 = $4 c c' in es, if_ $3 es1 es2 }
 ;
 if_ :
-  | value_type_list expr expr
-    { fun c -> $1, $2 c, $3 c, [] }
-  | value_type_list expr expr expr
-    { fun c -> $1, $2 c, $3 c, $4 c }
-  | value_type_list expr LPAR THEN instr_list RPAR
-    { fun c -> $1, $2 c, $5 c, [] }
-  | value_type_list expr LPAR THEN instr_list RPAR LPAR ELSE instr_list RPAR
-    { fun c -> $1, $2 c, $5 c, $9 c }
-  | value_type_list LPAR THEN instr_list RPAR
-    { fun c -> $1, [], $4 c, [] }
-  | value_type_list LPAR THEN instr_list RPAR LPAR ELSE instr_list RPAR
-    { fun c -> $1, [], $4 c, $8 c }
+  | LPAR THEN instr_list RPAR LPAR ELSE instr_list RPAR
+    { fun c c' -> [], $3 c', $7 c' }
+  | LPAR THEN instr_list RPAR  /* Sugar */
+    { fun c c' -> [], $3 c', [] }
+  | expr LPAR THEN instr_list RPAR LPAR ELSE instr_list RPAR  /* Sugar */
+    { fun c c' -> $1 c, $4 c', $8 c' }
+  | expr LPAR THEN instr_list RPAR  /* Sugar */
+    { fun c c' -> $1 c, $4 c', [] }
+  | expr expr expr  /* Sugar */
+    { fun c c' -> $1 c, $2 c', $3 c' }
+  | expr expr  /* Sugar */
+    { fun c c' -> $1 c, $2 c', [] }
 ;
 
 instr_list :
