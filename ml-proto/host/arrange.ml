@@ -1,5 +1,6 @@
 open Source
 open Ast
+open Script
 open Values
 open Types
 open Sexpr
@@ -11,20 +12,24 @@ let int = string_of_int
 let int32 = Int32.to_string
 let int64 = Int64.to_string
 
-let string s =
-  let buf = Buffer.create (String.length s + 2) in
+let add_hex_char buf c = Printf.bprintf buf "\\%02x" (Char.code c)
+let add_char buf c =
+  if c < '\x20' || c >= '\x7f' then
+    add_hex_char buf c
+  else begin
+    if c = '\"' || c = '\\' then Buffer.add_char buf '\\';
+    Buffer.add_char buf c
+  end
+
+let string_with add_char s =
+  let buf = Buffer.create (3 * String.length s + 2) in
   Buffer.add_char buf '\"';
-  for i = 0 to String.length s - 1 do
-    let c = s.[i] in
-    if c = '\"' then
-      Buffer.add_string buf "\\\""
-    else if '\x20' <= c && c < '\x7f' then
-      Buffer.add_char buf c
-    else
-      Buffer.add_string buf (Printf.sprintf "\\%02x" (Char.code c));
-  done;
+  String.iter (add_char buf) s;
   Buffer.add_char buf '\"';
   Buffer.contents buf
+
+let bytes = string_with add_hex_char
+let string = string_with add_char
 
 let list_of_opt = function None -> [] | Some x -> [x]
 
@@ -35,9 +40,9 @@ let opt f xo = list f (list_of_opt xo)
 let tab head f xs = if xs = [] then [] else [Node (head, list f xs)]
 let atom f x = Atom (f x)
 
-let break_string s =
-  let ss = Lib.String.breakup s (!Flags.width / 2) in
-  list (atom string) ss
+let break_bytes s =
+  let ss = Lib.String.breakup s (!Flags.width / 3 - 4) in
+  list (atom bytes) ss
 
 
 (* Types *)
@@ -277,7 +282,7 @@ let elems seg =
   segment "elem" (list (atom var)) seg
 
 let data seg =
-  segment "data" break_string seg
+  segment "data" break_bytes seg
 
 
 (* Modules *)
@@ -319,6 +324,10 @@ let global off i g =
 
 (* Modules *)
 
+let var_opt = function
+  | None -> ""
+  | Some x -> " " ^ x.it
+
 let is_func_import im =
   match im.it.ikind.it with FuncImport _ -> true | _ -> false
 let is_table_import im =
@@ -328,12 +337,12 @@ let is_memory_import im =
 let is_global_import im =
   match im.it.ikind.it with GlobalImport _ -> true | _ -> false
 
-let module_ m =
+let module_with_var_opt x_opt m =
   let func_imports = List.filter is_func_import m.it.imports in
   let table_imports = List.filter is_table_import m.it.imports in
   let memory_imports = List.filter is_memory_import m.it.imports in
   let global_imports = List.filter is_global_import m.it.imports in
-  Node ("module",
+  Node ("module" ^ var_opt x_opt,
     listi typedef m.it.types @
     listi import table_imports @
     listi import memory_imports @
@@ -349,3 +358,69 @@ let module_ m =
     list data m.it.data
   )
 
+let binary_module_with_var_opt x_opt bs =
+  Node ("module" ^ var_opt x_opt, break_bytes bs)
+
+let module_ = module_with_var_opt None
+let binary_module = binary_module_with_var_opt None
+
+
+(* Scripts *)
+
+let literal lit =
+  match lit.it with
+  | Values.I32 i -> Node ("i32.const " ^ I32.to_string i, [])
+  | Values.I64 i -> Node ("i64.const " ^ I64.to_string i, [])
+  | Values.F32 z -> Node ("f32.const " ^ F32.to_string z, [])
+  | Values.F64 z -> Node ("f64.const " ^ F64.to_string z, [])
+
+let definition mode x_opt def =
+  match mode, def.it with
+  | `Textual, _ | `Original, Textual _ ->
+    let m =
+      match def.it with
+      | Textual m -> m
+      | Binary (_, bs) -> Decode.decode "" bs
+    in module_with_var_opt x_opt m
+  | `Binary, _ | `Original, Binary _ ->
+    let bs =
+      match def.it with
+      | Textual m -> Encode.encode m
+      | Binary (_, bs) -> bs
+    in binary_module_with_var_opt x_opt bs
+
+let access x_opt name =
+  String.concat " " [var_opt x_opt; string name]
+
+let action act =
+  match act.it with
+  | Invoke (x_opt, name, lits) ->
+    Node ("invoke" ^ access x_opt name, List.map literal lits)
+  | Get (x_opt, name) ->
+    Node ("get" ^ access x_opt name, [])
+
+let assertion mode ass =
+  match ass.it with
+  | AssertMalformed (def, re) ->
+    Node ("assert_malformed", [definition `Original None def; Atom (string re)])
+  | AssertInvalid (def, re) ->
+    Node ("assert_invalid", [definition mode None def; Atom (string re)])
+  | AssertUnlinkable (def, re) ->
+    Node ("assert_unlinkable", [definition mode None def; Atom (string re)])
+  | AssertReturn (act, lits) ->
+    Node ("assert_return", action act :: List.map literal lits)
+  | AssertReturnNaN act ->
+    Node ("assert_return_nan", [action act])
+  | AssertTrap (act, re) ->
+    Node ("assert_trap", [action act; Atom (string re)])
+
+let command mode cmd =
+  match cmd.it with
+  | Module (x_opt, def) -> definition mode x_opt def
+  | Register (name, x_opt) ->
+    Node ("register " ^ string name ^ var_opt x_opt, [])
+  | Action act -> action act
+  | Assertion ass -> assertion mode ass
+  | Meta _ -> assert false
+
+let script mode scr = List.map (command mode) scr
