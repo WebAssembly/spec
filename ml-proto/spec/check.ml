@@ -112,8 +112,6 @@ let type_cvtop at = function
 
 let check_memop (c : context) (memop : 'a memop) get_sz at =
   ignore (memory c (0l @@ at));
-  require (memop.offset >= 0L) at "negative offset";
-  require (memop.offset <= 0xffffffffL) at "offset too large";
   require (Lib.Int.is_power_of_two memop.align) at
     "alignment must be a power of two";
   let size =

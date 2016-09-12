@@ -80,7 +80,8 @@ let u64 s =
 let rec vuN n s =
   require (n > 0) s (pos s) "integer representation too long";
   let b = u8 s in
-  require (n >= 7 || b land 0x7f < 1 lsl n) s (pos s - 1) "integer out of range";
+  require (n >= 7 || b land 0x7f < 1 lsl n) s (pos s - 1)
+    "integer out of range";
   let x = Int64.of_int (b land 0x7f) in
   if b land 0x80 = 0 then x else Int64.(logor x (shift_left (vuN (n - 7) s) 7))
 
@@ -211,8 +212,8 @@ let arity s = u8 s
 
 let memop s =
   let align = vu32 s in
+  let offset = vu32 s in
   require (I32.lt_u align 32l) s (pos s - 1) "invalid memop flags";
-  let offset = vu64 s in
   1 lsl Int32.to_int align, offset
 
 let var s = vu32 s

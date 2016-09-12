@@ -199,8 +199,8 @@ rule token = parse
             (i64_store16 (opt a 2))
             (i64_store32 (opt a 4)) o)) }
 
-  | "offset="(nat as s) { OFFSET_EQ_NAT (Int64.of_string s) }
-  | "align="(nat as s) { ALIGN_EQ_NAT (int_of_string s) }
+  | "offset="(nat as s) { OFFSET_EQ_NAT s }
+  | "align="(nat as s) { ALIGN_EQ_NAT s }
 
   | (ixx as t)".clz" { UNARY (intop t i32_clz i64_clz) }
   | (ixx as t)".ctz" { UNARY (intop t i32_ctz i64_ctz) }

@@ -183,8 +183,8 @@ let inline_type c t at =
 %token<Ast.instr'> CONVERT
 %token<int option -> Memory.offset -> Ast.instr'> LOAD
 %token<int option -> Memory.offset -> Ast.instr'> STORE
-%token<Memory.offset> OFFSET_EQ_NAT
-%token<int> ALIGN_EQ_NAT
+%token<string> OFFSET_EQ_NAT
+%token<string> ALIGN_EQ_NAT
 
 %nonassoc LOW
 %nonassoc VAR
@@ -287,12 +287,12 @@ labeling_opt :
 ;
 
 offset_opt :
-  | /* empty */ { 0L }
-  | OFFSET_EQ_NAT { $1 }
+  | /* empty */ { 0l }
+  | OFFSET_EQ_NAT { int32 $1 (at ()) }
 ;
 align_opt :
   | /* empty */ { None }
-  | ALIGN_EQ_NAT { Some $1 }
+  | ALIGN_EQ_NAT { Some (int $1 (at ())) }
 ;
 
 instr :

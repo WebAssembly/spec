@@ -3,7 +3,7 @@ type t = memory
 
 type size = int32  (* number of pages *)
 type address = int64
-type offset = int64
+type offset = int32
 
 type mem_size = Mem8 | Mem16 | Mem32
 type extension = SX | ZX
@@ -18,7 +18,7 @@ exception SizeOverflow
 exception SizeLimit
 exception OutOfMemory
 
-val page_size : offset
+val page_size : int64
 val mem_size : mem_size -> int
 
 val create : size limits -> memory (* raise SizeOverflow, OutOfMemory *)

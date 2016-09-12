@@ -183,7 +183,7 @@ let extension = function
 
 let memop name {ty; align; offset; _} =
   value_type ty ^ "." ^ name ^
-  (if offset = 0L then "" else " offset=" ^ int64 offset) ^
+  (if offset = 0l then "" else " offset=" ^ int32 offset) ^
   (if align = size ty then "" else " align=" ^ int align)
 
 let loadop op =
