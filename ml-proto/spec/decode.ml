@@ -276,8 +276,8 @@ let rec instr s =
 
   | 0x10 -> i32_const (at vs32 s)
   | 0x11 -> i64_const (at vs64 s)
-  | 0x12 -> f32_const (at f32 s)
-  | 0x13 -> f64_const (at f64 s)
+  | 0x12 -> f64_const (at f64 s)
+  | 0x13 -> f32_const (at f32 s)
 
   | 0x14 -> get_local (at var s)
   | 0x15 -> set_local (at var s)
@@ -492,8 +492,8 @@ let id s =
     | 6 -> `GlobalSection
     | 7 -> `ExportSection
     | 8 -> `StartSection
-    | 9 -> `CodeSection
-    | 10 -> `ElemSection
+    | 9 -> `ElemSection
+    | 10 -> `CodeSection
     | 11 -> `DataSection
     | _ -> error s (pos s) "invalid section id"
     ) bo
