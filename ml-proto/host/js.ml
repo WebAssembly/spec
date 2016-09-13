@@ -195,7 +195,7 @@ let of_string = of_string_with add_char
 let of_wrapper x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt x_opt in
 	let bs = wrap x name wrap_action wrap_assertion at in
-  "instance(module(" ^ of_bytes bs ^ "), " ^ "{" ^ x ^ "}).export.run()"
+  "instance(" ^ of_bytes bs ^ ", " ^ "{" ^ x ^ "}).export.run()"
 
 let of_float z =
   match string_of_float z with
@@ -278,7 +278,7 @@ let of_command mods cmd =
       | Binary (_, bs) -> Decode.decode "binary" bs
     in bind mods x_opt m;
     (if x_opt <> None then "let " else "") ^
-    of_var_opt x_opt ^ " = module(" ^ of_definition def ^ ");\n"
+    of_var_opt x_opt ^ " = instance(" ^ of_definition def ^ ");\n"
   | Register (name, x_opt) ->
     "register(" ^ of_string name ^ ", " ^ of_var_opt x_opt ^ ")\n"
   | Action act ->
