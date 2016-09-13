@@ -46,7 +46,7 @@ let prefix =
   "\n" ^
   "function assert_unlinkable(bytes) {\n" ^
   "  let mod = module(bytes);\n" ^
-  "  try { instance(mod, registry) } catch (e) { return }\n" ^
+  "  try { new WebAssembly.Instance(mod, registry) } catch (e) { return }\n" ^
   "  throw new Error(\"Wasm linking failure expected\");\n" ^
   "}\n" ^
   "\n" ^
