@@ -7,6 +7,9 @@ import subprocess
 import glob
 import sys
 
+# Set to run tests through JS as well
+jsCommand = ""
+
 def auxFile(path):
     try:
       os.remove(path)
@@ -75,6 +78,8 @@ class RunTests(unittest.TestCase):
     jsPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".js"))
     logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".js.log"))
     self._runCommand(("%s -d '%s' -o '%s'") % (interpreterPath, fileName, jsPath))
+    if jsCommand != "":
+      self._runCommand(("%s '%s'") % (jsCommand, jsPath))
 
 def generate_test_case(rec):
   return lambda self : self._runTestFile(*rec)
