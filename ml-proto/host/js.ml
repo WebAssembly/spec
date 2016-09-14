@@ -60,9 +60,9 @@ let prefix =
   "  };\n" ^
   "}\n" ^
   "\n" ^
-  "function assert_return(action) {\n" ^
+  "function assert_return_nan(action) {\n" ^
   "  let actual = action();\n" ^
-  "  if (!actual.isNaN()) {\n" ^
+  "  if (!Number.isNaN(actual)) {\n" ^
   "    throw new Error(\"Wasm return value NaN expected, got \" + actual);\n" ^
   "  };\n" ^
   "}\n" ^
@@ -93,6 +93,7 @@ let of_string = of_string_with add_char
 let of_float z =
   match string_of_float z with
   | "nan" -> "NaN"
+  | "-nan" -> "-NaN"
   | "inf" -> "Infinity"
   | "-inf" -> "-Infinity"
   | s -> s
@@ -118,10 +119,10 @@ let of_definition def =
 let of_action act =
   match act.it with
   | Invoke (x_opt, name, lits) ->
-    of_var_opt x_opt ^ ".export[" ^ of_string name ^ "]" ^
+    of_var_opt x_opt ^ ".exports[" ^ of_string name ^ "]" ^
       "(" ^ String.concat ", " (List.map of_literal lits) ^ ")"
   | Get (x_opt, name) ->
-    of_var_opt x_opt ^ ".export[" ^ of_string name ^ "]"
+    of_var_opt x_opt ^ ".exports[" ^ of_string name ^ "]"
 
 let of_assertion ass =
   match ass.it with
@@ -142,8 +143,8 @@ let of_assertion ass =
 let of_command cmd =
   match cmd.it with
   | Module (x_opt, def) ->
-    (if x_opt <> None then "let " else "") ^
-    of_var_opt x_opt ^ " = instance(" ^ of_definition def ^ ");\n"
+    (if x_opt = None then "" else "let " ^ of_var_opt x_opt ^ " = ") ^
+    "$$ = instance(" ^ of_definition def ^ ");\n"
   | Register (name, x_opt) ->
     "register(" ^ of_string name ^ ", " ^ of_var_opt x_opt ^ ")\n"
   | Action act ->
