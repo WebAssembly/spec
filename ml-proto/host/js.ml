@@ -62,9 +62,9 @@ let prefix =
   "  };\n" ^
   "}\n" ^
   "\n" ^
-  "function assert_return(action) {\n" ^
+  "function assert_return_nan(action) {\n" ^
   "  let actual = action();\n" ^
-  "  if (!actual.isNaN()) {\n" ^
+  "  if (!Number.isNaN(actual)) {\n" ^
   "    throw new Error(\"Wasm return value NaN expected, got \" + actual);\n" ^
   "  };\n" ^
   "}\n" ^
@@ -155,8 +155,8 @@ let wrap module_name item_name wrap_action wrap_assertion at =
 
 
 let is_js_value_type = function
-  | I32Type | F32Type | F64Type -> true
-  | I64Type -> false
+  | I32Type -> true
+  | I64Type | F32Type | F64Type -> false
 
 let is_js_global_type = function
   | GlobalType (t, mut) -> is_js_value_type t && mut = Immutable
@@ -195,11 +195,12 @@ let of_string = of_string_with add_char
 let of_wrapper x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt x_opt in
 	let bs = wrap x name wrap_action wrap_assertion at in
-  "instance(" ^ of_bytes bs ^ ", " ^ "{" ^ x ^ "}).export.run()"
+  "instance(" ^ of_bytes bs ^ ", " ^ "{" ^ x ^ "}).exports.run()"
 
 let of_float z =
   match string_of_float z with
   | "nan" -> "NaN"
+  | "-nan" -> "-NaN"
   | "inf" -> "Infinity"
   | "-inf" -> "-Infinity"
   | s -> s
@@ -221,7 +222,7 @@ let of_definition def =
 let of_action mods act =
   match act.it with
   | Invoke (x_opt, name, lits) ->
-    of_var_opt x_opt ^ ".export[" ^ of_string name ^ "]" ^
+    of_var_opt x_opt ^ ".exports[" ^ of_string name ^ "]" ^
       "(" ^ String.concat ", " (List.map of_literal lits) ^ ")",
     (match lookup mods x_opt name act.at with
     | ExternalFuncType ft when not (is_js_func_type ft) ->
@@ -230,7 +231,7 @@ let of_action mods act =
     | _ -> None
     )
   | Get (x_opt, name) ->
-    of_var_opt x_opt ^ ".export[" ^ of_string name ^ "]",
+    of_var_opt x_opt ^ ".exports[" ^ of_string name ^ "]",
     (match lookup mods x_opt name act.at with
     | ExternalGlobalType gt when not (is_js_global_type gt) ->
       let GlobalType (t, _) = gt in
@@ -277,8 +278,8 @@ let of_command mods cmd =
       | Textual m -> m
       | Binary (_, bs) -> Decode.decode "binary" bs
     in bind mods x_opt m;
-    (if x_opt <> None then "let " else "") ^
-    of_var_opt x_opt ^ " = instance(" ^ of_definition def ^ ");\n"
+    (if x_opt = None then "" else "let " ^ of_var_opt x_opt ^ " = ") ^
+    "$$ = instance(" ^ of_definition def ^ ");\n"
   | Register (name, x_opt) ->
     "register(" ^ of_string name ^ ", " ^ of_var_opt x_opt ^ ")\n"
   | Action act ->
