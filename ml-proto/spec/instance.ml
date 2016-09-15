@@ -24,7 +24,7 @@ and instance =
   exports : extern ExportMap.t;
 }
 
-exception Func of closure
+type Table.elem += Func of closure
 
 let instance m =
   { module_ = m; funcs = []; tables = []; memories = []; globals = [];

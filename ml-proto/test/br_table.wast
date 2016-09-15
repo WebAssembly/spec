@@ -1435,21 +1435,6 @@
 )
 
 (assert_invalid
-  (module (func $type-binary (result i64)
-    (block i64 i64 (i64.const 1) (i64.const 2) (i64.const 3) (br_table 0 0))
-    (i64.add)
-  ))
-  "invalid result arity"
-)
-(assert_invalid
-  (module (func $type-binary-with-nop (result i32)
-    (block i32 i32 (nop) (i32.const 7) (nop) (i32.const 8) (i64.const 3) (br_table 0))
-    (i32.add)
-  ))
-  "invalid result arity"
-)
-
-(assert_invalid
   (module (func $unbound-label
     (block (br_table 2 1 (i32.const 1)))
   ))

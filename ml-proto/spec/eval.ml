@@ -92,9 +92,9 @@ let global inst x = lookup "global" inst.Instance.globals x
 
 let elem inst x i t at =
   match Table.load (table inst x) i t with
-  | Some j -> j
-  | None ->
+  | Table.Uninitialized ->
     Trap.error at ("uninitialized element " ^ Int32.to_string i)
+  | f -> f
   | exception Table.Bounds ->
     Trap.error at ("undefined element " ^ Int32.to_string i)
 
@@ -364,7 +364,7 @@ let init_table inst seg =
   let {index; offset = e; init} = seg.it in
   let tab = table inst index in
   let offset = i32 (eval_const inst e) e.at in
-  Table.blit tab offset (List.map (fun x -> Some (Func (func inst x))) init)
+  Table.blit tab offset (List.map (fun x -> Func (func inst x)) init)
 
 let init_memory inst seg =
   let {index; offset = e; init} = seg.it in

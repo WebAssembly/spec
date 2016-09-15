@@ -4,7 +4,7 @@ open Values
 
 type size = int32  (* number of pages *)
 type address = int64
-type offset = int64
+type offset = int32
 
 type mem_size = Mem8 | Mem16 | Mem32
 type extension = SX | ZX
@@ -90,7 +90,7 @@ let grow mem delta =
   mem.content <- after
 
 let effective_address a o =
-  let ea = Int64.add a o in
+  let ea = Int64.add a (Int64.of_int32 o) in
   if I64.lt_u ea a then raise Bounds;
   ea
 

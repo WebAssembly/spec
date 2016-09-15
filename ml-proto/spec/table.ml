@@ -4,7 +4,8 @@ open Values
 type size = int32
 type index = int32
 
-type elem = exn option
+type elem = ..
+type elem += Uninitialized
 type elem_type = Types.elem_type
 type 'a limits = 'a Types.limits
 
@@ -40,7 +41,7 @@ let within_limits size = function
   | Some max -> I32.le_u size max
 
 let create' size =
-  Array.make (host_size_of_int32 size) None
+  Array.make (host_size_of_int32 size) Uninitialized
 
 let create {min; max} =
   assert (within_limits min max);

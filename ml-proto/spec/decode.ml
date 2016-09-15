@@ -80,8 +80,7 @@ let u64 s =
 let rec vuN n s =
   require (n > 0) s (pos s) "integer representation too long";
   let b = u8 s in
-  require (n >= 7 || b land 0x7f < 1 lsl n) s (pos s - 1)
-    "integer too large";
+  require (n >= 7 || b land 0x7f < 1 lsl n) s (pos s - 1) "integer too large";
   let x = Int64.of_int (b land 0x7f) in
   if b land 0x80 = 0 then x else Int64.(logor x (shift_left (vuN (n - 7) s) 7))
 
@@ -217,8 +216,8 @@ let arity s = u8 s
 
 let memop s =
   let align = vu32 s in
-  require (I32.lt_u align 32l) s (pos s - 1) "invalid memop flags";
-  let offset = vu64 s in
+  require (I32.le_u align 32l) s (pos s - 1) "invalid memop flags";
+  let offset = vu32 s in
   1 lsl Int32.to_int align, offset
 
 let var s = vu32 s
@@ -278,8 +277,8 @@ let rec instr s =
 
   | 0x10 -> i32_const (at vs32 s)
   | 0x11 -> i64_const (at vs64 s)
-  | 0x12 -> f32_const (at f32 s)
-  | 0x13 -> f64_const (at f64 s)
+  | 0x12 -> f64_const (at f64 s)
+  | 0x13 -> f32_const (at f32 s)
 
   | 0x14 -> get_local (at var s)
   | 0x15 -> set_local (at var s)
@@ -494,8 +493,8 @@ let id s =
     | 6 -> `GlobalSection
     | 7 -> `ExportSection
     | 8 -> `StartSection
-    | 9 -> `CodeSection
-    | 10 -> `ElemSection
+    | 9 -> `ElemSection
+    | 10 -> `CodeSection
     | 11 -> `DataSection
     | _ -> error s (pos s) "invalid section id"
     ) bo

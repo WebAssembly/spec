@@ -240,19 +240,6 @@
 )
 
 (assert_invalid
-  (module (func $type-binary (result i64)
-    (loop i64 i64 (i64.const 1) (i64.const 2)) (i64.add)
-  ))
-  "invalid result arity"
-)
-(assert_invalid
-  (module (func $type-binary-with-nop (result i32)
-    (loop i32 i32 (nop) (i32.const 7) (nop) (i32.const 8)) i32.add
-  ))
-  "invalid result arity"
-)
-
-(assert_invalid
   (module (func $type-value-void-vs-num (result i32)
     (loop (nop))
   ))
