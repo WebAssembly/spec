@@ -80,8 +80,7 @@ let u64 s =
 let rec vuN n s =
   require (n > 0) s (pos s) "integer representation too long";
   let b = u8 s in
-  require (n >= 7 || b land 0x7f < 1 lsl n) s (pos s - 1)
-    "integer out of range";
+  require (n >= 7 || b land 0x7f < 1 lsl n) s (pos s - 1) "integer too large";
   let x = Int64.of_int (b land 0x7f) in
   if b land 0x80 = 0 then x else Int64.(logor x (shift_left (vuN (n - 7) s) 7))
 
@@ -142,6 +141,11 @@ let elem_type s =
   match u8 s with
   | 0x20 -> AnyFuncType
   | _ -> error s (pos s - 1) "invalid element type"
+
+let stack_type s =
+  match peek s with
+  | Some 0x00 -> skip 1 s; []
+  | _ -> [value_type s]
 
 let func_type s =
   expect 0x40 s "invalid function type";
@@ -236,39 +240,35 @@ let rec instr s =
   match op s with
   | 0x00 -> unreachable
   | 0x01 ->
+    let ts = stack_type s in
     let es' = instr_block s in
     expect 0x0f s "END opcode expected";
-    block es'
+    block ts es'
   | 0x02 ->
+    let ts = stack_type s in
     let es' = instr_block s in
     expect 0x0f s "END opcode expected";
-    loop es'
+    loop ts es'
   | 0x03 ->
+    let ts = stack_type s in
     let es1 = instr_block s in
     if peek s = Some 0x04 then begin
       expect 0x04 s "`else` or `end` opcode expected";
       let es2 = instr_block s in
       expect 0x0f s "END opcode expected";
-      if_ es1 es2
+      if_ ts es1 es2
     end else begin
       expect 0x0f s "END opcode expected";
-      if_ es1 []
+      if_ ts es1 []
     end
   | 0x04 -> error s pos "misplaced ELSE opcode"
   | 0x05 -> select
-  | 0x06 ->
-    let n = arity s in
-    let x = at var s in
-    br n x
-  | 0x07 ->
-    let n = arity s in
-    let x = at var s in
-    br_if n x
+  | 0x06 -> br (at var s)
+  | 0x07 -> br_if (at var s)
   | 0x08 ->
-    let n = arity s in
     let xs = vec (at var) s in
     let x = at var s in
-    br_table n xs x
+    br_table xs x
   | 0x09 -> return
   | 0x0a -> nop
   | 0x0b -> drop

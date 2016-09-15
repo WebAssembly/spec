@@ -140,22 +140,28 @@ offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
+block_sig : <type>*
+func_sig:   ( type <var> ) | <param>* <result>*
+global_sig: <type> | ( mut <type> )
+table_sig:  <nat> <nat>? <elem_type>
+memory_sig: <nat> <nat>?
+
 expr:
   ( <op> )
   ( <op> <expr>+ )                                                   ;; = <expr>+ (<op>)
-  ( block <name>? <instr>* )
-  ( loop <name>? <instr>* )
-  ( if ( then <name>? <instr>* ) ( else <name>? <instr>* )? )
-  ( if <expr> ( then <name>? <instr>* ) ( else <name>? <instr>* )? ) ;; = (if <expr> (then <name>? <instr>*) (else <name>? <instr>*)?)
-  ( if <expr> <expr> <expr>? )                                       ;; = (if <expr> (then <expr>) (else <expr>?))
+  ( block <name>? <block_sig>? <instr>* )
+  ( loop <name>? <block_sig>? <instr>* )
+  ( if <name>? <block_sig>? ( then <instr>* ) ( else <instr>* )? )
+  ( if <name>? <block_sig>? <expr> ( then <instr>* ) ( else <instr>* )? ) ;; = (if <name>? <block_sig>? <expr> (then <instr>*) (else <instr>*)?)
+  ( if <name>? <block_sig>? <expr> <expr> <expr>? )                  ;; = (if <name>? <block_sig>? <expr> (then <expr>) (else <expr>?))
 
 instr:
   <expr>
   <op>                                                               ;; = (<op>)
-  block <name>? <instr>* end                                         ;; = (block <name>? <instr>*)
-  loop <name>? <instr>* end                                          ;; = (loop <name>? <instr>*)
-  if <name>? <instr>* end                                            ;; = (if (then <name>? <instr>*))
-  if <name>? <instr>* else <name>? <instr>* end                      ;; = (if (then <name>? instr>*) (else <name>? <instr>*))
+  block <name>? <block_sig>? <instr>* end                            ;; = (block <name>? <block_sig>? <instr>*)
+  loop <name>? <block_sig>? <instr>* end                             ;; = (loop <name>? <block_sig>? <instr>*)
+  if <name>? <block_sig>? <instr>* end                               ;; = (if <name>? <block_sig>? (then <instr>*))
+  if <name>? <block_sig>? <instr>* else <instr>* end                 ;; = (if <name>? <block_sig>? (then <instr>*) (else <instr>*))
 
 op:
   unreachable
@@ -188,11 +194,6 @@ func:    ( func <name>? <func_sig> <local>* <instr>* )
 param:   ( param <type>* ) | ( param <name> <type> )
 result:  ( result <type> )
 local:   ( local <type>* ) | ( local <name> <type> )
-
-func_sig:   ( type <var> ) | <param>* <result>?
-global_sig: <type> | ( mut <type> )
-table_sig:  <nat> <nat>? <elem_type>
-memory_sig: <nat> <nat>?
 
 global:  ( global <name>? <global_sig> )
          ( global <name>? ( export <string> ) <global_sig> )                ;; = (export <string> (global <N>)) (global <name>? <global_sig>)

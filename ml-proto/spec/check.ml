@@ -31,7 +31,7 @@ type context =
   globals : global_type list;
   locals : value_type list;
   results : value_type list;
-  labels : result_type ref list;
+  labels : stack_type list;
 }
 
 let context m =
@@ -54,15 +54,10 @@ let memory c x = lookup "memory" c.memories x
 
 (* Join *)
 
-let join r1 r2 at =
-  match r1, r2 with
-  | Bot, r | r, Bot -> r
-  | r1, r2 when r1 = r2 -> r1
-  | _ -> result_error at r1 r2
-
-let unknown () = ref Bot
-let known ts = ref (Stack ts)
-let unify v ts at = v := join !v (Stack ts) at
+let check_join ts r at =
+  match r with
+  | Bot -> ()
+  | Stack ts' -> if ts <> ts' then result_error at (Stack ts) r
 
 
 (* Type Synthesis *)
@@ -164,49 +159,38 @@ let rec check_instr (c : context) (e : instr) (stack : stack_type) : op_type =
   | Drop ->
     [peek 0 stack] --> Stack []
 
-  | Block es ->
-    let vr = unknown () in
-    let c' = {c with labels = vr :: c.labels} in
-    let r = check_block c' es in
-    check_result_arity r e.at;
-    [] --> join !vr r e.at
+  | Block (ts, es) ->
+    check_arity (List.length ts) e.at;
+    let c' = {c with labels = ts :: c.labels} in
+    check_block c' es ts e.at;
+    [] --> Stack ts
 
-  | Loop es ->
-    let c' = {c with labels = known [] :: c.labels} in
-    let r = check_block c' es in
-    check_result_arity r e.at;
-    [] --> r
+  | Loop (ts, es) ->
+    check_arity (List.length ts) e.at;
+    let c' = {c with labels = [] :: c.labels} in
+    check_block c' es ts e.at;
+    [] --> Stack ts
 
-  | Br (n, x) ->
-    check_arity n e.at;
-    let ts = peek_n n stack in
-    unify (label c x) ts e.at;
-    ts --> Bot
+  | Br x ->
+    label c x --> Bot
 
-  | BrIf (n, x) ->
-    check_arity n e.at;
-    let ts = List.tl (peek_n (n + 1) stack) in
-    unify (label c x) ts e.at;
-    (ts @ [I32Type]) --> Stack ts
+  | BrIf x ->
+    (label c x @ [I32Type]) --> Stack (label c x)
 
-  | BrTable (n, xs, x) ->
-    check_arity n e.at;
-    let ts = List.tl (peek_n (n + 1) stack) in
-    unify (label c x) ts x.at;
-    List.iter (fun x' -> unify (label c x') ts x'.at) xs;
+  | BrTable (xs, x) ->
+    let ts = label c x in
+    List.iter (fun x' -> check_join ts (Stack (label c x')) x'.at) xs;
     (ts @ [I32Type]) --> Bot
 
   | Return ->
     c.results --> Bot
 
-  | If (es1, es2) ->
-    let vr = unknown () in
-    let c' = {c with labels = vr :: c.labels} in
-    let r1 = check_block c' es1 in
-    let r2 = check_block c' es2 in
-    let r = join r1 r2 e.at in
-    check_result_arity r e.at;
-    [I32Type] --> join !vr r e.at
+  | If (ts, es1, es2) ->
+    check_arity (List.length ts) e.at;
+    let c' = {c with labels = ts :: c.labels} in
+    check_block c' es1 ts e.at;
+    check_block c' es2 ts e.at;
+    [I32Type] --> Stack ts
 
   | Select ->
     let t = peek 1 stack in
@@ -279,14 +263,14 @@ let rec check_instr (c : context) (e : instr) (stack : stack_type) : op_type =
     ignore (memory c (0l @@ e.at));
     [I32Type] --> Stack [I32Type]
 
-and check_block (c : context) (es : instr list) : result_type =
+and check_seq (c : context) (es : instr list) : result_type =
   match es with
   | [] ->
     Stack []
 
   | _ ->
     let es', e = Lib.List.split_last es in
-    let r1 = check_block c es' in
+    let r1 = check_seq c es' in
     match r1 with
     | Bot -> Bot
     | Stack ts0 ->
@@ -298,6 +282,9 @@ and check_block (c : context) (es : instr list) : result_type =
       match r2 with
       | Bot -> Bot
       | Stack ts3 -> Stack (ts1 @ ts3)
+
+and check_block (c : context) (es : instr list) (ts : stack_type) at =
+  check_join ts (check_seq c es) at
 
 
 (* Functions & Constants *)
@@ -317,10 +304,8 @@ let check_func (c : context) (f : func) =
   let {ftype; locals; body} = f.it in
   let FuncType (ins, out) = type_ c ftype in
   check_arity (List.length out) f.at;
-  let vr = known out in
-  let c' = {c with locals = ins @ locals; results = out; labels = [vr]} in
-  let r = check_block c' body in
-  ignore (join !vr r f.at)
+  let c' = {c with locals = ins @ locals; results = out; labels = [out]} in
+  check_block c' body out f.at
 
 
 let is_const e =
@@ -331,9 +316,7 @@ let is_const e =
 let check_const (c : context) (const : const) (t : value_type) =
   require (List.for_all is_const const.it) const.at
     "constant expression required";
-  match check_block c const.it with
-  | Stack [t'] when t = t' -> ()
-  | r -> result_error const.at (Stack [t]) r
+  check_block c const.it [t] const.at
 
 
 (* Tables, Memories, & Globals *)
@@ -421,7 +404,8 @@ let check_import im c =
     check_memory_type t ikind.at; {c with memories = t :: c.memories}
   | GlobalImport t ->
     let GlobalType (_, mut) = t in
-    require (mut = Immutable) ikind.at "mutable globals cannot be imported (yet)";
+    require (mut = Immutable) ikind.at
+      "mutable globals cannot be imported (yet)";
     {c with globals = t :: c.globals}
 
 module NameSet = Set.Make(String)
@@ -434,7 +418,8 @@ let check_export c set ex =
   | MemoryExport -> ignore (memory c item)
   | GlobalExport ->
     let GlobalType (_, mut) = global c item in
-    require (mut = Immutable) ekind.at "mutable globals cannot be exported (yet)"
+    require (mut = Immutable) ekind.at
+      "mutable globals cannot be exported (yet)"
   );
   require (not (NameSet.mem name set)) ex.at "duplicate export name";
   NameSet.add name set

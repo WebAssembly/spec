@@ -1,6 +1,6 @@
 (module
   (func (export "block") (result i32)
-    (block $exit
+    (block $exit i32
       (br $exit (i32.const 1))
       (i32.const 0)
     )
@@ -9,8 +9,8 @@
   (func (export "loop1") (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
-    (block $exit
-      (loop $cont
+    (block $exit i32
+      (loop $cont i32
         (set_local $i (i32.add (get_local $i) (i32.const 1)))
         (if (i32.eq (get_local $i) (i32.const 5))
           (br $exit (get_local $i))
@@ -23,8 +23,8 @@
   (func (export "loop2") (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
-    (block $exit
-      (loop $cont
+    (block $exit i32
+      (loop $cont i32
         (set_local $i (i32.add (get_local $i) (i32.const 1)))
         (if (i32.eq (get_local $i) (i32.const 5))
           (br $cont)
@@ -41,8 +41,8 @@
   (func (export "loop3") (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
-    (block $exit
-      (loop $cont
+    (block $exit i32
+      (loop $cont i32
         (set_local $i (i32.add (get_local $i) (i32.const 1)))
         (if (i32.eq (get_local $i) (i32.const 5))
           (br $exit (get_local $i))
@@ -55,8 +55,8 @@
   (func (export "loop4") (param $max i32) (result i32)
     (local $i i32)
     (set_local $i (i32.const 1))
-    (block $exit
-      (loop $cont
+    (block $exit i32
+      (loop $cont i32
         (set_local $i (i32.add (get_local $i) (get_local $i)))
         (if (i32.gt_u (get_local $i) (get_local $max))
           (br $exit (get_local $i))
@@ -68,7 +68,7 @@
 
   (func (export "loop5") (result i32)
     (i32.add
-      (loop $l (i32.const 1))
+      (loop $l i32 (i32.const 1))
       (i32.const 1)
     )
   )
@@ -77,33 +77,33 @@
     (local $i i32)
     (set_local $i (i32.const 0))
     (block
-      (if
+      (if $l
         (i32.const 1)
-        (then $l (br $l) (set_local $i (i32.const 666)))
+        (then (br $l) (set_local $i (i32.const 666)))
       )
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
-      (if
+      (if $l
         (i32.const 1)
-        (then $l (br $l) (set_local $i (i32.const 666)))
+        (then (br $l) (set_local $i (i32.const 666)))
         (else (set_local $i (i32.const 888)))
       )
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
-      (if
+      (if $l
         (i32.const 1)
-        (then $l (br $l) (set_local $i (i32.const 666)))
-        (else $l (set_local $i (i32.const 888)))
+        (then (br $l) (set_local $i (i32.const 666)))
+        (else (set_local $i (i32.const 888)))
       )
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
-      (if
+      (if $l
         (i32.const 0)
         (then (set_local $i (i32.const 888)))
-        (else $l (br $l) (set_local $i (i32.const 666)))
+        (else (br $l) (set_local $i (i32.const 666)))
       )
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
-      (if
+      (if $l
         (i32.const 0)
-        (then $l (set_local $i (i32.const 888)))
-        (else $l (br $l) (set_local $i (i32.const 666)))
+        (then (set_local $i (i32.const 888)))
+        (else (br $l) (set_local $i (i32.const 666)))
       )
       (set_local $i (i32.add (get_local $i) (i32.const 1)))
     )
@@ -148,9 +148,9 @@
   )
 
   (func (export "switch") (param i32) (result i32)
-    (block $ret
+    (block $ret i32
       (i32.mul (i32.const 10)
-        (block $exit
+        (block $exit i32
           (block $0
             (block $default
               (block $3
@@ -186,7 +186,7 @@
   (func (export "br_if0") (result i32)
     (local $i i32)
     (set_local $i (i32.const 0))
-    (block $outer
+    (block $outer i32
       (block $inner
         (br_if $inner (i32.const 0))
         (set_local $i (i32.or (get_local $i) (i32.const 0x1)))
@@ -194,12 +194,18 @@
         (set_local $i (i32.or (get_local $i) (i32.const 0x2)))
       )
       (drop (br_if $outer
-        (block (set_local $i (i32.or (get_local $i) (i32.const 0x4))) (get_local $i))
+        (block i32
+          (set_local $i (i32.or (get_local $i) (i32.const 0x4)))
+          (get_local $i)
+        )
         (i32.const 0)
       ))
       (set_local $i (i32.or (get_local $i) (i32.const 0x8)))
       (drop (br_if $outer
-        (block (set_local $i (i32.or (get_local $i) (i32.const 0x10))) (get_local $i))
+        (block i32
+          (set_local $i (i32.or (get_local $i) (i32.const 0x10)))
+          (get_local $i)
+        )
         (i32.const 1)
       ))
       (set_local $i (i32.or (get_local $i) (i32.const 0x20))) (get_local $i)
@@ -207,16 +213,16 @@
   )
 
   (func (export "br_if1") (result i32)
-    (block $l0
-      (drop (br_if $l0 (block $l1 (br $l1 (i32.const 1))) (i32.const 1)))
+    (block $l0 i32
+      (drop (br_if $l0 (block $l1 i32 (br $l1 (i32.const 1))) (i32.const 1)))
       (i32.const 1)
     )
   )
 
   (func (export "br_if2") (result i32)
-    (block $l0
+    (block $l0 i32
       (if (i32.const 1)
-        (br $l0 (block $l1 (br $l1 (i32.const 1))))
+        (br $l0 (block $l1 i32 (br $l1 (i32.const 1))))
       )
       (i32.const 1)
     )
@@ -226,10 +232,10 @@
     (local $i1 i32)
     (drop
       (i32.add
-        (block $l0
+        (block $l0 i32
           (drop (br_if $l0
-            (block (set_local $i1 (i32.const 1)) (get_local $i1))
-            (block (set_local $i1 (i32.const 2)) (get_local $i1))
+            (block i32 (set_local $i1 (i32.const 1)) (get_local $i1))
+            (block i32 (set_local $i1 (i32.const 2)) (get_local $i1))
           ))
           (i32.const 0)
         )
@@ -240,24 +246,24 @@
   )
 
   (func (export "br") (result i32)
-    (block $l0
+    (block $l0 i32
       (if (i32.const 1)
-        (br $l0 (block $l1 (br $l1 (i32.const 1))))
-        (block (drop (block $l1 (br $l1 (i32.const 1)))))
+        (br $l0 (block $l1 i32 (br $l1 (i32.const 1))))
+        (block (drop (block $l1 i32 (br $l1 (i32.const 1)))))
       )
       (i32.const 1)
     )
   )
 
   (func (export "shadowing") (result i32)
-   (block $l1 (i32.xor (br $l1 (i32.const 1)) (i32.const 2)))
+    (block $l1 i32 (i32.xor (br $l1 (i32.const 1)) (i32.const 2)))
   )
 
   (func (export "redefinition") (result i32)
-    (block $l1
+    (block $l1 i32
       (i32.add
-        (block $l1 (i32.const 2))
-        (block $l1 (br $l1 (i32.const 3)))
+        (block $l1 i32 (i32.const 2))
+        (block $l1 i32 (br $l1 (i32.const 3)))
       )
     )
   )

@@ -45,14 +45,14 @@
   ;; Recursion
 
   (func $fac (export "fac") (param i64) (result i64)
-    (if (i64.eqz (get_local 0))
+    (if i64 (i64.eqz (get_local 0))
       (i64.const 1)
       (i64.mul (get_local 0) (call $fac (i64.sub (get_local 0) (i64.const 1))))
     )
   )
 
   (func $fac-acc (export "fac-acc") (param i64 i64) (result i64)
-    (if (i64.eqz (get_local 0))
+    (if i64 (i64.eqz (get_local 0))
       (get_local 1)
       (call $fac-acc
         (i64.sub (get_local 0) (i64.const 1))
@@ -62,7 +62,7 @@
   )
 
   (func $fib (export "fib") (param i64) (result i64)
-    (if (i64.le_u (get_local 0) (i64.const 1))
+    (if i64 (i64.le_u (get_local 0) (i64.const 1))
       (i64.const 1)
       (i64.add
         (call $fib (i64.sub (get_local 0) (i64.const 2)))
@@ -72,13 +72,13 @@
   )
 
   (func $even (export "even") (param i64) (result i32)
-    (if (i64.eqz (get_local 0))
+    (if i32 (i64.eqz (get_local 0))
       (i32.const 44)
       (call $odd (i64.sub (get_local 0) (i64.const 1)))
     )
   )
   (func $odd (export "odd") (param i64) (result i32)
-    (if (i64.eqz (get_local 0))
+    (if i32 (i64.eqz (get_local 0))
       (i32.const 99)
       (call $even (i64.sub (get_local 0) (i64.const 1)))
     )

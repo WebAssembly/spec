@@ -33,7 +33,7 @@
         (i64.const 0)
         (i64.eq)
         (if
-          (then (br 0 $done))
+          (then (br $done))
           (else
             (get_local $i)
             (get_local $res)
@@ -45,7 +45,7 @@
             (set_local $i)
           )
         )
-        (br 0 $loop)
+        (br $loop)
       )
     )
     (get_local $res)
@@ -64,7 +64,7 @@
         i64.const 0
         i64.eq
         if
-          br 0 $done
+          br $done
         else
           get_local $i
           get_local $res
@@ -75,7 +75,7 @@
           i64.sub
           set_local $i
         end
-        br 0 $loop
+        br $loop
       end
     end
     get_local $res
@@ -90,7 +90,7 @@
       (loop $loop
         (i64.eq (get_local $i) (i64.const 0))
         (if
-          (then (br 0 $done))
+          (then (br $done))
           (else
             (i64.mul (get_local $i) (get_local $res))
             (set_local $res)
@@ -113,14 +113,14 @@
       loop $loop
         (i64.eq (get_local $i) (i64.const 0))
         if
-          br 0 $done
+          br $done
         else
           (i64.mul (get_local $i) (get_local $res))
           set_local $res
           (i64.sub (get_local $i) (i64.const 1))
           set_local $i
         end
-        br 0 $loop
+        br $loop
       end
     end
     get_local $res

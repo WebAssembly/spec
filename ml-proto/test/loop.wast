@@ -10,41 +10,56 @@
 
   (func (export "singular") (result i32)
     (loop (nop))
-    (loop (i32.const 7))
+    (loop i32 (i32.const 7))
   )
 
   (func (export "multi") (result i32)
     (loop (call $dummy) (call $dummy) (call $dummy) (call $dummy))
-    (loop (call $dummy) (call $dummy) (call $dummy) (i32.const 8))
+    (loop i32 (call $dummy) (call $dummy) (call $dummy) (i32.const 8))
   )
 
   (func (export "nested") (result i32)
-    (loop (loop (call $dummy) (block) (nop)) (loop (call $dummy) (i32.const 9)))
+    (loop i32
+      (loop (call $dummy) (block) (nop))
+      (loop i32 (call $dummy) (i32.const 9))
+    )
   )
 
   (func (export "deep") (result i32)
-    (loop (block (loop (block (loop (block (loop (block (loop (block
-      (loop (block (loop (block (loop (block (loop (block (loop (block
-        (loop (block (loop (block (loop (block (loop (block (loop (block
-          (loop (block (loop (block (loop (block (loop (block (loop (block
-            (loop (block (loop (block (loop (call $dummy) (i32.const 150))))))
-          ))))))))))
-        ))))))))))
-      ))))))))))
-    ))))))))))
+    (loop i32 (block i32 (loop i32 (block i32 (loop i32 (block i32
+      (loop i32 (block i32 (loop i32 (block i32 (loop i32 (block i32
+        (loop i32 (block i32 (loop i32 (block i32 (loop i32 (block i32
+          (loop i32 (block i32 (loop i32 (block i32 (loop i32 (block i32
+            (loop i32 (block i32 (loop i32 (block i32 (loop i32 (block i32
+              (loop i32 (block i32 (loop i32 (block i32 (loop i32 (block i32
+                (loop i32 (block i32 (loop i32 (block i32 (loop i32 (block i32
+                  (loop i32 (block i32 (call $dummy) (i32.const 150)))
+                ))))))
+              ))))))
+            ))))))
+          ))))))
+        ))))))
+      ))))))
+    ))))))
   )
 
   (func (export "as-unary-operand") (result i32)
-    (i32.ctz (loop (call $dummy) (i32.const 13)))
+    (i32.ctz (loop i32 (call $dummy) (i32.const 13)))
   )
   (func (export "as-binary-operand") (result i32)
-    (i32.mul (loop (call $dummy) (i32.const 3)) (loop (call $dummy) (i32.const 4)))
+    (i32.mul
+      (loop i32 (call $dummy) (i32.const 3))
+      (loop i32 (call $dummy) (i32.const 4))
+    )
   )
   (func (export "as-test-operand") (result i32)
-    (i32.eqz (loop (call $dummy) (i32.const 13)))
+    (i32.eqz (loop i32 (call $dummy) (i32.const 13)))
   )
   (func (export "as-compare-operand") (result i32)
-    (f32.gt (loop (call $dummy) (f32.const 3)) (loop (call $dummy) (f32.const 3)))
+    (f32.gt
+      (loop f32 (call $dummy) (f32.const 3))
+      (loop f32 (call $dummy) (f32.const 3))
+    )
   )
 
   (func (export "break-bare") (result i32)
@@ -55,11 +70,11 @@
     (i32.const 19)
   )
   (func (export "break-value") (result i32)
-    (block (loop (br 1 (i32.const 18)) (br 0) (i32.const 19)))
+    (block i32 (loop i32 (br 1 (i32.const 18)) (br 0) (i32.const 19)))
   )
   (func (export "break-repeated") (result i32)
-    (block
-      (loop
+    (block i32
+      (loop i32
         (br 1 (i32.const 18))
         (br 1 (i32.const 19))
         (br_if 1 (i32.const 20) (i32.const 0))
@@ -74,19 +89,19 @@
   (func (export "break-inner") (result i32)
     (local i32)
     (set_local 0 (i32.const 0))
-    (set_local 0 (i32.add (get_local 0) (block (loop (block (br 2 (i32.const 0x1)))))))
-    (set_local 0 (i32.add (get_local 0) (block (loop (loop (br 2 (i32.const 0x2)))))))
-    (set_local 0 (i32.add (get_local 0) (block (loop (block (loop (br 1 (i32.const 0x4))))))))
-    (set_local 0 (i32.add (get_local 0) (block (loop (i32.ctz (br 1 (i32.const 0x8)))))))
-    (set_local 0 (i32.add (get_local 0) (block (loop (i32.ctz (loop (br 2 (i32.const 0x10))))))))
+    (set_local 0 (i32.add (get_local 0) (block i32 (loop i32 (block i32 (br 2 (i32.const 0x1)))))))
+    (set_local 0 (i32.add (get_local 0) (block i32 (loop i32 (loop i32 (br 2 (i32.const 0x2)))))))
+    (set_local 0 (i32.add (get_local 0) (block i32 (loop i32 (block i32 (loop i32 (br 1 (i32.const 0x4))))))))
+    (set_local 0 (i32.add (get_local 0) (block i32 (loop i32 (i32.ctz (br 1 (i32.const 0x8)))))))
+    (set_local 0 (i32.add (get_local 0) (block i32 (loop i32 (i32.ctz (loop i32 (br 2 (i32.const 0x10))))))))
     (get_local 0)
   )
   (func (export "cont-inner") (result i32)
     (local i32)
     (set_local 0 (i32.const 0))
-    (set_local 0 (i32.add (get_local 0) (loop (loop (br 1)))))
-    (set_local 0 (i32.add (get_local 0) (loop (i32.ctz (br 0)))))
-    (set_local 0 (i32.add (get_local 0) (loop (i32.ctz (loop (br 1))))))
+    (set_local 0 (i32.add (get_local 0) (loop i32 (loop i32 (br 1)))))
+    (set_local 0 (i32.add (get_local 0) (loop i32 (i32.ctz (br 0)))))
+    (set_local 0 (i32.add (get_local 0) (loop i32 (i32.ctz (loop i32 (br 1))))))
     (get_local 0)
   )
 
@@ -225,19 +240,6 @@
 )
 
 (assert_invalid
-  (module (func $type-binary (result i64)
-    (loop (i64.const 1) (i64.const 2)) i64.add
-  ))
-  "invalid result arity"
-)
-(assert_invalid
-  (module (func $type-binary-with-nop (result i32)
-    (loop (nop) (i32.const 7) (nop) (i32.const 8)) i32.add
-  ))
-  "invalid result arity"
-)
-
-(assert_invalid
   (module (func $type-value-void-vs-num (result i32)
     (loop (nop))
   ))
@@ -250,7 +252,7 @@
   "type mismatch"
 )
 
-(; TODO(stack): Should these become legal?
+(; TODO(stack): soft failure
 (assert_invalid
   (module (func $type-value-void-vs-num-after-break (result i32)
     (loop (br 1 (i32.const 1)) (nop))
@@ -278,28 +280,10 @@
   "type mismatch"
 )
 
-(assert_invalid
-  (module (func $type-cont-void-vs-empty (result i32)
-    (loop (br 0 (nop)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-cont-num-vs-empty (result i32)
-    (loop (br 0 (i32.const 0)))
-  ))
-  "type mismatch"
-)
-
-(assert_invalid
-  (module (func $type-cont-nested-void-vs-empty
-    (block (loop (loop (br 0 (nop))) (br 1)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-cont-nested-num-vs-empty
-    (block (loop (loop (br 0 (i32.const 1))) (br 1)))
-  ))
-  "type mismatch"
-)
+;; TODO(stack): move these elsewhere
+(module (func $type-cont-num-vs-void
+  (loop (i32.const 0) (br 0))
+))
+(module (func $type-cont-nested-num-vs-void
+  (block (loop (i32.const 1) (loop (i32.const 1) (br 2)) (br 1)))
+))

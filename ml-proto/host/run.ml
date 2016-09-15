@@ -104,6 +104,7 @@ let input_from get_script run =
   | Eval.Link (at, msg) -> error at "link failure" msg
   | Eval.Trap (at, msg) -> error at "runtime trap" msg
   | Eval.Crash (at, msg) -> error at "runtime crash" msg
+  | Encode.Code (at, msg) -> error at "encoding error" msg
   | IO (at, msg) -> error at "i/o error" msg
   | Assert (at, msg) -> error at "assertion failure" msg
   | Abort _ -> false

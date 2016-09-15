@@ -126,7 +126,7 @@ let assert_return lits ts at =
     [ Const lit @@ at;
       Compare (eq_of (Values.type_of lit.it)) @@ at;
       Test (Values.I32 I32Op.Eqz) @@ at;
-      BrIf (0, 0l @@ at) @@ at ]
+      BrIf (0l @@ at) @@ at ]
   in [], List.flatten (List.rev_map test lits)
 
 let assert_return_nan ts at =
@@ -136,7 +136,7 @@ let assert_return_nan ts at =
     [ GetLocal (var i) @@ at;
       GetLocal (var i) @@ at;
       Compare (eq_of t) @@ at;
-      BrIf (0, 0l @@ at) @@ at ]
+      BrIf (0l @@ at) @@ at ]
   in ts, List.flatten (List.mapi init ts @ List.mapi test ts)
 
 let wrap module_name item_name wrap_action wrap_assertion at =
@@ -148,7 +148,9 @@ let wrap module_name item_name wrap_action wrap_assertion at =
   let ekind = FuncExport @@ at in
   let exports = [{name = "run"; ekind; item} @@ at] in
   let body =
-    [Block (action @ assertion @ [Return @@ at]) @@ at; Unreachable @@ at] in
+    [ Block ([], action @ assertion @ [Return @@ at]) @@ at;
+      Unreachable @@ at ]
+  in
   let funcs = [{ftype = 0l @@ at; locals; body} @@ at] in
   let m = {empty_module with types; funcs; imports; exports} @@ at in
   Encode.encode m

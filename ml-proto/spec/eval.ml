@@ -66,8 +66,8 @@ type eval_context = instr list * value stack * block stack * call stack
 and  call_context = instr list * value stack * block stack
 and block_context = instr list * value stack
 
-and block = {target : instr list; bcontext : block_context}
-and call = {instance : instance; locals : value list; arity : int;
+and block = {target : instr list; barity : int; bcontext : block_context}
+and call = {instance : instance; locals : value list; carity : int;
   ccontext : call_context}
 
 let resource_limit = 1000
@@ -151,8 +151,8 @@ let eval_call (clos : closure) (es, vs, bs, cs : eval_context) at =
   match clos with
   | AstFunc (inst, f) ->
     let locals = List.rev args @ List.map default_value f.it.locals in
-    [Block f.it.body @@ f.at], [], [],
-      {instance = !inst; locals; arity = m; ccontext = es, vs', bs} :: cs
+    [Block (out, f.it.body) @@ f.at], [], [],
+      {instance = !inst; locals; carity = m; ccontext = es, vs', bs} :: cs
 
   | HostFunc (t, f) ->
     try es, List.rev (f (List.rev args)) @ vs', bs, cs
@@ -169,40 +169,40 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
   | Drop, v :: vs', _, _ ->
     es, vs', bs, cs
 
-  | Block es', vs, bs, _ ->
-    es', [], {target = []; bcontext = es, vs} :: bs, cs
+  | Block (ts, es'), vs, bs, _ ->
+    es', [], {target = []; barity = List.length ts; bcontext = es, vs} :: bs, cs
 
-  | Loop es', vs, bs, _ ->
-    es', [], {target = [e]; bcontext = es, vs} :: bs, cs
+  | Loop (ts, es'), vs, bs, _ ->
+    es', [], {target = [e]; barity = 0; bcontext = es, vs} :: bs, cs
 
-  | Br (n, x), vs, bs, _ ->
+  | Br x, vs, bs, _ ->
     let bs' = drop32 x.it bs e.at in
     let b = List.hd (take 1 bs' e.at) in
     let es', vs' = b.bcontext in
-    b.target @ es', take n vs e.at @ vs', drop 1 bs' e.at, cs
+    b.target @ es', take b.barity vs e.at @ vs', drop 1 bs' e.at, cs
 
-  | BrIf (n, x), I32 0l :: vs', _, _ ->
+  | BrIf x, I32 0l :: vs', _, _ ->
     es, vs', bs, cs
 
-  | BrIf (n, x), I32 i :: vs', _, _ ->
-    (Br (n, x) @@ e.at) :: es, vs', bs, cs
+  | BrIf x, I32 i :: vs', _, _ ->
+    (Br x @@ e.at) :: es, vs', bs, cs
 
-  | BrTable (n, xs, x), I32 i :: vs', _, _
+  | BrTable (xs, x), I32 i :: vs', _, _
       when I32.ge_u i (Lib.List32.length xs) ->
-    (Br (n, x) @@ e.at) :: es, vs', bs, cs
+    (Br x @@ e.at) :: es, vs', bs, cs
 
-  | BrTable (n, xs, x), I32 i :: vs', _, _ ->
-    (Br (n, Lib.List32.nth xs i) @@ e.at) :: es, vs', bs, cs
+  | BrTable (xs, x), I32 i :: vs', _, _ ->
+    (Br (Lib.List32.nth xs i) @@ e.at) :: es, vs', bs, cs
 
   | Return, vs, _, c :: cs' ->
     let es', vs', bs' = c.ccontext in
-    es', take c.arity vs e.at @ vs', bs', cs'
+    es', take c.carity vs e.at @ vs', bs', cs'
 
-  | If (es1, es2), I32 0l :: vs', _, _ ->
-    (Block es2 @@ e.at) :: es, vs', bs, cs
+  | If (ts, es1, es2), I32 0l :: vs', _, _ ->
+    (Block (ts, es2) @@ e.at) :: es, vs', bs, cs
 
-  | If (es1, es2), I32 i :: vs', _, _ ->
-    (Block es1 @@ e.at) :: es, vs', bs, cs
+  | If (ts, es1, es2), I32 i :: vs', _, _ ->
+    (Block (ts, es1) @@ e.at) :: es, vs', bs, cs
 
   | Select, I32 0l :: v2 :: v1 :: vs', _, _ ->
     es, v2 :: vs', bs, cs
@@ -304,8 +304,8 @@ let rec eval_seq (es, vs, bs, cs : eval_context) =
     eval_seq (es', vs @ vs', bs', cs)
 
   | [], [], c :: cs' ->
-(*    if List.length vs <> c.arity then
-      Crash.error no_region "wrong number of values on stack";*)
+    if List.length vs <> c.carity then
+      Crash.error no_region "wrong number of return values on stack";
     let es', vs', bs' = c.ccontext in
     eval_seq (es', vs @ vs', bs', cs')
 
@@ -322,7 +322,7 @@ let eval_func (clos : closure) (vs : value list) at : value list =
   List.rev (eval_seq (eval_call clos ([], List.rev vs, [], []) at))
 
 let eval_const inst const =
-  let c = {instance = inst; locals = []; arity = 1; ccontext = [], [], []} in
+  let c = {instance = inst; locals = []; carity = 1; ccontext = [], [], []} in
   List.hd (eval_seq (const.it, [], [], [c]))
 
 let const (m : module_) const =
