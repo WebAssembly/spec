@@ -61,6 +61,8 @@ Either way, in order to run the test suite you'll need to have Python installed.
 
 ## Synopsis
 
+#### Running Modules or Scripts
+
 You can call the executable with
 
 ```
@@ -73,6 +75,8 @@ By default, the interpreter validates all modules.
 The `-u` option selects "unchecked mode", which skips validation and runs code as is.
 Runtime type errors will be captured and reported appropriately.
 
+#### Converting Modules or Scripts
+
 A file prefixed by `-o` is taken to be an output file. Depending on its extension, this will write out the preceding module definition in either S-expression or binary format. This option can be used to convert between the two in both directions, e.g.:
 
 ```
@@ -84,11 +88,27 @@ In the second case, the produced script contains exactly one module definition.
 The `-d` option selects "dry mode" and ensures that the input module is not run, even if it has a start section.
 In addition, the `-u` option for "unchecked mode" can be used to convert even modules that do not validate.
 
+The interpreter can also convert entire test scripts:
+
+```
+wasm -d script.wast -o script.bin.wast
+wasm -d script.wast -o script2.wast
+wasm -d script.wast -o script.js
+```
+
+The first creates a new test scripts where all embedded modules are converted to binary, the second one where all are converted to textual.
+
+The last invocation produces an equivalent, self-contained JavaScript test file.
+
+#### Command Line Expressions
+
 Finally, the option `-e` allows to provide arbitrary script commands directly on the command line. For example:
 
 ```
 wasm module.wasm -e '(invoke "foo")'
 ```
+
+#### Interactive Mode
 
 If neither a file nor any of the previous options is given, you'll land in the REPL and can enter script commands interactively. You can also get into the REPL by explicitly passing `-` as a file name. You can do that in combination to giving a module file, so that you can then invoke its exports interactively, e.g.:
 
@@ -240,31 +260,40 @@ script: <cmd>*
 
 cmd:
   <module>                                  ;; define, validate, and initialize module
-  <action>                                  ;; perform action and print results
   ( register <string> <name>? )             ;; register module for imports
-  ( assert_return <action> <expr>* )        ;; assert action has expected results
-  ( assert_return_nan <action> )            ;; assert action results in NaN
-  ( assert_trap <action> <failure> )        ;; assert action traps with given failure string
-  ( assert_invalid <module> <failure> )     ;; assert module is invalid with given failure string
-  ( assert_unlinkable <module> <failure> )  ;; assert module fails to link module with given failure string
-  ( input <string> )                        ;; read script or module from file
-  ( output <name>? <string>? )              ;; output module to stout or file
+module with given failure string
+  <action>                                  ;; perform action and print results
+  <assertion>                               ;; assert result of an action
+  <meta>                                    ;; meta command
 
 action:
   ( invoke <name>? <string> <expr>* )       ;; invoke function export
   ( get <name>? <string> )                  ;; get global export
-```
 
+assertion:
+  ( assert_return <action> <expr>* )        ;; assert action has expected results
+  ( assert_return_nan <action> )            ;; assert action results in NaN
+  ( assert_trap <action> <failure> )        ;; assert action traps with given failure string
+  ( assert_malformed <module> <failure> )   ;; assert module cannot be decoded with given failure string
+  ( assert_invalid <module> <failure> )     ;; assert module is invalid with given failure string
+  ( assert_unlinkable <module> <failure> )  ;; assert module fails to link
+
+meta:
+  ( script <name>? <script> )               ;; name a subscript
+  ( input <name>? <string> )                ;; read script or module from file
+  ( output <name>? <string>? )              ;; output module to stout or file
+```
 Commands are executed in sequence. Commands taking an optional module name refer to the most recently defined module if no name is given. They are only possible after a module has been defined.
 
 After a module is _registered_ under a string name it is available for importing in other modules.
 
-The input and output commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed.
+There are also a number of meta commands.
+The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta are expanded in place (`input`, recursively) or elided (`output`) in the named script.
 
-Again, this is only a meta-level for testing, and not a part of the language proper.
+The `input` and `output` meta commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a script where module definitions are in binary.
 
-The interpreter also supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, `invoke` commands are ignored (and not needed).
-
+The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
+It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.
 
 ## Abstract Syntax
 
