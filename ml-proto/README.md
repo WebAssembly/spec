@@ -1,19 +1,16 @@
 # WebAssembly Interpreter
 
-This repository implements a prototypical reference interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed (although it should be reasonably fast). Hopefully, it can be useful as a playground for trying out ideas and a device for nailing down the exact semantics. For that purpose, the code is written in a fairly declarative, "speccy" way.
+This repository implements a reference interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down the exact semantics, and as a proxy for the (yet to be produced) formal specification of WebAssembly. For that purpose, the code is written in a fairly declarative, "speccy" way.
 
 Currently, it can
 
-* *parse* a simple S-expression format,
-* *decode* the binary format,
-* *validate* modules defined in it,
-* *execute* invocations to functions exported by a module,
-* *encode* the binary format,
-* *prettyprint* the S-expression format.
+* *decode*/*parse* and *validate* modules in binary or text format
+* *execute* test scripts with assertions about modules
+* *convert* between binary and text format (both directions)
+* *export* test scripts to self-contained JavaScript test cases
+* *run* as an interactive interpreter
 
-The S-expression format is a (very dumb) form of *script* that cannot just define a module, but in fact a sequence of them, and a batch of invocations, assertions, and conversions to each one. As such it is different from the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
-
-The interpreter can also be run as a REPL, allowing to enter pieces of scripts interactively.
+The text format defines modules in S-expression syntax. Moreover, it is generalised to a (very dumb) form of *script* that can define multiples module and a batch of invocations, assertions, and conversions between them. As such it is richer than the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
 
 
 ## Building
