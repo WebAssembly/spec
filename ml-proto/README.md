@@ -211,11 +211,11 @@ The interpreter also supports a "dry" mode (flag `-d`), in which modules are onl
 
 ## Abstract Syntax and Kernel Syntax
 
-The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/master/AstSemantics.md), is defined in [ast.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/ast.ml).
+The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/master/AstSemantics.md), is defined in [ast.ml](spec/ast.ml).
 
-However, to simplify the implementation, this AST representation is first "desugared" into a more minimal <i>kernel</i> language that is a subset of the full language. For example, conditionals with no else-branch are desugared into conditionals with `nop` for their else-branch, such that in the kernel language, all conditionals have two branches. The desugaring rules are sketched in the comments of the S-expression grammar given above.
+However, to simplify the implementation, this AST representation is first "desugared" into a more minimal *kernel* language that is a subset of the full language. For example, conditionals with no else-branch are desugared into conditionals with `nop` for their else-branch, such that in the kernel language, all conditionals have two branches. The desugaring rules are sketched in the comments of the S-expression grammar given above.
 
-The representation for that kernel language AST is defined in [kernel.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/kernel.ml). Besides having fewer constructs, it also raises the level of abstraction further, e.g., by grouping related operators, or decomposing the syntactic structure of operators themselves.
+The representation for that kernel language AST is defined in [kernel.ml](spec/kernel.ml). Besides having fewer constructs, it also raises the level of abstraction further, e.g., by grouping related operators, or decomposing the syntactic structure of operators themselves.
 
 
 ## Implementation
