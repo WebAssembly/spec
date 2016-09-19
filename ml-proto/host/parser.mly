@@ -164,7 +164,7 @@ let inline_type c t at =
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token MODULE TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
 %token SCRIPT REGISTER INVOKE GET
-%token ASSERT_MALFORMED ASSERT_INVALID ASSERT_UNLINKABLE
+%token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
 %token ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP
 %token INPUT OUTPUT
 %token EOF
@@ -686,6 +686,8 @@ assertion :
     { AssertMalformed (snd $3, $4) @@ at () }
   | LPAR ASSERT_INVALID module_ TEXT RPAR
     { AssertInvalid (snd $3, $4) @@ at () }
+  | LPAR ASSERT_SOFT_INVALID module_ TEXT RPAR
+    { AssertSoftInvalid (snd $3, $4) @@ at () }
   | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR
     { AssertUnlinkable (snd $3, $4) @@ at () }
   | LPAR ASSERT_RETURN action const_list RPAR { AssertReturn ($3, $4) @@ at () }

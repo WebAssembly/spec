@@ -875,13 +875,13 @@
   )
   (func (export "as-br_if-value") (result i32)
     (block i32
-      (br_if 0 (br_table 0 (i32.const 8) (i32.const 0)) (i32.const 1))
+      (drop (br_if 0 (br_table 0 (i32.const 8) (i32.const 0)) (i32.const 1)))
       (i32.const 7)
     )
   )
   (func (export "as-br_if-value-cond") (result i32)
     (block i32
-      (br_if 0 (i32.const 6) (br_table 0 0 (i32.const 9) (i32.const 0)))
+      (drop (br_if 0 (i32.const 6) (br_table 0 0 (i32.const 9) (i32.const 0))))
       (i32.const 7)
     )
   )
@@ -1142,7 +1142,12 @@
           (drop
             (block i32
               (drop (i32.const 4))
-              (br_if 0 (br_table 0 1 2 (i32.const 8) (get_local 0)) (i32.const 1))
+              (drop
+                (br_if 0
+                  (br_table 0 1 2 (i32.const 8) (get_local 0))
+                  (i32.const 1)
+                )
+              )
               (i32.const 32)
             )
           )
@@ -1158,7 +1163,9 @@
         (i32.const 1)
         (block i32
           (drop (i32.const 2))
-          (br_if 0 (i32.const 4) (br_table 0 1 0 (i32.const 8) (get_local 0)))
+          (drop
+            (br_if 0 (i32.const 4) (br_table 0 1 0 (i32.const 8) (get_local 0)))
+          )
           (i32.const 16)
         )
       )
@@ -1386,15 +1393,6 @@
 (module (func $type-arg-num-vs-void
   (block (br_table 0 (i32.const 0) (i32.const 1)))
 ))
-
-(; TODO(stack): soft failure
-(assert_invalid
-  (module (func $type-arg-poly-vs-empty
-    (block (br_table 0 (unreachable) (i32.const 1)))
-  ))
-  "type mismatch"
-)
-;)
 
 (assert_invalid
   (module (func $type-arg-void-vs-num (result i32)
