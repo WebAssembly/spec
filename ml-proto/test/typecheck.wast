@@ -1,8 +1,5 @@
 ;; TODO: move all tests in this file to appropriate operator-specific files.
 
-;; at least one valid module is required for the testing framework
-(module)
-
 (assert_invalid
   (module (func $type-unary-operand-missing
     (i32.eqz) (drop)

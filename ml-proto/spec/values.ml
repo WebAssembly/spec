@@ -36,7 +36,7 @@ let string_of_value = function
 
 let string_of_values = function
   | [v] -> string_of_value v
-  | vs -> "(" ^ String.concat " " (List.map string_of_value vs) ^ ")"
+  | vs -> "[" ^ String.concat " " (List.map string_of_value vs) ^ "]"
 
 
 (* Injection & projection *)

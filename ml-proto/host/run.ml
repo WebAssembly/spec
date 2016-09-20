@@ -39,9 +39,9 @@ let dispatch_file_ext on_binary on_binary_sexpr on_sexpr on_js file =
 
 (* Output *)
 
-let create_binary_file file m script =
+let create_binary_file file _ get_module =
   trace ("Encoding (" ^ file ^ ")...");
-  let s = Encode.encode m in
+  let s = Encode.encode (get_module ()) in
   let oc = open_out_bin file in
   try
     trace "Writing...";
@@ -49,9 +49,9 @@ let create_binary_file file m script =
     close_out oc
   with exn -> close_out oc; raise exn
 
-let create_sexpr_file mode file m script =
+let create_sexpr_file mode file get_script _ =
   trace ("Formatting (" ^ file ^ ")...");
-  let sexprs = Arrange.script mode script in
+  let sexprs = Arrange.script mode (get_script ()) in
   let oc = open_out file in
   try
     trace "Writing...";
@@ -59,9 +59,9 @@ let create_sexpr_file mode file m script =
     close_out oc
   with exn -> close_out oc; raise exn
 
-let create_js_file file m script =
+let create_js_file file get_script _ =
   trace ("Converting (" ^ file ^ ")...");
-  let js = Js.of_script script in
+  let js = Js.of_script (get_script ()) in
   let oc = open_out file in
   try
     trace "Writing...";
@@ -76,9 +76,9 @@ let output_file =
     (create_sexpr_file `Textual)
     create_js_file
 
-let output_stdout m =
+let output_stdout get_module =
   trace "Formatting...";
-  let sexpr = Arrange.module_ m in
+  let sexpr = Arrange.module_ (get_module ()) in
   trace "Printing...";
   Sexpr.output stdout !Flags.width sexpr
 
@@ -411,11 +411,13 @@ and run_meta cmd =
 
   | Output (x_opt, Some file) ->
     (try
-      output_file file (lookup_module x_opt cmd.at) (lookup_script x_opt cmd.at)
+      output_file file
+        (fun () -> lookup_script x_opt cmd.at)
+        (fun () -> lookup_module x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
 
   | Output (x_opt, None) ->
-    (try output_stdout (lookup_module x_opt cmd.at)
+    (try output_stdout (fun () -> lookup_module x_opt cmd.at)
     with Sys_error msg -> IO.error cmd.at msg)
 
 and run_script script =

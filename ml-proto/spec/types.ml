@@ -35,7 +35,7 @@ let string_of_value_type = function
 
 let string_of_value_types = function
   | [t] -> string_of_value_type t
-  | ts -> "(" ^ String.concat " " (List.map string_of_value_type ts) ^ ")"
+  | ts -> "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
 
 let string_of_elem_type = function
   | AnyFuncType -> "anyfunc"
