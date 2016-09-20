@@ -257,29 +257,29 @@ In order to be able to check and run modules for testing purposes, the S-express
 script: <cmd>*
 
 cmd:
-  <module>                                  ;; define, validate, and initialize module
-  ( register <string> <name>? )             ;; register module for imports
+  <module>                                   ;; define, validate, and initialize module
+  ( register <string> <name>? )              ;; register module for imports
 module with given failure string
-  <action>                                  ;; perform action and print results
-  <assertion>                               ;; assert result of an action
-  <meta>                                    ;; meta command
+  <action>                                   ;; perform action and print results
+  <assertion>                                ;; assert result of an action
+  <meta>                                     ;; meta command
 
 action:
-  ( invoke <name>? <string> <expr>* )       ;; invoke function export
-  ( get <name>? <string> )                  ;; get global export
+  ( invoke <name>? <string> <expr>* )        ;; invoke function export
+  ( get <name>? <string> )                   ;; get global export
 
 assertion:
-  ( assert_return <action> <expr>* )        ;; assert action has expected results
-  ( assert_return_nan <action> )            ;; assert action results in NaN
-  ( assert_trap <action> <failure> )        ;; assert action traps with given failure string
-  ( assert_malformed <module> <failure> )   ;; assert module cannot be decoded with given failure string
-  ( assert_invalid <module> <failure> )     ;; assert module is invalid with given failure string
-  ( assert_unlinkable <module> <failure> )  ;; assert module fails to link
+  ( assert_return <action> <expr>* )         ;; assert action has expected results
+  ( assert_return_nan <action> )             ;; assert action results in NaN
+  ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
+  ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
+  ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
+  ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
 
 meta:
-  ( script <name>? <script> )               ;; name a subscript
-  ( input <name>? <string> )                ;; read script or module from file
-  ( output <name>? <string>? )              ;; output module to stout or file
+  ( script <name>? <script> )                ;; name a subscript
+  ( input <name>? <string> )                 ;; read script or module from file
+  ( output <name>? <string>? )               ;; output module to stout or file
 ```
 Commands are executed in sequence. Commands taking an optional module name refer to the most recently defined module if no name is given. They are only possible after a module has been defined.
 
@@ -314,15 +314,17 @@ The implementation consists of the following parts:
 
 * *Abstract Syntax* (`ast.ml`, `operators.ml`, `types.ml`, `source.ml[i]`). Notably, the `phrase` wrapper type around each AST node carries the source position information.
 
-* *Parser* (`lexer.mll`, `parser.mly`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing.
+* *Parser* (`lexer.mll`, `parser.mly`, `parse.ml[i]`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing.
 
-* *Pretty Printer* (`arrange.ml[i]`, `sexpr.ml[i]`). Turns a module AST back into the textual S-expression format.
+* *Pretty Printer* (`arrange.ml[i]`, `sexpr.ml[i]`). Turns a module or script AST back into the textual S-expression format.
 
 * *Decoder*/*Encoder* (`decode.ml[i]`, `encode.ml[i]`). The former parses the binary format and turns it into an AST, the latter does the inverse.
 
 * *Validator* (`check.ml[i]`). Does a recursive walk of the AST, passing down the *expected* type for expressions, and checking each expression against that. An expected empty type can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
 
-* *Evaluator* (`eval.ml[i]`, `values.ml`, `eval_numeric.ml[i]`, `int.ml`, `float.ml`, `memory.ml[i]`, and a few more). Evaluation of control transfer (`br` and `return`) is implemented using local exceptions as "labels". While these are allocated dynamically in the code and addressed via a stack, that is merely to simplify the code. In reality, these would be static jumps.
+* *Evaluator* (`eval.ml[i]`, `values.ml`, `eval_numeric.ml[i]`, `int.ml`, `float.ml`, `table.ml[i]`, `memory.ml[i]`, and a few more). Implements evaluation as a small-step semantics that rewrites a program one computation step at a time.
+
+* *JS Generator* (`js.ml[i]`). Converts a script to equivalent JavaScript.
 
 * *Driver* (`main.ml`, `run.ml[i]`, `script.ml[i]`, `error.ml`, `print.ml[i]`, `flags.ml`). Executes scripts, reports results or errors, etc.
 
