@@ -122,8 +122,8 @@ The implementation consumes a WebAssembly AST given in S-expression syntax. Here
 
 ```
 value: <int> | <float>
-var: <int> | $<name>
-name: (<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
+var: <int> | <name>
+name: $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex>)*"
 
 type: i32 | i64 | f32 | f64
