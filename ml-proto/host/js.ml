@@ -197,7 +197,7 @@ let of_string = of_string_with add_char
 let of_wrapper x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt x_opt in
 	let bs = wrap x name wrap_action wrap_assertion at in
-  "instance(" ^ of_bytes bs ^ ", " ^ "{" ^ x ^ "}).exports.run()"
+  "instance(" ^ of_bytes bs ^ ", " ^ "{$$: " ^ x ^ "[\"exports\"]}).exports.run()"
 
 let of_float z =
   match string_of_float z with
