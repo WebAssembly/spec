@@ -1,6 +1,9 @@
 ;; Functions
 
 (module
+  (type $func_i32 (func (param i32)))
+  (type $func_i64 (func (param i64)))
+
   (import "spectest" "print" (func (param i32)))
   (func (import "spectest" "print") (param i64))
 
@@ -12,6 +15,8 @@
   (func $print_i32-2 (import "spectest" "print") (param i32))
   (func $print_i64-2 (import "spectest" "print") (param i64))
 
+  (table anyfunc (elem $print_i32 $print_i64))
+
   (func (export "print32") (param $i i32)
     (call 0 (get_local $i))
     (call $print_i32_f32
@@ -20,6 +25,7 @@
     )
     (call $print_i32 (get_local $i))
     (call $print_i32-2 (get_local $i))
+    (call_indirect $func_i32 (get_local $i) (i32.const 0))
   )
 
   (func (export "print64") (param $i i64)
@@ -30,6 +36,7 @@
     )
     (call $print_i64 (get_local $i))
     (call $print_i64-2 (get_local $i))
+    (call_indirect $func_i64 (get_local $i) (i32.const 1))
   )
 )
 
@@ -43,11 +50,6 @@
 (assert_unlinkable
   (module (import "spectest" "table" (func)))
   "type mismatch"
-)
-
-(assert_unlinkable
-  (module (import "spectest" "print" (func)) (table anyfunc (elem 0)))
-  "invalid use of host function"
 )
 
 
