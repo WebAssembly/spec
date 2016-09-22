@@ -56,7 +56,11 @@ let encode m =
       if -64L <= i && i < 64L then u8 b
       else (u8 (b lor 0x80); vs64 (Int64.shift_right i 7))
 
-    let vu32 i = vu64 (Int64.of_int32 i)
+    let zext_i32 i =
+      (Int64.logand (Int64.shift_right_logical Int64.minus_one 32)
+                    (Int64.of_int32 i))
+
+    let vu32 i = vu64 (zext_i32 i)
     let vs32 i = vs64 (Int64.of_int32 i)
     let f32 x = u32 (F32.to_bits x)
     let f64 x = u64 (F64.to_bits x)
