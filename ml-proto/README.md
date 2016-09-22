@@ -295,9 +295,9 @@ It also supports an "unchecked" mode (flag `-u`), in which module definitions ar
 
 ## Abstract Syntax
 
-The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/master/AstSemantics.md), is defined in [ast.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/ast.ml).
+The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/master/AstSemantics.md), is defined in [ast.ml](spec/ast.ml).
 
-However, to simplify the implementation, this AST representation represents some of the inner structure of the operators more explicitly. The mapping from the operators as given in the design doc to their structured form is defined in [operators.ml](https://github.com/WebAssembly/spec/blob/master/ml-proto/spec/operators.ml).
+However, to simplify the implementation, this AST representation represents some of the inner structure of the operators more explicitly. The mapping from the operators as given in the design doc to their structured form is defined in [operators.ml](spec/operators.ml).
 
 
 ## Implementation
