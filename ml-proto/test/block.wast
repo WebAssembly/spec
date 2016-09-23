@@ -198,11 +198,6 @@
 )
 ;)
 
-;; TODO(stack): move this elsewhere
-(module (func $type-break-num-vs-void
-  (block (drop (i32.const 66)) (br 0))
-))
-
 (assert_invalid
   (module (func $type-break-last-void-vs-num (result i32)
     (block i32 (br 0))
