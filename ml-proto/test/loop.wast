@@ -64,7 +64,7 @@
 
   (func (export "break-bare") (result i32)
     (block (loop (br 1) (br 0) (unreachable)))
-    (block (loop (drop (br_if 1 (i32.const 1))) (unreachable)))
+    (block (loop (br_if 1 (i32.const 1)) (unreachable)))
     (block (loop (br_table 1 (i32.const 0)) (unreachable)))
     (block (loop (br_table 1 1 1 (i32.const 1)) (unreachable)))
     (i32.const 19)
@@ -125,7 +125,7 @@
     (set_local 1 (i64.const 1))
     (block
       (loop
-        (drop (br_if 1 (i64.eqz (get_local 0))))
+        (br_if 1 (i64.eqz (get_local 0)))
         (set_local 1 (i64.mul (get_local 0) (get_local 1)))
         (set_local 0 (i64.sub (get_local 0) (i64.const 1)))
         (br 0)
@@ -140,7 +140,7 @@
     (set_local 2 (i64.const 2))
     (block
       (loop
-        (drop (br_if 1 (i64.gt_u (get_local 2) (get_local 0))))
+        (br_if 1 (i64.gt_u (get_local 2) (get_local 0)))
         (set_local 1 (i64.mul (get_local 1) (get_local 2)))
         (set_local 2 (i64.add (get_local 2) (i64.const 1)))
         (br 0)
@@ -153,12 +153,12 @@
     (local f32 f32)
     (block
       (loop
-        (drop (br_if 1 (f32.eq (get_local 0) (f32.const 0))))
+        (br_if 1 (f32.eq (get_local 0) (f32.const 0)))
         (set_local 2 (get_local 1))
         (block
           (loop
-            (drop (br_if 1 (f32.eq (get_local 2) (f32.const 0))))
-            (drop (br_if 3 (f32.lt (get_local 2) (f32.const 0))))
+            (br_if 1 (f32.eq (get_local 2) (f32.const 0)))
+            (br_if 3 (f32.lt (get_local 2) (f32.const 0)))
             (set_local 3 (f32.add (get_local 3) (get_local 2)))
             (set_local 2 (f32.sub (get_local 2) (f32.const 2)))
             (br 0)
