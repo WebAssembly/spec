@@ -1382,11 +1382,6 @@
   "type mismatch"
 )
 
-;; TODO(stack): move this elsewhere
-(module (func $type-arg-num-vs-void
-  (drop (block (br_table 0 (i32.const 0) (i32.const 1))))
-))
-
 (; TODO(stack): soft failure
 (assert_invalid
   (module (func $type-arg-poly-vs-empty
