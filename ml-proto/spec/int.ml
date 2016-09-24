@@ -5,6 +5,7 @@ sig
   val zero : t
   val one : t
   val minus_one : t
+  val max_int : t
   val min_int : t
 
   val neg : t -> t
@@ -69,9 +70,13 @@ sig
   val ge_s : t -> t -> bool
   val ge_u : t -> t -> bool
 
-  val of_int : int -> t
+  val of_int_s : int -> t
+  val of_int_u : int -> t
+  val of_string_s : string -> t
+  val of_string_u : string -> t
   val of_string : string -> t
-  val to_string : t -> string
+  val to_string_s : t -> string
+  val to_string_u : t -> string
 end
 
 module Make (Rep : RepType) : S with type bits = Rep.t and type t = Rep.t =
@@ -105,6 +110,8 @@ struct
   let to_bits x = x
 
   let zero = Rep.zero
+  let one = Rep.one
+  let ten = Rep.of_int 10
 
   (* add, sub, and mul are sign-agnostic and do not trap on overflow. *)
   let add = Rep.add
@@ -168,10 +175,10 @@ struct
     let rec loop acc n =
       if n = Rep.zero then
         Rep.bitwidth
-      else if and_ n (Rep.shift_left Rep.one (Rep.bitwidth - 1)) <> Rep.zero then
-        acc
-      else
+      else if and_ n (Rep.shift_left Rep.one (Rep.bitwidth - 1)) = Rep.zero then
         loop (1 + acc) (Rep.shift_left n 1)
+      else
+        acc
     in Rep.of_int (loop 0 x)
 
   (* ctz is defined for all values, including all-zeros. *)
@@ -207,8 +214,15 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
-  let of_int = Rep.of_int
-  let to_string = Rep.to_string
+  let of_int_s = Rep.of_int
+  let of_int_u i = and_ (Rep.of_int i) (or_ (shl (Rep.of_int max_int) one) one)
+
+  let to_string_s = Rep.to_string
+  let to_string_u i =
+    if i >= Rep.zero then
+      to_string_s i
+    else
+      to_string_s (div_u i ten) ^ to_string_s (rem_u i ten)
 
   (* String conversion that allows leading signs and unsigned values *)
 
@@ -224,7 +238,6 @@ struct
     | 'A' .. 'F' as c ->  0xa + Char.code c - Char.code 'A'
     | _ ->  failwith "of_string"
 
-  let ten = Rep.of_int 10
   let max_upper, max_lower = divrem_u Rep.minus_one ten
 
   let of_string s =
@@ -243,15 +256,27 @@ struct
       parse_dec (i + 1) (add (mul num ten) digit)
     in
     let parse_int i =
+      require (len - i > 0);
       if i + 2 <= len && s.[i] = '0' && s.[i + 1] = 'x'
       then parse_hex (i + 2) zero
       else parse_dec i zero
     in
+    require (len > 0);
     match s.[0] with
     | '+' -> parse_int 1
     | '-' ->
       let n = parse_int 1 in
       require (ge_s (sub n one) minus_one);
-      neg n
+      Rep.neg n
     | _ -> parse_int 0
+
+  let of_string_s s =
+    let n = of_string s in
+    require (s.[0] = '-' || ge_s n Rep.zero);
+    n
+
+  let of_string_u s =
+    let n = of_string s in
+    require (s.[0] != '+' && s.[0] != '-');
+    n
 end

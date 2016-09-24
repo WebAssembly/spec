@@ -39,14 +39,17 @@ let ati i =
 let literal f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
-let int s at =
-  try int_of_string s with Failure _ -> error at "int constant out of range"
+let nat s at =
+  try
+    let n = int_of_string s in
+    if n >= 0 then n else raise (Failure "")
+  with Failure _ -> error at "integer constant out of range"
 
-let int32 s at =
-  try I32.of_string s with Failure _ -> error at "i32 constant out of range"
+let nat32 s at =
+  try I32.of_string_u s with Failure _ -> error at "i32 constant out of range"
 
-let int64 s at =
-  try I64.of_string s with Failure _ -> error at "i64 constant out of range"
+let nat64 s at =
+  try I64.of_string_u s with Failure _ -> error at "i64 constant out of range"
 
 
 (* Symbolic variables *)
@@ -243,8 +246,8 @@ memory_sig :
   | limits { MemoryType $1 }
 ;
 limits :
-  | NAT { {min = int32 $1 (ati 1); max = None} }
-  | NAT NAT { {min = int32 $1 (ati 1); max = Some (int32 $2 (ati 2))} }
+  | NAT { {min = nat32 $1 (ati 1); max = None} }
+  | NAT NAT { {min = nat32 $1 (ati 1); max = Some (nat32 $2 (ati 2))} }
 ;
 
 type_use :
@@ -261,7 +264,7 @@ literal :
 ;
 
 var :
-  | NAT { let at = at () in fun c lookup -> int32 $1 at @@ at }
+  | NAT { let at = at () in fun c lookup -> nat32 $1 at @@ at }
   | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
 ;
 var_list :
@@ -284,11 +287,11 @@ labeling_opt :
 
 offset_opt :
   | /* empty */ { 0l }
-  | OFFSET_EQ_NAT { int32 $1 (at ()) }
+  | OFFSET_EQ_NAT { nat32 $1 (at ()) }
 ;
 align_opt :
   | /* empty */ { None }
-  | ALIGN_EQ_NAT { Some (int $1 (at ())) }
+  | ALIGN_EQ_NAT { Some (nat $1 (at ())) }
 ;
 
 instr :

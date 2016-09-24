@@ -210,8 +210,8 @@ let of_float z =
 
 let of_literal lit =
   match lit.it with
-  | Values.I32 i -> I32.to_string i
-  | Values.I64 i -> "int64(\"" ^ I64.to_string i ^ "\")"
+  | Values.I32 i -> I32.to_string_s i
+  | Values.I64 i -> "int64(\"" ^ I64.to_string_s i ^ "\")"
   | Values.F32 z -> of_float (F32.to_float z)
   | Values.F64 z -> of_float (F64.to_float z)
 

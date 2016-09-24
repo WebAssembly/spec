@@ -41,8 +41,8 @@ let string_of_elem_type = function
   | AnyFuncType -> "anyfunc"
 
 let string_of_limits {min; max} =
-  I32.to_string min ^
-  (match max with None -> "" | Some n -> I32.to_string n)
+  I32.to_string_u min ^
+  (match max with None -> "" | Some n -> I32.to_string_u n)
 
 let string_of_memory_type = function
   | MemoryType lim -> string_of_limits lim
