@@ -266,10 +266,6 @@
 
 (assert_return (invoke "as-grow_memory-size") (i32.const 40))
 
-;; TODO(stack): move these somewhere else
-(module (func $type-value-void-vs-empty (return (nop))))
-(module (func $type-value-num-vs-empty (return (i32.const 0))))
-
 (assert_invalid
   (module (func $type-value-empty-vs-num (result f64) (return)))
   "type mismatch"

@@ -89,6 +89,24 @@
   ))
   "type mismatch"
 )
+(assert_soft_invalid
+  (module (func $type-func-value-num-vs-void-after-return
+    (return) (i32.const 1)
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-func-value-num-vs-num-after-return (result i32)
+    (return (i32.const 1)) (f32.const 0)
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-return-second-num-vs-num (result i32)
+    (return (i32.const 1)) (return (f64.const 1))
+  ))
+  "type mismatch"
+)
 
 (assert_soft_invalid
   (module (func $type-br-second-num-vs-num (result i32)
