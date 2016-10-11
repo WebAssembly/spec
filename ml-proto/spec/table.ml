@@ -10,7 +10,8 @@ type elem_type = Types.elem_type
 type 'a limits = 'a Types.limits
 
 type table' = elem array
-type table = {mutable content : table'; max : size option}
+type table =
+  {mutable content : table'; max : size option; elem_type : elem_type}
 type t = table
 
 exception Bounds
@@ -36,6 +37,8 @@ let host_index_of_int32 i =
 
 (* ========================================================================== *)
 
+let elem_type tab = tab.elem_type
+
 let within_limits size = function
   | None -> true
   | Some max -> I32.le_u size max
@@ -43,9 +46,9 @@ let within_limits size = function
 let create' size =
   Array.make (host_size_of_int32 size) Uninitialized
 
-let create {min; max} =
+let create elem_type {min; max} =
   assert (within_limits min max);
-  {content = create' min; max}
+  {content = create' min; max; elem_type}
 
 let size tab =
   int32_of_host_size (Array.length tab.content)
@@ -62,8 +65,7 @@ let grow tab delta =
   Array.blit tab.content 0 after 0 (Array.length tab.content);
   tab.content <- after
 
-let load tab i t =
-  assert (t = AnyFuncType);
+let load tab i =
   let j = host_index_of_int32 i in
   try tab.content.(j) with Invalid_argument _ -> raise Bounds
 

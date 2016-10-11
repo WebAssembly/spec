@@ -11,6 +11,9 @@ open Sexpr
 let int = string_of_int
 let int32 = Int32.to_string
 let int64 = Int64.to_string
+let nat n = I32.to_string_u (I32.of_int_u n)
+let nat32 = I32.to_string_u
+let nat64 = I64.to_string_u
 
 let add_hex_char buf c = Printf.bprintf buf "\\%02x" (Char.code c)
 let add_char buf c =
@@ -60,8 +63,8 @@ let func_type (FuncType (ins, out)) =
 
 let struct_type = func_type
 
-let limits int {min; max} =
-  String.concat " " (int min :: opt int max)
+let limits nat {min; max} =
+  String.concat " " (nat min :: opt nat max)
 
 let global_type = function
   | GlobalType (t, Immutable) -> atom string_of_value_type t
@@ -190,8 +193,8 @@ let extension = function
 
 let memop name {ty; align; offset; _} =
   value_type ty ^ "." ^ name ^
-  (if offset = 0l then "" else " offset=" ^ int32 offset) ^
-  (if align = size ty then "" else " align=" ^ int align)
+  (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
+  (if align = size ty then "" else " align=" ^ nat align)
 
 let loadop op =
   match op.sz with
@@ -206,7 +209,7 @@ let storeop op =
 
 (* Expressions *)
 
-let var x = Int32.to_string x.it
+let var x = nat32 x.it
 let value v = string_of_value v.it
 let constop v = value_type (type_of v.it) ^ ".const"
 
@@ -254,7 +257,7 @@ let const c =
 
 let func off i f =
   let {ftype; locals; body} = f.it in
-  Node ("func $" ^ string_of_int (off + i),
+  Node ("func $" ^ nat (off + i),
     [Node ("type " ^ var ftype, [])] @
     decls "local" locals @
     list instr body
@@ -269,13 +272,13 @@ let table xs = tab "table" (atom var) xs
 
 let table off i tab =
   let {ttype = TableType (lim, t)} = tab.it in
-  Node ("table $" ^ string_of_int (off + i) ^ " " ^ limits int32 lim,
+  Node ("table $" ^ nat (off + i) ^ " " ^ limits nat32 lim,
     [atom elem_type t]
   )
 
 let memory off i mem =
   let {mtype = MemoryType lim} = mem.it in
-  Node ("memory $" ^ string_of_int (off + i) ^ " " ^ limits int32 lim, [])
+  Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
 let segment head dat seg =
   let {index; offset; init} = seg.it in
@@ -291,15 +294,15 @@ let data seg =
 (* Modules *)
 
 let typedef i t =
-  Node ("type $" ^ string_of_int i, [struct_type t])
+  Node ("type $" ^ nat i, [struct_type t])
 
 let import_kind i k =
   match k.it with
   | FuncImport x ->
-    Node ("func $" ^ string_of_int i, [Node ("type", [atom var x])])
+    Node ("func $" ^ nat i, [Node ("type", [atom var x])])
   | TableImport t -> table 0 i ({ttype = t} @@ k.at)
   | MemoryImport t -> memory 0 i ({mtype = t} @@ k.at)
-  | GlobalImport t -> Node ("global $" ^ string_of_int i, [global_type t])
+  | GlobalImport t -> Node ("global $" ^ nat i, [global_type t])
 
 let import i im =
   let {module_name; item_name; ikind} = im.it in
@@ -322,7 +325,7 @@ let export ex =
 
 let global off i g =
   let {gtype; value} = g.it in
-  Node ("global $" ^ string_of_int (off + i), global_type gtype :: const value)
+  Node ("global $" ^ nat (off + i), global_type gtype :: const value)
 
 
 (* Modules *)
@@ -372,8 +375,8 @@ let binary_module = binary_module_with_var_opt None
 
 let literal lit =
   match lit.it with
-  | Values.I32 i -> Node ("i32.const " ^ I32.to_string i, [])
-  | Values.I64 i -> Node ("i64.const " ^ I64.to_string i, [])
+  | Values.I32 i -> Node ("i32.const " ^ I32.to_string_s i, [])
+  | Values.I64 i -> Node ("i64.const " ^ I64.to_string_s i, [])
   | Values.F32 z -> Node ("f32.const " ^ F32.to_string z, [])
   | Values.F64 z -> Node ("f64.const " ^ F64.to_string z, [])
 

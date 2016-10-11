@@ -14,9 +14,12 @@ let prefix =
   "let spectest = {\n" ^
   "  print: print || ((...xs) => console.log(...xs)),\n" ^
   "  global: 666,\n" ^
-  "};\n" ^  (* TODO: table, memory *)
+  "  table: " ^
+  "new WebAssembly.Table({initial: 10, maximum: 20, element: 'anyfunc'})," ^
+  "  memory: new WebAssembly.Memory({initial: 1, maximum: 2})," ^
+  "};\n" ^
   "\n" ^
-  "let registry = {spectest: spectest};\n" ^
+  "let registry = {spectest};\n" ^
   "let $$;\n" ^
   "\n" ^
   "function register(name, instance) {\n" ^
@@ -204,8 +207,9 @@ let of_string = of_string_with add_char
 
 let of_wrapper x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt x_opt in
-	let bs = wrap x name wrap_action wrap_assertion at in
-  "instance(" ^ of_bytes bs ^ ", " ^ "{" ^ x ^ "}).exports.run()"
+  let bs = wrap x name wrap_action wrap_assertion at in
+  "instance(" ^ of_bytes bs ^ ", " ^ "{" ^ x ^ ": " ^ x ^ ".exports})" ^
+    ".exports.run()"
 
 let of_float z =
   match string_of_float z with
@@ -217,8 +221,8 @@ let of_float z =
 
 let of_literal lit =
   match lit.it with
-  | Values.I32 i -> I32.to_string i
-  | Values.I64 i -> "int64(\"" ^ I64.to_string i ^ "\")"
+  | Values.I32 i -> I32.to_string_s i
+  | Values.I64 i -> "int64(\"" ^ I64.to_string_s i ^ "\")"
   | Values.F32 z -> of_float (F32.to_float z)
   | Values.F64 z -> of_float (F64.to_float z)
 

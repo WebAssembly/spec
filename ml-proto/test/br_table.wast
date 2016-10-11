@@ -1389,11 +1389,6 @@
   "type mismatch"
 )
 
-;; TODO(stack): move this elsewhere
-(module (func $type-arg-num-vs-void
-  (block (br_table 0 (i32.const 0) (i32.const 1)))
-))
-
 (assert_invalid
   (module (func $type-arg-void-vs-num (result i32)
     (block i32 (br_table 0 (nop) (i32.const 1)) (i32.const 1))

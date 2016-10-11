@@ -13,12 +13,12 @@ exception Bounds
 exception SizeOverflow
 exception SizeLimit
 
-val create : size limits -> table
+val create : elem_type -> size limits -> table
+val elem_type : table -> elem_type
 val size : table -> size
 val limits : table -> size limits
 val grow : table -> size -> unit
 
-val load : table -> index -> elem_type -> elem
+val load : table -> index -> elem
 val store : table -> index -> elem -> unit
 val blit : table -> index -> elem list -> unit
-

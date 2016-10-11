@@ -313,13 +313,14 @@ let check_func (c : context) (f : func) =
   check_block c' body out f.at
 
 
-let is_const e =
+let is_const (c : context) (e : instr) =
   match e.it with
-  | Const _ | GetGlobal _ -> true
+  | Const _ -> true
+  | GetGlobal x -> let GlobalType (_, mut) = global c x in mut = Immutable
   | _ -> false
 
 let check_const (c : context) (const : const) (t : value_type) =
-  require (List.for_all is_const const.it) const.at
+  require (List.for_all (is_const c) const.it) const.at
     "constant expression required";
   check_block c const.it [t] const.at
 

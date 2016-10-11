@@ -90,8 +90,8 @@ let table inst x = lookup "table" inst.Instance.tables x
 let memory inst x = lookup "memory" inst.Instance.memories x
 let global inst x = lookup "global" inst.Instance.globals x
 
-let elem inst x i t at =
-  match Table.load (table inst x) i t with
+let elem inst x i at =
+  match Table.load (table inst x) i with
   | Table.Uninitialized ->
     Trap.error at ("uninitialized element " ^ Int32.to_string i)
   | f -> f
@@ -99,7 +99,7 @@ let elem inst x i t at =
     Trap.error at ("undefined element " ^ Int32.to_string i)
 
 let func_elem inst x i at =
-  match elem inst x i AnyFuncType at with
+  match elem inst x i at with
   | Func f -> f
   | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
 
@@ -336,7 +336,7 @@ let create_closure m f =
 
 let create_table tab =
   let {ttype = TableType (lim, t)} = tab.it in
-  Table.create lim  (* TODO: elem_type *)
+  Table.create t lim
 
 let create_memory mem =
   let {mtype = MemoryType lim} = mem.it in
@@ -418,7 +418,8 @@ let init m externals =
     { imports; tables; memories; globals; funcs;
       exports; elems; data; start } = m.it
   in
-  assert (List.length externals = List.length imports);  (* TODO: better exception? *)
+  if List.length externals <> List.length imports then
+    Link.error m.at "wrong number of imports provided for initialisation";
   let fs = List.map (create_closure m) funcs in
   let gs = List.map create_global globals in
   let inst =
@@ -430,11 +431,11 @@ let init m externals =
         globals = gs;
       }
   in
+  List.iter2 (init_global inst) gs globals;
   List.iter (init_closure inst) fs;
   List.iter (check_elem inst) elems;
   List.iter (init_table inst) elems;
   List.iter (init_memory inst) data;
-  List.iter2 (init_global inst) gs globals;
   Lib.Option.app (fun x -> ignore (eval_func (func inst x) [] x.at)) start;
   {inst with exports = List.fold_right (add_export inst) exports inst.exports}
 

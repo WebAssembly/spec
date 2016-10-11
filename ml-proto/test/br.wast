@@ -375,11 +375,6 @@
   "type mismatch"
 )
 
-;; TODO(stack): move this elsewhere
-(module (func $type-arg-num-vs-void
-  (block (i32.const 0) (br 0))
-))
-
 (assert_invalid
   (module (func $type-arg-void-vs-num (result i32)
     (block (br 0 (nop)) (i32.const 1))

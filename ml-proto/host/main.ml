@@ -1,4 +1,4 @@
-let name = "Wasm-" ^ Printf.sprintf "0x%02lx" Encode.version
+let name = "wasm"
 let version = "0.5"
 
 let configure () =
@@ -6,7 +6,9 @@ let configure () =
   Import.register "env" Env.lookup
 
 let banner () =
-  print_endline (name ^ " " ^ version ^ " spec interpreter")
+  print_endline
+    (name ^ "-" ^ Printf.sprintf "0x%02lx" Encode.version ^
+     " " ^ version ^ " reference interpreter")
 
 let usage = "Usage: " ^ name ^ " [option] [file ...]"
 
