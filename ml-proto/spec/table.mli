@@ -16,9 +16,9 @@ exception SizeLimit
 val create : size limits -> table
 val size : table -> size
 val limits : table -> size limits
-val grow : table -> size -> unit
+val grow : table -> size -> unit (* raise SizeOverflow, SizeLimit *)
 
-val load : table -> index -> elem_type -> elem
-val store : table -> index -> elem -> unit
-val blit : table -> index -> elem list -> unit
+val load : table -> index -> elem_type -> elem (* raise Bounds *)
+val store : table -> index -> elem -> unit (* raise Bounds *)
+val blit : table -> index -> elem list -> unit (* raise Bounds *)
 

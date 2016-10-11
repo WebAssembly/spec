@@ -325,9 +325,6 @@ let eval_const inst const =
   let c = {instance = inst; locals = []; carity = 1; ccontext = [], [], []} in
   List.hd (eval_seq (const.it, [], [], [c]))
 
-let const (m : module_) const =
-  eval_const (instance m) const
-
 
 (* Modules *)
 
@@ -364,13 +361,16 @@ let init_table inst seg =
   let {index; offset = e; init} = seg.it in
   let tab = table inst index in
   let offset = i32 (eval_const inst e) e.at in
-  Table.blit tab offset (List.map (fun x -> Func (func inst x)) init)
+  try Table.blit tab offset (List.map (fun x -> Func (func inst x)) init)
+  with Table.Bounds -> Link.error seg.at "elements segment does not fit table"
 
 let init_memory inst seg =
   let {index; offset = e; init} = seg.it in
   let mem = memory inst index in
-  let offset = Int64.of_int32 (i32 (eval_const inst e) e.at) in
-  Memory.blit mem offset init
+  let offset = i32 (eval_const inst e) e.at in
+  let offset64 = Int64.logand (Int64.of_int32 offset) 0xffffffffL in
+  try Memory.blit mem offset64 init
+  with Memory.Bounds -> Link.error seg.at "data segment does not fit memory"
 
 let init_global inst ref glob =
   let {value = e; _} = glob.it in
