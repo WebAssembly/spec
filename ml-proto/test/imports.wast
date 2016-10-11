@@ -64,12 +64,6 @@
   (func (export "get-1") (result i32) (get_global 1))
   (func (export "get-x") (result i32) (get_global $x))
   (func (export "get-y") (result i32) (get_global $y))
-
-  ;; TODO: mutable globals
-  ;; (func (export "set-0") (param i32) (set_global 0 (get_local 0)))
-  ;; (func (export "set-1") (param i32) (set_global 1 (get_local 0)))
-  ;; (func (export "set-x") (param i32) (set_global $x (get_local 0)))
-  ;; (func (export "set-y") (param i32) (set_global $y (get_local 0)))
 )
 
 (assert_return (invoke "get-0") (i32.const 666))
