@@ -631,12 +631,12 @@ module_fields :
         error (List.hd m.imports).at "import after global definition";
       {m with globals = g () :: m.globals; exports = exs @ m.exports} }
   | table module_fields
-    { fun c -> let m = $2 c in let tab, elems, exs = $1 c in
+    { fun c -> let tab, elems, exs = $1 c in let m = $2 c in
       if m.imports <> [] then
         error (List.hd m.imports).at "import after table definition";
       {m with tables = tab :: m.tables; elems = elems @ m.elems; exports = exs @ m.exports} }
   | memory module_fields
-    { fun c -> let m = $2 c in let mem, data, exs = $1 c in
+    { fun c -> let mem, data, exs = $1 c in let m = $2 c in
       if m.imports <> [] then
         error (List.hd m.imports).at "import after memory definition";
       {m with memories = mem :: m.memories; data = data @ m.data; exports = exs @ m.exports} }
