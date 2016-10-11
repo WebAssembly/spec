@@ -464,11 +464,13 @@ table :
   | LPAR TABLE bind_var_opt inline_export_opt table_sig RPAR
     { let at = at () in
       fun c -> $3 c anon_table bind_table;
+      fun () ->
       {ttype = $5} @@ at, [], $4 TableExport c.tables.count c }
   | LPAR TABLE bind_var_opt inline_export_opt elem_type
       LPAR ELEM var_list RPAR RPAR  /* Sugar */
     { let at = at () in
       fun c -> let i = c.tables.count in $3 c anon_table bind_table;
+      fun () ->
       let init = $8 c func in let size = Int32.of_int (List.length init) in
       {ttype = TableType ({min = size; max = Some size}, $5)} @@ at,
       [{index = i @@ at;
@@ -631,7 +633,7 @@ module_fields :
         error (List.hd m.imports).at "import after global definition";
       {m with globals = g () :: m.globals; exports = exs @ m.exports} }
   | table module_fields
-    { fun c -> let tab, elems, exs = $1 c in let m = $2 c in
+    { fun c -> let t = $1 c in let m = $2 c in let tab, elems, exs = t () in
       if m.imports <> [] then
         error (List.hd m.imports).at "import after table definition";
       {m with tables = tab :: m.tables; elems = elems @ m.elems; exports = exs @ m.exports} }
