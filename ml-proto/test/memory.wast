@@ -34,6 +34,10 @@
   (module (memory 1) (data (nop)))
   "constant expression required"
 )
+(assert_invalid
+  (module (memory 1) (data (get_global $g)) (global $g (mut i32) (i32.const 0)))
+  "constant expression required"
+)
 
 (assert_invalid
   (module (memory 1 0))
