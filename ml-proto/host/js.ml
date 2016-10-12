@@ -12,9 +12,12 @@ let prefix =
   "let spectest = {\n" ^
   "  print: print || ((...xs) => console.log(...xs)),\n" ^
   "  global: 666,\n" ^
-  "};\n" ^  (* TODO: table, memory *)
+  "  table: " ^
+  "new WebAssembly.Table({initial: 10, maximum: 20, element: 'anyfunc'})," ^
+  "  memory: new WebAssembly.Memory({initial: 1, maximum: 2})," ^
+  "};\n" ^
   "\n" ^
-  "let registry = {spectest: spectest};\n" ^
+  "let registry = {spectest};\n" ^
   "let $$;\n" ^
   "\n" ^
   "function register(name, instance) {\n" ^
