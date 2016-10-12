@@ -17,8 +17,8 @@ val create : elem_type -> size limits -> table
 val elem_type : table -> elem_type
 val size : table -> size
 val limits : table -> size limits
-val grow : table -> size -> unit
+val grow : table -> size -> unit (* raise SizeOverflow, SizeLimit *)
 
-val load : table -> index -> elem
-val store : table -> index -> elem -> unit
-val blit : table -> index -> elem list -> unit
+val load : table -> index -> elem (* raise Bounds *)
+val store : table -> index -> elem -> unit (* raise Bounds *)
+val blit : table -> index -> elem list -> unit (* raise Bounds *)
