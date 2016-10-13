@@ -1,7 +1,7 @@
 ;; Test soft failures
 ;; These are invalid Wasm, but the failure is in dead code, which
-;; implementations are not required to validate. If they do, they shall diagnose
-;; the correct error.
+;; implementations are not required to validate. If they do, they shall
+;; diagnose the correct error.
 
 (assert_soft_invalid
   (module (func $type-num-vs-num
@@ -33,7 +33,9 @@
   "type mismatch"
 )
 (assert_soft_invalid
-  (module (func $type-unconsumed-result2 (unreachable) (i32.const 0) (i32.add)))
+  (module (func $type-unconsumed-result2
+    (unreachable) (i32.const 0) (i32.add)
+  ))
   "type mismatch"
 )
 (assert_soft_invalid
@@ -52,6 +54,30 @@
 )
 
 (assert_soft_invalid
+  (module (func $type-unary-num-vs-void-after-break
+    (block (br 0) (block (drop (i32.eqz (nop)))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-unary-num-vs-num-after-break
+    (block (br 0) (drop (i32.eqz (f32.const 1))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-void-after-break
+    (block (br 0) (block (drop (f32.eq (i32.const 1)))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-num-after-break
+    (block (br 0) (drop (f32.eq (i32.const 1) (f32.const 0))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
   (module (func $type-block-value-num-vs-void-after-break
     (block (br 0) (i32.const 1))
   ))
@@ -63,7 +89,6 @@
   ))
   "type mismatch"
 )
-
 (assert_soft_invalid
   (module (func $type-loop-value-num-vs-void-after-break
     (block (loop (br 1) (i32.const 1)))
@@ -76,7 +101,6 @@
   ))
   "type mismatch"
 )
-
 (assert_soft_invalid
   (module (func $type-func-value-num-vs-void-after-break
     (br 0) (i32.const 1)
@@ -86,6 +110,55 @@
 (assert_soft_invalid
   (module (func $type-func-value-num-vs-num-after-break (result i32)
     (br 0 (i32.const 1)) (f32.const 0)
+  ))
+  "type mismatch"
+)
+
+(assert_soft_invalid
+  (module (func $type-unary-num-vs-void-after-return
+    (return) (block (drop (i32.eqz (nop))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-unary-num-vs-num-after-return
+    (return) (drop (i32.eqz (f32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-void-after-return
+    (return) (block (drop (f32.eq (i32.const 1))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-num-after-return
+    (return) (drop (f32.eq (i32.const 1) (f32.const 0)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-void-after-return
+    (block (return) (i32.const 1))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-num-after-return (result i32)
+    (block i32 (i32.const 1) (return (i32.const 0)) (f32.const 0))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-loop-value-num-vs-void-after-return
+    (block (loop (return) (i32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-loop-value-num-vs-num-after-return (result i32)
+    (loop i32 (return (i32.const 1)) (f32.const 0))
   ))
   "type mismatch"
 )
@@ -101,6 +174,193 @@
   ))
   "type mismatch"
 )
+
+(assert_soft_invalid
+  (module (func $type-unary-num-vs-void-after-unreachable
+    (unreachable) (block (drop (i32.eqz (nop))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-unary-num-vs-num-after-unreachable
+    (unreachable) (drop (i32.eqz (f32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-void-after-unreachable
+    (unreachable) (block (drop (f32.eq (i32.const 1))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-num-after-unreachable
+    (unreachable) (drop (f32.eq (i32.const 1) (f32.const 0)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-void-after-unreachable
+    (block (unreachable) (i32.const 1))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-num-after-unreachable (result i32)
+    (block i32 (i32.const 1) (unreachable) (f32.const 0))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-loop-value-num-vs-void-after-unreachable
+    (block (loop (unreachable) (i32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-loop-value-num-vs-num-after-unreachable (result i32)
+    (loop i32 (unreachable) (f32.const 0))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-func-value-num-vs-void-after-unreachable
+    (unreachable) (i32.const 1)
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-func-value-num-vs-num-after-unreachable (result i32)
+    (unreachable) (f32.const 0)
+  ))
+  "type mismatch"
+)
+
+(assert_soft_invalid
+  (module (func $type-unary-num-vs-void-after-nested-unreachable
+    (block (unreachable)) (block (drop (i32.eqz (nop))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-unary-num-vs-num-after-nested-unreachable
+    (block (unreachable)) (drop (i32.eqz (f32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-void-after-nested-unreachable
+    (block (unreachable)) (block (drop (f32.eq (i32.const 1))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-num-after-nested-unreachable
+    (block (unreachable)) (drop (f32.eq (i32.const 1) (f32.const 0)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-void-after-nested-unreachable
+    (block (block (unreachable)) (i32.const 1))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-num-after-nested-unreachable
+    (result i32)
+    (block i32 (i32.const 1) (block (unreachable)) (f32.const 0))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-loop-value-num-vs-void-after-nested-unreachable
+    (block (loop (block (unreachable)) (i32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-loop-value-num-vs-num-after-nested-unreachable
+    (result i32)
+    (loop i32 (block (unreachable)) (f32.const 0))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-func-value-num-vs-void-after-nested-unreachable
+    (block (unreachable)) (i32.const 1)
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-func-value-num-vs-num-after-nested-unreachable
+    (result i32)
+    (block (unreachable)) (f32.const 0)
+  ))
+  "type mismatch"
+)
+
+(assert_soft_invalid
+  (module (func $type-unary-num-vs-void-after-infinite-loop
+    (loop (br 0)) (block (drop (i32.eqz (nop))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-unary-num-vs-num-after-infinite-loop
+    (loop (br 0)) (drop (i32.eqz (f32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-void-after-infinite-loop
+    (loop (br 0)) (block (drop (f32.eq (i32.const 1))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-num-after-infinite-loop
+    (loop (br 0)) (drop (f32.eq (i32.const 1) (f32.const 0)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-void-after-infinite-loop
+    (block (loop (br 0)) (i32.const 1))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-num-after-infinite-loop (result i32)
+    (block i32 (i32.const 1) (loop (br 0)) (f32.const 0))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-loop-value-num-vs-void-after-infinite-loop
+    (block (loop (loop (br 0)) (i32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-loop-value-num-vs-num-after-infinite-loop (result i32)
+    (loop i32 (loop (br 0)) (f32.const 0))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-func-value-num-vs-void-after-infinite-loop
+    (loop (br 0)) (i32.const 1)
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-func-value-num-vs-num-after-infinite-loop (result i32)
+    (loop (br 0)) (f32.const 0)
+  ))
+  "type mismatch"
+)
+
 (assert_soft_invalid
   (module (func $type-return-second-num-vs-num (result i32)
     (return (i32.const 1)) (return (f64.const 1))
@@ -116,14 +376,13 @@
 )
 
 (assert_soft_invalid
-  (module (func $type-br_if-cond-num-vs-num
+  (module (func $type-br_if-cond-num-vs-num-after-unreachable
     (block (br_if 0 (unreachable) (f32.const 0)))
   ))
   "type mismatch"
 )
-
 (assert_soft_invalid
-  (module (func $type-br_table-num-vs-num
+  (module (func $type-br_table-num-vs-num-after-unreachable
     (block (br_table 0 (unreachable) (f32.const 1)))
   ))
   "type mismatch"
