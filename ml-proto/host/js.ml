@@ -38,23 +38,39 @@ let prefix =
   "}\n" ^
   "\n" ^
   "function assert_malformed(bytes) {\n" ^
-  "  try { module(bytes) } catch (e) { return }\n" ^
+  "  try { module(bytes) } catch (e) {\n" ^
+  "    if (e instanceof WebAssembly.CompileError) return;\n" ^
+  "  }\n" ^
   "  throw new Error(\"Wasm decoding failure expected\");\n" ^
   "}\n" ^
   "\n" ^
   "function assert_invalid(bytes) {\n" ^
-  "  try { module(bytes) } catch (e) { return }\n" ^
+  "  try { module(bytes) } catch (e) {\n" ^
+  "    if (e instanceof WebAssembly.CompileError) return;\n" ^
+  "  }\n" ^
   "  throw new Error(\"Wasm validation failure expected\");\n" ^
   "}\n" ^
   "\n" ^
   "function assert_unlinkable(bytes) {\n" ^
   "  let mod = module(bytes);\n" ^
-  "  try { new WebAssembly.Instance(mod, registry) } catch (e) { return }\n" ^
+  "  try { new WebAssembly.Instance(mod, registry) } catch (e) {\n" ^
+  "    if (e instanceof TypeError) return;\n" ^
+  "  }\n" ^
   "  throw new Error(\"Wasm linking failure expected\");\n" ^
   "}\n" ^
   "\n" ^
+  "function assert_uninstantiable(bytes) {\n" ^
+  "  let mod = module(bytes);\n" ^
+  "  try { new WebAssembly.Instance(mod, registry) } catch (e) {\n" ^
+  "    if (e instanceof WebAssembly.RuntimeError) return;\n" ^
+  "  }\n" ^
+  "  throw new Error(\"Wasm trap expected\");\n" ^
+  "}\n" ^
+  "\n" ^
   "function assert_trap(action) {\n" ^
-  "  try { action() } catch (e) { return }\n" ^
+  "  try { action() } catch (e) {\n" ^
+  "    if (e instanceof WebAssembly.RuntimeError) return;\n" ^
+  "  }\n" ^
   "  throw new Error(\"Wasm trap expected\");\n" ^
   "}\n" ^
   "\n" ^
@@ -259,6 +275,8 @@ let of_assertion mods ass =
     "assert_invalid(" ^ of_definition def ^ ");"
   | AssertUnlinkable (def, _) ->
     "assert_unlinkable(" ^ of_definition def ^ ");"
+  | AssertUninstantiable (def, _) ->
+    "assert_uninstantiable(" ^ of_definition def ^ ");"
   | AssertReturn (act, lits) ->
     of_return_assertion mods act
       (fun act_js ->

@@ -15,6 +15,7 @@ and assertion' =
   | AssertMalformed of definition * string
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string
+  | AssertUninstantiable of definition * string
   | AssertReturn of action * Ast.literal list
   | AssertReturnNaN of action
   | AssertTrap of action * string
