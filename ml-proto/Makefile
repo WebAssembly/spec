@@ -82,3 +82,10 @@ check:
 		# check that we can find all relevant libraries
 		# when using ocamlfind
 		ocamlfind query $(LIBS)
+
+install:	$(LIB_OPT) $(LIB_UNOPT)
+		ocamlfind install wasmlib META _build/wasmlib.cm{o,x}
+
+.PHONY:		uninstall
+uninstall:
+		ocamlfind remove wasmlib
