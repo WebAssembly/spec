@@ -5,8 +5,11 @@
 #
 
 NAME =		wasm
+LIB =		wasmlib
 NAME_OPT =      $(NAME).opt
 NAME_UNOPT =    $(NAME)
+LIB_OPT =	$(LIB).cmx
+LIB_UNOPT =	$(LIB).cmo
 DIRS =		given host host/import spec
 LIBS =		str bigarray
 
@@ -18,8 +21,8 @@ OCB_FLAGS += 	$(LIBS:%=-libs %)
 OCB =		ocamlbuild $(OCB_FLAGS)
 
 .PHONY:		opt unopt all land
-unopt:		$(NAME_UNOPT)
-opt:		$(NAME_OPT)
+unopt:		$(NAME_UNOPT) $(LIB_UNOPT)
+opt:		$(NAME_OPT) $(LIB_OPT)
 all:		opt unopt test
 land:		all winmake.bat
 
@@ -28,6 +31,18 @@ $(NAME_OPT):	main.native
 
 $(NAME_UNOPT):	main.d.byte
 		mv $< $@
+
+$(LIB_OPT):	_build/wasmlib.cmx
+
+$(LIB_UNOPT):	_build/wasmlib.cmo
+
+.PHONY:		_build/$(LIB_OPT)
+_build/$(LIB_OPT):
+		$(OCB) -quiet $(LIB_OPT)
+
+.PHONY:		_build/$(LIB_UNOPT)
+_build/$(LIB_UNOPT):
+		$(OCB) -quiet $(LIB_UNOPT)
 
 .PHONY:		main.native
 main.native:
@@ -60,6 +75,7 @@ zip: 		winmake.bat
 .PHONY:		clean
 clean:
 		$(OCB) -clean
+		rm -f $(LIB_OPT) $(LIB_UNOPT)
 
 .PHONY:		check
 check:
