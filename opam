@@ -6,7 +6,7 @@ authors: "Jonathan Protzenko <jonathan.protzenko@gmail.com>"
 homepage: "https://github.com/WebAssembly/spec"
 bug-reports: "https://github.com/WebAssembly/spec/issues"
 license: "https://github.com/WebAssembly/spec/blob/master/LICENSE"
-dev-repo: "https://github.com/WebAssembly/spec"
+dev-repo: "git+https://github.com/WebAssembly/spec"
 build: [
   []
   [make "-C" "ml-proto" "opt" "unopt"]
