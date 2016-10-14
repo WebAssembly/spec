@@ -348,15 +348,6 @@ let init_closure inst clos =
   | AstFunc (inst_ref, _) -> inst_ref := inst
   | _ -> assert false
 
-let check_elem inst seg =
-  let {init; _} = seg.it in
-  List.iter
-    (fun x ->
-      match func inst x with
-      | AstFunc _ -> ()
-      | HostFunc _ -> Link.error x.at "invalid use of host function"
-    ) init
-
 let init_table inst seg =
   let {index; offset = e; init} = seg.it in
   let tab = table inst index in
@@ -433,7 +424,6 @@ let init m externals =
   in
   List.iter2 (init_global inst) gs globals;
   List.iter (init_closure inst) fs;
-  List.iter (check_elem inst) elems;
   List.iter (init_table inst) elems;
   List.iter (init_memory inst) data;
   Lib.Option.app (fun x -> ignore (eval_func (func inst x) [] x.at)) start;
