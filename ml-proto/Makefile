@@ -84,7 +84,7 @@ check:
 		ocamlfind query $(LIBS)
 
 install:	$(LIB_OPT) $(LIB_UNOPT)
-		ocamlfind install wasmlib META _build/wasmlib.cm{o,x}
+		ocamlfind install wasmlib META _build/wasmlib.{o,cmo,cmx,cmi,cmt}
 
 .PHONY:		uninstall
 uninstall:
