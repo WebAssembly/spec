@@ -362,6 +362,67 @@
 )
 
 (assert_soft_invalid
+  (module (func $type-unary-num-vs-void-in-dead-body
+    (if (i32.const 0) (then (drop (i32.eqz (nop)))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-unary-num-vs-num-in-dead-body
+    (if (i32.const 0) (then (drop (i32.eqz (f32.const 1)))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-void-in-dead-body
+    (if (i32.const 0) (then (drop (f32.eq (i32.const 1)))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-binary-num-vs-num-in-dead-body
+    (if (i32.const 0) (then (drop (f32.eq (i32.const 1) (f32.const 0)))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-if-value-num-vs-void-in-dead-body
+    (if (i32.const 0) (then (i32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-if-value-num-vs-num-in-dead-body (result i32)
+    (if i32 (i32.const 0) (then (f32.const 0)))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-void-in-dead-body
+    (if (i32.const 0) (then (block (i32.const 1))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-num-in-dead-body (result i32)
+    (if i32 (i32.const 0) (then (block i32 (f32.const 0))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-void-in-dead-body
+    (if (i32.const 0) (then (loop (i32.const 1))))
+  ))
+  "type mismatch"
+)
+(assert_soft_invalid
+  (module (func $type-block-value-num-vs-num-in-dead-body (result i32)
+    (if i32 (i32.const 0) (then (loop i32 (f32.const 0))))
+  ))
+  "type mismatch"
+)
+
+(assert_soft_invalid
   (module (func $type-return-second-num-vs-num (result i32)
     (return (i32.const 1)) (return (f64.const 1))
   ))
