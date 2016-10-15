@@ -404,10 +404,11 @@ let add_export inst ex map =
     | GlobalExport -> ExternalGlobal !(global inst item)
   in ExportMap.add name ext map
 
-let init m externals =
+let init (m : module_) (externals : extern list) : instance =
   let
     { imports; tables; memories; globals; funcs;
-      exports; elems; data; start } = m.it
+      exports; elems; data; start
+    } = m.it
   in
   if List.length externals <> List.length imports then
     Link.error m.at "wrong number of imports provided for initialisation";
@@ -429,6 +430,6 @@ let init m externals =
   Lib.Option.app (fun x -> ignore (eval_func (func inst x) [] x.at)) start;
   {inst with exports = List.fold_right (add_export inst) exports inst.exports}
 
-let invoke clos vs =
+let invoke (clos : closure) (vs : value list) : value list =
   (try eval_func clos vs no_region
   with Stack_overflow -> Trap.error no_region "call stack exhausted")
