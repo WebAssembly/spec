@@ -275,6 +275,7 @@ assertion:
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
   ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
+  ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
 meta:
   ( script <name>? <script> )                ;; name a subscript
