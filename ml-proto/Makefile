@@ -88,7 +88,7 @@ check:
 
 install:	$(LIB_OPT) $(LIB_UNOPT)
 		ocamlfind install wasm findlib/META _build/wasm.o \
-		  $(wildcard _build/wasm.cm*)
+		  $(wildcard _build/wasm.cm*) \
 		  $(wildcard host/*.mli spec/*.mli build/*.mli)
 
 .PHONY:		uninstall
