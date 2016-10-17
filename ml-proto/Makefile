@@ -78,7 +78,7 @@ zip: 		winmake.bat
 .PHONY:		clean
 clean:
 		$(OCB) -clean
-		rm -f $(LIB_OPT) $(LIB_UNOPT)
+		rm -f $(LIB_OPT) $(LIB_UNOPT) wasmlib.mlpack
 
 .PHONY:		check
 check:
