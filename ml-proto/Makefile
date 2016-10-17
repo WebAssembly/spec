@@ -92,4 +92,4 @@ install:	$(LIB_OPT) $(LIB_UNOPT)
 
 .PHONY:		uninstall
 uninstall:
-		ocamlfind remove wasmlib
+		ocamlfind remove wasm
