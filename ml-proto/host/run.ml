@@ -311,6 +311,24 @@ let run_assertion ass =
       Assert.error ass.at "expected linking error"
     )
 
+  | AssertUninstantiable (def, re) ->
+    trace "Asserting trap...";
+    let m = run_definition def in
+    if not !Flags.unchecked then Check.check_module m;
+    (match
+      let imports = Import.link m in
+      ignore (Eval.init m imports)
+    with
+    | exception Eval.Trap (_, msg) ->
+      if not (Str.string_match (Str.regexp re) msg 0) then begin
+        print_endline ("Result: \"" ^ msg ^ "\"");
+        print_endline ("Expect: \"" ^ re ^ "\"");
+        Assert.error ass.at "wrong instantiation trap"
+      end
+    | _ ->
+      Assert.error ass.at "expected instaniation trap"
+    )
+
   | AssertReturn (act, es) ->
     trace ("Asserting return...");
     let got_vs = run_action act in

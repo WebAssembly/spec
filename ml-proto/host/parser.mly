@@ -695,6 +695,8 @@ assertion :
     { AssertSoftInvalid (snd $3, $4) @@ at () }
   | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR
     { AssertUnlinkable (snd $3, $4) @@ at () }
+  | LPAR ASSERT_TRAP module_ TEXT RPAR
+    { AssertUninstantiable (snd $3, $4) @@ at () }
   | LPAR ASSERT_RETURN action const_list RPAR { AssertReturn ($3, $4) @@ at () }
   | LPAR ASSERT_RETURN_NAN action RPAR { AssertReturnNaN $3 @@ at () }
   | LPAR ASSERT_TRAP action TEXT RPAR { AssertTrap ($3, $4) @@ at () }

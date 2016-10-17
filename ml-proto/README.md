@@ -277,6 +277,7 @@ assertion:
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
   ( assert_soft_invalid <module> <failure> ) ;; assert module is for cases that are not required to be checked
   ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
+  ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
 meta:
   ( script <name>? <script> )                ;; name a subscript

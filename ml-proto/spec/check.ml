@@ -355,34 +355,16 @@ let check_memory (c : context) (mem : memory) =
   let {mtype} = mem.it in
   check_memory_type mtype mem.at
 
-let check_table_segment c prev_end seg =
+let check_elem c seg =
   let {index; offset; init} = seg.it in
   check_const c offset I32Type;
-  let start = Values.I32Value.of_value (Eval.const c.module_ offset) in
-  let len = Int32.of_int (List.length init) in
-  let end_ = Int32.add start len in
-  let TableType (lim, _) = table c index in
-  require (I32.le_u prev_end start) seg.at
-    "table segment not disjoint and ordered";
-  require (I32.le_u end_ lim.min) seg.at
-    "table segment does not fit into table";
-  ignore (List.map (func c) init);
-  end_
+  ignore (table c index);
+  ignore (List.map (func c) init)
 
-let check_memory_segment c prev_end seg =
+let check_data c seg =
   let {index; offset; init} = seg.it in
   check_const c offset I32Type;
-  let start =
-    Int64.of_int32 (Values.I32Value.of_value (Eval.const c.module_ offset)) in
-  let len = Int64.of_int (String.length init) in
-  let end_ = Int64.add start len in
-  let MemoryType lim = memory c index in
-  let limit = Int64.mul (Int64.of_int32 lim.min) Memory.page_size in
-  require (I64.le_u prev_end start) seg.at
-    "data segment not disjoint and ordered";
-  require (I64.le_u end_ limit) seg.at
-    "data segment does not fit into memory";
-  end_
+  ignore (memory c index)
 
 let check_global c glob =
   let {gtype; value} = glob.it in
@@ -449,8 +431,8 @@ let check_module (m : module_) =
   List.iter (check_func c') funcs;
   List.iter (check_table c') tables;
   List.iter (check_memory c') memories;
-  ignore (List.fold_left (check_table_segment c') 0l elems);
-  ignore (List.fold_left (check_memory_segment c') 0L data);
+  List.iter (check_elem c') elems;
+  List.iter (check_data c') data;
   ignore (List.fold_left (check_export c') NameSet.empty exports);
   check_start c' start
 

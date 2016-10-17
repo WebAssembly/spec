@@ -24,12 +24,14 @@ val mem_size : mem_size -> int
 val create : size limits -> memory (* raise SizeOverflow, OutOfMemory *)
 val size : memory -> size
 val limits : memory -> size limits
-val grow : memory -> size -> unit (* raise SizeOverflow, OutOfMemory *)
+val grow : memory -> size -> unit
+  (* raise SizeLimit, SizeOverflow, OutOfMemory *)
 
-val load : memory -> address -> offset -> value_type -> value
-val store : memory -> address -> offset -> value -> unit
+val load : memory -> address -> offset -> value_type -> value (* raise Bounds *)
+val store : memory -> address -> offset -> value -> unit (* raise Bounds *)
 val load_packed :
   mem_size -> extension -> memory -> address -> offset -> value_type -> value
+ (* raise Type, Bounds *)
 val store_packed : mem_size -> memory -> address -> offset -> value -> unit
-val blit : memory -> address -> string -> unit
-
+ (* raise Type, Bounds *)
+val blit : memory -> address -> string -> unit (* raise Bouunds *)

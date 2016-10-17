@@ -43,12 +43,11 @@ let host_size_of_int64 n =
 let int64_of_host_size n =
   Int64.of_int n
 
-let host_index_of_int64 a n =
-  assert (n >= 0);
-  let n' = Int64.of_int n in
-  if (a < 0L) ||
-     (Int64.sub Int64.max_int a < n') ||
-     (Int64.add a n' > Int64.of_int max_int) then raise Bounds;
+let host_index_of_int64 a size =
+  assert (size >= 0);
+  let n = Int64.of_int size in
+  if a < 0L || Int64.add a n > Int64.of_int max_int ||
+    Int64.sub Int64.max_int a < n then raise Bounds;
   Int64.to_int a
 
 (* ========================================================================== *)
@@ -164,7 +163,7 @@ let store_packed sz mem a o v =
   | _ -> raise Type
 
 let blit mem addr data =
-  let base = host_index_of_int64 addr 1 in
+  let base = host_index_of_int64 addr (String.length data) in
   try
     for i = 0 to String.length data - 1 do
       mem.content.{base + i} <- Char.code data.[i]

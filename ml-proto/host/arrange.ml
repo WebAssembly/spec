@@ -415,6 +415,8 @@ let assertion mode ass =
     Node ("assert_soft_invalid", [definition mode None def; Atom (string re)])
   | AssertUnlinkable (def, re) ->
     Node ("assert_unlinkable", [definition mode None def; Atom (string re)])
+  | AssertUninstantiable (def, re) ->
+    Node ("assert_trap", [definition mode None def; Atom (string re)])
   | AssertReturn (act, lits) ->
     Node ("assert_return", action act :: List.map literal lits)
   | AssertReturnNaN act ->
