@@ -348,15 +348,6 @@ let init_closure inst clos =
   | AstFunc (inst_ref, _) -> inst_ref := inst
   | _ -> assert false
 
-let check_elem inst seg =
-  let {init; _} = seg.it in
-  List.iter
-    (fun x ->
-      match func inst x with
-      | AstFunc _ -> ()
-      | HostFunc _ -> Link.error x.at "invalid use of host function"
-    ) init
-
 let init_table inst seg =
   let {index; offset = e; init} = seg.it in
   let tab = table inst index in
@@ -413,10 +404,11 @@ let add_export inst ex map =
     | GlobalExport -> ExternalGlobal !(global inst item)
   in ExportMap.add name ext map
 
-let init m externals =
+let init (m : module_) (externals : extern list) : instance =
   let
     { imports; tables; memories; globals; funcs;
-      exports; elems; data; start } = m.it
+      exports; elems; data; start
+    } = m.it
   in
   if List.length externals <> List.length imports then
     Link.error m.at "wrong number of imports provided for initialisation";
@@ -433,12 +425,11 @@ let init m externals =
   in
   List.iter2 (init_global inst) gs globals;
   List.iter (init_closure inst) fs;
-  List.iter (check_elem inst) elems;
   List.iter (init_table inst) elems;
   List.iter (init_memory inst) data;
   Lib.Option.app (fun x -> ignore (eval_func (func inst x) [] x.at)) start;
   {inst with exports = List.fold_right (add_export inst) exports inst.exports}
 
-let invoke clos vs =
+let invoke (clos : closure) (vs : value list) : value list =
   (try eval_func clos vs no_region
   with Stack_overflow -> Trap.error no_region "call stack exhausted")
