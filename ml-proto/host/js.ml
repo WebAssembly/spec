@@ -9,6 +9,8 @@ open Source
 let prefix =
   "'use strict';\n" ^
   "\n" ^
+  "let soft_validate = " ^ string_of_bool (not !Flags.unchecked_soft) ^ ";\n" ^
+  "\n" ^
   "let spectest = {\n" ^
   "  print: print || ((...xs) => console.log(...xs)),\n" ^
   "  global: 666,\n" ^
@@ -49,6 +51,15 @@ let prefix =
   "    if (e instanceof WebAssembly.CompileError) return;\n" ^
   "  }\n" ^
   "  throw new Error(\"Wasm validation failure expected\");\n" ^
+  "}\n" ^
+  "\n" ^
+  "function assert_soft_invalid(bytes) {\n" ^
+  "  try { module(bytes) } catch (e) {\n" ^
+  "    if (e instanceof WebAssembly.CompileError) return;\n" ^
+  "    throw new Error(\"Wasm validation failure expected\");\n" ^
+  "  }\n" ^
+  "  if (soft_validate)\n" ^
+  "    throw new Error(\"Wasm validation failure expected\");\n" ^
   "}\n" ^
   "\n" ^
   "function assert_unlinkable(bytes) {\n" ^
@@ -273,6 +284,8 @@ let of_assertion mods ass =
     "assert_malformed(" ^ of_definition def ^ ");"
   | AssertInvalid (def, _) ->
     "assert_invalid(" ^ of_definition def ^ ");"
+  | AssertSoftInvalid (def, _) ->
+    "assert_soft_invalid(" ^ of_definition def ^ ");"
   | AssertUnlinkable (def, _) ->
     "assert_unlinkable(" ^ of_definition def ^ ");"
   | AssertUninstantiable (def, _) ->

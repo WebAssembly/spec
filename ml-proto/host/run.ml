@@ -271,8 +271,14 @@ let run_assertion ass =
       Assert.error ass.at "expected decoding error"
     )
 
-  | AssertInvalid (def, re) ->
-    trace "Asserting invalid...";
+  | AssertInvalid (def, re)
+  | AssertSoftInvalid (def, re) ->
+    let active =
+      match ass.it with
+      | AssertSoftInvalid _ -> not !Flags.unchecked_soft
+      | _ -> true
+    in
+    trace ("Asserting " ^ (if active then "" else "soft ") ^ "invalid...");
     (match
       let m = run_definition def in
       Check.check_module m
@@ -284,7 +290,7 @@ let run_assertion ass =
         Assert.error ass.at "wrong validation error"
       end
     | _ ->
-      Assert.error ass.at "expected validation error"
+      if active then Assert.error ass.at "expected validation error"
     )
 
   | AssertUnlinkable (def, re) ->

@@ -96,6 +96,7 @@ wasm -d script.wast -o script.js
 The first creates a new test scripts where all embedded modules are converted to binary, the second one where all are converted to textual.
 
 The last invocation produces an equivalent, self-contained JavaScript test file.
+By default, the generated script will require `assert_soft_invalid` (see below) to detect validation failures. Use the `-us` flag ("unchecked soft") to deactivate these assertions to run on implementations that do not validate dead code.
 
 #### Command Line Expressions
 
@@ -274,6 +275,7 @@ assertion:
   ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
+  ( assert_soft_invalid <module> <failure> ) ;; assert module is for cases that are not required to be checked
   ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
@@ -293,6 +295,8 @@ The `input` and `output` meta commands determine the requested file format from 
 
 The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
 It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.
+
+Finally, "unchecked soft" mode (flag `-us`), will not require `assert_soft_valid` assertions to succeed. When outputing JavaScript scripts, this flag also controls how the created script implements this assertions.
 
 ## Abstract Syntax
 
