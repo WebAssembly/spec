@@ -87,7 +87,9 @@ check:
 		ocamlfind query $(LIBS)
 
 install:	$(LIB_OPT) $(LIB_UNOPT)
-		ocamlfind install wasm findlib/META _build/wasm.{o,cmo,cmx,cmi,cmt} {host,spec,given}/*.mli
+		ocamlfind install wasm findlib/META _build/wasm.o \
+		  $(wildcard _build/wasm.cm*)
+		  $(wildcard host/*.mli spec/*.mli build/*.mli)
 
 .PHONY:		uninstall
 uninstall:
