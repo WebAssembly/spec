@@ -32,16 +32,19 @@ $(NAME_OPT):	main.native
 $(NAME_UNOPT):	main.d.byte
 		mv $< $@
 
+wasmlib.mlpack:
+		find given host spec -iname *.ml* -type f | xargs -I % basename % .ml | xargs -I % basename % .mli | sort | uniq | grep -v -e .ml[yl] > $@
+
 $(LIB_OPT):	_build/wasmlib.cmx
 
 $(LIB_UNOPT):	_build/wasmlib.cmo
 
 .PHONY:		_build/$(LIB_OPT)
-_build/$(LIB_OPT):
+_build/$(LIB_OPT): wasmlib.mlpack
 		$(OCB) -quiet $(LIB_OPT)
 
 .PHONY:		_build/$(LIB_UNOPT)
-_build/$(LIB_UNOPT):
+_build/$(LIB_UNOPT): wasmlib.mlpack
 		$(OCB) -quiet $(LIB_UNOPT)
 
 .PHONY:		main.native
