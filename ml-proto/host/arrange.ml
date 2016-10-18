@@ -8,12 +8,8 @@ open Sexpr
 
 (* Generic formatting *)
 
-let int = string_of_int
-let int32 = Int32.to_string
-let int64 = Int64.to_string
 let nat n = I32.to_string_u (I32.of_int_u n)
 let nat32 = I32.to_string_u
-let nat64 = I64.to_string_u
 
 let add_hex_char buf c = Printf.bprintf buf "\\%02x" (Char.code c)
 let add_char buf c =
@@ -265,8 +261,6 @@ let func off i f =
 
 let start x = Node ("start " ^ var x, [])
 
-let table xs = tab "table" (atom var) xs
-
 
 (* Tables & memories *)
 
@@ -368,7 +362,6 @@ let binary_module_with_var_opt x_opt bs =
   Node ("module" ^ var_opt x_opt, break_bytes bs)
 
 let module_ = module_with_var_opt None
-let binary_module = binary_module_with_var_opt None
 
 
 (* Scripts *)
@@ -386,13 +379,13 @@ let definition mode x_opt def =
     let m =
       match def.it with
       | Textual m -> m
-      | Binary (_, bs) -> Decode.decode "" bs
+      | Encoded (_, bs) -> Decode.decode "" bs
     in module_with_var_opt x_opt m
-  | `Binary, _ | `Original, Binary _ ->
+  | `Binary, _ | `Original, Encoded _ ->
     let bs =
       match def.it with
       | Textual m -> Encode.encode m
-      | Binary (_, bs) -> bs
+      | Encoded (_, bs) -> bs
     in binary_module_with_var_opt x_opt bs
 
 let access x_opt name =

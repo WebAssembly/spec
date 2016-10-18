@@ -72,7 +72,6 @@ let encode m =
     let list f xs = List.iter f xs
     let opt f xo = Lib.Option.app f xo
     let vec f xs = len (List.length xs); list f xs
-    let vec1 f xo = bool (xo <> None); opt f xo
 
     let gap32 () = let p = pos s in u32 0l; u8 0; p
     let patch_gap32 p n =
@@ -154,10 +153,10 @@ let encode m =
       | Nop -> op 0x0a
       | Drop -> op 0x0b
 
-      | Const {it = I32 c} -> op 0x10; vs32 c
-      | Const {it = I64 c} -> op 0x11; vs64 c
-      | Const {it = F32 c} -> op 0x13; f32 c
-      | Const {it = F64 c} -> op 0x12; f64 c
+      | Const {it = I32 c; _} -> op 0x10; vs32 c
+      | Const {it = I64 c; _} -> op 0x11; vs64 c
+      | Const {it = F32 c; _} -> op 0x13; f32 c
+      | Const {it = F64 c; _} -> op 0x12; f64 c
 
       | GetLocal x -> op 0x14; var x
       | SetLocal x -> op 0x15; var x
@@ -385,12 +384,12 @@ let encode m =
       | MemoryImport t -> u8 0x02; memory_type t
       | GlobalImport t -> u8 0x03; global_type t
 
-    let import imp =
-      let {module_name; item_name; ikind} = imp.it in
+    let import im =
+      let {module_name; item_name; ikind} = im.it in
       string module_name; string item_name; import_kind ikind
 
-    let import_section imps =
-      section 2 (vec import) imps (imps <> [])
+    let import_section ims =
+      section 2 (vec import) ims (ims <> [])
 
     (* Function section *)
     let func f = var f.it.ftype
@@ -430,12 +429,12 @@ let encode m =
       | MemoryExport -> u8 2
       | GlobalExport -> u8 3
 
-    let export exp =
-      let {name; ekind; item} = exp.it in
+    let export ex =
+      let {name; ekind; item} = ex.it in
       string name; export_kind ekind; var item
 
-    let export_section exps =
-      section 7 (vec export) exps (exps <> [])
+    let export_section exs =
+      section 7 (vec export) exs (exs <> [])
 
     (* Start section *)
     let start_section xo =

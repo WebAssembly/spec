@@ -1,5 +1,4 @@
 open Types
-open Values
 
 type size = int32
 type index = int32

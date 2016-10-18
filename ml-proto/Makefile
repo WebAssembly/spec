@@ -10,9 +10,7 @@ NAME_UNOPT =    $(NAME)
 DIRS =		given host host/import spec
 LIBS =		str bigarray
 
-OCB_FLAGS +=	# -use-ocamlfind
-OCB_FLAGS +=	# -cflags -w
-OCB_FLAGS += 	# -cflags +a-4-41-42-44-45
+OCB_FLAGS += 	-cflags '-w +a-4-27-42-44-45 -warn-error +a'
 OCB_FLAGS += 	$(DIRS:%=-I %)
 OCB_FLAGS += 	$(LIBS:%=-libs %)
 OCB =		ocamlbuild $(OCB_FLAGS)

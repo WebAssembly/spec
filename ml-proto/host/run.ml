@@ -22,8 +22,6 @@ let binary_sexpr_ext = "bin.wast"
 let sexpr_ext = "wast"
 let js_ext = "js"
 
-let is_binary_file_ext file = Filename.check_suffix file binary_ext
-
 let dispatch_file_ext on_binary on_binary_sexpr on_sexpr on_js file =
   if Filename.check_suffix file binary_ext then
     on_binary file
@@ -115,7 +113,7 @@ let input_sexpr name lexbuf start run =
 let input_binary name buf run =
   let open Source in
   input_from (fun _ ->
-    [Module (None, Binary (name, buf) @@ no_region) @@ no_region]) run
+    [Module (None, Encoded (name, buf) @@ no_region) @@ no_region]) run
 
 let input_sexpr_file file run =
   trace ("Loading (" ^ file ^ ")...");
@@ -177,7 +175,7 @@ let lexbuf_stdin buf len =
   if n = 1 then continuing := false else trace "Parsing...";
   n
 
-let rec input_stdin run =
+let input_stdin run =
   let lexbuf = Lexing.from_function lexbuf_stdin in
   let rec loop () =
     let success = input_sexpr "stdin" lexbuf Parse.Script1 run in
@@ -230,7 +228,7 @@ let lookup_registry module_name item_name _t =
 let run_definition def =
   match def.it with
   | Textual m -> m
-  | Binary (name, bs) ->
+  | Encoded (name, bs) ->
     trace "Decoding...";
     Decode.decode name bs
 

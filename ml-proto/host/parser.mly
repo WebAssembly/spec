@@ -48,9 +48,6 @@ let nat s at =
 let nat32 s at =
   try I32.of_string_u s with Failure _ -> error at "i32 constant out of range"
 
-let nat64 s at =
-  try I64.of_string_u s with Failure _ -> error at "i64 constant out of range"
-
 
 (* Symbolic variables *)
 
@@ -71,10 +68,10 @@ let empty_context () =
     funcs = empty (); locals = empty (); globals = empty ();
     labels = VarMap.empty }
 
-let enter_func c =
+let enter_func (c : context) =
   {c with labels = VarMap.empty; locals = empty ()}
 
-let type_ c x =
+let type_ (c : context) x =
   try VarMap.find x.it c.types.tmap
   with Not_found -> error x.at ("unknown type " ^ x.it)
 
@@ -82,29 +79,23 @@ let lookup category space x =
   try VarMap.find x.it space.map
   with Not_found -> error x.at ("unknown " ^ category ^ " " ^ x.it)
 
-let func c x = lookup "function" c.funcs x
-let local c x = lookup "local" c.locals x
-let global c x = lookup "global" c.globals x
-let table c x = lookup "table" c.tables x
-let memory c x = lookup "memory" c.memories x
-let label c x =
+let func (c : context) x = lookup "function" c.funcs x
+let local (c : context) x = lookup "local" c.locals x
+let global (c : context) x = lookup "global" c.globals x
+let table (c : context) x = lookup "table" c.tables x
+let memory (c : context) x = lookup "memory" c.memories x
+let label (c : context) x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
 
-let bind_module () x = Some x
-let anon_module () = None
-
-let bind_type c x ty =
+let bind_type (c : context) x ty =
   if VarMap.mem x.it c.types.tmap then
     error x.at ("duplicate type " ^ x.it);
   c.types.tmap <-
     VarMap.add x.it (Lib.List32.length c.types.tlist) c.types.tmap;
   c.types.tlist <- c.types.tlist @ [ty]
 
-let anon_type c ty =
-  c.types.tlist <- c.types.tlist @ [ty]
-
-let anon_type c ty =
+let anon_type (c : context) ty =
   c.types.tlist <- c.types.tlist @ [ty]
 
 let bind category space x =
@@ -115,44 +106,42 @@ let bind category space x =
   if space.count = 0l then 
     error x.at ("too many " ^ category ^ " bindings")
 
-let bind_func c x = bind "function" c.funcs x
-let bind_local c x = bind "local" c.locals x
-let bind_global c x = bind "global" c.globals x
-let bind_table c x = bind "table" c.tables x
-let bind_memory c x = bind "memory" c.memories x
-let bind_label c x =
+let bind_func (c : context) x = bind "function" c.funcs x
+let bind_local (c : context) x = bind "local" c.locals x
+let bind_global (c : context) x = bind "global" c.globals x
+let bind_table (c : context) x = bind "table" c.tables x
+let bind_memory (c : context) x = bind "memory" c.memories x
+let bind_label (c : context) x =
   {c with labels = VarMap.add x.it 0l (VarMap.map (Int32.add 1l) c.labels)}
-
-let anon_type c ty =
-  c.types.tlist <- c.types.tlist @ [ty]
 
 let anon category space n =
   space.count <- Int32.add space.count n;
   if I32.lt_u space.count n then
     error no_region ("too many " ^ category ^ " bindings")
 
-let anon_func c = anon "function" c.funcs 1l
-let anon_locals c ts = anon "local" c.locals (Lib.List32.length ts)
-let anon_global c = anon "global" c.globals 1l
-let anon_table c = anon "table" c.tables 1l
-let anon_memory c = anon "memory" c.memories 1l
-let anon_label c = {c with labels = VarMap.map (Int32.add 1l) c.labels}
+let anon_func (c : context) = anon "function" c.funcs 1l
+let anon_locals (c : context) ts = anon "local" c.locals (Lib.List32.length ts)
+let anon_global (c : context) = anon "global" c.globals 1l
+let anon_table (c : context) = anon "table" c.tables 1l
+let anon_memory (c : context) = anon "memory" c.memories 1l
+let anon_label (c : context) =
+  {c with labels = VarMap.map (Int32.add 1l) c.labels}
 
 let empty_type = FuncType ([], [])
 
-let explicit_sig c var t at =
-  let x = var c type_ in
+let explicit_sig (c : context) var_sem ty at =
+  let x = var_sem c type_ in
   if
     x.it < Lib.List32.length c.types.tlist &&
-    t <> empty_type &&
-    t <> Lib.List32.nth c.types.tlist x.it
+    ty <> empty_type &&
+    ty <> Lib.List32.nth c.types.tlist x.it
   then
     error at "signature mismatch";
   x
 
-let inline_type c t at =
-  match Lib.List.index_of t c.types.tlist with
-  | None -> let i = Lib.List32.length c.types.tlist in anon_type c t; i @@ at
+let inline_type (c : context) ty at =
+  match Lib.List.index_of ty c.types.tlist with
+  | None -> let i = Lib.List32.length c.types.tlist in anon_type c ty; i @@ at
   | Some i -> Int32.of_int i @@ at
 
 %}
@@ -612,7 +601,7 @@ start :
 
 module_fields :
   | /* empty */
-    { fun c ->
+    { fun (c : context) -> let open Ast in
       {
         types = c.types.tlist;
         globals = [];
@@ -669,7 +658,7 @@ module_ :
   | LPAR MODULE script_var_opt module_fields RPAR
     { $3, Textual ($4 (empty_context ()) @@ at ()) @@ at () }
   | LPAR MODULE script_var_opt TEXT text_list RPAR
-    { $3, Binary ("binary", $4 ^ $5) @@ at() }
+    { $3, Encoded ("binary", $4 ^ $5) @@ at() }
 ;
 
 

@@ -81,14 +81,14 @@ let update category list x y =
   with Failure _ ->
     Crash.error x.at ("undefined " ^ category ^ " " ^ Int32.to_string x.it)
 
-let local c x = lookup "local" c.locals x
-let update_local c x v = {c with locals = update "local" c.locals x v}
+let local (c : call) x = lookup "local" c.locals x
+let update_local (c : call) x v = {c with locals = update "local" c.locals x v}
 
-let type_ inst x = lookup "type" inst.module_.it.types x
-let func inst x = lookup "function" inst.Instance.funcs x
-let table inst x = lookup "table" inst.Instance.tables x
-let memory inst x = lookup "memory" inst.Instance.memories x
-let global inst x = lookup "global" inst.Instance.globals x
+let type_ (inst : instance) x = lookup "type" inst.module_.it.types x
+let func (inst : instance) x = lookup "function" inst.funcs x
+let table (inst : instance) x = lookup "table" inst.tables x
+let memory (inst : instance) x = lookup "memory" inst.memories x
+let global (inst : instance) x = lookup "global" inst.globals x
 
 let elem inst x i at =
   match Table.load (table inst x) i with
@@ -109,20 +109,13 @@ let func_type_of t =
   | HostFunc (t, _) -> t
 
 let take n (vs : 'a stack) at =
-  try Lib.List.take n vs with Failure _ ->
-    Crash.error at "stack underflow"
+  try Lib.List.take n vs with Failure _ -> Crash.error at "stack underflow"
 
 let drop n (vs : 'a stack) at =
-  try Lib.List.drop n vs with Failure _ ->
-    Crash.error at "stack underflow"
-
-let take32 n (vs : 'a stack) at =
-  try Lib.List32.take n vs with Failure _ ->
-    Crash.error at "stack underflow"
+  try Lib.List.drop n vs with Failure _ -> Crash.error at "stack underflow"
 
 let drop32 n (vs : 'a stack) at =
-  try Lib.List32.drop n vs with Failure _ ->
-    Crash.error at "stack underflow"
+  try Lib.List32.drop n vs with Failure _ -> Crash.error at "stack underflow"
 
 
 (* Evaluation *)
@@ -328,34 +321,34 @@ let eval_const inst const =
 
 (* Modules *)
 
-let create_closure m f =
+let create_closure (m : module_) (f : func) =
   AstFunc (ref (instance m), f)
 
-let create_table tab =
+let create_table (tab : table) =
   let {ttype = TableType (lim, t)} = tab.it in
   Table.create t lim
 
-let create_memory mem =
+let create_memory (mem : memory) =
   let {mtype = MemoryType lim} = mem.it in
   Memory.create lim
 
-let create_global glob =
+let create_global (glob : global) =
   let {gtype = GlobalType (t, _); _} = glob.it in
   ref (default_value t)
 
-let init_closure inst clos =
+let init_closure (inst : instance) (clos : closure) =
   match clos with
   | AstFunc (inst_ref, _) -> inst_ref := inst
   | _ -> assert false
 
-let init_table inst seg =
+let init_table (inst : instance) (seg : table_segment) =
   let {index; offset = e; init} = seg.it in
   let tab = table inst index in
   let offset = i32 (eval_const inst e) e.at in
   try Table.blit tab offset (List.map (fun x -> Func (func inst x)) init)
   with Table.Bounds -> Link.error seg.at "elements segment does not fit table"
 
-let init_memory inst seg =
+let init_memory (inst : instance) (seg : memory_segment) =
   let {index; offset = e; init} = seg.it in
   let mem = memory inst index in
   let offset = i32 (eval_const inst e) e.at in
@@ -363,7 +356,7 @@ let init_memory inst seg =
   try Memory.blit mem offset64 init
   with Memory.Bounds -> Link.error seg.at "data segment does not fit memory"
 
-let init_global inst ref glob =
+let init_global (inst : instance) (ref : value ref) (glob : global) =
   let {value = e; _} = glob.it in
   ref := eval_const inst e
 
@@ -377,24 +370,26 @@ let check_limits actual expected at =
     | Some i, Some j -> I32.gt_u i j
   then Link.error at "maximum size larger than declared"
 
-let add_import (ext : extern) (imp : import) (inst : instance) : instance =
-  match ext, imp.it.ikind.it with
+let add_import (ext : extern) (im : import) (inst : instance) : instance =
+  let {ikind; _} = im.it in
+  match ext, ikind.it with
   | ExternalFunc clos, FuncImport x ->
     if func_type_of clos <> type_ inst x then
-      Link.error imp.it.ikind.at "type mismatch";
+      Link.error ikind.at "type mismatch";
     {inst with funcs = clos :: inst.funcs}
   | ExternalTable tab, TableImport (TableType (lim, _)) ->
-    check_limits (Table.limits tab) lim imp.it.ikind.at;
+    check_limits (Table.limits tab) lim ikind.at;
     {inst with tables = tab :: inst.tables}
   | ExternalMemory mem, MemoryImport (MemoryType lim) ->
-    check_limits (Memory.limits mem) lim imp.it.ikind.at;
+    check_limits (Memory.limits mem) lim ikind.at;
     {inst with memories = mem :: inst.memories}
   | ExternalGlobal v, GlobalImport (GlobalType _) ->
     {inst with globals = ref v :: inst.globals}
   | _ ->
-    Link.error imp.it.ikind.at "type mismatch"
+    Link.error ikind.at "type mismatch"
 
-let add_export inst ex map =
+let add_export (inst : instance) (ex : export) (map : extern ExportMap.t)
+  : extern ExportMap.t =
   let {name; ekind; item} = ex.it in
   let ext =
     match ekind.it with
@@ -404,18 +399,18 @@ let add_export inst ex map =
     | GlobalExport -> ExternalGlobal !(global inst item)
   in ExportMap.add name ext map
 
-let init (m : module_) (externals : extern list) : instance =
+let init (m : module_) (exts : extern list) : instance =
   let
     { imports; tables; memories; globals; funcs;
-      exports; elems; data; start
+      exports; elems; data; start; _
     } = m.it
   in
-  if List.length externals <> List.length imports then
+  if List.length exts <> List.length imports then
     Link.error m.at "wrong number of imports provided for initialisation";
   let fs = List.map (create_closure m) funcs in
   let gs = List.map create_global globals in
   let inst =
-    List.fold_right2 add_import externals imports
+    List.fold_right2 add_import exts imports
       { (instance m) with
         funcs = fs;
         tables = List.map create_table tables;

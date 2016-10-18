@@ -108,7 +108,7 @@ module Map = Map.Make(String)
 type exports = external_type Map.t
 type modules = exports Map.t
 
-let exports m =
+let exports m : exports =
   List.fold_left
     (fun map exp -> Map.add exp.it.name (export_type m exp) map)
     Map.empty m.it.exports
@@ -117,11 +117,11 @@ let of_var_opt = function
   | None -> "$$"
   | Some x -> x.it
 
-let bind mods x_opt m =
+let bind (mods : modules ref) x_opt m =
 	let exports = exports m in
   mods := Map.add "$$" exports (Map.add (of_var_opt x_opt) exports !mods)
 
-let lookup mods x_opt name at =
+let lookup (mods : modules ref) x_opt name at =
 	let exports =
     try Map.find (of_var_opt x_opt) !mods with Not_found ->
       raise (Eval.Crash (at, 
@@ -138,8 +138,6 @@ let eq_of = function
   | I64Type -> Values.I64 I64Op.Eq
   | F32Type -> Values.F32 F32Op.Eq
   | F64Type -> Values.F64 F64Op.Eq
-
-let types_of lits = List.map (fun lit -> Values.type_of lit.it) lits
 
 let invoke t lits at =
   [t], FuncImport (1l @@ at) @@ at,
@@ -196,12 +194,6 @@ let is_js_global_type = function
 let is_js_func_type = function
   | FuncType (ins, out) -> List.for_all is_js_value_type (ins @ out)
 
-let is_js_external_type = function
-  | ExternalFuncType t -> is_js_func_type t
-  | ExternalTableType _
-  | ExternalMemoryType _ -> true
-  | ExternalGlobalType t -> is_js_global_type t
-
 
 (* Script conversion *)
 
@@ -249,7 +241,7 @@ let of_definition def =
   let bs =
     match def.it with
     | Textual m -> Encode.encode m
-    | Binary (_, bs) -> bs
+    | Encoded (_, bs) -> bs
   in of_bytes bs
 
 let of_action mods act =
@@ -313,7 +305,7 @@ let of_command mods cmd =
     let m =
       match def.it with
       | Textual m -> m
-      | Binary (_, bs) -> Decode.decode "binary" bs
+      | Encoded (_, bs) -> Decode.decode "binary" bs
     in bind mods x_opt m;
     (if x_opt = None then "" else "let " ^ of_var_opt x_opt ^ " = ") ^
     "$$ = instance(" ^ of_definition def ^ ");\n"

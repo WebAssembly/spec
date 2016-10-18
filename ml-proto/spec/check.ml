@@ -35,14 +35,13 @@ let lookup category list x =
   try Lib.List32.nth list x.it with Failure _ ->
     error x.at ("unknown " ^ category ^ " " ^ Int32.to_string x.it)
 
-let type_ c x = lookup "type" c.types x
-let func c x = lookup "function" c.funcs x
-let import c x = lookup "import" c.imports x
-let local c x = lookup "local" c.locals x
-let global c x = lookup "global" c.globals x
-let label c x = lookup "label" c.labels x
-let table c x = lookup "table" c.tables x
-let memory c x = lookup "memory" c.memories x
+let type_ (c : context) x = lookup "type" c.types x
+let func (c : context) x = lookup "function" c.funcs x
+let local (c : context) x = lookup "local" c.locals x
+let global (c : context) x = lookup "global" c.globals x
+let label (c : context) x = lookup "label" c.labels x
+let table (c : context) x = lookup "table" c.tables x
+let memory (c : context) x = lookup "memory" c.memories x
 
 
 (* Stack typing *)
@@ -355,18 +354,18 @@ let check_memory (c : context) (mem : memory) =
   let {mtype} = mem.it in
   check_memory_type mtype mem.at
 
-let check_elem c seg =
+let check_elem (c : context) (seg : table_segment) =
   let {index; offset; init} = seg.it in
   check_const c offset I32Type;
   ignore (table c index);
   ignore (List.map (func c) init)
 
-let check_data c seg =
+let check_data (c : context) (seg : memory_segment) =
   let {index; offset; init} = seg.it in
   check_const c offset I32Type;
   ignore (memory c index)
 
-let check_global c glob =
+let check_global (c : context) (glob : global) : context =
   let {gtype; value} = glob.it in
   let GlobalType (t, mut) = gtype in
   check_const c value t;
@@ -375,13 +374,13 @@ let check_global c glob =
 
 (* Modules *)
 
-let check_start c start =
+let check_start (c : context) (start : var option) =
   Lib.Option.app (fun x ->
     require (func c x = FuncType ([], [])) x.at
       "start function must not have parameters or results"
   ) start
 
-let check_import im c =
+let check_import (im : import) (c : context) : context =
   let {module_name = _; item_name = _; ikind} = im.it in
   match ikind.it with
   | FuncImport x ->
@@ -398,7 +397,7 @@ let check_import im c =
 
 module NameSet = Set.Make(String)
 
-let check_export c set ex =
+let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
   let {name; ekind; item} = ex.it in
   (match ekind.it with
   | FuncExport -> ignore (func c item)
@@ -435,4 +434,3 @@ let check_module (m : module_) =
   List.iter (check_data c') data;
   ignore (List.fold_left (check_export c') NameSet.empty exports);
   check_start c' start
-

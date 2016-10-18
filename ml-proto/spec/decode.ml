@@ -58,9 +58,8 @@ let at f s =
 
 (* Generic values *)
 
-let bit i n = Int32.(logand n (shift_left 1l i)) <> 0l
-
-let u8 s = get s
+let u8 s =
+  get s
 
 let u16 s =
   let lo = u8 s in
@@ -96,10 +95,8 @@ let rec vsN n s =
   else Int64.(logor x (shift_left (vsN (n - 7) s) 7))
 
 let vu1 s = Int64.to_int (vuN 1 s)
-let vu7 s = Int64.to_int (vuN 7 s)
 let vu32 s = Int64.to_int32 (vuN 32 s)
 let vs32 s = Int64.to_int32 (vsN 32 s)
-let vu64 s = vuN 64 s
 let vs64 s = vsN 64 s
 let f32 s = F32.of_bits (u32 s)
 let f64 s = F64.of_bits (u64 s)
@@ -115,7 +112,6 @@ let string s = let n = len32 s in get_string n s
 let rec list f n s = if n = 0 then [] else let x = f s in x :: list f (n - 1) s
 let opt f b s = if b then Some (f s) else None
 let vec f s = let n = len32 s in list f n s
-let vec1 f s = let b = bool s in opt f b s
 
 let sized f s =
   let size = len32 s in
@@ -179,61 +175,21 @@ let global_type s =
   let mut = mutability s in
   GlobalType (t, mut)
 
-let limits vu s =
-  let has_max = bool s in
-  let min = vu s in
-  let max = opt vu has_max s in
-  {min; max}
-
-let table_type s =
-  let t = elem_type s in
-  let lim = limits vu32 s in
-  TableType (lim, t)
-
-let memory_type s =
-  let lim = limits vu32 s in
-  MemoryType lim
-
-let mutability s =
-  match u8 s with
-  | 0 -> Immutable
-  | 1 -> Mutable
-  | _ -> error s (pos s - 1) "invalid mutability"
-
-let global_type s =
-  let t = value_type s in
-  let mut = mutability s in
-  GlobalType (t, mut)
-
 
 (* Decode instructions *)
 
 open Ast
 open Operators
 
+let var s = vu32 s
+
 let op s = u8 s
-let arity s = u8 s
 
 let memop s =
   let align = vu32 s in
   require (I32.le_u align 32l) s (pos s - 1) "invalid memop flags";
   let offset = vu32 s in
   1 lsl Int32.to_int align, offset
-
-let var s = vu32 s
-
-let rec args n stack s pos = args' n stack [] s pos
-and args' n stack es s pos =
-  match n, stack with
-  | 0, _ -> es, stack
-  | n, e::stack' -> args' (n - 1) stack' (e::es) s pos
-  | _ -> error s pos "too few operands for operator"
-
-let args1 b stack s pos =
-  match args (if b then 1 else 0) stack s pos with
-  | [], stack' -> None, stack'
-  | [e], stack' -> Some e, stack'
-  | _ -> assert false
 
 let rec instr s =
   let pos = pos s in
@@ -476,10 +432,6 @@ let const s =
 
 (* Sections *)
 
-let trace s name =
-  print_endline
-    (name ^ " @ " ^ string_of_int (pos s) ^ " = " ^ string_of_byte (read s))
-
 let id s =
   let bo = peek s in
   Lib.Option.map
@@ -501,7 +453,7 @@ let id s =
 
 let section_with_size tag f default s =
   match id s with
-  | Some tag' when tag' = tag -> ignore (get s); sized f s
+  | Some tag' when tag' = tag -> ignore (u8 s); sized f s
   | _ -> default
 
 let section tag f default s =
@@ -692,4 +644,3 @@ let module_ s =
 
 
 let decode name bs = at module_ (stream name bs)
-

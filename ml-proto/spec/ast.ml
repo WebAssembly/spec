@@ -188,6 +188,8 @@ and module_' =
 }
 
 
+(* Auxiliary functions *)
+
 let empty_module =
 {
   types = [];
@@ -202,36 +204,35 @@ let empty_module =
   exports = [];
 }
 
+open Source
 
-(* Auxiliary functions *)
-
-let import_type (m : module_) ekind (item : int32) =
-  let open Source in
-  let rec loop i imps =
+let import_type (m : module_) (ekind : export_kind) (item : var)
+  : int32 * external_type option =
+  let rec loop i (ims : import list) =
     let i' = Int32.sub i 1l in
-    match imps with
+    match ims with
     | [] -> i, None
-    | imp::imps' ->
-    match imp.it.ikind.it, ekind.it with
+    | im::ims' ->
+    match im.it.ikind.it, ekind.it with
     | FuncImport x, FuncExport ->
       if i = 0l
       then i, Some (ExternalFuncType (Lib.List32.nth m.it.types x.it))
-      else loop i' imps'
+      else loop i' ims'
     | TableImport t, TableExport ->
-      if i = 0l then i, Some (ExternalTableType t) else loop i' imps'
+      if i = 0l then i, Some (ExternalTableType t) else loop i' ims'
     | MemoryImport t, MemoryExport ->
-      if i = 0l then i, Some (ExternalMemoryType t) else loop i' imps'
+      if i = 0l then i, Some (ExternalMemoryType t) else loop i' ims'
     | GlobalImport t, GlobalExport ->
-      if i = 0l then i, Some (ExternalGlobalType t) else loop i' imps'
-    | _ -> loop i imps'
-  in loop item m.it.imports
+      if i = 0l then i, Some (ExternalGlobalType t) else loop i' ims'
+    | _ -> loop i ims'
+  in loop item.it m.it.imports
 
-let export_type (m : module_) (exp : export) =
-  let open Source in
-  match import_type m exp.it.ekind exp.it.item.it with
+let export_type (m : module_) (ex : export) : external_type =
+  let {ekind; item; _} = ex.it in
+  match import_type m ekind item with
   | _, Some t -> t
   | n, None ->
-  match exp.it.ekind.it with
+  match ekind.it with
   | FuncExport ->
     ExternalFuncType
       (Lib.List32.nth m.it.types (Lib.List32.nth m.it.funcs n).it.ftype.it)
