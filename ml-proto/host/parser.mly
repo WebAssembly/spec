@@ -601,19 +601,7 @@ start :
 
 module_fields :
   | /* empty */
-    { fun (c : context) -> let open Ast in
-      {
-        types = c.types.tlist;
-        globals = [];
-        tables = [];
-        memories = [];
-        funcs = [];
-        elems = [];
-        data = [];
-        start = None;
-        imports = [];
-        exports = []
-      } }
+    { fun (c : context) -> {empty_module with types = c.types.tlist} }
   | type_def module_fields
     { fun c -> $1 c; $2 c }
   | global module_fields
