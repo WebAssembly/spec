@@ -7,7 +7,7 @@
 NAME =		wasm
 NAME_OPT =      $(NAME).opt
 NAME_UNOPT =    $(NAME)
-DIRS =		given host host/import spec
+DIRS =		aux spec text host host/import
 LIBS =		str bigarray
 
 OCB_FLAGS += 	-cflags '-w +a-4-27-42-44-45 -warn-error +a'

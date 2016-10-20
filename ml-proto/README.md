@@ -311,9 +311,11 @@ The implementation is split into three directories:
 
 * `spec`: the part of the implementation that corresponds to the actual language specification.
 
-* `host`: infrastructure for loading and running scripts, parsing S-expressions, and defining host environment modules.
+* `text`: parsing and printing the S-expressions text format.
 
-* `given`: auxiliary libraries.
+* `host`: infrastructure for loading and running scripts and defining host environment modules.
+
+* `aux`: auxiliary libraries.
 
 The implementation consists of the following parts:
 
@@ -321,7 +323,7 @@ The implementation consists of the following parts:
 
 * *Parser* (`lexer.mll`, `parser.mly`, `parse.ml[i]`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing.
 
-* *Pretty Printer* (`arrange.ml[i]`, `sexpr.ml[i]`). Turns a module or script AST back into the textual S-expression format.
+* *Pretty Printer* (`print.ml[i]`, `arrange.ml[i]`, `sexpr.ml[i]`). Turns a module or script AST back into the textual S-expression format.
 
 * *Decoder*/*Encoder* (`decode.ml[i]`, `encode.ml[i]`). The former parses the binary format and turns it into an AST, the latter does the inverse.
 
