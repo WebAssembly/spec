@@ -40,7 +40,9 @@ let () =
     configure ();
     Arg.parse argspec (fun file -> add_arg ("(input \"" ^ file ^ "\")")) usage;
     List.iter (fun arg -> if not (Run.run_string arg) then exit 1) !args;
-    if !Flags.interactive || !args = [] then begin
+    if !args = [] then Flags.interactive := true;
+    if !Flags.interactive then begin
+      Flags.print_sig := true;
       banner ();
       Run.run_stdin ()
     end

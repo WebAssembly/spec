@@ -189,6 +189,32 @@ let input_stdin run =
     trace "Bye."
 
 
+(* Printing *)
+
+let print_sig prefix name string_of_type t =
+  Printf.printf "%s \"%s\" : %s\n"
+    prefix (String.escaped name) (string_of_type t)
+
+let print_export m ex =
+  let open Types in
+  let n = ex.it.Ast.name in
+  match Ast.export_type m ex with
+  | ExternalFuncType t -> print_sig "func" n string_of_func_type t
+  | ExternalTableType t -> print_sig "table" n string_of_table_type t
+  | ExternalMemoryType t -> print_sig "memory" n string_of_memory_type t
+  | ExternalGlobalType t -> print_sig "global" n string_of_global_type t
+
+let print_module m =
+  List.iter (print_export m) m.it.Ast.exports;
+  flush_all ()
+
+let print_result vs =
+  let ts = List.map Values.type_of vs in
+  Printf.printf "%s : %s\n"
+    (Values.string_of_values vs) (Types.string_of_value_types ts);
+  flush_all ()
+
+
 (* Configuration *)
 
 module Map = Map.Make(String)
@@ -332,8 +358,8 @@ let run_assertion ass =
     let got_vs = run_action act in
     let expect_vs = List.map it es in
     if got_vs <> expect_vs then begin
-      print_string "Result: "; Print.print_result got_vs;
-      print_string "Expect: "; Print.print_result expect_vs;
+      print_string "Result: "; print_result got_vs;
+      print_string "Expect: "; print_result expect_vs;
       Assert.error ass.at "wrong return values"
     end
 
@@ -348,7 +374,7 @@ let run_assertion ass =
         got_f64 <> F64.pos_nan && got_f64 <> F64.neg_nan
       | _ -> true
     then begin
-      print_string "Result: "; Print.print_result got_vs;
+      print_string "Result: "; print_result got_vs;
       print_string "Expect: "; print_endline "nan";
       Assert.error ass.at "wrong return value"
     end
@@ -376,7 +402,7 @@ let rec run_command cmd =
       Check.check_module m;
       if !Flags.print_sig then begin
         trace "Signature:";
-        Print.print_module_sig m
+        print_module m
       end
     end;
     bind scripts x_opt [cmd];
@@ -401,7 +427,7 @@ let rec run_command cmd =
     quote := cmd :: !quote;
     if not !Flags.dry then begin
       let vs = run_action act in
-      if vs <> [] then Print.print_result vs
+      if vs <> [] then print_result vs
     end
 
   | Assertion ass ->

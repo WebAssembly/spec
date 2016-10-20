@@ -17,8 +17,13 @@ let global (GlobalType (t, _)) =
 let table = Table.create AnyFuncType {min = 10l; max = Some 20l}
 let memory = Memory.create {min = 1l; max = Some 2l}
 
+let print_value v =
+  Printf.printf "%s : %s\n"
+    (Values.string_of_value v) (Types.string_of_value_type (Values.type_of v))
+
 let print (FuncType (_, out)) vs =
-  List.iter Print.print_result (List.map (fun v -> [v]) vs);
+  List.iter print_value vs;
+  flush_all ();
   List.map default_value out
 
 
