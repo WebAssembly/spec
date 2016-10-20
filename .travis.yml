@@ -2,9 +2,9 @@ language: c++
 
 sudo: off
 
-install: ./ml-proto/travis/install-ocaml.sh
+install: ./interpreter/travis/install-ocaml.sh
 
-script: ./ml-proto/travis/build-test.sh
+script: ./interpreter/travis/build-test.sh
 
 os:
   - linux
