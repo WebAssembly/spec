@@ -3,9 +3,9 @@
 set -e
 
 # Move to a location relative to the script so it runs
-# from anywhere. Go two levels down to get out of ml-proto
+# from anywhere. Go two levels down to get out of interpreter/
 # and into the top-level dir, since we'll run ocamlbuild
-# inside of ml-proto and it goes pear-shaped if it
+# inside of interpreter/ and it goes pear-shaped if it
 # encounters ocaml's own build directory.
 cd $(dirname ${BASH_SOURCE[0]})/../..
 

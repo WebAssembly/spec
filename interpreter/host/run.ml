@@ -93,7 +93,7 @@ let input_from get_script run =
   with
   | Decode.Code (at, msg) -> error at "decoding error" msg
   | Parse.Syntax (at, msg) -> error at "syntax error" msg
-  | Check.Invalid (at, msg) -> error at "invalid module" msg
+  | Valid.Invalid (at, msg) -> error at "invalid module" msg
   | Import.Unknown (at, msg) -> error at "link failure" msg
   | Eval.Link (at, msg) -> error at "link failure" msg
   | Eval.Trap (at, msg) -> error at "runtime trap" msg
@@ -301,9 +301,9 @@ let run_assertion ass =
     trace ("Asserting " ^ (if active then "" else "soft ") ^ "invalid...");
     (match
       let m = run_definition def in
-      Check.check_module m
+      Valid.check_module m
     with
-    | exception Check.Invalid (_, msg) ->
+    | exception Valid.Invalid (_, msg) ->
       if not (Str.string_match (Str.regexp re) msg 0) then begin
         print_endline ("Result: \"" ^ msg ^ "\"");
         print_endline ("Expect: \"" ^ re ^ "\"");
@@ -316,7 +316,7 @@ let run_assertion ass =
   | AssertUnlinkable (def, re) ->
     trace "Asserting unlinkable...";
     let m = run_definition def in
-    if not !Flags.unchecked then Check.check_module m;
+    if not !Flags.unchecked then Valid.check_module m;
     (match
       let imports = Import.link m in
       ignore (Eval.init m imports)
@@ -334,7 +334,7 @@ let run_assertion ass =
   | AssertUninstantiable (def, re) ->
     trace "Asserting trap...";
     let m = run_definition def in
-    if not !Flags.unchecked then Check.check_module m;
+    if not !Flags.unchecked then Valid.check_module m;
     (match
       let imports = Import.link m in
       ignore (Eval.init m imports)
@@ -395,7 +395,7 @@ let rec run_command cmd =
     let m = run_definition def in
     if not !Flags.unchecked then begin
       trace "Checking...";
-      Check.check_module m;
+      Valid.check_module m;
       if !Flags.print_sig then begin
         trace "Signature:";
         print_module m
