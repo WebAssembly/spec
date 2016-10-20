@@ -256,11 +256,12 @@ let run_definition def =
 
 let run_action act =
   match act.it with
-  | Invoke (x_opt, name, es) ->
+  | Invoke (x_opt, name, vs) ->
     trace ("Invoking function \"" ^ name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
-    | Some (Instance.ExternalFunc f) -> Eval.invoke f (List.map it es)
+    | Some (Instance.ExternalFunc f) ->
+      Eval.invoke f (List.map (fun v -> v.it) vs)
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"
     )
@@ -349,10 +350,10 @@ let run_assertion ass =
       Assert.error ass.at "expected instaniation trap"
     )
 
-  | AssertReturn (act, es) ->
+  | AssertReturn (act, vs) ->
     trace ("Asserting return...");
     let got_vs = run_action act in
-    let expect_vs = List.map it es in
+    let expect_vs = List.map (fun v -> v.it) vs in
     if got_vs <> expect_vs then begin
       print_string "Result: "; print_result got_vs;
       print_string "Expect: "; print_result expect_vs;
