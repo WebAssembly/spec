@@ -40,7 +40,7 @@ let tab head f xs = if xs = [] then [] else [Node (head, list f xs)]
 let atom f x = Atom (f x)
 
 let break_bytes s =
-  let ss = Lib.String.breakup s (!Flags.width / 3 - 4) in
+  let ss = Lib.String.breakup s 16 in
   list (atom bytes) ss
 
 
@@ -251,13 +251,19 @@ let const c =
 
 (* Functions *)
 
-let func off i f =
+let func_with_name name f =
   let {ftype; locals; body} = f.it in
-  Node ("func $" ^ nat (off + i),
+  Node ("func" ^ name,
     [Node ("type " ^ var ftype, [])] @
     decls "local" locals @
     list instr body
   )
+
+let func_with_index off i f =
+  func_with_name (" $" ^ nat (off + i)) f
+
+let func f =
+  func_with_name "" f
 
 let start x = Node ("start " ^ var x, [])
 
@@ -351,7 +357,7 @@ let module_with_var_opt x_opt m =
     listi (table (List.length table_imports)) m.it.tables @
     listi (memory (List.length memory_imports)) m.it.memories @
     listi (global (List.length global_imports)) m.it.globals @
-    listi (func (List.length func_imports)) m.it.funcs @
+    listi (func_with_index (List.length func_imports)) m.it.funcs @
     list export m.it.exports @
     opt start m.it.start @
     list elems m.it.elems @

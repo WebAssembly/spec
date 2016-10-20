@@ -17,7 +17,6 @@ ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I spec -I given -I 
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I spec -I given -I host -I host/import -o spec/table.cmi spec/table.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I spec -I given -I host -I host/import -o spec/instance.cmo spec/instance.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I spec -I given -I host -I host/import -o spec/eval.cmi spec/eval.mli
-ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/print.cmi host/print.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/encode.cmi host/encode.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host/import -I spec -I given -I host -o host/import/env.cmo host/import/env.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/flags.cmo host/flags.ml
@@ -28,12 +27,11 @@ ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I g
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/main.d.cmo host/main.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I spec -I given -I host -I host/import -o spec/error.cmi spec/error.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/script.cmo host/script.ml
-ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/sexpr.cmi host/sexpr.mli
-ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/arrange.cmi host/arrange.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I spec -I given -I host -I host/import -o spec/check.cmi spec/check.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I spec -I given -I host -I host/import -o spec/decode.cmi spec/decode.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/js.cmi host/js.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/parse.cmi host/parse.mli
+ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/print.cmi host/print.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/encode.d.cmo host/encode.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host/import -I spec -I given -I host -o host/import/env.d.cmo host/import/env.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/flags.d.cmo host/flags.ml
@@ -71,16 +69,18 @@ ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I spec -I given -I 
 ocamlyacc host/parser.mly
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/parser.cmi host/parser.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/lexer.cmi host/lexer.mli
-ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/arrange.d.cmo host/arrange.ml
+ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/sexpr.cmi host/sexpr.mli
+ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -bin-annot -I host -I spec -I given -I host/import -o host/arrange.cmi host/arrange.mli
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I spec -I given -I host -I host/import -o spec/check.d.cmo spec/check.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I spec -I given -I host -I host/import -o spec/decode.d.cmo spec/decode.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/js.d.cmo host/js.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/parse.d.cmo host/parse.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/print.d.cmo host/print.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/script.d.cmo host/script.ml
-ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/sexpr.d.cmo host/sexpr.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I spec -I given -I host -I host/import -o spec/operators.d.cmo spec/operators.ml
 ocamllex.opt -q host/lexer.mll
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/lexer.d.cmo host/lexer.ml
 ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/parser.d.cmo host/parser.ml
-ocamlc.opt str.cma bigarray.cma -g given/lib.d.cmo given/source.d.cmo spec/float.d.cmo spec/f32.d.cmo spec/f64.d.cmo spec/numeric_error.d.cmo spec/int.d.cmo spec/i32.d.cmo spec/i64.d.cmo spec/types.d.cmo spec/values.d.cmo spec/memory.d.cmo spec/ast.d.cmo spec/error.d.cmo host/encode.d.cmo host/flags.d.cmo spec/table.d.cmo spec/instance.d.cmo host/import.d.cmo spec/i32_convert.d.cmo spec/f32_convert.d.cmo spec/i64_convert.d.cmo spec/f64_convert.d.cmo spec/eval_numeric.d.cmo spec/eval.d.cmo host/import/env.d.cmo host/print.d.cmo host/import/spectest.d.cmo host/script.d.cmo host/sexpr.d.cmo spec/operators.d.cmo spec/decode.d.cmo host/arrange.d.cmo host/js.d.cmo host/parser.d.cmo host/lexer.d.cmo host/parse.d.cmo spec/check.d.cmo host/run.d.cmo host/main.d.cmo -o %NAME%
+ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/arrange.d.cmo host/arrange.ml
+ocamlc.opt -c -w +a-4-27-42-44-45 -warn-error +a -g -bin-annot -I host -I spec -I given -I host/import -o host/sexpr.d.cmo host/sexpr.ml
+ocamlc.opt str.cma bigarray.cma -g given/lib.d.cmo given/source.d.cmo spec/float.d.cmo spec/f32.d.cmo spec/f64.d.cmo spec/numeric_error.d.cmo spec/int.d.cmo spec/i32.d.cmo spec/i64.d.cmo spec/types.d.cmo spec/values.d.cmo spec/memory.d.cmo spec/ast.d.cmo spec/error.d.cmo host/encode.d.cmo host/flags.d.cmo spec/table.d.cmo spec/instance.d.cmo host/import.d.cmo spec/i32_convert.d.cmo spec/f32_convert.d.cmo spec/i64_convert.d.cmo spec/f64_convert.d.cmo spec/eval_numeric.d.cmo spec/eval.d.cmo host/import/env.d.cmo host/import/spectest.d.cmo host/script.d.cmo spec/operators.d.cmo spec/decode.d.cmo host/js.d.cmo host/parser.d.cmo host/lexer.d.cmo host/parse.d.cmo host/sexpr.d.cmo host/arrange.d.cmo host/print.d.cmo spec/check.d.cmo host/run.d.cmo host/main.d.cmo -o %NAME%

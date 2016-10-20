@@ -48,12 +48,10 @@ let create_binary_file file _ get_module =
   with exn -> close_out oc; raise exn
 
 let create_sexpr_file mode file get_script _ =
-  trace ("Formatting (" ^ file ^ ")...");
-  let sexprs = Arrange.script mode (get_script ()) in
+  trace ("Writing (" ^ file ^ ")...");
   let oc = open_out file in
   try
-    trace "Writing...";
-    List.iter (Sexpr.output oc !Flags.width) sexprs;
+    Print.script oc !Flags.width mode (get_script ());
     close_out oc
   with exn -> close_out oc; raise exn
 
@@ -75,10 +73,8 @@ let output_file =
     create_js_file
 
 let output_stdout get_module =
-  trace "Formatting...";
-  let sexpr = Arrange.module_ (get_module ()) in
   trace "Printing...";
-  Sexpr.output stdout !Flags.width sexpr
+  Print.module_ stdout !Flags.width (get_module ())
 
 
 (* Input *)
