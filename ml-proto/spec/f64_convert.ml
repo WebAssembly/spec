@@ -4,8 +4,8 @@ let promote_f32 x =
   let xf = F32.to_float x in
   if xf = xf then F64.of_float xf else
   let nan32bits = I64_convert.extend_u_i32 (F32.to_bits x) in
-  let sign_field = Int64.shift_left (Int64.shift_right_logical nan32bits 31) 63 in
-  let significand_field = Int64.shift_right_logical (Int64.shift_left nan32bits 41) 12 in
+  let sign_field = Int64.(shift_left (shift_right_logical nan32bits 31) 63) in
+  let significand_field = Int64.(shift_right_logical (shift_left nan32bits 41) 12) in
   let fields = Int64.logor sign_field significand_field in
   let nan64bits = Int64.logor 0x7ff8000000000000L fields in
   F64.of_bits nan64bits
@@ -19,8 +19,7 @@ let convert_s_i32 x =
  * shift. Instead, we can use int64 signed arithmetic.
  *)
 let convert_u_i32 x =
-  F64.of_float
-    (Int64.to_float (Int64.logand (Int64.of_int32 x) 0x00000000ffffffffL))
+  F64.of_float Int64.(to_float (logand (of_int32 x) 0x00000000ffffffffL))
 
 let convert_s_i64 x =
   F64.of_float (Int64.to_float x)
@@ -35,6 +34,6 @@ let convert_u_i64 x =
   F64.of_float (if x >= Int64.zero then
     Int64.to_float x
   else
-    Int64.to_float (Int64.shift_right_logical x 1) *. 2.)
+    Int64.(to_float (shift_right_logical x 1) *. 2.0))
 
 let reinterpret_i64 = F64.of_bits

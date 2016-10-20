@@ -352,7 +352,7 @@ let init_memory (inst : instance) (seg : memory_segment) =
   let {index; offset = e; init} = seg.it in
   let mem = memory inst index in
   let offset = i32 (eval_const inst e) e.at in
-  let offset64 = Int64.logand (Int64.of_int32 offset) 0xffffffffL in
+  let offset64 = Int64.(logand (of_int32 offset) 0xffffffffL) in
   try Memory.blit mem offset64 init
   with Memory.Bounds -> Link.error seg.at "data segment does not fit memory"
 

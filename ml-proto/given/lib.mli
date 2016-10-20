@@ -61,11 +61,6 @@ sig
   val is_power_of_two : int -> bool
 end
 
-module Int64 :
-sig
-  val is_power_of_two : int64 -> bool
-end
-
 module String :
 sig
   val breakup : string -> int -> string list

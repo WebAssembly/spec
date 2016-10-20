@@ -49,7 +49,7 @@ let create {min; max} =
   {content = create' min; max}
 
 let size mem =
-  Int64.to_int32 (Int64.div (Array1_64.dim mem.content) page_size)
+  Int64.(to_int32 (div (Array1_64.dim mem.content) page_size))
 
 let limits mem =
   {min = size mem; max = mem.max}
@@ -65,7 +65,7 @@ let grow mem delta =
   mem.content <- after
 
 let effective_address a o =
-  let ea = Int64.add a (Int64.of_int32 o) in
+  let ea = Int64.(add a (of_int32 o)) in
   if I64.lt_u ea a then raise Bounds;
   ea
 
@@ -74,7 +74,7 @@ let loadn mem n ea =
   let rec loop mem n i =
     if n = 0 then 0L else
     let byte = Int64.of_int (Array1_64.get mem.content i) in
-    Int64.logor byte (Int64.shift_left (loop mem (n - 1) (Int64.add i 1L)) 8)
+    Int64.(logor byte (shift_left (loop mem (n - 1) (add i 1L)) 8))
   in
   try loop mem n ea with Invalid_argument _ -> raise Bounds
 
@@ -83,7 +83,7 @@ let storen mem n ea v =
   let rec loop mem n i v =
     if n > 0 then begin
       Array1_64.set mem.content i (Int64.to_int v land 255);
-      loop mem (n - 1) (Int64.add i 1L) (Int64.shift_right v 8)
+      Int64.(loop mem (n - 1) (add i 1L) (shift_right v 8))
     end
   in
   try loop mem n ea v with Invalid_argument _ -> raise Bounds
@@ -108,7 +108,7 @@ let loadn_sx mem n ea =
   assert (n > 0 && n <= 8);
   let v = loadn mem n ea in
   let shift = 64 - (8 * n) in
-  Int64.shift_right (Int64.shift_left v shift) shift
+  Int64.(shift_right (shift_left v shift) shift)
 
 let load_packed sz ext mem a o t =
   let ea = effective_address a o in
