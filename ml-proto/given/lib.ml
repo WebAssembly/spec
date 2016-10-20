@@ -71,6 +71,48 @@ struct
     | _ -> failwith "drop"
 end
 
+module Array32 =
+struct
+  let make n x =
+    if n < 0l || Int64.of_int32 n > Int64.of_int max_int then
+      raise (Invalid_argument "Array32.make");
+    Array.make (Int32.to_int n) x
+
+  let length a = Int32.of_int (Array.length a)
+
+  let index_of_int32 i =
+    if i < 0l || Int64.of_int32 i > Int64.of_int max_int then -1 else
+    Int32.to_int i
+
+  let get a i = Array.get a (index_of_int32 i)
+  let set a i x = Array.set a (index_of_int32 i) x
+  let blit a1 i1 a2 i2 n =
+    Array.blit a1 (index_of_int32 i1) a2 (index_of_int32 i2) (index_of_int32 n)
+end
+
+module Bigarray =
+struct
+  open Bigarray
+
+  module Array1_64 =
+  struct
+    let create kind layout n =
+      if n < 0L || n > Int64.of_int max_int then
+        raise (Invalid_argument "Bigarray.Array1_64.create");
+      Array1.create kind layout (Int64.to_int n)
+
+    let dim a = Int64.of_int (Array1.dim a)
+
+    let index_of_int64 i =
+      if i < 0L || i > Int64.of_int max_int then -1 else
+      Int64.to_int i
+
+    let get a i = Array1.get a (index_of_int64 i)
+    let set a i x = Array1.set a (index_of_int64 i) x
+    let sub a i n = Array1.sub a (index_of_int64 i) (index_of_int64 n)
+  end
+end
+
 module Option =
 struct
   let get o x =

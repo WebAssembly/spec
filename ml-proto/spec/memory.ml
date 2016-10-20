@@ -1,4 +1,5 @@
 open Bigarray
+open Lib.Bigarray
 open Types
 open Values
 
@@ -30,28 +31,6 @@ let mem_size = function
   | Mem16 -> 2
   | Mem32 -> 4
 
-(*
- * These limitations should be considered part of the host environment and not
- * part of the spec defined by this file.
- * ==========================================================================
- *)
-
-let host_size_of_int64 n =
-  if n < 0L || n > Int64.of_int max_int then raise Out_of_memory;
-  Int64.to_int n
-
-let int64_of_host_size n =
-  Int64.of_int n
-
-let host_index_of_int64 a size =
-  assert (size >= 0);
-  let n = Int64.of_int size in
-  if a < 0L || Int64.add a n > Int64.of_int max_int ||
-    Int64.sub Int64.max_int a < n then raise Bounds;
-  Int64.to_int a
-
-(* ========================================================================== *)
-
 let within_limits n = function
   | None -> true
   | Some max -> I32.le_u n max
@@ -59,8 +38,8 @@ let within_limits n = function
 let create' n =
   if I32.gt_u n 0x10000l then raise SizeOverflow else
   try
-    let sz = host_size_of_int64 (Int64.mul (Int64.of_int32 n) page_size) in
-    let mem = Array1.create Int8_unsigned C_layout sz in
+    let size = Int64.(mul (of_int32 n) page_size) in
+    let mem = Array1_64.create Int8_unsigned C_layout size in
     Array1.fill mem 0;
     mem
   with Out_of_memory -> raise OutOfMemory
@@ -70,22 +49,19 @@ let create {min; max} =
   {content = create' min; max}
 
 let size mem =
-  Int64.to_int32
-    (Int64.div (int64_of_host_size (Array1.dim mem.content)) page_size)
+  Int64.to_int32 (Int64.div (Array1_64.dim mem.content) page_size)
 
 let limits mem =
   {min = size mem; max = mem.max}
 
 let grow mem delta =
-  let host_old_size = Array1.dim mem.content in
   let old_size = size mem in
   let new_size = Int32.add old_size delta in
   if I32.gt_u old_size new_size then raise SizeOverflow else
   if not (within_limits new_size mem.max) then raise SizeLimit else
   let after = create' new_size in
-  Array1.blit
-    (Array1.sub mem.content 0 host_old_size)
-    (Array1.sub after 0 host_old_size);
+  let dim = Array1_64.dim mem.content in
+  Array1.blit (Array1_64.sub mem.content 0L dim) (Array1_64.sub after 0L dim);
   mem.content <- after
 
 let effective_address a o =
@@ -93,27 +69,24 @@ let effective_address a o =
   if I64.lt_u ea a then raise Bounds;
   ea
 
-let rec loadn' mem n i =
-  let byte = Int64.of_int mem.content.{i} in
-  if n = 1 then
-    byte
-  else
-    Int64.logor byte (Int64.shift_left (loadn' mem (n-1) (i+1)) 8)
-
-let rec storen' mem n i v =
-  mem.content.{i} <- Int64.to_int v land 255;
-  if n > 1 then
-    storen' mem (n - 1) (i + 1) (Int64.shift_right v 8)
-
 let loadn mem n ea =
   assert (n > 0 && n <= 8);
-  let i = host_index_of_int64 ea n in
-  try loadn' mem n i with Invalid_argument _ -> raise Bounds
+  let rec loop mem n i =
+    if n = 0 then 0L else
+    let byte = Int64.of_int (Array1_64.get mem.content i) in
+    Int64.logor byte (Int64.shift_left (loop mem (n - 1) (Int64.add i 1L)) 8)
+  in
+  try loop mem n ea with Invalid_argument _ -> raise Bounds
 
 let storen mem n ea v =
   assert (n > 0 && n <= 8);
-  let i = host_index_of_int64 ea n in
-  try storen' mem n i v with Invalid_argument _ -> raise Bounds
+  let rec loop mem n i v =
+    if n > 0 then begin
+      Array1_64.set mem.content i (Int64.to_int v land 255);
+      loop mem (n - 1) (Int64.add i 1L) (Int64.shift_right v 8)
+    end
+  in
+  try loop mem n ea v with Invalid_argument _ -> raise Bounds
 
 let load mem a o t =
   let ea = effective_address a o in
@@ -163,9 +136,8 @@ let store_packed sz mem a o v =
   | _ -> raise Type
 
 let blit mem addr data =
-  let base = host_index_of_int64 addr (String.length data) in
   try
-    for i = 0 to String.length data - 1 do
-      mem.content.{base + i} <- Char.code data.[i]
+    for i = String.length data - 1 downto 0 do
+      Array1_64.set mem.content Int64.(add addr (of_int i)) (Char.code data.[i])
     done
   with Invalid_argument _ -> raise Bounds

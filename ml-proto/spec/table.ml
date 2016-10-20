@@ -17,25 +17,6 @@ exception Bounds
 exception SizeOverflow
 exception SizeLimit
 
-(*
- * These limitations should be considered part of the host environment and not
- * part of the spec defined by this file.
- * ==========================================================================
- *)
-
-let host_size_of_int32 n =
-  if n < 0l || Int64.of_int32 n > Int64.of_int max_int then raise Out_of_memory;
-  Int32.to_int n
-
-let int32_of_host_size n =
-  Int32.of_int n
-
-let host_index_of_int32 i =
-  if i < 0l || Int64.of_int32 i > Int64.of_int max_int then raise Bounds;
-  Int32.to_int i
-
-(* ========================================================================== *)
-
 let elem_type tab = tab.elem_type
 
 let within_limits size = function
@@ -43,14 +24,15 @@ let within_limits size = function
   | Some max -> I32.le_u size max
 
 let create' size =
-  Array.make (host_size_of_int32 size) Uninitialized
+  try Lib.Array32.make size Uninitialized
+  with Invalid_argument _ -> raise Out_of_memory
 
 let create elem_type {min; max} =
   assert (within_limits min max);
   {content = create' min; max; elem_type}
 
 let size tab =
-  int32_of_host_size (Array.length tab.content)
+  Lib.Array32.length tab.content
 
 let limits tab =
   {min = size tab; max = tab.max}
@@ -65,16 +47,12 @@ let grow tab delta =
   tab.content <- after
 
 let load tab i =
-  let j = host_index_of_int32 i in
-  try tab.content.(j) with Invalid_argument _ -> raise Bounds
+  try Lib.Array32.get tab.content i with Invalid_argument _ -> raise Bounds
 
 let store tab i v =
-  let j = host_index_of_int32 i in
-  try tab.content.(j) <- v with Invalid_argument _ -> raise Bounds
+  try Lib.Array32.set tab.content i v with Invalid_argument _ -> raise Bounds
 
 let blit tab offset elems =
   let data = Array.of_list elems in
-  let base = host_index_of_int32 offset in
-  try
-    Array.blit data 0 tab.content base (Array.length data)
+  try Lib.Array32.blit data 0l tab.content offset (Lib.Array32.length data)
   with Invalid_argument _ -> raise Bounds
