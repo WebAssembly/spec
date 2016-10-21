@@ -1,1 +1,2 @@
 true:       bin_annot
+<{aux,host,spec,text,host/import}/*.cmx>:    for-pack(Wasm)

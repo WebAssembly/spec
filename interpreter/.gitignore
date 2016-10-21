@@ -2,6 +2,7 @@
 *.byte
 *.opt
 *.zip
+wasmlib.mlpack
 _build
 wasm
 unopt

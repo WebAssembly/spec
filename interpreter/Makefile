@@ -5,8 +5,11 @@
 #
 
 NAME =		wasm
+LIB =		wasm
 NAME_OPT =      $(NAME).opt
 NAME_UNOPT =    $(NAME)
+LIB_OPT =	$(LIB).cmx
+LIB_UNOPT =	$(LIB).cmo
 DIRS =		aux spec text host host/import
 LIBS =		str bigarray
 
@@ -16,8 +19,8 @@ OCB_FLAGS += 	$(LIBS:%=-libs %)
 OCB =		ocamlbuild $(OCB_FLAGS)
 
 .PHONY:		opt unopt all land
-unopt:		$(NAME_UNOPT)
-opt:		$(NAME_OPT)
+unopt:		$(NAME_UNOPT) $(LIB_UNOPT)
+opt:		$(NAME_OPT) $(LIB_OPT)
 all:		opt unopt test
 land:		all winmake.bat
 
@@ -26,6 +29,21 @@ $(NAME_OPT):	main.native
 
 $(NAME_UNOPT):	main.d.byte
 		mv $< $@
+
+wasm.mlpack:
+		find $(DIRS) -iname '*.ml*' -type f | sed 's/\(.*\/\)\{0,1\}\(.*\)\.[^\.]*/\2/' | uniq | sort | grep -v main > $@
+
+$(LIB_OPT):	_build/wasm.cmx
+
+$(LIB_UNOPT):	_build/wasm.cmo
+
+.PHONY:		_build/$(LIB_OPT)
+_build/$(LIB_OPT): wasm.mlpack
+		$(OCB) -quiet $(LIB_OPT)
+
+.PHONY:		_build/$(LIB_UNOPT)
+_build/$(LIB_UNOPT): wasm.mlpack
+		$(OCB) -quiet $(LIB_UNOPT)
 
 .PHONY:		main.native
 main.native:
@@ -58,9 +76,19 @@ zip: 		winmake.bat
 .PHONY:		clean
 clean:
 		$(OCB) -clean
+		rm -f $(LIB_OPT) $(LIB_UNOPT) wasm.mlpack
 
 .PHONY:		check
 check:
 		# check that we can find all relevant libraries
 		# when using ocamlfind
 		ocamlfind query $(LIBS)
+
+install:	$(LIB_OPT) $(LIB_UNOPT)
+		ocamlfind install wasm findlib/META _build/wasm.o \
+		  $(wildcard _build/wasm.cm*) \
+		  $(wildcard host/*.mli spec/*.mli build/*.mli)
+
+.PHONY:		uninstall
+uninstall:
+		ocamlfind remove wasm
