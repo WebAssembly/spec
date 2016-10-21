@@ -33,7 +33,7 @@ $(NAME_UNOPT):	main.d.byte
 		mv $< $@
 
 wasm.mlpack:
-		find given host spec -iname '*.ml*' -type f | sed 's/\.ml[iyl]\{0,1\}$$//' | xargs basename -a | uniq | sort | grep -v main > $@
+		find given host spec -iname '*.ml*' -type f | sed 's/\(.*\/\)\{0,1\}\(.*\)\.[^\.]*/\2/' | uniq | sort | grep -v main > $@
 
 $(LIB_OPT):	_build/wasm.cmx
 
