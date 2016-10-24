@@ -56,7 +56,9 @@ let encode m =
       if -64L <= i && i < 64L then u8 b
       else (u8 (b lor 0x80); vs64 (Int64.shift_right i 7))
 
+    let vu1 i = vu64 (Int64.of_int i)
     let vu32 i = vu64 (Int64.of_int32 i)
+    let vs7 i = vs64 (Int64.of_int i)
     let vs32 i = vs64 (Int64.of_int32 i)
     let f32 x = u32 (F32.to_bits x)
     let f64 x = u64 (F64.to_bits x)
@@ -67,7 +69,7 @@ let encode m =
           "cannot encode length with more than 32 bit";
       vu32 (Int32.of_int i)
 
-    let bool b = u8 (if b then 1 else 0)
+    let bool b = vu1 (if b then 1 else 0)
     let string bs = len (String.length bs); put_string s bs
     let list f xs = List.iter f xs
     let opt f xo = Lib.Option.app f xo
@@ -88,23 +90,23 @@ let encode m =
     open Types
 
     let value_type = function
-      | I32Type -> u8 0x01
-      | I64Type -> u8 0x02
-      | F32Type -> u8 0x03
-      | F64Type -> u8 0x04
+      | I32Type -> vs7 (-0x01)
+      | I64Type -> vs7 (-0x02)
+      | F32Type -> vs7 (-0x03)
+      | F64Type -> vs7 (-0x04)
 
     let elem_type = function
-      | AnyFuncType -> u8 0x20
+      | AnyFuncType -> vs7 (-0x10)
 
     let stack_type = function
-      | [] -> u8 0x00
+      | [] -> vs7 (-0x40)
       | [t] -> value_type t
       | _ ->
         Code.error Source.no_region
           "cannot encode stack type with arity > 1 (yet)"
 
     let func_type = function
-      | FuncType (ins, out) -> u8 0x40; vec value_type ins; vec value_type out
+      | FuncType (ins, out) -> vs7 (-0x20); vec value_type ins; vec value_type out
 
     let limits vu {min; max} =
       bool (max <> None); vu min; opt vu max

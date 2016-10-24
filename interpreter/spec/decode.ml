@@ -96,6 +96,7 @@ let rec vsN n s =
 
 let vu1 s = Int64.to_int (vuN 1 s)
 let vu32 s = Int64.to_int32 (vuN 32 s)
+let vs7 s = Int64.to_int (vsN 7 s)
 let vs32 s = Int64.to_int32 (vsN 32 s)
 let vs64 s = vsN 64 s
 let f32 s = F32.of_bits (u32 s)
@@ -126,28 +127,30 @@ let sized f s =
 open Types
 
 let value_type s =
-  match u8 s with
-  | 0x01 -> I32Type
-  | 0x02 -> I64Type
-  | 0x03 -> F32Type
-  | 0x04 -> F64Type
+  match vs7 s with
+  | -0x01 -> I32Type
+  | -0x02 -> I64Type
+  | -0x03 -> F32Type
+  | -0x04 -> F64Type
   | _ -> error s (pos s - 1) "invalid value type"
 
 let elem_type s =
-  match u8 s with
-  | 0x20 -> AnyFuncType
+  match vs7 s with
+  | -0x10 -> AnyFuncType
   | _ -> error s (pos s - 1) "invalid element type"
 
 let stack_type s =
   match peek s with
-  | Some 0x00 -> skip 1 s; []
+  | Some 0x40 -> skip 1 s; []
   | _ -> [value_type s]
 
 let func_type s =
-  expect 0x40 s "invalid function type";
-  let ins = vec value_type s in
-  let out = vec value_type s in
-  FuncType (ins, out)
+  match vs7 s with
+  | -0x20 ->
+    let ins = vec value_type s in
+    let out = vec value_type s in
+    FuncType (ins, out)
+  | _ -> error s (pos s - 1) "invalid function type"
 
 let limits vu s =
   let has_max = bool s in
