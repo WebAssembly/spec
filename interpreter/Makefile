@@ -1,8 +1,8 @@
-# vim: sw=8 ts=8 noet:
+# This Makefile uses ocamlbuild but does not rely on ocamlfind or the Opam
+# package manager to build. However, Opam package management is available
+# optionally through the check/install/uninstall targets.
 #
-# This Makefile uses ocamlbuild but does not rely on ocamlfind
-# or the Opam package manager.
-#
+# See README.me for instructions.
 
 NAME =		wasm
 LIB =		wasm
