@@ -159,14 +159,17 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
   | Nop, _, _, _ ->
     es, vs, bs, cs
 
-  | Drop, v :: vs', _, _ ->
-    es, vs', bs, cs
-
   | Block (ts, es'), vs, bs, _ ->
     es', [], {target = []; barity = List.length ts; bcontext = es, vs} :: bs, cs
 
   | Loop (ts, es'), vs, bs, _ ->
     es', [], {target = [e]; barity = 0; bcontext = es, vs} :: bs, cs
+
+  | If (ts, es1, es2), I32 0l :: vs', _, _ ->
+    (Block (ts, es2) @@ e.at) :: es, vs', bs, cs
+
+  | If (ts, es1, es2), I32 i :: vs', _, _ ->
+    (Block (ts, es1) @@ e.at) :: es, vs', bs, cs
 
   | Br x, vs, bs, _ ->
     let bs' = drop32 x.it bs e.at in
@@ -191,18 +194,6 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     let es', vs', bs' = c.ccontext in
     es', take c.carity vs e.at @ vs', bs', cs'
 
-  | If (ts, es1, es2), I32 0l :: vs', _, _ ->
-    (Block (ts, es2) @@ e.at) :: es, vs', bs, cs
-
-  | If (ts, es1, es2), I32 i :: vs', _, _ ->
-    (Block (ts, es1) @@ e.at) :: es, vs', bs, cs
-
-  | Select, I32 0l :: v2 :: v1 :: vs', _, _ ->
-    es, v2 :: vs', bs, cs
-
-  | Select, I32 i :: v2 :: v1 :: vs', _, _ ->
-    es, v1 :: vs', bs, cs
-
   | Call x, _, _, c :: _ ->
     eval_call (func c.instance x) (es, vs, bs, cs) e.at
 
@@ -211,6 +202,15 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     if type_ c.instance x <> func_type_of clos then
       Trap.error e.at "indirect call signature mismatch";
     eval_call clos (es, vs, bs, cs) e.at
+
+  | Drop, v :: vs', _, _ ->
+    es, vs', bs, cs
+
+  | Select, I32 0l :: v2 :: v1 :: vs', _, _ ->
+    es, v2 :: vs', bs, cs
+
+  | Select, I32 i :: v2 :: v1 :: vs', _, _ ->
+    es, v1 :: vs', bs, cs
 
   | GetLocal x, vs, _, c :: _ ->
     es, (local c x) :: vs, bs, cs
@@ -249,29 +249,6 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
     with exn -> memory_error e.at exn);
     es, vs', bs, cs
 
-  | Const v, vs, _, _ ->
-    es, v.it :: vs, bs, cs
-
-  | Unary unop, v :: vs', _, _ ->
-    (try es, Eval_numeric.eval_unop unop v :: vs', bs, cs
-    with exn -> numeric_error e.at exn)
-
-  | Binary binop, v2 :: v1 :: vs', _, _ ->
-    (try es, Eval_numeric.eval_binop binop v1 v2 :: vs', bs, cs
-    with exn -> numeric_error e.at exn)
-
-  | Test testop, v :: vs', _, _ ->
-    (try es, value_of_bool (Eval_numeric.eval_testop testop v) :: vs', bs, cs
-    with exn -> numeric_error e.at exn)
-
-  | Compare relop, v2 :: v1 :: vs', _, _ ->
-    (try es, value_of_bool (Eval_numeric.eval_relop relop v1 v2) :: vs', bs, cs
-    with exn -> numeric_error e.at exn)
-
-  | Convert cvtop, v :: vs', _, _ ->
-    (try es, Eval_numeric.eval_cvtop cvtop v :: vs', bs, cs
-    with exn -> numeric_error e.at exn)
-
   | CurrentMemory, vs, _, c :: _ ->
     let mem = memory c.instance (0l @@ e.at) in
     es, I32 (Memory.size mem) :: vs, bs, cs
@@ -283,6 +260,29 @@ let eval_instr (e : instr) (es, vs, bs, cs : eval_context) : eval_context =
       try Memory.grow mem delta; old_size
       with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
     in es, I32 result :: vs', bs, cs
+
+  | Const v, vs, _, _ ->
+    es, v.it :: vs, bs, cs
+
+  | Test testop, v :: vs', _, _ ->
+    (try es, value_of_bool (Eval_numeric.eval_testop testop v) :: vs', bs, cs
+    with exn -> numeric_error e.at exn)
+
+  | Compare relop, v2 :: v1 :: vs', _, _ ->
+    (try es, value_of_bool (Eval_numeric.eval_relop relop v1 v2) :: vs', bs, cs
+    with exn -> numeric_error e.at exn)
+
+  | Unary unop, v :: vs', _, _ ->
+    (try es, Eval_numeric.eval_unop unop v :: vs', bs, cs
+    with exn -> numeric_error e.at exn)
+
+  | Binary binop, v2 :: v1 :: vs', _, _ ->
+    (try es, Eval_numeric.eval_binop binop v1 v2 :: vs', bs, cs
+    with exn -> numeric_error e.at exn)
+
+  | Convert cvtop, v :: vs', _, _ ->
+    (try es, Eval_numeric.eval_cvtop cvtop v :: vs', bs, cs
+    with exn -> numeric_error e.at exn)
 
   | _ ->
     Crash.error e.at "missing or ill-typed operand on stack"
