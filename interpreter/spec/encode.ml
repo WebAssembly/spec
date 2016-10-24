@@ -209,8 +209,8 @@ let encode m =
       | Store ({ty = I64Type; sz = Some Mem32; _} as mo) -> op 0x3e; memop mo
       | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
 
-      | GrowMemory -> op 0x3f; u8 0x00
-      | CurrentMemory -> op 0x40; u8 0x00
+      | CurrentMemory -> op 0x3f; u8 0x00
+      | GrowMemory -> op 0x40; u8 0x00
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c
       | Const {it = I64 c; _} -> op 0x42; vs64 c
