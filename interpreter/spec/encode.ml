@@ -165,7 +165,7 @@ let encode m =
       | SetGlobal x -> op 0xbc; var x
 
       | Call x -> op 0x16; var x
-      | CallIndirect x -> op 0x17; var x
+      | CallIndirect x -> op 0x17; var x; u8 0x00
 
       | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x2a; memop mo
       | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x2b; memop mo
@@ -208,8 +208,8 @@ let encode m =
       | Store ({ty = I64Type; sz = Some Mem32; _} as mo) -> op 0x32; memop mo
       | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
 
-      | GrowMemory -> op 0x39
-      | CurrentMemory -> op 0x3b
+      | GrowMemory -> op 0x39; u8 0x00
+      | CurrentMemory -> op 0x3b; u8 0x00
 
       | Unary (I32 I32Op.Clz) -> op 0x57
       | Unary (I32 I32Op.Ctz) -> op 0x58

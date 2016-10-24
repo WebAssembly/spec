@@ -240,7 +240,10 @@ let rec instr s =
   | 0x15 -> set_local (at var s)
 
   | 0x16 -> call (at var s)
-  | 0x17 -> call_indirect (at var s)
+  | 0x17 ->
+    let x = at var s in
+    expect 0x00 s "zero flag expected";
+    call_indirect x
 
   | 0x19 -> tee_local (at var s)
 
@@ -273,9 +276,13 @@ let rec instr s =
 
   | 0x37 | 0x38 as b -> illegal s pos b
 
-  | 0x39 -> grow_memory
+  | 0x39 ->
+    expect 0x00 s "zero flag expected";
+    grow_memory
   | 0x3a as b -> illegal s pos b
-  | 0x3b -> current_memory
+  | 0x3b ->
+    expect 0x00 s "zero flag expected";
+    current_memory
 
   | 0x3c | 0x3d | 0x3e | 0x3f as b -> illegal s pos b
 
