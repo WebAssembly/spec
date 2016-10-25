@@ -187,20 +187,34 @@ let input_stdin run =
 
 (* Printing *)
 
-let print_sig prefix name string_of_type t =
-  Printf.printf "%s \"%s\" : %s\n"
-    prefix (String.escaped name) (string_of_type t)
+let print_import m im =
+  let open Types in
+  let category, annotation =
+    match Ast.import_type m im with
+    | ExternalFuncType t -> "func", string_of_func_type t
+    | ExternalTableType t -> "table", string_of_table_type t
+    | ExternalMemoryType t -> "memory", string_of_memory_type t
+    | ExternalGlobalType t -> "global", string_of_global_type t
+  in
+  Printf.printf "  import %s %S %S : %s\n"
+    category im.it.Ast.module_name im.it.Ast.item_name annotation
 
 let print_export m ex =
   let open Types in
-  let n = ex.it.Ast.name in
-  match Ast.export_type m ex with
-  | ExternalFuncType t -> print_sig "func" n string_of_func_type t
-  | ExternalTableType t -> print_sig "table" n string_of_table_type t
-  | ExternalMemoryType t -> print_sig "memory" n string_of_memory_type t
-  | ExternalGlobalType t -> print_sig "global" n string_of_global_type t
+  let category, annotation =
+    match Ast.export_type m ex with
+    | ExternalFuncType t -> "func", string_of_func_type t
+    | ExternalTableType t -> "table", string_of_table_type t
+    | ExternalMemoryType t -> "memory", string_of_memory_type t
+    | ExternalGlobalType t -> "global", string_of_global_type t
+  in
+  Printf.printf "  export %s %S : %s\n"
+    category (String.escaped ex.it.Ast.name) annotation
 
-let print_module m =
+let print_module x_opt m =
+  Printf.printf "module%s :\n"
+    (match x_opt with None -> "" | Some x -> " " ^ x.it);
+  List.iter (print_import m) m.it.Ast.imports;
   List.iter (print_export m) m.it.Ast.exports;
   flush_all ()
 
@@ -399,7 +413,7 @@ let rec run_command cmd =
       Valid.check_module m;
       if !Flags.print_sig then begin
         trace "Signature:";
-        print_module m
+        print_module x_opt m
       end
     end;
     bind scripts x_opt [cmd];

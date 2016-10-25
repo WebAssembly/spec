@@ -206,36 +206,32 @@ let empty_module =
 
 open Source
 
-let import_type (m : module_) (ekind : export_kind) (item : var)
-  : int32 * external_type option =
-  let rec loop i (ims : import list) =
-    let i' = Int32.sub i 1l in
-    match ims with
-    | [] -> i, None
-    | im::ims' ->
-    match im.it.ikind.it, ekind.it with
-    | FuncImport x, FuncExport ->
-      if i = 0l
-      then i, Some (ExternalFuncType (Lib.List32.nth m.it.types x.it))
-      else loop i' ims'
-    | TableImport t, TableExport ->
-      if i = 0l then i, Some (ExternalTableType t) else loop i' ims'
-    | MemoryImport t, MemoryExport ->
-      if i = 0l then i, Some (ExternalMemoryType t) else loop i' ims'
-    | GlobalImport t, GlobalExport ->
-      if i = 0l then i, Some (ExternalGlobalType t) else loop i' ims'
-    | _ -> loop i ims'
-  in loop item.it m.it.imports
+let export_kind_of_import_kind = function
+  | FuncImport _ -> FuncExport
+  | TableImport _ -> TableExport
+  | MemoryImport _ -> MemoryExport
+  | GlobalImport _ -> GlobalExport
+
+let import_type (m : module_) (im : import) : external_type =
+  let {ikind; _} = im.it in
+  match ikind.it with
+  | FuncImport x -> ExternalFuncType (Lib.List32.nth m.it.types x.it)
+  | TableImport t -> ExternalTableType t
+  | MemoryImport t -> ExternalMemoryType t
+  | GlobalImport t -> ExternalGlobalType t
 
 let export_type (m : module_) (ex : export) : external_type =
   let {ekind; item; _} = ex.it in
-  match import_type m ekind item with
-  | _, Some t -> t
-  | n, None ->
-  match ekind.it with
-  | FuncExport ->
-    ExternalFuncType
-      (Lib.List32.nth m.it.types (Lib.List32.nth m.it.funcs n).it.ftype.it)
-  | TableExport -> ExternalTableType (Lib.List32.nth m.it.tables n).it.ttype
-  | MemoryExport -> ExternalMemoryType (Lib.List32.nth m.it.memories n).it.mtype
-  | GlobalExport -> ExternalGlobalType (Lib.List32.nth m.it.globals n).it.gtype
+  let rec find i = function
+    | im::ims when export_kind_of_import_kind im.it.ikind.it = ekind.it ->
+      if i = 0l then import_type m im else find (Int32.sub i 1l) ims
+    | im::ims -> find i ims
+    | [] ->
+      let open Lib.List32 in
+      match ekind.it with
+      | FuncExport ->
+        ExternalFuncType (nth m.it.types (nth m.it.funcs i).it.ftype.it)
+      | TableExport -> ExternalTableType (nth m.it.tables i).it.ttype
+      | MemoryExport -> ExternalMemoryType (nth m.it.memories i).it.mtype
+      | GlobalExport -> ExternalGlobalType (nth m.it.globals i).it.gtype
+  in find item.it m.it.imports
