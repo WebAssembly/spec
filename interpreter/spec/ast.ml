@@ -27,7 +27,7 @@ struct
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
              | And | Or | Xor | Shl | ShrS | ShrU | Rotl | Rotr
   type testop = Eqz
-  type relop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
+  type relop = Eq | Ne | LtS | LtU | GtS | GtU | LeS | LeU | GeS | GeU
   type cvtop = ExtendSI32 | ExtendUI32 | WrapI64
              | TruncSF32 | TruncUF32 | TruncSF64 | TruncUF64
              | ReinterpretFloat
@@ -38,7 +38,7 @@ struct
   type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
   type binop = Add | Sub | Mul | Div | Min | Max | CopySign
   type testop
-  type relop = Eq | Ne | Lt | Le | Gt | Ge
+  type relop = Eq | Ne | Lt | Gt | Le | Ge
   type cvtop = ConvertSI32 | ConvertUI32 | ConvertSI64 | ConvertUI64
              | PromoteF32 | DemoteF64
              | ReinterpretInt
@@ -70,17 +70,17 @@ type instr = instr' Source.phrase
 and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
-  | Drop                              (* forget a value *)
-  | Select                            (* branchless conditional *)
   | Block of stack_type * instr list  (* execute in sequence *)
   | Loop of stack_type * instr list   (* loop header *)
+  | If of stack_type * instr list * instr list  (* conditional *)
   | Br of var                         (* break to n-th surrounding label *)
   | BrIf of var                       (* conditional break *)
   | BrTable of var list * var         (* indexed break *)
   | Return                            (* break from function body *)
-  | If of stack_type * instr list * instr list  (* conditional *)
   | Call of var                       (* call function *)
   | CallIndirect of var               (* call function through table *)
+  | Drop                              (* forget a value *)
+  | Select                            (* branchless conditional *)
   | GetLocal of var                   (* read local variable *)
   | SetLocal of var                   (* write local variable *)
   | TeeLocal of var                   (* write local variable and keep value *)
@@ -88,14 +88,14 @@ and instr' =
   | SetGlobal of var                  (* write global variable *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
-  | Const of literal                  (* constant *)
-  | Unary of unop                     (* unary numeric operator *)
-  | Binary of binop                   (* binary numeric operator *)
-  | Test of testop                    (* numeric test *)
-  | Compare of relop                  (* numeric comparison *)
-  | Convert of cvtop                  (* conversion *)
   | CurrentMemory                     (* size of linear memory *)
   | GrowMemory                        (* grow linear memory *)
+  | Const of literal                  (* constant *)
+  | Test of testop                    (* numeric test *)
+  | Compare of relop                  (* numeric comparison *)
+  | Unary of unop                     (* unary numeric operator *)
+  | Binary of binop                   (* binary numeric operator *)
+  | Convert of cvtop                  (* conversion *)
 
 
 (* Globals & Functions *)

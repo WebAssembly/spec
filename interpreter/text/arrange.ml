@@ -73,6 +73,21 @@ module IntOp =
 struct
   open Ast.IntOp
 
+  let testop xx = function
+    | Eqz -> "eqz"
+
+  let relop xx = function
+    | Eq -> "eq"
+    | Ne -> "ne"
+    | LtS -> "lt_s"
+    | LtU -> "lt_u"
+    | GtS -> "gt_s"
+    | GtU -> "gt_u"
+    | LeS -> "le_s"
+    | LeU -> "le_u"
+    | GeS -> "ge_s"
+    | GeU -> "ge_u"
+
   let unop xx = function
     | Clz -> "clz"
     | Ctz -> "ctz"
@@ -95,21 +110,6 @@ struct
     | Rotl -> "rotl"
     | Rotr -> "rotr"
 
-  let testop xx = function
-    | Eqz -> "eqz"
-
-  let relop xx = function
-    | Eq -> "eq"
-    | Ne -> "ne"
-    | LtS -> "lt_s"
-    | LtU -> "lt_u"
-    | LeS -> "le_s"
-    | LeU -> "le_u"
-    | GtS -> "gt_s"
-    | GtU -> "gt_u"
-    | GeS -> "ge_s"
-    | GeU -> "ge_u"
-
   let cvtop xx = function
     | ExtendSI32 -> "extend_s/i32"
     | ExtendUI32 -> "extend_u/i32"
@@ -124,6 +124,16 @@ end
 module FloatOp =
 struct
   open Ast.FloatOp
+
+  let testop xx = fun _ -> assert false
+
+  let relop xx = function
+    | Eq -> "eq"
+    | Ne -> "ne"
+    | Lt -> "lt"
+    | Gt -> "gt"
+    | Le -> "le"
+    | Ge -> "ge"
 
   let unop xx = function
     | Neg -> "neg"
@@ -142,16 +152,6 @@ struct
     | Min -> "min"
     | Max -> "max"
     | CopySign -> "copysign"
-
-  let testop xx = fun _ -> assert false
-
-  let relop xx = function
-    | Eq -> "eq"
-    | Ne -> "ne"
-    | Lt -> "lt"
-    | Le -> "le"
-    | Gt -> "gt"
-    | Ge -> "ge"
 
   let cvtop xx = function
     | ConvertSI32 -> "convert_s/i32"
@@ -214,20 +214,20 @@ let rec instr e =
     match e.it with
     | Unreachable -> "unreachable", []
     | Nop -> "nop", []
-    | Drop -> "drop", []
     | Block (ts, es) -> "block", stack_type ts @ list instr es
     | Loop (ts, es) -> "loop", stack_type ts @ list instr es
+    | If (ts, es1, es2) ->
+      "if", stack_type ts @
+        [Node ("then", list instr es1); Node ("else", list instr es2)]
     | Br x -> "br " ^ var x, []
     | BrIf x -> "br_if " ^ var x, []
     | BrTable (xs, x) ->
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
     | Return -> "return", []
-    | If (ts, es1, es2) ->
-      "if", stack_type ts @
-        [Node ("then", list instr es1); Node ("else", list instr es2)]
-    | Select -> "select", []
     | Call x -> "call " ^ var x, []
     | CallIndirect x -> "call_indirect " ^ var x, []
+    | Drop -> "drop", []
+    | Select -> "select", []
     | GetLocal x -> "get_local " ^ var x, []
     | SetLocal x -> "set_local " ^ var x, []
     | TeeLocal x -> "tee_local " ^ var x, []
@@ -235,14 +235,14 @@ let rec instr e =
     | SetGlobal x -> "set_global " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
-    | Const lit -> constop lit ^ " " ^ value lit, []
-    | Unary op -> unop op, []
-    | Binary op -> binop op, []
-    | Test op -> testop op, []
-    | Compare op -> relop op, []
-    | Convert op -> cvtop op, []
     | CurrentMemory -> "current_memory", []
     | GrowMemory -> "grow_memory", []
+    | Const lit -> constop lit ^ " " ^ value lit, []
+    | Test op -> testop op, []
+    | Compare op -> relop op, []
+    | Unary op -> unop op, []
+    | Binary op -> binop op, []
+    | Convert op -> cvtop op, []
   in Node (head, inner)
 
 let const c =

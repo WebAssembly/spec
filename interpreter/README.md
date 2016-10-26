@@ -164,27 +164,29 @@ instr:
 op:
   unreachable
   nop
-  drop
-  select
   br <var>
   br_if <var>
   br_table <var>+
   return
   call <var>
   call_indirect <var>
+  drop
+  select
   get_local <var>
   set_local <var>
   tee_local <var>
+  get_global <var>
+  set_global <var>
+  <type>.load((8|16|32)_<sign>)? <offset>? <align>?
+  <type>.store(8|16|32)? <offset>? <align>?
+  current_memory
+  grow_memory
   <type>.const <value>
   <type>.<unop>
   <type>.<binop>
   <type>.<testop>
   <type>.<relop>
   <type>.<cvtop>/<type>
-  <type>.load((8|16|32)_<sign>)? <offset>? <align>?
-  <type>.store(8|16|32)? <offset>? <align>?
-  current_memory
-  grow_memory
 
 func:    ( func <name>? <func_sig> <local>* <instr>* )
          ( func <name>? ( export <string> ) <func_sig> <local>* <instrr>* ) ;; = (export <string> (func <N>) (func <name>? <func_sig> <local>* <instr>*)

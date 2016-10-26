@@ -168,9 +168,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | Nop ->
     [] --> []
 
-  | Drop ->
-    [peek 0 s] -~> []
-
   | Block (ts, es) ->
     check_arity (List.length ts) e.at;
     check_block {c with labels = ts :: c.labels} es ts e.at;
@@ -180,6 +177,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     check_arity (List.length ts) e.at;
     check_block {c with labels = [] :: c.labels} es ts e.at;
     [] --> ts
+
+  | If (ts, es1, es2) ->
+    check_arity (List.length ts) e.at;
+    check_block {c with labels = ts :: c.labels} es1 ts e.at;
+    check_block {c with labels = ts :: c.labels} es2 ts e.at;
+    [I32Type] --> ts
 
   | Br x ->
     label c x -->... []
@@ -195,16 +198,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | Return ->
     c.results -->... []
 
-  | If (ts, es1, es2) ->
-    check_arity (List.length ts) e.at;
-    check_block {c with labels = ts :: c.labels} es1 ts e.at;
-    check_block {c with labels = ts :: c.labels} es2 ts e.at;
-    [I32Type] --> ts
-
-  | Select ->
-    let t = peek 1 s in
-    [t; t; Some I32Type] -~> [t]
-
   | Call x ->
     let FuncType (ins, out) = func c x in
     ins --> out
@@ -213,6 +206,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     ignore (table c (0l @@ e.at));
     let FuncType (ins, out) = type_ c x in
     (ins @ [I32Type]) --> out
+
+  | Drop ->
+    [peek 0 s] -~> []
+
+  | Select ->
+    let t = peek 1 s in
+    [t; t; Some I32Type] -~> [t]
 
   | GetLocal x ->
     [] --> [local c x]
@@ -240,17 +240,17 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     check_memop c memop (fun sz -> sz) e.at;
     [I32Type; memop.ty] --> []
 
+  | CurrentMemory ->
+    ignore (memory c (0l @@ e.at));
+    [] --> [I32Type]
+
+  | GrowMemory ->
+    ignore (memory c (0l @@ e.at));
+    [I32Type] --> [I32Type]
+
   | Const v ->
     let t = type_value v.it in
     [] --> [t]
-
-  | Unary unop ->
-    let t = type_unop unop in
-    [t] --> [t]
-
-  | Binary binop ->
-    let t = type_binop binop in
-    [t; t] --> [t]
 
   | Test testop ->
     let t = type_testop testop in
@@ -260,17 +260,17 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let t = type_relop relop in
     [t; t] --> [I32Type]
 
+  | Unary unop ->
+    let t = type_unop unop in
+    [t] --> [t]
+
+  | Binary binop ->
+    let t = type_binop binop in
+    [t; t] --> [t]
+
   | Convert cvtop ->
     let t1, t2 = type_cvtop e.at cvtop in
     [t1] --> [t2]
-
-  | CurrentMemory ->
-    ignore (memory c (0l @@ e.at));
-    [] --> [I32Type]
-
-  | GrowMemory ->
-    ignore (memory c (0l @@ e.at));
-    [I32Type] --> [I32Type]
 
 and check_seq (c : context) (es : instr list) : infer_stack_type =
   match es with

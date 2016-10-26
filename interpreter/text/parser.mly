@@ -291,8 +291,6 @@ instr :
 plain_instr :
   | UNREACHABLE { fun c -> unreachable }
   | NOP { fun c -> nop }
-  | DROP { fun c -> drop }
-  | SELECT { fun c -> select }
   | BR var { fun c -> br ($2 c label) }
   | BR_IF var { fun c -> br_if ($2 c label) }
   | BR_TABLE var var_list
@@ -301,6 +299,8 @@ plain_instr :
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_INDIRECT var { fun c -> call_indirect ($2 c type_) }
+  | DROP { fun c -> drop }
+  | SELECT { fun c -> select }
   | GET_LOCAL var { fun c -> get_local ($2 c local) }
   | SET_LOCAL var { fun c -> set_local ($2 c local) }
   | TEE_LOCAL var { fun c -> tee_local ($2 c local) }
@@ -308,14 +308,14 @@ plain_instr :
   | SET_GLOBAL var { fun c -> set_global ($2 c global) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
-  | CONST literal { fun c -> fst (literal $1 $2) }
-  | UNARY { fun c -> $1 }
-  | BINARY { fun c -> $1 }
-  | TEST { fun c -> $1 }
-  | COMPARE { fun c -> $1 }
-  | CONVERT { fun c -> $1 }
   | CURRENT_MEMORY { fun c -> current_memory }
   | GROW_MEMORY { fun c -> grow_memory }
+  | CONST literal { fun c -> fst (literal $1 $2) }
+  | TEST { fun c -> $1 }
+  | COMPARE { fun c -> $1 }
+  | UNARY { fun c -> $1 }
+  | BINARY { fun c -> $1 }
+  | CONVERT { fun c -> $1 }
 ;
 block_instr :
   | BLOCK labeling_opt block END
