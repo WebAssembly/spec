@@ -48,16 +48,16 @@ let encode m =
 
     let rec vu64 i =
       let b = Int64.(to_int (logand i 0x7fL)) in
-      if i < 128L then u8 b
-      else (u8 (b lor 0x80); vu64 (Int64.shift_right i 7))
+      if 0L <= i && i < 128L then u8 b
+      else (u8 (b lor 0x80); vu64 (Int64.shift_right_logical i 7))
 
     let rec vs64 i =
       let b = Int64.(to_int (logand i 0x7fL)) in
       if -64L <= i && i < 64L then u8 b
       else (u8 (b lor 0x80); vs64 (Int64.shift_right i 7))
 
-    let vu1 i = vu64 (Int64.of_int i)
-    let vu32 i = vu64 (Int64.of_int32 i)
+    let vu1 i = vu64 Int64.(logand (of_int i) 1L)
+    let vu32 i = vu64 Int64.(logand (of_int32 i) 0xffffffffL)
     let vs7 i = vs64 (Int64.of_int i)
     let vs32 i = vs64 (Int64.of_int32 i)
     let f32 x = u32 (F32.to_bits x)
