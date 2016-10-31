@@ -139,6 +139,12 @@ let eq_of = function
   | F32Type -> Values.F32 F32Op.Eq
   | F64Type -> Values.F64 F64Op.Eq
 
+let reinterpret_of = function
+  | I32Type -> I32Type, Nop
+  | I64Type -> I64Type, Nop
+  | F32Type -> I32Type, Convert (Values.I32 I32Op.ReinterpretFloat)
+  | F64Type -> I64Type, Convert (Values.I64 I64Op.ReinterpretFloat)
+
 let invoke t lits at =
   [t], FuncImport (1l @@ at) @@ at,
   List.map (fun lit -> Const lit @@ at) lits @ [Call (0l @@ at) @@ at]
@@ -150,16 +156,18 @@ let assert_nothing ts at =
   [], []
 
 let assert_return lits ts at =
-  let test lit = 
+  let test lit =
+    let t', reinterpret = reinterpret_of (Values.type_of lit.it) in
     [ Const lit @@ at;
-      Compare (eq_of (Values.type_of lit.it)) @@ at;
+      reinterpret @@ at;
+      Compare (eq_of t') @@ at;
       Test (Values.I32 I32Op.Eqz) @@ at;
       BrIf (0l @@ at) @@ at ]
   in [], List.flatten (List.rev_map test lits)
 
 let assert_return_nan ts at =
-	let var i = Int32.of_int i @@ at in
-	let init i t = [GetLocal (var i) @@ at; SetLocal (var i) @@ at] in
+  let var i = Int32.of_int i @@ at in
+  let init i t = [SetLocal (var i) @@ at] in
   let test i t =
     [ GetLocal (var i) @@ at;
       GetLocal (var i) @@ at;
