@@ -10,6 +10,7 @@ import sys
 # Set to run tests through JS as well
 jsCommand = ""
 
+interpreterPath = os.path.abspath("./wasm")
 inputDir = "test/"
 expectDir = inputDir + "expected-output/"
 outputDir = inputDir + "output/"
@@ -94,34 +95,15 @@ def generate_test_cases(cls, interpreterPath, files):
     testCase = generate_test_case(rec)
     setattr(cls, attrName, testCase)
 
-def find_interpreter(path):
-  if not os.path.exists(path):
-    raise Exception("Interpreter has not been built. Looked for %s" % path)
-
-def rebuild_interpreter(path):
-  print("// building %s" % path)
-  sys.stdout.flush()
-  exitCode = subprocess.call(["make"])
-  if (exitCode != 0):
-    raise Exception("make failed with exit code %i" % exitCode)
-  if not os.path.exists(path):
-    raise Exception("Interpreter has not been built. Looked for %s" % path)
-
 if __name__ == "__main__":
-  interpreterPath = os.path.abspath("./wasm")
+  if not os.path.exists(interpreterPath):
+    raise Exception("Interpreter not found. Looked for %s" % path)
 
   try:
-    os.makedirs("test/output/")
+    os.makedirs(outputDir)
   except OSError:
     pass
 
-  shouldBuildInterpreter = ("--build" in sys.argv)
-  if shouldBuildInterpreter:
-    sys.argv.remove("--build")
-    rebuild_interpreter(interpreterPath)
-  else:
-    find_interpreter(interpreterPath)
-
-  testFiles = glob.glob("test/*.wast")
+  testFiles = glob.glob(inputDir + "*.wast")
   generate_test_cases(RunTests, interpreterPath, testFiles)
   unittest.main()
