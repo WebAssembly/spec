@@ -87,7 +87,7 @@ let prefix =
   "\n" ^
   "function assert_return(action, expected) {\n" ^
   "  let actual = action();\n" ^
-  "  if (actual !== expected) {\n" ^
+  "  if (!Object.is(actual, expected)) {\n" ^
   "    throw new Error(\"Wasm return value \" + expected + \" expected, got \" + actual);\n" ^
   "  };\n" ^
   "}\n" ^
@@ -158,7 +158,8 @@ let assert_nothing ts at =
 let assert_return lits ts at =
   let test lit =
     let t', reinterpret = reinterpret_of (Values.type_of lit.it) in
-    [ Const lit @@ at;
+    [ reinterpret @@ at;
+      Const lit @@ at;
       reinterpret @@ at;
       Compare (eq_of t') @@ at;
       Test (Values.I32 I32Op.Eqz) @@ at;
