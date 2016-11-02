@@ -309,7 +309,7 @@ However, to simplify the implementation, this AST representation represents some
 
 ## Implementation
 
-The implementation is split into three directories:
+The implementation is split into four directories:
 
 * `spec`: the part of the implementation that corresponds to the actual language specification.
 
@@ -317,11 +317,11 @@ The implementation is split into three directories:
 
 * `host`: infrastructure for loading and running scripts and defining host environment modules.
 
-* `aux`: auxiliary libraries.
+* `util`: utility libraries.
 
 The implementation consists of the following parts:
 
-* *Abstract Syntax* (`ast.ml`, `operators.ml`, `types.ml`, `source.ml[i]`). Notably, the `phrase` wrapper type around each AST node carries the source position information.
+* *Abstract Syntax* (`ast.ml`, `operators.ml`, `types.ml`, `source.ml[i]`, `script.ml`). Notably, the `phrase` wrapper type around each AST node carries the source position information.
 
 * *Parser* (`lexer.mll`, `parser.mly`, `parse.ml[i]`). Generated with ocamllex and ocamlyacc. The lexer does the opcode encoding (non-trivial tokens carry e.g. type information as semantic values, as declared in `parser.mly`), the parser the actual S-expression parsing.
 
@@ -329,23 +329,14 @@ The implementation consists of the following parts:
 
 * *Decoder*/*Encoder* (`decode.ml[i]`, `encode.ml[i]`). The former parses the binary format and turns it into an AST, the latter does the inverse.
 
-* *Validator* (`check.ml[i]`). Does a recursive walk of the AST, passing down the *expected* type for expressions, and checking each expression against that. An expected empty type can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
+* *Validator* (`valid.ml[i]`). Does a recursive walk of the AST, passing down the *expected* type for expressions, and checking each expression against that. An expected empty type can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
 
-* *Evaluator* (`eval.ml[i]`, `values.ml`, `eval_numeric.ml[i]`, `int.ml`, `float.ml`, `table.ml[i]`, `memory.ml[i]`, and a few more). Implements evaluation as a small-step semantics that rewrites a program one computation step at a time.
+* *Evaluator* (`eval.ml[i]`, `values.ml`, `instance.ml`, `eval_numeric.ml[i]`, `int.ml`, `float.ml`, `table.ml[i]`, `memory.ml[i]`, and a few more). Implements evaluation as a small-step semantics that rewrites a program one computation step at a time.
 
 * *JS Generator* (`js.ml[i]`). Converts a script to equivalent JavaScript.
 
-* *Driver* (`main.ml`, `run.ml[i]`, `script.ml[i]`, `error.ml`, `print.ml[i]`, `flags.ml`). Executes scripts, reports results or errors, etc.
+* *Driver* (`main.ml`, `run.ml[i]`, `import.ml[i]`, `error.ml`, `flags.ml`). Executes scripts, reports results or errors, etc.
 
-The most relevant pieces are probably the validator (`check.ml`) and the evaluator (`eval.ml`). They are written to look as much like a "specification" as possible. Hopefully, the code is fairly self-explanatory, at least for those with a passing familiarity with functional programming.
+The most relevant pieces are probably the validator (`valid.ml`) and the evaluator (`eval.ml`). They are written to look as much like a "specification" as possible. Hopefully, the code is fairly self-explanatory, at least for those with a passing familiarity with functional programming.
 
-In typical FP convention (and for better readability), the code tends to use single-character names for local variables where consistent naming conventions are applicable (e.g., `e` for expressions, `v` for values, `xs` for lists of `x`s, etc.). See `check.ml` and `eval.ml` for explicit comments.
-
-
-## What Next?
-
-* Clean-ups.
-
-* More tests.
-
-* Compilation to JS/asm.js?
+In typical FP convention (and for better readability), the code tends to use single-character names for local variables where consistent naming conventions are applicable (e.g., `e` for expressions, `v` for values, `xs` for lists of `x`s, etc.). See `ast.ml`, `eval.ml` and `eval.ml` for more comments.
