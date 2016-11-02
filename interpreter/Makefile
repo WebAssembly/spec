@@ -10,7 +10,7 @@ NAME_OPT =      $(NAME).opt
 NAME_UNOPT =    $(NAME)
 LIB_OPT =	$(LIB).cmx
 LIB_UNOPT =	$(LIB).cmo
-DIRS =		aux spec text host host/import
+DIRS =		util spec text host host/import
 LIBS =		str bigarray
 
 OCB_FLAGS += 	-cflags '-w +a-4-27-42-44-45 -warn-error +a'

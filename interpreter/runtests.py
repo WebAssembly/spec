@@ -10,6 +10,10 @@ import sys
 # Set to run tests through JS as well
 jsCommand = ""
 
+inputDir = "test/"
+expectDir = inputDir + "expected-output/"
+outputDir = inputDir + "output/"
+
 def auxFile(path):
     try:
       os.remove(path)
@@ -29,45 +33,43 @@ class RunTests(unittest.TestCase):
         out.close()
 
   def _compareFile(self, expectedFile, actualFile):
-    with open(expectedFile) as expected:
-      with open(actualFile) as actual:
-        expectedText = expected.read()
-        actualText = actual.read()
-        self.assertEqual(expectedText, actualText)
-
-  def _compareLog(self, fileName, logPath):
     try:
-      self._compareFile(fileName.replace("test/", "test/expected-output/").replace(".wast", ".wast.log"), logPath)
+      with open(expectedFile) as expected:
+        with open(actualFile) as actual:
+          expectedText = expected.read()
+          actualText = actual.read()
+          self.assertEqual(expectedText, actualText)
     except IOError:
       pass
 
-  def _runTestFile(self, shortName, fileName, interpreterPath):
-
-    expectedExitCode = 1 if ".fail." in fileName else 0
+  def _runTestFile(self, shortName, inputPath, interpreterPath):
+    outputPath = inputPath.replace(inputDir, outputDir)
+    expectPath = inputPath.replace(inputDir, expectDir)
 
     # Run original file
-    logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.log"))
-    self._runCommand(("%s '%s'") % (interpreterPath, fileName), logPath, expectedExitCode)
-    self._compareLog(fileName, logPath)
+    expectedExitCode = 1 if ".fail." in inputPath else 0
+    logPath = auxFile(outputPath + ".log")
+    self._runCommand(("%s '%s'") % (interpreterPath, inputPath), logPath, expectedExitCode)
+    self._compareFile(expectPath + ".log", logPath)
 
     if expectedExitCode != 0:
       return
 
     # Convert to binary and validate again
-    wasmPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.bin.wast"))
-    logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.bin.wast.log"))
-    self._runCommand(("%s -d '%s' -o '%s'") % (interpreterPath, fileName, wasmPath))
+    wasmPath = auxFile(outputPath + ".bin.wast")
+    logPath = auxFile(wasmPath + ".log")
+    self._runCommand(("%s -d '%s' -o '%s'") % (interpreterPath, inputPath, wasmPath))
     self._runCommand(("%s -d '%s'") % (interpreterPath, wasmPath), logPath)
 
     # Convert back to text and validate again
-    wastPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.bin.wast.wast"))
-    logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.bin.wast.wast.log"))
+    wastPath = auxFile(wasmPath + ".wast")
+    logPath = auxFile(wastPath + ".log")
     self._runCommand(("%s -d '%s' -o '%s'") % (interpreterPath, wasmPath, wastPath))
     self._runCommand(("%s -d '%s' ") % (interpreterPath, wastPath), logPath)
 
     # Convert back to binary once more and compare
-    wasm2Path = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.bin.wast.wast.bin.wast"))
-    logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".wast.bin.wast.wast.bin.wast.log"))
+    wasm2Path = auxFile(wastPath + ".bin.wast")
+    logPath = auxFile(wasm2Path + ".log")
     self._runCommand(("%s -d '%s' -o '%s'") % (interpreterPath, wastPath, wasm2Path))
     self._runCommand(("%s -d '%s'") % (interpreterPath, wasm2Path), logPath)
     # TODO: The binary should stay the same, but OCaml's float-string conversions are inaccurate.
@@ -75,9 +77,9 @@ class RunTests(unittest.TestCase):
     # self._compareFile(wasmPath, wasm2Path)
 
     # Convert to JavaScript
-    jsPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".js"))
-    logPath = auxFile(fileName.replace("test/", "test/output/").replace(".wast", ".js.log"))
-    self._runCommand(("%s -d '%s' -o '%s'") % (interpreterPath, fileName, jsPath))
+    jsPath = auxFile(outputPath.replace(".wast", ".js"))
+    logPath = auxFile(jsPath + ".log")
+    self._runCommand(("%s -d '%s' -o '%s'") % (interpreterPath, inputPath, jsPath))
     if jsCommand != "":
       self._runCommand(("%s '%s'") % (jsCommand, jsPath))
 
