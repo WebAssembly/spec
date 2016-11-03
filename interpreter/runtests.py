@@ -15,7 +15,7 @@ outputDir = "output"
 
 
 def usage():
-  print("Usage: runtests.py [--wasm <wasm-path>] [--js <js-path>] [file ...]", file=sys.stderr)
+  print("Usage: runtests.py [--wasm <wasm-command>] [--js <js-command>] [file ...]", file=sys.stderr)
   exit(1)
 
 def param(args, name, default):
@@ -27,9 +27,8 @@ def param(args, name, default):
     usage()
   return args.pop(pos)
 
-wasmCommand = os.path.abspath(param(sys.argv, '--wasm', "./wasm"))
+wasmCommand = param(sys.argv, '--wasm', "./wasm")
 jsCommand = param(sys.argv, '--js', None)
-jsCommand = os.path.abspath(jsCommand) if jsCommand != None else None
 
 
 def auxFile(path):
@@ -105,13 +104,6 @@ class RunTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-  if not os.path.exists(wasmCommand):
-    print("Wasm interpreter not found: %s" % wasmCommand, file=sys.stderr)
-    exit(1)
-  if jsCommand != None and not os.path.exists(jsCommand):
-    print("JS interpreter not found: %s" % jsCommand, file=sys.stderr)
-    exit(1)
-
   try:
     os.makedirs(outputDir)
   except OSError:
