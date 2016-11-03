@@ -61,12 +61,12 @@ class RunTests(unittest.TestCase):
       pass
 
   def _runTestFile(self, inputPath):
-    dir, file = os.path.split(inputPath)
-    outputPath = os.path.join(dir, os.path.join(outputDir, file))
-    expectPath = os.path.join(dir, os.path.join(expectDir, file))
+    inputDir, inputFile = os.path.split(inputPath)
+    outputPath = os.path.join(inputDir, os.path.join(outputDir, inputFile))
+    expectPath = os.path.join(inputDir, os.path.join(expectDir, inputFile))
 
     # Run original file
-    expectedExitCode = 1 if ".fail." in file else 0
+    expectedExitCode = 1 if ".fail." in inputFile else 0
     logPath = auxFile(outputPath + ".log")
     self._runCommand(("%s '%s'") % (wasmCommand, inputPath), logPath, expectedExitCode)
     self._compareFile(expectPath + ".log", logPath)
