@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
+import argparse
 import os
 import os.path
 import unittest
@@ -13,26 +14,21 @@ inputDir = "test"
 expectDir = "expected-output"
 outputDir = os.path.join(inputDir, "output")
 
-
-def usage():
-  print("Usage: runtests.py [--wasm <wasm-command>] [--js <js-command>] [--out <out-dir>] [file ...]", file=sys.stderr)
-  exit(1)
-
-def param(args, name, default):
-  if name not in args:
-	return default
-  pos = args.index(name)
-  args.pop(pos)
-  if pos == len(args):
-    usage()
-  return args.pop(pos)
-
-wasmCommand = param(sys.argv, '--wasm', "./wasm")
-jsCommand = param(sys.argv, '--js', None)
-outputDir = param(sys.argv, '--out', outputDir)
-
-inputFiles = glob.glob(os.path.join(inputDir, '*.wast')) if len(sys.argv) <= 1 else sys.argv[1:]
+parser = argparse.ArgumentParser()
+parser.add_argument('--wasm', metavar='<wasm-command>', default='./wasm')
+parser.add_argument('--js', metavar='<js-command>')
+parser.add_argument('--out', metavar='<out-dir>', default=outputDir)
+parser.add_argument('file', nargs='*')
+arguments = parser.parse_args()
 sys.argv = sys.argv[:1]
+
+wasmCommand = arguments.wasm
+jsCommand = arguments.js
+outputDir = arguments.out
+if arguments.file:
+  inputFiles = arguments.file
+else:
+  inputFiles = glob.glob(os.path.join(inputDir, '*.wast'))
 
 
 class RunTests(unittest.TestCase):
