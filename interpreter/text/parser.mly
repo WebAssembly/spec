@@ -270,8 +270,20 @@ bind_var :
 ;
 
 labeling_opt :
-  | /* empty */ %prec LOW { fun c -> anon_label c }
-  | bind_var { fun c -> bind_label c $1 }
+  | /* empty */ %prec LOW
+    { fun c xs ->
+      List.iter (fun x -> error x.at "mismatching label") xs;
+      anon_label c }
+  | bind_var
+    { fun c xs ->
+      List.iter
+        (fun x -> if x.it <> $1.it then error x.at "mismatching label") xs;
+      bind_label c $1 }
+;
+
+labeling_end_opt :
+  | /* empty */ %prec LOW { [] }
+  | bind_var { [$1] }
 ;
 
 offset_opt :
@@ -318,14 +330,15 @@ plain_instr :
   | CONVERT { fun c -> $1 }
 ;
 block_instr :
-  | BLOCK labeling_opt block END
-    { fun c -> let c' = $2 c in let ts, es = $3 c' in block ts es }
-  | LOOP labeling_opt block END
-    { fun c -> let c' = $2 c in let ts, es = $3 c' in loop ts es }
-  | IF labeling_opt block END
-    { fun c -> let c' = $2 c in let ts, es = $3 c' in if_ ts es [] }
-  | IF labeling_opt block ELSE instr_list END
-    { fun c -> let c' = $2 c in let ts, es1 = $3 c' in if_ ts es1 ($5 c') }
+  | BLOCK labeling_opt block END labeling_end_opt
+    { fun c -> let c' = $2 c $5 in let ts, es = $3 c' in block ts es }
+  | LOOP labeling_opt block END labeling_end_opt
+    { fun c -> let c' = $2 c $5 in let ts, es = $3 c' in loop ts es }
+  | IF labeling_opt block END labeling_end_opt
+    { fun c -> let c' = $2 c $5 in let ts, es = $3 c' in if_ ts es [] }
+  | IF labeling_opt block ELSE labeling_end_opt instr_list END labeling_end_opt
+    { fun c -> let c' = $2 c ($5 @ $8) in
+      let ts, es1 = $3 c' in if_ ts es1 ($6 c') }
 ;
 block :
   | value_type_list instr_list { fun c -> $1, $2 c }
@@ -338,11 +351,11 @@ expr :  /* Sugar */
 expr1 :  /* Sugar */
   | plain_instr expr_list { fun c -> snd ($2 c), $1 c }
   | BLOCK labeling_opt block
-    { fun c -> let c' = $2 c in let ts, es = $3 c' in [], block ts es }
+    { fun c -> let c' = $2 c [] in let ts, es = $3 c' in [], block ts es }
   | LOOP labeling_opt block
-    { fun c -> let c' = $2 c in let ts, es = $3 c' in [], loop ts es }
+    { fun c -> let c' = $2 c [] in let ts, es = $3 c' in [], loop ts es }
   | IF labeling_opt value_type_list if_
-    { fun c -> let c' = $2 c in
+    { fun c -> let c' = $2 c [] in
       let es, es1, es2 = $4 c c' in es, if_ $3 es1 es2 }
 ;
 if_ :

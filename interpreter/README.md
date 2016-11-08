@@ -156,10 +156,10 @@ expr:
 instr:
   <expr>
   <op>                                                               ;; = (<op>)
-  block <name>? <block_sig>? <instr>* end                            ;; = (block <name>? <block_sig>? <instr>*)
-  loop <name>? <block_sig>? <instr>* end                             ;; = (loop <name>? <block_sig>? <instr>*)
-  if <name>? <block_sig>? <instr>* end                               ;; = (if <name>? <block_sig>? (then <instr>*))
-  if <name>? <block_sig>? <instr>* else <instr>* end                 ;; = (if <name>? <block_sig>? (then <instr>*) (else <instr>*))
+  block <name>? <block_sig>? <instr>* end <name>?                    ;; = (block <name>? <block_sig>? <instr>*)
+  loop <name>? <block_sig>? <instr>* end <name>?                     ;; = (loop <name>? <block_sig>? <instr>*)
+  if <name>? <block_sig>? <instr>* end <name>?                       ;; = (if <name>? <block_sig>? (then <instr>*))
+  if <name>? <block_sig>? <instr>* else <name>? <instr>* end <name>? ;; = (if <name>? <block_sig>? (then <instr>*) (else <instr>*))
 
 op:
   unreachable
