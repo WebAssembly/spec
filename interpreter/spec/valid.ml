@@ -365,11 +365,10 @@ let check_data (c : context) (seg : memory_segment) =
   check_const c offset I32Type;
   ignore (memory c index)
 
-let check_global (c : context) (glob : global) : context =
+let check_global (c : context) (glob : global) =
   let {gtype; value} = glob.it in
   let GlobalType (t, mut) = gtype in
-  check_const c value t;
-  {c with globals = c.globals @ [gtype]}
+  check_const c value t
 
 
 (* Modules *)
@@ -415,22 +414,26 @@ let check_module (m : module_) =
   let
     {types; imports; tables; memories; globals; funcs; start; elems; data;
      exports} = m.it in
-  let c = List.fold_right check_import imports {(context m) with types} in
-  let c' =
-    { (List.fold_left check_global c globals) with
-      funcs = c.funcs @ List.map (fun f -> type_ c f.it.ftype) funcs;
-      tables = c.tables @ List.map (fun tab -> tab.it.ttype) tables;
-      memories = c.memories @ List.map (fun mem -> mem.it.mtype) memories;
+  let c0 = List.fold_right check_import imports {(context m) with types} in
+  let c1 =
+    { c0 with
+      funcs = c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs;
+      tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
+      memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
     }
   in
-  require (List.length c'.tables <= 1) m.at
+  let c =
+    { c1 with globals = c1.globals @ List.map (fun g -> g.it.gtype) globals; }
+  in
+  List.iter (check_global c1) globals;
+  List.iter (check_table c1) tables;
+  List.iter (check_memory c1) memories;
+  List.iter (check_elem c1) elems;
+  List.iter (check_data c1) data;
+  List.iter (check_func c) funcs;
+  check_start c start;
+  ignore (List.fold_left (check_export c) NameSet.empty exports);
+  require (List.length c.tables <= 1) m.at
     "multiple tables are not allowed (yet)";
-  require (List.length c'.memories <= 1) m.at
-    "multiple memories are not allowed (yet)";
-  List.iter (check_func c') funcs;
-  List.iter (check_table c') tables;
-  List.iter (check_memory c') memories;
-  List.iter (check_elem c') elems;
-  List.iter (check_data c') data;
-  ignore (List.fold_left (check_export c') NameSet.empty exports);
-  check_start c' start
+  require (List.length c.memories <= 1) m.at
+    "multiple memories are not allowed (yet)"
