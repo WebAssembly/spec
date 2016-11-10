@@ -58,6 +58,7 @@ end
 
 module Int :
 sig
+  val log2 : int -> int
   val is_power_of_two : int -> bool
 end
 

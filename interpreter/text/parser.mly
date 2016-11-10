@@ -292,7 +292,11 @@ offset_opt :
 ;
 align_opt :
   | /* empty */ { None }
-  | ALIGN_EQ_NAT { Some (nat $1 (at ())) }
+  | ALIGN_EQ_NAT
+    { let n = nat $1 (at ()) in
+      if not (Lib.Int.is_power_of_two n) then
+        error (at ()) "alignment must be a power of two";
+      Some (Lib.Int.log2 n) }
 ;
 
 instr :

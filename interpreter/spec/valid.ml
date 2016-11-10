@@ -131,8 +131,6 @@ let type_cvtop at = function
 
 let check_memop (c : context) (memop : 'a memop) get_sz at =
   ignore (memory c (0l @@ at));
-  require (Lib.Int.is_power_of_two memop.align) at
-    "alignment must be a power of two";
   let size =
     match get_sz memop.sz with
     | None -> size memop.ty
@@ -141,7 +139,8 @@ let check_memop (c : context) (memop : 'a memop) get_sz at =
         "memory size too big";
       Memory.mem_size sz
   in
-  require (memop.align <= size) at "alignment must not be larger than natural"
+  require (1 lsl memop.align <= size) at
+    "alignment must not be larger than natural"
 
 let check_arity n at =
   require (n <= 1) at "invalid result arity, larger than 1 is not (yet) allowed"

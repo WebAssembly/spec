@@ -193,7 +193,7 @@ let memop s =
   let align = vu32 s in
   require (I32.le_u align 32l) s (pos s - 1) "invalid memop flags";
   let offset = vu32 s in
-  1 lsl Int32.to_int align, offset
+  Int32.to_int align, offset
 
 let rec instr s =
   let pos = pos s in

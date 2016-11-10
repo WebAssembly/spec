@@ -190,7 +190,7 @@ let extension = function
 let memop name {ty; align; offset; _} =
   value_type ty ^ "." ^ name ^
   (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
-  (if align = size ty then "" else " align=" ^ nat align)
+  (if 1 lsl align = size ty then "" else " align=" ^ nat (1 lsl align))
 
 let loadop op =
   match op.sz with
