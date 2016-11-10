@@ -377,13 +377,15 @@ let add_import (ext : extern) (im : import) (inst : instance) : instance =
     if func_type_of clos <> type_ inst x then
       Link.error ikind.at "type mismatch";
     {inst with funcs = clos :: inst.funcs}
-  | ExternalTable tab, TableImport (TableType (lim, _)) ->
+  | ExternalTable tab, TableImport (TableType (lim, t)) ->
+    if Table.elem_type tab <> t then Link.error ikind.at "type mismatch";
     check_limits (Table.limits tab) lim ikind.at;
     {inst with tables = tab :: inst.tables}
   | ExternalMemory mem, MemoryImport (MemoryType lim) ->
     check_limits (Memory.limits mem) lim ikind.at;
     {inst with memories = mem :: inst.memories}
-  | ExternalGlobal v, GlobalImport (GlobalType _) ->
+  | ExternalGlobal v, GlobalImport (GlobalType (t, _)) ->
+    if type_of v <> t then Link.error ikind.at "type mismatch";
     {inst with globals = ref v :: inst.globals}
   | _ ->
     Link.error ikind.at "type mismatch"
