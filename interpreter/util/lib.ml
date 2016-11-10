@@ -131,9 +131,14 @@ end
 
 module Int =
 struct
-  let is_power_of_two x =
-    if x < 0 then failwith "is_power_of_two";
-    x <> 0 && (x land (x - 1)) = 0
+  let log2 n =
+    if n <= 0 then failwith "log2";
+    let rec loop acc n = if n = 1 then acc else loop (acc + 1) (n lsr 1) in
+    loop 0 n
+
+  let is_power_of_two n =
+    if n < 0 then failwith "is_power_of_two";
+    n <> 0 && n land (n - 1) = 0
 end
 
 module String =

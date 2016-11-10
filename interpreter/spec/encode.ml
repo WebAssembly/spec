@@ -134,9 +134,7 @@ let encode m =
     let op n = u8 n
     let end_ () = op 0x0b
 
-    let memop {align; offset; _} =
-      vu32 (I32.ctz (Int32.of_int align));
-      vu32 offset
+    let memop {align; offset; _} = vu32 (Int32.of_int align); vu32 offset
 
     let var x = vu32 x.it
 
