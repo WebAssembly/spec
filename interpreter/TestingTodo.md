@@ -1,6 +1,5 @@
 This is a rough list of "tests to write". Everything here should either be
-specified in
-[AstSemantics.md](https://github.com/WebAssembly/design/blob/master/AstSemantics.md),
+specified in [Semantics.md](https://github.com/WebAssembly/design/blob/master/Semantics.md),
 have a link to an open issue/PR, or be obvious. Comments/corrections/additions
 welcome.
 
@@ -44,7 +43,7 @@ Floating point semantics:
 
 Linear memory semantics:
  - test that loading from null works
- - ~~test that loading from constant OOB traps and is not DCE'd or folded (pending [discussion](https://github.com/WebAssembly/design/blob/master/AstSemantics.md#out-of-bounds))~~
+ - ~~test that loading from constant OOB traps and is not DCE'd or folded (pending [discussion](https://github.com/WebAssembly/design/blob/master/Semantics.md#out-of-bounds))~~
  - test that loading from "beyond the STACKPTR" succeeds
  - test that "stackptr + (linearmemptr - stackptr)" loads from linearmemptr.
  - test loading "uninitialized" things from aliased stack frames return what's there
