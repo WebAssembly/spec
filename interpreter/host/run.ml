@@ -289,21 +289,27 @@ let run_action act =
     | None -> Assert.error act.at "undefined export"
     )
 
+let assert_result at correct got print_expect expect =
+  if not correct then begin
+    print_string "Result: "; print_result got;
+    print_string "Expect: "; print_expect expect;
+    Assert.error at "wrong return values"
+  end
+
+let assert_message at name msg re =
+  if not (Str.string_match (Str.regexp re) msg 0) then begin
+    print_endline ("Result: \"" ^ msg ^ "\"");
+    print_endline ("Expect: \"" ^ re ^ "\"");
+    Assert.error at ("wrong " ^ name ^ " error")
+  end
+
 let run_assertion ass =
   match ass.it with
   | AssertMalformed (def, re) ->
     trace "Asserting malformed...";
-    (match
-      ignore (run_definition def)
-    with
-    | exception Decode.Code (_, msg) ->
-      if not (Str.string_match (Str.regexp re) msg 0) then begin
-        print_endline ("Result: \"" ^ msg ^ "\"");
-        print_endline ("Expect: \"" ^ re ^ "\"");
-        Assert.error ass.at "wrong decoding error"
-      end
-    | _ ->
-      Assert.error ass.at "expected decoding error"
+    (match ignore (run_definition def) with
+    | exception Decode.Code (_, msg) -> assert_message ass.at "decoding" msg re
+    | _ -> Assert.error ass.at "expected decoding error"
     )
 
   | AssertInvalid (def, re)
@@ -319,13 +325,8 @@ let run_assertion ass =
       Valid.check_module m
     with
     | exception Valid.Invalid (_, msg) ->
-      if not (Str.string_match (Str.regexp re) msg 0) then begin
-        print_endline ("Result: \"" ^ msg ^ "\"");
-        print_endline ("Expect: \"" ^ re ^ "\"");
-        Assert.error ass.at "wrong validation error"
-      end
-    | _ ->
-      if active then Assert.error ass.at "expected validation error"
+      assert_message ass.at "validation" msg re
+    | _ -> if active then Assert.error ass.at "expected validation error"
     )
 
   | AssertUnlinkable (def, re) ->
@@ -337,13 +338,8 @@ let run_assertion ass =
       ignore (Eval.init m imports)
     with
     | exception (Import.Unknown (_, msg) | Eval.Link (_, msg)) ->
-      if not (Str.string_match (Str.regexp re) msg 0) then begin
-        print_endline ("Result: \"" ^ msg ^ "\"");
-        print_endline ("Expect: \"" ^ re ^ "\"");
-        Assert.error ass.at "wrong linking error"
-      end
-    | _ ->
-      Assert.error ass.at "expected linking error"
+      assert_message ass.at "linking" msg re
+    | _ -> Assert.error ass.at "expected linking error"
     )
 
   | AssertUninstantiable (def, re) ->
@@ -354,53 +350,31 @@ let run_assertion ass =
       let imports = Import.link m in
       ignore (Eval.init m imports)
     with
-    | exception Eval.Trap (_, msg) ->
-      if not (Str.string_match (Str.regexp re) msg 0) then begin
-        print_endline ("Result: \"" ^ msg ^ "\"");
-        print_endline ("Expect: \"" ^ re ^ "\"");
-        Assert.error ass.at "wrong instantiation trap"
-      end
-    | _ ->
-      Assert.error ass.at "expected instaniation trap"
+    | exception Eval.Trap (_, msg) -> assert_message ass.at "instantiation" msg re
+    | _ -> Assert.error ass.at "expected instantiation error"
     )
 
   | AssertReturn (act, vs) ->
     trace ("Asserting return...");
     let got_vs = run_action act in
     let expect_vs = List.map (fun v -> v.it) vs in
-    if got_vs <> expect_vs then begin
-      print_string "Result: "; print_result got_vs;
-      print_string "Expect: "; print_result expect_vs;
-      Assert.error ass.at "wrong return values"
-    end
+    assert_result ass.at (got_vs = expect_vs) got_vs print_result expect_vs
 
   | AssertReturnNaN act ->
     trace ("Asserting return...");
     let got_vs = run_action act in
-    if
+    let is_nan =
       match got_vs with
-      | [Values.F32 got_f32] ->
-        got_f32 <> F32.pos_nan && got_f32 <> F32.neg_nan
-      | [Values.F64 got_f64] ->
-        got_f64 <> F64.pos_nan && got_f64 <> F64.neg_nan
-      | _ -> true
-    then begin
-      print_string "Result: "; print_result got_vs;
-      print_string "Expect: "; print_endline "nan";
-      Assert.error ass.at "wrong return value"
-    end
+      | [Values.F32 got_f32] -> got_f32 = F32.pos_nan || got_f32 = F32.neg_nan
+      | [Values.F64 got_f64] -> got_f64 = F64.pos_nan || got_f64 = F64.neg_nan
+      | _ -> false
+    in assert_result ass.at is_nan got_vs print_endline "nan"
 
   | AssertTrap (act, re) ->
     trace ("Asserting trap...");
     (match run_action act with
-    | exception Eval.Trap (_, msg) ->
-      if not (Str.string_match (Str.regexp re) msg 0) then begin
-        print_endline ("Result: \"" ^ msg ^ "\"");
-        print_endline ("Expect: \"" ^ re ^ "\"");
-        Assert.error ass.at "wrong runtime trap"
-      end
-    | _ ->
-      Assert.error ass.at "expected runtime trap"
+    | exception Eval.Trap (_, msg) -> assert_message ass.at "runtime" msg re
+    | _ -> Assert.error ass.at "expected runtime error"
     )
 
 let rec run_command cmd =
