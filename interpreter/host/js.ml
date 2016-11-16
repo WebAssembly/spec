@@ -85,6 +85,16 @@ let prefix =
   "  throw new Error(\"Wasm trap expected\");\n" ^
   "}\n" ^
   "\n" ^
+  "let StackOverflow;\n" ^
+  "try { (function f() { 1 + f() })() } catch (e) { StackOverflow = e.constructor }\n" ^
+  "\n" ^
+  "function assert_exhaustion(action) {\n" ^
+  "  try { action() } catch (e) {\n" ^
+  "    if (e instanceof StackOverflow) return;\n" ^
+  "  }\n" ^
+  "  throw new Error(\"Wasm resource exhaustion expected\");\n" ^
+  "}\n" ^
+  "\n" ^
   "function assert_return(action, expected) {\n" ^
   "  let actual = action();\n" ^
   "  if (!Object.is(actual, expected)) {\n" ^
@@ -301,8 +311,9 @@ let of_assertion mods ass =
     of_return_assertion mods act
       (fun act_js -> "assert_return_nan(() => " ^ act_js ^ ")")
       assert_return_nan
-  | AssertTrap (act, _) ->
-    let js act_js = "assert_trap(() => " ^ act_js ^ ")" in
+  | AssertTrap (act, _) | AssertExhaustion (act, _) ->
+    let name = match ass.it with AssertTrap _ -> "trap" | _ -> "exhaustion" in
+    let js act_js = "assert_" ^ name ^ "(() => " ^ act_js ^ ")" in
     match of_action mods act with
     | act_js, None -> js act_js ^ ";"
     | act_js, Some (act_wrapper, ts) ->

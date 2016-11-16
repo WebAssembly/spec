@@ -10,10 +10,12 @@ open Source
 module Link = Error.Make ()
 module Trap = Error.Make ()
 module Crash = Error.Make ()
+module Exhaustion = Error.Make ()
 
 exception Link = Link.Error
 exception Trap = Trap.Error
 exception Crash = Crash.Error (* failure that cannot happen in valid code *)
+exception Exhaustion = Exhaustion.Error
 
 let memory_error at = function
   | Memory.Bounds -> Trap.error at "out of bounds memory access"
@@ -136,7 +138,8 @@ let i32 v at =
   | _ -> Crash.error at "type error: i32 value expected"
 
 let eval_call (clos : closure) (es, vs, bs, cs : eval_context) at =
-  if List.length cs = resource_limit then Trap.error at "call stack exhausted";
+  if List.length cs = resource_limit then
+    Exhaustion.error at "call stack exhausted";
   let FuncType (ins, out) = func_type_of clos in
   let n = List.length ins in
   let m = List.length out in
@@ -427,4 +430,4 @@ let init (m : module_) (exts : extern list) : instance =
 
 let invoke (clos : closure) (vs : value list) : value list =
   (try eval_func clos vs no_region
-  with Stack_overflow -> Trap.error no_region "call stack exhausted")
+  with Stack_overflow -> Exhaustion.error no_region "call stack exhausted")

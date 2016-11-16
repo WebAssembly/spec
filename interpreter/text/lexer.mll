@@ -311,6 +311,7 @@ rule token = parse
   | "assert_return" { ASSERT_RETURN }
   | "assert_return_nan" { ASSERT_RETURN_NAN }
   | "assert_trap" { ASSERT_TRAP }
+  | "assert_exhaustion" { ASSERT_EXHAUSTION }
   | "input" { INPUT }
   | "output" { OUTPUT }
 
