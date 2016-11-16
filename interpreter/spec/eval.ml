@@ -373,17 +373,16 @@ let check_limits actual expected at =
 let add_import (ext : extern) (im : import) (inst : instance) : instance =
   let {ikind; _} = im.it in
   match ext, ikind.it with
-  | ExternalFunc clos, FuncImport x ->
-    if func_type_of clos <> type_ inst x then
-      Link.error ikind.at "type mismatch";
+  | ExternalFunc clos, FuncImport x when func_type_of clos = type_ inst x ->
     {inst with funcs = clos :: inst.funcs}
-  | ExternalTable tab, TableImport (TableType (lim, _)) ->
+  | ExternalTable tab, TableImport (TableType (lim, t))
+    when Table.elem_type tab = t ->
     check_limits (Table.limits tab) lim ikind.at;
     {inst with tables = tab :: inst.tables}
   | ExternalMemory mem, MemoryImport (MemoryType lim) ->
     check_limits (Memory.limits mem) lim ikind.at;
     {inst with memories = mem :: inst.memories}
-  | ExternalGlobal v, GlobalImport (GlobalType _) ->
+  | ExternalGlobal v, GlobalImport (GlobalType (t, _)) when type_of v = t ->
     {inst with globals = ref v :: inst.globals}
   | _ ->
     Link.error ikind.at "type mismatch"
