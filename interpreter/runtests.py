@@ -25,10 +25,7 @@ sys.argv = sys.argv[:1]
 wasmCommand = arguments.wasm
 jsCommand = arguments.js
 outputDir = arguments.out
-if arguments.file:
-  inputFiles = arguments.file
-else:
-  inputFiles = glob.glob(os.path.join(inputDir, '*.wast'))
+inputFiles = arguments.file if arguments.file else glob.glob(os.path.join(inputDir, '*.wast'))
 
 
 class RunTests(unittest.TestCase):
