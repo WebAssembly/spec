@@ -103,7 +103,7 @@ check:
 		# when using ocamlfind
 		ocamlfind query $(LIBS)
 
-install:	$(LIB).cmx $(LIB).cmo
+install:	_build/$(LIB).cmx _build/$(LIB).cmo
 		ocamlfind install wasm findlib/META _build/wasm.o \
 		  $(wildcard _build/$(LIB).cm*) \
 		  $(wildcard $(DIRS:%=%/*.mli))
