@@ -1,0 +1,6 @@
+Type Section
+------------
+
+.. todo::
+
+   Describe
