@@ -57,8 +57,8 @@ if "%1" == "help" (
 )
 
 if "%1" == "clean" (
-	for /d %%i in (%BUILDDIR%\*) do rmdir /q /s %%i
-	del /q /s %BUILDDIR%\*
+	rmdir /q /s %BUILDDIR%
+	rmdir /q /s %STATICDIR%
 	goto end
 )
 
@@ -89,14 +89,16 @@ if errorlevel 9009 (
 
 if "%1" == "publish" (
 	.\make all
-	del /q /s %GHPAGESDIR%\*.*
-	xcopy %BUILDDIR%\html\*.* %GHPAGESDIR%\
-	git add -A %GHPAGESDIR%\*.*
+	mkdir %GHPAGESDIR%
+	for /d %%i in (%GHPAGESDIR%\*) do rmdir /q /s %%i
+	xcopy %BUILDDIR%\html\* %GHPAGESDIR%\
+	git add -A %GHPAGESDIR%\*
 	goto end
 )
 
 if "%1" == "all" (
 	.\make pdf
+	mkdir %STATICDIR%
 	del %STATICDIR%\%NAME%.pdf
 	copy %BUILDDIR%\latex\%NAME%.pdf %STATICDIR%\%NAME%.pdf
 	.\make html

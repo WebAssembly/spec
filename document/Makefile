@@ -67,12 +67,14 @@ all:	pdf html
 
 .PHONY: pdf
 pdf:	latexpdf
+	mkdir -p $(STATICDIR)
 	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(STATICDIR)/$(NAME).pdf
 
 
 .PHONY: clean
 clean:
-	rm -rf $(BUILDDIR)/*
+	rm -rf $(BUILDDIR)
+	rm -rf $(STATICDIR)
 
 .PHONY: html
 html:
