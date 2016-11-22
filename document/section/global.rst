@@ -1,6 +1,0 @@
-Global Section
---------------
-
-.. todo::
-
-   Describe

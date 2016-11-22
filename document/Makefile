@@ -4,8 +4,11 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-PAPER         =
+PAPER         = a4
 BUILDDIR      = _build
+STATICDIR     = _static
+GHPAGESDIR    = ../docs
+NAME          = WebAssembly
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -19,7 +22,8 @@ usage:
 	@echo "Please use \`make <target>' where <target> is one of"
 	@echo "  html       to make standalone HTML files"
 	@echo "  pdf        to make standalone PDF file"
-	@echo "  pub        to make both"
+	@echo "  all        to make both"
+	@echo "  publish    to make all and push to gh-pages (changes must be committed)"
 	@echo "  help       to see more options"
 
 .PHONY: help
@@ -52,11 +56,18 @@ help:
 	@echo "  coverage   to run coverage check of the documentation (if enabled)"
 	@echo "  dummy      to check syntax errors of document sources"
 
-.PHONY: pub
-pub:	html pdf
+.PHONY: publish
+publish: all
+	rm -rf $(GHPAGESDIR)/*
+	cp -rf $(BUILDDIR)/html/* $(GHPAGESDIR)/
+	git add -A $(GHPAGESDIR)/*
+
+.PHONY: all
+all:	pdf html
 
 .PHONY: pdf
 pdf:	latexpdf
+	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(STATICDIR)/$(NAME).pdf
 
 
 .PHONY: clean

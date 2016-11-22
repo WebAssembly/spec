@@ -1,6 +1,0 @@
-Element Section
----------------
-
-.. todo::
-
-   Describe

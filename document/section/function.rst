@@ -1,6 +1,0 @@
-Function Section
-----------------
-
-.. todo::
-
-   Describe

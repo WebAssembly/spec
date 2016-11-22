@@ -1,6 +1,0 @@
-Binary Format
--------------
-
-.. todo::
-
-   Describe

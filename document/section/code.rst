@@ -1,6 +1,0 @@
-Code Section
-------------
-
-.. todo::
-
-   Describe

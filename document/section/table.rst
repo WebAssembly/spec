@@ -1,6 +1,0 @@
-Table Section
--------------
-
-.. todo::
-
-   Describe

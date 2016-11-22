@@ -1,19 +1,20 @@
 WebAssembly Specification
 =========================
 
-A portable low-level execution format.
+.. only:: html
+
+   Release |release|
 
 .. toctree::
    :maxdepth: 2
 
-   introduction
-   concepts
-   modules
-   instructions
+   introduction/index
+   concepts/index
+   modules/index
+   instructions/index
+   appendix-properties/index
+   appendix-algorithm/index
 
-
-.. Commented out for now
-   Indices and tables
-   ==================
+.. only:: html
 
    * :ref:`genindex`

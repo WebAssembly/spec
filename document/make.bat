@@ -5,7 +5,10 @@ REM Command file for Sphinx documentation
 if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=sphinx-build
 )
+set NAME=WebAssembly
 set BUILDDIR=_build
+set STATICDIR=_static
+set GHPAGESDIR=..\docs
 set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees %SPHINXOPTS% .
 set I18NSPHINXOPTS=%SPHINXOPTS% .
 if NOT "%PAPER%" == "" (
@@ -17,7 +20,8 @@ if "%1" == "" (
 	echo.Please use `make ^<target^>` where ^<target^> is one of
 	echo.  html       to make standalone HTML files
 	echo.  pdf        to make standalone PDF file
-	echo.  pub        to make both
+	echo.  all        to make both
+	echo.  publish    to make all and push to gh-pages (changes must be committed)
 	echo.  help       to see more options
 	goto end
 )
@@ -83,9 +87,19 @@ if errorlevel 9009 (
 :sphinx_ok
 
 
-if "%1" == "pub" (
-	.\make html
+if "%1" == "publish" (
+	.\make all
+	del /q /s %GHPAGESDIR%\*.*
+	xcopy %BUILDDIR%\html\*.* %GHPAGESDIR%\
+	git add -A %GHPAGESDIR%\*.*
+	goto end
+)
+
+if "%1" == "all" (
 	.\make pdf
+	del %STATICDIR%\%NAME%.pdf
+	copy %BUILDDIR%\latex\%NAME%.pdf %STATICDIR%\%NAME%.pdf
+	.\make html
 	goto end
 )
 

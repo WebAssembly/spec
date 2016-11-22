@@ -1,6 +1,0 @@
-Start Section
--------------
-
-.. todo::
-
-   Describe

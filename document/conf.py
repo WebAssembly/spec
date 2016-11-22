@@ -24,7 +24,7 @@
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-needs_sphinx = '1.1'
+needs_sphinx = '1.4'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -58,6 +58,7 @@ project = u'WebAssembly'
 title = u'WebAssembly Specification'
 copyright = u'2016, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
+logo = 'placeholder.png'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -133,11 +134,15 @@ html_theme = 'alabaster'
 # documentation.
 #
 html_theme_options = {
-  'logo': 'wasm.png',
+  'logo': logo,
   'description': '  ',
   'fixed_sidebar': True,
+  'sidebar_width': '260px',
   'sidebar_collapse': True,
   'show_powered_by': False,
+  'extra_nav_links': {
+    'Download as PDF': '_static/' + name + '.pdf'
+  },
 }
 
 html_sidebars = {
@@ -155,7 +160,7 @@ html_sidebars = {
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-html_title = u'WebAssembly 1.0'
+html_title = project + u' ' + release
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #
@@ -164,7 +169,7 @@ html_title = u'WebAssembly 1.0'
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 #
-html_logo = 'wasm.png'
+html_logo = logo
 
 # The name of an image file (relative to this directory) to use as a favicon of
 # the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -201,15 +206,15 @@ html_static_path = ['_static']
 
 # If false, no module index is generated.
 #
-# html_domain_indices = True
+html_domain_indices = False
 
 # If false, no index is generated.
 #
-# html_use_index = True
+html_use_index = True
 
 # If true, the index is split into individual pages for each letter.
 #
-# html_split_index = False
+html_split_index = False
 
 # If true, the reST sources are included in the HTML build as _sources/name. The default is True.
 #
@@ -217,7 +222,7 @@ html_copy_source = False
 
 # If true, links to the reST sources are added to the pages.
 #
-# html_show_sourcelink = True
+html_show_sourcelink = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 #
@@ -234,6 +239,7 @@ html_show_copyright = True
 # html_use_opensearch = ''
 
 # This is the file name suffix for HTML files (e.g. ".xhtml").
+#
 # html_file_suffix = None
 
 # Language to be used for generating the HTML full-text search index.
@@ -255,7 +261,9 @@ html_show_copyright = True
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
+#
 htmlhelp_basename = 'WebAssemblydoc'
+
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -271,6 +279,9 @@ latex_elements = {
 
    # Latex figure (float) alignment
   'figure_align': 'htbp',
+
+   # Fancy chapters [Bjarne, Sonny, Lenny, Glenn, Conny, Rejne]
+   'fncychap': '\\usepackage[Sonny]{fncychap}',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -288,26 +299,25 @@ latex_documents = [
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
 #
-# latex_logo = None
+latex_logo = logo
 
-# For "manual" documents, if this is true, then toplevel headings are parts,
-# not chapters.
+# For "manual" documents [part, chapter, or section].
 #
-# latex_use_parts = False
+latex_toplevel_sectioning = 'chapter'
 
 # If true, show page references after internal links.
 #
-# latex_show_pagerefs = False
+latex_show_pagerefs = False
 
-# If true, show URL addresses after external links.
+# How to show URL addresses after external links [no, footnote, inline].
 #
-# latex_show_urls = False
+latex_show_urls = 'footnote'
 
 # Documents to append as an appendix to all manuals.
 #
 # latex_appendices = []
 
-# It false, will not define \strong, \code, 	itleref, \crossref ... but only
+# It false, will not define \strong, \code, titleref, \crossref ... but only
 # \sphinxstrong, ..., \sphinxtitleref, ... To help avoid clash with user added
 # packages.
 #
@@ -315,7 +325,7 @@ latex_documents = [
 
 # If false, no module index is generated.
 #
-# latex_domain_indices = True
+latex_domain_indices = False
 
 
 # -- Options for manual page output ---------------------------------------
@@ -358,7 +368,7 @@ texinfo_documents = [
 
 # If false, no module index is generated.
 #
-# texinfo_domain_indices = True
+texinfo_domain_indices = False
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #
