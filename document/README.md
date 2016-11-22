@@ -1,18 +1,16 @@
-This uses [Sphinx](http://www.sphinx-doc.org/).
-
-To install:
+This uses [Sphinx](http://www.sphinx-doc.org/). To install that:
 ```
 pip install sphinx
 ```
-To make HTML:
+To make HTML (result in `_build/html`):
 ```
 make html
 ```
-To make PDF (requires LaTeX):
+To make PDF (result in `_build/latex`, requires LaTeX):
 ```
 make pdf
 ```
 To make all:
 ```
-make pub
+make all
 ```

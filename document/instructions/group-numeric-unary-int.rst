@@ -1,13 +1,9 @@
-Unary Floating Point Instructions
----------------------------------
+Unary Integer Instructions
+--------------------------
 
 .. toctree::
    :maxdepth: 2
 
-   fxx.neg
-   fxx.abs
-   fxx.ceil
-   fxx.floor
-   fxx.trunc
-   fxx.nearest
-   fxx.sqrt
+   ixx.clz
+   ixx.ctz
+   ixx.popcnt

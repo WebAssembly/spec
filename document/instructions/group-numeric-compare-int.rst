@@ -1,12 +1,12 @@
-Numeric Instructions
---------------------
+Integer Comparison Instructions
+-------------------------------
 
 .. toctree::
    :maxdepth: 2
 
-   fxx.eq
-   fxx.ne
-   fxx.lt
-   fxx.gt
-   fxx.le
-   fxx.gt
+   ixx.eq
+   ixx.ne
+   ixx.lt_sx
+   ixx.gt_sx
+   ixx.le_sx
+   ixx.gt_sx

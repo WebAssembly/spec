@@ -139,6 +139,7 @@ html_theme_options = {
   'fixed_sidebar': True,
   'sidebar_width': '260px',
   'sidebar_collapse': True,
+  'sidebar_link_underscore': '#FFFFFF',
   'show_powered_by': False,
   'extra_nav_links': {
     'Download as PDF': '_static/' + name + '.pdf'
