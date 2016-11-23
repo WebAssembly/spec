@@ -7,6 +7,7 @@ SPHINXBUILD   = sphinx-build
 PAPER         = a4
 BUILDDIR      = _build
 STATICDIR     = _static
+DOWNLOADDIR   = _download
 GHPAGESDIR    = ../docs
 NAME          = WebAssembly
 
@@ -67,8 +68,8 @@ all:	pdf html
 
 .PHONY: pdf
 pdf:	latexpdf
-	mkdir -p $(STATICDIR)
-	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(STATICDIR)/$(NAME).pdf
+	mkdir -p $(BUILDDIR)/html/$(DOWNLOADDIR)
+	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(BUILDDIR)/html/$(DOWNLOADDIR)/$(NAME).pdf
 
 
 .PHONY: clean
@@ -79,6 +80,16 @@ clean:
 .PHONY: html
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	for file in `ls $(BUILDDIR)/html/*.html`; \
+	do \
+	  sed s:DOWNLOADDIR:$(DOWNLOADDIR):g <$$file >$$file.out; \
+	  mv -f $$file.out $$file; \
+	done
+	for file in `ls $(BUILDDIR)/html/*/*.html`; \
+	do \
+	  sed s:DOWNLOADDIR:../$(DOWNLOADDIR):g <$$file >$$file.out; \
+	  mv -f $$file.out $$file; \
+	done
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
