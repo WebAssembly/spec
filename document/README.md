@@ -1,4 +1,8 @@
-This uses [Sphinx](http://www.sphinx-doc.org/). To install that:
+# WebAssembly Specification
+
+This is (meant to become) the official WebAssembly "language" specification.
+
+It uses [Sphinx](http://www.sphinx-doc.org/). To install that:
 ```
 pip install sphinx
 ```
