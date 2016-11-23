@@ -58,7 +58,7 @@ project = u'WebAssembly'
 title = u'WebAssembly Specification'
 copyright = u'2016, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
-logo = 'placeholder.png'
+logo = 'placeholder.jpg'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
