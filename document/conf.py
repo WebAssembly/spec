@@ -232,6 +232,11 @@ html_show_sphinx = False
 #
 html_show_copyright = True
 
+# If this is not None, a ‘Last updated on:’ timestamp is inserted at every
+# page bottom, using the given strftime() format.
+#
+html_last_updated_fmt = '%F'
+
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
 # base URL from which the finished HTML is served.
