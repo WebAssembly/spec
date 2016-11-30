@@ -48,8 +48,6 @@ The design goals of WebAssembly are the following:
 
   * **Portable**: makes no architectural assumptions that are not broadly supported across modern hardware.
 
-  * **Versatile**: can be targetted equally by both state-of-the-art optimizing compilers and single-pass baseline compilers.
-
 WebAssembly code is also intended to be easy to display and debug, especially in environments like web browsers, but such features are beyond the scope of this specification.
 
 
