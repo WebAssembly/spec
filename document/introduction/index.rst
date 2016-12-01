@@ -34,7 +34,7 @@ The design goals of WebAssembly are the following:
 
   * **Open**: programs can interoperate with their environment in a simple and universal manner.
 
-* Efficient, checkable, and portable *representation*:
+* Efficient and portable *representation*:
 
   * **Compact**: a binary format that is fast to transmit by being smaller than typical text or native code formats.
 
