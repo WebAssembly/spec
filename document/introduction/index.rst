@@ -24,23 +24,23 @@ The design goals of WebAssembly are the following:
 
   * **Safe**: code is validated and executes in a memory-safe, sandboxed environment preventing data corruption or security breaches.
 
-  * **Deterministic**: fully and precisely defines valid programs and their behavior in a way that is easy to reason about informally and formally.
+  * **Well-defined**: fully and precisely defines valid programs and their behavior in a way that is easy to reason about informally and formally.
 
-  * **Hardware-independent**: can run on all modern hardware and CPUs, desktop or mobile devices and embedded systems alike.
+  * **Hardware-independent**: can be compiled on all modern architectures, desktop or mobile devices and embedded systems alike.
 
-  * **Language-independent**: does not privilege nor penalize any particular programming or object model.
+  * **Language-independent**: does not privilege any particular language, programming model, or object model.
 
   * **Platform-independent**: can be embedded in browsers, run as a stand-alone VM, or integrated in other environments.
 
   * **Open**: programs can interoperate with their environment in a simple and universal manner.
 
-* Efficient, safe, and portable *representation*:
+* Efficient, checkable, and portable *representation*:
 
   * **Compact**: a binary format that is fast to transmit by being smaller than typical text or native code formats.
 
   * **Modular**: programs can be split up in smaller parts that can be transmitted, cached, and consumed separately.
 
-  * **Efficient**: can be decoded, validated, and compiled to native code in a fast single pass, equally with either just-in-time (JIT) or ahead-of-time (AOT) compilation.
+  * **Efficient**: can be decoded, validated, and compiled in a fast single pass, equally with either just-in-time (JIT) or ahead-of-time (AOT) compilation.
 
   * **Streamable**: allows decoding, validation, and compilation to begin as soon as possible, before all data has been seen.
 
@@ -48,7 +48,7 @@ The design goals of WebAssembly are the following:
 
   * **Portable**: makes no architectural assumptions that are not broadly supported across modern hardware.
 
-WebAssembly code is also intended to be easy to display and debug, especially in environments like web browsers, but such features are beyond the scope of this specification.
+WebAssembly code is also intended to be easy to inspect and debug, especially in environments like web browsers, but such features are beyond the scope of this specification.
 
 
 .. [#wasm] A contraction of "WebAssembly", not an acronym, hence not using all-caps.
