@@ -412,8 +412,9 @@ let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
 
 let check_module (m : module_) =
   let
-    {types; imports; tables; memories; globals; funcs; start; elems; data;
-     exports} = m.it in
+    { types; imports; tables; memories; globals; funcs; start; elems; data;
+      exports } = m.it
+  in
   let c0 = List.fold_right check_import imports {(context m) with types} in
   let c1 =
     { c0 with
@@ -423,7 +424,7 @@ let check_module (m : module_) =
     }
   in
   let c =
-    { c1 with globals = c1.globals @ List.map (fun g -> g.it.gtype) globals; }
+    { c1 with globals = c1.globals @ List.map (fun g -> g.it.gtype) globals }
   in
   List.iter (check_global c1) globals;
   List.iter (check_table c1) tables;
