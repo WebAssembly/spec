@@ -22,7 +22,7 @@ The design goals of WebAssembly are the following:
 
   * **Fast**: executes with near native code performance, taking advantage of capabilities common to all contemporary hardware.
 
-  * **Safe**: code is validated and executes in a memory-safe, sandboxed environment preventing data corruption or security breaches.
+  * **Safe**: code is validated and executes in a memory-safe [#memorysafe]_, sandboxed environment preventing data corruption or security breaches.
 
   * **Well-defined**: fully and precisely defines valid programs and their behavior in a way that is easy to reason about informally and formally.
 
@@ -52,3 +52,5 @@ WebAssembly code is also intended to be easy to inspect and debug, especially in
 
 
 .. [#wasm] A contraction of "WebAssembly", not an acronym, hence not using all-caps.
+
+.. [#memorysafe] No program can break WebAssembly's memory model. Of course, it cannot guarantee that an unsafe language compiling to WebAssembly does not corrupt its own memory layout, e.g. inside WebAssembly's linear memory.
