@@ -23,6 +23,7 @@ val mem_size : mem_size -> int
 
 val create : size limits -> memory (* raise SizeOverflow, OutOfMemory *)
 val size : memory -> size
+val bound : memory -> address
 val limits : memory -> size limits
 val grow : memory -> size -> unit
   (* raise SizeLimit, SizeOverflow, OutOfMemory *)

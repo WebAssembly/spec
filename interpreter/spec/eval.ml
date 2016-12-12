@@ -359,19 +359,23 @@ let init_closure (inst : instance) (clos : closure) =
   | _ -> assert false
 
 let init_table (inst : instance) (seg : table_segment) =
-  let {index; offset; init} = seg.it in
+  let {index; offset = const; init} = seg.it in
   let tab = table inst index in
-  let offset = i32 (eval_const inst offset) offset.at in
-  try Table.blit tab offset (List.map (fun x -> Func (func inst x)) init)
-  with Table.Bounds -> Link.error seg.at "elements segment does not fit table"
+  let offset = i32 (eval_const inst const) const.at in
+  let bound = Table.size tab in
+  if I32.lt_u bound Int32.(add offset (of_int (List.length init))) then
+    Link.error seg.at "elements segment does not fit table";
+  fun () -> Table.blit tab offset (List.map (fun x -> Func (func inst x)) init)
 
 let init_memory (inst : instance) (seg : memory_segment) =
-  let {index; offset; init} = seg.it in
+  let {index; offset = const; init} = seg.it in
   let mem = memory inst index in
-  let offset = i32 (eval_const inst offset) offset.at in
-  let offset64 = Int64.(logand (of_int32 offset) 0xffffffffL) in
-  try Memory.blit mem offset64 init
-  with Memory.Bounds -> Link.error seg.at "data segment does not fit memory"
+  let offset' = i32 (eval_const inst const) const.at in
+  let offset = I64_convert.extend_u_i32 offset' in
+  let bound = Memory.bound mem in
+  if I64.lt_u bound Int64.(add offset (of_int (String.length init))) then
+    Link.error seg.at "data segment does not fit memory";
+  fun () -> Memory.blit mem offset init
 
 let init_global (inst : instance) (ref : value ref) (glob : global) =
   let {value; _} = glob.it in
@@ -436,7 +440,9 @@ let init (m : module_) (exts : extern list) : instance =
   in
   List.iter2 (init_global inst) gs globals;
   List.iter (init_closure inst) fs;
-  List.iter (init_table inst) elems;
-  List.iter (init_memory inst) data;
+  let init_elems = List.map (init_table inst) elems in
+  let init_datas = List.map (init_memory inst) data in
+  List.iter (fun f -> f ()) init_elems;
+  List.iter (fun f -> f ()) init_datas;
   Lib.Option.app (fun x -> ignore (invoke (func inst x) [])) start;
   {inst with exports = List.fold_right (add_export inst) exports inst.exports}
