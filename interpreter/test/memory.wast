@@ -46,6 +46,14 @@
   (module (func (i32.store8 (i32.const 0) (i32.const 0))))
   "unknown memory"
 )
+(assert_invalid
+  (module (func (drop (current_memory))))
+  "unknown memory"
+)
+(assert_invalid
+  (module (func (drop (grow_memory (i32.const 0)))))
+  "unknown memory"
+)
 
 (assert_invalid
   (module (memory 1) (data (i64.const 0)))
