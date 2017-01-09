@@ -364,8 +364,8 @@
 ;; invalid table
 (assert_invalid 
   (module
-    (table anyfunc (elem 0 $t1 44))
-    (func $t1 (result i32) (i32.const 1))
+    (table anyfunc (elem 0 1))
+    (func (result i32) (i32.const 1))
   )
-  "unknown function 44"
+  "unknown function 1"
 )
