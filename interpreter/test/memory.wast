@@ -78,6 +78,10 @@
   "data segment does not fit"
 )
 (assert_unlinkable
+  (module (memory 0 1) (data (i32.const 0) "a"))
+  "data segment does not fit"
+)
+(assert_unlinkable
   (module (memory 1 2) (data (i32.const 0) "a") (data (i32.const 98304) "b"))
   "data segment does not fit"
 )
