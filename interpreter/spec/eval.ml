@@ -10,10 +10,12 @@ open Source
 module Link = Error.Make ()
 module Trap = Error.Make ()
 module Crash = Error.Make ()
+module Exhaustion = Error.Make ()
 
 exception Link = Link.Error
 exception Trap = Trap.Error
 exception Crash = Crash.Error (* failure that cannot happen in valid code *)
+exception Exhaustion = Exhaustion.Error
 
 let memory_error at = function
   | Memory.Bounds -> "out of bounds memory access"
@@ -281,7 +283,7 @@ let rec step (inst : instance) (c : config) : config =
       vs, [Local (inst', c'.locals, c'.values, c'.instrs) @@ e.at]
 
     | Invoke clos, vs when c.budget = 0 ->
-      vs, [Trapped "call stack exhausted" @@ e.at]
+      Exhaustion.error e.at "call stack exhausted"
 
     | Invoke clos, vs ->
       let FuncType (ins, out) = func_type_of clos in
@@ -322,7 +324,7 @@ let invoke (clos : closure) (vs : value list) : value list =
   let inst = instance (empty_module @@ at) in
   let c = config (List.rev vs) [Invoke clos @@ at] in
   try List.rev (eval inst c)
-  with Stack_overflow -> Trap.error at "call stack exhausted"
+  with Stack_overflow -> Exhaustion.error at "call stack exhausted"
 
 let eval_const (inst : instance) (const : const) : value =
   let c = config [] (List.map plain const.it) in

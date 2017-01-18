@@ -20,6 +20,7 @@ and assertion' =
   | AssertReturn of action * Ast.literal list
   | AssertReturnNaN of action
   | AssertTrap of action * string
+  | AssertExhaustion of action * string
 
 type command = command' Source.phrase
 and command' =
