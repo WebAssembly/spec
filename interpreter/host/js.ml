@@ -26,11 +26,19 @@ let prefix =
   "  registry[name] = instance.exports;\n" ^
   "}\n" ^
   "\n" ^
-  "function module(bytes) {\n" ^
+  "function module(bytes, valid = true) {\n" ^
   "  let buffer = new ArrayBuffer(bytes.length);\n" ^
   "  let view = new Uint8Array(buffer);\n" ^
   "  for (let i = 0; i < bytes.length; ++i) {\n" ^
   "    view[i] = bytes.charCodeAt(i);\n" ^
+  "  }\n" ^
+  "  try {\n" ^
+  "    if (WebAssembly.validate(buffer) !== valid) {\n" ^
+  "      throw new Error(\"Wasm validate failure\" + " ^
+  "(valid ? \"\" : \" expected\"));\n" ^
+  "    }\n" ^
+  "  } catch (e) {\n" ^
+  "    throw new Error(\"Wasm validate throws\");\n" ^
   "  }\n" ^
   "  return new WebAssembly.Module(buffer);\n" ^
   "}\n" ^
@@ -40,21 +48,21 @@ let prefix =
   "}\n" ^
   "\n" ^
   "function assert_malformed(bytes) {\n" ^
-  "  try { module(bytes) } catch (e) {\n" ^
+  "  try { module(bytes, false) } catch (e) {\n" ^
   "    if (e instanceof WebAssembly.CompileError) return;\n" ^
   "  }\n" ^
   "  throw new Error(\"Wasm decoding failure expected\");\n" ^
   "}\n" ^
   "\n" ^
   "function assert_invalid(bytes) {\n" ^
-  "  try { module(bytes) } catch (e) {\n" ^
+  "  try { module(bytes, false) } catch (e) {\n" ^
   "    if (e instanceof WebAssembly.CompileError) return;\n" ^
   "  }\n" ^
   "  throw new Error(\"Wasm validation failure expected\");\n" ^
   "}\n" ^
   "\n" ^
   "function assert_soft_invalid(bytes) {\n" ^
-  "  try { module(bytes) } catch (e) {\n" ^
+  "  try { module(bytes, soft_validate) } catch (e) {\n" ^
   "    if (e instanceof WebAssembly.CompileError) return;\n" ^
   "    throw new Error(\"Wasm validation failure expected\");\n" ^
   "  }\n" ^
