@@ -1,8 +1,11 @@
+*.cmo
+*.cmx
 *.native
 *.byte
 *.opt
+*.unopt
 *.zip
-wasm.mlpack
+*.mlpack
 _build
 wasm
-unopt
+

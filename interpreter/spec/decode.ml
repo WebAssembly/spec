@@ -450,7 +450,7 @@ let id s =
   let bo = peek s in
   Lib.Option.map
     (function
-    | 0 -> `UserSection
+    | 0 -> `CustomSection
     | 1 -> `TypeSection
     | 2 -> `ImportSection
     | 3 -> `FuncSection
@@ -604,16 +604,16 @@ let data_section s =
   section `DataSection (vec (at memory_segment)) [] s
 
 
-(* User section *)
+(* Custom section *)
 
-let user size s =
+let custom size s =
   let start = pos s in
   let _id = string s in
   skip (size - (pos s - start)) s;
   true
 
-let user_section s =
-  section_with_size `UserSection user false s
+let custom_section s =
+  section_with_size `CustomSection custom false s
 
 
 (* Modules *)
@@ -625,29 +625,29 @@ let module_ s =
   require (magic = 0x6d736100l) s 0 "magic header not detected";
   let version = u32 s in
   require (version = Encode.version) s 4 "unknown binary version";
-  iterate user_section s;
+  iterate custom_section s;
   let types = type_section s in
-  iterate user_section s;
+  iterate custom_section s;
   let imports = import_section s in
-  iterate user_section s;
+  iterate custom_section s;
   let func_types = func_section s in
-  iterate user_section s;
+  iterate custom_section s;
   let tables = table_section s in
-  iterate user_section s;
+  iterate custom_section s;
   let memories = memory_section s in
-  iterate user_section s;
+  iterate custom_section s;
   let globals = global_section s in
-  iterate user_section s;
+  iterate custom_section s;
   let exports = export_section s in
-  iterate user_section s;
+  iterate custom_section s;
   let start = start_section s in
-  iterate user_section s;
+  iterate custom_section s;
   let elems = elem_section s in
-  iterate user_section s;
+  iterate custom_section s;
   let func_bodies = code_section s in
-  iterate user_section s;
+  iterate custom_section s;
   let data = data_section s in
-  iterate user_section s;
+  iterate custom_section s;
   require (pos s = len s) s (len s) "junk after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
