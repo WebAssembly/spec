@@ -10,7 +10,8 @@ import glob
 import sys
 
 
-inputDir = "test"
+ownDir = os.path.dirname(os.path.abspath(sys.argv[0]))
+inputDir = ownDir
 expectDir = "expected-output"
 outputDir = os.path.join(inputDir, "output")
 
@@ -94,5 +95,6 @@ if __name__ == "__main__":
   if not os.path.exists(outputDir):
     os.makedirs(outputDir)
   for fileName in inputFiles:
-    setattr(RunTests, fileName, lambda self, file=fileName: self._runTestFile(file))
+    testName = 'test ' + os.path.basename(fileName)
+    setattr(RunTests, testName, lambda self, file=fileName: self._runTestFile(file))
   unittest.main()

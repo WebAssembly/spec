@@ -88,7 +88,7 @@ $(ZIP):		$(WINMAKE)
 		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 test:		$(NAME)
-		./runtests.py
+		../test/core/run.py --wasm `pwd`/wasm
 
 clean:
 		$(OCB) -clean
