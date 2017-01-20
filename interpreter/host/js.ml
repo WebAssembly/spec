@@ -32,13 +32,15 @@ let prefix =
   "  for (let i = 0; i < bytes.length; ++i) {\n" ^
   "    view[i] = bytes.charCodeAt(i);\n" ^
   "  }\n" ^
+  "  let validated;\n" ^
   "  try {\n" ^
-  "    if (WebAssembly.validate(buffer) !== valid) {\n" ^
-  "      throw new Error(\"Wasm validate failure\" + " ^
-  "(valid ? \"\" : \" expected\"));\n" ^
-  "    }\n" ^
+  "    validated = WebAssembly.validate(buffer);\n" ^
   "  } catch (e) {\n" ^
   "    throw new Error(\"Wasm validate throws\");\n" ^
+  "  }\n" ^
+  "  if (validated !== valid) {\n" ^
+  "    throw new Error(\"Wasm validate failure\" + " ^
+  "(valid ? \"\" : \" expected\"));\n" ^
   "  }\n" ^
   "  return new WebAssembly.Module(buffer);\n" ^
   "}\n" ^
