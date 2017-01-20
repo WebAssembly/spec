@@ -131,7 +131,7 @@ let input_binary_file file run =
     let buf = Bytes.make len '\x00' in
     really_input ic buf 0 len;
     trace "Decoding...";
-    let success = input_binary file buf run in
+    let success = input_binary file (Bytes.to_string buf) run in
     close_in ic;
     success
   with exn -> close_in ic; raise exn
@@ -298,7 +298,7 @@ let assert_result at correct got print_expect expect =
   end
 
 let assert_message at name msg re =
-  if not (Str.string_match (Str.regexp re) msg 0) then begin
+  if String.sub msg 0 (String.length re) <> re then begin
     print_endline ("Result: \"" ^ msg ^ "\"");
     print_endline ("Expect: \"" ^ re ^ "\"");
     Assert.error at ("wrong " ^ name ^ " error")

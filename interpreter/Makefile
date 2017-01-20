@@ -2,6 +2,8 @@
 # package manager to build. However, Opam package management is available
 # optionally through the check/install/uninstall targets.
 #
+# The $(JSLIB) target requires node.js and BuckleScript.
+#
 # See README.me for instructions.
 
 
@@ -12,10 +14,11 @@ UNOPT = 	$(NAME)
 OPT =   	$(NAME).opt
 LIB =		$(NAME)
 ZIP =		$(NAME).zip
+JSLIB =		wast.js
 WINMAKE =	winmake.bat
 
 DIRS =		util spec text host host/import
-LIBS =		str bigarray
+LIBS =		bigarray
 FLAGS = 	-cflags '-w +a-4-27-42-44-45 -warn-error +a'
 OCB =		ocamlbuild $(FLAGS) $(DIRS:%=-I %) $(LIBS:%=-libs %)
 JS =		# set to JS shell command to run JS tests
@@ -67,6 +70,17 @@ _build/$(LIB).cmx: $(LIB).mlpack
 		$(OCB) -quiet $(LIB).cmx
 
 
+# Building JavaScript library
+
+.PHONY:		$(JSLIB)
+$(JSLIB):	$(UNOPT)
+		mkdir -p _build/jslib/src
+		cp jslib/* _build/jslib
+		cp $(DIRS:%=_build/%/*.ml*) jslib/*.ml _build/jslib/src
+		rm _build/jslib/src/*.ml[^i]
+		(cd _build/jslib; ./build.sh ../../$@)
+
+
 # Building Windows build file
 
 $(WINMAKE):	clean
@@ -95,6 +109,7 @@ test/%:		$(NAME)
 		../test/core/run.py --wasm `pwd`/wasm $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
 
 clean:
+		rm -rf _build/jslib
 		$(OCB) -clean
 
 
