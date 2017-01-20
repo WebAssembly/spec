@@ -48,8 +48,11 @@ let create {min; max} =
   assert (within_limits min max);
   {content = create' min; max}
 
+let bound mem =
+  Array1_64.dim mem.content
+
 let size mem =
-  Int64.(to_int32 (div (Array1_64.dim mem.content) page_size))
+  Int64.(to_int32 (div (bound mem) page_size))
 
 let limits mem =
   {min = size mem; max = mem.max}
