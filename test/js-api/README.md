@@ -1,0 +1,1 @@
+This directory contains tests specific to the JavaScript API to WebAssembly, as described in [JS.md](https://github.com/WebAssembly/design/blob/master/JS.md).

@@ -9,6 +9,4 @@ cd $(dirname ${BASH_SOURCE[0]})/..
 
 export PATH=$PWD/../ocaml/install/bin:$PATH
 
-make
-
-./runtests.py
+make all
