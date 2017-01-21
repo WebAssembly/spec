@@ -720,17 +720,18 @@ test(() => {
     assert_equals(instantiate.length, 1);
     assert_equals(instantiate.name, "instantiate");
     function assertInstantiateError(args, err, msg) {
-        instantiate(...args)
-        .then(m => {
-            throw new Error('unexpected success in assertInstantiateError');
-        })
-        .catch(error => {
-            assert_equals(error instanceof err, true);
-            assert_equals(Boolean(error.stack.match("jsapi.js")), true);
-            assert_equals(Boolean(error.message.match(msg)), true);
-        });
+        promise_test(() => {
+            return instantiate(...args)
+                .then(m => {
+                    throw null;
+                })
+                .catch(error => {
+                    assert_equals(error instanceof err, true);
+                    assert_equals(Boolean(error.stack.match("jsapi.js")), true);
+                })
+        }, 'unexpected success in assertInstantiateError');
     }
-    var scratch_memory = new WebAssembly.Memory(new ArrayBuffer(10));
+    var scratch_memory = new WebAssembly.Memory({initial:1});
     var scratch_table = new WebAssembly.Table({element:"anyfunc", initial:1, maximum:1});
     assertInstantiateError([], TypeError, /requires more than 0 arguments/);
     assertInstantiateError([undefined], TypeError, /first argument must be a WebAssembly.Module, ArrayBuffer or typed array object/);
@@ -755,18 +756,16 @@ test(() => {
     assertInstantiateError([complexImportingModuleBinary, {"c": {"d": scratch_memory}}], LinkError, /TODO: error messages?/);
 
     function assertInstantiateSuccess(module, imports) {
-        instantiate(module, imports)
-        .then(result => {
-            if (module instanceof Module) {
-                assert_equals(result instanceof Instance, true);
-            } else {
-                assert_equals(result.module instanceof Module, true);
-                assert_equals(result.instance instanceof Instance, true);
-            }
-        })
-        .catch(err => {
-            assert(false, 'unexpected failure in assertInstantiateSuccess')
-        });
+        promise_test(()=> {
+            return instantiate(module, imports)
+                .then(result => {
+                    if (module instanceof Module) {
+                        assert_equals(result instanceof Instance, true);
+                    } else {
+                        assert_equals(result.module instanceof Module, true);
+                        assert_equals(result.instance instanceof Instance, true);
+                    }
+                })}, 'unexpected failure in assertInstantiateSuccess');
     }
     assertInstantiateSuccess(emptyModule);
     assertInstantiateSuccess(emptyModuleBinary);
@@ -778,7 +777,7 @@ test(() => {
         a:{b:()=>{}},
         c:{d:scratch_memory},
         e:{f:scratch_table},
-        g:{'⚡': 1}});
+        g:{'⚡':1}});
 }, "'WebAssembly.instantiate' function");
 
 })();
