@@ -764,6 +764,14 @@ test(() => {
                     } else {
                         assert_equals(result.module instanceof Module, true);
                         assert_equals(result.instance instanceof Instance, true);
+                        var desc = Object.getOwnPropertyDescriptor(result, 'module');
+                        assert_equals(desc.writable, true);
+                        assert_equals(desc.enumerable, true);
+                        assert_equals(desc.configurable, true);
+                        desc = Object.getOwnPropertyDescriptor(result, 'instance');
+                        assert_equals(desc.writable, true);
+                        assert_equals(desc.enumerable, true);
+                        assert_equals(desc.configurable, true);
                     }
                 })}, 'unexpected failure in assertInstantiateSuccess');
     }
