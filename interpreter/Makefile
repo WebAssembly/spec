@@ -90,6 +90,9 @@ $(ZIP):		$(WINMAKE)
 test:		$(NAME)
 		../test/core/run.py --wasm `pwd`/wasm
 
+test/%:		$(NAME)
+		../test/core/run.py --wasm `pwd`/wasm $(@:test/%=../test/core/%.wast)
+
 clean:
 		$(OCB) -clean
 
