@@ -6,7 +6,7 @@ open Source
 
 (* Harness *)
 
-let prefix =
+let harness =
   "'use strict';\n" ^
   "\n" ^
   "let soft_validate = " ^ string_of_bool (not !Flags.unchecked_soft) ^ ";\n" ^
@@ -352,4 +352,5 @@ let of_command mods cmd =
   | Meta _ -> assert false
 
 let of_script scr =
-  prefix ^ String.concat "" (List.map (of_command (ref Map.empty)) scr)
+  (if !Flags.harness then harness else "") ^
+  String.concat "" (List.map (of_command (ref Map.empty)) scr)
