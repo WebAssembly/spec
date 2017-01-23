@@ -38,7 +38,7 @@ let prefix =
   "  } catch (e) {\n" ^
   "    throw new Error(\"Wasm validate throws\");\n" ^
   "  }\n" ^
-  "  if (validated !== valid) {\n" ^
+  "  if (validated !== valid && valid !== null) {\n" ^
   "    throw new Error(\"Wasm validate failure\" + " ^
   "(valid ? \"\" : \" expected\"));\n" ^
   "  }\n" ^
@@ -64,9 +64,8 @@ let prefix =
   "}\n" ^
   "\n" ^
   "function assert_soft_invalid(bytes) {\n" ^
-  "  try { module(bytes, soft_validate) } catch (e) {\n" ^
+  "  try { module(bytes, soft_validate ? false : null) } catch (e) {\n" ^
   "    if (e instanceof WebAssembly.CompileError) return;\n" ^
-  "    throw new Error(\"Wasm validation failure expected\");\n" ^
   "  }\n" ^
   "  if (soft_validate)\n" ^
   "    throw new Error(\"Wasm validation failure expected\");\n" ^
