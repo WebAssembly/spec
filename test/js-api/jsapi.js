@@ -381,7 +381,7 @@ test(() => {
     exportsObj.g = 1;
     assert_equals(Object.keys(exportsObj).join(), "f");
     assertErrorMessage(() => Object.setPrototypeOf(exportsObj, {}), TypeError, /can't set prototype of this object/);
-    assert_equals(Object.getPrototypeOf(exportsObj), 383);
+    assert_equals(Object.getPrototypeOf(exportsObj), null);
     assertErrorMessage(() => Object.defineProperty(exportsObj, 'g', {}), TypeError, /Object is not extensible/);
     assert_equals(Object.keys(exportsObj).join(), "f");
 }, "'WebAssembly.Instance' 'exports' object");
