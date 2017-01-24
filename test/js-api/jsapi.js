@@ -711,7 +711,7 @@ test(() => {
     const instantiateDesc = Object.getOwnPropertyDescriptor(WebAssembly, 'instantiate');
     const instantiate = WebAssembly.instantiate;
     assert_equals(instantiate, instantiateDesc.value);
-    assert_equals(instantiate.length, 2);
+    assert_equals(instantiate.length, 1);
     assert_equals(instantiate.name, "instantiate");
     function assertInstantiateError(args, err, msg) {
         promise_test(() => {
