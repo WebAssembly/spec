@@ -16,17 +16,17 @@ expectDir = "expected-output"
 outputDir = os.path.join(inputDir, "output")
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--wasm', metavar='<wasm-command>', default=os.path.join(os.getcwd(), 'wasm'))
-parser.add_argument('--js', metavar='<js-command>')
-parser.add_argument('--out', metavar='<out-dir>', default=outputDir)
-parser.add_argument('file', nargs='*')
+parser.add_argument("--wasm", metavar="<wasm-command>", default=os.path.join(os.getcwd(), "wasm"))
+parser.add_argument("--js", metavar="<js-command>")
+parser.add_argument("--out", metavar="<out-dir>", default=outputDir)
+parser.add_argument("file", nargs='*')
 arguments = parser.parse_args()
 sys.argv = sys.argv[:1]
 
 wasmCommand = arguments.wasm
 jsCommand = arguments.js
 outputDir = arguments.out
-inputFiles = arguments.file if arguments.file else glob.glob(os.path.join(inputDir, '*.wast'))
+inputFiles = arguments.file if arguments.file else glob.glob(os.path.join(inputDir, "*.wast"))
 
 
 class RunTests(unittest.TestCase):
