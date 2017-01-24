@@ -156,6 +156,21 @@
 
 (assert_trap (invoke $Ot "call" (i32.const 20)) "undefined")
 
+(module
+  (table (import "Mt" "tab") 0 anyfunc)
+  (elem (i32.const 9) $f)
+  (func $f)
+)
+
+(assert_unlinkable
+  (module
+    (table (import "Mt" "tab") 0 anyfunc)
+    (elem (i32.const 10) $f)
+    (func $f)
+  )
+  "elements segment does not fit"
+)
+
 (assert_unlinkable
   (module
     (table (import "Mt" "tab") 10 anyfunc)
@@ -233,6 +248,19 @@
 (assert_return (invoke $Nm "Mm.load" (i32.const 12)) (i32.const 0xa7))
 (assert_return (invoke $Nm "load" (i32.const 12)) (i32.const 0xf2))
 (assert_return (invoke $Om "load" (i32.const 12)) (i32.const 0xa7))
+
+(module
+  (memory (import "Mm" "mem") 0)
+  (data (i32.const 0xffff) "a")
+)
+
+(assert_unlinkable
+  (module
+    (memory (import "Mm" "mem") 0)
+    (data (i32.const 0x10000) "a")
+  )
+  "data segment does not fit"
+)
 
 (module $Pm
   (memory (import "Mm" "mem") 1 8)

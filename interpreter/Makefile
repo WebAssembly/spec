@@ -18,6 +18,7 @@ DIRS =		util spec text host host/import
 LIBS =		str bigarray
 FLAGS = 	-cflags '-w +a-4-27-42-44-45 -warn-error +a'
 OCB =		ocamlbuild $(FLAGS) $(DIRS:%=-I %) $(LIBS:%=-libs %)
+JS =		# set to JS shell command to run JS tests
 
 
 # Main targets
@@ -88,7 +89,10 @@ $(ZIP):		$(WINMAKE)
 		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 test:		$(NAME)
-		../test/core/run.py --wasm `pwd`/wasm
+		../test/core/run.py --wasm `pwd`/wasm $(if $(JS),--js '$(JS)',)
+
+test/%:		$(NAME)
+		../test/core/run.py --wasm `pwd`/wasm $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
 
 clean:
 		$(OCB) -clean
