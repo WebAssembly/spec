@@ -113,7 +113,6 @@ def build_js():
     print('Building JS...')
     convert_wast_to_js()
 
-    # Copy all the JS files to JS dir.
     print('Copying JS tests to the JS out dir...')
     for js_file in glob.glob(os.path.join(JS_DIR, '*.js')):
         shutil.copy(js_file, OUT_JS_DIR)
@@ -131,27 +130,34 @@ HTML_HEADER = """
 <div id=log></div>
 """
 
-def build_html():
-    print("Building HTML tests...")
+def build_html_from_js(src_dir):
+    files = []
+    for js_file in glob.glob(os.path.join(src_dir, '*.js')):
+        if src_dir != OUT_JS_DIR:
+            shutil.copy(js_file, OUT_JS_DIR)
 
-    print('Building WPT tests from JS files...')
-    js_files = []
-    for js_file in glob.glob(os.path.join(OUT_JS_DIR, '*.js')):
         js_filename = os.path.basename(js_file)
-        js_files.append(js_filename)
+        files.append(js_filename)
         html_filename = js_filename + '.html'
         html_file = os.path.join(OUT_HTML_DIR, html_filename)
         with open(html_file, 'w+') as f:
             content = HTML_HEADER.replace('{PREFIX}', '../../')
             content += "<script src=../js/{SCRIPT}></script>".replace('{SCRIPT}', js_filename)
             f.write(content)
+    return files
+
+def build_html():
+    print("Building HTML tests...")
+
+    print('Building WPT tests from pure JS tests...')
+    js_files = build_html_from_js(OUT_JS_DIR) + build_html_from_js(HTML_DIR)
 
     print('Building front page containing all the HTML tests...')
     front_page = os.path.join(OUT_DIR, 'index.html')
     with open(front_page, 'w+') as f:
         content = HTML_HEADER.replace('{PREFIX}', '../')
         for filename in js_files:
-            content += "<script src=./js/{SCRIPT}></script>".replace('{SCRIPT}', filename)
+            content += "<script src=./js/{SCRIPT}></script>\n".replace('{SCRIPT}', filename)
         f.write(content)
 
 if __name__ == '__main__':
