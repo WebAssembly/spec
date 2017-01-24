@@ -96,6 +96,8 @@ wasm -d script.wast -o script.js
 The first creates a new test scripts where all embedded modules are converted to binary, the second one where all are converted to textual.
 
 The last invocation produces an equivalent, self-contained JavaScript test file.
+The flag `-h` can be used to omit the test harness from the converted file;
+it then is the client's responsibility to provide versions of the necessary functions.
 By default, the generated script will require `assert_soft_invalid` (see below) to detect validation failures. Use the `-us` flag ("unchecked soft") to deactivate these assertions to run on implementations that do not validate dead code.
 
 #### Command Line Expressions

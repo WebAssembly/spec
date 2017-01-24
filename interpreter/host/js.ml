@@ -6,7 +6,7 @@ open Source
 
 (* Harness *)
 
-let prefix =
+let harness =
   "'use strict';\n" ^
   "\n" ^
   "let soft_validate = " ^ string_of_bool (not !Flags.unchecked_soft) ^ ";\n" ^
@@ -47,6 +47,18 @@ let prefix =
   "\n" ^
   "function instance(bytes, imports = registry) {\n" ^
   "  return new WebAssembly.Instance(module(bytes), imports);\n" ^
+  "}\n" ^
+  "\n" ^
+  "function call(instance, name, args) {\n" ^
+  "  return instance.exports[name](...args);\n" ^
+  "}\n" ^
+  "\n" ^
+  "function get(instance, name) {\n" ^
+  "  return instance.exports[name];\n" ^
+  "}\n" ^
+  "\n" ^
+  "function exports(name, instance) {\n" ^
+  "  return {[name]: instance.exports};\n" ^
   "}\n" ^
   "\n" ^
   "function assert_malformed(bytes) {\n" ^
@@ -247,8 +259,8 @@ let of_string = of_string_with add_char
 let of_wrapper x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt x_opt in
   let bs = wrap x name wrap_action wrap_assertion at in
-  "instance(" ^ of_bytes bs ^ ", " ^ "{" ^ x ^ ": " ^ x ^ ".exports})" ^
-    ".exports.run()"
+  "call(instance(" ^ of_bytes bs ^ ", " ^
+    "exports(" ^ of_string x ^ ", " ^ x ^ ")), " ^ " \"run\", [])"
 
 let of_float z =
   match string_of_float z with
@@ -275,8 +287,8 @@ let of_definition def =
 let of_action mods act =
   match act.it with
   | Invoke (x_opt, name, lits) ->
-    of_var_opt x_opt ^ ".exports[" ^ of_string name ^ "]" ^
-      "(" ^ String.concat ", " (List.map of_literal lits) ^ ")",
+    "call(" ^ of_var_opt x_opt ^ ", " ^ of_string name ^ ", " ^
+      "[" ^ String.concat ", " (List.map of_literal lits) ^ "])",
     (match lookup mods x_opt name act.at with
     | ExternalFuncType ft when not (is_js_func_type ft) ->
       let FuncType (_, out) = ft in
@@ -284,7 +296,7 @@ let of_action mods act =
     | _ -> None
     )
   | Get (x_opt, name) ->
-    of_var_opt x_opt ^ ".exports[" ^ of_string name ^ "]",
+    "get(" ^ of_var_opt x_opt ^ ", " ^ of_string name ^ ")",
     (match lookup mods x_opt name act.at with
     | ExternalGlobalType gt when not (is_js_global_type gt) ->
       let GlobalType (t, _) = gt in
@@ -351,4 +363,5 @@ let of_command mods cmd =
   | Meta _ -> assert false
 
 let of_script scr =
-  prefix ^ String.concat "" (List.map (of_command (ref Map.empty)) scr)
+  (if !Flags.harness then harness else "") ^
+  String.concat "" (List.map (of_command (ref Map.empty)) scr)
