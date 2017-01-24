@@ -294,8 +294,6 @@ test(() => {
     assert_equals(arr[3].name, "⚡");
 }, "'WebAssembly.Module.exports' method");
 
-if (0) { // not implemented in V8 yet
-
 test(() => {
     const customSectionsDesc = Object.getOwnPropertyDescriptor(Module, 'customSections');
     assert_equals(typeof customSectionsDesc.value, "function");
@@ -315,7 +313,6 @@ test(() => {
     assert_equals(arr instanceof Array, true);
     assert_equals(arr.length, 0);
 }, "'WebAssembly.Module.customSections' method");
-}
 
 test(() => {
     const instanceDesc = Object.getOwnPropertyDescriptor(WebAssembly, 'Instance');
@@ -483,16 +480,13 @@ test(() => {
     var buf = mem.buffer;
     assert_equals(buf.byteLength, WasmPage);
     assert_equals(mem.grow(0), 1);
-    // These 2 require spec clarification, as per gdeepti:
-    // assert_equals(buf !== mem.buffer, true);
-    // assert_equals(buf.byteLength, 0);
-    //
+    assert_equals(buf !== mem.buffer, true);
+    assert_equals(buf.byteLength, 0);
     buf = mem.buffer;
     assert_equals(buf.byteLength, WasmPage);
     assert_equals(mem.grow(1), 1);
-    // Spec clarification
-    // assert_equals(buf !== mem.buffer, true);
-    // assert_equals(buf.byteLength, 0);
+    assert_equals(buf !== mem.buffer, true);
+    assert_equals(buf.byteLength, 0);
     buf = mem.buffer;
     assert_equals(buf.byteLength, 2 * WasmPage);
     assertErrorMessage(() => mem.grow(1), Error, /failed to grow memory/);
@@ -589,7 +583,7 @@ test(() => {
     assertErrorMessage(() => get.call(tbl1, 2), RangeError, /bad Table get index/);
     assertErrorMessage(() => get.call(tbl1, 2.5), RangeError, /bad Table get index/);
     assertErrorMessage(() => get.call(tbl1, -1), RangeError, /bad Table get index/);
-    // V8 TODO: assertErrorMessage(() => get.call(tbl1, Math.pow(2,33)), RangeError, /bad Table get index/);
+    assertErrorMessage(() => get.call(tbl1, Math.pow(2,33)), RangeError, /bad Table get index/);
     assertErrorMessage(() => get.call(tbl1, {valueOf() { throw new Error("hi") }}), Error, "hi");
 }, "'WebAssembly.Table.prototype.get' method");
 
@@ -609,7 +603,7 @@ test(() => {
     assertErrorMessage(() => set.call(tbl1, 0), TypeError, /requires more than 1 argument/);
     assertErrorMessage(() => set.call(tbl1, 2, null), RangeError, /bad Table set index/);
     assertErrorMessage(() => set.call(tbl1, -1, null), RangeError, /bad Table set index/);
-    // V8 TODO: assertErrorMessage(() => set.call(tbl1, Math.pow(2,33), null), RangeError, /bad Table set index/);
+    assertErrorMessage(() => set.call(tbl1, Math.pow(2,33), null), RangeError, /bad Table set index/);
     assertErrorMessage(() => set.call(tbl1, 0, undefined), TypeError, /can only assign WebAssembly exported functions to Table/);
     assertErrorMessage(() => set.call(tbl1, 0, {}), TypeError, /can only assign WebAssembly exported functions to Table/);
     assertErrorMessage(() => set.call(tbl1, 0, function() {}), TypeError, /can only assign WebAssembly exported functions to Table/);
