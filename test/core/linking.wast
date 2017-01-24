@@ -257,7 +257,7 @@
 (assert_unlinkable
   (module
     (memory (import "Mm" "mem") 0)
-    (data (i32.const 0x10001) "a")
+    (data (i32.const 0x10000) "a")
   )
   "data segment does not fit"
 )
