@@ -131,7 +131,7 @@ let input_binary_file file run =
     let buf = Bytes.make len '\x00' in
     really_input ic buf 0 len;
     trace "Decoding...";
-    let success = input_binary file buf run in
+    let success = input_binary file (Bytes.to_string buf) run in
     close_in ic;
     success
   with exn -> close_in ic; raise exn
