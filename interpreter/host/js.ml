@@ -61,6 +61,10 @@ let harness =
   "  return {[name]: instance.exports};\n" ^
   "}\n" ^
   "\n" ^
+  "function run(action) {\n" ^
+  "  action();\n" ^
+  "}\n" ^
+  "\n" ^
   "function assert_malformed(bytes) {\n" ^
   "  try { module(bytes, false) } catch (e) {\n" ^
   "    if (e instanceof WebAssembly.CompileError) return;\n" ^
@@ -183,7 +187,7 @@ let invoke t lits at =
 let get t at =
   [], GlobalImport t @@ at, [GetGlobal (0l @@ at) @@ at]
 
-let assert_nothing ts at =
+let run ts at =
   [], []
 
 let assert_return lits ts at =
@@ -304,11 +308,17 @@ let of_action mods act =
     | _ -> None
     )
 
-let of_return_assertion mods act js wrapper =
-  match of_action mods act with
-  | act_js, None -> js act_js ^ ";"
-  | act_js, Some (act_wrapper, out) ->
-    act_wrapper (wrapper out) act.at ^ ";  // " ^ js act_js
+let of_assertion' mods act name args wrapper_opt =
+  let act_js, act_wrapper_opt = of_action mods act in
+  let js = name ^ "(() => " ^ act_js ^ String.concat ", " ("" :: args) ^ ")" in
+  match act_wrapper_opt with
+  | None -> js ^ ";"
+  | Some (act_wrapper, out) ->
+    let run_name, wrapper =
+      match wrapper_opt with
+      | None -> name, run
+      | Some wrapper -> "run", wrapper
+    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ ");  // " ^ js
 
 let of_assertion mods ass =
   match ass.it with
@@ -323,22 +333,14 @@ let of_assertion mods ass =
   | AssertUninstantiable (def, _) ->
     "assert_uninstantiable(" ^ of_definition def ^ ");"
   | AssertReturn (act, lits) ->
-    of_return_assertion mods act
-      (fun act_js ->
-        "assert_return(() => " ^ act_js ^
-          String.concat ", " ("" :: List.map of_literal lits) ^ ")")
-      (assert_return lits)
+    of_assertion' mods act "assert_return" (List.map of_literal lits)
+      (Some (assert_return lits))
   | AssertReturnNaN act ->
-    of_return_assertion mods act
-      (fun act_js -> "assert_return_nan(() => " ^ act_js ^ ")")
-      assert_return_nan
-  | AssertTrap (act, _) | AssertExhaustion (act, _) ->
-    let name = match ass.it with AssertTrap _ -> "trap" | _ -> "exhaustion" in
-    let js act_js = "assert_" ^ name ^ "(() => " ^ act_js ^ ")" in
-    match of_action mods act with
-    | act_js, None -> js act_js ^ ";"
-    | act_js, Some (act_wrapper, ts) ->
-      js (act_wrapper (assert_nothing ts) act.at) ^ ";  // " ^ js act_js
+    of_assertion' mods act "assert_return_nan" [] (Some assert_return_nan)
+  | AssertTrap (act, _) ->
+    of_assertion' mods act "assert_trap" [] None
+  | AssertExhaustion (act, _) ->
+    of_assertion' mods act "assert_exhaustion" [] None
 
 let of_command mods cmd =
   match cmd.it with
@@ -353,11 +355,7 @@ let of_command mods cmd =
   | Register (name, x_opt) ->
     "register(" ^ of_string name ^ ", " ^ of_var_opt x_opt ^ ")\n"
   | Action act ->
-    (match of_action mods act with
-    | js, None -> js ^ ";\n"
-    | js, Some (wrapper, ts) ->
-      wrapper (assert_nothing ts) act.at ^ ";  // " ^ js ^ "\n"
-    )
+    of_assertion' mods act "run" [] None ^ "\n"
   | Assertion ass ->
     of_assertion mods ass ^ "\n"
   | Meta _ -> assert false
