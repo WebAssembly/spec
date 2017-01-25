@@ -89,10 +89,13 @@ $(ZIP):		$(WINMAKE)
 		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 test:		$(NAME)
-		../test/core/run.py --wasm `pwd`/wasm $(if $(JS),--js '$(JS)',)
+		../test/core/run.py --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',)
 
 test/%:		$(NAME)
-		../test/core/run.py --wasm `pwd`/wasm $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
+		../test/core/run.py --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
+
+run/%:		$(NAME)
+		./$(NAME) $(@:run/%=../test/core/%.wast)
 
 clean:
 		$(OCB) -clean
