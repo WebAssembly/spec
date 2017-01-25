@@ -9,7 +9,7 @@ open Source
 let harness =
   "'use strict';\n" ^
   "\n" ^
-  "let soft_validate = " ^ string_of_bool (not !Flags.unchecked_soft) ^ ";\n" ^
+  "let hard_validate = " ^ string_of_bool !Flags.checked ^ ";\n" ^
   "\n" ^
   "let spectest = {\n" ^
   "  print: print || ((...xs) => console.log(...xs)),\n" ^
@@ -76,10 +76,10 @@ let harness =
   "}\n" ^
   "\n" ^
   "function assert_soft_invalid(bytes) {\n" ^
-  "  try { module(bytes, soft_validate ? false : null) } catch (e) {\n" ^
+  "  try { module(bytes, hard_validate ? false : null) } catch (e) {\n" ^
   "    if (e instanceof WebAssembly.CompileError) return;\n" ^
   "  }\n" ^
-  "  if (soft_validate)\n" ^
+  "  if (hard_validate)\n" ^
   "    throw new Error(\"Wasm validation failure expected\");\n" ^
   "}\n" ^
   "\n" ^

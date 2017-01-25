@@ -98,7 +98,7 @@ The first creates a new test scripts where all embedded modules are converted to
 The last invocation produces an equivalent, self-contained JavaScript test file.
 The flag `-h` can be used to omit the test harness from the converted file;
 it then is the client's responsibility to provide versions of the necessary functions.
-By default, the generated script will require `assert_soft_invalid` (see below) to detect validation failures. Use the `-us` flag ("unchecked soft") to deactivate these assertions to run on implementations that do not validate dead code.
+By default, the generated script will not require `assert_soft_invalid` (see below) to detect validation failures. Use the `-c` flag ("checked hard") to activate these assertions for full validity checks.
 
 #### Command Line Expressions
 
@@ -299,8 +299,7 @@ The `input` and `output` meta commands determine the requested file format from 
 
 The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
 It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.
-
-Finally, "unchecked soft" mode (flag `-us`), will not require `assert_soft_valid` assertions to succeed. When outputing JavaScript scripts, this flag also controls how the created script implements this assertions.
+Finally, "checked hard" mode (flag `-c`), will require `assert_soft_valid` assertions to succeed. When outputing JavaScript scripts, this flag also controls how the created script implements this assertions.
 
 ## Abstract Syntax
 

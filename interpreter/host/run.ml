@@ -317,7 +317,7 @@ let run_assertion ass =
   | AssertSoftInvalid (def, re) ->
     let active =
       match ass.it with
-      | AssertSoftInvalid _ -> not !Flags.unchecked_soft
+      | AssertSoftInvalid _ -> !Flags.checked
       | _ -> true
     in
     trace ("Asserting " ^ (if active then "" else "soft ") ^ "invalid...");
