@@ -364,8 +364,9 @@ let init_table (inst : instance) (seg : table_segment) =
   let {index; offset = const; init} = seg.it in
   let tab = table inst index in
   let offset = i32 (eval_const inst const) const.at in
+  let end_ = Int32.(add offset (of_int (List.length init))) in
   let bound = Table.size tab in
-  if I32.lt_u bound Int32.(add offset (of_int (List.length init))) then
+  if I32.lt_u bound end_ || I32.lt_u end_ offset then
     Link.error seg.at "elements segment does not fit table";
   fun () -> Table.blit tab offset (List.map (fun x -> Func (func inst x)) init)
 
@@ -374,8 +375,9 @@ let init_memory (inst : instance) (seg : memory_segment) =
   let mem = memory inst index in
   let offset' = i32 (eval_const inst const) const.at in
   let offset = I64_convert.extend_u_i32 offset' in
+  let end_ = Int64.(add offset (of_int (String.length init))) in
   let bound = Memory.bound mem in
-  if I64.lt_u bound Int64.(add offset (of_int (String.length init))) then
+  if I64.lt_u bound end_ || I64.lt_u end_ offset then
     Link.error seg.at "data segment does not fit memory";
   fun () -> Memory.blit mem offset init
 
