@@ -20,7 +20,6 @@ let harness =
   "};\n" ^
   "\n" ^
   "let registry = {spectest};\n" ^
-  "let $$;\n" ^
   "\n" ^
   "function register(name, instance) {\n" ^
   "  registry[name] = instance.exports;\n" ^
@@ -141,27 +140,32 @@ let harness =
 module Map = Map.Make(String)
 
 type exports = external_type Map.t
-type modules = exports Map.t
+type modules = {mutable env : exports Map.t; mutable current : int}
 
 let exports m : exports =
   List.fold_left
     (fun map exp -> Map.add exp.it.name (export_type m exp) map)
     Map.empty m.it.exports
 
-let of_var_opt = function
-  | None -> "$$"
+let modules () : modules = {env = Map.empty; current = 0}
+
+let current_var (mods : modules) = "$" ^ string_of_int mods.current
+let of_var_opt (mods : modules) = function
+  | None -> current_var mods
   | Some x -> x.it
 
-let bind (mods : modules ref) x_opt m =
-	let exports = exports m in
-  mods := Map.add "$$" exports (Map.add (of_var_opt x_opt) exports !mods)
+let bind (mods : modules) x_opt m =
+  let exports = exports m in
+  mods.current <- mods.current + 1;
+  mods.env <- Map.add (of_var_opt mods x_opt) exports mods.env;
+  if x_opt <> None then mods.env <- Map.add (current_var mods) exports mods.env
 
-let lookup (mods : modules ref) x_opt name at =
-	let exports =
-    try Map.find (of_var_opt x_opt) !mods with Not_found ->
+let lookup (mods : modules) x_opt name at =
+  let exports =
+    try Map.find (of_var_opt mods x_opt) mods.env with Not_found ->
       raise (Eval.Crash (at, 
-         if x_opt = None then "no module defined within script"
-         else "unknown module " ^ of_var_opt x_opt ^ " within script"))
+        if x_opt = None then "no module defined within script"
+        else "unknown module " ^ of_var_opt mods x_opt ^ " within script"))
   in try Map.find name exports with Not_found ->
     raise (Eval.Crash (at, "unknown export \"" ^ name ^ "\" within module"))
 
@@ -260,12 +264,6 @@ let of_string_with add_char s =
 let of_bytes = of_string_with add_hex_char
 let of_string = of_string_with add_char
 
-let of_wrapper x_opt name wrap_action wrap_assertion at =
-  let x = of_var_opt x_opt in
-  let bs = wrap x name wrap_action wrap_assertion at in
-  "call(instance(" ^ of_bytes bs ^ ", " ^
-    "exports(" ^ of_string x ^ ", " ^ x ^ ")), " ^ " \"run\", [])"
-
 let of_float z =
   match string_of_float z with
   | "nan" -> "NaN"
@@ -288,23 +286,29 @@ let of_definition def =
     | Encoded (_, bs) -> bs
   in of_bytes bs
 
+let of_wrapper mods x_opt name wrap_action wrap_assertion at =
+  let x = of_var_opt mods x_opt in
+  let bs = wrap x name wrap_action wrap_assertion at in
+  "call(instance(" ^ of_bytes bs ^ ", " ^
+    "exports(" ^ of_string x ^ ", " ^ x ^ ")), " ^ " \"run\", [])"
+
 let of_action mods act =
   match act.it with
   | Invoke (x_opt, name, lits) ->
-    "call(" ^ of_var_opt x_opt ^ ", " ^ of_string name ^ ", " ^
+    "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_string name ^ ", " ^
       "[" ^ String.concat ", " (List.map of_literal lits) ^ "])",
     (match lookup mods x_opt name act.at with
     | ExternalFuncType ft when not (is_js_func_type ft) ->
       let FuncType (_, out) = ft in
-      Some (of_wrapper x_opt name (invoke ft lits), out)
+      Some (of_wrapper mods x_opt name (invoke ft lits), out)
     | _ -> None
     )
   | Get (x_opt, name) ->
-    "get(" ^ of_var_opt x_opt ^ ", " ^ of_string name ^ ")",
+    "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_string name ^ ")",
     (match lookup mods x_opt name act.at with
     | ExternalGlobalType gt when not (is_js_global_type gt) ->
       let GlobalType (t, _) = gt in
-      Some (of_wrapper x_opt name (get gt), [t])
+      Some (of_wrapper mods x_opt name (get gt), [t])
     | _ -> None
     )
 
@@ -343,6 +347,8 @@ let of_assertion mods ass =
     of_assertion' mods act "assert_exhaustion" [] None
 
 let of_command mods cmd =
+  "\n// " ^ Filename.basename cmd.at.left.file ^
+    ":" ^ string_of_int cmd.at.left.line ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
     let m =
@@ -350,10 +356,11 @@ let of_command mods cmd =
       | Textual m -> m
       | Encoded (_, bs) -> Decode.decode "binary" bs
     in bind mods x_opt m;
-    (if x_opt = None then "" else "let " ^ of_var_opt x_opt ^ " = ") ^
-    "$$ = instance(" ^ of_definition def ^ ");\n"
+    "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
+    (if x_opt = None then "" else
+    "let " ^ of_var_opt mods x_opt ^ " = " ^ current_var mods ^ ";\n")
   | Register (name, x_opt) ->
-    "register(" ^ of_string name ^ ", " ^ of_var_opt x_opt ^ ")\n"
+    "register(" ^ of_string name ^ ", " ^ of_var_opt mods x_opt ^ ")\n"
   | Action act ->
     of_assertion' mods act "run" [] None ^ "\n"
   | Assertion ass ->
@@ -362,4 +369,4 @@ let of_command mods cmd =
 
 let of_script scr =
   (if !Flags.harness then harness else "") ^
-  String.concat "" (List.map (of_command (ref Map.empty)) scr)
+  String.concat "" (List.map (of_command (modules ())) scr)
