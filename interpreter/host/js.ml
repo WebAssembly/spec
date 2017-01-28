@@ -116,7 +116,18 @@ let harness =
   "  };\n" ^
   "}\n" ^
   "\n" ^
-  "function assert_return_nan(action) {\n" ^
+  "function assert_return_canonical_nan(action) {\n" ^
+  "  let actual = action();\n" ^
+  "  // Note that JS can't reliably distinguish different NaN values,\n" ^
+  "  // so there's no good way to test that it's a canonical NaN.\n" ^
+  "  if (!Number.isNaN(actual)) {\n" ^
+  "    throw new Error(\"Wasm return value NaN expected, got \" + actual);\n" ^
+  "  };\n" ^
+  "}\n" ^
+  "\n" ^
+  "function assert_return_arithmetic_nan(action) {\n" ^
+  "  // Note that JS can't reliably distinguish different NaN values,\n" ^
+  "  // so there's no good way to test for specific bitpatterns here.\n" ^
   "  let actual = action();\n" ^
   "  if (!Number.isNaN(actual)) {\n" ^
   "    throw new Error(\"Wasm return value NaN expected, got \" + actual);\n" ^
@@ -168,11 +179,23 @@ let eq_of = function
   | F32Type -> Values.F32 F32Op.Eq
   | F64Type -> Values.F64 F64Op.Eq
 
+let and_of = function
+  | I32Type | F32Type -> Values.I32 I32Op.And
+  | I64Type | F64Type -> Values.I64 I64Op.And
+
 let reinterpret_of = function
   | I32Type -> I32Type, Nop
   | I64Type -> I64Type, Nop
   | F32Type -> I32Type, Convert (Values.I32 I32Op.ReinterpretFloat)
   | F64Type -> I64Type, Convert (Values.I64 I64Op.ReinterpretFloat)
+
+let canonical_nan_of = function
+  | I32Type | F32Type -> Values.I32 (F32.to_bits F32.pos_nan)
+  | I64Type | F64Type -> Values.I64 (F64.to_bits F64.pos_nan)
+
+let abs_mask_of = function
+  | I32Type | F32Type -> Values.I32 Int32.max_int
+  | I64Type | F64Type -> Values.I64 Int64.max_int
 
 let invoke t lits at =
   [t], FuncImport (1l @@ at) @@ at,
@@ -195,15 +218,25 @@ let assert_return lits ts at =
       BrIf (0l @@ at) @@ at ]
   in [], List.flatten (List.rev_map test lits)
 
-let assert_return_nan ts at =
-  let var i = Int32.of_int i @@ at in
-  let init i t = [SetLocal (var i) @@ at] in
-  let test i t =
-    [ GetLocal (var i) @@ at;
-      GetLocal (var i) @@ at;
-      Compare (eq_of t) @@ at;
+let assert_return_nan_bitpattern nan_bitmask_of ts at =
+  let test t =
+    let t', reinterpret = reinterpret_of t in
+    [ reinterpret @@ at;
+      Const (nan_bitmask_of t' @@ at) @@ at;
+      Binary (and_of t') @@ at;
+      Const (canonical_nan_of t' @@ at) @@ at;
+      Compare (eq_of t') @@ at;
+      Test (Values.I32 I32Op.Eqz) @@ at;
       BrIf (0l @@ at) @@ at ]
-  in ts, List.flatten (List.mapi init ts @ List.mapi test ts)
+  in [], List.flatten (List.rev_map test ts)
+
+let assert_return_canonical_nan =
+  (* The result may only differ from the canonical NaN in its sign bit *)
+  assert_return_nan_bitpattern abs_mask_of
+
+let assert_return_arithmetic_nan =
+  (* The result can be any NaN that's one everywhere the canonical NaN is one *)
+  assert_return_nan_bitpattern canonical_nan_of
 
 let wrap module_name item_name wrap_action wrap_assertion at =
   let itypes, ikind, action = wrap_action at in
@@ -327,8 +360,10 @@ let of_assertion mods ass =
   | AssertReturn (act, lits) ->
     of_assertion' mods act "assert_return" (List.map of_literal lits)
       (Some (assert_return lits))
-  | AssertReturnNaN act ->
-    of_assertion' mods act "assert_return_nan" [] (Some assert_return_nan)
+  | AssertReturnCanonicalNaN act ->
+    of_assertion' mods act "assert_return_canonical_nan" [] (Some assert_return_canonical_nan)
+  | AssertReturnArithmeticNaN act ->
+    of_assertion' mods act "assert_return_arithmetic_nan" [] (Some assert_return_arithmetic_nan)
   | AssertTrap (act, _) ->
     of_assertion' mods act "assert_trap" [] None
   | AssertExhaustion (act, _) ->

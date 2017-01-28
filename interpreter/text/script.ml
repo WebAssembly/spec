@@ -17,7 +17,8 @@ and assertion' =
   | AssertUnlinkable of definition * string
   | AssertUninstantiable of definition * string
   | AssertReturn of action * Ast.literal list
-  | AssertReturnNaN of action
+  | AssertReturnCanonicalNaN of action
+  | AssertReturnArithmeticNaN of action
   | AssertTrap of action * string
   | AssertExhaustion of action * string
 
