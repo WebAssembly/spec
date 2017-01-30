@@ -20,7 +20,6 @@ let harness =
   "};\n" ^
   "\n" ^
   "let registry = {spectest};\n" ^
-  "let $$;\n" ^
   "\n" ^
   "function register(name, instance) {\n" ^
   "  registry[name] = instance.exports;\n" ^
@@ -59,6 +58,10 @@ let harness =
   "\n" ^
   "function exports(name, instance) {\n" ^
   "  return {[name]: instance.exports};\n" ^
+  "}\n" ^
+  "\n" ^
+  "function run(action) {\n" ^
+  "  action();\n" ^
   "}\n" ^
   "\n" ^
   "function assert_malformed(bytes) {\n" ^
@@ -137,27 +140,32 @@ let harness =
 module Map = Map.Make(String)
 
 type exports = external_type Map.t
-type modules = exports Map.t
+type modules = {mutable env : exports Map.t; mutable current : int}
 
 let exports m : exports =
   List.fold_left
     (fun map exp -> Map.add exp.it.name (export_type m exp) map)
     Map.empty m.it.exports
 
-let of_var_opt = function
-  | None -> "$$"
+let modules () : modules = {env = Map.empty; current = 0}
+
+let current_var (mods : modules) = "$" ^ string_of_int mods.current
+let of_var_opt (mods : modules) = function
+  | None -> current_var mods
   | Some x -> x.it
 
-let bind (mods : modules ref) x_opt m =
-	let exports = exports m in
-  mods := Map.add "$$" exports (Map.add (of_var_opt x_opt) exports !mods)
+let bind (mods : modules) x_opt m =
+  let exports = exports m in
+  mods.current <- mods.current + 1;
+  mods.env <- Map.add (of_var_opt mods x_opt) exports mods.env;
+  if x_opt <> None then mods.env <- Map.add (current_var mods) exports mods.env
 
-let lookup (mods : modules ref) x_opt name at =
-	let exports =
-    try Map.find (of_var_opt x_opt) !mods with Not_found ->
+let lookup (mods : modules) x_opt name at =
+  let exports =
+    try Map.find (of_var_opt mods x_opt) mods.env with Not_found ->
       raise (Eval.Crash (at, 
-         if x_opt = None then "no module defined within script"
-         else "unknown module " ^ of_var_opt x_opt ^ " within script"))
+        if x_opt = None then "no module defined within script"
+        else "unknown module " ^ of_var_opt mods x_opt ^ " within script"))
   in try Map.find name exports with Not_found ->
     raise (Eval.Crash (at, "unknown export \"" ^ name ^ "\" within module"))
 
@@ -183,7 +191,7 @@ let invoke t lits at =
 let get t at =
   [], GlobalImport t @@ at, [GetGlobal (0l @@ at) @@ at]
 
-let assert_nothing ts at =
+let run ts at =
   [], []
 
 let assert_return lits ts at =
@@ -256,12 +264,6 @@ let of_string_with add_char s =
 let of_bytes = of_string_with add_hex_char
 let of_string = of_string_with add_char
 
-let of_wrapper x_opt name wrap_action wrap_assertion at =
-  let x = of_var_opt x_opt in
-  let bs = wrap x name wrap_action wrap_assertion at in
-  "call(instance(" ^ of_bytes bs ^ ", " ^
-    "exports(" ^ of_string x ^ ", " ^ x ^ ")), " ^ " \"run\", [])"
-
 let of_float z =
   match string_of_float z with
   | "nan" -> "NaN"
@@ -284,31 +286,43 @@ let of_definition def =
     | Encoded (_, bs) -> bs
   in of_bytes bs
 
+let of_wrapper mods x_opt name wrap_action wrap_assertion at =
+  let x = of_var_opt mods x_opt in
+  let bs = wrap x name wrap_action wrap_assertion at in
+  "call(instance(" ^ of_bytes bs ^ ", " ^
+    "exports(" ^ of_string x ^ ", " ^ x ^ ")), " ^ " \"run\", [])"
+
 let of_action mods act =
   match act.it with
   | Invoke (x_opt, name, lits) ->
-    "call(" ^ of_var_opt x_opt ^ ", " ^ of_string name ^ ", " ^
+    "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_string name ^ ", " ^
       "[" ^ String.concat ", " (List.map of_literal lits) ^ "])",
     (match lookup mods x_opt name act.at with
     | ExternalFuncType ft when not (is_js_func_type ft) ->
       let FuncType (_, out) = ft in
-      Some (of_wrapper x_opt name (invoke ft lits), out)
+      Some (of_wrapper mods x_opt name (invoke ft lits), out)
     | _ -> None
     )
   | Get (x_opt, name) ->
-    "get(" ^ of_var_opt x_opt ^ ", " ^ of_string name ^ ")",
+    "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_string name ^ ")",
     (match lookup mods x_opt name act.at with
     | ExternalGlobalType gt when not (is_js_global_type gt) ->
       let GlobalType (t, _) = gt in
-      Some (of_wrapper x_opt name (get gt), [t])
+      Some (of_wrapper mods x_opt name (get gt), [t])
     | _ -> None
     )
 
-let of_return_assertion mods act js wrapper =
-  match of_action mods act with
-  | act_js, None -> js act_js ^ ";"
-  | act_js, Some (act_wrapper, out) ->
-    act_wrapper (wrapper out) act.at ^ ";  // " ^ js act_js
+let of_assertion' mods act name args wrapper_opt =
+  let act_js, act_wrapper_opt = of_action mods act in
+  let js = name ^ "(() => " ^ act_js ^ String.concat ", " ("" :: args) ^ ")" in
+  match act_wrapper_opt with
+  | None -> js ^ ";"
+  | Some (act_wrapper, out) ->
+    let run_name, wrapper =
+      match wrapper_opt with
+      | None -> name, run
+      | Some wrapper -> "run", wrapper
+    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ ");  // " ^ js
 
 let of_assertion mods ass =
   match ass.it with
@@ -323,24 +337,18 @@ let of_assertion mods ass =
   | AssertUninstantiable (def, _) ->
     "assert_uninstantiable(" ^ of_definition def ^ ");"
   | AssertReturn (act, lits) ->
-    of_return_assertion mods act
-      (fun act_js ->
-        "assert_return(() => " ^ act_js ^
-          String.concat ", " ("" :: List.map of_literal lits) ^ ")")
-      (assert_return lits)
+    of_assertion' mods act "assert_return" (List.map of_literal lits)
+      (Some (assert_return lits))
   | AssertReturnNaN act ->
-    of_return_assertion mods act
-      (fun act_js -> "assert_return_nan(() => " ^ act_js ^ ")")
-      assert_return_nan
-  | AssertTrap (act, _) | AssertExhaustion (act, _) ->
-    let name = match ass.it with AssertTrap _ -> "trap" | _ -> "exhaustion" in
-    let js act_js = "assert_" ^ name ^ "(() => " ^ act_js ^ ")" in
-    match of_action mods act with
-    | act_js, None -> js act_js ^ ";"
-    | act_js, Some (act_wrapper, ts) ->
-      js (act_wrapper (assert_nothing ts) act.at) ^ ";  // " ^ js act_js
+    of_assertion' mods act "assert_return_nan" [] (Some assert_return_nan)
+  | AssertTrap (act, _) ->
+    of_assertion' mods act "assert_trap" [] None
+  | AssertExhaustion (act, _) ->
+    of_assertion' mods act "assert_exhaustion" [] None
 
 let of_command mods cmd =
+  "\n// " ^ Filename.basename cmd.at.left.file ^
+    ":" ^ string_of_int cmd.at.left.line ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
     let m =
@@ -348,20 +356,17 @@ let of_command mods cmd =
       | Textual m -> m
       | Encoded (_, bs) -> Decode.decode "binary" bs
     in bind mods x_opt m;
-    (if x_opt = None then "" else "let " ^ of_var_opt x_opt ^ " = ") ^
-    "$$ = instance(" ^ of_definition def ^ ");\n"
+    "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
+    (if x_opt = None then "" else
+    "let " ^ of_var_opt mods x_opt ^ " = " ^ current_var mods ^ ";\n")
   | Register (name, x_opt) ->
-    "register(" ^ of_string name ^ ", " ^ of_var_opt x_opt ^ ")\n"
+    "register(" ^ of_string name ^ ", " ^ of_var_opt mods x_opt ^ ")\n"
   | Action act ->
-    (match of_action mods act with
-    | js, None -> js ^ ";\n"
-    | js, Some (wrapper, ts) ->
-      wrapper (assert_nothing ts) act.at ^ ";  // " ^ js ^ "\n"
-    )
+    of_assertion' mods act "run" [] None ^ "\n"
   | Assertion ass ->
     of_assertion mods ass ^ "\n"
   | Meta _ -> assert false
 
 let of_script scr =
   (if !Flags.harness then harness else "") ^
-  String.concat "" (List.map (of_command (ref Map.empty)) scr)
+  String.concat "" (List.map (of_command (modules ())) scr)
