@@ -1,0 +1,19 @@
+a {
+  text-decoration: none;
+}
+
+a.reference {
+  border-bottom: none;
+}
+
+a.reference:hover {
+  border-bottom: 1px dotted #004B6B;
+}
+
+div.sphinxsidebar a {
+  border-bottom: 0px;
+}
+
+div.sphinxsidebar a:hover {
+  border-bottom: 1px dotted;
+}
