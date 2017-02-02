@@ -1,7 +1,0 @@
-{
-  "dependencies": {"bs-platform": "1.4.1"},
-  "scripts": {
-    "build": "bsb",
-    "watch": "bsb -w"
-  }
-}

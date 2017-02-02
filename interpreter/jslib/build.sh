@@ -1,5 +1,3 @@
-#bslib='/usr/local/google/home/rossberg/ocaml/bucklescript/lib/js'
-
 link () {
 echo "// DO NOT EDIT. Generated from WebAssembly spec interpreter"
 echo "
@@ -30,7 +28,6 @@ echo "
   }
 "
 
-#for file in `ls $bslib/*.js lib/js/gen/*.js | grep -v Labels | grep -v node_ | grep -v js_ | grep -v bs_`
 for file in $*
 do
   echo 1>&2 Including $file
@@ -55,8 +52,19 @@ echo "
     }
     return buffer;
   }
+  function bytes(buffer) {
+    let string = '';
+    let view = new Uint8Array(buffer);
+    for (let i = 0; i < view.length; ++i) {
+      string += String.fromCodePoint(view[i]);
+    }
+    return string;
+  }
   let Wasm = require('wasm');
-  return {encode(s) { return binary(Wasm.encode(s)) }};
+  return {
+    encode(s) { return binary(Wasm.encode(s)) },
+    decode(b, w = 80) { return Wasm.decode(bytes(b), w) }
+  };
 })();
 
 "
@@ -66,15 +74,15 @@ echo 1>&2 ==== Compiling ====
 BSPATH=`which bsb`
 BPATH=`dirname $BSPATH`/../lib/js
 echo 1>&2 BSPATH = $BSPATH
-bsb
+bsb || exit 1
 cp `dirname $BSPATH`/../lib/js/*.js lib/js/src
 
 echo 1>&2 ==== Linking full version ====
 LOG=1
-link lib/js/src/*.js >temp.js
+link lib/js/src/*.js >temp.js || exit 1
 
 echo 1>&2 ==== Running for dependencies ====
-node temp.js >temp.log
+node temp.js >temp.log || exit 1
 
 echo 1>&2 ==== Linking stripped version ====
 used=''
@@ -86,6 +94,4 @@ do
   fi
 done
 LOG=0
-link $used >$1
-rm temp.*
-
+link $used >$1 || exit 1

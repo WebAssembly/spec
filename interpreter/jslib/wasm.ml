@@ -4,9 +4,6 @@ let encode s =
   | Script.Textual m -> Encode.encode m
   | Script.Encoded (_, bs) -> bs
 
-(*
-let decode s =
+let decode s width =
   let m = Decode.decode "(decode)" s in
-  Sexpr.to_string (Arrange.module_ m)
-*)
-
+  Sexpr.to_string width (Arrange.module_ m)
