@@ -2,12 +2,8 @@ This directory contains the WebAssembly test suite. It is split into two
 directories:
 
 * [`core/`](core/), tests for the core semantics
-* [`js-api/`](js-api/), tests for the JavaScript API. These tests can be run in
-  a pure JavaScript environment, that is, a JS shell (like v8 or spidermonkey's
-  shells). A small [harness](js-api/README.md) is needed, but it is very easy
-  to implement.
-* [`html/`](html/), tests for the JavaScript API necessitating a DOM
-  environment (a full browser).
+* [`js-api/`](js-api/), tests for the JavaScript API.
+* [`html/`](html/), tests for the JavaScript API in a DOM environment.
 
 A [landing page](out/index.html) contains a condensed version made of all
 these tests, converted to HTML.

@@ -94,11 +94,11 @@ HTML_HEADER = """<!doctype html>
     </head>
     <body>
 
-        <script src={PREFIX}lib/testharness.js></script>
-        <script src={PREFIX}lib/testharnessreport.js></script>
-        <script src={PREFIX}lib/index.js></script>
-        <script src={PREFIX}lib/wasm-constants.js></script>
-        <script src={PREFIX}lib/wasm-module-builder.js></script>
+        <script src={PREFIX}harness/testharness.js></script>
+        <script src={PREFIX}harness/testharnessreport.js></script>
+        <script src={PREFIX}harness/index.js></script>
+        <script src={PREFIX}harness/wasm-constants.js></script>
+        <script src={PREFIX}harness/wasm-module-builder.js></script>
 
         <div id=log></div>
 """

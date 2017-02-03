@@ -338,7 +338,6 @@ let kTrapMsgs = [
   "invalid index into function table"
 ];
 
-// TODO(bbouvier) to be moved to lib.js?
 function assertTraps(trap, code) {
     var threwException = true;
     try {
