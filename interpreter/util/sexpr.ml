@@ -8,6 +8,10 @@ let rec iter f = function
   | Leaf s -> f s
   | Concat rs -> List.iter (iter f) rs
 
+let rec concat = function
+  | Leaf s -> s
+  | Concat rs -> String.concat "" (List.map concat rs)
+
 let rec pp off width = function
   | Atom s -> String.length s, Leaf s
   | Node (s, xs) ->
@@ -25,3 +29,4 @@ let output oc width x =
 
 let print = output stdout
 
+let to_string width x = concat (snd (pp 0 width x)) ^ "\n"

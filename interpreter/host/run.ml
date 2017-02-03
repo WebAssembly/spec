@@ -298,7 +298,7 @@ let assert_result at correct got print_expect expect =
   end
 
 let assert_message at name msg re =
-  if not (Str.string_match (Str.regexp re) msg 0) then begin
+  if String.sub msg 0 (String.length re) <> re then begin
     print_endline ("Result: \"" ^ msg ^ "\"");
     print_endline ("Expect: \"" ^ re ^ "\"");
     Assert.error at ("wrong " ^ name ^ " error")
