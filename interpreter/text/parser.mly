@@ -656,8 +656,6 @@ assertion :
     { AssertMalformed (snd $3, $4) @@ at () }
   | LPAR ASSERT_INVALID module_ TEXT RPAR
     { AssertInvalid (snd $3, $4) @@ at () }
-  | LPAR ASSERT_SOFT_INVALID module_ TEXT RPAR
-    { AssertSoftInvalid (snd $3, $4) @@ at () }
   | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR
     { AssertUnlinkable (snd $3, $4) @@ at () }
   | LPAR ASSERT_TRAP module_ TEXT RPAR

@@ -30,7 +30,6 @@ let argspec = Arg.align
     " configure output width (default is 80)";
   "-s", Arg.Set Flags.print_sig, " show module signatures";
   "-u", Arg.Set Flags.unchecked, " unchecked, do not perform validation";
-  "-c", Arg.Set Flags.checked, " fully checked, perform hard validation";
   "-h", Arg.Clear Flags.harness, " exclude harness for JS convesion";
   "-d", Arg.Set Flags.dry, " dry, do not run program";
   "-t", Arg.Set Flags.trace, " trace execution";
