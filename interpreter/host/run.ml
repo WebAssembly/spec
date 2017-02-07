@@ -313,21 +313,15 @@ let run_assertion ass =
     | _ -> Assert.error ass.at "expected decoding error"
     )
 
-  | AssertInvalid (def, re)
-  | AssertSoftInvalid (def, re) ->
-    let active =
-      match ass.it with
-      | AssertSoftInvalid _ -> !Flags.checked
-      | _ -> true
-    in
-    trace ("Asserting " ^ (if active then "" else "soft ") ^ "invalid...");
+  | AssertInvalid (def, re) ->
+    trace "Asserting invalid...";
     (match
       let m = run_definition def in
       Valid.check_module m
     with
     | exception Valid.Invalid (_, msg) ->
       assert_message ass.at "validation" msg re
-    | _ -> if active then Assert.error ass.at "expected validation error"
+    | _ -> Assert.error ass.at "expected validation error"
     )
 
   | AssertUnlinkable (def, re) ->
@@ -351,7 +345,8 @@ let run_assertion ass =
       let imports = Import.link m in
       ignore (Eval.init m imports)
     with
-    | exception Eval.Trap (_, msg) -> assert_message ass.at "instantiation" msg re
+    | exception Eval.Trap (_, msg) ->
+      assert_message ass.at "instantiation" msg re
     | _ -> Assert.error ass.at "expected instantiation error"
     )
 

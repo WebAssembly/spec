@@ -410,8 +410,6 @@ let assertion mode ass =
     Node ("assert_malformed", [definition `Original None def; Atom (string re)])
   | AssertInvalid (def, re) ->
     Node ("assert_invalid", [definition mode None def; Atom (string re)])
-  | AssertSoftInvalid (def, re) ->
-    Node ("assert_soft_invalid", [definition mode None def; Atom (string re)])
   | AssertUnlinkable (def, re) ->
     Node ("assert_unlinkable", [definition mode None def; Atom (string re)])
   | AssertUninstantiable (def, re) ->

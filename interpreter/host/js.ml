@@ -9,8 +9,6 @@ open Source
 let harness =
   "'use strict';\n" ^
   "\n" ^
-  "let hard_validate = " ^ string_of_bool !Flags.checked ^ ";\n" ^
-  "\n" ^
   "let spectest = {\n" ^
   "  print: print || ((...xs) => console.log(...xs)),\n" ^
   "  global: 666,\n" ^
@@ -37,7 +35,7 @@ let harness =
   "  } catch (e) {\n" ^
   "    throw new Error(\"Wasm validate throws\");\n" ^
   "  }\n" ^
-  "  if (validated !== valid && valid !== null) {\n" ^
+  "  if (validated !== valid) {\n" ^
   "    throw new Error(\"Wasm validate failure\" + " ^
   "(valid ? \"\" : \" expected\"));\n" ^
   "  }\n" ^
@@ -76,14 +74,6 @@ let harness =
   "    if (e instanceof WebAssembly.CompileError) return;\n" ^
   "  }\n" ^
   "  throw new Error(\"Wasm validation failure expected\");\n" ^
-  "}\n" ^
-  "\n" ^
-  "function assert_soft_invalid(bytes) {\n" ^
-  "  try { module(bytes, hard_validate ? false : null) } catch (e) {\n" ^
-  "    if (e instanceof WebAssembly.CompileError) return;\n" ^
-  "  }\n" ^
-  "  if (hard_validate)\n" ^
-  "    throw new Error(\"Wasm validation failure expected\");\n" ^
   "}\n" ^
   "\n" ^
   "function assert_unlinkable(bytes) {\n" ^
@@ -330,8 +320,6 @@ let of_assertion mods ass =
     "assert_malformed(" ^ of_definition def ^ ");"
   | AssertInvalid (def, _) ->
     "assert_invalid(" ^ of_definition def ^ ");"
-  | AssertSoftInvalid (def, _) ->
-    "assert_soft_invalid(" ^ of_definition def ^ ");"
   | AssertUnlinkable (def, _) ->
     "assert_unlinkable(" ^ of_definition def ^ ");"
   | AssertUninstantiable (def, _) ->

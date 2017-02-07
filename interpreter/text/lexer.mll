@@ -306,7 +306,6 @@ rule token = parse
   | "get" { GET }
   | "assert_malformed" { ASSERT_MALFORMED }
   | "assert_invalid" { ASSERT_INVALID }
-  | "assert_soft_invalid" { ASSERT_SOFT_INVALID }
   | "assert_unlinkable" { ASSERT_UNLINKABLE }
   | "assert_return" { ASSERT_RETURN }
   | "assert_return_nan" { ASSERT_RETURN_NAN }
