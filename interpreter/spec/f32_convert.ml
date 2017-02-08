@@ -15,13 +15,13 @@ let convert_s_i32 x =
 
 (*
  * Similar to convert_u_i64 below, the high half of the i32 range are beyond
- * the range where f32 can represent odd numbers.
+ * the range where f32 can represent odd numbers, though we do need to adjust
+ * the least significant bit to round correctly.
  *)
 let convert_u_i32 x =
-  F32.of_float (if x >= Int32.zero then
-    Int32.to_float x
-  else
-    Int32.(to_float (shift_right_logical x 1) *. 2.0))
+  F32.of_float
+    Int32.(if x >= zero then to_float x else
+           to_float (logor (shift_right_logical x 1) (logand x 1l)) *. 2.0)
 
 let convert_s_i64 x =
   F32.of_float (Int64.to_float x)
