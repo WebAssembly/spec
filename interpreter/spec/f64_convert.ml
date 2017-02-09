@@ -27,13 +27,12 @@ let convert_s_i64 x =
 (*
  * Values in the low half of the int64 range can be converted with a signed
  * conversion. The high half is beyond the range where f64 can represent odd
- * numbers, so we can shift the value right, do a conversion, and then scale it
- * back up, without worrying about losing the least-significant digit.
+ * numbers, so we can shift the value right, adjust the least significant
+ * bit to round correctly, do a conversion, and then scale it back up.
  *)
 let convert_u_i64 x =
-  F64.of_float (if x >= Int64.zero then
-    Int64.to_float x
-  else
-    Int64.(to_float (shift_right_logical x 1) *. 2.0))
+  F64.of_float
+    Int64.(if x >= zero then to_float x else
+           to_float (logor (shift_right_logical x 1) (logand x 1L)) *. 2.0)
 
 let reinterpret_i64 = F64.of_bits
