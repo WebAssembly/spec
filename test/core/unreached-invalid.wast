@@ -462,6 +462,38 @@
   ))
   "type mismatch"
 )
+(assert_invalid
+  (module (func $type-br_table-label-num-vs-num-after-unreachable (result i32)
+    (block i32 (unreachable) (br_table 0 (f32.const 0) (i32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-br_table-label-num-vs-label-void-after-unreachable
+    (block
+      (block f32
+        (unreachable)
+        (br_table 0 1 0 (i32.const 1))
+      )
+      (drop)
+    )
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-br_table-label-num-vs-label-num-after-unreachable
+    (block f64
+      (block f32
+        (unreachable)
+        (br_table 0 1 1 (i32.const 1))
+      )
+      (drop)
+      (f64.const 0)
+    )
+    (drop)
+  ))
+  "type mismatch"
+)
 
 (assert_invalid
   (module (func $type-block-value-nested-unreachable-num-vs-void
