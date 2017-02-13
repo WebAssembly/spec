@@ -8,13 +8,13 @@ import subprocess
 import shutil
 import multiprocessing as mp
 
-CWD = os.getcwd()
-WASM_EXEC = os.path.join(CWD, '..', 'interpreter', 'wasm')
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+WASM_EXEC = os.path.join(SCRIPT_DIR, '..', 'interpreter', 'wasm')
 
-WAST_TESTS_DIR = os.path.join(CWD, 'core')
-JS_TESTS_DIR = os.path.join(CWD, 'js-api')
-HTML_TESTS_DIR = os.path.join(CWD, 'html')
-HARNESS_DIR = os.path.join(CWD, 'harness')
+WAST_TESTS_DIR = os.path.join(SCRIPT_DIR, 'core')
+JS_TESTS_DIR = os.path.join(SCRIPT_DIR, 'js-api')
+HTML_TESTS_DIR = os.path.join(SCRIPT_DIR, 'html')
+HARNESS_DIR = os.path.join(SCRIPT_DIR, 'harness')
 
 # Helpers.
 def run(*cmd):
