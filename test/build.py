@@ -6,6 +6,7 @@ import os
 import glob
 import subprocess
 import shutil
+import multiprocessing as mp
 
 CWD = os.getcwd()
 WASM_EXEC = os.path.join(CWD, '..', 'interpreter', 'wasm')
@@ -42,17 +43,27 @@ def ensure_wasm_executable(path_to_wasm):
 
 
 # JS harness.
+def convert_one_wast_file(inputs):
+    wast_file, js_file = inputs
+    print('Compiling {} to JS...'.format(wast_file))
+    return run(WASM_EXEC, wast_file, '-h', '-o', js_file)
+
 def convert_wast_to_js(out_js_dir):
     """Compile all the wast files to JS and store the results in the JS dir."""
+
+    inputs = []
+
     for wast_file in glob.glob(os.path.join(WAST_TESTS_DIR, '*.wast')):
         # Don't try to compile tests that are supposed to fail.
         if 'fail.wast' in wast_file:
             continue
 
-        print('Compiling {} to JS...'.format(wast_file))
         js_filename = os.path.basename(wast_file) + '.js'
         js_file = os.path.join(out_js_dir, js_filename)
-        result = run(WASM_EXEC, wast_file, '-h', '-o', js_file)
+        inputs.append((wast_file, js_file))
+
+    pool = mp.Pool(processes=8)
+    for result in pool.imap_unordered(convert_one_wast_file, inputs):
         if result.returncode != 0:
             print('Error when compiling {} to JS: {}', wast_file, result.stdout)
 
