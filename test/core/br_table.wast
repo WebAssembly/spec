@@ -1443,6 +1443,12 @@
   "type mismatch"
 )
 (assert_invalid
+  (module (func $type-arg-void-vs-num-nested (result i32)
+    (block i32 (i32.const 0) (block (br_table 1 (i32.const 0))))
+  ))
+  "type mismatch"
+)
+(assert_invalid
   (module (func $type-arg-index-num-vs-i32 (result i32)
     (block i32 (br_table 0 0 (i32.const 0) (i64.const 0)) (i32.const 1))
   ))

@@ -370,20 +370,26 @@
 
 (assert_invalid
   (module (func $type-arg-empty-vs-num (result i32)
-    (block (br 0) (i32.const 1))
+    (block i32 (br 0) (i32.const 1))
   ))
   "type mismatch"
 )
 
 (assert_invalid
   (module (func $type-arg-void-vs-num (result i32)
-    (block (br 0 (nop)) (i32.const 1))
+    (block i32 (br 0 (nop)) (i32.const 1))
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-arg-void-vs-num-nested (result i32)
+    (block i32 (i32.const 0) (block (br 1)))
   ))
   "type mismatch"
 )
 (assert_invalid
   (module (func $type-arg-num-vs-num (result i32)
-    (block (br 0 (i64.const 1)) (i32.const 1))
+    (block i32 (br 0 (i64.const 1)) (i32.const 1))
   ))
   "type mismatch"
 )
