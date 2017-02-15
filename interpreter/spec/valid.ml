@@ -81,7 +81,7 @@ let push (ell1, ts1) (ell2, ts2) =
   ts2 @ ts1
 
 let peek i (ell, ts) =
-  try List.nth ts i with Failure _ -> None
+  try List.nth (List.rev ts) i with Failure _ -> None
 
 
 (* Type Synthesis *)
