@@ -16,7 +16,14 @@
 
 'use strict';
 
-// WPT's assert_throw uses a list of predefined, hardcoded know errors. Since
+let testNum = (function() {
+    let count = 1;
+    return function() {
+        return `#${count++} `;
+    }
+})();
+
+// WPT's assert_throw uses a list of predefined, hardcoded known errors. Since
 // it is not aware of the WebAssembly error types (yet), implement our own
 // version.
 function assertThrows(func, err) {
@@ -27,7 +34,7 @@ function assertThrows(func, err) {
         assert_true(e instanceof err, `expected ${err.name}, observed ${e.constructor.name}`);
         caught = true;
     }
-    assert_true(caught, "assertThrows must catch any error.")
+    assert_true(caught, testNum() + "assertThrows must catch any error.")
 }
 
 /******************************************************************************
@@ -134,7 +141,7 @@ function assert_invalid(bytes) {
         } catch(e) {
             assert_true(e instanceof WebAssembly.CompileError, "expected invalid failure:");
         }
-    }, "A wast module that should be invalid or malformed.");
+    }, testNum() + "A wast module that should be invalid or malformed.");
 }
 
 const assert_malformed = assert_invalid;
@@ -149,7 +156,7 @@ function assert_soft_invalid(bytes) {
             if (soft_validate)
                 assert_true(e instanceof WebAssembly.CompileError, "expected soft invalid failure:");
         }
-    }, "A wast module that *could* be invalid under certain engines.");
+    }, testNum() + "A wast module that *could* be invalid under certain engines.");
 }
 
 function instance(bytes, imports = registry, valid = true) {
@@ -173,7 +180,7 @@ function instance(bytes, imports = registry, valid = true) {
         test(() => {
             let instanciated = err === null;
             assert_true(instanciated, err);
-        }, "module successfully instanciated");
+        }, testNum() + "module successfully instanciated");
     }
 
     return err !== null ? ErrorResult(err) : ValueResult(i);
@@ -231,7 +238,7 @@ function run(action) {
     test(() => {
         if (result.isError())
             throw result.value;
-    }, "A wast test that runs without any special assertion.");
+    }, testNum() + "A wast test that runs without any special assertion.");
 }
 
 function assert_unlinkable(bytes) {
@@ -245,7 +252,7 @@ function assert_unlinkable(bytes) {
             let e = result.value;
             assert_true(e instanceof WebAssembly.LinkError, `expected link error, observed ${e}:`);
         }
-    }, "A wast module that is unlinkable.");
+    }, testNum() + "A wast module that is unlinkable.");
 }
 
 function assert_uninstantiable(bytes) {
@@ -259,7 +266,7 @@ function assert_uninstantiable(bytes) {
             let e = result.value;
             assert_true(e instanceof WebAssembly.RuntimeError, `expected runtime error, observed ${e}:`);
         }
-    }, "A wast module that is uninstantiable.");
+    }, testNum() + "A wast module that is uninstantiable.");
 }
 
 function assert_trap(action) {
@@ -273,7 +280,7 @@ function assert_trap(action) {
             let e = result.value;
             assert_true(e instanceof WebAssembly.RuntimeError, `expected runtime error, observed ${e}:`);
         }
-    }, "A wast module that must trap at runtime.");
+    }, testNum() + "A wast module that must trap at runtime.");
 }
 
 let StackOverflow;
@@ -290,7 +297,7 @@ function assert_exhaustion(action) {
             let e = result.value;
             assert_true(e instanceof StackOverflow, `expected stack overflow error, observed ${e}:`);
         }
-    }, "A wast module that must exhaust the stack space.");
+    }, testNum() + "A wast module that must exhaust the stack space.");
 }
 
 function assert_return(action, expected) {
@@ -309,7 +316,7 @@ function assert_return(action, expected) {
         if (!result.isError()) {
             assert_equals(result.value, expected);
         };
-    }, "A wast module that must return a particular value.");
+    }, testNum() + "A wast module that must return a particular value.");
 };
 
 function assert_return_nan(action) {
@@ -322,5 +329,5 @@ function assert_return_nan(action) {
         if (!result.isError()) {
             assert_true(Number.isNaN(result.value), `expected NaN, observed ${result.value}.`);
         };
-    }, "A wast module that must return NaN.");
+    }, testNum() + "A wast module that must return NaN.");
 }
