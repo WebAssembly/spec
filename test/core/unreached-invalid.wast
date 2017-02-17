@@ -67,7 +67,8 @@
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-select-any (result i32) (i32.const 1) (if i64 (then (i64.const 0)) (else (unreachable) (select)))))
+  (module (func $unreached-select-in-reachable-if-with-value (result i32)
+    (i32.const 1) (if i64 (then (i64.const 0)) (else (unreachable) (select)))))
   "type mismatch"
 )
 
