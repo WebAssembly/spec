@@ -1,4 +1,0 @@
-description = "A library for writing/reading/running WebAssembly binaries"
-requires = "bigarray,str"
-archive(byte) = "wasm.cmo"
-archive(native) = "wasm.cmx"

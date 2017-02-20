@@ -1,6 +1,0 @@
-Instruction Sequences
----------------------
-
-.. todo::
-
-   Describe
