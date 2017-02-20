@@ -129,13 +129,14 @@ It is intended that it will be superseded by new incremental releases with addit
 </div>
 <div class="section" id="scope">
 <h2>Scope<a class="headerlink" href="#scope" title="Permalink to this headline">¶</a></h2>
-<p>At its core, WebAssembly is a universal <em>virtual instruction set architecture (virtual ISA)</em>.
-As such, it has many use cases, and can be embedded in many different environments.
-Consequently, the WebAssembly specification is layered to enable maximum reuse.</p>
-<p>This document is only concerned with that core ISA layer of WebAssembly.
-It does not define how WebAssembly programs can interact with a specific environment they execute in, nor how they are invoked from such an environment.</p>
-<p>Instead, this specification will be complemented by additional documents defining interfaces to specific embedding environments such as the Web.
-These will each define a different <em>application programming interface (API)</em> suitable for a given environment.</p>
+<p>At its core, WebAssembly is a <em>virtual instruction set architecture (virtual ISA)</em>.
+As such, it has many use cases and can be embedded in many different environments.
+To encompass their variety and enable maximum reuse, the WebAssembly specification is split and layered into several documents.</p>
+<p>This document is concerned with the core ISA layer of WebAssembly.
+It defines instruction set, binary encoding, validation, and execution semantics.
+It does not, however, define how WebAssembly programs can interact with a specific environment they execute in, nor how they are invoked from such an environment.</p>
+<p>Instead, this specification is complemented by additional documents defining interfaces to specific embedding environments such as the Web.
+These will each define a WebAssembly <em>application programming interface (API)</em> suitable for a given environment.</p>
 </div>
 </div>
 
