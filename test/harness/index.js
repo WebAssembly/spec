@@ -133,21 +133,25 @@ function module(bytes, valid = true) {
     return module;
 }
 
+function uniqueTest(func, desc) {
+    test(func, testNum() + desc);
+}
+
 function assert_invalid(bytes) {
-    test(() => {
+    uniqueTest(() => {
         try {
             module(bytes, /* valid */ false);
             throw new Error('did not fail');
         } catch(e) {
             assert_true(e instanceof WebAssembly.CompileError, "expected invalid failure:");
         }
-    }, testNum() + "A wast module that should be invalid or malformed.");
+    }, "A wast module that should be invalid or malformed.");
 }
 
 const assert_malformed = assert_invalid;
 
 function assert_soft_invalid(bytes) {
-    test(() => {
+    uniqueTest(() => {
         try {
             module(bytes, /* valid */ soft_validate);
             if (soft_validate)
@@ -156,7 +160,7 @@ function assert_soft_invalid(bytes) {
             if (soft_validate)
                 assert_true(e instanceof WebAssembly.CompileError, "expected soft invalid failure:");
         }
-    }, testNum() + "A wast module that *could* be invalid under certain engines.");
+    }, "A wast module that *could* be invalid under certain engines.");
 }
 
 function instance(bytes, imports = registry, valid = true) {
@@ -177,10 +181,10 @@ function instance(bytes, imports = registry, valid = true) {
     }
 
     if (valid) {
-        test(() => {
-            let instanciated = err === null;
-            assert_true(instanciated, err);
-        }, testNum() + "module successfully instanciated");
+        uniqueTest(() => {
+            let instantiated = err === null;
+            assert_true(instantiated, err);
+        }, "module successfully instantiated");
     }
 
     return err !== null ? ErrorResult(err) : ValueResult(i);
@@ -235,10 +239,10 @@ function run(action) {
 
     _assert(result instanceof Result);
 
-    test(() => {
+    uniqueTest(() => {
         if (result.isError())
             throw result.value;
-    }, testNum() + "A wast test that runs without any special assertion.");
+    }, "A wast test that runs without any special assertion.");
 }
 
 function assert_unlinkable(bytes) {
@@ -246,13 +250,13 @@ function assert_unlinkable(bytes) {
 
     _assert(result instanceof Result);
 
-    test(() => {
+    uniqueTest(() => {
         assert_true(result.isError(), 'expected error result');
         if (result.isError()) {
             let e = result.value;
             assert_true(e instanceof WebAssembly.LinkError, `expected link error, observed ${e}:`);
         }
-    }, testNum() + "A wast module that is unlinkable.");
+    }, "A wast module that is unlinkable.");
 }
 
 function assert_uninstantiable(bytes) {
@@ -260,13 +264,13 @@ function assert_uninstantiable(bytes) {
 
     _assert(result instanceof Result);
 
-    test(() => {
+    uniqueTest(() => {
         assert_true(result.isError(), 'expected error result');
         if (result.isError()) {
             let e = result.value;
             assert_true(e instanceof WebAssembly.RuntimeError, `expected runtime error, observed ${e}:`);
         }
-    }, testNum() + "A wast module that is uninstantiable.");
+    }, "A wast module that is uninstantiable.");
 }
 
 function assert_trap(action) {
@@ -274,13 +278,13 @@ function assert_trap(action) {
 
     _assert(result instanceof Result);
 
-    test(() => {
+    uniqueTest(() => {
         assert_true(result.isError(), 'expected error result');
         if (result.isError()) {
             let e = result.value;
             assert_true(e instanceof WebAssembly.RuntimeError, `expected runtime error, observed ${e}:`);
         }
-    }, testNum() + "A wast module that must trap at runtime.");
+    }, "A wast module that must trap at runtime.");
 }
 
 let StackOverflow;
@@ -291,13 +295,13 @@ function assert_exhaustion(action) {
 
     _assert(result instanceof Result);
 
-    test(() => {
+    uniqueTest(() => {
         assert_true(result.isError(), 'expected error result');
         if (result.isError()) {
             let e = result.value;
             assert_true(e instanceof StackOverflow, `expected stack overflow error, observed ${e}:`);
         }
-    }, testNum() + "A wast module that must exhaust the stack space.");
+    }, "A wast module that must exhaust the stack space.");
 }
 
 function assert_return(action, expected) {
@@ -311,12 +315,12 @@ function assert_return(action, expected) {
 
     _assert(result instanceof Result);
 
-    test(() => {
+    uniqueTest(() => {
         assert_true(!result.isError(), `expected success result, got: ${result.value}.`);
         if (!result.isError()) {
             assert_equals(result.value, expected);
         };
-    }, testNum() + "A wast module that must return a particular value.");
+    }, "A wast module that must return a particular value.");
 };
 
 function assert_return_nan(action) {
@@ -324,10 +328,10 @@ function assert_return_nan(action) {
 
     _assert(result instanceof Result);
 
-    test(() => {
+    uniqueTest(() => {
         assert_true(!result.isError(), 'expected success result');
         if (!result.isError()) {
             assert_true(Number.isNaN(result.value), `expected NaN, observed ${result.value}.`);
         };
-    }, testNum() + "A wast module that must return NaN.");
+    }, "A wast module that must return NaN.");
 }

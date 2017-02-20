@@ -58,7 +58,7 @@ def convert_wast_to_js(out_js_dir):
 
     for wast_file in glob.glob(os.path.join(WAST_TESTS_DIR, '*.wast')):
         # Don't try to compile tests that are supposed to fail.
-        if 'fail.wast' in wast_file:
+        if '.fail.' in wast_file:
             continue
 
         js_filename = os.path.basename(wast_file) + '.js'
