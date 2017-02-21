@@ -64,7 +64,7 @@ As such, it has many use cases and can be embedded in many different environment
 To encompass their variety and enable maximum reuse, the WebAssembly specification is split and layered into several documents.
 
 This document is concerned with the core ISA layer of WebAssembly.
-It defines instruction set, binary encoding, validation, and execution semantics.
+It defines the instruction set, binary encoding, validation, and execution semantics.
 It does not, however, define how WebAssembly programs can interact with a specific environment they execute in, nor how they are invoked from such an environment.
 
 Instead, this specification is complemented by additional documents defining interfaces to specific embedding environments such as the Web.

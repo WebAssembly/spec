@@ -62,10 +62,6 @@ help:
 
 .PHONY: publish
 publish: all deploy
-	#rm -rf $(GHPAGESDIR)/*
-	#cp -rf $(BUILDDIR)/html/* $(GHPAGESDIR)/
-	#git add -A $(GHPAGESDIR)/*
-	#(cd .. && git subtree push --prefix document/$(BUILDDIR)/html origin gh-pages)
 
 .PHONY: deploy
 deploy:
