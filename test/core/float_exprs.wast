@@ -1977,3 +1977,65 @@
 (assert_return (invoke "f64.no_trichotomy_le" (f64.const 0.0) (f64.const nan)) (i32.const 0))
 (assert_return (invoke "f64.no_trichotomy_gt" (f64.const 0.0) (f64.const nan)) (i32.const 0))
 (assert_return (invoke "f64.no_trichotomy_ge" (f64.const 0.0) (f64.const nan)) (i32.const 0))
+
+;; Some test harnesses which can run this testsuite are unable to perform tests
+;; of NaN bitpatterns. The following tests whether the underlying platform is
+;; generally producing the kinds of NaNs expected.
+(module
+  (func (export "f32.arithmetic_nan_bitpattern")
+        (param $x i32) (param $y i32) (result i32)
+    (i32.and (i32.reinterpret/f32
+               (f32.div
+                 (f32.reinterpret/i32 (get_local $x))
+                 (f32.reinterpret/i32 (get_local $y))))
+             (i32.const 0x7fc00000)))
+  (func (export "f32.canonical_nan_bitpattern")
+        (param $x i32) (param $y i32) (result i32)
+    (i32.and (i32.reinterpret/f32
+               (f32.div
+                 (f32.reinterpret/i32 (get_local $x))
+                 (f32.reinterpret/i32 (get_local $y))))
+             (i32.const 0x7fffffff)))
+  (func (export "f32.nonarithmetic_nan_bitpattern")
+        (param $x i32) (result i32)
+    (i32.reinterpret/f32 (f32.neg (f32.reinterpret/i32 (get_local $x)))))
+
+  (func (export "f64.arithmetic_nan_bitpattern")
+        (param $x i64) (param $y i64) (result i64)
+    (i64.and (i64.reinterpret/f64
+               (f64.div
+                 (f64.reinterpret/i64 (get_local $x))
+                 (f64.reinterpret/i64 (get_local $y))))
+             (i64.const 0x7ff8000000000000)))
+  (func (export "f64.canonical_nan_bitpattern")
+        (param $x i64) (param $y i64) (result i64)
+    (i64.and (i64.reinterpret/f64
+               (f64.div
+                 (f64.reinterpret/i64 (get_local $x))
+                 (f64.reinterpret/i64 (get_local $y))))
+             (i64.const 0x7fffffffffffffff)))
+  (func (export "f64.nonarithmetic_nan_bitpattern")
+        (param $x i64) (result i64)
+    (i64.reinterpret/f64 (f64.neg (f64.reinterpret/i64 (get_local $x)))))
+)
+
+(assert_return (invoke "f32.arithmetic_nan_bitpattern" (i32.const 0x7f803210) (i32.const 0x7f803210)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.canonical_nan_bitpattern" (i32.const 0) (i32.const 0)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.canonical_nan_bitpattern" (i32.const 0x7fc00000) (i32.const 0x7fc00000)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.canonical_nan_bitpattern" (i32.const 0xffc00000) (i32.const 0x7fc00000)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.canonical_nan_bitpattern" (i32.const 0x7fc00000) (i32.const 0xffc00000)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.canonical_nan_bitpattern" (i32.const 0xffc00000) (i32.const 0xffc00000)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.nonarithmetic_nan_bitpattern" (i32.const 0x7fc03210)) (i32.const 0xffc03210))
+(assert_return (invoke "f32.nonarithmetic_nan_bitpattern" (i32.const 0xffc03210)) (i32.const 0x7fc03210))
+(assert_return (invoke "f32.nonarithmetic_nan_bitpattern" (i32.const 0x7f803210)) (i32.const 0xff803210))
+(assert_return (invoke "f32.nonarithmetic_nan_bitpattern" (i32.const 0xff803210)) (i32.const 0x7f803210))
+(assert_return (invoke "f64.arithmetic_nan_bitpattern" (i64.const 0x7ff0000000003210) (i64.const 0x7ff0000000003210)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.canonical_nan_bitpattern" (i64.const 0) (i64.const 0)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.canonical_nan_bitpattern" (i64.const 0x7ff8000000000000) (i64.const 0x7ff8000000000000)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.canonical_nan_bitpattern" (i64.const 0xfff8000000000000) (i64.const 0x7ff8000000000000)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.canonical_nan_bitpattern" (i64.const 0x7ff8000000000000) (i64.const 0xfff8000000000000)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.canonical_nan_bitpattern" (i64.const 0xfff8000000000000) (i64.const 0xfff8000000000000)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.nonarithmetic_nan_bitpattern" (i64.const 0x7ff8000000003210)) (i64.const 0xfff8000000003210))
+(assert_return (invoke "f64.nonarithmetic_nan_bitpattern" (i64.const 0xfff8000000003210)) (i64.const 0x7ff8000000003210))
+(assert_return (invoke "f64.nonarithmetic_nan_bitpattern" (i64.const 0x7ff0000000003210)) (i64.const 0xfff0000000003210))
+(assert_return (invoke "f64.nonarithmetic_nan_bitpattern" (i64.const 0xfff0000000003210)) (i64.const 0x7ff0000000003210))
