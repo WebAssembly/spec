@@ -1,4 +1,4 @@
-;; Test `block` operator
+;; Test `if` operator
 
 (module
   ;; Auxiliary definition
