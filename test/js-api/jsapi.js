@@ -334,8 +334,9 @@ test(() => {
     assertThrows(() => new Instance(emptyModule, null), TypeError);
     assertThrows(() => new Instance(importingModule, null), TypeError);
     assertThrows(() => new Instance(importingModule, undefined), TypeError);
+    assertThrows(() => new Instance(importingModule, {}), TypeError);
     assertThrows(() => new Instance(importingModule, {"":{g:()=>{}}}), LinkError);
-    assertThrows(() => new Instance(importingModule, {t:{f:()=>{}}}), LinkError);
+    assertThrows(() => new Instance(importingModule, {t:{f:()=>{}}}), TypeError);
     assert_equals(new Instance(emptyModule) instanceof Instance, true);
     assert_equals(new Instance(emptyModule, {}) instanceof Instance, true);
 }, "'WebAssembly.Instance' constructor function");
