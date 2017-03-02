@@ -76,8 +76,9 @@ let loadn mem n ea =
   assert (n > 0 && n <= 8);
   let rec loop mem n i =
     if n = 0 then 0L else
+    let rest = Int64.(shift_left (loop mem (n - 1) (add i 1L)) 8) in
     let byte = Int64.of_int (Array1_64.get mem.content i) in
-    Int64.(logor byte (shift_left (loop mem (n - 1) (add i 1L)) 8))
+    Int64.logor byte rest
   in
   try loop mem n ea with Invalid_argument _ -> raise Bounds
 
@@ -85,8 +86,8 @@ let storen mem n ea v =
   assert (n > 0 && n <= 8);
   let rec loop mem n i v =
     if n > 0 then begin
-      Array1_64.set mem.content i (Int64.to_int v land 255);
-      Int64.(loop mem (n - 1) (add i 1L) (shift_right v 8))
+      Int64.(loop mem (n - 1) (add i 1L) (shift_right v 8));
+      Array1_64.set mem.content i (Int64.to_int v land 255)
     end
   in
   try loop mem n ea v with Invalid_argument _ -> raise Bounds
