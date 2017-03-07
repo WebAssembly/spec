@@ -714,7 +714,7 @@ test(() => {
     assert_equals(instantiate, instantiateDesc.value);
     assert_equals(instantiate.length, 1);
     assert_equals(instantiate.name, "instantiate");
-    function assertInstantiateError(args, err) {
+    function assertInstantiateError(args, err, message) {
         promise_test(() => {
             return instantiate(...args)
                 .then(m => {
@@ -724,31 +724,31 @@ test(() => {
                     assert_equals(error instanceof err, true);
                     assert_equals(Boolean(error.stack.match("jsapi.js")), true);
                 })
-        }, 'unexpected success in assertInstantiateError');
+        }, message);
     }
     var scratch_memory = new WebAssembly.Memory({initial:1});
     var scratch_table = new WebAssembly.Table({element:"anyfunc", initial:1, maximum:1});
-    assertInstantiateError([], TypeError);
-    assertInstantiateError([undefined], TypeError);
-    assertInstantiateError([1], TypeError);
-    assertInstantiateError([{}], TypeError);
-    assertInstantiateError([new Uint8Array()], CompileError);
-    assertInstantiateError([new ArrayBuffer()], CompileError);
-    assertInstantiateError([new Uint8Array("hi!")], CompileError);
-    assertInstantiateError([new ArrayBuffer("hi!")], CompileError);
-    assertInstantiateError([importingModule], TypeError);
-    assertInstantiateError([importingModule, null], TypeError);
-    assertInstantiateError([importingModuleBinary, null], TypeError);
-    assertInstantiateError([emptyModule, null], TypeError);
-    assertInstantiateError([importingModuleBinary, null], TypeError);
-    assertInstantiateError([importingModuleBinary, undefined], TypeError);
-    assertInstantiateError([importingModuleBinary, {}], TypeError);
-    assertInstantiateError([importingModuleBinary, {"":{g:()=>{}}}], LinkError);
-    assertInstantiateError([importingModuleBinary, {t:{f:()=>{}}}], TypeError);
-    assertInstantiateError([complexImportingModuleBinary, null], TypeError);
-    assertInstantiateError([complexImportingModuleBinary, undefined], TypeError);
-    assertInstantiateError([complexImportingModuleBinary, {}], TypeError);
-    assertInstantiateError([complexImportingModuleBinary, {"c": {"d": scratch_memory}}], TypeError);
+    assertInstantiateError([], TypeError, "assertInstantiateError([] => TypeError)");
+    assertInstantiateError([undefined], TypeError, "assertInstantiateError([undefined] => TypeError)");
+    assertInstantiateError([1], TypeError, "assertInstantiateError([1] => TypeError)");
+    assertInstantiateError([{}], TypeError, "assertInstantiateError([{}] => TypeError)");
+    assertInstantiateError([new Uint8Array()], CompileError, "assertInstantiateError([Uint8Array()] => CompileError)");
+    assertInstantiateError([new ArrayBuffer()], CompileError, "assertInstantiateError([ArrayBuffer()] => CompileError)");
+    assertInstantiateError([new Uint8Array("hi!")], CompileError, "assertInstantiateError([Uint8Array('hi!')] => CompileError)");
+    assertInstantiateError([new ArrayBuffer("hi!")], CompileError, "assertInstantiateError([ArrayBuffer('hi!')] => CompileError)");
+    assertInstantiateError([importingModule], TypeError, "assertInstantiateError([importingModule] => TypeError)");
+    assertInstantiateError([importingModule, null], TypeError, "assertInstantiateError([importingModule, null] => TypeError)");
+    assertInstantiateError([importingModuleBinary, null], TypeError, "assertInstantiateError([importingModuleBinary, null] => TypeError)");
+    assertInstantiateError([emptyModule, null], TypeError, "assertInstantiateError([emptyModule] => TypeError)");
+    assertInstantiateError([importingModuleBinary, null], TypeError, "assertInstantiateError([importingModuleBinary, null] => TypeError)");
+    assertInstantiateError([importingModuleBinary, undefined], TypeError, "assertInstantiateError([importingModuleBinary, undefined] => TypeError)");
+    assertInstantiateError([importingModuleBinary, {}], TypeError, "assertInstantiateError([importingModuleBinary, {}] => TypeError)");
+    assertInstantiateError([importingModuleBinary, {"":{g:()=>{}}}], LinkError, "assertInstantiateError([importingModuleBinary, {'':{g:()=>{}}}] => LinkError)");
+    assertInstantiateError([importingModuleBinary, {t:{f:()=>{}}}], TypeError, "assertInstantiateError([importingModuleBinary, {t:{f:()=>{}}}] => TypeError)");
+    assertInstantiateError([complexImportingModuleBinary, null], TypeError, "assertInstantiateError([complexImportingModuleBinary, null] => TypeError)");
+    assertInstantiateError([complexImportingModuleBinary, undefined], TypeError, "assertInstantiateError([complexImportingModuleBinary, undefined] => TypeError)");
+    assertInstantiateError([complexImportingModuleBinary, {}], TypeError, "assertInstantiateError([complexImportingModuleBinary, {}] => TypeError)");
+    assertInstantiateError([complexImportingModuleBinary, {"c": {"d": scratch_memory}}], TypeError, "assertInstantiateError([complexImportingModuleBinary, {'c': {'d': scratch_memory}}] => TypeError)");
 
     function assertInstantiateSuccess(module, imports) {
         promise_test(()=> {
