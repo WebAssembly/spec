@@ -750,7 +750,7 @@ test(() => {
     assertInstantiateError([complexImportingModuleBinary, {}], TypeError, "assertInstantiateError([complexImportingModuleBinary, {}] => TypeError)");
     assertInstantiateError([complexImportingModuleBinary, {"c": {"d": scratch_memory}}], TypeError, "assertInstantiateError([complexImportingModuleBinary, {'c': {'d': scratch_memory}}] => TypeError)");
 
-    function assertInstantiateSuccess(module, imports) {
+    function assertInstantiateSuccess(module, imports, message) {
         promise_test(()=> {
             return instantiate(module, imports)
                 .then(result => {
@@ -768,19 +768,19 @@ test(() => {
                         assert_equals(desc.enumerable, true);
                         assert_equals(desc.configurable, true);
                     }
-                })}, 'unexpected failure in assertInstantiateSuccess');
+                })}, message);
     }
-    assertInstantiateSuccess(emptyModule);
-    assertInstantiateSuccess(emptyModuleBinary);
-    assertInstantiateSuccess(emptyModuleBinary.buffer);
-    assertInstantiateSuccess(importingModule, {"":{f:()=>{}}});
-    assertInstantiateSuccess(importingModuleBinary, {"":{f:()=>{}}});
-    assertInstantiateSuccess(importingModuleBinary.buffer, {"":{f:()=>{}}});
+    assertInstantiateSuccess(emptyModule, undefined, "assertInstantiateSuccess(emptyModule, undefined)");
+    assertInstantiateSuccess(emptyModuleBinary, undefined, "assertInstantiateSuccess(emptyModuleBinary, undefined)");
+    assertInstantiateSuccess(emptyModuleBinary.buffer, undefined, "assertInstantiateSuccess(emptyModuleBinary.buffer, undefined)");
+    assertInstantiateSuccess(importingModule, {"":{f:()=>{}}}, 'assertInstantiateSuccess(importingModule, {"":{f:()=>{}}})');
+    assertInstantiateSuccess(importingModuleBinary, {"":{f:()=>{}}}, 'assertInstantiateSuccess(importingModuleBinary, {"":{f:()=>{}}})');
+    assertInstantiateSuccess(importingModuleBinary.buffer, {"":{f:()=>{}}}, 'assertInstantiateSuccess(importingModuleBinary.buffer, {"":{f:()=>{}}})');
     assertInstantiateSuccess(complexImportingModuleBinary, {
         a:{b:()=>{}},
         c:{d:scratch_memory},
         e:{f:scratch_table},
-        g:{'⚡':1}});
+        g:{'⚡':1}}, "assertInstantiateSuccess(complexImportingModuleBinary, {...})");
 }, "'WebAssembly.instantiate' function");
 
 })();
