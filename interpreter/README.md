@@ -237,8 +237,8 @@ param:   ( param <type>* ) | ( param <name> <type> )
 result:  ( result <type> )
 local:   ( local <type>* ) | ( local <name> <type> )
 
-global:  ( global <name>? <global_sig> )
-         ( global <name>? ( export <string> ) <global_sig> )                ;; = (export <string> (global <N>)) (global <name>? <global_sig>)
+global:  ( global <name>? <global_sig> <instr>* )
+         ( global <name>? ( export <string> ) <global_sig> <instr>* )       ;; = (export <string> (global <N>)) (global <name>? <global_sig> <instr>*)
          ( global <name>? ( import <string> <string> ) <global_sig> )       ;; = (import <name>? <string> <string> (global <global_sig>))
 table:   ( table <name>? <table_sig> )
          ( table <name>? ( export <string> ) <table_sig> )                  ;; = (export <string> (table <N>)) (table <name>? <table_sig>)
@@ -268,7 +268,7 @@ exkind:  ( func <var> )
          ( table <var> )
          ( memory <var> )
 
-module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <elem>* <data>* <start>? )
+module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
          ( module <name>? <string>+ )
 ```
 
