@@ -1,4 +1,5 @@
 a {
+  color: #004BAB;
   text-decoration: none;
 }
 
@@ -7,8 +8,29 @@ a.reference {
 }
 
 a.reference:hover {
-  border-bottom: 1px dotted #004B6B;
+  border-bottom: 1px dotted #004BAB;
 }
+
+div.body h1 { font-size: 200%; }
+div.body h2 { font-size: 150%; }
+div.body h3 { font-size: 120%; }
+div.body h4 { font-size: 110%; }
+
+div.note {
+  border: 0px;
+  font-size: 90%;
+}
+
+div.admonition {
+  padding: 10px;
+}
+
+div.admonition p.admonition-title {
+  margin: 0px 0px 0px 0px;
+  font-size: 100%;
+  font-weight: bold;
+}
+
 
 div.sphinxsidebar a {
   border-bottom: 0px;

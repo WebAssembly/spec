@@ -13,7 +13,3 @@ Instructions
    group-numeric
    group-memory
    sequences
-   summary-grammar
-   summary-validation
-   summary-execution
-   summary-binary

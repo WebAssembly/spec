@@ -15,10 +15,10 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+pwd = os.path.abspath('.')
+sys.path.insert(0, pwd)
 
 # -- General configuration ------------------------------------------------
 
@@ -35,6 +35,7 @@ extensions = [
   'sphinx.ext.mathjax',
   'sphinx.ext.ifconfig',
   'sphinx.ext.githubpages',
+  'mathdef',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -56,7 +57,7 @@ master_doc = 'index'
 name = 'WebAssembly'
 project = u'WebAssembly'
 title = u'WebAssembly Specification'
-copyright = u'2016, WebAssembly Community Group'
+copyright = u'2017, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
 logo = 'placeholder.jpg'
 
@@ -141,7 +142,8 @@ html_theme_options = {
   'sidebar_collapse': True,
   'show_powered_by': False,
   'extra_nav_links': {
-    'Download as PDF': 'DOWNLOADDIR/' + name + '.pdf'
+    'Index': 'BASEDIR/genindex.html',
+    'Download as PDF': 'BASEDIR/_download/' + name + '.pdf'
   },
 }
 
@@ -322,7 +324,7 @@ latex_show_urls = 'footnote'
 #
 # latex_appendices = []
 
-# It false, will not define \strong, \code, titleref, \crossref ... but only
+# It false, will not define \strong, \code, \titleref, \crossref ... but only
 # \sphinxstrong, ..., \sphinxtitleref, ... To help avoid clash with user added
 # packages.
 #
@@ -467,3 +469,8 @@ epub_exclude_files = ['search.html']
 # If false, no index is generated.
 #
 # epub_use_index = True
+
+# Macros
+rst_prolog = """
+.. include:: /""" + pwd + """/math.def
+"""
