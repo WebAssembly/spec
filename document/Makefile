@@ -86,12 +86,12 @@ html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	for file in `ls $(BUILDDIR)/html/*.html`; \
 	do \
-	  sed s:DOWNLOADDIR:$(DOWNLOADDIR):g <$$file >$$file.out; \
+	  sed s:BASEDIR:.:g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
 	done
 	for file in `ls $(BUILDDIR)/html/*/*.html`; \
 	do \
-	  sed s:DOWNLOADDIR:../$(DOWNLOADDIR):g <$$file >$$file.out; \
+	  sed s:BASEDIR:..:g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
 	done
 	@echo
