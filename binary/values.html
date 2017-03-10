@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Values &#8212; WebAssembly 1.0</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Binary Format" href="index.html" />
+    <link rel="next" title="Types" href="types.html" />
+    <link rel="prev" title="Conventions" href="conventions.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Binary Format</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="values">
+<h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="integers">
+<h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
+<p>All integer numbers are encoded using the <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128">LEB128</a> variable-length integer encoding, in either unsigned or signed variant.</p>
+<p>Unsigned integers are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128">unsigned LEB128</a> format.
+As an additional constraint, the total number of bytes encoding a value of type <span class="math">\(\def\uX#1{\mathit{uint}_{#1}}\uX{N}\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
+<div class="math">
+\[\begin{split}\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}}
+\begin{array}{lll&#64;{\qquad\qquad}l}
+\encx{n}{\def\uX#1{\mathit{uint}_{#1}}\uX{N}} &amp;=&amp;
+  \mathrm{byte}(n)
+  &amp; (n &lt; 128) \\
+\encx{m \cdot 128 + n}{\def\uX#1{\mathit{uint}_{#1}}\uX{N}} &amp;=&amp;
+  \mathrm{byte}(n+128)~
+  \encx{m}{\def\uX#1{\mathit{uint}_{#1}}\uX{N-7}}
+  &amp; (n &lt; 128 \wedge N &gt; 7) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the case of a value less than 128, both rules apply, allowing for optional padding bytes.</p>
+</div>
+<p>Signed integers are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Signed_LEB128">signed LEB128</a> format, which uses a 2&#8217;s complement representation.
+As an additional constraint, the total number of bytes encoding a value of type <span class="math">\(\def\sX#1{\mathit{sint}_{#1}}\sX{N}\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
+<div class="math">
+\[\begin{split}\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}}
+\begin{array}{lll&#64;{\qquad\qquad}l}
+\encx{n}{\def\sX#1{\mathit{sint}_{#1}}\sX{N}} &amp;=&amp;
+  \mathrm{byte}(n)
+  &amp; (0 \leq n &lt; 64) \\
+\encx{-n}{\def\sX#1{\mathit{sint}_{#1}}\sX{N}} &amp;=&amp;
+  \mathrm{byte}(128-n)
+  &amp; (0 &lt; n \leq 64) \\
+\encx{\pm m \cdot 128 + n}{\def\sX#1{\mathit{sint}_{#1}}\sX{N}} &amp;=&amp;
+  \mathrm{byte}(n+128)~
+  \encx{\pm m}{\def\sX#1{\mathit{sint}_{#1}}\sX{N-7}}
+  &amp; (n &lt; 128 \wedge N &gt; 7) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the case of a non-negative value less than 64, both the first and second rule apply, allowing for optional padding bytes.
+In the case of a negative value greater than or equal to -64, both the second and third rule apply, allowing for optional padding bytes.</p>
+</div>
+<p>Uninterpreted integers are encoded as signed, assuming a 2&#8217;s complement interpretation.</p>
+<div class="math">
+\[\begin{split}\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}}
+\begin{array}{lll&#64;{\qquad\qquad}l}
+\encx{n}{\def\iX#1{\mathit{int}_{#1}}\iX{N}} &amp;=&amp;
+  \encx{n}{\def\sX#1{\mathit{sint}_{#1}}\sX{N}}
+  &amp; (-2^{N-1} \leq n &lt; 2^{N-1}) \\
+\encx{n}{\def\iX#1{\mathit{int}_{#1}}\iX{N}} &amp;=&amp;
+  \encx{n-2^N}{\def\sX#1{\mathit{sint}_{#1}}\sX{N}}
+  &amp; (n \geq 2^{N-1}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="floating-point-numbers">
+<h2>Floating-point Numbers<a class="headerlink" href="#floating-point-numbers" title="Permalink to this headline">¶</a></h2>
+<p>Floating point values are encoded directly by their IEEE bit pattern in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
+<div class="math">
+\[\begin{split}\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}}
+\begin{array}{lll&#64;{\qquad\qquad}l}
+\encx{z}{\def\fX#1{\mathit{float}_{#1}}\fX{N}} &amp;=&amp; z \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="vectors">
+<h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<p>Vectors are encoded with their length followed by the encoding of their element sequence.</p>
+<div class="math">
+\[\begin{split}\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}}
+\begin{array}{lll&#64;{\qquad\qquad}l}
+\encx{[x^n]}{\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\_)} &amp;=&amp;
+  \encx{n}{\href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}}}~
+  \enc{x}^n \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="strings">
+<h2>Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<p>Strings are encoded directly as a vector of bytes.</p>
+<div class="math">
+\[\begin{split}\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}}
+\begin{array}{lll&#64;{\qquad\qquad}l}
+\encx{[b^\ast]}{\href{../syntax/values.html#syntax-string}{\mathit{string}}} &amp;=&amp;
+  \enc{[b^\ast]} \\
+\encx{s}{\href{../syntax/values.html#syntax-name}{\mathit{name}}} &amp;=&amp;
+  \encx{s}{\href{../syntax/values.html#syntax-string}{\mathit{string}}} \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

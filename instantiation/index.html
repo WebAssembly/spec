@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Summary: Binary Encoding of Instructions &#8212; WebAssembly 1.0</title>
+    <title>Instantiation &#8212; WebAssembly 1.0</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -27,9 +27,8 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Instructions" href="index.html" />
-    <link rel="next" title="Appendix: Formal Properties" href="../appendix-properties/index.html" />
-    <link rel="prev" title="Summary: Execution of Instructions" href="summary-execution.html" />
+    <link rel="next" title="Execution" href="../execution/index.html" />
+    <link rel="prev" title="Conventions" href="../validation/conventions.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -47,29 +46,25 @@
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/index.html">Concepts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Instructions</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="group-control.html">Control Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="group-variables.html">Variable Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="group-parametric.html">Parametric Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="group-numeric.html">Numeric Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="group-memory.html">Memory Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sequences.html">Instruction Sequences</a></li>
-<li class="toctree-l2"><a class="reference internal" href="summary-grammar.html">Summary: Abstract Grammar of Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="summary-validation.html">Summary: Validation of Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="summary-execution.html">Summary: Execution of Instructions</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Summary: Binary Encoding of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Instantiation</a><ul class="simple">
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 
 
 <hr />
 <ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
     
     <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
     
@@ -91,11 +86,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="summary-binary-encoding-of-instructions">
-<h1>Summary: Binary Encoding of Instructions<a class="headerlink" href="#summary-binary-encoding-of-instructions" title="Permalink to this headline">¶</a></h1>
-<div class="admonition-todo admonition" id="index-1">
-<span id="index-0"></span><p class="first admonition-title">Todo</p>
-<p class="last">Encoding summary</p>
+  <div class="section" id="instantiation">
+<h1>Instantiation<a class="headerlink" href="#instantiation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
 </div>
 </div>
 
@@ -106,7 +99,7 @@
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2016, WebAssembly Community Group.
+      &copy;2017, WebAssembly Community Group.
       
     </div>
 

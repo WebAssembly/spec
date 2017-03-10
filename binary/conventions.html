@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Conventions &#8212; WebAssembly 1.0</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Binary Format" href="index.html" />
+    <link rel="next" title="Values" href="values.html" />
+    <link rel="prev" title="Binary Format" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Binary Format</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="conventions">
+<h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="encoding">
+<span id="index-0"></span><h2>Encoding<a class="headerlink" href="#encoding" title="Permalink to this headline">¶</a></h2>
+<p>The binary format for WebAssembly modules is defined by <em>encoding</em>
+functions that map <span class="xref std std-ref">abstract syntax</span> to sequences of raw bytes.
+<a class="footnote-reference" href="#compression" id="id1">[1]</a></p>
+<p>Some syntactic phrases have multiple possible encodings.
+For example, numbers may be encoded as if they had optional leading zeros.
+Consequently, encoding functions are in fact defined to yield a (non-empty) <em>set</em> of possible byte sequences for each phrase.
+Implementations of encoders producing WebAssembly binaries can pick any encoding contained in these sets.</p>
+<table class="docutils footnote" frame="void" id="compression" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Additional encoding layers &#8211; for example, introducing compression &#8211; may be defined on top the basic representation defined here.
+However, such layers are outside the scope of the current specification.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="decoding">
+<h2>Decoding<a class="headerlink" href="#decoding" title="Permalink to this headline">¶</a></h2>
+<p>The defined encoding functions are all invertible in the sense that every possible byte sequence is the encoding of at most one syntactic phrase.
+Consequently, <em>decoding</em> is defined implicitly as the respective inverse function.</p>
+<p>Where multiple encodings are possible, a decoder must accept all of them.
+Conversely, a decoder must reject all inputs that are not a possible encoding for any phrase.</p>
+</div>
+<div class="section" id="notation">
+<h2>Notation<a class="headerlink" href="#notation" title="Permalink to this headline">¶</a></h2>
+<p>The following notation is adopted in defining binary encoding functions.</p>
+<ul>
+<li><p class="first">The meta variable <span class="math">\(b\)</span> is used to range over byte values.</p>
+</li>
+<li><p class="first">A hexadecimal constant like <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{08}\)</span> or <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{FF}\)</span> denotes the respective byte value as a singleton set.</p>
+</li>
+<li><p class="first"><span class="math">\(\mathrm{byte}(n)\)</span> denotes the byte value of the natural number <span class="math">\(n\)</span> (for <span class="math">\(0 \leq n &lt; 256\)</span>).</p>
+</li>
+<li><p class="first"><span class="math">\(\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}} \encx{x}{t}\)</span> denotes the set of encodings of <span class="math">\(x\)</span> of syntactic class <span class="math">\(t\)</span>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For example, <span class="math">\(\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}} \encx{10}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{8}}}\)</span> denotes the set of encodings of the <span class="math">\(\href{../syntax/values.html#syntax-int}{\mathit{uint}_{8}}\)</span> value <span class="math">\(10\)</span>, which is <span class="math">\(\{\def\hex#1{\mathrm{0x#1}}\hex{0A},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{8A}~\def\hex#1{\mathrm{0x#1}}\hex{00}\}\)</span>.</p>
+</div>
+</li>
+<li><p class="first">The concatenation <span class="math">\(A~B\)</span> denotes the set of all encodings that are concatenations of an element from encoding <span class="math">\(A\)</span> with an element from encoding <span class="math">\(B\)</span>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For example, the concatenation <span class="math">\(\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}} \encx{10}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{8}}}~\encx{13}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{8}}}\)</span> yields the set <span class="math">\(\{\def\hex#1{\mathrm{0x#1}}\hex{0A}~\def\hex#1{\mathrm{0x#1}}\hex{0D},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{0A}~\def\hex#1{\mathrm{0x#1}}\hex{8D}~\def\hex#1{\mathrm{0x#1}}\hex{00},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{8A}~\def\hex#1{\mathrm{0x#1}}\hex{00}~\def\hex#1{\mathrm{0x#1}}\hex{0D},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{8A}~\def\hex#1{\mathrm{0x#1}}\hex{00}~\def\hex#1{\mathrm{0x#1}}\hex{8D}~\def\hex#1{\mathrm{0x#1}}\hex{00}\}\)</span> of possible encodings.</p>
+</div>
+</li>
+<li><p class="first">The definition of encoding functions is given in clause form:</p>
+<div class="math">
+\[\begin{split}\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}}
+\begin{array}{lll&#64;{\qquad}l}
+\encx{x}{t} &amp;=&amp;
+  \mathit{byte~sequence~encoding~x}
+  &amp; (\mbox{side condition}) \\
+\encx{y}{t} &amp;=&amp;
+  \mathit{byte~sequence~encoding~y}
+  &amp; (\mbox{side condition}) \\
+\end{array}\end{split}\]</div>
+<p>The encoding for a single syntactic class <span class="math">\(t\)</span> may be defined by multiple clauses covering different cases.
+When clauses overlap, either is applicable,
+expressing multiple possible encodings.
+The result of the encoding function then is the union of all applicable clauses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>For example, the encoding of <span class="math">\(\href{../syntax/values.html#syntax-int}{\mathit{uint}_{8}}\)</span> values in length-bound <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128">LEB128</a> format could be given as follows:</p>
+<div class="math">
+\[\begin{split}\def\enc#1{{[\![#1]\!]}} \def\encx#1#2{{[\![#1]\!]}_{#2}}
+\begin{array}{lll&#64;{\qquad}l}
+\encx{n}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{8}}} &amp;=&amp;
+  \mathrm{byte}(n)
+  &amp; (n &lt; 128) \\
+\encx{m \cdot 128 + n}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{8}}} &amp;=&amp;
+  \mathrm{byte}(n+128)~
+  \mathrm{byte}(m) \\
+\end{array}\end{split}\]</div>
+<p class="last">For values smaller than <span class="math">\(128\)</span>, both clauses apply, resulting in a set of two possible encodings as sampled in the previous note.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

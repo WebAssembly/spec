@@ -45,18 +45,25 @@
             </a></p><h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="concepts/index.html">Concepts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="validation/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instantiation/index.html">Instantiation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instructions/index.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 
 
 <hr />
 <ul>
     
-    <li class="toctree-l1"><a href="_download/WebAssembly.pdf">Download as PDF</a></li>
+    <li class="toctree-l1"><a href="./genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="./_download/WebAssembly.pdf">Download as PDF</a></li>
     
 </ul>
 
@@ -78,42 +85,30 @@
             
   <div class="section" id="webassembly-specification">
 <h1>WebAssembly Specification<a class="headerlink" href="#webassembly-specification" title="Permalink to this headline">¶</a></h1>
-<p>Release 1.0 (work in progress, last updated Feb 21, 2017)</p>
+<p>Release 1.0 (work in progress, last updated Mar 10, 2017)</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction/index.html">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="introduction/index.html#design-goals">Design Goals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="introduction/index.html#scope">Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction/overview.html">Overview</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="concepts/index.html">Concepts</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="concepts/overview.html">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/conventions.html">Conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/binary.html">Binary Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/validation.html">Validation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/execution.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="syntax/index.html">Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="syntax/conventions.html">Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syntax/values.html">Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syntax/types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syntax/modules.html">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syntax/instructions.html">Instructions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/overview.html">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/instantiation.html">Instantiation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/invocation.html">Invocation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/type-section.html">Type Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/import-section.html">Import Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/function-section.html">Function Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/table-section.html">Table Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/memory-section.html">Memory Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/global-section.html">Global Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/export-section.html">Export Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/start-section.html">Start Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/element-section.html">Element Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/code-section.html">Code Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/data-section.html">Data Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/user-section.html">User Section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/summary-grammar.html">Summary: Abstract Grammar of Modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/summary-validation.html">Summary: Validation of Modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/summary-execution.html">Summary: Execution of Modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/summary-binary.html">Summary: Binary Encoding of Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="validation/index.html">Validation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="validation/conventions.html">Conventions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="instantiation/index.html">Instantiation</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="execution/index.html">Execution</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="instructions/index.html">Instructions</a><ul>
@@ -124,14 +119,18 @@
 <li class="toctree-l2"><a class="reference internal" href="instructions/group-numeric.html">Numeric Instructions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions/group-memory.html">Memory Instructions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions/sequences.html">Instruction Sequences</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions/summary-grammar.html">Summary: Abstract Grammar of Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions/summary-validation.html">Summary: Validation of Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions/summary-execution.html">Summary: Execution of Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions/summary-binary.html">Summary: Binary Encoding of Instructions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="binary/index.html">Binary Format</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="binary/conventions.html">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binary/values.html">Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binary/types.html">Types</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 </div>
 <ul class="simple">
@@ -146,7 +145,7 @@
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2016, WebAssembly Community Group.
+      &copy;2017, WebAssembly Community Group.
       
     </div>
 

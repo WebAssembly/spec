@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Conventions &#8212; WebAssembly 1.0</title>
+    <title>Custom Section &#8212; WebAssembly 1.0</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -27,9 +27,6 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Concepts" href="index.html" />
-    <link rel="next" title="Validation" href="validation.html" />
-    <link rel="prev" title="Overview" href="overview.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -45,25 +42,25 @@
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
             </a></p><h3>Navigation</h3>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Concepts</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="validation.html">Validation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="execution.html">Execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="binary.html">Binary Format</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 
 
 <hr />
 <ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
     
     <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
     
@@ -85,20 +82,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="conventions">
-<h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="custom-section">
+<h1>Custom Section<a class="headerlink" href="#custom-section" title="Permalink to this headline">¶</a></h1>
 <div class="admonition-todo admonition" id="index-1">
 <span id="index-0"></span><p class="first admonition-title">Todo</p>
 <p class="last">Describe</p>
 </div>
-<p>Testing math: <span class="math">\(C \vdash e^\ast : t^\ast\)</span> defined for <span class="math">\(C\)</span> by</p>
-<div class="math">
-\[\frac{
-  C \vdash e^\ast : t_1^\ast \to t_2^\ast
-}{
-  C \vdash \mathsf{func}~\mathit{tf}~\mathsf{local}~t^\ast~e^\ast
-}\]</div>
-<p>and bla.</p>
 </div>
 
 
@@ -108,7 +97,7 @@
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2016, WebAssembly Community Group.
+      &copy;2017, WebAssembly Community Group.
       
     </div>
 
