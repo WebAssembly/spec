@@ -24,13 +24,16 @@ usage:
 	@echo "  html       to make standalone HTML files"
 	@echo "  pdf        to make standalone PDF file"
 	@echo "  all        to make both"
-	@echo "  publish    to make all and push to gh-pages (changes must be committed)"
+	@echo "  publish    to make all and push to gh-pages"
 	@echo "  help       to see more options"
 
 .PHONY: help
 help:
 	@echo "Usage: \`make <target>' where <target> is one of"
 	@echo "  html       to make standalone HTML files"
+	@echo "  pdf        to make standalone PDF file"
+	@echo "  all        to make both"
+	@echo "  publish    to make all and push to gh-pages"
 	@echo "  dirhtml    to make HTML files named index.html in directories"
 	@echo "  singlehtml to make a single large HTML file"
 	@echo "  pickle     to make pickle files"
@@ -58,10 +61,11 @@ help:
 	@echo "  dummy      to check syntax errors of document sources"
 
 .PHONY: publish
-publish: all
-	rm -rf $(GHPAGESDIR)/*
-	cp -rf $(BUILDDIR)/html/* $(GHPAGESDIR)/
-	git add -A $(GHPAGESDIR)/*
+publish: all deploy
+
+.PHONY: deploy
+deploy:
+	GIT_DEPLOY_DIR=$(BUILDDIR)/html sh deploy.sh
 
 .PHONY: all
 all:	pdf html
@@ -91,7 +95,7 @@ html:
 	  mv -f $$file.out $$file; \
 	done
 	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html."
 
 .PHONY: dirhtml
 dirhtml:

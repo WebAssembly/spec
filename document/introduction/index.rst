@@ -7,7 +7,7 @@ Its main goal is to enable high performance applications on the Web, but it does
 
 WebAssembly is an open standard developed by a `W3C Community Group <https://www.w3.org/community/webassembly/>`_ that includes representatives of all major browser vendors.
 
-This document describes version |release| of the standard.
+This document describes version |release| of the :ref:`core <Scope>` WebAssembly standard.
 It is intended that it will be superseded by new incremental releases with additional features in the future.
 
 
@@ -54,3 +54,18 @@ WebAssembly code is also intended to be easy to inspect and debug, especially in
 .. [#wasm] A contraction of "WebAssembly", not an acronym, hence not using all-caps.
 
 .. [#memorysafe] No program can break WebAssembly's memory model. Of course, it cannot guarantee that an unsafe language compiling to WebAssembly does not corrupt its own memory layout, e.g. inside WebAssembly's linear memory.
+
+
+Scope
+-----
+
+At its core, WebAssembly is a *virtual instruction set architecture (virtual ISA)*.
+As such, it has many use cases and can be embedded in many different environments.
+To encompass their variety and enable maximum reuse, the WebAssembly specification is split and layered into several documents.
+
+This document is concerned with the core ISA layer of WebAssembly.
+It defines the instruction set, binary encoding, validation, and execution semantics.
+It does not, however, define how WebAssembly programs can interact with a specific environment they execute in, nor how they are invoked from such an environment.
+
+Instead, this specification is complemented by additional documents defining interfaces to specific embedding environments such as the Web.
+These will each define a WebAssembly *application programming interface (API)* suitable for a given environment.

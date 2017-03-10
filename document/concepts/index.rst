@@ -6,6 +6,6 @@ Concepts
 
    overview
    conventions
+   binary
    validation
    execution
-   binary
