@@ -728,14 +728,14 @@ test(() => {
     }
     var scratch_memory = new WebAssembly.Memory({initial:1});
     var scratch_table = new WebAssembly.Table({element:"anyfunc", initial:1, maximum:1});
-    assertInstantiateError([], TypeError, "instantiate with no args throws TypeError)");
-    assertInstantiateError([undefined], TypeError, "instantiate on undefined throws TypeError)");
-    assertInstantiateError([1], TypeError, "instantiate on a number throws TypeError)");
-    assertInstantiateError([{}], TypeError, "instantiate on empty object throws TypeError)");
-    assertInstantiateError([new Uint8Array()], CompileError, "instantiate on empty Uint8Array throws CompileError)");
-    assertInstantiateError([new ArrayBuffer()], CompileError, "instantiate on empty ArrayBuffer throws CompileError)");
-    assertInstantiateError([new Uint8Array("hi!")], CompileError, "instantiate on Uint8Array('hi!') throws CompileError)");
-    assertInstantiateError([new ArrayBuffer("hi!")], CompileError, "instantiate on ArrayBuffer('hi!') throws CompileError)");
+    assertInstantiateError([], TypeError, "instantiate with no args throws TypeError");
+    assertInstantiateError([undefined], TypeError, "instantiate on undefined throws TypeError");
+    assertInstantiateError([1], TypeError, "instantiate on a number throws TypeError");
+    assertInstantiateError([{}], TypeError, "instantiate on empty object throws TypeError");
+    assertInstantiateError([new Uint8Array()], CompileError, "instantiate on empty Uint8Array throws CompileError");
+    assertInstantiateError([new ArrayBuffer()], CompileError, "instantiate on empty ArrayBuffer throws CompileError");
+    assertInstantiateError([new Uint8Array("hi!")], CompileError, "instantiate on Uint8Array('hi!') throws CompileError");
+    assertInstantiateError([new ArrayBuffer("hi!")], CompileError, "instantiate on ArrayBuffer('hi!') throws CompileError");
     assertInstantiateError([importingModule], TypeError, "instantiate on importingModule throws TypeError");
     assertInstantiateError([importingModule, null], TypeError, "instantiate on importingModule, null throws TypeError");
     assertInstantiateError([importingModuleBinary, null], TypeError, "instantiate on importingModuleBinary, null throws TypeError");
