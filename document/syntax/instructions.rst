@@ -12,35 +12,35 @@ Instructions
 
 .. math::
    \begin{array}{llll}
-   \production{(width)} & \X{nn}, \X{mm} &::=&
+   \production{width} & \X{nn}, \X{mm} &::=&
      \K{32} ~|~ \K{64} \\
-   \production{(signedness)} & \sx &::=&
+   \production{signedness} & \sx &::=&
      \K{u} ~|~ \K{s} \\
-   \production{(memory operators)} & \memop &::=&
+   \production{memory operators} & \memop &::=&
      \{ \ALIGN~\u32, \OFFSET~\u32 \} \\
    \end{array}
 
 .. math::
    \begin{array}{llll}
-   \production{(instructions)} & \instr &::=&
+   \production{instructions} & \instr &::=&
      \K{unreachable} ~|~ \\&&&
      \K{nop} ~|~ \\&&&
-     \K{block}~\href{#types}{\resulttype}~\instr^\ast~\END ~|~ \\&&&
-     \K{loop}~\href{#types}{\resulttype}~\instr^\ast~\END ~|~ \\&&&
-     \K{if}~\href{#types}{\resulttype}~\instr^\ast~\K{else}~\instr^\ast~\END ~|~ \\&&&
-     \K{br}~\href{#indices}{\labelidx} ~|~ \\&&&
-     \K{br\_if}~\href{#indices}{\labelidx} ~|~ \\&&&
-     \K{br\_table}~\vec(\href{#indices}{\labelidx})~\href{#indices}{\labelidx} ~|~ \\&&&
+     \K{block}~\resulttype~\instr^\ast~\END ~|~ \\&&&
+     \K{loop}~\resulttype~\instr^\ast~\END ~|~ \\&&&
+     \K{if}~\resulttype~\instr^\ast~\K{else}~\instr^\ast~\END ~|~ \\&&&
+     \K{br}~\labelidx ~|~ \\&&&
+     \K{br\_if}~\labelidx ~|~ \\&&&
+     \K{br\_table}~\vec(\labelidx)~\labelidx ~|~ \\&&&
      \K{return} ~|~ \\&&&
-     \K{call}~\href{#indices}{\funcidx} ~|~ \\&&&
-     \K{call\_indirect}~\href{#indices}{\typeidx} ~|~ \\&&&
+     \K{call}~\funcidx ~|~ \\&&&
+     \K{call\_indirect}~\typeidx ~|~ \\&&&
      \K{drop} ~|~ \\&&&
      \K{select} ~|~ \\&&&
-     \K{get\_local}~\href{#indices}{\localidx} ~|~ \\&&&
-     \K{set\_local}~\href{#indices}{\localidx} ~|~ \\&&&
-     \K{tee\_local}~\href{#indices}{\localidx} ~|~ \\&&&
-     \K{get\_global}~\href{#indices}{\globalidx} ~|~ \\&&&
-     \K{set\_global}~\href{#indices}{\globalidx} ~|~ \\&&&
+     \K{get\_local}~\localidx ~|~ \\&&&
+     \K{set\_local}~\localidx ~|~ \\&&&
+     \K{tee\_local}~\localidx ~|~ \\&&&
+     \K{get\_global}~\globalidx ~|~ \\&&&
+     \K{set\_global}~\globalidx ~|~ \\&&&
      \K{i}\X{nn}\K{.load}~\memop ~|~
      \K{f}\X{nn}\K{.load}~\memop ~|~ \\&&&
      \K{i}\X{nn}\K{.store}~\memop ~|~
@@ -51,6 +51,11 @@ Instructions
      \K{i}\X{nn}\K{.store8}~\memop ~|~ \\&&&
      \K{i}\X{nn}\K{.store16}~\memop ~|~ \\&&&
      \K{i64.store32}~\memop ~|~ \\&&&
+   \end{array}
+
+.. math::
+   \begin{array}{llll}
+   \production{instructions} & \instr &::=& \dots \\&&&
      \K{i}\X{nn}\K{.const}~\iX{\X{nn}} ~|~
      \K{f}\X{nn}\K{.const}~\fX{\X{nn}} ~|~ \\&&&
      \K{i}\X{nn}\K{.eqz} ~|~ \\&&&
