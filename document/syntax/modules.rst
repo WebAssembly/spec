@@ -179,14 +179,6 @@ Most constructs implicitly reference table index :math:`0`.
    and *all* constructs implicitly reference this table :math:`0`.
    This restriction may be lifted in future versions.
 
-   Tables can contain values that are not otherwise accessible --
-   like host object references, raw OS handles, or native pointers --
-   so that they can be accessed indirectly through an integer index.
-   That bridges the gap between low-level, untrusted linear memory and high-level opaque handles or references.
-   Currently, the primary purpose of tables is to emulate function pointers,
-   which can be represented as integers indexing into a table of type |ANYFUNC|
-   holding functions and can be called via the :math:`\K{call\_indirect}` instruction.
-
 
 .. _syntax-mem:
 .. index:: ! memory
@@ -217,9 +209,6 @@ Most constructs implicitly reference memory index :math:`0`.
    In the current version of WebAssembly, at most one memory may be defined or imported in a single module,
    and *all* constructs implicitly reference this memory :math:`0`.
    This restriction may be lifted in future versions.
-
-   It is unspecified how embedders map this array into their process' own virtual memory.
-   However, linear memory is sandboxed and does not alias other memory regions.
 
 
 .. _syntax-global:
