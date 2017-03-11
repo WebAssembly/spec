@@ -27,9 +27,6 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Conventions" href="index.html" />
-    <link rel="next" title="Execution" href="execution.html" />
-    <link rel="prev" title="Binary Format" href="binary.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -45,16 +42,10 @@
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
             </a></p><h3>Navigation</h3>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Conventions</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="syntax.html">Abstract Syntax</a></li>
-<li class="toctree-l2"><a class="reference internal" href="binary.html">Binary Format</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Validation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="execution.html">Execution</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../basics/index.html">Basic Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-summary/index.html">Appendix: Rules Summary</a></li>
@@ -120,13 +111,13 @@ The label stack is the only part of the context that changes as validation of a 
 \[\begin{split}\begin{array}{llll}
 \mbox{(context)} &amp; C &amp;::=&amp;
   \begin{array}[t]{l&#64;{~}lll}
-  \{ &amp; \mathsf{types} &amp;=&amp; \href{../basics/types.html#function-types}{\mathit{functype}}^\ast, \\
-     &amp; \mathsf{funcs} &amp;=&amp; \href{../basics/types.html#function-types}{\mathit{functype}}^\ast, \\
-     &amp; \mathsf{table} &amp;=&amp; \href{../basics/types.html#table-types}{\mathit{tabletype}}^?, \\
-     &amp; \mathsf{memory} &amp;=&amp; \href{../basics/types.html#memory-types}{\mathit{memtype}}^?, \\
-     &amp; \mathsf{globals} &amp;=&amp; \href{../basics/types.html#global-types}{\mathit{globaltype}}^\ast, \\
-     &amp; \mathsf{locals} &amp;=&amp; \href{../basics/types.html#value-types}{\mathit{valtype}}^\ast, \\
-     &amp; \mathsf{labels} &amp;=&amp; \href{../basics/types.html#result-types}{\mathit{resulttype}}^\ast ~\} \\
+  \{ &amp; \mathsf{types} &amp;=&amp; \href{../basics/types.html#function-types}{\href{../syntax/types.html#syntax-functype}{\mathit{functype}}}^\ast, \\
+     &amp; \mathsf{funcs} &amp;=&amp; \href{../basics/types.html#function-types}{\href{../syntax/types.html#syntax-functype}{\mathit{functype}}}^\ast, \\
+     &amp; \mathsf{table} &amp;=&amp; \href{../basics/types.html#table-types}{\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}}^?, \\
+     &amp; \MEMORY &amp;=&amp; \href{../basics/types.html#memory-types}{\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}}^?, \\
+     &amp; \mathsf{globals} &amp;=&amp; \href{../basics/types.html#global-types}{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}^\ast, \\
+     &amp; \mathsf{locals} &amp;=&amp; \href{../basics/types.html#value-types}{\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}}^\ast, \\
+     &amp; \mathsf{labels} &amp;=&amp; \href{../basics/types.html#result-types}{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}^\ast ~\} \\
   \end{array}
 \end{array}\end{split}\]</div>
 </div>

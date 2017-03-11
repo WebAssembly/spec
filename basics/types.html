@@ -96,9 +96,9 @@ They are defined by the following grammar:</p>
 \[\begin{split}\begin{array}{llll}
 \def\void#1{}\void{(value types)} &amp; \mathit{valtype} &amp;::=&amp; \mathsf{i32} ~|~ \mathsf{i64} ~|~ \mathsf{f32} ~|~ \mathsf{f64} \\
 \end{array}\end{split}\]</div>
-<p>The types <span class="math">\(\mathsf{i32}\)</span> and <span class="math">\(\mathsf{i64}\)</span> classify 32 and 64 bit integers, respectively.
+<p>The types <span class="math">\({\mathit{int}_{32}}\)</span> and <span class="math">\({\mathit{int}_{64}}\)</span> classify 32 and 64 bit integers, respectively.
 Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.</p>
-<p>The types <span class="math">\(\mathsf{f32}\)</span> and <span class="math">\(\mathsf{f64}\)</span> classify 32 and 64 bit floating points, respectively.
+<p>The types <span class="math">\({\mathit{float}_{32}}\)</span> and <span class="math">\({\mathit{float}_{64}}\)</span> classify 32 and 64 bit floating points, respectively.
 They correspond to single and double precision floating point types as defined by the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE-754</a> standard</p>
 <div class="section" id="covnentions">
 <h3>Covnentions<a class="headerlink" href="#covnentions" title="Permalink to this headline">¶</a></h3>
@@ -110,14 +110,14 @@ They correspond to single and double precision floating point types as defined b
 <h3>Binary Encoding<a class="headerlink" href="#binary-encoding" title="Permalink to this headline">¶</a></h3>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad\qquad}l}
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{\mathsf{i32}}{\mathit{valtype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{7F} \\
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{\mathsf{i64}}{\mathit{valtype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{7E} \\
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{\mathsf{f32}}{\mathit{valtype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{7D} \\
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{\mathsf{f64}}{\mathit{valtype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{7C} \\
+\enc{\mathsf{i32}}{\mathit{valtype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{7F} \\
+\enc{\mathsf{i64}}{\mathit{valtype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{7E} \\
+\enc{\mathsf{f32}}{\mathit{valtype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{7D} \\
+\enc{\mathsf{f64}}{\mathit{valtype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{7C} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">These bytes correspond to the encodings of small negative <span class="math">\({\mathit{sint}}\)</span> values.
+<p class="last">These bytes correspond to the encodings of small negative <a href="#id5"><span class="problematic" id="id6">|sint|</span></a> values.
 This scheme is so that types can coexist in a single space with (positive) indices into the type section, which may be relevant for future extensions
 Gaps in this scheme are also reserved for future extensions.</p>
 </div>
@@ -150,7 +150,7 @@ They are defined by the following grammar:</p>
 <p>Function types are encoded by the byte <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{60}\)</span> followed by the vector of parameter types and the vector of result types.</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad\qquad}l}
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{t_1^\ast \to t_2^?}{\mathit{functype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{60}~\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{t_1^\ast}{}~\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{t_2^?}{} \\
+\enc{t_1^\ast \to t_2^?}{\mathit{functype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{60}~\enc{t_1^\ast}{}~\enc{t_2^?}{} \\
 \end{array}\end{split}\]</div>
 </div>
 </div>
@@ -162,7 +162,7 @@ They are defined by the following grammar:</p>
 \[\begin{split}\begin{array}{llll}
 \def\void#1{}\void{(table types)} &amp; \mathit{tabletype} &amp;::=&amp; \mathit{elemtype}[\mathit{limits}] \\
 \def\void#1{}\void{(element types)} &amp; \mathit{elemtype} &amp;::=&amp; \mathsf{anyfunc} \\
-\def\void#1{}\void{(limits)} &amp; \mathit{limits} &amp;::=&amp; {\mathit{uint}_{32}}~{\mathit{uint}_{32}}^? \\
+\def\void#1{}\void{(limits)} &amp; \mathit{limits} &amp;::=&amp; \uint32~\uint32^? \\
 \end{array}\end{split}\]</div>
 <p>The limits constrain the minimum and optional maximum size of a table.
 If no maximum is given, the table can grow to any size.</p>
@@ -174,11 +174,11 @@ If no maximum is given, the table can grow to any size.</p>
 <h3>Binary Encoding<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad\qquad}l}
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{\mathsf{anyfunc}}{\mathit{elemtype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{70} \\
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{t[n~m^?]}{\mathit{tabletype}} &amp;=&amp; \def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{t}{\mathit{elemtype}}~\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{n~m^?}{\mathit{limits}} \\
+\enc{\mathsf{anyfunc}}{\mathit{elemtype}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{70} \\
+\enc{t[n~m^?]}{\mathit{tabletype}} &amp;=&amp; \enc{t}{\mathit{elemtype}}~\enc{n~m^?}{\mathit{limits}} \\
 ~ \\
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{n}{\mathit{limits}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{00}~\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{n}{{\mathit{uint}_{32}}} \\
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{n~m}{\mathit{limits}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{01}~\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{n}{{\mathit{uint}_{32}}}~\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{m}{{\mathit{uint}_{32}}} \\
+\enc{n}{\mathit{limits}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{00}~\enc{n}{\uint32} \\
+\enc{n~m}{\mathit{limits}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{01}~\enc{n}{\uint32}~\enc{m}{\uint32} \\
 \end{array}\end{split}\]</div>
 </div>
 </div>
@@ -196,7 +196,7 @@ Both are given in units of page size.</p>
 <h3>Binary Encoding<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad\qquad}l}
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{\mathsf{page}[n~m^?]}{\mathit{memtype}} &amp;=&amp; \def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{n~m^?}{\mathit{limits}} \\
+\enc{\mathsf{page}[n~m^?]}{\mathit{memtype}} &amp;=&amp; \enc{n~m^?}{\mathit{limits}} \\
 \end{array}\end{split}\]</div>
 </div>
 </div>
@@ -213,9 +213,9 @@ They are defined by the following grammar:</p>
 <h3>Binary Encoding<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad\qquad}l}
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{\mathsf{mut}^?~t}{\mathit{globaltype}} &amp;=&amp; \def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{t}{\mathit{valtype}}~\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{\mathsf{mut}^?}{\mathit{mutability}} \\
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{\epsilon}{\mathit{mutability}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{00} \\
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{\mathsf{mut}}{\mathit{mutability}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{01} \\
+\enc{\mathsf{mut}^?~t}{\mathit{globaltype}} &amp;=&amp; \enc{t}{\mathit{valtype}}~\enc{\mathsf{mut}^?}{\mathit{mutability}} \\
+\enc{\epsilon}{\mathit{mutability}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{00} \\
+\enc{\mathsf{mut}}{\mathit{mutability}} &amp;=&amp; \def\hex#1{\mathrm{0x#1}}\hex{01} \\
 \end{array}\end{split}\]</div>
 </div>
 </div>

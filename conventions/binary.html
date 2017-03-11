@@ -27,9 +27,6 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Conventions" href="index.html" />
-    <link rel="next" title="Validation" href="validation.html" />
-    <link rel="prev" title="Abstract Syntax" href="syntax.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -45,16 +42,9 @@
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
             </a></p><h3>Navigation</h3>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Conventions</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="syntax.html">Abstract Syntax</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Binary Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="validation.html">Validation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="execution.html">Execution</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../basics/index.html">Basic Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../structure/index.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-summary/index.html">Appendix: Rules Summary</a></li>
@@ -124,23 +114,23 @@ Conversely, a decoder must reject all inputs that are not a possible encoding fo
 </li>
 <li><p class="first"><span class="math">\(\mathrm{byte}(n)\)</span> denotes the byte value of the natural number <span class="math">\(n\)</span> (for <span class="math">\(0 \leq n &lt; 256\)</span>).</p>
 </li>
-<li><p class="first"><span class="math">\(\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{x}{t}\)</span> denotes the set of encodings of <span class="math">\(x\)</span> of syntactic class <span class="math">\(t\)</span>.</p>
+<li><p class="first"><span class="math">\(\enc{x}{t}\)</span> denotes the set of encodings of <span class="math">\(x\)</span> of syntactic class <span class="math">\(t\)</span>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For example, <span class="math">\(\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{10}{{\mathit{uint}_{8}}}\)</span> denotes the set of encodings of the <span class="math">\({\mathit{uint}_{8}}\)</span> value <span class="math">\(10\)</span>, which is <span class="math">\(\{\def\hex#1{\mathrm{0x#1}}\hex{0A},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{8A}~\def\hex#1{\mathrm{0x#1}}\hex{00}\}\)</span>.</p>
+<p class="last">For example, <span class="math">\(\enc{10}{\uint8}\)</span> denotes the set of encodings of the <a href="#id2"><span class="problematic" id="id3">|uint8|</span></a> value <span class="math">\(10\)</span>, which is <span class="math">\(\{\def\hex#1{\mathrm{0x#1}}\hex{0A},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{8A}~\def\hex#1{\mathrm{0x#1}}\hex{00}\}\)</span>.</p>
 </div>
 </li>
 <li><p class="first">The concatenation <span class="math">\(A~B\)</span> denotes the set of all encodings that are concatenations of an element from encoding <span class="math">\(A\)</span> with an element from encoding <span class="math">\(B\)</span>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For example, the concatenation <span class="math">\(\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{10}{{\mathit{uint}_{8}}}~\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{13}{{\mathit{uint}_{8}}}\)</span> yields the set <span class="math">\(\{\def\hex#1{\mathrm{0x#1}}\hex{0A}~\def\hex#1{\mathrm{0x#1}}\hex{0D},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{0A}~\def\hex#1{\mathrm{0x#1}}\hex{8D}~\def\hex#1{\mathrm{0x#1}}\hex{00},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{8A}~\def\hex#1{\mathrm{0x#1}}\hex{00}~\def\hex#1{\mathrm{0x#1}}\hex{0D},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{8A}~\def\hex#1{\mathrm{0x#1}}\hex{00}~\def\hex#1{\mathrm{0x#1}}\hex{8D}~\def\hex#1{\mathrm{0x#1}}\hex{00}\}\)</span> of possible encodings.</p>
+<p class="last">For example, the concatenation <span class="math">\(\enc{10}{\uint8}~\enc{13}{\uint8}\)</span> yields the set <span class="math">\(\{\def\hex#1{\mathrm{0x#1}}\hex{0A}~\def\hex#1{\mathrm{0x#1}}\hex{0D},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{0A}~\def\hex#1{\mathrm{0x#1}}\hex{8D}~\def\hex#1{\mathrm{0x#1}}\hex{00},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{8A}~\def\hex#1{\mathrm{0x#1}}\hex{00}~\def\hex#1{\mathrm{0x#1}}\hex{0D},\)</span> <span class="math">\(\def\hex#1{\mathrm{0x#1}}\hex{8A}~\def\hex#1{\mathrm{0x#1}}\hex{00}~\def\hex#1{\mathrm{0x#1}}\hex{8D}~\def\hex#1{\mathrm{0x#1}}\hex{00}\}\)</span> of possible encodings.</p>
 </div>
 </li>
 <li><p class="first">The definition of encoding functions is given in clause form:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{x}{t} &amp;=&amp; \mathit{byte~sequence~encoding~x} &amp; (\mbox{side condition}) \\
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{y}{t} &amp;=&amp; \mathit{byte~sequence~encoding~y} &amp; (\mbox{side condition}) \\
+\enc{x}{t} &amp;=&amp; \mathit{byte~sequence~encoding~x} &amp; (\mbox{side condition}) \\
+\enc{y}{t} &amp;=&amp; \mathit{byte~sequence~encoding~y} &amp; (\mbox{side condition}) \\
 \end{array}\end{split}\]</div>
 <p>The encoding for a single syntactic class <span class="math">\(t\)</span> may be defined by multiple clauses covering different cases.
 When clauses overlap, either is applicable,
@@ -148,11 +138,11 @@ expressing multiple possible encodings.
 The result of the encoding function then is the union of all applicable clauses.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>For example, the encoding of <span class="math">\({\mathit{uint}_{8}}\)</span> values in length-bound <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128">LEB128</a> format could be given as follows:</p>
+<p>For example, the encoding of <a href="#id4"><span class="problematic" id="id5">|uint8|</span></a> values in length-bound <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128">LEB128</a> format could be given as follows:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{n}{{\mathit{uint}_{8}}} &amp;=&amp; \mathrm{byte}(n) &amp; (n &lt; 128) \\
-\def\encodeinternal#1#2{{[\![#2]\!]}(#1)}\encodeinternal{m \cdot 128 + n}{{\mathit{uint}_{8}}} &amp;=&amp; \mathrm{byte}(n+128)~\mathrm{byte}(m) \\
+\enc{n}{\uint8} &amp;=&amp; \mathrm{byte}(n) &amp; (n &lt; 128) \\
+\enc{m \cdot 128 + n}{\uint8} &amp;=&amp; \mathrm{byte}(n+128)~\mathrm{byte}(m) \\
 \end{array}\end{split}\]</div>
 <p class="last">For values smaller than <span class="math">\(128\)</span>, both clauses apply, resulting in a set of two possible encodings as sampled in the previous note.</p>
 </div>

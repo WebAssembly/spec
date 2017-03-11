@@ -27,6 +27,9 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Appendix: Rules Summary" href="index.html" />
+    <link rel="next" title="Binary Encoding Summary" href="binary.html" />
+    <link rel="prev" title="Appendix: Rules Summary" href="index.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -42,14 +45,19 @@
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
             </a></p><h3>Navigation</h3>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Appendix: Rules Summary</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Abstract Syntax Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binary.html">Binary Encoding Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html">Validation Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html">Execution Summary</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
@@ -59,8 +67,6 @@
 
 <hr />
 <ul>
-    
-    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
     
     <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
     
@@ -137,7 +143,7 @@
 \def\void#1{}\void{(external types)} &amp; \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}} &amp;::=&amp;
   \mathsf{func}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}} ~|~ \\&amp;&amp;&amp;
   \mathsf{table}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{mem}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} ~|~ \\&amp;&amp;&amp;
+  \MEMORY~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} ~|~ \\&amp;&amp;&amp;
   \mathsf{global}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} \\
 \end{array}\end{split}\]</div>
 </div>
@@ -145,13 +151,13 @@
 <h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\void#1{}\void{(type indices)} &amp; \href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
-\def\void#1{}\void{(function indices)} &amp; \href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
-\def\void#1{}\void{(table indices)} &amp; \href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
-\def\void#1{}\void{(memory indices)} &amp; \href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
-\def\void#1{}\void{(global indices)} &amp; \href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
-\def\void#1{}\void{(local indices)} &amp; \href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
-\def\void#1{}\void{(label indices)} &amp; \href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
+\def\void#1{}\void{(type indices)} &amp; \href{../syntax/modules.html#syntax-idx}{\mathit{typeidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
+\def\void#1{}\void{(function indices)} &amp; \href{../syntax/modules.html#syntax-idx}{\mathit{funcidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
+\def\void#1{}\void{(table indices)} &amp; \href{../syntax/modules.html#syntax-idx}{\mathit{tableidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
+\def\void#1{}\void{(memory indices)} &amp; \href{../syntax/modules.html#syntax-idx}{\mathit{memidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
+\def\void#1{}\void{(global indices)} &amp; \href{../syntax/modules.html#syntax-idx}{\mathit{globalidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
+\def\void#1{}\void{(local indices)} &amp; \href{../syntax/modules.html#syntax-idx}{\mathit{localidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
+\def\void#1{}\void{(label indices)} &amp; \href{../syntax/modules.html#syntax-idx}{\mathit{labelidx}} &amp;::=&amp; \href{#numbers}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}} \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="modules">
@@ -166,7 +172,7 @@
   \mathsf{globals}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-global}{\mathit{global}}), \\&amp;&amp;&amp;&amp;
   \mathsf{imports}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-import}{\mathit{import}}), \\&amp;&amp;&amp;&amp;
   \mathsf{exports}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}), \\&amp;&amp;&amp;&amp;
-  \mathsf{start}~\href{#indices}{\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}}, \\&amp;&amp;&amp;&amp;
+  \mathsf{start}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{funcidx}}}, \\&amp;&amp;&amp;&amp;
   \mathsf{elem}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-elemseg}{\mathit{elemseg}}), \\&amp;&amp;&amp;&amp;
   \mathsf{data}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-dataseg}{\mathit{dataseg}}) \quad\} \\
 \end{array}
@@ -192,17 +198,17 @@
 \def\void#1{}\void{(import sections)} &amp; \mathit{importsec} &amp;::=&amp;
   \mathsf{import}~\href{../syntax/modules.html#syntax-import}{\mathit{import}}^\ast \\
 \def\void#1{}\void{(function sections)} &amp; \mathit{funcsec} &amp;::=&amp;
-  \mathsf{func}~\href{#indices}{\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}^\ast \\
+  \mathsf{func}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{typeidx}}}^\ast \\
 \def\void#1{}\void{(table sections)} &amp; \mathit{tablesec} &amp;::=&amp;
   \mathsf{table}~\href{#types}{\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}}^\ast \\
 \def\void#1{}\void{(memory sections)} &amp; \mathit{memsec} &amp;::=&amp;
-  \mathsf{mem}~\href{#types}{\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}}^\ast \\
+  \MEMORY~\href{#types}{\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}}^\ast \\
 \def\void#1{}\void{(global sections)} &amp; \mathit{globalsec} &amp;::=&amp;
   \mathsf{global}~\href{../syntax/modules.html#syntax-global}{\mathit{global}}^\ast \\
 \def\void#1{}\void{(export sections)} &amp; \mathit{exportsec} &amp;::=&amp;
   \mathsf{export}~\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast \\
 \def\void#1{}\void{(start sections)} &amp; \mathit{startsec} &amp;::=&amp;
-  \mathsf{start}~\href{#indices}{\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}} \\
+  \mathsf{start}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{funcidx}}} \\
 \def\void#1{}\void{(code sections)} &amp; \mathit{codesec} &amp;::=&amp;
   \mathsf{code}~\mathit{code}^\ast \\
 \def\void#1{}\void{(element sections)} &amp; \mathit{elemsec} &amp;::=&amp;
@@ -214,36 +220,35 @@
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\void#1{}\void{(functions)} &amp; \href{../syntax/modules.html#syntax-func}{\mathit{func}} &amp;::=&amp;
-  \{ \mathsf{type}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}, \mathsf{locals}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{#types}{\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}}), \mathsf{body}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}} \} \\
+  \{ \mathsf{type}~\href{../syntax/modules.html#syntax-idx}{\mathit{typeidx}}, \mathsf{locals}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{#types}{\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}}), \mathsf{body}~\mathit{expr} \} \\
 \def\void#1{}\void{(tables)} &amp; \href{../syntax/modules.html#syntax-table}{\mathit{table}} &amp;::=&amp;
   \{ \mathsf{type}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} \} \\
 \def\void#1{}\void{(memories)} &amp; \href{../syntax/modules.html#syntax-mem}{\mathit{mem}} &amp;::=&amp;
   \{ \mathsf{type}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} \} \\
 \def\void#1{}\void{(globals)} &amp; \href{../syntax/modules.html#syntax-global}{\mathit{global}} &amp;::=&amp;
-  \{ \mathsf{type}~\href{#types}{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}, \mathsf{init}~\href{#expressions}{\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}} \} \\
-\def\void#1{}\void{(expressions)} &amp; \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} &amp;::=&amp;
-  \href{#instructions}{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast~\mathsf{end} \\
+  \{ \mathsf{type}~\href{#types}{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}, \mathsf{init}~\href{#expressions}{\mathit{expr}} \} \\
+\def\void#1{}\void{(expressions)} &amp; \mathit{expr} &amp;::=&amp;
+  \href{#instructions}{\mathit{instr}}^\ast~\mathsf{end} \\
 ~ \\
 \def\void#1{}\void{(data segments)} &amp; \href{../syntax/modules.html#syntax-dataseg}{\mathit{dataseg}} &amp;::=&amp;
-  \{ \mathsf{offset}~\href{#expressions}{\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}}, \mathsf{init}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{#numbers}{b}) \} \\
+  \{ \mathsf{offset}~\href{#expressions}{\mathit{expr}}, \mathsf{init}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{#numbers}{b}) \} \\
 \def\void#1{}\void{(element segments)} &amp; \href{../syntax/modules.html#syntax-elemseg}{\mathit{elemseg}} &amp;::=&amp;
-  \{ \mathsf{offset}~\href{#expressions}{\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}}, \mathsf{init}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{#indices}{\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}}) \} \\
+  \{ \mathsf{offset}~\href{#expressions}{\mathit{expr}}, \mathsf{init}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{funcidx}}}) \} \\
 ~ \\
 \def\void#1{}\void{(imports)} &amp; \href{../syntax/modules.html#syntax-import}{\mathit{import}} &amp;::=&amp;
   \{ \mathsf{module}~\href{#strings}{\href{../syntax/values.html#syntax-name}{\mathit{name}}}, \mathsf{name}~\href{#strings}{\href{../syntax/values.html#syntax-name}{\mathit{name}}}, \mathsf{desc}~\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}} \} \\
 \def\void#1{}\void{(import descriptions)} &amp; \href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}} &amp;::=&amp;
-  \mathsf{func}~\href{#indices}{\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{func}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{typeidx}}} ~|~ \\&amp;&amp;&amp;
   \mathsf{table}~\href{#types}{\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{mem}~\href{#types}{\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}} ~|~ \\&amp;&amp;&amp;
+  \MEMORY~\href{#types}{\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}} ~|~ \\&amp;&amp;&amp;
   \mathsf{global}~\href{#types}{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}} \\
 ~ \\
 \def\void#1{}\void{(exports)} &amp; \href{../syntax/modules.html#syntax-export}{\mathit{export}} &amp;::=&amp;
   \{ \mathsf{name}~\href{#strings}{\href{../syntax/values.html#syntax-name}{\mathit{name}}}, \mathsf{desc}~\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}} \} \\
 \def\void#1{}\void{(export descriptions)} &amp; \href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}} &amp;::=&amp;
-  \mathsf{func}~\href{#indices}{\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{table}~\href{#indices}{\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{mem}~\href{#indices}{\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{global}~\href{#indices}{\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}}} \\
+  \mathsf{func}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{funcidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{table}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{tableidx}}} ~|~ \\&amp;&amp;&amp; \MEMORY~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{memidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{global}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{globalidx}}} \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="instructions">
@@ -252,51 +257,51 @@
 \[\begin{split}\begin{array}{llll}
 \def\void#1{}\void{(width)} &amp; \mathit{nn}, \mathit{mm} &amp;::=&amp;
   \mathsf{32} ~|~ \mathsf{64} \\
-\def\void#1{}\void{(signedness)} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp;::=&amp;
+\def\void#1{}\void{(signedness)} &amp; \mathit{sx} &amp;::=&amp;
   \mathsf{u} ~|~ \mathsf{s} \\
-\def\void#1{}\void{(memory operators)} &amp; \href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} &amp;::=&amp;
+\def\void#1{}\void{(memory operators)} &amp; \mathit{memop} &amp;::=&amp;
   \{ \mathsf{align}~\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}, \mathsf{offset}~\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}} \} \\
 \end{array}\end{split}\]</div>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\void#1{}\void{(instructions)} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+\def\void#1{}\void{(instructions)} &amp; \mathit{instr} &amp;::=&amp;
   \mathsf{unreachable} ~|~ \\&amp;&amp;&amp;
   \mathsf{nop} ~|~ \\&amp;&amp;&amp;
-  \mathsf{block}~\href{#types}{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
-  \mathsf{loop}~\href{#types}{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
-  \mathsf{if}~\href{#types}{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{else}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
-  \mathsf{br}~\href{#indices}{\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{br\_if}~\href{#indices}{\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{br\_table}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{#indices}{\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}}})~\href{#indices}{\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{block}~\href{#types}{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}~\mathit{instr}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
+  \mathsf{loop}~\href{#types}{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}~\mathit{instr}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
+  \mathsf{if}~\href{#types}{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}~\mathit{instr}^\ast~\mathsf{else}~\mathit{instr}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
+  \mathsf{br}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{labelidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{br\_if}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{labelidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{br\_table}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{labelidx}}})~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{labelidx}}} ~|~ \\&amp;&amp;&amp;
   \mathsf{return} ~|~ \\&amp;&amp;&amp;
-  \mathsf{call}~\href{#indices}{\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{call\_indirect}~\href{#indices}{\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{call}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{funcidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{call\_indirect}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{typeidx}}} ~|~ \\&amp;&amp;&amp;
   \mathsf{drop} ~|~ \\&amp;&amp;&amp;
   \mathsf{select} ~|~ \\&amp;&amp;&amp;
-  \mathsf{get\_local}~\href{#indices}{\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{set\_local}~\href{#indices}{\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{tee\_local}~\href{#indices}{\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{get\_global}~\href{#indices}{\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{set\_global}~\href{#indices}{\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.load}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
-  \mathsf{f}\mathit{nn}\mathsf{.load}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.store}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
-  \mathsf{f}\mathit{nn}\mathsf{.store}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.load8\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.load16\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i64.load32\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.store8}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.store16}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i64.store32}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{get\_local}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{localidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{set\_local}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{localidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{tee\_local}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{localidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{get\_global}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{globalidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{set\_global}~\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{globalidx}}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.load}~\mathit{memop} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.load}~\mathit{memop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.store}~\mathit{memop} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.store}~\mathit{memop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.load8\_}\mathit{sx}~\mathit{memop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.load16\_}\mathit{sx}~\mathit{memop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i64.load32\_}\mathit{sx}~\mathit{memop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.store8}~\mathit{memop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.store16}~\mathit{memop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i64.store32}~\mathit{memop} ~|~ \\&amp;&amp;&amp;
   \mathsf{i}\mathit{nn}\mathsf{.const}~\def\iX#1{\mathit{int}_{#1}}\iX{\mathit{nn}} ~|~
   \mathsf{f}\mathit{nn}\mathsf{.const}~\def\fX#1{\mathit{float}_{#1}}\fX{\mathit{nn}} ~|~ \\&amp;&amp;&amp;
   \mathsf{i}\mathit{nn}\mathsf{.eqz} ~|~ \\&amp;&amp;&amp;
   \mathsf{i}\mathit{nn}\mathsf{.eq} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.ne} ~|~
-  \mathsf{i}\mathit{nn}\mathsf{.lt\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
-  \mathsf{i}\mathit{nn}\mathsf{.gt\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
-  \mathsf{i}\mathit{nn}\mathsf{.le\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
-  \mathsf{i}\mathit{nn}\mathsf{.ge\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.lt\_}\mathit{sx} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.gt\_}\mathit{sx} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.le\_}\mathit{sx} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.ge\_}\mathit{sx} ~|~ \\&amp;&amp;&amp;
   \mathsf{f}\mathit{nn}\mathsf{.eq} ~|~
   \mathsf{f}\mathit{nn}\mathsf{.ne} ~|~
   \mathsf{f}\mathit{nn}\mathsf{.lt} ~|~
@@ -309,13 +314,13 @@
   \mathsf{i}\mathit{nn}\mathsf{.add} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.sub} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.mul} ~|~
-  \mathsf{i}\mathit{nn}\mathsf{.div\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
-  \mathsf{i}\mathit{nn}\mathsf{.rem\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.div\_}\mathit{sx} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.rem\_}\mathit{sx} ~|~ \\&amp;&amp;&amp;
   \mathsf{i}\mathit{nn}\mathsf{.and} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.or} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.xor} ~|~ \\&amp;&amp;&amp;
   \mathsf{i}\mathit{nn}\mathsf{.shl} ~|~
-  \mathsf{i}\mathit{nn}\mathsf{.shr\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.shr\_}\mathit{sx} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.rotl} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.rotr} ~|~ \\&amp;&amp;&amp;
   \mathsf{f}\mathit{nn}\mathsf{.abs} ~|~
@@ -333,11 +338,11 @@
   \mathsf{f}\mathit{nn}\mathsf{.max} ~|~
   \mathsf{f}\mathit{nn}\mathsf{.copysign} ~|~ \\&amp;&amp;&amp;
   \mathsf{i32.wrap/i64} ~|~
-  \mathsf{i64.extend\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}/\mathsf{i32} ~|~
-  \mathsf{i}\mathit{nn}\mathsf{.trunc\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}/\mathsf{f}\mathit{mm} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i64.extend\_}\mathit{sx}/\mathsf{i32} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.trunc\_}\mathit{sx}/\mathsf{f}\mathit{mm} ~|~ \\&amp;&amp;&amp;
   \mathsf{f32.demote/f64} ~|~
   \mathsf{f64.promote/f32} ~|~
-  \mathsf{f}\mathit{nn}\mathsf{.convert\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}/\mathsf{i}\mathit{mm} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.convert\_}\mathit{sx}/\mathsf{i}\mathit{mm} ~|~ \\&amp;&amp;&amp;
   \mathsf{i}\mathit{nn}\mathsf{.reinterpret/f}\mathit{nn} ~|~
   \mathsf{f}\mathit{nn}\mathsf{.reinterpret/i}\mathit{nn} \\
 \end{array}\end{split}\]</div>

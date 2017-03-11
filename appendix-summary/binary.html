@@ -27,6 +27,9 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Appendix: Rules Summary" href="index.html" />
+    <link rel="next" title="Validation Summary" href="validation.html" />
+    <link rel="prev" title="Abstract Syntax Summary" href="syntax.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -42,14 +45,19 @@
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
             </a></p><h3>Navigation</h3>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Appendix: Rules Summary</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="syntax.html">Abstract Syntax Summary</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Binary Encoding Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html">Validation Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html">Execution Summary</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
@@ -59,8 +67,6 @@
 
 <hr />
 <ul>
-    
-    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
     
     <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
     
@@ -196,7 +202,7 @@
   \enc{\mathit{customsec}_4}^\ast~\\&amp;&amp;
   \encx{m.\mathsf{tables}}{\mathit{tablesec}}~
   \enc{\mathit{customsec}_5}^\ast~\\&amp;&amp;
-  \encx{m.\mathsf{mems}}{\mathit{memsec}}~
+  \encx{m.\MEMORIES}{\mathit{memsec}}~
   \enc{\mathit{customsec}_6}^\ast~\\&amp;&amp;
   \encx{m.\mathsf{globals}}{\mathit{globalsec}}~
   \enc{\mathit{customsec}_7}^\ast~\\&amp;&amp;
@@ -237,8 +243,8 @@
   \mathit{sec}(\def\hex#1{\mathrm{0x#1}}\hex{06})([\href{../syntax/modules.html#syntax-global}{\mathit{global}}^\ast]) \\
 \encx{[\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast]}{\mathit{exportsec}} &amp;=&amp;
   \mathit{sec}(\def\hex#1{\mathrm{0x#1}}\hex{07})([\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast]) \\
-\encx{\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}^?}{\mathit{startsec}} &amp;=&amp;
-  \mathit{sec}(\def\hex#1{\mathrm{0x#1}}\hex{08})(\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}^?) \\
+\encx{\href{../syntax/modules.html#syntax-idx}{\mathit{funcidx}}^?}{\mathit{startsec}} &amp;=&amp;
+  \mathit{sec}(\def\hex#1{\mathrm{0x#1}}\hex{08})(\href{../syntax/modules.html#syntax-idx}{\mathit{funcidx}}^?) \\
 \encx{[\href{../syntax/modules.html#syntax-elemseg}{\mathit{elemseg}}^\ast]}{\mathit{elemsec}} &amp;=&amp;
   \mathit{sec}(\def\hex#1{\mathrm{0x#1}}\hex{09})([\href{../syntax/modules.html#syntax-elemseg}{\mathit{elemseg}}^\ast]) \\
 \encx{[\href{../syntax/modules.html#syntax-func}{\mathit{func}}^\ast]}{\mathit{codesec}} &amp;=&amp;
@@ -249,8 +255,8 @@
 \encx{g}{\href{../syntax/modules.html#syntax-global}{\mathit{global}}} &amp;=&amp;
   \enc{g.\mathsf{type}}~
   \enc{g.\mathsf{init}} \\
-\encx{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end}}{\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}} &amp;=&amp;
-  \enc{\href{#instructions}{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}}^\ast~
+\encx{\mathit{instr}^\ast~\mathsf{end}}{\mathit{expr}} &amp;=&amp;
+  \enc{\href{#instructions}{\mathit{instr}}}^\ast~
   \enc{\mathsf{end}} \\
 \encx{f}{\href{../syntax/modules.html#syntax-func}{\mathit{func}}} &amp;=&amp;
   \enc{|\encx{f}{\mathit{code}}|}{\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}}~
@@ -274,8 +280,8 @@
    \enc{\mathit{im}.\mathsf{module}}~
    \enc{\mathit{im}.\mathsf{name}}~
    \enc{\mathit{im}.\mathsf{desc}} \\
-\encx{\mathsf{func}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}{\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}} &amp;=&amp;
-  \def\hex#1{\mathrm{0x#1}}\hex{00}~\enc{\href{#indices}{\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}} \\
+\encx{\mathsf{func}~\href{../syntax/modules.html#syntax-idx}{\mathit{typeidx}}}{\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}} &amp;=&amp;
+  \def\hex#1{\mathrm{0x#1}}\hex{00}~\enc{\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{typeidx}}}} \\
 \encx{\mathsf{table}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}}{\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}} &amp;=&amp;
   \def\hex#1{\mathrm{0x#1}}\hex{01}~\enc{\href{#types}{\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}}} \\
 \encx{\MEMORY~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}}{\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}} &amp;=&amp;
@@ -286,14 +292,14 @@
 \encx{\mathit{ex}}{\href{../syntax/modules.html#syntax-export}{\mathit{export}}} &amp;=&amp;
    \enc{\mathit{ex}.\mathsf{name}}~
    \enc{\mathit{ex}.\mathsf{desc}} \\
-\encx{\mathsf{func}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}{\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}} &amp;=&amp;
-  \def\hex#1{\mathrm{0x#1}}\hex{00}~\enc{\href{#indices}{\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}}} \\
-\encx{\mathsf{table}~\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}}}{\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}} &amp;=&amp;
-  \def\hex#1{\mathrm{0x#1}}\hex{01}~\enc{\href{#indices}{\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}}}} \\
-\encx{\MEMORY~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}}}{\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}} &amp;=&amp;
-  \def\hex#1{\mathrm{0x#1}}\hex{02}~\enc{\href{#indices}{\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}}}} \\
-\encx{\mathsf{global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}}}{\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}} &amp;=&amp;
-  \def\hex#1{\mathrm{0x#1}}\hex{03}~\enc{\href{#indices}{\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}}}} \\
+\encx{\mathsf{func}~\href{../syntax/modules.html#syntax-idx}{\mathit{typeidx}}}{\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}} &amp;=&amp;
+  \def\hex#1{\mathrm{0x#1}}\hex{00}~\enc{\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{funcidx}}}} \\
+\encx{\mathsf{table}~\href{../syntax/modules.html#syntax-idx}{\mathit{tableidx}}}{\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}} &amp;=&amp;
+  \def\hex#1{\mathrm{0x#1}}\hex{01}~\enc{\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{tableidx}}}} \\
+\encx{\MEMORY~\href{../syntax/modules.html#syntax-idx}{\mathit{memidx}}}{\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}} &amp;=&amp;
+  \def\hex#1{\mathrm{0x#1}}\hex{02}~\enc{\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{memidx}}}} \\
+\encx{\mathsf{global}~\href{../syntax/modules.html#syntax-idx}{\mathit{globalidx}}}{\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}} &amp;=&amp;
+  \def\hex#1{\mathrm{0x#1}}\hex{03}~\enc{\href{#indices}{\href{../syntax/modules.html#syntax-idx}{\mathit{globalidx}}}} \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="instructions">

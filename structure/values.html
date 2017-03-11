@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Values &#8212; WebAssembly 1.0</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Structure" href="index.html" />
+    <link rel="next" title="Types" href="types.html" />
+    <link rel="prev" title="Abstract Syntax" href="syntax.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="syntax.html">Abstract Syntax</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-summary/index.html">Appendix: Rules Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="values">
+<h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="bytes">
+<span id="syntax-byte"></span><h2>Bytes<a class="headerlink" href="#bytes" title="Permalink to this headline">¶</a></h2>
+<p>The simplest form of value are raw uninterpreted <em>bytes</em>.
+In the abstract they are represented as hexadecimal literals.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\void#1{}\void{(bytes)} &amp; b &amp;::=&amp;
+  \def\hex#1{\mathrm{0x#1}}\hex{00} ~|~ \dots ~|~ \def\hex#1{\mathrm{0x#1}}\hex{FF} \\
+\end{array}\end{split}\]</div>
+<div class="section" id="conventions">
+<h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The meta function <span class="math">\(\mathrm{byte}(n)\)</span> denotes the byte representing the natural number <span class="math">\(n &lt; 256\)</span>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="integers">
+<span id="syntax-int"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
+<p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>size</em> and their <em>signedness</em>.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\void#1{}\void{(unsigned integers)} &amp; \def\uX#1{\mathit{uint}_{#1}}\uX{N} &amp;::=&amp;
+  0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
+\def\void#1{}\void{(signed integers)} &amp; \def\sX#1{\mathit{sint}_{#1}}\sX{N} &amp;::=&amp;
+  -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
+\def\void#1{}\void{(uninterpreted integers)} &amp; \def\iX#1{\mathit{int}_{#1}}\iX{N} &amp;::=&amp;
+  \def\uX#1{\mathit{uint}_{#1}}\uX{N} ~|~ \def\sX#1{\mathit{sint}_{#1}}\sX{N} \\
+\end{array}\end{split}\]</div>
+<p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
+A 2&#8217;s complement interpretation is assumed for out-of-range values.
+That is, semantically, when interpreted as unsigned, negative values <span class="math">\(-n\)</span> convert to <span class="math">\(2^N-n\)</span>,
+and when interpreted as signed, positive values <span class="math">\(n \geq 2^{N-1}\)</span> convert to <span class="math">\(n-2^N\)</span>.</p>
+<div class="section" id="id1">
+<h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The meta variables <span class="math">\(m, n, i, j, k\)</span> range over unsigned integers.</li>
+<li>Numbers may be denoted by simple arithmetics.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="floating-point-numbers">
+<span id="syntax-float"></span><h2>Floating-point Numbers<a class="headerlink" href="#floating-point-numbers" title="Permalink to this headline">¶</a></h2>
+<p><em>Floating-point numbers</em> are represented as binary values according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE-754</a> standard.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\void#1{}\void{(floating-point numbers)} &amp; \def\fX#1{\mathit{float}_{#1}}\fX{N} &amp;::=&amp;
+  \href{#bytes}{b}^{N/8} \\
+\end{array}\end{split}\]</div>
+<p>The two possible sizes <span class="math">\(N\)</span> are 32 and 64.</p>
+<div class="section" id="id2">
+<h3>Conventions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The meta variable <span class="math">\(z\)</span> ranges over floating point values.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="vectors">
+<span id="syntax-vec"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<p><em>Vectors</em> are bracketed sequences of the form <span class="math">\([x^n]\)</span> (or <span class="math">\([x^\ast]\)</span>),
+where the <span class="math">\(x\)</span>-s can either be values or complex constructions.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\void#1{}\void{(vectors)} &amp; \href{../structure/values.html#syntax-vec}{\mathit{vec}}(x) &amp;::=&amp;
+  [x^\ast] \\
+\end{array}\end{split}\]</div>
+<div class="section" id="id3">
+<h3>Conventions<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><span class="math">\(|v|\)</span> denotes the length of a vector <span class="math">\(v\)</span>.</li>
+<li><span class="math">\(v[i]\)</span> denotes the <span class="math">\(i\)</span>-th element of a vector <span class="math">\(v\)</span>, starting from <span class="math">\(0\)</span>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="strings">
+<span id="syntax-name"></span><span id="syntax-string"></span><h2>Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<p><em>Strings</em> are uninterpreted vectors of bytes.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\void#1{}\void{(strings)} &amp; {\mathit{string}} &amp;::=&amp;
+  \href{#vectors}{\href{../structure/values.html#syntax-vec}{\mathit{vec}}}(\href{#bytes}{b}) \\
+\end{array}\end{split}\]</div>
+<p><em>Names</em> are strings that act as identifiers.
+Additional well-formedness constraints may apply to them.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\void#1{}\void{(names)} &amp; {\mathit{name}} &amp;::=&amp;
+  \href{#strings}{{\mathit{string}}} \\
+\end{array}\end{split}\]</div>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">UTF8?</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
