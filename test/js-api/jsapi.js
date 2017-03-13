@@ -714,7 +714,22 @@ test(() => {
     assert_equals(instantiate, instantiateDesc.value);
     assert_equals(instantiate.length, 1);
     assert_equals(instantiate.name, "instantiate");
+
+    // Keep track of all the messages for assertInstantiateError and assertCompileSuccess
+    // to make sure they're all unique.
+    const testNames = new Set();
+    function ensureUniqueTest(message) {
+        if (testNames.has(message)) {
+            if (quit instanceof Function) {
+                print("Test names must all be unique, but '" + message + "' already exists.");
+                quit(1);
+            }
+        }
+        testNames.add(message);
+    }
+
     function assertInstantiateError(args, err, message) {
+        ensureUniqueTest(message);
         promise_test(() => {
             return instantiate(...args)
                 .then(m => {
@@ -751,6 +766,7 @@ test(() => {
     assertInstantiateError([complexImportingModuleBinary, {"c": {"d": scratch_memory}}], TypeError, "instantiate on complexImportingModuleBinary, {'c': {'d': scratch_memory}} throws TypeError");
 
     function assertInstantiateSuccess(module, imports, message) {
+        ensureUniqueTest(message);
         promise_test(()=> {
             return instantiate(module, imports)
                 .then(result => {
