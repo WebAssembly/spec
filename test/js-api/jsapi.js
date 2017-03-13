@@ -751,18 +751,17 @@ test(() => {
     assertInstantiateError([new ArrayBuffer()], CompileError, "instantiate on empty ArrayBuffer throws CompileError");
     assertInstantiateError([new Uint8Array("hi!")], CompileError, "instantiate on Uint8Array('hi!') throws CompileError");
     assertInstantiateError([new ArrayBuffer("hi!")], CompileError, "instantiate on ArrayBuffer('hi!') throws CompileError");
-    assertInstantiateError([importingModule], TypeError, "instantiate on importingModule throws TypeError");
+    assertInstantiateError([importingModule], TypeError, "instantiate a module importing functions without passing an imports object throws TypeError");
     assertInstantiateError([importingModule, null], TypeError, "instantiate on importingModule, null throws TypeError");
     assertInstantiateError([importingModuleBinary, null], TypeError, "instantiate on importingModuleBinary, null throws TypeError");
     assertInstantiateError([emptyModule, null], TypeError, "instantiate on emptyModule throws TypeError");
-    assertInstantiateError([importingModuleBinary, null], TypeError, "instantiate on importingModuleBinary, null throws TypeError");
     assertInstantiateError([importingModuleBinary, undefined], TypeError, "instantiate on importingModuleBinary, undefined throws TypeError");
-    assertInstantiateError([importingModuleBinary, {}], TypeError, "instantiate on importingModuleBinary, {} throws TypeError");
-    assertInstantiateError([importingModuleBinary, {"":{g:()=>{}}}], LinkError, "instantiate on importingModuleBinary, {'':{g:()=>{}}} throws LinkError");
-    assertInstantiateError([importingModuleBinary, {t:{f:()=>{}}}], TypeError, "instantiate on importingModuleBinary, {t:{f:()=>{}}} throws TypeError");
+    assertInstantiateError([importingModuleBinary, {}], TypeError, "providing an empty imports object to a module that expects imports throws TypeError [1]");
+    assertInstantiateError([importingModuleBinary, {"":{g:()=>{}}}], LinkError, "instantiate on an module importing a function named f, not provided in the imports object, throws LinkError");
+    assertInstantiateError([importingModuleBinary, {t:{f:()=>{}}}], TypeError, "instantiate on an module importing a function from a module named '', not provided in the imports object, throws LinkError");
     assertInstantiateError([complexImportingModuleBinary, null], TypeError, "instantiate on complexImportingModuleBinary, null throws TypeError");
     assertInstantiateError([complexImportingModuleBinary, undefined], TypeError, "instantiate on complexImportingModuleBinary, undefined throws TypeError");
-    assertInstantiateError([complexImportingModuleBinary, {}], TypeError, "instantiate on complexImportingModuleBinary, empty object throws TypeError");
+    assertInstantiateError([complexImportingModuleBinary, {}], TypeError, "providing an empty imports object to a module that expects imports throws TypeError [2]");
     assertInstantiateError([complexImportingModuleBinary, {"c": {"d": scratch_memory}}], TypeError, "instantiate on complexImportingModuleBinary, {'c': {'d': scratch_memory}} throws TypeError");
 
     function assertInstantiateSuccess(module, imports, message) {
@@ -796,7 +795,7 @@ test(() => {
         a:{b:()=>{}},
         c:{d:scratch_memory},
         e:{f:scratch_table},
-        g:{'⚡':1}}, "instantiate on complexImportingModuleBinary, {...} succeeds");
+        g:{'⚡':1}}, "instantiate complexImportingModuleBinary with all expected imports succeeds");
 }, "'WebAssembly.instantiate' function");
 
 })();
