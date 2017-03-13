@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Instructions &#8212; WebAssembly 1.0</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Structure" href="index.html" />
+    <link rel="next" title="Validation" href="../validation/index.html" />
+    <link rel="prev" title="Modules" href="modules.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Instructions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="syntax-instr"><span id="syntax-memop"></span><span id="syntax-sx"></span></span><div class="section" id="instructions">
+<span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
+<p>WebAssembly code consists of sequences of <em>instructions</em>.
+The computational model is based on a <em>stack machine</em> in that these instructions manipulate values on an implicit <em>operand stack</em>.</p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Describe</p>
+</div>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\void#1{}\void{width} &amp; \mathit{nn}, \mathit{mm} &amp;::=&amp;
+  \mathsf{32} ~|~ \mathsf{64} \\
+\def\void#1{}\void{signedness} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp;::=&amp;
+  \mathsf{u} ~|~ \mathsf{s} \\
+\def\void#1{}\void{memory operators} &amp; \href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} &amp;::=&amp;
+  \{ \mathsf{align}~\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}, \mathsf{offset}~\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}} \} \\
+\end{array}\end{split}\]</div>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\void#1{}\void{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+  \mathsf{unreachable} ~|~ \\&amp;&amp;&amp;
+  \mathsf{nop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{block}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
+  \mathsf{loop}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
+  \mathsf{if}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{else}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
+  \mathsf{br}~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{br\_if}~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{br\_table}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}})~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{return} ~|~ \\&amp;&amp;&amp;
+  \mathsf{call}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{call\_indirect}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{drop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{select} ~|~ \\&amp;&amp;&amp;
+  \mathsf{get\_local}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{set\_local}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{tee\_local}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{get\_global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{set\_global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.load}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.load}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.store}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.store}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.load8\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.load16\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i64.load32\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.store8}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.store16}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i64.store32}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.const}~\def\iX#1{\mathit{int}_{#1}}\iX{\mathit{nn}} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.const}~\def\fX#1{\mathit{float}_{#1}}\fX{\mathit{nn}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.eqz} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.eq} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.ne} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.lt\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.gt\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.le\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.ge\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.eq} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.ne} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.lt} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.gt} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.le} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.ge} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.clz} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.ctz} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.popcnt} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.add} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.sub} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.mul} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.div\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.rem\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.and} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.or} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.xor} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.shl} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.shr\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.rotl} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.rotr} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.abs} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.neg} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.sqrt} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.ceil} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.floor} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.trunc} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.nearest} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.add} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.sub} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.mul} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.div} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.min} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.max} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.copysign} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i32.wrap/i64} ~|~
+  \mathsf{i64.extend\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}/\mathsf{i32} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.trunc\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}/\mathsf{f}\mathit{mm} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f32.demote/f64} ~|~
+  \mathsf{f64.promote/f32} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.convert\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}/\mathsf{i}\mathit{mm} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.reinterpret/f}\mathit{nn} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.reinterpret/i}\mathit{nn} \\
+\end{array}\end{split}\]</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

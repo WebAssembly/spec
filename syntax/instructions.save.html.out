@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Instructions &#8212; WebAssembly 1.0</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="syntax-instr"><span id="syntax-memop"></span><span id="syntax-sx"></span></span><div class="section" id="instructions">
+<span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
+<p>WebAssembly code consists of sequentially executed <em>instructions</em>.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\void#1{}\void{width} &amp; \mathit{nn}, \mathit{mm} &amp;::=&amp;
+  \mathsf{32} ~|~ \mathsf{64} \\
+\def\void#1{}\void{signedness} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp;::=&amp;
+  \mathsf{u} ~|~ \mathsf{s} \\
+\def\void#1{}\void{memory immediate} &amp; \href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} &amp;::=&amp;
+  \{ \mathsf{offset}~\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}, \mathsf{align}~\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}} \} \\
+~ \\
+\def\void#1{}\void{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+  \mathsf{unreachable} ~|~ \\&amp;&amp;&amp;
+  \mathsf{nop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{block}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
+  \mathsf{loop}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
+  \mathsf{if}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{else}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
+  \mathsf{br}~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{br\_if}~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{br\_table}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}})~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{return} ~|~ \\&amp;&amp;&amp;
+  \mathsf{call}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{call\_indirect}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{drop} ~|~ \\&amp;&amp;&amp;
+  \mathsf{select} ~|~ \\&amp;&amp;&amp;
+  \mathsf{get\_local}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{set\_local}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{tee\_local}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{get\_global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{set\_global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.load}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.load}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.store}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.store}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.load8\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.load16\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
+  \mathsf{i64.load32\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.store8}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.store16}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
+  \mathsf{i64.store32}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{current\_memory} ~|~ \\&amp;&amp;&amp;
+  \mathsf{grow\_memory} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.const}~\def\iX#1{\mathit{int}_{#1}}\iX{\mathit{nn}} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.const}~\def\fX#1{\mathit{float}_{#1}}\fX{\mathit{nn}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.eqz} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.eq} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.ne} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.lt\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.gt\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.le\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.ge\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.eq} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.ne} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.lt} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.gt} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.le} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.ge} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.clz} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.ctz} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.popcnt} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.add} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.sub} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.mul} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.div\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.rem\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.and} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.or} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.xor} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.shl} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.shr\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.rotl} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.rotr} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.abs} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.neg} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.sqrt} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.ceil} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.floor} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.trunc} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.nearest} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.add} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.sub} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.mul} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.div} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f}\mathit{nn}\mathsf{.min} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.max} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.copysign} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i32.wrap/i64} ~|~
+  \mathsf{i64.extend\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}/\mathsf{i32} ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.trunc\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}/\mathsf{f}\mathit{mm} ~|~ \\&amp;&amp;&amp;
+  \mathsf{f32.demote/f64} ~|~
+  \mathsf{f64.promote/f32} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.convert\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}/\mathsf{i}\mathit{mm} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.reinterpret/f}\mathit{nn} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.reinterpret/i}\mathit{nn} \\
+\end{array}\end{split}\]</div>
+<p>The computational model is based on a <em>stack machine</em> in that these instructions manipulate values on an implicit <em>operand stack</em>.
+In addition to dynamic operands from the stack, some instructions also have static <em>immediate</em> parameters which are part of the instruction itself,
+typically <span class="xref std std-ref">indices</span> or type annotations.
+Some instructions are <a class="reference internal" href="#syntax-instr-structured"><span class="std std-ref">structured</span></a> in that they bracket nested sequences of instructions.</p>
+<p>The following sections categorize instructions into a number of different groups.</p>
+<span class="target" id="syntax-instr-structured"></span><div class="section" id="structured-control">
+<span id="index-1"></span><h2>Structured Control<a class="headerlink" href="#structured-control" title="Permalink to this headline">¶</a></h2>
+<p>The <span class="math">\(\mathsf{block}\)</span>, <span class="math">\(\mathsf{loop}\)</span> and <span class="math">\(\mathsf{if}\)</span> instructions are <em>structured control</em> instructions.
+They bracket nested sequences of instructions, called <em>blocks</em>, terminated with <span class="math">\(\mathsf{end}\)</span> or separated by <span class="math">\(\mathsf{else}\)</span> markers.
+As the grammar prescribes, these instructures must be well-nested.</p>
+<p>Each structured control instruction introduces an implicit <em>label</em>.
+Labels are targets for <em>branch</em> instructions <span class="math">\(\mathsf{br}\)</span> that are referenced by <a class="reference internal" href="modules.html#syntax-labelidx"><span class="std std-ref">label indices</span></a>.
+Unlike with other index spaces, indexing of labels is relative by nesting depth,
+that is, label <span class="math">\(0\)</span> refers to the innermost structured control instruction enclosing the referring branch instruction,
+while increasing indices refer to those furhter out.
+Consequently, labels can only be referenced from <em>within</em> the associated structured control instruction.</p>
+<p>This also implies that branches can only be directed outwards,
+&#8220;breaking&#8221; from the block of the control construct they target.
+The exact effect depends on that control construct.
+In case of <span class="math">\(\mathsf{block}\)</span> or <span class="math">\(\mathsf{if}\)</span> it is a <em>forward jump</em>,
+resuming execution after the matching <span class="math">\(\mathsf{end}\)</span>.
+In case of <span class="math">\(\mathsf{loop}\)</span> it is a <em>backward jump</em> to the beginning of the loop.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This enforces <em>structured control flow</em>.
+Intuitively, a branch targeting a <span class="math">\(\mathsf{block}\)</span> or <span class="math">\(\mathsf{if}\)</span> behaves like a <span class="math">\(\mathsf{break}\)</span> statement,
+while a branch targeting a <span class="math">\(\mathsf{loop}\)</span> behaves like a <span class="math">\(\mathsf{continue}\)</span> statement.</p>
+</div>
+</div>
+<div class="section" id="memory-instructions">
+<span id="index-2"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
+<p>Linear memory is accessed by <span class="math">\(\mathsf{load}\)</span> and <span class="math">\(\mathsf{store}\)</span> instructions for the different <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value types</span></a>.
+They all take a <em>memory immediate</em> <span class="math">\(\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}}\)</span> that contains a static address <em>offset</em> and an <em>alignment</em> hint.</p>
+<p>Integer loads and stores can optionally specify a <em>storage size</em> that is smaller than the width of the respective value type.
+In the case of loads, a sign extension mode <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> is required to select appropriate behavior.</p>
+<p>In addition, <span class="math">\(\mathsf{current\_memory}\)</span> and <span class="math">\(\mathsf{grow\_memory}\)</span> .</p>
+<p>All memory instructions implicitly operate on <a class="reference internal" href="modules.html#syntax-mem"><span class="std std-ref">memory</span></a> <a class="reference internal" href="modules.html#syntax-memidx"><span class="std std-ref">index</span></a> <span class="math">\(0\)</span>.</p>
+</div>
+<div class="section" id="numeric-instructions">
+<h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
