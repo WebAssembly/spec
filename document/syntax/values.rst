@@ -37,6 +37,9 @@ Conventions
    pair: abstract syntax; unsigned integer
    pair: abstract syntax; signed integer
    pair: abstract syntax; uninterpreted integer
+   single: integer; unsigned
+   single: integer; signed
+   single: integer; uninterpreted
 
 Integers
 ~~~~~~~~
@@ -117,7 +120,7 @@ Conventions
 
 
 .. _syntax-name:
-.. index:: ! name
+.. index:: ! name, byte
    pair: abstract syntax; name
 
 Names

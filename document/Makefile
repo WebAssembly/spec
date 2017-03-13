@@ -92,7 +92,8 @@ html:
 	for file in `ls $(BUILDDIR)/html/*/*.html`; \
 	do \
 	  sed s:BASEDIR:..:g <$$file >$$file.out; \
-	  mv -f $$file.out $$file; \
+	  sed 's;<body;<script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body;' \
+	    <$$file.out >$$file; \
 	done
 	@echo
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html."

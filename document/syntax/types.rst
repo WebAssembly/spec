@@ -35,7 +35,7 @@ Conventions
 
 
 .. _syntax-resulttype:
-.. index:: ! result type
+.. index:: ! result type, value type
    pair: abstract syntax; result type
    pair: result; type
 
@@ -57,7 +57,7 @@ which is a sequence of values.
 
 
 .. _syntax-functype:
-.. index:: ! function type
+.. index:: ! function type, valut type, result type
    pair: abstract syntax; function type
    pair: function; type
 
@@ -76,7 +76,7 @@ mapping a sequence of parameters to a sequence of results.
 
 .. _syntax-memtype:
 .. _syntax-limits:
-.. index:: ! memory type; ! limits
+.. index:: ! memory type, ! limits, page size
    pair: abstract syntax; memory type
    pair: abstract syntax; limits
    pair: memory; type
@@ -102,7 +102,7 @@ Both values are given in units of :ref:`page size <page-size>`.
 
 .. _syntax-tabletype:
 .. _syntax-elemtype:
-.. index:: ! table type; ! element type
+.. index:: ! table type, ! element type, limits
    pair: abstract syntax; table type
    pair: abstract syntax; element type
    pair: table; type
@@ -133,7 +133,7 @@ A table of that type thus contains references to functions of heterogeneous type
 
 
 .. _syntax-globaltype:
-.. index:: ! global type
+.. index:: ! global type, value type
    pair: abstract syntax; global type
    pair: abstract syntax; mutability
    pair: global; type
@@ -152,7 +152,7 @@ Global Types
 
 
 .. _syntax-externtype:
-.. index:: ! external type
+.. index:: ! external type, function type, table type, memory type, global type
    pair: abstract syntax; external type
    pair: external; type
 

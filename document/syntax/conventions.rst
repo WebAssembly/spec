@@ -12,8 +12,8 @@ including the decoding of the :ref:`binary format <binary-format>`.
 
 
 .. _grammar:
-.. index:: ! grammar notation
-   pair: abstract syntax; grammar
+.. index:: ! grammar notation, notation
+   single: abstract syntax; grammar
    pair: abstract syntax; notation
 
 Grammar

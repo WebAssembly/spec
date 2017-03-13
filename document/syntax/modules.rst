@@ -1,5 +1,5 @@
 .. _syntax-module:
-.. index:: ! modules
+.. index:: ! modules, type definition, function type, function, table, memory, global, element, data, start function, import, export
    pair: abstract syntax; module
 
 Modules
@@ -36,8 +36,7 @@ Each of the vectors -- and thus the entire module -- may be empty.
 .. _syntax-globalidx:
 .. _syntax-localidx:
 .. _syntax-labelidx:
-.. index:: ! index; ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index
-   pair: abstract syntax; index
+.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index
    pair: abstract syntax; type index
    pair: abstract syntax; function index
    pair: abstract syntax; table index
@@ -106,7 +105,7 @@ In some places, validation :ref:`restricts <valid-const>` expressions to be *con
 
 
 .. _syntax-type:
-.. index:: ! type definition
+.. index:: ! type definition, type index
    pair: abstract syntax; type definition
    single: type; definition
 
@@ -123,7 +122,7 @@ They are referenced by :ref:`type indices <syntax-typeidx>`.
 
 
 .. _syntax-func:
-.. index:: ! function
+.. index:: ! function, ! local, function index, type index, value type, expression, import
    pair: abstract syntax; function
 
 Functions
@@ -151,7 +150,7 @@ starting with the smallest index not referencing a function :ref:`import <syntax
 
 
 .. _syntax-table:
-.. index:: ! table
+.. index:: ! table, table index, table type, limits, element, import
    pair: abstract syntax; table
 
 Tables
@@ -181,7 +180,7 @@ Most constructs implicitly reference table index :math:`0`.
 
 
 .. _syntax-mem:
-.. index:: ! memory
+.. index:: ! memory, memory index, memory type, limits, page size, data, import
    pair: abstract syntax; memory
 
 Memories
@@ -212,7 +211,7 @@ Most constructs implicitly reference memory index :math:`0`.
 
 
 .. _syntax-global:
-.. index:: ! global
+.. index:: ! global, global index, global type, mutability, expression
    pair: abstract syntax; global
 
 Globals
@@ -235,7 +234,7 @@ starting with the smallest index not referencing a global :ref:`import <syntax-i
 
 
 .. _syntax-elem:
-.. index:: ! element
+.. index:: ! element, table, table index, expression, function index, vector
    pair: abstract syntax; element
    single: table; element
    single: element; segment
@@ -260,7 +259,7 @@ The |OFFSET| is given by a :ref:`constant <valid-const>` :ref:`expression <synta
 
 
 .. _syntax-data:
-.. index:: ! data
+.. index:: ! data, memory, memory index, expression, byte, vector
    pair: abstract syntax; data
    single: memory; data
    single: data; segment
@@ -285,7 +284,7 @@ The |OFFSET| is given by a :ref:`constant <valid-const>` :ref:`expression <synta
 
 
 .. _syntax-start:
-.. index:: ! start function
+.. index:: ! start function, function index, table, memory, instantiation
    pair: abstract syntax; start function
 
 Start Function
@@ -295,7 +294,7 @@ The |START| component of a module denotes the :ref:`function index <syntax-idx>`
 
 
 .. _syntax-export:
-.. index:: ! export
+.. index:: ! export, name, index, function index, table index, memory index, global index, function, table, memory, global, instantiation
    pair: abstract syntax; export
    single: function; export
    single: table; export
@@ -327,7 +326,7 @@ which are referenced through a respective descriptor.
 
 
 .. _syntax-import:
-.. index:: ! import
+.. index:: ! import, name, function type, table type, memory type, global type, index, index space, type index, function index, table index, memory index, global index, function, table, memory, global, instantiation
    pair: abstract syntax; import
    single: function; import
    single: table; import
