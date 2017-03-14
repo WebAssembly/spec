@@ -34,7 +34,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -87,14 +87,14 @@
 <p>WebAssembly code consists of sequentially executed <em>instructions</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\void#1{}\void{width} &amp; \mathit{nn}, \mathit{mm} &amp;::=&amp;
+\def\vo_id#1{}\vo_id{width} &amp; \mathit{nn}, \mathit{mm} &amp;::=&amp;
   \mathsf{32} ~|~ \mathsf{64} \\
-\def\void#1{}\void{signedness} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp;::=&amp;
+\def\vo_id#1{}\vo_id{signedness} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp;::=&amp;
   \mathsf{u} ~|~ \mathsf{s} \\
-\def\void#1{}\void{memory immediate} &amp; \href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} &amp;::=&amp;
+\def\vo_id#1{}\vo_id{memory immediate} &amp; \memop &amp;::=&amp;
   \{ \mathsf{offset}~\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}}, \mathsf{align}~\href{../syntax/values.html#syntax-int}{\mathit{uint}_{32}} \} \\
 ~ \\
-\def\void#1{}\void{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+\def\vo_id#1{}\vo_id{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
   \mathsf{unreachable} ~|~ \\&amp;&amp;&amp;
   \mathsf{nop} ~|~ \\&amp;&amp;&amp;
   \mathsf{block}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
@@ -113,16 +113,16 @@
   \mathsf{tee\_local}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
   \mathsf{get\_global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \\&amp;&amp;&amp;
   \mathsf{set\_global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.load}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
-  \mathsf{f}\mathit{nn}\mathsf{.load}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.store}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
-  \mathsf{f}\mathit{nn}\mathsf{.store}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.load8\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
-  \mathsf{i}\mathit{nn}\mathsf{.load16\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
-  \mathsf{i64.load32\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.store8}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
-  \mathsf{i}\mathit{nn}\mathsf{.store16}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~
-  \mathsf{i64.store32}~\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}} ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.load}~\memop ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.load}~\memop ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.store}~\memop ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.store}~\memop ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.load8\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\memop ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.load16\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\memop ~|~
+  \mathsf{i64.load32\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\memop ~|~ \\&amp;&amp;&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.store8}~\memop ~|~
+  \mathsf{i}\mathit{nn}\mathsf{.store16}~\memop ~|~
+  \mathsf{i64.store32}~\memop ~|~ \\&amp;&amp;&amp;
   \mathsf{current\_memory} ~|~ \\&amp;&amp;&amp;
   \mathsf{grow\_memory} ~|~ \\&amp;&amp;&amp;
   \mathsf{i}\mathit{nn}\mathsf{.const}~\def\iX#1{\mathit{int}_{#1}}\iX{\mathit{nn}} ~|~
@@ -210,7 +210,7 @@ while a branch targeting a <span class="math">\(\mathsf{loop}\)</span> behaves l
 <div class="section" id="memory-instructions">
 <span id="index-2"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Linear memory is accessed by <span class="math">\(\mathsf{load}\)</span> and <span class="math">\(\mathsf{store}\)</span> instructions for the different <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value types</span></a>.
-They all take a <em>memory immediate</em> <span class="math">\(\href{../syntax/instructions.html#syntax-memop}{\mathit{memop}}\)</span> that contains a static address <em>offset</em> and an <em>alignment</em> hint.</p>
+They all take a <em>memory immediate</em> <a href="#id1"><span class="problematic" id="id2">|memop|</span></a> that contains a static address <em>offset</em> and an <em>alignment</em> hint.</p>
 <p>Integer loads and stores can optionally specify a <em>storage size</em> that is smaller than the width of the respective value type.
 In the case of loads, a sign extension mode <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> is required to select appropriate behavior.</p>
 <p>In addition, <span class="math">\(\mathsf{current\_memory}\)</span> and <span class="math">\(\mathsf{grow\_memory}\)</span> .</p>
