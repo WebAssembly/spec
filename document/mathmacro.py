@@ -11,7 +11,7 @@ redefined the math directive and the math role. For example, like this
       'numpydoc',
       'mathmacro']
 
-From https://bitbucket.org/fluiddyn/fluiddyn/src/doc/mathmacro.py
+From https://bitbucket.org/fluiddyn/fluiddyn/src/default/doc/mathmacro.py
 
 """
 

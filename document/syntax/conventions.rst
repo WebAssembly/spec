@@ -4,7 +4,7 @@
 Conventions
 -----------
 
-WebAssembly is a programming language that does not have a concrete syntax
+WebAssembly is a programming language that does not have a concrete textual syntax
 (other than the auxiliary :ref:`text format <text-format>`).
 For conciseness, however, its structure is described in the form of an *abstract syntax*.
 All parts of this specification are defined in terms of this abstract syntax,
@@ -30,13 +30,8 @@ The following conventions are adopted in defining grammar rules for abstract syn
 * :math:`A^\ast` is a possibly empty sequence of iterations of :math:`A`.
   (This is a shorthand for :math:`A^n` used where :math:`n` is not relevant.)
 
-* :math:`A^+` is a non-empty sequence of iterations of :math:`A`.
-  (This is a shorthand for :math:`A^n` where :math:`n \geq 1`.)
-
 * :math:`A^?` is an optional occurrence of :math:`A`.
   (This is a shorthand for :math:`A^n` where :math:`n \leq 1`.)
-
-Each non-terminal defines a syntactic class.
 
 
 Auxiliary Notation
@@ -58,5 +53,3 @@ Productions of the following form are interpreted as *records* that map a fixed 
 The following notation is adopted for manipulating such records:
 
 * :math:`r.\K{field}` denotes the :math:`\K{field}` component of :math:`r`.
-
-* :math:`r,\K{field}\,s` denotes the same record as :math:`r` but with the sequence :math:`s` appended to its :math:`\K{field}` component.

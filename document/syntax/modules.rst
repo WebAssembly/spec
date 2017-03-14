@@ -122,6 +122,7 @@ They are referenced by :ref:`type indices <syntax-typeidx>`.
 
 
 .. _syntax-func:
+.. _syntax-local:
 .. index:: ! function, ! local, function index, type index, value type, expression, import
    pair: abstract syntax; function
 
@@ -143,7 +144,7 @@ The |LOCALS| declare a vector of mutable local variables and their types.
 These variables are referenced through :ref:`local indices <syntax-localidx>` in the function's body.
 The index of the first local is the smallest index not referencing a parameter.
 
-The |BODY| is an :ref:`instruction <syntax-expr>` sequence that must evaluate to a stack matching the function type's :ref:`result type <syntax-resulttype>`.
+The |BODY| is an :ref:`instruction <syntax-expr>` sequence that upon termination must produce a stack matching the function type's :ref:`result type <syntax-resulttype>`.
 
 Functions are referenced through :ref:`function indices <syntax-funcidx>`,
 starting with the smallest index not referencing a function :ref:`import <syntax-import>`.
@@ -290,7 +291,7 @@ The |OFFSET| is given by a :ref:`constant <valid-const>` :ref:`expression <synta
 Start Function
 ~~~~~~~~~~~~~~
 
-The |START| component of a module denotes the :ref:`function index <syntax-idx>` of an optional *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
+The |START| component of a module declares the :ref:`function index <syntax-idx>` of an optional *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
 
 
 .. _syntax-export:

@@ -6,16 +6,17 @@ Instructions
 ------------
 
 WebAssembly code consists of sequences of *instructions*.
-The computational model is based on a *stack machine* in that instructions manipulate values on an implicit *operand stack*,
+Its computational model is based on a *stack machine* in that instructions manipulate values on an implicit *operand stack*,
 *consuming* (popping) argument values and *returning* (pushing) result values.
 
 .. note::
    In the current version of WebAssembly,
-   at most one result value can be returned by an instruction.
+   at most one result value can be pushed by a single instruction.
    This restriction may be lifted in future versions.
 
-In addition to dynamic operands from the stack, some instructions also have static *immediate* arguments which are part of the instruction itself,
-typically :ref:`indices <syntax-index>` or type annotations.
+In addition to dynamic operands from the stack, some instructions also have static *immediate* arguments,
+typically :ref:`indices <syntax-index>` or type annotations,
+which are part of the instruction itself.
 
 Some instructions are :ref:`structured <syntax-instr-control>` in that they bracket nested sequences of instructions.
 
@@ -95,7 +96,7 @@ These operations closely match respective operations available in hardware.
    \end{array}
 
 Numeric instructions are divided by :ref:`value type <syntax-valtype>`.
-For each type, several structural subcategories can be distinguished:
+For each type, several subcategories can be distinguished:
 
 * *Constants*: return a static constant.
 
@@ -103,16 +104,16 @@ For each type, several structural subcategories can be distinguished:
 
 * *Binary Operators*: consume two operands and produce one result of the respective type.
 
-* *Tests*: consume one operand of the respective type and produce a Boolean results.
+* *Tests*: consume one operand of the respective type and produce a Boolean result.
 
-* *Comparisons*: consume two operands of the respective type and produce a Boolean results.
+* *Comparisons*: consume two operands of the respective type and produce a Boolean result.
 
 * *Conversions*: consume a value of one type and produce a result of another
-  (the source type of the conversion is the one after the :math:`\K{/}`).
+  (the source type of the conversion is the one after the ":math:`\K{/}`").
 
-Several integer instructions come in two flavours,
+Some integer instructions come in two flavours,
 where a signedness annotation |sx| distinguishes whether the operands are to be interpreted as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
-For all other instructions, the sign interpretation is irrelevant in a 2's complement representation.
+For the other integer instructions, the sign interpretation is irrelevant under a 2's complement interpretation.
 
 
 .. _syntax-instr-parametric:
@@ -132,7 +133,7 @@ Instructions in this group can operate on operands of any :ref:`value type <synt
      \SELECT
    \end{array}
 
-The |DROP| operator simply throws away its operand.
+The |DROP| operator simply throws away a single operand.
 
 The |SELECT| operator selects one of its first two operands based on whether its third operand is zero or not.
 
@@ -162,7 +163,7 @@ The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
 
 
 .. _syntax-instr-memory:
-.. _syntax-memop:
+.. _syntax-memarg:
 .. index:: ! memory instructions, memory index
    pair: abstract syntax; instruction
 
@@ -173,28 +174,28 @@ Instructions in this group are concerned with :ref:`linear memory <sec-memory>`.
 
 .. math::
    \begin{array}{llll}
-   \production{memory immediate} & \memop &::=&
+   \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
    \production{instructions} & \instr &::=&
      \dots ~|~ \\&&&
-     \K{i}\X{nn}\K{.load}~\memop ~|~
-     \K{f}\X{nn}\K{.load}~\memop ~|~ \\&&&
-     \K{i}\X{nn}\K{.store}~\memop ~|~
-     \K{f}\X{nn}\K{.store}~\memop ~|~ \\&&&
-     \K{i}\X{nn}\K{.load8\_}\sx~\memop ~|~
-     \K{i}\X{nn}\K{.load16\_}\sx~\memop ~|~
-     \K{i64.load32\_}\sx~\memop ~|~ \\&&&
-     \K{i}\X{nn}\K{.store8}~\memop ~|~
-     \K{i}\X{nn}\K{.store16}~\memop ~|~
-     \K{i64.store32}~\memop ~|~ \\&&&
+     \K{i}\X{nn}\K{.load}~\memarg ~|~
+     \K{f}\X{nn}\K{.load}~\memarg ~|~ \\&&&
+     \K{i}\X{nn}\K{.store}~\memarg ~|~
+     \K{f}\X{nn}\K{.store}~\memarg ~|~ \\&&&
+     \K{i}\X{nn}\K{.load8\_}\sx~\memarg ~|~
+     \K{i}\X{nn}\K{.load16\_}\sx~\memarg ~|~
+     \K{i64.load32\_}\sx~\memarg ~|~ \\&&&
+     \K{i}\X{nn}\K{.store8}~\memarg ~|~
+     \K{i}\X{nn}\K{.store16}~\memarg ~|~
+     \K{i64.store32}~\memarg ~|~ \\&&&
      \CURRENTMEMORY ~|~ \\&&&
      \GROWMEMORY \\
    \end{array}
 
 Memory is accessed with :math:`\K{load}` and :math:`\K{store}` instructions for the different :ref:`value types <syntax-valtype>`.
-They all take a *memory immediate* |memop| that contains an address *offset* and an *alignment* hint.
+They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint.
 Integer loads and stores can optionally specify a *storage size* that is smaller than the width of the respective value type.
-In the case of loads, a sign extension mode |sx| is required to select appropriate behavior.
+In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
 All values are read and written in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order.
@@ -216,7 +217,8 @@ The precise semantics of memory instructions is :ref:`described <exec-instr-memo
 
 
 .. _syntax-instr-control:
-.. index:: ! control instructions, ! structured control, label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector
+.. _syntax-label:
+.. index:: ! control instructions, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector
    pair: abstract syntax; instruction
 
 Control Instructions
@@ -247,14 +249,14 @@ The |UNREACHABLE| instruction causes an unconditional :ref:`trap <trap>`.
 
 The |BLOCK|, |LOOP| and |IF| instructions are *structured* instructions.
 They bracket nested sequences of instructions, called *blocks*, terminated with, or separated by, |END| or |ELSE| pseudo-instructions.
-As the grammar prescribes, these control instructures must be well-nested.
+As the grammar prescribes, they must be well-nested.
 A structured instruction can produce a value as described by the annotated :ref:`result type <syntax-resulttype>`.
 
 Each structured control instruction introduces an implicit *label*.
 Labels are targets for branch instructions that reference them with :ref:`label indices <syntax-labelidx>`.
 Unlike with other index spaces, indexing of labels is relative by nesting depth,
 that is, label :math:`0` refers to the innermost structured control instruction enclosing the referring branch instruction,
-while increasing indices refer to those furhter out.
+while increasing indices refer to those farther out.
 Consequently, labels can only be referenced from *within* the associated structured control instruction.
 This also implies that branches can only be directed outwards,
 "breaking" from the block of the control construct they target.
@@ -271,9 +273,9 @@ In case of |LOOP| it is a *backward jump* to the beginning of the loop.
 Branch instructions come in several flavors:
 |BR| performs an unconditional branch,
 |BRIF| performs a conditional branch,
-and |BRTABLE| performs an indirect branch through a dense table that is an immediate to the instruction, or to a default target if the operand is out of bounds.
+and |BRTABLE| performs an indirect branch through an operand indexing into the label vector that is an immediate to the instruction, or to a default target if the operand is out of bounds.
 The |RETURN| instruction is a shortcut for an unconditional branch to the outermost block, which implicitly is the body of the current function.
-A branch *unwinds* the operand stack up to the height where the targeted control instruction was entered.
+Taking a branch *unwinds* the operand stack up to the height where the targeted structured control instruction was entered.
 However, forward branches that target a control instruction with a non-empty result type consume a matching operand first and push it back on the operand stack after unwinding, as a result for the terminated instruction.
 
 The |CALL| instruction invokes another function, consuming the necessary arguments from the stack and returning the result values of the call.

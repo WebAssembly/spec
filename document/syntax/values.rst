@@ -14,7 +14,7 @@ Bytes
 ~~~~~
 
 The simplest form of value are raw uninterpreted *bytes*.
-In the abstract they are represented as hexadecimal literals.
+In the abstract syntax they are represented as hexadecimal literals.
 
 .. math::
    \begin{array}{llll}
@@ -32,6 +32,8 @@ Conventions
 
 
 .. _syntax-int:
+.. _syntax-sint:
+.. _syntax-uint:
 .. index:: ! integer, ! unsigned integer, ! signed integer, ! uninterpreted integer
    pair: abstract syntax; integer
    pair: abstract syntax; unsigned integer
@@ -57,7 +59,7 @@ Different classes of *integers* with different value ranges are distinguished by
    \end{array}
 
 The latter class defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
-A 2's complement interpretation is assumed for out-of-range values.
+A 2's complement conversion is assumed for values that are out-of-range for a chosen interpretation.
 That is, semantically, when interpreted as unsigned, negative values :math:`-n` convert to :math:`2^N-n`,
 and when interpreted as signed, positive values :math:`n \geq 2^{N-1}` convert to :math:`n-2^N`.
 
@@ -65,9 +67,9 @@ and when interpreted as signed, positive values :math:`n \geq 2^{N-1}` convert t
 Conventions
 ...........
 
-* The meta variables :math:`m, n, i, j, k` range over unsigned integers.
+* The meta variables :math:`m, n` range over unsigned integers.
 
-* Numbers may be denoted by simple arithmetics.
+* Numbers may be denoted by simple arithmetics, as in the grammar above.
 
 
 .. _syntax-float:
@@ -101,22 +103,22 @@ Conventions
 Vectors
 ~~~~~~~
 
-*Vectors* are bracketed sequences of the form :math:`[A^n]` (or :math:`[A^\ast]`),
+*Vectors* are self-contained sequences of the form :math:`A^n` (or :math:`A^\ast`),
 where the :math:`A`-s can either be values or complex constructions.
 
 .. math::
    \begin{array}{llll}
    \production{vectors} & \vec(A) &::=&
-     [A^\ast] \\
+     A^\ast \\
    \end{array}
 
 
 Conventions
 ...........
 
-* :math:`|v|` denotes the length of a vector :math:`v`.
+* :math:`|V|` denotes the length of a vector :math:`V`.
 
-* :math:`v[i]` denotes the :math:`i`-th element of a vector :math:`v`, starting from :math:`0`.
+* :math:`V[i]` denotes the :math:`i`-th element of a vector :math:`V`, starting from :math:`0`.
 
 
 .. _syntax-name:
