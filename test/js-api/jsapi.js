@@ -720,7 +720,7 @@ test(() => {
     const testNames = new Set();
     function ensureUniqueTest(message) {
         if (testNames.has(message)) {
-            if (quit instanceof Function) {
+            if (typeof quit === 'function') {
                 print("Test names must all be unique, but '" + message + "' already exists.");
                 quit(1);
             }
