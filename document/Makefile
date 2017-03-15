@@ -94,6 +94,7 @@ html:
 	  sed s:BASEDIR:..:g <$$file >$$file.out; \
 	  sed 's;<body;<script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body;' \
 	    <$$file.out >$$file; \
+	  rm -f $$file.out; \
 	done
 	@echo
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html."

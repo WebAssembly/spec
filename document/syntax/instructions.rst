@@ -25,7 +25,7 @@ The following sections group instructions into a number of different categories.
 
 .. _syntax-sx:
 .. _syntax-instr-numeric:
-.. index:: ! memory instructions
+.. index:: ! numeric instruction
    pair: abstract syntax; instruction
 
 Numeric Instructions
@@ -117,7 +117,7 @@ For the other integer instructions, the sign interpretation is irrelevant under 
 
 
 .. _syntax-instr-parametric:
-.. index:: ! parametric instructions
+.. index:: ! parametric instruction
    pair: abstract syntax; instruction
 
 Parametric Instructions
@@ -139,7 +139,7 @@ The |SELECT| operator selects one of its first two operands based on whether its
 
 
 .. _syntax-instr-variable:
-.. index:: ! variable instructions, local, global, local index, global index
+.. index:: ! variable instruction, local, global, local index, global index
    pair: abstract syntax; instruction
 
 Variable Instructions
@@ -164,7 +164,7 @@ The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
 
 .. _syntax-instr-memory:
 .. _syntax-memarg:
-.. index:: ! memory instructions, memory index
+.. index:: ! memory instruction, memory index
    pair: abstract syntax; instruction
 
 Memory Instructions
@@ -218,7 +218,7 @@ The precise semantics of memory instructions is :ref:`described <exec-instr-memo
 
 .. _syntax-instr-control:
 .. _syntax-label:
-.. index:: ! control instructions, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector
+.. index:: ! control instruction, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector
    pair: abstract syntax; instruction
 
 Control Instructions

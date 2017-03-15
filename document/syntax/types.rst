@@ -33,6 +33,9 @@ Conventions
 
 * The meta variable :math:`t` ranges over value types where clear from context.
 
+* The notation :math:`|t|` denotes the *width* of a value type in bytes.
+  (That is, :math:`|\I32| = |\F32| = 4` and :math:`|\I64| = |\F64| = 8`.)
+
 
 .. _syntax-resulttype:
 .. index:: ! result type, value type
@@ -57,7 +60,7 @@ which is a sequence of values.
 
 
 .. _syntax-functype:
-.. index:: ! function type, valut type, result type
+.. index:: ! function type, value type, result type
    pair: abstract syntax; function type
    pair: function; type
 
@@ -65,13 +68,18 @@ Function Types
 ~~~~~~~~~~~~~~
 
 *Function types* classify the signature of functions,
-mapping a sequence of parameters to a sequence of results.
+mapping a vector of parameters to a vector of results.
 
 .. math::
    \begin{array}{llll}
    \production{function types} & \functype &::=&
-     \valtype^\ast \to \resulttype \\
+     [\vec(\valtype)] \to [\vec(\valtype)] \\
    \end{array}
+
+.. note::
+   In the current version of WebAssembly,
+   the length of the result type vector of a function may be at most :math:`1`.
+   This restriction may be removed in future versions.
 
 
 .. _syntax-memtype:
@@ -133,7 +141,7 @@ A table of that type thus contains references to functions of heterogeneous type
 
 
 .. _syntax-globaltype:
-.. index:: ! global type, value type
+.. index:: ! global type, ! mutability, value type
    pair: abstract syntax; global type
    pair: abstract syntax; mutability
    pair: global; type
@@ -147,7 +155,10 @@ Global Types
 .. math::
    \begin{array}{llll}
    \production{global types} & \globaltype &::=&
-     \MUT^?~\valtype \\
+     \mut^?~\valtype \\
+   \production{mutability} & \mut &::=&
+     \CONST ~|~
+     \MUT \\
    \end{array}
 
 
@@ -169,3 +180,17 @@ External Types
      \MEM~\memtype ~|~ \\&&&
      \GLOBAL~\globaltype \\
    \end{array}
+
+
+Conventions
+...........
+
+The following auxiliary notation is defined for sequences of external types, filtering out entries of a specific kind in an order-preserving fashion:
+
+* :math:`\funcs(\externtype^\ast) = [\functype ~|~ \FUNC~\functype \in \externtype^\ast]`
+
+* :math:`\tables(\externtype^\ast) = [\tabletype ~|~ \TABLE~\tabletype \in \externtype^\ast]`
+
+* :math:`\mems(\externtype^\ast) = [\memtype ~|~ \MEM~\memtype \in \externtype^\ast]`
+
+* :math:`\globals(\externtype^\ast) = [\globaltype ~|~ \GLOBAL~\globaltype \in \externtype^\ast]`

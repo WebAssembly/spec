@@ -4,9 +4,9 @@
 
 
 .. Type-setting of names
-.. X - (multi-letter) variables (non-terminals)
+.. X - (multi-letter) variables / non-terminals
 .. F - functions (meta-level)
-.. K - keywords (terminals)
+.. K - keywords / terminals
 
 .. |X| mathmacro:: \mathit
 .. |F| mathmacro:: \mathrm
@@ -81,7 +81,7 @@
 .. |memtype| mathmacro:: \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
 .. |externtype| mathmacro:: \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}
 .. |limits| mathmacro:: \href{../syntax/types.html#syntax-limits}{\mathit{limits}}
-.. |mut| mathmacro:: \href{../syntax/types.html#syntax-mut}{\mathit{mutability}}
+.. |mut| mathmacro:: \href{../syntax/types.html#syntax-mut}{\mathit{mut}}
 
 
 .. Indices
@@ -143,8 +143,17 @@
 .. |export| mathmacro:: \href{../syntax/modules.html#syntax-export}{\mathit{export}}
 .. |importdesc| mathmacro:: \href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}
 .. |exportdesc| mathmacro:: \href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}
-.. |elemseg| mathmacro:: \href{../syntax/modules.html#syntax-elemseg}{\mathit{elemseg}}
-.. |dataseg| mathmacro:: \href{../syntax/modules.html#syntax-dataseg}{\mathit{dataseg}}
+.. |elem| mathmacro:: \href{../syntax/modules.html#syntax-elemseg}{\mathit{elem}}
+.. |data| mathmacro:: \href{../syntax/modules.html#syntax-dataseg}{\mathit{data}}
+.. |start| mathmacro:: \href{../syntax/modules.html#syntax-start}{\mathit{start}}
+
+
+.. Modules, meta functions
+
+.. |funcs| mathmacro:: \href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}
+.. |tables| mathmacro:: \href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}
+.. |mems| mathmacro:: \href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}
+.. |globals| mathmacro:: \href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}
 
 
 .. Instructions, terminals
@@ -181,7 +190,14 @@
 
 .. Instructions, non-terminals
 
+.. |unop| mathmacro:: \mathit{unop}
+.. |binop| mathmacro:: \mathit{binop}
+.. |testop| mathmacro:: \mathit{testop}
+.. |relop| mathmacro:: \mathit{relop}
+.. |cvtop| mathmacro:: \mathit{cvtop}
+
 .. |sx| mathmacro:: \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}
 .. |memarg| mathmacro:: \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}
+
 .. |instr| mathmacro:: \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}
 .. |expr| mathmacro:: \href{../syntax/modules.html#syntax-expr}{\mathit{expr}}

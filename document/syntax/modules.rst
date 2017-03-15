@@ -19,9 +19,9 @@ and provide initialization logic in the form of :ref:`data <syntax-data>` and :r
      \TABLES~\vec(\table), \\&&&&
      \MEMS~\vec(\mem), \\&&&&
      \GLOBALS~\vec(\global), \\&&&&
-     \ELEM~\vec(\elemseg), \\&&&&
-     \DATA~\vec(\dataseg), \\&&&&
-     \START~\funcidx^?, \\&&&&
+     \ELEM~\vec(\elem), \\&&&&
+     \DATA~\vec(\data), \\&&&&
+     \START~\start^?, \\&&&&
      \IMPORTS~\vec(\import), \\&&&&
      \EXPORTS~\vec(\export) \quad\} \\
    \end{array}
@@ -29,6 +29,7 @@ and provide initialization logic in the form of :ref:`data <syntax-data>` and :r
 Each of the vectors -- and thus the entire module -- may be empty.
 
 
+.. _syntax-index:
 .. _syntax-typeidx:
 .. _syntax-funcidx:
 .. _syntax-tableidx:
@@ -82,7 +83,7 @@ Conventions
 
 * The meta variable :math:`l` ranges over label indices.
 
-* The meta variable :math:`x` ranges over indices in any of the other index spaces.
+* The meta variables :math:`x, y` ranges over indices in any of the other index spaces.
 
 
 .. _syntax-expr:
@@ -123,7 +124,7 @@ They are referenced by :ref:`type indices <syntax-typeidx>`.
 
 .. _syntax-func:
 .. _syntax-local:
-.. index:: ! function, ! local, function index, type index, value type, expression, import
+.. index:: ! function, ! local, function index, local index, type index, value type, expression, import
    pair: abstract syntax; function
 
 Functions
@@ -248,7 +249,7 @@ The |ELEM| component of a module defines a vector of *element segments* that ini
 
 .. math::
    \begin{array}{llll}
-   \production{element segments} & \elemseg &::=&
+   \production{element segments} & \elem &::=&
      \{ \TABLE~\tableidx, \OFFSET~\expr, \INIT~\vec(\funcidx) \} \\
    \end{array}
 
@@ -273,7 +274,7 @@ The |DATA| component of a module defines a vector of *data segments* that initia
 
 .. math::
    \begin{array}{llll}
-   \production{data segments} & \dataseg &::=&
+   \production{data segments} & \data &::=&
      \{ \MEM~\memidx, \OFFSET~\expr, \INIT~\vec(\by) \} \\
    \end{array}
 
@@ -291,7 +292,13 @@ The |OFFSET| is given by a :ref:`constant <valid-const>` :ref:`expression <synta
 Start Function
 ~~~~~~~~~~~~~~
 
-The |START| component of a module declares the :ref:`function index <syntax-idx>` of an optional *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
+The |START| component of a module optionally declares the :ref:`function index <syntax-idx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
+
+.. math::
+   \begin{array}{llll}
+   \production{start function} & \start &::=&
+     \{ \FUNC~\funcidx \} \\
+   \end{array}
 
 
 .. _syntax-export:
