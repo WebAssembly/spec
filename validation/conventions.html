@@ -235,8 +235,8 @@ a recursive rule, where the premise is itself a typing judgement:</p>
   C \vdash \mathsf{block}~t^?~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} : [] \to [t^?]
 }\]</div>
 <p class="last">A <span class="math">\(\mathsf{block}\)</span> instruction is only valid when the instruction sequence in its body is.
-If so, it has the same type as the body.
-The result type of the instruction must match the block&#8217;s annotation <span class="math">\(t^?\)</span>.
+Moreover, the result type must match the block&#8217;s annotation <span class="math">\(t^?\)</span>.
+If so, then the <span class="math">\(\mathsf{block}\)</span> instruction has the same type as the body.
 Inside the body an additional label of the same type is available,
 which is expressed by locally extending the context <span class="math">\(C\)</span> with the additional label information for the premise.</p>
 </div>
