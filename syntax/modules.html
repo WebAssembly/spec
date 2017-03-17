@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -96,7 +96,7 @@
 <span id="index-0"></span><h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
 <p>WebAssembly programs are organized into <em>modules</em>,
 which are the unit of deployment, loading, and compilation.
-A module collects definitions for <a class="reference internal" href="#syntax-type"><span class="std std-ref">types</span></a>, <a class="reference internal" href="#syntax-func"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="#syntax-table"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="#syntax-global"><span class="std std-ref">globals</span></a>.
+A module collects definitions for <a class="reference internal" href="types.html#syntax-type"><span class="std std-ref">types</span></a>, <a class="reference internal" href="#syntax-func"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="#syntax-table"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="#syntax-global"><span class="std std-ref">globals</span></a>.
 In addition, it can declare <a class="reference internal" href="#syntax-import"><span class="std std-ref">imports</span></a> and <a class="reference internal" href="#syntax-export"><span class="std std-ref">exports</span></a>
 and provide initialization logic in the form of <a class="reference internal" href="#syntax-data"><span class="std std-ref">data</span></a> and <a class="reference internal" href="#syntax-elem"><span class="std std-ref">element</span></a> segments or a <a class="reference internal" href="#syntax-start"><span class="std std-ref">start function</span></a>.</p>
 <div class="math">
@@ -158,7 +158,7 @@ They are referenced by <a class="reference internal" href="#syntax-typeidx"><spa
 \def\vo_id#1{}\vo_id{functions} &amp; \href{../syntax/modules.html#syntax-func}{\mathit{func}} &amp;::=&amp;
   \{ \mathsf{type}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}, \mathsf{locals}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}), \mathsf{body}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}} \} \\
 \end{array}\end{split}\]</div>
-<p>The <span class="math">\(\mathsf{type}\)</span> of a function declares its signature by reference to a <a class="reference internal" href="#syntax-type"><span class="std std-ref">type</span></a> defined in the module.
+<p>The <span class="math">\(\mathsf{type}\)</span> of a function declares its signature by reference to a <a class="reference internal" href="types.html#syntax-type"><span class="std std-ref">type</span></a> defined in the module.
 The parameters of the function are referenced through 0-based <a class="reference internal" href="#syntax-localidx"><span class="std std-ref">local indices</span></a> in the function&#8217;s body.</p>
 <p>The <span class="math">\(\mathsf{locals}\)</span> declare a vector of mutable local variables and their types.
 These variables are referenced through <a class="reference internal" href="#syntax-localidx"><span class="std std-ref">local indices</span></a> in the function&#8217;s body.
