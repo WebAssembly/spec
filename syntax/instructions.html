@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -320,6 +320,16 @@ the callee is dynamically checked against the <span class="xref std std-ref">fun
 <span class="math">\(\mathsf{call\_indirect}\)</span> implicitly operates on <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a> <a class="reference internal" href="modules.html#syntax-tableidx"><span class="std std-ref">index</span></a> <span class="math">\(0\)</span>.
 This restriction may be lifted in future versions.</p>
 </div>
+<span class="target" id="syntax-expr"></span></div>
+<div class="section" id="expressions">
+<span id="index-6"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="modules.html#syntax-func"><span class="std std-ref">Function</span></a> bodies, initialization values for <a class="reference internal" href="modules.html#syntax-global"><span class="std std-ref">globals</span></a> and offsets of <a class="reference internal" href="modules.html#syntax-elem"><span class="std std-ref">element</span></a> or <a class="reference internal" href="modules.html#syntax-data"><span class="std std-ref">data</span></a> segments are given as expressions, which are sequences of <a class="reference internal" href="#syntax-instr"><span class="std std-ref">instructions</span></a> terminated by an <span class="math">\(\mathsf{end}\)</span> marker.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\vo_id#1{}\vo_id{expressions} &amp; \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} &amp;::=&amp;
+  \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} \\
+\end{array}\end{split}\]</div>
+<p>In some places, validation <a class="reference internal" href="../validation/instructions.html#valid-const"><span class="std std-ref">restricts</span></a> expressions to be <em>constant</em>, which limits the set of allowable insructions.</p>
 </div>
 </div>
 

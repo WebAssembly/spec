@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -230,9 +230,9 @@ and the instruction is ill-typed.</p>
 a recursive rule, where the premise is itself a typing judgement:</p>
 <div class="math">
 \[\frac{
-  C,\mathsf{label}\,(t^?) \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \to [t^?]
+  C,\mathsf{label}\,[t^?] \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \to [t^?]
 }{
-  C \vdash \mathsf{block}~t^?~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} : [] \to [t^?]
+  C \vdash \mathsf{block}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} : [] \to [t^?]
 }\]</div>
 <p class="last">A <span class="math">\(\mathsf{block}\)</span> instruction is only valid when the instruction sequence in its body is.
 Moreover, the result type must match the block&#8217;s annotation <span class="math">\(t^?\)</span>.
