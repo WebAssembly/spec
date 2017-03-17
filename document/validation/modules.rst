@@ -165,70 +165,6 @@ Limits :math:`\{ \MIN~n, \MAX~m^? \}`
    }
 
 
-.. _valid-expr:
-.. index:: expression
-   pair: validation; expression
-   single: abstract syntax; expression
-   single: expression; constant
-
-Expressions
-~~~~~~~~~~~
-
-Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttype>` of the form :math:`t^?`.
-
-
-:math:`\instr^\ast~\END`
-........................
-
-* The :ref:`instruction sequence <syntax-instr-seq>` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`,
-  for some optional :ref:`value type <syntax-valtype>` :math:`t^?`.
-
-* Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`t^?`.
-
-.. math::
-   \frac{
-     C \vdash \instr^\ast : [] \to [t^?]
-   }{
-     C \vdash \instr^\ast~\END : t^?
-   }
-
-
-.. _valid-const:
-.. index:: ! constant
-
-Constant Expressions
-....................
-
-* In a *constant* expression :math:`\instr^\ast~\END` all instructions in :math:`\instr^\ast` must be constant.
-
-* A constant instruction :math:`\instr` must be:
-
-  * either of the form :math:`t.\CONST~c`,
-
-  * or of the form :math:`\GETGLOBAL~x`, in which case :math:`C.\GLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
-
-.. math::
-   \frac{
-     (C \vdash \instr ~\F{const})^\ast
-   }{
-     C \vdash \instr~\END ~\F{const}
-   }
-   \qquad
-   \frac{
-   }{
-     C \vdash t.\CONST~c ~\F{const}
-   }
-   \qquad
-   \frac{
-     C.\GLOBALS[x] = \CONST~t
-   }{
-     C \vdash \GETGLOBAL~x ~\F{const}
-   }
-
-.. note::
-   The definition of constant expression may be extended in future versions of WebAssembly.
-
-
 .. _valid-func:
 .. index:: function, local, function index, local index, type index, function type, value type, expression, import
    pair: abstract syntax; function
@@ -339,7 +275,7 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 :math:`\{ \TYPE~\mut~t, \INIT~\expr \}`
 .......................................
 
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`t`.
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
 * The expression :math:`\expr` must be :ref:`constant <constant>`.
 
@@ -347,7 +283,7 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 
 .. math::
    \frac{
-     C \vdash \expr : t
+     C \vdash \expr : [t]
      \qquad
      C \vdash \expr ~\F{const}
    }{
@@ -376,7 +312,7 @@ Element segments :math:`\elem` are not classified by a type.
 
 * The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |ANYFUNC|.
 
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` |I32|.
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
 * The expression :math:`\expr` must be :ref:`constant <constant>`.
 
@@ -390,7 +326,7 @@ Element segments :math:`\elem` are not classified by a type.
    \frac{
      C.\TABLES[x] = \limits~\ANYFUNC
      \qquad
-     C \vdash \expr : \I32
+     C \vdash \expr : [\I32]
      \qquad
      C \vdash \expr ~\F{const}
      \qquad
@@ -417,7 +353,7 @@ Data segments :math:`\data` are not classified by any type.
 
 * The memory :math:`C.\MEMS[x]` must be defined in the context.
 
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` |I32|.
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
 * The expression :math:`\expr` must be :ref:`constant <constant>`.
 
@@ -428,7 +364,7 @@ Data segments :math:`\data` are not classified by any type.
    \frac{
      C.\MEMS[x] = \limits
      \qquad
-     C \vdash \expr : \I32
+     C \vdash \expr : [\I32]
      \qquad
      C \vdash \expr ~\F{const}
    }{

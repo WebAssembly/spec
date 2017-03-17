@@ -4,8 +4,10 @@
 Instructions
 ------------
 
-:ref:`Instructions <syntax-instr>` are classified by :ref:`function types <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
-The types describe which types :math:`t_1^\ast` of argument values an instruction pops off the operand stack and which types :math:`t_2^\ast` of result values it pushes back to it.
+:ref:`Instructions <syntax-instr>` are classified by :ref:`function types <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`
+that describe how they manipulate the :ref:`operand stack <stack>`.
+The types describe the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
+and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
 
 .. note::
    For example, the instruction :math:`\K{i32.add}` has type :math:`[\I32~\I32] \to [\I32]`,
@@ -480,28 +482,10 @@ Control Instructions
    The |UNREACHABLE| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
-:math:`\BLOCK~t^?~\instr^\ast~\END`
-...................................
+:math:`\BLOCK~[t^?]~\instr^\ast~\END`
+.....................................
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`t^?` prepended to the |LABELS| vector.
-
-* Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
-
-* Then the compound instruction is valid with type :math:`[] \to [t^?]`.
-
-.. math::
-   \frac{
-     C,\LABELS\,(t^?) \vdash \instr^\ast : [] \to [t^?]
-   }{
-     C \vdash \BLOCK~t^?~\instr^\ast~\END : [] \to [t^?]
-   }
-
-
-:math:`\LOOP~t^?~\instr^\ast~\END`
-..................................
-
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`\epsilon` prepended to the |LABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |LABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
@@ -510,16 +494,34 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\LABELS\,(\epsilon) \vdash \instr^\ast : [] \to [t^?]
+     C,\LABELS\,[t^?] \vdash \instr^\ast : [] \to [t^?]
    }{
-     C \vdash \LOOP~t^?~\instr^\ast~\END : [] \to [t^?]
+     C \vdash \BLOCK~[^?]~\instr^\ast~\END : [] \to [t^?]
    }
 
 
-:math:`\IF~t^?~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
+:math:`\LOOP~[t^?]~\instr^\ast~\END`
+....................................
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`[]` prepended to the |LABELS| vector.
+
+* Under context :math:`C'`,
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
+
+* Then the compound instruction is valid with type :math:`[] \to [t^?]`.
+
+.. math::
+   \frac{
+     C,\LABELS\,[] \vdash \instr^\ast : [] \to [t^?]
+   }{
+     C \vdash \LOOP~[t^?]~\instr^\ast~\END : [] \to [t^?]
+   }
+
+
+:math:`\IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
 ......................................................
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`\epsilon` prepended to the |LABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |LABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
@@ -531,11 +533,11 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\LABELS\,(t^?) \vdash \instr_1^\ast : [] \to [t^?]
+     C,\LABELS\,[t^?] \vdash \instr_1^\ast : [] \to [t^?]
      \qquad
-     C,\LABELS\,(t^?) \vdash \instr_2^\ast : [] \to [t^?]
+     C,\LABELS\,[t^?] \vdash \instr_2^\ast : [] \to [t^?]
    }{
-     C \vdash \IF~t^?~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [\I32] \to [t^?]
+     C \vdash \IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [\I32] \to [t^?]
    }
 
 
@@ -544,13 +546,13 @@ Control Instructions
 
 * The label :math:`C.\LABELS[l]` must be defined in the context.
 
-* Let :math:`t^?` be the :ref:`result type <syntax-resulttype>` :math:`C.\LABELS[l]`.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\LABELS[l]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\LABELS[l] = t^?
+     C.\LABELS[l] = [t^?]
    }{
      C \vdash \BR~l : [t_1^\ast~t^?] \to [t_2^\ast]
    }
@@ -564,24 +566,24 @@ Control Instructions
 
 * The label :math:`C.\LABELS[l]` must be defined in the context.
 
-* Let :math:`t^?` be the :ref:`result type <syntax-resulttype>` :math:`C.\LABELS[l]`.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\LABELS[l]`.
 
 * Then the instruction is valid with type :math:`[t^?~\I32] \to [t^?]`.
 
 .. math::
    \frac{
-     C.\LABELS[l] = t^?
+     C.\LABELS[l] = [t^?]
    }{
      C \vdash \BRIF~l : [t^?~\I32] \to [t^?]
    }
 
 
-:math:`\BRTABLE~l^\ast~l'`
-..........................
+:math:`\BRTABLE~l^\ast~l_N`
+...........................
 
 * The label :math:`C.\LABELS[l]` must be defined in the context.
 
-* Let :math:`t^?` be the :ref:`result type <syntax-resulttype>` :math:`C.\LABELS[l']`.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\LABELS[l_N]`.
 
 * For all :math:`l_i` in :math:`l^\ast`,
   the label :math:`C.\LABELS[l_i]` must be defined in the context.
@@ -593,11 +595,11 @@ Control Instructions
 
 .. math::
    \frac{
-     (C.\LABELS[l] = t^?)^\ast
+     (C.\LABELS[l] = [t^?])^\ast
      \qquad
-     C.\LABELS[l'] = t^?
+     C.\LABELS[l_N] = [t^?]
    }{
-     C \vdash \BRTABLE~l^\ast~l' : [t_1^\ast~t^?] \to [t_2^\ast]
+     C \vdash \BRTABLE~l^\ast~l_N : [t_1^\ast~t^?] \to [t_2^\ast]
    }
 
 .. note::
@@ -609,13 +611,13 @@ Control Instructions
 
 * The label vector :math:`C.\LABELS` must not be empty in the context.
 
-* Let :math:`t^?` be the :ref:`result type <syntax-resulttype>` that is the last element of :math:`C.\LABELS`.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` that is the last element of :math:`C.\LABELS`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\LABELS[|C.\LABELS|-1] = t^?
+     C.\LABELS[|C.\LABELS|-1] = [t^?]
    }{
      C \vdash \RETURN : [t_1^\ast~t^?] \to [t_2^\ast]
    }
@@ -684,13 +686,13 @@ Empty Instruction Sequence: :math:`\epsilon`
    }
 
 
-Non-empty Instruction Sequence: :math:`\instr^\ast~\instr'`
-...........................................................
+Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
+............................................................
 
 * The instruction sequence :math:`\instr^\ast` must be valid with type :math:`[t_1^\ast] \to [t_2^\ast]`,
   for some sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
-* The instruction :math:`\instr'` must be valid with type :math:`[t^\ast] \to [t_3^\ast]`,
+* The instruction :math:`\instr_N` must be valid with type :math:`[t^\ast] \to [t_3^\ast]`,
   for some sequences of :ref:`value types <syntax-valtype>` :math:`t^\ast` and :math:`t_3^\ast`.
 
 * There must be a sequence of :ref:`value types <syntax-valtype>` :math:`t_0^\ast`,
@@ -702,7 +704,71 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr'`
    \frac{
      C \vdash \instr^\ast : [t_1^\ast] \to [t_0^\ast~t^\ast]
      \qquad
-     C \vdash \instr' : [t^\ast] \to [t_3^\ast]
+     C \vdash \instr_N : [t^\ast] \to [t_3^\ast]
    }{
-     C \vdash \instr^\ast~\instr' : [t_1^\ast] \to [t_0^\ast~t_3^\ast]
+     C \vdash \instr^\ast~\instr_N : [t_1^\ast] \to [t_0^\ast~t_3^\ast]
    }
+
+
+.. _valid-expr:
+.. index:: expression
+   pair: validation; expression
+   single: abstract syntax; expression
+   single: expression; constant
+
+Expressions
+~~~~~~~~~~~
+
+Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttype>` of the form :math:`[t^?]`.
+
+
+:math:`\instr^\ast~\END`
+........................
+
+* The :ref:`instruction sequence <syntax-instr-seq>` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`,
+  for some optional :ref:`value type <syntax-valtype>` :math:`t^?`.
+
+* Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`[t^?]`.
+
+.. math::
+   \frac{
+     C \vdash \instr^\ast : [] \to [t^?]
+   }{
+     C \vdash \instr^\ast~\END : [t^?]
+   }
+
+
+.. _valid-const:
+.. index:: ! constant
+
+Constant Expressions
+....................
+
+* In a *constant* expression :math:`\instr^\ast~\END` all instructions in :math:`\instr^\ast` must be constant.
+
+* A constant instruction :math:`\instr` must be:
+
+  * either of the form :math:`t.\CONST~c`,
+
+  * or of the form :math:`\GETGLOBAL~x`, in which case :math:`C.\GLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
+
+.. math::
+   \frac{
+     (C \vdash \instr ~\F{const})^\ast
+   }{
+     C \vdash \instr~\END ~\F{const}
+   }
+   \qquad
+   \frac{
+   }{
+     C \vdash t.\CONST~c ~\F{const}
+   }
+   \qquad
+   \frac{
+     C.\GLOBALS[x] = \CONST~t
+   }{
+     C \vdash \GETGLOBAL~x ~\F{const}
+   }
+
+.. note::
+   The definition of constant expression may be extended in future versions of WebAssembly.

@@ -86,25 +86,6 @@ Conventions
 * The meta variables :math:`x, y` ranges over indices in any of the other index spaces.
 
 
-.. _syntax-expr:
-.. index:: ! expression
-   pair: abstract syntax; expression
-   single: expression; constant
-
-Expressions
-~~~~~~~~~~~
-
-:ref:`Function <syntax-func>` bodies, initialization values for :ref:`globals <syntax-global>` and offsets of :ref:`element <syntax-elem>` or :ref:`data <syntax-data>` segments are given as expressions, which are sequences of :ref:`instructions <syntax-instr>` terminated by an |END| marker.
-
-.. math::
-   \begin{array}{llll}
-   \production{expressions} & \expr &::=&
-     \instr^\ast~\END \\
-   \end{array}
-
-In some places, validation :ref:`restricts <valid-const>` expressions to be *constant*, which limits the set of allowable insructions.
-
-
 .. _syntax-type:
 .. index:: ! type definition, type index
    pair: abstract syntax; type definition

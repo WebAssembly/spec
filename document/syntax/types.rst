@@ -51,7 +51,7 @@ which is a sequence of values.
 .. math::
    \begin{array}{llll}
    \production{result types} & \resulttype &::=&
-     \valtype^? \\
+     [\valtype^?] \\
    \end{array}
 
 .. note::

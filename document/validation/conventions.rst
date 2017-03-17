@@ -161,9 +161,9 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
 
    .. math::
       \frac{
-        C,\LABEL\,(t^?) \vdash \instr^\ast : [] \to [t^?]
+        C,\LABEL\,[t^?] \vdash \instr^\ast : [] \to [t^?]
       }{
-        C \vdash \BLOCK~t^?~\instr^\ast~\END : [] \to [t^?]
+        C \vdash \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
       }
 
    A |BLOCK| instruction is only valid when the instruction sequence in its body is.
