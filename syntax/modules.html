@@ -107,14 +107,14 @@ and provide initialization logic in the form of <a class="reference internal" hr
   \mathsf{tables}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-table}{\mathit{table}}), \\&amp;&amp;&amp;&amp;
   \mathsf{mems}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}), \\&amp;&amp;&amp;&amp;
   \mathsf{globals}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-global}{\mathit{global}}), \\&amp;&amp;&amp;&amp;
-  \mathsf{elem}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-elemseg}{\mathit{elemseg}}), \\&amp;&amp;&amp;&amp;
-  \mathsf{data}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-dataseg}{\mathit{dataseg}}), \\&amp;&amp;&amp;&amp;
-  \mathsf{start}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}^?, \\&amp;&amp;&amp;&amp;
+  \mathsf{elem}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-elemseg}{\mathit{elem}}), \\&amp;&amp;&amp;&amp;
+  \mathsf{data}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-dataseg}{\mathit{data}}), \\&amp;&amp;&amp;&amp;
+  \mathsf{start}~\href{../syntax/modules.html#syntax-start}{\mathit{start}}^?, \\&amp;&amp;&amp;&amp;
   \mathsf{imports}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-import}{\mathit{import}}), \\&amp;&amp;&amp;&amp;
   \mathsf{exports}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}) \quad\} \\
 \end{array}\end{split}\]</div>
 <p>Each of the vectors &#8211; and thus the entire module &#8211; may be empty.</p>
-<span class="target" id="syntax-labelidx"><span id="syntax-localidx"></span><span id="syntax-globalidx"></span><span id="syntax-memidx"></span><span id="syntax-tableidx"></span><span id="syntax-funcidx"></span><span id="syntax-typeidx"></span></span><div class="section" id="indices">
+<span class="target" id="syntax-labelidx"><span id="syntax-localidx"></span><span id="syntax-globalidx"></span><span id="syntax-memidx"></span><span id="syntax-tableidx"></span><span id="syntax-funcidx"></span><span id="syntax-typeidx"></span><span id="syntax-index"></span></span><div class="section" id="indices">
 <span id="index-1"></span><h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
 <p>Definitions are referenced with zero-based <em>indices</em>.
 Each class of definition has its own <em>index space</em>, as distinguished by the following classes.</p>
@@ -136,19 +136,19 @@ The indices of these imports precede the indices of other definitions in the sam
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The meta variable <span class="math">\(l\)</span> ranges over label indices.</li>
-<li>The meta variable <span class="math">\(x\)</span> ranges over indices in any of the other index spaces.</li>
+<li>The meta variables <span class="math">\(x, y\)</span> ranges over indices in any of the other index spaces.</li>
 </ul>
 <span class="target" id="syntax-expr"></span></div>
 </div>
 <div class="section" id="expressions">
 <span id="index-2"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="#syntax-func"><span class="std std-ref">Function</span></a> bodies, initialization values for <a class="reference internal" href="#syntax-global"><span class="std std-ref">globals</span></a> and offsets of <a class="reference internal" href="#syntax-elem"><span class="std std-ref">element</span></a> or <a class="reference internal" href="#syntax-data"><span class="std std-ref">data</span></a> segments are given as expressions, which are sequences of <a class="reference internal" href="instructions.save.html#syntax-instr"><span class="std std-ref">instructions</span></a> terminated by an <span class="math">\(\mathsf{end}\)</span> marker.</p>
+<p><a class="reference internal" href="#syntax-func"><span class="std std-ref">Function</span></a> bodies, initialization values for <a class="reference internal" href="#syntax-global"><span class="std std-ref">globals</span></a> and offsets of <a class="reference internal" href="#syntax-elem"><span class="std std-ref">element</span></a> or <a class="reference internal" href="#syntax-data"><span class="std std-ref">data</span></a> segments are given as expressions, which are sequences of <a class="reference internal" href="instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> terminated by an <span class="math">\(\mathsf{end}\)</span> marker.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\vo_id#1{}\vo_id{expressions} &amp; \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} &amp;::=&amp;
   \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} \\
 \end{array}\end{split}\]</div>
-<p>In some places, validation <span class="xref std std-ref">restricts</span> expressions to be <em>constant</em>, which limits the set of allowable insructions.</p>
+<p>In some places, validation <a class="reference internal" href="../validation/modules.html#valid-const"><span class="std std-ref">restricts</span></a> expressions to be <em>constant</em>, which limits the set of allowable insructions.</p>
 <span class="target" id="syntax-type"></span></div>
 <div class="section" id="types">
 <span id="index-3"></span><h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
@@ -230,7 +230,7 @@ This restriction may be lifted in future versions.</p>
 \end{array}\end{split}\]</div>
 <p>Each global stores a single value of the given <a class="reference internal" href="types.html#syntax-globaltype"><span class="std std-ref">global type</span></a>.
 Its <span class="math">\(\mathsf{type}\)</span> also specifies whether a global is immutable or mutable.
-Moreover, each global is initialized with an <span class="math">\(\mathsf{init}\)</span> value given by a <span class="xref std std-ref">constant</span> initializer <a class="reference internal" href="#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
+Moreover, each global is initialized with an <span class="math">\(\mathsf{init}\)</span> value given by a <a class="reference internal" href="../validation/modules.html#valid-const"><span class="std std-ref">constant</span></a> initializer <a class="reference internal" href="#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
 <p>Globals are referenced through <a class="reference internal" href="#syntax-globalidx"><span class="std std-ref">global indices</span></a>,
 starting with the smallest index not referencing a global <a class="reference internal" href="#syntax-import"><span class="std std-ref">import</span></a>.</p>
 <span class="target" id="syntax-elem"></span></div>
@@ -240,10 +240,10 @@ starting with the smallest index not referencing a global <a class="reference in
 The <span class="math">\(\mathsf{elem}\)</span> component of a module defines a vector of <em>element segments</em> that initialize a subrange of a table at a given offset from a static vector of elements.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\vo_id#1{}\vo_id{element segments} &amp; \href{../syntax/modules.html#syntax-elemseg}{\mathit{elemseg}} &amp;::=&amp;
+\def\vo_id#1{}\vo_id{element segments} &amp; \href{../syntax/modules.html#syntax-elemseg}{\mathit{elem}} &amp;::=&amp;
   \{ \mathsf{table}~\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}}, \mathsf{offset}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}) \} \\
 \end{array}\end{split}\]</div>
-<p>The <span class="math">\(\mathsf{offset}\)</span> is given by a <span class="xref std std-ref">constant</span> <a class="reference internal" href="#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
+<p>The <span class="math">\(\mathsf{offset}\)</span> is given by a <a class="reference internal" href="../validation/modules.html#valid-const"><span class="std std-ref">constant</span></a> <a class="reference internal" href="#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly, at most one table is allowed in a module.
@@ -256,10 +256,10 @@ Consequently, the only valid <span class="math">\(\href{../syntax/modules.html#s
 The <span class="math">\(\mathsf{data}\)</span> component of a module defines a vector of <em>data segments</em> that initialize a range of memory at a given offset with a static vector of bytes.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\vo_id#1{}\vo_id{data segments} &amp; \href{../syntax/modules.html#syntax-dataseg}{\mathit{dataseg}} &amp;::=&amp;
+\def\vo_id#1{}\vo_id{data segments} &amp; \href{../syntax/modules.html#syntax-dataseg}{\mathit{data}} &amp;::=&amp;
   \{ \mathsf{mem}~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}}, \mathsf{offset}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/values.html#syntax-byte}{byte}) \} \\
 \end{array}\end{split}\]</div>
-<p>The <span class="math">\(\mathsf{offset}\)</span> is given by a <span class="xref std std-ref">constant</span> <a class="reference internal" href="#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
+<p>The <span class="math">\(\mathsf{offset}\)</span> is given by a <a class="reference internal" href="../validation/modules.html#valid-const"><span class="std std-ref">constant</span></a> <a class="reference internal" href="#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly, at most one memory is allowed in a module.
@@ -268,7 +268,12 @@ Consequently, the only valid <span class="math">\(\href{../syntax/modules.html#s
 <span class="target" id="syntax-start"></span></div>
 <div class="section" id="start-function">
 <span id="index-10"></span><h2>Start Function<a class="headerlink" href="#start-function" title="Permalink to this headline">¶</a></h2>
-<p>The <span class="math">\(\mathsf{start}\)</span> component of a module declares the <span class="xref std std-ref">function index</span> of an optional <em>start function</em> that is automatically invoked when the module is <span class="xref std std-ref">instantiated</span>, after tables and memories have been initialized.</p>
+<p>The <span class="math">\(\mathsf{start}\)</span> component of a module optionally declares the <span class="xref std std-ref">function index</span> of a <em>start function</em> that is automatically invoked when the module is <span class="xref std std-ref">instantiated</span>, after tables and memories have been initialized.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\vo_id#1{}\vo_id{start function} &amp; \href{../syntax/modules.html#syntax-start}{\mathit{start}} &amp;::=&amp;
+  \{ \mathsf{func}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} \} \\
+\end{array}\end{split}\]</div>
 <span class="target" id="syntax-export"></span></div>
 <div class="section" id="exports">
 <span id="index-11"></span><h2>Exports<a class="headerlink" href="#exports" title="Permalink to this headline">¶</a></h2>

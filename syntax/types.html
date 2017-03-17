@@ -110,6 +110,8 @@ They correspond to single and double precision floating point types as defined b
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The meta variable <span class="math">\(t\)</span> ranges over value types where clear from context.</li>
+<li>The notation <span class="math">\(|t|\)</span> denotes the <em>width</em> of a value type in bytes.
+(That is, <span class="math">\(|\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}| = |\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}| = 4\)</span> and <span class="math">\(|\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}| = |\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}| = 8\)</span>.)</li>
 </ul>
 <span class="target" id="syntax-resulttype"></span></div>
 </div>
@@ -131,12 +133,18 @@ However, this may be generalized to sequences of values in future versions.</p>
 <div class="section" id="function-types">
 <span id="index-3"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
 <p><em>Function types</em> classify the signature of functions,
-mapping a sequence of parameters to a sequence of results.</p>
+mapping a vector of parameters to a vector of results.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\vo_id#1{}\vo_id{function types} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}} &amp;::=&amp;
-  \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^\ast \to \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}} \\
+  [\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}})] \to [\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}})] \\
 \end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the current version of WebAssembly,
+the length of the result type vector of a function may be at most <span class="math">\(1\)</span>.
+This restriction may be removed in future versions.</p>
+</div>
 <span class="target" id="syntax-limits"><span id="syntax-memtype"></span></span></div>
 <div class="section" id="memory-types">
 <span id="index-4"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
@@ -177,7 +185,10 @@ A table of that type thus contains references to functions of heterogeneous type
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\vo_id#1{}\vo_id{global types} &amp; \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} &amp;::=&amp;
-  \href{../syntax/types.html#syntax-mut}{\mathsf{mut}}^?~\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}} \\
+  \href{../syntax/types.html#syntax-mut}{\mathit{mut}}^?~\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}} \\
+\def\vo_id#1{}\vo_id{mutability} &amp; \href{../syntax/types.html#syntax-mut}{\mathit{mut}} &amp;::=&amp;
+  \mathsf{const} ~|~
+  \href{../syntax/types.html#syntax-mut}{\mathsf{mut}} \\
 \end{array}\end{split}\]</div>
 <span class="target" id="syntax-externtype"></span></div>
 <div class="section" id="external-types">
@@ -191,6 +202,16 @@ A table of that type thus contains references to functions of heterogeneous type
   \mathsf{mem}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} ~|~ \\&amp;&amp;&amp;
   \mathsf{global}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} \\
 \end{array}\end{split}\]</div>
+<div class="section" id="id1">
+<h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The following auxiliary notation is defined for sequences of external types, filtering out entries of a specific kind in an order-preserving fashion:</p>
+<ul class="simple">
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) = [\href{../syntax/types.html#syntax-functype}{\mathit{functype}} ~|~ \mathsf{func}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}} \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast]\)</span></li>
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) = [\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} ~|~ \mathsf{table}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast]\)</span></li>
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) = [\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} ~|~ \mathsf{mem}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast]\)</span></li>
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) = [\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} ~|~ \mathsf{global}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast]\)</span></li>
+</ul>
+</div>
 </div>
 </div>
 

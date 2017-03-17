@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Binary Format &#8212; WebAssembly 1.0</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Basics" href="index.html" />
+    <link rel="next" title="Validation" href="validation.html" />
+    <link rel="prev" title="Abstract Syntax" href="abstract-syntax.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Basics</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="abstract-syntax.html">Abstract Syntax</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Binary Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html">Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="binary-format">
+<span id="sec-binary"></span><h1>Binary Format<a class="headerlink" href="#binary-format" title="Permalink to this headline">¶</a></h1>
+<p id="index-0">The binary format for WebAssembly modules is defined as an <em>encoding</em>
+function that maps <span class="xref std std-ref">abstract syntax</span> to sequences of raw bytes.
+Some phrases may have several possible encodings,
+in particular, numbers may be encoded with optional leading zeros.
+Consequently, the encoding function defined here in fact yields a (non-empty) <em>set</em> of possible byte sequences for each input phrase.
+Implementations of encoders producing WebAssembly binaries can pick any encoding contained in these sets.</p>
+<p>Every byte sequence that is a valid encoding for a given syntactic class uniquely determines a phrase of that syntactic class.
+Consequently, encoding is invertible in that sense,
+and <em>decoding</em> is defined implicitly as the respective inverse function.
+A decoder in an implementation of WebAssembly must accept all possible encodings for a phrase. <a class="footnote-reference" href="#compression" id="id1">[1]</a></p>
+<table class="docutils footnote" frame="void" id="compression" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Additional encoding layers &#8211; for example, introducing compression &#8211; may be defined on top the basic representation defined here.
+However, such layers are outside the scope of the current specification.</td></tr>
+</tbody>
+</table>
+<div class="section" id="notation">
+<h2>Notation<a class="headerlink" href="#notation" title="Permalink to this headline">¶</a></h2>
+<p>The following notation is adopted in defining binary encoding functions.</p>
+<ul>
+<li><p class="first">A hexadecimal constant like <span class="math">\(\mathrm{08}\)</span> or <span class="math">\(\mathrm{FF}\)</span> denotes the respective byte value as a singleton set.</p>
+</li>
+<li><p class="first"><span class="math">\(\mathrm{byte}(n)\)</span> denotes the byte value of the natural number <span class="math">\(n\)</span> (for <span class="math">\(0 \leq n &lt; 256\)</span>).</p>
+</li>
+<li><p class="first"><span class="math">\(\def\sem#1{[\![#1]\!]}\sem{x}_{t}\)</span> denotes the set of encodings of the phrase <span class="math">\(x\)</span> of type <span class="math">\(t\)</span>. Usually <span class="math">\(t\)</span> is clear from context and will be omitted to avoid clutter.</p>
+</li>
+<li><p class="first">The sequence <span class="math">\(\def\sem#1{[\![#1]\!]}\sem{x}_{t_1}~\def\sem#1{[\![#1]\!]}\sem{y}_{t_2}\)</span> denotes the set of encodings that are the concatenation of an element from <span class="math">\(\def\sem#1{[\![#1]\!]}\sem{x}_{t_1}\)</span> with an element from <span class="math">\(\def\sem#1{[\![#1]\!]}\sem{y}_{t_2}\)</span>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For example, the set <span class="math">\(\def\sem#1{[\![#1]\!]}\sem{10}\)</span> of encodings of the <span class="math">\({\mathit{uint}_8}\)</span> value <span class="math">\(10\)</span> is <span class="math">\(\{\mathrm{0A}, \mathrm{8A~00}\}\)</span>.
+The concatenation <span class="math">\(\def\sem#1{[\![#1]\!]}\sem{10}~\def\sem#1{[\![#1]\!]}\sem{10}\)</span> yields the set <span class="math">\(\{\mathrm{0A~0A}, \mathrm{0A~8A~00}, \mathrm{8A~00~0A}, \mathrm{8A~00~8A~00}\}\)</span> of possible encodings.</p>
+</div>
+</li>
+<li><p class="first">The definition of the encoding function is given in clause form:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll}
+\def\sem#1{[\![#1]\!]}\sem{x}_t &amp;=&amp; \mathit{byte~sequence~encoding~x} \\
+\def\sem#1{[\![#1]\!]}\sem{y}_t &amp;=&amp; \mathit{byte~sequence~encoding~y} \\
+\end{array}\end{split}\]</div>
+<p>This function may be recursive.
+When multiple clauses overlap, any clause may be chosen.
+The result of the encoding function then is the union of all applicable clauses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<blockquote>
+<div><p>For example, the <span class="math">\(\mathsf{else}\)</span> opcode may be omitted in the encoding of the <span class="math">\(\mathsf{if}\)</span> instruction if the following instruction sequence is empty:</p>
+</div></blockquote>
+<div class="last math">
+\[\begin{split}\begin{array}{lll}
+\def\sem#1{[\![#1]\!]}\sem{\mathsf{if}~e_1^\ast~\mathsf{else}~e_2^\ast~\mathsf{end}} &amp;=&amp; \dots \\
+\def\sem#1{[\![#1]\!]}\sem{\mathsf{if}~e_1^\ast~\mathsf{else}~\mathsf{end}} &amp;=&amp; \dots \\
+\end{array}\end{split}\]</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="numbers">
+<h2>Numbers<a class="headerlink" href="#numbers" title="Permalink to this headline">¶</a></h2>
+<p>All integral numbers are encoded using the <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128">LEB128</a> variable-length integer encoding, in either unsigned or signed variant.</p>
+<ul>
+<li><p class="first"><span class="math">\({\mathit{uint}}_N\)</span>: unsigned integers are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128">unsigned LEB128</a> format:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad\qquad}l}
+\def\sem#1{[\![#1]\!]}\sem{n}_{{\mathit{uint}}_N} &amp;=&amp; \mathrm{byte}(n) &amp; (n &lt; 128) \\
+\def\sem#1{[\![#1]\!]}\sem{m \cdot 128 + n}_{{\mathit{uint}}_N} &amp;=&amp; \mathrm{byte}(n+128)~\def\sem#1{[\![#1]\!]}\sem{m}_{{\mathit{uint}}_N} &amp; (n &lt; 128) \\
+\end{array}\end{split}\]</div>
+<p>In the case of a value less than 128, both rules apply, allowing for optional padding <span class="math">\(\mathrm{80}\)</span> bytes.</p>
+<p>As an additional constraint, the total number of bytes encoding a value of type <span class="math">\({\mathit{uint}}_N\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
+</li>
+<li><p class="first"><span class="math">\({\mathit{sint}}_N\)</span>: signed integers are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Signed_LEB128">signed LEB128</a> format, which uses a 2&#8217;s complement representation:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad\qquad}l}
+\def\sem#1{[\![#1]\!]}\sem{n}_{{\mathit{sint}}_N} &amp;=&amp; \mathrm{byte}(n) &amp; (n &lt; 64) \\
+\def\sem#1{[\![#1]\!]}\sem{-n}_{{\mathit{sint}}_N} &amp;=&amp; \mathrm{byte}(128-n) &amp; (0 &lt; n \leq 64) \\
+\def\sem#1{[\![#1]\!]}\sem{\pm m \cdot 128 + n}_{{\mathit{sint}}_N} &amp;=&amp; \mathrm{byte}(n+128)~\def\sem#1{[\![#1]\!]}\sem{\pm m}_{{\mathit{sint}}_N} &amp; (n &lt; 128) \\
+\end{array}\end{split}\]</div>
+<p>In the case of a non-negative value less than 64, both the first and second rule apply, allowing for optional padding <span class="math">\(\mathrm{80}\)</span> bytes.
+In the case of a negative value greater than or equal to -64, both the second and third rule apply, allowing for optional padding <span class="math">\(\mathrm{FF}\)</span> bytes.</p>
+<p>As an additional constraint, the total number of bytes encoding a value of type <span class="math">\({\mathit{sint}}_N\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
+</li>
+<li><p class="first"><span class="math">\(\float_N\)</span>: floating point values are encoded as a vector of bytes containing their IEEE bit pattern in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad\qquad}l}
+\def\sem#1{[\![#1]\!]}\sem{z}_{\float_N} &amp;=&amp; \def\sem#1{[\![#1]\!]}\sem{\mathrm{bytes}(z)}_{\mathrm{byte}^\ast} \\
+\end{array}\end{split}\]</div>
+</li>
+</ul>
+</div>
+<div class="section" id="sequences-and-vectors">
+<h2>Sequences and Vectors<a class="headerlink" href="#sequences-and-vectors" title="Permalink to this headline">¶</a></h2>
+<p>All vectors are encoded by a their length, succeeded by their list of elements.</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad\qquad}l}
+\def\sem#1{[\![#1]\!]}\sem{x^n}_{{\mathit{uint}}_N} &amp;=&amp; \def\sem#1{[\![#1]\!]}\sem{x} \\
+\end{array}\end{split}\]</div>
+<ul>
+<li><p class="first"><span class="math">\(\string\)</span>: strings are encoded as a vector of bytes:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad\qquad}l}
+\def\sem#1{[\![#1]\!]}\sem{s} &amp;=&amp; \mathrm{bytes}(z) \\
+\end{array}\end{split}\]</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2016, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

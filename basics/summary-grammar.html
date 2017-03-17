@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Summary: Grammar of Basic Elements &#8212; WebAssembly 1.0</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Basic Elements" href="index.html" />
+    <link rel="next" title="Summary: Binary Encoding of Basic Elements" href="summary-binary.html" />
+    <link rel="prev" title="Types" href="types.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions/index.html">Concepts</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Basic Elements</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="numbers.html">Numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sequences.html">Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Summary: Grammar of Basic Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="summary-binary.html">Summary: Binary Encoding of Basic Elements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="summary-grammar-of-basic-elements">
+<h1>Summary: Grammar of Basic Elements<a class="headerlink" href="#summary-grammar-of-basic-elements" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="numbers">
+<h2>Numbers<a class="headerlink" href="#numbers" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\mbox{(unsigned integers)} &amp; {\mathit{uint}}_N &amp;::=&amp; 0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
+\mbox{(signed integers)} &amp; {\mathit{sint}}_N &amp;::=&amp; -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
+\mbox{(floating-point numbers)} &amp; {\mathit{float}}_N &amp;::=&amp; b^{N/8} \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="indices">
+<h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\mbox{(type indices)} &amp; \mathit{typeindex} &amp;::=&amp; {\mathit{uint}_{32}} \\
+\mbox{(function indices)} &amp; \mathit{funcindex} &amp;::=&amp; {\mathit{uint}_{32}} \\
+\mbox{(table indices)} &amp; \mathit{tableindex} &amp;::=&amp; {\mathit{uint}_{32}} \\
+\mbox{(memory indices)} &amp; \mathit{memindex} &amp;::=&amp; {\mathit{uint}_{32}} \\
+\mbox{(global indices)} &amp; \mathit{globalindex} &amp;::=&amp; {\mathit{uint}_{32}} \\
+\mbox{(local indices)} &amp; \mathit{localindex} &amp;::=&amp; {\mathit{uint}_{32}} \\
+\mbox{(label indices)} &amp; \mathit{labelindex} &amp;::=&amp; {\mathit{uint}_{32}} \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="types">
+<h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\mbox{(unsigned integers)} &amp; {\mathit{uint}}_N &amp;::=&amp; 0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
+\mbox{(signed integers)} &amp; {\mathit{sint}}_N &amp;::=&amp; -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
+\mbox{(value types)} &amp; \mathit{valtype} &amp;::=&amp; \mathsf{i32} ~|~ \mathsf{i64} ~|~ \mathsf{f32} ~|~ \mathsf{f64} \\
+\mbox{(result types)} &amp; \mathit{resulttype} &amp;::=&amp; \mathit{valtype}^? \\
+\mbox{(function types)} &amp; \mathit{functype} &amp;::=&amp; \mathit{valtype}^\ast \to \mathit{resulttype}^? \\
+\mbox{(table types)} &amp; \mathit{tabletype} &amp;::=&amp; \mathit{elemtype}[\mathit{limits}] \\
+\mbox{(element types)} &amp; \mathit{elemtype} &amp;::=&amp; \mathsf{anyfunc} \\
+\mbox{(limits)} &amp; \mathit{limits} &amp;::=&amp; {\mathit{uint}_{32}}~{\mathit{uint}_{32}}^? \\
+\mbox{(memory types)} &amp; \mathit{memtype} &amp;::=&amp; [\mathit{limits}] \\
+\mbox{(global types)} &amp; \mathit{globaltype} &amp;::=&amp; \mathit{mutability}~\mathit{valtype} \\
+\mbox{(mutability)} &amp; \mathit{mutability} &amp;::=&amp; \mathsf{mut}^? \\
+\mbox{(external types)} &amp; \mathit{externtype} &amp;::=&amp; \mathsf{func}~\mathit{functype} ~|~ \mathsf{global}~\mathit{globaltype} ~|~ \mathsf{table}~\mathit{tabletype} ~|~ \mathsf{memory}~\mathit{memtype} \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2016, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
