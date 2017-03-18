@@ -1,148 +1,8 @@
-.. _valid-module:
-.. index:: modules, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
-   pair: validation; module
-   single: abstract syntax; module
-
 Modules
 -------
 
 Modules are valid when all the definitions they contain are valid.
 To that end, each definition is classified with a suitable type.
-
-A module is entirely *closed*,
-that is, it only refers to definitions that appear in the module itself.
-Consequently, no initial :ref:`context <context>` is required.
-Instead, the context :math:`C` for validation of the module's content is constructed from the types of definitions in the module itself.
-
-* Let :math:`\module` be the module to validate.
-
-* Let :math:`C` be a :ref:`context <context>` where:
-
-  * :math:`C.\TYPES` is :math:`\module.\TYPES`,
-
-  * :math:`C.\FUNCS` is :math:`\funcs(\externtype_i^\ast)` concatenated with :math:`\functype_i^\ast`,
-    with the type sequences :math:`\externtype_i^\ast` and :math:`\functype_i^\ast` as determined below,
-
-  * :math:`C.\TABLES` is :math:`\tables(\externtype_i^\ast)` concatenated with :math:`\tabletype_i^\ast`,
-    with the type sequences :math:`\externtype_i^\ast` and :math:`\tabletype_i^\ast` as determined below,
-
-  * :math:`C.\MEMS` is :math:`\mems(\externtype_i^\ast)` concatenated with :math:`\memtype_i^\ast`,
-    with the type sequences :math:`\externtype_i^\ast` and :math:`\memtype_i^\ast` as determined below,
-
-  * :math:`C.\GLOBALS` is :math:`\globals(\externtype_i^\ast)` concatenated with :math:`\globaltype_i^\ast`,
-    with the type sequences :math:`\externtype_i^\ast` and :math:`\globaltype_i^\ast` as determined below.
-
-  * :math:`C.\LOCALS` is empty,
-
-  * :math:`C.\LABELS` is empty.
-
-* Under the context :math:`C`:
-
-  * For each :math:`\func_i` in :math:`\module.\FUNCS`,
-    the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\functype_i`.
-
-  * For each :math:`\table_i` in :math:`\module.\TABLES`,
-    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\tabletype_i`.
-
-  * For each :math:`\mem_i` in :math:`\module.\MEMS`,
-    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\memtype_i`.
-
-  * For each :math:`\global_i` in :math:`\module.\GLOBALS`:
-
-    * Let :math:`C_i` be the :ref:`context <context>` where :math:`C_i.\GLOBALS` is the sequence :math:`\globals(\externtype_i^\ast)` concatenated with :math:`\globaltype_0~\dots~\globaltype_{i-1}`, and all other fields are empty.
-
-    * Under the context :math:`C_i`,
-      the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
-
-  * For each :math:`\elem_i` in :math:`\module.\ELEM`,
-    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>`.
-
-  * For each :math:`\data_i` in :math:`\module.\DATA`,
-    the segment :math:`\elem_i` must be :ref:`valid <valid-data>`.
-
-  * If :math:`\module.\START` is non-empty,
-    then :math:`\module.\START` must be :ref:`valid <valid-start>`.
-
-  * For each :math:`\import_i` in :math:`\module.\IMPORTS`,
-    the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\externtype_i`.
-
-  * For each :math:`\export_i` in :math:`\module.\EXPORTS`,
-    the segment :math:`\import_i` must be :ref:`valid <valid-export>` with a :ref:`name <syntax-name>` :math:`\name_i`.
-
-* The length of :math:`C.\TABLES` must not be larger than :math:`1`.
-
-* The length of :math:`C.\MEMS` must not be larger than :math:`1`.
-
-* All export names :math:`\name_i` must be different.
-
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     (C \vdash \func : \X{ft})^\ast
-     \quad
-     (C \vdash \table : \X{tt})^\ast
-     \quad
-     (C \vdash \mem : \X{mt})^\ast
-     \quad
-     (C_i \vdash \global : \X{gt})_i^\ast
-     \\
-     (C \vdash \elem ~\F{ok})^\ast
-     \quad
-     (C \vdash \data ~\F{ok})^\ast
-     \quad
-     (C \vdash \start ~\F{ok})^?
-     \quad
-     (C \vdash \import : \X{it})^\ast
-     \quad
-     (C \vdash \export : \X{name})^\ast
-     \\
-     \X{ift}^\ast = \funcs(\X{it}^\ast)
-     \qquad
-     \X{itt}^\ast = \tables(\X{it}^\ast)
-     \qquad
-     \X{imt}^\ast = \mems(\X{it}^\ast)
-     \qquad
-     \X{igt}^\ast = \globals(\X{it}^\ast)
-     \\
-     C = \{ \TYPES~\functype^\ast, \FUNCS~\X{ift}^\ast~\X{ft}^\ast, \TABLES~\X{itt}^\ast~\X{tt}^\ast, \MEMS~\X{imt}^\ast~\X{mt}^\ast, \GLOBALS~\X{igt}^\ast~\X{gt}^\ast \}
-     \\
-     |C.\TABLES| \leq 1
-     \qquad
-     |C.\MEMS| \leq 1
-     \qquad
-     \name^\ast ~\F{disjoint}
-     \qquad
-     (C_i = \{ \GLOBALS~[\X{igt}^\ast~\X{gt}^{i-1}] \})_i^\ast
-     \end{array}
-   }{
-     \vdash \{
-       \begin{array}[t]{@{}l@{}}
-         \TYPES~\functype^\ast,
-         \FUNCS~\func^\ast,
-         \TABLES~\table^\ast,
-         \MEMS~\mem^\ast,
-         \GLOBALS~\global^\ast, \\
-         \ELEM~\elem^\ast,
-         \DATA~\data^\ast,
-         \START~\start^?,
-         \IMPORTS~\import^\ast,
-         \EXPORTS~\export^\ast \} ~\F{ok} \\
-       \end{array}
-   }
-
-.. note::
-   Most definitions in a module -- particularly functions -- are mutually recursive.
-   Consequently, the definition of the :ref:`context <context>` :math:`C` in this rule is recursive:
-   it depends on the outcome of validation of the function, table, memory, and global definitions contained in the module,
-   which itself depends on :math:`C`.
-   However, this recursion is just a specification device.
-   All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
-
-   Globals, however, are not recursive.
-   The effect of defining the limited contexts :math:`C_i` for validating the module's globals is that their initialization expressions can only access imported and previously defined globals and nothing else.
-
-.. note::
-   The restriction on the number of tables and memories may be lifted in future versions of WebAssembly.
 
 
 Auxiliary Rules
@@ -176,7 +36,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
 
 :math:`\{ \TYPE~x, \LOCALS~t^\ast, \BODY~\expr \}`
-....................................................
+..................................................
 
 * The type :math:`C.\TYPES[x]` must be defined in the context.
 
@@ -189,7 +49,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
   * the |LOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
 
-  * the |LABELS| set to the singular sequence with :ref:`result type <syntax-valtype>` :math:`(t_2^\ast)`.
+  * the |LABELS| set to the singular sequence with :ref:`result type <syntax-valtype>` :math:`[t_2^\ast][t_1^\ast] \to [t_2^?]`.
 
 * Under the context :math:`C'`,
   the expression :math:`\expr` must be valid with type :math:`t_2^\ast`.
@@ -200,9 +60,9 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
    \frac{
      C.\TYPES[x] = [t_1^\ast] \to [t_2^?]
      \qquad
-     C,\LOCALS\,t_1^\ast~t^\ast,\LABELS~(t_2^?) \vdash \expr : t_2^?
+     C,\LOCALS\,t_1^\ast~t^\ast,\LABELS~[t_2^?] \vdash \expr : [t_2^?]
    }{
-     C \vdash \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\expr \} : t_2^?
+     C \vdash \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\expr \} : [t_1^\ast] \to [t_2^?]
    }
 
 .. note::
@@ -277,7 +137,7 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
-* The expression :math:`\expr` must be :ref:`constant <constant>`.
+* The expression :math:`\expr` must be :ref:`constant <valid-const>`.
 
 * Then the global definition is valid with type :math:`\mut~t`.
 
@@ -314,7 +174,7 @@ Element segments :math:`\elem` are not classified by a type.
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
-* The expression :math:`\expr` must be :ref:`constant <constant>`.
+* The expression :math:`\expr` must be :ref:`constant <valid-const>`.
 
 * For each :math:`y_i` in :math:`y^\ast`,
   the function :math:`C.\FUNCS[y]` must be defined in the context.
@@ -355,7 +215,7 @@ Data segments :math:`\data` are not classified by any type.
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
-* The expression :math:`\expr` must be :ref:`constant <constant>`.
+* The expression :math:`\expr` must be :ref:`constant <valid-const>`.
 
 * Then the data segment is valid.
 
@@ -581,3 +441,147 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
    }{
      C \vdash \GLOBAL~t : \GLOBAL~t
    }
+
+
+.. _valid-module:
+.. index:: modules, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
+   pair: validation; module
+   single: abstract syntax; module
+
+Modules
+~~~~~~~
+
+A module is entirely *closed*,
+that is, it only refers to definitions that appear in the module itself.
+Consequently, no initial :ref:`context <context>` is required.
+Instead, the context :math:`C` for validation of the module's content is constructed from the types of definitions in the module itself.
+
+* Let :math:`\module` be the module to validate.
+
+* Let :math:`C` be a :ref:`context <context>` where:
+
+  * :math:`C.\TYPES` is :math:`\module.\TYPES`,
+
+  * :math:`C.\FUNCS` is :math:`\funcs(\externtype_i^\ast)` concatenated with :math:`\functype_i^\ast`,
+    with the type sequences :math:`\externtype_i^\ast` and :math:`\functype_i^\ast` as determined below,
+
+  * :math:`C.\TABLES` is :math:`\tables(\externtype_i^\ast)` concatenated with :math:`\tabletype_i^\ast`,
+    with the type sequences :math:`\externtype_i^\ast` and :math:`\tabletype_i^\ast` as determined below,
+
+  * :math:`C.\MEMS` is :math:`\mems(\externtype_i^\ast)` concatenated with :math:`\memtype_i^\ast`,
+    with the type sequences :math:`\externtype_i^\ast` and :math:`\memtype_i^\ast` as determined below,
+
+  * :math:`C.\GLOBALS` is :math:`\globals(\externtype_i^\ast)` concatenated with :math:`\globaltype_i^\ast`,
+    with the type sequences :math:`\externtype_i^\ast` and :math:`\globaltype_i^\ast` as determined below.
+
+  * :math:`C.\LOCALS` is empty,
+
+  * :math:`C.\LABELS` is empty.
+
+* Under the context :math:`C`:
+
+  * For each :math:`\func_i` in :math:`\module.\FUNCS`,
+    the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\functype_i`.
+
+  * For each :math:`\table_i` in :math:`\module.\TABLES`,
+    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\tabletype_i`.
+
+  * For each :math:`\mem_i` in :math:`\module.\MEMS`,
+    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\memtype_i`.
+
+  * For each :math:`\global_i` in :math:`\module.\GLOBALS`:
+
+    * Let :math:`C_i` be the :ref:`context <context>` where :math:`C_i.\GLOBALS` is the sequence :math:`\globals(\externtype_i^\ast)` concatenated with :math:`\globaltype_0~\dots~\globaltype_{i-1}`, and all other fields are empty.
+
+    * Under the context :math:`C_i`,
+      the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
+
+  * For each :math:`\elem_i` in :math:`\module.\ELEM`,
+    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>`.
+
+  * For each :math:`\data_i` in :math:`\module.\DATA`,
+    the segment :math:`\elem_i` must be :ref:`valid <valid-data>`.
+
+  * If :math:`\module.\START` is non-empty,
+    then :math:`\module.\START` must be :ref:`valid <valid-start>`.
+
+  * For each :math:`\import_i` in :math:`\module.\IMPORTS`,
+    the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\externtype_i`.
+
+  * For each :math:`\export_i` in :math:`\module.\EXPORTS`,
+    the segment :math:`\import_i` must be :ref:`valid <valid-export>` with a :ref:`name <syntax-name>` :math:`\name_i`.
+
+* The length of :math:`C.\TABLES` must not be larger than :math:`1`.
+
+* The length of :math:`C.\MEMS` must not be larger than :math:`1`.
+
+* All export names :math:`\name_i` must be different.
+
+.. math::
+   \frac{
+     \begin{array}{@{}c@{}}
+     (C \vdash \func : \X{ft})^\ast
+     \quad
+     (C \vdash \table : \X{tt})^\ast
+     \quad
+     (C \vdash \mem : \X{mt})^\ast
+     \quad
+     (C_i \vdash \global : \X{gt})_i^\ast
+     \\
+     (C \vdash \elem ~\F{ok})^\ast
+     \quad
+     (C \vdash \data ~\F{ok})^\ast
+     \quad
+     (C \vdash \start ~\F{ok})^?
+     \quad
+     (C \vdash \import : \X{it})^\ast
+     \quad
+     (C \vdash \export : \X{name})^\ast
+     \\
+     \X{ift}^\ast = \funcs(\X{it}^\ast)
+     \qquad
+     \X{itt}^\ast = \tables(\X{it}^\ast)
+     \qquad
+     \X{imt}^\ast = \mems(\X{it}^\ast)
+     \qquad
+     \X{igt}^\ast = \globals(\X{it}^\ast)
+     \\
+     C = \{ \TYPES~\functype^\ast, \FUNCS~\X{ift}^\ast~\X{ft}^\ast, \TABLES~\X{itt}^\ast~\X{tt}^\ast, \MEMS~\X{imt}^\ast~\X{mt}^\ast, \GLOBALS~\X{igt}^\ast~\X{gt}^\ast \}
+     \\
+     |C.\TABLES| \leq 1
+     \qquad
+     |C.\MEMS| \leq 1
+     \qquad
+     \name^\ast ~\F{disjoint}
+     \qquad
+     (C_i = \{ \GLOBALS~[\X{igt}^\ast~\X{gt}^{i-1}] \})_i^\ast
+     \end{array}
+   }{
+     \vdash \{
+       \begin{array}[t]{@{}l@{}}
+         \TYPES~\functype^\ast,
+         \FUNCS~\func^\ast,
+         \TABLES~\table^\ast,
+         \MEMS~\mem^\ast,
+         \GLOBALS~\global^\ast, \\
+         \ELEM~\elem^\ast,
+         \DATA~\data^\ast,
+         \START~\start^?,
+         \IMPORTS~\import^\ast,
+         \EXPORTS~\export^\ast \} ~\F{ok} \\
+       \end{array}
+   }
+
+.. note::
+   Most definitions in a module -- particularly functions -- are mutually recursive.
+   Consequently, the definition of the :ref:`context <context>` :math:`C` in this rule is recursive:
+   it depends on the outcome of validation of the function, table, memory, and global definitions contained in the module,
+   which itself depends on :math:`C`.
+   However, this recursion is just a specification device.
+   All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
+
+   Globals, however, are not recursive.
+   The effect of defining the limited contexts :math:`C_i` for validating the module's globals is that their initialization expressions can only access imported and previously defined globals and nothing else.
+
+.. note::
+   The restriction on the number of tables and memories may be lifted in future versions of WebAssembly.

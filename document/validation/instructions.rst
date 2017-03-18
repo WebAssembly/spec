@@ -1,4 +1,4 @@
-.. _valid-instr
+.. _valid-instr:
 .. index:: function type, context
 
 Instructions
@@ -203,7 +203,7 @@ In this section, the following grammar shorthands are adopted:
    pair: abstract syntax; instruction
 
 
-.. _valid-parametric:
+.. _valid-instr-parametric:
 .. index:: value type, polymorphism
 
 Parametric Instructions
@@ -519,7 +519,7 @@ Control Instructions
 
 
 :math:`\IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
-......................................................
+........................................................
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |LABELS| vector.
 
@@ -725,7 +725,7 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
 :math:`\instr^\ast~\END`
 ........................
 
-* The :ref:`instruction sequence <syntax-instr-seq>` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`,
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`,
   for some optional :ref:`value type <syntax-valtype>` :math:`t^?`.
 
 * Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`[t^?]`.

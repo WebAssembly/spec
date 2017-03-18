@@ -7,5 +7,5 @@ Structure
    conventions
    values
    types
-   modules
    instructions
+   modules
