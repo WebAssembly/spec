@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Abstract Syntax &#8212; WebAssembly 1.0</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Conventions" href="index.html" />
+    <link rel="next" title="Binary Format" href="binary.html" />
+    <link rel="prev" title="Conventions" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Conventions</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binary.html">Binary Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html">Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/index.html">Basic Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-summary/index.html">Appendix: Rules Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="abstract-syntax">
+<h1>Abstract Syntax<a class="headerlink" href="#abstract-syntax" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="index-0"></span><p id="index-1">WebAssembly is defined in terms of an <em>abstract syntax</em>.</p>
+<div class="section" id="grammar">
+<h2>Grammar<a class="headerlink" href="#grammar" title="Permalink to this headline">¶</a></h2>
+<p>The following conventions are adopted in defining grammar rules.</p>
+<ul class="simple">
+<li>Terminal symbols (atoms) are written in sans-serif: <span class="math">\(\mathsf{i32}, \mathsf{end}\)</span>.</li>
+<li>Nonterminal symbols are written in italic: <span class="math">\(\mathit{valtype}, \mathit{instr}\)</span>.</li>
+<li><span class="math">\(x^n\)</span> is a sequence of <span class="math">\(n\geq 0\)</span> iterations  of <span class="math">\(x\)</span>.</li>
+<li><span class="math">\(x^\ast\)</span> is a possibly empty sequence of iterations of <span class="math">\(x\)</span>.
+(This is a shorthand for <span class="math">\(x^n\)</span> used where <span class="math">\(n\)</span> is not relevant.)</li>
+<li><span class="math">\(x^+\)</span> is a non-empty sequence of iterations of <span class="math">\(x\)</span>.
+(This is a shorthand for <span class="math">\(x^n\)</span> where <span class="math">\(n \geq 1\)</span>.)</li>
+<li><span class="math">\(x^?\)</span> is an optional occurrence of <span class="math">\(x\)</span>.
+(This is a shorthand for <span class="math">\(x^n\)</span> where <span class="math">\(n \leq 1\)</span>.)</li>
+</ul>
+<p>Each non-terminal defines a syntactic class.</p>
+</div>
+<div class="section" id="auxiliary-notation">
+<h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
+<p>When dealing with syntactic constructs the following notation is also used:</p>
+<ul class="simple">
+<li><span class="math">\(\epsilon\)</span> denotes the empty sequence.</li>
+<li><span class="math">\(|s|\)</span> denotes the length of a sequence <span class="math">\(s\)</span>.</li>
+<li><span class="math">\(s[i]\)</span> denotes the <span class="math">\(i\)</span>-th element of a sequence <span class="math">\(s\)</span>, starting from <span class="math">\(0\)</span>.</li>
+</ul>
+</div>
+<div class="section" id="semantic-objects">
+<h2>Semantic Objects<a class="headerlink" href="#semantic-objects" title="Permalink to this headline">¶</a></h2>
+<p>For convenience, some objects of the semantic domain are also defined syntactically.
+In particular, grammars of the following form define <em>records</em> that collect different semantic information:</p>
+<div class="math">
+\[\mathit{name} ~::=~ \{ \mathsf{field}_1 = x_1, \mathsf{field}_2 = x_2, \dots \}\]</div>
+<p>The following notation is adopted for manipulating such records:</p>
+<ul class="simple">
+<li><span class="math">\(r.\mathsf{field}\)</span> denotes the <span class="math">\(\mathsf{field}\)</span> component of <span class="math">\(r\)</span>.</li>
+<li><span class="math">\(r,\mathsf{field}\,s\)</span> denotes the same record as <span class="math">\(r\)</span> but with the sequence <span class="math">\(s\)</span> appended to its <span class="math">\(\mathsf{field}\)</span> component.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

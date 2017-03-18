@@ -90,7 +90,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="instructions">
+  <span class="target" id="valid-instr"></span><div class="section" id="instructions">
 <span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">Instructions</span></a> are classified by <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> <span class="math">\([t_1^\ast] \to [t_2^\ast]\)</span>
 that describe how they manipulate the <span class="xref std std-ref">operand stack</span>.
@@ -110,7 +110,7 @@ Two degrees of polymorphism can be distinguished:</p>
 <ul class="simple">
 <li><em>value-polymorphic</em>:
 the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span> of one or several individual operands is unconstrained.
-That is the case for all <span class="xref std std-ref">parametric instructions</span> like <span class="math">\(\mathsf{drop}\)</span> and <span class="math">\(\mathsf{select}\)</span>.</li>
+That is the case for all <a class="reference internal" href="#valid-instr-parametric"><span class="std std-ref">parametric instructions</span></a> like <span class="math">\(\mathsf{drop}\)</span> and <span class="math">\(\mathsf{select}\)</span>.</li>
 <li><em>stack-polymorphic</em>:
 the entire (or most of the) <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\([t_1^\ast] \to [t_2^\ast]\)</span> of the instruction is unconstrained.
 That is the case for all <a class="reference internal" href="#valid-instr-control"><span class="std std-ref">control instructions</span></a> that perform an <em>unconditional control transfer</em>, such as <span class="math">\(\mathsf{unreachable}\)</span>, <span class="math">\(\mathsf{br}\)</span>, <span class="math">\(\mathsf{br\_table}\)</span>, and <span class="math">\(\mathsf{return}\)</span>.</li>
@@ -255,7 +255,7 @@ In contrast,</p>
 }{
   C \vdash t_2\mathsf{.}\mathit{cvtop}/t_1 : [t_1] \to [t_2]
 }\]</div>
-<span class="target" id="syntax-instr-parametric"></span><span class="target" id="valid-parametric"><span id="index-2"></span></span></div>
+<span class="target" id="syntax-instr-parametric"></span><span class="target" id="valid-instr-parametric"><span id="index-2"></span></span></div>
 </div>
 <div class="section" id="parametric-instructions">
 <span id="index-3"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
@@ -678,7 +678,7 @@ such that <span class="math">\(t_2^\ast = t_0^\ast~t^\ast\)</span>.</li>
 <div class="section" id="id31">
 <h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end}\)</span><a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The <span class="xref std std-ref">instruction sequence</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math">\([] \to [t^?]\)</span>,
+<li>The instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math">\([] \to [t^?]\)</span>,
 for some optional <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t^?\)</span>.</li>
 <li>Then the expression is valid with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([t^?]\)</span>.</li>
 </ul>
