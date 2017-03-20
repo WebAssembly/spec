@@ -201,4 +201,4 @@
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
 
 .. |instr| mathdef:: \xref{syntax/instructions}{syntax-instr}{\X{instr}}
-.. |expr| mathdef:: \xref{syntax/modules}{syntax-expr}{\X{expr}}
+.. |expr| mathdef:: \xref{syntax/instructions}{syntax-expr}{\X{expr}}
