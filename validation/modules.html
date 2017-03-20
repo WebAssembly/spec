@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -117,7 +117,7 @@ To that end, each definition is classified with a suitable type.</p>
 <span id="index-0"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <p>Functions <span class="math">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> of the form <span class="math">\([t_1^\ast] \to [t_2^?]\)</span>.</p>
 <div class="section" id="id1">
-<h3><span class="math">\(\{ \mathsf{type}~x, \mathsf{locals}~t^\ast, \mathsf{body}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math">\(\{ \mathsf{type}~x, \mathsf{locals}~t^\ast, \mathsf{body}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The type <span class="math">\(C.\mathsf{types}[x]\)</span> must be defined in the context.</li>
 <li>Let <span class="math">\([t_1^\ast] \to [t_2^\ast]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(C.\mathsf{types}[x]\)</span>.</li>
@@ -129,16 +129,16 @@ but with:<ul>
 </ul>
 </li>
 <li>Under the context <span class="math">\(C'\)</span>,
-the expression <span class="math">\(\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}\)</span> must be valid with type <span class="math">\(t_2^\ast\)</span>.</li>
+the expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be valid with type <span class="math">\(t_2^\ast\)</span>.</li>
 <li>Then the function definition is valid with type <span class="math">\([t_1^\ast] \to [t_2^\ast]\)</span>.</li>
 </ul>
 <div class="math">
 \[\frac{
   C.\mathsf{types}[x] = [t_1^\ast] \to [t_2^?]
   \qquad
-  C,\mathsf{locals}\,t_1^\ast~t^\ast,\mathsf{labels}~[t_2^?] \vdash \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} : [t_2^?]
+  C,\mathsf{locals}\,t_1^\ast~t^\ast,\mathsf{labels}~[t_2^?] \vdash \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} : [t_2^?]
 }{
-  C \vdash \{ \mathsf{type}~x, \mathsf{locals}~t^\ast, \mathsf{body}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}} \} : [t_1^\ast] \to [t_2^?]
+  C \vdash \{ \mathsf{type}~x, \mathsf{locals}~t^\ast, \mathsf{body}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \} : [t_1^\ast] \to [t_2^?]
 }\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -184,19 +184,19 @@ the expression <span class="math">\(\href{../syntax/modules.html#syntax-expr}{\m
 <span id="index-3"></span><h2>Globals<a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h2>
 <p>Globals <span class="math">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global types</span></a> of the form <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span>.</p>
 <div class="section" id="id4">
-<h3><span class="math">\(\{ \mathsf{type}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t, \mathsf{init}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math">\(\{ \mathsf{type}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t, \mathsf{init}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The expression <span class="math">\(\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([t]\)</span>.</li>
-<li>The expression <span class="math">\(\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}\)</span> must be <span class="xref std std-ref">constant</span>.</li>
+<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([t]\)</span>.</li>
+<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <span class="xref std std-ref">constant</span>.</li>
 <li>Then the global definition is valid with type <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span>.</li>
 </ul>
 <div class="math">
 \[\frac{
-  C \vdash \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} : [t]
+  C \vdash \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} : [t]
   \qquad
-  C \vdash \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} ~\mathrm{const}
+  C \vdash \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} ~\mathrm{const}
 }{
-  C \vdash \{ \mathsf{type}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t, \mathsf{init}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}} \} : \href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t
+  C \vdash \{ \mathsf{type}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t, \mathsf{init}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \} : \href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t
 }\]</div>
 <span class="target" id="valid-elem"></span></div>
 </div>
@@ -204,13 +204,13 @@ the expression <span class="math">\(\href{../syntax/modules.html#syntax-expr}{\m
 <span id="index-4"></span><h2>Element Segments<a class="headerlink" href="#element-segments" title="Permalink to this headline">¶</a></h2>
 <p>Element segments <span class="math">\(\href{../syntax/modules.html#syntax-elemseg}{\mathit{elem}}\)</span> are not classified by a type.</p>
 <div class="section" id="id5">
-<h3><span class="math">\(\{ \mathsf{table}~x, \mathsf{offset}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~y^\ast \}\)</span><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math">\(\{ \mathsf{table}~x, \mathsf{offset}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~y^\ast \}\)</span><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The table <span class="math">\(C.\mathsf{tables}[x]\)</span> must be defined in the context.</li>
 <li>Let <span class="math">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math">\(C.\mathsf{tables}[x]\)</span>.</li>
 <li>The <a class="reference internal" href="../syntax/types.html#syntax-elemtype"><span class="std std-ref">element type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}\)</span>.</li>
-<li>The expression <span class="math">\(\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
-<li>The expression <span class="math">\(\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}\)</span> must be <span class="xref std std-ref">constant</span>.</li>
+<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
+<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <span class="xref std std-ref">constant</span>.</li>
 <li>For each <span class="math">\(y_i\)</span> in <span class="math">\(y^\ast\)</span>,
 the function <span class="math">\(C.\mathsf{funcs}[y]\)</span> must be defined in the context.</li>
 <li>Then the element segment is valid.</li>
@@ -219,13 +219,13 @@ the function <span class="math">\(C.\mathsf{funcs}[y]\)</span> must be defined i
 \[\frac{
   C.\mathsf{tables}[x] = \href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}
   \qquad
-  C \vdash \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
+  C \vdash \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
   \qquad
-  C \vdash \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} ~\mathrm{const}
+  C \vdash \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} ~\mathrm{const}
   \qquad
   (C.\mathsf{funcs}[y] = \href{../syntax/types.html#syntax-functype}{\mathit{functype}})^\ast
 }{
-  C \vdash \{ \mathsf{table}~x, \mathsf{offset}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~y^\ast \} ~\mathrm{ok}
+  C \vdash \{ \mathsf{table}~x, \mathsf{offset}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~y^\ast \} ~\mathrm{ok}
 }\]</div>
 <span class="target" id="valid-data"></span></div>
 </div>
@@ -233,22 +233,22 @@ the function <span class="math">\(C.\mathsf{funcs}[y]\)</span> must be defined i
 <span id="index-5"></span><h2>Data Segments<a class="headerlink" href="#data-segments" title="Permalink to this headline">¶</a></h2>
 <p>Data segments <span class="math">\(\href{../syntax/modules.html#syntax-dataseg}{\mathit{data}}\)</span> are not classified by any type.</p>
 <div class="section" id="id6">
-<h3><span class="math">\(\{ \mathsf{mem}~x, \mathsf{offset}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~b^\ast \}\)</span><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math">\(\{ \mathsf{mem}~x, \mathsf{offset}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~b^\ast \}\)</span><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The memory <span class="math">\(C.\mathsf{mems}[x]\)</span> must be defined in the context.</li>
-<li>The expression <span class="math">\(\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
-<li>The expression <span class="math">\(\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}\)</span> must be <span class="xref std std-ref">constant</span>.</li>
+<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
+<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <span class="xref std std-ref">constant</span>.</li>
 <li>Then the data segment is valid.</li>
 </ul>
 <div class="math">
 \[\frac{
   C.\mathsf{mems}[x] = \href{../syntax/types.html#syntax-limits}{\mathit{limits}}
   \qquad
-  C \vdash \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
+  C \vdash \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
   \qquad
-  C \vdash \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} ~\mathrm{const}
+  C \vdash \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} ~\mathrm{const}
 }{
-  C \vdash \{ \mathsf{mem}~x, \mathsf{offset}~\href{../syntax/modules.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~b^\ast \} ~\mathrm{ok}
+  C \vdash \{ \mathsf{mem}~x, \mathsf{offset}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~b^\ast \} ~\mathrm{ok}
 }\]</div>
 <span class="target" id="valid-start"></span></div>
 </div>
@@ -412,7 +412,7 @@ Export descriptions <span class="math">\(\href{../syntax/modules.html#syntax-exp
 <div class="math">
 \[\frac{
 }{
-  C \vdash \mathsf{global}~t : \mathsf{global}~t
+  C \vdash \mathsf{global}~\mathsf{const}~t : \mathsf{global}~\mathsf{const}~t
 }\]</div>
 <span class="target" id="valid-module"></span></div>
 </div>
