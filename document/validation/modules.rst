@@ -439,7 +439,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 .. math::
    \frac{
    }{
-     C \vdash \GLOBAL~t : \GLOBAL~t
+     C \vdash \GLOBAL~\CONST~t : \GLOBAL~\CONST~t
    }
 
 
