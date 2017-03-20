@@ -35,7 +35,7 @@ extensions = [
   'sphinx.ext.mathjax',
   'sphinx.ext.ifconfig',
   'sphinx.ext.githubpages',
-  'mathmacro',
+  'mathdef',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -282,7 +282,7 @@ latex_elements = {
   'pointsize': '10pt',
 
    # Additional stuff for the LaTeX preamble.
-   'preamble': '\def\href#1{}',
+   'preamble': '',
 
    # Latex figure (float) alignment
   'figure_align': 'htbp',
@@ -472,5 +472,5 @@ epub_exclude_files = ['search.html']
 
 # Macros
 rst_prolog = """
-.. include:: /""" + pwd + """/macros.rst
+.. include:: /""" + pwd + """/math.def
 """

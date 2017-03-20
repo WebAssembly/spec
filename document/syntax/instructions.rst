@@ -41,8 +41,8 @@ These operations closely match respective operations available in hardware.
    \production{signedness} & \sx &::=&
      \K{u} ~|~ \K{s} \\
    \production{instructions} & \instr &::=&
-     \K{i}\X{nn}\K{.const}~\href{../syntax/values.html#syntax-int}{\iX{\X{nn}}} ~|~
-     \K{f}\X{nn}\K{.const}~\href{../syntax/values.html#syntax-float}{\fX{\X{nn}}} ~|~ \\&&&
+     \K{i}\X{nn}\K{.const}~\xref{syntax/values}{syntax-int}{\iX{\X{nn}}} ~|~
+     \K{f}\X{nn}\K{.const}~\xref{syntax/values}{syntax-float}{\fX{\X{nn}}} ~|~ \\&&&
      \K{i}\X{nn}\K{.eqz} ~|~ \\&&&
      \K{i}\X{nn}\K{.eq} ~|~
      \K{i}\X{nn}\K{.ne} ~|~
