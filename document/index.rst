@@ -20,6 +20,15 @@ WebAssembly Specification
    appendix-textual/index
    appendix-names/index
 
+.. only:: latex
+
+   .. toctree::
+      :maxdepth: 2
+
+      syntax/instrindex
+
 .. only:: html
+
+   * :ref:`instrindex`
 
    * :ref:`genindex`

@@ -126,6 +126,8 @@ In this section, the following grammar shorthands are adopted:
    \end{array}
 
 
+.. _valid-const:
+
 :math:`t \K{.const}~c`
 ......................
 
@@ -137,6 +139,8 @@ In this section, the following grammar shorthands are adopted:
      C \vdash t\K{.const}~c : [] \to [t]
    }
 
+
+.. _valid-unop:
 
 :math:`t\K{.}\unop`
 ...................
@@ -150,6 +154,8 @@ In this section, the following grammar shorthands are adopted:
    }
 
 
+.. _valid-binop:
+
 :math:`t\K{.}\binop`
 ....................
 
@@ -161,6 +167,8 @@ In this section, the following grammar shorthands are adopted:
      C \vdash t\K{.}\binop : [t~t] \to [t]
    }
 
+
+.. _valid-testop:
 
 :math:`t\K{.}\testop`
 .....................
@@ -174,6 +182,8 @@ In this section, the following grammar shorthands are adopted:
    }
 
 
+.. _valid-relop:
+
 :math:`t\K{.}\relop`
 ....................
 
@@ -185,6 +195,8 @@ In this section, the following grammar shorthands are adopted:
      C \vdash t\K{.}\relop : [t~t] \to [\I32]
    }
 
+
+.. _valid-cvtop:
 
 :math:`t_2\K{.}\cvtop/t_1`
 ..........................
@@ -209,6 +221,8 @@ In this section, the following grammar shorthands are adopted:
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+.. _valid-drop:
+
 :math:`\DROP`
 .............
 
@@ -220,6 +234,8 @@ Parametric Instructions
      C \vdash \DROP : [t] \to []
    }
 
+
+.. _valid-select:
 
 :math:`\SELECT`
 ...............
@@ -244,6 +260,8 @@ Parametric Instructions
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
+.. _valid-get_local:
+
 :math:`\GETLOCAL~x`
 ...................
 
@@ -260,6 +278,8 @@ Variable Instructions
      C \vdash \GETLOCAL~x : [] \to [t]
    }
 
+
+.. _valid-set_local:
 
 :math:`\SETLOCAL~x`
 ...................
@@ -278,6 +298,8 @@ Variable Instructions
    }
 
 
+.. _valid-tee_local:
+
 :math:`\TEELOCAL~x`
 ...................
 
@@ -295,6 +317,8 @@ Variable Instructions
    }
 
 
+.. _valid-get_global:
+
 :math:`\GETGLOBAL~x`
 ....................
 
@@ -311,6 +335,8 @@ Variable Instructions
      C \vdash \GETGLOBAL~x : [] \to [t]
    }
 
+
+.. _valid-set_global:
 
 :math:`\SETGLOBAL~x`
 ....................
@@ -340,6 +366,8 @@ Variable Instructions
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
+.. _valid-load:
+
 :math:`t\K{.load}~\memarg`
 ..........................
 
@@ -358,6 +386,8 @@ Memory Instructions
      C \vdash t\K{.load}~\memarg : [\I32] \to [t]
    }
 
+
+.. _valid-loadn:
 
 :math:`t\K{.load}N\K{\_}\sx~\memarg`
 ....................................
@@ -378,6 +408,8 @@ Memory Instructions
    }
 
 
+.. _valid-store:
+
 :math:`t\K{.store}~\memarg`
 ...........................
 
@@ -396,6 +428,8 @@ Memory Instructions
      C \vdash t\K{.store}~\memarg : [\I32~t] \to []
    }
 
+
+.. _valid-storen:
 
 :math:`t\K{.store}N~\memarg`
 ............................
@@ -416,6 +450,8 @@ Memory Instructions
    }
 
 
+.. _valid-current_memory:
+
 :math:`\CURRENTMEMORY`
 ......................
 
@@ -430,6 +466,8 @@ Memory Instructions
      C \vdash \CURRENTMEMORY : [] \to [\I32]
    }
 
+
+.. _valid-grow_memory:
 
 :math:`\GROWMEMORY`
 ...................
@@ -455,6 +493,8 @@ Memory Instructions
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
+.. _valid-nop:
+
 :math:`\NOP`
 ............
 
@@ -466,6 +506,8 @@ Control Instructions
      C \vdash \NOP : [] \to []
    }
 
+
+.. _valid-unreachable:
 
 :math:`\UNREACHABLE`
 ....................
@@ -481,6 +523,8 @@ Control Instructions
 .. note::
    The |UNREACHABLE| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
+
+.. _valid-block:
 
 :math:`\BLOCK~[t^?]~\instr^\ast~\END`
 .....................................
@@ -500,6 +544,8 @@ Control Instructions
    }
 
 
+.. _valid-loop:
+
 :math:`\LOOP~[t^?]~\instr^\ast~\END`
 ....................................
 
@@ -517,6 +563,8 @@ Control Instructions
      C \vdash \LOOP~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
 
+
+.. _valid-if:
 
 :math:`\IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
 ........................................................
@@ -541,6 +589,8 @@ Control Instructions
    }
 
 
+.. _valid-br:
+
 :math:`\BR~l`
 .............
 
@@ -561,6 +611,8 @@ Control Instructions
    The |BR| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
+.. _valid-br_if:
+
 :math:`\BRIF~l`
 ...............
 
@@ -578,6 +630,8 @@ Control Instructions
    }
 
 
+.. _valid-br_table:
+
 :math:`\BRTABLE~l^\ast~l_N`
 ...........................
 
@@ -591,7 +645,7 @@ Control Instructions
 * For all :math:`l_i` in :math:`l^\ast`,
   :math:`C.\LABELS[l_i]` must be :math:`t^?`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~t^?] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* Then the instruction is valid with type :math:`[t_1^\ast~t^?~\I32] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
@@ -599,12 +653,14 @@ Control Instructions
      \qquad
      C.\LABELS[l_N] = [t^?]
    }{
-     C \vdash \BRTABLE~l^\ast~l_N : [t_1^\ast~t^?] \to [t_2^\ast]
+     C \vdash \BRTABLE~l^\ast~l_N : [t_1^\ast~t^?~\I32] \to [t_2^\ast]
    }
 
 .. note::
    The |BRTABLE| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
+
+.. _valid-return:
 
 :math:`\RETURN`
 ...............
@@ -626,6 +682,8 @@ Control Instructions
    The |RETURN| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
+.. _valid-call:
+
 :math:`\CALL~x`
 ...............
 
@@ -640,6 +698,8 @@ Control Instructions
      C \vdash \CALL~x : [t_1^\ast] \to [t_2^\ast]
    }
 
+
+.. _valid-call_indirect:
 
 :math:`\CALLINDIRECT~x`
 .......................
