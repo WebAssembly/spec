@@ -41,8 +41,8 @@ These operations closely match respective operations available in hardware.
    \production{signedness} & \sx &::=&
      \K{u} ~|~ \K{s} \\
    \production{instructions} & \instr &::=&
-     \K{i}\X{nn}\K{.const}~\href{../syntax/values.html#syntax-int}{\iX{\X{nn}}} ~|~
-     \K{f}\X{nn}\K{.const}~\href{../syntax/values.html#syntax-float}{\fX{\X{nn}}} ~|~ \\&&&
+     \K{i}\X{nn}\K{.const}~\xref{syntax/values}{syntax-int}{\iX{\X{nn}}} ~|~
+     \K{f}\X{nn}\K{.const}~\xref{syntax/values}{syntax-float}{\fX{\X{nn}}} ~|~ \\&&&
      \K{i}\X{nn}\K{.eqz} ~|~ \\&&&
      \K{i}\X{nn}\K{.eq} ~|~
      \K{i}\X{nn}\K{.ne} ~|~
@@ -113,7 +113,7 @@ For each type, several subcategories can be distinguished:
 
 Some integer instructions come in two flavours,
 where a signedness annotation |sx| distinguishes whether the operands are to be interpreted as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
-For the other integer instructions, the sign interpretation is irrelevant under a 2's complement interpretation.
+For the other integer instructions, the use of 2's complement for the signed interpretation means that they behave the same regardless of signedness.
 
 
 .. _syntax-instr-parametric:

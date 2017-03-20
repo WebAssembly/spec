@@ -81,9 +81,9 @@ In this section, the following grammar shorthands are adopted:
      \K{abs} ~|~
      \K{neg} ~|~
      \K{sqrt} ~|~
-     \K{ceil} ~|~ 
-     \K{floor} ~|~ 
-     \K{trunc} ~|~ 
+     \K{ceil} ~|~
+     \K{floor} ~|~
+     \K{trunc} ~|~
      \K{nearest} \\
    \production{binary operators} & \binop &::=&
      \K{add} ~|~
