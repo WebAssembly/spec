@@ -113,7 +113,7 @@ For each type, several subcategories can be distinguished:
 
 Some integer instructions come in two flavours,
 where a signedness annotation |sx| distinguishes whether the operands are to be interpreted as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
-For the other integer instructions, the sign interpretation is irrelevant under a 2's complement interpretation.
+For the other integer instructions, the use of 2's complement for the signed interpretation means that they behave the same regardless of signedness.
 
 
 .. _syntax-instr-parametric:

@@ -59,9 +59,11 @@ Different classes of *integers* with different value ranges are distinguished by
    \end{array}
 
 The latter class defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
-A 2's complement conversion is assumed for values that are out-of-range for a chosen interpretation.
+In those contexts, a conversion based on 2's complement will be applied for values that are out-of-range for a chosen interpretation.
 That is, semantically, when interpreted as unsigned, negative values :math:`-n` convert to :math:`2^N-n`,
 and when interpreted as signed, positive values :math:`n \geq 2^{N-1}` convert to :math:`n-2^N`.
+
+.. todo:: once there, link to definition of conversion
 
 
 Conventions
@@ -76,10 +78,10 @@ Conventions
 .. index:: ! floating-point number
    pair: abstract syntax; floating-point number
 
-Floating-point Numbers
-~~~~~~~~~~~~~~~~~~~~~~
+Floating-point Data
+~~~~~~~~~~~~~~~~~~~
 
-*Floating-point numbers* are represented as binary values according to the `IEEE-754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
+*Floating-point data* consists of values in binary floating-point format according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
 
 .. math::
    \begin{array}{llll}
@@ -90,12 +92,6 @@ Floating-point Numbers
 The two possible sizes :math:`N` are 32 and 64.
 
 
-Conventions
-...........
-
-* The meta variable :math:`z` ranges over floating point values.
-
-
 .. _syntax-vec:
 .. index:: ! vector
    pair: abstract syntax; vector
@@ -103,13 +99,15 @@ Conventions
 Vectors
 ~~~~~~~
 
-*Vectors* are self-contained sequences of the form :math:`A^n` (or :math:`A^\ast`),
+*Vectors* are bounded sequences of the form :math:`A^n` (or :math:`A^\ast`),
 where the :math:`A`-s can either be values or complex constructions.
+A vector can have at most :math:`2^{32}-1` elements.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{lllll}
    \production{vectors} & \vec(A) &::=&
-     A^\ast \\
+     A^n
+     & (n < 2^{32})\\
    \end{array}
 
 
