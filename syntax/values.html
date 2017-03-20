@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -64,6 +64,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="instrindex.html">Index of Instructions</a></li>
 </ul>
 
 
@@ -100,8 +103,8 @@
 In the abstract syntax they are represented as hexadecimal literals.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\vo_id#1{}\vo_id{bytes} &amp; \href{../syntax/values.html#syntax-byte}{byte} &amp;::=&amp;
-  \def\hex#1{\mathrm{0x#1}}\hex{00} ~|~ \dots ~|~ \def\hex#1{\mathrm{0x#1}}\hex{FF} \\
+\def\mathdef867#1{{}}\mathdef867{bytes} &amp; \href{../syntax/values.html#syntax-byte}{byte} &amp;::=&amp;
+  \def\mathdef883#1{\mathrm{0x#1}}\mathdef883{00} ~|~ \dots ~|~ \def\mathdef884#1{\mathrm{0x#1}}\mathdef884{FF} \\
 \end{array}\end{split}\]</div>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
@@ -116,17 +119,21 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 <p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>size</em> and their <em>signedness</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\vo_id#1{}\vo_id{unsigned integers} &amp; \href{../syntax/values.html#syntax-int}{\mathit{uint}_{N}} &amp;::=&amp;
+\def\mathdef867#1{{}}\mathdef867{unsigned integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef868#1{{\mathit{uint}_{#1}}}\mathdef868{N}} &amp;::=&amp;
   0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
-\def\vo_id#1{}\vo_id{signed integers} &amp; \href{../syntax/values.html#syntax-int}{\mathit{sint}_{N}} &amp;::=&amp;
+\def\mathdef867#1{{}}\mathdef867{signed integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef874#1{{\mathit{sint}_{#1}}}\mathdef874{N}} &amp;::=&amp;
   -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
-\def\vo_id#1{}\vo_id{uninterpreted integers} &amp; \href{../syntax/values.html#syntax-int}{\mathit{int}_{N}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-int}{\mathit{uint}_{N}} ~|~ \href{../syntax/values.html#syntax-int}{\mathit{sint}_{N}} \\
+\def\mathdef867#1{{}}\mathdef867{uninterpreted integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef877#1{{\mathit{int}_{#1}}}\mathdef877{N}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-int}{\def\mathdef868#1{{\mathit{uint}_{#1}}}\mathdef868{N}} ~|~ \href{../syntax/values.html#syntax-int}{\def\mathdef874#1{{\mathit{sint}_{#1}}}\mathdef874{N}} \\
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
-A 2&#8217;s complement conversion is assumed for values that are out-of-range for a chosen interpretation.
+In those contexts, a conversion based on 2&#8217;s complement will be applied for values that are out-of-range for a chosen interpretation.
 That is, semantically, when interpreted as unsigned, negative values <span class="math">\(-n\)</span> convert to <span class="math">\(2^N-n\)</span>,
 and when interpreted as signed, positive values <span class="math">\(n \geq 2^{N-1}\)</span> convert to <span class="math">\(n-2^N\)</span>.</p>
+<div class="admonition-todo admonition" id="index-3">
+<p class="first admonition-title">Todo</p>
+<p class="last">once there, link to definition of conversion</p>
+</div>
 <div class="section" id="id1">
 <h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -135,43 +142,37 @@ and when interpreted as signed, positive values <span class="math">\(n \geq 2^{N
 </ul>
 <span class="target" id="syntax-float"></span></div>
 </div>
-<div class="section" id="floating-point-numbers">
-<span id="index-3"></span><h2>Floating-point Numbers<a class="headerlink" href="#floating-point-numbers" title="Permalink to this headline">¶</a></h2>
-<p><em>Floating-point numbers</em> are represented as binary values according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE-754</a> standard.</p>
+<div class="section" id="floating-point-data">
+<span id="index-4"></span><h2>Floating-point Data<a class="headerlink" href="#floating-point-data" title="Permalink to this headline">¶</a></h2>
+<p><em>Floating-point data</em> consists of values in binary floating-point format according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\vo_id#1{}\vo_id{floating-point numbers} &amp; \href{../syntax/values.html#syntax-float}{\mathit{float}_{N}} &amp;::=&amp;
+\def\mathdef867#1{{}}\mathdef867{floating-point numbers} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef880#1{{\mathit{float}_{#1}}}\mathdef880{N}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-byte}{byte}^{N/8} \\
 \end{array}\end{split}\]</div>
 <p>The two possible sizes <span class="math">\(N\)</span> are 32 and 64.</p>
-<div class="section" id="id2">
-<h3>Conventions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>The meta variable <span class="math">\(z\)</span> ranges over floating point values.</li>
-</ul>
 <span class="target" id="syntax-vec"></span></div>
-</div>
 <div class="section" id="vectors">
-<span id="index-4"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<span id="index-5"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
 <p><em>Vectors</em> are bounded sequences of the form <span class="math">\(A^n\)</span> (or <span class="math">\(A^\ast\)</span>),
 where the <span class="math">\(A\)</span>-s can either be values or complex constructions.
 A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
 <div class="math">
 \[\begin{split}\begin{array}{lllll}
-\def\vo_id#1{}\vo_id{vectors} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
+\def\mathdef867#1{{}}\mathdef867{vectors} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
   A^n
   &amp; (n &lt; 2^{32})\\
 \end{array}\end{split}\]</div>
 <span class="target" id="syntax-name"></span></div>
 <div class="section" id="names">
-<span id="index-5"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
+<span id="index-6"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
 <p><em>Names</em> are vectors of bytes interpreted as character strings.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\vo_id#1{}\vo_id{names} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
+\def\mathdef867#1{{}}\mathdef867{names} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/values.html#syntax-byte}{byte}) \\
 \end{array}\end{split}\]</div>
-<div class="admonition-todo admonition" id="index-6">
+<div class="admonition-todo admonition" id="index-7">
 <p class="first admonition-title">Todo</p>
 <p class="last">Unicode?</p>
 </div>
