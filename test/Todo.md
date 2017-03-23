@@ -32,5 +32,7 @@ SIMD (post-MVP):
 
 Threads (post-MVP):
  - test that thread-local variables are actually thread-local
- - test that 8-bit, 16-bit, 32-bit, and 64-bit (on wasm64) atomic operations
-   are lock-free (is this possible?)
+ - test that atomic operations that isLockFree says are lock-free actually are
+   (is this possible?)
+ - test that isLockFree is true for datatypes that the spec says should
+   always be lock-free
