@@ -568,6 +568,14 @@
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.0000000000001p+0)) (f64.const 0x1p+0))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.0000000000002p+0)) (f64.const 0x1.0000000000001p+0))
 
+;; Test the greatest value less than one for which sqrt is not an identity.
+(assert_return (invoke "f32.sqrt" (f32.const 0x1.fffffep-1)) (f32.const 0x1.fffffep-1))
+(assert_return (invoke "f32.sqrt" (f32.const 0x1.fffffcp-1)) (f32.const 0x1.fffffep-1))
+(assert_return (invoke "f32.sqrt" (f32.const 0x1.fffffap-1)) (f32.const 0x1.fffffcp-1))
+(assert_return (invoke "f64.sqrt" (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.fffffffffffffp-1))
+(assert_return (invoke "f64.sqrt" (f64.const 0x1.ffffffffffffep-1)) (f64.const 0x1.fffffffffffffp-1))
+(assert_return (invoke "f64.sqrt" (f64.const 0x1.ffffffffffffdp-1)) (f64.const 0x1.ffffffffffffep-1))
+
 ;; Test that the bitwise floating point operators are bitwise on NaN.
 
 (assert_return (invoke "f32.abs" (f32.const nan)) (f32.const nan))
