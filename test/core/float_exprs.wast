@@ -2399,3 +2399,13 @@
 (assert_return (invoke "f64.silver_means" (f64.const 3.0)) (f64.const 3.302775637731995))
 (assert_return (invoke "f64.silver_means" (f64.const 4.0)) (f64.const 4.236067977499790))
 (assert_return (invoke "f64.silver_means" (f64.const 5.0)) (f64.const 5.192582403567252))
+
+;; Test that an f64 0.4 isn't double-rounded as via extended precision.
+;; https://bugs.llvm.org/show_bug.cgi?id=11200
+
+(module
+  (func (export "point_four") (param $four f64) (param $ten f64) (result i32)
+    (f64.lt (f64.div (get_local $four) (get_local $ten)) (f64.const 0.4)))
+)
+
+(assert_return (invoke "point_four" (f64.const 4.0) (f64.const 10.0)) (i32.const 0))
