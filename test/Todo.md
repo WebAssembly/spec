@@ -17,7 +17,6 @@ Misc optimizer bait:
  - test that the scheduler doesn't move a trapping div past a call which may not return
  - test that linearized multidimensional array accesses can have overindexing in interesting ways
  - test that 32-bit loop induction variables that wrap aren't promoted to 64-bit
- - test that functions with C standard library names aren't assumed to have C standarad library semantics
  - test that code after a non-obviously infinite loop is not executed
 
 Misc x86 optimizer bait:
