@@ -166,6 +166,10 @@
 (assert_return (invoke "f32.add" (f32.const 0x1.fffffcp+127) (f32.const 0x1p+104)) (f32.const 0x1.fffffep+127))
 (assert_return (invoke "f64.add" (f64.const 0x1.ffffffffffffep+1023) (f64.const 0x1p+971)) (f64.const 0x1.fffffffffffffp+1023))
 
+;; http://news.harvard.edu/gazette/story/2013/09/dawn-of-a-revolution/
+(assert_return (invoke "f32.add" (f32.const 2.0) (f32.const 2.0)) (f32.const 4.0))
+(assert_return (invoke "f64.add" (f64.const 2.0) (f64.const 2.0)) (f64.const 4.0))
+
 ;; Test for a historic spreadsheet bug.
 ;; https://blogs.office.com/2007/09/25/calculation-issue-update/
 (assert_return (invoke "f32.sub" (f32.const 65536.0) (f32.const 0x1p-37)) (f32.const 65536.0))
