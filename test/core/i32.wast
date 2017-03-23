@@ -57,6 +57,7 @@
 (assert_return (invoke "mul" (i32.const 0x80000000) (i32.const -1)) (i32.const 0x80000000))
 (assert_return (invoke "mul" (i32.const 0x7fffffff) (i32.const -1)) (i32.const 0x80000001))
 (assert_return (invoke "mul" (i32.const 0x01234567) (i32.const 0x76543210)) (i32.const 0x358e7470))
+(assert_return (invoke "mul" (i32.const 0x7fffffff) (i32.const 0x7fffffff)) (i32.const 1))
 
 (assert_trap (invoke "div_s" (i32.const 1) (i32.const 0)) "integer divide by zero")
 (assert_trap (invoke "div_s" (i32.const 0) (i32.const 0)) "integer divide by zero")
