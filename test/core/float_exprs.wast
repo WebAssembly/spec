@@ -1280,6 +1280,87 @@
 (assert_return (invoke "f64.no_algebraic_factoring" (f64.const -0x1.be663e4c0e4b2p+182) (f64.const -0x1.da85703760d25p+166)) (f64.const 0x1.853434f1a2ffep+365))
 (assert_return (invoke "f64.no_algebraic_factoring" (f64.const -0x1.230e09952df1cp-236) (f64.const -0x1.fa2752adfadc9p-237)) (f64.const 0x1.42e43156bd1b8p-474))
 
+;; Test that platforms where SIMD instructions flush subnormals don't implicitly
+;; optimize using SIMD instructions.
+
+(module
+  (memory (data
+    "\01\00\00\00\01\00\00\80\01\00\00\00\01\00\00\80"
+    "\01\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00"
+    "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00"
+  ))
+
+  (func (export "f32.simple_x4_sum")
+    (param $i i32)
+    (param $j i32)
+    (param $k i32)
+    (local $x0 f32) (local $x1 f32) (local $x2 f32) (local $x3 f32)
+    (local $y0 f32) (local $y1 f32) (local $y2 f32) (local $y3 f32)
+    (set_local $x0 (f32.load offset=0 (get_local $i)))
+    (set_local $x1 (f32.load offset=4 (get_local $i)))
+    (set_local $x2 (f32.load offset=8 (get_local $i)))
+    (set_local $x3 (f32.load offset=12 (get_local $i)))
+    (set_local $y0 (f32.load offset=0 (get_local $j)))
+    (set_local $y1 (f32.load offset=4 (get_local $j)))
+    (set_local $y2 (f32.load offset=8 (get_local $j)))
+    (set_local $y3 (f32.load offset=12 (get_local $j)))
+    (f32.store offset=0 (get_local $k) (f32.add (get_local $x0) (get_local $y0)))
+    (f32.store offset=4 (get_local $k) (f32.add (get_local $x1) (get_local $y1)))
+    (f32.store offset=8 (get_local $k) (f32.add (get_local $x2) (get_local $y2)))
+    (f32.store offset=12 (get_local $k) (f32.add (get_local $x3) (get_local $y3)))
+  )
+
+  (func (export "f32.load")
+    (param $k i32) (result f32)
+    (f32.load (get_local $k))
+  )
+)
+
+(assert_return (invoke "f32.simple_x4_sum" (i32.const 0) (i32.const 16) (i32.const 32)))
+(assert_return (invoke "f32.load" (i32.const 32)) (f32.const 0x1p-148))
+(assert_return (invoke "f32.load" (i32.const 36)) (f32.const 0x0p+0))
+(assert_return (invoke "f32.load" (i32.const 40)) (f32.const 0x1p-149))
+(assert_return (invoke "f32.load" (i32.const 44)) (f32.const -0x1p-149))
+
+(module
+  (memory (data
+    "\01\00\00\00\00\00\00\00\01\00\00\00\00\00\00\80\01\00\00\00\00\00\00\00\01\00\00\00\00\00\00\80"
+    "\01\00\00\00\00\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00"
+    "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00"
+  ))
+
+  (func (export "f64.simple_x4_sum")
+    (param $i i32)
+    (param $j i32)
+    (param $k i32)
+    (local $x0 f64) (local $x1 f64) (local $x2 f64) (local $x3 f64)
+    (local $y0 f64) (local $y1 f64) (local $y2 f64) (local $y3 f64)
+    (set_local $x0 (f64.load offset=0 (get_local $i)))
+    (set_local $x1 (f64.load offset=8 (get_local $i)))
+    (set_local $x2 (f64.load offset=16 (get_local $i)))
+    (set_local $x3 (f64.load offset=24 (get_local $i)))
+    (set_local $y0 (f64.load offset=0 (get_local $j)))
+    (set_local $y1 (f64.load offset=8 (get_local $j)))
+    (set_local $y2 (f64.load offset=16 (get_local $j)))
+    (set_local $y3 (f64.load offset=24 (get_local $j)))
+    (f64.store offset=0 (get_local $k) (f64.add (get_local $x0) (get_local $y0)))
+    (f64.store offset=8 (get_local $k) (f64.add (get_local $x1) (get_local $y1)))
+    (f64.store offset=16 (get_local $k) (f64.add (get_local $x2) (get_local $y2)))
+    (f64.store offset=24 (get_local $k) (f64.add (get_local $x3) (get_local $y3)))
+  )
+
+  (func (export "f64.load")
+    (param $k i32) (result f64)
+    (f64.load (get_local $k))
+  )
+)
+
+(assert_return (invoke "f64.simple_x4_sum" (i32.const 0) (i32.const 32) (i32.const 64)))
+(assert_return (invoke "f64.load" (i32.const 64)) (f64.const 0x0.0000000000001p-1021))
+(assert_return (invoke "f64.load" (i32.const 72)) (f64.const 0x0p+0))
+(assert_return (invoke "f64.load" (i32.const 80)) (f64.const 0x0.0000000000001p-1022))
+(assert_return (invoke "f64.load" (i32.const 88)) (f64.const -0x0.0000000000001p-1022))
+
 ;; Test that plain summation is not reassociated, and that Kahan summation
 ;; isn't optimized into plain summation.
 
