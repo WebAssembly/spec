@@ -247,6 +247,14 @@
 (assert_return (invoke "f32.sub" (f32.const 0x1p-126) (f32.const 0x1.fffffcp-127)) (f32.const 0x1p-149))
 (assert_return (invoke "f64.sub" (f64.const 0x1p-1022) (f64.const 0x0.fffffffffffffp-1022)) (f64.const 0x0.0000000000001p-1022))
 
+;; Test subtraction of numbers very close to 1.
+(assert_return (invoke "f32.sub" (f32.const 0x1.000002p+0) (f32.const 0x1.fffffep-1)) (f32.const 0x1.8p-23))
+(assert_return (invoke "f32.sub" (f32.const 0x1.000002p+0) (f32.const 0x1.0p+0)) (f32.const 0x1p-23))
+(assert_return (invoke "f32.sub" (f32.const 0x1p+0) (f32.const 0x1.fffffep-1)) (f32.const 0x1p-24))
+(assert_return (invoke "f64.sub" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.8p-52))
+(assert_return (invoke "f64.sub" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.0p+0)) (f64.const 0x1p-52))
+(assert_return (invoke "f64.sub" (f64.const 0x1p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1p-53))
+
 ;; Miscellaneous values.
 (assert_return (invoke "f32.mul" (f32.const 1e15) (f32.const 1e15)) (f32.const 0x1.93e592p+99))
 (assert_return (invoke "f32.mul" (f32.const 1e20) (f32.const 1e20)) (f32.const infinity))
@@ -334,6 +342,18 @@
 (assert_return (invoke "f32.mul" (f32.const 0x1p+64) (f32.const 0x1p+64)) (f32.const infinity))
 (assert_return (invoke "f64.mul" (f64.const 0x1.fffffffffffffp+511) (f64.const 0x1.fffffffffffffp+511)) (f64.const 0x1.ffffffffffffep+1023))
 (assert_return (invoke "f64.mul" (f64.const 0x1p+512) (f64.const 0x1p+512)) (f64.const infinity))
+
+;; Test the squares of values very close to 1.
+(assert_return (invoke "f32.mul" (f32.const 0x1.000002p+0) (f32.const 0x1.000002p+0)) (f32.const 0x1.000004p+0))
+(assert_return (invoke "f32.mul" (f32.const 0x1.fffffep-1) (f32.const 0x1.fffffep-1)) (f32.const 0x1.fffffcp-1))
+(assert_return (invoke "f64.mul" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.0000000000001p+0)) (f64.const 0x1.0000000000002p+0))
+(assert_return (invoke "f64.mul" (f64.const 0x1.fffffffffffffp-1) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.ffffffffffffep-1))
+
+;; Test multiplication of numbers very close to 1.
+(assert_return (invoke "f32.mul" (f32.const 0x1.000002p+0) (f32.const 0x1.fffffep-1)) (f32.const 0x1p+0))
+(assert_return (invoke "f32.mul" (f32.const 0x1.000004p+0) (f32.const 0x1.fffffcp-1)) (f32.const 0x1.000002p+0))
+(assert_return (invoke "f64.mul" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1p+0))
+(assert_return (invoke "f64.mul" (f64.const 0x1.0000000000002p+0) (f64.const 0x1.ffffffffffffep-1)) (f64.const 0x1.0000000000001p+0))
 
 ;; Test MIN * EPSILON.
 ;; http://www.mpfr.org/mpfr-2.0.1/patch2
@@ -470,6 +490,16 @@
 (assert_return (invoke "f64.div" (f64.const 0x1p+0) (f64.const 0x1.8p+1)) (f64.const 0x1.5555555555555p-2))
 (assert_return (invoke "f64.div" (f64.const 0x3p+0) (f64.const 0x1.2p+3)) (f64.const 0x1.5555555555555p-2))
 (assert_return (invoke "f64.div" (f64.const 0x1.2p+3) (f64.const 0x1.bp+4)) (f64.const 0x1.5555555555555p-2))
+
+;; Test division of numbers very close to 1.
+(assert_return (invoke "f32.div" (f32.const 0x1.000002p+0) (f32.const 0x1.fffffep-1)) (f32.const 0x1.000004p+0))
+(assert_return (invoke "f32.div" (f32.const 0x1.fffffep-1) (f32.const 0x1.000002p+0)) (f32.const 0x1.fffffap-1))
+(assert_return (invoke "f32.div" (f32.const 0x1.0p+0) (f32.const 0x1.fffffep-1)) (f32.const 0x1.000002p+0))
+(assert_return (invoke "f32.div" (f32.const 0x1.0p+0) (f32.const 0x1.000002p+0)) (f32.const 0x1.fffffcp-1))
+(assert_return (invoke "f64.div" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.0000000000002p+0))
+(assert_return (invoke "f64.div" (f64.const 0x1.fffffffffffffp-1) (f64.const 0x1.0000000000001p+0)) (f64.const 0x1.ffffffffffffdp-1))
+(assert_return (invoke "f64.div" (f64.const 0x1.0p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.0000000000001p+0))
+(assert_return (invoke "f64.div" (f64.const 0x1.0p+0) (f64.const 0x1.0000000000001p+0)) (f64.const 0x1.ffffffffffffep-1))
 
 ;; Test for bugs found in an early RISC-V implementation.
 ;; https://github.com/riscv/riscv-tests/pull/8
