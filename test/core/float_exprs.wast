@@ -2085,6 +2085,61 @@
 (assert_return (invoke "f32.epsilon") (f32.const -0x1p-23))
 (assert_return (invoke "f64.epsilon") (f64.const 0x1p-52))
 
+;; Test that a method for computing a "machine epsilon" produces the expected
+;; result.
+;; https://www.math.utah.edu/~beebe/software/ieee/
+
+(module
+  (func (export "f32.epsilon") (result f32)
+    (local $x f32)
+    (local $result f32)
+    (set_local $x (f32.const 1))
+    (loop $loop
+      (br_if $loop
+        (f32.gt
+          (f32.add
+            (tee_local $x
+              (f32.mul
+                (tee_local $result (get_local $x))
+                (f32.const 0.5)
+              )
+            )
+            (f32.const 1)
+          )
+          (f32.const 1)
+        )
+      )
+    )
+    (get_local $result)
+  )
+
+  (func (export "f64.epsilon") (result f64)
+    (local $x f64)
+    (local $result f64)
+    (set_local $x (f64.const 1))
+    (loop $loop
+      (br_if $loop
+        (f64.gt
+          (f64.add
+            (tee_local $x
+              (f64.mul
+                (tee_local $result (get_local $x))
+                (f64.const 0.5)
+              )
+            )
+            (f64.const 1)
+          )
+          (f64.const 1)
+        )
+      )
+    )
+    (get_local $result)
+  )
+)
+
+(assert_return (invoke "f32.epsilon") (f32.const 0x1p-23))
+(assert_return (invoke "f64.epsilon") (f64.const 0x1p-52))
+
 ;; Test that floating-point numbers are not optimized as if they form a
 ;; trichotomy.
 
