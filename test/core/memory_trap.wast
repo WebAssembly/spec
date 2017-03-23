@@ -36,11 +36,17 @@
 (module
   (memory 1)
 
+  (func (export "i32.store8") (param $a i32) (param $v i32)
+    (i32.store8 (get_local $a) (get_local $v))
+  )
   (func (export "i32.store16") (param $a i32) (param $v i32)
     (i32.store16 (get_local $a) (get_local $v))
   )
   (func (export "i32.store") (param $a i32) (param $v i32)
     (i32.store (get_local $a) (get_local $v))
+  )
+  (func (export "i64.store8") (param $a i32) (param $v i64)
+    (i64.store8 (get_local $a) (get_local $v))
   )
   (func (export "i64.store16") (param $a i32) (param $v i64)
     (i64.store16 (get_local $a) (get_local $v))
@@ -64,6 +70,10 @@
 )
 
 (assert_trap
+  (invoke "i32.store8" (i32.const 0x10000) (i32.const 0x01234567))
+  "out of bounds memory access"
+)
+(assert_trap
   (invoke "i32.store16" (i32.const 0xffff) (i32.const 0x01234567))
   "out of bounds memory access"
 )
@@ -80,6 +90,10 @@
   "out of bounds memory access"
 )
 
+(assert_trap
+  (invoke "i64.store8" (i32.const 0x10000) (i64.const 0x0123456701234567))
+  "out of bounds memory access"
+)
 (assert_trap
   (invoke "i64.store16" (i32.const 0xffff) (i64.const 0x0123456701234567))
   "out of bounds memory access"
