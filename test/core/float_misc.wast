@@ -58,8 +58,8 @@
 (assert_return (invoke "f64.add" (f64.const 1.0) (f64.const 0x1.0000000000001p-53)) (f64.const 0x1.0000000000001p+0))
 
 ;; Test that what some systems call signaling NaN behaves as a quiet NaN.
-(assert_return (invoke "f32.add" (f32.const nan:0x200000) (f32.const 1.0)) (f32.const nan:0x600000))
-(assert_return (invoke "f64.add" (f64.const nan:0x4000000000000) (f64.const 1.0)) (f64.const nan:0xc000000000000))
+(assert_return_arithmetic_nan (invoke "f32.add" (f32.const nan:0x200000) (f32.const 1.0)))
+(assert_return_arithmetic_nan (invoke "f64.add" (f64.const nan:0x4000000000000) (f64.const 1.0)))
 
 ;; Max subnornmal + min subnormal = min normal.
 (assert_return (invoke "f32.add" (f32.const 0x1p-149) (f32.const 0x1.fffffcp-127)) (f32.const 0x1p-126))
@@ -526,7 +526,7 @@
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.c201b94757145p-492)) (f64.const 0x1.5369ee6bf2967p-246))
 
 ;; Computations that round differently when computed via f32.
-(assert_return_nan (invoke "f64.sqrt" (f64.const -0x1.360e8d0032adp-963)))
+(assert_return_canonical_nan (invoke "f64.sqrt" (f64.const -0x1.360e8d0032adp-963)))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.d9a6f5eef0503p+103)) (f64.const 0x1.ec73f56c166f6p+51))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.aa051a5c4ec27p-760)) (f64.const 0x1.4a3e771ff5149p-380))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.e5522a741babep-276)) (f64.const 0x1.607ae2b6feb7dp-138))
