@@ -210,6 +210,24 @@
 (assert_return_canonical_nan (invoke "f64.no_fold_sub_self" (f64.const infinity)))
 (assert_return_canonical_nan (invoke "f64.no_fold_sub_self" (f64.const nan)))
 
+;; Test that x / x is not folded to 1.0.
+
+(module
+  (func (export "f32.no_fold_div_self") (param $x f32) (result f32)
+    (f32.div (get_local $x) (get_local $x)))
+  (func (export "f64.no_fold_div_self") (param $x f64) (result f64)
+    (f64.div (get_local $x) (get_local $x)))
+)
+
+(assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const infinity)))
+(assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const nan)))
+(assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const 0.0)))
+(assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const -0.0)))
+(assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const infinity)))
+(assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const nan)))
+(assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const 0.0)))
+(assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const -0.0)))
+
 ;; Test that x/3 is not folded to x*(1/3).
 
 (module
