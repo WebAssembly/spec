@@ -251,6 +251,13 @@
 (assert_return (invoke "f64.sub" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.0p+0)) (f64.const 0x1p-52))
 (assert_return (invoke "f64.sub" (f64.const 0x1p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1p-53))
 
+;; Test the least value that can be subtracted from the max value to produce a
+;; different value.
+(assert_return (invoke "f32.sub" (f32.const 0x1.fffffep+127) (f32.const 0x1.fffffep+102)) (f32.const 0x1.fffffep+127))
+(assert_return (invoke "f32.sub" (f32.const 0x1.fffffep+127) (f32.const 0x1p+103)) (f32.const 0x1.fffffcp+127))
+(assert_return (invoke "f64.sub" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1.fffffffffffffp+969)) (f64.const 0x1.fffffffffffffp+1023))
+(assert_return (invoke "f64.sub" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1p+970)) (f64.const 0x1.ffffffffffffep+1023))
+
 ;; Miscellaneous values.
 (assert_return (invoke "f32.mul" (f32.const 1e15) (f32.const 1e15)) (f32.const 0x1.93e592p+99))
 (assert_return (invoke "f32.mul" (f32.const 1e20) (f32.const 1e20)) (f32.const infinity))
