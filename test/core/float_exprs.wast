@@ -2268,3 +2268,23 @@
     (f64.const 3.2e7) (f64.const 1.0) (f64.const -1.0) (f64.const 8.0e7)
     (f64.const 4.0e7) (f64.const 1.0) (f64.const -1.0) (f64.const -1.6e7))
   (f64.const 2.0))
+
+;; http://www.vinc17.org/research/fptest.en.html#contract2fma
+
+(module
+  (func (export "f32.contract2fma")
+        (param $x f32) (param $y f32) (result f32)
+    (f32.sqrt (f32.sub (f32.mul (get_local $x) (get_local $x))
+                       (f32.mul (get_local $y) (get_local $y)))))
+  (func (export "f64.contract2fma")
+        (param $x f64) (param $y f64) (result f64)
+    (f64.sqrt (f64.sub (f64.mul (get_local $x) (get_local $x))
+                       (f64.mul (get_local $y) (get_local $y)))))
+)
+
+(assert_return (invoke "f32.contract2fma" (f32.const 1.0) (f32.const 1.0)) (f32.const 0.0))
+(assert_return (invoke "f32.contract2fma" (f32.const 0x1.19999ap+0) (f32.const 0x1.19999ap+0)) (f32.const 0.0))
+(assert_return (invoke "f32.contract2fma" (f32.const 0x1.333332p+0) (f32.const 0x1.333332p+0)) (f32.const 0.0))
+(assert_return (invoke "f64.contract2fma" (f64.const 1.0) (f64.const 1.0)) (f64.const 0.0))
+(assert_return (invoke "f64.contract2fma" (f64.const 0x1.199999999999ap+0) (f64.const 0x1.199999999999ap+0)) (f64.const 0.0))
+(assert_return (invoke "f64.contract2fma" (f64.const 0x1.3333333333333p+0) (f64.const 0x1.3333333333333p+0)) (f64.const 0.0))

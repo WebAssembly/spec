@@ -75,6 +75,12 @@
 ;; http://mmix.cs.hm.edu/bugs/bug_rounding.html
 (assert_return (invoke "f64.add" (f64.const -0x1p-1008) (f64.const 0x0.0000000001716p-1022)) (f64.const -0x1.fffffffffffffp-1009))
 
+;; http://www.vinc17.org/software/tst-ieee754.xsl
+(assert_return (invoke "f64.add" (f64.const 9007199254740992) (f64.const 1.00001)) (f64.const 9007199254740994))
+
+;; http://www.vinc17.org/software/test.java
+(assert_return (invoke "f64.add" (f64.const 9007199254740994) (f64.const 0x1.fffep-1)) (f64.const 9007199254740994))
+
 ;; Computations that round differently in ties-to-odd mode.
 (assert_return (invoke "f32.add" (f32.const 0x1p23) (f32.const 0x1p-1)) (f32.const 0x1p23))
 (assert_return (invoke "f32.add" (f32.const 0x1.000002p+23) (f32.const 0x1p-1)) (f32.const 0x1.000004p+23))

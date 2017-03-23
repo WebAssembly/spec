@@ -35,3 +35,6 @@ Threads (post-MVP):
    (is this possible?)
  - test that isLockFree is true for datatypes that the spec says should
    always be lock-free
+
+FMA (post-MVP):
+ - http://www.vinc17.org/software/fma-tests.c
