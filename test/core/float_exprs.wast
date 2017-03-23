@@ -2357,3 +2357,16 @@
 
 (assert_return (invoke "f32.division_by_small_number" (f32.const 112000000) (f32.const 100000) (f32.const 0.0009)) (f32.const 888888))
 (assert_return (invoke "f64.division_by_small_number" (f64.const 112000000) (f64.const 100000) (f64.const 0.0009)) (f64.const 888888.8888888806))
+
+;; Test a simple golden ratio computation.
+;; http://mathworld.wolfram.com/GoldenRatio.html
+
+(module
+  (func (export "f32.golden_ratio") (param $a f32) (param $b f32) (param $c f32) (result f32)
+    (f32.mul (get_local 0) (f32.add (get_local 1) (f32.sqrt (get_local 2)))))
+  (func (export "f64.golden_ratio") (param $a f64) (param $b f64) (param $c f64) (result f64)
+    (f64.mul (get_local 0) (f64.add (get_local 1) (f64.sqrt (get_local 2)))))
+)
+
+(assert_return (invoke "f32.golden_ratio" (f32.const 0.5) (f32.const 1.0) (f32.const 5.0)) (f32.const 1.618034))
+(assert_return (invoke "f64.golden_ratio" (f64.const 0.5) (f64.const 1.0) (f64.const 5.0)) (f64.const 1.618033988749895))
