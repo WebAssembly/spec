@@ -532,7 +532,7 @@
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.e5522a741babep-276)) (f64.const 0x1.607ae2b6feb7dp-138))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.4832badc0c061p+567)) (f64.const 0x1.99ec7934139b2p+283))
 
-;; Test the least greatest value with a sqrt that rounds to one.
+;; Test the least value with a sqrt that rounds to one.
 (assert_return (invoke "f32.sqrt" (f32.const 0x1.000002p+0)) (f32.const 0x1p+0))
 (assert_return (invoke "f32.sqrt" (f32.const 0x1.000004p+0)) (f32.const 0x1.000002p+0))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.0000000000001p+0)) (f64.const 0x1p+0))
