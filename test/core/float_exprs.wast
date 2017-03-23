@@ -2138,3 +2138,38 @@
 (assert_return (invoke "f64.nonarithmetic_nan_bitpattern" (i64.const 0xfff8000000003210)) (i64.const 0x7ff8000000003210))
 (assert_return (invoke "f64.nonarithmetic_nan_bitpattern" (i64.const 0x7ff0000000003210)) (i64.const 0xfff0000000003210))
 (assert_return (invoke "f64.nonarithmetic_nan_bitpattern" (i64.const 0xfff0000000003210)) (i64.const 0x7ff0000000003210))
+
+;; Test that IEEE 754 double precision does, in fact, compute a certain dot
+;; product correctly.
+
+(module
+  (func (export "dot_product_example")
+        (param $x0 f64) (param $x1 f64) (param $x2 f64) (param $x3 f64)
+        (param $y0 f64) (param $y1 f64) (param $y2 f64) (param $y3 f64)
+        (result f64)
+    (f64.add (f64.add (f64.add
+      (f64.mul (get_local $x0) (get_local $y0))
+      (f64.mul (get_local $x1) (get_local $y1)))
+      (f64.mul (get_local $x2) (get_local $y2)))
+      (f64.mul (get_local $x3) (get_local $y3)))
+  )
+
+  (func (export "with_binary_sum_collapse")
+        (param $x0 f64) (param $x1 f64) (param $x2 f64) (param $x3 f64)
+        (param $y0 f64) (param $y1 f64) (param $y2 f64) (param $y3 f64)
+        (result f64)
+      (f64.add (f64.add (f64.mul (get_local $x0) (get_local $y0))
+                        (f64.mul (get_local $x1) (get_local $y1)))
+               (f64.add (f64.mul (get_local $x2) (get_local $y2))
+                        (f64.mul (get_local $x3) (get_local $y3))))
+  )
+)
+
+(assert_return (invoke "dot_product_example"
+    (f64.const 3.2e7) (f64.const 1.0) (f64.const -1.0) (f64.const 8.0e7)
+    (f64.const 4.0e7) (f64.const 1.0) (f64.const -1.0) (f64.const -1.6e7))
+  (f64.const 2.0))
+(assert_return (invoke "with_binary_sum_collapse"
+    (f64.const 3.2e7) (f64.const 1.0) (f64.const -1.0) (f64.const 8.0e7)
+    (f64.const 4.0e7) (f64.const 1.0) (f64.const -1.0) (f64.const -1.6e7))
+  (f64.const 2.0))
