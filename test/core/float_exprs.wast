@@ -2342,3 +2342,18 @@
 (assert_return (invoke "f64.contract2fma" (f64.const 1.0) (f64.const 1.0)) (f64.const 0.0))
 (assert_return (invoke "f64.contract2fma" (f64.const 0x1.199999999999ap+0) (f64.const 0x1.199999999999ap+0)) (f64.const 0.0))
 (assert_return (invoke "f64.contract2fma" (f64.const 0x1.3333333333333p+0) (f64.const 0x1.3333333333333p+0)) (f64.const 0.0))
+
+;; Test that floating-point isn't implemented with QuickBasic for MS-DOS.
+;; https://support.microsoft.com/en-us/help/42980/-complete-tutorial-to-understand-ieee-floating-point-errors
+
+(module
+  (func (export "f32.division_by_small_number")
+        (param $a f32) (param $b f32) (param $c f32) (result f32)
+    (f32.sub (get_local $a) (f32.div (get_local $b) (get_local $c))))
+  (func (export "f64.division_by_small_number")
+        (param $a f64) (param $b f64) (param $c f64) (result f64)
+    (f64.sub (get_local $a) (f64.div (get_local $b) (get_local $c))))
+)
+
+(assert_return (invoke "f32.division_by_small_number" (f32.const 112000000) (f32.const 100000) (f32.const 0.0009)) (f32.const 888888))
+(assert_return (invoke "f64.division_by_small_number" (f64.const 112000000) (f64.const 100000) (f64.const 0.0009)) (f64.const 888888.8888888806))
