@@ -239,10 +239,6 @@
 (assert_return (invoke "f64.sub" (f64.const 400000000000002) (f64.const 400000000000001)) (f64.const 1.0))
 (assert_return (invoke "f64.sub" (f64.const 400000000000002) (f64.const 400000000000000)) (f64.const 2.0))
 
-;; Min normal - min subnormal = max subnornmal.
-(assert_return (invoke "f32.sub" (f32.const 0x1p-126) (f32.const 0x1p-149)) (f32.const 0x1.fffffcp-127))
-(assert_return (invoke "f64.sub" (f64.const 0x1p-1022) (f64.const 0x0.0000000000001p-1022)) (f64.const 0x0.fffffffffffffp-1022))
-
 ;; Min normal - max subnormal = min subnornmal.
 (assert_return (invoke "f32.sub" (f32.const 0x1p-126) (f32.const 0x1.fffffcp-127)) (f32.const 0x1p-149))
 (assert_return (invoke "f64.sub" (f64.const 0x1p-1022) (f64.const 0x0.fffffffffffffp-1022)) (f64.const 0x0.0000000000001p-1022))
@@ -474,11 +470,6 @@
 (assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x1.0000000000001p+1022)) (f64.const 0x0.fffffffffffffp-1022))
 (assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x1p+1022)) (f64.const 0x1p-1022))
 
-;; Test the minimum positive normal number divided by the minimum positive
-;; subnormal number.
-(assert_return (invoke "f32.div" (f32.const 0x1p-126) (f32.const 0x1p-149)) (f32.const 0x1p+23))
-(assert_return (invoke "f64.div" (f64.const 0x1p-1022) (f64.const 0x0.0000000000001p-1022)) (f64.const 0x1p+52))
-
 ;; Test that the last binary digit of 1.0/3.0 is even in f32,
 ;; https://en.wikipedia.org/wiki/Single-precision_floating-point_format#Single-precision_examples
 ;;
@@ -572,45 +563,27 @@
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.0000000000002p+0)) (f64.const 0x1.0000000000001p+0))
 
 ;; Test the greatest value less than one for which sqrt is not an identity.
-(assert_return (invoke "f32.sqrt" (f32.const 0x1.fffffep-1)) (f32.const 0x1.fffffep-1))
 (assert_return (invoke "f32.sqrt" (f32.const 0x1.fffffcp-1)) (f32.const 0x1.fffffep-1))
 (assert_return (invoke "f32.sqrt" (f32.const 0x1.fffffap-1)) (f32.const 0x1.fffffcp-1))
-(assert_return (invoke "f64.sqrt" (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.fffffffffffffp-1))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.ffffffffffffep-1)) (f64.const 0x1.fffffffffffffp-1))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.ffffffffffffdp-1)) (f64.const 0x1.ffffffffffffep-1))
 
 ;; Test that the bitwise floating point operators are bitwise on NaN.
 
-(assert_return (invoke "f32.abs" (f32.const nan)) (f32.const nan))
-(assert_return (invoke "f32.abs" (f32.const -nan)) (f32.const nan))
 (assert_return (invoke "f32.abs" (f32.const nan:0x0f1e2)) (f32.const nan:0x0f1e2))
 (assert_return (invoke "f32.abs" (f32.const -nan:0x0f1e2)) (f32.const nan:0x0f1e2))
-(assert_return (invoke "f64.abs" (f64.const nan)) (f64.const nan))
-(assert_return (invoke "f64.abs" (f64.const -nan)) (f64.const nan))
 (assert_return (invoke "f64.abs" (f64.const nan:0x0f1e27a6b)) (f64.const nan:0x0f1e27a6b))
 (assert_return (invoke "f64.abs" (f64.const -nan:0x0f1e27a6b)) (f64.const nan:0x0f1e27a6b))
 
-(assert_return (invoke "f32.neg" (f32.const nan)) (f32.const -nan))
-(assert_return (invoke "f32.neg" (f32.const -nan)) (f32.const nan))
 (assert_return (invoke "f32.neg" (f32.const nan:0x0f1e2)) (f32.const -nan:0x0f1e2))
 (assert_return (invoke "f32.neg" (f32.const -nan:0x0f1e2)) (f32.const nan:0x0f1e2))
-(assert_return (invoke "f64.neg" (f64.const nan)) (f64.const -nan))
-(assert_return (invoke "f64.neg" (f64.const -nan)) (f64.const nan))
 (assert_return (invoke "f64.neg" (f64.const nan:0x0f1e27a6b)) (f64.const -nan:0x0f1e27a6b))
 (assert_return (invoke "f64.neg" (f64.const -nan:0x0f1e27a6b)) (f64.const nan:0x0f1e27a6b))
 
-(assert_return (invoke "f32.copysign" (f32.const nan) (f32.const nan)) (f32.const nan))
-(assert_return (invoke "f32.copysign" (f32.const nan) (f32.const -nan)) (f32.const -nan))
-(assert_return (invoke "f32.copysign" (f32.const -nan) (f32.const nan)) (f32.const nan))
-(assert_return (invoke "f32.copysign" (f32.const -nan) (f32.const -nan)) (f32.const -nan))
 (assert_return (invoke "f32.copysign" (f32.const nan:0x0f1e2) (f32.const nan)) (f32.const nan:0x0f1e2))
 (assert_return (invoke "f32.copysign" (f32.const nan:0x0f1e2) (f32.const -nan)) (f32.const -nan:0x0f1e2))
 (assert_return (invoke "f32.copysign" (f32.const -nan:0x0f1e2) (f32.const nan)) (f32.const nan:0x0f1e2))
 (assert_return (invoke "f32.copysign" (f32.const -nan:0x0f1e2) (f32.const -nan)) (f32.const -nan:0x0f1e2))
-(assert_return (invoke "f64.copysign" (f64.const nan) (f64.const nan)) (f64.const nan))
-(assert_return (invoke "f64.copysign" (f64.const nan) (f64.const -nan)) (f64.const -nan))
-(assert_return (invoke "f64.copysign" (f64.const -nan) (f64.const nan)) (f64.const nan))
-(assert_return (invoke "f64.copysign" (f64.const -nan) (f64.const -nan)) (f64.const -nan))
 (assert_return (invoke "f64.copysign" (f64.const nan:0x0f1e27a6b) (f64.const nan)) (f64.const nan:0x0f1e27a6b))
 (assert_return (invoke "f64.copysign" (f64.const nan:0x0f1e27a6b) (f64.const -nan)) (f64.const -nan:0x0f1e27a6b))
 (assert_return (invoke "f64.copysign" (f64.const -nan:0x0f1e27a6b) (f64.const nan)) (f64.const nan:0x0f1e27a6b))
