@@ -110,7 +110,7 @@ Misc x87-isms:
 Validation errors:
  - ~~sign-extend load from int64 to int32 etc.~~
  - ~~fp-promote load and fp-demote store~~
- - alignment greater than the size of a load or store (https://github.com/WebAssembly/spec/issues/302)
+ - ~~alignment greater than the size of a load or store (https://github.com/WebAssembly/spec/issues/302)~~
 
 SIMD (post-MVP):
  - test that SIMD insert/extract don't canonicalize NaNs
