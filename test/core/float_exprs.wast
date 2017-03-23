@@ -959,7 +959,7 @@
 (assert_return (invoke "f64.no_fold_ge_if" (f64.const 0.0) (f64.const -0.0)) (f64.const 0.0))
 (assert_return (invoke "f64.no_fold_ge_if" (f64.const -0.0) (f64.const 0.0)) (f64.const -0.0))
 
-;; Test that x<0?-x:0, etc. using select aren't folded to abs
+;; Test that x<0?-x:x, etc. using select aren't folded to abs
 
 (module
   (func (export "f32.no_fold_lt_select_to_abs") (param $x f32) (result f32) (select (f32.neg (get_local $x)) (get_local $x) (f32.lt (get_local $x) (f32.const 0.0))))
@@ -1006,7 +1006,7 @@
 (assert_return (invoke "f64.no_fold_ge_select_to_abs" (f64.const 0.0)) (f64.const 0.0))
 (assert_return (invoke "f64.no_fold_ge_select_to_abs" (f64.const -0.0)) (f64.const -0.0))
 
-;; Test that x<0?-x:0, etc. using if aren't folded to abs
+;; Test that x<0?-x:x, etc. using if aren't folded to abs
 
 (module
   (func (export "f32.no_fold_lt_if_to_abs") (param $x f32) (result f32) (if f32 (f32.lt (get_local $x) (f32.const 0.0)) (f32.neg (get_local $x)) (get_local $x)))
