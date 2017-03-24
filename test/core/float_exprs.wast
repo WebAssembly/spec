@@ -2409,3 +2409,74 @@
 )
 
 (assert_return (invoke "point_four" (f64.const 4.0) (f64.const 10.0)) (i32.const 0))
+
+;; Test an approximation function for tau; it should produces the correctly
+;; rounded result after (and only after) the expected number of iterations.
+
+(module
+  (func (export "tau") (param i32) (result f64)
+    (local f64 f64 f64 f64)
+    f64.const 0x0p+0
+    set_local 1
+    block
+      get_local 0
+      i32.const 1
+      i32.lt_s
+      br_if 0
+      f64.const 0x1p+0
+      set_local 2
+      f64.const 0x0p+0
+      set_local 3
+      loop
+        get_local 1
+        get_local 2
+        f64.const 0x1p+3
+        get_local 3
+        f64.const 0x1p+3
+        f64.mul
+        tee_local 4
+        f64.const 0x1p+0
+        f64.add
+        f64.div
+        f64.const 0x1p+2
+        get_local 4
+        f64.const 0x1p+2
+        f64.add
+        f64.div
+        f64.sub
+        f64.const 0x1p+1
+        get_local 4
+        f64.const 0x1.4p+2
+        f64.add
+        f64.div
+        f64.sub
+        f64.const 0x1p+1
+        get_local 4
+        f64.const 0x1.8p+2
+        f64.add
+        f64.div
+        f64.sub
+        f64.mul
+        f64.add
+        set_local 1
+        get_local 3
+        f64.const 0x1p+0
+        f64.add
+        set_local 3
+        get_local 2
+        f64.const 0x1p-4
+        f64.mul
+        set_local 2
+        get_local 0
+        i32.const -1
+        i32.add
+        tee_local 0
+        br_if 0
+      end
+    end
+    get_local 1
+  )
+)
+
+(assert_return (invoke "tau" (i32.const 10)) (f64.const 0x1.921fb54442d14p+2))
+(assert_return (invoke "tau" (i32.const 11)) (f64.const 0x1.921fb54442d18p+2))
