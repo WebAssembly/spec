@@ -266,6 +266,7 @@
 (assert_return (invoke "eqz" (i64.const 1)) (i32.const 0))
 (assert_return (invoke "eqz" (i64.const 0x8000000000000000)) (i32.const 0))
 (assert_return (invoke "eqz" (i64.const 0x7fffffffffffffff)) (i32.const 0))
+(assert_return (invoke "eqz" (i64.const 0xffffffffffffffff)) (i32.const 0))
 
 (assert_return (invoke "eq" (i64.const 0) (i64.const 0)) (i32.const 1))
 (assert_return (invoke "eq" (i64.const 1) (i64.const 1)) (i32.const 1))
