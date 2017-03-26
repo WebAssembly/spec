@@ -335,3 +335,16 @@
 (assert_return (invoke "i64.rem_s_7" (i64.const 0x7000000000000000)) (i64.const 0))
 (assert_return (invoke "i64.rem_u_7" (i64.const 71)) (i64.const 1))
 (assert_return (invoke "i64.rem_u_7" (i64.const 0xe000000000000000)) (i64.const 0))
+
+;; Test that x/-1 is not folded to -x.
+
+(module
+  (func (export "i32.no_fold_div_neg1") (param $x i32) (result i32)
+    (i32.div_s (get_local $x) (i32.const -1)))
+
+  (func (export "i64.no_fold_div_neg1") (param $x i64) (result i64)
+    (i64.div_s (get_local $x) (i64.const -1)))
+)
+
+(assert_trap (invoke "i32.no_fold_div_neg1" (i32.const 0x80000000)) "integer overflow")
+(assert_trap (invoke "i64.no_fold_div_neg1" (i64.const 0x8000000000000000)) "integer overflow")
