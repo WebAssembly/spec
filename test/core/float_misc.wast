@@ -166,6 +166,12 @@
 (assert_return (invoke "f32.add" (f32.const 2.0) (f32.const 2.0)) (f32.const 4.0))
 (assert_return (invoke "f64.add" (f64.const 2.0) (f64.const 2.0)) (f64.const 4.0))
 
+;; Test rounding above the greatest finite value.
+(assert_return (invoke "f32.add" (f32.const 0x1.fffffep+127) (f32.const 0x1.fffffep+102)) (f32.const 0x1.fffffep+127))
+(assert_return (invoke "f32.add" (f32.const 0x1.fffffep+127) (f32.const 0x1p+103)) (f32.const infinity))
+(assert_return (invoke "f64.add" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1.fffffffffffffp+969)) (f64.const 0x1.fffffffffffffp+1023))
+(assert_return (invoke "f64.add" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1p+970)) (f64.const infinity))
+
 ;; Test for a historic spreadsheet bug.
 ;; https://blogs.office.com/2007/09/25/calculation-issue-update/
 (assert_return (invoke "f32.sub" (f32.const 65536.0) (f32.const 0x1p-37)) (f32.const 65536.0))
