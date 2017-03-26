@@ -182,21 +182,21 @@
 ;; Test that x/0 works
 
 (module
-  (func (export "i32.div_s_3") (param $x i32) (result i32)
+  (func (export "i32.div_s_0") (param $x i32) (result i32)
     (i32.div_s (get_local $x) (i32.const 0)))
-  (func (export "i32.div_u_3") (param $x i32) (result i32)
+  (func (export "i32.div_u_0") (param $x i32) (result i32)
     (i32.div_u (get_local $x) (i32.const 0)))
 
-  (func (export "i64.div_s_3") (param $x i64) (result i64)
+  (func (export "i64.div_s_0") (param $x i64) (result i64)
     (i64.div_s (get_local $x) (i64.const 0)))
-  (func (export "i64.div_u_3") (param $x i64) (result i64)
+  (func (export "i64.div_u_0") (param $x i64) (result i64)
     (i64.div_u (get_local $x) (i64.const 0)))
 )
 
-(assert_trap (invoke "i32.div_s_3" (i32.const 71)) "integer divide by zero")
-(assert_trap (invoke "i32.div_u_3" (i32.const 71)) "integer divide by zero")
-(assert_trap (invoke "i64.div_s_3" (i64.const 71)) "integer divide by zero")
-(assert_trap (invoke "i64.div_u_3" (i64.const 71)) "integer divide by zero")
+(assert_trap (invoke "i32.div_s_0" (i32.const 71)) "integer divide by zero")
+(assert_trap (invoke "i32.div_u_0" (i32.const 71)) "integer divide by zero")
+(assert_trap (invoke "i64.div_s_0" (i64.const 71)) "integer divide by zero")
+(assert_trap (invoke "i64.div_u_0" (i64.const 71)) "integer divide by zero")
 
 ;; Test that x/3 works
 
