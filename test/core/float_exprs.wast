@@ -1057,20 +1057,16 @@
 ;; https://support.microsoft.com/en-us/kb/78113
 
 (module
-  (func (export "incorrect_correction") (result f32)
+  (func (export "f32.incorrect_correction") (result f32)
     (f32.sub (f32.sub (f32.add (f32.const 1.333) (f32.const 1.225)) (f32.const 1.333)) (f32.const 1.225))
   )
-)
-
-(assert_return (invoke "incorrect_correction") (f32.const 0x1p-23))
-
-(module
-  (func (export "incorrect_correction") (result f64)
+  (func (export "f64.incorrect_correction") (result f64)
     (f64.sub (f64.sub (f64.add (f64.const 1.333) (f64.const 1.225)) (f64.const 1.333)) (f64.const 1.225))
   )
 )
 
-(assert_return (invoke "incorrect_correction") (f64.const -0x1p-52))
+(assert_return (invoke "f32.incorrect_correction") (f32.const 0x1p-23))
+(assert_return (invoke "f64.incorrect_correction") (f64.const -0x1p-52))
 
 ;; Test for a historical calculator bug.
 ;; http://www.hpmuseum.org/cgi-sys/cgiwrap/hpmuseum/articles.cgi?read=735
