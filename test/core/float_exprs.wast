@@ -248,7 +248,7 @@
 (assert_return (invoke "f64.no_fold_div_3" (f64.const -0x1.0138bf530a53cp+1007)) (f64.const -0x1.56f6546eb86fbp+1005))
 (assert_return (invoke "f64.no_fold_div_3" (f64.const 0x1.052b87f9d794dp+415)) (f64.const 0x1.5c3a0aa274c67p+413))
 
-;; Test that (x*z)+(y*z) is not folded to (x+y)*z
+;; Test that (x*z)+(y*z) is not folded to (x+y)*z.
 
 (module
   (func (export "f32.no_factor") (param $x f32) (param $y f32) (param $z f32) (result f32)
@@ -268,7 +268,7 @@
 (assert_return (invoke "f64.no_factor" (f64.const -0x1.c4ded58a6f389p-289) (f64.const 0x1.ba6fdef5d59c9p-260) (f64.const -0x1.c1201c0470205p-253)) (f64.const -0x1.841ada2e0f184p-512))
 (assert_return (invoke "f64.no_factor" (f64.const 0x1.9d3688f8e375ap-608) (f64.const 0x1.bf91311588256p-579) (f64.const -0x1.1605a6b5d5ff8p+489)) (f64.const -0x1.e6118ca76af53p-90))
 
-;; Test that (x+y)*z is not folded to (x*z)+(y*z)
+;; Test that (x+y)*z is not folded to (x*z)+(y*z).
 
 (module
   (func (export "f32.no_distribute") (param $x f32) (param $y f32) (param $z f32) (result f32)
@@ -288,7 +288,7 @@
 (assert_return (invoke "f64.no_distribute" (f64.const -0x1.c4ded58a6f389p-289) (f64.const 0x1.ba6fdef5d59c9p-260) (f64.const -0x1.c1201c0470205p-253)) (f64.const -0x1.841ada2e0f183p-512))
 (assert_return (invoke "f64.no_distribute" (f64.const 0x1.9d3688f8e375ap-608) (f64.const 0x1.bf91311588256p-579) (f64.const -0x1.1605a6b5d5ff8p+489)) (f64.const -0x1.e6118ca76af52p-90))
 
-;; Test that x*(y/z) is not folded to (x*y)/z
+;; Test that x*(y/z) is not folded to (x*y)/z.
 
 (module
   (func (export "f32.no_regroup_div_mul") (param $x f32) (param $y f32) (param $z f32) (result f32)
@@ -308,7 +308,7 @@
 (assert_return (invoke "f64.no_regroup_div_mul" (f64.const -0x1.706023645be72p+480) (f64.const -0x1.6c229f7d9101dp+611) (f64.const -0x1.4d50fa68d3d9ep+836)) (f64.const -0x1.926fa3cacc651p+255))
 (assert_return (invoke "f64.no_regroup_div_mul" (f64.const 0x1.8cc63d8caf4c7p-599) (f64.const 0x1.8671ac4c35753p-878) (f64.const -0x1.ef35b1695e659p-838)) (f64.const -0x1.38d55f56406dp-639))
 
-;; Test that (x*y)/z is not folded to x*(y/z)
+;; Test that (x*y)/z is not folded to x*(y/z).
 
 (module
   (func (export "f32.no_regroup_mul_div") (param $x f32) (param $y f32) (param $z f32) (result f32)
@@ -489,7 +489,7 @@
 (assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.ba4c5p+13)) (f32.const 0x1.136f16p-7))
 (assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.4a5be2p+104)) (f32.const 0x1.c2b5bp-53))
 
-;; Test that converting i32/i64 to f32/f64 and back isn't folded away
+;; Test that converting i32/i64 to f32/f64 and back isn't folded away.
 
 (module
   (func (export "i32.no_fold_f32_s") (param i32) (result i32)
@@ -959,7 +959,7 @@
 (assert_return (invoke "f64.no_fold_ge_if" (f64.const 0.0) (f64.const -0.0)) (f64.const 0.0))
 (assert_return (invoke "f64.no_fold_ge_if" (f64.const -0.0) (f64.const 0.0)) (f64.const -0.0))
 
-;; Test that x<0?-x:x, etc. using select aren't folded to abs
+;; Test that x<0?-x:x, etc. using select aren't folded to abs.
 
 (module
   (func (export "f32.no_fold_lt_select_to_abs") (param $x f32) (result f32) (select (f32.neg (get_local $x)) (get_local $x) (f32.lt (get_local $x) (f32.const 0.0))))
@@ -1006,7 +1006,7 @@
 (assert_return (invoke "f64.no_fold_ge_select_to_abs" (f64.const 0.0)) (f64.const 0.0))
 (assert_return (invoke "f64.no_fold_ge_select_to_abs" (f64.const -0.0)) (f64.const -0.0))
 
-;; Test that x<0?-x:x, etc. using if aren't folded to abs
+;; Test that x<0?-x:x, etc. using if aren't folded to abs.
 
 (module
   (func (export "f32.no_fold_lt_if_to_abs") (param $x f32) (result f32) (if f32 (f32.lt (get_local $x) (f32.const 0.0)) (f32.neg (get_local $x)) (get_local $x)))
