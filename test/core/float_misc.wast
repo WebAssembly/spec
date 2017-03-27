@@ -602,11 +602,11 @@
 (assert_return (invoke "f64.copysign" (f64.const -nan:0x0f1e27a6b) (f64.const nan)) (f64.const nan:0x0f1e27a6b))
 (assert_return (invoke "f64.copysign" (f64.const -nan:0x0f1e27a6b) (f64.const -nan)) (f64.const -nan:0x0f1e27a6b))
 
-;; Test that ceil isn't implemented as adding 0.5 and rounding to nearest.
+;; Test values close to 1.0.
 (assert_return (invoke "f32.ceil" (f32.const 0x1.fffffep-1)) (f32.const 1.0))
-(assert_return (invoke "f32.ceil" (f32.const 0x1p-126)) (f32.const 1.0))
+(assert_return (invoke "f32.ceil" (f32.const 0x1.000002p+0)) (f32.const 2.0))
 (assert_return (invoke "f64.ceil" (f64.const 0x1.fffffffffffffp-1)) (f64.const 1.0))
-(assert_return (invoke "f64.ceil" (f64.const 0x1p-1022)) (f64.const 1.0))
+(assert_return (invoke "f64.ceil" (f64.const 0x1.0000000000001p+0)) (f64.const 2.0))
 
 ;; Test the maximum and minimum value for which ceil is not an identity operator.
 (assert_return (invoke "f32.ceil" (f32.const 0x1.fffffep+22)) (f32.const 0x1p+23))
@@ -614,11 +614,11 @@
 (assert_return (invoke "f64.ceil" (f64.const 0x1.fffffffffffffp+51)) (f64.const 0x1p+52))
 (assert_return (invoke "f64.ceil" (f64.const -0x1.fffffffffffffp+51)) (f64.const -0x1.ffffffffffffep+51))
 
-;; Test that floor isn't implemented as subtracting 0.5 and rounding to nearest.
+;; Test values close to -1.0.
 (assert_return (invoke "f32.floor" (f32.const -0x1.fffffep-1)) (f32.const -1.0))
-(assert_return (invoke "f32.floor" (f32.const -0x1p-126)) (f32.const -1.0))
+(assert_return (invoke "f32.floor" (f32.const -0x1.000002p+0)) (f32.const -2.0))
 (assert_return (invoke "f64.floor" (f64.const -0x1.fffffffffffffp-1)) (f64.const -1.0))
-(assert_return (invoke "f64.floor" (f64.const -0x1p-1022)) (f64.const -1.0))
+(assert_return (invoke "f64.floor" (f64.const -0x1.0000000000001p+0)) (f64.const -2.0))
 
 ;; Test the maximum and minimum value for which floor is not an identity operator.
 (assert_return (invoke "f32.floor" (f32.const -0x1.fffffep+22)) (f32.const -0x1p+23))
