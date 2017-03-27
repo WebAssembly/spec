@@ -92,7 +92,7 @@ html:
 	for file in `ls $(BUILDDIR)/html/*/*.html`; \
 	do \
 	  sed s:BASEDIR:..:g <$$file >$$file.out; \
-	  sed 's;<body;<script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body;' \
+	  sed 's;<body;<script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body;' \
 	    <$$file.out >$$file; \
 	  rm -f $$file.out; \
 	done

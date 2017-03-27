@@ -82,11 +82,29 @@ mapping a vector of parameters to a vector of results.
    This restriction may be removed in future versions.
 
 
-.. _syntax-memtype:
 .. _syntax-limits:
-.. index:: ! memory type, ! limits, page size
-   pair: abstract syntax; memory type
+.. index:: ! limits, memory type, table type
    pair: abstract syntax; limits
+   single: memory; limits
+   single: table; limits
+
+Limits
+~~~~~~
+
+*Limits* classify the size range of resizeable storage like associated with :ref:`memory types <syntax-memtype>` and :ref:`table types <syntax-tabletype>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{limits} & \limits &::=&
+     \{ \MIN~\u32, \MAX~\u32^? \} \\
+   \end{array}
+
+If no maximum is given, the respective storage can grow to any size.
+
+
+.. _syntax-memtype:
+.. index:: ! memory type, limits, page size
+   pair: abstract syntax; memory type
    pair: memory; type
    pair: memory; limits
 
@@ -99,13 +117,10 @@ Memory Types
    \begin{array}{llll}
    \production{memory types} & \memtype &::=&
      \limits \\
-   \production{limits} & \limits &::=&
-     \{ \MIN~\u32, \MAX~\u32^? \} \\
    \end{array}
 
-The limits constrain the minimum and optionally the maximum size of a table.
-If no maximum is given, the table can grow to any size.
-Both values are given in units of :ref:`page size <page-size>`.
+The limits constrain the minimum and optionally the maximum size of a memory.
+The limits are given in units of :ref:`page size <page-size>`.
 
 
 .. _syntax-tabletype:
@@ -130,8 +145,8 @@ Table Types
      \ANYFUNC \\
    \end{array}
 
-Like memories, tables are constrained by limits for their minimum and optionally the maximum size.
-These sizes are given in numbers of entries.
+Like memories, tables are constrained by limits for their minimum and optionally maximum size.
+The limits are given in numbers of entries.
 
 The element type |ANYFUNC| is the infinite union of all `function types`.
 A table of that type thus contains references to functions of heterogeneous type.

@@ -1,5 +1,5 @@
 .. _valid-instr:
-.. index:: function type, context
+.. index:: instruction, function type, context
 
 Instructions
 ------------
@@ -210,13 +210,10 @@ In this section, the following grammar shorthands are adopted:
    }
 
 
-.. _syntax-instr-parametric:
-.. index:: ! parametric instructions
-   pair: abstract syntax; instruction
-
-
 .. _valid-instr-parametric:
-.. index:: value type, polymorphism
+.. index:: parametric instructions, value type, polymorphism
+   pair: validation; instruction
+   single: abstract syntax; instruction
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
