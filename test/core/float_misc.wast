@@ -10,9 +10,9 @@
 ;; value-changing optimizations, and (d) that the WebAssembly implementation
 ;; doesn't exhibit any known implementation bugs.
 ;;
-;; This file supplements f32.wast, f64.wast, f32_cmp.wast, and f64_cmp.wast with
-;; additional single-instruction tests covering additional miscellaneous
-;; interesting cases.
+;; This file supplements f32.wast, f64.wast, f32_bitwise.wast, f64_bitwise.wast,
+;; f32_cmp.wast, and f64_cmp.wast with additional single-instruction tests
+;; covering additional miscellaneous interesting cases.
 
 (module
   (func (export "f32.add") (param $x f32) (param $y f32) (result f32) (f32.add (get_local $x) (get_local $y)))
