@@ -1992,7 +1992,7 @@
 (assert_return_canonical_nan (invoke "max" (f64.const -nan) (f64.const 0x1p-1022)))
 (assert_return_canonical_nan (invoke "max" (f64.const nan) (f64.const -0x1p-1022)))
 (assert_return_canonical_nan (invoke "max" (f64.const nan) (f64.const 0x1p-1022)))
-(assert_return_arithmetic_nan (invoke "max" (f64.const nan:0x4000000000000) (f64.const 0x1p-1022)))
+(assert_return_arithmetic_nan (invoke "max" (f64.const nan:0x4000000000000) (f64.const -0x1p-1022)))
 (assert_return_arithmetic_nan (invoke "max" (f64.const nan:0x4000000000000) (f64.const 0x1p-1022)))
 (assert_return_canonical_nan (invoke "max" (f64.const -nan) (f64.const -0x1p-1)))
 (assert_return_canonical_nan (invoke "max" (f64.const -nan) (f64.const 0x1p-1)))
