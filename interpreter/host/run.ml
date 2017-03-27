@@ -357,7 +357,7 @@ let run_assertion ass =
     assert_result ass.at (got_vs = expect_vs) got_vs print_result expect_vs
 
   | AssertReturnCanonicalNaN act ->
-    trace ("Asserting return...");
+    trace ("Asserting return canonical nan...");
     let got_vs = run_action act in
     let is_canonical_nan =
       match got_vs with
@@ -367,15 +367,15 @@ let run_assertion ass =
     in assert_result ass.at is_canonical_nan got_vs print_endline "nan"
 
   | AssertReturnArithmeticNaN act ->
-    trace ("Asserting return...");
+    trace ("Asserting return arithmetic nan...");
     let got_vs = run_action act in
     let is_arithmetic_nan =
       (* Accept any NaN that's one everywhere pos_nan is one *)
       match got_vs with
-      | [Values.F32 got_f32] -> let pos_nan = F32.to_bits F32.pos_nan in
-        Int32.logand (F32.to_bits got_f32) pos_nan = pos_nan
-      | [Values.F64 got_f64] -> let pos_nan = F64.to_bits F64.pos_nan in
-        Int64.logand (F64.to_bits got_f64) pos_nan = pos_nan
+      | [Values.F32 got_f32] -> let bare_nan = F32.to_bits F32.bare_nan in
+        Int32.logand (F32.to_bits got_f32) bare_nan = bare_nan
+      | [Values.F64 got_f64] -> let bare_nan = F64.to_bits F64.bare_nan in
+        Int64.logand (F64.to_bits got_f64) bare_nan = bare_nan
       | _ -> false
     in assert_result ass.at is_arithmetic_nan got_vs print_endline "nan"
 
