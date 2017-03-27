@@ -210,7 +210,7 @@ The |GLOBALS| component of a module defines a vector of *global variables* (or *
 
 Each global stores a single value of the given :ref:`global type <syntax-globaltype>`.
 Its |TYPE| also specifies whether a global is immutable or mutable.
-Moreover, each global is initialized with an |INIT| value given by a :ref:`constant <valid-const>` initializer :ref:`expression <syntax-expr>`.
+Moreover, each global is initialized with an |INIT| value given by a :ref:`constant <valid-constant>` initializer :ref:`expression <syntax-expr>`.
 
 Globals are referenced through :ref:`global indices <syntax-globalidx>`,
 starting with the smallest index not referencing a global :ref:`import <syntax-import>`.
@@ -234,7 +234,7 @@ The |ELEM| component of a module defines a vector of *element segments* that ini
      \{ \TABLE~\tableidx, \OFFSET~\expr, \INIT~\vec(\funcidx) \} \\
    \end{array}
 
-The |OFFSET| is given by a :ref:`constant <valid-const>` :ref:`expression <syntax-expr>`.
+The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
 
 .. note::
    In the current version of WebAssembly, at most one table is allowed in a module.
@@ -259,7 +259,7 @@ The |DATA| component of a module defines a vector of *data segments* that initia
      \{ \MEM~\memidx, \OFFSET~\expr, \INIT~\vec(\by) \} \\
    \end{array}
 
-The |OFFSET| is given by a :ref:`constant <valid-const>` :ref:`expression <syntax-expr>`.
+The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
 
 .. note::
    In the current version of WebAssembly, at most one memory is allowed in a module.

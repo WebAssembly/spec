@@ -192,7 +192,7 @@ Instructions in this group are concerned with :ref:`linear memory <sec-memory>`.
      \GROWMEMORY \\
    \end{array}
 
-Memory is accessed with :math:`\K{load}` and :math:`\K{store}` instructions for the different :ref:`value types <syntax-valtype>`.
+Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
 They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint.
 Integer loads and stores can optionally specify a *storage size* that is smaller than the width of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
@@ -305,4 +305,4 @@ Expressions
      \instr^\ast~\END \\
    \end{array}
 
-In some places, validation :ref:`restricts <valid-const>` expressions to be *constant*, which limits the set of allowable insructions.
+In some places, validation :ref:`restricts <valid-constant>` expressions to be *constant*, which limits the set of allowable insructions.

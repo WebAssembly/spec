@@ -137,7 +137,7 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
-* The expression :math:`\expr` must be :ref:`constant <valid-const>`.
+* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
 * Then the global definition is valid with type :math:`\mut~t`.
 
@@ -174,7 +174,7 @@ Element segments :math:`\elem` are not classified by a type.
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
-* The expression :math:`\expr` must be :ref:`constant <valid-const>`.
+* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
 * For each :math:`y_i` in :math:`y^\ast`,
   the function :math:`C.\FUNCS[y]` must be defined in the context.
@@ -215,7 +215,7 @@ Data segments :math:`\data` are not classified by any type.
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
-* The expression :math:`\expr` must be :ref:`constant <valid-const>`.
+* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
 * Then the data segment is valid.
 

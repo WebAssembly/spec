@@ -129,12 +129,12 @@ The conclusion always is a judgment :math:`C \vdash A : T`,
 and there is one respective rule for each relevant construct :math:`A` of the abstract syntax.
 
 .. note::
-   For example, the typing rule for the :ref:`instruction <syntax-instr-numeric>` :math:`\K{i32.add}` can be given as an axiom:
+   For example, the typing rule for the :ref:`instruction <syntax-instr-numeric>` :math:`\I32.\ADD` can be given as an axiom:
 
    .. math::
       \frac{
       }{
-        C \vdash \K{i32.add} : [\I32~\I32] \to [\I32]
+        C \vdash \I32.\ADD : [\I32~\I32] \to [\I32]
       }
 
    The instruction is always valid with type :math:`[\I32~\I32] \to [\I32`]

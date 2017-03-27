@@ -10,7 +10,7 @@ The types describe the required input stack with argument values of types :math:
 and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
 
 .. note::
-   For example, the instruction :math:`\K{i32.add}` has type :math:`[\I32~\I32] \to [\I32]`,
+   For example, the instruction :math:`\I32.\ADD` has type :math:`[\I32~\I32] \to [\I32]`,
    consuming two |I32| values and producing one.
 
 Typing extends to :ref:`instruction sequences <valid-instr-seq>` :math:`\instr^\ast`.
@@ -38,12 +38,12 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
    For example, the |SELECT| instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any possible :ref:`value type <syntax-valtype>` :math:`t`.   Consequently, both instruction sequences
 
    .. math::
-      (\K{i32.const}~1)~~(\K{i32.const}~2)~~(\K{i32.const}~3)~~\SELECT{}
+      (\I32.\CONST~1)~~(\I32.\CONST~2)~~(\I32.\CONST~3)~~\SELECT{}
 
    and
 
    .. math::
-      (\K{f64.const}~1.0)~~(\K{f64.const}~2.0)~~(\K{i32.const}~3)~~\SELECT{}
+      (\F64.\CONST~1.0)~~(\F64.\CONST~2.0)~~(\I32.\CONST~3)~~\SELECT{}
 
    are valid, with :math:`t` in the typing of |SELECT| being instantiated to |I32| or |F64|, respectively.
 
@@ -51,13 +51,13 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
    Consequently,
 
    .. math::
-      \UNREACHABLE~~\K{i32.add}
+      \UNREACHABLE~~\I32.\ADD
 
    is valid by assuming type :math:`[] \to [\I32~\I32]` for the |UNREACHABLE| instruction.
    In contrast,
 
    .. math::
-      \UNREACHABLE~~(\K{i64.const}~0)~~\K{i32.add}
+      \UNREACHABLE~~(\I64.\CONST~0)~~\I32.\ADD
 
    is invalid, because there is no possible type to pick for the |UNREACHABLE| instruction that would make the sequence well-typed.
 
@@ -75,54 +75,54 @@ In this section, the following grammar shorthands are adopted:
 .. math::
    \begin{array}{llll}
    \production{unary operators} & \unop &::=&
-     \K{clz} ~|~
-     \K{ctz} ~|~
-     \K{popcnt} ~|~
-     \K{abs} ~|~
-     \K{neg} ~|~
-     \K{sqrt} ~|~
-     \K{ceil} ~|~
-     \K{floor} ~|~
-     \K{trunc} ~|~
-     \K{nearest} \\
+     \CLZ ~|~
+     \CTZ ~|~
+     \POPCNT ~|~
+     \ABS ~|~
+     \NEG ~|~
+     \SQRT ~|~
+     \CEIL ~|~
+     \FLOOR ~|~
+     \TRUNC ~|~
+     \NEAREST \\
    \production{binary operators} & \binop &::=&
-     \K{add} ~|~
-     \K{sub} ~|~
-     \K{mul} ~|~
-     \K{div} ~|~
-     \K{div\_}\sx ~|~
-     \K{rem\_}\sx ~|~
-     \K{min} ~|~
-     \K{max} ~|~
-     \K{copysign} ~|~ \\&&&
-     \K{and} ~|~
-     \K{or} ~|~
-     \K{xor} ~|~
-     \K{shl} ~|~
-     \K{shr\_}\sx ~|~
-     \K{rotl} ~|~
-     \K{rotr} \\
+     \ADD ~|~
+     \SUB ~|~
+     \MUL ~|~
+     \DIV ~|~
+     \DIV\K{\_}\sx ~|~
+     \REM\K{\_}\sx ~|~
+     \FMIN ~|~
+     \FMAX ~|~
+     \COPYSIGN ~|~ \\&&&
+     \AND ~|~
+     \OR ~|~
+     \XOR ~|~
+     \SHL ~|~
+     \SHR\K{\_}\sx ~|~
+     \ROTL ~|~
+     \ROTR \\
    \production{test operators} & \testop &::=&
-     \K{eqz} \\
+     \EQZ \\
    \production{relational operators} & \relop &::=&
-     \K{eq} ~|~
-     \K{ne} ~|~
-     \K{lt} ~|~
-     \K{gt} ~|~
-     \K{le} ~|~
-     \K{ge} ~|~
-     \K{lt\_}\sx ~|~
-     \K{gt\_}\sx ~|~
-     \K{le\_}\sx ~|~
-     \K{ge\_}\sx \\
+     \EQ ~|~
+     \NE ~|~
+     \LT ~|~
+     \GT ~|~
+     \LE ~|~
+     \GE ~|~
+     \LT\K{\_}\sx ~|~
+     \GT\K{\_}\sx ~|~
+     \LE\K{\_}\sx ~|~
+     \GE\K{\_}\sx \\
    \production{conversion operators} & \cvtop &::=&
-     \K{wrap} ~|~
-     \K{extend\_}\sx ~|~
-     \K{trunc\_}\sx ~|~
-     \K{convert\_}\sx ~|~
-     \K{demote} ~|~
-     \K{promote} ~|~
-     \K{reinterpret} \\
+     \WRAP ~|~
+     \EXTEND\K{\_}\sx ~|~
+     \TRUNC\K{\_}\sx ~|~
+     \CONVERT\K{\_}\sx ~|~
+     \DEMOTE ~|~
+     \PROMOTE ~|~
+     \REINTERPRET \\
    \end{array}
 
 
@@ -798,7 +798,7 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
    }
 
 
-.. _valid-const:
+.. _valid-constant:
 .. index:: ! constant
 
 Constant Expressions
