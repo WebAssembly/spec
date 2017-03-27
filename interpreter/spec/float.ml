@@ -27,6 +27,7 @@ sig
   type bits
   val pos_nan : t
   val neg_nan : t
+  val bare_nan : t
   val of_float : float -> t
   val to_float : t -> float
   val of_string : string -> t
