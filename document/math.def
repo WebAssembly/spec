@@ -29,7 +29,7 @@
 
 .. Values, non-terminals
 
-.. |by| mathdef:: \xref{syntax/values}{syntax-byte}{byte}
+.. |by| mathdef:: \xref{syntax/values}{syntax-byte}{\X{byte}}
 
 .. |uX#1| mathdef:: {\X{uint}_{#1}}
 .. |sX#1| mathdef:: {\X{sint}_{#1}}

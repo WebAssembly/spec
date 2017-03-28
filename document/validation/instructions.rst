@@ -1,5 +1,5 @@
 .. _valid-instr:
-.. index:: function type, context
+.. index:: instruction, function type, context
 
 Instructions
 ------------
@@ -210,13 +210,10 @@ In this section, the following grammar shorthands are adopted:
    }
 
 
-.. _syntax-instr-parametric:
-.. index:: ! parametric instructions
-   pair: abstract syntax; instruction
-
-
 .. _valid-instr-parametric:
-.. index:: value type, polymorphism
+.. index:: parametric instructions, value type, polymorphism
+   pair: validation; instruction
+   single: abstract syntax; instruction
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -543,6 +540,10 @@ Control Instructions
      C \vdash \BLOCK~[^?]~\instr^\ast~\END : [] \to [t^?]
    }
 
+.. note::
+   The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the block was entered.
+   This may be generalized in future versions of WebAssembly.
+
 
 .. _valid-loop:
 
@@ -562,6 +563,10 @@ Control Instructions
    }{
      C \vdash \LOOP~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
+
+.. note::
+   The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the loop was entered.
+   This may be generalized in future versions of WebAssembly.
 
 
 .. _valid-if:
@@ -587,6 +592,10 @@ Control Instructions
    }{
      C \vdash \IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [\I32] \to [t^?]
    }
+
+.. note::
+   The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the conditional was entered.
+   This may be generalized in future versions of WebAssembly.
 
 
 .. _valid-br:
