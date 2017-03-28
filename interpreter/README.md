@@ -315,7 +315,8 @@ action:
 
 assertion:
   ( assert_return <action> <expr>* )         ;; assert action has expected results
-  ( assert_return_nan <action> )             ;; assert action results in NaN
+  ( assert_return_canonical_nan <action> )   ;; assert action results in NaN in a canonical form
+  ( assert_return_arithmetic_nan <action> )  ;; assert action results in NaN with 1 in MSB of fraction field
   ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string

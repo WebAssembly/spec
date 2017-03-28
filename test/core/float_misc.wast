@@ -58,10 +58,10 @@
 (assert_return (invoke "f64.add" (f64.const 1.0) (f64.const 0x1.0000000000001p-53)) (f64.const 0x1.0000000000001p+0))
 
 ;; Test that what some systems call signaling NaN behaves as a quiet NaN.
-(assert_return (invoke "f32.add" (f32.const nan:0x200000) (f32.const 1.0)) (f32.const nan:0x600000))
-(assert_return (invoke "f64.add" (f64.const nan:0x4000000000000) (f64.const 1.0)) (f64.const nan:0xc000000000000))
+(assert_return_arithmetic_nan (invoke "f32.add" (f32.const nan:0x200000) (f32.const 1.0)))
+(assert_return_arithmetic_nan (invoke "f64.add" (f64.const nan:0x4000000000000) (f64.const 1.0)))
 
-;; Max subnornmal + min subnormal = min normal.
+;; Max subnormal + min subnormal = min normal.
 (assert_return (invoke "f32.add" (f32.const 0x1p-149) (f32.const 0x1.fffffcp-127)) (f32.const 0x1p-126))
 (assert_return (invoke "f64.add" (f64.const 0x0.0000000000001p-1022) (f64.const 0x0.fffffffffffffp-1022)) (f64.const 0x1p-1022))
 
@@ -74,6 +74,12 @@
 ;; Test a case that was "tricky" on MMIX.
 ;; http://mmix.cs.hm.edu/bugs/bug_rounding.html
 (assert_return (invoke "f64.add" (f64.const -0x1p-1008) (f64.const 0x0.0000000001716p-1022)) (f64.const -0x1.fffffffffffffp-1009))
+
+;; http://www.vinc17.org/software/tst-ieee754.xsl
+(assert_return (invoke "f64.add" (f64.const 9007199254740992) (f64.const 1.00001)) (f64.const 9007199254740994))
+
+;; http://www.vinc17.org/software/test.java
+(assert_return (invoke "f64.add" (f64.const 9007199254740994) (f64.const 0x1.fffep-1)) (f64.const 9007199254740994))
 
 ;; Computations that round differently in ties-to-odd mode.
 (assert_return (invoke "f32.add" (f32.const 0x1p23) (f32.const 0x1p-1)) (f32.const 0x1p23))
@@ -160,6 +166,10 @@
 (assert_return (invoke "f32.add" (f32.const 0x1.fffffcp+127) (f32.const 0x1p+104)) (f32.const 0x1.fffffep+127))
 (assert_return (invoke "f64.add" (f64.const 0x1.ffffffffffffep+1023) (f64.const 0x1p+971)) (f64.const 0x1.fffffffffffffp+1023))
 
+;; http://news.harvard.edu/gazette/story/2013/09/dawn-of-a-revolution/
+(assert_return (invoke "f32.add" (f32.const 2.0) (f32.const 2.0)) (f32.const 4.0))
+(assert_return (invoke "f64.add" (f64.const 2.0) (f64.const 2.0)) (f64.const 4.0))
+
 ;; Test for a historic spreadsheet bug.
 ;; https://blogs.office.com/2007/09/25/calculation-issue-update/
 (assert_return (invoke "f32.sub" (f32.const 65536.0) (f32.const 0x1p-37)) (f32.const 65536.0))
@@ -239,13 +249,24 @@
 (assert_return (invoke "f64.sub" (f64.const 400000000000002) (f64.const 400000000000001)) (f64.const 1.0))
 (assert_return (invoke "f64.sub" (f64.const 400000000000002) (f64.const 400000000000000)) (f64.const 2.0))
 
-;; Min normal - min subnormal = max subnornmal.
-(assert_return (invoke "f32.sub" (f32.const 0x1p-126) (f32.const 0x1p-149)) (f32.const 0x1.fffffcp-127))
-(assert_return (invoke "f64.sub" (f64.const 0x1p-1022) (f64.const 0x0.0000000000001p-1022)) (f64.const 0x0.fffffffffffffp-1022))
-
-;; Min normal - max subnormal = min subnornmal.
+;; Min normal - max subnormal = min subnormal.
 (assert_return (invoke "f32.sub" (f32.const 0x1p-126) (f32.const 0x1.fffffcp-127)) (f32.const 0x1p-149))
 (assert_return (invoke "f64.sub" (f64.const 0x1p-1022) (f64.const 0x0.fffffffffffffp-1022)) (f64.const 0x0.0000000000001p-1022))
+
+;; Test subtraction of numbers very close to 1.
+(assert_return (invoke "f32.sub" (f32.const 0x1.000002p+0) (f32.const 0x1.fffffep-1)) (f32.const 0x1.8p-23))
+(assert_return (invoke "f32.sub" (f32.const 0x1.000002p+0) (f32.const 0x1.0p+0)) (f32.const 0x1p-23))
+(assert_return (invoke "f32.sub" (f32.const 0x1p+0) (f32.const 0x1.fffffep-1)) (f32.const 0x1p-24))
+(assert_return (invoke "f64.sub" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.8p-52))
+(assert_return (invoke "f64.sub" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.0p+0)) (f64.const 0x1p-52))
+(assert_return (invoke "f64.sub" (f64.const 0x1p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1p-53))
+
+;; Test the least value that can be subtracted from the max value to produce a
+;; different value.
+(assert_return (invoke "f32.sub" (f32.const 0x1.fffffep+127) (f32.const 0x1.fffffep+102)) (f32.const 0x1.fffffep+127))
+(assert_return (invoke "f32.sub" (f32.const 0x1.fffffep+127) (f32.const 0x1p+103)) (f32.const 0x1.fffffcp+127))
+(assert_return (invoke "f64.sub" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1.fffffffffffffp+969)) (f64.const 0x1.fffffffffffffp+1023))
+(assert_return (invoke "f64.sub" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1p+970)) (f64.const 0x1.ffffffffffffep+1023))
 
 ;; Miscellaneous values.
 (assert_return (invoke "f32.mul" (f32.const 1e15) (f32.const 1e15)) (f32.const 0x1.93e592p+99))
@@ -335,10 +356,25 @@
 (assert_return (invoke "f64.mul" (f64.const 0x1.fffffffffffffp+511) (f64.const 0x1.fffffffffffffp+511)) (f64.const 0x1.ffffffffffffep+1023))
 (assert_return (invoke "f64.mul" (f64.const 0x1p+512) (f64.const 0x1p+512)) (f64.const infinity))
 
+;; Test the squares of values very close to 1.
+(assert_return (invoke "f32.mul" (f32.const 0x1.000002p+0) (f32.const 0x1.000002p+0)) (f32.const 0x1.000004p+0))
+(assert_return (invoke "f32.mul" (f32.const 0x1.fffffep-1) (f32.const 0x1.fffffep-1)) (f32.const 0x1.fffffcp-1))
+(assert_return (invoke "f64.mul" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.0000000000001p+0)) (f64.const 0x1.0000000000002p+0))
+(assert_return (invoke "f64.mul" (f64.const 0x1.fffffffffffffp-1) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.ffffffffffffep-1))
+
+;; Test multiplication of numbers very close to 1.
+(assert_return (invoke "f32.mul" (f32.const 0x1.000002p+0) (f32.const 0x1.fffffep-1)) (f32.const 0x1p+0))
+(assert_return (invoke "f32.mul" (f32.const 0x1.000004p+0) (f32.const 0x1.fffffcp-1)) (f32.const 0x1.000002p+0))
+(assert_return (invoke "f64.mul" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1p+0))
+(assert_return (invoke "f64.mul" (f64.const 0x1.0000000000002p+0) (f64.const 0x1.ffffffffffffep-1)) (f64.const 0x1.0000000000001p+0))
+
 ;; Test MIN * EPSILON.
 ;; http://www.mpfr.org/mpfr-2.0.1/patch2
 (assert_return (invoke "f32.mul" (f32.const 0x1p-126) (f32.const 0x1p-23)) (f32.const 0x1p-149))
 (assert_return (invoke "f64.mul" (f64.const 0x1p-1022) (f64.const 0x1p-52)) (f64.const 0x0.0000000000001p-1022))
+
+;; http://opencores.org/bug,view,2454
+(assert_return (invoke "f32.mul" (f32.const -0x1.0006p+4) (f32.const 0x1.ap-132)) (f32.const -0x1.a009cp-128))
 
 ;; Miscellaneous values.
 (assert_return (invoke "f32.div" (f32.const 1.123456789) (f32.const 100)) (f32.const 0x1.702264p-7))
@@ -451,11 +487,6 @@
 (assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x1.0000000000001p+1022)) (f64.const 0x0.fffffffffffffp-1022))
 (assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x1p+1022)) (f64.const 0x1p-1022))
 
-;; Test the minimum positive normal number divided by the minimum positive
-;; subnormal number.
-(assert_return (invoke "f32.div" (f32.const 0x1p-126) (f32.const 0x1p-149)) (f32.const 0x1p+23))
-(assert_return (invoke "f64.div" (f64.const 0x1p-1022) (f64.const 0x0.0000000000001p-1022)) (f64.const 0x1p+52))
-
 ;; Test that the last binary digit of 1.0/3.0 is even in f32,
 ;; https://en.wikipedia.org/wiki/Single-precision_floating-point_format#Single-precision_examples
 ;;
@@ -470,6 +501,16 @@
 (assert_return (invoke "f64.div" (f64.const 0x1p+0) (f64.const 0x1.8p+1)) (f64.const 0x1.5555555555555p-2))
 (assert_return (invoke "f64.div" (f64.const 0x3p+0) (f64.const 0x1.2p+3)) (f64.const 0x1.5555555555555p-2))
 (assert_return (invoke "f64.div" (f64.const 0x1.2p+3) (f64.const 0x1.bp+4)) (f64.const 0x1.5555555555555p-2))
+
+;; Test division of numbers very close to 1.
+(assert_return (invoke "f32.div" (f32.const 0x1.000002p+0) (f32.const 0x1.fffffep-1)) (f32.const 0x1.000004p+0))
+(assert_return (invoke "f32.div" (f32.const 0x1.fffffep-1) (f32.const 0x1.000002p+0)) (f32.const 0x1.fffffap-1))
+(assert_return (invoke "f32.div" (f32.const 0x1.0p+0) (f32.const 0x1.fffffep-1)) (f32.const 0x1.000002p+0))
+(assert_return (invoke "f32.div" (f32.const 0x1.0p+0) (f32.const 0x1.000002p+0)) (f32.const 0x1.fffffcp-1))
+(assert_return (invoke "f64.div" (f64.const 0x1.0000000000001p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.0000000000002p+0))
+(assert_return (invoke "f64.div" (f64.const 0x1.fffffffffffffp-1) (f64.const 0x1.0000000000001p+0)) (f64.const 0x1.ffffffffffffdp-1))
+(assert_return (invoke "f64.div" (f64.const 0x1.0p+0) (f64.const 0x1.fffffffffffffp-1)) (f64.const 0x1.0000000000001p+0))
+(assert_return (invoke "f64.div" (f64.const 0x1.0p+0) (f64.const 0x1.0000000000001p+0)) (f64.const 0x1.ffffffffffffep-1))
 
 ;; Test for bugs found in an early RISC-V implementation.
 ;; https://github.com/riscv/riscv-tests/pull/8
@@ -526,50 +567,40 @@
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.c201b94757145p-492)) (f64.const 0x1.5369ee6bf2967p-246))
 
 ;; Computations that round differently when computed via f32.
-(assert_return_nan (invoke "f64.sqrt" (f64.const -0x1.360e8d0032adp-963)))
+(assert_return_canonical_nan (invoke "f64.sqrt" (f64.const -0x1.360e8d0032adp-963)))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.d9a6f5eef0503p+103)) (f64.const 0x1.ec73f56c166f6p+51))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.aa051a5c4ec27p-760)) (f64.const 0x1.4a3e771ff5149p-380))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.e5522a741babep-276)) (f64.const 0x1.607ae2b6feb7dp-138))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.4832badc0c061p+567)) (f64.const 0x1.99ec7934139b2p+283))
 
-;; Test the least greatest value with a sqrt that rounds to one.
+;; Test the least value with a sqrt that rounds to one.
 (assert_return (invoke "f32.sqrt" (f32.const 0x1.000002p+0)) (f32.const 0x1p+0))
 (assert_return (invoke "f32.sqrt" (f32.const 0x1.000004p+0)) (f32.const 0x1.000002p+0))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.0000000000001p+0)) (f64.const 0x1p+0))
 (assert_return (invoke "f64.sqrt" (f64.const 0x1.0000000000002p+0)) (f64.const 0x1.0000000000001p+0))
 
+;; Test the greatest value less than one for which sqrt is not an identity.
+(assert_return (invoke "f32.sqrt" (f32.const 0x1.fffffcp-1)) (f32.const 0x1.fffffep-1))
+(assert_return (invoke "f32.sqrt" (f32.const 0x1.fffffap-1)) (f32.const 0x1.fffffcp-1))
+(assert_return (invoke "f64.sqrt" (f64.const 0x1.ffffffffffffep-1)) (f64.const 0x1.fffffffffffffp-1))
+(assert_return (invoke "f64.sqrt" (f64.const 0x1.ffffffffffffdp-1)) (f64.const 0x1.ffffffffffffep-1))
+
 ;; Test that the bitwise floating point operators are bitwise on NaN.
 
-(assert_return (invoke "f32.abs" (f32.const nan)) (f32.const nan))
-(assert_return (invoke "f32.abs" (f32.const -nan)) (f32.const nan))
 (assert_return (invoke "f32.abs" (f32.const nan:0x0f1e2)) (f32.const nan:0x0f1e2))
 (assert_return (invoke "f32.abs" (f32.const -nan:0x0f1e2)) (f32.const nan:0x0f1e2))
-(assert_return (invoke "f64.abs" (f64.const nan)) (f64.const nan))
-(assert_return (invoke "f64.abs" (f64.const -nan)) (f64.const nan))
 (assert_return (invoke "f64.abs" (f64.const nan:0x0f1e27a6b)) (f64.const nan:0x0f1e27a6b))
 (assert_return (invoke "f64.abs" (f64.const -nan:0x0f1e27a6b)) (f64.const nan:0x0f1e27a6b))
 
-(assert_return (invoke "f32.neg" (f32.const nan)) (f32.const -nan))
-(assert_return (invoke "f32.neg" (f32.const -nan)) (f32.const nan))
 (assert_return (invoke "f32.neg" (f32.const nan:0x0f1e2)) (f32.const -nan:0x0f1e2))
 (assert_return (invoke "f32.neg" (f32.const -nan:0x0f1e2)) (f32.const nan:0x0f1e2))
-(assert_return (invoke "f64.neg" (f64.const nan)) (f64.const -nan))
-(assert_return (invoke "f64.neg" (f64.const -nan)) (f64.const nan))
 (assert_return (invoke "f64.neg" (f64.const nan:0x0f1e27a6b)) (f64.const -nan:0x0f1e27a6b))
 (assert_return (invoke "f64.neg" (f64.const -nan:0x0f1e27a6b)) (f64.const nan:0x0f1e27a6b))
 
-(assert_return (invoke "f32.copysign" (f32.const nan) (f32.const nan)) (f32.const nan))
-(assert_return (invoke "f32.copysign" (f32.const nan) (f32.const -nan)) (f32.const -nan))
-(assert_return (invoke "f32.copysign" (f32.const -nan) (f32.const nan)) (f32.const nan))
-(assert_return (invoke "f32.copysign" (f32.const -nan) (f32.const -nan)) (f32.const -nan))
 (assert_return (invoke "f32.copysign" (f32.const nan:0x0f1e2) (f32.const nan)) (f32.const nan:0x0f1e2))
 (assert_return (invoke "f32.copysign" (f32.const nan:0x0f1e2) (f32.const -nan)) (f32.const -nan:0x0f1e2))
 (assert_return (invoke "f32.copysign" (f32.const -nan:0x0f1e2) (f32.const nan)) (f32.const nan:0x0f1e2))
 (assert_return (invoke "f32.copysign" (f32.const -nan:0x0f1e2) (f32.const -nan)) (f32.const -nan:0x0f1e2))
-(assert_return (invoke "f64.copysign" (f64.const nan) (f64.const nan)) (f64.const nan))
-(assert_return (invoke "f64.copysign" (f64.const nan) (f64.const -nan)) (f64.const -nan))
-(assert_return (invoke "f64.copysign" (f64.const -nan) (f64.const nan)) (f64.const nan))
-(assert_return (invoke "f64.copysign" (f64.const -nan) (f64.const -nan)) (f64.const -nan))
 (assert_return (invoke "f64.copysign" (f64.const nan:0x0f1e27a6b) (f64.const nan)) (f64.const nan:0x0f1e27a6b))
 (assert_return (invoke "f64.copysign" (f64.const nan:0x0f1e27a6b) (f64.const -nan)) (f64.const -nan:0x0f1e27a6b))
 (assert_return (invoke "f64.copysign" (f64.const -nan:0x0f1e27a6b) (f64.const nan)) (f64.const nan:0x0f1e27a6b))

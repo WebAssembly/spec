@@ -81,7 +81,7 @@ Conventions
 Floating-Point
 ~~~~~~~~~~~~~~
 
-*Floating-point data* consists of values in binary floating-point format according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
+*Floating-point* data consists of values in binary floating-point format according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
 
 .. math::
    \begin{array}{llll}

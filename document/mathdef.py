@@ -65,8 +65,6 @@ def lookup_mathdef(defs, name):
       auxcounter = auxcounter + 1
       name = "\\mathdef%d" % auxcounter
       s = "\\def%s#%d{%s}%s" % (name, arity, s, name)
-      # DEBUG
-      print("EXPAND %s %d = %s" % (name, arity, s))
     return s
   return name
 

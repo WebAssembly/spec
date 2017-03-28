@@ -364,7 +364,7 @@
 
 ;; Unbound function in table
 
-(assert_invalid 
+(assert_invalid
   (module (table anyfunc (elem 0 0)))
   "unknown function 0"
 )

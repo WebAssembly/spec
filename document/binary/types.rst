@@ -47,7 +47,7 @@ Value Types
    single: abstract syntax; result type
 
 Result Types
-~~~~~~~~~~~
+~~~~~~~~~~~~
 
 :ref:`Result types <syntax-resulttype>` are encoded by either the byte :math:`\hex{40}` for the empty type or as a single :ref:`value type <binary-valtype>`.
 

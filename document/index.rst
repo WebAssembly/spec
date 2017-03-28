@@ -6,7 +6,7 @@ WebAssembly Specification
    Release |release| (work in progress, last updated |today|)
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    introduction/index
    syntax/index
@@ -23,7 +23,6 @@ WebAssembly Specification
 .. only:: latex
 
    .. toctree::
-      :maxdepth: 2
 
       syntax/instrindex
 

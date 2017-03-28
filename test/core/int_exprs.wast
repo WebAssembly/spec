@@ -96,6 +96,44 @@
 (assert_return (invoke "i64.no_fold_div_s_mul" (i64.const 1)) (i64.const 0))
 (assert_return (invoke "i64.no_fold_div_u_mul" (i64.const 1)) (i64.const 0))
 
+;; Test that x/x is not folded to 1
+
+(module
+  (func (export "i32.no_fold_div_s_self") (param $x i32) (result i32)
+    (i32.div_s (get_local $x) (get_local $x)))
+  (func (export "i32.no_fold_div_u_self") (param $x i32) (result i32)
+    (i32.div_u (get_local $x) (get_local $x)))
+
+  (func (export "i64.no_fold_div_s_self") (param $x i64) (result i64)
+    (i64.div_s (get_local $x) (get_local $x)))
+  (func (export "i64.no_fold_div_u_self") (param $x i64) (result i64)
+    (i64.div_u (get_local $x) (get_local $x)))
+)
+
+(assert_trap (invoke "i32.no_fold_div_s_self" (i32.const 0)) "integer divide by zero")
+(assert_trap (invoke "i32.no_fold_div_u_self" (i32.const 0)) "integer divide by zero")
+(assert_trap (invoke "i64.no_fold_div_s_self" (i64.const 0)) "integer divide by zero")
+(assert_trap (invoke "i64.no_fold_div_u_self" (i64.const 0)) "integer divide by zero")
+
+;; Test that x%x is not folded to 0
+
+(module
+  (func (export "i32.no_fold_rem_s_self") (param $x i32) (result i32)
+    (i32.rem_s (get_local $x) (get_local $x)))
+  (func (export "i32.no_fold_rem_u_self") (param $x i32) (result i32)
+    (i32.rem_u (get_local $x) (get_local $x)))
+
+  (func (export "i64.no_fold_rem_s_self") (param $x i64) (result i64)
+    (i64.rem_s (get_local $x) (get_local $x)))
+  (func (export "i64.no_fold_rem_u_self") (param $x i64) (result i64)
+    (i64.rem_u (get_local $x) (get_local $x)))
+)
+
+(assert_trap (invoke "i32.no_fold_rem_s_self" (i32.const 0)) "integer divide by zero")
+(assert_trap (invoke "i32.no_fold_rem_u_self" (i32.const 0)) "integer divide by zero")
+(assert_trap (invoke "i64.no_fold_rem_s_self" (i64.const 0)) "integer divide by zero")
+(assert_trap (invoke "i64.no_fold_rem_u_self" (i64.const 0)) "integer divide by zero")
+
 ;; Test that x*n/n is not folded to x
 
 (module

@@ -118,7 +118,7 @@
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
-.. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mutability}}
+.. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
 
 
 .. Types, binary non-terminals
@@ -202,8 +202,17 @@
 .. |export| mathdef:: \xref{syntax/modules}{syntax-export}{\X{export}}
 .. |importdesc| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\X{importdesc}}
 .. |exportdesc| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\X{exportdesc}}
-.. |elemseg| mathdef:: \xref{syntax/modules}{syntax-elemseg}{\X{elemseg}}
-.. |dataseg| mathdef:: \xref{syntax/modules}{syntax-dataseg}{\X{dataseg}}
+.. |elem| mathdef:: \xref{syntax/modules}{syntax-elemseg}{\X{elem}}
+.. |data| mathdef:: \xref{syntax/modules}{syntax-dataseg}{\X{data}}
+.. |start| mathdef:: \xref{syntax/modules}{syntax-dataseg}{\X{start}}
+
+
+.. Modules, meta functions
+
+.. |funcs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
+.. |tables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}
+.. |mems| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{mems}}
+.. |globals| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{globals}}
 
 
 .. Instructions, terminals
@@ -283,8 +292,15 @@
 
 .. Instructions, non-terminals
 
+.. |unop| mathdef:: \X{unop}
+.. |binop| mathdef:: \X{binop}
+.. |testop| mathdef:: \X{testop}
+.. |relop| mathdef:: \X{relop}
+.. |cvtop| mathdef:: \X{cvtop}
+
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
+
 .. |instr| mathdef:: \xref{syntax/instructions}{syntax-instr}{\X{instr}}
 .. |expr| mathdef:: \xref{syntax/instructions}{syntax-expr}{\X{expr}}
 
