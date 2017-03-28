@@ -89,7 +89,6 @@ Conventions
 .. _syntax-type:
 .. index:: ! type definition, type index
    pair: abstract syntax; type definition
-   single: type; definition
 
 Types
 ~~~~~
@@ -277,7 +276,7 @@ The |START| component of a module optionally declares the :ref:`function index <
 
 .. math::
    \begin{array}{llll}
-   \production{start function} & \start &::=&
+   \production{start functions} & \start &::=&
      \{ \FUNC~\funcidx \} \\
    \end{array}
 

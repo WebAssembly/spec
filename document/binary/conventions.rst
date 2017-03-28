@@ -44,6 +44,8 @@ They mirror the conventions used for :ref:`abstract syntax <grammar>`, but are d
 * :math:`B^?` is an optional occurrence of :math:`B`.
   (This is a shorthand for :math:`A^n` where :math:`n \leq 1`.)
 
+* :math:`|B|` is the length of the byte sequence generated from :math:`B` in a given derivation.
+
 * :math:`B\{x\}` denotes the same language as :math:`B`, but also binds the variable :math:`x` to the abstract syntax synthesized recursively for :math:`B`.
 
 * Productions are written :math:`\B{B} ::= B \Rightarrow A`, where :math:`A` defines the abstract syntax synthesized for :math:`\B{B}`, usually fro atrribute variables bound in :math:`B`.

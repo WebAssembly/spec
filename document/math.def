@@ -24,7 +24,7 @@
 
 .. Values, terminals and auxiliary
 
-.. |hex#1| mathdef:: \B{0x#1}
+.. |hex#1| mathdef:: \mathtt{0x#1}
 .. |byte| mathdef:: \F{byte}
 .. |bytes| mathdef:: \F{bytes}
 
@@ -202,9 +202,41 @@
 .. |export| mathdef:: \xref{syntax/modules}{syntax-export}{\X{export}}
 .. |importdesc| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\X{importdesc}}
 .. |exportdesc| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\X{exportdesc}}
-.. |elem| mathdef:: \xref{syntax/modules}{syntax-elemseg}{\X{elem}}
-.. |data| mathdef:: \xref{syntax/modules}{syntax-dataseg}{\X{data}}
-.. |start| mathdef:: \xref{syntax/modules}{syntax-dataseg}{\X{start}}
+.. |elem| mathdef:: \xref{syntax/modules}{syntax-elem}{\X{elem}}
+.. |data| mathdef:: \xref{syntax/modules}{syntax-data}{\X{data}}
+.. |start| mathdef:: \xref{syntax/modules}{syntax-start}{\X{start}}
+
+
+.. Modules, binary non-terminals
+
+.. |Bmodule| mathdef:: \xref{binary/modules}{binary-module}{\B{module}}
+.. |Bsection| mathdef:: \xref{binary/modules}{binary-module}{\B{section}}
+.. |Bcustomsec| mathdef:: \xref{binary/modules}{binary-customsec}{\B{customsec}}
+.. |Btypesec| mathdef:: \xref{binary/modules}{binary-typesec}{\B{typesec}}
+.. |Bfuncsec| mathdef:: \xref{binary/modules}{binary-funcsec}{\B{funcsec}}
+.. |Bcodesec| mathdef:: \xref{binary/modules}{binary-codesec}{\B{codesec}}
+.. |Btablesec| mathdef:: \xref{binary/modules}{binary-tablesec}{\B{tablesec}}
+.. |Bmemsec| mathdef:: \xref{binary/modules}{binary-memsec}{\B{memsec}}
+.. |Bglobalsec| mathdef:: \xref{binary/modules}{binary-globalsec}{\B{globalsec}}
+.. |Bimportsec| mathdef:: \xref{binary/modules}{binary-importsec}{\B{importsec}}
+.. |Bexportsec| mathdef:: \xref{binary/modules}{binary-exportsec}{\B{exportsec}}
+.. |Belemsec| mathdef:: \xref{binary/modules}{binary-elemsec}{\B{elemsec}}
+.. |Bdatasec| mathdef:: \xref{binary/modules}{binary-datasec}{\B{datasec}}
+.. |Bstartsec| mathdef:: \xref{binary/modules}{binary-startseg}{\B{startsec}}
+.. |Btype| mathdef:: \xref{binary/modules}{binary-type}{\B{type}}
+.. |Bfunc| mathdef:: \xref{binary/modules}{binary-func}{\B{func}}
+.. |Btable| mathdef:: \xref{binary/modules}{binary-table}{\B{table}}
+.. |Bmem| mathdef:: \xref{binary/modules}{binary-mem}{\B{mem}}
+.. |Bglobal| mathdef:: \xref{binary/modules}{binary-global}{\B{global}}
+.. |Bimport| mathdef:: \xref{binary/modules}{binary-import}{\B{import}}
+.. |Bexport| mathdef:: \xref{binary/modules}{binary-export}{\B{export}}
+.. |Bimportdesc| mathdef:: \xref{binary/modules}{binary-importdesc}{\B{importdesc}}
+.. |Bexportdesc| mathdef:: \xref{binary/modules}{binary-exportdesc}{\B{exportdesc}}
+.. |Belem| mathdef:: \xref{binary/modules}{binary-elem}{\B{elem}}
+.. |Bcode| mathdef:: \xref{binary/modules}{binary-code}{\B{code}}
+.. |Blocal| mathdef:: \xref{binary/modules}{binary-local}{\B{local}}
+.. |Bdata| mathdef:: \xref{binary/modules}{binary-data}{\B{data}}
+.. |Bstart| mathdef:: \xref{binary/modules}{binary-start}{\B{start}}
 
 
 .. Modules, meta functions
