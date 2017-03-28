@@ -78,10 +78,10 @@ Conventions
 .. index:: ! floating-point number
    pair: abstract syntax; floating-point number
 
-Floating-point Data
-~~~~~~~~~~~~~~~~~~~
+Floating-Point
+~~~~~~~~~~~~~~
 
-*Floating-point data* consists of values in binary floating-point format according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
+*Floating-point* data consists of values in binary floating-point format according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
 
 .. math::
    \begin{array}{llll}
@@ -109,14 +109,6 @@ A vector can have at most :math:`2^{32}-1` elements.
      A^n
      & (n < 2^{32})\\
    \end{array}
-
-
-Conventions
-...........
-
-* :math:`|V|` denotes the length of a vector :math:`V`.
-
-* :math:`V[i]` denotes the :math:`i`-th element of a vector :math:`V`, starting from :math:`0`.
 
 
 .. _syntax-name:

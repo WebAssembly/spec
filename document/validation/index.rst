@@ -5,5 +5,5 @@ Validation
    :maxdepth: 2
 
    conventions
-   modules
    instructions
+   modules

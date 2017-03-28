@@ -1,3 +1,5 @@
+.. MATH
+
 .. To comment out stuff
 
 .. |void#1| mathdef:: {}
@@ -27,7 +29,7 @@
 
 .. Values, non-terminals
 
-.. |by| mathdef:: \xref{syntax/values}{syntax-byte}{byte}
+.. |by| mathdef:: \xref{syntax/values}{syntax-byte}{\X{byte}}
 
 .. |uX#1| mathdef:: {\X{uint}_{#1}}
 .. |sX#1| mathdef:: {\X{sint}_{#1}}
@@ -82,7 +84,7 @@
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
-.. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mutability}}
+.. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
 
 
 .. Indices
@@ -144,8 +146,17 @@
 .. |export| mathdef:: \xref{syntax/modules}{syntax-export}{\X{export}}
 .. |importdesc| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\X{importdesc}}
 .. |exportdesc| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\X{exportdesc}}
-.. |elemseg| mathdef:: \xref{syntax/modules}{syntax-elemseg}{\X{elemseg}}
-.. |dataseg| mathdef:: \xref{syntax/modules}{syntax-dataseg}{\X{dataseg}}
+.. |elem| mathdef:: \xref{syntax/modules}{syntax-elemseg}{\X{elem}}
+.. |data| mathdef:: \xref{syntax/modules}{syntax-dataseg}{\X{data}}
+.. |start| mathdef:: \xref{syntax/modules}{syntax-dataseg}{\X{start}}
+
+
+.. Modules, meta functions
+
+.. |funcs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
+.. |tables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}
+.. |mems| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{mems}}
+.. |globals| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{globals}}
 
 
 .. Instructions, terminals
@@ -153,36 +164,86 @@
 .. |OFFSET| mathdef:: \K{offset}
 .. |ALIGN| mathdef:: \K{align}
 
-.. |UNREACHABLE| mathdef:: \K{unreachable}
-.. |NOP| mathdef:: \K{nop}
-.. |BLOCK| mathdef:: \K{block}
-.. |LOOP| mathdef:: \K{loop}
-.. |IF| mathdef:: \K{if}
-.. |ELSE| mathdef:: \K{else}
-.. |END| mathdef:: \K{end}
-.. |BR| mathdef:: \K{br}
-.. |BRIF| mathdef:: \K{br\_if}
-.. |BRTABLE| mathdef:: \K{br\_table}
-.. |RETURN| mathdef:: \K{return}
-.. |CALL| mathdef:: \K{call}
-.. |CALLINDIRECT| mathdef:: \K{call\_indirect}
-.. |DROP| mathdef:: \K{drop}
-.. |SELECT| mathdef:: \K{select}
-.. |GETLOCAL| mathdef:: \K{get\_local}
-.. |SETLOCAL| mathdef:: \K{set\_local}
-.. |TEELOCAL| mathdef:: \K{tee\_local}
-.. |GETGLOBAL| mathdef:: \K{get\_global}
-.. |SETGLOBAL| mathdef:: \K{set\_global}
-.. |LOAD| mathdef:: \K{load}
-.. |STORE| mathdef:: \K{store}
-.. |CURRENTMEMORY| mathdef:: \K{current\_memory}
-.. |GROWMEMORY| mathdef:: \K{grow\_memory}
-.. |CONST| mathdef:: \K{const}
+.. |UNREACHABLE| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{unreachable}}
+.. |NOP| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{nop}}
+.. |BLOCK| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{block}}
+.. |LOOP| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{loop}}
+.. |IF| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{if}}
+.. |ELSE| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{else}}
+.. |END| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{end}}
+.. |BR| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br}}
+.. |BRIF| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_if}}
+.. |BRTABLE| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_table}}
+.. |RETURN| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{return}}
+.. |CALL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call}}
+.. |CALLINDIRECT| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call\_indirect}}
+
+.. |DROP| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{drop}}
+.. |SELECT| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{select}}
+
+.. |GETLOCAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{get\_local}}
+.. |SETLOCAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{set\_local}}
+.. |TEELOCAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{tee\_local}}
+.. |GETGLOBAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{get\_global}}
+.. |SETGLOBAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{set\_global}}
+
+.. |LOAD| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{load}}
+.. |STORE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{store}}
+.. |CURRENTMEMORY| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{current\_memory}}
+.. |GROWMEMORY| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{grow\_memory}}
+
+.. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
+.. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}
+.. |EQ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eq}}
+.. |NE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{ne}}
+.. |LT| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{lt}}
+.. |GT| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{gt}}
+.. |LE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{le}}
+.. |GE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{ge}}
+.. |CLZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{clz}}
+.. |CTZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{ctz}}
+.. |POPCNT| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{popcnt}}
+.. |ABS| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{abs}}
+.. |NEG| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{neg}}
+.. |CEIL| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{ceil}}
+.. |FLOOR| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{floor}}
+.. |TRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{trunc}}
+.. |NEAREST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{nearest}}
+.. |SQRT| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{sqrt}}
+.. |ADD| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{add}}
+.. |SUB| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{sub}}
+.. |MUL| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{mul}}
+.. |DIV| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{div}}
+.. |REM| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{rem}}
+.. |FMIN| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{min}}
+.. |FMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{max}}
+.. |AND| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{and}}
+.. |OR| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{or}}
+.. |XOR| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{xor}}
+.. |SHL| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{shl}}
+.. |SHR| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{shr}}
+.. |ROTL| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{rotl}}
+.. |ROTR| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{rotr}}
+.. |COPYSIGN| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{copysign}}
+
+.. |CONVERT| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{convert}}
+.. |EXTEND| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{extend}}
+.. |WRAP| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{wrap}}
+.. |PROMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{promote}}
+.. |DEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{demote}}
+.. |REINTERPRET| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{reinterpret}}
 
 
 .. Instructions, non-terminals
 
+.. |unop| mathdef:: \X{unop}
+.. |binop| mathdef:: \X{binop}
+.. |testop| mathdef:: \X{testop}
+.. |relop| mathdef:: \X{relop}
+.. |cvtop| mathdef:: \X{cvtop}
+
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
+
 .. |instr| mathdef:: \xref{syntax/instructions}{syntax-instr}{\X{instr}}
-.. |expr| mathdef:: \xref{syntax/modules}{syntax-expr}{\X{expr}}
+.. |expr| mathdef:: \xref{syntax/instructions}{syntax-expr}{\X{expr}}

@@ -6,7 +6,7 @@ WebAssembly Specification
    Release |release| (work in progress, last updated |today|)
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    introduction/index
    syntax/index
@@ -20,6 +20,14 @@ WebAssembly Specification
    appendix-textual/index
    appendix-names/index
 
+.. only:: latex
+
+   .. toctree::
+
+      syntax/instrindex
+
 .. only:: html
+
+   * :ref:`instrindex`
 
    * :ref:`genindex`

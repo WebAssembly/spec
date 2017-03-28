@@ -34,6 +34,8 @@ The following conventions are adopted in defining grammar rules for abstract syn
   (This is a shorthand for :math:`A^n` where :math:`n \leq 1`.)
 
 
+.. _syntax-record:
+
 Auxiliary Notation
 ~~~~~~~~~~~~~~~~~~
 

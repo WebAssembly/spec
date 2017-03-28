@@ -19,9 +19,9 @@ and provide initialization logic in the form of :ref:`data <syntax-data>` and :r
      \TABLES~\vec(\table), \\&&&&
      \MEMS~\vec(\mem), \\&&&&
      \GLOBALS~\vec(\global), \\&&&&
-     \ELEM~\vec(\elemseg), \\&&&&
-     \DATA~\vec(\dataseg), \\&&&&
-     \START~\funcidx^?, \\&&&&
+     \ELEM~\vec(\elem), \\&&&&
+     \DATA~\vec(\data), \\&&&&
+     \START~\start^?, \\&&&&
      \IMPORTS~\vec(\import), \\&&&&
      \EXPORTS~\vec(\export) \quad\} \\
    \end{array}
@@ -29,6 +29,7 @@ and provide initialization logic in the form of :ref:`data <syntax-data>` and :r
 Each of the vectors -- and thus the entire module -- may be empty.
 
 
+.. _syntax-index:
 .. _syntax-typeidx:
 .. _syntax-funcidx:
 .. _syntax-tableidx:
@@ -82,26 +83,7 @@ Conventions
 
 * The meta variable :math:`l` ranges over label indices.
 
-* The meta variable :math:`x` ranges over indices in any of the other index spaces.
-
-
-.. _syntax-expr:
-.. index:: ! expression
-   pair: abstract syntax; expression
-   single: expression; constant
-
-Expressions
-~~~~~~~~~~~
-
-:ref:`Function <syntax-func>` bodies, initialization values for :ref:`globals <syntax-global>` and offsets of :ref:`element <syntax-elem>` or :ref:`data <syntax-data>` segments are given as expressions, which are sequences of :ref:`instructions <syntax-instr>` terminated by an |END| marker.
-
-.. math::
-   \begin{array}{llll}
-   \production{expressions} & \expr &::=&
-     \instr^\ast~\END \\
-   \end{array}
-
-In some places, validation :ref:`restricts <valid-const>` expressions to be *constant*, which limits the set of allowable insructions.
+* The meta variables :math:`x, y` ranges over indices in any of the other index spaces.
 
 
 .. _syntax-type:
@@ -123,7 +105,7 @@ They are referenced by :ref:`type indices <syntax-typeidx>`.
 
 .. _syntax-func:
 .. _syntax-local:
-.. index:: ! function, ! local, function index, type index, value type, expression, import
+.. index:: ! function, ! local, function index, local index, type index, value type, expression, import
    pair: abstract syntax; function
 
 Functions
@@ -228,7 +210,7 @@ The |GLOBALS| component of a module defines a vector of *global variables* (or *
 
 Each global stores a single value of the given :ref:`global type <syntax-globaltype>`.
 Its |TYPE| also specifies whether a global is immutable or mutable.
-Moreover, each global is initialized with an |INIT| value given by a :ref:`constant <valid-const>` initializer :ref:`expression <syntax-expr>`.
+Moreover, each global is initialized with an |INIT| value given by a :ref:`constant <valid-constant>` initializer :ref:`expression <syntax-expr>`.
 
 Globals are referenced through :ref:`global indices <syntax-globalidx>`,
 starting with the smallest index not referencing a global :ref:`import <syntax-import>`.
@@ -248,11 +230,11 @@ The |ELEM| component of a module defines a vector of *element segments* that ini
 
 .. math::
    \begin{array}{llll}
-   \production{element segments} & \elemseg &::=&
+   \production{element segments} & \elem &::=&
      \{ \TABLE~\tableidx, \OFFSET~\expr, \INIT~\vec(\funcidx) \} \\
    \end{array}
 
-The |OFFSET| is given by a :ref:`constant <valid-const>` :ref:`expression <syntax-expr>`.
+The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
 
 .. note::
    In the current version of WebAssembly, at most one table is allowed in a module.
@@ -273,11 +255,11 @@ The |DATA| component of a module defines a vector of *data segments* that initia
 
 .. math::
    \begin{array}{llll}
-   \production{data segments} & \dataseg &::=&
+   \production{data segments} & \data &::=&
      \{ \MEM~\memidx, \OFFSET~\expr, \INIT~\vec(\by) \} \\
    \end{array}
 
-The |OFFSET| is given by a :ref:`constant <valid-const>` :ref:`expression <syntax-expr>`.
+The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
 
 .. note::
    In the current version of WebAssembly, at most one memory is allowed in a module.
@@ -291,7 +273,13 @@ The |OFFSET| is given by a :ref:`constant <valid-const>` :ref:`expression <synta
 Start Function
 ~~~~~~~~~~~~~~
 
-The |START| component of a module declares the :ref:`function index <syntax-idx>` of an optional *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
+The |START| component of a module optionally declares the :ref:`function index <syntax-idx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
+
+.. math::
+   \begin{array}{llll}
+   \production{start function} & \start &::=&
+     \{ \FUNC~\funcidx \} \\
+   \end{array}
 
 
 .. _syntax-export:

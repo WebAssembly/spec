@@ -33,6 +33,9 @@ Conventions
 
 * The meta variable :math:`t` ranges over value types where clear from context.
 
+* The notation :math:`|t|` denotes the *width* of a value type in bytes.
+  (That is, :math:`|\I32| = |\F32| = 4` and :math:`|\I64| = |\F64| = 8`.)
+
 
 .. _syntax-resulttype:
 .. index:: ! result type, value type
@@ -48,7 +51,7 @@ which is a sequence of values.
 .. math::
    \begin{array}{llll}
    \production{result types} & \resulttype &::=&
-     \valtype^? \\
+     [\valtype^?] \\
    \end{array}
 
 .. note::
@@ -57,7 +60,7 @@ which is a sequence of values.
 
 
 .. _syntax-functype:
-.. index:: ! function type, valut type, result type
+.. index:: ! function type, value type, result type
    pair: abstract syntax; function type
    pair: function; type
 
@@ -65,20 +68,43 @@ Function Types
 ~~~~~~~~~~~~~~
 
 *Function types* classify the signature of functions,
-mapping a sequence of parameters to a sequence of results.
+mapping a vector of parameters to a vector of results.
 
 .. math::
    \begin{array}{llll}
    \production{function types} & \functype &::=&
-     \valtype^\ast \to \resulttype \\
+     [\vec(\valtype)] \to [\vec(\valtype)] \\
    \end{array}
+
+.. note::
+   In the current version of WebAssembly,
+   the length of the result type vector of a function may be at most :math:`1`.
+   This restriction may be removed in future versions.
+
+
+.. _syntax-limits:
+.. index:: ! limits, memory type, table type
+   pair: abstract syntax; limits
+   single: memory; limits
+   single: table; limits
+
+Limits
+~~~~~~
+
+*Limits* classify the size range of resizeable storage like associated with :ref:`memory types <syntax-memtype>` and :ref:`table types <syntax-tabletype>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{limits} & \limits &::=&
+     \{ \MIN~\u32, \MAX~\u32^? \} \\
+   \end{array}
+
+If no maximum is given, the respective storage can grow to any size.
 
 
 .. _syntax-memtype:
-.. _syntax-limits:
-.. index:: ! memory type, ! limits, page size
+.. index:: ! memory type, limits, page size
    pair: abstract syntax; memory type
-   pair: abstract syntax; limits
    pair: memory; type
    pair: memory; limits
 
@@ -91,13 +117,10 @@ Memory Types
    \begin{array}{llll}
    \production{memory types} & \memtype &::=&
      \limits \\
-   \production{limits} & \limits &::=&
-     \{ \MIN~\u32, \MAX~\u32^? \} \\
    \end{array}
 
-The limits constrain the minimum and optionally the maximum size of a table.
-If no maximum is given, the table can grow to any size.
-Both values are given in units of :ref:`page size <page-size>`.
+The limits constrain the minimum and optionally the maximum size of a memory.
+The limits are given in units of :ref:`page size <page-size>`.
 
 
 .. _syntax-tabletype:
@@ -122,8 +145,8 @@ Table Types
      \ANYFUNC \\
    \end{array}
 
-Like memories, tables are constrained by limits for their minimum and optionally the maximum size.
-These sizes are given in numbers of entries.
+Like memories, tables are constrained by limits for their minimum and optionally maximum size.
+The limits are given in numbers of entries.
 
 The element type |ANYFUNC| is the infinite union of all `function types`.
 A table of that type thus contains references to functions of heterogeneous type.
@@ -133,7 +156,7 @@ A table of that type thus contains references to functions of heterogeneous type
 
 
 .. _syntax-globaltype:
-.. index:: ! global type, value type
+.. index:: ! global type, ! mutability, value type
    pair: abstract syntax; global type
    pair: abstract syntax; mutability
    pair: global; type
@@ -147,7 +170,10 @@ Global Types
 .. math::
    \begin{array}{llll}
    \production{global types} & \globaltype &::=&
-     \MUT^?~\valtype \\
+     \mut^?~\valtype \\
+   \production{mutability} & \mut &::=&
+     \CONST ~|~
+     \MUT \\
    \end{array}
 
 
@@ -169,3 +195,17 @@ External Types
      \MEM~\memtype ~|~ \\&&&
      \GLOBAL~\globaltype \\
    \end{array}
+
+
+Conventions
+...........
+
+The following auxiliary notation is defined for sequences of external types, filtering out entries of a specific kind in an order-preserving fashion:
+
+* :math:`\funcs(\externtype^\ast) = [\functype ~|~ \FUNC~\functype \in \externtype^\ast]`
+
+* :math:`\tables(\externtype^\ast) = [\tabletype ~|~ \TABLE~\tabletype \in \externtype^\ast]`
+
+* :math:`\mems(\externtype^\ast) = [\memtype ~|~ \MEM~\memtype \in \externtype^\ast]`
+
+* :math:`\globals(\externtype^\ast) = [\globaltype ~|~ \GLOBAL~\globaltype \in \externtype^\ast]`
