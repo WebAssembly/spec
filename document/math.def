@@ -1,0 +1,188 @@
+.. To comment out stuff
+
+.. |void#1| mathdef:: {}
+
+
+.. Type-setting of names
+.. X - (multi-letter) variables / non-terminals
+.. F - functions
+.. K - keywords / terminals
+
+.. |X| mathdef:: \mathit
+.. |F| mathdef:: \mathrm
+.. |K| mathdef:: \mathsf
+
+
+.. Auxiliary definitions for grammars
+
+.. |production| mathdef:: \void
+
+
+.. Values, terminals and auxiliary
+
+.. |hex#1| mathdef:: \F{0x#1}
+.. |byte| mathdef:: \F{byte}
+.. |bytes| mathdef:: \F{bytes}
+
+
+.. Values, non-terminals
+
+.. |by| mathdef:: \xref{syntax/values}{syntax-byte}{byte}
+
+.. |uX#1| mathdef:: {\X{uint}_{#1}}
+.. |sX#1| mathdef:: {\X{sint}_{#1}}
+.. |iX#1| mathdef:: {\X{int}_{#1}}
+.. |fX#1| mathdef:: {\X{float}_{#1}}
+
+.. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\uX{N}}
+.. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\uX{1}}
+.. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\uX{8}}
+.. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\uX{16}}
+.. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\uX{32}}
+.. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\uX{64}}
+
+.. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\sX{N}}
+.. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\sX{32}}
+.. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\sX{64}}
+
+.. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\iX{N}}
+.. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\iX{32}}
+.. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\iX{64}}
+
+.. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\fX{N}}
+.. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\fX{32}}
+.. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\fX{64}}
+
+.. |vec| mathdef:: \xref{syntax/values}{syntax-vec}{\X{vec}}
+.. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
+
+
+.. Types, terminals
+
+.. |I32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i32}}
+.. |I64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i64}}
+.. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
+.. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
+
+.. |ANYFUNC| mathdef:: \xref{syntax/types}{syntax-elemtype}{\K{anyfunc}}
+.. |MUT| mathdef:: \xref{syntax/types}{syntax-mut}{\K{mut}}
+
+.. |MIN| mathdef:: \K{min}
+.. |MAX| mathdef:: \K{max}
+
+
+.. Types, non-terminals
+
+.. |valtype| mathdef:: \xref{syntax/types}{syntax-valtype}{\X{valtype}}
+.. |resulttype| mathdef:: \xref{syntax/types}{syntax-resulttype}{\X{resulttype}}
+.. |functype| mathdef:: \xref{syntax/types}{syntax-functype}{\X{functype}}
+.. |globaltype| mathdef:: \xref{syntax/types}{syntax-globaltype}{\X{globaltype}}
+.. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
+.. |elemtype| mathdef:: \xref{syntax/types}{syntax-elemtype}{\X{elemtype}}
+.. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
+.. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
+.. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
+.. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mutability}}
+
+
+.. Indices
+
+.. |typeidx| mathdef:: \xref{syntax/modules}{syntax-typeidx}{\X{typeidx}}
+.. |funcidx| mathdef:: \xref{syntax/modules}{syntax-funcidx}{\X{funcidx}}
+.. |tableidx| mathdef:: \xref{syntax/modules}{syntax-tableidx}{\X{tableidx}}
+.. |memidx| mathdef:: \xref{syntax/modules}{syntax-memidx}{\X{memidx}}
+.. |globalidx| mathdef:: \xref{syntax/modules}{syntax-globalidx}{\X{globalidx}}
+.. |localidx| mathdef:: \xref{syntax/modules}{syntax-localidx}{\X{localidx}}
+.. |labelidx| mathdef:: \xref{syntax/modules}{syntax-labelidx}{\X{labelidx}}
+
+
+.. Modules, terminals
+
+.. |TYPES| mathdef:: \K{types}
+.. |FUNCS| mathdef:: \K{funcs}
+.. |TABLES| mathdef:: \K{tables}
+.. |MEMS| mathdef:: \K{mems}
+.. |GLOBALS| mathdef:: \K{globals}
+.. |LOCALS| mathdef:: \K{locals}
+.. |LABELS| mathdef:: \K{labels}
+.. |IMPORTS| mathdef:: \K{imports}
+.. |EXPORTS| mathdef:: \K{exports}
+
+.. |MODULE| mathdef:: \K{module}
+.. |TYPE| mathdef:: \K{type}
+.. |FUNC| mathdef:: \K{func}
+.. |TABLE| mathdef:: \K{table}
+.. |MEM| mathdef:: \K{mem}
+.. |GLOBAL| mathdef:: \K{global}
+.. |LOCAL| mathdef:: \K{local}
+.. |LABEL| mathdef:: \K{label}
+.. |IMPORT| mathdef:: \K{import}
+.. |EXPORT| mathdef:: \K{export}
+.. |CODE| mathdef:: \K{code}
+.. |DATA| mathdef:: \K{data}
+.. |ELEM| mathdef:: \K{elem}
+.. |START| mathdef:: \K{start}
+.. |CUSTOM| mathdef:: \K{custom}
+
+.. |INDEX| mathdef:: \K{index}
+.. |VALUE| mathdef:: \K{value}
+.. |INIT| mathdef:: \K{init}
+.. |BODY| mathdef:: \K{body}
+.. |NAME| mathdef:: \K{name}
+.. |DESC| mathdef:: \K{desc}
+
+
+.. Modules, non-terminals
+
+.. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
+.. |type| mathdef:: \xref{syntax/modules}{syntax-type}{\X{type}}
+.. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
+.. |table| mathdef:: \xref{syntax/modules}{syntax-table}{\X{table}}
+.. |mem| mathdef:: \xref{syntax/modules}{syntax-mem}{\X{mem}}
+.. |global| mathdef:: \xref{syntax/modules}{syntax-global}{\X{global}}
+.. |import| mathdef:: \xref{syntax/modules}{syntax-import}{\X{import}}
+.. |export| mathdef:: \xref{syntax/modules}{syntax-export}{\X{export}}
+.. |importdesc| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\X{importdesc}}
+.. |exportdesc| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\X{exportdesc}}
+.. |elemseg| mathdef:: \xref{syntax/modules}{syntax-elemseg}{\X{elemseg}}
+.. |dataseg| mathdef:: \xref{syntax/modules}{syntax-dataseg}{\X{dataseg}}
+
+
+.. Instructions, terminals
+
+.. |OFFSET| mathdef:: \K{offset}
+.. |ALIGN| mathdef:: \K{align}
+
+.. |UNREACHABLE| mathdef:: \K{unreachable}
+.. |NOP| mathdef:: \K{nop}
+.. |BLOCK| mathdef:: \K{block}
+.. |LOOP| mathdef:: \K{loop}
+.. |IF| mathdef:: \K{if}
+.. |ELSE| mathdef:: \K{else}
+.. |END| mathdef:: \K{end}
+.. |BR| mathdef:: \K{br}
+.. |BRIF| mathdef:: \K{br\_if}
+.. |BRTABLE| mathdef:: \K{br\_table}
+.. |RETURN| mathdef:: \K{return}
+.. |CALL| mathdef:: \K{call}
+.. |CALLINDIRECT| mathdef:: \K{call\_indirect}
+.. |DROP| mathdef:: \K{drop}
+.. |SELECT| mathdef:: \K{select}
+.. |GETLOCAL| mathdef:: \K{get\_local}
+.. |SETLOCAL| mathdef:: \K{set\_local}
+.. |TEELOCAL| mathdef:: \K{tee\_local}
+.. |GETGLOBAL| mathdef:: \K{get\_global}
+.. |SETGLOBAL| mathdef:: \K{set\_global}
+.. |LOAD| mathdef:: \K{load}
+.. |STORE| mathdef:: \K{store}
+.. |CURRENTMEMORY| mathdef:: \K{current\_memory}
+.. |GROWMEMORY| mathdef:: \K{grow\_memory}
+.. |CONST| mathdef:: \K{const}
+
+
+.. Instructions, non-terminals
+
+.. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
+.. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
+.. |instr| mathdef:: \xref{syntax/instructions}{syntax-instr}{\X{instr}}
+.. |expr| mathdef:: \xref{syntax/modules}{syntax-expr}{\X{expr}}
