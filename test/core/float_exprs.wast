@@ -210,6 +210,24 @@
 (assert_return_canonical_nan (invoke "f64.no_fold_sub_self" (f64.const infinity)))
 (assert_return_canonical_nan (invoke "f64.no_fold_sub_self" (f64.const nan)))
 
+;; Test that x / x is not folded to 1.0.
+
+(module
+  (func (export "f32.no_fold_div_self") (param $x f32) (result f32)
+    (f32.div (get_local $x) (get_local $x)))
+  (func (export "f64.no_fold_div_self") (param $x f64) (result f64)
+    (f64.div (get_local $x) (get_local $x)))
+)
+
+(assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const infinity)))
+(assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const nan)))
+(assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const 0.0)))
+(assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const -0.0)))
+(assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const infinity)))
+(assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const nan)))
+(assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const 0.0)))
+(assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const -0.0)))
+
 ;; Test that x/3 is not folded to x*(1/3).
 
 (module
@@ -941,7 +959,7 @@
 (assert_return (invoke "f64.no_fold_ge_if" (f64.const 0.0) (f64.const -0.0)) (f64.const 0.0))
 (assert_return (invoke "f64.no_fold_ge_if" (f64.const -0.0) (f64.const 0.0)) (f64.const -0.0))
 
-;; Test that x<0?-x:0, etc. using select aren't folded to abs
+;; Test that x<0?-x:x, etc. using select aren't folded to abs
 
 (module
   (func (export "f32.no_fold_lt_select_to_abs") (param $x f32) (result f32) (select (f32.neg (get_local $x)) (get_local $x) (f32.lt (get_local $x) (f32.const 0.0))))
@@ -988,7 +1006,7 @@
 (assert_return (invoke "f64.no_fold_ge_select_to_abs" (f64.const 0.0)) (f64.const 0.0))
 (assert_return (invoke "f64.no_fold_ge_select_to_abs" (f64.const -0.0)) (f64.const -0.0))
 
-;; Test that x<0?-x:0, etc. using if aren't folded to abs
+;; Test that x<0?-x:x, etc. using if aren't folded to abs
 
 (module
   (func (export "f32.no_fold_lt_if_to_abs") (param $x f32) (result f32) (if f32 (f32.lt (get_local $x) (f32.const 0.0)) (f32.neg (get_local $x)) (get_local $x)))
@@ -1262,6 +1280,87 @@
 (assert_return (invoke "f64.no_algebraic_factoring" (f64.const -0x1.be663e4c0e4b2p+182) (f64.const -0x1.da85703760d25p+166)) (f64.const 0x1.853434f1a2ffep+365))
 (assert_return (invoke "f64.no_algebraic_factoring" (f64.const -0x1.230e09952df1cp-236) (f64.const -0x1.fa2752adfadc9p-237)) (f64.const 0x1.42e43156bd1b8p-474))
 
+;; Test that platforms where SIMD instructions flush subnormals don't implicitly
+;; optimize using SIMD instructions.
+
+(module
+  (memory (data
+    "\01\00\00\00\01\00\00\80\01\00\00\00\01\00\00\80"
+    "\01\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00"
+    "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00"
+  ))
+
+  (func (export "f32.simple_x4_sum")
+    (param $i i32)
+    (param $j i32)
+    (param $k i32)
+    (local $x0 f32) (local $x1 f32) (local $x2 f32) (local $x3 f32)
+    (local $y0 f32) (local $y1 f32) (local $y2 f32) (local $y3 f32)
+    (set_local $x0 (f32.load offset=0 (get_local $i)))
+    (set_local $x1 (f32.load offset=4 (get_local $i)))
+    (set_local $x2 (f32.load offset=8 (get_local $i)))
+    (set_local $x3 (f32.load offset=12 (get_local $i)))
+    (set_local $y0 (f32.load offset=0 (get_local $j)))
+    (set_local $y1 (f32.load offset=4 (get_local $j)))
+    (set_local $y2 (f32.load offset=8 (get_local $j)))
+    (set_local $y3 (f32.load offset=12 (get_local $j)))
+    (f32.store offset=0 (get_local $k) (f32.add (get_local $x0) (get_local $y0)))
+    (f32.store offset=4 (get_local $k) (f32.add (get_local $x1) (get_local $y1)))
+    (f32.store offset=8 (get_local $k) (f32.add (get_local $x2) (get_local $y2)))
+    (f32.store offset=12 (get_local $k) (f32.add (get_local $x3) (get_local $y3)))
+  )
+
+  (func (export "f32.load")
+    (param $k i32) (result f32)
+    (f32.load (get_local $k))
+  )
+)
+
+(assert_return (invoke "f32.simple_x4_sum" (i32.const 0) (i32.const 16) (i32.const 32)))
+(assert_return (invoke "f32.load" (i32.const 32)) (f32.const 0x1p-148))
+(assert_return (invoke "f32.load" (i32.const 36)) (f32.const 0x0p+0))
+(assert_return (invoke "f32.load" (i32.const 40)) (f32.const 0x1p-149))
+(assert_return (invoke "f32.load" (i32.const 44)) (f32.const -0x1p-149))
+
+(module
+  (memory (data
+    "\01\00\00\00\00\00\00\00\01\00\00\00\00\00\00\80\01\00\00\00\00\00\00\00\01\00\00\00\00\00\00\80"
+    "\01\00\00\00\00\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00"
+    "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00"
+  ))
+
+  (func (export "f64.simple_x4_sum")
+    (param $i i32)
+    (param $j i32)
+    (param $k i32)
+    (local $x0 f64) (local $x1 f64) (local $x2 f64) (local $x3 f64)
+    (local $y0 f64) (local $y1 f64) (local $y2 f64) (local $y3 f64)
+    (set_local $x0 (f64.load offset=0 (get_local $i)))
+    (set_local $x1 (f64.load offset=8 (get_local $i)))
+    (set_local $x2 (f64.load offset=16 (get_local $i)))
+    (set_local $x3 (f64.load offset=24 (get_local $i)))
+    (set_local $y0 (f64.load offset=0 (get_local $j)))
+    (set_local $y1 (f64.load offset=8 (get_local $j)))
+    (set_local $y2 (f64.load offset=16 (get_local $j)))
+    (set_local $y3 (f64.load offset=24 (get_local $j)))
+    (f64.store offset=0 (get_local $k) (f64.add (get_local $x0) (get_local $y0)))
+    (f64.store offset=8 (get_local $k) (f64.add (get_local $x1) (get_local $y1)))
+    (f64.store offset=16 (get_local $k) (f64.add (get_local $x2) (get_local $y2)))
+    (f64.store offset=24 (get_local $k) (f64.add (get_local $x3) (get_local $y3)))
+  )
+
+  (func (export "f64.load")
+    (param $k i32) (result f64)
+    (f64.load (get_local $k))
+  )
+)
+
+(assert_return (invoke "f64.simple_x4_sum" (i32.const 0) (i32.const 32) (i32.const 64)))
+(assert_return (invoke "f64.load" (i32.const 64)) (f64.const 0x0.0000000000001p-1021))
+(assert_return (invoke "f64.load" (i32.const 72)) (f64.const 0x0p+0))
+(assert_return (invoke "f64.load" (i32.const 80)) (f64.const 0x0.0000000000001p-1022))
+(assert_return (invoke "f64.load" (i32.const 88)) (f64.const -0x0.0000000000001p-1022))
+
 ;; Test that plain summation is not reassociated, and that Kahan summation
 ;; isn't optimized into plain summation.
 
@@ -1429,6 +1528,46 @@
 (assert_return (invoke "f64.no_fold_neg_sub" (f64.const 0.0) (f64.const -0.0)) (f64.const -0.0))
 (assert_return (invoke "f64.no_fold_neg_sub" (f64.const -0.0) (f64.const 0.0)) (f64.const 0.0))
 (assert_return (invoke "f64.no_fold_neg_sub" (f64.const 0.0) (f64.const 0.0)) (f64.const -0.0))
+
+;; Test that -(x + y) is not folded to (-x + -y).
+
+(module
+  (func (export "f32.no_fold_neg_add") (param $x f32) (param $y f32) (result f32)
+    (f32.neg (f32.add (get_local $x) (get_local $y))))
+
+  (func (export "f64.no_fold_neg_add") (param $x f64) (param $y f64) (result f64)
+    (f64.neg (f64.add (get_local $x) (get_local $y))))
+)
+
+(assert_return (invoke "f32.no_fold_neg_add" (f32.const -0.0) (f32.const -0.0)) (f32.const 0.0))
+(assert_return (invoke "f32.no_fold_neg_add" (f32.const 0.0) (f32.const -0.0)) (f32.const -0.0))
+(assert_return (invoke "f32.no_fold_neg_add" (f32.const -0.0) (f32.const 0.0)) (f32.const -0.0))
+(assert_return (invoke "f32.no_fold_neg_add" (f32.const 0.0) (f32.const 0.0)) (f32.const -0.0))
+
+(assert_return (invoke "f64.no_fold_neg_add" (f64.const -0.0) (f64.const -0.0)) (f64.const 0.0))
+(assert_return (invoke "f64.no_fold_neg_add" (f64.const 0.0) (f64.const -0.0)) (f64.const -0.0))
+(assert_return (invoke "f64.no_fold_neg_add" (f64.const -0.0) (f64.const 0.0)) (f64.const -0.0))
+(assert_return (invoke "f64.no_fold_neg_add" (f64.const 0.0) (f64.const 0.0)) (f64.const -0.0))
+
+;; Test that (-x + -y) is not folded to -(x + y).
+
+(module
+  (func (export "f32.no_fold_add_neg_neg") (param $x f32) (param $y f32) (result f32)
+    (f32.add (f32.neg (get_local $x)) (f32.neg (get_local $y))))
+
+  (func (export "f64.no_fold_add_neg_neg") (param $x f64) (param $y f64) (result f64)
+    (f64.add (f64.neg (get_local $x)) (f64.neg (get_local $y))))
+)
+
+(assert_return (invoke "f32.no_fold_add_neg_neg" (f32.const -0.0) (f32.const -0.0)) (f32.const 0.0))
+(assert_return (invoke "f32.no_fold_add_neg_neg" (f32.const 0.0) (f32.const -0.0)) (f32.const 0.0))
+(assert_return (invoke "f32.no_fold_add_neg_neg" (f32.const -0.0) (f32.const 0.0)) (f32.const 0.0))
+(assert_return (invoke "f32.no_fold_add_neg_neg" (f32.const 0.0) (f32.const 0.0)) (f32.const -0.0))
+
+(assert_return (invoke "f64.no_fold_add_neg_neg" (f64.const -0.0) (f64.const -0.0)) (f64.const 0.0))
+(assert_return (invoke "f64.no_fold_add_neg_neg" (f64.const 0.0) (f64.const -0.0)) (f64.const 0.0))
+(assert_return (invoke "f64.no_fold_add_neg_neg" (f64.const -0.0) (f64.const 0.0)) (f64.const 0.0))
+(assert_return (invoke "f64.no_fold_add_neg_neg" (f64.const 0.0) (f64.const 0.0)) (f64.const -0.0))
 
 ;; Test that -x + x is not folded to 0.0.
 
@@ -1946,6 +2085,61 @@
 (assert_return (invoke "f32.epsilon") (f32.const -0x1p-23))
 (assert_return (invoke "f64.epsilon") (f64.const 0x1p-52))
 
+;; Test that a method for computing a "machine epsilon" produces the expected
+;; result.
+;; https://www.math.utah.edu/~beebe/software/ieee/
+
+(module
+  (func (export "f32.epsilon") (result f32)
+    (local $x f32)
+    (local $result f32)
+    (set_local $x (f32.const 1))
+    (loop $loop
+      (br_if $loop
+        (f32.gt
+          (f32.add
+            (tee_local $x
+              (f32.mul
+                (tee_local $result (get_local $x))
+                (f32.const 0.5)
+              )
+            )
+            (f32.const 1)
+          )
+          (f32.const 1)
+        )
+      )
+    )
+    (get_local $result)
+  )
+
+  (func (export "f64.epsilon") (result f64)
+    (local $x f64)
+    (local $result f64)
+    (set_local $x (f64.const 1))
+    (loop $loop
+      (br_if $loop
+        (f64.gt
+          (f64.add
+            (tee_local $x
+              (f64.mul
+                (tee_local $result (get_local $x))
+                (f64.const 0.5)
+              )
+            )
+            (f64.const 1)
+          )
+          (f64.const 1)
+        )
+      )
+    )
+    (get_local $result)
+  )
+)
+
+(assert_return (invoke "f32.epsilon") (f32.const 0x1p-23))
+(assert_return (invoke "f64.epsilon") (f64.const 0x1p-52))
+
 ;; Test that floating-point numbers are not optimized as if they form a
 ;; trichotomy.
 
@@ -2017,6 +2211,47 @@
   (func (export "f64.nonarithmetic_nan_bitpattern")
         (param $x i64) (result i64)
     (i64.reinterpret/f64 (f64.neg (f64.reinterpret/i64 (get_local $x)))))
+
+  ;; Versions of no_fold testcases that only care about NaN bitpatterns.
+  (func (export "f32.no_fold_sub_zero") (param $x i32) (result i32)
+    (i32.and (i32.reinterpret/f32 (f32.sub (f32.reinterpret/i32 (get_local $x)) (f32.const 0.0)))
+             (i32.const 0x7fc00000)))
+  (func (export "f32.no_fold_neg0_sub") (param $x i32) (result i32)
+    (i32.and (i32.reinterpret/f32 (f32.sub (f32.const -0.0) (f32.reinterpret/i32 (get_local $x))))
+             (i32.const 0x7fc00000)))
+  (func (export "f32.no_fold_mul_one") (param $x i32) (result i32)
+    (i32.and (i32.reinterpret/f32 (f32.mul (f32.reinterpret/i32 (get_local $x)) (f32.const 1.0)))
+             (i32.const 0x7fc00000)))
+  (func (export "f32.no_fold_neg1_mul") (param $x i32) (result i32)
+    (i32.and (i32.reinterpret/f32 (f32.mul (f32.const -1.0) (f32.reinterpret/i32 (get_local $x))))
+             (i32.const 0x7fc00000)))
+  (func (export "f32.no_fold_div_one") (param $x i32) (result i32)
+    (i32.and (i32.reinterpret/f32 (f32.div (f32.reinterpret/i32 (get_local $x)) (f32.const 1.0)))
+             (i32.const 0x7fc00000)))
+  (func (export "f32.no_fold_div_neg1") (param $x i32) (result i32)
+    (i32.and (i32.reinterpret/f32 (f32.div (f32.reinterpret/i32 (get_local $x)) (f32.const -1.0)))
+             (i32.const 0x7fc00000)))
+  (func (export "f64.no_fold_sub_zero") (param $x i64) (result i64)
+    (i64.and (i64.reinterpret/f64 (f64.sub (f64.reinterpret/i64 (get_local $x)) (f64.const 0.0)))
+             (i64.const 0x7ff8000000000000)))
+  (func (export "f64.no_fold_neg0_sub") (param $x i64) (result i64)
+    (i64.and (i64.reinterpret/f64 (f64.sub (f64.const -0.0) (f64.reinterpret/i64 (get_local $x))))
+             (i64.const 0x7ff8000000000000)))
+  (func (export "f64.no_fold_mul_one") (param $x i64) (result i64)
+    (i64.and (i64.reinterpret/f64 (f64.mul (f64.reinterpret/i64 (get_local $x)) (f64.const 1.0)))
+             (i64.const 0x7ff8000000000000)))
+  (func (export "f64.no_fold_neg1_mul") (param $x i64) (result i64)
+    (i64.and (i64.reinterpret/f64 (f64.mul (f64.const -1.0) (f64.reinterpret/i64 (get_local $x))))
+             (i64.const 0x7ff8000000000000)))
+  (func (export "f64.no_fold_div_one") (param $x i64) (result i64)
+    (i64.and (i64.reinterpret/f64 (f64.div (f64.reinterpret/i64 (get_local $x)) (f64.const 1.0)))
+             (i64.const 0x7ff8000000000000)))
+  (func (export "f64.no_fold_div_neg1") (param $x i64) (result i64)
+    (i64.and (i64.reinterpret/f64 (f64.div (f64.reinterpret/i64 (get_local $x)) (f64.const -1.0)))
+             (i64.const 0x7ff8000000000000)))
+  (func (export "no_fold_promote_demote") (param $x i32) (result i32)
+    (i32.and (i32.reinterpret/f32 (f32.demote/f64 (f64.promote/f32 (f32.reinterpret/i32 (get_local $x)))))
+             (i32.const 0x7fc00000)))
 )
 
 (assert_return (invoke "f32.arithmetic_nan_bitpattern" (i32.const 0x7f803210) (i32.const 0x7f803210)) (i32.const 0x7fc00000))
@@ -2039,3 +2274,209 @@
 (assert_return (invoke "f64.nonarithmetic_nan_bitpattern" (i64.const 0xfff8000000003210)) (i64.const 0x7ff8000000003210))
 (assert_return (invoke "f64.nonarithmetic_nan_bitpattern" (i64.const 0x7ff0000000003210)) (i64.const 0xfff0000000003210))
 (assert_return (invoke "f64.nonarithmetic_nan_bitpattern" (i64.const 0xfff0000000003210)) (i64.const 0x7ff0000000003210))
+(assert_return (invoke "f32.no_fold_sub_zero" (i32.const 0x7fa00000)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.no_fold_neg0_sub" (i32.const 0x7fa00000)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.no_fold_mul_one" (i32.const 0x7fa00000)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.no_fold_neg1_mul" (i32.const 0x7fa00000)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.no_fold_div_one" (i32.const 0x7fa00000)) (i32.const 0x7fc00000))
+(assert_return (invoke "f32.no_fold_div_neg1" (i32.const 0x7fa00000)) (i32.const 0x7fc00000))
+(assert_return (invoke "f64.no_fold_sub_zero" (i64.const 0x7ff4000000000000)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.no_fold_neg0_sub" (i64.const 0x7ff4000000000000)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.no_fold_mul_one" (i64.const 0x7ff4000000000000)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.no_fold_neg1_mul" (i64.const 0x7ff4000000000000)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.no_fold_div_one" (i64.const 0x7ff4000000000000)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "f64.no_fold_div_neg1" (i64.const 0x7ff4000000000000)) (i64.const 0x7ff8000000000000))
+(assert_return (invoke "no_fold_promote_demote" (i32.const 0x7fa00000)) (i32.const 0x7fc00000))
+
+;; Test that IEEE 754 double precision does, in fact, compute a certain dot
+;; product correctly.
+
+(module
+  (func (export "dot_product_example")
+        (param $x0 f64) (param $x1 f64) (param $x2 f64) (param $x3 f64)
+        (param $y0 f64) (param $y1 f64) (param $y2 f64) (param $y3 f64)
+        (result f64)
+    (f64.add (f64.add (f64.add
+      (f64.mul (get_local $x0) (get_local $y0))
+      (f64.mul (get_local $x1) (get_local $y1)))
+      (f64.mul (get_local $x2) (get_local $y2)))
+      (f64.mul (get_local $x3) (get_local $y3)))
+  )
+
+  (func (export "with_binary_sum_collapse")
+        (param $x0 f64) (param $x1 f64) (param $x2 f64) (param $x3 f64)
+        (param $y0 f64) (param $y1 f64) (param $y2 f64) (param $y3 f64)
+        (result f64)
+      (f64.add (f64.add (f64.mul (get_local $x0) (get_local $y0))
+                        (f64.mul (get_local $x1) (get_local $y1)))
+               (f64.add (f64.mul (get_local $x2) (get_local $y2))
+                        (f64.mul (get_local $x3) (get_local $y3))))
+  )
+)
+
+(assert_return (invoke "dot_product_example"
+    (f64.const 3.2e7) (f64.const 1.0) (f64.const -1.0) (f64.const 8.0e7)
+    (f64.const 4.0e7) (f64.const 1.0) (f64.const -1.0) (f64.const -1.6e7))
+  (f64.const 2.0))
+(assert_return (invoke "with_binary_sum_collapse"
+    (f64.const 3.2e7) (f64.const 1.0) (f64.const -1.0) (f64.const 8.0e7)
+    (f64.const 4.0e7) (f64.const 1.0) (f64.const -1.0) (f64.const -1.6e7))
+  (f64.const 2.0))
+
+;; http://www.vinc17.org/research/fptest.en.html#contract2fma
+
+(module
+  (func (export "f32.contract2fma")
+        (param $x f32) (param $y f32) (result f32)
+    (f32.sqrt (f32.sub (f32.mul (get_local $x) (get_local $x))
+                       (f32.mul (get_local $y) (get_local $y)))))
+  (func (export "f64.contract2fma")
+        (param $x f64) (param $y f64) (result f64)
+    (f64.sqrt (f64.sub (f64.mul (get_local $x) (get_local $x))
+                       (f64.mul (get_local $y) (get_local $y)))))
+)
+
+(assert_return (invoke "f32.contract2fma" (f32.const 1.0) (f32.const 1.0)) (f32.const 0.0))
+(assert_return (invoke "f32.contract2fma" (f32.const 0x1.19999ap+0) (f32.const 0x1.19999ap+0)) (f32.const 0.0))
+(assert_return (invoke "f32.contract2fma" (f32.const 0x1.333332p+0) (f32.const 0x1.333332p+0)) (f32.const 0.0))
+(assert_return (invoke "f64.contract2fma" (f64.const 1.0) (f64.const 1.0)) (f64.const 0.0))
+(assert_return (invoke "f64.contract2fma" (f64.const 0x1.199999999999ap+0) (f64.const 0x1.199999999999ap+0)) (f64.const 0.0))
+(assert_return (invoke "f64.contract2fma" (f64.const 0x1.3333333333333p+0) (f64.const 0x1.3333333333333p+0)) (f64.const 0.0))
+
+;; Test that floating-point isn't implemented with QuickBasic for MS-DOS.
+;; https://support.microsoft.com/en-us/help/42980/-complete-tutorial-to-understand-ieee-floating-point-errors
+
+(module
+  (func (export "f32.division_by_small_number")
+        (param $a f32) (param $b f32) (param $c f32) (result f32)
+    (f32.sub (get_local $a) (f32.div (get_local $b) (get_local $c))))
+  (func (export "f64.division_by_small_number")
+        (param $a f64) (param $b f64) (param $c f64) (result f64)
+    (f64.sub (get_local $a) (f64.div (get_local $b) (get_local $c))))
+)
+
+(assert_return (invoke "f32.division_by_small_number" (f32.const 112000000) (f32.const 100000) (f32.const 0.0009)) (f32.const 888888))
+(assert_return (invoke "f64.division_by_small_number" (f64.const 112000000) (f64.const 100000) (f64.const 0.0009)) (f64.const 888888.8888888806))
+
+;; Test a simple golden ratio computation.
+;; http://mathworld.wolfram.com/GoldenRatio.html
+
+(module
+  (func (export "f32.golden_ratio") (param $a f32) (param $b f32) (param $c f32) (result f32)
+    (f32.mul (get_local 0) (f32.add (get_local 1) (f32.sqrt (get_local 2)))))
+  (func (export "f64.golden_ratio") (param $a f64) (param $b f64) (param $c f64) (result f64)
+    (f64.mul (get_local 0) (f64.add (get_local 1) (f64.sqrt (get_local 2)))))
+)
+
+(assert_return (invoke "f32.golden_ratio" (f32.const 0.5) (f32.const 1.0) (f32.const 5.0)) (f32.const 1.618034))
+(assert_return (invoke "f64.golden_ratio" (f64.const 0.5) (f64.const 1.0) (f64.const 5.0)) (f64.const 1.618033988749895))
+
+;; Test some silver means computations.
+;; http://mathworld.wolfram.com/SilverRatio.html
+
+(module
+  (func (export "f32.silver_means") (param $n f32) (result f32)
+    (f32.mul (f32.const 0.5)
+             (f32.add (get_local $n)
+                      (f32.sqrt (f32.add (f32.mul (get_local $n) (get_local $n))
+                                         (f32.const 4.0))))))
+  (func (export "f64.silver_means") (param $n f64) (result f64)
+    (f64.mul (f64.const 0.5)
+             (f64.add (get_local $n)
+                      (f64.sqrt (f64.add (f64.mul (get_local $n) (get_local $n))
+                                         (f64.const 4.0))))))
+)
+
+(assert_return (invoke "f32.silver_means" (f32.const 0.0)) (f32.const 1.0))
+(assert_return (invoke "f32.silver_means" (f32.const 1.0)) (f32.const 1.6180340))
+(assert_return (invoke "f32.silver_means" (f32.const 2.0)) (f32.const 2.4142136))
+(assert_return (invoke "f32.silver_means" (f32.const 3.0)) (f32.const 3.3027756))
+(assert_return (invoke "f32.silver_means" (f32.const 4.0)) (f32.const 4.2360680))
+(assert_return (invoke "f32.silver_means" (f32.const 5.0)) (f32.const 5.1925821))
+(assert_return (invoke "f64.silver_means" (f64.const 0.0)) (f64.const 1.0))
+(assert_return (invoke "f64.silver_means" (f64.const 1.0)) (f64.const 1.618033988749895))
+(assert_return (invoke "f64.silver_means" (f64.const 2.0)) (f64.const 2.414213562373095))
+(assert_return (invoke "f64.silver_means" (f64.const 3.0)) (f64.const 3.302775637731995))
+(assert_return (invoke "f64.silver_means" (f64.const 4.0)) (f64.const 4.236067977499790))
+(assert_return (invoke "f64.silver_means" (f64.const 5.0)) (f64.const 5.192582403567252))
+
+;; Test that an f64 0.4 isn't double-rounded as via extended precision.
+;; https://bugs.llvm.org/show_bug.cgi?id=11200
+
+(module
+  (func (export "point_four") (param $four f64) (param $ten f64) (result i32)
+    (f64.lt (f64.div (get_local $four) (get_local $ten)) (f64.const 0.4)))
+)
+
+(assert_return (invoke "point_four" (f64.const 4.0) (f64.const 10.0)) (i32.const 0))
+
+;; Test an approximation function for tau; it should produces the correctly
+;; rounded result after (and only after) the expected number of iterations.
+
+(module
+  (func (export "tau") (param i32) (result f64)
+    (local f64 f64 f64 f64)
+    f64.const 0x0p+0
+    set_local 1
+    block
+      get_local 0
+      i32.const 1
+      i32.lt_s
+      br_if 0
+      f64.const 0x1p+0
+      set_local 2
+      f64.const 0x0p+0
+      set_local 3
+      loop
+        get_local 1
+        get_local 2
+        f64.const 0x1p+3
+        get_local 3
+        f64.const 0x1p+3
+        f64.mul
+        tee_local 4
+        f64.const 0x1p+0
+        f64.add
+        f64.div
+        f64.const 0x1p+2
+        get_local 4
+        f64.const 0x1p+2
+        f64.add
+        f64.div
+        f64.sub
+        f64.const 0x1p+1
+        get_local 4
+        f64.const 0x1.4p+2
+        f64.add
+        f64.div
+        f64.sub
+        f64.const 0x1p+1
+        get_local 4
+        f64.const 0x1.8p+2
+        f64.add
+        f64.div
+        f64.sub
+        f64.mul
+        f64.add
+        set_local 1
+        get_local 3
+        f64.const 0x1p+0
+        f64.add
+        set_local 3
+        get_local 2
+        f64.const 0x1p-4
+        f64.mul
+        set_local 2
+        get_local 0
+        i32.const -1
+        i32.add
+        tee_local 0
+        br_if 0
+      end
+    end
+    get_local 1
+  )
+)
+
+(assert_return (invoke "tau" (i32.const 10)) (f64.const 0x1.921fb54442d14p+2))
+(assert_return (invoke "tau" (i32.const 11)) (f64.const 0x1.921fb54442d18p+2))
