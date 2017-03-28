@@ -287,22 +287,3 @@ the callee is dynamically checked against the :ref:`function type <functype>` in
    In the current version of WebAssembly,
    |CALLINDIRECT| implicitly operates on :ref:`table <syntax-table>` :ref:`index <syntax-tableidx>` :math:`0`.
    This restriction may be lifted in future versions.
-
-
-.. _syntax-expr:
-.. index:: ! expression, constant
-   pair: abstract syntax; expression
-   single: expression; constant
-
-Expressions
-~~~~~~~~~~~
-
-:ref:`Function <syntax-func>` bodies, initialization values for :ref:`globals <syntax-global>` and offsets of :ref:`element <syntax-elem>` or :ref:`data <syntax-data>` segments are given as expressions, which are sequences of :ref:`instructions <syntax-instr>` terminated by an |END| marker.
-
-.. math::
-   \begin{array}{llll}
-   \production{expressions} & \expr &::=&
-     \instr^\ast~\END \\
-   \end{array}
-
-In some places, validation :ref:`restricts <valid-constant>` expressions to be *constant*, which limits the set of allowable insructions.

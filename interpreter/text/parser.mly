@@ -157,7 +157,7 @@ let inline_type (c : context) ty at =
 %token MODULE TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
-%token ASSERT_RETURN ASSERT_RETURN_NAN ASSERT_TRAP ASSERT_EXHAUSTION
+%token ASSERT_RETURN ASSERT_RETURN_CANONICAL_NAN ASSERT_RETURN_ARITHMETIC_NAN ASSERT_TRAP ASSERT_EXHAUSTION
 %token INPUT OUTPUT
 %token EOF
 
@@ -661,7 +661,8 @@ assertion :
   | LPAR ASSERT_TRAP module_ TEXT RPAR
     { AssertUninstantiable (snd $3, $4) @@ at () }
   | LPAR ASSERT_RETURN action const_list RPAR { AssertReturn ($3, $4) @@ at () }
-  | LPAR ASSERT_RETURN_NAN action RPAR { AssertReturnNaN $3 @@ at () }
+  | LPAR ASSERT_RETURN_CANONICAL_NAN action RPAR { AssertReturnCanonicalNaN $3 @@ at () }
+  | LPAR ASSERT_RETURN_ARITHMETIC_NAN action RPAR { AssertReturnArithmeticNaN $3 @@ at () }
   | LPAR ASSERT_TRAP action TEXT RPAR { AssertTrap ($3, $4) @@ at () }
   | LPAR ASSERT_EXHAUSTION action TEXT RPAR { AssertExhaustion ($3, $4) @@ at () }
 
