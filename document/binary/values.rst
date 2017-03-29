@@ -7,6 +7,25 @@ Values
 ------
 
 
+.. _binary-byte:
+.. index:: byte
+   pair: binary encoding; byte
+   single: abstract syntax; byte
+
+Bytes
+~~~~~
+
+:ref:`Bytes <syntax-int>` encode by themselves.
+
+.. math::
+   \begin{array}{llclll}
+   \production{bytes} & \Bbyte &::=&
+     \hex{00} &\Rightarrow& \hex{00} \\ &&|&&
+     \dots \\ &&|&
+     \hex{FF} &\Rightarrow& \hex{FF} \\
+   \end{array}
+
+
 .. _binary-int:
 .. _binary-sint:
 .. _binary-uint:
@@ -23,58 +42,49 @@ Values
 Integers
 ~~~~~~~~
 
-All integers are encoded using the `LEB128 <https://en.wikipedia.org/wiki/LEB128>`_ variable-length integer encoding, in either unsigned or signed variant.
+All :ref:`integers <syntax-int>` are encoded using the `LEB128 <https://en.wikipedia.org/wiki/LEB128>`_ variable-length integer encoding, in either unsigned or signed variant.
 
-Unsigned integers are encoded in `unsigned LEB128 <https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128>`_ format.
+:ref:`Unsigned integers <syntax-uint>` are encoded in `unsigned LEB128 <https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128>`_ format.
 As an additional constraint, the total number of bytes encoding a value of type :math:`\uX{N}` must not exceed :math:`\F{ceil}(N/7)` bytes.
 
 .. math::
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{unsigned integers} & \BuX{N} &::=&
-     \byte(n)
-     &\Rightarrow&
-     n
-     & (n < 128) \\
-   &&|&
-     \byte(n)~~
-     \BuX{N-7}\{m\}
-     &\Rightarrow&
-     128\cdot m + (n-128)
-     & (n \geq 128 \wedge N > 7) \\
+     n{:}\Bbyte &\Rightarrow& n & (n < 128 \wedge n < 2^N) \\ &&|&
+     n{:}\Bbyte~~m{:}\BuX{N-7} &\Rightarrow&
+       128\cdot m + (n-128) & (n \geq 128 \wedge N > 7) \\
    \end{array}
 
-Signed integers are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a 2's complement representation.
+:ref:`Signed integers <syntax-sint>` are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a 2's complement representation.
 As an additional constraint, the total number of bytes encoding a value of type :math:`\sX{N}` must not exceed :math:`\F{ceil}(N/7)` bytes.
 
 .. math::
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{signed integers} & \BsX{N} &::=&
-     \byte(n)
-     &\Rightarrow&
-     n
-     & (0 \leq n < 64) \\
-   &&|&
-     \byte(n)
-     &\Rightarrow&
-     128-n
-     & (64 \leq n < 128) \\
-   &&|&
-     \byte(n)~~
-     \BsX{N-7}\{\pm m\}
-     &\Rightarrow&
-     \pm 128\cdot m + (n-128)
-     & (n \geq 128 \wedge N > 7) \\
+     n{:}\Bbyte &\Rightarrow& n & (n < 64 \wedge n < 2^{N-1}) \\ &&|&
+     n{:}\Bbyte &\Rightarrow& n-128 & (64 \leq n < 128 \wedge n \geq 128-2^{N-1}) \\ &&|&
+     n{:}\Bbyte~~m{:}\BsX{N-7} &\Rightarrow&
+       128\cdot m + (n-128) & (n \geq 128 \wedge N > 7) \\
    \end{array}
 
-Uninterpreted integers are encoded as signed, assuming a 2's complement interpretation.
+:ref:`Uninterpreted integers <syntax-int>` are always encoded as signed integers.
 
 .. math::
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{uninterpreted integers} & \BiX{N} &::=&
-     \BsX{N}\{n\}
-     &\Rightarrow&
-     n
+     n{:}\BsX{N} &\Rightarrow& n
    \end{array}
+
+.. note::
+   While the side conditions :math:`N > 7` in the productions for *non-terminating* bytes restrict the length of the :math:`\uX{}` and :math:`\sX{}` encodings,
+   "trailing zeros" are still allowed within these bounds.
+   For example, :math:`\hex{03}` and :math:`\hex{83}~\hex{00}` are both well-formed encodings for the value :math:`3` as a |u8|.
+   Similarly, either of :math:`\hex{7e}` and :math:`\hex{FE}~\hex{7F}` and :math:`\hex{FE}~\hex{FF}~\hex{7F}` are well-formed encodings of the value :math:`-2` as a |s16|.
+
+   The side conditions on the value :math:`n` of *terminating* bytes further enforce that
+   any unused bits in these bytes must be :math:`0` for positive values and :math:`1` for negative ones.
+   For example, :math:`\hex{83}~\hex{10}` is malformed as a |u8| encoding.
+   Similarly, both :math:`\hex{83}~\hex{3E}` and :math:`\hex{FF}~\hex{7B}` are malformed as |s8| encodings.
 
 
 .. _binary-float:
@@ -85,15 +95,15 @@ Uninterpreted integers are encoded as signed, assuming a 2's complement interpre
 Floating-Point
 ~~~~~~~~~~~~~~
 
-Floating point values are encoded directly by their IEEE bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+:ref:`Floating point <syntax-float>` values are encoded directly by their IEEE bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
 
 .. math::
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{floating-point numbers} & \BfX{N} &::=&
-     b^{N/8}
-     &\Rightarrow&
-     b^{N/8} \\
+     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \F{reverse}(b^\ast) \\
    \end{array}
+
+Here, :math:`\F{reverse}(b^\ast)` denotes the byte sequence :math:`b^\ast` in reversed order.
 
 
 .. _binary-vec:
@@ -104,15 +114,12 @@ Floating point values are encoded directly by their IEEE bit pattern in `little 
 Vectors
 ~~~~~~~
 
-Vectors are encoded with their length followed by the encoding of their element sequence.
+:ref:`Vectors <syntax-vec>` are encoded with their length followed by the encoding of their element sequence.
 
 .. math::
    \begin{array}{llcll@{\qquad\qquad}l}
-   \production{vectors} & \Bvec(A) &::=&
-     \Bu32\{n\}~~
-     (A\{x\})^n
-     &\Rightarrow&
-     x^n \\
+   \production{vectors} & \Bvec(\B{B}) &::=&
+     n{:}\Bu32~~(x{:}\B{B})^n &\Rightarrow& x^n \\
    \end{array}
 
 
@@ -124,14 +131,12 @@ Vectors are encoded with their length followed by the encoding of their element 
 Names
 ~~~~~
 
-Names are encoded directly as a vector of bytes.
+:ref:`Names <syntax-name>` are encoded directly as a vector of bytes.
 
 .. math::
    \begin{array}{llcll}
    \production{names} & \Bname &::=&
-     \Bvec(\by)\{b^\ast\}
-     &\Rightarrow&
-     b^\ast \\
+     b^\ast{:\,}\Bvec(\Bbyte) &\Rightarrow& b^\ast \\
    \end{array}
 
 .. todo::

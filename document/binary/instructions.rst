@@ -1,11 +1,13 @@
 .. _binary-instr:
-.. index:: instruction
+.. index:: instruction, ! opcode
 
 Instructions
 ------------
 
-Most :ref:`instructions <syntax-instr>` are encoded by single byte codes, followed by the instruction's immediate arguments.
-The only exception are structured instructions, whose nested instruction sequences are terminated with explicit opcodes for |END| and |ELSE|.
+:ref:`Instructions <syntax-instr>` are encoded by *opcodes*.
+Each opcode is represented by a single byte,
+and is followed by the instruction's immediate arguments, where present.
+The only exception are :ref:`structured control instructions <binary-instr-control>`, which consist of several opcodes bracketing their nested instruction sequences.
 
 .. note::
    Gaps in the byte code ranges encoding instructions are reserved for future extensions.
@@ -19,8 +21,7 @@ The only exception are structured instructions, whose nested instruction sequenc
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-.. :ref:`Control instructions <syntax-instr-control>` have varying encodings.
-   For structured instructions, the nested instruction sequences are terminated with explicit opcodes for |END| and |ELSE|.
+:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the nested instruction sequences are terminated with explicit opcodes for |END| and |ELSE|.
 
 .. _valid-nop:
 .. _valid-unreachable:
@@ -37,34 +38,24 @@ Control Instructions
 .. math::
    \begin{array}{llclll}
    \production{instructions} & \Binstr &::=&
-     \hex{00} &\Rightarrow&
-       \UNREACHABLE \\ &&|&
-     \hex{01} &\Rightarrow&
-       \NOP \\ &&|&
-     \hex{02}~~\Bresulttype\{\X{rt}\}~~\Binstr\{\X{in}\}^\ast~~\hex{0B}
-       &\Rightarrow&
-       \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \hex{03}~~\Bresulttype\{\X{rt}\}~~\Binstr\{\X{in}\}^\ast~~\hex{0B}
-       &\Rightarrow&
-       \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \hex{04}~~\Bresulttype\{\X{rt}\}~~\Binstr\{\X{in}\}^\ast~~\hex{0B}
-       &\Rightarrow&
-       \IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
-     \hex{04}~~\Bresulttype\{\X{rt}\}~~\Binstr\{\X{in_1}\}^\ast~~\hex{05}~~\Binstr\{\X{in_2}\}^\ast~~\hex{0B}
-       &\Rightarrow&
-       \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
-     \hex{0C}~~\Blabelidx\{x\} &\Rightarrow&
-       \BR~x \\ &&|&
-     \hex{0D}~~\Blabelidx\{x\} &\Rightarrow&
-       \BRIF~x \\ &&|&
-     \hex{0E}~~\Bvec(\Blabelidx)\{x^\ast\}~~\Blabelidx\{y\} &\Rightarrow&
-       \BRTABLE~x^\ast~y \\ &&|&
-     \hex{0F} &\Rightarrow&
-       \RETURN \\ &&|&
-     \hex{10}~~\Bfuncidx\{x\} &\Rightarrow&
-       \CALL~x \\ &&|&
-     \hex{11}~~\Bfuncidx\{x\} &\Rightarrow&
-       \CALLINDIRECT~x \\
+     \hex{00} &\Rightarrow& \UNREACHABLE \\ &&|&
+     \hex{01} &\Rightarrow& \NOP \\ &&|&
+     \hex{02}~~\X{rt}{:}\Bresulttype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
+     \hex{03}~~\X{rt}{:}\Bresulttype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
+     \hex{04}~~\X{rt}{:}\Bresulttype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
+     \hex{04}~~\X{rt}{:}\Bresulttype~~(\X{in}_1{:}\Binstr)^\ast~~
+       \hex{05}~~(\X{in}_2{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
+     \hex{0C}~~l{:}\Blabelidx &\Rightarrow& \BR~l \\ &&|&
+     \hex{0D}~~l{:}\Blabelidx &\Rightarrow& \BRIF~l \\ &&|&
+     \hex{0E}~~l^\ast{:}\Bvec(\Blabelidx)~~l_N{:}\Blabelidx &\Rightarrow&
+       \BRTABLE~l^\ast~l_N \\ &&|&
+     \hex{0F} &\Rightarrow& \RETURN \\ &&|&
+     \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
+     \hex{11}~~x{:}\Btypeidx &\Rightarrow& \CALLINDIRECT~x \\
    \end{array}
 
 .. note::
@@ -79,7 +70,7 @@ Control Instructions
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. :ref:`Parametric instructions <syntax-instr-parametric>` are represented by single byte codes.
+:ref:`Parametric instructions <syntax-instr-parametric>` are represented by single byte codes.
 
 .. _binary-drop:
 .. _binary-select:
@@ -100,7 +91,7 @@ Parametric Instructions
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. :ref:`Variable instructions <syntax-instr-variable>` are represented by a byte codes followed by the encodogn of the respective :ref:`index <syntax-indices>`.
+:ref:`Variable instructions <syntax-instr-variable>` are represented by byte codes followed by the encoding of the respective :ref:`index <syntax-indices>`.
 
 .. _binary-get_local:
 .. _binary-set_local:
@@ -111,11 +102,11 @@ Variable Instructions
 .. math::
    \begin{array}{llclll}
    \production{instructions} & \Binstr &::=& \dots \\ &&|&
-     \hex{20}~~\Blocalidx\{x\} &\Rightarrow& \GETLOCAL~x \\ &&|&
-     \hex{21}~~\Blocalidx\{x\} &\Rightarrow& \SETLOCAL~x \\ &&|&
-     \hex{22}~~\Blocalidx\{x\} &\Rightarrow& \TEELOCAL~x \\ &&|&
-     \hex{23}~~\Bglobalidx\{x\} &\Rightarrow& \GETGLOBAL~x \\ &&|&
-     \hex{24}~~\Bglobalidx\{x\} &\Rightarrow& \SETGLOBAL~x \\
+     \hex{20}~~x{:}\Blocalidx &\Rightarrow& \GETLOCAL~x \\ &&|&
+     \hex{21}~~x{:}\Blocalidx &\Rightarrow& \SETLOCAL~x \\ &&|&
+     \hex{22}~~x{:}\Blocalidx &\Rightarrow& \TEELOCAL~x \\ &&|&
+     \hex{23}~~x{:}\Bglobalidx &\Rightarrow& \GETGLOBAL~x \\ &&|&
+     \hex{24}~~x{:}\Bglobalidx &\Rightarrow& \SETGLOBAL~x \\
    \end{array}
 
 
@@ -128,7 +119,7 @@ Variable Instructions
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-.. :ref:`Memory instructions <syntax-instr-memory>` are encoded as different byte codes, with loads and stores followed by their |memarg| immediate.
+Each variant of :ref:`memory instructions <syntax-instr-memory>` is encoded with a different byte code. Loads and stores are followed by the encoding of their |memarg| immediate.
 
 .. _binary-memarg:
 .. _binary-load:
@@ -141,31 +132,31 @@ Memory Instructions
 .. math::
    \begin{array}{llclll}
    \production{memory arguments} & \Bmemarg &::=&
-     \Bu32\{a\}~~\Bu32\{o\} &\Rightarrow& \{ \ALIGN~a,~\OFFSET~o \} \\
+     a{:}\Bu32~~o{:}\Bu32 &\Rightarrow& \{ \ALIGN~a,~\OFFSET~o \} \\
    \production{instructions} & \Binstr &::=& \dots \\ &&|&
-     \hex{28}~~\Bmemarg\{m\} &\Rightarrow& \I32.\LOAD~m \\ &&|&
-     \hex{29}~~\Bmemarg\{m\} &\Rightarrow& \I64.\LOAD~m \\ &&|&
-     \hex{2A}~~\Bmemarg\{m\} &\Rightarrow& \F32.\LOAD~m \\ &&|&
-     \hex{2B}~~\Bmemarg\{m\} &\Rightarrow& \F64.\LOAD~m \\ &&|&
-     \hex{2C}~~\Bmemarg\{m\} &\Rightarrow& \I32.\LOAD\K{8\_s}~m \\ &&|&
-     \hex{2D}~~\Bmemarg\{m\} &\Rightarrow& \I32.\LOAD\K{8\_u}~m \\ &&|&
-     \hex{2E}~~\Bmemarg\{m\} &\Rightarrow& \I32.\LOAD\K{16\_s}~m \\ &&|&
-     \hex{2F}~~\Bmemarg\{m\} &\Rightarrow& \I32.\LOAD\K{16\_u}~m \\ &&|&
-     \hex{30}~~\Bmemarg\{m\} &\Rightarrow& \I64.\LOAD\K{8\_s}~m \\ &&|&
-     \hex{31}~~\Bmemarg\{m\} &\Rightarrow& \I64.\LOAD\K{8\_u}~m \\ &&|&
-     \hex{32}~~\Bmemarg\{m\} &\Rightarrow& \I64.\LOAD\K{16\_s}~m \\ &&|&
-     \hex{33}~~\Bmemarg\{m\} &\Rightarrow& \I64.\LOAD\K{16\_u}~m \\ &&|&
-     \hex{34}~~\Bmemarg\{m\} &\Rightarrow& \I64.\LOAD\K{32\_s}~m \\ &&|&
-     \hex{35}~~\Bmemarg\{m\} &\Rightarrow& \I64.\LOAD\K{32\_u}~m \\ &&|&
-     \hex{36}~~\Bmemarg\{m\} &\Rightarrow& \I32.\STORE~m \\ &&|&
-     \hex{37}~~\Bmemarg\{m\} &\Rightarrow& \I64.\STORE~m \\ &&|&
-     \hex{38}~~\Bmemarg\{m\} &\Rightarrow& \F32.\STORE~m \\ &&|&
-     \hex{39}~~\Bmemarg\{m\} &\Rightarrow& \F64.\STORE~m \\ &&|&
-     \hex{3A}~~\Bmemarg\{m\} &\Rightarrow& \I32.\STORE\K{8}~m \\ &&|&
-     \hex{3B}~~\Bmemarg\{m\} &\Rightarrow& \I32.\STORE\K{16}~m \\ &&|&
-     \hex{3C}~~\Bmemarg\{m\} &\Rightarrow& \I64.\STORE\K{8}~m \\ &&|&
-     \hex{3D}~~\Bmemarg\{m\} &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
-     \hex{3E}~~\Bmemarg\{m\} &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
+     \hex{28}~~m{:}\Bmemarg &\Rightarrow& \I32.\LOAD~m \\ &&|&
+     \hex{29}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD~m \\ &&|&
+     \hex{2A}~~m{:}\Bmemarg &\Rightarrow& \F32.\LOAD~m \\ &&|&
+     \hex{2B}~~m{:}\Bmemarg &\Rightarrow& \F64.\LOAD~m \\ &&|&
+     \hex{2C}~~m{:}\Bmemarg &\Rightarrow& \I32.\LOAD\K{8\_s}~m \\ &&|&
+     \hex{2D}~~m{:}\Bmemarg &\Rightarrow& \I32.\LOAD\K{8\_u}~m \\ &&|&
+     \hex{2E}~~m{:}\Bmemarg &\Rightarrow& \I32.\LOAD\K{16\_s}~m \\ &&|&
+     \hex{2F}~~m{:}\Bmemarg &\Rightarrow& \I32.\LOAD\K{16\_u}~m \\ &&|&
+     \hex{30}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD\K{8\_s}~m \\ &&|&
+     \hex{31}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD\K{8\_u}~m \\ &&|&
+     \hex{32}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD\K{16\_s}~m \\ &&|&
+     \hex{33}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD\K{16\_u}~m \\ &&|&
+     \hex{34}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD\K{32\_s}~m \\ &&|&
+     \hex{35}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD\K{32\_u}~m \\ &&|&
+     \hex{36}~~m{:}\Bmemarg &\Rightarrow& \I32.\STORE~m \\ &&|&
+     \hex{37}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE~m \\ &&|&
+     \hex{38}~~m{:}\Bmemarg &\Rightarrow& \F32.\STORE~m \\ &&|&
+     \hex{39}~~m{:}\Bmemarg &\Rightarrow& \F64.\STORE~m \\ &&|&
+     \hex{3A}~~m{:}\Bmemarg &\Rightarrow& \I32.\STORE\K{8}~m \\ &&|&
+     \hex{3B}~~m{:}\Bmemarg &\Rightarrow& \I32.\STORE\K{16}~m \\ &&|&
+     \hex{3C}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{8}~m \\ &&|&
+     \hex{3D}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
+     \hex{3E}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
      \hex{3F}~~\hex{00} &\Rightarrow& \CURRENTMEMORY \\ &&|&
      \hex{40}~~\hex{00} &\Rightarrow& \GROWMEMORY \\
    \end{array}
@@ -182,7 +173,7 @@ Memory Instructions
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-.. :ref:`Numeric instructions <syntax-instr-numeric>` are represented by single byte codes without any immediates, with the only exception of |CONST| instructions, which are followed by the respective literal.
+All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represented by separate byte codes without any immediates, with the only exception of |CONST| instructions, which are followed by the respective literal.
 
 .. _binary-const:
 .. _binary-unop:
@@ -194,10 +185,10 @@ Numeric Instructions
 .. math::
    \begin{array}{llclll}
    \production{instructions} & \Binstr &::=& \dots \\&&|&
-     \hex{41}~~\Bi32\{n\} &\Rightarrow& \I32.\CONST~n \\ &&|&
-     \hex{42}~~\Bi64\{n\} &\Rightarrow& \I64.\CONST~n \\ &&|&
-     \hex{43}~~\Bf32\{z\} &\Rightarrow& \F32.\CONST~z \\ &&|&
-     \hex{44}~~\Bf64\{z\} &\Rightarrow& \F64.\CONST~z \\ &&|&
+     \hex{41}~~n{:}\Bi32 &\Rightarrow& \I32.\CONST~n \\ &&|&
+     \hex{42}~~n{:}\Bi64 &\Rightarrow& \I64.\CONST~n \\ &&|&
+     \hex{43}~~z{:}\Bf32 &\Rightarrow& \F32.\CONST~z \\ &&|&
+     \hex{44}~~z{:}\Bf64 &\Rightarrow& \F64.\CONST~z \\ &&|&
      \hex{45} &\Rightarrow& \I32.\EQZ \\ &&|&
      \hex{46} &\Rightarrow& \I32.\EQ \\ &&|&
      \hex{47} &\Rightarrow& \I32.\NE \\ &&|&
@@ -338,6 +329,5 @@ Expressions
 .. math::
    \begin{array}{llclll}
    \production{instructions} & \Bexpr &::=&
-     \Binstr\{\X{in}\}^\ast~~\hex{0B} &\Rightarrow&
-       \X{in}^\ast~\END \\
+     (\X{in}{:}\Binstr)^\ast~~\hex{0B} &\Rightarrow& \X{in}^\ast~\END \\
    \end{array}

@@ -18,7 +18,7 @@ In the abstract syntax they are represented as hexadecimal literals.
 
 .. math::
    \begin{array}{llll}
-   \production{bytes} & \by &::=&
+   \production{bytes} & \byte &::=&
      \hex{00} ~|~ \dots ~|~ \hex{FF} \\
    \end{array}
 
@@ -28,7 +28,7 @@ Conventions
 
 * The meta variable :math:`b` range over bytes.
 
-* The meta function :math:`\byte(n)` denotes the byte representing the natural number :math:`n < 256`.
+* Bytes are sometimes interpreted as natural numbers :math:`n < 256`.
 
 
 .. _syntax-int:
@@ -69,7 +69,7 @@ and when interpreted as signed, positive values :math:`n \geq 2^{N-1}` convert t
 Conventions
 ...........
 
-* The meta variables :math:`m, n` range over unsigned integers.
+* The meta variables :math:`m, n, i` range over integers.
 
 * Numbers may be denoted by simple arithmetics, as in the grammar above.
 
@@ -86,7 +86,7 @@ Floating-Point
 .. math::
    \begin{array}{llll}
    \production{floating-point numbers} & \fN &::=&
-     \by^{N/8} \\
+     \byte^{N/8} \\
    \end{array}
 
 The two possible sizes :math:`N` are 32 and 64.
@@ -123,7 +123,7 @@ Names
 .. math::
    \begin{array}{llll}
    \production{names} & \name &::=&
-     \vec(\by) \\
+     \vec(\byte) \\
    \end{array}
 
 .. todo::

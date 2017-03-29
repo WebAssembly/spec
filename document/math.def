@@ -22,16 +22,14 @@
 .. |production| mathdef:: \void
 
 
-.. Values, terminals and auxiliary
+.. Values, terminals
 
 .. |hex#1| mathdef:: \mathtt{0x#1}
-.. |byte| mathdef:: \F{byte}
-.. |bytes| mathdef:: \F{bytes}
 
 
 .. Values, non-terminals
 
-.. |by| mathdef:: \xref{syntax/values}{syntax-byte}{\X{byte}}
+.. |byte| mathdef:: \xref{syntax/values}{syntax-byte}{\X{byte}}
 
 .. |uX#1| mathdef:: {\X{uint}_{#1}}
 .. |sX#1| mathdef:: {\X{sint}_{#1}}
@@ -46,6 +44,8 @@
 .. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\uX{64}}
 
 .. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\sX{N}}
+.. |s8| mathdef:: \xref{syntax/values}{syntax-int}{\sX{8}}
+.. |s16| mathdef:: \xref{syntax/values}{syntax-int}{\sX{16}}
 .. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\sX{32}}
 .. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\sX{64}}
 
@@ -63,7 +63,7 @@
 
 .. Values, binary non-terminals
 
-.. |Bby| mathdef:: \xref{binary/values}{binary-byte}{\B{byte}}
+.. |Bbyte| mathdef:: \xref{binary/values}{binary-byte}{\B{byte}}
 
 .. |BuX#1| mathdef:: {\B{uint}_{#1}}
 .. |BsX#1| mathdef:: {\B{sint}_{#1}}
@@ -223,6 +223,7 @@
 .. |Belemsec| mathdef:: \xref{binary/modules}{binary-elemsec}{\B{elemsec}}
 .. |Bdatasec| mathdef:: \xref{binary/modules}{binary-datasec}{\B{datasec}}
 .. |Bstartsec| mathdef:: \xref{binary/modules}{binary-startseg}{\B{startsec}}
+.. |Bcustom| mathdef:: \xref{binary/modules}{binary-customsec}{\B{custom}}
 .. |Btype| mathdef:: \xref{binary/modules}{binary-type}{\B{type}}
 .. |Bfunc| mathdef:: \xref{binary/modules}{binary-func}{\B{func}}
 .. |Btable| mathdef:: \xref{binary/modules}{binary-table}{\B{table}}
@@ -235,6 +236,7 @@
 .. |Belem| mathdef:: \xref{binary/modules}{binary-elem}{\B{elem}}
 .. |Bcode| mathdef:: \xref{binary/modules}{binary-code}{\B{code}}
 .. |Blocal| mathdef:: \xref{binary/modules}{binary-local}{\B{local}}
+.. |Blocals| mathdef:: \xref{binary/modules}{binary-local}{\B{locals}}
 .. |Bdata| mathdef:: \xref{binary/modules}{binary-data}{\B{data}}
 .. |Bstart| mathdef:: \xref{binary/modules}{binary-start}{\B{start}}
 

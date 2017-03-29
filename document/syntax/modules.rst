@@ -1,5 +1,5 @@
 .. _syntax-module:
-.. index:: ! modules, type definition, function type, function, table, memory, global, element, data, start function, import, export
+.. index:: ! module, type definition, function type, function, table, memory, global, element, data, start function, import, export
    pair: abstract syntax; module
 
 Modules
@@ -249,13 +249,13 @@ The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <sy
 Data Segments
 ~~~~~~~~~~~~~
 
-The initial contents of a :ref:`memory <syntax-memory>` are zero bytes.
+The initial contents of a :ref:`memory <syntax-mem>` are zero bytes.
 The |DATA| component of a module defines a vector of *data segments* that initialize a range of memory at a given offset with a static vector of bytes.
 
 .. math::
    \begin{array}{llll}
    \production{data segments} & \data &::=&
-     \{ \MEM~\memidx, \OFFSET~\expr, \INIT~\vec(\by) \} \\
+     \{ \MEM~\memidx, \OFFSET~\expr, \INIT~\vec(\byte) \} \\
    \end{array}
 
 The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
@@ -272,7 +272,7 @@ The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <sy
 Start Function
 ~~~~~~~~~~~~~~
 
-The |START| component of a module optionally declares the :ref:`function index <syntax-idx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
+The |START| component of a module optionally declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
 
 .. math::
    \begin{array}{llll}
@@ -341,7 +341,7 @@ Each import is identified by a two-level :ref:`name <syntax-name>` space, consis
 Importable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
 Each import is specified by a descriptor with a respective type that a definition provided during instantiation is required to match.
 
-Every import defines an index in the respective :ref:`index space <syntax-indices>`.
+Every import defines an index in the respective :ref:`index space <syntax-index>`.
 In each index space, the indices of imports go before the first index of any definition contained in the module itself.
 
 .. note::

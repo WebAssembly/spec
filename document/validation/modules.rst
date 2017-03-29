@@ -448,7 +448,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 
 .. _valid-module:
-.. index:: modules, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
+.. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
    pair: validation; module
    single: abstract syntax; module
 
