@@ -10,7 +10,7 @@ specification language.
 It also holds the WebAssembly testsuite, which tests numerous aspects of
 conformance to the spec.
 
-View the HTML rendered spec at [webassembly.github.io/spec](webassembly.github.io/spec/).
+View the spec at [webassembly.github.io/spec](webassembly.github.io/spec/).
 
 At this time, the contents of this repository are under development and known
 to be "incomplet and inkorrect".
