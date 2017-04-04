@@ -49,7 +49,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
   * the |LOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
 
-  * the |LABELS| set to the singular sequence with :ref:`result type <syntax-valtype>` :math:`[t_2^\ast][t_1^\ast] \to [t_2^?]`.
+  * the |LABELS| set to the singular sequence containing only :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
 
 * Under the context :math:`C'`,
   the expression :math:`\expr` must be valid with type :math:`t_2^\ast`.
