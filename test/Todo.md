@@ -35,6 +35,7 @@ Threads (post-MVP):
    (is this possible?)
  - test that isLockFree is true for datatypes that the spec says should
    always be lock-free
+ - test that 16-bit and 8-bit cmpxchg does a wrapped 8-bit or 16-bit compare
 
 FMA (post-MVP):
  - http://www.vinc17.org/software/fma-tests.c
