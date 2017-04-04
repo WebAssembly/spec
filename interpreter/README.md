@@ -2,10 +2,10 @@
 
 This repository implements a reference interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down the exact semantics, and as a proxy for the (yet to be produced) formal specification of WebAssembly. For that purpose, the code is written in a fairly declarative, "speccy" way.
 
-Currently, it can
+The interpreter can
 
 * *decode*/*parse* and *validate* modules in binary or text format
-* *execute* test scripts with assertions about modules
+* *execute* scripts with module definitions, invocations, and assertions
 * *convert* between binary and text format (both directions)
 * *export* test scripts to self-contained JavaScript test cases
 * *run* as an interactive interpreter
