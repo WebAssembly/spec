@@ -7,8 +7,8 @@ and definition' =
 
 type action = action' Source.phrase
 and action' =
-  | Invoke of var option * string * Ast.literal list
-  | Get of var option * string
+  | Invoke of var option * Ast.name * Ast.literal list
+  | Get of var option * Ast.name
 
 type assertion = assertion' Source.phrase
 and assertion' =
@@ -25,7 +25,7 @@ and assertion' =
 type command = command' Source.phrase
 and command' =
   | Module of var option * definition
-  | Register of string * var option
+  | Register of Ast.name * var option
   | Action of action
   | Assertion of assertion
   | Meta of meta

@@ -393,7 +393,7 @@ let check_import (im : import) (c : context) : context =
       "mutable globals cannot be imported (yet)";
     {c with globals = t :: c.globals}
 
-module NameSet = Set.Make(String)
+module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
 
 let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
   let {name; ekind; item} = ex.it in

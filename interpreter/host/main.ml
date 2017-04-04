@@ -2,8 +2,8 @@ let name = "wasm"
 let version = "0.7"
 
 let configure () =
-  Import.register "spectest" Spectest.lookup;
-  Import.register "env" Env.lookup
+  Import.register (Utf8.decode "spectest") Spectest.lookup;
+  Import.register (Utf8.decode "env") Env.lookup
 
 let banner () =
   print_endline

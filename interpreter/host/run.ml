@@ -188,6 +188,8 @@ let input_stdin run =
 
 (* Printing *)
 
+let string_of_name n = String.escaped (Utf8.encode n)
+
 let print_import m im =
   let open Types in
   let category, annotation =
@@ -198,7 +200,8 @@ let print_import m im =
     | ExternalGlobalType t -> "global", string_of_global_type t
   in
   Printf.printf "  import %s %S %S : %s\n"
-    category im.it.Ast.module_name im.it.Ast.item_name annotation
+    category (string_of_name im.it.Ast.module_name)
+      (string_of_name im.it.Ast.item_name) annotation
 
 let print_export m ex =
   let open Types in
@@ -210,7 +213,7 @@ let print_export m ex =
     | ExternalGlobalType t -> "global", string_of_global_type t
   in
   Printf.printf "  export %s %S : %s\n"
-    category (String.escaped ex.it.Ast.name) annotation
+    category (string_of_name ex.it.Ast.name) annotation
 
 let print_module x_opt m =
   Printf.printf "module%s :\n"
@@ -272,7 +275,7 @@ let run_definition def =
 let run_action act =
   match act.it with
   | Invoke (x_opt, name, vs) ->
-    trace ("Invoking function \"" ^ name ^ "\"...");
+    trace ("Invoking function \"" ^ string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternalFunc f) ->
@@ -282,7 +285,7 @@ let run_action act =
     )
 
  | Get (x_opt, name) ->
-    trace ("Getting global \"" ^ name ^ "\"...");
+    trace ("Getting global \"" ^ string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternalGlobal v) -> [v]
@@ -298,7 +301,10 @@ let assert_result at correct got print_expect expect =
   end
 
 let assert_message at name msg re =
-  if String.sub msg 0 (String.length re) <> re then begin
+  if
+    String.length msg < String.length re ||
+    String.sub msg 0 (String.length re) <> re
+  then begin
     print_endline ("Result: \"" ^ msg ^ "\"");
     print_endline ("Expect: \"" ^ re ^ "\"");
     Assert.error at ("wrong " ^ name ^ " error")
@@ -419,10 +425,10 @@ let rec run_command cmd =
   | Register (name, x_opt) ->
     quote := cmd :: !quote;
     if not !Flags.dry then begin
-      trace ("Registering module \"" ^ name ^ "\"...");
+      trace ("Registering module \"" ^ string_of_name name ^ "\"...");
       let inst = lookup_instance x_opt cmd.at in
-      registry := Map.add name inst !registry;
-      Import.register name (lookup_registry name)
+      registry := Map.add (Utf8.encode name) inst !registry;
+      Import.register name (lookup_registry (Utf8.encode name))
     end
 
   | Action act ->

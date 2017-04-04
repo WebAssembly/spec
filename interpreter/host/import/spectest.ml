@@ -28,7 +28,7 @@ let print (FuncType (_, out)) vs =
 
 
 let lookup name t =
-  match name, t with
+  match Utf8.encode name, t with
   | "print", ExternalFuncType t -> ExternalFunc (HostFunc (t, print t))
   | "print", _ ->
     let t = FuncType ([], []) in ExternalFunc (HostFunc (t, print t))
