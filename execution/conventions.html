@@ -27,9 +27,9 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Validation" href="index.html" />
-    <link rel="next" title="Instructions" href="instructions.html" />
-    <link rel="prev" title="Validation" href="index.html" />
+    <link rel="up" title="Execution" href="index.html" />
+    <link rel="next" title="Module Instantiation" href="modules.html" />
+    <link rel="prev" title="Execution" href="index.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -48,18 +48,25 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Validation</a><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Execution</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#contexts">Contexts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#values">Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#addresses">Addresses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-instances">Module Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#function-instances">Function Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#table-instances">Table Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-instances">Memory Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-instances">Global Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#index-7">Store</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#textual-notation">Textual Notation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#formal-notation">Formal Notation</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Module Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
@@ -98,73 +105,84 @@
             
   <div class="section" id="conventions">
 <span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
-<p>Validation checks that a WebAssembly module is well-formed.
-Only valid modules can be <span class="xref std std-ref">instantiated</span>.</p>
-<p>Validity is defined by a <em>type system</em> over the <a class="reference internal" href="../syntax/conventions.html#syntax"><span class="std std-ref">abstract syntax</span></a> of both instructions and modules.
-For each piece of abstract syntax, there is a typing rule that specifies the constraints that apply to it.
-All rules are given in two <em>equivalent</em> forms:</p>
-<ol class="arabic simple">
-<li>In <em>prose</em>, describing the meaning in intuitive form.</li>
-<li>In <em>formal notation</em>, describing the rule in mathematical form.</li>
-</ol>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The prose and formal rules are equivalent,
-so that understanding of the formal notation is <em>not</em> required to read this specification.
-The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.</p>
-</div>
-<p>In both cases, the rules are formulated in a <em>declarative</em> manner.
-That is, they only formulate the constraints, they do not define an algorithm.
-A sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the <span class="xref std std-ref">appendix</span>.</p>
-<span class="target" id="context"></span><div class="section" id="contexts">
-<span id="index-1"></span><h2>Contexts<a class="headerlink" href="#contexts" title="Permalink to this headline">¶</a></h2>
-<p>Validity of an individual definition is specified relative to a <em>context</em>,
-which collects relevant information about the surrounding <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> and other definitions in scope:</p>
-<ul class="simple">
-<li><em>Types</em>: the list of types defined in the current module.</li>
-<li><em>Functions</em>: the list of functions declared in the current module, represented by their function type.</li>
-<li><em>Tables</em>: the list of tables declared in the current module, represented by their table type.</li>
-<li><em>Memories</em>: the list of memories declared in the current module, represented by their memory type.</li>
-<li><em>Globals</em>: the list of globals declared in the current module, represented by their global type.</li>
-<li><em>Locals</em>: the list of locals declared in the current function (including parameters), represented by their value type.</li>
-<li><em>Labels</em>: the stack of labels accessible from the current position, represented by their result type.</li>
-</ul>
-<p>In other words, a context contains a sequence of suitable <span class="xref std std-ref">types</span> for each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>,
-describing each defined entry in that space.
-Locals and labels are only used for validating <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> in <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function bodies</span></a>, and are left empty elsewhere.
-The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.</p>
-<p>It is convenient to define contexts as <a class="reference internal" href="../syntax/conventions.html#syntax-record"><span class="std std-ref">records</span></a> <span class="math">\(C\)</span> with abstract syntax:</p>
+<div class="section" id="values">
+<h2>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h2>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef517#1{{}}\mathdef517{(context)} &amp; C &amp;::=&amp;
+\def\mathdef17#1{{}}\mathdef17{(value)} &amp; \href{../execution/conventions.html#syntax-val}{\mathit{val}} &amp;::=&amp;
+  \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c \\
+\end{array}\end{split}\]</div>
+<span class="target" id="syntax-globaladdr"><span id="syntax-memaddr"></span><span id="syntax-tableaddr"></span><span id="syntax-addr"></span></span></div>
+<div class="section" id="addresses">
+<span id="index-1"></span><h2>Addresses<a class="headerlink" href="#addresses" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef17#1{{}}\mathdef17{(address)} &amp; \href{../execution/conventions.html#syntax-addr}{\mathit{addr}} &amp;::=&amp;
+  0 ~|~ 1 ~|~ 2 ~|~ \dots \\
+\def\mathdef17#1{{}}\mathdef17{(table address)} &amp; \href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}} &amp;::=&amp;
+  \href{../execution/conventions.html#syntax-addr}{\mathit{addr}} \\
+\def\mathdef17#1{{}}\mathdef17{(memory address)} &amp; \href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}} &amp;::=&amp;
+  \href{../execution/conventions.html#syntax-addr}{\mathit{addr}} \\
+\def\mathdef17#1{{}}\mathdef17{(global address)} &amp; \href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}} &amp;::=&amp;
+  \href{../execution/conventions.html#syntax-addr}{\mathit{addr}} \\
+\end{array}\end{split}\]</div>
+<span class="target" id="syntax-moduleinst"></span></div>
+<div class="section" id="module-instances">
+<span id="index-2"></span><h2>Module Instances<a class="headerlink" href="#module-instances" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef17#1{{}}\mathdef17{(module instance)} &amp; \href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}} &amp;::=&amp;
   \begin{array}[t]{l&#64;{~}ll}
-  \{ &amp; \mathsf{types} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
-     &amp; \mathsf{funcs} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
-     &amp; \mathsf{tables} &amp; \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}^\ast, \\
-     &amp; \mathsf{mems} &amp; \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}^\ast, \\
-     &amp; \mathsf{globals} &amp; \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}^\ast, \\
-     &amp; \mathsf{locals} &amp; \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^\ast, \\
-     &amp; \mathsf{labels} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^\ast ~\} \\
+  \{ &amp; \mathsf{funcs} &amp; \href{../execution/conventions.html#syntax-funcinst}{\mathit{funcinst}}^\ast, \\
+     &amp; \mathsf{tables} &amp; \href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}}^\ast, \\
+     &amp; \mathsf{mems} &amp; \href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}}^\ast, \\
+     &amp; \mathsf{globals} &amp; \href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}}^\ast ~\} \\
   \end{array}
 \end{array}\end{split}\]</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The fields of a context are not defined as <a class="reference internal" href="../syntax/values.html#syntax-vec"><span class="std std-ref">vectors</span></a>,
-since their lengths are not bounded by the maximum vector size.</p>
-</div>
-<p>In addition to field access <span class="math">\(C.\mathsf{field}\)</span> the following notation is adopted for manipulating contexts:</p>
-<ul class="simple">
-<li>When spelling out a context, empty fields are omitted.</li>
-<li><span class="math">\(C,\mathsf{field}\,A^\ast\)</span> denotes the same context as <span class="math">\(C\)</span> but with the elements <span class="math">\(A^\ast\)</span> prepended to its <span class="math">\(\mathsf{field}\)</span> component sequence.</li>
-</ul>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This notation is defined to <em>prepend</em> not <em>append</em>.
-It is only used in situations where the original <span class="math">\(C.\mathsf{field}\)</span> is either empty
-or <span class="math">\(\mathsf{field}\)</span> is <span class="math">\(\mathsf{labels}\)</span>.
-In the latter case adding to the front is desired
-because the <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label index</span></a> space is indexed relatively, that is, in reverse order of addition.</p>
-</div>
+<span class="target" id="syntax-funcinst"></span></div>
+<div class="section" id="function-instances">
+<span id="index-3"></span><h2>Function Instances<a class="headerlink" href="#function-instances" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef17#1{{}}\mathdef17{(function instance)} &amp; \href{../execution/conventions.html#syntax-funcinst}{\mathit{funcinst}} &amp;::=&amp;
+  \{ \href{../execution/conventions.html#syntax-funcinst}{\mathsf{inst}}~\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}, \mathsf{func}~\href{../syntax/modules.html#syntax-func}{\mathit{func}} \} \\
+\end{array}\end{split}\]</div>
+<span class="target" id="syntax-funcelem"><span id="syntax-tableinst"></span></span></div>
+<div class="section" id="table-instances">
+<span id="index-4"></span><h2>Table Instances<a class="headerlink" href="#table-instances" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef17#1{{}}\mathdef17{(table instance)} &amp; \href{../execution/conventions.html#syntax-tableinst}{\mathit{tableinst}} &amp;::=&amp;
+  \{ \mathsf{elem}~(\href{../execution/conventions.html#syntax-funcelem}{\mathit{funcelem}}^?)^\ast, \mathsf{max}~\href{../syntax/values.html#syntax-int}{\def\mathdef22#1{{\mathit{uint}_{#1}}}\mathdef22{32}} \} \\
+\end{array}\end{split}\]</div>
+<span class="target" id="syntax-meminst"></span></div>
+<div class="section" id="memory-instances">
+<span id="index-5"></span><h2>Memory Instances<a class="headerlink" href="#memory-instances" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef17#1{{}}\mathdef17{(memory instance)} &amp; \href{../execution/conventions.html#syntax-meminst}{\mathit{meminst}} &amp;::=&amp;
+  \{ \mathsf{data}~\href{../syntax/values.html#syntax-byte}{\mathit{byte}}^\ast, \mathsf{max}~\href{../syntax/values.html#syntax-int}{\def\mathdef22#1{{\mathit{uint}_{#1}}}\mathdef22{32}} \} \\
+\end{array}\end{split}\]</div>
+<span class="target" id="id2"></span></div>
+<div class="section" id="global-instances">
+<span id="index-6"></span><h2>Global Instances<a class="headerlink" href="#global-instances" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef17#1{{}}\mathdef17{(global instance)} &amp; \href{../execution/conventions.html#syntax-globalinst}{\mathit{globalinst}} &amp;::=&amp;
+  \{ \mathsf{value}~\href{../execution/conventions.html#syntax-val}{\mathit{val}}, \href{../syntax/types.html#syntax-mut}{\mathsf{mut}}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}} \} \\
+\end{array}\end{split}\]</div>
+<span class="target" id="syntax-globalinst"><span id="id4"></span></span></div>
+<div class="section" id="index-7">
+<span id="id5"></span><h2>Store<a class="headerlink" href="#index-7" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef17#1{{}}\mathdef17{(store)} &amp; S &amp;::=&amp;
+  \begin{array}[t]{l&#64;{~}ll}
+  \{ &amp; \mathsf{tables} &amp; \href{../execution/conventions.html#syntax-tableinst}{\mathit{tableinst}}^\ast, \\
+     &amp; \mathsf{mems} &amp; \href{../execution/conventions.html#syntax-meminst}{\mathit{meminst}}^\ast, \\
+     &amp; \mathsf{globals} &amp; \href{../execution/conventions.html#syntax-globalinst}{\mathit{globalinst}}^\ast ~\} \\
+  \end{array}
+\end{array}\end{split}\]</div>
 </div>
 <div class="section" id="textual-notation">
 <h2>Textual Notation<a class="headerlink" href="#textual-notation" title="Permalink to this headline">¶</a></h2>
@@ -182,7 +200,7 @@ for an <span class="math">\(A\)</span> that is a <a class="reference internal" h
 <span class="math">\(T\)</span> is a <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a>;
 and so on.</p>
 </div>
-<p>The rules implicitly assume a given <a class="reference internal" href="#context"><span class="std std-ref">context</span></a> <span class="math">\(C\)</span>.
+<p>The rules implicitly assume a given <a class="reference internal" href="../validation/conventions.html#context"><span class="std std-ref">context</span></a> <span class="math">\(C\)</span>.
 In some places, this context is locally extended to a context <span class="math">\(C'\)</span> with additional entries.
 The formulation &#8220;Under context <span class="math">\(C'\)</span>, ... <em>statement</em> ...&#8221; is adopted to express that the following statement must apply under the assumptions embodied in the extended context.</p>
 </div>
@@ -191,7 +209,7 @@ The formulation &#8220;Under context <span class="math">\(C'\)</span>, ... <em>s
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This section gives a brief explanation of the notation for specifying typing rules formally.
-For the interested reader, a more thorough introduction can be found in respective text books. <a class="footnote-reference" href="#tapl" id="id1">[1]</a></p>
+For the interested reader, a more thorough introduction can be found in respective text books. <a class="footnote-reference" href="#tapl" id="id6">[1]</a></p>
 </div>
 <p>The proposition that a phrase <span class="math">\(A\)</span> has a respective type <span class="math">\(T\)</span> is written <span class="math">\(A : T\)</span>.
 In general, however, typing is dependent on the context <span class="math">\(C\)</span>.
@@ -249,7 +267,7 @@ which is expressed by locally extending the context <span class="math">\(C\)</sp
 <table class="docutils footnote" frame="void" id="tapl" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>For example: Benjamin Pierce. <a class="reference external" href="https://www.cis.upenn.edu/~bcpierce/tapl/">Types and Programming Languages</a>. The MIT Press 2002</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id6">[1]</a></td><td>For example: Benjamin Pierce. <a class="reference external" href="https://www.cis.upenn.edu/~bcpierce/tapl/">Types and Programming Languages</a>. The MIT Press 2002</td></tr>
 </tbody>
 </table>
 </div>

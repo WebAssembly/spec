@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -51,14 +51,20 @@
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Instructions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numeric-instructions">Numeric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parametric-instructions">Parametric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variable-instructions">Variable Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-instructions">Memory Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#control-instructions">Control Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expressions">Expressions</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
@@ -117,13 +123,13 @@ which are part of the instruction itself.</p>
 These operations closely match respective operations available in hardware.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef817#1{{}}\mathdef817{width} &amp; \mathit{nn}, \mathit{mm} &amp;::=&amp;
+\def\mathdef449#1{{}}\mathdef449{width} &amp; \mathit{nn}, \mathit{mm} &amp;::=&amp;
   \mathsf{32} ~|~ \mathsf{64} \\
-\def\mathdef817#1{{}}\mathdef817{signedness} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp;::=&amp;
+\def\mathdef449#1{{}}\mathdef449{signedness} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp;::=&amp;
   \mathsf{u} ~|~ \mathsf{s} \\
-\def\mathdef817#1{{}}\mathdef817{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
-  \mathsf{i}\mathit{nn}\mathsf{.const}~\href{../syntax/values.html#syntax-int}{\def\mathdef833#1{{\mathit{int}_{#1}}}\mathdef833{\mathit{nn}}} ~|~
-  \mathsf{f}\mathit{nn}\mathsf{.const}~\href{../syntax/values.html#syntax-float}{\def\mathdef834#1{{\mathit{float}_{#1}}}\mathdef834{\mathit{nn}}} ~|~ \\&amp;&amp;&amp;
+\def\mathdef449#1{{}}\mathdef449{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+  \mathsf{i}\mathit{nn}\mathsf{.const}~\href{../syntax/values.html#syntax-int}{\def\mathdef465#1{{\mathit{int}_{#1}}}\mathdef465{\mathit{nn}}} ~|~
+  \mathsf{f}\mathit{nn}\mathsf{.const}~\href{../syntax/values.html#syntax-float}{\def\mathdef466#1{{\mathit{float}_{#1}}}\mathdef466{\mathit{nn}}} ~|~ \\&amp;&amp;&amp;
   \mathsf{i}\mathit{nn}\mathsf{.eqz} ~|~ \\&amp;&amp;&amp;
   \mathsf{i}\mathit{nn}\mathsf{.eq} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.ne} ~|~
@@ -195,38 +201,38 @@ For the other integer instructions, the use of 2&#8217;s complement for the sign
 <p>Instructions in this group can operate on operands of any <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value type</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef817#1{{}}\mathdef817{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+\def\mathdef449#1{{}}\mathdef449{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
   \dots ~|~ \\&amp;&amp;&amp;
-  \mathsf{drop} ~|~ \\&amp;&amp;&amp;
-  \mathsf{select}
+  \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}
 \end{array}\end{split}\]</div>
-<p>The <span class="math">\(\mathsf{drop}\)</span> operator simply throws away a single operand.</p>
-<p>The <span class="math">\(\mathsf{select}\)</span> operator selects one of its first two operands based on whether its third operand is zero or not.</p>
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}}\)</span> operator simply throws away a single operand.</p>
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span> operator selects one of its first two operands based on whether its third operand is zero or not.</p>
 <span class="target" id="syntax-instr-variable"></span></div>
 <div class="section" id="variable-instructions">
 <span id="index-3"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Variable instructions are concerned with the access to <a class="reference internal" href="modules.html#syntax-local"><span class="std std-ref">local</span></a> or <a class="reference internal" href="modules.html#syntax-global"><span class="std std-ref">global</span></a> variables.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef817#1{{}}\mathdef817{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+\def\mathdef449#1{{}}\mathdef449{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
   \dots ~|~ \\&amp;&amp;&amp;
-  \mathsf{get\_local}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{set\_local}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{tee\_local}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{get\_global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{set\_global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \\
+  \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_local}}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{tee\_local}}~\href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_global}}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_global}}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \\
 \end{array}\end{split}\]</div>
 <p>These instructions get or set the values of variables, respectively.
-The <span class="math">\(\mathsf{tee\_local}\)</span> instruction is like <span class="math">\(\mathsf{set\_local}\)</span> but also returns its argument.</p>
+The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{tee\_local}}\)</span> instruction is like <span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_local}}\)</span> but also returns its argument.</p>
 <span class="target" id="syntax-memarg"><span id="syntax-instr-memory"></span></span></div>
 <div class="section" id="memory-instructions">
 <span id="index-4"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Instructions in this group are concerned with <span class="xref std std-ref">linear memory</span>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef817#1{{}}\mathdef817{memory immediate} &amp; \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} &amp;::=&amp;
-  \{ \mathsf{offset}~\href{../syntax/values.html#syntax-int}{\def\mathdef822#1{{\mathit{uint}_{#1}}}\mathdef822{32}}, \mathsf{align}~\href{../syntax/values.html#syntax-int}{\def\mathdef822#1{{\mathit{uint}_{#1}}}\mathdef822{32}} \} \\
-\def\mathdef817#1{{}}\mathdef817{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+\def\mathdef449#1{{}}\mathdef449{memory immediate} &amp; \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} &amp;::=&amp;
+  \{ \mathsf{offset}~\href{../syntax/values.html#syntax-int}{\def\mathdef454#1{{\mathit{uint}_{#1}}}\mathdef454{32}}, \mathsf{align}~\href{../syntax/values.html#syntax-int}{\def\mathdef454#1{{\mathit{uint}_{#1}}}\mathdef454{32}} \} \\
+\def\mathdef449#1{{}}\mathdef449{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
   \dots ~|~ \\&amp;&amp;&amp;
   \mathsf{i}\mathit{nn}\mathsf{.load}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} ~|~
   \mathsf{f}\mathit{nn}\mathsf{.load}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} ~|~ \\&amp;&amp;&amp;
@@ -238,10 +244,10 @@ The <span class="math">\(\mathsf{tee\_local}\)</span> instruction is like <span 
   \mathsf{i}\mathit{nn}\mathsf{.store8}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.store16}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} ~|~
   \mathsf{i64.store32}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{current\_memory} ~|~ \\&amp;&amp;&amp;
-  \mathsf{grow\_memory} \\
+  \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} \\
 \end{array}\end{split}\]</div>
-<p>Memory is accessed with <span class="math">\(\mathsf{load}\)</span> and <span class="math">\(\mathsf{store}\)</span> instructions for the different <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value types</span></a>.
+<p>Memory is accessed with <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\)</span> instructions for the different <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value types</span></a>.
 They all take a <em>memory immediate</em> <span class="math">\(\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span> that contains an address <em>offset</em> and an <em>alignment</em> hint.
 Integer loads and stores can optionally specify a <em>storage size</em> that is smaller than the width of the respective value type.
 In the case of loads, a sign extension mode <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> is then required to select appropriate behavior.</p>
@@ -252,8 +258,8 @@ A <span class="xref std std-ref">trap</span> results if any of the accessed memo
 <p class="first admonition-title">Note</p>
 <p class="last">Future version of WebAssembly might provide memory instructions with 64 bit address ranges.</p>
 </div>
-<p>The <span class="math">\(\mathsf{current\_memory}\)</span> instruction returns the current size of a memory.
-The <span class="math">\(\mathsf{grow\_memory}\)</span> instruction grows memory by a given delta and returns the previous size, or <span class="math">\(-1\)</span> if enough memory cannot be allocated.
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}}\)</span> instruction returns the current size of a memory.
+The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}}\)</span> instruction grows memory by a given delta and returns the previous size, or <span class="math">\(-1\)</span> if enough memory cannot be allocated.
 Both instructions operate in units of <span class="xref std std-ref">page size</span>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -268,24 +274,24 @@ This restriction may be lifted in future versions.</p>
 <p>Instructions in this group affect the flow of control.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef817#1{{}}\mathdef817{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+\def\mathdef449#1{{}}\mathdef449{instructions} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
   \dots ~|~ \\&amp;&amp;&amp;
-  \mathsf{nop} ~|~ \\&amp;&amp;&amp;
-  \mathsf{unreachable} ~|~ \\&amp;&amp;&amp;
-  \mathsf{block}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
-  \mathsf{loop}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
-  \mathsf{if}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{else}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} ~|~ \\&amp;&amp;&amp;
-  \mathsf{br}~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{br\_if}~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{br\_table}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}})~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{return} ~|~ \\&amp;&amp;&amp;
-  \mathsf{call}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} ~|~ \\&amp;&amp;&amp;
-  \mathsf{call\_indirect}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} \\
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_if}}~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}})~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} ~|~ \\&amp;&amp;&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} \\
 \end{array}\end{split}\]</div>
-<p>The <span class="math">\(\mathsf{nop}\)</span> instruction does nothing.</p>
-<p>The <span class="math">\(\mathsf{unreachable}\)</span> instruction causes an unconditional <span class="xref std std-ref">trap</span>.</p>
-<p>The <span class="math">\(\mathsf{block}\)</span>, <span class="math">\(\mathsf{loop}\)</span> and <span class="math">\(\mathsf{if}\)</span> instructions are <em>structured</em> instructions.
-They bracket nested sequences of instructions, called <em>blocks</em>, terminated with, or separated by, <span class="math">\(\mathsf{end}\)</span> or <span class="math">\(\mathsf{else}\)</span> pseudo-instructions.
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}}\)</span> instruction does nothing.</p>
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span> instruction causes an unconditional <span class="xref std std-ref">trap</span>.</p>
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span>, <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> instructions are <em>structured</em> instructions.
+They bracket nested sequences of instructions, called <em>blocks</em>, terminated with, or separated by, <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> or <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span> pseudo-instructions.
 As the grammar prescribes, they must be well-nested.
 A structured instruction can produce a value as described by the annotated <a class="reference internal" href="types.html#syntax-resulttype"><span class="std std-ref">result type</span></a>.</p>
 <p>Each structured control instruction introduces an implicit <em>label</em>.
@@ -297,42 +303,42 @@ Consequently, labels can only be referenced from <em>within</em> the associated 
 This also implies that branches can only be directed outwards,
 &#8220;breaking&#8221; from the block of the control construct they target.
 The exact effect depends on that control construct.
-In case of <span class="math">\(\mathsf{block}\)</span> or <span class="math">\(\mathsf{if}\)</span> it is a <em>forward jump</em>,
-resuming execution after the matching <span class="math">\(\mathsf{end}\)</span>.
-In case of <span class="math">\(\mathsf{loop}\)</span> it is a <em>backward jump</em> to the beginning of the loop.</p>
+In case of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> or <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> it is a <em>forward jump</em>,
+resuming execution after the matching <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span>.
+In case of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}\)</span> it is a <em>backward jump</em> to the beginning of the loop.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This enforces <em>structured control flow</em>.
-Intuitively, a branch targeting a <span class="math">\(\mathsf{block}\)</span> or <span class="math">\(\mathsf{if}\)</span> behaves like a <span class="math">\(\mathsf{break}\)</span> statement,
-while a branch targeting a <span class="math">\(\mathsf{loop}\)</span> behaves like a <span class="math">\(\mathsf{continue}\)</span> statement.</p>
+Intuitively, a branch targeting a <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> or <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> behaves like a <span class="math">\(\mathsf{break}\)</span> statement,
+while a branch targeting a <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}\)</span> behaves like a <span class="math">\(\mathsf{continue}\)</span> statement.</p>
 </div>
 <p>Branch instructions come in several flavors:
-<span class="math">\(\mathsf{br}\)</span> performs an unconditional branch,
-<span class="math">\(\mathsf{br\_if}\)</span> performs a conditional branch,
-and <span class="math">\(\mathsf{br\_table}\)</span> performs an indirect branch through an operand indexing into the label vector that is an immediate to the instruction, or to a default target if the operand is out of bounds.
-The <span class="math">\(\mathsf{return}\)</span> instruction is a shortcut for an unconditional branch to the outermost block, which implicitly is the body of the current function.
+<span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}\)</span> performs an unconditional branch,
+<span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_if}}\)</span> performs a conditional branch,
+and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}\)</span> performs an indirect branch through an operand indexing into the label vector that is an immediate to the instruction, or to a default target if the operand is out of bounds.
+The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}}\)</span> instruction is a shortcut for an unconditional branch to the outermost block, which implicitly is the body of the current function.
 Taking a branch <em>unwinds</em> the operand stack up to the height where the targeted structured control instruction was entered.
 However, forward branches that target a control instruction with a non-empty result type consume a matching operand first and push it back on the operand stack after unwinding, as a result for the terminated instruction.</p>
-<p>The <span class="math">\(\mathsf{call}\)</span> instruction invokes another function, consuming the necessary arguments from the stack and returning the result values of the call.
-The <span class="math">\(\mathsf{call\_indirect}\)</span> instruction calls a function indirectly through an operand indexing into a <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a>.
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}\)</span> instruction invokes another function, consuming the necessary arguments from the stack and returning the result values of the call.
+The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> instruction calls a function indirectly through an operand indexing into a <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a>.
 Since tables may contain function elements of heterogeneous type <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}\)</span>,
 the callee is dynamically checked against the <span class="xref std std-ref">function type</span> indexed by the instruction&#8217;s immediate, and the call aborted with a <span class="xref std std-ref">trap</span> if it does not match.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly,
-<span class="math">\(\mathsf{call\_indirect}\)</span> implicitly operates on <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a> <a class="reference internal" href="modules.html#syntax-tableidx"><span class="std std-ref">index</span></a> <span class="math">\(0\)</span>.
+<span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> implicitly operates on <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a> <a class="reference internal" href="modules.html#syntax-tableidx"><span class="std std-ref">index</span></a> <span class="math">\(0\)</span>.
 This restriction may be lifted in future versions.</p>
 </div>
 <span class="target" id="syntax-expr"></span></div>
 <div class="section" id="expressions">
 <span id="index-6"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="modules.html#syntax-func"><span class="std std-ref">Function</span></a> bodies, initialization values for <a class="reference internal" href="modules.html#syntax-global"><span class="std std-ref">globals</span></a> and offsets of <a class="reference internal" href="modules.html#syntax-elem"><span class="std std-ref">element</span></a> or <a class="reference internal" href="modules.html#syntax-data"><span class="std std-ref">data</span></a> segments are given as expressions, which are sequences of <a class="reference internal" href="#syntax-instr"><span class="std std-ref">instructions</span></a> terminated by an <span class="math">\(\mathsf{end}\)</span> marker.</p>
+<p><a class="reference internal" href="modules.html#syntax-func"><span class="std std-ref">Function</span></a> bodies, initialization values for <a class="reference internal" href="modules.html#syntax-global"><span class="std std-ref">globals</span></a> and offsets of <a class="reference internal" href="modules.html#syntax-elem"><span class="std std-ref">element</span></a> or <a class="reference internal" href="modules.html#syntax-data"><span class="std std-ref">data</span></a> segments are given as expressions, which are sequences of <a class="reference internal" href="#syntax-instr"><span class="std std-ref">instructions</span></a> terminated by an <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> marker.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef817#1{{}}\mathdef817{expressions} &amp; \href{../syntax/modules.html#syntax-expr}{\mathit{expr}} &amp;::=&amp;
-  \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\mathsf{end} \\
+\def\mathdef449#1{{}}\mathdef449{expressions} &amp; \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} &amp;::=&amp;
+  \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
 \end{array}\end{split}\]</div>
-<p>In some places, validation <span class="xref std std-ref">restricts</span> expressions to be <em>constant</em>, which limits the set of allowable insructions.</p>
+<p>In some places, validation <a class="reference internal" href="../validation/instructions.html#valid-constant"><span class="std std-ref">restricts</span></a> expressions to be <em>constant</em>, which limits the set of allowable insructions.</p>
 </div>
 </div>
 

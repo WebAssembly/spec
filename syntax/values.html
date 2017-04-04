@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -49,16 +49,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Values</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Values</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bytes">Bytes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integers">Integers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#floating-point">Floating-Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vectors">Vectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#names">Names</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instructions/index.html">Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
@@ -103,8 +108,8 @@
 In the abstract syntax they are represented as hexadecimal literals.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef867#1{{}}\mathdef867{bytes} &amp; \href{../syntax/values.html#syntax-byte}{byte} &amp;::=&amp;
-  \def\mathdef883#1{\mathrm{0x#1}}\mathdef883{00} ~|~ \dots ~|~ \def\mathdef884#1{\mathrm{0x#1}}\mathdef884{FF} \\
+\def\mathdef499#1{{}}\mathdef499{bytes} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
+  \def\mathdef515#1{\mathrm{0x#1}}\mathdef515{00} ~|~ \dots ~|~ \def\mathdef516#1{\mathrm{0x#1}}\mathdef516{FF} \\
 \end{array}\end{split}\]</div>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
@@ -119,12 +124,12 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 <p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>size</em> and their <em>signedness</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef867#1{{}}\mathdef867{unsigned integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef868#1{{\mathit{uint}_{#1}}}\mathdef868{N}} &amp;::=&amp;
+\def\mathdef499#1{{}}\mathdef499{unsigned integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef500#1{{\mathit{uint}_{#1}}}\mathdef500{N}} &amp;::=&amp;
   0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
-\def\mathdef867#1{{}}\mathdef867{signed integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef874#1{{\mathit{sint}_{#1}}}\mathdef874{N}} &amp;::=&amp;
+\def\mathdef499#1{{}}\mathdef499{signed integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef506#1{{\mathit{sint}_{#1}}}\mathdef506{N}} &amp;::=&amp;
   -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
-\def\mathdef867#1{{}}\mathdef867{uninterpreted integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef877#1{{\mathit{int}_{#1}}}\mathdef877{N}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-int}{\def\mathdef868#1{{\mathit{uint}_{#1}}}\mathdef868{N}} ~|~ \href{../syntax/values.html#syntax-int}{\def\mathdef874#1{{\mathit{sint}_{#1}}}\mathdef874{N}} \\
+\def\mathdef499#1{{}}\mathdef499{uninterpreted integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef509#1{{\mathit{int}_{#1}}}\mathdef509{N}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-int}{\def\mathdef500#1{{\mathit{uint}_{#1}}}\mathdef500{N}} ~|~ \href{../syntax/values.html#syntax-int}{\def\mathdef506#1{{\mathit{sint}_{#1}}}\mathdef506{N}} \\
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
 In those contexts, a conversion based on 2&#8217;s complement will be applied for values that are out-of-range for a chosen interpretation.
@@ -142,13 +147,13 @@ and when interpreted as signed, positive values <span class="math">\(n \geq 2^{N
 </ul>
 <span class="target" id="syntax-float"></span></div>
 </div>
-<div class="section" id="floating-point-data">
-<span id="index-4"></span><h2>Floating-point Data<a class="headerlink" href="#floating-point-data" title="Permalink to this headline">¶</a></h2>
-<p><em>Floating-point data</em> consists of values in binary floating-point format according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.</p>
+<div class="section" id="floating-point">
+<span id="index-4"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
+<p><em>Floating-point</em> data consists of values in binary floating-point format according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef867#1{{}}\mathdef867{floating-point numbers} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef880#1{{\mathit{float}_{#1}}}\mathdef880{N}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-byte}{byte}^{N/8} \\
+\def\mathdef499#1{{}}\mathdef499{floating-point numbers} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef512#1{{\mathit{float}_{#1}}}\mathdef512{N}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-byte}{\mathit{byte}}^{N/8} \\
 \end{array}\end{split}\]</div>
 <p>The two possible sizes <span class="math">\(N\)</span> are 32 and 64.</p>
 <span class="target" id="syntax-vec"></span></div>
@@ -159,7 +164,7 @@ where the <span class="math">\(A\)</span>-s can either be values or complex cons
 A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
 <div class="math">
 \[\begin{split}\begin{array}{lllll}
-\def\mathdef867#1{{}}\mathdef867{vectors} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
+\def\mathdef499#1{{}}\mathdef499{vectors} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
   A^n
   &amp; (n &lt; 2^{32})\\
 \end{array}\end{split}\]</div>
@@ -169,8 +174,8 @@ A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
 <p><em>Names</em> are vectors of bytes interpreted as character strings.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef867#1{{}}\mathdef867{names} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/values.html#syntax-byte}{byte}) \\
+\def\mathdef499#1{{}}\mathdef499{names} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}) \\
 \end{array}\end{split}\]</div>
 <div class="admonition-todo admonition" id="index-7">
 <p class="first admonition-title">Todo</p>

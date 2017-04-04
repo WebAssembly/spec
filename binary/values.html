@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Values &#8212; WebAssembly 1.0</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Binary Format" href="index.html" />
+    <link rel="next" title="Types" href="types.html" />
+    <link rel="prev" title="Conventions" href="conventions.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Binary Format</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Values</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bytes">Bytes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integers">Integers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#floating-point">Floating-Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vectors">Vectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#names">Names</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/instrindex.html">Index of Instructions</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="binary-value"></span><div class="section" id="values">
+<span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="binary-byte"></span><div class="section" id="bytes">
+<span id="index-1"></span><h2>Bytes<a class="headerlink" href="#bytes" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">Bytes</span></a> encode by themselves.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
+\def\mathdef45#1{{}}\mathdef45{bytes} &amp; \href{../binary/values.html#binary-byte}{\mathtt{byte}} &amp;::=&amp;
+  \def\mathdef78#1{\mathtt{0x#1}}\mathdef78{00} &amp;\Rightarrow&amp; \def\mathdef79#1{\mathtt{0x#1}}\mathdef79{00} \\ &amp;&amp;|&amp;&amp;
+  \dots \\ &amp;&amp;|&amp;
+  \def\mathdef80#1{\mathtt{0x#1}}\mathdef80{FF} &amp;\Rightarrow&amp; \def\mathdef81#1{\mathtt{0x#1}}\mathdef81{FF} \\
+\end{array}\end{split}\]</div>
+<span class="target" id="binary-uint"><span id="binary-sint"></span><span id="binary-int"></span></span></div>
+<div class="section" id="integers">
+<span id="index-2"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
+<p>All <a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">integers</span></a> are encoded using the <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128">LEB128</a> variable-length integer encoding, in either unsigned or signed variant.</p>
+<p><a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">Unsigned integers</span></a> are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128">unsigned LEB128</a> format.
+As an additional constraint, the total number of bytes encoding a value of type <span class="math">\(\def\mathdef82#1{{\mathit{uint}_{#1}}}\mathdef82{N}\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llcll&#64;{\qquad\qquad}l}
+\def\mathdef45#1{{}}\mathdef45{unsigned integers} &amp; \def\mathdef83#1{{\mathtt{uint}_{#1}}}\mathdef83{N} &amp;::=&amp;
+  n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}} &amp;\Rightarrow&amp; n &amp; (n &lt; 128 \wedge n &lt; 2^N) \\ &amp;&amp;|&amp;
+  n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}}~~m{:}\def\mathdef84#1{{\mathtt{uint}_{#1}}}\mathdef84{N-7} &amp;\Rightarrow&amp;
+    128\cdot m + (n-128) &amp; (n \geq 128 \wedge N &gt; 7) \\
+\end{array}\end{split}\]</div>
+<p><a class="reference internal" href="../syntax/values.html#syntax-sint"><span class="std std-ref">Signed integers</span></a> are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Signed_LEB128">signed LEB128</a> format, which uses a 2&#8217;s complement representation.
+As an additional constraint, the total number of bytes encoding a value of type <span class="math">\(\def\mathdef85#1{{\mathit{sint}_{#1}}}\mathdef85{N}\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llcll&#64;{\qquad\qquad}l}
+\def\mathdef45#1{{}}\mathdef45{signed integers} &amp; \def\mathdef86#1{{\mathtt{sint}_{#1}}}\mathdef86{N} &amp;::=&amp;
+  n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}} &amp;\Rightarrow&amp; n &amp; (n &lt; 64 \wedge n &lt; 2^{N-1}) \\ &amp;&amp;|&amp;
+  n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}} &amp;\Rightarrow&amp; n-128 &amp; (64 \leq n &lt; 128 \wedge n \geq 128-2^{N-1}) \\ &amp;&amp;|&amp;
+  n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}}~~m{:}\def\mathdef87#1{{\mathtt{sint}_{#1}}}\mathdef87{N-7} &amp;\Rightarrow&amp;
+    128\cdot m + (n-128) &amp; (n \geq 128 \wedge N &gt; 7) \\
+\end{array}\end{split}\]</div>
+<p><a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">Uninterpreted integers</span></a> are always encoded as signed integers.</p>
+<div class="math">
+\[\begin{array}{llcll&#64;{\qquad\qquad}l}
+\def\mathdef45#1{{}}\mathdef45{uninterpreted integers} &amp; \def\mathdef88#1{{\mathtt{int}_{#1}}}\mathdef88{N} &amp;::=&amp;
+  n{:}\def\mathdef89#1{{\mathtt{sint}_{#1}}}\mathdef89{N} &amp;\Rightarrow&amp; n
+\end{array}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>While the side conditions <span class="math">\(N &gt; 7\)</span> in the productions for <em>non-terminating</em> bytes restrict the length of the <span class="math">\(\def\mathdef90#1{{\mathit{uint}_{#1}}}\mathdef90{}\)</span> and <span class="math">\(\def\mathdef91#1{{\mathit{sint}_{#1}}}\mathdef91{}\)</span> encodings,
+&#8220;trailing zeros&#8221; are still allowed within these bounds.
+For example, <span class="math">\(\def\mathdef92#1{\mathtt{0x#1}}\mathdef92{03}\)</span> and <span class="math">\(\def\mathdef93#1{\mathtt{0x#1}}\mathdef93{83}~\def\mathdef94#1{\mathtt{0x#1}}\mathdef94{00}\)</span> are both well-formed encodings for the value <span class="math">\(3\)</span> as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef48#1{{\mathit{uint}_{#1}}}\mathdef48{8}}\)</span>.
+Similarly, either of <span class="math">\(\def\mathdef95#1{\mathtt{0x#1}}\mathdef95{7e}\)</span> and <span class="math">\(\def\mathdef96#1{\mathtt{0x#1}}\mathdef96{FE}~\def\mathdef97#1{\mathtt{0x#1}}\mathdef97{7F}\)</span> and <span class="math">\(\def\mathdef98#1{\mathtt{0x#1}}\mathdef98{FE}~\def\mathdef99#1{\mathtt{0x#1}}\mathdef99{FF}~\def\mathdef100#1{\mathtt{0x#1}}\mathdef100{7F}\)</span> are well-formed encodings of the value <span class="math">\(-2\)</span> as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef54#1{{\mathit{sint}_{#1}}}\mathdef54{16}}\)</span>.</p>
+<p class="last">The side conditions on the value <span class="math">\(n\)</span> of <em>terminating</em> bytes further enforce that
+any unused bits in these bytes must be <span class="math">\(0\)</span> for positive values and <span class="math">\(1\)</span> for negative ones.
+For example, <span class="math">\(\def\mathdef101#1{\mathtt{0x#1}}\mathdef101{83}~\def\mathdef102#1{\mathtt{0x#1}}\mathdef102{10}\)</span> is malformed as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef48#1{{\mathit{uint}_{#1}}}\mathdef48{8}}\)</span> encoding.
+Similarly, both <span class="math">\(\def\mathdef103#1{\mathtt{0x#1}}\mathdef103{83}~\def\mathdef104#1{\mathtt{0x#1}}\mathdef104{3E}\)</span> and <span class="math">\(\def\mathdef105#1{\mathtt{0x#1}}\mathdef105{FF}~\def\mathdef106#1{\mathtt{0x#1}}\mathdef106{7B}\)</span> are malformed as <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef53#1{{\mathit{sint}_{#1}}}\mathdef53{8}}\)</span> encodings.</p>
+</div>
+<span class="target" id="binary-float"></span></div>
+<div class="section" id="floating-point">
+<span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating point</span></a> values are encoded directly by their IEEE bit pattern in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
+<div class="math">
+\[\begin{split}\begin{array}{llcll&#64;{\qquad\qquad}l}
+\def\mathdef45#1{{}}\mathdef45{floating-point numbers} &amp; \def\mathdef107#1{{\mathtt{float}_{#1}}}\mathdef107{N} &amp;::=&amp;
+  b^\ast{:\,}\href{../binary/values.html#binary-byte}{\mathtt{byte}}^{N/8} &amp;\Rightarrow&amp; \mathrm{reverse}(b^\ast) \\
+\end{array}\end{split}\]</div>
+<p>Here, <span class="math">\(\mathrm{reverse}(b^\ast)\)</span> denotes the byte sequence <span class="math">\(b^\ast\)</span> in reversed order.</p>
+<span class="target" id="binary-vec"></span></div>
+<div class="section" id="vectors">
+<span id="index-4"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/values.html#syntax-vec"><span class="std std-ref">Vectors</span></a> are encoded with their length followed by the encoding of their element sequence.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llcll&#64;{\qquad\qquad}l}
+\def\mathdef45#1{{}}\mathdef45{vectors} &amp; \href{../binary/values.html#binary-vec}{\mathtt{vec}}(\mathtt{B}) &amp;::=&amp;
+  n{:}\href{../binary/values.html#binary-int}{\def\mathdef67#1{{\mathtt{uint}_{#1}}}\mathdef67{32}}~~(x{:}\mathtt{B})^n &amp;\Rightarrow&amp; x^n \\
+\end{array}\end{split}\]</div>
+<span class="target" id="binary-name"></span></div>
+<div class="section" id="names">
+<span id="index-5"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are encoded directly as a vector of bytes.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llcll}
+\def\mathdef45#1{{}}\mathdef45{names} &amp; \href{../binary/values.html#binary-name}{\mathtt{name}} &amp;::=&amp;
+  b^\ast{:\,}\href{../binary/values.html#binary-vec}{\mathtt{vec}}(\href{../binary/values.html#binary-byte}{\mathtt{byte}}) &amp;\Rightarrow&amp; b^\ast \\
+\end{array}\end{split}\]</div>
+<div class="admonition-todo admonition" id="index-6">
+<p class="first admonition-title">Todo</p>
+<p class="last">UTF-8?</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
