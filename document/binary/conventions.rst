@@ -74,7 +74,7 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
    The :ref:`binary grammar <binary-limits>` for :ref:`limits <syntax-limits>` is defined as follows:   
 
    .. math::
-      \begin{array}{llcll}
+      \begin{array}{llclll}
       \production{limits} & \Blimits &::=&
         \hex{00}~~n{:}\Bu32 &\Rightarrow& \{ \MIN~n, \MAX~\epsilon \} \\ &&|&
         \hex{01}~~n{:}\Bu32~~m{:}\Bu32 &\Rightarrow& \{ \MIN~n, \MAX~m \} \\

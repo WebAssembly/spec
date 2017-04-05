@@ -17,7 +17,7 @@ Value Types
 :ref:`Value types <syntax-valtype>` are encoded by a single byte.
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llclll@{\qquad\qquad}l}
    \production{value types} & \Bvaltype &::=&
      \hex{7F} &\Rightarrow& \I32 \\ &&|&
      \hex{7E} &\Rightarrow& \I64 \\ &&|&
@@ -41,7 +41,7 @@ Result Types
 :ref:`Result types <syntax-resulttype>` are encoded by either the byte :math:`\hex{40}` indicating the empty type or as a single :ref:`value type <binary-valtype>`.
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llclll@{\qquad\qquad}l}
    \production{result types} & \Bresulttype &::=&
      \hex{40} &\Rightarrow& [] \\ &&|&
      t{:}\Bvaltype &\Rightarrow& [t] \\
@@ -62,7 +62,7 @@ Function Types
 :ref:`Function types <syntax-functype>` are encoded by the byte :math:`\hex{60}` followed by the respective :ref:`vectors <binary-vec>` of parameter and result types.
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llclll@{\qquad\qquad}l}
    \production{function types} & \Bfunctype &::=&
      \hex{60}~~t_1^\ast{:\,}\Bvec(\Bvaltype)~~t_2^\ast{:\,}\Bvec(\Bvaltype)
        &\Rightarrow& [t_1^\ast] \to [t_2^\ast] \\
@@ -80,7 +80,7 @@ Limits
 :ref:`Limits <syntax-limits>` are encoded with a preceding flag indicating whether a maximum is present.
 
 .. math::
-   \begin{array}{llcll}
+   \begin{array}{llclll}
    \production{limits} & \Blimits &::=&
      \hex{00}~~n{:}\Bu32 &\Rightarrow& \{ \MIN~n, \MAX~\epsilon \} \\ &&|&
      \hex{01}~~n{:}\Bu32~~m{:}\Bu32 &\Rightarrow& \{ \MIN~n, \MAX~m \} \\
@@ -98,7 +98,7 @@ Memory Types
 :ref:`Memory types <syntax-memtype>` are encoded with their :ref:`limits <binary-limits>`.
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llclll@{\qquad\qquad}l}
    \production{memory types} & \Bmemtype &::=&
      \X{lim}{:}\Blimits &\Rightarrow& \X{lim} \\
    \end{array}
@@ -118,7 +118,7 @@ Table Types
 :ref:`Table types <syntax-tabletype>` are encoded with their :ref:`limits <binary-limits>` and a constant byte indicating their :ref:`element type <syntax-elemtype>`.
 
 .. math::
-   \begin{array}{llcll}
+   \begin{array}{llclll}
    \production{table types} & \Btabletype &::=&
      \X{et}{:}\Belemtype~~\X{lim}{:}\Blimits &\Rightarrow& \X{lim}~\X{et} \\
    \production{element types} & \Belemtype &::=&
@@ -139,7 +139,7 @@ Global Types
 :ref:`Global types <syntax-globaltype>` are encoded by their :ref:`value type <binary-valtype>` and a flag for their :ref:`mutability <syntax-mut>`.
 
 .. math::
-   \begin{array}{llcll}
+   \begin{array}{llclll}
    \production{global types} & \Bglobaltype &::=&
      t{:}\Bvaltype~~m{:}\Bmut &\Rightarrow& m~t \\
    \production{mutability} & \Bmut &::=&

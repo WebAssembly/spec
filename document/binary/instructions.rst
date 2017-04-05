@@ -173,14 +173,11 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represented by separate byte codes without any immediates, with the only exception of |CONST| instructions, which are followed by the respective literal.
+All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represented by separate byte codes.
+
+The |CONST| instructions are followed by the respective literal.
 
 .. _binary-const:
-.. _binary-unop:
-.. _binary--binop:
-.. _binary-testop:
-.. _binary-relop:
-.. _binary-cvtop:
 
 .. math::
    \begin{array}{llclll}
@@ -188,7 +185,17 @@ All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represent
      \hex{41}~~n{:}\Bi32 &\Rightarrow& \I32.\CONST~n \\ &&|&
      \hex{42}~~n{:}\Bi64 &\Rightarrow& \I64.\CONST~n \\ &&|&
      \hex{43}~~z{:}\Bf32 &\Rightarrow& \F32.\CONST~z \\ &&|&
-     \hex{44}~~z{:}\Bf64 &\Rightarrow& \F64.\CONST~z \\ &&|&
+     \hex{44}~~z{:}\Bf64 &\Rightarrow& \F64.\CONST~z \\
+   \end{array}
+
+All other numeric instructions are plain opcodes without any immediates.
+
+.. _binary-testop:
+.. _binary-relop:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instructions} & \Binstr &::=& \dots && \phantom{thisshouldbeenough} \\&&|&
      \hex{45} &\Rightarrow& \I32.\EQZ \\ &&|&
      \hex{46} &\Rightarrow& \I32.\EQ \\ &&|&
      \hex{47} &\Rightarrow& \I32.\NE \\ &&|&
@@ -199,7 +206,12 @@ All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represent
      \hex{4C} &\Rightarrow& \I32.\LE\K{\_s} \\ &&|&
      \hex{4D} &\Rightarrow& \I32.\LE\K{\_u} \\ &&|&
      \hex{4E} &\Rightarrow& \I32.\GE\K{\_s} \\ &&|&
-     \hex{4F} &\Rightarrow& \I32.\GE\K{\_u} \\ &&|&
+     \hex{4F} &\Rightarrow& \I32.\GE\K{\_u} \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{50} &\Rightarrow& \I64.\EQZ \\ &&|&
      \hex{51} &\Rightarrow& \I64.\EQ \\ &&|&
      \hex{52} &\Rightarrow& \I64.\NE \\ &&|&
@@ -210,19 +222,37 @@ All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represent
      \hex{57} &\Rightarrow& \I64.\LE\K{\_s} \\ &&|&
      \hex{58} &\Rightarrow& \I64.\LE\K{\_u} \\ &&|&
      \hex{59} &\Rightarrow& \I64.\GE\K{\_s} \\ &&|&
-     \hex{5A} &\Rightarrow& \I64.\GE\K{\_u} \\ &&|&
+     \hex{5A} &\Rightarrow& \I64.\GE\K{\_u} \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{5B} &\Rightarrow& \F32.\EQ \\ &&|&
      \hex{5C} &\Rightarrow& \F32.\NE \\ &&|&
      \hex{5D} &\Rightarrow& \F32.\LT \\ &&|&
      \hex{5E} &\Rightarrow& \F32.\GT \\ &&|&
      \hex{5F} &\Rightarrow& \F32.\LE \\ &&|&
-     \hex{60} &\Rightarrow& \F32.\GE \\ &&|&
+     \hex{60} &\Rightarrow& \F32.\GE \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{61} &\Rightarrow& \F64.\EQ \\ &&|&
      \hex{62} &\Rightarrow& \F64.\NE \\ &&|&
      \hex{63} &\Rightarrow& \F64.\LT \\ &&|&
      \hex{64} &\Rightarrow& \F64.\GT \\ &&|&
      \hex{65} &\Rightarrow& \F64.\LE \\ &&|&
-     \hex{66} &\Rightarrow& \F64.\GE \\ &&|&
+     \hex{66} &\Rightarrow& \F64.\GE \\
+   \end{array}
+
+.. _binary-unop:
+.. _binary-binop:
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{67} &\Rightarrow& \I32.\CLZ \\ &&|&
      \hex{68} &\Rightarrow& \I32.\CTZ \\ &&|&
      \hex{69} &\Rightarrow& \I32.\POPCNT \\ &&|&
@@ -240,7 +270,12 @@ All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represent
      \hex{75} &\Rightarrow& \I32.\SHR\K{\_s} \\ &&|&
      \hex{76} &\Rightarrow& \I32.\SHR\K{\_u} \\ &&|&
      \hex{77} &\Rightarrow& \I32.\ROTL \\ &&|&
-     \hex{78} &\Rightarrow& \I32.\ROTR \\ &&|&
+     \hex{78} &\Rightarrow& \I32.\ROTR \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{79} &\Rightarrow& \I64.\CLZ \\ &&|&
      \hex{7A} &\Rightarrow& \I64.\CTZ \\ &&|&
      \hex{7B} &\Rightarrow& \I64.\POPCNT \\ &&|&
@@ -258,7 +293,12 @@ All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represent
      \hex{87} &\Rightarrow& \I64.\SHR\K{\_s} \\ &&|&
      \hex{88} &\Rightarrow& \I64.\SHR\K{\_u} \\ &&|&
      \hex{89} &\Rightarrow& \I64.\ROTL \\ &&|&
-     \hex{8A} &\Rightarrow& \I64.\ROTR \\ &&|&
+     \hex{8A} &\Rightarrow& \I64.\ROTR \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{8B} &\Rightarrow& \F32.\ABS \\ &&|&
      \hex{8C} &\Rightarrow& \F32.\NEG \\ &&|&
      \hex{8D} &\Rightarrow& \F32.\CEIL \\ &&|&
@@ -272,7 +312,12 @@ All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represent
      \hex{95} &\Rightarrow& \F32.\DIV \\ &&|&
      \hex{96} &\Rightarrow& \F32.\FMIN \\ &&|&
      \hex{97} &\Rightarrow& \F32.\FMAX \\ &&|&
-     \hex{98} &\Rightarrow& \F32.\COPYSIGN \\ &&|&
+     \hex{98} &\Rightarrow& \F32.\COPYSIGN \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{99} &\Rightarrow& \F64.\ABS \\ &&|&
      \hex{9A} &\Rightarrow& \F64.\NEG \\ &&|&
      \hex{9B} &\Rightarrow& \F64.\CEIL \\ &&|&
@@ -286,7 +331,14 @@ All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represent
      \hex{A3} &\Rightarrow& \F64.\DIV \\ &&|&
      \hex{A4} &\Rightarrow& \F64.\FMIN \\ &&|&
      \hex{A5} &\Rightarrow& \F64.\FMAX \\ &&|&
-     \hex{A6} &\Rightarrow& \F64.\COPYSIGN \\ &&|&
+     \hex{A6} &\Rightarrow& \F64.\COPYSIGN \\
+   \end{array}
+
+.. _binary-cvtop:
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{A7} &\Rightarrow& \I32.\WRAP\K{/}\I64 \\ &&|&
      \hex{A8} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F32 \\ &&|&
      \hex{A9} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F32 \\ &&|&

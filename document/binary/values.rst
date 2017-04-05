@@ -18,7 +18,7 @@ Bytes
 :ref:`Bytes <syntax-int>` encode themselves.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcll@{\qquad}l}
    \production{bytes} & \Bbyte &::=&
      \hex{00} &\Rightarrow& \hex{00} \\ &&|&&
      \dots \\ &&|&
@@ -48,7 +48,7 @@ All :ref:`integers <syntax-int>` are encoded using the `LEB128 <https://en.wikip
 As an additional constraint, the total number of bytes encoding a value of type :math:`\uX{N}` must not exceed :math:`\F{ceil}(N/7)` bytes.
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llclll@{\qquad}l}
    \production{unsigned integers} & \BuX{N} &::=&
      n{:}\Bbyte &\Rightarrow& n & (n < 2^7 \wedge n < 2^N) \\ &&|&
      n{:}\Bbyte~~m{:}\BuX{N-7} &\Rightarrow&
@@ -59,7 +59,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
 As an additional constraint, the total number of bytes encoding a value of type :math:`\sX{N}` must not exceed :math:`\F{ceil}(N/7)` bytes.
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llclll@{\qquad}l}
    \production{signed integers} & \BsX{N} &::=&
      n{:}\Bbyte &\Rightarrow& n & (n < 2^6 \wedge n < 2^{N-1}) \\ &&|&
      n{:}\Bbyte &\Rightarrow& n-2^7 & (2^6 \leq n < 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &&|&
@@ -70,7 +70,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
 :ref:`Uninterpreted integers <syntax-int>` are always encoded as signed integers.
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llclll@{\qquad\qquad}l}
    \production{uninterpreted integers} & \BiX{N} &::=&
      n{:}\BsX{N} &\Rightarrow& n
    \end{array}
@@ -98,7 +98,7 @@ Floating-Point
 :ref:`Floating point <syntax-float>` values are encoded directly by their IEEE bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llclll@{\qquad\qquad}l}
    \production{floating-point numbers} & \BfX{N} &::=&
      b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \F{reverse}(b^\ast) \\
    \end{array}
@@ -117,7 +117,7 @@ Vectors
 :ref:`Vectors <syntax-vec>` are encoded with their length followed by the encoding of their element sequence.
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llclll@{\qquad\qquad}l}
    \production{vectors} & \Bvec(\B{B}) &::=&
      n{:}\Bu32~~(x{:}\B{B})^n &\Rightarrow& x^n \\
    \end{array}
@@ -134,7 +134,7 @@ Names
 :ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vector>` of bytes containing the `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding of the name's code point sequence.
 
 .. math::
-   \begin{array}{llcll}
+   \begin{array}{llclll@{\qquad}l}
    \production{names} & \Bname &::=&
      n{:}\Bu32~~(\X{uc}{:}\Bcodepoint)^\ast &\Rightarrow& \X{uc}^\ast
        & (|\Bcodepoint^\ast| = n) \\

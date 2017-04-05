@@ -68,7 +68,7 @@ Every section is optional; an omitted section is equivalent to the section being
 The following parameterized grammar rule defines the generic structure of a section with id :math:`N` and contents described by the grammar :math:`\B{B}`.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llclll@{\qquad}l}
    \production{sections} & \Bsection_N(\B{B}) &::=&
      N{:}\Bbyte~~\X{size}{:}\Bu32~~\X{cont}{:}\B{B}
        &\Rightarrow& \X{cont} & (\X{size} = ||\B{B}||) \\ &&|&
@@ -351,7 +351,7 @@ Local declarations are compressed into a vector whose entries consist of
 denoting *count* locals of the same value type.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llclll@{\qquad}l}
    \production{code sections} & \Bcodesec &::=&
      \X{code}^\ast{:}\Bsection_{10}(\Bcode^\ast)
        &\Rightarrow& \X{code}^\ast \\
