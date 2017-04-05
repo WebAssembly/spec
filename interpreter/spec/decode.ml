@@ -116,7 +116,8 @@ let vec f s = let n = len32 s in list f n s
 
 let name s =
   let pos = pos s in
-  try Utf8.decode (string s) with Utf8.Utf8 -> error s pos "invalid UTF-8 encoding"
+  try Utf8.decode (string s) with Utf8.Utf8 ->
+    error s pos "invalid UTF-8 encoding"
 
 let sized f s =
   let size = len32 s in
