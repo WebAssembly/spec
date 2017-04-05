@@ -25,6 +25,7 @@
 .. Values, terminals
 
 .. |hex#1| mathdef:: \mathtt{0x#1}
+.. |unicode#1| mathdef:: \mathrm{U{+}#1}
 
 
 .. Values, non-terminals
@@ -59,6 +60,7 @@
 
 .. |vec| mathdef:: \xref{syntax/values}{syntax-vec}{\X{vec}}
 .. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
+.. |codepoint| mathdef:: \xref{syntax/values}{syntax-name}{\X{codepoint}}
 
 
 .. Values, binary non-terminals
@@ -91,6 +93,9 @@
 
 .. |Bvec| mathdef:: \xref{binary/values}{binary-vec}{\B{vec}}
 .. |Bname| mathdef:: \xref{binary/values}{binary-name}{\B{name}}
+.. |Bcodepoint| mathdef:: \xref{binary/values}{binary-name}{\B{codepoint}}
+.. |Bcodeval| mathdef:: \xref{binary/values}{binary-name}{\B{codeval}}
+.. |Bcodecont| mathdef:: \xref{binary/values}{binary-name}{\B{cont}}
 
 
 .. Types, terminals

@@ -50,9 +50,9 @@ As an additional constraint, the total number of bytes encoding a value of type 
 .. math::
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{unsigned integers} & \BuX{N} &::=&
-     n{:}\Bbyte &\Rightarrow& n & (n < 128 \wedge n < 2^N) \\ &&|&
+     n{:}\Bbyte &\Rightarrow& n & (n < 2^7 \wedge n < 2^N) \\ &&|&
      n{:}\Bbyte~~m{:}\BuX{N-7} &\Rightarrow&
-       128\cdot m + (n-128) & (n \geq 128 \wedge N > 7) \\
+       2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
 :ref:`Signed integers <syntax-sint>` are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a 2's complement representation.
@@ -61,10 +61,10 @@ As an additional constraint, the total number of bytes encoding a value of type 
 .. math::
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{signed integers} & \BsX{N} &::=&
-     n{:}\Bbyte &\Rightarrow& n & (n < 64 \wedge n < 2^{N-1}) \\ &&|&
-     n{:}\Bbyte &\Rightarrow& n-128 & (64 \leq n < 128 \wedge n \geq 128-2^{N-1}) \\ &&|&
+     n{:}\Bbyte &\Rightarrow& n & (n < 2^6 \wedge n < 2^{N-1}) \\ &&|&
+     n{:}\Bbyte &\Rightarrow& n-2^7 & (2^6 \leq n < 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &&|&
      n{:}\Bbyte~~m{:}\BsX{N-7} &\Rightarrow&
-       128\cdot m + (n-128) & (n \geq 128 \wedge N > 7) \\
+       2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
 :ref:`Uninterpreted integers <syntax-int>` are always encoded as signed integers.
@@ -131,13 +131,36 @@ Vectors
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are encoded directly as a vector of bytes.
+:ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vector>` of bytes containing the `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding of the name's code point sequence.
 
 .. math::
    \begin{array}{llcll}
    \production{names} & \Bname &::=&
-     b^\ast{:\,}\Bvec(\Bbyte) &\Rightarrow& b^\ast \\
+     n{:}\Bu32~~(\X{uc}{:}\Bcodepoint)^\ast &\Rightarrow& \X{uc}^\ast
+       & (|\Bcodepoint^\ast| = n) \\
+   \production{code points} & \Bcodepoint &::=&
+     \X{uv}{:}\Bcodeval_N &\Rightarrow& \X{uv}
+       & (\X{uv} \geq N \wedge (\X{uv} < \unicode{D800} \vee \unicode{E000} \leq \X{uv} < \unicode{110000})) \\
+   \production{code values} & \Bcodeval_N &::=&
+     b_1{:}\Bbyte &\Rightarrow&
+       b_1
+       & (b_1 < \hex{80} \wedge N = \unicode{00}) \\ &&|&
+     b_1{:}\Bbyte~~b_2{:}\Bcodecont &\Rightarrow&
+       2^6\cdot(b_1-\hex{c0}) + b_2
+       & (\hex{c0} \leq b_1 < \hex{e0} \wedge N = \unicode{80}) \\ &&|&
+     b_1{:}\Bbyte~~b_2{:}\Bcodecont~~b_3{:}\Bcodecont &\Rightarrow&
+       2^{12}\cdot(b_1-\hex{e0}) + 2^6\cdot b_2 + b_3
+       & (\hex{e0} \leq b_1 < \hex{f0} \wedge N = \unicode{800}) \\ &&|&
+     b_1{:}\Bbyte~~b_2{:}\Bcodecont~~b_3{:}\Bcodecont~~b_4{:}\Bcodecont
+       &\Rightarrow&
+       2^{18}\cdot(b_1-\hex{f0}) + 2^{12}\cdot b_2 + 2^6\cdot b_3 + b_4
+       & (\hex{f0} \leq b_1 < \hex{f8} \wedge N = \unicode{10000}) \\
+   \production{code continuation} & \Bcodecont &::=&
+     b{:}\Bbyte &\Rightarrow& b - \hex{80} & (b \geq \hex{80}) \\
    \end{array}
 
-.. todo::
-   UTF-8?
+.. note::
+   As :ref:`defined <binary-notation>`, the size :math:`|\Bcodepoint^\ast|` denotes the number of bytes in the encoding of the sequence, not the number of code points.
+
+   The index :math:`N` to |Bcodeval| is the minimum value that a given byte sequence may decode into.
+   The respective side conditions on it exclude encodings using more than the minimal number of bytes to represent a code point.

@@ -84,6 +84,8 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
 
 
+.. _binary-notation:
+
 Auxiliary Notation
 ~~~~~~~~~~~~~~~~~~
 

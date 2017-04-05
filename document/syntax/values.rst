@@ -118,13 +118,25 @@ A vector can have at most :math:`2^{32}-1` elements.
 Names
 ~~~~~
 
-*Names* are vectors of bytes interpreted as character strings.
+*Names* are sequences of *scalar* `Unicode <http://www.unicode.org/versions/latest/>`_ *code points*.
 
 .. math::
    \begin{array}{llll}
    \production{names} & \name &::=&
-     \vec(\byte) \\
+     \codepoint^\ast \\
+   \production{code points} & \codepoint &::=&
+     \unicode{0000} ~|~ \dots ~|~ \unicode{D7FF} ~|~
+     \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
    \end{array}
 
 .. todo::
-   Unicode?
+   The definition of a name as an arbitrary sequence of scalar code points is too general.
+   So would be the definition of a vector.
+   Only names whose UTF-8 encoding is within the bounds of the maximum vector lengths must be included.
+   How specify this?
+
+
+Convention
+..........
+
+* Code points are sometimes used interchangeably with natural numbers :math:`n < 1114112`.
