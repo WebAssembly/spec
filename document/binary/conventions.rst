@@ -17,7 +17,8 @@ Except for a few exceptions, the binary grammar closely mirrors the grammar of t
 .. note::
    Some phrases of abstract syntax have multiple possible encodings in the binary format.
    For example, numbers may be encoded as if they had optional leading zeros.
-   Implementations of encoders producing WebAssembly binaries can pick any encoding.
+   Implementations of decoders must support all possible alternatives;
+   implementations of encoders can pick any one allowed encoding.
 
 .. [#compression]
    Additional encoding layers -- for example, introducing compression -- may be defined on top of the basic representation defined here.
@@ -50,8 +51,9 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 
 * :math:`x{:}B` denotes the same language as the nonterminal :math:`B`, but also binds the variable :math:`x` to the attribute synthesized for :math:`B`.
 
-* Productions are written :math:`\B{B} ::= B \Rightarrow A`, where :math:`A` is the attribute that is synthesized for :math:`\B{B}`, usually from attribute variables bound in :math:`B`.
+* Productions are written :math:`\B{name} ::= B \Rightarrow A`, where :math:`A` is the attribute that is synthesized for :math:`\B{name}`, usually from attribute variables bound in :math:`B`.
 
+* Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
 .. note::
    For example, the :ref:`binary grammar <binary-valtype>` for :ref:`value types <syntax-valtype>` is given as follows:
@@ -79,8 +81,8 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
       \end{array}
 
    That is, a limits pair is encoded as either the byte :math:`\hex{00}` followed by the encoding of a |U32| value,
-   or the byte :math:`\hex{01}` followed by the encoding of two such values. 
-   The variables :math:`n` and :math:`m` name the attributes of the respective |Bu32| nonterminals, which are the actual :ref:`unsigned integers <syntax-uint>` they decode into.
+   or the byte :math:`\hex{01}` followed by two such encodings. 
+   The variables :math:`n` and :math:`m` name the attributes of the respective |Bu32| nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` they decode into.
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
 
 
@@ -93,4 +95,4 @@ When dealing with binary encodings the following notation is also used:
 
 * :math:`\epsilon` denotes the empty byte sequence.
 
-* :math:`|B|` is the length of the byte sequence generated from the production :math:`B` in a derivation.
+* :math:`||B||` is the length of the byte sequence generated from the production :math:`B` in a derivation.

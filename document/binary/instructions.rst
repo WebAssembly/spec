@@ -119,7 +119,7 @@ Variable Instructions
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Each variant of :ref:`memory instructions <syntax-instr-memory>` is encoded with a different byte code. Loads and stores are followed by the encoding of their |memarg| immediate.
+Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with a different byte code. Loads and stores are followed by the encoding of their |memarg| immediate.
 
 .. _binary-memarg:
 .. _binary-load:
@@ -324,7 +324,7 @@ All variants of :ref:`numeric instructions <syntax-instr-numeric>` are represent
 Expressions
 ~~~~~~~~~~~
 
-:ref:`Expressions <syntax-expr>` are encoded by their instruction sequence terminated with an explicit opcode for |END|.
+:ref:`Expressions <syntax-expr>` are encoded by their instruction sequence terminated with an explicit :math:`\hex{0B}` opcode for |END|.
 
 .. math::
    \begin{array}{llclll}

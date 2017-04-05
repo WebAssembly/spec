@@ -15,7 +15,7 @@ Values
 Bytes
 ~~~~~
 
-:ref:`Bytes <syntax-int>` encode by themselves.
+:ref:`Bytes <syntax-int>` encode themselves.
 
 .. math::
    \begin{array}{llclll}
@@ -160,7 +160,7 @@ Names
    \end{array}
 
 .. note::
-   As :ref:`defined <binary-notation>`, the size :math:`|\Bcodepoint^\ast|` denotes the number of bytes in the encoding of the sequence, not the number of code points.
+   The :ref:`size <binary-notation>`, :math:`||\Bcodepoint^\ast||` denotes the number of bytes in the encoding of the sequence, not the number of code points.
 
    The index :math:`N` to |Bcodeval| is the minimum value that a given byte sequence may decode into.
    The respective side conditions on it exclude encodings using more than the minimal number of bytes to represent a code point.

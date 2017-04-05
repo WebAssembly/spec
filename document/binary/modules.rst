@@ -2,11 +2,11 @@ Modules
 -------
 
 The binary encoding of modules is organized into *sections*.
-These mostly correspond to the different components of a :ref:`module <syntax-module>` record,
+Most sections correspond to one component of a :ref:`module <syntax-module>` record,
 except that :ref:`function definitions <syntax-func>` are split into two sections, separating their type declarations in the :ref:`function section <binary-funcsec>` from their bodies in the :ref:`code section <binary-codesec>`.
 
 .. note::
-   This separation enables *parallel* and *streaming* compilation of a the functions in a module.
+   This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
 .. _binary-index:
@@ -65,13 +65,13 @@ Each section consists of
 
 Every section is optional; an omitted section is equivalent to the section being present with empty contents.
 
-The following parameterized grammar rule defines the generic structure of a section with id :math:`N` and contents described by grammar :math:`\B{B}`.
+The following parameterized grammar rule defines the generic structure of a section with id :math:`N` and contents described by the grammar :math:`\B{B}`.
 
 .. math::
    \begin{array}{llclll}
    \production{sections} & \Bsection_N(\B{B}) &::=&
      N{:}\Bbyte~~\X{size}{:}\Bu32~~\X{cont}{:}\B{B}
-       &\Rightarrow& \X{cont} & (\X{size} = |\B{B}|) \\ &&|&
+       &\Rightarrow& \X{cont} & (\X{size} = ||\B{B}||) \\ &&|&
      \epsilon &\Rightarrow& \epsilon
    \end{array}
 
@@ -284,7 +284,7 @@ Start Section
 ~~~~~~~~~~~~~
 
 The *start section* has the id 8.
-It decodes into an optional :ref:`start function <syntax-start>` that represent the |START| component of a :ref:`module <syntax-module>`.
+It decodes into an optional :ref:`start function <syntax-start>` that represents the |START| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -357,10 +357,10 @@ denoting *count* locals of the same value type.
        &\Rightarrow& \X{code}^\ast \\
    \production{code} & \Bcode &::=&
      \X{size}{:}\Bu32~~\X{code}{:}\Bfunc
-       &\Rightarrow& \X{code} & (\X{size} = |\Bfunc|) \\
+       &\Rightarrow& \X{code} & (\X{size} = ||\Bfunc||) \\
    \production{functions} & \Bfunc &::=&
      (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
-       &\Rightarrow& (\F{concat}((t^\ast)^\ast), e^\ast)
+       &\Rightarrow& \F{concat}((t^\ast)^\ast), e^\ast
          & (|\F{concat}((t^\ast)^\ast)| < 2^{32}) \\
    \production{locals} & \Blocals &::=&
      n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
@@ -382,7 +382,6 @@ denoting *count* locals of the same value type.
    \end{array}
 
 Here, :math:`\X{code}` ranges over pairs :math:`(\valtype^\ast, \expr)`.
-
 The meta function :math:`\F{concat}((t^\ast)^\ast)` denotes the sequence of types formed by concatenating all sequences :math:`t_i^\ast` in :math:`(t^\ast)^\ast`.
 Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`vector <syntax-vec>` is malformed.
 
@@ -424,14 +423,14 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
 Modules
 ~~~~~~~
 
-The encoding of a :ref:`module <syntax-module>` starts with a preamble containing a magic number and a version field.
+The encoding of a :ref:`module <syntax-module>` starts with a preamble containing a 4-byte magic number and a version field.
 The current version of the WebAssembly binary format is 1.
 
 The preamble is followed by a sequence of :ref:`sections <binary-section>`.
 :ref:`Custom sections <binary-customsec>` may be inserted at any place in this sequence,
-while other sections may occur at most once and in a fixed order.
+while other sections must occur at most once and in the prescribed order.
 All sections can be empty.
-The length of vectors produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
+The lengths of vectors produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
 
 .. math::
    \begin{array}{llcllll}
