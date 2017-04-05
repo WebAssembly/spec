@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -111,7 +111,8 @@ Thus, the attribute grammar implicitly defines a <em>decoding</em> function.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Some phrases of abstract syntax have multiple possible encodings in the binary format.
 For example, numbers may be encoded as if they had optional leading zeros.
-Implementations of encoders producing WebAssembly binaries can pick any encoding.</p>
+Implementations of decoders must support all possible alternatives;
+implementations of encoders can pick any one allowed encoding.</p>
 </div>
 <table class="docutils footnote" frame="void" id="compression" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -134,7 +135,8 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 <li><span class="math">\(B^?\)</span> is an optional occurrence of <span class="math">\(B\)</span>.
 (This is a shorthand for <span class="math">\(A^n\)</span> where <span class="math">\(n \leq 1\)</span>.)</li>
 <li><span class="math">\(x{:}B\)</span> denotes the same language as the nonterminal <span class="math">\(B\)</span>, but also binds the variable <span class="math">\(x\)</span> to the attribute synthesized for <span class="math">\(B\)</span>.</li>
-<li>Productions are written <span class="math">\(\mathtt{B} ::= B \Rightarrow A\)</span>, where <span class="math">\(A\)</span> is the attribute that is synthesized for <span class="math">\(\mathtt{B}\)</span>, usually from attribute variables bound in <span class="math">\(B\)</span>.</li>
+<li>Productions are written <span class="math">\(\mathtt{name} ::= B \Rightarrow A\)</span>, where <span class="math">\(A\)</span> is the attribute that is synthesized for <span class="math">\(\mathtt{name}\)</span>, usually from attribute variables bound in <span class="math">\(B\)</span>.</li>
+<li>Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -152,23 +154,23 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 No other byte value is allowed as the encoding of a value type.</p>
 <p>The <a class="reference internal" href="types.html#binary-limits"><span class="std std-ref">binary grammar</span></a> for <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> is defined as follows:</p>
 <div class="math">
-\[\begin{split}\begin{array}{llcll}
+\[\begin{split}\begin{array}{llclll}
 \def\mathdef1#1{{}}\mathdef1{limits} &amp; \href{../binary/types.html#binary-limits}{\mathtt{limits}} &amp;::=&amp;
   \def\mathdef41#1{\mathtt{0x#1}}\mathdef41{00}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef23#1{{\mathtt{uint}_{#1}}}\mathdef23{32}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~\epsilon \} \\ &amp;&amp;|&amp;
   \def\mathdef42#1{\mathtt{0x#1}}\mathdef42{01}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef23#1{{\mathtt{uint}_{#1}}}\mathdef23{32}}~~m{:}\href{../binary/values.html#binary-int}{\def\mathdef23#1{{\mathtt{uint}_{#1}}}\mathdef23{32}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~m \} \\
 \end{array}\end{split}\]</div>
 <p class="last">That is, a limits pair is encoded as either the byte <span class="math">\(\def\mathdef43#1{\mathtt{0x#1}}\mathdef43{00}\)</span> followed by the encoding of a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef6#1{{\mathit{uint}_{#1}}}\mathdef6{32}}\)</span> value,
-or the byte <span class="math">\(\def\mathdef44#1{\mathtt{0x#1}}\mathdef44{01}\)</span> followed by the encoding of two such values.
-The variables <span class="math">\(n\)</span> and <span class="math">\(m\)</span> name the attributes of the respective <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef23#1{{\mathtt{uint}_{#1}}}\mathdef23{32}}\)</span> nonterminals, which are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> they decode into.
+or the byte <span class="math">\(\def\mathdef44#1{\mathtt{0x#1}}\mathdef44{01}\)</span> followed by two such encodings.
+The variables <span class="math">\(n\)</span> and <span class="math">\(m\)</span> name the attributes of the respective <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef23#1{{\mathtt{uint}_{#1}}}\mathdef23{32}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> they decode into.
 The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.</p>
 </div>
 </div>
 <div class="section" id="auxiliary-notation">
-<h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
+<span id="binary-notation"></span><h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
 <p>When dealing with binary encodings the following notation is also used:</p>
 <ul class="simple">
 <li><span class="math">\(\epsilon\)</span> denotes the empty byte sequence.</li>
-<li><span class="math">\(|B|\)</span> is the length of the byte sequence generated from the production <span class="math">\(B\)</span> in a derivation.</li>
+<li><span class="math">\(||B||\)</span> is the length of the byte sequence generated from the production <span class="math">\(B\)</span> in a derivation.</li>
 </ul>
 </div>
 </div>
