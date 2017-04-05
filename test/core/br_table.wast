@@ -1203,6 +1203,20 @@
       )
     )
   )
+
+  (func (export "nested-br_table-loop-block") (param i32) (result i32)
+    (loop i32
+      (block
+        (br_table 0 1 1
+          (get_local 0)
+        )
+        (return
+          (i32.const 0)
+        )
+      )
+      (i32.const 1)
+    )
+  )
 )
 
 (assert_return (invoke "type-i32"))
@@ -1381,6 +1395,8 @@
 (assert_return (invoke "nested-br_table-value-index" (i32.const 3)) (i32.const 9))
 (assert_return (invoke "nested-br_table-value-index" (i32.const -1000000)) (i32.const 9))
 (assert_return (invoke "nested-br_table-value-index" (i32.const 9423975)) (i32.const 9))
+
+(assert_return (invoke "nested-br_table-loop-block" (i32.const 0)) (i32.const 1))
 
 (assert_invalid
   (module (func $type-arg-void-vs-num (result i32)
