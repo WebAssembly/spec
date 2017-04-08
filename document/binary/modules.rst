@@ -478,4 +478,7 @@ where for each :math:`(t_i^\ast, e_i)` in :math:`\X{code}^n`,
 
 .. note::
    The version of the WebAssembly binary format may increase in the future
-   if backwards-incompatible changes are made to the format.
+   if backward-incompatible changes are made to the format.
+   However, such changes are expected to occur very infrequently, if ever.
+   The binary format is intended to be forward-compatible,
+   such that future extensions can be made without incrementing the version of the binary format.
