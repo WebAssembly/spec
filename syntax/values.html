@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -109,8 +109,8 @@
 In the abstract syntax they are represented as hexadecimal literals.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1224#1{{}}\mathdef1224{bytes} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
-  \def\mathdef1257#1{\mathtt{0x#1}}\mathdef1257{00} ~|~ \dots ~|~ \def\mathdef1258#1{\mathtt{0x#1}}\mathdef1258{FF} \\
+\def\mathdef1192#1{{}}\mathdef1192{bytes} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
+  \def\mathdef1225#1{\mathtt{0x#1}}\mathdef1225{00} ~|~ \dots ~|~ \def\mathdef1226#1{\mathtt{0x#1}}\mathdef1226{FF} \\
 \end{array}\end{split}\]</div>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
@@ -125,12 +125,12 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 <p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>size</em> and their <em>signedness</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1224#1{{}}\mathdef1224{unsigned integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1225#1{{\mathit{uint}_{#1}}}\mathdef1225{N}} &amp;::=&amp;
+\def\mathdef1192#1{{}}\mathdef1192{unsigned integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1193#1{{\mathit{uint}_{#1}}}\mathdef1193{N}} &amp;::=&amp;
   0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
-\def\mathdef1224#1{{}}\mathdef1224{signed integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1231#1{{\mathit{sint}_{#1}}}\mathdef1231{N}} &amp;::=&amp;
+\def\mathdef1192#1{{}}\mathdef1192{signed integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1199#1{{\mathit{sint}_{#1}}}\mathdef1199{N}} &amp;::=&amp;
   -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
-\def\mathdef1224#1{{}}\mathdef1224{uninterpreted integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1236#1{{\mathit{int}_{#1}}}\mathdef1236{N}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-int}{\def\mathdef1225#1{{\mathit{uint}_{#1}}}\mathdef1225{N}} ~|~ \href{../syntax/values.html#syntax-int}{\def\mathdef1231#1{{\mathit{sint}_{#1}}}\mathdef1231{N}} \\
+\def\mathdef1192#1{{}}\mathdef1192{uninterpreted integers} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1204#1{{\mathit{int}_{#1}}}\mathdef1204{N}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-int}{\def\mathdef1193#1{{\mathit{uint}_{#1}}}\mathdef1193{N}} ~|~ \href{../syntax/values.html#syntax-int}{\def\mathdef1199#1{{\mathit{sint}_{#1}}}\mathdef1199{N}} \\
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
 In those contexts, a conversion based on 2&#8217;s complement will be applied for values that are out-of-range for a chosen interpretation.
@@ -153,7 +153,7 @@ and when interpreted as signed, positive values <span class="math">\(n \geq 2^{N
 <p><em>Floating-point</em> data consists of values in binary floating-point format according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1224#1{{}}\mathdef1224{floating-point numbers} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1239#1{{\mathit{float}_{#1}}}\mathdef1239{N}} &amp;::=&amp;
+\def\mathdef1192#1{{}}\mathdef1192{floating-point numbers} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1207#1{{\mathit{float}_{#1}}}\mathdef1207{N}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-byte}{\mathit{byte}}^{N/8} \\
 \end{array}\end{split}\]</div>
 <p>The two possible sizes <span class="math">\(N\)</span> are 32 and 64.</p>
@@ -165,7 +165,7 @@ where the <span class="math">\(A\)</span>-s can either be values or complex cons
 A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
 <div class="math">
 \[\begin{split}\begin{array}{lllll}
-\def\mathdef1224#1{{}}\mathdef1224{vectors} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
+\def\mathdef1192#1{{}}\mathdef1192{vectors} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
   A^n
   &amp; (n &lt; 2^{32})\\
 \end{array}\end{split}\]</div>
@@ -175,11 +175,11 @@ A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
 <p><em>Names</em> are sequences of <em>scalar</em> <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> <em>code points</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1224#1{{}}\mathdef1224{names} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
+\def\mathdef1192#1{{}}\mathdef1192{names} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast \\
-\def\mathdef1224#1{{}}\mathdef1224{code points} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
-  \def\mathdef1259#1{\mathrm{U{+}#1}}\mathdef1259{0000} ~|~ \dots ~|~ \def\mathdef1260#1{\mathrm{U{+}#1}}\mathdef1260{D7FF} ~|~
-  \def\mathdef1261#1{\mathrm{U{+}#1}}\mathdef1261{E000} ~|~ \dots ~|~ \def\mathdef1262#1{\mathrm{U{+}#1}}\mathdef1262{10FFFF} \\
+\def\mathdef1192#1{{}}\mathdef1192{code points} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
+  \def\mathdef1227#1{\mathrm{U{+}#1}}\mathdef1227{0000} ~|~ \dots ~|~ \def\mathdef1228#1{\mathrm{U{+}#1}}\mathdef1228{D7FF} ~|~
+  \def\mathdef1229#1{\mathrm{U{+}#1}}\mathdef1229{E000} ~|~ \dots ~|~ \def\mathdef1230#1{\mathrm{U{+}#1}}\mathdef1230{10FFFF} \\
 \end{array}\end{split}\]</div>
 <div class="admonition-todo admonition" id="index-7">
 <p class="first admonition-title">Todo</p>
