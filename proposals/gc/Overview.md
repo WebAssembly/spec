@@ -63,6 +63,15 @@ Managed Wasm should inherit the efficiency properties of unmanaged Wasm as much 
 * primitive values should not need to be boxed to be stored in managed data structures.
 
 
+### Evaluation
+
+Should attempt to implement 2-3 exemplary languages:
+
+* an object-oriented language (e.g., a subset of Java, with classes, inheritence, interfaces),
+* a typed functional language (e.g., a subset of ML, with closures, polymorphism, variant types)
+* an untyped language (e.g., a subset of Scheme or Python or something else)
+
+
 ## Use Cases
 
 ### Tuples and Arrays
