@@ -40,13 +40,13 @@ Control Instructions
    \production{instructions} & \Binstr &::=&
      \hex{00} &\Rightarrow& \UNREACHABLE \\ &&|&
      \hex{01} &\Rightarrow& \NOP \\ &&|&
-     \hex{02}~~\X{rt}{:}\Bresulttype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+     \hex{02}~~\X{rt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \hex{03}~~\X{rt}{:}\Bresulttype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+     \hex{03}~~\X{rt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \hex{04}~~\X{rt}{:}\Bresulttype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+     \hex{04}~~\X{rt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
-     \hex{04}~~\X{rt}{:}\Bresulttype~~(\X{in}_1{:}\Binstr)^\ast~~
+     \hex{04}~~\X{rt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast~~
        \hex{05}~~(\X{in}_2{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
      \hex{0C}~~l{:}\Blabelidx &\Rightarrow& \BR~l \\ &&|&

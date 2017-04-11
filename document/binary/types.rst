@@ -31,6 +31,7 @@ Value Types
 
 
 .. _binary-resulttype:
+.. _binary-blocktype:
 .. index:: result type, value type
    pair: binary format; result type
    single: abstract syntax; result type
@@ -38,17 +39,17 @@ Value Types
 Result Types
 ~~~~~~~~~~~~
 
-:ref:`Result types <syntax-resulttype>` are encoded by either the byte :math:`\hex{40}` indicating the empty type or as a single :ref:`value type <binary-valtype>`.
+The only :ref:`result types <syntax-resulttype>` occurring in the binary format are the types of blocks. These are encoded in special compressed form, by either the byte :math:`\hex{40}` indicating the empty type or as a single :ref:`value type <binary-valtype>`.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{result types} & \Bresulttype &::=&
+   \production{result types} & \Bblocktype &::=&
      \hex{40} &\Rightarrow& [] \\ &&|&
      t{:}\Bvaltype &\Rightarrow& [t] \\
    \end{array}
 
 .. note::
-   In future versions of WebAssembly, this scheme may be extended to support multiple results.
+   In future versions of WebAssembly, this scheme may be extended to support multiple results or more general block types.
 
 
 .. _binary-functype:
