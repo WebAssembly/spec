@@ -722,7 +722,6 @@ test(() => {
                 })
                 .catch(error => {
                     assert_equals(error instanceof err, true);
-                    assert_equals(Boolean(error.stack.match("jsapi.js")), true);
                 })
         }, 'unexpected success in assertInstantiateError');
     }
