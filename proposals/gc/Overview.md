@@ -34,21 +34,22 @@
 * No heavyweight object model.
 * Accept minimal amount of dynamic overhead (checked casts) as price for simplicity/universality.
 * Independent from linear memory.
-* Pay as you go.
+* Pay as you go; in particular, no effect on code not using GC.
 * Avoid generics or other complex type structure _if possible_.
 * Extend the design iteratively, ship a minimal set of functionality fast.
 
 
 ### Requirements
 
-* Allocation of structures on the heap which are garbage collected.
-* Allocation of unstructured byte arrays which are garbage collected.
+* Allocation of structures that are garbage collected.
+* Allocation of unstructured byte arrays that are garbage collected.
 * Handles to heap values from the embedder, garbage collected.
 * Manipulating references to these, as value types.
 * Forming unions of different types, as value types? (future extension?)
 * Defining, allocating, and indexing structures as extensions to imported types? (future extension)
 * Exceptions (separate proposal)
 * Direct support for strings? (separate proposal)
+* Safe interaction with threads (sharing, atomic access)
 
 
 ### Efficiency Considerations
