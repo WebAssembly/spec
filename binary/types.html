@@ -121,19 +121,19 @@
 <p class="last">In future versions of WebAssembly, value types may include types denoted by <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type indices</span></a>.
 Thus, the binary format for types corresponds to the encodings of small negative <span class="math">\(\href{../binary/values.html#binary-sint}{\def\mathdef510#1{{\mathit{sint}_{#1}}}\mathdef510{}}\)</span> values, so that they can coexist with (positive) type indices.</p>
 </div>
-<span class="target" id="binary-resulttype"></span></div>
+<span class="target" id="binary-blocktype"><span id="binary-resulttype"></span></span></div>
 <div class="section" id="result-types">
 <span id="index-2"></span><h2>Result Types<a class="headerlink" href="#result-types" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">Result types</span></a> are encoded by either the byte <span class="math">\(\def\mathdef511#1{\mathtt{0x#1}}\mathdef511{40}\)</span> indicating the empty type or as a single <a class="reference internal" href="#binary-valtype"><span class="std std-ref">value type</span></a>.</p>
+<p>The only <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result types</span></a> occurring in the binary format are the types of blocks. These are encoded in special compressed form, by either the byte <span class="math">\(\def\mathdef511#1{\mathtt{0x#1}}\mathdef511{40}\)</span> indicating the empty type or as a single <a class="reference internal" href="#binary-valtype"><span class="std std-ref">value type</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
-\def\mathdef473#1{{}}\mathdef473{result types} &amp; \href{../binary/types.html#binary-resulttype}{\mathtt{resulttype}} &amp;::=&amp;
+\def\mathdef473#1{{}}\mathdef473{result types} &amp; \href{../binary/types.html#binary-blocktype}{\mathtt{blocktype}} &amp;::=&amp;
   \def\mathdef512#1{\mathtt{0x#1}}\mathdef512{40} &amp;\Rightarrow&amp; [] \\ &amp;&amp;|&amp;
   t{:}\href{../binary/types.html#binary-valtype}{\mathtt{valtype}} &amp;\Rightarrow&amp; [t] \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">In future versions of WebAssembly, this scheme may be extended to support multiple results.</p>
+<p class="last">In future versions of WebAssembly, this scheme may be extended to support multiple results or more general block types.</p>
 </div>
 <span class="target" id="binary-functype"></span></div>
 <div class="section" id="function-types">
