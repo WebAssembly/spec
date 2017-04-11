@@ -557,7 +557,7 @@ Casting is also possible in the reverse direction:
 (cast_down <type1> <type2> $label (...))
 ```
 also casts the operand of type `<type1>` to type `<type2>`.
-It is a validation error if the operand's type is not `<type1>`, or if `<type1>` is not a subtype of `<type2>`.
+It is a validation error if the operand's type is not `<type1>`, or if `<type2>` is not a subtype of `<type1>`.
 However, a downcast may fail at runtime if the operand's type is not `<type2>`, in which case control branches to `$label`, with the operand as argument.
 
 Downcasts can be used to implement runtime type analysis, or to recover the concrete type of an object that has been cast to `anyref` to emulate parametric polymorphism.
