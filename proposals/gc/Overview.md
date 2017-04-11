@@ -35,7 +35,8 @@
 * Accept minimal amount of dynamic overhead (checked casts) as price for simplicity/universality.
 * Independent from linear memory.
 * Pay as you go.
-* Avoid generics or other complex type structure if possible.
+* Avoid generics or other complex type structure _if possible_.
+* Extend the design iteratively, ship a minimal set of functionality fast.
 
 
 ### Requirements
@@ -43,24 +44,24 @@
 * Allocation of structures on the heap which are garbage collected.
 * Allocation of unstructured byte arrays which are garbage collected.
 * Handles to heap values from the embedder, garbage collected.
-Constructing closures which are  garbage collected.
-Manipulating references to these, as value types.
-Forming unions of different types, as value types.
-Defining, allocating, and indexing structures as extensions to imported types.
-Exceptions
-Direct support for strings?
+* Manipulating references to these, as value types.
+* Forming unions of different types, as value types? (future extension?)
+* Defining, allocating, and indexing structures as extensions to imported types? (future extension)
+* Exceptions (separate proposal)
+* Direct support for strings? (separate proposal)
 
 
 ### Efficiency Considerations
 
-Managed Wasm should inherit the efficiency properties of unmanaged Wasm as much as possible, namely:
+GC support should maintain Wasm's efficiency properties as much as possible, namely:
 
 * all operations are very cheap, ideally constant time,
 * structures are contiguous, dense chunks of memory,
 * accessing fields are single-indirection loads and stores,
 * allocation is fast,
 * no implicit boxing operations (i.e. no implicit allocation on the heap),
-* primitive values should not need to be boxed to be stored in managed data structures.
+* primitive values should not need to be boxed to be stored in managed data structures,
+* allows ahead-of-time compilation and code caching.
 
 
 ### Evaluation
@@ -137,7 +138,6 @@ For example, `D.g`:
 ```
 (func $D.g (param $Cthis (ref $C))
   (local $this (ref $D))
-  (set_local $clos (call $outer (f64.const 1)))
   (block $fail (result (ref $D))
     (set_local $this (cast_down (ref $Cthis) (ref $D) $fail (get_local $Cthis)))
     ...
@@ -228,7 +228,7 @@ TODO: via type `anyref` and `intref`
 * Lots of tricky details here, mostly ignore for now...
 
 
-## Basic Functionality: Simple aggregates
+## Basic Functionality: Simple Aggregates
 
 * Extend the Wasm type section with new constructors for aggregate types.
 * Extend the value types with new constructors for references and interior references.
@@ -236,7 +236,7 @@ TODO: via type `anyref` and `intref`
 * References are never null; nullable reference types are separate.
 
 
-### Structs
+### Structures
 
 *Structure* types define aggregates with heterogeneous fields that are _statically indexed_:
 ```
@@ -266,6 +266,12 @@ The operator yields a reference to the respective type:
 )
 ```
 Structures are garbage-collected.
+
+Structures can be compared for identity:
+```
+(same (new $point ...) (new $point ...))  ;; false
+```
+TODO: Could even allow heterogeneous equality (equality between operands of different type), but that might lead to some discontinueties or even prevent some potential optimizations?
 
 
 ### Arrays
@@ -303,6 +309,8 @@ The *length* of an array, i.e., the number of elements, can be inquired via the 
 (load_length $vector (get_local $v))
 ```
 
+Like structures, arrays can be compared for identity.
+
 
 ### Packed Fields
 
@@ -333,7 +341,7 @@ Fields and elements can either be immutable or *mutable*:
 ```
 Store operators are only valid when targeting a mutable field or element.
 
-Immutability is needed to enable the safe and efficient [subtyping](#subtyping), especially as needed for the [objects](#objects-and-mehtod-tables) use case.
+Immutability is needed to enable the safe and efficient [subtyping](#subtyping), especially as needed for the [objects](#objects-and-method-tables) use case.
 
 
 ### Nullability
@@ -384,7 +392,7 @@ and the original type can be recovered via [down casts](#casting).
 
 A new built-in value type called `foreignref` represents opaque pointers to objects on the _embedder_'s heap.
 
-There are no operations to manipulate foreign references, but by passing them as parameters or results of exorted Wasm functions, embedder references (such as DOM objects) can safely be stored in or round-trip through Wasm code.
+There are no operations to manipulate foreign references, but by passing them as parameters or results of exported Wasm functions, embedder references (such as DOM objects) can safely be stored in or round-trip through Wasm code.
 ```
 (type $s (struct (field $a i32) (field $x foreignref))
 
@@ -392,6 +400,16 @@ There are no operations to manipulate foreign references, but by passing them as
   ...
 )
 ```
+
+Alternatively, foreign references could be typed. For example, introduce another form of type definition:
+```
+(type $T (foreign "name"))
+
+(func (export "f") (param $x (ref $T))
+  ...
+)
+```
+Here, the name is just a string whose meaning depends on the embedder (for example, it could embed its own domain-specific type algebra into strings). Casts are possible between different foreign types, but whether they succeed is up to the embedder.
 
 
 ### Function References
@@ -430,7 +448,9 @@ tag : [intref] -> [i32]
 ```
 Being reference types, tagged integers can be casted into `anyref`, and can participate in runtime type dispatch with `cast_down`.
 
-TODO: To avoid portability hazards, the value range of `intref` has to be restricted to at most 31 bit?
+To avoid portability hazards, the value range of `intref` has to be restricted to at most 31 bit.
+
+Alternatively, allow references to any numeric type. There are `ref` and `deref` instructions for all of them. It is up to implementations (and transparent to the semantics) which values they can optimize and represent unboxed. This is a bit more high-level but would allow for maximum performance on all architectures.
 
 
 ## Type Structure
