@@ -258,7 +258,7 @@ Fields are *accessed* with generic load/store instructions that take a reference
 ```
 All accesses are type-checked at validation time.
 
-Structures are [allocated](#allocation) with `new` instructions that take initialization values for each field.
+Structures are *allocated* witha  `new` instruction that take initialization values for each field.
 The operator yields a reference to the respective type:
 ```
 (func $g
@@ -296,7 +296,7 @@ The element type of every access is checked at validation time.
 The index is checked at execution time.
 A trap occurs if the index is out of bounds.
 
-Arrays are [allocated](#allocation) with `new` instructions that take a size and an initialization value as operands, yielding a reference:
+Arrays are *allocated* with a `new` instruction that takes a size and an initialization value as operands, yielding a reference:
 ```
 (func $g
   (call $g (new_array $vector (i32.const 0) (i64.const 3.14)))
