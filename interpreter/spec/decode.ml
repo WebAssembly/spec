@@ -482,7 +482,7 @@ let type_section s =
 
 (* Import section *)
 
-let import_kind s =
+let import_desc s =
   match u8 s with
   | 0x00 -> FuncImport (at var s)
   | 0x01 -> TableImport (table_type s)
@@ -493,8 +493,8 @@ let import_kind s =
 let import s =
   let module_name = string s in
   let item_name = string s in
-  let ikind = at import_kind s in
-  {module_name; item_name; ikind}
+  let idesc = at import_desc s in
+  {module_name; item_name; idesc}
 
 let import_section s =
   section `ImportSection (vec (at import)) [] s
@@ -539,19 +539,18 @@ let global_section s =
 
 (* Export section *)
 
-let export_kind s =
+let export_desc s =
   match u8 s with
-  | 0x00 -> FuncExport
-  | 0x01 -> TableExport
-  | 0x02 -> MemoryExport
-  | 0x03 -> GlobalExport
+  | 0x00 -> FuncExport (at var s)
+  | 0x01 -> TableExport (at var s)
+  | 0x02 -> MemoryExport (at var s)
+  | 0x03 -> GlobalExport (at var s)
   | _ -> error s (pos s - 1) "invalid export kind"
 
 let export s =
   let name = string s in
-  let ekind = at export_kind s in
-  let item = at var s in
-  {name; ekind; item}
+  let edesc = at export_desc s in
+  {name; edesc}
 
 let export_section s =
   section `ExportSection (vec (at export)) [] s

@@ -146,19 +146,22 @@ type memory_segment = string segment
 
 (* Modules *)
 
-type export_kind = export_kind' Source.phrase
-and export_kind' = FuncExport | TableExport | MemoryExport | GlobalExport
+type export_desc = export_desc' Source.phrase
+and export_desc' =
+  | FuncExport of var
+  | TableExport of var
+  | MemoryExport of var
+  | GlobalExport of var
 
 type export = export' Source.phrase
 and export' =
 {
   name : string;
-  ekind : export_kind;
-  item : var;
+  edesc : export_desc;
 }
 
-type import_kind = import_kind' Source.phrase
-and import_kind' =
+type import_desc = import_desc' Source.phrase
+and import_desc' =
   | FuncImport of var
   | TableImport of table_type
   | MemoryImport of memory_type
@@ -169,7 +172,7 @@ and import' =
 {
   module_name : string;
   item_name : string;
-  ikind : import_kind;
+  idesc : import_desc;
 }
 
 type module_ = module_' Source.phrase
@@ -206,32 +209,29 @@ let empty_module =
 
 open Source
 
-let export_kind_of_import_kind = function
-  | FuncImport _ -> FuncExport
-  | TableImport _ -> TableExport
-  | MemoryImport _ -> MemoryExport
-  | GlobalImport _ -> GlobalExport
-
 let import_type (m : module_) (im : import) : external_type =
-  let {ikind; _} = im.it in
-  match ikind.it with
+  let {idesc; _} = im.it in
+  match idesc.it with
   | FuncImport x -> ExternalFuncType (Lib.List32.nth m.it.types x.it)
   | TableImport t -> ExternalTableType t
   | MemoryImport t -> ExternalMemoryType t
   | GlobalImport t -> ExternalGlobalType t
 
 let export_type (m : module_) (ex : export) : external_type =
-  let {ekind; item; _} = ex.it in
-  let rec find i = function
-    | im::ims when export_kind_of_import_kind im.it.ikind.it = ekind.it ->
-      if i = 0l then import_type m im else find (Int32.sub i 1l) ims
-    | im::ims -> find i ims
-    | [] ->
-      let open Lib.List32 in
-      match ekind.it with
-      | FuncExport ->
-        ExternalFuncType (nth m.it.types (nth m.it.funcs i).it.ftype.it)
-      | TableExport -> ExternalTableType (nth m.it.tables i).it.ttype
-      | MemoryExport -> ExternalMemoryType (nth m.it.memories i).it.mtype
-      | GlobalExport -> ExternalGlobalType (nth m.it.globals i).it.gtype
-  in find item.it m.it.imports
+  let {edesc; _} = ex.it in
+  let its = List.map (import_type m) m.it.imports in
+  let open Lib.List32 in
+  match edesc.it with
+  | FuncExport x ->
+    let fts =
+      funcs its @ List.map (fun f -> nth m.it.types f.it.ftype.it) m.it.funcs
+    in ExternalFuncType (nth fts x.it)
+  | TableExport x ->
+    let tts = tables its @ List.map (fun t -> t.it.ttype) m.it.tables in
+    ExternalTableType (nth tts x.it)
+  | MemoryExport x ->
+    let mts = memories its @ List.map (fun m -> m.it.mtype) m.it.memories in
+    ExternalMemoryType (nth mts x.it)
+  | GlobalExport x ->
+    let gts = globals its @ List.map (fun g -> g.it.gtype) m.it.globals in
+    ExternalGlobalType (nth gts x.it)

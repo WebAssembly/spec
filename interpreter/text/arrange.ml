@@ -296,32 +296,30 @@ let data seg =
 let typedef i t =
   Node ("type $" ^ nat i, [struct_type t])
 
-let import_kind i k =
-  match k.it with
+let import_desc i d =
+  match d.it with
   | FuncImport x ->
     Node ("func $" ^ nat i, [Node ("type", [atom var x])])
-  | TableImport t -> table 0 i ({ttype = t} @@ k.at)
-  | MemoryImport t -> memory 0 i ({mtype = t} @@ k.at)
+  | TableImport t -> table 0 i ({ttype = t} @@ d.at)
+  | MemoryImport t -> memory 0 i ({mtype = t} @@ d.at)
   | GlobalImport t -> Node ("global $" ^ nat i, [global_type t])
 
 let import i im =
-  let {module_name; item_name; ikind} = im.it in
+  let {module_name; item_name; idesc} = im.it in
   Node ("import",
-    [atom string module_name; atom string item_name; import_kind i ikind]
+    [atom string module_name; atom string item_name; import_desc i idesc]
   )
 
-let export_kind k =
-  match k.it with
-  | FuncExport -> "func"
-  | TableExport -> "table"
-  | MemoryExport -> "memory"
-  | GlobalExport -> "global"
+let export_desc d =
+  match d.it with
+  | FuncExport x -> Node ("func", [atom var x])
+  | TableExport x -> Node ("table", [atom var x])
+  | MemoryExport x -> Node ("memory", [atom var x])
+  | GlobalExport x -> Node ("global", [atom var x])
 
 let export ex =
-  let {name; ekind; item} = ex.it in
-  Node ("export",
-    [atom string name; Node (export_kind ekind, [atom var item])]
-  )
+  let {name; edesc} = ex.it in
+  Node ("export", [atom string name; export_desc edesc])
 
 let global off i g =
   let {gtype; value} = g.it in
@@ -335,13 +333,13 @@ let var_opt = function
   | Some x -> " " ^ x.it
 
 let is_func_import im =
-  match im.it.ikind.it with FuncImport _ -> true | _ -> false
+  match im.it.idesc.it with FuncImport _ -> true | _ -> false
 let is_table_import im =
-  match im.it.ikind.it with TableImport _ -> true | _ -> false
+  match im.it.idesc.it with TableImport _ -> true | _ -> false
 let is_memory_import im =
-  match im.it.ikind.it with MemoryImport _ -> true | _ -> false
+  match im.it.idesc.it with MemoryImport _ -> true | _ -> false
 let is_global_import im =
-  match im.it.ikind.it with GlobalImport _ -> true | _ -> false
+  match im.it.idesc.it with GlobalImport _ -> true | _ -> false
 
 let module_with_var_opt x_opt m =
   let func_imports = List.filter is_func_import m.it.imports in

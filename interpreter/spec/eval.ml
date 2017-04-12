@@ -396,31 +396,31 @@ let check_limits actual expected at =
   then Link.error at "maximum size larger than declared"
 
 let add_import (ext : extern) (im : import) (inst : instance) : instance =
-  let {ikind; _} = im.it in
-  match ext, ikind.it with
+  let {idesc; _} = im.it in
+  match ext, idesc.it with
   | ExternalFunc clos, FuncImport x when func_type_of clos = type_ inst x ->
     {inst with funcs = clos :: inst.funcs}
   | ExternalTable tab, TableImport (TableType (lim, t))
     when Table.elem_type tab = t ->
-    check_limits (Table.limits tab) lim ikind.at;
+    check_limits (Table.limits tab) lim idesc.at;
     {inst with tables = tab :: inst.tables}
   | ExternalMemory mem, MemoryImport (MemoryType lim) ->
-    check_limits (Memory.limits mem) lim ikind.at;
+    check_limits (Memory.limits mem) lim idesc.at;
     {inst with memories = mem :: inst.memories}
   | ExternalGlobal v, GlobalImport (GlobalType (t, _)) when type_of v = t ->
     {inst with globals = ref v :: inst.globals}
   | _ ->
-    Link.error ikind.at "type mismatch"
+    Link.error idesc.at "type mismatch"
 
 let add_export (inst : instance) (ex : export) (map : extern ExportMap.t)
   : extern ExportMap.t =
-  let {name; ekind; item} = ex.it in
+  let {name; edesc} = ex.it in
   let ext =
-    match ekind.it with
-    | FuncExport -> ExternalFunc (func inst item)
-    | TableExport -> ExternalTable (table inst item)
-    | MemoryExport -> ExternalMemory (memory inst item)
-    | GlobalExport -> ExternalGlobal !(global inst item)
+    match edesc.it with
+    | FuncExport x -> ExternalFunc (func inst x)
+    | TableExport x -> ExternalTable (table inst x)
+    | MemoryExport x -> ExternalMemory (memory inst x)
+    | GlobalExport x -> ExternalGlobal !(global inst x)
   in ExportMap.add name ext map
 
 let init (m : module_) (exts : extern list) : instance =
