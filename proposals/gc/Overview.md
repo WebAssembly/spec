@@ -412,6 +412,8 @@ Alternatively, foreign references could be typed. For example, introduce another
 ```
 Here, the name is just a string whose meaning depends on the embedder (for example, it could embed its own domain-specific type algebra into strings). Casts are possible between different foreign types, but whether they succeed is up to the embedder.
 
+An even nicer alternative may be to not have any internal means to define foreign types altogether, but instead require them to be [imported](import-and-export) as "host types", analogous to host functions. The host environment would then define a suitable set of types, and probably an API enabling the user to define their own additional types (including a subtype relation between them).
+
 
 ### Function References
 
@@ -569,7 +571,15 @@ That would require constraining the ability of implementations to reorder or ali
 
 ### Import and Export
 
-Types can be exported from and imported into a module.
+Types can be exported from and imported into a module:
+```
+(type (export "T") (type (struct ...)))
+(type (import "env" "T"))
+```
+
+Imported types are essentially parameters to the module.
+As such, they are entirely abstract, as far as compile-time validation is concerned.
+The only operations possible with them are those that do not require knowledge of their actual definition or size: primarily, passing and storing references to such types.
 
 TODO: The ability to import types makes the type and import sections interdependent.
 
