@@ -35,6 +35,7 @@
 * Accept minimal amount of dynamic overhead (checked casts) as price for simplicity/universality.
 * Independent from linear memory.
 * Pay as you go; in particular, no effect on code not using GC.
+* Don't introduce dependencies on GC for other features (e.g., using resources through tables).
 * Avoid generics or other complex type structure _if possible_.
 * Extend the design iteratively, ship a minimal set of functionality fast.
 
