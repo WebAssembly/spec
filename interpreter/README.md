@@ -255,7 +255,7 @@ data:    ( data <var>? ( offset <instr>* ) <string>* )
 
 start:   ( start <var> )
 
-typedef: ( type <name>? ( func <funcsig> ) )
+typedef: ( type <name>? ( func <func_sig> ) )
 
 import:  ( import <string> <string> <imkind> )
 imkind:  ( func <name>? <func_sig> )
