@@ -40,9 +40,6 @@ pattern:
 * `LaneIdx8`: An integer in the range 0–7 identifying a lane.
 * `LaneIdx16`: An integer in the range 0–15 identifying a lane.
 * `LaneIdx32`: An integer in the range 0–31 identifying a lane.
-* `RoundingMode`: Rounding mode for floating-point operations. One of
-  `TiesToEven`, `TowardPositive`, `TowardNegative`, and `TowardZero`. See
-  [Rounding modes](#rounding-modes).
 
 ## SIMD types
 
@@ -181,13 +178,9 @@ semantics by WebAssembly.
 
 ## Rounding modes
 
-Floating-point operations that need a *rounding mode* take a `RoundingMode`
-operand which provides the rounding mode to use for the operation.
-
-* `TiesToEven`: Round to nearest, ties towards even.
-* `TowardPositive`: Round towards positive infinity.
-* `TowardNegative`: Round towards negative infinity.
-* `TowardZero`: Round towards zero.
+This specification does not yet provide a way of changing floating point
+rounding modes. All floating point operations use the default *roundTiesToEven*
+mode.
 
 ## Default NaN value
 
@@ -441,6 +434,9 @@ def S.Reduce(x):
     bitmask = (1 << S.LaneBits) - 1
     return x & bitmask
 ```
+
+There is no integer division operation provided here. This operation is not
+commonly part of bit 128-bit SIMD ISAs.
 
 ### Integer addition
 * `i8x16.add(a: v128, b: v128) -> v128`
@@ -710,7 +706,7 @@ boolean vector with the same number of lanes as the input interpretation.
 
 Integer equality is independent of the signed/unsigned interpretation. Floating
 point equality follows IEEE semantics, so a NaN lane compares not equal with
-anything, including itself:
+anything, including itself, and +0.0 is equal to -0.0:
 
 ```python
 def S.equal(a, b):
@@ -1146,22 +1142,22 @@ The floating-point arithmetic operations handle NaNs more strictly specified
 than the IEEE standard:
 
 ```python
-def wrap_fp_unary(func, rmode):
+def wrap_fp_unary(func):
     def wrapped(x):
         if isnan(x):
             return canonicalize_nan(x)
-        result = func(x, rmode)
+        result = func(x)
         if isnan(result):
             return type(result).default_nan()
         else:
             return result
     return wrapped
 
-def wrap_fp_binary(func, rmode):
+def wrap_fp_binary(func):
     def wrapped(x, y):
         if isnan(x) or isnan(y):
             return propagate_nan(x, y)
-        result = func(x, y, rmode)
+        result = func(x, y)
         if isnan(result):
             return type(result).default_nan()
         else:
@@ -1170,58 +1166,58 @@ def wrap_fp_binary(func, rmode):
 ```
 
 ### Addition
-* `f32x4.add(a: v128, b: v128, rmode: RoundingMode) -> v128`
-* `f64x2.add(a: v128, b: v128, rmode: RoundingMode) -> v128`
+* `f32x4.add(a: v128, b: v128) -> v128`
+* `f64x2.add(a: v128, b: v128) -> v128`
 
 Lane-wise IEEE `addition`.
 
 ```python
-def S.add(a, b, rmode):
-    return S.lanewise_binary(wrap_fp_binary(ieee.addition, rmode), a, b)
+def S.add(a, b):
+    return S.lanewise_binary(wrap_fp_binary(ieee.addition), a, b)
 ```
 
 ### Subtraction
-* `f32x4.sub(a: v128, b: v128, rmode: RoundingMode) -> v128`
-* `f64x2.sub(a: v128, b: v128, rmode: RoundingMode) -> v128`
+* `f32x4.sub(a: v128, b: v128) -> v128`
+* `f64x2.sub(a: v128, b: v128) -> v128`
 
 Lane-wise IEEE `subtraction`.
 
 ```python
-def S.sub(a, b, rmode):
-    return S.lanewise_binary(wrap_fp_binary(ieee.subtraction, rmode), a, b)
+def S.sub(a, b):
+    return S.lanewise_binary(wrap_fp_binary(ieee.subtraction), a, b)
 ```
 
 ### Division
-* `f32x4.div(a: v128, b: v128, rmode: RoundingMode) -> v128`
-* `f64x2.div(a: v128, b: v128, rmode: RoundingMode) -> v128`
+* `f32x4.div(a: v128, b: v128) -> v128`
+* `f64x2.div(a: v128, b: v128) -> v128`
 
 Lane-wise IEEE `division`.
 
 ```python
-def S.div(a, b, rmode):
-    return S.lanewise_binary(wrap_fp_binary(ieee.division, rmode), a, b)
+def S.div(a, b):
+    return S.lanewise_binary(wrap_fp_binary(ieee.division), a, b)
 ```
 
 ### Multiplication
-* `f32x4.mul(a: v128, b: v128, rmode: RoundingMode) -> v128`
-* `f64x2.mul(a: v128, b: v128, rmode: RoundingMode) -> v128`
+* `f32x4.mul(a: v128, b: v128) -> v128`
+* `f64x2.mul(a: v128, b: v128) -> v128`
 
 Lane-wise IEEE `multiplication`.
 
 ```python
-def S.mul(a, b, rmode):
-    return S.lanewise_binary(wrap_fp_binary(ieee.multiplication, rmode), a, b)
+def S.mul(a, b):
+    return S.lanewise_binary(wrap_fp_binary(ieee.multiplication), a, b)
 ```
 
 ### Square root
-* `f32x4.sqrt(a: v128, rmode: RoundingMode) -> v128`
-* `f64x2.sqrt(a: v128, rmode: RoundingMode) -> v128`
+* `f32x4.sqrt(a: v128) -> v128`
+* `f64x2.sqrt(a: v128) -> v128`
 
 Lane-wise IEEE `squareRoot`.
 
 ```python
-def S.sqrt(a, rmode):
-    return S.lanewise_unary(wrap_fp_unary(ieee.squareRoot, rmode), a)
+def S.sqrt(a):
+    return S.lanewise_unary(wrap_fp_unary(ieee.squareRoot), a)
 ```
 
 ### Reciprocal approximation
@@ -1270,23 +1266,23 @@ def S.reciprocalSqrtApproximation(a):
 
 ## Conversions
 ### Integer to floating point
-* `f32x4.fromSignedInt(a: v128, rmode: RoundingMode) -> v128`
-* `f64x2.fromSignedInt(a: v128, rmode: RoundingMode) -> v128`
-* `f32x4.fromUnsignedInt(a: v128, rmode: RoundingMode) -> v128`
-* `f64x2.fromUnsignedInt(a: v128, rmode: RoundingMode) -> v128`
+* `f32x4.fromSignedInt(a: v128) -> v128`
+* `f64x2.fromSignedInt(a: v128) -> v128`
+* `f32x4.fromUnsignedInt(a: v128) -> v128`
+* `f64x2.fromUnsignedInt(a: v128) -> v128`
 
 Lane-wise conversion from integer to floating point. Some integer values will be
 rounded.
 
 ```python
-def S.fromSignedInt(a, rmode):
+def S.fromSignedInt(a):
     def convert(x):
-        return S.LaneType.convertFromInt(x, rmode)
+        return S.LaneType.convertFromInt(x)
     return S.lanewise_unary(convert, a)
 
-def S.fromUnsignedInt(a, rmode):
+def S.fromUnsignedInt(a):
     def convert(x):
-        return S.LaneType.convertFromInt(x, rmode)
+        return S.LaneType.convertFromInt(x)
     return S.lanewise_unary(convert, a)
 ```
 
