@@ -1,0 +1,37 @@
+(module
+ (func $one
+    (i32.const 1))
+
+ (func $two
+    (i32.const 2))
+
+ (func $add (param i32) (param i32) (result i32)
+    (i32.add (get_local 0) (get_local 1)))
+
+ (func $callone (call $one))
+ (func $calltwo (call $two))
+ (func $calladd (param i32) (param i32) (result i32)
+  (call $add (get_local 0) (get_local 1)))
+
+ (export "one" $one)
+ (export "two" $two)
+ (export "add" $add)
+ (export "callone" $callone)
+ (export "calltwo" $calltwo)
+ (export "calladd" $calladd)
+)
+
+(assert_eq (invoke "one") (i32.const 1))
+(assert_eq (invoke "two") (i32.const 2))
+
+(assert_eq (invoke "add" (i32.const 1) (i32.const 2)) (i32.const 3))
+
+(assert_eq (invoke "callone") (i32.const 1))
+(assert_eq (invoke "calltwo") (i32.const 2))
+(assert_eq (invoke "calladd" (i32.const 1) (i32.const 2))
+           (i32.const 3))
+
+(; the following test fails
+(assert_eq (invoke "calladd" (invoke "callone") (invoke "calltwo"))
+           (i32.const 3))
+;)
