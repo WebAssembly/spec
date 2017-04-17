@@ -15,15 +15,18 @@ There are three parts to the proposal:
 3. This document which describes the mapping between WebAssembly and the
    portable specification.
 
-Referencing a common specification of the portable SIMD semantics reduces the
-work required to support both SIMD.js and WebAssembly SIMD in the same
-implementation.
-
 # Mapping portable SIMD to WebAssembly
 
 The types and operations in the portable SIMD specification are relatively
 straightforward to map to WebAssembly. This section describes the details of
 the mapping.
+
+The following operations are *not* provided in WebAssembly:
+
+- `f*.maxNum` and `f*.minNum`. These NaN-suppressing operations don't exist in
+  scalar WebAssembly versions either. The NaN-propagating versions are provided.
+- `f*.reciprocalApproximation` and `f*.reciprocalSqrtApproximation` are omitted
+  from WebAssembly pending further discussion.
 
 ## New value types
 

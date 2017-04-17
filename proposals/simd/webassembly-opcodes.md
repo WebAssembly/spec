@@ -156,8 +156,6 @@ and output vectors:
 | `f32x4.max(a: v128, b: v128) -> v128` | [f32x4.max](portable-simd.md#nan-propagating-maximum) |
 | `f32x4.div(a: v128, b: v128) -> v128` | [f32x4.div](portable-simd.md#division) |
 | `f32x4.sqrt(a: v128) -> v128` | [f32x4.sqrt](portable-simd.md#square-root) |
-| `f32x4.reciprocalApproximation(a: v128) -> v128` | [f32x4.reciprocalApproximation](portable-simd.md#reciprocal-approximation) |
-| `f32x4.reciprocalSqrtApproximation(a: v128) -> v128` | [f32x4.reciprocalSqrtApproximation](portable-simd.md#reciprocal-square-root-approximation) |
 | `f32x4.convert_s/i32x4(a: v128) -> v128` | [f32x4.fromSignedInt](portable-simd.md#integer-to-floating-point) |
 | `f32x4.convert_u/i32x4(a: v128) -> v128` | [f32x4.fromUnsignedInt](portable-simd.md#integer-to-floating-point) |
 
@@ -217,8 +215,6 @@ and output vectors:
 | `f64x2.max(a: v128, b: v128) -> v128` | [f64x2.max](portable-simd.md#nan-propagating-maximum) |
 | `f64x2.div(a: v128, b: v128) -> v128` | [f64x2.div](portable-simd.md#division) |
 | `f64x2.sqrt(a: v128) -> v128` | [f64x2.sqrt](portable-simd.md#square-root) |
-| `f64x2.reciprocalApproximation(a: v128) -> v128` | [f64x2.reciprocalApproximation](portable-simd.md#reciprocal-approximation) |
-| `f64x2.reciprocalSqrtApproximation(a: v128) -> v128` | [f64x2.reciprocalSqrtApproximation](portable-simd.md#reciprocal-square-root-approximation) |
 | `f64x2.convert_s/i64x2(a: v128) -> v128` | [f64x2.fromSignedInt](portable-simd.md#integer-to-floating-point) |
 | `f64x2.convert_u/i64x2(a: v128) -> v128` | [f64x2.fromUnsignedInt](portable-simd.md#integer-to-floating-point) |
 
