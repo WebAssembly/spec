@@ -181,7 +181,7 @@ align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
 block_sig : <type>*
-func_sig:   ( type <var> ) | <param>* <result>*
+func_sig:   ( type <var> )? <param>* <result>*
 global_sig: <type> | ( mut <type> )
 table_sig:  <nat> <nat>? <elem_type>
 memory_sig: <nat> <nat>?
