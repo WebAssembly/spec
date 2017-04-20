@@ -416,7 +416,9 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
 
 
 .. _binary-module:
-.. index:: module, section, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
+.. _binary-magic:
+.. _binary-version:
+.. index:: module, section, type definition, function type, function, table, memory, global, element, data, start function, import, export, context, version
    pair: binary format; module
    single: abstract syntax; module
 
@@ -434,9 +436,13 @@ The lengths of vectors produced by the (possibly empty) :ref:`function <binary-f
 
 .. math::
    \begin{array}{llcllll}
+   \production{magic} & \Bmagic &::=&
+     \hex{00}~\hex{61}~\hex{73}~\hex{6D} \\
+   \production{version} & \Bversion &::=&
+     \hex{01}~\hex{00}~\hex{00}~\hex{00} \\
    \production{modules} & \Bmodule &::=&
-     \hex{00}~\hex{61}~\hex{73}~\hex{6D}~~~ \\ &&&
-     \hex{01}~\hex{00}~\hex{00}~\hex{00}~~~ \\ &&&
+     \Bmagic \\ &&&
+     \Bversion \\ &&&
      \Bcustomsec^\ast \\ &&&
      \functype^\ast{:\,}\Btypesec \\ &&&
      \Bcustomsec^\ast \\ &&&
@@ -460,17 +466,19 @@ The lengths of vectors produced by the (possibly empty) :ref:`function <binary-f
      \Bcustomsec^\ast \\ &&&
      \data^\ast{:\,}\Bdatasec \\ &&&
      \Bcustomsec^\ast
-     &\Rightarrow& \{ &
-       \TYPES~\functype^\ast, \\ &&&&&&
-       \FUNCS~\func^n, \\ &&&&&&
-       \TABLES~\table^\ast, \\ &&&&&&
-       \MEMS~\mem^\ast, \\ &&&&&&
-       \GLOBALS~\global^\ast, \\ &&&&&&
-       \ELEM~\elem^\ast, \\ &&&&&&
-       \DATA~\data^\ast, \\ &&&&&&
-       \START~\start^?, \\ &&&&&&
-       \IMPORTS~\import^\ast, \\ &&&&&&
-       \EXPORTS~\export^\ast ~~\} \\
+     &\Rightarrow& \{~
+       \begin{array}[t]{@{}l@{}}
+       \TYPES~\functype^\ast, \\
+       \FUNCS~\func^n, \\
+       \TABLES~\table^\ast, \\
+       \MEMS~\mem^\ast, \\
+       \GLOBALS~\global^\ast, \\
+       \ELEM~\elem^\ast, \\
+       \DATA~\data^\ast, \\
+       \START~\start^?, \\
+       \IMPORTS~\import^\ast, \\
+       \EXPORTS~\export^\ast ~\} \\
+      \end{array} \\
    \end{array}
 
 where for each :math:`(t_i^\ast, e_i)` in :math:`\X{code}^n`,
@@ -481,4 +489,4 @@ where for each :math:`(t_i^\ast, e_i)` in :math:`\X{code}^n`,
    if backward-incompatible changes are made to the format.
    However, such changes are expected to occur very infrequently, if ever.
    The binary format is intended to be forward-compatible,
-   such that future extensions can be made without incrementing the version of the binary format.
+   such that future extensions can be made without incrementing its version.
