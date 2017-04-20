@@ -28,7 +28,7 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
     <link rel="up" title="Execution" href="index.html" />
-    <link rel="next" title="Module Instantiation" href="modules.html" />
+    <link rel="next" title="Modules" href="modules.html" />
     <link rel="prev" title="Conventions" href="conventions.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -61,7 +61,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#expressions">Expressions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html">Module Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
@@ -107,7 +107,7 @@
 <p>In this section, the following grammar shorthands are adopted:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef17#1{{}}\mathdef17{unary operators} &amp; \mathit{unop} &amp;::=&amp;
+\def\mathdef113#1{{}}\mathdef113{unary operators} &amp; \mathit{unop} &amp;::=&amp;
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{clz}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ctz}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{popcnt}} ~|~
@@ -118,7 +118,7 @@
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{floor}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{nearest}} \\
-\def\mathdef17#1{{}}\mathdef17{binary operators} &amp; \mathit{binop} &amp;::=&amp;
+\def\mathdef113#1{{}}\mathdef113{binary operators} &amp; \mathit{binop} &amp;::=&amp;
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}} ~|~
@@ -135,9 +135,9 @@
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shr}}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotl}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotr}} \\
-\def\mathdef17#1{{}}\mathdef17{test operators} &amp; \mathit{testop} &amp;::=&amp;
+\def\mathdef113#1{{}}\mathdef113{test operators} &amp; \mathit{testop} &amp;::=&amp;
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eqz}} \\
-\def\mathdef17#1{{}}\mathdef17{relational operators} &amp; \mathit{relop} &amp;::=&amp;
+\def\mathdef113#1{{}}\mathdef113{relational operators} &amp; \mathit{relop} &amp;::=&amp;
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}} ~|~
@@ -148,7 +148,7 @@
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} \\
-\def\mathdef17#1{{}}\mathdef17{conversion operators} &amp; \mathit{cvtop} &amp;::=&amp;
+\def\mathdef113#1{{}}\mathdef113{conversion operators} &amp; \mathit{cvtop} &amp;::=&amp;
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{wrap}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
@@ -282,7 +282,7 @@
 \[\frac{
   \mathit{cvtop}_{t_1,t_2}(c_1) = \bot
 }{
-  (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t_2\mathsf{.}\mathit{cvtop}/t_1 \hookrightarrow \href{../execution/instructions.html#syntax-instr-admin}{\mathsf{trap}}
+  (t_1\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t_2\mathsf{.}\mathit{cvtop}/t_1 \hookrightarrow \href{../execution/instructions.html#syntax-instr-admin}{\mathsf{trap}}
 }\]</div>
 <span class="target" id="exec-instr-parametric"></span></div>
 </div>
@@ -485,7 +485,7 @@ The only purpose of the annotation is to provide optimizatons hints.</p>
 </div></blockquote>
 <ol class="arabic simple" start="10">
 <li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\mathit{mem}.\mathsf{data}[\mathit{ea}:\mathit{ea}+N]\)</span>.</li>
-<li>Let <span class="math">\(n\)</span> be the result of computing <span class="math">\(\ofbits_{\def\mathdef33#1{{\mathit{int}_{#1}}}\mathdef33{N}}(b^\ast)\)</span>.</li>
+<li>Let <span class="math">\(n\)</span> be the result of computing <span class="math">\(\ofbits_{\def\mathdef129#1{{\mathit{int}_{#1}}}\mathdef129{N}}(b^\ast)\)</span>.</li>
 </ol>
 <ol class="arabic simple" start="11">
 <li>Let <span class="math">\(c\)</span> be the result of computing <span class="math">\(\extend_{N,w,\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}(n)\)</span>.</li>
@@ -644,7 +644,7 @@ The only purpose of the annotation is to provide optimizatons hints.</p>
 <blockquote>
 <div><ol class="loweralpha simple">
 <li>Let <span class="math">\(\mathit{len}\)</span> be <span class="math">\(n\)</span> multiplied with the <span class="xref std std-ref">page size</span>.</li>
-<li>Append <span class="math">\(\mathit{len}\)</span> bytes with value <span class="math">\(\def\mathdef34#1{\mathrm{0x#1}}\mathdef34{00}\)</span> to <span class="math">\(S.\mathsf{mems}[a]\)</span>.</li>
+<li>Append <span class="math">\(\mathit{len}\)</span> bytes with value <span class="math">\(\def\mathdef130#1{\mathrm{0x#1}}\mathdef130{00}\)</span> to <span class="math">\(S.\mathsf{mems}[a]\)</span>.</li>
 <li>Push the value <span class="math">\((\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz})\)</span> to the operand stack.</li>
 </ol>
 </div></blockquote>
@@ -664,7 +664,7 @@ The only purpose of the annotation is to provide optimizatons hints.</p>
   \qquad
   S.\mathsf{mems}[a].\mathsf{max} = \epsilon \vee \mathit{sz} + \uint(n) \leq S.\mathsf{mems}[a].\mathsf{max}
   \qquad
-  S' = S~\mbox{with}~\mathsf{mems}[a].\mathsf{data} = S.\mathsf{mems}[a].\mathsf{data}~(\def\mathdef35#1{\mathrm{0x#1}}\mathdef35{00})^{\uint(n)\cdot64\,\mathrm{Ki}}
+  S' = S~\mbox{with}~\mathsf{mems}[a].\mathsf{data} = S.\mathsf{mems}[a].\mathsf{data}~(\def\mathdef131#1{\mathrm{0x#1}}\mathdef131{00})^{\uint(n)\cdot64\,\mathrm{Ki}}
 }{
   S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} \hookrightarrow S'; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz})
 }\]</div>
@@ -727,7 +727,7 @@ In practice, the choice depends on the resources available to the <span class="x
 <div class="math">
 \[\frac{
 }{
-  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \hookrightarrow \href{../execution/instructions.html#syntax-instr-admin}{\mathsf{label}}_\epsilon~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \hookrightarrow \mathsf{label}_\epsilon~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}
 }\]</div>
 </div>
 <div class="section" id="exec-loop">
@@ -739,7 +739,7 @@ In practice, the choice depends on the resources available to the <span class="x
 <div class="math">
 \[\frac{
 }{
-  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \hookrightarrow \href{../execution/instructions.html#syntax-instr-admin}{\mathsf{label}}_{\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \hookrightarrow \mathsf{label}_{\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}
 }\]</div>
 </div>
 <div class="section" id="exec-if">
@@ -969,9 +969,9 @@ such that <span class="math">\(t_2^\ast = t_0^\ast~t^\ast\)</span>.</li>
 <h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span><a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
 <div class="math">
 \[\frac{
-  C \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \to [t^?]
+  S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \hookrightarrow^\ast S; F; v
 }{
-  C \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [t^?]
+  S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \hookrightarrow^\ast v
 }\]</div>
 </div>
 </div>
