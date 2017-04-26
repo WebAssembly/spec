@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -49,7 +49,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Binary Format</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a><ul>
@@ -156,12 +155,12 @@ No other byte value is allowed as the encoding of a value type.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef133#1{{}}\mathdef133{limits} &amp; \href{../binary/types.html#binary-limits}{\mathtt{limits}} &amp;::=&amp;
-  \def\mathdef173#1{\mathtt{0x#1}}\mathdef173{00}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef155#1{{\mathtt{uint}_{#1}}}\mathdef155{32}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~\epsilon \} \\ &amp;&amp;|&amp;
-  \def\mathdef174#1{\mathtt{0x#1}}\mathdef174{01}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef155#1{{\mathtt{uint}_{#1}}}\mathdef155{32}}~~m{:}\href{../binary/values.html#binary-int}{\def\mathdef155#1{{\mathtt{uint}_{#1}}}\mathdef155{32}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~m \} \\
+  \def\mathdef173#1{\mathtt{0x#1}}\mathdef173{00}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef155#1{{\mathtt{u}#1}}\mathdef155{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~\epsilon \} \\ &amp;&amp;|&amp;
+  \def\mathdef174#1{\mathtt{0x#1}}\mathdef174{01}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef155#1{{\mathtt{u}#1}}\mathdef155{\mathtt{32}}}~~m{:}\href{../binary/values.html#binary-int}{\def\mathdef155#1{{\mathtt{u}#1}}\mathdef155{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~m \} \\
 \end{array}\end{split}\]</div>
-<p class="last">That is, a limits pair is encoded as either the byte <span class="math">\(\def\mathdef175#1{\mathtt{0x#1}}\mathdef175{00}\)</span> followed by the encoding of a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef138#1{{\mathit{uint}_{#1}}}\mathdef138{32}}\)</span> value,
+<p class="last">That is, a limits pair is encoded as either the byte <span class="math">\(\def\mathdef175#1{\mathtt{0x#1}}\mathdef175{00}\)</span> followed by the encoding of a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef138#1{{\mathit{u}#1}}\mathdef138{\mathit{32}}}\)</span> value,
 or the byte <span class="math">\(\def\mathdef176#1{\mathtt{0x#1}}\mathdef176{01}\)</span> followed by two such encodings.
-The variables <span class="math">\(n\)</span> and <span class="math">\(m\)</span> name the attributes of the respective <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef155#1{{\mathtt{uint}_{#1}}}\mathdef155{32}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> they decode into.
+The variables <span class="math">\(n\)</span> and <span class="math">\(m\)</span> name the attributes of the respective <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef155#1{{\mathtt{u}#1}}\mathdef155{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> they decode into.
 The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.</p>
 </div>
 </div>

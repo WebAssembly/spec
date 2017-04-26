@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -59,7 +59,6 @@
 <li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
@@ -129,15 +128,16 @@ which collects relevant information about the surrounding <a class="reference in
 <li><em>Globals</em>: the list of globals declared in the current module, represented by their global type.</li>
 <li><em>Locals</em>: the list of locals declared in the current function (including parameters), represented by their value type.</li>
 <li><em>Labels</em>: the stack of labels accessible from the current position, represented by their result type.</li>
+<li><em>Return</em>: the return type of the current function, represented as a result type.</li>
 </ul>
 <p>In other words, a context contains a sequence of suitable <span class="xref std std-ref">types</span> for each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>,
 describing each defined entry in that space.
-Locals and labels are only used for validating <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> in <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function bodies</span></a>, and are left empty elsewhere.
+Locals, labels and return type are only used for validating <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> in <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function bodies</span></a>, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.</p>
 <p>It is convenient to define contexts as <a class="reference internal" href="../syntax/conventions.html#syntax-record"><span class="std std-ref">records</span></a> <span class="math">\(C\)</span> with abstract syntax:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1231#1{{}}\mathdef1231{(context)} &amp; C &amp;::=&amp;
+\def\mathdef1365#1{{}}\mathdef1365{(context)} &amp; C &amp;::=&amp;
   \begin{array}[t]{l&#64;{~}ll}
   \{ &amp; \mathsf{types} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
      &amp; \mathsf{funcs} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
@@ -145,7 +145,8 @@ The label stack is the only part of the context that changes as validation of an
      &amp; \mathsf{mems} &amp; \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}^\ast, \\
      &amp; \mathsf{globals} &amp; \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}^\ast, \\
      &amp; \mathsf{locals} &amp; \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^\ast, \\
-     &amp; \mathsf{labels} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^\ast ~\} \\
+     &amp; \mathsf{labels} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^\ast, \\
+     &amp; \mathsf{return} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^? ~\} \\
   \end{array}
 \end{array}\end{split}\]</div>
 <div class="admonition note">
@@ -168,12 +169,14 @@ because the <a class="reference internal" href="../syntax/modules.html#syntax-la
 </div>
 </div>
 <div class="section" id="textual-notation">
-<h2>Textual Notation<a class="headerlink" href="#textual-notation" title="Permalink to this headline">¶</a></h2>
+<span id="valid-notation-textual"></span><h2>Textual Notation<a class="headerlink" href="#textual-notation" title="Permalink to this headline">¶</a></h2>
 <p>Validation is specified by stylised rules for each relevant part of the <a class="reference internal" href="../syntax/conventions.html#syntax"><span class="std std-ref">abstract syntax</span></a>.
 The rules not only state constraints defining when a phrase is valid,
 they also classify it with a type.
-A phrase <span class="math">\(A\)</span> is said to be &#8220;valid with type <span class="math">\(T\)</span>&#8221;,
-if all constraints expressed by the respective rules are met.
+The following conventions are adopted in stating these rules.</p>
+<ul>
+<li><p class="first">A phrase <span class="math">\(A\)</span> is said to be &#8220;valid with type <span class="math">\(T\)</span>&#8221;
+if and only if all constraints expressed by the respective rules are met.
 The form of <span class="math">\(T\)</span> depends on what <span class="math">\(A\)</span> is.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -183,12 +186,16 @@ for an <span class="math">\(A\)</span> that is a <a class="reference internal" h
 <span class="math">\(T\)</span> is a <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a>;
 and so on.</p>
 </div>
-<p>The rules implicitly assume a given <a class="reference internal" href="#context"><span class="std std-ref">context</span></a> <span class="math">\(C\)</span>.
-In some places, this context is locally extended to a context <span class="math">\(C'\)</span> with additional entries.
+</li>
+<li><p class="first">The rules implicitly assume a given <a class="reference internal" href="#context"><span class="std std-ref">context</span></a> <span class="math">\(C\)</span>.</p>
+</li>
+<li><p class="first">In some places, this context is locally extended to a context <span class="math">\(C'\)</span> with additional entries.
 The formulation &#8220;Under context <span class="math">\(C'\)</span>, ... <em>statement</em> ...&#8221; is adopted to express that the following statement must apply under the assumptions embodied in the extended context.</p>
-</div>
+</li>
+</ul>
+<span class="target" id="valid-notation"></span></div>
 <div class="section" id="formal-notation">
-<h2>Formal Notation<a class="headerlink" href="#formal-notation" title="Permalink to this headline">¶</a></h2>
+<span id="index-2"></span><h2>Formal Notation<a class="headerlink" href="#formal-notation" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This section gives a brief explanation of the notation for specifying typing rules formally.
@@ -212,7 +219,7 @@ The conclusion always is a judgment <span class="math">\(C \vdash A : T\)</span>
 and there is one respective rule for each relevant construct <span class="math">\(A\)</span> of the abstract syntax.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>For example, the typing rule for the <a class="reference internal" href="../syntax/instructions.html#syntax-instr-numeric"><span class="std std-ref">instruction</span></a> <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> can be given as an axiom:</p>
+<p>For example, the typing rule for the <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction can be given as an axiom:</p>
 <div class="math">
 \[\frac{
 }{
@@ -224,20 +231,20 @@ independent from any side conditions.</p>
 <p>An instruction like <span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}\)</span> can be typed as follows:</p>
 <div class="math">
 \[\frac{
-  C.\mathsf{local}[x] = t
+  C.\mathsf{locals}[x] = t
 }{
   C \vdash \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~x : [] \to [t]
 }\]</div>
 <p>Here, the premise enforces that the immediate <a class="reference internal" href="../syntax/modules.html#syntax-localidx"><span class="std std-ref">local index</span></a> <span class="math">\(x\)</span> exists in the context.
 The instruction produces a value of its respective type <span class="math">\(t\)</span>
 (and does not consume any values).
-If <span class="math">\(C.\mathsf{local}[x]\)</span> does not exist then the premise does not hold,
+If <span class="math">\(C.\mathsf{locals}[x]\)</span> does not exist then the premise does not hold,
 and the instruction is ill-typed.</p>
 <p>Finally, a <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured</span></a> instruction requires
 a recursive rule, where the premise is itself a typing judgement:</p>
 <div class="math">
 \[\frac{
-  C,\mathsf{label}\,[t^?] \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \to [t^?]
+  C,\href{../execution/runtime.html#syntax-instr-admin}{\mathsf{label}}\,[t^?] \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \to [t^?]
 }{
   C \vdash \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \to [t^?]
 }\]</div>

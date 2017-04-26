@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 10*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -51,11 +51,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Execution</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="runtime.html">Runtime Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numerics.html">Numerics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#instantiation">Instantiation</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Modules</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
@@ -96,177 +95,9 @@
             
   <div class="section" id="modules">
 <h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="exec-module"></span><div class="section" id="instantiation">
-<span id="index-0"></span><h2>Instantiation<a class="headerlink" href="#instantiation" title="Permalink to this headline">¶</a></h2>
-<p>Given a <a class="reference internal" href="conventions.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span> and a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> <span class="math">\(m\)</span> is instantiated with a list of <a class="reference internal" href="conventions.html#syntax-externval"><span class="std std-ref">external values</span></a> <span class="math">\(\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}^\ast\)</span> supplying the required imports as follows.</p>
-<div class="math">
-\[\begin{split}\begin{array}{llll}
-\mathrm{alloctable}(S, \href{../syntax/modules.html#syntax-table}{\mathit{table}}) &amp;=&amp; S', \href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}} \\[1ex]
-\mbox{where:} \\[1ex]
-\href{../execution/conventions.html#syntax-tableinst}{\mathit{tableinst}} &amp;=&amp; \{ \mathsf{elem}~(\epsilon)^{\href{../syntax/types.html#syntax-limits}{\mathit{limits}}.\mathsf{min}}, \mathsf{max}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}.\mathsf{max} \}
-  &amp; (\href{../syntax/modules.html#syntax-table}{\mathit{table}}.\mathsf{type} = \href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}) \\
-\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}} &amp;=&amp; |S.\mathsf{tables}| \\
-S' &amp;=&amp; S~\mbox{with}~\mathsf{tables} = S.\mathsf{tables}~\href{../execution/conventions.html#syntax-tableinst}{\mathit{tableinst}} \\
-\end{array}\end{split}\]</div>
-<div class="math">
-\[\begin{split}\begin{array}{llll}
-\mathrm{allocmem}(S, \href{../syntax/modules.html#syntax-mem}{\mathit{mem}}) &amp;=&amp; S', \href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}} \\[1ex]
-\mbox{where:} \\[1ex]
-\href{../execution/conventions.html#syntax-meminst}{\mathit{meminst}} &amp;=&amp; \{ \mathsf{data}~(\def\mathdef148#1{\mathrm{0x#1}}\mathdef148{00})^{\href{../syntax/types.html#syntax-limits}{\mathit{limits}}.\mathsf{min}}, \mathsf{max}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}.\mathsf{max} \}
-  &amp; (\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}.\mathsf{type} = \href{../syntax/types.html#syntax-limits}{\mathit{limits}}) \\
-\href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}} &amp;=&amp; |S.\mathsf{mems}| \\
-S' &amp;=&amp; S~\mbox{with}~\mathsf{mems} = S.\mathsf{mems}~\href{../execution/conventions.html#syntax-meminst}{\mathit{meminst}} \\
-\end{array}\end{split}\]</div>
-<div class="math">
-\[\begin{split}\begin{array}{llll}
-\mathrm{allocglobal}(S, \href{../syntax/modules.html#syntax-global}{\mathit{global}}) &amp;=&amp; S', \href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}} \\[1ex]
-\mbox{where:} \\[1ex]
-\href{../execution/conventions.html#syntax-globalinst}{\mathit{globalinst}} &amp;=&amp; \{ \mathsf{value}~(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0), \href{../syntax/types.html#syntax-mut}{\mathsf{mut}}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}} \}
-  &amp; (\href{../syntax/modules.html#syntax-global}{\mathit{global}}.\mathsf{type} = \href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t) \\
-\href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}} &amp;=&amp; |S.\mathsf{globals}| \\
-S' &amp;=&amp; S~\mbox{with}~\mathsf{globals} = S.\mathsf{globals}~\href{../execution/conventions.html#syntax-globalinst}{\mathit{globalinst}} \\
-\end{array}\end{split}\]</div>
-<div class="math">
-\[\begin{split}\begin{array}{llll}
-\mathrm{alloc}X^\ast(S_0, X^n) &amp;=&amp; S_n, a^n \\[1ex]
-\mbox{where for all $i &lt; n$:} \\[1ex]
-S_{i+1}, a^n[i] &amp;=&amp; \mathrm{alloc}X(S_i, X^n[i])
-\end{array}\end{split}\]</div>
-<div class="math">
-\[\begin{split}\begin{array}{llll}
-\mathrm{allocmodule}(S, \href{../syntax/modules.html#syntax-module}{\mathit{module}}, \href{../execution/conventions.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast) &amp;=&amp; S', \href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}} \\[1ex]
-\mbox{where:} \\[1ex]
-\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}} &amp;=&amp; \{~
-  \begin{array}[t]{&#64;{}l&#64;{}}
-  \mathsf{types}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{types}, \\
-  \mathsf{funcs}~\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/conventions.html#syntax-funcinst}{\mathit{funcinst}}^\ast, \\
-  \mathsf{tables}~\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}}^\ast, \\
-  \mathsf{mems}~\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}}^\ast, \\
-  \mathsf{globals}~\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}}^\ast, \\
-  \mathsf{exports}~\href{../execution/conventions.html#syntax-exportinst}{\mathit{exportinst}}^\ast ~\}
-  \end{array} \\[1ex]
-S_1, \href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}}^\ast &amp;=&amp; \mathrm{alloctable}^\ast(S, \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{tables}) \\
-S_2, \href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}}^\ast &amp;=&amp; \mathrm{allocmem}^\ast(S_1, \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{mems}) \\
-S', \href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}}^\ast &amp;=&amp; \mathrm{allocglobal}^\ast(S_2, \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{globals}) \\[1ex]
-\href{../execution/conventions.html#syntax-funcinst}{\mathit{funcinst}}^\ast &amp;=&amp; (\{ \mathsf{module}~\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}, \mathsf{func}~\href{../syntax/modules.html#syntax-func}{\mathit{func}} \})^\ast
-  &amp; (\href{../syntax/modules.html#syntax-func}{\mathit{func}}^\ast = \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{funcs}) \\
-\href{../execution/conventions.html#syntax-exportinst}{\mathit{exportinst}}^\ast &amp;=&amp; (\{ \mathsf{name}~(\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{name}), \mathsf{value}~\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}} \})^\ast
-  &amp; (\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast = \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports}) \\[1ex]
-\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[x])^\ast
-  &amp; (x^\ast = \href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
-\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{tables}[x])^\ast
-  &amp; (x^\ast = \href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
-\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{mems}[x])^\ast
-  &amp; (x^\ast = \href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
-\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{globals}[x])^\ast
-  &amp; (x^\ast = \href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
-\end{array}\end{split}\]</div>
-<div class="math">
-\[\frac{
-  \href{../execution/conventions.html#syntax-funcinst}{\mathit{funcinst}}.\mathsf{module}.\mathsf{types}[\href{../execution/conventions.html#syntax-funcinst}{\mathit{funcinst}}.\mathsf{func}.\mathsf{type}] = \href{../syntax/types.html#syntax-functype}{\mathit{functype}}
-}{
-  S \vdash \mathsf{func}~\href{../execution/conventions.html#syntax-funcinst}{\mathit{funcinst}} : \mathsf{func}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}
-}\]</div>
-<div class="math">
-\[\frac{
-  S.\mathsf{tables}[\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}}] = \{ \mathsf{elem}~(a^?)^n, \mathsf{max}~m \}
-}{
-  S \vdash \mathsf{table}~\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}} : \mathsf{table}~(\{ \mathsf{min}~n, \mathsf{max}~m \}~\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}})
-}\]</div>
-<div class="math">
-\[\frac{
-  S.\mathsf{mems}[\href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}}] = \{ \mathsf{data}~b^{n\cdot64\,\mathrm{Ki}}, \mathsf{max}~m \}
-}{
-  S \vdash \mathsf{mem}~\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}} : \mathsf{mem}~\{ \mathsf{min}~n, \mathsf{max}~m \}
-}\]</div>
-<div class="math">
-\[\frac{
-  S.\mathsf{globals}[\href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}}] = \{ \mathsf{value}~(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c), \href{../syntax/types.html#syntax-mut}{\mathsf{mut}}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\}
-}{
-  S \vdash \mathsf{global}~\href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}} : \mathsf{global}~(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t)
-}\]</div>
-<div class="math">
-\[\frac{
-}{
-  S; \href{../execution/modules.html#syntax-instantiate}{\mathsf{instantiate}}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}~\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}^n \hookrightarrow S; \href{../execution/instructions.html#syntax-instr-admin}{\mathsf{trap}}
-}\]</div>
-<div class="math">
-\[\begin{split}\frac{
-  \begin{array}{&#64;{}c&#64;{}}
-  \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{imports} = \href{../execution/conventions.html#syntax-externtype}{\mathit{externtype}}^n
-  \qquad
-  \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{globals} = \href{../syntax/modules.html#syntax-global}{\mathit{global}}^\ast
-  \qquad
-  \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{elem} = \href{../syntax/modules.html#syntax-elem}{\mathit{elem}}^\ast
-  \qquad
-  \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{data} = \href{../syntax/modules.html#syntax-data}{\mathit{data}}^\ast
-  \qquad
-  \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{start} = \href{../syntax/modules.html#syntax-start}{\mathit{start}}^?
-  \\
-  (\vdash \href{../execution/conventions.html#syntax-externval}{\mathit{externval}} : \href{../execution/conventions.html#syntax-externtype}{\mathit{externtype}})^n
-  \qquad
-  \mathrm{allocmodule}(S, \href{../syntax/modules.html#syntax-module}{\mathit{module}}, \href{../execution/conventions.html#syntax-externval}{\mathit{externval}}^n) = S', \href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}
-  \qquad
-  F = \{ \mathsf{module}~\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}, \mathsf{local}~\epsilon \}
-  \\
-  (S'; F; \href{../syntax/modules.html#syntax-global}{\mathit{global}}.\mathsf{init} \hookrightarrow^\ast v)^\ast
-  \qquad
-  (S'; F; \href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\mathsf{offset} \hookrightarrow^\ast \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{eo})^\ast
-  \qquad
-  (S'; F; \href{../syntax/modules.html#syntax-data}{\mathit{data}}.\mathsf{offset} \hookrightarrow^\ast \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{do})^\ast
-  \\
-  (\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}}^\ast = i + |\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{globals}| - |\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{globals}|)_i^\ast
-  \qquad
-  (\href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}} = \href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{globals}[\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}}])^\ast
-  \\
-  (\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}} = \href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{tables}[\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\mathsf{table}])^\ast
-  \qquad
-  (\href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}} = \href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{mems}[\href{../syntax/modules.html#syntax-data}{\mathit{data}}.\mathsf{mem}])^\ast
-  \qquad
-  (\href{../execution/conventions.html#syntax-funcinst}{\mathit{funcinst}} = \href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[\href{../syntax/modules.html#syntax-start}{\mathit{start}}.\mathsf{func}])^?
-  \\
-  (\mathit{eo} + |\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\mathsf{init}| \leq |S'.\mathsf{tables}[\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}}]|)^\ast
-  \qquad
-  (\mathit{do} + |\href{../syntax/modules.html#syntax-data}{\mathit{data}}.\mathsf{init}| \leq |S'.\mathsf{mems}[\href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}}]|)^\ast
-  \end{array}
-}{
-  S; \href{../execution/modules.html#syntax-instantiate}{\mathsf{instantiate}}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}~\href{../execution/conventions.html#syntax-externval}{\mathit{externval}}^n \hookrightarrow S';
-    \begin{array}[t]{&#64;{}l&#64;{}}
-    (\href{../execution/modules.html#syntax-instantiate}{\mathsf{init\_global}}~\href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}}~v)^\ast \\
-    (\href{../execution/modules.html#syntax-instantiate}{\mathsf{init\_table}}~\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}}~\mathit{eo}~\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}~\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\mathsf{init})^\ast \\
-    (\href{../execution/modules.html#syntax-instantiate}{\mathsf{init\_mem}}~\href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}}~\mathit{do}~\href{../syntax/modules.html#syntax-data}{\mathit{data}}.\mathsf{init})^\ast \\
-    (\href{../execution/instructions.html#syntax-instr-admin}{\mathsf{invoke}}~\href{../execution/conventions.html#syntax-funcinst}{\mathit{funcinst}})^? \\
-    \href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}} \\
-    \end{array}
-}\end{split}\]</div>
-<div class="math">
-\[\frac{
-  S' = S~\mbox{with}~\mathsf{globals}[\href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}}] = v
-}{
-  S; \href{../execution/modules.html#syntax-instantiate}{\mathsf{init\_global}}~\href{../execution/conventions.html#syntax-globaladdr}{\mathit{globaladdr}}~v \hookrightarrow S'; \epsilon
-}\]</div>
-<div class="math">
-\[\frac{
-}{
-  S; \href{../execution/modules.html#syntax-instantiate}{\mathsf{init\_table}}~\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}}~o~\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}~\epsilon \hookrightarrow S; \epsilon
-}\]</div>
-<div class="math">
-\[\frac{
-  S' = S~\mbox{with}~\mathsf{tables}[\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}}][o] = \href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[x_0]
-}{
-  S; \href{../execution/modules.html#syntax-instantiate}{\mathsf{init\_table}}~\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}}~o~\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}~(x_0~x^\ast) \hookrightarrow S'; \href{../execution/modules.html#syntax-instantiate}{\mathsf{init\_table}}~\href{../execution/conventions.html#syntax-tableaddr}{\mathit{tableaddr}}~(o+1)~\href{../execution/conventions.html#syntax-moduleinst}{\mathit{moduleinst}}~x^\ast
-}\]</div>
-<div class="math">
-\[\frac{
-}{
-  S; \href{../execution/modules.html#syntax-instantiate}{\mathsf{init\_mem}}~\href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}}~o~\epsilon \hookrightarrow S; \epsilon
-}\]</div>
-<div class="math">
-\[\frac{
-  S' = S~\mbox{with}~\mathsf{mems}[\href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}}][o] = b_0
-}{
-  S; \href{../execution/modules.html#syntax-instantiate}{\mathsf{init\_mem}}~\href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}}~o~(b_0~b^\ast) \hookrightarrow S'; \href{../execution/modules.html#syntax-instantiate}{\mathsf{init\_mem}}~\href{../execution/conventions.html#syntax-memaddr}{\mathit{memaddr}}~(o+1)~b^\ast
-}\]</div>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Work in progress</p>
 </div>
 </div>
 

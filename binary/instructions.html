@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -49,7 +49,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Binary Format</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
@@ -117,7 +116,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">Control instructions</span></a> have varying encodings. For structured instructions, the nested instruction sequences are terminated with explicit opcodes for <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span>.</p>
 <div class="math" id="valid-call-indirect">
 <span id="valid-call"></span><span id="valid-return"></span><span id="valid-br-table"></span><span id="valid-br-if"></span><span id="valid-br"></span><span id="valid-if"></span><span id="valid-loop"></span><span id="valid-block"></span><span id="valid-unreachable"></span><span id="valid-nop"></span>\[\begin{split}\begin{array}{llclll}
-\def\mathdef210#1{{}}\mathdef210{instructions} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp;
+\def\mathdef210#1{{}}\mathdef210{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp;
   \def\mathdef243#1{\mathtt{0x#1}}\mathdef243{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}} \\ &amp;&amp;|&amp;
   \def\mathdef244#1{\mathtt{0x#1}}\mathdef244{01} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}} \\ &amp;&amp;|&amp;
   \def\mathdef245#1{\mathtt{0x#1}}\mathdef245{02}~~\mathit{rt}{:}\href{../binary/types.html#binary-blocktype}{\mathtt{blocktype}}~~(\mathit{in}{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~\def\mathdef246#1{\mathtt{0x#1}}\mathdef246{0B}
@@ -147,7 +146,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-parametric"><span class="std std-ref">Parametric instructions</span></a> are represented by single byte codes.</p>
 <div class="math" id="binary-select">
 <span id="binary-drop"></span>\[\begin{split}\begin{array}{llclll}
-\def\mathdef210#1{{}}\mathdef210{instructions} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
+\def\mathdef210#1{{}}\mathdef210{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
   \def\mathdef261#1{\mathtt{0x#1}}\mathdef261{1A} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}} \\ &amp;&amp;|&amp;
   \def\mathdef262#1{\mathtt{0x#1}}\mathdef262{1B} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}} \\
 \end{array}\end{split}\]</div>
@@ -157,7 +156,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-variable"><span class="std std-ref">Variable instructions</span></a> are represented by byte codes followed by the encoding of the respective <span class="xref std std-ref">index</span>.</p>
 <div class="math" id="binary-set-global">
 <span id="binary-get-global"></span><span id="binary-tee-local"></span><span id="binary-set-local"></span><span id="binary-get-local"></span>\[\begin{split}\begin{array}{llclll}
-\def\mathdef210#1{{}}\mathdef210{instructions} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
+\def\mathdef210#1{{}}\mathdef210{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
   \def\mathdef263#1{\mathtt{0x#1}}\mathdef263{20}~~x{:}\href{../binary/modules.html#binary-localidx}{\mathtt{localidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~x \\ &amp;&amp;|&amp;
   \def\mathdef264#1{\mathtt{0x#1}}\mathdef264{21}~~x{:}\href{../binary/modules.html#binary-localidx}{\mathtt{localidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_local}}~x \\ &amp;&amp;|&amp;
   \def\mathdef265#1{\mathtt{0x#1}}\mathdef265{22}~~x{:}\href{../binary/modules.html#binary-localidx}{\mathtt{localidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{tee\_local}}~x \\ &amp;&amp;|&amp;
@@ -170,9 +169,9 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p>Each variant of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instruction</span></a> is encoded with a different byte code. Loads and stores are followed by the encoding of their <span class="math">\(\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span> immediate.</p>
 <div class="math" id="binary-grow-memory">
 <span id="binary-current-memory"></span><span id="binary-storen"></span><span id="binary-store"></span><span id="binary-loadn"></span><span id="binary-load"></span><span id="id1"></span>\[\begin{split}\begin{array}{llclll}
-\def\mathdef210#1{{}}\mathdef210{memory arguments} &amp; \href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;::=&amp;
-  a{:}\href{../binary/values.html#binary-int}{\def\mathdef232#1{{\mathtt{uint}_{#1}}}\mathdef232{32}}~~o{:}\href{../binary/values.html#binary-int}{\def\mathdef232#1{{\mathtt{uint}_{#1}}}\mathdef232{32}} &amp;\Rightarrow&amp; \{ \mathsf{align}~a,~\mathsf{offset}~o \} \\
-\def\mathdef210#1{{}}\mathdef210{instructions} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
+\def\mathdef210#1{{}}\mathdef210{memory argument} &amp; \href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;::=&amp;
+  a{:}\href{../binary/values.html#binary-int}{\def\mathdef232#1{{\mathtt{u}#1}}\mathdef232{\mathtt{32}}}~~o{:}\href{../binary/values.html#binary-int}{\def\mathdef232#1{{\mathtt{u}#1}}\mathdef232{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{align}~a,~\mathsf{offset}~o \} \\
+\def\mathdef210#1{{}}\mathdef210{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
   \def\mathdef268#1{\mathtt{0x#1}}\mathdef268{28}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~m \\ &amp;&amp;|&amp;
   \def\mathdef269#1{\mathtt{0x#1}}\mathdef269{29}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~m \\ &amp;&amp;|&amp;
   \def\mathdef270#1{\mathtt{0x#1}}\mathdef270{2A}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~m \\ &amp;&amp;|&amp;
@@ -210,16 +209,16 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions are followed by the respective literal.</p>
 <div class="math" id="binary-const">
 \[\begin{split}\begin{array}{llclll}
-\def\mathdef210#1{{}}\mathdef210{instructions} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\&amp;&amp;|&amp;
-  \def\mathdef295#1{\mathtt{0x#1}}\mathdef295{41}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef238#1{{\mathtt{int}_{#1}}}\mathdef238{32}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n \\ &amp;&amp;|&amp;
-  \def\mathdef296#1{\mathtt{0x#1}}\mathdef296{42}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef239#1{{\mathtt{int}_{#1}}}\mathdef239{64}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n \\ &amp;&amp;|&amp;
-  \def\mathdef297#1{\mathtt{0x#1}}\mathdef297{43}~~z{:}\href{../binary/values.html#binary-float}{\def\mathdef241#1{{\mathtt{float}_{#1}}}\mathdef241{32}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~z \\ &amp;&amp;|&amp;
-  \def\mathdef298#1{\mathtt{0x#1}}\mathdef298{44}~~z{:}\href{../binary/values.html#binary-float}{\def\mathdef242#1{{\mathtt{float}_{#1}}}\mathdef242{64}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~z \\
+\def\mathdef210#1{{}}\mathdef210{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\&amp;&amp;|&amp;
+  \def\mathdef295#1{\mathtt{0x#1}}\mathdef295{41}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef238#1{{\mathtt{i}#1}}\mathdef238{\mathtt{32}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n \\ &amp;&amp;|&amp;
+  \def\mathdef296#1{\mathtt{0x#1}}\mathdef296{42}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef239#1{{\mathtt{i}#1}}\mathdef239{\mathtt{64}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n \\ &amp;&amp;|&amp;
+  \def\mathdef297#1{\mathtt{0x#1}}\mathdef297{43}~~z{:}\href{../binary/values.html#binary-float}{\def\mathdef241#1{{\mathtt{f}#1}}\mathdef241{\mathtt{32}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~z \\ &amp;&amp;|&amp;
+  \def\mathdef298#1{\mathtt{0x#1}}\mathdef298{44}~~z{:}\href{../binary/values.html#binary-float}{\def\mathdef242#1{{\mathtt{f}#1}}\mathdef242{\mathtt{64}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~z \\
 \end{array}\end{split}\]</div>
 <p>All other numeric instructions are plain opcodes without any immediates.</p>
 <div class="math" id="binary-relop">
 <span id="binary-testop"></span>\[\begin{split}\begin{array}{llclll}
-\def\mathdef210#1{{}}\mathdef210{instructions} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots &amp;&amp; \phantom{thisshouldbeenough} \\&amp;&amp;|&amp;
+\def\mathdef210#1{{}}\mathdef210{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots &amp;&amp; \phantom{thisshouldbeenough} \\&amp;&amp;|&amp;
   \def\mathdef299#1{\mathtt{0x#1}}\mathdef299{45} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eqz}} \\ &amp;&amp;|&amp;
   \def\mathdef300#1{\mathtt{0x#1}}\mathdef300{46} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} \\ &amp;&amp;|&amp;
   \def\mathdef301#1{\mathtt{0x#1}}\mathdef301{47} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}} \\ &amp;&amp;|&amp;
@@ -234,7 +233,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 \end{array}\end{split}\]</div>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\phantom{\def\mathdef210#1{{}}\mathdef210{instructions}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+\phantom{\def\mathdef210#1{{}}\mathdef210{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef310#1{\mathtt{0x#1}}\mathdef310{50} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eqz}} \\ &amp;&amp;|&amp;
   \def\mathdef311#1{\mathtt{0x#1}}\mathdef311{51} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} \\ &amp;&amp;|&amp;
   \def\mathdef312#1{\mathtt{0x#1}}\mathdef312{52} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}} \\ &amp;&amp;|&amp;
@@ -249,7 +248,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 \end{array}\end{split}\]</div>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\phantom{\def\mathdef210#1{{}}\mathdef210{instructions}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+\phantom{\def\mathdef210#1{{}}\mathdef210{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef321#1{\mathtt{0x#1}}\mathdef321{5B} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} \\ &amp;&amp;|&amp;
   \def\mathdef322#1{\mathtt{0x#1}}\mathdef322{5C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}} \\ &amp;&amp;|&amp;
   \def\mathdef323#1{\mathtt{0x#1}}\mathdef323{5D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}} \\ &amp;&amp;|&amp;
@@ -259,7 +258,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 \end{array}\end{split}\]</div>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\phantom{\def\mathdef210#1{{}}\mathdef210{instructions}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+\phantom{\def\mathdef210#1{{}}\mathdef210{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef327#1{\mathtt{0x#1}}\mathdef327{61} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} \\ &amp;&amp;|&amp;
   \def\mathdef328#1{\mathtt{0x#1}}\mathdef328{62} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}} \\ &amp;&amp;|&amp;
   \def\mathdef329#1{\mathtt{0x#1}}\mathdef329{63} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}} \\ &amp;&amp;|&amp;
@@ -269,7 +268,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 \end{array}\end{split}\]</div>
 <div class="math" id="binary-binop">
 <span id="binary-unop"></span>\[\begin{split}\begin{array}{llclll}
-\phantom{\def\mathdef210#1{{}}\mathdef210{instructions}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+\phantom{\def\mathdef210#1{{}}\mathdef210{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef333#1{\mathtt{0x#1}}\mathdef333{67} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{clz}} \\ &amp;&amp;|&amp;
   \def\mathdef334#1{\mathtt{0x#1}}\mathdef334{68} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ctz}} \\ &amp;&amp;|&amp;
   \def\mathdef335#1{\mathtt{0x#1}}\mathdef335{69} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{popcnt}} \\ &amp;&amp;|&amp;
@@ -291,7 +290,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 \end{array}\end{split}\]</div>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\phantom{\def\mathdef210#1{{}}\mathdef210{instructions}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+\phantom{\def\mathdef210#1{{}}\mathdef210{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef351#1{\mathtt{0x#1}}\mathdef351{79} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{clz}} \\ &amp;&amp;|&amp;
   \def\mathdef352#1{\mathtt{0x#1}}\mathdef352{7A} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ctz}} \\ &amp;&amp;|&amp;
   \def\mathdef353#1{\mathtt{0x#1}}\mathdef353{7B} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{popcnt}} \\ &amp;&amp;|&amp;
@@ -313,7 +312,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 \end{array}\end{split}\]</div>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\phantom{\def\mathdef210#1{{}}\mathdef210{instructions}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+\phantom{\def\mathdef210#1{{}}\mathdef210{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef369#1{\mathtt{0x#1}}\mathdef369{8B} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{abs}} \\ &amp;&amp;|&amp;
   \def\mathdef370#1{\mathtt{0x#1}}\mathdef370{8C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}} \\ &amp;&amp;|&amp;
   \def\mathdef371#1{\mathtt{0x#1}}\mathdef371{8D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ceil}} \\ &amp;&amp;|&amp;
@@ -331,7 +330,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 \end{array}\end{split}\]</div>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\phantom{\def\mathdef210#1{{}}\mathdef210{instructions}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+\phantom{\def\mathdef210#1{{}}\mathdef210{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef383#1{\mathtt{0x#1}}\mathdef383{99} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{abs}} \\ &amp;&amp;|&amp;
   \def\mathdef384#1{\mathtt{0x#1}}\mathdef384{9A} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}} \\ &amp;&amp;|&amp;
   \def\mathdef385#1{\mathtt{0x#1}}\mathdef385{9B} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ceil}} \\ &amp;&amp;|&amp;
@@ -349,7 +348,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 \end{array}\end{split}\]</div>
 <div class="math" id="binary-cvtop">
 \[\begin{split}\begin{array}{llclll}
-\phantom{\def\mathdef210#1{{}}\mathdef210{instructions}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+\phantom{\def\mathdef210#1{{}}\mathdef210{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef397#1{\mathtt{0x#1}}\mathdef397{A7} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{wrap}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
   \def\mathdef398#1{\mathtt{0x#1}}\mathdef398{A8} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
   \def\mathdef399#1{\mathtt{0x#1}}\mathdef399{A9} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
@@ -382,7 +381,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-expr"><span class="std std-ref">Expressions</span></a> are encoded by their instruction sequence terminated with an explicit <span class="math">\(\def\mathdef422#1{\mathtt{0x#1}}\mathdef422{0B}\)</span> opcode for <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\def\mathdef210#1{{}}\mathdef210{instructions} &amp; \href{../binary/instructions.html#binary-expr}{\mathtt{expr}} &amp;::=&amp;
+\def\mathdef210#1{{}}\mathdef210{expression} &amp; \href{../binary/instructions.html#binary-expr}{\mathtt{expr}} &amp;::=&amp;
   (\mathit{in}{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~\def\mathdef423#1{\mathtt{0x#1}}\mathdef423{0B} &amp;\Rightarrow&amp; \mathit{in}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
 \end{array}\end{split}\]</div>
 </div>

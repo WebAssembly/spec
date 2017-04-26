@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -60,7 +60,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
@@ -114,6 +113,8 @@ including the decoding of the <a class="reference internal" href="../binary/inde
 <li><span class="math">\(A^n\)</span> is a sequence of <span class="math">\(n\geq 0\)</span> iterations  of <span class="math">\(A\)</span>.</li>
 <li><span class="math">\(A^\ast\)</span> is a possibly empty sequence of iterations of <span class="math">\(A\)</span>.
 (This is a shorthand for <span class="math">\(A^n\)</span> used where <span class="math">\(n\)</span> is not relevant.)</li>
+<li><span class="math">\(A^+\)</span> is a possibly empty sequence of iterations of <span class="math">\(A\)</span>.
+(This is a shorthand for <span class="math">\(A^n\)</span> where <span class="math">\(n \geq 1\)</span>.)</li>
 <li><span class="math">\(A^?\)</span> is an optional occurrence of <span class="math">\(A\)</span>.
 (This is a shorthand for <span class="math">\(A^n\)</span> where <span class="math">\(n \leq 1\)</span>.)</li>
 </ul>
@@ -125,6 +126,11 @@ including the decoding of the <a class="reference internal" href="../binary/inde
 <li><span class="math">\(\epsilon\)</span> denotes the empty sequence.</li>
 <li><span class="math">\(|s|\)</span> denotes the length of a sequence <span class="math">\(s\)</span>.</li>
 <li><span class="math">\(s[i]\)</span> denotes the <span class="math">\(i\)</span>-th element of a sequence <span class="math">\(s\)</span>, starting from <span class="math">\(0\)</span>.</li>
+<li><span class="math">\(s[i:n]\)</span> denotes the sub-sequence of length <span class="math">\(n\)</span> a sequence <span class="math">\(s\)</span> that consists of its <span class="math">\(i\)</span>-th to <span class="math">\((i+n-1)\)</span>-the element.</li>
+<li><span class="math">\(s~\mbox{with}~[i] = x\)</span> denotes the same sequence as <span class="math">\(s\)</span>,
+except that the <span class="math">\(i\)</span>-the element is replaced with <span class="math">\(x\)</span>.</li>
+<li><span class="math">\(s~\mbox{with}~[i:n] = x^n\)</span> denotes the same sequence as <span class="math">\(s\)</span>,
+except that the sub-sequence <span class="math">\(s[i:n]\)</span> is replaced with <span class="math">\(x^n\)</span>.</li>
 </ul>
 <p>Productions of the following form are interpreted as <em>records</em> that map a fixed set of fields <span class="math">\(\mathsf{field}_i\)</span> to values <span class="math">\(x_i\)</span>, respectively:</p>
 <div class="math">
@@ -132,6 +138,15 @@ including the decoding of the <a class="reference internal" href="../binary/inde
 <p>The following notation is adopted for manipulating such records:</p>
 <ul class="simple">
 <li><span class="math">\(r.\mathsf{field}\)</span> denotes the <span class="math">\(\mathsf{field}\)</span> component of <span class="math">\(r\)</span>.</li>
+<li><span class="math">\(r~\mbox{with}~\mathsf{field} = x\)</span> denotes the same record as <span class="math">\(r\)</span>,
+except that the <span class="math">\(\mathsf{field}\)</span> component is replaced with <span class="math">\(x\)</span>.</li>
+</ul>
+<p>The update notation for sequences and records generalizes recursively to nested components accessed by &#8220;paths&#8221; <span class="math">\(\mathit{pth} ::= ([\dots] \;| \;.\mathsf{field})^+\)</span>:</p>
+<ul class="simple">
+<li><span class="math">\(s~\mbox{with}~[i]\mathit{pth} = x\)</span> denotes the same sequence as <span class="math">\(s\)</span>,
+except that the <span class="math">\(s[i]\)</span> is replaced with <span class="math">\(s[i]~\mbox{with}~\mathit{pth} = x\)</span>.</li>
+<li><span class="math">\(r~\mbox{with}~\mathsf{field}\mathit{pth} = x\)</span> denotes the same record as <span class="math">\(r\)</span>,
+except that the <span class="math">\(\mathsf{field}\)</span> component is replaced with <span class="math">\(r.\mathsf{field}~\mbox{with}~\mathit{pth} = x\)</span>.</li>
 </ul>
 </div>
 </div>

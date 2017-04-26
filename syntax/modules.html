@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -69,7 +69,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../instantiation/index.html">Instantiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
@@ -116,7 +115,7 @@ In addition, it can declare <a class="reference internal" href="#syntax-import">
 and provide initialization logic in the form of <a class="reference internal" href="#syntax-data"><span class="std std-ref">data</span></a> and <a class="reference internal" href="#syntax-elem"><span class="std std-ref">element</span></a> segments or a <a class="reference internal" href="#syntax-start"><span class="std std-ref">start function</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{lllll}
-\def\mathdef1126#1{{}}\mathdef1126{modules} &amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}} &amp;::=&amp; \{ &amp;
+\def\mathdef1260#1{{}}\mathdef1260{module} &amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}} &amp;::=&amp; \{ &amp;
   \mathsf{types}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}), \\&amp;&amp;&amp;&amp;
   \mathsf{funcs}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-func}{\mathit{func}}), \\&amp;&amp;&amp;&amp;
   \mathsf{tables}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-table}{\mathit{table}}), \\&amp;&amp;&amp;&amp;
@@ -135,13 +134,13 @@ and provide initialization logic in the form of <a class="reference internal" hr
 Each class of definition has its own <em>index space</em>, as distinguished by the following classes.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1126#1{{}}\mathdef1126{type indices} &amp; \href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1131#1{{\mathit{uint}_{#1}}}\mathdef1131{32}} \\
-\def\mathdef1126#1{{}}\mathdef1126{function indices} &amp; \href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1131#1{{\mathit{uint}_{#1}}}\mathdef1131{32}} \\
-\def\mathdef1126#1{{}}\mathdef1126{table indices} &amp; \href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1131#1{{\mathit{uint}_{#1}}}\mathdef1131{32}} \\
-\def\mathdef1126#1{{}}\mathdef1126{memory indices} &amp; \href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1131#1{{\mathit{uint}_{#1}}}\mathdef1131{32}} \\
-\def\mathdef1126#1{{}}\mathdef1126{global indices} &amp; \href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1131#1{{\mathit{uint}_{#1}}}\mathdef1131{32}} \\
-\def\mathdef1126#1{{}}\mathdef1126{local indices} &amp; \href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1131#1{{\mathit{uint}_{#1}}}\mathdef1131{32}} \\
-\def\mathdef1126#1{{}}\mathdef1126{label indices} &amp; \href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1131#1{{\mathit{uint}_{#1}}}\mathdef1131{32}} \\
+\def\mathdef1260#1{{}}\mathdef1260{type index} &amp; \href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1265#1{{\mathit{u}#1}}\mathdef1265{\mathit{32}}} \\
+\def\mathdef1260#1{{}}\mathdef1260{function index} &amp; \href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1265#1{{\mathit{u}#1}}\mathdef1265{\mathit{32}}} \\
+\def\mathdef1260#1{{}}\mathdef1260{table index} &amp; \href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1265#1{{\mathit{u}#1}}\mathdef1265{\mathit{32}}} \\
+\def\mathdef1260#1{{}}\mathdef1260{memory index} &amp; \href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1265#1{{\mathit{u}#1}}\mathdef1265{\mathit{32}}} \\
+\def\mathdef1260#1{{}}\mathdef1260{global index} &amp; \href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1265#1{{\mathit{u}#1}}\mathdef1265{\mathit{32}}} \\
+\def\mathdef1260#1{{}}\mathdef1260{local index} &amp; \href{../syntax/modules.html#syntax-localidx}{\mathit{localidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1265#1{{\mathit{u}#1}}\mathdef1265{\mathit{32}}} \\
+\def\mathdef1260#1{{}}\mathdef1260{label index} &amp; \href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} &amp;::=&amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1265#1{{\mathit{u}#1}}\mathdef1265{\mathit{32}}} \\
 \end{array}\end{split}\]</div>
 <p>The index space for functions, tables, memories and globals includes respective imports declared in the same module.
 The indices of these imports precede the indices of other definitions in the same index space.</p>
@@ -170,7 +169,7 @@ They are referenced by <a class="reference internal" href="#syntax-typeidx"><spa
 <p>The <span class="math">\(\mathsf{funcs}\)</span> component of a module defines a vector of <em>functions</em> with the following structure:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1126#1{{}}\mathdef1126{functions} &amp; \href{../syntax/modules.html#syntax-func}{\mathit{func}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{function} &amp; \href{../syntax/modules.html#syntax-func}{\mathit{func}} &amp;::=&amp;
   \{ \mathsf{type}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}, \mathsf{locals}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}), \mathsf{body}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \} \\
 \end{array}\end{split}\]</div>
 <p>The <span class="math">\(\mathsf{type}\)</span> of a function declares its signature by reference to a <a class="reference internal" href="types.html#syntax-type"><span class="std std-ref">type</span></a> defined in the module.
@@ -187,7 +186,7 @@ starting with the smallest index not referencing a function <a class="reference 
 <p>The <span class="math">\(\mathsf{tables}\)</span> component of a module defines a vector of <em>tables</em> described by their <a class="reference internal" href="types.html#syntax-tabletype"><span class="std std-ref">table type</span></a>:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1126#1{{}}\mathdef1126{tables} &amp; \href{../syntax/modules.html#syntax-table}{\mathit{table}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{table} &amp; \href{../syntax/modules.html#syntax-table}{\mathit{table}} &amp;::=&amp;
   \{ \mathsf{type}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} \} \\
 \end{array}\end{split}\]</div>
 <p>A table is a vector of opaque values of a particular table <a class="reference internal" href="types.html#syntax-elemtype"><span class="std std-ref">element type</span></a>.
@@ -208,12 +207,12 @@ This restriction may be lifted in future versions.</p>
 <p>The <span class="math">\(\mathsf{mems}\)</span> component of a module defines a vector of <em>linear memories</em> (or <em>memories</em> for short) as described by their <a class="reference internal" href="types.html#syntax-memtype"><span class="std std-ref">memory type</span></a>:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1126#1{{}}\mathdef1126{memories} &amp; \href{../syntax/modules.html#syntax-mem}{\mathit{mem}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{memory} &amp; \href{../syntax/modules.html#syntax-mem}{\mathit{mem}} &amp;::=&amp;
   \{ \mathsf{type}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} \} \\
 \end{array}\end{split}\]</div>
 <p>A memory is a vector of raw uninterpreted bytes.
 The <span class="math">\(\mathsf{min}\)</span> size in the <a class="reference internal" href="types.html#syntax-limits"><span class="std std-ref">limits</span></a> of the memory type of a definition specifies the initial size of that memory, while its <span class="math">\(\mathsf{max}\)</span>, if present, restricts the size to which it can grow later.
-Both are in units of <span class="xref std std-ref">page size</span>.</p>
+Both are in units of <a class="reference internal" href="../execution/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
 <p>Memories can be initialized through <a class="reference internal" href="#syntax-data"><span class="std std-ref">data segments</span></a>.</p>
 <p>Memories are referenced through <a class="reference internal" href="#syntax-memidx"><span class="std std-ref">memory indices</span></a>,
 starting with the smallest index not referencing a memory <a class="reference internal" href="#syntax-import"><span class="std std-ref">import</span></a>.
@@ -230,7 +229,7 @@ This restriction may be lifted in future versions.</p>
 <p>The <span class="math">\(\mathsf{globals}\)</span> component of a module defines a vector of <em>global variables</em> (or <em>globals</em> for short):</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1126#1{{}}\mathdef1126{globals} &amp; \href{../syntax/modules.html#syntax-global}{\mathit{global}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{global} &amp; \href{../syntax/modules.html#syntax-global}{\mathit{global}} &amp;::=&amp;
   \{ \mathsf{type}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}, \mathsf{init}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \} \\
 \end{array}\end{split}\]</div>
 <p>Each global stores a single value of the given <a class="reference internal" href="types.html#syntax-globaltype"><span class="std std-ref">global type</span></a>.
@@ -245,7 +244,7 @@ starting with the smallest index not referencing a global <a class="reference in
 The <span class="math">\(\mathsf{elem}\)</span> component of a module defines a vector of <em>element segments</em> that initialize a subrange of a table at a given offset from a static vector of elements.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1126#1{{}}\mathdef1126{element segments} &amp; \href{../syntax/modules.html#syntax-elem}{\mathit{elem}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{element segment} &amp; \href{../syntax/modules.html#syntax-elem}{\mathit{elem}} &amp;::=&amp;
   \{ \mathsf{table}~\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}}, \mathsf{offset}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}) \} \\
 \end{array}\end{split}\]</div>
 <p>The <span class="math">\(\mathsf{offset}\)</span> is given by a <a class="reference internal" href="../validation/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
@@ -261,7 +260,7 @@ Consequently, the only valid <span class="math">\(\href{../syntax/modules.html#s
 The <span class="math">\(\mathsf{data}\)</span> component of a module defines a vector of <em>data segments</em> that initialize a range of memory at a given offset with a static vector of bytes.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1126#1{{}}\mathdef1126{data segments} &amp; \href{../syntax/modules.html#syntax-data}{\mathit{data}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{data segment} &amp; \href{../syntax/modules.html#syntax-data}{\mathit{data}} &amp;::=&amp;
   \{ \mathsf{mem}~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}}, \mathsf{offset}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}) \} \\
 \end{array}\end{split}\]</div>
 <p>The <span class="math">\(\mathsf{offset}\)</span> is given by a <a class="reference internal" href="../validation/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
@@ -276,7 +275,7 @@ Consequently, the only valid <span class="math">\(\href{../syntax/modules.html#s
 <p>The <span class="math">\(\mathsf{start}\)</span> component of a module optionally declares the <a class="reference internal" href="#syntax-funcidx"><span class="std std-ref">function index</span></a> of a <em>start function</em> that is automatically invoked when the module is <span class="xref std std-ref">instantiated</span>, after tables and memories have been initialized.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1126#1{{}}\mathdef1126{start functions} &amp; \href{../syntax/modules.html#syntax-start}{\mathit{start}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{start function} &amp; \href{../syntax/modules.html#syntax-start}{\mathit{start}} &amp;::=&amp;
   \{ \mathsf{func}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} \} \\
 \end{array}\end{split}\]</div>
 <span class="target" id="syntax-export"></span></div>
@@ -285,9 +284,9 @@ Consequently, the only valid <span class="math">\(\href{../syntax/modules.html#s
 <p>The <span class="math">\(\mathsf{exports}\)</span> component of a module defines a set of <em>exports</em> that become accessible to the host environment once the module has been <span class="xref std std-ref">instantiated</span>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1126#1{{}}\mathdef1126{exports} &amp; \href{../syntax/modules.html#syntax-export}{\mathit{export}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{export} &amp; \href{../syntax/modules.html#syntax-export}{\mathit{export}} &amp;::=&amp;
   \{ \mathsf{name}~\href{../syntax/values.html#syntax-name}{\mathit{name}}, \mathsf{desc}~\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}} \} \\
-\def\mathdef1126#1{{}}\mathdef1126{export descriptions} &amp; \href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{export description} &amp; \href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}} &amp;::=&amp;
   \mathsf{func}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} ~|~ \\&amp;&amp;&amp;
   \mathsf{table}~\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} ~|~ \\&amp;&amp;&amp;
   \mathsf{mem}~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} ~|~ \\&amp;&amp;&amp;
@@ -300,15 +299,25 @@ which are referenced through a respective descriptor.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly, only <em>immutable</em> globals may be exported.</p>
 </div>
+<div class="section" id="id1">
+<h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The following auxiliary notation is defined for sequences of exports, filtering out indices of a specific kind in an order-preserving fashion:</p>
+<ul class="simple">
+<li><span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} ~|~ \mathsf{func}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
+<li><span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} ~|~ \mathsf{table}~\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
+<li><span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} ~|~ \mathsf{mem}~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
+<li><span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \mathsf{global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
+</ul>
 <span class="target" id="syntax-import"></span></div>
+</div>
 <div class="section" id="imports">
 <span id="index-11"></span><h2>Imports<a class="headerlink" href="#imports" title="Permalink to this headline">¶</a></h2>
 <p>The <span class="math">\(\mathsf{imports}\)</span> component of a module defines a set of <em>imports</em> that are required for <span class="xref std std-ref">instantiation</span>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1126#1{{}}\mathdef1126{imports} &amp; \href{../syntax/modules.html#syntax-import}{\mathit{import}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{import} &amp; \href{../syntax/modules.html#syntax-import}{\mathit{import}} &amp;::=&amp;
   \{ \mathsf{module}~\href{../syntax/values.html#syntax-name}{\mathit{name}}, \mathsf{name}~\href{../syntax/values.html#syntax-name}{\mathit{name}}, \mathsf{desc}~\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}} \} \\
-\def\mathdef1126#1{{}}\mathdef1126{import descriptions} &amp; \href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}} &amp;::=&amp;
+\def\mathdef1260#1{{}}\mathdef1260{import description} &amp; \href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}} &amp;::=&amp;
   \mathsf{func}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} ~|~ \\&amp;&amp;&amp;
   \mathsf{table}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} ~|~ \\&amp;&amp;&amp;
   \mathsf{mem}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} ~|~ \\&amp;&amp;&amp;
