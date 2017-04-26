@@ -156,6 +156,7 @@ A table of that type thus contains references to functions of heterogeneous type
 
 
 .. _syntax-globaltype:
+.. _syntax-mut:
 .. index:: ! global type, ! mutability, value type
    pair: abstract syntax; global type
    pair: abstract syntax; mutability

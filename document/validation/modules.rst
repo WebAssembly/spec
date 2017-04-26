@@ -9,6 +9,9 @@ Auxiliary Rules
 ~~~~~~~~~~~~~~~
 
 .. _valid-limits:
+.. index:: limits
+   pair: validation; limits
+   single: abstract syntax; limits
 
 Limits :math:`\{ \MIN~n, \MAX~m^? \}`
 .....................................
@@ -28,6 +31,7 @@ Limits :math:`\{ \MIN~n, \MAX~m^? \}`
 .. _valid-func:
 .. index:: function, local, function index, local index, type index, function type, value type, expression, import
    pair: abstract syntax; function
+   single: abstract syntax; function
 
 Functions
 ~~~~~~~~~
@@ -262,7 +266,7 @@ Start function declarations :math:`\start` are not classified by any type.
 
 .. _valid-export:
 .. index:: export, name, index, function index, table index, memory index, global index
-   validation: abstract syntax; export
+   pair: validation; export
    single: abstract syntax; export
 
 Exports
@@ -444,7 +448,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 
 .. _valid-module:
-.. index:: modules, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
+.. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
    pair: validation; module
    single: abstract syntax; module
 
