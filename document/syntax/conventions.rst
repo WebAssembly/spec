@@ -30,6 +30,9 @@ The following conventions are adopted in defining grammar rules for abstract syn
 * :math:`A^\ast` is a possibly empty sequence of iterations of :math:`A`.
   (This is a shorthand for :math:`A^n` used where :math:`n` is not relevant.)
 
+* :math:`A^+` is a possibly empty sequence of iterations of :math:`A`.
+  (This is a shorthand for :math:`A^n` where :math:`n \geq 1`.)
+
 * :math:`A^?` is an optional occurrence of :math:`A`.
   (This is a shorthand for :math:`A^n` where :math:`n \leq 1`.)
 
@@ -47,6 +50,14 @@ When dealing with syntactic constructs the following notation is also used:
 
 * :math:`s[i]` denotes the :math:`i`-th element of a sequence :math:`s`, starting from :math:`0`.
 
+* :math:`s[i:n]` denotes the sub-sequence of length :math:`n` a sequence :math:`s` that consists of its :math:`i`-th to :math:`(i+n-1)`-the element.
+
+* :math:`s~\mbox{with}~[i] = x` denotes the same sequence as :math:`s`,
+  except that the :math:`i`-the element is replaced with :math:`x`.
+
+* :math:`s~\mbox{with}~[i:n] = x^n` denotes the same sequence as :math:`s`,
+  except that the sub-sequence :math:`s[i:n]` is replaced with :math:`x^n`.
+
 Productions of the following form are interpreted as *records* that map a fixed set of fields :math:`\K{field}_i` to values :math:`x_i`, respectively:
 
 .. math::
@@ -55,3 +66,14 @@ Productions of the following form are interpreted as *records* that map a fixed 
 The following notation is adopted for manipulating such records:
 
 * :math:`r.\K{field}` denotes the :math:`\K{field}` component of :math:`r`.
+
+* :math:`r~\mbox{with}~\K{field} = x` denotes the same record as :math:`r`,
+  except that the :math:`\K{field}` component is replaced with :math:`x`.
+
+The update notation for sequences and records generalizes recursively to nested components accessed by "paths" :math:`\X{pth} ::= ([\dots] \;| \;.\K{field})^+`:
+
+* :math:`s~\mbox{with}~[i]\X{pth} = x` denotes the same sequence as :math:`s`,
+  except that the :math:`s[i]` is replaced with :math:`s[i]~\mbox{with}~\X{pth} = x`.
+
+* :math:`r~\mbox{with}~\K{field}\X{pth} = x` denotes the same record as :math:`r`,
+  except that the :math:`\K{field}` component is replaced with :math:`r.\K{field}~\mbox{with}~\X{pth} = x`.
