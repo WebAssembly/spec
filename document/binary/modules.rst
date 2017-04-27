@@ -124,7 +124,7 @@ It decodes into a vector of :ref:`function types <syntax-functype>` that represe
 .. math::
    \begin{array}{llclll}
    \production{type section} & \Btypesec &::=&
-     \X{ft}^\ast{:\,}\Bsection_1(\Bfunctype^\ast) &\Rightarrow& \X{ft}^\ast \\
+     \X{ft}^\ast{:\,}\Bsection_1(\Bvec(\Bfunctype)) &\Rightarrow& \X{ft}^\ast \\
    \end{array}
 
 
@@ -144,7 +144,7 @@ It decodes into a vector of :ref:`imports <syntax-import>` that represent the |I
 .. math::
    \begin{array}{llclll}
    \production{import section} & \Bimportsec &::=&
-     \X{im}^\ast{:}\Bsection_2(\Bimport^\ast) &\Rightarrow& \X{im}^\ast \\
+     \X{im}^\ast{:}\Bsection_2(\Bvec(\Bimport)) &\Rightarrow& \X{im}^\ast \\
    \production{import} & \Bimport &::=&
      \X{mod}{:}\Bname~~\X{nm}{:}\Bname~~d{:}\Bimportdesc
        &\Rightarrow& \{ \MODULE~\X{mod}, \NAME~\X{nm}, \DESC~d \} \\
@@ -173,7 +173,7 @@ The |LOCALS| and |BODY| fields of the respective functions are encoded separatel
 .. math::
    \begin{array}{llclll}
    \production{function section} & \Bfuncsec &::=&
-     x^\ast{:}\Bsection_3(\Btypeidx^\ast) &\Rightarrow& x^\ast \\
+     x^\ast{:}\Bsection_3(\Bvec(\Btypeidx)) &\Rightarrow& x^\ast \\
    \end{array}
 
 
@@ -193,7 +193,7 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |TAB
 .. math::
    \begin{array}{llclll}
    \production{table section} & \Btablesec &::=&
-     \X{tab}^\ast{:}\Bsection_4(\Btable^\ast) &\Rightarrow& \X{tab}^\ast \\
+     \X{tab}^\ast{:}\Bsection_4(\Bvec(\Btable)) &\Rightarrow& \X{tab}^\ast \\
    \production{table} & \Btable &::=&
      \X{tt}{:}\Btabletype &\Rightarrow& \{ \TYPE~\X{tt} \} \\
    \end{array}
@@ -215,7 +215,7 @@ It decodes into a vector of :ref:`memories <syntax-mem>` that represent the |MEM
 .. math::
    \begin{array}{llclll}
    \production{memory section} & \Bmemsec &::=&
-     \X{mem}^\ast{:}\Bsection_5(\Bmem^\ast) &\Rightarrow& \X{mem}^\ast \\
+     \X{mem}^\ast{:}\Bsection_5(\Bvec(\Bmem)) &\Rightarrow& \X{mem}^\ast \\
    \production{memory} & \Bmem &::=&
      \X{mt}{:}\Bmemtype &\Rightarrow& \{ \TYPE~\X{mt} \} \\
    \end{array}
@@ -237,7 +237,7 @@ It decodes into a vector of :ref:`globals <syntax-global>` that represent the |G
 .. math::
    \begin{array}{llclll}
    \production{global section} & \Bglobalsec &::=&
-     \X{glob}^\ast{:}\Bsection_6(\Bglobal^\ast) &\Rightarrow& \X{glob}^\ast \\
+     \X{glob}^\ast{:}\Bsection_6(\Bvec(\Bglobal)) &\Rightarrow& \X{glob}^\ast \\
    \production{global} & \Bglobal &::=&
      \X{gt}{:}\Bglobaltype~~e{:}\Bexpr
        &\Rightarrow& \{ \TYPE~\X{gt}, \INIT~e \} \\
@@ -260,7 +260,7 @@ It decodes into a vector of :ref:`exports <syntax-export>` that represent the |E
 .. math::
    \begin{array}{llclll}
    \production{export section} & \Bexportsec &::=&
-     \X{ex}^\ast{:}\Bsection_7(\Bexport^\ast) &\Rightarrow& \X{ex}^\ast \\
+     \X{ex}^\ast{:}\Bsection_7(\Bvec(\Bexport)) &\Rightarrow& \X{ex}^\ast \\
    \production{export} & \Bexport &::=&
      \X{nm}{:}\Bname~~d{:}\Bexportdesc
        &\Rightarrow& \{ \NAME~\X{nm}, \DESC~d \} \\
@@ -313,7 +313,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
 .. math::
    \begin{array}{llclll}
    \production{element section} & \Belemsec &::=&
-     \X{seg}^\ast{:}\Bsection_9(\Belem^\ast) &\Rightarrow& \X{seg} \\
+     \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg} \\
    \production{element segment} & \Belem &::=&
      x{:}\Btableidx~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \{ \TABLE~x, \OFFSET~e, \INIT~y^\ast \} \\
@@ -353,7 +353,7 @@ denoting *count* locals of the same value type.
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{code section} & \Bcodesec &::=&
-     \X{code}^\ast{:}\Bsection_{10}(\Bcode^\ast)
+     \X{code}^\ast{:}\Bsection_{10}(\Bvec(\Bcode))
        &\Rightarrow& \X{code}^\ast \\
    \production{code} & \Bcode &::=&
      \X{size}{:}\Bu32~~\X{code}{:}\Bfunc
@@ -362,21 +362,6 @@ denoting *count* locals of the same value type.
      (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
        &\Rightarrow& \F{concat}((t^\ast)^\ast), e^\ast
          & (|\F{concat}((t^\ast)^\ast)| < 2^{32}) \\
-   \production{locals} & \Blocals &::=&
-     n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
-   \end{array}
-
-.. math (commented out)
-   \begin{array}{llclll}
-   \production{code section} & \Bcodesec_{\typeidx^n} &::=&
-     \f^\ast{:}\Bsection_{10}(\Bcode_{\typeidx}^n)
-       &\Rightarrow& \f^\ast \\
-   \production{code} & \Bcode_{\typeidx} &::=&
-     \X{size}{:}\Bu32~~f{:}\Bfunc_{\typeidx}
-       &\Rightarrow& f \qquad\qquad (\X{size} = |\Bfunc|) \\
-   \production{function} & \Bfunc_{\typeidx} &::=&
-     (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr &\Rightarrow&
-       \{ \TYPE~\typeidx, \LOCALS~\F{concat}((t^\ast)^\ast), \BODY~e^\ast \} \\
    \production{locals} & \Blocals &::=&
      n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
    \end{array}
@@ -408,7 +393,7 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
 .. math::
    \begin{array}{llclll}
    \production{data section} & \Bdatasec &::=&
-     \X{seg}^\ast{:}\Bsection_{11}(\Bdata^\ast) &\Rightarrow& \X{seg} \\
+     \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg} \\
    \production{data segment} & \Bdata &::=&
      x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
        &\Rightarrow& \{ \MEM~x, \OFFSET~e, \INIT~b^\ast \} \\
