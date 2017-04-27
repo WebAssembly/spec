@@ -67,12 +67,12 @@ As an additional constraint, the total number of bytes encoding a value of type 
        2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
-:ref:`Uninterpreted integers <syntax-int>` are always encoded as signed integers.
+:ref:`Uninterpreted integers <syntax-int>` are encoded as signed integers.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{uninterpreted integer} & \BiX{N} &::=&
-     n{:}\BsX{N} &\Rightarrow& n
+     n{:}\BsX{N} &\Rightarrow& i & (n = \signed_{\iX{N}}(i))
    \end{array}
 
 .. note::
