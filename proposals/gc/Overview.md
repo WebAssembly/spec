@@ -390,30 +390,19 @@ It can be formed via [up casts](#casting),
 and the original type can be recovered via [down casts](#casting).
 
 
-### Foreign References
+### Host Types
 
-A new built-in value type called `foreignref` represents opaque pointers to objects on the _embedder_'s heap.
+The embedder may define its own set of types (such as DOM objects), or allow the user to create their own types using the embedder API (including a subtype relation between them).
+Such *host types* can be [imported](import-and-export) into a module, where they are treated as opaque data types.
 
-There are no operations to manipulate foreign references, but by passing them as parameters or results of exported Wasm functions, embedder references (such as DOM objects) can safely be stored in or round-trip through Wasm code.
-```
-(type $s (struct (field $a i32) (field $x foreignref))
+There are no operations to manipulate such types, but a WebAssembly program can receive references to them as parameters or results of imported/exported Wasm functions. Such "foreign" references may point to objects on the _embedder_'s heap. Yet, they can safely be stored in or round-trip through Wasm code.
 
-(func (export "f") (param $x foreignref)
+(type $Foreign (import "env" "Foreign"))
+(type $s (struct (field $a i32) (field $x (ref Foreign)))
+
+(func (export "f") (param $x (ref Foreign))
   ...
 )
-```
-
-Alternatively, foreign references could be typed. For example, introduce another form of type definition:
-```
-(type $T (foreign "name"))
-
-(func (export "f") (param $x (ref $T))
-  ...
-)
-```
-Here, the name is just a string whose meaning depends on the embedder (for example, it could embed its own domain-specific type algebra into strings). Casts are possible between different foreign types, but whether they succeed is up to the embedder.
-
-An even nicer alternative may be to not have any internal means to define foreign types altogether, but instead require them to be [imported](import-and-export) as "host types", analogous to host functions. The host environment would then define a suitable set of types, and probably an API enabling the user to define their own additional types (including a subtype relation between them).
 
 
 ### Function References
@@ -464,7 +453,7 @@ Alternatively, allow references to any numeric type. There are `ref` and `deref`
 The type syntax can be captured in the following grammar:
 ```
 num_type       ::=  i32 | i64 | f32 | f64
-ref_type       ::=  (ref <def_type>) | foreignref | intref | anyref | anyfunc
+ref_type       ::=  (ref <def_type>) | intref | anyref | anyfunc
 value_type     ::=  <num_type> | <ref_type>
 
 packed_type    ::=  i8 | i16
