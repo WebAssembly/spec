@@ -1,19 +1,21 @@
-.. _binary-value:
+.. _text-value:
 .. index:: value
-   pair: binary format; value
+   pair: text format; value
    single: abstract syntax; value
 
 Values
 ------
 
 
-.. _binary-byte:
+.. text-byte:
 .. index:: byte
-   pair: binary format; byte
+   pair: text format; byte
    single: abstract syntax; byte
 
 Bytes
 ~~~~~
+
+.. todo:: needed?
 
 :ref:`Bytes <syntax-byte>` encode themselves.
 
@@ -26,14 +28,14 @@ Bytes
    \end{array}
 
 
-.. _binary-int:
-.. _binary-sint:
-.. _binary-uint:
+.. _text-int:
+.. _text-sint:
+.. _text-uint:
 .. index:: integer, unsigned integer, signed integer, uninterpreted integer
-   pair: binary format; integer
-   pair: binary format; unsigned integer
-   pair: binary format; signed integer
-   pair: binary format; uninterpreted integer
+   pair: text format; integer
+   pair: text format; unsigned integer
+   pair: text format; signed integer
+   pair: text format; uninterpreted integer
    single: abstract syntax; integer
    single: abstract syntax; unsigned integer
    single: abstract syntax; signed integer

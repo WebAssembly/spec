@@ -10,11 +10,13 @@
 .. F - functions
 .. K - keywords / terminals
 .. B - binary grammar non-terminals
+.. T - textual grammar non-terminals
 
 .. |X| mathdef:: \mathit
 .. |F| mathdef:: \mathrm
 .. |K| mathdef:: \mathsf
 .. |B| mathdef:: \mathtt
+.. |T| mathdef:: \mathtt
 
 
 .. Auxiliary definitions for grammars
@@ -26,6 +28,7 @@
 
 .. |hex#1| mathdef:: \mathtt{0x#1}
 .. |unicode#1| mathdef:: \mathrm{U{+}#1}
+.. |text#1| mathdef:: \mbox{‘}\mathtt{#1}\mbox{’}
 
 
 .. Values, non-terminals
@@ -98,6 +101,41 @@
 .. |Bcodecont| mathdef:: \xref{binary/values}{binary-name}{\B{cont}}
 
 
+.. Values, textual non-terminals
+
+.. |Tbyte| mathdef:: \xref{text/values}{text-byte}{\T{byte}}
+
+.. |TuX#1| mathdef:: {\T{u}#1}
+.. |TsX#1| mathdef:: {\T{s}#1}
+.. |TiX#1| mathdef:: {\T{i}#1}
+.. |TfX#1| mathdef:: {\T{f}#1}
+
+.. |TuN| mathdef:: \xref{text/values}{text-int}{\TuX{N}}
+.. |Tu1| mathdef:: \xref{text/values}{text-int}{\TuX{\T{1}}}
+.. |Tu8| mathdef:: \xref{text/values}{text-int}{\TuX{\T{8}}}
+.. |Tu16| mathdef:: \xref{text/values}{text-int}{\TuX{\T{16}}}
+.. |Tu32| mathdef:: \xref{text/values}{text-int}{\TuX{\T{32}}}
+.. |Tu64| mathdef:: \xref{text/values}{text-int}{\TuX{\T{64}}}
+
+.. |TsN| mathdef:: \xref{text/values}{text-int}{\TsX{N}}
+.. |Ts32| mathdef:: \xref{text/values}{text-int}{\TsX{\T{32}}}
+.. |Ts64| mathdef:: \xref{text/values}{text-int}{\TsX{\T{64}}}
+
+.. |TiN| mathdef:: \xref{text/values}{text-int}{\TiX{N}}
+.. |Ti32| mathdef:: \xref{text/values}{text-int}{\TiX{\T{32}}}
+.. |Ti64| mathdef:: \xref{text/values}{text-int}{\TiX{\T{64}}}
+
+.. |TfN| mathdef:: \xref{text/values}{text-float}{\TfX{N}}
+.. |Tf32| mathdef:: \xref{text/values}{text-float}{\TfX{\T{32}}}
+.. |Tf64| mathdef:: \xref{text/values}{text-float}{\TfX{\T{64}}}
+
+.. |Tvec| mathdef:: \xref{text/values}{text-vec}{\T{vec}}
+.. |Tname| mathdef:: \xref{text/values}{text-name}{\T{name}}
+.. |Tcodepoint| mathdef:: \xref{text/values}{text-name}{\T{codepoint}}
+.. |Tcodeval| mathdef:: \xref{text/values}{text-name}{\T{codeval}}
+.. |Tcodecont| mathdef:: \xref{text/values}{text-name}{\T{cont}}
+
+
 .. Types, terminals
 
 .. |I32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i32}}
@@ -107,6 +145,7 @@
 
 .. |ANYFUNC| mathdef:: \xref{syntax/types}{syntax-elemtype}{\K{anyfunc}}
 .. |MUT| mathdef:: \xref{syntax/types}{syntax-mut}{\K{mut}}
+.. |VAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 
 .. |MIN| mathdef:: \K{min}
 .. |MAX| mathdef:: \K{max}
@@ -141,6 +180,22 @@
 .. |Bmut| mathdef:: \xref{binary/types}{binary-mut}{\B{mut}}
 
 
+.. Types, textual non-terminals
+
+.. |Tvaltype| mathdef:: \xref{text/types}{text-valtype}{\T{valtype}}
+.. |Tresulttype| mathdef:: \xref{text/types}{text-resulttype}{\T{resulttype}}
+.. |Tblocktype| mathdef:: \xref{text/types}{text-blocktype}{\T{blocktype}}
+.. |Tfunctype| mathdef:: \xref{text/types}{text-functype}{\T{functype}}
+.. |Tglobaltype| mathdef:: \xref{text/types}{text-globaltype}{\T{globaltype}}
+.. |Ttabletype| mathdef:: \xref{text/types}{text-tabletype}{\T{tabletype}}
+.. |Telemtype| mathdef:: \xref{text/types}{text-elemtype}{\T{elemtype}}
+.. |Tmemtype| mathdef:: \xref{text/types}{text-memtype}{\T{memtype}}
+.. |Texterntype| mathdef:: \xref{text/types}{text-externtype}{\T{externtype}}
+.. |Tlimits| mathdef:: \xref{text/types}{text-limits}{\T{limits}}
+.. |Tparam| mathdef:: \xref{text/types}{text-functype}{\T{param}}
+.. |Tresult| mathdef:: \xref{text/types}{text-functype}{\T{result}}
+
+
 .. Indices
 
 .. |typeidx| mathdef:: \xref{syntax/modules}{syntax-typeidx}{\X{typeidx}}
@@ -158,6 +213,14 @@
 .. |Bglobalidx| mathdef:: \xref{binary/modules}{binary-globalidx}{\B{globalidx}}
 .. |Blocalidx| mathdef:: \xref{binary/modules}{binary-localidx}{\B{localidx}}
 .. |Blabelidx| mathdef:: \xref{binary/modules}{binary-labelidx}{\B{labelidx}}
+
+.. |Ttypeidx| mathdef:: \xref{text/modules}{text-typeidx}{\T{typeidx}}
+.. |Tfuncidx| mathdef:: \xref{text/modules}{text-funcidx}{\T{funcidx}}
+.. |Ttableidx| mathdef:: \xref{text/modules}{text-tableidx}{\T{tableidx}}
+.. |Tmemidx| mathdef:: \xref{text/modules}{text-memidx}{\T{memidx}}
+.. |Tglobalidx| mathdef:: \xref{text/modules}{text-globalidx}{\T{globalidx}}
+.. |Tlocalidx| mathdef:: \xref{text/modules}{text-localidx}{\T{localidx}}
+.. |Tlabelidx| mathdef:: \xref{text/modules}{text-labelidx}{\T{labelidx}}
 
 
 .. Modules, terminals
@@ -247,6 +310,26 @@
 .. |Blocals| mathdef:: \xref{binary/modules}{binary-local}{\B{locals}}
 .. |Bdata| mathdef:: \xref{binary/modules}{binary-data}{\B{data}}
 .. |Bstart| mathdef:: \xref{binary/modules}{binary-start}{\B{start}}
+
+
+.. Modules, textual non-terminals
+
+.. |Tmodule| mathdef:: \xref{text/modules}{text-module}{\T{module}}
+.. |Ttype| mathdef:: \xref{text/modules}{text-type}{\T{type}}
+.. |Tfunc| mathdef:: \xref{text/modules}{text-func}{\T{func}}
+.. |Ttable| mathdef:: \xref{text/modules}{text-table}{\T{table}}
+.. |Tmem| mathdef:: \xref{text/modules}{text-mem}{\T{mem}}
+.. |Tglobal| mathdef:: \xref{text/modules}{text-global}{\T{global}}
+.. |Timport| mathdef:: \xref{text/modules}{text-import}{\T{import}}
+.. |Texport| mathdef:: \xref{text/modules}{text-export}{\T{export}}
+.. |Timportdesc| mathdef:: \xref{text/modules}{text-importdesc}{\T{importdesc}}
+.. |Texportdesc| mathdef:: \xref{text/modules}{text-exportdesc}{\T{exportdesc}}
+.. |Telem| mathdef:: \xref{text/modules}{text-elem}{\T{elem}}
+.. |Tcode| mathdef:: \xref{text/modules}{text-code}{\T{code}}
+.. |Tlocal| mathdef:: \xref{text/modules}{text-local}{\T{local}}
+.. |Tlocals| mathdef:: \xref{text/modules}{text-local}{\T{locals}}
+.. |Tdata| mathdef:: \xref{text/modules}{text-data}{\T{data}}
+.. |Tstart| mathdef:: \xref{text/modules}{text-start}{\T{start}}
 
 
 .. Modules, meta functions
@@ -353,3 +436,13 @@
 
 .. |Binstr| mathdef:: \xref{binary/instructions}{binary-instr}{\B{instr}}
 .. |Bexpr| mathdef:: \xref{binary/instructions}{binary-expr}{\B{expr}}
+
+
+.. Instructions, textual non-terminals
+
+.. |Tmemarg| mathdef:: \xref{text/instructions}{text-memarg}{\T{memarg}}
+.. |Talign| mathdef:: \xref{text/instructions}{text-memarg}{\T{align}}
+.. |Toffset| mathdef:: \xref{text/instructions}{text-memarg}{\T{offset}}
+
+.. |Tinstr| mathdef:: \xref{text/instructions}{text-instr}{\T{instr}}
+.. |Texpr| mathdef:: \xref{text/instructions}{text-expr}{\T{expr}}

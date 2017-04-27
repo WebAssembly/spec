@@ -105,8 +105,8 @@ Memory Types
    \end{array}
 
 
-.. _syntax-tabletype:
-.. _syntax-elemtype:
+.. _binary-tabletype:
+.. _binary-elemtype:
 .. index:: table type, element type, limits
    pair: binary format; table type
    pair: binary format; element type

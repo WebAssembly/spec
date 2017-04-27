@@ -23,17 +23,17 @@ Control Instructions
 
 :ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the nested instruction sequences are terminated with explicit opcodes for |END| and |ELSE|.
 
-.. _valid-nop:
-.. _valid-unreachable:
-.. _valid-block:
-.. _valid-loop:
-.. _valid-if:
-.. _valid-br:
-.. _valid-br_if:
-.. _valid-br_table:
-.. _valid-return:
-.. _valid-call:
-.. _valid-call_indirect:
+.. _binary-nop:
+.. _binary-unreachable:
+.. _binary-block:
+.. _binary-loop:
+.. _binary-if:
+.. _binary-br:
+.. _binary-br_if:
+.. _binary-br_table:
+.. _binary-return:
+.. _binary-call:
+.. _binary-call_indirect:
 
 .. math::
    \begin{array}{llclll}
@@ -51,8 +51,8 @@ Control Instructions
        &\Rightarrow& \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
      \hex{0C}~~l{:}\Blabelidx &\Rightarrow& \BR~l \\ &&|&
      \hex{0D}~~l{:}\Blabelidx &\Rightarrow& \BRIF~l \\ &&|&
-     \hex{0E}~~l^\ast{:}\Bvec(\Blabelidx)~~l_N{:}\Blabelidx &\Rightarrow&
-       \BRTABLE~l^\ast~l_N \\ &&|&
+     \hex{0E}~~l^\ast{:}\Bvec(\Blabelidx)~~l_N{:}\Blabelidx
+       &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
      \hex{11}~~x{:}\Btypeidx &\Rightarrow& \CALLINDIRECT~x \\
@@ -113,7 +113,7 @@ Variable Instructions
 .. _binary-instr-memory:
 .. _binary-memarg:
 .. index:: memory instruction, memory index
-   pair: validation; instruction
+   pair: binary format; instruction
    single: abstract syntax; instruction
 
 Memory Instructions
