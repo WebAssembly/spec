@@ -72,8 +72,6 @@ The following notation is adopted for manipulating such records:
 
 The update notation for sequences and records generalizes recursively to nested components accessed by "paths" :math:`\X{pth} ::= ([\dots] \;| \;.\K{field})^+`:
 
-* :math:`s~\mbox{with}~[i]\X{pth} = x` denotes the same sequence as :math:`s`,
-  except that the :math:`s[i]` is replaced with :math:`s[i]~\mbox{with}~\X{pth} = x`.
+* :math:`s~\mbox{with}~[i]\,\X{pth} = x` is short for :math:`s~\mbox{with}~[i] = (s[i]~\mbox{with}~\X{pth} = x)`.
 
-* :math:`r~\mbox{with}~\K{field}\X{pth} = x` denotes the same record as :math:`r`,
-  except that the :math:`\K{field}` component is replaced with :math:`r.\K{field}~\mbox{with}~\X{pth} = x`.
+* :math:`r~\mbox{with}~\K{field}\,\X{pth} = x` is short for :math:`r~\mbox{with}~\K{field} = (r.\K{field}~\mbox{with}~\X{pth} = x)`.
