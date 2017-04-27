@@ -143,10 +143,8 @@ except that the <span class="math">\(\mathsf{field}\)</span> component is replac
 </ul>
 <p>The update notation for sequences and records generalizes recursively to nested components accessed by &#8220;paths&#8221; <span class="math">\(\mathit{pth} ::= ([\dots] \;| \;.\mathsf{field})^+\)</span>:</p>
 <ul class="simple">
-<li><span class="math">\(s~\mbox{with}~[i]\mathit{pth} = x\)</span> denotes the same sequence as <span class="math">\(s\)</span>,
-except that the <span class="math">\(s[i]\)</span> is replaced with <span class="math">\(s[i]~\mbox{with}~\mathit{pth} = x\)</span>.</li>
-<li><span class="math">\(r~\mbox{with}~\mathsf{field}\mathit{pth} = x\)</span> denotes the same record as <span class="math">\(r\)</span>,
-except that the <span class="math">\(\mathsf{field}\)</span> component is replaced with <span class="math">\(r.\mathsf{field}~\mbox{with}~\mathit{pth} = x\)</span>.</li>
+<li><span class="math">\(s~\mbox{with}~[i]\,\mathit{pth} = x\)</span> is short for <span class="math">\(s~\mbox{with}~[i] = (s[i]~\mbox{with}~\mathit{pth} = x)\)</span>.</li>
+<li><span class="math">\(r~\mbox{with}~\mathsf{field}\,\mathit{pth} = x\)</span> is short for <span class="math">\(r~\mbox{with}~\mathsf{field} = (r.\mathsf{field}~\mbox{with}~\mathit{pth} = x)\)</span>.</li>
 </ul>
 </div>
 </div>
