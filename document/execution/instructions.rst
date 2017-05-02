@@ -22,7 +22,7 @@ Numeric Instructions
 1. Push the value :math:`t.\CONST~c` to the stack.
 
 .. note::
-   No formal reduction rule is needed for this instruction, since |CONST| instructions coincide with :ref:`values <syntax-val>`.
+   No formal reduction rule is required for this instruction, since |CONST| instructions coincide with :ref:`values <syntax-val>`.
 
 
 .. _exec-unop:
@@ -172,7 +172,7 @@ Parametric Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val~\DROP &\stepto& \epsilon
+   \val~~\DROP &\stepto& \epsilon
    \end{array}
 
 
@@ -183,7 +183,7 @@ Parametric Instructions
 
 1. Assert: due to :ref:`validation <valid-select>`, a value :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-2. Pop the value :math:`\I32.\CONST~n` from the stack.
+2. Pop the value :math:`\I32.\CONST~c` from the stack.
 
 3. Assert: due to :ref:`validation <valid-select>`, two more values (of the same :ref:`value type <syntax-valtype>`) are on the top of the stack.
 
@@ -191,7 +191,7 @@ Parametric Instructions
 
 5. Pop the value :math:`\val_1` from the stack.
 
-6. If :math:`n` is not :math:`0`, then:
+6. If :math:`c` is not :math:`0`, then:
 
    a. Push the value :math:`\val_1` back to the stack.
 
@@ -201,10 +201,10 @@ Parametric Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val_1~\val_2~(\I32\K{.}\CONST~n)~\SELECT &\stepto& \val_1
-     & (\mbox{if}~n \neq 0) \\
-   \val_1~\val_2~(\I32\K{.}\CONST~n)~\SELECT &\stepto& \val_2
-     & (\mbox{if}~n = 0) \\
+   \val_1~\val_2~(\I32\K{.}\CONST~c)~\SELECT &\stepto& \val_1
+     & (\mbox{if}~c \neq 0) \\
+   \val_1~\val_2~(\I32\K{.}\CONST~c)~\SELECT &\stepto& \val_2
+     & (\mbox{if}~c = 0) \\
    \end{array}
 
 
@@ -372,7 +372,7 @@ Memory Instructions
 
 9. If :math:`N` is not part of the instruction, then:
 
-   a. Let :math:`N` be the :ref:`width <syntax-valtype>` :ref:`value type <syntax-valtype>` of :math:`t`.
+   a. Let :math:`N` be the :ref:`width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
 10. If :math:`\X{ea} + N` is larger than the length of :math:`\X{mem}.\DATA`, then:
 
@@ -450,7 +450,7 @@ Memory Instructions
 
 9. If :math:`N` is not part of the instruction, then:
 
-   a. Let :math:`N` be the :ref:`width <syntax-valtype>` :ref:`value type <syntax-valtype>` of :math:`t`.
+   a. Let :math:`N` be the :ref:`width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
 10. If :math:`\X{ea} + N` is larger than the length of :math:`\X{mem}.\DATA`, then:
 
@@ -872,9 +872,9 @@ Control Instructions
 
 14. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\FUNCS[a]`.
 
-15. Assert: due to :ref:`validation <valid-func>`, :math:`\X{func}.\MODULE.\TYPES[\X{f}.\CODE.\TYPE]` exists.
+15. Assert: due to :ref:`validation <valid-func>`, :math:`\X{f}.\MODULE.\TYPES[\X{f}.\CODE.\TYPE]` exists.
 
-16. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{func}.\MODULE.\TYPES[\X{f}.\CODE.\TYPE]`.
+16. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\MODULE.\TYPES[\X{f}.\CODE.\TYPE]`.
 
 15. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
 
@@ -890,7 +890,8 @@ Control Instructions
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & S.\TABLES[F.\MODULE.\TABLES[0]].\ELEM[i] = a \\
-     \wedge & F.\MODULE.\TYPES[x] = f.\MODULE.\TYPES[S.\FUNCS[a].\CODE.\TYPE])
+    \wedge S.\FUNCS[a] = f \\
+     \wedge & F.\MODULE.\TYPES[x] = f.\MODULE.\TYPES[f.\CODE.\TYPE])
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x) &\stepto& S; F; \TRAP
@@ -917,7 +918,7 @@ Entering :math:`\instr^\ast` with label :math:`L`
 
 .. note::
    No formal reduction rule is needed for entering an instruction sequence,
-   because the label :math:`L` is embedded in the :ref:`administrative instruction <syntax-instr-admin>` that is reduced to directly.
+   because the label :math:`L` is embedded in the :ref:`administrative instruction <syntax-instr-admin>` that structured control instructions reduce to directly.
 
 
 .. _exec-instr-seq-exit:
@@ -948,7 +949,7 @@ When the end of a labelled instruction sequence is reached without a jump or tra
 
 .. note::
    This semantics also applies to the instruction sequence contained in a |LOOP| instruction.
-   Therefor, execution of a loop falls off the end if no backwards branch is performed explicitly.
+   Therefor, execution of a loop falls off the end, unless a backwards branch is performed explicitly.
 
 
 .. index:: ! invocation, function, function instance, label, frame
@@ -969,7 +970,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 4. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\MODULE.\TYPES[f.\CODE.\TYPE]`.
 
-5. Let :math:`t^n` be the list of :ref:`value types <syntax-valtype>` :math:`f.\CODE.\LOCALS`.
+5. Let :math:`t^\ast` be the list of :ref:`value types <syntax-valtype>` :math:`f.\CODE.\LOCALS`.
 
 6. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\CODE.\BODY`.
 
@@ -981,19 +982,20 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 10. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \MODULE~f.\MODULE, \LOCALS~\val^n~\val_0^\ast \}`.
 
-11. Push :math:`F` to the stack.
+11. Push the activation of :math:`F` with arity :math:`m` to the stack.
 
 12. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   \val^n~(\INVOKE~a) &\stepto& \FRAME_n\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
+   \val^n~(\INVOKE~a) &\stepto& \FRAME_m\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\FUNCS[a].\CODE = \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\instr^\ast~\END \} \\
-     \wedge & S.\FUNCS[a].\MODULE.\TYPES[x] = [t_1^n] \to [t_2^m] \\
+     (\mbox{if} & S.\FUNCS[a] = f \\
+     \wedge & f.\CODE = \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\instr^\ast~\END \} \\
+     \wedge & f.\MODULE.\TYPES[x] = [t_1^n] \to [t_2^m] \\
      \wedge & F = \{ \MODULE~f.\MODULE, ~\LOCALS~\val^n~(t.\CONST~0)^\ast \})
      \end{array} \\
    \end{array}
@@ -1008,7 +1010,7 @@ When the end of a funtion is reached without a jump (|RETURN|) or trap aborting 
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Let :math:`n` be the arity of :math:`F`.
+2. Let :math:`n` be the arity of the activation of :math:`F`.
 
 3. Assert: due to :ref:`validation <valid-instr-seq>`, there are :math:`n` values on the top of the stack.
 

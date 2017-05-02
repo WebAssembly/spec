@@ -1,3 +1,4 @@
+.. _syntax-runtime:
 .. index:: ! runtime
 
 Runtime Structure
@@ -11,7 +12,7 @@ Runtime Structure
 Values
 ~~~~~~
 
-WebAssembly computations manipulate *values* of the four basic :ref:`value types <syntax-valtype>`: :ref:`uninterpreted integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each, respectively.
+WebAssembly computations manipulate *values* of the four basic :ref:`value types <syntax-valtype>`: :ref:`integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each, respectively.
 
 In most places of the semantics, values of different types can occur.
 In order to avoid ambiguities, values are therefor represented with an abstract syntax that makes their type explicit.
@@ -35,7 +36,7 @@ It is convenient to reuse the same notation as for the |CONST| :ref:`instruction
 Store
 ~~~~~
 
-The *store* represents all *mutable* global state that can be manipulated by WebAssembly programs.
+The *store* represents all global state that can be manipulated by WebAssembly programs.
 It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been *allocated* during the life time of the abstract machine. [#gc]_
 
 Syntactically, the store is defined as a :ref:`record <syntax-record>` listing the existing instances of each category:
@@ -131,7 +132,7 @@ and collects runtime representations of all entities that are imported, defined,
      \end{array}
    \end{array}
 
-Each component contains runtime instances corresponding to respective entities from the original module -- whether imported or defined -- in the order of their static :ref:`indices <syntax-index>`.
+Each component references runtime instances corresponding to respective declarations from the original module -- whether imported or defined -- in the order of their static :ref:`indices <syntax-index>`.
 :ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` are referenced with an indirection through their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
 
 It is an invariant of the semantics that all :ref:`export instances <syntax-exportinst>` in a given module instance have different :ref:`names <syntax-name>`.
@@ -146,7 +147,7 @@ Function Instances
 ~~~~~~~~~~~~~~~~~~
 
 A *function instance* is the runtime representation of a :ref:`function <syntax-func>`.
-It is effectively a *closure* of the original function over the runtime :ref:`module instance <syntax-moduleinst>` of its own :ref:`module <syntax-module>`.
+It effectively is a *closure* of the original function over the runtime :ref:`module instance <syntax-moduleinst>` of its own :ref:`module <syntax-module>`.
 The module instance is used to resolve references to other non-local definitions during execution of the function.
 
 .. math::
@@ -202,16 +203,16 @@ Memory Instances
 A *memory instance* is the runtime representation of a linear :ref:`memory <syntax-mem>`.
 It holds a vector of bytes and an optional maximum size, if one was specified at the definition site of the memory.
 
-The length of the vector always is a multiple of the WebAssembly *page size*, which is defined to be the constant :math:`65536` -- abbreviated :math:`64\,\F{Ki}`.
-Like in a :ref:`memory type <syntax-memtype>`, the maximum size in a memory instance is given in units of this page size.
-
-The bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>`, the execution of a :ref:`data segment <syntax-data>`, or by external means provided by the :ref:`embedder <embedder>`.
-
 .. math::
    \begin{array}{llll}
    \production{(memory instance)} & \meminst &::=&
      \{ \DATA~\vec(\byte), \MAX~\u32^? \} \\
    \end{array}
+
+The length of the vector always is a multiple of the WebAssembly *page size*, which is defined to be the constant :math:`65536` -- abbreviated :math:`64\,\F{Ki}`.
+Like in a :ref:`memory type <syntax-memtype>`, the maximum size in a memory instance is given in units of this page size.
+
+The bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>`, the execution of a :ref:`data segment <syntax-data>`, or by external means provided by the :ref:`embedder <embedder>`.
 
 It is an invariant of the semantics that the length of the byte vector, divided by page size, never exceeds the maximum size, if present.
 
@@ -227,13 +228,13 @@ Global Instances
 A *global instance* is the runtime representation of a :ref:`global <syntax-global>` variable.
 It holds an individual :ref:`value <syntax-val>` and a flag indicating whether it is mutable.
 
-The value of mutable globals can be mutated through specific instructions or by external means provided by the :ref:`embedder <embedder>`.
-
 .. math::
    \begin{array}{llll}
    \production{(global instance)} & \globalinst &::=&
      \{ \VALUE~\val, \MUT~\mut \} \\
    \end{array}
+
+The value of mutable globals can be mutated through specific instructions or by external means provided by the :ref:`embedder <embedder>`.
 
 
 .. _syntax-exportinst:
@@ -342,9 +343,9 @@ The stack contains three kinds of entries:
 
 * *Values*: the *operands* (arguments and results) of instructions.
 
-* *Labels*: an active (entered) :ref:`structured control instruction <syntax-instr-control>` that can be targeted by branches.
+* *Labels*: active (entered) :ref:`structured control instructions <syntax-instr-control>` that can be targeted by branches.
 
-* *Locals*: the *call frame* of an active :ref:`function <syntax-func>` call.
+* *Activations*: the *call frames* of active :ref:`function <syntax-func>` calls.
 
 These entries can occur on the stack in any order during the execution of a program.
 Stack entries are described by abstract syntax as follows.
@@ -371,7 +372,7 @@ Labels carry an argument arity :math:`n` and their associated branch *target*, w
      \LABEL_n\{\instr^\ast\} \\
    \end{array}
 
-Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branch is taken, "replacing" the original control construct.
+Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branch is taken, in place of the original control construct.
 
 .. note::
    For example, a loop label has the form
@@ -379,19 +380,19 @@ Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branc
    .. math::
       \LABEL_n\{\LOOP~[t^?]~\dots~\END\}
 
-   When performing a branch to this label, this restarts the loop from the  beginning.
+   When performing a branch to this label, this executes the loop, effectively restarting it from the beginning.
    Conversely, a simple block label has the form
 
    .. math::
       \LABEL_n\{\epsilon\}
 
-   When branching, the empty continuation ends the targeted block and proceeds with consecutive instructions.
+   When branching, the empty continuation ends the targeted block, such that execution can proceed with consecutive instructions.
 
 Frames
 ......
 
-Frames carry the return arity of the respective function,
-hold the values of its locals (including arguments) in the order corresponding to their static :ref:`local indices <syntax-localidx>`,
+Activation frames carry the return arity of the respective function,
+hold the values of its :ref:`locals <syntax-local>` (including arguments) in the order corresponding to their static :ref:`local indices <syntax-localidx>`,
 and a reference to the function's own :ref:`module instance <syntax-moduleinst>`:
 
 .. math::
@@ -404,10 +405,6 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
 
 The values of the locals are mutated by respective :ref:`variable instructions <syntax-instr-var>`.
 
-.. note::
-   In the current version of WebAssembly, the arities of labels and activations cannot be larger than :math:`1`.
-   This may be generalized in future versions.
-
 
 Conventions
 ...........
@@ -416,11 +413,13 @@ Conventions
 
 * The meta variable :math:`F` ranges over frames where clear from context.
 
+.. note::
+   In the current version of WebAssembly, the arities of labels and activations cannot be larger than :math:`1`.
+   This may be generalized in future versions.
+
 
 .. _syntax-instr-admin:
-.. _syntax-ctxt-eval:
-.. _syntax-ctxt-label:
-.. index:: ! administrative instructions, ! block context, ! evaluation context, function, function instance, function address, label, frame, instruction, trap
+.. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap
    pair:: abstract syntax; administrative instruction
 
 Administrative Instructions
@@ -429,7 +428,7 @@ Administrative Instructions
 .. note::
    This section is only relevant for the :ref:`formal notation <exec-notation>`.
 
-In order to express the reduction of :ref:`traps <trap>` and :ref:`control instructions <syntax-instr-control>`, the syntax of instructions is extended to include the following *administrative instructions*:
+In order to express the reduction of :ref:`traps <trap>`, calls, and :ref:`control instructions <syntax-instr-control>`, the syntax of instructions is extended to include the following *administrative instructions*:
 
 .. math::
    \begin{array}{llll}
@@ -442,13 +441,13 @@ In order to express the reduction of :ref:`traps <trap>` and :ref:`control instr
    \end{array}
 
 The |TRAP| instruction represents the occurrence of a trap.
-Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction.
+Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction, signalling termination.
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
 
 The |LABEL| and |FRAME| instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
-The administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>`.
+Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>`.
 That way, the end of the inner instruction sequence is tracked when part of an outer sequence.
 
 .. note::
@@ -479,26 +478,44 @@ That way, the end of the inner instruction sequence is tracked when part of an o
       \stepto & (\F32.\CONST~{-}1) \\
       \end{array}
 
+
+.. _syntax-ctxt-label:
+.. index:: ! evaluation context
+
+Block Contexts
+..............
+
 To express :ref:`branches <syntax-instr-control>`, the following syntax of *block contexts* is defined, indexed by the count :math:`k` of labels surrounding the hole:
 
 .. math::
    \begin{array}{llll}
-   \production{(label contexts)} & \XB^0 &::=&
+   \production{(block contexts)} & \XB^0 &::=&
      \val^\ast~[\_]~\instr^\ast \\
-   \production{(label contexts)} & \XB^{k+1} &::=&
+   \production{(block contexts)} & \XB^{k+1} &::=&
      \val^\ast~\LABEL_n\{\instr^\ast\}~\XB^k~\END~\instr^\ast \\
    \end{array}
 
+This definition allows to index active labels surrounding a :ref:`branch <syntax-br>` or :ref:`return <syntax-return>` instruction.
+
 .. note::
-   Given this definition, the :ref:`reduction <exec-br>` of a simple branch can be defined as follows:
+   For example, the :ref:`reduction <exec-br>` of a simple branch can be defined as follows:
 
    .. math::
       \LABEL_0\{\instr^\ast\}~\XB^l[\BR~l]~\END \quad\stepto\quad \instr^\ast
 
-   When a branch occurs in a block context,
+   Here, the hole :math:`[\_]` of the context is instantiated with a branch instruction.
+   When a branch occurs,
    this rule replaces the targeted label and associated instruction sequence with the label's continuation.
+   The right label is identified through the :ref:`label index <syntax-labelidx>` :math:`l`, which corresponds to the number of surrounding |LABEL| instructions that must be hopped over -- which is exactly the count encoded in the index of a block context.
 
-Finally, the following definition of *evaluation context* and associated structural rules enable reduction inside instruction sequences and administrative forms and the propagation of traps:
+
+.. _syntax-ctxt-eval:
+.. index:: ! evaluation context
+
+Evaluation Contexts
+...................
+
+Finally, the following definition of *evaluation context* and associated structural rules enable reduction inside instruction sequences and administrative forms as well as the propagation of traps:
 
 .. math::
    \begin{array}{llll}

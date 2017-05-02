@@ -23,7 +23,9 @@ Auxiliary Operations
    \bytes_{\K{i}N}(i) &=& \bytes_N(i) \\
    \bytes_{\K{f}N}(b^N) &=& \F{reverse}(b^N) \\
    \end{array}
-   
+
+Note that |bytes| is a bijection, hence the function is invertible.
+
 .. math::
    \begin{array}{lll@{\qquad}l}
    \signed_N(i) &=& i & (0 \leq i < 2^{N-1}) \\

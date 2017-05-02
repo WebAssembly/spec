@@ -268,6 +268,7 @@ The precise semantics of memory instructions is :ref:`described <exec-instr-memo
 
 
 .. _syntax-instr-control:
+.. _syntax-isntr-seq:
 .. _syntax-label:
 .. index:: ! control instruction, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector
    pair: abstract syntax; instruction

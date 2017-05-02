@@ -3,7 +3,7 @@
 Conventions
 -----------
 
-WebAssembly code is *executed* when :ref:`instantiating <instantiation>` a module or :ref:`invoking <exec-invocation>` a function on the resulting module instance.
+WebAssembly code is *executed* when :ref:`instantiating <instantiation>` a module or :ref:`invoking <exec-invocation>` an :ref:`exported <syntax-export>` function on the resulting module :ref:`instance <syntax-moduleinst>`.
 
 Execution behavior is defined in terms of an *abstract machine* that models the *program state*.
 It includes a *stack*, which records operand values and control constructs, and an abstract *store* containing global state.
@@ -20,7 +20,7 @@ As with :ref:`validation <validation>`, all rules are given in two *equivalent* 
    so that understanding of the formal notation is *not* required to read this specification.
    The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.
 
-:ref:`Store <syntax-store>`, :ref:`stack <syntax-stack>`, and other *runtime structure*, such as :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary :ref:`syntax <syntax-runtime>`.
+:ref:`Store <store>`, :ref:`stack <stack>`, and other *runtime structure*, such as :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary :ref:`syntax <syntax-runtime>`.
 
 
 .. _exec-notation-textual:
@@ -44,7 +44,7 @@ The following conventions are adopted in stating these rules.
   Such replacement is assumed to apply globally.
 
 * The execution of an instruction may *trap*,
-  in which case the entire computation is aborted and no further modifications to the store are performed by it.
+  in which case the entire computation is aborted and no further modifications to the store are performed by it. (Other computations can still be initiated afterwards.)
 
 * The execution of an instruction may also end in a *jump* to a designated target,
   which defines the next instruction to execute.
@@ -72,7 +72,7 @@ Every rule has the following general form:
 .. math::
    \X{configuration} \quad\stepto\quad \X{configuration}
 
-A *configuration* is a syntactic description of a specific program state.
+A *configuration* is a syntactic description of a program state.
 Each rule specifies one *step* of execution.
 As long as there is at most one reduction rule applicable to a given configuration, reduction -- and thereby execution -- is *deterministic*.
 WebAssembly has only very few exceptions to this, which are noted explicitly in this specification.
