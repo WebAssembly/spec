@@ -4,10 +4,19 @@
 Instructions
 ------------
 
-:ref:`Instructions <syntax-instr>` are encoded by *opcodes*.
-Each opcode is represented by a single byte,
-and is followed by the instruction's immediate arguments, where present.
-The only exception are :ref:`structured control instructions <binary-instr-control>`, which consist of several opcodes bracketing their nested instruction sequences.
+.. todo:: symbolic labels
+
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tinstr_C &::=&
+     \X{in}{:}\Tplaininstr
+       &\Rightarrow& \X{in} \\ &&|&
+     \X{in}{:}\Tblockinstr_C
+       &\Rightarrow& \X{in} \\ &&|&
+     \X{in}^\ast{:}\Tfoldedinstr_C
+       &\Rightarrow& \X{in}^\ast \\
+   \end{array}
 
 
 .. _text-instr-control:
@@ -17,8 +26,6 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
-
-:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the nested instruction sequences are terminated with explicit opcodes for |END| and |ELSE|.
 
 .. _text-nop:
 .. _text-unreachable:
@@ -34,18 +41,19 @@ Control Instructions
 
 .. math::
    \begin{array}{llclll}
-   \production{instruction} & \Tinstr &::=&
+   \production{block instruction} & \Tblockinstr_C &::=&
+     \text{block}~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{C'})^\ast~~\text{end}
+       &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
+     \text{loop}~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{C'})^\ast~~\text{end}
+       &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
+     \text{if}~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{C'})^\ast~~\text{end}
+       &\Rightarrow& \IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
+     \text{if}~~\X{rt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr_{C'})^\ast~~
+       \text{else}~~(\X{in}_2{:}\Tinstr_{C'})^\ast~~\text{end}
+       &\Rightarrow& \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\
+   \production{plain instruction} & \Tplaininstr &::=&
      \text{unreachable} &\Rightarrow& \UNREACHABLE \\ &&|&
      \text{nop} &\Rightarrow& \NOP \\ &&|&
-     \text{block}~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr)^\ast~~\text{end}
-       &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \text{loop}~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr)^\ast~~\text{end}
-       &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \text{if}~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr)^\ast~~\text{end}
-       &\Rightarrow& \IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
-     \text{if}~~\X{rt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr)^\ast~~
-       \text{else}~~(\X{in}_2{:}\Tinstr)^\ast~~\text{end}
-       &\Rightarrow& \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
      \text{br}~~l{:}\Tlabelidx &\Rightarrow& \BR~l \\ &&|&
      \text{br\_if}~~l{:}\Tlabelidx &\Rightarrow& \BRIF~l \\ &&|&
      \text{br\_table}~~l^\ast{:}\Tvec(\Tlabelidx)~~l_N{:}\Tlabelidx
@@ -56,7 +64,7 @@ Control Instructions
    \end{array}
 
 .. note::
-   The :math:`\text{else}` keyword an :math:`\text{if}` instruction can be omitted if the following instruction sequence is empty.
+   The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitted if the following instruction sequence is empty.
 
 
 .. _text-instr-parametric:
@@ -72,7 +80,7 @@ Parametric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \production{instruction} & \Tinstr &::=& \dots \\ &&|&
+   \production{instruction} & \Tplaininstr &::=& \dots \\ &&|&
      \text{drop} &\Rightarrow& \DROP \\ &&|&
      \text{select} &\Rightarrow& \SELECT \\
    \end{array}
@@ -94,7 +102,7 @@ Variable Instructions
 
 .. math::
    \begin{array}{llclll}
-   \production{instruction} & \Tinstr &::=& \dots \\ &&|&
+   \production{instruction} & \Tplaininstr &::=& \dots \\ &&|&
      \text{get\_local}~~x{:}\Tlocalidx &\Rightarrow& \GETLOCAL~x \\ &&|&
      \text{set\_local}~~x{:}\Tlocalidx &\Rightarrow& \SETLOCAL~x \\ &&|&
      \text{tee\_local}~~x{:}\Tlocalidx &\Rightarrow& \TEELOCAL~x \\ &&|&
@@ -130,7 +138,7 @@ Memory Instructions
    \production{memory alignment} & \Talign_N &::=&
      \text{align{=}}a{:}\Tu32 &\Rightarrow& a \\ &&|&
      \epsilon &\Rightarrow& N \\
-   \production{instruction} & \Tinstr &::=& \dots \\ &&|&
+   \production{instruction} & \Tplaininstr &::=& \dots \\ &&|&
      \text{i32.load}~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\LOAD~m \\ &&|&
      \text{i64.load}~~m{:}\Tmemarg_8 &\Rightarrow& \I64.\LOAD~m \\ &&|&
      \text{f32.load}~~m{:}\Tmemarg_4 &\Rightarrow& \F32.\LOAD~m \\ &&|&
@@ -171,7 +179,7 @@ Numeric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \production{instruction} & \Tinstr &::=& \dots \\&&|&
+   \production{instruction} & \Tplaininstr &::=& \dots \\&&|&
      \text{i32.const}~~n{:}\Ti32 &\Rightarrow& \I32.\CONST~n \\ &&|&
      \text{i64.const}~~n{:}\Ti64 &\Rightarrow& \I64.\CONST~n \\ &&|&
      \text{f32.const}~~z{:}\Tf32 &\Rightarrow& \F32.\CONST~z \\ &&|&
@@ -183,7 +191,7 @@ Numeric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tinstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \text{i32.clz} &\Rightarrow& \I32.\CLZ \\ &&|&
      \text{i32.ctz} &\Rightarrow& \I32.\CTZ \\ &&|&
      \text{i32.popcnt} &\Rightarrow& \I32.\POPCNT \\ &&|&
@@ -206,7 +214,7 @@ Numeric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tinstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \text{i64.clz} &\Rightarrow& \I64.\CLZ \\ &&|&
      \text{i64.ctz} &\Rightarrow& \I64.\CTZ \\ &&|&
      \text{i64.popcnt} &\Rightarrow& \I64.\POPCNT \\ &&|&
@@ -229,7 +237,7 @@ Numeric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tinstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \text{f32.abs} &\Rightarrow& \F32.\ABS \\ &&|&
      \text{f32.neg} &\Rightarrow& \F32.\NEG \\ &&|&
      \text{f32.ceil} &\Rightarrow& \F32.\CEIL \\ &&|&
@@ -248,7 +256,7 @@ Numeric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tinstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \text{f64.abs} &\Rightarrow& \F64.\ABS \\ &&|&
      \text{f64.neg} &\Rightarrow& \F64.\NEG \\ &&|&
      \text{f64.ceil} &\Rightarrow& \F64.\CEIL \\ &&|&
@@ -270,7 +278,7 @@ Numeric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tinstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \text{i32.eqz} &\Rightarrow& \I32.\EQZ \\ &&|&
      \text{i32.eq} &\Rightarrow& \I32.\EQ \\ &&|&
      \text{i32.ne} &\Rightarrow& \I32.\NE \\ &&|&
@@ -286,7 +294,7 @@ Numeric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tinstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \text{i64.eqz} &\Rightarrow& \I64.\EQZ \\ &&|&
      \text{i64.eq} &\Rightarrow& \I64.\EQ \\ &&|&
      \text{i64.ne} &\Rightarrow& \I64.\NE \\ &&|&
@@ -302,7 +310,7 @@ Numeric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tinstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \text{f32.eq} &\Rightarrow& \F32.\EQ \\ &&|&
      \text{f32.ne} &\Rightarrow& \F32.\NE \\ &&|&
      \text{f32.lt} &\Rightarrow& \F32.\LT \\ &&|&
@@ -313,7 +321,7 @@ Numeric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tinstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \text{f64.eq} &\Rightarrow& \F64.\EQ \\ &&|&
      \text{f64.ne} &\Rightarrow& \F64.\NE \\ &&|&
      \text{f64.lt} &\Rightarrow& \F64.\LT \\ &&|&
@@ -326,7 +334,7 @@ Numeric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tinstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \text{i32.wrap/i64} &\Rightarrow& \I32.\WRAP\K{/}\I64 \\ &&|&
      \text{i32.trunc\_s/f32} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F32 \\ &&|&
      \text{i32.trunc\_u/f32} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F32 \\ &&|&
@@ -352,6 +360,28 @@ Numeric Instructions
      \text{i64.reinterpret/f64} &\Rightarrow& \I64.\REINTERPRET\K{/}\F64 \\ &&|&
      \text{f32.reinterpret/i32} &\Rightarrow& \F32.\REINTERPRET\K{/}\I32 \\ &&|&
      \text{f64.reinterpret/i64} &\Rightarrow& \F64.\REINTERPRET\K{/}\I64 \\
+   \end{array}
+
+
+.. _text-foldedinstr:
+
+Folded Instructions
+~~~~~~~~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llclll}
+   \production{folded instruction} & \Tfoldedinstr_C &::=&
+     \text{(}~\X{in}{:}\Tplaininstr~~(\X{op}{:}\Tfoldedinstr_C)^\ast~\text{)}
+       &\Rightarrow& \X{op}^\ast~\X{in} \\ &&|&
+     \text{(}~\text{block}~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{C'})^\ast~\text{)}
+       &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
+     \text{(}~\text{loop}~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{C'})^\ast~\text{)}
+       &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
+     \text{(}~\text{if}~~\X{rt}{:}\Tblocktype~~\X{in}_0^\ast{:}\Tfoldedinstr_C~~\text{(}~\text{then}~~(\X{in}{:}\Tinstr_{C'})^\ast~\text{)}~~\text{)}
+       &\Rightarrow& \X{in}_0^\ast~~\IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
+     \text{(}~\text{if}~~\X{rt}{:}\Tblocktype~~\X{in}_0^\ast{:}\Tfoldedinstr_C~~\text{(}~\text{then}~~(\X{in}_1{:}\Tinstr_{C'})^\ast~\text{)}~~
+       \text{(}~\text{else}~~(\X{in}_2{:}\Tinstr_{C'})^\ast~\text{)}~~\text{)}
+       &\Rightarrow& \X{in}_0^\ast~~\IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\
    \end{array}
 
 

@@ -17,7 +17,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
 .. _binary-globalidx:
 .. _binary-localidx:
 .. _binary-labelidx:
-.. index:: index, index space, type index, function index, table index, memory index, global index, local index, label index
+.. index:: index, type index, function index, table index, memory index, global index, local index, label index
    pair: binary format; type index
    pair: binary format; function index
    pair: binary format; table index
@@ -25,13 +25,6 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    pair: binary format; global index
    pair: binary format; local index
    pair: binary format; label index
-   single: abstract syntax; type index
-   single: abstract syntax; function index
-   single: abstract syntax; table index
-   single: abstract syntax; memory index
-   single: abstract syntax; global index
-   single: abstract syntax; local index
-   single: abstract syntax; label index
 
 Indices
 ~~~~~~~
@@ -112,7 +105,6 @@ Their contents consist of a :ref:`name <syntax-name>` further identifying the cu
 .. _binary-type:
 .. index:: ! type section, type definition
    pair: binary format; type section
-   single: abstract syntax; type definition
    pair: section; type
 
 Type Section
@@ -132,7 +124,6 @@ It decodes into a vector of :ref:`function types <syntax-functype>` that represe
 .. _binary-import:
 .. index:: ! import section, import, name, function type, table type, memory type, global type
    pair: binary format; import
-   single: abstract syntax; import
    pair: section; import
 
 Import Section
@@ -160,7 +151,6 @@ It decodes into a vector of :ref:`imports <syntax-import>` that represent the |I
 .. _binary-func:
 .. index:: ! function section, function, type index, function type
    pair: binary format; function
-   single: abstract syntax; function
    pair: section; function
 
 Function Section
@@ -181,7 +171,6 @@ The |LOCALS| and |BODY| fields of the respective functions are encoded separatel
 .. _binary-table:
 .. index:: ! table section, table, table type
    pair: binary format; table
-   single: abstract syntax; table
    pair: section; table
 
 Table Section
@@ -203,7 +192,6 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |TAB
 .. _binary-mem:
 .. index:: ! memory section, memory, memory type
    pair: binary format; memory
-   single: abstract syntax; memory
    pair: section; memory
 
 Memory Section
@@ -225,7 +213,6 @@ It decodes into a vector of :ref:`memories <syntax-mem>` that represent the |MEM
 .. _binary-global:
 .. index:: ! global section, global, global type, expression
    pair: binary format; global
-   single: abstract syntax; global
    pair: section; global
 
 Global Section
@@ -248,7 +235,6 @@ It decodes into a vector of :ref:`globals <syntax-global>` that represent the |G
 .. _binary-export:
 .. index:: ! export section, export, name, index, function index, table index, memory index, global index
    pair: binary format; export
-   single: abstract syntax; export
    pair: section; export
 
 Export Section
@@ -276,7 +262,6 @@ It decodes into a vector of :ref:`exports <syntax-export>` that represent the |E
 .. _binary-start:
 .. index:: ! start section, start function, function index
    pair: binary format; start function
-   single: abstract syntax; start function
    single: section; start
    single: start function; section
 
@@ -299,7 +284,6 @@ It decodes into an optional :ref:`start function <syntax-start>` that represents
 .. _binary-elem:
 .. index:: ! element section, element, table index, expression, function index
    pair: binary format; element
-   single: abstract syntax; element
    pair: section; element
    single: table; element
    single: element; segment
@@ -324,7 +308,6 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
 .. _binary-local:
 .. index:: ! code section, function, local, type index, function type
    pair: binary format; function
-   single: abstract syntax; function
    pair: section; code
 
 Code Section
@@ -379,7 +362,6 @@ Any code for which the length of the resulting sequence is out of bounds of the 
 .. _binary-data:
 .. index:: ! data section, data, memory, memory index, expression, byte
    pair: binary format; data
-   single: abstract syntax; data
    pair: section; data
    single: memory; data
    single: data; segment
@@ -405,7 +387,6 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
 .. _binary-version:
 .. index:: module, section, type definition, function type, function, table, memory, global, element, data, start function, import, export, context, version
    pair: binary format; module
-   single: abstract syntax; module
 
 Modules
 ~~~~~~~

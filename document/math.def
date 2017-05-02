@@ -222,6 +222,14 @@
 .. |Tlocalidx| mathdef:: \xref{text/modules}{text-localidx}{\T{localidx}}
 .. |Tlabelidx| mathdef:: \xref{text/modules}{text-labelidx}{\T{labelidx}}
 
+.. |Ttypebind| mathdef:: \xref{text/modules}{text-typebind}{\T{typebind}}
+.. |Tfuncbind| mathdef:: \xref{text/modules}{text-funcbind}{\T{funcbind}}
+.. |Ttablebind| mathdef:: \xref{text/modules}{text-tablebind}{\T{tablebind}}
+.. |Tmembind| mathdef:: \xref{text/modules}{text-membind}{\T{membind}}
+.. |Tglobalbind| mathdef:: \xref{text/modules}{text-globalbind}{\T{globalbind}}
+.. |Tlocalbind| mathdef:: \xref{text/modules}{text-localbind}{\T{localbind}}
+.. |Tlabelbind| mathdef:: \xref{text/modules}{text-labelbind}{\T{labelbind}}
+
 
 .. Modules, terminals
 
@@ -315,7 +323,9 @@
 .. Modules, textual non-terminals
 
 .. |Tmodule| mathdef:: \xref{text/modules}{text-module}{\T{module}}
+.. |Tmodulebody| mathdef:: \xref{text/modules}{text-module}{\T{modulebody}}
 .. |Ttype| mathdef:: \xref{text/modules}{text-type}{\T{type}}
+.. |Ttypeuse| mathdef:: \xref{text/modules}{text-typeuse}{\T{typeuse}}
 .. |Tfunc| mathdef:: \xref{text/modules}{text-func}{\T{func}}
 .. |Ttable| mathdef:: \xref{text/modules}{text-table}{\T{table}}
 .. |Tmem| mathdef:: \xref{text/modules}{text-mem}{\T{mem}}
@@ -445,4 +455,7 @@
 .. |Toffset| mathdef:: \xref{text/instructions}{text-memarg}{\T{offset}}
 
 .. |Tinstr| mathdef:: \xref{text/instructions}{text-instr}{\T{instr}}
+.. |Tplaininstr| mathdef:: \xref{text/instructions}{text-plaininstr}{\T{plaininstr}}
+.. |Tblockinstr| mathdef:: \xref{text/instructions}{text-blockinstr}{\T{blockinstr}}
+.. |Tfoldedinstr| mathdef:: \xref{text/instructions}{text-foldedinstr}{\T{foldedinstr}}
 .. |Texpr| mathdef:: \xref{text/instructions}{text-expr}{\T{expr}}
