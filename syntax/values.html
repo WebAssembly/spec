@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -108,8 +108,8 @@
 In the abstract syntax they are represented as hexadecimal literals.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1326#1{{}}\mathdef1326{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
-  \def\mathdef1359#1{\mathtt{0x#1}}\mathdef1359{00} ~|~ \dots ~|~ \def\mathdef1360#1{\mathtt{0x#1}}\mathdef1360{FF} \\
+\def\mathdef1327#1{{}}\mathdef1327{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
+  \def\mathdef1360#1{\mathtt{0x#1}}\mathdef1360{00} ~|~ \dots ~|~ \def\mathdef1361#1{\mathtt{0x#1}}\mathdef1361{FF} \\
 \end{array}\end{split}\]</div>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
@@ -124,12 +124,12 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 <p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>size</em> and their <em>signedness</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1326#1{{}}\mathdef1326{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1327#1{{\mathit{u}#1}}\mathdef1327{N}} &amp;::=&amp;
+\def\mathdef1327#1{{}}\mathdef1327{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1328#1{{\mathit{u}#1}}\mathdef1328{N}} &amp;::=&amp;
   0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
-\def\mathdef1326#1{{}}\mathdef1326{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1333#1{{\mathit{s}#1}}\mathdef1333{N}} &amp;::=&amp;
+\def\mathdef1327#1{{}}\mathdef1327{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1334#1{{\mathit{s}#1}}\mathdef1334{N}} &amp;::=&amp;
   -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
-\def\mathdef1326#1{{}}\mathdef1326{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1338#1{{\mathit{i}#1}}\mathdef1338{N}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-int}{\def\mathdef1327#1{{\mathit{u}#1}}\mathdef1327{N}} \\
+\def\mathdef1327#1{{}}\mathdef1327{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1339#1{{\mathit{i}#1}}\mathdef1339{N}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-int}{\def\mathdef1328#1{{\mathit{u}#1}}\mathdef1328{N}} \\
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned.
@@ -147,7 +147,7 @@ However, some operations <span class="xref std std-ref">convert</span> them to s
 <p><em>Floating-point</em> data consists of values in binary floating-point format according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1326#1{{}}\mathdef1326{floating-point number} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1341#1{{\mathit{f}#1}}\mathdef1341{N}} &amp;::=&amp;
+\def\mathdef1327#1{{}}\mathdef1327{floating-point number} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1342#1{{\mathit{f}#1}}\mathdef1342{N}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-byte}{\mathit{byte}}^{N/8} \\
 \end{array}\end{split}\]</div>
 <p>The two possible sizes <span class="math">\(N\)</span> are 32 and 64.</p>
@@ -159,7 +159,7 @@ where the <span class="math">\(A\)</span>-s can either be values or complex cons
 A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
 <div class="math">
 \[\begin{split}\begin{array}{lllll}
-\def\mathdef1326#1{{}}\mathdef1326{vector} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
+\def\mathdef1327#1{{}}\mathdef1327{vector} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
   A^n
   &amp; (n &lt; 2^{32})\\
 \end{array}\end{split}\]</div>
@@ -169,11 +169,11 @@ A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
 <p><em>Names</em> are sequences of <em>scalar</em> <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> <em>code points</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1326#1{{}}\mathdef1326{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
+\def\mathdef1327#1{{}}\mathdef1327{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast \\
-\def\mathdef1326#1{{}}\mathdef1326{code point} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
-  \def\mathdef1361#1{\mathrm{U{+}#1}}\mathdef1361{0000} ~|~ \dots ~|~ \def\mathdef1362#1{\mathrm{U{+}#1}}\mathdef1362{D7FF} ~|~
-  \def\mathdef1363#1{\mathrm{U{+}#1}}\mathdef1363{E000} ~|~ \dots ~|~ \def\mathdef1364#1{\mathrm{U{+}#1}}\mathdef1364{10FFFF} \\
+\def\mathdef1327#1{{}}\mathdef1327{code point} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
+  \def\mathdef1362#1{\mathrm{U{+}#1}}\mathdef1362{0000} ~|~ \dots ~|~ \def\mathdef1363#1{\mathrm{U{+}#1}}\mathdef1363{D7FF} ~|~
+  \def\mathdef1364#1{\mathrm{U{+}#1}}\mathdef1364{E000} ~|~ \dots ~|~ \def\mathdef1365#1{\mathrm{U{+}#1}}\mathdef1365{10FFFF} \\
 \end{array}\end{split}\]</div>
 <div class="admonition-todo admonition" id="index-6">
 <p class="first admonition-title">Todo</p>

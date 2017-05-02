@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -114,7 +114,7 @@
 </ol>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">No formal reduction rule is needed for this instruction, since <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions coincide with <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a>.</p>
+<p class="last">No formal reduction rule is required for this instruction, since <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions coincide with <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a>.</p>
 </div>
 </div>
 <div class="section" id="exec-unop">
@@ -227,18 +227,18 @@
 </ol>
 <div class="math">
 \[\begin{array}{lcl&#64;{\qquad}l}
-\href{../execution/runtime.html#syntax-val}{\mathit{val}}~\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}} &amp;\hookrightarrow&amp; \epsilon
+\href{../execution/runtime.html#syntax-val}{\mathit{val}}~~\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}} &amp;\hookrightarrow&amp; \epsilon
 \end{array}\]</div>
 </div>
 <div class="section" id="exec-select">
 <span id="id8"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span><a class="headerlink" href="#exec-select" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-select"><span class="std std-ref">validation</span></a>, a value <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> is on the top of the stack.</li>
-<li>Pop the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n\)</span> from the stack.</li>
+<li>Pop the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span> from the stack.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-select"><span class="std std-ref">validation</span></a>, two more values (of the same <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a>) are on the top of the stack.</li>
 <li>Pop the value <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_2\)</span> from the stack.</li>
 <li>Pop the value <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_1\)</span> from the stack.</li>
-<li>If <span class="math">\(n\)</span> is not <span class="math">\(0\)</span>, then:<ol class="loweralpha">
+<li>If <span class="math">\(c\)</span> is not <span class="math">\(0\)</span>, then:<ol class="loweralpha">
 <li>Push the value <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_1\)</span> back to the stack.</li>
 </ol>
 </li>
@@ -249,10 +249,10 @@
 </ol>
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
-\href{../execution/runtime.html#syntax-val}{\mathit{val}}_1~\href{../execution/runtime.html#syntax-val}{\mathit{val}}_2~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}} &amp;\hookrightarrow&amp; \href{../execution/runtime.html#syntax-val}{\mathit{val}}_1
-  &amp; (\mbox{if}~n \neq 0) \\
-\href{../execution/runtime.html#syntax-val}{\mathit{val}}_1~\href{../execution/runtime.html#syntax-val}{\mathit{val}}_2~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}} &amp;\hookrightarrow&amp; \href{../execution/runtime.html#syntax-val}{\mathit{val}}_2
-  &amp; (\mbox{if}~n = 0) \\
+\href{../execution/runtime.html#syntax-val}{\mathit{val}}_1~\href{../execution/runtime.html#syntax-val}{\mathit{val}}_2~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)~\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}} &amp;\hookrightarrow&amp; \href{../execution/runtime.html#syntax-val}{\mathit{val}}_1
+  &amp; (\mbox{if}~c \neq 0) \\
+\href{../execution/runtime.html#syntax-val}{\mathit{val}}_1~\href{../execution/runtime.html#syntax-val}{\mathit{val}}_2~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)~\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}} &amp;\hookrightarrow&amp; \href{../execution/runtime.html#syntax-val}{\mathit{val}}_2
+  &amp; (\mbox{if}~c = 0) \\
 \end{array}\end{split}\]</div>
 <span class="target" id="exec-instr-variable"></span></div>
 </div>
@@ -357,7 +357,7 @@ S; F; \href{../execution/runtime.html#syntax-val}{\mathit{val}}~(\href{../syntax
 <li>Pop the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i\)</span> from the stack.</li>
 <li>Let <span class="math">\(\mathit{ea}\)</span> be <span class="math">\(i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{offset}\)</span>.</li>
 <li>If <span class="math">\(N\)</span> is not part of the instruction, then:<ol class="loweralpha">
-<li>Let <span class="math">\(N\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> of <span class="math">\(t\)</span>.</li>
+<li>Let <span class="math">\(N\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> <span class="math">\(|t|\)</span> of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span>.</li>
 </ol>
 </li>
 <li>If <span class="math">\(\mathit{ea} + N\)</span> is larger than the length of <span class="math">\(\mathit{mem}.\mathsf{data}\)</span>, then:<ol class="loweralpha">
@@ -422,7 +422,7 @@ The only purpose of the annotation is to provide optimizatons hints.</p>
 <li>Pop the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i\)</span> from the stack.</li>
 <li>Let <span class="math">\(\mathit{ea}\)</span> be <span class="math">\(i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{offset}\)</span>.</li>
 <li>If <span class="math">\(N\)</span> is not part of the instruction, then:<ol class="loweralpha">
-<li>Let <span class="math">\(N\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> of <span class="math">\(t\)</span>.</li>
+<li>Let <span class="math">\(N\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> <span class="math">\(|t|\)</span> of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span>.</li>
 </ol>
 </li>
 <li>If <span class="math">\(\mathit{ea} + N\)</span> is larger than the length of <span class="math">\(\mathit{mem}.\mathsf{data}\)</span>, then:<ol class="loweralpha">
@@ -510,7 +510,7 @@ S; F; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_me
 <ol class="arabic simple" start="10">
 <li>Else, either:<ol class="loweralpha">
 <li>Let <span class="math">\(\mathit{len}\)</span> be <span class="math">\(n\)</span> multiplied with the <a class="reference internal" href="runtime.html#page-size"><span class="std std-ref">page size</span></a>.</li>
-<li>Append <span class="math">\(\mathit{len}\)</span> bytes with value <span class="math">\(\def\mathdef701#1{\mathtt{0x#1}}\mathdef701{00}\)</span> to <span class="math">\(S.\mathsf{mems}[a]\)</span>.</li>
+<li>Append <span class="math">\(\mathit{len}\)</span> bytes with value <span class="math">\(\def\mathdef702#1{\mathtt{0x#1}}\mathdef702{00}\)</span> to <span class="math">\(S.\mathsf{mems}[a]\)</span>.</li>
 <li>Push the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz}\)</span> to the stack.</li>
 </ol>
 </li>
@@ -529,7 +529,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   (\mbox{if} &amp; F.\mathsf{module}.\mathsf{mems}[0] = a \\
   \wedge &amp; |S.\mathsf{mems}[a].\mathsf{data}| = \mathit{sz}\cdot64\,\mathrm{Ki} \\
   \wedge &amp; (\mathit{sz} + n \leq S.\mathsf{mems}[a].\mathsf{max} \vee S.\mathsf{mems}[a].\mathsf{max} = \epsilon) \\
-  \wedge &amp; S' = S ~\href{../syntax/conventions.html#syntax-record}{\mbox{with}}~ \mathsf{mems}[a].\mathsf{data} = S.\mathsf{mems}[a].\mathsf{data}~(\def\mathdef702#1{\mathtt{0x#1}}\mathdef702{00})^{n\cdot64\,\mathrm{Ki}}) \\
+  \wedge &amp; S' = S ~\href{../syntax/conventions.html#syntax-record}{\mbox{with}}~ \mathsf{mems}[a].\mathsf{data} = S.\mathsf{mems}[a].\mathsf{data}~(\def\mathdef703#1{\mathtt{0x#1}}\mathdef703{00})^{n\cdot64\,\mathrm{Ki}}) \\
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} &amp;\hookrightarrow&amp; S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~{-1})
@@ -748,8 +748,8 @@ F; (\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}~x) &a
 <li>Let <span class="math">\(a\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math">\(\mathit{tab}.\mathsf{elem}[i]\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-call-indirect"><span class="std std-ref">validation</span></a>, <span class="math">\(S.\mathsf{funcs}[a]\)</span> exists.</li>
 <li>Let <span class="math">\(\mathit{f}\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">function instance</span></a> <span class="math">\(S.\mathsf{funcs}[a]\)</span>.</li>
-<li>Assert: due to <a class="reference internal" href="../validation/modules.html#valid-func"><span class="std std-ref">validation</span></a>, <span class="math">\(\mathit{func}.\mathsf{module}.\mathsf{types}[\mathit{f}.\mathsf{code}.\mathsf{type}]\)</span> exists.</li>
-<li>Let <span class="math">\(\mathit{ft}_{\mathrm{actual}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(\mathit{func}.\mathsf{module}.\mathsf{types}[\mathit{f}.\mathsf{code}.\mathsf{type}]\)</span>.</li>
+<li>Assert: due to <a class="reference internal" href="../validation/modules.html#valid-func"><span class="std std-ref">validation</span></a>, <span class="math">\(\mathit{f}.\mathsf{module}.\mathsf{types}[\mathit{f}.\mathsf{code}.\mathsf{type}]\)</span> exists.</li>
+<li>Let <span class="math">\(\mathit{ft}_{\mathrm{actual}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(\mathit{f}.\mathsf{module}.\mathsf{types}[\mathit{f}.\mathsf{code}.\mathsf{type}]\)</span>.</li>
 </ol>
 <ol class="arabic simple" start="15">
 <li>If <span class="math">\(\mathit{ft}_{\mathrm{actual}}\)</span> and <span class="math">\(\mathit{ft}_{\mathrm{expect}}\)</span> differ, then:<ol class="loweralpha">
@@ -768,7 +768,8 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; S.\mathsf{tables}[F.\mathsf{module}.\mathsf{tables}[0]].\mathsf{elem}[i] = a \\
-  \wedge &amp; F.\mathsf{module}.\mathsf{types}[x] = f.\mathsf{module}.\mathsf{types}[S.\mathsf{funcs}[a].\mathsf{code}.\mathsf{type}])
+ \wedge S.\mathsf{funcs}[a] = f \\
+  \wedge &amp; F.\mathsf{module}.\mathsf{types}[x] = f.\mathsf{module}.\mathsf{types}[f.\mathsf{code}.\mathsf{type}])
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~x) &amp;\hookrightarrow&amp; S; F; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}
@@ -789,7 +790,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">No formal reduction rule is needed for entering an instruction sequence,
-because the label <span class="math">\(L\)</span> is embedded in the <a class="reference internal" href="runtime.html#syntax-instr-admin"><span class="std std-ref">administrative instruction</span></a> that is reduced to directly.</p>
+because the label <span class="math">\(L\)</span> is embedded in the <a class="reference internal" href="runtime.html#syntax-instr-admin"><span class="std std-ref">administrative instruction</span></a> that structured control instructions reduce to directly.</p>
 </div>
 </div>
 <div class="section" id="exiting-with-label">
@@ -811,7 +812,7 @@ because the label <span class="math">\(L\)</span> is embedded in the <a class="r
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This semantics also applies to the instruction sequence contained in a <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}\)</span> instruction.
-Therefor, execution of a loop falls off the end if no backwards branch is performed explicitly.</p>
+Therefor, execution of a loop falls off the end, unless a backwards branch is performed explicitly.</p>
 </div>
 </div>
 </div>
@@ -824,24 +825,25 @@ Therefor, execution of a loop falls off the end if no backwards branch is perfor
 <li>Let <span class="math">\(f\)</span> be the <span class="xref std std-ref">function instance</span>, <span class="math">\(S.\mathsf{funcs}[a]\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/modules.html#valid-func"><span class="std std-ref">validation</span></a>, <span class="math">\(f.\mathsf{module}.\mathsf{types}[f.\mathsf{code}.\mathsf{type}]\)</span> exists.</li>
 <li>Let <span class="math">\([t_1^n] \to [t_2^m]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(f.\mathsf{module}.\mathsf{types}[f.\mathsf{code}.\mathsf{type}]\)</span>.</li>
-<li>Let <span class="math">\(t^n\)</span> be the list of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(f.\mathsf{code}.\mathsf{locals}\)</span>.</li>
+<li>Let <span class="math">\(t^\ast\)</span> be the list of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(f.\mathsf{code}.\mathsf{locals}\)</span>.</li>
 <li>Let <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> be the <a class="reference internal" href="../syntax/instructions.html#syntax-expr"><span class="std std-ref">expression</span></a> <span class="math">\(f.\mathsf{code}.\mathsf{body}\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-call"><span class="std std-ref">validation</span></a>, <span class="math">\(n\)</span> values are on the top of the stack.</li>
 <li>Pop the values <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}^n\)</span> from the stack.</li>
 <li>Let <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_0^\ast\)</span> be the list of zero values of types <span class="math">\(t^\ast\)</span>.</li>
 <li>Let <span class="math">\(F\)</span> be the <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a> <span class="math">\(\{ \mathsf{module}~f.\mathsf{module}, \mathsf{locals}~\href{../execution/runtime.html#syntax-val}{\mathit{val}}^n~\href{../execution/runtime.html#syntax-val}{\mathit{val}}_0^\ast \}\)</span>.</li>
-<li>Push <span class="math">\(F\)</span> to the stack.</li>
+<li>Push the activation of <span class="math">\(F\)</span> with arity <span class="math">\(m\)</span> to the stack.</li>
 <li><a class="reference internal" href="#exec-block"><span class="std std-ref">Execute</span></a> the instruction <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t_2^m]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span>.</li>
 </ol>
 <div class="math">
 \[\begin{split}\begin{array}{l}
 \begin{array}{lcl&#64;{\qquad}l}
-\href{../execution/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../execution/instructions.html#syntax-instr-admin}{\mathsf{invoke}}~a) &amp;\hookrightarrow&amp; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{frame}}_n\{F\}~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t_2^m]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}
+\href{../execution/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../execution/instructions.html#syntax-instr-admin}{\mathsf{invoke}}~a) &amp;\hookrightarrow&amp; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{frame}}_m\{F\}~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t_2^m]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}
 \end{array}
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
-  (\mbox{if} &amp; S.\mathsf{funcs}[a].\mathsf{code} = \{ \mathsf{type}~x, \mathsf{locals}~t^\ast, \mathsf{body}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \} \\
-  \wedge &amp; S.\mathsf{funcs}[a].\mathsf{module}.\mathsf{types}[x] = [t_1^n] \to [t_2^m] \\
+  (\mbox{if} &amp; S.\mathsf{funcs}[a] = f \\
+  \wedge &amp; f.\mathsf{code} = \{ \mathsf{type}~x, \mathsf{locals}~t^\ast, \mathsf{body}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \} \\
+  \wedge &amp; f.\mathsf{module}.\mathsf{types}[x] = [t_1^n] \to [t_2^m] \\
   \wedge &amp; F = \{ \mathsf{module}~f.\mathsf{module}, ~\mathsf{locals}~\href{../execution/runtime.html#syntax-val}{\mathit{val}}^n~(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0)^\ast \})
   \end{array} \\
 \end{array}\end{split}\]</div>
@@ -851,7 +853,7 @@ Therefor, execution of a loop falls off the end if no backwards branch is perfor
 <p>When the end of a funtion is reached without a jump (<span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}}\)</span>) or trap aborting it, then the following steps are performed.</p>
 <ol class="arabic simple">
 <li>Let <span class="math">\(F\)</span> be the <a class="reference internal" href="conventions.html#exec-notation-textual"><span class="std std-ref">current</span></a> <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a>.</li>
-<li>Let <span class="math">\(n\)</span> be the arity of <span class="math">\(F\)</span>.</li>
+<li>Let <span class="math">\(n\)</span> be the arity of the activation of <span class="math">\(F\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-instr-seq"><span class="std std-ref">validation</span></a>, there are <span class="math">\(n\)</span> values on the top of the stack.</li>
 <li>Pop the results <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}^n\)</span> from the stack.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/modules.html#valid-func"><span class="std std-ref">validation</span></a>, the frame <span class="math">\(F\)</span> is now on the top of the stack.</li>

@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -99,7 +99,7 @@
             
   <div class="section" id="conventions">
 <span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
-<p>WebAssembly code is <em>executed</em> when <span class="xref std std-ref">instantiating</span> a module or <span class="xref std std-ref">invoking</span> a function on the resulting module instance.</p>
+<p>WebAssembly code is <em>executed</em> when <span class="xref std std-ref">instantiating</span> a module or <span class="xref std std-ref">invoking</span> an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> function on the resulting module <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">instance</span></a>.</p>
 <p>Execution behavior is defined in terms of an <em>abstract machine</em> that models the <em>program state</em>.
 It includes a <em>stack</em>, which records operand values and control constructs, and an abstract <em>store</em> containing global state.</p>
 <p>For each instruction, there is a rule that specifies the effect of its execution on the program state.
@@ -115,7 +115,7 @@ As with <span class="xref std std-ref">validation</span>, all rules are given in
 so that understanding of the formal notation is <em>not</em> required to read this specification.
 The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.</p>
 </div>
-<p><a class="reference internal" href="../syntax/instructions.html#syntax-store"><span class="std std-ref">Store</span></a>, <span class="xref std std-ref">stack</span>, and other <em>runtime structure</em>, such as <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">module instances</span></a>, are made precise in terms of additional auxiliary <span class="xref std std-ref">syntax</span>.</p>
+<p><a class="reference internal" href="runtime.html#store"><span class="std std-ref">Store</span></a>, <a class="reference internal" href="runtime.html#stack"><span class="std std-ref">stack</span></a>, and other <em>runtime structure</em>, such as <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">module instances</span></a>, are made precise in terms of additional auxiliary <a class="reference internal" href="runtime.html#syntax-runtime"><span class="std std-ref">syntax</span></a>.</p>
 <div class="section" id="textual-notation">
 <span id="exec-notation-textual"></span><h2>Textual Notation<a class="headerlink" href="#textual-notation" title="Permalink to this headline">¶</a></h2>
 <p>Execution is specified by stylised, step-wise rules for each <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> of the <a class="reference internal" href="../syntax/conventions.html#syntax"><span class="std std-ref">abstract syntax</span></a>.
@@ -130,7 +130,7 @@ which is referred to as the <em>current</em> frame.</li>
 <li>Both the store and the current frame are mutated by <em>replacing</em> some of its components.
 Such replacement is assumed to apply globally.</li>
 <li>The execution of an instruction may <em>trap</em>,
-in which case the entire computation is aborted and no further modifications to the store are performed by it.</li>
+in which case the entire computation is aborted and no further modifications to the store are performed by it. (Other computations can still be initiated afterwards.)</li>
 <li>The execution of an instruction may also end in a <em>jump</em> to a designated target,
 which defines the next instruction to execute.</li>
 <li>Execution can <em>enter</em> and <em>exit</em> <span class="xref std std-ref">instruction sequences</span> in a block-like fashion.</li>
@@ -149,7 +149,7 @@ For the interested reader, a more thorough introduction can be found in respecti
 Every rule has the following general form:</p>
 <div class="math">
 \[\mathit{configuration} \quad\hookrightarrow\quad \mathit{configuration}\]</div>
-<p>A <em>configuration</em> is a syntactic description of a specific program state.
+<p>A <em>configuration</em> is a syntactic description of a program state.
 Each rule specifies one <em>step</em> of execution.
 As long as there is at most one reduction rule applicable to a given configuration, reduction &#8211; and thereby execution &#8211; is <em>deterministic</em>.
 WebAssembly has only very few exceptions to this, which are noted explicitly in this specification.</p>
