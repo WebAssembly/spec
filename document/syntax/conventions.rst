@@ -42,7 +42,7 @@ The following conventions are adopted in defining grammar rules for abstract syn
 Auxiliary Notation
 ~~~~~~~~~~~~~~~~~~
 
-When dealing with syntactic constructs the following notation is also used:
+When dealing with syntactic constructs the following notations and conventions are also used:
 
 * :math:`\epsilon` denotes the empty sequence.
 
@@ -50,28 +50,37 @@ When dealing with syntactic constructs the following notation is also used:
 
 * :math:`s[i]` denotes the :math:`i`-th element of a sequence :math:`s`, starting from :math:`0`.
 
-* :math:`s[i:n]` denotes the sub-sequence of length :math:`n` a sequence :math:`s` that consists of its :math:`i`-th to :math:`(i+n-1)`-the element.
+* :math:`s[i:n]` denotes the sub-sequence of length :math:`n` of a sequence :math:`s` that consists of its :math:`i`-th to :math:`(i+n-1)`-th element.
 
-* :math:`s~\mbox{with}~[i] = x` denotes the same sequence as :math:`s`,
-  except that the :math:`i`-the element is replaced with :math:`x`.
+* :math:`s \with [i] = A` denotes the same sequence as :math:`s`,
+  except that the :math:`i`-the element is replaced with :math:`A`.
 
-* :math:`s~\mbox{with}~[i:n] = x^n` denotes the same sequence as :math:`s`,
-  except that the sub-sequence :math:`s[i:n]` is replaced with :math:`x^n`.
+* :math:`s \with [i:n] = A^n` denotes the same sequence as :math:`s`,
+  except that the sub-sequence :math:`s[i:n]` is replaced with :math:`A^n`.
 
-Productions of the following form are interpreted as *records* that map a fixed set of fields :math:`\K{field}_i` to values :math:`x_i`, respectively:
+* :math:`x^n`, where :math:`x` is a non-terminal symbol, is treated as a meta variable ranging over respective sequences of :math:`x` (similarly for :math:`x^\ast`, :math:`x^+`, :math:`x^?`).
+
+* When given a sequence :math:`x^n`,
+  then the ocurrences of :math:`x` in a sequence written :math:`(A_1~x~A_2)^n` are assumed to be in pointwise correspondence with :math:`x^n`
+  (similarly for :math:`x^\ast`, :math:`x^+`, :math:`x^?`).
+  This implicitly expresses a form of mapping syntactic constructions over a sequence.
+
+Productions of the following form are interpreted as *records* that map a fixed set of fields :math:`\K{field}_i` to "values" :math:`A_i`, respectively:
 
 .. math::
-   \X{r} ~::=~ \{ \K{field}_1~x_1, \K{field}_2~x_2, \dots \}
+   \X{r} ~::=~ \{ \K{field}_1~A_1, \K{field}_2~A_2, \dots \}
 
 The following notation is adopted for manipulating such records:
 
-* :math:`r.\K{field}` denotes the :math:`\K{field}` component of :math:`r`.
+* :math:`r.\K{field}` denotes the value of the :math:`\K{field}` component of :math:`r`.
 
-* :math:`r~\mbox{with}~\K{field} = x` denotes the same record as :math:`r`,
-  except that the :math:`\K{field}` component is replaced with :math:`x`.
+* :math:`r \with \K{field} = A` denotes the same record as :math:`r`,
+  except that the value of the :math:`\K{field}` component is replaced with :math:`A`.
 
 The update notation for sequences and records generalizes recursively to nested components accessed by "paths" :math:`\X{pth} ::= ([\dots] \;| \;.\K{field})^+`:
 
-* :math:`s~\mbox{with}~[i]\,\X{pth} = x` is short for :math:`s~\mbox{with}~[i] = (s[i]~\mbox{with}~\X{pth} = x)`.
+* :math:`s \with [i]\,\X{pth} = A` is short for :math:`s \with [i] = (s[i] \with \X{pth} = A)`.
 
-* :math:`r~\mbox{with}~\K{field}\,\X{pth} = x` is short for :math:`r~\mbox{with}~\K{field} = (r.\K{field}~\mbox{with}~\X{pth} = x)`.
+* :math:`r \with \K{field}\,\X{pth} = A` is short for :math:`r \with \K{field} = (r.\K{field} \with \X{pth} = A)`.
+
+where :math:`r \with .\K{field} = A` is shortened to :math:`r \with \K{field} = A`.

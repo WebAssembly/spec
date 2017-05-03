@@ -15,7 +15,7 @@ Values
 WebAssembly computations manipulate *values* of the four basic :ref:`value types <syntax-valtype>`: :ref:`integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each, respectively.
 
 In most places of the semantics, values of different types can occur.
-In order to avoid ambiguities, values are therefor represented with an abstract syntax that makes their type explicit.
+In order to avoid ambiguities, values are therefore represented with an abstract syntax that makes their type explicit.
 It is convenient to reuse the same notation as for the |CONST| :ref:`instructions <syntax-const>` producing them:
 
 .. math::

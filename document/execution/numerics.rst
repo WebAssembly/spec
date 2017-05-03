@@ -18,7 +18,7 @@ Auxiliary Operations
 .. math::
    \begin{array}{lll@{\qquad}l}
    \bytes_N(i) &=& \epsilon & (N = 0 \wedge i = 0) \\
-   \bytes_N(i) &=& b~\bytes_{N-8}(j) & (N \geq 8 \wedge i = 8\cdot j + b) \\
+   \bytes_N(i) &=& b~\bytes_{N-8}(j) & (N \geq 8 \wedge i = 2^8\cdot j + b) \\
    ~ \\
    \bytes_{\K{i}N}(i) &=& \bytes_N(i) \\
    \bytes_{\K{f}N}(b^N) &=& \F{reverse}(b^N) \\

@@ -844,11 +844,11 @@ Control Instructions
 
 2. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\MODULE.\TABLES[0]` exists.
 
-3. Let :math:`a` be the :ref:`table address <syntax-tableaddr>` :math:`F.\MODULE.\TABLES[0]`.
+3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\MODULE.\TABLES[0]`.
 
-4. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\TABLES[a]` exists.
+4. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\TABLES[\X{ta}]` exists.
 
-5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\TABLES[a]`.
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\TABLES[\X{ta}]`.
 
 6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\MODULE.\TYPES[x]` exists.
 
