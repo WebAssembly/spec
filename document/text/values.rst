@@ -148,16 +148,17 @@ Strings
 
 *Strings* are sequences of bytes that can represent both textual and binary data.
 They are enclosed in `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ *quotation marks* (bytes of value \hex{22})
-and may contain any byte that is not an ASCII *quotation marks* (\hex{22}) or ASCII *reverse slant* (backslash, \hex{5C}),
-or an *escape sequence* started by an ASCII *reverse slant* (\hex{5C}).
+and may contain any byte that is not an ASCII control character, ASCII *quotation marks* (\hex{22}), or ASCII *reverse slant* (backslash, \hex{5C}),
+except when expressed with an *escape sequence* started by an ASCII *reverse slant* (\hex{5C}).
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{byte} & \Tbyte &::=&
-     b &\Rightarrow& b & (b \neq \text{\backslash} \wedge b \neq \text{"}) \\ &&|&
+     b &\Rightarrow& b & (\hex{20} \leq b < \hex{7F} \wedge b \neq \text{"} \wedge b \neq \text{\backslash}) \\ &&|&
      \text{\backslash}~n{:}\Thexdigit~m{:}\Thexdigit &\Rightarrow& 16\cdot n+m \\ &&|&
      \text{\backslash{}t} &\Rightarrow& \hex{09} \\ &&|&
      \text{\backslash{}n} &\Rightarrow& \hex{0A} \\ &&|&
+     \text{\backslash{}r} &\Rightarrow& \hex{0D} \\ &&|&
      \text{\backslash{}"} &\Rightarrow& \hex{22} \\ &&|&
      \text{\backslash{}'} &\Rightarrow& \hex{27} \\ &&|&
      \text{\backslash\backslash} &\Rightarrow& \hex{5C} \\
@@ -167,9 +168,7 @@ or an *escape sequence* started by an ASCII *reverse slant* (\hex{5C}).
    \end{array}
 
 .. note::
-   Any byte value may occur in a string,
-   including :math:`\hex{00}` or ASCII control characters.
-   The bytes are not interpreted in any specific way,
+   The bytes in a string are not interpreted in any specific way,
    except when the string appears as a :ref:`name <text-name>`.
 
 

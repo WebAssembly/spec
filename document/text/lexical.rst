@@ -3,9 +3,13 @@
 Lexical Format
 --------------
 
-The text format is assumed to be represented in a superset of `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_.
+The text format is represented in a superset of `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_.
 Only printable 7-bit ASCII characters are interpreted in this format,
 hence any compatible character encoding, such as `Unicode UTF-8 <http://www.unicode.org/versions/latest/>`_ is applicable.
+
+.. note::
+   Non-ASCII bytes can only occur in :ref:`comments <text-comments>` and :ref:`string literals <text-string>`.
+   Similarly, ASCII control characters other than :ref:`white space <text-whitespace>` can only occur in :ref:`comments <text-comments>`.
 
 
 .. _text-stoken:

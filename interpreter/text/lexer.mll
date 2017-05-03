@@ -84,9 +84,11 @@ let space = [' ''\x08'-'\x09''\x0b'-'\x0d']
 let digit = ['0'-'9']
 let hexdigit = ['0'-'9''a'-'f''A'-'F']
 let letter = ['a'-'z''A'-'Z']
-let symbol = ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
-let escape = ['n''t''\\''\'''\"']
-let character = [^'"''\\'] | '\\'escape | '\\'hexdigit hexdigit
+let symbol =
+  ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
+let escape = ['n''r''t''\\''\'''\"']
+let character =
+  [^'"''\\''\x00'-'\x1f''\x7f'] | '\\'escape | '\\'hexdigit hexdigit
 
 let sign = ('+' | '-')
 let num = digit+
@@ -121,6 +123,8 @@ rule token = parse
   | float as s { FLOAT s }
   | text as s { TEXT (text s) }
   | '"'character*('\n'|eof) { error lexbuf "unclosed text literal" }
+  | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
+    { error lexbuf "illegal control character in text literal" }
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
