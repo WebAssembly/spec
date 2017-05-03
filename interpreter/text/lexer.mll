@@ -80,15 +80,13 @@ let ext e s u =
 let opt = Lib.Option.get
 }
 
-let space = [' ''\t']
+let space = [' ''\x08'-'\x09''\x0b'-'\x0d']
 let digit = ['0'-'9']
 let hexdigit = ['0'-'9''a'-'f''A'-'F']
 let letter = ['a'-'z''A'-'Z']
-let symbol = ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.']
-let tick = '\''
+let symbol = ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
 let escape = ['n''t''\\''\'''\"']
-let character =
-  [^'"''\\''\x00'-'\x1f''\x7f'] | '\\'escape | '\\'hexdigit hexdigit
+let character = [^'"''\\'] | '\\'escape | '\\'hexdigit hexdigit
 
 let sign = ('+' | '-')
 let num = digit+
@@ -98,13 +96,14 @@ let int = sign nat
 let float =
     sign? num '.' digit*
   | sign? num ('.' digit*)? ('e' | 'E') sign? num
-  | sign? "0x" hexdigit+ '.'? hexdigit* ('e' | 'E' | 'p') sign? digit+
+  | sign? hexnum '.' hexdigit*
+  | sign? hexnum ('.' hexdigit*)? ('p' | 'P') sign? num
   | sign? "inf"
   | sign? "infinity"
   | sign? "nan"
-  | sign? "nan:0x" hexdigit+
+  | sign? "nan:" hexnum
 let text = '"' character* '"'
-let name = '$' (letter | digit | '_' | tick | symbol)+
+let name = '$' (letter | digit | '_' | symbol)+
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -122,8 +121,6 @@ rule token = parse
   | float as s { FLOAT s }
   | text as s { TEXT (text s) }
   | '"'character*('\n'|eof) { error lexbuf "unclosed text literal" }
-  | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
-    { error lexbuf "illegal control character in text literal" }
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 

@@ -7,6 +7,7 @@ Text Format
    :maxdepth: 2
 
    conventions
+   lexical
    values
    types
    instructions

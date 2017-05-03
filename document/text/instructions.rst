@@ -22,7 +22,6 @@ Instructions
 .. _text-instr-control:
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
    pair: text format; instruction
-   single: abstract syntax; instruction
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -70,7 +69,6 @@ Control Instructions
 .. _text-instr-parametric:
 .. index:: value type, polymorphism
    pair: text format; instruction
-   single: abstract syntax; instruction
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -89,7 +87,6 @@ Parametric Instructions
 .. _text-instr-variable:
 .. index:: variable instructions, local index, global index
    pair: text format; instruction
-   single: abstract syntax; instruction
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -115,7 +112,6 @@ Variable Instructions
 .. _text-memarg:
 .. index:: memory instruction, memory index
    pair: text format; instruction
-   single: abstract syntax; instruction
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -170,7 +166,6 @@ Memory Instructions
 .. _text-instr-numeric:
 .. index:: numeric instruction
    pair: text format; instruction
-   single: abstract syntax; instruction
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -388,7 +383,6 @@ Folded Instructions
 .. _text-expr:
 .. index:: expression
    pair: text format; expression
-   single: abstract syntax; expression
    single: expression; constant
 
 Expressions

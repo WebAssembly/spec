@@ -104,6 +104,17 @@
 .. Values, textual non-terminals
 
 .. |Tbyte| mathdef:: \xref{text/values}{text-byte}{\T{byte}}
+.. |Tstring| mathdef:: \xref{text/values}{text-string}{\T{string}}
+
+.. |Tsign| mathdef:: \xref{text/values}{text-sign}{\T{sign}}
+.. |Tdigit| mathdef:: \xref{text/values}{text-digit}{\T{digit}}
+.. |Thexdigit| mathdef:: \xref{text/values}{text-hexdigit}{\T{hexdigit}}
+.. |Tnum| mathdef:: \xref{text/values}{text-num}{\T{num}}
+.. |Thexnum| mathdef:: \xref{text/values}{text-hexnum}{\T{hexnum}}
+.. |Tfrac| mathdef:: \xref{text/values}{text-frac}{\T{frac}}
+.. |Thexfrac| mathdef:: \xref{text/values}{text-hexfrac}{\T{hexfrac}}
+.. |Tfloat| mathdef:: \xref{text/values}{text-float}{\T{float}}
+.. |Thexfloat| mathdef:: \xref{text/values}{text-hexfloat}{\T{hexfloat}}
 
 .. |TuX#1| mathdef:: {\T{u}#1}
 .. |TsX#1| mathdef:: {\T{s}#1}

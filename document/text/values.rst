@@ -1,33 +1,17 @@
 .. _text-value:
 .. index:: value
    pair: text format; value
-   single: abstract syntax; value
 
 Values
 ------
 
-
-.. text-byte:
-.. index:: byte
-   pair: text format; byte
-   single: abstract syntax; byte
-
-Bytes
-~~~~~
-
-.. todo:: needed?
-
-:ref:`Bytes <syntax-byte>` encode themselves.
-
-.. math::
-   \begin{array}{llcll@{\qquad}l}
-   \production{bytes} & \Bbyte &::=&
-     \hex{00} &\Rightarrow& \hex{00} \\ &&|&&
-     \dots \\ &&|&
-     \hex{FF} &\Rightarrow& \hex{FF} \\
-   \end{array}
+The grammar produtions in this section define *lexical syntax*,
+hence no :ref:`white space <text-whitespace>` is allowed.
 
 
+.. _text-sign:
+.. _text-digit:
+.. _text-hexdigit:
 .. _text-int:
 .. _text-sint:
 .. _text-uint:
@@ -36,133 +20,171 @@ Bytes
    pair: text format; unsigned integer
    pair: text format; signed integer
    pair: text format; uninterpreted integer
-   single: abstract syntax; integer
-   single: abstract syntax; unsigned integer
-   single: abstract syntax; signed integer
-   single: abstract syntax; uninterpreted integer
 
 Integers
 ~~~~~~~~
 
-All :ref:`integers <syntax-int>` are encoded using the `LEB128 <https://en.wikipedia.org/wiki/LEB128>`_ variable-length integer encoding, in either unsigned or signed variant.
-
-:ref:`Unsigned integers <syntax-uint>` are encoded in `unsigned LEB128 <https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128>`_ format.
-As an additional constraint, the total number of bytes encoding a value of type :math:`\uX{N}` must not exceed :math:`\F{ceil}(N/7)` bytes.
+All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal notation.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
-   \production{unsigned integers} & \BuX{N} &::=&
-     n{:}\Bbyte &\Rightarrow& n & (n < 2^7 \wedge n < 2^N) \\ &&|&
-     n{:}\Bbyte~~m{:}\BuX{N-7} &\Rightarrow&
-       2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
+   \production{sign} & \Tsign &::=&
+     \epsilon \Rightarrow {+}1 ~|~
+     \text{+} \Rightarrow {+}1 ~|~
+     \text{-} \Rightarrow {-}1 \\
+   \production{decimal digit} & \Tdigit &::=&
+     \text{0} \Rightarrow 0 ~|~ \dots ~|~ \text{9} \Rightarrow 9 \\
+   \production{hexadecimal digit} & \Thexdigit &::=&
+     d{:}\Tdigit \Rightarrow d \\ &&|&
+     \text{A} \Rightarrow 10 ~|~ \dots ~|~ \text{F} \Rightarrow 15 \\ &&|&
+     \text{a} \Rightarrow 10 ~|~ \dots ~|~ \text{f} \Rightarrow 15 \\
+   \production{decimal number} & \Tnum &::=&
+     d{:}\Tdigit &\Rightarrow& d \\ &&|&
+     n{:}\Tnum~~d{:}\Tdigit &\Rightarrow& 10\cdot n + d \\
+   \production{hexadecimal number} & \Thexnum &::=&
+     \text{0x}~~h{:}\Thexdigit &\Rightarrow& h \\ &&|&
+     n{:}\Thexnum~~h{:}\Thexdigit &\Rightarrow& 16\cdot n + h \\
    \end{array}
 
-:ref:`Signed integers <syntax-sint>` are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a 2's complement representation.
-As an additional constraint, the total number of bytes encoding a value of type :math:`\sX{N}` must not exceed :math:`\F{ceil}(N/7)` bytes.
+Integer literals are distinguished by size and signedness.
+Their value must lie within the range of the respective type.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
-   \production{signed integers} & \BsX{N} &::=&
-     n{:}\Bbyte &\Rightarrow& n & (n < 2^6 \wedge n < 2^{N-1}) \\ &&|&
-     n{:}\Bbyte &\Rightarrow& n-2^7 & (2^6 \leq n < 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &&|&
-     n{:}\Bbyte~~m{:}\BsX{N-7} &\Rightarrow&
-       2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
+   \production{unsigned integer} & \TuX{N} &::=&
+     n{:}\Tnum &\Rightarrow& n & (n < 2^N) \\ &&|&
+     n{:}\Thexnum &\Rightarrow& n & (n < 2^N) \\
+   \production{signed integer} & \TsX{N} &::=&
+     s{:}\Tsign~~n{:}\Tnum &\Rightarrow& s\cdot n & (-2^{N-1} \leq s\cdot n < 2^{N-1}) \\ &&|&
+     s{:}\Tsign~~n{:}\Thexnum &\Rightarrow& s\cdot n & (-2^{N-1} \leq s\cdot n < 2^{N-1}) \\
    \end{array}
 
-:ref:`Uninterpreted integers <syntax-int>` are always encoded as signed integers.
+:ref:`Uninterpreted integers <syntax-int>` can be written as either signed or unsigned, and are normalized to unsigned in the abstract syntax.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{uninterpreted integers} & \BiX{N} &::=&
-     n{:}\BsX{N} &\Rightarrow& n
+   \production{uninterpreted integers} & \TiX{N} &::=&
+     n{:}\TuX{N} &\Rightarrow& n \\ &&|&
+     i{:}\TsX{N} &\Rightarrow& n & (i = \signed(n)) \\
    \end{array}
 
-.. note::
-   While the side conditions :math:`N > 7` in the productions for *non-terminating* bytes restrict the length of the :math:`\uX{}` and :math:`\sX{}` encodings,
-   "trailing zeros" are still allowed within these bounds.
-   For example, :math:`\hex{03}` and :math:`\hex{83}~\hex{00}` are both well-formed encodings for the value :math:`3` as a |u8|.
-   Similarly, either of :math:`\hex{7e}` and :math:`\hex{FE}~\hex{7F}` and :math:`\hex{FE}~\hex{FF}~\hex{7F}` are well-formed encodings of the value :math:`-2` as a |s16|.
 
-   The side conditions on the value :math:`n` of *terminating* bytes further enforce that
-   any unused bits in these bytes must be :math:`0` for positive values and :math:`1` for negative ones.
-   For example, :math:`\hex{83}~\hex{10}` is malformed as a |u8| encoding.
-   Similarly, both :math:`\hex{83}~\hex{3E}` and :math:`\hex{FF}~\hex{7B}` are malformed as |s8| encodings.
-
-
-.. _binary-float:
+.. _text-frac:
+.. _text-hexfrac:
+.. _text-float:
+.. _text-hexfloat:
 .. index:: floating-point number
-   pair: binary format; floating-point number
-   single: abstract syntax; floating-point number
+   pair: text format; floating-point number
 
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating point <syntax-float>` values are encoded directly by their IEEE bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+:ref:`Floating point <syntax-float>` values can be represented in either decimal or hexadecimal notation.
+The value must not be outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
+(that is, it must not overflow to infinity),
+but it may be rounded to the nearest representable value.
+
+.. note::
+   Rounding can be avoided by using hexadecimal notation with no more significant bits than supported by the desired type.
+
+Floating-point values may also be written as constants for *infinity* or *canonical NaN* (*not a number*).
+Furthermore, arbitrary NaN values may be expressed by providing an explicit payload value.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{floating-point numbers} & \BfX{N} &::=&
-     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \F{reverse}(b^\ast) \\
+   \production{decimal floating-point fraction} & \Tfrac &::=&
+     \epsilon &\Rightarrow& 0 \\ &&|&
+     d{:}\Tdigit~q{:}\Tfrac &\Rightarrow& (d+q)/10 \\
+   \production{hexadecimal floating-point fraction} & \Thexfrac &::=&
+     \epsilon &\Rightarrow& 0 \\ &&|&
+     h{:}\Thexdigit~q{:}\Thexfrac &\Rightarrow& (h+q)/16 \\
+   \production{decimal floating-point number} & \Tfloat &::=&
+     s{:}\Tsign~p{:}\Tnum~\text{.}~q{:}\Tfrac
+       &\Rightarrow& s\cdot(p+q) \\ &&|&
+     s{:}\Tsign~p{:}\Tnum~(\text{E}~|~\text{e})~t{:}\Tsign~e{:}\Tnum
+       &\Rightarrow& s\cdot p\cdot 10^{t\cdot e} \\ &&|&
+     s{:}\Tsign~p{:}\Tnum~\text{.}~q{:}\Tfrac~(\text{E}~|~\text{e})~t{:}\Tsign~e{:}\Tnum
+       &\Rightarrow& s\cdot(p+q)\cdot 10^{t\cdot e} \\
+   \production{hexadecimal floating-point number} & \Thexfloat &::=&
+     s{:}\Tsign~p{:}\Thexnum~\text{.}~q{:}\Thexfrac
+       &\Rightarrow& s\cdot(p+q) \\ &&|&
+     s{:}\Tsign~p{:}\Thexnum~(\text{P}~|~\text{p})~t{:}\Tsign~e{:}\Tnum
+       &\Rightarrow& s\cdot p\cdot 2^{t\cdot e} \\ &&|&
+     s{:}\Tsign~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~t{:}\Tsign~e{:}\Tnum
+       &\Rightarrow& s\cdot(p+q)\cdot 2^{t\cdot e} \\
+   \production{floating-point value} & \TfX{N} &::=&
+     z{:}\Tfloat &\Rightarrow& b^\ast & (\ieee_N(z) = b^\ast) \\ &&|&
+     z{:}\Thexfloat &\Rightarrow& b^\ast & (\ieee_N(z) = b^\ast) \\ &&|&
+     s{:}\Tsign~\text{inf} &\Rightarrow& b^\ast & (\ieeeinf_N(s) = b^\ast) \\ &&|&
+     s{:}\Tsign~\text{nan} &\Rightarrow& b^\ast & (\ieeenan_N(s, 0) = b^\ast) \\ &&|&
+     s{:}\Tsign~\text{nan\!:}~n{:}\Thexnum &\Rightarrow& b^\ast & (\ieeenan_N(s, n) = b^\ast) \\
    \end{array}
 
-Here, :math:`\F{reverse}(b^\ast)` denotes the byte sequence :math:`b^\ast` in reversed order.
 
-
-.. _binary-vec:
+.. _text-vec:
 .. index:: vector
-   pair: binary format; vector
-   single: abstract syntax; vector
+   pair: text format; vector
 
 Vectors
 ~~~~~~~
 
-:ref:`Vectors <syntax-vec>` are encoded with their length followed by the encoding of their element sequence.
+:ref:`Vectors <syntax-vec>` are written as ordinary sequences, but with restricted length.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{vectors} & \Bvec(\B{B}) &::=&
-     n{:}\Bu32~~(x{:}\B{B})^n &\Rightarrow& x^n \\
+   \production{vector} & \Tvec(\T{A}) &::=&
+     (x{:}\T{A})^n &\Rightarrow& x^n & (n < 2^{32}) \\
    \end{array}
 
 
-.. _binary-name:
+.. _text-byte:
+.. _text-string:
+.. index:: byte, string
+   pair: text format; byte
+   pair: text format; string
+
+Strings
+~~~~~~~
+
+*Strings* are sequences of bytes that can represent both textual and binary data.
+They are enclosed in `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ *quotation marks* (bytes of value \hex{22})
+and may contain any byte that is not an ASCII *quotation marks* (\hex{22}) or ASCII *reverse slant* (backslash, \hex{5C}),
+or an *escape sequence* started by an ASCII *reverse slant* (\hex{5C}).
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{byte} & \Tbyte &::=&
+     b &\Rightarrow& b & (b \neq \text{\backslash} \wedge b \neq \text{"}) \\ &&|&
+     \text{\backslash}~n{:}\Thexdigit~m{:}\Thexdigit &\Rightarrow& 16\cdot n+m \\ &&|&
+     \text{\backslash{}t} &\Rightarrow& \hex{09} \\ &&|&
+     \text{\backslash{}n} &\Rightarrow& \hex{0A} \\ &&|&
+     \text{\backslash{}"} &\Rightarrow& \hex{22} \\ &&|&
+     \text{\backslash{}'} &\Rightarrow& \hex{27} \\ &&|&
+     \text{\backslash\backslash} &\Rightarrow& \hex{5C} \\
+   \production{string} & \Tstring &::=&
+     \text{"}~(b{:}\Tbyte)^\ast~\text{"}
+       &\Rightarrow& b^\ast \\
+   \end{array}
+
+.. note::
+   Any byte value may occur in a string,
+   including :math:`\hex{00}` or ASCII control characters.
+   The bytes are not interpreted in any specific way,
+   except when the string appears as a :ref:`name <text-name>`.
+
+
+.. _text-name:
 .. index:: name, byte
-   pair: binary format; name
-   single: abstract syntax; name
+   pair: text format; name
 
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vector>` of bytes containing the `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding of the name's code point sequence.
+:ref:`Names <syntax-name>` are strings denoting a byte sequence that must form a valid `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
-   \production{names} & \Bname &::=&
-     n{:}\Bu32~~(\X{uc}{:}\Bcodepoint)^\ast &\Rightarrow& \X{uc}^\ast
-       & (|\Bcodepoint^\ast| = n) \\
-   \production{code points} & \Bcodepoint &::=&
-     \X{uv}{:}\Bcodeval_N &\Rightarrow& \X{uv}
-       & (\X{uv} \geq N \wedge (\X{uv} < \unicode{D800} \vee \unicode{E000} \leq \X{uv} < \unicode{110000})) \\
-   \production{code values} & \Bcodeval_N &::=&
-     b_1{:}\Bbyte &\Rightarrow&
-       b_1
-       & (b_1 < \hex{80} \wedge N = \unicode{00}) \\ &&|&
-     b_1{:}\Bbyte~~b_2{:}\Bcodecont &\Rightarrow&
-       2^6\cdot(b_1-\hex{c0}) + b_2
-       & (\hex{c0} \leq b_1 < \hex{e0} \wedge N = \unicode{80}) \\ &&|&
-     b_1{:}\Bbyte~~b_2{:}\Bcodecont~~b_3{:}\Bcodecont &\Rightarrow&
-       2^{12}\cdot(b_1-\hex{e0}) + 2^6\cdot b_2 + b_3
-       & (\hex{e0} \leq b_1 < \hex{f0} \wedge N = \unicode{800}) \\ &&|&
-     b_1{:}\Bbyte~~b_2{:}\Bcodecont~~b_3{:}\Bcodecont~~b_4{:}\Bcodecont
-       &\Rightarrow&
-       2^{18}\cdot(b_1-\hex{f0}) + 2^{12}\cdot b_2 + 2^6\cdot b_3 + b_4
-       & (\hex{f0} \leq b_1 < \hex{f8} \wedge N = \unicode{10000}) \\
-   \production{code continuation} & \Bcodecont &::=&
-     b{:}\Bbyte &\Rightarrow& b - \hex{80} & (b \geq \hex{80}) \\
+   \production{name} & \Tname &::=&
+     b^\ast{:}\Tstring &\Rightarrow& \X{uc}^n
+       & (\utf8(\X{uc}^n) = b^\ast \wedge n < 2^{32}) \\
    \end{array}
-
-.. note::
-   The :ref:`size <binary-notation>`, :math:`||\Bcodepoint^\ast||` denotes the number of bytes in the encoding of the sequence, not the number of code points.
-
-   The index :math:`N` to |Bcodeval| is the minimum value that a given byte sequence may decode into.
-   The respective side conditions on it exclude encodings using more than the minimal number of bytes to represent a code point.

@@ -16,7 +16,6 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
 .. _binary-instr-control:
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
    pair: binary format; instruction
-   single: abstract syntax; instruction
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +64,6 @@ Control Instructions
 .. _binary-instr-parametric:
 .. index:: value type, polymorphism
    pair: binary format; instruction
-   single: abstract syntax; instruction
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +84,6 @@ Parametric Instructions
 .. _binary-instr-variable:
 .. index:: variable instructions, local index, global index
    pair: binary format; instruction
-   single: abstract syntax; instruction
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -114,7 +111,6 @@ Variable Instructions
 .. _binary-memarg:
 .. index:: memory instruction, memory index
    pair: binary format; instruction
-   single: abstract syntax; instruction
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -168,7 +164,6 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 .. _binary-instr-numeric:
 .. index:: numeric instruction
    pair: binary format; instruction
-   single: abstract syntax; instruction
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -370,7 +365,6 @@ All other numeric instructions are plain opcodes without any immediates.
 .. _binary-expr:
 .. index:: expression
    pair: binary format; expression
-   single: abstract syntax; expression
    single: expression; constant
 
 Expressions

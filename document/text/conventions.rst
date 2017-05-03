@@ -14,6 +14,8 @@ Thus, the attribute grammar implicitly defines a *parsing* function.
 Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
 However, it also defines a number of forms that are *syntactic sugar* over the core syntax.
 
+The recommended extension for source files containing WebAssembly modules in text format is ":math:`\T{.wat}`".
+
 
 .. _text-grammar:
 .. index:: grammar notation, notation
@@ -27,11 +29,13 @@ The following conventions are adopted in defining grammar rules for the text for
 They mirror the conventions used for :ref:`abstract syntax <grammar>` and for the :ref:`binary format <binary-format>`.
 In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, typewriter font is adopted for the former.
 
-* Terminal symbols are strings given in quotes: :math:`\text{module}`.
+* Input characters are written as either :ref:`byte values <syntax-bytes>`, :math:`\hex{0A}`, or literal characters of the 7-bit `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ character set that represent their respective character codes.
+
+* Terminal symbols are strings of `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters enclosed in quotes: :math:`\text{module}`.
 
 * Nonterminal symbols are written in typewriter font: :math:`\T{valtype}, \T{instr}`.
 
-* Arbitrary :ref:`white space <text-space>` is allowed in any place where the grammar contains spaces.
+* Arbitrary :ref:`white space <text-whitespace>` is allowed in any place where the grammar contains spaces, except where noted otherwise, such as the :ref:`lexical syntax <text-lexical>`.
 
 * :math:`T^n` is a sequence of :math:`n\geq 0` iterations  of :math:`T`.
 
@@ -72,7 +76,7 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
 
 
-.. _binary-notation:
+.. _text-notation:
 
 Auxiliary Notation
 ~~~~~~~~~~~~~~~~~~

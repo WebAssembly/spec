@@ -1,7 +1,6 @@
 .. _text-type:
 .. index:: type
    pair: text format; type
-   single: abstract syntax; type
 
 Types
 -----
@@ -9,7 +8,6 @@ Types
 .. _text-valtype:
 .. index:: value type
    pair: text format; value type
-   single: abstract syntax; value type
 
 Value Types
 ~~~~~~~~~~~
@@ -27,7 +25,6 @@ Value Types
 .. _text-resulttype:
 .. index:: result type, value type
    pair: text format; result type
-   single: abstract syntax; result type
 
 Block Types
 ~~~~~~~~~~~
@@ -45,7 +42,6 @@ Block Types
 .. _text-functype:
 .. index:: function type, value type, result type
    pair: text format; function type
-   single: abstract syntax; function type
 
 Function Types
 ~~~~~~~~~~~~~~
@@ -67,7 +63,6 @@ Function Types
 .. _text-limits:
 .. index:: limits
    pair: text format; limits
-   single: abstract syntax; limits
 
 Limits
 ~~~~~~
@@ -82,8 +77,7 @@ Limits
 
 .. _text-memtype:
 .. index:: memory type, limits, page size
-   single: text format; memory type
-   pair: abstract syntax; memory type
+   pair: text format; memory type
 
 Memory Types
 ~~~~~~~~~~~~
@@ -100,8 +94,6 @@ Memory Types
 .. index:: table type, element type, limits
    pair: text format; table type
    pair: text format; element type
-   single: abstract syntax; table type
-   single: abstract syntax; element type
 
 Table Types
 ~~~~~~~~~~~
@@ -119,8 +111,6 @@ Table Types
 .. index:: global type, mutability, value type
    pair: text format; global type
    pair: text format; mutability
-   single: abstract syntax; global type
-   single: abstract syntax; mutability
 
 Global Types
 ~~~~~~~~~~~~

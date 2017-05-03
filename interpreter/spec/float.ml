@@ -226,4 +226,3 @@ struct
         (* TODO: use sprintf "%h" once we have upgraded to OCaml 4.03 *)
         string_of_float (to_float a)
 end
-

@@ -1,7 +1,6 @@
 .. _binary-value:
 .. index:: value
    pair: binary format; value
-   single: abstract syntax; value
 
 Values
 ------
@@ -10,7 +9,6 @@ Values
 .. _binary-byte:
 .. index:: byte
    pair: binary format; byte
-   single: abstract syntax; byte
 
 Bytes
 ~~~~~
@@ -34,10 +32,6 @@ Bytes
    pair: binary format; unsigned integer
    pair: binary format; signed integer
    pair: binary format; uninterpreted integer
-   single: abstract syntax; integer
-   single: abstract syntax; unsigned integer
-   single: abstract syntax; signed integer
-   single: abstract syntax; uninterpreted integer
 
 Integers
 ~~~~~~~~
@@ -90,12 +84,11 @@ As an additional constraint, the total number of bytes encoding a value of type 
 .. _binary-float:
 .. index:: floating-point number
    pair: binary format; floating-point number
-   single: abstract syntax; floating-point number
 
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating point <syntax-float>` values are encoded directly by their IEEE bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+:ref:`Floating point <syntax-float>` values are encoded directly by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -109,7 +102,6 @@ Here, :math:`\F{reverse}(b^\ast)` denotes the byte sequence :math:`b^\ast` in re
 .. _binary-vec:
 .. index:: vector
    pair: binary format; vector
-   single: abstract syntax; vector
 
 Vectors
 ~~~~~~~
@@ -126,12 +118,11 @@ Vectors
 .. _binary-name:
 .. index:: name, byte
    pair: binary format; name
-   single: abstract syntax; name
 
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vector>` of bytes containing the `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding of the name's code point sequence.
+:ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vector>` of bytes containing the `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding of the name's code point sequence.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
