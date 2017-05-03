@@ -52,10 +52,9 @@ import and export sections of the module. All imported/exported exceptions must
 be named to reconcile exception tags between modules.
 
 Exception tags are used by throw and catch instructions. The throw instruction
-uses the tag to call the appropriate exception constructor, which gets values
-defined by the corresponding type signature of the exception. The catch
-instruction uses the tag to identify if the thrown exception is one it can
-catch.
+uses the tag to allocate the exception with the corresponding data fields
+defined by the exception's type signature. The catch instruction uses the tag to
+identify if the thrown exception is one it can catch.
 
 Exceptions can also be thrown by called, imported functions. If it corresponds
 to an imported exception, it can be caught by an appropriate catch instruction.
@@ -118,15 +117,15 @@ In the initial implementation, try blocks may only yield 0 or 1 values.
 ### Throws
 
 The _throw_ instruction has a single immediate argument, an exception tag.  The
-exception tag is used to define the constructed exception. The arguments for the
-constructor must be on top of the value stack, and must correspond to the
-exception type signature for the exception.
+exception tag is used to define the data fields of the allocated exception. The
+values for the data fields must be on top of the value stack, and must
+correspond to the exception type signature for the exception.
 
-When an exception is thrown, the values on the stack (corresponding to the type
-signature) are popped off and the corresponding exception is constructed.  The
-exception is stored internally for access when the exception is caught. The
-runtime then searches for nearest enclosing try block body that execution is
-in. That try block is called the _catching_ try block.
+When an exception is thrown, the exception is allocated and the values on the
+stack (corresponding to the type signature) are popped off and assigned to the
+allocated exception.  The exception is stored internally for access when the
+exception is caught. The runtime then searches for nearest enclosing try block
+body that execution is in. That try block is called the _catching_ try block.
 
 If the throw appears within the body of a try block, it is the catching try
 block.
@@ -144,13 +143,11 @@ are not in the body of the try block.
 Once a catching try block is found for the throw, the value stack is popped back
 to the size the value stack had when the try block was entered. Then, tagged
 catch blocks are tried in the order they appear in the catching try block, until
-one matches. A tagged catch block matches if the corresponding `catch`
-instruction is applicable, i.e. the corresponding exception was generated using
-the constructor defined by the tag of the `catch` instruction.
+one matches.
 
 If a matched tagged catch block is found, control is transferred to the body of
-the catch block, and the constructor arguments (when the exception was created)
-are pushed back onto the stack.
+the catch block, and the data fields of the exception are pushed back onto the
+stack.
 
 Otherwise, control is transferred to the body of the default catch
 block. However, unlike tagged catch blocks, the constructor arguments are not
