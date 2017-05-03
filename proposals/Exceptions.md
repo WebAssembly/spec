@@ -191,13 +191,15 @@ This section describes changes in
 the
 [binary encoding design document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
 
-### Exception type signatures
+### except_type
 
 An exception is described by its exception type signature, which corresponds to
-the function signature of the exception constructor. Hence, an exception _type
-signature_ is a `func_type` that returns zero values.
+the data fields of the exception.
 
-Exception type signatures must appear in the type section.
+| Field | Type | Description |
+|-------|------|-------------|
+| `count` | `varuint32` | The number of known exceptions |
+| `sig` | `value_type*` | The type signature of each exception |
 
 ### External kind
 
@@ -219,8 +221,8 @@ declares exception types using exception type signatures.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| count | `varuint32` | count of the number of exception types to follow |
-| entries | `func_type` | sequence of indices into the type section |
+| count | `varuint32` | count of the number of exceptions to follow |
+| sig | `except_type*` | The type signature of the data fields for the exception |
 
 ### Import section
 
@@ -231,7 +233,7 @@ If the `kind` is `Exception`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| tag   | varuint32 | index into exception section |
+| tag   | varuint32 | index into the exception section |
 | type  | `varuint32` | type index of the function signature |
 
 ### Export section
@@ -252,7 +254,7 @@ follows:
 | --------- | ---- | ----------- |
 | [Function](#function-names) | `1` | Assigns names to functions |
 | [Local](#local-names) | `2` | Assigns names to locals in functions |
-| [Exception](#(exception-names) | `3` | Assigns names to exception types |
+| [Exception](#exception-names) | `3` | Assigns names to exception types |
 
 ### Exception names
 
