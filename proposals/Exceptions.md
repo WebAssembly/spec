@@ -1,6 +1,6 @@
 # Exception handling
 
-There are three sections to this proposal
+There are two sections to this proposal
 
 1. A overview of the proposed extension to WebAssembly
 
@@ -18,13 +18,14 @@ may be an unknown exception thrown by an imported call.
 
 Thrown exceptions are handled as follows:
 
-a) They can be caught by a catch in an enclosing try block of a function body.
+a) They can be caught by a catch block in an enclosing try block of a function
+   body.
 
-b) Throws not caught within a function body continue up the call chain until an
+b) Throws not caught within a function body continue up the call stack until an
    enclosing try block is found.
    
-c) If the call stack is exhausted without any enclosing try blocks, it terminates
-   the application.
+c) If the call stack is exhausted without any enclosing try blocks, it
+   terminates the application.
 
 This proposal looks at the changes needed to incorporate these concepts into the
 portable binary encoding of WebAssembly modules.
@@ -38,125 +39,133 @@ and the instructions *throw* and *rethrow*.
 
 ### Exceptions
 
-An _exception_ is an internal construct in WebAssembly.  Exceptions are
-categorized into _exception types_. Each _exception type_ defines a unique kind
-of exception. An exception is defined by its _exception type_, and a sequence of
-values (i.e. integers and floats) that define the data fields of the exception.
-The exception _type signature_ of an exception defines the value types of the
-exception's data fields.
+An _exception_ is an internal construct in WebAssembly. Exceptions are defined
+by a new _exception_ section of a WebAssembly module. The exception section is a
+list of exceptions. Each exception has a _type signature_. The type signature
+defines the list of values associated with an exception.
 
-Exception types are defined in a new _exception type_ section of a WebAssembly
-module. The _exception type_ section is a table of exception _type
-signatures_. Each element in the table defines a different exception type, and
-the corresponding exception type signature defines the corresponding data that
-can be thrown for that exception type.
+Within the module, exceptions are identified by an index into the exception
+section.  This index is referred to as the _exception tag_.
 
-Exception types, in the exception type section, are referenced by both catch blocks
-and throw instructions. The reference is an exception type _index_ that refers to
-the corresponding exception type in the exception type section.
+Exceptions can be imported and exported by adding the appropriate entries to the
+import and export sections of the module. All imported/exported exceptions must
+be named to reconcile exception tags between modules.
 
-Note that multiple exception types can have the same exception _type
-signature_. However, because they are separate entries in the exception type
-section, they none the less represent different exception types.
-
-Like functions, exception types can be imported and exported. In such cases, the
-exceptions must be named, and also appear in the corresponding import/export
-sections of the WebAssembly module. The runtime is responsible for connecting
-exception types between WebAssembly modules, and the external environment (i.e.
-Javascript).
+Exception tags are used by throw and catch instructions. The throw instruction
+uses the tag to allocate the exception with the corresponding data fields
+defined by the exception's type signature. The catch instruction uses the tag to
+identify if the thrown exception is one it can catch.
 
 Exceptions can also be thrown by called, imported functions. If it corresponds
-to an imported exception, it can be caught in try blocks, as well as access the
-data of the thrown exception. If the exception is not imported, it still can be
-caught to allow code clean-up, but the data of the exception can't be accessed.
+to an imported exception, it can be caught by an appropriate catch instruction.
+If the exception is not imported, it still can be caught to allow code clean-up,
+but the data of the exception can't be accessed.
 
 ### Try and catch blocks.
 
-A _try_ block defines a block of code that may need to catch exceptions and/or
-clean up state when an exception is thrown. Each try block must end with one or
-more _catch_ blocks. No instructions (in the try block) can appear between catch
-blocks, or after the last catch block.
+A _try_ block defines a list of instruction that may need to catch exceptions
+and/or clean up state when an exception is thrown.  Like other higher-level
+constructs, a try block begins with a `try` instruction, and ends with an `end`
+instruction. That is, a try block is sequence of instructions having the
+following form:
 
-A try block may define more than one catch block, and all but the last catch block
-must define an *exception type*. The exception type defines the type of
-exception it catches. Catch blocks with an *exception type* are _typed_ catch
-blocks. Each typed catch block, within a try block, must reference a different
-exception type. The last catch block can either be typed, or it can be a
-_default_ catch block. The default catch block has no exception type, and is
-used to catch all exceptions not defined by any of the other catch blocks.
+```
+try
+  instruction*
+catch i
+  instruction*
+catch j
+  instruction*
+...
+catch n
+  instruction*
+else
+    instruction*
+end
+```
 
-Try blocks, like a control-flow blocks, have a *block type*. The block type of a
-try block defines the value yielded by the evaluation the try block when
-either no exception is thrown, or the exception is successfully caught and the
-code can recover and continue. The catch blocks, within a try block also have a
-block type, and must be the same as the enclosing try block.
+A try block also contains one or more catch blocks, and all but the last catch
+block must begin with a`catch` instruction. The last catch block can begin with
+either a `catch` or `else` instruction. The `catch`/`else` instructions (within
+the try construct) are called the _catching_ instructions.
 
-In the initial implementation, try and catch blocks may only yield 0 or 1
-values.
+The _body_ of the try block is the list of instructions before the first
+catching instruction. The _body_ of each catch block is the sequence of
+instructions following the corresponding catching instruction, and the next
+catching instruction (or the `end` instruction if it is the last catching
+block).
 
-Instruction validation checks that each catch block within a try block refer to
-a different exception type (they must have different exception type indices), and
-the exception types are defined in the exception type section of the module. It
-also checks that the block type of the catch blocks is the same as the enclosing
-try block. Further, it verifies that there aren't any instructions between the
-catch blocks of the try block, and the last catch block is at the end of the try
-block.
+The `catch` instruction has an exception tag associated with it. The tag
+identifies what exceptions it can catch. That is, any exception created with the
+corresponding exception tag. Catch blocks that begin with a `catch` instruction
+are considered _tagged_ catch blocks.
+
+The last catch block of an exception can be a tagged catch block. Alternatively,
+it can begin with the `else` instruction. If it begins with the `else`
+instruction, it defines the _default_ catch block. The default catch block has
+no exception type, and is used to catch all exceptions not caught by any of the
+tagged catch blocks.
+
+Try blocks, like a control-flow blocks, have a _block type_. The block type of a
+try block defines the values yielded by the evaluation the try block when either
+no exception is thrown, or the exception is successfully caught by one of its
+catch blocks, and the instructions within the catch block can recover from the
+throw.
+
+In the initial implementation, try blocks may only yield 0 or 1 values.
 
 ### Throws
 
-The _throw_ instruction has a single immediate argument containing an
-exception type index. This index defines the type of exception to throw. The
-arguments to the thrown exception must be on top of the value stack, and must
-correspond to the exception type signature of the exception.
+The _throw_ instruction has a single immediate argument, an exception tag.  The
+exception tag is used to define the data fields of the allocated exception. The
+values for the data fields must be on top of the value stack, and must
+correspond to the exception type signature for the exception.
 
-**TODO** Define the order that the data fields of the exception should appear on
-the value stack.
+When an exception is thrown, the exception is allocated and the values on the
+stack (corresponding to the type signature) are popped off and assigned to the
+allocated exception.  The exception is stored internally for access when the
+exception is caught. The runtime then searches for nearest enclosing try block
+body that execution is in. That try block is called the _catching_ try block.
 
-When an exception is thrown, the corresponding values are popped off the value
-stack, and stored internally for access when the exception is caught.
-
-If the throw appears within a try block, the value stack is popped back to
-the size the value stack had when the try block was initially entered.
-
-If a throw occurs within a function body, and it doesn't have an enclosing try
-block, the throw continues up the call stack until either an enclosing try block
-is found, or the call stack is flushed. If the call stack is flushed, execution
-is terminated.
-
-Otherwise, the call stack is wound back to the function with the nearest
-enclosing try block. The value stack is then popped back to the size the value
-stack had when that try block was initially entered.
-
-If the throw appears within a catch block, it is treated as being outside the
-corresponding try block of the catch (i.e. just after the end of corresponding
-try block). Therefore, throws within the catch block can't be caught by their
-enclosing try block. Rather, execution is thrown to the next enclosing try
+If the throw appears within the body of a try block, it is the catching try
 block.
 
-Once the value stack has been popped back to the size of the enclosing try block
-(whether local or across function calls), control is then passed to the
-appropriate catch block.
+If a throw occurs within a function body, and it doesn't appear inside the body
+of a try block, the throw continues up the call stack until it is in the body of
+an an enclosing try block, or the call stack is flushed. If the call stack is
+flushed, execution is terminated. Otherwise, the found enclosing try block is
+the catching try block.
 
-If there is a typed catch block with the same exception type _index_ as the
-throw, the thrown values (stored internally at the throw) are copied back on the
-value stack. Then, the corresponding typed catch block is entered. This allows
-the values of the exception to be accessed by the catch block.
+A throw inside a the body of a catch block is never caught by the corresponding
+try block of the catch block, since instructions in the body of the catch block
+are not in the body of the try block.
 
-On the other hand, if there isn't a corresponding typed catch block, and there
-is a default catch block, the default catch block is entered without pushing the
-values of the exception onto the value stack. This allows the default catch
-block to clean up state, but it can't look at the thrown value.
+Once a catching try block is found for the throw, the value stack is popped back
+to the size the value stack had when the try block was entered. Then, tagged
+catch blocks are tried in the order they appear in the catching try block, until
+one matches.
 
-Finally, if there isn't a corresponding typed catch block, and there isn't a
-default catch block, the except is automatically rethrown to the next enclosing
-try block.
+If a matched tagged catch block is found, control is transferred to the body of
+the catch block, and the data fields of the exception are pushed back onto the
+stack.
+
+Otherwise, control is transferred to the body of the default catch
+block. However, unlike tagged catch blocks, the constructor arguments are not
+copied back onto the value stack.
+
+If no tagged catch blocks were matched, and the catching try block doesn't have
+a default catch block, the exception is rethrown to the next enclosing try
+block.
+
+If control is transferred to the body of a catch block, and the last instruction
+in the body is executed, control then exits the try block.
 
 Also note that when the thrown exception is caught by a catch block, it is not
 destroyed until the catch block is exited. This is done so that the catch block
 can rethrow the exception.
 
 If the selected catch block does not rethrow an exception, it must yield the
-value(s) expected by the enclosing try block. For typed catch blocks, they must
+value(s) expected by the enclosing try block. For tagged catch blocks, they must
 also be sure to also pop off the caught exception values.
 
 ### Rethrows
@@ -178,58 +187,54 @@ there to query.
 
 ## Changes to the binary model
 
-This section describes changes in the binary encoding design document (ref?).
+This section describes changes in
+the
+[binary encoding design document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
 
-### Language types
+### except_type
 
-A new type constructor '0x50' for exception types will be added.
-
-All types are distinguished by a negative `varint7` values that is the first
-byte of their encoding (representing a type constructor):
-
-| Opcode | Type constructor |
-|--------|------------------|
-| `-0x01` (i.e., the byte `0x7f`) | `i32` |
-| `-0x02` (i.e., the byte `0x7e`) | `i64` |
-| `-0x03` (i.e., the byte `0x7d`) | `f32` |
-| `-0x04` (i.e., the byte `0x7c`) | `f64` |
-| `-0x10` (i.e., the byte `0x70`) | `anyfunc` |
-| `-0x20` (i.e., the byte `0x60`) | `func` |
-| `-0x30` (i.e., the byte `0x50`) | `except` |
-| `-0x40` (i.e., the byte `0x40`) | pseudo type for representing an empty `block_type` |
-
-### Exception type signatures
-
-An exception type is described by its exception type signature as follows:
-
-`except_type`
+An exception is described by its exception type signature, which corresponds to
+the data fields of the exception.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| count | `varuint32` | The number of arguments to the exception |
-| value_types | `value_type*` | The type of each argument to the exception |
+| `count` | `varuint32` | The number of types in the signature |
+| `type` | `value_type*` | The type of each element in the signature |
 
 ### External kind
 
 `external_kind`
 
-A single-byte unsigned integer indicating the kind of definition being imported or defined:
+A single-byte unsigned integer indicating the kind of definition being imported
+or defined:
 
 * `0` indicating a `Function` [import](Modules.md#imports) or [definition](Modules.md#function-and-code-sections)
 * `1` indicating a `Table` [import](Modules.md#imports) or [definition](Modules.md#table-section)
 * `2` indicating a `Memory` [import](Modules.md#imports) or [definition](Modules.md#linear-memory-section)
 * `3` indicating a `Global` [import](Modules.md#imports) or [definition](Modules.md#global-section)
-* `4` indicating an `Exception` *import* or *definition*
+* `4` indicating an `Exception` [import](#import-section) or [definition](#exception-sectio)
 
-### Exception type section
+### Exception section
 
-The exception type section is the named section 'exception'. The exception type
-section declares exception types using exception type signatures.
+The `exception` section is the named section 'exception'. The exception section
+declares exception types using exception type signatures.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| count | `varuint32` | Count of the number of exception types to follow |
-| entries | `except_type` | Repeated exception type signatures as described *above* |
+| count | `varuint32` | count of the number of exceptions to follow |
+| sig | `except_type*` | The type signature of the data fields for each exception |
+
+#### Exception index space
+
+The _exception index space_ indexes all imported and internally-defined
+exceptions, assigning monotonically-increasing indices based on the order
+defined in the import and exception sections. Thus, the index space starts at
+zero with imported exceptions followed by internally-defined exceptions.
+
+**Note:** The exception index space is a change to the
+[Modules document](https://github.com/WebAssembly/design/blob/master/Modules.md),
+rather than the
+[binary encoding design document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
 
 ### Import section
 
@@ -240,31 +245,33 @@ If the `kind` is `Exception`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| type  | `varuint32` | exception index to table in the *exception type section* |
+| `sig`  | `except_type` | the type signature of the exception |
 
 ### Export section
 
 The export section is extended to include exception types by extending an
 `export_entry` as follows:
 
-* If the `kind` is `Exception`, then the `index` is into the corresponding
-   exception type in the *exception type section*.
+If the `kind` is `Exception`, then the `index` is into the corresponding
+exception in the [exception index space](#exception-index-space).
 
 ### Name section
 
-The set of known values for `name_type` of a name section is extended as follows:
+The set of known values for `name_type` of a name section is extended as
+follows:
 
 
 | Name Type | Code | Description |
 | --------- | ---- | ----------- |
 | [Function](#function-names) | `1` | Assigns names to functions |
 | [Local](#local-names) | `2` | Assigns names to locals in functions |
-| [Exception](#(exception-names) | `3` | Assigns names to exception types |
+| [Exception](#exception-names) | `3` | Assigns names to exception types |
 
 ### Exception names
 
 The exception names subsection is a `name_map` which assigns names to a subset
-of the *exception type index* (both imports and module-defined).
+of the _exception_ indices from the exception section. (Used for both imports
+and module-defined).
 
 ### Control flow operators
 
@@ -278,17 +285,16 @@ throws, and rethrows as follows:
 | `block` | `0x02` | sig : `block_type` | begin a sequence of expressions, yielding 0 or 1 values |
 | `loop` | `0x03` |  sig : `block_type` | begin a block which can also form control flow loops |
 | `if` | `0x04` | sig : `block_type` | begin if expression |
-| `else` | `0x05` | | begin else expression of if |
+| `else` | `0x05` | | begin else expression of if or try  |
+| `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
+| `catch` | `0x07` | tag : `varuint32` | begins a block when the exception `tag` is thrown |
+| `throw` | `0x08` | tag : `varuint32` | Throws an exception defined by the exception `tag` |
+| `rethrow` | `0x09` | | re-throws the exception caught by the enclosing catch block |
 | `end` | `0x0b` | | end a block, loop, if, try, catch, and catch_default |
 | `br` | `0x0c` | relative_depth : `varuint32` | break that targets an outer nested block |
 | `br_if` | `0x0d` | relative_depth : `varuint32` | conditional break that targets an outer nested block |
 | `br_table` | `0x0e` | see below | branch table control flow construct |
 | `return` | `0x0f` | | return zero or one value from this function |
-| `try` | 0x?? | sig : `block_type` | begins a block which can handle thrown exceptions |
-| `catch` | 0x?? | sig : `block_type` , index : `varuint32` | begins a block when the exception type `index` is thrown |
-| `catch_default` | 0x?? | sig : block_type | begins a block when an unknown exception is thrown |
-| `throw` | 0x?? | index : `varuint32` | Throws an exception defined by the exception type `index` |
-| `rethrow` | 0x?? | | re-throws the exception caught by the enclosing catch block |
 
-The *sig* fields of `block', 'if`, `try`, `catch`, and `catch_default` operators
-are block signatures which describe their use of the operand stack.
+The *sig* fields of `block', 'if`, and `try` operators are block signatures
+which describe their use of the operand stack.
