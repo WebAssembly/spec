@@ -84,7 +84,7 @@ else
 end
 ```
 
-A try block also contain one or more catch blocks, and all but the last catch
+A try block also contains one or more catch blocks, and all but the last catch
 block must begin with a`catch` instruction. The last catch block can begin with
 either a `catch` or `else` instruction. The `catch`/`else` instructions (within
 the try construct) are called the _catching_ instructions.
@@ -228,8 +228,8 @@ declares exception types using exception type signatures.
 
 The _exception index space_ indexes all imported and internally-defined
 exceptions, assigning monotonically-increasing indices based on the order
-defined in the exception section. Thus, the index space starts at zero with
-imported exceptions followed by internally-defined exceptions.
+defined in the import and exception sections. Thus, the index space starts at
+zero with imported exceptions followed by internally-defined exceptions.
 
 **Note:** The exception index space is a change to the
 [Modules document](https://github.com/WebAssembly/design/blob/master/Modules.md),
