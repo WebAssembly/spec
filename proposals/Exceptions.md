@@ -84,7 +84,7 @@ else
 end
 ```
 
-A try block may contain one or more catch blocks, and all but the last catch
+A try block also contain one or more catch blocks, and all but the last catch
 block must begin with a`catch` instruction. The last catch block can begin with
 either a `catch` or `else` instruction. The `catch`/`else` instructions (within
 the try construct) are called the _catching_ instructions.
@@ -98,7 +98,7 @@ block).
 The `catch` instruction has an exception tag associated with it. The tag
 identifies what exceptions it can catch. That is, any exception created with the
 corresponding exception tag. Catch blocks that begin with a `catch` instruction
-are considered a _tagged_ catch block.
+are considered _tagged_ catch blocks.
 
 The last catch block of an exception can be a tagged catch block. Alternatively,
 it can begin with the `else` instruction. If it begins with the `else`
@@ -154,7 +154,7 @@ block. However, unlike tagged catch blocks, the constructor arguments are not
 copied back onto the value stack.
 
 If no tagged catch blocks were matched, and the catching try block doesn't have
-a default catch block, the exception is re-thrown to the next enclosing try
+a default catch block, the exception is rethrown to the next enclosing try
 block.
 
 If control is transferred to the body of a catch block, and the last instruction
@@ -198,8 +198,8 @@ the data fields of the exception.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `count` | `varuint32` | The number of known exceptions |
-| `sig` | `value_type*` | The type signature of each exception |
+| `count` | `varuint32` | The number of types in the signature |
+| `type` | `value_type*` | The type of each element in the signature |
 
 ### External kind
 
@@ -222,7 +222,19 @@ declares exception types using exception type signatures.
 | Field | Type | Description |
 |-------|------|-------------|
 | count | `varuint32` | count of the number of exceptions to follow |
-| sig | `except_type*` | The type signature of the data fields for the exception |
+| sig | `except_type*` | The type signature of the data fields for each exception |
+
+#### Exception index space
+
+The _exception index space_ indexes all imported and internally-defined
+exceptions, assigning monotonically-increasing indices based on the order
+defined in the exception section. Thus, the index space starts at zero with
+imported exceptions followed by internally-defined exceptions.
+
+**Note:** The exception index space is a change to the
+[Modules document](https://github.com/WebAssembly/design/blob/master/Modules.md),
+rather than the
+[binary encoding design document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
 
 ### Import section
 
@@ -233,8 +245,7 @@ If the `kind` is `Exception`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| tag   | varuint32 | index into the exception section |
-| type  | `varuint32` | type index of the function signature |
+| `sig`  | `except_type` | the type signature of the exception |
 
 ### Export section
 
@@ -242,7 +253,7 @@ The export section is extended to include exception types by extending an
 `export_entry` as follows:
 
 If the `kind` is `Exception`, then the `index` is into the corresponding
-exception in the _exception section_ index space.
+exception in the [exception index space](#exception-index-space).
 
 ### Name section
 
@@ -274,17 +285,16 @@ throws, and rethrows as follows:
 | `block` | `0x02` | sig : `block_type` | begin a sequence of expressions, yielding 0 or 1 values |
 | `loop` | `0x03` |  sig : `block_type` | begin a block which can also form control flow loops |
 | `if` | `0x04` | sig : `block_type` | begin if expression |
-| `else` | `0x05` | | begin else expression of if |
+| `else` | `0x05` | | begin else expression of if or try  |
+| `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
+| `catch` | `0x07` | tag : `varuint32` | begins a block when the exception `tag` is thrown |
+| `throw` | `0x08` | tag : `varuint32` | Throws an exception defined by the exception `tag` |
+| `rethrow` | `0x09` | | re-throws the exception caught by the enclosing catch block |
 | `end` | `0x0b` | | end a block, loop, if, try, catch, and catch_default |
 | `br` | `0x0c` | relative_depth : `varuint32` | break that targets an outer nested block |
 | `br_if` | `0x0d` | relative_depth : `varuint32` | conditional break that targets an outer nested block |
 | `br_table` | `0x0e` | see below | branch table control flow construct |
 | `return` | `0x0f` | | return zero or one value from this function |
-| `try` | 0x?? | sig : `block_type` | begins a block which can handle thrown exceptions |
-| `catch` | 0x?? | tag : `varuint32` | begins a block when the exception `tag` is thrown |
-| `catch_default` | 0x?? | | begins a block when an unknown exception is thrown |
-| `throw` | 0x?? | tag : `varuint32` | Throws an exception defined by the exception `tag` |
-| `rethrow` | 0x?? | | re-throws the exception caught by the enclosing catch block |
 
 The *sig* fields of `block', 'if`, and `try` operators are block signatures
 which describe their use of the operand stack.
