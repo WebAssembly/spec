@@ -29,9 +29,7 @@ The following conventions are adopted in defining grammar rules for the text for
 They mirror the conventions used for :ref:`abstract syntax <grammar>` and for the :ref:`binary format <binary-format>`.
 In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, typewriter font is adopted for the former.
 
-* Input characters are written as either :ref:`byte values <syntax-bytes>`, :math:`\hex{0A}`, or literal characters of the 7-bit `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ character set that represent their respective character codes.
-
-* Terminal symbols are strings of `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters enclosed in quotes: :math:`\text{module}`.
+* Terminal symbols are strings of characters enclosed in quotes: :math:`\text{module}`.
 
 * Nonterminal symbols are written in typewriter font: :math:`\T{valtype}, \T{instr}`.
 
@@ -84,3 +82,35 @@ Auxiliary Notation
 When dealing with binary encodings the following notation is also used:
 
 * :math:`\epsilon` denotes the empty byte sequence.
+
+
+.. text-context:
+.. index:: ! identifier context, identifier, index, index space
+
+Contexts
+~~~~~~~~
+
+The text format allows to use symbolic :ref:`identifiers <text-id>` in place of :ref:`indices <syntax-index>`.
+To resolve these identifiers into concrete indices,
+some grammar production are indexed by an *identifier context* that records the declared identifiers in each :ref:`index space <syntax-index>`.
+
+It is convenient to define identifier contexts as :ref:`records <syntax-record>` :math:`I` with abstract syntax:
+
+.. math::
+   \begin{array}{llll}
+   \production{(identifier context)} & I &::=&
+     \begin{array}[t]{l@{~}ll}
+     \{ & \TYPES & (\Tid^?)^\ast, \\
+        & \FUNCS & (\Tid^?)^\ast, \\
+        & \TABLES & (\Tid^?)^\ast, \\
+        & \MEMS & (\Tid^?)^\ast, \\
+        & \GLOBALS & (\Tid^?)^\ast, \\
+        & \LOCALS & (\Tid^?)^\ast, \\
+        & \LABELS & (\Tid^?)^\ast ~\} \\
+     \end{array}
+   \end{array}
+
+For each index space, an identifier context contains the list of :ref:`identifiers <text-id>` assigned to the defined indices.
+Unnamed indices are associated with empty (:math:`\epsilon`) entries in these lists.
+
+It is an invariant of the specification that no component contains duplicate identifiers.

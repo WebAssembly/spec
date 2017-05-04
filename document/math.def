@@ -22,6 +22,20 @@
 .. Auxiliary definitions for grammars
 
 .. |production| mathdef:: \void
+.. |with| mathdef:: ~\xref{syntax/conventions}{syntax-record}{\mbox{with}}~
+
+
+.. Lexical grammar
+
+.. |Tchar| mathdef:: \xref{text/lexical}{text-char}{\T{char}}
+.. |Tspace| mathdef:: \xref{text/lexical}{text-space}{\T{space}}
+.. |Tformat| mathdef:: \xref{text/lexical}{text-format}{\T{format}}
+
+.. |Tcomment| mathdef:: \xref{text/lexical}{text-comment}{\T{comment}}
+.. |Tlinecomment| mathdef:: \xref{text/lexical}{text-comment}{\T{linecomment}}
+.. |Tblockcomment| mathdef:: \xref{text/lexical}{text-comment}{\T{blockcomment}}
+.. |Tlinechar| mathdef:: \xref{text/lexical}{text-comment}{\T{linechar}}
+.. |Tblockchar| mathdef:: \xref{text/lexical}{text-comment}{\T{blockchar}}
 
 
 .. Values, terminals
@@ -105,6 +119,7 @@
 
 .. |Tbyte| mathdef:: \xref{text/values}{text-byte}{\T{byte}}
 .. |Tstring| mathdef:: \xref{text/values}{text-string}{\T{string}}
+.. |Tstringchar| mathdef:: \xref{text/values}{text-string}{\T{stringchar}}
 
 .. |Tsign| mathdef:: \xref{text/values}{text-sign}{\T{sign}}
 .. |Tdigit| mathdef:: \xref{text/values}{text-digit}{\T{digit}}
@@ -145,6 +160,9 @@
 .. |Tcodepoint| mathdef:: \xref{text/values}{text-name}{\T{codepoint}}
 .. |Tcodeval| mathdef:: \xref{text/values}{text-name}{\T{codeval}}
 .. |Tcodecont| mathdef:: \xref{text/values}{text-name}{\T{cont}}
+
+.. |Tid| mathdef:: \xref{text/values}{text-id}{\T{id}}
+.. |Tidchar| mathdef:: \xref{text/values}{text-id}{\T{idchar}}
 
 
 .. Types, terminals

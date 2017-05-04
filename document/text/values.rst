@@ -80,12 +80,12 @@ Floating-Point
 ~~~~~~~~~~~~~~
 
 :ref:`Floating point <syntax-float>` values can be represented in either decimal or hexadecimal notation.
-The value must not be outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
-(that is, it must not overflow to infinity),
+The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
+(that is, it must not overflow to :math:`\pm`infinity),
 but it may be rounded to the nearest representable value.
 
 .. note::
-   Rounding can be avoided by using hexadecimal notation with no more significant bits than supported by the desired type.
+   Rounding can be prevented by using hexadecimal notation with no more significant bits than supported by the required type.
 
 Floating-point values may also be written as constants for *infinity* or *canonical NaN* (*not a number*).
 Furthermore, arbitrary NaN values may be expressed by providing an explicit payload value.
@@ -120,6 +120,8 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      s{:}\Tsign~\text{nan\!:}~n{:}\Thexnum &\Rightarrow& b^\ast & (\ieeenan_N(s, n) = b^\ast) \\
    \end{array}
 
+.. todo:: IEEE encoding
+
 
 .. _text-vec:
 .. index:: vector
@@ -146,30 +148,33 @@ Vectors
 Strings
 ~~~~~~~
 
-*Strings* are sequences of bytes that can represent both textual and binary data.
-They are enclosed in `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ *quotation marks* (bytes of value \hex{22})
-and may contain any byte that is not an ASCII control character, ASCII *quotation marks* (\hex{22}), or ASCII *reverse slant* (backslash, \hex{5C}),
-except when expressed with an *escape sequence* started by an ASCII *reverse slant* (\hex{5C}).
+*Strings* denote sequences of bytes that can represent both textual and binary data.
+They are enclosed in quotation marks
+and may contain any *printable* `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ character other than quotation marks (:math:`\text{"}`) or backslash (:math:`\text{\verb|\|}`),
+except when expressed with an *escape sequence* started by a backslash.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{byte} & \Tbyte &::=&
-     b &\Rightarrow& b & (\hex{20} \leq b < \hex{7F} \wedge b \neq \text{"} \wedge b \neq \text{\backslash}) \\ &&|&
-     \text{\backslash}~n{:}\Thexdigit~m{:}\Thexdigit &\Rightarrow& 16\cdot n+m \\ &&|&
-     \text{\backslash{}t} &\Rightarrow& \hex{09} \\ &&|&
-     \text{\backslash{}n} &\Rightarrow& \hex{0A} \\ &&|&
-     \text{\backslash{}r} &\Rightarrow& \hex{0D} \\ &&|&
-     \text{\backslash{}"} &\Rightarrow& \hex{22} \\ &&|&
-     \text{\backslash{}'} &\Rightarrow& \hex{27} \\ &&|&
-     \text{\backslash\backslash} &\Rightarrow& \hex{5C} \\
    \production{string} & \Tstring &::=&
-     \text{"}~(b{:}\Tbyte)^\ast~\text{"}
-       &\Rightarrow& b^\ast \\
+     \text{"}~(b{:}\Tstringchar)^\ast~\text{"}
+       \quad\Rightarrow\quad b^\ast \\
+   \production{string character} & \Tstringchar &::=&
+     \text{~~} ~~\Rightarrow~~ \hex{20} ~~~|~~~
+     \text{!} ~~\Rightarrow~~ \hex{21} \\ &&|&
+     \text{\#} ~~\Rightarrow~~ \hex{23} ~~~|~~~
+     \cdots ~~~|~~~
+     \text{[} ~~\Rightarrow~~ \hex{5B} \\ &&|&
+     \text{]} ~~\Rightarrow~~ \hex{5D} ~~~|~~~
+     \cdots ~~~|~~~
+     \text{\verb|~|} ~~\Rightarrow~~ \hex{7E} \\ &&|&
+     \text{\verb|\t|} ~~\Rightarrow~~ \hex{09} \\ &&|&
+     \text{\verb|\n|} ~~\Rightarrow~~ \hex{0A} \\ &&|&
+     \text{\verb|\r|} ~~\Rightarrow~~ \hex{0D} \\ &&|&
+     \text{\verb|\"|} ~~\Rightarrow~~ \hex{22} \\ &&|&
+     \text{\verb|\'|} ~~\Rightarrow~~ \hex{27} \\ &&|&
+     \text{\verb|\\|} ~~\Rightarrow~~ \hex{5C} \\ &&|&
+     \text{\verb|\|}~n{:}\Thexdigit~m{:}\Thexdigit ~~\Rightarrow~~ 16\cdot n+m \\
    \end{array}
-
-.. note::
-   The bytes in a string are not interpreted in any specific way,
-   except when the string appears as a :ref:`name <text-name>`.
 
 
 .. _text-name:
@@ -187,3 +192,54 @@ Names
      b^\ast{:}\Tstring &\Rightarrow& \X{uc}^n
        & (\utf8(\X{uc}^n) = b^\ast \wedge n < 2^{32}) \\
    \end{array}
+
+.. todo:: UTF-8 decoding
+
+
+.. _text-id:
+.. index:: ! identifiers
+   pair: text format; identifiers
+
+Identifiers
+~~~~~~~~~~~
+
+:ref:`Indices <syntax-index>` can be given in both numeric and symbolic form.
+Symbolic *identifiers* standing for indices start with :math:`\text{$}`, followed by any sequence of printable `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket (parentheses, square brackets, or braces).
+
+.. math::
+   \begin{array}{llclll@{\qquad}l}
+   \production{identifier} & \Tid &::=&
+     \text{$}~(b{:}\Tidchar)^+ \\
+   \production{identifier character} & \Tidchar &::=&
+     \text{0} ~~|~~ \dots ~~|~~ \text{9} \\ &&|&
+     \text{A} ~~|~~ \dots ~~|~~ \text{Z} \\ &&|&
+     \text{a} ~~|~~ \dots ~~|~~ \text{z} \\ &&|&
+     \text{!} ~~|~~
+     \text{\#} ~~|~~
+     \text{\$} ~~|~~
+     \text{\%} ~~|~~
+     \text{\&} ~~|~~
+     \text{\verb|'|} ~~|~~
+     \text{*} ~~|~~
+     \text{+} ~~|~~
+     \text{-} ~~|~~
+     \text{.} ~~|~~
+     \text{/} \\ &&|&
+     \text{:} ~~|~~
+     \text{<} ~~|~~
+     \text{=} ~~|~~
+     \text{>} ~~|~~
+     \text{?} ~~|~~
+     \text{@} ~~|~~
+     \text{\verb|\|} ~~|~~
+     \text{\verb|^|} ~~|~~
+     \text{\verb|_|} ~~|~~
+     \text{\verb|`|} ~~|~~
+     \text{|} ~~|~~
+     \text{\verb|~|} \\
+   \end{array}
+
+.. math (commented out)
+     b \Rightarrow b
+       && (\hex{21} \leq b \leq \hex{7E} \wedge
+           b \notin \{\text{,}, \text{;}, \text{(}, \text{)}, \text{[}, \text{]}, \text{\{}, \text{\}}\}) \\
