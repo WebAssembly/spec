@@ -29,15 +29,19 @@ All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{sign} & \Tsign &::=&
-     \epsilon \Rightarrow {+}1 ~|~
-     \text{+} \Rightarrow {+}1 ~|~
+     \epsilon \Rightarrow {+}1 ~~|~~
+     \text{+} \Rightarrow {+}1 ~~|~~
      \text{-} \Rightarrow {-}1 \\
    \production{decimal digit} & \Tdigit &::=&
-     \text{0} \Rightarrow 0 ~|~ \dots ~|~ \text{9} \Rightarrow 9 \\
+     \text{0} \Rightarrow 0 ~~|~~ \dots ~~|~~ \text{9} \Rightarrow 9 \\
    \production{hexadecimal digit} & \Thexdigit &::=&
      d{:}\Tdigit \Rightarrow d \\ &&|&
-     \text{A} \Rightarrow 10 ~|~ \dots ~|~ \text{F} \Rightarrow 15 \\ &&|&
-     \text{a} \Rightarrow 10 ~|~ \dots ~|~ \text{f} \Rightarrow 15 \\
+     \text{A} \Rightarrow 10 ~~|~~ \dots ~~|~~ \text{F} \Rightarrow 15 \\ &&|&
+     \text{a} \Rightarrow 10 ~~|~~ \dots ~~|~~ \text{f} \Rightarrow 15 \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll@{\qquad}l}
    \production{decimal number} & \Tnum &::=&
      d{:}\Tdigit &\Rightarrow& d \\ &&|&
      n{:}\Tnum~~d{:}\Tdigit &\Rightarrow& 10\cdot n + d \\
@@ -148,17 +152,32 @@ Vectors
 Strings
 ~~~~~~~
 
-*Strings* denote sequences of bytes that can represent both textual and binary data.
+*Strings* denote sequences of characters that can represent both textual and binary data.
 They are enclosed in quotation marks
-and may contain any *printable* `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ character other than quotation marks (:math:`\text{"}`) or backslash (:math:`\text{\verb|\|}`),
+and may contain any character other than `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\verb|\|}`),
 except when expressed with an *escape sequence* started by a backslash.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{string} & \Tstring &::=&
-     \text{"}~(b{:}\Tstringchar)^\ast~\text{"}
-       \quad\Rightarrow\quad b^\ast \\
+     \text{"}~(c{:}\Tstringchar)^\ast~\text{"}
+       &\Rightarrow& c^\ast \\
    \production{string character} & \Tstringchar &::=&
+     c{:}\Tchar &\Rightarrow& c \qquad
+       & (c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\verb|\|}) \\ &&|&
+     \text{\verb|\t|} &\Rightarrow& \unicode{09} \\ &&|&
+     \text{\verb|\n|} &\Rightarrow& \unicode{0A} \\ &&|&
+     \text{\verb|\r|} &\Rightarrow& \unicode{0D} \\ &&|&
+     \text{\verb|\"|} &\Rightarrow& \unicode{22} \\ &&|&
+     \text{\verb|\'|} &\Rightarrow& \unicode{27} \\ &&|&
+     \text{\verb|\\|} &\Rightarrow& \unicode{5C} \\ &&|&
+     \text{\verb|\|}~n{:}\Thexdigit~m{:}\Thexdigit
+       &\Rightarrow& \unicode{(16\cdot n+m)} \\ &&|&
+     \text{\verb|\u|\{}~n{:}\Thexnum~\text{\}}
+       &\Rightarrow& \unicode{(n)} & (n < \hex{110000}) \\
+   \end{array}
+
+.. commented out
      \text{~~} ~~\Rightarrow~~ \hex{20} ~~~|~~~
      \text{!} ~~\Rightarrow~~ \hex{21} \\ &&|&
      \text{\#} ~~\Rightarrow~~ \hex{23} ~~~|~~~
@@ -167,13 +186,36 @@ except when expressed with an *escape sequence* started by a backslash.
      \text{]} ~~\Rightarrow~~ \hex{5D} ~~~|~~~
      \cdots ~~~|~~~
      \text{\verb|~|} ~~\Rightarrow~~ \hex{7E} \\ &&|&
-     \text{\verb|\t|} ~~\Rightarrow~~ \hex{09} \\ &&|&
-     \text{\verb|\n|} ~~\Rightarrow~~ \hex{0A} \\ &&|&
-     \text{\verb|\r|} ~~\Rightarrow~~ \hex{0D} \\ &&|&
-     \text{\verb|\"|} ~~\Rightarrow~~ \hex{22} \\ &&|&
-     \text{\verb|\'|} ~~\Rightarrow~~ \hex{27} \\ &&|&
-     \text{\verb|\\|} ~~\Rightarrow~~ \hex{5C} \\ &&|&
-     \text{\verb|\|}~n{:}\Thexdigit~m{:}\Thexdigit ~~\Rightarrow~~ 16\cdot n+m \\
+
+   Due to the limitations of the :ref:`binary format <binary-name>`, the length of strings is limited by the length of their `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding.
+
+   The auxiliary |utf8| function is defined as follows:
+
+   .. math::
+   \begin{array}{lcl@{\qquad}l}
+   \utf8(c^\ast) &=& (\utf8(c))^\ast \\[1ex]
+   \utf8(c) &=& b & (c < \unicode{80} \wedge c = b) \\
+   \utf8(c) &=& b_1~b_2 & (\unicode{80} \leq c < \unicode{800} \wedge c = 2^6\cdot(b_1-\hex{C0})+(b_2-\hex{80})) \\
+   \utf8(c) &=& b_1~b_2~b_3 & (\unicode{800} \leq c < \unicode{10000} \wedge c = 2^{12}\cdot(b_1-\hex{C0})+2^6\cdot(b_2-\hex{80})+(b_3-\hex{80})) \\
+   \utf8(c) &=& b_1~b_2~b_3~b_4 & (\unicode{10000} \leq c < \unicode{110000} \wedge c = 2^{18}\cdot(b_1-\hex{C0})+2^{12}\cdot(b_2-\hex{80})+2^6\cdot(b_3-\hex{80})+(b_4-\hex{80})) \\
+   \end{array}
+
+
+.. _text-bytes:
+.. index:: bytes, byte
+   pair: text format; bytes
+
+Bytes
+~~~~~
+
+:ref:`Bytes <syntax-name>` are strings denoting a sequence of raw :ref:`bytes <syntax-bytes>`.
+They may contain only code points that are within range for a byte.
+
+.. math::
+   \begin{array}{llclll@{\qquad}l}
+   \production{bytes} & \Tbytes &::=&
+     c^\ast{:}\Tstring &\Rightarrow& b^\ast
+       & ((\unicode{(b)} = c \leq \unicode{FF})^\ast) \\
    \end{array}
 
 
@@ -184,16 +226,13 @@ except when expressed with an *escape sequence* started by a backslash.
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are strings denoting a byte sequence that must form a valid `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding.
+:ref:`Names <syntax-name>` are strings denoting a literal character sequence. 
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{name} & \Tname &::=&
-     b^\ast{:}\Tstring &\Rightarrow& \X{uc}^n
-       & (\utf8(\X{uc}^n) = b^\ast \wedge n < 2^{32}) \\
+     c^\ast{:}\Tstring &\Rightarrow& c^\ast \\
    \end{array}
-
-.. todo:: UTF-8 decoding
 
 
 .. _text-id:
@@ -209,7 +248,7 @@ Symbolic *identifiers* standing for indices start with :math:`\text{$}`, followe
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{identifier} & \Tid &::=&
-     \text{$}~(b{:}\Tidchar)^+ \\
+     \text{$}~(c{:}\Tidchar)^+ \\
    \production{identifier character} & \Tidchar &::=&
      \text{0} ~~|~~ \dots ~~|~~ \text{9} \\ &&|&
      \text{A} ~~|~~ \dots ~~|~~ \text{Z} \\ &&|&

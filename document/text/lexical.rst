@@ -12,19 +12,17 @@ Characters
 ~~~~~~~~~~
 
 The text format assigns meaning to *source text*, which consists of a sequence of *characters*.
-The set of significant characters interpreted in the text format is a subset of the characters supported by `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_,
-but a source text may contain additional characters,
-such as other `Unicode <http://www.unicode.org/versions/latest/>`_ *code points*.
+Characters are assumed to be represented as valid `Unicode <http://www.unicode.org/versions/latest/>`_ *code points*.
 
 .. math::
    \begin{array}{llll}
    \production{character} & \Tchar &::=&
-     \dots (\mbox{any character}) \\
+     \unicode{00} ~|~ \dots ~|~ \unicode{D800} ~|~ \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
    \end{array}
 
 .. note::
-   Non-ASCII characters or ASCII control characters other than format characters can only occur in :ref:`comments <text-comments>`,
-   where they have no effect on the meaning of the source text.
+   The set of characters interpreted in the text format is a subset of the characters supported by `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_,
+   but a source text may contain other characters in :ref:`comments <text-comments>` or :ref:`string <text-string>` literals.
 
 
 .. _text-stoken:
@@ -55,17 +53,15 @@ White Space
 
 *White space* is any sequence of literal space characters, formatting characters, or :ref:`comments <text-comment>`.
 
-A format character corresponds to an `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ *format effector*, that is, *backspace* (ASCII :math:`\hex{08}`), *horizontal tabulation* (:math:`\hex{09}`), *line feed* (:math:`\hex{0A}`), *vertical tabulation* (:math:`\hex{0B}`), *form feed* (:math:`\hex{0C}`), or *carriage return* (:math:`\hex{0D}`).
+A format character corresponds to an `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ *format effector*, that is, *backspace* (:math:`\unicode{08}`), *horizontal tabulation* (:math:`\unicode{09}`), *line feed* (:math:`\unicode{0A}`), *vertical tabulation* (:math:`\unicode{0B}`), *form feed* (:math:`\unicode{0C}`), or *carriage return* (:math:`\unicode{0D}`).
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{white space} & \Tspace &::=&
      (\text{~~} ~|~ \Tformat ~|~ \Tcomment)^\ast \\
    \production{format} & \Tformat &::=&
-     \hex{08} ~|~ \hex{09} ~|~ \hex{0A} ~|~ \hex{0B} ~|~ \hex{0C} ~|~ \hex{0D} \\
+     \unicode{08} ~|~ \unicode{09} ~|~ \unicode{0A} ~|~ \unicode{0B} ~|~ \unicode{0C} ~|~ \unicode{0D} \\
    \end{array}
-
-Here, its binary code in ASCII is used to denote the respective control character.
 
 
 .. text-comment:
@@ -83,9 +79,9 @@ Block comments can be nested.
    \production{comment} & \Tcomment &::=&
      \Tlinecomment ~|~ \Tblockcomment \\
    \production{line comment} & \Tlinecomment &::=&
-     \text{\verb|;;|}~~\Tlinechar^\ast~~(\hex{0A} ~|~ \T{eof}) \\
+     \text{\verb|;;|}~~\Tlinechar^\ast~~(\unicode{0A} ~|~ \T{eof}) \\
    \production{line character} & \Tlinechar &::=&
-     c{:}\Tchar & (c \neq \hex{0A}) \\
+     c{:}\Tchar & (c \neq \unicode{0A}) \\
    \production{block comment} & \Tblockcomment &::=&
      \text{\verb|(;|}~~\Tblockchar^\ast~~\text{\verb|;)|} \\
    \production{block character} & \Tblockchar &::=&
@@ -95,5 +91,5 @@ Block comments can be nested.
      \Tblockcomment \\
    \end{array}
 
-Here, the binary ASCII code :math:`\text{0A}` is used to denote the end-of-line character and the pseudo token :math:`\T{eof}` indicates the end of the input.
-The *look-ahead* restrictions on |Tblockchar| disambiguate the grammar such that only well-bracketted uses of block comment delimiters are allowed.
+Here, the pseudo token :math:`\T{eof}` indicates the end of the input.
+The *look-ahead* restrictions on the productions for |Tblockchar| disambiguate the grammar such that only well-bracketed uses of block comment delimiters are allowed.

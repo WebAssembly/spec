@@ -25,7 +25,7 @@
 .. |with| mathdef:: ~\xref{syntax/conventions}{syntax-record}{\mbox{with}}~
 
 
-.. Lexical grammar
+.. Lexical grammar, non-terminals
 
 .. |Tchar| mathdef:: \xref{text/lexical}{text-char}{\T{char}}
 .. |Tspace| mathdef:: \xref{text/lexical}{text-space}{\T{space}}
@@ -36,6 +36,11 @@
 .. |Tblockcomment| mathdef:: \xref{text/lexical}{text-comment}{\T{blockcomment}}
 .. |Tlinechar| mathdef:: \xref{text/lexical}{text-comment}{\T{linechar}}
 .. |Tblockchar| mathdef:: \xref{text/lexical}{text-comment}{\T{blockchar}}
+
+
+.. Lexical grammar, meta functions
+
+.. |utf8| mathdef:: \xref{text/values}{text-bytes}{\F{utf8}}
 
 
 .. Values, terminals
