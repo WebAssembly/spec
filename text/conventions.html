@@ -28,7 +28,7 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
     <link rel="up" title="Text Format" href="index.html" />
-    <link rel="next" title="Values" href="values.html" />
+    <link rel="next" title="Lexical Format" href="lexical.html" />
     <link rel="prev" title="Text Format" href="index.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -56,8 +56,10 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#grammar">Grammar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#auxiliary-notation">Auxiliary Notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#contexts">Contexts</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="lexical.html">Lexical Format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
@@ -107,15 +109,16 @@ A text string is a well-formed description of a module if and only if it is gene
 Thus, the attribute grammar implicitly defines a <em>parsing</em> function.</p>
 <p>Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
 However, it also defines a number of forms that are <em>syntactic sugar</em> over the core syntax.</p>
+<p>The recommended extension for source files containing WebAssembly modules in text format is &#8220;<span class="math">\(\mathtt{.wat}\)</span>&#8221;.</p>
 <span class="target" id="text-grammar"></span><div class="section" id="grammar">
 <span id="index-1"></span><h2>Grammar<a class="headerlink" href="#grammar" title="Permalink to this headline">¶</a></h2>
 <p>The following conventions are adopted in defining grammar rules for the text format.
 They mirror the conventions used for <a class="reference internal" href="../syntax/conventions.html#grammar"><span class="std std-ref">abstract syntax</span></a> and for the <a class="reference internal" href="../binary/index.html#binary-format"><span class="std std-ref">binary format</span></a>.
 In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, typewriter font is adopted for the former.</p>
 <ul class="simple">
-<li>Terminal symbols are strings given in quotes: <span class="math">\(\def\mathdef1576#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1576{module}\)</span>.</li>
+<li>Terminal symbols are strings of characters enclosed in quotes: <span class="math">\(\def\mathdef1576#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1576{module}\)</span>.</li>
 <li>Nonterminal symbols are written in typewriter font: <span class="math">\(\mathtt{valtype}, \mathtt{instr}\)</span>.</li>
-<li>Arbitrary <span class="xref std std-ref">white space</span> is allowed in any place where the grammar contains spaces.</li>
+<li>Arbitrary <span class="xref std std-ref">white space</span> is allowed in any place where the grammar contains spaces, except where noted otherwise, such as the <span class="xref std std-ref">lexical syntax</span>.</li>
 <li><span class="math">\(T^n\)</span> is a sequence of <span class="math">\(n\geq 0\)</span> iterations  of <span class="math">\(T\)</span>.</li>
 <li><span class="math">\(T^\ast\)</span> is a possibly empty sequence of iterations of <span class="math">\(T\)</span>.
 (This is a shorthand for <span class="math">\(T^n\)</span> used where <span class="math">\(n\)</span> is not relevant.)</li>
@@ -148,11 +151,34 @@ The attribute of the complete production then is the abstract syntax for the lim
 </div>
 </div>
 <div class="section" id="auxiliary-notation">
-<span id="binary-notation"></span><h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
+<span id="text-notation"></span><h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
 <p>When dealing with binary encodings the following notation is also used:</p>
 <ul class="simple">
 <li><span class="math">\(\epsilon\)</span> denotes the empty byte sequence.</li>
 </ul>
+</div>
+<div class="section" id="contexts">
+<span id="index-2"></span><h2>Contexts<a class="headerlink" href="#contexts" title="Permalink to this headline">¶</a></h2>
+<p>The text format allows to use symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> in place of <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
+To resolve these identifiers into concrete indices,
+some grammar production are indexed by an <em>identifier context</em> that records the declared identifiers in each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>.</p>
+<p>It is convenient to define identifier contexts as <a class="reference internal" href="../syntax/conventions.html#syntax-record"><span class="std std-ref">records</span></a> <span class="math">\(I\)</span> with abstract syntax:</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef1528#1{{}}\mathdef1528{(identifier context)} &amp; I &amp;::=&amp;
+  \begin{array}[t]{l&#64;{~}ll}
+  \{ &amp; \mathsf{types} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \mathsf{funcs} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \mathsf{tables} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \mathsf{mems} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \mathsf{globals} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \mathsf{locals} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \mathsf{labels} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast ~\} \\
+  \end{array}
+\end{array}\end{split}\]</div>
+<p>For each index space, an identifier context contains the list of <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> assigned to the defined indices.
+Unnamed indices are associated with empty (<span class="math">\(\epsilon\)</span>) entries in these lists.</p>
+<p>It is an invariant of the specification that no component contains duplicate identifiers.</p>
 </div>
 </div>
 

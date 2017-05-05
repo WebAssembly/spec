@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -110,7 +110,7 @@
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
 \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_N(i) &amp;=&amp; \epsilon &amp; (N = 0 \wedge i = 0) \\
-\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_N(i) &amp;=&amp; b~\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{N-8}(j) &amp; (N \geq 8 \wedge i = 8\cdot j + b) \\
+\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_N(i) &amp;=&amp; b~\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{N-8}(j) &amp; (N \geq 8 \wedge i = 2^8\cdot j + b) \\
 ~ \\
 \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\mathsf{i}N}(i) &amp;=&amp; \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_N(i) \\
 \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\mathsf{f}N}(b^N) &amp;=&amp; \mathrm{reverse}(b^N) \\

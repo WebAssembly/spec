@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -510,7 +510,7 @@ S; F; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_me
 <ol class="arabic simple" start="10">
 <li>Else, either:<ol class="loweralpha">
 <li>Let <span class="math">\(\mathit{len}\)</span> be <span class="math">\(n\)</span> multiplied with the <a class="reference internal" href="runtime.html#page-size"><span class="std std-ref">page size</span></a>.</li>
-<li>Append <span class="math">\(\mathit{len}\)</span> bytes with value <span class="math">\(\def\mathdef702#1{\mathtt{0x#1}}\mathdef702{00}\)</span> to <span class="math">\(S.\mathsf{mems}[a]\)</span>.</li>
+<li>Append <span class="math">\(\mathit{len}\)</span> bytes with value <span class="math">\(\def\mathdef248#1{\mathtt{0x#1}}\mathdef248{00}\)</span> to <span class="math">\(S.\mathsf{mems}[a]\)</span>.</li>
 <li>Push the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz}\)</span> to the stack.</li>
 </ol>
 </li>
@@ -529,7 +529,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   (\mbox{if} &amp; F.\mathsf{module}.\mathsf{mems}[0] = a \\
   \wedge &amp; |S.\mathsf{mems}[a].\mathsf{data}| = \mathit{sz}\cdot64\,\mathrm{Ki} \\
   \wedge &amp; (\mathit{sz} + n \leq S.\mathsf{mems}[a].\mathsf{max} \vee S.\mathsf{mems}[a].\mathsf{max} = \epsilon) \\
-  \wedge &amp; S' = S ~\href{../syntax/conventions.html#syntax-record}{\mbox{with}}~ \mathsf{mems}[a].\mathsf{data} = S.\mathsf{mems}[a].\mathsf{data}~(\def\mathdef703#1{\mathtt{0x#1}}\mathdef703{00})^{n\cdot64\,\mathrm{Ki}}) \\
+  \wedge &amp; S' = S ~\href{../syntax/conventions.html#syntax-record}{\mbox{with}}~ \mathsf{mems}[a].\mathsf{data} = S.\mathsf{mems}[a].\mathsf{data}~(\def\mathdef249#1{\mathtt{0x#1}}\mathdef249{00})^{n\cdot64\,\mathrm{Ki}}) \\
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} &amp;\hookrightarrow&amp; S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~{-1})
@@ -730,9 +730,9 @@ F; (\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}~x) &a
 <ol class="arabic simple">
 <li>Let <span class="math">\(F\)</span> be the <a class="reference internal" href="conventions.html#exec-notation-textual"><span class="std std-ref">current</span></a> <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a>.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-call-indirect"><span class="std std-ref">validation</span></a>, <span class="math">\(F.\mathsf{module}.\mathsf{tables}[0]\)</span> exists.</li>
-<li>Let <span class="math">\(a\)</span> be the <a class="reference internal" href="runtime.html#syntax-tableaddr"><span class="std std-ref">table address</span></a> <span class="math">\(F.\mathsf{module}.\mathsf{tables}[0]\)</span>.</li>
-<li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-call-indirect"><span class="std std-ref">validation</span></a>, <span class="math">\(S.\mathsf{tables}[a]\)</span> exists.</li>
-<li>Let <span class="math">\(\mathit{tab}\)</span> be the <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math">\(S.\mathsf{tables}[a]\)</span>.</li>
+<li>Let <span class="math">\(\mathit{ta}\)</span> be the <a class="reference internal" href="runtime.html#syntax-tableaddr"><span class="std std-ref">table address</span></a> <span class="math">\(F.\mathsf{module}.\mathsf{tables}[0]\)</span>.</li>
+<li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-call-indirect"><span class="std std-ref">validation</span></a>, <span class="math">\(S.\mathsf{tables}[\mathit{ta}]\)</span> exists.</li>
+<li>Let <span class="math">\(\mathit{tab}\)</span> be the <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math">\(S.\mathsf{tables}[\mathit{ta}]\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-call-indirect"><span class="std std-ref">validation</span></a>, <span class="math">\(F.\mathsf{module}.\mathsf{types}[x]\)</span> exists.</li>
 <li>Let <span class="math">\(\mathit{ft}_{\mathrm{expect}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(F.\mathsf{module}.\mathsf{types}[x]\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-call-indirect"><span class="std std-ref">validation</span></a>, a value with <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> is on the top of the stack.</li>
