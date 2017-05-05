@@ -82,7 +82,32 @@
 )
 
 (assert_invalid
+  (module (global f32 (f32.neg (f32.const 1))))
+  "constant expression required"
+)
+
+(assert_invalid
+  (module (global i32 (i32.const 0) (nop)))
+  "constant expression required"
+)
+
+(assert_invalid
+  (module (global i32 (nop)))
+  "constant expression required"
+)
+
+(assert_invalid
   (module (global i32 (f32.const 0)))
+  "type mismatch"
+)
+
+(assert_invalid
+  (module (global i32 (i32.const 0) (i32.const 0)))
+  "type mismatch"
+)
+
+(assert_invalid
+  (module (global i32 (;empty instruction sequence;)))
   "type mismatch"
 )
 

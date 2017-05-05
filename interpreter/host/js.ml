@@ -241,13 +241,13 @@ let assert_return_arithmetic_nan =
   assert_return_nan_bitpattern canonical_nan_of
 
 let wrap module_name item_name wrap_action wrap_assertion at =
-  let itypes, ikind, action = wrap_action at in
+  let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let item = Lib.List32.length itypes @@ at in
   let types = FuncType ([], []) :: itypes in
-  let imports = [{module_name; item_name; ikind} @@ at] in
-  let ekind = FuncExport @@ at in
-  let exports = [{name = Utf8.decode "run"; ekind; item} @@ at] in
+  let imports = [{module_name; item_name; idesc} @@ at] in
+  let edesc = FuncExport item @@ at in
+  let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
   let body =
     [ Block ([], action @ assertion @ [Return @@ at]) @@ at;
       Unreachable @@ at ]

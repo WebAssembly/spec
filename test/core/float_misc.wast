@@ -10,9 +10,9 @@
 ;; value-changing optimizations, and (d) that the WebAssembly implementation
 ;; doesn't exhibit any known implementation bugs.
 ;;
-;; This file supplements f32.wast, f64.wast, f32_cmp.wast, and f64_cmp.wast with
-;; additional single-instruction tests covering additional miscellaneous
-;; interesting cases.
+;; This file supplements f32.wast, f64.wast, f32_bitwise.wast, f64_bitwise.wast,
+;; f32_cmp.wast, and f64_cmp.wast with additional single-instruction tests
+;; covering additional miscellaneous interesting cases.
 
 (module
   (func (export "f32.add") (param $x f32) (param $y f32) (result f32) (f32.add (get_local $x) (get_local $y)))
@@ -56,10 +56,6 @@
 (assert_return (invoke "f32.add" (f32.const 1.0) (f32.const 0x1.000002p-24)) (f32.const 0x1.000002p+0))
 (assert_return (invoke "f64.add" (f64.const 1.0) (f64.const 0x1p-53)) (f64.const 0x1.0p+0))
 (assert_return (invoke "f64.add" (f64.const 1.0) (f64.const 0x1.0000000000001p-53)) (f64.const 0x1.0000000000001p+0))
-
-;; Test that what some systems call signaling NaN behaves as a quiet NaN.
-(assert_return_arithmetic_nan (invoke "f32.add" (f32.const nan:0x200000) (f32.const 1.0)))
-(assert_return_arithmetic_nan (invoke "f64.add" (f64.const nan:0x4000000000000) (f64.const 1.0)))
 
 ;; Max subnormal + min subnormal = min normal.
 (assert_return (invoke "f32.add" (f32.const 0x1p-149) (f32.const 0x1.fffffcp-127)) (f32.const 0x1p-126))
@@ -169,6 +165,12 @@
 ;; http://news.harvard.edu/gazette/story/2013/09/dawn-of-a-revolution/
 (assert_return (invoke "f32.add" (f32.const 2.0) (f32.const 2.0)) (f32.const 4.0))
 (assert_return (invoke "f64.add" (f64.const 2.0) (f64.const 2.0)) (f64.const 4.0))
+
+;; Test rounding above the greatest finite value.
+(assert_return (invoke "f32.add" (f32.const 0x1.fffffep+127) (f32.const 0x1.fffffep+102)) (f32.const 0x1.fffffep+127))
+(assert_return (invoke "f32.add" (f32.const 0x1.fffffep+127) (f32.const 0x1p+103)) (f32.const infinity))
+(assert_return (invoke "f64.add" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1.fffffffffffffp+969)) (f64.const 0x1.fffffffffffffp+1023))
+(assert_return (invoke "f64.add" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1p+970)) (f64.const infinity))
 
 ;; Test for a historic spreadsheet bug.
 ;; https://blogs.office.com/2007/09/25/calculation-issue-update/
@@ -606,11 +608,11 @@
 (assert_return (invoke "f64.copysign" (f64.const -nan:0x0f1e27a6b) (f64.const nan)) (f64.const nan:0x0f1e27a6b))
 (assert_return (invoke "f64.copysign" (f64.const -nan:0x0f1e27a6b) (f64.const -nan)) (f64.const -nan:0x0f1e27a6b))
 
-;; Test that ceil isn't implemented as adding 0.5 and rounding to nearest.
+;; Test values close to 1.0.
 (assert_return (invoke "f32.ceil" (f32.const 0x1.fffffep-1)) (f32.const 1.0))
-(assert_return (invoke "f32.ceil" (f32.const 0x1p-126)) (f32.const 1.0))
+(assert_return (invoke "f32.ceil" (f32.const 0x1.000002p+0)) (f32.const 2.0))
 (assert_return (invoke "f64.ceil" (f64.const 0x1.fffffffffffffp-1)) (f64.const 1.0))
-(assert_return (invoke "f64.ceil" (f64.const 0x1p-1022)) (f64.const 1.0))
+(assert_return (invoke "f64.ceil" (f64.const 0x1.0000000000001p+0)) (f64.const 2.0))
 
 ;; Test the maximum and minimum value for which ceil is not an identity operator.
 (assert_return (invoke "f32.ceil" (f32.const 0x1.fffffep+22)) (f32.const 0x1p+23))
@@ -618,11 +620,11 @@
 (assert_return (invoke "f64.ceil" (f64.const 0x1.fffffffffffffp+51)) (f64.const 0x1p+52))
 (assert_return (invoke "f64.ceil" (f64.const -0x1.fffffffffffffp+51)) (f64.const -0x1.ffffffffffffep+51))
 
-;; Test that floor isn't implemented as subtracting 0.5 and rounding to nearest.
+;; Test values close to -1.0.
 (assert_return (invoke "f32.floor" (f32.const -0x1.fffffep-1)) (f32.const -1.0))
-(assert_return (invoke "f32.floor" (f32.const -0x1p-126)) (f32.const -1.0))
+(assert_return (invoke "f32.floor" (f32.const -0x1.000002p+0)) (f32.const -2.0))
 (assert_return (invoke "f64.floor" (f64.const -0x1.fffffffffffffp-1)) (f64.const -1.0))
-(assert_return (invoke "f64.floor" (f64.const -0x1p-1022)) (f64.const -1.0))
+(assert_return (invoke "f64.floor" (f64.const -0x1.0000000000001p+0)) (f64.const -2.0))
 
 ;; Test the maximum and minimum value for which floor is not an identity operator.
 (assert_return (invoke "f32.floor" (f32.const -0x1.fffffep+22)) (f32.const -0x1p+23))

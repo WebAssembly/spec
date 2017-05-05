@@ -2,10 +2,10 @@
 
 This repository implements a reference interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down the exact semantics, and as a proxy for the (yet to be produced) formal specification of WebAssembly. For that purpose, the code is written in a fairly declarative, "speccy" way.
 
-Currently, it can
+The interpreter can
 
 * *decode*/*parse* and *validate* modules in binary or text format
-* *execute* test scripts with assertions about modules
+* *execute* scripts with module definitions, invocations, and assertions
 * *convert* between binary and text format (both directions)
 * *export* test scripts to self-contained JavaScript test cases
 * *run* as an interactive interpreter
@@ -181,7 +181,7 @@ align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
 block_sig : <type>*
-func_sig:   ( type <var> ) | <param>* <result>*
+func_sig:   ( type <var> )? <param>* <result>*
 global_sig: <type> | ( mut <type> )
 table_sig:  <nat> <nat>? <elem_type>
 memory_sig: <nat> <nat>?
@@ -231,7 +231,7 @@ op:
   <type>.<cvtop>/<type>
 
 func:    ( func <name>? <func_sig> <local>* <instr>* )
-         ( func <name>? ( export <string> ) <func_sig> <local>* <instrr>* ) ;; = (export <string> (func <N>) (func <name>? <func_sig> <local>* <instr>*)
+         ( func <name>? ( export <string> ) <func_sig> <local>* <instr>* )  ;; = (export <string> (func <N>)) (func <name>? <func_sig> <local>* <instr>*)
          ( func <name>? ( import <string> <string> ) <func_sig>)            ;; = (import <name>? <string> <string> (func <func_sig>))
 param:   ( param <type>* ) | ( param <name> <type> )
 result:  ( result <type> )
@@ -255,7 +255,7 @@ data:    ( data <var>? ( offset <instr>* ) <string>* )
 
 start:   ( start <var> )
 
-typedef: ( type <name>? ( func <funcsig> ) )
+typedef: ( type <name>? ( func <func_sig> ) )
 
 import:  ( import <string> <string> <imkind> )
 imkind:  ( func <name>? <func_sig> )

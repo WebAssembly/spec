@@ -9,5 +9,5 @@ Binary Format
    conventions
    values
    types
-   modules
    instructions
+   modules

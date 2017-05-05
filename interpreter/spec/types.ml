@@ -24,6 +24,29 @@ let size = function
   | I64Type | F64Type -> 8
 
 
+(* Filters *)
+
+let rec funcs = function
+  | [] -> []
+  | ExternalFuncType ft :: ets -> ft :: funcs ets
+  | _ :: ets -> funcs ets
+
+let rec tables = function
+  | [] -> []
+  | ExternalTableType tt :: ets -> tt :: tables ets
+  | _ :: ets -> tables ets
+
+let rec memories = function
+  | [] -> []
+  | ExternalMemoryType mt :: ets -> mt :: memories ets
+  | _ :: ets -> memories ets
+
+let rec globals = function
+  | [] -> []
+  | ExternalGlobalType ft :: ets -> ft :: globals ets
+  | _ :: ets -> globals ets
+
+
 (* String conversion *)
 
 let string_of_value_type = function

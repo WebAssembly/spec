@@ -537,7 +537,7 @@ Control Instructions
    \frac{
      C,\LABELS\,[t^?] \vdash \instr^\ast : [] \to [t^?]
    }{
-     C \vdash \BLOCK~[^?]~\instr^\ast~\END : [] \to [t^?]
+     C \vdash \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
 
 .. note::

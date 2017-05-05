@@ -46,6 +46,15 @@ let memory (c : context) x = lookup "memory" c.memories x
 
 (* Stack typing *)
 
+(*
+ * Note: The declarative typing rules are non-deterministic, that is, they
+ * have the liberty to locally "guess" the right types implied by the context.
+ * In the algorithmic formulation required here, stack types are hence modelled
+ * as lists of _options_ of types here, where `None` representss a locally
+ * unknown type. Furthermore, an ellipses flag represents arbitrary sequences
+ * of unknown types, in order to handle stack polymorphism algorithmically.
+ *)
+
 type ellipses = NoEllipses | Ellipses
 type infer_stack_type = ellipses * value_type option list
 type op_type = {ins : infer_stack_type; outs : infer_stack_type}
@@ -153,10 +162,16 @@ let check_arity n at =
  *   v  : value
  *   t  : value_type var
  *   ts : stack_type
+ *   x  : variable
  *
  * Note: To deal with the non-determinism in some of the declarative rules,
  * the function takes the current stack `s` as an additional argument, allowing
  * it to "peek" when it would otherwise have to guess an input type.
+ *
+ * Furthermore, stack-polymorphic types are given with the `-->...` operator:
+ * a type `ts1 -->... ts2` expresses any type `(ts1' @ ts1) -> (ts2' @ ts2)`
+ * where `ts1'` and `ts2'` would be chosen non-deterministically in the
+ * declarative typing rules.
  *)
 
 let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
@@ -301,6 +316,7 @@ and check_block (c : context) (es : instr list) (ts : stack_type) at =
  *   v : value
  *   t : value_type
  *   s : func_type
+ *   x : variable
  *)
 
 let check_func (c : context) (f : func) =
@@ -379,31 +395,31 @@ let check_start (c : context) (start : var option) =
   ) start
 
 let check_import (im : import) (c : context) : context =
-  let {module_name = _; item_name = _; ikind} = im.it in
-  match ikind.it with
+  let {module_name = _; item_name = _; idesc} = im.it in
+  match idesc.it with
   | FuncImport x ->
     {c with funcs = type_ c x :: c.funcs}
   | TableImport t ->
-    check_table_type t ikind.at; {c with tables = t :: c.tables}
+    check_table_type t idesc.at; {c with tables = t :: c.tables}
   | MemoryImport t ->
-    check_memory_type t ikind.at; {c with memories = t :: c.memories}
+    check_memory_type t idesc.at; {c with memories = t :: c.memories}
   | GlobalImport t ->
     let GlobalType (_, mut) = t in
-    require (mut = Immutable) ikind.at
+    require (mut = Immutable) idesc.at
       "mutable globals cannot be imported (yet)";
     {c with globals = t :: c.globals}
 
 module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
 
 let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
-  let {name; ekind; item} = ex.it in
-  (match ekind.it with
-  | FuncExport -> ignore (func c item)
-  | TableExport -> ignore (table c item)
-  | MemoryExport -> ignore (memory c item)
-  | GlobalExport ->
-    let GlobalType (_, mut) = global c item in
-    require (mut = Immutable) ekind.at
+  let {name; edesc} = ex.it in
+  (match edesc.it with
+  | FuncExport x -> ignore (func c x)
+  | TableExport x -> ignore (table c x)
+  | MemoryExport x -> ignore (memory c x)
+  | GlobalExport x ->
+    let GlobalType (_, mut) = global c x in
+    require (mut = Immutable) edesc.at
       "mutable globals cannot be exported (yet)"
   );
   require (not (NameSet.mem name set)) ex.at "duplicate export name";

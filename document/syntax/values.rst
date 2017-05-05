@@ -18,7 +18,7 @@ In the abstract syntax they are represented as hexadecimal literals.
 
 .. math::
    \begin{array}{llll}
-   \production{bytes} & \by &::=&
+   \production{bytes} & \byte &::=&
      \hex{00} ~|~ \dots ~|~ \hex{FF} \\
    \end{array}
 
@@ -28,7 +28,7 @@ Conventions
 
 * The meta variable :math:`b` range over bytes.
 
-* The meta function :math:`\byte(n)` denotes the byte representing the natural number :math:`n < 256`.
+* Bytes are sometimes interpreted as natural numbers :math:`n < 256`.
 
 
 .. _syntax-int:
@@ -69,7 +69,7 @@ and when interpreted as signed, positive values :math:`n \geq 2^{N-1}` convert t
 Conventions
 ...........
 
-* The meta variables :math:`m, n` range over unsigned integers.
+* The meta variables :math:`m, n, i` range over integers.
 
 * Numbers may be denoted by simple arithmetics, as in the grammar above.
 
@@ -86,7 +86,7 @@ Floating-Point
 .. math::
    \begin{array}{llll}
    \production{floating-point numbers} & \fN &::=&
-     \by^{N/8} \\
+     \byte^{N/8} \\
    \end{array}
 
 The two possible sizes :math:`N` are 32 and 64.
@@ -118,13 +118,25 @@ A vector can have at most :math:`2^{32}-1` elements.
 Names
 ~~~~~
 
-*Names* are vectors of bytes interpreted as character strings.
+*Names* are sequences of *scalar* `Unicode <http://www.unicode.org/versions/latest/>`_ *code points*.
 
 .. math::
    \begin{array}{llll}
    \production{names} & \name &::=&
-     \vec(\by) \\
+     \codepoint^\ast \\
+   \production{code points} & \codepoint &::=&
+     \unicode{0000} ~|~ \dots ~|~ \unicode{D7FF} ~|~
+     \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
    \end{array}
 
 .. todo::
-   Unicode?
+   The definition of a name as an arbitrary sequence of scalar code points is too general.
+   So would be the definition of a vector.
+   Only names whose UTF-8 encoding is within the bounds of the maximum vector lengths must be included.
+   How specify this?
+
+
+Convention
+..........
+
+* Code points are sometimes used interchangeably with natural numbers :math:`n < 1114112`.
