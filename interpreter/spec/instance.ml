@@ -1,6 +1,6 @@
 open Values
 
-module ExportMap = Map.Make(String)
+module ExportMap = Map.Make(struct type t = Ast.name let compare = compare end)
 
 type global = value ref
 
