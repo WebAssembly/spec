@@ -42,7 +42,7 @@ The following conventions are adopted in defining grammar rules for abstract syn
 Auxiliary Notation
 ~~~~~~~~~~~~~~~~~~
 
-When dealing with syntactic constructs the following notations and conventions are also used:
+When dealing with syntactic constructs the following notation is also used:
 
 * :math:`\epsilon` denotes the empty sequence.
 
@@ -50,7 +50,7 @@ When dealing with syntactic constructs the following notations and conventions a
 
 * :math:`s[i]` denotes the :math:`i`-th element of a sequence :math:`s`, starting from :math:`0`.
 
-* :math:`s[i:n]` denotes the sub-sequence of length :math:`n` of a sequence :math:`s` that consists of its :math:`i`-th to :math:`(i+n-1)`-th element.
+* :math:`s[i:n]` denotes the sub-sequence :math:`s[i]~\dots~s[i+n-1]` of a sequence :math:`s`.
 
 * :math:`s \with [i] = A` denotes the same sequence as :math:`s`,
   except that the :math:`i`-the element is replaced with :math:`A`.
@@ -58,10 +58,12 @@ When dealing with syntactic constructs the following notations and conventions a
 * :math:`s \with [i:n] = A^n` denotes the same sequence as :math:`s`,
   except that the sub-sequence :math:`s[i:n]` is replaced with :math:`A^n`.
 
-* :math:`x^n`, where :math:`x` is a non-terminal symbol, is treated as a meta variable ranging over respective sequences of :math:`x` (similarly for :math:`x^\ast`, :math:`x^+`, :math:`x^?`).
+Moreover, the following conventions are employed:
+
+* The notation :math:`x^n`, where :math:`x` is a non-terminal symbol, is treated as a meta variable ranging over respective sequences of :math:`x` (similarly for :math:`x^\ast`, :math:`x^+`, :math:`x^?`).
 
 * When given a sequence :math:`x^n`,
-  then the ocurrences of :math:`x` in a sequence written :math:`(A_1~x~A_2)^n` are assumed to be in pointwise correspondence with :math:`x^n`
+  then the occurrences of :math:`x` in a sequence written :math:`(A_1~x~A_2)^n` are assumed to be in point-wise correspondence with :math:`x^n`
   (similarly for :math:`x^\ast`, :math:`x^+`, :math:`x^?`).
   This implicitly expresses a form of mapping syntactic constructions over a sequence.
 
