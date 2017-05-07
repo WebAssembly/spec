@@ -7,6 +7,10 @@ which is currently serving as the official specification. Eventually, we expect
 to produce a specification either written in human-readable prose or in a formal
 specification language.
 
+It also holds a prototype which may eventually satisfy the need for a
+human-readable prose specification
+[here](https://github.com/WebAssembly/spec/tree/master/md-proto).
+
 It also holds the WebAssembly testsuite, which tests numerous aspects of
 conformance to the spec.
 
