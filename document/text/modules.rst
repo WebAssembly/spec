@@ -1,7 +1,7 @@
 Modules
 -------
 
-.. todo:: symbolic indices; free ordering
+.. todo:: free ordering
 
 
 .. _text-index:
@@ -12,13 +12,7 @@ Modules
 .. _text-globalidx:
 .. _text-localidx:
 .. _text-labelidx:
-.. _text-typebind:
-.. _text-funcbind:
-.. _text-tablebind:
-.. _text-membind:
-.. _text-globalbind:
-.. _text-localbind:
-.. _text-labelbind:
+.. _text-label:
 .. index:: index, type index, function index, table index, memory index, global index, local index, label index
    pair: text format; type index
    pair: text format; function index
@@ -30,6 +24,9 @@ Modules
 
 Indices
 ~~~~~~~
+
+All :ref:`indices <syntax-index>` can be given either in raw numeric or in symbolic form.
+In the latter case, they are looked up in the suitable space of the :ref:`identifier context <text-context>`.
 
 .. math::
    \begin{array}{llclll}
@@ -56,38 +53,6 @@ Indices
      v{:}\Tid &\Rightarrow& x & (I.\LABELS[x] = v) \\
    \end{array}
 
-.. math::
-   \begin{array}{llclll}
-   \production{type binder} & \Ttypebind_C &::=&
-     \epsilon &\Rightarrow& C \with \TYPES = C.\TYPES~(\epsilon) \\ &&|&
-     v{:}\Tvar &\Rightarrow& C \with \TYPES = C.\TYPES~v
-       & (v \notin C.\TYPES) \\
-   \production{function binder} & \Tfuncbind_C &::=&
-     \epsilon &\Rightarrow& C \with \FUNCS = C.\FUNCS~(\epsilon) \\ &&|&
-     v{:}\Tvar &\Rightarrow& C \with \FUNCS = C.\FUNCS~v
-       & (v \notin C.\FUNCS) \\
-   \production{table binder} & \Ttablebind_C &::=&
-     \epsilon &\Rightarrow& C \with \TABLES = C.\TABLES~(\epsilon) \\ &&|&
-     v{:}\Tvar &\Rightarrow& C \with \TABLES = C.\TABLES~v
-       & (v \notin C.\TABLES) \\
-   \production{memory binder} & \Tmembind_C &::=&
-     \epsilon &\Rightarrow& C \with \MEMS = C.\MEMS~(\epsilon) \\ &&|&
-     v{:}\Tvar &\Rightarrow& C \with \MEMS = C.\MEMS~v
-       & (v \notin C.\MEMS) \\
-   \production{global binder} & \Tglobalbind_C &::=&
-     \epsilon &\Rightarrow& C \with \GLOBALS = C.\GLOBALS~(\epsilon) \\ &&|&
-     v{:}\Tvar &\Rightarrow& C \with \GLOBALS = C.\GLOBALS~v
-       & (v \notin C.\GLOBALS) \\
-   \production{local binder} & \Tlocalbind_C &::=&
-     \epsilon &\Rightarrow& C \with \LOCALS = C.\LOCALS~(\epsilon) \\ &&|&
-     v{:}\Tvar &\Rightarrow& C \with \LOCALS = C.\LOCALS~v
-       & (v \notin C.\LOCALS) \\
-   \production{label binder} & \Tlabelbind_I &::=&
-     \epsilon &\Rightarrow& I \with \LABELS = I.\LABELS~(\epsilon) \\ &&|&
-     v{:}\Tid &\Rightarrow& I \with \LABELS = v~I.\LABELS
-       & (v \notin I.\LABELS) \\
-   \end{array}
-
 
 .. _text-type:
 .. _text-typeuse:
@@ -112,6 +77,13 @@ Types
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
        &\Rightarrow& x \\
    \end{array}
+
+
+Abbreviations
+.............
+
+A |Ttypeuse| may be replaced by inline function parameters and result annotations.
+@@@@
 
 
 .. _text-import:
@@ -147,17 +119,56 @@ Imports
 Functions
 ~~~~~~~~~
 
-.. todo:: inline type, inline import/export, multi-locals
+.. todo:: inline type, inline import/export
 
 .. math::
    \begin{array}{llclll}
    \production{function} & \Tfunc_I &::=&
-     \text{(}~\text{func}~~x{:}\Ttypeuse_I~~(t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
-       &\Rightarrow& \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\X{in}^\ast~\END \}
-       & (I' = I \with \LOCALS = (\id(\Tlocal))^\ast) \\
+     \text{(}~\text{func}~~\Tid^?~~x{:}\Ttypeuse_I~~
+     (t_1{:}\Tparam)^\ast~~(t_2{:}\Tresult)^\ast~~(t_3{:}\Tlocal)^\ast~~
+     (\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
+       &\Rightarrow& \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\X{in}^\ast~\END \} \\ &&& \qquad
+         (\begin{array}[n]{@{}l@{}}
+          I' = I \with \LOCALS~\F{id}(\Tparam)^\ast)~\F{id}(\Tlocal)^\ast \\
+          I.\TYPEDEFS[x] = t_4^n \to t_5^n \\
+          t_1^\ast \to t_2^\ast = [] \to [] \vee )
+          \end{array} \\
    \production{local} & \Tlocal &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype~\text{)}
        &\Rightarrow& t \\
+   \end{array}
+
+The definition of the local :ref:`identifier context <text-context>` :math:`I'` uses the following auxiliary notation to filter out optional identifiers from parameters and locals:
+
+.. math::
+   \begin{array}{lcl@{\qquad\qquad}l}
+   \F{id}(\text{(}~\text{param}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
+   \F{id}(\text{(}~\text{local}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+A number of abbreviations are defined for functions.
+
+Multiple anonymous locals may be combined into a single declaration:
+
+.. math::
+   \begin{array}{llclll}
+   \production{local} &
+     \text{(}~~\text{local}~~\Tvaltype^\ast~~\text{)} &\equiv&
+     (\text{(}~~\text{local}~~\Tvaltype~~\text{)})^\ast \\
+   \end{array}
+
+The function type may be specified inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{function} &
+     \text{(}~\text{func}~~\Tid^?~~\Ttypeuse~~\Tparam^\ast~~\Tresult_I~~\dots~\text{)} &\equiv&
+     \text{(}~\text{func}~~\Tid^?~~\Ttypeuse~~\Tparam^\ast~~\Tresult_I~~\dots~\text{)} \\ &
+     \text{(}~\text{func}~~\Tid^?~~\Ttypeuse~~\Tparam^\ast~~\Tresult_I~~\dots~\text{)} &\equiv&
    \end{array}
 
 
@@ -306,7 +317,7 @@ Modules
      (\start{:}\Tstart_I)^? \\ &&&
      (\elem{:}\Telem_I)^\ast \\ &&&
      (\data{:}\Tdata_I)^\ast
-     \quad\Rightarrow\quad \{~
+     \quad\Rightarrow\quad \\ &&&\qquad \{~
        \begin{array}[t]{@{}l@{}}
        \TYPES~\functype^\ast, \\
        \FUNCS~\func^\ast, \\
@@ -321,12 +332,28 @@ Modules
       \end{array} \\ &&&
    \qquad (I = \{~
      \begin{array}[t]{@{}l@{}}
-     \TYPES~(\id(\Ttype))^\ast, \\
-     \FUNCS~\id^\ast(\funcs(\Timport^\ast))~(\id(\Tfunc))^\ast, \\
-     \TABLES~\id^\ast(\tables(\Timport^\ast))~(\id(\Ttable))^\ast, \\
-     \MEMS~\id^\ast(\mems(\Timport^\ast))~(\id(\Tmem))^\ast, \\
-     \GLOBALS~\id^\ast(\globals(\Timport^\ast))~(\id(\Tglobal))^\ast, \\
+     \TYPES~(\F{id}(\Ttype))^\ast, \\
+     \FUNCS~\F{funcids}(\Timport^\ast)~(\F{id}(\Tfunc))^\ast, \\
+     \TABLES~\F{tableids}(\Timport^\ast)~(\F{id}(\Ttable))^\ast, \\
+     \MEMS~\F{memids}(\Timport^\ast)~(\F{id}(\Tmem))^\ast, \\
+     \GLOBALS~\F{globalids}(\Timport^\ast)~(\F{id}(\Tglobal))^\ast, \\
      \LOCALS~\epsilon, \\
-     \LABELS~\epsilon ~\}) \\
+     \LABELS~\epsilon ~\}~\mbox{well-formed}) \\
      \end{array}
+   \end{array}
+
+The definition of the :ref:`identifier context <text-context>` :math:`I` uses the following auxiliary notation to filters out optional identifiers from definitions and imports in an order-preserving fashion:
+
+.. math::
+   \begin{array}{lcl@{\qquad\qquad}l}
+   \F{id}(\text{(}~\text{type}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
+   \F{id}(\text{(}~\text{func}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
+   \F{id}(\text{(}~\text{table}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
+   \F{id}(\text{(}~\text{memory}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
+   \F{id}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\[1ex]
+   \F{desc}(\text{(}~\text{import}~\dots~\Timportdesc~\text{)}) &=& \Timportdesc \\[1ex]
+   \F{funcids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{func}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
+   \F{tableids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{table}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
+   \F{memids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{memory}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
+   \F{globalids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{global}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
    \end{array}

@@ -26,17 +26,17 @@ Value Types
 .. index:: result type, value type
    pair: text format; result type
 
-Block Types
-~~~~~~~~~~~
+Result Types
+~~~~~~~~~~~~
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{result type} & \Tblocktype &::=&
+   \production{result type} & \Tresulttype &::=&
      (t{:}\Tresult)^? &\Rightarrow& [t^?] \\
    \end{array}
 
 .. note::
-   In future versions of WebAssembly, this scheme may be extended to support multiple results or more general block types.
+   In future versions of WebAssembly, this scheme may be extended to support multiple results or more general result types.
 
 
 .. _text-functype:
@@ -52,11 +52,26 @@ Function Types
      \text{(}~\text{func}~~t_1^\ast{:\,}\Tvec(\Tparam)~~t_2^\ast{:\,}\Tvec(\Tresult)~\text{)}
        &\Rightarrow& [t_1^\ast] \to [t_2^\ast] \\
    \production{parameter} & \Tparam &::=&
-     \text{(}~\text{param}~~t{:}\Tvaltype~\text{)}
+     \text{(}~\text{param}~~\Tid^?~~t{:}\Tvaltype~\text{)}
        &\Rightarrow& t \\
    \production{result} & \Tresult &::=&
      \text{(}~\text{result}~~t{:}\Tvaltype~\text{)}
        &\Rightarrow& t \\
+   \end{array}
+
+Abbreviations
+.............
+
+Multiple anonymous parameters or results may be combined into a single declaration:
+
+.. math::
+   \begin{array}{llclll}
+   \production{parameter} &
+     \text{(}~~\text{param}~~\Tvaltype^\ast~~\text{)} &\equiv&
+     (\text{(}~~\text{param}~~\Tvaltype~~\text{)})^\ast \\
+   \production{result} &
+     \text{(}~~\text{result}~~\Tvaltype^\ast~~\text{)} &\equiv&
+     (\text{(}~~\text{result}~~\Tvaltype~~\text{)})^\ast \\
    \end{array}
 
 

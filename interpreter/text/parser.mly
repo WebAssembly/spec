@@ -137,21 +137,21 @@ let anon_label (c : context) =
 
 let empty_type = FuncType ([], [])
 
-let explicit_sig (c : context) var_sem ty at =
-  let x = var_sem c type_ in
-  if
-    x.it < Lib.List32.length c.types.tlist &&
-    ty <> empty_type &&
-    ty <> Lib.List32.nth c.types.tlist x.it
-  then
-    error at "signature mismatch";
-  x
-
 let inline_type (c : context) ty at =
   match Lib.List.index_of ty c.types.tlist with
   | Some i -> Int32.of_int i @@ at
   | None ->
     let i = Lib.List32.length c.types.tlist in ignore (anon_type c ty); i @@ at
+
+let inline_type_explicit (c : context) x ty at =
+  if
+    ty <> empty_type &&
+    (x.it >= Lib.List32.length c.types.tlist ||
+     ty <> Lib.List32.nth c.types.tlist x.it)
+  then
+    error at "inline function type does not match explicit type"
+  else
+    x
 
 %}
 
@@ -425,14 +425,14 @@ func :
     { let at = at () in
       fun c ->
       let x = $3 c anon_func bind_func @@ at in
-      let t = explicit_sig c $5 (fst $6) at in
+      let t = inline_type_explicit c ($5 c type_) (fst $6) at in
       (fun () -> {(snd $6 (enter_func c)) with ftype = t} @@ at),
       $4 (FuncExport x) c }
   /* Duplicate above for empty inline_export_opt to avoid LR(1) conflict. */
   | LPAR FUNC bind_var_opt type_use func_fields RPAR
     { let at = at () in
       fun c -> ignore ($3 c anon_func bind_func);
-      let t = explicit_sig c $4 (fst $5) at in
+      let t = inline_type_explicit c ($4 c type_) (fst $5) at in
       (fun () -> {(snd $5 (enter_func c)) with ftype = t} @@ at),
       [] }
   | LPAR FUNC bind_var_opt inline_export func_fields RPAR  /* Sugar */

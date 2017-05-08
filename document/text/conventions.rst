@@ -1,4 +1,4 @@
-.. index:: ! text format, Unicode, UTF-8
+.. index:: ! text format, Unicode, UTF-8, S-expression
 
 Conventions
 -----------
@@ -90,6 +90,7 @@ When dealing with binary encodings the following notation is also used:
 
 
 .. text-context:
+.. text-context-wf:
 .. index:: ! identifier context, identifier, index, index space
 
 Contexts
@@ -98,6 +99,7 @@ Contexts
 The text format allows to use symbolic :ref:`identifiers <text-id>` in place of :ref:`indices <syntax-index>`.
 To resolve these identifiers into concrete indices,
 some grammar production are indexed by an *identifier context* that records the declared identifiers in each :ref:`index space <syntax-index>`.
+In addition, the context records the types defined in the module, so that parameter indices can be computed.
 
 It is convenient to define identifier contexts as :ref:`records <syntax-record>` :math:`I` with abstract syntax:
 
@@ -111,11 +113,12 @@ It is convenient to define identifier contexts as :ref:`records <syntax-record>`
         & \MEMS & (\Tid^?)^\ast, \\
         & \GLOBALS & (\Tid^?)^\ast, \\
         & \LOCALS & (\Tid^?)^\ast, \\
-        & \LABELS & (\Tid^?)^\ast ~\} \\
+        & \LABELS & (\Tid^?)^\ast, \\
+        & \TYPEDEFS & \functype^\ast ~\} \\
      \end{array}
    \end{array}
 
 For each index space, an identifier context contains the list of :ref:`identifiers <text-id>` assigned to the defined indices.
 Unnamed indices are associated with empty (:math:`\epsilon`) entries in these lists.
 
-It is an invariant of the specification that no component contains duplicate identifiers.
+An identifier context is *well-formed* if no index space contains duplicate identifiers.

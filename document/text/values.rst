@@ -46,7 +46,7 @@ All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal
      d{:}\Tdigit &\Rightarrow& d \\ &&|&
      n{:}\Tnum~~d{:}\Tdigit &\Rightarrow& 10\cdot n + d \\
    \production{hexadecimal number} & \Thexnum &::=&
-     \text{0x}~~h{:}\Thexdigit &\Rightarrow& h \\ &&|&
+     h{:}\Thexdigit &\Rightarrow& h \\ &&|&
      n{:}\Thexnum~~h{:}\Thexdigit &\Rightarrow& 16\cdot n + h \\
    \end{array}
 
@@ -57,10 +57,10 @@ Their value must lie within the range of the respective type.
    \begin{array}{llclll@{\qquad}l}
    \production{unsigned integer} & \TuX{N} &::=&
      n{:}\Tnum &\Rightarrow& n & (n < 2^N) \\ &&|&
-     n{:}\Thexnum &\Rightarrow& n & (n < 2^N) \\
+     \text{0x}~~n{:}\Thexnum &\Rightarrow& n & (n < 2^N) \\
    \production{signed integer} & \TsX{N} &::=&
      s{:}\Tsign~~n{:}\Tnum &\Rightarrow& s\cdot n & (-2^{N-1} \leq s\cdot n < 2^{N-1}) \\ &&|&
-     s{:}\Tsign~~n{:}\Thexnum &\Rightarrow& s\cdot n & (-2^{N-1} \leq s\cdot n < 2^{N-1}) \\
+     s{:}\Tsign~~\text{0x}~~n{:}\Thexnum &\Rightarrow& s\cdot n & (-2^{N-1} \leq s\cdot n < 2^{N-1}) \\
    \end{array}
 
 :ref:`Uninterpreted integers <syntax-int>` can be written as either signed or unsigned, and are normalized to unsigned in the abstract syntax.
@@ -110,18 +110,18 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      s{:}\Tsign~p{:}\Tnum~\text{.}~q{:}\Tfrac~(\text{E}~|~\text{e})~t{:}\Tsign~e{:}\Tnum
        &\Rightarrow& s\cdot(p+q)\cdot 10^{t\cdot e} \\
    \production{hexadecimal floating-point number} & \Thexfloat &::=&
-     s{:}\Tsign~p{:}\Thexnum~\text{.}~q{:}\Thexfrac
+     s{:}\Tsign~\text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac
        &\Rightarrow& s\cdot(p+q) \\ &&|&
-     s{:}\Tsign~p{:}\Thexnum~(\text{P}~|~\text{p})~t{:}\Tsign~e{:}\Tnum
+     s{:}\Tsign~\text{0x}~p{:}\Thexnum~(\text{P}~|~\text{p})~t{:}\Tsign~e{:}\Tnum
        &\Rightarrow& s\cdot p\cdot 2^{t\cdot e} \\ &&|&
-     s{:}\Tsign~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~t{:}\Tsign~e{:}\Tnum
+     s{:}\Tsign~\text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~t{:}\Tsign~e{:}\Tnum
        &\Rightarrow& s\cdot(p+q)\cdot 2^{t\cdot e} \\
    \production{floating-point value} & \TfX{N} &::=&
      z{:}\Tfloat &\Rightarrow& b^\ast & (\ieee_N(z) = b^\ast) \\ &&|&
      z{:}\Thexfloat &\Rightarrow& b^\ast & (\ieee_N(z) = b^\ast) \\ &&|&
      s{:}\Tsign~\text{inf} &\Rightarrow& b^\ast & (\ieeeinf_N(s) = b^\ast) \\ &&|&
      s{:}\Tsign~\text{nan} &\Rightarrow& b^\ast & (\ieeenan_N(s, 0) = b^\ast) \\ &&|&
-     s{:}\Tsign~\text{nan\!:}~n{:}\Thexnum &\Rightarrow& b^\ast & (\ieeenan_N(s, n) = b^\ast) \\
+     s{:}\Tsign~\text{nan\!:}~\text{0x}~n{:}\Thexnum &\Rightarrow& b^\ast & (\ieeenan_N(s, n) = b^\ast) \\
    \end{array}
 
 .. todo:: IEEE encoding
@@ -134,7 +134,7 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
 Vectors
 ~~~~~~~
 
-:ref:`Vectors <syntax-vec>` are written as ordinary sequences, but with restricted length.
+:ref:`Vectors <syntax-vec>` are written as plain sequences, but with restricted length.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -212,7 +212,7 @@ Identifiers
 ~~~~~~~~~~~
 
 :ref:`Indices <syntax-index>` can be given in both numeric and symbolic form.
-Symbolic *identifiers* standing for indices start with :math:`\text{$}`, followed by any sequence of printable `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket (parentheses, square brackets, or braces).
+Symbolic *identifiers* standing for indices start with :math:`\text{$}`, followed by any sequence of printable `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}

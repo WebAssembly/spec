@@ -490,8 +490,14 @@
 .. |Talign| mathdef:: \xref{text/instructions}{text-memarg}{\T{align}}
 .. |Toffset| mathdef:: \xref{text/instructions}{text-memarg}{\T{offset}}
 
+.. |Tlabel| mathdef:: \xref{text/instructions}{text-label}{\T{label}}
 .. |Tinstr| mathdef:: \xref{text/instructions}{text-instr}{\T{instr}}
 .. |Tplaininstr| mathdef:: \xref{text/instructions}{text-plaininstr}{\T{plaininstr}}
 .. |Tblockinstr| mathdef:: \xref{text/instructions}{text-blockinstr}{\T{blockinstr}}
 .. |Tfoldedinstr| mathdef:: \xref{text/instructions}{text-foldedinstr}{\T{foldedinstr}}
 .. |Texpr| mathdef:: \xref{text/instructions}{text-expr}{\T{expr}}
+
+
+.. Context, textual
+
+.. |TYPEDEFS| mathdef:: \K{typedefs}

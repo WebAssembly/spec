@@ -167,7 +167,7 @@ The implementation consumes a WebAssembly AST given in S-expression syntax. Here
 value: <int> | <float>
 var: <int> | <name>
 name: $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
-string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex>)*"
+string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
 
 type: i32 | i64 | f32 | f64
 elem_type: anyfunc
@@ -282,6 +282,8 @@ A module of the form `(module <string>+)` is given in binary form and will be de
 
 The segment strings in the memory field are used to initialize the consecutive memory at the given offset.
 The `<size>` in the expansion of the two short-hand forms for `table` and `memory` is the minimal size that can hold the segment: the number of `<var>`s for tables, and the accumulative length of the strings rounded up to page size for memories.
+
+In addition to the grammar rules above, the fields of a module may appear in any order, except that all imports must occur before the first proper definition of a function, table, memory, or global.
 
 Comments can be written in one of two ways:
 

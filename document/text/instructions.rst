@@ -4,8 +4,8 @@
 Instructions
 ------------
 
-.. todo:: symbolic labels
-
+Instructions are syntactically distinguished into *plain* and *structured* instructions.
+Both can also be written in :ref:`folded <text-foldedinstr>` form.
 
 .. math::
    \begin{array}{llclll}
@@ -16,6 +16,26 @@ Instructions
        &\Rightarrow& \X{in} \\ &&|&
      \X{in}^\ast{:}\Tfoldedinstr_I
        &\Rightarrow& \X{in}^\ast \\
+   \end{array}
+
+
+.. _text-label:
+.. index:: index, label index
+   pair: text format; label index
+
+Labels
+~~~~~~
+
+All :ref:`indices <text-index>` can be given either in raw numeric or in symbolic form.
+:ref:`Labels <syntax-labelidx>` are the only symbolic indices that can be defined locally in an :ref:`instruction sequence <text-instr-seq>`.
+The following grammar handles the corresponding update to the :ref:`identifier context <text-context>` by producing a context with an additional label entry.
+
+.. math::
+   \begin{array}{llclll}
+   \production{label} & \Tlabel_I &::=&
+     \epsilon &\Rightarrow& I \with \LABELS~(\epsilon)~I.\LABELS \\ &&|&
+     v{:}\Tid &\Rightarrow& I \with \LABELS~v~I.\LABELS
+       & (v \notin I.\LABELS) \\
    \end{array}
 
 
@@ -41,13 +61,13 @@ Control Instructions
 .. math::
    \begin{array}{llclll}
    \production{block instruction} & \Tblockinstr_I &::=&
-     \text{block}~~I'{:}\Tlabelbind_I~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}
+     \text{block}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}
        &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \text{loop}~~I'{:}\Tlabelbind_I~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}
+     \text{loop}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}
        &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \text{if}~~I'{:}\Tlabelbind_I~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}
+     \text{if}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}
        &\Rightarrow& \IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
-     \text{if}~~I'{:}\Tlabelbind_I~~\X{rt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
+     \text{if}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
        \text{else}~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}
        &\Rightarrow& \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\
    \production{plain instruction} & \Tplaininstr_I &::=&
@@ -62,8 +82,19 @@ Control Instructions
      \text{call\_indirect}~~x{:}\Ttypeidx_I &\Rightarrow& \CALLINDIRECT~x \\
    \end{array}
 
-.. note::
-   The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitted if the following instruction sequence is empty.
+
+Abbreviations
+.............
+
+The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitted if the following instruction sequence is empty.
+
+.. math::
+   \begin{array}{llclll}
+   \production{block instruction} &
+     \text{if}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{end}
+       &\equiv&
+     \text{if}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{else}~~\text{end}
+   \end{array}
 
 
 .. _text-instr-parametric:
@@ -358,23 +389,42 @@ Numeric Instructions
    \end{array}
 
 
-.. _text-foldedinstr:
+.. index:: ! folded instruction, S-expression
+
 
 Folded Instructions
 ~~~~~~~~~~~~~~~~~~~
 
+As a further abbreviation, instructions can also be written in *folded* S-expression form.
+
 .. math::
+   \begin{array}{lllll}
+   \production{instruction} & 
+     \text{(}~\Tplaininstr~~\Tfoldedinstr^\ast~\text{)}
+       &\equiv\quad \Tfoldedinstr^\ast~~\Tplaininstr \\ &
+     \text{(}~\text{block}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~\text{)}
+       &\equiv\quad \text{block}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{end} \\ &
+     \text{(}~\text{loop}~~\Tresulttype~~\Tinstr^\ast~\text{)}
+       &\equiv\quad \text{loop}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{end} \\ &
+     \text{(}~\text{if}~~\Tlabel~~\Tresulttype~~\Tfoldedinstr
+       &\hspace{-1ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)}^?~~\text{)}
+       \quad\equiv \\ &\qquad
+         \Tfoldedinstr~~\text{if}~~\Tresulttype \hspace{-2em}&
+         ~\Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\
+   \end{array}
+
+.. math (commented out)
    \begin{array}{llclll}
    \production{folded instruction} & \Tfoldedinstr_I &::=&
      \text{(}~\X{in}{:}\Tplaininstr~~(\X{op}{:}\Tfoldedinstr_I)^\ast~\text{)}
        &\Rightarrow& \X{op}^\ast~\X{in} \\ &&|&
-     \text{(}~\text{block}~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
+     \text{(}~\text{block}~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
        &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \text{(}~\text{loop}~~\X{rt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
+     \text{(}~\text{loop}~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
        &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \text{(}~\text{if}~~\X{rt}{:}\Tblocktype~~\X{in}_0^\ast{:}\Tfoldedinstr_I~~\text{(}~\text{then}~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}~~\text{)}
+     \text{(}~\text{if}~~\X{rt}{:}\Tresulttype~~\X{in}_0^\ast{:}\Tfoldedinstr_I~~\text{(}~\text{then}~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}~~\text{)}
        &\Rightarrow& \X{in}_0^\ast~~\IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
-     \text{(}~\text{if}~~\X{rt}{:}\Tblocktype~~\X{in}_0^\ast{:}\Tfoldedinstr_I~~\text{(}~\text{then}~~(\X{in}_1{:}\Tinstr_{I'})^\ast~\text{)}~~
+     \text{(}~\text{if}~~\X{rt}{:}\Tresulttype~~\X{in}_0^\ast{:}\Tfoldedinstr_I~~\text{(}~\text{then}~~(\X{in}_1{:}\Tinstr_{I'})^\ast~\text{)}~~
        \text{(}~\text{else}~~(\X{in}_2{:}\Tinstr_{I'})^\ast~\text{)}~~\text{)}
        &\Rightarrow& \X{in}_0^\ast~~\IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\
    \end{array}

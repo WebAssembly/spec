@@ -170,7 +170,7 @@ let lookup (mods : modules) x_opt name at =
         else "unknown module " ^ of_var_opt mods x_opt ^ " within script"))
   in try ExportMap.find name exports with Not_found ->
     raise (Eval.Crash (at, "unknown export \"" ^
-      String.escaped (Utf8.encode name) ^ "\" within module"))
+      string_of_name name ^ "\" within module"))
 
 
 (* Wrappers *)

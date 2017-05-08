@@ -188,8 +188,6 @@ let input_stdin run =
 
 (* Printing *)
 
-let string_of_name n = String.escaped (Utf8.encode n)
-
 let print_import m im =
   let open Types in
   let category, annotation =
@@ -199,9 +197,9 @@ let print_import m im =
     | ExternalMemoryType t -> "memory", string_of_memory_type t
     | ExternalGlobalType t -> "global", string_of_global_type t
   in
-  Printf.printf "  import %s %S %S : %s\n"
-    category (string_of_name im.it.Ast.module_name)
-      (string_of_name im.it.Ast.item_name) annotation
+  Printf.printf "  import %s \"%s\" \"%s\" : %s\n"
+    category (Ast.string_of_name im.it.Ast.module_name)
+      (Ast.string_of_name im.it.Ast.item_name) annotation
 
 let print_export m ex =
   let open Types in
@@ -212,8 +210,8 @@ let print_export m ex =
     | ExternalMemoryType t -> "memory", string_of_memory_type t
     | ExternalGlobalType t -> "global", string_of_global_type t
   in
-  Printf.printf "  export %s %S : %s\n"
-    category (string_of_name ex.it.Ast.name) annotation
+  Printf.printf "  export %s \"%s\" : %s\n"
+    category (Ast.string_of_name ex.it.Ast.name) annotation
 
 let print_module x_opt m =
   Printf.printf "module%s :\n"
@@ -275,7 +273,7 @@ let run_definition def =
 let run_action act =
   match act.it with
   | Invoke (x_opt, name, vs) ->
-    trace ("Invoking function \"" ^ string_of_name name ^ "\"...");
+    trace ("Invoking function \"" ^ Ast.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternalFunc f) ->
@@ -285,7 +283,7 @@ let run_action act =
     )
 
  | Get (x_opt, name) ->
-    trace ("Getting global \"" ^ string_of_name name ^ "\"...");
+    trace ("Getting global \"" ^ Ast.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternalGlobal v) -> [v]
@@ -425,7 +423,7 @@ let rec run_command cmd =
   | Register (name, x_opt) ->
     quote := cmd :: !quote;
     if not !Flags.dry then begin
-      trace ("Registering module \"" ^ string_of_name name ^ "\"...");
+      trace ("Registering module \"" ^ Ast.string_of_name name ^ "\"...");
       let inst = lookup_instance x_opt cmd.at in
       registry := Map.add (Utf8.encode name) inst !registry;
       Import.register name (lookup_registry (Utf8.encode name))
