@@ -114,6 +114,11 @@ let rec list f n s = if n = 0 then [] else let x = f s in x :: list f (n - 1) s
 let opt f b s = if b then Some (f s) else None
 let vec f s = let n = len32 s in list f n s
 
+let name s =
+  let pos = pos s in
+  try Utf8.decode (string s) with Utf8.Utf8 ->
+    error s pos "invalid UTF-8 encoding"
+
 let sized f s =
   let size = len32 s in
   let start = pos s in
@@ -491,8 +496,8 @@ let import_desc s =
   | _ -> error s (pos s - 1) "invalid import kind"
 
 let import s =
-  let module_name = string s in
-  let item_name = string s in
+  let module_name = name s in
+  let item_name = name s in
   let idesc = at import_desc s in
   {module_name; item_name; idesc}
 
@@ -548,7 +553,7 @@ let export_desc s =
   | _ -> error s (pos s - 1) "invalid export kind"
 
 let export s =
-  let name = string s in
+  let name = name s in
   let edesc = at export_desc s in
   {name; edesc}
 
@@ -607,7 +612,7 @@ let data_section s =
 
 let custom size s =
   let start = pos s in
-  let _id = string s in
+  let _id = name s in
   skip (size - (pos s - start)) s;
   true
 

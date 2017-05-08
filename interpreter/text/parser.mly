@@ -48,6 +48,9 @@ let nat s at =
 let nat32 s at =
   try I32.of_string_u s with Failure _ -> error at "i32 constant out of range"
 
+let name s at =
+  try Utf8.decode s with Utf8.Utf8 -> error at "invalid UTF-8 encoding"
+
 
 (* Symbolic variables *)
 
@@ -195,6 +198,9 @@ let inline_type (c : context) ty at =
 %%
 
 /* Auxiliaries */
+
+name :
+  | TEXT { name $1 (at ()) }
 
 text_list :
   | /* empty */ { "" }
@@ -537,7 +543,7 @@ import_desc :
     { fun c -> ignore ($3 c anon_global bind_global); GlobalImport $4 }
 
 import :
-  | LPAR IMPORT TEXT TEXT import_desc RPAR
+  | LPAR IMPORT name name import_desc RPAR
     { let at = at () and at5 = ati 5 in
       fun c -> {module_name = $3; item_name = $4; idesc = $5 c @@ at5} @@ at }
   | LPAR FUNC bind_var_opt inline_import type_use RPAR  /* Sugar */
@@ -567,7 +573,7 @@ import :
         idesc = GlobalImport $5 @@ at } @@ at }
 
 inline_import :
-  | LPAR IMPORT TEXT TEXT RPAR { $3, $4 }
+  | LPAR IMPORT name name RPAR { $3, $4 }
 
 export_desc :
   | LPAR FUNC var RPAR { fun c -> FuncExport ($3 c func) }
@@ -576,7 +582,7 @@ export_desc :
   | LPAR GLOBAL var RPAR { fun c -> GlobalExport ($3 c global) }
 
 export :
-  | LPAR EXPORT TEXT export_desc RPAR
+  | LPAR EXPORT name export_desc RPAR
     { let at = at () and at4 = ati 4 in
       fun c -> {name = $3; edesc = $4 c @@ at4} @@ at }
 
@@ -585,7 +591,7 @@ inline_export_opt :
   | inline_export { $1 }
 
 inline_export :
-  | LPAR EXPORT TEXT RPAR
+  | LPAR EXPORT name RPAR
     { let at = at () in fun d c -> [{name = $3; edesc = d @@ at} @@ at] }
 
 
@@ -658,9 +664,9 @@ script_var_opt :
   | VAR { Some ($1 @@ at ()) }  /* Sugar */
 
 action :
-  | LPAR INVOKE script_var_opt TEXT const_list RPAR
+  | LPAR INVOKE script_var_opt name const_list RPAR
     { Invoke ($3, $4, $5) @@ at () }
-  | LPAR GET script_var_opt TEXT RPAR
+  | LPAR GET script_var_opt name RPAR
     { Get ($3, $4) @@ at() }
 
 assertion :
@@ -682,7 +688,7 @@ cmd :
   | action { Action $1 @@ at () }
   | assertion { Assertion $1 @@ at () }
   | module_ { Module (fst $1, snd $1) @@ at () }
-  | LPAR REGISTER TEXT script_var_opt RPAR { Register ($3, $4) @@ at () }
+  | LPAR REGISTER name script_var_opt RPAR { Register ($3, $4) @@ at () }
   | meta { Meta $1 @@ at () }
 
 cmd_list :

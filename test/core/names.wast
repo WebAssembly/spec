@@ -46,6 +46,9 @@
   ;; Test that we can use some libc hidden names without conflict.
   (func (export "_malloc") (result f32) (f32.const 0x1.93p+2))
   (func (export "__malloc") (result f32) (f32.const 0x1.94p+2))
+
+  ;; Test that UTF-8 BOM characters can appear in identifiers.
+  (func (export "﻿") (result f32) (f32.const 0x2.04p+2))
 )
 
 (assert_return (invoke "") (f32.const 0x1.91p+2))
@@ -60,6 +63,7 @@
 (assert_return (invoke "NaN") (f32.const 0x2.01p+2))
 (assert_return (invoke "Infinity") (f32.const 0x2.02p+2))
 (assert_return (invoke "if") (f32.const 0x2.03p+2))
+(assert_return (invoke "﻿") (f32.const 0x2.04p+2))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,

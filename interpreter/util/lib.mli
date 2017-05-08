@@ -64,5 +64,7 @@ end
 
 module String :
 sig
+  val implode : char list -> string
+  val explode : string -> char list
   val breakup : string -> int -> string list
 end
