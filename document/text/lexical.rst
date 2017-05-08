@@ -5,7 +5,7 @@ Lexical Format
 
 
 .. _text-char:
-.. index:: ! character
+.. index:: ! character, Unicode, ASCII, code point
    pair: text format; character
 
 Characters
@@ -26,7 +26,7 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
 
 
 .. _text-stoken:
-.. index:: ! token
+.. index:: ! token, character, white space, comment
    single: text format; token
 
 Tokens
@@ -46,7 +46,8 @@ Except for :ref:`string <text-string>` literals, white space cannot appear insid
 
 
 .. _text-space:
-.. index:: ! white space
+.. index:: ! white space, character, ASCII
+   single: text format; white space
 
 White Space
 ~~~~~~~~~~~
@@ -65,7 +66,8 @@ A format character corresponds to an `ASCII <http://webstore.ansi.org/RecordDeta
 
 
 .. text-comment:
-.. index:: ! comments
+.. index:: ! comment, character
+   single: text format; comment
 
 Comments
 ~~~~~~~~

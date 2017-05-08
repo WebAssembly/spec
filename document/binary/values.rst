@@ -27,7 +27,7 @@ Bytes
 .. _binary-int:
 .. _binary-sint:
 .. _binary-uint:
-.. index:: integer, unsigned integer, signed integer, uninterpreted integer
+.. index:: integer, unsigned integer, signed integer, uninterpreted integer, LEB128
    pair: binary format; integer
    pair: binary format; unsigned integer
    pair: binary format; signed integer
@@ -116,7 +116,7 @@ Vectors
 
 
 .. _binary-name:
-.. index:: name, byte
+.. index:: name, byte, Unicode, UTF-8
    pair: binary format; name
 
 Names

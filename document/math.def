@@ -22,6 +22,7 @@
 .. Auxiliary definitions for grammars
 
 .. |production| mathdef:: \void
+.. |concat| mathdef:: \xref{syntax/conventions}{syntax-concat}{\F{concat}}
 .. |with| mathdef:: ~\xref{syntax/conventions}{syntax-record}{\mbox{with}}~
 
 
@@ -40,7 +41,7 @@
 
 .. Lexical grammar, meta functions
 
-.. |utf8| mathdef:: \xref{text/values}{text-bytes}{\F{utf8}}
+.. |utf8| mathdef:: \xref{syntax/values}{syntax-utf8}{\F{utf8}}
 
 
 .. Values, terminals
@@ -123,8 +124,6 @@
 .. Values, textual non-terminals
 
 .. |Tbyte| mathdef:: \xref{text/values}{text-byte}{\T{byte}}
-.. |Tstring| mathdef:: \xref{text/values}{text-string}{\T{string}}
-.. |Tstringchar| mathdef:: \xref{text/values}{text-string}{\T{stringchar}}
 
 .. |Tsign| mathdef:: \xref{text/values}{text-sign}{\T{sign}}
 .. |Tdigit| mathdef:: \xref{text/values}{text-digit}{\T{digit}}
@@ -161,6 +160,9 @@
 .. |Tf64| mathdef:: \xref{text/values}{text-float}{\TfX{\T{64}}}
 
 .. |Tvec| mathdef:: \xref{text/values}{text-vec}{\T{vec}}
+.. |Tstring| mathdef:: \xref{text/values}{text-string}{\T{string}}
+.. |Tstringelem| mathdef:: \xref{text/values}{text-string}{\T{stringelem}}
+.. |Tstringchar| mathdef:: \xref{text/values}{text-string}{\T{stringchar}}
 .. |Tname| mathdef:: \xref{text/values}{text-name}{\T{name}}
 .. |Tcodepoint| mathdef:: \xref{text/values}{text-name}{\T{codepoint}}
 .. |Tcodeval| mathdef:: \xref{text/values}{text-name}{\T{codeval}}

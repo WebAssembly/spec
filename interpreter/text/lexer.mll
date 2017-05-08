@@ -25,13 +25,21 @@ let text s =
     let c = if s.[!i] <> '\\' then s.[!i] else
       match (incr i; s.[!i]) with
       | 'n' -> '\n'
+      | 'r' -> '\r'
       | 't' -> '\t'
       | '\\' -> '\\'
       | '\'' -> '\''
       | '\"' -> '\"'
-      | d ->
+      | 'u' ->
+        let j = !i + 2 in
+        i := String.index_from s j '}';
+        let n = int_of_string ("0x" ^ String.sub s j (!i - j)) in
+        let bs = Utf8.encode n in
+        Buffer.add_substring b bs 0 (String.length bs - 1);
+        bs.[String.length bs - 1]
+      | h ->
         incr i;
-        Char.chr (int_of_string ("0x" ^ String.make 1 d ^ String.make 1 s.[!i]))
+        Char.chr (int_of_string ("0x" ^ String.make 1 h ^ String.make 1 s.[!i]))
     in Buffer.add_char b c;
     incr i
   done;
@@ -81,29 +89,35 @@ let opt = Lib.Option.get
 }
 
 let space = [' ''\x08'-'\x09''\x0b'-'\x0d']
+
+let sign = '+' | '-'
 let digit = ['0'-'9']
 let hexdigit = ['0'-'9''a'-'f''A'-'F']
+let num = digit+
+let hexnum = hexdigit+
+
 let letter = ['a'-'z''A'-'Z']
 let symbol =
   ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
+
 let escape = ['n''r''t''\\''\'''\"']
 let character =
-  [^'"''\\''\x00'-'\x1f''\x7f'] | '\\'escape | '\\'hexdigit hexdigit
+    [^'"''\\''\x00'-'\x1f''\x7f']
+  | '\\'escape
+  | '\\'hexdigit hexdigit 
+  | "\\u{" hexnum '}'
 
-let sign = ('+' | '-')
-let num = digit+
-let hexnum = "0x" hexdigit+
-let nat = num | hexnum
+let nat = num | "0x" hexnum
 let int = sign nat
 let float =
     sign? num '.' digit*
   | sign? num ('.' digit*)? ('e' | 'E') sign? num
-  | sign? hexnum '.' hexdigit*
-  | sign? hexnum ('.' hexdigit*)? ('p' | 'P') sign? num
+  | sign? "0x" hexnum '.' hexdigit*
+  | sign? "0x" hexnum ('.' hexdigit*)? ('p' | 'P') sign? num
   | sign? "inf"
   | sign? "infinity"
   | sign? "nan"
-  | sign? "nan:" hexnum
+  | sign? "nan:" "0x" hexnum
 let text = '"' character* '"'
 let name = '$' (letter | digit | '_' | symbol)+
 

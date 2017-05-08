@@ -343,14 +343,14 @@ denoting *count* locals of the same value type.
        &\Rightarrow& \X{code} & (\X{size} = ||\Bfunc||) \\
    \production{functions} & \Bfunc &::=&
      (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
-       &\Rightarrow& \F{concat}((t^\ast)^\ast), e^\ast
-         & (|\F{concat}((t^\ast)^\ast)| < 2^{32}) \\
+       &\Rightarrow& \concat((t^\ast)^\ast), e^\ast
+         & (|\concat((t^\ast)^\ast)| < 2^{32}) \\
    \production{locals} & \Blocals &::=&
      n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
    \end{array}
 
 Here, :math:`\X{code}` ranges over pairs :math:`(\valtype^\ast, \expr)`.
-The meta function :math:`\F{concat}((t^\ast)^\ast)` denotes the sequence of types formed by concatenating all sequences :math:`t_i^\ast` in :math:`(t^\ast)^\ast`.
+The meta function :math:`\F{concat}((t^\ast)^\ast)` concatenates all sequences :math:`t_i^\ast` in :math:`(t^\ast)^\ast`.
 Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`vector <syntax-vec>` is malformed.
 
 .. note::

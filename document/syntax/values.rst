@@ -112,7 +112,8 @@ A vector can have at most :math:`2^{32}-1` elements.
 
 
 .. _syntax-name:
-.. index:: ! name, byte
+.. _syntax-utf8:
+.. index:: ! name, byte, Unicode, UTF-8, code point
    pair: abstract syntax; name
 
 Names
@@ -123,17 +124,24 @@ Names
 .. math::
    \begin{array}{llll}
    \production{names} & \name &::=&
-     \codepoint^\ast \\
+     \codepoint^\ast & (|\utf(\codepoint^\ast)| < 2^{32}) \\
    \production{code points} & \codepoint &::=&
      \unicode{0000} ~|~ \dots ~|~ \unicode{D7FF} ~|~
      \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
    \end{array}
 
-.. todo::
-   The definition of a name as an arbitrary sequence of scalar code points is too general.
-   So would be the definition of a vector.
-   Only names whose UTF-8 encoding is within the bounds of the maximum vector lengths must be included.
-   How specify this?
+Due to the limitations of the :ref:`binary format <binary-name>`,
+the lengths of a name is bounded by the length of its `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding.
+The auxiliary |utf8| function expressing this encoding is defined as follows:
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \utf8(c^\ast) &=& (\utf8(c))^\ast \\[1ex]
+   \utf8(c) &=& b & (c < \unicode{80} \wedge c = b) \\
+   \utf8(c) &=& b_1~b_2 & (\unicode{80} \leq c < \unicode{800} \wedge c = 2^6\cdot(b_1-\hex{C0})+(b_2-\hex{80})) \\
+   \utf8(c) &=& b_1~b_2~b_3 & (\unicode{800} \leq c < \unicode{10000} \wedge c = 2^{12}\cdot(b_1-\hex{C0})+2^6\cdot(b_2-\hex{80})+(b_3-\hex{80})) \\
+   \utf8(c) &=& b_1~b_2~b_3~b_4 & (\unicode{10000} \leq c < \unicode{110000} \wedge c = 2^{18}\cdot(b_1-\hex{C0})+2^{12}\cdot(b_2-\hex{80})+2^6\cdot(b_3-\hex{80})+(b_4-\hex{80})) \\
+   \end{array}
 
 
 Convention

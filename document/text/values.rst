@@ -145,23 +145,31 @@ Vectors
 
 .. _text-byte:
 .. _text-string:
-.. index:: byte, string
+.. index:: ! string, byte, character, ASCII, Unicode, UTF-8
    pair: text format; byte
    pair: text format; string
 
 Strings
 ~~~~~~~
 
-*Strings* denote sequences of characters that can represent both textual and binary data.
+*Strings* denote sequences of bytes that can represent both textual and binary data.
 They are enclosed in quotation marks
 and may contain any character other than `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\verb|\|}`),
 except when expressed with an *escape sequence* started by a backslash.
 
+Each character in a string literal represents the byte sequence corresponding to its `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding,
+except for hexadecimal escape sequences :math:`\text{\verb|\|}hh`, which represent raw bytes of the respective value.
+
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{string} & \Tstring &::=&
-     \text{"}~(c{:}\Tstringchar)^\ast~\text{"}
-       &\Rightarrow& c^\ast \\
+     \text{"}~(b^\ast{:}\Tstringelem)^\ast~\text{"}
+       &\Rightarrow& \concat((b^\ast)^\ast)
+       & (|\concat((b^\ast)^\ast)| < 2^{32}) \\
+   \production{string element} & \Tstringelem &::=&
+     c{:}\Tstringchar &\Rightarrow& \utf8(c) \\ &&|&
+     \text{\verb|\|}~n{:}\Thexdigit~m{:}\Thexdigit
+       &\Rightarrow& 16\cdot n+m \\
    \production{string character} & \Tstringchar &::=&
      c{:}\Tchar &\Rightarrow& c \qquad
        & (c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\verb|\|}) \\ &&|&
@@ -171,68 +179,29 @@ except when expressed with an *escape sequence* started by a backslash.
      \text{\verb|\"|} &\Rightarrow& \unicode{22} \\ &&|&
      \text{\verb|\'|} &\Rightarrow& \unicode{27} \\ &&|&
      \text{\verb|\\|} &\Rightarrow& \unicode{5C} \\ &&|&
-     \text{\verb|\|}~n{:}\Thexdigit~m{:}\Thexdigit
-       &\Rightarrow& \unicode{(16\cdot n+m)} \\ &&|&
      \text{\verb|\u|\{}~n{:}\Thexnum~\text{\}}
-       &\Rightarrow& \unicode{(n)} & (n < \hex{110000}) \\
-   \end{array}
-
-.. commented out
-     \text{~~} ~~\Rightarrow~~ \hex{20} ~~~|~~~
-     \text{!} ~~\Rightarrow~~ \hex{21} \\ &&|&
-     \text{\#} ~~\Rightarrow~~ \hex{23} ~~~|~~~
-     \cdots ~~~|~~~
-     \text{[} ~~\Rightarrow~~ \hex{5B} \\ &&|&
-     \text{]} ~~\Rightarrow~~ \hex{5D} ~~~|~~~
-     \cdots ~~~|~~~
-     \text{\verb|~|} ~~\Rightarrow~~ \hex{7E} \\ &&|&
-
-   Due to the limitations of the :ref:`binary format <binary-name>`, the length of strings is limited by the length of their `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding.
-
-   The auxiliary |utf8| function is defined as follows:
-
-   .. math::
-   \begin{array}{lcl@{\qquad}l}
-   \utf8(c^\ast) &=& (\utf8(c))^\ast \\[1ex]
-   \utf8(c) &=& b & (c < \unicode{80} \wedge c = b) \\
-   \utf8(c) &=& b_1~b_2 & (\unicode{80} \leq c < \unicode{800} \wedge c = 2^6\cdot(b_1-\hex{C0})+(b_2-\hex{80})) \\
-   \utf8(c) &=& b_1~b_2~b_3 & (\unicode{800} \leq c < \unicode{10000} \wedge c = 2^{12}\cdot(b_1-\hex{C0})+2^6\cdot(b_2-\hex{80})+(b_3-\hex{80})) \\
-   \utf8(c) &=& b_1~b_2~b_3~b_4 & (\unicode{10000} \leq c < \unicode{110000} \wedge c = 2^{18}\cdot(b_1-\hex{C0})+2^{12}\cdot(b_2-\hex{80})+2^6\cdot(b_3-\hex{80})+(b_4-\hex{80})) \\
-   \end{array}
-
-
-.. _text-bytes:
-.. index:: bytes, byte
-   pair: text format; bytes
-
-Bytes
-~~~~~
-
-:ref:`Bytes <syntax-name>` are strings denoting a sequence of raw :ref:`bytes <syntax-bytes>`.
-They may contain only code points that are within range for a byte.
-
-.. math::
-   \begin{array}{llclll@{\qquad}l}
-   \production{bytes} & \Tbytes &::=&
-     c^\ast{:}\Tstring &\Rightarrow& b^\ast
-       & ((\unicode{(b)} = c \leq \unicode{FF})^\ast) \\
+       &\Rightarrow& \unicode{(n)} & (n < \hex{D800} \vee \hex{E000} \leq n < \hex{110000}) \\
    \end{array}
 
 
 .. _text-name:
-.. index:: name, byte
+.. index:: name, byte, character, code point
    pair: text format; name
 
 Names
 ~~~~~
 
 :ref:`Names <syntax-name>` are strings denoting a literal character sequence. 
+It must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding that is interpreted as a string of Unicode code points.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{name} & \Tname &::=&
-     c^\ast{:}\Tstring &\Rightarrow& c^\ast \\
+     b^\ast{:}\Tstring &\Rightarrow& c^\ast & (b^\ast = \utf8(c^\ast)) \\
    \end{array}
+
+.. note::
+   Strings that do not contain any uses of hexadecimal byte escapes are always valid names.
 
 
 .. _text-id:

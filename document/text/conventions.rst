@@ -1,4 +1,4 @@
-.. index:: ! text format
+.. index:: ! text format, Unicode, UTF-8
 
 Conventions
 -----------
@@ -17,10 +17,11 @@ Except for a few exceptions, the core of the text grammar closely mirrors the gr
 However, it also defines a number of forms that are *syntactic sugar* over the core syntax.
 
 The recommended extension for source files containing WebAssembly modules in text format is ":math:`\T{.wat}`".
+Files with this extension are assumed to be encoded in `Unicode UTF-8 <http://www.unicode.org/versions/latest/>`_.
 
 
 .. _text-grammar:
-.. index:: grammar notation, notation
+.. index:: grammar notation, notation, Unicode
    single: text format; grammar
    pair: text format; notation
 

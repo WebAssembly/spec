@@ -47,6 +47,8 @@ When dealing with syntactic constructs the following notation is also used:
 
 * :math:`s[i]` denotes the :math:`i`-th element of a sequence :math:`s`, starting from :math:`0`.
 
+* :math:`\concat(s^\ast)` denotes the flat sequence formed by concatenating all sequences :math:`s_i^\ast` in :math:`s^\ast`.
+
 Productions of the following form are interpreted as *records* that map a fixed set of fields :math:`\K{field}_i` to values :math:`x_i`, respectively:
 
 .. math::

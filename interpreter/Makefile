@@ -112,7 +112,7 @@ run/%:		$(NAME)
 		./$(NAME) $(@:run/%=../test/core/%.wast)
 
 clean:
-		rm -rf _build/jslib
+		rm -rf _build/jslib wasm.mlpack
 		$(OCB) -clean
 
 
