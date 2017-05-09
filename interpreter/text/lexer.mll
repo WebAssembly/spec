@@ -88,8 +88,6 @@ let ext e s u =
 let opt = Lib.Option.get
 }
 
-let space = [' ''\x08'-'\x09''\x0b'-'\x0d']
-
 let sign = '+' | '-'
 let digit = ['0'-'9']
 let hexdigit = ['0'-'9''a'-'f''A'-'F']
@@ -100,9 +98,25 @@ let letter = ['a'-'z''A'-'Z']
 let symbol =
   ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
 
+let space = [' ''\t''\n''\r']
+let ascii = ['\x00'-'\x7f']
+let ascii_no_nl = ['\x00'-'\x09''\x0b'-'\x7f']
+let utf8cont = ['\x80'-'\xbf']
+let utf8enc =
+    ['\xc2'-'\xdf'] utf8cont
+  | ['\xe0'] ['\xa0'-'\xbf'] utf8cont
+  | ['\xed'] ['\x80'-'\x9f'] utf8cont
+  | ['\xe1'-'\xec''\xee'-'\xef'] utf8cont utf8cont
+  | ['\xf0'] ['\x90'-'\xbf'] utf8cont utf8cont
+  | ['\xf4'] ['\x80'-'\x8f'] utf8cont utf8cont
+  | ['\xf1'-'\xf3'] utf8cont utf8cont utf8cont
+let utf8 = ascii | utf8enc
+let utf8_no_nl = ascii_no_nl | utf8enc
+
 let escape = ['n''r''t''\\''\'''\"']
 let character =
-    [^'"''\\''\x00'-'\x1f''\x7f']
+    [^'"''\\''\x00'-'\x1f''\x7f'-'\xff']
+  | utf8enc
   | '\\'escape
   | '\\'hexdigit hexdigit 
   | "\\u{" hexnum '}'
@@ -332,17 +346,20 @@ rule token = parse
 
   | name as s { VAR s }
 
-  | ";;"[^'\n']*eof { EOF }
-  | ";;"[^'\n']*'\n' { Lexing.new_line lexbuf; token lexbuf }
+  | ";;"utf8_no_nl*eof { EOF }
+  | ";;"utf8_no_nl*'\n' { Lexing.new_line lexbuf; token lexbuf }
+  | ";;"utf8_no_nl* { token lexbuf (* causes error on following position *) }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
   | space { token lexbuf }
   | '\n' { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
-  | _ { error lexbuf "unknown operator" }
+  | utf8 { error lexbuf "unknown operator" }
+  | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and comment start = parse
   | ";)" { () }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; comment start lexbuf }
   | '\n' { Lexing.new_line lexbuf; comment start lexbuf }
   | eof { error_nest start lexbuf "unclosed comment" }
-  | _ { comment start lexbuf }
+  | utf8 { comment start lexbuf }
+  | _ { error lexbuf "malformed UTF-8 encoding" }

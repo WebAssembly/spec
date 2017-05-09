@@ -54,15 +54,18 @@ White Space
 
 *White space* is any sequence of literal space characters, formatting characters, or :ref:`comments <text-comment>`.
 
-A format character corresponds to an `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ *format effector*, that is, *backspace* (:math:`\unicode{08}`), *horizontal tabulation* (:math:`\unicode{09}`), *line feed* (:math:`\unicode{0A}`), *vertical tabulation* (:math:`\unicode{0B}`), *form feed* (:math:`\unicode{0C}`), or *carriage return* (:math:`\unicode{0D}`).
+The allowed formatting characters correspond to a subset of the `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ *format effectors*, namely, *horizontal tabulation* (:math:`\unicode{09}`), *line feed* (:math:`\unicode{0A}`), or *carriage return* (:math:`\unicode{0D}`).
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{white space} & \Tspace &::=&
      (\text{~~} ~|~ \Tformat ~|~ \Tcomment)^\ast \\
    \production{format} & \Tformat &::=&
-     \unicode{08} ~|~ \unicode{09} ~|~ \unicode{0A} ~|~ \unicode{0B} ~|~ \unicode{0C} ~|~ \unicode{0D} \\
+     \unicode{09} ~|~ \unicode{0A} ~|~ \unicode{0D} \\
    \end{array}
+
+.. note::
+   Other formatting and control characters are allowed inside :ref:`comments <text-comment>`.
 
 
 .. text-comment:

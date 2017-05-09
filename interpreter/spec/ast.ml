@@ -240,11 +240,10 @@ let export_type (m : module_) (ex : export) : external_type =
 let string_of_name n =
   let s = Utf8.encode n in
   let b = Buffer.create (3 * String.length s) in
-  let escape c =
-    if '\x20' <= c && c < '\x7f' then
-      Buffer.add_char b c
-    else
-      Buffer.add_string b (Printf.sprintf "\\%02x" (Char.code c))
+  let escape = function
+    | '\"' -> Buffer.add_string b "\\\""
+    | c when '\x20' <= c && c < '\x7f' -> Buffer.add_char b c
+    | c -> Buffer.add_string b (Printf.sprintf "\\%02x" (Char.code c))
   in
   String.iter escape s;
   Buffer.contents b
