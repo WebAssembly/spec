@@ -55,7 +55,6 @@ In the latter case, they are looked up in the suitable space of the :ref:`identi
 
 
 .. _text-type:
-.. _text-typeuse:
 .. index:: type definition
    pair: text format; type definition
 
@@ -69,21 +68,64 @@ Types
        &\Rightarrow& \X{ft} \\
    \end{array}
 
-.. todo:: inline functypes
+
+.. _text-typeuse:
+.. index:: type use
+   pair: text format; type use
+
+Type Uses
+~~~~~~~~~
+
+A *type use* is a reference to a :ref:`type definition <text-type>`.
+It may optionally be augmented by inline function :ref:`parameters <text-param>` and :ref:`result <text-result>` annotations.
+That allows declaring symbolic :ref:`identifiers <text-id>` for the :ref:`local indices <text-localidx>` of parameters.
+If any inline annotation is given, then it must be complete and match the referenced type.
 
 .. math::
    \begin{array}{llclll}
    \production{type use} & \Ttypeuse_I &::=&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
-       &\Rightarrow& x \\
+       \quad\Rightarrow\quad x, I' \\ &&& \qquad
+       (\begin{array}[t]{@{}l@{}}
+        I.\TYPEDEFS[x] = [t_1^n] \to [t_2^\ast] \wedge
+        I' = I \with \LOCALS~(\epsilon)^n) \\
+        \end{array} \\ &&|&
+     \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
+     ~~(t_1{:}\Tparam)^\ast~~(t_2{:}\Tresult)^\ast
+       \quad\Rightarrow\quad x, I' \\ &&&\qquad
+       (\begin{array}[t]{@{}l@{}}
+        I.\TYPEDEFS[x] = [t_1^\ast] \to [t_2^\ast] \wedge
+        I' = I \with \LOCALS~\F{id}(\Tparam)^\ast) \\
+        \end{array} \\
    \end{array}
+
+The resulting attribute of a |Ttypeuse| is a pair consisting of both the referenced :ref:`type index <syntax-typeidx>` and the updated :ref:`identifier context <text-context>` including the parameter identifiers.
+The following auxiliary notation filters out optional identifiers from parameters:
+
+.. math::
+   \begin{array}{lcl@{\qquad\qquad}l}
+   \F{id}(\text{(}~\text{param}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
+   \end{array}
+
+.. note::
+   Both productions overlap for the case that the function type is :math:`[] \to []`.
+   However, in that case, they also produce the same results, so that the choice is immaterial.
 
 
 Abbreviations
 .............
 
-A |Ttypeuse| may be replaced by inline function parameters and result annotations.
-@@@@
+A |Ttypeuse| may also be replaced entirely by inline function :ref:`parameters <text-param>` and :ref:`result <text-result>` annotations.
+In that case, the :ref:`type index <syntax-typeidx>` of the first matching :ref:`type definition <text-type>` is automatically inserted.
+If no matching definition exists
+
+.. math::
+   \begin{array}{llclll}
+   \production{type use} &
+     \text{(}~\text{func}~~\Tid^?~~\Ttypeuse~~\Tparam^\ast~~\Tresult_I~~\dots~\text{)} &\equiv&
+     \text{(}~\text{func}~~\Tid^?~~\Ttypeuse~~\Tparam^\ast~~\Tresult_I~~\dots~\text{)} \\ &
+     \text{(}~\text{func}~~\Tid^?~~\Ttypeuse~~\Tparam^\ast~~\Tresult_I~~\dots~\text{)} &\equiv&
+   \end{array}
 
 
 .. _text-import:
@@ -101,7 +143,7 @@ Imports
      \text{(}~\text{import}~~\X{mod}{:}\Tname~~\X{nm}{:}\Tname~~d{:}\Timportdesc_I~\text{)}
        &\Rightarrow& \{ \MODULE~\X{mod}, \NAME~\X{nm}, \DESC~d \} \\
    \production{import description} & \Timportdesc_I &::=&
-     \text{(}~\text{func}~~\Tid^?~~x{:}\Ttypeuse_I~\text{)}
+     \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~\text{)}
        &\Rightarrow& \FUNC~x \\ &&|&
      \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype~\text{)}
        &\Rightarrow& \TABLE~\X{tt} \\ &&|&
@@ -124,25 +166,21 @@ Functions
 .. math::
    \begin{array}{llclll}
    \production{function} & \Tfunc_I &::=&
-     \text{(}~\text{func}~~\Tid^?~~x{:}\Ttypeuse_I~~
-     (t_1{:}\Tparam)^\ast~~(t_2{:}\Tresult)^\ast~~(t_3{:}\Tlocal)^\ast~~
-     (\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
+     \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
+     (t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
        &\Rightarrow& \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\X{in}^\ast~\END \} \\ &&& \qquad
          (\begin{array}[n]{@{}l@{}}
-          I' = I \with \LOCALS~\F{id}(\Tparam)^\ast)~\F{id}(\Tlocal)^\ast \\
-          I.\TYPEDEFS[x] = t_4^n \to t_5^n \\
-          t_1^\ast \to t_2^\ast = [] \to [] \vee )
+          I'' = I' \with \LOCALS~(I'.\LOCALS)~\F{id}(\Tlocal)^\ast) \\
           \end{array} \\
    \production{local} & \Tlocal &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype~\text{)}
        &\Rightarrow& t \\
    \end{array}
 
-The definition of the local :ref:`identifier context <text-context>` :math:`I'` uses the following auxiliary notation to filter out optional identifiers from parameters and locals:
+The definition of the local :ref:`identifier context <text-context>` :math:`I''` uses the following auxiliary notation to filter out optional identifiers from locals:
 
 .. math::
    \begin{array}{lcl@{\qquad\qquad}l}
-   \F{id}(\text{(}~\text{param}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
    \F{id}(\text{(}~\text{local}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
    \end{array}
 
@@ -159,16 +197,6 @@ Multiple anonymous locals may be combined into a single declaration:
    \production{local} &
      \text{(}~~\text{local}~~\Tvaltype^\ast~~\text{)} &\equiv&
      (\text{(}~~\text{local}~~\Tvaltype~~\text{)})^\ast \\
-   \end{array}
-
-The function type may be specified inline:
-
-.. math::
-   \begin{array}{llclll}
-   \production{function} &
-     \text{(}~\text{func}~~\Tid^?~~\Ttypeuse~~\Tparam^\ast~~\Tresult_I~~\dots~\text{)} &\equiv&
-     \text{(}~\text{func}~~\Tid^?~~\Ttypeuse~~\Tparam^\ast~~\Tresult_I~~\dots~\text{)} \\ &
-     \text{(}~\text{func}~~\Tid^?~~\Ttypeuse~~\Tparam^\ast~~\Tresult_I~~\dots~\text{)} &\equiv&
    \end{array}
 
 
@@ -338,7 +366,8 @@ Modules
      \MEMS~\F{memids}(\Timport^\ast)~(\F{id}(\Tmem))^\ast, \\
      \GLOBALS~\F{globalids}(\Timport^\ast)~(\F{id}(\Tglobal))^\ast, \\
      \LOCALS~\epsilon, \\
-     \LABELS~\epsilon ~\}~\mbox{well-formed}) \\
+     \LABELS~\epsilon,
+     \TYPEDEFS~\functype^\ast ~\}~\mbox{well-formed}) \\
      \end{array}
    \end{array}
 
