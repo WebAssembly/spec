@@ -49,6 +49,12 @@
 
   ;; Test that UTF-8 BOM code points can appear in identifiers.
   (func (export "﻿") (result f32) (f32.const 0x2.04p+2))
+
+  ;; Test that Unicode normalization is not applied. These function names
+  ;; different codepoints which normalize to the same thing under NFC or NFD.
+  (func (export "Å") (result f32) (f32.const 0x2.05p+2))
+  (func (export "Å") (result f32) (f32.const 0x2.06p+2))
+  (func (export "Å") (result f32) (f32.const 0x2.07p+2))
 )
 
 (assert_return (invoke "") (f32.const 0x1.91p+2))
@@ -64,6 +70,9 @@
 (assert_return (invoke "Infinity") (f32.const 0x2.02p+2))
 (assert_return (invoke "if") (f32.const 0x2.03p+2))
 (assert_return (invoke "﻿") (f32.const 0x2.04p+2))
+(assert_return (invoke "Å") (f32.const 0x2.05p+2))
+(assert_return (invoke "Å") (f32.const 0x2.06p+2))
+(assert_return (invoke "Å") (f32.const 0x2.07p+2))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
