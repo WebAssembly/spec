@@ -47,7 +47,7 @@
   (func (export "_malloc") (result f32) (f32.const 0x1.93p+2))
   (func (export "__malloc") (result f32) (f32.const 0x1.94p+2))
 
-  ;; Test that UTF-8 BOM characters can appear in identifiers.
+  ;; Test that UTF-8 BOM code points can appear in identifiers.
   (func (export "﻿") (result f32) (f32.const 0x2.04p+2))
 )
 
