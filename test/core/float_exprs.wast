@@ -2488,3 +2488,19 @@
 
 (assert_return (invoke "tau" (i32.const 10)) (f64.const 0x1.921fb54442d14p+2))
 (assert_return (invoke "tau" (i32.const 11)) (f64.const 0x1.921fb54442d18p+2))
+
+;; Test that y < 0 ? x : (x + 1) is not folded to x + (y < 0).
+
+(module
+  (func (export "f32.no_fold_conditional_inc") (param $x f32) (param $y f32) (result f32)
+    (select (get_local $x)
+            (f32.add (get_local $x) (f32.const 1.0))
+            (f32.lt (get_local $y) (f32.const 0.0))))
+  (func (export "f64.no_fold_conditional_inc") (param $x f64) (param $y f64) (result f64)
+    (select (get_local $x)
+            (f64.add (get_local $x) (f64.const 1.0))
+            (f64.lt (get_local $y) (f64.const 0.0))))
+)
+
+(assert_return (invoke "f32.no_fold_conditional_inc" (f32.const -0.0) (f32.const -1.0)) (f32.const -0.0))
+(assert_return (invoke "f64.no_fold_conditional_inc" (f64.const -0.0) (f64.const -1.0)) (f64.const -0.0))
