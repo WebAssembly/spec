@@ -424,6 +424,8 @@ def S.SignedSaturate(x):
     return x
 
 def S.UnsignedSaturate(x):
+    if x < 0:
+        return 0
     if x > S.Umax:
         return S.Umax
     return x
