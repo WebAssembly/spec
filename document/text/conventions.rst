@@ -84,9 +84,12 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 Auxiliary Notation
 ~~~~~~~~~~~~~~~~~~
 
-When dealing with binary encodings the following notation is also used:
+When dealing with source text the following notation is also used:
 
 * :math:`\epsilon` denotes the empty byte sequence.
+
+
+.. todo:: Explain abbreviations
 
 
 .. _text-context:

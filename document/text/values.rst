@@ -50,8 +50,8 @@ All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal
      n{:}\Thexnum~~h{:}\Thexdigit &\Rightarrow& 16\cdot n + h \\
    \end{array}
 
-Integer literals are distinguished by size and signedness.
-Their value must lie within the range of the respective type.
+The allowed syntax for integer literals depends on size and signedness.
+Moreover, their value must lie within the range of the respective type.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
@@ -85,7 +85,7 @@ Floating-Point
 
 :ref:`Floating point <syntax-float>` values can be represented in either decimal or hexadecimal notation.
 The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
-(that is, it must not overflow to :math:`\pm`infinity),
+(that is, a numeric value must not overflow to :math:`\pm` infinity),
 but it may be rounded to the nearest representable value.
 
 .. note::
@@ -155,7 +155,7 @@ Strings
 *Strings* denote sequences of bytes that can represent both textual and binary data.
 They are enclosed in quotation marks
 and may contain any character other than `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\verb|\|}`),
-except when expressed with an *escape sequence* started by a backslash.
+except when expressed with an *escape sequence*.
 
 Each character in a string literal represents the byte sequence corresponding to its `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding,
 except for hexadecimal escape sequences :math:`\text{\verb|\|}hh`, which represent raw bytes of the respective value.
@@ -192,7 +192,7 @@ Names
 ~~~~~
 
 :ref:`Names <syntax-name>` are strings denoting a literal character sequence. 
-It must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding that is interpreted as a string of Unicode code points.
+A name string must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding that is interpreted as a string of Unicode code points.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
@@ -212,7 +212,7 @@ Identifiers
 ~~~~~~~~~~~
 
 :ref:`Indices <syntax-index>` can be given in both numeric and symbolic form.
-Symbolic *identifiers* standing for indices start with :math:`\text{$}`, followed by any sequence of printable `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket.
+Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{$}`, followed by any sequence of printable `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}

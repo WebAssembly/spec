@@ -23,32 +23,32 @@ Modules
 Indices
 ~~~~~~~
 
-All :ref:`indices <syntax-index>` can be given either in raw numeric or in symbolic form.
-In the latter case, they are looked up in the suitable space of the :ref:`identifier context <text-context>`.
+All :ref:`indices <syntax-index>` can be given either in raw numeric form or as symbolic :ref:`identifiers <text-id>` when bound by a respective construct.
+Identifiers are looked up in the suitable space of the :ref:`identifier context <text-context>`.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llclllllll}
    \production{type index} & \Ttypeidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x \\ &&|&
+     x{:}\Tu32 &\Rightarrow& x &|&
      v{:}\Tid &\Rightarrow& x & (I.\TYPES[x] = v) \\
    \production{function index} & \Tfuncidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x \\ &&|&
+     x{:}\Tu32 &\Rightarrow& x &|&
      v{:}\Tid &\Rightarrow& x & (I.\FUNCS[x] = v) \\
    \production{table index} & \Ttableidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x \\ &&|&
+     x{:}\Tu32 &\Rightarrow& x &|&
      v{:}\Tid &\Rightarrow& x & (I.\TABLES[x] = v) \\
    \production{memory index} & \Tmemidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x \\ &&|&
+     x{:}\Tu32 &\Rightarrow& x &|&
      v{:}\Tid &\Rightarrow& x & (I.\MEMS[x] = v) \\
    \production{global index} & \Tglobalidx_I &::=&
-     x{:}\Tid &\Rightarrow& x \\ &&|&
+     x{:}\Tu32 &\Rightarrow& x &|&
      v{:}\Tid &\Rightarrow& x & (I.\GLOBALS[x] = v) \\
    \production{local index} & \Tlocalidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x \\ &&|&
+     x{:}\Tu32 &\Rightarrow& x &|&
      v{:}\Tid &\Rightarrow& x & (I.\LOCALS[x] = v) \\
    \production{label index} & \Tlabelidx_I &::=&
-     l{:}\Tu32 &\Rightarrow& l \\ &&|&
-     v{:}\Tid &\Rightarrow& x & (I.\LABELS[x] = v) \\
+     l{:}\Tu32 &\Rightarrow& l &|&
+     v{:}\Tid &\Rightarrow& l & (I.\LABELS[l] = v) \\
    \end{array}
 
 
@@ -58,6 +58,8 @@ In the latter case, they are looked up in the suitable space of the :ref:`identi
 
 Types
 ~~~~~
+
+Type definitions can bind a symbolic :ref:`type identifier <text-id>`.
 
 .. math::
    \begin{array}{llclll}
@@ -119,6 +121,8 @@ A |Ttypeuse| may also be replaced entirely by inline function :ref:`parameters <
 In that case, the :ref:`type index <syntax-typeidx>` of the first matching :ref:`type definition <text-type>` is automatically inserted.
 If no matching definition exists
 
+.. todo:: fix
+
 .. math::
    \begin{array}{llclll}
    \production{type use} &
@@ -135,7 +139,7 @@ If no matching definition exists
 Imports
 ~~~~~~~
 
-.. todo:: inline imports
+The descriptors in imports can bind a symbolic function, table, memory, or global :ref:`identifier <text-id>`.
 
 .. math::
    \begin{array}{llclll}
@@ -161,17 +165,17 @@ Imports
 Functions
 ~~~~~~~~~
 
-.. todo:: inline type, inline import/export
+.. todo:: inline type
+
+Function definitions can bind a symbolic :ref:`function identifier <text-id>`.
 
 .. math::
    \begin{array}{llclll}
    \production{function} & \Tfunc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
      (t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)}
-       &\Rightarrow& \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\X{in}^\ast~\END \} \\ &&& \qquad
-         (\begin{array}[n]{@{}l@{}}
-          I'' = I' \compose \{\LOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\
-          \end{array} \\
+       &\Rightarrow& \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\X{in}^\ast~\END \} \\ &&&&& \qquad
+       (I'' = I' \compose \{\LOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\
    \production{local} & \Tlocal &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype~\text{)}
        &\Rightarrow& t \\
@@ -192,8 +196,6 @@ The definition of the local :ref:`identifier context <text-context>` :math:`I''`
 Abbreviations
 .............
 
-A number of abbreviations are defined for functions.
-
 Multiple anonymous locals may be combined into a single declaration:
 
 .. math::
@@ -201,6 +203,20 @@ Multiple anonymous locals may be combined into a single declaration:
    \production{local} &
      \text{(}~~\text{local}~~\Tvaltype^\ast~~\text{)} &\equiv&
      (\text{(}~~\text{local}~~\Tvaltype~~\text{)})^\ast \\
+   \end{array}
+
+Functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{func}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttypeuse~\text{)} &\equiv&
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{func}~~\Tid^?~~\Ttypeuse~\text{)}~\text{)} \\ &
+     \text{(}~\text{func}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\Ttypeuse~~\dots~\text{)} &\equiv&
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{func}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{func}~~\Tid'~~\Ttypeuse~~\dots~\text{)}
+       \\&&& \qquad
+       (\Tid' = \Tid^? \neq \epsilon \vee \Tid'~\mbox{fresh}) \\
    \end{array}
 
 
@@ -211,11 +227,43 @@ Multiple anonymous locals may be combined into a single declaration:
 Tables
 ~~~~~~
 
+Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
+
 .. math::
    \begin{array}{llclll}
    \production{table} & \Ttable_I &::=&
      \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype~\text{)}
        &\Rightarrow& \{ \TYPE~\X{tt} \} \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttabletype~\text{)} &\equiv&
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{table}~~\Tid^?~~\Ttabletype~\text{)}~\text{)} \\ &
+     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\Ttabletype~\text{)} &\equiv&
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{table}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{table}~~\Tid'~~\Ttabletype~\text{)}
+       \\&&& \qquad
+       (\Tid' = \Tid^? \neq \epsilon \vee \Tid'~\mbox{fresh}) \\
+   \end{array}
+
+Moreover, :ref:`elements <text-elem>` can be given inline, in which case the limits of the table type are inferred from the length of the given element vector:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}^?~~\Telemtype~~\text{(}~\text{elem}~~\Tvec(\Tfuncidx)~\text{)}~~\text{)} &\equiv&
+       \text{(}~\text{table}~~\Tid'~~\text{(}~\text{export}~~\Tname~\text{)}^?~~n~~n~~\Telemtype~\text{)}~~
+       \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
+       \\&&& \qquad
+       (n = |\Tvec(\Tfuncidx)|, \Tid' = \Tid^? \neq \epsilon \vee \Tid'~\mbox{fresh}) \\
    \end{array}
 
 
@@ -226,12 +274,46 @@ Tables
 Memories
 ~~~~~~~~
 
+Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
+
 .. math::
    \begin{array}{llclll}
    \production{memory} & \Tmem_I &::=&
      \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype~\text{)}
        &\Rightarrow& \{ \TYPE~\X{mt} \} \\
    \end{array}
+
+
+Abbreviations
+.............
+
+Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tmemtype~\text{)} &\equiv&
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{memory}~~\Tid^?~~\Tmemtype~\text{)}~\text{)} \\ &
+     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\Tmemtype~\text{)} &\equiv&
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{memory}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{memory}~~\Tid'~~\Tmemtype~\text{)}
+       \\&&& \qquad
+       (\Tid' = \Tid^? \neq \epsilon \vee \Tid'~\mbox{fresh}) \\
+   \end{array}
+
+Moreover, :ref:`data <text-data>` can be given inline, in which case the limits of the table type are inferred from the length of the given string, rounded up to :ref:`page size <page-size>`:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}^?~~\text{(}~\text{data}~~\Tstring~\text{)}~~\text{)} &\equiv&
+       \text{(}~\text{memory}~~\Tid'~~\text{(}~\text{export}~~\Tname~\text{)}^?~~n~~n~\text{)}~~
+       \text{(}~\text{data}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tstring~\text{)}
+       \\&&& \qquad
+       (n = |\Tstring|, \Tid' = \Tid^? \neq \epsilon \vee \Tid'~\mbox{fresh}) \\
+   \end{array}
+
+.. todo:: length of data
 
 
 .. _text-global:
@@ -241,11 +323,31 @@ Memories
 Globals
 ~~~~~~~
 
+Global definitions can bind a symbolic :ref:`global identifier <text-id>`.
+
 .. math::
    \begin{array}{llclll}
    \production{global} & \Tglobal_I &::=&
      \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype~~(\X{in}{:}\Tinstr_I)^\ast~\text{)}
        &\Rightarrow& \{ \TYPE~\X{gt}, \INIT~\X{in}^\ast~\END \} \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{global}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tglobaltype~\text{)} &\equiv&
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{global}~~\Tid^?~~\Tglobaltype~\text{)}~\text{)} \\ &
+     \text{(}~\text{global}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\Tglobaltype~\text{)} &\equiv&
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{global}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{global}~~\Tid'~~\Tglobaltype~\text{)}
+       \\&&& \qquad
+       (\Tid' = \Tid^? \neq \epsilon \vee \Tid'~\mbox{fresh}) \\
    \end{array}
 
 
@@ -297,12 +399,20 @@ Start Function
 Element Segments
 ~~~~~~~~~~~~~~~~
 
+Element segments allow for an optional :ref:`table index <text-tableidx>` to identify the table to initialize.
+When omitted, :math:`\T{0}` is assumed.
+
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~x{:}\Ttableidx_I~~\text{(}~\text{offset}~~(\X{in}{:}\Tinstr_I)^\ast~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)}
-       &\Rightarrow& \{ \TABLE~x, \OFFSET~\X{in}^\ast~\END, \INIT~y^\ast \} \\
+     \text{(}~\text{elem}~~(x{:}\Ttableidx_I)^?~~\text{(}~\text{offset}~~(\X{in}{:}\Tinstr_I)^\ast~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)}
+       &\Rightarrow& \{ \TABLE~x', \OFFSET~\X{in}^\ast~\END, \INIT~y^\ast \} \\
+       &&&&& \qquad (x' = x^? \neq \epsilon \vee x' = 0) \\
    \end{array}
+
+.. note::
+   In the current version of WebAssembly, the only valid table index is 0
+   or a symbolic :ref:`table identifier <text-id>` resolving to the same value.
 
 
 .. _text-data:
@@ -314,12 +424,20 @@ Element Segments
 Data Segments
 ~~~~~~~~~~~~~
 
+Data segments allow for an optional :ref:`memory index <text-memidx>` to identify the memory to initialize.
+When omitted, :math:`\T{0}` is assumed.
+
 .. math::
    \begin{array}{llclll}
    \production{data segment} & \Tdata_I &::=&
-     \text{(}~\text{data}~~x{:}\Tmemidx_I~~\text{(}~\text{offset}~~(\X{in}{:}\Tinstr_I)^\ast~\text{)}~~b^\ast{:}\Tstring~\text{)}
-       &\Rightarrow& \{ \MEM~x, \OFFSET~\X{in}^\ast~\END, \INIT~b^\ast \} \\
+     \text{(}~\text{data}~~(x{:}\Tmemidx_I)^?~~\text{(}~\text{offset}~~(\X{in}{:}\Tinstr_I)^\ast~\text{)}~~b^\ast{:}\Tstring~\text{)}
+       &\Rightarrow& \{ \MEM~x', \OFFSET~\X{in}^\ast~\END, \INIT~b^\ast \} \\
+       &&&&& \qquad (x' = x^? \neq \epsilon \vee x' = 0) \\
    \end{array}
+
+.. note::
+   In the current version of WebAssembly, the only valid memory index is 0
+   or a symbolic :ref:`memory identifier <text-id>` resolving to the same value.
 
 
 .. _text-module:
@@ -338,21 +456,21 @@ Modules
    ::=&
      \text{(}~\text{module}~~(m{:}\Tmodulefield_I)^\ast~\text{)}
        &\Rightarrow& \bigcompose m^\ast
-       \\& (I = \bigcompose \F{idc}(\Tmodulefield)^\ast \idcwellformed) \\
+       & (I = \bigcompose \F{idc}(\Tmodulefield)^\ast \idcwellformed) \\
    \end{array} \\
    \production{module field} & \Tmodulefield_I &
    \begin{array}[t]{@{}clll}
    ::=&
-     \functype{:}\Ttype &\Rightarrow& \{\TYPES~\functype\} \\ |&
-     \import{:}\Timport_I &\Rightarrow& \{\IMPORTS~\import\} \\ |&
-     \func{:}\Tfunc_I &\Rightarrow& \{\FUNCS~\func\} \\ |&
-     \table{:}\Ttable_I &\Rightarrow& \{\TABLES~\table\} \\ |&
-     \mem{:}\Tmem_I &\Rightarrow& \{\MEMS~\mem\} \\ |&
-     \global{:}\Tglobal_I &\Rightarrow& \{\GLOBALS~\global\} \\ |&
-     \export{:}\Texport_I &\Rightarrow& \{\EXPORTS~\export\} \\ |&
-     \start{:}\Tstart_I &\Rightarrow& \{\START~\start\} \\ |&
-     \elem{:}\Telem_I &\Rightarrow& \{\ELEM~\elem\} \\ |&
-     \data{:}\Tdata_I &\Rightarrow& \{\DATA~\data\} \\
+     \X{ty}{:}\Ttype &\Rightarrow& \{\TYPES~\X{ty}\} \\ |&
+     \X{im}{:}\Timport_I &\Rightarrow& \{\IMPORTS~\X{im}\} \\ |&
+     \X{fn}{:}\Tfunc_I &\Rightarrow& \{\FUNCS~\X{fn}\} \\ |&
+     \X{ta}{:}\Ttable_I &\Rightarrow& \{\TABLES~\X{ta}\} \\ |&
+     \X{me}{:}\Tmem_I &\Rightarrow& \{\MEMS~\X{me}\} \\ |&
+     \X{gl}{:}\Tglobal_I &\Rightarrow& \{\GLOBALS~\X{gl}\} \\ |&
+     \X{ex}{:}\Texport_I &\Rightarrow& \{\EXPORTS~\X{ex}\} \\ |&
+     \X{st}{:}\Tstart_I &\Rightarrow& \{\START~\X{st}\} \\ |&
+     \X{el}{:}\Telem_I &\Rightarrow& \{\ELEM~\X{el}\} \\ |&
+     \X{da}{:}\Tdata_I &\Rightarrow& \{\DATA~\X{da}\} \\
    \end{array}
    \end{array}
 
@@ -423,7 +541,11 @@ Moreover, the following restrictions are imposed on the composition of :ref:`mod
    The second condition enforces that all :ref:`imports <text-import>` must occur before any regular definition of a :ref:`function <text-func>`, :ref:`table <text-table>`, :ref:`memory <text-mem>`, or :ref:`global <text-global>`,
    thereby maintaining the ordering of the respective :ref:`index spaces <syntax-index>`.
 
+   The :ref:`well-formedness <text-context-wf>` condition on :math:`I` in the grammar for |Tmodule| ensures that no namespace contains duplicate identifiers.
+
 The definition of the initial :ref:`identifier context <text-context>` :math:`I` uses the following auxiliary definition which maps each relevant definition to a singular context with one (possibly empty) identifier:
+
+.. todo:: |TYPEDEFS|
 
 .. math::
    \begin{array}{@{}lcl@{\qquad\qquad}l}
@@ -473,5 +595,15 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
    \F{desc}(\text{(}~\text{import}~\dots~\Timportdesc~\text{)}) \quad=\quad \Timportdesc
    \end{array}
 
-.. note::
-   The :ref:`well-formedness <text-context-wf>` condition on :math:`I` ensures that no namespace contains duplicate identifiers.
+
+Abbreviations
+.............
+
+In a source file, the toplevel :math:`\T{(module}~\dots\T{)}` surrounding the module body may be omitted.
+
+.. math::
+   \begin{array}{llcll}
+   \production{module} &
+     \Tmodulefield^\ast &\equiv&
+     \text{(}~\text{module}~~\Tmodulefield^\ast~\text{)}
+   \end{array}

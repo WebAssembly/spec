@@ -28,7 +28,8 @@ Both can also be written in :ref:`folded <text-foldedinstr>` form.
 Labels
 ~~~~~~
 
-All :ref:`indices <text-index>` can be given either in raw numeric or in symbolic form.
+:ref:`Structured control instructions <syntax-control>` can be annotated with an optional symbolic :ref:`label identifier <text-id>` that can be used in place of the corresponding numeric :ref:`label index <text-labelidx>` in :ref:`branches <text-br>`.
+
 :ref:`Labels <syntax-labelidx>` are the only symbolic indices that can be defined locally in an :ref:`instruction sequence <text-instr-seq>`.
 The following grammar handles the corresponding update to the :ref:`identifier context <text-context>` by producing a context with an additional label entry.
 
@@ -36,9 +37,14 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    \begin{array}{llclll}
    \production{label} & \Tlabel_I &::=&
      \epsilon &\Rightarrow& \{\LABELS~(\epsilon)\} \compose I \\ &&|&
-     v{:}\Tid &\Rightarrow& \{\LABELS~v\} \compose I \\
+     v{:}\Tid &\Rightarrow& \{\LABELS~v\} \compose I
        & (v \notin I.\LABELS) \\
    \end{array}
+
+.. note::
+   The new label entry is inserted at the *beginning* of the label list in the identifier context.
+   This effectively shifts all existing labels by one,
+   mirroring the fact that control instructions are indexed relatively not absolutely.
 
 
 .. _text-instr-control:
@@ -48,11 +54,30 @@ The following grammar handles the corresponding update to the :ref:`identifier c
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _text-nop:
-.. _text-unreachable:
 .. _text-block:
 .. _text-loop:
 .. _text-if:
+
+:ref:`Structured control instructions <syntax-control>` can bind an optional symbolic :ref:`label identifier <text-label>`.
+The same identifier may optionally be repeated after the corresponding :math:`\T{end}` and :math:`\T{else}` pseudo instructions.
+
+.. math::
+   \begin{array}{llclll}
+   \production{block instruction} & \Tblockinstr_I &::=&
+     \text{block}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+       \\ &&&\qquad \Rightarrow\quad \BLOCK~\X{rt}~\X{in}^\ast~\END
+       \qquad\quad (\Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
+     \text{loop}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+       \\ &&&\qquad \Rightarrow\quad \LOOP~\X{rt}~\X{in}^\ast~\END
+       \qquad\qquad (\Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
+     \text{if}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
+       \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
+       \\ &&&\qquad \Rightarrow\quad \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
+       \qquad (\Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\
+   \end{array}
+
+.. _text-nop:
+.. _text-unreachable:
 .. _text-br:
 .. _text-br_if:
 .. _text-br_table:
@@ -60,20 +85,7 @@ Control Instructions
 .. _text-call:
 .. _text-call_indirect:
 
-.. math::
-   \begin{array}{llclll}
-   \production{block instruction} & \Tblockinstr_I &::=&
-     \text{block}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
-       &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END
-       \\ &&& (\Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{loop}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
-       &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END
-       \\ &&& (\Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{if}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
-       \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
-       &\Rightarrow& \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
-       \\ &&& (\Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\
-   \end{array}
+All other control instruction are represented verbatim.
 
 .. math::
    \begin{array}{llclll}
@@ -402,7 +414,10 @@ Numeric Instructions
 Folded Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-As a further abbreviation, instructions can also be written in *folded* S-expression form.
+As a special abbreviation, instructions can be grouped into *folded* S-expression form.
+The set side of all instruction phrases enabled by the following abbreviations defines the auxiliary syntactic class |Tfoldedinstr|.
+
+.. MathJax doesn't handle LaTex multicolumns, this the spacing hack in the following formula.
 
 .. math::
    \begin{array}{lllll}
@@ -413,33 +428,15 @@ As a further abbreviation, instructions can also be written in *folded* S-expres
        &\equiv\quad \text{block}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{end} \\ &
      \text{(}~\text{loop}~~\Tresulttype~~\Tinstr^\ast~\text{)}
        &\equiv\quad \text{loop}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{end} \\ &
-     \text{(}~\text{if}~~\Tlabel~~\Tresulttype~~\Tfoldedinstr
-       &\hspace{-1ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)}^?~~\text{)}
+     \text{(}~\text{if}~~\Tlabel~~\Tresulttype~~\Tfoldedinstr^\ast
+       &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)}^?~~\text{)}
        \quad\equiv \\ &\qquad
-         \Tfoldedinstr~~\text{if}~~\Tresulttype \hspace{-2em}&
-         ~\Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\
-   \end{array}
-
-.. math (commented out)
-   \begin{array}{llclll}
-   \production{folded instruction} & \Tfoldedinstr_I &::=&
-     \text{(}~\X{in}{:}\Tplaininstr~~(\X{op}{:}\Tfoldedinstr_I)^\ast~\text{)}
-       &\Rightarrow& \X{op}^\ast~\X{in} \\ &&|&
-     \text{(}~\text{block}~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
-       &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \text{(}~\text{loop}~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
-       &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \text{(}~\text{if}~~\X{rt}{:}\Tresulttype~~\X{in}_0^\ast{:}\Tfoldedinstr_I~~\text{(}~\text{then}~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}~~\text{)}
-       &\Rightarrow& \X{in}_0^\ast~~\IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
-     \text{(}~\text{if}~~\X{rt}{:}\Tresulttype~~\X{in}_0^\ast{:}\Tfoldedinstr_I~~\text{(}~\text{then}~~(\X{in}_1{:}\Tinstr_{I'})^\ast~\text{)}~~
-       \text{(}~\text{else}~~(\X{in}_2{:}\Tinstr_{I'})^\ast~\text{)}~~\text{)}
-       &\Rightarrow& \X{in}_0^\ast~~\IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\
+         \Tfoldedinstr^\ast~~\text{if}~~\Tlabel~~\Tresulttype &\hspace{-1ex} \Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\
    \end{array}
 
 .. note::
    Folded instructions are solely syntactic sugar,
-   no additional syntactic or type checking is implied.
-   In particular, the number of syntactic operands to an instruction can differ from the number of values that the instruction consumes from the :ref:`stack <exec-stack>`, because an individual operand instruction may produce less or more than one value.
+   no additional syntactic or type-based checking is implied.
 
 
 .. _text-expr:
