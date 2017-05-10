@@ -18,6 +18,8 @@ Both can also be written in :ref:`folded <text-foldedinstr>` form.
        &\Rightarrow& \X{in}^\ast \\
    \end{array}
 
+:ref:`Folded instructions` are a syntactic abbreviation for grouping instructions.
+
 
 .. _text-label:
 .. index:: index, label index
@@ -33,8 +35,8 @@ The following grammar handles the corresponding update to the :ref:`identifier c
 .. math::
    \begin{array}{llclll}
    \production{label} & \Tlabel_I &::=&
-     \epsilon &\Rightarrow& I \with \LABELS~(\epsilon)~I.\LABELS \\ &&|&
-     v{:}\Tid &\Rightarrow& I \with \LABELS~v~I.\LABELS
+     \epsilon &\Rightarrow& \{\LABELS~(\epsilon)\} \compose I \\ &&|&
+     v{:}\Tid &\Rightarrow& \{\LABELS~v\} \compose I \\
        & (v \notin I.\LABELS) \\
    \end{array}
 
@@ -61,15 +63,20 @@ Control Instructions
 .. math::
    \begin{array}{llclll}
    \production{block instruction} & \Tblockinstr_I &::=&
-     \text{block}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}
-       &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \text{loop}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}
-       &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \text{if}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}
-       &\Rightarrow& \IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
+     \text{block}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+       &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END
+       \\ &&& (\Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
+     \text{loop}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+       &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END
+       \\ &&& (\Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
      \text{if}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
-       \text{else}~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}
-       &\Rightarrow& \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\
+       \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
+       &\Rightarrow& \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
+       \\ &&& (\Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
    \production{plain instruction} & \Tplaininstr_I &::=&
      \text{unreachable} &\Rightarrow& \UNREACHABLE \\ &&|&
      \text{nop} &\Rightarrow& \NOP \\ &&|&
