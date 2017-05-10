@@ -57,3 +57,8 @@ Productions of the following form are interpreted as *records* that map a fixed 
 The following notation is adopted for manipulating such records:
 
 * :math:`r.\K{field}` denotes the :math:`\K{field}` component of :math:`r`.
+
+* :math:`r_1 \compose r_2` denotes the composition of two records whose fields are sequences by appending each sequence pointwise:
+
+  .. math::
+     \{ \K{field}_1\,A_1^\ast, \K{field}_2\,A_2^\ast, \dots \} \compose \{ \K{field}_1\,B_1^\ast, \K{field}_2\,B_2^\ast, \dots \} = \{ \K{field}_1\,A_1^\ast~B_1^\ast, \K{field}_2\,A_2^\ast~B_2^\ast, \dots \}

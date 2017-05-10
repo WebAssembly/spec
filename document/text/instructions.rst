@@ -429,6 +429,11 @@ As a further abbreviation, instructions can also be written in *folded* S-expres
        &\Rightarrow& \X{in}_0^\ast~~\IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\
    \end{array}
 
+.. note::
+   Folded instructions are solely syntactic sugar,
+   no additional syntactic or type checking is implied.
+   In particular, the number of syntactic operands to an instruction can differ from the number of values that the instruction consumes from the :ref:`stack <exec-stack>`, because an individual operand instruction may produce less or more than one value.
+
 
 .. _text-expr:
 .. index:: expression

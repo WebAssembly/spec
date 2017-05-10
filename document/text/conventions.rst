@@ -89,8 +89,8 @@ When dealing with binary encodings the following notation is also used:
 * :math:`\epsilon` denotes the empty byte sequence.
 
 
-.. text-context:
-.. text-context-wf:
+.. _text-context:
+.. _text-context-wf:
 .. index:: ! identifier context, identifier, index, index space
 
 Contexts
@@ -122,3 +122,10 @@ For each index space, an identifier context contains the list of :ref:`identifie
 Unnamed indices are associated with empty (:math:`\epsilon`) entries in these lists.
 
 An identifier context is *well-formed* if no index space contains duplicate identifiers.
+
+
+Conventions
+...........
+
+To avoid unnecessary clutter, empty components are omitted when writing out identifier contexts.
+For example, the record :math:`\{\}` is shorthand for an :ref:`identifier context <text-context>` whose components are all empty.

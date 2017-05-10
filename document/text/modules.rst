@@ -1,8 +1,6 @@
 Modules
 -------
 
-.. todo:: free ordering
-
 
 .. _text-index:
 .. _text-typeidx:
@@ -88,14 +86,14 @@ If any inline annotation is given, then it must be complete and match the refere
        \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\begin{array}[t]{@{}l@{}}
         I.\TYPEDEFS[x] = [t_1^n] \to [t_2^\ast] \wedge
-        I' = I \with \LOCALS~(\epsilon)^n) \\
+        I' = \{\LOCALS~(\epsilon)^n\}) \\
         \end{array} \\ &&|&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
      ~~(t_1{:}\Tparam)^\ast~~(t_2{:}\Tresult)^\ast
        \quad\Rightarrow\quad x, I' \\ &&&\qquad
        (\begin{array}[t]{@{}l@{}}
         I.\TYPEDEFS[x] = [t_1^\ast] \to [t_2^\ast] \wedge
-        I' = I \with \LOCALS~\F{id}(\Tparam)^\ast) \\
+        I' = \{\LOCALS~\F{id}(\Tparam)\}^\ast \idcwellformed) \\
         \end{array} \\
    \end{array}
 
@@ -110,6 +108,8 @@ The following auxiliary notation filters out optional identifiers from parameter
 .. note::
    Both productions overlap for the case that the function type is :math:`[] \to []`.
    However, in that case, they also produce the same results, so that the choice is immaterial.
+
+   The :ref:`well-formedness <text-context-wf>` condition on :math:`I'` ensures that the parameters do not contain duplicate identifier.
 
 
 Abbreviations
@@ -167,10 +167,10 @@ Functions
    \begin{array}{llclll}
    \production{function} & \Tfunc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
-     (t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I'})^\ast~\text{)}
+     (t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)}
        &\Rightarrow& \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\X{in}^\ast~\END \} \\ &&& \qquad
          (\begin{array}[n]{@{}l@{}}
-          I'' = I' \with \LOCALS~(I'.\LOCALS)~\F{id}(\Tlocal)^\ast) \\
+          I'' = I' \compose \{\LOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\
           \end{array} \\
    \production{local} & \Tlocal &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype~\text{)}
@@ -183,6 +183,10 @@ The definition of the local :ref:`identifier context <text-context>` :math:`I''`
    \begin{array}{lcl@{\qquad\qquad}l}
    \F{id}(\text{(}~\text{local}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
    \end{array}
+
+
+.. note::
+   The :ref:`well-formedness <text-context-wf>` condition on :math:`I'` ensures that parameters and locals do not contain duplicate identifier.
 
 
 Abbreviations
@@ -319,15 +323,50 @@ Data Segments
 
 
 .. _text-module:
+.. _text-modulebody:
+.. _text-modulefield:
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context, version
    pair: text format; module
 
 Modules
 ~~~~~~~
 
-.. todo:: free ordering
-
 .. math::
+   \begin{array}{lll}
+   \production{module} & \Tmodule &
+   \begin{array}[t]{@{}clll}
+   ::=&
+     \text{(}~\text{module}~~(m{:}\Tmodulefield_I)^\ast~\text{)}
+       &\Rightarrow& \bigcompose m^\ast
+       \\& (I = \bigcompose \F{idc}(\Tmodulefield)^\ast \idcwellformed) \\
+   \end{array} \\
+   \production{module field} & \Tmodulefield_I &
+   \begin{array}[t]{@{}clll}
+   ::=&
+     \functype{:}\Ttype &\Rightarrow& \{\TYPES~\functype\} \\ |&
+     \import{:}\Timport_I &\Rightarrow& \{\IMPORTS~\import\} \\ |&
+     \func{:}\Tfunc_I &\Rightarrow& \{\FUNCS~\func\} \\ |&
+     \table{:}\Ttable_I &\Rightarrow& \{\TABLES~\table\} \\ |&
+     \mem{:}\Tmem_I &\Rightarrow& \{\MEMS~\mem\} \\ |&
+     \global{:}\Tglobal_I &\Rightarrow& \{\GLOBALS~\global\} \\ |&
+     \export{:}\Texport_I &\Rightarrow& \{\EXPORTS~\export\} \\ |&
+     \start{:}\Tstart_I &\Rightarrow& \{\START~\start\} \\ |&
+     \elem{:}\Telem_I &\Rightarrow& \{\ELEM~\elem\} \\ |&
+     \data{:}\Tdata_I &\Rightarrow& \{\DATA~\data\} \\
+   \end{array}
+   \end{array}
+
+.. math (commented out)
+   \production{module} & \Tmodule &::=&
+     \text{(}~\text{module}~~m{:}\Tmodulebody_I~\text{)}
+       &\Rightarrow& m
+       \qquad (I = \F{idc}(\Tmodulebody)~\mbox{well-formed}) \\ &&|&
+     m{:}\Tmodulebody_I \phantom{\text{(}~\text{module}~~~\text{)}}
+       &\Rightarrow& m
+       \qquad (I = \F{idc}(\Tmodulebody)~\mbox{well-formed}) \\
+   \production{module body} & \Tmodulebody_I &::=&
+     (m{:}\Tmodulefield_I)^\ast &\Rightarrow& \{\}~(\compose~m)^\ast \\
+
    \begin{array}{llcllll}
    \production{module} & \Tmodule &::=&
      \text{(}~\text{module}~~m{:}\Tmodulebody~\text{)}
@@ -371,18 +410,68 @@ Modules
      \end{array}
    \end{array}
 
-The definition of the :ref:`identifier context <text-context>` :math:`I` uses the following auxiliary notation to filters out optional identifiers from definitions and imports in an order-preserving fashion:
+Here, the notation :math:`\bigcompose r^\ast` is shorthand for :ref:`composing <syntax-record>` a sequence of :ref:`module <syntax-module>` or :ref:`identifier context <text-context>` records, respectively;
+if the sequence is empty, then all fields of the resulting record are empty.
+Moreover, the following restrictions are imposed on the composition of :ref:`modules <syntax-module>`: :math:`m_1 \compose m_2` is defined if and only if
+
+* :math:`m_1.\START = \epsilon \vee m_2.\START = \epsilon`
+
+* :math:`m_2.\IMPORTS = \epsilon \vee m_1.\FUNCS = m_1.\TABLES = m_1.\MEMS = m_1.\GLOBALS = \epsilon`
+
+.. note::
+   The first condition ensures that there is at most one start function.
+   The second condition enforces that all :ref:`imports <text-import>` must occur before any regular definition of a :ref:`function <text-func>`, :ref:`table <text-table>`, :ref:`memory <text-mem>`, or :ref:`global <text-global>`,
+   thereby maintaining the ordering of the respective :ref:`index spaces <syntax-index>`.
+
+The definition of the initial :ref:`identifier context <text-context>` :math:`I` uses the following auxiliary definition which maps each relevant definition to a singular context with one (possibly empty) identifier:
 
 .. math::
-   \begin{array}{lcl@{\qquad\qquad}l}
+   \begin{array}{@{}lcl@{\qquad\qquad}l}
+   \F{idc}(\text{(}~\text{type}~\Tid^?~\dots~\text{)}) &=&
+     \{\TYPES~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{func}~\Tid^?~\dots~\text{)}) &=&
+     \{\FUNCS~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{table}~\Tid^?~\dots~\text{)}) &=&
+     \{\TABLES~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{memory}~\Tid^?~\dots~\text{)}) &=&
+     \{\MEMS~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=&
+     \{\GLOBALS~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{func}~\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\FUNCS~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\TABLES~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{memory}~\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\MEMS~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{global}~\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\GLOBALS~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\dots~\text{)}) &=&
+     \{\} \\
+   \end{array}
+
+
+.. math
+   \F{idc}(\epsilon) &=&
+     \{\} \\
+   \F{idc}(\Tmodulebody~\Tmodulefield) &=&
+     \F{idc}(\Tmodulebody) \compose \F{idc}(\Tmodulefield) \\[1ex]
+
+   The definition of the :ref:`identifier context <text-context>` :math:`I` uses the following auxiliary notation to filters out optional identifiers from definitions and imports in an order-preserving fashion:
+
+   \begin{array}{@{}l@{}}
+   \begin{array}{@{}lcl@{\qquad\qquad}l}
    \F{id}(\text{(}~\text{type}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
    \F{id}(\text{(}~\text{func}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
    \F{id}(\text{(}~\text{table}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
    \F{id}(\text{(}~\text{memory}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
    \F{id}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\[1ex]
-   \F{desc}(\text{(}~\text{import}~\dots~\Timportdesc~\text{)}) &=& \Timportdesc \\[1ex]
    \F{funcids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{func}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
    \F{tableids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{table}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
    \F{memids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{memory}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
    \F{globalids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{global}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
+   \end{array} \\
+   \F{desc}(\text{(}~\text{import}~\dots~\Timportdesc~\text{)}) \quad=\quad \Timportdesc
    \end{array}
+
+.. note::
+   The :ref:`well-formedness <text-context-wf>` condition on :math:`I` ensures that no namespace contains duplicate identifiers.

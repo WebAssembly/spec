@@ -23,7 +23,9 @@
 
 .. |production| mathdef:: \void
 .. |concat| mathdef:: \xref{syntax/conventions}{syntax-concat}{\F{concat}}
-.. |with| mathdef:: ~\xref{syntax/conventions}{syntax-record}{\mbox{with}}~
+.. |with| mathdef:: \xref{syntax/conventions}{syntax-record}{\mathrel{\mbox{with}}}
+.. |compose| mathdef:: \xref{syntax/conventions}{syntax-record}{\oplus}
+.. |bigcompose| mathdef:: \xref{syntax/conventions}{syntax-record}{\bigoplus}
 
 
 .. Lexical grammar, non-terminals
@@ -359,7 +361,8 @@
 .. Modules, textual non-terminals
 
 .. |Tmodule| mathdef:: \xref{text/modules}{text-module}{\T{module}}
-.. |Tmodulebody| mathdef:: \xref{text/modules}{text-module}{\T{modulebody}}
+.. |Tmodulebody| mathdef:: \xref{text/modules}{text-modulebody}{\T{modulebody}}
+.. |Tmodulefield| mathdef:: \xref{text/modules}{text-modulefield}{\T{modulefield}}
 .. |Ttype| mathdef:: \xref{text/modules}{text-type}{\T{type}}
 .. |Ttypeuse| mathdef:: \xref{text/modules}{text-typeuse}{\T{typeuse}}
 .. |Tfunc| mathdef:: \xref{text/modules}{text-func}{\T{func}}
@@ -501,3 +504,8 @@
 .. Context, textual
 
 .. |TYPEDEFS| mathdef:: \K{typedefs}
+
+
+.. Contexts, meta functions
+
+.. |idcwellformed| mathdef:: ~\xref{text/conventions}{text-context-wf}{\mbox{well-formed}}
