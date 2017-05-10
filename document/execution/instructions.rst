@@ -994,9 +994,9 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & S.\FUNCS[a] = f \\
-     \wedge & f.\CODE = \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\instr^\ast~\END \} \\
+     \wedge & f.\CODE = \{ \TYPE~x, \LOCALS~t^k, \BODY~\instr^\ast~\END \} \\
      \wedge & f.\MODULE.\TYPES[x] = [t_1^n] \to [t_2^m] \\
-     \wedge & F = \{ \MODULE~f.\MODULE, ~\LOCALS~\val^n~(t.\CONST~0)^\ast \})
+     \wedge & F = \{ \MODULE~f.\MODULE, ~\LOCALS~\val^n~(t.\CONST~0)^k \})
      \end{array} \\
    \end{array}
 
