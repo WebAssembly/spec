@@ -57,31 +57,31 @@
 
 .. |byte| mathdef:: \xref{syntax/values}{syntax-byte}{\X{byte}}
 
-.. |uX#1| mathdef:: {\X{uint}_{#1}}
-.. |sX#1| mathdef:: {\X{sint}_{#1}}
-.. |iX#1| mathdef:: {\X{int}_{#1}}
-.. |fX#1| mathdef:: {\X{float}_{#1}}
+.. |uX#1| mathdef:: {\X{u}#1}
+.. |sX#1| mathdef:: {\X{s}#1}
+.. |iX#1| mathdef:: {\X{i}#1}
+.. |fX#1| mathdef:: {\X{f}#1}
 
 .. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\uX{N}}
-.. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\uX{1}}
-.. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\uX{8}}
-.. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\uX{16}}
-.. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\uX{32}}
-.. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\uX{64}}
+.. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{1}}}
+.. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{8}}}
+.. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{16}}}
+.. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{32}}}
+.. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{64}}}
 
 .. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\sX{N}}
-.. |s8| mathdef:: \xref{syntax/values}{syntax-int}{\sX{8}}
-.. |s16| mathdef:: \xref{syntax/values}{syntax-int}{\sX{16}}
-.. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\sX{32}}
-.. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\sX{64}}
+.. |s8| mathdef:: \xref{syntax/values}{syntax-int}{\sX{\X{8}}}
+.. |s16| mathdef:: \xref{syntax/values}{syntax-int}{\sX{\X{16}}}
+.. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\sX{\X{32}}}
+.. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\sX{\X{64}}}
 
 .. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\iX{N}}
-.. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\iX{32}}
-.. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\iX{64}}
+.. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{32}}}
+.. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{64}}}
 
 .. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\fX{N}}
-.. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\fX{32}}
-.. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\fX{64}}
+.. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{32}}}
+.. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{64}}}
 
 .. |vec| mathdef:: \xref{syntax/values}{syntax-vec}{\X{vec}}
 .. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
@@ -92,29 +92,29 @@
 
 .. |Bbyte| mathdef:: \xref{binary/values}{binary-byte}{\B{byte}}
 
-.. |BuX#1| mathdef:: {\B{uint}_{#1}}
-.. |BsX#1| mathdef:: {\B{sint}_{#1}}
-.. |BiX#1| mathdef:: {\B{int}_{#1}}
-.. |BfX#1| mathdef:: {\B{float}_{#1}}
+.. |BuX#1| mathdef:: {\B{u}#1}
+.. |BsX#1| mathdef:: {\B{s}#1}
+.. |BiX#1| mathdef:: {\B{i}#1}
+.. |BfX#1| mathdef:: {\B{f}#1}
 
 .. |BuN| mathdef:: \xref{binary/values}{binary-int}{\BuX{N}}
-.. |Bu1| mathdef:: \xref{binary/values}{binary-int}{\BuX{1}}
-.. |Bu8| mathdef:: \xref{binary/values}{binary-int}{\BuX{8}}
-.. |Bu16| mathdef:: \xref{binary/values}{binary-int}{\BuX{16}}
-.. |Bu32| mathdef:: \xref{binary/values}{binary-int}{\BuX{32}}
-.. |Bu64| mathdef:: \xref{binary/values}{binary-int}{\BuX{64}}
+.. |Bu1| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{1}}}
+.. |Bu8| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{8}}}
+.. |Bu16| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{16}}}
+.. |Bu32| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{32}}}
+.. |Bu64| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{64}}}
 
 .. |BsN| mathdef:: \xref{binary/values}{binary-int}{\BsX{N}}
-.. |Bs32| mathdef:: \xref{binary/values}{binary-int}{\BsX{32}}
-.. |Bs64| mathdef:: \xref{binary/values}{binary-int}{\BsX{64}}
+.. |Bs32| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{32}}}
+.. |Bs64| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{64}}}
 
 .. |BiN| mathdef:: \xref{binary/values}{binary-int}{\BiX{N}}
-.. |Bi32| mathdef:: \xref{binary/values}{binary-int}{\BiX{32}}
-.. |Bi64| mathdef:: \xref{binary/values}{binary-int}{\BiX{64}}
+.. |Bi32| mathdef:: \xref{binary/values}{binary-int}{\BiX{\B{32}}}
+.. |Bi64| mathdef:: \xref{binary/values}{binary-int}{\BiX{\B{64}}}
 
 .. |BfN| mathdef:: \xref{binary/values}{binary-float}{\BfX{N}}
-.. |Bf32| mathdef:: \xref{binary/values}{binary-float}{\BfX{32}}
-.. |Bf64| mathdef:: \xref{binary/values}{binary-float}{\BfX{64}}
+.. |Bf32| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{32}}}
+.. |Bf64| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{64}}}
 
 .. |Bvec| mathdef:: \xref{binary/values}{binary-vec}{\B{vec}}
 .. |Bname| mathdef:: \xref{binary/values}{binary-name}{\B{name}}
@@ -176,14 +176,16 @@
 
 .. Types, terminals
 
+.. |I8| mathdef:: \xref{execution/runtime}{syntax-storagetype}{\K{i8}}
+.. |I16| mathdef:: \xref{execution/runtime}{syntax-storagetype}{\K{i16}}
 .. |I32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i32}}
 .. |I64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i64}}
 .. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
 
 .. |ANYFUNC| mathdef:: \xref{syntax/types}{syntax-elemtype}{\K{anyfunc}}
-.. |MUT| mathdef:: \xref{syntax/types}{syntax-mut}{\K{mut}}
-.. |VAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
+.. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
+.. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
 
 .. |MIN| mathdef:: \K{min}
 .. |MAX| mathdef:: \K{max}
@@ -198,7 +200,6 @@
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
 .. |elemtype| mathdef:: \xref{syntax/types}{syntax-elemtype}{\X{elemtype}}
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
-.. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
 .. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
 
@@ -213,7 +214,6 @@
 .. |Btabletype| mathdef:: \xref{binary/types}{binary-tabletype}{\B{tabletype}}
 .. |Belemtype| mathdef:: \xref{binary/types}{binary-elemtype}{\B{elemtype}}
 .. |Bmemtype| mathdef:: \xref{binary/types}{binary-memtype}{\B{memtype}}
-.. |Bexterntype| mathdef:: \xref{binary/types}{binary-externtype}{\B{externtype}}
 .. |Blimits| mathdef:: \xref{binary/types}{binary-limits}{\B{limits}}
 .. |Bmut| mathdef:: \xref{binary/types}{binary-mut}{\B{mut}}
 
@@ -278,6 +278,7 @@
 .. |GLOBALS| mathdef:: \K{globals}
 .. |LOCALS| mathdef:: \K{locals}
 .. |LABELS| mathdef:: \K{labels}
+.. |LRETURN| mathdef:: \K{return}
 .. |IMPORTS| mathdef:: \K{imports}
 .. |EXPORTS| mathdef:: \K{exports}
 
@@ -287,8 +288,6 @@
 .. |TABLE| mathdef:: \K{table}
 .. |MEM| mathdef:: \K{mem}
 .. |GLOBAL| mathdef:: \K{global}
-.. |LOCAL| mathdef:: \K{local}
-.. |LABEL| mathdef:: \K{label}
 .. |IMPORT| mathdef:: \K{import}
 .. |EXPORT| mathdef:: \K{export}
 .. |CODE| mathdef:: \K{code}
@@ -384,10 +383,10 @@
 
 .. Modules, meta functions
 
-.. |funcs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
-.. |tables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}
-.. |mems| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{mems}}
-.. |globals| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{globals}}
+.. |funcs| mathdef:: \xref{execution/runtime}{syntax-externtype}{\F{funcs}}
+.. |tables| mathdef:: \xref{execution/runtime}{syntax-externtype}{\F{tables}}
+.. |mems| mathdef:: \xref{execution/runtime}{syntax-externtype}{\F{mems}}
+.. |globals| mathdef:: \xref{execution/runtime}{syntax-externtype}{\F{globals}}
 
 
 .. Instructions, terminals
@@ -464,14 +463,35 @@
 .. |DEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{demote}}
 .. |REINTERPRET| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{reinterpret}}
 
+.. |TRAP| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{trap}}
+.. |LABEL| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{label}}
+.. |FRAME| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{frame}}
+
+.. |INVOKE| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{invoke}}
+.. |INSTANTIATE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{instantiate}}
+.. |INITIALIZE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{initialize}}
+.. |INITGLOBAL| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{init\_global}}
+.. |INITTABLE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{init\_table}}
+.. |INITMEM| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{init\_mem}}
+
 
 .. Instructions, non-terminals
 
-.. |unop| mathdef:: \X{unop}
-.. |binop| mathdef:: \X{binop}
-.. |testop| mathdef:: \X{testop}
-.. |relop| mathdef:: \X{relop}
-.. |cvtop| mathdef:: \X{cvtop}
+.. |unop| mathdef:: \xref{syntax/instructions}{syntax-unop}{\X{unop}}
+.. |binop| mathdef:: \xref{syntax/instructions}{syntax-binop}{\X{binop}}
+.. |testop| mathdef:: \xref{syntax/instructions}{syntax-testop}{\X{testop}}
+.. |relop| mathdef:: \xref{syntax/instructions}{syntax-relop}{\X{relop}}
+.. |cvtop| mathdef:: \xref{syntax/instructions}{syntax-cvtop}{\X{cvtop}}
+
+.. |iunop| mathdef:: \xref{syntax/instructions}{syntax-iunop}{\X{iunop}}
+.. |ibinop| mathdef:: \xref{syntax/instructions}{syntax-ibinop}{\X{ibinop}}
+.. |itestop| mathdef:: \xref{syntax/instructions}{syntax-itestop}{\X{itestop}}
+.. |irelop| mathdef:: \xref{syntax/instructions}{syntax-irelop}{\X{irelop}}
+
+.. |funop| mathdef:: \xref{syntax/instructions}{syntax-funop}{\X{funop}}
+.. |fbinop| mathdef:: \xref{syntax/instructions}{syntax-fbinop}{\X{fbinop}}
+.. |ftestop| mathdef:: \xref{syntax/instructions}{syntax-ftestop}{\X{ftestop}}
+.. |frelop| mathdef:: \xref{syntax/instructions}{syntax-frelop}{\X{frelop}}
 
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
@@ -511,3 +531,50 @@
 
 .. |idfresh| mathdef:: ~\xref{text/conventions}{text-id-fresh}{\mbox{fresh}}
 .. |idcwellformed| mathdef:: ~\xref{text/conventions}{text-context-wf}{\mbox{well-formed}}
+
+
+.. Runtime, terminals
+
+.. |MUT| mathdef:: \K{mut}
+
+
+.. Runtime, non-terminals
+
+.. |val| mathdef:: \xref{execution/runtime}{syntax-val}{\X{val}}
+
+.. |addr| mathdef:: \xref{execution/runtime}{syntax-addr}{\X{addr}}
+.. |funcaddr| mathdef:: \xref{execution/runtime}{syntax-funcaddr}{\X{funcaddr}}
+.. |tableaddr| mathdef:: \xref{execution/runtime}{syntax-tableaddr}{\X{tableaddr}}
+.. |memaddr| mathdef:: \xref{execution/runtime}{syntax-memaddr}{\X{memaddr}}
+.. |globaladdr| mathdef:: \xref{execution/runtime}{syntax-globaladdr}{\X{globaladdr}}
+
+.. |moduleinst| mathdef:: \xref{execution/runtime}{syntax-moduleinst}{\X{moduleinst}}
+.. |funcinst| mathdef:: \xref{execution/runtime}{syntax-funcinst}{\X{funcinst}}
+.. |tableinst| mathdef:: \xref{execution/runtime}{syntax-tableinst}{\X{tableinst}}
+.. |funcelem| mathdef:: \xref{execution/runtime}{syntax-funcelem}{\X{funcelem}}
+.. |meminst| mathdef:: \xref{execution/runtime}{syntax-meminst}{\X{meminst}}
+.. |globalinst| mathdef:: \xref{execution/runtime}{syntax-globalinst}{\X{globalinst}}
+.. |exportinst| mathdef:: \xref{execution/runtime}{syntax-exportinst}{\X{exportinst}}
+
+.. |externval| mathdef:: \xref{execution/runtime}{syntax-externval}{\X{externval}}
+.. |externtype| mathdef:: \xref{execution/runtime}{syntax-externtype}{\X{externtype}}
+.. |storagetype| mathdef:: \xref{execution/runtime}{syntax-storagetype}{\X{storagetype}}
+
+.. |store| mathdef:: \xref{execution/runtime}{syntax-store}{\X{store}}
+.. |frame| mathdef:: \xref{execution/runtime}{syntax-frame}{\X{frame}}
+.. |label| mathdef:: \xref{execution/runtime}{syntax-label}{\X{label}}
+
+.. |XB| mathdef:: \xref{execution/runtime}{syntax-ctxt-block}{B}
+
+
+.. Execution, notation
+
+.. |stepto| mathdef:: \hookrightarrow
+.. |mod| mathdef:: \mathbin{\F{mod}}
+
+.. Numerics, meta functions
+
+.. |bytes| mathdef:: \xref{execution/numerics}{aux-bytes}{\F{bytes}}
+.. |signed| mathdef:: \xref{execution/numerics}{aux-signed}{\F{signed}}
+.. |extend| mathdef:: \xref{execution/numerics}{aux-extend}{\F{extend}}
+.. |wrap| mathdef:: \xref{execution/numerics}{aux-wrap}{\F{wrap}}

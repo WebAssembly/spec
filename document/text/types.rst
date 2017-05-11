@@ -133,6 +133,6 @@ Global Types
 .. math::
    \begin{array}{llclll}
    \production{global type} & \Tglobaltype &::=&
-     t{:}\Tvaltype &\Rightarrow& \CONST~t \\ &&|&
-     \text{(}~\text{mut}~~t{:}\Tvaltype~\text{)} &\Rightarrow& \VAR~t \\
+     t{:}\Tvaltype &\Rightarrow& \MCONST~t \\ &&|&
+     \text{(}~\text{mut}~~t{:}\Tvaltype~\text{)} &\Rightarrow& \MVAR~t \\
    \end{array}

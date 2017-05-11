@@ -16,7 +16,7 @@ Value Types
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{value types} & \Bvaltype &::=&
+   \production{value type} & \Bvaltype &::=&
      \hex{7F} &\Rightarrow& \I32 \\ &&|&
      \hex{7E} &\Rightarrow& \I64 \\ &&|&
      \hex{7D} &\Rightarrow& \F32 \\ &&|&
@@ -40,7 +40,7 @@ The only :ref:`result types <syntax-resulttype>` occurring in the binary format 
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{result types} & \Bblocktype &::=&
+   \production{result type} & \Bblocktype &::=&
      \hex{40} &\Rightarrow& [] \\ &&|&
      t{:}\Bvaltype &\Rightarrow& [t] \\
    \end{array}
@@ -60,7 +60,7 @@ Function Types
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{function types} & \Bfunctype &::=&
+   \production{function type} & \Bfunctype &::=&
      \hex{60}~~t_1^\ast{:\,}\Bvec(\Bvaltype)~~t_2^\ast{:\,}\Bvec(\Bvaltype)
        &\Rightarrow& [t_1^\ast] \to [t_2^\ast] \\
    \end{array}
@@ -94,7 +94,7 @@ Memory Types
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{memory types} & \Bmemtype &::=&
+   \production{memory type} & \Bmemtype &::=&
      \X{lim}{:}\Blimits &\Rightarrow& \X{lim} \\
    \end{array}
 
@@ -112,9 +112,9 @@ Table Types
 
 .. math::
    \begin{array}{llclll}
-   \production{table types} & \Btabletype &::=&
+   \production{table type} & \Btabletype &::=&
      \X{et}{:}\Belemtype~~\X{lim}{:}\Blimits &\Rightarrow& \X{lim}~\X{et} \\
-   \production{element types} & \Belemtype &::=&
+   \production{element type} & \Belemtype &::=&
      \hex{70} &\Rightarrow& \ANYFUNC \\
    \end{array}
 
@@ -131,9 +131,9 @@ Global Types
 
 .. math::
    \begin{array}{llclll}
-   \production{global types} & \Bglobaltype &::=&
+   \production{global type} & \Bglobaltype &::=&
      t{:}\Bvaltype~~m{:}\Bmut &\Rightarrow& m~t \\
    \production{mutability} & \Bmut &::=&
-     \hex{00} &\Rightarrow& \CONST \\ &&|&
-     \hex{01} &\Rightarrow& \MUT \\
+     \hex{00} &\Rightarrow& \MCONST \\ &&|&
+     \hex{01} &\Rightarrow& \MVAR \\
    \end{array}

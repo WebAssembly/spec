@@ -511,9 +511,7 @@ The name serves a documentary role only.
    \end{array}
    \end{array}
 
-Here, the notation :math:`\bigcompose r^\ast` is shorthand for :ref:`composing <syntax-record>` a sequence of :ref:`module <syntax-module>` or :ref:`identifier context <text-context>` records, respectively;
-if the sequence is empty, then all fields of the resulting record are empty.
-Moreover, the following restrictions are imposed on the composition of :ref:`modules <syntax-module>`: :math:`m_1 \compose m_2` is defined if and only if
+The following restrictions are imposed on the composition of :ref:`modules <syntax-module>`: :math:`m_1 \compose m_2` is defined if and only if
 
 * :math:`m_1.\START = \epsilon \vee m_2.\START = \epsilon`
 

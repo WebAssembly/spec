@@ -11,9 +11,7 @@ WebAssembly Specification
    introduction/index
    syntax/index
    validation/index
-   instantiation/index
    execution/index
-   instructions/index
    binary/index
    text/index
    appendix-properties/index
