@@ -13,24 +13,68 @@ Both can also be written in :ref:`folded <text-foldedinstr>` form.
      \X{in}{:}\Tplaininstr_I
        &\Rightarrow& \X{in} \\ &&|&
      \X{in}{:}\Tblockinstr_I
-       &\Rightarrow& \X{in} \\ &&|&
-     \X{in}^\ast{:}\Tfoldedinstr_I
-       &\Rightarrow& \X{in}^\ast \\
+       &\Rightarrow& \X{in} \\
    \end{array}
 
-:ref:`Folded instructions` are a syntactic abbreviation for grouping instructions.
+In addition, as a syntactic abbreviation, instructions can be :ref:`folded` into S-expressions, as a means of grouping them visually.
+
+
+.. _text-index:
+.. _text-typeidx:
+.. _text-funcidx:
+.. _text-tableidx:
+.. _text-memidx:
+.. _text-globalidx:
+.. _text-localidx:
+.. _text-labelidx:
+.. _text-label:
+.. index:: index, type index, function index, table index, memory index, global index, local index, label index
+   pair: text format; type index
+   pair: text format; function index
+   pair: text format; table index
+   pair: text format; memory index
+   pair: text format; global index
+   pair: text format; local index
+   pair: text format; label index
+
+Indices
+~~~~~~~
+
+:ref:`Indices <syntax-index>` can be given either in raw numeric form or as symbolic :ref:`identifiers <text-id>` when bound by a respective construct.
+Such identifiers are looked up in the suitable space of the :ref:`identifier context <text-context>`.
+
+.. math::
+   \begin{array}{llclllllll}
+   \production{type index} & \Ttypeidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\TYPES[x] = v) \\
+   \production{function index} & \Tfuncidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\FUNCS[x] = v) \\
+   \production{table index} & \Ttableidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\TABLES[x] = v) \\
+   \production{memory index} & \Tmemidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\MEMS[x] = v) \\
+   \production{global index} & \Tglobalidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\GLOBALS[x] = v) \\
+   \production{local index} & \Tlocalidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\LOCALS[x] = v) \\
+   \production{label index} & \Tlabelidx_I &::=&
+     l{:}\Tu32 &\Rightarrow& l &|&
+     v{:}\Tid &\Rightarrow& l & (I.\LABELS[l] = v) \\
+   \end{array}
 
 
 .. _text-label:
 .. index:: index, label index
    pair: text format; label index
 
-Labels
-~~~~~~
-
-:ref:`Structured control instructions <syntax-control>` can be annotated with an optional symbolic :ref:`label identifier <text-id>` that can be used in place of the corresponding numeric :ref:`label index <text-labelidx>` in :ref:`branches <text-br>`.
-
-:ref:`Labels <syntax-labelidx>` are the only symbolic indices that can be defined locally in an :ref:`instruction sequence <text-instr-seq>`.
+:ref:`Structured control instructions <text-instr-control>` can be annotated with an optional symbolic :ref:`label identifier <text-id>` that can be used in place of the corresponding numeric :ref:`label index <text-labelidx>` to reference the instruction.
+:ref:`Labels <syntax-labelidx>` are the only symbolic identifiers that can be defined locally in an :ref:`instruction sequence <text-instr-seq>`.
 The following grammar handles the corresponding update to the :ref:`identifier context <text-context>` by producing a context with an additional label entry.
 
 .. math::
@@ -43,7 +87,7 @@ The following grammar handles the corresponding update to the :ref:`identifier c
 
 .. note::
    The new label entry is inserted at the *beginning* of the label list in the identifier context.
-   This effectively shifts all existing labels by one,
+   This effectively shifts all existing labels up by one,
    mirroring the fact that control instructions are indexed relatively not absolutely.
 
 
@@ -415,7 +459,8 @@ Folded Instructions
 ~~~~~~~~~~~~~~~~~~~
 
 As a special abbreviation, instructions can be grouped into *folded* S-expression form.
-The set side of all instruction phrases enabled by the following abbreviations defines the auxiliary syntactic class |Tfoldedinstr|.
+The set of all phrases defined by the following abbreviations recursively forms the auxiliary syntactic class |Tfoldedinstr|.
+Such a folded instruction can appear anywhere a regular instruction can.
 
 .. MathJax doesn't handle LaTex multicolumns, this the spacing hack in the following formula.
 
@@ -446,6 +491,9 @@ The set side of all instruction phrases enabled by the following abbreviations d
 
 Expressions
 ~~~~~~~~~~~
+
+Expressions are written as instruction sequences.
+No explicit :math:`\text{end}` keyword is included, since they only occur in bracketed positions.
 
 .. math::
    \begin{array}{llclll}

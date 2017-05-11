@@ -29,6 +29,7 @@ Limits :math:`\{ \MIN~n, \MAX~m^? \}`
 
 
 .. _valid-func:
+.. _valid-local:
 .. index:: function, local, function index, local index, type index, function type, value type, expression, import
    pair: abstract syntax; function
    single: abstract syntax; function

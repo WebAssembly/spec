@@ -5,7 +5,7 @@ Lexical Format
 
 
 .. _text-char:
-.. index:: ! character, Unicode, ASCII, code point
+.. index:: ! character, Unicode, ASCII, code point, ! source text
    pair: text format; character
 
 Characters
@@ -22,11 +22,11 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
 
 .. note::
    The set of characters interpreted in the text format is a subset of the characters supported by `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_,
-   but a source text may contain other characters in :ref:`comments <text-comments>` or :ref:`string <text-string>` literals.
+   but a source text may contain other characters in :ref:`comments <text-comment>` or :ref:`string <text-string>` literals.
 
 
 .. _text-stoken:
-.. index:: ! token, character, white space, comment
+.. index:: ! token, character, white space, comment, source text
    single: text format; token
 
 Tokens
@@ -40,7 +40,7 @@ or implicitly, by the occurrence of terminal symbols in literal form in the non-
 Tokens are formed from the input character stream according to the *longest match* rule.
 That is, the next token always consists of the longest possible sequence of characters that is recognized as a token.
 
-Tokens may explicitly be separated by space and formatting characters or :ref:`comments <text-comment>`,
+Tokens may explicitly be separated by space, formatting characters or :ref:`comments <text-comment>`,
 collectively called :ref:`white space <text-space>`.
 Except for :ref:`string <text-string>` literals, white space cannot appear inside a token.
 
@@ -53,8 +53,7 @@ White Space
 ~~~~~~~~~~~
 
 *White space* is any sequence of literal space characters, formatting characters, or :ref:`comments <text-comment>`.
-
-The allowed formatting characters correspond to a subset of the `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ *format effectors*, namely, *horizontal tabulation* (:math:`\unicode{09}`), *line feed* (:math:`\unicode{0A}`), or *carriage return* (:math:`\unicode{0D}`).
+The allowed formatting characters correspond to a subset of the `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ *format effectors*, namely, *horizontal tabulation* (:math:`\unicode{09}`), *line feed* (:math:`\unicode{0A}`), and *carriage return* (:math:`\unicode{0D}`).
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -64,9 +63,6 @@ The allowed formatting characters correspond to a subset of the `ASCII <http://w
      \unicode{09} ~|~ \unicode{0A} ~|~ \unicode{0D} \\
    \end{array}
 
-.. note::
-   Other formatting and control characters are allowed inside :ref:`comments <text-comment>`.
-
 
 .. text-comment:
 .. index:: ! comment, character
@@ -75,7 +71,7 @@ The allowed formatting characters correspond to a subset of the `ASCII <http://w
 Comments
 ~~~~~~~~
 
-A *comment* can either be a *line comment*, started with a double semicolon :math:`\text{;\!;}` and extending to the end of the line,
+A *comment* can either be a *line comment*, started with a double semicolon :math:`\text{\verb|;;|}` and extending to the end of the line,
 or a *block comment*, enclosed in delimiters :math:`\text{\verb|(;|} \dots \text{\verb|;)|}`.
 Block comments can be nested.
 
@@ -98,3 +94,6 @@ Block comments can be nested.
 
 Here, the pseudo token :math:`\T{eof}` indicates the end of the input.
 The *look-ahead* restrictions on the productions for |Tblockchar| disambiguate the grammar such that only well-bracketed uses of block comment delimiters are allowed.
+
+.. note::
+   Any formatting and control characters are allowed inside comments.

@@ -14,7 +14,7 @@ Some productions also take a :ref:`context <text-context>` as an inherited attri
 that records bound :ref:`identifers <text-id>`.
 
 Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
-However, it also defines a number of forms that are *syntactic sugar* over the core syntax.
+However, it also defines a number of *abbreviations* that are *syntactic sugar* over the core syntax.
 
 The recommended extension for source files containing WebAssembly modules in text format is ":math:`\T{.wat}`".
 Files with this extension are assumed to be encoded in `Unicode UTF-8 <http://www.unicode.org/versions/latest/>`_.
@@ -32,9 +32,9 @@ The following conventions are adopted in defining grammar rules for the text for
 They mirror the conventions used for :ref:`abstract syntax <grammar>` and for the :ref:`binary format <binary-format>`.
 In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, typewriter font is adopted for the former.
 
-* Terminal symbols are either literal strings of characters enclosed in quotes: :math:`\text{module}`,
-  or expressed as `Unicode <http://www.unicode.org/versions/latest/>`_ code points: :math:`\unicode{0A}.
-  (All characters written literally are contained in the `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ subset of Unicode.)
+* Terminal symbols are either literal strings of characters enclosed in quotes: :math:`\text{module}`;
+  or expressed as `Unicode <http://www.unicode.org/versions/latest/>`_ code points: :math:`\unicode{0A}`.
+  (All characters written literally are unambguously drawn from the `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ subset of Unicode.)
 
 * Nonterminal symbols are written in typewriter font: :math:`\T{valtype}, \T{instr}`.
 
@@ -44,6 +44,9 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 
 * :math:`T^\ast` is a possibly empty sequence of iterations of :math:`T`.
   (This is a shorthand for :math:`T^n` used where :math:`n` is not relevant.)
+
+* :math:`T^+` is a sequence of one or more iterations of :math:`T`.
+  (This is a shorthand for :math:`T^n` where :math:`n \geq 1`.)
 
 * :math:`T^?` is an optional occurrence of :math:`T`.
   (This is a shorthand for :math:`T^n` where :math:`n \leq 1`.)
@@ -79,17 +82,20 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
 
 
-.. _text-notation:
+.. _text-abbreviations:
+.. index:: ! abbreviations
 
-Auxiliary Notation
-~~~~~~~~~~~~~~~~~~
+Abbreviations
+~~~~~~~~~~~~~
 
-When dealing with source text the following notation is also used:
+In addition to the core grammar, which corresponds directly to the :ref:`abstract syntax <syntax>`, the textual syntax also defines a number of *abbreviations* that can be used to improve convenience and readability.
 
-* :math:`\epsilon` denotes the empty byte sequence.
+Abbreviations are defined by rewrite rules specifying their expansion into the core syntax:
 
+.. math::
+   \X{abbreviation~syntax} \quad\equiv\quad \X{expanded~syntax}
 
-.. todo:: Explain abbreviations
+These expansions are assumed to be applied, recursively and in order of appearance, before applying the core grammar rules to construct the abstract syntax.
 
 
 .. _text-context:
@@ -101,8 +107,8 @@ Contexts
 
 The text format allows to use symbolic :ref:`identifiers <text-id>` in place of :ref:`indices <syntax-index>`.
 To resolve these identifiers into concrete indices,
-some grammar production are indexed by an *identifier context* that records the declared identifiers in each :ref:`index space <syntax-index>`.
-In addition, the context records the types defined in the module, so that parameter indices can be computed.
+some grammar production are indexed by an *identifier context* :math:`I` as a synthesized attribute that records the declared identifiers in each :ref:`index space <syntax-index>`.
+In addition, the context records the types defined in the module, so that :ref:`parameter <text-param>` indices can be computed for :ref:`functions <text-func>`.
 
 It is convenient to define identifier contexts as :ref:`records <syntax-record>` :math:`I` with abstract syntax:
 
@@ -121,7 +127,7 @@ It is convenient to define identifier contexts as :ref:`records <syntax-record>`
      \end{array}
    \end{array}
 
-For each index space, an identifier context contains the list of :ref:`identifiers <text-id>` assigned to the defined indices.
+For each index space, such a context contains the list of :ref:`identifiers <text-id>` assigned to the defined indices.
 Unnamed indices are associated with empty (:math:`\epsilon`) entries in these lists.
 
 An identifier context is *well-formed* if no index space contains duplicate identifiers.

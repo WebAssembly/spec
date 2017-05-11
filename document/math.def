@@ -378,6 +378,7 @@
 .. |Tlocal| mathdef:: \xref{text/modules}{text-local}{\T{local}}
 .. |Tlocals| mathdef:: \xref{text/modules}{text-local}{\T{locals}}
 .. |Tdata| mathdef:: \xref{text/modules}{text-data}{\T{data}}
+.. |Tdatastring| mathdef:: \xref{text/modules}{text-datastring}{\T{datastring}}
 .. |Tstart| mathdef:: \xref{text/modules}{text-start}{\T{start}}
 
 
@@ -508,4 +509,5 @@
 
 .. Contexts, meta functions
 
+.. |idfresh| mathdef:: ~\xref{text/conventions}{text-id-fresh}{\mbox{fresh}}
 .. |idcwellformed| mathdef:: ~\xref{text/conventions}{text-context-wf}{\mbox{well-formed}}

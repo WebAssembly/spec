@@ -85,7 +85,7 @@ Floating-Point
 
 :ref:`Floating point <syntax-float>` values can be represented in either decimal or hexadecimal notation.
 The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
-(that is, a numeric value must not overflow to :math:`\pm` infinity),
+(that is, a numeric value must not overflow to :math:`\pm\mbox{infinity}`),
 but it may be rounded to the nearest representable value.
 
 .. note::
@@ -121,7 +121,7 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      z{:}\Thexfloat &\Rightarrow& b^\ast & (\ieee_N(z) = b^\ast) \\ &&|&
      s{:}\Tsign~\text{inf} &\Rightarrow& b^\ast & (\ieeeinf_N(s) = b^\ast) \\ &&|&
      s{:}\Tsign~\text{nan} &\Rightarrow& b^\ast & (\ieeenan_N(s, 0) = b^\ast) \\ &&|&
-     s{:}\Tsign~\text{nan\!:}~\text{0x}~n{:}\Thexnum &\Rightarrow& b^\ast & (\ieeenan_N(s, n) = b^\ast) \\
+     s{:}\Tsign~\text{nan\verb|:|}~\text{0x}~n{:}\Thexnum &\Rightarrow& b^\ast & (\ieeenan_N(s, n) = b^\ast) \\
    \end{array}
 
 .. todo:: IEEE encoding
@@ -201,7 +201,8 @@ A name string must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>
    \end{array}
 
 .. note::
-   Strings that do not contain any uses of hexadecimal byte escapes are always valid names.
+   Presuming the source text is itself encoded correctly,
+   strings that do not contain any uses of hexadecimal byte escapes are always valid names.
 
 
 .. _text-id:
@@ -247,7 +248,11 @@ Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{$}`
      \text{\verb|~|} \\
    \end{array}
 
-.. math (commented out)
-     b \Rightarrow b
-       && (\hex{21} \leq b \leq \hex{7E} \wedge
-           b \notin \{\text{,}, \text{;}, \text{(}, \text{)}, \text{[}, \text{]}, \text{\{}, \text{\}}\}) \\
+
+.. _text-id-fresh:
+
+Conventions
+...........
+
+The expansion rule of some abbreviations require insertion of a *fresh* identifier.
+That may be any syntactically valid identifier that does not already occur in the given source text.

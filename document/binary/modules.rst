@@ -308,6 +308,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
 .. _binary-local:
 .. index:: ! code section, function, local, type index, function type
    pair: binary format; function
+   pair: binary format; local
    pair: section; code
 
 Code Section

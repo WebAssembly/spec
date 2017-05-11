@@ -106,6 +106,7 @@ They are referenced by :ref:`type indices <syntax-typeidx>`.
 .. _syntax-local:
 .. index:: ! function, ! local, function index, local index, type index, value type, expression, import
    pair: abstract syntax; function
+   pair: abstract syntax; local
 
 Functions
 ~~~~~~~~~
