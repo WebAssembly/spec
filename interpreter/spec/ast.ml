@@ -65,6 +65,7 @@ type storeop = Memory.mem_size memop
 
 type var = int32 Source.phrase
 type literal = Values.value Source.phrase
+type name = int list
 
 type instr = instr' Source.phrase
 and instr' =
@@ -156,7 +157,7 @@ and export_desc' =
 type export = export' Source.phrase
 and export' =
 {
-  name : string;
+  name : name;
   edesc : export_desc;
 }
 
@@ -170,8 +171,8 @@ and import_desc' =
 type import = import' Source.phrase
 and import' =
 {
-  module_name : string;
-  item_name : string;
+  module_name : name;
+  item_name : name;
   idesc : import_desc;
 }
 

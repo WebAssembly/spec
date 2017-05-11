@@ -71,6 +71,7 @@ let encode m =
 
     let bool b = vu1 (if b then 1 else 0)
     let string bs = len (String.length bs); put_string s bs
+    let name n = string (Utf8.encode n)
     let list f xs = List.iter f xs
     let opt f xo = Lib.Option.app f xo
     let vec f xs = len (List.length xs); list f xs
@@ -390,7 +391,7 @@ let encode m =
 
     let import im =
       let {module_name; item_name; idesc} = im.it in
-      string module_name; string item_name; import_desc idesc
+      name module_name; name item_name; import_desc idesc
 
     let import_section ims =
       section 2 (vec import) ims (ims <> [])
@@ -434,8 +435,8 @@ let encode m =
       | GlobalExport x -> u8 3; var x
 
     let export ex =
-      let {name; edesc} = ex.it in
-      string name; export_desc edesc
+      let {name = n; edesc} = ex.it in
+      name n; export_desc edesc
 
     let export_section exs =
       section 7 (vec export) exs (exs <> [])

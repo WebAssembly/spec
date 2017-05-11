@@ -40,7 +40,7 @@ let exit vs =
 
 
 let lookup name t =
-  match name, t with
+  match Utf8.encode name, t with
   | "abort", ExternalFuncType t -> ExternalFunc (HostFunc (t, abort))
   | "exit", ExternalFuncType t -> ExternalFunc (HostFunc (t, exit))
   | _ -> raise Not_found

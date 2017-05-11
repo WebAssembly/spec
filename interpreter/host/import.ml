@@ -4,7 +4,7 @@ open Ast
 module Unknown = Error.Make ()
 exception Unknown = Unknown.Error  (* indicates unknown import name *)
 
-module Registry = Map.Make(String)
+module Registry = Instance.ExportMap
 let registry = ref Registry.empty
 
 let register name lookup = registry := Registry.add name lookup !registry
@@ -14,6 +14,7 @@ let lookup (m : module_) (im : import) : Instance.extern =
   let t = import_type m im in
   try Registry.find module_name !registry item_name t with Not_found ->
     Unknown.error im.at
-      ("unknown import \"" ^ module_name ^ "." ^ item_name ^ "\"")
+      ("unknown import \"" ^ String.escaped (Utf8.encode module_name) ^
+        "\".\"" ^ String.escaped (Utf8.encode item_name) ^ "\"")
 
 let link m = List.map (lookup m) m.it.imports

@@ -29,6 +29,7 @@ let string_with add_char s =
 
 let bytes = string_with add_hex_char
 let string = string_with add_char
+let name n = string (Utf8.encode n)
 
 let list_of_opt = function None -> [] | Some x -> [x]
 
@@ -307,7 +308,7 @@ let import_desc i d =
 let import i im =
   let {module_name; item_name; idesc} = im.it in
   Node ("import",
-    [atom string module_name; atom string item_name; import_desc i idesc]
+    [atom name module_name; atom name item_name; import_desc i idesc]
   )
 
 let export_desc d =
@@ -318,8 +319,8 @@ let export_desc d =
   | GlobalExport x -> Node ("global", [atom var x])
 
 let export ex =
-  let {name; edesc} = ex.it in
-  Node ("export", [atom string name; export_desc edesc])
+  let {name = n; edesc} = ex.it in
+  Node ("export", [atom name n; export_desc edesc])
 
 let global off i g =
   let {gtype; value} = g.it in
@@ -392,8 +393,8 @@ let definition mode x_opt def =
       | Encoded (_, bs) -> bs
     in binary_module_with_var_opt x_opt bs
 
-let access x_opt name =
-  String.concat " " [var_opt x_opt; string name]
+let access x_opt n =
+  String.concat " " [var_opt x_opt; name n]
 
 let action act =
   match act.it with
@@ -426,8 +427,8 @@ let assertion mode ass =
 let command mode cmd =
   match cmd.it with
   | Module (x_opt, def) -> definition mode x_opt def
-  | Register (name, x_opt) ->
-    Node ("register " ^ string name ^ var_opt x_opt, [])
+  | Register (n, x_opt) ->
+    Node ("register " ^ name n ^ var_opt x_opt, [])
   | Action act -> action act
   | Assertion ass -> assertion mode ass
   | Meta _ -> assert false
