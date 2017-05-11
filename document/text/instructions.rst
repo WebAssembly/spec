@@ -16,7 +16,7 @@ Both can also be written in :ref:`folded <text-foldedinstr>` form.
        &\Rightarrow& \X{in} \\
    \end{array}
 
-In addition, as a syntactic abbreviation, instructions can be :ref:`folded` into S-expressions, as a means of grouping them visually.
+In addition, as a syntactic abbreviation, instructions can be :ref:`folded <text-foldedinstr>` into S-expressions, as a means of grouping them visually.
 
 
 .. _text-index:
@@ -27,7 +27,6 @@ In addition, as a syntactic abbreviation, instructions can be :ref:`folded` into
 .. _text-globalidx:
 .. _text-localidx:
 .. _text-labelidx:
-.. _text-label:
 .. index:: index, type index, function index, table index, memory index, global index, local index, label index
    pair: text format; type index
    pair: text format; function index
@@ -74,7 +73,7 @@ Such identifiers are looked up in the suitable space of the :ref:`identifier con
    pair: text format; label index
 
 :ref:`Structured control instructions <text-instr-control>` can be annotated with an optional symbolic :ref:`label identifier <text-id>` that can be used in place of the corresponding numeric :ref:`label index <text-labelidx>` to reference the instruction.
-:ref:`Labels <syntax-labelidx>` are the only symbolic identifiers that can be defined locally in an :ref:`instruction sequence <text-instr-seq>`.
+:ref:`Labels <syntax-labelidx>` are the only symbolic identifiers that can be defined locally in an instruction sequence.
 The following grammar handles the corresponding update to the :ref:`identifier context <text-context>` by producing a context with an additional label entry.
 
 .. math::
@@ -102,7 +101,7 @@ Control Instructions
 .. _text-loop:
 .. _text-if:
 
-:ref:`Structured control instructions <syntax-control>` can bind an optional symbolic :ref:`label identifier <text-label>`.
+:ref:`Structured control instructions <syntax-instr-control>` can bind an optional symbolic :ref:`label identifier <text-label>`.
 The same identifier may optionally be repeated after the corresponding :math:`\T{end}` and :math:`\T{else}` pseudo instructions.
 
 .. math::
@@ -452,8 +451,8 @@ Numeric Instructions
    \end{array}
 
 
+.. _text-foldedinstr:
 .. index:: ! folded instruction, S-expression
-
 
 Folded Instructions
 ~~~~~~~~~~~~~~~~~~~

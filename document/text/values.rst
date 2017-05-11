@@ -6,7 +6,7 @@ Values
 ------
 
 The grammar produtions in this section define *lexical syntax*,
-hence no :ref:`white space <text-whitespace>` is allowed.
+hence no :ref:`white space <text-space>` is allowed.
 
 
 .. _text-sign:
@@ -121,7 +121,7 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      z{:}\Thexfloat &\Rightarrow& b^\ast & (\ieee_N(z) = b^\ast) \\ &&|&
      s{:}\Tsign~\text{inf} &\Rightarrow& b^\ast & (\ieeeinf_N(s) = b^\ast) \\ &&|&
      s{:}\Tsign~\text{nan} &\Rightarrow& b^\ast & (\ieeenan_N(s, 0) = b^\ast) \\ &&|&
-     s{:}\Tsign~\text{nan\verb|:|}~\text{0x}~n{:}\Thexnum &\Rightarrow& b^\ast & (\ieeenan_N(s, n) = b^\ast) \\
+     s{:}\Tsign~\text{nan{:}}~\text{0x}~n{:}\Thexnum &\Rightarrow& b^\ast & (\ieeenan_N(s, n) = b^\ast) \\
    \end{array}
 
 .. todo:: IEEE encoding
@@ -159,6 +159,8 @@ except when expressed with an *escape sequence*.
 
 Each character in a string literal represents the byte sequence corresponding to its `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding,
 except for hexadecimal escape sequences :math:`\text{\verb|\|}hh`, which represent raw bytes of the respective value.
+
+.. todo - find replacement for the use of \verb, which isn't actually allowed in math mode, nor can be put into an \mbox
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}

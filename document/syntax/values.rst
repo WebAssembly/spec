@@ -60,7 +60,7 @@ Different classes of *integers* with different value ranges are distinguished by
 
 The latter class defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned.
-However, some operations :ref:`convert <aus-signed>` them to signed based on a 2's complement interpretation.
+However, some operations :ref:`convert <aux-signed>` them to signed based on a 2's complement interpretation.
 
 
 Conventions
@@ -119,9 +119,9 @@ Names
 *Names* are sequences of *scalar* `Unicode <http://www.unicode.org/versions/latest/>`_ *code points*.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llclll}
    \production{name} & \name &::=&
-     \codepoint^\ast & (|\utf(\codepoint^\ast)| < 2^{32}) \\
+     \codepoint^\ast & (|\utf8(\codepoint^\ast)| < 2^{32}) \\
    \production{code point} & \codepoint &::=&
      \unicode{0000} ~|~ \dots ~|~ \unicode{D7FF} ~|~
      \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\

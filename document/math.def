@@ -28,6 +28,17 @@
 .. |bigcompose| mathdef:: \xref{syntax/conventions}{syntax-record}{\bigoplus}
 
 
+.. Lexical grammar, terminals
+
+.. |textl| mathdef:: \mbox{‘}
+.. |textr| mathdef:: \mbox{’}
+.. |text#1| mathdef:: \textl\mathtt{#1}\textr
+
+.. |Tcommentl| mathdef:: \text{{(}{;}}
+.. |Tcommentr| mathdef:: \text{{;}{)}}
+.. |Tcommentd| mathdef:: \text{{;}{;}}
+
+
 .. Lexical grammar, non-terminals
 
 .. |Tchar| mathdef:: \xref{text/lexical}{text-char}{\T{char}}
@@ -50,7 +61,6 @@
 
 .. |hex#1| mathdef:: \mathtt{0x#1}
 .. |unicode#1| mathdef:: \mathrm{U{+}#1}
-.. |text#1| mathdef:: \mbox{‘}\mathtt{#1}\mbox{’}
 
 
 .. Values, non-terminals
@@ -578,3 +588,9 @@
 .. |signed| mathdef:: \xref{execution/numerics}{aux-signed}{\F{signed}}
 .. |extend| mathdef:: \xref{execution/numerics}{aux-extend}{\F{extend}}
 .. |wrap| mathdef:: \xref{execution/numerics}{aux-wrap}{\F{wrap}}
+
+.. todo...
+
+.. |ieee| mathdef:: \F{ieee}
+.. |ieeeinf| mathdef:: \F{ieeeinf}
+.. |ieeenan| mathdef:: \F{ieeenan}

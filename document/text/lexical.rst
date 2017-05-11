@@ -1,3 +1,4 @@
+.. _text-lexical:
 .. index:: lexical format
 
 Lexical Format
@@ -25,7 +26,7 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
    but a source text may contain other characters in :ref:`comments <text-comment>` or :ref:`string <text-string>` literals.
 
 
-.. _text-stoken:
+.. _text-token:
 .. index:: ! token, character, white space, comment, source text
    single: text format; token
 
@@ -64,15 +65,15 @@ The allowed formatting characters correspond to a subset of the `ASCII <http://w
    \end{array}
 
 
-.. text-comment:
+.. _text-comment:
 .. index:: ! comment, character
    single: text format; comment
 
 Comments
 ~~~~~~~~
 
-A *comment* can either be a *line comment*, started with a double semicolon :math:`\text{\verb|;;|}` and extending to the end of the line,
-or a *block comment*, enclosed in delimiters :math:`\text{\verb|(;|} \dots \text{\verb|;)|}`.
+A *comment* can either be a *line comment*, started with a double semicolon :math:`\Tcommentd` and extending to the end of the line,
+or a *block comment*, enclosed in delimiters :math:`\Tcommentl \dots \Tcommentr`.
 Block comments can be nested.
 
 .. math::
@@ -80,11 +81,11 @@ Block comments can be nested.
    \production{comment} & \Tcomment &::=&
      \Tlinecomment ~|~ \Tblockcomment \\
    \production{line comment} & \Tlinecomment &::=&
-     \text{\verb|;;|}~~\Tlinechar^\ast~~(\unicode{0A} ~|~ \T{eof}) \\
+     \Tcommentd~~\Tlinechar^\ast~~(\unicode{0A} ~|~ \T{eof}) \\
    \production{line character} & \Tlinechar &::=&
      c{:}\Tchar & (c \neq \unicode{0A}) \\
    \production{block comment} & \Tblockcomment &::=&
-     \text{\verb|(;|}~~\Tblockchar^\ast~~\text{\verb|;)|} \\
+     \Tcommentl~~\Tblockchar^\ast~~\Tcommentr \\
    \production{block character} & \Tblockchar &::=&
      c{:}\Tchar & (c \neq \text{;} \wedge c \neq \text{(}) \\ &&|&
      \text{;} & (\mbox{the next character is not}~\text{)}) \\ &&|&

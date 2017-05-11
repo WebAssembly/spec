@@ -40,6 +40,8 @@ Result Types
 
 
 .. _text-functype:
+.. _text-param:
+.. _text-result:
 .. index:: function type, value type, result type
    pair: text format; function type
 

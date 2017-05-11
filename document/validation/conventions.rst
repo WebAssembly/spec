@@ -41,7 +41,7 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Labels*: the stack of labels accessible from the current position, represented by their result type.
 * *Return*: the return type of the current function, represented as a result type.
 
-In other words, a context contains a sequence of suitable :ref:`types <syntax-types>` for each :ref:`index space <syntax-index>`,
+In other words, a context contains a sequence of suitable :ref:`types <syntax-type>` for each :ref:`index space <syntax-index>`,
 describing each defined entry in that space.
 Locals, labels and return type are only used for validating :ref:`instructions <syntax-instr>` in :ref:`function bodies <syntax-func>`, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.

@@ -38,7 +38,7 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 
 * Nonterminal symbols are written in typewriter font: :math:`\T{valtype}, \T{instr}`.
 
-* Arbitrary :ref:`white space <text-whitespace>` is allowed in any place where the grammar contains spaces, except where noted otherwise, such as the :ref:`lexical syntax <text-lexical>`.
+* Arbitrary :ref:`white space <text-space>` is allowed in any place where the grammar contains spaces, except where noted otherwise, such as the :ref:`lexical syntax <text-lexical>`.
 
 * :math:`T^n` is a sequence of :math:`n\geq 0` iterations  of :math:`T`.
 

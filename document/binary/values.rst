@@ -122,7 +122,7 @@ Vectors
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vector>` of bytes containing the `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding of the name's code point sequence.
+:ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vec>` of bytes containing the `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding of the name's code point sequence.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
