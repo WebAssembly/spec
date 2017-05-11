@@ -4,11 +4,11 @@ There are four sections to this proposal
 
 1. A overview of the proposed extension to WebAssembly
    
-2. Changes to the text format document.
+1. Changes to the text format document.
 
-3. Changes to the Modules document.
+1. Changes to the Modules document.
 
-3. Changes of the WebAssembly Binary Design document.
+1. Changes of the WebAssembly Binary Design document.
 
 The proposal here is also meant to be a minimal proposal that may be further
 extended sometime in the future.
@@ -21,13 +21,13 @@ may be an unknown exception thrown by an imported call.
 
 Thrown exceptions are handled as follows:
 
-a) They can be caught by a catch block in an enclosing try block of a function
+1. They can be caught by a catch block in an enclosing try block of a function
    body.
 
-b) Throws not caught within a function body continue up the call stack until an
+1. Throws not caught within a function body continue up the call stack until an
    enclosing try block is found.
    
-c) If the call stack is exhausted without any enclosing try blocks, it
+1. If the call stack is exhausted without any enclosing try blocks, it
    terminates the application.
 
 This proposal looks at the changes needed to incorporate these concepts into the
@@ -90,7 +90,7 @@ end
 
 A try block also contains one or more catch blocks, and all but the last catch
 block must begin with a`catch` instruction. The last catch block can begin with
-either a `catch` or `catch_deafult` instruction. The `catch`/`catch default`
+either a `catch` or `catch default` instruction. The `catch`/`catch default`
 instructions (within the try construct) are called the _catching_ instructions.
 
 The _body_ of the try block is the list of instructions before the first
@@ -175,15 +175,43 @@ also be sure to also pop off the caught exception values.
 ### Rethrows
 
 The _rethrow_ instruction can only appear in the body of a catch block.  The
-_rethrow_ instruction gets a single index argument. It is to disambiguate which
-caught exception is to be rethrown, when inside nested catch blocks (of
-corresponding nested try blocks). The blocks are numbered monotonically
-(inside-out) starting at zero. Sero implies the immediately enclosing catch
-block.
+_rethrow_ instruction always re-throws the exception caught by the referenced
+catch block. This allows the catch block to clean up state before the exception
+is passed back to the next enclosing try block.
 
-The _rethrow_ isntruction always re-throws the exception caught by the
-referenced catch block. This allows the catch block to clean up state before the
-exception is passed back to the next enclosing try block.
+The _rethrow_ instruction gets a _catch index_ argument. It is to disambiguate
+which caught exception is to be rethrown, when inside nested catch blocks (of
+corresponding nested try blocks).
+
+For example consider the following example:
+
+```
+try
+  ...
+catch 1
+  ...
+  try
+    ...
+  catch 2
+    ...
+    try
+      ...
+    catch 3
+      ...
+      rethrow N
+    end
+  end
+end
+```
+
+In this example, `N` is used to disambiguate which caught exception is being
+rethrown. It could rethrow any of the three caught expceptions. The catch blocks
+are numbered monotonically (inside-out) starting at zero. Zero implies the
+immediately enclosing catch block.
+
+So, in the above example, `rethrow 0` corresponds to the exception caught by
+`catch 3`, `rethrow 1` corresponds to the exception caught by `catch 2`, and
+`rethrow 2` corresponds to the exception caught by `catch 1`.
 
 ### Debugging
 
@@ -208,11 +236,11 @@ The following rule is added to *instructions*:
 instructions ::=
   ...
   try resulttype instr* catch+ end |
-  throw exceptidex |
-  rethrow
+  throw except_index |
+  rethrow catch_index
   
 catch ::=
-  catch exceptidx inst* |
+  catch except_index inst* |
   catch default inst*
 ```
 
@@ -220,10 +248,13 @@ Like the *block*, *loop*, and *if* instructions, the *try* instruction is a
 *structured* instruction, and is implicitly labeled. this allows branch
 instructions to exit try blocks.
 
-The _exceptidx_ of the *catch* instruction is the exception tag for the caught
-exception. Similarly, the _exceptidx_ of the *throw* instruction is the tag for
+The `except_index` of the `catch` instruction is the exception tag for the caught
+exception. Similarly, the `except_index` of the *throw* instruction is the tag for
 the constructed exception.  See [exception index space](#exception-index-space)
 for further clarification of exception tags.
+
+The `catch_index` of the `rethrow` instruciton is the index to the corresponding
+catch that defines the exception to throw.
 
 ## Changes to Modules document.
 
@@ -331,7 +362,7 @@ throws, and rethrows as follows:
 | `catch` | `0x07` | tag : `varuint32` | begins a block when the exception `tag` is thrown |
 | `throw` | `0x08` | tag : `varuint32` | Throws an exception defined by the exception `tag` |
 | `rethrow` | `0x09` | catch_index : `varuint32` | re-throws the exception caught by the enclosing catch block |
-| `end` | `0x0b` | | end a block, loop, if, try, catch, and catch_default |
+| `end` | `0x0b` | | end a block, loop, if, try, catch, and catch default |
 | `br` | `0x0c` | relative_depth : `varuint32` | break that targets an outer nested block |
 | `br_if` | `0x0d` | relative_depth : `varuint32` | conditional break that targets an outer nested block |
 | `br_table` | `0x0e` | see below | branch table control flow construct |
