@@ -256,5 +256,5 @@ Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{$}`
 Conventions
 ...........
 
-The expansion rule of some abbreviations require insertion of a *fresh* identifier.
+The expansion rules of some abbreviations require insertion of a *fresh* identifier.
 That may be any syntactically valid identifier that does not already occur in the given source text.

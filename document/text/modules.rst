@@ -236,7 +236,7 @@ Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-exp
        (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
-Moreover, an :ref:`element segment <text-elem>` can be given inline, in which case the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>`are inferred from the length of the given segment:
+Moreover, an :ref:`element segment <text-elem>` can be given inline, in which case the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>` are inferred from the length of the given segment:
 
 .. math::
    \begin{array}{llclll}

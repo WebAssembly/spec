@@ -5,7 +5,6 @@ Instructions
 ------------
 
 Instructions are syntactically distinguished into *plain* and *structured* instructions.
-Both can also be written in :ref:`folded <text-foldedinstr>` form.
 
 .. math::
    \begin{array}{llclll}
@@ -16,7 +15,7 @@ Both can also be written in :ref:`folded <text-foldedinstr>` form.
        &\Rightarrow& \X{in} \\
    \end{array}
 
-In addition, as a syntactic abbreviation, instructions can be :ref:`folded <text-foldedinstr>` into S-expressions, as a means of grouping them visually.
+In addition, as a syntactic abbreviation, instructions can be written in :ref:`folded <text-foldedinstr>` form as S-expressions, to group them visually.
 
 
 .. _text-index:
@@ -72,8 +71,8 @@ Such identifiers are looked up in the suitable space of the :ref:`identifier con
 .. index:: index, label index
    pair: text format; label index
 
-:ref:`Structured control instructions <text-instr-control>` can be annotated with an optional symbolic :ref:`label identifier <text-id>` that can be used in place of the corresponding numeric :ref:`label index <text-labelidx>` to reference the instruction.
-:ref:`Labels <syntax-labelidx>` are the only symbolic identifiers that can be defined locally in an instruction sequence.
+:ref:`Structured control instructions <text-instr-control>` can be annotated with a symbolic :ref:`label identifier <text-id>`.
+They are the only symbolic identifiers that can be bound locally in an instruction sequence.
 The following grammar handles the corresponding update to the :ref:`identifier context <text-context>` by producing a context with an additional label entry.
 
 .. math::
@@ -216,6 +215,9 @@ Memory Instructions
 .. _text-storen:
 .. _text-current_memory:
 .. _text-grow_memory:
+
+The offset and alignment immediates to memory instructions are optional.
+The offset defaults to :math:`\T{0}`, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
 
 .. math::
    \begin{array}{llclll}

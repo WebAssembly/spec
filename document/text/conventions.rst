@@ -88,7 +88,7 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 Abbreviations
 ~~~~~~~~~~~~~
 
-In addition to the core grammar, which corresponds directly to the :ref:`abstract syntax <syntax>`, the textual syntax also defines a number of *abbreviations* that can be used to improve convenience and readability.
+In addition to the core grammar, which corresponds directly to the :ref:`abstract syntax <syntax>`, the textual syntax also defines a number of *abbreviations* that can be used for convenience and readability.
 
 Abbreviations are defined by rewrite rules specifying their expansion into the core syntax:
 
