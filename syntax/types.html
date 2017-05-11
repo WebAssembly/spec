@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -67,9 +67,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 <ul>
@@ -109,12 +109,12 @@
 <p><em>Value types</em> classify the individual values that WebAssembly code can compute with and the values that a variable accepts.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1294#1{{}}\mathdef1294{value type} &amp; \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}} &amp;::=&amp;
+\def\mathdef1693#1{{}}\mathdef1693{value type} &amp; \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}} &amp;::=&amp;
   \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} ~|~ \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} ~|~ \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} ~|~ \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\
 \end{array}\end{split}\]</div>
-<p>The types <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1307#1{{\mathit{i}#1}}\mathdef1307{\mathit{32}}}\)</span> and <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1308#1{{\mathit{i}#1}}\mathdef1308{\mathit{64}}}\)</span> classify 32 and 64 bit integers, respectively.
+<p>The types <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1709#1{{\mathit{i}#1}}\mathdef1709{\mathit{32}}}\)</span> and <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1710#1{{\mathit{i}#1}}\mathdef1710{\mathit{64}}}\)</span> classify 32 and 64 bit integers, respectively.
 Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.</p>
-<p>The types <span class="math">\(\href{../syntax/values.html#syntax-float}{\def\mathdef1310#1{{\mathit{f}#1}}\mathdef1310{\mathit{32}}}\)</span> and <span class="math">\(\href{../syntax/values.html#syntax-float}{\def\mathdef1311#1{{\mathit{f}#1}}\mathdef1311{\mathit{64}}}\)</span> classify 32 and 64 bit floating points, respectively.
+<p>The types <span class="math">\(\href{../syntax/values.html#syntax-float}{\def\mathdef1712#1{{\mathit{f}#1}}\mathdef1712{\mathit{32}}}\)</span> and <span class="math">\(\href{../syntax/values.html#syntax-float}{\def\mathdef1713#1{{\mathit{f}#1}}\mathdef1713{\mathit{64}}}\)</span> classify 32 and 64 bit floating points, respectively.
 They correspond to single and double precision floating point types as defined by the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE-754</a> standard</p>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
@@ -131,7 +131,7 @@ They correspond to single and double precision floating point types as defined b
 which is a sequence of values.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1294#1{{}}\mathdef1294{result type} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}} &amp;::=&amp;
+\def\mathdef1693#1{{}}\mathdef1693{result type} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}} &amp;::=&amp;
   [\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^?] \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
@@ -146,7 +146,7 @@ However, this may be generalized to sequences of values in future versions.</p>
 mapping a vector of parameters to a vector of results.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1294#1{{}}\mathdef1294{function type} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}} &amp;::=&amp;
+\def\mathdef1693#1{{}}\mathdef1693{function type} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}} &amp;::=&amp;
   [\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}})] \to [\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}})] \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
@@ -161,8 +161,8 @@ This restriction may be removed in future versions.</p>
 <p><em>Limits</em> classify the size range of resizeable storage like associated with <a class="reference internal" href="#syntax-memtype"><span class="std std-ref">memory types</span></a> and <a class="reference internal" href="#syntax-tabletype"><span class="std std-ref">table types</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1294#1{{}}\mathdef1294{limits} &amp; \href{../syntax/types.html#syntax-limits}{\mathit{limits}} &amp;::=&amp;
-  \{ \mathsf{min}~\href{../syntax/values.html#syntax-int}{\def\mathdef1299#1{{\mathit{u}#1}}\mathdef1299{\mathit{32}}}, \mathsf{max}~\href{../syntax/values.html#syntax-int}{\def\mathdef1299#1{{\mathit{u}#1}}\mathdef1299{\mathit{32}}}^? \} \\
+\def\mathdef1693#1{{}}\mathdef1693{limits} &amp; \href{../syntax/types.html#syntax-limits}{\mathit{limits}} &amp;::=&amp;
+  \{ \mathsf{min}~\href{../syntax/values.html#syntax-int}{\def\mathdef1701#1{{\mathit{u}#1}}\mathdef1701{\mathit{32}}}, \mathsf{max}~\href{../syntax/values.html#syntax-int}{\def\mathdef1701#1{{\mathit{u}#1}}\mathdef1701{\mathit{32}}}^? \} \\
 \end{array}\end{split}\]</div>
 <p>If no maximum is given, the respective storage can grow to any size.</p>
 <span class="target" id="syntax-memtype"></span></div>
@@ -171,7 +171,7 @@ This restriction may be removed in future versions.</p>
 <p><em>Memory types</em> classify linear memories and their size range.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1294#1{{}}\mathdef1294{memory type} &amp; \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} &amp;::=&amp;
+\def\mathdef1693#1{{}}\mathdef1693{memory type} &amp; \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} &amp;::=&amp;
   \href{../syntax/types.html#syntax-limits}{\mathit{limits}} \\
 \end{array}\end{split}\]</div>
 <p>The limits constrain the minimum and optionally the maximum size of a memory.
@@ -182,9 +182,9 @@ The limits are given in units of <a class="reference internal" href="../executio
 <p><em>Table types</em> classify tables over elements of <em>element types</em> within a given size range.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1294#1{{}}\mathdef1294{table type} &amp; \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} &amp;::=&amp;
+\def\mathdef1693#1{{}}\mathdef1693{table type} &amp; \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} &amp;::=&amp;
   \href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}} \\
-\def\mathdef1294#1{{}}\mathdef1294{element type} &amp; \href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}} &amp;::=&amp;
+\def\mathdef1693#1{{}}\mathdef1693{element type} &amp; \href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}} &amp;::=&amp;
   \href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}} \\
 \end{array}\end{split}\]</div>
 <p>Like memories, tables are constrained by limits for their minimum and optionally maximum size.
@@ -201,10 +201,10 @@ A table of that type thus contains references to functions of heterogeneous type
 <p><em>Global types</em> classify global variables, which hold a value and can either be mutable or immutable.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1294#1{{}}\mathdef1294{global type} &amp; \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} &amp;::=&amp;
+\def\mathdef1693#1{{}}\mathdef1693{global type} &amp; \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} &amp;::=&amp;
   \href{../syntax/types.html#syntax-mut}{\mathit{mut}}^?~\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}} \\
-\def\mathdef1294#1{{}}\mathdef1294{mutability} &amp; \href{../syntax/types.html#syntax-mut}{\mathit{mut}} &amp;::=&amp;
-  \href{../syntax/types.html#syntax-mut}{\mathsf{var}} ~|~
+\def\mathdef1693#1{{}}\mathdef1693{mutability} &amp; \href{../syntax/types.html#syntax-mut}{\mathit{mut}} &amp;::=&amp;
+  \href{../syntax/types.html#syntax-mut}{\mathsf{const}} ~|~
   \href{../syntax/types.html#syntax-mut}{\mathsf{var}} \\
 \end{array}\end{split}\]</div>
 </div>

@@ -37,7 +37,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -69,9 +69,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 <ul>
@@ -122,7 +122,7 @@ To that end, each definition is classified with a suitable type.</p>
 }{
   \vdash \{ \mathsf{min}~n, \mathsf{max}~m^? \} ~\mathrm{ok}
 }\]</div>
-<span class="target" id="valid-func"></span></div>
+<span class="target" id="valid-local"><span id="valid-func"></span></span></div>
 </div>
 <div class="section" id="functions">
 <span id="index-1"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
@@ -343,12 +343,12 @@ Export descriptions <span class="math">\(\href{../syntax/modules.html#syntax-exp
 <ul class="simple">
 <li>The global <span class="math">\(C.\mathsf{globals}[x]\)</span> must be defined in the context.</li>
 <li>Let <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math">\(C.\mathsf{globals}[x]\)</span>.</li>
-<li>The mutability <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{var}}\)</span>.</li>
+<li>The mutability <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{const}}\)</span>.</li>
 <li>Then the export description is valid.</li>
 </ul>
 <div class="math">
 \[\frac{
-  C.\mathsf{globals}[x] = \href{../syntax/types.html#syntax-mut}{\mathsf{var}}~t
+  C.\mathsf{globals}[x] = \href{../syntax/types.html#syntax-mut}{\mathsf{const}}~t
 }{
   C \vdash \mathsf{global}~x ~\mathrm{ok}
 }\]</div>
@@ -418,13 +418,13 @@ Export descriptions <span class="math">\(\href{../syntax/modules.html#syntax-exp
 <div class="section" id="id17">
 <h3><span class="math">\(\mathsf{global}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span><a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The mutability <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{var}}\)</span>.</li>
+<li>The mutability <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{const}}\)</span>.</li>
 <li>Then the import description is valid with type <span class="math">\(\mathsf{global}~t\)</span>.</li>
 </ul>
 <div class="math">
 \[\frac{
 }{
-  C \vdash \mathsf{global}~\href{../syntax/types.html#syntax-mut}{\mathsf{var}}~t : \mathsf{global}~\href{../syntax/types.html#syntax-mut}{\mathsf{var}}~t
+  C \vdash \mathsf{global}~\href{../syntax/types.html#syntax-mut}{\mathsf{const}}~t : \mathsf{global}~\href{../syntax/types.html#syntax-mut}{\mathsf{const}}~t
 }\]</div>
 <span class="target" id="valid-module"></span></div>
 </div>

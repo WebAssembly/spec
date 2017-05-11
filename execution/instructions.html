@@ -68,9 +68,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 <ul>
@@ -284,7 +284,7 @@ F; (\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 F; \href{../execution/runtime.html#syntax-val}{\mathit{val}}~(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_local}}~x) &amp;\hookrightarrow&amp; F'; \epsilon
-  &amp; (\mbox{if}~F' = F ~\href{../syntax/conventions.html#syntax-record}{\mbox{with}}~ \mathsf{locals}[x] = \href{../execution/runtime.html#syntax-val}{\mathit{val}}) \\
+  &amp; (\mbox{if}~F' = F \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{locals}[x] = \href{../execution/runtime.html#syntax-val}{\mathit{val}}) \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="exec-tee-local">
@@ -339,7 +339,7 @@ S; F; (\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_glo
 S; F; \href{../execution/runtime.html#syntax-val}{\mathit{val}}~(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_global}}~x) &amp;\hookrightarrow&amp; S'; F; \epsilon
 \end{array}
 \\ \qquad
-(\mbox{if}~S' = S ~\href{../syntax/conventions.html#syntax-record}{\mbox{with}}~ \mathsf{globals}[F.\mathsf{module}.\mathsf{globals}[x]].\mathsf{value} = \href{../execution/runtime.html#syntax-val}{\mathit{val}}) \\
+(\mbox{if}~S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{globals}[F.\mathsf{module}.\mathsf{globals}[x]].\mathsf{value} = \href{../execution/runtime.html#syntax-val}{\mathit{val}}) \\
 \end{array}\end{split}\]</div>
 <span class="target" id="exec-memarg"><span id="exec-instr-memory"></span></span></div>
 </div>
@@ -451,7 +451,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; \mathit{ea} = i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{offset} \\
   \wedge &amp; \mathit{ea} + |t| \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
-  \wedge &amp; S' = S ~\href{../syntax/conventions.html#syntax-record}{\mbox{with}}~ \mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:|t|] = \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_t(c)
+  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:|t|] = \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_t(c)
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(t.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}{N}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}) &amp;\hookrightarrow&amp; S'; F; \epsilon
@@ -460,7 +460,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; \mathit{ea} = i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{offset} \\
   \wedge &amp; \mathit{ea} + N \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
-  \wedge &amp; S' = S ~\href{../syntax/conventions.html#syntax-record}{\mbox{with}}~ \mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:N] = \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_N(\href{../execution/numerics.html#aux-wrap}{\mathrm{wrap}}_N(c))
+  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:N] = \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_N(\href{../execution/numerics.html#aux-wrap}{\mathrm{wrap}}_N(c))
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~k)~(t.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}{N}^?~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}) &amp;\hookrightarrow&amp; S; F; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}
@@ -510,7 +510,7 @@ S; F; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_me
 <ol class="arabic simple" start="10">
 <li>Else, either:<ol class="loweralpha">
 <li>Let <span class="math">\(\mathit{len}\)</span> be <span class="math">\(n\)</span> multiplied with the <a class="reference internal" href="runtime.html#page-size"><span class="std std-ref">page size</span></a>.</li>
-<li>Append <span class="math">\(\mathit{len}\)</span> bytes with value <span class="math">\(\def\mathdef248#1{\mathtt{0x#1}}\mathdef248{00}\)</span> to <span class="math">\(S.\mathsf{mems}[a]\)</span>.</li>
+<li>Append <span class="math">\(\mathit{len}\)</span> bytes with value <span class="math">\(\def\mathdef885#1{\mathtt{0x#1}}\mathdef885{00}\)</span> to <span class="math">\(S.\mathsf{mems}[a]\)</span>.</li>
 <li>Push the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz}\)</span> to the stack.</li>
 </ol>
 </li>
@@ -529,7 +529,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   (\mbox{if} &amp; F.\mathsf{module}.\mathsf{mems}[0] = a \\
   \wedge &amp; |S.\mathsf{mems}[a].\mathsf{data}| = \mathit{sz}\cdot64\,\mathrm{Ki} \\
   \wedge &amp; (\mathit{sz} + n \leq S.\mathsf{mems}[a].\mathsf{max} \vee S.\mathsf{mems}[a].\mathsf{max} = \epsilon) \\
-  \wedge &amp; S' = S ~\href{../syntax/conventions.html#syntax-record}{\mbox{with}}~ \mathsf{mems}[a].\mathsf{data} = S.\mathsf{mems}[a].\mathsf{data}~(\def\mathdef249#1{\mathtt{0x#1}}\mathdef249{00})^{n\cdot64\,\mathrm{Ki}}) \\
+  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[a].\mathsf{data} = S.\mathsf{mems}[a].\mathsf{data}~(\def\mathdef886#1{\mathtt{0x#1}}\mathdef886{00})^{n\cdot64\,\mathrm{Ki}}) \\
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} &amp;\hookrightarrow&amp; S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~{-1})
@@ -785,7 +785,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 <span id="exec-instr-seq-enter"></span><h3>Entering <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math">\(L\)</span><a class="headerlink" href="#entering-with-label" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Push <span class="math">\(L\)</span> to the stack.</li>
-<li><span class="xref std std-ref">Jump</span> to the start of the instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span>.</li>
+<li>Jump to the start of the instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span>.</li>
 </ol>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -822,7 +822,7 @@ Therefor, execution of a loop falls off the end, unless a backwards branch is pe
 <span id="exec-invoke"></span><h3>Invocation of <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math">\(a\)</span><a class="headerlink" href="#invocation-of-function-address" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-call"><span class="std std-ref">validation</span></a>, <span class="math">\(S.\mathsf{funcs}[a]\)</span> exists.</li>
-<li>Let <span class="math">\(f\)</span> be the <span class="xref std std-ref">function instance</span>, <span class="math">\(S.\mathsf{funcs}[a]\)</span>.</li>
+<li>Let <span class="math">\(f\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">function instance</span></a>, <span class="math">\(S.\mathsf{funcs}[a]\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/modules.html#valid-func"><span class="std std-ref">validation</span></a>, <span class="math">\(f.\mathsf{module}.\mathsf{types}[f.\mathsf{code}.\mathsf{type}]\)</span> exists.</li>
 <li>Let <span class="math">\([t_1^n] \to [t_2^m]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(f.\mathsf{module}.\mathsf{types}[f.\mathsf{code}.\mathsf{type}]\)</span>.</li>
 <li>Let <span class="math">\(t^\ast\)</span> be the list of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(f.\mathsf{code}.\mathsf{locals}\)</span>.</li>
@@ -842,9 +842,9 @@ Therefor, execution of a loop falls off the end, unless a backwards branch is pe
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; S.\mathsf{funcs}[a] = f \\
-  \wedge &amp; f.\mathsf{code} = \{ \mathsf{type}~x, \mathsf{locals}~t^\ast, \mathsf{body}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \} \\
+  \wedge &amp; f.\mathsf{code} = \{ \mathsf{type}~x, \mathsf{locals}~t^k, \mathsf{body}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \} \\
   \wedge &amp; f.\mathsf{module}.\mathsf{types}[x] = [t_1^n] \to [t_2^m] \\
-  \wedge &amp; F = \{ \mathsf{module}~f.\mathsf{module}, ~\mathsf{locals}~\href{../execution/runtime.html#syntax-val}{\mathit{val}}^n~(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0)^\ast \})
+  \wedge &amp; F = \{ \mathsf{module}~f.\mathsf{module}, ~\mathsf{locals}~\href{../execution/runtime.html#syntax-val}{\mathit{val}}^n~(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0)^k \})
   \end{array} \\
 \end{array}\end{split}\]</div>
 </div>
