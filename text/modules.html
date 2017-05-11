@@ -268,7 +268,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\&amp;&amp;&amp; \qquad
     (\href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/conventions.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
-<p>Moreover, an <a class="reference internal" href="#text-elem"><span class="std std-ref">element segment</span></a> can be given inline, in which case the <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">limits</span></a> of the :ref:<a href="#id4"><span class="problematic" id="id5">`</span></a>table type &lt;text-tabletype&gt;`are inferred from the length of the given segment:</p>
+<p>Moreover, an <a class="reference internal" href="#text-elem"><span class="std std-ref">element segment</span></a> can be given inline, in which case the <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">limits</span></a> of the <a class="reference internal" href="types.html#text-tabletype"><span class="std std-ref">table type</span></a> are inferred from the length of the given segment:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2254#1{{}}\mathdef2254{module field} &amp;
@@ -290,7 +290,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     &amp;\Rightarrow&amp; \{ \mathsf{type}~\mathit{mt} \} \\
 \end{array}\end{split}\]</div>
 <span class="target" id="text-mem-abbrev"></span><span class="target" id="index-11"></span><span class="target" id="index-12"></span><div class="section" id="index-13">
-<span id="id6"></span><h3>Abbreviations<a class="headerlink" href="#index-13" title="Permalink to this headline">¶</a></h3>
+<span id="id4"></span><h3>Abbreviations<a class="headerlink" href="#index-13" title="Permalink to this headline">¶</a></h3>
 <p>Memories can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
@@ -325,7 +325,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     &amp;\Rightarrow&amp; \{ \mathsf{type}~\mathit{gt}, \mathsf{init}~e \} \\
 \end{array}\end{split}\]</div>
 <span class="target" id="text-global-abbrev"></span><span class="target" id="index-15"></span><div class="section" id="index-16">
-<span id="id7"></span><h3>Abbreviations<a class="headerlink" href="#index-16" title="Permalink to this headline">¶</a></h3>
+<span id="id5"></span><h3>Abbreviations<a class="headerlink" href="#index-16" title="Permalink to this headline">¶</a></h3>
 <p>Globals can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
@@ -358,8 +358,8 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
   \def\mathdef2529#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2529{(}~\def\mathdef2530#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2530{global}~~x{:}\href{../binary/modules.html#binary-globalidx}{\mathtt{globalidx}}_I~\def\mathdef2531#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2531{)}
     &amp;\Rightarrow&amp; \mathsf{global}~x \\
 \end{array}\end{split}\]</div>
-<div class="section" id="id8">
-<h3>Abbreviations<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>Abbreviations<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>As an abbreviation, exports may also be specified inline with <a class="reference internal" href="#text-func"><span class="std std-ref">function</span></a>, <a class="reference internal" href="#text-table"><span class="std std-ref">table</span></a>, <a class="reference internal" href="#text-mem"><span class="std std-ref">memory</span></a>, or <a class="reference internal" href="#text-global"><span class="std std-ref">global</span></a> definitions; see the respective sections.</p>
 <span class="target" id="text-start"></span></div>
 </div>
@@ -394,8 +394,8 @@ When omitted, <span class="math">\(\mathtt{0}\)</span> is assumed.</p>
 <p class="last">In the current version of WebAssembly, the only valid table index is 0
 or a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">table identifier</span></a> resolving to the same value.</p>
 </div>
-<div class="section" id="id9">
-<h3>Abbreviations<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id7">
+<h3>Abbreviations<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>As an abbreviation, element segments may also be specified inline with <a class="reference internal" href="#text-table"><span class="std std-ref">table</span></a> definitions; see the respective section.</p>
 <span class="target" id="text-datastring"><span id="text-data"></span></span></div>
 </div>
@@ -418,13 +418,13 @@ The data is written as a <a class="reference internal" href="values.html#text-st
 <p class="last">In the current version of WebAssembly, the only valid memory index is 0
 or a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">memory identifier</span></a> resolving to the same value.</p>
 </div>
-<div class="section" id="id10">
-<h3>Abbreviations<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h3>Abbreviations<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <p>As an abbreviation, data segments may also be specified inline with <a class="reference internal" href="#text-mem"><span class="std std-ref">memory</span></a> definitions; see the respective section.</p>
 <span class="target" id="text-modulefield"><span id="text-modulebody"></span><span id="text-module"></span></span></div>
 </div>
 <div class="section" id="index-21">
-<span id="id11"></span><h2>Modules<a class="headerlink" href="#index-21" title="Permalink to this headline">¶</a></h2>
+<span id="id9"></span><h2>Modules<a class="headerlink" href="#index-21" title="Permalink to this headline">¶</a></h2>
 <p>A module consists of a sequence of fields that can occur in any order.
 All definitions and their respective bound <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> scope over the entire module, including the text preceding them.</p>
 <p>A module may optionally bind an <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifier</span></a> that names the module.
@@ -493,8 +493,8 @@ thereby maintaining the ordering of the respective <a class="reference internal"
 \mathrm{idc}(\def\mathdef2589#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2589{(}~\dots~\def\mathdef2590#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2590{)}) &amp;=&amp;
   \{\} \\
 \end{array}\end{split}\]</div>
-<div class="section" id="id12">
-<h3>Abbreviations<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id10">
+<h3>Abbreviations<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>In a source file, the toplevel <span class="math">\(\mathtt{(module}~\dots\mathtt{)}\)</span> surrounding the module body may be omitted.</p>
 <div class="math">
 \[\begin{array}{llcll}

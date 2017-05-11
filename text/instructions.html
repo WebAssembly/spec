@@ -106,8 +106,7 @@
             
   <span class="target" id="text-instr"></span><div class="section" id="instructions">
 <span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
-<p>Instructions are syntactically distinguished into <em>plain</em> and <em>structured</em> instructions.
-Both can also be written in <a class="reference internal" href="#text-foldedinstr"><span class="std std-ref">folded</span></a> form.</p>
+<p>Instructions are syntactically distinguished into <em>plain</em> and <em>structured</em> instructions.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef1925#1{{}}\mathdef1925{instruction} &amp; \href{../text/instructions.html#text-instr}{\mathtt{instr}}_I &amp;::=&amp;
@@ -116,7 +115,7 @@ Both can also be written in <a class="reference internal" href="#text-foldedinst
   \mathit{in}{:}\href{../text/instructions.html#text-blockinstr}{\mathtt{blockinstr}}_I
     &amp;\Rightarrow&amp; \mathit{in} \\
 \end{array}\end{split}\]</div>
-<p>In addition, as a syntactic abbreviation, instructions can be <a class="reference internal" href="#text-foldedinstr"><span class="std std-ref">folded</span></a> into S-expressions, as a means of grouping them visually.</p>
+<p>In addition, as a syntactic abbreviation, instructions can be written in <a class="reference internal" href="#text-foldedinstr"><span class="std std-ref">folded</span></a> form as S-expressions, to group them visually.</p>
 <span class="target" id="text-labelidx"><span id="text-localidx"></span><span id="text-globalidx"></span><span id="text-memidx"></span><span id="text-tableidx"></span><span id="text-funcidx"></span><span id="text-typeidx"></span><span id="text-index"></span></span><div class="section" id="indices">
 <span id="index-1"></span><h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">Indices</span></a> can be given either in raw numeric form or as symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> when bound by a respective construct.
@@ -145,8 +144,8 @@ Such identifiers are looked up in the suitable space of the <a class="reference 
   l{:}\href{../text/values.html#text-int}{\def\mathdef1965#1{{\mathtt{u}#1}}\mathdef1965{\mathtt{32}}} &amp;\Rightarrow&amp; l &amp;|&amp;
   v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; l &amp; (I.\mathsf{labels}[l] = v) \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-label"></span><p id="index-2"><a class="reference internal" href="#text-instr-control"><span class="std std-ref">Structured control instructions</span></a> can be annotated with an optional symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">label identifier</span></a> that can be used in place of the corresponding numeric <a class="reference internal" href="#text-labelidx"><span class="std std-ref">label index</span></a> to reference the instruction.
-<a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">Labels</span></a> are the only symbolic identifiers that can be defined locally in an instruction sequence.
+<span class="target" id="text-label"></span><p id="index-2"><a class="reference internal" href="#text-instr-control"><span class="std std-ref">Structured control instructions</span></a> can be annotated with a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">label identifier</span></a>.
+They are the only symbolic identifiers that can be bound locally in an instruction sequence.
 The following grammar handles the corresponding update to the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> by producing a context with an additional label entry.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
@@ -229,8 +228,10 @@ The same identifier may optionally be repeated after the corresponding <span cla
 <span class="target" id="text-memarg"><span id="text-instr-memory"></span></span></div>
 <div class="section" id="memory-instructions">
 <span id="index-6"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
-<div class="math" id="text-grow-memory">
-<span id="text-current-memory"></span><span id="text-storen"></span><span id="text-store"></span><span id="text-loadn"></span><span id="text-load"></span><span id="id1"></span>\[\begin{split}\begin{array}{llclll}
+<p id="text-grow-memory"><span id="text-current-memory"></span><span id="text-storen"></span><span id="text-store"></span><span id="text-loadn"></span><span id="text-load"></span><span id="id1"></span>The offset and alignment immediates to memory instructions are optional.
+The offset defaults to <span class="math">\(\mathtt{0}\)</span>, the alignment to the storage size of the respective memory access, which is its <em>natural alignment</em>.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
 \def\mathdef1925#1{{}}\mathdef1925{memory argument} &amp; \href{../text/instructions.html#text-memarg}{\mathtt{memarg}}_N &amp;::=&amp;
   o{:}\href{../text/instructions.html#text-memarg}{\mathtt{offset}}~~a{:}\href{../text/instructions.html#text-memarg}{\mathtt{align}}_N &amp;\Rightarrow&amp; \{ \mathsf{align}~a,~\mathsf{offset}~o \} \\
 \def\mathdef1925#1{{}}\mathdef1925{memory offset} &amp; \href{../text/instructions.html#text-memarg}{\mathtt{offset}} &amp;::=&amp;
