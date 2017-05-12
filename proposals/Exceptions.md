@@ -364,7 +364,7 @@ throws, and rethrows as follows:
 | `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
 | `catch` | `0x07` | tag : `varuint32` | begins a block when the exception `tag` is thrown |
 | `throw` | `0x08` | tag : `varuint32` | Throws an exception defined by the exception `tag` |
-| `rethrow` | `0x09` | catch_index : `varuint32` | re-throws the exception caught by the enclosing catch block |
+| `rethrow` | `0x09` | relativew_depth : `varuint32` | re-throws the exception caught by the corresponding try block |
 | `end` | `0x0b` | | end a block, loop, if,  and try |
 | `br` | `0x0c` | relative_depth : `varuint32` | break that targets an outer nested block |
 | `br_if` | `0x0d` | relative_depth : `varuint32` | conditional break that targets an outer nested block |
