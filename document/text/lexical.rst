@@ -18,7 +18,7 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
 .. math::
    \begin{array}{llll}
    \production{character} & \Tchar &::=&
-     \unicode{00} ~|~ \dots ~|~ \unicode{D800} ~|~ \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
+     \unicode{00} ~|~ \dots ~|~ \unicode{D7FF} ~|~ \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
    \end{array}
 
 .. note::

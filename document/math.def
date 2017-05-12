@@ -539,7 +539,7 @@
 
 .. Contexts, meta functions
 
-.. |idfresh| mathdef:: ~\xref{text/conventions}{text-id-fresh}{\mbox{fresh}}
+.. |idfresh| mathdef:: ~\xref{text/values}{text-id-fresh}{\mbox{fresh}}
 .. |idcwellformed| mathdef:: ~\xref{text/conventions}{text-context-wf}{\mbox{well-formed}}
 
 
