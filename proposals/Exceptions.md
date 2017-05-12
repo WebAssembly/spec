@@ -83,14 +83,14 @@ catch j
 ...
 catch n
   instruction*
-catch default
+catch_all
     instruction*
 end
 ```
 
 A try block also contains one or more catch blocks, and all but the last catch
 block must begin with a`catch` instruction. The last catch block can begin with
-either a `catch` or `catch default` instruction. The `catch`/`catch default`
+either a `catch` or `catch_all` instruction. The `catch`/`catch_all`
 instructions (within the try construct) are called the _catching_ instructions.
 
 The _body_ of the try block is the list of instructions before the first
@@ -105,8 +105,8 @@ corresponding exception tag. Catch blocks that begin with a `catch` instruction
 are considered _tagged_ catch blocks.
 
 The last catch block of an exception can be a tagged catch block. Alternatively,
-it can begin with the `catch default` instruction. If it begins with the
-`catch default` instruction, it defines the _default_ catch block. The default
+it can begin with the `catch_all` instruction. If it begins with the
+`catch_all` instruction, it defines the _default_ catch block. The default
 catch block has no exception type, and is used to catch all exceptions not
 caught by any of the tagged catch blocks.
 
@@ -179,9 +179,11 @@ _rethrow_ instruction always re-throws the exception caught by the referenced
 catch block. This allows the catch block to clean up state before the exception
 is passed back to the next enclosing try block.
 
-The _rethrow_ instruction gets a _catch index_ argument. It is to disambiguate
-which caught exception is to be rethrown, when inside nested catch blocks (of
-corresponding nested try blocks).
+Associated with the _rethrow_ instruction is a _label_. The label is used to
+disambiguate which exception is to be rethrown, when inside nested catch blocks.
+
+The label is the relative block depth to the corresponding try block for which
+the catching block appears.
 
 For example consider the following example:
 
@@ -190,28 +192,29 @@ try
   ...
 catch 1
   ...
-  try
-    ...
-  catch 2
+  begin
     ...
     try
       ...
-    catch 3
+    catch 2
       ...
-      rethrow N
+      try
+        ...
+      catch 3
+        ...
+        rethrow N
+      end
     end
   end
+  ...
 end
 ```
 
 In this example, `N` is used to disambiguate which caught exception is being
-rethrown. It could rethrow any of the three caught expceptions. The catch blocks
-are numbered monotonically (inside-out) starting at zero. Zero implies the
-immediately enclosing catch block.
-
-So, in the above example, `rethrow 0` corresponds to the exception caught by
-`catch 3`, `rethrow 1` corresponds to the exception caught by `catch 2`, and
-`rethrow 2` corresponds to the exception caught by `catch 1`.
+rethrown. It could rethrow any of the three caught expceptions. Hence,
+`rethrow 0` corresponds to the exception caught by `catch 3`, `rethrow 1`
+corresponds to the exception caught by `catch 2`, and `rethrow 4` corresponds
+to the exception caught by `catch 1`.
 
 ### Debugging
 
@@ -219,14 +222,14 @@ Earlier discussion implied that when an exception is thrown, the runtime will
 pop the operand stack across function calls until a corresponding, enclosing try
 block is found. The implementation may actually not do this. Rather, it may
 first search up the call stack to see if there is an enclosing try. If none are
-found, it could terminate the thread at that point of the throw. This would
+found, it could terminate the thread at the point of the throw. This would
 allow better debugging capability, since the corresponding call stack is still
 there to query.
 
 ## Changes to the text format.
 
 This section describes change in the
-[instruction syntax document](https://github.com/WebAssembly/spec/blob/master/document/syntax/instructions.rst).
+[instruction syntax document](https://github.com/WebAssembly/spec/blob/master/document/text/instructions.rst).
 
 ### Control Instructions
 
@@ -241,7 +244,7 @@ instructions ::=
   
 catch ::=
   catch except_index inst* |
-  catch default inst*
+  catch_all inst*
 ```
 
 Like the *block*, *loop*, and *if* instructions, the *try* instruction is a
@@ -253,7 +256,7 @@ exception. Similarly, the `except_index` of the *throw* instruction is the tag f
 the constructed exception.  See [exception index space](#exception-index-space)
 for further clarification of exception tags.
 
-The `catch_index` of the `rethrow` instruciton is the index to the corresponding
+The `catch_index` of the `rethrow` instruction is the index to the corresponding
 catch that defines the exception to throw.
 
 ## Changes to Modules document.
@@ -371,8 +374,8 @@ throws, and rethrows as follows:
 The *sig* fields of `block', 'if`, and `try` operators are block signatures
 which describe their use of the operand stack.
 
-Note that the textual `catch default` instruction is implemented using the
+Note that the textual `catch_all` instruction is implemented using the
 `else` operator. Since the `else` operator is always unambiguous in the binary
-format, there is no need to tie up a separate opcode for the `catch default`
+format, there is no need to tie up a separate opcode for the `catch_all`
 instruction.
 
