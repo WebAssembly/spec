@@ -82,6 +82,13 @@
   ;; Test the Unicode Specials.
   (func (export "\ef\bf\b0\ef\bf\b1\ef\bf\b2\ef\bf\b3\ef\bf\b4\ef\bf\b5\ef\bf\b6\ef\bf\b7") (result i32) (i32.const 27))
   (func (export "\ef\bf\b8\ef\bf\b9\ef\bf\ba\ef\bf\bb\ef\bf\bc\ef\bf\bd\ef\bf\be\ef\bf\bf") (result i32) (i32.const 28))
+
+  ;; Test that the control pictures are distinct from the control codes they
+  ;; depict. These correspond to the C0 and miscellaneous control code tests
+  ;; above.
+  (func (export "␀␁␂␃␄␅␆␇␈␉␊␋␌␍␎␏") (result i32) (i32.const 29))
+  (func (export "␐␑␒␓␔␕␖␗␘␙␚␛␜␝␞␟") (result i32) (i32.const 30))
+  (func (export "␠␡") (result i32) (i32.const 31))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -113,6 +120,9 @@
 (assert_return (invoke "\c2\90\c2\91\c2\92\c2\93\c2\94\c2\95\c2\96\c2\97\c2\98\c2\99\c2\9a\c2\9b\c2\9c\c2\9d\c2\9e\c2\9f") (i32.const 26))
 (assert_return (invoke "\ef\bf\b0\ef\bf\b1\ef\bf\b2\ef\bf\b3\ef\bf\b4\ef\bf\b5\ef\bf\b6\ef\bf\b7") (i32.const 27))
 (assert_return (invoke "\ef\bf\b8\ef\bf\b9\ef\bf\ba\ef\bf\bb\ef\bf\bc\ef\bf\bd\ef\bf\be\ef\bf\bf") (i32.const 28))
+(assert_return (invoke "␀␁␂␃␄␅␆␇␈␉␊␋␌␍␎␏") (i32.const 29))
+(assert_return (invoke "␐␑␒␓␔␕␖␗␘␙␚␛␜␝␞␟") (i32.const 30))
+(assert_return (invoke "␠␡") (i32.const 31))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
