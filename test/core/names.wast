@@ -245,6 +245,13 @@
   ;; Test an interrobang with combining diacritical marks above.
   ;; https://xkcd.com/1209/
   (func (export "̈‽̈̉") (result i32) (i32.const 142))
+
+  ;; Test that RLM/LRM don't change the logical byte order.
+  (func (export "abc") (result i32) (i32.const 143))
+  (func (export "‭abc") (result i32) (i32.const 144))
+  (func (export "‮cba") (result i32) (i32.const 145))
+  (func (export "‭abc‮") (result i32) (i32.const 146))
+  (func (export "‮cba‭") (result i32) (i32.const 147))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -390,6 +397,11 @@
 (assert_return (invoke "\f4\8f\bf\be") (i32.const 140))
 (assert_return (invoke "\f4\8f\bf\bf") (i32.const 141))
 (assert_return (invoke "̈‽̈̉") (i32.const 142))
+(assert_return (invoke "abc") (i32.const 143))
+(assert_return (invoke "‭abc") (i32.const 144))
+(assert_return (invoke "‮cba") (i32.const 145))
+(assert_return (invoke "‭abc‮") (i32.const 146))
+(assert_return (invoke "‮cba‭") (i32.const 147))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
