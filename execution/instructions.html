@@ -768,7 +768,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; S.\mathsf{tables}[F.\mathsf{module}.\mathsf{tables}[0]].\mathsf{elem}[i] = a \\
- \wedge S.\mathsf{funcs}[a] = f \\
+  \wedge &amp; S.\mathsf{funcs}[a] = f \\
   \wedge &amp; F.\mathsf{module}.\mathsf{types}[x] = f.\mathsf{module}.\mathsf{types}[f.\mathsf{code}.\mathsf{type}])
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
@@ -781,6 +781,8 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 </div>
 <div class="section" id="instruction-sequences">
 <span id="index-6"></span><h2>Instruction Sequences<a class="headerlink" href="#instruction-sequences" title="Permalink to this headline">¶</a></h2>
+<p>The following auxiliary rules define the semantics of executing an <a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">instruction sequence</span></a>
+that is part of a <a class="reference internal" href="#exec-instr-control"><span class="std std-ref">structured control instruction</span></a>.</p>
 <div class="section" id="entering-with-label">
 <span id="exec-instr-seq-enter"></span><h3>Entering <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math">\(L\)</span><a class="headerlink" href="#entering-with-label" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
@@ -818,6 +820,9 @@ Therefor, execution of a loop falls off the end, unless a backwards branch is pe
 </div>
 <div class="section" id="function-calls">
 <span id="index-7"></span><h2>Function Calls<a class="headerlink" href="#function-calls" title="Permalink to this headline">¶</a></h2>
+<p>The following auxiliary rules define the semantics of invoking a <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">function instance</span></a>
+through one of the <a class="reference internal" href="#exec-instr-control"><span class="std std-ref">call instructions</span></a>
+and returning from it.</p>
 <div class="section" id="invocation-of-function-address">
 <span id="exec-invoke"></span><h3>Invocation of <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math">\(a\)</span><a class="headerlink" href="#invocation-of-function-address" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
