@@ -38,7 +38,7 @@ must implement lightweight or heavyweight exceptions. Rather, it defers that
 choice to the runtime implementation.
 
 Exception handling is defined using *exceptions*, *try blocks*, *catch blocks*,
-and the instructions *throw* and *rethrow*.
+and the instructions `throw` and `rethrow`.
 
 ### Exceptions
 
@@ -120,7 +120,7 @@ In the initial implementation, try blocks may only yield 0 or 1 values.
 
 ### Throws
 
-The _throw_ instruction has a single immediate argument, an exception tag.  The
+The `throw` instruction has a single immediate argument, an exception tag.  The
 exception tag is used to define the data fields of the allocated exception. The
 values for the data fields must be on top of the operand stack, and must
 correspond to the exception type signature for the exception.
@@ -174,18 +174,18 @@ also be sure to also pop off the caught exception values.
 
 ### Rethrows
 
-The _rethrow_ instruction can only appear in the body of a catch block.  The
-_rethrow_ instruction always re-throws the exception caught by the referenced
+The `rethrow` instruction can only appear in the body of a catch block.  The
+`rethrow` instruction always re-throws the exception caught by an enclosing
 catch block. This allows the catch block to clean up state before the exception
 is passed back to the next enclosing try block.
 
-Associated with the _rethrow_ instruction is a _label_. The label is used to
+Associated with the `rethrow` instruction is a _label_. The label is used to
 disambiguate which exception is to be rethrown, when inside nested catch blocks.
 
 The label is the relative block depth to the corresponding try block for which
 the catching block appears.
 
-For example consider the following example:
+For example consider the following:
 
 ```
 try
@@ -250,12 +250,12 @@ catch ::=
   catch_all inst*
 ```
 
-Like the *block*, *loop*, and *if* instructions, the *try* instruction is a
-*structured* instruction, and is implicitly labeled. this allows branch
+Like the `block`, `loop`, and `if` instructions, the `try` instruction is a
+*structured* instruction, and is implicitly labeled. This allows branch
 instructions to exit try blocks.
 
 The `except_index` of the `catch` instruction is the exception tag for the caught
-exception. Similarly, the `except_index` of the *throw* instruction is the tag for
+exception. Similarly, the `except_index` of the `throw` instruction is the tag for
 the constructed exception.  See [exception index space](#exception-index-space)
 for further clarification of exception tags.
 
@@ -367,18 +367,17 @@ throws, and rethrows as follows:
 | `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
 | `catch` | `0x07` | tag : `varuint32` | begins a block when the exception `tag` is thrown |
 | `throw` | `0x08` | tag : `varuint32` | Throws an exception defined by the exception `tag` |
-| `rethrow` | `0x09` | relativew_depth : `varuint32` | re-throws the exception caught by the corresponding try block |
-| `end` | `0x0b` | | end a block, loop, if,  and try |
+| `rethrow` | `0x09` | relative_depth : `varuint32` | re-throws the exception caught by the corresponding try block |
+| `end` | `0x0b` | | end a block, loop, if, and try |
 | `br` | `0x0c` | relative_depth : `varuint32` | break that targets an outer nested block |
 | `br_if` | `0x0d` | relative_depth : `varuint32` | conditional break that targets an outer nested block |
 | `br_table` | `0x0e` | see below | branch table control flow construct |
 | `return` | `0x0f` | | return zero or one value from this function |
 
-The *sig* fields of `block', 'if`, and `try` operators are block signatures
+The *sig* fields of `block`, `if`, and `try` operators are block signatures
 which describe their use of the operand stack.
 
 Note that the textual `catch_all` instruction is implemented using the
 `else` operator. Since the `else` operator is always unambiguous in the binary
 format, there is no need to tie up a separate opcode for the `catch_all`
 instruction.
-
