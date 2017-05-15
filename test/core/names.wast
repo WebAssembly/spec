@@ -122,6 +122,9 @@
   ;; activate symmetric swapping, inhibit arabic form shaping,
   ;; activate arabic form shaping, national digit shapes, nominal digit shapes.
   (func (export "⁪⁫⁬⁭⁮⁯") (result i32) (i32.const 42))
+
+  ;; Test "invisible" operator code points.
+  (func (export "⁡⁢⁣⁤") (result i32) (i32.const 43))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -167,6 +170,7 @@
 (assert_return (invoke "￯​ ­⁠ ‮‭") (i32.const 40))
 (assert_return (invoke "‎‏‑  ‪‫‬ ⁦⁧⁨⁩") (i32.const 41))
 (assert_return (invoke "⁪⁫⁬⁭⁮⁯") (i32.const 42))
+(assert_return (invoke "⁡⁢⁣⁤") (i32.const 43))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
