@@ -160,10 +160,11 @@ let inline_type (c : context) ty at =
 %token CALL CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
-%token CONST UNARY BINARY COMPARE CONVERT
+%token CONST UNARY BINARY TEST COMPARE CONVERT
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
-%token MODULE TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
+%token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
+%token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
 %token ASSERT_RETURN ASSERT_RETURN_CANONICAL_NAN ASSERT_RETURN_ARITHMETIC_NAN ASSERT_TRAP ASSERT_EXHAUSTION
@@ -653,8 +654,10 @@ module_fields :
 module_ :
   | LPAR MODULE script_var_opt module_fields RPAR
     { $3, Textual ($4 (empty_context ()) @@ at ()) @@ at () }
-  | LPAR MODULE script_var_opt TEXT text_list RPAR
-    { $3, Encoded ("binary", $4 ^ $5) @@ at() }
+  | LPAR MODULE script_var_opt BIN text_list RPAR
+    { $3, Encoded ("binary", $5) @@ at() }
+  | LPAR MODULE script_var_opt QUOTE text_list RPAR
+    { $3, Quoted ("quote", $5) @@ at() }
 
 
 /* Scripts */

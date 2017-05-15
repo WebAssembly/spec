@@ -1,4 +1,4 @@
-(module
+(module binary
   "\00asm" "\01\00\00\00"
   "\00\24\10" "a custom section" "this is the payload"
   "\00\20\10" "a custom section" "this is payload"
@@ -8,7 +8,7 @@
   "\00\24\10" "\00\00custom sectio\00" "this is the payload"
 )
 
-(module
+(module binary
   "\00asm" "\01\00\00\00"
   "\00\0e\06" "custom" "payload"
   "\00\0e\06" "custom" "payload"
@@ -44,7 +44,7 @@
   "\00\0e\06" "custom" "payload"
 )
 
-(module
+(module binary
   "\00asm" "\01\00\00\00"
   "\01\07\01\60\02\7f\7f\01\7f"                ;; type section
   "\00\1a\06" "custom" "this is the payload"   ;; custom section
@@ -55,7 +55,7 @@
 )
 
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\00\00"
   )
@@ -63,7 +63,7 @@
 )
 
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\00\26\10" "a custom section" "this is the payload"
   )
@@ -71,7 +71,7 @@
 )
 
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\00\25\10" "a custom section" "this is the payload"
     "\00\24\10" "a custom section" "this is the payload"
@@ -80,7 +80,7 @@
 )
 
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\01\07\01\60\02\7f\7f\01\7f"                         ;; type section
     "\00\25\10" "a custom section" "this is the payload"  ;; invalid length!

@@ -291,7 +291,6 @@ rule token = parse
   | "result" { RESULT }
   | "local" { LOCAL }
   | "global" { GLOBAL }
-  | "module" { MODULE }
   | "table" { TABLE }
   | "memory" { MEMORY }
   | "elem" { ELEM }
@@ -299,6 +298,10 @@ rule token = parse
   | "offset" { OFFSET }
   | "import" { IMPORT }
   | "export" { EXPORT }
+
+  | "module" { MODULE }
+  | "binary" { BIN }
+  | "quote" { QUOTE }
 
   | "script" { SCRIPT }
   | "register" { REGISTER }

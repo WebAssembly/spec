@@ -364,7 +364,7 @@ let module_with_var_opt x_opt m =
   )
 
 let binary_module_with_var_opt x_opt bs =
-  Node ("module" ^ var_opt x_opt, break_bytes bs)
+  Node ("module" ^ var_opt x_opt ^ " binary", break_bytes bs)
 
 let module_ = module_with_var_opt None
 
@@ -378,20 +378,24 @@ let literal lit =
   | Values.F32 z -> Node ("f32.const " ^ F32.to_string z, [])
   | Values.F64 z -> Node ("f64.const " ^ F64.to_string z, [])
 
-let definition mode x_opt def =
+let rec definition mode x_opt def =
   match mode, def.it with
   | `Textual, _ | `Original, Textual _ ->
-    let m =
+    let rec unquote def =
       match def.it with
       | Textual m -> m
       | Encoded (_, bs) -> Decode.decode "" bs
-    in module_with_var_opt x_opt m
+      | Quoted (_, s) -> unquote (Parse.string_to_module s)
+    in module_with_var_opt x_opt (unquote def)
   | `Binary, _ | `Original, Encoded _ ->
-    let bs =
+    let rec unquote bs =
       match def.it with
       | Textual m -> Encode.encode m
       | Encoded (_, bs) -> bs
-    in binary_module_with_var_opt x_opt bs
+      | Quoted (_, s) -> unquote (Parse.string_to_module s)
+    in binary_module_with_var_opt x_opt (unquote def)
+  | `Original, Quoted (_, s) ->
+    definition mode x_opt (Parse.string_to_module s)
 
 let access x_opt n =
   String.concat " " [var_opt x_opt; name n]

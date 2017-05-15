@@ -125,7 +125,7 @@
   (import "spectest" "global" (global i32))
 )
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\94\80\80\80\00"             ;; import section
       "\01"                          ;; length 1
@@ -138,7 +138,7 @@
   "invalid mutability"
 )
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\94\80\80\80\00"             ;; import section
       "\01"                          ;; length 1
@@ -155,7 +155,7 @@
   (global i32 (i32.const 0))
 )
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\06\86\80\80\80\00"  ;; global section
       "\01"               ;; length 1
@@ -167,7 +167,7 @@
   "invalid mutability"
 )
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\06\86\80\80\80\00"  ;; global section
       "\01"               ;; length 1
