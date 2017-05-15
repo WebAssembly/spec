@@ -581,6 +581,22 @@
   (func (export "󠀿") (result i32) (i32.const 456))
   (func (export "𖡄") (result i32) (i32.const 457))
   (func (export "⯑") (result i32) (i32.const 458))
+
+  ;; Test that different present and historical representations of the
+  ;; "paragraph" concept are distinct. (U+2029 is covered above).
+  (func (export "¶") (result i32) (i32.const 459))
+  (func (export "⁋") (result i32) (i32.const 460))
+  (func (export "܀") (result i32) (i32.const 461))
+  (func (export "჻") (result i32) (i32.const 462))
+  (func (export "፨") (result i32) (i32.const 463))
+  (func (export "〷") (result i32) (i32.const 464))
+  (func (export "❡") (result i32) (i32.const 465))
+  (func (export "⸏") (result i32) (i32.const 466))
+  (func (export "⸐") (result i32) (i32.const 467))
+  (func (export "⸑") (result i32) (i32.const 468))
+  (func (export "⸎") (result i32) (i32.const 469))
+  (func (export "\14") (result i32) (i32.const 470)) ;; ¶ in CP437
+  (func (export "☙") (result i32) (i32.const 471))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -1042,6 +1058,19 @@
 (assert_return (invoke "󠀿") (i32.const 456))
 (assert_return (invoke "𖡄") (i32.const 457))
 (assert_return (invoke "⯑") (i32.const 458))
+(assert_return (invoke "¶") (i32.const 459))
+(assert_return (invoke "⁋") (i32.const 460))
+(assert_return (invoke "܀") (i32.const 461))
+(assert_return (invoke "჻") (i32.const 462))
+(assert_return (invoke "፨") (i32.const 463))
+(assert_return (invoke "〷") (i32.const 464))
+(assert_return (invoke "❡") (i32.const 465))
+(assert_return (invoke "⸏") (i32.const 466))
+(assert_return (invoke "⸐") (i32.const 467))
+(assert_return (invoke "⸑") (i32.const 468))
+(assert_return (invoke "⸎") (i32.const 469))
+(assert_return (invoke "\14") (i32.const 470))
+(assert_return (invoke "☙") (i32.const 471))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
