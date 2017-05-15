@@ -252,6 +252,22 @@
   (func (export "‮cba") (result i32) (i32.const 145))
   (func (export "‭abc‮") (result i32) (i32.const 146))
   (func (export "‮cba‭") (result i32) (i32.const 147))
+
+  ;; Test that Unicode font variations are preserved.
+  (func (export "𝑨") (result i32) (i32.const 148))
+  (func (export "𝐴") (result i32) (i32.const 149))
+  (func (export "𝘈") (result i32) (i32.const 150))
+  (func (export "𝘼") (result i32) (i32.const 151))
+  (func (export "𝐀") (result i32) (i32.const 152))
+  (func (export "𝓐") (result i32) (i32.const 153))
+  (func (export "𝕬") (result i32) (i32.const 154))
+  (func (export "𝗔") (result i32) (i32.const 155))
+  (func (export "𝒜") (result i32) (i32.const 156))
+  (func (export "𝔄") (result i32) (i32.const 157))
+  (func (export "𝔸") (result i32) (i32.const 158))
+  (func (export "𝖠") (result i32) (i32.const 159))
+  (func (export "𝙰") (result i32) (i32.const 160))
+  (func (export "ᴀ") (result i32) (i32.const 161))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -402,6 +418,20 @@
 (assert_return (invoke "‮cba") (i32.const 145))
 (assert_return (invoke "‭abc‮") (i32.const 146))
 (assert_return (invoke "‮cba‭") (i32.const 147))
+(assert_return (invoke "𝑨") (i32.const 148))
+(assert_return (invoke "𝐴") (i32.const 149))
+(assert_return (invoke "𝘈") (i32.const 150))
+(assert_return (invoke "𝘼") (i32.const 151))
+(assert_return (invoke "𝐀") (i32.const 152))
+(assert_return (invoke "𝓐") (i32.const 153))
+(assert_return (invoke "𝕬") (i32.const 154))
+(assert_return (invoke "𝗔") (i32.const 155))
+(assert_return (invoke "𝒜") (i32.const 156))
+(assert_return (invoke "𝔄") (i32.const 157))
+(assert_return (invoke "𝔸") (i32.const 158))
+(assert_return (invoke "𝖠") (i32.const 159))
+(assert_return (invoke "𝙰") (i32.const 160))
+(assert_return (invoke "ᴀ") (i32.const 161))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
