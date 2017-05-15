@@ -143,6 +143,35 @@
 
   ;; Test an uncombined combining code point.
   (func (export "̈") (result i32) (i32.const 51))
+
+  ;; Test that numerous different present and historical representations of the
+  ;; "newline" concept are distinct. Tests largely inspired by:
+  ;;   https://en.wikipedia.org/wiki/Newline#Representations
+  ;;   https://en.wikipedia.org/wiki/Newline#Unicode and
+  ;;   https://en.wikipedia.org/wiki/Newline#Reverse_and_partial_line_feeds
+  (func (export "\0a") (result i32) (i32.const 52))
+  (func (export "␤") (result i32) (i32.const 53))
+  (func (export " ") (result i32) (i32.const 54))
+  (func (export "\0d") (result i32) (i32.const 55))
+  (func (export "\0d\0a") (result i32) (i32.const 56))
+  (func (export "\0a\0d") (result i32) (i32.const 57))
+  (func (export "\1e") (result i32) (i32.const 58))
+  (func (export "\0b") (result i32) (i32.const 59))
+  (func (export "\0c") (result i32) (i32.const 60))
+  (func (export "\c2\85") (result i32) (i32.const 61))
+  (func (export " ") (result i32) (i32.const 62))
+  (func (export "…") (result i32) (i32.const 63))
+  (func (export "⏎") (result i32) (i32.const 64))
+  (func (export "\c2\8b") (result i32) (i32.const 65))
+  (func (export "\c2\8c") (result i32) (i32.const 66))
+  (func (export "\c2\8d") (result i32) (i32.const 67))
+  (func (export "↵") (result i32) (i32.const 68))
+  (func (export "↩") (result i32) (i32.const 69))
+  (func (export "⌤") (result i32) (i32.const 70))
+  (func (export "⤶") (result i32) (i32.const 71))
+  (func (export "↲") (result i32) (i32.const 72))
+  (func (export "⮨") (result i32) (i32.const 73))
+  (func (export "⮰") (result i32) (i32.const 74))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -197,6 +226,29 @@
 (assert_return (invoke "󠄀") (i32.const 49))
 (assert_return (invoke "󠇯") (i32.const 50))
 (assert_return (invoke "̈") (i32.const 51))
+(assert_return (invoke "\0a") (i32.const 52))
+(assert_return (invoke "␤") (i32.const 53))
+(assert_return (invoke " ") (i32.const 54))
+(assert_return (invoke "\0d") (i32.const 55))
+(assert_return (invoke "\0d\0a") (i32.const 56))
+(assert_return (invoke "\0a\0d") (i32.const 57))
+(assert_return (invoke "\1e") (i32.const 58))
+(assert_return (invoke "\0b") (i32.const 59))
+(assert_return (invoke "\0c") (i32.const 60))
+(assert_return (invoke "\c2\85") (i32.const 61))
+(assert_return (invoke " ") (i32.const 62))
+(assert_return (invoke "…") (i32.const 63))
+(assert_return (invoke "⏎") (i32.const 64))
+(assert_return (invoke "\c2\8b") (i32.const 65))
+(assert_return (invoke "\c2\8c") (i32.const 66))
+(assert_return (invoke "\c2\8d") (i32.const 67))
+(assert_return (invoke "↵") (i32.const 68))
+(assert_return (invoke "↩") (i32.const 69))
+(assert_return (invoke "⌤") (i32.const 70))
+(assert_return (invoke "⤶") (i32.const 71))
+(assert_return (invoke "↲") (i32.const 72))
+(assert_return (invoke "⮨") (i32.const 73))
+(assert_return (invoke "⮰") (i32.const 74))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
