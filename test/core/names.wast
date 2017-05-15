@@ -63,6 +63,13 @@
   (func (export "Å") (result i32) (i32.const 16))
   (func (export "Å") (result i32) (i32.const 17))
   (func (export "Å") (result i32) (i32.const 18))
+
+  ;; Test that Unicode compatibility normalization is not applied. These
+  ;; function names contain different codepoints which normalize to the
+  ;; same thing under NFKC or NFKD.
+  (func (export "ﬃ") (result i32) (i32.const 19))
+  (func (export "fﬁ") (result i32) (i32.const 20))
+  (func (export "ffi") (result i32) (i32.const 21))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -84,6 +91,9 @@
 (assert_return (invoke "Å") (i32.const 16))
 (assert_return (invoke "Å") (i32.const 17))
 (assert_return (invoke "Å") (i32.const 18))
+(assert_return (invoke "ﬃ") (i32.const 19))
+(assert_return (invoke "fﬁ") (i32.const 20))
+(assert_return (invoke "ffi") (i32.const 21))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
