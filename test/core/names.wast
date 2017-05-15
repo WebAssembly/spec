@@ -134,6 +134,12 @@
 
   ;; Test Hangul filler code points.
   (func (export "ᅟᅠㅤﾠ") (result i32) (i32.const 46))
+
+  ;; Test variation selectors (which are also ID_Continue code points).
+  (func (export "︀") (result i32) (i32.const 47))
+  (func (export "︄") (result i32) (i32.const 48))
+  (func (export "󠄀") (result i32) (i32.const 49))
+  (func (export "󠇯") (result i32) (i32.const 50))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -183,6 +189,10 @@
 (assert_return (invoke "𐀀󟿿􏿿") (i32.const 44))
 (assert_return (invoke "Z̴͇̫̥̪͓͈͔͎̗̞̺̯̱̞̙̱̜̖̠̏͆̆͛͌͘͞ḁ̶̰̳̭͙̲̱̹̝͎̼͗ͨ̎̄̆͗̿̀́͟͡l̶̷͉̩̹̫̝͖̙̲̼͇͚͍̮͎̥̞̈́͊͗ͦ̈́ͫ̇́̚ͅͅg̶͕͔͚̩̓̐̅ͮ̔̐̎̂̏̾͊̍͋͊ͧ́̆ͦ͞o̡͋̔͐ͪͩ͏̢̧̫̙̤̮͖͙͓̺̜̩̼̘̠́") (i32.const 45))
 (assert_return (invoke "ᅟᅠㅤﾠ") (i32.const 46))
+(assert_return (invoke "︀") (i32.const 47))
+(assert_return (invoke "︄") (i32.const 48))
+(assert_return (invoke "󠄀") (i32.const 49))
+(assert_return (invoke "󠇯") (i32.const 50))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
