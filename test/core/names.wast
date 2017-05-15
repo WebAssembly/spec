@@ -140,6 +140,9 @@
   (func (export "︄") (result i32) (i32.const 48))
   (func (export "󠄀") (result i32) (i32.const 49))
   (func (export "󠇯") (result i32) (i32.const 50))
+
+  ;; Test an uncombined combining code point.
+  (func (export "̈") (result i32) (i32.const 51))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -193,6 +196,7 @@
 (assert_return (invoke "︄") (i32.const 48))
 (assert_return (invoke "󠄀") (i32.const 49))
 (assert_return (invoke "󠇯") (i32.const 50))
+(assert_return (invoke "̈") (i32.const 51))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
