@@ -98,6 +98,13 @@
   (func (export "‍") (result i32) (i32.const 33))
   ;; Test a bare ZWNJ code point.
   (func (export "‌") (result i32) (i32.const 34))
+
+  ;; Test various bare joiner code points.
+  (func (export "͏") (result i32) (i32.const 35))
+  (func (export "⁠") (result i32) (i32.const 36))
+  (func (export "⵿") (result i32) (i32.const 37))
+  (func (export "𑁿") (result i32) (i32.const 38))
+  (func (export "᠎") (result i32) (i32.const 39))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -135,6 +142,11 @@
 (assert_return (invoke "￰￱￲￳￴￵￶￷￸￹￺￻￼�") (i32.const 32))
 (assert_return (invoke "‍") (i32.const 33))
 (assert_return (invoke "‌") (i32.const 34))
+(assert_return (invoke "͏") (i32.const 35))
+(assert_return (invoke "⁠") (i32.const 36))
+(assert_return (invoke "⵿") (i32.const 37))
+(assert_return (invoke "𑁿") (i32.const 38))
+(assert_return (invoke "᠎") (i32.const 39))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
