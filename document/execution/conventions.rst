@@ -25,8 +25,8 @@ As with :ref:`validation <validation>`, all rules are given in two *equivalent* 
 
 .. _exec-notation-textual:
 
-Textual Notation
-~~~~~~~~~~~~~~~~
+Prose Notation
+~~~~~~~~~~~~~~
 
 Execution is specified by stylised, step-wise rules for each :ref:`instruction <syntax-instr>` of the :ref:`abstract syntax <syntax>`.
 The following conventions are adopted in stating these rules.

@@ -100,6 +100,10 @@ These are simply indices into the respective store component.
    \end{array}
 
 .. note::
+   Addresses are *dynamic*, globally unique references to runtime objects,
+   in contrast to :ref:`indices <syntax-index>`,
+   which are *static*, module-local references to their original definitions.
+
    There is no specific limit on the number of allocations of store objects,
    hence logical addresses can be arbitrarily large natural numbers.
 
