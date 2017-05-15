@@ -509,6 +509,12 @@
   (func (export "⩜") (result i32) (i32.const 396))
   (func (export "ᗅ") (result i32) (i32.const 397))
   (func (export "Ꭺ") (result i32) (i32.const 398))
+
+  ;; Test unmatched "closing" and "opening" code points.
+  (func (export ")˺˼𔗏𝅴𝅶𝅸𝅺⁾₎❩❫⟯﴿︶﹚）｠󠀩❳❵⟧⟩⟫⟭⦈⦊⦖⸣⸥︘︸︺︼︾﹀﹂﹄﹈﹜﹞］｝｣󠁝󠁽»’”›❯") (result i32) (i32.const 399))
+  (func (export "(˹˻𔗎𝅳𝅵𝅷𝅹⁽₍❨❪⟮﴾︵﹙（｟󠀨❲❴⟦⟨⟪⟬⦇⦉⦕⸢⸤︗︷︹︻︽︿﹁﹃﹇﹛﹝［｛｢󠁛󠁻«‘“‹❮") (result i32) (i32.const 400))
+  (func (export "𝪋𝪤") (result i32) (i32.const 401))
+  (func (export "𝪋") (result i32) (i32.const 402))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -910,6 +916,10 @@
 (assert_return (invoke "⩜") (i32.const 396))
 (assert_return (invoke "ᗅ") (i32.const 397))
 (assert_return (invoke "Ꭺ") (i32.const 398))
+(assert_return (invoke ")˺˼𔗏𝅴𝅶𝅸𝅺⁾₎❩❫⟯﴿︶﹚）｠󠀩❳❵⟧⟩⟫⟭⦈⦊⦖⸣⸥︘︸︺︼︾﹀﹂﹄﹈﹜﹞］｝｣󠁝󠁽»’”›❯") (i32.const 399))
+(assert_return (invoke "(˹˻𔗎𝅳𝅵𝅷𝅹⁽₍❨❪⟮﴾︵﹙（｟󠀨❲❴⟦⟨⟪⟬⦇⦉⦕⸢⸤︗︷︹︻︽︿﹁﹃﹇﹛﹝［｛｢󠁛󠁻«‘“‹❮") (i32.const 400))
+(assert_return (invoke "𝪋𝪤") (i32.const 401))
+(assert_return (invoke "𝪋") (i32.const 402))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
