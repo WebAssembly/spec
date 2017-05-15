@@ -125,6 +125,9 @@
 
   ;; Test "invisible" operator code points.
   (func (export "⁡⁢⁣⁤") (result i32) (i32.const 43))
+
+  ;; Test that code points outside the BMP are supported.
+  (func (export "𐀀󟿿􏿿") (result i32) (i32.const 44))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -171,6 +174,7 @@
 (assert_return (invoke "‎‏‑  ‪‫‬ ⁦⁧⁨⁩") (i32.const 41))
 (assert_return (invoke "⁪⁫⁬⁭⁮⁯") (i32.const 42))
 (assert_return (invoke "⁡⁢⁣⁤") (i32.const 43))
+(assert_return (invoke "𐀀󟿿􏿿") (i32.const 44))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
