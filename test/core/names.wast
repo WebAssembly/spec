@@ -532,6 +532,23 @@
 
   ;; Test a full-width quote.
   (func (export "＂") (result i32) (i32.const 415))
+
+  ;; Test that different present and historical representations of the "delete"
+  ;; concept are distinct.
+  (func (export "\7f") (result i32) (i32.const 416))
+  (func (export "\08") (result i32) (i32.const 417))
+  (func (export "⌫") (result i32) (i32.const 418))
+  (func (export "⌦") (result i32) (i32.const 419))
+  (func (export "␈") (result i32) (i32.const 420))
+  (func (export "␡") (result i32) (i32.const 421))
+  (func (export "᷻") (result i32) (i32.const 422))
+  (func (export "\0f") (result i32) (i32.const 423))
+  (func (export "←") (result i32) (i32.const 424))
+  (func (export "⌧") (result i32) (i32.const 425))
+  (func (export "⍒") (result i32) (i32.const 426))
+  (func (export "⍔") (result i32) (i32.const 427))
+  (func (export "⍢") (result i32) (i32.const 428))
+  (func (export "⍫") (result i32) (i32.const 429))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -950,6 +967,20 @@
 (assert_return (invoke "𐦽") (i32.const 413))
 (assert_return (invoke "𐹻") (i32.const 414))
 (assert_return (invoke "＂") (i32.const 415))
+(assert_return (invoke "\7f") (i32.const 416))
+(assert_return (invoke "\08") (i32.const 417))
+(assert_return (invoke "⌫") (i32.const 418))
+(assert_return (invoke "⌦") (i32.const 419))
+(assert_return (invoke "␈") (i32.const 420))
+(assert_return (invoke "␡") (i32.const 421))
+(assert_return (invoke "᷻") (i32.const 422))
+(assert_return (invoke "\0f") (i32.const 423))
+(assert_return (invoke "←") (i32.const 424))
+(assert_return (invoke "⌧") (i32.const 425))
+(assert_return (invoke "⍒") (i32.const 426))
+(assert_return (invoke "⍔") (i32.const 427))
+(assert_return (invoke "⍢") (i32.const 428))
+(assert_return (invoke "⍫") (i32.const 429))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
