@@ -529,6 +529,9 @@
   (func (export "𐅶") (result i32) (i32.const 412))
   (func (export "𐦽") (result i32) (i32.const 413))
   (func (export "𐹻") (result i32) (i32.const 414))
+
+  ;; Test a full-width quote.
+  (func (export "＂") (result i32) (i32.const 415))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -946,6 +949,7 @@
 (assert_return (invoke "𐅶") (i32.const 412))
 (assert_return (invoke "𐦽") (i32.const 413))
 (assert_return (invoke "𐹻") (i32.const 414))
+(assert_return (invoke "＂") (i32.const 415))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
