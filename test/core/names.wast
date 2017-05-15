@@ -70,6 +70,18 @@
   (func (export "ﬃ") (result i32) (i32.const 19))
   (func (export "fﬁ") (result i32) (i32.const 20))
   (func (export "ffi") (result i32) (i32.const 21))
+
+  ;; Test the C0 control codes.
+  (func (export "\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f") (result i32) (i32.const 22))
+  (func (export "\10\11\12\13\14\15\16\17\18\19\1a\1b\1c\1d\1e\1f") (result i32) (i32.const 23))
+  ;; Test miscellaneous control codes.
+  (func (export " \7f") (result i32) (i32.const 24))
+  ;; Test the C1 control codes.
+  (func (export "\c2\80\c2\81\c2\82\c2\83\c2\84\c2\85\c2\86\c2\87\c2\88\c2\89\c2\8a\c2\8b\c2\8c\c2\8d\c2\8e\c2\8f") (result i32) (i32.const 25))
+  (func (export "\c2\90\c2\91\c2\92\c2\93\c2\94\c2\95\c2\96\c2\97\c2\98\c2\99\c2\9a\c2\9b\c2\9c\c2\9d\c2\9e\c2\9f") (result i32) (i32.const 26))
+  ;; Test the Unicode Specials.
+  (func (export "\ef\bf\b0\ef\bf\b1\ef\bf\b2\ef\bf\b3\ef\bf\b4\ef\bf\b5\ef\bf\b6\ef\bf\b7") (result i32) (i32.const 27))
+  (func (export "\ef\bf\b8\ef\bf\b9\ef\bf\ba\ef\bf\bb\ef\bf\bc\ef\bf\bd\ef\bf\be\ef\bf\bf") (result i32) (i32.const 28))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -94,6 +106,13 @@
 (assert_return (invoke "ﬃ") (i32.const 19))
 (assert_return (invoke "fﬁ") (i32.const 20))
 (assert_return (invoke "ffi") (i32.const 21))
+(assert_return (invoke "\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f") (i32.const 22))
+(assert_return (invoke "\10\11\12\13\14\15\16\17\18\19\1a\1b\1c\1d\1e\1f") (i32.const 23))
+(assert_return (invoke " \7f") (i32.const 24))
+(assert_return (invoke "\c2\80\c2\81\c2\82\c2\83\c2\84\c2\85\c2\86\c2\87\c2\88\c2\89\c2\8a\c2\8b\c2\8c\c2\8d\c2\8e\c2\8f") (i32.const 25))
+(assert_return (invoke "\c2\90\c2\91\c2\92\c2\93\c2\94\c2\95\c2\96\c2\97\c2\98\c2\99\c2\9a\c2\9b\c2\9c\c2\9d\c2\9e\c2\9f") (i32.const 26))
+(assert_return (invoke "\ef\bf\b0\ef\bf\b1\ef\bf\b2\ef\bf\b3\ef\bf\b4\ef\bf\b5\ef\bf\b6\ef\bf\b7") (i32.const 27))
+(assert_return (invoke "\ef\bf\b8\ef\bf\b9\ef\bf\ba\ef\bf\bb\ef\bf\bc\ef\bf\bd\ef\bf\be\ef\bf\bf") (i32.const 28))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
