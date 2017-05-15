@@ -890,7 +890,7 @@ Control Instructions
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & S.\TABLES[F.\MODULE.\TABLES[0]].\ELEM[i] = a \\
-    \wedge S.\FUNCS[a] = f \\
+     \wedge & S.\FUNCS[a] = f \\
      \wedge & F.\MODULE.\TYPES[x] = f.\MODULE.\TYPES[f.\CODE.\TYPE])
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
@@ -906,6 +906,10 @@ Control Instructions
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
+
+The following auxiliary rules define the semantics of executing an :ref:`instruction sequence <syntax-instr-seq>`
+that is part of a :ref:`structured control instruction <exec-instr-control>`.
+
 
 .. _exec-instr-seq-enter:
 
@@ -956,6 +960,11 @@ When the end of a labelled instruction sequence is reached without a jump or tra
 
 Function Calls
 ~~~~~~~~~~~~~~
+
+The following auxiliary rules define the semantics of invoking a :ref:`function instance <syntax-funcinst>`
+through one of the :ref:`call instructions <exec-instr-control>`
+and returning from it.
+
 
 .. _exec-invoke:
 

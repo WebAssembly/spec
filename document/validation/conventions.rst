@@ -83,8 +83,8 @@ In addition to field access :math:`C.\K{field}` the following notation is adopte
 
 .. _valid-notation-textual:
 
-Textual Notation
-~~~~~~~~~~~~~~~~
+Prose Notation
+~~~~~~~~~~~~~~
 
 Validation is specified by stylised rules for each relevant part of the :ref:`abstract syntax <syntax>`.
 The rules not only state constraints defining when a phrase is valid,
