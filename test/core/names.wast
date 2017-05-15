@@ -117,6 +117,11 @@
   ;; pop directional formatting, narrow no-break space, left-to-right isolate,
   ;; right-to-left isolate, first strong isolate, pop directional isolate.
   (func (export "‎‏‑  ‪‫‬ ⁦⁧⁨⁩") (result i32) (i32.const 41))
+
+  ;; Test some deprecated code points: inhibit symmetric swapping,
+  ;; activate symmetric swapping, inhibit arabic form shaping,
+  ;; activate arabic form shaping, national digit shapes, nominal digit shapes.
+  (func (export "⁪⁫⁬⁭⁮⁯") (result i32) (i32.const 42))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -161,6 +166,7 @@
 (assert_return (invoke "᠎") (i32.const 39))
 (assert_return (invoke "￯​ ­⁠ ‮‭") (i32.const 40))
 (assert_return (invoke "‎‏‑  ‪‫‬ ⁦⁧⁨⁩") (i32.const 41))
+(assert_return (invoke "⁪⁫⁬⁭⁮⁯") (i32.const 42))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
