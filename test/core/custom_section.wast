@@ -101,3 +101,12 @@
   )
   "function and code section have inconsistent lengths"
 )
+
+;; Test concatenated modules.
+(assert_malformed
+  (module
+    "\00asm\01\00\00\00"
+    "\00asm\01\00\00\00"
+  )
+  "length out of bounds"
+)
