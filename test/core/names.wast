@@ -241,6 +241,10 @@
   (func (export "\f3\bf\bf\bf") (result i32) (i32.const 139))
   (func (export "\f4\8f\bf\be") (result i32) (i32.const 140))
   (func (export "\f4\8f\bf\bf") (result i32) (i32.const 141))
+
+  ;; Test an interrobang with combining diacritical marks above.
+  ;; https://xkcd.com/1209/
+  (func (export "̈‽̈̉") (result i32) (i32.const 142))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -385,6 +389,7 @@
 (assert_return (invoke "\f3\bf\bf\bf") (i32.const 139))
 (assert_return (invoke "\f4\8f\bf\be") (i32.const 140))
 (assert_return (invoke "\f4\8f\bf\bf") (i32.const 141))
+(assert_return (invoke "̈‽̈̉") (i32.const 142))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
