@@ -93,6 +93,11 @@
   ;; Test the Unicode Specials in non-escaped form (excluding U+FFFE and
   ;; U+FFFF, so that generic tools don't detect this file as non-UTF-8).
   (func (export "￰￱￲￳￴￵￶￷￸￹￺￻￼�") (result i32) (i32.const 32))
+
+  ;; Test a bare ZWJ code point.
+  (func (export "‍") (result i32) (i32.const 33))
+  ;; Test a bare ZWNJ code point.
+  (func (export "‌") (result i32) (i32.const 34))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -128,6 +133,8 @@
 (assert_return (invoke "␐␑␒␓␔␕␖␗␘␙␚␛␜␝␞␟") (i32.const 30))
 (assert_return (invoke "␠␡") (i32.const 31))
 (assert_return (invoke "￰￱￲￳￴￵￶￷￸￹￺￻￼�") (i32.const 32))
+(assert_return (invoke "‍") (i32.const 33))
+(assert_return (invoke "‌") (i32.const 34))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
