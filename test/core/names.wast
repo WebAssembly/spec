@@ -515,6 +515,20 @@
   (func (export "(˹˻𔗎𝅳𝅵𝅷𝅹⁽₍❨❪⟮﴾︵﹙（｟󠀨❲❴⟦⟨⟪⟬⦇⦉⦕⸢⸤︗︷︹︻︽︿﹁﹃﹇﹛﹝［｛｢󠁛󠁻«‘“‹❮") (result i32) (i32.const 400))
   (func (export "𝪋𝪤") (result i32) (i32.const 401))
   (func (export "𝪋") (result i32) (i32.const 402))
+
+  ;; Test that Unicode fraction normalization is not applied.
+  (func (export "½") (result i32) (i32.const 403))
+  (func (export "1⁄2") (result i32) (i32.const 404))
+  (func (export "1/2") (result i32) (i32.const 405))
+  (func (export "୳") (result i32) (i32.const 406))
+  (func (export "൴") (result i32) (i32.const 407))
+  (func (export "⳽") (result i32) (i32.const 408))
+  (func (export "꠱") (result i32) (i32.const 409))
+  (func (export "𐅁") (result i32) (i32.const 410))
+  (func (export "𐅵") (result i32) (i32.const 411))
+  (func (export "𐅶") (result i32) (i32.const 412))
+  (func (export "𐦽") (result i32) (i32.const 413))
+  (func (export "𐹻") (result i32) (i32.const 414))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -920,6 +934,18 @@
 (assert_return (invoke "(˹˻𔗎𝅳𝅵𝅷𝅹⁽₍❨❪⟮﴾︵﹙（｟󠀨❲❴⟦⟨⟪⟬⦇⦉⦕⸢⸤︗︷︹︻︽︿﹁﹃﹇﹛﹝［｛｢󠁛󠁻«‘“‹❮") (i32.const 400))
 (assert_return (invoke "𝪋𝪤") (i32.const 401))
 (assert_return (invoke "𝪋") (i32.const 402))
+(assert_return (invoke "½") (i32.const 403))
+(assert_return (invoke "1⁄2") (i32.const 404))
+(assert_return (invoke "1/2") (i32.const 405))
+(assert_return (invoke "୳") (i32.const 406))
+(assert_return (invoke "൴") (i32.const 407))
+(assert_return (invoke "⳽") (i32.const 408))
+(assert_return (invoke "꠱") (i32.const 409))
+(assert_return (invoke "𐅁") (i32.const 410))
+(assert_return (invoke "𐅵") (i32.const 411))
+(assert_return (invoke "𐅶") (i32.const 412))
+(assert_return (invoke "𐦽") (i32.const 413))
+(assert_return (invoke "𐹻") (i32.const 414))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
