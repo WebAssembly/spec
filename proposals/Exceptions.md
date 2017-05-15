@@ -110,7 +110,7 @@ it can begin with the `catch_all` instruction. If it begins with the
 catch block has no exception type, and is used to catch all exceptions not
 caught by any of the tagged catch blocks.
 
-Try blocks, like a control-flow blocks, have a _block type_. The block type of a
+Try blocks, like control-flow blocks, have a _block type_. The block type of a
 try block defines the values yielded by the evaluation the try block when either
 no exception is thrown, or the exception is successfully caught by one of its
 catch blocks, and the instructions within the catch block can recover from the
@@ -192,7 +192,7 @@ try
   ...
 catch 1
   ...
-  begin
+  block
     ...
     try
       ...
@@ -213,8 +213,11 @@ end
 In this example, `N` is used to disambiguate which caught exception is being
 rethrown. It could rethrow any of the three caught expceptions. Hence,
 `rethrow 0` corresponds to the exception caught by `catch 3`, `rethrow 1`
-corresponds to the exception caught by `catch 2`, and `rethrow 4` corresponds
+corresponds to the exception caught by `catch 2`, and `rethrow 3` corresponds
 to the exception caught by `catch 1`.
+
+Note that `rethrow 2` is not allowed because it does not reference a `try`
+instruction. Rather, it references a `block` instruction.
 
 ### Debugging
 
@@ -240,7 +243,7 @@ instructions ::=
   ...
   try resulttype instr* catch+ end |
   throw except_index |
-  rethrow catch_index
+  rethrow label
   
 catch ::=
   catch except_index inst* |
@@ -256,8 +259,8 @@ exception. Similarly, the `except_index` of the *throw* instruction is the tag f
 the constructed exception.  See [exception index space](#exception-index-space)
 for further clarification of exception tags.
 
-The `catch_index` of the `rethrow` instruction is the index to the corresponding
-catch that defines the exception to throw.
+The `label` of the `rethrow` instruction is the label to the corresponding try
+block, defining the catch to rethrow.
 
 ## Changes to Modules document.
 
