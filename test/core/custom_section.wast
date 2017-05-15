@@ -60,6 +60,14 @@
 (assert_malformed
   (module
     "\00asm" "\01\00\00\00"
+    "\00"
+  )
+  "unexpected end"
+)
+
+(assert_malformed
+  (module
+    "\00asm" "\01\00\00\00"
     "\00\00"
   )
   "unexpected end"
