@@ -110,6 +110,13 @@
   ;; no-break space, soft hyphen, word joiner, ogham space mark,
   ;; right-to-left override, left-to-right override.
   (func (export "￯​ ­⁠ ‮‭") (result i32) (i32.const 40))
+
+  ;; Test more interesting code points: left-to-right mark, right-to-left mark,
+  ;; non-breaking hyphen, line separator, paragraph separator,
+  ;; left-to-right embedding, right-to-left embedding,
+  ;; pop directional formatting, narrow no-break space, left-to-right isolate,
+  ;; right-to-left isolate, first strong isolate, pop directional isolate.
+  (func (export "‎‏‑  ‪‫‬ ⁦⁧⁨⁩") (result i32) (i32.const 41))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -153,6 +160,7 @@
 (assert_return (invoke "𑁿") (i32.const 38))
 (assert_return (invoke "᠎") (i32.const 39))
 (assert_return (invoke "￯​ ­⁠ ‮‭") (i32.const 40))
+(assert_return (invoke "‎‏‑  ‪‫‬ ⁦⁧⁨⁩") (i32.const 41))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
