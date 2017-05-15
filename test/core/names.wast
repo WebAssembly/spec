@@ -128,6 +128,9 @@
 
   ;; Test that code points outside the BMP are supported.
   (func (export "𐀀󟿿􏿿") (result i32) (i32.const 44))
+
+  ;; Test that WebAssembly implementations cope in the presence of Zalgo.
+  (func (export "Z̴͇̫̥̪͓͈͔͎̗̞̺̯̱̞̙̱̜̖̠̏͆̆͛͌͘͞ḁ̶̰̳̭͙̲̱̹̝͎̼͗ͨ̎̄̆͗̿̀́͟͡l̶̷͉̩̹̫̝͖̙̲̼͇͚͍̮͎̥̞̈́͊͗ͦ̈́ͫ̇́̚ͅͅg̶͕͔͚̩̓̐̅ͮ̔̐̎̂̏̾͊̍͋͊ͧ́̆ͦ͞o̡͋̔͐ͪͩ͏̢̧̫̙̤̮͖͙͓̺̜̩̼̘̠́") (result i32) (i32.const 45))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -175,6 +178,7 @@
 (assert_return (invoke "⁪⁫⁬⁭⁮⁯") (i32.const 42))
 (assert_return (invoke "⁡⁢⁣⁤") (i32.const 43))
 (assert_return (invoke "𐀀󟿿􏿿") (i32.const 44))
+(assert_return (invoke "Z̴͇̫̥̪͓͈͔͎̗̞̺̯̱̞̙̱̜̖̠̏͆̆͛͌͘͞ḁ̶̰̳̭͙̲̱̹̝͎̼͗ͨ̎̄̆͗̿̀́͟͡l̶̷͉̩̹̫̝͖̙̲̼͇͚͍̮͎̥̞̈́͊͗ͦ̈́ͫ̇́̚ͅͅg̶͕͔͚̩̓̐̅ͮ̔̐̎̂̏̾͊̍͋͊ͧ́̆ͦ͞o̡͋̔͐ͪͩ͏̢̧̫̙̤̮͖͙͓̺̜̩̼̘̠́") (i32.const 45))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
