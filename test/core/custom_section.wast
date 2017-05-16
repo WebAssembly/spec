@@ -6,6 +6,9 @@
   "\00\10\00" "" "this is payload"
   "\00\01\00" "" ""
   "\00\24\10" "\00\00custom sectio\00" "this is the payload"
+  "\00\24\10" "\ef\bb\bfa custom sect" "this is the payload"
+  "\00\24\10" "a custom sect\e2\8c\a3" "this is the payload"
+  "\00\1f\16" "module within a module" "\00asm" "\01\00\00\00"
 )
 
 (module
@@ -57,6 +60,14 @@
 (assert_malformed
   (module
     "\00asm" "\01\00\00\00"
+    "\00"
+  )
+  "unexpected end"
+)
+
+(assert_malformed
+  (module
+    "\00asm" "\01\00\00\00"
     "\00\00"
   )
   "unexpected end"
@@ -89,4 +100,13 @@
     "\00\1b\07" "custom2" "this is the payload"           ;; custom section
   )
   "function and code section have inconsistent lengths"
+)
+
+;; Test concatenated modules.
+(assert_malformed
+  (module
+    "\00asm\01\00\00\00"
+    "\00asm\01\00\00\00"
+  )
+  "length out of bounds"
 )
