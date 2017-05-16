@@ -177,19 +177,21 @@ Multiple anonymous locals may be combined into a single declaration:
      (\text{(}~~\text{local}~~\Tvaltype~~\text{)})^\ast \\
    \end{array}
 
-Functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+Moreover, functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
 
 .. math::
    \begin{array}{llclll}
    \production{module field} &
      \text{(}~\text{func}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttypeuse~\text{)} &\equiv&
        \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{func}~~\Tid^?~~\Ttypeuse~\text{)}~\text{)} \\ &
-     \text{(}~\text{func}~~\Tid^?~~(\text{(}~\text{export}~~\Tname~\text{)})^+~~\Ttypeuse~~\dots~\text{)} &\equiv&
-       (\text{(}~\text{export}~~\Tname~~\text{(}~\text{func}~~\Tid'~\text{)}~\text{)})^+~~
-       \text{(}~\text{func}~~\Tid'~~\Ttypeuse~~\dots~\text{)}
+     \text{(}~\text{func}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} &\equiv&
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{func}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{func}~~\Tid'~~\dots~\text{)}
        \\&&& \qquad
        (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
+
+The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
 
 
 .. _text-table:
@@ -222,31 +224,33 @@ Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
 Abbreviations
 .............
 
-Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+An :ref:`element segment <text-elem>` can be given inline with a table definition, in which case the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>` are inferred from the length of the given segment:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\Telemtype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~~\text{)} &\equiv&
+       \text{(}~\text{table}~~\Tid'~~n~~n~~\Telemtype~\text{)}~~
+       \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
+       \\&&& \qquad
+       (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+   \end{array}
+
+Moreover, tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
 
 .. math::
    \begin{array}{llclll}
    \production{module field} &
      \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttabletype~\text{)} &\equiv&
        \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{table}~~\Tid^?~~\Ttabletype~\text{)}~\text{)} \\ &
-     \text{(}~\text{table}~~\Tid^?~~(\text{(}~\text{export}~~\Tname~\text{)})^+~~\Ttabletype~\text{)} &\equiv&
-       (\text{(}~\text{export}~~\Tname~~\text{(}~\text{table}~~\Tid'~\text{)}~\text{)})^+~~
-       \text{(}~\text{table}~~\Tid'~~\Ttabletype~\text{)}
+     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} &\equiv&
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{table}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{table}~~\Tid'~~\dots~\text{)}
        \\&&& \qquad
        (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
-Moreover, an :ref:`element segment <text-elem>` can be given inline, in which case the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>` are inferred from the length of the given segment:
-
-.. math::
-   \begin{array}{llclll}
-   \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}^?~~\Telemtype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~~\text{)} &\equiv&
-       \text{(}~\text{table}~~\Tid'~~\text{(}~\text{export}~~\Tname~\text{)}^?~~n~~n~~\Telemtype~\text{)}~~
-       \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
-       \\&&& \qquad
-       (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
-   \end{array}
+The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline elements segment.
 
 
 .. _text-mem:
@@ -279,31 +283,34 @@ Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
 Abbreviations
 .............
 
-Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+A :ref:`data segment <text-data>` can be given inline with a memory definition, in which case the :ref:`limits <text-limits>` of the :ref:`memory type <text-memtype>` are inferred from the length of the data, rounded up to :ref:`page size <page-size>`:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} &\equiv&
+       \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)}~~
+       \text{(}~\text{data}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
+       \\&&& \qquad
+       (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
+   \end{array}
+
+Moreover, memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
 
 .. math::
    \begin{array}{llclll}
    \production{module field} &
      \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tmemtype~\text{)} &\equiv&
-       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{memory}~~\Tid^?~~\Tmemtype~\text{)}~\text{)} \\ &
-     \text{(}~\text{memory}~~\Tid^?~~(\text{(}~\text{export}~~\Tname~\text{)})^+~~\Tmemtype~\text{)} &\equiv&
-       (\text{(}~\text{export}~~\Tname~~\text{(}~\text{memory}~~\Tid'~\text{)}~\text{)})^+~~
-       \text{(}~\text{memory}~~\Tid'~~\Tmemtype~\text{)}
-       \\&&& \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{memory}~~\Tid^?~~\Tmemtype~\text{)}~\text{)}
+       \\ &
+     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} &\equiv&
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{memory}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{memory}~~\Tid'~~\dots~\text{)}
+       \\ &&& \qquad
        (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
-Moreover, a :ref:`data segment <text-data>` can be given inline, in which case the :ref:`limits <text-limits>` of the :ref:`memory type <text-memtype>` are inferred from the length of the data, rounded up to :ref:`page size <page-size>`:
-
-.. math::
-   \begin{array}{llclll}
-   \production{module field} &
-     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} &\equiv&
-       \text{(}~\text{memory}~~\Tid'~~\text{(}~\text{export}~~\Tname~\text{)}^?~~m~~m~\text{)}~~
-       \text{(}~\text{data}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
-       \\&&& \qquad
-       (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
-   \end{array}
+The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline data segment.
 
 
 .. _text-global:
@@ -338,13 +345,16 @@ Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-ex
    \begin{array}{llclll}
    \production{module field} &
      \text{(}~\text{global}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tglobaltype~\text{)} &\equiv&
-       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{global}~~\Tid^?~~\Tglobaltype~\text{)}~\text{)} \\ &
-     \text{(}~\text{global}~~\Tid^?~~(\text{(}~\text{export}~~\Tname~\text{)})^+~~\Tglobaltype~\text{)} &\equiv&
-       (\text{(}~\text{export}~~\Tname~~\text{(}~\text{global}~~\Tid'~\text{)}~\text{)})^+~~
-       \text{(}~\text{global}~~\Tid'~~\Tglobaltype~\text{)}
-       \\&&& \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{global}~~\Tid^?~~\Tglobaltype~\text{)}~\text{)}
+       \\ &
+     \text{(}~\text{global}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} &\equiv&
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{global}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{global}~~\Tid'~~\dots~\text{)}
+       \\ &&& \qquad
        (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
+
+The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
 
 
 .. _text-export:

@@ -53,7 +53,7 @@ let elem_type t = string_of_elem_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
-let stack_type ts = list (atom value_type) ts
+let stack_type ts = decls "result" ts
 
 let func_type (FuncType (ins, out)) =
   Node ("func", decls "param" ins @ decls "result" out)

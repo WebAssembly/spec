@@ -55,10 +55,10 @@ Moreover, their value must lie within the range of the respective type.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
-   \production{unsigned integer} & \TuX{N} &::=&
+   \production{unsigned integer} & \TuN &::=&
      n{:}\Tnum &\Rightarrow& n & (n < 2^N) \\ &&|&
      \text{0x}~~n{:}\Thexnum &\Rightarrow& n & (n < 2^N) \\
-   \production{signed integer} & \TsX{N} &::=&
+   \production{signed integer} & \TsN &::=&
      s{:}\Tsign~~n{:}\Tnum &\Rightarrow& s\cdot n & (-2^{N-1} \leq s\cdot n < 2^{N-1}) \\ &&|&
      s{:}\Tsign~~\text{0x}~~n{:}\Thexnum &\Rightarrow& s\cdot n & (-2^{N-1} \leq s\cdot n < 2^{N-1}) \\
    \end{array}
@@ -67,9 +67,9 @@ Moreover, their value must lie within the range of the respective type.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{uninterpreted integers} & \TiX{N} &::=&
-     n{:}\TuX{N} &\Rightarrow& n \\ &&|&
-     i{:}\TsX{N} &\Rightarrow& n & (i = \signed(n)) \\
+   \production{uninterpreted integers} & \TiN &::=&
+     n{:}\TuN &\Rightarrow& n \\ &&|&
+     i{:}\TsN &\Rightarrow& n & (i = \signed(n)) \\
    \end{array}
 
 
@@ -116,7 +116,7 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
        &\Rightarrow& s\cdot p\cdot 2^{t\cdot e} \\ &&|&
      s{:}\Tsign~\text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~t{:}\Tsign~e{:}\Tnum
        &\Rightarrow& s\cdot(p+q)\cdot 2^{t\cdot e} \\
-   \production{floating-point value} & \TfX{N} &::=&
+   \production{floating-point value} & \TfN &::=&
      z{:}\Tfloat &\Rightarrow& b^\ast & (\ieee_N(z) = b^\ast) \\ &&|&
      z{:}\Thexfloat &\Rightarrow& b^\ast & (\ieee_N(z) = b^\ast) \\ &&|&
      s{:}\Tsign~\text{inf} &\Rightarrow& b^\ast & (\ieeeinf_N(s) = b^\ast) \\ &&|&

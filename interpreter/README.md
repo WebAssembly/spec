@@ -180,7 +180,7 @@ offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
-block_sig : <type>*
+block_sig : ( result <type>* )*
 func_sig:   ( type <var> )? <param>* <result>*
 global_sig: <type> | ( mut <type> )
 table_sig:  <nat> <nat>? <elem_type>
@@ -188,20 +188,19 @@ memory_sig: <nat> <nat>?
 
 expr:
   ( <op> )
-  ( <op> <expr>+ )                                                   ;; = <expr>+ (<op>)
-  ( block <name>? <block_sig>? <instr>* )
-  ( loop <name>? <block_sig>? <instr>* )
-  ( if <name>? <block_sig>? ( then <instr>* ) ( else <instr>* )? )
-  ( if <name>? <block_sig>? <expr> ( then <instr>* ) ( else <instr>* )? ) ;; = (if <name>? <block_sig>? <expr> (then <instr>*) (else <instr>*)?)
-  ( if <name>? <block_sig>? <expr> <expr> <expr>? )                  ;; = (if <name>? <block_sig>? <expr> (then <expr>) (else <expr>?))
+  ( <op> <expr>+ )                                                  ;; = <expr>+ (<op>)
+  ( block <name>? <block_sig> <instr>* )
+  ( loop <name>? <block_sig> <instr>* )
+  ( if <name>? <block_sig> ( then <instr>* ) ( else <instr>* )? )
+  ( if <name>? <block_sig> <expr>+ ( then <instr>* ) ( else <instr>* )? ) ;; = <expr>+ (if <name>? <block_sig> (then <instr>*) (else <instr>*)?)
 
 instr:
   <expr>
-  <op>                                                               ;; = (<op>)
-  block <name>? <block_sig>? <instr>* end <name>?                    ;; = (block <name>? <block_sig>? <instr>*)
-  loop <name>? <block_sig>? <instr>* end <name>?                     ;; = (loop <name>? <block_sig>? <instr>*)
-  if <name>? <block_sig>? <instr>* end <name>?                       ;; = (if <name>? <block_sig>? (then <instr>*))
-  if <name>? <block_sig>? <instr>* else <name>? <instr>* end <name>? ;; = (if <name>? <block_sig>? (then <instr>*) (else <instr>*))
+  <op>                                                              ;; = (<op>)
+  block <name>? <block_sig> <instr>* end <name>?                    ;; = (block <name>? <block_sig> <instr>*)
+  loop <name>? <block_sig> <instr>* end <name>?                     ;; = (loop <name>? <block_sig> <instr>*)
+  if <name>? <block_sig> <instr>* end <name>?                       ;; = (if <name>? <block_sig> (then <instr>*))
+  if <name>? <block_sig> <instr>* else <name>? <instr>* end <name>? ;; = (if <name>? <block_sig> (then <instr>*) (else <instr>*))
 
 op:
   unreachable
@@ -231,25 +230,25 @@ op:
   <type>.<cvtop>/<type>
 
 func:    ( func <name>? <func_sig> <local>* <instr>* )
-         ( func <name>? ( export <string> ) <func_sig> <local>* <instr>* )  ;; = (export <string> (func <N>)) (func <name>? <func_sig> <local>* <instr>*)
+         ( func <name>? ( export <string> )+ <func_sig> <local>* <instr>* ) ;; = (export <string> (func <N>))+ (func <name>? <func_sig> <local>* <instr>*)
          ( func <name>? ( import <string> <string> ) <func_sig>)            ;; = (import <name>? <string> <string> (func <func_sig>))
 param:   ( param <type>* ) | ( param <name> <type> )
 result:  ( result <type> )
 local:   ( local <type>* ) | ( local <name> <type> )
 
 global:  ( global <name>? <global_sig> <instr>* )
-         ( global <name>? ( export <string> ) <global_sig> <instr>* )       ;; = (export <string> (global <N>)) (global <name>? <global_sig> <instr>*)
+         ( global <name>? ( export <string> )+ <global_sig> <instr>* )      ;; = (export <string> (global <N>))+ (global <name>? <global_sig> <instr>*)
          ( global <name>? ( import <string> <string> ) <global_sig> )       ;; = (import <name>? <string> <string> (global <global_sig>))
 table:   ( table <name>? <table_sig> )
-         ( table <name>? ( export <string> ) <table_sig> )                  ;; = (export <string> (table <N>)) (table <name>? <table_sig>)
+         ( table <name>? ( export <string> )+ <table_sig> )                 ;; = (export <string> (table <N>))+ (table <name>? <table_sig>)
          ( table <name>? ( import <string> <string> ) <table_sig> )         ;; = (import <name>? <string> <string> (table <table_sig>))
-         ( table <name>? ( export <string> )? <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )? <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
+         ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )* <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
 elem:    ( elem <var>? (offset <instr>* ) <var>* )
          ( elem <var>? <expr> <var>* )                                      ;; = (elem <var>? (offset <expr>) <var>*)
 memory:  ( memory <name>? <memory_sig> )
-         ( memory <name>? ( export <string> ) <memory_sig> )                ;; = (export <string> (memory <N>)) (memory <name>? <memory_sig>)
+         ( memory <name>? ( export <string> )+ <memory_sig> )               ;; = (export <string> (memory <N>))+ (memory <name>? <memory_sig>)
          ( memory <name>? ( import <string> <string> ) <memory_sig> )       ;; = (import <name>? <string> <string> (memory <memory_sig>))
-         ( memory <name>? ( export <string> )? ( data <string>* )           ;; = (memory <name>? ( export <string> )? <size> <size>) (data (i32.const 0) <string>*)
+         ( memory <name>? ( export <string> )* ( data <string>* )           ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
 data:    ( data <var>? ( offset <instr>* ) <string>* )
          ( data <var>? <expr> <string>* )                                   ;; = (data <var>? (offset <expr>) <string>*)
 

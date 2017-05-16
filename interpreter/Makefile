@@ -102,14 +102,20 @@ $(WINMAKE):	clean
 $(ZIP):		$(WINMAKE)
 		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
-test:		$(NAME)
-		../test/core/run.py --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',)
+test:		$(OPT)
+		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
+debugtest:	$(UNOPT)
+		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',)
 
-test/%:		$(NAME)
-		../test/core/run.py --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
+test/%:		$(OPT)
+		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
+debugtest/%:	$(UNOPT)
+		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
 
-run/%:		$(NAME)
-		./$(NAME) $(@:run/%=../test/core/%.wast)
+run/%:		$(OPT)
+		./$(OPT) $(@:run/%=../test/core/%.wast)
+debugrun/%:		$(UNOPT)
+		./$(UNOPT) $(@:run/%=../test/core/%.wast)
 
 clean:
 		rm -rf _build/jslib wasm.mlpack

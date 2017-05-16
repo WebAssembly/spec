@@ -129,11 +129,10 @@ let float =
   | sign? "0x" hexnum '.' hexdigit*
   | sign? "0x" hexnum ('.' hexdigit*)? ('p' | 'P') sign? num
   | sign? "inf"
-  | sign? "infinity"
   | sign? "nan"
   | sign? "nan:" "0x" hexnum
 let text = '"' character* '"'
-let keyword = letter (letter | digit | '_' | symbol)*
+let keyword = letter ([^'\"''('')'';'] # space)*  (* hack for table size *)
 let name = '$' (letter | digit | '_' | symbol)+
 
 let ixx = "i" ("32" | "64")
@@ -175,68 +174,28 @@ rule token = parse
   | "anyfunc" { ANYFUNC }
   | "mut" { MUT }
 
-  | keyword as s
-    { match s with
-      | "nop" -> NOP
-      | "unreachable" -> UNREACHABLE
-      | "drop" -> DROP
-      | "block" -> BLOCK
-      | "loop" -> LOOP
-      | "end" -> END
-      | "br" -> BR
-      | "br_if" -> BR_IF
-      | "br_table" -> BR_TABLE
-      | "return" -> RETURN
-      | "if" -> IF
-      | "then" -> THEN
-      | "else" -> ELSE
-      | "select" -> SELECT
-      | "call" -> CALL
-      | "call_indirect" -> CALL_INDIRECT
+  | "nop" { NOP }
+  | "unreachable" { UNREACHABLE }
+  | "drop" { DROP }
+  | "block" { BLOCK }
+  | "loop" { LOOP }
+  | "end" { END }
+  | "br" { BR }
+  | "br_if" { BR_IF }
+  | "br_table" { BR_TABLE }
+  | "return" { RETURN }
+  | "if" { IF }
+  | "then" { THEN }
+  | "else" { ELSE }
+  | "select" { SELECT }
+  | "call" { CALL }
+  | "call_indirect" { CALL_INDIRECT }
 
-      | "get_local" -> GET_LOCAL
-      | "set_local" -> SET_LOCAL
-      | "tee_local" -> TEE_LOCAL
-      | "get_global" -> GET_GLOBAL
-      | "set_global" -> SET_GLOBAL
-
-      | "current_memory" -> CURRENT_MEMORY
-      | "grow_memory" -> GROW_MEMORY
-
-      | "type" -> TYPE
-      | "func" -> FUNC
-      | "start" -> START
-      | "param" -> PARAM
-      | "result" -> RESULT
-      | "local" -> LOCAL
-      | "global" -> GLOBAL
-      | "table" -> TABLE
-      | "memory" -> MEMORY
-      | "elem" -> ELEM
-      | "data" -> DATA
-      | "offset" -> OFFSET
-      | "import" -> IMPORT
-      | "export" -> EXPORT
-
-      | "module" -> MODULE
-
-      | "script" -> SCRIPT
-      | "register" -> REGISTER
-      | "invoke" -> INVOKE
-      | "get" -> GET
-      | "assert_malformed" -> ASSERT_MALFORMED
-      | "assert_invalid" -> ASSERT_INVALID
-      | "assert_unlinkable" -> ASSERT_UNLINKABLE
-      | "assert_return" -> ASSERT_RETURN
-      | "assert_return_canonical_nan" -> ASSERT_RETURN_CANONICAL_NAN
-      | "assert_return_arithmetic_nan" -> ASSERT_RETURN_ARITHMETIC_NAN
-      | "assert_trap" -> ASSERT_TRAP
-      | "assert_exhaustion" -> ASSERT_EXHAUSTION
-      | "input" -> INPUT
-      | "output" -> OUTPUT
-
-      | _ -> error lexbuf "unknown operator"
-    }
+  | "get_local" { GET_LOCAL }
+  | "set_local" { SET_LOCAL }
+  | "tee_local" { TEE_LOCAL }
+  | "get_global" { GET_GLOBAL }
+  | "set_global" { SET_GLOBAL }
 
   | (nxx as t)".load"
     { LOAD (fun a o ->
@@ -353,16 +312,51 @@ rule token = parse
   | "i32.reinterpret/f32" { CONVERT i32_reinterpret_f32 }
   | "i64.reinterpret/f64" { CONVERT i64_reinterpret_f64 }
 
+  | "current_memory" { CURRENT_MEMORY }
+  | "grow_memory" { GROW_MEMORY }
+
+  | "type" { TYPE }
+  | "func" { FUNC }
+  | "start" { START }
+  | "param" { PARAM }
+  | "result" { RESULT }
+  | "local" { LOCAL }
+  | "global" { GLOBAL }
+  | "module" { MODULE }
+  | "table" { TABLE }
+  | "memory" { MEMORY }
+  | "elem" { ELEM }
+  | "data" { DATA }
+  | "offset" { OFFSET }
+  | "import" { IMPORT }
+  | "export" { EXPORT }
+
+  | "script" { SCRIPT }
+  | "register" { REGISTER }
+  | "invoke" { INVOKE }
+  | "get" { GET }
+  | "assert_malformed" { ASSERT_MALFORMED }
+  | "assert_invalid" { ASSERT_INVALID }
+  | "assert_unlinkable" { ASSERT_UNLINKABLE }
+  | "assert_return" { ASSERT_RETURN }
+  | "assert_return_canonical_nan" { ASSERT_RETURN_CANONICAL_NAN }
+  | "assert_return_arithmetic_nan" { ASSERT_RETURN_ARITHMETIC_NAN }
+  | "assert_trap" { ASSERT_TRAP }
+  | "assert_exhaustion" { ASSERT_EXHAUSTION }
+  | "input" { INPUT }
+  | "output" { OUTPUT }
+
   | name as s { VAR s }
 
   | ";;"utf8_no_nl*eof { EOF }
   | ";;"utf8_no_nl*'\n' { Lexing.new_line lexbuf; token lexbuf }
   | ";;"utf8_no_nl* { token lexbuf (* causes error on following position *) }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
-  | space { token lexbuf }
+  | space#'\n' { token lexbuf }
   | '\n' { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
 
+  | keyword { error lexbuf "unknown operator" }
   | utf8 { error lexbuf "malformed operator" }
   | _ { error lexbuf "malformed UTF-8 encoding" }
 

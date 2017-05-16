@@ -119,15 +119,9 @@ Names
 *Names* are sequences of *scalar* `Unicode <http://www.unicode.org/versions/latest/>`_ *code points*.
 
 .. math::
-<<<<<<< HEAD
    \begin{array}{llclll}
    \production{name} & \name &::=&
      \codepoint^\ast & (|\utf8(\codepoint^\ast)| < 2^{32}) \\
-=======
-   \begin{array}{llll}
-   \production{name} & \name &::=&
-     \codepoint^\ast \\
->>>>>>> master
    \production{code point} & \codepoint &::=&
      \unicode{0000} ~|~ \dots ~|~ \unicode{D7FF} ~|~
      \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
