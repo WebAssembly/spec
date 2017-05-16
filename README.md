@@ -1,6 +1,20 @@
 [![Build Status](https://travis-ci.org/WebAssembly/spec.svg?branch=master)](https://travis-ci.org/WebAssembly/spec)
 
-# spec
+# Exception handling
+
+This repository
+a holds
+[propsal](https://github.com/WebAssembly/exception-handling/blob/master/proposals/Exceptions.md) for
+adding exception handling to WebAssembly.
+
+The repository is a copy
+of [WebAssembly/spec](https://github.com/WebAssembly/spec).
+
+The remainder of the document is contents of the
+original [README.md](https://github.com/WebAssembly/spec/blob/master/README.md)
+document of that repository.
+
+## spec
 
 This repository holds a prototypical reference implementation for WebAssembly,
 which is currently serving as the official specification. Eventually, we expect
