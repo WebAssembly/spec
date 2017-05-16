@@ -27,23 +27,29 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
 
 
 .. _text-token:
-.. index:: ! token, character, white space, comment, source text
+.. _text-keyword:
+.. index:: ! token, ! keyword, character, white space, comment, source text
    single: text format; token
 
 Tokens
 ~~~~~~
 
-The character stream in the source text is divided, from left to right, into a sequence of *tokens*.
-In this specification, tokens are either defined explicitly by lexical grammar rules,
-such as the lexical syntax of :ref:`values <text-value>`,
-or implicitly, by the occurrence of terminal symbols in literal form in the non-lexical grammar. 
+The character stream in the source text is divided, from left to right, into a sequence of *tokens*, as defined by the following grammar.
+
+.. math::
+   \begin{array}{llll}
+   \production{token} & \Ttoken &::=&
+     \Tkeyword ~|~ \TuN ~|~ \TsN ~|~ \TfN ~|~ \Tstring ~|~ \Tid \\
+   \production{keyword} & \Tkeyword &::=&
+     (\text{a} ~|~ \dots ~|~ \text{z})~\Tidchar^\ast \\
+   \end{array}
+
+In this specification, the set of valid *keyword* tokens is defined implicitly, by their occurrence as a terminal symbols in literal form in the non-lexical grammar.
+All lexically valid keywords that do not occur in any grammar rule are considered reserved.
 
 Tokens are formed from the input character stream according to the *longest match* rule.
-That is, the next token always consists of the longest possible sequence of characters that is recognized as a token.
-
-Tokens may explicitly be separated by space, formatting characters or :ref:`comments <text-comment>`,
-collectively called :ref:`white space <text-space>`.
-Except for :ref:`string <text-string>` literals, white space cannot appear inside a token.
+That is, the next token always consists of the longest possible sequence of characters that is recognized by the above grammar.
+They may be separated by either brackets or by :ref:`white space <text-space>`.
 
 
 .. _text-space:
@@ -63,6 +69,8 @@ The allowed formatting characters correspond to a subset of the `ASCII <http://w
    \production{format} & \Tformat &::=&
      \unicode{09} ~|~ \unicode{0A} ~|~ \unicode{0D} \\
    \end{array}
+
+The only relevance of white space is to separate :ref:`tokens <text-token>`, it is ignored otherwise.
 
 
 .. _text-comment:

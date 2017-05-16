@@ -220,7 +220,7 @@ Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{$}`
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{identifier} & \Tid &::=&
-     \text{$}~(c{:}\Tidchar)^+ \\
+     \text{$}~\Tidchar^+ \\
    \production{identifier character} & \Tidchar &::=&
      \text{0} ~~|~~ \dots ~~|~~ \text{9} \\ &&|&
      \text{A} ~~|~~ \dots ~~|~~ \text{Z} \\ &&|&

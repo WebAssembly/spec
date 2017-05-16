@@ -45,6 +45,9 @@
 .. |Tspace| mathdef:: \xref{text/lexical}{text-space}{\T{space}}
 .. |Tformat| mathdef:: \xref{text/lexical}{text-format}{\T{format}}
 
+.. |Ttoken| mathdef:: \xref{text/lexical}{text-token}{\T{token}}
+.. |Tkeyword| mathdef:: \xref{text/lexical}{text-keyword}{\T{keyword}}
+
 .. |Tcomment| mathdef:: \xref{text/lexical}{text-comment}{\T{comment}}
 .. |Tlinecomment| mathdef:: \xref{text/lexical}{text-comment}{\T{linecomment}}
 .. |Tblockcomment| mathdef:: \xref{text/lexical}{text-comment}{\T{blockcomment}}

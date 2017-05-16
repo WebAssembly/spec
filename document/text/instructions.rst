@@ -218,6 +218,7 @@ Memory Instructions
 
 The offset and alignment immediates to memory instructions are optional.
 The offset defaults to :math:`\T{0}`, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
+Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword token <text-keyword>`, so no :ref:`white space <text-space>` is allowed around the :math:`\text{=}`.
 
 .. math::
    \begin{array}{llclll}
