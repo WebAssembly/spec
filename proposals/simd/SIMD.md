@@ -171,32 +171,6 @@ instruction is encoded with 16 immediate bytes which provide the bits of the
 vector directly. The boolean constants are encoded with one bit per lane such
 that lane 0 is the LSB of the first immediate byte.
 
-### Build vector from individual lanes
-* `b8x16.build(x: i32[16]) -> b8x16`
-* `b16x8.build(x: i32[8]) -> b16x8`
-* `b32x4.build(x: i32[4]) -> b32x4`
-* `b64x2.build(x: i32[2]) -> b64x2`
-* `i8x16.build(x: i32[16]) -> v128`
-* `i16x8.build(x: i32[8]) -> v128`
-* `i32x4.build(x: i32[4]) -> v128`
-* `i64x2.build(x: i64[2]) -> v128`
-* `f32x4.build(x: f32[4]) -> v128`
-* `f64x2.build(x: f64[2]) -> v128`
-
-Construct a vector from an array of individual lane values.
-
-```python
-def S.build(x):
-    result = S.New()
-    for i in range(S.Lanes):
-        result[i] = x[i]
-    return result
-```
-
-The `i32[16]` array notation is a shorthand for a sequence of identically typed
-arguments. So `b8x16.build` takes 16 `i32` arguments where a non-zero value is
-interpreted as true.
-
 ### Create vector with identical lanes
 * `b8x16.splat(x: i32) -> b8x16`
 * `b16x8.splat(x: i32) -> b16x8`
