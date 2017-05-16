@@ -37,7 +37,7 @@ Control Instructions
 
 .. math::
    \begin{array}{llclll}
-   \production{instructions} & \Binstr &::=&
+   \production{instruction} & \Binstr &::=&
      \hex{00} &\Rightarrow& \UNREACHABLE \\ &&|&
      \hex{01} &\Rightarrow& \NOP \\ &&|&
      \hex{02}~~\X{rt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
@@ -77,7 +77,7 @@ Parametric Instructions
 
 .. math::
    \begin{array}{llclll}
-   \production{instructions} & \Binstr &::=& \dots \\ &&|&
+   \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{1A} &\Rightarrow& \DROP \\ &&|&
      \hex{1B} &\Rightarrow& \SELECT \\
    \end{array}
@@ -101,7 +101,7 @@ Variable Instructions
 
 .. math::
    \begin{array}{llclll}
-   \production{instructions} & \Binstr &::=& \dots \\ &&|&
+   \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{20}~~x{:}\Blocalidx &\Rightarrow& \GETLOCAL~x \\ &&|&
      \hex{21}~~x{:}\Blocalidx &\Rightarrow& \SETLOCAL~x \\ &&|&
      \hex{22}~~x{:}\Blocalidx &\Rightarrow& \TEELOCAL~x \\ &&|&
@@ -131,9 +131,9 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 
 .. math::
    \begin{array}{llclll}
-   \production{memory arguments} & \Bmemarg &::=&
+   \production{memory argument} & \Bmemarg &::=&
      a{:}\Bu32~~o{:}\Bu32 &\Rightarrow& \{ \ALIGN~a,~\OFFSET~o \} \\
-   \production{instructions} & \Binstr &::=& \dots \\ &&|&
+   \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{28}~~m{:}\Bmemarg &\Rightarrow& \I32.\LOAD~m \\ &&|&
      \hex{29}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD~m \\ &&|&
      \hex{2A}~~m{:}\Bmemarg &\Rightarrow& \F32.\LOAD~m \\ &&|&
@@ -181,7 +181,7 @@ The |CONST| instructions are followed by the respective literal.
 
 .. math::
    \begin{array}{llclll}
-   \production{instructions} & \Binstr &::=& \dots \\&&|&
+   \production{instruction} & \Binstr &::=& \dots \\&&|&
      \hex{41}~~n{:}\Bi32 &\Rightarrow& \I32.\CONST~n \\ &&|&
      \hex{42}~~n{:}\Bi64 &\Rightarrow& \I64.\CONST~n \\ &&|&
      \hex{43}~~z{:}\Bf32 &\Rightarrow& \F32.\CONST~z \\ &&|&
@@ -195,7 +195,7 @@ All other numeric instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \production{instructions} & \Binstr &::=& \dots && \phantom{thisshouldbeenough} \\&&|&
+   \production{instruction} & \Binstr &::=& \dots && \phantom{thisshouldbeenough} \\&&|&
      \hex{45} &\Rightarrow& \I32.\EQZ \\ &&|&
      \hex{46} &\Rightarrow& \I32.\EQ \\ &&|&
      \hex{47} &\Rightarrow& \I32.\NE \\ &&|&
@@ -211,7 +211,7 @@ All other numeric instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{50} &\Rightarrow& \I64.\EQZ \\ &&|&
      \hex{51} &\Rightarrow& \I64.\EQ \\ &&|&
      \hex{52} &\Rightarrow& \I64.\NE \\ &&|&
@@ -227,7 +227,7 @@ All other numeric instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{5B} &\Rightarrow& \F32.\EQ \\ &&|&
      \hex{5C} &\Rightarrow& \F32.\NE \\ &&|&
      \hex{5D} &\Rightarrow& \F32.\LT \\ &&|&
@@ -238,7 +238,7 @@ All other numeric instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{61} &\Rightarrow& \F64.\EQ \\ &&|&
      \hex{62} &\Rightarrow& \F64.\NE \\ &&|&
      \hex{63} &\Rightarrow& \F64.\LT \\ &&|&
@@ -252,7 +252,7 @@ All other numeric instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{67} &\Rightarrow& \I32.\CLZ \\ &&|&
      \hex{68} &\Rightarrow& \I32.\CTZ \\ &&|&
      \hex{69} &\Rightarrow& \I32.\POPCNT \\ &&|&
@@ -275,7 +275,7 @@ All other numeric instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{79} &\Rightarrow& \I64.\CLZ \\ &&|&
      \hex{7A} &\Rightarrow& \I64.\CTZ \\ &&|&
      \hex{7B} &\Rightarrow& \I64.\POPCNT \\ &&|&
@@ -298,7 +298,7 @@ All other numeric instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{8B} &\Rightarrow& \F32.\ABS \\ &&|&
      \hex{8C} &\Rightarrow& \F32.\NEG \\ &&|&
      \hex{8D} &\Rightarrow& \F32.\CEIL \\ &&|&
@@ -317,7 +317,7 @@ All other numeric instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{99} &\Rightarrow& \F64.\ABS \\ &&|&
      \hex{9A} &\Rightarrow& \F64.\NEG \\ &&|&
      \hex{9B} &\Rightarrow& \F64.\CEIL \\ &&|&
@@ -338,7 +338,7 @@ All other numeric instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instructions}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
      \hex{A7} &\Rightarrow& \I32.\WRAP\K{/}\I64 \\ &&|&
      \hex{A8} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F32 \\ &&|&
      \hex{A9} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F32 \\ &&|&
@@ -380,6 +380,6 @@ Expressions
 
 .. math::
    \begin{array}{llclll}
-   \production{instructions} & \Bexpr &::=&
+   \production{expression} & \Bexpr &::=&
      (\X{in}{:}\Binstr)^\ast~~\hex{0B} &\Rightarrow& \X{in}^\ast~\END \\
    \end{array}
