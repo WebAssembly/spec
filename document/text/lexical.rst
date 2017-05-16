@@ -39,7 +39,8 @@ The character stream in the source text is divided, from left to right, into a s
 .. math::
    \begin{array}{llll}
    \production{token} & \Ttoken &::=&
-     \Tkeyword ~|~ \TuN ~|~ \TsN ~|~ \TfN ~|~ \Tstring ~|~ \Tid \\
+     \Tkeyword ~|~ \TuN ~|~ \TsN ~|~ \TfN ~|~ \Tstring ~|~ \Tid ~|~
+     \text{(} ~|~ \text{)} \\
    \production{keyword} & \Tkeyword &::=&
      (\text{a} ~|~ \dots ~|~ \text{z})~\Tidchar^\ast \\
    \end{array}
@@ -49,7 +50,7 @@ All lexically valid keywords that do not occur in any grammar rule are considere
 
 Tokens are formed from the input character stream according to the *longest match* rule.
 That is, the next token always consists of the longest possible sequence of characters that is recognized by the above grammar.
-They may be separated by either brackets or by :ref:`white space <text-space>`.
+Where necessary, tokens may be separated by :ref:`white space <text-space>`.
 
 
 .. _text-space:
