@@ -47,6 +47,7 @@
 
 .. |Ttoken| mathdef:: \xref{text/lexical}{text-token}{\T{token}}
 .. |Tkeyword| mathdef:: \xref{text/lexical}{text-keyword}{\T{keyword}}
+.. |Treserved| mathdef:: \xref{text/lexical}{text-reserved}{\T{reserved}}
 
 .. |Tcomment| mathdef:: \xref{text/lexical}{text-comment}{\T{comment}}
 .. |Tlinecomment| mathdef:: \xref{text/lexical}{text-comment}{\T{linecomment}}

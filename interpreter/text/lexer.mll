@@ -132,8 +132,8 @@ let float =
   | sign? "nan"
   | sign? "nan:" "0x" hexnum
 let text = '"' character* '"'
-let keyword = letter ([^'\"''('')'';'] # space)*  (* hack for table size *)
 let name = '$' (letter | digit | '_' | symbol)+
+let reserved = ([^'\"''('')'';'] # space)+  (* hack for table size *)
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -356,7 +356,7 @@ rule token = parse
   | '\n' { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
 
-  | keyword { error lexbuf "unknown operator" }
+  | reserved { error lexbuf "unknown operator" }
   | utf8 { error lexbuf "malformed operator" }
   | _ { error lexbuf "malformed UTF-8 encoding" }
 

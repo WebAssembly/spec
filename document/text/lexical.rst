@@ -40,13 +40,15 @@ The character stream in the source text is divided, from left to right, into a s
    \begin{array}{llll}
    \production{token} & \Ttoken &::=&
      \Tkeyword ~|~ \TuN ~|~ \TsN ~|~ \TfN ~|~ \Tstring ~|~ \Tid ~|~
-     \text{(} ~|~ \text{)} \\
+     \text{(} ~|~ \text{)} ~|~ \Treserved \\
    \production{keyword} & \Tkeyword &::=&
-     (\text{a} ~|~ \dots ~|~ \text{z})~\Tidchar^\ast \\
+     \mbox{(any terminal symbol in the grammar that is non of the above)} \\
+   \production{reserved} & \Treserved &::=&
+     \Tidchar^+ \\
    \end{array}
 
 In this specification, the set of valid *keyword* tokens is defined implicitly, by their occurrence as a terminal symbols in literal form in the non-lexical grammar.
-All lexically valid keywords that do not occur in any grammar rule are considered reserved.
+Any sequence of alphanumeric or symbolic characters that is not in the other classes is considered a *reserved word*.
 
 Tokens are formed from the input character stream according to the *longest match* rule.
 That is, the next token always consists of the longest possible sequence of characters that is recognized by the above grammar.
