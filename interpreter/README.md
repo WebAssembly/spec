@@ -75,7 +75,7 @@ You can call the executable with
 wasm [option | file ...]
 ```
 
-where `file`, depending on its extension, either should be an S-expression script file (see below) to be run, or a binary module file to be loaded.
+where `file`, depending on its extension, either should be a binary (`.wasm`) or textual (`.wat`) module file to be loaded, or a script file (`.wast`, see below) to be run.
 
 By default, the interpreter validates all modules.
 The `-u` option selects "unchecked mode", which skips validation and runs code as is.
@@ -86,8 +86,8 @@ Runtime type errors will be captured and reported appropriately.
 A file prefixed by `-o` is taken to be an output file. Depending on its extension, this will write out the preceding module definition in either S-expression or binary format. This option can be used to convert between the two in both directions, e.g.:
 
 ```
-wasm -d module.wast -o module.wasm
-wasm -d module.wasm -o module.wast
+wasm -d module.wat -o module.wasm
+wasm -d module.wasm -o module.wat
 ```
 
 In the second case, the produced script contains exactly one module definition.
@@ -119,10 +119,10 @@ wasm module.wasm -e '(invoke "foo")'
 
 #### Interactive Mode
 
-If neither a file nor any of the previous options is given, you'll land in the REPL and can enter script commands interactively. You can also get into the REPL by explicitly passing `-` as a file name. You can do that in combination to giving a module file, so that you can then invoke its exports interactively, e.g.:
+If neither a file nor any of the previous options is given, you'll land in the REPL and can enter script commands interactively. You can also get into the REPL by explicitly passing `-` as a file name. You can do that in combination to giving a module or script file, so that you can then invoke its exports interactively, e.g.:
 
 ```
-wasm module.wast -
+wasm module.wat -
 ```
 
 See `wasm -h` for (the few) additional options.
@@ -269,6 +269,8 @@ exkind:  ( func <var> )
 
 module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
          ( module <name>? <string>+ )
+         <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>?  ;; =
+         ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the AST below).
@@ -337,7 +339,7 @@ After a module is _registered_ under a string name it is available for importing
 There are also a number of meta commands.
 The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta are expanded in place (`input`, recursively) or elided (`output`) in the named script.
 
-The `input` and `output` meta commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a script where module definitions are in binary.
+The `input` and `output` meta commands determine the requested file format from the file name extension. They can handle both `.wasm`, `.wat`, and `.wast` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a script where module definitions are in binary.
 
 The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
 It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.

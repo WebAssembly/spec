@@ -18,17 +18,20 @@ let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 (* File types *)
 
 let binary_ext = "wasm"
-let binary_sexpr_ext = "bin.wast"
-let sexpr_ext = "wast"
+let sexpr_ext = "wat"
+let script_binary_ext = "bin.wast"
+let script_ext = "wast"
 let js_ext = "js"
 
-let dispatch_file_ext on_binary on_binary_sexpr on_sexpr on_js file =
+let dispatch_file_ext on_binary on_sexpr on_script_binary on_script on_js file =
   if Filename.check_suffix file binary_ext then
     on_binary file
-  else if Filename.check_suffix file binary_sexpr_ext then
-    on_binary_sexpr file
   else if Filename.check_suffix file sexpr_ext then
     on_sexpr file
+  else if Filename.check_suffix file script_binary_ext then
+    on_script_binary file
+  else if Filename.check_suffix file script_ext then
+    on_script file
   else if Filename.check_suffix file js_ext then
     on_js file
   else
@@ -47,7 +50,15 @@ let create_binary_file file _ get_module =
     close_out oc
   with exn -> close_out oc; raise exn
 
-let create_sexpr_file mode file get_script _ =
+let create_sexpr_file file _ get_module =
+  trace ("Writing (" ^ file ^ ")...");
+  let oc = open_out file in
+  try
+    Print.module_ oc !Flags.width (get_module ());
+    close_out oc
+  with exn -> close_out oc; raise exn
+
+let create_script_file mode file get_script _ =
   trace ("Writing (" ^ file ^ ")...");
   let oc = open_out file in
   try
@@ -68,8 +79,9 @@ let create_js_file file get_script _ =
 let output_file =
   dispatch_file_ext
     create_binary_file
-    (create_sexpr_file `Binary)
-    (create_sexpr_file `Textual)
+    create_sexpr_file
+    (create_script_file `Binary)
+    (create_script_file `Textual)
     create_js_file
 
 let output_stdout get_module =
@@ -104,21 +116,26 @@ let input_from get_script run =
   | Assert (at, msg) -> error at "assertion failure" msg
   | Abort _ -> false
 
-let input_sexpr name lexbuf start run =
+let input_script start name lexbuf run =
   input_from (fun _ -> Parse.parse name lexbuf start) run
+
+let input_sexpr name lexbuf run =
+  input_from (fun _ ->
+    let var_opt, def = Parse.parse name lexbuf Parse.Module in
+    [Module (var_opt, def) @@ no_region]) run
 
 let input_binary name buf run =
   let open Source in
   input_from (fun _ ->
     [Module (None, Encoded (name, buf) @@ no_region) @@ no_region]) run
 
-let input_sexpr_file file run =
+let input_sexpr_file input file run =
   trace ("Loading (" ^ file ^ ")...");
   let ic = open_in file in
   try
     let lexbuf = Lexing.from_channel ic in
     trace "Parsing...";
-    let success = input_sexpr file lexbuf Parse.Script run in
+    let success = input file lexbuf run in
     close_in ic;
     success
   with exn -> close_in ic; raise exn
@@ -142,8 +159,9 @@ let input_js_file file run =
 let input_file file run =
   dispatch_file_ext
     input_binary_file
-    input_sexpr_file
-    input_sexpr_file
+    (input_sexpr_file input_sexpr)
+    (input_sexpr_file (input_script Parse.Script))
+    (input_sexpr_file (input_script Parse.Script))
     input_js_file
     file run
 
@@ -151,7 +169,7 @@ let input_string string run =
   trace ("Running (\"" ^ String.escaped string ^ "\")...");
   let lexbuf = Lexing.from_string string in
   trace "Parsing...";
-  input_sexpr "string" lexbuf Parse.Script run
+  input_script Parse.Script "string" lexbuf run
 
 
 (* Interactive *)
@@ -175,7 +193,7 @@ let lexbuf_stdin buf len =
 let input_stdin run =
   let lexbuf = Lexing.from_function lexbuf_stdin in
   let rec loop () =
-    let success = input_sexpr "stdin" lexbuf Parse.Script1 run in
+    let success = input_script Parse.Script1 "stdin" lexbuf run in
     if not success then Lexing.flush_input lexbuf;
     if Lexing.(lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len - 1) then
       continuing := false;

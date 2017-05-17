@@ -193,7 +193,7 @@ let inline_type_explicit (c : context) x ty at =
 %start script script1 module1
 %type<Script.script> script
 %type<Script.script> script1
-%type<Script.definition> module1
+%type<Script.var option * Script.definition> module1
 
 %%
 
@@ -605,6 +605,9 @@ start :
 module_fields :
   | /* empty */
     { fun (c : context) -> {empty_module with types = c.types.tlist} }
+  | module_fields1 { $1 }
+
+module_fields1 :
   | type_def module_fields
     { fun c -> $1 c; $2 c }
   | global module_fields
@@ -657,6 +660,12 @@ module_ :
     { $3, Textual ($4 (empty_context ()) @@ at ()) @@ at () }
   | LPAR MODULE script_var_opt TEXT text_list RPAR
     { $3, Encoded ("binary", $4 ^ $5) @@ at() }
+
+inline_module :  /* Sugar */
+  | module_fields { Textual ($1 (empty_context ()) @@ at ()) @@ at () }
+
+inline_module1 :  /* Sugar */
+  | module_fields1 { Textual ($1 (empty_context ()) @@ at ()) @@ at () }
 
 
 /* Scripts */
@@ -712,10 +721,12 @@ const_list :
 
 script :
   | cmd_list EOF { $1 }
+  | inline_module1 EOF { [Module (None, $1) @@ at ()] }  /* Sugar */
 
 script1 :
   | cmd { [$1] }
 
 module1 :
-  | module_ EOF { snd $1 }
+  | module_ EOF { $1 }
+  | inline_module EOF { None, $1 }  /* Sugar */
 %%
