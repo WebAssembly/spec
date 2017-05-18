@@ -620,6 +620,13 @@
 (assert_return (invoke "f64.ceil" (f64.const 0x1.fffffffffffffp+51)) (f64.const 0x1p+52))
 (assert_return (invoke "f64.ceil" (f64.const -0x1.fffffffffffffp+51)) (f64.const -0x1.ffffffffffffep+51))
 
+;; Test that implementations don't do the x+0x1p52-0x1p52 trick outside the
+;; range where it's safe.
+(assert_return (invoke "f32.ceil" (f32.const 0x1.fffffep+23)) (f32.const 0x1.fffffep+23))
+(assert_return (invoke "f32.ceil" (f32.const -0x1.fffffep+23)) (f32.const -0x1.fffffep+23))
+(assert_return (invoke "f64.ceil" (f64.const 0x1.fffffffffffffp+52)) (f64.const 0x1.fffffffffffffp+52))
+(assert_return (invoke "f64.ceil" (f64.const -0x1.fffffffffffffp+52)) (f64.const -0x1.fffffffffffffp+52))
+
 ;; Test values close to -1.0.
 (assert_return (invoke "f32.floor" (f32.const -0x1.fffffep-1)) (f32.const -1.0))
 (assert_return (invoke "f32.floor" (f32.const -0x1.000002p+0)) (f32.const -2.0))
@@ -631,6 +638,11 @@
 (assert_return (invoke "f32.floor" (f32.const 0x1.fffffep+22)) (f32.const 0x1.fffffcp+22))
 (assert_return (invoke "f64.floor" (f64.const -0x1.fffffffffffffp+51)) (f64.const -0x1p+52))
 (assert_return (invoke "f64.floor" (f64.const 0x1.fffffffffffffp+51)) (f64.const 0x1.ffffffffffffep+51))
+
+;; Test that floor isn't implemented as XMVectorFloor.
+;; http://dss.stephanierct.com/DevBlog/?p=8#comment-4
+(assert_return (invoke "f32.floor" (f32.const 88607.0)) (f32.const 88607.0))
+(assert_return (invoke "f64.floor" (f64.const 88607.0)) (f64.const 88607.0))
 
 ;; Test the maximum and minimum value for which trunc is not an identity operator.
 (assert_return (invoke "f32.trunc" (f32.const -0x1.fffffep+22)) (f32.const -0x1.fffffcp+22))
