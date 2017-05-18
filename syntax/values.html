@@ -108,8 +108,8 @@
 In the abstract syntax they are represented as hexadecimal literals.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1744#1{{}}\mathdef1744{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
-  \def\mathdef1795#1{\mathtt{0x#1}}\mathdef1795{00} ~|~ \dots ~|~ \def\mathdef1796#1{\mathtt{0x#1}}\mathdef1796{FF} \\
+\def\mathdef1736#1{{}}\mathdef1736{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
+  \def\mathdef1787#1{\mathtt{0x#1}}\mathdef1787{00} ~|~ \dots ~|~ \def\mathdef1788#1{\mathtt{0x#1}}\mathdef1788{FF} \\
 \end{array}\end{split}\]</div>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
@@ -124,12 +124,12 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 <p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>size</em> and their <em>signedness</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1744#1{{}}\mathdef1744{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1748#1{{\mathit{u}#1}}\mathdef1748{N}} &amp;::=&amp;
+\def\mathdef1736#1{{}}\mathdef1736{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1740#1{{\mathit{u}#1}}\mathdef1740{N}} &amp;::=&amp;
   0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
-\def\mathdef1744#1{{}}\mathdef1744{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1754#1{{\mathit{s}#1}}\mathdef1754{N}} &amp;::=&amp;
+\def\mathdef1736#1{{}}\mathdef1736{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1746#1{{\mathit{s}#1}}\mathdef1746{N}} &amp;::=&amp;
   -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
-\def\mathdef1744#1{{}}\mathdef1744{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1759#1{{\mathit{i}#1}}\mathdef1759{N}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-int}{\def\mathdef1748#1{{\mathit{u}#1}}\mathdef1748{N}} \\
+\def\mathdef1736#1{{}}\mathdef1736{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1751#1{{\mathit{i}#1}}\mathdef1751{N}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-int}{\def\mathdef1740#1{{\mathit{u}#1}}\mathdef1740{N}} \\
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned.
@@ -147,7 +147,7 @@ However, some operations <a class="reference internal" href="../execution/numeri
 <p><em>Floating-point</em> data consists of values in binary floating-point format according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1744#1{{}}\mathdef1744{floating-point number} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1762#1{{\mathit{f}#1}}\mathdef1762{N}} &amp;::=&amp;
+\def\mathdef1736#1{{}}\mathdef1736{floating-point number} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1754#1{{\mathit{f}#1}}\mathdef1754{N}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-byte}{\mathit{byte}}^{N/8} \\
 \end{array}\end{split}\]</div>
 <p>The two possible sizes <span class="math">\(N\)</span> are 32 and 64.</p>
@@ -159,7 +159,7 @@ where the <span class="math">\(A\)</span>-s can either be values or complex cons
 A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
 <div class="math">
 \[\begin{split}\begin{array}{lllll}
-\def\mathdef1744#1{{}}\mathdef1744{vector} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
+\def\mathdef1736#1{{}}\mathdef1736{vector} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
   A^n
   &amp; (n &lt; 2^{32})\\
 \end{array}\end{split}\]</div>
@@ -169,11 +169,11 @@ A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
 <p><em>Names</em> are sequences of <em>scalar</em> <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> <em>code points</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\def\mathdef1744#1{{}}\mathdef1744{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
+\def\mathdef1736#1{{}}\mathdef1736{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast &amp; (|\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(\href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast)| &lt; 2^{32}) \\
-\def\mathdef1744#1{{}}\mathdef1744{code point} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
-  \def\mathdef1797#1{\mathrm{U{+}#1}}\mathdef1797{0000} ~|~ \dots ~|~ \def\mathdef1798#1{\mathrm{U{+}#1}}\mathdef1798{D7FF} ~|~
-  \def\mathdef1799#1{\mathrm{U{+}#1}}\mathdef1799{E000} ~|~ \dots ~|~ \def\mathdef1800#1{\mathrm{U{+}#1}}\mathdef1800{10FFFF} \\
+\def\mathdef1736#1{{}}\mathdef1736{code point} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
+  \def\mathdef1789#1{\mathrm{U{+}#1}}\mathdef1789{0000} ~|~ \dots ~|~ \def\mathdef1790#1{\mathrm{U{+}#1}}\mathdef1790{D7FF} ~|~
+  \def\mathdef1791#1{\mathrm{U{+}#1}}\mathdef1791{E000} ~|~ \dots ~|~ \def\mathdef1792#1{\mathrm{U{+}#1}}\mathdef1792{10FFFF} \\
 \end{array}\end{split}\]</div>
 <p>Due to the limitations of the <a class="reference internal" href="../binary/values.html#binary-name"><span class="std std-ref">binary format</span></a>,
 the lengths of a name is bounded by the length of its <a class="reference external" href="http://www.unicode.org/versions/latest/">UTF-8</a> encoding.
@@ -181,10 +181,10 @@ The auxiliary <span class="math">\(\href{../syntax/values.html#syntax-utf8}{\mat
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 \href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c^\ast) &amp;=&amp; (\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c))^\ast \\[1ex]
-\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b &amp; (c &lt; \def\mathdef1801#1{\mathrm{U{+}#1}}\mathdef1801{80} \wedge c = b) \\
-\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2 &amp; (\def\mathdef1802#1{\mathrm{U{+}#1}}\mathdef1802{80} \leq c &lt; \def\mathdef1803#1{\mathrm{U{+}#1}}\mathdef1803{800} \wedge c = 2^6\cdot(b_1-\def\mathdef1804#1{\mathtt{0x#1}}\mathdef1804{C0})+(b_2-\def\mathdef1805#1{\mathtt{0x#1}}\mathdef1805{80})) \\
-\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2~b_3 &amp; (\def\mathdef1806#1{\mathrm{U{+}#1}}\mathdef1806{800} \leq c &lt; \def\mathdef1807#1{\mathrm{U{+}#1}}\mathdef1807{10000} \wedge c = 2^{12}\cdot(b_1-\def\mathdef1808#1{\mathtt{0x#1}}\mathdef1808{C0})+2^6\cdot(b_2-\def\mathdef1809#1{\mathtt{0x#1}}\mathdef1809{80})+(b_3-\def\mathdef1810#1{\mathtt{0x#1}}\mathdef1810{80})) \\
-\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2~b_3~b_4 &amp; (\def\mathdef1811#1{\mathrm{U{+}#1}}\mathdef1811{10000} \leq c &lt; \def\mathdef1812#1{\mathrm{U{+}#1}}\mathdef1812{110000} \wedge c = 2^{18}\cdot(b_1-\def\mathdef1813#1{\mathtt{0x#1}}\mathdef1813{C0})+2^{12}\cdot(b_2-\def\mathdef1814#1{\mathtt{0x#1}}\mathdef1814{80})+2^6\cdot(b_3-\def\mathdef1815#1{\mathtt{0x#1}}\mathdef1815{80})+(b_4-\def\mathdef1816#1{\mathtt{0x#1}}\mathdef1816{80})) \\
+\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b &amp; (c &lt; \def\mathdef1793#1{\mathrm{U{+}#1}}\mathdef1793{80} \wedge c = b) \\
+\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2 &amp; (\def\mathdef1794#1{\mathrm{U{+}#1}}\mathdef1794{80} \leq c &lt; \def\mathdef1795#1{\mathrm{U{+}#1}}\mathdef1795{800} \wedge c = 2^6\cdot(b_1-\def\mathdef1796#1{\mathtt{0x#1}}\mathdef1796{C0})+(b_2-\def\mathdef1797#1{\mathtt{0x#1}}\mathdef1797{80})) \\
+\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2~b_3 &amp; (\def\mathdef1798#1{\mathrm{U{+}#1}}\mathdef1798{800} \leq c &lt; \def\mathdef1799#1{\mathrm{U{+}#1}}\mathdef1799{10000} \wedge c = 2^{12}\cdot(b_1-\def\mathdef1800#1{\mathtt{0x#1}}\mathdef1800{C0})+2^6\cdot(b_2-\def\mathdef1801#1{\mathtt{0x#1}}\mathdef1801{80})+(b_3-\def\mathdef1802#1{\mathtt{0x#1}}\mathdef1802{80})) \\
+\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2~b_3~b_4 &amp; (\def\mathdef1803#1{\mathrm{U{+}#1}}\mathdef1803{10000} \leq c &lt; \def\mathdef1804#1{\mathrm{U{+}#1}}\mathdef1804{110000} \wedge c = 2^{18}\cdot(b_1-\def\mathdef1805#1{\mathtt{0x#1}}\mathdef1805{C0})+2^{12}\cdot(b_2-\def\mathdef1806#1{\mathtt{0x#1}}\mathdef1806{80})+2^6\cdot(b_3-\def\mathdef1807#1{\mathtt{0x#1}}\mathdef1807{80})+(b_4-\def\mathdef1808#1{\mathtt{0x#1}}\mathdef1808{80})) \\
 \end{array}\end{split}\]</div>
 <div class="section" id="convention">
 <h3>Convention<a class="headerlink" href="#convention" title="Permalink to this headline">¶</a></h3>
