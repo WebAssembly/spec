@@ -416,6 +416,13 @@
 .. |stepto| mathdef:: \hookrightarrow
 .. |mod| mathdef:: \mathbin{\F{mod}}
 
+.. |allocfunc| mathdef:: \xref{execution/modules}{alloc-func}{\F{allocfunc}}
+.. |alloctable| mathdef:: \xref{execution/modules}{alloc-table}{\F{alloctable}}
+.. |allocmem| mathdef:: \xref{execution/modules}{alloc-mem}{\F{allocmem}}
+.. |allocglobal| mathdef:: \xref{execution/modules}{alloc-global}{\F{allocglobal}}
+.. |allocmodule| mathdef:: \xref{execution/modules}{alloc-module}{\F{allocmodule}}
+
+
 .. Numerics, meta functions
 
 .. |bytes| mathdef:: \xref{execution/numerics}{aux-bytes}{\F{bytes}}
