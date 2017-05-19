@@ -127,4 +127,4 @@ then it may terminate that computation by causing a trap or reporting an embedde
 Some of the above limits may already be verified during instantiation, in which case an implementation may report exceedance in the same manner as for :ref:`syntactic limits <impl-syntax>`.
 
 .. note::
-   Concrete limits are usually not fixed but may be dependent on specifics, interdependent, vary over time, or depend on other implementation- or embedder-specific variables.
+   Concrete limits are usually not fixed but may be dependent on specifics, interdependent, vary over time, or depend on other implementation- or embedder-specific situations or events.
