@@ -1,5 +1,5 @@
-Appendix: Validation Algorithm
-------------------------------
+Validation Algorithm
+--------------------
 
 .. todo::
 
