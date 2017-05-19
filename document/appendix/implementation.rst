@@ -53,6 +53,9 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the length of a :ref:`name <syntax-name>`
 * the range of :ref:`code points <syntax-codepoint>` in a :ref:`name <syntax-name>`
 
+If the limits of an implementation are exceeded for a given module,
+then the implementation may reject the :ref:`instantiation <exec-instantiate>` of that module with an embedder-specific error.
+
 
 .. _impl-binary:
 .. index:: binary format, module, section, function, code
@@ -91,7 +94,8 @@ Validation
 ~~~~~~~~~~
 
 An implementation may defer :ref:`validation <valid>` of individual :ref:`functions <syntax-func>` until they are first :ref:`invoked <exec-invoke>`.
-If a function turns out to be invalid, the invocation, and every consecutive call to the same function, results in a :ref:`trap <trap>`.
+
+If a function turns out to be invalid, then the invocation, and every consecutive call to the same function, results in a :ref:`trap <trap>`.
 
 .. note::
    This is to allow implementations to use interpretation or just-in-time compilation for functions.
@@ -116,6 +120,11 @@ Restrictions on the following dimensions may be imposed during :ref:`execution <
 * the number of :ref:`frames <syntax-frame>` on the :ref:`stack <syntax-stack>`
 * the number of :ref:`labels <syntax-label>` on the :ref:`stack <syntax-stack>`
 * the number of :ref:`values <syntax-val>` on the :ref:`stack <syntax-stack>`
+
+If the runtime limits of an implementation are exceeded during execution of a computation,
+then it may terminate that computation by causing a trap or reporting an embedder-specific error to the invoking code.
+
+Some of the above limits may already be verified during instantiation, in which case an implementation may report exceedance in the same manner as for :ref:`syntactic limits <impl-syntax>`.
 
 .. note::
    Concrete limits are usually not fixed but may be dependent on specifics, interdependent, vary over time, or depend on other implementation- or embedder-specific variables.
