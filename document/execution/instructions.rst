@@ -1045,18 +1045,33 @@ When the end of a funtion is reached without a jump (|RETURN|) or trap aborting 
    single: abstract syntax; expression
    single: expression; constant
 
-Expressions
-~~~~~~~~~~~
+Constant Expressions
+~~~~~~~~~~~~~~~~~~~~
 
-:math:`\instr^\ast~\END`
-........................
+A :ref:`constant expression <syntax-expr>` is *evaluated* relative to its containing :ref:`module instance <syntax-modinst>` :math:`\moduleinst`.
+To evaluate it, the instruction sequence is entered as follows:
 
-.. todo::
-   Define
+1. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \MODULE~\moduleinst, \LOCALS~\epsilon \}`.
+
+2. Push :math:`F` to the stack.
+
+3. :ref:`Jump <exec-jump>` to the start of the instruction sequence :math:`\instr^\ast` of the instruction.
+
+Once execution of the instruction sequence is complete, it is exited as follows:
+
+1. Assert: due to :ref:`validation <valid-constant>`, the instruction sequence is terminated without a trap, leaving a single value and the original frame on the stack.
+
+2. Pop the result :math:`\val` from the stack.
+
+3. Pop the frame from the stack.
+
+The value :math:`\val` is returned.
 
 .. math::
    \frac{
-     S; F; \instr^\ast \stepto^\ast S; F; v
+     F = \{ \MODULE~\moduleinst, \LOCALS~\epsilon \}
+     \qquad
+     S; F; \instr^\ast \stepto^\ast S'; F; v
    }{
-     S; F; \instr^\ast~\END \stepto^\ast S; F; v
+     S; \instr^\ast~\END \stepto^\ast S'; v
    }

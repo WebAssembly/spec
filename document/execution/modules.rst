@@ -8,8 +8,8 @@ External Typing
 ~~~~~~~~~~~~~~~
 
 For the purpose of checking :ref:`external values <syntax-externval>` against :ref:`imports <syntax-import>`,
-such values are classified by :ref:`external types <syntax-externtype>` via auxiliary typing rules.
-These typing rules are specified relative to a :ref:`store <syntax-store>` :math:`S` in which the external value lives.
+such values are classified by :ref:`external types <syntax-externtype>`.
+The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which the external value lives.
 
 :math:`\FUNC~a`
 ...............
@@ -29,13 +29,13 @@ These typing rules are specified relative to a :ref:`store <syntax-store>` :math
 :math:`\TABLE~a`
 ................
 
-* The store entry :math:`S.\TABLES[a]` must be a :ref:`table instance <syntax-tableinst>` :math:`\{\ELEM~(a^?)^n, \MAX~m^?\}`.
+* The store entry :math:`S.\TABLES[a]` must be a :ref:`table instance <syntax-tableinst>` :math:`\{\ELEM~(\X{fa}^?)^n, \MAX~m^?\}`.
 
 * Then :math:`\TABLE~a` is valid with :ref:`external type <syntax-externtype>` :math:`\TABLE~(\{\MIN~n, \MAX~m^?\}~\ANYFUNC)`.
 
 .. math::
    \frac{
-     S.\TABLES[a] = \{ \ELEM~(a^?)^n, \MAX~m^? \}
+     S.\TABLES[a] = \{ \ELEM~(\X{fa}^?)^n, \MAX~m^? \}
    }{
      S \vdash \TABLE~a : \TABLE~(\{\MIN~n, \MAX~m^?\}~\ANYFUNC)
    }
@@ -216,7 +216,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 1. Let :math:`\table` be the :ref:`table <syntax-table>` to allocate.
 
-2. Let :math:`\{\MIN~n, \MAX~m^?\}~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`\table.\TYPE`.
+2. Let :math:`(\{\MIN~n, \MAX~m^?\}~\elemtype)` be the :ref:`table type <syntax-tabletype>` :math:`\table.\TYPE`.
 
 3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
 
@@ -299,41 +299,39 @@ The allocation function for :ref:`modules <syntax-module>` requires a suitable l
 
 1. Let :math:`\module` be the :ref:`module <syntax-module>` to allocate and :math:`\externval_{\F{im}}^\ast` the vector of :ref:`external values <syntax-externval>` providing the module's imports.
 
-2. Let :math:`\funcaddr_{\F{mod}}^\ast` be the list of :ref:`function addresses <syntax-funcaddr>` extracted from :math:`\externval_{\F{im}}^\ast`.
-
-3. Let :math:`\tableaddr_{\F{mod}}^\ast` be the list of :ref:`table addresses <syntax-tableaddr>` extracted from :math:`\externval_{\F{im}}^\ast`.
-
-4. Let :math:`\memaddr_{\F{mod}}^\ast` be the list of :ref:`memory addresses <syntax-memaddr>` extracted from :math:`\externval_{\F{im}}^\ast`.
-
-5. Let :math:`\globaladdr_{\F{mod}}^\ast` be the list of :ref:`global addresses <syntax-globaladdr>` extracted from :math:`\externval_{\F{im}}^\ast`.
-
-6. For each :ref:`function <syntax-func>` :math:`\func_i` in :math:`\module.\FUNCS`, do:
+2. For each :ref:`function <syntax-func>` :math:`\func_i` in :math:`\module.\FUNCS`, do:
 
    a. Let :math:`\funcaddr_i` be the :ref:`function address <syntax-funcaddr>` resulting from :ref:`allocating <alloc-func>` :math:`\func_i` for the :ref:`\module instance <syntax-moduleinst>` :math:`\moduleinst` defined below.
 
-   b. Append :math:`\funcaddr_i` to :math:`\funcaddr_{\F{mod}}^\ast`.
-
-7. For each :ref:`table <syntax-table>` :math:`\table_i` in :math:`\module.\TABLES`, do:
+3. For each :ref:`table <syntax-table>` :math:`\table_i` in :math:`\module.\TABLES`, do:
 
    a. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` resulting from :ref:`allocating <alloc-table>` :math:`\table_i`.
 
-   b. Append :math:`\tableaddr_i` to :math:`\tableaddr_{\F{mod}}^\ast`.
-
-8. For each :ref:`memory <syntax-mem>` :math:`\mem_i` in :math:`\module.\MEMS`, do:
+4. For each :ref:`memory <syntax-mem>` :math:`\mem_i` in :math:`\module.\MEMS`, do:
 
    a. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` resulting from :ref:`allocating <alloc-mem>` :math:`\mem_i`.
 
-   b. Append :math:`\memaddr_i` to :math:`\memaddr_{\F{mod}}^\ast`.
-
-9. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\GLOBALS`, do:
+5. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\GLOBALS`, do:
 
    a. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` resulting from :ref:`allocating <alloc-global>` :math:`\global_i`.
 
-   b. Append :math:`\globaladdr_i` to :math:`\globaladdr_{\F{mod}}^\ast`.
+6. Let :math:`\funcaddr^\ast` be the the concatenation of the :ref:`function addresses <syntax-funcaddr>` :math:`\funcaddr_i` in index order.
 
-10. Let :math:`\exportinst^\ast` be an empty list of :ref:`export instances <syntax-exportinst>`
+7. Let :math:`\tableaddr^\ast` be the the concatenation of the :ref:`table addresses <syntax-tableaddr>` :math:`\tableaddr_i` in index order.
 
-11. For each :ref:`export <syntax-export>` :math:`\export_i` in :math:`\module.\EXPORTS`, do:
+8. Let :math:`\memaddr^\ast` be the the concatenation of the :ref:`memory addresses <syntax-memaddr>` :math:`\memaddr_i` in index order.
+
+9. Let :math:`\globaladdr^\ast` be the the concatenation of the :ref:`global addresses <syntax-globaladdr>` :math:`\globaladdr_i` in index order.
+
+10. Let :math:`\funcaddr_{\F{mod}}^\ast` be the list of :ref:`function addresses <syntax-funcaddr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\funcaddr^\ast`.
+
+11. Let :math:`\tableaddr_{\F{mod}}^\ast` be the list of :ref:`table addresses <syntax-tableaddr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\tableaddr^\ast`.
+
+12. Let :math:`\memaddr_{\F{mod}}^\ast` be the list of :ref:`memory addresses <syntax-memaddr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\memaddr^\ast`.
+
+13. Let :math:`\globaladdr_{\F{mod}}^\ast` be the list of :ref:`global addresses <syntax-globaladdr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\globaladdr^\ast`.
+
+14. For each :ref:`export <syntax-export>` :math:`\export_i` in :math:`\module.\EXPORTS`, do:
 
     a. If :math:`\export_i` is a function export for :ref:`function index <syntax-funcidx>` :math:`x`, then let :math:`\externval_i` be the :ref:`external value <syntax-externval>` :math:`\FUNC~(\funcaddr_{\F{mod}}^\ast[x])`.
 
@@ -345,11 +343,11 @@ The allocation function for :ref:`modules <syntax-module>` requires a suitable l
 
     e. Let :math:`\exportinst_i` be the :ref:`export instance <syntax-exportinst>` :math:`\{\NAME~(\export_i.\NAME), \VALUE~\externval_i\}`.
 
-    f. Append :math:`\exportinst_i` to :math:`\exportinst^\ast`.
+15. Let :math:`\exportinst^\ast` be the the concatenation of the :ref:`export instances <syntax-exportinst>` :math:`\exportinst_i` in index order.
 
-12. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\TYPES~(\module.\TYPES), \FUNCS~\funcaddr_{\F{mod}}^\ast, \TABLES~\tableaddr_{\F{mod}}^\ast, \MEMS~\memaddr_{\F{mod}}^\ast, \GLOBALS~\globaladdr_{\F{mod}}^\ast, \EXPORTS~\exportinst^\ast\}`.
+16. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\TYPES~(\module.\TYPES),` :math:`\FUNCS~\funcaddr_{\F{mod}}^\ast,` :math:`\TABLES~\tableaddr_{\F{mod}}^\ast,` :math:`\MEMS~\memaddr_{\F{mod}}^\ast,` :math:`\GLOBALS~\globaladdr_{\F{mod}}^\ast,` :math:`\EXPORTS~\exportinst^\ast\}`.
 
-6. Return :math:`\moduleinst`.
+17. Return :math:`\moduleinst`.
 
 
 .. math::
@@ -409,7 +407,117 @@ Here, the notation :math:`\F{allocX}^\ast` is shorthand for multiple :ref:`alloc
 Instantiation
 ~~~~~~~~~~~~~
 
-Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>` :math:`m` is instantiated with a list of :ref:`external values <syntax-externval>` :math:`\externval^\ast` supplying the required imports as follows.
+Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :math:`\module` is instantiated with a list of :ref:`external values <syntax-externval>` :math:`\externval^n` supplying the required imports as follows.
+Instantiation may *fail* with an error.
+
+1. If :math:`\module` is not :ref:`valid <valid-module>`, then:
+
+   a. Fail.
+
+2. Assert: :math:`\module` is :ref:`valid <valid-module>` with :ref:`external types <syntax-externtype>` :math:`\externtype^m` classifying its :ref:`imports <syntax-import>`.
+
+3. If the number :math:`m` of :ref:`imports <syntax-import>` is not equal to the number :math:`n` of provided :ref:`external values <syntax-externval>`, then:
+
+   a. Fail.
+
+4. For each :ref:`external value <syntax-externval>` :math:`\externval_i` in :math:`\externval^n` and :ref:`external type <syntax-externtype>` :math:`\externtype_i` in :math:`\externtype^n`, do:
+
+   a. If :math:`\externval_i` is not valid in store :math:`S` with :math:`\externtype_i`, then:
+
+      i. Fail.
+
+5. Let :math:`\moduleinst` be a new module instance :ref:`allocated <alloc-module>` from :math:`\module` in store :math:`S`.
+
+6. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\ELEM`, do:
+
+   a. Let :math:`\X{eoval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\elem_i.\OFFSET`.
+
+   b. Assert: due to :ref:`validation <valid-elem>`, :math:`\X{eoval}_i` is of the form :math:`\I32.\CONST~\X{eo}_i`.
+
+   c. Let :math:`\tableidx_i` be the :ref:`table index <syntax-tableidx>` :math:`\elem_i.\TABLE`.
+
+   d. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\TABLES[\tableidx_i]` exists.
+
+   e. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` :math:`\moduleinst.\TABLES[\tableidx_i]`.
+
+   f. Assert: due to :ref:`validation <valid-elem>`, :math:`S.\TABLES[\tableaddr_i]` exists.
+
+   g. Let :math:`\tableinst_i` be the :ref:`table instance <syntax-tableinst>` :math:`S.\TABLES[\tableaddr_i]`.
+
+   h. Let :math:`\X{elen}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\INIT`.
+
+   i. If :math:`\X{elen}_i` is larger than the length of :math:`\tableinst_i.\ELEM`, then:
+
+      i. Fail.
+
+   j. For each :ref:`function index <syntax-funcidx>` :math:`\funcidx_{ij}` in :math:`\elem_i.\INIT`, do:
+
+      i. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\FUNCS[\funcidx_{ij}]` exists.
+
+      ii. Let :math:`\funcaddr_{ij}` be the :ref:`function address <func-addr>` :math:`\moduleinst.\FUNCS[\funcidx_{ij}]`.
+
+   k. Let :math:`\funcaddr_i^\ast` be the concatenation of the :ref:`function addresses <func-addr>` :math:`\funcaddr_{ij}` in the order of index :math:`j`.
+
+7. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\DATA`, do:
+
+   a. Let :math:`\X{doval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\data_i.\OFFSET`.
+
+   b. Assert: due to :ref:`validation <valid-data>`, :math:`\X{doval}_i` is of the form :math:`\I32.\CONST~\X{do}_i`.
+
+   c. Let :math:`\memidx_i` be the :ref:`memory index <syntax-memidx>` :math:`\data_i.\MEM`.
+
+   d. Assert: due to :ref:`validation <valid-data>`, :math:`\moduleinst.\MEMS[\memidx_i]` exists.
+
+   e. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` :math:`\moduleinst.\MEMS[\memidx_i]`.
+
+   f. Assert: due to :ref:`validation <valid-data>`, :math:`S.\MEMS[\memaddr_i]` exists.
+
+   g. Let :math:`\meminst_i` be the :ref:`memory instance <syntax-meminst>` :math:`S.\MEMS[\memaddr_i]`.
+
+   h. Let :math:`\X{dlen}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\INIT`.
+
+   i. If :math:`\X{dlen}_i` is larger than the length of :math:`\meminst_i.\DATA`, then:
+
+      i. Fail.
+
+   j. Let :math:`b_i^\ast` be the byte sequence :math:`\data_i.\INIT`.
+
+8. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\ELEM`, do:
+
+   a. Replace :math:`\tableinst_i.\ELEM[\X{eo}_i : |\funcidx_i^\ast|]` with :math:`\funcidx_i^\ast`.
+
+9. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\DATA`, do:
+
+   a. Replace :math:`\meminst_i.\DATA[\X{do}_i : |b_i^\ast|]` with :math:`b_i^\ast`.
+
+10. Let :math:`\globalidx_{\F{new}}` be the :ref:`global index <syntax-globalidx>` that corresponds to the number of global :ref:`imports <syntax-import>` in :math:`\module.\IMPORTS` (i.e., the index of the first non-imported global).
+
+11. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\GLOBALS`, do:
+
+    a. Let :math:`\val_i` be the result of :ref:`evaluating <exec-expr>` the initializer expression :math:`\global_i.\INIT`.
+
+    b. Let :math:`\globalidx_i` be the :ref:`global index <syntax-globalidx>` :math:`\globalidx_{\F{new}} + i`.
+
+    c. Assert: due to :ref:`validation <valid-global>`, :math:`\moduleinst.\GLOBALS[\globalidx_i]` exists.
+
+    d. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` :math:`\moduleinst.\GLOBALS[\globalidx_i]`.
+
+    e. Assert: due to :ref:`validation <valid-global>`, :math:`S.\GLOBALS[\globaladdr_i]` exists.
+
+    f. Let :math:`\globalinst_i` be the :ref:`global instance <syntax-globalinst>` :math:`S.\GLOBALS[\globaladdr_i]`.
+
+    h. Replace :math:`\globalinst_i.\VALUE` with :math:`\val_i`.
+
+12. If the :ref:`start function <sytnax-start>` :math:`\module.\START` is not empty, then:
+
+    a. Assert: due to :ref:`validation <valid-start>`, :math:`\moduleinst.\FUNCS[\module.\START]` exists.
+
+    b. Let :math:`\funcaddr` be the :ref:`function address <func-addr>` :math:`\moduleinst.\FUNCS[\module.\START]`.
+
+    c. :ref:`Invoke <exec-invoke>` the function instance at :math:`\funcaddr`.
+
+.. note::
+   All failure conditions are checked before any observable mutation of the store takes place.
 
 .. todo::
    Work in progress
@@ -426,7 +534,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
      \module.\IMPORTS = \externtype^n
      \qquad
      \module.\GLOBALS = \global^\ast
-     \qquad
+     \\
      \module.\ELEM = \elem^\ast
      \qquad
      \module.\DATA = \data^\ast
@@ -436,24 +544,24 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
      (\vdash \externval : \externtype)^n
      \qquad
      \F{allocmodule}(S, \module, \externval^n) = S', \moduleinst
-     \qquad
-     F = \{ \MODULE~\moduleinst, \LOCALS~\epsilon \}
      \\
-     (S'; F; \global.\INIT \stepto^\ast v)^\ast
+     F = \{ \MODULE~\moduleinst, \LOCALS~\epsilon \}
      \qquad
+     (S'; F; \global.\INIT \stepto^\ast v)^\ast
+     \\
      (S'; F; \elem.\OFFSET \stepto^\ast \I32.\CONST~\X{eo})^\ast
      \qquad
      (S'; F; \data.\OFFSET \stepto^\ast \I32.\CONST~\X{do})^\ast
      \\
      (\globalidx = i + |\moduleinst.\GLOBALS| - |\module.\GLOBALS|)_i^\ast
-     \qquad
+     \\
      (\globaladdr = \moduleinst.\GLOBALS[\globalidx])^\ast
      \\
      (\tableaddr = \moduleinst.\TABLES[\elem.\TABLE])^\ast
      \qquad
      (\globaladdr = \moduleinst.\MEMS[\data.\MEM])^\ast
-     \qquad
-     (\funcinst = \moduleinst.\FUNCS[\start.\FUNC])^?
+     \\
+     (\funcaddr = \moduleinst.\FUNCS[\start.\FUNC])^?
      \\
      (\X{eo} + |\elem.\INIT| \leq |S'.\TABLES[\tableaddr]|)^\ast
      \qquad
@@ -465,7 +573,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
        (\INITGLOBAL~\globaladdr~v)^\ast \\
        (\INITTABLE~\tableaddr~\X{eo}~\moduleinst~\elem.\INIT)^\ast \\
        (\INITMEM~\memaddr~\X{do}~\data.\INIT)^\ast \\
-       (\INVOKE~\funcinst)^? \\
+       (\INVOKE~\funcaddr)^? \\
        \moduleinst \\
        \end{array}
    }

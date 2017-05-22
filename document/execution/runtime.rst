@@ -295,41 +295,6 @@ It filters out entries of a specific kind in an order-preserving fashion:
    \end{array}
 
 
-.. _syntax-externtype:
-.. index:: ! external type, function type, table type, memory type, global type
-   pair: abstract syntax; external type
-   pair: external; type
-
-External Types
-~~~~~~~~~~~~~~
-
-*External types* classify :ref:`external values <syntax-externval>`, and thereby imports and exports, with their respective types.
-
-.. math::
-   \begin{array}{llll}
-   \production{external types} & \externtype &::=&
-     \FUNC~\functype ~|~
-     \TABLE~\tabletype ~|~
-     \MEM~\memtype ~|~
-     \GLOBAL~\globaltype \\
-   \end{array}
-
-
-Conventions
-...........
-
-The following auxiliary notation is defined for sequences of external types.
-It filters out entries of a specific kind in an order-preserving fashion:
-
-.. math::
-   \begin{array}{lcl}
-   \funcs(\externtype^\ast) &=& [\functype ~|~ (\FUNC~\functype) \in \externtype^\ast] \\
-   \tables(\externtype^\ast) &=& [\tabletype ~|~ (\TABLE~\tabletype) \in \externtype^\ast] \\
-   \mems(\externtype^\ast) &=& [\memtype ~|~ (\MEM~\memtype) \in \externtype^\ast] \\
-   \globals(\externtype^\ast) &=& [\globaltype ~|~ (\GLOBAL~\globaltype) \in \externtype^\ast] \\
-   \end{array}
-
-
 .. _stack:
 .. _frame:
 .. _label:

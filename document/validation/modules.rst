@@ -525,6 +525,10 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
 * All export names :math:`\name_i` must be different.
 
+* Let :math:`\externtype^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\externtype_i` of the imports, in index order.
+
+* Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\externtype^\ast`.
+
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
@@ -576,7 +580,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
          \DATA~\data^\ast,
          \START~\start^?,
          \IMPORTS~\import^\ast,
-         \EXPORTS~\export^\ast \} ~\F{ok} \\
+         \EXPORTS~\export^\ast \} : \X{it}^\ast \\
        \end{array}
    }
 
