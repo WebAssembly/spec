@@ -40,13 +40,13 @@ All :ref:`indices <syntax-index>` are encoded with their respective |U32| value.
 
 .. math::
    \begin{array}{llclll}
-   \production{type indices} & \Btypeidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{function indices} & \Bfuncidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{table indices} & \Btableidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{memory indices} & \Bmemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{global indices} & \Bglobalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{local indices} & \Blocalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{label indices} & \Blabelidx &::=& l{:}\Bu32 &\Rightarrow& l \\
+   \production{type index} & \Btypeidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{function index} & \Bfuncidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{table index} & \Btableidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{memory index} & \Bmemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{global index} & \Bglobalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{local index} & \Blocalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{label index} & \Blabelidx &::=& l{:}\Bu32 &\Rightarrow& l \\
    \end{array}
 
 
@@ -69,7 +69,7 @@ The following parameterized grammar rule defines the generic structure of a sect
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
-   \production{sections} & \Bsection_N(\B{B}) &::=&
+   \production{section} & \Bsection_N(\B{B}) &::=&
      N{:}\Bbyte~~\X{size}{:}\Bu32~~\X{cont}{:}\B{B}
        &\Rightarrow& \X{cont} & (\X{size} = ||\B{B}||) \\ &&|&
      \epsilon &\Rightarrow& \epsilon
@@ -98,7 +98,7 @@ Their contents consist of a :ref:`name <syntax-name>` further identifying the cu
 
 .. math::
    \begin{array}{llclll}
-   \production{custom sections} & \Bcustomsec &::=&
+   \production{custom section} & \Bcustomsec &::=&
      \Bsection_0(\Bcustom) \\
    \production{custom data} & \Bcustom &::=&
      \Bname~~\Bbyte^\ast \\
@@ -123,7 +123,7 @@ It decodes into a vector of :ref:`function types <syntax-functype>` that represe
 
 .. math::
    \begin{array}{llclll}
-   \production{type sections} & \Btypesec &::=&
+   \production{type section} & \Btypesec &::=&
      \X{ft}^\ast{:\,}\Bsection_1(\Bvec(\Bfunctype)) &\Rightarrow& \X{ft}^\ast \\
    \end{array}
 
@@ -143,12 +143,12 @@ It decodes into a vector of :ref:`imports <syntax-import>` that represent the |I
 
 .. math::
    \begin{array}{llclll}
-   \production{import sections} & \Bimportsec &::=&
+   \production{import section} & \Bimportsec &::=&
      \X{im}^\ast{:}\Bsection_2(\Bvec(\Bimport)) &\Rightarrow& \X{im}^\ast \\
-   \production{imports} & \Bimport &::=&
+   \production{import} & \Bimport &::=&
      \X{mod}{:}\Bname~~\X{nm}{:}\Bname~~d{:}\Bimportdesc
        &\Rightarrow& \{ \MODULE~\X{mod}, \NAME~\X{nm}, \DESC~d \} \\
-   \production{import descriptions} & \Bimportdesc &::=&
+   \production{import description} & \Bimportdesc &::=&
      \hex{00}~~x{:}\Btypeidx &\Rightarrow& \FUNC~x \\ &&|&
      \hex{01}~~\X{tt}{:}\Btabletype &\Rightarrow& \TABLE~\X{tt} \\ &&|&
      \hex{02}~~\X{mt}{:}\Bmemtype &\Rightarrow& \MEM~\X{mt} \\ &&|&
@@ -172,7 +172,7 @@ The |LOCALS| and |BODY| fields of the respective functions are encoded separatel
 
 .. math::
    \begin{array}{llclll}
-   \production{function sections} & \Bfuncsec &::=&
+   \production{function section} & \Bfuncsec &::=&
      x^\ast{:}\Bsection_3(\Bvec(\Btypeidx)) &\Rightarrow& x^\ast \\
    \end{array}
 
@@ -192,9 +192,9 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |TAB
 
 .. math::
    \begin{array}{llclll}
-   \production{table sections} & \Btablesec &::=&
+   \production{table section} & \Btablesec &::=&
      \X{tab}^\ast{:}\Bsection_4(\Bvec(\Btable)) &\Rightarrow& \X{tab}^\ast \\
-   \production{tables} & \Btable &::=&
+   \production{table} & \Btable &::=&
      \X{tt}{:}\Btabletype &\Rightarrow& \{ \TYPE~\X{tt} \} \\
    \end{array}
 
@@ -214,9 +214,9 @@ It decodes into a vector of :ref:`memories <syntax-mem>` that represent the |MEM
 
 .. math::
    \begin{array}{llclll}
-   \production{memory sections} & \Bmemsec &::=&
+   \production{memory section} & \Bmemsec &::=&
      \X{mem}^\ast{:}\Bsection_5(\Bvec(\Bmem)) &\Rightarrow& \X{mem}^\ast \\
-   \production{memories} & \Bmem &::=&
+   \production{memory} & \Bmem &::=&
      \X{mt}{:}\Bmemtype &\Rightarrow& \{ \TYPE~\X{mt} \} \\
    \end{array}
 
@@ -236,9 +236,9 @@ It decodes into a vector of :ref:`globals <syntax-global>` that represent the |G
 
 .. math::
    \begin{array}{llclll}
-   \production{global sections} & \Bglobalsec &::=&
+   \production{global section} & \Bglobalsec &::=&
      \X{glob}^\ast{:}\Bsection_6(\Bvec(\Bglobal)) &\Rightarrow& \X{glob}^\ast \\
-   \production{globals} & \Bglobal &::=&
+   \production{global} & \Bglobal &::=&
      \X{gt}{:}\Bglobaltype~~e{:}\Bexpr
        &\Rightarrow& \{ \TYPE~\X{gt}, \INIT~e \} \\
    \end{array}
@@ -259,12 +259,12 @@ It decodes into a vector of :ref:`exports <syntax-export>` that represent the |E
 
 .. math::
    \begin{array}{llclll}
-   \production{export sections} & \Bexportsec &::=&
+   \production{export section} & \Bexportsec &::=&
      \X{ex}^\ast{:}\Bsection_7(\Bvec(\Bexport)) &\Rightarrow& \X{ex}^\ast \\
-   \production{exports} & \Bexport &::=&
+   \production{export} & \Bexport &::=&
      \X{nm}{:}\Bname~~d{:}\Bexportdesc
        &\Rightarrow& \{ \NAME~\X{nm}, \DESC~d \} \\
-   \production{export descriptions} & \Bexportdesc &::=&
+   \production{export description} & \Bexportdesc &::=&
      \hex{00}~~x{:}\Bfuncidx &\Rightarrow& \FUNC~x \\ &&|&
      \hex{01}~~x{:}\Btableidx &\Rightarrow& \TABLE~x \\ &&|&
      \hex{02}~~x{:}\Bmemidx &\Rightarrow& \MEM~x \\ &&|&
@@ -288,9 +288,9 @@ It decodes into an optional :ref:`start function <syntax-start>` that represents
 
 .. math::
    \begin{array}{llclll}
-   \production{start sections} & \Bstartsec &::=&
+   \production{start section} & \Bstartsec &::=&
      \X{st}^?{:}\Bsection_8(\Bstart) &\Rightarrow& \X{st}^? \\
-   \production{start functions} & \Bstart &::=&
+   \production{start function} & \Bstart &::=&
      x{:}\Bfuncidx &\Rightarrow& \{ \FUNC~x \} \\
    \end{array}
 
@@ -312,9 +312,9 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
 
 .. math::
    \begin{array}{llclll}
-   \production{element sections} & \Belemsec &::=&
+   \production{element section} & \Belemsec &::=&
      \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg} \\
-   \production{element segments} & \Belem &::=&
+   \production{element segment} & \Belem &::=&
      x{:}\Btableidx~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \{ \TABLE~x, \OFFSET~e, \INIT~y^\ast \} \\
    \end{array}
@@ -352,13 +352,13 @@ denoting *count* locals of the same value type.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
-   \production{code sections} & \Bcodesec &::=&
+   \production{code section} & \Bcodesec &::=&
      \X{code}^\ast{:}\Bsection_{10}(\Bvec(\Bcode))
        &\Rightarrow& \X{code}^\ast \\
    \production{code} & \Bcode &::=&
      \X{size}{:}\Bu32~~\X{code}{:}\Bfunc
        &\Rightarrow& \X{code} & (\X{size} = ||\Bfunc||) \\
-   \production{functions} & \Bfunc &::=&
+   \production{function} & \Bfunc &::=&
      (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
        &\Rightarrow& \F{concat}((t^\ast)^\ast), e^\ast
          & (|\F{concat}((t^\ast)^\ast)| < 2^{32}) \\
@@ -392,9 +392,9 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
 
 .. math::
    \begin{array}{llclll}
-   \production{data sections} & \Bdatasec &::=&
+   \production{data section} & \Bdatasec &::=&
      \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg} \\
-   \production{data segments} & \Bdata &::=&
+   \production{data segment} & \Bdata &::=&
      x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
        &\Rightarrow& \{ \MEM~x, \OFFSET~e, \INIT~b^\ast \} \\
    \end{array}
@@ -425,7 +425,7 @@ The lengths of vectors produced by the (possibly empty) :ref:`function <binary-f
      \hex{00}~\hex{61}~\hex{73}~\hex{6D} \\
    \production{version} & \Bversion &::=&
      \hex{01}~\hex{00}~\hex{00}~\hex{00} \\
-   \production{modules} & \Bmodule &::=&
+   \production{module} & \Bmodule &::=&
      \Bmagic \\ &&&
      \Bversion \\ &&&
      \Bcustomsec^\ast \\ &&&
@@ -451,7 +451,7 @@ The lengths of vectors produced by the (possibly empty) :ref:`function <binary-f
      \Bcustomsec^\ast \\ &&&
      \data^\ast{:\,}\Bdatasec \\ &&&
      \Bcustomsec^\ast
-     &\Rightarrow& \{~
+     \quad\Rightarrow\quad \{~
        \begin{array}[t]{@{}l@{}}
        \TYPES~\functype^\ast, \\
        \FUNCS~\func^n, \\
@@ -464,10 +464,11 @@ The lengths of vectors produced by the (possibly empty) :ref:`function <binary-f
        \IMPORTS~\import^\ast, \\
        \EXPORTS~\export^\ast ~\} \\
       \end{array} \\
+   &&& (\begin{array}[t]{@{}l@{}}
+        \mbox{where for each $t_i^\ast, e_i$ in $\X{code}^n$,} \\
+        \func^n[i] = \{ \TYPE~\typeidx^n[i], \LOCALS~t_i^\ast, \BODY~e_i \} ) \\
+        \end{array}
    \end{array}
-
-where for each :math:`(t_i^\ast, e_i)` in :math:`\X{code}^n`,
-:math:`\func^n[i] = \{ \TYPE~\typeidx^n[i], \LOCALS~t_i^\ast, \BODY~e_i \}`.
 
 .. note::
    The version of the WebAssembly binary format may increase in the future

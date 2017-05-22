@@ -12,13 +12,13 @@ let nat n = I32.to_string_u (I32.of_int_u n)
 let nat32 = I32.to_string_u
 
 let add_hex_char buf c = Printf.bprintf buf "\\%02x" (Char.code c)
-let add_char buf c =
-  if c < '\x20' || c >= '\x7f' then
-    add_hex_char buf c
-  else begin
-    if c = '\"' || c = '\\' then Buffer.add_char buf '\\';
-    Buffer.add_char buf c
-  end
+let add_char buf = function
+  | '\n' -> Buffer.add_string buf "\\n"
+  | '\t' -> Buffer.add_string buf "\\t"
+  | '\"' -> Buffer.add_string buf "\\\""
+  | '\\' -> Buffer.add_string buf "\\\\"
+  | c when  '\x20' <= c && c < '\x7f' -> Buffer.add_char buf c
+  | c -> add_hex_char buf c
 
 let string_with add_char s =
   let buf = Buffer.create (3 * String.length s + 2) in
@@ -43,6 +43,10 @@ let atom f x = Atom (f x)
 let break_bytes s =
   let ss = Lib.String.breakup s 16 in
   list (atom bytes) ss
+
+let break_string s =
+  let ss, s' = Lib.List.split_last (Lib.String.split s '\n') in
+  list (atom string) (List.map (fun s -> s ^ "\n") ss @ [s'])
 
 
 (* Types *)
@@ -366,6 +370,9 @@ let module_with_var_opt x_opt m =
 let binary_module_with_var_opt x_opt bs =
   Node ("module" ^ var_opt x_opt ^ " binary", break_bytes bs)
 
+let quoted_module_with_var_opt x_opt s =
+  Node ("module" ^ var_opt x_opt ^ " quote", break_string s)
+
 let module_ = module_with_var_opt None
 
 
@@ -378,24 +385,27 @@ let literal lit =
   | Values.F32 z -> Node ("f32.const " ^ F32.to_string z, [])
   | Values.F64 z -> Node ("f64.const " ^ F64.to_string z, [])
 
-let rec definition mode x_opt def =
-  match mode, def.it with
-  | `Textual, _ | `Original, Textual _ ->
-    let rec unquote def =
-      match def.it with
-      | Textual m -> m
-      | Encoded (_, bs) -> Decode.decode "" bs
-      | Quoted (_, s) -> unquote (Parse.string_to_module s)
-    in module_with_var_opt x_opt (unquote def)
-  | `Binary, _ | `Original, Encoded _ ->
-    let rec unquote bs =
-      match def.it with
-      | Textual m -> Encode.encode m
-      | Encoded (_, bs) -> bs
-      | Quoted (_, s) -> unquote (Parse.string_to_module s)
-    in binary_module_with_var_opt x_opt (unquote def)
-  | `Original, Quoted (_, s) ->
-    definition mode x_opt (Parse.string_to_module s)
+let definition mode x_opt def =
+  try
+    match mode, def.it with
+    | `Textual, _ | `Original, Textual _ ->
+      let rec unquote def =
+        match def.it with
+        | Textual m -> m
+        | Encoded (_, bs) -> Decode.decode "" bs
+        | Quoted (_, s) -> unquote (Parse.string_to_module s)
+      in module_with_var_opt x_opt (unquote def)
+    | `Binary, _ | `Original, Encoded _ ->
+      let rec unquote bs =
+        match def.it with
+        | Textual m -> Encode.encode m
+        | Encoded (_, bs) -> bs
+        | Quoted (_, s) -> unquote (Parse.string_to_module s)
+      in binary_module_with_var_opt x_opt (unquote def)
+    | `Original, Quoted (_, s) ->
+      quoted_module_with_var_opt x_opt s
+  with Parse.Syntax _ ->
+    quoted_module_with_var_opt x_opt "<invalid module>"
 
 let access x_opt n =
   String.concat " " [var_opt x_opt; name n]

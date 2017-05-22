@@ -602,6 +602,18 @@
 (assert_return (invoke "f64.no_fold_div_mul" (f64.const -0x1.e75859d2f0765p-278) (f64.const -0x1.5f19b6ab497f9p+283)) (f64.const -0x1.e75859d2f0764p-278))
 (assert_return (invoke "f64.no_fold_div_mul" (f64.const -0x1.515fe9c3b5f5p+620) (f64.const 0x1.36be869c99f7ap+989)) (f64.const -0x1.515fe9c3b5f4fp+620))
 
+;; Test that x/2*2 is not folded to x.
+
+(module
+  (func (export "f32.no_fold_div2_mul2") (param $x f32) (result f32)
+    (f32.mul (f32.div (get_local $x) (f32.const 2.0)) (f32.const 2.0)))
+  (func (export "f64.no_fold_div2_mul2") (param $x f64) (result f64)
+    (f64.mul (f64.div (get_local $x) (f64.const 2.0)) (f64.const 2.0)))
+)
+
+(assert_return (invoke "f32.no_fold_div2_mul2" (f32.const 0x1.fffffep-126)) (f32.const 0x1p-125))
+(assert_return (invoke "f64.no_fold_div2_mul2" (f64.const 0x1.fffffffffffffp-1022)) (f64.const 0x1p-1021))
+
 ;; Test that promote(demote(x)) is not folded to x.
 
 (module
@@ -2476,3 +2488,19 @@
 
 (assert_return (invoke "tau" (i32.const 10)) (f64.const 0x1.921fb54442d14p+2))
 (assert_return (invoke "tau" (i32.const 11)) (f64.const 0x1.921fb54442d18p+2))
+
+;; Test that y < 0 ? x : (x + 1) is not folded to x + (y < 0).
+
+(module
+  (func (export "f32.no_fold_conditional_inc") (param $x f32) (param $y f32) (result f32)
+    (select (get_local $x)
+            (f32.add (get_local $x) (f32.const 1.0))
+            (f32.lt (get_local $y) (f32.const 0.0))))
+  (func (export "f64.no_fold_conditional_inc") (param $x f64) (param $y f64) (result f64)
+    (select (get_local $x)
+            (f64.add (get_local $x) (f64.const 1.0))
+            (f64.lt (get_local $y) (f64.const 0.0))))
+)
+
+(assert_return (invoke "f32.no_fold_conditional_inc" (f32.const -0.0) (f32.const -1.0)) (f32.const -0.0))
+(assert_return (invoke "f64.no_fold_conditional_inc" (f64.const -0.0) (f64.const -1.0)) (f64.const -0.0))

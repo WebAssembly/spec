@@ -18,7 +18,7 @@ In the abstract syntax they are represented as hexadecimal literals.
 
 .. math::
    \begin{array}{llll}
-   \production{bytes} & \byte &::=&
+   \production{byte} & \byte &::=&
      \hex{00} ~|~ \dots ~|~ \hex{FF} \\
    \end{array}
 
@@ -50,20 +50,17 @@ Different classes of *integers* with different value ranges are distinguished by
 
 .. math::
    \begin{array}{llll}
-   \production{unsigned integers} & \uN &::=&
+   \production{unsigned integer} & \uN &::=&
      0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
-   \production{signed integers} & \sN &::=&
+   \production{signed integer} & \sN &::=&
      -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
-   \production{uninterpreted integers} & \iN &::=&
-     \uN ~|~ \sN \\
+   \production{uninterpreted integer} & \iN &::=&
+     \uN \\
    \end{array}
 
 The latter class defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
-In those contexts, a conversion based on 2's complement will be applied for values that are out-of-range for a chosen interpretation.
-That is, semantically, when interpreted as unsigned, negative values :math:`-n` convert to :math:`2^N-n`,
-and when interpreted as signed, positive values :math:`n \geq 2^{N-1}` convert to :math:`n-2^N`.
-
-.. todo:: once there, link to definition of conversion
+In the abstract syntax, they are represented as unsigned.
+However, some operations :ref:`convert <aus-signed>` them to signed based on a 2's complement interpretation.
 
 
 Conventions
@@ -85,7 +82,7 @@ Floating-Point
 
 .. math::
    \begin{array}{llll}
-   \production{floating-point numbers} & \fN &::=&
+   \production{floating-point number} & \fN &::=&
      \byte^{N/8} \\
    \end{array}
 
@@ -105,7 +102,7 @@ A vector can have at most :math:`2^{32}-1` elements.
 
 .. math::
    \begin{array}{lllll}
-   \production{vectors} & \vec(A) &::=&
+   \production{vector} & \vec(A) &::=&
      A^n
      & (n < 2^{32})\\
    \end{array}
@@ -122,9 +119,9 @@ Names
 
 .. math::
    \begin{array}{llll}
-   \production{names} & \name &::=&
+   \production{name} & \name &::=&
      \codepoint^\ast \\
-   \production{code points} & \codepoint &::=&
+   \production{code point} & \codepoint &::=&
      \unicode{0000} ~|~ \dots ~|~ \unicode{D7FF} ~|~
      \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
    \end{array}
