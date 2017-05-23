@@ -226,23 +226,23 @@ instructions ignore the high bits of `x`.
 ## Accessing lanes
 
 ### Extract lane as a scalar
-* `b8x16.extractLane(a: b8x16, i: LaneIdx16) -> i32`
-* `b16x8.extractLane(a: b16x8, i: LaneIdx8) -> i32`
-* `b32x4.extractLane(a: b32x4, i: LaneIdx4) -> i32`
-* `b64x2.extractLane(a: b64x2, i: LaneIdx2) -> i32`
-* `i8x16.extractLane_s(a: v128, i: LaneIdx16) -> i32`
-* `i8x16.extractLane_u(a: v128, i: LaneIdx16) -> i32`
-* `i16x8.extractLane_s(a: v128, i: LaneIdx8) -> i32`
-* `i16x8.extractLane_u(a: v128, i: LaneIdx8) -> i32`
-* `i32x4.extractLane(a: v128, i: LaneIdx4) -> i32`
-* `i64x2.extractLane(a: v128, i: LaneIdx2) -> i64`
-* `f32x4.extractLane(a: v128, i: LaneIdx4) -> f32`
-* `f64x2.extractLane(a: v128, i: LaneIdx2) -> f64`
+* `b8x16.extract_lane(a: b8x16, i: LaneIdx16) -> i32`
+* `b16x8.extract_lane(a: b16x8, i: LaneIdx8) -> i32`
+* `b32x4.extract_lane(a: b32x4, i: LaneIdx4) -> i32`
+* `b64x2.extract_lane(a: b64x2, i: LaneIdx2) -> i32`
+* `i8x16.extract_lane_s(a: v128, i: LaneIdx16) -> i32`
+* `i8x16.extract_lane_u(a: v128, i: LaneIdx16) -> i32`
+* `i16x8.extract_lane_s(a: v128, i: LaneIdx8) -> i32`
+* `i16x8.extract_lane_u(a: v128, i: LaneIdx8) -> i32`
+* `i32x4.extract_lane(a: v128, i: LaneIdx4) -> i32`
+* `i64x2.extract_lane(a: v128, i: LaneIdx2) -> i64`
+* `f32x4.extract_lane(a: v128, i: LaneIdx4) -> f32`
+* `f64x2.extract_lane(a: v128, i: LaneIdx2) -> f64`
 
 Extract the value of lane `i` in `a`.
 
 ```python
-def S.extractLane(a, i):
+def S.extract_lane(a, i):
     return a[i]
 ```
 
@@ -251,22 +251,22 @@ The `_s` and `_u` variants will sign-extend or zero-extend the lane value to
 1.
 
 ### Replace lane value
-* `b8x16.replaceLane(a: b8x16, i: LaneIdx16, x: i32) -> b8x16`
-* `b16x8.replaceLane(a: b16x8, i: LaneIdx8, x: i32) -> b16x8`
-* `b32x4.replaceLane(a: b32x4, i: LaneIdx4, x: i32) -> b32x4`
-* `b64x2.replaceLane(a: b64x2, i: LaneIdx2, x: i32) -> b64x2`
-* `i8x16.replaceLane(a: v128, i: LaneIdx16, x: i32) -> v128`
-* `i16x8.replaceLane(a: v128, i: LaneIdx8, x: i32) -> v128`
-* `i32x4.replaceLane(a: v128, i: LaneIdx4, x: i32) -> v128`
-* `i64x2.replaceLane(a: v128, i: LaneIdx2, x: i64) -> v128`
-* `f32x4.replaceLane(a: v128, i: LaneIdx4, x: f32) -> v128`
-* `f64x2.replaceLane(a: v128, i: LaneIdx2, x: f64) -> v128`
+* `b8x16.replace_lane(a: b8x16, i: LaneIdx16, x: i32) -> b8x16`
+* `b16x8.replace_lane(a: b16x8, i: LaneIdx8, x: i32) -> b16x8`
+* `b32x4.replace_lane(a: b32x4, i: LaneIdx4, x: i32) -> b32x4`
+* `b64x2.replace_lane(a: b64x2, i: LaneIdx2, x: i32) -> b64x2`
+* `i8x16.replace_lane(a: v128, i: LaneIdx16, x: i32) -> v128`
+* `i16x8.replace_lane(a: v128, i: LaneIdx8, x: i32) -> v128`
+* `i32x4.replace_lane(a: v128, i: LaneIdx4, x: i32) -> v128`
+* `i64x2.replace_lane(a: v128, i: LaneIdx2, x: i64) -> v128`
+* `f32x4.replace_lane(a: v128, i: LaneIdx4, x: f32) -> v128`
+* `f64x2.replace_lane(a: v128, i: LaneIdx2, x: f64) -> v128`
 
 Return a new vector with lanes identical to `a`, except for lane `i` which has
 the value `x`.
 
 ```python
-def S.replaceLane(a, i, x):
+def S.replace_lane(a, i, x):
     result = S.New()
     for j in range(S.Lanes):
         result[j] = a[j]
