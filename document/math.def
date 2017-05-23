@@ -410,6 +410,8 @@
 
 .. |XB| mathdef:: \xref{execution/runtime}{syntax-ctxt-block}{B}
 
+.. |moduleinstr| mathdef:: \xref{execution/runtime}{syntax-moduleinstr}{\X{moduleinstr}}
+
 
 .. Execution, notation
 

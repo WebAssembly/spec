@@ -422,7 +422,7 @@ Instantiation may *fail* with an error.
 
 4. For each :ref:`external value <syntax-externval>` :math:`\externval_i` in :math:`\externval^n` and :ref:`external type <syntax-externtype>` :math:`\externtype_i` in :math:`\externtype^n`, do:
 
-   a. If :math:`\externval_i` is not valid in store :math:`S` with :math:`\externtype_i`, then:
+   a. If :math:`\externval_i` does not :ref:`have type <valid-externval>` :math:`\externtype_i` in store :math:`S`, then:
 
       i. Fail.
 
@@ -450,14 +450,6 @@ Instantiation may *fail* with an error.
 
       i. Fail.
 
-   j. For each :ref:`function index <syntax-funcidx>` :math:`\funcidx_{ij}` in :math:`\elem_i.\INIT`, do:
-
-      i. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\FUNCS[\funcidx_{ij}]` exists.
-
-      ii. Let :math:`\funcaddr_{ij}` be the :ref:`function address <func-addr>` :math:`\moduleinst.\FUNCS[\funcidx_{ij}]`.
-
-   k. Let :math:`\funcaddr_i^\ast` be the concatenation of the :ref:`function addresses <func-addr>` :math:`\funcaddr_{ij}` in the order of index :math:`j`.
-
 7. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\DATA`, do:
 
    a. Let :math:`\X{doval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\data_i.\OFFSET`.
@@ -480,35 +472,43 @@ Instantiation may *fail* with an error.
 
       i. Fail.
 
-   j. Let :math:`b_i^\ast` be the byte sequence :math:`\data_i.\INIT`.
+8. Let :math:`\globalidx_{\F{new}}` be the :ref:`global index <syntax-globalidx>` that corresponds to the number of global :ref:`imports <syntax-import>` in :math:`\module.\IMPORTS` (i.e., the index of the first non-imported global).
 
-8. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\ELEM`, do:
+9. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\GLOBALS`, do:
 
-   a. Replace :math:`\tableinst_i.\ELEM[\X{eo}_i : |\funcidx_i^\ast|]` with :math:`\funcidx_i^\ast`.
+   a. Let :math:`\val_i` be the result of :ref:`evaluating <exec-expr>` the initializer expression :math:`\global_i.\INIT`.
 
-9. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\DATA`, do:
+   b. Let :math:`\globalidx_i` be the :ref:`global index <syntax-globalidx>` :math:`\globalidx_{\F{new}} + i`.
 
-   a. Replace :math:`\meminst_i.\DATA[\X{do}_i : |b_i^\ast|]` with :math:`b_i^\ast`.
+   c. Assert: due to :ref:`validation <valid-global>`, :math:`\moduleinst.\GLOBALS[\globalidx_i]` exists.
 
-10. Let :math:`\globalidx_{\F{new}}` be the :ref:`global index <syntax-globalidx>` that corresponds to the number of global :ref:`imports <syntax-import>` in :math:`\module.\IMPORTS` (i.e., the index of the first non-imported global).
+   d. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` :math:`\moduleinst.\GLOBALS[\globalidx_i]`.
 
-11. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\GLOBALS`, do:
+   e. Assert: due to :ref:`validation <valid-global>`, :math:`S.\GLOBALS[\globaladdr_i]` exists.
 
-    a. Let :math:`\val_i` be the result of :ref:`evaluating <exec-expr>` the initializer expression :math:`\global_i.\INIT`.
+   f. Let :math:`\globalinst_i` be the :ref:`global instance <syntax-globalinst>` :math:`S.\GLOBALS[\globaladdr_i]`.
 
-    b. Let :math:`\globalidx_i` be the :ref:`global index <syntax-globalidx>` :math:`\globalidx_{\F{new}} + i`.
+10. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\ELEM`, do:
 
-    c. Assert: due to :ref:`validation <valid-global>`, :math:`\moduleinst.\GLOBALS[\globalidx_i]` exists.
+    a. For each :ref:`function index <syntax-funcidx>` :math:`\funcidx_{ij}` in :math:`\elem_i.\INIT` (starting with :math:`j = 0`), do:
 
-    d. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` :math:`\moduleinst.\GLOBALS[\globalidx_i]`.
+       i. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\FUNCS[\funcidx_{ij}]` exists.
 
-    e. Assert: due to :ref:`validation <valid-global>`, :math:`S.\GLOBALS[\globaladdr_i]` exists.
+       ii. Let :math:`\funcaddr_{ij}` be the :ref:`function address <func-addr>` :math:`\moduleinst.\FUNCS[\funcidx_{ij}]`.
 
-    f. Let :math:`\globalinst_i` be the :ref:`global instance <syntax-globalinst>` :math:`S.\GLOBALS[\globaladdr_i]`.
+       iii. Replace :math:`\tableinst_i.\ELEM[\X{eo}_i + j]` with :math:`\funcaddr_{ij}`.
 
-    h. Replace :math:`\globalinst_i.\VALUE` with :math:`\val_i`.
+11. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\DATA`, do:
 
-12. If the :ref:`start function <sytnax-start>` :math:`\module.\START` is not empty, then:
+    a. For each :ref:`byte <syntax-byte>` :math:`b_{ij}` in :math:`\data_i.\INIT` (starting with :math:`j = 0`), do:
+
+       i. Replace :math:`\meminst_i.\DATA[\X{do}_i + j]` with :math:`b_{ij}`.
+
+12. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\GLOBALS`, do:
+
+    a. Replace :math:`\globalinst_i.\VALUE` with :math:`\val_i`.
+
+13. If the :ref:`start function <sytnax-start>` :math:`\module.\START` is not empty, then:
 
     a. Assert: due to :ref:`validation <valid-start>`, :math:`\moduleinst.\FUNCS[\module.\START]` exists.
 
@@ -516,97 +516,52 @@ Instantiation may *fail* with an error.
 
     c. :ref:`Invoke <exec-invoke>` the function instance at :math:`\funcaddr`.
 
+.. math::
+   \begin{array}{@{}rcll}
+   S; \INSTANTIATE~\module~\externval^n &\stepto& S';
+     \begin{array}[t]{@{}l@{}}
+     (\INITTABLE~\tableaddr~\X{eo}~\moduleinst~\elem.\INIT)^\ast \\
+     (\INITMEM~\memaddr~\X{do}~\data.\INIT)^\ast \\
+     (\INITGLOBAL~\globaladdr~v)^\ast \\
+     (\INVOKE~\funcaddr)^? \\
+     \moduleinst \\
+     \end{array} \\
+   &\mbox{if}
+     & S \vdash \module : \externtype^n \\
+     && (\vdash \externval : \externtype)^n \\[1ex]
+     && \module.\GLOBALS = \global^k \\
+     && \module.\ELEM = \elem^\ast \\
+     && \module.\DATA = \data^\ast \\
+     && \module.\START = \start^? \\
+     && \globalidx^\ast = 0~\dots~(k-1) \\[1ex]
+     && S', \moduleinst = \F{allocmodule}(S, \module, \externval^n) \\
+     && F = \{ \MODULE~\moduleinst, \LOCALS~\epsilon \} \\[1ex]
+     && (S'; F; \elem.\OFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo})^\ast \\
+     && (S'; F; \data.\OFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do})^\ast \\
+     && (S'; F; \global.\INIT \stepto^\ast S'; F; v)^\ast \\[1ex]
+     && (\tableaddr = \moduleinst.\TABLES[\elem.\TABLE])^\ast \\
+     && (\memaddr = \moduleinst.\MEMS[\data.\MEM])^\ast \\
+     && (\globaladdr = \moduleinst.\GLOBALS[\globalidx])^\ast \\
+     && (\funcaddr = \moduleinst.\FUNCS[\start.\FUNC])^? \\[1ex]
+     && (\X{eo} + |\elem.\INIT| \leq |S'.\TABLES[\tableaddr].\ELEM|)^\ast \\
+     && (\X{do} + |\data.\INIT| \leq |S'.\MEMS[\memaddr].\DATA|)^\ast \\[1ex]
+   S; \INSTANTIATE~\module~\externval^n &\stepto&
+     S'; \TRAP  \qquad (\mbox{otherwise}) \\[1ex]
+   S; \INITTABLE~a~i~\moduleinst~\epsilon &\stepto&
+     S; \epsilon \\
+   S; \INITTABLE~a~i~\moduleinst~(x_0~x^\ast) &\stepto&
+     S'; \INITTABLE~a~(i+1)~\moduleinst~x^\ast \\ &&
+     (S' = S \with \TABLES[a].\ELEM[i] = \moduleinst.\FUNCS[x_0]) \\[1ex]
+   S; \INITMEM~a~i~\epsilon &\stepto&
+     S; \epsilon \\
+   S; \INITMEM~a~i~(b_0~b^\ast) &\stepto&
+     S'; \INITMEM~a~(i+1)~b^\ast \\ &&
+     (S' = S \with \MEMS[a].\DATA[i] = b_0) \\[1ex]
+   S; \INITGLOBAL~a~v &\stepto&
+     S'; \epsilon \\ &&
+     (S' = S \with \GLOBALS[a] = v) \\
+   \end{array}
+
 .. note::
    All failure conditions are checked before any observable mutation of the store takes place.
-
-.. todo::
-   Work in progress
-
-.. math::
-   \frac{
-   }{
-     S; \INSTANTIATE~\module~\externval^n \stepto S; \TRAP
-   }
-
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     \module.\IMPORTS = \externtype^n
-     \qquad
-     \module.\GLOBALS = \global^\ast
-     \\
-     \module.\ELEM = \elem^\ast
-     \qquad
-     \module.\DATA = \data^\ast
-     \qquad
-     \module.\START = \start^?
-     \\
-     (\vdash \externval : \externtype)^n
-     \qquad
-     \F{allocmodule}(S, \module, \externval^n) = S', \moduleinst
-     \\
-     F = \{ \MODULE~\moduleinst, \LOCALS~\epsilon \}
-     \qquad
-     (S'; F; \global.\INIT \stepto^\ast v)^\ast
-     \\
-     (S'; F; \elem.\OFFSET \stepto^\ast \I32.\CONST~\X{eo})^\ast
-     \qquad
-     (S'; F; \data.\OFFSET \stepto^\ast \I32.\CONST~\X{do})^\ast
-     \\
-     (\globalidx = i + |\moduleinst.\GLOBALS| - |\module.\GLOBALS|)_i^\ast
-     \\
-     (\globaladdr = \moduleinst.\GLOBALS[\globalidx])^\ast
-     \\
-     (\tableaddr = \moduleinst.\TABLES[\elem.\TABLE])^\ast
-     \qquad
-     (\globaladdr = \moduleinst.\MEMS[\data.\MEM])^\ast
-     \\
-     (\funcaddr = \moduleinst.\FUNCS[\start.\FUNC])^?
-     \\
-     (\X{eo} + |\elem.\INIT| \leq |S'.\TABLES[\tableaddr]|)^\ast
-     \qquad
-     (\X{do} + |\data.\INIT| \leq |S'.\MEMS[\memaddr]|)^\ast
-     \end{array}
-   }{
-     S; \INSTANTIATE~\module~\externval^n \stepto S';
-       \begin{array}[t]{@{}l@{}}
-       (\INITGLOBAL~\globaladdr~v)^\ast \\
-       (\INITTABLE~\tableaddr~\X{eo}~\moduleinst~\elem.\INIT)^\ast \\
-       (\INITMEM~\memaddr~\X{do}~\data.\INIT)^\ast \\
-       (\INVOKE~\funcaddr)^? \\
-       \moduleinst \\
-       \end{array}
-   }
-
-.. math::
-   \frac{
-     S' = S \with \GLOBALS[\globaladdr] = v
-   }{
-     S; \INITGLOBAL~\globaladdr~v \stepto S'; \epsilon
-   }
-
-.. math::
-   \frac{
-   }{
-     S; \INITTABLE~\tableaddr~o~\moduleinst~\epsilon \stepto S; \epsilon
-   }
-
-.. math::
-   \frac{
-     S' = S \with \TABLES[\tableaddr][o] = \moduleinst.\FUNCS[x_0]
-   }{
-     S; \INITTABLE~\tableaddr~o~\moduleinst~(x_0~x^\ast) \stepto S'; \INITTABLE~\tableaddr~(o+1)~\moduleinst~x^\ast
-   }
-
-.. math::
-   \frac{
-   }{
-     S; \INITMEM~\memaddr~o~\epsilon \stepto S; \epsilon
-   }
-
-.. math::
-   \frac{
-     S' = S \with \MEMS[\memaddr][o] = b_0
-   }{
-     S; \INITMEM~\memaddr~o~(b_0~b^\ast) \stepto S'; \INITMEM~\memaddr~(o+1)~b^\ast
-   }
+   Mutation is not atomic but happens in individual steps that may be interleaved with other threads.

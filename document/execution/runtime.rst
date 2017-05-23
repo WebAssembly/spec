@@ -400,13 +400,13 @@ Administrative Instructions
 In order to express the reduction of :ref:`traps <trap>`, calls, and :ref:`control instructions <syntax-instr-control>`, the syntax of instructions is extended to include the following *administrative instructions*:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llcl}
    \production{(administrative instruction)} & \instr &::=&
-     \dots ~|~ \\&&&
-     \TRAP ~|~ \\&&&
-     \INVOKE~\funcaddr ~|~ \\&&&
-     \LABEL_n\{\instr^\ast\}~\instr^\ast~\END ~|~ \\&&&
-     \FRAME_n\{\frame\}~\instr^\ast~\END ~|~ \\
+     \dots \\ &&|&
+     \TRAP \\ &&|&
+     \INVOKE~\funcaddr \\ &&|&
+     \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
+     \FRAME_n\{\frame\}~\instr^\ast~\END \\
    \end{array}
 
 The |TRAP| instruction represents the occurrence of a trap.
@@ -502,3 +502,59 @@ Finally, the following definition of *evaluation context* and associated structu
    S; F; E[\TRAP] &\stepto& S; F; \TRAP
      & (\mbox{if}~E \neq [\_]) \\
    \end{array}
+
+
+.. _syntax-instr-module:
+.. index:: ! module instructions, function, function instance, function address, label, frame, instruction, trap
+   pair:: abstract syntax; meta instruction
+
+Module Instructions
+...................
+
+Module :ref:`instantiation <instantiation>` is a complex operation.
+It is hence expressed in terms of reduction into smaller steps expressed by a sequence of administrative *module instructions* that are a superset of ordinary instructions and defined as follow.
+
+.. math::
+   \begin{array}{llcl}
+   \production{(module instruction)} & \moduleinstr &::=&
+     \instr \\ &&|&
+     \INSTANTIATE~\module~\externval^\ast \\ &&|&
+     \INITTABLE~\tableaddr~\u32~\funcidx^\ast \\ &&|&
+     \INITMEM~\memaddr~\u32~\byte^\ast \\ &&|&
+     \INITGLOBAL~\globaladdr~\val \\ &&|&
+     \INVOKE~\funcaddr \\ &&|&
+     \moduleinst \\
+   \end{array}
+
+The |INSTANTIATE| instruction expresses instantiation of a :ref:`module <syntax-module>` itself, requiring a sequence of :ref:`external values <syntax-externval>` for the expected imports.
+It reduces into a sequence of initialization instructions for :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>`,
+and a possible invocation of the :ref:`start function <syntax-start>`.
+The final instruction returns the newly created and initialized :ref:`module instance <syntax-moduleinst>`.
+
+.. note::
+   The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.
+
+   Unlike the administrative instructions above,
+   module instructions *embed* ordinary instructions |instr| instead of extending them.
+   Consequently, they can only occur at the top-level.
+
+Evaluation contexts and additional structural reduction rules for module instructions are defined as follows:
+
+.. math::
+   \begin{array}{llll}
+   \production{(module evaluation contexts)} & M &::=&
+     E~~\moduleinstr^\ast \\
+   \end{array}
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; M[\moduleinstr] &\stepto& S'; M[{\moduleinstr'}^\ast]
+     & (\mbox{if}~S; \moduleinstr \stepto S'; {\moduleinstr'}^\ast) \\
+   S; M[\TRAP] &\stepto& S; \TRAP
+     & (\mbox{if}~M \neq [\_]) \\
+   \end{array}
+
+Reduction terminates when the sequence has been reduced to a |moduleinst| or a trap occurred.
+
+.. note::
+   A trap may either arise from invocation of a :ref:`start function <syntax-start>` or indicate failure of the |INSTANTIATE| instruction itself.
