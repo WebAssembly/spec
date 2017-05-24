@@ -143,6 +143,7 @@ It is an invariant of the semantics that all :ref:`export instances <syntax-expo
 
 
 .. _syntax-funcinst:
+.. _syntax-hostfunc:
 .. index:: ! function instance, module instance, function, closure
    pair: abstract syntax; function instance
    pair: function; instance
@@ -157,13 +158,18 @@ The module instance is used to resolve references to other non-local definitions
 .. math::
    \begin{array}{llll}
    \production{(function instance)} & \funcinst &::=&
-     \{ \MODULE~\moduleinst, \CODE~\func \} \\
+     \{ \TYPE~\functype, \MODULE~\moduleinst, \CODE~\func \} \\ &&|&
+     \{ \TYPE~\functype, \CODE~\hostfunc \} \\
+   \production{(host function)} & \hostfunc &::=& \dots \\
    \end{array}
 
 Function instances are immutable, and their identity is not observable by WebAssembly code.
 However, the :ref:`embedder <embedder>` might provide implicit or explicit means for distinguishing them.
 
-.. todo:: Host functions?
+A *host function* is a function expressed outside WebAssembly but passed to a :ref:`module <syntax-module>` as an :ref:`import <syntax-import>`.
+The definition and behaviour of host functions are outside the scope of this specification.
+For the purpose of this specification, it is assumed that when :ref:`invoked <exec-invoke-host>`,
+a host function behaves non-deterministicaly.
 
 
 .. _syntax-tableinst:

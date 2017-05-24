@@ -382,6 +382,7 @@
 .. Runtime, terminals
 
 .. |MUT| mathdef:: \K{mut}
+.. |HOST| mathdef:: \K{host}
 
 
 .. Runtime, non-terminals
@@ -401,6 +402,7 @@
 .. |meminst| mathdef:: \xref{execution/runtime}{syntax-meminst}{\X{meminst}}
 .. |globalinst| mathdef:: \xref{execution/runtime}{syntax-globalinst}{\X{globalinst}}
 .. |exportinst| mathdef:: \xref{execution/runtime}{syntax-exportinst}{\X{exportinst}}
+.. |hostfunc| mathdef:: \xref{execution/runtime}{syntax-hostfunc}{\X{hostfunc}}
 
 .. |externval| mathdef:: \xref{execution/runtime}{syntax-externval}{\X{externval}}
 .. |externtype| mathdef:: \xref{execution/runtime}{syntax-externtype}{\X{externtype}}

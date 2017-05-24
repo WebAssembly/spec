@@ -14,15 +14,15 @@ The following auxiliary typing rules specify this typing relation relative to a 
 :math:`\FUNC~a`
 ...............
 
-* The store entry :math:`S.\FUNCS[a]` must be a :ref:`function instance <syntax-funcinst>` :math:`\{\MODULE~m, \CODE~f\}`.
+* The store entry :math:`S.\FUNCS[a]` must be a :ref:`function instance <syntax-funcinst>` :math:`\{\TYPE~\functype, \dots\}`.
 
-* Then :math:`\FUNC~a` is valid with :ref:`external type <syntax-externtype>` :math:`\FUNC~(m.\TYPES[f.\TYPE])`.
+* Then :math:`\FUNC~a` is valid with :ref:`external type <syntax-externtype>` :math:`\FUNC~\functype`.
 
 .. math::
    \frac{
-     S.\FUNCS[a] = \{\MODULE~m, \CODE~f\}
+     S.\FUNCS[a] = \{\TYPE~\functype, \dots\}
    }{
-     S \vdash \FUNC~a : \FUNC~(m.\TYPES[f.\TYPE])
+     S \vdash \FUNC~a : \FUNC~\functype
    }
 
 
@@ -194,18 +194,21 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 2. Let :math:`a` be the first free :ref:`function address <syntax-funcaddr>` in :math:`S`.
 
-3. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \MODULE~\moduleinst, \CODE~\func \}`.
+3. Let :math:`\functype` be the :ref:`function type <syntax-functype>` :math:`\moduleinst.\TYPES[\func.\TYPE]`.
 
-4. Append :math:`\funcinst` to the |FUNCS| of :math:`S`.
+4. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \TYPE~\functype, \MODULE~\moduleinst, \CODE~\func \}`.
 
-5. Return :math:`a`.
+5. Append :math:`\funcinst` to the |FUNCS| of :math:`S`.
+
+6. Return :math:`a`.
 
 .. math::
    \begin{array}{rlll}
    \allocfunc(S, \func, \moduleinst) &=& S', \funcaddr \\[1ex]
    \mbox{where:} \hfill \\
    \funcaddr &=& |S.\FUNCS| \\
-   \funcinst &=& \{ \MODULE~\moduleinst, \CODE~\func \} \\
+   \functype &=& \moduleinst.\TYPES[\func.\TYPE] \\
+   \funcinst &=& \{ \TYPE~\functype, \MODULE~\moduleinst, \CODE~\func \} \\
    S' &=& S \compose \{\FUNCS~\tableinst\} \\
    \end{array}
 
@@ -536,22 +539,22 @@ Instantiation may *fail* with an error.
      \end{array} \\
    &\mbox{if}
      & S \vdash \module : \externtype^n \\
-     && (\vdash \externval : \externtype)^n \\[1ex]
-     && \module.\GLOBALS = \global^k \\
-     && \module.\ELEM = \elem^\ast \\
-     && \module.\DATA = \data^\ast \\
-     && \module.\START = \start^? \\[1ex]
-     && S', \moduleinst = \F{allocmodule}(S, \module, \externval^n) \\
-     && F = \{ \MODULE~\moduleinst, \LOCALS~\epsilon \} \\[1ex]
-     && (S'; F; \elem.\OFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo})^\ast \\
-     && (S'; F; \data.\OFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do})^\ast \\
-     && (S'; F; \global.\INIT \stepto^\ast S'; F; v)^\ast \\[1ex]
-     && (\tableaddr = \moduleinst.\TABLES[\elem.\TABLE])^\ast \\
-     && (\memaddr = \moduleinst.\MEMS[\data.\MEM])^\ast \\
-     && \globaladdr^\ast = \moduleinst.\GLOBALS[|\globals(\module.\IMPORTS)|:k] \\
-     && (\funcaddr = \moduleinst.\FUNCS[\start.\FUNC])^? \\[1ex]
-     && (\X{eo} + |\elem.\INIT| \leq |S'.\TABLES[\tableaddr].\ELEM|)^\ast \\
-     && (\X{do} + |\data.\INIT| \leq |S'.\MEMS[\memaddr].\DATA|)^\ast \\[1ex]
+     &\wedge& (\vdash \externval : \externtype)^n \\[1ex]
+     &\wedge& \module.\GLOBALS = \global^k \\
+     &\wedge& \module.\ELEM = \elem^\ast \\
+     &\wedge& \module.\DATA = \data^\ast \\
+     &\wedge& \module.\START = \start^? \\[1ex]
+     &\wedge& S', \moduleinst = \F{allocmodule}(S, \module, \externval^n) \\
+     &\wedge& F = \{ \MODULE~\moduleinst, \LOCALS~\epsilon \} \\[1ex]
+     &\wedge& (S'; F; \elem.\OFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo})^\ast \\
+     &\wedge& (S'; F; \data.\OFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do})^\ast \\
+     &\wedge& (S'; F; \global.\INIT \stepto^\ast S'; F; v)^\ast \\[1ex]
+     &\wedge& (\tableaddr = \moduleinst.\TABLES[\elem.\TABLE])^\ast \\
+     &\wedge& (\memaddr = \moduleinst.\MEMS[\data.\MEM])^\ast \\
+     &\wedge& \globaladdr^\ast = \moduleinst.\GLOBALS[|\globals(\module.\IMPORTS)|:k] \\
+     &\wedge& (\funcaddr = \moduleinst.\FUNCS[\start.\FUNC])^? \\[1ex]
+     &\wedge& (\X{eo} + |\elem.\INIT| \leq |S'.\TABLES[\tableaddr].\ELEM|)^\ast \\
+     &\wedge& (\X{do} + |\data.\INIT| \leq |S'.\MEMS[\memaddr].\DATA|)^\ast \\[1ex]
    S; \INSTANTIATE~\module~\externval^n &\stepto&
      S'; \TRAP  \qquad (\mbox{otherwise}) \\[1ex]
    S; \INITTABLE~a~i~m~\epsilon &\stepto&
@@ -573,3 +576,57 @@ Instantiation may *fail* with an error.
    All failure conditions are checked before any observable mutation of the store takes place.
    Store mutation is not atomic;
    it happens in individual steps that may be interleaved with other threads.
+
+
+.. _invocation:
+.. _exec-call-export:
+.. index:: ! invocation, module, instance, function, export, function address
+
+Invocation
+~~~~~~~~~~
+
+Once a :ref:`module <syntax-module>` has been :ref:`instantiated <instantiation>`, any exported function can be *invoked* externally via its :ref:`function address <syntax-funcaddr>` :math:`\funcaddr` in the :ref:`store <syntax-store>` :math:`S` and an appropriate list :math:`\val^\ast` of argument :ref:`values <syntax-val>`.
+If successful, the invocation returns the function's result values :math:`\val_{\F{res}}^\ast`.
+
+The following steps are performed:
+
+1. Assert: :math:`S.\FUNCS[\funcaddr]` exists.
+
+2. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`S.\FUNCS[\funcaddr]`.
+
+3. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`\funcinst.\TYPE`.
+
+4. If the length :math:`|\val^\ast|` of the provided argument values is different from the number :math:`n` of expected arguments, then:
+
+   a. Fail.
+
+5. For each :ref:`value type <syntax-valtype>` :math:`t_i` in :math:`t_1^n`, do:
+
+   a. If :math:`\val^\ast[i]` is not :math:`t_i.\CONST~c_i` for some :math:`c_i`, then:
+
+      i. Fail.
+
+6. Push the values :math:`\val^\ast` to the stack.
+
+7. :ref:`Invoke <exec-invoke>` the function instance at address :math:`\funcaddr`.
+
+.. note::
+   If the embedder performs type checks itself, either statically or dynamically, no failure can occur.
+
+Once the function has returned, the following steps are executed:
+
+1. Assert: due to :ref:`validation <valid-func>`, :math:`m` :ref:`values <syntax-val>` are on the top of the stack.
+
+2. Pop :math:`\val_{\F{res}}^m` from the stack.
+
+The values :math:`\val_{\F{res}}^m` are the result of the call.
+
+If the function terminates with a :ref:`trap <trap>`, the error is propagated to the caller in a manner specified by the :ref:`embedder <embedder>`.
+
+.. math::
+   \begin{array}{@{}lcl}
+   \F{invoke}(S, \funcaddr, \val^n) &=& \val_{\F{res}}^m / \TRAP \\
+     &\mbox{if}& S.\FUNCS[\funcaddr].\TYPE = [t_1^n] \to [t_2^m] \\
+     &\wedge& \val^n = (t_1.\CONST~c)^n \\
+     &\wedge& S; \val^n~(\INVOKE~\funcaddr) \stepto^\ast S'; \val_{\F{res}}^m / \TRAP \\
+   \end{array}
