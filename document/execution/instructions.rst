@@ -1047,24 +1047,17 @@ When the end of a funtion is reached without a jump (|RETURN|) or trap aborting 
 Expressions
 ~~~~~~~~~~~
 
-An :ref:`expression <syntax-expr>` is *evaluated* relative to its containing :ref:`module instance <syntax-modinst>` :math:`\moduleinst`.
-To evaluate it, the instruction sequence is entered as follows:
+An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-modinst>` :math:`\moduleinst`.
 
-1. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \MODULE~\moduleinst, \LOCALS~\epsilon \}`.
+1. :ref:`Jump <exec-jump>` to the start of the instruction sequence :math:`\instr^\ast` of the expression.
 
-2. Push :math:`F` to the stack.
+2. Execute of the instruction sequence.
 
-3. :ref:`Jump <exec-jump>` to the start of the instruction sequence :math:`\instr^\ast` of the expression.
+3. Assert: due to :ref:`validation <valid-expr>`, the top of the stack contains a :ref:`value <syntax-val>`.
 
-Once execution of the instruction sequence is complete, it is exited as follows:
+4. Pop the the :ref:`value <syntax-val>` :math:`\val` from the stack.
 
-1. Assert: due to :ref:`validation <valid-constant>`, the instruction sequence is terminated without a trap, leaving a single value and the original frame on the stack.
-
-2. Pop the result :math:`\val` from the stack.
-
-3. Pop the frame from the stack.
-
-The value :math:`\val` is returned.
+The value :math:`\val` is the result of the evaluation.
 
 .. math::
    \frac{

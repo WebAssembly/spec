@@ -388,6 +388,8 @@ Conventions
 
 
 .. _syntax-instr-admin:
+.. _syntax-trap:
+.. _syntax-invoke:
 .. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap
    pair:: abstract syntax; administrative instruction
 
@@ -519,16 +521,15 @@ It is hence expressed in terms of reduction into smaller steps expressed by a se
    \production{(module instruction)} & \moduleinstr &::=&
      \instr \\ &&|&
      \INSTANTIATE~\module~\externval^\ast \\ &&|&
-     \INITTABLE~\tableaddr~\u32~\funcidx^\ast \\ &&|&
+     \INITTABLE~\tableaddr~\u32~\moduleinst~funcidx^\ast \\ &&|&
      \INITMEM~\memaddr~\u32~\byte^\ast \\ &&|&
      \INITGLOBAL~\globaladdr~\val \\ &&|&
-     \INVOKE~\funcaddr \\ &&|&
      \moduleinst \\
    \end{array}
 
 The |INSTANTIATE| instruction expresses instantiation of a :ref:`module <syntax-module>` itself, requiring a sequence of :ref:`external values <syntax-externval>` for the expected imports.
 It reduces into a sequence of initialization instructions for :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>`,
-and a possible invocation of the :ref:`start function <syntax-start>`.
+and a possible :ref:`invocation <syntax-invoke>` of the :ref:`start function <syntax-start>`.
 The final instruction returns the newly created and initialized :ref:`module instance <syntax-moduleinst>`.
 
 .. note::

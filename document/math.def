@@ -20,7 +20,10 @@
 .. Auxiliary definitions for grammars
 
 .. |production| mathdef:: \void
-.. |with| mathdef:: ~\xref{syntax/conventions}{syntax-record}{\mbox{with}}~
+.. |concat| mathdef:: \xref{syntax/conventions}{syntax-concat}{\F{concat}}
+.. |with| mathdef:: \xref{syntax/conventions}{syntax-record}{\mathrel{\mbox{with}}}
+.. |compose| mathdef:: \xref{syntax/conventions}{syntax-record}{\oplus}
+.. |bigcompose| mathdef:: \xref{syntax/conventions}{syntax-record}{\bigoplus}
 
 
 .. Values, terminals
@@ -336,12 +339,11 @@
 .. |LABEL| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{label}}
 .. |FRAME| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{frame}}
 
-.. |INVOKE| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{invoke}}
-.. |INSTANTIATE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{instantiate}}
-.. |INITIALIZE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{initialize}}
-.. |INITGLOBAL| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{init\_global}}
-.. |INITTABLE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{init\_table}}
-.. |INITMEM| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{init\_mem}}
+.. |INVOKE| mathdef:: \xref{execution/runtime}{syntax-invoke}{\K{invoke}}
+.. |INSTANTIATE| mathdef:: \xref{execution/runtime}{syntax-instantiate}{\K{instantiate}}
+.. |INITGLOBAL| mathdef:: \xref{execution/runtime}{syntax-init_global}{\K{init\_global}}
+.. |INITTABLE| mathdef:: \xref{execution/runtime}{syntax-init_table}{\K{init\_table}}
+.. |INITMEM| mathdef:: \xref{execution/runtime}{syntax-init_mem}{\K{init\_mem}}
 
 
 .. Instructions, non-terminals

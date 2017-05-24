@@ -37,8 +37,8 @@ The following conventions are adopted in stating these rules.
   that is modified by *pushing* or *popping*
   :ref:`values <syntax-value>`, :ref:`labels <syntax-label>`, and :ref:`frames <syntax-frame>`.
 
-* Certain rules require the stack to contain at least one frame,
-  which is referred to as the *current* frame.
+* Certain rules require the stack to contain at least one frame.
+  The most recent frame is referred to as the *current* frame.
 
 * Both the store and the current frame are mutated by *replacing* some of its components.
   Such replacement is assumed to apply globally.
