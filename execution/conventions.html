@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
@@ -62,9 +62,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 <ul>
@@ -99,7 +99,7 @@
             
   <div class="section" id="conventions">
 <span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
-<p>WebAssembly code is <em>executed</em> when <span class="xref std std-ref">instantiating</span> a module or <span class="xref std std-ref">invoking</span> an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> function on the resulting module <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">instance</span></a>.</p>
+<p>WebAssembly code is <em>executed</em> when <a class="reference internal" href="modules.html#instantiation"><span class="std std-ref">instantiating</span></a> a module or <span class="xref std std-ref">invoking</span> an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> function on the resulting module <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">instance</span></a>.</p>
 <p>Execution behavior is defined in terms of an <em>abstract machine</em> that models the <em>program state</em>.
 It includes a <em>stack</em>, which records operand values and control constructs, and an abstract <em>store</em> containing global state.</p>
 <p>For each instruction, there is a rule that specifies the effect of its execution on the program state.
@@ -125,16 +125,16 @@ The following conventions are adopted in stating these rules.</p>
 <li>The execution rules also assume the presence of an implicit <a class="reference internal" href="runtime.html#stack"><span class="std std-ref">stack</span></a>
 that is modified by <em>pushing</em> or <em>popping</em>
 <a class="reference internal" href="../syntax/values.html#syntax-value"><span class="std std-ref">values</span></a>, <a class="reference internal" href="../syntax/instructions.html#syntax-label"><span class="std std-ref">labels</span></a>, and <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frames</span></a>.</li>
-<li>Certain rules require the stack to contain at least one frame,
-which is referred to as the <em>current</em> frame.</li>
+<li>Certain rules require the stack to contain at least one frame.
+The most recent frame is referred to as the <em>current</em> frame.</li>
 <li>Both the store and the current frame are mutated by <em>replacing</em> some of its components.
 Such replacement is assumed to apply globally.</li>
 <li>The execution of an instruction may <em>trap</em>,
 in which case the entire computation is aborted and no further modifications to the store are performed by it. (Other computations can still be initiated afterwards.)</li>
 <li>The execution of an instruction may also end in a <em>jump</em> to a designated target,
 which defines the next instruction to execute.</li>
-<li>Execution can <em>enter</em> and <em>exit</em> <a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">instruction sequences</span></a> in a block-like fashion.</li>
-<li><a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">Instruction sequences</span></a> are implicitly executed in order, unless a trap or jump occurs.</li>
+<li>Execution can <em>enter</em> and <em>exit</em> <span class="xref std std-ref">instruction sequences</span> in a block-like fashion.</li>
+<li><span class="xref std std-ref">Instruction sequences</span> are implicitly executed in order, unless a trap or jump occurs.</li>
 <li>In various places the rules contain <em>assertions</em> expressing crucial invariants about the program state, with indications why these are known to hold.</li>
 </ul>
 <span class="target" id="exec-notation"></span></div>

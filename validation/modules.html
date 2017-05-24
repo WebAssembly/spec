@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
@@ -69,9 +69,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 <ul>
@@ -122,7 +122,7 @@ To that end, each definition is classified with a suitable type.</p>
 }{
   \vdash \{ \mathsf{min}~n, \mathsf{max}~m^? \} ~\mathrm{ok}
 }\]</div>
-<span class="target" id="valid-local"><span id="valid-func"></span></span></div>
+<span class="target" id="valid-func"></span></div>
 </div>
 <div class="section" id="functions">
 <span id="index-1"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
@@ -343,12 +343,12 @@ Export descriptions <span class="math">\(\href{../syntax/modules.html#syntax-exp
 <ul class="simple">
 <li>The global <span class="math">\(C.\mathsf{globals}[x]\)</span> must be defined in the context.</li>
 <li>Let <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math">\(C.\mathsf{globals}[x]\)</span>.</li>
-<li>The mutability <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{const}}\)</span>.</li>
+<li>The mutability <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{var}}\)</span>.</li>
 <li>Then the export description is valid.</li>
 </ul>
 <div class="math">
 \[\frac{
-  C.\mathsf{globals}[x] = \href{../syntax/types.html#syntax-mut}{\mathsf{const}}~t
+  C.\mathsf{globals}[x] = \href{../syntax/types.html#syntax-mut}{\mathsf{var}}~t
 }{
   C \vdash \mathsf{global}~x ~\mathrm{ok}
 }\]</div>
@@ -356,7 +356,7 @@ Export descriptions <span class="math">\(\href{../syntax/modules.html#syntax-exp
 </div>
 <div class="section" id="imports">
 <span id="index-9"></span><h2>Imports<a class="headerlink" href="#imports" title="Permalink to this headline">¶</a></h2>
-<p>Imports <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}\)</span> and import descriptions <span class="math">\(\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}\)</span> are classified by <a class="reference internal" href="../execution/runtime.html#syntax-externtype"><span class="std std-ref">external types</span></a>.</p>
+<p>Imports <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}\)</span> and import descriptions <span class="math">\(\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a>.</p>
 <div class="section" id="id13">
 <h3><span class="math">\(\{ \mathsf{module}~\href{../syntax/values.html#syntax-name}{\mathit{name}}_1, \mathsf{name}~\href{../syntax/values.html#syntax-name}{\mathit{name}}_2, \mathsf{desc}~\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}} \}\)</span><a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -418,13 +418,13 @@ Export descriptions <span class="math">\(\href{../syntax/modules.html#syntax-exp
 <div class="section" id="id17">
 <h3><span class="math">\(\mathsf{global}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span><a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The mutability <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{const}}\)</span>.</li>
+<li>The mutability <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{var}}\)</span>.</li>
 <li>Then the import description is valid with type <span class="math">\(\mathsf{global}~t\)</span>.</li>
 </ul>
 <div class="math">
 \[\frac{
 }{
-  C \vdash \mathsf{global}~\href{../syntax/types.html#syntax-mut}{\mathsf{const}}~t : \mathsf{global}~\href{../syntax/types.html#syntax-mut}{\mathsf{const}}~t
+  C \vdash \mathsf{global}~\href{../syntax/types.html#syntax-mut}{\mathsf{var}}~t : \mathsf{global}~\href{../syntax/types.html#syntax-mut}{\mathsf{var}}~t
 }\]</div>
 <span class="target" id="valid-module"></span></div>
 </div>
@@ -471,7 +471,7 @@ the segment <span class="math">\(\href{../syntax/modules.html#syntax-elem}{\math
 <li>If <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{start}\)</span> is non-empty,
 then <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{start}\)</span> must be <a class="reference internal" href="#valid-start"><span class="std std-ref">valid</span></a>.</li>
 <li>For each <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{imports}\)</span>,
-the segment <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> must be <a class="reference internal" href="#valid-import"><span class="std std-ref">valid</span></a> with an <a class="reference internal" href="../execution/runtime.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}_i\)</span>.</li>
+the segment <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> must be <a class="reference internal" href="#valid-import"><span class="std std-ref">valid</span></a> with an <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}_i\)</span>.</li>
 <li>For each <span class="math">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports}\)</span>,
 the segment <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> must be <a class="reference internal" href="#valid-export"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a> <span class="math">\(\href{../syntax/values.html#syntax-name}{\mathit{name}}_i\)</span>.</li>
 </ul>
@@ -479,6 +479,8 @@ the segment <span class="math">\(\href{../syntax/modules.html#syntax-import}{\ma
 <li>The length of <span class="math">\(C.\mathsf{tables}\)</span> must not be larger than <span class="math">\(1\)</span>.</li>
 <li>The length of <span class="math">\(C.\mathsf{mems}\)</span> must not be larger than <span class="math">\(1\)</span>.</li>
 <li>All export names <span class="math">\(\href{../syntax/values.html#syntax-name}{\mathit{name}}_i\)</span> must be different.</li>
+<li>Let <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span> be the concatenation of <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}_i\)</span> of the imports, in index order.</li>
+<li>Then the module is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span>.</li>
 </ul>
 <div class="math">
 \[\begin{split}\frac{
@@ -531,7 +533,7 @@ the segment <span class="math">\(\href{../syntax/modules.html#syntax-import}{\ma
       \mathsf{data}~\href{../syntax/modules.html#syntax-data}{\mathit{data}}^\ast,
       \mathsf{start}~\href{../syntax/modules.html#syntax-start}{\mathit{start}}^?,
       \mathsf{imports}~\href{../syntax/modules.html#syntax-import}{\mathit{import}}^\ast,
-      \mathsf{exports}~\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast \} ~\mathrm{ok} \\
+      \mathsf{exports}~\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast \} : \mathit{it}^\ast \\
     \end{array}
 }\end{split}\]</div>
 <div class="admonition note">
