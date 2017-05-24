@@ -65,9 +65,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 <ul>
@@ -108,8 +108,8 @@
 In the abstract syntax they are represented as hexadecimal literals.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1329#1{{}}\mathdef1329{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
-  \def\mathdef1362#1{\mathtt{0x#1}}\mathdef1362{00} ~|~ \dots ~|~ \def\mathdef1363#1{\mathtt{0x#1}}\mathdef1363{FF} \\
+\def\mathdef1738#1{{}}\mathdef1738{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
+  \def\mathdef1789#1{\mathtt{0x#1}}\mathdef1789{00} ~|~ \dots ~|~ \def\mathdef1790#1{\mathtt{0x#1}}\mathdef1790{FF} \\
 \end{array}\end{split}\]</div>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
@@ -124,16 +124,16 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 <p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>size</em> and their <em>signedness</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1329#1{{}}\mathdef1329{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1330#1{{\mathit{u}#1}}\mathdef1330{N}} &amp;::=&amp;
+\def\mathdef1738#1{{}}\mathdef1738{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1742#1{{\mathit{u}#1}}\mathdef1742{N}} &amp;::=&amp;
   0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
-\def\mathdef1329#1{{}}\mathdef1329{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1336#1{{\mathit{s}#1}}\mathdef1336{N}} &amp;::=&amp;
+\def\mathdef1738#1{{}}\mathdef1738{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1748#1{{\mathit{s}#1}}\mathdef1748{N}} &amp;::=&amp;
   -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
-\def\mathdef1329#1{{}}\mathdef1329{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1341#1{{\mathit{i}#1}}\mathdef1341{N}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-int}{\def\mathdef1330#1{{\mathit{u}#1}}\mathdef1330{N}} \\
+\def\mathdef1738#1{{}}\mathdef1738{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef1753#1{{\mathit{i}#1}}\mathdef1753{N}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-int}{\def\mathdef1742#1{{\mathit{u}#1}}\mathdef1742{N}} \\
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned.
-However, some operations <span class="xref std std-ref">convert</span> them to signed based on a 2&#8217;s complement interpretation.</p>
+However, some operations <a class="reference internal" href="../execution/numerics.html#aux-signed"><span class="std std-ref">convert</span></a> them to signed based on a 2&#8217;s complement interpretation.</p>
 <div class="section" id="id1">
 <h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -147,7 +147,7 @@ However, some operations <span class="xref std std-ref">convert</span> them to s
 <p><em>Floating-point</em> data consists of values in binary floating-point format according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1329#1{{}}\mathdef1329{floating-point number} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1344#1{{\mathit{f}#1}}\mathdef1344{N}} &amp;::=&amp;
+\def\mathdef1738#1{{}}\mathdef1738{floating-point number} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1756#1{{\mathit{f}#1}}\mathdef1756{N}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-byte}{\mathit{byte}}^{N/8} \\
 \end{array}\end{split}\]</div>
 <p>The two possible sizes <span class="math">\(N\)</span> are 32 and 64.</p>
@@ -159,29 +159,33 @@ where the <span class="math">\(A\)</span>-s can either be values or complex cons
 A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
 <div class="math">
 \[\begin{split}\begin{array}{lllll}
-\def\mathdef1329#1{{}}\mathdef1329{vector} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
+\def\mathdef1738#1{{}}\mathdef1738{vector} &amp; \href{../syntax/values.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
   A^n
   &amp; (n &lt; 2^{32})\\
 \end{array}\end{split}\]</div>
-<span class="target" id="syntax-name"></span></div>
+<span class="target" id="syntax-utf8"><span id="syntax-name"></span></span></div>
 <div class="section" id="names">
 <span id="index-5"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
 <p><em>Names</em> are sequences of <em>scalar</em> <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> <em>code points</em>.</p>
 <div class="math">
-\[\begin{split}\begin{array}{llll}
-\def\mathdef1329#1{{}}\mathdef1329{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast \\
-\def\mathdef1329#1{{}}\mathdef1329{code point} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
-  \def\mathdef1364#1{\mathrm{U{+}#1}}\mathdef1364{0000} ~|~ \dots ~|~ \def\mathdef1365#1{\mathrm{U{+}#1}}\mathdef1365{D7FF} ~|~
-  \def\mathdef1366#1{\mathrm{U{+}#1}}\mathdef1366{E000} ~|~ \dots ~|~ \def\mathdef1367#1{\mathrm{U{+}#1}}\mathdef1367{10FFFF} \\
+\[\begin{split}\begin{array}{llclll}
+\def\mathdef1738#1{{}}\mathdef1738{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast &amp; (|\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(\href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast)| &lt; 2^{32}) \\
+\def\mathdef1738#1{{}}\mathdef1738{code point} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
+  \def\mathdef1791#1{\mathrm{U{+}#1}}\mathdef1791{0000} ~|~ \dots ~|~ \def\mathdef1792#1{\mathrm{U{+}#1}}\mathdef1792{D7FF} ~|~
+  \def\mathdef1793#1{\mathrm{U{+}#1}}\mathdef1793{E000} ~|~ \dots ~|~ \def\mathdef1794#1{\mathrm{U{+}#1}}\mathdef1794{10FFFF} \\
 \end{array}\end{split}\]</div>
-<div class="admonition-todo admonition" id="index-6">
-<p class="first admonition-title">Todo</p>
-<p class="last">The definition of a name as an arbitrary sequence of scalar code points is too general.
-So would be the definition of a vector.
-Only names whose UTF-8 encoding is within the bounds of the maximum vector lengths must be included.
-How specify this?</p>
-</div>
+<p>Due to the limitations of the <a class="reference internal" href="../binary/values.html#binary-name"><span class="std std-ref">binary format</span></a>,
+the lengths of a name is bounded by the length of its <a class="reference external" href="http://www.unicode.org/versions/latest/">UTF-8</a> encoding.
+The auxiliary <span class="math">\(\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}\)</span> function expressing this encoding is defined as follows:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
+\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c^\ast) &amp;=&amp; (\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c))^\ast \\[1ex]
+\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b &amp; (c &lt; \def\mathdef1795#1{\mathrm{U{+}#1}}\mathdef1795{80} \wedge c = b) \\
+\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2 &amp; (\def\mathdef1796#1{\mathrm{U{+}#1}}\mathdef1796{80} \leq c &lt; \def\mathdef1797#1{\mathrm{U{+}#1}}\mathdef1797{800} \wedge c = 2^6\cdot(b_1-\def\mathdef1798#1{\mathtt{0x#1}}\mathdef1798{C0})+(b_2-\def\mathdef1799#1{\mathtt{0x#1}}\mathdef1799{80})) \\
+\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2~b_3 &amp; (\def\mathdef1800#1{\mathrm{U{+}#1}}\mathdef1800{800} \leq c &lt; \def\mathdef1801#1{\mathrm{U{+}#1}}\mathdef1801{10000} \wedge c = 2^{12}\cdot(b_1-\def\mathdef1802#1{\mathtt{0x#1}}\mathdef1802{C0})+2^6\cdot(b_2-\def\mathdef1803#1{\mathtt{0x#1}}\mathdef1803{80})+(b_3-\def\mathdef1804#1{\mathtt{0x#1}}\mathdef1804{80})) \\
+\href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2~b_3~b_4 &amp; (\def\mathdef1805#1{\mathrm{U{+}#1}}\mathdef1805{10000} \leq c &lt; \def\mathdef1806#1{\mathrm{U{+}#1}}\mathdef1806{110000} \wedge c = 2^{18}\cdot(b_1-\def\mathdef1807#1{\mathtt{0x#1}}\mathdef1807{C0})+2^{12}\cdot(b_2-\def\mathdef1808#1{\mathtt{0x#1}}\mathdef1808{80})+2^6\cdot(b_3-\def\mathdef1809#1{\mathtt{0x#1}}\mathdef1809{80})+(b_4-\def\mathdef1810#1{\mathtt{0x#1}}\mathdef1810{80})) \\
+\end{array}\end{split}\]</div>
 <div class="section" id="convention">
 <h3>Convention<a class="headerlink" href="#convention" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">

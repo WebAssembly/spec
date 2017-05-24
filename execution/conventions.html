@@ -62,9 +62,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 <ul>
@@ -133,8 +133,8 @@ Such replacement is assumed to apply globally.</li>
 in which case the entire computation is aborted and no further modifications to the store are performed by it. (Other computations can still be initiated afterwards.)</li>
 <li>The execution of an instruction may also end in a <em>jump</em> to a designated target,
 which defines the next instruction to execute.</li>
-<li>Execution can <em>enter</em> and <em>exit</em> <span class="xref std std-ref">instruction sequences</span> in a block-like fashion.</li>
-<li><span class="xref std std-ref">Instruction sequences</span> are implicitly executed in order, unless a trap or jump occurs.</li>
+<li>Execution can <em>enter</em> and <em>exit</em> <a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">instruction sequences</span></a> in a block-like fashion.</li>
+<li><a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">Instruction sequences</span></a> are implicitly executed in order, unless a trap or jump occurs.</li>
 <li>In various places the rules contain <em>assertions</em> expressing crucial invariants about the program state, with indications why these are known to hold.</li>
 </ul>
 <span class="target" id="exec-notation"></span></div>

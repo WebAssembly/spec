@@ -61,9 +61,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
 </ul>
 <ul>
@@ -130,14 +130,14 @@ which collects relevant information about the surrounding <a class="reference in
 <li><em>Labels</em>: the stack of labels accessible from the current position, represented by their result type.</li>
 <li><em>Return</em>: the return type of the current function, represented as a result type.</li>
 </ul>
-<p>In other words, a context contains a sequence of suitable <span class="xref std std-ref">types</span> for each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>,
+<p>In other words, a context contains a sequence of suitable <a class="reference internal" href="../syntax/types.html#syntax-type"><span class="std std-ref">types</span></a> for each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>,
 describing each defined entry in that space.
 Locals, labels and return type are only used for validating <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> in <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function bodies</span></a>, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.</p>
 <p>It is convenient to define contexts as <a class="reference internal" href="../syntax/conventions.html#syntax-record"><span class="std std-ref">records</span></a> <span class="math">\(C\)</span> with abstract syntax:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1368#1{{}}\mathdef1368{(context)} &amp; C &amp;::=&amp;
+\def\mathdef2798#1{{}}\mathdef2798{(context)} &amp; C &amp;::=&amp;
   \begin{array}[t]{l&#64;{~}ll}
   \{ &amp; \mathsf{types} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
      &amp; \mathsf{funcs} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
