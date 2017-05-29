@@ -34,7 +34,7 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 
 * Terminal symbols are either literal strings of characters enclosed in quotes: :math:`\text{module}`;
   or expressed as `Unicode <http://www.unicode.org/versions/latest/>`_ code points: :math:`\unicode{0A}`.
-  (All characters written literally are unambguously drawn from the `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ subset of Unicode.)
+  (All characters written literally are unambiguously drawn from the `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ subset of Unicode.)
 
 * Nonterminal symbols are written in typewriter font: :math:`\T{valtype}, \T{instr}`.
 

@@ -5,7 +5,7 @@
 Values
 ------
 
-The grammar produtions in this section define *lexical syntax*,
+The grammar productions in this section define *lexical syntax*,
 hence no :ref:`white space <text-space>` is allowed.
 
 

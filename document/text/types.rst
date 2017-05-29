@@ -123,6 +123,9 @@ Table Types
      \text{anyfunc} &\Rightarrow& \ANYFUNC \\
    \end{array}
 
+.. note::
+   Additional element types may be introduced in future versions of WebAssembly.
+
 
 .. _text-globaltype:
 .. index:: global type, mutability, value type

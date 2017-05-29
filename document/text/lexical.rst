@@ -22,8 +22,8 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
    \end{array}
 
 .. note::
-   The set of characters interpreted in the text format is a subset of the characters supported by `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_,
-   but a source text may contain other characters in :ref:`comments <text-comment>` or :ref:`string <text-string>` literals.
+   While source text may contain any Unicode character in :ref:`comments <text-comment>` or :ref:`string <text-string>` literals,
+   the rest of the grammar is formed exclusively from the characters supported by the `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ subset of Unicode.
 
 
 .. _text-token:
@@ -42,7 +42,7 @@ The character stream in the source text is divided, from left to right, into a s
      \Tkeyword ~|~ \TuN ~|~ \TsN ~|~ \TfN ~|~ \Tstring ~|~ \Tid ~|~
      \text{(} ~|~ \text{)} ~|~ \Treserved \\
    \production{keyword} & \Tkeyword &::=&
-     \mbox{(any terminal symbol in the grammar that is non of the above)} \\
+     \mbox{(any terminal symbol in the grammar that is none of the above)} \\
    \production{reserved} & \Treserved &::=&
      \Tidchar^+ \\
    \end{array}
