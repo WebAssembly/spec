@@ -1040,7 +1040,7 @@ When the end of a funtion is reached without a jump (|RETURN|) or trap aborting 
 Host Functions
 ..............
 
-Invoking a :ref:`host function <syntax-hostfunc>` has non-deterministic behaviour.
+Invoking a :ref:`host function <syntax-hostfunc>` has non-deterministic behavior.
 It may either terminate with a :ref:`trap <trap>` or return regularly.
 However, the latter case, it is assumed that it consumes and produces the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
 according to its type.
@@ -1077,7 +1077,7 @@ and it must still be well-typed.
 
 .. note::
    A host function can call back into WebAssembly by :ref:`invoking <invocation>` a function :ref:`exported <syntax-export>` from a :ref:`module <syntax-module>`.
-   However, the effects of any such call are subsumed by the non-deterministic behaviour allowed for a host function.
+   However, the effects of any such call are subsumed by the non-deterministic behavior allowed for a host function.
 
 
 
