@@ -117,14 +117,14 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      s{:}\Tsign~\text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~t{:}\Tsign~e{:}\Tnum
        &\Rightarrow& s\cdot(p+q)\cdot 2^{t\cdot e} \\
    \production{floating-point value} & \TfN &::=&
-     z{:}\Tfloat &\Rightarrow& b^\ast & (\ieee_N(z) = b^\ast) \\ &&|&
-     z{:}\Thexfloat &\Rightarrow& b^\ast & (\ieee_N(z) = b^\ast) \\ &&|&
-     s{:}\Tsign~\text{inf} &\Rightarrow& b^\ast & (\ieeeinf_N(s) = b^\ast) \\ &&|&
-     s{:}\Tsign~\text{nan} &\Rightarrow& b^\ast & (\ieeenan_N(s, 0) = b^\ast) \\ &&|&
+     z{:}\Tfloat &\Rightarrow& \ieee_N(z) \\ &&|&
+     z{:}\Thexfloat &\Rightarrow& \ieee_N(z) \\ &&|&
+     s{:}\Tsign~\text{inf} &\Rightarrow& \ieeeinf_N(s) \\ &&|&
+     s{:}\Tsign~\text{nan} &\Rightarrow& \ieeenan_N(s, 0) \\ &&|&
      s{:}\Tsign~\text{nan{:}}~\text{0x}~n{:}\Thexnum &\Rightarrow& b^\ast & (\ieeenan_N(s, n) = b^\ast) \\
    \end{array}
 
-.. todo:: IEEE encoding
+.. todo:: IEEE encoding helper functions
 
 
 .. _text-vec:
@@ -154,13 +154,11 @@ Strings
 
 *Strings* denote sequences of bytes that can represent both textual and binary data.
 They are enclosed in quotation marks
-and may contain any character other than `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\verb|\|}`),
+and may contain any character other than `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\backslash}`),
 except when expressed with an *escape sequence*.
 
 Each character in a string literal represents the byte sequence corresponding to its `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding,
-except for hexadecimal escape sequences :math:`\text{\verb|\|}hh`, which represent raw bytes of the respective value.
-
-.. todo - find replacement for the use of \verb, which isn't actually allowed in math mode, nor can be put into an \mbox
+except for hexadecimal escape sequences :math:`\text{\backslash}hh`, which represent raw bytes of the respective value.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -170,18 +168,18 @@ except for hexadecimal escape sequences :math:`\text{\verb|\|}hh`, which represe
        & (|\concat((b^\ast)^\ast)| < 2^{32}) \\
    \production{string element} & \Tstringelem &::=&
      c{:}\Tstringchar &\Rightarrow& \utf8(c) \\ &&|&
-     \text{\verb|\|}~n{:}\Thexdigit~m{:}\Thexdigit
+     \text{\backslash}~n{:}\Thexdigit~m{:}\Thexdigit
        &\Rightarrow& 16\cdot n+m \\
    \production{string character} & \Tstringchar &::=&
      c{:}\Tchar &\Rightarrow& c \qquad
-       & (c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\verb|\|}) \\ &&|&
-     \text{\verb|\t|} &\Rightarrow& \unicode{09} \\ &&|&
-     \text{\verb|\n|} &\Rightarrow& \unicode{0A} \\ &&|&
-     \text{\verb|\r|} &\Rightarrow& \unicode{0D} \\ &&|&
-     \text{\verb|\"|} &\Rightarrow& \unicode{22} \\ &&|&
-     \text{\verb|\'|} &\Rightarrow& \unicode{27} \\ &&|&
-     \text{\verb|\\|} &\Rightarrow& \unicode{5C} \\ &&|&
-     \text{\verb|\u|\{}~n{:}\Thexnum~\text{\}}
+       & (c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\backslash}) \\ &&|&
+     \text{\backslash t} &\Rightarrow& \unicode{09} \\ &&|&
+     \text{\backslash n} &\Rightarrow& \unicode{0A} \\ &&|&
+     \text{\backslash r} &\Rightarrow& \unicode{0D} \\ &&|&
+     \text{\backslash{"}} &\Rightarrow& \unicode{22} \\ &&|&
+     \text{\backslash{'}} &\Rightarrow& \unicode{27} \\ &&|&
+     \text{\backslash\backslash} &\Rightarrow& \unicode{5C} \\ &&|&
+     \text{\backslash u\{}~n{:}\Thexnum~\text{\}}
        &\Rightarrow& \unicode{(n)} & (n < \hex{D800} \vee \hex{E000} \leq n < \hex{110000}) \\
    \end{array}
 
@@ -215,12 +213,12 @@ Identifiers
 ~~~~~~~~~~~
 
 :ref:`Indices <syntax-index>` can be given in both numeric and symbolic form.
-Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{$}`, followed by any sequence of printable `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket.
+Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}`, followed by any sequence of printable `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{identifier} & \Tid &::=&
-     \text{$}~\Tidchar^+ \\
+     \text{\$}~\Tidchar^+ \\
    \production{identifier character} & \Tidchar &::=&
      \text{0} ~~|~~ \dots ~~|~~ \text{9} \\ &&|&
      \text{A} ~~|~~ \dots ~~|~~ \text{Z} \\ &&|&
@@ -230,7 +228,7 @@ Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{$}`
      \text{\$} ~~|~~
      \text{\%} ~~|~~
      \text{\&} ~~|~~
-     \text{\verb|'|} ~~|~~
+     \text{'} ~~|~~
      \text{*} ~~|~~
      \text{+} ~~|~~
      \text{-} ~~|~~
@@ -242,14 +240,15 @@ Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{$}`
      \text{>} ~~|~~
      \text{?} ~~|~~
      \text{@} ~~|~~
-     \text{\verb|\|} ~~|~~
-     \text{\verb|^|} ~~|~~
-     \text{\verb|_|} ~~|~~
-     \text{\verb|`|} ~~|~~
+     \text{\backslash} ~~|~~
+     \text{\hat{~~}} ~~|~~
+     \text{\_} ~~|~~
+     \text{\grave{~~}} ~~|~~
      \text{|} ~~|~~
-     \text{\verb|~|} \\
+     \text{\tilde{~~}} \\
    \end{array}
 
+.. bla
 
 .. _text-id-fresh:
 

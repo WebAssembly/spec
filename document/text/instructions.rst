@@ -42,7 +42,7 @@ Indices
 Such identifiers are looked up in the suitable space of the :ref:`identifier context <text-context>`.
 
 .. math::
-   \begin{array}{llclllllll}
+   \begin{array}{llcllllllll}
    \production{type index} & \Ttypeidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x &|&
      v{:}\Tid &\Rightarrow& x & (I.\TYPES[x] = v) \\
@@ -76,7 +76,7 @@ They are the only symbolic identifiers that can be bound locally in an instructi
 The following grammar handles the corresponding update to the :ref:`identifier context <text-context>` by producing a context with an additional label entry.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcllll}
    \production{label} & \Tlabel_I &::=&
      \epsilon &\Rightarrow& \{\LABELS~(\epsilon)\} \compose I \\ &&|&
      v{:}\Tid &\Rightarrow& \{\LABELS~v\} \compose I

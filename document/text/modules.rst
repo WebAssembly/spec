@@ -32,7 +32,7 @@ That allows binding symbolic :ref:`identifiers <text-id>` to name the :ref:`loca
 If inline declarations are given, then their types must match the referenced :ref:`function type <text-type>`.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcllll}
    \production{type use} & \Ttypeuse_I &::=&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
        &\Rightarrow& x, I' &
@@ -499,7 +499,7 @@ The name serves a documentary role only.
 .. math::
    \begin{array}{lll}
    \production{module} & \Tmodule &
-   \begin{array}[t]{@{}clll}
+   \begin{array}[t]{@{}cllll}
    ::=&
      \text{(}~\text{module}~~\Tid^?~~(m{:}\Tmodulefield_I)^\ast~\text{)}
        &\Rightarrow& \bigcompose m^\ast
