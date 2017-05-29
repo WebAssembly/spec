@@ -238,12 +238,15 @@ let export_type (m : module_) (ex : export) : external_type =
     ExternalGlobalType (nth gts x.it)
 
 let string_of_name n =
-  let s = Utf8.encode n in
-  let b = Buffer.create (3 * String.length s) in
-  let escape = function
-    | '\"' -> Buffer.add_string b "\\\""
-    | c when '\x20' <= c && c < '\x7f' -> Buffer.add_char b c
-    | c -> Buffer.add_string b (Printf.sprintf "\\%02x" (Char.code c))
+  let b = Buffer.create 16 in
+  let escape uc =
+    if uc < 0x20 || uc >= 0x7f then
+      Buffer.add_string b (Printf.sprintf "\\u{%02x}" uc)
+    else begin
+      let c = Char.chr uc in
+      if c = '\"' || c = '\\' then Buffer.add_char b '\\';
+      Buffer.add_char b c
+    end
   in
-  String.iter escape s;
+  List.iter escape n;
   Buffer.contents b
