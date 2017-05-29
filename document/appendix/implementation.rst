@@ -54,7 +54,7 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the range of :ref:`code points <syntax-codepoint>` in a :ref:`name <syntax-name>`
 
 If the limits of an implementation are exceeded for a given module,
-then the implementation may reject the :ref:`instantiation <exec-instantiate>` of that module with an embedder-specific error.
+then the implementation may reject the :ref:`validation <valid>`, compilation, or :ref:`instantiation <exec-instantiate>` of that module with an embedder-specific error.
 
 .. note::
    The last item allows embedders that operate in limited environments without support for
