@@ -418,7 +418,12 @@
 
 .. Numerics, meta functions
 
+.. |bits| mathdef:: \xref{execution/numerics}{aux-bits}{\F{bits}}
 .. |bytes| mathdef:: \xref{execution/numerics}{aux-bytes}{\F{bytes}}
 .. |signed| mathdef:: \xref{execution/numerics}{aux-signed}{\F{signed}}
 .. |extend| mathdef:: \xref{execution/numerics}{aux-extend}{\F{extend}}
 .. |wrap| mathdef:: \xref{execution/numerics}{aux-wrap}{\F{wrap}}
+.. |floor| mathdef:: \xref{execution/numerics}{aux-floor}{\F{floor}}
+.. |ceil| mathdef:: \xref{execution/numerics}{aux-ceil}{\F{ceil}}
+.. |trunc| mathdef:: \xref{execution/numerics}{aux-trunc}{\F{trunc}}
+.. |bool| mathdef:: \xref{execution/numerics}{aux-bool}{\F{bool}}
