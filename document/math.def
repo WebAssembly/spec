@@ -416,6 +416,7 @@
 .. |stepto| mathdef:: \hookrightarrow
 .. |mod| mathdef:: \mathbin{\F{mod}}
 
+
 .. Numerics, meta functions
 
 .. |bits| mathdef:: \xref{execution/numerics}{aux-bits}{\F{bits}}
@@ -427,3 +428,36 @@
 .. |ceil| mathdef:: \xref{execution/numerics}{aux-ceil}{\F{ceil}}
 .. |trunc| mathdef:: \xref{execution/numerics}{aux-trunc}{\F{trunc}}
 .. |bool| mathdef:: \xref{execution/numerics}{aux-bool}{\F{bool}}
+
+
+.. Numerics, operators
+
+.. |addop| mathdef:: \xref{execution/numerics}{op-add}{\F{add}}
+.. |subop| mathdef:: \xref{execution/numerics}{op-sub}{\F{sub}}
+.. |mulop| mathdef:: \xref{execution/numerics}{op-mul}{\F{mul}}
+.. |divuop| mathdef:: \xref{execution/numerics}{op-div_u}{\F{div\_u}}
+.. |divsop| mathdef:: \xref{execution/numerics}{op-div_s}{\F{div\_s}}
+.. |remuop| mathdef:: \xref{execution/numerics}{op-rem_u}{\F{rem\_u}}
+.. |remsop| mathdef:: \xref{execution/numerics}{op-rem_s}{\F{rem\_s}}
+.. |andop| mathdef:: \xref{execution/numerics}{op-and}{\F{and}}
+.. |orop| mathdef:: \xref{execution/numerics}{op-or}{\F{or}}
+.. |xorop| mathdef:: \xref{execution/numerics}{op-xor}{\F{xor}}
+.. |shlop| mathdef:: \xref{execution/numerics}{op-shl}{\F{shl}}
+.. |shruop| mathdef:: \xref{execution/numerics}{op-shr_u}{\F{shr\_u}}
+.. |shrsop| mathdef:: \xref{execution/numerics}{op-shr_s}{\F{shr\_s}}
+.. |rotlop| mathdef:: \xref{execution/numerics}{op-rotl}{\F{rotl}}
+.. |rotrop| mathdef:: \xref{execution/numerics}{op-rotr}{\F{rotr}}
+.. |clzop| mathdef:: \xref{execution/numerics}{op-clz}{\F{clz}}
+.. |ctzop| mathdef:: \xref{execution/numerics}{op-ctz}{\F{ctz}}
+.. |popcntop| mathdef:: \xref{execution/numerics}{op-popcnt}{\F{popcnt}}
+.. |eqzop| mathdef:: \xref{execution/numerics}{op-eqz}{\F{eqz}}
+.. |eqop| mathdef:: \xref{execution/numerics}{op-eq}{\F{eq}}
+.. |neop| mathdef:: \xref{execution/numerics}{op-ne}{\F{ne}}
+.. |ltuop| mathdef:: \xref{execution/numerics}{op-lt_u}{\F{lt\_u}}
+.. |ltsop| mathdef:: \xref{execution/numerics}{op-lt_s}{\F{lt\_s}}
+.. |gtuop| mathdef:: \xref{execution/numerics}{op-gt_u}{\F{gt\_u}}
+.. |gtsop| mathdef:: \xref{execution/numerics}{op-gt_s}{\F{gt\_s}}
+.. |leuop| mathdef:: \xref{execution/numerics}{op-le_u}{\F{le\_u}}
+.. |lesop| mathdef:: \xref{execution/numerics}{op-le_s}{\F{le\_s}}
+.. |geuop| mathdef:: \xref{execution/numerics}{op-ge_u}{\F{ge\_u}}
+.. |gesop| mathdef:: \xref{execution/numerics}{op-ge_s}{\F{ge\_s}}

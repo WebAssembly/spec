@@ -65,46 +65,46 @@ Note that |bytes| is a bijection, hence the function is invertible.
 Integer Operations
 ~~~~~~~~~~~~~~~~~~
 
-.. _exec-add:
+.. _op-add:
 
-:math:`\F{add}_{\K{i}N}(i_1, i_2)`
-..................................
+:math:`\addop_{\K{i}N}(i_1, i_2)`
+.................................
 
 * Return the result of adding :math:`i_1` and :math:`i_2` modulo :math:`2^N`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{add}_{\K{i}N}(i_1, i_2) &=& (i_1 + i_2) \mod 2^N
+   \addop_{\K{i}N}(i_1, i_2) &=& (i_1 + i_2) \mod 2^N
    \end{array}
 
-.. _exec-sub:
+.. _op-sub:
 
-:math:`\F{sub}_{\K{i}N}(i_1, i_2)`
-..................................
+:math:`\subop_{\K{i}N}(i_1, i_2)`
+.................................
 
 * Return the result of subtracting :math:`i_2` from :math:`i_1` modulo :math:`2^N`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{sub}_{\K{i}N}(i_1, i_2) &=& (i_1 - i_2 + 2^N) \mod 2^N
+   \subop_{\K{i}N}(i_1, i_2) &=& (i_1 - i_2 + 2^N) \mod 2^N
    \end{array}
 
-.. _exec-mul:
+.. _op-mul:
 
-:math:`\F{mul}_{\K{i}N}(i_1, i_2)`
-..................................
+:math:`\mulop_{\K{i}N}(i_1, i_2)`
+.................................
 
 * Return the result of multiplying :math:`i_1` and :math:`i_2` modulo :math:`2^N`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{mul}_{\K{i}N}(i_1, i_2) &=& (i_1 \cdot i_2) \mod 2^N
+   \mulop_{\K{i}N}(i_1, i_2) &=& (i_1 \cdot i_2) \mod 2^N
    \end{array}
 
-.. _exec-div_u:
+.. _op-div_u:
 
-:math:`\F{div\_u}_{\K{i}N}(i_1, i_2)`
-.....................................
+:math:`\divuop_{\K{i}N}(i_1, i_2)`
+..................................
 
 * If :math:`i_2` is not :math:`0`, then:
 
@@ -112,16 +112,16 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{div\_u}_{\K{i}N}(i_1, i_2) &=& \F{floor}(i_1 / i_2) & (i_2 \neq 0)
+   \divuop_{\K{i}N}(i_1, i_2) &=& \floor(i_1 / i_2) & (i_2 \neq 0)
    \end{array}
 
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
 
-.. _exec-div_s:
+.. _op-div_s:
 
-:math:`\F{div\_s}_{\K{i}N}(i_1, i_2)`
-.....................................
+:math:`\divsop_{\K{i}N}(i_1, i_2)`
+..................................
 
 * If :math:`i_2` is not :math:`0`, then:
 
@@ -133,16 +133,16 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{div\_s}_{\K{i}N}(i_1, i_2) &=& \signed_N^{-1}(\F{trunc}(\signed_N(i_1) / \signed_N(i_2))) & (i_2 \neq 0)
+   \divsop_{\K{i}N}(i_1, i_2) &=& \signed_N^{-1}(\trunc(\signed_N(i_1) / \signed_N(i_2))) & (i_2 \neq 0)
    \end{array}
 
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
 
-.. _exec-rem_u:
+.. _op-rem_u:
 
-:math:`\F{rem\_u}_{\K{i}N}(i_1, i_2)`
-.....................................
+:math:`\remuop_{\K{i}N}(i_1, i_2)`
+..................................
 
 * If :math:`i_2` is not :math:`0`, then:
 
@@ -150,19 +150,19 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{rem\_u}_{\K{i}N}(i_1, i_2) &=& i_1 - i_2 \cdot \F{floor}(i_1 / i_2) & (i_2 \neq 0)
+   \remuop_{\K{i}N}(i_1, i_2) &=& i_1 - i_2 \cdot \floor(i_1 / i_2) & (i_2 \neq 0)
    \end{array}
 
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
 
    As long as :math:`i_2 \neq 0` it holds that
-   :math:`i_1 = i_2\cdot\F{div\_u}(i_1, i_2) + \F{rem\_u}(i_1, i_2)`.
+   :math:`i_1 = i_2\cdot\divuop(i_1, i_2) + \remuop(i_1, i_2)`.
 
-.. _exec-rem_s:
+.. _op-rem_s:
 
-:math:`\F{rem\_s}_{\K{i}N}(i_1, i_2)`
-.....................................
+:math:`\remsop_{\K{i}N}(i_1, i_2)`
+..................................
 
 * If :math:`i_2` is not :math:`0`, then:
 
@@ -174,56 +174,56 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{rem\_s}_{\K{i}N}(i_1, i_2) &=& \signed_N^{-1}(i_1 - i_2 \cdot \F{trunc}(\signed_N(i_1) / \signed_N(i_2))) & (i_2 \neq 0)
+   \remsop_{\K{i}N}(i_1, i_2) &=& \signed_N^{-1}(i_1 - i_2 \cdot \trunc(\signed_N(i_1) / \signed_N(i_2))) & (i_2 \neq 0)
    \end{array}
 
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
 
    As long as :math:`i_2 \neq 0` it holds that
-   :math:`i_1 = i_2\cdot\F{div\_s}(i_1, i_2) + \F{rem\_s}(i_1, i_2)`.
+   :math:`i_1 = i_2\cdot\divsop(i_1, i_2) + \remsop(i_1, i_2)`.
 
 
-.. _exec-and:
+.. _op-and:
 
-:math:`\F{and}_{\K{i}N}(i_1, i_2)`
-..................................
+:math:`\andop_{\K{i}N}(i_1, i_2)`
+.................................
 
 * Return the bitwise conjunction of :math:`i_1` and :math:`i_2`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{and}_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \wedge \bits_N(i_2))
+   \andop_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \wedge \bits_N(i_2))
    \end{array}
 
-.. _exec-or:
+.. _op-or:
 
-:math:`\F{or}_{\K{i}N}(i_1, i_2)`
-.................................
+:math:`\orop_{\K{i}N}(i_1, i_2)`
+................................
 
 * Return the bitwise disjunction of :math:`i_1` and :math:`i_2`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{or}_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \vee \bits_N(i_2))
+   \orop_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \vee \bits_N(i_2))
    \end{array}
 
-.. _exec-xor:
+.. _op-xor:
 
-:math:`\F{xor}_{\K{i}N}(i_1, i_2)`
-..................................
+:math:`\xorop_{\K{i}N}(i_1, i_2)`
+.................................
 
 * Return the bitwise exclusive disjunction of :math:`i_1` and :math:`i_2`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{xor}_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \veebar \bits_N(i_2))
+   \xorop_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \veebar \bits_N(i_2))
    \end{array}
 
-.. _exec-shl:
+.. _op-shl:
 
-:math:`\F{shl}_{\K{i}N}(i_1, i_2)`
-..................................
+:math:`\shlop_{\K{i}N}(i_1, i_2)`
+.................................
 
 * Let :math:`k` be :math:`i_2` modulo :math:`N`.
 
@@ -231,14 +231,14 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{shl}_{\K{i}N}(i_1, i_2) &=& (i_1 \cdot 2^{i_2 \mod N}) \mod 2^N \\
-   \F{shl}_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(b_2^{N-k}~0^k) & (\bits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
+   \shlop_{\K{i}N}(i_1, i_2) &=& (i_1 \cdot 2^{i_2 \mod N}) \mod 2^N \\
+   \shlop_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(b_2^{N-k}~0^k) & (\bits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
    \end{array}
 
-.. _exec-shr_u:
+.. _op-shr_u:
 
-:math:`\F{shr\_u}_{\K{i}N}(i_1, i_2)`
-.....................................
+:math:`\shruop_{\K{i}N}(i_1, i_2)`
+..................................
 
 * Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
 
@@ -246,14 +246,14 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{shr\_u}_{\K{i}N}(i_1, i_2) &=& \floor_N(i_1 / 2^{i_2 \mod N}) \\
-   \F{shr\_u}_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(0^k~b_1^{N-k}) & (\bits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
+   \shruop_{\K{i}N}(i_1, i_2) &=& \floor_N(i_1 / 2^{i_2 \mod N}) \\
+   \shruop_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(0^k~b_1^{N-k}) & (\bits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
-.. _exec-shr_s:
+.. _op-shr_s:
 
-:math:`\F{shr\_s}_{\K{i}N}(i_1, i_2)`
-.....................................
+:math:`\shrsop_{\K{i}N}(i_1, i_2)`
+..................................
 
 * Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
 
@@ -261,14 +261,14 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{shr\_s}_{\K{i}N}(i_1, i_2) &=& \signed_N^{-1}(\floor_N(\signed_N(i_1) / 2^{i_2 \mod N})) \\
-   \F{shr\_s}_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) & (\bits_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mod N)
+   \shrsop_{\K{i}N}(i_1, i_2) &=& \signed_N^{-1}(\floor_N(\signed_N(i_1) / 2^{i_2 \mod N})) \\
+   \shrsop_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) & (\bits_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
-.. _exec-rotl:
+.. _op-rotl:
 
-:math:`\F{rotl}_{\K{i}N}(i_1, i_2)`
-...................................
+:math:`\rotlop_{\K{i}N}(i_1, i_2)`
+..................................
 
 * Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
 
@@ -276,14 +276,14 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{rotl}_{\K{i}N}(i_1, i_2) &=& (i_1 \cdot 2^{i_2 \mod N} \mod 2^N) + \floor_N(i_1 / 2^{N - (i_2 \mod N)}) \\
-   \F{rotl}_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(b_2^{N-k}~b_1^k) & (\bits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
+   \rotlop_{\K{i}N}(i_1, i_2) &=& (i_1 \cdot 2^{i_2 \mod N} \mod 2^N) + \floor_N(i_1 / 2^{N - (i_2 \mod N)}) \\
+   \rotlop_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(b_2^{N-k}~b_1^k) & (\bits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
    \end{array}
 
-.. _exec-rotr:
+.. _op-rotr:
 
-:math:`\F{rotr}_{\K{i}N}(i_1, i_2)`
-...................................
+:math:`\rotrop_{\K{i}N}(i_1, i_2)`
+..................................
 
 * Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
 
@@ -291,106 +291,106 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{rotr}_{\K{i}N}(i_1, i_2) &=& (i_1 \cdot 2^{N - (i_2 \mod N)} \mod 2^N) + \floor_N(i_1 / 2^{i_2 \mod N}) \\
-   \F{rotr\_u}_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(b_2^k~b_1^{N-k}) & (\bits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
+   \rotrop_{\K{i}N}(i_1, i_2) &=& (i_1 \cdot 2^{N - (i_2 \mod N)} \mod 2^N) + \floor_N(i_1 / 2^{i_2 \mod N}) \\
+   \rotruop_{\K{i}N}(i_1, i_2) &=& \bits_N^{-1}(b_2^k~b_1^{N-k}) & (\bits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
 
-.. _exec-clz:
+.. _op-clz:
 
-:math:`\F{clz}_{\K{i}N}(i)`
-...........................
+:math:`\clzop_{\K{i}N}(i)`
+..........................
 
 * Return the count of leading zero bits in :math:`i`; all bits are considered leading zeros if :math:`i` is :math:`0`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{clz}_{\K{i}N}(i) &=& k & (\bits_N(i) = 0^k~(1~b^\ast)^?)
+   \clzop_{\K{i}N}(i) &=& k & (\bits_N(i) = 0^k~(1~b^\ast)^?)
    \end{array}
 
 
-.. _exec-ctz:
+.. _op-ctz:
 
-:math:`\F{ctz}_{\K{i}N}(i)`
-...........................
+:math:`\ctzop_{\K{i}N}(i)`
+..........................
 
 * Return the count of trailing zero bits in :math:`i`; all bits are considered trailing zeros if :math:`i` is :math:`0`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{ctz}_{\K{i}N}(i) &=& k & (\bits_N(i) = (b^\ast~1)^?~0^k)
+   \ctzop_{\K{i}N}(i) &=& k & (\bits_N(i) = (b^\ast~1)^?~0^k)
    \end{array}
 
 
-.. _exec-popcnt:
+.. _op-popcnt:
 
-:math:`\F{popcnt}_{\K{i}N}(i)`
-..............................
+:math:`\popcntop_{\K{i}N}(i)`
+.............................
 
 * Return the count of non-zero bits in :math:`i`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{popcnt}_{\K{i}N}(i) &=& k & (\bits_N(i) = (0^\ast~1)^k~0^\ast)
+   \popcntop_{\K{i}N}(i) &=& k & (\bits_N(i) = (0^\ast~1)^k~0^\ast)
    \end{array}
 
 
-.. _exec-eqz:
+.. _op-eqz:
 
-:math:`\F{eqz}_{\K{i}N}(i)`
-...........................
+:math:`\eqzop_{\K{i}N}(i)`
+..........................
 
 * Return :math:`1` if :math:`i` is zero, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{eqz}_{\K{i}N}(i) &=& \bool(i = 0)
+   \eqzop_{\K{i}N}(i) &=& \bool(i = 0)
    \end{array}
 
 
-.. _exec-eq:
+.. _op-eq:
 
-:math:`\F{eq}_{\K{i}N}(i_!, i_2)`
-.................................
+:math:`\eqop_{\K{i}N}(i_!, i_2)`
+................................
 
 * Return :math:`1` if :math:`i_1` equals :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{eq}_{\K{i}N}(i_1, i_2) &=& \bool(i_1 = i_2)
+   \eqop_{\K{i}N}(i_1, i_2) &=& \bool(i_1 = i_2)
    \end{array}
 
 
-.. _exec-ne:
+.. _op-ne:
 
-:math:`\F{ne}_{\K{i}N}(i_!, i_2)`
-.................................
+:math:`\neop_{\K{i}N}(i_!, i_2)`
+................................
 
 * Return :math:`1` if :math:`i_1` does not equal :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{ne}_{\K{i}N}(i_1, i_2) &=& \bool(i_1 \neq i_2)
+   \neop_{\K{i}N}(i_1, i_2) &=& \bool(i_1 \neq i_2)
    \end{array}
 
 
-.. _exec-lt_u:
+.. _op-lt_u:
 
-:math:`\F{lt\_u}_{\K{i}N}(i_!, i_2)`
-....................................
+:math:`\ltuop_{\K{i}N}(i_!, i_2)`
+.................................
 
 * Return :math:`1` if :math:`i_1` is less than :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{lt\_u}_{\K{i}N}(i_1, i_2) &=& \bool(i_1 < i_2)
+   \ltuop_{\K{i}N}(i_1, i_2) &=& \bool(i_1 < i_2)
    \end{array}
 
 
-.. _exec-lt_s:
+.. _op-lt_s:
 
-:math:`\F{lt\_s}_{\K{i}N}(i_!, i_2)`
-....................................
+:math:`\ltsop_{\K{i}N}(i_!, i_2)`
+.................................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
 
@@ -400,27 +400,27 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{lt\_s}_{\K{i}N}(i_1, i_2) &=& \bool(\signed_N(i_1) < \signed_N(i_2))
+   \ltsop_{\K{i}N}(i_1, i_2) &=& \bool(\signed_N(i_1) < \signed_N(i_2))
    \end{array}
 
 
-.. _exec-gt_u:
+.. _op-gt_u:
 
-:math:`\F{gt\_u}_{\K{i}N}(i_!, i_2)`
-....................................
+:math:`\gtuop_{\K{i}N}(i_!, i_2)`
+.................................
 
 * Return :math:`1` if :math:`i_1` is greater than :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{gt\_u}_{\K{i}N}(i_1, i_2) &=& \bool(i_1 > i_2)
+   \gtuop_{\K{i}N}(i_1, i_2) &=& \bool(i_1 > i_2)
    \end{array}
 
 
-.. _exec-gt_s:
+.. _op-gt_s:
 
-:math:`\F{gt\_s}_{\K{i}N}(i_!, i_2)`
-....................................
+:math:`\gtsop_{\K{i}N}(i_!, i_2)`
+.................................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
 
@@ -430,27 +430,27 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{gt\_s}_{\K{i}N}(i_1, i_2) &=& \bool(\signed_N(i_1) > \signed_N(i_2))
+   \gtsop_{\K{i}N}(i_1, i_2) &=& \bool(\signed_N(i_1) > \signed_N(i_2))
    \end{array}
 
 
-.. _exec-le_u:
+.. _op-le_u:
 
-:math:`\F{le\_u}_{\K{i}N}(i_!, i_2)`
-....................................
+:math:`\leuop_{\K{i}N}(i_!, i_2)`
+.................................
 
 * Return :math:`1` if :math:`i_1` is less than or equal to :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{le\_u}_{\K{i}N}(i_1, i_2) &=& \bool(i_1 \leq i_2)
+   \leuop_{\K{i}N}(i_1, i_2) &=& \bool(i_1 \leq i_2)
    \end{array}
 
 
-.. _exec-le_s:
+.. _op-le_s:
 
-:math:`\F{le\_s}_{\K{i}N}(i_!, i_2)`
-....................................
+:math:`\lesop_{\K{i}N}(i_!, i_2)`
+.................................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
 
@@ -460,27 +460,27 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{le\_s}_{\K{i}N}(i_1, i_2) &=& \bool(\signed_N(i_1) \leq \signed_N(i_2))
+   \lesop_{\K{i}N}(i_1, i_2) &=& \bool(\signed_N(i_1) \leq \signed_N(i_2))
    \end{array}
 
 
-.. _exec-ge_u:
+.. _op-ge_u:
 
-:math:`\F{ge\_u}_{\K{i}N}(i_!, i_2)`
-....................................
+:math:`\geuop_{\K{i}N}(i_!, i_2)`
+.................................
 
 * Return :math:`1` if :math:`i_1` is greater than or equal to :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{ge\_u}_{\K{i}N}(i_1, i_2) &=& \bool(i_1 \geq i_2)
+   \geuop_{\K{i}N}(i_1, i_2) &=& \bool(i_1 \geq i_2)
    \end{array}
 
 
-.. _exec-ge_s:
+.. _op-ge_s:
 
-:math:`\F{ge\_s}_{\K{i}N}(i_!, i_2)`
-....................................
+:math:`\gesop_{\K{i}N}(i_!, i_2)`
+.................................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
 
@@ -490,7 +490,7 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \F{ge\_s}_{\K{i}N}(i_1, i_2) &=& \bool(\signed_N(i_1) \geq \signed_N(i_2))
+   \gesop_{\K{i}N}(i_1, i_2) &=& \bool(\signed_N(i_1) \geq \signed_N(i_2))
    \end{array}
 
 
