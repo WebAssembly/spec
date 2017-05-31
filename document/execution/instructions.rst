@@ -384,7 +384,7 @@ Memory Instructions
 
     a. Let :math:`n` be the integer for which :math:`\bytes_N(n) = b^\ast`.
 
-    b. Let :math:`c` be the result of computing :math:`\extend_{\sx,N}(n)`.
+    b. Let :math:`c` be the result of computing :math:`\extend\F{\_}\sx_N(n)`.
 
 13. Else:
 
@@ -405,7 +405,7 @@ Memory Instructions
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(t.\LOAD{N}\K{\_}\sx~\memarg) &\stepto&
-     S; F; (t.\CONST~\extend_{\sx,N}(n))
+     S; F; (t.\CONST~\extend\F{\_}\sx_N(n))
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
