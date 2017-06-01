@@ -22,6 +22,7 @@
 .. Auxiliary definitions for grammars
 
 .. |production| mathdef:: \void
+
 .. |concat| mathdef:: \xref{syntax/conventions}{syntax-concat}{\F{concat}}
 .. |with| mathdef:: \xref{syntax/conventions}{syntax-record}{\mathrel{\mbox{with}}}
 .. |compose| mathdef:: \xref{syntax/conventions}{syntax-record}{\oplus}
@@ -66,6 +67,8 @@
 .. |hex#1| mathdef:: \mathtt{0x#1}
 .. |unicode#1| mathdef:: \mathrm{U{+}#1}
 
+.. |NAN| mathdef:: \xref{syntax/values}{syntax-float}{\K{nan}}
+
 
 .. Values, non-terminals
 
@@ -77,6 +80,7 @@
 .. |fX#1| mathdef:: {\X{f}#1}
 
 .. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\uX{N}}
+.. |uM| mathdef:: \xref{syntax/values}{syntax-int}{\uX{M}}
 .. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{1}}}
 .. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{8}}}
 .. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{16}}}
@@ -94,6 +98,7 @@
 .. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{64}}}
 
 .. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\fX{N}}
+.. |fNmag| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{Nmag}}}
 .. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{32}}}
 .. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{64}}}
 
@@ -172,6 +177,7 @@
 .. |Ti64| mathdef:: \xref{text/values}{text-int}{\TiX{\T{64}}}
 
 .. |TfN| mathdef:: \xref{text/values}{text-float}{\TfX{N}}
+.. |TfNmag| mathdef:: \xref{text/values}{text-float}{\TfX{N}\T{mag}}
 .. |Tf32| mathdef:: \xref{text/values}{text-float}{\TfX{\T{32}}}
 .. |Tf64| mathdef:: \xref{text/values}{text-float}{\TfX{\T{64}}}
 
@@ -592,18 +598,11 @@
 .. |bits| mathdef:: \xref{execution/numerics}{aux-bits}{\F{bits}}
 .. |bytes| mathdef:: \xref{execution/numerics}{aux-bytes}{\F{bytes}}
 .. |signed| mathdef:: \xref{execution/numerics}{aux-signed}{\F{signed}}
-.. |extend| mathdef:: \xref{execution/numerics}{aux-extend_u}{\F{extend}}
-.. |extendu| mathdef:: \xref{execution/numerics}{aux-extend_u}{\F{extend\_u}}
-.. |extends| mathdef:: \xref{execution/numerics}{aux-extend_s}{\F{extend\_s}}
-.. |wrap| mathdef:: \xref{execution/numerics}{aux-wrap}{\F{wrap}}
-.. |floor| mathdef:: \xref{execution/numerics}{aux-floor}{\F{floor}}
-.. |ceil| mathdef:: \xref{execution/numerics}{aux-ceil}{\F{ceil}}
-.. |trunc| mathdef:: \xref{execution/numerics}{aux-trunc}{\F{trunc}}
 .. |bool| mathdef:: \xref{execution/numerics}{aux-bool}{\F{bool}}
 
-.. |ieee| mathdef:: \F{ieee}
-.. |ieeeinf| mathdef:: \F{ieeeinf}
-.. |ieeenan| mathdef:: \F{ieeenan}
+.. |ieee| mathdef:: \xref{execution/numerics}{aux-ieee}{\F{ieee}}
+.. |nan| mathdef:: \xref{execution/numerics}{aux-nan}{\F{nan}}
+.. |payloadsize| mathdef:: \xref{syntax/values}{aux-payloadsize}{\F{payloadsize}}
 
 
 .. Numerics, operators
@@ -658,3 +657,19 @@
 .. |fgtop| mathdef:: \xref{execution/numerics}{op-fgt}{\F{fgt}}
 .. |fleop| mathdef:: \xref{execution/numerics}{op-fle}{\F{fle}}
 .. |fgeop| mathdef:: \xref{execution/numerics}{op-fge}{\F{fge}}
+
+.. |extend| mathdef:: \xref{execution/numerics}{op-extend_u}{\F{extend}}
+.. |extendu| mathdef:: \xref{execution/numerics}{op-extend_u}{\F{extend\_u}}
+.. |extends| mathdef:: \xref{execution/numerics}{op-extend_s}{\F{extend\_s}}
+.. |wrap| mathdef:: \xref{execution/numerics}{op-wrap}{\F{wrap}}
+.. |trunc| mathdef:: \xref{execution/numerics}{op-trunc_u}{\F{trunc}}
+.. |truncu| mathdef:: \xref{execution/numerics}{op-trunc_u}{\F{trunc\_u}}
+.. |truncs| mathdef:: \xref{execution/numerics}{op-trunc_s}{\F{trunc\_s}}
+.. |promote| mathdef:: \xref{execution/numerics}{op-promote}{\F{promote}}
+.. |demote| mathdef:: \xref{execution/numerics}{op-demote}{\F{demote}}
+.. |convert| mathdef:: \xref{execution/numerics}{op-convert_u}{\F{convert}}
+.. |convertu| mathdef:: \xref{execution/numerics}{op-convert_u}{\F{convert\_u}}
+.. |converts| mathdef:: \xref{execution/numerics}{op-convert_s}{\F{convert\_s}}
+.. |reinterpret| mathdef:: \xref{execution/numerics}{op-reinterpret}{\F{reinterpret}}
+
+.. |truncate| mathdef:: \xref{execution/numerics}{aux-truncate}{\F{truncate}}

@@ -8,7 +8,9 @@ sig
   val float_of_bits : t -> float
   val of_string : string -> t
   val to_string : t -> string
+  val to_hex_string : t -> string
 
+  val lognot : t -> t
   val logand : t -> t -> t
   val logor : t -> t -> t
   val logxor : t -> t -> t
@@ -18,7 +20,6 @@ sig
 
   val zero : t
   val bare_nan : t
-  val print_nan_significand_digits : t -> string
 end
 
 module type S =
@@ -193,36 +194,39 @@ struct
   let le x y = (to_float x <= to_float y)
   let ge x y = (to_float x >= to_float y)
 
-  let of_signless_string x len =
-    if x <> "nan" && len > 6 && String.sub x 0 6 = "nan:0x" then
-      let s = Rep.of_string (String.sub x 4 (len - 4)) in
-      if s = Rep.zero then
+  let of_signless_string s =
+    if s = "inf" then
+      bare_nan
+    else if s = "nan" then
+      pos_nan
+    else if String.length s > 6 && String.sub s 0 6 = "nan:0x" then
+      let x = Rep.of_string (String.sub s 4 (String.length s - 4)) in
+      if x = Rep.zero then
         raise (Failure "nan payload must not be zero")
-      else if Rep.logand s bare_nan <> Rep.zero then
+      else if Rep.logand x bare_nan <> Rep.zero then
         raise (Failure "nan payload must not overlap with exponent bits")
-      else if s < Rep.zero then
+      else if x < Rep.zero then
         raise (Failure "nan payload must not overlap with sign bit")
       else
-        Rep.logor s bare_nan
+        Rep.logor x bare_nan
     else
       (* TODO: OCaml's float_of_string is insufficient *)
-      of_float (float_of_string x)
+      of_float (float_of_string s)
 
-  let of_string x =
-    let len = String.length x in
-    if len > 0 && x.[0] = '-' then
-      neg (of_signless_string (String.sub x 1 (len - 1)) (len - 1))
-    else if len > 0 && x.[0] = '+' then
-      of_signless_string (String.sub x 1 (len - 1)) (len - 1)
+  let of_string s =
+    if s = "" then
+      failwith "of_string"
+    else if s.[0] = '+' || s.[0] = '-' then
+      let x = of_signless_string (String.sub s 1 (String.length s - 1)) in
+      if s.[0] = '+' then x else neg x
     else
-      of_signless_string x len
+      of_signless_string s
 
   let to_string x =
     (if x < Rep.zero then "-" else "") ^
-      let a = abs x in
-      if is_nan a then
-        "nan:0x" ^ Rep.print_nan_significand_digits a
-      else
-        (* TODO: use sprintf "%h" once we have upgraded to OCaml 4.03 *)
-        string_of_float (to_float a)
+    if is_nan x then
+      "nan:0x" ^ Rep.to_hex_string (Rep.logand (abs x) (Rep.lognot bare_nan))
+    else
+      (* TODO: use sprintf "%h" once we have upgraded to OCaml 4.03 *)
+      string_of_float (to_float (abs x))
 end

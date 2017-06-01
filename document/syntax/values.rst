@@ -72,21 +72,50 @@ Conventions
 
 
 .. _syntax-float:
-.. index:: ! floating-point number
+.. _syntax-payload:
+.. index:: ! floating-point number, *payload*
    pair: abstract syntax; floating-point number
 
 Floating-Point
 ~~~~~~~~~~~~~~
 
-*Floating-point* data consists of values in binary floating-point format according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
+*Floating-point* data consists of values according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
+Every value has a *sign* and a *magnitude*.
+Magnitudes include the special value :math:`\infty` (infinity) and |NAN| (NaN, not a number).
+Furthermore, NaN values have a *payload* value that describes the mantissa bits in the underlying representation.
+No distinction is being made between signalling and silent NaNs.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llcll}
    \production{floating-point number} & \fN &::=&
-     \byte^{N/8} \\
+     + \fNmag ~|~ - \fNmag \\
+   \production{floating-point magnitude} & \fNmag &::=&
+     0 \\ &&|&
+     q & (\ieee_N(q) = q \in \mathbb{Q}_+) \\ &&|&
+     \infty \\ &&|&
+     \NAN(\uM) & (M = \payloadsize(N) \wedge \uM \neq 0) \\
+   \end{array}
+
+where
+
+.. _aux-payloadsize:
+
+.. math::
+   \begin{array}{lcl}
+   \payloadsize(32) &=& 23 \\
+   \payloadsize(64) &=& 52 \\
    \end{array}
 
 The two possible sizes :math:`N` are 32 and 64.
+
+.. note::
+   The auxiliary function :math:`\ieee_N` rounds a rational value to the nearest value representable in IEEE 754.
+   The respective side condition ensures that only representable floating-point values are part of the abstract syntax.
+
+Convention
+..........
+
+* The notation :math:`\pm` or :math:`\mp` is used as a meta variable ranging over signs.
 
 
 .. _syntax-vec:

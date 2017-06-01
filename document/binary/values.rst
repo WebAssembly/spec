@@ -88,12 +88,12 @@ As an additional constraint, the total number of bytes encoding a value of type 
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating point <syntax-float>` values are encoded directly by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+:ref:`Floating point <syntax-float>` values are encoded by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{floating-point number} & \BfN &::=&
-     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \F{reverse}(b^\ast) \\
+     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \bytes_{\K{F}N}^{-1}(\F{reverse}(b^\ast)) \\
    \end{array}
 
 Here, :math:`\F{reverse}(b^\ast)` denotes the byte sequence :math:`b^\ast` in reversed order.
