@@ -236,3 +236,17 @@ let export_type (m : module_) (ex : export) : external_type =
   | GlobalExport x ->
     let gts = globals its @ List.map (fun g -> g.it.gtype) m.it.globals in
     ExternalGlobalType (nth gts x.it)
+
+let string_of_name n =
+  let b = Buffer.create 16 in
+  let escape uc =
+    if uc < 0x20 || uc >= 0x7f then
+      Buffer.add_string b (Printf.sprintf "\\u{%02x}" uc)
+    else begin
+      let c = Char.chr uc in
+      if c = '\"' || c = '\\' then Buffer.add_char b '\\';
+      Buffer.add_char b c
+    end
+  in
+  List.iter escape n;
+  Buffer.contents b

@@ -918,7 +918,7 @@ Entering :math:`\instr^\ast` with label :math:`L`
 
 1. Push :math:`L` to the stack.
 
-2. :ref:`Jump <exec-jump>` to the start of the instruction sequence :math:`\instr^\ast`.
+2. Jump to the start of the instruction sequence :math:`\instr^\ast`.
 
 .. note::
    No formal reduction rule is needed for entering an instruction sequence,
@@ -973,7 +973,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\FUNCS[a]` exists.
 
-2. Let :math:`f` be the :ref:`function instance <sytnax-funcinst>`, :math:`S.\FUNCS[a]`.
+2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\FUNCS[a]`.
 
 3. Assert: due to :ref:`validation <valid-func>`, :math:`f.\MODULE.\TYPES[f.\CODE.\TYPE]` exists.
 

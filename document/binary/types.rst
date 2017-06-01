@@ -1,7 +1,6 @@
 .. _binary-type:
 .. index:: type
    pair: binary format; type
-   single: abstract syntax; type
 
 Types
 -----
@@ -9,7 +8,6 @@ Types
 .. _binary-valtype:
 .. index:: value type
    pair: binary format; value type
-   single: abstract syntax; value type
 
 Value Types
 ~~~~~~~~~~~
@@ -34,7 +32,6 @@ Value Types
 .. _binary-blocktype:
 .. index:: result type, value type
    pair: binary format; result type
-   single: abstract syntax; result type
 
 Result Types
 ~~~~~~~~~~~~
@@ -55,7 +52,6 @@ The only :ref:`result types <syntax-resulttype>` occurring in the binary format 
 .. _binary-functype:
 .. index:: function type, value type, result type
    pair: binary format; function type
-   single: abstract syntax; function type
 
 Function Types
 ~~~~~~~~~~~~~~
@@ -73,7 +69,6 @@ Function Types
 .. _binary-limits:
 .. index:: limits
    pair: binary format; limits
-   single: abstract syntax; limits
 
 Limits
 ~~~~~~
@@ -90,8 +85,7 @@ Limits
 
 .. _binary-memtype:
 .. index:: memory type, limits, page size
-   single: binary format; memory type
-   pair: abstract syntax; memory type
+   pair: binary format; memory type
 
 Memory Types
 ~~~~~~~~~~~~
@@ -105,13 +99,11 @@ Memory Types
    \end{array}
 
 
-.. _syntax-tabletype:
-.. _syntax-elemtype:
+.. _binary-tabletype:
+.. _binary-elemtype:
 .. index:: table type, element type, limits
    pair: binary format; table type
    pair: binary format; element type
-   single: abstract syntax; table type
-   single: abstract syntax; element type
 
 Table Types
 ~~~~~~~~~~~
@@ -131,8 +123,6 @@ Table Types
 .. index:: global type, mutability, value type
    pair: binary format; global type
    pair: binary format; mutability
-   single: abstract syntax; global type
-   single: abstract syntax; mutability
 
 Global Types
 ~~~~~~~~~~~~

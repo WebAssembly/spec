@@ -19,7 +19,7 @@ end
 module String =
 struct
   let implode cs =
-    let buf = Buffer.create (List.length cs) in
+    let buf = Buffer.create 80 in
     List.iter (Buffer.add_char buf) cs;
     Buffer.contents buf
 
