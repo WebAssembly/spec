@@ -44,10 +44,10 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 * :math:`B^n` is a sequence of :math:`n\geq 0` iterations  of :math:`B`.
 
 * :math:`B^\ast` is a possibly empty sequence of iterations of :math:`B`.
-  (This is a shorthand for :math:`A^n` used where :math:`n` is not relevant.)
+  (This is a shorthand for :math:`B^n` used where :math:`n` is not relevant.)
 
 * :math:`B^?` is an optional occurrence of :math:`B`.
-  (This is a shorthand for :math:`A^n` where :math:`n \leq 1`.)
+  (This is a shorthand for :math:`B^n` where :math:`n \leq 1`.)
 
 * :math:`x{:}B` denotes the same language as the nonterminal :math:`B`, but also binds the variable :math:`x` to the attribute synthesized for :math:`B`.
 

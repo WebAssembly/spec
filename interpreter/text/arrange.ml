@@ -19,17 +19,22 @@ let add_char buf c =
     if c = '\"' || c = '\\' then Buffer.add_char buf '\\';
     Buffer.add_char buf c
   end
+let add_unicode_char buf uc =
+  if uc < 0x20 || uc >= 0x7f then
+    Printf.bprintf buf "\\u{%02x}" uc
+  else
+    add_char buf (Char.chr uc)
 
-let string_with add_char s =
-  let buf = Buffer.create (3 * String.length s + 2) in
+let string_with iter add_char s =
+  let buf = Buffer.create 256 in
   Buffer.add_char buf '\"';
-  String.iter (add_char buf) s;
+  iter (add_char buf) s;
   Buffer.add_char buf '\"';
   Buffer.contents buf
 
-let bytes = string_with add_hex_char
-let string = string_with add_char
-let name n = string (Utf8.encode n)
+let bytes = string_with String.iter add_hex_char
+let string = string_with String.iter add_char
+let name = string_with List.iter add_unicode_char
 
 let list_of_opt = function None -> [] | Some x -> [x]
 
@@ -53,7 +58,7 @@ let elem_type t = string_of_elem_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
-let stack_type ts = list (atom value_type) ts
+let stack_type ts = decls "result" ts
 
 let func_type (FuncType (ins, out)) =
   Node ("func", decls "param" ins @ decls "result" out)

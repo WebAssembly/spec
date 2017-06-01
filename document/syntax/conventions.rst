@@ -58,6 +58,8 @@ When dealing with syntactic constructs the following notation is also used:
 * :math:`s \with [i:n] = A^n` denotes the same sequence as :math:`s`,
   except that the sub-sequence :math:`s[i:n]` is replaced with :math:`A^n`.
 
+* :math:`\concat(s^\ast)` denotes the flat sequence formed by concatenating all sequences :math:`s_i^\ast` in :math:`s^\ast`.
+
 Moreover, the following conventions are employed:
 
 * The notation :math:`x^n`, where :math:`x` is a non-terminal symbol, is treated as a meta variable ranging over respective sequences of :math:`x` (similarly for :math:`x^\ast`, :math:`x^+`, :math:`x^?`).
@@ -78,6 +80,13 @@ The following notation is adopted for manipulating such records:
 
 * :math:`r \with \K{field} = A` denotes the same record as :math:`r`,
   except that the value of the :math:`\K{field}` component is replaced with :math:`A`.
+
+* :math:`r_1 \compose r_2` denotes the composition of two records with the same fields of sequences by appending each sequence pointwise:
+
+  .. math::
+     \{ \K{field}_1\,A_1^\ast, \K{field}_2\,A_2^\ast, \dots \} \compose \{ \K{field}_1\,B_1^\ast, \K{field}_2\,B_2^\ast, \dots \} = \{ \K{field}_1\,A_1^\ast~B_1^\ast, \K{field}_2\,A_2^\ast~B_2^\ast, \dots \}
+
+* :math:`\bigcompose r^\ast` denotes the composition of a sequence of records, respectively; if the sequence is empty, then all fields of the resulting record are empty.
 
 The update notation for sequences and records generalizes recursively to nested components accessed by "paths" :math:`\X{pth} ::= ([\dots] \;| \;.\K{field})^+`:
 

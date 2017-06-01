@@ -170,7 +170,7 @@ let lookup (mods : modules) x_opt name at =
         else "unknown module " ^ of_var_opt mods x_opt ^ " within script"))
   in try ExportMap.find name exports with Not_found ->
     raise (Eval.Crash (at, "unknown export \"" ^
-      String.escaped (Utf8.encode name) ^ "\" within module"))
+      string_of_name name ^ "\" within module"))
 
 
 (* Wrappers *)
@@ -278,17 +278,22 @@ let add_char buf c =
     if c = '\"' || c = '\\' then Buffer.add_char buf '\\';
     Buffer.add_char buf c
   end
+let add_unicode_char buf uc =
+  if uc < 0x20 || uc >= 0x7f then
+    Printf.bprintf buf "\\u{%02x}" uc
+  else
+    add_char buf (Char.chr uc)
 
-let of_string_with add_char s =
-  let buf = Buffer.create (4 * String.length s + 2) in
+let of_string_with iter add_char s =
+  let buf = Buffer.create 256 in
   Buffer.add_char buf '\"';
-  String.iter (add_char buf) s;
+  iter (add_char buf) s;
   Buffer.add_char buf '\"';
   Buffer.contents buf
 
-let of_bytes = of_string_with add_hex_char
-let of_string = of_string_with add_char
-let of_name n = of_string (Utf8.encode n)
+let of_bytes = of_string_with String.iter add_hex_char
+let of_string = of_string_with String.iter add_char
+let of_name = of_string_with List.iter add_unicode_char
 
 let of_float z =
   match string_of_float z with
