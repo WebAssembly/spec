@@ -18,7 +18,7 @@ let error_nest start lexbuf msg =
   lexbuf.Lexing.lex_start_p <- start;
   error lexbuf msg
 
-let text s =
+let string s =
   let b = Buffer.create (String.length s) in
   let i = ref 1 in
   while !i < String.length s - 1 do
@@ -131,7 +131,7 @@ let float =
   | sign? "inf"
   | sign? "nan"
   | sign? "nan:" "0x" hexnum
-let text = '"' character* '"'
+let string = '"' character* '"'
 let name = '$' (letter | digit | '_' | symbol)+
 let reserved = ([^'\"''('')'';'] # space)+  (* hack for table size *)
 
@@ -151,10 +151,10 @@ rule token = parse
   | int as s { INT s }
   | float as s { FLOAT s }
 
-  | text as s { TEXT (text s) }
-  | '"'character*('\n'|eof) { error lexbuf "unclosed text literal" }
+  | string as s { STRING (string s) }
+  | '"'character*('\n'|eof) { error lexbuf "unclosed string literal" }
   | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
-    { error lexbuf "illegal control character in text literal" }
+    { error lexbuf "illegal control character in string literal" }
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 

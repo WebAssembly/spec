@@ -155,7 +155,7 @@ let inline_type_explicit (c : context) x ty at =
 
 %}
 
-%token NAT INT FLOAT TEXT VAR VALUE_TYPE ANYFUNC MUT LPAR RPAR
+%token NAT INT FLOAT STRING VAR VALUE_TYPE ANYFUNC MUT LPAR RPAR
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
@@ -173,7 +173,7 @@ let inline_type_explicit (c : context) x ty at =
 %token<string> NAT
 %token<string> INT
 %token<string> FLOAT
-%token<string> TEXT
+%token<string> STRING
 %token<string> VAR
 %token<Types.value_type> VALUE_TYPE
 %token<string Source.phrase -> Ast.instr' * Values.value> CONST
@@ -200,11 +200,11 @@ let inline_type_explicit (c : context) x ty at =
 /* Auxiliaries */
 
 name :
-  | TEXT { name $1 (at ()) }
+  | STRING { name $1 (at ()) }
 
-text_list :
+string_list :
   | /* empty */ { "" }
-  | text_list TEXT { $1 ^ $2 }
+  | string_list STRING { $1 ^ $2 }
 
 
 /* Types */
@@ -498,10 +498,10 @@ table_fields :
       [], [] }
 
 data :
-  | LPAR DATA var offset text_list RPAR
+  | LPAR DATA var offset string_list RPAR
     { let at = at () in
       fun c -> {index = $3 c memory; offset = $4 c; init = $5} @@ at }
-  | LPAR DATA offset text_list RPAR  /* Sugar */
+  | LPAR DATA offset string_list RPAR  /* Sugar */
     { let at = at () in
       fun c -> {index = 0l @@ at; offset = $3 c; init = $4} @@ at }
 
@@ -522,7 +522,7 @@ memory_fields :
   | inline_export memory_fields  /* Sugar */
     { fun c x at -> let mems, data, ims, exs = $2 c x at in
       mems, data, ims, $1 (MemoryExport x) c :: exs }
-  | LPAR DATA text_list RPAR  /* Sugar */
+  | LPAR DATA string_list RPAR  /* Sugar */
     { fun c x at ->
       let size = Int32.(div (add (of_int (String.length $3)) 65535l) 65536l) in
       [{mtype = MemoryType {min = size; max = Some size}} @@ at],
@@ -658,7 +658,7 @@ module_fields1 :
 module_ :
   | LPAR MODULE script_var_opt module_fields RPAR
     { $3, Textual ($4 (empty_context ()) @@ at ()) @@ at () }
-  | LPAR MODULE script_var_opt TEXT text_list RPAR
+  | LPAR MODULE script_var_opt STRING string_list RPAR
     { $3, Encoded ("binary", $4 ^ $5) @@ at() }
 
 inline_module :  /* Sugar */
@@ -681,19 +681,19 @@ action :
     { Get ($3, $4) @@ at() }
 
 assertion :
-  | LPAR ASSERT_MALFORMED module_ TEXT RPAR
+  | LPAR ASSERT_MALFORMED module_ STRING RPAR
     { AssertMalformed (snd $3, $4) @@ at () }
-  | LPAR ASSERT_INVALID module_ TEXT RPAR
+  | LPAR ASSERT_INVALID module_ STRING RPAR
     { AssertInvalid (snd $3, $4) @@ at () }
-  | LPAR ASSERT_UNLINKABLE module_ TEXT RPAR
+  | LPAR ASSERT_UNLINKABLE module_ STRING RPAR
     { AssertUnlinkable (snd $3, $4) @@ at () }
-  | LPAR ASSERT_TRAP module_ TEXT RPAR
+  | LPAR ASSERT_TRAP module_ STRING RPAR
     { AssertUninstantiable (snd $3, $4) @@ at () }
   | LPAR ASSERT_RETURN action const_list RPAR { AssertReturn ($3, $4) @@ at () }
   | LPAR ASSERT_RETURN_CANONICAL_NAN action RPAR { AssertReturnCanonicalNaN $3 @@ at () }
   | LPAR ASSERT_RETURN_ARITHMETIC_NAN action RPAR { AssertReturnArithmeticNaN $3 @@ at () }
-  | LPAR ASSERT_TRAP action TEXT RPAR { AssertTrap ($3, $4) @@ at () }
-  | LPAR ASSERT_EXHAUSTION action TEXT RPAR { AssertExhaustion ($3, $4) @@ at () }
+  | LPAR ASSERT_TRAP action STRING RPAR { AssertTrap ($3, $4) @@ at () }
+  | LPAR ASSERT_EXHAUSTION action STRING RPAR { AssertExhaustion ($3, $4) @@ at () }
 
 cmd :
   | action { Action $1 @@ at () }
@@ -708,8 +708,8 @@ cmd_list :
 
 meta :
   | LPAR SCRIPT script_var_opt cmd_list RPAR { Script ($3, $4) @@ at () }
-  | LPAR INPUT script_var_opt TEXT RPAR { Input ($3, $4) @@ at () }
-  | LPAR OUTPUT script_var_opt TEXT RPAR { Output ($3, Some $4) @@ at () }
+  | LPAR INPUT script_var_opt STRING RPAR { Input ($3, $4) @@ at () }
+  | LPAR OUTPUT script_var_opt STRING RPAR { Output ($3, Some $4) @@ at () }
   | LPAR OUTPUT script_var_opt RPAR { Output ($3, None) @@ at () }
 
 const :

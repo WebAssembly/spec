@@ -95,12 +95,9 @@ $(WINMAKE):	clean
 		>>$@
 
 
-# Miscellaneous targets
+# Executing test suite
 
-.PHONY:		test clean
-
-$(ZIP):		$(WINMAKE)
-		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
+.PHONY:		test debugtest
 
 test:		$(OPT)
 		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
@@ -116,6 +113,14 @@ run/%:		$(OPT)
 		./$(OPT) $(@:run/%=../test/core/%.wast)
 debugrun/%:		$(UNOPT)
 		./$(UNOPT) $(@:run/%=../test/core/%.wast)
+
+
+# Miscellaneous targets
+
+.PHONY:		clean
+
+$(ZIP):		$(WINMAKE)
+		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 clean:
 		rm -rf _build/jslib wasm.mlpack
