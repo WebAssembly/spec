@@ -636,8 +636,8 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \F{can}_N \} & (\forall \NAN(n) \in z^\ast,~ n = \F{can}_N) \\
-   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n > \F{can}_N \} & (\mbox{otherwise}) \\
+   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \canon_N \} & (\forall \NAN(n) \in z^\ast,~ n = \canon_N) \\
+   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n > \canon_N \} & (\mbox{otherwise}) \\
    \end{array}
 
 
@@ -1323,7 +1323,7 @@ Conversions
    \truncs_{M,N}(\pm \NAN(n)) &=& \{\} \\
    \truncs_{M,N}(\pm \infty) &=& \{\} \\
    \truncs_{M,N}(\pm 0) &=& 0 \\
-   \truncs_{M,N}(\pm q) &=& \trunc(\pm q) & (2^{N-1} \leq \trunc(\pm q) < 2^{N-1}) \\
+   \truncs_{M,N}(\pm q) &=& \trunc(\pm q) & (- 2^{N-1} \leq \trunc(\pm q) < 2^{N-1}) \\
    \truncs_{M,N}(\pm q) &=& \{\} & (\mbox{otherwise}) \\
    \end{array}
 
@@ -1345,8 +1345,8 @@ Conversions
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \promote_{M,N}(\pm \NAN(n)) &=& \nan_N\{\} & (n = \F{can}_N) \\
-   \promote_{M,N}(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(1)\} & (\mbox{otherwise}) \\
+   \promote_{M,N}(\pm \NAN(n)) &=& \nan_N\{\} & (n = \canon_N) \\
+   \promote_{M,N}(\pm \NAN(n)) &=& \nan_N\{+ \NAN(1)\} & (\mbox{otherwise}) \\
    \promote_{M,N}(z) &=& z \\
    \end{array}
 
@@ -1368,8 +1368,8 @@ Conversions
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \demote_{M,N}(\pm \NAN(n)) &=& \nan_N\{\} & (n = \F{can}_N) \\
-   \demote_{M,N}(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(1)\} & (\mbox{otherwise}) \\
+   \demote_{M,N}(\pm \NAN(n)) &=& \nan_N\{\} & (n = \canon_N) \\
+   \demote_{M,N}(\pm \NAN(n)) &=& \nan_N\{+ \NAN(1)\} & (\mbox{otherwise}) \\
    \demote_{M,N}(\pm \infty) &=& \pm \infty \\
    \demote_{M,N}(\pm 0) &=& \pm 0 \\
    \demote_{M,N}(\pm q) &=& \ieee_N(\pm q) \\
@@ -1423,8 +1423,8 @@ Conversions
 .. _aux-ibytes:
 .. _aux-fbytes:
 
-Memory Conversion
-~~~~~~~~~~~~~~~~~
+Storage Conversion
+~~~~~~~~~~~~~~~~~~
 
 When a number is stored in :ref:`memory <syntax-mem>`, it is converted into a sequence of :ref:`bytes <syntax-byte>`.
 
@@ -1446,7 +1446,7 @@ Floating-point values are represented in the respective binary format defined by
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \fbytes_N(z) &=& (\mbox{IEEE 754 $N$-bit binary representation of $z$})  \\
+   \fbytes_N(z) &=& \F{reverse}(\mbox{IEEE 754 $N$-bit binary representation of $z$})  \\
    \end{array}
 
-Each of these functions are bijections, hence they are invertible.
+Each of these functions is a bijection, hence they are invertible.
