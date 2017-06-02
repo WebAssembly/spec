@@ -66,9 +66,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/instrindex.html">Index of Instructions</a></li>
@@ -296,7 +294,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#syntax-record}{\oplus} \{\math
 <li>Let <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memory</span></a> to allocate.</li>
 <li>Let <span class="math">\(\{\mathsf{min}~n, \mathsf{max}~m^?\}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">table type</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}.\mathsf{type}\)</span>.</li>
 <li>Let <span class="math">\(a\)</span> be the first free <a class="reference internal" href="runtime.html#syntax-memaddr"><span class="std std-ref">memory address</span></a> in <span class="math">\(S\)</span>.</li>
-<li>Let <span class="math">\(\href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\{ \mathsf{data}~(\def\mathdef930#1{\mathtt{0x#1}}\mathdef930{00})^{n \cdot 64\,\mathrm{Ki}}, \mathsf{max}~m^? \}\)</span> that contains <span class="math">\(n\)</span> pages of zeroed bytes.</li>
+<li>Let <span class="math">\(\href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\{ \mathsf{data}~(\def\mathdef1077#1{\mathtt{0x#1}}\mathdef1077{00})^{n \cdot 64\,\mathrm{Ki}}, \mathsf{max}~m^? \}\)</span> that contains <span class="math">\(n\)</span> pages of zeroed bytes.</li>
 <li>Append <span class="math">\(\href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> to the <span class="math">\(\mathsf{mems}\)</span> of <span class="math">\(S\)</span>.</li>
 <li>Return <span class="math">\(a\)</span>.</li>
 </ol>
@@ -306,7 +304,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#syntax-record}{\oplus} \{\math
 \mbox{where:} \hfill \\
 \href{../syntax/modules.html#syntax-mem}{\mathit{mem}}.\mathsf{type} &amp;=&amp; \{\mathsf{min}~n, \mathsf{max}~m^?\} \\
 \href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}} &amp;=&amp; |S.\mathsf{mems}| \\
-\href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;=&amp; \{ \mathsf{data}~(\def\mathdef931#1{\mathtt{0x#1}}\mathdef931{00})^{n \cdot 64\,\mathrm{Ki}}, \mathsf{max}~m^? \} \\
+\href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;=&amp; \{ \mathsf{data}~(\def\mathdef1078#1{\mathtt{0x#1}}\mathdef1078{00})^{n \cdot 64\,\mathrm{Ki}}, \mathsf{max}~m^? \} \\
 S' &amp;=&amp; S \href{../syntax/conventions.html#syntax-record}{\oplus} \{\mathsf{mems}~\href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}}\} \\
 \end{array}\end{split}\]</div>
 </div>

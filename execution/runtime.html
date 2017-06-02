@@ -73,9 +73,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/instrindex.html">Index of Instructions</a></li>
@@ -117,11 +115,11 @@ In order to avoid ambiguities, values are therefore represented with an abstract
 It is convenient to reuse the same notation as for the <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> <a class="reference internal" href="../syntax/instructions.html#syntax-const"><span class="std std-ref">instructions</span></a> producing them:</p>
 <div class="math">
 \[\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(value)} &amp; \href{../execution/runtime.html#syntax-val}{\mathit{val}} &amp;::=&amp;
-  \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-int}{\def\mathdef999#1{{\mathit{i}#1}}\mathdef999{\mathit{32}}} ~|~
-  \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1000#1{{\mathit{i}#1}}\mathdef1000{\mathit{64}}} ~|~
-  \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-float}{\def\mathdef1002#1{{\mathit{f}#1}}\mathdef1002{\mathit{32}}} ~|~
-  \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-float}{\def\mathdef1003#1{{\mathit{f}#1}}\mathdef1003{\mathit{64}}}
+\def\mathdef1133#1{{}}\mathdef1133{(value)} &amp; \href{../execution/runtime.html#syntax-val}{\mathit{val}} &amp;::=&amp;
+  \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1150#1{{\mathit{i}#1}}\mathdef1150{\mathit{32}}} ~|~
+  \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1151#1{{\mathit{i}#1}}\mathdef1151{\mathit{64}}} ~|~
+  \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-float}{\def\mathdef1154#1{{\mathit{f}#1}}\mathdef1154{\mathit{32}}} ~|~
+  \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-float}{\def\mathdef1155#1{{\mathit{f}#1}}\mathdef1155{\mathit{64}}}
 \end{array}\]</div>
 <span class="target" id="syntax-store"><span id="store"></span></span></div>
 <div class="section" id="index-2">
@@ -131,7 +129,7 @@ It consists of the runtime representation of all <em>instances</em> of <a class=
 <p>Syntactically, the store is defined as a <a class="reference internal" href="../syntax/conventions.html#syntax-record"><span class="std std-ref">record</span></a> listing the existing instances of each category:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(store)} &amp; \href{../execution/runtime.html#syntax-store}{\mathit{store}} &amp;::=&amp; \{~
+\def\mathdef1133#1{{}}\mathdef1133{(store)} &amp; \href{../execution/runtime.html#syntax-store}{\mathit{store}} &amp;::=&amp; \{~
   \begin{array}[t]{l&#64;{~}ll}
   \mathsf{funcs} &amp; \href{../execution/runtime.html#syntax-funcinst}{\mathit{funcinst}}^\ast, \\
   \mathsf{tables} &amp; \href{../execution/runtime.html#syntax-tableinst}{\mathit{tableinst}}^\ast, \\
@@ -160,15 +158,15 @@ and hence outside the scope of this specification.</td></tr>
 These are simply indices into the respective store component.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(address)} &amp; \href{../execution/runtime.html#syntax-addr}{\mathit{addr}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(address)} &amp; \href{../execution/runtime.html#syntax-addr}{\mathit{addr}} &amp;::=&amp;
   0 ~|~ 1 ~|~ 2 ~|~ \dots \\
-\def\mathdef983#1{{}}\mathdef983{(function address)} &amp; \href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(function address)} &amp; \href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} &amp;::=&amp;
   \href{../execution/runtime.html#syntax-addr}{\mathit{addr}} \\
-\def\mathdef983#1{{}}\mathdef983{(table address)} &amp; \href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(table address)} &amp; \href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}} &amp;::=&amp;
   \href{../execution/runtime.html#syntax-addr}{\mathit{addr}} \\
-\def\mathdef983#1{{}}\mathdef983{(memory address)} &amp; \href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(memory address)} &amp; \href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}} &amp;::=&amp;
   \href{../execution/runtime.html#syntax-addr}{\mathit{addr}} \\
-\def\mathdef983#1{{}}\mathdef983{(global address)} &amp; \href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(global address)} &amp; \href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}} &amp;::=&amp;
   \href{../execution/runtime.html#syntax-addr}{\mathit{addr}} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
@@ -189,7 +187,7 @@ It is created by <a class="reference internal" href="modules.html#instantiation"
 and collects runtime representations of all entities that are imported, defined, or exported by the module.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(module instance)} &amp; \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} &amp;::=&amp; \{
+\def\mathdef1133#1{{}}\mathdef1133{(module instance)} &amp; \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} &amp;::=&amp; \{
   \begin{array}[t]{l&#64;{~}ll}
   \mathsf{types} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
   \mathsf{funcs} &amp; \href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^\ast, \\
@@ -210,15 +208,15 @@ It effectively is a <em>closure</em> of the original function over the runtime <
 The module instance is used to resolve references to other non-local definitions during execution of the function.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(function instance)} &amp; \href{../execution/runtime.html#syntax-funcinst}{\mathit{funcinst}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(function instance)} &amp; \href{../execution/runtime.html#syntax-funcinst}{\mathit{funcinst}} &amp;::=&amp;
   \{ \mathsf{type}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \mathsf{module}~\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}, \mathsf{code}~\href{../syntax/modules.html#syntax-func}{\mathit{func}} \} \\ &amp;&amp;|&amp;
   \{ \mathsf{type}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \mathsf{code}~\href{../execution/runtime.html#syntax-hostfunc}{\mathit{hostfunc}} \} \\
-\def\mathdef983#1{{}}\mathdef983{(host function)} &amp; \href{../execution/runtime.html#syntax-hostfunc}{\mathit{hostfunc}} &amp;::=&amp; \dots \\
+\def\mathdef1133#1{{}}\mathdef1133{(host function)} &amp; \href{../execution/runtime.html#syntax-hostfunc}{\mathit{hostfunc}} &amp;::=&amp; \dots \\
 \end{array}\end{split}\]</div>
 <p>Function instances are immutable, and their identity is not observable by WebAssembly code.
 However, the <span class="xref std std-ref">embedder</span> might provide implicit or explicit means for distinguishing them.</p>
 <p>A <em>host function</em> is a function expressed outside WebAssembly but passed to a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> as an <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">import</span></a>.
-The definition and behaviour of host functions are outside the scope of this specification.
+The definition and behavior of host functions are outside the scope of this specification.
 For the purpose of this specification, it is assumed that when <a class="reference internal" href="instructions.html#exec-invoke-host"><span class="std std-ref">invoked</span></a>,
 a host function behaves non-deterministicaly.</p>
 <span class="target" id="syntax-funcelem"><span id="syntax-tableinst"></span></span></div>
@@ -230,9 +228,9 @@ It holds a vector of <em>function elements</em> and an optional maximum size, if
 Function elements can be mutated through the execution of an <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segment</span></a> or by external means provided by the <span class="xref std std-ref">embedder</span>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(table instance)} &amp; \href{../execution/runtime.html#syntax-tableinst}{\mathit{tableinst}} &amp;::=&amp;
-  \{ \mathsf{elem}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../execution/runtime.html#syntax-funcelem}{\mathit{funcelem}}), \mathsf{max}~\href{../syntax/values.html#syntax-int}{\def\mathdef991#1{{\mathit{u}#1}}\mathdef991{\mathit{32}}}^? \} \\
-\def\mathdef983#1{{}}\mathdef983{(function element)} &amp; \href{../execution/runtime.html#syntax-funcelem}{\mathit{funcelem}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(table instance)} &amp; \href{../execution/runtime.html#syntax-tableinst}{\mathit{tableinst}} &amp;::=&amp;
+  \{ \mathsf{elem}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../execution/runtime.html#syntax-funcelem}{\mathit{funcelem}}), \mathsf{max}~\href{../syntax/values.html#syntax-int}{\def\mathdef1142#1{{\mathit{u}#1}}\mathdef1142{\mathit{32}}}^? \} \\
+\def\mathdef1133#1{{}}\mathdef1133{(function element)} &amp; \href{../execution/runtime.html#syntax-funcelem}{\mathit{funcelem}} &amp;::=&amp;
   \href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^? \\
 \end{array}\end{split}\]</div>
 <p>It is an invariant of the semantics that the length of the element vector never exceeds the maximum size, if present.</p>
@@ -247,8 +245,8 @@ Function elements can be mutated through the execution of an <a class="reference
 It holds a vector of bytes and an optional maximum size, if one was specified at the definition site of the memory.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(memory instance)} &amp; \href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;::=&amp;
-  \{ \mathsf{data}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}), \mathsf{max}~\href{../syntax/values.html#syntax-int}{\def\mathdef991#1{{\mathit{u}#1}}\mathdef991{\mathit{32}}}^? \} \\
+\def\mathdef1133#1{{}}\mathdef1133{(memory instance)} &amp; \href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;::=&amp;
+  \{ \mathsf{data}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}), \mathsf{max}~\href{../syntax/values.html#syntax-int}{\def\mathdef1142#1{{\mathit{u}#1}}\mathdef1142{\mathit{32}}}^? \} \\
 \end{array}\end{split}\]</div>
 <p>The length of the vector always is a multiple of the WebAssembly <em>page size</em>, which is defined to be the constant <span class="math">\(65536\)</span> &#8211; abbreviated <span class="math">\(64\,\mathrm{Ki}\)</span>.
 Like in a <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a>, the maximum size in a memory instance is given in units of this page size.</p>
@@ -261,7 +259,7 @@ Like in a <a class="reference internal" href="../syntax/types.html#syntax-memtyp
 It holds an individual <a class="reference internal" href="#syntax-val"><span class="std std-ref">value</span></a> and a flag indicating whether it is mutable.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(global instance)} &amp; \href{../execution/runtime.html#syntax-globalinst}{\mathit{globalinst}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(global instance)} &amp; \href{../execution/runtime.html#syntax-globalinst}{\mathit{globalinst}} &amp;::=&amp;
   \{ \mathsf{value}~\href{../execution/runtime.html#syntax-val}{\mathit{val}}, \mathsf{mut}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}} \} \\
 \end{array}\end{split}\]</div>
 <p>The value of mutable globals can be mutated through specific instructions or by external means provided by the <span class="xref std std-ref">embedder</span>.</p>
@@ -272,7 +270,7 @@ It holds an individual <a class="reference internal" href="#syntax-val"><span cl
 It defines the export&#8217;s <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a> and the <a class="reference internal" href="#syntax-externval"><span class="std std-ref">external value</span></a> being exported.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(export instance)} &amp; \href{../execution/runtime.html#syntax-exportinst}{\mathit{exportinst}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(export instance)} &amp; \href{../execution/runtime.html#syntax-exportinst}{\mathit{exportinst}} &amp;::=&amp;
   \{ \mathsf{name}~\href{../syntax/values.html#syntax-name}{\mathit{name}}, \mathsf{value}~\href{../execution/runtime.html#syntax-externval}{\mathit{externval}} \} \\
 \end{array}\end{split}\]</div>
 <span class="target" id="syntax-externval"></span></div>
@@ -282,7 +280,7 @@ It defines the export&#8217;s <a class="reference internal" href="../syntax/valu
 It is an <a class="reference internal" href="#syntax-addr"><span class="std std-ref">address</span></a> denoting either a <a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">function instance</span></a>, <a class="reference internal" href="#syntax-tableinst"><span class="std std-ref">table instance</span></a>, <a class="reference internal" href="#syntax-meminst"><span class="std std-ref">memory instance</span></a>, or <a class="reference internal" href="#syntax-globalinst"><span class="std std-ref">global instances</span></a> in the shared <a class="reference internal" href="../syntax/instructions.html#syntax-store"><span class="std std-ref">store</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(external value)} &amp; \href{../execution/runtime.html#syntax-externval}{\mathit{externval}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(external value)} &amp; \href{../execution/runtime.html#syntax-externval}{\mathit{externval}} &amp;::=&amp;
   \mathsf{func}~\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} ~|~
   \mathsf{table}~\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}} ~|~
   \mathsf{mem}~\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}} ~|~
@@ -327,7 +325,7 @@ For the purpose of this specification, an interleaved representation is simpler.
 <p>Labels carry an argument arity <span class="math">\(n\)</span> and their associated branch <em>target</em>, which is expressed syntactically as an <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> sequence:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(label)} &amp; \href{../execution/runtime.html#syntax-label}{\mathit{label}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(label)} &amp; \href{../execution/runtime.html#syntax-label}{\mathit{label}} &amp;::=&amp;
   \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\} \\
 \end{array}\end{split}\]</div>
 <p>Intuitively, <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> is the <em>continuation</em> to execute when the branch is taken, in place of the original control construct.</p>
@@ -350,9 +348,9 @@ hold the values of its <a class="reference internal" href="../syntax/modules.htm
 and a reference to the function&#8217;s own <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a>:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(activation)} &amp; \mathit{activation} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(activation)} &amp; \mathit{activation} &amp;::=&amp;
   \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{frame}}_n\{\href{../execution/runtime.html#syntax-frame}{\mathit{frame}}\} \\
-\def\mathdef983#1{{}}\mathdef983{(frame)} &amp; \href{../execution/runtime.html#syntax-frame}{\mathit{frame}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(frame)} &amp; \href{../execution/runtime.html#syntax-frame}{\mathit{frame}} &amp;::=&amp;
   \{ \mathsf{locals}~\href{../execution/runtime.html#syntax-val}{\mathit{val}}^\ast, \mathsf{module}~\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\} \\
 \end{array}\end{split}\]</div>
 <p>The values of the locals are mutated by respective <a class="reference internal" href="../syntax/instructions.html#syntax-instr-variable"><span class="std std-ref">variable instructions</span></a>.</p>
@@ -379,7 +377,7 @@ This may be generalized in future versions.</p>
 <p>In order to express the reduction of <span class="xref std std-ref">traps</span>, calls, and <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">control instructions</span></a>, the syntax of instructions is extended to include the following <em>administrative instructions</em>:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcl}
-\def\mathdef983#1{{}}\mathdef983{(administrative instruction)} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(administrative instruction)} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
   \dots \\ &amp;&amp;|&amp;
   \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}} \\ &amp;&amp;|&amp;
   \href{../execution/runtime.html#syntax-invoke}{\mathsf{invoke}}~\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} \\ &amp;&amp;|&amp;
@@ -411,9 +409,9 @@ When <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control
 <p>To express <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">branches</span></a>, the following syntax of <em>block contexts</em> is defined, indexed by the count <span class="math">\(k\)</span> of labels surrounding the hole:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(block contexts)} &amp; \href{../execution/runtime.html#syntax-ctxt-block}{B}^0 &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(block contexts)} &amp; \href{../execution/runtime.html#syntax-ctxt-block}{B}^0 &amp;::=&amp;
   \href{../execution/runtime.html#syntax-val}{\mathit{val}}^\ast~[\_]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \\
-\def\mathdef983#1{{}}\mathdef983{(block contexts)} &amp; \href{../execution/runtime.html#syntax-ctxt-block}{B}^{k+1} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(block contexts)} &amp; \href{../execution/runtime.html#syntax-ctxt-block}{B}^{k+1} &amp;::=&amp;
   \href{../execution/runtime.html#syntax-val}{\mathit{val}}^\ast~\href{../execution/runtime.html#syntax-instr-admin}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~\href{../execution/runtime.html#syntax-ctxt-block}{B}^k~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \\
 \end{array}\end{split}\]</div>
 <p>This definition allows to index active labels surrounding a <a class="reference internal" href="../syntax/instructions.html#syntax-br"><span class="std std-ref">branch</span></a> or <a class="reference internal" href="../syntax/instructions.html#syntax-return"><span class="std std-ref">return</span></a> instruction.</p>
@@ -433,7 +431,7 @@ The right label is identified through the <a class="reference internal" href="..
 <p>Finally, the following definition of <em>evaluation context</em> and associated structural rules enable reduction inside instruction sequences and administrative forms as well as the propagation of traps:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(evaluation contexts)} &amp; E &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(evaluation contexts)} &amp; E &amp;::=&amp;
   [\_] ~|~
   \href{../execution/runtime.html#syntax-val}{\mathit{val}}^\ast~E~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast ~|~
   \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~E~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} ~|~
@@ -453,11 +451,11 @@ S; F; E[\href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}] &amp
 It is hence expressed in terms of reduction into smaller steps expressed by a sequence of administrative <em>module instructions</em> that are a superset of ordinary instructions and defined as follow.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcl}
-\def\mathdef983#1{{}}\mathdef983{(module instruction)} &amp; \href{../execution/runtime.html#syntax-moduleinstr}{\mathit{moduleinstr}} &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(module instruction)} &amp; \href{../execution/runtime.html#syntax-moduleinstr}{\mathit{moduleinstr}} &amp;::=&amp;
   \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} \\ &amp;&amp;|&amp;
   \href{../execution/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}~\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast \\ &amp;&amp;|&amp;
-  \href{../execution/runtime.html#syntax-init_table}{\mathsf{init\_table}}~\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~\href{../syntax/values.html#syntax-int}{\def\mathdef991#1{{\mathit{u}#1}}\mathdef991{\mathit{32}}}~\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}~funcidx^\ast \\ &amp;&amp;|&amp;
-  \href{../execution/runtime.html#syntax-init_mem}{\mathsf{init\_mem}}~\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}~\href{../syntax/values.html#syntax-int}{\def\mathdef991#1{{\mathit{u}#1}}\mathdef991{\mathit{32}}}~\href{../syntax/values.html#syntax-byte}{\mathit{byte}}^\ast \\ &amp;&amp;|&amp;
+  \href{../execution/runtime.html#syntax-init_table}{\mathsf{init\_table}}~\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1142#1{{\mathit{u}#1}}\mathdef1142{\mathit{32}}}~\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}~funcidx^\ast \\ &amp;&amp;|&amp;
+  \href{../execution/runtime.html#syntax-init_mem}{\mathsf{init\_mem}}~\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1142#1{{\mathit{u}#1}}\mathdef1142{\mathit{32}}}~\href{../syntax/values.html#syntax-byte}{\mathit{byte}}^\ast \\ &amp;&amp;|&amp;
   \href{../execution/runtime.html#syntax-init_global}{\mathsf{init\_global}}~\href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}~\href{../execution/runtime.html#syntax-val}{\mathit{val}} \\ &amp;&amp;|&amp;
   \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} \\
 \end{array}\end{split}\]</div>
@@ -475,7 +473,7 @@ Consequently, they can only occur at the top-level.</p>
 <p>Evaluation contexts and additional structural reduction rules for module instructions are defined as follows:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef983#1{{}}\mathdef983{(module evaluation contexts)} &amp; M &amp;::=&amp;
+\def\mathdef1133#1{{}}\mathdef1133{(module evaluation contexts)} &amp; M &amp;::=&amp;
   E~~\href{../execution/runtime.html#syntax-moduleinstr}{\mathit{moduleinstr}}^\ast \\
 \end{array}\end{split}\]</div>
 <div class="math">

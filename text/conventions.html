@@ -65,9 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/instrindex.html">Index of Instructions</a></li>
@@ -118,9 +116,9 @@ Files with this extension are assumed to be encoded in <a class="reference exter
 They mirror the conventions used for <a class="reference internal" href="../syntax/conventions.html#grammar"><span class="std std-ref">abstract syntax</span></a> and for the <a class="reference internal" href="../binary/index.html#binary-format"><span class="std std-ref">binary format</span></a>.
 In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, typewriter font is adopted for the former.</p>
 <ul class="simple">
-<li>Terminal symbols are either literal strings of characters enclosed in quotes: <span class="math">\(\def\mathdef1862#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1862{module}\)</span>;
-or expressed as <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> code points: <span class="math">\(\def\mathdef1863#1{\mathrm{U{+}#1}}\mathdef1863{0A}\)</span>.
-(All characters written literally are unambguously drawn from the <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">7-bit ASCII</a> subset of Unicode.)</li>
+<li>Terminal symbols are either literal strings of characters enclosed in quotes: <span class="math">\(\def\mathdef2051#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2051{module}\)</span>;
+or expressed as <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> code points: <span class="math">\(\def\mathdef2052#1{\mathrm{U{+}#1}}\mathdef2052{0A}\)</span>.
+(All characters written literally are unambiguously drawn from the <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">7-bit ASCII</a> subset of Unicode.)</li>
 <li>Nonterminal symbols are written in typewriter font: <span class="math">\(\mathtt{valtype}, \mathtt{instr}\)</span>.</li>
 <li>Arbitrary <a class="reference internal" href="lexical.html#text-space"><span class="std std-ref">white space</span></a> is allowed in any place where the grammar contains spaces, except where noted otherwise, such as the <a class="reference internal" href="lexical.html#text-lexical"><span class="std std-ref">lexical syntax</span></a>.</li>
 <li><span class="math">\(T^n\)</span> is a sequence of <span class="math">\(n\geq 0\)</span> iterations  of <span class="math">\(T\)</span>.</li>
@@ -139,20 +137,20 @@ or expressed as <a class="reference external" href="http://www.unicode.org/versi
 <p>For example, the <a class="reference internal" href="types.html#text-valtype"><span class="std std-ref">textual grammar</span></a> for <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> is given as follows:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcll&#64;{\qquad\qquad}l}
-\def\mathdef1811#1{{}}\mathdef1811{value types} &amp; \href{../text/types.html#text-valtype}{\mathtt{valtype}} &amp;::=&amp;
-  \def\mathdef1864#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1864{i32} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
-  \def\mathdef1865#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1865{i64} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
-  \def\mathdef1866#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1866{f32} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
-  \def\mathdef1867#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1867{f64} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\
+\def\mathdef1997#1{{}}\mathdef1997{value types} &amp; \href{../text/types.html#text-valtype}{\mathtt{valtype}} &amp;::=&amp;
+  \def\mathdef2053#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2053{i32} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef2054#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2054{i64} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
+  \def\mathdef2055#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2055{f32} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
+  \def\mathdef2056#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2056{f64} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\
 \end{array}\end{split}\]</div>
 <p>The <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">textual grammar</span></a> for <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> is defined as follows:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\def\mathdef1811#1{{}}\mathdef1811{limits} &amp; \href{../text/types.html#text-limits}{\mathtt{limits}} &amp;::=&amp;
-  n{:}\href{../text/values.html#text-int}{\def\mathdef1851#1{{\mathtt{u}#1}}\mathdef1851{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~\epsilon \} \\ &amp;&amp;|&amp;
-  n{:}\href{../text/values.html#text-int}{\def\mathdef1851#1{{\mathtt{u}#1}}\mathdef1851{\mathtt{32}}}~~m{:}\href{../text/values.html#text-int}{\def\mathdef1851#1{{\mathtt{u}#1}}\mathdef1851{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~m \} \\
+\def\mathdef1997#1{{}}\mathdef1997{limits} &amp; \href{../text/types.html#text-limits}{\mathtt{limits}} &amp;::=&amp;
+  n{:}\href{../text/values.html#text-int}{\def\mathdef2039#1{{\mathtt{u}#1}}\mathdef2039{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~\epsilon \} \\ &amp;&amp;|&amp;
+  n{:}\href{../text/values.html#text-int}{\def\mathdef2039#1{{\mathtt{u}#1}}\mathdef2039{\mathtt{32}}}~~m{:}\href{../text/values.html#text-int}{\def\mathdef2039#1{{\mathtt{u}#1}}\mathdef2039{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~m \} \\
 \end{array}\end{split}\]</div>
-<p class="last">The variables <span class="math">\(n\)</span> and <span class="math">\(m\)</span> name the attributes of the respective <span class="math">\(\href{../text/values.html#text-int}{\def\mathdef1851#1{{\mathtt{u}#1}}\mathdef1851{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> they decode into.
+<p class="last">The variables <span class="math">\(n\)</span> and <span class="math">\(m\)</span> name the attributes of the respective <span class="math">\(\href{../text/values.html#text-int}{\def\mathdef2039#1{{\mathtt{u}#1}}\mathdef2039{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> they decode into.
 The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.</p>
 </div>
 <span class="target" id="text-abbreviations"></span></div>
@@ -173,7 +171,7 @@ In addition, the context records the types defined in the module, so that <a cla
 <p>It is convenient to define identifier contexts as <a class="reference internal" href="../syntax/conventions.html#syntax-record"><span class="std std-ref">records</span></a> <span class="math">\(I\)</span> with abstract syntax:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1811#1{{}}\mathdef1811{(identifier context)} &amp; I &amp;::=&amp;
+\def\mathdef1997#1{{}}\mathdef1997{(identifier context)} &amp; I &amp;::=&amp;
   \begin{array}[t]{l&#64;{~}ll}
   \{ &amp; \mathsf{types} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
      &amp; \mathsf{funcs} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\

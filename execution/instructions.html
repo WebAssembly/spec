@@ -69,9 +69,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/instrindex.html">Index of Instructions</a></li>
@@ -107,6 +105,15 @@
 <span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="exec-instr-numeric"></span><div class="section" id="numeric-instructions">
 <span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
+<p>Numeric instructions are defined in terms of the basic <a class="reference internal" href="numerics.html#exec-numeric"><span class="std std-ref">numeric operators</span></a>.
+Where these operators are partial, the corresponding instruction will <span class="xref std std-ref">trap</span> when the result is not defined.
+Where these operators are non-deterministic, because they may return different <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a> values, so are the corresponding instructions.</p>
+<p>The mapping of numeric instructions to their underlying operators is expressed by the following definition:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\mathit{op}_{\mathsf{i}N}(i) &amp;=&amp; \mathrm{i}\mathit{op}_N(i) \\
+\mathit{op}_{\mathsf{f}N}(i) &amp;=&amp; \mathrm{f}\mathit{op}_N(i) \\
+\end{array}\end{split}\]</div>
 <div class="section" id="exec-const">
 <span id="id1"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span><a class="headerlink" href="#exec-const" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
@@ -135,9 +142,9 @@
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t\mathsf{.}\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}} &amp;\hookrightarrow&amp; (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
-  &amp; (\mbox{if}~\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}_t(c_1) = c) \\
+  &amp; (\mbox{if}~c \in \href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}_t(c_1)) \\
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t\mathsf{.}\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}} &amp;\hookrightarrow&amp; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}
-  &amp; (\mbox{otherwise})
+  &amp; (\mbox{if}~\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}_{t_1,t_2}(c_1) = \{\})
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="exec-binop">
@@ -159,9 +166,9 @@
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)~t\mathsf{.}\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}} &amp;\hookrightarrow&amp; (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
-  &amp; (\mbox{if}~\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}_t(c_1,c_2) = c) \\
+  &amp; (\mbox{if}~c \in \href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}_t(c_1,c_2)) \\
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)~t\mathsf{.}\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}} &amp;\hookrightarrow&amp; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}
-  &amp; (\mbox{otherwise})
+  &amp; (\mbox{if}~\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}_{t_1,t_2}(c_1) = \{\})
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="exec-testop">
@@ -175,7 +182,7 @@
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t\mathsf{.}\href{../syntax/instructions.html#syntax-testop}{\mathit{testop}} &amp;\hookrightarrow&amp; (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
-  &amp; (\mbox{if}~\href{../syntax/instructions.html#syntax-testop}{\mathit{testop}}_t(c_1) = c) \\
+  &amp; (\mbox{if}~c = \href{../syntax/instructions.html#syntax-testop}{\mathit{testop}}_t(c_1)) \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="exec-relop">
@@ -190,7 +197,7 @@
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)~t\mathsf{.}\href{../syntax/instructions.html#syntax-relop}{\mathit{relop}} &amp;\hookrightarrow&amp; (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
-  &amp; (\mbox{if}~\href{../syntax/instructions.html#syntax-relop}{\mathit{relop}}_t(c_1,c_2) = c) \\
+  &amp; (\mbox{if}~c = \href{../syntax/instructions.html#syntax-relop}{\mathit{relop}}_t(c_1,c_2)) \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="exec-cvtop">
@@ -211,9 +218,9 @@
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t_2\mathsf{.}\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}\mathsf{/}t_1 &amp;\hookrightarrow&amp; (t_2\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)
-  &amp; (\mbox{if}~\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}_{t_1,t_2}(c_1) = c_2) \\
+  &amp; (\mbox{if}~c_2 \in \href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}_{t_1,t_2}(c_1)) \\
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t_2\mathsf{.}\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}\mathsf{/}t_1 &amp;\hookrightarrow&amp; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}
-  &amp; (\mbox{otherwise})
+  &amp; (\mbox{if}~\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}_{t_1,t_2}(c_1) = \{\})
 \end{array}\end{split}\]</div>
 <span class="target" id="exec-instr-parametric"></span></div>
 </div>
@@ -367,7 +374,7 @@ S; F; \href{../execution/runtime.html#syntax-val}{\mathit{val}}~(\href{../syntax
 <li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\mathit{mem}.\mathsf{data}[\mathit{ea}:N]\)</span>.</li>
 <li>If <span class="math">\(N\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> are part of the instruction, then:<ol class="loweralpha">
 <li>Let <span class="math">\(n\)</span> be the integer for which <span class="math">\(\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_N(n) = b^\ast\)</span>.</li>
-<li>Let <span class="math">\(c\)</span> be the result of computing <span class="math">\(\href{../execution/numerics.html#aux-extend}{\mathrm{extend}}_{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}},N}(n)\)</span>.</li>
+<li>Let <span class="math">\(c\)</span> be the result of computing <span class="math">\(\extend\mathrm{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_{N,|t|}(n)\)</span>.</li>
 </ol>
 </li>
 <li>Else:<ol class="loweralpha">
@@ -389,7 +396,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(t.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{N}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}) &amp;\hookrightarrow&amp;
-  S; F; (t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../execution/numerics.html#aux-extend}{\mathrm{extend}}_{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}},N}(n))
+  S; F; (t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\extend\mathrm{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_{N,|t|}(n))
 \end{array}
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
@@ -432,7 +439,7 @@ The only purpose of the annotation is to provide optimizatons hints.</p>
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-storen"><span class="std std-ref">validation</span></a>, a value of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span> is on the top of the stack.</li>
 <li>Pop the value <span class="math">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span> from the stack.</li>
 <li>If <span class="math">\(N\)</span> is part of the instruction, then:<ol class="loweralpha">
-<li>Let <span class="math">\(n\)</span> be the result of computing <span class="math">\(\href{../execution/numerics.html#aux-wrap}{\mathrm{wrap}}_N(c)\)</span>.</li>
+<li>Let <span class="math">\(n\)</span> be the result of computing <span class="math">\(\href{../execution/numerics.html#op-wrap}{\mathrm{wrap}}_{|t|,N}(c)\)</span>.</li>
 <li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_N(n)\)</span>.</li>
 </ol>
 </li>
@@ -460,7 +467,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; \mathit{ea} = i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{offset} \\
   \wedge &amp; \mathit{ea} + N \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
-  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:N] = \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_N(\href{../execution/numerics.html#aux-wrap}{\mathrm{wrap}}_N(c))
+  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:N] = \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_N(\href{../execution/numerics.html#op-wrap}{\mathrm{wrap}}_{|t|,N}(c))
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~k)~(t.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}{N}^?~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}) &amp;\hookrightarrow&amp; S; F; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}
@@ -510,7 +517,7 @@ S; F; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_me
 <ol class="arabic simple" start="10">
 <li>Else, either:<ol class="loweralpha">
 <li>Let <span class="math">\(\mathit{len}\)</span> be <span class="math">\(n\)</span> multiplied with the <a class="reference internal" href="runtime.html#page-size"><span class="std std-ref">page size</span></a>.</li>
-<li>Append <span class="math">\(\mathit{len}\)</span> bytes with value <span class="math">\(\def\mathdef877#1{\mathtt{0x#1}}\mathdef877{00}\)</span> to <span class="math">\(S.\mathsf{mems}[a]\)</span>.</li>
+<li>Append <span class="math">\(\mathit{len}\)</span> bytes with value <span class="math">\(\def\mathdef1021#1{\mathtt{0x#1}}\mathdef1021{00}\)</span> to <span class="math">\(S.\mathsf{mems}[a]\)</span>.</li>
 <li>Push the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz}\)</span> to the stack.</li>
 </ol>
 </li>
@@ -529,7 +536,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   (\mbox{if} &amp; F.\mathsf{module}.\mathsf{mems}[0] = a \\
   \wedge &amp; |S.\mathsf{mems}[a].\mathsf{data}| = \mathit{sz}\cdot64\,\mathrm{Ki} \\
   \wedge &amp; (\mathit{sz} + n \leq S.\mathsf{mems}[a].\mathsf{max} \vee S.\mathsf{mems}[a].\mathsf{max} = \epsilon) \\
-  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[a].\mathsf{data} = S.\mathsf{mems}[a].\mathsf{data}~(\def\mathdef878#1{\mathtt{0x#1}}\mathdef878{00})^{n\cdot64\,\mathrm{Ki}}) \\
+  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[a].\mathsf{data} = S.\mathsf{mems}[a].\mathsf{data}~(\def\mathdef1022#1{\mathtt{0x#1}}\mathdef1022{00})^{n\cdot64\,\mathrm{Ki}}) \\
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} &amp;\hookrightarrow&amp; S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~{-1})
@@ -867,7 +874,7 @@ and returning from it.</p>
 </div>
 <div class="section" id="host-functions">
 <span id="exec-invoke-host"></span><h3>Host Functions<a class="headerlink" href="#host-functions" title="Permalink to this headline">¶</a></h3>
-<p>Invoking a <a class="reference internal" href="runtime.html#syntax-hostfunc"><span class="std std-ref">host function</span></a> has non-deterministic behaviour.
+<p>Invoking a <a class="reference internal" href="runtime.html#syntax-hostfunc"><span class="std std-ref">host function</span></a> has non-deterministic behavior.
 It may either terminate with a <span class="xref std std-ref">trap</span> or return regularly.
 However, the latter case, it is assumed that it consumes and produces the right number and types of WebAssembly <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> on the stack,
 according to its type.
@@ -904,7 +911,7 @@ and it must still be well-typed.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">A host function can call back into WebAssembly by <a class="reference internal" href="modules.html#invocation"><span class="std std-ref">invoking</span></a> a function <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> from a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.
-However, the effects of any such call are subsumed by the non-deterministic behaviour allowed for a host function.</p>
+However, the effects of any such call are subsumed by the non-deterministic behavior allowed for a host function.</p>
 </div>
 <span class="target" id="exec-expr"></span></div>
 </div>

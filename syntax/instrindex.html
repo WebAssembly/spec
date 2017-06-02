@@ -27,7 +27,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="prev" title="Appendix: Name Section" href="../appendix-names/index.html" />
+    <link rel="prev" title="Validation Algorithm" href="../appendix/algorithm.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -50,9 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Index of Instructions</a></li>
@@ -104,1153 +102,1153 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span></td>
-<td><span class="math">\(\def\mathdef1391#1{\mathtt{0x#1}}\mathdef1391{00}\)</span></td>
+<td><span class="math">\(\def\mathdef1565#1{\mathtt{0x#1}}\mathdef1565{00}\)</span></td>
 <td><span class="math">\([t_1^\ast] \to [t_2^\ast]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unreachable"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}}\)</span></td>
-<td><span class="math">\(\def\mathdef1392#1{\mathtt{0x#1}}\mathdef1392{01}\)</span></td>
+<td><span class="math">\(\def\mathdef1566#1{\mathtt{0x#1}}\mathdef1566{01}\)</span></td>
 <td><span class="math">\([] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-nop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]\)</span></td>
-<td><span class="math">\(\def\mathdef1393#1{\mathtt{0x#1}}\mathdef1393{02}\)</span></td>
+<td><span class="math">\(\def\mathdef1567#1{\mathtt{0x#1}}\mathdef1567{02}\)</span></td>
 <td><span class="math">\([] \to [t^\ast]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-block"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~[t^?]\)</span></td>
-<td><span class="math">\(\def\mathdef1394#1{\mathtt{0x#1}}\mathdef1394{03}\)</span></td>
+<td><span class="math">\(\def\mathdef1568#1{\mathtt{0x#1}}\mathdef1568{03}\)</span></td>
 <td><span class="math">\([] \to [t^\ast]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}~[t^?]\)</span></td>
-<td><span class="math">\(\def\mathdef1395#1{\mathtt{0x#1}}\mathdef1395{04}\)</span></td>
+<td><span class="math">\(\def\mathdef1569#1{\mathtt{0x#1}}\mathdef1569{04}\)</span></td>
 <td><span class="math">\([] \to [t^\ast]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-if"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span></td>
-<td><span class="math">\(\def\mathdef1396#1{\mathtt{0x#1}}\mathdef1396{05}\)</span></td>
+<td><span class="math">\(\def\mathdef1570#1{\mathtt{0x#1}}\mathdef1570{05}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1397#1{\mathtt{0x#1}}\mathdef1397{06}\)</span></td>
+<td><span class="math">\(\def\mathdef1571#1{\mathtt{0x#1}}\mathdef1571{06}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1398#1{\mathtt{0x#1}}\mathdef1398{07}\)</span></td>
+<td><span class="math">\(\def\mathdef1572#1{\mathtt{0x#1}}\mathdef1572{07}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1399#1{\mathtt{0x#1}}\mathdef1399{08}\)</span></td>
+<td><span class="math">\(\def\mathdef1573#1{\mathtt{0x#1}}\mathdef1573{08}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1400#1{\mathtt{0x#1}}\mathdef1400{09}\)</span></td>
+<td><span class="math">\(\def\mathdef1574#1{\mathtt{0x#1}}\mathdef1574{09}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1401#1{\mathtt{0x#1}}\mathdef1401{0A}\)</span></td>
+<td><span class="math">\(\def\mathdef1575#1{\mathtt{0x#1}}\mathdef1575{0A}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span></td>
-<td><span class="math">\(\def\mathdef1402#1{\mathtt{0x#1}}\mathdef1402{0B}\)</span></td>
+<td><span class="math">\(\def\mathdef1576#1{\mathtt{0x#1}}\mathdef1576{0B}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}~l\)</span></td>
-<td><span class="math">\(\def\mathdef1403#1{\mathtt{0x#1}}\mathdef1403{0C}\)</span></td>
+<td><span class="math">\(\def\mathdef1577#1{\mathtt{0x#1}}\mathdef1577{0C}\)</span></td>
 <td><span class="math">\([t_1^\ast~t^?] \to [t_2^\ast]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-br"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_if}}~l\)</span></td>
-<td><span class="math">\(\def\mathdef1404#1{\mathtt{0x#1}}\mathdef1404{0D}\)</span></td>
+<td><span class="math">\(\def\mathdef1578#1{\mathtt{0x#1}}\mathdef1578{0D}\)</span></td>
 <td><span class="math">\([t^?~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [t^?]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-br-if"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}~l^\ast~l\)</span></td>
-<td><span class="math">\(\def\mathdef1405#1{\mathtt{0x#1}}\mathdef1405{0E}\)</span></td>
+<td><span class="math">\(\def\mathdef1579#1{\mathtt{0x#1}}\mathdef1579{0E}\)</span></td>
 <td><span class="math">\([t_1^\ast~t^?~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [t_2^\ast]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-br-table"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}}\)</span></td>
-<td><span class="math">\(\def\mathdef1406#1{\mathtt{0x#1}}\mathdef1406{0F}\)</span></td>
+<td><span class="math">\(\def\mathdef1580#1{\mathtt{0x#1}}\mathdef1580{0F}\)</span></td>
 <td><span class="math">\([t_1^\ast~t^?] \to [t_2^\ast]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-return"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}~x\)</span></td>
-<td><span class="math">\(\def\mathdef1407#1{\mathtt{0x#1}}\mathdef1407{10}\)</span></td>
+<td><span class="math">\(\def\mathdef1581#1{\mathtt{0x#1}}\mathdef1581{10}\)</span></td>
 <td><span class="math">\([t_1^\ast] \to [t_2^\ast]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-call"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~x\)</span></td>
-<td><span class="math">\(\def\mathdef1408#1{\mathtt{0x#1}}\mathdef1408{11}\)</span></td>
+<td><span class="math">\(\def\mathdef1582#1{\mathtt{0x#1}}\mathdef1582{11}\)</span></td>
 <td><span class="math">\([t_1^\ast~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [t_2^\ast]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-call-indirect"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1409#1{\mathtt{0x#1}}\mathdef1409{12}\)</span></td>
+<td><span class="math">\(\def\mathdef1583#1{\mathtt{0x#1}}\mathdef1583{12}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1410#1{\mathtt{0x#1}}\mathdef1410{13}\)</span></td>
+<td><span class="math">\(\def\mathdef1584#1{\mathtt{0x#1}}\mathdef1584{13}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1411#1{\mathtt{0x#1}}\mathdef1411{14}\)</span></td>
+<td><span class="math">\(\def\mathdef1585#1{\mathtt{0x#1}}\mathdef1585{14}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1412#1{\mathtt{0x#1}}\mathdef1412{15}\)</span></td>
+<td><span class="math">\(\def\mathdef1586#1{\mathtt{0x#1}}\mathdef1586{15}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1413#1{\mathtt{0x#1}}\mathdef1413{16}\)</span></td>
+<td><span class="math">\(\def\mathdef1587#1{\mathtt{0x#1}}\mathdef1587{16}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1414#1{\mathtt{0x#1}}\mathdef1414{17}\)</span></td>
+<td><span class="math">\(\def\mathdef1588#1{\mathtt{0x#1}}\mathdef1588{17}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1415#1{\mathtt{0x#1}}\mathdef1415{18}\)</span></td>
+<td><span class="math">\(\def\mathdef1589#1{\mathtt{0x#1}}\mathdef1589{18}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1416#1{\mathtt{0x#1}}\mathdef1416{19}\)</span></td>
+<td><span class="math">\(\def\mathdef1590#1{\mathtt{0x#1}}\mathdef1590{19}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}}\)</span></td>
-<td><span class="math">\(\def\mathdef1417#1{\mathtt{0x#1}}\mathdef1417{1A}\)</span></td>
+<td><span class="math">\(\def\mathdef1591#1{\mathtt{0x#1}}\mathdef1591{1A}\)</span></td>
 <td><span class="math">\([t] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-drop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span></td>
-<td><span class="math">\(\def\mathdef1418#1{\mathtt{0x#1}}\mathdef1418{1B}\)</span></td>
+<td><span class="math">\(\def\mathdef1592#1{\mathtt{0x#1}}\mathdef1592{1B}\)</span></td>
 <td><span class="math">\([t~t~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [t]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-select"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1419#1{\mathtt{0x#1}}\mathdef1419{1C}\)</span></td>
+<td><span class="math">\(\def\mathdef1593#1{\mathtt{0x#1}}\mathdef1593{1C}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1420#1{\mathtt{0x#1}}\mathdef1420{1D}\)</span></td>
+<td><span class="math">\(\def\mathdef1594#1{\mathtt{0x#1}}\mathdef1594{1D}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1421#1{\mathtt{0x#1}}\mathdef1421{1E}\)</span></td>
+<td><span class="math">\(\def\mathdef1595#1{\mathtt{0x#1}}\mathdef1595{1E}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1422#1{\mathtt{0x#1}}\mathdef1422{1F}\)</span></td>
+<td><span class="math">\(\def\mathdef1596#1{\mathtt{0x#1}}\mathdef1596{1F}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~x\)</span></td>
-<td><span class="math">\(\def\mathdef1423#1{\mathtt{0x#1}}\mathdef1423{20}\)</span></td>
+<td><span class="math">\(\def\mathdef1597#1{\mathtt{0x#1}}\mathdef1597{20}\)</span></td>
 <td><span class="math">\([] \to [t]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-get-local"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_local}}~x\)</span></td>
-<td><span class="math">\(\def\mathdef1424#1{\mathtt{0x#1}}\mathdef1424{21}\)</span></td>
+<td><span class="math">\(\def\mathdef1598#1{\mathtt{0x#1}}\mathdef1598{21}\)</span></td>
 <td><span class="math">\([t] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-set-local"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{tee\_local}}~x\)</span></td>
-<td><span class="math">\(\def\mathdef1425#1{\mathtt{0x#1}}\mathdef1425{22}\)</span></td>
+<td><span class="math">\(\def\mathdef1599#1{\mathtt{0x#1}}\mathdef1599{22}\)</span></td>
 <td><span class="math">\([t] \to [t]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-tee-local"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_global}}~x\)</span></td>
-<td><span class="math">\(\def\mathdef1426#1{\mathtt{0x#1}}\mathdef1426{23}\)</span></td>
+<td><span class="math">\(\def\mathdef1600#1{\mathtt{0x#1}}\mathdef1600{23}\)</span></td>
 <td><span class="math">\([] \to [t]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-get-global"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_global}}~x\)</span></td>
-<td><span class="math">\(\def\mathdef1427#1{\mathtt{0x#1}}\mathdef1427{24}\)</span></td>
+<td><span class="math">\(\def\mathdef1601#1{\mathtt{0x#1}}\mathdef1601{24}\)</span></td>
 <td><span class="math">\([t] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-set-global"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1428#1{\mathtt{0x#1}}\mathdef1428{25}\)</span></td>
+<td><span class="math">\(\def\mathdef1602#1{\mathtt{0x#1}}\mathdef1602{25}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1429#1{\mathtt{0x#1}}\mathdef1429{26}\)</span></td>
+<td><span class="math">\(\def\mathdef1603#1{\mathtt{0x#1}}\mathdef1603{26}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
-<td><span class="math">\(\def\mathdef1430#1{\mathtt{0x#1}}\mathdef1430{27}\)</span></td>
+<td><span class="math">\(\def\mathdef1604#1{\mathtt{0x#1}}\mathdef1604{27}\)</span></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1431#1{\mathtt{0x#1}}\mathdef1431{28}\)</span></td>
+<td><span class="math">\(\def\mathdef1605#1{\mathtt{0x#1}}\mathdef1605{28}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-load"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1432#1{\mathtt{0x#1}}\mathdef1432{29}\)</span></td>
+<td><span class="math">\(\def\mathdef1606#1{\mathtt{0x#1}}\mathdef1606{29}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-load"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1433#1{\mathtt{0x#1}}\mathdef1433{2A}\)</span></td>
+<td><span class="math">\(\def\mathdef1607#1{\mathtt{0x#1}}\mathdef1607{2A}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-load"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1434#1{\mathtt{0x#1}}\mathdef1434{2B}\)</span></td>
+<td><span class="math">\(\def\mathdef1608#1{\mathtt{0x#1}}\mathdef1608{2B}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-load"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{8\_s}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1435#1{\mathtt{0x#1}}\mathdef1435{2C}\)</span></td>
+<td><span class="math">\(\def\mathdef1609#1{\mathtt{0x#1}}\mathdef1609{2C}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{8\_u}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1436#1{\mathtt{0x#1}}\mathdef1436{2D}\)</span></td>
+<td><span class="math">\(\def\mathdef1610#1{\mathtt{0x#1}}\mathdef1610{2D}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{16\_s}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1437#1{\mathtt{0x#1}}\mathdef1437{2E}\)</span></td>
+<td><span class="math">\(\def\mathdef1611#1{\mathtt{0x#1}}\mathdef1611{2E}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{16\_u}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1438#1{\mathtt{0x#1}}\mathdef1438{2F}\)</span></td>
+<td><span class="math">\(\def\mathdef1612#1{\mathtt{0x#1}}\mathdef1612{2F}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{8\_s}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1439#1{\mathtt{0x#1}}\mathdef1439{30}\)</span></td>
+<td><span class="math">\(\def\mathdef1613#1{\mathtt{0x#1}}\mathdef1613{30}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{8\_u}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1440#1{\mathtt{0x#1}}\mathdef1440{31}\)</span></td>
+<td><span class="math">\(\def\mathdef1614#1{\mathtt{0x#1}}\mathdef1614{31}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{16\_s}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1441#1{\mathtt{0x#1}}\mathdef1441{32}\)</span></td>
+<td><span class="math">\(\def\mathdef1615#1{\mathtt{0x#1}}\mathdef1615{32}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{16\_u}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1442#1{\mathtt{0x#1}}\mathdef1442{33}\)</span></td>
+<td><span class="math">\(\def\mathdef1616#1{\mathtt{0x#1}}\mathdef1616{33}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{32\_s}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1443#1{\mathtt{0x#1}}\mathdef1443{34}\)</span></td>
+<td><span class="math">\(\def\mathdef1617#1{\mathtt{0x#1}}\mathdef1617{34}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{32\_u}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1444#1{\mathtt{0x#1}}\mathdef1444{35}\)</span></td>
+<td><span class="math">\(\def\mathdef1618#1{\mathtt{0x#1}}\mathdef1618{35}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1445#1{\mathtt{0x#1}}\mathdef1445{36}\)</span></td>
+<td><span class="math">\(\def\mathdef1619#1{\mathtt{0x#1}}\mathdef1619{36}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-store"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1446#1{\mathtt{0x#1}}\mathdef1446{37}\)</span></td>
+<td><span class="math">\(\def\mathdef1620#1{\mathtt{0x#1}}\mathdef1620{37}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-store"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1447#1{\mathtt{0x#1}}\mathdef1447{38}\)</span></td>
+<td><span class="math">\(\def\mathdef1621#1{\mathtt{0x#1}}\mathdef1621{38}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-store"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1448#1{\mathtt{0x#1}}\mathdef1448{39}\)</span></td>
+<td><span class="math">\(\def\mathdef1622#1{\mathtt{0x#1}}\mathdef1622{39}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-store"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{8}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1449#1{\mathtt{0x#1}}\mathdef1449{3A}\)</span></td>
+<td><span class="math">\(\def\mathdef1623#1{\mathtt{0x#1}}\mathdef1623{3A}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-storen"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{16}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1450#1{\mathtt{0x#1}}\mathdef1450{3B}\)</span></td>
+<td><span class="math">\(\def\mathdef1624#1{\mathtt{0x#1}}\mathdef1624{3B}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-storen"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{8}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1451#1{\mathtt{0x#1}}\mathdef1451{3C}\)</span></td>
+<td><span class="math">\(\def\mathdef1625#1{\mathtt{0x#1}}\mathdef1625{3C}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-storen"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{16}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1452#1{\mathtt{0x#1}}\mathdef1452{3D}\)</span></td>
+<td><span class="math">\(\def\mathdef1626#1{\mathtt{0x#1}}\mathdef1626{3D}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-storen"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{32}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1453#1{\mathtt{0x#1}}\mathdef1453{3E}\)</span></td>
+<td><span class="math">\(\def\mathdef1627#1{\mathtt{0x#1}}\mathdef1627{3E}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to []\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-storen"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}}\)</span></td>
-<td><span class="math">\(\def\mathdef1454#1{\mathtt{0x#1}}\mathdef1454{3F}\)</span></td>
+<td><span class="math">\(\def\mathdef1628#1{\mathtt{0x#1}}\mathdef1628{3F}\)</span></td>
 <td><span class="math">\([] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-current-memory"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}}\)</span></td>
-<td><span class="math">\(\def\mathdef1455#1{\mathtt{0x#1}}\mathdef1455{40}\)</span></td>
+<td><span class="math">\(\def\mathdef1629#1{\mathtt{0x#1}}\mathdef1629{40}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-grow-memory"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1356#1{{\mathit{i}#1}}\mathdef1356{\mathit{32}}}\)</span></td>
-<td><span class="math">\(\def\mathdef1456#1{\mathtt{0x#1}}\mathdef1456{41}\)</span></td>
+<tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1528#1{{\mathit{i}#1}}\mathdef1528{\mathit{32}}}\)</span></td>
+<td><span class="math">\(\def\mathdef1630#1{\mathtt{0x#1}}\mathdef1630{41}\)</span></td>
 <td><span class="math">\([] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-const"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
-<tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1357#1{{\mathit{i}#1}}\mathdef1357{\mathit{64}}}\)</span></td>
-<td><span class="math">\(\def\mathdef1457#1{\mathtt{0x#1}}\mathdef1457{42}\)</span></td>
+<tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1529#1{{\mathit{i}#1}}\mathdef1529{\mathit{64}}}\)</span></td>
+<td><span class="math">\(\def\mathdef1631#1{\mathtt{0x#1}}\mathdef1631{42}\)</span></td>
 <td><span class="math">\([] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-const"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-float}{\def\mathdef1359#1{{\mathit{f}#1}}\mathdef1359{\mathit{32}}}\)</span></td>
-<td><span class="math">\(\def\mathdef1458#1{\mathtt{0x#1}}\mathdef1458{43}\)</span></td>
+<tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-float}{\def\mathdef1532#1{{\mathit{f}#1}}\mathdef1532{\mathit{32}}}\)</span></td>
+<td><span class="math">\(\def\mathdef1632#1{\mathtt{0x#1}}\mathdef1632{43}\)</span></td>
 <td><span class="math">\([] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-const"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
-<tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-float}{\def\mathdef1360#1{{\mathit{f}#1}}\mathdef1360{\mathit{64}}}\)</span></td>
-<td><span class="math">\(\def\mathdef1459#1{\mathtt{0x#1}}\mathdef1459{44}\)</span></td>
+<tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-float}{\def\mathdef1533#1{{\mathit{f}#1}}\mathdef1533{\mathit{64}}}\)</span></td>
+<td><span class="math">\(\def\mathdef1633#1{\mathtt{0x#1}}\mathdef1633{44}\)</span></td>
 <td><span class="math">\([] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-const"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eqz}}\)</span></td>
-<td><span class="math">\(\def\mathdef1460#1{\mathtt{0x#1}}\mathdef1460{45}\)</span></td>
+<td><span class="math">\(\def\mathdef1634#1{\mathtt{0x#1}}\mathdef1634{45}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-testop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}}\)</span></td>
-<td><span class="math">\(\def\mathdef1461#1{\mathtt{0x#1}}\mathdef1461{46}\)</span></td>
+<td><span class="math">\(\def\mathdef1635#1{\mathtt{0x#1}}\mathdef1635{46}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}}\)</span></td>
-<td><span class="math">\(\def\mathdef1462#1{\mathtt{0x#1}}\mathdef1462{47}\)</span></td>
+<td><span class="math">\(\def\mathdef1636#1{\mathtt{0x#1}}\mathdef1636{47}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1463#1{\mathtt{0x#1}}\mathdef1463{48}\)</span></td>
+<td><span class="math">\(\def\mathdef1637#1{\mathtt{0x#1}}\mathdef1637{48}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1464#1{\mathtt{0x#1}}\mathdef1464{49}\)</span></td>
+<td><span class="math">\(\def\mathdef1638#1{\mathtt{0x#1}}\mathdef1638{49}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1465#1{\mathtt{0x#1}}\mathdef1465{4A}\)</span></td>
+<td><span class="math">\(\def\mathdef1639#1{\mathtt{0x#1}}\mathdef1639{4A}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1466#1{\mathtt{0x#1}}\mathdef1466{4B}\)</span></td>
+<td><span class="math">\(\def\mathdef1640#1{\mathtt{0x#1}}\mathdef1640{4B}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1467#1{\mathtt{0x#1}}\mathdef1467{4C}\)</span></td>
+<td><span class="math">\(\def\mathdef1641#1{\mathtt{0x#1}}\mathdef1641{4C}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1468#1{\mathtt{0x#1}}\mathdef1468{4D}\)</span></td>
+<td><span class="math">\(\def\mathdef1642#1{\mathtt{0x#1}}\mathdef1642{4D}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1469#1{\mathtt{0x#1}}\mathdef1469{4E}\)</span></td>
+<td><span class="math">\(\def\mathdef1643#1{\mathtt{0x#1}}\mathdef1643{4E}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1470#1{\mathtt{0x#1}}\mathdef1470{4F}\)</span></td>
+<td><span class="math">\(\def\mathdef1644#1{\mathtt{0x#1}}\mathdef1644{4F}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eqz}}\)</span></td>
-<td><span class="math">\(\def\mathdef1471#1{\mathtt{0x#1}}\mathdef1471{50}\)</span></td>
+<td><span class="math">\(\def\mathdef1645#1{\mathtt{0x#1}}\mathdef1645{50}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-testop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}}\)</span></td>
-<td><span class="math">\(\def\mathdef1472#1{\mathtt{0x#1}}\mathdef1472{51}\)</span></td>
+<td><span class="math">\(\def\mathdef1646#1{\mathtt{0x#1}}\mathdef1646{51}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}}\)</span></td>
-<td><span class="math">\(\def\mathdef1473#1{\mathtt{0x#1}}\mathdef1473{52}\)</span></td>
+<td><span class="math">\(\def\mathdef1647#1{\mathtt{0x#1}}\mathdef1647{52}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1474#1{\mathtt{0x#1}}\mathdef1474{53}\)</span></td>
+<td><span class="math">\(\def\mathdef1648#1{\mathtt{0x#1}}\mathdef1648{53}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1475#1{\mathtt{0x#1}}\mathdef1475{54}\)</span></td>
+<td><span class="math">\(\def\mathdef1649#1{\mathtt{0x#1}}\mathdef1649{54}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1476#1{\mathtt{0x#1}}\mathdef1476{55}\)</span></td>
+<td><span class="math">\(\def\mathdef1650#1{\mathtt{0x#1}}\mathdef1650{55}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1477#1{\mathtt{0x#1}}\mathdef1477{56}\)</span></td>
+<td><span class="math">\(\def\mathdef1651#1{\mathtt{0x#1}}\mathdef1651{56}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1478#1{\mathtt{0x#1}}\mathdef1478{57}\)</span></td>
+<td><span class="math">\(\def\mathdef1652#1{\mathtt{0x#1}}\mathdef1652{57}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1479#1{\mathtt{0x#1}}\mathdef1479{58}\)</span></td>
+<td><span class="math">\(\def\mathdef1653#1{\mathtt{0x#1}}\mathdef1653{58}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1480#1{\mathtt{0x#1}}\mathdef1480{59}\)</span></td>
+<td><span class="math">\(\def\mathdef1654#1{\mathtt{0x#1}}\mathdef1654{59}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1481#1{\mathtt{0x#1}}\mathdef1481{5A}\)</span></td>
+<td><span class="math">\(\def\mathdef1655#1{\mathtt{0x#1}}\mathdef1655{5A}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}}\)</span></td>
-<td><span class="math">\(\def\mathdef1482#1{\mathtt{0x#1}}\mathdef1482{5B}\)</span></td>
+<td><span class="math">\(\def\mathdef1656#1{\mathtt{0x#1}}\mathdef1656{5B}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}}\)</span></td>
-<td><span class="math">\(\def\mathdef1483#1{\mathtt{0x#1}}\mathdef1483{5C}\)</span></td>
+<td><span class="math">\(\def\mathdef1657#1{\mathtt{0x#1}}\mathdef1657{5C}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}}\)</span></td>
-<td><span class="math">\(\def\mathdef1484#1{\mathtt{0x#1}}\mathdef1484{5D}\)</span></td>
+<td><span class="math">\(\def\mathdef1658#1{\mathtt{0x#1}}\mathdef1658{5D}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\)</span></td>
-<td><span class="math">\(\def\mathdef1485#1{\mathtt{0x#1}}\mathdef1485{5E}\)</span></td>
+<td><span class="math">\(\def\mathdef1659#1{\mathtt{0x#1}}\mathdef1659{5E}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\)</span></td>
-<td><span class="math">\(\def\mathdef1486#1{\mathtt{0x#1}}\mathdef1486{5F}\)</span></td>
+<td><span class="math">\(\def\mathdef1660#1{\mathtt{0x#1}}\mathdef1660{5F}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\)</span></td>
-<td><span class="math">\(\def\mathdef1487#1{\mathtt{0x#1}}\mathdef1487{60}\)</span></td>
+<td><span class="math">\(\def\mathdef1661#1{\mathtt{0x#1}}\mathdef1661{60}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}}\)</span></td>
-<td><span class="math">\(\def\mathdef1488#1{\mathtt{0x#1}}\mathdef1488{61}\)</span></td>
+<td><span class="math">\(\def\mathdef1662#1{\mathtt{0x#1}}\mathdef1662{61}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}}\)</span></td>
-<td><span class="math">\(\def\mathdef1489#1{\mathtt{0x#1}}\mathdef1489{62}\)</span></td>
+<td><span class="math">\(\def\mathdef1663#1{\mathtt{0x#1}}\mathdef1663{62}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}}\)</span></td>
-<td><span class="math">\(\def\mathdef1490#1{\mathtt{0x#1}}\mathdef1490{63}\)</span></td>
+<td><span class="math">\(\def\mathdef1664#1{\mathtt{0x#1}}\mathdef1664{63}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\)</span></td>
-<td><span class="math">\(\def\mathdef1491#1{\mathtt{0x#1}}\mathdef1491{64}\)</span></td>
+<td><span class="math">\(\def\mathdef1665#1{\mathtt{0x#1}}\mathdef1665{64}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\)</span></td>
-<td><span class="math">\(\def\mathdef1492#1{\mathtt{0x#1}}\mathdef1492{65}\)</span></td>
+<td><span class="math">\(\def\mathdef1666#1{\mathtt{0x#1}}\mathdef1666{65}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\)</span></td>
-<td><span class="math">\(\def\mathdef1493#1{\mathtt{0x#1}}\mathdef1493{66}\)</span></td>
+<td><span class="math">\(\def\mathdef1667#1{\mathtt{0x#1}}\mathdef1667{66}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-relop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{clz}}\)</span></td>
-<td><span class="math">\(\def\mathdef1494#1{\mathtt{0x#1}}\mathdef1494{67}\)</span></td>
+<td><span class="math">\(\def\mathdef1668#1{\mathtt{0x#1}}\mathdef1668{67}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ctz}}\)</span></td>
-<td><span class="math">\(\def\mathdef1495#1{\mathtt{0x#1}}\mathdef1495{68}\)</span></td>
+<td><span class="math">\(\def\mathdef1669#1{\mathtt{0x#1}}\mathdef1669{68}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{popcnt}}\)</span></td>
-<td><span class="math">\(\def\mathdef1496#1{\mathtt{0x#1}}\mathdef1496{69}\)</span></td>
+<td><span class="math">\(\def\mathdef1670#1{\mathtt{0x#1}}\mathdef1670{69}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span></td>
-<td><span class="math">\(\def\mathdef1497#1{\mathtt{0x#1}}\mathdef1497{6A}\)</span></td>
+<td><span class="math">\(\def\mathdef1671#1{\mathtt{0x#1}}\mathdef1671{6A}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}}\)</span></td>
-<td><span class="math">\(\def\mathdef1498#1{\mathtt{0x#1}}\mathdef1498{6B}\)</span></td>
+<td><span class="math">\(\def\mathdef1672#1{\mathtt{0x#1}}\mathdef1672{6B}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}\)</span></td>
-<td><span class="math">\(\def\mathdef1499#1{\mathtt{0x#1}}\mathdef1499{6C}\)</span></td>
+<td><span class="math">\(\def\mathdef1673#1{\mathtt{0x#1}}\mathdef1673{6C}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1500#1{\mathtt{0x#1}}\mathdef1500{6D}\)</span></td>
+<td><span class="math">\(\def\mathdef1674#1{\mathtt{0x#1}}\mathdef1674{6D}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1501#1{\mathtt{0x#1}}\mathdef1501{6E}\)</span></td>
+<td><span class="math">\(\def\mathdef1675#1{\mathtt{0x#1}}\mathdef1675{6E}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rem}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1502#1{\mathtt{0x#1}}\mathdef1502{6F}\)</span></td>
+<td><span class="math">\(\def\mathdef1676#1{\mathtt{0x#1}}\mathdef1676{6F}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rem}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1503#1{\mathtt{0x#1}}\mathdef1503{70}\)</span></td>
+<td><span class="math">\(\def\mathdef1677#1{\mathtt{0x#1}}\mathdef1677{70}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{and}}\)</span></td>
-<td><span class="math">\(\def\mathdef1504#1{\mathtt{0x#1}}\mathdef1504{71}\)</span></td>
+<td><span class="math">\(\def\mathdef1678#1{\mathtt{0x#1}}\mathdef1678{71}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{or}}\)</span></td>
-<td><span class="math">\(\def\mathdef1505#1{\mathtt{0x#1}}\mathdef1505{72}\)</span></td>
+<td><span class="math">\(\def\mathdef1679#1{\mathtt{0x#1}}\mathdef1679{72}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{xor}}\)</span></td>
-<td><span class="math">\(\def\mathdef1506#1{\mathtt{0x#1}}\mathdef1506{73}\)</span></td>
+<td><span class="math">\(\def\mathdef1680#1{\mathtt{0x#1}}\mathdef1680{73}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shl}}\)</span></td>
-<td><span class="math">\(\def\mathdef1507#1{\mathtt{0x#1}}\mathdef1507{74}\)</span></td>
+<td><span class="math">\(\def\mathdef1681#1{\mathtt{0x#1}}\mathdef1681{74}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shr}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1508#1{\mathtt{0x#1}}\mathdef1508{75}\)</span></td>
+<td><span class="math">\(\def\mathdef1682#1{\mathtt{0x#1}}\mathdef1682{75}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shr}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1509#1{\mathtt{0x#1}}\mathdef1509{76}\)</span></td>
+<td><span class="math">\(\def\mathdef1683#1{\mathtt{0x#1}}\mathdef1683{76}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotl}}\)</span></td>
-<td><span class="math">\(\def\mathdef1510#1{\mathtt{0x#1}}\mathdef1510{77}\)</span></td>
+<td><span class="math">\(\def\mathdef1684#1{\mathtt{0x#1}}\mathdef1684{77}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotr}}\)</span></td>
-<td><span class="math">\(\def\mathdef1511#1{\mathtt{0x#1}}\mathdef1511{78}\)</span></td>
+<td><span class="math">\(\def\mathdef1685#1{\mathtt{0x#1}}\mathdef1685{78}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{clz}}\)</span></td>
-<td><span class="math">\(\def\mathdef1512#1{\mathtt{0x#1}}\mathdef1512{79}\)</span></td>
+<td><span class="math">\(\def\mathdef1686#1{\mathtt{0x#1}}\mathdef1686{79}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ctz}}\)</span></td>
-<td><span class="math">\(\def\mathdef1513#1{\mathtt{0x#1}}\mathdef1513{7A}\)</span></td>
+<td><span class="math">\(\def\mathdef1687#1{\mathtt{0x#1}}\mathdef1687{7A}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{popcnt}}\)</span></td>
-<td><span class="math">\(\def\mathdef1514#1{\mathtt{0x#1}}\mathdef1514{7B}\)</span></td>
+<td><span class="math">\(\def\mathdef1688#1{\mathtt{0x#1}}\mathdef1688{7B}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span></td>
-<td><span class="math">\(\def\mathdef1515#1{\mathtt{0x#1}}\mathdef1515{7C}\)</span></td>
+<td><span class="math">\(\def\mathdef1689#1{\mathtt{0x#1}}\mathdef1689{7C}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}}\)</span></td>
-<td><span class="math">\(\def\mathdef1516#1{\mathtt{0x#1}}\mathdef1516{7D}\)</span></td>
+<td><span class="math">\(\def\mathdef1690#1{\mathtt{0x#1}}\mathdef1690{7D}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}\)</span></td>
-<td><span class="math">\(\def\mathdef1517#1{\mathtt{0x#1}}\mathdef1517{7E}\)</span></td>
+<td><span class="math">\(\def\mathdef1691#1{\mathtt{0x#1}}\mathdef1691{7E}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1518#1{\mathtt{0x#1}}\mathdef1518{7F}\)</span></td>
+<td><span class="math">\(\def\mathdef1692#1{\mathtt{0x#1}}\mathdef1692{7F}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1519#1{\mathtt{0x#1}}\mathdef1519{80}\)</span></td>
+<td><span class="math">\(\def\mathdef1693#1{\mathtt{0x#1}}\mathdef1693{80}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rem}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1520#1{\mathtt{0x#1}}\mathdef1520{81}\)</span></td>
+<td><span class="math">\(\def\mathdef1694#1{\mathtt{0x#1}}\mathdef1694{81}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rem}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1521#1{\mathtt{0x#1}}\mathdef1521{82}\)</span></td>
+<td><span class="math">\(\def\mathdef1695#1{\mathtt{0x#1}}\mathdef1695{82}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{and}}\)</span></td>
-<td><span class="math">\(\def\mathdef1522#1{\mathtt{0x#1}}\mathdef1522{83}\)</span></td>
+<td><span class="math">\(\def\mathdef1696#1{\mathtt{0x#1}}\mathdef1696{83}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{or}}\)</span></td>
-<td><span class="math">\(\def\mathdef1523#1{\mathtt{0x#1}}\mathdef1523{84}\)</span></td>
+<td><span class="math">\(\def\mathdef1697#1{\mathtt{0x#1}}\mathdef1697{84}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{xor}}\)</span></td>
-<td><span class="math">\(\def\mathdef1524#1{\mathtt{0x#1}}\mathdef1524{85}\)</span></td>
+<td><span class="math">\(\def\mathdef1698#1{\mathtt{0x#1}}\mathdef1698{85}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shl}}\)</span></td>
-<td><span class="math">\(\def\mathdef1525#1{\mathtt{0x#1}}\mathdef1525{86}\)</span></td>
+<td><span class="math">\(\def\mathdef1699#1{\mathtt{0x#1}}\mathdef1699{86}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shr}}\mathsf{\_s}\)</span></td>
-<td><span class="math">\(\def\mathdef1526#1{\mathtt{0x#1}}\mathdef1526{87}\)</span></td>
+<td><span class="math">\(\def\mathdef1700#1{\mathtt{0x#1}}\mathdef1700{87}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shr}}\mathsf{\_u}\)</span></td>
-<td><span class="math">\(\def\mathdef1527#1{\mathtt{0x#1}}\mathdef1527{88}\)</span></td>
+<td><span class="math">\(\def\mathdef1701#1{\mathtt{0x#1}}\mathdef1701{88}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotl}}\)</span></td>
-<td><span class="math">\(\def\mathdef1528#1{\mathtt{0x#1}}\mathdef1528{89}\)</span></td>
+<td><span class="math">\(\def\mathdef1702#1{\mathtt{0x#1}}\mathdef1702{89}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotr}}\)</span></td>
-<td><span class="math">\(\def\mathdef1529#1{\mathtt{0x#1}}\mathdef1529{8A}\)</span></td>
+<td><span class="math">\(\def\mathdef1703#1{\mathtt{0x#1}}\mathdef1703{8A}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{abs}}\)</span></td>
-<td><span class="math">\(\def\mathdef1530#1{\mathtt{0x#1}}\mathdef1530{8B}\)</span></td>
+<td><span class="math">\(\def\mathdef1704#1{\mathtt{0x#1}}\mathdef1704{8B}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1531#1{\mathtt{0x#1}}\mathdef1531{8C}\)</span></td>
+<td><span class="math">\(\def\mathdef1705#1{\mathtt{0x#1}}\mathdef1705{8C}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ceil}}\)</span></td>
-<td><span class="math">\(\def\mathdef1532#1{\mathtt{0x#1}}\mathdef1532{8D}\)</span></td>
+<td><span class="math">\(\def\mathdef1706#1{\mathtt{0x#1}}\mathdef1706{8D}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{floor}}\)</span></td>
-<td><span class="math">\(\def\mathdef1533#1{\mathtt{0x#1}}\mathdef1533{8E}\)</span></td>
+<td><span class="math">\(\def\mathdef1707#1{\mathtt{0x#1}}\mathdef1707{8E}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\)</span></td>
-<td><span class="math">\(\def\mathdef1534#1{\mathtt{0x#1}}\mathdef1534{8F}\)</span></td>
+<td><span class="math">\(\def\mathdef1708#1{\mathtt{0x#1}}\mathdef1708{8F}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{nearest}}\)</span></td>
-<td><span class="math">\(\def\mathdef1535#1{\mathtt{0x#1}}\mathdef1535{90}\)</span></td>
+<td><span class="math">\(\def\mathdef1709#1{\mathtt{0x#1}}\mathdef1709{90}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sqrt}}\)</span></td>
-<td><span class="math">\(\def\mathdef1536#1{\mathtt{0x#1}}\mathdef1536{91}\)</span></td>
+<td><span class="math">\(\def\mathdef1710#1{\mathtt{0x#1}}\mathdef1710{91}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span></td>
-<td><span class="math">\(\def\mathdef1537#1{\mathtt{0x#1}}\mathdef1537{92}\)</span></td>
+<td><span class="math">\(\def\mathdef1711#1{\mathtt{0x#1}}\mathdef1711{92}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}}\)</span></td>
-<td><span class="math">\(\def\mathdef1538#1{\mathtt{0x#1}}\mathdef1538{93}\)</span></td>
+<td><span class="math">\(\def\mathdef1712#1{\mathtt{0x#1}}\mathdef1712{93}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}\)</span></td>
-<td><span class="math">\(\def\mathdef1539#1{\mathtt{0x#1}}\mathdef1539{94}\)</span></td>
+<td><span class="math">\(\def\mathdef1713#1{\mathtt{0x#1}}\mathdef1713{94}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}}\)</span></td>
-<td><span class="math">\(\def\mathdef1540#1{\mathtt{0x#1}}\mathdef1540{95}\)</span></td>
+<td><span class="math">\(\def\mathdef1714#1{\mathtt{0x#1}}\mathdef1714{95}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{min}}\)</span></td>
-<td><span class="math">\(\def\mathdef1541#1{\mathtt{0x#1}}\mathdef1541{96}\)</span></td>
+<td><span class="math">\(\def\mathdef1715#1{\mathtt{0x#1}}\mathdef1715{96}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{max}}\)</span></td>
-<td><span class="math">\(\def\mathdef1542#1{\mathtt{0x#1}}\mathdef1542{97}\)</span></td>
+<td><span class="math">\(\def\mathdef1716#1{\mathtt{0x#1}}\mathdef1716{97}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{copysign}}\)</span></td>
-<td><span class="math">\(\def\mathdef1543#1{\mathtt{0x#1}}\mathdef1543{98}\)</span></td>
+<td><span class="math">\(\def\mathdef1717#1{\mathtt{0x#1}}\mathdef1717{98}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{abs}}\)</span></td>
-<td><span class="math">\(\def\mathdef1544#1{\mathtt{0x#1}}\mathdef1544{99}\)</span></td>
+<td><span class="math">\(\def\mathdef1718#1{\mathtt{0x#1}}\mathdef1718{99}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}}\)</span></td>
-<td><span class="math">\(\def\mathdef1545#1{\mathtt{0x#1}}\mathdef1545{9A}\)</span></td>
+<td><span class="math">\(\def\mathdef1719#1{\mathtt{0x#1}}\mathdef1719{9A}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ceil}}\)</span></td>
-<td><span class="math">\(\def\mathdef1546#1{\mathtt{0x#1}}\mathdef1546{9B}\)</span></td>
+<td><span class="math">\(\def\mathdef1720#1{\mathtt{0x#1}}\mathdef1720{9B}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{floor}}\)</span></td>
-<td><span class="math">\(\def\mathdef1547#1{\mathtt{0x#1}}\mathdef1547{9C}\)</span></td>
+<td><span class="math">\(\def\mathdef1721#1{\mathtt{0x#1}}\mathdef1721{9C}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\)</span></td>
-<td><span class="math">\(\def\mathdef1548#1{\mathtt{0x#1}}\mathdef1548{9D}\)</span></td>
+<td><span class="math">\(\def\mathdef1722#1{\mathtt{0x#1}}\mathdef1722{9D}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{nearest}}\)</span></td>
-<td><span class="math">\(\def\mathdef1549#1{\mathtt{0x#1}}\mathdef1549{9E}\)</span></td>
+<td><span class="math">\(\def\mathdef1723#1{\mathtt{0x#1}}\mathdef1723{9E}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sqrt}}\)</span></td>
-<td><span class="math">\(\def\mathdef1550#1{\mathtt{0x#1}}\mathdef1550{9F}\)</span></td>
+<td><span class="math">\(\def\mathdef1724#1{\mathtt{0x#1}}\mathdef1724{9F}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-unop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span></td>
-<td><span class="math">\(\def\mathdef1551#1{\mathtt{0x#1}}\mathdef1551{A0}\)</span></td>
+<td><span class="math">\(\def\mathdef1725#1{\mathtt{0x#1}}\mathdef1725{A0}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}}\)</span></td>
-<td><span class="math">\(\def\mathdef1552#1{\mathtt{0x#1}}\mathdef1552{A1}\)</span></td>
+<td><span class="math">\(\def\mathdef1726#1{\mathtt{0x#1}}\mathdef1726{A1}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}\)</span></td>
-<td><span class="math">\(\def\mathdef1553#1{\mathtt{0x#1}}\mathdef1553{A2}\)</span></td>
+<td><span class="math">\(\def\mathdef1727#1{\mathtt{0x#1}}\mathdef1727{A2}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}}\)</span></td>
-<td><span class="math">\(\def\mathdef1554#1{\mathtt{0x#1}}\mathdef1554{A3}\)</span></td>
+<td><span class="math">\(\def\mathdef1728#1{\mathtt{0x#1}}\mathdef1728{A3}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{min}}\)</span></td>
-<td><span class="math">\(\def\mathdef1555#1{\mathtt{0x#1}}\mathdef1555{A4}\)</span></td>
+<td><span class="math">\(\def\mathdef1729#1{\mathtt{0x#1}}\mathdef1729{A4}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{max}}\)</span></td>
-<td><span class="math">\(\def\mathdef1556#1{\mathtt{0x#1}}\mathdef1556{A5}\)</span></td>
+<td><span class="math">\(\def\mathdef1730#1{\mathtt{0x#1}}\mathdef1730{A5}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{copysign}}\)</span></td>
-<td><span class="math">\(\def\mathdef1557#1{\mathtt{0x#1}}\mathdef1557{A6}\)</span></td>
+<td><span class="math">\(\def\mathdef1731#1{\mathtt{0x#1}}\mathdef1731{A6}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-binop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{wrap}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1558#1{\mathtt{0x#1}}\mathdef1558{A7}\)</span></td>
+<td><span class="math">\(\def\mathdef1732#1{\mathtt{0x#1}}\mathdef1732{A7}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1559#1{\mathtt{0x#1}}\mathdef1559{A8}\)</span></td>
+<td><span class="math">\(\def\mathdef1733#1{\mathtt{0x#1}}\mathdef1733{A8}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1560#1{\mathtt{0x#1}}\mathdef1560{A9}\)</span></td>
+<td><span class="math">\(\def\mathdef1734#1{\mathtt{0x#1}}\mathdef1734{A9}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1561#1{\mathtt{0x#1}}\mathdef1561{AA}\)</span></td>
+<td><span class="math">\(\def\mathdef1735#1{\mathtt{0x#1}}\mathdef1735{AA}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1562#1{\mathtt{0x#1}}\mathdef1562{AB}\)</span></td>
+<td><span class="math">\(\def\mathdef1736#1{\mathtt{0x#1}}\mathdef1736{AB}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1563#1{\mathtt{0x#1}}\mathdef1563{AC}\)</span></td>
+<td><span class="math">\(\def\mathdef1737#1{\mathtt{0x#1}}\mathdef1737{AC}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1564#1{\mathtt{0x#1}}\mathdef1564{AD}\)</span></td>
+<td><span class="math">\(\def\mathdef1738#1{\mathtt{0x#1}}\mathdef1738{AD}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1565#1{\mathtt{0x#1}}\mathdef1565{AE}\)</span></td>
+<td><span class="math">\(\def\mathdef1739#1{\mathtt{0x#1}}\mathdef1739{AE}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1566#1{\mathtt{0x#1}}\mathdef1566{AF}\)</span></td>
+<td><span class="math">\(\def\mathdef1740#1{\mathtt{0x#1}}\mathdef1740{AF}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1567#1{\mathtt{0x#1}}\mathdef1567{B0}\)</span></td>
+<td><span class="math">\(\def\mathdef1741#1{\mathtt{0x#1}}\mathdef1741{B0}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1568#1{\mathtt{0x#1}}\mathdef1568{B1}\)</span></td>
+<td><span class="math">\(\def\mathdef1742#1{\mathtt{0x#1}}\mathdef1742{B1}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1569#1{\mathtt{0x#1}}\mathdef1569{B2}\)</span></td>
+<td><span class="math">\(\def\mathdef1743#1{\mathtt{0x#1}}\mathdef1743{B2}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1570#1{\mathtt{0x#1}}\mathdef1570{B3}\)</span></td>
+<td><span class="math">\(\def\mathdef1744#1{\mathtt{0x#1}}\mathdef1744{B3}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1571#1{\mathtt{0x#1}}\mathdef1571{B4}\)</span></td>
+<td><span class="math">\(\def\mathdef1745#1{\mathtt{0x#1}}\mathdef1745{B4}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1572#1{\mathtt{0x#1}}\mathdef1572{B5}\)</span></td>
+<td><span class="math">\(\def\mathdef1746#1{\mathtt{0x#1}}\mathdef1746{B5}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{demote}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1573#1{\mathtt{0x#1}}\mathdef1573{B6}\)</span></td>
+<td><span class="math">\(\def\mathdef1747#1{\mathtt{0x#1}}\mathdef1747{B6}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1574#1{\mathtt{0x#1}}\mathdef1574{B7}\)</span></td>
+<td><span class="math">\(\def\mathdef1748#1{\mathtt{0x#1}}\mathdef1748{B7}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1575#1{\mathtt{0x#1}}\mathdef1575{B8}\)</span></td>
+<td><span class="math">\(\def\mathdef1749#1{\mathtt{0x#1}}\mathdef1749{B8}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1576#1{\mathtt{0x#1}}\mathdef1576{B9}\)</span></td>
+<td><span class="math">\(\def\mathdef1750#1{\mathtt{0x#1}}\mathdef1750{B9}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1577#1{\mathtt{0x#1}}\mathdef1577{BA}\)</span></td>
+<td><span class="math">\(\def\mathdef1751#1{\mathtt{0x#1}}\mathdef1751{BA}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{promote}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1578#1{\mathtt{0x#1}}\mathdef1578{BB}\)</span></td>
+<td><span class="math">\(\def\mathdef1752#1{\mathtt{0x#1}}\mathdef1752{BB}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1579#1{\mathtt{0x#1}}\mathdef1579{BC}\)</span></td>
+<td><span class="math">\(\def\mathdef1753#1{\mathtt{0x#1}}\mathdef1753{BC}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1580#1{\mathtt{0x#1}}\mathdef1580{BD}\)</span></td>
+<td><span class="math">\(\def\mathdef1754#1{\mathtt{0x#1}}\mathdef1754{BD}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span></td>
-<td><span class="math">\(\def\mathdef1581#1{\mathtt{0x#1}}\mathdef1581{BE}\)</span></td>
+<td><span class="math">\(\def\mathdef1755#1{\mathtt{0x#1}}\mathdef1755{BE}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span></td>
-<td><span class="math">\(\def\mathdef1582#1{\mathtt{0x#1}}\mathdef1582{BF}\)</span></td>
+<td><span class="math">\(\def\mathdef1756#1{\mathtt{0x#1}}\mathdef1756{BF}\)</span></td>
 <td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}]\)</span></td>
 <td><a class="reference internal" href="../validation/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></td>
 <td>&nbsp;</td>
