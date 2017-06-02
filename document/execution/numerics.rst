@@ -1,28 +1,62 @@
 .. _exec-numeric:
+.. _exec-op-partial:
 
 Numerics
 --------
 
-Auxiliary Operations
-~~~~~~~~~~~~~~~~~~~~
+Numeric primitives are defined in a generic manner, by oeprators indexed over a width :math:`N`.
 
-.. todo::
-   Describe; IEEE bytes
+Some operators are *non-deterministic*, because they can return more than one possible result (such as different possible :ref:`NaN <syntax-nan>` values).
+Conceptually, each operator thus returns a *set* of allowed values.
+For convenience, deterministic results are expressed as plain values, which are assumed to be identified with a respective singleton set.
 
-.. _aux-bytes:
+Some operator are *partial*, because they are not defined on certain inputs.
+Conceptually, an empty set of results is returned in such a case.
+
+In formal notation, each operator is defined by equational clauses that apply in order.
+That is, the first clause that is applicable to the given arguments defines the result.
+In some cases, similar clauses are combined into one by using the notation :math:`\pm` or :math:`\mp`.
+When several of these placeholders occur in a single clause, then they must be resolved consistently: either the upper sign is chosen for all of them or the lower sign.
+
+.. note::
+   For example, the |fcopysign| operator is defined as follows:
+
+   .. math::
+      \begin{array}{@{}lcll}
+      \fcopysign_N(\pm p_1, \pm p_2) &=& \pm p_1 \\
+      \fcopysign_N(\pm p_1, \mp p_2) &=& \mp p_1 \\
+      \end{array}
+
+   This definition is to be read as a shorthand for the following expansion of each clause into two separate ones:
+
+   .. math::
+      \begin{array}{@{}lcll}
+      \fcopysign_N(+ p_1, + p_2) &=& + p_1 \\
+      \fcopysign_N(- p_1, - p_2) &=& + p_1 \\
+      \fcopysign_N(+ p_1, - p_2) &=& - p_1 \\
+      \fcopysign_N(- p_1, + p_2) &=& - p_1 \\
+      \end{array}
+
+.. _aux-trunc:
+
+Some definitions use *truncation* of rational values, with the usual mathematical definition:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \bytes_N(i) &=& \epsilon & (N = 0 \wedge i = 0) \\
-   \bytes_N(i) &=& b~\bytes_{N-8}(j) & (N \geq 8 \wedge i = 2^8\cdot j + b) \\
-   ~ \\
-   \bytes_{\K{i}N}(i) &=& \bytes_N(i) \\
-   \bytes_{\K{f}N}(z) &=& \F{reverse}(\dots) \\
+   \trunc(\pm q) &=& \pm i & (q - 1 < i \leq q) \\
    \end{array}
 
-Note that |bytes| is a bijection, hence the function is invertible.
+
+Integer Operations
+~~~~~~~~~~~~~~~~~~
 
 .. _aux-signed:
+
+Sign Interpretation
+...................
+
+Integer operators are defined on |iN| values.
+Operators that use a signed interpretation convert the value using the following definition, which takes the 2's complement when the value lies in the upper half of the value range (i.e., its most significant bit is :math:`1`):
 
 .. math::
    \begin{array}{lll@{\qquad}l}
@@ -30,103 +64,87 @@ Note that |bytes| is a bijection, hence the function is invertible.
    \signed_N(i) &=& i - 2^N & (2^{N-1} \leq i < 2^N) \\
    \end{array}
 
-.. Note::
-   The index :math:`N` of the |extend| function is the size extending *from*,
-   where as the index of the |wrap| function is the size wrapping *to*.
-
-.. _aux-truncate:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \truncate(\pm q) &=& \pm i & (q - 1 < i \leq q) \\
-   \end{array}
+This function is bijective, and hence invertible.
 
 .. _aux-bits:
-.. _aux-bool:
+
+Bitwise Interpretation
+......................
+
+Bitwise operators are defined by converting the number into a sequence of binary digits representing the bits of its binary representation:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
    \bits_N(i) &=& b_{N-1}~\dots~b_0 & (i = 2^{N-1}\cdot b_{N-1} + \dots + 2^0\cdot b_0) \\
-   \bool(C) &=& (\mbox{if}~C) \\
-   \bool(C) &=& (\mbox{otherwise}) \\
    \end{array}
 
+This function also is bijective and invertible.
+
+Boolean operators like :math:`\wedge`, :math:`\vee`, or :math:`\veebar` are lifted to bit sequences of equal length by applying them pointwise.
+
+.. _aux-bool:
+
+Boolean Interpretation
+......................
+
+The integer result of predicates -- i.e., tests and relational operators -- is defined with the help of the following auxiliary function producing the value :math:`1` or :math:`0` depending on a condition.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{op}_{\K{i}N}(i) &=& \X{op}_N(i) \\
-   \X{op}_{\K{f}N}(i) &=& \F{f}\X{op}_N(i) \\
+   \bool(C) &=& 1 & (\mbox{if}~C) \\
+   \bool(C) &=& 0 & (\mbox{otherwise}) \\
    \end{array}
 
-.. _aux-ieee:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \ieee_N(i) &=& \dots \\
-   \end{array}
-
-.. _aux-nan:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \F{can}_N \} & (\forall \NAN(n) \in z^\ast,~ n = \F{can}_N) \\
-   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n > \F{can}_N \} & (\mbox{otherwise}) \\
-   \end{array}
-
-where :math:`\F{can}_N = 2^{\payloadsize(N)-1}` is the :ref:`payload <syntax-payload>` of a *canonical* NaN, whose most significant bit is :math:`1` while all others are :math:`0`.
-
-
-Integer Operations
-~~~~~~~~~~~~~~~~~~
 
 .. _op-add:
 
-:math:`\addop_N(i_1, i_2)`
-..........................
+:math:`\iadd_N(i_1, i_2)`
+.........................
 
 * Return the result of adding :math:`i_1` and :math:`i_2` modulo :math:`2^N`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \addop_N(i_1, i_2) &=& (i_1 + i_2) \mod 2^N
+   \iadd_N(i_1, i_2) &=& (i_1 + i_2) \mod 2^N
    \end{array}
 
 .. _op-sub:
 
-:math:`\subop_N(i_1, i_2)`
-..........................
+:math:`\isub_N(i_1, i_2)`
+.........................
 
 * Return the result of subtracting :math:`i_2` from :math:`i_1` modulo :math:`2^N`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \subop_N(i_1, i_2) &=& (i_1 - i_2 + 2^N) \mod 2^N
+   \isub_N(i_1, i_2) &=& (i_1 - i_2 + 2^N) \mod 2^N
    \end{array}
 
 .. _op-mul:
 
-:math:`\mulop_N(i_1, i_2)`
-..........................
+:math:`\imul_N(i_1, i_2)`
+.........................
 
 * Return the result of multiplying :math:`i_1` and :math:`i_2` modulo :math:`2^N`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \mulop_N(i_1, i_2) &=& (i_1 \cdot i_2) \mod 2^N
+   \imul_N(i_1, i_2) &=& (i_1 \cdot i_2) \mod 2^N
    \end{array}
 
 .. _op-div_u:
 
-:math:`\divuop_N(i_1, i_2)`
-...........................
+:math:`\idivu_N(i_1, i_2)`
+..........................
 
-* If :math:`i_2` is not :math:`0`, then:
+* If :math:`i_2` is :math:`0`, then the result is undefined.
 
-  * Return the result of dividing :math:`i_1` by :math:`i_2`, truncated toward zero.
+* Else, return the result of dividing :math:`i_1` by :math:`i_2`, truncated toward zero.
 
 .. math::
    \begin{array}{@{}lcll}
-   \divuop_N(i_1, i_2) &=& \truncate(i_1 / i_2) & (i_2 \neq 0)
+   \idivu_N(i_1, 0) &=& \{\} \\
+   \idivu_N(i_1, i_2) &=& \trunc(i_1 / i_2) \\
    \end{array}
 
 .. note::
@@ -134,20 +152,21 @@ Integer Operations
 
 .. _op-div_s:
 
-:math:`\divsop_N(i_1, i_2)`
-...........................
+:math:`\idivs_N(i_1, i_2)`
+..........................
 
-* If :math:`i_2` is not :math:`0`, then:
+* Let :math:`j_1` be the signed interpretation of :math:`i_1`.
 
-  * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
+* Let :math:`j_2` be the signed interpretation of :math:`i_2`.
 
-  * Let :math:`j_2` be the signed interpretation of :math:`i_2`.
+* If :math:`i_2` is :math:`0`, then the result is undefined.
 
-  * Return the result of dividing :math:`j_1` by :math:`j_2`, truncated toward zero.
+* Else, return the result of dividing :math:`j_1` by :math:`j_2`, truncated toward zero.
 
 .. math::
    \begin{array}{@{}lcll}
-   \divsop_N(i_1, i_2) &=& \signed_N^{-1}(\truncate(\signed_N(i_1) / \signed_N(i_2))) & (i_2 \neq 0)
+   \idivs_N(i_1, 0) &=& \{\} \\
+   \idivs_N(i_1, i_2) &=& \signed_N^{-1}(\trunc(\signed_N(i_1) / \signed_N(i_2))) \\
    \end{array}
 
 .. note::
@@ -155,16 +174,17 @@ Integer Operations
 
 .. _op-rem_u:
 
-:math:`\remuop_N(i_1, i_2)`
-...........................
+:math:`\iremu_N(i_1, i_2)`
+..........................
 
-* If :math:`i_2` is not :math:`0`, then:
+* If :math:`i_2` is :math:`0`, then the result is undefined.
 
-  * Return the remainder of dividing :math:`i_1` by :math:`i_2`.
+* Else, return the remainder of dividing :math:`i_1` by :math:`i_2`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \remuop_N(i_1, i_2) &=& i_1 - i_2 \cdot \truncate(i_1 / i_2) & (i_2 \neq 0)
+   \iremu_N(i_1, 0) &=& \{\} \\
+   \iremu_N(i_1, i_2) &=& i_1 - i_2 \cdot \trunc(i_1 / i_2) \\
    \end{array}
 
 .. note::
@@ -175,20 +195,21 @@ Integer Operations
 
 .. _op-rem_s:
 
-:math:`\remsop_N(i_1, i_2)`
-...........................
+:math:`\irems_N(i_1, i_2)`
+..........................
 
-* If :math:`i_2` is not :math:`0`, then:
+* Let :math:`j_1` be the signed interpretation of :math:`i_1`.
 
-  * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
+* Let :math:`j_2` be the signed interpretation of :math:`i_2`.
 
-  * Let :math:`j_2` be the signed interpretation of :math:`i_2`.
+* If :math:`i_2` is :math:`0`, then the result is undefined.
 
-  * Return the remainder of dividing :math:`j_1` by :math:`j_2`, with the sign of the dividend :math:`j_1`.
+* Else, return the remainder of dividing :math:`j_1` by :math:`j_2`, with the sign of the dividend :math:`j_1`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \remsop_N(i_1, i_2) &=& \signed_N^{-1}(i_1 - i_2 \cdot \truncate(\signed_N(i_1) / \signed_N(i_2))) & (i_2 \neq 0)
+   \irems_N(i_1, 0) &=& \{\} \\
+   \irems_N(i_1, i_2) &=& \signed_N^{-1}(i_1 - i_2 \cdot \trunc(\signed_N(i_1) / \signed_N(i_2))) \\
    \end{array}
 
 .. note::
@@ -200,44 +221,44 @@ Integer Operations
 
 .. _op-and:
 
-:math:`\andop_N(i_1, i_2)`
-..........................
+:math:`\iand_N(i_1, i_2)`
+.........................
 
 * Return the bitwise conjunction of :math:`i_1` and :math:`i_2`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \andop_N(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \wedge \bits_N(i_2))
+   \iand_N(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \wedge \bits_N(i_2))
    \end{array}
 
 .. _op-or:
 
-:math:`\orop_N(i_1, i_2)`
-.........................
+:math:`\ior_N(i_1, i_2)`
+........................
 
 * Return the bitwise disjunction of :math:`i_1` and :math:`i_2`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \orop_N(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \vee \bits_N(i_2))
+   \ior_N(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \vee \bits_N(i_2))
    \end{array}
 
 .. _op-xor:
 
-:math:`\xorop_N(i_1, i_2)`
-..........................
+:math:`\ixor_N(i_1, i_2)`
+.........................
 
 * Return the bitwise exclusive disjunction of :math:`i_1` and :math:`i_2`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \xorop_N(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \veebar \bits_N(i_2))
+   \ixor_N(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \veebar \bits_N(i_2))
    \end{array}
 
 .. _op-shl:
 
-:math:`\shlop_N(i_1, i_2)`
-..........................
+:math:`\ishl_N(i_1, i_2)`
+.........................
 
 * Let :math:`k` be :math:`i_2` modulo :math:`N`.
 
@@ -245,13 +266,13 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \shlop_N(i_1, i_2) &=& \bits_N^{-1}(b_2^{N-k}~0^k) & (\bits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
+   \ishl_N(i_1, i_2) &=& \bits_N^{-1}(b_2^{N-k}~0^k) & (\bits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-shr_u:
 
-:math:`\shruop_N(i_1, i_2)`
-...........................
+:math:`\ishru_N(i_1, i_2)`
+..........................
 
 * Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
 
@@ -259,13 +280,13 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \shruop_N(i_1, i_2) &=& \bits_N^{-1}(0^k~b_1^{N-k}) & (\bits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
+   \ishru_N(i_1, i_2) &=& \bits_N^{-1}(0^k~b_1^{N-k}) & (\bits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-shr_s:
 
-:math:`\shrsop_N(i_1, i_2)`
-...........................
+:math:`\ishrs_N(i_1, i_2)`
+..........................
 
 * Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
 
@@ -273,13 +294,13 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \shrsop_N(i_1, i_2) &=& \bits_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) & (\bits_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mod N)
+   \ishrs_N(i_1, i_2) &=& \bits_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) & (\bits_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-rotl:
 
-:math:`\rotlop_N(i_1, i_2)`
-...........................
+:math:`\irotl_N(i_1, i_2)`
+..........................
 
 * Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
 
@@ -287,13 +308,13 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \rotlop_N(i_1, i_2) &=& \bits_N^{-1}(b_2^{N-k}~b_1^k) & (\bits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
+   \irotl_N(i_1, i_2) &=& \bits_N^{-1}(b_2^{N-k}~b_1^k) & (\bits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-rotr:
 
-:math:`\rotrop_N(i_1, i_2)`
-...........................
+:math:`\irotr_N(i_1, i_2)`
+..........................
 
 * Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
 
@@ -301,105 +322,105 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \rotrop_N(i_1, i_2) &=& \bits_N^{-1}(b_2^k~b_1^{N-k}) & (\bits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
+   \irotr_N(i_1, i_2) &=& \bits_N^{-1}(b_2^k~b_1^{N-k}) & (\bits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
 
 .. _op-clz:
 
-:math:`\clzop_N(i)`
-...................
+:math:`\iclz_N(i)`
+..................
 
 * Return the count of leading zero bits in :math:`i`; all bits are considered leading zeros if :math:`i` is :math:`0`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \clzop_N(i) &=& k & (\bits_N(i) = 0^k~(1~b^\ast)^?)
+   \iclz_N(i) &=& k & (\bits_N(i) = 0^k~(1~b^\ast)^?)
    \end{array}
 
 
 .. _op-ctz:
 
-:math:`\ctzop_N(i)`
-...................
+:math:`\ictz_N(i)`
+..................
 
 * Return the count of trailing zero bits in :math:`i`; all bits are considered trailing zeros if :math:`i` is :math:`0`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \ctzop_N(i) &=& k & (\bits_N(i) = (b^\ast~1)^?~0^k)
+   \ictz_N(i) &=& k & (\bits_N(i) = (b^\ast~1)^?~0^k)
    \end{array}
 
 
 .. _op-popcnt:
 
-:math:`\popcntop_N(i)`
-......................
+:math:`\ipopcnt_N(i)`
+.....................
 
 * Return the count of non-zero bits in :math:`i`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \popcntop_N(i) &=& k & (\bits_N(i) = (0^\ast~1)^k~0^\ast)
+   \ipopcnt_N(i) &=& k & (\bits_N(i) = (0^\ast~1)^k~0^\ast)
    \end{array}
 
 
 .. _op-eqz:
 
-:math:`\eqzop_N(i)`
-...................
+:math:`\ieqz_N(i)`
+..................
 
 * Return :math:`1` if :math:`i` is zero, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \eqzop_N(i) &=& \bool(i = 0)
+   \ieqz_N(i) &=& \bool(i = 0)
    \end{array}
 
 
 .. _op-eq:
 
-:math:`\eqop_N(i_!, i_2)`
-.........................
+:math:`\ieq_N(i_!, i_2)`
+........................
 
 * Return :math:`1` if :math:`i_1` equals :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \eqop_N(i_1, i_2) &=& \bool(i_1 = i_2)
+   \ieq_N(i_1, i_2) &=& \bool(i_1 = i_2)
    \end{array}
 
 
 .. _op-ne:
 
-:math:`\neop_N(i_!, i_2)`
-.........................
+:math:`\ine_N(i_!, i_2)`
+........................
 
 * Return :math:`1` if :math:`i_1` does not equal :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \neop_N(i_1, i_2) &=& \bool(i_1 \neq i_2)
+   \ine_N(i_1, i_2) &=& \bool(i_1 \neq i_2)
    \end{array}
 
 
 .. _op-lt_u:
 
-:math:`\ltuop_N(i_!, i_2)`
-..........................
+:math:`\iltu_N(i_!, i_2)`
+.........................
 
 * Return :math:`1` if :math:`i_1` is less than :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \ltuop_N(i_1, i_2) &=& \bool(i_1 < i_2)
+   \iltu_N(i_1, i_2) &=& \bool(i_1 < i_2)
    \end{array}
 
 
 .. _op-lt_s:
 
-:math:`\ltsop_N(i_!, i_2)`
-..........................
+:math:`\ilts_N(i_!, i_2)`
+.........................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
 
@@ -409,27 +430,27 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \ltsop_N(i_1, i_2) &=& \bool(\signed_N(i_1) < \signed_N(i_2))
+   \ilts_N(i_1, i_2) &=& \bool(\signed_N(i_1) < \signed_N(i_2))
    \end{array}
 
 
 .. _op-gt_u:
 
-:math:`\gtuop_N(i_!, i_2)`
-..........................
+:math:`\igtu_N(i_!, i_2)`
+.........................
 
 * Return :math:`1` if :math:`i_1` is greater than :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \gtuop_N(i_1, i_2) &=& \bool(i_1 > i_2)
+   \igtu_N(i_1, i_2) &=& \bool(i_1 > i_2)
    \end{array}
 
 
 .. _op-gt_s:
 
-:math:`\gtsop_N(i_!, i_2)`
-..........................
+:math:`\igts_N(i_!, i_2)`
+.........................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
 
@@ -439,27 +460,27 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \gtsop_N(i_1, i_2) &=& \bool(\signed_N(i_1) > \signed_N(i_2))
+   \igts_N(i_1, i_2) &=& \bool(\signed_N(i_1) > \signed_N(i_2))
    \end{array}
 
 
 .. _op-le_u:
 
-:math:`\leuop_N(i_!, i_2)`
-..........................
+:math:`\ileu_N(i_!, i_2)`
+.........................
 
 * Return :math:`1` if :math:`i_1` is less than or equal to :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \leuop_N(i_1, i_2) &=& \bool(i_1 \leq i_2)
+   \ileu_N(i_1, i_2) &=& \bool(i_1 \leq i_2)
    \end{array}
 
 
 .. _op-le_s:
 
-:math:`\lesop_N(i_!, i_2)`
-..........................
+:math:`\iles_N(i_!, i_2)`
+.........................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
 
@@ -469,27 +490,27 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \lesop_N(i_1, i_2) &=& \bool(\signed_N(i_1) \leq \signed_N(i_2))
+   \iles_N(i_1, i_2) &=& \bool(\signed_N(i_1) \leq \signed_N(i_2))
    \end{array}
 
 
 .. _op-ge_u:
 
-:math:`\geuop_N(i_!, i_2)`
-..........................
+:math:`\igeu_N(i_!, i_2)`
+.........................
 
 * Return :math:`1` if :math:`i_1` is greater than or equal to :math:`i_2`, :math:`0` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \geuop_N(i_1, i_2) &=& \bool(i_1 \geq i_2)
+   \igeu_N(i_1, i_2) &=& \bool(i_1 \geq i_2)
    \end{array}
 
 
 .. _op-ge_s:
 
-:math:`\gesop_N(i_!, i_2)`
-..........................
+:math:`\iges_N(i_!, i_2)`
+.........................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
 
@@ -499,7 +520,7 @@ Integer Operations
 
 .. math::
    \begin{array}{@{}lcll}
-   \gesop_N(i_1, i_2) &=& \bool(\signed_N(i_1) \geq \signed_N(i_2))
+   \iges_N(i_1, i_2) &=& \bool(\signed_N(i_1) \geq \signed_N(i_2))
    \end{array}
 
 
@@ -509,30 +530,121 @@ Floating-Point Operations
 Floating-point arithmetic follows the `IEEE 754-2008 <http://ieeexplore.ieee.org/document/4610935/>`_ standard,
 with the following qualifications:
 
-* Following the recommendation that operations propagate NaN bits from their operands is permitted but not required.
-
-* WebAssembly uses "non-stop" mode, and floating-point exceptions are not otherwise observable.
-  In particular, neither alternate floating-point exception handling attributes nor operators on status flags are supported.
-  There is no observable difference between quiet and signalling NaN.
-
-* All operations use the round-to-nearest ties-to-even rounding,
-  except where otherwise specified.
+* All operators use round-to-nearest ties-to-even, except where otherwise specified.
   Non-default directed rounding attributes are not supported.
+
+* Following the recommendation that operators propagate NaN bits from their operands is permitted but not required.
+
+* All operators use "non-stop" mode, and floating-point exceptions are not otherwise observable.
+  In particular, neither alternate floating-point exception handling attributes nor operators on status flags are supported.
+  There is no observable difference between quiet and signalling NaNs.
 
 .. note::
    Some of these limitations may be lifted in future versions of WebAssembly.
 
-When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |fcopysignop| is a NaN, the sign bit and the fraction field (which does not include the implicit leading digit of the significand) of the NaN are computed as follows:
 
-* If the fraction fields of all NaN inputs to the operation all consist of 1 in the most significant bit and 0 in the remaining bits, or if there are no NaN inputs, the result is a NaN with a nondeterministic sign bit, 1 in the most significant bit of the fraction field, and all zeros in the remaining bits of the fraction field.
+.. _aux-ieee:
 
-* Otherwise the result is a NaN with a nondeterministic sign bit, 1 in the most significant bit of the fraction field, and nondeterminsitic values in the remaining bits of the fraction field.
+IEEE Rounding
+.............
+
+A floating-point number of bit width :math:`N` can be represented in the form :math:`\pm m \cdot 2^e`, where :math:`m` is the *significand* drawn from |uM|, with :math:`M = \payloadsize(N)`, and :math:`e` the *exponent*.
+
+An *exact* floating-point number is a rational number that is exactly representable as an IEEE 754 value of given bit width :math:`N`.
+
+A *limit* number for a given bit width :math:`N` is one of the values :math:`2^{128}` and :math:`-2^{128}` if :math:`N` is 32, or :math:`2^{1024}` and :math:`-2^{1024}` if :math:`N` is 64.
+
+A *candidate* number is either an exact floating-point number or one of the two limit numbers for the given bit width :math:`N`.
+
+A *candidate pair* is a pair :math:`z_1,z_2` of candidate numbers, such that no candidate number exists that lies between the two.
+
+A real number :math:`z` is converted to a floating-point value of bit width :math:`N` using round-to-nearest ties-to-even as follows:
+
+* If :math:`z` is :math:`0`, then return :math:`+0`.
+
+* Else if :math:`z` is an exact floating-point number, then return :math:`z`.
+
+* Else if :math:`z` greater than or equal to the positive limit, then return :math:`+\infty`.
+
+* Else if :math:`z` is less than or equal to the negative limit, then return :math:`-\infty`.
+
+* Else if :math:`z_1` and :math:`z_2` that are a candidate pair such that :math:`z_1 < z < z_2`, then:
+
+  * If :math:`|z - z_1| < |z - z_2|`, then let :math:`z'` be :math:`z_1`.
+
+  * Else if :math:`|z - z_1| > |z - z_2|`, then let :math:`z'` be :math:`z_2`.
+
+  * Else if :math:`|z - z_1| = |z - z_2|` and the significand of :math:`z_1` is even, then let :math:`z'` be :math:`z_1`.
+
+  * Else, let :math:`z'` be :math:`z_2`.
+
+* If :math:`z`` is :math:`0`, then:
+
+  * If :math:`z < 0`, then return :math:`-0`.
+
+  * Else, return :math:`+0`.
+
+* Else if :math:`z'` is a limit number, then:
+
+  * If :math:`z < 0`, then return :math:`-\infty`.
+
+  * Else, return :math:`+\infty`.
+
+* Else, return :math:`z'`.
+
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \ieee_N(0) &=& +0 \\
+   \ieee_N(z) &=& z & (z \in \F{exact}_N) \\
+   \ieee_N(z) &=& +\infty & (z \geq \F{max}(\F{limit}_n)) \\
+   \ieee_N(z) &=& -\infty & (z \leq \F{min}(\F{limit}_n)) \\
+   \ieee_N(z) &=& \F{closest}_N(z, z_1, z_2) & (z_1 < z < z_2 \wedge (z_1,z_2) \in \F{candidatepair}_N) \\[1ex]
+   \F{closest}_N(z, z_1, z_2) &=& \F{rectify}_N(z, z_1) & (|z-z_1|<|z-z_2|) \\
+   \F{closest}_N(z, z_1, z_2) &=& \F{rectify}_N(z, z_2) & (|z-z_1|>|z-z_2|) \\
+   \F{closest}_N(z, z_1, z_2) &=& \F{rectify}_N(z, z_1) & (|z-z_1|=|z-z_2| \wedge z_1~\mbox{has even significand}) \\
+   \F{closest}_N(z, z_1, z_2) &=& \F{rectify}_N(z, z_2) & (|z-z_1|=|z-z_2| \wedge z_2~\mbox{has even significand}) \\[1ex]
+   \F{rectify}_N(\pm z, 0) &=& \pm 0 \\
+   \F{rectify}_N(z, \pm z') &=& \pm \infty & (\pm z' \in \F{limit}_N) \\
+   \F{rectify}_N(z, z') &=& z' \\
+   \end{array}
+
+where:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \F{exact}_N &=& \{q \in \mathbb{Q} ~|~ q~\mbox{is exactly representable in IEEE 754 with bit width}~N\} \\
+   \F{limit}_{32} &=& \{-2^{128}, +2^{128}\} \\
+   \F{limit}_{64} &=& \{-2^{1024}, +2^{1024}\} \\
+   \F{candidate}_N &=& \F{exact}_N \cup \F{limit}_N \\
+   \F{candidatepair}_N &=& \{ (z_1, z_2) \in \F{candidate}_N^2 ~|~ z1 < z2 \wedge \forall z \in \F{candidate}, z \leq z_1 \vee z \geq z_2\} \\[1ex]
+   \end{array}
+
+
+.. _aux-nan:
+
+NaN Propagation
+...............
+
+When the result of a floating-poin operator other than |fneg|, |fabs|, or |fcopysign| is a :ref:`NaN <syntax-nan>`, its sign is non-deterministic and the :ref:`payload <syntax-payload>` computed as follows:
+
+* If the payload of all NaN inputs to the operator is :ref:`canonical <canonical-nan>` (including the case that there are no NaN inputs), then the payload of the output is canonical as well.
+
+* Otherwise the payload is picked non-determinsitically among all :ref:`arithmetic NaNs <arithmetic-nan>`; that is, its most significant bit is :math:`1` and all others are unspecified.
+
+This non-deterministic result is expressed by the following auxiliary function producing a set of allowed outputs from a set of inputs:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \F{can}_N \} & (\forall \NAN(n) \in z^\ast,~ n = \F{can}_N) \\
+   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n > \F{can}_N \} & (\mbox{otherwise}) \\
+   \end{array}
 
 
 .. _op-fadd:
 
-:math:`\faddop_N(z_1, z_2)`
-...........................
+:math:`\fadd_N(z_1, z_2)`
+.........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
 
@@ -554,25 +666,25 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \faddop_N(\pm \NAN(n), z_2) &\in& \nan_N\{\pm \NAN(n), z_2\} \\
-   \faddop_N(z_1, \pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n), z_1\} \\
-   \faddop_N(\pm \infty, \mp \infty) &\in& \nan_N\{\} \\
-   \faddop_N(\pm \infty, \pm \infty) &=& \pm \infty \\
-   \faddop_N(z_1, \pm \infty) &=& \pm \infty \\
-   \faddop_N(\pm \infty, z_2) &=& \pm \infty \\
-   \faddop_N(\pm 0, \mp 0) &=& +0 \\
-   \faddop_N(\pm 0, \pm 0) &=& \pm 0 \\
-   \faddop_N(z_1, \pm 0) &=& z_1 \\
-   \faddop_N(\pm 0, z_2) &=& z_2 \\
-   \faddop_N(\pm q, \mp q) &=& +0 \\
-   \faddop_N(z_1, z_2) &=& \ieee_N(z_1 + z_2) \\
+   \fadd_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
+   \fadd_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
+   \fadd_N(\pm \infty, \mp \infty) &=& \nan_N\{\} \\
+   \fadd_N(\pm \infty, \pm \infty) &=& \pm \infty \\
+   \fadd_N(z_1, \pm \infty) &=& \pm \infty \\
+   \fadd_N(\pm \infty, z_2) &=& \pm \infty \\
+   \fadd_N(\pm 0, \mp 0) &=& +0 \\
+   \fadd_N(\pm 0, \pm 0) &=& \pm 0 \\
+   \fadd_N(z_1, \pm 0) &=& z_1 \\
+   \fadd_N(\pm 0, z_2) &=& z_2 \\
+   \fadd_N(\pm q, \mp q) &=& +0 \\
+   \fadd_N(z_1, z_2) &=& \ieee_N(z_1 + z_2) \\
    \end{array}
 
 
 .. _op-fsub:
 
-:math:`\fsubop_N(z_1, z_2)`
-...........................
+:math:`\fsub_N(z_1, z_2)`
+.........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
 
@@ -598,28 +710,28 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fsubop_N(\pm \NAN(n), z_2) &\in& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fsubop_N(z_1, \pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n), z_1\} \\
-   \fsubop_N(\pm \infty, \pm \infty) &\in& \nan_N\{\} \\
-   \fsubop_N(\pm \infty, \mp \infty) &=& \pm \infty \\
-   \fsubop_N(z_1, \pm \infty) &=& \mp \infty \\
-   \fsubop_N(\pm \infty, z_2) &=& \pm \infty \\
-   \fsubop_N(\pm 0, \pm 0) &=& +0 \\
-   \fsubop_N(\pm 0, \mp 0) &=& \pm 0 \\
-   \fsubop_N(z_1, \pm 0) &=& z_1 \\
-   \fsubop_N(\pm 0, \pm q_2) &=& \mp q_2 \\
-   \fsubop_N(\pm q, \pm q) &=& +0 \\
-   \fsubop_N(z_1, z_2) &=& \ieee_N(z_1 - z_2) \\
+   \fsub_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
+   \fsub_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
+   \fsub_N(\pm \infty, \pm \infty) &=& \nan_N\{\} \\
+   \fsub_N(\pm \infty, \mp \infty) &=& \pm \infty \\
+   \fsub_N(z_1, \pm \infty) &=& \mp \infty \\
+   \fsub_N(\pm \infty, z_2) &=& \pm \infty \\
+   \fsub_N(\pm 0, \pm 0) &=& +0 \\
+   \fsub_N(\pm 0, \mp 0) &=& \pm 0 \\
+   \fsub_N(z_1, \pm 0) &=& z_1 \\
+   \fsub_N(\pm 0, \pm q_2) &=& \mp q_2 \\
+   \fsub_N(\pm q, \pm q) &=& +0 \\
+   \fsub_N(z_1, z_2) &=& \ieee_N(z_1 - z_2) \\
    \end{array}
 
 .. note::
-   Up to the non-determinism regarding NaNs, it always holds that :math:`\fsubop_N(z_1, z_2) = \faddop_N(z_1, \fnegop_N(z_2))`.
+   Up to the non-determinism regarding NaNs, it always holds that :math:`\fsub_N(z_1, z_2) = \fadd_N(z_1, \fneg_N(z_2))`.
 
 
 .. _op-fmul:
 
-:math:`\fmulop_N(z_1, z_2)`
-...........................
+:math:`\fmul_N(z_1, z_2)`
+.........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
 
@@ -637,26 +749,26 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fmulop_N(\pm \NAN(n), z_2) &\in& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fmulop_N(z_1, \pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n), z_1\} \\
-   \fmulop_N(\pm \infty, \pm 0) &\in& \nan_N\{\} \\
-   \fmulop_N(\pm \infty, \mp 0) &\in& \nan_N\{\} \\
-   \fmulop_N(\pm 0, \pm \infty) &\in& \nan_N\{\} \\
-   \fmulop_N(\pm 0, \mp \infty) &\in& \nan_N\{\} \\
-   \fmulop_N(\pm \infty, \pm \infty) &=& +\infty \\
-   \fmulop_N(\pm \infty, \mp \infty) &=& -\infty \\
-   \fmulop_N(\pm q_1, \pm \infty) &=& +\infty \\
-   \fmulop_N(\pm q_1, \mp \infty) &=& -\infty \\
-   \fmulop_N(\pm \infty, \pm q_2) &=& +\infty \\
-   \fmulop_N(\pm \infty, \mp q_2) &=& -\infty \\
-   \fmulop_N(z_1, z_2) &=& \ieee_N(z_1 \cdot z_2) \\
+   \fmul_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
+   \fmul_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
+   \fmul_N(\pm \infty, \pm 0) &=& \nan_N\{\} \\
+   \fmul_N(\pm \infty, \mp 0) &=& \nan_N\{\} \\
+   \fmul_N(\pm 0, \pm \infty) &=& \nan_N\{\} \\
+   \fmul_N(\pm 0, \mp \infty) &=& \nan_N\{\} \\
+   \fmul_N(\pm \infty, \pm \infty) &=& +\infty \\
+   \fmul_N(\pm \infty, \mp \infty) &=& -\infty \\
+   \fmul_N(\pm q_1, \pm \infty) &=& +\infty \\
+   \fmul_N(\pm q_1, \mp \infty) &=& -\infty \\
+   \fmul_N(\pm \infty, \pm q_2) &=& +\infty \\
+   \fmul_N(\pm \infty, \mp q_2) &=& -\infty \\
+   \fmul_N(z_1, z_2) &=& \ieee_N(z_1 \cdot z_2) \\
    \end{array}
 
 
 .. _op-fdiv:
 
-:math:`\fdivop_N(z_1, z_2)`
-...........................
+:math:`\fdiv_N(z_1, z_2)`
+.........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
 
@@ -680,26 +792,26 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fdivop_N(\pm \NAN(n), z_2) &\in& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fdivop_N(z_1, \pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n), z_1\} \\
-   \fdivop_N(\pm \infty, \pm \infty) &\in& \nan_N\{\} \\
-   \fdivop_N(\pm \infty, \mp \infty) &\in& \nan_N\{\} \\
-   \fdivop_N(\pm 0, \pm 0) &\in& \nan_N\{\} \\
-   \fdivop_N(\pm 0, \mp 0) &\in& \nan_N\{\} \\
-   \fdivop_N(\pm \infty, \pm q_2) &=& +\infty \\
-   \fdivop_N(\pm \infty, \mp q_2) &=& -\infty \\
-   \fdivop_N(\pm q_1, \pm \infty) &=& +0 \\
-   \fdivop_N(\pm q_1, \mp \infty) &=& -0 \\
-   \fdivop_N(\pm q_1, \pm 0) &=& +\infty \\
-   \fdivop_N(\pm q_1, \mp 0) &=& -\infty \\
-   \fdivop_N(z_1, z_2) &=& \ieee_N(z_1 / z_2) \\
+   \fdiv_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
+   \fdiv_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
+   \fdiv_N(\pm \infty, \pm \infty) &=& \nan_N\{\} \\
+   \fdiv_N(\pm \infty, \mp \infty) &=& \nan_N\{\} \\
+   \fdiv_N(\pm 0, \pm 0) &=& \nan_N\{\} \\
+   \fdiv_N(\pm 0, \mp 0) &=& \nan_N\{\} \\
+   \fdiv_N(\pm \infty, \pm q_2) &=& +\infty \\
+   \fdiv_N(\pm \infty, \mp q_2) &=& -\infty \\
+   \fdiv_N(\pm q_1, \pm \infty) &=& +0 \\
+   \fdiv_N(\pm q_1, \mp \infty) &=& -0 \\
+   \fdiv_N(\pm q_1, \pm 0) &=& +\infty \\
+   \fdiv_N(\pm q_1, \mp 0) &=& -\infty \\
+   \fdiv_N(z_1, z_2) &=& \ieee_N(z_1 / z_2) \\
    \end{array}
 
 
 .. _op-fmin:
 
-:math:`\fminop_N(z_1, z_2)`
-...........................
+:math:`\fmin_N(z_1, z_2)`
+.........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
 
@@ -713,22 +825,22 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fminop_N(\pm \NAN(n), z_2) &\in& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fminop_N(z_1, \pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n), z_1\} \\
-   \fminop_N(- \infty, z_2) &=& - \infty \\
-   \fminop_N(z_1, - \infty) &=& - \infty \\
-   \fminop_N(+ \infty, z_2) &=& z_2 \\
-   \fminop_N(z_1, + \infty) &=& z_1 \\
-   \fminop_N(\pm 0, \mp 0) &=& -0 \\
-   \fminop_N(z_1, z_2) &=& z_1 & (z_1 \leq z_2) \\
-   \fminop_N(z_1, z_2) &=& z_2 & (z_2 \leq z_1) \\
+   \fmin_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
+   \fmin_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
+   \fmin_N(- \infty, z_2) &=& - \infty \\
+   \fmin_N(z_1, - \infty) &=& - \infty \\
+   \fmin_N(+ \infty, z_2) &=& z_2 \\
+   \fmin_N(z_1, + \infty) &=& z_1 \\
+   \fmin_N(\pm 0, \mp 0) &=& -0 \\
+   \fmin_N(z_1, z_2) &=& z_1 & (z_1 \leq z_2) \\
+   \fmin_N(z_1, z_2) &=& z_2 & (z_2 \leq z_1) \\
    \end{array}
 
 
 .. _op-fmax:
 
-:math:`\fmaxop_N(z_1, z_2)`
-...........................
+:math:`\fmax_N(z_1, z_2)`
+.........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
 
@@ -742,22 +854,22 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fmaxop_N(\pm \NAN(n), z_2) &\in& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fmaxop_N(z_1, \pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n), z_1\} \\
-   \fmaxop_N(+ \infty, z_2) &=& + \infty \\
-   \fmaxop_N(z_1, + \infty) &=& + \infty \\
-   \fmaxop_N(- \infty, z_2) &=& z_2 \\
-   \fmaxop_N(z_1, - \infty) &=& z_1 \\
-   \fmaxop_N(\pm 0, \mp 0) &=& +0 \\
-   \fmaxop_N(z_1, z_2) &=& z_1 & (z_1 \geq z_2) \\
-   \fmaxop_N(z_1, z_2) &=& z_2 & (z_2 \geq z_1) \\
+   \fmax_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
+   \fmax_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
+   \fmax_N(+ \infty, z_2) &=& + \infty \\
+   \fmax_N(z_1, + \infty) &=& + \infty \\
+   \fmax_N(- \infty, z_2) &=& z_2 \\
+   \fmax_N(z_1, - \infty) &=& z_1 \\
+   \fmax_N(\pm 0, \mp 0) &=& +0 \\
+   \fmax_N(z_1, z_2) &=& z_1 & (z_1 \geq z_2) \\
+   \fmax_N(z_1, z_2) &=& z_2 & (z_2 \geq z_1) \\
    \end{array}
 
 
 .. _op-fcopysign:
 
-:math:`\fcopysignop_N(z_1, z_2)`
-................................
+:math:`\fcopysign_N(z_1, z_2)`
+..............................
 
 * If :math:`z_1` and :math:`z_2` have the same sign, then return :math:`z_1`.
 
@@ -765,15 +877,15 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fcopysignop_N(\pm p_1, \pm p_2) &=& \pm p_1 \\
-   \fcopysignop_N(\pm p_1, \mp p_2) &=& \mp p_1 \\
+   \fcopysign_N(\pm p_1, \pm p_2) &=& \pm p_1 \\
+   \fcopysign_N(\pm p_1, \mp p_2) &=& \mp p_1 \\
    \end{array}
 
 
 .. _op-fabs:
 
-:math:`\fabsop_N(z)`
-....................
+:math:`\fabs_N(z)`
+..................
 
 * If :math:`z` is a NaN, then return :math:`z` with positive sign.
 
@@ -787,17 +899,17 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fabsop_N(\pm \NAN(n)) &=& +\NAN(n) \\
-   \fabsop_N(\pm \infty) &=& +\infty \\
-   \fabsop_N(\pm 0) &=& +0 \\
-   \fabsop_N(\pm q) &=& +q \\
+   \fabs_N(\pm \NAN(n)) &=& +\NAN(n) \\
+   \fabs_N(\pm \infty) &=& +\infty \\
+   \fabs_N(\pm 0) &=& +0 \\
+   \fabs_N(\pm q) &=& +q \\
    \end{array}
 
 
 .. _op-fneg:
 
-:math:`\fnegop_N(z)`
-....................
+:math:`\fneg_N(z)`
+..................
 
 * If :math:`z` is a NaN, then return :math:`z` with negated sign.
 
@@ -809,17 +921,17 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fnegop_N(\pm \NAN(n)) &=& \mp \NAN(n) \\
-   \fnegop_N(\pm \infty) &=& \mp \infty \\
-   \fnegop_N(\pm 0) &=& \mp 0 \\
-   \fnegop_N(\pm z) &=& \mp z \\
+   \fneg_N(\pm \NAN(n)) &=& \mp \NAN(n) \\
+   \fneg_N(\pm \infty) &=& \mp \infty \\
+   \fneg_N(\pm 0) &=& \mp 0 \\
+   \fneg_N(\pm z) &=& \mp z \\
    \end{array}
 
 
 .. _op-fsqrt:
 
-:math:`\fsqrtop_N(z)`
-.....................
+:math:`\fsqrt_N(z)`
+...................
 
 * If :math:`z` is a NaN, then return an element of :math:`\nan_N\{z\}`.
 
@@ -833,19 +945,19 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fsqrtop_N(\pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n)\} \\
-   \fsqrtop_N(- \infty) &\in& \nan_N\{\} \\
-   \fsqrtop_N(+ \infty) &=& + \infty \\
-   \fsqrtop_N(\pm 0) &=& \pm 0 \\
-   \fsqrtop_N(- q) &\in& \nan_N\{\} \\
-   \fsqrtop_N(+ q) &=& \ieee_N\left(\sqrt{z}\right) \\
+   \fsqrt_N(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(n)\} \\
+   \fsqrt_N(- \infty) &=& \nan_N\{\} \\
+   \fsqrt_N(+ \infty) &=& + \infty \\
+   \fsqrt_N(\pm 0) &=& \pm 0 \\
+   \fsqrt_N(- q) &=& \nan_N\{\} \\
+   \fsqrt_N(+ q) &=& \ieee_N\left(\sqrt{z}\right) \\
    \end{array}
 
 
 .. _op-fceil:
 
-:math:`\fceilop_N(z)`
-.....................
+:math:`\fceil_N(z)`
+...................
 
 * If :math:`z` is a NaN, then return an element of :math:`\nan_N\{z\}`.
 
@@ -859,18 +971,18 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fceilop_N(\pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n)\} \\
-   \fceilop_N(\pm \infty) &=& \pm \infty \\
-   \fceilop_N(\pm 0) &=& \pm 0 \\
-   \fceilop_N(- q) &=& -0 & (-1 < -q < 0) \\
-   \fceilop_N(\pm q) &=& \ieee_N(i) & (\pm q \leq i < \pm q + 1) \\
+   \fceil_N(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(n)\} \\
+   \fceil_N(\pm \infty) &=& \pm \infty \\
+   \fceil_N(\pm 0) &=& \pm 0 \\
+   \fceil_N(- q) &=& -0 & (-1 < -q < 0) \\
+   \fceil_N(\pm q) &=& \ieee_N(i) & (\pm q \leq i < \pm q + 1) \\
    \end{array}
 
 
 .. _op-ffloor:
 
-:math:`\ffloorop_N(z)`
-......................
+:math:`\ffloor_N(z)`
+....................
 
 * If :math:`z` is a NaN, then return an element of :math:`\nan_N\{z\}`.
 
@@ -884,18 +996,18 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \ffloorop_N(\pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n)\} \\
-   \ffloorop_N(\pm \infty) &=& \pm \infty \\
-   \ffloorop_N(\pm 0) &=& \pm 0 \\
-   \ffloorop_N(+ q) &=& +0 & (0 < +q < 1) \\
-   \ffloorop_N(\pm q) &=& \ieee_N(i) & (\pm q - 1 < i \leq \pm q) \\
+   \ffloor_N(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(n)\} \\
+   \ffloor_N(\pm \infty) &=& \pm \infty \\
+   \ffloor_N(\pm 0) &=& \pm 0 \\
+   \ffloor_N(+ q) &=& +0 & (0 < +q < 1) \\
+   \ffloor_N(\pm q) &=& \ieee_N(i) & (\pm q - 1 < i \leq \pm q) \\
    \end{array}
 
 
 .. _op-ftrunc:
 
-:math:`\ftruncop_N(z)`
-......................
+:math:`\ftrunc_N(z)`
+....................
 
 * If :math:`z` is a NaN, then return an element of :math:`\nan_N\{z\}`.
 
@@ -911,19 +1023,19 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \ftruncop_N(\pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n)\} \\
-   \ftruncop_N(\pm \infty) &=& \pm \infty \\
-   \ftruncop_N(\pm 0) &=& \pm 0 \\
-   \ftruncop_N(+ q) &=& +0 & (0 < +q < 1) \\
-   \ftruncop_N(- q) &=& -0 & (-1 < -q < 0) \\
-   \ftruncop_N(\pm q) &=& \ieee_N(\pm i) & (+q - 1 < i \leq +q) \\
+   \ftrunc_N(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(n)\} \\
+   \ftrunc_N(\pm \infty) &=& \pm \infty \\
+   \ftrunc_N(\pm 0) &=& \pm 0 \\
+   \ftrunc_N(+ q) &=& +0 & (0 < +q < 1) \\
+   \ftrunc_N(- q) &=& -0 & (-1 < -q < 0) \\
+   \ftrunc_N(\pm q) &=& \ieee_N(\pm i) & (+q - 1 < i \leq +q) \\
    \end{array}
 
 
 .. _op-fnearest:
 
-:math:`\fnearestop_N(z)`
-........................
+:math:`\fnearest_N(z)`
+......................
 
 * If :math:`z` is a NaN, then return an element of :math:`\nan_N\{z\}`.
 
@@ -939,20 +1051,20 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fnearestop_N(\pm \NAN(n)) &\in& \nan_N\{\pm \NAN(n)\} \\
-   \fnearestop_N(\pm \infty) &=& \pm \infty \\
-   \fnearestop_N(\pm 0) &=& \pm 0 \\
-   \fnearestop_N(+ q) &=& +0 & (0 < +q \leq 0.5) \\
-   \fnearestop_N(- q) &=& -0 & (-0.5 \leq -q < 0) \\
-   \fnearestop_N(\pm q) &=& \ieee_N(\pm i) & (|i - q| < 0.5) \\
-   \fnearestop_N(\pm q) &=& \ieee_N(\pm i) & (|i - q| = 0.5 \wedge i~\mbox{even}) \\
+   \fnearest_N(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(n)\} \\
+   \fnearest_N(\pm \infty) &=& \pm \infty \\
+   \fnearest_N(\pm 0) &=& \pm 0 \\
+   \fnearest_N(+ q) &=& +0 & (0 < +q \leq 0.5) \\
+   \fnearest_N(- q) &=& -0 & (-0.5 \leq -q < 0) \\
+   \fnearest_N(\pm q) &=& \ieee_N(\pm i) & (|i - q| < 0.5) \\
+   \fnearest_N(\pm q) &=& \ieee_N(\pm i) & (|i - q| = 0.5 \wedge i~\mbox{even}) \\
    \end{array}
 
 
 .. _op-feq:
 
-:math:`\feqop_N(z_1, z_2)`
-..........................
+:math:`\feq_N(z_1, z_2)`
+........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return :math:`0`.
 
@@ -964,18 +1076,18 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \feqop_N(\pm \NAN(n), z_2) &=& 0 \\
-   \feqop_N(z_1, \pm \NAN(n)) &=& 0 \\
-   \feqop_N(\pm 0, \mp 0) &=& 1 \\
-   \feqop_N(z, z) &=& 1 \\
-   \feqop_N(z_1, z_2) &=& 0 \\
+   \feq_N(\pm \NAN(n), z_2) &=& 0 \\
+   \feq_N(z_1, \pm \NAN(n)) &=& 0 \\
+   \feq_N(\pm 0, \mp 0) &=& 1 \\
+   \feq_N(z, z) &=& 1 \\
+   \feq_N(z_1, z_2) &=& 0 \\
    \end{array}
 
 
 .. _op-fne:
 
-:math:`\fneop_N(z_1, z_2)`
-..........................
+:math:`\fne_N(z_1, z_2)`
+........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return :math:`0`.
 
@@ -987,18 +1099,18 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fneop_N(\pm \NAN(n), z_2) &=& 0 \\
-   \fneop_N(z_1, \pm \NAN(n)) &=& 0 \\
-   \fneop_N(\pm 0, \mp 0) &=& 0 \\
-   \fneop_N(z, z) &=& 0 \\
-   \fneop_N(z_1, z_2) &=& 1 \\
+   \fne_N(\pm \NAN(n), z_2) &=& 0 \\
+   \fne_N(z_1, \pm \NAN(n)) &=& 0 \\
+   \fne_N(\pm 0, \mp 0) &=& 0 \\
+   \fne_N(z, z) &=& 0 \\
+   \fne_N(z_1, z_2) &=& 1 \\
    \end{array}
 
 
 .. _op-flt:
 
-:math:`\fltop_N(z_1, z_2)`
-..........................
+:math:`\flt_N(z_1, z_2)`
+........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return :math:`0`.
 
@@ -1016,20 +1128,20 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fltop_N(\pm \NAN(n), z_2) &=& 0 \\
-   \fltop_N(z_1, \pm \NAN(n)) &=& 0 \\
-   \fltop_N(z, z) &=& 0 \\
-   \fltop_N(- \infty, z_2) &=& 1 \\
-   \fltop_N(z_1, + \infty) &=& 1 \\
-   \fltop_N(\pm 0, \mp 0) &=& 0 \\
-   \fltop_N(z_1, z_2) &=& \bool(z_1 < z_2) \\
+   \flt_N(\pm \NAN(n), z_2) &=& 0 \\
+   \flt_N(z_1, \pm \NAN(n)) &=& 0 \\
+   \flt_N(z, z) &=& 0 \\
+   \flt_N(- \infty, z_2) &=& 1 \\
+   \flt_N(z_1, + \infty) &=& 1 \\
+   \flt_N(\pm 0, \mp 0) &=& 0 \\
+   \flt_N(z_1, z_2) &=& \bool(z_1 < z_2) \\
    \end{array}
 
 
 .. _op-fgt:
 
-:math:`\fgtop_N(z_1, z_2)`
-..........................
+:math:`\fgt_N(z_1, z_2)`
+........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return :math:`0`.
 
@@ -1047,20 +1159,20 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fgtop_N(\pm \NAN(n), z_2) &=& 0 \\
-   \fgtop_N(z_1, \pm \NAN(n)) &=& 0 \\
-   \fgtop_N(z, z) &=& 0 \\
-   \fgtop_N(+ \infty, z_2) &=& 1 \\
-   \fgtop_N(z_1, - \infty) &=& 1 \\
-   \fgtop_N(\pm 0, \mp 0) &=& 0 \\
-   \fgtop_N(z_1, z_2) &=& \bool(z_1 > z_2) \\
+   \fgt_N(\pm \NAN(n), z_2) &=& 0 \\
+   \fgt_N(z_1, \pm \NAN(n)) &=& 0 \\
+   \fgt_N(z, z) &=& 0 \\
+   \fgt_N(+ \infty, z_2) &=& 1 \\
+   \fgt_N(z_1, - \infty) &=& 1 \\
+   \fgt_N(\pm 0, \mp 0) &=& 0 \\
+   \fgt_N(z_1, z_2) &=& \bool(z_1 > z_2) \\
    \end{array}
 
 
 .. _op-fle:
 
-:math:`\fleop_N(z_1, z_2)`
-..........................
+:math:`\fle_N(z_1, z_2)`
+........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return :math:`0`.
 
@@ -1078,20 +1190,20 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fleop_N(\pm \NAN(n), z_2) &=& 0 \\
-   \fleop_N(z_1, \pm \NAN(n)) &=& 0 \\
-   \fleop_N(z, z) &=& 1 \\
-   \fleop_N(- \infty, z_2) &=& 1 \\
-   \fleop_N(z_1, + \infty) &=& 1 \\
-   \fleop_N(\pm 0, \mp 0) &=& 1 \\
-   \fleop_N(z_1, z_2) &=& \bool(z_1 \leq z_2) \\
+   \fle_N(\pm \NAN(n), z_2) &=& 0 \\
+   \fle_N(z_1, \pm \NAN(n)) &=& 0 \\
+   \fle_N(z, z) &=& 1 \\
+   \fle_N(- \infty, z_2) &=& 1 \\
+   \fle_N(z_1, + \infty) &=& 1 \\
+   \fle_N(\pm 0, \mp 0) &=& 1 \\
+   \fle_N(z_1, z_2) &=& \bool(z_1 \leq z_2) \\
    \end{array}
 
 
 .. _op-fge:
 
-:math:`\fgeop_N(z_1, z_2)`
-..........................
+:math:`\fge_N(z_1, z_2)`
+........................
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return :math:`0`.
 
@@ -1109,13 +1221,13 @@ When the result of any arithmetic operation other than |fnegop|, |fabsop|, or |f
 
 .. math::
    \begin{array}{@{}lcll}
-   \fgeop_N(\pm \NAN(n), z_2) &=& 0 \\
-   \fgeop_N(z_1, \pm \NAN(n)) &=& 0 \\
-   \fgeop_N(z, z) &=& 1 \\
-   \fgeop_N(+ \infty, z_2) &=& 1 \\
-   \fgeop_N(z_1, - \infty) &=& 1 \\
-   \fgeop_N(\pm 0, \mp 0) &=& 1 \\
-   \fgeop_N(z_1, z_2) &=& \bool(z_1 \geq z_2) \\
+   \fge_N(\pm \NAN(n), z_2) &=& 0 \\
+   \fge_N(z_1, \pm \NAN(n)) &=& 0 \\
+   \fge_N(z, z) &=& 1 \\
+   \fge_N(+ \infty, z_2) &=& 1 \\
+   \fge_N(z_1, - \infty) &=& 1 \\
+   \fge_N(\pm 0, \mp 0) &=& 1 \\
+   \fge_N(z_1, z_2) &=& \bool(z_1 \geq z_2) \\
    \end{array}
 
 
@@ -1171,12 +1283,21 @@ Conversions
 :math:`\truncu_{M,N}(z)`
 ........................
 
-* If :math:`z` is a number and :math:`\truncate(z)` is a value within range of the target type, return that value.
+* If :math:`z` is a NaN, then the result is undefined. 
+
+* Else if :math:`z` is an infinity, then the result is undefined. 
+
+* Else if :math:`z` is a number and :math:`\trunc(z)` is a value within range of the target type, then return that value.
+
+* Else the result is undefined.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
+   \truncu_{M,N}(\pm \NAN(n)) &=& \{\} \\
+   \truncu_{M,N}(\pm \infty) &=& \{\} \\
    \truncu_{M,N}(\pm 0) &=& 0 \\
-   \truncu_{M,N}(\pm q) &=& \truncate(\pm q) & (0 \leq \truncate(\pm q) < 2^N) \\
+   \truncu_{M,N}(\pm q) &=& \trunc(\pm q) & (0 \leq \trunc(\pm q) < 2^N) \\
+   \truncu_{M,N}(\pm q) &=& \{\} & (\mbox{otherwise}) \\
    \end{array}
 
 .. note::
@@ -1189,12 +1310,21 @@ Conversions
 :math:`\truncs_{M,N}(z)`
 ........................
 
-* If :math:`z` is a number and :math:`\truncate(z)` is a value within range of the target type, return that value.
+* If :math:`z` is a NaN, then the result is undefined. 
+
+* Else if :math:`z` is an infinity, then the result is undefined. 
+
+* If :math:`z` is a number and :math:`\trunc(z)` is a value within range of the target type, then return that value.
+
+* Else the result is undefined.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
+   \truncs_{M,N}(\pm \NAN(n)) &=& \{\} \\
+   \truncs_{M,N}(\pm \infty) &=& \{\} \\
    \truncs_{M,N}(\pm 0) &=& 0 \\
-   \truncs_{M,N}(\pm q) &=& \truncate(\pm q) & (2^{N-1} \leq \truncate(\pm q) < 2^{N-1}) \\
+   \truncs_{M,N}(\pm q) &=& \trunc(\pm q) & (2^{N-1} \leq \trunc(\pm q) < 2^{N-1}) \\
+   \truncs_{M,N}(\pm q) &=& \{\} & (\mbox{otherwise}) \\
    \end{array}
 
 .. note::
@@ -1287,3 +1417,36 @@ Conversions
    \begin{array}{lll@{\qquad}l}
    \reinterpret_{t_1,t_2}(c) &=& \bytes_{t_2}^{-1}(\bytes_{t_1}(c)) \\
    \end{array}
+
+
+.. _aux-bytes:
+.. _aux-ibytes:
+.. _aux-fbytes:
+
+Memory Conversion
+~~~~~~~~~~~~~~~~~
+
+When a number is stored in :ref:`memory <syntax-mem>`, it is converted into a sequence of :ref:`bytes <syntax-byte>`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \bytes_{\K{i}N}(i) &=& \ibytes_N(i) \\
+   \bytes_{\K{f}N}(z) &=& \fbytes_N(z) \\
+   \end{array}
+
+Integers are represented in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \ibytes_N(i) &=& \epsilon & (N = 0 \wedge i = 0) \\
+   \ibytes_N(i) &=& b~\bytes_{N-8}(j) & (N \geq 8 \wedge i = 2^8\cdot j + b) \\
+   \end{array}
+
+Floating-point values are represented in the respective binary format defined by `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_, and also stored in little endian byte order:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \fbytes_N(z) &=& (\mbox{IEEE 754 $N$-bit binary representation of $z$})  \\
+   \end{array}
+
+Each of these functions are bijections, hence they are invertible.

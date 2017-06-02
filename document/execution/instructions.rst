@@ -13,6 +13,18 @@ Instructions
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
+Numeric instructions are defined in terms of the basic :ref:`numeric operators <exec-numeric>`.
+Where these operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
+Where these operators are non-deterministic, because they may return different :ref:`NaN <syntax-nan>` values, so are the corresponding instructions.
+
+The mapping of numeric instructions to their underlying operators is expressed by the following definition:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \X{op}_{\K{i}N}(i) &=& \F{i}\X{op}_N(i) \\
+   \X{op}_{\K{f}N}(i) &=& \F{f}\X{op}_N(i) \\
+   \end{array}
+
 
 .. _exec-const:
 
@@ -47,9 +59,9 @@ Numeric Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& (t\K{.}\CONST~c)
-     & (\mbox{if}~\unop_t(c_1) = c) \\
+     & (\mbox{if}~c \in \unop_t(c_1)) \\
    (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& \TRAP
-     & (\mbox{otherwise})
+     & (\mbox{if}~\unop_{t_1,t_2}(c_1) = \{\})
    \end{array}
 
 
@@ -77,9 +89,9 @@ Numeric Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& (t\K{.}\CONST~c)
-     & (\mbox{if}~\binop_t(c_1,c_2) = c) \\
+     & (\mbox{if}~c \in \binop_t(c_1,c_2)) \\
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& \TRAP
-     & (\mbox{otherwise})
+     & (\mbox{if}~\binop_{t_1,t_2}(c_1) = \{\})
    \end{array}
 
 
@@ -99,7 +111,7 @@ Numeric Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~t\K{.}\testop &\stepto& (t\K{.}\CONST~c)
-     & (\mbox{if}~\testop_t(c_1) = c) \\
+     & (\mbox{if}~c = \testop_t(c_1)) \\
    \end{array}
 
 
@@ -121,7 +133,7 @@ Numeric Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop &\stepto& (t\K{.}\CONST~c)
-     & (\mbox{if}~\relop_t(c_1,c_2) = c) \\
+     & (\mbox{if}~c = \relop_t(c_1,c_2)) \\
    \end{array}
 
 
@@ -147,9 +159,9 @@ Numeric Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& (t_2\K{.}\CONST~c_2)
-     & (\mbox{if}~\cvtop_{t_1,t_2}(c_1) = c_2) \\
+     & (\mbox{if}~c_2 \in \cvtop_{t_1,t_2}(c_1)) \\
    (t\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& \TRAP
-     & (\mbox{otherwise})
+     & (\mbox{if}~\cvtop_{t_1,t_2}(c_1) = \{\})
    \end{array}
 
 
@@ -384,7 +396,7 @@ Memory Instructions
 
     a. Let :math:`n` be the integer for which :math:`\bytes_N(n) = b^\ast`.
 
-    b. Let :math:`c` be the result of computing :math:`\extend\F{\_}\sx_N(n)`.
+    b. Let :math:`c` be the result of computing :math:`\extend\F{\_}\sx_{N,|t|}(n)`.
 
 13. Else:
 
@@ -405,7 +417,7 @@ Memory Instructions
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(t.\LOAD{N}\K{\_}\sx~\memarg) &\stepto&
-     S; F; (t.\CONST~\extend\F{\_}\sx_N(n))
+     S; F; (t.\CONST~\extend\F{\_}\sx_{N,|t|}(n))
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -462,7 +474,7 @@ Memory Instructions
 
 13. If :math:`N` is part of the instruction, then:
 
-    a. Let :math:`n` be the result of computing :math:`\wrap_N(c)`.
+    a. Let :math:`n` be the result of computing :math:`\wrap_{|t|,N}(c)`.
 
     b. Let :math:`b^\ast` be the byte sequence :math:`\bytes_N(n)`.
 
@@ -490,7 +502,7 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N] = \bytes_N(\wrap_N(c))
+     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N] = \bytes_N(\wrap_{|t|,N}(c))
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~k)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP

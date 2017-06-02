@@ -72,16 +72,20 @@ Conventions
 
 
 .. _syntax-float:
+.. _syntax-nan:
 .. _syntax-payload:
-.. index:: ! floating-point number, *payload*
+.. index:: ! floating-point number, ! NaN, payload, canonical NaN, arithmetic NaN
    pair: abstract syntax; floating-point number
+   single: NaN; payload
+   single: NaN; canonical
+   single: NaN; arithmetic
 
 Floating-Point
 ~~~~~~~~~~~~~~
 
 *Floating-point* data consists of values according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
 Every value has a *sign* and a *magnitude*.
-Magnitudes include the special value :math:`\infty` (infinity) and |NAN| (NaN, not a number).
+Magnitudes include the special value :math:`\infty` (infinity) and |NAN| (*NaN*, not a number).
 Furthermore, NaN values have a *payload* value that describes the mantissa bits in the underlying representation.
 No distinction is being made between signalling and silent NaNs.
 
@@ -112,10 +116,16 @@ The two possible sizes :math:`N` are 32 and 64.
    The auxiliary function :math:`\ieee_N` rounds a rational value to the nearest value representable in IEEE 754.
    The respective side condition ensures that only representable floating-point values are part of the abstract syntax.
 
-Convention
-..........
+.. _canonical-nan:
+.. _arithmetic-nan:
+.. _aux-canon:
 
-* The notation :math:`\pm` or :math:`\mp` is used as a meta variable ranging over signs.
+A *canonical NaN* is a floating-point value :math:`\pm\NAN(\canon_N)` where :math:`\canon_N` is a payload whose most significant bit is :math:`1` while all others are :math:`0`:
+
+.. math::
+   \canon_N = 2^{\payloadsize(N)-1}
+
+An *arithmetic NaN*  is a floating-point value :math:`\pm\NAN(n)` with :math:`n > \canon_N`, such that the most significant bit is :math:`1` while all others are arbitrary.
 
 
 .. _syntax-vec:
