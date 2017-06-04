@@ -142,7 +142,7 @@ However, some operations <a class="reference internal" href="../execution/numeri
 </div>
 <div class="section" id="floating-point">
 <span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
-<p><em>Floating-point</em> data consists of values according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.
+<p><em>Floating-point</em> data consists of 32 or 64 bit values according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.
 Every value has a <em>sign</em> and a <em>magnitude</em>.</p>
 <p>Magnitudes can either be expressed as <em>normal</em> numbers of the form <span class="math">\(m_0.m_1m_2\dots m_M \cdot2^e\)</span>, where <span class="math">\(m\)</span> is the <em>significand</em> whose most signifcant bit <span class="math">\(m_0\)</span> is <span class="math">\(1\)</span>, and <span class="math">\(e\)</span> is the exponent,
 or as a <em>subnormal</em> number where <span class="math">\(m_0\)</span> is <span class="math">\(0\)</span> and the exponent is fixed to the smallest possible value; among the subnormals are positive and negative zero.
@@ -168,7 +168,6 @@ No distinction is made between signalling and silent NaNs.</p>
 \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(64) &amp;=&amp; 52 &amp;&amp;&amp;&amp;
 \href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(64) &amp;=&amp; 11 \\
 \end{array}\end{split}\]</div>
-<p>The two possible sizes <span class="math">\(N\)</span> are 32 and 64.</p>
 <p id="aux-canon"><span id="arithmetic-nan"></span><span id="canonical-nan"></span>A <em>canonical NaN</em> is a floating-point value <span class="math">\(\pm\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N)\)</span> where <span class="math">\(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N\)</span> is a payload whose most significant bit is <span class="math">\(1\)</span> while all others are <span class="math">\(0\)</span>:</p>
 <div class="math">
 \[\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N = 2^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}_N-1}\]</div>
