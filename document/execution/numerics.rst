@@ -4,7 +4,7 @@
 Numerics
 --------
 
-Numeric primitives are defined in a generic manner, by oeprators indexed over a width :math:`N`.
+Numeric primitives are defined in a generic manner, by operators indexed over a width :math:`N`.
 
 Some operators are *non-deterministic*, because they can return more than one possible result (such as different possible :ref:`NaN <syntax-nan>` values).
 Conceptually, each operator thus returns a *set* of allowed values.
@@ -56,7 +56,7 @@ Sign Interpretation
 ...................
 
 Integer operators are defined on |iN| values.
-Operators that use a signed interpretation convert the value using the following definition, which takes the 2's complement when the value lies in the upper half of the value range (i.e., its most significant bit is :math:`1`):
+Operators that use a signed interpretation convert the value using the following definition, which takes the two's complement when the value lies in the upper half of the value range (i.e., its most significant bit is :math:`1`):
 
 .. math::
    \begin{array}{lll@{\qquad}l}
@@ -380,7 +380,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. _op-eq:
 
-:math:`\ieq_N(i_!, i_2)`
+:math:`\ieq_N(i_1, i_2)`
 ........................
 
 * Return :math:`1` if :math:`i_1` equals :math:`i_2`, :math:`0` otherwise.
@@ -393,7 +393,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. _op-ne:
 
-:math:`\ine_N(i_!, i_2)`
+:math:`\ine_N(i_1, i_2)`
 ........................
 
 * Return :math:`1` if :math:`i_1` does not equal :math:`i_2`, :math:`0` otherwise.
@@ -406,7 +406,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. _op-lt_u:
 
-:math:`\iltu_N(i_!, i_2)`
+:math:`\iltu_N(i_1, i_2)`
 .........................
 
 * Return :math:`1` if :math:`i_1` is less than :math:`i_2`, :math:`0` otherwise.
@@ -419,7 +419,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. _op-lt_s:
 
-:math:`\ilts_N(i_!, i_2)`
+:math:`\ilts_N(i_1, i_2)`
 .........................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
@@ -436,7 +436,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. _op-gt_u:
 
-:math:`\igtu_N(i_!, i_2)`
+:math:`\igtu_N(i_1, i_2)`
 .........................
 
 * Return :math:`1` if :math:`i_1` is greater than :math:`i_2`, :math:`0` otherwise.
@@ -449,7 +449,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. _op-gt_s:
 
-:math:`\igts_N(i_!, i_2)`
+:math:`\igts_N(i_1, i_2)`
 .........................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
@@ -466,7 +466,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. _op-le_u:
 
-:math:`\ileu_N(i_!, i_2)`
+:math:`\ileu_N(i_1, i_2)`
 .........................
 
 * Return :math:`1` if :math:`i_1` is less than or equal to :math:`i_2`, :math:`0` otherwise.
@@ -479,7 +479,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. _op-le_s:
 
-:math:`\iles_N(i_!, i_2)`
+:math:`\iles_N(i_1, i_2)`
 .........................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
@@ -496,7 +496,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. _op-ge_u:
 
-:math:`\igeu_N(i_!, i_2)`
+:math:`\igeu_N(i_1, i_2)`
 .........................
 
 * Return :math:`1` if :math:`i_1` is greater than or equal to :math:`i_2`, :math:`0` otherwise.
@@ -509,7 +509,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. _op-ge_s:
 
-:math:`\iges_N(i_!, i_2)`
+:math:`\iges_N(i_1, i_2)`
 .........................
 
 * Let :math:`j_1` be the signed interpretation of :math:`i_1`.
@@ -552,7 +552,7 @@ An *exact* floating-point number is a rational number that is exactly representa
 
 A *limit* number for a given floating-point bit width :math:`N` is a positive or negative number whose magnitude is the smallest power of :math:`2` that is not exactly representable as a floating-point number of width :math:`N` (that magnitude is :math:`2^{128}` for :math:`N = 32` and :math:`2^{1024}` for :math:`N = 64`).
 
-A *candidate* number is either an exact floating-point number or one of the two limit numbers for the given bit width :math:`N`.
+A *candidate* number is either an exact floating-point number or a positive or negative limit number for the given bit width :math:`N`.
 
 A *candidate pair* is a pair :math:`z_1,z_2` of candidate numbers, such that no candidate number exists that lies between the two.
 
@@ -566,7 +566,7 @@ A real number :math:`r` is converted to a floating-point value of bit width :mat
 
 * Else if :math:`r` is less than or equal to the negative limit, then return :math:`-\infty`.
 
-* Else if :math:`z_1` and :math:`z_2` are a candidate pair such that :math:`z_1 < z < z_2`, then:
+* Else if :math:`z_1` and :math:`z_2` are a candidate pair such that :math:`z_1 < r < z_2`, then:
 
   * If :math:`|r - z_1| < |r - z_2|`, then let :math:`z` be :math:`z_1`.
 
@@ -601,7 +601,7 @@ A real number :math:`r` is converted to a floating-point value of bit width :mat
    \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_1) & (|r-z_1|<|r-z_2|) \\
    \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_2) & (|r-z_1|>|r-z_2|) \\
    \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_1) & (|r-z_1|=|r-z_2| \wedge \F{even}_N(z_1)) \\
-   \F{closest}_N(z, z_1, z_2) &=& \F{rectify}_N(z, z_2) & (|r-z_1|=|r-z_2| \wedge \F{even}_N(z_2)) \\[1ex]
+   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_2) & (|r-z_1|=|r-z_2| \wedge \F{even}_N(z_2)) \\[1ex]
    \F{rectify}_N(r, \pm \F{limit}_N) &=& \pm \infty \\
    \F{rectify}_N(r, 0) &=& +0 \qquad (r \geq 0) \\
    \F{rectify}_N(r, 0) &=& -0 \qquad (r < 0) \\
@@ -662,7 +662,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if both :math:`z_1` and :math:`z_2` are values with the same magnitude but opposite signs, then return positive zero.
 
-* Else return the result of adding :math:`z_1` and :math:`z_2`, rounded to the nearest representable value using round to nearest, ties to even mode; if the magnitude is too large to represent, return an infinity of appropriate sign.
+* Else return the result of adding :math:`z_1` and :math:`z_2`, :ref:`rounded <aux-ieee>` to the nearest representable value.
 
 .. math::
    \begin{array}{@{}lcll}
@@ -706,7 +706,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if both :math:`z_1` and :math:`z_2` are the same value, then return positive zero.
 
-* Else return the result of subtracting :math:`z_2` from :math:`z_1`, rounded to the nearest representable value using round to nearest, ties to even mode; if the magnitude is too large to represent, return an infinity of appropriate sign.
+* Else return the result of subtracting :math:`z_2` from :math:`z_1`, :ref:`rounded <aux-ieee>` to the nearest representable value.
 
 .. math::
    \begin{array}{@{}lcll}
@@ -745,7 +745,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if one of :math:`z_1` or :math:`z_2` is an infinity and the other a value with opposite sign, then return negative infinity.
 
-* Else return the result of multiplying :math:`z_1` and :math:`z_2`, rounded to the nearest representable value using round to nearest, ties to even mode; if the magnitude is too large to represent, return an infinity of appropriate sign.
+* Else return the result of multiplying :math:`z_1` and :math:`z_2`, :ref:`rounded <aux-ieee>` to the nearest representable value.
 
 .. math::
    \begin{array}{@{}lcll}
@@ -788,7 +788,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if :math:`z_2` is a zero and :math:`z_1` a value with opposite sign, then return negative infinity.
 
-* Else return the result of dividing :math:`z_2` by :math:`z_1`, rounded to the nearest representable value using round to nearest, ties to even mode; if the magnitude is too large to represent, return an infinity of appropriate sign.
+* Else return the result of dividing :math:`z_2` by :math:`z_1`, :ref:`rounded <aux-ieee>` to the nearest representable value.
 
 .. math::
    \begin{array}{@{}lcll}
@@ -1043,7 +1043,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if :math:`z` is a zero, then return :math:`z`.
 
-* Else if :math:`z` is greater than :math:`0` but smaller than :math:`0.5`, then return positive zero.
+* Else if :math:`z` is greater than :math:`0` but smaller than or equal to :math:`0.5`, then return positive zero.
 
 * Else if :math:`z` is smaller than :math:`0` but greater than or equal to :math:`-0.5`, then return negative zero.
 

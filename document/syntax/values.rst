@@ -83,7 +83,7 @@ Conventions
 Floating-Point
 ~~~~~~~~~~~~~~
 
-*Floating-point* data consists of values according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
+*Floating-point* data consists of 32 or 64 bit values according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
 Every value has a *sign* and a *magnitude*.
 
 Magnitudes can either be expressed as *normal* numbers of the form :math:`m_0.m_1m_2\dots m_M \cdot2^e`, where :math:`m` is the *significand* whose most signifcant bit :math:`m_0` is :math:`1`, and :math:`e` is the exponent,
@@ -117,8 +117,6 @@ where
    \significand(64) &=& 52 &&&&
    \exponent(64) &=& 11 \\
    \end{array}
-
-The two possible sizes :math:`N` are 32 and 64.
 
 .. _canonical-nan:
 .. _arithmetic-nan:
