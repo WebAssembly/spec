@@ -143,37 +143,45 @@ However, some operations <a class="reference internal" href="../execution/numeri
 <div class="section" id="floating-point">
 <span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
 <p><em>Floating-point</em> data consists of values according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.
-Every value has a <em>sign</em> and a <em>magnitude</em>.
-Magnitudes include the special value <span class="math">\(\infty\)</span> (infinity) and <span class="math">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> (<em>NaN</em>, not a number).
-Furthermore, NaN values have a <em>payload</em> value that describes the mantissa bits in the underlying representation.
-No distinction is being made between signalling and silent NaNs.</p>
+Every value has a <em>sign</em> and a <em>magnitude</em>.</p>
+<p>Magnitudes can either be expressed as <em>normal</em> numbers of the form <span class="math">\(m_0.m_1m_2\dots m_M \cdot2^e\)</span>, where <span class="math">\(m\)</span> is the <em>significand</em> whose most signifcant bit <span class="math">\(m_0\)</span> is <span class="math">\(1\)</span>, and <span class="math">\(e\)</span> is the exponent,
+or as a <em>subnormal</em> number where <span class="math">\(m_0\)</span> is <span class="math">\(0\)</span> and the exponent is fixed to the smallest possible value; among the subnormals are positive and negative zero.
+Since the significands are binary values, normals are represented in the form <span class="math">\((1 + m\cdot 2^{-M})\)</span>, where <span class="math">\(M\)</span> is the bit width of <span class="math">\(m\)</span>; similarly for subnormals.</p>
+<p>Possible magnitudes also include the special values <span class="math">\(\infty\)</span> (infinity) and <span class="math">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> (<em>NaN</em>, not a number).
+NaN values have a <em>payload</em> value that describes the mantissa bits in the underlying representation.
+No distinction is made between signalling and silent NaNs.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcll}
 \def\mathdef1921#1{{}}\mathdef1921{floating-point number} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1940#1{{\mathit{f}#1}}\mathdef1940{N}} &amp;::=&amp;
-  + \href{../syntax/values.html#syntax-float}{\def\mathdef1941#1{{\mathit{f}#1}}\mathdef1941{\mathit{Nmag}}} ~|~ - \href{../syntax/values.html#syntax-float}{\def\mathdef1941#1{{\mathit{f}#1}}\mathdef1941{\mathit{Nmag}}} \\
+  {+} \href{../syntax/values.html#syntax-float}{\def\mathdef1941#1{{\mathit{f}#1}}\mathdef1941{\mathit{Nmag}}} ~|~ {-} \href{../syntax/values.html#syntax-float}{\def\mathdef1941#1{{\mathit{f}#1}}\mathdef1941{\mathit{Nmag}}} \\
 \def\mathdef1921#1{{}}\mathdef1921{floating-point magnitude} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1941#1{{\mathit{f}#1}}\mathdef1941{\mathit{Nmag}}} &amp;::=&amp;
-  0 \\ &amp;&amp;|&amp;
-  q &amp; (\href{../execution/numerics.html#aux-ieee}{\mathrm{ieee}}_N(q) = q \in \mathbb{Q}_+) \\ &amp;&amp;|&amp;
+  (1 + \href{../syntax/values.html#syntax-int}{\def\mathdef1926#1{{\mathit{u}#1}}\mathdef1926{M}}\cdot 2^{-M}) \cdot 2^e &amp; (M = \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N) \wedge -2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}+2 \leq e &lt; 2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}) \\ &amp;&amp;|&amp;
+  (0 + \href{../syntax/values.html#syntax-int}{\def\mathdef1926#1{{\mathit{u}#1}}\mathdef1926{M}}\cdot 2^{-M}) \cdot 2^e &amp; (M = \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N) \wedge e = -2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}+2) \\ &amp;&amp;|&amp;
   \infty \\ &amp;&amp;|&amp;
-  \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(\href{../syntax/values.html#syntax-int}{\def\mathdef1926#1{{\mathit{u}#1}}\mathdef1926{M}}) &amp; (M = \href{../syntax/values.html#aux-payloadsize}{\mathrm{payloadsize}}(N) \wedge \href{../syntax/values.html#syntax-int}{\def\mathdef1926#1{{\mathit{u}#1}}\mathdef1926{M}} \neq 0) \\
+  \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) &amp; (1 \leq n &lt; 2^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)}) \\
 \end{array}\end{split}\]</div>
 <p>where</p>
-<div class="math" id="aux-payloadsize">
-\[\begin{split}\begin{array}{lcl}
-\href{../syntax/values.html#aux-payloadsize}{\mathrm{payloadsize}}(32) &amp;=&amp; 23 \\
-\href{../syntax/values.html#aux-payloadsize}{\mathrm{payloadsize}}(64) &amp;=&amp; 52 \\
+<div class="math" id="aux-exponent">
+<span id="aux-significand"></span>\[\begin{split}\begin{array}{lclllllcl}
+\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(32) &amp;=&amp; 23 &amp;&amp;&amp;&amp;
+\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(32) &amp;=&amp; 8 \\
+\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(64) &amp;=&amp; 52 &amp;&amp;&amp;&amp;
+\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(64) &amp;=&amp; 11 \\
 \end{array}\end{split}\]</div>
 <p>The two possible sizes <span class="math">\(N\)</span> are 32 and 64.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The auxiliary function <span class="math">\(\href{../execution/numerics.html#aux-ieee}{\mathrm{ieee}}_N\)</span> rounds a rational value to the nearest value representable in IEEE 754.
-The respective side condition ensures that only representable floating-point values are part of the abstract syntax.</p>
-</div>
 <p id="aux-canon"><span id="arithmetic-nan"></span><span id="canonical-nan"></span>A <em>canonical NaN</em> is a floating-point value <span class="math">\(\pm\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N)\)</span> where <span class="math">\(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N\)</span> is a payload whose most significant bit is <span class="math">\(1\)</span> while all others are <span class="math">\(0\)</span>:</p>
 <div class="math">
-\[\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N = 2^{\href{../syntax/values.html#aux-payloadsize}{\mathrm{payloadsize}}(N)-1}\]</div>
+\[\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N = 2^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}_N-1}\]</div>
 <p>An <em>arithmetic NaN</em>  is a floating-point value <span class="math">\(\pm\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\)</span> with <span class="math">\(n &gt; \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N\)</span>, such that the most significant bit is <span class="math">\(1\)</span> while all others are arbitrary.</p>
+<div class="section" id="id2">
+<h3>Conventions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The meta variable <span class="math">\(z\)</span> ranges over floating-point values where clear from context.</li>
+<li>The notation <span class="math">\(-z\)</span> denotes the same floating-point value as <span class="math">\(z\)</span> but with the sign inverted.</li>
+<li>Floating-point numbers, in normal or subnormal form, are sometimes interpreted as rational numbers <span class="math">\(q \in \mathbb{Q}\)</span>.</li>
+</ul>
 <span class="target" id="syntax-vec"></span></div>
+</div>
 <div class="section" id="vectors">
 <span id="index-4"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
 <p><em>Vectors</em> are bounded sequences of the form <span class="math">\(A^n\)</span> (or <span class="math">\(A^\ast\)</span>),
