@@ -85,36 +85,40 @@ Floating-Point
 
 *Floating-point* data consists of values according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
 Every value has a *sign* and a *magnitude*.
-Magnitudes include the special value :math:`\infty` (infinity) and |NAN| (*NaN*, not a number).
-Furthermore, NaN values have a *payload* value that describes the mantissa bits in the underlying representation.
-No distinction is being made between signalling and silent NaNs.
+
+Magnitudes can either be expressed as *normal* numbers of the form :math:`m_0.m_1m_2\dots m_M \cdot2^e`, where :math:`m` is the *significand* whose most signifcant bit :math:`m_0` is :math:`1`, and :math:`e` is the exponent,
+or as a *subnormal* number where :math:`m_0` is :math:`0` and the exponent is fixed to the smallest possible value; among the subnormals are positive and negative zero.
+Since the significands are binary values, normals are represented in the form :math:`(1 + m\cdot 2^{-M})`, where :math:`M` is the bit width of :math:`m`; similarly for subnormals.
+
+Possible magnitudes also include the special values :math:`\infty` (infinity) and |NAN| (*NaN*, not a number).
+NaN values have a *payload* value that describes the mantissa bits in the underlying representation.
+No distinction is made between signalling and silent NaNs.
 
 .. math::
    \begin{array}{llcll}
    \production{floating-point number} & \fN &::=&
-     + \fNmag ~|~ - \fNmag \\
+     {+} \fNmag ~|~ {-} \fNmag \\
    \production{floating-point magnitude} & \fNmag &::=&
-     0 \\ &&|&
-     q & (\ieee_N(q) = q \in \mathbb{Q}_+) \\ &&|&
+     (1 + \uM\cdot 2^{-M}) \cdot 2^e & (M = \significand(N) \wedge -2^{\exponent(N)-1}+2 \leq e < 2^{\exponent(N)-1}) \\ &&|&
+     (0 + \uM\cdot 2^{-M}) \cdot 2^e & (M = \significand(N) \wedge e = -2^{\exponent(N)-1}+2) \\ &&|&
      \infty \\ &&|&
-     \NAN(\uM) & (M = \payloadsize(N) \wedge \uM \neq 0) \\
+     \NAN(n) & (1 \leq n < 2^{\significand(N)}) \\
    \end{array}
 
 where
 
-.. _aux-payloadsize:
+.. _aux-significand:
+.. _aux-exponent:
 
 .. math::
-   \begin{array}{lcl}
-   \payloadsize(32) &=& 23 \\
-   \payloadsize(64) &=& 52 \\
+   \begin{array}{lclllllcl}
+   \significand(32) &=& 23 &&&&
+   \exponent(32) &=& 8 \\
+   \significand(64) &=& 52 &&&&
+   \exponent(64) &=& 11 \\
    \end{array}
 
 The two possible sizes :math:`N` are 32 and 64.
-
-.. note::
-   The auxiliary function :math:`\ieee_N` rounds a rational value to the nearest value representable in IEEE 754.
-   The respective side condition ensures that only representable floating-point values are part of the abstract syntax.
 
 .. _canonical-nan:
 .. _arithmetic-nan:
@@ -123,9 +127,19 @@ The two possible sizes :math:`N` are 32 and 64.
 A *canonical NaN* is a floating-point value :math:`\pm\NAN(\canon_N)` where :math:`\canon_N` is a payload whose most significant bit is :math:`1` while all others are :math:`0`:
 
 .. math::
-   \canon_N = 2^{\payloadsize(N)-1}
+   \canon_N = 2^{\significand_N-1}
 
 An *arithmetic NaN*  is a floating-point value :math:`\pm\NAN(n)` with :math:`n > \canon_N`, such that the most significant bit is :math:`1` while all others are arbitrary.
+
+
+Conventions
+...........
+
+* The meta variable :math:`z` ranges over floating-point values where clear from context.
+
+* The notation :math:`-z` denotes the same floating-point value as :math:`z` but with the sign inverted.
+
+* Floating-point numbers, in normal or subnormal form, are sometimes interpreted as rational numbers :math:`q \in \mathbb{Q}`.
 
 
 .. _syntax-vec:

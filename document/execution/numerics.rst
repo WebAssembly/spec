@@ -71,11 +71,11 @@ This function is bijective, and hence invertible.
 Bitwise Interpretation
 ......................
 
-Bitwise operators are defined by converting the number into a sequence of binary digits representing the bits of its binary representation:
+Bitwise operators are defined by converting the number into a sequence :math:`d^\ast` of binary digits representing the bits of its binary representation:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \bits_N(i) &=& b_{N-1}~\dots~b_0 & (i = 2^{N-1}\cdot b_{N-1} + \dots + 2^0\cdot b_0) \\
+   \bits_N(i) &=& d_{N-1}~\dots~d_0 & (i = 2^{N-1}\cdot d_{N-1} + \dots + 2^0\cdot d_0) \\
    \end{array}
 
 This function also is bijective and invertible.
@@ -191,7 +191,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    This operator is :ref:`partial <exec-op-partial>`.
 
    As long as :math:`i_2 \neq 0` it holds that
-   :math:`i_1 = i_2\cdot\divuop(i_1, i_2) + \remuop(i_1, i_2)`.
+   :math:`i_1 = i_2\cdot\idivu(i_1, i_2) + \iremu(i_1, i_2)`.
 
 .. _op-rem_s:
 
@@ -216,7 +216,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    This operator is :ref:`partial <exec-op-partial>`.
 
    As long as :math:`i_2 \neq 0` it holds that
-   :math:`i_1 = i_2\cdot\divsop(i_1, i_2) + \remsop(i_1, i_2)`.
+   :math:`i_1 = i_2\cdot\idivs(i_1, i_2) + \irems(i_1, i_2)`.
 
 
 .. _op-and:
@@ -545,79 +545,79 @@ with the following qualifications:
 
 .. _aux-ieee:
 
-IEEE Rounding
-.............
+Rounding
+........
 
-A floating-point number of bit width :math:`N` can be represented in the form :math:`\pm m \cdot 2^e`, where :math:`m` is the *significand* drawn from |uM|, with :math:`M = \payloadsize(N)`, and :math:`e` the *exponent*.
+An *exact* floating-point number is a rational number that is exactly representable as a :ref:`floating-point number <syntax-float>` of given bit width :math:`N`.
 
-An *exact* floating-point number is a rational number that is exactly representable as an IEEE 754 value of given bit width :math:`N`.
-
-A *limit* number for a given bit width :math:`N` is one of the values :math:`2^{128}` and :math:`-2^{128}` if :math:`N` is 32, or :math:`2^{1024}` and :math:`-2^{1024}` if :math:`N` is 64.
+A *limit* number for a given floating-point bit width :math:`N` is a positive or negative number whose magnitude is the smallest power of :math:`2` that is not exactly representable as a floating-point number of width :math:`N` (that magnitude is :math:`2^{128}` for :math:`N = 32` and :math:`2^{1024}` for :math:`N = 64`).
 
 A *candidate* number is either an exact floating-point number or one of the two limit numbers for the given bit width :math:`N`.
 
 A *candidate pair* is a pair :math:`z_1,z_2` of candidate numbers, such that no candidate number exists that lies between the two.
 
-A real number :math:`z` is converted to a floating-point value of bit width :math:`N` using round-to-nearest ties-to-even as follows:
+A real number :math:`r` is converted to a floating-point value of bit width :math:`N` as follows:
 
-* If :math:`z` is :math:`0`, then return :math:`+0`.
+* If :math:`r` is :math:`0`, then return :math:`+0`.
 
-* Else if :math:`z` is an exact floating-point number, then return :math:`z`.
+* Else if :math:`r` is an exact floating-point number, then return :math:`r`.
 
-* Else if :math:`z` greater than or equal to the positive limit, then return :math:`+\infty`.
+* Else if :math:`r` greater than or equal to the positive limit, then return :math:`+\infty`.
 
-* Else if :math:`z` is less than or equal to the negative limit, then return :math:`-\infty`.
+* Else if :math:`r` is less than or equal to the negative limit, then return :math:`-\infty`.
 
-* Else if :math:`z_1` and :math:`z_2` that are a candidate pair such that :math:`z_1 < z < z_2`, then:
+* Else if :math:`z_1` and :math:`z_2` are a candidate pair such that :math:`z_1 < z < z_2`, then:
 
-  * If :math:`|z - z_1| < |z - z_2|`, then let :math:`z'` be :math:`z_1`.
+  * If :math:`|r - z_1| < |r - z_2|`, then let :math:`z` be :math:`z_1`.
 
-  * Else if :math:`|z - z_1| > |z - z_2|`, then let :math:`z'` be :math:`z_2`.
+  * Else if :math:`|r - z_1| > |r - z_2|`, then let :math:`z` be :math:`z_2`.
 
-  * Else if :math:`|z - z_1| = |z - z_2|` and the significand of :math:`z_1` is even, then let :math:`z'` be :math:`z_1`.
+  * Else if :math:`|r - z_1| = |r - z_2|` and the significand of :math:`z_1` is even, then let :math:`z` be :math:`z_1`.
 
-  * Else, let :math:`z'` be :math:`z_2`.
+  * Else, let :math:`z` be :math:`z_2`.
 
-* If :math:`z`` is :math:`0`, then:
+* If :math:`z` is :math:`0`, then:
 
-  * If :math:`z < 0`, then return :math:`-0`.
+  * If :math:`r < 0`, then return :math:`-0`.
 
   * Else, return :math:`+0`.
 
-* Else if :math:`z'` is a limit number, then:
+* Else if :math:`z` is a limit number, then:
 
-  * If :math:`z < 0`, then return :math:`-\infty`.
+  * If :math:`r < 0`, then return :math:`-\infty`.
 
   * Else, return :math:`+\infty`.
 
-* Else, return :math:`z'`.
+* Else, return :math:`z`.
 
 
 .. math::
    \begin{array}{lll@{\qquad}l}
    \ieee_N(0) &=& +0 \\
-   \ieee_N(z) &=& z & (z \in \F{exact}_N) \\
-   \ieee_N(z) &=& +\infty & (z \geq \F{max}(\F{limit}_n)) \\
-   \ieee_N(z) &=& -\infty & (z \leq \F{min}(\F{limit}_n)) \\
-   \ieee_N(z) &=& \F{closest}_N(z, z_1, z_2) & (z_1 < z < z_2 \wedge (z_1,z_2) \in \F{candidatepair}_N) \\[1ex]
-   \F{closest}_N(z, z_1, z_2) &=& \F{rectify}_N(z, z_1) & (|z-z_1|<|z-z_2|) \\
-   \F{closest}_N(z, z_1, z_2) &=& \F{rectify}_N(z, z_2) & (|z-z_1|>|z-z_2|) \\
-   \F{closest}_N(z, z_1, z_2) &=& \F{rectify}_N(z, z_1) & (|z-z_1|=|z-z_2| \wedge z_1~\mbox{has even significand}) \\
-   \F{closest}_N(z, z_1, z_2) &=& \F{rectify}_N(z, z_2) & (|z-z_1|=|z-z_2| \wedge z_2~\mbox{has even significand}) \\[1ex]
-   \F{rectify}_N(\pm z, 0) &=& \pm 0 \\
-   \F{rectify}_N(z, \pm z') &=& \pm \infty & (\pm z' \in \F{limit}_N) \\
-   \F{rectify}_N(z, z') &=& z' \\
+   \ieee_N(r) &=& r & (r \in \F{exact}_N) \\
+   \ieee_N(r) &=& +\infty & (r \geq -\F{limit}_n) \\
+   \ieee_N(r) &=& -\infty & (r \leq +\F{limit}_n) \\
+   \ieee_N(r) &=& \F{closest}_N(r, z_1, z_2) & (z_1 < r < z_2 \wedge (z_1,z_2) \in \F{candidatepair}_N) \\[1ex]
+   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_1) & (|r-z_1|<|r-z_2|) \\
+   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_2) & (|r-z_1|>|r-z_2|) \\
+   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_1) & (|r-z_1|=|r-z_2| \wedge \F{even}_N(z_1)) \\
+   \F{closest}_N(z, z_1, z_2) &=& \F{rectify}_N(z, z_2) & (|r-z_1|=|r-z_2| \wedge \F{even}_N(z_2)) \\[1ex]
+   \F{rectify}_N(r, \pm \F{limit}_N) &=& \pm \infty \\
+   \F{rectify}_N(r, 0) &=& +0 \qquad (r \geq 0) \\
+   \F{rectify}_N(r, 0) &=& -0 \qquad (r < 0) \\
+   \F{rectify}_N(r, z) &=& z \\
    \end{array}
 
 where:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \F{exact}_N &=& \{q \in \mathbb{Q} ~|~ q~\mbox{is exactly representable in IEEE 754 with bit width}~N\} \\
-   \F{limit}_{32} &=& \{-2^{128}, +2^{128}\} \\
-   \F{limit}_{64} &=& \{-2^{1024}, +2^{1024}\} \\
-   \F{candidate}_N &=& \F{exact}_N \cup \F{limit}_N \\
-   \F{candidatepair}_N &=& \{ (z_1, z_2) \in \F{candidate}_N^2 ~|~ z1 < z2 \wedge \forall z \in \F{candidate}, z \leq z_1 \vee z \geq z_2\} \\[1ex]
+   \F{exact}_N &=& \fN \cap \mathbb{Q} \\
+   \F{limit}_N &=& 2^{2^{\exponent(N)-1}} \\
+   \F{candidate}_N &=& \F{exact}_N \cup \{+\F{limit}_N, -\F{limit}_N\} \\
+   \F{candidatepair}_N &=& \{ (z_1, z_2) \in \F{candidate}_N^2 ~|~ z_1 < z_2 \wedge \forall z \in \F{candidate}_N, z \leq z_1 \vee z \geq z_2\} \\[1ex]
+   \F{even}_N((d + m\cdot 2^{-M}) \cdot 2^e) &\Leftrightarrow& m \mod 2 = 0 \\
+   \F{even}_N(\pm \F{limit}_N) &\Leftrightarrow& \F{true} \\
    \end{array}
 
 
@@ -637,7 +637,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 .. math::
    \begin{array}{lll@{\qquad}l}
    \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \canon_N \} & (\forall \NAN(n) \in z^\ast,~ n = \canon_N) \\
-   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n > \canon_N \} & (\mbox{otherwise}) \\
+   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n \geq \canon_N \} & (\mbox{otherwise}) \\
    \end{array}
 
 
@@ -1420,11 +1420,9 @@ Conversions
 
 
 .. _aux-bytes:
-.. _aux-ibytes:
-.. _aux-fbytes:
 
-Storage Conversion
-~~~~~~~~~~~~~~~~~~
+Storage Conversions
+~~~~~~~~~~~~~~~~~~~
 
 When a number is stored in :ref:`memory <syntax-mem>`, it is converted into a sequence of :ref:`bytes <syntax-byte>`.
 
@@ -1434,19 +1432,40 @@ When a number is stored in :ref:`memory <syntax-mem>`, it is converted into a se
    \bytes_{\K{f}N}(z) &=& \fbytes_N(z) \\
    \end{array}
 
-Integers are represented in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \ibytes_N(i) &=& \epsilon & (N = 0 \wedge i = 0) \\
-   \ibytes_N(i) &=& b~\bytes_{N-8}(j) & (N \geq 8 \wedge i = 2^8\cdot j + b) \\
-   \end{array}
-
-Floating-point values are represented in the respective binary format defined by `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_, and also stored in little endian byte order:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \fbytes_N(z) &=& \F{reverse}(\mbox{IEEE 754 $N$-bit binary representation of $z$})  \\
-   \end{array}
-
 Each of these functions is a bijection, hence they are invertible.
+
+
+.. _aux-ibytes:
+.. _aux-littleendian:
+
+Integers
+........
+
+:ref:`Integers <syntax-int>` are represented in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \ibytes_N(i) &=& \littleendian(\bits_N(i)) \\[1ex]
+   \littleendian(\epsilon) &=& \epsilon \\
+   \littleendian(d_1^8~d_2^{N-8}) &=& \bits_8^{-1}(d_1^8)~\littleendian(d_2^{N-8}) \\
+   \end{array}
+
+.. _aux-fbytes:
+.. _aux-fbits:
+.. _aux-fsign:
+
+Floating-Point
+..............
+
+:ref:`Floating-point values <syntax-float>` are represented in the respective binary format defined by `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_, and also stored in little endian byte order:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \fbytes_N(z) &=& \littleendian(\fbits_N(z)) \\[1ex]
+   \fbits_N(\pm (1+m\cdot 2^{-M})\cdot 2^e) &=& \fsign({\pm})~\bits_{\exponent(N)}(e+2^{\exponent(N)-1}-1)~\bits_{\significand(N)}(m) \\
+   \fbits_N(\pm (0+m\cdot 2^{-M})\cdot 2^e) &=& \fsign({\pm})~(0)^{\exponent(N)}~\bits_{\significand(N)}(m) \\
+   \fbits_N(\pm \infty) &=& \fsign({\pm})~(1)^{\exponent(N)}~(0)^{\significand(N)} \\
+   \fbits_N(\pm \NAN(n)) &=& \fsign({\pm})~(1)^{\exponent(N)}~\bits_{\significand(N)}(n) \\[1ex]
+   \fsign({+}) &=& 0 \\
+   \fsign({-}) &=& 1 \\
+   \end{array}

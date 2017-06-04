@@ -596,16 +596,21 @@
 .. Numerics, meta functions
 
 .. |bits| mathdef:: \xref{execution/numerics}{aux-bits}{\F{bits}}
+.. |fbits| mathdef:: \xref{execution/numerics}{aux-fbits}{\F{fbits}}
+.. |fsign| mathdef:: \xref{execution/numerics}{aux-fsign}{\F{fsign}}
 .. |bytes| mathdef:: \xref{execution/numerics}{aux-bytes}{\F{bytes}}
 .. |ibytes| mathdef:: \xref{execution/numerics}{aux-ibytes}{\F{ibytes}}
 .. |fbytes| mathdef:: \xref{execution/numerics}{aux-fbytes}{\F{fbytes}}
 .. |signed| mathdef:: \xref{execution/numerics}{aux-signed}{\F{signed}}
 .. |bool| mathdef:: \xref{execution/numerics}{aux-bool}{\F{bool}}
+.. |littleendian| mathdef:: \xref{execution/numerics}{aux-littleendian}{\F{littleendian}}
 
-.. |ieee| mathdef:: \xref{execution/numerics}{aux-ieee}{\F{ieee}}
+.. |ieee| mathdef:: \xref{execution/numerics}{aux-ieee}{\F{float}}
 .. |nan| mathdef:: \xref{execution/numerics}{aux-nan}{\F{nan}}
-.. |payloadsize| mathdef:: \xref{syntax/values}{aux-payloadsize}{\F{payloadsize}}
 .. |canon| mathdef:: \xref{syntax/values}{aux-canon}{\F{canon}}
+
+.. |significand| mathdef:: \xref{syntax/values}{aux-significand}{\F{signif}}
+.. |exponent| mathdef:: \xref{syntax/values}{aux-exponent}{\F{expon}}
 
 
 .. Numerics, operators

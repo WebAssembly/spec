@@ -93,7 +93,7 @@ Floating-Point
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{floating-point number} & \BfN &::=&
-     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \bytes_{\K{F}N}^{-1}(\F{reverse}(b^\ast)) \\
+     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \bytes_{\fN}^{-1}(\F{reverse}(b^\ast)) \\
    \end{array}
 
 Here, :math:`\F{reverse}(b^\ast)` denotes the byte sequence :math:`b^\ast` in reversed order.

@@ -120,8 +120,8 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      z{:}\Tfloat &\Rightarrow& \ieee_N(z) & (\ieee_N(z) \neq \pm \infty) \\ &&|&
      z{:}\Thexfloat &\Rightarrow& \ieee_N(z) & (\ieee_N(z) \neq \pm \infty) \\ &&|&
      \text{inf} &\Rightarrow& \infty \\ &&|&
-     \text{nan} &\Rightarrow& \NAN(2^{\payloadsize(N)-1}) \\ &&|&
-     \text{nan{:}0x}~n{:}\Thexnum &\Rightarrow& \NAN(n) & (0 < n < 2^{\payloadsize(N)}) \\
+     \text{nan} &\Rightarrow& \NAN(2^{\significand(N)-1}) \\ &&|&
+     \text{nan{:}0x}~n{:}\Thexnum &\Rightarrow& \NAN(n) & (1 \leq n < 2^{\significand(N)}) \\
    \production{floating-point value} & \TfN &::=&
      {\pm}{:}\Tsign~z{:}\TfNmag &\Rightarrow& \pm z \\
    \end{array}
