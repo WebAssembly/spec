@@ -519,7 +519,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <span id="aux-ieee"></span><h3>Rounding<a class="headerlink" href="#rounding" title="Permalink to this headline">¶</a></h3>
 <p>An <em>exact</em> floating-point number is a rational number that is exactly representable as a <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point number</span></a> of given bit width <span class="math">\(N\)</span>.</p>
 <p>A <em>limit</em> number for a given floating-point bit width <span class="math">\(N\)</span> is a positive or negative number whose magnitude is the smallest power of <span class="math">\(2\)</span> that is not exactly representable as a floating-point number of width <span class="math">\(N\)</span> (that magnitude is <span class="math">\(2^{128}\)</span> for <span class="math">\(N = 32\)</span> and <span class="math">\(2^{1024}\)</span> for <span class="math">\(N = 64\)</span>).</p>
-<p>A <em>candidate</em> number is either an exact floating-point number or one of the two limit numbers for the given bit width <span class="math">\(N\)</span>.</p>
+<p>A <em>candidate</em> number is either an exact floating-point number or a positive or negative limit number for the given bit width <span class="math">\(N\)</span>.</p>
 <p>A <em>candidate pair</em> is a pair <span class="math">\(z_1,z_2\)</span> of candidate numbers, such that no candidate number exists that lies between the two.</p>
 <p>A real number <span class="math">\(r\)</span> is converted to a floating-point value of bit width <span class="math">\(N\)</span> as follows:</p>
 <ul class="simple">
@@ -527,7 +527,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <li>Else if <span class="math">\(r\)</span> is an exact floating-point number, then return <span class="math">\(r\)</span>.</li>
 <li>Else if <span class="math">\(r\)</span> greater than or equal to the positive limit, then return <span class="math">\(+\infty\)</span>.</li>
 <li>Else if <span class="math">\(r\)</span> is less than or equal to the negative limit, then return <span class="math">\(-\infty\)</span>.</li>
-<li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are a candidate pair such that <span class="math">\(z_1 &lt; z &lt; z_2\)</span>, then:<ul>
+<li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are a candidate pair such that <span class="math">\(z_1 &lt; r &lt; z_2\)</span>, then:<ul>
 <li>If <span class="math">\(|r - z_1| &lt; |r - z_2|\)</span>, then let <span class="math">\(z\)</span> be <span class="math">\(z_1\)</span>.</li>
 <li>Else if <span class="math">\(|r - z_1| &gt; |r - z_2|\)</span>, then let <span class="math">\(z\)</span> be <span class="math">\(z_2\)</span>.</li>
 <li>Else if <span class="math">\(|r - z_1| = |r - z_2|\)</span> and the significand of <span class="math">\(z_1\)</span> is even, then let <span class="math">\(z\)</span> be <span class="math">\(z_1\)</span>.</li>
@@ -556,7 +556,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 \mathrm{closest}_N(r, z_1, z_2) &amp;=&amp; \mathrm{rectify}_N(r, z_1) &amp; (|r-z_1|&lt;|r-z_2|) \\
 \mathrm{closest}_N(r, z_1, z_2) &amp;=&amp; \mathrm{rectify}_N(r, z_2) &amp; (|r-z_1|&gt;|r-z_2|) \\
 \mathrm{closest}_N(r, z_1, z_2) &amp;=&amp; \mathrm{rectify}_N(r, z_1) &amp; (|r-z_1|=|r-z_2| \wedge \mathrm{even}_N(z_1)) \\
-\mathrm{closest}_N(z, z_1, z_2) &amp;=&amp; \mathrm{rectify}_N(z, z_2) &amp; (|r-z_1|=|r-z_2| \wedge \mathrm{even}_N(z_2)) \\[1ex]
+\mathrm{closest}_N(r, z_1, z_2) &amp;=&amp; \mathrm{rectify}_N(r, z_2) &amp; (|r-z_1|=|r-z_2| \wedge \mathrm{even}_N(z_2)) \\[1ex]
 \mathrm{rectify}_N(r, \pm \mathrm{limit}_N) &amp;=&amp; \pm \infty \\
 \mathrm{rectify}_N(r, 0) &amp;=&amp; +0 \qquad (r \geq 0) \\
 \mathrm{rectify}_N(r, 0) &amp;=&amp; -0 \qquad (r &lt; 0) \\
