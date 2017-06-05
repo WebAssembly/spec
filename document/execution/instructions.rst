@@ -394,7 +394,7 @@ Memory Instructions
 
 12. If :math:`N` and :math:`\sx` are part of the instruction, then:
 
-    a. Let :math:`n` be the integer for which :math:`\bytes_N(n) = b^\ast`.
+    a. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
     b. Let :math:`c` be the result of computing :math:`\extend\F{\_}\sx_{N,|t|}(n)`.
 
@@ -423,7 +423,7 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & \bytes_N(n) = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N])
+     \wedge & \bytes_{\iN}(n) = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N])
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~k)~(t.\LOAD({N}\K{\_}\sx)^?~\memarg) &\stepto& S; F; \TRAP
@@ -476,7 +476,7 @@ Memory Instructions
 
     a. Let :math:`n` be the result of computing :math:`\wrap_{|t|,N}(c)`.
 
-    b. Let :math:`b^\ast` be the byte sequence :math:`\bytes_N(n)`.
+    b. Let :math:`b^\ast` be the byte sequence :math:`\bytes_{\iN}(n)`.
 
 14. Else:
 
@@ -502,7 +502,7 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N] = \bytes_N(\wrap_{|t|,N}(c))
+     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N] = \bytes_{\iN}(\wrap_{|t|,N}(c))
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~k)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP

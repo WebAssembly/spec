@@ -47,6 +47,75 @@ Some definitions use *truncation* of rational values, with the usual mathematica
    \end{array}
 
 
+Representations
+~~~~~~~~~~~~~~~
+
+Numbers have an underlying binary representation as a sequence of bits:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \bits_{\K{i}N}(i) &=& \ibits_N(i) \\
+   \bits_{\K{f}N}(z) &=& \fbits_N(z) \\
+   \end{array}
+
+Each of these functions is a bijection, hence they are invertible.
+
+
+.. _aux-ibits:
+
+Integers
+........
+
+:ref:`Integers <syntax-int>` are represented as base two unsigned numbers:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \ibits_N(i) &=& d_{N-1}~\dots~d_0 & (i = 2^{N-1}\cdot d_{N-1} + \dots + 2^0\cdot d_0) \\
+   \end{array}
+
+Boolean operators like :math:`\wedge`, :math:`\vee`, or :math:`\veebar` are lifted to bit sequences of equal length by applying them pointwise.
+
+
+.. _aux-fbits:
+.. _aux-fbias:
+.. _aux-fsign:
+
+Floating-Point
+..............
+
+:ref:`Floating-point values <syntax-float>` are represented in the respective binary format defined by `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \fbits_N(\pm (1+m\cdot 2^{-M})\cdot 2^e) &=& \fsign({\pm})~\ibits_E(e+\fbias_N)~\ibits_M(m) \\
+   \fbits_N(\pm (0+m\cdot 2^{-M})\cdot 2^e) &=& \fsign({\pm})~(0)^E~\ibits_M(m) \\
+   \fbits_N(\pm \infty) &=& \fsign({\pm})~(1)^E~(0)^M \\
+   \fbits_N(\pm \NAN(n)) &=& \fsign({\pm})~(1)^E~\ibits_M(n) \\[1ex]
+   \fbias_N &=& 2^{E-1}-1 \\
+   \fsign({+}) &=& 0 \\
+   \fsign({-}) &=& 1 \\
+   \end{array}
+
+where :math:`M = \significand(N)` and :math:`E = \exponent(N)`.
+
+.. _aux-bytes:
+.. _aux-littleendian:
+
+Storage
+.......
+
+When a number is stored into :ref:`memory <syntax-mem>`, it is converted into a sequence of :ref:`bytes <syntax-byte>` in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \bytes_t(i) &=& \littleendian(\bits_t(i)) \\[1ex]
+   \littleendian(\epsilon) &=& \epsilon \\
+   \littleendian(d_1^8~d_2^{N-8}) &=& \ibits_8^{-1}(d_1^8)~\littleendian(d_2^{N-8}) \\
+   \end{array}
+
+Again these functions are invertable bijections.
+
+
 Integer Operations
 ~~~~~~~~~~~~~~~~~~
 
@@ -65,22 +134,6 @@ Operators that use a signed interpretation convert the value using the following
    \end{array}
 
 This function is bijective, and hence invertible.
-
-.. _aux-bits:
-
-Bitwise Interpretation
-......................
-
-Bitwise operators are defined by converting the number into a sequence :math:`d^\ast` of binary digits representing the bits of its binary representation:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \bits_N(i) &=& d_{N-1}~\dots~d_0 & (i = 2^{N-1}\cdot d_{N-1} + \dots + 2^0\cdot d_0) \\
-   \end{array}
-
-This function also is bijective and invertible.
-
-Boolean operators like :math:`\wedge`, :math:`\vee`, or :math:`\veebar` are lifted to bit sequences of equal length by applying them pointwise.
 
 .. _aux-bool:
 
@@ -228,7 +281,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \iand_N(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \wedge \bits_N(i_2))
+   \iand_N(i_1, i_2) &=& \ibits_N^{-1}(\ibits_N(i_1) \wedge \ibits_N(i_2))
    \end{array}
 
 .. _op-or:
@@ -240,7 +293,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ior_N(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \vee \bits_N(i_2))
+   \ior_N(i_1, i_2) &=& \ibits_N^{-1}(\ibits_N(i_1) \vee \ibits_N(i_2))
    \end{array}
 
 .. _op-xor:
@@ -252,7 +305,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ixor_N(i_1, i_2) &=& \bits_N^{-1}(\bits_N(i_1) \veebar \bits_N(i_2))
+   \ixor_N(i_1, i_2) &=& \ibits_N^{-1}(\ibits_N(i_1) \veebar \ibits_N(i_2))
    \end{array}
 
 .. _op-shl:
@@ -266,7 +319,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ishl_N(i_1, i_2) &=& \bits_N^{-1}(b_2^{N-k}~0^k) & (\bits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
+   \ishl_N(i_1, i_2) &=& \ibits_N^{-1}(b_2^{N-k}~0^k) & (\ibits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-shr_u:
@@ -280,7 +333,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ishru_N(i_1, i_2) &=& \bits_N^{-1}(0^k~b_1^{N-k}) & (\bits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
+   \ishru_N(i_1, i_2) &=& \ibits_N^{-1}(0^k~b_1^{N-k}) & (\ibits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-shr_s:
@@ -294,7 +347,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ishrs_N(i_1, i_2) &=& \bits_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) & (\bits_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mod N)
+   \ishrs_N(i_1, i_2) &=& \ibits_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) & (\ibits_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-rotl:
@@ -308,7 +361,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \irotl_N(i_1, i_2) &=& \bits_N^{-1}(b_2^{N-k}~b_1^k) & (\bits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
+   \irotl_N(i_1, i_2) &=& \ibits_N^{-1}(b_2^{N-k}~b_1^k) & (\ibits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-rotr:
@@ -322,7 +375,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \irotr_N(i_1, i_2) &=& \bits_N^{-1}(b_2^k~b_1^{N-k}) & (\bits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
+   \irotr_N(i_1, i_2) &=& \ibits_N^{-1}(b_2^k~b_1^{N-k}) & (\ibits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
 
@@ -335,7 +388,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \iclz_N(i) &=& k & (\bits_N(i) = 0^k~(1~b^\ast)^?)
+   \iclz_N(i) &=& k & (\ibits_N(i) = 0^k~(1~b^\ast)^?)
    \end{array}
 
 
@@ -348,7 +401,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ictz_N(i) &=& k & (\bits_N(i) = (b^\ast~1)^?~0^k)
+   \ictz_N(i) &=& k & (\ibits_N(i) = (b^\ast~1)^?~0^k)
    \end{array}
 
 
@@ -361,7 +414,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ipopcnt_N(i) &=& k & (\bits_N(i) = (0^\ast~1)^k~0^\ast)
+   \ipopcnt_N(i) &=& k & (\ibits_N(i) = (0^\ast~1)^k~0^\ast)
    \end{array}
 
 
@@ -1409,63 +1462,11 @@ Conversions
 :math:`\reinterpret_{t_1,t_2}(c)`
 .................................
 
-* Let :math:`b^\ast` be the byte sequence :math:`\bytes_{t_1}(c)`.
+* Let :math:`d^\ast` be the bit sequence :math:`\bits_{t_1}(c)`.
 
-* Return the constant :math:`c'` for which :math:`\bytes_{t_2}(c') = b^\ast`.
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \reinterpret_{t_1,t_2}(c) &=& \bytes_{t_2}^{-1}(\bytes_{t_1}(c)) \\
-   \end{array}
-
-
-.. _aux-bytes:
-
-Storage Conversions
-~~~~~~~~~~~~~~~~~~~
-
-When a number is stored in :ref:`memory <syntax-mem>`, it is converted into a sequence of :ref:`bytes <syntax-byte>`.
+* Return the constant :math:`c'` for which :math:`\bits_{t_2}(c') = d^\ast`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \bytes_{\K{i}N}(i) &=& \ibytes_N(i) \\
-   \bytes_{\K{f}N}(z) &=& \fbytes_N(z) \\
-   \end{array}
-
-Each of these functions is a bijection, hence they are invertible.
-
-
-.. _aux-ibytes:
-.. _aux-littleendian:
-
-Integers
-........
-
-:ref:`Integers <syntax-int>` are represented in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \ibytes_N(i) &=& \littleendian(\bits_N(i)) \\[1ex]
-   \littleendian(\epsilon) &=& \epsilon \\
-   \littleendian(d_1^8~d_2^{N-8}) &=& \bits_8^{-1}(d_1^8)~\littleendian(d_2^{N-8}) \\
-   \end{array}
-
-.. _aux-fbytes:
-.. _aux-fbits:
-.. _aux-fsign:
-
-Floating-Point
-..............
-
-:ref:`Floating-point values <syntax-float>` are represented in the respective binary format defined by `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_, and also stored in little endian byte order:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \fbytes_N(z) &=& \littleendian(\fbits_N(z)) \\[1ex]
-   \fbits_N(\pm (1+m\cdot 2^{-M})\cdot 2^e) &=& \fsign({\pm})~\bits_{\exponent(N)}(e+2^{\exponent(N)-1}-1)~\bits_{\significand(N)}(m) \\
-   \fbits_N(\pm (0+m\cdot 2^{-M})\cdot 2^e) &=& \fsign({\pm})~(0)^{\exponent(N)}~\bits_{\significand(N)}(m) \\
-   \fbits_N(\pm \infty) &=& \fsign({\pm})~(1)^{\exponent(N)}~(0)^{\significand(N)} \\
-   \fbits_N(\pm \NAN(n)) &=& \fsign({\pm})~(1)^{\exponent(N)}~\bits_{\significand(N)}(n) \\[1ex]
-   \fsign({+}) &=& 0 \\
-   \fsign({-}) &=& 1 \\
+   \reinterpret_{t_1,t_2}(c) &=& \bits_{t_2}^{-1}(\bits_{t_1}(c)) \\
    \end{array}

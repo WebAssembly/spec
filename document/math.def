@@ -596,14 +596,14 @@
 .. Numerics, meta functions
 
 .. |bits| mathdef:: \xref{execution/numerics}{aux-bits}{\F{bits}}
+.. |ibits| mathdef:: \xref{execution/numerics}{aux-ibits}{\F{ibits}}
 .. |fbits| mathdef:: \xref{execution/numerics}{aux-fbits}{\F{fbits}}
 .. |fsign| mathdef:: \xref{execution/numerics}{aux-fsign}{\F{fsign}}
+.. |fbias| mathdef:: \xref{execution/numerics}{aux-fbias}{\F{fbias}}
 .. |bytes| mathdef:: \xref{execution/numerics}{aux-bytes}{\F{bytes}}
-.. |ibytes| mathdef:: \xref{execution/numerics}{aux-ibytes}{\F{ibytes}}
-.. |fbytes| mathdef:: \xref{execution/numerics}{aux-fbytes}{\F{fbytes}}
+.. |littleendian| mathdef:: \xref{execution/numerics}{aux-littleendian}{\F{littleendian}}
 .. |signed| mathdef:: \xref{execution/numerics}{aux-signed}{\F{signed}}
 .. |bool| mathdef:: \xref{execution/numerics}{aux-bool}{\F{bool}}
-.. |littleendian| mathdef:: \xref{execution/numerics}{aux-littleendian}{\F{littleendian}}
 
 .. |ieee| mathdef:: \xref{execution/numerics}{aux-ieee}{\F{float}}
 .. |nan| mathdef:: \xref{execution/numerics}{aux-nan}{\F{nan}}

@@ -60,7 +60,7 @@ Different classes of *integers* with different value ranges are distinguished by
 
 The latter class defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned.
-However, some operations :ref:`convert <aux-signed>` them to signed based on a 2's complement interpretation.
+However, some operations :ref:`convert <aux-signed>` them to signed based on a two's complement interpretation.
 
 
 Conventions
@@ -91,7 +91,7 @@ or as a *subnormal* number where :math:`m_0` is :math:`0` and the exponent is fi
 Since the significands are binary values, normals are represented in the form :math:`(1 + m\cdot 2^{-M})`, where :math:`M` is the bit width of :math:`m`; similarly for subnormals.
 
 Possible magnitudes also include the special values :math:`\infty` (infinity) and |NAN| (*NaN*, not a number).
-NaN values have a *payload* value that describes the mantissa bits in the underlying representation.
+NaN values have a *payload* value that describes the mantissa bits in the underlying :ref:`binary representation <aux-fbits>`.
 No distinction is made between signalling and silent NaNs.
 
 .. math::
@@ -99,7 +99,7 @@ No distinction is made between signalling and silent NaNs.
    \production{floating-point number} & \fN &::=&
      {+} \fNmag ~|~ {-} \fNmag \\
    \production{floating-point magnitude} & \fNmag &::=&
-     (1 + \uM\cdot 2^{-M}) \cdot 2^e & (M = \significand(N) \wedge -2^{\exponent(N)-1}+2 \leq e < 2^{\exponent(N)-1}) \\ &&|&
+     (1 + \uM\cdot 2^{-M}) \cdot 2^e & (M = \significand(N) \wedge -2^{\exponent(N)-1}+2 \leq e \leq 2^{\exponent(N)-1}-1) \\ &&|&
      (0 + \uM\cdot 2^{-M}) \cdot 2^e & (M = \significand(N) \wedge e = -2^{\exponent(N)-1}+2) \\ &&|&
      \infty \\ &&|&
      \NAN(n) & (1 \leq n < 2^{\significand(N)}) \\
