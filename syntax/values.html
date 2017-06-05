@@ -131,7 +131,7 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned.
-However, some operations <a class="reference internal" href="../execution/numerics.html#aux-signed"><span class="std std-ref">convert</span></a> them to signed based on a 2&#8217;s complement interpretation.</p>
+However, some operations <a class="reference internal" href="../execution/numerics.html#aux-signed"><span class="std std-ref">convert</span></a> them to signed based on a two&#8217;s complement interpretation.</p>
 <div class="section" id="id1">
 <h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -148,14 +148,14 @@ Every value has a <em>sign</em> and a <em>magnitude</em>.</p>
 or as a <em>subnormal</em> number where <span class="math">\(m_0\)</span> is <span class="math">\(0\)</span> and the exponent is fixed to the smallest possible value; among the subnormals are positive and negative zero.
 Since the significands are binary values, normals are represented in the form <span class="math">\((1 + m\cdot 2^{-M})\)</span>, where <span class="math">\(M\)</span> is the bit width of <span class="math">\(m\)</span>; similarly for subnormals.</p>
 <p>Possible magnitudes also include the special values <span class="math">\(\infty\)</span> (infinity) and <span class="math">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> (<em>NaN</em>, not a number).
-NaN values have a <em>payload</em> value that describes the mantissa bits in the underlying representation.
+NaN values have a <em>payload</em> value that describes the mantissa bits in the underlying <a class="reference internal" href="../execution/numerics.html#aux-fbits"><span class="std std-ref">binary representation</span></a>.
 No distinction is made between signalling and silent NaNs.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcll}
 \def\mathdef1921#1{{}}\mathdef1921{floating-point number} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1940#1{{\mathit{f}#1}}\mathdef1940{N}} &amp;::=&amp;
   {+} \href{../syntax/values.html#syntax-float}{\def\mathdef1941#1{{\mathit{f}#1}}\mathdef1941{\mathit{Nmag}}} ~|~ {-} \href{../syntax/values.html#syntax-float}{\def\mathdef1941#1{{\mathit{f}#1}}\mathdef1941{\mathit{Nmag}}} \\
 \def\mathdef1921#1{{}}\mathdef1921{floating-point magnitude} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1941#1{{\mathit{f}#1}}\mathdef1941{\mathit{Nmag}}} &amp;::=&amp;
-  (1 + \href{../syntax/values.html#syntax-int}{\def\mathdef1926#1{{\mathit{u}#1}}\mathdef1926{M}}\cdot 2^{-M}) \cdot 2^e &amp; (M = \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N) \wedge -2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}+2 \leq e &lt; 2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}) \\ &amp;&amp;|&amp;
+  (1 + \href{../syntax/values.html#syntax-int}{\def\mathdef1926#1{{\mathit{u}#1}}\mathdef1926{M}}\cdot 2^{-M}) \cdot 2^e &amp; (M = \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N) \wedge -2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}+2 \leq e \leq 2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}-1) \\ &amp;&amp;|&amp;
   (0 + \href{../syntax/values.html#syntax-int}{\def\mathdef1926#1{{\mathit{u}#1}}\mathdef1926{M}}\cdot 2^{-M}) \cdot 2^e &amp; (M = \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N) \wedge e = -2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}+2) \\ &amp;&amp;|&amp;
   \infty \\ &amp;&amp;|&amp;
   \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) &amp; (1 \leq n &lt; 2^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)}) \\

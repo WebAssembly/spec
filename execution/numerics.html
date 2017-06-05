@@ -53,10 +53,10 @@
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="runtime.html">Runtime Structure</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Numerics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#representations">Representations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#integer-operations">Integer Operations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#floating-point-operations">Floating-Point Operations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#conversions">Conversions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#storage-conversions">Storage Conversions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
@@ -131,6 +131,51 @@ When several of these placeholders occur in a single clause, then they must be r
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
 \href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp;=&amp; \pm i &amp; (q - 1 &lt; i \leq q) \\
 \end{array}\end{split}\]</div>
+<div class="section" id="representations">
+<h2>Representations<a class="headerlink" href="#representations" title="Permalink to this headline">¶</a></h2>
+<p>Numbers have an underlying binary representation as a sequence of bits:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_{\mathsf{i}N}(i) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) \\
+\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_{\mathsf{f}N}(z) &amp;=&amp; \href{../execution/numerics.html#aux-fbits}{\mathrm{fbits}}_N(z) \\
+\end{array}\end{split}\]</div>
+<p>Each of these functions is a bijection, hence they are invertible.</p>
+<div class="section" id="integers">
+<span id="aux-ibits"></span><h3>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">Integers</span></a> are represented as base two unsigned numbers:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) &amp;=&amp; d_{N-1}~\dots~d_0 &amp; (i = 2^{N-1}\cdot d_{N-1} + \dots + 2^0\cdot d_0) \\
+\end{array}\end{split}\]</div>
+<p>Boolean operators like <span class="math">\(\wedge\)</span>, <span class="math">\(\vee\)</span>, or <span class="math">\(\veebar\)</span> are lifted to bit sequences of equal length by applying them pointwise.</p>
+</div>
+<div class="section" id="floating-point">
+<span id="aux-fsign"></span><span id="aux-fbias"></span><span id="aux-fbits"></span><h3>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point values</span></a> are represented in the respective binary format defined by <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a>:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../execution/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm (1+m\cdot 2^{-M})\cdot 2^e) &amp;=&amp; \href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_E(e+\href{../execution/numerics.html#aux-fbias}{\mathrm{fbias}}_N)~\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_M(m) \\
+\href{../execution/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm (0+m\cdot 2^{-M})\cdot 2^e) &amp;=&amp; \href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~(0)^E~\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_M(m) \\
+\href{../execution/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm \infty) &amp;=&amp; \href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~(1)^E~(0)^M \\
+\href{../execution/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~(1)^E~\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_M(n) \\[1ex]
+\href{../execution/numerics.html#aux-fbias}{\mathrm{fbias}}_N &amp;=&amp; 2^{E-1}-1 \\
+\href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({+}) &amp;=&amp; 0 \\
+\href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({-}) &amp;=&amp; 1 \\
+\end{array}\end{split}\]</div>
+<p>where <span class="math">\(M = \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)\)</span> and <span class="math">\(E = \href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)\)</span>.</p>
+</div>
+<div class="section" id="storage">
+<span id="aux-littleendian"></span><span id="aux-bytes"></span><h3>Storage<a class="headerlink" href="#storage" title="Permalink to this headline">¶</a></h3>
+<p>When a number is stored into <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memory</span></a>, it is converted into a sequence of <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a> in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_t(i) &amp;=&amp; \href{../execution/numerics.html#aux-littleendian}{\mathrm{littleendian}}(\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_t(i)) \\[1ex]
+\href{../execution/numerics.html#aux-littleendian}{\mathrm{littleendian}}(\epsilon) &amp;=&amp; \epsilon \\
+\href{../execution/numerics.html#aux-littleendian}{\mathrm{littleendian}}(d_1^8~d_2^{N-8}) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_8^{-1}(d_1^8)~\href{../execution/numerics.html#aux-littleendian}{\mathrm{littleendian}}(d_2^{N-8}) \\
+\end{array}\end{split}\]</div>
+<p>Again these functions are invertable bijections.</p>
+</div>
+</div>
 <div class="section" id="integer-operations">
 <h2>Integer Operations<a class="headerlink" href="#integer-operations" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="sign-interpretation">
@@ -143,16 +188,6 @@ Operators that use a signed interpretation convert the value using the following
 \href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i) &amp;=&amp; i - 2^N &amp; (2^{N-1} \leq i &lt; 2^N) \\
 \end{array}\end{split}\]</div>
 <p>This function is bijective, and hence invertible.</p>
-</div>
-<div class="section" id="bitwise-interpretation">
-<span id="aux-bits"></span><h3>Bitwise Interpretation<a class="headerlink" href="#bitwise-interpretation" title="Permalink to this headline">¶</a></h3>
-<p>Bitwise operators are defined by converting the number into a sequence <span class="math">\(d^\ast\)</span> of binary digits representing the bits of its binary representation:</p>
-<div class="math">
-\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i) &amp;=&amp; d_{N-1}~\dots~d_0 &amp; (i = 2^{N-1}\cdot d_{N-1} + \dots + 2^0\cdot d_0) \\
-\end{array}\end{split}\]</div>
-<p>This function also is bijective and invertible.</p>
-<p>Boolean operators like <span class="math">\(\wedge\)</span>, <span class="math">\(\vee\)</span>, or <span class="math">\(\veebar\)</span> are lifted to bit sequences of equal length by applying them pointwise.</p>
 </div>
 <div class="section" id="boolean-interpretation">
 <span id="aux-bool"></span><h3>Boolean Interpretation<a class="headerlink" href="#boolean-interpretation" title="Permalink to this headline">¶</a></h3>
@@ -272,7 +307,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-iand}{\mathrm{iand}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N^{-1}(\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_1) \wedge \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_2))
+\href{../execution/numerics.html#op-iand}{\mathrm{iand}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) \wedge \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_2))
 \end{array}\]</div>
 </div>
 <div class="section" id="op-or">
@@ -282,7 +317,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-ior}{\mathrm{ior}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N^{-1}(\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_1) \vee \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_2))
+\href{../execution/numerics.html#op-ior}{\mathrm{ior}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) \vee \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_2))
 \end{array}\]</div>
 </div>
 <div class="section" id="op-xor">
@@ -292,7 +327,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-ixor}{\mathrm{ixor}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N^{-1}(\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_1) \veebar \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_2))
+\href{../execution/numerics.html#op-ixor}{\mathrm{ixor}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) \veebar \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_2))
 \end{array}\]</div>
 </div>
 <div class="section" id="op-shl">
@@ -303,7 +338,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-ishl}{\mathrm{ishl}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N^{-1}(b_2^{N-k}~0^k) &amp; (\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mathbin{\mathrm{mod}} N)
+\href{../execution/numerics.html#op-ishl}{\mathrm{ishl}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(b_2^{N-k}~0^k) &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mathbin{\mathrm{mod}} N)
 \end{array}\]</div>
 </div>
 <div class="section" id="op-shr-u">
@@ -314,7 +349,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-ishr_u}{\mathrm{ishr\_u}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N^{-1}(0^k~b_1^{N-k}) &amp; (\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
+\href{../execution/numerics.html#op-ishr_u}{\mathrm{ishr\_u}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(0^k~b_1^{N-k}) &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
 \end{array}\]</div>
 </div>
 <div class="section" id="op-shr-s">
@@ -325,7 +360,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-ishr_s}{\mathrm{ishr\_s}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) &amp; (\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
+\href{../execution/numerics.html#op-ishr_s}{\mathrm{ishr\_s}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
 \end{array}\]</div>
 </div>
 <div class="section" id="op-rotl">
@@ -336,7 +371,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-irotl}{\mathrm{irotl}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N^{-1}(b_2^{N-k}~b_1^k) &amp; (\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mathbin{\mathrm{mod}} N)
+\href{../execution/numerics.html#op-irotl}{\mathrm{irotl}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(b_2^{N-k}~b_1^k) &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mathbin{\mathrm{mod}} N)
 \end{array}\]</div>
 </div>
 <div class="section" id="op-rotr">
@@ -347,7 +382,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-irotr}{\mathrm{irotr}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N^{-1}(b_2^k~b_1^{N-k}) &amp; (\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
+\href{../execution/numerics.html#op-irotr}{\mathrm{irotr}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(b_2^k~b_1^{N-k}) &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
 \end{array}\]</div>
 </div>
 <div class="section" id="op-clz">
@@ -357,7 +392,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-iclz}{\mathrm{iclz}}_N(i) &amp;=&amp; k &amp; (\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i) = 0^k~(1~b^\ast)^?)
+\href{../execution/numerics.html#op-iclz}{\mathrm{iclz}}_N(i) &amp;=&amp; k &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) = 0^k~(1~b^\ast)^?)
 \end{array}\]</div>
 </div>
 <div class="section" id="op-ctz">
@@ -367,7 +402,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-ictz}{\mathrm{ictz}}_N(i) &amp;=&amp; k &amp; (\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i) = (b^\ast~1)^?~0^k)
+\href{../execution/numerics.html#op-ictz}{\mathrm{ictz}}_N(i) &amp;=&amp; k &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) = (b^\ast~1)^?~0^k)
 \end{array}\]</div>
 </div>
 <div class="section" id="op-popcnt">
@@ -377,7 +412,7 @@ Operators that use a signed interpretation convert the value using the following
 </ul>
 <div class="math">
 \[\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-ipopcnt}{\mathrm{ipopcnt}}_N(i) &amp;=&amp; k &amp; (\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i) = (0^\ast~1)^k~0^\ast)
+\href{../execution/numerics.html#op-ipopcnt}{\mathrm{ipopcnt}}_N(i) &amp;=&amp; k &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) = (0^\ast~1)^k~0^\ast)
 \end{array}\]</div>
 </div>
 <div class="section" id="op-eqz">
@@ -1155,46 +1190,12 @@ It is not defined for NaNs, infinities, or values for which the result is out of
 <div class="section" id="op-reinterpret">
 <span id="id59"></span><h3><span class="math">\(\href{../execution/numerics.html#op-reinterpret}{\mathrm{reinterpret}}_{t_1,t_2}(c)\)</span><a class="headerlink" href="#op-reinterpret" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{t_1}(c)\)</span>.</li>
-<li>Return the constant <span class="math">\(c'\)</span> for which <span class="math">\(\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{t_2}(c') = b^\ast\)</span>.</li>
+<li>Let <span class="math">\(d^\ast\)</span> be the bit sequence <span class="math">\(\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_{t_1}(c)\)</span>.</li>
+<li>Return the constant <span class="math">\(c'\)</span> for which <span class="math">\(\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_{t_2}(c') = d^\ast\)</span>.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../execution/numerics.html#op-reinterpret}{\mathrm{reinterpret}}_{t_1,t_2}(c) &amp;=&amp; \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{t_2}^{-1}(\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{t_1}(c)) \\
-\end{array}\end{split}\]</div>
-</div>
-</div>
-<div class="section" id="storage-conversions">
-<span id="aux-bytes"></span><h2>Storage Conversions<a class="headerlink" href="#storage-conversions" title="Permalink to this headline">¶</a></h2>
-<p>When a number is stored in <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memory</span></a>, it is converted into a sequence of <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.</p>
-<div class="math">
-\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\mathsf{i}N}(i) &amp;=&amp; \href{../execution/numerics.html#aux-ibytes}{\mathrm{ibytes}}_N(i) \\
-\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\mathsf{f}N}(z) &amp;=&amp; \href{../execution/numerics.html#aux-fbytes}{\mathrm{fbytes}}_N(z) \\
-\end{array}\end{split}\]</div>
-<p>Each of these functions is a bijection, hence they are invertible.</p>
-<div class="section" id="integers">
-<span id="aux-littleendian"></span><span id="aux-ibytes"></span><h3>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">Integers</span></a> are represented in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
-<div class="math">
-\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../execution/numerics.html#aux-ibytes}{\mathrm{ibytes}}_N(i) &amp;=&amp; \href{../execution/numerics.html#aux-littleendian}{\mathrm{littleendian}}(\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_N(i)) \\[1ex]
-\href{../execution/numerics.html#aux-littleendian}{\mathrm{littleendian}}(\epsilon) &amp;=&amp; \epsilon \\
-\href{../execution/numerics.html#aux-littleendian}{\mathrm{littleendian}}(d_1^8~d_2^{N-8}) &amp;=&amp; \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_8^{-1}(d_1^8)~\href{../execution/numerics.html#aux-littleendian}{\mathrm{littleendian}}(d_2^{N-8}) \\
-\end{array}\end{split}\]</div>
-</div>
-<div class="section" id="floating-point">
-<span id="aux-fsign"></span><span id="aux-fbits"></span><span id="aux-fbytes"></span><h3>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point values</span></a> are represented in the respective binary format defined by <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a>, and also stored in little endian byte order:</p>
-<div class="math">
-\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../execution/numerics.html#aux-fbytes}{\mathrm{fbytes}}_N(z) &amp;=&amp; \href{../execution/numerics.html#aux-littleendian}{\mathrm{littleendian}}(\href{../execution/numerics.html#aux-fbits}{\mathrm{fbits}}_N(z)) \\[1ex]
-\href{../execution/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm (1+m\cdot 2^{-M})\cdot 2^e) &amp;=&amp; \href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)}(e+2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}-1)~\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)}(m) \\
-\href{../execution/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm (0+m\cdot 2^{-M})\cdot 2^e) &amp;=&amp; \href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~(0)^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)}~\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)}(m) \\
-\href{../execution/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm \infty) &amp;=&amp; \href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~(1)^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)}~(0)^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)} \\
-\href{../execution/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~(1)^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)}~\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)}(n) \\[1ex]
-\href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({+}) &amp;=&amp; 0 \\
-\href{../execution/numerics.html#aux-fsign}{\mathrm{fsign}}({-}) &amp;=&amp; 1 \\
+\href{../execution/numerics.html#op-reinterpret}{\mathrm{reinterpret}}_{t_1,t_2}(c) &amp;=&amp; \href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_{t_2}^{-1}(\href{../execution/numerics.html#aux-bits}{\mathrm{bits}}_{t_1}(c)) \\
 \end{array}\end{split}\]</div>
 </div>
 </div>
