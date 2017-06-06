@@ -10,8 +10,8 @@
 # Configuration
 
 NAME =		wasm
-UNOPT = 	$(NAME)
-OPT =   	$(NAME).opt
+UNOPT = 	$(NAME).debug
+OPT =   	$(NAME)
 LIB =		$(NAME)
 ZIP =		$(NAME).zip
 JSLIB =		wast.js
