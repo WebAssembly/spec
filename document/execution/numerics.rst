@@ -43,7 +43,7 @@ Some definitions use *truncation* of rational values, with the usual mathematica
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \trunc(\pm q) &=& \pm i & (q - 1 < i \leq q) \\
+   \trunc(\pm q) &=& \pm i & (i \in \mathbb{N} \wedge q - 1 < i \leq q) \\
    \end{array}
 
 
