@@ -271,7 +271,6 @@ def S.sub(a, b):
 * `i8x16.mul(a: v128, b: v128) -> v128`
 * `i16x8.mul(a: v128, b: v128) -> v128`
 * `i32x4.mul(a: v128, b: v128) -> v128`
-* `i64x2.mul(a: v128, b: v128) -> v128`
 
 Lane-wise wrapping integer multiplication:
 
@@ -482,7 +481,6 @@ mask vector with the same number of lanes as the input interpretation.
 * `i8x16.eq(a: v128, b: v128) -> v128`
 * `i16x8.eq(a: v128, b: v128) -> v128`
 * `i32x4.eq(a: v128, b: v128) -> v128`
-* `i64x2.eq(a: v128, b: v128) -> v128`
 * `f32x4.eq(a: v128, b: v128) -> v128`
 * `f64x2.eq(a: v128, b: v128) -> v128`
 
@@ -501,7 +499,6 @@ def S.eq(a, b):
 * `i8x16.ne(a: v128, b: v128) -> v128`
 * `i16x8.ne(a: v128, b: v128) -> v128`
 * `i32x4.ne(a: v128, b: v128) -> v128`
-* `i64x2.ne(a: v128, b: v128) -> v128`
 * `f32x4.ne(a: v128, b: v128) -> v128`
 * `f64x2.ne(a: v128, b: v128) -> v128`
 
@@ -521,8 +518,6 @@ def S.ne(a, b):
 * `i16x8.lt_u(a: v128, b: v128) -> v128`
 * `i32x4.lt_s(a: v128, b: v128) -> v128`
 * `i32x4.lt_u(a: v128, b: v128) -> v128`
-* `i64x2.lt_s(a: v128, b: v128) -> v128`
-* `i64x2.lt_u(a: v128, b: v128) -> v128`
 * `f32x4.lt(a: v128, b: v128) -> v128`
 * `f64x2.lt(a: v128, b: v128) -> v128`
 
@@ -533,8 +528,6 @@ def S.ne(a, b):
 * `i16x8.le_u(a: v128, b: v128) -> v128`
 * `i32x4.le_s(a: v128, b: v128) -> v128`
 * `i32x4.le_u(a: v128, b: v128) -> v128`
-* `i64x2.le_s(a: v128, b: v128) -> v128`
-* `i64x2.le_u(a: v128, b: v128) -> v128`
 * `f32x4.le(a: v128, b: v128) -> v128`
 * `f64x2.le(a: v128, b: v128) -> v128`
 
@@ -545,8 +538,6 @@ def S.ne(a, b):
 * `i16x8.gt_u(a: v128, b: v128) -> v128`
 * `i32x4.gt_s(a: v128, b: v128) -> v128`
 * `i32x4.gt_u(a: v128, b: v128) -> v128`
-* `i64x2.gt_s(a: v128, b: v128) -> v128`
-* `i64x2.gt_u(a: v128, b: v128) -> v128`
 * `f32x4.gt(a: v128, b: v128) -> v128`
 * `f64x2.gt(a: v128, b: v128) -> v128`
 
@@ -557,8 +548,6 @@ def S.ne(a, b):
 * `i16x8.ge_u(a: v128, b: v128) -> v128`
 * `i32x4.ge_s(a: v128, b: v128) -> v128`
 * `i32x4.ge_u(a: v128, b: v128) -> v128`
-* `i64x2.ge_s(a: v128, b: v128) -> v128`
-* `i64x2.ge_u(a: v128, b: v128) -> v128`
 * `f32x4.ge(a: v128, b: v128) -> v128`
 * `f64x2.ge(a: v128, b: v128) -> v128`
 
