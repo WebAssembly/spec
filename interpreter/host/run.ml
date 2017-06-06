@@ -281,12 +281,16 @@ let lookup_registry module_name item_name _t =
 
 (* Running *)
 
-let run_definition def =
+let rec run_definition def =
   match def.it with
   | Textual m -> m
   | Encoded (name, bs) ->
     trace "Decoding...";
     Decode.decode name bs
+  | Quoted (_, s) ->
+    trace "Parsing quote...";
+    let def' = Parse.string_to_module s in
+    run_definition def'
 
 let run_action act =
   match act.it with
@@ -332,7 +336,8 @@ let run_assertion ass =
     trace "Asserting malformed...";
     (match ignore (run_definition def) with
     | exception Decode.Code (_, msg) -> assert_message ass.at "decoding" msg re
-    | _ -> Assert.error ass.at "expected decoding error"
+    | exception Parse.Syntax (_, msg) -> assert_message ass.at "parsing" msg re
+    | _ -> Assert.error ass.at "expected decoding/parsing error"
     )
 
   | AssertInvalid (def, re) ->

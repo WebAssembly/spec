@@ -310,12 +310,13 @@ let of_literal lit =
   | Values.F32 z -> of_float (F32.to_float z)
   | Values.F64 z -> of_float (F64.to_float z)
 
-let of_definition def =
-  let bs =
-    match def.it with
-    | Textual m -> Encode.encode m
-    | Encoded (_, bs) -> bs
-  in of_bytes bs
+let rec of_definition def =
+  match def.it with
+  | Textual m -> of_bytes (Encode.encode m)
+  | Encoded (_, bs) -> of_bytes bs
+  | Quoted (_, s) ->
+    try of_definition (Parse.string_to_module s) with Parse.Syntax _ ->
+      of_bytes "<malformed quote>"
 
 let of_wrapper mods x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt mods x_opt in
@@ -382,11 +383,12 @@ let of_command mods cmd =
     ":" ^ string_of_int cmd.at.left.line ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
-    let m =
+    let rec unquote def =
       match def.it with
       | Textual m -> m
       | Encoded (_, bs) -> Decode.decode "binary" bs
-    in bind mods x_opt m;
+      | Quoted (_, s) -> unquote (Parse.string_to_module s)
+    in bind mods x_opt (unquote def);
     "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
     (if x_opt = None then "" else
     "let " ^ of_var_opt mods x_opt ^ " = " ^ current_var mods ^ ";\n")

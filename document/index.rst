@@ -14,9 +14,7 @@ WebAssembly Specification
    execution/index
    binary/index
    text/index
-   appendix-properties/index
-   appendix-algorithm/index
-   appendix-names/index
+   appendix/index
 
 .. only:: latex
 
