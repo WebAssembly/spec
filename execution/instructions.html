@@ -101,9 +101,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
-<span class="target" id="exec-instr"></span><div class="section" id="instructions">
+  <span class="target" id="exec-instr"></span><div class="section" id="instructions">
 <span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="exec-instr-numeric"></span><div class="section" id="numeric-instructions">
 <span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
@@ -376,7 +374,7 @@ S; F; \href{../execution/runtime.html#syntax-val}{\mathit{val}}~(\href{../syntax
 <li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\mathit{mem}.\mathsf{data}[\mathit{ea}:N]\)</span>.</li>
 <li>If <span class="math">\(N\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> are part of the instruction, then:<ol class="loweralpha">
 <li>Let <span class="math">\(n\)</span> be the integer for which <span class="math">\(\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef983#1{{\mathit{i}#1}}\mathdef983{N}}}(n) = b^\ast\)</span>.</li>
-<li>Let <span class="math">\(c\)</span> be the result of computing <span class="math">\(\extend\mathrm{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_{N,|t|}(n)\)</span>.</li>
+<li>Let <span class="math">\(c\)</span> be the result of computing <span class="math">\(\href{../execution/numerics.html#op-extend_u}{\mathrm{extend}}\mathrm{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_{N,|t|}(n)\)</span>.</li>
 </ol>
 </li>
 <li>Else:<ol class="loweralpha">
@@ -398,7 +396,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(t.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{N}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}) &amp;\hookrightarrow&amp;
-  S; F; (t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\extend\mathrm{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_{N,|t|}(n))
+  S; F; (t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../execution/numerics.html#op-extend_u}{\mathrm{extend}}\mathrm{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_{N,|t|}(n))
 \end{array}
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
