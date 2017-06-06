@@ -348,11 +348,11 @@ block_instr :
       let ts, es1 = $3 c' in if_ ts es1 ($6 c') }
 
 block_sig :
-  | LPAR RESULT value_type_list RPAR { $3 }
+  | LPAR RESULT VALUE_TYPE RPAR { [$3] }
 
 block :
-  | block_sig block
-    { fun c -> let ts, es = $2 c in $1 @ ts, es }
+  | block_sig instr_list
+    { fun c -> $1, $2 c }
   | instr_list { fun c -> [], $1 c }
 
 expr :  /* Sugar */
@@ -427,18 +427,19 @@ func_fields :
       let fns, ims, exs = $2 c x at in fns, ims, $1 (FuncExport x) c :: exs }
 
 func_fields_import :  /* Sugar */
-  | /* empty */ { empty_type }
-  | LPAR RESULT value_type_list RPAR
-    { FuncType ([], $3) }
+  | func_fields_import_result { $1 }
   | LPAR PARAM value_type_list RPAR func_fields_import
     { let FuncType (ins, out) = $5 in FuncType ($3 @ ins, out) }
   | LPAR PARAM bind_var VALUE_TYPE RPAR func_fields_import  /* Sugar */
     { let FuncType (ins, out) = $6 in FuncType ($4 :: ins, out) }
 
+func_fields_import_result :  /* Sugar */
+  | /* empty */ { empty_type }
+  | LPAR RESULT value_type_list RPAR func_fields_import_result
+    { let FuncType (ins, out) = $5 in FuncType (ins, $3 @ out) }
+
 func_fields_body :
-  | func_body { empty_type, $1 }
-  | LPAR RESULT value_type_list RPAR func_body
-    { FuncType ([], $3), $5 }
+  | func_result_body { $1 }
   | LPAR PARAM value_type_list RPAR func_fields_body
     { let FuncType (ins, out) = fst $5 in
       FuncType ($3 @ ins, out),
@@ -447,6 +448,12 @@ func_fields_body :
     { let FuncType (ins, out) = fst $6 in
       FuncType ($4 :: ins, out),
       fun c -> ignore (bind_local c $3); snd $6 c }
+
+func_result_body :
+  | func_body { empty_type, $1 }
+  | LPAR RESULT value_type_list RPAR func_result_body
+    { let FuncType (ins, out) = fst $5 in
+      FuncType (ins, $3 @ out), snd $5 }
 
 func_body :
   | instr_list
