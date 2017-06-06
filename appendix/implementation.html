@@ -95,7 +95,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="impl"></span><div class="section" id="implementation-limitations">
+  <p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
+<span class="target" id="impl"></span><div class="section" id="implementation-limitations">
 <span id="index-0"></span><h1>Implementation Limitations<a class="headerlink" href="#implementation-limitations" title="Permalink to this headline">¶</a></h1>
 <p>Implementations typically impose additional restrictions on a number of aspects of a WebAssembly module or execution.
 These may stem from:</p>
@@ -135,6 +137,7 @@ However, designated subsets of WebAssembly may be specified in the future.</p>
 <li>the size of a <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instruction</span></a></li>
 <li>the number of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instructions</span></a> in a <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a></li>
 <li>the nesting depth of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instructions</span></a></li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label indices</span></a> in a <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}\)</span> instruction</li>
 <li>the length of an <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segment</span></a></li>
 <li>the length of a <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data segment</span></a></li>
 <li>the length of a <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a></li>
@@ -199,7 +202,7 @@ The function must still be fully validated before execution of its body begins.<
 <li>the number of <a class="reference internal" href="../execution/runtime.html#syntax-val"><span class="std std-ref">values</span></a> on the <span class="xref std std-ref">stack</span></li>
 </ul>
 <p>If the runtime limits of an implementation are exceeded during execution of a computation,
-then it may terminate that computation by causing a trap or reporting an embedder-specific error to the invoking code.</p>
+then it may terminate that computation and report an embedder-specific error to the invoking code.</p>
 <p>Some of the above limits may already be verified during instantiation, in which case an implementation may report exceedance in the same manner as for <a class="reference internal" href="#impl-syntax"><span class="std std-ref">syntactic limits</span></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>

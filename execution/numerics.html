@@ -97,14 +97,16 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="numerics">
+  <p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
+<div class="section" id="numerics">
 <span id="exec-op-partial"></span><span id="exec-numeric"></span><h1>Numerics<a class="headerlink" href="#numerics" title="Permalink to this headline">¶</a></h1>
 <p>Numeric primitives are defined in a generic manner, by operators indexed over a width <span class="math">\(N\)</span>.</p>
-<p>Some operators are <em>non-deterministic</em>, because they can return more than one possible result (such as different possible <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a> values).
+<p>Some operators are <em>non-deterministic</em>, because they can return one of several possible results (such as different <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a> values).
 Conceptually, each operator thus returns a <em>set</em> of allowed values.
 For convenience, deterministic results are expressed as plain values, which are assumed to be identified with a respective singleton set.</p>
-<p>Some operator are <em>partial</em>, because they are not defined on certain inputs.
-Conceptually, an empty set of results is returned in such a case.</p>
+<p>Some operators are <em>partial</em>, because they are not defined on certain inputs.
+Conceptually, an empty set of results is returned for these inputs.</p>
 <p>In formal notation, each operator is defined by equational clauses that apply in order.
 That is, the first clause that is applicable to the given arguments defines the result.
 In some cases, similar clauses are combined into one by using the notation <span class="math">\(\pm\)</span> or <span class="math">\(\mp\)</span>.
@@ -121,15 +123,15 @@ When several of these placeholders occur in a single clause, then they must be r
 <div class="last math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
 \href{../execution/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(+ p_1, + p_2) &amp;=&amp; + p_1 \\
-\href{../execution/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(- p_1, - p_2) &amp;=&amp; + p_1 \\
+\href{../execution/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(- p_1, - p_2) &amp;=&amp; - p_1 \\
 \href{../execution/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(+ p_1, - p_2) &amp;=&amp; - p_1 \\
-\href{../execution/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(- p_1, + p_2) &amp;=&amp; - p_1 \\
+\href{../execution/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(- p_1, + p_2) &amp;=&amp; + p_1 \\
 \end{array}\end{split}\]</div>
 </div>
 <p id="aux-trunc">Some definitions use <em>truncation</em> of rational values, with the usual mathematical definition:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp;=&amp; \pm i &amp; (q - 1 &lt; i \leq q) \\
+\href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp;=&amp; \pm i &amp; (i \in \mathbb{N} \wedge q - 1 &lt; i \leq q) \\
 \end{array}\end{split}\]</div>
 <div class="section" id="representations">
 <h2>Representations<a class="headerlink" href="#representations" title="Permalink to this headline">¶</a></h2>
