@@ -1,7 +1,6 @@
 .. _binary-value:
 .. index:: value
-   binary: binary format; value
-   single: abstract syntax; value
+   pair: binary format; value
 
 Values
 ------
@@ -9,13 +8,12 @@ Values
 
 .. _binary-byte:
 .. index:: byte
-   pair: binary encoding; byte
-   single: abstract syntax; byte
+   pair: binary format; byte
 
 Bytes
 ~~~~~
 
-:ref:`Bytes <syntax-int>` encode themselves.
+:ref:`Bytes <syntax-byte>` encode themselves.
 
 .. math::
    \begin{array}{llcll@{\qquad}l}
@@ -29,15 +27,11 @@ Bytes
 .. _binary-int:
 .. _binary-sint:
 .. _binary-uint:
-.. index:: integer, unsigned integer, signed integer, uninterpreted integer
+.. index:: integer, unsigned integer, signed integer, uninterpreted integer, LEB128
    pair: binary format; integer
    pair: binary format; unsigned integer
    pair: binary format; signed integer
    pair: binary format; uninterpreted integer
-   single: abstract syntax; integer
-   single: abstract syntax; unsigned integer
-   single: abstract syntax; signed integer
-   single: abstract syntax; uninterpreted integer
 
 Integers
 ~~~~~~~~
@@ -45,22 +39,22 @@ Integers
 All :ref:`integers <syntax-int>` are encoded using the `LEB128 <https://en.wikipedia.org/wiki/LEB128>`_ variable-length integer encoding, in either unsigned or signed variant.
 
 :ref:`Unsigned integers <syntax-uint>` are encoded in `unsigned LEB128 <https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128>`_ format.
-As an additional constraint, the total number of bytes encoding a value of type :math:`\uX{N}` must not exceed :math:`\F{ceil}(N/7)` bytes.
+As an additional constraint, the total number of bytes encoding a value of type :math:`\uN` must not exceed :math:`\F{ceil}(N/7)` bytes.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
-   \production{unsigned integer} & \BuX{N} &::=&
+   \production{unsigned integer} & \BuN &::=&
      n{:}\Bbyte &\Rightarrow& n & (n < 2^7 \wedge n < 2^N) \\ &&|&
      n{:}\Bbyte~~m{:}\BuX{(N\B{-7})} &\Rightarrow&
        2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
 :ref:`Signed integers <syntax-sint>` are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a 2's complement representation.
-As an additional constraint, the total number of bytes encoding a value of type :math:`\sX{N}` must not exceed :math:`\F{ceil}(N/7)` bytes.
+As an additional constraint, the total number of bytes encoding a value of type :math:`\sN` must not exceed :math:`\F{ceil}(N/7)` bytes.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
-   \production{signed integer} & \BsX{N} &::=&
+   \production{signed integer} & \BsN &::=&
      n{:}\Bbyte &\Rightarrow& n & (n < 2^6 \wedge n < 2^{N-1}) \\ &&|&
      n{:}\Bbyte &\Rightarrow& n-2^7 & (2^6 \leq n < 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &&|&
      n{:}\Bbyte~~m{:}\BsX{(N\B{-7})} &\Rightarrow&
@@ -71,8 +65,8 @@ As an additional constraint, the total number of bytes encoding a value of type 
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{uninterpreted integer} & \BiX{N} &::=&
-     n{:}\BsX{N} &\Rightarrow& i & (n = \signed_{\iX{N}}(i))
+   \production{uninterpreted integer} & \BiN &::=&
+     n{:}\BsN &\Rightarrow& i & (n = \signed_{\iN}(i))
    \end{array}
 
 .. note::
@@ -90,16 +84,15 @@ As an additional constraint, the total number of bytes encoding a value of type 
 .. _binary-float:
 .. index:: floating-point number
    pair: binary format; floating-point number
-   single: abstract syntax; floating-point number
 
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating point <syntax-float>` values are encoded directly by their IEEE bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+:ref:`Floating point <syntax-float>` values are encoded directly by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{floating-point number} & \BfX{N} &::=&
+   \production{floating-point number} & \BfN &::=&
      b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \F{reverse}(b^\ast) \\
    \end{array}
 
@@ -109,7 +102,6 @@ Here, :math:`\F{reverse}(b^\ast)` denotes the byte sequence :math:`b^\ast` in re
 .. _binary-vec:
 .. index:: vector
    pair: binary format; vector
-   single: abstract syntax; vector
 
 Vectors
 ~~~~~~~
@@ -124,14 +116,13 @@ Vectors
 
 
 .. _binary-name:
-.. index:: name, byte
+.. index:: name, byte, Unicode, UTF-8
    pair: binary format; name
-   single: abstract syntax; name
 
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vector>` of bytes containing the `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding of the name's code point sequence.
+:ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vec>` of bytes containing the `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding of the name's code point sequence.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}

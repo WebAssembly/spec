@@ -13,6 +13,7 @@ WebAssembly Specification
    validation/index
    execution/index
    binary/index
+   text/index
    appendix/index
 
 .. only:: latex
