@@ -17,19 +17,23 @@ let add_char buf = function
   | '\t' -> Buffer.add_string buf "\\t"
   | '\"' -> Buffer.add_string buf "\\\""
   | '\\' -> Buffer.add_string buf "\\\\"
-  | c when  '\x20' <= c && c < '\x7f' -> Buffer.add_char buf c
+  | c when '\x20' <= c && c < '\x7f' -> Buffer.add_char buf c
   | c -> add_hex_char buf c
+let add_unicode_char buf = function
+  | (0x09 | 0x0a) as uc -> add_char buf (Char.chr uc)
+  | uc when 0x20 <= uc && uc < 0x7f -> add_char buf (Char.chr uc)
+  | uc -> Printf.bprintf buf "\\u{%02x}" uc
 
-let string_with add_char s =
-  let buf = Buffer.create (3 * String.length s + 2) in
+let string_with iter add_char s =
+  let buf = Buffer.create 256 in
   Buffer.add_char buf '\"';
-  String.iter (add_char buf) s;
+  iter (add_char buf) s;
   Buffer.add_char buf '\"';
   Buffer.contents buf
 
-let bytes = string_with add_hex_char
-let string = string_with add_char
-let name n = string (Utf8.encode n)
+let bytes = string_with String.iter add_hex_char
+let string = string_with String.iter add_char
+let name = string_with List.iter add_unicode_char
 
 let list_of_opt = function None -> [] | Some x -> [x]
 
@@ -57,7 +61,7 @@ let elem_type t = string_of_elem_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
-let stack_type ts = list (atom value_type) ts
+let stack_type ts = decls "result" ts
 
 let func_type (FuncType (ins, out)) =
   Node ("func", decls "param" ins @ decls "result" out)

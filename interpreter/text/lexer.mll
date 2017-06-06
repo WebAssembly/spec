@@ -18,20 +18,28 @@ let error_nest start lexbuf msg =
   lexbuf.Lexing.lex_start_p <- start;
   error lexbuf msg
 
-let text s =
+let string s =
   let b = Buffer.create (String.length s) in
   let i = ref 1 in
   while !i < String.length s - 1 do
     let c = if s.[!i] <> '\\' then s.[!i] else
       match (incr i; s.[!i]) with
       | 'n' -> '\n'
+      | 'r' -> '\r'
       | 't' -> '\t'
       | '\\' -> '\\'
       | '\'' -> '\''
       | '\"' -> '\"'
-      | d ->
+      | 'u' ->
+        let j = !i + 2 in
+        i := String.index_from s j '}';
+        let n = int_of_string ("0x" ^ String.sub s j (!i - j)) in
+        let bs = Utf8.encode [n] in
+        Buffer.add_substring b bs 0 (String.length bs - 1);
+        bs.[String.length bs - 1]
+      | h ->
         incr i;
-        Char.chr (int_of_string ("0x" ^ String.make 1 d ^ String.make 1 s.[!i]))
+        Char.chr (int_of_string ("0x" ^ String.make 1 h ^ String.make 1 s.[!i]))
     in Buffer.add_char b c;
     incr i
   done;
@@ -80,31 +88,52 @@ let ext e s u =
 let opt = Lib.Option.get
 }
 
-let space = [' ''\t']
+let sign = '+' | '-'
 let digit = ['0'-'9']
 let hexdigit = ['0'-'9''a'-'f''A'-'F']
-let letter = ['a'-'z''A'-'Z']
-let symbol = ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.']
-let tick = '\''
-let escape = ['n''t''\\''\'''\"']
-let character =
-  [^'"''\\''\x00'-'\x1f''\x7f'] | '\\'escape | '\\'hexdigit hexdigit
-
-let sign = ('+' | '-')
 let num = digit+
-let hexnum = "0x" hexdigit+
-let nat = num | hexnum
+let hexnum = hexdigit+
+
+let letter = ['a'-'z''A'-'Z']
+let symbol =
+  ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
+
+let space = [' ''\t''\n''\r']
+let ascii = ['\x00'-'\x7f']
+let ascii_no_nl = ['\x00'-'\x09''\x0b'-'\x7f']
+let utf8cont = ['\x80'-'\xbf']
+let utf8enc =
+    ['\xc2'-'\xdf'] utf8cont
+  | ['\xe0'] ['\xa0'-'\xbf'] utf8cont
+  | ['\xed'] ['\x80'-'\x9f'] utf8cont
+  | ['\xe1'-'\xec''\xee'-'\xef'] utf8cont utf8cont
+  | ['\xf0'] ['\x90'-'\xbf'] utf8cont utf8cont
+  | ['\xf4'] ['\x80'-'\x8f'] utf8cont utf8cont
+  | ['\xf1'-'\xf3'] utf8cont utf8cont utf8cont
+let utf8 = ascii | utf8enc
+let utf8_no_nl = ascii_no_nl | utf8enc
+
+let escape = ['n''r''t''\\''\'''\"']
+let character =
+    [^'"''\\''\x00'-'\x1f''\x7f'-'\xff']
+  | utf8enc
+  | '\\'escape
+  | '\\'hexdigit hexdigit 
+  | "\\u{" hexnum '}'
+
+let nat = num | "0x" hexnum
 let int = sign nat
 let float =
     sign? num '.' digit*
   | sign? num ('.' digit*)? ('e' | 'E') sign? num
-  | sign? "0x" hexdigit+ '.'? hexdigit* ('e' | 'E' | 'p') sign? digit+
+  | sign? "0x" hexnum '.' hexdigit*
+  | sign? "0x" hexnum ('.' hexdigit*)? ('p' | 'P') sign? num
   | sign? "inf"
-  | sign? "infinity"
   | sign? "nan"
-  | sign? "nan:0x" hexdigit+
-let text = '"' character* '"'
-let name = '$' (letter | digit | '_' | tick | symbol)+
+  | sign? "nan:" "0x" hexnum
+let string = '"' character* '"'
+let name = '$' (letter | digit | '_' | symbol)+
+let reserved = ([^'\"''('')'';'] # space)+  (* hack for table size *)
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -117,13 +146,15 @@ let mem_size = "8" | "16" | "32"
 rule token = parse
   | "(" { LPAR }
   | ")" { RPAR }
+
   | nat as s { NAT s }
   | int as s { INT s }
   | float as s { FLOAT s }
-  | text as s { TEXT (text s) }
-  | '"'character*('\n'|eof) { error lexbuf "unclosed text literal" }
+
+  | string as s { STRING (string s) }
+  | '"'character*('\n'|eof) { error lexbuf "unclosed string literal" }
   | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
-    { error lexbuf "illegal control character in text literal" }
+    { error lexbuf "illegal control character in string literal" }
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
@@ -320,17 +351,22 @@ rule token = parse
 
   | name as s { VAR s }
 
-  | ";;"[^'\n']*eof { EOF }
-  | ";;"[^'\n']*'\n' { Lexing.new_line lexbuf; token lexbuf }
+  | ";;"utf8_no_nl*eof { EOF }
+  | ";;"utf8_no_nl*'\n' { Lexing.new_line lexbuf; token lexbuf }
+  | ";;"utf8_no_nl* { token lexbuf (* causes error on following position *) }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
-  | space { token lexbuf }
+  | space#'\n' { token lexbuf }
   | '\n' { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
-  | _ { error lexbuf "unknown operator" }
+
+  | reserved { error lexbuf "unknown operator" }
+  | utf8 { error lexbuf "malformed operator" }
+  | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and comment start = parse
   | ";)" { () }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; comment start lexbuf }
   | '\n' { Lexing.new_line lexbuf; comment start lexbuf }
   | eof { error_nest start lexbuf "unclosed comment" }
-  | _ { comment start lexbuf }
+  | utf8 { comment start lexbuf }
+  | _ { error lexbuf "malformed UTF-8 encoding" }

@@ -41,6 +41,12 @@
   (func $print_f64-2 (import "spectest" "print") (param f64))
   (import "test" "func-i64->i64" (func $i64->i64 (param i64) (result i64)))
 
+  (func (export "p1") (import "spectest" "print") (param i32))
+  (func $p (export "p2") (import "spectest" "print") (param i32))
+  (func (export "p3") (export "p4") (import "spectest" "print") (param i32))
+  (func (export "p5") (import "spectest" "print") (type 0))
+  (func (export "p6") (import "spectest" "print") (type 0) (param i32) (result))
+
   (table anyfunc (elem $print_i32 $print_f64))
 
   (func (export "print32") (param $i i32)
