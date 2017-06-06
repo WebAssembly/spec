@@ -6,12 +6,12 @@ Numerics
 
 Numeric primitives are defined in a generic manner, by operators indexed over a width :math:`N`.
 
-Some operators are *non-deterministic*, because they can return more than one possible result (such as different possible :ref:`NaN <syntax-nan>` values).
+Some operators are *non-deterministic*, because they can return one of several possible results (such as different :ref:`NaN <syntax-nan>` values).
 Conceptually, each operator thus returns a *set* of allowed values.
 For convenience, deterministic results are expressed as plain values, which are assumed to be identified with a respective singleton set.
 
-Some operator are *partial*, because they are not defined on certain inputs.
-Conceptually, an empty set of results is returned in such a case.
+Some operators are *partial*, because they are not defined on certain inputs.
+Conceptually, an empty set of results is returned for these inputs.
 
 In formal notation, each operator is defined by equational clauses that apply in order.
 That is, the first clause that is applicable to the given arguments defines the result.
@@ -32,9 +32,9 @@ When several of these placeholders occur in a single clause, then they must be r
    .. math::
       \begin{array}{@{}lcll}
       \fcopysign_N(+ p_1, + p_2) &=& + p_1 \\
-      \fcopysign_N(- p_1, - p_2) &=& + p_1 \\
+      \fcopysign_N(- p_1, - p_2) &=& - p_1 \\
       \fcopysign_N(+ p_1, - p_2) &=& - p_1 \\
-      \fcopysign_N(- p_1, + p_2) &=& - p_1 \\
+      \fcopysign_N(- p_1, + p_2) &=& + p_1 \\
       \end{array}
 
 .. _aux-trunc:
