@@ -48,6 +48,7 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the size of a :ref:`structured control instruction <syntax-instr-control>`
 * the number of :ref:`structured control instructions <syntax-instr-control>` in a :ref:`function <syntax-func>`
 * the nesting depth of :ref:`structured control instructions <syntax-instr-control>`
+* the number of :ref:`label indices <syntax-labelidx>` in a |brtable| instruction
 * the length of an :ref:`element segment <syntax-elem>`
 * the length of a :ref:`data segment <syntax-data>`
 * the length of a :ref:`name <syntax-name>`
@@ -120,7 +121,7 @@ Restrictions on the following dimensions may be imposed during :ref:`execution <
 * the number of :ref:`values <syntax-val>` on the :ref:`stack <syntax-stack>`
 
 If the runtime limits of an implementation are exceeded during execution of a computation,
-then it may terminate that computation by causing a trap or reporting an embedder-specific error to the invoking code.
+then it may terminate that computation and report an embedder-specific error to the invoking code.
 
 Some of the above limits may already be verified during instantiation, in which case an implementation may report exceedance in the same manner as for :ref:`syntactic limits <impl-syntax>`.
 
