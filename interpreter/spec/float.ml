@@ -62,6 +62,8 @@ struct
   type t = Rep.t
   type bits = Rep.t
 
+  let pos_inf = Rep.bits_of_float (1.0 /. 0.0)
+  let neg_inf = Rep.bits_of_float (-. (1.0 /. 0.0))
   let pos_nan = Rep.pos_nan
   let neg_nan = Rep.neg_nan
   let bare_nan = Rep.bare_nan
@@ -72,6 +74,7 @@ struct
   let of_bits x = x
   let to_bits x = x
 
+  let is_inf x = x = pos_inf || x = neg_inf
   let is_nan x = let xf = Rep.float_of_bits x in xf <> xf
 
   (*
@@ -196,7 +199,7 @@ struct
 
   let of_signless_string s =
     if s = "inf" then
-      bare_nan
+      pos_inf
     else if s = "nan" then
       pos_nan
     else if String.length s > 6 && String.sub s 0 6 = "nan:0x" then
@@ -210,8 +213,8 @@ struct
       else
         Rep.logor x bare_nan
     else
-      (* TODO: OCaml's float_of_string is insufficient *)
-      of_float (float_of_string s)
+      let x = of_float (float_of_string s) in
+      if is_inf x then failwith "of_string" else x
 
   let of_string s =
     if s = "" then
