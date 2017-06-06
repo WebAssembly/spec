@@ -4,6 +4,8 @@ This specification describes a 128-bit packed *Single Instruction Multiple
 Data* (SIMD) extension to WebAssembly that can be implemented efficiently on
 current popular instruction set architectures.
 
+See also [The binary encoding of SIMD instructions](BinarySIMD.md).
+
 # Types
 
 WebAssembly is extended with a new `v128` value type and a number of new kinds
