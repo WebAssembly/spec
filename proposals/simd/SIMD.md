@@ -6,36 +6,17 @@ current popular instruction set architectures.
 
 # Types
 
-WebAssembly is extended with five new value types and a number of new kinds of
-immediate operands used by the SIMD instructions.
+WebAssembly is extended with a new `v128` value type and a number of new kinds
+of immediate operands used by the SIMD instructions.
 
-## SIMD value types
+## SIMD value type
 
-The `v128` type has a concrete mapping to a 128-bit representation. The boolean
-types do not have a bit-pattern representation.
-
-* `v128`: A 128-bit SIMD vector. Bits are numbered 0–127.
-* `b8x16`: A vector of 16 `boolean` lanes numbered 0–15.
-* `b16x8`: A vector of 8 `boolean` lanes numbered 0–7.
-* `b32x4`: A vector of 4 `boolean` lanes numbered 0–3.
-* `b64x2`: A vector of 2 `boolean` lanes numbered 0–1.
-
-The `v128` type corresponds to a vector register in a typical SIMD ISA. The
-interpretation of the 128 bits in the vector register is provided by the
-individual instructions. When a `v128` value is represented as 16 bytes, bits
-0-7 go in the first byte with bit 0 as the LSB, bits 8-15 go in the second
+The `v128` value type has a concrete mapping to a 128-bit representation with bits
+numbered 0–127. The `v128` type corresponds to a vector register in a typical
+SIMD ISA. The interpretation of the 128 bits in the vector register is provided
+by the individual instructions. When a `v128` value is represented as 16 bytes,
+bits 0-7 go in the first byte with bit 0 as the LSB, bits 8-15 go in the second
 byte, etc.
-
-The abstract boolean vector types can be mapped to vector registers or predicate
-registers by an implementation. They have a property `S.Lanes` which is used by
-the pseudo-code below:
-
-|    S    | S.Lanes |
-|---------|--------:|
-| `b8x16` |      16 |
-| `b16x8` |       8 |
-| `b32x4` |       4 |
-| `b64x2` |       2 |
 
 ## Immediate operands
 
@@ -43,8 +24,6 @@ Some of the new SIMD instructions defined here have immediate operands that are
 encoded as individual bytes in the binary encoding. Many have a limited valid
 range, and it is a validation error if the immediate operands are out of range.
 
-* `ImmBits2`: A byte with values in the range 0-3 used to initialize a `b64x2`.
-* `ImmBits4`: A byte with values in the range 0-15 used to initialize a `b32x4`.
 * `ImmByte`: A single unconstrained byte (0-255).
 * `LaneIdx2`: A byte with values in the range 0–1 identifying a lane.
 * `LaneIdx4`: A byte with values in the range 0–3 identifying a lane.
@@ -52,13 +31,11 @@ range, and it is a validation error if the immediate operands are out of range.
 * `LaneIdx16`: A byte with values in the range 0–15 identifying a lane.
 * `LaneIdx32`: A byte with values in the range 0–31 identifying a lane.
 
-## Interpreting SIMD value types
+## Interpreting the SIMD value type
 
 The single `v128` SIMD type can represent packed data in multiple ways.
 Instructions specify how the bits should be interpreted through a hierarchy of
 *interpretations*.
-
-The boolean vector types only have the one interpretation given by their type.
 
 ### Lane division interpretation
 
@@ -74,12 +51,12 @@ The lane dividing interpretations don't say anything about the semantics of the
 bits in each lane. The interpretations have *properties* used by the semantic
 specification pseudo-code below:
 
-|    S    | S.LaneBits | S.Lanes | S.BoolType |
+|    S    | S.LaneBits | S.Lanes | S.MaskType |
 |---------|-----------:|--------:|:----------:|
-| `v8x16` |          8 |      16 | `b8x16`    |
-| `v16x8` |         16 |       8 | `b16x8`    |
-| `v32x4` |         32 |       4 | `b32x4`    |
-| `v64x2` |         64 |       2 | `b64x2`    |
+| `v8x16` |          8 |      16 | `i8x16`    |
+| `v16x8` |         16 |       8 | `i16x8`    |
+| `v32x4` |         32 |       4 | `i32x4`    |
+| `v64x2` |         64 |       2 | `i64x2`    |
 
 Since WebAssembly is little-endian, the least significant bit in each lane is
 the bit with the lowest number.
@@ -147,35 +124,28 @@ def S.lanewise_binary(func, a, b):
     return result
 ```
 
-Comparison operators produce a boolean vector:
+Comparison operators produce a mask vector where the bits in each lane are 0
+for false and all ones for true:
 
 ```python
 def S.lanewise_comparison(func, a, b):
-    result = S.BoolType.New()
+    all_ones = S.MaskType.Umax
+    result = S.MaskType.New()
     for i in range(S.Lanes):
-        result[i] = func(a[i], b[i])
+        result[i] = all_ones if func(a[i], b[i]) else 0
     return result
 ```
 
 ## Constructing SIMD values
 
-### Constants
+### Constant
 * `v128.const(imm: ImmByte[16]) -> v128`
-* `b8x16.const(imm: ImmByte[2]) -> b8x16`
-* `b16x8.const(imm: ImmByte) -> b16x8`
-* `b32x4.const(imm: ImmBits4) -> b32x4`
-* `b64x2.const(imm: ImmBits2) -> b64x2`
 
 Materialize a constant SIMD value from the immediate operands. The `v128.const`
 instruction is encoded with 16 immediate bytes which provide the bits of the
-vector directly. The boolean constants are encoded with one bit per lane such
-that lane 0 is the LSB of the first immediate byte.
+vector directly.
 
 ### Create vector with identical lanes
-* `b8x16.splat(x: i32) -> b8x16`
-* `b16x8.splat(x: i32) -> b16x8`
-* `b32x4.splat(x: i32) -> b32x4`
-* `b64x2.splat(x: i32) -> b64x2`
 * `i8x16.splat(x: i32) -> v128`
 * `i16x8.splat(x: i32) -> v128`
 * `i32x4.splat(x: i32) -> v128`
@@ -193,17 +163,9 @@ def S.splat(x):
     return result
 ```
 
-The boolean vector splats will create a vector with all false lanes if `x` is
-zero, all true lanes otherwise. The `i8x16.splat` and `i16x8.splat`
-instructions ignore the high bits of `x`.
-
 ## Accessing lanes
 
 ### Extract lane as a scalar
-* `b8x16.extract_lane(a: b8x16, i: LaneIdx16) -> i32`
-* `b16x8.extract_lane(a: b16x8, i: LaneIdx8) -> i32`
-* `b32x4.extract_lane(a: b32x4, i: LaneIdx4) -> i32`
-* `b64x2.extract_lane(a: b64x2, i: LaneIdx2) -> i32`
 * `i8x16.extract_lane_s(a: v128, i: LaneIdx16) -> i32`
 * `i8x16.extract_lane_u(a: v128, i: LaneIdx16) -> i32`
 * `i16x8.extract_lane_s(a: v128, i: LaneIdx8) -> i32`
@@ -221,14 +183,9 @@ def S.extract_lane(a, i):
 ```
 
 The `_s` and `_u` variants will sign-extend or zero-extend the lane value to
-`i32` respectively. Boolean lanes are returned as an `i32` with the value 0 or
-1.
+`i32` respectively.
 
 ### Replace lane value
-* `b8x16.replace_lane(a: b8x16, i: LaneIdx16, x: i32) -> b8x16`
-* `b16x8.replace_lane(a: b16x8, i: LaneIdx8, x: i32) -> b16x8`
-* `b32x4.replace_lane(a: b32x4, i: LaneIdx4, x: i32) -> b32x4`
-* `b64x2.replace_lane(a: b64x2, i: LaneIdx2, x: i32) -> b64x2`
 * `i8x16.replace_lane(a: v128, i: LaneIdx16, x: i32) -> v128`
 * `i16x8.replace_lane(a: v128, i: LaneIdx8, x: i32) -> v128`
 * `i32x4.replace_lane(a: v128, i: LaneIdx4, x: i32) -> v128`
@@ -249,31 +206,7 @@ def S.replace_lane(a, i, x):
 ```
 
 The input lane value, `x`, is interpreted the same way as for the splat
-instructions. For the boolean vectors, non-zero means true; for the `i8` and
-`i16` lanes, the high bits of `x` are ignored.
-
-### Lane-wise select
-* `v8x16.select(s: b8x16, t: v128, f: v128) -> v128`
-* `v16x8.select(s: b16x8, t: v128, f: v128) -> v128`
-* `v32x4.select(s: b32x4, t: v128, f: v128) -> v128`
-* `v64x2.select(s: b64x2, t: v128, f: v128) -> v128`
-
-Use a boolean vector to select lanes from two numerical vectors.
-
-```python
-def S.select(s, t, f):
-    result = S.New()
-    for i in range(S.Lanes):
-        if s[i]:
-            result[i] = t[i]
-        else
-            result[i] = f[i]
-    return result
-```
-
-Note that the normal WebAssembly `select` instruction also works with vector
-types. It selects between two whole vectors controlled by a scalar value,
-rather than selecting lanes controlled by a boolean vector.
+instructions. For the `i8` and `i16` lanes, the high bits of `x` are ignored.
 
 ### Swizzle lanes
 * `v8x16.swizzle(a: v128, s: LaneIdx16[16]) -> v128`
@@ -480,14 +413,14 @@ arithmetic right shift for the `_s` variants and a logical right shift for the
 `_u` variants.
 
 ```python
-def S.shl_s(a, y):
+def S.shr_s(a, y):
     # Number of bits to shift: 0 .. S.LaneBits - 1.
     amount = y mod S.LaneBits
     def shift(x):
         return x >> amount
     return S.lanewise_unary(shift, S.AsSigned(a))
 
-def S.shl_u(a, y):
+def S.shr_u(a, y):
     # Number of bits to shift: 0 .. S.LaneBits - 1.
     amount = y mod S.LaneBits
     def shift(x):
@@ -495,107 +428,66 @@ def S.shl_u(a, y):
     return S.lanewise_unary(shift, S.AsUnsigned(a))
 ```
 
-## Logical operations
-
-The logical operations are defined on the boolean SIMD types. See also the
-[Bitwise operations](#bitwise-operations) below.
-
-### Logical and
-* `b8x16.and(a: b8x16, b: b8x16) -> b8x16`
-* `b16x8.and(a: b16x8, b: b16x8) -> b16x8`
-* `b32x4.and(a: b32x4, b: b32x4) -> b32x4`
-* `b64x2.and(a: b64x2, b: b64x2) -> b64x2`
-
-```python
-def S.and(a, b):
-    def logical_and(x, y):
-        return x and y
-    return S.lanewise_binary(logical_and, a, b)
-```
-
-### Logical or
-* `b8x16.or(a: b8x16, b: b8x16) -> b8x16`
-* `b16x8.or(a: b16x8, b: b16x8) -> b16x8`
-* `b32x4.or(a: b32x4, b: b32x4) -> b32x4`
-* `b64x2.or(a: b64x2, b: b64x2) -> b64x2`
-
-```python
-def S.or(a, b):
-    def logical_or(x, y):
-        return x or y
-    return S.lanewise_binary(logical_or, a, b)
-```
-
-### Logical xor
-* `b8x16.xor(a: b8x16, b: b8x16) -> b8x16`
-* `b16x8.xor(a: b16x8, b: b16x8) -> b16x8`
-* `b32x4.xor(a: b32x4, b: b32x4) -> b32x4`
-* `b64x2.xor(a: b64x2, b: b64x2) -> b64x2`
-
-```python
-def S.xor(a, b):
-    def logical_xor(x, y):
-        return x xor y
-    return S.lanewise_binary(logical_xor, a, b)
-```
-
-### Logical not
-* `b8x16.not(a: b8x16) -> b8x16`
-* `b16x8.not(a: b16x8) -> b16x8`
-* `b32x4.not(a: b32x4) -> b32x4`
-* `b64x2.not(a: b64x2) -> b64x2`
-
-```python
-def S.not(a):
-    def logical_not(x):
-        return not x
-    return S.lanewise_unary(logical_not, a)
-```
 
 ## Bitwise operations
 
-The same logical operations defined on the boolean types are also available on
-the `v128` type where they operate bitwise the same way C's `&`, `|`, `^`, and
-`~` operators work on an `unsigned` type.
+Bitwise operations treat a `v128` value type as a vector of 128 independent bits.
 
+### Bitwise logic
 * `v128.and(a: v128, b: v128) -> v128`
 * `v128.or(a: v128, b: v128) -> v128`
 * `v128.xor(a: v128, b: v128) -> v128`
 * `v128.not(a: v128) -> v128`
 
+The logical operations defined on the scalar integer types are also available
+on the `v128` type where they operate bitwise the same way C's `&`, `|`, `^`,
+and `~` operators work on an `unsigned` type.
+
+### Bitwise select
+* `v128.bitselect(v1: v128, v2: v128, c: v128) -> v128`
+
+Use the bits in the control mask `c` to select the corresponding bit from `v1`
+when 1 and `v2` when 0.
+This is the same as `v128.or(v128.and(v1, c), v128.and(v2, v128.not(c)))`.
+
+Note that the normal WebAssembly `select` instruction also works with vector
+types. It selects between two whole vectors controlled by a single scalar value,
+rather than selecting bits controlled by a control mask vector.
+
+
 ## Boolean horizontal reductions
 
-These operations reduce all the lanes of a boolean vector to a single scalar
-boolean value.
+These operations reduce all the lanes of an integer vector to a single scalar
+0 or 1 value. A lane is considered "true" if it is non-zero.
 
 ### Any lane true
-* `b8x16.any_true(a: b8x16) -> i32`
-* `b16x8.any_true(a: b16x8) -> i32`
-* `b32x4.any_true(a: b32x4) -> i32`
-* `b64x2.any_true(a: b64x2) -> i32`
+* `i8x16.any_true(a: v128) -> i32`
+* `i16x8.any_true(a: v128) -> i32`
+* `i32x4.any_true(a: v128) -> i32`
+* `i64x2.any_true(a: v128) -> i32`
 
-These functions return 1 if any lane in `a` is true, 0 otherwise.
+These functions return 1 if any lane in `a` is non-zero, 0 otherwise.
 
 ```python
 def S.any_true(a):
     for i in range(S.Lanes):
-        if a[i]:
+        if a[i] != 0:
             return 1
     return 0
 ```
 
 ### All lanes true
-* `b8x16.all_true(a: b8x16) -> i32`
-* `b16x8.all_true(a: b16x8) -> i32`
-* `b32x4.all_true(a: b32x4) -> i32`
-* `b64x2.all_true(a: b64x2) -> i32`
+* `i8x16.all_true(a: v128) -> i32`
+* `i16x8.all_true(a: v128) -> i32`
+* `i32x4.all_true(a: v128) -> i32`
+* `i64x2.all_true(a: v128) -> i32`
 
-These functions return 1 if all lanes in `a` are true, 0 otherwise.
+These functions return 1 if all lanes in `a` are non-zero, 0 otherwise.
 
 ```python
 def S.all_true(a):
     for i in range(S.Lanes):
-        if not a[i]:
+        if a[i] == 0:
             return 0
     return 1
 ```
@@ -603,15 +495,15 @@ def S.all_true(a):
 ## Comparisons
 
 The comparison operations all compare two vectors lane-wise, and produce a
-boolean vector with the same number of lanes as the input interpretation.
+mask vector with the same number of lanes as the input interpretation.
 
 ### Equality
-* `i8x16.eq(a: v128, b: v128) -> b8x16`
-* `i16x8.eq(a: v128, b: v128) -> b16x8`
-* `i32x4.eq(a: v128, b: v128) -> b32x4`
-* `i64x2.eq(a: v128, b: v128) -> b64x2`
-* `f32x4.eq(a: v128, b: v128) -> b32x4`
-* `f64x2.eq(a: v128, b: v128) -> b64x2`
+* `i8x16.eq(a: v128, b: v128) -> v128`
+* `i16x8.eq(a: v128, b: v128) -> v128`
+* `i32x4.eq(a: v128, b: v128) -> v128`
+* `i64x2.eq(a: v128, b: v128) -> v128`
+* `f32x4.eq(a: v128, b: v128) -> v128`
+* `f64x2.eq(a: v128, b: v128) -> v128`
 
 Integer equality is independent of the signed/unsigned interpretation. Floating
 point equality follows IEEE semantics, so a NaN lane compares not equal with
@@ -625,12 +517,12 @@ def S.eq(a, b):
 ```
 
 ### Non-equality
-* `i8x16.ne(a: v128, b: v128) -> b8x16`
-* `i16x8.ne(a: v128, b: v128) -> b16x8`
-* `i32x4.ne(a: v128, b: v128) -> b32x4`
-* `i64x2.ne(a: v128, b: v128) -> b64x2`
-* `f32x4.ne(a: v128, b: v128) -> b32x4`
-* `f64x2.ne(a: v128, b: v128) -> b64x2`
+* `i8x16.ne(a: v128, b: v128) -> v128`
+* `i16x8.ne(a: v128, b: v128) -> v128`
+* `i32x4.ne(a: v128, b: v128) -> v128`
+* `i64x2.ne(a: v128, b: v128) -> v128`
+* `f32x4.ne(a: v128, b: v128) -> v128`
+* `f64x2.ne(a: v128, b: v128) -> v128`
 
 The `ne` operations produce the inverse of their `ne` counterparts:
 
@@ -642,62 +534,59 @@ def S.ne(a, b):
 ```
 
 ### Less than
-* `i8x16.lt_s(a: v128, b: v128) -> b8x16`
-* `i8x16.lt_u(a: v128, b: v128) -> b8x16`
-* `i16x8.lt_s(a: v128, b: v128) -> b16x8`
-* `i16x8.lt_u(a: v128, b: v128) -> b16x8`
-* `i32x4.lt_s(a: v128, b: v128) -> b32x4`
-* `i32x4.lt_u(a: v128, b: v128) -> b32x4`
-* `i64x2.lt_s(a: v128, b: v128) -> b64x2`
-* `i64x2.lt_u(a: v128, b: v128) -> b64x2`
-* `f32x4.lt(a: v128, b: v128) -> b32x4`
-* `f64x2.lt(a: v128, b: v128) -> b64x2`
+* `i8x16.lt_s(a: v128, b: v128) -> v128`
+* `i8x16.lt_u(a: v128, b: v128) -> v128`
+* `i16x8.lt_s(a: v128, b: v128) -> v128`
+* `i16x8.lt_u(a: v128, b: v128) -> v128`
+* `i32x4.lt_s(a: v128, b: v128) -> v128`
+* `i32x4.lt_u(a: v128, b: v128) -> v128`
+* `i64x2.lt_s(a: v128, b: v128) -> v128`
+* `i64x2.lt_u(a: v128, b: v128) -> v128`
+* `f32x4.lt(a: v128, b: v128) -> v128`
+* `f64x2.lt(a: v128, b: v128) -> v128`
 
 ### Less than or equal
-* `i8x16.le_s(a: v128, b: v128) -> b8x16`
-* `i8x16.le_u(a: v128, b: v128) -> b8x16`
-* `i16x8.le_s(a: v128, b: v128) -> b16x8`
-* `i16x8.le_u(a: v128, b: v128) -> b16x8`
-* `i32x4.le_s(a: v128, b: v128) -> b32x4`
-* `i32x4.le_u(a: v128, b: v128) -> b32x4`
-* `i64x2.le_s(a: v128, b: v128) -> b64x2`
-* `i64x2.le_u(a: v128, b: v128) -> b64x2`
-* `f32x4.le(a: v128, b: v128) -> b32x4`
-* `f64x2.le(a: v128, b: v128) -> b64x2`
+* `i8x16.le_s(a: v128, b: v128) -> v128`
+* `i8x16.le_u(a: v128, b: v128) -> v128`
+* `i16x8.le_s(a: v128, b: v128) -> v128`
+* `i16x8.le_u(a: v128, b: v128) -> v128`
+* `i32x4.le_s(a: v128, b: v128) -> v128`
+* `i32x4.le_u(a: v128, b: v128) -> v128`
+* `i64x2.le_s(a: v128, b: v128) -> v128`
+* `i64x2.le_u(a: v128, b: v128) -> v128`
+* `f32x4.le(a: v128, b: v128) -> v128`
+* `f64x2.le(a: v128, b: v128) -> v128`
 
 ### Greater than
-* `i8x16.gt_s(a: v128, b: v128) -> b8x16`
-* `i8x16.gt_u(a: v128, b: v128) -> b8x16`
-* `i16x8.gt_s(a: v128, b: v128) -> b16x8`
-* `i16x8.gt_u(a: v128, b: v128) -> b16x8`
-* `i32x4.gt_s(a: v128, b: v128) -> b32x4`
-* `i32x4.gt_u(a: v128, b: v128) -> b32x4`
-* `i64x2.gt_s(a: v128, b: v128) -> b64x2`
-* `i64x2.gt_u(a: v128, b: v128) -> b64x2`
-* `f32x4.gt(a: v128, b: v128) -> b32x4`
-* `f64x2.gt(a: v128, b: v128) -> b64x2`
+* `i8x16.gt_s(a: v128, b: v128) -> v128`
+* `i8x16.gt_u(a: v128, b: v128) -> v128`
+* `i16x8.gt_s(a: v128, b: v128) -> v128`
+* `i16x8.gt_u(a: v128, b: v128) -> v128`
+* `i32x4.gt_s(a: v128, b: v128) -> v128`
+* `i32x4.gt_u(a: v128, b: v128) -> v128`
+* `i64x2.gt_s(a: v128, b: v128) -> v128`
+* `i64x2.gt_u(a: v128, b: v128) -> v128`
+* `f32x4.gt(a: v128, b: v128) -> v128`
+* `f64x2.gt(a: v128, b: v128) -> v128`
 
 ### Greater than or equal
-* `i8x16.ge_s(a: v128, b: v128) -> b8x16`
-* `i8x16.ge_u(a: v128, b: v128) -> b8x16`
-* `i16x8.ge_s(a: v128, b: v128) -> b16x8`
-* `i16x8.ge_u(a: v128, b: v128) -> b16x8`
-* `i32x4.ge_s(a: v128, b: v128) -> b32x4`
-* `i32x4.ge_u(a: v128, b: v128) -> b32x4`
-* `i64x2.ge_s(a: v128, b: v128) -> b64x2`
-* `i64x2.ge_u(a: v128, b: v128) -> b64x2`
-* `f32x4.ge(a: v128, b: v128) -> b32x4`
-* `f64x2.ge(a: v128, b: v128) -> b64x2`
+* `i8x16.ge_s(a: v128, b: v128) -> v128`
+* `i8x16.ge_u(a: v128, b: v128) -> v128`
+* `i16x8.ge_s(a: v128, b: v128) -> v128`
+* `i16x8.ge_u(a: v128, b: v128) -> v128`
+* `i32x4.ge_s(a: v128, b: v128) -> v128`
+* `i32x4.ge_u(a: v128, b: v128) -> v128`
+* `i64x2.ge_s(a: v128, b: v128) -> v128`
+* `i64x2.ge_u(a: v128, b: v128) -> v128`
+* `f32x4.ge(a: v128, b: v128) -> v128`
+* `f64x2.ge(a: v128, b: v128) -> v128`
 
 ## Load and store
 
-Load and store operations are provided for `v128` vectors, but not for the
-boolean vectors; we don't want to prescribe a bitwise representation of the
-boolean vectors.
-
-The memory operations take the same arguments and have the same semantics as
-the existing scalar WebAssembly load and store instructions. The difference is
-that the memory access size is 16 bytes which is also the natural alignment.
+Load and store operations are provided for the `v128` vectors. The memory
+operations take the same arguments and have the same semantics as the existing
+scalar WebAssembly load and store instructions. The difference is that the
+memory access size is 16 bytes which is also the natural alignment.
 
 ### Load
 
