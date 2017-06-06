@@ -662,13 +662,14 @@ Lane-wise IEEE `squareRoot`.
 Lane-wise conversion from integer to floating point. Some integer values will be
 rounded.
 
-### Floating point to integer
-* `i32x4.trunc_s/f32x4(a: v128) -> v128`
-* `i32x4.trunc_u/f32x4(a: v128) -> v128`
-* `i64x2.trunc_s/f64x2(a: v128) -> v128`
-* `i64x2.trunc_u/f64x2(a: v128) -> v128`
+### Floating point to integer with saturation
+* `i32x4.trunc_s/f32x4:sat(a: v128) -> v128`
+* `i32x4.trunc_u/f32x4:sat(a: v128) -> v128`
+* `i64x2.trunc_s/f64x2:sat(a: v128) -> v128`
+* `i64x2.trunc_u/f64x2:sat(a: v128) -> v128`
 
-Lane-wise conversion from floating point to integer using the IEEE
-`convertToIntegerTowardZero` function. If any lane is a NaN or the rounded
-integer value is outside the range of the destination type, these instructions
-trap.
+Lane-wise saturating conversion from floating point to integer using the IEEE
+`convertToIntegerTowardZero` function. If any input lane is a NaN, the
+resulting lane is 0. If the rounded integer value of a lane is outside the
+range of the destination type, the result is saturated to the nearest
+representable integer value.
