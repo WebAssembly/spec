@@ -405,3 +405,45 @@
   ))
   "type mismatch"
 )
+
+
+(assert_malformed
+  (module quote "(func if end $l)")
+  "mismatching label"
+)
+(assert_malformed
+  (module quote "(func if $a end $l)")
+  "mismatching label"
+)
+(assert_malformed
+  (module quote "(func if else $l end)")
+  "mismatching label"
+)
+(assert_malformed
+  (module quote "(func if $a else $l end)")
+  "mismatching label"
+)
+(assert_malformed
+  (module quote "(func if else end $l)")
+  "mismatching label"
+)
+(assert_malformed
+  (module quote "(func if else $l end $l)")
+  "mismatching label"
+)
+(assert_malformed
+  (module quote "(func if else $l1 end $l2)")
+  "mismatching label"
+)
+(assert_malformed
+  (module quote "(func if $a else end $l)")
+  "mismatching label"
+)
+(assert_malformed
+  (module quote "(func if $a else $a end $l)")
+  "mismatching label"
+)
+(assert_malformed
+  (module quote "(func if $a else $l end $l)")
+  "mismatching label"
+)

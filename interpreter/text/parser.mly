@@ -160,10 +160,11 @@ let inline_type_explicit (c : context) x ty at =
 %token CALL CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
-%token CONST UNARY BINARY COMPARE CONVERT
+%token CONST UNARY BINARY TEST COMPARE CONVERT
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
-%token MODULE TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
+%token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
+%token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
 %token ASSERT_RETURN ASSERT_RETURN_CANONICAL_NAN ASSERT_RETURN_ARITHMETIC_NAN ASSERT_TRAP ASSERT_EXHAUSTION
@@ -655,11 +656,13 @@ module_fields1 :
     { fun c -> let m = $2 c in
       {m with exports = $1 c :: m.exports} }
 
+module_var_opt :
+  | /* empty */ { None }
+  | VAR { Some ($1 @@ at ()) }  /* Sugar */
+
 module_ :
-  | LPAR MODULE script_var_opt module_fields RPAR
+  | LPAR MODULE module_var_opt module_fields RPAR
     { $3, Textual ($4 (empty_context ()) @@ at ()) @@ at () }
-  | LPAR MODULE script_var_opt STRING string_list RPAR
-    { $3, Encoded ("binary", $4 ^ $5) @@ at() }
 
 inline_module :  /* Sugar */
   | module_fields { Textual ($1 (empty_context ()) @@ at ()) @@ at () }
@@ -674,20 +677,27 @@ script_var_opt :
   | /* empty */ { None }
   | VAR { Some ($1 @@ at ()) }  /* Sugar */
 
+script_module :
+  | module_ { $1 }
+  | LPAR MODULE module_var_opt BIN string_list RPAR
+    { $3, Encoded ("binary", $5) @@ at() }
+  | LPAR MODULE module_var_opt QUOTE string_list RPAR
+    { $3, Quoted ("quote", $5) @@ at() }
+
 action :
-  | LPAR INVOKE script_var_opt name const_list RPAR
+  | LPAR INVOKE module_var_opt name const_list RPAR
     { Invoke ($3, $4, $5) @@ at () }
-  | LPAR GET script_var_opt name RPAR
+  | LPAR GET module_var_opt name RPAR
     { Get ($3, $4) @@ at() }
 
 assertion :
-  | LPAR ASSERT_MALFORMED module_ STRING RPAR
+  | LPAR ASSERT_MALFORMED script_module STRING RPAR
     { AssertMalformed (snd $3, $4) @@ at () }
-  | LPAR ASSERT_INVALID module_ STRING RPAR
+  | LPAR ASSERT_INVALID script_module STRING RPAR
     { AssertInvalid (snd $3, $4) @@ at () }
-  | LPAR ASSERT_UNLINKABLE module_ STRING RPAR
+  | LPAR ASSERT_UNLINKABLE script_module STRING RPAR
     { AssertUnlinkable (snd $3, $4) @@ at () }
-  | LPAR ASSERT_TRAP module_ STRING RPAR
+  | LPAR ASSERT_TRAP script_module STRING RPAR
     { AssertUninstantiable (snd $3, $4) @@ at () }
   | LPAR ASSERT_RETURN action const_list RPAR { AssertReturn ($3, $4) @@ at () }
   | LPAR ASSERT_RETURN_CANONICAL_NAN action RPAR { AssertReturnCanonicalNaN $3 @@ at () }
@@ -698,8 +708,8 @@ assertion :
 cmd :
   | action { Action $1 @@ at () }
   | assertion { Assertion $1 @@ at () }
-  | module_ { Module (fst $1, snd $1) @@ at () }
-  | LPAR REGISTER name script_var_opt RPAR { Register ($3, $4) @@ at () }
+  | script_module { Module (fst $1, snd $1) @@ at () }
+  | LPAR REGISTER name module_var_opt RPAR { Register ($3, $4) @@ at () }
   | meta { Meta $1 @@ at () }
 
 cmd_list :

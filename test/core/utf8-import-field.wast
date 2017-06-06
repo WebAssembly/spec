@@ -4,7 +4,7 @@
 
 ;; encoding starts with (first) continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -19,7 +19,7 @@
 
 ;; encoding starts with (0x8f) continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -34,7 +34,7 @@
 
 ;; encoding starts with (0x90) continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -49,7 +49,7 @@
 
 ;; encoding starts with (0x9f) continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -64,7 +64,7 @@
 
 ;; encoding starts with (0xa0) continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -79,7 +79,7 @@
 
 ;; encoding starts with (last) continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -96,7 +96,7 @@
 
 ;; 2-byte sequence contains 3 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -111,7 +111,7 @@
 
 ;; 2-byte sequence contains 1 byte at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -126,7 +126,7 @@
 
 ;; 2-byte sequence contains 1 byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -143,7 +143,7 @@
 
 ;; overlong encoding after 0xc0 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -158,7 +158,7 @@
 
 ;; overlong encoding after 0xc0 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -173,7 +173,7 @@
 
 ;; overlong encoding after 0xc1 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -188,7 +188,7 @@
 
 ;; overlong encoding after 0xc1 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -203,7 +203,7 @@
 
 ;; byte after (first) 2-byte prefix not a contination byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -218,7 +218,7 @@
 
 ;; byte after (first) 2-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -233,7 +233,7 @@
 
 ;; byte after (first) 2-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -248,7 +248,7 @@
 
 ;; byte after (first) 2-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -263,7 +263,7 @@
 
 ;; byte after (last) 2-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -278,7 +278,7 @@
 
 ;; byte after (last) 2-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -293,7 +293,7 @@
 
 ;; byte after (last) 2-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -308,7 +308,7 @@
 
 ;; byte after (last) 2-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -325,7 +325,7 @@
 
 ;; 3-byte sequence contains 4 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -340,7 +340,7 @@
 
 ;; 3-byte sequence contains 2 bytes at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -355,7 +355,7 @@
 
 ;; 3-byte sequence contains 2 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -370,7 +370,7 @@
 
 ;; 3-byte sequence contains 1 byte at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -385,7 +385,7 @@
 
 ;; 3-byte sequence contains 1 byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -402,7 +402,7 @@
 
 ;; first byte after (0xe0) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -417,7 +417,7 @@
 
 ;; first byte after (0xe0) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -432,7 +432,7 @@
 
 ;; overlong encoding after 0xe0 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -447,7 +447,7 @@
 
 ;; overlong encoding after 0xe0 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -462,7 +462,7 @@
 
 ;; overlong encoding after 0xe0 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -477,7 +477,7 @@
 
 ;; overlong encoding after 0xe0 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -492,7 +492,7 @@
 
 ;; first byte after (0xe0) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -507,7 +507,7 @@
 
 ;; first byte after (0xe0) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -522,7 +522,7 @@
 
 ;; first byte after (first normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -537,7 +537,7 @@
 
 ;; first byte after (first normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -552,7 +552,7 @@
 
 ;; first byte after (first normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -567,7 +567,7 @@
 
 ;; first byte after (first normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -582,7 +582,7 @@
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -597,7 +597,7 @@
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -612,7 +612,7 @@
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -627,7 +627,7 @@
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -642,7 +642,7 @@
 
 ;; first byte after (0xed) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -657,7 +657,7 @@
 
 ;; first byte after (0xed) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -672,7 +672,7 @@
 
 ;; byte sequence reserved for UTF-16 surrogate half
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -687,7 +687,7 @@
 
 ;; byte sequence reserved for UTF-16 surrogate half
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -702,7 +702,7 @@
 
 ;; byte sequence reserved for UTF-16 surrogate half
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -717,7 +717,7 @@
 
 ;; byte sequence reserved for UTF-16 surrogate half
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -732,7 +732,7 @@
 
 ;; first byte after (0xed) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -747,7 +747,7 @@
 
 ;; first byte after (0xed) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -762,7 +762,7 @@
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -777,7 +777,7 @@
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -792,7 +792,7 @@
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -807,7 +807,7 @@
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -822,7 +822,7 @@
 
 ;; first byte after (last normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -837,7 +837,7 @@
 
 ;; first byte after (last normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -852,7 +852,7 @@
 
 ;; first byte after (last normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -867,7 +867,7 @@
 
 ;; first byte after (last normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -884,7 +884,7 @@
 
 ;; second byte after (0xe0) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -899,7 +899,7 @@
 
 ;; second byte after (0xe0) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -914,7 +914,7 @@
 
 ;; second byte after (0xe0) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -929,7 +929,7 @@
 
 ;; second byte after (0xe0) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -944,7 +944,7 @@
 
 ;; second byte after (first normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -959,7 +959,7 @@
 
 ;; second byte after (first normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -974,7 +974,7 @@
 
 ;; second byte after (first normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -989,7 +989,7 @@
 
 ;; second byte after (first normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1004,7 +1004,7 @@
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1019,7 +1019,7 @@
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1034,7 +1034,7 @@
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1049,7 +1049,7 @@
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1064,7 +1064,7 @@
 
 ;; second byte after (0xed) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1079,7 +1079,7 @@
 
 ;; second byte after (0xed) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1094,7 +1094,7 @@
 
 ;; second byte after (0xed) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1109,7 +1109,7 @@
 
 ;; second byte after (0xed) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1124,7 +1124,7 @@
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1139,7 +1139,7 @@
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1154,7 +1154,7 @@
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1169,7 +1169,7 @@
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1184,7 +1184,7 @@
 
 ;; second byte after (last normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1199,7 +1199,7 @@
 
 ;; second byte after (last normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1214,7 +1214,7 @@
 
 ;; second byte after (last normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1229,7 +1229,7 @@
 
 ;; second byte after (last normal) 3-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1246,7 +1246,7 @@
 
 ;; 4-byte sequence contains 5 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0f"                       ;; import section
     "\01"                          ;; length 1
@@ -1261,7 +1261,7 @@
 
 ;; 4-byte sequence contains 3 bytes at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1276,7 +1276,7 @@
 
 ;; 4-byte sequence contains 3 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1291,7 +1291,7 @@
 
 ;; 4-byte sequence contains 2 bytes at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -1306,7 +1306,7 @@
 
 ;; 4-byte sequence contains 2 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -1321,7 +1321,7 @@
 
 ;; 4-byte sequence contains 1 byte at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -1336,7 +1336,7 @@
 
 ;; 4-byte sequence contains 1 byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -1353,7 +1353,7 @@
 
 ;; first byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1368,7 +1368,7 @@
 
 ;; first byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1383,7 +1383,7 @@
 
 ;; overlong encoding after 0xf0 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1398,7 +1398,7 @@
 
 ;; overlong encoding after 0xf0 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1413,7 +1413,7 @@
 
 ;; overlong encoding after 0xf0 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1428,7 +1428,7 @@
 
 ;; overlong encoding after 0xf0 prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1443,7 +1443,7 @@
 
 ;; first byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1458,7 +1458,7 @@
 
 ;; first byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1473,7 +1473,7 @@
 
 ;; first byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1488,7 +1488,7 @@
 
 ;; first byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1503,7 +1503,7 @@
 
 ;; first byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1518,7 +1518,7 @@
 
 ;; first byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1533,7 +1533,7 @@
 
 ;; first byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1548,7 +1548,7 @@
 
 ;; first byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1563,7 +1563,7 @@
 
 ;; first byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1578,7 +1578,7 @@
 
 ;; first byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1593,7 +1593,7 @@
 
 ;; first byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1608,7 +1608,7 @@
 
 ;; first byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1623,7 +1623,7 @@
 
 ;; (first) invalid code point
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1638,7 +1638,7 @@
 
 ;; invalid code point
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1653,7 +1653,7 @@
 
 ;; first byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1668,7 +1668,7 @@
 
 ;; first byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1683,7 +1683,7 @@
 
 ;; (first) invalid 4-byte prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1698,7 +1698,7 @@
 
 ;; (last) invalid 4-byte prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1713,7 +1713,7 @@
 
 ;; (last) invalid 4-byte prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1730,7 +1730,7 @@
 
 ;; second byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1745,7 +1745,7 @@
 
 ;; second byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1760,7 +1760,7 @@
 
 ;; second byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1775,7 +1775,7 @@
 
 ;; second byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1790,7 +1790,7 @@
 
 ;; second byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1805,7 +1805,7 @@
 
 ;; second byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1820,7 +1820,7 @@
 
 ;; second byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1835,7 +1835,7 @@
 
 ;; second byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1850,7 +1850,7 @@
 
 ;; second byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1865,7 +1865,7 @@
 
 ;; second byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1880,7 +1880,7 @@
 
 ;; second byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1895,7 +1895,7 @@
 
 ;; second byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1910,7 +1910,7 @@
 
 ;; second byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1925,7 +1925,7 @@
 
 ;; second byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1940,7 +1940,7 @@
 
 ;; second byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1955,7 +1955,7 @@
 
 ;; second byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1972,7 +1972,7 @@
 
 ;; third byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -1987,7 +1987,7 @@
 
 ;; third byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2002,7 +2002,7 @@
 
 ;; third byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2017,7 +2017,7 @@
 
 ;; third byte after (0xf0) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2032,7 +2032,7 @@
 
 ;; third byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2047,7 +2047,7 @@
 
 ;; third byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2062,7 +2062,7 @@
 
 ;; third byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2077,7 +2077,7 @@
 
 ;; third byte after (first normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2092,7 +2092,7 @@
 
 ;; third byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2107,7 +2107,7 @@
 
 ;; third byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2122,7 +2122,7 @@
 
 ;; third byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2137,7 +2137,7 @@
 
 ;; third byte after (last normal) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2152,7 +2152,7 @@
 
 ;; third byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2167,7 +2167,7 @@
 
 ;; third byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2182,7 +2182,7 @@
 
 ;; third byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2197,7 +2197,7 @@
 
 ;; third byte after (0xf4) 4-byte prefix not a continuation byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2214,7 +2214,7 @@
 
 ;; 5-byte sequence contains 6 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\10"                       ;; import section
     "\01"                          ;; length 1
@@ -2229,7 +2229,7 @@
 
 ;; 5-byte sequence contains 4 bytes at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2244,7 +2244,7 @@
 
 ;; 5-byte sequence contains 4 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0f"                       ;; import section
     "\01"                          ;; length 1
@@ -2259,7 +2259,7 @@
 
 ;; 5-byte sequence contains 3 bytes at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -2274,7 +2274,7 @@
 
 ;; 5-byte sequence contains 3 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2289,7 +2289,7 @@
 
 ;; 5-byte sequence contains 2 bytes at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -2304,7 +2304,7 @@
 
 ;; 5-byte sequence contains 2 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -2319,7 +2319,7 @@
 
 ;; 5-byte sequence contains 1 byte at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -2334,7 +2334,7 @@
 
 ;; 5-byte sequence contains 1 byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -2351,7 +2351,7 @@
 
 ;; (first) invalid 5-byte prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0f"                       ;; import section
     "\01"                          ;; length 1
@@ -2366,7 +2366,7 @@
 
 ;; (last) invalid 5-byte prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0f"                       ;; import section
     "\01"                          ;; length 1
@@ -2383,7 +2383,7 @@
 
 ;; 6-byte sequence contains 7 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\11"                       ;; import section
     "\01"                          ;; length 1
@@ -2398,7 +2398,7 @@
 
 ;; 6-byte sequence contains 5 bytes at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0f"                       ;; import section
     "\01"                          ;; length 1
@@ -2413,7 +2413,7 @@
 
 ;; 6-byte sequence contains 5 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\10"                       ;; import section
     "\01"                          ;; length 1
@@ -2428,7 +2428,7 @@
 
 ;; 6-byte sequence contains 4 bytes at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2443,7 +2443,7 @@
 
 ;; 6-byte sequence contains 4 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0f"                       ;; import section
     "\01"                          ;; length 1
@@ -2458,7 +2458,7 @@
 
 ;; 6-byte sequence contains 3 bytes at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -2473,7 +2473,7 @@
 
 ;; 6-byte sequence contains 3 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2488,7 +2488,7 @@
 
 ;; 6-byte sequence contains 2 bytes at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -2503,7 +2503,7 @@
 
 ;; 6-byte sequence contains 2 bytes
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0d"                       ;; import section
     "\01"                          ;; length 1
@@ -2518,7 +2518,7 @@
 
 ;; 6-byte sequence contains 1 byte at end of string
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -2533,7 +2533,7 @@
 
 ;; 6-byte sequence contains 1 byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -2550,7 +2550,7 @@
 
 ;; (first) invalid 6-byte prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\10"                       ;; import section
     "\01"                          ;; length 1
@@ -2565,7 +2565,7 @@
 
 ;; (last) invalid 6-byte prefix
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\10"                       ;; import section
     "\01"                          ;; length 1
@@ -2582,7 +2582,7 @@
 
 ;; invalid byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -2597,7 +2597,7 @@
 
 ;; invalid byte
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0b"                       ;; import section
     "\01"                          ;; length 1
@@ -2612,7 +2612,7 @@
 
 ;; UTF-16BE BOM
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -2627,7 +2627,7 @@
 
 ;; UTF-32BE BOM
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1
@@ -2642,7 +2642,7 @@
 
 ;; UTF-16LE BOM
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0c"                       ;; import section
     "\01"                          ;; length 1
@@ -2657,7 +2657,7 @@
 
 ;; UTF-32LE BOM
 (assert_malformed
-  (module
+  (module binary
     "\00asm" "\01\00\00\00"
     "\02\0e"                       ;; import section
     "\01"                          ;; length 1

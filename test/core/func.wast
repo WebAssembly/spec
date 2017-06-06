@@ -488,3 +488,30 @@
   "type mismatch"
 )
 
+
+;; Syntax errors
+
+(assert_malformed
+  (module quote "(func (nop) (local i32))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (nop) (param i32))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (nop) (result i32))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (local i32) (param i32))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (local i32) (result i32) (get_local 0))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (result i32) (param i32) (get_local 0))")
+  "unexpected token"
+)

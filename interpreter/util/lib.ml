@@ -28,6 +28,14 @@ struct
     for i = String.length s - 1 downto 0 do cs := s.[i] :: !cs done;
     !cs
 
+  let split s c =
+    let len = String.length s in
+    let rec loop i =
+      if i > len then [] else
+      let j = try String.index_from s i c with Not_found -> len in
+      String.sub s i (j - i) :: loop (j + 1)
+    in loop 0
+
   let breakup s n =
     let rec loop i =
       let len = min n (String.length s - i) in

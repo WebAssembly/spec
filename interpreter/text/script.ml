@@ -4,6 +4,7 @@ type definition = definition' Source.phrase
 and definition' =
   | Textual of Ast.module_
   | Encoded of string * string
+  | Quoted of string * string
 
 type action = action' Source.phrase
 and action' =

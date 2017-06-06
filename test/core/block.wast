@@ -287,3 +287,13 @@
   ))
   "type mismatch"
 )
+
+
+(assert_malformed
+  (module quote "(func block end $l)")
+  "mismatching label"
+)
+(assert_malformed
+  (module quote "(func block $a end $l)")
+  "mismatching label"
+)
