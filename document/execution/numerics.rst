@@ -977,7 +977,7 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fneg_N(\pm \NAN(n)) &=& \mp \NAN(n) \\
    \fneg_N(\pm \infty) &=& \mp \infty \\
    \fneg_N(\pm 0) &=& \mp 0 \\
-   \fneg_N(\pm z) &=& \mp z \\
+   \fneg_N(\pm q) &=& \mp q \\
    \end{array}
 
 
