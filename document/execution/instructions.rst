@@ -386,11 +386,11 @@ Memory Instructions
 
    a. Let :math:`N` be the :ref:`width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
-10. If :math:`\X{ea} + N` is larger than the length of :math:`\X{mem}.\DATA`, then:
+10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\DATA`, then:
 
     a. Trap.
 
-11. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\DATA[\X{ea}:N]`.
+11. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\DATA[\X{ea}:N/8]`.
 
 12. If :math:`N` and :math:`\sx` are part of the instruction, then:
 
@@ -412,8 +412,8 @@ Memory Instructions
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + |t| \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & \bytes_t(c) = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:|t|])
+     \wedge & \X{ea} + |t|/8 \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+     \wedge & \bytes_t(c) = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:|t|/8])
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(t.\LOAD{N}\K{\_}\sx~\memarg) &\stepto&
@@ -422,8 +422,8 @@ Memory Instructions
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N])
+     \wedge & \X{ea} + N/8 \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+     \wedge & \bytes_{\iN}(n) = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N/8])
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~k)~(t.\LOAD({N}\K{\_}\sx)^?~\memarg) &\stepto& S; F; \TRAP
@@ -464,7 +464,7 @@ Memory Instructions
 
    a. Let :math:`N` be the :ref:`width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
-10. If :math:`\X{ea} + N` is larger than the length of :math:`\X{mem}.\DATA`, then:
+10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\DATA`, then:
 
     a. Trap.
 
@@ -482,7 +482,7 @@ Memory Instructions
 
     a. Let :math:`b^\ast` be the byte sequence :math:`\bytes_t(c)`.
 
-15. Replace the bytes :math:`\X{mem}.\DATA[\X{ea}:N]` with :math:`b^\ast`.
+15. Replace the bytes :math:`\X{mem}.\DATA[\X{ea}:N/8]` with :math:`b^\ast`.
 
 .. math::
    \begin{array}{l}
@@ -492,8 +492,8 @@ Memory Instructions
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + |t| \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:|t|] = \bytes_t(c)
+     \wedge & \X{ea} + |t|/8 \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:|t|/8] = \bytes_t(c)
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(t.\STORE{N}~\memarg) &\stepto& S'; F; \epsilon
@@ -501,8 +501,8 @@ Memory Instructions
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N] = \bytes_{\iN}(\wrap_{|t|,N}(c))
+     \wedge & \X{ea} + N/8 \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c))
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~k)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP

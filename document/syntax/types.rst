@@ -33,8 +33,8 @@ Conventions
 
 * The meta variable :math:`t` ranges over value types where clear from context.
 
-* The notation :math:`|t|` denotes the *width* of a value type in bytes.
-  (That is, :math:`|\I32| = |\F32| = 4` and :math:`|\I64| = |\F64| = 8`.)
+* The notation :math:`|t|` denotes the *width* of a value type.
+  (That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.)
 
 
 .. _syntax-resulttype:
