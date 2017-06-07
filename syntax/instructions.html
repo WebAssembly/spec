@@ -280,7 +280,7 @@ The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable
 \end{array}\end{split}\]</div>
 <p>Memory is accessed with <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\)</span> instructions for the different <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value types</span></a>.
 They all take a <em>memory immediate</em> <span class="math">\(\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span> that contains an address <em>offset</em> and an <em>alignment</em> hint.
-Integer loads and stores can optionally specify a <em>storage size</em> that is smaller than the width of the respective value type.
+Integer loads and stores can optionally specify a <em>storage size</em> that is smaller than the <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">width</span></a> of the respective value type.
 In the case of loads, a sign extension mode <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> is then required to select appropriate behavior.</p>
 <p>The static address offset is added to the dynamic address operand, yielding a 33 bit <em>effective address</em> that is the zero-based index at which the memory is accessed.
 All values are read and written in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order.

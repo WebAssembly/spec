@@ -367,11 +367,11 @@ S; F; \href{../execution/runtime.html#syntax-val}{\mathit{val}}~(\href{../syntax
 <li>Let <span class="math">\(N\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> <span class="math">\(|t|\)</span> of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span>.</li>
 </ol>
 </li>
-<li>If <span class="math">\(\mathit{ea} + N\)</span> is larger than the length of <span class="math">\(\mathit{mem}.\mathsf{data}\)</span>, then:<ol class="loweralpha">
+<li>If <span class="math">\(\mathit{ea} + N/8\)</span> is larger than the length of <span class="math">\(\mathit{mem}.\mathsf{data}\)</span>, then:<ol class="loweralpha">
 <li>Trap.</li>
 </ol>
 </li>
-<li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\mathit{mem}.\mathsf{data}[\mathit{ea}:N]\)</span>.</li>
+<li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\mathit{mem}.\mathsf{data}[\mathit{ea}:N/8]\)</span>.</li>
 <li>If <span class="math">\(N\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> are part of the instruction, then:<ol class="loweralpha">
 <li>Let <span class="math">\(n\)</span> be the integer for which <span class="math">\(\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef983#1{{\mathit{i}#1}}\mathdef983{N}}}(n) = b^\ast\)</span>.</li>
 <li>Let <span class="math">\(c\)</span> be the result of computing <span class="math">\(\href{../execution/numerics.html#op-extend_u}{\mathrm{extend}}\mathrm{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_{N,|t|}(n)\)</span>.</li>
@@ -391,8 +391,8 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; \mathit{ea} = i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{offset} \\
-  \wedge &amp; \mathit{ea} + |t| \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
-  \wedge &amp; \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_t(c) = S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:|t|])
+  \wedge &amp; \mathit{ea} + |t|/8 \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
+  \wedge &amp; \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_t(c) = S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:|t|/8])
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(t.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{N}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}) &amp;\hookrightarrow&amp;
@@ -401,8 +401,8 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; \mathit{ea} = i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{offset} \\
-  \wedge &amp; \mathit{ea} + N \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
-  \wedge &amp; \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef983#1{{\mathit{i}#1}}\mathdef983{N}}}(n) = S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:N])
+  \wedge &amp; \mathit{ea} + N/8 \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
+  \wedge &amp; \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef983#1{{\mathit{i}#1}}\mathdef983{N}}}(n) = S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:N/8])
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~k)~(t.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}({N}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}})^?~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}) &amp;\hookrightarrow&amp; S; F; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}
@@ -432,7 +432,7 @@ The only purpose of the annotation is to provide optimizatons hints.</p>
 <li>Let <span class="math">\(N\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> <span class="math">\(|t|\)</span> of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span>.</li>
 </ol>
 </li>
-<li>If <span class="math">\(\mathit{ea} + N\)</span> is larger than the length of <span class="math">\(\mathit{mem}.\mathsf{data}\)</span>, then:<ol class="loweralpha">
+<li>If <span class="math">\(\mathit{ea} + N/8\)</span> is larger than the length of <span class="math">\(\mathit{mem}.\mathsf{data}\)</span>, then:<ol class="loweralpha">
 <li>Trap.</li>
 </ol>
 </li>
@@ -447,7 +447,7 @@ The only purpose of the annotation is to provide optimizatons hints.</p>
 <li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_t(c)\)</span>.</li>
 </ol>
 </li>
-<li>Replace the bytes <span class="math">\(\mathit{mem}.\mathsf{data}[\mathit{ea}:N]\)</span> with <span class="math">\(b^\ast\)</span>.</li>
+<li>Replace the bytes <span class="math">\(\mathit{mem}.\mathsf{data}[\mathit{ea}:N/8]\)</span> with <span class="math">\(b^\ast\)</span>.</li>
 </ol>
 <div class="math">
 \[\begin{split}\begin{array}{l}
@@ -457,8 +457,8 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; \mathit{ea} = i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{offset} \\
-  \wedge &amp; \mathit{ea} + |t| \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
-  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:|t|] = \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_t(c)
+  \wedge &amp; \mathit{ea} + |t|/8 \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
+  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:|t|/8] = \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_t(c)
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(t.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}{N}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}) &amp;\hookrightarrow&amp; S'; F; \epsilon
@@ -466,8 +466,8 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; \mathit{ea} = i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{offset} \\
-  \wedge &amp; \mathit{ea} + N \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
-  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:N] = \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef983#1{{\mathit{i}#1}}\mathdef983{N}}}(\href{../execution/numerics.html#op-wrap}{\mathrm{wrap}}_{|t|,N}(c))
+  \wedge &amp; \mathit{ea} + N/8 \leq |S.\mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}| \\
+  \wedge &amp; S' = S \href{../syntax/conventions.html#syntax-record}{\mathrel{\mbox{with}}} \mathsf{mems}[F.\mathsf{module}.\mathsf{mems}[0]].\mathsf{data}[\mathit{ea}:N/8] = \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef983#1{{\mathit{i}#1}}\mathdef983{N}}}(\href{../execution/numerics.html#op-wrap}{\mathrm{wrap}}_{|t|,N}(c))
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~k)~(t.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}{N}^?~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}) &amp;\hookrightarrow&amp; S; F; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}

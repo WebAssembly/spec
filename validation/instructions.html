@@ -321,14 +321,14 @@ In contrast,</p>
 <span id="id14"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#valid-load" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The memory <span class="math">\(C.\mathsf{mems}[0]\)</span> must be defined in the context.</li>
-<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> of <span class="math">\(t\)</span>.</li>
+<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> of <span class="math">\(t\)</span> divided by <span class="math">\(8\)</span>.</li>
 <li>Then the instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [t]\)</span>.</li>
 </ul>
 <div class="math">
 \[\frac{
   C.\mathsf{mems}[0] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
   \qquad
-  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}} \leq |t|
+  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}} \leq |t|/8
 }{
   C \vdash t\mathsf{.load}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [t]
 }\]</div>
@@ -337,14 +337,14 @@ In contrast,</p>
 <span id="id15"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{N}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#valid-loadn" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The memory <span class="math">\(C.\mathsf{mems}[0]\)</span> must be defined in the context.</li>
-<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}}\)</span> must not be larger than <span class="math">\(N\)</span>.</li>
+<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}}\)</span> must not be larger than <span class="math">\(N/8\)</span>.</li>
 <li>Then the instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [t]\)</span>.</li>
 </ul>
 <div class="math">
 \[\frac{
   C.\mathsf{mems}[0] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
   \qquad
-  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}} \leq N
+  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}} \leq N/8
 }{
   C \vdash t\mathsf{.load}N\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [t]
 }\]</div>
@@ -353,14 +353,14 @@ In contrast,</p>
 <span id="id16"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#valid-store" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The memory <span class="math">\(C.\mathsf{mems}[0]\)</span> must be defined in the context.</li>
-<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> of <span class="math">\(t\)</span>.</li>
+<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> of <span class="math">\(t\)</span> divided by <span class="math">\(8\)</span>.</li>
 <li>Then the instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t] \to []\)</span>.</li>
 </ul>
 <div class="math">
 \[\frac{
   C.\mathsf{mems}[0] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
   \qquad
-  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}} \leq |t|
+  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}} \leq |t|/8
 }{
   C \vdash t\mathsf{.store}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t] \to []
 }\]</div>
@@ -369,14 +369,14 @@ In contrast,</p>
 <span id="id17"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}{N}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#valid-storen" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The memory <span class="math">\(C.\mathsf{mems}[0]\)</span> must be defined in the context.</li>
-<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}}\)</span> must not be larger than <span class="math">\(N\)</span>.</li>
+<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}}\)</span> must not be larger than <span class="math">\(N/8\)</span>.</li>
 <li>Then the instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t] \to []\)</span>.</li>
 </ul>
 <div class="math">
 \[\frac{
   C.\mathsf{mems}[0] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
   \qquad
-  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}} \leq N
+  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\mathsf{align}} \leq N/8
 }{
   C \vdash t\mathsf{.store}N~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t] \to []
 }\]</div>
