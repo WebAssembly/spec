@@ -98,9 +98,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
-<span class="target" id="syntax-value"></span><div class="section" id="values">
+  <span class="target" id="syntax-value"></span><div class="section" id="values">
 <span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="syntax-byte"></span><div class="section" id="bytes">
 <span id="index-1"></span><h2>Bytes<a class="headerlink" href="#bytes" title="Permalink to this headline">¶</a></h2>
@@ -151,7 +149,7 @@ or as a <em>subnormal</em> number where <span class="math">\(m_0\)</span> is <sp
 Since the significands are binary values, normals are represented in the form <span class="math">\((1 + m\cdot 2^{-M})\)</span>, where <span class="math">\(M\)</span> is the bit width of <span class="math">\(m\)</span>; similarly for subnormals.</p>
 <p>Possible magnitudes also include the special values <span class="math">\(\infty\)</span> (infinity) and <span class="math">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> (<em>NaN</em>, not a number).
 NaN values have a <em>payload</em> value that describes the mantissa bits in the underlying <a class="reference internal" href="../execution/numerics.html#aux-fbits"><span class="std std-ref">binary representation</span></a>.
-No distinction is made between signalling and silent NaNs.</p>
+No distinction is made between signalling and quiet NaNs.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcll}
 \def\mathdef1921#1{{}}\mathdef1921{floating-point number} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1940#1{{\mathit{f}#1}}\mathdef1940{N}} &amp;::=&amp;

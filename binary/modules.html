@@ -108,9 +108,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
-<div class="section" id="modules">
+  <div class="section" id="modules">
 <h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
 <p>The binary encoding of modules is organized into <em>sections</em>.
 Most sections correspond to one component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> record,
@@ -326,8 +324,8 @@ The <span class="math">\(\mathsf{type}\)</span> fields of the respective functio
     &amp;\Rightarrow&amp; \mathit{code} &amp; (\mathit{size} = ||\href{../binary/modules.html#binary-func}{\mathtt{func}}||) \\
 \def\mathdef625#1{{}}\mathdef625{function} &amp; \href{../binary/modules.html#binary-func}{\mathtt{func}} &amp;::=&amp;
   (t^\ast)^\ast{:}\href{../binary/values.html#binary-vec}{\mathtt{vec}}(\href{../binary/modules.html#binary-local}{\mathtt{locals}})~~e{:}\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}
-    &amp;\Rightarrow&amp; \concat((t^\ast)^\ast), e^\ast
-      &amp; (|\concat((t^\ast)^\ast)| &lt; 2^{32}) \\
+    &amp;\Rightarrow&amp; \href{../syntax/conventions.html#syntax-concat}{\mathrm{concat}}((t^\ast)^\ast), e^\ast
+      &amp; (|\href{../syntax/conventions.html#syntax-concat}{\mathrm{concat}}((t^\ast)^\ast)| &lt; 2^{32}) \\
 \def\mathdef625#1{{}}\mathdef625{locals} &amp; \href{../binary/modules.html#binary-local}{\mathtt{locals}} &amp;::=&amp;
   n{:}\href{../binary/values.html#binary-int}{\def\mathdef652#1{{\mathtt{u}#1}}\mathdef652{\mathtt{32}}}~~t{:}\href{../binary/types.html#binary-valtype}{\mathtt{valtype}} &amp;\Rightarrow&amp; t^n \\
 \end{array}\end{split}\]</div>

@@ -100,9 +100,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
-<span class="target" id="text-value"></span><div class="section" id="values">
+  <span class="target" id="text-value"></span><div class="section" id="values">
 <span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
 <p>The grammar productions in this section define <em>lexical syntax</em>,
 hence no <a class="reference internal" href="lexical.html#text-space"><span class="std std-ref">white space</span></a> is allowed.</p>
@@ -215,8 +213,8 @@ except for hexadecimal escape sequences <span class="math">\(\def\mathdef2947#1{
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef2863#1{{}}\mathdef2863{string} &amp; \href{../text/values.html#text-string}{\mathtt{string}} &amp;::=&amp;
   \def\mathdef2948#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2948{&quot;}~(b^\ast{:}\href{../text/values.html#text-string}{\mathtt{stringelem}})^\ast~\def\mathdef2949#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2949{&quot;}
-    &amp;\Rightarrow&amp; \concat((b^\ast)^\ast)
-    &amp; (|\concat((b^\ast)^\ast)| &lt; 2^{32}) \\
+    &amp;\Rightarrow&amp; \href{../syntax/conventions.html#syntax-concat}{\mathrm{concat}}((b^\ast)^\ast)
+    &amp; (|\href{../syntax/conventions.html#syntax-concat}{\mathrm{concat}}((b^\ast)^\ast)| &lt; 2^{32}) \\
 \def\mathdef2863#1{{}}\mathdef2863{string element} &amp; \href{../text/values.html#text-string}{\mathtt{stringelem}} &amp;::=&amp;
   c{:}\href{../text/values.html#text-string}{\mathtt{stringchar}} &amp;\Rightarrow&amp; \href{../syntax/values.html#syntax-utf8}{\mathrm{utf8}}(c) \\ &amp;&amp;|&amp;
   \def\mathdef2950#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2950{\backslash}~n{:}\href{../text/values.html#text-hexdigit}{\mathtt{hexdigit}}~m{:}\href{../text/values.html#text-hexdigit}{\mathtt{hexdigit}}
