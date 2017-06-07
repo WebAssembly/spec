@@ -92,7 +92,7 @@ Since the significands are binary values, normals are represented in the form :m
 
 Possible magnitudes also include the special values :math:`\infty` (infinity) and |NAN| (*NaN*, not a number).
 NaN values have a *payload* value that describes the mantissa bits in the underlying :ref:`binary representation <aux-fbits>`.
-No distinction is made between signalling and silent NaNs.
+No distinction is made between signalling and quiet NaNs.
 
 .. math::
    \begin{array}{llcll}
@@ -134,8 +134,6 @@ Conventions
 ...........
 
 * The meta variable :math:`z` ranges over floating-point values where clear from context.
-
-* The notation :math:`-z` denotes the same floating-point value as :math:`z` but with the sign inverted.
 
 * Floating-point numbers, in normal or subnormal form, are sometimes interpreted as rational numbers :math:`q \in \mathbb{Q}`.
 

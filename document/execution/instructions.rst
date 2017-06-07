@@ -686,7 +686,7 @@ Control Instructions
 
 4. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |IF| instruction.
 
-5. If :math:`c` is not :math:`0`, then:
+5. If :math:`c` is non-zero, then:
 
    a. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr_1^\ast` with label :math:`L`.
 
@@ -749,7 +749,7 @@ Control Instructions
 
 2. Pop the value :math:`\I32.\CONST~c` from the stack.
 
-3. If :math:`c` is not :math:`0`, then:
+3. If :math:`c` is non-zero, then:
 
    a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
 
