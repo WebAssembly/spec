@@ -154,6 +154,7 @@ let check_memop (c : context) (memop : 'a memop) get_sz at =
 let check_arity n at =
   require (n <= 1) at "invalid result arity, larger than 1 is not (yet) allowed"
 
+
 (*
  * Conventions:
  *   c  : context
@@ -319,10 +320,13 @@ and check_block (c : context) (es : instr list) (ts : stack_type) at =
  *   x : variable
  *)
 
+let check_type (t : type_) =
+  let FuncType (ins, out) = t.it in
+  check_arity (List.length out) t.at
+
 let check_func (c : context) (f : func) =
   let {ftype; locals; body} = f.it in
   let FuncType (ins, out) = type_ c ftype in
-  check_arity (List.length out) f.at;
   let c' = {c with locals = ins @ locals; results = out; labels = [out]} in
   check_block c' body out f.at
 
@@ -430,7 +434,10 @@ let check_module (m : module_) =
     { types; imports; tables; memories; globals; funcs; start; elems; data;
       exports } = m.it
   in
-  let c0 = List.fold_right check_import imports {(context m) with types} in
+  let c0 =
+    List.fold_right check_import imports
+      {(context m) with types = List.map (fun ty -> ty.it) types}
+  in
   let c1 =
     { c0 with
       funcs = c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs;
@@ -441,6 +448,7 @@ let check_module (m : module_) =
   let c =
     { c1 with globals = c1.globals @ List.map (fun g -> g.it.gtype) globals }
   in
+  List.iter check_type types;
   List.iter (check_global c1) globals;
   List.iter (check_table c1) tables;
   List.iter (check_memory c1) memories;

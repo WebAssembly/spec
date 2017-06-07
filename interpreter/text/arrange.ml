@@ -302,8 +302,8 @@ let data seg =
 
 (* Modules *)
 
-let typedef i t =
-  Node ("type $" ^ nat i, [struct_type t])
+let typedef i ty =
+  Node ("type $" ^ nat i, [struct_type ty.it])
 
 let import_desc i d =
   match d.it with
@@ -400,7 +400,7 @@ let definition mode x_opt def =
         | Quoted (_, s) -> unquote (Parse.string_to_module s)
       in module_with_var_opt x_opt (unquote def)
     | `Binary, _ | `Original, Encoded _ ->
-      let rec unquote bs =
+      let rec unquote def =
         match def.it with
         | Textual m -> Encode.encode m
         | Encoded (_, bs) -> bs

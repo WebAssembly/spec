@@ -74,12 +74,14 @@ struct
     | x::xs -> let ys, y = split_last xs in x::ys, y
     | [] -> failwith "split_last"
 
-  let rec index_of x xs = index_of' x xs 0
-  and index_of' x xs i =
+  let rec index_where p xs = index_where' p xs 0
+  and index_where' p xs i =
     match xs with
     | [] -> None
-    | y::xs' when x = y -> Some i
-    | y::xs' -> index_of' x xs' (i+1)
+    | x::xs' when p x -> Some i
+    | x::xs' -> index_where' p xs' (i+1)
+
+  let index_of x = index_where ((=) x)
 end
 
 module List32 =

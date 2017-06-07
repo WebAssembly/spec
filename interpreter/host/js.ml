@@ -199,8 +199,8 @@ let abs_mask_of = function
   | I32Type | F32Type -> Values.I32 Int32.max_int
   | I64Type | F64Type -> Values.I64 Int64.max_int
 
-let invoke t lits at =
-  [t], FuncImport (1l @@ at) @@ at,
+let invoke ft lits at =
+  [ft @@ at], FuncImport (1l @@ at) @@ at,
   List.map (fun lit -> Const lit @@ at) lits @ [Call (0l @@ at) @@ at]
 
 let get t at =
@@ -244,7 +244,7 @@ let wrap module_name item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let item = Lib.List32.length itypes @@ at in
-  let types = FuncType ([], []) :: itypes in
+  let types = (FuncType ([], []) @@ at) :: itypes in
   let imports = [{module_name; item_name; idesc} @@ at] in
   let edesc = FuncExport item @@ at in
   let exports = [{name = Utf8.decode "run"; edesc} @@ at] in

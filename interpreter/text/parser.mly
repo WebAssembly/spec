@@ -59,7 +59,7 @@ module VarMap = Map.Make(String)
 type space = {mutable map : int32 VarMap.t; mutable count : int32}
 let empty () = {map = VarMap.empty; count = 0l}
 
-type types = {mutable tmap : int32 VarMap.t; mutable tlist : Types.func_type list}
+type types = {mutable tmap : int32 VarMap.t; mutable tlist : type_ list}
 let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
@@ -138,16 +138,16 @@ let anon_label (c : context) =
 let empty_type = FuncType ([], [])
 
 let inline_type (c : context) ty at =
-  match Lib.List.index_of ty c.types.tlist with
+  match Lib.List.index_where (fun ty' -> ty'.it = ty) c.types.tlist with
   | Some i -> Int32.of_int i @@ at
   | None ->
-    let i = Lib.List32.length c.types.tlist in ignore (anon_type c ty); i @@ at
+    let i = Lib.List32.length c.types.tlist in ignore (anon_type c (ty @@ at)); i @@ at
 
 let inline_type_explicit (c : context) x ty at =
   if
     ty <> empty_type &&
     (x.it >= Lib.List32.length c.types.tlist ||
-     ty <> Lib.List32.nth c.types.tlist x.it)
+     ty <> (Lib.List32.nth c.types.tlist x.it).it)
   then
     error at "inline function type does not match explicit type"
   else
@@ -600,10 +600,13 @@ inline_export :
 
 /* Modules */
 
+type_ :
+  | func_type { $1 @@ at () }
+
 type_def :
-  | LPAR TYPE func_type RPAR
+  | LPAR TYPE type_ RPAR
     { fun c -> anon_type c $3 }
-  | LPAR TYPE bind_var func_type RPAR  /* Sugar */
+  | LPAR TYPE bind_var type_ RPAR  /* Sugar */
     { fun c -> bind_type c $3 $4 }
 
 start :

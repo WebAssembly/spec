@@ -78,7 +78,7 @@ mapping a vector of parameters to a vector of results.
 
 .. note::
    In the current version of WebAssembly,
-   the length of the result type vector of a function may be at most :math:`1`.
+   the length of the result type vector of a :ref:`valid <valid-functype>` function type may be at most :math:`1`.
    This restriction may be removed in future versions.
 
 
