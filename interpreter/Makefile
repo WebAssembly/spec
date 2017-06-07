@@ -17,7 +17,7 @@ ZIP =		$(NAME).zip
 JSLIB =		wast.js
 WINMAKE =	winmake.bat
 
-DIRS =		util spec text host host/import
+DIRS =		util syntax binary text validation execution script host host/import
 LIBS =		bigarray
 FLAGS = 	-cflags '-w +a-4-27-42-44-45 -warn-error +a'
 OCB =		ocamlbuild $(FLAGS) $(DIRS:%=-I %) $(LIBS:%=-libs %)
@@ -40,6 +40,15 @@ zip: 		$(ZIP)
 
 # Building executable
 
+empty =
+space =		$(empty) $(empty)
+comma =		,
+
+.INTERMEDIATE:	_tags
+_tags:
+		echo >$@ "true: bin_annot"
+		echo >>$@ "<{$(subst $(space),$(comma),$(DIRS))}/*.cmx>: for-pack($(NAME))"
+
 $(UNOPT):	main.d.byte
 		mv $< $@
 
@@ -47,10 +56,10 @@ $(OPT):		main.native
 		mv $< $@
 
 .PHONY:		main.d.byte main.native
-main.d.byte:
+main.d.byte:	_tags
 		$(OCB) -quiet $@
 
-main.native:
+main.native:	_tags
 		$(OCB) -quiet $@
 
 
