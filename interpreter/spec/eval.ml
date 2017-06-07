@@ -87,7 +87,7 @@ let func_elem inst x i at =
   | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
 
 let func_type_of = function
-  | AstFunc (inst, f) -> lookup "type" (!inst).module_.it.types f.it.ftype
+  | AstFunc (inst, f) -> (lookup "type" (!inst).module_.it.types f.it.ftype).it
   | HostFunc (t, _) -> t
 
 let take n (vs : 'a stack) at =
@@ -155,7 +155,7 @@ let rec step (inst : instance) (c : config) : config =
 
       | CallIndirect x, I32 i :: vs ->
         let clos = func_elem inst (0l @@ e.at) i e.at in
-        if type_ inst x <> func_type_of clos then
+        if (type_ inst x).it <> func_type_of clos then
           Trap.error e.at "indirect call signature mismatch";
         vs, [Invoke clos @@ e.at]
 
@@ -398,7 +398,7 @@ let check_limits actual expected at =
 let add_import (ext : extern) (im : import) (inst : instance) : instance =
   let {idesc; _} = im.it in
   match ext, idesc.it with
-  | ExternalFunc clos, FuncImport x when func_type_of clos = type_ inst x ->
+  | ExternalFunc clos, FuncImport x when func_type_of clos = (type_ inst x).it ->
     {inst with funcs = clos :: inst.funcs}
   | ExternalTable tab, TableImport (TableType (lim, t))
     when Table.elem_type tab = t ->

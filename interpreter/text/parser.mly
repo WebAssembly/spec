@@ -59,7 +59,7 @@ module VarMap = Map.Make(String)
 type space = {mutable map : int32 VarMap.t; mutable count : int32}
 let empty () = {map = VarMap.empty; count = 0l}
 
-type types = {mutable tmap : int32 VarMap.t; mutable tlist : Types.func_type list}
+type types = {mutable tmap : int32 VarMap.t; mutable tlist : type_ list}
 let empty_types () = {tmap = VarMap.empty; tlist = []}
 
 type context =
@@ -138,16 +138,16 @@ let anon_label (c : context) =
 let empty_type = FuncType ([], [])
 
 let inline_type (c : context) ty at =
-  match Lib.List.index_of ty c.types.tlist with
+  match Lib.List.index_where (fun ty' -> ty'.it = ty) c.types.tlist with
   | Some i -> Int32.of_int i @@ at
   | None ->
-    let i = Lib.List32.length c.types.tlist in ignore (anon_type c ty); i @@ at
+    let i = Lib.List32.length c.types.tlist in ignore (anon_type c (ty @@ at)); i @@ at
 
 let inline_type_explicit (c : context) x ty at =
   if
     ty <> empty_type &&
     (x.it >= Lib.List32.length c.types.tlist ||
-     ty <> Lib.List32.nth c.types.tlist x.it)
+     ty <> (Lib.List32.nth c.types.tlist x.it).it)
   then
     error at "inline function type does not match explicit type"
   else
@@ -348,11 +348,11 @@ block_instr :
       let ts, es1 = $3 c' in if_ ts es1 ($6 c') }
 
 block_sig :
-  | LPAR RESULT value_type_list RPAR { $3 }
+  | LPAR RESULT VALUE_TYPE RPAR { [$3] }
 
 block :
-  | block_sig block
-    { fun c -> let ts, es = $2 c in $1 @ ts, es }
+  | block_sig instr_list
+    { fun c -> $1, $2 c }
   | instr_list { fun c -> [], $1 c }
 
 expr :  /* Sugar */
@@ -427,18 +427,19 @@ func_fields :
       let fns, ims, exs = $2 c x at in fns, ims, $1 (FuncExport x) c :: exs }
 
 func_fields_import :  /* Sugar */
-  | /* empty */ { empty_type }
-  | LPAR RESULT value_type_list RPAR
-    { FuncType ([], $3) }
+  | func_fields_import_result { $1 }
   | LPAR PARAM value_type_list RPAR func_fields_import
     { let FuncType (ins, out) = $5 in FuncType ($3 @ ins, out) }
   | LPAR PARAM bind_var VALUE_TYPE RPAR func_fields_import  /* Sugar */
     { let FuncType (ins, out) = $6 in FuncType ($4 :: ins, out) }
 
+func_fields_import_result :  /* Sugar */
+  | /* empty */ { empty_type }
+  | LPAR RESULT value_type_list RPAR func_fields_import_result
+    { let FuncType (ins, out) = $5 in FuncType (ins, $3 @ out) }
+
 func_fields_body :
-  | func_body { empty_type, $1 }
-  | LPAR RESULT value_type_list RPAR func_body
-    { FuncType ([], $3), $5 }
+  | func_result_body { $1 }
   | LPAR PARAM value_type_list RPAR func_fields_body
     { let FuncType (ins, out) = fst $5 in
       FuncType ($3 @ ins, out),
@@ -447,6 +448,12 @@ func_fields_body :
     { let FuncType (ins, out) = fst $6 in
       FuncType ($4 :: ins, out),
       fun c -> ignore (bind_local c $3); snd $6 c }
+
+func_result_body :
+  | func_body { empty_type, $1 }
+  | LPAR RESULT value_type_list RPAR func_result_body
+    { let FuncType (ins, out) = fst $5 in
+      FuncType (ins, $3 @ out), snd $5 }
 
 func_body :
   | instr_list
@@ -593,10 +600,13 @@ inline_export :
 
 /* Modules */
 
+type_ :
+  | func_type { $1 @@ at () }
+
 type_def :
-  | LPAR TYPE func_type RPAR
+  | LPAR TYPE type_ RPAR
     { fun c -> anon_type c $3 }
-  | LPAR TYPE bind_var func_type RPAR  /* Sugar */
+  | LPAR TYPE bind_var type_ RPAR  /* Sugar */
     { fun c -> bind_type c $3 $4 }
 
 start :

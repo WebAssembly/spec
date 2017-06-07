@@ -26,12 +26,13 @@ JS =		# set to JS shell command to run JS tests
 
 # Main targets
 
-.PHONY:		unopt opt libunopt libopt all land zip
+.PHONY:		default opt unopt libopt libunopt all land zip
 
-unopt:		$(UNOPT)
+default:	opt
 opt:		$(OPT)
-libunopt:	_build/$(LIB).cmo
+unopt:		$(UNOPT)
 libopt:		_build/$(LIB).cmx
+libunopt:	_build/$(LIB).cmo
 all:		unopt opt libunopt libopt test
 land:		all $(WINMAKE)
 zip: 		$(ZIP)

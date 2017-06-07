@@ -378,8 +378,10 @@ let encode m =
       end
 
     (* Type section *)
+    let type_ t = func_type t.it
+
     let type_section ts =
-      section 1 (vec func_type) ts (ts <> [])
+      section 1 (vec type_) ts (ts <> [])
 
     (* Import section *)
     let import_desc d =
