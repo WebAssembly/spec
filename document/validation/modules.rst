@@ -548,7 +548,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
    \frac{
      \begin{array}{@{}c@{}}
      (\vdash \functype ~\F{ok})^\ast
-     \\
+     \quad
      (C \vdash \func : \X{ft})^\ast
      \quad
      (C \vdash \table : \X{tt})^\ast
