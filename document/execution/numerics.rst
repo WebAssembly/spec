@@ -60,6 +60,9 @@ Numbers have an underlying binary representation as a sequence of bits:
 
 Each of these functions is a bijection, hence they are invertible.
 
+.. note::
+   The notation :math:`f^{-1}` denotes the inverse of a function :math:`f`.
+
 
 .. _aux-ibits:
 
@@ -212,13 +215,16 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 * Let :math:`j_2` be the signed interpretation of :math:`i_2`.
 
-* If :math:`i_2` is :math:`0`, then the result is undefined.
+* If :math:`j_2` is :math:`0`, then the result is undefined.
+
+* Else if :math:`j_2` is :math:`-1`, then the result is undefined.
 
 * Else, return the result of dividing :math:`j_1` by :math:`j_2`, truncated toward zero.
 
 .. math::
    \begin{array}{@{}lcll}
    \idivs_N(i_1, 0) &=& \{\} \\
+   \idivs_N(i_1, i_2) &=& \{\} & (\signed_N(i_2) = -1 \\
    \idivs_N(i_1, i_2) &=& \signed_N^{-1}(\trunc(\signed_N(i_1) / \signed_N(i_2))) \\
    \end{array}
 
@@ -243,8 +249,8 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
 
-   As long as :math:`i_2 \neq 0` it holds that
-   :math:`i_1 = i_2\cdot\idivu(i_1, i_2) + \iremu(i_1, i_2)`.
+   As long as :math:`i_2 \neq 0`,
+   it holds that :math:`i_1 = i_2\cdot\idivu(i_1, i_2) + \iremu(i_1, i_2)`.
 
 .. _op-rem_s:
 
@@ -268,8 +274,8 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
 
-   As long as :math:`i_2 \neq 0` it holds that
-   :math:`i_1 = i_2\cdot\idivs(i_1, i_2) + \irems(i_1, i_2)`.
+   As long as :math:`i_2 \neq 0` and :math:`i_2 \neq \signed_N^{-1}(-1)`,
+   it holds that :math:`i_1 = i_2\cdot\idivs(i_1, i_2) + \irems(i_1, i_2)`.
 
 
 .. _op-and:
