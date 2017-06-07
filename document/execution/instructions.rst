@@ -21,8 +21,8 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{op}_{\K{i}N}(i) &=& \F{i}\X{op}_N(i) \\
-   \X{op}_{\K{f}N}(i) &=& \F{f}\X{op}_N(i) \\
+   \X{op}_{\K{i}N}(n) &=& \F{i}\X{op}_N(n) \\
+   \X{op}_{\K{f}N}(z) &=& \F{f}\X{op}_N(z) \\
    \end{array}
 
 
@@ -110,7 +110,7 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~t\K{.}\testop &\stepto& (t\K{.}\CONST~c)
+   (t\K{.}\CONST~c_1)~t\K{.}\testop &\stepto& (\I32\K{.}\CONST~c)
      & (\mbox{if}~c = \testop_t(c_1)) \\
    \end{array}
 
@@ -132,7 +132,7 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop &\stepto& (t\K{.}\CONST~c)
+   (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop &\stepto& (\I32\K{.}\CONST~c)
      & (\mbox{if}~c = \relop_t(c_1,c_2)) \\
    \end{array}
 
@@ -193,7 +193,7 @@ Parametric Instructions
 :math:`\SELECT`
 ...............
 
-1. Assert: due to :ref:`validation <valid-select>`, a value :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-select>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 2. Pop the value :math:`\I32.\CONST~c` from the stack.
 
@@ -287,7 +287,7 @@ Variable Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; \val~(\TEELOCAL~x) &\stepto& F'; \val~\val~(\SETLOCAL~x)
+   \val~(\TEELOCAL~x) &\stepto& \val~\val~(\SETLOCAL~x)
    \end{array}
 
 

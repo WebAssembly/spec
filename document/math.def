@@ -606,7 +606,7 @@
 .. |bool| mathdef:: \xref{execution/numerics}{aux-bool}{\F{bool}}
 
 .. |ieee| mathdef:: \xref{execution/numerics}{aux-ieee}{\F{float}}
-.. |nan| mathdef:: \xref{execution/numerics}{aux-nan}{\F{nan}}
+.. |nans| mathdef:: \xref{execution/numerics}{aux-nans}{\F{nans}}
 .. |canon| mathdef:: \xref{syntax/values}{aux-canon}{\F{canon}}
 
 .. |significand| mathdef:: \xref{syntax/values}{aux-significand}{\F{signif}}

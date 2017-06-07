@@ -685,7 +685,7 @@ where:
 NaN Propagation
 ...............
 
-When the result of a floating-poin operator other than |fneg|, |fabs|, or |fcopysign| is a :ref:`NaN <syntax-nan>`, its sign is non-deterministic and the :ref:`payload <syntax-payload>` computed as follows:
+When the result of a floating-point operator other than |fneg|, |fabs|, or |fcopysign| is a :ref:`NaN <syntax-nan>`, its sign is non-deterministic and the :ref:`payload <syntax-payload>` computed as follows:
 
 * If the payload of all NaN inputs to the operator is :ref:`canonical <canonical-nan>` (including the case that there are no NaN inputs), then the payload of the output is canonical as well.
 
@@ -695,8 +695,8 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \canon_N \} & (\forall \NAN(n) \in z^\ast,~ n = \canon_N) \\
-   \nan_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n \geq \canon_N \} & (\mbox{otherwise}) \\
+   \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \canon_N \} & (\forall \NAN(n) \in z^\ast,~ n = \canon_N) \\
+   \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n \geq \canon_N \} & (\mbox{otherwise}) \\
    \end{array}
 
 
@@ -705,9 +705,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fadd_N(z_1, z_2)`
 .........................
 
-* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if both :math:`z_1` and :math:`z_2` are infinities of opposite signs, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities of opposite signs, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
 * Else if both :math:`z_1` and :math:`z_2` are infinities of equal sign, then return that infinity.
 
@@ -725,9 +725,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \fadd_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fadd_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
-   \fadd_N(\pm \infty, \mp \infty) &=& \nan_N\{\} \\
+   \fadd_N(\pm \NAN(n), z_2) &=& \nans_N\{\pm \NAN(n), z_2\} \\
+   \fadd_N(z_1, \pm \NAN(n)) &=& \nans_N\{\pm \NAN(n), z_1\} \\
+   \fadd_N(\pm \infty, \mp \infty) &=& \nans_N\{\} \\
    \fadd_N(\pm \infty, \pm \infty) &=& \pm \infty \\
    \fadd_N(z_1, \pm \infty) &=& \pm \infty \\
    \fadd_N(\pm \infty, z_2) &=& \pm \infty \\
@@ -745,9 +745,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fsub_N(z_1, z_2)`
 .........................
 
-* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if both :math:`z_1` and :math:`z_2` are infinities of equal signs, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities of equal signs, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
 * Else if both :math:`z_1` and :math:`z_2` are infinities of opposite sign, then return :math:`z_1`.
 
@@ -769,9 +769,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \fsub_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fsub_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
-   \fsub_N(\pm \infty, \pm \infty) &=& \nan_N\{\} \\
+   \fsub_N(\pm \NAN(n), z_2) &=& \nans_N\{\pm \NAN(n), z_2\} \\
+   \fsub_N(z_1, \pm \NAN(n)) &=& \nans_N\{\pm \NAN(n), z_1\} \\
+   \fsub_N(\pm \infty, \pm \infty) &=& \nans_N\{\} \\
    \fsub_N(\pm \infty, \mp \infty) &=& \pm \infty \\
    \fsub_N(z_1, \pm \infty) &=& \mp \infty \\
    \fsub_N(\pm \infty, z_2) &=& \pm \infty \\
@@ -792,9 +792,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fmul_N(z_1, z_2)`
 .........................
 
-* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if one of :math:`z_1` and :math:`z_2` is a zero and the other an infinity, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* Else if one of :math:`z_1` and :math:`z_2` is a zero and the other an infinity, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
 * Else if both :math:`z_1` and :math:`z_2` are infinities of equal sign, then return positive infinity.
 
@@ -804,22 +804,28 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if one of :math:`z_1` or :math:`z_2` is an infinity and the other a value with opposite sign, then return negative infinity.
 
+* Else if both :math:`z_1` and :math:`z_2` are zeroes of equal sign, then return positive zero.
+
+* Else if both :math:`z_1` and :math:`z_2` are zeroes of opposite sign, then return negative zero.
+
 * Else return the result of multiplying :math:`z_1` and :math:`z_2`, :ref:`rounded <aux-ieee>` to the nearest representable value.
 
 .. math::
    \begin{array}{@{}lcll}
-   \fmul_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fmul_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
-   \fmul_N(\pm \infty, \pm 0) &=& \nan_N\{\} \\
-   \fmul_N(\pm \infty, \mp 0) &=& \nan_N\{\} \\
-   \fmul_N(\pm 0, \pm \infty) &=& \nan_N\{\} \\
-   \fmul_N(\pm 0, \mp \infty) &=& \nan_N\{\} \\
+   \fmul_N(\pm \NAN(n), z_2) &=& \nans_N\{\pm \NAN(n), z_2\} \\
+   \fmul_N(z_1, \pm \NAN(n)) &=& \nans_N\{\pm \NAN(n), z_1\} \\
+   \fmul_N(\pm \infty, \pm 0) &=& \nans_N\{\} \\
+   \fmul_N(\pm \infty, \mp 0) &=& \nans_N\{\} \\
+   \fmul_N(\pm 0, \pm \infty) &=& \nans_N\{\} \\
+   \fmul_N(\pm 0, \mp \infty) &=& \nans_N\{\} \\
    \fmul_N(\pm \infty, \pm \infty) &=& +\infty \\
    \fmul_N(\pm \infty, \mp \infty) &=& -\infty \\
    \fmul_N(\pm q_1, \pm \infty) &=& +\infty \\
    \fmul_N(\pm q_1, \mp \infty) &=& -\infty \\
    \fmul_N(\pm \infty, \pm q_2) &=& +\infty \\
    \fmul_N(\pm \infty, \mp q_2) &=& -\infty \\
+   \fmul_N(\pm 0, \pm 0) &=& + 0 \\
+   \fmul_N(\pm 0, \mp 0) &=& - 0 \\
    \fmul_N(z_1, z_2) &=& \ieee_N(z_1 \cdot z_2) \\
    \end{array}
 
@@ -829,11 +835,11 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fdiv_N(z_1, z_2)`
 .........................
 
-* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if both :math:`z_1` and :math:`z_2` are infinities, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if both :math:`z_1` and :math:`z_2` are zeroes, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* Else if both :math:`z_1` and :math:`z_2` are zeroes, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
 * Else if :math:`z_1` is an infinity and :math:`z_2` a value with equal sign, then return positive infinity.
 
@@ -843,6 +849,10 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if :math:`z_2` is an infinity and :math:`z_1` a value with opposite sign, then return negative zero.
 
+* Else if :math:`z_1` is a zero and :math:`z_2` a value with equal sign, then return positive zero.
+
+* Else if :math:`z_1` is a zero and :math:`z_2` a value with opposite sign, then return negative zero.
+
 * Else if :math:`z_2` is a zero and :math:`z_1` a value with equal sign, then return positive infinity.
 
 * Else if :math:`z_2` is a zero and :math:`z_1` a value with opposite sign, then return negative infinity.
@@ -851,16 +861,18 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \fdiv_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fdiv_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
-   \fdiv_N(\pm \infty, \pm \infty) &=& \nan_N\{\} \\
-   \fdiv_N(\pm \infty, \mp \infty) &=& \nan_N\{\} \\
-   \fdiv_N(\pm 0, \pm 0) &=& \nan_N\{\} \\
-   \fdiv_N(\pm 0, \mp 0) &=& \nan_N\{\} \\
+   \fdiv_N(\pm \NAN(n), z_2) &=& \nans_N\{\pm \NAN(n), z_2\} \\
+   \fdiv_N(z_1, \pm \NAN(n)) &=& \nans_N\{\pm \NAN(n), z_1\} \\
+   \fdiv_N(\pm \infty, \pm \infty) &=& \nans_N\{\} \\
+   \fdiv_N(\pm \infty, \mp \infty) &=& \nans_N\{\} \\
+   \fdiv_N(\pm 0, \pm 0) &=& \nans_N\{\} \\
+   \fdiv_N(\pm 0, \mp 0) &=& \nans_N\{\} \\
    \fdiv_N(\pm \infty, \pm q_2) &=& +\infty \\
    \fdiv_N(\pm \infty, \mp q_2) &=& -\infty \\
    \fdiv_N(\pm q_1, \pm \infty) &=& +0 \\
    \fdiv_N(\pm q_1, \mp \infty) &=& -0 \\
+   \fdiv_N(\pm 0, \pm q_2) &=& +0 \\
+   \fdiv_N(\pm 0, \mp q_2) &=& -0 \\
    \fdiv_N(\pm q_1, \pm 0) &=& +\infty \\
    \fdiv_N(\pm q_1, \mp 0) &=& -\infty \\
    \fdiv_N(z_1, z_2) &=& \ieee_N(z_1 / z_2) \\
@@ -872,7 +884,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fmin_N(z_1, z_2)`
 .........................
 
-* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
 * Else if one of :math:`z_1` or :math:`z_2` is a negative infinity, then return negative infinity.
 
@@ -884,12 +896,12 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \fmin_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fmin_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
-   \fmin_N(- \infty, z_2) &=& - \infty \\
-   \fmin_N(z_1, - \infty) &=& - \infty \\
+   \fmin_N(\pm \NAN(n), z_2) &=& \nans_N\{\pm \NAN(n), z_2\} \\
+   \fmin_N(z_1, \pm \NAN(n)) &=& \nans_N\{\pm \NAN(n), z_1\} \\
    \fmin_N(+ \infty, z_2) &=& z_2 \\
+   \fmin_N(- \infty, z_2) &=& - \infty \\
    \fmin_N(z_1, + \infty) &=& z_1 \\
+   \fmin_N(z_1, - \infty) &=& - \infty \\
    \fmin_N(\pm 0, \mp 0) &=& -0 \\
    \fmin_N(z_1, z_2) &=& z_1 & (z_1 \leq z_2) \\
    \fmin_N(z_1, z_2) &=& z_2 & (z_2 \leq z_1) \\
@@ -901,7 +913,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fmax_N(z_1, z_2)`
 .........................
 
-* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nan_N\{z_1, z_2\}`.
+* If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
 * Else if one of :math:`z_1` or :math:`z_2` is a positive infinity, then return positive infinity.
 
@@ -913,11 +925,11 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \fmax_N(\pm \NAN(n), z_2) &=& \nan_N\{\pm \NAN(n), z_2\} \\
-   \fmax_N(z_1, \pm \NAN(n)) &=& \nan_N\{\pm \NAN(n), z_1\} \\
+   \fmax_N(\pm \NAN(n), z_2) &=& \nans_N\{\pm \NAN(n), z_2\} \\
+   \fmax_N(z_1, \pm \NAN(n)) &=& \nans_N\{\pm \NAN(n), z_1\} \\
    \fmax_N(+ \infty, z_2) &=& + \infty \\
-   \fmax_N(z_1, + \infty) &=& + \infty \\
    \fmax_N(- \infty, z_2) &=& z_2 \\
+   \fmax_N(z_1, + \infty) &=& + \infty \\
    \fmax_N(z_1, - \infty) &=& z_1 \\
    \fmax_N(\pm 0, \mp 0) &=& +0 \\
    \fmax_N(z_1, z_2) &=& z_1 & (z_1 \geq z_2) \\
@@ -992,9 +1004,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fsqrt_N(z)`
 ...................
 
-* If :math:`z` is a NaN, then return an element of :math:`\nan_N\{z\}`.
+* If :math:`z` is a NaN, then return an element of :math:`\nans_N\{z\}`.
 
-* Else if :math:`z` has a negative sign, then return an element of :math:`\nan_N\{z\}`.
+* Else if :math:`z` has a negative sign, then return an element of :math:`\nans_N\{z\}`.
 
 * Else if :math:`z` is positive infinity, then return positive infinity.
 
@@ -1004,11 +1016,11 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \fsqrt_N(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(n)\} \\
-   \fsqrt_N(- \infty) &=& \nan_N\{\} \\
+   \fsqrt_N(\pm \NAN(n)) &=& \nans_N\{\pm \NAN(n)\} \\
+   \fsqrt_N(- \infty) &=& \nans_N\{\} \\
    \fsqrt_N(+ \infty) &=& + \infty \\
    \fsqrt_N(\pm 0) &=& \pm 0 \\
-   \fsqrt_N(- q) &=& \nan_N\{\} \\
+   \fsqrt_N(- q) &=& \nans_N\{\} \\
    \fsqrt_N(+ q) &=& \ieee_N\left(\sqrt{z}\right) \\
    \end{array}
 
@@ -1018,7 +1030,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fceil_N(z)`
 ...................
 
-* If :math:`z` is a NaN, then return an element of :math:`\nan_N\{z\}`.
+* If :math:`z` is a NaN, then return an element of :math:`\nans_N\{z\}`.
 
 * Else if :math:`z` is an infinity, then return :math:`z`.
 
@@ -1030,7 +1042,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \fceil_N(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(n)\} \\
+   \fceil_N(\pm \NAN(n)) &=& \nans_N\{\pm \NAN(n)\} \\
    \fceil_N(\pm \infty) &=& \pm \infty \\
    \fceil_N(\pm 0) &=& \pm 0 \\
    \fceil_N(- q) &=& -0 & (-1 < -q < 0) \\
@@ -1043,7 +1055,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\ffloor_N(z)`
 ....................
 
-* If :math:`z` is a NaN, then return an element of :math:`\nan_N\{z\}`.
+* If :math:`z` is a NaN, then return an element of :math:`\nans_N\{z\}`.
 
 * Else if :math:`z` is an infinity, then return :math:`z`.
 
@@ -1055,7 +1067,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \ffloor_N(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(n)\} \\
+   \ffloor_N(\pm \NAN(n)) &=& \nans_N\{\pm \NAN(n)\} \\
    \ffloor_N(\pm \infty) &=& \pm \infty \\
    \ffloor_N(\pm 0) &=& \pm 0 \\
    \ffloor_N(+ q) &=& +0 & (0 < +q < 1) \\
@@ -1068,7 +1080,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\ftrunc_N(z)`
 ....................
 
-* If :math:`z` is a NaN, then return an element of :math:`\nan_N\{z\}`.
+* If :math:`z` is a NaN, then return an element of :math:`\nans_N\{z\}`.
 
 * Else if :math:`z` is an infinity, then return :math:`z`.
 
@@ -1082,7 +1094,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \ftrunc_N(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(n)\} \\
+   \ftrunc_N(\pm \NAN(n)) &=& \nans_N\{\pm \NAN(n)\} \\
    \ftrunc_N(\pm \infty) &=& \pm \infty \\
    \ftrunc_N(\pm 0) &=& \pm 0 \\
    \ftrunc_N(+ q) &=& +0 & (0 < +q < 1) \\
@@ -1096,7 +1108,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fnearest_N(z)`
 ......................
 
-* If :math:`z` is a NaN, then return an element of :math:`\nan_N\{z\}`.
+* If :math:`z` is a NaN, then return an element of :math:`\nans_N\{z\}`.
 
 * Else if :math:`z` is an infinity, then return :math:`z`.
 
@@ -1110,7 +1122,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \fnearest_N(\pm \NAN(n)) &=& \nan_N\{\pm \NAN(n)\} \\
+   \fnearest_N(\pm \NAN(n)) &=& \nans_N\{\pm \NAN(n)\} \\
    \fnearest_N(\pm \infty) &=& \pm \infty \\
    \fnearest_N(\pm 0) &=& \pm 0 \\
    \fnearest_N(+ q) &=& +0 & (0 < +q \leq 0.5) \\
@@ -1175,9 +1187,13 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if :math:`z_1` and :math:`z_2` are the same value, then return :math:`0`.
 
+* Else if :math:`z_1` is positive infinity, then return :math:`0`.
+
 * Else if :math:`z_1` is negative infinity, then return :math:`1`.
 
 * Else if :math:`z_2` is positive infinity, then return :math:`1`.
+
+* Else if :math:`z_2` is negative infinity, then return :math:`0`.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes, then return :math:`0`.
 
@@ -1190,8 +1206,10 @@ This non-deterministic result is expressed by the following auxiliary function p
    \flt_N(\pm \NAN(n), z_2) &=& 0 \\
    \flt_N(z_1, \pm \NAN(n)) &=& 0 \\
    \flt_N(z, z) &=& 0 \\
+   \flt_N(+ \infty, z_2) &=& 0 \\
    \flt_N(- \infty, z_2) &=& 1 \\
    \flt_N(z_1, + \infty) &=& 1 \\
+   \flt_N(z_1, - \infty) &=& 0 \\
    \flt_N(\pm 0, \mp 0) &=& 0 \\
    \flt_N(z_1, z_2) &=& \bool(z_1 < z_2) \\
    \end{array}
@@ -1208,6 +1226,10 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if :math:`z_1` is positive infinity, then return :math:`1`.
 
+* Else if :math:`z_1` is negative infinity, then return :math:`0`.
+
+* Else if :math:`z_2` is positive infinity, then return :math:`0`.
+
 * Else if :math:`z_2` is negative infinity, then return :math:`1`.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes, then return :math:`0`.
@@ -1222,6 +1244,8 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fgt_N(z_1, \pm \NAN(n)) &=& 0 \\
    \fgt_N(z, z) &=& 0 \\
    \fgt_N(+ \infty, z_2) &=& 1 \\
+   \fgt_N(- \infty, z_2) &=& 0 \\
+   \fgt_N(z_1, + \infty) &=& 0 \\
    \fgt_N(z_1, - \infty) &=& 1 \\
    \fgt_N(\pm 0, \mp 0) &=& 0 \\
    \fgt_N(z_1, z_2) &=& \bool(z_1 > z_2) \\
@@ -1237,9 +1261,13 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if :math:`z_1` and :math:`z_2` are the same value, then return :math:`1`.
 
+* Else if :math:`z_1` is positive infinity, then return :math:`0`.
+
 * Else if :math:`z_1` is negative infinity, then return :math:`1`.
 
 * Else if :math:`z_2` is positive infinity, then return :math:`1`.
+
+* Else if :math:`z_2` is negative infinity, then return :math:`0`.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes, then return :math:`1`.
 
@@ -1252,8 +1280,10 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fle_N(\pm \NAN(n), z_2) &=& 0 \\
    \fle_N(z_1, \pm \NAN(n)) &=& 0 \\
    \fle_N(z, z) &=& 1 \\
+   \fle_N(+ \infty, z_2) &=& 0 \\
    \fle_N(- \infty, z_2) &=& 1 \\
    \fle_N(z_1, + \infty) &=& 1 \\
+   \fle_N(z_1, - \infty) &=& 0 \\
    \fle_N(\pm 0, \mp 0) &=& 1 \\
    \fle_N(z_1, z_2) &=& \bool(z_1 \leq z_2) \\
    \end{array}
@@ -1270,6 +1300,10 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if :math:`z_1` is positive infinity, then return :math:`1`.
 
+* Else if :math:`z_1` is negative infinity, then return :math:`0`.
+
+* Else if :math:`z_2` is positive infinity, then return :math:`0`.
+
 * Else if :math:`z_2` is negative infinity, then return :math:`1`.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes, then return :math:`1`.
@@ -1284,6 +1318,8 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fge_N(z_1, \pm \NAN(n)) &=& 0 \\
    \fge_N(z, z) &=& 1 \\
    \fge_N(+ \infty, z_2) &=& 1 \\
+   \fge_N(- \infty, z_2) &=& 0 \\
+   \fge_N(z_1, + \infty) &=& 0 \\
    \fge_N(z_1, - \infty) &=& 1 \\
    \fge_N(\pm 0, \mp 0) &=& 1 \\
    \fge_N(z_1, z_2) &=& \bool(z_1 \geq z_2) \\
@@ -1354,8 +1390,7 @@ Conversions
    \begin{array}{lll@{\qquad}l}
    \truncu_{M,N}(\pm \NAN(n)) &=& \{\} \\
    \truncu_{M,N}(\pm \infty) &=& \{\} \\
-   \truncu_{M,N}(\pm 0) &=& 0 \\
-   \truncu_{M,N}(\pm q) &=& \trunc(\pm q) & (0 \leq \trunc(\pm q) < 2^N) \\
+   \truncu_{M,N}(\pm q) &=& \trunc(\pm q) & (-1 < \trunc(\pm q) < 2^N) \\
    \truncu_{M,N}(\pm q) &=& \{\} & (\mbox{otherwise}) \\
    \end{array}
 
@@ -1381,8 +1416,7 @@ Conversions
    \begin{array}{lll@{\qquad}l}
    \truncs_{M,N}(\pm \NAN(n)) &=& \{\} \\
    \truncs_{M,N}(\pm \infty) &=& \{\} \\
-   \truncs_{M,N}(\pm 0) &=& 0 \\
-   \truncs_{M,N}(\pm q) &=& \trunc(\pm q) & (- 2^{N-1} \leq \trunc(\pm q) < 2^{N-1}) \\
+   \truncs_{M,N}(\pm q) &=& \trunc(\pm q) & (- 2^{N-1} - 1 < \trunc(\pm q) < 2^{N-1}) \\
    \truncs_{M,N}(\pm q) &=& \{\} & (\mbox{otherwise}) \\
    \end{array}
 
@@ -1396,16 +1430,16 @@ Conversions
 :math:`\promote_{M,N}(z)`
 .........................
 
-* If :math:`z` is a :ref:`canonical NaN <canonical-nan>`, then return a element of :math:`\nan_N\{\}` (i.e., a canonical NaN of size :math:`N`).
+* If :math:`z` is a :ref:`canonical NaN <canonical-nan>`, then return a element of :math:`\nans_N\{\}` (i.e., a canonical NaN of size :math:`N`).
 
-* Else if :math:`z` is a NaN, then return a element of :math:`\nan_N\{\pm \NAN(1)\}` (i.e., any NaN of size :math:`N`).
+* Else if :math:`z` is a NaN, then return a element of :math:`\nans_N\{\pm \NAN(1)\}` (i.e., any NaN of size :math:`N`).
 
 * Else, return :math:`z`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \promote_{M,N}(\pm \NAN(n)) &=& \nan_N\{\} & (n = \canon_N) \\
-   \promote_{M,N}(\pm \NAN(n)) &=& \nan_N\{+ \NAN(1)\} & (\mbox{otherwise}) \\
+   \promote_{M,N}(\pm \NAN(n)) &=& \nans_N\{\} & (n = \canon_N) \\
+   \promote_{M,N}(\pm \NAN(n)) &=& \nans_N\{+ \NAN(1)\} & (\mbox{otherwise}) \\
    \promote_{M,N}(z) &=& z \\
    \end{array}
 
@@ -1415,9 +1449,9 @@ Conversions
 :math:`\demote_{M,N}(z)`
 ........................
 
-* If :math:`z` is a :ref:`canonical NaN <canonical-nan>`, then return a element of :math:`\nan_N\{\}` (i.e., a canonical NaN of size :math:`N`).
+* If :math:`z` is a :ref:`canonical NaN <canonical-nan>`, then return a element of :math:`\nans_N\{\}` (i.e., a canonical NaN of size :math:`N`).
 
-* Else if :math:`z` is a NaN, then return a element of :math:`\nan_N\{\pm \NAN(1)\}` (i.e., any NaN of size :math:`N`).
+* Else if :math:`z` is a NaN, then return a element of :math:`\nans_N\{\pm \NAN(1)\}` (i.e., any NaN of size :math:`N`).
 
 * Else if :math:`z` is an infinity, then return that infinity.
 
@@ -1427,8 +1461,8 @@ Conversions
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \demote_{M,N}(\pm \NAN(n)) &=& \nan_N\{\} & (n = \canon_N) \\
-   \demote_{M,N}(\pm \NAN(n)) &=& \nan_N\{+ \NAN(1)\} & (\mbox{otherwise}) \\
+   \demote_{M,N}(\pm \NAN(n)) &=& \nans_N\{\} & (n = \canon_N) \\
+   \demote_{M,N}(\pm \NAN(n)) &=& \nans_N\{+ \NAN(1)\} & (\mbox{otherwise}) \\
    \demote_{M,N}(\pm \infty) &=& \pm \infty \\
    \demote_{M,N}(\pm 0) &=& \pm 0 \\
    \demote_{M,N}(\pm q) &=& \ieee_N(\pm q) \\
