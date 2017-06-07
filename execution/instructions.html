@@ -113,8 +113,8 @@ Where these operators are non-deterministic, because they may return different <
 <p>The mapping of numeric instructions to their underlying operators is expressed by the following definition:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\mathit{op}_{\mathsf{i}N}(i) &amp;=&amp; \mathrm{i}\mathit{op}_N(i) \\
-\mathit{op}_{\mathsf{f}N}(i) &amp;=&amp; \mathrm{f}\mathit{op}_N(i) \\
+\mathit{op}_{\mathsf{i}N}(n) &amp;=&amp; \mathrm{i}\mathit{op}_N(n) \\
+\mathit{op}_{\mathsf{f}N}(z) &amp;=&amp; \mathrm{f}\mathit{op}_N(z) \\
 \end{array}\end{split}\]</div>
 <div class="section" id="exec-const">
 <span id="id1"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span><a class="headerlink" href="#exec-const" title="Permalink to this headline">¶</a></h3>
@@ -183,7 +183,7 @@ Where these operators are non-deterministic, because they may return different <
 </ol>
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
-(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t\mathsf{.}\href{../syntax/instructions.html#syntax-testop}{\mathit{testop}} &amp;\hookrightarrow&amp; (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
+(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t\mathsf{.}\href{../syntax/instructions.html#syntax-testop}{\mathit{testop}} &amp;\hookrightarrow&amp; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
   &amp; (\mbox{if}~c = \href{../syntax/instructions.html#syntax-testop}{\mathit{testop}}_t(c_1)) \\
 \end{array}\end{split}\]</div>
 </div>
@@ -198,7 +198,7 @@ Where these operators are non-deterministic, because they may return different <
 </ol>
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
-(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)~t\mathsf{.}\href{../syntax/instructions.html#syntax-relop}{\mathit{relop}} &amp;\hookrightarrow&amp; (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
+(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)~t\mathsf{.}\href{../syntax/instructions.html#syntax-relop}{\mathit{relop}} &amp;\hookrightarrow&amp; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
   &amp; (\mbox{if}~c = \href{../syntax/instructions.html#syntax-relop}{\mathit{relop}}_t(c_1,c_2)) \\
 \end{array}\end{split}\]</div>
 </div>
@@ -242,7 +242,7 @@ Where these operators are non-deterministic, because they may return different <
 <div class="section" id="exec-select">
 <span id="id8"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span><a class="headerlink" href="#exec-select" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-select"><span class="std std-ref">validation</span></a>, a value <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> is on the top of the stack.</li>
+<li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-select"><span class="std std-ref">validation</span></a>, a value of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> is on the top of the stack.</li>
 <li>Pop the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span> from the stack.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/instructions.html#valid-select"><span class="std std-ref">validation</span></a>, two more values (of the same <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a>) are on the top of the stack.</li>
 <li>Pop the value <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_2\)</span> from the stack.</li>

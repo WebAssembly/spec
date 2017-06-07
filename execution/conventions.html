@@ -158,7 +158,7 @@ WebAssembly has only very few exceptions to this, which are noted explicitly in 
 <p>There is no separate representation of the <a class="reference internal" href="runtime.html#stack"><span class="std std-ref">stack</span></a>.
 Instead, it is conveniently represented as part of the configuration&#8217;s instruction sequence.
 In particular, <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> are defined to coincide with <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions,
-and a sequence of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions can be interpreted as an operand &#8220;stack&#8221;.</p>
+and a sequence of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions can be interpreted as an operand &#8220;stack&#8221; that grows to the right.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>For example, the <a class="reference internal" href="instructions.html#exec-binop"><span class="std std-ref">reduction rule</span></a> for the <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction could be given as follows:</p>

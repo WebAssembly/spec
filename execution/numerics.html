@@ -618,7 +618,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </div>
 <div class="section" id="nan-propagation">
 <span id="aux-nan"></span><h3>NaN Propagation<a class="headerlink" href="#nan-propagation" title="Permalink to this headline">¶</a></h3>
-<p>When the result of a floating-poin operator other than <span class="math">\(\href{../execution/numerics.html#op-fneg}{\mathrm{fneg}}\)</span>, <span class="math">\(\href{../execution/numerics.html#op-fabs}{\mathrm{fabs}}\)</span>, or <span class="math">\(\href{../execution/numerics.html#op-fcopysign}{\mathrm{fcopysign}}\)</span> is a <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a>, its sign is non-deterministic and the <a class="reference internal" href="../syntax/values.html#syntax-payload"><span class="std std-ref">payload</span></a> computed as follows:</p>
+<p>When the result of a floating-point operator other than <span class="math">\(\href{../execution/numerics.html#op-fneg}{\mathrm{fneg}}\)</span>, <span class="math">\(\href{../execution/numerics.html#op-fabs}{\mathrm{fabs}}\)</span>, or <span class="math">\(\href{../execution/numerics.html#op-fcopysign}{\mathrm{fcopysign}}\)</span> is a <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a>, its sign is non-deterministic and the <a class="reference internal" href="../syntax/values.html#syntax-payload"><span class="std std-ref">payload</span></a> computed as follows:</p>
 <ul class="simple">
 <li>If the payload of all NaN inputs to the operator is <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical</span></a> (including the case that there are no NaN inputs), then the payload of the output is canonical as well.</li>
 <li>Otherwise the payload is picked non-determinsitically among all <a class="reference internal" href="../syntax/values.html#arithmetic-nan"><span class="std std-ref">arithmetic NaNs</span></a>; that is, its most significant bit is <span class="math">\(1\)</span> and all others are unspecified.</li>
@@ -626,15 +626,15 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <p>This non-deterministic result is expressed by the following auxiliary function producing a set of allowed outputs from a set of inputs:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) ~|~ n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N \} &amp; (\forall \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) \in z^\ast,~ n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \\
-\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) ~|~ n \geq \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N \} &amp; (\mbox{otherwise}) \\
+\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) ~|~ n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N \} &amp; (\forall \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) \in z^\ast,~ n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \\
+\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) ~|~ n \geq \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N \} &amp; (\mbox{otherwise}) \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="op-fadd">
 <span id="id30"></span><h3><span class="math">\(\href{../execution/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fadd" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
-<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of opposite signs, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of opposite signs, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of equal sign, then return that infinity.</li>
 <li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is an infinity, then return that infinity.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of opposite sign, then return positive zero.</li>
@@ -645,9 +645,9 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
-\href{../execution/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
-\href{../execution/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm \infty, \mp \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
+\href{../execution/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../execution/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../execution/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm \infty, \mp \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
 \href{../execution/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm \infty, \pm \infty) &amp;=&amp; \pm \infty \\
 \href{../execution/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, \pm \infty) &amp;=&amp; \pm \infty \\
 \href{../execution/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm \infty, z_2) &amp;=&amp; \pm \infty \\
@@ -662,8 +662,8 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <div class="section" id="op-fsub">
 <span id="id31"></span><h3><span class="math">\(\href{../execution/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fsub" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
-<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of equal signs, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of equal signs, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of opposite sign, then return <span class="math">\(z_1\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> is an infinity, then return that infinity.</li>
 <li>Else if <span class="math">\(z_2\)</span> is an infinity, then return that infinity negated.</li>
@@ -676,9 +676,9 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
-\href{../execution/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
-\href{../execution/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm \infty, \pm \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
+\href{../execution/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../execution/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../execution/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm \infty, \pm \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
 \href{../execution/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm \infty, \mp \infty) &amp;=&amp; \pm \infty \\
 \href{../execution/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, \pm \infty) &amp;=&amp; \mp \infty \\
 \href{../execution/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm \infty, z_2) &amp;=&amp; \pm \infty \\
@@ -697,57 +697,65 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <div class="section" id="op-fmul">
 <span id="id32"></span><h3><span class="math">\(\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fmul" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
-<li>Else if one of <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> is a zero and the other an infinity, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if one of <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> is a zero and the other an infinity, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of equal sign, then return positive infinity.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of opposite sign, then return negative infinity.</li>
 <li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is an infinity and the other a value with equal sign, then return positive infinity.</li>
 <li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is an infinity and the other a value with opposite sign, then return negative infinity.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of equal sign, then return positive zero.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of opposite sign, then return negative zero.</li>
 <li>Else return the result of multiplying <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span>, <a class="reference internal" href="#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
-\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
-\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \pm 0) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
-\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \mp 0) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
-\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \pm \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
-\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \mp \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
+\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \pm 0) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \mp 0) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \pm \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \mp \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
 \href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \pm \infty) &amp;=&amp; +\infty \\
 \href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \mp \infty) &amp;=&amp; -\infty \\
 \href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm q_1, \pm \infty) &amp;=&amp; +\infty \\
 \href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm q_1, \mp \infty) &amp;=&amp; -\infty \\
 \href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \pm q_2) &amp;=&amp; +\infty \\
 \href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \mp q_2) &amp;=&amp; -\infty \\
+\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \pm 0) &amp;=&amp; + 0 \\
+\href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \mp 0) &amp;=&amp; - 0 \\
 \href{../execution/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, z_2) &amp;=&amp; \href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(z_1 \cdot z_2) \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="op-fdiv">
 <span id="id33"></span><h3><span class="math">\(\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fdiv" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
-<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
-<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> is an infinity and <span class="math">\(z_2\)</span> a value with equal sign, then return positive infinity.</li>
 <li>Else if <span class="math">\(z_1\)</span> is an infinity and <span class="math">\(z_2\)</span> a value with opposite sign, then return negative infinity.</li>
 <li>Else if <span class="math">\(z_2\)</span> is an infinity and <span class="math">\(z_1\)</span> a value with equal sign, then return positive zero.</li>
 <li>Else if <span class="math">\(z_2\)</span> is an infinity and <span class="math">\(z_1\)</span> a value with opposite sign, then return negative zero.</li>
+<li>Else if <span class="math">\(z_1\)</span> is a zero and <span class="math">\(z_2\)</span> a value with equal sign, then return positive zero.</li>
+<li>Else if <span class="math">\(z_1\)</span> is a zero and <span class="math">\(z_2\)</span> a value with opposite sign, then return negative zero.</li>
 <li>Else if <span class="math">\(z_2\)</span> is a zero and <span class="math">\(z_1\)</span> a value with equal sign, then return positive infinity.</li>
 <li>Else if <span class="math">\(z_2\)</span> is a zero and <span class="math">\(z_1\)</span> a value with opposite sign, then return negative infinity.</li>
 <li>Else return the result of dividing <span class="math">\(z_2\)</span> by <span class="math">\(z_1\)</span>, <a class="reference internal" href="#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
-\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
-\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \infty, \pm \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
-\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \infty, \mp \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
-\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm 0, \pm 0) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
-\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm 0, \mp 0) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
+\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \infty, \pm \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \infty, \mp \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm 0, \pm 0) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm 0, \mp 0) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
 \href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \infty, \pm q_2) &amp;=&amp; +\infty \\
 \href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \infty, \mp q_2) &amp;=&amp; -\infty \\
 \href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm q_1, \pm \infty) &amp;=&amp; +0 \\
 \href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm q_1, \mp \infty) &amp;=&amp; -0 \\
+\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm 0, \pm q_2) &amp;=&amp; +0 \\
+\href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm 0, \mp q_2) &amp;=&amp; -0 \\
 \href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm q_1, \pm 0) &amp;=&amp; +\infty \\
 \href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm q_1, \mp 0) &amp;=&amp; -\infty \\
 \href{../execution/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(z_1, z_2) &amp;=&amp; \href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(z_1 / z_2) \\
@@ -756,7 +764,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <div class="section" id="op-fmin">
 <span id="id34"></span><h3><span class="math">\(\href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fmin" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
 <li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a negative infinity, then return negative infinity.</li>
 <li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a positive infinity, then return the other value.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of opposite signs, then return negative zero.</li>
@@ -764,12 +772,12 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
-\href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
-\href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(- \infty, z_2) &amp;=&amp; - \infty \\
-\href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, - \infty) &amp;=&amp; - \infty \\
+\href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
 \href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(+ \infty, z_2) &amp;=&amp; z_2 \\
+\href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(- \infty, z_2) &amp;=&amp; - \infty \\
 \href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, + \infty) &amp;=&amp; z_1 \\
+\href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, - \infty) &amp;=&amp; - \infty \\
 \href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(\pm 0, \mp 0) &amp;=&amp; -0 \\
 \href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, z_2) &amp;=&amp; z_1 &amp; (z_1 \leq z_2) \\
 \href{../execution/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, z_2) &amp;=&amp; z_2 &amp; (z_2 \leq z_1) \\
@@ -778,7 +786,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <div class="section" id="op-fmax">
 <span id="id35"></span><h3><span class="math">\(\href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fmax" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z_1, z_2\}\)</span>.</li>
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
 <li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a positive infinity, then return positive infinity.</li>
 <li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a negative infinity, then return the other value.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of opposite signs, then return positive zero.</li>
@@ -786,11 +794,11 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
-\href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
 \href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(+ \infty, z_2) &amp;=&amp; + \infty \\
-\href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, + \infty) &amp;=&amp; + \infty \\
 \href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(- \infty, z_2) &amp;=&amp; z_2 \\
+\href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, + \infty) &amp;=&amp; + \infty \\
 \href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, - \infty) &amp;=&amp; z_1 \\
 \href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(\pm 0, \mp 0) &amp;=&amp; +0 \\
 \href{../execution/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, z_2) &amp;=&amp; z_1 &amp; (z_1 \geq z_2) \\
@@ -845,26 +853,26 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <div class="section" id="op-fsqrt">
 <span id="id39"></span><h3><span class="math">\(\href{../execution/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(z)\)</span><a class="headerlink" href="#op-fsqrt" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z\}\)</span>.</li>
-<li>Else if <span class="math">\(z\)</span> has a negative sign, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z\}\)</span>.</li>
+<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> has a negative sign, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is positive infinity, then return positive infinity.</li>
 <li>Else if <span class="math">\(z\)</span> is a zero, then return that zero.</li>
 <li>Else return the square root of <span class="math">\(z\)</span>.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
-\href{../execution/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(- \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
+\href{../execution/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
+\href{../execution/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(- \infty) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
 \href{../execution/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(+ \infty) &amp;=&amp; + \infty \\
 \href{../execution/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(\pm 0) &amp;=&amp; \pm 0 \\
-\href{../execution/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(- q) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} \\
+\href{../execution/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(- q) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
 \href{../execution/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(+ q) &amp;=&amp; \href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N\left(\sqrt{z}\right) \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="op-fceil">
 <span id="id40"></span><h3><span class="math">\(\href{../execution/numerics.html#op-fceil}{\mathrm{fceil}}_N(z)\)</span><a class="headerlink" href="#op-fceil" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z\}\)</span>.</li>
+<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is an infinity, then return <span class="math">\(z\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is a zero, then return <span class="math">\(z\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is smaller than <span class="math">\(0\)</span> but greater than <span class="math">\(-1\)</span>, then return negative zero.</li>
@@ -872,7 +880,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-fceil}{\mathrm{fceil}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
+\href{../execution/numerics.html#op-fceil}{\mathrm{fceil}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
 \href{../execution/numerics.html#op-fceil}{\mathrm{fceil}}_N(\pm \infty) &amp;=&amp; \pm \infty \\
 \href{../execution/numerics.html#op-fceil}{\mathrm{fceil}}_N(\pm 0) &amp;=&amp; \pm 0 \\
 \href{../execution/numerics.html#op-fceil}{\mathrm{fceil}}_N(- q) &amp;=&amp; -0 &amp; (-1 &lt; -q &lt; 0) \\
@@ -882,7 +890,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <div class="section" id="op-ffloor">
 <span id="id41"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(z)\)</span><a class="headerlink" href="#op-ffloor" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z\}\)</span>.</li>
+<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is an infinity, then return <span class="math">\(z\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is a zero, then return <span class="math">\(z\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is greater than <span class="math">\(0\)</span> but smaller than <span class="math">\(1\)</span>, then return positive zero.</li>
@@ -890,7 +898,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
+\href{../execution/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
 \href{../execution/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(\pm \infty) &amp;=&amp; \pm \infty \\
 \href{../execution/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(\pm 0) &amp;=&amp; \pm 0 \\
 \href{../execution/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(+ q) &amp;=&amp; +0 &amp; (0 &lt; +q &lt; 1) \\
@@ -900,7 +908,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <div class="section" id="op-ftrunc">
 <span id="id42"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(z)\)</span><a class="headerlink" href="#op-ftrunc" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z\}\)</span>.</li>
+<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is an infinity, then return <span class="math">\(z\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is a zero, then return <span class="math">\(z\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is greater than <span class="math">\(0\)</span> but smaller than <span class="math">\(1\)</span>, then return positive zero.</li>
@@ -909,7 +917,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
+\href{../execution/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
 \href{../execution/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(\pm \infty) &amp;=&amp; \pm \infty \\
 \href{../execution/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(\pm 0) &amp;=&amp; \pm 0 \\
 \href{../execution/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(+ q) &amp;=&amp; +0 &amp; (0 &lt; +q &lt; 1) \\
@@ -920,7 +928,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <div class="section" id="op-fnearest">
 <span id="id43"></span><h3><span class="math">\(\href{../execution/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(z)\)</span><a class="headerlink" href="#op-fnearest" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{z\}\)</span>.</li>
+<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is an infinity, then return <span class="math">\(z\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is a zero, then return <span class="math">\(z\)</span>.</li>
 <li>Else if <span class="math">\(z\)</span> is greater than <span class="math">\(0\)</span> but smaller than or equal to <span class="math">\(0.5\)</span>, then return positive zero.</li>
@@ -929,7 +937,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../execution/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
+\href{../execution/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
 \href{../execution/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(\pm \infty) &amp;=&amp; \pm \infty \\
 \href{../execution/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(\pm 0) &amp;=&amp; \pm 0 \\
 \href{../execution/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(+ q) &amp;=&amp; +0 &amp; (0 &lt; +q \leq 0.5) \\
@@ -977,8 +985,10 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <ul class="simple">
 <li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is positive infinity, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> is negative infinity, then return <span class="math">\(1\)</span>.</li>
 <li>Else if <span class="math">\(z_2\)</span> is positive infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is negative infinity, then return <span class="math">\(0\)</span>.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> is smaller than <span class="math">\(z_2\)</span>, then return <span class="math">\(1\)</span>.</li>
 <li>Else return <span class="math">\(0\)</span>.</li>
@@ -988,8 +998,10 @@ There is no observable difference between quiet and signalling NaNs.</li>
 \href{../execution/numerics.html#op-flt}{\mathrm{flt}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-flt}{\mathrm{flt}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-flt}{\mathrm{flt}}_N(z, z) &amp;=&amp; 0 \\
+\href{../execution/numerics.html#op-flt}{\mathrm{flt}}_N(+ \infty, z_2) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-flt}{\mathrm{flt}}_N(- \infty, z_2) &amp;=&amp; 1 \\
 \href{../execution/numerics.html#op-flt}{\mathrm{flt}}_N(z_1, + \infty) &amp;=&amp; 1 \\
+\href{../execution/numerics.html#op-flt}{\mathrm{flt}}_N(z_1, - \infty) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-flt}{\mathrm{flt}}_N(\pm 0, \mp 0) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-flt}{\mathrm{flt}}_N(z_1, z_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(z_1 &lt; z_2) \\
 \end{array}\end{split}\]</div>
@@ -1000,6 +1012,8 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> is positive infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is negative infinity, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is positive infinity, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_2\)</span> is negative infinity, then return <span class="math">\(1\)</span>.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> is larger than <span class="math">\(z_2\)</span>, then return <span class="math">\(1\)</span>.</li>
@@ -1011,6 +1025,8 @@ There is no observable difference between quiet and signalling NaNs.</li>
 \href{../execution/numerics.html#op-fgt}{\mathrm{fgt}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-fgt}{\mathrm{fgt}}_N(z, z) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-fgt}{\mathrm{fgt}}_N(+ \infty, z_2) &amp;=&amp; 1 \\
+\href{../execution/numerics.html#op-fgt}{\mathrm{fgt}}_N(- \infty, z_2) &amp;=&amp; 0 \\
+\href{../execution/numerics.html#op-fgt}{\mathrm{fgt}}_N(z_1, + \infty) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-fgt}{\mathrm{fgt}}_N(z_1, - \infty) &amp;=&amp; 1 \\
 \href{../execution/numerics.html#op-fgt}{\mathrm{fgt}}_N(\pm 0, \mp 0) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-fgt}{\mathrm{fgt}}_N(z_1, z_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(z_1 &gt; z_2) \\
@@ -1021,8 +1037,10 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <ul class="simple">
 <li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is positive infinity, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> is negative infinity, then return <span class="math">\(1\)</span>.</li>
 <li>Else if <span class="math">\(z_2\)</span> is positive infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is negative infinity, then return <span class="math">\(0\)</span>.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return <span class="math">\(1\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> is smaller than or equal to <span class="math">\(z_2\)</span>, then return <span class="math">\(1\)</span>.</li>
 <li>Else return <span class="math">\(0\)</span>.</li>
@@ -1032,8 +1050,10 @@ There is no observable difference between quiet and signalling NaNs.</li>
 \href{../execution/numerics.html#op-fle}{\mathrm{fle}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-fle}{\mathrm{fle}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-fle}{\mathrm{fle}}_N(z, z) &amp;=&amp; 1 \\
+\href{../execution/numerics.html#op-fle}{\mathrm{fle}}_N(+ \infty, z_2) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-fle}{\mathrm{fle}}_N(- \infty, z_2) &amp;=&amp; 1 \\
 \href{../execution/numerics.html#op-fle}{\mathrm{fle}}_N(z_1, + \infty) &amp;=&amp; 1 \\
+\href{../execution/numerics.html#op-fle}{\mathrm{fle}}_N(z_1, - \infty) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-fle}{\mathrm{fle}}_N(\pm 0, \mp 0) &amp;=&amp; 1 \\
 \href{../execution/numerics.html#op-fle}{\mathrm{fle}}_N(z_1, z_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(z_1 \leq z_2) \\
 \end{array}\end{split}\]</div>
@@ -1044,6 +1064,8 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return <span class="math">\(1\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> is positive infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is negative infinity, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is positive infinity, then return <span class="math">\(0\)</span>.</li>
 <li>Else if <span class="math">\(z_2\)</span> is negative infinity, then return <span class="math">\(1\)</span>.</li>
 <li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return <span class="math">\(1\)</span>.</li>
 <li>Else if <span class="math">\(z_1\)</span> is smaller than or equal to <span class="math">\(z_2\)</span>, then return <span class="math">\(1\)</span>.</li>
@@ -1055,6 +1077,8 @@ There is no observable difference between quiet and signalling NaNs.</li>
 \href{../execution/numerics.html#op-fge}{\mathrm{fge}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-fge}{\mathrm{fge}}_N(z, z) &amp;=&amp; 1 \\
 \href{../execution/numerics.html#op-fge}{\mathrm{fge}}_N(+ \infty, z_2) &amp;=&amp; 1 \\
+\href{../execution/numerics.html#op-fge}{\mathrm{fge}}_N(- \infty, z_2) &amp;=&amp; 0 \\
+\href{../execution/numerics.html#op-fge}{\mathrm{fge}}_N(z_1, + \infty) &amp;=&amp; 0 \\
 \href{../execution/numerics.html#op-fge}{\mathrm{fge}}_N(z_1, - \infty) &amp;=&amp; 1 \\
 \href{../execution/numerics.html#op-fge}{\mathrm{fge}}_N(\pm 0, \mp 0) &amp;=&amp; 1 \\
 \href{../execution/numerics.html#op-fge}{\mathrm{fge}}_N(z_1, z_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(z_1 \geq z_2) \\
@@ -1110,8 +1134,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
 \href{../execution/numerics.html#op-trunc_u}{\mathrm{trunc\_u}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \{\} \\
 \href{../execution/numerics.html#op-trunc_u}{\mathrm{trunc\_u}}_{M,N}(\pm \infty) &amp;=&amp; \{\} \\
-\href{../execution/numerics.html#op-trunc_u}{\mathrm{trunc\_u}}_{M,N}(\pm 0) &amp;=&amp; 0 \\
-\href{../execution/numerics.html#op-trunc_u}{\mathrm{trunc\_u}}_{M,N}(\pm q) &amp;=&amp; \href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp; (0 \leq \href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &lt; 2^N) \\
+\href{../execution/numerics.html#op-trunc_u}{\mathrm{trunc\_u}}_{M,N}(\pm q) &amp;=&amp; \href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp; (-1 &lt; \href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &lt; 2^N) \\
 \href{../execution/numerics.html#op-trunc_u}{\mathrm{trunc\_u}}_{M,N}(\pm q) &amp;=&amp; \{\} &amp; (\mbox{otherwise}) \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
@@ -1132,8 +1155,7 @@ It is not defined for NaNs, infinities, or values for which the result is out of
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
 \href{../execution/numerics.html#op-trunc_s}{\mathrm{trunc\_s}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \{\} \\
 \href{../execution/numerics.html#op-trunc_s}{\mathrm{trunc\_s}}_{M,N}(\pm \infty) &amp;=&amp; \{\} \\
-\href{../execution/numerics.html#op-trunc_s}{\mathrm{trunc\_s}}_{M,N}(\pm 0) &amp;=&amp; 0 \\
-\href{../execution/numerics.html#op-trunc_s}{\mathrm{trunc\_s}}_{M,N}(\pm q) &amp;=&amp; \href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp; (- 2^{N-1} \leq \href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &lt; 2^{N-1}) \\
+\href{../execution/numerics.html#op-trunc_s}{\mathrm{trunc\_s}}_{M,N}(\pm q) &amp;=&amp; \href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp; (- 2^{N-1} - 1 &lt; \href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &lt; 2^{N-1}) \\
 \href{../execution/numerics.html#op-trunc_s}{\mathrm{trunc\_s}}_{M,N}(\pm q) &amp;=&amp; \{\} &amp; (\mbox{otherwise}) \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
@@ -1145,30 +1167,30 @@ It is not defined for NaNs, infinities, or values for which the result is out of
 <div class="section" id="op-promote">
 <span id="id55"></span><h3><span class="math">\(\href{../execution/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(z)\)</span><a class="headerlink" href="#op-promote" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If <span class="math">\(z\)</span> is a <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical NaN</span></a>, then return a element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\}\)</span> (i.e., a canonical NaN of size <span class="math">\(N\)</span>).</li>
-<li>Else if <span class="math">\(z\)</span> is a NaN, then return a element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\}\)</span> (i.e., any NaN of size <span class="math">\(N\)</span>).</li>
+<li>If <span class="math">\(z\)</span> is a <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical NaN</span></a>, then return a element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span> (i.e., a canonical NaN of size <span class="math">\(N\)</span>).</li>
+<li>Else if <span class="math">\(z\)</span> is a NaN, then return a element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\}\)</span> (i.e., any NaN of size <span class="math">\(N\)</span>).</li>
 <li>Else, return <span class="math">\(z\)</span>.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../execution/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} &amp; (n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \\
-\href{../execution/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{+ \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\} &amp; (\mbox{otherwise}) \\
+\href{../execution/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} &amp; (n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \\
+\href{../execution/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{+ \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\} &amp; (\mbox{otherwise}) \\
 \href{../execution/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(z) &amp;=&amp; z \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="op-demote">
 <span id="id56"></span><h3><span class="math">\(\href{../execution/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(z)\)</span><a class="headerlink" href="#op-demote" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If <span class="math">\(z\)</span> is a <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical NaN</span></a>, then return a element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\}\)</span> (i.e., a canonical NaN of size <span class="math">\(N\)</span>).</li>
-<li>Else if <span class="math">\(z\)</span> is a NaN, then return a element of <span class="math">\(\href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\}\)</span> (i.e., any NaN of size <span class="math">\(N\)</span>).</li>
+<li>If <span class="math">\(z\)</span> is a <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical NaN</span></a>, then return a element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span> (i.e., a canonical NaN of size <span class="math">\(N\)</span>).</li>
+<li>Else if <span class="math">\(z\)</span> is a NaN, then return a element of <span class="math">\(\href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\}\)</span> (i.e., any NaN of size <span class="math">\(N\)</span>).</li>
 <li>Else if <span class="math">\(z\)</span> is an infinity, then return that infinity.</li>
 <li>Else if <span class="math">\(z\)</span> is a zero, then return that zero.</li>
 <li>Else, return <span class="math">\(\href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(z)\)</span>.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../execution/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{\} &amp; (n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \\
-\href{../execution/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nan}{\mathrm{nan}}_N\{+ \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\} &amp; (\mbox{otherwise}) \\
+\href{../execution/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} &amp; (n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \\
+\href{../execution/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../execution/numerics.html#aux-nans}{\mathrm{nans}}_N\{+ \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\} &amp; (\mbox{otherwise}) \\
 \href{../execution/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm \infty) &amp;=&amp; \pm \infty \\
 \href{../execution/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm 0) &amp;=&amp; \pm 0 \\
 \href{../execution/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm q) &amp;=&amp; \href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(\pm q) \\
