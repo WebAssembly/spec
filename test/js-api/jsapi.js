@@ -46,8 +46,7 @@ const exportingModuleBinary = (() => {
         .addFunction('f', kSig_i_v)
         .addBody([
             kExprI32Const,
-            42,
-            kExprEnd
+            42
         ])
         .exportFunc();
 
@@ -59,9 +58,7 @@ const complexExportingModuleBinary = (() => {
 
     builder
         .addFunction('a', kSig_v_v)
-        .addBody([
-            kExprEnd
-        ])
+        .addBody([])
         .exportFunc();
 
     builder.addMemory(1, 1, /* exported */ false);
@@ -200,7 +197,7 @@ test(() => {
     assertThrows(() => new Module(new Uint8Array()), CompileError);
     assertThrows(() => new Module(new ArrayBuffer()), CompileError);
     assert_equals(new Module(emptyModuleBinary) instanceof Module, true);
-    assert_equals(new Module(emptyModuleBinary.buffer) instanceof Module, true);
+    assert_equals(new Module(new Uint8Array(emptyModuleBinary)) instanceof Module, true);
 }, "'WebAssembly.Module' constructor function");
 
 test(() => {
@@ -703,7 +700,7 @@ function assertCompileSuccess(bytes) {
 }
 
 assertCompileSuccess(emptyModuleBinary);
-assertCompileSuccess(emptyModuleBinary.buffer);
+assertCompileSuccess(new Uint8Array(emptyModuleBinary));
 
 test(() => {
     const instantiateDesc = Object.getOwnPropertyDescriptor(WebAssembly, 'instantiate');
@@ -776,10 +773,10 @@ test(() => {
     }
     assertInstantiateSuccess(emptyModule);
     assertInstantiateSuccess(emptyModuleBinary);
-    assertInstantiateSuccess(emptyModuleBinary.buffer);
+    assertInstantiateSuccess(new Uint8Array(emptyModuleBinary));
     assertInstantiateSuccess(importingModule, {"":{f:()=>{}}});
     assertInstantiateSuccess(importingModuleBinary, {"":{f:()=>{}}});
-    assertInstantiateSuccess(importingModuleBinary.buffer, {"":{f:()=>{}}});
+    assertInstantiateSuccess(new Uint8Array(importingModuleBinary), {"":{f:()=>{}}});
     assertInstantiateSuccess(complexImportingModuleBinary, {
         a:{b:()=>{}},
         c:{d:scratch_memory},
