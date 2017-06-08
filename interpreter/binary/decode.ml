@@ -481,8 +481,10 @@ let section tag f default s =
 
 (* Type section *)
 
+let type_ s = at func_type s
+
 let type_section s =
-  section `TypeSection (vec func_type) [] s
+  section `TypeSection (vec type_) [] s
 
 
 (* Import section *)

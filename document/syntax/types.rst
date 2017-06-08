@@ -22,10 +22,10 @@ Value Types
      \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 \\
    \end{array}
 
-The types |i32| and |i64| classify 32 and 64 bit integers, respectively.
+The types |I32| and |I64| classify 32 and 64 bit integers, respectively.
 Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.
 
-The types |f32| and |f64| classify 32 and 64 bit floating points, respectively.
+The types |F32| and |F64| classify 32 and 64 bit floating points, respectively.
 They correspond to single and double precision floating point types as defined by the `IEEE-754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard
 
 Conventions
@@ -33,8 +33,8 @@ Conventions
 
 * The meta variable :math:`t` ranges over value types where clear from context.
 
-* The notation :math:`|t|` denotes the *width* of a value type in bytes.
-  (That is, :math:`|\I32| = |\F32| = 4` and :math:`|\I64| = |\F64| = 8`.)
+* The notation :math:`|t|` denotes the *width* of a value type.
+  (That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.)
 
 
 .. _syntax-resulttype:
@@ -78,7 +78,7 @@ mapping a vector of parameters to a vector of results.
 
 .. note::
    In the current version of WebAssembly,
-   the length of the result type vector of a function may be at most :math:`1`.
+   the length of the result type vector of a :ref:`valid <valid-functype>` function type may be at most :math:`1`.
    This restriction may be removed in future versions.
 
 

@@ -314,7 +314,7 @@ Memory Instructions
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
@@ -322,7 +322,7 @@ Memory Instructions
    \frac{
      C.\MEMS[0] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} \leq |t|
+     2^{\memarg.\ALIGN} \leq |t|/8
    }{
      C \vdash t\K{.load}~\memarg : [\I32] \to [t]
    }
@@ -335,7 +335,7 @@ Memory Instructions
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
@@ -343,7 +343,7 @@ Memory Instructions
    \frac{
      C.\MEMS[0] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} \leq N
+     2^{\memarg.\ALIGN} \leq N/8
    }{
      C \vdash t\K{.load}N\K{\_}\sx~\memarg : [\I32] \to [t]
    }
@@ -356,7 +356,7 @@ Memory Instructions
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
@@ -364,7 +364,7 @@ Memory Instructions
    \frac{
      C.\MEMS[0] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} \leq |t|
+     2^{\memarg.\ALIGN} \leq |t|/8
    }{
      C \vdash t\K{.store}~\memarg : [\I32~t] \to []
    }
@@ -377,7 +377,7 @@ Memory Instructions
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
@@ -385,7 +385,7 @@ Memory Instructions
    \frac{
      C.\MEMS[0] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} \leq N
+     2^{\memarg.\ALIGN} \leq N/8
    }{
      C \vdash t\K{.store}N~\memarg : [\I32~t] \to []
    }

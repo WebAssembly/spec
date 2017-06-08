@@ -29,9 +29,9 @@ All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{sign} & \Tsign &::=&
-     \epsilon \Rightarrow {+}1 ~~|~~
-     \text{+} \Rightarrow {+}1 ~~|~~
-     \text{-} \Rightarrow {-}1 \\
+     \epsilon \Rightarrow {+} ~~|~~
+     \text{+} \Rightarrow {+} ~~|~~
+     \text{-} \Rightarrow {-} \\
    \production{decimal digit} & \Tdigit &::=&
      \text{0} \Rightarrow 0 ~~|~~ \dots ~~|~~ \text{9} \Rightarrow 9 \\
    \production{hexadecimal digit} & \Thexdigit &::=&
@@ -59,8 +59,8 @@ Moreover, their value must lie within the range of the respective type.
      n{:}\Tnum &\Rightarrow& n & (n < 2^N) \\ &&|&
      \text{0x}~~n{:}\Thexnum &\Rightarrow& n & (n < 2^N) \\
    \production{signed integer} & \TsN &::=&
-     s{:}\Tsign~~n{:}\Tnum &\Rightarrow& s\cdot n & (-2^{N-1} \leq s\cdot n < 2^{N-1}) \\ &&|&
-     s{:}\Tsign~~\text{0x}~~n{:}\Thexnum &\Rightarrow& s\cdot n & (-2^{N-1} \leq s\cdot n < 2^{N-1}) \\
+     {\pm}{:}\Tsign~~n{:}\Tnum &\Rightarrow& \pm n & (-2^{N-1} \leq \pm n < 2^{N-1}) \\ &&|&
+     {\pm}{:}\Tsign~~\text{0x}~~n{:}\Thexnum &\Rightarrow& \pm n & (-2^{N-1} \leq \pm n < 2^{N-1}) \\
    \end{array}
 
 :ref:`Uninterpreted integers <syntax-int>` can be written as either signed or unsigned, and are normalized to unsigned in the abstract syntax.
@@ -86,7 +86,7 @@ Floating-Point
 :ref:`Floating point <syntax-float>` values can be represented in either decimal or hexadecimal notation.
 The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
 (that is, a numeric value must not overflow to :math:`\pm\mbox{infinity}`),
-but it may be rounded to the nearest representable value.
+but it may be :ref:`rounded <aux-ieee>` to the nearest representable value.
 
 .. note::
    Rounding can be prevented by using hexadecimal notation with no more significant bits than supported by the required type.
@@ -103,28 +103,28 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      \epsilon &\Rightarrow& 0 \\ &&|&
      h{:}\Thexdigit~q{:}\Thexfrac &\Rightarrow& (h+q)/16 \\
    \production{decimal floating-point number} & \Tfloat &::=&
-     s{:}\Tsign~p{:}\Tnum~\text{.}~q{:}\Tfrac
-       &\Rightarrow& s\cdot(p+q) \\ &&|&
-     s{:}\Tsign~p{:}\Tnum~(\text{E}~|~\text{e})~t{:}\Tsign~e{:}\Tnum
-       &\Rightarrow& s\cdot p\cdot 10^{t\cdot e} \\ &&|&
-     s{:}\Tsign~p{:}\Tnum~\text{.}~q{:}\Tfrac~(\text{E}~|~\text{e})~t{:}\Tsign~e{:}\Tnum
-       &\Rightarrow& s\cdot(p+q)\cdot 10^{t\cdot e} \\
+     p{:}\Tnum~\text{.}~q{:}\Tfrac
+       &\Rightarrow& p+q \\ &&|&
+     p{:}\Tnum~(\text{E}~|~\text{e})~{\pm}{:}\Tsign~e{:}\Tnum
+       &\Rightarrow& p\cdot 10^{\pm e} \\ &&|&
+     p{:}\Tnum~\text{.}~q{:}\Tfrac~(\text{E}~|~\text{e})~{\pm}{:}\Tsign~e{:}\Tnum
+       &\Rightarrow& (p+q)\cdot 10^{\pm e} \\
    \production{hexadecimal floating-point number} & \Thexfloat &::=&
-     s{:}\Tsign~\text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac
-       &\Rightarrow& s\cdot(p+q) \\ &&|&
-     s{:}\Tsign~\text{0x}~p{:}\Thexnum~(\text{P}~|~\text{p})~t{:}\Tsign~e{:}\Tnum
-       &\Rightarrow& s\cdot p\cdot 2^{t\cdot e} \\ &&|&
-     s{:}\Tsign~\text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~t{:}\Tsign~e{:}\Tnum
-       &\Rightarrow& s\cdot(p+q)\cdot 2^{t\cdot e} \\
+     \text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac
+       &\Rightarrow& p+q \\ &&|&
+     \text{0x}~p{:}\Thexnum~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum
+       &\Rightarrow& p\cdot 2^{\pm e} \\ &&|&
+     \text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum
+       &\Rightarrow& (p+q)\cdot 2^{\pm e} \\
+   \production{floating-point value} & \TfNmag &::=&
+     z{:}\Tfloat &\Rightarrow& \ieee_N(z) & (\ieee_N(z) \neq \pm \infty) \\ &&|&
+     z{:}\Thexfloat &\Rightarrow& \ieee_N(z) & (\ieee_N(z) \neq \pm \infty) \\ &&|&
+     \text{inf} &\Rightarrow& \infty \\ &&|&
+     \text{nan} &\Rightarrow& \NAN(2^{\significand(N)-1}) \\ &&|&
+     \text{nan{:}0x}~n{:}\Thexnum &\Rightarrow& \NAN(n) & (1 \leq n < 2^{\significand(N)}) \\
    \production{floating-point value} & \TfN &::=&
-     z{:}\Tfloat &\Rightarrow& \ieee_N(z) \\ &&|&
-     z{:}\Thexfloat &\Rightarrow& \ieee_N(z) \\ &&|&
-     s{:}\Tsign~\text{inf} &\Rightarrow& \ieeeinf_N(s) \\ &&|&
-     s{:}\Tsign~\text{nan} &\Rightarrow& \ieeenan_N(s, 0) \\ &&|&
-     s{:}\Tsign~\text{nan{:}}~\text{0x}~n{:}\Thexnum &\Rightarrow& b^\ast & (\ieeenan_N(s, n) = b^\ast) \\
+     {\pm}{:}\Tsign~z{:}\TfNmag &\Rightarrow& \pm z \\
    \end{array}
-
-.. todo:: IEEE encoding helper functions
 
 
 .. _text-vec:
