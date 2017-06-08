@@ -217,19 +217,21 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 * If :math:`j_2` is :math:`0`, then the result is undefined.
 
-* Else if :math:`j_2` is :math:`-1`, then the result is undefined.
+* Else if :math:`j_1` divided by :math:`j_2` is :math:`2^{N-1}`, then the result is undefined.
 
 * Else, return the result of dividing :math:`j_1` by :math:`j_2`, truncated toward zero.
 
 .. math::
    \begin{array}{@{}lcll}
    \idivs_N(i_1, 0) &=& \{\} \\
-   \idivs_N(i_1, i_2) &=& \{\} & (\signed_N(i_2) = -1 \\
+   \idivs_N(i_1, i_2) &=& \{\} \qquad\qquad (\signed_N(i_1) / \signed_N(i_2) = 2^{N-1}) \\
    \idivs_N(i_1, i_2) &=& \signed_N^{-1}(\trunc(\signed_N(i_1) / \signed_N(i_2))) \\
    \end{array}
 
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
+   In particular, the result of :math:`(-2^{N-1})/(-1) = +2^{N-1}` is not representable as an :math:`N`-bit signed integer.
+
 
 .. _op-rem_u:
 
