@@ -212,6 +212,35 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    S' &=& S \compose \{\FUNCS~\tableinst\} \\
    \end{array}
 
+.. _alloc-hostfunc:
+
+:ref:`Host Functions <syntax-hostfunc>`
+.......................................
+
+1. Let :math:`\hostfunc` be the :ref:`host function <syntax-hostfunc>` to allocate and :math:`\functype` its :ref:`function type <syntax-functype>`.
+
+2. Let :math:`a` be the first free :ref:`function address <syntax-funcaddr>` in :math:`S`.
+
+4. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \TYPE~\functype, \CODE~\hostfunc \}`.
+
+5. Append :math:`\funcinst` to the |FUNCS| of :math:`S`.
+
+6. Return :math:`a`.
+
+.. math::
+   \begin{array}{rlll}
+   \allochostfunc(S, \hostfunc, \functype) &=& S', \funcaddr \\[1ex]
+   \mbox{where:} \hfill \\
+   \funcaddr &=& |S.\FUNCS| \\
+   \funcinst &=& \{ \TYPE~\functype, \CODE~\hostfunc \} \\
+   S' &=& S \compose \{\FUNCS~\tableinst\} \\
+   \end{array}
+
+.. note::
+   Host functions are never allocated by the WebAssembly semantics itself,
+   but may be allocated by the embedder.
+
+
 .. _alloc-table:
 
 :ref:`Tables <syntax-tableinst>`
@@ -298,7 +327,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 :ref:`Modules <syntax-moduleinst>`
 ..................................
 
-The allocation function for :ref:`modules <syntax-module>` requires a suitable list of :ref:`external values <syntax-externval>` that are assumed to match the :ref:`import <syntax-import>` vector of the module.
+The allocation function for :ref:`modules <syntax-module>` requires a suitable list of :ref:`external values <syntax-externval>` that are assumed to :ref:`match <match-externtype>` the :ref:`import <syntax-import>` vector of the module.
 
 1. Let :math:`\module` be the :ref:`module <syntax-module>` to allocate and :math:`\externval_{\F{im}}^\ast` the vector of :ref:`external values <syntax-externval>` providing the module's imports.
 
@@ -399,9 +428,6 @@ Here, the notation :math:`\F{allocX}^\ast` is shorthand for multiple :ref:`alloc
    The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance :math:`\moduleinst` is passed to the function allocator as an argument, in order to form the necessary closures.
    In an implementation, this recursion is easily unraveled by mutating one or the other in a secondary step.
 
-   The export instances in the formal definition are also formed by reference to the resulting module instance :math:`\moduleinst`.
-   However, that is merely a convenient device to succinctly look up the external values by :ref:`index <syntax-index>` relative to their respective :ref:`index space <syntax-index>`.
-
 
 .. _instantiation:
 .. _exec-module:
@@ -425,7 +451,9 @@ Instantiation may *fail* with an error.
 
 4. For each :ref:`external value <syntax-externval>` :math:`\externval_i` in :math:`\externval^n` and :ref:`external type <syntax-externtype>` :math:`\externtype_i` in :math:`\externtype^n`, do:
 
-   a. If :math:`\externval_i` does not :ref:`have type <valid-externval>` :math:`\externtype_i` in store :math:`S`, then:
+   a. Assert: :math:`\externval_i` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\externtype'_i` in store :math:`S`.
+
+   b. If :math:`\externtype'_i` does not :ref:`match <match-externtype>` :math:`\externtype_i`, then:
 
       i. Fail.
 
@@ -451,9 +479,9 @@ Instantiation may *fail* with an error.
 
    g. Let :math:`\tableinst_i` be the :ref:`table instance <syntax-tableinst>` :math:`S.\TABLES[\tableaddr_i]`.
 
-   h. Let :math:`\X{elen}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\INIT`.
+   h. Let :math:`\X{eend}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\INIT`.
 
-   i. If :math:`\X{elen}_i` is larger than the length of :math:`\tableinst_i.\ELEM`, then:
+   i. If :math:`\X{eend}_i` is larger than the length of :math:`\tableinst_i.\ELEM`, then:
 
       i. Fail.
 
@@ -473,9 +501,9 @@ Instantiation may *fail* with an error.
 
    g. Let :math:`\meminst_i` be the :ref:`memory instance <syntax-meminst>` :math:`S.\MEMS[\memaddr_i]`.
 
-   h. Let :math:`\X{dlen}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\INIT`.
+   h. Let :math:`\X{dend}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\INIT`.
 
-   i. If :math:`\X{dlen}_i` is larger than the length of :math:`\meminst_i.\DATA`, then:
+   i. If :math:`\X{dend}_i` is larger than the length of :math:`\meminst_i.\DATA`, then:
 
       i. Fail.
 
@@ -539,7 +567,8 @@ Instantiation may *fail* with an error.
      \end{array} \\
    &\mbox{if}
      & S \vdash \module : \externtype^n \\
-     &\wedge& (\vdash \externval : \externtype)^n \\[1ex]
+     &\wedge& (\vdash \externval : \externtype')^n \\
+     &\wedge& (\vdash \externtype' \leq \externtype)^n \\[1ex]
      &\wedge& \module.\GLOBALS = \global^k \\
      &\wedge& \module.\ELEM = \elem^\ast \\
      &\wedge& \module.\DATA = \data^\ast \\
@@ -600,9 +629,9 @@ The following steps are performed:
 
    a. Fail.
 
-5. For each :ref:`value type <syntax-valtype>` :math:`t_i` in :math:`t_1^n`, do:
+5. For each :ref:`value type <syntax-valtype>` :math:`t_i` in :math:`t_1^n` and corresponding :ref:`value <syntax-val>` :math:`val_i` in :math:`\val^\ast`, do:
 
-   a. If :math:`\val^\ast[i]` is not :math:`t_i.\CONST~c_i` for some :math:`c_i`, then:
+   a. If :math:`\val_i` is not :math:`t_i.\CONST~c_i` for some :math:`c_i`, then:
 
       i. Fail.
 
@@ -619,7 +648,7 @@ Once the function has returned, the following steps are executed:
 
 2. Pop :math:`\val_{\F{res}}^m` from the stack.
 
-The values :math:`\val_{\F{res}}^m` are the result of the call.
+The values :math:`\val_{\F{res}}^m` are the results of the call.
 
 If the function terminates with a :ref:`trap <trap>`, the error is propagated to the caller in a manner specified by the :ref:`embedder <embedder>`.
 

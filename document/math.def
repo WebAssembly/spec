@@ -423,6 +423,7 @@
 .. |mod| mathdef:: \mathbin{\F{mod}}
 
 .. |allocfunc| mathdef:: \xref{execution/modules}{alloc-func}{\F{allocfunc}}
+.. |allochostfunc| mathdef:: \xref{execution/modules}{alloc-hostfunc}{\F{allochostfunc}}
 .. |alloctable| mathdef:: \xref{execution/modules}{alloc-table}{\F{alloctable}}
 .. |allocmem| mathdef:: \xref{execution/modules}{alloc-mem}{\F{allocmem}}
 .. |allocglobal| mathdef:: \xref{execution/modules}{alloc-global}{\F{allocglobal}}
