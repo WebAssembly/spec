@@ -109,11 +109,6 @@ class WasmFunctionBuilder {
     return this;
   }
 
-  addBodyWithEnd(body) {
-    this.body = body;
-    return this;
-  }
-
   addLocals(locals) {
     this.locals = locals;
     return this;
