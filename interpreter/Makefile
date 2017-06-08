@@ -10,8 +10,8 @@
 # Configuration
 
 NAME =		wasm
-UNOPT = 	$(NAME)
-OPT =   	$(NAME).opt
+UNOPT = 	$(NAME).debug
+OPT =   	$(NAME)
 LIB =		$(NAME)
 ZIP =		$(NAME).zip
 JSLIB =		wast.js
@@ -26,12 +26,13 @@ JS =		# set to JS shell command to run JS tests
 
 # Main targets
 
-.PHONY:		unopt opt libunopt libopt all land zip
+.PHONY:		default opt unopt libopt libunopt all land zip
 
-unopt:		$(UNOPT)
+default:	opt
 opt:		$(OPT)
-libunopt:	_build/$(LIB).cmo
+unopt:		$(UNOPT)
 libopt:		_build/$(LIB).cmx
+libunopt:	_build/$(LIB).cmo
 all:		unopt opt libunopt libopt test
 land:		all $(WINMAKE)
 zip: 		$(ZIP)
@@ -95,24 +96,35 @@ $(WINMAKE):	clean
 		>>$@
 
 
+# Executing test suite
+
+.PHONY:		test debugtest
+
+test:		$(OPT)
+		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
+debugtest:	$(UNOPT)
+		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',)
+
+test/%:		$(OPT)
+		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
+debugtest/%:	$(UNOPT)
+		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
+
+run/%:		$(OPT)
+		./$(OPT) $(@:run/%=../test/core/%.wast)
+debugrun/%:		$(UNOPT)
+		./$(UNOPT) $(@:run/%=../test/core/%.wast)
+
+
 # Miscellaneous targets
 
-.PHONY:		test clean
+.PHONY:		clean
 
 $(ZIP):		$(WINMAKE)
 		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
-test:		$(NAME)
-		../test/core/run.py --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',)
-
-test/%:		$(NAME)
-		../test/core/run.py --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
-
-run/%:		$(NAME)
-		./$(NAME) $(@:run/%=../test/core/%.wast)
-
 clean:
-		rm -rf _build/jslib
+		rm -rf _build/jslib wasm.mlpack
 		$(OCB) -clean
 
 

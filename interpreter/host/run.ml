@@ -18,17 +18,20 @@ let trace name = if !Flags.trace then print_endline ("-- " ^ name)
 (* File types *)
 
 let binary_ext = "wasm"
-let binary_sexpr_ext = "bin.wast"
-let sexpr_ext = "wast"
+let sexpr_ext = "wat"
+let script_binary_ext = "bin.wast"
+let script_ext = "wast"
 let js_ext = "js"
 
-let dispatch_file_ext on_binary on_binary_sexpr on_sexpr on_js file =
+let dispatch_file_ext on_binary on_sexpr on_script_binary on_script on_js file =
   if Filename.check_suffix file binary_ext then
     on_binary file
-  else if Filename.check_suffix file binary_sexpr_ext then
-    on_binary_sexpr file
   else if Filename.check_suffix file sexpr_ext then
     on_sexpr file
+  else if Filename.check_suffix file script_binary_ext then
+    on_script_binary file
+  else if Filename.check_suffix file script_ext then
+    on_script file
   else if Filename.check_suffix file js_ext then
     on_js file
   else
@@ -47,7 +50,15 @@ let create_binary_file file _ get_module =
     close_out oc
   with exn -> close_out oc; raise exn
 
-let create_sexpr_file mode file get_script _ =
+let create_sexpr_file file _ get_module =
+  trace ("Writing (" ^ file ^ ")...");
+  let oc = open_out file in
+  try
+    Print.module_ oc !Flags.width (get_module ());
+    close_out oc
+  with exn -> close_out oc; raise exn
+
+let create_script_file mode file get_script _ =
   trace ("Writing (" ^ file ^ ")...");
   let oc = open_out file in
   try
@@ -68,8 +79,9 @@ let create_js_file file get_script _ =
 let output_file =
   dispatch_file_ext
     create_binary_file
-    (create_sexpr_file `Binary)
-    (create_sexpr_file `Textual)
+    create_sexpr_file
+    (create_script_file `Binary)
+    (create_script_file `Textual)
     create_js_file
 
 let output_stdout get_module =
@@ -104,21 +116,26 @@ let input_from get_script run =
   | Assert (at, msg) -> error at "assertion failure" msg
   | Abort _ -> false
 
-let input_sexpr name lexbuf start run =
+let input_script start name lexbuf run =
   input_from (fun _ -> Parse.parse name lexbuf start) run
+
+let input_sexpr name lexbuf run =
+  input_from (fun _ ->
+    let var_opt, def = Parse.parse name lexbuf Parse.Module in
+    [Module (var_opt, def) @@ no_region]) run
 
 let input_binary name buf run =
   let open Source in
   input_from (fun _ ->
     [Module (None, Encoded (name, buf) @@ no_region) @@ no_region]) run
 
-let input_sexpr_file file run =
+let input_sexpr_file input file run =
   trace ("Loading (" ^ file ^ ")...");
   let ic = open_in file in
   try
     let lexbuf = Lexing.from_channel ic in
     trace "Parsing...";
-    let success = input_sexpr file lexbuf Parse.Script run in
+    let success = input file lexbuf run in
     close_in ic;
     success
   with exn -> close_in ic; raise exn
@@ -142,8 +159,9 @@ let input_js_file file run =
 let input_file file run =
   dispatch_file_ext
     input_binary_file
-    input_sexpr_file
-    input_sexpr_file
+    (input_sexpr_file input_sexpr)
+    (input_sexpr_file (input_script Parse.Script))
+    (input_sexpr_file (input_script Parse.Script))
     input_js_file
     file run
 
@@ -151,7 +169,7 @@ let input_string string run =
   trace ("Running (\"" ^ String.escaped string ^ "\")...");
   let lexbuf = Lexing.from_string string in
   trace "Parsing...";
-  input_sexpr "string" lexbuf Parse.Script run
+  input_script Parse.Script "string" lexbuf run
 
 
 (* Interactive *)
@@ -175,7 +193,7 @@ let lexbuf_stdin buf len =
 let input_stdin run =
   let lexbuf = Lexing.from_function lexbuf_stdin in
   let rec loop () =
-    let success = input_sexpr "stdin" lexbuf Parse.Script1 run in
+    let success = input_script Parse.Script1 "stdin" lexbuf run in
     if not success then Lexing.flush_input lexbuf;
     if Lexing.(lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len - 1) then
       continuing := false;
@@ -188,8 +206,6 @@ let input_stdin run =
 
 (* Printing *)
 
-let string_of_name n = String.escaped (Utf8.encode n)
-
 let print_import m im =
   let open Types in
   let category, annotation =
@@ -199,9 +215,9 @@ let print_import m im =
     | ExternalMemoryType t -> "memory", string_of_memory_type t
     | ExternalGlobalType t -> "global", string_of_global_type t
   in
-  Printf.printf "  import %s %S %S : %s\n"
-    category (string_of_name im.it.Ast.module_name)
-      (string_of_name im.it.Ast.item_name) annotation
+  Printf.printf "  import %s \"%s\" \"%s\" : %s\n"
+    category (Ast.string_of_name im.it.Ast.module_name)
+      (Ast.string_of_name im.it.Ast.item_name) annotation
 
 let print_export m ex =
   let open Types in
@@ -212,8 +228,8 @@ let print_export m ex =
     | ExternalMemoryType t -> "memory", string_of_memory_type t
     | ExternalGlobalType t -> "global", string_of_global_type t
   in
-  Printf.printf "  export %s %S : %s\n"
-    category (string_of_name ex.it.Ast.name) annotation
+  Printf.printf "  export %s \"%s\" : %s\n"
+    category (Ast.string_of_name ex.it.Ast.name) annotation
 
 let print_module x_opt m =
   Printf.printf "module%s :\n"
@@ -265,17 +281,21 @@ let lookup_registry module_name item_name _t =
 
 (* Running *)
 
-let run_definition def =
+let rec run_definition def =
   match def.it with
   | Textual m -> m
   | Encoded (name, bs) ->
     trace "Decoding...";
     Decode.decode name bs
+  | Quoted (_, s) ->
+    trace "Parsing quote...";
+    let def' = Parse.string_to_module s in
+    run_definition def'
 
 let run_action act =
   match act.it with
   | Invoke (x_opt, name, vs) ->
-    trace ("Invoking function \"" ^ string_of_name name ^ "\"...");
+    trace ("Invoking function \"" ^ Ast.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternalFunc f) ->
@@ -285,7 +305,7 @@ let run_action act =
     )
 
  | Get (x_opt, name) ->
-    trace ("Getting global \"" ^ string_of_name name ^ "\"...");
+    trace ("Getting global \"" ^ Ast.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternalGlobal v) -> [v]
@@ -316,7 +336,8 @@ let run_assertion ass =
     trace "Asserting malformed...";
     (match ignore (run_definition def) with
     | exception Decode.Code (_, msg) -> assert_message ass.at "decoding" msg re
-    | _ -> Assert.error ass.at "expected decoding error"
+    | exception Parse.Syntax (_, msg) -> assert_message ass.at "parsing" msg re
+    | _ -> Assert.error ass.at "expected decoding/parsing error"
     )
 
   | AssertInvalid (def, re) ->
@@ -376,11 +397,12 @@ let run_assertion ass =
     trace ("Asserting return...");
     let got_vs = run_action act in
     let is_arithmetic_nan =
-      (* Accept any NaN that's one everywhere pos_nan is one *)
       match got_vs with
-      | [Values.F32 got_f32] -> let pos_nan = F32.to_bits F32.pos_nan in
+      | [Values.F32 got_f32] ->
+        let pos_nan = F32.to_bits F32.pos_nan in
         Int32.logand (F32.to_bits got_f32) pos_nan = pos_nan
-      | [Values.F64 got_f64] -> let pos_nan = F64.to_bits F64.pos_nan in
+      | [Values.F64 got_f64] ->
+        let pos_nan = F64.to_bits F64.pos_nan in
         Int64.logand (F64.to_bits got_f64) pos_nan = pos_nan
       | _ -> false
     in assert_result ass.at is_arithmetic_nan got_vs print_endline "nan"
@@ -425,7 +447,7 @@ let rec run_command cmd =
   | Register (name, x_opt) ->
     quote := cmd :: !quote;
     if not !Flags.dry then begin
-      trace ("Registering module \"" ^ string_of_name name ^ "\"...");
+      trace ("Registering module \"" ^ Ast.string_of_name name ^ "\"...");
       let inst = lookup_instance x_opt cmd.at in
       registry := Map.add (Utf8.encode name) inst !registry;
       Import.register name (lookup_registry (Utf8.encode name))

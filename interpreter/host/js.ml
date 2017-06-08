@@ -170,7 +170,7 @@ let lookup (mods : modules) x_opt name at =
         else "unknown module " ^ of_var_opt mods x_opt ^ " within script"))
   in try ExportMap.find name exports with Not_found ->
     raise (Eval.Crash (at, "unknown export \"" ^
-      String.escaped (Utf8.encode name) ^ "\" within module"))
+      string_of_name name ^ "\" within module"))
 
 
 (* Wrappers *)
@@ -199,8 +199,8 @@ let abs_mask_of = function
   | I32Type | F32Type -> Values.I32 Int32.max_int
   | I64Type | F64Type -> Values.I64 Int64.max_int
 
-let invoke t lits at =
-  [t], FuncImport (1l @@ at) @@ at,
+let invoke ft lits at =
+  [ft @@ at], FuncImport (1l @@ at) @@ at,
   List.map (fun lit -> Const lit @@ at) lits @ [Call (0l @@ at) @@ at]
 
 let get t at =
@@ -244,7 +244,7 @@ let wrap module_name item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let item = Lib.List32.length itypes @@ at in
-  let types = FuncType ([], []) :: itypes in
+  let types = (FuncType ([], []) @@ at) :: itypes in
   let imports = [{module_name; item_name; idesc} @@ at] in
   let edesc = FuncExport item @@ at in
   let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
@@ -278,17 +278,22 @@ let add_char buf c =
     if c = '\"' || c = '\\' then Buffer.add_char buf '\\';
     Buffer.add_char buf c
   end
+let add_unicode_char buf uc =
+  if uc < 0x20 || uc >= 0x7f then
+    Printf.bprintf buf "\\u{%02x}" uc
+  else
+    add_char buf (Char.chr uc)
 
-let of_string_with add_char s =
-  let buf = Buffer.create (4 * String.length s + 2) in
+let of_string_with iter add_char s =
+  let buf = Buffer.create 256 in
   Buffer.add_char buf '\"';
-  String.iter (add_char buf) s;
+  iter (add_char buf) s;
   Buffer.add_char buf '\"';
   Buffer.contents buf
 
-let of_bytes = of_string_with add_hex_char
-let of_string = of_string_with add_char
-let of_name n = of_string (Utf8.encode n)
+let of_bytes = of_string_with String.iter add_hex_char
+let of_string = of_string_with String.iter add_char
+let of_name = of_string_with List.iter add_unicode_char
 
 let of_float z =
   match string_of_float z with
@@ -305,12 +310,13 @@ let of_literal lit =
   | Values.F32 z -> of_float (F32.to_float z)
   | Values.F64 z -> of_float (F64.to_float z)
 
-let of_definition def =
-  let bs =
-    match def.it with
-    | Textual m -> Encode.encode m
-    | Encoded (_, bs) -> bs
-  in of_bytes bs
+let rec of_definition def =
+  match def.it with
+  | Textual m -> of_bytes (Encode.encode m)
+  | Encoded (_, bs) -> of_bytes bs
+  | Quoted (_, s) ->
+    try of_definition (Parse.string_to_module s) with Parse.Syntax _ ->
+      of_bytes "<malformed quote>"
 
 let of_wrapper mods x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt mods x_opt in
@@ -377,11 +383,12 @@ let of_command mods cmd =
     ":" ^ string_of_int cmd.at.left.line ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
-    let m =
+    let rec unquote def =
       match def.it with
       | Textual m -> m
       | Encoded (_, bs) -> Decode.decode "binary" bs
-    in bind mods x_opt m;
+      | Quoted (_, s) -> unquote (Parse.string_to_module s)
+    in bind mods x_opt (unquote def);
     "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
     (if x_opt = None then "" else
     "let " ^ of_var_opt mods x_opt ^ " = " ^ current_var mods ^ ";\n")

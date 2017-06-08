@@ -13,6 +13,18 @@ Instructions
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
+Numeric instructions are defined in terms of the basic :ref:`numeric operators <exec-numeric>`.
+Where these operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
+Where these operators are non-deterministic, because they may return different :ref:`NaN <syntax-nan>` values, so are the corresponding instructions.
+
+The mapping of numeric instructions to their underlying operators is expressed by the following definition:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \X{op}_{\K{i}N}(n) &=& \F{i}\X{op}_N(n) \\
+   \X{op}_{\K{f}N}(z) &=& \F{f}\X{op}_N(z) \\
+   \end{array}
+
 
 .. _exec-const:
 
@@ -47,9 +59,9 @@ Numeric Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& (t\K{.}\CONST~c)
-     & (\mbox{if}~\unop_t(c_1) = c) \\
+     & (\mbox{if}~c \in \unop_t(c_1)) \\
    (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& \TRAP
-     & (\mbox{otherwise})
+     & (\mbox{if}~\unop_{t_1,t_2}(c_1) = \{\})
    \end{array}
 
 
@@ -77,9 +89,9 @@ Numeric Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& (t\K{.}\CONST~c)
-     & (\mbox{if}~\binop_t(c_1,c_2) = c) \\
+     & (\mbox{if}~c \in \binop_t(c_1,c_2)) \\
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& \TRAP
-     & (\mbox{otherwise})
+     & (\mbox{if}~\binop_{t_1,t_2}(c_1) = \{\})
    \end{array}
 
 
@@ -98,8 +110,8 @@ Numeric Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~t\K{.}\testop &\stepto& (t\K{.}\CONST~c)
-     & (\mbox{if}~\testop_t(c_1) = c) \\
+   (t\K{.}\CONST~c_1)~t\K{.}\testop &\stepto& (\I32\K{.}\CONST~c)
+     & (\mbox{if}~c = \testop_t(c_1)) \\
    \end{array}
 
 
@@ -120,8 +132,8 @@ Numeric Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop &\stepto& (t\K{.}\CONST~c)
-     & (\mbox{if}~\relop_t(c_1,c_2) = c) \\
+   (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop &\stepto& (\I32\K{.}\CONST~c)
+     & (\mbox{if}~c = \relop_t(c_1,c_2)) \\
    \end{array}
 
 
@@ -147,9 +159,9 @@ Numeric Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& (t_2\K{.}\CONST~c_2)
-     & (\mbox{if}~\cvtop_{t_1,t_2}(c_1) = c_2) \\
+     & (\mbox{if}~c_2 \in \cvtop_{t_1,t_2}(c_1)) \\
    (t\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& \TRAP
-     & (\mbox{otherwise})
+     & (\mbox{if}~\cvtop_{t_1,t_2}(c_1) = \{\})
    \end{array}
 
 
@@ -181,7 +193,7 @@ Parametric Instructions
 :math:`\SELECT`
 ...............
 
-1. Assert: due to :ref:`validation <valid-select>`, a value :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-select>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 2. Pop the value :math:`\I32.\CONST~c` from the stack.
 
@@ -275,7 +287,7 @@ Variable Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; \val~(\TEELOCAL~x) &\stepto& F'; \val~\val~(\SETLOCAL~x)
+   \val~(\TEELOCAL~x) &\stepto& \val~\val~(\SETLOCAL~x)
    \end{array}
 
 
@@ -374,17 +386,17 @@ Memory Instructions
 
    a. Let :math:`N` be the :ref:`width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
-10. If :math:`\X{ea} + N` is larger than the length of :math:`\X{mem}.\DATA`, then:
+10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\DATA`, then:
 
     a. Trap.
 
-11. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\DATA[\X{ea}:N]`.
+11. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\DATA[\X{ea}:N/8]`.
 
 12. If :math:`N` and :math:`\sx` are part of the instruction, then:
 
-    a. Let :math:`n` be the integer for which :math:`\bytes_N(n) = b^\ast`.
+    a. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
-    b. Let :math:`c` be the result of computing :math:`\extend_{\sx,N}(n)`.
+    b. Let :math:`c` be the result of computing :math:`\extend\F{\_}\sx_{N,|t|}(n)`.
 
 13. Else:
 
@@ -400,18 +412,18 @@ Memory Instructions
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + |t| \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & \bytes_t(c) = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:|t|])
+     \wedge & \X{ea} + |t|/8 \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+     \wedge & \bytes_t(c) = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:|t|/8])
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(t.\LOAD{N}\K{\_}\sx~\memarg) &\stepto&
-     S; F; (t.\CONST~\extend_{\sx,N}(n))
+     S; F; (t.\CONST~\extend\F{\_}\sx_{N,|t|}(n))
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & \bytes_N(n) = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N])
+     \wedge & \X{ea} + N/8 \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+     \wedge & \bytes_{\iN}(n) = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N/8])
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~k)~(t.\LOAD({N}\K{\_}\sx)^?~\memarg) &\stepto& S; F; \TRAP
@@ -452,7 +464,7 @@ Memory Instructions
 
    a. Let :math:`N` be the :ref:`width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
-10. If :math:`\X{ea} + N` is larger than the length of :math:`\X{mem}.\DATA`, then:
+10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\DATA`, then:
 
     a. Trap.
 
@@ -462,15 +474,15 @@ Memory Instructions
 
 13. If :math:`N` is part of the instruction, then:
 
-    a. Let :math:`n` be the result of computing :math:`\wrap_N(c)`.
+    a. Let :math:`n` be the result of computing :math:`\wrap_{|t|,N}(c)`.
 
-    b. Let :math:`b^\ast` be the byte sequence :math:`\bytes_N(n)`.
+    b. Let :math:`b^\ast` be the byte sequence :math:`\bytes_{\iN}(n)`.
 
 14. Else:
 
     a. Let :math:`b^\ast` be the byte sequence :math:`\bytes_t(c)`.
 
-15. Replace the bytes :math:`\X{mem}.\DATA[\X{ea}:N]` with :math:`b^\ast`.
+15. Replace the bytes :math:`\X{mem}.\DATA[\X{ea}:N/8]` with :math:`b^\ast`.
 
 .. math::
    \begin{array}{l}
@@ -480,8 +492,8 @@ Memory Instructions
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + |t| \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:|t|] = \bytes_t(c)
+     \wedge & \X{ea} + |t|/8 \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:|t|/8] = \bytes_t(c)
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(t.\STORE{N}~\memarg) &\stepto& S'; F; \epsilon
@@ -489,8 +501,8 @@ Memory Instructions
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
-     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N] = \bytes_N(\wrap_N(c))
+     \wedge & \X{ea} + N/8 \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+     \wedge & S' = S \with \MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c))
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~k)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP
@@ -674,7 +686,7 @@ Control Instructions
 
 4. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |IF| instruction.
 
-5. If :math:`c` is not :math:`0`, then:
+5. If :math:`c` is non-zero, then:
 
    a. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr_1^\ast` with label :math:`L`.
 
@@ -737,7 +749,7 @@ Control Instructions
 
 2. Pop the value :math:`\I32.\CONST~c` from the stack.
 
-3. If :math:`c` is not :math:`0`, then:
+3. If :math:`c` is non-zero, then:
 
    a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
 
@@ -916,7 +928,7 @@ Entering :math:`\instr^\ast` with label :math:`L`
 
 1. Push :math:`L` to the stack.
 
-2. :ref:`Jump <exec-jump>` to the start of the instruction sequence :math:`\instr^\ast`.
+2. Jump to the start of the instruction sequence :math:`\instr^\ast`.
 
 .. note::
    No formal reduction rule is needed for entering an instruction sequence,
@@ -971,7 +983,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\FUNCS[a]` exists.
 
-2. Let :math:`f` be the :ref:`function instance <sytnax-funcinst>`, :math:`S.\FUNCS[a]`.
+2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\FUNCS[a]`.
 
 3. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\TYPE`.
 

@@ -147,6 +147,8 @@ type memory_segment = string segment
 
 (* Modules *)
 
+type type_ = func_type Source.phrase
+
 type export_desc = export_desc' Source.phrase
 and export_desc' =
   | FuncExport of var
@@ -179,7 +181,7 @@ and import' =
 type module_ = module_' Source.phrase
 and module_' =
 {
-  types : func_type list;
+  types : type_ list;
   globals : global list;
   tables : table list;
   memories : memory list;
@@ -213,7 +215,7 @@ open Source
 let import_type (m : module_) (im : import) : external_type =
   let {idesc; _} = im.it in
   match idesc.it with
-  | FuncImport x -> ExternalFuncType (Lib.List32.nth m.it.types x.it)
+  | FuncImport x -> ExternalFuncType (Lib.List32.nth m.it.types x.it).it
   | TableImport t -> ExternalTableType t
   | MemoryImport t -> ExternalMemoryType t
   | GlobalImport t -> ExternalGlobalType t
@@ -225,7 +227,7 @@ let export_type (m : module_) (ex : export) : external_type =
   match edesc.it with
   | FuncExport x ->
     let fts =
-      funcs its @ List.map (fun f -> nth m.it.types f.it.ftype.it) m.it.funcs
+      funcs its @ List.map (fun f -> (nth m.it.types f.it.ftype.it).it) m.it.funcs
     in ExternalFuncType (nth fts x.it)
   | TableExport x ->
     let tts = tables its @ List.map (fun t -> t.it.ttype) m.it.tables in
@@ -236,3 +238,17 @@ let export_type (m : module_) (ex : export) : external_type =
   | GlobalExport x ->
     let gts = globals its @ List.map (fun g -> g.it.gtype) m.it.globals in
     ExternalGlobalType (nth gts x.it)
+
+let string_of_name n =
+  let b = Buffer.create 16 in
+  let escape uc =
+    if uc < 0x20 || uc >= 0x7f then
+      Buffer.add_string b (Printf.sprintf "\\u{%02x}" uc)
+    else begin
+      let c = Char.chr uc in
+      if c = '\"' || c = '\\' then Buffer.add_char b '\\';
+      Buffer.add_char b c
+    end
+  in
+  List.iter escape n;
+  Buffer.contents b

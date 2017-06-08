@@ -221,7 +221,7 @@ The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Instructions in this group are concerned with :ref:`linear memory <sec-memory>`.
+Instructions in this group are concerned with :ref:`linear memory <syntax-mem>`.
 
 .. math::
    \begin{array}{llll}
@@ -245,7 +245,7 @@ Instructions in this group are concerned with :ref:`linear memory <sec-memory>`.
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
 They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint.
-Integer loads and stores can optionally specify a *storage size* that is smaller than the width of the respective value type.
+Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`width <syntax-valtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
@@ -264,11 +264,20 @@ Both instructions operate in units of :ref:`page size <page-size>`.
    all memory instructions implicitly operate on :ref:`memory <syntax-mem>` :ref:`index <syntax-memidx>` :math:`0`.
    This restriction may be lifted in future versions.
 
-The precise semantics of memory instructions is :ref:`described <exec-instr-memory>` in the :ref:`Instruction <sec-instruction>` section.
-
 
 .. _syntax-instr-control:
-.. _syntax-isntr-seq:
+.. _syntax-instr-seq:
+.. _syntax-nop:
+.. _syntax-unreachable:
+.. _syntax-block:
+.. _syntax-loop:
+.. _syntax-if:
+.. _syntax-br:
+.. _syntax-br_if:
+.. _syntax-br_table:
+.. _syntax-return:
+.. _syntax-call:
+.. _syntax-call_indirect:
 .. _syntax-label:
 .. index:: ! control instruction, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector
    pair: abstract syntax; instruction
@@ -333,7 +342,7 @@ However, forward branches that target a control instruction with a non-empty res
 The |CALL| instruction invokes another function, consuming the necessary arguments from the stack and returning the result values of the call.
 The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>`.
 Since tables may contain function elements of heterogeneous type |ANYFUNC|,
-the callee is dynamically checked against the :ref:`function type <functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
+the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
 
 .. note::
    In the current version of WebAssembly,

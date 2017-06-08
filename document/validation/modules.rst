@@ -8,6 +8,28 @@ To that end, each definition is classified with a suitable type.
 Auxiliary Rules
 ~~~~~~~~~~~~~~~
 
+.. _valid-functype:
+.. index:: function type
+   pair: validation; function type
+   single: abstract syntax; function type
+
+Function Types :math:`[t_1^n] \to [t_2^m]`
+..........................................
+
+* The arity :math:`m` must not be larger than :math:`1`.
+
+* Then the function type is valid.
+
+.. math::
+   \frac{
+   }{
+     \vdash [t_1^\ast] \to [t_2^?] ~\F{ok}
+   }
+
+.. note::
+   This restriction may be removed in future versions of WebAssembly.
+
+
 .. _valid-limits:
 .. index:: limits
    pair: validation; limits
@@ -29,6 +51,7 @@ Limits :math:`\{ \MIN~n, \MAX~m^? \}`
 
 
 .. _valid-func:
+.. _valid-local:
 .. index:: function, local, function index, local index, type index, function type, value type, expression, import
    pair: abstract syntax; function
    single: abstract syntax; function
@@ -44,9 +67,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
 * The type :math:`C.\TYPES[x]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\TYPES[x]`.
-
-* The length of :math:`t_2^\ast` must not be larger than :math:`1`.
+* Let :math:`[t_1^\ast] \to [t_2^?]` be the :ref:`function type <syntax-functype>` :math:`C.\TYPES[x]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
@@ -55,12 +76,12 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
   * |LABELS| set to the singular sequence containing only :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
 
-  * |LRETURN| set to the :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
+  * |LRETURN| set to the :ref:`result type <syntax-valtype>` :math:`[t_2^?]`.
 
 * Under the context :math:`C'`,
-  the expression :math:`\expr` must be valid with type :math:`t_2^\ast`.
+  the expression :math:`\expr` must be valid with type :math:`t_2^?`.
 
-* Then the function definition is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+* Then the function definition is valid with type :math:`[t_1^\ast] \to [t_2^?]`.
 
 .. math::
    \frac{
@@ -390,19 +411,14 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 * Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\TYPES[x]`.
 
-* The length of :math:`t_2^\ast` must not be larger than :math:`1`.
-
 * Then the import description is valid with type :math:`\FUNC~[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\TYPES[x] = [t_1^\ast] \to [t_2^?]
+     C.\TYPES[x] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdash \FUNC~x : \FUNC~[t_1^\ast] \to [t_2^?]
+     C \vdash \FUNC~x : \FUNC~[t_1^\ast] \to [t_2^\ast]
    }
-
-.. note::
-   The restriction on the length of the result types :math:`t_2^\ast` may be lifted in future versions of WebAssembly.
 
 
 :math:`\TABLE~\limits~\elemtype`
@@ -488,6 +504,9 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
 * Under the context :math:`C`:
 
+  * For each :math:`\functype_i` in :math:`\module.\TYPES`,
+    the :ref:`function type <syntax-functype>` :math:`\functype_i` must be :ref:`valid <valid-functype>`.
+
   * For each :math:`\func_i` in :math:`\module.\FUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\functype_i`.
 
@@ -532,6 +551,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
+     (\vdash \functype ~\F{ok})^\ast
+     \quad
      (C \vdash \func : \X{ft})^\ast
      \quad
      (C \vdash \table : \X{tt})^\ast

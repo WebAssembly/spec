@@ -378,7 +378,7 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
      \{ \LOCALS~\val^\ast, \MODULE~\moduleinst\} \\
    \end{array}
 
-The values of the locals are mutated by respective :ref:`variable instructions <syntax-instr-var>`.
+The values of the locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
 
 
 Conventions

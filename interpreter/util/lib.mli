@@ -16,6 +16,7 @@ sig
   val split_last : 'a list -> 'a list * 'a (* raise Failure *)
 
   val index_of : 'a -> 'a list -> int option
+  val index_where : ('a -> bool) -> 'a list -> int option
 end
 
 module List32 :
@@ -66,5 +67,6 @@ module String :
 sig
   val implode : char list -> string
   val explode : string -> char list
+  val split : string -> char -> string list
   val breakup : string -> int -> string list
 end
