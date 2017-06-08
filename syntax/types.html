@@ -111,9 +111,9 @@
 \def\mathdef1867#1{{}}\mathdef1867{value type} &amp; \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}} &amp;::=&amp;
   \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} ~|~ \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} ~|~ \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} ~|~ \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\
 \end{array}\end{split}\]</div>
-<p>The types <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1884#1{{\mathit{i}#1}}\mathdef1884{\mathit{32}}}\)</span> and <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1885#1{{\mathit{i}#1}}\mathdef1885{\mathit{64}}}\)</span> classify 32 and 64 bit integers, respectively.
+<p>The types <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> and <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span> classify 32 and 64 bit integers, respectively.
 Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.</p>
-<p>The types <span class="math">\(\href{../syntax/values.html#syntax-float}{\def\mathdef1888#1{{\mathit{f}#1}}\mathdef1888{\mathit{32}}}\)</span> and <span class="math">\(\href{../syntax/values.html#syntax-float}{\def\mathdef1889#1{{\mathit{f}#1}}\mathdef1889{\mathit{64}}}\)</span> classify 32 and 64 bit floating points, respectively.
+<p>The types <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}\)</span> and <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\)</span> classify 32 and 64 bit floating points, respectively.
 They correspond to single and double precision floating point types as defined by the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE-754</a> standard</p>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
@@ -151,7 +151,7 @@ mapping a vector of parameters to a vector of results.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly,
-the length of the result type vector of a function may be at most <span class="math">\(1\)</span>.
+the length of the result type vector of a <a class="reference internal" href="../validation/modules.html#valid-functype"><span class="std std-ref">valid</span></a> function type may be at most <span class="math">\(1\)</span>.
 This restriction may be removed in future versions.</p>
 </div>
 <span class="target" id="syntax-limits"></span></div>

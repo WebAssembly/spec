@@ -268,6 +268,31 @@ In some cases, this allows for a simple form of subtyping, as defined below.</p>
 S' &amp;=&amp; S \href{../syntax/conventions.html#syntax-record}{\oplus} \{\mathsf{funcs}~\href{../execution/runtime.html#syntax-tableinst}{\mathit{tableinst}}\} \\
 \end{array}\end{split}\]</div>
 </div>
+<div class="section" id="host-functions">
+<span id="alloc-hostfunc"></span><h3><a class="reference internal" href="runtime.html#syntax-hostfunc"><span class="std std-ref">Host Functions</span></a><a class="headerlink" href="#host-functions" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Let <span class="math">\(\href{../execution/runtime.html#syntax-hostfunc}{\mathit{hostfunc}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-hostfunc"><span class="std std-ref">host function</span></a> to allocate and <span class="math">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span> its <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a>.</li>
+<li>Let <span class="math">\(a\)</span> be the first free <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> in <span class="math">\(S\)</span>.</li>
+</ol>
+<ol class="arabic simple" start="4">
+<li>Let <span class="math">\(\href{../execution/runtime.html#syntax-funcinst}{\mathit{funcinst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">function instance</span></a> <span class="math">\(\{ \mathsf{type}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \mathsf{code}~\href{../execution/runtime.html#syntax-hostfunc}{\mathit{hostfunc}} \}\)</span>.</li>
+<li>Append <span class="math">\(\href{../execution/runtime.html#syntax-funcinst}{\mathit{funcinst}}\)</span> to the <span class="math">\(\mathsf{funcs}\)</span> of <span class="math">\(S\)</span>.</li>
+<li>Return <span class="math">\(a\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{rlll}
+\href{../execution/modules.html#alloc-hostfunc}{\mathrm{allochostfunc}}(S, \href{../execution/runtime.html#syntax-hostfunc}{\mathit{hostfunc}}, \href{../syntax/types.html#syntax-functype}{\mathit{functype}}) &amp;=&amp; S', \href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} \\[1ex]
+\mbox{where:} \hfill \\
+\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} &amp;=&amp; |S.\mathsf{funcs}| \\
+\href{../execution/runtime.html#syntax-funcinst}{\mathit{funcinst}} &amp;=&amp; \{ \mathsf{type}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \mathsf{code}~\href{../execution/runtime.html#syntax-hostfunc}{\mathit{hostfunc}} \} \\
+S' &amp;=&amp; S \href{../syntax/conventions.html#syntax-record}{\oplus} \{\mathsf{funcs}~\href{../execution/runtime.html#syntax-tableinst}{\mathit{tableinst}}\} \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Host functions are never allocated by the WebAssembly semantics itself,
+but may be allocated by the embedder.</p>
+</div>
+</div>
 <div class="section" id="alloc-table">
 <span id="id6"></span><h3><a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">Tables</span></a><a class="headerlink" href="#alloc-table" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
@@ -330,7 +355,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#syntax-record}{\oplus} \{\math
 </div>
 <div class="section" id="alloc-module">
 <span id="id9"></span><h3><a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">Modules</span></a><a class="headerlink" href="#alloc-module" title="Permalink to this headline">¶</a></h3>
-<p>The allocation function for <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">modules</span></a> requires a suitable list of <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> that are assumed to match the <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">import</span></a> vector of the module.</p>
+<p>The allocation function for <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">modules</span></a> requires a suitable list of <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> that are assumed to <a class="reference internal" href="#match-externtype"><span class="std std-ref">match</span></a> the <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">import</span></a> vector of the module.</p>
 <ol class="arabic simple">
 <li>Let <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> to allocate and <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast\)</span> the vector of <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> providing the module&#8217;s imports.</li>
 <li>For each <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{funcs}\)</span>, do:<ol class="loweralpha">
@@ -409,10 +434,8 @@ S_{i+1}, a^n[i] &amp;=&amp; \mathrm{allocX}(S_i, X^n[i], \dots)
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span> is passed to the function allocator as an argument, in order to form the necessary closures.
+<p class="last">The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span> is passed to the function allocator as an argument, in order to form the necessary closures.
 In an implementation, this recursion is easily unraveled by mutating one or the other in a secondary step.</p>
-<p class="last">The export instances in the formal definition are also formed by reference to the resulting module instance <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span>.
-However, that is merely a convenient device to succinctly look up the external values by <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index</span></a> relative to their respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>.</p>
 </div>
 <span class="target" id="exec-module"><span id="instantiation"></span></span></div>
 </div>
@@ -431,7 +454,8 @@ Instantiation may <em>fail</em> with an error.</p>
 </ol>
 </li>
 <li>For each <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_i\)</span> in <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^n\)</span> and <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}_i\)</span> in <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^n\)</span>, do:<ol class="loweralpha">
-<li>If <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_i\)</span> does not <a class="reference internal" href="#valid-externval"><span class="std std-ref">have type</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}_i\)</span> in store <span class="math">\(S\)</span>, then:<ol class="lowerroman">
+<li>Assert: <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_i\)</span> is <a class="reference internal" href="#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}'_i\)</span> in store <span class="math">\(S\)</span>.</li>
+<li>If <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}'_i\)</span> does not <a class="reference internal" href="#match-externtype"><span class="std std-ref">match</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}_i\)</span>, then:<ol class="lowerroman">
 <li>Fail.</li>
 </ol>
 </li>
@@ -448,8 +472,8 @@ Instantiation may <em>fail</em> with an error.</p>
 <li>Let <span class="math">\(\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}_i\)</span> be the <a class="reference internal" href="runtime.html#syntax-tableaddr"><span class="std std-ref">table address</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{tables}[\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}}_i]\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/modules.html#valid-elem"><span class="std std-ref">validation</span></a>, <span class="math">\(S.\mathsf{tables}[\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}_i]\)</span> exists.</li>
 <li>Let <span class="math">\(\href{../execution/runtime.html#syntax-tableinst}{\mathit{tableinst}}_i\)</span> be the <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math">\(S.\mathsf{tables}[\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}_i]\)</span>.</li>
-<li>Let <span class="math">\(\mathit{elen}_i\)</span> be <span class="math">\(\mathit{eo}_i\)</span> plus the length of <span class="math">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i.\mathsf{init}\)</span>.</li>
-<li>If <span class="math">\(\mathit{elen}_i\)</span> is larger than the length of <span class="math">\(\href{../execution/runtime.html#syntax-tableinst}{\mathit{tableinst}}_i.\mathsf{elem}\)</span>, then:<ol class="lowerroman">
+<li>Let <span class="math">\(\mathit{eend}_i\)</span> be <span class="math">\(\mathit{eo}_i\)</span> plus the length of <span class="math">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i.\mathsf{init}\)</span>.</li>
+<li>If <span class="math">\(\mathit{eend}_i\)</span> is larger than the length of <span class="math">\(\href{../execution/runtime.html#syntax-tableinst}{\mathit{tableinst}}_i.\mathsf{elem}\)</span>, then:<ol class="lowerroman">
 <li>Fail.</li>
 </ol>
 </li>
@@ -463,8 +487,8 @@ Instantiation may <em>fail</em> with an error.</p>
 <li>Let <span class="math">\(\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}_i\)</span> be the <a class="reference internal" href="runtime.html#syntax-memaddr"><span class="std std-ref">memory address</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{mems}[\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}}_i]\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../validation/modules.html#valid-data"><span class="std std-ref">validation</span></a>, <span class="math">\(S.\mathsf{mems}[\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}_i]\)</span> exists.</li>
 <li>Let <span class="math">\(\href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}}_i\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(S.\mathsf{mems}[\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}_i]\)</span>.</li>
-<li>Let <span class="math">\(\mathit{dlen}_i\)</span> be <span class="math">\(\mathit{do}_i\)</span> plus the length of <span class="math">\(\href{../syntax/modules.html#syntax-data}{\mathit{data}}_i.\mathsf{init}\)</span>.</li>
-<li>If <span class="math">\(\mathit{dlen}_i\)</span> is larger than the length of <span class="math">\(\href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}}_i.\mathsf{data}\)</span>, then:<ol class="lowerroman">
+<li>Let <span class="math">\(\mathit{dend}_i\)</span> be <span class="math">\(\mathit{do}_i\)</span> plus the length of <span class="math">\(\href{../syntax/modules.html#syntax-data}{\mathit{data}}_i.\mathsf{init}\)</span>.</li>
+<li>If <span class="math">\(\mathit{dend}_i\)</span> is larger than the length of <span class="math">\(\href{../execution/runtime.html#syntax-meminst}{\mathit{meminst}}_i.\mathsf{data}\)</span>, then:<ol class="lowerroman">
 <li>Fail.</li>
 </ol>
 </li>
@@ -521,7 +545,8 @@ S; \href{../execution/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\hr
   \end{array} \\
 &amp;\mbox{if}
   &amp; S \vdash \href{../syntax/modules.html#syntax-module}{\mathit{module}} : \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^n \\
-  &amp;\wedge&amp; (\vdash \href{../execution/runtime.html#syntax-externval}{\mathit{externval}} : \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}})^n \\[1ex]
+  &amp;\wedge&amp; (\vdash \href{../execution/runtime.html#syntax-externval}{\mathit{externval}} : \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}')^n \\
+  &amp;\wedge&amp; (\vdash \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}' \leq \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}})^n \\[1ex]
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{globals} = \href{../syntax/modules.html#syntax-global}{\mathit{global}}^k \\
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{elem} = \href{../syntax/modules.html#syntax-elem}{\mathit{elem}}^\ast \\
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{data} = \href{../syntax/modules.html#syntax-data}{\mathit{data}}^\ast \\
@@ -573,8 +598,8 @@ If successful, the invocation returns the function&#8217;s result values <span c
 <li>Fail.</li>
 </ol>
 </li>
-<li>For each <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t_i\)</span> in <span class="math">\(t_1^n\)</span>, do:<ol class="loweralpha">
-<li>If <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}^\ast[i]\)</span> is not <span class="math">\(t_i.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_i\)</span> for some <span class="math">\(c_i\)</span>, then:<ol class="lowerroman">
+<li>For each <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t_i\)</span> in <span class="math">\(t_1^n\)</span> and corresponding <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math">\(val_i\)</span> in <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span>, do:<ol class="loweralpha">
+<li>If <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_i\)</span> is not <span class="math">\(t_i.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_i\)</span> for some <span class="math">\(c_i\)</span>, then:<ol class="lowerroman">
 <li>Fail.</li>
 </ol>
 </li>
@@ -592,7 +617,7 @@ If successful, the invocation returns the function&#8217;s result values <span c
 <li>Assert: due to <a class="reference internal" href="../validation/modules.html#valid-func"><span class="std std-ref">validation</span></a>, <span class="math">\(m\)</span> <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> are on the top of the stack.</li>
 <li>Pop <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^m\)</span> from the stack.</li>
 </ol>
-<p>The values <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^m\)</span> are the result of the call.</p>
+<p>The values <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^m\)</span> are the results of the call.</p>
 <p>If the function terminates with a <span class="xref std std-ref">trap</span>, the error is propagated to the caller in a manner specified by the <span class="xref std std-ref">embedder</span>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcl}

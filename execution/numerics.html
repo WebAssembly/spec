@@ -254,18 +254,19 @@ Operators that use a signed interpretation convert the value using the following
 <li>Let <span class="math">\(j_1\)</span> be the signed interpretation of <span class="math">\(i_1\)</span>.</li>
 <li>Let <span class="math">\(j_2\)</span> be the signed interpretation of <span class="math">\(i_2\)</span>.</li>
 <li>If <span class="math">\(j_2\)</span> is <span class="math">\(0\)</span>, then the result is undefined.</li>
-<li>Else if <span class="math">\(j_2\)</span> is <span class="math">\(-1\)</span>, then the result is undefined.</li>
+<li>Else if <span class="math">\(j_1\)</span> divided by <span class="math">\(j_2\)</span> is <span class="math">\(2^{N-1}\)</span>, then the result is undefined.</li>
 <li>Else, return the result of dividing <span class="math">\(j_1\)</span> by <span class="math">\(j_2\)</span>, truncated toward zero.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcll}
 \href{../execution/numerics.html#op-idiv_s}{\mathrm{idiv\_s}}_N(i_1, 0) &amp;=&amp; \{\} \\
-\href{../execution/numerics.html#op-idiv_s}{\mathrm{idiv\_s}}_N(i_1, i_2) &amp;=&amp; \{\} &amp; (\href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2) = -1 \\
+\href{../execution/numerics.html#op-idiv_s}{\mathrm{idiv\_s}}_N(i_1, i_2) &amp;=&amp; \{\} \qquad\qquad (\href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) / \href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2) = 2^{N-1}) \\
 \href{../execution/numerics.html#op-idiv_s}{\mathrm{idiv\_s}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N^{-1}(\href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) / \href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))) \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This operator is <a class="reference internal" href="#exec-op-partial"><span class="std std-ref">partial</span></a>.</p>
+<p class="last">This operator is <a class="reference internal" href="#exec-op-partial"><span class="std std-ref">partial</span></a>.
+In particular, the result of <span class="math">\((-2^{N-1})/(-1) = +2^{N-1}\)</span> is not representable as an <span class="math">\(N\)</span>-bit signed integer.</p>
 </div>
 </div>
 <div class="section" id="op-rem-u">
