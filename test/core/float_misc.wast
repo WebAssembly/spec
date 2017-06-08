@@ -168,9 +168,9 @@
 
 ;; Test rounding above the greatest finite value.
 (assert_return (invoke "f32.add" (f32.const 0x1.fffffep+127) (f32.const 0x1.fffffep+102)) (f32.const 0x1.fffffep+127))
-(assert_return (invoke "f32.add" (f32.const 0x1.fffffep+127) (f32.const 0x1p+103)) (f32.const infinity))
+(assert_return (invoke "f32.add" (f32.const 0x1.fffffep+127) (f32.const 0x1p+103)) (f32.const inf))
 (assert_return (invoke "f64.add" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1.fffffffffffffp+969)) (f64.const 0x1.fffffffffffffp+1023))
-(assert_return (invoke "f64.add" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1p+970)) (f64.const infinity))
+(assert_return (invoke "f64.add" (f64.const 0x1.fffffffffffffp+1023) (f64.const 0x1p+970)) (f64.const inf))
 
 ;; Test for a historic spreadsheet bug.
 ;; https://blogs.office.com/2007/09/25/calculation-issue-update/
@@ -272,8 +272,8 @@
 
 ;; Miscellaneous values.
 (assert_return (invoke "f32.mul" (f32.const 1e15) (f32.const 1e15)) (f32.const 0x1.93e592p+99))
-(assert_return (invoke "f32.mul" (f32.const 1e20) (f32.const 1e20)) (f32.const infinity))
-(assert_return (invoke "f32.mul" (f32.const 1e25) (f32.const 1e25)) (f32.const infinity))
+(assert_return (invoke "f32.mul" (f32.const 1e20) (f32.const 1e20)) (f32.const inf))
+(assert_return (invoke "f32.mul" (f32.const 1e25) (f32.const 1e25)) (f32.const inf))
 (assert_return (invoke "f64.mul" (f64.const 1e15) (f64.const 1e15)) (f64.const 0x1.93e5939a08ceap+99))
 (assert_return (invoke "f64.mul" (f64.const 1e20) (f64.const 1e20)) (f64.const 0x1.d6329f1c35ca5p+132))
 (assert_return (invoke "f64.mul" (f64.const 1e25) (f64.const 1e25)) (f64.const 0x1.11b0ec57e649bp+166))
@@ -295,7 +295,7 @@
 (assert_return (invoke "f32.mul" (f32.const -0x1.b17694p+92) (f32.const -0x1.e4b56ap-97)) (f32.const 0x1.9a5baep-4))
 (assert_return (invoke "f32.mul" (f32.const -0x1.1626a6p+79) (f32.const -0x1.c57d7p-75)) (f32.const 0x1.ecbaaep+4))
 (assert_return (invoke "f32.mul" (f32.const 0x1.7acf72p+53) (f32.const 0x1.6c89acp+5)) (f32.const 0x1.0db556p+59))
-(assert_return (invoke "f64.mul" (f64.const -0x1.25c293f6f37e4p+425) (f64.const 0x1.f5fd4fa41c6d8p+945)) (f64.const -infinity))
+(assert_return (invoke "f64.mul" (f64.const -0x1.25c293f6f37e4p+425) (f64.const 0x1.f5fd4fa41c6d8p+945)) (f64.const -inf))
 (assert_return (invoke "f64.mul" (f64.const -0x1.cc1ae79fffc5bp-986) (f64.const -0x1.c36ccc2861ca6p-219)) (f64.const 0x0p+0))
 (assert_return (invoke "f64.mul" (f64.const 0x1.c0232b3e64b56p+606) (f64.const -0x1.f6939cf3affaap+106)) (f64.const -0x1.b7e3aedf190d3p+713))
 (assert_return (invoke "f64.mul" (f64.const -0x1.60f289966b271p-313) (f64.const 0x1.28a5497f0c259p+583)) (f64.const -0x1.98fc50bcec259p+270))
@@ -309,12 +309,12 @@
 (assert_return (invoke "f32.mul" (f32.const 0x1.936742p+30) (f32.const -0x1.a7a19p+66)) (f32.const -0x1.4dc71ap+97))
 (assert_return (invoke "f64.mul" (f64.const -0x1.ba737b4ca3b13p-639) (f64.const 0x1.8923309857438p-314)) (f64.const -0x1.53bc0d07baa37p-952))
 (assert_return (invoke "f64.mul" (f64.const 0x1.7c1932e610219p-276) (f64.const -0x1.2605db646489fp-635)) (f64.const -0x1.b48da2b0d2ae3p-911))
-(assert_return (invoke "f64.mul" (f64.const -0x1.e43cdf3b2108p+329) (f64.const -0x1.99d96abbd61d1p+835)) (f64.const infinity))
+(assert_return (invoke "f64.mul" (f64.const -0x1.e43cdf3b2108p+329) (f64.const -0x1.99d96abbd61d1p+835)) (f64.const inf))
 (assert_return (invoke "f64.mul" (f64.const 0x1.4c19466551da3p+947) (f64.const 0x1.0bdcd6c7646e9p-439)) (f64.const 0x1.5b7cd8c3f638ap+508))
 (assert_return (invoke "f64.mul" (f64.const 0x1.ff1da1726e3dfp+339) (f64.const -0x1.043c44f52b158p+169)) (f64.const -0x1.03c9364bb585cp+509))
 
 ;; Computations that round differently in round-toward-zero mode.
-(assert_return (invoke "f32.mul" (f32.const -0x1.907e8ap+46) (f32.const -0x1.5d3668p+95)) (f32.const infinity))
+(assert_return (invoke "f32.mul" (f32.const -0x1.907e8ap+46) (f32.const -0x1.5d3668p+95)) (f32.const inf))
 (assert_return (invoke "f32.mul" (f32.const -0x1.8c9f74p-3) (f32.const 0x1.e2b452p-99)) (f32.const -0x1.75edccp-101))
 (assert_return (invoke "f32.mul" (f32.const -0x1.cc605ap-19) (f32.const 0x1.ec321ap+105)) (f32.const -0x1.ba91a4p+87))
 (assert_return (invoke "f32.mul" (f32.const -0x1.5fbb7ap+56) (f32.const 0x1.a8965ep-96)) (f32.const -0x1.23ae8ep-39))
@@ -322,7 +322,7 @@
 (assert_return (invoke "f64.mul" (f64.const -0x1.5b0266454c26bp-496) (f64.const -0x1.af5787e3e0399p+433)) (f64.const 0x1.2457d81949e0bp-62))
 (assert_return (invoke "f64.mul" (f64.const 0x1.0d54a82393d45p+478) (f64.const -0x1.425760807ceaep-764)) (f64.const -0x1.532068c8d0d5dp-286))
 (assert_return (invoke "f64.mul" (f64.const -0x1.b532af981786p+172) (f64.const 0x1.ada95085ba36fp+359)) (f64.const -0x1.6ee38c1e01864p+532))
-(assert_return (invoke "f64.mul" (f64.const 0x1.e132f4d49d1cep+768) (f64.const -0x1.a75afe9a7d864p+374)) (f64.const -infinity))
+(assert_return (invoke "f64.mul" (f64.const 0x1.e132f4d49d1cep+768) (f64.const -0x1.a75afe9a7d864p+374)) (f64.const -inf))
 (assert_return (invoke "f64.mul" (f64.const 0x1.68bbf1cfff90ap+81) (f64.const 0x1.09cd17d652c5p+70)) (f64.const 0x1.768b8d67d794p+151))
 
 ;; Computations that round differently on x87.
@@ -354,9 +354,9 @@
 
 ;; Test the greatest positive value with a finite square.
 (assert_return (invoke "f32.mul" (f32.const 0x1.fffffep+63) (f32.const 0x1.fffffep+63)) (f32.const 0x1.fffffcp+127))
-(assert_return (invoke "f32.mul" (f32.const 0x1p+64) (f32.const 0x1p+64)) (f32.const infinity))
+(assert_return (invoke "f32.mul" (f32.const 0x1p+64) (f32.const 0x1p+64)) (f32.const inf))
 (assert_return (invoke "f64.mul" (f64.const 0x1.fffffffffffffp+511) (f64.const 0x1.fffffffffffffp+511)) (f64.const 0x1.ffffffffffffep+1023))
-(assert_return (invoke "f64.mul" (f64.const 0x1p+512) (f64.const 0x1p+512)) (f64.const infinity))
+(assert_return (invoke "f64.mul" (f64.const 0x1p+512) (f64.const 0x1p+512)) (f64.const inf))
 
 ;; Test the squares of values very close to 1.
 (assert_return (invoke "f32.mul" (f32.const 0x1.000002p+0) (f32.const 0x1.000002p+0)) (f32.const 0x1.000004p+0))
@@ -408,7 +408,7 @@
 (assert_return (invoke "f64.div" (f64.const -0x1.44ca7539cc851p+540) (f64.const 0x1.58501bccc58fep+453)) (f64.const -0x1.e2f8657e0924ep+86))
 
 ;; Computations that round differently in round-downward mode.
-(assert_return (invoke "f32.div" (f32.const -0x1.c2c54ap+69) (f32.const -0x1.00d142p-86)) (f32.const infinity))
+(assert_return (invoke "f32.div" (f32.const -0x1.c2c54ap+69) (f32.const -0x1.00d142p-86)) (f32.const inf))
 (assert_return (invoke "f32.div" (f32.const 0x1.e35abep-46) (f32.const 0x1.c69dfp+44)) (f32.const 0x1.102eb4p-90))
 (assert_return (invoke "f32.div" (f32.const 0x1.45ff2ap+0) (f32.const -0x1.1e8754p+89)) (f32.const -0x1.23434ep-89))
 (assert_return (invoke "f32.div" (f32.const 0x1.8db18ap-51) (f32.const 0x1.47c678p-128)) (f32.const 0x1.369b96p+77))
@@ -420,13 +420,13 @@
 (assert_return (invoke "f64.div" (f64.const -0x1.91f58d7ed1237p+236) (f64.const -0x1.f190d808383c8p+55)) (f64.const 0x1.9d9eb0836f906p+180))
 
 ;; Computations that round differently in round-toward-zero mode.
-(assert_return (invoke "f32.div" (f32.const 0x1.64b2a4p+26) (f32.const 0x1.e95752p-119)) (f32.const infinity))
+(assert_return (invoke "f32.div" (f32.const 0x1.64b2a4p+26) (f32.const 0x1.e95752p-119)) (f32.const inf))
 (assert_return (invoke "f32.div" (f32.const -0x1.53c9b6p+77) (f32.const 0x1.d689ap+27)) (f32.const -0x1.71baa4p+49))
 (assert_return (invoke "f32.div" (f32.const 0x1.664a8ap+38) (f32.const -0x1.59dba2p+96)) (f32.const -0x1.0933f4p-58))
 (assert_return (invoke "f32.div" (f32.const -0x1.99e0fap+111) (f32.const -0x1.c2b5a8p+9)) (f32.const 0x1.d19de6p+101))
 (assert_return (invoke "f32.div" (f32.const -0x1.5a815ap+92) (f32.const -0x1.b5820ap+13)) (f32.const 0x1.9580b8p+78))
 (assert_return (invoke "f64.div" (f64.const -0x1.81fd1e2af7bebp-655) (f64.const 0x1.edefc4eae536cp-691)) (f64.const -0x1.901abdd91b661p+35))
-(assert_return (invoke "f64.div" (f64.const -0x1.47cf932953c43p+782) (f64.const -0x1.bc40496b1f2a1p-553)) (f64.const infinity))
+(assert_return (invoke "f64.div" (f64.const -0x1.47cf932953c43p+782) (f64.const -0x1.bc40496b1f2a1p-553)) (f64.const inf))
 (assert_return (invoke "f64.div" (f64.const -0x1.2bd2e8fbdcad7p-746) (f64.const 0x1.b115674cc476ep-65)) (f64.const -0x1.62752bf19fa81p-682))
 (assert_return (invoke "f64.div" (f64.const -0x1.f923e3fea9efep+317) (f64.const -0x1.8044c74d27a39p-588)) (f64.const 0x1.5086518cc7186p+905))
 (assert_return (invoke "f64.div" (f64.const 0x1.516ed2051d6bbp+181) (f64.const -0x1.c9f455eb9c2eep+214)) (f64.const -0x1.79414d67f2889p-34))
@@ -478,9 +478,9 @@
 (assert_return (invoke "f64.div" (f64.const 0x1p-51) (f64.const 0x1.fffffffffffffp+1023)) (f64.const 0x0.0000000000001p-1022))
 
 ;; Test the least positive value with a finite reciprocal.
-(assert_return (invoke "f32.div" (f32.const 1.0) (f32.const 0x1p-128)) (f32.const infinity))
+(assert_return (invoke "f32.div" (f32.const 1.0) (f32.const 0x1p-128)) (f32.const inf))
 (assert_return (invoke "f32.div" (f32.const 1.0) (f32.const 0x1.000008p-128)) (f32.const 0x1.fffffp+127))
-(assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4p-1022)) (f64.const infinity))
+(assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4p-1022)) (f64.const inf))
 (assert_return (invoke "f64.div" (f64.const 1.0) (f64.const 0x0.4000000000001p-1022)) (f64.const 0x1.ffffffffffff8p+1023))
 
 ;; Test the least positive value that has a subnormal reciprocal.
@@ -620,6 +620,13 @@
 (assert_return (invoke "f64.ceil" (f64.const 0x1.fffffffffffffp+51)) (f64.const 0x1p+52))
 (assert_return (invoke "f64.ceil" (f64.const -0x1.fffffffffffffp+51)) (f64.const -0x1.ffffffffffffep+51))
 
+;; Test that implementations don't do the x+0x1p52-0x1p52 trick outside the
+;; range where it's safe.
+(assert_return (invoke "f32.ceil" (f32.const 0x1.fffffep+23)) (f32.const 0x1.fffffep+23))
+(assert_return (invoke "f32.ceil" (f32.const -0x1.fffffep+23)) (f32.const -0x1.fffffep+23))
+(assert_return (invoke "f64.ceil" (f64.const 0x1.fffffffffffffp+52)) (f64.const 0x1.fffffffffffffp+52))
+(assert_return (invoke "f64.ceil" (f64.const -0x1.fffffffffffffp+52)) (f64.const -0x1.fffffffffffffp+52))
+
 ;; Test values close to -1.0.
 (assert_return (invoke "f32.floor" (f32.const -0x1.fffffep-1)) (f32.const -1.0))
 (assert_return (invoke "f32.floor" (f32.const -0x1.000002p+0)) (f32.const -2.0))
@@ -631,6 +638,11 @@
 (assert_return (invoke "f32.floor" (f32.const 0x1.fffffep+22)) (f32.const 0x1.fffffcp+22))
 (assert_return (invoke "f64.floor" (f64.const -0x1.fffffffffffffp+51)) (f64.const -0x1p+52))
 (assert_return (invoke "f64.floor" (f64.const 0x1.fffffffffffffp+51)) (f64.const 0x1.ffffffffffffep+51))
+
+;; Test that floor isn't implemented as XMVectorFloor.
+;; http://dss.stephanierct.com/DevBlog/?p=8#comment-4
+(assert_return (invoke "f32.floor" (f32.const 88607.0)) (f32.const 88607.0))
+(assert_return (invoke "f64.floor" (f64.const 88607.0)) (f64.const 88607.0))
 
 ;; Test the maximum and minimum value for which trunc is not an identity operator.
 (assert_return (invoke "f32.trunc" (f32.const -0x1.fffffep+22)) (f32.const -0x1.fffffcp+22))

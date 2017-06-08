@@ -25,6 +25,19 @@ The following sections group instructions into a number of different categories.
 
 .. _syntax-sx:
 .. _syntax-instr-numeric:
+.. _syntax-const:
+.. _syntax-unop:
+.. _syntax-binop:
+.. _syntax-testop:
+.. _syntax-relop:
+.. _syntax-iunop:
+.. _syntax-ibinop:
+.. _syntax-itestop:
+.. _syntax-irelop:
+.. _syntax-funop:
+.. _syntax-fbinop:
+.. _syntax-ftestop:
+.. _syntax-frelop:
 .. index:: ! numeric instruction
    pair: abstract syntax; instruction
 
@@ -40,59 +53,73 @@ These operations closely match respective operations available in hardware.
      \K{32} ~|~ \K{64} \\
    \production{signedness} & \sx &::=&
      \K{u} ~|~ \K{s} \\
-   \production{instructions} & \instr &::=&
-     \K{i}\X{nn}\K{.const}~\xref{syntax/values}{syntax-int}{\iX{\X{nn}}} ~|~
-     \K{f}\X{nn}\K{.const}~\xref{syntax/values}{syntax-float}{\fX{\X{nn}}} ~|~ \\&&&
-     \K{i}\X{nn}\K{.eqz} ~|~ \\&&&
-     \K{i}\X{nn}\K{.eq} ~|~
-     \K{i}\X{nn}\K{.ne} ~|~
-     \K{i}\X{nn}\K{.lt\_}\sx ~|~
-     \K{i}\X{nn}\K{.gt\_}\sx ~|~
-     \K{i}\X{nn}\K{.le\_}\sx ~|~
-     \K{i}\X{nn}\K{.ge\_}\sx ~|~ \\&&&
-     \K{f}\X{nn}\K{.eq} ~|~
-     \K{f}\X{nn}\K{.ne} ~|~
-     \K{f}\X{nn}\K{.lt} ~|~
-     \K{f}\X{nn}\K{.gt} ~|~
-     \K{f}\X{nn}\K{.le} ~|~
-     \K{f}\X{nn}\K{.ge} ~|~ \\&&&
-     \K{i}\X{nn}\K{.clz} ~|~
-     \K{i}\X{nn}\K{.ctz} ~|~
-     \K{i}\X{nn}\K{.popcnt} ~|~ \\&&&
-     \K{i}\X{nn}\K{.add} ~|~
-     \K{i}\X{nn}\K{.sub} ~|~
-     \K{i}\X{nn}\K{.mul} ~|~
-     \K{i}\X{nn}\K{.div\_}\sx ~|~
-     \K{i}\X{nn}\K{.rem\_}\sx ~|~ \\&&&
-     \K{i}\X{nn}\K{.and} ~|~
-     \K{i}\X{nn}\K{.or} ~|~
-     \K{i}\X{nn}\K{.xor} ~|~ \\&&&
-     \K{i}\X{nn}\K{.shl} ~|~
-     \K{i}\X{nn}\K{.shr\_}\sx ~|~
-     \K{i}\X{nn}\K{.rotl} ~|~
-     \K{i}\X{nn}\K{.rotr} ~|~ \\&&&
-     \K{f}\X{nn}\K{.abs} ~|~
-     \K{f}\X{nn}\K{.neg} ~|~
-     \K{f}\X{nn}\K{.sqrt} ~|~ \\&&&
-     \K{f}\X{nn}\K{.ceil} ~|~ 
-     \K{f}\X{nn}\K{.floor} ~|~ 
-     \K{f}\X{nn}\K{.trunc} ~|~ 
-     \K{f}\X{nn}\K{.nearest} ~|~ \\&&&
-     \K{f}\X{nn}\K{.add} ~|~
-     \K{f}\X{nn}\K{.sub} ~|~
-     \K{f}\X{nn}\K{.mul} ~|~
-     \K{f}\X{nn}\K{.div} ~|~ \\&&&
-     \K{f}\X{nn}\K{.min} ~|~
-     \K{f}\X{nn}\K{.max} ~|~
-     \K{f}\X{nn}\K{.copysign} ~|~ \\&&&
-     \K{i32.wrap/i64} ~|~
-     \K{i64.extend\_}\sx/\K{i32} ~|~
-     \K{i}\X{nn}\K{.trunc\_}\sx/\K{f}\X{mm} ~|~ \\&&&
-     \K{f32.demote/f64} ~|~
-     \K{f64.promote/f32} ~|~
-     \K{f}\X{nn}\K{.convert\_}\sx/\K{i}\X{mm} ~|~ \\&&&
-     \K{i}\X{nn}\K{.reinterpret/f}\X{nn} ~|~
-     \K{f}\X{nn}\K{.reinterpret/i}\X{nn} \\
+   \production{instruction} & \instr &::=&
+     \K{i}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-int}{\iX{\X{nn}}} ~|~
+     \K{f}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-float}{\fX{\X{nn}}} ~|~ \\&&&
+     \K{i}\X{nn}\K{.}\iunop ~|~
+     \K{f}\X{nn}\K{.}\funop ~|~ \\&&&
+     \K{i}\X{nn}\K{.}\ibinop ~|~
+     \K{f}\X{nn}\K{.}\fbinop ~|~ \\&&&
+     \K{i}\X{nn}\K{.}\itestop ~|~ \\&&&
+     \K{i}\X{nn}\K{.}\irelop ~|~
+     \K{f}\X{nn}\K{.}\frelop ~|~ \\&&&
+     \K{i32.}\WRAP\K{/i64} ~|~
+     \K{i64.}\EXTEND\K{\_}\sx/\K{i32} ~|~
+     \K{i}\X{nn}\K{.}\TRUNC\K{\_}\sx/\K{f}\X{mm} ~|~ \\&&&
+     \K{f32.}\TRUNC\K{/f64} ~|~
+     \K{f64.}\PROMOTE\K{/f32} ~|~
+     \K{f}\X{nn}\K{.}\CONVERT\K{\_}\sx/\K{i}\X{mm} ~|~ \\&&&
+     \K{i}\X{nn}\K{.}\REINTERPRET\K{/f}\X{nn} ~|~
+     \K{f}\X{nn}\K{.}\REINTERPRET\K{/i}\X{nn} \\
+   \production{integer unary operator} & \iunop &::=&
+     \K{clz} ~|~
+     \K{ctz} ~|~
+     \K{popcnt} \\
+   \production{integer binary operator} & \ibinop &::=&
+     \K{add} ~|~
+     \K{sub} ~|~
+     \K{mul} ~|~
+     \K{div\_}\sx ~|~
+     \K{rem\_}\sx ~|~ \\&&&
+     \K{and} ~|~
+     \K{or} ~|~
+     \K{xor} ~|~
+     \K{shl} ~|~
+     \K{shr\_}\sx ~|~
+     \K{rotl} ~|~
+     \K{rotr} \\
+   \production{floating-point unary operator} & \funop &::=&
+     \K{abs} ~|~
+     \K{neg} ~|~
+     \K{sqrt} ~|~
+     \K{ceil} ~|~ 
+     \K{floor} ~|~ 
+     \K{trunc} ~|~ 
+     \K{nearest} \\
+   \production{floating-point binary operator} & \fbinop &::=&
+     \K{add} ~|~
+     \K{sub} ~|~
+     \K{mul} ~|~
+     \K{div} ~|~
+     \K{min} ~|~
+     \K{max} ~|~
+     \K{copysign} \\
+   \production{integer test operator} & \itestop &::=&
+     \K{eqz} \\
+   \production{integer relational operator} & \irelop &::=&
+     \K{eq} ~|~
+     \K{ne} ~|~
+     \K{lt\_}\sx ~|~
+     \K{gt\_}\sx ~|~
+     \K{le\_}\sx ~|~
+     \K{ge\_}\sx \\
+   \production{floating-point relational operator} & \frelop &::=&
+     \K{eq} ~|~
+     \K{ne} ~|~
+     \K{lt} ~|~
+     \K{gt} ~|~
+     \K{le} ~|~
+     \K{ge} \\
    \end{array}
 
 Numeric instructions are divided by :ref:`value type <syntax-valtype>`.
@@ -116,6 +143,28 @@ where a signedness annotation |sx| distinguishes whether the operands are to be 
 For the other integer instructions, the use of 2's complement for the signed interpretation means that they behave the same regardless of signedness.
 
 
+Conventions
+...........
+
+Occasionally, it is convenient to group operators together according to the following grammar shorthands:
+
+.. math::
+   \begin{array}{llll}
+   \production{unary operator} & \unop &::=& \iunop ~|~ \funop \\
+   \production{binary operator} & \binop &::=& \ibinop ~|~ \fbinop \\
+   \production{test operator} & \testop &::=& \itestop \\
+   \production{relational operator} & \relop &::=& \irelop ~|~ \frelop \\
+   \production{conversion operator} & \cvtop &::=&
+     \WRAP ~|~
+     \EXTEND\K{\_}\sx ~|~
+     \TRUNC\K{\_}\sx ~|~
+     \CONVERT\K{\_}\sx ~|~
+     \DEMOTE ~|~
+     \PROMOTE ~|~
+     \REINTERPRET \\
+   \end{array}
+
+
 .. _syntax-instr-parametric:
 .. index:: ! parametric instruction
    pair: abstract syntax; instruction
@@ -127,7 +176,7 @@ Instructions in this group can operate on operands of any :ref:`value type <synt
 
 .. math::
    \begin{array}{llll}
-   \production{instructions} & \instr &::=&
+   \production{instruction} & \instr &::=&
      \dots ~|~ \\&&&
      \DROP ~|~ \\&&&
      \SELECT
@@ -149,7 +198,7 @@ Variable instructions are concerned with the access to :ref:`local <syntax-local
 
 .. math::
    \begin{array}{llll}
-   \production{instructions} & \instr &::=&
+   \production{instruction} & \instr &::=&
      \dots ~|~ \\&&&
      \GETLOCAL~\localidx ~|~ \\&&&
      \SETLOCAL~\localidx ~|~ \\&&&
@@ -163,6 +212,8 @@ The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
 
 
 .. _syntax-instr-memory:
+.. _syntax-load:
+.. _syntax-store:
 .. _syntax-memarg:
 .. index:: ! memory instruction, memory index
    pair: abstract syntax; instruction
@@ -170,31 +221,31 @@ The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Instructions in this group are concerned with :ref:`linear memory <sec-memory>`.
+Instructions in this group are concerned with :ref:`linear memory <syntax-mem>`.
 
 .. math::
    \begin{array}{llll}
    \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
-   \production{instructions} & \instr &::=&
+   \production{instruction} & \instr &::=&
      \dots ~|~ \\&&&
-     \K{i}\X{nn}\K{.load}~\memarg ~|~
-     \K{f}\X{nn}\K{.load}~\memarg ~|~ \\&&&
-     \K{i}\X{nn}\K{.store}~\memarg ~|~
-     \K{f}\X{nn}\K{.store}~\memarg ~|~ \\&&&
-     \K{i}\X{nn}\K{.load8\_}\sx~\memarg ~|~
-     \K{i}\X{nn}\K{.load16\_}\sx~\memarg ~|~
-     \K{i64.load32\_}\sx~\memarg ~|~ \\&&&
-     \K{i}\X{nn}\K{.store8}~\memarg ~|~
-     \K{i}\X{nn}\K{.store16}~\memarg ~|~
-     \K{i64.store32}~\memarg ~|~ \\&&&
+     \K{i}\X{nn}\K{.}\LOAD~\memarg ~|~
+     \K{f}\X{nn}\K{.}\LOAD~\memarg ~|~ \\&&&
+     \K{i}\X{nn}\K{.}\STORE~\memarg ~|~
+     \K{f}\X{nn}\K{.}\STORE~\memarg ~|~ \\&&&
+     \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memarg ~|~
+     \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memarg ~|~
+     \K{i64.}\LOAD\K{32\_}\sx~\memarg ~|~ \\&&&
+     \K{i}\X{nn}\K{.}\STORE\K{8}~\memarg ~|~
+     \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
+     \K{i64.}\STORE\K{32}~\memarg ~|~ \\&&&
      \CURRENTMEMORY ~|~ \\&&&
      \GROWMEMORY \\
    \end{array}
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
 They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint.
-Integer loads and stores can optionally specify a *storage size* that is smaller than the width of the respective value type.
+Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`width <syntax-valtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
@@ -213,10 +264,20 @@ Both instructions operate in units of :ref:`page size <page-size>`.
    all memory instructions implicitly operate on :ref:`memory <syntax-mem>` :ref:`index <syntax-memidx>` :math:`0`.
    This restriction may be lifted in future versions.
 
-The precise semantics of memory instructions is :ref:`described <exec-instr-memory>` in the :ref:`Instruction <sec-instruction>` section.
-
 
 .. _syntax-instr-control:
+.. _syntax-instr-seq:
+.. _syntax-nop:
+.. _syntax-unreachable:
+.. _syntax-block:
+.. _syntax-loop:
+.. _syntax-if:
+.. _syntax-br:
+.. _syntax-br_if:
+.. _syntax-br_table:
+.. _syntax-return:
+.. _syntax-call:
+.. _syntax-call_indirect:
 .. _syntax-label:
 .. index:: ! control instruction, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector
    pair: abstract syntax; instruction
@@ -228,7 +289,7 @@ Instructions in this group affect the flow of control.
 
 .. math::
    \begin{array}{llll}
-   \production{instructions} & \instr &::=&
+   \production{instruction} & \instr &::=&
      \dots ~|~ \\&&&
      \NOP ~|~ \\&&&
      \UNREACHABLE ~|~ \\&&&
@@ -281,7 +342,7 @@ However, forward branches that target a control instruction with a non-empty res
 The |CALL| instruction invokes another function, consuming the necessary arguments from the stack and returning the result values of the call.
 The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>`.
 Since tables may contain function elements of heterogeneous type |ANYFUNC|,
-the callee is dynamically checked against the :ref:`function type <functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
+the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
 
 .. note::
    In the current version of WebAssembly,
@@ -301,7 +362,7 @@ Expressions
 
 .. math::
    \begin{array}{llll}
-   \production{expressions} & \expr &::=&
+   \production{expression} & \expr &::=&
      \instr^\ast~\END \\
    \end{array}
 

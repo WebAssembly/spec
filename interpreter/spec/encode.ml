@@ -71,6 +71,7 @@ let encode m =
 
     let bool b = vu1 (if b then 1 else 0)
     let string bs = len (String.length bs); put_string s bs
+    let name n = string (Utf8.encode n)
     let list f xs = List.iter f xs
     let opt f xo = Lib.Option.app f xo
     let vec f xs = len (List.length xs); list f xs
@@ -377,20 +378,22 @@ let encode m =
       end
 
     (* Type section *)
+    let type_ t = func_type t.it
+
     let type_section ts =
-      section 1 (vec func_type) ts (ts <> [])
+      section 1 (vec type_) ts (ts <> [])
 
     (* Import section *)
-    let import_kind k =
-      match k.it with
+    let import_desc d =
+      match d.it with
       | FuncImport x -> u8 0x00; var x
       | TableImport t -> u8 0x01; table_type t
       | MemoryImport t -> u8 0x02; memory_type t
       | GlobalImport t -> u8 0x03; global_type t
 
     let import im =
-      let {module_name; item_name; ikind} = im.it in
-      string module_name; string item_name; import_kind ikind
+      let {module_name; item_name; idesc} = im.it in
+      name module_name; name item_name; import_desc idesc
 
     let import_section ims =
       section 2 (vec import) ims (ims <> [])
@@ -426,16 +429,16 @@ let encode m =
       section 6 (vec global) gs (gs <> [])
 
     (* Export section *)
-    let export_kind k =
-      match k.it with
-      | FuncExport -> u8 0
-      | TableExport -> u8 1
-      | MemoryExport -> u8 2
-      | GlobalExport -> u8 3
+    let export_desc d =
+      match d.it with
+      | FuncExport x -> u8 0; var x
+      | TableExport x -> u8 1; var x
+      | MemoryExport x -> u8 2; var x
+      | GlobalExport x -> u8 3; var x
 
     let export ex =
-      let {name; ekind; item} = ex.it in
-      string name; export_kind ekind; var item
+      let {name = n; edesc} = ex.it in
+      name n; export_desc edesc
 
     let export_section exs =
       section 7 (vec export) exs (exs <> [])

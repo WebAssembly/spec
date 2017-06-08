@@ -39,10 +39,11 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Globals*: the list of globals declared in the current module, represented by their global type.
 * *Locals*: the list of locals declared in the current function (including parameters), represented by their value type.
 * *Labels*: the stack of labels accessible from the current position, represented by their result type.
+* *Return*: the return type of the current function, represented as a result type.
 
-In other words, a context contains a sequence of suitable :ref:`types <syntax-types>` for each :ref:`index space <syntax-index>`,
+In other words, a context contains a sequence of suitable :ref:`types <syntax-type>` for each :ref:`index space <syntax-index>`,
 describing each defined entry in that space.
-Locals and labels are only used for validating :ref:`instructions <syntax-instr>` in :ref:`function bodies <syntax-func>`, and are left empty elsewhere.
+Locals, labels and return type are only used for validating :ref:`instructions <syntax-instr>` in :ref:`function bodies <syntax-func>`, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.
 
 It is convenient to define contexts as :ref:`records <syntax-record>` :math:`C` with abstract syntax:
@@ -57,7 +58,8 @@ It is convenient to define contexts as :ref:`records <syntax-record>` :math:`C` 
         & \MEMS & \memtype^\ast, \\
         & \GLOBALS & \globaltype^\ast, \\
         & \LOCALS & \valtype^\ast, \\
-        & \LABELS & \resulttype^\ast ~\} \\
+        & \LABELS & \resulttype^\ast, \\
+        & \LRETURN & \resulttype^? ~\} \\
      \end{array}
    \end{array}
 
@@ -79,27 +81,35 @@ In addition to field access :math:`C.\K{field}` the following notation is adopte
    because the :ref:`label index <syntax-labelidx>` space is indexed relatively, that is, in reverse order of addition.
 
 
-Textual Notation
-~~~~~~~~~~~~~~~~
+.. _valid-notation-textual:
+
+Prose Notation
+~~~~~~~~~~~~~~
 
 Validation is specified by stylised rules for each relevant part of the :ref:`abstract syntax <syntax>`.
 The rules not only state constraints defining when a phrase is valid,
 they also classify it with a type.
-A phrase :math:`A` is said to be "valid with type :math:`T`",
-if all constraints expressed by the respective rules are met.
-The form of :math:`T` depends on what :math:`A` is.
+The following conventions are adopted in stating these rules.
 
-.. note::
-   For example, if :math:`A` is a :ref:`function <syntax-func>`,
-   then  :math:`T` is a :ref:`function type <syntax-functype>`;
-   for an :math:`A` that is a :ref:`global <syntax-global>`,
-   :math:`T` is a :ref:`global type <syntax-globaltype>`;
-   and so on.
+* A phrase :math:`A` is said to be "valid with type :math:`T`"
+  if and only if all constraints expressed by the respective rules are met.
+  The form of :math:`T` depends on what :math:`A` is.
 
-The rules implicitly assume a given :ref:`context <context>` :math:`C`.
-In some places, this context is locally extended to a context :math:`C'` with additional entries.
-The formulation "Under context :math:`C'`, ... *statement* ..." is adopted to express that the following statement must apply under the assumptions embodied in the extended context.
+  .. note::
+     For example, if :math:`A` is a :ref:`function <syntax-func>`,
+     then  :math:`T` is a :ref:`function type <syntax-functype>`;
+     for an :math:`A` that is a :ref:`global <syntax-global>`,
+     :math:`T` is a :ref:`global type <syntax-globaltype>`;
+     and so on.
 
+* The rules implicitly assume a given :ref:`context <context>` :math:`C`.
+
+* In some places, this context is locally extended to a context :math:`C'` with additional entries.
+  The formulation "Under context :math:`C'`, ... *statement* ..." is adopted to express that the following statement must apply under the assumptions embodied in the extended context.
+
+
+.. _valid-notation:
+.. index:: ! typing rules
 
 Formal Notation
 ~~~~~~~~~~~~~~~
@@ -129,7 +139,7 @@ The conclusion always is a judgment :math:`C \vdash A : T`,
 and there is one respective rule for each relevant construct :math:`A` of the abstract syntax.
 
 .. note::
-   For example, the typing rule for the :ref:`instruction <syntax-instr-numeric>` :math:`\I32.\ADD` can be given as an axiom:
+   For example, the typing rule for the :math:`\I32.\ADD` instruction can be given as an axiom:
 
    .. math::
       \frac{
@@ -145,7 +155,7 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
 
    .. math::
       \frac{
-        C.\LOCAL[x] = t
+        C.\LOCALS[x] = t
       }{
         C \vdash \GETLOCAL~x : [] \to [t]
       }
@@ -153,7 +163,7 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
    Here, the premise enforces that the immediate :ref:`local index <syntax-localidx>` :math:`x` exists in the context.
    The instruction produces a value of its respective type :math:`t`
    (and does not consume any values).
-   If :math:`C.\LOCAL[x]` does not exist then the premise does not hold,
+   If :math:`C.\LOCALS[x]` does not exist then the premise does not hold,
    and the instruction is ill-typed.
 
    Finally, a :ref:`structured <syntax-instr-control>` instruction requires

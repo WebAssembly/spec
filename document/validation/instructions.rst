@@ -70,65 +70,9 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-In this section, the following grammar shorthands are adopted:
-
-.. math::
-   \begin{array}{llll}
-   \production{unary operators} & \unop &::=&
-     \CLZ ~|~
-     \CTZ ~|~
-     \POPCNT ~|~
-     \ABS ~|~
-     \NEG ~|~
-     \SQRT ~|~
-     \CEIL ~|~
-     \FLOOR ~|~
-     \TRUNC ~|~
-     \NEAREST \\
-   \production{binary operators} & \binop &::=&
-     \ADD ~|~
-     \SUB ~|~
-     \MUL ~|~
-     \DIV ~|~
-     \DIV\K{\_}\sx ~|~
-     \REM\K{\_}\sx ~|~
-     \FMIN ~|~
-     \FMAX ~|~
-     \COPYSIGN ~|~ \\&&&
-     \AND ~|~
-     \OR ~|~
-     \XOR ~|~
-     \SHL ~|~
-     \SHR\K{\_}\sx ~|~
-     \ROTL ~|~
-     \ROTR \\
-   \production{test operators} & \testop &::=&
-     \EQZ \\
-   \production{relational operators} & \relop &::=&
-     \EQ ~|~
-     \NE ~|~
-     \LT ~|~
-     \GT ~|~
-     \LE ~|~
-     \GE ~|~
-     \LT\K{\_}\sx ~|~
-     \GT\K{\_}\sx ~|~
-     \LE\K{\_}\sx ~|~
-     \GE\K{\_}\sx \\
-   \production{conversion operators} & \cvtop &::=&
-     \WRAP ~|~
-     \EXTEND\K{\_}\sx ~|~
-     \TRUNC\K{\_}\sx ~|~
-     \CONVERT\K{\_}\sx ~|~
-     \DEMOTE ~|~
-     \PROMOTE ~|~
-     \REINTERPRET \\
-   \end{array}
-
-
 .. _valid-const:
 
-:math:`t \K{.const}~c`
+:math:`t\K{.}\CONST~c`
 ......................
 
 * The instruction is valid with type :math:`[] \to [t]`.
@@ -136,7 +80,7 @@ In this section, the following grammar shorthands are adopted:
 .. math::
    \frac{
    }{
-     C \vdash t\K{.const}~c : [] \to [t]
+     C \vdash t\K{.}\CONST~c : [] \to [t]
    }
 
 
@@ -321,7 +265,7 @@ Variable Instructions
 
 * The global :math:`C.\GLOBALS[x]` must be defined in the context.
 
-* Let :math:`\mut~t` be the :ref:`value type <syntax-globaltype>` :math:`C.\LOCALS[x]`.
+* Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\GLOBALS[x]`.
 
 * Then the instruction is valid with type :math:`[] \to [t]`.
 
@@ -342,13 +286,13 @@ Variable Instructions
 
 * Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\GLOBALS[x]`.
 
-* The mutability :math:`\mut` must be |MUT|.
+* The mutability :math:`\mut` must be |MVAR|.
 
 * Then the instruction is valid with type :math:`[t] \to []`.
 
 .. math::
    \frac{
-     C.\GLOBALS[x] = \MUT~t
+     C.\GLOBALS[x] = \MVAR~t
    }{
      C \vdash \SETGLOBAL~x : [t] \to []
    }
@@ -365,12 +309,12 @@ Memory Instructions
 
 .. _valid-load:
 
-:math:`t\K{.load}~\memarg`
-..........................
+:math:`t\K{.}\LOAD~\memarg`
+...........................
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
@@ -378,7 +322,7 @@ Memory Instructions
    \frac{
      C.\MEMS[0] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} \leq |t|
+     2^{\memarg.\ALIGN} \leq |t|/8
    }{
      C \vdash t\K{.load}~\memarg : [\I32] \to [t]
    }
@@ -386,12 +330,12 @@ Memory Instructions
 
 .. _valid-loadn:
 
-:math:`t\K{.load}N\K{\_}\sx~\memarg`
-....................................
+:math:`t\K{.}\LOAD{N}\K{\_}\sx~\memarg`
+.......................................
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
@@ -399,7 +343,7 @@ Memory Instructions
    \frac{
      C.\MEMS[0] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} \leq N
+     2^{\memarg.\ALIGN} \leq N/8
    }{
      C \vdash t\K{.load}N\K{\_}\sx~\memarg : [\I32] \to [t]
    }
@@ -407,12 +351,12 @@ Memory Instructions
 
 .. _valid-store:
 
-:math:`t\K{.store}~\memarg`
-...........................
+:math:`t\K{.}\STORE~\memarg`
+............................
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
@@ -420,7 +364,7 @@ Memory Instructions
    \frac{
      C.\MEMS[0] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} \leq |t|
+     2^{\memarg.\ALIGN} \leq |t|/8
    }{
      C \vdash t\K{.store}~\memarg : [\I32~t] \to []
    }
@@ -428,12 +372,12 @@ Memory Instructions
 
 .. _valid-storen:
 
-:math:`t\K{.store}N~\memarg`
-............................
+:math:`t\K{.}\STORE{N}~\memarg`
+...............................
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
@@ -441,7 +385,7 @@ Memory Instructions
    \frac{
      C.\MEMS[0] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} \leq N
+     2^{\memarg.\ALIGN} \leq N/8
    }{
      C \vdash t\K{.store}N~\memarg : [\I32~t] \to []
    }
@@ -537,7 +481,7 @@ Control Instructions
    \frac{
      C,\LABELS\,[t^?] \vdash \instr^\ast : [] \to [t^?]
    }{
-     C \vdash \BLOCK~[^?]~\instr^\ast~\END : [] \to [t^?]
+     C \vdash \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
 
 .. note::
@@ -674,21 +618,25 @@ Control Instructions
 :math:`\RETURN`
 ...............
 
-* The label vector :math:`C.\LABELS` must not be empty in the context.
+* The return type :math:`C.\LRETURN` must not be empty in the context.
 
-* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` that is the last element of :math:`C.\LABELS`.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\LRETURN`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\LABELS[|C.\LABELS|-1] = [t^?]
+     C.\LRETURN = [t^?]
    }{
      C \vdash \RETURN : [t_1^\ast~t^?] \to [t_2^\ast]
    }
 
 .. note::
    The |RETURN| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+   :math:`C.\LRETURN` is empty (:math:`\epsilon`) when validating an expression that is not a function body.
+   This differs from it being set to the empty result type (:math:`[]`),
+   which is the case for functions not returning anything.
 
 
 .. _valid-call:
@@ -734,7 +682,7 @@ Control Instructions
 
 
 .. _valid-instr-seq:
-.. index:: instruction
+.. index:: instruction, instruction sequence
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~

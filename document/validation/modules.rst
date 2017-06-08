@@ -8,7 +8,32 @@ To that end, each definition is classified with a suitable type.
 Auxiliary Rules
 ~~~~~~~~~~~~~~~
 
+.. _valid-functype:
+.. index:: function type
+   pair: validation; function type
+   single: abstract syntax; function type
+
+Function Types :math:`[t_1^n] \to [t_2^m]`
+..........................................
+
+* The arity :math:`m` must not be larger than :math:`1`.
+
+* Then the function type is valid.
+
+.. math::
+   \frac{
+   }{
+     \vdash [t_1^\ast] \to [t_2^?] ~\F{ok}
+   }
+
+.. note::
+   This restriction may be removed in future versions of WebAssembly.
+
+
 .. _valid-limits:
+.. index:: limits
+   pair: validation; limits
+   single: abstract syntax; limits
 
 Limits :math:`\{ \MIN~n, \MAX~m^? \}`
 .....................................
@@ -26,8 +51,10 @@ Limits :math:`\{ \MIN~n, \MAX~m^? \}`
 
 
 .. _valid-func:
+.. _valid-local:
 .. index:: function, local, function index, local index, type index, function type, value type, expression, import
    pair: abstract syntax; function
+   single: abstract syntax; function
 
 Functions
 ~~~~~~~~~
@@ -40,27 +67,27 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
 * The type :math:`C.\TYPES[x]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\TYPES[x]`.
-
-* The length of :math:`t_2^\ast` must not be larger than :math:`1`.
+* Let :math:`[t_1^\ast] \to [t_2^?]` be the :ref:`function type <syntax-functype>` :math:`C.\TYPES[x]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
 
-  * the |LOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
+  * |LOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
 
-  * the |LABELS| set to the singular sequence containing only :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
+  * |LABELS| set to the singular sequence containing only :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
+
+  * |LRETURN| set to the :ref:`result type <syntax-valtype>` :math:`[t_2^?]`.
 
 * Under the context :math:`C'`,
-  the expression :math:`\expr` must be valid with type :math:`t_2^\ast`.
+  the expression :math:`\expr` must be valid with type :math:`t_2^?`.
 
-* Then the function definition is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+* Then the function definition is valid with type :math:`[t_1^\ast] \to [t_2^?]`.
 
 .. math::
    \frac{
      C.\TYPES[x] = [t_1^\ast] \to [t_2^?]
      \qquad
-     C,\LOCALS\,t_1^\ast~t^\ast,\LABELS~[t_2^?] \vdash \expr : [t_2^?]
+     C,\LOCALS\,t_1^\ast~t^\ast,\LRETURN~[t_2^?] \vdash \expr : [t_2^?]
    }{
      C \vdash \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\expr \} : [t_1^\ast] \to [t_2^?]
    }
@@ -262,7 +289,7 @@ Start function declarations :math:`\start` are not classified by any type.
 
 .. _valid-export:
 .. index:: export, name, index, function index, table index, memory index, global index
-   validation: abstract syntax; export
+   pair: validation; export
    single: abstract syntax; export
 
 Exports
@@ -339,13 +366,13 @@ Export descriptions :math:`\exportdesc` are not classified by any type.
 
 * Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\GLOBALS[x]`.
 
-* The mutability :math:`\mut` must be |CONST|.
+* The mutability :math:`\mut` must be |MCONST|.
 
 * Then the export description is valid.
 
 .. math::
    \frac{
-     C.\GLOBALS[x] = \CONST~t
+     C.\GLOBALS[x] = \MCONST~t
    }{
      C \vdash \GLOBAL~x ~\F{ok}
    }
@@ -384,19 +411,14 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 * Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\TYPES[x]`.
 
-* The length of :math:`t_2^\ast` must not be larger than :math:`1`.
-
 * Then the import description is valid with type :math:`\FUNC~[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\TYPES[x] = [t_1^\ast] \to [t_2^?]
+     C.\TYPES[x] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdash \FUNC~x : \FUNC~[t_1^\ast] \to [t_2^?]
+     C \vdash \FUNC~x : \FUNC~[t_1^\ast] \to [t_2^\ast]
    }
-
-.. note::
-   The restriction on the length of the result types :math:`t_2^\ast` may be lifted in future versions of WebAssembly.
 
 
 :math:`\TABLE~\limits~\elemtype`
@@ -432,19 +454,19 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 :math:`\GLOBAL~\mut~t`
 ......................
 
-* The mutability :math:`\mut` must be |CONST|.
+* The mutability :math:`\mut` must be |MCONST|.
 
 * Then the import description is valid with type :math:`\GLOBAL~t`.
 
 .. math::
    \frac{
    }{
-     C \vdash \GLOBAL~\CONST~t : \GLOBAL~\CONST~t
+     C \vdash \GLOBAL~\MCONST~t : \GLOBAL~\MCONST~t
    }
 
 
 .. _valid-module:
-.. index:: modules, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
+.. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
    pair: validation; module
    single: abstract syntax; module
 
@@ -478,7 +500,12 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\LABELS` is empty.
 
+  * :math:`C.\LRETURN` is empty.
+
 * Under the context :math:`C`:
+
+  * For each :math:`\functype_i` in :math:`\module.\TYPES`,
+    the :ref:`function type <syntax-functype>` :math:`\functype_i` must be :ref:`valid <valid-functype>`.
 
   * For each :math:`\func_i` in :math:`\module.\FUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\functype_i`.
@@ -520,13 +547,15 @@ Instead, the context :math:`C` for validation of the module's content is constru
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
+     (\vdash \functype ~\F{ok})^\ast
+     \quad
      (C \vdash \func : \X{ft})^\ast
      \quad
      (C \vdash \table : \X{tt})^\ast
      \quad
      (C \vdash \mem : \X{mt})^\ast
      \quad
-     (C_i \vdash \global : \X{gt})_i^\ast
+     (C' \vdash \global : \X{gt})^\ast
      \\
      (C \vdash \elem ~\F{ok})^\ast
      \quad
@@ -548,13 +577,13 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \\
      C = \{ \TYPES~\functype^\ast, \FUNCS~\X{ift}^\ast~\X{ft}^\ast, \TABLES~\X{itt}^\ast~\X{tt}^\ast, \MEMS~\X{imt}^\ast~\X{mt}^\ast, \GLOBALS~\X{igt}^\ast~\X{gt}^\ast \}
      \\
+     C' = \{ \GLOBALS~\X{igt}^\ast \}
+     \qquad
      |C.\TABLES| \leq 1
      \qquad
      |C.\MEMS| \leq 1
      \qquad
      \name^\ast ~\F{disjoint}
-     \qquad
-     (C_i = \{ \GLOBALS~[\X{igt}^\ast~\X{gt}^{i-1}] \})_i^\ast
      \end{array}
    }{
      \vdash \{
@@ -581,7 +610,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
    Globals, however, are not recursive.
-   The effect of defining the limited contexts :math:`C_i` for validating the module's globals is that their initialization expressions can only access imported and previously defined globals and nothing else.
+   The effect of defining the limited context :math:`C'` for validating the module's globals is that their initialization expressions can only access imported globals and nothing else.
 
 .. note::
    The restriction on the number of tables and memories may be lifted in future versions of WebAssembly.

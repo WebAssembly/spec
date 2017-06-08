@@ -139,14 +139,15 @@ let harness =
 (* Context *)
 
 module Map = Map.Make(String)
+module ExportMap = Instance.ExportMap
 
-type exports = external_type Map.t
+type exports = external_type ExportMap.t
 type modules = {mutable env : exports Map.t; mutable current : int}
 
 let exports m : exports =
   List.fold_left
-    (fun map exp -> Map.add exp.it.name (export_type m exp) map)
-    Map.empty m.it.exports
+    (fun map exp -> ExportMap.add exp.it.name (export_type m exp) map)
+    ExportMap.empty m.it.exports
 
 let modules () : modules = {env = Map.empty; current = 0}
 
@@ -167,8 +168,9 @@ let lookup (mods : modules) x_opt name at =
       raise (Eval.Crash (at, 
         if x_opt = None then "no module defined within script"
         else "unknown module " ^ of_var_opt mods x_opt ^ " within script"))
-  in try Map.find name exports with Not_found ->
-    raise (Eval.Crash (at, "unknown export \"" ^ name ^ "\" within module"))
+  in try ExportMap.find name exports with Not_found ->
+    raise (Eval.Crash (at, "unknown export \"" ^
+      string_of_name name ^ "\" within module"))
 
 
 (* Wrappers *)
@@ -197,8 +199,8 @@ let abs_mask_of = function
   | I32Type | F32Type -> Values.I32 Int32.max_int
   | I64Type | F64Type -> Values.I64 Int64.max_int
 
-let invoke t lits at =
-  [t], FuncImport (1l @@ at) @@ at,
+let invoke ft lits at =
+  [ft @@ at], FuncImport (1l @@ at) @@ at,
   List.map (fun lit -> Const lit @@ at) lits @ [Call (0l @@ at) @@ at]
 
 let get t at =
@@ -239,13 +241,13 @@ let assert_return_arithmetic_nan =
   assert_return_nan_bitpattern canonical_nan_of
 
 let wrap module_name item_name wrap_action wrap_assertion at =
-  let itypes, ikind, action = wrap_action at in
+  let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let item = Lib.List32.length itypes @@ at in
-  let types = FuncType ([], []) :: itypes in
-  let imports = [{module_name; item_name; ikind} @@ at] in
-  let ekind = FuncExport @@ at in
-  let exports = [{name = "run"; ekind; item} @@ at] in
+  let types = (FuncType ([], []) @@ at) :: itypes in
+  let imports = [{module_name; item_name; idesc} @@ at] in
+  let edesc = FuncExport item @@ at in
+  let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
   let body =
     [ Block ([], action @ assertion @ [Return @@ at]) @@ at;
       Unreachable @@ at ]
@@ -276,16 +278,22 @@ let add_char buf c =
     if c = '\"' || c = '\\' then Buffer.add_char buf '\\';
     Buffer.add_char buf c
   end
+let add_unicode_char buf uc =
+  if uc < 0x20 || uc >= 0x7f then
+    Printf.bprintf buf "\\u{%02x}" uc
+  else
+    add_char buf (Char.chr uc)
 
-let of_string_with add_char s =
-  let buf = Buffer.create (4 * String.length s + 2) in
+let of_string_with iter add_char s =
+  let buf = Buffer.create 256 in
   Buffer.add_char buf '\"';
-  String.iter (add_char buf) s;
+  iter (add_char buf) s;
   Buffer.add_char buf '\"';
   Buffer.contents buf
 
-let of_bytes = of_string_with add_hex_char
-let of_string = of_string_with add_char
+let of_bytes = of_string_with String.iter add_hex_char
+let of_string = of_string_with String.iter add_char
+let of_name = of_string_with List.iter add_unicode_char
 
 let of_float z =
   match string_of_float z with
@@ -302,23 +310,24 @@ let of_literal lit =
   | Values.F32 z -> of_float (F32.to_float z)
   | Values.F64 z -> of_float (F64.to_float z)
 
-let of_definition def =
-  let bs =
-    match def.it with
-    | Textual m -> Encode.encode m
-    | Encoded (_, bs) -> bs
-  in of_bytes bs
+let rec of_definition def =
+  match def.it with
+  | Textual m -> of_bytes (Encode.encode m)
+  | Encoded (_, bs) -> of_bytes bs
+  | Quoted (_, s) ->
+    try of_definition (Parse.string_to_module s) with Parse.Syntax _ ->
+      of_bytes "<malformed quote>"
 
 let of_wrapper mods x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt mods x_opt in
-  let bs = wrap x name wrap_action wrap_assertion at in
+  let bs = wrap (Utf8.decode x) name wrap_action wrap_assertion at in
   "call(instance(" ^ of_bytes bs ^ ", " ^
     "exports(" ^ of_string x ^ ", " ^ x ^ ")), " ^ " \"run\", [])"
 
 let of_action mods act =
   match act.it with
   | Invoke (x_opt, name, lits) ->
-    "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_string name ^ ", " ^
+    "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^
       "[" ^ String.concat ", " (List.map of_literal lits) ^ "])",
     (match lookup mods x_opt name act.at with
     | ExternalFuncType ft when not (is_js_func_type ft) ->
@@ -327,7 +336,7 @@ let of_action mods act =
     | _ -> None
     )
   | Get (x_opt, name) ->
-    "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_string name ^ ")",
+    "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ")",
     (match lookup mods x_opt name act.at with
     | ExternalGlobalType gt when not (is_js_global_type gt) ->
       let GlobalType (t, _) = gt in
@@ -374,16 +383,17 @@ let of_command mods cmd =
     ":" ^ string_of_int cmd.at.left.line ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
-    let m =
+    let rec unquote def =
       match def.it with
       | Textual m -> m
       | Encoded (_, bs) -> Decode.decode "binary" bs
-    in bind mods x_opt m;
+      | Quoted (_, s) -> unquote (Parse.string_to_module s)
+    in bind mods x_opt (unquote def);
     "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
     (if x_opt = None then "" else
     "let " ^ of_var_opt mods x_opt ^ " = " ^ current_var mods ^ ";\n")
   | Register (name, x_opt) ->
-    "register(" ^ of_string name ^ ", " ^ of_var_opt mods x_opt ^ ")\n"
+    "register(" ^ of_name name ^ ", " ^ of_var_opt mods x_opt ^ ")\n"
   | Action act ->
     of_assertion' mods act "run" [] None ^ "\n"
   | Assertion ass ->

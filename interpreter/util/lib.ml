@@ -4,6 +4,45 @@ struct
     if n = 0 then () else (f x; repeat (n - 1) f x)
 end
 
+module Int =
+struct
+  let log2 n =
+    if n <= 0 then failwith "log2";
+    let rec loop acc n = if n = 1 then acc else loop (acc + 1) (n lsr 1) in
+    loop 0 n
+
+  let is_power_of_two n =
+    if n < 0 then failwith "is_power_of_two";
+    n <> 0 && n land (n - 1) = 0
+end
+
+module String =
+struct
+  let implode cs =
+    let buf = Buffer.create 80 in
+    List.iter (Buffer.add_char buf) cs;
+    Buffer.contents buf
+
+  let explode s =
+    let cs = ref [] in
+    for i = String.length s - 1 downto 0 do cs := s.[i] :: !cs done;
+    !cs
+
+  let split s c =
+    let len = String.length s in
+    let rec loop i =
+      if i > len then [] else
+      let j = try String.index_from s i c with Not_found -> len in
+      String.sub s i (j - i) :: loop (j + 1)
+    in loop 0
+
+  let breakup s n =
+    let rec loop i =
+      let len = min n (String.length s - i) in
+      if len = 0 then [] else String.sub s i len :: loop (i + len)
+    in loop 0
+end
+
 module List =
 struct
   let rec make n x =
@@ -35,12 +74,14 @@ struct
     | x::xs -> let ys, y = split_last xs in x::ys, y
     | [] -> failwith "split_last"
 
-  let rec index_of x xs = index_of' x xs 0
-  and index_of' x xs i =
+  let rec index_where p xs = index_where' p xs 0
+  and index_where' p xs i =
     match xs with
     | [] -> None
-    | y::xs' when x = y -> Some i
-    | y::xs' -> index_of' x xs' (i+1)
+    | x::xs' when p x -> Some i
+    | x::xs' -> index_where' p xs' (i+1)
+
+  let index_of x = index_where ((=) x)
 end
 
 module List32 =
@@ -127,25 +168,4 @@ struct
   let app f = function
     | Some x -> f x
     | None -> ()
-end
-
-module Int =
-struct
-  let log2 n =
-    if n <= 0 then failwith "log2";
-    let rec loop acc n = if n = 1 then acc else loop (acc + 1) (n lsr 1) in
-    loop 0 n
-
-  let is_power_of_two n =
-    if n < 0 then failwith "is_power_of_two";
-    n <> 0 && n land (n - 1) = 0
-end
-
-module String =
-struct
-  let breakup s n =
-    let rec loop i =
-      let len = min n (String.length s - i) in
-      if len = 0 then [] else String.sub s i len :: loop (i + len)
-    in loop 0
 end

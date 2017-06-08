@@ -205,9 +205,9 @@
     (f64.sub (get_local $x) (get_local $x)))
 )
 
-(assert_return_canonical_nan (invoke "f32.no_fold_sub_self" (f32.const infinity)))
+(assert_return_canonical_nan (invoke "f32.no_fold_sub_self" (f32.const inf)))
 (assert_return_canonical_nan (invoke "f32.no_fold_sub_self" (f32.const nan)))
-(assert_return_canonical_nan (invoke "f64.no_fold_sub_self" (f64.const infinity)))
+(assert_return_canonical_nan (invoke "f64.no_fold_sub_self" (f64.const inf)))
 (assert_return_canonical_nan (invoke "f64.no_fold_sub_self" (f64.const nan)))
 
 ;; Test that x / x is not folded to 1.0.
@@ -219,11 +219,11 @@
     (f64.div (get_local $x) (get_local $x)))
 )
 
-(assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const infinity)))
+(assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const inf)))
 (assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const nan)))
 (assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const 0.0)))
 (assert_return_canonical_nan (invoke "f32.no_fold_div_self" (f32.const -0.0)))
-(assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const infinity)))
+(assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const inf)))
 (assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const nan)))
 (assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const 0.0)))
 (assert_return_canonical_nan (invoke "f64.no_fold_div_self" (f64.const -0.0)))
@@ -304,7 +304,7 @@
 (assert_return (invoke "f32.no_regroup_div_mul" (f32.const 0x1.c6ae76p+112) (f32.const 0x1.fc953cp+24) (f32.const -0x1.60b3e8p+71)) (f32.const -0x1.47d0eap+66))
 (assert_return (invoke "f64.no_regroup_div_mul" (f64.const 0x1.3c04b815e30bp-423) (f64.const -0x1.379646fd98127p-119) (f64.const 0x1.bddb158506031p-642)) (f64.const -0x1.b9b3301f2dd2dp+99))
 (assert_return (invoke "f64.no_regroup_div_mul" (f64.const 0x1.46b3a402f86d5p+337) (f64.const 0x1.6fbf1b9e1798dp-447) (f64.const -0x1.bd9704a5a6a06p+797)) (f64.const -0x0p+0))
-(assert_return (invoke "f64.no_regroup_div_mul" (f64.const 0x1.6c9765bb4347fp-479) (f64.const 0x1.a4af42e34a141p+902) (f64.const 0x1.d2dde70eb68f9p-448)) (f64.const infinity))
+(assert_return (invoke "f64.no_regroup_div_mul" (f64.const 0x1.6c9765bb4347fp-479) (f64.const 0x1.a4af42e34a141p+902) (f64.const 0x1.d2dde70eb68f9p-448)) (f64.const inf))
 (assert_return (invoke "f64.no_regroup_div_mul" (f64.const -0x1.706023645be72p+480) (f64.const -0x1.6c229f7d9101dp+611) (f64.const -0x1.4d50fa68d3d9ep+836)) (f64.const -0x1.926fa3cacc651p+255))
 (assert_return (invoke "f64.no_regroup_div_mul" (f64.const 0x1.8cc63d8caf4c7p-599) (f64.const 0x1.8671ac4c35753p-878) (f64.const -0x1.ef35b1695e659p-838)) (f64.const -0x1.38d55f56406dp-639))
 
@@ -321,11 +321,11 @@
 (assert_return (invoke "f32.no_regroup_mul_div" (f32.const -0x1.454738p+91) (f32.const -0x1.b28a66p-115) (f32.const -0x1.f53908p+72)) (f32.const -0x1.1a00e8p-96))
 (assert_return (invoke "f32.no_regroup_mul_div" (f32.const -0x1.6be56ep+16) (f32.const -0x1.b46fc6p-21) (f32.const -0x1.a51df6p-123)) (f32.const -0x1.79225ap+118))
 (assert_return (invoke "f32.no_regroup_mul_div" (f32.const -0x1.c343f8p-94) (f32.const 0x1.e4d906p+73) (f32.const 0x1.be69f8p+68)) (f32.const -0x1.ea1df4p-89))
-(assert_return (invoke "f32.no_regroup_mul_div" (f32.const 0x1.c6ae76p+112) (f32.const 0x1.fc953cp+24) (f32.const -0x1.60b3e8p+71)) (f32.const -infinity))
+(assert_return (invoke "f32.no_regroup_mul_div" (f32.const 0x1.c6ae76p+112) (f32.const 0x1.fc953cp+24) (f32.const -0x1.60b3e8p+71)) (f32.const -inf))
 (assert_return (invoke "f64.no_regroup_mul_div" (f64.const 0x1.3c04b815e30bp-423) (f64.const -0x1.379646fd98127p-119) (f64.const 0x1.bddb158506031p-642)) (f64.const -0x1.b9b3301f2dd2ep+99))
 (assert_return (invoke "f64.no_regroup_mul_div" (f64.const 0x1.46b3a402f86d5p+337) (f64.const 0x1.6fbf1b9e1798dp-447) (f64.const -0x1.bd9704a5a6a06p+797)) (f64.const -0x1.0da0b6328e09p-907))
 (assert_return (invoke "f64.no_regroup_mul_div" (f64.const 0x1.6c9765bb4347fp-479) (f64.const 0x1.a4af42e34a141p+902) (f64.const 0x1.d2dde70eb68f9p-448)) (f64.const 0x1.4886b6d9a9a79p+871))
-(assert_return (invoke "f64.no_regroup_mul_div" (f64.const -0x1.706023645be72p+480) (f64.const -0x1.6c229f7d9101dp+611) (f64.const -0x1.4d50fa68d3d9ep+836)) (f64.const -infinity))
+(assert_return (invoke "f64.no_regroup_mul_div" (f64.const -0x1.706023645be72p+480) (f64.const -0x1.6c229f7d9101dp+611) (f64.const -0x1.4d50fa68d3d9ep+836)) (f64.const -inf))
 (assert_return (invoke "f64.no_regroup_mul_div" (f64.const 0x1.8cc63d8caf4c7p-599) (f64.const 0x1.8671ac4c35753p-878) (f64.const -0x1.ef35b1695e659p-838)) (f64.const -0x0p+0))
 
 ;; Test that x+y+z+w is not reassociated.
@@ -377,18 +377,18 @@
     (f64.div (get_local $x) (f64.const 0.0)))
 )
 
-(assert_return (invoke "f32.no_fold_div_0" (f32.const 1.0)) (f32.const infinity))
-(assert_return (invoke "f32.no_fold_div_0" (f32.const -1.0)) (f32.const -infinity))
-(assert_return (invoke "f32.no_fold_div_0" (f32.const infinity)) (f32.const infinity))
-(assert_return (invoke "f32.no_fold_div_0" (f32.const -infinity)) (f32.const -infinity))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const 1.0)) (f32.const inf))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const -1.0)) (f32.const -inf))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const inf)) (f32.const inf))
+(assert_return (invoke "f32.no_fold_div_0" (f32.const -inf)) (f32.const -inf))
 (assert_return_canonical_nan (invoke "f32.no_fold_div_0" (f32.const 0)))
 (assert_return_canonical_nan (invoke "f32.no_fold_div_0" (f32.const -0)))
 (assert_return_arithmetic_nan (invoke "f32.no_fold_div_0" (f32.const nan:0x200000)))
 (assert_return_canonical_nan (invoke "f32.no_fold_div_0" (f32.const nan)))
-(assert_return (invoke "f64.no_fold_div_0" (f64.const 1.0)) (f64.const infinity))
-(assert_return (invoke "f64.no_fold_div_0" (f64.const -1.0)) (f64.const -infinity))
-(assert_return (invoke "f64.no_fold_div_0" (f64.const infinity)) (f64.const infinity))
-(assert_return (invoke "f64.no_fold_div_0" (f64.const -infinity)) (f64.const -infinity))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const 1.0)) (f64.const inf))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const -1.0)) (f64.const -inf))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const inf)) (f64.const inf))
+(assert_return (invoke "f64.no_fold_div_0" (f64.const -inf)) (f64.const -inf))
 (assert_return_canonical_nan (invoke "f64.no_fold_div_0" (f64.const 0)))
 (assert_return_canonical_nan (invoke "f64.no_fold_div_0" (f64.const -0)))
 (assert_return_canonical_nan (invoke "f64.no_fold_div_0" (f64.const nan)))
@@ -403,18 +403,18 @@
     (f64.div (get_local $x) (f64.const -0.0)))
 )
 
-(assert_return (invoke "f32.no_fold_div_neg0" (f32.const 1.0)) (f32.const -infinity))
-(assert_return (invoke "f32.no_fold_div_neg0" (f32.const -1.0)) (f32.const infinity))
-(assert_return (invoke "f32.no_fold_div_neg0" (f32.const infinity)) (f32.const -infinity))
-(assert_return (invoke "f32.no_fold_div_neg0" (f32.const -infinity)) (f32.const infinity))
+(assert_return (invoke "f32.no_fold_div_neg0" (f32.const 1.0)) (f32.const -inf))
+(assert_return (invoke "f32.no_fold_div_neg0" (f32.const -1.0)) (f32.const inf))
+(assert_return (invoke "f32.no_fold_div_neg0" (f32.const inf)) (f32.const -inf))
+(assert_return (invoke "f32.no_fold_div_neg0" (f32.const -inf)) (f32.const inf))
 (assert_return_canonical_nan (invoke "f32.no_fold_div_neg0" (f32.const 0)))
 (assert_return_canonical_nan (invoke "f32.no_fold_div_neg0" (f32.const -0)))
 (assert_return_arithmetic_nan (invoke "f32.no_fold_div_neg0" (f32.const nan:0x200000)))
 (assert_return_canonical_nan (invoke "f32.no_fold_div_neg0" (f32.const nan)))
-(assert_return (invoke "f64.no_fold_div_neg0" (f64.const 1.0)) (f64.const -infinity))
-(assert_return (invoke "f64.no_fold_div_neg0" (f64.const -1.0)) (f64.const infinity))
-(assert_return (invoke "f64.no_fold_div_neg0" (f64.const infinity)) (f64.const -infinity))
-(assert_return (invoke "f64.no_fold_div_neg0" (f64.const -infinity)) (f64.const infinity))
+(assert_return (invoke "f64.no_fold_div_neg0" (f64.const 1.0)) (f64.const -inf))
+(assert_return (invoke "f64.no_fold_div_neg0" (f64.const -1.0)) (f64.const inf))
+(assert_return (invoke "f64.no_fold_div_neg0" (f64.const inf)) (f64.const -inf))
+(assert_return (invoke "f64.no_fold_div_neg0" (f64.const -inf)) (f64.const inf))
 (assert_return_canonical_nan (invoke "f64.no_fold_div_neg0" (f64.const 0)))
 (assert_return_canonical_nan (invoke "f64.no_fold_div_neg0" (f64.const -0)))
 (assert_return_canonical_nan (invoke "f64.no_fold_div_neg0" (f64.const nan)))
@@ -602,6 +602,18 @@
 (assert_return (invoke "f64.no_fold_div_mul" (f64.const -0x1.e75859d2f0765p-278) (f64.const -0x1.5f19b6ab497f9p+283)) (f64.const -0x1.e75859d2f0764p-278))
 (assert_return (invoke "f64.no_fold_div_mul" (f64.const -0x1.515fe9c3b5f5p+620) (f64.const 0x1.36be869c99f7ap+989)) (f64.const -0x1.515fe9c3b5f4fp+620))
 
+;; Test that x/2*2 is not folded to x.
+
+(module
+  (func (export "f32.no_fold_div2_mul2") (param $x f32) (result f32)
+    (f32.mul (f32.div (get_local $x) (f32.const 2.0)) (f32.const 2.0)))
+  (func (export "f64.no_fold_div2_mul2") (param $x f64) (result f64)
+    (f64.mul (f64.div (get_local $x) (f64.const 2.0)) (f64.const 2.0)))
+)
+
+(assert_return (invoke "f32.no_fold_div2_mul2" (f32.const 0x1.fffffep-126)) (f32.const 0x1p-125))
+(assert_return (invoke "f64.no_fold_div2_mul2" (f64.const 0x1.fffffffffffffp-1022)) (f64.const 0x1p-1021))
+
 ;; Test that promote(demote(x)) is not folded to x.
 
 (module
@@ -634,8 +646,8 @@
 (assert_return (invoke "no_fold_promote_demote" (f32.const -0x1p-126)) (f32.const -0x1p-126))
 (assert_return (invoke "no_fold_promote_demote" (f32.const 0x1.fffffep+127)) (f32.const 0x1.fffffep+127))
 (assert_return (invoke "no_fold_promote_demote" (f32.const -0x1.fffffep+127)) (f32.const -0x1.fffffep+127))
-(assert_return (invoke "no_fold_promote_demote" (f32.const infinity)) (f32.const infinity))
-(assert_return (invoke "no_fold_promote_demote" (f32.const -infinity)) (f32.const -infinity))
+(assert_return (invoke "no_fold_promote_demote" (f32.const inf)) (f32.const inf))
+(assert_return (invoke "no_fold_promote_demote" (f32.const -inf)) (f32.const -inf))
 
 ;; Test that demote(x+promote(y)) is not folded to demote(x)+y.
 
@@ -915,15 +927,47 @@
 ;; Test that x<y?x:y, etc. using if and else aren't folded to min, etc.
 
 (module
-  (func (export "f32.no_fold_lt_if") (param $x f32) (param $y f32) (result f32) (if f32 (f32.lt (get_local $x) (get_local $y)) (get_local $x) (get_local $y)))
-  (func (export "f32.no_fold_le_if") (param $x f32) (param $y f32) (result f32) (if f32 (f32.le (get_local $x) (get_local $y)) (get_local $x) (get_local $y)))
-  (func (export "f32.no_fold_gt_if") (param $x f32) (param $y f32) (result f32) (if f32 (f32.gt (get_local $x) (get_local $y)) (get_local $x) (get_local $y)))
-  (func (export "f32.no_fold_ge_if") (param $x f32) (param $y f32) (result f32) (if f32 (f32.ge (get_local $x) (get_local $y)) (get_local $x) (get_local $y)))
+  (func (export "f32.no_fold_lt_if") (param $x f32) (param $y f32) (result f32)
+    (if (result f32) (f32.lt (get_local $x) (get_local $y))
+      (then (get_local $x)) (else (get_local $y))
+    )
+  )
+  (func (export "f32.no_fold_le_if") (param $x f32) (param $y f32) (result f32)
+    (if (result f32) (f32.le (get_local $x) (get_local $y))
+      (then (get_local $x)) (else (get_local $y))
+    )
+  )
+  (func (export "f32.no_fold_gt_if") (param $x f32) (param $y f32) (result f32)
+    (if (result f32) (f32.gt (get_local $x) (get_local $y))
+      (then (get_local $x)) (else (get_local $y))
+    )
+  )
+  (func (export "f32.no_fold_ge_if") (param $x f32) (param $y f32) (result f32)
+    (if (result f32) (f32.ge (get_local $x) (get_local $y))
+      (then (get_local $x)) (else (get_local $y))
+    )
+  )
 
-  (func (export "f64.no_fold_lt_if") (param $x f64) (param $y f64) (result f64) (if f64 (f64.lt (get_local $x) (get_local $y)) (get_local $x) (get_local $y)))
-  (func (export "f64.no_fold_le_if") (param $x f64) (param $y f64) (result f64) (if f64 (f64.le (get_local $x) (get_local $y)) (get_local $x) (get_local $y)))
-  (func (export "f64.no_fold_gt_if") (param $x f64) (param $y f64) (result f64) (if f64 (f64.gt (get_local $x) (get_local $y)) (get_local $x) (get_local $y)))
-  (func (export "f64.no_fold_ge_if") (param $x f64) (param $y f64) (result f64) (if f64 (f64.ge (get_local $x) (get_local $y)) (get_local $x) (get_local $y)))
+  (func (export "f64.no_fold_lt_if") (param $x f64) (param $y f64) (result f64)
+    (if (result f64) (f64.lt (get_local $x) (get_local $y))
+      (then (get_local $x)) (else (get_local $y))
+    )
+  )
+  (func (export "f64.no_fold_le_if") (param $x f64) (param $y f64) (result f64)
+    (if (result f64) (f64.le (get_local $x) (get_local $y))
+      (then (get_local $x)) (else (get_local $y))
+    )
+  )
+  (func (export "f64.no_fold_gt_if") (param $x f64) (param $y f64) (result f64)
+    (if (result f64) (f64.gt (get_local $x) (get_local $y))
+      (then (get_local $x)) (else (get_local $y))
+    )
+  )
+  (func (export "f64.no_fold_ge_if") (param $x f64) (param $y f64) (result f64)
+    (if (result f64) (f64.ge (get_local $x) (get_local $y))
+      (then (get_local $x)) (else (get_local $y))
+    )
+  )
 )
 
 (assert_return (invoke "f32.no_fold_lt_if" (f32.const 0.0) (f32.const nan)) (f32.const nan))
@@ -1009,15 +1053,47 @@
 ;; Test that x<0?-x:x, etc. using if aren't folded to abs.
 
 (module
-  (func (export "f32.no_fold_lt_if_to_abs") (param $x f32) (result f32) (if f32 (f32.lt (get_local $x) (f32.const 0.0)) (f32.neg (get_local $x)) (get_local $x)))
-  (func (export "f32.no_fold_le_if_to_abs") (param $x f32) (result f32) (if f32 (f32.le (get_local $x) (f32.const -0.0)) (f32.neg (get_local $x)) (get_local $x)))
-  (func (export "f32.no_fold_gt_if_to_abs") (param $x f32) (result f32) (if f32 (f32.gt (get_local $x) (f32.const -0.0)) (get_local $x) (f32.neg (get_local $x))))
-  (func (export "f32.no_fold_ge_if_to_abs") (param $x f32) (result f32) (if f32 (f32.ge (get_local $x) (f32.const 0.0)) (get_local $x) (f32.neg (get_local $x))))
+  (func (export "f32.no_fold_lt_if_to_abs") (param $x f32) (result f32)
+    (if (result f32) (f32.lt (get_local $x) (f32.const 0.0))
+      (then (f32.neg (get_local $x))) (else (get_local $x))
+    )
+  )
+  (func (export "f32.no_fold_le_if_to_abs") (param $x f32) (result f32)
+    (if (result f32) (f32.le (get_local $x) (f32.const -0.0))
+      (then (f32.neg (get_local $x))) (else (get_local $x))
+    )
+  )
+  (func (export "f32.no_fold_gt_if_to_abs") (param $x f32) (result f32)
+    (if (result f32) (f32.gt (get_local $x) (f32.const -0.0))
+      (then (get_local $x)) (else (f32.neg (get_local $x)))
+    )
+  )
+  (func (export "f32.no_fold_ge_if_to_abs") (param $x f32) (result f32)
+    (if (result f32) (f32.ge (get_local $x) (f32.const 0.0))
+      (then (get_local $x)) (else (f32.neg (get_local $x)))
+    )
+  )
 
-  (func (export "f64.no_fold_lt_if_to_abs") (param $x f64) (result f64) (if f64 (f64.lt (get_local $x) (f64.const 0.0)) (f64.neg (get_local $x)) (get_local $x)))
-  (func (export "f64.no_fold_le_if_to_abs") (param $x f64) (result f64) (if f64 (f64.le (get_local $x) (f64.const -0.0)) (f64.neg (get_local $x)) (get_local $x)))
-  (func (export "f64.no_fold_gt_if_to_abs") (param $x f64) (result f64) (if f64 (f64.gt (get_local $x) (f64.const -0.0)) (get_local $x) (f64.neg (get_local $x))))
-  (func (export "f64.no_fold_ge_if_to_abs") (param $x f64) (result f64) (if f64 (f64.ge (get_local $x) (f64.const 0.0)) (get_local $x) (f64.neg (get_local $x))))
+  (func (export "f64.no_fold_lt_if_to_abs") (param $x f64) (result f64)
+    (if (result f64) (f64.lt (get_local $x) (f64.const 0.0))
+      (then (f64.neg (get_local $x))) (else (get_local $x))
+    )
+  )
+  (func (export "f64.no_fold_le_if_to_abs") (param $x f64) (result f64)
+    (if (result f64) (f64.le (get_local $x) (f64.const -0.0))
+      (then (f64.neg (get_local $x))) (else (get_local $x))
+    )
+  )
+  (func (export "f64.no_fold_gt_if_to_abs") (param $x f64) (result f64)
+    (if (result f64) (f64.gt (get_local $x) (f64.const -0.0))
+      (then (get_local $x)) (else (f64.neg (get_local $x)))
+    )
+  )
+  (func (export "f64.no_fold_ge_if_to_abs") (param $x f64) (result f64)
+    (if (result f64) (f64.ge (get_local $x) (f64.const 0.0))
+      (then (get_local $x)) (else (f64.neg (get_local $x)))
+    )
+  )
 )
 
 (assert_return (invoke "f32.no_fold_lt_if_to_abs" (f32.const nan:0x200000)) (f32.const nan:0x200000))
@@ -1214,8 +1290,8 @@
 
 (assert_return (invoke "f32.no_fold_recip_recip" (f32.const -0x0p+0)) (f32.const -0x0p+0))
 (assert_return (invoke "f32.no_fold_recip_recip" (f32.const 0x0p+0)) (f32.const 0x0p+0))
-(assert_return (invoke "f32.no_fold_recip_recip" (f32.const -infinity)) (f32.const -infinity))
-(assert_return (invoke "f32.no_fold_recip_recip" (f32.const infinity)) (f32.const infinity))
+(assert_return (invoke "f32.no_fold_recip_recip" (f32.const -inf)) (f32.const -inf))
+(assert_return (invoke "f32.no_fold_recip_recip" (f32.const inf)) (f32.const inf))
 
 (assert_return (invoke "f64.no_fold_recip_recip" (f64.const -0x1.d81248dda63dp+148)) (f64.const -0x1.d81248dda63d1p+148))
 (assert_return (invoke "f64.no_fold_recip_recip" (f64.const -0x1.f4750312039e3p+66)) (f64.const -0x1.f4750312039e2p+66))
@@ -1225,8 +1301,8 @@
 
 (assert_return (invoke "f64.no_fold_recip_recip" (f64.const -0x0p+0)) (f64.const -0x0p+0))
 (assert_return (invoke "f64.no_fold_recip_recip" (f64.const 0x0p+0)) (f64.const 0x0p+0))
-(assert_return (invoke "f64.no_fold_recip_recip" (f64.const -infinity)) (f64.const -infinity))
-(assert_return (invoke "f64.no_fold_recip_recip" (f64.const infinity)) (f64.const infinity))
+(assert_return (invoke "f64.no_fold_recip_recip" (f64.const -inf)) (f64.const -inf))
+(assert_return (invoke "f64.no_fold_recip_recip" (f64.const inf)) (f64.const inf))
 
 ;; Test that (x+y) * (x-y) is not optimized to x*x - y*y.
 
@@ -1577,13 +1653,13 @@
 
 (assert_return (invoke "f32.no_fold_add_neg" (f32.const 0.0)) (f32.const 0.0))
 (assert_return (invoke "f32.no_fold_add_neg" (f32.const -0.0)) (f32.const 0.0))
-(assert_return_canonical_nan (invoke "f32.no_fold_add_neg" (f32.const infinity)))
-(assert_return_canonical_nan (invoke "f32.no_fold_add_neg" (f32.const -infinity)))
+(assert_return_canonical_nan (invoke "f32.no_fold_add_neg" (f32.const inf)))
+(assert_return_canonical_nan (invoke "f32.no_fold_add_neg" (f32.const -inf)))
 
 (assert_return (invoke "f64.no_fold_add_neg" (f64.const 0.0)) (f64.const 0.0))
 (assert_return (invoke "f64.no_fold_add_neg" (f64.const -0.0)) (f64.const 0.0))
-(assert_return_canonical_nan (invoke "f64.no_fold_add_neg" (f64.const infinity)))
-(assert_return_canonical_nan (invoke "f64.no_fold_add_neg" (f64.const -infinity)))
+(assert_return_canonical_nan (invoke "f64.no_fold_add_neg" (f64.const inf)))
+(assert_return_canonical_nan (invoke "f64.no_fold_add_neg" (f64.const -inf)))
 
 ;; Test that x+x+x+x+x+x is not folded to x * 6.
 
@@ -1626,14 +1702,14 @@
 
 (assert_return (invoke "f32.no_fold_div_div" (f32.const -0x1.f70228p+78) (f32.const -0x1.fbc612p-16) (f32.const -0x1.8c379p+10)) (f32.const -0x1.47b43cp+83))
 (assert_return (invoke "f32.no_fold_div_div" (f32.const 0x1.d29d2ep-70) (f32.const 0x1.f3a17ep+110) (f32.const -0x1.64d41p-112)) (f32.const -0x0p+0))
-(assert_return (invoke "f32.no_fold_div_div" (f32.const 0x1.867f98p+43) (f32.const 0x1.30acfcp-105) (f32.const 0x1.e210d8p+105)) (f32.const infinity))
+(assert_return (invoke "f32.no_fold_div_div" (f32.const 0x1.867f98p+43) (f32.const 0x1.30acfcp-105) (f32.const 0x1.e210d8p+105)) (f32.const inf))
 (assert_return (invoke "f32.no_fold_div_div" (f32.const -0x1.c4001ap-14) (f32.const -0x1.9beb6cp+124) (f32.const -0x1.74f34cp-43)) (f32.const -0x1.819874p-96))
 (assert_return (invoke "f32.no_fold_div_div" (f32.const 0x1.db0e6ep+46) (f32.const 0x1.55eea2p+56) (f32.const -0x1.f3134p+124)) (f32.const -0x1.6cep-135))
 
 (assert_return (invoke "f64.no_fold_div_div" (f64.const 0x1.b4dc8ec3c7777p+337) (f64.const 0x1.9f95ac2d1863p+584) (f64.const -0x1.d4318abba341ep-782)) (f64.const -0x1.2649159d87e02p+534))
 (assert_return (invoke "f64.no_fold_div_div" (f64.const -0x1.ac53af5eb445fp+791) (f64.const 0x1.8549c0a4ceb13p-29) (f64.const 0x1.64e384003c801p+316)) (f64.const -0x1.9417cdccbae91p+503))
 (assert_return (invoke "f64.no_fold_div_div" (f64.const -0x1.d2685afb27327p+2) (f64.const -0x1.abb1eeed3dbebp+880) (f64.const 0x1.a543e2e6968a3p+170)) (f64.const 0x0.0000002a69a5fp-1022))
-(assert_return (invoke "f64.no_fold_div_div" (f64.const -0x1.47ddede78ad1cp+825) (f64.const 0x1.6d932d070a367p-821) (f64.const 0x1.79cf18cc64fp+961)) (f64.const -infinity))
+(assert_return (invoke "f64.no_fold_div_div" (f64.const -0x1.47ddede78ad1cp+825) (f64.const 0x1.6d932d070a367p-821) (f64.const 0x1.79cf18cc64fp+961)) (f64.const -inf))
 (assert_return (invoke "f64.no_fold_div_div" (f64.const -0x1.f73d4979a9379p-888) (f64.const 0x1.4d83b53e97788p-596) (f64.const -0x1.f8f86c9603b5bp-139)) (f64.const 0x1.87a7bd89c586cp-154))
 
 ;; Test that (x/y)*(z/w) is not optimized to (x*z)/(y*w), example from
@@ -1651,11 +1727,11 @@
 (assert_return (invoke "f32.no_fold_mul_divs" (f32.const -0x1.c483bep-109) (f32.const 0x1.ee1c3cp-92) (f32.const 0x1.800756p-88) (f32.const -0x1.95b972p+4)) (f32.const 0x1.bbd30cp-110))
 (assert_return (invoke "f32.no_fold_mul_divs" (f32.const -0x1.0f4262p+102) (f32.const 0x1.248498p+25) (f32.const 0x1.f66a7cp-17) (f32.const 0x1.897fc8p-3)) (f32.const -0x1.2f1aa4p+63))
 (assert_return (invoke "f32.no_fold_mul_divs" (f32.const -0x1.df5f22p+33) (f32.const -0x1.fcee3ep+39) (f32.const -0x1.9ea914p+29) (f32.const -0x1.2c4d3p+10)) (f32.const 0x1.4cf51cp+13))
-(assert_return (invoke "f32.no_fold_mul_divs" (f32.const -0x1.f568bcp+109) (f32.const 0x1.d9963p-34) (f32.const 0x1.37a87ap-16) (f32.const 0x1.a1524ap+78)) (f32.const -infinity))
+(assert_return (invoke "f32.no_fold_mul_divs" (f32.const -0x1.f568bcp+109) (f32.const 0x1.d9963p-34) (f32.const 0x1.37a87ap-16) (f32.const 0x1.a1524ap+78)) (f32.const -inf))
 (assert_return (invoke "f32.no_fold_mul_divs" (f32.const 0x1.3dd592p-53) (f32.const -0x1.332c22p-64) (f32.const 0x1.b01064p-91) (f32.const 0x1.92bb3ap-36)) (f32.const -0x1.1c2dbp-44))
 
 (assert_return (invoke "f64.no_fold_mul_divs" (f64.const -0x1.363d6764f7b12p-819) (f64.const -0x1.ed5471f660b5fp-464) (f64.const -0x1.671b0a7f3a42p+547) (f64.const 0x1.0633be34ba1f2p+186)) (f64.const -0x1.b8fa2b76baeebp+5))
-(assert_return (invoke "f64.no_fold_mul_divs" (f64.const -0x1.37880182e0fa8p+115) (f64.const 0x1.f842631576147p-920) (f64.const -0x1.999372231d156p+362) (f64.const -0x1.d5db481ab9554p+467)) (f64.const -infinity))
+(assert_return (invoke "f64.no_fold_mul_divs" (f64.const -0x1.37880182e0fa8p+115) (f64.const 0x1.f842631576147p-920) (f64.const -0x1.999372231d156p+362) (f64.const -0x1.d5db481ab9554p+467)) (f64.const -inf))
 (assert_return (invoke "f64.no_fold_mul_divs" (f64.const -0x1.9a747c8d4b541p+308) (f64.const -0x1.99092ad6bbdc8p+192) (f64.const -0x1.cb23755c20101p-140) (f64.const -0x1.de8716f6b0b6ap+732)) (f64.const 0x1.ecf584c8466a5p-757))
 (assert_return (invoke "f64.no_fold_mul_divs" (f64.const -0x1.c424b2ece903dp+129) (f64.const -0x1.568ce281db37fp-347) (f64.const 0x1.53900b99fd3dp-957) (f64.const 0x1.5c33952254dadp+223)) (f64.const 0x0p+0))
 (assert_return (invoke "f64.no_fold_mul_divs" (f64.const 0x1.a8ec2cecb32a9p-18) (f64.const 0x1.58acab0051851p-277) (f64.const 0x1.35e87c9077f7fp-620) (f64.const -0x1.925ee37ffb386p+352)) (f64.const -0x1.e6286970b31bfp-714))
@@ -1696,13 +1772,13 @@
 (assert_return (invoke "f32.no_fold_sqrt_square" (f32.const -0x1.b0f9e4p-73)) (f32.const 0x1.b211b2p-73))
 (assert_return (invoke "f32.no_fold_sqrt_square" (f32.const -0x1.de417cp-71)) (f32.const 0x1.de65b8p-71))
 (assert_return (invoke "f32.no_fold_sqrt_square" (f32.const 0x1.64c872p-86)) (f32.const 0x0p+0))
-(assert_return (invoke "f32.no_fold_sqrt_square" (f32.const 0x1.e199e4p+108)) (f32.const infinity))
+(assert_return (invoke "f32.no_fold_sqrt_square" (f32.const 0x1.e199e4p+108)) (f32.const inf))
 
 (assert_return (invoke "f64.no_fold_sqrt_square" (f64.const 0x1.1759d657203fdp-529)) (f64.const 0x1.1759dd57545f3p-529))
 (assert_return (invoke "f64.no_fold_sqrt_square" (f64.const -0x1.4c68de1c78d83p-514)) (f64.const 0x1.4c68de1c78d81p-514))
 (assert_return (invoke "f64.no_fold_sqrt_square" (f64.const -0x1.214736edb6e1ep-521)) (f64.const 0x1.214736ed9cf8dp-521))
 (assert_return (invoke "f64.no_fold_sqrt_square" (f64.const -0x1.0864b9f68457p-616)) (f64.const 0x0p+0))
-(assert_return (invoke "f64.no_fold_sqrt_square" (f64.const 0x1.b2a9855995abap+856)) (f64.const infinity))
+(assert_return (invoke "f64.no_fold_sqrt_square" (f64.const 0x1.b2a9855995abap+856)) (f64.const inf))
 
 ;; Test that sqrt(x)*sqrt(y) is not optimized to sqrt(x*y).
 
@@ -1758,13 +1834,13 @@
     (f64.div (f64.mul (get_local $x) (f64.sqrt (get_local $y))) (get_local $y)))
 )
 
-(assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const -0x1.f4a7cap+81) (f32.const 0x1.c09adep+92)) (f32.const -infinity))
+(assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const -0x1.f4a7cap+81) (f32.const 0x1.c09adep+92)) (f32.const -inf))
 (assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const -0x1.90bf1cp-120) (f32.const 0x1.8dbe88p-97)) (f32.const -0x0p+0))
 (assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const 0x1.8570e8p+29) (f32.const 0x1.217d3p-128)) (f32.const 0x1.6e391ap+93))
 (assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const -0x1.5b4652p+43) (f32.const 0x1.a9d71cp+112)) (f32.const -0x1.0d423ap-13))
 (assert_return (invoke "f32.no_fold_mul_sqrt_div" (f32.const -0x1.910604p+8) (f32.const 0x1.0ca912p+7)) (f32.const -0x1.14cdecp+5))
 
-(assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const 0x1.1dcdeb857305fp+698) (f64.const 0x1.a066171c40eb9p+758)) (f64.const infinity))
+(assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const 0x1.1dcdeb857305fp+698) (f64.const 0x1.a066171c40eb9p+758)) (f64.const inf))
 (assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const -0x1.8b4f1c218e2abp-827) (f64.const 0x1.5e1ee65953b0bp-669)) (f64.const -0x0p+0))
 (assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const 0x1.74ee531ddba38p-425) (f64.const 0x1.f370f758857f3p+560)) (f64.const 0x1.0aff34269583ep-705))
 (assert_return (invoke "f64.no_fold_mul_sqrt_div" (f64.const -0x1.27f216b0da6c5p+352) (f64.const 0x1.8e0b4e0b9fd7ep-483)) (f64.const -0x1.4fa558aad514ep+593))
@@ -1810,17 +1886,17 @@
     (f32.mul (f32.demote/f64 (get_local $x)) (get_local $y)))
 )
 
-(assert_return (invoke "f32.recoding_eq" (f32.const -infinity) (f32.const 3.0)) (i32.const 1))
-(assert_return (invoke "f32.recoding_le" (f32.const -infinity) (f32.const 3.0)) (i32.const 1))
-(assert_return (invoke "f32.recoding_lt" (f32.const -infinity) (f32.const 3.0)) (i32.const 0))
+(assert_return (invoke "f32.recoding_eq" (f32.const -inf) (f32.const 3.0)) (i32.const 1))
+(assert_return (invoke "f32.recoding_le" (f32.const -inf) (f32.const 3.0)) (i32.const 1))
+(assert_return (invoke "f32.recoding_lt" (f32.const -inf) (f32.const 3.0)) (i32.const 0))
 
 (assert_return (invoke "f32.recoding_eq" (f32.const 0x0p+0) (f32.const 0x1p+0)) (i32.const 1))
 (assert_return (invoke "f32.recoding_le" (f32.const 0x0p+0) (f32.const 0x1p+0)) (i32.const 1))
 (assert_return (invoke "f32.recoding_lt" (f32.const 0x0p+0) (f32.const 0x1p+0)) (i32.const 0))
 
-(assert_return (invoke "f64.recoding_eq" (f64.const -infinity) (f64.const 3.0)) (i32.const 1))
-(assert_return (invoke "f64.recoding_le" (f64.const -infinity) (f64.const 3.0)) (i32.const 1))
-(assert_return (invoke "f64.recoding_lt" (f64.const -infinity) (f64.const 3.0)) (i32.const 0))
+(assert_return (invoke "f64.recoding_eq" (f64.const -inf) (f64.const 3.0)) (i32.const 1))
+(assert_return (invoke "f64.recoding_le" (f64.const -inf) (f64.const 3.0)) (i32.const 1))
+(assert_return (invoke "f64.recoding_lt" (f64.const -inf) (f64.const 3.0)) (i32.const 0))
 
 (assert_return (invoke "f64.recoding_eq" (f64.const 0x0p+0) (f64.const 0x1p+0)) (i32.const 1))
 (assert_return (invoke "f64.recoding_le" (f64.const 0x0p+0) (f64.const 0x1p+0)) (i32.const 1))
@@ -2025,9 +2101,9 @@
 )
 
 (assert_return (invoke "f32.no_fold_add_le_monotonicity" (f32.const 0.0) (f32.const 0.0) (f32.const nan)) (i32.const 0))
-(assert_return (invoke "f32.no_fold_add_le_monotonicity" (f32.const infinity) (f32.const -infinity) (f32.const infinity)) (i32.const 0))
+(assert_return (invoke "f32.no_fold_add_le_monotonicity" (f32.const inf) (f32.const -inf) (f32.const inf)) (i32.const 0))
 (assert_return (invoke "f64.no_fold_add_le_monotonicity" (f64.const 0.0) (f64.const 0.0) (f64.const nan)) (i32.const 0))
-(assert_return (invoke "f64.no_fold_add_le_monotonicity" (f64.const infinity) (f64.const -infinity) (f64.const infinity)) (i32.const 0))
+(assert_return (invoke "f64.no_fold_add_le_monotonicity" (f64.const inf) (f64.const -inf) (f64.const inf)) (i32.const 0))
 
 ;; Test that !(x < y) and friends are not optimized to x >= y and friends.
 
@@ -2476,3 +2552,19 @@
 
 (assert_return (invoke "tau" (i32.const 10)) (f64.const 0x1.921fb54442d14p+2))
 (assert_return (invoke "tau" (i32.const 11)) (f64.const 0x1.921fb54442d18p+2))
+
+;; Test that y < 0 ? x : (x + 1) is not folded to x + (y < 0).
+
+(module
+  (func (export "f32.no_fold_conditional_inc") (param $x f32) (param $y f32) (result f32)
+    (select (get_local $x)
+            (f32.add (get_local $x) (f32.const 1.0))
+            (f32.lt (get_local $y) (f32.const 0.0))))
+  (func (export "f64.no_fold_conditional_inc") (param $x f64) (param $y f64) (result f64)
+    (select (get_local $x)
+            (f64.add (get_local $x) (f64.const 1.0))
+            (f64.lt (get_local $y) (f64.const 0.0))))
+)
+
+(assert_return (invoke "f32.no_fold_conditional_inc" (f32.const -0.0) (f32.const -1.0)) (f32.const -0.0))
+(assert_return (invoke "f64.no_fold_conditional_inc" (f64.const -0.0) (f64.const -1.0)) (f64.const -0.0))

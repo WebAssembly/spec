@@ -75,7 +75,7 @@ You can call the executable with
 wasm [option | file ...]
 ```
 
-where `file`, depending on its extension, either should be an S-expression script file (see below) to be run, or a binary module file to be loaded.
+where `file`, depending on its extension, either should be a binary (`.wasm`) or textual (`.wat`) module file to be loaded, or a script file (`.wast`, see below) to be run.
 
 By default, the interpreter validates all modules.
 The `-u` option selects "unchecked mode", which skips validation and runs code as is.
@@ -86,8 +86,8 @@ Runtime type errors will be captured and reported appropriately.
 A file prefixed by `-o` is taken to be an output file. Depending on its extension, this will write out the preceding module definition in either S-expression or binary format. This option can be used to convert between the two in both directions, e.g.:
 
 ```
-wasm -d module.wast -o module.wasm
-wasm -d module.wasm -o module.wast
+wasm -d module.wat -o module.wasm
+wasm -d module.wasm -o module.wat
 ```
 
 In the second case, the produced script contains exactly one module definition.
@@ -119,10 +119,10 @@ wasm module.wasm -e '(invoke "foo")'
 
 #### Interactive Mode
 
-If neither a file nor any of the previous options is given, you'll land in the REPL and can enter script commands interactively. You can also get into the REPL by explicitly passing `-` as a file name. You can do that in combination to giving a module file, so that you can then invoke its exports interactively, e.g.:
+If neither a file nor any of the previous options is given, you'll land in the REPL and can enter script commands interactively. You can also get into the REPL by explicitly passing `-` as a file name. You can do that in combination to giving a module or script file, so that you can then invoke its exports interactively, e.g.:
 
 ```
-wasm module.wast -
+wasm module.wat -
 ```
 
 See `wasm -h` for (the few) additional options.
@@ -167,7 +167,7 @@ The implementation consumes a WebAssembly AST given in S-expression syntax. Here
 value: <int> | <float>
 var: <int> | <name>
 name: $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
-string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex>)*"
+string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
 
 type: i32 | i64 | f32 | f64
 elem_type: anyfunc
@@ -180,28 +180,27 @@ offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
-block_sig : <type>*
-func_sig:   ( type <var> ) | <param>* <result>*
+block_sig : ( result <type>* )*
+func_sig:   ( type <var> )? <param>* <result>*
 global_sig: <type> | ( mut <type> )
 table_sig:  <nat> <nat>? <elem_type>
 memory_sig: <nat> <nat>?
 
 expr:
   ( <op> )
-  ( <op> <expr>+ )                                                   ;; = <expr>+ (<op>)
-  ( block <name>? <block_sig>? <instr>* )
-  ( loop <name>? <block_sig>? <instr>* )
-  ( if <name>? <block_sig>? ( then <instr>* ) ( else <instr>* )? )
-  ( if <name>? <block_sig>? <expr> ( then <instr>* ) ( else <instr>* )? ) ;; = (if <name>? <block_sig>? <expr> (then <instr>*) (else <instr>*)?)
-  ( if <name>? <block_sig>? <expr> <expr> <expr>? )                  ;; = (if <name>? <block_sig>? <expr> (then <expr>) (else <expr>?))
+  ( <op> <expr>+ )                                                  ;; = <expr>+ (<op>)
+  ( block <name>? <block_sig> <instr>* )
+  ( loop <name>? <block_sig> <instr>* )
+  ( if <name>? <block_sig> ( then <instr>* ) ( else <instr>* )? )
+  ( if <name>? <block_sig> <expr>+ ( then <instr>* ) ( else <instr>* )? ) ;; = <expr>+ (if <name>? <block_sig> (then <instr>*) (else <instr>*)?)
 
 instr:
   <expr>
-  <op>                                                               ;; = (<op>)
-  block <name>? <block_sig>? <instr>* end <name>?                    ;; = (block <name>? <block_sig>? <instr>*)
-  loop <name>? <block_sig>? <instr>* end <name>?                     ;; = (loop <name>? <block_sig>? <instr>*)
-  if <name>? <block_sig>? <instr>* end <name>?                       ;; = (if <name>? <block_sig>? (then <instr>*))
-  if <name>? <block_sig>? <instr>* else <name>? <instr>* end <name>? ;; = (if <name>? <block_sig>? (then <instr>*) (else <instr>*))
+  <op>                                                              ;; = (<op>)
+  block <name>? <block_sig> <instr>* end <name>?                    ;; = (block <name>? <block_sig> <instr>*)
+  loop <name>? <block_sig> <instr>* end <name>?                     ;; = (loop <name>? <block_sig> <instr>*)
+  if <name>? <block_sig> <instr>* end <name>?                       ;; = (if <name>? <block_sig> (then <instr>*))
+  if <name>? <block_sig> <instr>* else <name>? <instr>* end <name>? ;; = (if <name>? <block_sig> (then <instr>*) (else <instr>*))
 
 op:
   unreachable
@@ -231,31 +230,31 @@ op:
   <type>.<cvtop>/<type>
 
 func:    ( func <name>? <func_sig> <local>* <instr>* )
-         ( func <name>? ( export <string> ) <func_sig> <local>* <instrr>* ) ;; = (export <string> (func <N>) (func <name>? <func_sig> <local>* <instr>*)
+         ( func <name>? ( export <string> )+ <func_sig> <local>* <instr>* ) ;; = (export <string> (func <N>))+ (func <name>? <func_sig> <local>* <instr>*)
          ( func <name>? ( import <string> <string> ) <func_sig>)            ;; = (import <name>? <string> <string> (func <func_sig>))
 param:   ( param <type>* ) | ( param <name> <type> )
 result:  ( result <type> )
 local:   ( local <type>* ) | ( local <name> <type> )
 
 global:  ( global <name>? <global_sig> <instr>* )
-         ( global <name>? ( export <string> ) <global_sig> <instr>* )       ;; = (export <string> (global <N>)) (global <name>? <global_sig> <instr>*)
+         ( global <name>? ( export <string> )+ <global_sig> <instr>* )      ;; = (export <string> (global <N>))+ (global <name>? <global_sig> <instr>*)
          ( global <name>? ( import <string> <string> ) <global_sig> )       ;; = (import <name>? <string> <string> (global <global_sig>))
 table:   ( table <name>? <table_sig> )
-         ( table <name>? ( export <string> ) <table_sig> )                  ;; = (export <string> (table <N>)) (table <name>? <table_sig>)
+         ( table <name>? ( export <string> )+ <table_sig> )                 ;; = (export <string> (table <N>))+ (table <name>? <table_sig>)
          ( table <name>? ( import <string> <string> ) <table_sig> )         ;; = (import <name>? <string> <string> (table <table_sig>))
-         ( table <name>? ( export <string> )? <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )? <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
+         ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )* <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
 elem:    ( elem <var>? (offset <instr>* ) <var>* )
          ( elem <var>? <expr> <var>* )                                      ;; = (elem <var>? (offset <expr>) <var>*)
 memory:  ( memory <name>? <memory_sig> )
-         ( memory <name>? ( export <string> ) <memory_sig> )                ;; = (export <string> (memory <N>)) (memory <name>? <memory_sig>)
+         ( memory <name>? ( export <string> )+ <memory_sig> )               ;; = (export <string> (memory <N>))+ (memory <name>? <memory_sig>)
          ( memory <name>? ( import <string> <string> ) <memory_sig> )       ;; = (import <name>? <string> <string> (memory <memory_sig>))
-         ( memory <name>? ( export <string> )? ( data <string>* )           ;; = (memory <name>? ( export <string> )? <size> <size>) (data (i32.const 0) <string>*)
+         ( memory <name>? ( export <string> )* ( data <string>* )           ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
 data:    ( data <var>? ( offset <instr>* ) <string>* )
          ( data <var>? <expr> <string>* )                                   ;; = (data <var>? (offset <expr>) <string>*)
 
 start:   ( start <var> )
 
-typedef: ( type <name>? ( func <funcsig> ) )
+typedef: ( type <name>? ( func <func_sig> ) )
 
 import:  ( import <string> <string> <imkind> )
 imkind:  ( func <name>? <func_sig> )
@@ -270,6 +269,8 @@ exkind:  ( func <var> )
 
 module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
          ( module <name>? <string>+ )
+         <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>?  ;; =
+         ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the AST below).
@@ -282,6 +283,8 @@ A module of the form `(module <string>+)` is given in binary form and will be de
 
 The segment strings in the memory field are used to initialize the consecutive memory at the given offset.
 The `<size>` in the expansion of the two short-hand forms for `table` and `memory` is the minimal size that can hold the segment: the number of `<var>`s for tables, and the accumulative length of the strings rounded up to page size for memories.
+
+In addition to the grammar rules above, the fields of a module may appear in any order, except that all imports must occur before the first proper definition of a function, table, memory, or global.
 
 Comments can be written in one of two ways:
 
@@ -336,7 +339,7 @@ After a module is _registered_ under a string name it is available for importing
 There are also a number of meta commands.
 The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta are expanded in place (`input`, recursively) or elided (`output`) in the named script.
 
-The `input` and `output` meta commands determine the requested file format from the file name extension. They can handle both `.wast` and `.wasm` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a script where module definitions are in binary.
+The `input` and `output` meta commands determine the requested file format from the file name extension. They can handle both `.wasm`, `.wat`, and `.wast` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a script where module definitions are in binary.
 
 The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
 It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.

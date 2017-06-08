@@ -114,6 +114,11 @@ let rec list f n s = if n = 0 then [] else let x = f s in x :: list f (n - 1) s
 let opt f b s = if b then Some (f s) else None
 let vec f s = let n = len32 s in list f n s
 
+let name s =
+  let pos = pos s in
+  try Utf8.decode (string s) with Utf8.Utf8 ->
+    error s pos "invalid UTF-8 encoding"
+
 let sized f s =
   let size = len32 s in
   let start = pos s in
@@ -476,13 +481,15 @@ let section tag f default s =
 
 (* Type section *)
 
+let type_ s = at func_type s
+
 let type_section s =
-  section `TypeSection (vec func_type) [] s
+  section `TypeSection (vec type_) [] s
 
 
 (* Import section *)
 
-let import_kind s =
+let import_desc s =
   match u8 s with
   | 0x00 -> FuncImport (at var s)
   | 0x01 -> TableImport (table_type s)
@@ -491,10 +498,10 @@ let import_kind s =
   | _ -> error s (pos s - 1) "invalid import kind"
 
 let import s =
-  let module_name = string s in
-  let item_name = string s in
-  let ikind = at import_kind s in
-  {module_name; item_name; ikind}
+  let module_name = name s in
+  let item_name = name s in
+  let idesc = at import_desc s in
+  {module_name; item_name; idesc}
 
 let import_section s =
   section `ImportSection (vec (at import)) [] s
@@ -539,19 +546,18 @@ let global_section s =
 
 (* Export section *)
 
-let export_kind s =
+let export_desc s =
   match u8 s with
-  | 0x00 -> FuncExport
-  | 0x01 -> TableExport
-  | 0x02 -> MemoryExport
-  | 0x03 -> GlobalExport
+  | 0x00 -> FuncExport (at var s)
+  | 0x01 -> TableExport (at var s)
+  | 0x02 -> MemoryExport (at var s)
+  | 0x03 -> GlobalExport (at var s)
   | _ -> error s (pos s - 1) "invalid export kind"
 
 let export s =
-  let name = string s in
-  let ekind = at export_kind s in
-  let item = at var s in
-  {name; ekind; item}
+  let name = name s in
+  let edesc = at export_desc s in
+  {name; edesc}
 
 let export_section s =
   section `ExportSection (vec (at export)) [] s
@@ -608,7 +614,7 @@ let data_section s =
 
 let custom size s =
   let start = pos s in
-  let _id = string s in
+  let _id = name s in
   skip (size - (pos s - start)) s;
   true
 

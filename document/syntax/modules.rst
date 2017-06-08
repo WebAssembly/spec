@@ -1,5 +1,5 @@
 .. _syntax-module:
-.. index:: ! modules, type definition, function type, function, table, memory, global, element, data, start function, import, export
+.. index:: ! module, type definition, function type, function, table, memory, global, element, data, start function, import, export
    pair: abstract syntax; module
 
 Modules
@@ -13,7 +13,7 @@ and provide initialization logic in the form of :ref:`data <syntax-data>` and :r
 
 .. math::
    \begin{array}{lllll}
-   \production{modules} & \module &::=& \{ &
+   \production{module} & \module &::=& \{ &
      \TYPES~\vec(\functype), \\&&&&
      \FUNCS~\vec(\func), \\&&&&
      \TABLES~\vec(\table), \\&&&&
@@ -61,13 +61,13 @@ Each class of definition has its own *index space*, as distinguished by the foll
 
 .. math::
    \begin{array}{llll}
-   \production{type indices} & \typeidx &::=& \u32 \\
-   \production{function indices} & \funcidx &::=& \u32 \\
-   \production{table indices} & \tableidx &::=& \u32 \\
-   \production{memory indices} & \memidx &::=& \u32 \\
-   \production{global indices} & \globalidx &::=& \u32 \\
-   \production{local indices} & \localidx &::=& \u32 \\
-   \production{label indices} & \labelidx &::=& \u32 \\
+   \production{type index} & \typeidx &::=& \u32 \\
+   \production{function index} & \funcidx &::=& \u32 \\
+   \production{table index} & \tableidx &::=& \u32 \\
+   \production{memory index} & \memidx &::=& \u32 \\
+   \production{global index} & \globalidx &::=& \u32 \\
+   \production{local index} & \localidx &::=& \u32 \\
+   \production{label index} & \labelidx &::=& \u32 \\
    \end{array}
 
 The index space for functions, tables, memories and globals includes respective imports declared in the same module.
@@ -89,7 +89,6 @@ Conventions
 .. _syntax-type:
 .. index:: ! type definition, type index
    pair: abstract syntax; type definition
-   single: type; definition
 
 Types
 ~~~~~
@@ -107,6 +106,7 @@ They are referenced by :ref:`type indices <syntax-typeidx>`.
 .. _syntax-local:
 .. index:: ! function, ! local, function index, local index, type index, value type, expression, import
    pair: abstract syntax; function
+   pair: abstract syntax; local
 
 Functions
 ~~~~~~~~~
@@ -115,7 +115,7 @@ The |FUNCS| component of a module defines a vector of *functions* with the follo
 
 .. math::
    \begin{array}{llll}
-   \production{functions} & \func &::=&
+   \production{function} & \func &::=&
      \{ \TYPE~\typeidx, \LOCALS~\vec(\valtype), \BODY~\expr \} \\
    \end{array}
 
@@ -143,7 +143,7 @@ The |TABLES| component of a module defines a vector of *tables* described by the
 
 .. math::
    \begin{array}{llll}
-   \production{tables} & \table &::=&
+   \production{table} & \table &::=&
      \{ \TYPE~\tabletype \} \\
    \end{array}
 
@@ -173,7 +173,7 @@ The |MEMS| component of a module defines a vector of *linear memories* (or *memo
 
 .. math::
    \begin{array}{llll}
-   \production{memories} & \mem &::=&
+   \production{memory} & \mem &::=&
      \{ \TYPE~\memtype \} \\
    \end{array}
 
@@ -204,7 +204,7 @@ The |GLOBALS| component of a module defines a vector of *global variables* (or *
 
 .. math::
    \begin{array}{llll}
-   \production{globals} & \global &::=&
+   \production{global} & \global &::=&
      \{ \TYPE~\globaltype, \INIT~\expr \} \\
    \end{array}
 
@@ -230,7 +230,7 @@ The |ELEM| component of a module defines a vector of *element segments* that ini
 
 .. math::
    \begin{array}{llll}
-   \production{element segments} & \elem &::=&
+   \production{element segment} & \elem &::=&
      \{ \TABLE~\tableidx, \OFFSET~\expr, \INIT~\vec(\funcidx) \} \\
    \end{array}
 
@@ -250,13 +250,13 @@ The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <sy
 Data Segments
 ~~~~~~~~~~~~~
 
-The initial contents of a :ref:`memory <syntax-memory>` are zero bytes.
+The initial contents of a :ref:`memory <syntax-mem>` are zero bytes.
 The |DATA| component of a module defines a vector of *data segments* that initialize a range of memory at a given offset with a static vector of bytes.
 
 .. math::
    \begin{array}{llll}
-   \production{data segments} & \data &::=&
-     \{ \MEM~\memidx, \OFFSET~\expr, \INIT~\vec(\by) \} \\
+   \production{data segment} & \data &::=&
+     \{ \MEM~\memidx, \OFFSET~\expr, \INIT~\vec(\byte) \} \\
    \end{array}
 
 The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
@@ -273,7 +273,7 @@ The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <sy
 Start Function
 ~~~~~~~~~~~~~~
 
-The |START| component of a module optionally declares the :ref:`function index <syntax-idx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
+The |START| component of a module optionally declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
 
 .. math::
    \begin{array}{llll}
@@ -297,9 +297,9 @@ The |EXPORTS| component of a module defines a set of *exports* that become acces
 
 .. math::
    \begin{array}{llll}
-   \production{exports} & \export &::=&
+   \production{export} & \export &::=&
      \{ \NAME~\name, \DESC~\exportdesc \} \\
-   \production{export descriptions} & \exportdesc &::=&
+   \production{export description} & \exportdesc &::=&
      \FUNC~\funcidx ~|~ \\&&&
      \TABLE~\tableidx ~|~ \\&&&
      \MEM~\memidx ~|~ \\&&&
@@ -312,6 +312,20 @@ which are referenced through a respective descriptor.
 
 .. note::
    In the current version of WebAssembly, only *immutable* globals may be exported.
+
+
+Conventions
+...........
+
+The following auxiliary notation is defined for sequences of exports, filtering out indices of a specific kind in an order-preserving fashion:
+
+* :math:`\funcs(\export^\ast) = [\funcidx ~|~ \FUNC~\funcidx \in (\export.\DESC)^\ast]`
+
+* :math:`\tables(\export^\ast) = [\tableidx ~|~ \TABLE~\tableidx \in (\export.\DESC)^\ast]`
+
+* :math:`\mems(\export^\ast) = [\memidx ~|~ \MEM~\memidx \in (\export.\DESC)^\ast]`
+
+* :math:`\globals(\export^\ast) = [\globalidx ~|~ \GLOBAL~\globalidx \in (\export.\DESC)^\ast]`
 
 
 .. _syntax-import:
@@ -329,9 +343,9 @@ The |IMPORTS| component of a module defines a set of *imports* that are required
 
 .. math::
    \begin{array}{llll}
-   \production{imports} & \import &::=&
+   \production{import} & \import &::=&
      \{ \MODULE~\name, \NAME~\name, \DESC~\importdesc \} \\
-   \production{import descriptions} & \importdesc &::=&
+   \production{import description} & \importdesc &::=&
      \FUNC~\typeidx ~|~ \\&&&
      \TABLE~\tabletype ~|~ \\&&&
      \MEM~\memtype ~|~ \\&&&
@@ -342,7 +356,7 @@ Each import is identified by a two-level :ref:`name <syntax-name>` space, consis
 Importable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
 Each import is specified by a descriptor with a respective type that a definition provided during instantiation is required to match.
 
-Every import defines an index in the respective :ref:`index space <syntax-indices>`.
+Every import defines an index in the respective :ref:`index space <syntax-index>`.
 In each index space, the indices of imports go before the first index of any definition contained in the module itself.
 
 .. note::
