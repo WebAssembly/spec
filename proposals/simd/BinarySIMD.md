@@ -27,7 +27,7 @@ The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 
 | Instruction               | `simdop` | Immediate operands |
 | --------------------------|---------:|--------------------|
-| `v128.const`              |        0 | -                  |
+| `v128.const`              |        0 | i:ImmByte[16]      |
 | `v128.load`               |        1 | m:memarg           |
 | `v128.store`              |        2 | m:memarg           |
 | `i8x16.splat`             |        3 | -                  |
