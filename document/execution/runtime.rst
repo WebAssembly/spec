@@ -169,7 +169,7 @@ However, the :ref:`embedder <embedder>` might provide implicit or explicit means
 A *host function* is a function expressed outside WebAssembly but passed to a :ref:`module <syntax-module>` as an :ref:`import <syntax-import>`.
 The definition and behavior of host functions are outside the scope of this specification.
 For the purpose of this specification, it is assumed that when :ref:`invoked <exec-invoke-host>`,
-a host function behaves non-deterministicaly.
+a host function behaves non-deterministically.
 
 
 .. _syntax-tableinst:
