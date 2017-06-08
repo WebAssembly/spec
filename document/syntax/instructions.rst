@@ -245,7 +245,7 @@ Instructions in this group are concerned with :ref:`linear memory <syntax-mem>`.
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
 They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint.
-Integer loads and stores can optionally specify a *storage size* that is smaller than the width of the respective value type.
+Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`width <syntax-valtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.

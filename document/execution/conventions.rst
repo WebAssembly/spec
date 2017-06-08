@@ -84,7 +84,7 @@ To avoid unnecessary clutter, the store :math:`S` and the frame :math:`F` are om
 There is no separate representation of the :ref:`stack <stack>`.
 Instead, it is conveniently represented as part of the configuration's instruction sequence.
 In particular, :ref:`values <syntax-val>` are defined to coincide with |CONST| instructions,
-and a sequence of |CONST| instructions can be interpreted as an operand "stack".
+and a sequence of |CONST| instructions can be interpreted as an operand "stack" that grows to the right.
 
 .. note::
    For example, the :ref:`reduction rule <exec-binop>` for the :math:`\I32.\ADD` instruction could be given as follows:
