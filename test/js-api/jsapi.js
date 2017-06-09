@@ -686,8 +686,6 @@ assertCompileError([1], TypeError);
 assertCompileError([{}], TypeError);
 assertCompileError([new Uint8Array()], CompileError);
 assertCompileError([new ArrayBuffer()], CompileError);
-assertCompileError([new Uint8Array("hi!")], CompileError);
-assertCompileError([new ArrayBuffer("hi!")], CompileError);
 
 num_tests = 1;
 function assertCompileSuccess(bytes) {
