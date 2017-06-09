@@ -733,8 +733,6 @@ test(() => {
     assertInstantiateError([{}], TypeError);
     assertInstantiateError([new Uint8Array()], CompileError);
     assertInstantiateError([new ArrayBuffer()], CompileError);
-    assertInstantiateError([new Uint8Array("hi!")], CompileError);
-    assertInstantiateError([new ArrayBuffer("hi!")], CompileError);
     assertInstantiateError([importingModule], TypeError);
     assertInstantiateError([importingModule, null], TypeError);
     assertInstantiateError([importingModuleBinary, null], TypeError);
