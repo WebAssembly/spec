@@ -647,7 +647,7 @@ test(() => {
     assert_true(WebAssembly.validate(complexImportingModuleBinary));
     assert_false(WebAssembly.validate(moduleBinaryImporting2Memories));
     assert_false(WebAssembly.validate(moduleBinaryWithMemSectionAndMemImport));
-}, "'WebAssembly.validate' method"),
+}, "'WebAssembly.validate' method");
 
 test(() => {
     const compileDesc = Object.getOwnPropertyDescriptor(WebAssembly, 'compile');
