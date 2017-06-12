@@ -686,6 +686,7 @@ assertCompileError([1], TypeError);
 assertCompileError([{}], TypeError);
 assertCompileError([new Uint8Array()], CompileError);
 assertCompileError([new ArrayBuffer()], CompileError);
+assertCompileError([new Uint8Array([0xC0, 0xDE, 0xFE, 0xFE]), CompileError);
 
 num_tests = 1;
 function assertCompileSuccess(bytes) {
@@ -733,6 +734,7 @@ test(() => {
     assertInstantiateError([{}], TypeError);
     assertInstantiateError([new Uint8Array()], CompileError);
     assertInstantiateError([new ArrayBuffer()], CompileError);
+    assertInstantiateError([new Uint8Array([0xC0, 0xDE, 0xFE, 0xFE]), CompileError);
     assertInstantiateError([importingModule], TypeError);
     assertInstantiateError([importingModule, null], TypeError);
     assertInstantiateError([importingModuleBinary, null], TypeError);
