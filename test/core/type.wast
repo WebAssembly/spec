@@ -48,11 +48,12 @@
   (module quote "(type (func (result $x i32)))")
   "unexpected token"
 )
+
 (assert_invalid
-  (module quote "(type (func (result i32 i32)))")
+  (module (type (func (result i32 i32))))
   "invalid result arity"
 )
 (assert_invalid
-  (module quote "(type (func (result i32) (result i32)))")
+  (module (type (func (result i32) (result i32))))
   "invalid result arity"
 )
