@@ -74,7 +74,7 @@ echo 1>&2 ==== Compiling ====
 BSPATH=`which bsb`
 BPATH=`dirname $BSPATH`/../lib/js
 echo 1>&2 BSPATH = $BSPATH
-bsb || exit 1
+bsb.exe || exit 1
 cp `dirname $BSPATH`/../lib/js/*.js lib/js/src
 
 echo 1>&2 ==== Linking full version ====

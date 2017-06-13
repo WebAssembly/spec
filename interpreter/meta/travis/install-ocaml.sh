@@ -3,11 +3,11 @@
 set -e
 
 # Move to a location relative to the script so it runs
-# from anywhere. Go two levels down to get out of interpreter/
+# from anywhere. Go three levels down to get out of interpreter/
 # and into the top-level dir, since we'll run ocamlbuild
 # inside of interpreter/ and it goes pear-shaped if it
 # encounters ocaml's own build directory.
-cd $(dirname ${BASH_SOURCE[0]})/../..
+cd $(dirname ${BASH_SOURCE[0]})/../../..
 
 rm -rf ocaml
 mkdir ocaml

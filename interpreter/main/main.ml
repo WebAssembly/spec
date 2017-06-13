@@ -1,14 +1,12 @@
 let name = "wasm"
-let version = "0.7"
+let version = "1.0"
 
 let configure () =
   Import.register (Utf8.decode "spectest") Spectest.lookup;
   Import.register (Utf8.decode "env") Env.lookup
 
 let banner () =
-  print_endline
-    (name ^ "-" ^ Printf.sprintf "0x%lX" Encode.version ^
-     " " ^ version ^ " reference interpreter")
+  print_endline (name ^ " " ^ version ^ " reference interpreter")
 
 let usage = "Usage: " ^ name ^ " [option] [file ...]"
 
