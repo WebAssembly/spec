@@ -209,7 +209,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    \funcaddr &=& |S.\FUNCS| \\
    \functype &=& \moduleinst.\TYPES[\func.\TYPE] \\
    \funcinst &=& \{ \TYPE~\functype, \MODULE~\moduleinst, \CODE~\func \} \\
-   S' &=& S \compose \{\FUNCS~\tableinst\} \\
+   S' &=& S \compose \{\FUNCS~\funcinst\} \\
    \end{array}
 
 .. _alloc-hostfunc:
@@ -566,7 +566,7 @@ Instantiation may *fail* with an error.
      \moduleinst \\
      \end{array} \\
    &\mbox{if}
-     & S \vdash \module : \externtype^n \\
+     & \vdash \module : \externtype^n \\
      &\wedge& (\vdash \externval : \externtype')^n \\
      &\wedge& (\vdash \externtype' \leq \externtype)^n \\[1ex]
      &\wedge& \module.\GLOBALS = \global^k \\

@@ -103,12 +103,15 @@ These are simply indices into the respective store component.
    Addresses are *dynamic*, globally unique references to runtime objects,
    in contrast to :ref:`indices <syntax-index>`,
    which are *static*, module-local references to their original definitions.
+   A *memory address* |memaddr| denotes the abstract address *of* a memory *instance* in the store,
+   not an offset *inside* a memory instance.
 
    There is no specific limit on the number of allocations of store objects,
    hence logical addresses can be arbitrarily large natural numbers.
 
-   A *memory address* |memaddr| denotes the abstract address *of* a memory *instance* in the store,
-   not an offset *inside* a memory instance.
+An :ref:`embedder <embedder>` may assign identity to :ref:`exported <syntax-export>` store objects corresponding to their addresses,
+even where this identity is not observable from within WebAssembly code itself
+(such as for :ref:`function instances <syntax-funcinst>` or immutable :ref:`globals <syntax-global>`).
 
 
 .. _syntax-moduleinst:
@@ -163,13 +166,14 @@ The module instance is used to resolve references to other non-local definitions
    \production{(host function)} & \hostfunc &::=& \dots \\
    \end{array}
 
-Function instances are immutable, and their identity is not observable by WebAssembly code.
-However, the :ref:`embedder <embedder>` might provide implicit or explicit means for distinguishing them.
-
 A *host function* is a function expressed outside WebAssembly but passed to a :ref:`module <syntax-module>` as an :ref:`import <syntax-import>`.
 The definition and behavior of host functions are outside the scope of this specification.
 For the purpose of this specification, it is assumed that when :ref:`invoked <exec-invoke-host>`,
 a host function behaves non-deterministically.
+
+.. note::
+   Function instances are immutable, and their identity is not observable by WebAssembly code.
+   However, the :ref:`embedder <embedder>` might provide implicit or explicit means for distinguishing their :ref:`addresses <syntax-funcaddr>` when :ref:`exported <syntax-export>`, either directly or through an entry in a :ref:`table <syntax-table>`.
 
 
 .. _syntax-tableinst:
