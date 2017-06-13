@@ -65,7 +65,7 @@ main.native:	_tags
 
 # Building library
 
-PACK =		$(shell LIB=$(LIB); echo $${LIB^})
+PACK =		$(shell echo `echo $(LIB) | sed 's/^\(.\).*$$/\\1/g' | tr [:lower:] [:upper:]``echo $(LIB) | sed 's/^.\(.*\)$$/\\1/g'`)
 
 .INTERMEDIATE:	$(LIB).mlpack
 $(LIB).mlpack:	$(DIRS)
