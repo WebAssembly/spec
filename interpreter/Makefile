@@ -26,13 +26,14 @@ JS =		# set to JS shell command to run JS tests
 
 # Main targets
 
-.PHONY:		default opt unopt libopt libunopt all land zip
+.PHONY:		default opt unopt libopt libunopt jslib all land zip
 
 default:	opt
 opt:		$(OPT)
 unopt:		$(UNOPT)
 libopt:		_build/$(LIB).cmx
 libunopt:	_build/$(LIB).cmo
+jslib:		$(JSLIB)
 all:		unopt opt libunopt libopt test
 land:		all $(WINMAKE)
 zip: 		$(ZIP)
@@ -87,8 +88,8 @@ _build/$(LIB).cmx: $(LIB).mlpack
 .PHONY:		$(JSLIB)
 $(JSLIB):	$(UNOPT)
 		mkdir -p _build/jslib/src
-		cp jslib/* _build/jslib
-		cp $(DIRS:%=_build/%/*.ml*) jslib/*.ml _build/jslib/src
+		cp meta/jslib/* _build/jslib
+		cp $(DIRS:%=_build/%/*.ml*) meta/jslib/*.ml _build/jslib/src
 		rm _build/jslib/src/*.ml[^i]
 		(cd _build/jslib; ./build.sh ../../$@)
 
@@ -135,7 +136,7 @@ $(ZIP):		$(WINMAKE)
 		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 clean:
-		rm -rf _build/jslib wasm.mlpack
+		rm -rf _build/jslib wasm.mlpack _tags
 		$(OCB) -clean
 
 
@@ -149,7 +150,7 @@ check:
 		ocamlfind query $(LIBS)
 
 install:	_build/$(LIB).cmx _build/$(LIB).cmo
-		ocamlfind install wasm findlib/META _build/wasm.o \
+		ocamlfind install wasm meta/findlib/META _build/wasm.o \
 		  $(wildcard _build/$(LIB).cm*) \
 		  $(wildcard $(DIRS:%=%/*.mli))
 
