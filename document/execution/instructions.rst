@@ -884,11 +884,9 @@ Control Instructions
 
 14. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\FUNCS[a]`.
 
-15. Assert: due to :ref:`validation <valid-func>`, :math:`\X{f}.\MODULE.\TYPES[\X{f}.\CODE.\TYPE]` exists.
+15. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\TYPE`.
 
-16. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\MODULE.\TYPES[\X{f}.\CODE.\TYPE]`.
-
-15. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
+16. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
 
     a. Trap.
 
@@ -903,7 +901,7 @@ Control Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & S.\TABLES[F.\MODULE.\TABLES[0]].\ELEM[i] = a \\
      \wedge & S.\FUNCS[a] = f \\
-     \wedge & F.\MODULE.\TYPES[x] = f.\MODULE.\TYPES[f.\CODE.\TYPE])
+     \wedge & F.\MODULE.\TYPES[x] = f.\TYPE)
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x) &\stepto& S; F; \TRAP
@@ -987,25 +985,23 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\FUNCS[a]`.
 
-3. Assert: due to :ref:`validation <valid-func>`, :math:`f.\MODULE.\TYPES[f.\CODE.\TYPE]` exists.
+3. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\TYPE`.
 
-4. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\MODULE.\TYPES[f.\CODE.\TYPE]`.
+4. Let :math:`t^\ast` be the list of :ref:`value types <syntax-valtype>` :math:`f.\CODE.\LOCALS`.
 
-5. Let :math:`t^\ast` be the list of :ref:`value types <syntax-valtype>` :math:`f.\CODE.\LOCALS`.
+5. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\CODE.\BODY`.
 
-6. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\CODE.\BODY`.
+6. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
 
-7. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
+7. Pop the values :math:`\val^n` from the stack.
 
-8. Pop the values :math:`\val^n` from the stack.
+8. Let :math:`\val_0^\ast` be the list of zero values of types :math:`t^\ast`.
 
-9. Let :math:`\val_0^\ast` be the list of zero values of types :math:`t^\ast`.
+9. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \MODULE~f.\MODULE, \LOCALS~\val^n~\val_0^\ast \}`.
 
-10. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \MODULE~f.\MODULE, \LOCALS~\val^n~\val_0^\ast \}`.
+10. Push the activation of :math:`F` with arity :math:`m` to the stack.
 
-11. Push the activation of :math:`F` with arity :math:`m` to the stack.
-
-12. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
+11. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
 
 .. math::
    \begin{array}{l}
@@ -1016,7 +1012,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & S.\FUNCS[a] = f \\
      \wedge & f.\CODE = \{ \TYPE~x, \LOCALS~t^k, \BODY~\instr^\ast~\END \} \\
-     \wedge & f.\MODULE.\TYPES[x] = [t_1^n] \to [t_2^m] \\
+     \wedge & f.\TYPE = [t_1^n] \to [t_2^m] \\
      \wedge & F = \{ \MODULE~f.\MODULE, ~\LOCALS~\val^n~(t.\CONST~0)^k \})
      \end{array} \\
    \end{array}
@@ -1051,24 +1047,75 @@ When the end of a funtion is reached without a jump (|RETURN|) or trap aborting 
    \end{array}
 
 
+.. _exec-invoke-host:
+
+Host Functions
+..............
+
+Invoking a :ref:`host function <syntax-hostfunc>` has non-deterministic behavior.
+It may either terminate with a :ref:`trap <trap>` or return regularly.
+However, the latter case, it is assumed that it consumes and produces the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
+according to its type.
+A host function may also modify the :ref:`store <syntax-store>` when invoked.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; \val^n~(\INVOKE~a) &\stepto& S'; {\val'\,}^m
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\mbox{if} & S.\FUNCS[a] = \{ \TYPE~[t_1^n] \to [t_2^m], \HOST~\dots \} \\
+     \wedge & \val^n = (t_1.\CONST~c_1)^n \\
+     \wedge & {\val'\,}^m = (t_2.\CONST~c_2)^m \\
+     \wedge & S' \succ S) \\
+     \end{array} \\
+   \begin{array}{lcl@{\qquad}l}
+   S; \val^n~(\INVOKE~a) &\stepto& S'; \TRAP
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\mbox{if} & S.\FUNCS[a] = \{ \TYPE~\X{ft}, \HOST~\dots \} \\ 
+     \wedge & S' \succ S) \\
+     \end{array} \\
+   \end{array}
+
+Here, :math:`S' \succ S` expresses that the new store :math:`S'` is *reachable* from :math:`S`.
+Such a store must not contain fewer addresses than the original store,
+it must not differ in elements that are not mutable,
+and it must still be well-typed.
+
+.. todo:: Define more precisely?
+
+.. note::
+   A host function can call back into WebAssembly by :ref:`invoking <invocation>` a function :ref:`exported <syntax-export>` from a :ref:`module <syntax-module>`.
+   However, the effects of any such call are subsumed by the non-deterministic behavior allowed for a host function.
+
+
+
 .. _exec-expr:
 .. index:: expression
    pair: execution; expression
    single: abstract syntax; expression
-   single: expression; constant
 
 Expressions
 ~~~~~~~~~~~
 
-:math:`\instr^\ast~\END`
-........................
+An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-modinst>` :math:`\moduleinst`.
 
-.. todo::
-   Define
+1. :ref:`Jump <exec-jump>` to the start of the instruction sequence :math:`\instr^\ast` of the expression.
+
+2. Execute of the instruction sequence.
+
+3. Assert: due to :ref:`validation <valid-expr>`, the top of the stack contains a :ref:`value <syntax-val>`.
+
+4. Pop the the :ref:`value <syntax-val>` :math:`\val` from the stack.
+
+The value :math:`\val` is the result of the evaluation.
 
 .. math::
    \frac{
-     S; F; \instr^\ast \stepto^\ast S; F; v
+     S; F; \instr^\ast \stepto^\ast S'; F'; v
    }{
-     S; F; \instr^\ast~\END \stepto^\ast S; F; v
+     S; F; \instr^\ast~\END \stepto^\ast S'; F'; v
    }

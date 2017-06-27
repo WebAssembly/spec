@@ -526,7 +526,7 @@ Control Instructions
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
 
-* Then the compound instruction is valid with type :math:`[] \to [t^?]`.
+* Then the compound instruction is valid with type :math:`[\I32] \to [t^?]`.
 
 .. math::
    \frac{

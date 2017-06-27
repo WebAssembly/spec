@@ -487,12 +487,11 @@
 .. |LABEL| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{label}}
 .. |FRAME| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{frame}}
 
-.. |INVOKE| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{invoke}}
-.. |INSTANTIATE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{instantiate}}
-.. |INITIALIZE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{initialize}}
-.. |INITGLOBAL| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{init\_global}}
-.. |INITTABLE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{init\_table}}
-.. |INITMEM| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{init\_mem}}
+.. |INVOKE| mathdef:: \xref{execution/runtime}{syntax-invoke}{\K{invoke}}
+.. |INSTANTIATE| mathdef:: \xref{execution/runtime}{syntax-instantiate}{\K{instantiate}}
+.. |INITGLOBAL| mathdef:: \xref{execution/runtime}{syntax-init_global}{\K{init\_global}}
+.. |INITTABLE| mathdef:: \xref{execution/runtime}{syntax-init_table}{\K{init\_table}}
+.. |INITMEM| mathdef:: \xref{execution/runtime}{syntax-init_mem}{\K{init\_mem}}
 
 
 .. Instructions, non-terminals
@@ -556,6 +555,7 @@
 .. Runtime, terminals
 
 .. |MUT| mathdef:: \K{mut}
+.. |HOST| mathdef:: \K{host}
 
 
 .. Runtime, non-terminals
@@ -575,6 +575,7 @@
 .. |meminst| mathdef:: \xref{execution/runtime}{syntax-meminst}{\X{meminst}}
 .. |globalinst| mathdef:: \xref{execution/runtime}{syntax-globalinst}{\X{globalinst}}
 .. |exportinst| mathdef:: \xref{execution/runtime}{syntax-exportinst}{\X{exportinst}}
+.. |hostfunc| mathdef:: \xref{execution/runtime}{syntax-hostfunc}{\X{hostfunc}}
 
 .. |externval| mathdef:: \xref{execution/runtime}{syntax-externval}{\X{externval}}
 .. |externtype| mathdef:: \xref{execution/runtime}{syntax-externtype}{\X{externtype}}
@@ -586,11 +587,20 @@
 
 .. |XB| mathdef:: \xref{execution/runtime}{syntax-ctxt-block}{B}
 
+.. |moduleinstr| mathdef:: \xref{execution/runtime}{syntax-moduleinstr}{\X{moduleinstr}}
+
 
 .. Execution, notation
 
 .. |stepto| mathdef:: \hookrightarrow
 .. |mod| mathdef:: \mathbin{\F{mod}}
+
+.. |allocfunc| mathdef:: \xref{execution/modules}{alloc-func}{\F{allocfunc}}
+.. |allochostfunc| mathdef:: \xref{execution/modules}{alloc-hostfunc}{\F{allochostfunc}}
+.. |alloctable| mathdef:: \xref{execution/modules}{alloc-table}{\F{alloctable}}
+.. |allocmem| mathdef:: \xref{execution/modules}{alloc-mem}{\F{allocmem}}
+.. |allocglobal| mathdef:: \xref{execution/modules}{alloc-global}{\F{allocglobal}}
+.. |allocmodule| mathdef:: \xref{execution/modules}{alloc-module}{\F{allocmodule}}
 
 
 .. Numerics, meta functions

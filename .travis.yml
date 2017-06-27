@@ -2,9 +2,9 @@ language: c++
 
 sudo: off
 
-install: ./interpreter/travis/install-ocaml.sh
+install: ./interpreter/meta/travis/install-ocaml.sh
 
-script: ./interpreter/travis/build-test.sh
+script: ./interpreter/meta/travis/build-test.sh
 
 os:
   - linux

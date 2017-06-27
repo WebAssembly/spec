@@ -212,8 +212,8 @@ The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
 
 
 .. _syntax-instr-memory:
-.. _syntax-load:
-.. _syntax-store:
+.. _syntax-loadn:
+.. _syntax-storen:
 .. _syntax-memarg:
 .. index:: ! memory instruction, memory index
    pair: abstract syntax; instruction

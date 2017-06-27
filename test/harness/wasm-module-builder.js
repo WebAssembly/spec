@@ -100,8 +100,8 @@ class WasmFunctionBuilder {
 
   addBody(body) {
     for (let b of body) {
-      if (typeof b != 'number')
-        throw new Error('invalid body (entries have to be numbers): ' + body);
+      if (typeof b !== 'number' || (b & (~0xFF)) !== 0 )
+        throw new Error('invalid body (entries have to be 8 bit numbers): ' + body);
     }
     this.body = body.slice();
     // Automatically add the end for the function block to the body.
@@ -115,7 +115,6 @@ class WasmFunctionBuilder {
   }
 
   end() {
-    this.body.push(kExprEnd);
     return this.module;
   }
 }

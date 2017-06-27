@@ -354,13 +354,23 @@ However, to simplify the implementation, this AST representation represents some
 
 ## Implementation
 
-The implementation is split into four directories:
+The implementation is split into several directories:
 
-* `spec`: the part of the implementation that corresponds to the actual language specification.
+* `syntax`: the definition of abstract syntax; corresponds to the "Structure" section of the language specification
 
-* `text`: parsing and printing the S-expressions text format.
+* `valid`: validation of code and modules; corresponds to the "Validation" section of the language specification
 
-* `host`: infrastructure for loading and running scripts and defining host environment modules.
+* `exec`: execution and module instantiation; corresponds to the "Execution" section of the language specification
+
+* `binary`: encoding and decoding of the binary format; corresponds to the "Binary Format" section of the language specification
+
+* `text`: parsing and printing the S-expressions text format; corresponds to the "Text Format" section of the language specification
+
+* `script`: abstract syntax and execution of the extended script language
+
+* `host`: definition of host environment modules
+
+* `main`: main program
 
 * `util`: utility libraries.
 

@@ -103,12 +103,15 @@ These are simply indices into the respective store component.
    Addresses are *dynamic*, globally unique references to runtime objects,
    in contrast to :ref:`indices <syntax-index>`,
    which are *static*, module-local references to their original definitions.
+   A *memory address* |memaddr| denotes the abstract address *of* a memory *instance* in the store,
+   not an offset *inside* a memory instance.
 
    There is no specific limit on the number of allocations of store objects,
    hence logical addresses can be arbitrarily large natural numbers.
 
-   A *memory address* |memaddr| denotes the abstract address *of* a memory *instance* in the store,
-   not an offset *inside* a memory instance.
+An :ref:`embedder <embedder>` may assign identity to :ref:`exported <syntax-export>` store objects corresponding to their addresses,
+even where this identity is not observable from within WebAssembly code itself
+(such as for :ref:`function instances <syntax-funcinst>` or immutable :ref:`globals <syntax-global>`).
 
 
 .. _syntax-moduleinst:
@@ -143,6 +146,7 @@ It is an invariant of the semantics that all :ref:`export instances <syntax-expo
 
 
 .. _syntax-funcinst:
+.. _syntax-hostfunc:
 .. index:: ! function instance, module instance, function, closure
    pair: abstract syntax; function instance
    pair: function; instance
@@ -157,13 +161,19 @@ The module instance is used to resolve references to other non-local definitions
 .. math::
    \begin{array}{llll}
    \production{(function instance)} & \funcinst &::=&
-     \{ \MODULE~\moduleinst, \CODE~\func \} \\
+     \{ \TYPE~\functype, \MODULE~\moduleinst, \CODE~\func \} \\ &&|&
+     \{ \TYPE~\functype, \CODE~\hostfunc \} \\
+   \production{(host function)} & \hostfunc &::=& \dots \\
    \end{array}
 
-Function instances are immutable, and their identity is not observable by WebAssembly code.
-However, the :ref:`embedder <embedder>` might provide implicit or explicit means for distinguishing them.
+A *host function* is a function expressed outside WebAssembly but passed to a :ref:`module <syntax-module>` as an :ref:`import <syntax-import>`.
+The definition and behavior of host functions are outside the scope of this specification.
+For the purpose of this specification, it is assumed that when :ref:`invoked <exec-invoke-host>`,
+a host function behaves non-deterministically.
 
-.. todo:: Host functions?
+.. note::
+   Function instances are immutable, and their identity is not observable by WebAssembly code.
+   However, the :ref:`embedder <embedder>` might provide implicit or explicit means for distinguishing their :ref:`addresses <syntax-funcaddr>` when :ref:`exported <syntax-export>`, either directly or through an entry in a :ref:`table <syntax-table>`.
 
 
 .. _syntax-tableinst:
@@ -295,41 +305,6 @@ It filters out entries of a specific kind in an order-preserving fashion:
    \end{array}
 
 
-.. _syntax-externtype:
-.. index:: ! external type, function type, table type, memory type, global type
-   pair: abstract syntax; external type
-   pair: external; type
-
-External Types
-~~~~~~~~~~~~~~
-
-*External types* classify :ref:`external values <syntax-externval>`, and thereby imports and exports, with their respective types.
-
-.. math::
-   \begin{array}{llll}
-   \production{external types} & \externtype &::=&
-     \FUNC~\functype ~|~
-     \TABLE~\tabletype ~|~
-     \MEM~\memtype ~|~
-     \GLOBAL~\globaltype \\
-   \end{array}
-
-
-Conventions
-...........
-
-The following auxiliary notation is defined for sequences of external types.
-It filters out entries of a specific kind in an order-preserving fashion:
-
-.. math::
-   \begin{array}{lcl}
-   \funcs(\externtype^\ast) &=& [\functype ~|~ (\FUNC~\functype) \in \externtype^\ast] \\
-   \tables(\externtype^\ast) &=& [\tabletype ~|~ (\TABLE~\tabletype) \in \externtype^\ast] \\
-   \mems(\externtype^\ast) &=& [\memtype ~|~ (\MEM~\memtype) \in \externtype^\ast] \\
-   \globals(\externtype^\ast) &=& [\globaltype ~|~ (\GLOBAL~\globaltype) \in \externtype^\ast] \\
-   \end{array}
-
-
 .. _stack:
 .. _frame:
 .. _label:
@@ -423,6 +398,8 @@ Conventions
 
 
 .. _syntax-instr-admin:
+.. _syntax-trap:
+.. _syntax-invoke:
 .. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap
    pair:: abstract syntax; administrative instruction
 
@@ -435,13 +412,13 @@ Administrative Instructions
 In order to express the reduction of :ref:`traps <trap>`, calls, and :ref:`control instructions <syntax-instr-control>`, the syntax of instructions is extended to include the following *administrative instructions*:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llcl}
    \production{(administrative instruction)} & \instr &::=&
-     \dots ~|~ \\&&&
-     \TRAP ~|~ \\&&&
-     \INVOKE~\funcaddr ~|~ \\&&&
-     \LABEL_n\{\instr^\ast\}~\instr^\ast~\END ~|~ \\&&&
-     \FRAME_n\{\frame\}~\instr^\ast~\END ~|~ \\
+     \dots \\ &&|&
+     \TRAP \\ &&|&
+     \INVOKE~\funcaddr \\ &&|&
+     \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
+     \FRAME_n\{\frame\}~\instr^\ast~\END \\
    \end{array}
 
 The |TRAP| instruction represents the occurrence of a trap.
@@ -537,3 +514,58 @@ Finally, the following definition of *evaluation context* and associated structu
    S; F; E[\TRAP] &\stepto& S; F; \TRAP
      & (\mbox{if}~E \neq [\_]) \\
    \end{array}
+
+
+.. _syntax-instr-module:
+.. index:: ! module instructions, function, function instance, function address, label, frame, instruction, trap
+   pair:: abstract syntax; meta instruction
+
+Module Instructions
+...................
+
+Module :ref:`instantiation <instantiation>` is a complex operation.
+It is hence expressed in terms of reduction into smaller steps expressed by a sequence of administrative *module instructions* that are a superset of ordinary instructions and defined as follow.
+
+.. math::
+   \begin{array}{llcl}
+   \production{(module instruction)} & \moduleinstr &::=&
+     \instr \\ &&|&
+     \INSTANTIATE~\module~\externval^\ast \\ &&|&
+     \INITTABLE~\tableaddr~\u32~\moduleinst~funcidx^\ast \\ &&|&
+     \INITMEM~\memaddr~\u32~\byte^\ast \\ &&|&
+     \INITGLOBAL~\globaladdr~\val \\ &&|&
+     \moduleinst \\
+   \end{array}
+
+The |INSTANTIATE| instruction expresses instantiation of a :ref:`module <syntax-module>` itself, requiring a sequence of :ref:`external values <syntax-externval>` for the expected imports.
+It reduces into a sequence of initialization instructions for :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>`,
+and a possible :ref:`invocation <syntax-invoke>` of the :ref:`start function <syntax-start>`.
+The final instruction returns the newly created and initialized :ref:`module instance <syntax-moduleinst>`.
+
+.. note::
+   The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.
+
+   Unlike the administrative instructions above,
+   module instructions *embed* ordinary instructions |instr| instead of extending them.
+   Consequently, they can only occur at the top-level.
+
+Evaluation contexts and additional structural reduction rules for module instructions are defined as follows:
+
+.. math::
+   \begin{array}{llll}
+   \production{(module evaluation contexts)} & M &::=&
+     E~~\moduleinstr^\ast \\
+   \end{array}
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; M[\moduleinstr] &\stepto& S'; M[{\moduleinstr'}^\ast]
+     & (\mbox{if}~S; \moduleinstr \stepto S'; {\moduleinstr'}^\ast) \\
+   S; M[\TRAP] &\stepto& S; \TRAP
+     & (\mbox{if}~M \neq [\_]) \\
+   \end{array}
+
+Reduction terminates when the sequence has been reduced to a |moduleinst| or a trap occurred.
+
+.. note::
+   A trap may either arise from invocation of a :ref:`start function <syntax-start>` or indicate failure of the |INSTANTIATE| instruction itself.
