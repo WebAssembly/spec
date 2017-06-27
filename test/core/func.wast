@@ -31,6 +31,7 @@
   (func (result i32) (unreachable))
 
   (func (type $sig))
+  (func (type $empty-sig-duplicate))  ;; forward reference
 
   (func $complex
     (param i32 f32) (param $x i64) (param) (param i32)
@@ -157,12 +158,15 @@
   (func $empty-sig-2)  ;; should be assigned type $sig
   (func $complex-sig-2 (param f64 i64 f64 i64 f64 i64 f32 i32))
   (func $complex-sig-3 (param f64 i64 f64 i64 f64 i64 f32 i32))
+  (func $complex-sig-4 (param i64 i64 f64 i64 f64 i64 f32 i32))
+  (func $complex-sig-5 (param i64 i64 f64 i64 f64 i64 f32 i32))
 
   (type $empty-sig-duplicate (func))
-  (type $complex-sig-duplicate (func (param f64 i64 f64 i64 f64 i64 f32 i32)))
+  (type $complex-sig-duplicate (func (param i64 i64 f64 i64 f64 i64 f32 i32)))
   (table anyfunc
     (elem
       $complex-sig-3 $empty-sig-2 $complex-sig-1 $complex-sig-3 $empty-sig-1
+      $complex-sig-4 $complex-sig-5
     )
   )
 
@@ -172,19 +176,19 @@
   )
 
   (func (export "signature-implicit-reused")
-    ;; The implicit index 16 in this test depends on the function and
+    ;; The implicit index 18 in this test depends on the function and
     ;; type definitions, and may need adapting if they change.
-    (call_indirect 16
+    (call_indirect 18
       (f64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
       (f64.const 0) (i64.const 0) (f32.const 0) (i32.const 0)
       (i32.const 0)
     )
-    (call_indirect 16
+    (call_indirect 18
       (f64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
       (f64.const 0) (i64.const 0) (f32.const 0) (i32.const 0)
       (i32.const 2)
     )
-    (call_indirect 16
+    (call_indirect 18
       (f64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
       (f64.const 0) (i64.const 0) (f32.const 0) (i32.const 0)
       (i32.const 3)
@@ -197,9 +201,14 @@
 
   (func (export "signature-implicit-duplicate")
     (call_indirect $complex-sig-duplicate
-      (f64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
+      (i64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
       (f64.const 0) (i64.const 0) (f32.const 0) (i32.const 0)
-      (i32.const 0)
+      (i32.const 5)
+    )
+    (call_indirect $complex-sig-duplicate
+      (i64.const 0) (i64.const 0) (f64.const 0) (i64.const 0)
+      (f64.const 0) (i64.const 0) (f32.const 0) (i32.const 0)
+      (i32.const 6)
     )
   )
 )

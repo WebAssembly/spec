@@ -59,8 +59,8 @@ module VarMap = Map.Make(String)
 type space = {mutable map : int32 VarMap.t; mutable count : int32}
 let empty () = {map = VarMap.empty; count = 0l}
 
-type types = {mutable tmap : int32 VarMap.t; mutable tlist : type_ list}
-let empty_types () = {tmap = VarMap.empty; tlist = []}
+type types = {space : space; mutable list : type_ list}
+let empty_types () = {space = empty (); list = []}
 
 type context =
   { types : types; tables : space; memories : space;
@@ -74,14 +74,11 @@ let empty_context () =
 let enter_func (c : context) =
   {c with labels = VarMap.empty; locals = empty ()}
 
-let type_ (c : context) x =
-  try VarMap.find x.it c.types.tmap
-  with Not_found -> error x.at ("unknown type " ^ x.it)
-
 let lookup category space x =
   try VarMap.find x.it space.map
   with Not_found -> error x.at ("unknown " ^ category ^ " " ^ x.it)
 
+let type_ (c : context) x = lookup "type" c.types.space x
 let func (c : context) x = lookup "function" c.funcs x
 let local (c : context) x = lookup "local" c.locals x
 let global (c : context) x = lookup "global" c.globals x
@@ -91,15 +88,10 @@ let label (c : context) x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
 
-let bind_type (c : context) x ty =
-  if VarMap.mem x.it c.types.tmap then
-    error x.at ("duplicate type " ^ x.it);
-  c.types.tmap <-
-    VarMap.add x.it (Lib.List32.length c.types.tlist) c.types.tmap;
-  c.types.tlist <- c.types.tlist @ [ty]
+let func_type (c : context) x =
+  try (Lib.List32.nth c.types.list x.it).it
+  with Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
 
-let anon_type (c : context) ty =
-  c.types.tlist <- c.types.tlist @ [ty]
 
 let bind category space x =
   if VarMap.mem x.it space.map then
@@ -111,6 +103,9 @@ let bind category space x =
     error x.at ("too many " ^ category ^ " bindings");
   i
 
+let bind_type (c : context) x ty =
+  c.types.list <- c.types.list @ [ty];
+  bind "type" c.types.space x
 let bind_func (c : context) x = bind "function" c.funcs x
 let bind_local (c : context) x = bind "local" c.locals x
 let bind_global (c : context) x = bind "global" c.globals x
@@ -126,6 +121,9 @@ let anon category space n =
     error no_region ("too many " ^ category ^ " bindings");
   i
 
+let anon_type (c : context) ty =
+  c.types.list <- c.types.list @ [ty];
+  anon "type" c.types.space 1l
 let anon_func (c : context) = anon "function" c.funcs 1l
 let anon_locals (c : context) ts =
   ignore (anon "local" c.locals (Lib.List32.length ts))
@@ -135,23 +133,15 @@ let anon_memory (c : context) = anon "memory" c.memories 1l
 let anon_label (c : context) =
   {c with labels = VarMap.map (Int32.add 1l) c.labels}
 
-let empty_type = FuncType ([], [])
-
-let inline_type (c : context) ty at =
-  match Lib.List.index_where (fun ty' -> ty'.it = ty) c.types.tlist with
+let inline_type (c : context) ft at =
+  match Lib.List.index_where (fun ty -> ty.it = ft) c.types.list with
   | Some i -> Int32.of_int i @@ at
-  | None ->
-    let i = Lib.List32.length c.types.tlist in ignore (anon_type c (ty @@ at)); i @@ at
+  | None -> anon_type c (ft @@ at) @@ at
 
-let inline_type_explicit (c : context) x ty at =
-  if
-    ty <> empty_type &&
-    (x.it >= Lib.List32.length c.types.tlist ||
-     ty <> (Lib.List32.nth c.types.tlist x.it).it)
-  then
-    error at "inline function type does not match explicit type"
-  else
-    x
+let inline_type_explicit (c : context) x ft at =
+  if ft <> FuncType ([], []) && ft <> func_type c x then
+    error at "inline function type does not match explicit type";
+  x
 
 %}
 
@@ -399,27 +389,27 @@ const_expr :
 func :
   | LPAR FUNC bind_var_opt func_fields RPAR
     { let at = at () in
-      fun c -> let x = $3 c anon_func bind_func @@ at in $4 c x at }
+      fun c -> let x = $3 c anon_func bind_func @@ at in fun () -> $4 c x at }
 
 func_fields :
   | type_use func_fields_body
     { fun c x at ->
       let t = inline_type_explicit c ($1 c type_) (fst $2) at in
-      (fun () -> [{(snd $2 (enter_func c)) with ftype = t} @@ at]), [], [] }
+      [{(snd $2 (enter_func c)) with ftype = t} @@ at], [], [] }
   | func_fields_body  /* Sugar */
     { fun c x at ->
       let t = inline_type c (fst $1) at in
-      (fun () -> [{(snd $1 (enter_func c)) with ftype = t} @@ at]), [], [] }
+      [{(snd $1 (enter_func c)) with ftype = t} @@ at], [], [] }
   | inline_import type_use func_fields_import  /* Sugar */
     { fun c x at ->
       let t = inline_type_explicit c ($2 c type_) $3 at in
-      (fun () -> []),
+      [],
       [{ module_name = fst $1; item_name = snd $1;
          idesc = FuncImport t @@ at } @@ at ], [] }
   | inline_import func_fields_import  /* Sugar */
     { fun c x at ->
       let t = inline_type c $2 at in
-      (fun () -> []),
+      [],
       [{ module_name = fst $1; item_name = snd $1;
          idesc = FuncImport t @@ at } @@ at ], [] }
   | inline_export func_fields  /* Sugar */
@@ -434,7 +424,7 @@ func_fields_import :  /* Sugar */
     { let FuncType (ins, out) = $6 in FuncType ($4 :: ins, out) }
 
 func_fields_import_result :  /* Sugar */
-  | /* empty */ { empty_type }
+  | /* empty */ { FuncType ([], []) }
   | LPAR RESULT value_type_list RPAR func_fields_import_result
     { let FuncType (ins, out) = $5 in FuncType (ins, $3 @ out) }
 
@@ -450,7 +440,7 @@ func_fields_body :
       fun c -> ignore (bind_local c $3); snd $6 c }
 
 func_result_body :
-  | func_body { empty_type, $1 }
+  | func_body { FuncType ([], []), $1 }
   | LPAR RESULT value_type_list RPAR func_result_body
     { let FuncType (ins, out) = fst $5 in
       FuncType (ins, $3 @ out), snd $5 }
@@ -562,22 +552,26 @@ global_fields :
 import_desc :
   | LPAR FUNC bind_var_opt type_use RPAR
     { fun c -> ignore ($3 c anon_func bind_func);
-      FuncImport ($4 c type_) }
+      fun () -> FuncImport ($4 c type_) }
   | LPAR FUNC bind_var_opt func_sig RPAR  /* Sugar */
     { let at4 = ati 4 in
       fun c -> ignore ($3 c anon_func bind_func);
-      FuncImport (inline_type c $4 at4) }
+      fun () -> FuncImport (inline_type c $4 at4) }
   | LPAR TABLE bind_var_opt table_sig RPAR
-    { fun c -> ignore ($3 c anon_table bind_table); TableImport $4 }
+    { fun c -> ignore ($3 c anon_table bind_table);
+      fun () -> TableImport $4 }
   | LPAR MEMORY bind_var_opt memory_sig RPAR
-    { fun c -> ignore ($3 c anon_memory bind_memory); MemoryImport $4 }
+    { fun c -> ignore ($3 c anon_memory bind_memory);
+      fun () -> MemoryImport $4 }
   | LPAR GLOBAL bind_var_opt global_type RPAR
-    { fun c -> ignore ($3 c anon_global bind_global); GlobalImport $4 }
+    { fun c -> ignore ($3 c anon_global bind_global);
+      fun () -> GlobalImport $4 }
 
 import :
   | LPAR IMPORT name name import_desc RPAR
     { let at = at () and at5 = ati 5 in
-      fun c -> {module_name = $3; item_name = $4; idesc = $5 c @@ at5} @@ at }
+      fun c -> let df = $5 c in
+      fun () -> {module_name = $3; item_name = $4; idesc = df () @@ at5} @@ at }
 
 inline_import :
   | LPAR IMPORT name name RPAR { $3, $4 }
@@ -615,55 +609,61 @@ start :
 
 module_fields :
   | /* empty */
-    { fun (c : context) -> {empty_module with types = c.types.tlist} }
+    { fun (c : context) () -> {empty_module with types = c.types.list} }
   | module_fields1 { $1 }
 
 module_fields1 :
   | type_def module_fields
-    { fun c -> $1 c; $2 c }
+    { fun c -> ignore ($1 c); $2 c }
   | global module_fields
-    { fun c -> let gf = $1 c in let m = $2 c in
-      let globs, ims, exs = gf () in
+    { fun c -> let gf = $1 c in let mf = $2 c in
+      fun () -> let globs, ims, exs = gf () in let m = mf () in
       if globs <> [] && m.imports <> [] then
         error (List.hd m.imports).at "import after global definition";
       { m with globals = globs @ m.globals;
         imports = ims @ m.imports; exports = exs @ m.exports } }
   | table module_fields
-    { fun c -> let tf = $1 c in let m = $2 c in
-      let tabs, elems, ims, exs = tf () in
+    { fun c -> let tf = $1 c in let mf = $2 c in
+      fun () -> let tabs, elems, ims, exs = tf () in let m = mf () in
       if tabs <> [] && m.imports <> [] then
         error (List.hd m.imports).at "import after table definition";
       { m with tables = tabs @ m.tables; elems = elems @ m.elems;
         imports = ims @ m.imports; exports = exs @ m.exports } }
   | memory module_fields
-    { fun c -> let mf = $1 c in let m = $2 c in
-      let mems, data, ims, exs = mf () in
+    { fun c -> let mmf = $1 c in let mf = $2 c in
+      fun () -> let mems, data, ims, exs = mmf () in let m = mf () in
       if mems <> [] && m.imports <> [] then
         error (List.hd m.imports).at "import after memory definition";
       { m with memories = mems @ m.memories; data = data @ m.data;
         imports = ims @ m.imports; exports = exs @ m.exports } }
   | func module_fields
-    { fun c -> let ff, ims, exs = $1 c in let m = $2 c in let funcs = ff () in
+    { fun c -> let ff = $1 c in let mf = $2 c in
+      fun () -> let funcs, ims, exs = ff () in let m = mf () in
       if funcs <> [] && m.imports <> [] then
         error (List.hd m.imports).at "import after function definition";
       { m with funcs = funcs @ m.funcs;
         imports = ims @ m.imports; exports = exs @ m.exports } }
   | elem module_fields
-    { fun c -> let m = $2 c in
+    { fun c -> let mf = $2 c in
+      fun () -> let m = mf () in
       {m with elems = $1 c :: m.elems} }
   | data module_fields
-    { fun c -> let m = $2 c in
+    { fun c -> let mf = $2 c in
+      fun () -> let m = mf () in
       {m with data = $1 c :: m.data} }
   | start module_fields
-    { fun c -> let m = $2 c in let x = $1 c in
+    { fun c -> let mf = $2 c in
+      fun () -> let m = mf () in let x = $1 c in
       match m.start with
       | Some _ -> error x.at "multiple start sections"
       | None -> {m with start = Some x} }
   | import module_fields
-    { fun c -> let i = $1 c in let m = $2 c in
-      {m with imports = i :: m.imports} }
+    { fun c -> let imf = $1 c in let mf = $2 c in
+      fun () -> let im = imf () in let m = mf () in
+      {m with imports = im :: m.imports} }
   | export module_fields
-    { fun c -> let m = $2 c in
+    { fun c -> let mf = $2 c in
+      fun () -> let m = mf () in
       {m with exports = $1 c :: m.exports} }
 
 module_var_opt :
@@ -672,13 +672,13 @@ module_var_opt :
 
 module_ :
   | LPAR MODULE module_var_opt module_fields RPAR
-    { $3, Textual ($4 (empty_context ()) @@ at ()) @@ at () }
+    { $3, Textual ($4 (empty_context ()) () @@ at ()) @@ at () }
 
 inline_module :  /* Sugar */
-  | module_fields { Textual ($1 (empty_context ()) @@ at ()) @@ at () }
+  | module_fields { Textual ($1 (empty_context ()) () @@ at ()) @@ at () }
 
 inline_module1 :  /* Sugar */
-  | module_fields1 { Textual ($1 (empty_context ()) @@ at ()) @@ at () }
+  | module_fields1 { Textual ($1 (empty_context ()) () @@ at ()) @@ at () }
 
 
 /* Scripts */
