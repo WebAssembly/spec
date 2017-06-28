@@ -59,7 +59,7 @@ project = u'WebAssembly'
 title = u'WebAssembly Specification'
 copyright = u'2017, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
-logo = 'placeholder.jpg'
+logo = 'webassembly.png'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -136,7 +136,8 @@ html_theme = 'alabaster'
 #
 html_theme_options = {
   'logo': logo,
-  'description': '  ',
+  'logo_name': 'WebAssembly',
+  'description': 'WebAssembly Specification',
   'fixed_sidebar': True,
   'sidebar_width': '260px',
   'sidebar_collapse': True,
