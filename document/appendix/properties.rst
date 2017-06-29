@@ -1,8 +1,17 @@
 Formal Properties
 -----------------
 
-.. todo::
+.. _bijective:
 
-   * representation (bijection between abstract and binary)
-   * validation (progress, preservation)
-   * ...
+Representation
+~~~~~~~~~~~~~~
+
+.. todo:: bijection between abstract and binary
+
+
+.. _soundness:
+
+Validation
+~~~~~~~~~~
+
+.. todo:: progress, preservation

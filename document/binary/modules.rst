@@ -9,14 +9,6 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
-.. _binary-index:
-.. _binary-typeidx:
-.. _binary-funcidx:
-.. _binary-tableidx:
-.. _binary-memidx:
-.. _binary-globalidx:
-.. _binary-localidx:
-.. _binary-labelidx:
 .. index:: index, type index, function index, table index, memory index, global index, local index, label index
    pair: binary format; type index
    pair: binary format; function index
@@ -25,6 +17,14 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    pair: binary format; global index
    pair: binary format; local index
    pair: binary format; label index
+.. _binary-typeidx:
+.. _binary-funcidx:
+.. _binary-tableidx:
+.. _binary-memidx:
+.. _binary-globalidx:
+.. _binary-localidx:
+.. _binary-labelidx:
+.. _binary-index:
 
 Indices
 ~~~~~~~
@@ -43,9 +43,9 @@ All :ref:`indices <syntax-index>` are encoded with their respective |U32| value.
    \end{array}
 
 
-.. _binary-section:
 .. index:: ! section
    pair: binary format; section
+.. _binary-section:
 
 Sections
 ~~~~~~~~
@@ -77,10 +77,10 @@ In these cases, the empty result :math:`\epsilon` is interpreted as the empty ve
    The module is malformed if the size does not match the length of the binary contents :math:`\B{B}`.
 
 
-.. _binary-customsec:
 .. index:: ! custom section
    pair: binary format; custom section
    single: section; custom
+.. _binary-customsec:
 
 Custom Section
 ~~~~~~~~~~~~~~
@@ -101,11 +101,11 @@ Their contents consist of a :ref:`name <syntax-name>` further identifying the cu
    If an implementation interprets the contents of a custom section, then errors in that contents, or the placement of the section, must not invalidate the module.
 
 
-.. _binary-typesec:
-.. _binary-type:
 .. index:: ! type section, type definition
    pair: binary format; type section
    pair: section; type
+.. _binary-typedef:
+.. _binary-typesec:
 
 Type Section
 ~~~~~~~~~~~~
@@ -120,11 +120,12 @@ It decodes into a vector of :ref:`function types <syntax-functype>` that represe
    \end{array}
 
 
-.. _binary-importsec:
-.. _binary-import:
 .. index:: ! import section, import, name, function type, table type, memory type, global type
    pair: binary format; import
    pair: section; import
+.. _binary-import:
+.. _binary-importdesc:
+.. _binary-importsec:
 
 Import Section
 ~~~~~~~~~~~~~~
@@ -147,11 +148,10 @@ It decodes into a vector of :ref:`imports <syntax-import>` that represent the |I
    \end{array}
 
 
-.. _binary-funcsec:
-.. _binary-func:
 .. index:: ! function section, function, type index, function type
    pair: binary format; function
    pair: section; function
+.. _binary-funcsec:
 
 Function Section
 ~~~~~~~~~~~~~~~~
@@ -167,11 +167,11 @@ The |LOCALS| and |BODY| fields of the respective functions are encoded separatel
    \end{array}
 
 
-.. _binary-tablesec:
-.. _binary-table:
 .. index:: ! table section, table, table type
    pair: binary format; table
    pair: section; table
+.. _binary-table:
+.. _binary-tablesec:
 
 Table Section
 ~~~~~~~~~~~~~
@@ -188,11 +188,11 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |TAB
    \end{array}
 
 
-.. _binary-memsec:
-.. _binary-mem:
 .. index:: ! memory section, memory, memory type
    pair: binary format; memory
    pair: section; memory
+.. _binary-mem:
+.. _binary-memsec:
 
 Memory Section
 ~~~~~~~~~~~~~~
@@ -209,11 +209,11 @@ It decodes into a vector of :ref:`memories <syntax-mem>` that represent the |MEM
    \end{array}
 
 
-.. _binary-globalsec:
-.. _binary-global:
 .. index:: ! global section, global, global type, expression
    pair: binary format; global
    pair: section; global
+.. _binary-global:
+.. _binary-globalsec:
 
 Global Section
 ~~~~~~~~~~~~~~
@@ -231,11 +231,12 @@ It decodes into a vector of :ref:`globals <syntax-global>` that represent the |G
    \end{array}
 
 
-.. _binary-exportsec:
-.. _binary-export:
 .. index:: ! export section, export, name, index, function index, table index, memory index, global index
    pair: binary format; export
    pair: section; export
+.. _binary-export:
+.. _binary-exportdesc:
+.. _binary-exportsec:
 
 Export Section
 ~~~~~~~~~~~~~~
@@ -258,12 +259,12 @@ It decodes into a vector of :ref:`exports <syntax-export>` that represent the |E
    \end{array}
 
 
-.. _binary-startsec:
-.. _binary-start:
 .. index:: ! start section, start function, function index
    pair: binary format; start function
    single: section; start
    single: start function; section
+.. _binary-start:
+.. _binary-startsec:
 
 Start Section
 ~~~~~~~~~~~~~
@@ -280,13 +281,13 @@ It decodes into an optional :ref:`start function <syntax-start>` that represents
    \end{array}
 
 
-.. _binary-elemsec:
-.. _binary-elem:
 .. index:: ! element section, element, table index, expression, function index
    pair: binary format; element
    pair: section; element
    single: table; element
    single: element; segment
+.. _binary-elem:
+.. _binary-elemsec:
 
 Element Section
 ~~~~~~~~~~~~~~~
@@ -304,12 +305,14 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    \end{array}
 
 
-.. _binary-codesec:
-.. _binary-local:
 .. index:: ! code section, function, local, type index, function type
    pair: binary format; function
    pair: binary format; local
    pair: section; code
+.. _binary-code:
+.. _binary-func:
+.. _binary-local:
+.. _binary-codesec:
 
 Code Section
 ~~~~~~~~~~~~
@@ -359,13 +362,13 @@ Any code for which the length of the resulting sequence is out of bounds of the 
    The module is malformed if a size does not match the length of the respective function code.
 
 
-.. _binary-datasec:
-.. _binary-data:
 .. index:: ! data section, data, memory, memory index, expression, byte
    pair: binary format; data
    pair: section; data
    single: memory; data
    single: data; segment
+.. _binary-data:
+.. _binary-datasec:
 
 Data Section
 ~~~~~~~~~~~~
@@ -383,11 +386,11 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
    \end{array}
 
 
-.. _binary-module:
-.. _binary-magic:
-.. _binary-version:
 .. index:: module, section, type definition, function type, function, table, memory, global, element, data, start function, import, export, context, version
    pair: binary format; module
+.. _binary-magic:
+.. _binary-version:
+.. _binary-module:
 
 Modules
 ~~~~~~~

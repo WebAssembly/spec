@@ -1,6 +1,6 @@
-.. _text-value:
 .. index:: value
    pair: text format; value
+.. _text-value:
 
 Values
 ------
@@ -9,17 +9,19 @@ The grammar productions in this section define *lexical syntax*,
 hence no :ref:`white space <text-space>` is allowed.
 
 
-.. _text-sign:
-.. _text-digit:
-.. _text-hexdigit:
-.. _text-int:
-.. _text-sint:
-.. _text-uint:
 .. index:: integer, unsigned integer, signed integer, uninterpreted integer
    pair: text format; integer
    pair: text format; unsigned integer
    pair: text format; signed integer
    pair: text format; uninterpreted integer
+.. _text-sign:
+.. _text-digit:
+.. _text-hexdigit:
+.. _text-num:
+.. _text-hexnum:
+.. _text-sint:
+.. _text-uint:
+.. _text-int:
 
 Integers
 ~~~~~~~~
@@ -73,12 +75,12 @@ Moreover, their value must lie within the range of the respective type.
    \end{array}
 
 
-.. _text-frac:
-.. _text-hexfrac:
-.. _text-float:
-.. _text-hexfloat:
 .. index:: floating-point number
    pair: text format; floating-point number
+.. _text-frac:
+.. _text-hexfrac:
+.. _text-hexfloat:
+.. _text-float:
 
 Floating-Point
 ~~~~~~~~~~~~~~
@@ -127,9 +129,9 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
    \end{array}
 
 
-.. _text-vec:
 .. index:: vector
    pair: text format; vector
+.. _text-vec:
 
 Vectors
 ~~~~~~~
@@ -143,11 +145,11 @@ Vectors
    \end{array}
 
 
-.. _text-byte:
-.. _text-string:
 .. index:: ! string, byte, character, ASCII, Unicode, UTF-8
    pair: text format; byte
    pair: text format; string
+.. _text-byte:
+.. _text-string:
 
 Strings
 ~~~~~~~
@@ -184,9 +186,9 @@ except for hexadecimal escape sequences :math:`\text{\backslash}hh`, which repre
    \end{array}
 
 
-.. _text-name:
 .. index:: name, byte, character, code point
    pair: text format; name
+.. _text-name:
 
 Names
 ~~~~~
@@ -205,9 +207,9 @@ A name string must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>
    strings that do not contain any uses of hexadecimal byte escapes are always valid names.
 
 
-.. _text-id:
 .. index:: ! identifiers
    pair: text format; identifiers
+.. _text-id:
 
 Identifiers
 ~~~~~~~~~~~
@@ -247,8 +249,6 @@ Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}
      \text{|} ~~|~~
      \text{\tilde{~~}} \\
    \end{array}
-
-.. bla
 
 .. _text-id-fresh:
 

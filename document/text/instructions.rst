@@ -1,5 +1,5 @@
-.. _text-instr:
 .. index:: instruction
+.. _text-instr:
 
 Instructions
 ------------
@@ -18,61 +18,15 @@ Instructions are syntactically distinguished into *plain* and *structured* instr
 In addition, as a syntactic abbreviation, instructions can be written in :ref:`folded <text-foldedinstr>` form as S-expressions, to group them visually.
 
 
-.. _text-index:
-.. _text-typeidx:
-.. _text-funcidx:
-.. _text-tableidx:
-.. _text-memidx:
-.. _text-globalidx:
-.. _text-localidx:
-.. _text-labelidx:
-.. index:: index, type index, function index, table index, memory index, global index, local index, label index
-   pair: text format; type index
-   pair: text format; function index
-   pair: text format; table index
-   pair: text format; memory index
-   pair: text format; global index
-   pair: text format; local index
-   pair: text format; label index
-
-Indices
-~~~~~~~
-
-:ref:`Indices <syntax-index>` can be given either in raw numeric form or as symbolic :ref:`identifiers <text-id>` when bound by a respective construct.
-Such identifiers are looked up in the suitable space of the :ref:`identifier context <text-context>`.
-
-.. math::
-   \begin{array}{llcllllllll}
-   \production{type index} & \Ttypeidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\TYPES[x] = v) \\
-   \production{function index} & \Tfuncidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\FUNCS[x] = v) \\
-   \production{table index} & \Ttableidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\TABLES[x] = v) \\
-   \production{memory index} & \Tmemidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\MEMS[x] = v) \\
-   \production{global index} & \Tglobalidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\GLOBALS[x] = v) \\
-   \production{local index} & \Tlocalidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\LOCALS[x] = v) \\
-   \production{label index} & \Tlabelidx_I &::=&
-     l{:}\Tu32 &\Rightarrow& l &|&
-     v{:}\Tid &\Rightarrow& l & (I.\LABELS[l] = v) \\
-   \end{array}
-
-
-.. _text-label:
 .. index:: index, label index
    pair: text format; label index
+.. _text-label:
+
+Labels
+~~~~~~
 
 :ref:`Structured control instructions <text-instr-control>` can be annotated with a symbolic :ref:`label identifier <text-id>`.
-They are the only symbolic identifiers that can be bound locally in an instruction sequence.
+They are the only :ref:`symbolic identifiers <text-index>` that can be bound locally in an instruction sequence.
 The following grammar handles the corresponding update to the :ref:`identifier context <text-context>` by producing a context with an additional label entry.
 
 .. math::
@@ -89,9 +43,11 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    mirroring the fact that control instructions are indexed relatively not absolutely.
 
 
-.. _text-instr-control:
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
    pair: text format; instruction
+.. _text-blockinstr:
+.. _text-plaininstr:
+.. _text-instr-control:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -158,9 +114,9 @@ The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitt
    \end{array}
 
 
-.. _text-instr-parametric:
 .. index:: value type, polymorphism
    pair: text format; instruction
+.. _text-instr-parametric:
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -176,9 +132,9 @@ Parametric Instructions
    \end{array}
 
 
-.. _text-instr-variable:
 .. index:: variable instructions, local index, global index
    pair: text format; instruction
+.. _text-instr-variable:
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -200,10 +156,9 @@ Variable Instructions
    \end{array}
 
 
-.. _text-instr-memory:
-.. _text-memarg:
 .. index:: memory instruction, memory index
    pair: text format; instruction
+.. _text-instr-memory:
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -259,9 +214,9 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
    \end{array}
 
 
-.. _text-instr-numeric:
 .. index:: numeric instruction
    pair: text format; instruction
+.. _text-instr-numeric:
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -454,8 +409,8 @@ Numeric Instructions
    \end{array}
 
 
-.. _text-foldedinstr:
 .. index:: ! folded instruction, S-expression
+.. _text-foldedinstr:
 
 Folded Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -486,10 +441,10 @@ Such a folded instruction can appear anywhere a regular instruction can.
    no additional syntactic or type-based checking is implied.
 
 
-.. _text-expr:
 .. index:: expression
    pair: text format; expression
    single: expression; constant
+.. _text-expr:
 
 Expressions
 ~~~~~~~~~~~

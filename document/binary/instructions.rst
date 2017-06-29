@@ -1,5 +1,5 @@
-.. _binary-instr:
 .. index:: instruction, ! opcode
+.. _binary-instr:
 
 Instructions
 ------------
@@ -13,9 +13,9 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
    Gaps in the byte code ranges encoding instructions are reserved for future extensions.
 
 
-.. _binary-instr-control:
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
    pair: binary format; instruction
+.. _binary-instr-control:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -61,9 +61,9 @@ Control Instructions
    The |ELSE| opcode :math:`\hex{05}` in the encoding of an |IF| instruction can be omitted if the following instruction sequence is empty.
 
 
-.. _binary-instr-parametric:
 .. index:: value type, polymorphism
    pair: binary format; instruction
+.. _binary-instr-parametric:
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,14 +81,14 @@ Parametric Instructions
    \end{array}
 
 
-.. _binary-instr-variable:
 .. index:: variable instructions, local index, global index
    pair: binary format; instruction
+.. _binary-instr-variable:
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Variable instructions <syntax-instr-variable>` are represented by byte codes followed by the encoding of the respective :ref:`index <syntax-indices>`.
+:ref:`Variable instructions <syntax-instr-variable>` are represented by byte codes followed by the encoding of the respective :ref:`index <syntax-index>`.
 
 .. _binary-get_local:
 .. _binary-set_local:
@@ -107,10 +107,9 @@ Variable Instructions
    \end{array}
 
 
-.. _binary-instr-memory:
-.. _binary-memarg:
 .. index:: memory instruction, memory index
    pair: binary format; instruction
+.. _binary-instr-memory:
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -161,9 +160,9 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
    In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |CURRENTMEMORY| and |GROWMEMORY| instructions may be used to index additional memories.
 
 
-.. _binary-instr-numeric:
 .. index:: numeric instruction
    pair: binary format; instruction
+.. _binary-instr-numeric:
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -362,10 +361,10 @@ All other numeric instructions are plain opcodes without any immediates.
    \end{array}
 
 
-.. _binary-expr:
 .. index:: expression
    pair: binary format; expression
    single: expression; constant
+.. _binary-expr:
 
 Expressions
 ~~~~~~~~~~~

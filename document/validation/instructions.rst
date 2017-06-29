@@ -1,5 +1,5 @@
-.. _valid-instr:
 .. index:: instruction, function type, context
+.. _valid-instr:
 
 Instructions
 ------------
@@ -62,10 +62,10 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
    is invalid, because there is no possible type to pick for the |UNREACHABLE| instruction that would make the sequence well-typed.
 
 
-.. _valid-instr-numeric:
 .. index:: numeric instruction
    pair: validation; instruction
    single: abstract syntax; instruction
+.. _valid-instr-numeric:
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -154,10 +154,10 @@ Numeric Instructions
    }
 
 
-.. _valid-instr-parametric:
 .. index:: parametric instructions, value type, polymorphism
    pair: validation; instruction
    single: abstract syntax; instruction
+.. _valid-instr-parametric:
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -193,10 +193,10 @@ Parametric Instructions
    Both |DROP| and |SELECT| are :ref:`value-polymorphic <polymorphism>` instructions.
 
 
-.. _valid-instr-variable:
 .. index:: variable instructions, local index, global index
    pair: validation; instruction
    single: abstract syntax; instruction
+.. _valid-instr-variable:
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -298,11 +298,11 @@ Variable Instructions
    }
 
 
-.. _valid-instr-memory:
-.. _valid-memarg:
 .. index:: memory instruction, memory index
    pair: validation; instruction
    single: abstract syntax; instruction
+.. _valid-memarg:
+.. _valid-instr-memory:
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -425,11 +425,11 @@ Memory Instructions
    }
 
 
-.. _valid-instr-control:
-.. _valid-label:
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
    pair: validation; instruction
    single: abstract syntax; instruction
+.. _valid-label:
+.. _valid-instr-control:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -681,8 +681,8 @@ Control Instructions
    }
 
 
-.. _valid-instr-seq:
 .. index:: instruction, instruction sequence
+.. _valid-instr-seq:
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
@@ -727,11 +727,11 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
    }
 
 
-.. _valid-expr:
 .. index:: expression
    pair: validation; expression
    single: abstract syntax; expression
    single: expression; constant
+.. _valid-expr:
 
 Expressions
 ~~~~~~~~~~~
@@ -755,8 +755,8 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
    }
 
 
-.. _valid-constant:
 .. index:: ! constant
+.. _valid-constant:
 
 Constant Expressions
 ....................

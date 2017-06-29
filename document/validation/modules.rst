@@ -8,10 +8,10 @@ To that end, each definition is classified with a suitable type.
 Auxiliary Rules
 ~~~~~~~~~~~~~~~
 
-.. _valid-functype:
 .. index:: function type
    pair: validation; function type
    single: abstract syntax; function type
+.. _valid-functype:
 
 Function Types :math:`[t_1^n] \to [t_2^m]`
 ..........................................
@@ -30,10 +30,10 @@ Function Types :math:`[t_1^n] \to [t_2^m]`
    This restriction may be removed in future versions of WebAssembly.
 
 
-.. _valid-limits:
 .. index:: limits
    pair: validation; limits
    single: abstract syntax; limits
+.. _valid-limits:
 
 Limits :math:`\{ \MIN~n, \MAX~m^? \}`
 .....................................
@@ -50,11 +50,11 @@ Limits :math:`\{ \MIN~n, \MAX~m^? \}`
    }
 
 
-.. _valid-func:
-.. _valid-local:
 .. index:: function, local, function index, local index, type index, function type, value type, expression, import
    pair: abstract syntax; function
    single: abstract syntax; function
+.. _valid-local:
+.. _valid-func:
 
 Functions
 ~~~~~~~~~
@@ -96,10 +96,10 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
    The restriction on the length of the result types :math:`t_2^\ast` may be lifted in future versions of WebAssembly.
 
 
-.. _valid-table:
 .. index:: table, table type, limits, element type
    pair: validation; table
    single: abstract syntax; table
+.. _valid-table:
 
 Tables
 ~~~~~~
@@ -122,10 +122,10 @@ Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>` of
    }
 
 
-.. _valid-mem:
 .. index:: memory, memory type, limits
    pair: validation; memory
    single: abstract syntax; memory
+.. _valid-mem:
 
 Memories
 ~~~~~~~~
@@ -148,10 +148,10 @@ Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>` of 
    }
 
 
-.. _valid-global:
 .. index:: global, global type, mutability, expression
    pair: validation; global
    single: abstract syntax; global
+.. _valid-global:
 
 Globals
 ~~~~~~~
@@ -178,12 +178,12 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
    }
 
 
-.. _valid-elem:
 .. index:: element, table, table index, expression, function index
    pair: validation; element
    single: abstract syntax; element
    single: table; element
    single: element; segment
+.. _valid-elem:
 
 Element Segments
 ~~~~~~~~~~~~~~~~
@@ -223,12 +223,12 @@ Element segments :math:`\elem` are not classified by a type.
    }
 
 
-.. _valid-data:
 .. index:: data, memory, memory index, expression, byte
    pair: validation; data
    single: abstract syntax; data
    single: memory; data
    single: data; segment
+.. _valid-data:
 
 Data Segments
 ~~~~~~~~~~~~~
@@ -259,10 +259,10 @@ Data segments :math:`\data` are not classified by any type.
    }
 
 
-.. _valid-start:
 .. index:: start function, function index
    pair: validation; start function
    single: abstract syntax; start function
+.. _valid-start:
 
 Start Function
 ~~~~~~~~~~~~~~
@@ -287,10 +287,10 @@ Start function declarations :math:`\start` are not classified by any type.
    }
 
 
-.. _valid-export:
 .. index:: export, name, index, function index, table index, memory index, global index
    pair: validation; export
    single: abstract syntax; export
+.. _valid-export:
 
 Exports
 ~~~~~~~
@@ -378,10 +378,10 @@ Export descriptions :math:`\exportdesc` are not classified by any type.
    }
 
 
-.. _valid-import:
 .. index:: import, name, function type, table type, memory type, global type
    pair: validation; import
    single: abstract syntax; import
+.. _valid-import:
 
 Imports
 ~~~~~~~
@@ -465,10 +465,10 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
    }
 
 
-.. _valid-module:
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
    pair: validation; module
    single: abstract syntax; module
+.. _valid-module:
 
 Modules
 ~~~~~~~

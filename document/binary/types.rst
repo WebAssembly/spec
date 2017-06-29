@@ -1,13 +1,13 @@
-.. _binary-type:
 .. index:: type
    pair: binary format; type
+.. _binary-type:
 
 Types
 -----
 
-.. _binary-valtype:
 .. index:: value type
    pair: binary format; value type
+.. _binary-valtype:
 
 Value Types
 ~~~~~~~~~~~
@@ -28,10 +28,10 @@ Value Types
    Thus, the binary format for types corresponds to the encodings of small negative :math:`\xref{binary/values}{binary-sint}{\sX{}}` values, so that they can coexist with (positive) type indices.
 
 
-.. _binary-resulttype:
-.. _binary-blocktype:
 .. index:: result type, value type
    pair: binary format; result type
+.. _binary-blocktype:
+.. _binary-resulttype:
 
 Result Types
 ~~~~~~~~~~~~
@@ -49,9 +49,9 @@ The only :ref:`result types <syntax-resulttype>` occurring in the binary format 
    In future versions of WebAssembly, this scheme may be extended to support multiple results or more general block types.
 
 
-.. _binary-functype:
 .. index:: function type, value type, result type
    pair: binary format; function type
+.. _binary-functype:
 
 Function Types
 ~~~~~~~~~~~~~~
@@ -66,9 +66,9 @@ Function Types
    \end{array}
 
 
-.. _binary-limits:
 .. index:: limits
    pair: binary format; limits
+.. _binary-limits:
 
 Limits
 ~~~~~~
@@ -83,9 +83,9 @@ Limits
    \end{array}
 
 
-.. _binary-memtype:
 .. index:: memory type, limits, page size
    pair: binary format; memory type
+.. _binary-memtype:
 
 Memory Types
 ~~~~~~~~~~~~
@@ -99,11 +99,11 @@ Memory Types
    \end{array}
 
 
-.. _binary-tabletype:
-.. _binary-elemtype:
 .. index:: table type, element type, limits
    pair: binary format; table type
    pair: binary format; element type
+.. _binary-elemtype:
+.. _binary-tabletype:
 
 Table Types
 ~~~~~~~~~~~
@@ -119,10 +119,11 @@ Table Types
    \end{array}
 
 
-.. _binary-globaltype:
 .. index:: global type, mutability, value type
    pair: binary format; global type
    pair: binary format; mutability
+.. _binary-mut:
+.. _binary-globaltype:
 
 Global Types
 ~~~~~~~~~~~~

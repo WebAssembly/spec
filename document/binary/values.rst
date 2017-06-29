@@ -1,14 +1,14 @@
-.. _binary-value:
 .. index:: value
    pair: binary format; value
+.. _binary-value:
 
 Values
 ------
 
 
-.. _binary-byte:
 .. index:: byte
    pair: binary format; byte
+.. _binary-byte:
 
 Bytes
 ~~~~~
@@ -24,14 +24,14 @@ Bytes
    \end{array}
 
 
-.. _binary-int:
-.. _binary-sint:
-.. _binary-uint:
 .. index:: integer, unsigned integer, signed integer, uninterpreted integer, LEB128
    pair: binary format; integer
    pair: binary format; unsigned integer
    pair: binary format; signed integer
    pair: binary format; uninterpreted integer
+.. _binary-sint:
+.. _binary-uint:
+.. _binary-int:
 
 Integers
 ~~~~~~~~
@@ -81,9 +81,9 @@ As an additional constraint, the total number of bytes encoding a value of type 
    Similarly, both :math:`\hex{83}~\hex{3E}` and :math:`\hex{FF}~\hex{7B}` are malformed as |s8| encodings.
 
 
-.. _binary-float:
 .. index:: floating-point number
    pair: binary format; floating-point number
+.. _binary-float:
 
 Floating-Point
 ~~~~~~~~~~~~~~
@@ -99,9 +99,9 @@ Floating-Point
 Here, :math:`\F{reverse}(b^\ast)` denotes the byte sequence :math:`b^\ast` in reversed order.
 
 
-.. _binary-vec:
 .. index:: vector
    pair: binary format; vector
+.. _binary-vec:
 
 Vectors
 ~~~~~~~
@@ -115,9 +115,9 @@ Vectors
    \end{array}
 
 
-.. _binary-name:
 .. index:: name, byte, Unicode, UTF-8
    pair: binary format; name
+.. _binary-name:
 
 Names
 ~~~~~

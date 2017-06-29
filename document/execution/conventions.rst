@@ -3,7 +3,7 @@
 Conventions
 -----------
 
-WebAssembly code is *executed* when :ref:`instantiating <instantiation>` a module or :ref:`invoking <exec-invocation>` an :ref:`exported <syntax-export>` function on the resulting module :ref:`instance <syntax-moduleinst>`.
+WebAssembly code is *executed* when :ref:`instantiating <instantiation>` a module or :ref:`invoking <exec-call-export>` an :ref:`exported <syntax-export>` function on the resulting module :ref:`instance <syntax-moduleinst>`.
 
 Execution behavior is defined in terms of an *abstract machine* that models the *program state*.
 It includes a *stack*, which records operand values and control constructs, and an abstract *store* containing global state.
@@ -56,8 +56,8 @@ The following conventions are adopted in stating these rules.
 * In various places the rules contain *assertions* expressing crucial invariants about the program state, with indications why these are known to hold.
 
 
-.. _exec-notation:
 .. index:: ! reduction rules, ! configuration
+.. _exec-notation:
 
 Formal Notation
 ~~~~~~~~~~~~~~~

@@ -35,7 +35,7 @@ def ext_html_visit_displaymath(self, node):
 def latex_hyperlink(file, id):
   id = text_type(id).translate(tex_replace_map).\
     encode('ascii', 'backslashreplace').decode('ascii').\
-    replace('\\', '_').replace('-', '\\string-')
+    replace('_', '-').replace('\\', '_')
   return '\\hyperref[%s:%s]' % (file, id)
 
 def latex_transform_math_xref(node):

@@ -1,20 +1,19 @@
-.. _syntax:
 .. index:: ! abstract syntax
 
 Conventions
 -----------
 
 WebAssembly is a programming language that does not have a concrete textual syntax
-(other than the auxiliary :ref:`text format <text-format>`).
+(other than the auxiliary :ref:`text format <text>`).
 For conciseness, however, its structure is described in the form of an *abstract syntax*.
 All parts of this specification are defined in terms of this abstract syntax,
-including the decoding of the :ref:`binary format <binary-format>`.
+including the decoding of the :ref:`binary format <binary>`.
 
 
-.. _grammar:
 .. index:: ! grammar notation, notation
    single: abstract syntax; grammar
    pair: abstract syntax; notation
+.. _grammar:
 
 Grammar
 ~~~~~~~
@@ -38,6 +37,7 @@ The following conventions are adopted in defining grammar rules for abstract syn
 
 
 .. _syntax-record:
+.. _syntax-concat:
 
 Auxiliary Notation
 ~~~~~~~~~~~~~~~~~~

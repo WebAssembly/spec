@@ -1,5 +1,5 @@
-.. _impl:
 .. index:: ! implementation limitations, implementation
+.. _impl:
 
 Implementation Limitations
 --------------------------
@@ -24,8 +24,8 @@ However, it is expected that all implementations have "reasonably" large limits 
 Syntactic Limits
 ~~~~~~~~~~~~~~~~
 
-.. _impl-syntax:
 .. index:: abstract syntax, module, type, function, table, memory, global, element, data, import, export, parameter, result, local, structured control instruction, instruction, name, Unicode, code point
+.. _impl-syntax:
 
 Structure
 .........
@@ -55,17 +55,17 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the range of :ref:`code points <syntax-codepoint>` in a :ref:`name <syntax-name>`
 
 If the limits of an implementation are exceeded for a given module,
-then the implementation may reject the :ref:`validation <valid>`, compilation, or :ref:`instantiation <exec-instantiate>` of that module with an embedder-specific error.
+then the implementation may reject the :ref:`validation <valid>`, compilation, or :ref:`instantiation <instantiation>` of that module with an embedder-specific error.
 
 .. note::
-   The last item allows embedders that operate in limited environments without support for
+   The last item allows :ref:`embedders <embedder>` that operate in limited environments without support for
    `Unicode <http://www.unicode.org/versions/latest/>`_ to limit the
    names of :ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`
    to common subsets like `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_.
 
 
-.. _impl-binary:
 .. index:: binary format, module, section, function, code
+.. _impl-binary:
 
 Binary Format
 .............
@@ -74,12 +74,12 @@ For a module given in :ref:`binary format <binary>`, additional limitations may 
 
 * the size of a :ref:`module <binary-module>`
 * the size of any :ref:`section <binary-section>`
-* the size of an individual :ref:`function's code <binary-func>`
+* the size of an individual function's :ref:`code <binary-code>`
 * the number of :ref:`sections <binary-section>`
 
 
-.. _impl-text:
 .. index:: text format, source text, token, identifier, character, unicode
+.. _impl-text:
 
 Text Format
 ...........
@@ -94,8 +94,8 @@ For a module given in :ref:`text format <text>`, additional limitations may be i
 * the range of literal :ref:`characters <text-char>` (code points) allowed in the :ref:`source text <source>`
 
 
-.. _impl-valid:
 .. index:: validation, function
+.. _impl-valid:
 
 Validation
 ~~~~~~~~~~
@@ -109,8 +109,8 @@ If a function turns out to be invalid, then the invocation, and every consecutiv
    The function must still be fully validated before execution of its body begins.
 
 
-.. _impl-exec:
 .. index:: execution, module instance, function instance, table instance, memory instance, global instance, allocation, frame, label, value
+.. _impl-exec:
 
 Execution
 ~~~~~~~~~
@@ -124,9 +124,9 @@ Restrictions on the following dimensions may be imposed during :ref:`execution <
 * the number of allocated :ref:`global instances <syntax-globalinst>`
 * the size of a :ref:`table instance <syntax-tableinst>`
 * the size of a :ref:`memory instance <syntax-meminst>`
-* the number of :ref:`frames <syntax-frame>` on the :ref:`stack <syntax-stack>`
-* the number of :ref:`labels <syntax-label>` on the :ref:`stack <syntax-stack>`
-* the number of :ref:`values <syntax-val>` on the :ref:`stack <syntax-stack>`
+* the number of :ref:`frames <syntax-frame>` on the :ref:`stack <stack>`
+* the number of :ref:`labels <syntax-label>` on the :ref:`stack <stack>`
+* the number of :ref:`values <syntax-val>` on the :ref:`stack <stack>`
 
 If the runtime limits of an implementation are exceeded during execution of a computation,
 then it may terminate that computation and report an embedder-specific error to the invoking code.

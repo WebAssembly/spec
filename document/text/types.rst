@@ -1,13 +1,13 @@
-.. _text-type:
 .. index:: type
    pair: text format; type
+.. _text-type:
 
 Types
 -----
 
-.. _text-valtype:
 .. index:: value type
    pair: text format; value type
+.. _text-valtype:
 
 Value Types
 ~~~~~~~~~~~
@@ -22,9 +22,9 @@ Value Types
    \end{array}
 
 
-.. _text-resulttype:
 .. index:: result type, value type
    pair: text format; result type
+.. _text-resulttype:
 
 Result Types
 ~~~~~~~~~~~~
@@ -39,11 +39,11 @@ Result Types
    In future versions of WebAssembly, this scheme may be extended to support multiple results or more general result types.
 
 
-.. _text-functype:
-.. _text-param:
-.. _text-result:
 .. index:: function type, value type, result type
    pair: text format; function type
+.. _text-param:
+.. _text-result:
+.. _text-functype:
 
 Function Types
 ~~~~~~~~~~~~~~
@@ -77,9 +77,9 @@ Multiple anonymous parameters or results may be combined into a single declarati
    \end{array}
 
 
-.. _text-limits:
 .. index:: limits
    pair: text format; limits
+.. _text-limits:
 
 Limits
 ~~~~~~
@@ -92,9 +92,9 @@ Limits
     \end{array}
 
 
-.. _text-memtype:
 .. index:: memory type, limits, page size
    pair: text format; memory type
+.. _text-memtype:
 
 Memory Types
 ~~~~~~~~~~~~
@@ -106,11 +106,11 @@ Memory Types
    \end{array}
 
 
-.. _text-tabletype:
-.. _text-elemtype:
 .. index:: table type, element type, limits
    pair: text format; table type
    pair: text format; element type
+.. _text-elemtype:
+.. _text-tabletype:
 
 Table Types
 ~~~~~~~~~~~
@@ -127,10 +127,10 @@ Table Types
    Additional element types may be introduced in future versions of WebAssembly.
 
 
-.. _text-globaltype:
 .. index:: global type, mutability, value type
    pair: text format; global type
    pair: text format; mutability
+.. _text-globaltype:
 
 Global Types
 ~~~~~~~~~~~~

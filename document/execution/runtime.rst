@@ -1,13 +1,13 @@
-.. _syntax-runtime:
 .. index:: ! runtime
+.. _syntax-runtime:
 
 Runtime Structure
 -----------------
 
 
-.. _syntax-val:
 .. index:: ! value, constant
    pair: abstract syntax; value
+.. _syntax-val:
 
 Values
 ~~~~~~
@@ -28,10 +28,10 @@ It is convenient to reuse the same notation as for the |CONST| :ref:`instruction
    \end{array}
 
 
-.. _store:
-.. _syntax-store:
 .. index:: ! store, function instance, table instance, memory instance, global instance, module
    pair: abstract syntax; store
+.. _syntax-store:
+.. _store:
 
 Store
 ~~~~~
@@ -64,11 +64,6 @@ Convention
 * The meta variable :math:`S` ranges over stores where clear from context.
 
 
-.. _syntax-addr:
-.. _syntax-funcaddr:
-.. _syntax-tableaddr:
-.. _syntax-memaddr:
-.. _syntax-globaladdr:
 .. index:: ! address, store, function instance, table instance, memory instance, global instance
    pair: abstract syntax; function address
    pair: abstract syntax; table address
@@ -78,6 +73,11 @@ Convention
    pair: table; address
    pair: memory; address
    pair: global; address
+.. _syntax-funcaddr:
+.. _syntax-tableaddr:
+.. _syntax-memaddr:
+.. _syntax-globaladdr:
+.. _syntax-addr:
 
 Addresses
 ~~~~~~~~~
@@ -114,10 +114,10 @@ even where this identity is not observable from within WebAssembly code itself
 (such as for :ref:`function instances <syntax-funcinst>` or immutable :ref:`globals <syntax-global>`).
 
 
-.. _syntax-moduleinst:
 .. index:: ! instance, function type, function instance, table instance, memory instance, global instance, export instance, table address, memory address, global address, index
    pair: abstract syntax; module instance
    pair: module; instance
+.. _syntax-moduleinst:
 
 Module Instances
 ~~~~~~~~~~~~~~~~
@@ -145,11 +145,11 @@ Each component references runtime instances corresponding to respective declarat
 It is an invariant of the semantics that all :ref:`export instances <syntax-exportinst>` in a given module instance have different :ref:`names <syntax-name>`.
 
 
-.. _syntax-funcinst:
-.. _syntax-hostfunc:
 .. index:: ! function instance, module instance, function, closure
    pair: abstract syntax; function instance
    pair: function; instance
+.. _syntax-hostfunc:
+.. _syntax-funcinst:
 
 Function Instances
 ~~~~~~~~~~~~~~~~~~
@@ -176,11 +176,11 @@ a host function behaves non-deterministically.
    However, the :ref:`embedder <embedder>` might provide implicit or explicit means for distinguishing their :ref:`addresses <syntax-funcaddr>` when :ref:`exported <syntax-export>`, either directly or through an entry in a :ref:`table <syntax-table>`.
 
 
-.. _syntax-tableinst:
-.. _syntax-funcelem:
 .. index:: ! table instance, table, function address
    pair: abstract syntax; table instance
    pair: table; instance
+.. _syntax-funcelem:
+.. _syntax-tableinst:
 
 Table Instances
 ~~~~~~~~~~~~~~~
@@ -205,11 +205,11 @@ It is an invariant of the semantics that the length of the element vector never 
    Other table elements may be added in future versions of WebAssembly.
 
 
-.. _syntax-meminst:
-.. _page-size:
 .. index:: ! memory instance, memory, byte, ! page size, memory type
    pair: abstract syntax; memory instance
    pair: memory; instance
+.. _page-size:
+.. _syntax-meminst:
 
 Memory Instances
 ~~~~~~~~~~~~~~~~
@@ -231,10 +231,10 @@ The bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>
 It is an invariant of the semantics that the length of the byte vector, divided by page size, never exceeds the maximum size, if present.
 
 
-.. _syntax-globalinst:
 .. index:: ! global instance, value
    pair: abstract syntax; global instance
    pair: global; instance
+.. _syntax-globalinst:
 
 Global Instances
 ~~~~~~~~~~~~~~~~
@@ -251,10 +251,10 @@ It holds an individual :ref:`value <syntax-val>` and a flag indicating whether i
 The value of mutable globals can be mutated through specific instructions or by external means provided by the :ref:`embedder <embedder>`.
 
 
-.. _syntax-exportinst:
 .. index:: ! export instance, name, external value
    pair: abstract syntax; export instance
    pair: export; instance
+.. _syntax-exportinst:
 
 Export Instances
 ~~~~~~~~~~~~~~~~
@@ -269,10 +269,10 @@ It defines the export's :ref:`name <syntax-name>` and the :ref:`external value <
    \end{array}
 
 
-.. _syntax-externval:
 .. index:: ! external value, function address, table address, memory address, global address
    pair: abstract syntax; external value
    pair: external; value
+.. _syntax-externval:
 
 External Values
 ~~~~~~~~~~~~~~~
@@ -305,14 +305,14 @@ It filters out entries of a specific kind in an order-preserving fashion:
    \end{array}
 
 
-.. _stack:
-.. _frame:
-.. _label:
-.. _syntax-frame:
-.. _syntax-label:
 .. index:: ! stack, ! frame, ! label
    pair: abstract syntax; frame
    pair: abstract syntax; label
+.. _syntax-frame:
+.. _syntax-label:
+.. _frame:
+.. _label:
+.. _stack:
 
 Stack
 ~~~~~
@@ -397,11 +397,11 @@ Conventions
    This may be generalized in future versions.
 
 
-.. _syntax-instr-admin:
-.. _syntax-trap:
-.. _syntax-invoke:
 .. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap
    pair:: abstract syntax; administrative instruction
+.. _syntax-trap:
+.. _syntax-invoke:
+.. _syntax-instr-admin:
 
 Administrative Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -460,8 +460,8 @@ That way, the end of the inner instruction sequence is tracked when part of an o
       \end{array}
 
 
-.. _syntax-ctxt-label:
 .. index:: ! evaluation context
+.. _syntax-ctxt-block:
 
 Block Contexts
 ..............
@@ -490,8 +490,8 @@ This definition allows to index active labels surrounding a :ref:`branch <syntax
    The right label is identified through the :ref:`label index <syntax-labelidx>` :math:`l`, which corresponds to the number of surrounding |LABEL| instructions that must be hopped over -- which is exactly the count encoded in the index of a block context.
 
 
-.. _syntax-ctxt-eval:
 .. index:: ! evaluation context
+.. _syntax-ctxt-eval:
 
 Evaluation Contexts
 ...................
@@ -516,9 +516,13 @@ Finally, the following definition of *evaluation context* and associated structu
    \end{array}
 
 
-.. _syntax-instr-module:
 .. index:: ! module instructions, function, function instance, function address, label, frame, instruction, trap
    pair:: abstract syntax; meta instruction
+.. _syntax-instantiate:
+.. _syntax-init_table:
+.. _syntax-init_mem:
+.. _syntax-init_global:
+.. _syntax-moduleinstr:
 
 Module Instructions
 ...................
