@@ -12,6 +12,8 @@ hence no :ref:`white space <text-space>` is allowed.
 .. _text-sign:
 .. _text-digit:
 .. _text-hexdigit:
+.. _text-num:
+.. _text-hexnum:
 .. _text-int:
 .. _text-sint:
 .. _text-uint:

@@ -1,3 +1,5 @@
+.. _binary-namesec:
+
 Name Section
 ------------
 

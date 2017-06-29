@@ -122,6 +122,7 @@ It decodes into a vector of :ref:`function types <syntax-functype>` that represe
 
 .. _binary-importsec:
 .. _binary-import:
+.. _binary-importdesc:
 .. index:: ! import section, import, name, function type, table type, memory type, global type
    pair: binary format; import
    pair: section; import
@@ -148,7 +149,6 @@ It decodes into a vector of :ref:`imports <syntax-import>` that represent the |I
 
 
 .. _binary-funcsec:
-.. _binary-func:
 .. index:: ! function section, function, type index, function type
    pair: binary format; function
    pair: section; function
@@ -233,6 +233,7 @@ It decodes into a vector of :ref:`globals <syntax-global>` that represent the |G
 
 .. _binary-exportsec:
 .. _binary-export:
+.. _binary-exportdesc:
 .. index:: ! export section, export, name, index, function index, table index, memory index, global index
    pair: binary format; export
    pair: section; export
@@ -305,6 +306,8 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
 
 
 .. _binary-codesec:
+.. _binary-code:
+.. _binary-func:
 .. _binary-local:
 .. index:: ! code section, function, local, type index, function type
    pair: binary format; function

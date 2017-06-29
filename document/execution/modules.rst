@@ -533,7 +533,7 @@ Instantiation may *fail* with an error.
 
        i. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\FUNCS[\funcidx_{ij}]` exists.
 
-       ii. Let :math:`\funcaddr_{ij}` be the :ref:`function address <func-addr>` :math:`\moduleinst.\FUNCS[\funcidx_{ij}]`.
+       ii. Let :math:`\funcaddr_{ij}` be the :ref:`function address <syntax-funcaddr>` :math:`\moduleinst.\FUNCS[\funcidx_{ij}]`.
 
        iii. Replace :math:`\tableinst_i.\ELEM[\X{eo}_i + j]` with :math:`\funcaddr_{ij}`.
 
@@ -551,7 +551,7 @@ Instantiation may *fail* with an error.
 
     a. Assert: due to :ref:`validation <valid-start>`, :math:`\moduleinst.\FUNCS[\module.\START]` exists.
 
-    b. Let :math:`\funcaddr` be the :ref:`function address <func-addr>` :math:`\moduleinst.\FUNCS[\module.\START]`.
+    b. Let :math:`\funcaddr` be the :ref:`function address <syntax-funcaddr>` :math:`\moduleinst.\FUNCS[\module.\START]`.
 
     c. :ref:`Invoke <exec-invoke>` the function instance at :math:`\funcaddr`.
 

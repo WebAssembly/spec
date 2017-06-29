@@ -47,6 +47,8 @@ Some definitions use *truncation* of rational values, with the usual mathematica
    \end{array}
 
 
+.. _aux-bits:
+
 Representations
 ~~~~~~~~~~~~~~~
 
@@ -152,7 +154,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-add:
+.. _op-iadd:
 
 :math:`\iadd_N(i_1, i_2)`
 .........................
@@ -164,7 +166,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \iadd_N(i_1, i_2) &=& (i_1 + i_2) \mod 2^N
    \end{array}
 
-.. _op-sub:
+.. _op-isub:
 
 :math:`\isub_N(i_1, i_2)`
 .........................
@@ -176,7 +178,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \isub_N(i_1, i_2) &=& (i_1 - i_2 + 2^N) \mod 2^N
    \end{array}
 
-.. _op-mul:
+.. _op-imul:
 
 :math:`\imul_N(i_1, i_2)`
 .........................
@@ -188,7 +190,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \imul_N(i_1, i_2) &=& (i_1 \cdot i_2) \mod 2^N
    \end{array}
 
-.. _op-div_u:
+.. _op-idiv_u:
 
 :math:`\idivu_N(i_1, i_2)`
 ..........................
@@ -206,7 +208,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
 
-.. _op-div_s:
+.. _op-idiv_s:
 
 :math:`\idivs_N(i_1, i_2)`
 ..........................
@@ -233,7 +235,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    In particular, the result of :math:`(-2^{N-1})/(-1) = +2^{N-1}` is not representable as an :math:`N`-bit signed integer.
 
 
-.. _op-rem_u:
+.. _op-irem_u:
 
 :math:`\iremu_N(i_1, i_2)`
 ..........................
@@ -254,7 +256,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    As long as :math:`i_2 \neq 0`,
    it holds that :math:`i_1 = i_2\cdot\idivu(i_1, i_2) + \iremu(i_1, i_2)`.
 
-.. _op-rem_s:
+.. _op-irem_s:
 
 :math:`\irems_N(i_1, i_2)`
 ..........................
@@ -280,7 +282,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    it holds that :math:`i_1 = i_2\cdot\idivs(i_1, i_2) + \irems(i_1, i_2)`.
 
 
-.. _op-and:
+.. _op-iand:
 
 :math:`\iand_N(i_1, i_2)`
 .........................
@@ -292,7 +294,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \iand_N(i_1, i_2) &=& \ibits_N^{-1}(\ibits_N(i_1) \wedge \ibits_N(i_2))
    \end{array}
 
-.. _op-or:
+.. _op-ior:
 
 :math:`\ior_N(i_1, i_2)`
 ........................
@@ -304,7 +306,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \ior_N(i_1, i_2) &=& \ibits_N^{-1}(\ibits_N(i_1) \vee \ibits_N(i_2))
    \end{array}
 
-.. _op-xor:
+.. _op-ixor:
 
 :math:`\ixor_N(i_1, i_2)`
 .........................
@@ -316,7 +318,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \ixor_N(i_1, i_2) &=& \ibits_N^{-1}(\ibits_N(i_1) \veebar \ibits_N(i_2))
    \end{array}
 
-.. _op-shl:
+.. _op-ishl:
 
 :math:`\ishl_N(i_1, i_2)`
 .........................
@@ -330,7 +332,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \ishl_N(i_1, i_2) &=& \ibits_N^{-1}(b_2^{N-k}~0^k) & (\ibits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
    \end{array}
 
-.. _op-shr_u:
+.. _op-ishr_u:
 
 :math:`\ishru_N(i_1, i_2)`
 ..........................
@@ -344,7 +346,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \ishru_N(i_1, i_2) &=& \ibits_N^{-1}(0^k~b_1^{N-k}) & (\ibits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
-.. _op-shr_s:
+.. _op-ishr_s:
 
 :math:`\ishrs_N(i_1, i_2)`
 ..........................
@@ -358,7 +360,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \ishrs_N(i_1, i_2) &=& \ibits_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) & (\ibits_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mod N)
    \end{array}
 
-.. _op-rotl:
+.. _op-irotl:
 
 :math:`\irotl_N(i_1, i_2)`
 ..........................
@@ -372,7 +374,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \irotl_N(i_1, i_2) &=& \ibits_N^{-1}(b_2^{N-k}~b_1^k) & (\ibits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
    \end{array}
 
-.. _op-rotr:
+.. _op-irotr:
 
 :math:`\irotr_N(i_1, i_2)`
 ..........................
@@ -387,7 +389,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-clz:
+.. _op-iclz:
 
 :math:`\iclz_N(i)`
 ..................
@@ -400,7 +402,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-ctz:
+.. _op-ictz:
 
 :math:`\ictz_N(i)`
 ..................
@@ -413,7 +415,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-popcnt:
+.. _op-ipopcnt:
 
 :math:`\ipopcnt_N(i)`
 .....................
@@ -426,7 +428,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-eqz:
+.. _op-ieqz:
 
 :math:`\ieqz_N(i)`
 ..................
@@ -439,7 +441,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-eq:
+.. _op-ieq:
 
 :math:`\ieq_N(i_1, i_2)`
 ........................
@@ -452,7 +454,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-ne:
+.. _op-ine:
 
 :math:`\ine_N(i_1, i_2)`
 ........................
@@ -465,7 +467,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-lt_u:
+.. _op-ilt_u:
 
 :math:`\iltu_N(i_1, i_2)`
 .........................
@@ -478,7 +480,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-lt_s:
+.. _op-ilt_s:
 
 :math:`\ilts_N(i_1, i_2)`
 .........................
@@ -495,7 +497,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-gt_u:
+.. _op-igt_u:
 
 :math:`\igtu_N(i_1, i_2)`
 .........................
@@ -508,7 +510,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-gt_s:
+.. _op-igt_s:
 
 :math:`\igts_N(i_1, i_2)`
 .........................
@@ -525,7 +527,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-le_u:
+.. _op-ile_u:
 
 :math:`\ileu_N(i_1, i_2)`
 .........................
@@ -538,7 +540,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-le_s:
+.. _op-ile_s:
 
 :math:`\iles_N(i_1, i_2)`
 .........................
@@ -555,7 +557,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-ge_u:
+.. _op-ige_u:
 
 :math:`\igeu_N(i_1, i_2)`
 .........................
@@ -568,7 +570,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \end{array}
 
 
-.. _op-ge_s:
+.. _op-ige_s:
 
 :math:`\iges_N(i_1, i_2)`
 .........................
@@ -682,7 +684,7 @@ where:
    \end{array}
 
 
-.. _aux-nan:
+.. _aux-nans:
 
 NaN Propagation
 ...............
@@ -1331,7 +1333,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 Conversions
 ~~~~~~~~~~~
 
-.. _op-extendu:
+.. _op-extend_u:
 
 :math:`\extendu_{M,N}(i)`
 .........................
@@ -1347,7 +1349,7 @@ Conversions
    In the abstract syntax, unsigned extension just reinterprets the same value.
 
 
-.. _op-extends:
+.. _op-extend_s:
 
 :math:`\extends_{M,N}(i)`
 .........................
@@ -1375,7 +1377,7 @@ Conversions
    \end{array}
 
 
-.. _op-truncu:
+.. _op-trunc_u:
 
 :math:`\truncu_{M,N}(z)`
 ........................
@@ -1401,7 +1403,7 @@ Conversions
    It is not defined for NaNs, infinities, or values for which the result is out of range.
 
 
-.. _op-truncs:
+.. _op-trunc_s:
 
 :math:`\truncs_{M,N}(z)`
 ........................
@@ -1471,7 +1473,7 @@ Conversions
    \end{array}
 
 
-.. _op-convertu:
+.. _op-convert_u:
 
 :math:`\convertu_{M,N}(i)`
 ..........................
@@ -1484,7 +1486,7 @@ Conversions
    \end{array}
 
 
-.. _op-converts:
+.. _op-convert_s:
 
 :math:`\converts_{M,N}(i)`
 ..........................

@@ -120,6 +120,7 @@ Table Types
 
 
 .. _binary-globaltype:
+.. _binary-mut:
 .. index:: global type, mutability, value type
    pair: binary format; global type
    pair: binary format; mutability

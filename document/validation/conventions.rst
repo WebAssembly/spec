@@ -1,3 +1,4 @@
+.. _type-system:
 .. index:: ! validation, ! type system, function type, table type, memory type, globaltype, valtype, resulttype, index space
 
 Conventions
@@ -20,7 +21,7 @@ All rules are given in two *equivalent* forms:
 
 In both cases, the rules are formulated in a *declarative* manner.
 That is, they only formulate the constraints, they do not define an algorithm.
-A sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the :ref:`appendix <checking>`.
+A sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the :ref:`appendix <soundness>`.
 
 
 .. _context:

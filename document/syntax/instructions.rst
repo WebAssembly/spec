@@ -30,6 +30,7 @@ The following sections group instructions into a number of different categories.
 .. _syntax-binop:
 .. _syntax-testop:
 .. _syntax-relop:
+.. _syntax-cvtop:
 .. _syntax-iunop:
 .. _syntax-ibinop:
 .. _syntax-itestop:

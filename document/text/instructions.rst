@@ -18,61 +18,15 @@ Instructions are syntactically distinguished into *plain* and *structured* instr
 In addition, as a syntactic abbreviation, instructions can be written in :ref:`folded <text-foldedinstr>` form as S-expressions, to group them visually.
 
 
-.. _text-index:
-.. _text-typeidx:
-.. _text-funcidx:
-.. _text-tableidx:
-.. _text-memidx:
-.. _text-globalidx:
-.. _text-localidx:
-.. _text-labelidx:
-.. index:: index, type index, function index, table index, memory index, global index, local index, label index
-   pair: text format; type index
-   pair: text format; function index
-   pair: text format; table index
-   pair: text format; memory index
-   pair: text format; global index
-   pair: text format; local index
-   pair: text format; label index
-
-Indices
-~~~~~~~
-
-:ref:`Indices <syntax-index>` can be given either in raw numeric form or as symbolic :ref:`identifiers <text-id>` when bound by a respective construct.
-Such identifiers are looked up in the suitable space of the :ref:`identifier context <text-context>`.
-
-.. math::
-   \begin{array}{llcllllllll}
-   \production{type index} & \Ttypeidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\TYPES[x] = v) \\
-   \production{function index} & \Tfuncidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\FUNCS[x] = v) \\
-   \production{table index} & \Ttableidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\TABLES[x] = v) \\
-   \production{memory index} & \Tmemidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\MEMS[x] = v) \\
-   \production{global index} & \Tglobalidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\GLOBALS[x] = v) \\
-   \production{local index} & \Tlocalidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\LOCALS[x] = v) \\
-   \production{label index} & \Tlabelidx_I &::=&
-     l{:}\Tu32 &\Rightarrow& l &|&
-     v{:}\Tid &\Rightarrow& l & (I.\LABELS[l] = v) \\
-   \end{array}
-
-
 .. _text-label:
 .. index:: index, label index
    pair: text format; label index
 
+Labels
+~~~~~~
+
 :ref:`Structured control instructions <text-instr-control>` can be annotated with a symbolic :ref:`label identifier <text-id>`.
-They are the only symbolic identifiers that can be bound locally in an instruction sequence.
+They are the only :ref:`symbolic identifiers <text-index>` that can be bound locally in an instruction sequence.
 The following grammar handles the corresponding update to the :ref:`identifier context <text-context>` by producing a context with an additional label entry.
 
 .. math::
@@ -90,6 +44,8 @@ The following grammar handles the corresponding update to the :ref:`identifier c
 
 
 .. _text-instr-control:
+.. _text-blockinstr:
+.. _text-plaininstr:
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
    pair: text format; instruction
 
@@ -201,7 +157,6 @@ Variable Instructions
 
 
 .. _text-instr-memory:
-.. _text-memarg:
 .. index:: memory instruction, memory index
    pair: text format; instruction
 

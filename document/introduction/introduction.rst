@@ -7,9 +7,11 @@ Its main goal is to enable high performance applications on the Web, but it does
 
 WebAssembly is an open standard developed by a `W3C Community Group <https://www.w3.org/community/webassembly/>`_ that includes representatives of all major browser vendors.
 
-This document describes version |release| of the :ref:`core <Scope>` WebAssembly standard.
+This document describes version |release| of the :ref:`core <scope>` WebAssembly standard.
 It is intended that it will be superseded by new incremental releases with additional features in the future.
 
+
+.. _goals:
 
 Design Goals
 ~~~~~~~~~~~~
@@ -55,6 +57,8 @@ WebAssembly code is also intended to be easy to inspect and debug, especially in
 
 .. [#memorysafe] No program can break WebAssembly's memory model. Of course, it cannot guarantee that an unsafe language compiling to WebAssembly does not corrupt its own memory layout, e.g. inside WebAssembly's linear memory.
 
+
+.. _scope:
 
 Scope
 ~~~~~

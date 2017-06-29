@@ -159,6 +159,7 @@ A vector can have at most :math:`2^{32}-1` elements.
 
 .. _syntax-name:
 .. _syntax-utf8:
+.. _syntax-codepoint:
 .. index:: ! name, byte, Unicode, UTF-8, code point
    pair: abstract syntax; name
 

@@ -460,7 +460,7 @@ That way, the end of the inner instruction sequence is tracked when part of an o
       \end{array}
 
 
-.. _syntax-ctxt-label:
+.. _syntax-ctxt-block:
 .. index:: ! evaluation context
 
 Block Contexts
@@ -516,7 +516,11 @@ Finally, the following definition of *evaluation context* and associated structu
    \end{array}
 
 
-.. _syntax-instr-module:
+.. _syntax-moduleinstr:
+.. _syntax-instantiate:
+.. _syntax-init_table:
+.. _syntax-init_mem:
+.. _syntax-init_global:
 .. index:: ! module instructions, function, function instance, function address, label, frame, instruction, trap
    pair:: abstract syntax; meta instruction
 

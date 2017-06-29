@@ -283,6 +283,7 @@ The |START| component of a module optionally declares the :ref:`function index <
 
 
 .. _syntax-export:
+.. _syntax-exportdesc:
 .. index:: ! export, name, index, function index, table index, memory index, global index, function, table, memory, global, instantiation
    pair: abstract syntax; export
    single: function; export
@@ -329,6 +330,7 @@ The following auxiliary notation is defined for sequences of exports, filtering 
 
 
 .. _syntax-import:
+.. _syntax-importdesc:
 .. index:: ! import, name, function type, table type, memory type, global type, index, index space, type index, function index, table index, memory index, global index, function, table, memory, global, instantiation
    pair: abstract syntax; import
    single: function; import

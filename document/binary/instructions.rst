@@ -88,7 +88,7 @@ Parametric Instructions
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Variable instructions <syntax-instr-variable>` are represented by byte codes followed by the encoding of the respective :ref:`index <syntax-indices>`.
+:ref:`Variable instructions <syntax-instr-variable>` are represented by byte codes followed by the encoding of the respective :ref:`index <syntax-index>`.
 
 .. _binary-get_local:
 .. _binary-set_local:
@@ -108,7 +108,6 @@ Variable Instructions
 
 
 .. _binary-instr-memory:
-.. _binary-memarg:
 .. index:: memory instruction, memory index
    pair: binary format; instruction
 

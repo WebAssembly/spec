@@ -1,4 +1,4 @@
-.. _binary-format:
+.. _binary:
 
 Binary Format
 =============

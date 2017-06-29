@@ -3,7 +3,7 @@
 Conventions
 -----------
 
-The binary format for WebAssembly :ref:`modules <modules>` is a dense linear *encoding* of their :ref:`abstract syntax <syntax-module>`.
+The binary format for WebAssembly :ref:`modules <module>` is a dense linear *encoding* of their :ref:`abstract syntax <syntax-module>`.
 [#compression]_
 
 The format is defined by an *attribute grammar* whose only terminal symbols are :ref:`bytes <syntax-byte>`.

@@ -5,6 +5,7 @@ Lexical Format
 --------------
 
 
+.. _source:
 .. _text-char:
 .. index:: ! character, Unicode, ASCII, code point, ! source text
    pair: text format; character
@@ -28,6 +29,7 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
 
 .. _text-token:
 .. _text-keyword:
+.. _text-reserved:
 .. index:: ! token, ! keyword, character, white space, comment, source text
    single: text format; token
 
@@ -56,6 +58,7 @@ Where necessary, tokens may be separated by :ref:`white space <text-space>`.
 
 
 .. _text-space:
+.. _text-format:
 .. index:: ! white space, character, ASCII
    single: text format; white space
 

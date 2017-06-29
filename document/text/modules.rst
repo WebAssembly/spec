@@ -2,6 +2,55 @@ Modules
 -------
 
 
+.. _text-index:
+.. _text-typeidx:
+.. _text-funcidx:
+.. _text-tableidx:
+.. _text-memidx:
+.. _text-globalidx:
+.. _text-localidx:
+.. _text-labelidx:
+.. index:: index, type index, function index, table index, memory index, global index, local index, label index
+   pair: text format; type index
+   pair: text format; function index
+   pair: text format; table index
+   pair: text format; memory index
+   pair: text format; global index
+   pair: text format; local index
+   pair: text format; label index
+
+Indices
+~~~~~~~
+
+:ref:`Indices <syntax-index>` can be given either in raw numeric form or as symbolic :ref:`identifiers <text-id>` when bound by a respective construct.
+Such identifiers are looked up in the suitable space of the :ref:`identifier context <text-context>`.
+
+.. math::
+   \begin{array}{llcllllllll}
+   \production{type index} & \Ttypeidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\TYPES[x] = v) \\
+   \production{function index} & \Tfuncidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\FUNCS[x] = v) \\
+   \production{table index} & \Ttableidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\TABLES[x] = v) \\
+   \production{memory index} & \Tmemidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\MEMS[x] = v) \\
+   \production{global index} & \Tglobalidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\GLOBALS[x] = v) \\
+   \production{local index} & \Tlocalidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x &|&
+     v{:}\Tid &\Rightarrow& x & (I.\LOCALS[x] = v) \\
+   \production{label index} & \Tlabelidx_I &::=&
+     l{:}\Tu32 &\Rightarrow& l &|&
+     v{:}\Tid &\Rightarrow& l & (I.\LABELS[l] = v) \\
+   \end{array}
+
+
 .. _text-type:
 .. index:: type definition, identifier
    pair: text format; type definition
@@ -92,6 +141,7 @@ is first inserted at the end of the module.
 
 
 .. _text-import:
+.. _text-importdesc:
 .. index:: import, name, function type, table type, memory type, global type
    pair: text format; import
 
@@ -358,6 +408,7 @@ The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containi
 
 
 .. _text-export:
+.. _text-exportdesc:
 .. index:: export, name, index, function index, table index, memory index, global index
    pair: text format; export
 
@@ -478,7 +529,6 @@ As an abbreviation, data segments may also be specified inline with :ref:`memory
 
 
 .. _text-module:
-.. _text-modulebody:
 .. _text-modulefield:
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, identifier context, identifier, name section
    pair: text format; module

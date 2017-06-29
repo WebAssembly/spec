@@ -1101,9 +1101,9 @@ and it must still be well-typed.
 Expressions
 ~~~~~~~~~~~
 
-An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-modinst>` :math:`\moduleinst`.
+An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst`.
 
-1. :ref:`Jump <exec-jump>` to the start of the instruction sequence :math:`\instr^\ast` of the expression.
+1. Jump to the start of the instruction sequence :math:`\instr^\ast` of the expression.
 
 2. Execute of the instruction sequence.
 

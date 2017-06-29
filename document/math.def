@@ -358,7 +358,7 @@
 .. |Bexportsec| mathdef:: \xref{binary/modules}{binary-exportsec}{\B{exportsec}}
 .. |Belemsec| mathdef:: \xref{binary/modules}{binary-elemsec}{\B{elemsec}}
 .. |Bdatasec| mathdef:: \xref{binary/modules}{binary-datasec}{\B{datasec}}
-.. |Bstartsec| mathdef:: \xref{binary/modules}{binary-startseg}{\B{startsec}}
+.. |Bstartsec| mathdef:: \xref{binary/modules}{binary-startsec}{\B{startsec}}
 .. |Bcustom| mathdef:: \xref{binary/modules}{binary-customsec}{\B{custom}}
 .. |Btype| mathdef:: \xref{binary/modules}{binary-type}{\B{type}}
 .. |Bfunc| mathdef:: \xref{binary/modules}{binary-func}{\B{func}}
@@ -403,10 +403,10 @@
 
 .. Modules, meta functions
 
-.. |funcs| mathdef:: \xref{execution/runtime}{syntax-externtype}{\F{funcs}}
-.. |tables| mathdef:: \xref{execution/runtime}{syntax-externtype}{\F{tables}}
-.. |mems| mathdef:: \xref{execution/runtime}{syntax-externtype}{\F{mems}}
-.. |globals| mathdef:: \xref{execution/runtime}{syntax-externtype}{\F{globals}}
+.. |funcs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
+.. |tables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}
+.. |mems| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{mems}}
+.. |globals| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{globals}}
 
 
 .. Instructions, terminals
@@ -578,7 +578,7 @@
 .. |hostfunc| mathdef:: \xref{execution/runtime}{syntax-hostfunc}{\X{hostfunc}}
 
 .. |externval| mathdef:: \xref{execution/runtime}{syntax-externval}{\X{externval}}
-.. |externtype| mathdef:: \xref{execution/runtime}{syntax-externtype}{\X{externtype}}
+.. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 .. |storagetype| mathdef:: \xref{execution/runtime}{syntax-storagetype}{\X{storagetype}}
 
 .. |store| mathdef:: \xref{execution/runtime}{syntax-store}{\X{store}}
