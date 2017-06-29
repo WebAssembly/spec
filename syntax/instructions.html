@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -99,8 +99,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="syntax-instr"></span><div class="section" id="instructions">
-<span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="instructions">
+<span id="syntax-instr"></span><span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
 <p>WebAssembly code consists of sequences of <em>instructions</em>.
 Its computational model is based on a <em>stack machine</em> in that instructions manipulate values on an implicit <em>operand stack</em>,
 <em>consuming</em> (popping) argument values and <em>returning</em> (pushing) result values.</p>
@@ -115,8 +115,8 @@ typically <a class="reference internal" href="modules.html#syntax-index"><span c
 which are part of the instruction itself.</p>
 <p>Some instructions are <a class="reference internal" href="#syntax-instr-control"><span class="std std-ref">structured</span></a> in that they bracket nested sequences of instructions.</p>
 <p>The following sections group instructions into a number of different categories.</p>
-<span class="target" id="syntax-frelop"><span id="syntax-ftestop"></span><span id="syntax-fbinop"></span><span id="syntax-funop"></span><span id="syntax-irelop"></span><span id="syntax-itestop"></span><span id="syntax-ibinop"></span><span id="syntax-iunop"></span><span id="syntax-relop"></span><span id="syntax-testop"></span><span id="syntax-binop"></span><span id="syntax-unop"></span><span id="syntax-const"></span><span id="syntax-instr-numeric"></span><span id="syntax-sx"></span></span><div class="section" id="numeric-instructions">
-<span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="numeric-instructions">
+<span id="syntax-instr-numeric"></span><span id="syntax-frelop"></span><span id="syntax-ftestop"></span><span id="syntax-fbinop"></span><span id="syntax-funop"></span><span id="syntax-irelop"></span><span id="syntax-itestop"></span><span id="syntax-ibinop"></span><span id="syntax-iunop"></span><span id="syntax-cvtop"></span><span id="syntax-relop"></span><span id="syntax-testop"></span><span id="syntax-binop"></span><span id="syntax-unop"></span><span id="syntax-const"></span><span id="syntax-sx"></span><span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Numeric instructions provide basic operations over numeric values of specific type.
 These operations closely match respective operations available in hardware.</p>
 <div class="math">
@@ -225,10 +225,10 @@ For the other integer instructions, the use of 2&#8217;s complement for the sign
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{promote}} ~|~
   \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="syntax-instr-parametric"></span></div>
+</div>
 </div>
 <div class="section" id="parametric-instructions">
-<span id="index-2"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-parametric"></span><span id="index-2"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Instructions in this group can operate on operands of any <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value type</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -239,9 +239,9 @@ For the other integer instructions, the use of 2&#8217;s complement for the sign
 \end{array}\end{split}\]</div>
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}}\)</span> operator simply throws away a single operand.</p>
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span> operator selects one of its first two operands based on whether its third operand is zero or not.</p>
-<span class="target" id="syntax-instr-variable"></span></div>
+</div>
 <div class="section" id="variable-instructions">
-<span id="index-3"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-variable"></span><span id="index-3"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Variable instructions are concerned with the access to <a class="reference internal" href="modules.html#syntax-local"><span class="std std-ref">local</span></a> or <a class="reference internal" href="modules.html#syntax-global"><span class="std std-ref">global</span></a> variables.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -255,9 +255,9 @@ For the other integer instructions, the use of 2&#8217;s complement for the sign
 \end{array}\end{split}\]</div>
 <p>These instructions get or set the values of variables, respectively.
 The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{tee\_local}}\)</span> instruction is like <span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_local}}\)</span> but also returns its argument.</p>
-<span class="target" id="syntax-memarg"><span id="syntax-storen"></span><span id="syntax-loadn"></span><span id="syntax-instr-memory"></span></span></div>
+</div>
 <div class="section" id="memory-instructions">
-<span id="index-4"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-memory"></span><span id="syntax-memarg"></span><span id="syntax-storen"></span><span id="syntax-loadn"></span><span id="index-4"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Instructions in this group are concerned with <a class="reference internal" href="modules.html#syntax-mem"><span class="std std-ref">linear memory</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -284,7 +284,7 @@ Integer loads and stores can optionally specify a <em>storage size</em> that is 
 In the case of loads, a sign extension mode <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> is then required to select appropriate behavior.</p>
 <p>The static address offset is added to the dynamic address operand, yielding a 33 bit <em>effective address</em> that is the zero-based index at which the memory is accessed.
 All values are read and written in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order.
-A <span class="xref std std-ref">trap</span> results if any of the accessed memory bytes lies outside the address range implied by the memory&#8217;s current size.</p>
+A <a class="reference internal" href="../introduction/overview.html#trap"><span class="std std-ref">trap</span></a> results if any of the accessed memory bytes lies outside the address range implied by the memory&#8217;s current size.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Future version of WebAssembly might provide memory instructions with 64 bit address ranges.</p>
@@ -298,9 +298,9 @@ Both instructions operate in units of <a class="reference internal" href="../exe
 all memory instructions implicitly operate on <a class="reference internal" href="modules.html#syntax-mem"><span class="std std-ref">memory</span></a> <a class="reference internal" href="modules.html#syntax-memidx"><span class="std std-ref">index</span></a> <span class="math">\(0\)</span>.
 This restriction may be lifted in future versions.</p>
 </div>
-<span class="target" id="syntax-label"><span id="syntax-call-indirect"></span><span id="syntax-call"></span><span id="syntax-return"></span><span id="syntax-br-table"></span><span id="syntax-br-if"></span><span id="syntax-br"></span><span id="syntax-if"></span><span id="syntax-loop"></span><span id="syntax-block"></span><span id="syntax-unreachable"></span><span id="syntax-nop"></span><span id="syntax-instr-seq"></span><span id="syntax-instr-control"></span></span></div>
+</div>
 <div class="section" id="control-instructions">
-<span id="index-5"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-control"></span><span id="syntax-instr-seq"></span><span id="syntax-label"></span><span id="syntax-call-indirect"></span><span id="syntax-call"></span><span id="syntax-return"></span><span id="syntax-br-table"></span><span id="syntax-br-if"></span><span id="syntax-br"></span><span id="syntax-if"></span><span id="syntax-loop"></span><span id="syntax-block"></span><span id="syntax-unreachable"></span><span id="syntax-nop"></span><span id="index-5"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Instructions in this group affect the flow of control.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -319,7 +319,7 @@ This restriction may be lifted in future versions.</p>
   \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} \\
 \end{array}\end{split}\]</div>
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}}\)</span> instruction does nothing.</p>
-<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span> instruction causes an unconditional <span class="xref std std-ref">trap</span>.</p>
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span> instruction causes an unconditional <a class="reference internal" href="../introduction/overview.html#trap"><span class="std std-ref">trap</span></a>.</p>
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span>, <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> instructions are <em>structured</em> instructions.
 They bracket nested sequences of instructions, called <em>blocks</em>, terminated with, or separated by, <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> or <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span> pseudo-instructions.
 As the grammar prescribes, they must be well-nested.
@@ -352,16 +352,16 @@ However, forward branches that target a control instruction with a non-empty res
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}\)</span> instruction invokes another function, consuming the necessary arguments from the stack and returning the result values of the call.
 The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> instruction calls a function indirectly through an operand indexing into a <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a>.
 Since tables may contain function elements of heterogeneous type <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}\)</span>,
-the callee is dynamically checked against the <a class="reference internal" href="types.html#syntax-functype"><span class="std std-ref">function type</span></a> indexed by the instruction&#8217;s immediate, and the call aborted with a <span class="xref std std-ref">trap</span> if it does not match.</p>
+the callee is dynamically checked against the <a class="reference internal" href="types.html#syntax-functype"><span class="std std-ref">function type</span></a> indexed by the instruction&#8217;s immediate, and the call aborted with a <a class="reference internal" href="../introduction/overview.html#trap"><span class="std std-ref">trap</span></a> if it does not match.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly,
 <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> implicitly operates on <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a> <a class="reference internal" href="modules.html#syntax-tableidx"><span class="std std-ref">index</span></a> <span class="math">\(0\)</span>.
 This restriction may be lifted in future versions.</p>
 </div>
-<span class="target" id="syntax-expr"></span></div>
+</div>
 <div class="section" id="expressions">
-<span id="index-6"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-expr"></span><span id="index-6"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="modules.html#syntax-func"><span class="std std-ref">Function</span></a> bodies, initialization values for <a class="reference internal" href="modules.html#syntax-global"><span class="std std-ref">globals</span></a> and offsets of <a class="reference internal" href="modules.html#syntax-elem"><span class="std std-ref">element</span></a> or <a class="reference internal" href="modules.html#syntax-data"><span class="std std-ref">data</span></a> segments are given as expressions, which are sequences of <a class="reference internal" href="#syntax-instr"><span class="std std-ref">instructions</span></a> terminated by an <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> marker.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}

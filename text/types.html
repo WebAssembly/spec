@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -101,10 +101,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="text-type"></span><div class="section" id="types">
-<span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="text-valtype"></span><div class="section" id="value-types">
-<span id="index-1"></span><h2>Value Types<a class="headerlink" href="#value-types" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="types">
+<span id="text-type"></span><span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="value-types">
+<span id="text-valtype"></span><span id="index-1"></span><h2>Value Types<a class="headerlink" href="#value-types" title="Permalink to this headline">¶</a></h2>
 <div class="math">
 \[\begin{split}\begin{array}{llcll&#64;{\qquad\qquad}l}
 \def\mathdef2780#1{{}}\mathdef2780{value type} &amp; \href{../text/types.html#text-valtype}{\mathtt{valtype}} &amp;::=&amp;
@@ -113,9 +113,9 @@
   \def\mathdef2836#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2836{f32} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
   \def\mathdef2837#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2837{f64} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-resulttype"></span></div>
+</div>
 <div class="section" id="result-types">
-<span id="index-2"></span><h2>Result Types<a class="headerlink" href="#result-types" title="Permalink to this headline">¶</a></h2>
+<span id="text-resulttype"></span><span id="index-2"></span><h2>Result Types<a class="headerlink" href="#result-types" title="Permalink to this headline">¶</a></h2>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef2780#1{{}}\mathdef2780{result type} &amp; \href{../text/types.html#text-resulttype}{\mathtt{resulttype}} &amp;::=&amp;
@@ -125,9 +125,9 @@
 <p class="first admonition-title">Note</p>
 <p class="last">In future versions of WebAssembly, this scheme may be extended to support multiple results or more general result types.</p>
 </div>
-<span class="target" id="text-result"><span id="text-param"></span><span id="text-functype"></span></span></div>
+</div>
 <div class="section" id="function-types">
-<span id="index-3"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
+<span id="text-functype"></span><span id="text-result"></span><span id="text-param"></span><span id="index-3"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef2780#1{{}}\mathdef2780{function type} &amp; \href{../text/types.html#text-functype}{\mathtt{functype}} &amp;::=&amp;
@@ -152,27 +152,27 @@
   \def\mathdef2853#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2853{(}~~\def\mathdef2854#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2854{result}~~\href{../text/types.html#text-valtype}{\mathtt{valtype}}^\ast~~\def\mathdef2855#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2855{)} &amp;\equiv&amp;
   (\def\mathdef2856#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2856{(}~~\def\mathdef2857#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2857{result}~~\href{../text/types.html#text-valtype}{\mathtt{valtype}}~~\def\mathdef2858#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2858{)})^\ast \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-limits"></span></div>
+</div>
 </div>
 <div class="section" id="limits">
-<span id="index-4"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
+<span id="text-limits"></span><span id="index-4"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2780#1{{}}\mathdef2780{limits} &amp; \href{../text/types.html#text-limits}{\mathtt{limits}} &amp;::=&amp;
   n{:}\href{../text/values.html#text-int}{\def\mathdef2822#1{{\mathtt{u}#1}}\mathdef2822{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~\epsilon \} \\ &amp;&amp;|&amp;
   n{:}\href{../text/values.html#text-int}{\def\mathdef2822#1{{\mathtt{u}#1}}\mathdef2822{\mathtt{32}}}~~m{:}\href{../text/values.html#text-int}{\def\mathdef2822#1{{\mathtt{u}#1}}\mathdef2822{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~m \} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-memtype"></span></div>
+</div>
 <div class="section" id="memory-types">
-<span id="index-5"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
+<span id="text-memtype"></span><span id="index-5"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef2780#1{{}}\mathdef2780{memory type} &amp; \href{../text/types.html#text-memtype}{\mathtt{memtype}} &amp;::=&amp;
   \mathit{lim}{:}\href{../text/types.html#text-limits}{\mathtt{limits}} &amp;\Rightarrow&amp; \mathit{lim} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-elemtype"><span id="text-tabletype"></span></span></div>
+</div>
 <div class="section" id="table-types">
-<span id="index-6"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
+<span id="text-tabletype"></span><span id="text-elemtype"></span><span id="index-6"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2780#1{{}}\mathdef2780{table type} &amp; \href{../text/types.html#text-tabletype}{\mathtt{tabletype}} &amp;::=&amp;
@@ -184,9 +184,9 @@
 <p class="first admonition-title">Note</p>
 <p class="last">Additional element types may be introduced in future versions of WebAssembly.</p>
 </div>
-<span class="target" id="text-globaltype"></span></div>
+</div>
 <div class="section" id="global-types">
-<span id="index-7"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
+<span id="text-globaltype"></span><span id="index-7"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2780#1{{}}\mathdef2780{global type} &amp; \href{../text/types.html#text-globaltype}{\mathtt{globaltype}} &amp;::=&amp;

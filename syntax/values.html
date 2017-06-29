@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -98,10 +98,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="syntax-value"></span><div class="section" id="values">
-<span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="syntax-byte"></span><div class="section" id="bytes">
-<span id="index-1"></span><h2>Bytes<a class="headerlink" href="#bytes" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="values">
+<span id="syntax-value"></span><span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="bytes">
+<span id="syntax-byte"></span><span id="index-1"></span><h2>Bytes<a class="headerlink" href="#bytes" title="Permalink to this headline">¶</a></h2>
 <p>The simplest form of value are raw uninterpreted <em>bytes</em>.
 In the abstract syntax they are represented as hexadecimal literals.</p>
 <div class="math">
@@ -115,10 +115,10 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 <li>The meta variable <span class="math">\(b\)</span> range over bytes.</li>
 <li>Bytes are sometimes interpreted as natural numbers <span class="math">\(n &lt; 256\)</span>.</li>
 </ul>
-<span class="target" id="syntax-uint"><span id="syntax-sint"></span><span id="syntax-int"></span></span></div>
+</div>
 </div>
 <div class="section" id="integers">
-<span id="index-2"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-int"></span><span id="syntax-uint"></span><span id="syntax-sint"></span><span id="index-2"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
 <p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>size</em> and their <em>signedness</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -138,10 +138,10 @@ However, some operations <a class="reference internal" href="../execution/numeri
 <li>The meta variables <span class="math">\(m, n, i\)</span> range over integers.</li>
 <li>Numbers may be denoted by simple arithmetics, as in the grammar above.</li>
 </ul>
-<span class="target" id="syntax-payload"><span id="syntax-nan"></span><span id="syntax-float"></span></span></div>
+</div>
 </div>
 <div class="section" id="floating-point">
-<span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-float"></span><span id="syntax-payload"></span><span id="syntax-nan"></span><span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
 <p><em>Floating-point</em> data consists of 32 or 64 bit values according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.
 Every value has a <em>sign</em> and a <em>magnitude</em>.</p>
 <p>Magnitudes can either be expressed as <em>normal</em> numbers of the form <span class="math">\(m_0.m_1m_2\dots m_M \cdot2^e\)</span>, where <span class="math">\(m\)</span> is the <em>significand</em> whose most signifcant bit <span class="math">\(m_0\)</span> is <span class="math">\(1\)</span>, and <span class="math">\(e\)</span> is the exponent,
@@ -178,10 +178,10 @@ No distinction is made between signalling and quiet NaNs.</p>
 <li>The meta variable <span class="math">\(z\)</span> ranges over floating-point values where clear from context.</li>
 <li>Floating-point numbers, in normal or subnormal form, are sometimes interpreted as rational numbers <span class="math">\(q \in \mathbb{Q}\)</span>.</li>
 </ul>
-<span class="target" id="syntax-vec"></span></div>
+</div>
 </div>
 <div class="section" id="vectors">
-<span id="index-4"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-vec"></span><span id="index-4"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
 <p><em>Vectors</em> are bounded sequences of the form <span class="math">\(A^n\)</span> (or <span class="math">\(A^\ast\)</span>),
 where the <span class="math">\(A\)</span>-s can either be values or complex constructions.
 A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
@@ -191,9 +191,9 @@ A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
   A^n
   &amp; (n &lt; 2^{32})\\
 \end{array}\end{split}\]</div>
-<span class="target" id="syntax-utf8"><span id="syntax-name"></span></span></div>
+</div>
 <div class="section" id="names">
-<span id="index-5"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-name"></span><span id="syntax-codepoint"></span><span id="syntax-utf8"></span><span id="index-5"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
 <p><em>Names</em> are sequences of <em>scalar</em> <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> <em>code points</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}

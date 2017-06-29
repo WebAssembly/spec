@@ -43,13 +43,13 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#index-1">Grammar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#grammar">Grammar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#auxiliary-notation">Auxiliary Notation</a></li>
 </ul>
 </li>
@@ -95,15 +95,15 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="syntax"></span><div class="section" id="conventions">
+  <div class="section" id="conventions">
 <span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
 <p>WebAssembly is a programming language that does not have a concrete textual syntax
-(other than the auxiliary <a class="reference internal" href="../text/index.html#text-format"><span class="std std-ref">text format</span></a>).
+(other than the auxiliary <a class="reference internal" href="../text/index.html#text"><span class="std std-ref">text format</span></a>).
 For conciseness, however, its structure is described in the form of an <em>abstract syntax</em>.
 All parts of this specification are defined in terms of this abstract syntax,
-including the decoding of the <a class="reference internal" href="../binary/index.html#binary-format"><span class="std std-ref">binary format</span></a>.</p>
-<span class="target" id="grammar"></span><div class="section" id="index-1">
-<span id="id1"></span><h2>Grammar<a class="headerlink" href="#index-1" title="Permalink to this headline">¶</a></h2>
+including the decoding of the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>.</p>
+<div class="section" id="grammar">
+<span id="index-1"></span><span id="id1"></span><h2>Grammar<a class="headerlink" href="#grammar" title="Permalink to this headline">¶</a></h2>
 <p>The following conventions are adopted in defining grammar rules for abstract syntax.</p>
 <ul class="simple">
 <li>Terminal symbols (atoms) are written in sans-serif: <span class="math">\(\mathsf{i32}, \mathsf{end}\)</span>.</li>
@@ -118,7 +118,7 @@ including the decoding of the <a class="reference internal" href="../binary/inde
 </ul>
 </div>
 <div class="section" id="auxiliary-notation">
-<span id="syntax-record"></span><h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-concat"></span><span id="syntax-record"></span><h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
 <p>When dealing with syntactic constructs the following notation is also used:</p>
 <ul class="simple">
 <li><span class="math">\(\epsilon\)</span> denotes the empty sequence.</li>

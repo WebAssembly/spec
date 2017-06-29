@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -97,12 +97,12 @@
             
   <div class="section" id="conventions">
 <span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
-<p>WebAssembly code is <em>executed</em> when <a class="reference internal" href="modules.html#instantiation"><span class="std std-ref">instantiating</span></a> a module or <span class="xref std std-ref">invoking</span> an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> function on the resulting module <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">instance</span></a>.</p>
+<p>WebAssembly code is <em>executed</em> when <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiating</span></a> a module or <a class="reference internal" href="modules.html#exec-call-export"><span class="std std-ref">invoking</span></a> an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> function on the resulting module <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">instance</span></a>.</p>
 <p>Execution behavior is defined in terms of an <em>abstract machine</em> that models the <em>program state</em>.
 It includes a <em>stack</em>, which records operand values and control constructs, and an abstract <em>store</em> containing global state.</p>
 <p>For each instruction, there is a rule that specifies the effect of its execution on the program state.
 Furthermore, there are rules describing the instantiation of a module.
-As with <span class="xref std std-ref">validation</span>, all rules are given in two <em>equivalent</em> forms:</p>
+As with <a class="reference internal" href="../introduction/overview.html#validation"><span class="std std-ref">validation</span></a>, all rules are given in two <em>equivalent</em> forms:</p>
 <ol class="arabic simple">
 <li>In <em>prose</em>, describing the execution in intuitive form.</li>
 <li>In <em>formal notation</em>, describing the rule in mathematical form.</li>
@@ -116,7 +116,7 @@ The formalism offers a more concise description in notation that is used widely 
 <p><a class="reference internal" href="runtime.html#store"><span class="std std-ref">Store</span></a>, <a class="reference internal" href="runtime.html#stack"><span class="std std-ref">stack</span></a>, and other <em>runtime structure</em>, such as <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">module instances</span></a>, are made precise in terms of additional auxiliary <a class="reference internal" href="runtime.html#syntax-runtime"><span class="std std-ref">syntax</span></a>.</p>
 <div class="section" id="prose-notation">
 <span id="exec-notation-textual"></span><h2>Prose Notation<a class="headerlink" href="#prose-notation" title="Permalink to this headline">¶</a></h2>
-<p>Execution is specified by stylised, step-wise rules for each <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> of the <a class="reference internal" href="../syntax/conventions.html#syntax"><span class="std std-ref">abstract syntax</span></a>.
+<p>Execution is specified by stylised, step-wise rules for each <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> of the <a class="reference internal" href="../syntax/index.html#syntax"><span class="std std-ref">abstract syntax</span></a>.
 The following conventions are adopted in stating these rules.</p>
 <ul class="simple">
 <li>The execution rules implicitly assume a given <a class="reference internal" href="runtime.html#store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span>.</li>
@@ -135,9 +135,9 @@ which defines the next instruction to execute.</li>
 <li><a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">Instruction sequences</span></a> are implicitly executed in order, unless a trap or jump occurs.</li>
 <li>In various places the rules contain <em>assertions</em> expressing crucial invariants about the program state, with indications why these are known to hold.</li>
 </ul>
-<span class="target" id="exec-notation"></span></div>
+</div>
 <div class="section" id="formal-notation">
-<span id="index-1"></span><h2>Formal Notation<a class="headerlink" href="#formal-notation" title="Permalink to this headline">¶</a></h2>
+<span id="exec-notation"></span><span id="index-1"></span><h2>Formal Notation<a class="headerlink" href="#formal-notation" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This section gives a brief explanation of the notation for specifying execution formally.
@@ -171,7 +171,7 @@ This can be interpreted as popping two value off the stack and pushing the resul
 <p><a class="reference internal" href="runtime.html#label"><span class="std std-ref">Labels</span></a> and <a class="reference internal" href="runtime.html#frame"><span class="std std-ref">frames</span></a> are similarly <a class="reference internal" href="runtime.html#syntax-instr-admin"><span class="std std-ref">defined to be part</span></a> of an instruction sequence.</p>
 <p>The order of reduction is determined by the definition of an approporiate <a class="reference internal" href="runtime.html#syntax-ctxt-eval"><span class="std std-ref">evaluation context</span></a>.</p>
 <p>Reduction <em>terminates</em> when no more reduction rules are applicable.
-<span class="xref std std-ref">Soundness</span> of the WebAssembly <span class="xref std std-ref">type system</span> guarantees that this is only the case when the original instruction sequence has either been reduced to a sequence of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions, which can be interpreted as the <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> of the resulting operand stack,
+<a class="reference internal" href="../appendix/properties.html#soundness"><span class="std std-ref">Soundness</span></a> of the WebAssembly <a class="reference internal" href="../validation/conventions.html#type-system"><span class="std std-ref">type system</span></a> guarantees that this is only the case when the original instruction sequence has either been reduced to a sequence of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions, which can be interpreted as the <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> of the resulting operand stack,
 or if a trap occurred.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>

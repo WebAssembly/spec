@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -57,7 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Instructions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#indices">Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#labels">Labels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#control-instructions">Control Instructions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#parametric-instructions">Parametric Instructions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#variable-instructions">Variable Instructions</a></li>
@@ -102,8 +102,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="text-instr"></span><div class="section" id="instructions">
-<span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="instructions">
+<span id="text-instr"></span><span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
 <p>Instructions are syntactically distinguished into <em>plain</em> and <em>structured</em> instructions.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
@@ -114,36 +114,10 @@
     &amp;\Rightarrow&amp; \mathit{in} \\
 \end{array}\end{split}\]</div>
 <p>In addition, as a syntactic abbreviation, instructions can be written in <a class="reference internal" href="#text-foldedinstr"><span class="std std-ref">folded</span></a> form as S-expressions, to group them visually.</p>
-<span class="target" id="text-labelidx"><span id="text-localidx"></span><span id="text-globalidx"></span><span id="text-memidx"></span><span id="text-tableidx"></span><span id="text-funcidx"></span><span id="text-typeidx"></span><span id="text-index"></span></span><div class="section" id="indices">
-<span id="index-1"></span><h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">Indices</span></a> can be given either in raw numeric form or as symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> when bound by a respective construct.
-Such identifiers are looked up in the suitable space of the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a>.</p>
-<div class="math">
-\[\begin{split}\begin{array}{llcllllllll}
-\def\mathdef2111#1{{}}\mathdef2111{type index} &amp; \href{../text/modules.html#text-typeidx}{\mathtt{typeidx}}_I &amp;::=&amp;
-  x{:}\href{../text/values.html#text-int}{\def\mathdef2153#1{{\mathtt{u}#1}}\mathdef2153{\mathtt{32}}} &amp;\Rightarrow&amp; x &amp;|&amp;
-  v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; x &amp; (I.\mathsf{types}[x] = v) \\
-\def\mathdef2111#1{{}}\mathdef2111{function index} &amp; \href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}_I &amp;::=&amp;
-  x{:}\href{../text/values.html#text-int}{\def\mathdef2153#1{{\mathtt{u}#1}}\mathdef2153{\mathtt{32}}} &amp;\Rightarrow&amp; x &amp;|&amp;
-  v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; x &amp; (I.\mathsf{funcs}[x] = v) \\
-\def\mathdef2111#1{{}}\mathdef2111{table index} &amp; \href{../text/modules.html#text-tableidx}{\mathtt{tableidx}}_I &amp;::=&amp;
-  x{:}\href{../text/values.html#text-int}{\def\mathdef2153#1{{\mathtt{u}#1}}\mathdef2153{\mathtt{32}}} &amp;\Rightarrow&amp; x &amp;|&amp;
-  v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; x &amp; (I.\mathsf{tables}[x] = v) \\
-\def\mathdef2111#1{{}}\mathdef2111{memory index} &amp; \href{../text/modules.html#text-memidx}{\mathtt{memidx}}_I &amp;::=&amp;
-  x{:}\href{../text/values.html#text-int}{\def\mathdef2153#1{{\mathtt{u}#1}}\mathdef2153{\mathtt{32}}} &amp;\Rightarrow&amp; x &amp;|&amp;
-  v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; x &amp; (I.\mathsf{mems}[x] = v) \\
-\def\mathdef2111#1{{}}\mathdef2111{global index} &amp; \href{../text/modules.html#text-globalidx}{\mathtt{globalidx}}_I &amp;::=&amp;
-  x{:}\href{../text/values.html#text-int}{\def\mathdef2153#1{{\mathtt{u}#1}}\mathdef2153{\mathtt{32}}} &amp;\Rightarrow&amp; x &amp;|&amp;
-  v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; x &amp; (I.\mathsf{globals}[x] = v) \\
-\def\mathdef2111#1{{}}\mathdef2111{local index} &amp; \href{../text/modules.html#text-localidx}{\mathtt{localidx}}_I &amp;::=&amp;
-  x{:}\href{../text/values.html#text-int}{\def\mathdef2153#1{{\mathtt{u}#1}}\mathdef2153{\mathtt{32}}} &amp;\Rightarrow&amp; x &amp;|&amp;
-  v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; x &amp; (I.\mathsf{locals}[x] = v) \\
-\def\mathdef2111#1{{}}\mathdef2111{label index} &amp; \href{../text/modules.html#text-labelidx}{\mathtt{labelidx}}_I &amp;::=&amp;
-  l{:}\href{../text/values.html#text-int}{\def\mathdef2153#1{{\mathtt{u}#1}}\mathdef2153{\mathtt{32}}} &amp;\Rightarrow&amp; l &amp;|&amp;
-  v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; l &amp; (I.\mathsf{labels}[l] = v) \\
-\end{array}\end{split}\]</div>
-<span class="target" id="text-label"></span><p id="index-2"><a class="reference internal" href="#text-instr-control"><span class="std std-ref">Structured control instructions</span></a> can be annotated with a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">label identifier</span></a>.
-They are the only symbolic identifiers that can be bound locally in an instruction sequence.
+<div class="section" id="labels">
+<span id="text-label"></span><span id="index-1"></span><h2>Labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="#text-instr-control"><span class="std std-ref">Structured control instructions</span></a> can be annotated with a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">label identifier</span></a>.
+They are the only <a class="reference internal" href="modules.html#text-index"><span class="std std-ref">symbolic identifiers</span></a> that can be bound locally in an instruction sequence.
 The following grammar handles the corresponding update to the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> by producing a context with an additional label entry.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcllll}
@@ -158,9 +132,9 @@ The following grammar handles the corresponding update to the <a class="referenc
 This effectively shifts all existing labels up by one,
 mirroring the fact that control instructions are indexed relatively not absolutely.</p>
 </div>
-<span class="target" id="text-instr-control"></span></div>
+</div>
 <div class="section" id="control-instructions">
-<span id="index-3"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="text-instr-control"></span><span id="text-plaininstr"></span><span id="text-blockinstr"></span><span id="index-2"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
 <p id="text-if"><span id="text-loop"></span><span id="text-block"></span><a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">Structured control instructions</span></a> can bind an optional symbolic <a class="reference internal" href="#text-label"><span class="std std-ref">label identifier</span></a>.
 The same identifier may optionally be repeated after the corresponding <span class="math">\(\mathtt{end}\)</span> and <span class="math">\(\mathtt{else}\)</span> pseudo instructions.</p>
 <div class="math">
@@ -201,19 +175,19 @@ The same identifier may optionally be repeated after the corresponding <span cla
     &amp;\equiv&amp;
   \def\mathdef2184#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2184{if}~~\href{../text/instructions.html#text-label}{\mathtt{label}}~~\href{../text/types.html#text-resulttype}{\mathtt{resulttype}}~~\href{../text/instructions.html#text-instr}{\mathtt{instr}}^\ast~~\def\mathdef2185#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2185{else}~~\def\mathdef2186#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2186{end}
 \end{array}\]</div>
-<span class="target" id="text-instr-parametric"></span></div>
+</div>
 </div>
 <div class="section" id="parametric-instructions">
-<span id="index-4"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="text-instr-parametric"></span><span id="index-3"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="math" id="text-select">
 <span id="text-drop"></span>\[\begin{split}\begin{array}{llclll}
 \def\mathdef2111#1{{}}\mathdef2111{instruction} &amp; \href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
   \def\mathdef2187#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2187{drop} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}} \\ &amp;&amp;|&amp;
   \def\mathdef2188#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2188{select} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-instr-variable"></span></div>
+</div>
 <div class="section" id="variable-instructions">
-<span id="index-5"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="text-instr-variable"></span><span id="index-4"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="math" id="text-set-global">
 <span id="text-get-global"></span><span id="text-tee-local"></span><span id="text-set-local"></span><span id="text-get-local"></span>\[\begin{split}\begin{array}{llclll}
 \def\mathdef2111#1{{}}\mathdef2111{instruction} &amp; \href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
@@ -223,10 +197,10 @@ The same identifier may optionally be repeated after the corresponding <span cla
   \def\mathdef2192#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2192{get\_global}~~x{:}\href{../text/modules.html#text-globalidx}{\mathtt{globalidx}}_I &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_global}}~x \\ &amp;&amp;|&amp;
   \def\mathdef2193#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2193{set\_global}~~x{:}\href{../text/modules.html#text-globalidx}{\mathtt{globalidx}}_I &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_global}}~x \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-memarg"><span id="text-instr-memory"></span></span></div>
+</div>
 <div class="section" id="memory-instructions">
-<span id="index-6"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
-<p id="text-grow-memory"><span id="text-current-memory"></span><span id="text-storen"></span><span id="text-store"></span><span id="text-loadn"></span><span id="text-load"></span><span id="id1"></span>The offset and alignment immediates to memory instructions are optional.
+<span id="text-instr-memory"></span><span id="index-5"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
+<p id="text-grow-memory"><span id="text-current-memory"></span><span id="text-storen"></span><span id="text-store"></span><span id="text-loadn"></span><span id="text-load"></span><span id="text-memarg"></span>The offset and alignment immediates to memory instructions are optional.
 The offset defaults to <span class="math">\(\mathtt{0}\)</span>, the alignment to the storage size of the respective memory access, which is its <em>natural alignment</em>.
 Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{\mathtt{offset}}\)</span> or <span class="math">\(\href{../text/instructions.html#text-memarg}{\mathtt{align}}\)</span> phrase is considered a single <a class="reference internal" href="lexical.html#text-keyword"><span class="std std-ref">keyword token</span></a>, so no <a class="reference internal" href="lexical.html#text-space"><span class="std std-ref">white space</span></a> is allowed around the <span class="math">\(\def\mathdef2194#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2194{=}\)</span>.</p>
 <div class="math">
@@ -266,9 +240,9 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2220#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2220{current\_memory} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}} \\ &amp;&amp;|&amp;
   \def\mathdef2221#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2221{grow\_memory} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-instr-numeric"></span></div>
+</div>
 <div class="section" id="numeric-instructions">
-<span id="index-7"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="text-instr-numeric"></span><span id="index-6"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="math" id="text-const">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2111#1{{}}\mathdef2111{instruction} &amp; \href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I &amp;::=&amp; \dots \\&amp;&amp;|&amp;
@@ -436,9 +410,9 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2347#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2347{f32.reinterpret/i32} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
   \def\mathdef2348#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2348{f64.reinterpret/i64} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-foldedinstr"></span></div>
+</div>
 <div class="section" id="folded-instructions">
-<span id="index-8"></span><h2>Folded Instructions<a class="headerlink" href="#folded-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="text-foldedinstr"></span><span id="index-7"></span><h2>Folded Instructions<a class="headerlink" href="#folded-instructions" title="Permalink to this headline">¶</a></h2>
 <p>As a special abbreviation, instructions can be grouped into <em>folded</em> S-expression form.
 The set of all phrases defined by the following abbreviations recursively forms the auxiliary syntactic class <span class="math">\(\href{../text/instructions.html#text-foldedinstr}{\mathtt{foldedinstr}}\)</span>.
 Such a folded instruction can appear anywhere a regular instruction can.</p>
@@ -461,9 +435,9 @@ Such a folded instruction can appear anywhere a regular instruction can.</p>
 <p class="last">Folded instructions are solely syntactic sugar,
 no additional syntactic or type-based checking is implied.</p>
 </div>
-<span class="target" id="text-expr"></span></div>
+</div>
 <div class="section" id="expressions">
-<span id="index-9"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
+<span id="text-expr"></span><span id="index-8"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
 <p>Expressions are written as instruction sequences.
 No explicit <span class="math">\(\def\mathdef2373#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2373{end}\)</span> keyword is included, since they only occur in bracketed positions.</p>
 <div class="math">

@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -98,10 +98,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="binary-value"></span><div class="section" id="values">
-<span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="binary-byte"></span><div class="section" id="bytes">
-<span id="index-1"></span><h2>Bytes<a class="headerlink" href="#bytes" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="values">
+<span id="binary-value"></span><span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="bytes">
+<span id="binary-byte"></span><span id="index-1"></span><h2>Bytes<a class="headerlink" href="#bytes" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">Bytes</span></a> encode themselves.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcll&#64;{\qquad}l}
@@ -110,9 +110,9 @@
   \dots \\ &amp;&amp;|&amp;
   \def\mathdef819#1{\mathtt{0x#1}}\mathdef819{FF} &amp;\Rightarrow&amp; \def\mathdef820#1{\mathtt{0x#1}}\mathdef820{FF} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-uint"><span id="binary-sint"></span><span id="binary-int"></span></span></div>
+</div>
 <div class="section" id="integers">
-<span id="index-2"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
+<span id="binary-int"></span><span id="binary-uint"></span><span id="binary-sint"></span><span id="index-2"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
 <p>All <a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">integers</span></a> are encoded using the <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128">LEB128</a> variable-length integer encoding, in either unsigned or signed variant.</p>
 <p><a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">Unsigned integers</span></a> are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128">unsigned LEB128</a> format.
 As an additional constraint, the total number of bytes encoding a value of type <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef767#1{{\mathit{u}#1}}\mathdef767{N}}\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
@@ -150,9 +150,9 @@ any unused bits in these bytes must be <span class="math">\(0\)</span> for posit
 For example, <span class="math">\(\def\mathdef834#1{\mathtt{0x#1}}\mathdef834{83}~\def\mathdef835#1{\mathtt{0x#1}}\mathdef835{10}\)</span> is malformed as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef770#1{{\mathit{u}#1}}\mathdef770{\mathit{8}}}\)</span> encoding.
 Similarly, both <span class="math">\(\def\mathdef836#1{\mathtt{0x#1}}\mathdef836{83}~\def\mathdef837#1{\mathtt{0x#1}}\mathdef837{3E}\)</span> and <span class="math">\(\def\mathdef838#1{\mathtt{0x#1}}\mathdef838{FF}~\def\mathdef839#1{\mathtt{0x#1}}\mathdef839{7B}\)</span> are malformed as <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef775#1{{\mathit{s}#1}}\mathdef775{\mathit{8}}}\)</span> encodings.</p>
 </div>
-<span class="target" id="binary-float"></span></div>
+</div>
 <div class="section" id="floating-point">
-<span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
+<span id="binary-float"></span><span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating point</span></a> values are encoded by their <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> bit pattern in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
@@ -160,18 +160,18 @@ Similarly, both <span class="math">\(\def\mathdef836#1{\mathtt{0x#1}}\mathdef836
   b^\ast{:\,}\href{../binary/values.html#binary-byte}{\mathtt{byte}}^{N/8} &amp;\Rightarrow&amp; \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-float}{\def\mathdef782#1{{\mathit{f}#1}}\mathdef782{N}}}^{-1}(\mathrm{reverse}(b^\ast)) \\
 \end{array}\end{split}\]</div>
 <p>Here, <span class="math">\(\mathrm{reverse}(b^\ast)\)</span> denotes the byte sequence <span class="math">\(b^\ast\)</span> in reversed order.</p>
-<span class="target" id="binary-vec"></span></div>
+</div>
 <div class="section" id="vectors">
-<span id="index-4"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<span id="binary-vec"></span><span id="index-4"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-vec"><span class="std std-ref">Vectors</span></a> are encoded with their length followed by the encoding of their element sequence.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef763#1{{}}\mathdef763{vector} &amp; \href{../binary/values.html#binary-vec}{\mathtt{vec}}(\mathtt{B}) &amp;::=&amp;
   n{:}\href{../binary/values.html#binary-int}{\def\mathdef790#1{{\mathtt{u}#1}}\mathdef790{\mathtt{32}}}~~(x{:}\mathtt{B})^n &amp;\Rightarrow&amp; x^n \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-name"></span></div>
+</div>
 <div class="section" id="names">
-<span id="index-5"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
+<span id="binary-name"></span><span id="index-5"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are encoded like a <a class="reference internal" href="#binary-vec"><span class="std std-ref">vector</span></a> of bytes containing the <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> UTF-8 encoding of the name&#8217;s code point sequence.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}

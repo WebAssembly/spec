@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -58,8 +58,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#external-typing">External Typing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#import-matching">Import Matching</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#allocation">Allocation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#index-0">Instantiation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#index-1">Invocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instantiation">Instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#invocation">Invocation</a></li>
 </ul>
 </li>
 </ul>
@@ -404,10 +404,10 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#syntax-record}{\oplus} \{\math
 \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} &amp;=&amp; \{~
   \begin{array}[t]{&#64;{}l&#64;{}}
   \mathsf{types}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{types}, \\
-  \mathsf{funcs}~\href{../execution/runtime.html#syntax-externtype}{\mathrm{funcs}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^\ast, \\
-  \mathsf{tables}~\href{../execution/runtime.html#syntax-externtype}{\mathrm{tables}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}^\ast, \\
-  \mathsf{mems}~\href{../execution/runtime.html#syntax-externtype}{\mathrm{mems}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}^\ast, \\
-  \mathsf{globals}~\href{../execution/runtime.html#syntax-externtype}{\mathrm{globals}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}^\ast, \\
+  \mathsf{funcs}~\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^\ast, \\
+  \mathsf{tables}~\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}^\ast, \\
+  \mathsf{mems}~\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}^\ast, \\
+  \mathsf{globals}~\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast)~\href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}^\ast, \\
   \mathsf{exports}~\href{../execution/runtime.html#syntax-exportinst}{\mathit{exportinst}}^\ast ~\}
   \end{array} \\[1ex]
 S_1, \href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^\ast &amp;=&amp; \href{../execution/modules.html#alloc-func}{\mathrm{allocfunc}}^\ast(S, \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{funcs}, \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}) \\
@@ -416,14 +416,14 @@ S_3, \href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}^\ast &amp
 S', \href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}^\ast &amp;=&amp; \href{../execution/modules.html#alloc-global}{\mathrm{allocglobal}}^\ast(S_3, \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{globals}) \\[1ex]
 \href{../execution/runtime.html#syntax-exportinst}{\mathit{exportinst}}^\ast &amp;=&amp; \{ \mathsf{name}~(\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{name}), \mathsf{value}~\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}} \}^\ast
   &amp; (\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast = \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports}) \\
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{funcs}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[x])^\ast
-  &amp; (x^\ast = \href{../execution/runtime.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{tables}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{tables}[x])^\ast
-  &amp; (x^\ast = \href{../execution/runtime.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{mems}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{mems}[x])^\ast
-  &amp; (x^\ast = \href{../execution/runtime.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{globals}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{globals}[x])^\ast
-  &amp; (x^\ast = \href{../execution/runtime.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[x])^\ast
+  &amp; (x^\ast = \href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{tables}[x])^\ast
+  &amp; (x^\ast = \href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{mems}[x])^\ast
+  &amp; (x^\ast = \href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{ex}}^\ast) &amp;=&amp; (\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{globals}[x])^\ast
+  &amp; (x^\ast = \href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{exports})) \\
 \end{array}\end{split}\]</div>
 <p>Here, the notation <span class="math">\(\mathrm{allocX}^\ast\)</span> is shorthand for multiple <a class="reference internal" href="#alloc"><span class="std std-ref">allocations</span></a> of object kind <span class="math">\(X\)</span>, defined as follows:</p>
 <div class="math">
@@ -437,10 +437,10 @@ S_{i+1}, a^n[i] &amp;=&amp; \mathrm{allocX}(S_i, X^n[i], \dots)
 <p class="last">The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span> is passed to the function allocator as an argument, in order to form the necessary closures.
 In an implementation, this recursion is easily unraveled by mutating one or the other in a secondary step.</p>
 </div>
-<span class="target" id="exec-module"><span id="instantiation"></span></span></div>
 </div>
-<div class="section" id="index-0">
-<span id="id10"></span><h2>Instantiation<a class="headerlink" href="#index-0" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="instantiation">
+<span id="exec-module"></span><span id="index-0"></span><span id="id10"></span><h2>Instantiation<a class="headerlink" href="#instantiation" title="Permalink to this headline">¶</a></h2>
 <p>Given a <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span>, a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is instantiated with a list of <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^n\)</span> supplying the required imports as follows.
 Instantiation may <em>fail</em> with an error.</p>
 <ol class="arabic simple">
@@ -448,14 +448,14 @@ Instantiation may <em>fail</em> with an error.</p>
 <li>Fail.</li>
 </ol>
 </li>
-<li>Assert: <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is <a class="reference internal" href="../validation/modules.html#valid-module"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^m\)</span> classifying its <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">imports</span></a>.</li>
+<li>Assert: <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is <a class="reference internal" href="../validation/modules.html#valid-module"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^m\)</span> classifying its <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">imports</span></a>.</li>
 <li>If the number <span class="math">\(m\)</span> of <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">imports</span></a> is not equal to the number <span class="math">\(n\)</span> of provided <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a>, then:<ol class="loweralpha">
 <li>Fail.</li>
 </ol>
 </li>
-<li>For each <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_i\)</span> in <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^n\)</span> and <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}_i\)</span> in <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^n\)</span>, do:<ol class="loweralpha">
-<li>Assert: <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_i\)</span> is <a class="reference internal" href="#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}'_i\)</span> in store <span class="math">\(S\)</span>.</li>
-<li>If <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}'_i\)</span> does not <a class="reference internal" href="#match-externtype"><span class="std std-ref">match</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}_i\)</span>, then:<ol class="lowerroman">
+<li>For each <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_i\)</span> in <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^n\)</span> and <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i\)</span> in <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^n\)</span>, do:<ol class="loweralpha">
+<li>Assert: <span class="math">\(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}_i\)</span> is <a class="reference internal" href="#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'_i\)</span> in store <span class="math">\(S\)</span>.</li>
+<li>If <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'_i\)</span> does not <a class="reference internal" href="#match-externtype"><span class="std std-ref">match</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i\)</span>, then:<ol class="lowerroman">
 <li>Fail.</li>
 </ol>
 </li>
@@ -509,7 +509,7 @@ Instantiation may <em>fail</em> with an error.</p>
 <li>For each <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segment</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{elem}\)</span>, do:<ol class="loweralpha">
 <li>For each <a class="reference internal" href="../syntax/modules.html#syntax-funcidx"><span class="std std-ref">function index</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}_{ij}\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i.\mathsf{init}\)</span> (starting with <span class="math">\(j = 0\)</span>), do:<ol class="lowerroman">
 <li>Assert: due to <a class="reference internal" href="../validation/modules.html#valid-elem"><span class="std std-ref">validation</span></a>, <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}_{ij}]\)</span> exists.</li>
-<li>Let <span class="math">\(\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}_{ij}\)</span> be the <span class="xref std std-ref">function address</span> <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}_{ij}]\)</span>.</li>
+<li>Let <span class="math">\(\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}_{ij}\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}_{ij}]\)</span>.</li>
 <li>Replace <span class="math">\(\href{../execution/runtime.html#syntax-tableinst}{\mathit{tableinst}}_i.\mathsf{elem}[\mathit{eo}_i + j]\)</span> with <span class="math">\(\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}_{ij}\)</span>.</li>
 </ol>
 </li>
@@ -528,7 +528,7 @@ Instantiation may <em>fail</em> with an error.</p>
 </li>
 <li>If the <a class="reference internal" href="../syntax/modules.html#syntax-start"><span class="std std-ref">start function</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{start}\)</span> is not empty, then:<ol class="loweralpha">
 <li>Assert: due to <a class="reference internal" href="../validation/modules.html#valid-start"><span class="std std-ref">validation</span></a>, <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{start}]\)</span> exists.</li>
-<li>Let <span class="math">\(\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> be the <span class="xref std std-ref">function address</span> <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{start}]\)</span>.</li>
+<li>Let <span class="math">\(\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{start}]\)</span>.</li>
 <li><a class="reference internal" href="instructions.html#exec-invoke"><span class="std std-ref">Invoke</span></a> the function instance at <span class="math">\(\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span>.</li>
 </ol>
 </li>
@@ -544,9 +544,9 @@ S; \href{../execution/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\hr
   \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} \\
   \end{array} \\
 &amp;\mbox{if}
-  &amp; \vdash \href{../syntax/modules.html#syntax-module}{\mathit{module}} : \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^n \\
-  &amp;\wedge&amp; (\vdash \href{../execution/runtime.html#syntax-externval}{\mathit{externval}} : \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}')^n \\
-  &amp;\wedge&amp; (\vdash \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}' \leq \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}})^n \\[1ex]
+  &amp; \vdash \href{../syntax/modules.html#syntax-module}{\mathit{module}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^n \\
+  &amp;\wedge&amp; (\vdash \href{../execution/runtime.html#syntax-externval}{\mathit{externval}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}')^n \\
+  &amp;\wedge&amp; (\vdash \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}' \leq \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^n \\[1ex]
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{globals} = \href{../syntax/modules.html#syntax-global}{\mathit{global}}^k \\
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{elem} = \href{../syntax/modules.html#syntax-elem}{\mathit{elem}}^\ast \\
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{data} = \href{../syntax/modules.html#syntax-data}{\mathit{data}}^\ast \\
@@ -558,7 +558,7 @@ S; \href{../execution/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\hr
   &amp;\wedge&amp; (S'; F; \href{../syntax/modules.html#syntax-global}{\mathit{global}}.\mathsf{init} \hookrightarrow^\ast S'; F; v)^\ast \\[1ex]
   &amp;\wedge&amp; (\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}} = \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{tables}[\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\mathsf{table}])^\ast \\
   &amp;\wedge&amp; (\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}} = \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{mems}[\href{../syntax/modules.html#syntax-data}{\mathit{data}}.\mathsf{mem}])^\ast \\
-  &amp;\wedge&amp; \href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}^\ast = \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{globals}[|\href{../execution/runtime.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{imports})|:k] \\
+  &amp;\wedge&amp; \href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}^\ast = \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{globals}[|\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\mathsf{imports})|:k] \\
   &amp;\wedge&amp; (\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} = \href{../execution/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\mathsf{funcs}[\href{../syntax/modules.html#syntax-start}{\mathit{start}}.\mathsf{func}])^? \\[1ex]
   &amp;\wedge&amp; (\mathit{eo} + |\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\mathsf{init}| \leq |S'.\mathsf{tables}[\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}].\mathsf{elem}|)^\ast \\
   &amp;\wedge&amp; (\mathit{do} + |\href{../syntax/modules.html#syntax-data}{\mathit{data}}.\mathsf{init}| \leq |S'.\mathsf{mems}[\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}].\mathsf{data}|)^\ast \\[1ex]
@@ -584,10 +584,10 @@ S; \href{../execution/runtime.html#syntax-init_global}{\mathsf{init\_global}}~a~
 Store mutation is not atomic;
 it happens in individual steps that may be interleaved with other threads.</p>
 </div>
-<span class="target" id="exec-call-export"><span id="invocation"></span></span></div>
-<div class="section" id="index-1">
-<span id="id11"></span><h2>Invocation<a class="headerlink" href="#index-1" title="Permalink to this headline">¶</a></h2>
-<p>Once a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> has been <a class="reference internal" href="#instantiation"><span class="std std-ref">instantiated</span></a>, any exported function can be <em>invoked</em> externally via its <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> in the <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span> and an appropriate list <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span> of argument <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a>.
+</div>
+<div class="section" id="invocation">
+<span id="exec-call-export"></span><span id="index-1"></span><span id="id11"></span><h2>Invocation<a class="headerlink" href="#invocation" title="Permalink to this headline">¶</a></h2>
+<p>Once a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> has been <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiated</span></a>, any exported function can be <em>invoked</em> externally via its <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math">\(\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> in the <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span> and an appropriate list <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span> of argument <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a>.
 If successful, the invocation returns the function&#8217;s result values <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^\ast\)</span>.</p>
 <p>The following steps are performed:</p>
 <ol class="arabic simple">
@@ -618,7 +618,7 @@ If successful, the invocation returns the function&#8217;s result values <span c
 <li>Pop <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^m\)</span> from the stack.</li>
 </ol>
 <p>The values <span class="math">\(\href{../execution/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^m\)</span> are the results of the call.</p>
-<p>If the function terminates with a <span class="xref std std-ref">trap</span>, the error is propagated to the caller in a manner specified by the <span class="xref std std-ref">embedder</span>.</p>
+<p>If the function terminates with a <a class="reference internal" href="../introduction/overview.html#trap"><span class="std std-ref">trap</span></a>, the error is propagated to the caller in a manner specified by the <a class="reference internal" href="../introduction/overview.html#embedder"><span class="std std-ref">embedder</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{&#64;{}lcl}
 \mathrm{invoke}(S, \href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}, \href{../execution/runtime.html#syntax-val}{\mathit{val}}^n) &amp;=&amp; \href{../execution/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^m / \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}} \\

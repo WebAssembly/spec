@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -101,10 +101,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="syntax-type"></span><div class="section" id="types">
-<span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="syntax-valtype"></span><div class="section" id="value-types">
-<span id="index-1"></span><h2>Value Types<a class="headerlink" href="#value-types" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="types">
+<span id="syntax-type"></span><span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="value-types">
+<span id="syntax-valtype"></span><span id="index-1"></span><h2>Value Types<a class="headerlink" href="#value-types" title="Permalink to this headline">¶</a></h2>
 <p><em>Value types</em> classify the individual values that WebAssembly code can compute with and the values that a variable accepts.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -122,10 +122,10 @@ They correspond to single and double precision floating point types as defined b
 <li>The notation <span class="math">\(|t|\)</span> denotes the <em>width</em> of a value type.
 (That is, <span class="math">\(|\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}| = |\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}| = 32\)</span> and <span class="math">\(|\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}| = |\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}| = 64\)</span>.)</li>
 </ul>
-<span class="target" id="syntax-resulttype"></span></div>
+</div>
 </div>
 <div class="section" id="result-types">
-<span id="index-2"></span><h2>Result Types<a class="headerlink" href="#result-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-resulttype"></span><span id="index-2"></span><h2>Result Types<a class="headerlink" href="#result-types" title="Permalink to this headline">¶</a></h2>
 <p><em>Result types</em> classify the results of functions or blocks,
 which is a sequence of values.</p>
 <div class="math">
@@ -138,9 +138,9 @@ which is a sequence of values.</p>
 <p class="last">In the current version of WebAssembly, at most one value is allowed as a result.
 However, this may be generalized to sequences of values in future versions.</p>
 </div>
-<span class="target" id="syntax-functype"></span></div>
+</div>
 <div class="section" id="function-types">
-<span id="index-3"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-functype"></span><span id="index-3"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
 <p><em>Function types</em> classify the signature of functions,
 mapping a vector of parameters to a vector of results.</p>
 <div class="math">
@@ -154,9 +154,9 @@ mapping a vector of parameters to a vector of results.</p>
 the length of the result type vector of a <a class="reference internal" href="../validation/modules.html#valid-functype"><span class="std std-ref">valid</span></a> function type may be at most <span class="math">\(1\)</span>.
 This restriction may be removed in future versions.</p>
 </div>
-<span class="target" id="syntax-limits"></span></div>
+</div>
 <div class="section" id="limits">
-<span id="index-4"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-limits"></span><span id="index-4"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
 <p><em>Limits</em> classify the size range of resizeable storage like associated with <a class="reference internal" href="#syntax-memtype"><span class="std std-ref">memory types</span></a> and <a class="reference internal" href="#syntax-tabletype"><span class="std std-ref">table types</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -164,9 +164,9 @@ This restriction may be removed in future versions.</p>
   \{ \mathsf{min}~\href{../syntax/values.html#syntax-int}{\def\mathdef1876#1{{\mathit{u}#1}}\mathdef1876{\mathit{32}}}, \mathsf{max}~\href{../syntax/values.html#syntax-int}{\def\mathdef1876#1{{\mathit{u}#1}}\mathdef1876{\mathit{32}}}^? \} \\
 \end{array}\end{split}\]</div>
 <p>If no maximum is given, the respective storage can grow to any size.</p>
-<span class="target" id="syntax-memtype"></span></div>
+</div>
 <div class="section" id="memory-types">
-<span id="index-5"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-memtype"></span><span id="index-5"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
 <p><em>Memory types</em> classify linear memories and their size range.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -175,9 +175,9 @@ This restriction may be removed in future versions.</p>
 \end{array}\end{split}\]</div>
 <p>The limits constrain the minimum and optionally the maximum size of a memory.
 The limits are given in units of <a class="reference internal" href="../execution/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
-<span class="target" id="syntax-elemtype"><span id="syntax-tabletype"></span></span></div>
+</div>
 <div class="section" id="table-types">
-<span id="index-6"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-tabletype"></span><span id="syntax-elemtype"></span><span id="index-6"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
 <p><em>Table types</em> classify tables over elements of <em>element types</em> within a given size range.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -194,9 +194,9 @@ A table of that type thus contains references to functions of heterogeneous type
 <p class="first admonition-title">Note</p>
 <p class="last">In future versions of WebAssembly, additional element types may be introduced.</p>
 </div>
-<span class="target" id="syntax-mut"><span id="syntax-globaltype"></span></span></div>
+</div>
 <div class="section" id="global-types">
-<span id="index-7"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-globaltype"></span><span id="syntax-mut"></span><span id="index-7"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
 <p><em>Global types</em> classify global variables, which hold a value and can either be mutable or immutable.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -206,13 +206,13 @@ A table of that type thus contains references to functions of heterogeneous type
   \href{../syntax/types.html#syntax-mut}{\mathsf{const}} ~|~
   \href{../syntax/types.html#syntax-mut}{\mathsf{var}} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="syntax-externtype"></span></div>
+</div>
 <div class="section" id="external-types">
-<span id="index-8"></span><h2>External Types<a class="headerlink" href="#external-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-externtype"></span><span id="index-8"></span><h2>External Types<a class="headerlink" href="#external-types" title="Permalink to this headline">¶</a></h2>
 <p><em>External types</em> classify <a class="reference internal" href="modules.html#syntax-import"><span class="std std-ref">imports</span></a> and <a class="reference internal" href="../execution/runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> with their respective types.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1867#1{{}}\mathdef1867{external types} &amp; \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}} &amp;::=&amp;
+\def\mathdef1867#1{{}}\mathdef1867{external types} &amp; \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}} &amp;::=&amp;
   \mathsf{func}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}} ~|~
   \mathsf{table}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} ~|~
   \mathsf{mem}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} ~|~
@@ -224,10 +224,10 @@ A table of that type thus contains references to functions of heterogeneous type
 It filters out entries of a specific kind in an order-preserving fashion:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lcl}
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{funcs}}(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^\ast) &amp;=&amp; [\href{../syntax/types.html#syntax-functype}{\mathit{functype}} ~|~ (\mathsf{func}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}) \in \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^\ast] \\
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{tables}}(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^\ast) &amp;=&amp; [\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} ~|~ (\mathsf{table}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}) \in \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^\ast] \\
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{mems}}(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^\ast) &amp;=&amp; [\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} ~|~ (\mathsf{mem}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}) \in \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^\ast] \\
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{globals}}(\href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^\ast) &amp;=&amp; [\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} ~|~ (\mathsf{global}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}) \in \href{../execution/runtime.html#syntax-externtype}{\mathit{externtype}}^\ast] \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) &amp;=&amp; [\href{../syntax/types.html#syntax-functype}{\mathit{functype}} ~|~ (\mathsf{func}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}) \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast] \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) &amp;=&amp; [\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} ~|~ (\mathsf{table}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}) \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast] \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) &amp;=&amp; [\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} ~|~ (\mathsf{mem}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}) \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast] \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) &amp;=&amp; [\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} ~|~ (\mathsf{global}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}) \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast] \\
 \end{array}\end{split}\]</div>
 </div>
 </div>

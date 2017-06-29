@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -53,7 +53,7 @@
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Runtime Structure</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#values">Values</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#index-2">Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#store">Store</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#addresses">Addresses</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-instances">Module Instances</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#function-instances">Function Instances</a></li>
@@ -62,7 +62,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#global-instances">Global Instances</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#export-instances">Export Instances</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#external-values">External Values</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#index-11">Stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stack">Stack</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#administrative-instructions">Administrative Instructions</a></li>
 </ul>
 </li>
@@ -105,10 +105,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="syntax-runtime"></span><div class="section" id="runtime-structure">
-<span id="index-0"></span><h1>Runtime Structure<a class="headerlink" href="#runtime-structure" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="syntax-val"></span><div class="section" id="values">
-<span id="index-1"></span><h2>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="runtime-structure">
+<span id="syntax-runtime"></span><span id="index-0"></span><h1>Runtime Structure<a class="headerlink" href="#runtime-structure" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="values">
+<span id="syntax-val"></span><span id="index-1"></span><h2>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h2>
 <p>WebAssembly computations manipulate <em>values</em> of the four basic <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a>: <a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">integers</span></a> and <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point data</span></a> of 32 or 64 bit width each, respectively.</p>
 <p>In most places of the semantics, values of different types can occur.
 In order to avoid ambiguities, values are therefore represented with an abstract syntax that makes their type explicit.
@@ -121,9 +121,9 @@ It is convenient to reuse the same notation as for the <span class="math">\(\hre
   \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-float}{\def\mathdef1154#1{{\mathit{f}#1}}\mathdef1154{\mathit{32}}} ~|~
   \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../syntax/values.html#syntax-float}{\def\mathdef1155#1{{\mathit{f}#1}}\mathdef1155{\mathit{64}}}
 \end{array}\]</div>
-<span class="target" id="syntax-store"><span id="store"></span></span></div>
-<div class="section" id="index-2">
-<span id="id1"></span><h2>Store<a class="headerlink" href="#index-2" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="store">
+<span id="syntax-store"></span><span id="index-2"></span><span id="id1"></span><h2>Store<a class="headerlink" href="#store" title="Permalink to this headline">¶</a></h2>
 <p>The <em>store</em> represents all global state that can be manipulated by WebAssembly programs.
 It consists of the runtime representation of all <em>instances</em> of <a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="#syntax-tableinst"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="#syntax-meminst"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="#syntax-globalinst"><span class="std std-ref">globals</span></a> that have been <em>allocated</em> during the life time of the abstract machine. <a class="footnote-reference" href="#gc" id="id2">[1]</a></p>
 <p>Syntactically, the store is defined as a <a class="reference internal" href="../syntax/conventions.html#syntax-record"><span class="std std-ref">record</span></a> listing the existing instances of each category:</p>
@@ -150,10 +150,10 @@ and hence outside the scope of this specification.</td></tr>
 <ul class="simple">
 <li>The meta variable <span class="math">\(S\)</span> ranges over stores where clear from context.</li>
 </ul>
-<span class="target" id="syntax-globaladdr"><span id="syntax-memaddr"></span><span id="syntax-tableaddr"></span><span id="syntax-funcaddr"></span><span id="syntax-addr"></span></span></div>
+</div>
 </div>
 <div class="section" id="addresses">
-<span id="index-3"></span><h2>Addresses<a class="headerlink" href="#addresses" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-addr"></span><span id="syntax-globaladdr"></span><span id="syntax-memaddr"></span><span id="syntax-tableaddr"></span><span id="syntax-funcaddr"></span><span id="index-3"></span><h2>Addresses<a class="headerlink" href="#addresses" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">Function instances</span></a>, <a class="reference internal" href="#syntax-tableinst"><span class="std std-ref">table instances</span></a>, <a class="reference internal" href="#syntax-meminst"><span class="std std-ref">memory instances</span></a>, and <a class="reference internal" href="#syntax-globalinst"><span class="std std-ref">global instances</span></a> in the <a class="reference internal" href="#syntax-store"><span class="std std-ref">store</span></a> are referenced with abstract <em>addresses</em>.
 These are simply indices into the respective store component.</p>
 <div class="math">
@@ -179,14 +179,14 @@ not an offset <em>inside</em> a memory instance.</p>
 <p class="last">There is no specific limit on the number of allocations of store objects,
 hence logical addresses can be arbitrarily large natural numbers.</p>
 </div>
-<p>An <span class="xref std std-ref">embedder</span> may assign identity to <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> store objects corresponding to their addresses,
+<p>An <a class="reference internal" href="../introduction/overview.html#embedder"><span class="std std-ref">embedder</span></a> may assign identity to <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> store objects corresponding to their addresses,
 even where this identity is not observable from within WebAssembly code itself
 (such as for <a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">function instances</span></a> or immutable <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">globals</span></a>).</p>
-<span class="target" id="syntax-moduleinst"></span></div>
+</div>
 <div class="section" id="module-instances">
-<span id="index-4"></span><h2>Module Instances<a class="headerlink" href="#module-instances" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-moduleinst"></span><span id="index-4"></span><h2>Module Instances<a class="headerlink" href="#module-instances" title="Permalink to this headline">¶</a></h2>
 <p>A <em>module instance</em> is the runtime representation of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.
-It is created by <a class="reference internal" href="modules.html#instantiation"><span class="std std-ref">instantiating</span></a> a module,
+It is created by <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiating</span></a> a module,
 and collects runtime representations of all entities that are imported, defined, or exported by the module.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -203,9 +203,9 @@ and collects runtime representations of all entities that are imported, defined,
 <p>Each component references runtime instances corresponding to respective declarations from the original module &#8211; whether imported or defined &#8211; in the order of their static <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
 <a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">Function instances</span></a>, <a class="reference internal" href="#syntax-tableinst"><span class="std std-ref">table instances</span></a>, <a class="reference internal" href="#syntax-meminst"><span class="std std-ref">memory instances</span></a>, and <a class="reference internal" href="#syntax-globalinst"><span class="std std-ref">global instances</span></a> are referenced with an indirection through their respective <a class="reference internal" href="#syntax-addr"><span class="std std-ref">addresses</span></a> in the <a class="reference internal" href="#syntax-store"><span class="std std-ref">store</span></a>.</p>
 <p>It is an invariant of the semantics that all <a class="reference internal" href="#syntax-exportinst"><span class="std std-ref">export instances</span></a> in a given module instance have different <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">names</span></a>.</p>
-<span class="target" id="syntax-hostfunc"><span id="syntax-funcinst"></span></span></div>
+</div>
 <div class="section" id="function-instances">
-<span id="index-5"></span><h2>Function Instances<a class="headerlink" href="#function-instances" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-funcinst"></span><span id="syntax-hostfunc"></span><span id="index-5"></span><h2>Function Instances<a class="headerlink" href="#function-instances" title="Permalink to this headline">¶</a></h2>
 <p>A <em>function instance</em> is the runtime representation of a <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a>.
 It effectively is a <em>closure</em> of the original function over the runtime <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a> of its own <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.
 The module instance is used to resolve references to other non-local definitions during execution of the function.</p>
@@ -223,15 +223,15 @@ a host function behaves non-deterministically.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Function instances are immutable, and their identity is not observable by WebAssembly code.
-However, the <span class="xref std std-ref">embedder</span> might provide implicit or explicit means for distinguishing their <a class="reference internal" href="#syntax-funcaddr"><span class="std std-ref">addresses</span></a> when <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a>, either directly or through an entry in a <a class="reference internal" href="../syntax/modules.html#syntax-table"><span class="std std-ref">table</span></a>.</p>
+However, the <a class="reference internal" href="../introduction/overview.html#embedder"><span class="std std-ref">embedder</span></a> might provide implicit or explicit means for distinguishing their <a class="reference internal" href="#syntax-funcaddr"><span class="std std-ref">addresses</span></a> when <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a>, either directly or through an entry in a <a class="reference internal" href="../syntax/modules.html#syntax-table"><span class="std std-ref">table</span></a>.</p>
 </div>
-<span class="target" id="syntax-funcelem"><span id="syntax-tableinst"></span></span></div>
+</div>
 <div class="section" id="table-instances">
-<span id="index-6"></span><h2>Table Instances<a class="headerlink" href="#table-instances" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-tableinst"></span><span id="syntax-funcelem"></span><span id="index-6"></span><h2>Table Instances<a class="headerlink" href="#table-instances" title="Permalink to this headline">¶</a></h2>
 <p>A <em>table instance</em> is the runtime representation of a <a class="reference internal" href="../syntax/modules.html#syntax-table"><span class="std std-ref">table</span></a>.
 It holds a vector of <em>function elements</em> and an optional maximum size, if one was specified at the definition site of the table.</p>
 <p>Each function element is either empty, representing an uninitialized table entry, or a <a class="reference internal" href="#syntax-funcaddr"><span class="std std-ref">function address</span></a>.
-Function elements can be mutated through the execution of an <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segment</span></a> or by external means provided by the <span class="xref std std-ref">embedder</span>.</p>
+Function elements can be mutated through the execution of an <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segment</span></a> or by external means provided by the <a class="reference internal" href="../introduction/overview.html#embedder"><span class="std std-ref">embedder</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1133#1{{}}\mathdef1133{(table instance)} &amp; \href{../execution/runtime.html#syntax-tableinst}{\mathit{tableinst}} &amp;::=&amp;
@@ -244,9 +244,9 @@ Function elements can be mutated through the execution of an <a class="reference
 <p class="first admonition-title">Note</p>
 <p class="last">Other table elements may be added in future versions of WebAssembly.</p>
 </div>
-<span class="target" id="page-size"><span id="syntax-meminst"></span></span></div>
+</div>
 <div class="section" id="memory-instances">
-<span id="index-7"></span><h2>Memory Instances<a class="headerlink" href="#memory-instances" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-meminst"></span><span id="page-size"></span><span id="index-7"></span><h2>Memory Instances<a class="headerlink" href="#memory-instances" title="Permalink to this headline">¶</a></h2>
 <p>A <em>memory instance</em> is the runtime representation of a linear <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memory</span></a>.
 It holds a vector of bytes and an optional maximum size, if one was specified at the definition site of the memory.</p>
 <div class="math">
@@ -256,11 +256,11 @@ It holds a vector of bytes and an optional maximum size, if one was specified at
 \end{array}\end{split}\]</div>
 <p>The length of the vector always is a multiple of the WebAssembly <em>page size</em>, which is defined to be the constant <span class="math">\(65536\)</span> &#8211; abbreviated <span class="math">\(64\,\mathrm{Ki}\)</span>.
 Like in a <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a>, the maximum size in a memory instance is given in units of this page size.</p>
-<p>The bytes can be mutated through <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instructions</span></a>, the execution of a <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data segment</span></a>, or by external means provided by the <span class="xref std std-ref">embedder</span>.</p>
+<p>The bytes can be mutated through <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instructions</span></a>, the execution of a <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data segment</span></a>, or by external means provided by the <a class="reference internal" href="../introduction/overview.html#embedder"><span class="std std-ref">embedder</span></a>.</p>
 <p>It is an invariant of the semantics that the length of the byte vector, divided by page size, never exceeds the maximum size, if present.</p>
-<span class="target" id="syntax-globalinst"></span></div>
+</div>
 <div class="section" id="global-instances">
-<span id="index-8"></span><h2>Global Instances<a class="headerlink" href="#global-instances" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-globalinst"></span><span id="index-8"></span><h2>Global Instances<a class="headerlink" href="#global-instances" title="Permalink to this headline">¶</a></h2>
 <p>A <em>global instance</em> is the runtime representation of a <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">global</span></a> variable.
 It holds an individual <a class="reference internal" href="#syntax-val"><span class="std std-ref">value</span></a> and a flag indicating whether it is mutable.</p>
 <div class="math">
@@ -268,10 +268,10 @@ It holds an individual <a class="reference internal" href="#syntax-val"><span cl
 \def\mathdef1133#1{{}}\mathdef1133{(global instance)} &amp; \href{../execution/runtime.html#syntax-globalinst}{\mathit{globalinst}} &amp;::=&amp;
   \{ \mathsf{value}~\href{../execution/runtime.html#syntax-val}{\mathit{val}}, \mathsf{mut}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}} \} \\
 \end{array}\end{split}\]</div>
-<p>The value of mutable globals can be mutated through specific instructions or by external means provided by the <span class="xref std std-ref">embedder</span>.</p>
-<span class="target" id="syntax-exportinst"></span></div>
+<p>The value of mutable globals can be mutated through specific instructions or by external means provided by the <a class="reference internal" href="../introduction/overview.html#embedder"><span class="std std-ref">embedder</span></a>.</p>
+</div>
 <div class="section" id="export-instances">
-<span id="index-9"></span><h2>Export Instances<a class="headerlink" href="#export-instances" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-exportinst"></span><span id="index-9"></span><h2>Export Instances<a class="headerlink" href="#export-instances" title="Permalink to this headline">¶</a></h2>
 <p>An <em>export instance</em> is the runtime representation of an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">export</span></a>.
 It defines the export&#8217;s <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a> and the <a class="reference internal" href="#syntax-externval"><span class="std std-ref">external value</span></a> being exported.</p>
 <div class="math">
@@ -279,9 +279,9 @@ It defines the export&#8217;s <a class="reference internal" href="../syntax/valu
 \def\mathdef1133#1{{}}\mathdef1133{(export instance)} &amp; \href{../execution/runtime.html#syntax-exportinst}{\mathit{exportinst}} &amp;::=&amp;
   \{ \mathsf{name}~\href{../syntax/values.html#syntax-name}{\mathit{name}}, \mathsf{value}~\href{../execution/runtime.html#syntax-externval}{\mathit{externval}} \} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="syntax-externval"></span></div>
+</div>
 <div class="section" id="external-values">
-<span id="index-10"></span><h2>External Values<a class="headerlink" href="#external-values" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-externval"></span><span id="index-10"></span><h2>External Values<a class="headerlink" href="#external-values" title="Permalink to this headline">¶</a></h2>
 <p>An <em>external value</em> is the runtime representation of an entity that can be imported or exported.
 It is an <a class="reference internal" href="#syntax-addr"><span class="std std-ref">address</span></a> denoting either a <a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">function instance</span></a>, <a class="reference internal" href="#syntax-tableinst"><span class="std std-ref">table instance</span></a>, <a class="reference internal" href="#syntax-meminst"><span class="std std-ref">memory instance</span></a>, or <a class="reference internal" href="#syntax-globalinst"><span class="std std-ref">global instances</span></a> in the shared <a class="reference internal" href="#syntax-store"><span class="std std-ref">store</span></a>.</p>
 <div class="math">
@@ -298,15 +298,15 @@ It is an <a class="reference internal" href="#syntax-addr"><span class="std std-
 It filters out entries of a specific kind in an order-preserving fashion:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lcl}
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{funcs}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast) &amp;=&amp; [\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} ~|~ (\mathsf{func}~\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) \in \href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast] \\
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{tables}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast) &amp;=&amp; [\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}} ~|~ (\mathsf{table}~\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) \in \href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast] \\
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{mems}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast) &amp;=&amp; [\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}} ~|~ (\mathsf{mem}~\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}) \in \href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast] \\
-\href{../execution/runtime.html#syntax-externtype}{\mathrm{globals}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast) &amp;=&amp; [\href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}} ~|~ (\mathsf{global}~\href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) \in \href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast] \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast) &amp;=&amp; [\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} ~|~ (\mathsf{func}~\href{../execution/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) \in \href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast] \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast) &amp;=&amp; [\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}} ~|~ (\mathsf{table}~\href{../execution/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) \in \href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast] \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast) &amp;=&amp; [\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}} ~|~ (\mathsf{mem}~\href{../execution/runtime.html#syntax-memaddr}{\mathit{memaddr}}) \in \href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast] \\
+\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast) &amp;=&amp; [\href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}} ~|~ (\mathsf{global}~\href{../execution/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) \in \href{../execution/runtime.html#syntax-externval}{\mathit{externval}}^\ast] \\
 \end{array}\end{split}\]</div>
-<span class="target" id="syntax-label"><span id="syntax-frame"></span><span id="label"></span><span id="frame"></span><span id="stack"></span></span></div>
 </div>
-<div class="section" id="index-11">
-<span id="id3"></span><h2>Stack<a class="headerlink" href="#index-11" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="stack">
+<span id="label"></span><span id="frame"></span><span id="syntax-label"></span><span id="syntax-frame"></span><span id="index-11"></span><span id="id3"></span><h2>Stack<a class="headerlink" href="#stack" title="Permalink to this headline">¶</a></h2>
 <p>Besides the <a class="reference internal" href="#store"><span class="std std-ref">store</span></a>, most <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> interact with an implicit <em>stack</em>.
 The stack contains three kinds of entries:</p>
 <ul class="simple">
@@ -372,15 +372,15 @@ and a reference to the function&#8217;s own <a class="reference internal" href="
 <p class="last">In the current version of WebAssembly, the arities of labels and activations cannot be larger than <span class="math">\(1\)</span>.
 This may be generalized in future versions.</p>
 </div>
-<span class="target" id="syntax-invoke"><span id="syntax-trap"></span><span id="syntax-instr-admin"></span></span></div>
+</div>
 </div>
 <div class="section" id="administrative-instructions">
-<span id="index-12"></span><h2>Administrative Instructions<a class="headerlink" href="#administrative-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-admin"></span><span id="syntax-invoke"></span><span id="syntax-trap"></span><span id="index-12"></span><h2>Administrative Instructions<a class="headerlink" href="#administrative-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This section is only relevant for the <a class="reference internal" href="conventions.html#exec-notation"><span class="std std-ref">formal notation</span></a>.</p>
 </div>
-<p>In order to express the reduction of <span class="xref std std-ref">traps</span>, calls, and <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">control instructions</span></a>, the syntax of instructions is extended to include the following <em>administrative instructions</em>:</p>
+<p>In order to express the reduction of <a class="reference internal" href="../introduction/overview.html#trap"><span class="std std-ref">traps</span></a>, calls, and <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">control instructions</span></a>, the syntax of instructions is extended to include the following <em>administrative instructions</em>:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcl}
 \def\mathdef1133#1{{}}\mathdef1133{(administrative instruction)} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
@@ -410,8 +410,8 @@ When <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control
 \[\href{../execution/runtime.html#syntax-instr-admin}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~\href{../execution/runtime.html#syntax-val}{\mathit{val}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\hookrightarrow\quad \href{../execution/runtime.html#syntax-val}{\mathit{val}}^\ast\]</div>
 <p class="last">This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.</p>
 </div>
-<span class="target" id="syntax-ctxt-label"></span><div class="section" id="block-contexts">
-<span id="index-13"></span><h3>Block Contexts<a class="headerlink" href="#block-contexts" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="block-contexts">
+<span id="syntax-ctxt-block"></span><span id="index-13"></span><h3>Block Contexts<a class="headerlink" href="#block-contexts" title="Permalink to this headline">¶</a></h3>
 <p>To express <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">branches</span></a>, the following syntax of <em>block contexts</em> is defined, indexed by the count <span class="math">\(k\)</span> of labels surrounding the hole:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -431,9 +431,9 @@ When a branch occurs,
 this rule replaces the targeted label and associated instruction sequence with the label&#8217;s continuation.
 The right label is identified through the <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label index</span></a> <span class="math">\(l\)</span>, which corresponds to the number of surrounding <span class="math">\(\href{../execution/runtime.html#syntax-instr-admin}{\mathsf{label}}\)</span> instructions that must be hopped over &#8211; which is exactly the count encoded in the index of a block context.</p>
 </div>
-<span class="target" id="syntax-ctxt-eval"></span></div>
+</div>
 <div class="section" id="evaluation-contexts">
-<span id="index-14"></span><h3>Evaluation Contexts<a class="headerlink" href="#evaluation-contexts" title="Permalink to this headline">¶</a></h3>
+<span id="syntax-ctxt-eval"></span><span id="index-14"></span><h3>Evaluation Contexts<a class="headerlink" href="#evaluation-contexts" title="Permalink to this headline">¶</a></h3>
 <p>Finally, the following definition of <em>evaluation context</em> and associated structural rules enable reduction inside instruction sequences and administrative forms as well as the propagation of traps:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -450,10 +450,10 @@ S; F; E[\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast] &a
 S; F; E[\href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}] &amp;\hookrightarrow&amp; S; F; \href{../execution/runtime.html#syntax-instr-admin}{\mathsf{trap}}
   &amp; (\mbox{if}~E \neq [\_]) \\
 \end{array}\end{split}\]</div>
-<span class="target" id="syntax-instr-module"></span></div>
+</div>
 <div class="section" id="module-instructions">
-<span id="index-15"></span><h3>Module Instructions<a class="headerlink" href="#module-instructions" title="Permalink to this headline">¶</a></h3>
-<p>Module <a class="reference internal" href="modules.html#instantiation"><span class="std std-ref">instantiation</span></a> is a complex operation.
+<span id="syntax-moduleinstr"></span><span id="syntax-init-global"></span><span id="syntax-init-mem"></span><span id="syntax-init-table"></span><span id="syntax-instantiate"></span><span id="index-15"></span><h3>Module Instructions<a class="headerlink" href="#module-instructions" title="Permalink to this headline">¶</a></h3>
+<p>Module <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiation</span></a> is a complex operation.
 It is hence expressed in terms of reduction into smaller steps expressed by a sequence of administrative <em>module instructions</em> that are a superset of ordinary instructions and defined as follow.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcl}

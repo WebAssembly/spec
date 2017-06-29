@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -100,10 +100,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="binary-type"></span><div class="section" id="types">
-<span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="binary-valtype"></span><div class="section" id="value-types">
-<span id="index-1"></span><h2>Value Types<a class="headerlink" href="#value-types" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="types">
+<span id="binary-type"></span><span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="value-types">
+<span id="binary-valtype"></span><span id="index-1"></span><h2>Value Types<a class="headerlink" href="#value-types" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">Value types</span></a> are encoded by a single byte.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
@@ -118,9 +118,9 @@
 <p class="last">In future versions of WebAssembly, value types may include types denoted by <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type indices</span></a>.
 Thus, the binary format for types corresponds to the encodings of small negative <span class="math">\(\href{../binary/values.html#binary-sint}{\def\mathdef753#1{{\mathit{s}#1}}\mathdef753{}}\)</span> values, so that they can coexist with (positive) type indices.</p>
 </div>
-<span class="target" id="binary-blocktype"><span id="binary-resulttype"></span></span></div>
+</div>
 <div class="section" id="result-types">
-<span id="index-2"></span><h2>Result Types<a class="headerlink" href="#result-types" title="Permalink to this headline">¶</a></h2>
+<span id="binary-resulttype"></span><span id="binary-blocktype"></span><span id="index-2"></span><h2>Result Types<a class="headerlink" href="#result-types" title="Permalink to this headline">¶</a></h2>
 <p>The only <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result types</span></a> occurring in the binary format are the types of blocks. These are encoded in special compressed form, by either the byte <span class="math">\(\def\mathdef754#1{\mathtt{0x#1}}\mathdef754{40}\)</span> indicating the empty type or as a single <a class="reference internal" href="#binary-valtype"><span class="std std-ref">value type</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
@@ -132,9 +132,9 @@ Thus, the binary format for types corresponds to the encodings of small negative
 <p class="first admonition-title">Note</p>
 <p class="last">In future versions of WebAssembly, this scheme may be extended to support multiple results or more general block types.</p>
 </div>
-<span class="target" id="binary-functype"></span></div>
+</div>
 <div class="section" id="function-types">
-<span id="index-3"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
+<span id="binary-functype"></span><span id="index-3"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">Function types</span></a> are encoded by the byte <span class="math">\(\def\mathdef756#1{\mathtt{0x#1}}\mathdef756{60}\)</span> followed by the respective <a class="reference internal" href="values.html#binary-vec"><span class="std std-ref">vectors</span></a> of parameter and result types.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
@@ -142,9 +142,9 @@ Thus, the binary format for types corresponds to the encodings of small negative
   \def\mathdef757#1{\mathtt{0x#1}}\mathdef757{60}~~t_1^\ast{:\,}\href{../binary/values.html#binary-vec}{\mathtt{vec}}(\href{../binary/types.html#binary-valtype}{\mathtt{valtype}})~~t_2^\ast{:\,}\href{../binary/values.html#binary-vec}{\mathtt{vec}}(\href{../binary/types.html#binary-valtype}{\mathtt{valtype}})
     &amp;\Rightarrow&amp; [t_1^\ast] \to [t_2^\ast] \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-limits"></span></div>
+</div>
 <div class="section" id="limits">
-<span id="index-4"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
+<span id="binary-limits"></span><span id="index-4"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">Limits</span></a> are encoded with a preceding flag indicating whether a maximum is present.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
@@ -152,18 +152,18 @@ Thus, the binary format for types corresponds to the encodings of small negative
   \def\mathdef758#1{\mathtt{0x#1}}\mathdef758{00}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef722#1{{\mathtt{u}#1}}\mathdef722{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~\epsilon \} \\ &amp;&amp;|&amp;
   \def\mathdef759#1{\mathtt{0x#1}}\mathdef759{01}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef722#1{{\mathtt{u}#1}}\mathdef722{\mathtt{32}}}~~m{:}\href{../binary/values.html#binary-int}{\def\mathdef722#1{{\mathtt{u}#1}}\mathdef722{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{min}~n, \mathsf{max}~m \} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-memtype"></span></div>
+</div>
 <div class="section" id="memory-types">
-<span id="index-5"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
+<span id="binary-memtype"></span><span id="index-5"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">Memory types</span></a> are encoded with their <a class="reference internal" href="#binary-limits"><span class="std std-ref">limits</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef695#1{{}}\mathdef695{memory type} &amp; \href{../binary/types.html#binary-memtype}{\mathtt{memtype}} &amp;::=&amp;
   \mathit{lim}{:}\href{../binary/types.html#binary-limits}{\mathtt{limits}} &amp;\Rightarrow&amp; \mathit{lim} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-elemtype"><span id="binary-tabletype"></span></span></div>
+</div>
 <div class="section" id="table-types">
-<span id="index-6"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
+<span id="binary-tabletype"></span><span id="binary-elemtype"></span><span id="index-6"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">Table types</span></a> are encoded with their <a class="reference internal" href="#binary-limits"><span class="std std-ref">limits</span></a> and a constant byte indicating their <a class="reference internal" href="../syntax/types.html#syntax-elemtype"><span class="std std-ref">element type</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
@@ -172,9 +172,9 @@ Thus, the binary format for types corresponds to the encodings of small negative
 \def\mathdef695#1{{}}\mathdef695{element type} &amp; \href{../binary/types.html#binary-elemtype}{\mathtt{elemtype}} &amp;::=&amp;
   \def\mathdef760#1{\mathtt{0x#1}}\mathdef760{70} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-globaltype"></span></div>
+</div>
 <div class="section" id="global-types">
-<span id="index-7"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
+<span id="binary-globaltype"></span><span id="binary-mut"></span><span id="index-7"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">Global types</span></a> are encoded by their <a class="reference internal" href="#binary-valtype"><span class="std std-ref">value type</span></a> and a flag for their <a class="reference internal" href="../syntax/types.html#syntax-mut"><span class="std std-ref">mutability</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}

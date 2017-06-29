@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -98,8 +98,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="valid-instr"></span><div class="section" id="instructions">
-<span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="instructions">
+<span id="valid-instr"></span><span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">Instructions</span></a> are classified by <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> <span class="math">\([t_1^\ast] \to [t_2^\ast]\)</span>
 that describe how they manipulate the <a class="reference internal" href="../execution/runtime.html#stack"><span class="std std-ref">operand stack</span></a>.
 The types describe the required input stack with argument values of types <span class="math">\(t_1^\ast\)</span> that an instruction pops off
@@ -143,8 +143,8 @@ In contrast,</p>
 \[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}~~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0)~~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\]</div>
 <p class="last">is invalid, because there is no possible type to pick for the <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span> instruction that would make the sequence well-typed.</p>
 </div>
-<span class="target" id="valid-instr-numeric"></span><div class="section" id="numeric-instructions">
-<span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="numeric-instructions">
+<span id="valid-instr-numeric"></span><span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="valid-const">
 <span id="id1"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span><a class="headerlink" href="#valid-const" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -210,10 +210,10 @@ In contrast,</p>
 }{
   C \vdash t_2\mathsf{.}\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}/t_1 : [t_1] \to [t_2]
 }\]</div>
-<span class="target" id="valid-instr-parametric"></span></div>
+</div>
 </div>
 <div class="section" id="parametric-instructions">
-<span id="index-2"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="valid-instr-parametric"></span><span id="index-2"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="valid-drop">
 <span id="id7"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}}\)</span><a class="headerlink" href="#valid-drop" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -239,10 +239,10 @@ In contrast,</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Both <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span> are <a class="reference internal" href="#polymorphism"><span class="std std-ref">value-polymorphic</span></a> instructions.</p>
 </div>
-<span class="target" id="valid-instr-variable"></span></div>
+</div>
 </div>
 <div class="section" id="variable-instructions">
-<span id="index-3"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="valid-instr-variable"></span><span id="index-3"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="valid-get-local">
 <span id="id9"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~x\)</span><a class="headerlink" href="#valid-get-local" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -313,10 +313,10 @@ In contrast,</p>
 }{
   C \vdash \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_global}}~x : [t] \to []
 }\]</div>
-<span class="target" id="valid-memarg"><span id="valid-instr-memory"></span></span></div>
+</div>
 </div>
 <div class="section" id="memory-instructions">
-<span id="index-4"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="valid-instr-memory"></span><span id="valid-memarg"></span><span id="index-4"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="valid-load">
 <span id="id14"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#valid-load" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -406,10 +406,10 @@ In contrast,</p>
 }{
   C \vdash \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
 }\]</div>
-<span class="target" id="valid-label"><span id="valid-instr-control"></span></span></div>
+</div>
 </div>
 <div class="section" id="control-instructions">
-<span id="index-5"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="valid-instr-control"></span><span id="valid-label"></span><span id="index-5"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="valid-nop">
 <span id="id20"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}}\)</span><a class="headerlink" href="#valid-nop" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -484,7 +484,7 @@ This may be generalized in future versions of WebAssembly.</p>
 the instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast\)</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math">\([] \to [t^?]\)</span>.</li>
 <li>Under context <span class="math">\(C'\)</span>,
 the instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast\)</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math">\([] \to [t^?]\)</span>.</li>
-<li>Then the compound instruction is valid with type <span class="math">\([] \to [t^?]\)</span>.</li>
+<li>Then the compound instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [t^?]\)</span>.</li>
 </ul>
 <div class="math">
 \[\frac{
@@ -607,10 +607,10 @@ which is the case for functions not returning anything.</p>
 }{
   C \vdash \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~x : [t_1^\ast] \to [t_2^\ast]
 }\]</div>
-<span class="target" id="valid-instr-seq"></span></div>
+</div>
 </div>
 <div class="section" id="instruction-sequences">
-<span id="index-6"></span><h2>Instruction Sequences<a class="headerlink" href="#instruction-sequences" title="Permalink to this headline">¶</a></h2>
+<span id="valid-instr-seq"></span><span id="index-6"></span><h2>Instruction Sequences<a class="headerlink" href="#instruction-sequences" title="Permalink to this headline">¶</a></h2>
 <p>Typing of instruction sequences is defined recursively.</p>
 <div class="section" id="empty-instruction-sequence">
 <h3>Empty Instruction Sequence: <span class="math">\(\epsilon\)</span><a class="headerlink" href="#empty-instruction-sequence" title="Permalink to this headline">¶</a></h3>
@@ -643,10 +643,10 @@ such that <span class="math">\(t_2^\ast = t_0^\ast~t^\ast\)</span>.</li>
 }{
   C \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_N : [t_1^\ast] \to [t_0^\ast~t_3^\ast]
 }\]</div>
-<span class="target" id="valid-expr"></span></div>
+</div>
 </div>
 <div class="section" id="expressions">
-<span id="index-7"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
+<span id="valid-expr"></span><span id="index-7"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
 <p>Expressions <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result types</span></a> of the form <span class="math">\([t^?]\)</span>.</p>
 <div class="section" id="id31">
 <h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span><a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
@@ -661,9 +661,9 @@ for some optional <a class="reference internal" href="../syntax/types.html#synta
 }{
   C \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [t^?]
 }\]</div>
-<span class="target" id="valid-constant"></span></div>
+</div>
 <div class="section" id="constant-expressions">
-<span id="index-8"></span><h3>Constant Expressions<a class="headerlink" href="#constant-expressions" title="Permalink to this headline">¶</a></h3>
+<span id="valid-constant"></span><span id="index-8"></span><h3>Constant Expressions<a class="headerlink" href="#constant-expressions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>In a <em>constant</em> expression <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> all instructions in <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be constant.</li>
 <li>A constant instruction <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}\)</span> must be:<ul>

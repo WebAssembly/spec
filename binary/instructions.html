@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -99,8 +99,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="binary-instr"></span><div class="section" id="instructions">
-<span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="instructions">
+<span id="binary-instr"></span><span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">Instructions</span></a> are encoded by <em>opcodes</em>.
 Each opcode is represented by a single byte,
 and is followed by the instruction&#8217;s immediate arguments, where present.
@@ -109,8 +109,8 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p class="first admonition-title">Note</p>
 <p class="last">Gaps in the byte code ranges encoding instructions are reserved for future extensions.</p>
 </div>
-<span class="target" id="binary-instr-control"></span><div class="section" id="control-instructions">
-<span id="index-1"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="control-instructions">
+<span id="binary-instr-control"></span><span id="index-1"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">Control instructions</span></a> have varying encodings. For structured instructions, the nested instruction sequences are terminated with explicit opcodes for <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span>.</p>
 <div class="math" id="binary-call-indirect">
 <span id="binary-call"></span><span id="binary-return"></span><span id="binary-br-table"></span><span id="binary-br-if"></span><span id="binary-br"></span><span id="binary-if"></span><span id="binary-loop"></span><span id="binary-block"></span><span id="binary-unreachable"></span><span id="binary-nop"></span>\[\begin{split}\begin{array}{llclll}
@@ -138,9 +138,9 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p class="first admonition-title">Note</p>
 <p class="last">The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span> opcode <span class="math">\(\def\mathdef461#1{\mathtt{0x#1}}\mathdef461{05}\)</span> in the encoding of an <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> instruction can be omitted if the following instruction sequence is empty.</p>
 </div>
-<span class="target" id="binary-instr-parametric"></span></div>
+</div>
 <div class="section" id="parametric-instructions">
-<span id="index-2"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="binary-instr-parametric"></span><span id="index-2"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-parametric"><span class="std std-ref">Parametric instructions</span></a> are represented by single byte codes.</p>
 <div class="math" id="binary-select">
 <span id="binary-drop"></span>\[\begin{split}\begin{array}{llclll}
@@ -148,10 +148,10 @@ The only exception are <a class="reference internal" href="#binary-instr-control
   \def\mathdef462#1{\mathtt{0x#1}}\mathdef462{1A} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}} \\ &amp;&amp;|&amp;
   \def\mathdef463#1{\mathtt{0x#1}}\mathdef463{1B} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-instr-variable"></span></div>
+</div>
 <div class="section" id="variable-instructions">
-<span id="index-3"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-variable"><span class="std std-ref">Variable instructions</span></a> are represented by byte codes followed by the encoding of the respective <span class="xref std std-ref">index</span>.</p>
+<span id="binary-instr-variable"></span><span id="index-3"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-variable"><span class="std std-ref">Variable instructions</span></a> are represented by byte codes followed by the encoding of the respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index</span></a>.</p>
 <div class="math" id="binary-set-global">
 <span id="binary-get-global"></span><span id="binary-tee-local"></span><span id="binary-set-local"></span><span id="binary-get-local"></span>\[\begin{split}\begin{array}{llclll}
 \def\mathdef390#1{{}}\mathdef390{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
@@ -161,12 +161,12 @@ The only exception are <a class="reference internal" href="#binary-instr-control
   \def\mathdef467#1{\mathtt{0x#1}}\mathdef467{23}~~x{:}\href{../binary/modules.html#binary-globalidx}{\mathtt{globalidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_global}}~x \\ &amp;&amp;|&amp;
   \def\mathdef468#1{\mathtt{0x#1}}\mathdef468{24}~~x{:}\href{../binary/modules.html#binary-globalidx}{\mathtt{globalidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_global}}~x \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-memarg"><span id="binary-instr-memory"></span></span></div>
+</div>
 <div class="section" id="memory-instructions">
-<span id="index-4"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="binary-instr-memory"></span><span id="index-4"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Each variant of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instruction</span></a> is encoded with a different byte code. Loads and stores are followed by the encoding of their <span class="math">\(\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span> immediate.</p>
 <div class="math" id="binary-grow-memory">
-<span id="binary-current-memory"></span><span id="binary-storen"></span><span id="binary-store"></span><span id="binary-loadn"></span><span id="binary-load"></span><span id="id1"></span>\[\begin{split}\begin{array}{llclll}
+<span id="binary-current-memory"></span><span id="binary-storen"></span><span id="binary-store"></span><span id="binary-loadn"></span><span id="binary-load"></span><span id="binary-memarg"></span>\[\begin{split}\begin{array}{llclll}
 \def\mathdef390#1{{}}\mathdef390{memory argument} &amp; \href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;::=&amp;
   a{:}\href{../binary/values.html#binary-int}{\def\mathdef417#1{{\mathtt{u}#1}}\mathdef417{\mathtt{32}}}~~o{:}\href{../binary/values.html#binary-int}{\def\mathdef417#1{{\mathtt{u}#1}}\mathdef417{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \mathsf{align}~a,~\mathsf{offset}~o \} \\
 \def\mathdef390#1{{}}\mathdef390{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
@@ -200,9 +200,9 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p class="first admonition-title">Note</p>
 <p class="last">In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}}\)</span> instructions may be used to index additional memories.</p>
 </div>
-<span class="target" id="binary-instr-numeric"></span></div>
+</div>
 <div class="section" id="numeric-instructions">
-<span id="index-5"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="binary-instr-numeric"></span><span id="index-5"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
 <p>All variants of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-numeric"><span class="std std-ref">numeric instructions</span></a> are represented by separate byte codes.</p>
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions are followed by the respective literal.</p>
 <div class="math" id="binary-const">
@@ -373,9 +373,9 @@ The only exception are <a class="reference internal" href="#binary-instr-control
   \def\mathdef621#1{\mathtt{0x#1}}\mathdef621{BE} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
   \def\mathdef622#1{\mathtt{0x#1}}\mathdef622{BF} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-expr"></span></div>
+</div>
 <div class="section" id="expressions">
-<span id="index-6"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
+<span id="binary-expr"></span><span id="index-6"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-expr"><span class="std std-ref">Expressions</span></a> are encoded by their instruction sequence terminated with an explicit <span class="math">\(\def\mathdef623#1{\mathtt{0x#1}}\mathdef623{0B}\)</span> opcode for <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}

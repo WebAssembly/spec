@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -98,7 +98,7 @@
           <div class="body" role="main">
             
   <div class="section" id="numerics">
-<span id="exec-op-partial"></span><span id="exec-numeric"></span><h1>Numerics<a class="headerlink" href="#numerics" title="Permalink to this headline">¶</a></h1>
+<span id="exec-numeric"></span><span id="exec-op-partial"></span><h1>Numerics<a class="headerlink" href="#numerics" title="Permalink to this headline">¶</a></h1>
 <p>Numeric primitives are defined in a generic manner, by operators indexed over a width <span class="math">\(N\)</span>.</p>
 <p>Some operators are <em>non-deterministic</em>, because they can return one of several possible results (such as different <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a> values).
 Conceptually, each operator thus returns a <em>set</em> of allowed values.
@@ -132,7 +132,7 @@ When several of these placeholders occur in a single clause, then they must be r
 \href{../execution/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp;=&amp; \pm i &amp; (i \in \mathbb{N} \wedge q - 1 &lt; i \leq q) \\
 \end{array}\end{split}\]</div>
 <div class="section" id="representations">
-<h2>Representations<a class="headerlink" href="#representations" title="Permalink to this headline">¶</a></h2>
+<span id="aux-bits"></span><h2>Representations<a class="headerlink" href="#representations" title="Permalink to this headline">¶</a></h2>
 <p>Numbers have an underlying binary representation as a sequence of bits:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
@@ -154,7 +154,7 @@ When several of these placeholders occur in a single clause, then they must be r
 <p>Boolean operators like <span class="math">\(\wedge\)</span>, <span class="math">\(\vee\)</span>, or <span class="math">\(\veebar\)</span> are lifted to bit sequences of equal length by applying them pointwise.</p>
 </div>
 <div class="section" id="floating-point">
-<span id="aux-fsign"></span><span id="aux-fbias"></span><span id="aux-fbits"></span><h3>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h3>
+<span id="aux-fbits"></span><span id="aux-fsign"></span><span id="aux-fbias"></span><h3>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point values</span></a> are represented in the respective binary format defined by <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a>:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
@@ -169,7 +169,7 @@ When several of these placeholders occur in a single clause, then they must be r
 <p>where <span class="math">\(M = \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)\)</span> and <span class="math">\(E = \href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)\)</span>.</p>
 </div>
 <div class="section" id="storage">
-<span id="aux-littleendian"></span><span id="aux-bytes"></span><h3>Storage<a class="headerlink" href="#storage" title="Permalink to this headline">¶</a></h3>
+<span id="aux-bytes"></span><span id="aux-littleendian"></span><h3>Storage<a class="headerlink" href="#storage" title="Permalink to this headline">¶</a></h3>
 <p>When a number is stored into <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memory</span></a>, it is converted into a sequence of <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a> in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
@@ -202,8 +202,8 @@ Operators that use a signed interpretation convert the value using the following
 \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(C) &amp;=&amp; 0 &amp; (\mbox{otherwise}) \\
 \end{array}\end{split}\]</div>
 </div>
-<div class="section" id="op-add">
-<span id="id1"></span><h3><span class="math">\(\href{../execution/numerics.html#op-iadd}{\mathrm{iadd}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-add" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-iadd">
+<span id="id1"></span><h3><span class="math">\(\href{../execution/numerics.html#op-iadd}{\mathrm{iadd}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-iadd" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return the result of adding <span class="math">\(i_1\)</span> and <span class="math">\(i_2\)</span> modulo <span class="math">\(2^N\)</span>.</li>
 </ul>
@@ -212,8 +212,8 @@ Operators that use a signed interpretation convert the value using the following
 \href{../execution/numerics.html#op-iadd}{\mathrm{iadd}}_N(i_1, i_2) &amp;=&amp; (i_1 + i_2) \mathbin{\mathrm{mod}} 2^N
 \end{array}\]</div>
 </div>
-<div class="section" id="op-sub">
-<span id="id2"></span><h3><span class="math">\(\href{../execution/numerics.html#op-isub}{\mathrm{isub}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-sub" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-isub">
+<span id="id2"></span><h3><span class="math">\(\href{../execution/numerics.html#op-isub}{\mathrm{isub}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-isub" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return the result of subtracting <span class="math">\(i_2\)</span> from <span class="math">\(i_1\)</span> modulo <span class="math">\(2^N\)</span>.</li>
 </ul>
@@ -222,8 +222,8 @@ Operators that use a signed interpretation convert the value using the following
 \href{../execution/numerics.html#op-isub}{\mathrm{isub}}_N(i_1, i_2) &amp;=&amp; (i_1 - i_2 + 2^N) \mathbin{\mathrm{mod}} 2^N
 \end{array}\]</div>
 </div>
-<div class="section" id="op-mul">
-<span id="id3"></span><h3><span class="math">\(\href{../execution/numerics.html#op-imul}{\mathrm{imul}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-mul" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-imul">
+<span id="id3"></span><h3><span class="math">\(\href{../execution/numerics.html#op-imul}{\mathrm{imul}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-imul" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return the result of multiplying <span class="math">\(i_1\)</span> and <span class="math">\(i_2\)</span> modulo <span class="math">\(2^N\)</span>.</li>
 </ul>
@@ -232,8 +232,8 @@ Operators that use a signed interpretation convert the value using the following
 \href{../execution/numerics.html#op-imul}{\mathrm{imul}}_N(i_1, i_2) &amp;=&amp; (i_1 \cdot i_2) \mathbin{\mathrm{mod}} 2^N
 \end{array}\]</div>
 </div>
-<div class="section" id="op-div-u">
-<span id="id4"></span><h3><span class="math">\(\href{../execution/numerics.html#op-idiv_u}{\mathrm{idiv\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-div-u" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-idiv-u">
+<span id="id4"></span><h3><span class="math">\(\href{../execution/numerics.html#op-idiv_u}{\mathrm{idiv\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-idiv-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>If <span class="math">\(i_2\)</span> is <span class="math">\(0\)</span>, then the result is undefined.</li>
 <li>Else, return the result of dividing <span class="math">\(i_1\)</span> by <span class="math">\(i_2\)</span>, truncated toward zero.</li>
@@ -248,8 +248,8 @@ Operators that use a signed interpretation convert the value using the following
 <p class="last">This operator is <a class="reference internal" href="#exec-op-partial"><span class="std std-ref">partial</span></a>.</p>
 </div>
 </div>
-<div class="section" id="op-div-s">
-<span id="id5"></span><h3><span class="math">\(\href{../execution/numerics.html#op-idiv_s}{\mathrm{idiv\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-div-s" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-idiv-s">
+<span id="id5"></span><h3><span class="math">\(\href{../execution/numerics.html#op-idiv_s}{\mathrm{idiv\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-idiv-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j_1\)</span> be the signed interpretation of <span class="math">\(i_1\)</span>.</li>
 <li>Let <span class="math">\(j_2\)</span> be the signed interpretation of <span class="math">\(i_2\)</span>.</li>
@@ -269,8 +269,8 @@ Operators that use a signed interpretation convert the value using the following
 In particular, the result of <span class="math">\((-2^{N-1})/(-1) = +2^{N-1}\)</span> is not representable as an <span class="math">\(N\)</span>-bit signed integer.</p>
 </div>
 </div>
-<div class="section" id="op-rem-u">
-<span id="id6"></span><h3><span class="math">\(\href{../execution/numerics.html#op-irem_u}{\mathrm{irem\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-rem-u" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-irem-u">
+<span id="id6"></span><h3><span class="math">\(\href{../execution/numerics.html#op-irem_u}{\mathrm{irem\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-irem-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>If <span class="math">\(i_2\)</span> is <span class="math">\(0\)</span>, then the result is undefined.</li>
 <li>Else, return the remainder of dividing <span class="math">\(i_1\)</span> by <span class="math">\(i_2\)</span>.</li>
@@ -287,8 +287,8 @@ In particular, the result of <span class="math">\((-2^{N-1})/(-1) = +2^{N-1}\)</
 it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.html#op-idiv_u}{\mathrm{idiv\_u}}(i_1, i_2) + \href{../execution/numerics.html#op-irem_u}{\mathrm{irem\_u}}(i_1, i_2)\)</span>.</p>
 </div>
 </div>
-<div class="section" id="op-rem-s">
-<span id="id7"></span><h3><span class="math">\(\href{../execution/numerics.html#op-irem_s}{\mathrm{irem\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-rem-s" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-irem-s">
+<span id="id7"></span><h3><span class="math">\(\href{../execution/numerics.html#op-irem_s}{\mathrm{irem\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-irem-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j_1\)</span> be the signed interpretation of <span class="math">\(i_1\)</span>.</li>
 <li>Let <span class="math">\(j_2\)</span> be the signed interpretation of <span class="math">\(i_2\)</span>.</li>
@@ -307,8 +307,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.html#op-idiv_s}{\mathrm{idiv\_s}}(i_1, i_2) + \href{../execution/numerics.html#op-irem_s}{\mathrm{irem\_s}}(i_1, i_2)\)</span>.</p>
 </div>
 </div>
-<div class="section" id="op-and">
-<span id="id8"></span><h3><span class="math">\(\href{../execution/numerics.html#op-iand}{\mathrm{iand}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-and" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-iand">
+<span id="id8"></span><h3><span class="math">\(\href{../execution/numerics.html#op-iand}{\mathrm{iand}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-iand" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return the bitwise conjunction of <span class="math">\(i_1\)</span> and <span class="math">\(i_2\)</span>.</li>
 </ul>
@@ -317,8 +317,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-iand}{\mathrm{iand}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) \wedge \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_2))
 \end{array}\]</div>
 </div>
-<div class="section" id="op-or">
-<span id="id9"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ior}{\mathrm{ior}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-or" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ior">
+<span id="id9"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ior}{\mathrm{ior}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ior" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return the bitwise disjunction of <span class="math">\(i_1\)</span> and <span class="math">\(i_2\)</span>.</li>
 </ul>
@@ -327,8 +327,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ior}{\mathrm{ior}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) \vee \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_2))
 \end{array}\]</div>
 </div>
-<div class="section" id="op-xor">
-<span id="id10"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ixor}{\mathrm{ixor}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-xor" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ixor">
+<span id="id10"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ixor}{\mathrm{ixor}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ixor" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return the bitwise exclusive disjunction of <span class="math">\(i_1\)</span> and <span class="math">\(i_2\)</span>.</li>
 </ul>
@@ -337,8 +337,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ixor}{\mathrm{ixor}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) \veebar \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_2))
 \end{array}\]</div>
 </div>
-<div class="section" id="op-shl">
-<span id="id11"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ishl}{\mathrm{ishl}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-shl" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ishl">
+<span id="id11"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ishl}{\mathrm{ishl}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ishl" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(k\)</span> be <span class="math">\(i_2\)</span> modulo <span class="math">\(N\)</span>.</li>
 <li>Return the result of shifting <span class="math">\(i_1\)</span> left by <span class="math">\(k\)</span> bits, modulo <span class="math">\(2^N\)</span>.</li>
@@ -348,8 +348,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ishl}{\mathrm{ishl}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(b_2^{N-k}~0^k) &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mathbin{\mathrm{mod}} N)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-shr-u">
-<span id="id12"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ishr_u}{\mathrm{ishr\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-shr-u" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ishr-u">
+<span id="id12"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ishr_u}{\mathrm{ishr\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ishr-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j_2\)</span> be <span class="math">\(i_2\)</span> modulo <span class="math">\(N\)</span>.</li>
 <li>Return the result of shifting <span class="math">\(i_1\)</span> right by <span class="math">\(j_2\)</span> bits, extended with <span class="math">\(0\)</span> bits.</li>
@@ -359,8 +359,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ishr_u}{\mathrm{ishr\_u}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(0^k~b_1^{N-k}) &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-shr-s">
-<span id="id13"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ishr_s}{\mathrm{ishr\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-shr-s" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ishr-s">
+<span id="id13"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ishr_s}{\mathrm{ishr\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ishr-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j_2\)</span> be <span class="math">\(i_2\)</span> modulo <span class="math">\(N\)</span>.</li>
 <li>Return the result of shifting <span class="math">\(i_1\)</span> right by <span class="math">\(j_2\)</span> bits, extended with the most significant bit of the original value.</li>
@@ -370,8 +370,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ishr_s}{\mathrm{ishr\_s}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-rotl">
-<span id="id14"></span><h3><span class="math">\(\href{../execution/numerics.html#op-irotl}{\mathrm{irotl}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-rotl" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-irotl">
+<span id="id14"></span><h3><span class="math">\(\href{../execution/numerics.html#op-irotl}{\mathrm{irotl}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-irotl" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j_2\)</span> be <span class="math">\(i_2\)</span> modulo <span class="math">\(N\)</span>.</li>
 <li>Return the result of rotating <span class="math">\(i_1\)</span> left by <span class="math">\(j_2\)</span> bits.</li>
@@ -381,8 +381,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-irotl}{\mathrm{irotl}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(b_2^{N-k}~b_1^k) &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mathbin{\mathrm{mod}} N)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-rotr">
-<span id="id15"></span><h3><span class="math">\(\href{../execution/numerics.html#op-irotr}{\mathrm{irotr}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-rotr" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-irotr">
+<span id="id15"></span><h3><span class="math">\(\href{../execution/numerics.html#op-irotr}{\mathrm{irotr}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-irotr" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j_2\)</span> be <span class="math">\(i_2\)</span> modulo <span class="math">\(N\)</span>.</li>
 <li>Return the result of rotating <span class="math">\(i_1\)</span> right by <span class="math">\(j_2\)</span> bits.</li>
@@ -392,8 +392,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-irotr}{\mathrm{irotr}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(b_2^k~b_1^{N-k}) &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-clz">
-<span id="id16"></span><h3><span class="math">\(\href{../execution/numerics.html#op-iclz}{\mathrm{iclz}}_N(i)\)</span><a class="headerlink" href="#op-clz" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-iclz">
+<span id="id16"></span><h3><span class="math">\(\href{../execution/numerics.html#op-iclz}{\mathrm{iclz}}_N(i)\)</span><a class="headerlink" href="#op-iclz" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return the count of leading zero bits in <span class="math">\(i\)</span>; all bits are considered leading zeros if <span class="math">\(i\)</span> is <span class="math">\(0\)</span>.</li>
 </ul>
@@ -402,8 +402,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-iclz}{\mathrm{iclz}}_N(i) &amp;=&amp; k &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) = 0^k~(1~b^\ast)^?)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-ctz">
-<span id="id17"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ictz}{\mathrm{ictz}}_N(i)\)</span><a class="headerlink" href="#op-ctz" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ictz">
+<span id="id17"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ictz}{\mathrm{ictz}}_N(i)\)</span><a class="headerlink" href="#op-ictz" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return the count of trailing zero bits in <span class="math">\(i\)</span>; all bits are considered trailing zeros if <span class="math">\(i\)</span> is <span class="math">\(0\)</span>.</li>
 </ul>
@@ -412,8 +412,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ictz}{\mathrm{ictz}}_N(i) &amp;=&amp; k &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) = (b^\ast~1)^?~0^k)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-popcnt">
-<span id="id18"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ipopcnt}{\mathrm{ipopcnt}}_N(i)\)</span><a class="headerlink" href="#op-popcnt" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ipopcnt">
+<span id="id18"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ipopcnt}{\mathrm{ipopcnt}}_N(i)\)</span><a class="headerlink" href="#op-ipopcnt" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return the count of non-zero bits in <span class="math">\(i\)</span>.</li>
 </ul>
@@ -422,8 +422,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ipopcnt}{\mathrm{ipopcnt}}_N(i) &amp;=&amp; k &amp; (\href{../execution/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) = (0^\ast~1)^k~0^\ast)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-eqz">
-<span id="id19"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ieqz}{\mathrm{ieqz}}_N(i)\)</span><a class="headerlink" href="#op-eqz" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ieqz">
+<span id="id19"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ieqz}{\mathrm{ieqz}}_N(i)\)</span><a class="headerlink" href="#op-ieqz" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return <span class="math">\(1\)</span> if <span class="math">\(i\)</span> is zero, <span class="math">\(0\)</span> otherwise.</li>
 </ul>
@@ -432,8 +432,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ieqz}{\mathrm{ieqz}}_N(i) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(i = 0)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-eq">
-<span id="id20"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ieq}{\mathrm{ieq}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-eq" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ieq">
+<span id="id20"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ieq}{\mathrm{ieq}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ieq" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> equals <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
 </ul>
@@ -442,8 +442,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ieq}{\mathrm{ieq}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(i_1 = i_2)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-ne">
-<span id="id21"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ine}{\mathrm{ine}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ne" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ine">
+<span id="id21"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ine}{\mathrm{ine}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ine" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> does not equal <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
 </ul>
@@ -452,8 +452,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ine}{\mathrm{ine}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(i_1 \neq i_2)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-lt-u">
-<span id="id22"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ilt_u}{\mathrm{ilt\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-lt-u" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ilt-u">
+<span id="id22"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ilt_u}{\mathrm{ilt\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ilt-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> is less than <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
 </ul>
@@ -462,8 +462,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ilt_u}{\mathrm{ilt\_u}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(i_1 &lt; i_2)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-lt-s">
-<span id="id23"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ilt_s}{\mathrm{ilt\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-lt-s" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ilt-s">
+<span id="id23"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ilt_s}{\mathrm{ilt\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ilt-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j_1\)</span> be the signed interpretation of <span class="math">\(i_1\)</span>.</li>
 <li>Let <span class="math">\(j_2\)</span> be the signed interpretation of <span class="math">\(i_2\)</span>.</li>
@@ -474,8 +474,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ilt_s}{\mathrm{ilt\_s}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(\href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) &lt; \href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))
 \end{array}\]</div>
 </div>
-<div class="section" id="op-gt-u">
-<span id="id24"></span><h3><span class="math">\(\href{../execution/numerics.html#op-igt_u}{\mathrm{igt\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-gt-u" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-igt-u">
+<span id="id24"></span><h3><span class="math">\(\href{../execution/numerics.html#op-igt_u}{\mathrm{igt\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-igt-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> is greater than <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
 </ul>
@@ -484,8 +484,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-igt_u}{\mathrm{igt\_u}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(i_1 &gt; i_2)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-gt-s">
-<span id="id25"></span><h3><span class="math">\(\href{../execution/numerics.html#op-igt_s}{\mathrm{igt\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-gt-s" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-igt-s">
+<span id="id25"></span><h3><span class="math">\(\href{../execution/numerics.html#op-igt_s}{\mathrm{igt\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-igt-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j_1\)</span> be the signed interpretation of <span class="math">\(i_1\)</span>.</li>
 <li>Let <span class="math">\(j_2\)</span> be the signed interpretation of <span class="math">\(i_2\)</span>.</li>
@@ -496,8 +496,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-igt_s}{\mathrm{igt\_s}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(\href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) &gt; \href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))
 \end{array}\]</div>
 </div>
-<div class="section" id="op-le-u">
-<span id="id26"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ile_u}{\mathrm{ile\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-le-u" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ile-u">
+<span id="id26"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ile_u}{\mathrm{ile\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ile-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> is less than or equal to <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
 </ul>
@@ -506,8 +506,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ile_u}{\mathrm{ile\_u}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(i_1 \leq i_2)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-le-s">
-<span id="id27"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ile_s}{\mathrm{ile\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-le-s" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ile-s">
+<span id="id27"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ile_s}{\mathrm{ile\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ile-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j_1\)</span> be the signed interpretation of <span class="math">\(i_1\)</span>.</li>
 <li>Let <span class="math">\(j_2\)</span> be the signed interpretation of <span class="math">\(i_2\)</span>.</li>
@@ -518,8 +518,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ile_s}{\mathrm{ile\_s}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(\href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) \leq \href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))
 \end{array}\]</div>
 </div>
-<div class="section" id="op-ge-u">
-<span id="id28"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ige_u}{\mathrm{ige\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ge-u" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ige-u">
+<span id="id28"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ige_u}{\mathrm{ige\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ige-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> is greater than or equal to <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
 </ul>
@@ -528,8 +528,8 @@ it holds that <span class="math">\(i_1 = i_2\cdot\href{../execution/numerics.htm
 \href{../execution/numerics.html#op-ige_u}{\mathrm{ige\_u}}_N(i_1, i_2) &amp;=&amp; \href{../execution/numerics.html#aux-bool}{\mathrm{bool}}(i_1 \geq i_2)
 \end{array}\]</div>
 </div>
-<div class="section" id="op-ge-s">
-<span id="id29"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ige_s}{\mathrm{ige\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ge-s" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-ige-s">
+<span id="id29"></span><h3><span class="math">\(\href{../execution/numerics.html#op-ige_s}{\mathrm{ige\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ige-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j_1\)</span> be the signed interpretation of <span class="math">\(i_1\)</span>.</li>
 <li>Let <span class="math">\(j_2\)</span> be the signed interpretation of <span class="math">\(i_2\)</span>.</li>
@@ -616,7 +616,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="nan-propagation">
-<span id="aux-nan"></span><h3>NaN Propagation<a class="headerlink" href="#nan-propagation" title="Permalink to this headline">¶</a></h3>
+<span id="aux-nans"></span><h3>NaN Propagation<a class="headerlink" href="#nan-propagation" title="Permalink to this headline">¶</a></h3>
 <p>When the result of a floating-point operator other than <span class="math">\(\href{../execution/numerics.html#op-fneg}{\mathrm{fneg}}\)</span>, <span class="math">\(\href{../execution/numerics.html#op-fabs}{\mathrm{fabs}}\)</span>, or <span class="math">\(\href{../execution/numerics.html#op-fcopysign}{\mathrm{fcopysign}}\)</span> is a <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a>, its sign is non-deterministic and the <a class="reference internal" href="../syntax/values.html#syntax-payload"><span class="std std-ref">payload</span></a> computed as follows:</p>
 <ul class="simple">
 <li>If the payload of all NaN inputs to the operator is <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical</span></a> (including the case that there are no NaN inputs), then the payload of the output is canonical as well.</li>
@@ -1086,8 +1086,8 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </div>
 <div class="section" id="conversions">
 <h2>Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="op-extendu">
-<span id="id50"></span><h3><span class="math">\(\href{../execution/numerics.html#op-extend_u}{\mathrm{extend\_u}}_{M,N}(i)\)</span><a class="headerlink" href="#op-extendu" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-extend-u">
+<span id="id50"></span><h3><span class="math">\(\href{../execution/numerics.html#op-extend_u}{\mathrm{extend\_u}}_{M,N}(i)\)</span><a class="headerlink" href="#op-extend-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return <span class="math">\(i\)</span>.</li>
 </ul>
@@ -1100,8 +1100,8 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <p class="last">In the abstract syntax, unsigned extension just reinterprets the same value.</p>
 </div>
 </div>
-<div class="section" id="op-extends">
-<span id="id51"></span><h3><span class="math">\(\href{../execution/numerics.html#op-extend_s}{\mathrm{extend\_s}}_{M,N}(i)\)</span><a class="headerlink" href="#op-extends" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-extend-s">
+<span id="id51"></span><h3><span class="math">\(\href{../execution/numerics.html#op-extend_s}{\mathrm{extend\_s}}_{M,N}(i)\)</span><a class="headerlink" href="#op-extend-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j\)</span> be the signed interpretation of <span class="math">\(i\)</span> of size <span class="math">\(M\)</span>.</li>
 <li>Return the 2&#8217;s complement of <span class="math">\(j\)</span> relative to size <span class="math">\(N\)</span>.</li>
@@ -1121,8 +1121,8 @@ There is no observable difference between quiet and signalling NaNs.</li>
 \href{../execution/numerics.html#op-wrap}{\mathrm{wrap}}_{M,N}(i) &amp;=&amp; i \mathbin{\mathrm{mod}} 2^N \\
 \end{array}\end{split}\]</div>
 </div>
-<div class="section" id="op-truncu">
-<span id="id53"></span><h3><span class="math">\(\href{../execution/numerics.html#op-trunc_u}{\mathrm{trunc\_u}}_{M,N}(z)\)</span><a class="headerlink" href="#op-truncu" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-trunc-u">
+<span id="id53"></span><h3><span class="math">\(\href{../execution/numerics.html#op-trunc_u}{\mathrm{trunc\_u}}_{M,N}(z)\)</span><a class="headerlink" href="#op-trunc-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>If <span class="math">\(z\)</span> is a NaN, then the result is undefined.</li>
 <li>Else if <span class="math">\(z\)</span> is an infinity, then the result is undefined.</li>
@@ -1142,8 +1142,8 @@ There is no observable difference between quiet and signalling NaNs.</li>
 It is not defined for NaNs, infinities, or values for which the result is out of range.</p>
 </div>
 </div>
-<div class="section" id="op-truncs">
-<span id="id54"></span><h3><span class="math">\(\href{../execution/numerics.html#op-trunc_s}{\mathrm{trunc\_s}}_{M,N}(z)\)</span><a class="headerlink" href="#op-truncs" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-trunc-s">
+<span id="id54"></span><h3><span class="math">\(\href{../execution/numerics.html#op-trunc_s}{\mathrm{trunc\_s}}_{M,N}(z)\)</span><a class="headerlink" href="#op-trunc-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>If <span class="math">\(z\)</span> is a NaN, then the result is undefined.</li>
 <li>Else if <span class="math">\(z\)</span> is an infinity, then the result is undefined.</li>
@@ -1195,8 +1195,8 @@ It is not defined for NaNs, infinities, or values for which the result is out of
 \href{../execution/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm q) &amp;=&amp; \href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(\pm q) \\
 \end{array}\end{split}\]</div>
 </div>
-<div class="section" id="op-convertu">
-<span id="id57"></span><h3><span class="math">\(\href{../execution/numerics.html#op-convert_u}{\mathrm{convert\_u}}_{M,N}(i)\)</span><a class="headerlink" href="#op-convertu" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-convert-u">
+<span id="id57"></span><h3><span class="math">\(\href{../execution/numerics.html#op-convert_u}{\mathrm{convert\_u}}_{M,N}(i)\)</span><a class="headerlink" href="#op-convert-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Return <span class="math">\(\href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(i)\)</span>.</li>
 </ul>
@@ -1205,8 +1205,8 @@ It is not defined for NaNs, infinities, or values for which the result is out of
 \href{../execution/numerics.html#op-convert_u}{\mathrm{convert\_u}}_{M,N}(i) &amp;=&amp; \href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(i) \\
 \end{array}\end{split}\]</div>
 </div>
-<div class="section" id="op-converts">
-<span id="id58"></span><h3><span class="math">\(\href{../execution/numerics.html#op-convert_s}{\mathrm{convert\_s}}_{M,N}(i)\)</span><a class="headerlink" href="#op-converts" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="op-convert-s">
+<span id="id58"></span><h3><span class="math">\(\href{../execution/numerics.html#op-convert_s}{\mathrm{convert\_s}}_{M,N}(i)\)</span><a class="headerlink" href="#op-convert-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j\)</span> be the signed interpretation of <span class="math">\(i\)</span>.</li>
 <li>Return <span class="math">\(\href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(j)\)</span>.</li>

@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -104,8 +104,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="syntax-module"></span><div class="section" id="modules">
-<span id="index-0"></span><h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="modules">
+<span id="syntax-module"></span><span id="index-0"></span><h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
 <p>WebAssembly programs are organized into <em>modules</em>,
 which are the unit of deployment, loading, and compilation.
 A module collects definitions for <a class="reference internal" href="types.html#syntax-type"><span class="std std-ref">types</span></a>, <a class="reference internal" href="#syntax-func"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="#syntax-table"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="#syntax-global"><span class="std std-ref">globals</span></a>.
@@ -126,8 +126,8 @@ and provide initialization logic in the form of <a class="reference internal" hr
   \mathsf{exports}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}) \quad\} \\
 \end{array}\end{split}\]</div>
 <p>Each of the vectors &#8211; and thus the entire module &#8211; may be empty.</p>
-<span class="target" id="syntax-labelidx"><span id="syntax-localidx"></span><span id="syntax-globalidx"></span><span id="syntax-memidx"></span><span id="syntax-tableidx"></span><span id="syntax-funcidx"></span><span id="syntax-typeidx"></span><span id="syntax-index"></span></span><div class="section" id="indices">
-<span id="index-1"></span><h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="indices">
+<span id="syntax-index"></span><span id="syntax-labelidx"></span><span id="syntax-localidx"></span><span id="syntax-globalidx"></span><span id="syntax-memidx"></span><span id="syntax-tableidx"></span><span id="syntax-funcidx"></span><span id="syntax-typeidx"></span><span id="index-1"></span><h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
 <p>Definitions are referenced with zero-based <em>indices</em>.
 Each class of definition has its own <em>index space</em>, as distinguished by the following classes.</p>
 <div class="math">
@@ -150,10 +150,10 @@ The indices of these imports precede the indices of other definitions in the sam
 <li>The meta variable <span class="math">\(l\)</span> ranges over label indices.</li>
 <li>The meta variables <span class="math">\(x, y\)</span> ranges over indices in any of the other index spaces.</li>
 </ul>
-<span class="target" id="syntax-type"></span></div>
+</div>
 </div>
 <div class="section" id="types">
-<span id="index-2"></span><h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-typedef"></span><span id="index-2"></span><h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
 <p>The <span class="math">\(\mathsf{types}\)</span> component of a module defines a vector of <a class="reference internal" href="types.html#syntax-functype"><span class="std std-ref">function types</span></a>.</p>
 <p>All function types used in a module must be defined in the type section.
 They are referenced by <a class="reference internal" href="#syntax-typeidx"><span class="std std-ref">type indices</span></a>.</p>
@@ -161,9 +161,9 @@ They are referenced by <a class="reference internal" href="#syntax-typeidx"><spa
 <p class="first admonition-title">Note</p>
 <p class="last">Future versions of WebAssembly may add additional forms of type definitions.</p>
 </div>
-<span class="target" id="syntax-local"><span id="syntax-func"></span></span></div>
+</div>
 <div class="section" id="functions">
-<span id="index-3"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-func"></span><span id="syntax-local"></span><span id="index-3"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <p>The <span class="math">\(\mathsf{funcs}\)</span> component of a module defines a vector of <em>functions</em> with the following structure:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -178,9 +178,9 @@ The index of the first local is the smallest index not referencing a parameter.<
 <p>The <span class="math">\(\mathsf{body}\)</span> is an <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">instruction</span></a> sequence that upon termination must produce a stack matching the function type&#8217;s <a class="reference internal" href="types.html#syntax-resulttype"><span class="std std-ref">result type</span></a>.</p>
 <p>Functions are referenced through <a class="reference internal" href="#syntax-funcidx"><span class="std std-ref">function indices</span></a>,
 starting with the smallest index not referencing a function <a class="reference internal" href="#syntax-import"><span class="std std-ref">import</span></a>.</p>
-<span class="target" id="syntax-table"></span></div>
+</div>
 <div class="section" id="tables">
-<span id="index-4"></span><h2>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-table"></span><span id="index-4"></span><h2>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h2>
 <p>The <span class="math">\(\mathsf{tables}\)</span> component of a module defines a vector of <em>tables</em> described by their <a class="reference internal" href="types.html#syntax-tabletype"><span class="std std-ref">table type</span></a>:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -199,9 +199,9 @@ Most constructs implicitly reference table index <span class="math">\(0\)</span>
 and <em>all</em> constructs implicitly reference this table <span class="math">\(0\)</span>.
 This restriction may be lifted in future versions.</p>
 </div>
-<span class="target" id="syntax-mem"></span></div>
+</div>
 <div class="section" id="memories">
-<span id="index-5"></span><h2>Memories<a class="headerlink" href="#memories" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-mem"></span><span id="index-5"></span><h2>Memories<a class="headerlink" href="#memories" title="Permalink to this headline">¶</a></h2>
 <p>The <span class="math">\(\mathsf{mems}\)</span> component of a module defines a vector of <em>linear memories</em> (or <em>memories</em> for short) as described by their <a class="reference internal" href="types.html#syntax-memtype"><span class="std std-ref">memory type</span></a>:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -221,9 +221,9 @@ Most constructs implicitly reference memory index <span class="math">\(0\)</span
 and <em>all</em> constructs implicitly reference this memory <span class="math">\(0\)</span>.
 This restriction may be lifted in future versions.</p>
 </div>
-<span class="target" id="syntax-global"></span></div>
+</div>
 <div class="section" id="globals">
-<span id="index-6"></span><h2>Globals<a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-global"></span><span id="index-6"></span><h2>Globals<a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h2>
 <p>The <span class="math">\(\mathsf{globals}\)</span> component of a module defines a vector of <em>global variables</em> (or <em>globals</em> for short):</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -235,9 +235,9 @@ Its <span class="math">\(\mathsf{type}\)</span> also specifies whether a global 
 Moreover, each global is initialized with an <span class="math">\(\mathsf{init}\)</span> value given by a <a class="reference internal" href="../validation/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> initializer <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
 <p>Globals are referenced through <a class="reference internal" href="#syntax-globalidx"><span class="std std-ref">global indices</span></a>,
 starting with the smallest index not referencing a global <a class="reference internal" href="#syntax-import"><span class="std std-ref">import</span></a>.</p>
-<span class="target" id="syntax-elem"></span></div>
+</div>
 <div class="section" id="element-segments">
-<span id="index-7"></span><h2>Element Segments<a class="headerlink" href="#element-segments" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-elem"></span><span id="index-7"></span><h2>Element Segments<a class="headerlink" href="#element-segments" title="Permalink to this headline">¶</a></h2>
 <p>The initial contents of a table is uninitialized.
 The <span class="math">\(\mathsf{elem}\)</span> component of a module defines a vector of <em>element segments</em> that initialize a subrange of a table at a given offset from a static vector of elements.</p>
 <div class="math">
@@ -251,9 +251,9 @@ The <span class="math">\(\mathsf{elem}\)</span> component of a module defines a 
 <p class="last">In the current version of WebAssembly, at most one table is allowed in a module.
 Consequently, the only valid <span class="math">\(\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}}\)</span> is <span class="math">\(0\)</span>.</p>
 </div>
-<span class="target" id="syntax-data"></span></div>
+</div>
 <div class="section" id="data-segments">
-<span id="index-8"></span><h2>Data Segments<a class="headerlink" href="#data-segments" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-data"></span><span id="index-8"></span><h2>Data Segments<a class="headerlink" href="#data-segments" title="Permalink to this headline">¶</a></h2>
 <p>The initial contents of a <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memory</span></a> are zero bytes.
 The <span class="math">\(\mathsf{data}\)</span> component of a module defines a vector of <em>data segments</em> that initialize a range of memory at a given offset with a static vector of bytes.</p>
 <div class="math">
@@ -267,19 +267,19 @@ The <span class="math">\(\mathsf{data}\)</span> component of a module defines a 
 <p class="last">In the current version of WebAssembly, at most one memory is allowed in a module.
 Consequently, the only valid <span class="math">\(\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}}\)</span> is <span class="math">\(0\)</span>.</p>
 </div>
-<span class="target" id="syntax-start"></span></div>
+</div>
 <div class="section" id="start-function">
-<span id="index-9"></span><h2>Start Function<a class="headerlink" href="#start-function" title="Permalink to this headline">¶</a></h2>
-<p>The <span class="math">\(\mathsf{start}\)</span> component of a module optionally declares the <a class="reference internal" href="#syntax-funcidx"><span class="std std-ref">function index</span></a> of a <em>start function</em> that is automatically invoked when the module is <a class="reference internal" href="../execution/modules.html#instantiation"><span class="std std-ref">instantiated</span></a>, after tables and memories have been initialized.</p>
+<span id="syntax-start"></span><span id="index-9"></span><h2>Start Function<a class="headerlink" href="#start-function" title="Permalink to this headline">¶</a></h2>
+<p>The <span class="math">\(\mathsf{start}\)</span> component of a module optionally declares the <a class="reference internal" href="#syntax-funcidx"><span class="std std-ref">function index</span></a> of a <em>start function</em> that is automatically invoked when the module is <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiated</span></a>, after tables and memories have been initialized.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1813#1{{}}\mathdef1813{start function} &amp; \href{../syntax/modules.html#syntax-start}{\mathit{start}} &amp;::=&amp;
   \{ \mathsf{func}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} \} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="syntax-export"></span></div>
+</div>
 <div class="section" id="exports">
-<span id="index-10"></span><h2>Exports<a class="headerlink" href="#exports" title="Permalink to this headline">¶</a></h2>
-<p>The <span class="math">\(\mathsf{exports}\)</span> component of a module defines a set of <em>exports</em> that become accessible to the host environment once the module has been <a class="reference internal" href="../execution/modules.html#instantiation"><span class="std std-ref">instantiated</span></a>.</p>
+<span id="syntax-export"></span><span id="syntax-exportdesc"></span><span id="index-10"></span><h2>Exports<a class="headerlink" href="#exports" title="Permalink to this headline">¶</a></h2>
+<p>The <span class="math">\(\mathsf{exports}\)</span> component of a module defines a set of <em>exports</em> that become accessible to the host environment once the module has been <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiated</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1813#1{{}}\mathdef1813{export} &amp; \href{../syntax/modules.html#syntax-export}{\mathit{export}} &amp;::=&amp;
@@ -301,16 +301,16 @@ which are referenced through a respective descriptor.</p>
 <h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The following auxiliary notation is defined for sequences of exports, filtering out indices of a specific kind in an order-preserving fashion:</p>
 <ul class="simple">
-<li><span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} ~|~ \mathsf{func}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
-<li><span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} ~|~ \mathsf{table}~\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
-<li><span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} ~|~ \mathsf{mem}~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
-<li><span class="math">\(\href{../execution/runtime.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \mathsf{global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} ~|~ \mathsf{func}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} ~|~ \mathsf{table}~\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} ~|~ \mathsf{mem}~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \mathsf{global}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\mathsf{desc})^\ast]\)</span></li>
 </ul>
-<span class="target" id="syntax-import"></span></div>
+</div>
 </div>
 <div class="section" id="imports">
-<span id="index-11"></span><h2>Imports<a class="headerlink" href="#imports" title="Permalink to this headline">¶</a></h2>
-<p>The <span class="math">\(\mathsf{imports}\)</span> component of a module defines a set of <em>imports</em> that are required for <a class="reference internal" href="../execution/modules.html#instantiation"><span class="std std-ref">instantiation</span></a>.</p>
+<span id="syntax-import"></span><span id="syntax-importdesc"></span><span id="index-11"></span><h2>Imports<a class="headerlink" href="#imports" title="Permalink to this headline">¶</a></h2>
+<p>The <span class="math">\(\mathsf{imports}\)</span> component of a module defines a set of <em>imports</em> that are required for <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiation</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1813#1{{}}\mathdef1813{import} &amp; \href{../syntax/modules.html#syntax-import}{\mathit{import}} &amp;::=&amp;

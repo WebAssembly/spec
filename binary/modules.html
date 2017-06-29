@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -70,7 +70,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#element-section">Element Section</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#code-section">Code Section</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#data-section">Data Section</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#index-14">Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#binary-module">Modules</a></li>
 </ul>
 </li>
 </ul>
@@ -117,8 +117,8 @@ except that <a class="reference internal" href="../syntax/modules.html#syntax-fu
 <p class="first admonition-title">Note</p>
 <p class="last">This separation enables <em>parallel</em> and <em>streaming</em> compilation of the functions in a module.</p>
 </div>
-<span class="target" id="binary-labelidx"><span id="binary-localidx"></span><span id="binary-globalidx"></span><span id="binary-memidx"></span><span id="binary-tableidx"></span><span id="binary-funcidx"></span><span id="binary-typeidx"></span><span id="binary-index"></span></span><div class="section" id="indices">
-<span id="index-0"></span><h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="indices">
+<span id="binary-index"></span><span id="binary-labelidx"></span><span id="binary-localidx"></span><span id="binary-globalidx"></span><span id="binary-memidx"></span><span id="binary-tableidx"></span><span id="binary-funcidx"></span><span id="binary-typeidx"></span><span id="index-0"></span><h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
 <p>All <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a> are encoded with their respective <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef634#1{{\mathit{u}#1}}\mathdef634{\mathit{32}}}\)</span> value.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
@@ -130,9 +130,9 @@ except that <a class="reference internal" href="../syntax/modules.html#syntax-fu
 \def\mathdef625#1{{}}\mathdef625{local index} &amp; \href{../binary/modules.html#binary-localidx}{\mathtt{localidx}} &amp;::=&amp; x{:}\href{../binary/values.html#binary-int}{\def\mathdef652#1{{\mathtt{u}#1}}\mathdef652{\mathtt{32}}} &amp;\Rightarrow&amp; x \\
 \def\mathdef625#1{{}}\mathdef625{label index} &amp; \href{../binary/modules.html#binary-labelidx}{\mathtt{labelidx}} &amp;::=&amp; l{:}\href{../binary/values.html#binary-int}{\def\mathdef652#1{{\mathtt{u}#1}}\mathdef652{\mathtt{32}}} &amp;\Rightarrow&amp; l \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-section"></span></div>
+</div>
 <div class="section" id="sections">
-<span id="index-1"></span><h2>Sections<a class="headerlink" href="#sections" title="Permalink to this headline">¶</a></h2>
+<span id="binary-section"></span><span id="index-1"></span><h2>Sections<a class="headerlink" href="#sections" title="Permalink to this headline">¶</a></h2>
 <p>Each section consists of</p>
 <ul class="simple">
 <li>a one-byte section <em>id</em>,</li>
@@ -156,9 +156,9 @@ In these cases, the empty result <span class="math">\(\epsilon\)</span> is inter
 the <span class="math">\(\mathit{size}\)</span> is not required for decoding, but can be used to skip sections when navigating through a binary.
 The module is malformed if the size does not match the length of the binary contents <span class="math">\(\mathtt{B}\)</span>.</p>
 </div>
-<span class="target" id="binary-customsec"></span></div>
+</div>
 <div class="section" id="custom-section">
-<span id="index-2"></span><h2>Custom Section<a class="headerlink" href="#custom-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-customsec"></span><span id="index-2"></span><h2>Custom Section<a class="headerlink" href="#custom-section" title="Permalink to this headline">¶</a></h2>
 <p><em>Custom sections</em> have the id 0.
 They are intended to be used for debugging information or third-party extensions, and are ignored by the WebAssembly semantics.
 Their contents consist of a <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a> further identifying the custom section, followed by an uninterpreted sequence of bytes for custom use.</p>
@@ -173,9 +173,9 @@ Their contents consist of a <a class="reference internal" href="../syntax/values
 <p class="first admonition-title">Note</p>
 <p class="last">If an implementation interprets the contents of a custom section, then errors in that contents, or the placement of the section, must not invalidate the module.</p>
 </div>
-<span class="target" id="binary-type"><span id="binary-typesec"></span></span></div>
+</div>
 <div class="section" id="type-section">
-<span id="index-3"></span><h2>Type Section<a class="headerlink" href="#type-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-typesec"></span><span id="binary-typedef"></span><span id="index-3"></span><h2>Type Section<a class="headerlink" href="#type-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>type section</em> has the id 1.
 It decodes into a vector of <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> that represent the <span class="math">\(\mathsf{types}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.</p>
 <div class="math">
@@ -183,9 +183,9 @@ It decodes into a vector of <a class="reference internal" href="../syntax/types.
 \def\mathdef625#1{{}}\mathdef625{type section} &amp; \href{../binary/modules.html#binary-typesec}{\mathtt{typesec}} &amp;::=&amp;
   \mathit{ft}^\ast{:\,}\href{../binary/modules.html#binary-module}{\mathtt{section}}_1(\href{../binary/values.html#binary-vec}{\mathtt{vec}}(\href{../binary/types.html#binary-functype}{\mathtt{functype}})) &amp;\Rightarrow&amp; \mathit{ft}^\ast \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-import"><span id="binary-importsec"></span></span></div>
+</div>
 <div class="section" id="import-section">
-<span id="index-4"></span><h2>Import Section<a class="headerlink" href="#import-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-importsec"></span><span id="binary-importdesc"></span><span id="binary-import"></span><span id="index-4"></span><h2>Import Section<a class="headerlink" href="#import-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>import section</em> has the id 2.
 It decodes into a vector of <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">imports</span></a> that represent the <span class="math">\(\mathsf{imports}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.</p>
 <div class="math">
@@ -201,9 +201,9 @@ It decodes into a vector of <a class="reference internal" href="../syntax/module
   \def\mathdef681#1{\mathtt{0x#1}}\mathdef681{02}~~\mathit{mt}{:}\href{../binary/types.html#binary-memtype}{\mathtt{memtype}} &amp;\Rightarrow&amp; \mathsf{mem}~\mathit{mt} \\ &amp;&amp;|&amp;
   \def\mathdef682#1{\mathtt{0x#1}}\mathdef682{03}~~\mathit{gt}{:}\href{../binary/types.html#binary-globaltype}{\mathtt{globaltype}} &amp;\Rightarrow&amp; \mathsf{global}~\mathit{gt} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-func"><span id="binary-funcsec"></span></span></div>
+</div>
 <div class="section" id="function-section">
-<span id="index-5"></span><h2>Function Section<a class="headerlink" href="#function-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-funcsec"></span><span id="index-5"></span><h2>Function Section<a class="headerlink" href="#function-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>function section</em> has the id 3.
 It decodes into a vector of <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type indices</span></a> that represent the <span class="math">\(\mathsf{type}\)</span> fields of the <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">functions</span></a> in the <span class="math">\(\mathsf{funcs}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.
 The <span class="math">\(\mathsf{locals}\)</span> and <span class="math">\(\mathsf{body}\)</span> fields of the respective functions are encoded separately in the <a class="reference internal" href="#binary-codesec"><span class="std std-ref">code section</span></a>.</p>
@@ -212,9 +212,9 @@ The <span class="math">\(\mathsf{locals}\)</span> and <span class="math">\(\math
 \def\mathdef625#1{{}}\mathdef625{function section} &amp; \href{../binary/modules.html#binary-funcsec}{\mathtt{funcsec}} &amp;::=&amp;
   x^\ast{:}\href{../binary/modules.html#binary-module}{\mathtt{section}}_3(\href{../binary/values.html#binary-vec}{\mathtt{vec}}(\href{../binary/modules.html#binary-typeidx}{\mathtt{typeidx}})) &amp;\Rightarrow&amp; x^\ast \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-table"><span id="binary-tablesec"></span></span></div>
+</div>
 <div class="section" id="table-section">
-<span id="index-6"></span><h2>Table Section<a class="headerlink" href="#table-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-tablesec"></span><span id="binary-table"></span><span id="index-6"></span><h2>Table Section<a class="headerlink" href="#table-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>table section</em> has the id 4.
 It decodes into a vector of <a class="reference internal" href="../syntax/modules.html#syntax-table"><span class="std std-ref">tables</span></a> that represent the <span class="math">\(\mathsf{tables}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.</p>
 <div class="math">
@@ -224,9 +224,9 @@ It decodes into a vector of <a class="reference internal" href="../syntax/module
 \def\mathdef625#1{{}}\mathdef625{table} &amp; \href{../binary/modules.html#binary-table}{\mathtt{table}} &amp;::=&amp;
   \mathit{tt}{:}\href{../binary/types.html#binary-tabletype}{\mathtt{tabletype}} &amp;\Rightarrow&amp; \{ \mathsf{type}~\mathit{tt} \} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-mem"><span id="binary-memsec"></span></span></div>
+</div>
 <div class="section" id="memory-section">
-<span id="index-7"></span><h2>Memory Section<a class="headerlink" href="#memory-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-memsec"></span><span id="binary-mem"></span><span id="index-7"></span><h2>Memory Section<a class="headerlink" href="#memory-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>memory section</em> has the id 5.
 It decodes into a vector of <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memories</span></a> that represent the <span class="math">\(\mathsf{mems}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.</p>
 <div class="math">
@@ -236,9 +236,9 @@ It decodes into a vector of <a class="reference internal" href="../syntax/module
 \def\mathdef625#1{{}}\mathdef625{memory} &amp; \href{../binary/modules.html#binary-mem}{\mathtt{mem}} &amp;::=&amp;
   \mathit{mt}{:}\href{../binary/types.html#binary-memtype}{\mathtt{memtype}} &amp;\Rightarrow&amp; \{ \mathsf{type}~\mathit{mt} \} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-global"><span id="binary-globalsec"></span></span></div>
+</div>
 <div class="section" id="global-section">
-<span id="index-8"></span><h2>Global Section<a class="headerlink" href="#global-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-globalsec"></span><span id="binary-global"></span><span id="index-8"></span><h2>Global Section<a class="headerlink" href="#global-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>global section</em> has the id 6.
 It decodes into a vector of <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">globals</span></a> that represent the <span class="math">\(\mathsf{globals}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.</p>
 <div class="math">
@@ -249,9 +249,9 @@ It decodes into a vector of <a class="reference internal" href="../syntax/module
   \mathit{gt}{:}\href{../binary/types.html#binary-globaltype}{\mathtt{globaltype}}~~e{:}\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}
     &amp;\Rightarrow&amp; \{ \mathsf{type}~\mathit{gt}, \mathsf{init}~e \} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-export"><span id="binary-exportsec"></span></span></div>
+</div>
 <div class="section" id="export-section">
-<span id="index-9"></span><h2>Export Section<a class="headerlink" href="#export-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-exportsec"></span><span id="binary-exportdesc"></span><span id="binary-export"></span><span id="index-9"></span><h2>Export Section<a class="headerlink" href="#export-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>export section</em> has the id 7.
 It decodes into a vector of <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exports</span></a> that represent the <span class="math">\(\mathsf{exports}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.</p>
 <div class="math">
@@ -267,21 +267,21 @@ It decodes into a vector of <a class="reference internal" href="../syntax/module
   \def\mathdef685#1{\mathtt{0x#1}}\mathdef685{02}~~x{:}\href{../binary/modules.html#binary-memidx}{\mathtt{memidx}} &amp;\Rightarrow&amp; \mathsf{mem}~x \\ &amp;&amp;|&amp;
   \def\mathdef686#1{\mathtt{0x#1}}\mathdef686{03}~~x{:}\href{../binary/modules.html#binary-globalidx}{\mathtt{globalidx}} &amp;\Rightarrow&amp; \mathsf{global}~x \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-start"><span id="binary-startsec"></span></span></div>
+</div>
 <div class="section" id="start-section">
-<span id="index-10"></span><h2>Start Section<a class="headerlink" href="#start-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-startsec"></span><span id="binary-start"></span><span id="index-10"></span><h2>Start Section<a class="headerlink" href="#start-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>start section</em> has the id 8.
 It decodes into an optional <a class="reference internal" href="../syntax/modules.html#syntax-start"><span class="std std-ref">start function</span></a> that represents the <span class="math">\(\mathsf{start}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\def\mathdef625#1{{}}\mathdef625{start section} &amp; \href{../binary/modules.html#binary-startseg}{\mathtt{startsec}} &amp;::=&amp;
+\def\mathdef625#1{{}}\mathdef625{start section} &amp; \href{../binary/modules.html#binary-startsec}{\mathtt{startsec}} &amp;::=&amp;
   \mathit{st}^?{:}\href{../binary/modules.html#binary-module}{\mathtt{section}}_8(\href{../binary/modules.html#binary-start}{\mathtt{start}}) &amp;\Rightarrow&amp; \mathit{st}^? \\
 \def\mathdef625#1{{}}\mathdef625{start function} &amp; \href{../binary/modules.html#binary-start}{\mathtt{start}} &amp;::=&amp;
   x{:}\href{../binary/modules.html#binary-funcidx}{\mathtt{funcidx}} &amp;\Rightarrow&amp; \{ \mathsf{func}~x \} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-elem"><span id="binary-elemsec"></span></span></div>
+</div>
 <div class="section" id="element-section">
-<span id="index-11"></span><h2>Element Section<a class="headerlink" href="#element-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-elemsec"></span><span id="binary-elem"></span><span id="index-11"></span><h2>Element Section<a class="headerlink" href="#element-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>element section</em> has the id 9.
 It decodes into a vector of <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segments</span></a> that represent the <span class="math">\(\mathsf{elem}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.</p>
 <div class="math">
@@ -292,9 +292,9 @@ It decodes into a vector of <a class="reference internal" href="../syntax/module
   x{:}\href{../binary/modules.html#binary-tableidx}{\mathtt{tableidx}}~~e{:}\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}~~y^\ast{:}\href{../binary/values.html#binary-vec}{\mathtt{vec}}(\href{../binary/modules.html#binary-funcidx}{\mathtt{funcidx}})
     &amp;\Rightarrow&amp; \{ \mathsf{table}~x, \mathsf{offset}~e, \mathsf{init}~y^\ast \} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-local"><span id="binary-codesec"></span></span></div>
+</div>
 <div class="section" id="code-section">
-<span id="index-12"></span><h2>Code Section<a class="headerlink" href="#code-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-codesec"></span><span id="binary-local"></span><span id="binary-func"></span><span id="binary-code"></span><span id="index-12"></span><h2>Code Section<a class="headerlink" href="#code-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>code section</em> has the id 10.
 It decodes into a vector of <em>code</em> entries that are pairs of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> vectors and <a class="reference internal" href="../syntax/instructions.html#syntax-expr"><span class="std std-ref">expressions</span></a>.
 They represent the <span class="math">\(\mathsf{locals}\)</span> and <span class="math">\(\mathsf{body}\)</span> field of the <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">functions</span></a> in the <span class="math">\(\mathsf{funcs}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.
@@ -337,9 +337,9 @@ Any code for which the length of the resulting sequence is out of bounds of the 
 <p class="last">The <span class="math">\(\mathit{size}\)</span> is not needed for decoding, but like with <a class="reference internal" href="#binary-section"><span class="std std-ref">sections</span></a>, can be used to skip functions when navigating through a binary.
 The module is malformed if a size does not match the length of the respective function code.</p>
 </div>
-<span class="target" id="binary-data"><span id="binary-datasec"></span></span></div>
+</div>
 <div class="section" id="data-section">
-<span id="index-13"></span><h2>Data Section<a class="headerlink" href="#data-section" title="Permalink to this headline">¶</a></h2>
+<span id="binary-datasec"></span><span id="binary-data"></span><span id="index-13"></span><h2>Data Section<a class="headerlink" href="#data-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>data section</em> has the id 11.
 It decodes into a vector of <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data segments</span></a> that represent the <span class="math">\(\mathsf{data}\)</span> component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>.</p>
 <div class="math">
@@ -350,9 +350,9 @@ It decodes into a vector of <a class="reference internal" href="../syntax/module
   x{:}\href{../binary/modules.html#binary-memidx}{\mathtt{memidx}}~~e{:}\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}~~b^\ast{:}\href{../binary/values.html#binary-vec}{\mathtt{vec}}(\href{../binary/values.html#binary-byte}{\mathtt{byte}})
     &amp;\Rightarrow&amp; \{ \mathsf{mem}~x, \mathsf{offset}~e, \mathsf{init}~b^\ast \} \\
 \end{array}\end{split}\]</div>
-<span class="target" id="binary-version"><span id="binary-magic"></span><span id="binary-module"></span></span></div>
-<div class="section" id="index-14">
-<span id="id1"></span><h2>Modules<a class="headerlink" href="#index-14" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="binary-module">
+<span id="binary-version"></span><span id="binary-magic"></span><span id="index-14"></span><span id="id1"></span><h2>Modules<a class="headerlink" href="#binary-module" title="Permalink to this headline">¶</a></h2>
 <p>The encoding of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> starts with a preamble containing a 4-byte magic number and a version field.
 The current version of the WebAssembly binary format is 1.</p>
 <p>The preamble is followed by a sequence of <a class="reference internal" href="#binary-section"><span class="std std-ref">sections</span></a>.
@@ -384,7 +384,7 @@ The lengths of vectors produced by the (possibly empty) <a class="reference inte
   \href{../binary/modules.html#binary-customsec}{\mathtt{customsec}}^\ast \\ &amp;&amp;&amp;
   \href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast{:\,}\href{../binary/modules.html#binary-exportsec}{\mathtt{exportsec}} \\ &amp;&amp;&amp;
   \href{../binary/modules.html#binary-customsec}{\mathtt{customsec}}^\ast \\ &amp;&amp;&amp;
-  \href{../syntax/modules.html#syntax-start}{\mathit{start}}^?{:\,}\href{../binary/modules.html#binary-startseg}{\mathtt{startsec}} \\ &amp;&amp;&amp;
+  \href{../syntax/modules.html#syntax-start}{\mathit{start}}^?{:\,}\href{../binary/modules.html#binary-startsec}{\mathtt{startsec}} \\ &amp;&amp;&amp;
   \href{../binary/modules.html#binary-customsec}{\mathtt{customsec}}^\ast \\ &amp;&amp;&amp;
   \href{../syntax/modules.html#syntax-elem}{\mathit{elem}}^\ast{:\,}\href{../binary/modules.html#binary-elemsec}{\mathtt{elemsec}} \\ &amp;&amp;&amp;
   \href{../binary/modules.html#binary-customsec}{\mathtt{customsec}}^\ast \\ &amp;&amp;&amp;

@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
@@ -60,7 +60,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#vectors">Vectors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#strings">Strings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#names">Names</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#index-6">Identifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-id">Identifiers</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
@@ -100,12 +100,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="text-value"></span><div class="section" id="values">
-<span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="values">
+<span id="text-value"></span><span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
 <p>The grammar productions in this section define <em>lexical syntax</em>,
 hence no <a class="reference internal" href="lexical.html#text-space"><span class="std std-ref">white space</span></a> is allowed.</p>
-<span class="target" id="text-uint"><span id="text-sint"></span><span id="text-int"></span><span id="text-hexdigit"></span><span id="text-digit"></span><span id="text-sign"></span></span><div class="section" id="integers">
-<span id="index-1"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="integers">
+<span id="text-int"></span><span id="text-uint"></span><span id="text-sint"></span><span id="text-hexnum"></span><span id="text-num"></span><span id="text-hexdigit"></span><span id="text-digit"></span><span id="text-sign"></span><span id="index-1"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
 <p>All <a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">integers</span></a> can be written in either decimal or hexadecimal notation.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}
@@ -147,9 +147,9 @@ Moreover, their value must lie within the range of the respective type.</p>
   n{:}\href{../text/values.html#text-int}{\def\mathdef2901#1{{\mathtt{u}#1}}\mathdef2901{N}} &amp;\Rightarrow&amp; n \\ &amp;&amp;|&amp;
   i{:}\href{../text/values.html#text-int}{\def\mathdef2907#1{{\mathtt{s}#1}}\mathdef2907{N}} &amp;\Rightarrow&amp; n &amp; (i = \href{../execution/numerics.html#aux-signed}{\mathrm{signed}}(n)) \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-hexfloat"><span id="text-float"></span><span id="text-hexfrac"></span><span id="text-frac"></span></span></div>
+</div>
 <div class="section" id="floating-point">
-<span id="index-2"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
+<span id="text-float"></span><span id="text-hexfloat"></span><span id="text-hexfrac"></span><span id="text-frac"></span><span id="index-2"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating point</span></a> values can be represented in either decimal or hexadecimal notation.
 The value of a literal must not lie outside the representable range of the corresponding <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> type
 (that is, a numeric value must not overflow to <span class="math">\(\pm\mbox{infinity}\)</span>),
@@ -191,18 +191,18 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
 \def\mathdef2863#1{{}}\mathdef2863{floating-point value} &amp; \href{../text/values.html#text-float}{\def\mathdef2913#1{{\mathtt{f}#1}}\mathdef2913{N}} &amp;::=&amp;
   {\pm}{:}\href{../text/values.html#text-sign}{\mathtt{sign}}~z{:}\href{../text/values.html#text-float}{\def\mathdef2914#1{{\mathtt{f}#1}}\mathdef2914{N}\mathtt{mag}} &amp;\Rightarrow&amp; \pm z \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-vec"></span></div>
+</div>
 <div class="section" id="vectors">
-<span id="index-3"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<span id="text-vec"></span><span id="index-3"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-vec"><span class="std std-ref">Vectors</span></a> are written as plain sequences, but with restricted length.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef2863#1{{}}\mathdef2863{vector} &amp; \href{../text/values.html#text-vec}{\mathtt{vec}}(\mathtt{A}) &amp;::=&amp;
   (x{:}\mathtt{A})^n &amp;\Rightarrow&amp; x^n &amp; (n &lt; 2^{32}) \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-string"><span id="text-byte"></span></span></div>
+</div>
 <div class="section" id="strings">
-<span id="index-4"></span><h2>Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<span id="text-string"></span><span id="text-byte"></span><span id="index-4"></span><h2>Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
 <p><em>Strings</em> denote sequences of bytes that can represent both textual and binary data.
 They are enclosed in quotation marks
 and may contain any character other than <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> control characters, quotation marks (<span class="math">\(\def\mathdef2945#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2945{&quot;}\)</span>), or backslash (<span class="math">\(\def\mathdef2946#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2946{\backslash}\)</span>),
@@ -231,9 +231,9 @@ except for hexadecimal escape sequences <span class="math">\(\def\mathdef2947#1{
   \def\mathdef2967#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2967{\backslash u\{}~n{:}\href{../text/values.html#text-hexnum}{\mathtt{hexnum}}~\def\mathdef2968#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2968{\}}
     &amp;\Rightarrow&amp; \def\mathdef2969#1{\mathrm{U{+}#1}}\mathdef2969{(n)} &amp; (n &lt; \def\mathdef2970#1{\mathtt{0x#1}}\mathdef2970{D800} \vee \def\mathdef2971#1{\mathtt{0x#1}}\mathdef2971{E000} \leq n &lt; \def\mathdef2972#1{\mathtt{0x#1}}\mathdef2972{110000}) \\
 \end{array}\end{split}\]</div>
-<span class="target" id="text-name"></span></div>
+</div>
 <div class="section" id="names">
-<span id="index-5"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
+<span id="text-name"></span><span id="index-5"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are strings denoting a literal character sequence.
 A name string must form a valid <a class="reference external" href="http://www.unicode.org/versions/latest/">UTF-8</a> encoding that is interpreted as a string of Unicode code points.</p>
 <div class="math">
@@ -246,9 +246,9 @@ A name string must form a valid <a class="reference external" href="http://www.u
 <p class="last">Presuming the source text is itself encoded correctly,
 strings that do not contain any uses of hexadecimal byte escapes are always valid names.</p>
 </div>
-<span class="target" id="text-id"></span></div>
-<div class="section" id="index-6">
-<span id="identifiers"></span><h2>Identifiers<a class="headerlink" href="#index-6" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="text-id">
+<span id="index-6"></span><span id="identifiers"></span><h2>Identifiers<a class="headerlink" href="#text-id" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">Indices</span></a> can be given in both numeric and symbolic form.
 Symbolic <em>identifiers</em> that stand in lieu of indices start with <span class="math">\(\def\mathdef2973#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2973{\$}\)</span>, followed by any sequence of printable <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> characters that does not contain a space, quotation mark, comma, semicolon, or bracket.</p>
 <div class="math">

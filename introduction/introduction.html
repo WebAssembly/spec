@@ -43,7 +43,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/placeholder.jpg" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Introduction</a><ul class="current">
@@ -59,10 +59,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-properties/index.html">Appendix: Formal Properties</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-algorithm/index.html">Appendix: Validation Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-textual/index.html">Appendix: Text Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix-names/index.html">Appendix: Name Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/instrindex.html">Index of Instructions</a></li>
@@ -100,10 +98,10 @@
 designed for efficient execution and compact representation.
 Its main goal is to enable high performance applications on the Web, but it does not make any Web-specific assumptions or provide Web-specific features, so can be employed in other environments as well.</p>
 <p>WebAssembly is an open standard developed by a <a class="reference external" href="https://www.w3.org/community/webassembly/">W3C Community Group</a> that includes representatives of all major browser vendors.</p>
-<p>This document describes version 1.0 of the <span class="xref std std-ref">core</span> WebAssembly standard.
+<p>This document describes version 1.0 of the <a class="reference internal" href="#scope"><span class="std std-ref">core</span></a> WebAssembly standard.
 It is intended that it will be superseded by new incremental releases with additional features in the future.</p>
 <div class="section" id="design-goals">
-<h2>Design Goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">¶</a></h2>
+<span id="goals"></span><h2>Design Goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">¶</a></h2>
 <p id="index-0">The design goals of WebAssembly are the following:</p>
 <ul class="simple">
 <li>Fast, safe, and portable <em>semantics</em>:<ul>
@@ -141,7 +139,7 @@ It is intended that it will be superseded by new incremental releases with addit
 </table>
 </div>
 <div class="section" id="scope">
-<h2>Scope<a class="headerlink" href="#scope" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Scope<a class="headerlink" href="#scope" title="Permalink to this headline">¶</a></h2>
 <p>At its core, WebAssembly is a <em>virtual instruction set architecture (virtual ISA)</em>.
 As such, it has many use cases and can be embedded in many different environments.
 To encompass their variety and enable maximum reuse, the WebAssembly specification is split and layered into several documents.</p>
