@@ -11,7 +11,13 @@ a.reference:hover {
   border-bottom: 1px dotted #004BAB;
 }
 
+body {
+  font-size: 15px;
+}
+
 div.document { width: 1000px; }
+div.bodywrapper { margin: 0 0 0 200px; }
+div.body { padding: 0 10px 0 10px; }
 div.footer { width: 1000px; }
 
 div.body h1 { font-size: 200%; }
@@ -21,7 +27,8 @@ div.body h4 { font-size: 110%; }
 
 div.note {
   border: 0px;
-  font-size: 90%;
+  font-size: 80%;
+  background-color: #FCF4FF;
 }
 
 div.admonition {
@@ -39,8 +46,17 @@ div.sphinxsidebar {
   z-index: 1;
   background: #FFF;
   margin-top: -30px;
-  width: 230px;
+  font-size: 13px;
+  width: 200px;
   height: 100%;
+}
+
+div.sphinxsidebarwrapper p.logo {
+  padding: 30px 40px 10px 0px;
+}
+
+div.sphinxsidebar h3 {
+  font-size: 0px;
 }
 
 div.sphinxsidebar a {
