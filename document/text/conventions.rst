@@ -20,10 +20,10 @@ The recommended extension for source files containing WebAssembly modules in tex
 Files with this extension are assumed to be encoded in `Unicode UTF-8 <http://www.unicode.org/versions/latest/>`_.
 
 
-.. _text-grammar:
 .. index:: grammar notation, notation, Unicode
    single: text format; grammar
    pair: text format; notation
+.. _text-grammar:
 
 Grammar
 ~~~~~~~
@@ -82,8 +82,8 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
 
 
-.. _text-abbreviations:
 .. index:: ! abbreviations
+.. _text-abbreviations:
 
 Abbreviations
 ~~~~~~~~~~~~~
@@ -98,9 +98,9 @@ Abbreviations are defined by rewrite rules specifying their expansion into the c
 These expansions are assumed to be applied, recursively and in order of appearance, before applying the core grammar rules to construct the abstract syntax.
 
 
-.. _text-context:
-.. _text-context-wf:
 .. index:: ! identifier context, identifier, index, index space
+.. _text-context-wf:
+.. _text-context:
 
 Contexts
 ~~~~~~~~

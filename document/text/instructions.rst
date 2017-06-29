@@ -1,5 +1,5 @@
-.. _text-instr:
 .. index:: instruction
+.. _text-instr:
 
 Instructions
 ------------
@@ -18,9 +18,9 @@ Instructions are syntactically distinguished into *plain* and *structured* instr
 In addition, as a syntactic abbreviation, instructions can be written in :ref:`folded <text-foldedinstr>` form as S-expressions, to group them visually.
 
 
-.. _text-label:
 .. index:: index, label index
    pair: text format; label index
+.. _text-label:
 
 Labels
 ~~~~~~
@@ -43,11 +43,11 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    mirroring the fact that control instructions are indexed relatively not absolutely.
 
 
-.. _text-instr-control:
-.. _text-blockinstr:
-.. _text-plaininstr:
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
    pair: text format; instruction
+.. _text-blockinstr:
+.. _text-plaininstr:
+.. _text-instr-control:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -114,9 +114,9 @@ The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitt
    \end{array}
 
 
-.. _text-instr-parametric:
 .. index:: value type, polymorphism
    pair: text format; instruction
+.. _text-instr-parametric:
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,9 +132,9 @@ Parametric Instructions
    \end{array}
 
 
-.. _text-instr-variable:
 .. index:: variable instructions, local index, global index
    pair: text format; instruction
+.. _text-instr-variable:
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -156,9 +156,9 @@ Variable Instructions
    \end{array}
 
 
-.. _text-instr-memory:
 .. index:: memory instruction, memory index
    pair: text format; instruction
+.. _text-instr-memory:
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -214,9 +214,9 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
    \end{array}
 
 
-.. _text-instr-numeric:
 .. index:: numeric instruction
    pair: text format; instruction
+.. _text-instr-numeric:
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -409,8 +409,8 @@ Numeric Instructions
    \end{array}
 
 
-.. _text-foldedinstr:
 .. index:: ! folded instruction, S-expression
+.. _text-foldedinstr:
 
 Folded Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -441,10 +441,10 @@ Such a folded instruction can appear anywhere a regular instruction can.
    no additional syntactic or type-based checking is implied.
 
 
-.. _text-expr:
 .. index:: expression
    pair: text format; expression
    single: expression; constant
+.. _text-expr:
 
 Expressions
 ~~~~~~~~~~~

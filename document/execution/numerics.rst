@@ -1,5 +1,5 @@
-.. _exec-numeric:
 .. _exec-op-partial:
+.. _exec-numeric:
 
 Numerics
 --------
@@ -81,9 +81,9 @@ Integers
 Boolean operators like :math:`\wedge`, :math:`\vee`, or :math:`\veebar` are lifted to bit sequences of equal length by applying them pointwise.
 
 
-.. _aux-fbits:
 .. _aux-fbias:
 .. _aux-fsign:
+.. _aux-fbits:
 
 Floating-Point
 ..............
@@ -103,8 +103,8 @@ Floating-Point
 
 where :math:`M = \significand(N)` and :math:`E = \exponent(N)`.
 
-.. _aux-bytes:
 .. _aux-littleendian:
+.. _aux-bytes:
 
 Storage
 .......

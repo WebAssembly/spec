@@ -1,6 +1,6 @@
-.. _syntax-module:
 .. index:: ! module, type definition, function type, function, table, memory, global, element, data, start function, import, export
    pair: abstract syntax; module
+.. _syntax-module:
 
 Modules
 -------
@@ -29,14 +29,6 @@ and provide initialization logic in the form of :ref:`data <syntax-data>` and :r
 Each of the vectors -- and thus the entire module -- may be empty.
 
 
-.. _syntax-index:
-.. _syntax-typeidx:
-.. _syntax-funcidx:
-.. _syntax-tableidx:
-.. _syntax-memidx:
-.. _syntax-globalidx:
-.. _syntax-localidx:
-.. _syntax-labelidx:
 .. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index
    pair: abstract syntax; type index
    pair: abstract syntax; function index
@@ -52,6 +44,14 @@ Each of the vectors -- and thus the entire module -- may be empty.
    pair: global; index
    pair: local; index
    pair: label; index
+.. _syntax-typeidx:
+.. _syntax-funcidx:
+.. _syntax-tableidx:
+.. _syntax-memidx:
+.. _syntax-globalidx:
+.. _syntax-localidx:
+.. _syntax-labelidx:
+.. _syntax-index:
 
 Indices
 ~~~~~~~
@@ -86,9 +86,9 @@ Conventions
 * The meta variables :math:`x, y` ranges over indices in any of the other index spaces.
 
 
-.. _syntax-type:
 .. index:: ! type definition, type index
    pair: abstract syntax; type definition
+.. _syntax-typedef:
 
 Types
 ~~~~~
@@ -102,11 +102,11 @@ They are referenced by :ref:`type indices <syntax-typeidx>`.
    Future versions of WebAssembly may add additional forms of type definitions.
 
 
-.. _syntax-func:
-.. _syntax-local:
 .. index:: ! function, ! local, function index, local index, type index, value type, expression, import
    pair: abstract syntax; function
    pair: abstract syntax; local
+.. _syntax-local:
+.. _syntax-func:
 
 Functions
 ~~~~~~~~~
@@ -132,9 +132,9 @@ Functions are referenced through :ref:`function indices <syntax-funcidx>`,
 starting with the smallest index not referencing a function :ref:`import <syntax-import>`.
 
 
-.. _syntax-table:
 .. index:: ! table, table index, table type, limits, element, import
    pair: abstract syntax; table
+.. _syntax-table:
 
 Tables
 ~~~~~~
@@ -162,9 +162,9 @@ Most constructs implicitly reference table index :math:`0`.
    This restriction may be lifted in future versions.
 
 
-.. _syntax-mem:
 .. index:: ! memory, memory index, memory type, limits, page size, data, import
    pair: abstract syntax; memory
+.. _syntax-mem:
 
 Memories
 ~~~~~~~~
@@ -193,9 +193,9 @@ Most constructs implicitly reference memory index :math:`0`.
    This restriction may be lifted in future versions.
 
 
-.. _syntax-global:
 .. index:: ! global, global index, global type, mutability, expression
    pair: abstract syntax; global
+.. _syntax-global:
 
 Globals
 ~~~~~~~
@@ -216,11 +216,11 @@ Globals are referenced through :ref:`global indices <syntax-globalidx>`,
 starting with the smallest index not referencing a global :ref:`import <syntax-import>`.
 
 
-.. _syntax-elem:
 .. index:: ! element, table, table index, expression, function index, vector
    pair: abstract syntax; element
    single: table; element
    single: element; segment
+.. _syntax-elem:
 
 Element Segments
 ~~~~~~~~~~~~~~~~
@@ -241,11 +241,11 @@ The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <sy
    Consequently, the only valid |tableidx| is :math:`0`.
 
 
-.. _syntax-data:
 .. index:: ! data, memory, memory index, expression, byte, vector
    pair: abstract syntax; data
    single: memory; data
    single: data; segment
+.. _syntax-data:
 
 Data Segments
 ~~~~~~~~~~~~~
@@ -266,9 +266,9 @@ The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <sy
    Consequently, the only valid |memidx| is :math:`0`.
 
 
-.. _syntax-start:
 .. index:: ! start function, function index, table, memory, instantiation
    pair: abstract syntax; start function
+.. _syntax-start:
 
 Start Function
 ~~~~~~~~~~~~~~
@@ -282,14 +282,14 @@ The |START| component of a module optionally declares the :ref:`function index <
    \end{array}
 
 
-.. _syntax-export:
-.. _syntax-exportdesc:
 .. index:: ! export, name, index, function index, table index, memory index, global index, function, table, memory, global, instantiation
    pair: abstract syntax; export
    single: function; export
    single: table; export
    single: memory; export
    single: global; export
+.. _syntax-exportdesc:
+.. _syntax-export:
 
 Exports
 ~~~~~~~
@@ -329,14 +329,14 @@ The following auxiliary notation is defined for sequences of exports, filtering 
 * :math:`\globals(\export^\ast) = [\globalidx ~|~ \GLOBAL~\globalidx \in (\export.\DESC)^\ast]`
 
 
-.. _syntax-import:
-.. _syntax-importdesc:
 .. index:: ! import, name, function type, table type, memory type, global type, index, index space, type index, function index, table index, memory index, global index, function, table, memory, global, instantiation
    pair: abstract syntax; import
    single: function; import
    single: table; import
    single: memory; import
    single: global; import
+.. _syntax-importdesc:
+.. _syntax-import:
 
 Imports
 ~~~~~~~

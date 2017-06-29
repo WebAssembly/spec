@@ -1,14 +1,14 @@
-.. _text-lexical:
 .. index:: lexical format
+.. _text-lexical:
 
 Lexical Format
 --------------
 
 
-.. _source:
-.. _text-char:
 .. index:: ! character, Unicode, ASCII, code point, ! source text
    pair: text format; character
+.. _source:
+.. _text-char:
 
 Characters
 ~~~~~~~~~~
@@ -27,11 +27,11 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
    the rest of the grammar is formed exclusively from the characters supported by the `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ subset of Unicode.
 
 
-.. _text-token:
-.. _text-keyword:
-.. _text-reserved:
 .. index:: ! token, ! keyword, character, white space, comment, source text
    single: text format; token
+.. _text-keyword:
+.. _text-reserved:
+.. _text-token:
 
 Tokens
 ~~~~~~
@@ -57,10 +57,10 @@ That is, the next token always consists of the longest possible sequence of char
 Where necessary, tokens may be separated by :ref:`white space <text-space>`.
 
 
-.. _text-space:
-.. _text-format:
 .. index:: ! white space, character, ASCII
    single: text format; white space
+.. _text-format:
+.. _text-space:
 
 White Space
 ~~~~~~~~~~~
@@ -79,9 +79,9 @@ The allowed formatting characters correspond to a subset of the `ASCII <http://w
 The only relevance of white space is to separate :ref:`tokens <text-token>`, it is ignored otherwise.
 
 
-.. _text-comment:
 .. index:: ! comment, character
    single: text format; comment
+.. _text-comment:
 
 Comments
 ~~~~~~~~

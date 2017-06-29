@@ -56,8 +56,8 @@ The following conventions are adopted in stating these rules.
 * In various places the rules contain *assertions* expressing crucial invariants about the program state, with indications why these are known to hold.
 
 
-.. _exec-notation:
 .. index:: ! reduction rules, ! configuration
+.. _exec-notation:
 
 Formal Notation
 ~~~~~~~~~~~~~~~

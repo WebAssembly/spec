@@ -327,7 +327,7 @@
 .. Modules, non-terminals
 
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
-.. |type| mathdef:: \xref{syntax/modules}{syntax-type}{\X{type}}
+.. |type| mathdef:: \xref{syntax/modules}{syntax-typedef}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
 .. |table| mathdef:: \xref{syntax/modules}{syntax-table}{\X{table}}
 .. |mem| mathdef:: \xref{syntax/modules}{syntax-mem}{\X{mem}}
@@ -360,7 +360,7 @@
 .. |Bdatasec| mathdef:: \xref{binary/modules}{binary-datasec}{\B{datasec}}
 .. |Bstartsec| mathdef:: \xref{binary/modules}{binary-startsec}{\B{startsec}}
 .. |Bcustom| mathdef:: \xref{binary/modules}{binary-customsec}{\B{custom}}
-.. |Btype| mathdef:: \xref{binary/modules}{binary-type}{\B{type}}
+.. |Btype| mathdef:: \xref{binary/modules}{binary-typedef}{\B{type}}
 .. |Bfunc| mathdef:: \xref{binary/modules}{binary-func}{\B{func}}
 .. |Btable| mathdef:: \xref{binary/modules}{binary-table}{\B{table}}
 .. |Bmem| mathdef:: \xref{binary/modules}{binary-mem}{\B{mem}}
@@ -382,7 +382,7 @@
 .. |Tmodule| mathdef:: \xref{text/modules}{text-module}{\T{module}}
 .. |Tmodulebody| mathdef:: \xref{text/modules}{text-modulebody}{\T{modulebody}}
 .. |Tmodulefield| mathdef:: \xref{text/modules}{text-modulefield}{\T{modulefield}}
-.. |Ttype| mathdef:: \xref{text/modules}{text-type}{\T{type}}
+.. |Ttype| mathdef:: \xref{text/modules}{text-typedef}{\T{type}}
 .. |Ttypeuse| mathdef:: \xref{text/modules}{text-typeuse}{\T{typeuse}}
 .. |Tfunc| mathdef:: \xref{text/modules}{text-func}{\T{func}}
 .. |Ttable| mathdef:: \xref{text/modules}{text-table}{\T{table}}

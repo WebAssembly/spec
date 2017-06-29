@@ -1,4 +1,3 @@
-.. _syntax:
 .. index:: ! abstract syntax
 
 Conventions
@@ -11,10 +10,10 @@ All parts of this specification are defined in terms of this abstract syntax,
 including the decoding of the :ref:`binary format <binary>`.
 
 
-.. _grammar:
 .. index:: ! grammar notation, notation
    single: abstract syntax; grammar
    pair: abstract syntax; notation
+.. _grammar:
 
 Grammar
 ~~~~~~~

@@ -1,15 +1,15 @@
-.. _syntax-type:
 .. index:: ! type
    pair: abstract syntax; type
+.. _syntax-type:
 
 Types
 -----
 
 
-.. _syntax-valtype:
 .. index:: ! value type
    pair: abstract syntax; value type
    pair: value; type
+.. _syntax-valtype:
 
 Value Types
 ~~~~~~~~~~~
@@ -37,10 +37,10 @@ Conventions
   (That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.)
 
 
-.. _syntax-resulttype:
 .. index:: ! result type, value type
    pair: abstract syntax; result type
    pair: result; type
+.. _syntax-resulttype:
 
 Result Types
 ~~~~~~~~~~~~
@@ -59,10 +59,10 @@ which is a sequence of values.
    However, this may be generalized to sequences of values in future versions.
 
 
-.. _syntax-functype:
 .. index:: ! function type, value type, result type
    pair: abstract syntax; function type
    pair: function; type
+.. _syntax-functype:
 
 Function Types
 ~~~~~~~~~~~~~~
@@ -82,11 +82,11 @@ mapping a vector of parameters to a vector of results.
    This restriction may be removed in future versions.
 
 
-.. _syntax-limits:
 .. index:: ! limits, memory type, table type
    pair: abstract syntax; limits
    single: memory; limits
    single: table; limits
+.. _syntax-limits:
 
 Limits
 ~~~~~~
@@ -102,11 +102,11 @@ Limits
 If no maximum is given, the respective storage can grow to any size.
 
 
-.. _syntax-memtype:
 .. index:: ! memory type, limits, page size
    pair: abstract syntax; memory type
    pair: memory; type
    pair: memory; limits
+.. _syntax-memtype:
 
 Memory Types
 ~~~~~~~~~~~~
@@ -123,14 +123,14 @@ The limits constrain the minimum and optionally the maximum size of a memory.
 The limits are given in units of :ref:`page size <page-size>`.
 
 
-.. _syntax-tabletype:
-.. _syntax-elemtype:
 .. index:: ! table type, ! element type, limits
    pair: abstract syntax; table type
    pair: abstract syntax; element type
    pair: table; type
    pair: table; limits
    pair: element; type
+.. _syntax-elemtype:
+.. _syntax-tabletype:
 
 Table Types
 ~~~~~~~~~~~
@@ -155,13 +155,13 @@ A table of that type thus contains references to functions of heterogeneous type
    In future versions of WebAssembly, additional element types may be introduced.
 
 
-.. _syntax-globaltype:
-.. _syntax-mut:
 .. index:: ! global type, ! mutability, value type
    pair: abstract syntax; global type
    pair: abstract syntax; mutability
    pair: global; type
    pair: global; mutability
+.. _syntax-mut:
+.. _syntax-globaltype:
 
 Global Types
 ~~~~~~~~~~~~
@@ -178,10 +178,10 @@ Global Types
    \end{array}
 
 
-.. _syntax-externtype:
 .. index:: ! external type, function type, table type, memory type, global type
    pair: abstract syntax; external type
    pair: external; type
+.. _syntax-externtype:
 
 External Types
 ~~~~~~~~~~~~~~

@@ -2,14 +2,6 @@ Modules
 -------
 
 
-.. _text-index:
-.. _text-typeidx:
-.. _text-funcidx:
-.. _text-tableidx:
-.. _text-memidx:
-.. _text-globalidx:
-.. _text-localidx:
-.. _text-labelidx:
 .. index:: index, type index, function index, table index, memory index, global index, local index, label index
    pair: text format; type index
    pair: text format; function index
@@ -18,6 +10,14 @@ Modules
    pair: text format; global index
    pair: text format; local index
    pair: text format; label index
+.. _text-typeidx:
+.. _text-funcidx:
+.. _text-tableidx:
+.. _text-memidx:
+.. _text-globalidx:
+.. _text-localidx:
+.. _text-labelidx:
+.. _text-index:
 
 Indices
 ~~~~~~~
@@ -51,9 +51,9 @@ Such identifiers are looked up in the suitable space of the :ref:`identifier con
    \end{array}
 
 
-.. _text-type:
 .. index:: type definition, identifier
    pair: text format; type definition
+.. _text-typedef:
 
 Types
 ~~~~~
@@ -68,9 +68,9 @@ Type definitions can bind a symbolic :ref:`type identifier <text-id>`.
    \end{array}
 
 
-.. _text-typeuse:
 .. index:: type use
    pair: text format; type use
+.. _text-typeuse:
 
 Type Uses
 ~~~~~~~~~
@@ -140,10 +140,10 @@ is first inserted at the end of the module.
    Abbreviations are expanded in the order they appear, such that previously inserted type definitions are reused by consecutive expansions.
 
 
-.. _text-import:
-.. _text-importdesc:
 .. index:: import, name, function type, table type, memory type, global type
    pair: text format; import
+.. _text-importdesc:
+.. _text-import:
 
 Imports
 ~~~~~~~
@@ -174,11 +174,11 @@ As an abbreviation, imports may also be specified inline with :ref:`function <te
 
 
 
-.. _text-func:
-.. _text-local:
 .. index:: function, type index, function type, identifier, local
    pair: text format; function
    pair: text format; local
+.. _text-local:
+.. _text-func:
 
 Functions
 ~~~~~~~~~
@@ -209,11 +209,11 @@ The definition of the local :ref:`identifier context <text-context>` :math:`I''`
    The :ref:`well-formedness <text-context-wf>` condition on :math:`I''` ensures that parameters and locals do not contain duplicate identifiers.
 
 
-.. _text-func-abbrev:
 .. index:: import, name
    pair: text format; import
 .. index:: export, name, index, function index
    pair: text format; export
+.. _text-func-abbrev:
 
 Abbreviations
 .............
@@ -244,9 +244,9 @@ Moreover, functions can be defined as :ref:`imports <text-import>` or :ref:`expo
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
 
 
-.. _text-table:
 .. index:: table, table type, identifier
    pair: text format; table
+.. _text-table:
 
 Tables
 ~~~~~~
@@ -261,7 +261,6 @@ Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
    \end{array}
 
 
-.. _text-table-abbrev:
 .. index:: import, name
    pair: text format; import
 .. index:: export, name, index, table index
@@ -270,6 +269,7 @@ Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
    pair: text format; element
    single: table; element
    single: element; segment
+.. _text-table-abbrev:
 
 Abbreviations
 .............
@@ -303,9 +303,9 @@ Moreover, tables can be defined as :ref:`imports <text-import>` or :ref:`exports
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline elements segment.
 
 
-.. _text-mem:
 .. index:: memory, memory type, identifier
    pair: text format; memory
+.. _text-mem:
 
 Memories
 ~~~~~~~~
@@ -320,7 +320,6 @@ Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
    \end{array}
 
 
-.. _text-mem-abbrev:
 .. index:: import, name
    pair: text format; import
 .. index:: export, name, index, memory index
@@ -329,6 +328,7 @@ Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
    pair: text format; data
    single: memory; data
    single: data; segment
+.. _text-mem-abbrev:
 
 Abbreviations
 .............
@@ -363,9 +363,9 @@ Moreover, memories can be defined as :ref:`imports <text-import>` or :ref:`expor
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline data segment.
 
 
-.. _text-global:
 .. index:: global, global type, identifier, expression
    pair: text format; global
+.. _text-global:
 
 Globals
 ~~~~~~~
@@ -380,11 +380,11 @@ Global definitions can bind a symbolic :ref:`global identifier <text-id>`.
    \end{array}
 
 
-.. _text-global-abbrev:
 .. index:: import, name
    pair: text format; import
 .. index:: export, name, index, global index
    pair: text format; export
+.. _text-global-abbrev:
 
 Abbreviations
 .............
@@ -407,10 +407,10 @@ Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-ex
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
 
 
-.. _text-export:
-.. _text-exportdesc:
 .. index:: export, name, index, function index, table index, memory index, global index
    pair: text format; export
+.. _text-exportdesc:
+.. _text-export:
 
 Exports
 ~~~~~~~
@@ -440,9 +440,9 @@ Abbreviations
 As an abbreviation, exports may also be specified inline with :ref:`function <text-func>`, :ref:`table <text-table>`, :ref:`memory <text-mem>`, or :ref:`global <text-global>` definitions; see the respective sections.
 
 
-.. _text-start:
 .. index:: start function, function index
    pair: text format; start function
+.. _text-start:
 
 Start Function
 ~~~~~~~~~~~~~~
@@ -462,11 +462,11 @@ A :ref:`start function <syntax-start>` is defined in terms of its index.
 
 
 
-.. _text-elem:
 .. index:: element, table index, expression, function index
    pair: text format; element
    single: table; element
    single: element; segment
+.. _text-elem:
 
 Element Segments
 ~~~~~~~~~~~~~~~~
@@ -493,12 +493,12 @@ Abbreviations
 As an abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
 
 
-.. _text-data:
-.. _text-datastring:
 .. index:: data, memory, memory index, expression, byte
    pair: text format; data
    single: memory; data
    single: data; segment
+.. _text-datastring:
+.. _text-data:
 
 Data Segments
 ~~~~~~~~~~~~~
@@ -528,11 +528,11 @@ Abbreviations
 As an abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.
 
 
-.. _text-module:
-.. _text-modulefield:
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, identifier context, identifier, name section
    pair: text format; module
    single: section; name
+.. _text-modulefield:
+.. _text-module:
 
 Modules
 ~~~~~~~

@@ -1,5 +1,5 @@
-.. _impl:
 .. index:: ! implementation limitations, implementation
+.. _impl:
 
 Implementation Limitations
 --------------------------
@@ -24,8 +24,8 @@ However, it is expected that all implementations have "reasonably" large limits 
 Syntactic Limits
 ~~~~~~~~~~~~~~~~
 
-.. _impl-syntax:
 .. index:: abstract syntax, module, type, function, table, memory, global, element, data, import, export, parameter, result, local, structured control instruction, instruction, name, Unicode, code point
+.. _impl-syntax:
 
 Structure
 .........
@@ -64,8 +64,8 @@ then the implementation may reject the :ref:`validation <valid>`, compilation, o
    to common subsets like `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_.
 
 
-.. _impl-binary:
 .. index:: binary format, module, section, function, code
+.. _impl-binary:
 
 Binary Format
 .............
@@ -78,8 +78,8 @@ For a module given in :ref:`binary format <binary>`, additional limitations may 
 * the number of :ref:`sections <binary-section>`
 
 
-.. _impl-text:
 .. index:: text format, source text, token, identifier, character, unicode
+.. _impl-text:
 
 Text Format
 ...........
@@ -94,8 +94,8 @@ For a module given in :ref:`text format <text>`, additional limitations may be i
 * the range of literal :ref:`characters <text-char>` (code points) allowed in the :ref:`source text <source>`
 
 
-.. _impl-valid:
 .. index:: validation, function
+.. _impl-valid:
 
 Validation
 ~~~~~~~~~~
@@ -109,8 +109,8 @@ If a function turns out to be invalid, then the invocation, and every consecutiv
    The function must still be fully validated before execution of its body begins.
 
 
-.. _impl-exec:
 .. index:: execution, module instance, function instance, table instance, memory instance, global instance, allocation, frame, label, value
+.. _impl-exec:
 
 Execution
 ~~~~~~~~~

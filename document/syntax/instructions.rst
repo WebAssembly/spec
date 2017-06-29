@@ -1,6 +1,6 @@
-.. _syntax-instr:
 .. index:: ! instruction, ! code, stack machine, operand, operand stack
    pair: abstract syntax; instruction
+.. _syntax-instr:
 
 Instructions
 ------------
@@ -23,8 +23,9 @@ Some instructions are :ref:`structured <syntax-instr-control>` in that they brac
 The following sections group instructions into a number of different categories.
 
 
+.. index:: ! numeric instruction
+   pair: abstract syntax; instruction
 .. _syntax-sx:
-.. _syntax-instr-numeric:
 .. _syntax-const:
 .. _syntax-unop:
 .. _syntax-binop:
@@ -39,8 +40,7 @@ The following sections group instructions into a number of different categories.
 .. _syntax-fbinop:
 .. _syntax-ftestop:
 .. _syntax-frelop:
-.. index:: ! numeric instruction
-   pair: abstract syntax; instruction
+.. _syntax-instr-numeric:
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -166,9 +166,9 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
-.. _syntax-instr-parametric:
 .. index:: ! parametric instruction
    pair: abstract syntax; instruction
+.. _syntax-instr-parametric:
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -188,9 +188,9 @@ The |DROP| operator simply throws away a single operand.
 The |SELECT| operator selects one of its first two operands based on whether its third operand is zero or not.
 
 
-.. _syntax-instr-variable:
 .. index:: ! variable instruction, local, global, local index, global index
    pair: abstract syntax; instruction
+.. _syntax-instr-variable:
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -212,12 +212,12 @@ These instructions get or set the values of variables, respectively.
 The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
 
 
-.. _syntax-instr-memory:
+.. index:: ! memory instruction, memory index
+   pair: abstract syntax; instruction
 .. _syntax-loadn:
 .. _syntax-storen:
 .. _syntax-memarg:
-.. index:: ! memory instruction, memory index
-   pair: abstract syntax; instruction
+.. _syntax-instr-memory:
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -266,8 +266,8 @@ Both instructions operate in units of :ref:`page size <page-size>`.
    This restriction may be lifted in future versions.
 
 
-.. _syntax-instr-control:
-.. _syntax-instr-seq:
+.. index:: ! control instruction, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector
+   pair: abstract syntax; instruction
 .. _syntax-nop:
 .. _syntax-unreachable:
 .. _syntax-block:
@@ -280,8 +280,8 @@ Both instructions operate in units of :ref:`page size <page-size>`.
 .. _syntax-call:
 .. _syntax-call_indirect:
 .. _syntax-label:
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector
-   pair: abstract syntax; instruction
+.. _syntax-instr-seq:
+.. _syntax-instr-control:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -351,10 +351,10 @@ the callee is dynamically checked against the :ref:`function type <syntax-functy
    This restriction may be lifted in future versions.
 
 
-.. _syntax-expr:
 .. index:: ! expression, constant
    pair: abstract syntax; expression
    single: expression; constant
+.. _syntax-expr:
 
 Expressions
 ~~~~~~~~~~~

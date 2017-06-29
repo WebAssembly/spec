@@ -1,14 +1,14 @@
-.. _syntax-value:
 .. index:: ! value
    pair: abstract syntax; value
+.. _syntax-value:
 
 Values
 ------
 
 
-.. _syntax-byte:
 .. index:: ! byte
    pair: abstract syntax; byte
+.. _syntax-byte:
 
 Bytes
 ~~~~~
@@ -31,9 +31,6 @@ Conventions
 * Bytes are sometimes interpreted as natural numbers :math:`n < 256`.
 
 
-.. _syntax-int:
-.. _syntax-sint:
-.. _syntax-uint:
 .. index:: ! integer, ! unsigned integer, ! signed integer, ! uninterpreted integer
    pair: abstract syntax; integer
    pair: abstract syntax; unsigned integer
@@ -42,6 +39,9 @@ Conventions
    single: integer; unsigned
    single: integer; signed
    single: integer; uninterpreted
+.. _syntax-sint:
+.. _syntax-uint:
+.. _syntax-int:
 
 Integers
 ~~~~~~~~
@@ -71,14 +71,14 @@ Conventions
 * Numbers may be denoted by simple arithmetics, as in the grammar above.
 
 
-.. _syntax-float:
-.. _syntax-nan:
-.. _syntax-payload:
 .. index:: ! floating-point number, ! NaN, payload, canonical NaN, arithmetic NaN
    pair: abstract syntax; floating-point number
    single: NaN; payload
    single: NaN; canonical
    single: NaN; arithmetic
+.. _syntax-nan:
+.. _syntax-payload:
+.. _syntax-float:
 
 Floating-Point
 ~~~~~~~~~~~~~~
@@ -138,9 +138,9 @@ Conventions
 * Floating-point numbers, in normal or subnormal form, are sometimes interpreted as rational numbers :math:`q \in \mathbb{Q}`.
 
 
-.. _syntax-vec:
 .. index:: ! vector
    pair: abstract syntax; vector
+.. _syntax-vec:
 
 Vectors
 ~~~~~~~
@@ -157,11 +157,11 @@ A vector can have at most :math:`2^{32}-1` elements.
    \end{array}
 
 
-.. _syntax-name:
-.. _syntax-utf8:
-.. _syntax-codepoint:
 .. index:: ! name, byte, Unicode, UTF-8, code point
    pair: abstract syntax; name
+.. _syntax-utf8:
+.. _syntax-codepoint:
+.. _syntax-name:
 
 Names
 ~~~~~

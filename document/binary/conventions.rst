@@ -25,10 +25,10 @@ Except for a few exceptions, the binary grammar closely mirrors the grammar of t
    However, such layers are outside the scope of the current specification.
 
 
-.. _binary-grammar:
 .. index:: grammar notation, notation, byte
    single: binary format; grammar
    pair: binary format; notation
+.. _binary-grammar:
 
 Grammar
 ~~~~~~~

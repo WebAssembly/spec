@@ -1,14 +1,14 @@
-.. _exec-instr:
 .. index:: instruction, function type, store
+.. _exec-instr:
 
 Instructions
 ------------
 
 
-.. _exec-instr-numeric:
 .. index:: numeric instruction
    pair: execution; instruction
    single: abstract syntax; instruction
+.. _exec-instr-numeric:
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -165,10 +165,10 @@ The mapping of numeric instructions to their underlying operators is expressed b
    \end{array}
 
 
-.. _exec-instr-parametric:
 .. index:: parametric instructions
    pair: execution; instruction
    single: abstract syntax; instruction
+.. _exec-instr-parametric:
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -220,10 +220,10 @@ Parametric Instructions
    \end{array}
 
 
-.. _exec-instr-variable:
 .. index:: variable instructions, local index, global index, address, global address, global instance, store, frame
    pair: execution; instruction
    single: abstract syntax; instruction
+.. _exec-instr-variable:
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -351,11 +351,11 @@ Variable Instructions
    \end{array}
 
 
-.. _exec-instr-memory:
-.. _exec-memarg:
 .. index:: memory instruction, memory index, store, frame, address, memory address, memory instance, store, frame, value type, width
    pair: execution; instruction
    single: abstract syntax; instruction
+.. _exec-memarg:
+.. _exec-instr-memory:
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -604,11 +604,11 @@ Memory Instructions
    In practice, the choice depends on the resources available to the :ref:`embedder <embedder>`.
 
 
-.. _exec-instr-control:
-.. _exec-label:
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, address, table address, table instance, store, frame
    pair: execution; instruction
    single: abstract syntax; instruction
+.. _exec-label:
+.. _exec-instr-control:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -911,8 +911,8 @@ Control Instructions
    \end{array}
 
 
-.. _exec-instr-seq:
 .. index:: instruction, instruction sequence
+.. _exec-instr-seq:
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
@@ -1093,10 +1093,10 @@ and it must still be well-typed.
 
 
 
-.. _exec-expr:
 .. index:: expression
    pair: execution; expression
    single: abstract syntax; expression
+.. _exec-expr:
 
 Expressions
 ~~~~~~~~~~~

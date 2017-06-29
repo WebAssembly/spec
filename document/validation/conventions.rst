@@ -1,5 +1,5 @@
-.. _type-system:
 .. index:: ! validation, ! type system, function type, table type, memory type, globaltype, valtype, resulttype, index space
+.. _type-system:
 
 Conventions
 -----------
@@ -24,8 +24,8 @@ That is, they only formulate the constraints, they do not define an algorithm.
 A sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the :ref:`appendix <soundness>`.
 
 
-.. _context:
 .. index:: ! context, function type, table type, memory type, global type, value type, result type, index space
+.. _context:
 
 Contexts
 ~~~~~~~~
@@ -109,8 +109,8 @@ The following conventions are adopted in stating these rules.
   The formulation "Under context :math:`C'`, ... *statement* ..." is adopted to express that the following statement must apply under the assumptions embodied in the extended context.
 
 
-.. _valid-notation:
 .. index:: ! typing rules
+.. _valid-notation:
 
 Formal Notation
 ~~~~~~~~~~~~~~~

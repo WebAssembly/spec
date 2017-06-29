@@ -429,9 +429,9 @@ Here, the notation :math:`\F{allocX}^\ast` is shorthand for multiple :ref:`alloc
    In an implementation, this recursion is easily unraveled by mutating one or the other in a secondary step.
 
 
-.. _instantiation:
-.. _exec-module:
 .. index:: ! instantiation, module, instance, store
+.. _exec-module:
+.. _instantiation:
 
 Instantiation
 ~~~~~~~~~~~~~
@@ -607,9 +607,9 @@ Instantiation may *fail* with an error.
    it happens in individual steps that may be interleaved with other threads.
 
 
-.. _invocation:
-.. _exec-call-export:
 .. index:: ! invocation, module, instance, function, export, function address
+.. _exec-call-export:
+.. _invocation:
 
 Invocation
 ~~~~~~~~~~
