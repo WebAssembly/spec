@@ -38,7 +38,7 @@ The design goals of WebAssembly are the following:
 
 * Efficient and portable *representation*:
 
-  * **Compact**: a binary format that is fast to transmit by being smaller than typical text or native code formats.
+  * **Compact**: has a binary format that is fast to transmit by being smaller than typical text or native code formats.
 
   * **Modular**: programs can be split up in smaller parts that can be transmitted, cached, and consumed separately.
 
@@ -68,7 +68,7 @@ As such, it has many use cases and can be embedded in many different environment
 To encompass their variety and enable maximum reuse, the WebAssembly specification is split and layered into several documents.
 
 This document is concerned with the core ISA layer of WebAssembly.
-It defines the instruction set, binary encoding, validation, and execution semantics.
+It defines the instruction set, binary encoding, validation, and execution semantics, as well as a textual representation.
 It does not, however, define how WebAssembly programs can interact with a specific environment they execute in, nor how they are invoked from such an environment.
 
 Instead, this specification is complemented by additional documents defining interfaces to specific embedding environments such as the Web.

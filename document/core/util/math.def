@@ -27,7 +27,7 @@
 
 .. |mod| mathdef:: \mathbin{\F{mod}}
 
-.. |iff| mathdef:: \mathop{\mbox{if}}
+.. |iff| mathdef:: \mathrel{\mbox{if}}
 .. |where| mathdef:: \mathrel{\mbox{where}}
 
 
@@ -42,9 +42,8 @@
 
 .. Notation for Sequences & Records
 
-.. |concat| mathdef:: \xref{syntax/conventions}{syntax-concat}{\F{concat}}
-
 .. |with| mathdef:: \xref{syntax/conventions}{syntax-record}{\mathrel{\mbox{with}}}
+.. |concat| mathdef:: \xref{syntax/conventions}{syntax-concat}{\F{concat}}
 .. |compose| mathdef:: \xref{syntax/conventions}{syntax-record}{\oplus}
 .. |bigcompose| mathdef:: \xref{syntax/conventions}{syntax-record}{\bigoplus}
 

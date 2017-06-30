@@ -1,22 +1,20 @@
 Overview
 --------
 
-.. index:: concepts, value, instruction, trap, function, table, memory, linear memory, module, !embedder
-
-
+.. index:: concepts, value, instruction, trap, function, table, memory, linear memory, module, ! embedder
 .. _concepts:
 
 Concepts
 ~~~~~~~~
 
 WebAssembly encodes a low-level, assembly-like programming language.
-This language is structured around the following main concepts.
+This language is structured around the following concepts.
 
 .. _value:
 
 **Values**
   WebAssembly provides only four basic *value types*.
-  These are integers and `IEEE-754 floating point <http://ieeexplore.ieee.org/document/4610935/>`_ numbers,
+  These are integers and `IEEE 754 floating point <http://ieeexplore.ieee.org/document/4610935/>`_ numbers,
   each in 32 and 64 bit width.
   32 bit integers also serve as Booleans and as memory addresses.
   The usual operations on these types are available,
@@ -32,7 +30,7 @@ This language is structured around the following main concepts.
   Code consists of sequences of *instructions* that are executed in order.
   Instructions manipulate values on an implicit *operand stack* [#stackmachine]_
   and fall into two main categories.
-  Simple instructions perform basic operations on data.
+  *Simple* instructions perform basic operations on data.
   They pop arguments from the operand stack and push results back to it.
   *Control* instructions alter control flow.
   Control flow is *structured*, meaning it is expressed with well-nested constructs such as blocks, loops, and conditionals.
@@ -64,13 +62,13 @@ This language is structured around the following main concepts.
   It allows programs to select such values indirectly through a dynamic index operand.
   Currently, the only available element type is an untyped function reference.
   Thereby, a program can call functions indirectly through a dynamic index into a table.
-  For example, this allows emulating function pointers with table indices.
+  For example, this allows emulating function pointers by way of table indices.
 
 .. _memory:
 
 **Linear Memory**
-  A *linear memory* is a contiguous, mutable array of untyped bytes.
-  Such a memory is created with an initial size but can be dynamically grown.
+  A *linear memory* is a contiguous, mutable array of raw bytes.
+  Such a memory is created with an initial size but can be grown dynamically.
   A program can load and store values from/to a linear memory at any byte address (including unaligned).
   Integer loads and stores can specify a *storage size* which is smaller than the size of the respective value type.
   A trap occurs if access is not within the bounds of the current memory size.
@@ -83,9 +81,9 @@ This language is structured around the following main concepts.
   as well as mutable or immutable *global variables*.
   Definitions can also be *imported*, specifying a module/name pair and a suitable type.
   Each definition can optionally be *exported* under one or more names.
-  In addition to definitions, a module can define initialization data for its memory or table
+  In addition to definitions, modules can define initialization data for their memories or tables
   that takes the form of *segments* copied to given offsets.
-  It can also define a *start function* that is automatically executed.
+  They can also define a *start function* that is automatically executed.
 
 .. _embedder:
 
@@ -132,14 +130,14 @@ For each part of the language, the specification specifies each of them.
   Execution can be further divided into two phases:
 
   **Instantiation**.
-  An *instance* is the dynamic representation of a module,
+  A module *instance* is the dynamic representation of a module,
   complete with its own state and execution stack.
-  Instantiation executes the module body itself given definitions for all its imports.
+  Instantiation executes the module body itself, given definitions for all its imports.
   It initializes globals, memories and tables and invokes the module's start function if defined.
   It returns the instances of the module's exports.
 
   **Invocation**.
-  Once instantiated, further WebAssembly computations can be initiated by *invoking* an exported function of an instance.
+  Once instantiated, further WebAssembly computations can be initiated by *invoking* an exported function on a module instance.
   Given the required arguments, that executes the respective function and returns its results.
 
   Instantiation and invocation are operations within the embedding environment.
