@@ -30,31 +30,72 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
 .. index:: ! token, ! keyword, character, white space, comment, source text
    single: text format; token
 .. _text-keyword:
-.. _text-reserved:
+.. _text-tokenchar:
 .. _text-token:
 
 Tokens
 ~~~~~~
 
-The character stream in the source text is divided, from left to right, into a sequence of *tokens*, as defined by the following grammar.
+The character stream in the source text is divided, from left to right, into a sequence of *tokens*.
+Tokens are drawn from the set of *pre-tokens*, which are either single parentheses or sequences of alphanumeric and symbolic characters, as defined by the following grammar.
+
+.. math::
+   \begin{array}{llll}
+   \production{pre token} & \Tpretoken &::=&
+     \Ttokenchar^+ ~|~ \text{(} ~|~ \text{)} \\
+   \production{token character} & \Ttokenchar &::=&
+     \text{0} ~~|~~ \dots ~~|~~ \text{9} \\ &&|&
+     \text{A} ~~|~~ \dots ~~|~~ \text{Z} \\ &&|&
+     \text{a} ~~|~~ \dots ~~|~~ \text{z} \\ &&|&
+     \text{!} ~~|~~
+     \text{\#} ~~|~~
+     \text{\$} ~~|~~
+     \text{\%} ~~|~~
+     \text{\&} ~~|~~
+     \text{'} ~~|~~
+     \text{*} ~~|~~
+     \text{+} ~~|~~
+     \text{-} ~~|~~
+     \text{.} ~~|~~
+     \text{/} \\ &&|&
+     \text{:} ~~|~~
+     \text{<} ~~|~~
+     \text{=} ~~|~~
+     \text{>} ~~|~~
+     \text{?} ~~|~~
+     \text{@} ~~|~~
+     \text{\backslash} ~~|~~
+     \text{\hat{~~}} ~~|~~
+     \text{\_} ~~|~~
+     \text{\grave{~~}} ~~|~~
+     \text{|} ~~|~~
+     \text{\tilde{~~}} \\
+   \end{array}
+
+Pre-tokens are formed from the input character stream according to the *longest match* rule.
+That is, the next pre-token always consists of the longest possible sequence of characters that is recognized by the above grammar.
+Where necessary, pre-tokens may be separated by :ref:`white space <text-space>`.
+
+Tokens are the subset of all pre-tokens that can occur in a syntactically correct source.
+They are defined by the following grammar:
 
 .. math::
    \begin{array}{llll}
    \production{token} & \Ttoken &::=&
      \Tkeyword ~|~ \TuN ~|~ \TsN ~|~ \TfN ~|~ \Tstring ~|~ \Tid ~|~
-     \text{(} ~|~ \text{)} ~|~ \Treserved \\
+     \text{(} ~|~ \text{)} \\
    \production{keyword} & \Tkeyword &::=&
-     \mbox{(any terminal symbol in the grammar that is none of the above)} \\
-   \production{reserved} & \Treserved &::=&
-     \Tidchar^+ \\
+     (\text{a} ~|~ \dots ~|~ \text{z})~\Ttokenchar^\ast
+     \qquad (\mbox{if occurring as a terminal in the grammar}) \\
    \end{array}
 
-In this specification, the set of valid *keyword* tokens is defined implicitly, by their occurrence as a terminal symbols in literal form in the non-lexical grammar.
-Any sequence of alphanumeric or symbolic characters that is not in the other classes is considered a *reserved word*.
+Any pre-token that is not a token is considered *reserved*.
+The set of *keyword* tokens is defined implicitly, by all occurrences of a terminal symbol in literal form in the non-lexical grammar of this specification.
 
-Tokens are formed from the input character stream according to the *longest match* rule.
-That is, the next token always consists of the longest possible sequence of characters that is recognized by the above grammar.
-Where necessary, tokens may be separated by :ref:`white space <text-space>`.
+.. note::
+   The effect of defining the larger set of pre-tokens is that all tokens must be separated by either parentheses or :ref:`white space <text-space>`.
+   For example, :math:`\text{0$x}` is a pre-token but not a token.
+   Consequently, it is not recognized as two separate tokens :math:`\text{0}` and :math:`\text{$x}`, but instead disallowed.
 
 
 .. index:: ! white space, character, ASCII

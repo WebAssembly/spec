@@ -423,6 +423,8 @@
 .. |Tspace| mathdef:: \xref{text/lexical}{text-space}{\T{space}}
 .. |Tformat| mathdef:: \xref{text/lexical}{text-format}{\T{format}}
 
+.. |Ttokenchar| mathdef:: \xref{text/lexicals}{text-tokenchar}{\T{tokenchar}}
+.. |Tpretoken| mathdef:: \xref{text/lexical}{text-pretoken}{\T{pretoken}}
 .. |Ttoken| mathdef:: \xref{text/lexical}{text-token}{\T{token}}
 .. |Tkeyword| mathdef:: \xref{text/lexical}{text-keyword}{\T{keyword}}
 .. |Treserved| mathdef:: \xref{text/lexical}{text-reserved}{\T{reserved}}
@@ -483,7 +485,6 @@
 .. |Tcodecont| mathdef:: \xref{text/values}{text-name}{\T{cont}}
 
 .. |Tid| mathdef:: \xref{text/values}{text-id}{\T{id}}
-.. |Tidchar| mathdef:: \xref{text/values}{text-id}{\T{idchar}}
 
 
 .. Types, non-terminals

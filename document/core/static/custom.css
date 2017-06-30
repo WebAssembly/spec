@@ -42,6 +42,10 @@ div.admonition p.admonition-title {
 }
 
 
+div.relations {
+  display: block;
+}
+
 div.sphinxsidebar {
   z-index: 1;
   background: #FFF;
@@ -56,7 +60,7 @@ div.sphinxsidebarwrapper p.logo {
 }
 
 div.sphinxsidebar h3 {
-  font-size: 0px;
+  font-size: 10px;
 }
 
 div.sphinxsidebar a {

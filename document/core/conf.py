@@ -152,10 +152,11 @@ html_sidebars = {
   '**': [
     # 'about.html',
     'navigation.html',
-    # 'relations.html',
+    'relations.html',
     'searchbox.html',
   ]
 }
+
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []

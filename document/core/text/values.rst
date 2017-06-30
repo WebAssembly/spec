@@ -220,34 +220,7 @@ Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{identifier} & \Tid &::=&
-     \text{\$}~\Tidchar^+ \\
-   \production{identifier character} & \Tidchar &::=&
-     \text{0} ~~|~~ \dots ~~|~~ \text{9} \\ &&|&
-     \text{A} ~~|~~ \dots ~~|~~ \text{Z} \\ &&|&
-     \text{a} ~~|~~ \dots ~~|~~ \text{z} \\ &&|&
-     \text{!} ~~|~~
-     \text{\#} ~~|~~
-     \text{\$} ~~|~~
-     \text{\%} ~~|~~
-     \text{\&} ~~|~~
-     \text{'} ~~|~~
-     \text{*} ~~|~~
-     \text{+} ~~|~~
-     \text{-} ~~|~~
-     \text{.} ~~|~~
-     \text{/} \\ &&|&
-     \text{:} ~~|~~
-     \text{<} ~~|~~
-     \text{=} ~~|~~
-     \text{>} ~~|~~
-     \text{?} ~~|~~
-     \text{@} ~~|~~
-     \text{\backslash} ~~|~~
-     \text{\hat{~~}} ~~|~~
-     \text{\_} ~~|~~
-     \text{\grave{~~}} ~~|~~
-     \text{|} ~~|~~
-     \text{\tilde{~~}} \\
+     \text{\$}~\Ttokenchar^+ \\
    \end{array}
 
 .. _text-id-fresh:
