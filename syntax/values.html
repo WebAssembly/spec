@@ -46,7 +46,7 @@
               <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Values</a><ul>
@@ -62,8 +62,8 @@
 <li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
@@ -131,7 +131,7 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned.
-However, some operations <a class="reference internal" href="../execution/numerics.html#aux-signed"><span class="std std-ref">convert</span></a> them to signed based on a two&#8217;s complement interpretation.</p>
+However, some operations <a class="reference internal" href="../exec/numerics.html#aux-signed"><span class="std std-ref">convert</span></a> them to signed based on a two&#8217;s complement interpretation.</p>
 <div class="section" id="id1">
 <h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -148,7 +148,7 @@ Every value has a <em>sign</em> and a <em>magnitude</em>.</p>
 or as a <em>subnormal</em> number where <span class="math">\(m_0\)</span> is <span class="math">\(0\)</span> and the exponent is fixed to the smallest possible value; among the subnormals are positive and negative zero.
 Since the significands are binary values, normals are represented in the form <span class="math">\((1 + m\cdot 2^{-M})\)</span>, where <span class="math">\(M\)</span> is the bit width of <span class="math">\(m\)</span>; similarly for subnormals.</p>
 <p>Possible magnitudes also include the special values <span class="math">\(\infty\)</span> (infinity) and <span class="math">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> (<em>NaN</em>, not a number).
-NaN values have a <em>payload</em> value that describes the mantissa bits in the underlying <a class="reference internal" href="../execution/numerics.html#aux-fbits"><span class="std std-ref">binary representation</span></a>.
+NaN values have a <em>payload</em> value that describes the mantissa bits in the underlying <a class="reference internal" href="../exec/numerics.html#aux-fbits"><span class="std std-ref">binary representation</span></a>.
 No distinction is made between signalling and quiet NaNs.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcll}

@@ -46,10 +46,10 @@
               <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Appendix</a><ul class="current">
@@ -142,10 +142,10 @@ However, designated subsets of WebAssembly may be specified in the future.</p>
 <li>the range of <a class="reference internal" href="../syntax/values.html#syntax-codepoint"><span class="std std-ref">code points</span></a> in a <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a></li>
 </ul>
 <p>If the limits of an implementation are exceeded for a given module,
-then the implementation may reject the <a class="reference internal" href="../validation/index.html#valid"><span class="std std-ref">validation</span></a>, compilation, or <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiation</span></a> of that module with an embedder-specific error.</p>
+then the implementation may reject the <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a>, compilation, or <a class="reference internal" href="../intro/overview.html#instantiation"><span class="std std-ref">instantiation</span></a> of that module with an embedder-specific error.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The last item allows <a class="reference internal" href="../introduction/overview.html#embedder"><span class="std std-ref">embedders</span></a> that operate in limited environments without support for
+<p class="last">The last item allows <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedders</span></a> that operate in limited environments without support for
 <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> to limit the
 names of <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">imports</span></a> and <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exports</span></a>
 to common subsets like <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a>.</p>
@@ -176,8 +176,8 @@ to common subsets like <a class="reference external" href="http://webstore.ansi.
 </div>
 <div class="section" id="validation">
 <span id="impl-valid"></span><span id="index-4"></span><h2>Validation<a class="headerlink" href="#validation" title="Permalink to this headline">¶</a></h2>
-<p>An implementation may defer <a class="reference internal" href="../validation/index.html#valid"><span class="std std-ref">validation</span></a> of individual <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">functions</span></a> until they are first <a class="reference internal" href="../execution/instructions.html#exec-invoke"><span class="std std-ref">invoked</span></a>.</p>
-<p>If a function turns out to be invalid, then the invocation, and every consecutive call to the same function, results in a <a class="reference internal" href="../introduction/overview.html#trap"><span class="std std-ref">trap</span></a>.</p>
+<p>An implementation may defer <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a> of individual <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">functions</span></a> until they are first <a class="reference internal" href="../exec/instructions.html#exec-invoke"><span class="std std-ref">invoked</span></a>.</p>
+<p>If a function turns out to be invalid, then the invocation, and every consecutive call to the same function, results in a <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This is to allow implementations to use interpretation or just-in-time compilation for functions.
@@ -186,18 +186,18 @@ The function must still be fully validated before execution of its body begins.<
 </div>
 <div class="section" id="execution">
 <span id="impl-exec"></span><span id="index-5"></span><h2>Execution<a class="headerlink" href="#execution" title="Permalink to this headline">¶</a></h2>
-<p>Restrictions on the following dimensions may be imposed during <a class="reference internal" href="../execution/index.html#exec"><span class="std std-ref">execution</span></a> of a WebAssembly program:</p>
+<p>Restrictions on the following dimensions may be imposed during <a class="reference internal" href="../exec/index.html#exec"><span class="std std-ref">execution</span></a> of a WebAssembly program:</p>
 <ul class="simple">
-<li>the number of allocated <a class="reference internal" href="../execution/runtime.html#syntax-moduleinst"><span class="std std-ref">module instances</span></a></li>
-<li>the number of allocated <a class="reference internal" href="../execution/runtime.html#syntax-funcinst"><span class="std std-ref">function instances</span></a></li>
-<li>the number of allocated <a class="reference internal" href="../execution/runtime.html#syntax-tableinst"><span class="std std-ref">table instances</span></a></li>
-<li>the number of allocated <a class="reference internal" href="../execution/runtime.html#syntax-meminst"><span class="std std-ref">memory instances</span></a></li>
-<li>the number of allocated <a class="reference internal" href="../execution/runtime.html#syntax-globalinst"><span class="std std-ref">global instances</span></a></li>
-<li>the size of a <a class="reference internal" href="../execution/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a></li>
-<li>the size of a <a class="reference internal" href="../execution/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a></li>
-<li>the number of <a class="reference internal" href="../execution/runtime.html#syntax-frame"><span class="std std-ref">frames</span></a> on the <a class="reference internal" href="../execution/runtime.html#stack"><span class="std std-ref">stack</span></a></li>
-<li>the number of <a class="reference internal" href="../syntax/instructions.html#syntax-label"><span class="std std-ref">labels</span></a> on the <a class="reference internal" href="../execution/runtime.html#stack"><span class="std std-ref">stack</span></a></li>
-<li>the number of <a class="reference internal" href="../execution/runtime.html#syntax-val"><span class="std std-ref">values</span></a> on the <a class="reference internal" href="../execution/runtime.html#stack"><span class="std std-ref">stack</span></a></li>
+<li>the number of allocated <a class="reference internal" href="../exec/runtime.html#syntax-moduleinst"><span class="std std-ref">module instances</span></a></li>
+<li>the number of allocated <a class="reference internal" href="../exec/runtime.html#syntax-funcinst"><span class="std std-ref">function instances</span></a></li>
+<li>the number of allocated <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instances</span></a></li>
+<li>the number of allocated <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instances</span></a></li>
+<li>the number of allocated <a class="reference internal" href="../exec/runtime.html#syntax-globalinst"><span class="std std-ref">global instances</span></a></li>
+<li>the size of a <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a></li>
+<li>the size of a <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a></li>
+<li>the number of <a class="reference internal" href="../exec/runtime.html#syntax-frame"><span class="std std-ref">frames</span></a> on the <a class="reference internal" href="../exec/runtime.html#stack"><span class="std std-ref">stack</span></a></li>
+<li>the number of <a class="reference internal" href="../syntax/instructions.html#syntax-label"><span class="std std-ref">labels</span></a> on the <a class="reference internal" href="../exec/runtime.html#stack"><span class="std std-ref">stack</span></a></li>
+<li>the number of <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">values</span></a> on the <a class="reference internal" href="../exec/runtime.html#stack"><span class="std std-ref">stack</span></a></li>
 </ul>
 <p>If the runtime limits of an implementation are exceeded during execution of a computation,
 then it may terminate that computation and report an embedder-specific error to the invoking code.</p>

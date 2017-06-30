@@ -46,7 +46,7 @@
               <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
@@ -63,8 +63,8 @@
 <li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
@@ -284,14 +284,14 @@ Integer loads and stores can optionally specify a <em>storage size</em> that is 
 In the case of loads, a sign extension mode <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> is then required to select appropriate behavior.</p>
 <p>The static address offset is added to the dynamic address operand, yielding a 33 bit <em>effective address</em> that is the zero-based index at which the memory is accessed.
 All values are read and written in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order.
-A <a class="reference internal" href="../introduction/overview.html#trap"><span class="std std-ref">trap</span></a> results if any of the accessed memory bytes lies outside the address range implied by the memory&#8217;s current size.</p>
+A <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> results if any of the accessed memory bytes lies outside the address range implied by the memory&#8217;s current size.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Future version of WebAssembly might provide memory instructions with 64 bit address ranges.</p>
 </div>
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}}\)</span> instruction returns the current size of a memory.
 The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}}\)</span> instruction grows memory by a given delta and returns the previous size, or <span class="math">\(-1\)</span> if enough memory cannot be allocated.
-Both instructions operate in units of <a class="reference internal" href="../execution/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
+Both instructions operate in units of <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly,
@@ -319,7 +319,7 @@ This restriction may be lifted in future versions.</p>
   \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} \\
 \end{array}\end{split}\]</div>
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}}\)</span> instruction does nothing.</p>
-<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span> instruction causes an unconditional <a class="reference internal" href="../introduction/overview.html#trap"><span class="std std-ref">trap</span></a>.</p>
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span> instruction causes an unconditional <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a>.</p>
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span>, <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> instructions are <em>structured</em> instructions.
 They bracket nested sequences of instructions, called <em>blocks</em>, terminated with, or separated by, <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> or <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span> pseudo-instructions.
 As the grammar prescribes, they must be well-nested.
@@ -352,7 +352,7 @@ However, forward branches that target a control instruction with a non-empty res
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}\)</span> instruction invokes another function, consuming the necessary arguments from the stack and returning the result values of the call.
 The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> instruction calls a function indirectly through an operand indexing into a <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a>.
 Since tables may contain function elements of heterogeneous type <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}\)</span>,
-the callee is dynamically checked against the <a class="reference internal" href="types.html#syntax-functype"><span class="std std-ref">function type</span></a> indexed by the instruction&#8217;s immediate, and the call aborted with a <a class="reference internal" href="../introduction/overview.html#trap"><span class="std std-ref">trap</span></a> if it does not match.</p>
+the callee is dynamically checked against the <a class="reference internal" href="types.html#syntax-functype"><span class="std std-ref">function type</span></a> indexed by the instruction&#8217;s immediate, and the call aborted with a <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> if it does not match.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly,
@@ -368,7 +368,7 @@ This restriction may be lifted in future versions.</p>
 \def\mathdef1757#1{{}}\mathdef1757{expression} &amp; \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} &amp;::=&amp;
   \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
 \end{array}\end{split}\]</div>
-<p>In some places, validation <a class="reference internal" href="../validation/instructions.html#valid-constant"><span class="std std-ref">restricts</span></a> expressions to be <em>constant</em>, which limits the set of allowable insructions.</p>
+<p>In some places, validation <a class="reference internal" href="../valid/instructions.html#valid-constant"><span class="std std-ref">restricts</span></a> expressions to be <em>constant</em>, which limits the set of allowable insructions.</p>
 </div>
 </div>
 

@@ -46,7 +46,7 @@
               <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
@@ -65,8 +65,8 @@
 <li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
@@ -151,7 +151,7 @@ mapping a vector of parameters to a vector of results.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly,
-the length of the result type vector of a <a class="reference internal" href="../validation/modules.html#valid-functype"><span class="std std-ref">valid</span></a> function type may be at most <span class="math">\(1\)</span>.
+the length of the result type vector of a <a class="reference internal" href="../valid/modules.html#valid-functype"><span class="std std-ref">valid</span></a> function type may be at most <span class="math">\(1\)</span>.
 This restriction may be removed in future versions.</p>
 </div>
 </div>
@@ -174,7 +174,7 @@ This restriction may be removed in future versions.</p>
   \href{../syntax/types.html#syntax-limits}{\mathit{limits}} \\
 \end{array}\end{split}\]</div>
 <p>The limits constrain the minimum and optionally the maximum size of a memory.
-The limits are given in units of <a class="reference internal" href="../execution/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
+The limits are given in units of <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
 </div>
 <div class="section" id="table-types">
 <span id="syntax-tabletype"></span><span id="syntax-elemtype"></span><span id="index-6"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
@@ -209,7 +209,7 @@ A table of that type thus contains references to functions of heterogeneous type
 </div>
 <div class="section" id="external-types">
 <span id="syntax-externtype"></span><span id="index-8"></span><h2>External Types<a class="headerlink" href="#external-types" title="Permalink to this headline">¶</a></h2>
-<p><em>External types</em> classify <a class="reference internal" href="modules.html#syntax-import"><span class="std std-ref">imports</span></a> and <a class="reference internal" href="../execution/runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> with their respective types.</p>
+<p><em>External types</em> classify <a class="reference internal" href="modules.html#syntax-import"><span class="std std-ref">imports</span></a> and <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> with their respective types.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1867#1{{}}\mathdef1867{external types} &amp; \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}} &amp;::=&amp;

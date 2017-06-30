@@ -46,10 +46,10 @@
               <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Text Format</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
@@ -145,7 +145,7 @@ Moreover, their value must lie within the range of the respective type.</p>
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef2863#1{{}}\mathdef2863{uninterpreted integers} &amp; \href{../text/values.html#text-int}{\def\mathdef2910#1{{\mathtt{i}#1}}\mathdef2910{N}} &amp;::=&amp;
   n{:}\href{../text/values.html#text-int}{\def\mathdef2901#1{{\mathtt{u}#1}}\mathdef2901{N}} &amp;\Rightarrow&amp; n \\ &amp;&amp;|&amp;
-  i{:}\href{../text/values.html#text-int}{\def\mathdef2907#1{{\mathtt{s}#1}}\mathdef2907{N}} &amp;\Rightarrow&amp; n &amp; (i = \href{../execution/numerics.html#aux-signed}{\mathrm{signed}}(n)) \\
+  i{:}\href{../text/values.html#text-int}{\def\mathdef2907#1{{\mathtt{s}#1}}\mathdef2907{N}} &amp;\Rightarrow&amp; n &amp; (i = \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}(n)) \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="floating-point">
@@ -153,7 +153,7 @@ Moreover, their value must lie within the range of the respective type.</p>
 <p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating point</span></a> values can be represented in either decimal or hexadecimal notation.
 The value of a literal must not lie outside the representable range of the corresponding <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> type
 (that is, a numeric value must not overflow to <span class="math">\(\pm\mbox{infinity}\)</span>),
-but it may be <a class="reference internal" href="../execution/numerics.html#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</p>
+but it may be <a class="reference internal" href="../exec/numerics.html#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Rounding can be prevented by using hexadecimal notation with no more significant bits than supported by the required type.</p>
@@ -183,8 +183,8 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
   \def\mathdef2938#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2938{0x}~p{:}\href{../text/values.html#text-hexnum}{\mathtt{hexnum}}~\def\mathdef2939#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2939{.}~q{:}\href{../text/values.html#text-hexfrac}{\mathtt{hexfrac}}~(\def\mathdef2940#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2940{P}~|~\def\mathdef2941#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2941{p})~{\pm}{:}\href{../text/values.html#text-sign}{\mathtt{sign}}~e{:}\href{../text/values.html#text-num}{\mathtt{num}}
     &amp;\Rightarrow&amp; (p+q)\cdot 2^{\pm e} \\
 \def\mathdef2863#1{{}}\mathdef2863{floating-point value} &amp; \href{../text/values.html#text-float}{\def\mathdef2914#1{{\mathtt{f}#1}}\mathdef2914{N}\mathtt{mag}} &amp;::=&amp;
-  z{:}\href{../text/values.html#text-float}{\mathtt{float}} &amp;\Rightarrow&amp; \href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(z) &amp; (\href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(z) \neq \pm \infty) \\ &amp;&amp;|&amp;
-  z{:}\href{../text/values.html#text-hexfloat}{\mathtt{hexfloat}} &amp;\Rightarrow&amp; \href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(z) &amp; (\href{../execution/numerics.html#aux-ieee}{\mathrm{float}}_N(z) \neq \pm \infty) \\ &amp;&amp;|&amp;
+  z{:}\href{../text/values.html#text-float}{\mathtt{float}} &amp;\Rightarrow&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z) &amp; (\href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z) \neq \pm \infty) \\ &amp;&amp;|&amp;
+  z{:}\href{../text/values.html#text-hexfloat}{\mathtt{hexfloat}} &amp;\Rightarrow&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z) &amp; (\href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z) \neq \pm \infty) \\ &amp;&amp;|&amp;
   \def\mathdef2942#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2942{inf} &amp;\Rightarrow&amp; \infty \\ &amp;&amp;|&amp;
   \def\mathdef2943#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2943{nan} &amp;\Rightarrow&amp; \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(2^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)-1}) \\ &amp;&amp;|&amp;
   \def\mathdef2944#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2944{nan{:}0x}~n{:}\href{../text/values.html#text-hexnum}{\mathtt{hexnum}} &amp;\Rightarrow&amp; \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) &amp; (1 \leq n &lt; 2^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)}) \\

@@ -28,7 +28,7 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
     <link rel="up" title="Structure" href="index.html" />
-    <link rel="next" title="Validation" href="../validation/index.html" />
+    <link rel="next" title="Validation" href="../valid/index.html" />
     <link rel="prev" title="Instructions" href="instructions.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -46,7 +46,7 @@
               <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
@@ -68,8 +68,8 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
@@ -210,7 +210,7 @@ This restriction may be lifted in future versions.</p>
 \end{array}\end{split}\]</div>
 <p>A memory is a vector of raw uninterpreted bytes.
 The <span class="math">\(\mathsf{min}\)</span> size in the <a class="reference internal" href="types.html#syntax-limits"><span class="std std-ref">limits</span></a> of the memory type of a definition specifies the initial size of that memory, while its <span class="math">\(\mathsf{max}\)</span>, if present, restricts the size to which it can grow later.
-Both are in units of <a class="reference internal" href="../execution/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
+Both are in units of <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
 <p>Memories can be initialized through <a class="reference internal" href="#syntax-data"><span class="std std-ref">data segments</span></a>.</p>
 <p>Memories are referenced through <a class="reference internal" href="#syntax-memidx"><span class="std std-ref">memory indices</span></a>,
 starting with the smallest index not referencing a memory <a class="reference internal" href="#syntax-import"><span class="std std-ref">import</span></a>.
@@ -232,7 +232,7 @@ This restriction may be lifted in future versions.</p>
 \end{array}\end{split}\]</div>
 <p>Each global stores a single value of the given <a class="reference internal" href="types.html#syntax-globaltype"><span class="std std-ref">global type</span></a>.
 Its <span class="math">\(\mathsf{type}\)</span> also specifies whether a global is immutable or mutable.
-Moreover, each global is initialized with an <span class="math">\(\mathsf{init}\)</span> value given by a <a class="reference internal" href="../validation/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> initializer <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
+Moreover, each global is initialized with an <span class="math">\(\mathsf{init}\)</span> value given by a <a class="reference internal" href="../valid/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> initializer <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
 <p>Globals are referenced through <a class="reference internal" href="#syntax-globalidx"><span class="std std-ref">global indices</span></a>,
 starting with the smallest index not referencing a global <a class="reference internal" href="#syntax-import"><span class="std std-ref">import</span></a>.</p>
 </div>
@@ -245,7 +245,7 @@ The <span class="math">\(\mathsf{elem}\)</span> component of a module defines a 
 \def\mathdef1813#1{{}}\mathdef1813{element segment} &amp; \href{../syntax/modules.html#syntax-elem}{\mathit{elem}} &amp;::=&amp;
   \{ \mathsf{table}~\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}}, \mathsf{offset}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}) \} \\
 \end{array}\end{split}\]</div>
-<p>The <span class="math">\(\mathsf{offset}\)</span> is given by a <a class="reference internal" href="../validation/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
+<p>The <span class="math">\(\mathsf{offset}\)</span> is given by a <a class="reference internal" href="../valid/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly, at most one table is allowed in a module.
@@ -261,7 +261,7 @@ The <span class="math">\(\mathsf{data}\)</span> component of a module defines a 
 \def\mathdef1813#1{{}}\mathdef1813{data segment} &amp; \href{../syntax/modules.html#syntax-data}{\mathit{data}} &amp;::=&amp;
   \{ \mathsf{mem}~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}}, \mathsf{offset}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \mathsf{init}~\href{../syntax/values.html#syntax-vec}{\mathit{vec}}(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}) \} \\
 \end{array}\end{split}\]</div>
-<p>The <span class="math">\(\mathsf{offset}\)</span> is given by a <a class="reference internal" href="../validation/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
+<p>The <span class="math">\(\mathsf{offset}\)</span> is given by a <a class="reference internal" href="../valid/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly, at most one memory is allowed in a module.
@@ -270,7 +270,7 @@ Consequently, the only valid <span class="math">\(\href{../syntax/modules.html#s
 </div>
 <div class="section" id="start-function">
 <span id="syntax-start"></span><span id="index-9"></span><h2>Start Function<a class="headerlink" href="#start-function" title="Permalink to this headline">¶</a></h2>
-<p>The <span class="math">\(\mathsf{start}\)</span> component of a module optionally declares the <a class="reference internal" href="#syntax-funcidx"><span class="std std-ref">function index</span></a> of a <em>start function</em> that is automatically invoked when the module is <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiated</span></a>, after tables and memories have been initialized.</p>
+<p>The <span class="math">\(\mathsf{start}\)</span> component of a module optionally declares the <a class="reference internal" href="#syntax-funcidx"><span class="std std-ref">function index</span></a> of a <em>start function</em> that is automatically invoked when the module is <a class="reference internal" href="../intro/overview.html#instantiation"><span class="std std-ref">instantiated</span></a>, after tables and memories have been initialized.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1813#1{{}}\mathdef1813{start function} &amp; \href{../syntax/modules.html#syntax-start}{\mathit{start}} &amp;::=&amp;
@@ -279,7 +279,7 @@ Consequently, the only valid <span class="math">\(\href{../syntax/modules.html#s
 </div>
 <div class="section" id="exports">
 <span id="syntax-export"></span><span id="syntax-exportdesc"></span><span id="index-10"></span><h2>Exports<a class="headerlink" href="#exports" title="Permalink to this headline">¶</a></h2>
-<p>The <span class="math">\(\mathsf{exports}\)</span> component of a module defines a set of <em>exports</em> that become accessible to the host environment once the module has been <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiated</span></a>.</p>
+<p>The <span class="math">\(\mathsf{exports}\)</span> component of a module defines a set of <em>exports</em> that become accessible to the host environment once the module has been <a class="reference internal" href="../intro/overview.html#instantiation"><span class="std std-ref">instantiated</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1813#1{{}}\mathdef1813{export} &amp; \href{../syntax/modules.html#syntax-export}{\mathit{export}} &amp;::=&amp;
@@ -310,7 +310,7 @@ which are referenced through a respective descriptor.</p>
 </div>
 <div class="section" id="imports">
 <span id="syntax-import"></span><span id="syntax-importdesc"></span><span id="index-11"></span><h2>Imports<a class="headerlink" href="#imports" title="Permalink to this headline">¶</a></h2>
-<p>The <span class="math">\(\mathsf{imports}\)</span> component of a module defines a set of <em>imports</em> that are required for <a class="reference internal" href="../introduction/overview.html#instantiation"><span class="std std-ref">instantiation</span></a>.</p>
+<p>The <span class="math">\(\mathsf{imports}\)</span> component of a module defines a set of <em>imports</em> that are required for <a class="reference internal" href="../intro/overview.html#instantiation"><span class="std std-ref">instantiation</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1813#1{{}}\mathdef1813{import} &amp; \href{../syntax/modules.html#syntax-import}{\mathit{import}} &amp;::=&amp;

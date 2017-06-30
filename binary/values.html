@@ -46,10 +46,10 @@
               <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../validation/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../execution/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Binary Format</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Values</a><ul>
@@ -137,7 +137,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
 <div class="math">
 \[\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef763#1{{}}\mathdef763{uninterpreted integer} &amp; \href{../binary/values.html#binary-int}{\def\mathdef795#1{{\mathtt{i}#1}}\mathdef795{N}} &amp;::=&amp;
-  n{:}\href{../binary/values.html#binary-int}{\def\mathdef792#1{{\mathtt{s}#1}}\mathdef792{N}} &amp;\Rightarrow&amp; i &amp; (n = \href{../execution/numerics.html#aux-signed}{\mathrm{signed}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef779#1{{\mathit{i}#1}}\mathdef779{N}}}(i))
+  n{:}\href{../binary/values.html#binary-int}{\def\mathdef792#1{{\mathtt{s}#1}}\mathdef792{N}} &amp;\Rightarrow&amp; i &amp; (n = \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef779#1{{\mathit{i}#1}}\mathdef779{N}}}(i))
 \end{array}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -157,7 +157,7 @@ Similarly, both <span class="math">\(\def\mathdef836#1{\mathtt{0x#1}}\mathdef836
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef763#1{{}}\mathdef763{floating-point number} &amp; \href{../binary/values.html#binary-float}{\def\mathdef798#1{{\mathtt{f}#1}}\mathdef798{N}} &amp;::=&amp;
-  b^\ast{:\,}\href{../binary/values.html#binary-byte}{\mathtt{byte}}^{N/8} &amp;\Rightarrow&amp; \href{../execution/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-float}{\def\mathdef782#1{{\mathit{f}#1}}\mathdef782{N}}}^{-1}(\mathrm{reverse}(b^\ast)) \\
+  b^\ast{:\,}\href{../binary/values.html#binary-byte}{\mathtt{byte}}^{N/8} &amp;\Rightarrow&amp; \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-float}{\def\mathdef782#1{{\mathit{f}#1}}\mathdef782{N}}}^{-1}(\mathrm{reverse}(b^\ast)) \\
 \end{array}\end{split}\]</div>
 <p>Here, <span class="math">\(\mathrm{reverse}(b^\ast)\)</span> denotes the byte sequence <span class="math">\(b^\ast\)</span> in reversed order.</p>
 </div>
