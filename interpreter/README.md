@@ -349,7 +349,7 @@ Finally, "checked hard" mode (flag `-c`), will require `assert_soft_valid` asser
 
 The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/master/Semantics.md), is defined in [ast.ml](syntax/ast.ml).
 
-However, to simplify the implementation, this AST representation represents some of the inner structure of the operators more explicitly. The mapping from the operators as given in the design doc to their structured form is defined in [operators.ml](spec/operators.ml).
+However, to simplify the implementation, this AST representation represents some of the inner structure of the operators more explicitly. The mapping from the operators as given in the design doc to their structured form is defined in [operators.ml](syntax/operators.ml).
 
 
 ## Implementation
