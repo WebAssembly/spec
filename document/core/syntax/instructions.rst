@@ -279,7 +279,6 @@ Both instructions operate in units of :ref:`page size <page-size>`.
 .. _syntax-return:
 .. _syntax-call:
 .. _syntax-call_indirect:
-.. _syntax-label:
 .. _syntax-instr-seq:
 .. _syntax-instr-control:
 

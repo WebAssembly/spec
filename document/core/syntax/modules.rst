@@ -273,7 +273,7 @@ The |OFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <sy
 Start Function
 ~~~~~~~~~~~~~~
 
-The |START| component of a module optionally declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <instantiation>`, after tables and memories have been initialized.
+The |START| component of a module optionally declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after tables and memories have been initialized.
 
 .. math::
    \begin{array}{llll}
@@ -294,7 +294,7 @@ The |START| component of a module optionally declares the :ref:`function index <
 Exports
 ~~~~~~~
 
-The |EXPORTS| component of a module defines a set of *exports* that become accessible to the host environment once the module has been :ref:`instantiated <instantiation>`.
+The |EXPORTS| component of a module defines a set of *exports* that become accessible to the host environment once the module has been :ref:`instantiated <exec-instantiation>`.
 
 .. math::
    \begin{array}{llll}
@@ -341,7 +341,7 @@ The following auxiliary notation is defined for sequences of exports, filtering 
 Imports
 ~~~~~~~
 
-The |IMPORTS| component of a module defines a set of *imports* that are required for :ref:`instantiation <instantiation>`.
+The |IMPORTS| component of a module defines a set of *imports* that are required for :ref:`instantiation <exec-instantiation>`.
 
 .. math::
    \begin{array}{llll}

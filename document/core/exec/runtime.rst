@@ -123,7 +123,7 @@ Module Instances
 ~~~~~~~~~~~~~~~~
 
 A *module instance* is the runtime representation of a :ref:`module <syntax-module>`.
-It is created by :ref:`instantiating <instantiation>` a module,
+It is created by :ref:`instantiating <exec-instantiation>` a module,
 and collects runtime representations of all entities that are imported, defined, or exported by the module.
 
 .. math::
@@ -527,7 +527,7 @@ Finally, the following definition of *evaluation context* and associated structu
 Module Instructions
 ...................
 
-Module :ref:`instantiation <instantiation>` is a complex operation.
+Module :ref:`instantiation <exec-instantiation>` is a complex operation.
 It is hence expressed in terms of reduction into smaller steps expressed by a sequence of administrative *module instructions* that are a superset of ordinary instructions and defined as follow.
 
 .. math::

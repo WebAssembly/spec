@@ -431,7 +431,7 @@ Here, the notation :math:`\F{allocX}^\ast` is shorthand for multiple :ref:`alloc
 
 .. index:: ! instantiation, module, instance, store
 .. _exec-module:
-.. _instantiation:
+.. _exec-instantiation:
 
 Instantiation
 ~~~~~~~~~~~~~
@@ -608,13 +608,12 @@ Instantiation may *fail* with an error.
 
 
 .. index:: ! invocation, module, instance, function, export, function address
-.. _exec-call-export:
-.. _invocation:
+.. _exec-invocation:
 
 Invocation
 ~~~~~~~~~~
 
-Once a :ref:`module <syntax-module>` has been :ref:`instantiated <instantiation>`, any exported function can be *invoked* externally via its :ref:`function address <syntax-funcaddr>` :math:`\funcaddr` in the :ref:`store <syntax-store>` :math:`S` and an appropriate list :math:`\val^\ast` of argument :ref:`values <syntax-val>`.
+Once a :ref:`module <syntax-module>` has been :ref:`instantiated <exec-instantiation>`, any exported function can be *invoked* externally via its :ref:`function address <syntax-funcaddr>` :math:`\funcaddr` in the :ref:`store <syntax-store>` :math:`S` and an appropriate list :math:`\val^\ast` of argument :ref:`values <syntax-val>`.
 If successful, the invocation returns the function's result values :math:`\val_{\F{res}}^\ast`.
 
 The following steps are performed:

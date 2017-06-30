@@ -5,7 +5,7 @@ Conventions
 -----------
 
 Validation checks that a WebAssembly module is well-formed.
-Only valid modules can be :ref:`instantiated <instantiation>`.
+Only valid modules can be :ref:`instantiated <exec-instantiation>`.
 
 Validity is defined by a *type system* over the :ref:`abstract syntax <syntax>` of both instructions and modules.
 For each piece of abstract syntax, there is a typing rule that specifies the constraints that apply to it.

@@ -1088,7 +1088,7 @@ and it must still be well-typed.
 .. todo:: Define more precisely?
 
 .. note::
-   A host function can call back into WebAssembly by :ref:`invoking <invocation>` a function :ref:`exported <syntax-export>` from a :ref:`module <syntax-module>`.
+   A host function can call back into WebAssembly by :ref:`invoking <exec-invocation>` a function :ref:`exported <syntax-export>` from a :ref:`module <syntax-module>`.
    However, the effects of any such call are subsumed by the non-deterministic behavior allowed for a host function.
 
 
