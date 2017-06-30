@@ -196,8 +196,8 @@
 
 .. Types, terminals
 
-.. |I8| mathdef:: \xref{execution/runtime}{syntax-storagetype}{\K{i8}}
-.. |I16| mathdef:: \xref{execution/runtime}{syntax-storagetype}{\K{i16}}
+.. |I8| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i8}}
+.. |I16| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i16}}
 .. |I32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i32}}
 .. |I64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i64}}
 .. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
@@ -483,15 +483,15 @@
 .. |DEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{demote}}
 .. |REINTERPRET| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{reinterpret}}
 
-.. |TRAP| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{trap}}
-.. |LABEL| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{label}}
-.. |FRAME| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{frame}}
+.. |TRAP| mathdef:: \xref{exec/runtime}{syntax-instr-admin}{\K{trap}}
+.. |LABEL| mathdef:: \xref{exec/runtime}{syntax-instr-admin}{\K{label}}
+.. |FRAME| mathdef:: \xref{exec/runtime}{syntax-instr-admin}{\K{frame}}
 
-.. |INVOKE| mathdef:: \xref{execution/runtime}{syntax-invoke}{\K{invoke}}
-.. |INSTANTIATE| mathdef:: \xref{execution/runtime}{syntax-instantiate}{\K{instantiate}}
-.. |INITGLOBAL| mathdef:: \xref{execution/runtime}{syntax-init_global}{\K{init\_global}}
-.. |INITTABLE| mathdef:: \xref{execution/runtime}{syntax-init_table}{\K{init\_table}}
-.. |INITMEM| mathdef:: \xref{execution/runtime}{syntax-init_mem}{\K{init\_mem}}
+.. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
+.. |INSTANTIATE| mathdef:: \xref{exec/runtime}{syntax-instantiate}{\K{instantiate}}
+.. |INITGLOBAL| mathdef:: \xref{exec/runtime}{syntax-init_global}{\K{init\_global}}
+.. |INITTABLE| mathdef:: \xref{exec/runtime}{syntax-init_table}{\K{init\_table}}
+.. |INITMEM| mathdef:: \xref{exec/runtime}{syntax-init_mem}{\K{init\_mem}}
 
 
 .. Instructions, non-terminals
@@ -560,34 +560,34 @@
 
 .. Runtime, non-terminals
 
-.. |val| mathdef:: \xref{execution/runtime}{syntax-val}{\X{val}}
+.. |val| mathdef:: \xref{exec/runtime}{syntax-val}{\X{val}}
 
-.. |addr| mathdef:: \xref{execution/runtime}{syntax-addr}{\X{addr}}
-.. |funcaddr| mathdef:: \xref{execution/runtime}{syntax-funcaddr}{\X{funcaddr}}
-.. |tableaddr| mathdef:: \xref{execution/runtime}{syntax-tableaddr}{\X{tableaddr}}
-.. |memaddr| mathdef:: \xref{execution/runtime}{syntax-memaddr}{\X{memaddr}}
-.. |globaladdr| mathdef:: \xref{execution/runtime}{syntax-globaladdr}{\X{globaladdr}}
+.. |addr| mathdef:: \xref{exec/runtime}{syntax-addr}{\X{addr}}
+.. |funcaddr| mathdef:: \xref{exec/runtime}{syntax-funcaddr}{\X{funcaddr}}
+.. |tableaddr| mathdef:: \xref{exec/runtime}{syntax-tableaddr}{\X{tableaddr}}
+.. |memaddr| mathdef:: \xref{exec/runtime}{syntax-memaddr}{\X{memaddr}}
+.. |globaladdr| mathdef:: \xref{exec/runtime}{syntax-globaladdr}{\X{globaladdr}}
 
-.. |moduleinst| mathdef:: \xref{execution/runtime}{syntax-moduleinst}{\X{moduleinst}}
-.. |funcinst| mathdef:: \xref{execution/runtime}{syntax-funcinst}{\X{funcinst}}
-.. |tableinst| mathdef:: \xref{execution/runtime}{syntax-tableinst}{\X{tableinst}}
-.. |funcelem| mathdef:: \xref{execution/runtime}{syntax-funcelem}{\X{funcelem}}
-.. |meminst| mathdef:: \xref{execution/runtime}{syntax-meminst}{\X{meminst}}
-.. |globalinst| mathdef:: \xref{execution/runtime}{syntax-globalinst}{\X{globalinst}}
-.. |exportinst| mathdef:: \xref{execution/runtime}{syntax-exportinst}{\X{exportinst}}
-.. |hostfunc| mathdef:: \xref{execution/runtime}{syntax-hostfunc}{\X{hostfunc}}
+.. |moduleinst| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\X{moduleinst}}
+.. |funcinst| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\X{funcinst}}
+.. |tableinst| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\X{tableinst}}
+.. |funcelem| mathdef:: \xref{exec/runtime}{syntax-funcelem}{\X{funcelem}}
+.. |meminst| mathdef:: \xref{exec/runtime}{syntax-meminst}{\X{meminst}}
+.. |globalinst| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\X{globalinst}}
+.. |exportinst| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\X{exportinst}}
+.. |hostfunc| mathdef:: \xref{exec/runtime}{syntax-hostfunc}{\X{hostfunc}}
 
-.. |externval| mathdef:: \xref{execution/runtime}{syntax-externval}{\X{externval}}
+.. |externval| mathdef:: \xref{exec/runtime}{syntax-externval}{\X{externval}}
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
-.. |storagetype| mathdef:: \xref{execution/runtime}{syntax-storagetype}{\X{storagetype}}
+.. |storagetype| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\X{storagetype}}
 
-.. |store| mathdef:: \xref{execution/runtime}{syntax-store}{\X{store}}
-.. |frame| mathdef:: \xref{execution/runtime}{syntax-frame}{\X{frame}}
-.. |label| mathdef:: \xref{execution/runtime}{syntax-label}{\X{label}}
+.. |store| mathdef:: \xref{exec/runtime}{syntax-store}{\X{store}}
+.. |frame| mathdef:: \xref{exec/runtime}{syntax-frame}{\X{frame}}
+.. |label| mathdef:: \xref{exec/runtime}{syntax-label}{\X{label}}
 
-.. |XB| mathdef:: \xref{execution/runtime}{syntax-ctxt-block}{B}
+.. |XB| mathdef:: \xref{exec/runtime}{syntax-ctxt-block}{B}
 
-.. |moduleinstr| mathdef:: \xref{execution/runtime}{syntax-moduleinstr}{\X{moduleinstr}}
+.. |moduleinstr| mathdef:: \xref{exec/runtime}{syntax-moduleinstr}{\X{moduleinstr}}
 
 
 .. Execution, notation
@@ -595,28 +595,28 @@
 .. |stepto| mathdef:: \hookrightarrow
 .. |mod| mathdef:: \mathbin{\F{mod}}
 
-.. |allocfunc| mathdef:: \xref{execution/modules}{alloc-func}{\F{allocfunc}}
-.. |allochostfunc| mathdef:: \xref{execution/modules}{alloc-hostfunc}{\F{allochostfunc}}
-.. |alloctable| mathdef:: \xref{execution/modules}{alloc-table}{\F{alloctable}}
-.. |allocmem| mathdef:: \xref{execution/modules}{alloc-mem}{\F{allocmem}}
-.. |allocglobal| mathdef:: \xref{execution/modules}{alloc-global}{\F{allocglobal}}
-.. |allocmodule| mathdef:: \xref{execution/modules}{alloc-module}{\F{allocmodule}}
+.. |allocfunc| mathdef:: \xref{exec/modules}{alloc-func}{\F{allocfunc}}
+.. |allochostfunc| mathdef:: \xref{exec/modules}{alloc-hostfunc}{\F{allochostfunc}}
+.. |alloctable| mathdef:: \xref{exec/modules}{alloc-table}{\F{alloctable}}
+.. |allocmem| mathdef:: \xref{exec/modules}{alloc-mem}{\F{allocmem}}
+.. |allocglobal| mathdef:: \xref{exec/modules}{alloc-global}{\F{allocglobal}}
+.. |allocmodule| mathdef:: \xref{exec/modules}{alloc-module}{\F{allocmodule}}
 
 
 .. Numerics, meta functions
 
-.. |bits| mathdef:: \xref{execution/numerics}{aux-bits}{\F{bits}}
-.. |ibits| mathdef:: \xref{execution/numerics}{aux-ibits}{\F{ibits}}
-.. |fbits| mathdef:: \xref{execution/numerics}{aux-fbits}{\F{fbits}}
-.. |fsign| mathdef:: \xref{execution/numerics}{aux-fsign}{\F{fsign}}
-.. |fbias| mathdef:: \xref{execution/numerics}{aux-fbias}{\F{fbias}}
-.. |bytes| mathdef:: \xref{execution/numerics}{aux-bytes}{\F{bytes}}
-.. |littleendian| mathdef:: \xref{execution/numerics}{aux-littleendian}{\F{littleendian}}
-.. |signed| mathdef:: \xref{execution/numerics}{aux-signed}{\F{signed}}
-.. |bool| mathdef:: \xref{execution/numerics}{aux-bool}{\F{bool}}
+.. |bits| mathdef:: \xref{exec/numerics}{aux-bits}{\F{bits}}
+.. |ibits| mathdef:: \xref{exec/numerics}{aux-ibits}{\F{ibits}}
+.. |fbits| mathdef:: \xref{exec/numerics}{aux-fbits}{\F{fbits}}
+.. |fsign| mathdef:: \xref{exec/numerics}{aux-fsign}{\F{fsign}}
+.. |fbias| mathdef:: \xref{exec/numerics}{aux-fbias}{\F{fbias}}
+.. |bytes| mathdef:: \xref{exec/numerics}{aux-bytes}{\F{bytes}}
+.. |littleendian| mathdef:: \xref{exec/numerics}{aux-littleendian}{\F{littleendian}}
+.. |signed| mathdef:: \xref{exec/numerics}{aux-signed}{\F{signed}}
+.. |bool| mathdef:: \xref{exec/numerics}{aux-bool}{\F{bool}}
 
-.. |ieee| mathdef:: \xref{execution/numerics}{aux-ieee}{\F{float}}
-.. |nans| mathdef:: \xref{execution/numerics}{aux-nans}{\F{nans}}
+.. |ieee| mathdef:: \xref{exec/numerics}{aux-ieee}{\F{float}}
+.. |nans| mathdef:: \xref{exec/numerics}{aux-nans}{\F{nans}}
 .. |canon| mathdef:: \xref{syntax/values}{aux-canon}{\F{canon}}
 
 .. |significand| mathdef:: \xref{syntax/values}{aux-significand}{\F{signif}}
@@ -625,67 +625,67 @@
 
 .. Numerics, operators
 
-.. |iadd| mathdef:: \xref{execution/numerics}{op-iadd}{\F{iadd}}
-.. |isub| mathdef:: \xref{execution/numerics}{op-isub}{\F{isub}}
-.. |imul| mathdef:: \xref{execution/numerics}{op-imul}{\F{imul}}
-.. |idivu| mathdef:: \xref{execution/numerics}{op-idiv_u}{\F{idiv\_u}}
-.. |idivs| mathdef:: \xref{execution/numerics}{op-idiv_s}{\F{idiv\_s}}
-.. |iremu| mathdef:: \xref{execution/numerics}{op-irem_u}{\F{irem\_u}}
-.. |irems| mathdef:: \xref{execution/numerics}{op-irem_s}{\F{irem\_s}}
-.. |iand| mathdef:: \xref{execution/numerics}{op-iand}{\F{iand}}
-.. |ior| mathdef:: \xref{execution/numerics}{op-ior}{\F{ior}}
-.. |ixor| mathdef:: \xref{execution/numerics}{op-ixor}{\F{ixor}}
-.. |ishl| mathdef:: \xref{execution/numerics}{op-ishl}{\F{ishl}}
-.. |ishru| mathdef:: \xref{execution/numerics}{op-ishr_u}{\F{ishr\_u}}
-.. |ishrs| mathdef:: \xref{execution/numerics}{op-ishr_s}{\F{ishr\_s}}
-.. |irotl| mathdef:: \xref{execution/numerics}{op-irotl}{\F{irotl}}
-.. |irotr| mathdef:: \xref{execution/numerics}{op-irotr}{\F{irotr}}
-.. |iclz| mathdef:: \xref{execution/numerics}{op-iclz}{\F{iclz}}
-.. |ictz| mathdef:: \xref{execution/numerics}{op-ictz}{\F{ictz}}
-.. |ipopcnt| mathdef:: \xref{execution/numerics}{op-ipopcnt}{\F{ipopcnt}}
-.. |ieqz| mathdef:: \xref{execution/numerics}{op-ieqz}{\F{ieqz}}
-.. |ieq| mathdef:: \xref{execution/numerics}{op-ieq}{\F{ieq}}
-.. |ine| mathdef:: \xref{execution/numerics}{op-ine}{\F{ine}}
-.. |iltu| mathdef:: \xref{execution/numerics}{op-ilt_u}{\F{ilt\_u}}
-.. |ilts| mathdef:: \xref{execution/numerics}{op-ilt_s}{\F{ilt\_s}}
-.. |igtu| mathdef:: \xref{execution/numerics}{op-igt_u}{\F{igt\_u}}
-.. |igts| mathdef:: \xref{execution/numerics}{op-igt_s}{\F{igt\_s}}
-.. |ileu| mathdef:: \xref{execution/numerics}{op-ile_u}{\F{ile\_u}}
-.. |iles| mathdef:: \xref{execution/numerics}{op-ile_s}{\F{ile\_s}}
-.. |igeu| mathdef:: \xref{execution/numerics}{op-ige_u}{\F{ige\_u}}
-.. |iges| mathdef:: \xref{execution/numerics}{op-ige_s}{\F{ige\_s}}
+.. |iadd| mathdef:: \xref{exec/numerics}{op-iadd}{\F{iadd}}
+.. |isub| mathdef:: \xref{exec/numerics}{op-isub}{\F{isub}}
+.. |imul| mathdef:: \xref{exec/numerics}{op-imul}{\F{imul}}
+.. |idivu| mathdef:: \xref{exec/numerics}{op-idiv_u}{\F{idiv\_u}}
+.. |idivs| mathdef:: \xref{exec/numerics}{op-idiv_s}{\F{idiv\_s}}
+.. |iremu| mathdef:: \xref{exec/numerics}{op-irem_u}{\F{irem\_u}}
+.. |irems| mathdef:: \xref{exec/numerics}{op-irem_s}{\F{irem\_s}}
+.. |iand| mathdef:: \xref{exec/numerics}{op-iand}{\F{iand}}
+.. |ior| mathdef:: \xref{exec/numerics}{op-ior}{\F{ior}}
+.. |ixor| mathdef:: \xref{exec/numerics}{op-ixor}{\F{ixor}}
+.. |ishl| mathdef:: \xref{exec/numerics}{op-ishl}{\F{ishl}}
+.. |ishru| mathdef:: \xref{exec/numerics}{op-ishr_u}{\F{ishr\_u}}
+.. |ishrs| mathdef:: \xref{exec/numerics}{op-ishr_s}{\F{ishr\_s}}
+.. |irotl| mathdef:: \xref{exec/numerics}{op-irotl}{\F{irotl}}
+.. |irotr| mathdef:: \xref{exec/numerics}{op-irotr}{\F{irotr}}
+.. |iclz| mathdef:: \xref{exec/numerics}{op-iclz}{\F{iclz}}
+.. |ictz| mathdef:: \xref{exec/numerics}{op-ictz}{\F{ictz}}
+.. |ipopcnt| mathdef:: \xref{exec/numerics}{op-ipopcnt}{\F{ipopcnt}}
+.. |ieqz| mathdef:: \xref{exec/numerics}{op-ieqz}{\F{ieqz}}
+.. |ieq| mathdef:: \xref{exec/numerics}{op-ieq}{\F{ieq}}
+.. |ine| mathdef:: \xref{exec/numerics}{op-ine}{\F{ine}}
+.. |iltu| mathdef:: \xref{exec/numerics}{op-ilt_u}{\F{ilt\_u}}
+.. |ilts| mathdef:: \xref{exec/numerics}{op-ilt_s}{\F{ilt\_s}}
+.. |igtu| mathdef:: \xref{exec/numerics}{op-igt_u}{\F{igt\_u}}
+.. |igts| mathdef:: \xref{exec/numerics}{op-igt_s}{\F{igt\_s}}
+.. |ileu| mathdef:: \xref{exec/numerics}{op-ile_u}{\F{ile\_u}}
+.. |iles| mathdef:: \xref{exec/numerics}{op-ile_s}{\F{ile\_s}}
+.. |igeu| mathdef:: \xref{exec/numerics}{op-ige_u}{\F{ige\_u}}
+.. |iges| mathdef:: \xref{exec/numerics}{op-ige_s}{\F{ige\_s}}
 
-.. |fadd| mathdef:: \xref{execution/numerics}{op-fadd}{\F{fadd}}
-.. |fsub| mathdef:: \xref{execution/numerics}{op-fsub}{\F{fsub}}
-.. |fmul| mathdef:: \xref{execution/numerics}{op-fmul}{\F{fmul}}
-.. |fdiv| mathdef:: \xref{execution/numerics}{op-fdiv}{\F{fdiv}}
-.. |fmin| mathdef:: \xref{execution/numerics}{op-fmin}{\F{fmin}}
-.. |fmax| mathdef:: \xref{execution/numerics}{op-fmax}{\F{fmax}}
-.. |fcopysign| mathdef:: \xref{execution/numerics}{op-fcopysign}{\F{fcopysign}}
-.. |fabs| mathdef:: \xref{execution/numerics}{op-fabs}{\F{fabs}}
-.. |fneg| mathdef:: \xref{execution/numerics}{op-fneg}{\F{fneg}}
-.. |fsqrt| mathdef:: \xref{execution/numerics}{op-fsqrt}{\F{fsqrt}}
-.. |fceil| mathdef:: \xref{execution/numerics}{op-fceil}{\F{fceil}}
-.. |ffloor| mathdef:: \xref{execution/numerics}{op-ffloor}{\F{ffloor}}
-.. |ftrunc| mathdef:: \xref{execution/numerics}{op-ftrunc}{\F{ftrunc}}
-.. |fnearest| mathdef:: \xref{execution/numerics}{op-fnearest}{\F{fnearest}}
-.. |feq| mathdef:: \xref{execution/numerics}{op-feq}{\F{feq}}
-.. |fne| mathdef:: \xref{execution/numerics}{op-fne}{\F{fne}}
-.. |flt| mathdef:: \xref{execution/numerics}{op-flt}{\F{flt}}
-.. |fgt| mathdef:: \xref{execution/numerics}{op-fgt}{\F{fgt}}
-.. |fle| mathdef:: \xref{execution/numerics}{op-fle}{\F{fle}}
-.. |fge| mathdef:: \xref{execution/numerics}{op-fge}{\F{fge}}
+.. |fadd| mathdef:: \xref{exec/numerics}{op-fadd}{\F{fadd}}
+.. |fsub| mathdef:: \xref{exec/numerics}{op-fsub}{\F{fsub}}
+.. |fmul| mathdef:: \xref{exec/numerics}{op-fmul}{\F{fmul}}
+.. |fdiv| mathdef:: \xref{exec/numerics}{op-fdiv}{\F{fdiv}}
+.. |fmin| mathdef:: \xref{exec/numerics}{op-fmin}{\F{fmin}}
+.. |fmax| mathdef:: \xref{exec/numerics}{op-fmax}{\F{fmax}}
+.. |fcopysign| mathdef:: \xref{exec/numerics}{op-fcopysign}{\F{fcopysign}}
+.. |fabs| mathdef:: \xref{exec/numerics}{op-fabs}{\F{fabs}}
+.. |fneg| mathdef:: \xref{exec/numerics}{op-fneg}{\F{fneg}}
+.. |fsqrt| mathdef:: \xref{exec/numerics}{op-fsqrt}{\F{fsqrt}}
+.. |fceil| mathdef:: \xref{exec/numerics}{op-fceil}{\F{fceil}}
+.. |ffloor| mathdef:: \xref{exec/numerics}{op-ffloor}{\F{ffloor}}
+.. |ftrunc| mathdef:: \xref{exec/numerics}{op-ftrunc}{\F{ftrunc}}
+.. |fnearest| mathdef:: \xref{exec/numerics}{op-fnearest}{\F{fnearest}}
+.. |feq| mathdef:: \xref{exec/numerics}{op-feq}{\F{feq}}
+.. |fne| mathdef:: \xref{exec/numerics}{op-fne}{\F{fne}}
+.. |flt| mathdef:: \xref{exec/numerics}{op-flt}{\F{flt}}
+.. |fgt| mathdef:: \xref{exec/numerics}{op-fgt}{\F{fgt}}
+.. |fle| mathdef:: \xref{exec/numerics}{op-fle}{\F{fle}}
+.. |fge| mathdef:: \xref{exec/numerics}{op-fge}{\F{fge}}
 
-.. |extend| mathdef:: \xref{execution/numerics}{op-extend_u}{\F{extend}}
-.. |extendu| mathdef:: \xref{execution/numerics}{op-extend_u}{\F{extend\_u}}
-.. |extends| mathdef:: \xref{execution/numerics}{op-extend_s}{\F{extend\_s}}
-.. |wrap| mathdef:: \xref{execution/numerics}{op-wrap}{\F{wrap}}
-.. |truncu| mathdef:: \xref{execution/numerics}{op-trunc_u}{\F{trunc\_u}}
-.. |truncs| mathdef:: \xref{execution/numerics}{op-trunc_s}{\F{trunc\_s}}
-.. |promote| mathdef:: \xref{execution/numerics}{op-promote}{\F{promote}}
-.. |demote| mathdef:: \xref{execution/numerics}{op-demote}{\F{demote}}
-.. |convertu| mathdef:: \xref{execution/numerics}{op-convert_u}{\F{convert\_u}}
-.. |converts| mathdef:: \xref{execution/numerics}{op-convert_s}{\F{convert\_s}}
-.. |reinterpret| mathdef:: \xref{execution/numerics}{op-reinterpret}{\F{reinterpret}}
+.. |extend| mathdef:: \xref{exec/numerics}{op-extend_u}{\F{extend}}
+.. |extendu| mathdef:: \xref{exec/numerics}{op-extend_u}{\F{extend\_u}}
+.. |extends| mathdef:: \xref{exec/numerics}{op-extend_s}{\F{extend\_s}}
+.. |wrap| mathdef:: \xref{exec/numerics}{op-wrap}{\F{wrap}}
+.. |truncu| mathdef:: \xref{exec/numerics}{op-trunc_u}{\F{trunc\_u}}
+.. |truncs| mathdef:: \xref{exec/numerics}{op-trunc_s}{\F{trunc\_s}}
+.. |promote| mathdef:: \xref{exec/numerics}{op-promote}{\F{promote}}
+.. |demote| mathdef:: \xref{exec/numerics}{op-demote}{\F{demote}}
+.. |convertu| mathdef:: \xref{exec/numerics}{op-convert_u}{\F{convert\_u}}
+.. |converts| mathdef:: \xref{exec/numerics}{op-convert_s}{\F{convert\_s}}
+.. |reinterpret| mathdef:: \xref{exec/numerics}{op-reinterpret}{\F{reinterpret}}
 
-.. |trunc| mathdef:: \xref{execution/numerics}{aux-trunc}{\F{trunc}}
+.. |trunc| mathdef:: \xref{exec/numerics}{aux-trunc}{\F{trunc}}

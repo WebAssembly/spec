@@ -8,10 +8,10 @@ WebAssembly Specification
 .. toctree::
    :maxdepth: 3
 
-   introduction/index
+   intro/index
    syntax/index
-   validation/index
-   execution/index
+   valid/index
+   exec/index
    binary/index
    text/index
    appendix/index

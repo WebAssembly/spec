@@ -69,7 +69,7 @@ publish: all deploy
 
 .PHONY: deploy
 deploy:
-	GIT_DEPLOY_DIR=$(BUILDDIR)/html sh deploy.sh
+	GIT_DEPLOY_DIR=$(BUILDDIR)/html sh util/deploy.sh
 
 .PHONY: all
 all:	pdf html
