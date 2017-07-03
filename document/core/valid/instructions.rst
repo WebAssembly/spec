@@ -1,4 +1,4 @@
-.. index:: instruction, function type, context
+.. index:: instruction, function type, context, value, operand stack, ! polymorphism
 .. _valid-instr:
 
 Instructions
@@ -193,7 +193,7 @@ Parametric Instructions
    Both |DROP| and |SELECT| are :ref:`value-polymorphic <polymorphism>` instructions.
 
 
-.. index:: variable instructions, local index, global index
+.. index:: variable instructions, local index, global index, context
    pair: validation; instruction
    single: abstract syntax; instruction
 .. _valid-instr-variable:
@@ -206,15 +206,15 @@ Variable Instructions
 :math:`\GETLOCAL~x`
 ...................
 
-* The local :math:`C.\LOCALS[x]` must be defined in the context.
+* The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`C.\LOCALS[x]`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`C.\CLOCALS[x]`.
 
 * Then the instruction is valid with type :math:`[] \to [t]`.
 
 .. math::
    \frac{
-     C.\LOCALS[x] = t
+     C.\CLOCALS[x] = t
    }{
      C \vdash \GETLOCAL~x : [] \to [t]
    }
@@ -225,15 +225,15 @@ Variable Instructions
 :math:`\SETLOCAL~x`
 ...................
 
-* The local :math:`C.\LOCALS[x]` must be defined in the context.
+* The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`C.\LOCALS[x]`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`C.\CLOCALS[x]`.
 
 * Then the instruction is valid with type :math:`[t] \to []`.
 
 .. math::
    \frac{
-     C.\LOCALS[x] = t
+     C.\CLOCALS[x] = t
    }{
      C \vdash \SETLOCAL~x : [t] \to []
    }
@@ -244,15 +244,15 @@ Variable Instructions
 :math:`\TEELOCAL~x`
 ...................
 
-* The local :math:`C.\LOCALS[x]` must be defined in the context.
+* The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`C.\LOCALS[x]`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`C.\CLOCALS[x]`.
 
 * Then the instruction is valid with type :math:`[t] \to [t]`.
 
 .. math::
    \frac{
-     C.\LOCALS[x] = t
+     C.\CLOCALS[x] = t
    }{
      C \vdash \TEELOCAL~x : [t] \to [t]
    }
@@ -263,15 +263,15 @@ Variable Instructions
 :math:`\GETGLOBAL~x`
 ....................
 
-* The global :math:`C.\GLOBALS[x]` must be defined in the context.
+* The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 
-* Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\GLOBALS[x]`.
+* Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\CGLOBALS[x]`.
 
 * Then the instruction is valid with type :math:`[] \to [t]`.
 
 .. math::
    \frac{
-     C.\GLOBALS[x] = \mut~t
+     C.\CGLOBALS[x] = \mut~t
    }{
      C \vdash \GETGLOBAL~x : [] \to [t]
    }
@@ -282,9 +282,9 @@ Variable Instructions
 :math:`\SETGLOBAL~x`
 ....................
 
-* The global :math:`C.\GLOBALS[x]` must be defined in the context.
+* The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 
-* Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\GLOBALS[x]`.
+* Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\CGLOBALS[x]`.
 
 * The mutability :math:`\mut` must be |MVAR|.
 
@@ -292,13 +292,13 @@ Variable Instructions
 
 .. math::
    \frac{
-     C.\GLOBALS[x] = \MVAR~t
+     C.\CGLOBALS[x] = \MVAR~t
    }{
      C \vdash \SETGLOBAL~x : [t] \to []
    }
 
 
-.. index:: memory instruction, memory index
+.. index:: memory instruction, memory index, context
    pair: validation; instruction
    single: abstract syntax; instruction
 .. _valid-memarg:
@@ -312,7 +312,7 @@ Memory Instructions
 :math:`t\K{.}\LOAD~\memarg`
 ...........................
 
-* The memory :math:`C.\MEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
@@ -320,7 +320,7 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\MEMS[0] = \memtype
+     C.\CMEMS[0] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
@@ -333,7 +333,7 @@ Memory Instructions
 :math:`t\K{.}\LOAD{N}\K{\_}\sx~\memarg`
 .......................................
 
-* The memory :math:`C.\MEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
@@ -341,7 +341,7 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\MEMS[0] = \memtype
+     C.\CMEMS[0] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
@@ -354,7 +354,7 @@ Memory Instructions
 :math:`t\K{.}\STORE~\memarg`
 ............................
 
-* The memory :math:`C.\MEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
@@ -362,7 +362,7 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\MEMS[0] = \memtype
+     C.\CMEMS[0] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
@@ -375,7 +375,7 @@ Memory Instructions
 :math:`t\K{.}\STORE{N}~\memarg`
 ...............................
 
-* The memory :math:`C.\MEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
@@ -383,7 +383,7 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\MEMS[0] = \memtype
+     C.\CMEMS[0] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
@@ -396,13 +396,13 @@ Memory Instructions
 :math:`\CURRENTMEMORY`
 ......................
 
-* The memory :math:`C.\MEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[] \to [\I32]`.
 
 .. math::
    \frac{
-     C.\MEMS[0] = \memtype
+     C.\CMEMS[0] = \memtype
    }{
      C \vdash \CURRENTMEMORY : [] \to [\I32]
    }
@@ -413,19 +413,19 @@ Memory Instructions
 :math:`\GROWMEMORY`
 ...................
 
-* The memory :math:`C.\MEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[\I32] \to [\I32]`.
 
 .. math::
    \frac{
-     C.\MEMS[0] = \memtype
+     C.\CMEMS[0] = \memtype
    }{
      C \vdash \GROWMEMORY : [\I32] \to [\I32]
    }
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
+.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism, context
    pair: validation; instruction
    single: abstract syntax; instruction
 .. _valid-label:
@@ -470,7 +470,7 @@ Control Instructions
 :math:`\BLOCK~[t^?]~\instr^\ast~\END`
 .....................................
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |LABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
@@ -479,7 +479,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\LABELS\,[t^?] \vdash \instr^\ast : [] \to [t^?]
+     C,\CLABELS\,[t^?] \vdash \instr^\ast : [] \to [t^?]
    }{
      C \vdash \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
@@ -494,7 +494,7 @@ Control Instructions
 :math:`\LOOP~[t^?]~\instr^\ast~\END`
 ....................................
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`[]` prepended to the |LABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`[]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
@@ -503,7 +503,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\LABELS\,[] \vdash \instr^\ast : [] \to [t^?]
+     C,\CLABELS\,[] \vdash \instr^\ast : [] \to [t^?]
    }{
      C \vdash \LOOP~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
@@ -518,7 +518,7 @@ Control Instructions
 :math:`\IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
 ........................................................
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |LABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
@@ -530,9 +530,9 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\LABELS\,[t^?] \vdash \instr_1^\ast : [] \to [t^?]
+     C,\CLABELS\,[t^?] \vdash \instr_1^\ast : [] \to [t^?]
      \qquad
-     C,\LABELS\,[t^?] \vdash \instr_2^\ast : [] \to [t^?]
+     C,\CLABELS\,[t^?] \vdash \instr_2^\ast : [] \to [t^?]
    }{
      C \vdash \IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [\I32] \to [t^?]
    }
@@ -547,15 +547,15 @@ Control Instructions
 :math:`\BR~l`
 .............
 
-* The label :math:`C.\LABELS[l]` must be defined in the context.
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\LABELS[l]`.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\LABELS[l] = [t^?]
+     C.\CLABELS[l] = [t^?]
    }{
      C \vdash \BR~l : [t_1^\ast~t^?] \to [t_2^\ast]
    }
@@ -569,15 +569,15 @@ Control Instructions
 :math:`\BRIF~l`
 ...............
 
-* The label :math:`C.\LABELS[l]` must be defined in the context.
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\LABELS[l]`.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the instruction is valid with type :math:`[t^?~\I32] \to [t^?]`.
 
 .. math::
    \frac{
-     C.\LABELS[l] = [t^?]
+     C.\CLABELS[l] = [t^?]
    }{
      C \vdash \BRIF~l : [t^?~\I32] \to [t^?]
    }
@@ -588,23 +588,23 @@ Control Instructions
 :math:`\BRTABLE~l^\ast~l_N`
 ...........................
 
-* The label :math:`C.\LABELS[l]` must be defined in the context.
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\LABELS[l_N]`.
-
-* For all :math:`l_i` in :math:`l^\ast`,
-  the label :math:`C.\LABELS[l_i]` must be defined in the context.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l_N]`.
 
 * For all :math:`l_i` in :math:`l^\ast`,
-  :math:`C.\LABELS[l_i]` must be :math:`t^?`.
+  the label :math:`C.\CLABELS[l_i]` must be defined in the context.
+
+* For all :math:`l_i` in :math:`l^\ast`,
+  :math:`C.\CLABELS[l_i]` must be :math:`t^?`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?~\I32] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     (C.\LABELS[l] = [t^?])^\ast
+     (C.\CLABELS[l] = [t^?])^\ast
      \qquad
-     C.\LABELS[l_N] = [t^?]
+     C.\CLABELS[l_N] = [t^?]
    }{
      C \vdash \BRTABLE~l^\ast~l_N : [t_1^\ast~t^?~\I32] \to [t_2^\ast]
    }
@@ -618,15 +618,15 @@ Control Instructions
 :math:`\RETURN`
 ...............
 
-* The return type :math:`C.\LRETURN` must not be empty in the context.
+* The return type :math:`C.\CRETURN` must not be empty in the context.
 
-* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\LRETURN`.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\LRETURN = [t^?]
+     C.\CRETURN = [t^?]
    }{
      C \vdash \RETURN : [t_1^\ast~t^?] \to [t_2^\ast]
    }
@@ -634,7 +634,7 @@ Control Instructions
 .. note::
    The |RETURN| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-   :math:`C.\LRETURN` is empty (:math:`\epsilon`) when validating an expression that is not a function body.
+   :math:`C.\CRETURN` is empty (:math:`\epsilon`) when validating an :ref:`expression <valid-expr>` that is not a function body.
    This differs from it being set to the empty result type (:math:`[]`),
    which is the case for functions not returning anything.
 
@@ -644,13 +644,13 @@ Control Instructions
 :math:`\CALL~x`
 ...............
 
-* The function :math:`C.\FUNCS[x]` must be defined in the context.
+* The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`C.\FUNCS[x]`.
+* Then the instruction is valid with type :math:`C.\CFUNCS[x]`.
 
 .. math::
    \frac{
-     C.\FUNCS[x] = [t_1^\ast] \to [t_2^\ast]
+     C.\CFUNCS[x] = [t_1^\ast] \to [t_2^\ast]
    }{
      C \vdash \CALL~x : [t_1^\ast] \to [t_2^\ast]
    }
@@ -661,21 +661,21 @@ Control Instructions
 :math:`\CALLINDIRECT~x`
 .......................
 
-* The table :math:`C.\TABLES[0]` must be defined in the context.
+* The table :math:`C.\CTABLES[0]` must be defined in the context.
 
-* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\TABLES[0]`.
+* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[0]`.
 
 * The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |ANYFUNC|.
 
-* The type :math:`C.\TYPES[x]` must be defined in the context.
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`C.\TYPES[x]`.
+* Then the instruction is valid with type :math:`C.\CTYPES[x]`.
 
 .. math::
    \frac{
-     C.\TABLES[0] = \limits~\ANYFUNC
+     C.\CTABLES[0] = \limits~\ANYFUNC
      \qquad
-     C.\TYPES[x] = [t_1^\ast] \to [t_2^\ast]
+     C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
    }{
      C \vdash \CALLINDIRECT~x : [t_1^\ast] \to [t_2^\ast]
    }
@@ -767,7 +767,7 @@ Constant Expressions
 
   * either of the form :math:`t.\CONST~c`,
 
-  * or of the form :math:`\GETGLOBAL~x`, in which case :math:`C.\GLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
+  * or of the form :math:`\GETGLOBAL~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
 
 .. math::
    \frac{
@@ -782,7 +782,7 @@ Constant Expressions
    }
    \qquad
    \frac{
-     C.\GLOBALS[x] = \CONST~t
+     C.\CGLOBALS[x] = \CONST~t
    }{
      C \vdash \GETGLOBAL~x ~\F{const}
    }

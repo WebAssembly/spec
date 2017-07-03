@@ -5,6 +5,9 @@
 Values
 ------
 
+WebAssembly programs operate on primitive numeric *values*.
+Moreover, in the definition of programs, immutable sequences of values occur to represent more complex data, such as text strings or other vectors.
+
 
 .. index:: ! byte
    pair: abstract syntax; byte
@@ -31,7 +34,7 @@ Conventions
 * Bytes are sometimes interpreted as natural numbers :math:`n < 256`.
 
 
-.. index:: ! integer, ! unsigned integer, ! signed integer, ! uninterpreted integer
+.. index:: ! integer, ! unsigned integer, ! signed integer, ! uninterpreted integer, bit width
    pair: abstract syntax; integer
    pair: abstract syntax; unsigned integer
    pair: abstract syntax; signed integer
@@ -46,7 +49,7 @@ Conventions
 Integers
 ~~~~~~~~
 
-Different classes of *integers* with different value ranges are distinguished by their bit *width* :math:`N` and by whether they are *unsigned* or *signed*.
+Different classes of *integers* with different value ranges are distinguished by their *bit width* :math:`N` and by whether they are *unsigned* or *signed*.
 
 .. math::
    \begin{array}{llll}
@@ -59,7 +62,7 @@ Different classes of *integers* with different value ranges are distinguished by
    \end{array}
 
 The latter class defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
-In the abstract syntax, they are represented as unsigned.
+In the abstract syntax, they are represented as unsigned values.
 However, some operations :ref:`convert <aux-signed>` them to signed based on a two's complement interpretation.
 
 .. note::
@@ -74,7 +77,7 @@ Conventions
 * Numbers may be denoted by simple arithmetics, as in the grammar above.
 
 
-.. index:: ! floating-point number, ! NaN, payload, canonical NaN, arithmetic NaN
+.. index:: ! floating-point number, ! NaN, payload, significand, exponent, magnitude, canonical NaN, arithmetic NaN, bit width, IEEE 754
    pair: abstract syntax; floating-point number
    single: NaN; payload
    single: NaN; canonical
@@ -141,26 +144,7 @@ Conventions
 * Floating-point numbers, in normal or subnormal form, are sometimes interpreted as rational numbers :math:`q \in \mathbb{Q}`.
 
 
-.. index:: ! vector
-   pair: abstract syntax; vector
-.. _syntax-vec:
-
-Vectors
-~~~~~~~
-
-*Vectors* are bounded sequences of the form :math:`A^n` (or :math:`A^\ast`),
-where the :math:`A`s can either be values or complex constructions.
-A vector can have at most :math:`2^{32}-1` elements.
-
-.. math::
-   \begin{array}{lllll}
-   \production{vector} & \vec(A) &::=&
-     A^n
-     & (\iff n < 2^{32})\\
-   \end{array}
-
-
-.. index:: ! name, byte, Unicode, UTF-8, code point
+.. index:: ! name, byte, Unicode, ! UTF-8, code point, binary format
    pair: abstract syntax; name
 .. _syntax-utf8:
 .. _syntax-codepoint:
@@ -169,7 +153,7 @@ A vector can have at most :math:`2^{32}-1` elements.
 Names
 ~~~~~
 
-*Names* are sequences of *scalar* `Unicode <http://www.unicode.org/versions/latest/>`_ *code points*.
+*Names* are sequences of scalar `Unicode <http://www.unicode.org/versions/latest/>`_ *code points*.
 
 .. math::
    \begin{array}{llclll}
@@ -185,12 +169,28 @@ the lengths of a name is bounded by the length of its `UTF-8 <http://www.unicode
 The auxiliary |utf8| function expressing this encoding is defined as follows:
 
 .. math::
-   \begin{array}{lcl@{\qquad}l}
+   \begin{array}{@{}lcl@{\qquad}l}
    \utf8(c^\ast) &=& (\utf8(c))^\ast \\[1ex]
-   \utf8(c) &=& b & (\iff c < \unicode{80} \wedge c = b) \\
-   \utf8(c) &=& b_1~b_2 & (\iff \unicode{80} \leq c < \unicode{800} \wedge c = 2^6\cdot(b_1-\hex{C0})+(b_2-\hex{80})) \\
-   \utf8(c) &=& b_1~b_2~b_3 & (\iff \unicode{800} \leq c < \unicode{10000} \wedge c = 2^{12}\cdot(b_1-\hex{C0})+2^6\cdot(b_2-\hex{80})+(b_3-\hex{80})) \\
-   \utf8(c) &=& b_1~b_2~b_3~b_4 & (\iff \unicode{10000} \leq c < \unicode{110000} \wedge c = 2^{18}\cdot(b_1-\hex{C0})+2^{12}\cdot(b_2-\hex{80})+2^6\cdot(b_3-\hex{80})+(b_4-\hex{80})) \\
+   \utf8(c) &=& b &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & c < \unicode{80} \\
+      \wedge & c = b) \\
+      \end{array} \\
+   \utf8(c) &=& b_1~b_2 &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & \unicode{80} \leq c < \unicode{800} \\
+      \wedge & c = 2^6(b_1-\hex{C0})+(b_2-\hex{80})) \\
+      \end{array} \\
+   \utf8(c) &=& b_1~b_2~b_3 &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & \unicode{800} \leq c < \unicode{10000} \\
+      \wedge & c = 2^{12}(b_1-\hex{C0})+2^6(b_2-\hex{80})+(b_3-\hex{80})) \\
+      \end{array} \\
+   \utf8(c) &=& b_1~b_2~b_3~b_4 &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & \unicode{10000} \leq c < \unicode{110000} \\
+      \wedge & c = 2^{18}(b_1-\hex{C0})+2^{12}(b_2-\hex{80})+2^6(b_3-\hex{80})+(b_4-\hex{80})) \\
+      \end{array} \\
    \end{array}
 
 
@@ -198,3 +198,22 @@ Convention
 ..........
 
 * Code points are sometimes used interchangeably with natural numbers :math:`n < 1114112`.
+
+
+.. index:: ! vector
+   pair: abstract syntax; vector
+.. _syntax-vec:
+
+Vectors
+~~~~~~~
+
+*Vectors* are bounded sequences of the form :math:`A^n` (or :math:`A^\ast`),
+where the :math:`A` can either be values or complex constructions.
+A vector can have at most :math:`2^{32}-1` elements.
+
+.. math::
+   \begin{array}{lllll}
+   \production{vector} & \vec(A) &::=&
+     A^n
+     & (\iff n < 2^{32})\\
+   \end{array}

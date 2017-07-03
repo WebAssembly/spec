@@ -29,25 +29,25 @@ Such identifiers are looked up in the suitable space of the :ref:`identifier con
    \begin{array}{llcllllllll}
    \production{type index} & \Ttypeidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\TYPES[x] = v) \\
+     v{:}\Tid &\Rightarrow& x & (I.\ITYPES[x] = v) \\
    \production{function index} & \Tfuncidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\FUNCS[x] = v) \\
+     v{:}\Tid &\Rightarrow& x & (I.\IFUNCS[x] = v) \\
    \production{table index} & \Ttableidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\TABLES[x] = v) \\
+     v{:}\Tid &\Rightarrow& x & (I.\ITABLES[x] = v) \\
    \production{memory index} & \Tmemidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\MEMS[x] = v) \\
+     v{:}\Tid &\Rightarrow& x & (I.\IMEMS[x] = v) \\
    \production{global index} & \Tglobalidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\GLOBALS[x] = v) \\
+     v{:}\Tid &\Rightarrow& x & (I.\IGLOBALS[x] = v) \\
    \production{local index} & \Tlocalidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\LOCALS[x] = v) \\
+     v{:}\Tid &\Rightarrow& x & (I.\ILOCALS[x] = v) \\
    \production{label index} & \Tlabelidx_I &::=&
      l{:}\Tu32 &\Rightarrow& l &|&
-     v{:}\Tid &\Rightarrow& l & (I.\LABELS[l] = v) \\
+     v{:}\Tid &\Rightarrow& l & (I.\ILABELS[l] = v) \\
    \end{array}
 
 
@@ -86,14 +86,14 @@ If inline declarations are given, then their types must match the referenced :re
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
        &\Rightarrow& x, I' &
        (\begin{array}[t]{@{}l@{}}
-        I.\TYPEDEFS[x] = [t_1^n] \to [t_2^\ast] \wedge
+        I.\ITYPEDEFS[x] = [t_1^n] \to [t_2^\ast] \wedge
         I' = \{\LOCALS~(\epsilon)^n\}) \\
         \end{array} \\ &&|&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
      ~~(t_1{:}\Tparam)^\ast~~(t_2{:}\Tresult)^\ast
        &\Rightarrow& x, I' &
        (\begin{array}[t]{@{}l@{}}
-        I.\TYPEDEFS[x] = [t_1^\ast] \to [t_2^\ast] \wedge
+        I.\ITYPEDEFS[x] = [t_1^\ast] \to [t_2^\ast] \wedge
         I' = \{\LOCALS~\F{id}(\Tparam)\}^\ast \idcwellformed) \\
         \end{array} \\
    \end{array}
@@ -190,7 +190,7 @@ Function definitions can bind a symbolic :ref:`function identifier <text-id>`, a
    \production{function} & \Tfunc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
      (t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)}
-       &\Rightarrow& \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\X{in}^\ast~\END \} \\ &&&&& \qquad
+       &\Rightarrow& \{ \FTYPE~x, \LOCALS~t^\ast, \BODY~\X{in}^\ast~\END \} \\ &&&&& \qquad
        (I'' = I' \compose \{\LOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\
    \production{local} & \Tlocal &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype~\text{)}
@@ -257,7 +257,7 @@ Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
    \begin{array}{llclll}
    \production{table} & \Ttable_I &::=&
      \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype~\text{)}
-       &\Rightarrow& \{ \TYPE~\X{tt} \} \\
+       &\Rightarrow& \{ \TTYPE~\X{tt} \} \\
    \end{array}
 
 
@@ -316,7 +316,7 @@ Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
    \begin{array}{llclll}
    \production{memory} & \Tmem_I &::=&
      \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype~\text{)}
-       &\Rightarrow& \{ \TYPE~\X{mt} \} \\
+       &\Rightarrow& \{ \MTYPE~\X{mt} \} \\
    \end{array}
 
 
@@ -376,7 +376,7 @@ Global definitions can bind a symbolic :ref:`global identifier <text-id>`.
    \begin{array}{llclll}
    \production{global} & \Tglobal_I &::=&
      \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype~~e{:}\Texpr_I~\text{)}
-       &\Rightarrow& \{ \TYPE~\X{gt}, \INIT~e \} \\
+       &\Rightarrow& \{ \GTYPE~\X{gt}, \INIT~e \} \\
    \end{array}
 
 
@@ -589,23 +589,23 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
 .. math::
    \begin{array}{@{}lcl@{\qquad\qquad}l}
    \F{idc}(\text{(}~\text{type}~\Tid^?~\X{ft}{:}\Tfunctype~\text{)}) &=&
-     \{\TYPES~(\Tid^?), \TYPEDEFS~\X{ft}\} \\
+     \{\ITYPES~(\Tid^?), \ITYPEDEFS~\X{ft}\} \\
    \F{idc}(\text{(}~\text{func}~\Tid^?~\dots~\text{)}) &=&
-     \{\FUNCS~(\Tid^?)\} \\
+     \{\IFUNCS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{table}~\Tid^?~\dots~\text{)}) &=&
-     \{\TABLES~(\Tid^?)\} \\
+     \{\ITABLES~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{memory}~\Tid^?~\dots~\text{)}) &=&
-     \{\MEMS~(\Tid^?)\} \\
+     \{\IMEMS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=&
-     \{\GLOBALS~(\Tid^?)\} \\
+     \{\IGLOBALS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{func}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\FUNCS~(\Tid^?)\} \\
+     \{\IFUNCS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\TABLES~(\Tid^?)\} \\
+     \{\ITABLES~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{memory}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\MEMS~(\Tid^?)\} \\
+     \{\IMEMS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{global}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\GLOBALS~(\Tid^?)\} \\
+     \{\IGLOBALS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\dots~\text{)}) &=&
      \{\} \\
    \end{array}

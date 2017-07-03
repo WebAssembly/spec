@@ -19,11 +19,11 @@ In order to avoid ambiguities, values are therefore represented with an abstract
 It is convenient to reuse the same notation as for the |CONST| :ref:`instructions <syntax-const>` producing them:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llcl}
    \production{(value)} & \val &::=&
-     \I32.\CONST~\i32 ~|~
-     \I64.\CONST~\i64 ~|~
-     \F32.\CONST~\f32 ~|~
+     \I32.\CONST~\i32 \\&&|&
+     \I64.\CONST~\i64 \\&&|&
+     \F32.\CONST~\f32 \\&&|&
      \F64.\CONST~\f64
    \end{array}
 
@@ -45,10 +45,10 @@ Syntactically, the store is defined as a :ref:`record <syntax-record>` listing t
    \begin{array}{llll}
    \production{(store)} & \store &::=& \{~
      \begin{array}[t]{l@{~}ll}
-     \FUNCS & \funcinst^\ast, \\
-     \TABLES & \tableinst^\ast, \\
-     \MEMS & \meminst^\ast, \\
-     \GLOBALS & \globalinst^\ast ~\} \\
+     \SFUNCS & \funcinst^\ast, \\
+     \STABLES & \tableinst^\ast, \\
+     \SMEMS & \meminst^\ast, \\
+     \SGLOBALS & \globalinst^\ast ~\} \\
      \end{array}
    \end{array}
 
@@ -130,12 +130,12 @@ and collects runtime representations of all entities that are imported, defined,
    \begin{array}{llll}
    \production{(module instance)} & \moduleinst &::=& \{
      \begin{array}[t]{l@{~}ll}
-     \TYPES & \functype^\ast, \\
-     \FUNCS & \funcaddr^\ast, \\
-     \TABLES & \tableaddr^\ast, \\
-     \MEMS & \memaddr^\ast, \\
-     \GLOBALS & \globaladdr^\ast \\
-     \EXPORTS & \exportinst^\ast ~\} \\
+     \MITYPES & \functype^\ast, \\
+     \MIFUNCS & \funcaddr^\ast, \\
+     \MITABLES & \tableaddr^\ast, \\
+     \MIMEMS & \memaddr^\ast, \\
+     \MIGLOBALS & \globaladdr^\ast \\
+     \MIEXPORTS & \exportinst^\ast ~\} \\
      \end{array}
    \end{array}
 
@@ -161,8 +161,8 @@ The module instance is used to resolve references to other non-local definitions
 .. math::
    \begin{array}{llll}
    \production{(function instance)} & \funcinst &::=&
-     \{ \TYPE~\functype, \MODULE~\moduleinst, \CODE~\func \} \\ &&|&
-     \{ \TYPE~\functype, \CODE~\hostfunc \} \\
+     \{ \FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func \} \\ &&|&
+     \{ \FITYPE~\functype, \FICODE~\hostfunc \} \\
    \production{(host function)} & \hostfunc &::=& \dots \\
    \end{array}
 
@@ -194,7 +194,7 @@ Function elements can be mutated through the execution of an :ref:`element segme
 .. math::
    \begin{array}{llll}
    \production{(table instance)} & \tableinst &::=&
-     \{ \ELEM~\vec(\funcelem), \MAX~\u32^? \} \\
+     \{ \TIELEM~\vec(\funcelem), \TIMAX~\u32^? \} \\
    \production{(function element)} & \funcelem &::=&
      \funcaddr^? \\
    \end{array}
@@ -220,7 +220,7 @@ It holds a vector of bytes and an optional maximum size, if one was specified at
 .. math::
    \begin{array}{llll}
    \production{(memory instance)} & \meminst &::=&
-     \{ \DATA~\vec(\byte), \MAX~\u32^? \} \\
+     \{ \MIDATA~\vec(\byte), \MIMAX~\u32^? \} \\
    \end{array}
 
 The length of the vector always is a multiple of the WebAssembly *page size*, which is defined to be the constant :math:`65536` -- abbreviated :math:`64\,\F{Ki}`.
@@ -245,7 +245,7 @@ It holds an individual :ref:`value <syntax-val>` and a flag indicating whether i
 .. math::
    \begin{array}{llll}
    \production{(global instance)} & \globalinst &::=&
-     \{ \VALUE~\val, \MUT~\mut \} \\
+     \{ \GIVALUE~\val, \GIMUT~\mut \} \\
    \end{array}
 
 The value of mutable globals can be mutated through specific instructions or by external means provided by the :ref:`embedder <embedder>`.
@@ -265,7 +265,7 @@ It defines the export's :ref:`name <syntax-name>` and the :ref:`external value <
 .. math::
    \begin{array}{llll}
    \production{(export instance)} & \exportinst &::=&
-     \{ \NAME~\name, \VALUE~\externval \} \\
+     \{ \EINAME~\name, \EIVALUE~\externval \} \\
    \end{array}
 
 
@@ -281,12 +281,12 @@ An *external value* is the runtime representation of an entity that can be impor
 It is an :ref:`address <syntax-addr>` denoting either a :ref:`function instance <syntax-funcinst>`, :ref:`table instance <syntax-tableinst>`, :ref:`memory instance <syntax-meminst>`, or :ref:`global instances <syntax-globalinst>` in the shared :ref:`store <syntax-store>`.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llcl}
    \production{(external value)} & \externval &::=&
-     \FUNC~\funcaddr ~|~
-     \TABLE~\tableaddr ~|~
-     \MEM~\memaddr ~|~
-     \GLOBAL~\globaladdr \\
+     \EVFUNC~\funcaddr \\&&|&
+     \EVTABLE~\tableaddr \\&&|&
+     \EVMEM~\memaddr \\&&|&
+     \EVGLOBAL~\globaladdr \\
    \end{array}
 
 
@@ -296,13 +296,13 @@ Conventions
 The following auxiliary notation is defined for sequences of external values.
 It filters out entries of a specific kind in an order-preserving fashion:
 
-.. math::
-   \begin{array}{lcl}
-   \funcs(\externval^\ast) &=& [\funcaddr ~|~ (\FUNC~\funcaddr) \in \externval^\ast] \\
-   \tables(\externval^\ast) &=& [\tableaddr ~|~ (\TABLE~\tableaddr) \in \externval^\ast] \\
-   \mems(\externval^\ast) &=& [\memaddr ~|~ (\MEM~\memaddr) \in \externval^\ast] \\
-   \globals(\externval^\ast) &=& [\globaladdr ~|~ (\GLOBAL~\globaladdr) \in \externval^\ast] \\
-   \end{array}
+* :math:`\evfuncs(\externval^\ast) = [\funcaddr ~|~ (\EVFUNC~\funcaddr) \in \externval^\ast]`
+
+* :math:`\evtables(\externval^\ast) = [\tableaddr ~|~ (\EVTABLE~\tableaddr) \in \externval^\ast]`
+
+* :math:`\evmems(\externval^\ast) = [\memaddr ~|~ (\EVMEM~\memaddr) \in \externval^\ast]`
+
+* :math:`\evglobals(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
 
 
 .. index:: ! stack, ! frame, ! label
@@ -379,7 +379,7 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
    \production{(activation)} & \X{activation} &::=&
      \FRAME_n\{\frame\} \\
    \production{(frame)} & \frame &::=&
-     \{ \LOCALS~\val^\ast, \MODULE~\moduleinst\} \\
+     \{ \ALOCALS~\val^\ast, \AMODULE~\moduleinst \} \\
    \end{array}
 
 The values of the locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
@@ -510,9 +510,9 @@ Finally, the following definition of *evaluation context* and associated structu
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; F; E[\instr^\ast] &\stepto& S'; F'; E[{\instr'}^\ast]
-     & (\mbox{if}~S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
+     & (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
    S; F; E[\TRAP] &\stepto& S; F; \TRAP
-     & (\mbox{if}~E \neq [\_]) \\
+     & (\iff E \neq [\_]) \\
    \end{array}
 
 
@@ -564,9 +564,9 @@ Evaluation contexts and additional structural reduction rules for module instruc
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; M[\moduleinstr] &\stepto& S'; M[{\moduleinstr'}^\ast]
-     & (\mbox{if}~S; \moduleinstr \stepto S'; {\moduleinstr'}^\ast) \\
+     & (\iff S; \moduleinstr \stepto S'; {\moduleinstr'}^\ast) \\
    S; M[\TRAP] &\stepto& S; \TRAP
-     & (\mbox{if}~M \neq [\_]) \\
+     & (\iff M \neq [\_]) \\
    \end{array}
 
 Reduction terminates when the sequence has been reduced to a |moduleinst| or a trap occurred.

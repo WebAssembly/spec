@@ -116,14 +116,14 @@ It is convenient to define identifier contexts as :ref:`records <syntax-record>`
    \begin{array}{llll}
    \production{(identifier context)} & I &::=&
      \begin{array}[t]{l@{~}ll}
-     \{ & \TYPES & (\Tid^?)^\ast, \\
-        & \FUNCS & (\Tid^?)^\ast, \\
-        & \TABLES & (\Tid^?)^\ast, \\
-        & \MEMS & (\Tid^?)^\ast, \\
-        & \GLOBALS & (\Tid^?)^\ast, \\
-        & \LOCALS & (\Tid^?)^\ast, \\
-        & \LABELS & (\Tid^?)^\ast, \\
-        & \TYPEDEFS & \functype^\ast ~\} \\
+     \{ & \ITYPES & (\Tid^?)^\ast, \\
+        & \IFUNCS & (\Tid^?)^\ast, \\
+        & \ITABLES & (\Tid^?)^\ast, \\
+        & \IMEMS & (\Tid^?)^\ast, \\
+        & \IGLOBALS & (\Tid^?)^\ast, \\
+        & \ILOCALS & (\Tid^?)^\ast, \\
+        & \ILABELS & (\Tid^?)^\ast, \\
+        & \ITYPEDEFS & \functype^\ast ~\} \\
      \end{array}
    \end{array}
 

@@ -1,7 +1,7 @@
 Overview
 --------
 
-.. index:: concepts, value, instruction, trap, function, table, memory, linear memory, module, ! embedder
+.. index:: concepts, value, instruction, trap, function, table, memory, linear memory, module, ! embedder, integer, floating point, IEEE 754
 .. _concepts:
 
 Concepts

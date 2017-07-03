@@ -1,8 +1,8 @@
 Modules
 -------
 
-Modules are valid when all the definitions they contain are valid.
-To that end, each definition is classified with a suitable type.
+Modules are valid when all the components they contain are valid.
+Furthermore, most definitions are themselves classified with a suitable type.
 
 
 Auxiliary Rules
@@ -23,7 +23,7 @@ Function Types :math:`[t_1^n] \to [t_2^m]`
 .. math::
    \frac{
    }{
-     \vdash [t_1^\ast] \to [t_2^?] ~\F{ok}
+     \vdash [t_1^\ast] \to [t_2^?] \ok
    }
 
 .. note::
@@ -35,8 +35,8 @@ Function Types :math:`[t_1^n] \to [t_2^m]`
    single: abstract syntax; limits
 .. _valid-limits:
 
-Limits :math:`\{ \MIN~n, \MAX~m^? \}`
-.....................................
+Limits :math:`\{ \LMIN~n, \LMAX~m^? \}`
+.......................................
 
 * If the maximum :math:`m^?` is not empty, then its value must not be smaller than :math:`n`.
 
@@ -46,7 +46,7 @@ Limits :math:`\{ \MIN~n, \MAX~m^? \}`
    \frac{
      (n \leq m)^?
    }{
-     \vdash \{ \MIN~n, \MAX~m^? \} ~\F{ok}
+     \vdash \{ \LMIN~n, \LMAX~m^? \} \ok
    }
 
 
@@ -62,21 +62,21 @@ Functions
 Functions :math:`\func` are classified by :ref:`function types <syntax-functype>` of the form :math:`[t_1^\ast] \to [t_2^?]`.
 
 
-:math:`\{ \TYPE~x, \LOCALS~t^\ast, \BODY~\expr \}`
-..................................................
+:math:`\{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \}`
+.....................................................
 
-* The type :math:`C.\TYPES[x]` must be defined in the context.
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^?]` be the :ref:`function type <syntax-functype>` :math:`C.\TYPES[x]`.
+* Let :math:`[t_1^\ast] \to [t_2^?]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
 
-  * |LOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
+  * |CLOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
 
-  * |LABELS| set to the singular sequence containing only :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
+  * |CLABELS| set to the singular sequence containing only :ref:`result type <syntax-valtype>` :math:`[t_2^?]`.
 
-  * |LRETURN| set to the :ref:`result type <syntax-valtype>` :math:`[t_2^?]`.
+  * |CRETURN| set to the :ref:`result type <syntax-valtype>` :math:`[t_2^?]`.
 
 * Under the context :math:`C'`,
   the expression :math:`\expr` must be valid with type :math:`t_2^?`.
@@ -85,11 +85,11 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
 .. math::
    \frac{
-     C.\TYPES[x] = [t_1^\ast] \to [t_2^?]
+     C.\CTYPES[x] = [t_1^\ast] \to [t_2^?]
      \qquad
-     C,\LOCALS\,t_1^\ast~t^\ast,\LRETURN~[t_2^?] \vdash \expr : [t_2^?]
+     C,\CLOCALS\,t_1^\ast~t^\ast,\CLABELS~[t_2^?],\CRETURN~[t_2^?] \vdash \expr : [t_2^?]
    }{
-     C \vdash \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\expr \} : [t_1^\ast] \to [t_2^?]
+     C \vdash \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : [t_1^\ast] \to [t_2^?]
    }
 
 .. note::
@@ -107,18 +107,20 @@ Tables
 Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>` of the form :math:`\limits~\elemtype`.
 
 
-:math:`\{ \TYPE~\limits~\elemtype \}`
-.....................................
+:math:`\{ \TTYPE~\tabletype \}`
+...............................
+
+* Let :math:`\limits~\elemtype` be the :ref:`table types <syntax-tabletype>` :math:`\tabletype`.
 
 * The limits :math:`\limits` must be :ref:`valid <valid-limits>`.
 
-* Then the table definition is valid with type :math:`\limits~\elemtype`.
+* Then the table definition is valid with type :math:`\tabletype`.
 
 .. math::
    \frac{
-     \vdash \limits~\F{ok}
+     \vdash \limits\ok
    }{
-     C \vdash \{ \TYPE~\limits~\elemtype \} : \limits~\elemtype
+     C \vdash \{ \TTYPE~\limits~\elemtype \} : \limits~\elemtype
    }
 
 
@@ -133,18 +135,20 @@ Memories
 Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>` of the form :math:`\limits`.
 
 
-:math:`\{ \TYPE~\limits \}`
-...........................
+:math:`\{ \MTYPE~\memtype \}`
+.............................
+
+* Let :math:`\limits` be the :ref:`memory types <syntax-memtype>` :math:`\memtype`.
 
 * The limits :math:`\limits` must be :ref:`valid <valid-limits>`.
 
-* Then the memory definition is valid with type :math:`\limits`.
+* Then the memory definition is valid with type :math:`\memtype`.
 
 .. math::
    \frac{
-     \vdash \limits~\F{ok}
+     \vdash \limits\ok
    }{
-     C \vdash \{ \TYPE~\limits \} : \limits~\elemtype
+     C \vdash \{ \MTYPE~\limits \} : \limits~\elemtype
    }
 
 
@@ -159,8 +163,8 @@ Globals
 Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>` of the form :math:`\mut~t`.
 
 
-:math:`\{ \TYPE~\mut~t, \INIT~\expr \}`
-.......................................
+:math:`\{ \GTYPE~\mut~t, \GINIT~\expr \}`
+.........................................
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
@@ -174,7 +178,7 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
      \qquad
      C \vdash \expr ~\F{const}
    }{
-     C \vdash \{ \TYPE~\mut~t, \INIT~\expr \} : \mut~t
+     C \vdash \{ \GTYPE~\mut~t, \GINIT~\expr \} : \mut~t
    }
 
 
@@ -190,12 +194,12 @@ Element Segments
 
 Element segments :math:`\elem` are not classified by a type.
 
-:math:`\{ \TABLE~x, \OFFSET~\expr, \INIT~y^\ast \}`
-...................................................
+:math:`\{ \ETABLE~x, \EOFFSET~\expr, \EINIT~y^\ast \}`
+......................................................
 
-* The table :math:`C.\TABLES[x]` must be defined in the context.
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\TABLES[x]`.
+* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
 * The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |ANYFUNC|.
 
@@ -204,22 +208,22 @@ Element segments :math:`\elem` are not classified by a type.
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
 * For each :math:`y_i` in :math:`y^\ast`,
-  the function :math:`C.\FUNCS[y]` must be defined in the context.
+  the function :math:`C.\CFUNCS[y]` must be defined in the context.
 
 * Then the element segment is valid.
 
 
 .. math::
    \frac{
-     C.\TABLES[x] = \limits~\ANYFUNC
+     C.\CTABLES[x] = \limits~\ANYFUNC
      \qquad
      C \vdash \expr : [\I32]
      \qquad
      C \vdash \expr ~\F{const}
      \qquad
-     (C.\FUNCS[y] = \functype)^\ast
+     (C.\CFUNCS[y] = \functype)^\ast
    }{
-     C \vdash \{ \TABLE~x, \OFFSET~\expr, \INIT~y^\ast \} ~\F{ok}
+     C \vdash \{ \ETABLE~x, \EOFFSET~\expr, \EINIT~y^\ast \} \ok
    }
 
 
@@ -235,10 +239,10 @@ Data Segments
 
 Data segments :math:`\data` are not classified by any type.
 
-:math:`\{ \MEM~x, \OFFSET~\expr, \INIT~b^\ast \}`
-.................................................
+:math:`\{ \DMEM~x, \DOFFSET~\expr, \DINIT~b^\ast \}`
+....................................................
 
-* The memory :math:`C.\MEMS[x]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
@@ -249,13 +253,13 @@ Data segments :math:`\data` are not classified by any type.
 
 .. math::
    \frac{
-     C.\MEMS[x] = \limits
+     C.\CMEMS[x] = \limits
      \qquad
      C \vdash \expr : [\I32]
      \qquad
      C \vdash \expr ~\F{const}
    }{
-     C \vdash \{ \MEM~x, \OFFSET~\expr, \INIT~b^\ast \} ~\F{ok}
+     C \vdash \{ \DMEM~x, \DOFFSET~\expr, \DINIT~b^\ast \} \ok
    }
 
 
@@ -269,21 +273,21 @@ Start Function
 
 Start function declarations :math:`\start` are not classified by any type.
 
-:math:`\{ \FUNC~x \}`
-.....................
+:math:`\{ \SFUNC~x \}`
+......................
 
-* The function :math:`C.\FUNCS[x]` must be defined in the context.
+* The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* The type of :math:`C.\FUNCS[x]` must be :math:`[] \to []`.
+* The type of :math:`C.\CFUNCS[x]` must be :math:`[] \to []`.
 
 * Then the start function is valid.
 
 
 .. math::
    \frac{
-     C.\FUNCS[x] = [] \to []
+     C.\CFUNCS[x] = [] \to []
    }{
-     C \vdash \{ \FUNC~x \} ~\F{ok}
+     C \vdash \{ \SFUNC~x \} \ok
    }
 
 
@@ -299,8 +303,8 @@ Exports :math:`\export` are classified by their export :ref:`name <syntax-name>`
 Export descriptions :math:`\exportdesc` are not classified by any type.
 
 
-:math:`\{ \NAME~\name, \DESC~\exportdesc \}`
-............................................
+:math:`\{ \ENAME~\name, \EDESC~\exportdesc \}`
+..............................................
 
 * The export description :math:`\exportdesc` must be valid with type :math:`\externtype`.
 
@@ -308,63 +312,63 @@ Export descriptions :math:`\exportdesc` are not classified by any type.
 
 .. math::
    \frac{
-     C \vdash \exportdesc ~\F{ok}
+     C \vdash \exportdesc \ok
    }{
-     C \vdash \{ \NAME~\name, \DESC~\exportdesc \} : \name
+     C \vdash \{ \ENAME~\name, \EDESC~\exportdesc \} : \name
    }
 
 
-:math:`\FUNC~x`
-...............
-
-* The function :math:`C.\FUNCS[x]` must be defined in the context.
-
-* Then the export description is valid.
-
-.. math::
-   \frac{
-     C.\FUNCS[x] = \functype
-   }{
-     C \vdash \FUNC~x ~\F{ok}
-   }
-
-
-:math:`\TABLE~x`
-................
-
-* The table :math:`C.\TABLES[x]` must be defined in the context.
-
-* Then the export description is valid.
-
-.. math::
-   \frac{
-     C.\TABLES[x] = \tabletype
-   }{
-     C \vdash \TABLE~x ~\F{ok}
-   }
-
-
-:math:`\MEM~x`
-..............
-
-* The memory :math:`C.\MEMS[x]` must be defined in the context.
-
-* Then the export description is valid.
-
-.. math::
-   \frac{
-     C.\MEMS[x] = \memtype
-   }{
-     C \vdash \MEM~x ~\F{ok}
-   }
-
-
-:math:`\GLOBAL~x`
+:math:`\EDFUNC~x`
 .................
 
-* The global :math:`C.\GLOBALS[x]` must be defined in the context.
+* The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\GLOBALS[x]`.
+* Then the export description is valid.
+
+.. math::
+   \frac{
+     C.\CFUNCS[x] = \functype
+   }{
+     C \vdash \EDFUNC~x \ok
+   }
+
+
+:math:`\EDTABLE~x`
+..................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Then the export description is valid.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = \tabletype
+   }{
+     C \vdash \EDTABLE~x \ok
+   }
+
+
+:math:`\EDMEM~x`
+................
+
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
+
+* Then the export description is valid.
+
+.. math::
+   \frac{
+     C.\CMEMS[x] = \memtype
+   }{
+     C \vdash \EDMEM~x \ok
+   }
+
+
+:math:`\EDGLOBAL~x`
+...................
+
+* The global :math:`C.\CGLOBALS[x]` must be defined in the context.
+
+* Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\CGLOBALS[x]`.
 
 * The mutability :math:`\mut` must be |MCONST|.
 
@@ -372,9 +376,9 @@ Export descriptions :math:`\exportdesc` are not classified by any type.
 
 .. math::
    \frac{
-     C.\GLOBALS[x] = \MCONST~t
+     C.\CGLOBALS[x] = \MCONST~t
    }{
-     C \vdash \GLOBAL~x ~\F{ok}
+     C \vdash \EDGLOBAL~x \ok
    }
 
 
@@ -389,8 +393,8 @@ Imports
 Imports :math:`\import` and import descriptions :math:`\importdesc` are classified by :ref:`external types <syntax-externtype>`.
 
 
-:math:`\{ \MODULE~\name_1, \NAME~\name_2, \DESC~\importdesc \}`
-...............................................................
+:math:`\{ \IMODULE~\name_1, \INAME~\name_2, \IDESC~\importdesc \}`
+..................................................................
 
 * The import description :math:`\importdesc` must be valid with type :math:`\externtype`.
 
@@ -400,68 +404,68 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
    \frac{
      C \vdash \importdesc : \externtype
    }{
-     C \vdash \{ \MODULE~\name_1, \NAME~\name_2, \DESC~\importdesc \} : \externtype
+     C \vdash \{ \IMODULE~\name_1, \INAME~\name_2, \IDESC~\importdesc \} : \externtype
    }
 
 
-:math:`\FUNC~x`
-...............
+:math:`\IDFUNC~x`
+.................
 
-* The function :math:`C.\TYPES[x]` must be defined in the context.
+* The function :math:`C.\CTYPES[x]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\TYPES[x]`.
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
 
-* Then the import description is valid with type :math:`\FUNC~[t_1^\ast] \to [t_2^\ast]`.
+* Then the import description is valid with type :math:`\ETFUNC~[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\TYPES[x] = [t_1^\ast] \to [t_2^\ast]
+     C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdash \FUNC~x : \FUNC~[t_1^\ast] \to [t_2^\ast]
+     C \vdash \IDFUNC~x : \ETFUNC~[t_1^\ast] \to [t_2^\ast]
    }
 
 
-:math:`\TABLE~\limits~\elemtype`
-................................
+:math:`\IDTABLE~\limits~\elemtype`
+..................................
 
 * The limits :math:`\limits` must be valid.
 
-* Then the import description is valid with type :math:`\TABLE~\limits~\elemtype`.
+* Then the import description is valid with type :math:`\ETTABLE~\limits~\elemtype`.
 
 .. math::
    \frac{
-     \vdash \limits ~\F{ok}
+     \vdash \limits \ok
    }{
-     C \vdash \TABLE~\limits~\elemtype : \TABLE~\limits~\elemtype
+     C \vdash \IDTABLE~\limits~\elemtype : \ETTABLE~\limits~\elemtype
    }
 
 
-:math:`\MEM~\limits`
-....................
-
-* The limits :math:`\limits` must be valid.
-
-* Then the import description is valid with type :math:`\MEM~\limits`.
-
-.. math::
-   \frac{
-     \vdash \limits ~\F{ok}
-   }{
-     C \vdash \MEM~\limits : \MEM~\limits
-   }
-
-
-:math:`\GLOBAL~\mut~t`
+:math:`\IDMEM~\limits`
 ......................
+
+* The limits :math:`\limits` must be valid.
+
+* Then the import description is valid with type :math:`\ETMEM~\limits`.
+
+.. math::
+   \frac{
+     \vdash \limits \ok
+   }{
+     C \vdash \IDMEM~\limits : \ETMEM~\limits
+   }
+
+
+:math:`\IDGLOBAL~\mut~t`
+........................
 
 * The mutability :math:`\mut` must be |MCONST|.
 
-* Then the import description is valid with type :math:`\GLOBAL~t`.
+* Then the import description is valid with type :math:`\ETGLOBAL~t`.
 
 .. math::
    \frac{
    }{
-     C \vdash \GLOBAL~\MCONST~t : \GLOBAL~\MCONST~t
+     C \vdash \IDGLOBAL~\MCONST~t : \ETGLOBAL~\MCONST~t
    }
 
 
@@ -474,73 +478,73 @@ Modules
 ~~~~~~~
 
 A module is entirely *closed*,
-that is, it only refers to definitions that appear in the module itself.
+that is, its components can only refer to definitions that appear in the module itself.
 Consequently, no initial :ref:`context <context>` is required.
-Instead, the context :math:`C` for validation of the module's content is constructed from the types of definitions in the module itself.
+Instead, the context :math:`C` for validation of the module's content is constructed from the definitions in the module.
 
 * Let :math:`\module` be the module to validate.
 
 * Let :math:`C` be a :ref:`context <context>` where:
 
-  * :math:`C.\TYPES` is :math:`\module.\TYPES`,
+  * :math:`C.\CTYPES` is :math:`\module.\MTYPES`,
 
-  * :math:`C.\FUNCS` is :math:`\funcs(\externtype_i^\ast)` concatenated with :math:`\functype_i^\ast`,
+  * :math:`C.\CFUNCS` is :math:`\etfuncs(\externtype_i^\ast)` concatenated with :math:`\functype_i^\ast`,
     with the type sequences :math:`\externtype_i^\ast` and :math:`\functype_i^\ast` as determined below,
 
-  * :math:`C.\TABLES` is :math:`\tables(\externtype_i^\ast)` concatenated with :math:`\tabletype_i^\ast`,
+  * :math:`C.\CTABLES` is :math:`\ettables(\externtype_i^\ast)` concatenated with :math:`\tabletype_i^\ast`,
     with the type sequences :math:`\externtype_i^\ast` and :math:`\tabletype_i^\ast` as determined below,
 
-  * :math:`C.\MEMS` is :math:`\mems(\externtype_i^\ast)` concatenated with :math:`\memtype_i^\ast`,
+  * :math:`C.\CMEMS` is :math:`\etmems(\externtype_i^\ast)` concatenated with :math:`\memtype_i^\ast`,
     with the type sequences :math:`\externtype_i^\ast` and :math:`\memtype_i^\ast` as determined below,
 
-  * :math:`C.\GLOBALS` is :math:`\globals(\externtype_i^\ast)` concatenated with :math:`\globaltype_i^\ast`,
+  * :math:`C.\CGLOBALS` is :math:`\etglobals(\externtype_i^\ast)` concatenated with :math:`\globaltype_i^\ast`,
     with the type sequences :math:`\externtype_i^\ast` and :math:`\globaltype_i^\ast` as determined below.
 
-  * :math:`C.\LOCALS` is empty,
+  * :math:`C.\CLOCALS` is empty,
 
-  * :math:`C.\LABELS` is empty.
+  * :math:`C.\CLABELS` is empty.
 
-  * :math:`C.\LRETURN` is empty.
+  * :math:`C.\CRETURN` is empty.
+
+* Let :math:`C'` be the :ref:`context <context>` where :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\externtype_i^\ast)` and all other fields are empty.
 
 * Under the context :math:`C`:
 
-  * For each :math:`\functype_i` in :math:`\module.\TYPES`,
+  * For each :math:`\functype_i` in :math:`\module.\MTYPES`,
     the :ref:`function type <syntax-functype>` :math:`\functype_i` must be :ref:`valid <valid-functype>`.
 
-  * For each :math:`\func_i` in :math:`\module.\FUNCS`,
+  * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\functype_i`.
 
-  * For each :math:`\table_i` in :math:`\module.\TABLES`,
+  * For each :math:`\table_i` in :math:`\module.\MTABLES`,
     the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\tabletype_i`.
 
-  * For each :math:`\mem_i` in :math:`\module.\MEMS`,
+  * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
     the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\memtype_i`.
 
-  * For each :math:`\global_i` in :math:`\module.\GLOBALS`:
+  * For each :math:`\global_i` in :math:`\module.\MGLOBALS`:
 
-    * Let :math:`C_i` be the :ref:`context <context>` where :math:`C_i.\GLOBALS` is the sequence :math:`\globals(\externtype_i^\ast)` concatenated with :math:`\globaltype_0~\dots~\globaltype_{i-1}`, and all other fields are empty.
-
-    * Under the context :math:`C_i`,
+    * Under the context :math:`C'`,
       the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
 
-  * For each :math:`\elem_i` in :math:`\module.\ELEM`,
+  * For each :math:`\elem_i` in :math:`\module.\MELEM`,
     the segment :math:`\elem_i` must be :ref:`valid <valid-elem>`.
 
-  * For each :math:`\data_i` in :math:`\module.\DATA`,
+  * For each :math:`\data_i` in :math:`\module.\MDATA`,
     the segment :math:`\elem_i` must be :ref:`valid <valid-data>`.
 
-  * If :math:`\module.\START` is non-empty,
-    then :math:`\module.\START` must be :ref:`valid <valid-start>`.
+  * If :math:`\module.\MSTART` is non-empty,
+    then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
 
-  * For each :math:`\import_i` in :math:`\module.\IMPORTS`,
+  * For each :math:`\import_i` in :math:`\module.\MIMPORTS`,
     the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\externtype_i`.
 
-  * For each :math:`\export_i` in :math:`\module.\EXPORTS`,
+  * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
     the segment :math:`\import_i` must be :ref:`valid <valid-export>` with a :ref:`name <syntax-name>` :math:`\name_i`.
 
-* The length of :math:`C.\TABLES` must not be larger than :math:`1`.
+* The length of :math:`C.\CTABLES` must not be larger than :math:`1`.
 
-* The length of :math:`C.\MEMS` must not be larger than :math:`1`.
+* The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
 
 * All export names :math:`\name_i` must be different.
 
@@ -551,7 +555,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     (\vdash \functype ~\F{ok})^\ast
+     (\vdash \functype \ok)^\ast
      \quad
      (C \vdash \func : \X{ft})^\ast
      \quad
@@ -561,47 +565,47 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \quad
      (C' \vdash \global : \X{gt})^\ast
      \\
-     (C \vdash \elem ~\F{ok})^\ast
+     (C \vdash \elem \ok)^\ast
      \quad
-     (C \vdash \data ~\F{ok})^\ast
+     (C \vdash \data \ok)^\ast
      \quad
-     (C \vdash \start ~\F{ok})^?
+     (C \vdash \start \ok)^?
      \quad
      (C \vdash \import : \X{it})^\ast
      \quad
      (C \vdash \export : \X{name})^\ast
      \\
-     \X{ift}^\ast = \funcs(\X{it}^\ast)
+     \X{ift}^\ast = \etfuncs(\X{it}^\ast)
      \qquad
-     \X{itt}^\ast = \tables(\X{it}^\ast)
+     \X{itt}^\ast = \ettables(\X{it}^\ast)
      \qquad
-     \X{imt}^\ast = \mems(\X{it}^\ast)
+     \X{imt}^\ast = \etmems(\X{it}^\ast)
      \qquad
-     \X{igt}^\ast = \globals(\X{it}^\ast)
+     \X{igt}^\ast = \etglobals(\X{it}^\ast)
      \\
-     C = \{ \TYPES~\functype^\ast, \FUNCS~\X{ift}^\ast~\X{ft}^\ast, \TABLES~\X{itt}^\ast~\X{tt}^\ast, \MEMS~\X{imt}^\ast~\X{mt}^\ast, \GLOBALS~\X{igt}^\ast~\X{gt}^\ast \}
+     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast \}
      \\
-     C' = \{ \GLOBALS~\X{igt}^\ast \}
+     C' = \{ \CGLOBALS~\X{igt}^\ast \}
      \qquad
-     |C.\TABLES| \leq 1
+     |C.\CTABLES| \leq 1
      \qquad
-     |C.\MEMS| \leq 1
+     |C.\CMEMS| \leq 1
      \qquad
      \name^\ast ~\F{disjoint}
      \end{array}
    }{
      \vdash \{
        \begin{array}[t]{@{}l@{}}
-         \TYPES~\functype^\ast,
-         \FUNCS~\func^\ast,
-         \TABLES~\table^\ast,
-         \MEMS~\mem^\ast,
-         \GLOBALS~\global^\ast, \\
-         \ELEM~\elem^\ast,
-         \DATA~\data^\ast,
-         \START~\start^?,
-         \IMPORTS~\import^\ast,
-         \EXPORTS~\export^\ast \} : \X{it}^\ast \\
+         \MTYPES~\functype^\ast,
+         \MFUNCS~\func^\ast,
+         \MTABLES~\table^\ast,
+         \MMEMS~\mem^\ast,
+         \MGLOBALS~\global^\ast, \\
+         \MELEM~\elem^\ast,
+         \MDATA~\data^\ast,
+         \MSTART~\start^?,
+         \MIMPORTS~\import^\ast,
+         \MEXPORTS~\export^\ast \} : \X{it}^\ast \\
        \end{array}
    }
 
