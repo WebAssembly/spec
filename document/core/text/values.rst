@@ -58,11 +58,11 @@ Moreover, their value must lie within the range of the respective type.
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{unsigned integer} & \TuN &::=&
-     n{:}\Tnum &\Rightarrow& n & (n < 2^N) \\ &&|&
-     \text{0x}~~n{:}\Thexnum &\Rightarrow& n & (n < 2^N) \\
+     n{:}\Tnum &\Rightarrow& n & (\iff n < 2^N) \\ &&|&
+     \text{0x}~~n{:}\Thexnum &\Rightarrow& n & (\iff n < 2^N) \\
    \production{signed integer} & \TsN &::=&
-     {\pm}{:}\Tsign~~n{:}\Tnum &\Rightarrow& \pm n & (-2^{N-1} \leq \pm n < 2^{N-1}) \\ &&|&
-     {\pm}{:}\Tsign~~\text{0x}~~n{:}\Thexnum &\Rightarrow& \pm n & (-2^{N-1} \leq \pm n < 2^{N-1}) \\
+     {\pm}{:}\Tsign~~n{:}\Tnum &\Rightarrow& \pm n & (\iff -2^{N-1} \leq \pm n < 2^{N-1}) \\ &&|&
+     {\pm}{:}\Tsign~~\text{0x}~~n{:}\Thexnum &\Rightarrow& \pm n & (\iff -2^{N-1} \leq \pm n < 2^{N-1}) \\
    \end{array}
 
 :ref:`Uninterpreted integers <syntax-int>` can be written as either signed or unsigned, and are normalized to unsigned in the abstract syntax.
@@ -71,7 +71,7 @@ Moreover, their value must lie within the range of the respective type.
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{uninterpreted integers} & \TiN &::=&
      n{:}\TuN &\Rightarrow& n \\ &&|&
-     i{:}\TsN &\Rightarrow& n & (i = \signed(n)) \\
+     i{:}\TsN &\Rightarrow& n & (\iff i = \signed(n)) \\
    \end{array}
 
 
@@ -119,29 +119,13 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      \text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum
        &\Rightarrow& (p+q)\cdot 2^{\pm e} \\
    \production{floating-point value} & \TfNmag &::=&
-     z{:}\Tfloat &\Rightarrow& \ieee_N(z) & (\ieee_N(z) \neq \pm \infty) \\ &&|&
-     z{:}\Thexfloat &\Rightarrow& \ieee_N(z) & (\ieee_N(z) \neq \pm \infty) \\ &&|&
+     z{:}\Tfloat &\Rightarrow& \ieee_N(z) & (\iff \ieee_N(z) \neq \pm \infty) \\ &&|&
+     z{:}\Thexfloat &\Rightarrow& \ieee_N(z) & (\iff \ieee_N(z) \neq \pm \infty) \\ &&|&
      \text{inf} &\Rightarrow& \infty \\ &&|&
      \text{nan} &\Rightarrow& \NAN(2^{\significand(N)-1}) \\ &&|&
-     \text{nan{:}0x}~n{:}\Thexnum &\Rightarrow& \NAN(n) & (1 \leq n < 2^{\significand(N)}) \\
+     \text{nan{:}0x}~n{:}\Thexnum &\Rightarrow& \NAN(n) & (\iff 1 \leq n < 2^{\significand(N)}) \\
    \production{floating-point value} & \TfN &::=&
      {\pm}{:}\Tsign~z{:}\TfNmag &\Rightarrow& \pm z \\
-   \end{array}
-
-
-.. index:: vector
-   pair: text format; vector
-.. _text-vec:
-
-Vectors
-~~~~~~~
-
-:ref:`Vectors <syntax-vec>` are written as plain sequences, but with restricted length.
-
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{vector} & \Tvec(\T{A}) &::=&
-     (x{:}\T{A})^n &\Rightarrow& x^n & (n < 2^{32}) \\
    \end{array}
 
 
@@ -167,14 +151,14 @@ except for hexadecimal escape sequences :math:`\text{\backslash}hh`, which repre
    \production{string} & \Tstring &::=&
      \text{"}~(b^\ast{:}\Tstringelem)^\ast~\text{"}
        &\Rightarrow& \concat((b^\ast)^\ast)
-       & (|\concat((b^\ast)^\ast)| < 2^{32}) \\
+       & (\iff |\concat((b^\ast)^\ast)| < 2^{32}) \\
    \production{string element} & \Tstringelem &::=&
      c{:}\Tstringchar &\Rightarrow& \utf8(c) \\ &&|&
      \text{\backslash}~n{:}\Thexdigit~m{:}\Thexdigit
        &\Rightarrow& 16\cdot n+m \\
    \production{string character} & \Tstringchar &::=&
      c{:}\Tchar &\Rightarrow& c \qquad
-       & (c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\backslash}) \\ &&|&
+       & (\iff c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\backslash}) \\ &&|&
      \text{\backslash t} &\Rightarrow& \unicode{09} \\ &&|&
      \text{\backslash n} &\Rightarrow& \unicode{0A} \\ &&|&
      \text{\backslash r} &\Rightarrow& \unicode{0D} \\ &&|&
@@ -182,7 +166,7 @@ except for hexadecimal escape sequences :math:`\text{\backslash}hh`, which repre
      \text{\backslash{'}} &\Rightarrow& \unicode{27} \\ &&|&
      \text{\backslash\backslash} &\Rightarrow& \unicode{5C} \\ &&|&
      \text{\backslash u\{}~n{:}\Thexnum~\text{\}}
-       &\Rightarrow& \unicode{(n)} & (n < \hex{D800} \vee \hex{E000} \leq n < \hex{110000}) \\
+       &\Rightarrow& \unicode{(n)} & (\iff n < \hex{D800} \vee \hex{E000} \leq n < \hex{110000}) \\
    \end{array}
 
 
@@ -199,12 +183,28 @@ A name string must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{name} & \Tname &::=&
-     b^\ast{:}\Tstring &\Rightarrow& c^\ast & (b^\ast = \utf8(c^\ast)) \\
+     b^\ast{:}\Tstring &\Rightarrow& c^\ast & (\iff b^\ast = \utf8(c^\ast)) \\
    \end{array}
 
 .. note::
    Presuming the source text is itself encoded correctly,
    strings that do not contain any uses of hexadecimal byte escapes are always valid names.
+
+
+.. index:: vector
+   pair: text format; vector
+.. _text-vec:
+
+Vectors
+~~~~~~~
+
+:ref:`Vectors <syntax-vec>` are written as plain sequences, but with restricted length.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{vector} & \Tvec(\T{A}) &::=&
+     (x{:}\T{A})^n &\Rightarrow& x^n & (\iff n < 2^{32}) \\
+   \end{array}
 
 
 .. index:: ! identifiers

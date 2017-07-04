@@ -74,8 +74,8 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
    .. math::
       \begin{array}{llclll}
       \production{limits} & \Tlimits &::=&
-        n{:}\Tu32 &\Rightarrow& \{ \MIN~n, \MAX~\epsilon \} \\ &&|&
-        n{:}\Tu32~~m{:}\Tu32 &\Rightarrow& \{ \MIN~n, \MAX~m \} \\
+        n{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
+        n{:}\Tu32~~m{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
       \end{array}
 
    The variables :math:`n` and :math:`m` name the attributes of the respective |Tu32| nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` they decode into.

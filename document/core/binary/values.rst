@@ -44,9 +44,9 @@ As an additional constraint, the total number of bytes encoding a value of type 
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{unsigned integer} & \BuN &::=&
-     n{:}\Bbyte &\Rightarrow& n & (n < 2^7 \wedge n < 2^N) \\ &&|&
+     n{:}\Bbyte &\Rightarrow& n & (\iff n < 2^7 \wedge n < 2^N) \\ &&|&
      n{:}\Bbyte~~m{:}\BuX{(N\B{-7})} &\Rightarrow&
-       2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
+       2^7\cdot m + (n-2^7) & (\iff n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
 :ref:`Signed integers <syntax-sint>` are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a two's complement representation.
@@ -55,10 +55,10 @@ As an additional constraint, the total number of bytes encoding a value of type 
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{signed integer} & \BsN &::=&
-     n{:}\Bbyte &\Rightarrow& n & (n < 2^6 \wedge n < 2^{N-1}) \\ &&|&
-     n{:}\Bbyte &\Rightarrow& n-2^7 & (2^6 \leq n < 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &&|&
+     n{:}\Bbyte &\Rightarrow& n & (\iff n < 2^6 \wedge n < 2^{N-1}) \\ &&|&
+     n{:}\Bbyte &\Rightarrow& n-2^7 & (\iff 2^6 \leq n < 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &&|&
      n{:}\Bbyte~~m{:}\BsX{(N\B{-7})} &\Rightarrow&
-       2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
+       2^7\cdot m + (n-2^7) & (\iff n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
 :ref:`Uninterpreted integers <syntax-int>` are encoded as signed integers.
@@ -66,7 +66,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{uninterpreted integer} & \BiN &::=&
-     n{:}\BsN &\Rightarrow& i & (n = \signed_{\iN}(i))
+     n{:}\BsN &\Rightarrow& i & (\iff n = \signed_{\iN}(i))
    \end{array}
 
 .. note::
@@ -128,26 +128,26 @@ Names
    \begin{array}{llclll@{\qquad}l}
    \production{name} & \Bname &::=&
      n{:}\Bu32~~(\X{uc}{:}\Bcodepoint)^\ast &\Rightarrow& \X{uc}^\ast
-       & (|\Bcodepoint^\ast| = n) \\
+       & (\iff |\Bcodepoint^\ast| = n) \\
    \production{code point} & \Bcodepoint &::=&
      \X{uv}{:}\Bcodeval_N &\Rightarrow& \X{uv}
-       & (\X{uv} \geq N \wedge (\X{uv} < \unicode{D800} \vee \unicode{E000} \leq \X{uv} < \unicode{110000})) \\
+       & (\iff \X{uv} \geq N \wedge (\X{uv} < \unicode{D800} \vee \unicode{E000} \leq \X{uv} < \unicode{110000})) \\
    \production{code value} & \Bcodeval_N &::=&
      b_1{:}\Bbyte &\Rightarrow&
        b_1
-       & (b_1 < \hex{80} \wedge N = \unicode{00}) \\ &&|&
+       & (\iff b_1 < \hex{80} \wedge N = \unicode{00}) \\ &&|&
      b_1{:}\Bbyte~~b_2{:}\Bcodecont &\Rightarrow&
        2^6\cdot(b_1-\hex{c0}) + b_2
-       & (\hex{c0} \leq b_1 < \hex{e0} \wedge N = \unicode{80}) \\ &&|&
+       & (\iff \hex{c0} \leq b_1 < \hex{e0} \wedge N = \unicode{80}) \\ &&|&
      b_1{:}\Bbyte~~b_2{:}\Bcodecont~~b_3{:}\Bcodecont &\Rightarrow&
        2^{12}\cdot(b_1-\hex{e0}) + 2^6\cdot b_2 + b_3
-       & (\hex{e0} \leq b_1 < \hex{f0} \wedge N = \unicode{800}) \\ &&|&
+       & (\iff \hex{e0} \leq b_1 < \hex{f0} \wedge N = \unicode{800}) \\ &&|&
      b_1{:}\Bbyte~~b_2{:}\Bcodecont~~b_3{:}\Bcodecont~~b_4{:}\Bcodecont
        &\Rightarrow&
        2^{18}\cdot(b_1-\hex{f0}) + 2^{12}\cdot b_2 + 2^6\cdot b_3 + b_4
-       & (\hex{f0} \leq b_1 < \hex{f8} \wedge N = \unicode{10000}) \\
+       & (\iff \hex{f0} \leq b_1 < \hex{f8} \wedge N = \unicode{10000}) \\
    \production{code continuation} & \Bcodecont &::=&
-     b{:}\Bbyte &\Rightarrow& b - \hex{80} & (b \geq \hex{80}) \\
+     b{:}\Bbyte &\Rightarrow& b - \hex{80} & (\iff b \geq \hex{80}) \\
    \end{array}
 
 .. note::

@@ -138,13 +138,13 @@ Block comments can be nested.
    \production{line comment} & \Tlinecomment &::=&
      \Tcommentd~~\Tlinechar^\ast~~(\unicode{0A} ~|~ \T{eof}) \\
    \production{line character} & \Tlinechar &::=&
-     c{:}\Tchar & (c \neq \unicode{0A}) \\
+     c{:}\Tchar & (\iff c \neq \unicode{0A}) \\
    \production{block comment} & \Tblockcomment &::=&
      \Tcommentl~~\Tblockchar^\ast~~\Tcommentr \\
    \production{block character} & \Tblockchar &::=&
-     c{:}\Tchar & (c \neq \text{;} \wedge c \neq \text{(}) \\ &&|&
-     \text{;} & (\mbox{the next character is not}~\text{)}) \\ &&|&
-     \text{(} & (\mbox{the next character is not}~\text{;}) \\ &&|&
+     c{:}\Tchar & (\iff c \neq \text{;} \wedge c \neq \text{(}) \\ &&|&
+     \text{;} & (\iff~\mbox{the next character is not}~\text{)}) \\ &&|&
+     \text{(} & (\iff~\mbox{the next character is not}~\text{;}) \\ &&|&
      \Tblockcomment \\
    \end{array}
 

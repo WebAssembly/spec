@@ -28,26 +28,26 @@ Such identifiers are looked up in the suitable space of the :ref:`identifier con
 .. math::
    \begin{array}{llcllllllll}
    \production{type index} & \Ttypeidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\ITYPES[x] = v) \\
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\ITYPES[x] = v) \\
    \production{function index} & \Tfuncidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\IFUNCS[x] = v) \\
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\IFUNCS[x] = v) \\
    \production{table index} & \Ttableidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\ITABLES[x] = v) \\
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\ITABLES[x] = v) \\
    \production{memory index} & \Tmemidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\IMEMS[x] = v) \\
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\IMEMS[x] = v) \\
    \production{global index} & \Tglobalidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\IGLOBALS[x] = v) \\
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\IGLOBALS[x] = v) \\
    \production{local index} & \Tlocalidx_I &::=&
-     x{:}\Tu32 &\Rightarrow& x &|&
-     v{:}\Tid &\Rightarrow& x & (I.\ILOCALS[x] = v) \\
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\ILOCALS[x] = v) \\
    \production{label index} & \Tlabelidx_I &::=&
-     l{:}\Tu32 &\Rightarrow& l &|&
-     v{:}\Tid &\Rightarrow& l & (I.\ILABELS[l] = v) \\
+     l{:}\Tu32 &\Rightarrow& l \\&&|&
+     v{:}\Tid &\Rightarrow& l & (\iff I.\ILABELS[l] = v) \\
    \end{array}
 
 
@@ -85,16 +85,16 @@ If inline declarations are given, then their types must match the referenced :re
    \production{type use} & \Ttypeuse_I &::=&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
        &\Rightarrow& x, I' &
-       (\begin{array}[t]{@{}l@{}}
+       (\iff \begin{array}[t]{@{}l@{}}
         I.\ITYPEDEFS[x] = [t_1^n] \to [t_2^\ast] \wedge
-        I' = \{\LOCALS~(\epsilon)^n\}) \\
+        I' = \{\ILOCALS~(\epsilon)^n\}) \\
         \end{array} \\ &&|&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
      ~~(t_1{:}\Tparam)^\ast~~(t_2{:}\Tresult)^\ast
        &\Rightarrow& x, I' &
-       (\begin{array}[t]{@{}l@{}}
+       (\iff \begin{array}[t]{@{}l@{}}
         I.\ITYPEDEFS[x] = [t_1^\ast] \to [t_2^\ast] \wedge
-        I' = \{\LOCALS~\F{id}(\Tparam)\}^\ast \idcwellformed) \\
+        I' = \{\ILOCALS~\F{id}(\Tparam)\}^\ast \idcwellformed) \\
         \end{array} \\
    \end{array}
 
@@ -154,16 +154,16 @@ The descriptors in imports can bind a symbolic function, table, memory, or globa
    \begin{array}{llclll}
    \production{import} & \Timport_I &::=&
      \text{(}~\text{import}~~\X{mod}{:}\Tname~~\X{nm}{:}\Tname~~d{:}\Timportdesc_I~\text{)}
-       &\Rightarrow& \{ \MODULE~\X{mod}, \NAME~\X{nm}, \DESC~d \} \\
+       &\Rightarrow& \{ \IMODULE~\X{mod}, \INAME~\X{nm}, \IDESC~d \} \\
    \production{import description} & \Timportdesc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~\text{)}
-       &\Rightarrow& \FUNC~x \\ &&|&
+       &\Rightarrow& \IDFUNC~x \\ &&|&
      \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype~\text{)}
-       &\Rightarrow& \TABLE~\X{tt} \\ &&|&
+       &\Rightarrow& \IDTABLE~\X{tt} \\ &&|&
      \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype~\text{)}
-       &\Rightarrow& \MEM~~\X{mt} \\ &&|&
+       &\Rightarrow& \IDMEM~~\X{mt} \\ &&|&
      \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype~\text{)}
-       &\Rightarrow& \GLOBAL~\X{gt} \\
+       &\Rightarrow& \IDGLOBAL~\X{gt} \\
    \end{array}
 
 
@@ -190,8 +190,8 @@ Function definitions can bind a symbolic :ref:`function identifier <text-id>`, a
    \production{function} & \Tfunc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
      (t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)}
-       &\Rightarrow& \{ \FTYPE~x, \LOCALS~t^\ast, \BODY~\X{in}^\ast~\END \} \\ &&&&& \qquad
-       (I'' = I' \compose \{\LOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\
+       &\Rightarrow& \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\X{in}^\ast~\END \} \\ &&&&& \qquad
+       (\iff I'' = I' \compose \{\ILOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\
    \production{local} & \Tlocal &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype~\text{)}
        &\Rightarrow& t \\
@@ -238,7 +238,7 @@ Moreover, functions can be defined as :ref:`imports <text-import>` or :ref:`expo
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{func}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{func}~~\Tid'~~\dots~\text{)}
        \\&&& \qquad
-       (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
@@ -283,7 +283,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Telemtype~\text{)}~~
        \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
        \\&&& \qquad
-       (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
 Moreover, tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
@@ -297,7 +297,7 @@ Moreover, tables can be defined as :ref:`imports <text-import>` or :ref:`exports
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{table}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{table}~~\Tid'~~\dots~\text{)}
        \\&&& \qquad
-       (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline elements segment.
@@ -342,7 +342,7 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
        \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)}~~
        \text{(}~\text{data}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
        \\&&& \qquad
-       (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
+       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
    \end{array}
 
 Moreover, memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
@@ -357,7 +357,7 @@ Moreover, memories can be defined as :ref:`imports <text-import>` or :ref:`expor
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{memory}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{memory}~~\Tid'~~\dots~\text{)}
        \\ &&& \qquad
-       (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline data segment.
@@ -376,7 +376,7 @@ Global definitions can bind a symbolic :ref:`global identifier <text-id>`.
    \begin{array}{llclll}
    \production{global} & \Tglobal_I &::=&
      \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype~~e{:}\Texpr_I~\text{)}
-       &\Rightarrow& \{ \GTYPE~\X{gt}, \INIT~e \} \\
+       &\Rightarrow& \{ \GTYPE~\X{gt}, \GINIT~e \} \\
    \end{array}
 
 
@@ -401,7 +401,7 @@ Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-ex
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{global}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{global}~~\Tid'~~\dots~\text{)}
        \\ &&& \qquad
-       (\Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
@@ -421,16 +421,16 @@ The syntax for exports mirrors their :ref:`abstract syntax <syntax-export>` dire
    \begin{array}{llclll}
    \production{export} & \Texport_I &::=&
      \text{(}~\text{export}~~\X{nm}{:}\Tname~~d{:}\Texportdesc_I~\text{)}
-       &\Rightarrow& \{ \NAME~\X{nm}, \DESC~d \} \\
+       &\Rightarrow& \{ \ENAME~\X{nm}, \EDESC~d \} \\
    \production{export description} & \Texportdesc_I &::=&
      \text{(}~\text{func}~~x{:}\Bfuncidx_I~\text{)}
-       &\Rightarrow& \FUNC~x \\ &&|&
+       &\Rightarrow& \EDFUNC~x \\ &&|&
      \text{(}~\text{table}~~x{:}\Btableidx_I~\text{)}
-       &\Rightarrow& \TABLE~x \\ &&|&
+       &\Rightarrow& \EDTABLE~x \\ &&|&
      \text{(}~\text{memory}~~x{:}\Bmemidx_I~\text{)}
-       &\Rightarrow& \MEM~x \\ &&|&
+       &\Rightarrow& \EDMEM~x \\ &&|&
      \text{(}~\text{global}~~x{:}\Bglobalidx_I~\text{)}
-       &\Rightarrow& \GLOBAL~x \\
+       &\Rightarrow& \EDGLOBAL~x \\
    \end{array}
 
 
@@ -453,7 +453,7 @@ A :ref:`start function <syntax-start>` is defined in terms of its index.
    \begin{array}{llclll}
    \production{start function} & \Tstart_I &::=&
      \text{(}~\text{start}~~x{:}\Tfuncidx_I~\text{)}
-       &\Rightarrow& \{ \FUNC~x \} \\
+       &\Rightarrow& \{ \SFUNC~x \} \\
    \end{array}
 
 .. note::
@@ -478,8 +478,8 @@ When omitted, :math:`\T{0}` is assumed.
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
      \text{(}~\text{elem}~~(x{:}\Ttableidx_I)^?~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)}
-       &\Rightarrow& \{ \TABLE~x', \OFFSET~e, \INIT~y^\ast \} \\
-       &&&&& \qquad (x' = x^? \neq \epsilon \vee x' = 0) \\
+       &\Rightarrow& \{ \ETABLE~x', \EOFFSET~e, \EINIT~y^\ast \} \\
+       &&&&& \qquad (\iff x' = x^? \neq \epsilon \vee x' = 0) \\
    \end{array}
 
 .. note::
@@ -511,8 +511,8 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
    \begin{array}{llclll}
    \production{data segment} & \Tdata_I &::=&
      \text{(}~\text{data}~~(x{:}\Tmemidx_I)^?~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)}
-       &\Rightarrow& \{ \MEM~x', \OFFSET~e, \INIT~b^\ast \} \\
-       &&&&& \qquad (x' = x^? \neq \epsilon \vee x' = 0) \\
+       &\Rightarrow& \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\
+       &&&&& \qquad (\iff x' = x^? \neq \epsilon \vee x' = 0) \\
    \production{data string} & \Tdatastring &::=&
      (b^\ast{:}\Tstring)^\ast &\Rightarrow& \concat((b^\ast)^\ast) \\
    \end{array}
@@ -553,29 +553,29 @@ The name serves a documentary role only.
    ::=&
      \text{(}~\text{module}~~\Tid^?~~(m{:}\Tmodulefield_I)^\ast~\text{)}
        &\Rightarrow& \bigcompose m^\ast
-       & (I = \bigcompose \F{idc}(\Tmodulefield)^\ast \idcwellformed) \\
+       & (\iff I = \bigcompose \F{idc}(\Tmodulefield)^\ast \idcwellformed) \\
    \end{array} \\
    \production{module field} & \Tmodulefield_I &
    \begin{array}[t]{@{}clll}
    ::=&
-     \X{ty}{:}\Ttype &\Rightarrow& \{\TYPES~\X{ty}\} \\ |&
-     \X{im}{:}\Timport_I &\Rightarrow& \{\IMPORTS~\X{im}\} \\ |&
-     \X{fn}{:}\Tfunc_I &\Rightarrow& \{\FUNCS~\X{fn}\} \\ |&
-     \X{ta}{:}\Ttable_I &\Rightarrow& \{\TABLES~\X{ta}\} \\ |&
-     \X{me}{:}\Tmem_I &\Rightarrow& \{\MEMS~\X{me}\} \\ |&
-     \X{gl}{:}\Tglobal_I &\Rightarrow& \{\GLOBALS~\X{gl}\} \\ |&
-     \X{ex}{:}\Texport_I &\Rightarrow& \{\EXPORTS~\X{ex}\} \\ |&
-     \X{st}{:}\Tstart_I &\Rightarrow& \{\START~\X{st}\} \\ |&
-     \X{el}{:}\Telem_I &\Rightarrow& \{\ELEM~\X{el}\} \\ |&
-     \X{da}{:}\Tdata_I &\Rightarrow& \{\DATA~\X{da}\} \\
+     \X{ty}{:}\Ttype &\Rightarrow& \{\MTYPES~\X{ty}\} \\ |&
+     \X{im}{:}\Timport_I &\Rightarrow& \{\MIMPORTS~\X{im}\} \\ |&
+     \X{fn}{:}\Tfunc_I &\Rightarrow& \{\MFUNCS~\X{fn}\} \\ |&
+     \X{ta}{:}\Ttable_I &\Rightarrow& \{\MTABLES~\X{ta}\} \\ |&
+     \X{me}{:}\Tmem_I &\Rightarrow& \{\MMEMS~\X{me}\} \\ |&
+     \X{gl}{:}\Tglobal_I &\Rightarrow& \{\MGLOBALS~\X{gl}\} \\ |&
+     \X{ex}{:}\Texport_I &\Rightarrow& \{\MEXPORTS~\X{ex}\} \\ |&
+     \X{st}{:}\Tstart_I &\Rightarrow& \{\MSTART~\X{st}\} \\ |&
+     \X{el}{:}\Telem_I &\Rightarrow& \{\MELEM~\X{el}\} \\ |&
+     \X{da}{:}\Tdata_I &\Rightarrow& \{\MDATA~\X{da}\} \\
    \end{array}
    \end{array}
 
 The following restrictions are imposed on the composition of :ref:`modules <syntax-module>`: :math:`m_1 \compose m_2` is defined if and only if
 
-* :math:`m_1.\START = \epsilon \vee m_2.\START = \epsilon`
+* :math:`m_1.\MSTART = \epsilon \vee m_2.\MSTART = \epsilon`
 
-* :math:`m_2.\IMPORTS = \epsilon \vee m_1.\FUNCS = m_1.\TABLES = m_1.\MEMS = m_1.\GLOBALS = \epsilon`
+* :math:`m_1.\MFUNCS = m_1.\MTABLES = m_1.\MMEMS = m_1.\MGLOBALS = \epsilon \vee m_2.\MIMPORTS = \epsilon`
 
 .. note::
    The first condition ensures that there is at most one start function.

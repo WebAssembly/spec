@@ -64,7 +64,7 @@ The following parameterized grammar rule defines the generic structure of a sect
    \begin{array}{llclll@{\qquad}l}
    \production{section} & \Bsection_N(\B{B}) &::=&
      N{:}\Bbyte~~\X{size}{:}\Bu32~~\X{cont}{:}\B{B}
-       &\Rightarrow& \X{cont} & (\X{size} = ||\B{B}||) \\ &&|&
+       &\Rightarrow& \X{cont} & (\iff \X{size} = ||\B{B}||) \\ &&|&
      \epsilon &\Rightarrow& \epsilon
    \end{array}
 
@@ -139,12 +139,12 @@ It decodes into a vector of :ref:`imports <syntax-import>` that represent the |I
      \X{im}^\ast{:}\Bsection_2(\Bvec(\Bimport)) &\Rightarrow& \X{im}^\ast \\
    \production{import} & \Bimport &::=&
      \X{mod}{:}\Bname~~\X{nm}{:}\Bname~~d{:}\Bimportdesc
-       &\Rightarrow& \{ \MODULE~\X{mod}, \NAME~\X{nm}, \DESC~d \} \\
+       &\Rightarrow& \{ \IMODULE~\X{mod}, \INAME~\X{nm}, \IDESC~d \} \\
    \production{import description} & \Bimportdesc &::=&
-     \hex{00}~~x{:}\Btypeidx &\Rightarrow& \FUNC~x \\ &&|&
-     \hex{01}~~\X{tt}{:}\Btabletype &\Rightarrow& \TABLE~\X{tt} \\ &&|&
-     \hex{02}~~\X{mt}{:}\Bmemtype &\Rightarrow& \MEM~\X{mt} \\ &&|&
-     \hex{03}~~\X{gt}{:}\Bglobaltype &\Rightarrow& \GLOBAL~\X{gt} \\
+     \hex{00}~~x{:}\Btypeidx &\Rightarrow& \IDFUNC~x \\ &&|&
+     \hex{01}~~\X{tt}{:}\Btabletype &\Rightarrow& \IDTABLE~\X{tt} \\ &&|&
+     \hex{02}~~\X{mt}{:}\Bmemtype &\Rightarrow& \IDMEM~\X{mt} \\ &&|&
+     \hex{03}~~\X{gt}{:}\Bglobaltype &\Rightarrow& \IDGLOBAL~\X{gt} \\
    \end{array}
 
 
@@ -184,7 +184,7 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |TAB
    \production{table section} & \Btablesec &::=&
      \X{tab}^\ast{:}\Bsection_4(\Bvec(\Btable)) &\Rightarrow& \X{tab}^\ast \\
    \production{table} & \Btable &::=&
-     \X{tt}{:}\Btabletype &\Rightarrow& \{ \TYPE~\X{tt} \} \\
+     \X{tt}{:}\Btabletype &\Rightarrow& \{ \TTYPE~\X{tt} \} \\
    \end{array}
 
 
@@ -205,7 +205,7 @@ It decodes into a vector of :ref:`memories <syntax-mem>` that represent the |MEM
    \production{memory section} & \Bmemsec &::=&
      \X{mem}^\ast{:}\Bsection_5(\Bvec(\Bmem)) &\Rightarrow& \X{mem}^\ast \\
    \production{memory} & \Bmem &::=&
-     \X{mt}{:}\Bmemtype &\Rightarrow& \{ \TYPE~\X{mt} \} \\
+     \X{mt}{:}\Bmemtype &\Rightarrow& \{ \MTYPE~\X{mt} \} \\
    \end{array}
 
 
@@ -227,7 +227,7 @@ It decodes into a vector of :ref:`globals <syntax-global>` that represent the |G
      \X{glob}^\ast{:}\Bsection_6(\Bvec(\Bglobal)) &\Rightarrow& \X{glob}^\ast \\
    \production{global} & \Bglobal &::=&
      \X{gt}{:}\Bglobaltype~~e{:}\Bexpr
-       &\Rightarrow& \{ \TYPE~\X{gt}, \INIT~e \} \\
+       &\Rightarrow& \{ \GTYPE~\X{gt}, \GINIT~e \} \\
    \end{array}
 
 
@@ -250,12 +250,12 @@ It decodes into a vector of :ref:`exports <syntax-export>` that represent the |E
      \X{ex}^\ast{:}\Bsection_7(\Bvec(\Bexport)) &\Rightarrow& \X{ex}^\ast \\
    \production{export} & \Bexport &::=&
      \X{nm}{:}\Bname~~d{:}\Bexportdesc
-       &\Rightarrow& \{ \NAME~\X{nm}, \DESC~d \} \\
+       &\Rightarrow& \{ \ENAME~\X{nm}, \EDESC~d \} \\
    \production{export description} & \Bexportdesc &::=&
-     \hex{00}~~x{:}\Bfuncidx &\Rightarrow& \FUNC~x \\ &&|&
-     \hex{01}~~x{:}\Btableidx &\Rightarrow& \TABLE~x \\ &&|&
-     \hex{02}~~x{:}\Bmemidx &\Rightarrow& \MEM~x \\ &&|&
-     \hex{03}~~x{:}\Bglobalidx &\Rightarrow& \GLOBAL~x \\
+     \hex{00}~~x{:}\Bfuncidx &\Rightarrow& \EDFUNC~x \\ &&|&
+     \hex{01}~~x{:}\Btableidx &\Rightarrow& \EDTABLE~x \\ &&|&
+     \hex{02}~~x{:}\Bmemidx &\Rightarrow& \EDMEM~x \\ &&|&
+     \hex{03}~~x{:}\Bglobalidx &\Rightarrow& \EDGLOBAL~x \\
    \end{array}
 
 
@@ -277,7 +277,7 @@ It decodes into an optional :ref:`start function <syntax-start>` that represents
    \production{start section} & \Bstartsec &::=&
      \X{st}^?{:}\Bsection_8(\Bstart) &\Rightarrow& \X{st}^? \\
    \production{start function} & \Bstart &::=&
-     x{:}\Bfuncidx &\Rightarrow& \{ \FUNC~x \} \\
+     x{:}\Bfuncidx &\Rightarrow& \{ \SFUNC~x \} \\
    \end{array}
 
 
@@ -301,7 +301,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
      \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg} \\
    \production{element segment} & \Belem &::=&
      x{:}\Btableidx~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \TABLE~x, \OFFSET~e, \INIT~y^\ast \} \\
+       &\Rightarrow& \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\
    \end{array}
 
 
@@ -344,11 +344,11 @@ denoting *count* locals of the same value type.
        &\Rightarrow& \X{code}^\ast \\
    \production{code} & \Bcode &::=&
      \X{size}{:}\Bu32~~\X{code}{:}\Bfunc
-       &\Rightarrow& \X{code} & (\X{size} = ||\Bfunc||) \\
+       &\Rightarrow& \X{code} & (\iff \X{size} = ||\Bfunc||) \\
    \production{function} & \Bfunc &::=&
      (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
        &\Rightarrow& \concat((t^\ast)^\ast), e^\ast
-         & (|\concat((t^\ast)^\ast)| < 2^{32}) \\
+         & (\iff |\concat((t^\ast)^\ast)| < 2^{32}) \\
    \production{locals} & \Blocals &::=&
      n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
    \end{array}
@@ -382,7 +382,7 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
      \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg} \\
    \production{data segment} & \Bdata &::=&
      x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
-       &\Rightarrow& \{ \MEM~x, \OFFSET~e, \INIT~b^\ast \} \\
+       &\Rightarrow& \{ \DMEM~x, \DOFFSET~e, \DINIT~b^\ast \} \\
    \end{array}
 
 
@@ -438,20 +438,20 @@ The lengths of vectors produced by the (possibly empty) :ref:`function <binary-f
      \Bcustomsec^\ast
      \quad\Rightarrow\quad \{~
        \begin{array}[t]{@{}l@{}}
-       \TYPES~\functype^\ast, \\
-       \FUNCS~\func^n, \\
-       \TABLES~\table^\ast, \\
-       \MEMS~\mem^\ast, \\
-       \GLOBALS~\global^\ast, \\
-       \ELEM~\elem^\ast, \\
-       \DATA~\data^\ast, \\
-       \START~\start^?, \\
-       \IMPORTS~\import^\ast, \\
-       \EXPORTS~\export^\ast ~\} \\
+       \MTYPES~\functype^\ast, \\
+       \MFUNCS~\func^n, \\
+       \MTABLES~\table^\ast, \\
+       \MMEMS~\mem^\ast, \\
+       \MGLOBALS~\global^\ast, \\
+       \MELEM~\elem^\ast, \\
+       \MDATA~\data^\ast, \\
+       \MSTART~\start^?, \\
+       \MIMPORTS~\import^\ast, \\
+       \MEXPORTS~\export^\ast ~\} \\
       \end{array} \\
    &&& (\begin{array}[t]{@{}l@{}}
         \mbox{where for each $t_i^\ast, e_i$ in $\X{code}^n$,} \\
-        \func^n[i] = \{ \TYPE~\typeidx^n[i], \LOCALS~t_i^\ast, \BODY~e_i \} ) \\
+        \func^n[i] = \{ \FTYPE~\typeidx^n[i], \FLOCALS~t_i^\ast, \FBODY~e_i \} ) \\
         \end{array}
    \end{array}
 

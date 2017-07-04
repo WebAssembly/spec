@@ -76,8 +76,8 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
    .. math::
       \begin{array}{llclll}
       \production{limits} & \Blimits &::=&
-        \hex{00}~~n{:}\Bu32 &\Rightarrow& \{ \MIN~n, \MAX~\epsilon \} \\ &&|&
-        \hex{01}~~n{:}\Bu32~~m{:}\Bu32 &\Rightarrow& \{ \MIN~n, \MAX~m \} \\
+        \hex{00}~~n{:}\Bu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
+        \hex{01}~~n{:}\Bu32~~m{:}\Bu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
       \end{array}
 
    That is, a limits pair is encoded as either the byte :math:`\hex{00}` followed by the encoding of a |U32| value,

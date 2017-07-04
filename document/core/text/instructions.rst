@@ -32,9 +32,9 @@ The following grammar handles the corresponding update to the :ref:`identifier c
 .. math::
    \begin{array}{llcllll}
    \production{label} & \Tlabel_I &::=&
-     \epsilon &\Rightarrow& \{\LABELS~(\epsilon)\} \compose I \\ &&|&
-     v{:}\Tid &\Rightarrow& \{\LABELS~v\} \compose I
-       & (v \notin I.\LABELS) \\
+     \epsilon &\Rightarrow& \{\ILABELS~(\epsilon)\} \compose I \\ &&|&
+     v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose I
+       & (\iff v \notin I.\ILABELS) \\
    \end{array}
 
 .. note::
@@ -64,14 +64,14 @@ The same identifier may optionally be repeated after the corresponding :math:`\T
    \production{block instruction} & \Tblockinstr_I &::=&
      \text{block}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \BLOCK~\X{rt}~\X{in}^\ast~\END
-       \qquad\quad (\Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
+       \qquad\quad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
      \text{loop}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \LOOP~\X{rt}~\X{in}^\ast~\END
-       \qquad\qquad (\Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
+       \qquad\qquad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
      \text{if}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
        \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
        \\ &&&\qquad \Rightarrow\quad \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
-       \qquad (\Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\
+       \qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\
    \end{array}
 
 .. _text-nop:
