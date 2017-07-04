@@ -24,7 +24,7 @@ Bytes
    \end{array}
 
 
-.. index:: integer, unsigned integer, signed integer, uninterpreted integer, LEB128
+.. index:: integer, unsigned integer, signed integer, uninterpreted integer, LEB128, two's complement
    pair: binary format; integer
    pair: binary format; unsigned integer
    pair: binary format; signed integer
@@ -49,7 +49,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
        2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
-:ref:`Signed integers <syntax-sint>` are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a 2's complement representation.
+:ref:`Signed integers <syntax-sint>` are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a two's complement representation.
 As an additional constraint, the total number of bytes encoding a value of type :math:`\sN` must not exceed :math:`\F{ceil}(N/7)` bytes.
 
 .. math::
@@ -81,14 +81,14 @@ As an additional constraint, the total number of bytes encoding a value of type 
    Similarly, both :math:`\hex{83}~\hex{3E}` and :math:`\hex{FF}~\hex{7B}` are malformed as |s8| encodings.
 
 
-.. index:: floating-point number
+.. index:: floating-point number, little endian
    pair: binary format; floating-point number
 .. _binary-float:
 
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating point <syntax-float>` values are encoded by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+:ref:`Floating-point <syntax-float>` values are encoded by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}

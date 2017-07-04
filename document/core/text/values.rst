@@ -85,7 +85,7 @@ Moreover, their value must lie within the range of the respective type.
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating point <syntax-float>` values can be represented in either decimal or hexadecimal notation.
+:ref:`Floating-point <syntax-float>` values can be represented in either decimal or hexadecimal notation.
 The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
 (that is, a numeric value must not overflow to :math:`\pm\mbox{infinity}`),
 but it may be :ref:`rounded <aux-ieee>` to the nearest representable value.

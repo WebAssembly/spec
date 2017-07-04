@@ -1,7 +1,7 @@
 Overview
 --------
 
-.. index:: concepts, value, instruction, trap, function, table, memory, linear memory, module, ! embedder, integer, floating point, IEEE 754
+.. index:: concepts, value, instruction, trap, function, table, memory, linear memory, module, ! embedder, integer, floating-point, IEEE 754, Boolean, two's complement
 .. _concepts:
 
 Concepts
@@ -14,14 +14,14 @@ This language is structured around the following concepts.
 
 **Values**
   WebAssembly provides only four basic *value types*.
-  These are integers and `IEEE 754 floating point <http://ieeexplore.ieee.org/document/4610935/>`_ numbers,
+  These are integers and `IEEE 754 floating-point <http://ieeexplore.ieee.org/document/4610935/>`_ numbers,
   each in 32 and 64 bit width.
   32 bit integers also serve as Booleans and as memory addresses.
   The usual operations on these types are available,
   including the full matrix of conversions between them.
   There is no distinction between signed and unsigned integer types.
   Instead, integers are interpreted by respective operations
-  as either unsigned or signed in 2’s complement representation.
+  as either unsigned or signed in two’s complement representation.
 
 .. _instruction:
 

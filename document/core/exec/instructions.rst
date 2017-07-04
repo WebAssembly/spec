@@ -429,7 +429,7 @@ Memory Instructions
    S; F; (\I32.\CONST~k)~(t.\LOAD({N}\K{\_}\sx)^?~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
-     (\mbox{otherwise}) \\
+     (\otherwise) \\
    \end{array}
 
 .. note::
@@ -508,7 +508,7 @@ Memory Instructions
    S; F; (\I32.\CONST~k)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
-     (\mbox{otherwise}) \\
+     (\otherwise) \\
    \end{array}
 
 
@@ -907,7 +907,7 @@ Control Instructions
    S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
-     (\mbox{otherwise})
+     (\otherwise)
    \end{array}
 
 

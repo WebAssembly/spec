@@ -23,7 +23,7 @@ Some instructions are :ref:`structured <syntax-instr-control>` in that they brac
 The following sections group instructions into a number of different categories.
 
 
-.. index:: ! numeric instruction, value, value type, integer, floating point
+.. index:: ! numeric instruction, value, value type, integer, floating-point, two's complement
    pair: abstract syntax; instruction
 .. _syntax-sx:
 .. _syntax-const:

@@ -9,7 +9,7 @@ Various entitites in WebAssembly are classified by types.
 Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <call_indirect>`.
 
 
-.. index:: ! value type, integer, floating point, IEEE 754, bit width
+.. index:: ! value type, integer, floating-point, IEEE 754, bit width
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
@@ -28,8 +28,8 @@ Value Types
 The types |I32| and |I64| classify 32 and 64 bit integers, respectively.
 Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.
 
-The types |F32| and |F64| classify 32 and 64 bit floating point data, respectively.
-They correspond to *single* and *double* precision floating point types as defined by the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard
+The types |F32| and |F64| classify 32 and 64 bit floating-point data, respectively.
+They correspond to *single* and *double* precision floating-point types as defined by the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard
 
 Conventions
 ...........

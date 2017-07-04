@@ -585,7 +585,7 @@ Instantiation may *fail* with an error.
      &\wedge& (\X{eo} + |\elem.\EINIT| \leq |S'.\STABLES[\tableaddr].\TIELEM|)^\ast \\
      &\wedge& (\X{do} + |\data.\DINIT| \leq |S'.\SMEMS[\memaddr].\MIDATA|)^\ast \\[1ex]
    S; \INSTANTIATE~\module~\externval^n &\stepto&
-     S'; \TRAP  \qquad (\mbox{otherwise}) \\[1ex]
+     S'; \TRAP  \qquad (\otherwise) \\[1ex]
    S; \INITTABLE~a~i~m~\epsilon &\stepto&
      S; \epsilon \\
    S; \INITTABLE~a~i~m~(x_0~x^\ast) &\stepto&

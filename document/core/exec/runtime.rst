@@ -4,8 +4,10 @@
 Runtime Structure
 -----------------
 
+:ref:`Store <store>`, :ref:`stack <stack>`, and other *runtime structure* forming the WebAssembly abstract machine, such as :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary syntax.
 
-.. index:: ! value, constant
+
+.. index:: ! value, constant, value type, integer, floating-point
    pair: abstract syntax; value
 .. _syntax-val:
 
@@ -28,7 +30,7 @@ It is convenient to reuse the same notation as for the |CONST| :ref:`instruction
    \end{array}
 
 
-.. index:: ! store, function instance, table instance, memory instance, global instance, module
+.. index:: ! store, function instance, table instance, memory instance, global instance, module, allocation
    pair: abstract syntax; store
 .. _syntax-store:
 .. _store:
@@ -37,7 +39,7 @@ Store
 ~~~~~
 
 The *store* represents all global state that can be manipulated by WebAssembly programs.
-It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been *allocated* during the life time of the abstract machine. [#gc]_
+It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been :ref:`allocated <exec-alloc>` during the life time of the abstract machine. [#gc]_
 
 Syntactically, the store is defined as a :ref:`record <syntax-record>` listing the existing instances of each category:
 
@@ -64,7 +66,7 @@ Convention
 * The meta variable :math:`S` ranges over stores where clear from context.
 
 
-.. index:: ! address, store, function instance, table instance, memory instance, global instance
+.. index:: ! address, store, function instance, table instance, memory instance, global instance, embedder
    pair: abstract syntax; function address
    pair: abstract syntax; table address
    pair: abstract syntax; memory address
@@ -99,6 +101,10 @@ These are simply indices into the respective store component.
      \addr \\
    \end{array}
 
+An :ref:`embedder <embedder>` may assign identity to :ref:`exported <syntax-export>` store objects corresponding to their addresses,
+even where this identity is not observable from within WebAssembly code itself
+(such as for :ref:`function instances <syntax-funcinst>` or immutable :ref:`globals <syntax-globalinst>`).
+
 .. note::
    Addresses are *dynamic*, globally unique references to runtime objects,
    in contrast to :ref:`indices <syntax-index>`,
@@ -109,12 +115,8 @@ These are simply indices into the respective store component.
    There is no specific limit on the number of allocations of store objects,
    hence logical addresses can be arbitrarily large natural numbers.
 
-An :ref:`embedder <embedder>` may assign identity to :ref:`exported <syntax-export>` store objects corresponding to their addresses,
-even where this identity is not observable from within WebAssembly code itself
-(such as for :ref:`function instances <syntax-funcinst>` or immutable :ref:`globals <syntax-global>`).
 
-
-.. index:: ! instance, function type, function instance, table instance, memory instance, global instance, export instance, table address, memory address, global address, index
+.. index:: ! instance, function type, function instance, table instance, memory instance, global instance, export instance, table address, memory address, global address, index, name
    pair: abstract syntax; module instance
    pair: module; instance
 .. _syntax-moduleinst:
@@ -145,7 +147,7 @@ Each component references runtime instances corresponding to respective declarat
 It is an invariant of the semantics that all :ref:`export instances <syntax-exportinst>` in a given module instance have different :ref:`names <syntax-name>`.
 
 
-.. index:: ! function instance, module instance, function, closure
+.. index:: ! function instance, module instance, function, closure, module, ! host function, invocation
    pair: abstract syntax; function instance
    pair: function; instance
 .. _syntax-hostfunc:
@@ -155,8 +157,8 @@ Function Instances
 ~~~~~~~~~~~~~~~~~~
 
 A *function instance* is the runtime representation of a :ref:`function <syntax-func>`.
-It effectively is a *closure* of the original function over the runtime :ref:`module instance <syntax-moduleinst>` of its own :ref:`module <syntax-module>`.
-The module instance is used to resolve references to other non-local definitions during execution of the function.
+It effectively is a *closure* of the original function over the runtime :ref:`module instance <syntax-moduleinst>` of its originating :ref:`module <syntax-module>`.
+The module instance is used to resolve references to other definitions during execution of the function.
 
 .. math::
    \begin{array}{llll}
@@ -173,10 +175,10 @@ a host function behaves non-deterministically.
 
 .. note::
    Function instances are immutable, and their identity is not observable by WebAssembly code.
-   However, the :ref:`embedder <embedder>` might provide implicit or explicit means for distinguishing their :ref:`addresses <syntax-funcaddr>` when :ref:`exported <syntax-export>`, either directly or through an entry in a :ref:`table <syntax-table>`.
+   However, the :ref:`embedder <embedder>` might provide implicit or explicit means for distinguishing their :ref:`addresses <syntax-funcaddr>`.
 
 
-.. index:: ! table instance, table, function address
+.. index:: ! table instance, table, function address, table type, embedder, element segment
    pair: abstract syntax; table instance
    pair: table; instance
 .. _syntax-funcelem:
@@ -186,7 +188,7 @@ Table Instances
 ~~~~~~~~~~~~~~~
 
 A *table instance* is the runtime representation of a :ref:`table <syntax-table>`.
-It holds a vector of *function elements* and an optional maximum size, if one was specified at the definition site of the table.
+It holds a vector of *function elements* and an optional maximum size, if one was specified in the :ref:`table type <syntax-tabletype>` at the table's definition site.
 
 Each function element is either empty, representing an uninitialized table entry, or a :ref:`function address <syntax-funcaddr>`.
 Function elements can be mutated through the execution of an :ref:`element segment <syntax-elem>` or by external means provided by the :ref:`embedder <embedder>`.
@@ -205,7 +207,7 @@ It is an invariant of the semantics that the length of the element vector never 
    Other table elements may be added in future versions of WebAssembly.
 
 
-.. index:: ! memory instance, memory, byte, ! page size, memory type
+.. index:: ! memory instance, memory, byte, ! page size, memory type, embedder, data segment, instruction
    pair: abstract syntax; memory instance
    pair: memory; instance
 .. _page-size:
@@ -215,7 +217,7 @@ Memory Instances
 ~~~~~~~~~~~~~~~~
 
 A *memory instance* is the runtime representation of a linear :ref:`memory <syntax-mem>`.
-It holds a vector of bytes and an optional maximum size, if one was specified at the definition site of the memory.
+It holds a vector of :ref:`bytes <syntax-byte>` and an optional maximum size, if one was specified at the definition site of the memory.
 
 .. math::
    \begin{array}{llll}
@@ -231,7 +233,7 @@ The bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>
 It is an invariant of the semantics that the length of the byte vector, divided by page size, never exceeds the maximum size, if present.
 
 
-.. index:: ! global instance, value
+.. index:: ! global instance, global, value, mutability, instruction, embedder
    pair: abstract syntax; global instance
    pair: global; instance
 .. _syntax-globalinst:
@@ -248,10 +250,10 @@ It holds an individual :ref:`value <syntax-val>` and a flag indicating whether i
      \{ \GIVALUE~\val, \GIMUT~\mut \} \\
    \end{array}
 
-The value of mutable globals can be mutated through specific instructions or by external means provided by the :ref:`embedder <embedder>`.
+The value of mutable globals can be mutated through :ref:`variable instructions <syntax-instr-variable>` or by external means provided by the :ref:`embedder <embedder>`.
 
 
-.. index:: ! export instance, name, external value
+.. index:: ! export instance, export, name, external value
    pair: abstract syntax; export instance
    pair: export; instance
 .. _syntax-exportinst:
@@ -260,7 +262,7 @@ Export Instances
 ~~~~~~~~~~~~~~~~
 
 An *export instance* is the runtime representation of an :ref:`export <syntax-export>`.
-It defines the export's :ref:`name <syntax-name>` and the :ref:`external value <syntax-externval>` being exported.
+It defines the export's :ref:`name <syntax-name>` and the associated :ref:`external value <syntax-externval>`.
 
 .. math::
    \begin{array}{llll}
@@ -269,7 +271,7 @@ It defines the export's :ref:`name <syntax-name>` and the :ref:`external value <
    \end{array}
 
 
-.. index:: ! external value, function address, table address, memory address, global address
+.. index:: ! external value, function address, table address, memory address, global address, store, function, table, memory, global
    pair: abstract syntax; external value
    pair: external; value
 .. _syntax-externval:
@@ -305,7 +307,7 @@ It filters out entries of a specific kind in an order-preserving fashion:
 * :math:`\evglobals(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
 
 
-.. index:: ! stack, ! frame, ! label
+.. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, local, module instance
    pair: abstract syntax; frame
    pair: abstract syntax; label
 .. _syntax-frame:
@@ -320,9 +322,9 @@ Stack
 Besides the :ref:`store <store>`, most :ref:`instructions <syntax-instr>` interact with an implicit *stack*.
 The stack contains three kinds of entries:
 
-* *Values*: the *operands* (arguments and results) of instructions.
+* *Values*: the *operands* of instructions.
 
-* *Labels*: active (entered) :ref:`structured control instructions <syntax-instr-control>` that can be targeted by branches.
+* *Labels*: active :ref:`structured control instructions <syntax-instr-control>` that can be targeted by branches.
 
 * *Activations*: the *call frames* of active :ref:`function <syntax-func>` calls.
 
@@ -393,11 +395,11 @@ Conventions
 * The meta variable :math:`F` ranges over frames where clear from context.
 
 .. note::
-   In the current version of WebAssembly, the arities of labels and activations cannot be larger than :math:`1`.
+   In the current version of WebAssembly, the arities of labels and frames cannot be larger than :math:`1`.
    This may be generalized in future versions.
 
 
-.. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap
+.. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call
    pair:: abstract syntax; administrative instruction
 .. _syntax-trap:
 .. _syntax-invoke:
@@ -409,7 +411,7 @@ Administrative Instructions
 .. note::
    This section is only relevant for the :ref:`formal notation <exec-notation>`.
 
-In order to express the reduction of :ref:`traps <trap>`, calls, and :ref:`control instructions <syntax-instr-control>`, the syntax of instructions is extended to include the following *administrative instructions*:
+In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-call>`, and :ref:`control instructions <syntax-instr-control>`, the syntax of instructions is extended to include the following *administrative instructions*:
 
 .. math::
    \begin{array}{llcl}
@@ -422,14 +424,14 @@ In order to express the reduction of :ref:`traps <trap>`, calls, and :ref:`contr
    \end{array}
 
 The |TRAP| instruction represents the occurrence of a trap.
-Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction, signalling termination.
+Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction, signalling abrupt termination.
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
 
 The |LABEL| and |FRAME| instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
-Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>`.
-That way, the end of the inner instruction sequence is tracked when part of an outer sequence.
+Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>` with an |END| marker.
+That way, the end of the inner instruction sequence is known when part of an outer sequence.
 
 .. note::
    For example, the :ref:`reduction rule <exec-block>` for |BLOCK| is:
@@ -440,10 +442,10 @@ That way, the end of the inner instruction sequence is tracked when part of an o
 
    This replaces the block with a label instruction,
    which can be interpreted as "pushing" the label on the stack.
-   When |END| is reached, i.e., the inner instruction sequence has been reduced to the empty sequence -- or a sequence of |CONST| instructions, the representation of non-empty local operand stack -- then the |LABEL| instruction is eliminated courtesy of its own :ref:`reduction rule <exec-label>`:
+   When |END| is reached, i.e., the inner instruction sequence has been reduced to the empty sequence -- or rather, a sequence of :math:`n` |CONST| instructions representing the resulting values -- then the |LABEL| instruction is eliminated courtesy of its own :ref:`reduction rule <exec-label>`:
 
    .. math::
-      \LABEL_n\{\instr^\ast\}~\val^\ast~\END \quad\stepto\quad \val^\ast
+      \LABEL_n\{\instr^n\}~\val^\ast~\END \quad\stepto\quad \val^n
 
    This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.
 
@@ -460,13 +462,13 @@ That way, the end of the inner instruction sequence is tracked when part of an o
       \end{array}
 
 
-.. index:: ! evaluation context
+.. index:: ! block context, instruction, branch
 .. _syntax-ctxt-block:
 
 Block Contexts
 ..............
 
-To express :ref:`branches <syntax-instr-control>`, the following syntax of *block contexts* is defined, indexed by the count :math:`k` of labels surrounding the hole:
+In order to specify the reduction of :ref:`branches <syntax-instr-control>`, the following syntax of *block contexts* is defined, indexed by the count :math:`k` of labels surrounding the hole:
 
 .. math::
    \begin{array}{llll}
@@ -487,10 +489,10 @@ This definition allows to index active labels surrounding a :ref:`branch <syntax
    Here, the hole :math:`[\_]` of the context is instantiated with a branch instruction.
    When a branch occurs,
    this rule replaces the targeted label and associated instruction sequence with the label's continuation.
-   The right label is identified through the :ref:`label index <syntax-labelidx>` :math:`l`, which corresponds to the number of surrounding |LABEL| instructions that must be hopped over -- which is exactly the count encoded in the index of a block context.
+   The selected label is identified through the :ref:`label index <syntax-labelidx>` :math:`l`, which corresponds to the number of surrounding |LABEL| instructions that must be hopped over -- which is exactly the count encoded in the index of a block context.
 
 
-.. index:: ! evaluation context
+.. index:: ! evaluation context, instruction, trap, label, frame, value
 .. _syntax-ctxt-eval:
 
 Evaluation Contexts
@@ -515,8 +517,21 @@ Finally, the following definition of *evaluation context* and associated structu
      & (\iff E \neq [\_]) \\
    \end{array}
 
+.. note::
+   For example, the following instruction sequence,
 
-.. index:: ! module instructions, function, function instance, function address, label, frame, instruction, trap
+   .. math::
+       (\F64.\CONST~x_1)~(\F64.\CONST~x_2)~\F64.\NEG~(\F64.\CONST~x_3)~\F64.\ADD~\F64.\MUL
+
+   can be decomposed into :math:`E[(\F64.\CONST~x_2)~\F64.\NEG]` where
+
+   .. math::
+      E = (\F64.\CONST~x_1)~[\_]~(\F64.\CONST~x_3)~\F64.\ADD~\F64.\MUL
+
+   Moreover, this is the *only* possible choice of evaluation context where the contents of the hole matches the left-hand side of a reduction rule.
+
+
+.. index:: ! module instructions, function, function instance, function address, label, frame, instruction, trap, global, global instance, memory, memory instance, table, table instance, invocation, start function
    pair:: abstract syntax; meta instruction
 .. _syntax-instantiate:
 .. _syntax-init_table:
@@ -558,7 +573,7 @@ Evaluation contexts and additional structural reduction rules for module instruc
 .. math::
    \begin{array}{llll}
    \production{(module evaluation contexts)} & M &::=&
-     E~~\moduleinstr^\ast \\
+     E~~\moduleinstr^\ast~~\moduleinst \\
    \end{array}
 
 .. math::
@@ -569,7 +584,7 @@ Evaluation contexts and additional structural reduction rules for module instruc
      & (\iff M \neq [\_]) \\
    \end{array}
 
-Reduction terminates when the sequence has been reduced to a |moduleinst| or a trap occurred.
+Reduction terminates when the sequence has been reduced to a |moduleinst| or when a trap occurred.
 
 .. note::
    A trap may either arise from invocation of a :ref:`start function <syntax-start>` or indicate failure of the |INSTANTIATE| instruction itself.

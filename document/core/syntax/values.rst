@@ -34,7 +34,7 @@ Conventions
 * Bytes are sometimes interpreted as natural numbers :math:`n < 256`.
 
 
-.. index:: ! integer, ! unsigned integer, ! signed integer, ! uninterpreted integer, bit width
+.. index:: ! integer, ! unsigned integer, ! signed integer, ! uninterpreted integer, bit width, two's complement
    pair: abstract syntax; integer
    pair: abstract syntax; unsigned integer
    pair: abstract syntax; signed integer
@@ -77,7 +77,7 @@ Conventions
 * Numbers may be denoted by simple arithmetics, as in the grammar above.
 
 
-.. index:: ! floating-point number, ! NaN, payload, significand, exponent, magnitude, canonical NaN, arithmetic NaN, bit width, IEEE 754
+.. index:: ! floating-point, ! NaN, payload, significand, exponent, magnitude, canonical NaN, arithmetic NaN, bit width, IEEE 754
    pair: abstract syntax; floating-point number
    single: NaN; payload
    single: NaN; canonical
@@ -140,8 +140,6 @@ Conventions
 ...........
 
 * The meta variable :math:`z` ranges over floating-point values where clear from context.
-
-* Floating-point numbers, in normal or subnormal form, are sometimes interpreted as rational numbers :math:`q \in \mathbb{Q}`.
 
 
 .. index:: ! name, byte, Unicode, ! UTF-8, code point, binary format

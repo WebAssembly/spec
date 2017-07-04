@@ -28,6 +28,7 @@
 .. |mod| mathdef:: \mathbin{\F{mod}}
 
 .. |iff| mathdef:: \mathrel{\mbox{if}}
+.. |otherwise| mathdef:: \mathrel{\mbox{otherwise}}
 .. |where| mathdef:: \mathrel{\mbox{where}}
 
 
