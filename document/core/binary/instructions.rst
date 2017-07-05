@@ -10,7 +10,7 @@ and is followed by the instruction's immediate arguments, where present.
 The only exception are :ref:`structured control instructions <binary-instr-control>`, which consist of several opcodes bracketing their nested instruction sequences.
 
 .. note::
-   Gaps in the byte code ranges encoding instructions are reserved for future extensions.
+   Gaps in the byte code ranges for encoding instructions are reserved for future extensions.
 
 
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
@@ -20,7 +20,7 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the nested instruction sequences are terminated with explicit opcodes for |END| and |ELSE|.
+:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are terminated with explicit opcodes for |END| and |ELSE|.
 
 .. _binary-nop:
 .. _binary-unreachable:

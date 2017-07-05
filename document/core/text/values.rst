@@ -39,11 +39,8 @@ All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal
    \production{hexadecimal digit} & \Thexdigit &::=&
      d{:}\Tdigit \Rightarrow d \\ &&|&
      \text{A} \Rightarrow 10 ~~|~~ \dots ~~|~~ \text{F} \Rightarrow 15 \\ &&|&
-     \text{a} \Rightarrow 10 ~~|~~ \dots ~~|~~ \text{f} \Rightarrow 15 \\
-   \end{array}
-
-.. math::
-   \begin{array}{llclll@{\qquad}l}
+     \text{a} \Rightarrow 10 ~~|~~ \dots ~~|~~ \text{f} \Rightarrow 15
+   \\[1ex]
    \production{decimal number} & \Tnum &::=&
      d{:}\Tdigit &\Rightarrow& d \\ &&|&
      n{:}\Tnum~~d{:}\Tdigit &\Rightarrow& 10\cdot n + d \\

@@ -35,7 +35,7 @@ The following conventions are adopted in defining grammar rules for abstract syn
 * :math:`A^?` is an optional occurrence of :math:`A`.
   (This is a shorthand for :math:`A^n` where :math:`n \leq 1`.)
 
-* Productions are written in the form :math:`\X{sym} ::= A_1 ~|~ \dots ~|~ A_n`.
+* Productions are written :math:`\X{sym} ::= A_1 ~|~ \dots ~|~ A_n`.
 
 * Some productions are augmented with side conditions in parentheses, ":math:`(\iff \X{condition})`", that provide a shorthand for a combinatorial expansion of the production into many separate cases.
 

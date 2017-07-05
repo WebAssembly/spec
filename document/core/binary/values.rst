@@ -70,12 +70,12 @@ As an additional constraint, the total number of bytes encoding a value of type 
    \end{array}
 
 .. note::
-   While the side conditions :math:`N > 7` in the productions for *non-terminating* bytes restrict the length of the :math:`\uX{}` and :math:`\sX{}` encodings,
-   "trailing zeros" are still allowed within these bounds.
+   The side conditions :math:`N > 7` in the productions for non-terminal bytes of the :math:`\uX{}` and :math:`\sX{}` encodings restrict the encoding's length.
+   However, "trailing zeros" are still allowed within these bounds.
    For example, :math:`\hex{03}` and :math:`\hex{83}~\hex{00}` are both well-formed encodings for the value :math:`3` as a |u8|.
    Similarly, either of :math:`\hex{7e}` and :math:`\hex{FE}~\hex{7F}` and :math:`\hex{FE}~\hex{FF}~\hex{7F}` are well-formed encodings of the value :math:`-2` as a |s16|.
 
-   The side conditions on the value :math:`n` of *terminating* bytes further enforce that
+   The side conditions on the value :math:`n` of terminal bytes further enforce that
    any unused bits in these bytes must be :math:`0` for positive values and :math:`1` for negative ones.
    For example, :math:`\hex{83}~\hex{10}` is malformed as a |u8| encoding.
    Similarly, both :math:`\hex{83}~\hex{3E}` and :math:`\hex{FF}~\hex{7B}` are malformed as |s8| encodings.
@@ -88,7 +88,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating-point <syntax-float>` values are encoded by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+:ref:`Floating-point <syntax-float>` values are encoded directly by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -108,7 +108,7 @@ Names
 :ref:`Names <syntax-name>` are encoded as a :ref:`vector <binary-vec>` of bytes containing the `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding of the name's code point sequence.
 
 .. math::
-   \begin{array}{llclll@{\qquad}l}
+   \begin{array}{llclllll}
    \production{name} & \Bname &::=&
      b^\ast{:}\Bvec(\Bbyte) &\Rightarrow& \name
        && (\iff \utf8(\name) = b^\ast) \\

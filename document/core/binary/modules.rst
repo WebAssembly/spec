@@ -29,7 +29,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
 Indices
 ~~~~~~~
 
-All :ref:`indices <syntax-index>` are encoded with their respective |U32| value.
+All :ref:`indices <syntax-index>` are encoded with their respective value.
 
 .. math::
    \begin{array}{llclll}
@@ -53,7 +53,7 @@ Sections
 Each section consists of
 
 * a one-byte section *id*,
-* the |U32| *size* of the contents in bytes,
+* the |U32| *size* of the contents, in bytes,
 * the actual *contents*, whose structure is depended on the section id.
 
 Every section is optional; an omitted section is equivalent to the section being present with empty contents.
@@ -75,6 +75,25 @@ In these cases, the empty result :math:`\epsilon` is interpreted as the empty ve
    Other than for unknown :ref:`custom sections <binary-customsec>`,
    the :math:`\X{size}` is not required for decoding, but can be used to skip sections when navigating through a binary.
    The module is malformed if the size does not match the length of the binary contents :math:`\B{B}`.
+
+The following section ids are used:
+
+==  ========================================
+Id  Section                                 
+==  ========================================
+ 0  :ref:`custom section <binary-customsec>`
+ 1  :ref:`type section <binary-typesec>`    
+ 2  :ref:`import section <binary-importsec>`
+ 3  :ref:`function section <binary-funcsec>`
+ 4  :ref:`table section <binary-tablesec>`  
+ 5  :ref:`memory section <binary-memsec>`   
+ 6  :ref:`global section <binary-globalsec>`
+ 7  :ref:`export section <binary-exportsec>`
+ 8  :ref:`start section <binary-startsec>`  
+ 9  :ref:`element section <binary-elemsec>` 
+10  :ref:`code section <binary-codesec>`    
+11  :ref:`data section <binary-datasec>`    
+==  ========================================
 
 
 .. index:: ! custom section
@@ -358,7 +377,7 @@ The meta function :math:`\concat((t^\ast)^\ast)` concatenates all sequences :mat
 Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`vector <syntax-vec>` is malformed.
 
 .. note::
-   The :math:`\X{size}` is not needed for decoding, but like with :ref:`sections <binary-section>`, can be used to skip functions when navigating through a binary.
+   Like with :ref:`sections <binary-section>`, the code :math:`\X{size}` is not needed for decoding, but can be used to skip functions when navigating through a binary.
    The module is malformed if a size does not match the length of the respective function code.
 
 
@@ -449,15 +468,16 @@ The lengths of vectors produced by the (possibly empty) :ref:`function <binary-f
        \MIMPORTS~\import^\ast, \\
        \MEXPORTS~\export^\ast ~\} \\
       \end{array} \\
-   &&& (\begin{array}[t]{@{}l@{}}
-        \mbox{where for each $t_i^\ast, e_i$ in $\X{code}^n$,} \\
-        \func^n[i] = \{ \FTYPE~\typeidx^n[i], \FLOCALS~t_i^\ast, \FBODY~e_i \} ) \\
-        \end{array}
    \end{array}
+
+where for each :math:`t_i^\ast, e_i` in :math:`\X{code}^n`,
+
+.. math::
+   \func^n[i] = \{ \FTYPE~\typeidx^n[i], \FLOCALS~t_i^\ast, \FBODY~e_i \} ) \\
 
 .. note::
    The version of the WebAssembly binary format may increase in the future
-   if backward-incompatible changes are made to the format.
+   if backward-incompatible changes have to be made to the format.
    However, such changes are expected to occur very infrequently, if ever.
    The binary format is intended to be forward-compatible,
    such that future extensions can be made without incrementing its version.

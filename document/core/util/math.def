@@ -86,6 +86,8 @@
 .. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\sX{\X{64}}}
 
 .. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\iX{N}}
+.. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{8}}}
+.. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{16}}}
 .. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{32}}}
 .. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{64}}}
 
@@ -870,4 +872,4 @@
 
 .. Other meta functions
 
-.. |invoke| mathdef:: \xref{exec/numerics}{exec-invocation}{\F{invoke}}
+.. |invoke| mathdef:: \xref{exec/modules}{exec-invocation}{\F{invoke}}

@@ -38,12 +38,12 @@ Tokens
 ~~~~~~
 
 The character stream in the source text is divided, from left to right, into a sequence of *tokens*.
-Tokens are drawn from the set of *pre-tokens*, which are either single parentheses or sequences of alphanumeric and symbolic characters, as defined by the following grammar.
+Tokens are drawn from the set of *pre-tokens*, which are either single parentheses, text :ref:`strings <text-string>` in quotes, or sequences of alphanumeric and symbolic characters, as defined by the following grammar.
 
 .. math::
    \begin{array}{llll}
    \production{pre token} & \Tpretoken &::=&
-     \Ttokenchar^+ ~|~ \text{(} ~|~ \text{)} \\
+     \Ttokenchar^+ ~|~ \text{(} ~|~ \text{)} ~|~ \Tstring \\
    \production{token character} & \Ttokenchar &::=&
      \text{0} ~~|~~ \dots ~~|~~ \text{9} \\ &&|&
      \text{A} ~~|~~ \dots ~~|~~ \text{Z} \\ &&|&
@@ -75,7 +75,8 @@ Tokens are drawn from the set of *pre-tokens*, which are either single parenthes
 
 Pre-tokens are formed from the input character stream according to the *longest match* rule.
 That is, the next pre-token always consists of the longest possible sequence of characters that is recognized by the above grammar.
-Where necessary, pre-tokens may be separated by :ref:`white space <text-space>`.
+Pre-tokens can be separated by :ref:`white space <text-space>`;
+except for strings, they cannot themselves contain whitespace.
 
 Tokens are the subset of all pre-tokens that can occur in a syntactically correct source.
 They are defined by the following grammar:
@@ -91,7 +92,7 @@ They are defined by the following grammar:
    \end{array}
 
 Any pre-token that is not a token is considered *reserved*.
-The set of *keyword* tokens is defined implicitly, by all occurrences of a terminal symbol in literal form in the non-lexical grammar of this specification.
+The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:`terminal symbol <text-grammar>` in literal form in the non-lexical grammar of this specification.
 
 .. note::
    The effect of defining the larger set of pre-tokens is that all tokens must be separated by either parentheses or :ref:`white space <text-space>`.
