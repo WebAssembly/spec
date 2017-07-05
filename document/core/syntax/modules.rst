@@ -70,7 +70,7 @@ Each class of definition has its own *index space*, as distinguished by the foll
    \production{label index} & \labelidx &::=& \u32 \\
    \end{array}
 
-The index space for :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-memory>` and :ref:`globals <syntax-global>` includes respective :ref:`imports <syntax-import>` declared in the same module.
+The index space for :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>` includes respective :ref:`imports <syntax-import>` declared in the same module.
 The indices of these imports precede the indices of other definitions in the same index space.
 
 The index space for :ref:`locals <syntax-local>` is only accessible inside a :ref:`function <syntax-func>` and includes the parameters and local variables of that function, which precede the other locals.
@@ -111,7 +111,7 @@ They are referenced by :ref:`type indices <syntax-typeidx>`.
 Functions
 ~~~~~~~~~
 
-The |FUNCS| component of a module defines a vector of *functions* with the following structure:
+The |MFUNCS| component of a module defines a vector of *functions* with the following structure:
 
 .. math::
    \begin{array}{llll}
@@ -226,7 +226,7 @@ Element Segments
 ~~~~~~~~~~~~~~~~
 
 The initial contents of a table is uninitialized.
-The |<ELEM| component of a module defines a vector of *element segments* that initialize a subrange of a table at a given offset from a static :ref:`vector <syntax-vec>` of elements.
+The |MELEM| component of a module defines a vector of *element segments* that initialize a subrange of a table at a given offset from a static :ref:`vector <syntax-vec>` of elements.
 
 .. math::
    \begin{array}{llll}
@@ -273,7 +273,7 @@ The |DOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <s
 Start Function
 ~~~~~~~~~~~~~~
 
-The |MSTART| component of a module optionally declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-memory>` have been initialized.
+The |MSTART| component of a module optionally declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` have been initialized.
 
 .. math::
    \begin{array}{llll}

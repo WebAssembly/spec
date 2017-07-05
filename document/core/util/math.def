@@ -471,7 +471,7 @@
 .. |Tspace| mathdef:: \xref{text/lexical}{text-space}{\T{space}}
 .. |Tformat| mathdef:: \xref{text/lexical}{text-format}{\T{format}}
 
-.. |Ttokenchar| mathdef:: \xref{text/lexicals}{text-tokenchar}{\T{tokenchar}}
+.. |Ttokenchar| mathdef:: \xref{text/lexical}{text-tokenchar}{\T{tokenchar}}
 .. |Tpretoken| mathdef:: \xref{text/lexical}{text-pretoken}{\T{pretoken}}
 .. |Ttoken| mathdef:: \xref{text/lexical}{text-token}{\T{token}}
 .. |Tkeyword| mathdef:: \xref{text/lexical}{text-keyword}{\T{keyword}}
@@ -703,12 +703,12 @@
 .. |EVMEM| mathdef:: \xref{exec/runtime}{syntax-externval}{\K{mem}}
 .. |EVGLOBAL| mathdef:: \xref{exec/runtime}{syntax-externval}{\K{global}}
 
-.. |MITYPES| mathdef:: \xref{syntax/runtime}{syntax-moduleinst}{\K{types}}
-.. |MIFUNCS| mathdef:: \xref{syntax/runtime}{syntax-moduleinst}{\K{funcs}}
-.. |MITABLES| mathdef:: \xref{syntax/runtime}{syntax-moduleinst}{\K{tables}}
-.. |MIMEMS| mathdef:: \xref{syntax/runtime}{syntax-moduleinst}{\K{mems}}
-.. |MIGLOBALS| mathdef:: \xref{syntax/runtime}{syntax-moduleinst}{\K{globals}}
-.. |MIEXPORTS| mathdef:: \xref{syntax/runtime}{syntax-moduleinst}{\K{exports}}
+.. |MITYPES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{types}}
+.. |MIFUNCS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{funcs}}
+.. |MITABLES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{tables}}
+.. |MIMEMS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{mems}}
+.. |MIGLOBALS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{globals}}
+.. |MIEXPORTS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{exports}}
 
 
 .. Instances, non-terminals
@@ -752,7 +752,7 @@
 .. |LABEL| mathdef:: \xref{exec/runtime}{syntax-label}{\K{label}}
 .. |FRAME| mathdef:: \xref{exec/runtime}{syntax-frame}{\K{frame}}
 
-.. |ALOCALS| mathdef:: \xref{exec/runtime}{syntax-fame}{\K{locals}}
+.. |ALOCALS| mathdef:: \xref{exec/runtime}{syntax-frame}{\K{locals}}
 .. |AMODULE| mathdef:: \xref{exec/runtime}{syntax-frame}{\K{module}}
 
 

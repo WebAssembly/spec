@@ -39,7 +39,7 @@ Store
 ~~~~~
 
 The *store* represents all global state that can be manipulated by WebAssembly programs.
-It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been :ref:`allocated <exec-alloc>` during the life time of the abstract machine. [#gc]_
+It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
 
 Syntactically, the store is defined as a :ref:`record <syntax-record>` listing the existing instances of each category:
 

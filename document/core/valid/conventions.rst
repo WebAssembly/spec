@@ -156,7 +156,7 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
 
    .. math::
       \frac{
-        C.\LOCALS[x] = t
+        C.\CLOCALS[x] = t
       }{
         C \vdash \GETLOCAL~x : [] \to [t]
       }
@@ -164,7 +164,7 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
    Here, the premise enforces that the immediate :ref:`local index <syntax-localidx>` :math:`x` exists in the context.
    The instruction produces a value of its respective type :math:`t`
    (and does not consume any values).
-   If :math:`C.\LOCALS[x]` does not exist then the premise does not hold,
+   If :math:`C.\CLOCALS[x]` does not exist then the premise does not hold,
    and the instruction is ill-typed.
 
    Finally, a :ref:`structured <syntax-instr-control>` instruction requires

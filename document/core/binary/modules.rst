@@ -111,7 +111,7 @@ Type Section
 ~~~~~~~~~~~~
 
 The *type section* has the id 1.
-It decodes into a vector of :ref:`function types <syntax-functype>` that represent the |TYPES| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`function types <syntax-functype>` that represent the |MTYPES| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -131,7 +131,7 @@ Import Section
 ~~~~~~~~~~~~~~
 
 The *import section* has the id 2.
-It decodes into a vector of :ref:`imports <syntax-import>` that represent the |IMPORTS| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`imports <syntax-import>` that represent the |MIMPORTS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -157,8 +157,8 @@ Function Section
 ~~~~~~~~~~~~~~~~
 
 The *function section* has the id 3.
-It decodes into a vector of :ref:`type indices <syntax-typeidx>` that represent the |TYPE| fields of the :ref:`functions <syntax-func>` in the |FUNCS| component of a :ref:`module <syntax-module>`.
-The |LOCALS| and |BODY| fields of the respective functions are encoded separately in the :ref:`code section <binary-codesec>`.
+It decodes into a vector of :ref:`type indices <syntax-typeidx>` that represent the |FTYPE| fields of the :ref:`functions <syntax-func>` in the |MFUNCS| component of a :ref:`module <syntax-module>`.
+The |FLOCALS| and |FBODY| fields of the respective functions are encoded separately in the :ref:`code section <binary-codesec>`.
 
 .. math::
    \begin{array}{llclll}
@@ -177,7 +177,7 @@ Table Section
 ~~~~~~~~~~~~~
 
 The *table section* has the id 4.
-It decodes into a vector of :ref:`tables <syntax-table>` that represent the |TABLES| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTABLES| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -198,7 +198,7 @@ Memory Section
 ~~~~~~~~~~~~~~
 
 The *memory section* has the id 5.
-It decodes into a vector of :ref:`memories <syntax-mem>` that represent the |MEMS| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`memories <syntax-mem>` that represent the |MMEMS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -219,7 +219,7 @@ Global Section
 ~~~~~~~~~~~~~~
 
 The *global section* has the id 6.
-It decodes into a vector of :ref:`globals <syntax-global>` that represent the |GLOBALS| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`globals <syntax-global>` that represent the |MGLOBALS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -242,7 +242,7 @@ Export Section
 ~~~~~~~~~~~~~~
 
 The *export section* has the id 7.
-It decodes into a vector of :ref:`exports <syntax-export>` that represent the |EXPORTS| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`exports <syntax-export>` that represent the |MEXPORTS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -270,7 +270,7 @@ Start Section
 ~~~~~~~~~~~~~
 
 The *start section* has the id 8.
-It decodes into an optional :ref:`start function <syntax-start>` that represents the |START| component of a :ref:`module <syntax-module>`.
+It decodes into an optional :ref:`start function <syntax-start>` that represents the |MSTART| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -293,7 +293,7 @@ Element Section
 ~~~~~~~~~~~~~~~
 
 The *element section* has the id 9.
-It decodes into a vector of :ref:`element segments <syntax-elem>` that represent the |ELEM| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`element segments <syntax-elem>` that represent the |MELEM| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -319,8 +319,8 @@ Code Section
 
 The *code section* has the id 10.
 It decodes into a vector of *code* entries that are pairs of :ref:`value type <syntax-valtype>` vectors and :ref:`expressions <syntax-expr>`.
-They represent the |LOCALS| and |BODY| field of the :ref:`functions <syntax-func>` in the |FUNCS| component of a :ref:`module <syntax-module>`.
-The |TYPE| fields of the respective functions are encoded separately in the :ref:`function section <binary-funcsec>`.
+They represent the |FLOCALS| and |FBODY| field of the :ref:`functions <syntax-func>` in the |MFUNCS| component of a :ref:`module <syntax-module>`.
+The |FTYPE| fields of the respective functions are encoded separately in the :ref:`function section <binary-funcsec>`.
 
 The encoding of each code entry consists of
 
@@ -354,7 +354,7 @@ denoting *count* locals of the same value type.
    \end{array}
 
 Here, :math:`\X{code}` ranges over pairs :math:`(\valtype^\ast, \expr)`.
-The meta function :math:`\F{concat}((t^\ast)^\ast)` concatenates all sequences :math:`t_i^\ast` in :math:`(t^\ast)^\ast`.
+The meta function :math:`\concat((t^\ast)^\ast)` concatenates all sequences :math:`t_i^\ast` in :math:`(t^\ast)^\ast`.
 Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`vector <syntax-vec>` is malformed.
 
 .. note::
@@ -374,7 +374,7 @@ Data Section
 ~~~~~~~~~~~~
 
 The *data section* has the id 11.
-It decodes into a vector of :ref:`data segments <syntax-data>` that represent the |DATA| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`data segments <syntax-data>` that represent the |MDATA| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}

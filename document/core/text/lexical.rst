@@ -31,6 +31,7 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
    single: text format; token
 .. _text-keyword:
 .. _text-tokenchar:
+.. _text-pretoken:
 .. _text-token:
 
 Tokens
@@ -94,8 +95,8 @@ The set of *keyword* tokens is defined implicitly, by all occurrences of a termi
 
 .. note::
    The effect of defining the larger set of pre-tokens is that all tokens must be separated by either parentheses or :ref:`white space <text-space>`.
-   For example, :math:`\text{0$x}` is a pre-token but not a token.
-   Consequently, it is not recognized as two separate tokens :math:`\text{0}` and :math:`\text{$x}`, but instead disallowed.
+   For example, :math:`\text{0\$x}` is a pre-token but not a token.
+   Consequently, it is not recognized as two separate tokens :math:`\text{0}` and :math:`\text{\$x}`, but instead disallowed.
 
 
 .. index:: ! white space, character, ASCII

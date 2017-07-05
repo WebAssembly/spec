@@ -6,7 +6,7 @@ Types
 -----
 
 Various entitites in WebAssembly are classified by types.
-Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <call_indirect>`.
+Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <syntax-call_indirect>`.
 
 
 .. index:: ! value type, integer, floating-point, IEEE 754, bit width
@@ -114,7 +114,7 @@ If no maximum is given, the respective storage can grow to any size.
 Memory Types
 ~~~~~~~~~~~~
 
-*Memory types* classify linear :ref:`memories <syntax-memory>` and their size range.
+*Memory types* classify linear :ref:`memories <syntax-mem>` and their size range.
 
 .. math::
    \begin{array}{llll}
