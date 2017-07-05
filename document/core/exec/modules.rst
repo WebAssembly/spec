@@ -1,7 +1,12 @@
 Modules
 -------
 
+For modules, the execution semantics primarily defines :ref:`instantiation <exec-instantiation>`, which :ref:`allocates <alloc>` instances for a module and its contained definitions, inititializes :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` from contained :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segments, and invokes the :ref:`start function <syntax-start>` if present. It also includes :ref:`invocation <exec-invocation>` of exported functions.
 
+Instantiation depends on a number of auxiliary notions for :ref:`type-checking imports <exec-import>` and :ref:`allocating <alloc>` instances.
+
+
+.. index:: external value, external type, validation, import, store
 .. _valid-externval:
 
 External Typing
@@ -10,6 +15,10 @@ External Typing
 For the purpose of checking :ref:`external values <syntax-externval>` against :ref:`imports <syntax-import>`,
 such values are classified by :ref:`external types <syntax-externtype>`.
 The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which the external value lives.
+
+
+.. index:: function type, function address
+.. _valid-externval-func:
 
 :math:`\EVFUNC~a`
 .................
@@ -26,6 +35,9 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }
 
 
+.. index:: table type, table address, limits
+.. _valid-externval-table:
+
 :math:`\EVTABLE~a`
 ..................
 
@@ -41,6 +53,9 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }
 
 
+.. index:: memory type, memory address, limits
+.. _valid-externval-mem:
+
 :math:`\EVMEM~a`
 ................
 
@@ -55,6 +70,9 @@ The following auxiliary typing rules specify this typing relation relative to a 
      S \vdash \EVMEM~a : \ETMEM~\{\LMIN~n, \LMAX~m^?\}
    }
 
+
+.. index:: global type, global address, value type, mutability
+.. _valid-externval-global:
 
 :math:`\EVGLOBAL~a`
 ...................
@@ -72,6 +90,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 
 
+.. index:: ! matching, external type
 .. _exec-import:
 .. _match-externtype:
 
@@ -82,6 +101,8 @@ When :ref:`instantiating <exec-module>` a module,
 :ref:`external values <syntax-externval>` must be provided whose :ref:`types <valid-externval>` are *matched* against the respective :ref:`external types <syntax-externtype>` classifying each import.
 In some cases, this allows for a simple form of subtyping, as defined below.
 
+
+.. index:: limits
 .. _match-limits:
 
 Limits
@@ -89,7 +110,7 @@ Limits
 
 :ref:`Limits <syntax-limits>` :math:`\{ \LMIN~n_1, \LMAX~m_1^? \}` match limits :math:`\{ \LMIN~n_2, \LMAX~m_2^? \}` if and only if:
 
-* :math:`n_1` is not smaller than :math:`n_2`.
+* :math:`n_1` is larger than or equal to :math:`n_2`.
 
 * Either:
 
@@ -99,9 +120,10 @@ Limits
 
   * Both :math:`m_1^?` and :math:`m_2^?` are non-empty.
 
-  * :math:`m_1` is not larger than :math:`m_2`.
+  * :math:`m_1` is smaller than or equal to :math:`m_2`.
 
 .. math::
+   ~\\[-1ex]
    \frac{
      n_1 \geq n_2
    }{
@@ -117,6 +139,9 @@ Limits
    }
 
 
+.. index:: function type
+.. _match-functype:
+
 Functions
 .........
 
@@ -125,11 +150,15 @@ An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches 
 * Both :math:`\functype_1` and :math:`\functype_2` are the same.
 
 .. math::
+   ~\\[-1ex]
    \frac{
    }{
      \vdash \ETFUNC~\functype \leq \ETFUNC~\functype
    }
 
+
+.. index:: table type, limits, element type
+.. _match-tabletype:
 
 Tables
 ......
@@ -148,6 +177,9 @@ An :ref:`external type <syntax-externtype>` :math:`\ETTABLE~(\limits_1~\elemtype
    }
 
 
+.. index:: memory type, limits
+.. _match-memtype:
+
 Memories
 ........
 
@@ -163,6 +195,9 @@ An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\limits_1` matches :ma
    }
 
 
+.. index:: global type, value type, mutability
+.. _match-globaltype:
+
 Globals
 .......
 
@@ -171,12 +206,14 @@ An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_1` matc
 * Both :math:`\globaltype_1` and :math:`\globaltype_2` are the same.
 
 .. math::
+   ~\\[-1ex]
    \frac{
    }{
      \vdash \ETGLOBAL~\globaltype \leq \ETGLOBAL~\globaltype
    }
 
 
+.. index:: ! allocation, store, address
 .. _alloc:
 
 Allocation
@@ -185,6 +222,7 @@ Allocation
 New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, :ref:`globals <syntax-globalinst>`, and :ref:`modules <syntax-moduleinst>` are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the following auxiliary functions.
 
 
+.. index:: function, function instance, function address, module instance, function type
 .. _alloc-func:
 
 :ref:`Functions <syntax-funcinst>`
@@ -203,6 +241,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 6. Return :math:`a`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{rlll}
    \allocfunc(S, \func, \moduleinst) &=& S', \funcaddr \\[1ex]
    \mbox{where:} \hfill \\
@@ -212,6 +251,8 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    S' &=& S \compose \{\SFUNCS~\funcinst\} \\
    \end{array}
 
+
+.. index:: host function, function instance, function address, function type
 .. _alloc-hostfunc:
 
 :ref:`Host Functions <syntax-hostfunc>`
@@ -221,26 +262,28 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 2. Let :math:`a` be the first free :ref:`function address <syntax-funcaddr>` in :math:`S`.
 
-4. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \FITYPE~\functype, \FICODE~\hostfunc \}`.
+4. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \}`.
 
 5. Append :math:`\funcinst` to the |SFUNCS| of :math:`S`.
 
 6. Return :math:`a`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{rlll}
    \allochostfunc(S, \hostfunc, \functype) &=& S', \funcaddr \\[1ex]
    \mbox{where:} \hfill \\
    \funcaddr &=& |S.\SFUNCS| \\
-   \funcinst &=& \{ \FITYPE~\functype, \FICODE~\hostfunc \} \\
+   \funcinst &=& \{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \} \\
    S' &=& S \compose \{\SFUNCS~\tableinst\} \\
    \end{array}
 
 .. note::
    Host functions are never allocated by the WebAssembly semantics itself,
-   but may be allocated by the embedder.
+   but may be allocated by the :ref:`embedder <embedder>`.
 
 
+.. index:: table, table instance, table address, table type, limits
 .. _alloc-table:
 
 :ref:`Tables <syntax-tableinst>`
@@ -268,6 +311,8 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    S' &=& S \compose \{\STABLES~\tableinst\} \\
    \end{array}
 
+
+.. index:: memory, memory instance, memory address, memory type, limits, byte
 .. _alloc-mem:
 
 :ref:`Memories <syntax-meminst>`
@@ -279,7 +324,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 3. Let :math:`a` be the first free :ref:`memory address <syntax-memaddr>` in :math:`S`.
 
-4. Let :math:`\meminst` be the :ref:`memory instance <syntax-meminst>` :math:`\{ \MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}}, \MIMAX~m^? \}` that contains :math:`n` pages of zeroed bytes.
+4. Let :math:`\meminst` be the :ref:`memory instance <syntax-meminst>` :math:`\{ \MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}}, \MIMAX~m^? \}` that contains :math:`n` pages of zeroed :ref:`bytes <syntax-byte>`.
 
 5. Append :math:`\meminst` to the |SMEMS| of :math:`S`.
 
@@ -295,6 +340,8 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    S' &=& S \compose \{\SMEMS~\meminst\} \\
    \end{array}
 
+
+.. index:: global, global instance, global address, global type, value type, mutability, value
 .. _alloc-global:
 
 :ref:`Globals <syntax-globalinst>`
@@ -322,6 +369,8 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    S' &=& S \compose \{\SGLOBALS~\globalinst\} \\
    \end{array}
 
+
+.. index:: module, module instance, function instance, table instance, memory instance, global instance, export instance, function address, table address, memory address, global address, function index, table index, memory index, global index, type, function, table, memory, global, import, export, external value, external type, matching
 .. _alloc-module:
 
 :ref:`Modules <syntax-moduleinst>`
@@ -383,10 +432,11 @@ The allocation function for :ref:`modules <syntax-module>` requires a suitable l
 
 
 .. math::
+   ~\\
    \begin{array}{rlll}
-   \allocmodule(S, \module, \externval_{\F{im}}^\ast) &=& S', \moduleinst \\[1ex]
-   \mbox{where:} \hfill \\
-   \end{array}
+   \allocmodule(S, \module, \externval_{\F{im}}^\ast) &=& S', \moduleinst    \end{array}
+
+where:
 
 .. math::
    \begin{array}{rlll}
@@ -404,15 +454,15 @@ The allocation function for :ref:`modules <syntax-module>` requires a suitable l
    S_3, \memaddr^\ast &=& \allocmem^\ast(S_2, \module.\MMEMS) \\
    S', \globaladdr^\ast &=& \allocglobal^\ast(S_3, \module.\MGLOBALS) \\[1ex]
    \exportinst^\ast &=& \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast
-     & (\export^\ast = \module.\MEXPORTS) \\
+     \quad (\where \export^\ast = \module.\MEXPORTS) \\
    \evfuncs(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
-     & (x^\ast = \edfuncs(\module.\MEXPORTS)) \\
+     \qquad~ (\where x^\ast = \edfuncs(\module.\MEXPORTS)) \\
    \evtables(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MITABLES[x])^\ast
-     & (x^\ast = \edtables(\module.\MEXPORTS)) \\
+     \qquad (\where x^\ast = \edtables(\module.\MEXPORTS)) \\
    \evmems(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIMEMS[x])^\ast
-     & (x^\ast = \edmems(\module.\MEXPORTS)) \\
+     \qquad (\where x^\ast = \edmems(\module.\MEXPORTS)) \\
    \evglobals(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIGLOBALS[x])^\ast
-     & (x^\ast = \edglobals(\module.\MEXPORTS)) \\
+     \qquad\!\!\! (\where x^\ast = \edglobals(\module.\MEXPORTS)) \\
    \end{array}
 
 Here, the notation :math:`\F{allocX}^\ast` is shorthand for multiple :ref:`allocations <alloc>` of object kind :math:`X`, defined as follows:
@@ -429,7 +479,7 @@ Here, the notation :math:`\F{allocX}^\ast` is shorthand for multiple :ref:`alloc
    In an implementation, this recursion is easily unraveled by mutating one or the other in a secondary step.
 
 
-.. index:: ! instantiation, module, instance, store
+.. index:: ! instantiation, module, instance, store, trap
 .. _exec-module:
 .. _exec-instantiation:
 
@@ -437,7 +487,10 @@ Instantiation
 ~~~~~~~~~~~~~
 
 Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :math:`\module` is instantiated with a list of :ref:`external values <syntax-externval>` :math:`\externval^n` supplying the required imports as follows.
-Instantiation may *fail* with an error.
+
+Instantiation may *fail* with an error if the module is not :ref:`valid <valid>` or the imports do not :ref:`match <match>`.
+Instantiation can also result in a :ref:`trap <trap>` from executing the start function.
+It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
 
 1. If :math:`\module` is not :ref:`valid <valid-module>`, then:
 
@@ -555,7 +608,9 @@ Instantiation may *fail* with an error.
 
     c. :ref:`Invoke <exec-invoke>` the function instance at :math:`\funcaddr`.
 
+
 .. math::
+   ~\\
    \begin{array}{@{}rcll}
    S; \INSTANTIATE~\module~\externval^n &\stepto& S';
      \begin{array}[t]{@{}l@{}}
@@ -565,7 +620,7 @@ Instantiation may *fail* with an error.
      (\INVOKE~\funcaddr)^? \\
      \moduleinst \\
      \end{array} \\
-   &\mbox{if}
+   &(\iff
      & \vdash \module : \externtype^n \\
      &\wedge& (\vdash \externval : \externtype')^n \\
      &\wedge& (\vdash \externtype' \leq \externtype)^n \\[1ex]
@@ -580,22 +635,27 @@ Instantiation may *fail* with an error.
      &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; v)^\ast \\[1ex]
      &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\
      &\wedge& (\memaddr = \moduleinst.\MIMEMS[\data.\DMEM])^\ast \\
-     &\wedge& \globaladdr^\ast = \moduleinst.\MIGLOBALS[|\moduleinst.\MIGLOBALS|-k:k] \\
+     &\wedge& \globaladdr^\ast = \moduleinst.\MIGLOBALS[|\moduleinst.\MIGLOBALS|-k \slice k] \\
      &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^? \\[1ex]
      &\wedge& (\X{eo} + |\elem.\EINIT| \leq |S'.\STABLES[\tableaddr].\TIELEM|)^\ast \\
-     &\wedge& (\X{do} + |\data.\DINIT| \leq |S'.\SMEMS[\memaddr].\MIDATA|)^\ast \\[1ex]
+     &\wedge& (\X{do} + |\data.\DINIT| \leq |S'.\SMEMS[\memaddr].\MIDATA|)^\ast
+     )
+   \\[1ex]
    S; \INSTANTIATE~\module~\externval^n &\stepto&
-     S'; \TRAP  \qquad (\otherwise) \\[1ex]
+     S'; \TRAP  \qquad (\otherwise)
+   \\[2ex]
    S; \INITTABLE~a~i~m~\epsilon &\stepto&
      S; \epsilon \\
    S; \INITTABLE~a~i~m~(x_0~x^\ast) &\stepto&
      S'; \INITTABLE~a~(i+1)~m~x^\ast \\ &&
-     (\iff S' = S \with \STABLES[a].\TIELEM[i] = m.\MIFUNCS[x_0]) \\[1ex]
+     (\iff S' = S \with \STABLES[a].\TIELEM[i] = m.\MIFUNCS[x_0])
+   \\[1ex]
    S; \INITMEM~a~i~\epsilon &\stepto&
      S; \epsilon \\
    S; \INITMEM~a~i~(b_0~b^\ast) &\stepto&
      S'; \INITMEM~a~(i+1)~b^\ast \\ &&
-     (\iff S' = S \with \SMEMS[a].\MIDATA[i] = b_0) \\[1ex]
+     (\iff S' = S \with \SMEMS[a].\MIDATA[i] = b_0)
+   \\[1ex]
    S; \INITGLOBAL~a~v &\stepto&
      S'; \epsilon \\ &&
      (\iff S' = S \with \SGLOBALS[a] = v) \\
@@ -607,14 +667,20 @@ Instantiation may *fail* with an error.
    it happens in individual steps that may be interleaved with other threads.
 
 
-.. index:: ! invocation, module, instance, function, export, function address
+.. index:: ! invocation, module, module instance, function, export, function address, function instance, function type, value, stack, trap, store
 .. _exec-invocation:
 
 Invocation
 ~~~~~~~~~~
 
 Once a :ref:`module <syntax-module>` has been :ref:`instantiated <exec-instantiation>`, any exported function can be *invoked* externally via its :ref:`function address <syntax-funcaddr>` :math:`\funcaddr` in the :ref:`store <syntax-store>` :math:`S` and an appropriate list :math:`\val^\ast` of argument :ref:`values <syntax-val>`.
-If successful, the invocation returns the function's result values :math:`\val_{\F{res}}^\ast`.
+
+Invocation may *fail* with an error if the arguments do not fit the :ref:`function type <syntax-functype>`.
+Invocation can also result in a :ref:`trap <trap>`.
+It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
+
+.. note::
+   If the :ref:`embedder <embedder>` API performs type checks itself, either statically or dynamically, before performing an invocation, then no failure other than traps can occur.
 
 The following steps are performed:
 
@@ -638,23 +704,19 @@ The following steps are performed:
 
 7. :ref:`Invoke <exec-invoke>` the function instance at address :math:`\funcaddr`.
 
-.. note::
-   If the embedder performs type checks itself, either statically or dynamically, no failure can occur.
-
 Once the function has returned, the following steps are executed:
 
 1. Assert: due to :ref:`validation <valid-func>`, :math:`m` :ref:`values <syntax-val>` are on the top of the stack.
 
 2. Pop :math:`\val_{\F{res}}^m` from the stack.
 
-The values :math:`\val_{\F{res}}^m` are the results of the call.
-
-If the function terminates with a :ref:`trap <trap>`, the error is propagated to the caller in a manner specified by the :ref:`embedder <embedder>`.
+The values :math:`\val_{\F{res}}^m` are returned as the results of the invocation.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{@{}lcl}
-   \F{invoke}(S, \funcaddr, \val^n) &=& \val_{\F{res}}^m / \TRAP \\
-     &\mbox{if}& S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
+   \invoke(S, \funcaddr, \val^n) &=& \val_{\F{res}}^m / \TRAP \\
+     &(\iff & S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
      &\wedge& \val^n = (t_1.\CONST~c)^n \\
-     &\wedge& S; \val^n~(\INVOKE~\funcaddr) \stepto^\ast S'; \val_{\F{res}}^m / \TRAP \\
+     &\wedge& S; \val^n~(\INVOKE~\funcaddr) \stepto^\ast S'; \val_{\F{res}}^m / \TRAP) \\
    \end{array}

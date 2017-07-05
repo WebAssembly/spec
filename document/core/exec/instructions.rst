@@ -1,11 +1,13 @@
-.. index:: instruction, function type, store
+.. index:: instruction, function type, store, validation
 .. _exec-instr:
 
 Instructions
 ------------
 
+WebAssembly computation is performed by executing individual :ref:`instructions <syntax-instr>`.
 
-.. index:: numeric instruction
+
+.. index:: numeric instruction, determinism, trap, NaN, value, value type
    pair: execution; instruction
    single: abstract syntax; instruction
 .. _exec-instr-numeric:
@@ -14,9 +16,6 @@ Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
 Numeric instructions are defined in terms of the basic :ref:`numeric operators <exec-numeric>`.
-Where these operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
-Where these operators are non-deterministic, because they may return different :ref:`NaN <syntax-nan>` values, so are the corresponding instructions.
-
 The mapping of numeric instructions to their underlying operators is expressed by the following definition:
 
 .. math::
@@ -24,6 +23,9 @@ The mapping of numeric instructions to their underlying operators is expressed b
    \X{op}_{\K{i}N}(n) &=& \F{i}\X{op}_N(n) \\
    \X{op}_{\K{f}N}(z) &=& \F{f}\X{op}_N(z) \\
    \end{array}
+
+Where the underlying operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
+Where the underlying operators are non-deterministic, because they may return one of multiple possible :ref:`NaN <syntax-nan>` values, so are the corresponding instructions.
 
 
 .. _exec-const:
@@ -48,7 +50,7 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 3. If :math:`\unop_t(c_1)` is defined, then:
 
-   a. Let :math:`c` be the result of computing :math:`\unop_t(c_1)`.
+   a. Let :math:`c` be a possible result of computing :math:`\unop_t(c_1)`.
 
    b. Push the value :math:`t.\CONST~c` to the stack.
 
@@ -78,7 +80,7 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 4. If :math:`\binop_t(c_1, c_2)` is defined, then:
 
-   a. Let :math:`c` be the result of computing :math:`\binop_t(c_1, c_2)`.
+   a. Let :math:`c` be a possible result of computing :math:`\binop_t(c_1, c_2)`.
 
    b. Push the value :math:`t.\CONST~c` to the stack.
 
@@ -148,7 +150,7 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 3. If :math:`\cvtop_{t_1,t_2}(c_1)` is defined:
 
-   a. Let :math:`c_2` be the result of computing :math:`\cvtop_{t_1,t_2}(c_1)`.
+   a. Let :math:`c_2` be a possible result of computing :math:`\cvtop_{t_1,t_2}(c_1)`.
 
    b. Push the value :math:`t_2.\CONST~c_2` to the stack.
 
@@ -165,7 +167,7 @@ The mapping of numeric instructions to their underlying operators is expressed b
    \end{array}
 
 
-.. index:: parametric instructions
+.. index:: parametric instructions, value
    pair: execution; instruction
    single: abstract syntax; instruction
 .. _exec-instr-parametric:
@@ -220,7 +222,7 @@ Parametric Instructions
    \end{array}
 
 
-.. index:: variable instructions, local index, global index, address, global address, global instance, store, frame
+.. index:: variable instructions, local index, global index, address, global address, global instance, store, frame, value
    pair: execution; instruction
    single: abstract syntax; instruction
 .. _exec-instr-variable:
@@ -351,7 +353,7 @@ Variable Instructions
    \end{array}
 
 
-.. index:: memory instruction, memory index, store, frame, address, memory address, memory instance, store, frame, value type, width
+.. index:: memory instruction, memory index, store, frame, address, memory address, memory instance, store, frame, value, integer, limits, value type, bit width
    pair: execution; instruction
    single: abstract syntax; instruction
 .. _exec-memarg:
@@ -376,7 +378,7 @@ Memory Instructions
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
 
-6. Assert: due to :ref:`validation <valid-loadn>`, a value :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+6. Assert: due to :ref:`validation <valid-loadn>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 7. Pop the value :math:`\I32.\CONST~i` from the stack.
 
@@ -384,13 +386,13 @@ Memory Instructions
 
 9. If :math:`N` is not part of the instruction, then:
 
-   a. Let :math:`N` be the :ref:`width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+   a. Let :math:`N` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
 10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 
     a. Trap.
 
-11. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea}:N/8]`.
+11. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]`.
 
 12. If :math:`N` and :math:`\sx` are part of the instruction, then:
 
@@ -405,6 +407,7 @@ Memory Instructions
 14. Push the value :math:`t.\CONST~c` to the stack.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(t.\LOAD~\memarg) &\stepto& S; F; (t.\CONST~c)
@@ -413,8 +416,9 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_t(c) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea}:|t|/8])
-     \end{array} \\
+     \wedge & \bytes_t(c) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8])
+     \end{array}
+   \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(t.\LOAD{N}\K{\_}\sx~\memarg) &\stepto&
      S; F; (t.\CONST~\extend\F{\_}\sx_{N,|t|}(n))
@@ -423,8 +427,9 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea}:N/8])
-     \end{array} \\
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8])
+     \end{array}
+   \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~k)~(t.\LOAD({N}\K{\_}\sx)^?~\memarg) &\stepto& S; F; \TRAP
    \end{array}
@@ -454,23 +459,23 @@ Memory Instructions
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
 
-6. Assert: due to :ref:`validation <valid-storen>`, a value :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+6. Assert: due to :ref:`validation <valid-storen>`, a value of :ref:`value type <syntax-valtype>` :math:`t` is on the top of the stack.
 
-7. Pop the value :math:`\I32.\CONST~i` from the stack.
+7. Pop the value :math:`t.\CONST~c` from the stack.
 
-8. Let :math:`\X{ea}` be :math:`i + \memarg.\OFFSET`.
+8. Assert: due to :ref:`validation <valid-storen>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-9. If :math:`N` is not part of the instruction, then:
+9. Pop the value :math:`\I32.\CONST~i` from the stack.
 
-   a. Let :math:`N` be the :ref:`width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+10. Let :math:`\X{ea}` be :math:`i + \memarg.\OFFSET`.
 
-10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+11. If :math:`N` is not part of the instruction, then:
+
+    a. Let :math:`N` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+
+12. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 
     a. Trap.
-
-11. Assert: due to :ref:`validation <valid-storen>`, a value of :ref:`value type <syntax-valtype>` :math:`t` is on the top of the stack.
-
-12. Pop the value :math:`t.\CONST~c` from the stack.
 
 13. If :math:`N` is part of the instruction, then:
 
@@ -482,30 +487,33 @@ Memory Instructions
 
     a. Let :math:`b^\ast` be the byte sequence :math:`\bytes_t(c)`.
 
-15. Replace the bytes :math:`\X{mem}.\MIDATA[\X{ea}:N/8]` with :math:`b^\ast`.
+15. Replace the bytes :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]` with :math:`b^\ast`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\STORE~\memarg) &\stepto& S'; F; \epsilon
+   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE~\memarg) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & S' = S \with \MIMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea}:|t|/8] = \bytes_t(c)
-     \end{array} \\
+     \wedge & S' = S \with \MIMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c)
+     \end{array}
+   \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\STORE{N}~\memarg) &\stepto& S'; F; \epsilon
+   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE{N}~\memarg) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea}:N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c))
-     \end{array} \\
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c))
+     \end{array}
+   \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~k)~(t.\CONST~c)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -579,6 +587,7 @@ Memory Instructions
     a. Push the value :math:`\I32.\CONST~(-1)` to the stack.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~n)~\GROWMEMORY &\stepto& S'; F; (\I32.\CONST~\X{sz})
@@ -589,7 +598,8 @@ Memory Instructions
      \wedge & |S.\SMEMS[a].\MIDATA| = \X{sz}\cdot64\,\F{Ki} \\
      \wedge & (\X{sz} + n \leq S.\SMEMS[a].\MIMAX \vee S.\SMEMS[a].\MIMAX = \epsilon) \\
      \wedge & S' = S \with \SMEMS[a].\MIDATA = S.\SMEMS[a].\MIDATA~(\hex{00})^{n\cdot64\,\F{Ki}}) \\
-     \end{array} \\
+     \end{array}
+   \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~n)~\GROWMEMORY &\stepto& S; F; (\I32.\CONST~{-1})
    \end{array}
@@ -648,9 +658,10 @@ Control Instructions
 
 2. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
 
-3. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
+3. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
    \BLOCK~[t^n]~\instr^\ast~\END &\stepto&
      \LABEL_n\{\epsilon\}~\instr^\ast~\END
@@ -664,9 +675,10 @@ Control Instructions
 
 1. Let :math:`L` be the label whose arity is :math:`0` and whose continuation is the start of the loop.
 
-2. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
+2. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
    \LOOP~[t^?]~\instr^\ast~\END &\stepto&
      \LABEL_0\{\LOOP~[t^?]~\instr^\ast~\END\}~\instr^\ast~\END
@@ -688,13 +700,14 @@ Control Instructions
 
 5. If :math:`c` is non-zero, then:
 
-   a. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr_1^\ast` with label :math:`L`.
+   a. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\instr_1^\ast` with label :math:`L`.
 
 6. Else:
 
-   a. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr_2^\ast` with label :math:`L`.
+   a. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\instr_2^\ast` with label :math:`L`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
    (\I32.\CONST~c)~\IF~[t^n]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
      \LABEL_n\{\epsilon\}~\instr_1^\ast~\END
@@ -735,6 +748,7 @@ Control Instructions
 8. Jump to the continuation of :math:`L`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
    \LABEL_n\{\instr^\ast\}~\XB^l[\val^n~(\BR~l)]~\END &\stepto& \val^n~\instr^\ast
    \end{array}
@@ -758,6 +772,7 @@ Control Instructions
    a. Do nothing.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
    (\I32.\CONST~c)~(\BRIF~l) &\stepto& (\BR~l)
      & (\iff c \neq 0) \\
@@ -786,6 +801,7 @@ Control Instructions
    a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l_N)`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
    (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) &\stepto& (\BR~l_i)
      & (\iff l^\ast[i] = l_i) \\
@@ -819,9 +835,10 @@ Control Instructions
 
 9. Push :math:`\val^n` to the stack.
 
-10. Jump to the instruction after the original call.
+10. Jump to the instruction after the original call that pushed the frame.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
    \FRAME_n\{F\}~\XB^k[\val^n~\RETURN]~\END &\stepto& \val^n
    \end{array}
@@ -893,6 +910,7 @@ Control Instructions
 17. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x) &\stepto& S; F; (\INVOKE~a)
@@ -902,7 +920,8 @@ Control Instructions
      (\mbox{if} & S.\STABLES[F.\AMODULE.\MITABLES[0]].\TIELEM[i] = a \\
      \wedge & S.\SFUNCS[a] = f \\
      \wedge & F.\AMODULE.\MITYPES[x] = f.\FITYPE)
-     \end{array} \\
+     \end{array}
+   \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x) &\stepto& S; F; \TRAP
    \end{array}
@@ -911,14 +930,14 @@ Control Instructions
    \end{array}
 
 
-.. index:: instruction, instruction sequence
+.. index:: instruction, instruction sequence, block
 .. _exec-instr-seq:
 
-Instruction Sequences
-~~~~~~~~~~~~~~~~~~~~~
+Blocks
+~~~~~~
 
 The following auxiliary rules define the semantics of executing an :ref:`instruction sequence <syntax-instr-seq>`
-that is part of a :ref:`structured control instruction <exec-instr-control>`.
+that forms a :ref:`block <exec-instr-control>`.
 
 
 .. _exec-instr-seq-enter:
@@ -940,7 +959,7 @@ Entering :math:`\instr^\ast` with label :math:`L`
 Exiting :math:`\instr^\ast` with label :math:`L`
 ................................................
 
-When the end of a labelled instruction sequence is reached without a jump or trap aborting it, then the following steps are performed.
+When the end of a block is reached without a jump or trap aborting it, then the following steps are performed.
 
 1. Let :math:`n` be the arity of :math:`L`.
 
@@ -957,6 +976,7 @@ When the end of a labelled instruction sequence is reached without a jump or tra
 7. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
    \LABEL_n\{\instr^\ast\}~\val^n~\END &\stepto& \val^n
    \end{array}
@@ -966,7 +986,7 @@ When the end of a labelled instruction sequence is reached without a jump or tra
    Therefor, execution of a loop falls off the end, unless a backwards branch is performed explicitly.
 
 
-.. index:: ! invocation, function, function instance, label, frame
+.. index:: ! call, function, function instance, label, frame
 
 Function Calls
 ~~~~~~~~~~~~~~
@@ -1004,15 +1024,16 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 11. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   \val^n~(\INVOKE~a) &\stepto& \FRAME_m\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
+   S; \val^n~(\INVOKE~a) &\stepto& S; \FRAME_m\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & S.\SFUNCS[a] = f \\
-     \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~t^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & f.\FITYPE = [t_1^n] \to [t_2^m] \\
+     \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~t^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(t.\CONST~0)^k \})
      \end{array} \\
    \end{array}
@@ -1023,7 +1044,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 Returning from a function
 .........................
 
-When the end of a funtion is reached without a jump (|RETURN|) or trap aborting it, then the following steps are performed.
+When the end of a funtion is reached without a jump (i.e., |RETURN|) or trap aborting it, then the following steps are performed.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -1042,11 +1063,13 @@ When the end of a funtion is reached without a jump (|RETURN|) or trap aborting 
 8. Jump to the instruction after the original call.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
    \FRAME_n\{F\}~\val^n~\END &\stepto& \val^n
    \end{array}
 
 
+.. index:: host function, store
 .. _exec-invoke-host:
 
 Host Functions
@@ -1054,28 +1077,30 @@ Host Functions
 
 Invoking a :ref:`host function <syntax-hostfunc>` has non-deterministic behavior.
 It may either terminate with a :ref:`trap <trap>` or return regularly.
-However, the latter case, it is assumed that it consumes and produces the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
-according to its type.
-A host function may also modify the :ref:`store <syntax-store>` when invoked.
+However, in the latter case, it is assumed that it consumes and produces the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
+according to its :ref:`function type <syntax-functype>`.
+A host function may also modify the :ref:`store <syntax-store>`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\INVOKE~a) &\stepto& S'; {\val'\,}^m
+   S; \val_1^n~(\INVOKE~a) &\stepto& S'; \val_2^m
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FICODE~\dots \} \\
-     \wedge & \val^n = (t_1.\CONST~c_1)^n \\
-     \wedge & {\val'\,}^m = (t_2.\CONST~c_2)^m \\
+     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\dots \} \\
+     \wedge & \val_1^n = (t_1.\CONST~c_1)^n \\
+     \wedge & \val_2^m = (t_2.\CONST~c_2)^m \\
      \wedge & S' \succ S) \\
-     \end{array} \\
+     \end{array}
+   \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; \val^n~(\INVOKE~a) &\stepto& S'; \TRAP
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~\X{ft}, \FICODE~\dots \} \\ 
+     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~\X{ft}, \FIHOSTCODE~\dots \} \\ 
      \wedge & S' \succ S) \\
      \end{array} \\
    \end{array}
@@ -1085,11 +1110,11 @@ Such a store must not contain fewer addresses than the original store,
 it must not differ in elements that are not mutable,
 and it must still be well-typed.
 
-.. todo:: Define more precisely?
+.. todo:: Define this relation more precisely.
 
 .. note::
    A host function can call back into WebAssembly by :ref:`invoking <exec-invocation>` a function :ref:`exported <syntax-export>` from a :ref:`module <syntax-module>`.
-   However, the effects of any such call are subsumed by the non-deterministic behavior allowed for a host function.
+   However, the effects of any such call are subsumed by the non-deterministic behavior allowed for the host function.
 
 
 
@@ -1101,7 +1126,7 @@ and it must still be well-typed.
 Expressions
 ~~~~~~~~~~~
 
-An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst`.
+An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>`.
 
 1. Jump to the start of the instruction sequence :math:`\instr^\ast` of the expression.
 

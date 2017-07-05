@@ -191,22 +191,6 @@ A name string must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>
    strings that do not contain any uses of hexadecimal byte escapes are always valid names.
 
 
-.. index:: vector
-   pair: text format; vector
-.. _text-vec:
-
-Vectors
-~~~~~~~
-
-:ref:`Vectors <syntax-vec>` are written as plain sequences, but with restricted length.
-
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{vector} & \Tvec(\T{A}) &::=&
-     (x{:}\T{A})^n &\Rightarrow& x^n & (\iff n < 2^{32}) \\
-   \end{array}
-
-
 .. index:: ! identifiers
    pair: text format; identifiers
 .. _text-id:
@@ -230,3 +214,19 @@ Conventions
 
 The expansion rules of some abbreviations require insertion of a *fresh* identifier.
 That may be any syntactically valid identifier that does not already occur in the given source text.
+
+
+.. index:: vector
+   pair: text format; vector
+.. _text-vec:
+
+Vectors
+~~~~~~~
+
+:ref:`Vectors <syntax-vec>` are written as plain sequences, but with restricted length.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{vector} & \Tvec(\T{A}) &::=&
+     (x{:}\T{A})^n &\Rightarrow& x^n & (\iff n < 2^{32}) \\
+   \end{array}

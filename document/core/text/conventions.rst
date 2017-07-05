@@ -110,7 +110,7 @@ To resolve these identifiers into concrete indices,
 some grammar production are indexed by an *identifier context* :math:`I` as a synthesized attribute that records the declared identifiers in each :ref:`index space <syntax-index>`.
 In addition, the context records the types defined in the module, so that :ref:`parameter <text-param>` indices can be computed for :ref:`functions <text-func>`.
 
-It is convenient to define identifier contexts as :ref:`records <syntax-record>` :math:`I` with abstract syntax:
+It is convenient to define identifier contexts as :ref:`records <notation-record>` :math:`I` with abstract syntax:
 
 .. math::
    \begin{array}{llll}

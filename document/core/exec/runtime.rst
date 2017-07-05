@@ -4,7 +4,7 @@
 Runtime Structure
 -----------------
 
-:ref:`Store <store>`, :ref:`stack <stack>`, and other *runtime structure* forming the WebAssembly abstract machine, such as :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary syntax.
+:ref:`Store <store>`, :ref:`stack <stack>`, and other *runtime structure* forming the WebAssembly abstract machine, such as :ref:`values <syntax-val>` or :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary syntax.
 
 
 .. index:: ! value, constant, value type, integer, floating-point
@@ -41,7 +41,7 @@ Store
 The *store* represents all global state that can be manipulated by WebAssembly programs.
 It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
 
-Syntactically, the store is defined as a :ref:`record <syntax-record>` listing the existing instances of each category:
+Syntactically, the store is defined as a :ref:`record <notation-record>` listing the existing instances of each category:
 
 .. math::
    \begin{array}{llll}
@@ -164,7 +164,7 @@ The module instance is used to resolve references to other definitions during ex
    \begin{array}{llll}
    \production{(function instance)} & \funcinst &::=&
      \{ \FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func \} \\ &&|&
-     \{ \FITYPE~\functype, \FICODE~\hostfunc \} \\
+     \{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \} \\
    \production{(host function)} & \hostfunc &::=& \dots \\
    \end{array}
 

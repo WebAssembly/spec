@@ -47,7 +47,7 @@ describing each defined entry in that space.
 Locals, labels and return type are only used for validating :ref:`instructions <syntax-instr>` in :ref:`function bodies <syntax-func>`, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.
 
-It is convenient to define contexts as :ref:`records <syntax-record>` :math:`C` with abstract syntax:
+It is convenient to define contexts as :ref:`records <notation-record>` :math:`C` with abstract syntax:
 
 .. math::
    \begin{array}{llll}

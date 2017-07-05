@@ -66,7 +66,8 @@ In the abstract syntax, they are represented as unsigned values.
 However, some operations :ref:`convert <aux-signed>` them to signed based on a two's complement interpretation.
 
 .. note::
-   The only integer types currently occurring in this specification are |u32|, |u64|, |s32|, and |s64|.
+   The main integer types occurring in this specification are |u32|, |u64|, |s32|, |s64|, |i8|, |i16|, |i32|, |i64|.
+   However, other sizes occur as auxiliary constructions, e.g., in the definition of :ref:`floating-point <syntax-float>` numbers.
 
 
 Conventions
@@ -75,6 +76,7 @@ Conventions
 * The meta variables :math:`m, n, i` range over integers.
 
 * Numbers may be denoted by simple arithmetics, as in the grammar above.
+  In order to distinguish arithmetics like :math:`2^N` from sequences like :math:`(1)^N`, the latter is distinguished with parentheses.
 
 
 .. index:: ! floating-point, ! NaN, payload, significand, exponent, magnitude, canonical NaN, arithmetic NaN, bit width, IEEE 754
@@ -142,9 +144,8 @@ Conventions
 * The meta variable :math:`z` ranges over floating-point values where clear from context.
 
 
-.. index:: ! name, byte, Unicode, ! UTF-8, code point, binary format
+.. index:: ! name, byte, Unicode, UTF-8, code point, binary format
    pair: abstract syntax; name
-.. _syntax-utf8:
 .. _syntax-codepoint:
 .. _syntax-name:
 
@@ -163,33 +164,7 @@ Names
    \end{array}
 
 Due to the limitations of the :ref:`binary format <binary-name>`,
-the lengths of a name is bounded by the length of its `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding.
-The auxiliary |utf8| function expressing this encoding is defined as follows:
-
-.. math::
-   \begin{array}{@{}lcl@{\qquad}l}
-   \utf8(c^\ast) &=& (\utf8(c))^\ast \\[1ex]
-   \utf8(c) &=& b &
-     (\begin{array}[t]{@{}c@{~}l@{}}
-      \iff & c < \unicode{80} \\
-      \wedge & c = b) \\
-      \end{array} \\
-   \utf8(c) &=& b_1~b_2 &
-     (\begin{array}[t]{@{}c@{~}l@{}}
-      \iff & \unicode{80} \leq c < \unicode{800} \\
-      \wedge & c = 2^6(b_1-\hex{C0})+(b_2-\hex{80})) \\
-      \end{array} \\
-   \utf8(c) &=& b_1~b_2~b_3 &
-     (\begin{array}[t]{@{}c@{~}l@{}}
-      \iff & \unicode{800} \leq c < \unicode{10000} \\
-      \wedge & c = 2^{12}(b_1-\hex{C0})+2^6(b_2-\hex{80})+(b_3-\hex{80})) \\
-      \end{array} \\
-   \utf8(c) &=& b_1~b_2~b_3~b_4 &
-     (\begin{array}[t]{@{}c@{~}l@{}}
-      \iff & \unicode{10000} \leq c < \unicode{110000} \\
-      \wedge & c = 2^{18}(b_1-\hex{C0})+2^{12}(b_2-\hex{80})+2^6(b_3-\hex{80})+(b_4-\hex{80})) \\
-      \end{array} \\
-   \end{array}
+the lengths of a name is bounded by the length of its :ref:`UTF-8 <binary-utf8>` encoding.
 
 
 Convention

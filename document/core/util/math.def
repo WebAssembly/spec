@@ -43,10 +43,11 @@
 
 .. Notation for Sequences & Records
 
-.. |with| mathdef:: \xref{syntax/conventions}{syntax-record}{\mathrel{\mbox{with}}}
-.. |concat| mathdef:: \xref{syntax/conventions}{syntax-concat}{\F{concat}}
-.. |compose| mathdef:: \xref{syntax/conventions}{syntax-record}{\oplus}
-.. |bigcompose| mathdef:: \xref{syntax/conventions}{syntax-record}{\bigoplus}
+.. |slice| mathdef:: \xref{syntax/conventions}{notation-slice}{\mathrel{\mathbf{:}}}
+.. |with| mathdef:: \xref{syntax/conventions}{notation-replace}{\mathrel{\mbox{with}}}
+.. |concat| mathdef:: \xref{syntax/conventions}{notation-concat}{\F{concat}}
+.. |compose| mathdef:: \xref{syntax/conventions}{notation-record}{\oplus}
+.. |bigcompose| mathdef:: \xref{syntax/conventions}{notation-record}{\bigoplus}
 
 
 
@@ -103,8 +104,6 @@
 .. |canon| mathdef:: \xref{syntax/values}{aux-canon}{\F{canon}}
 .. |significand| mathdef:: \xref{syntax/values}{aux-significand}{\F{signif}}
 .. |exponent| mathdef:: \xref{syntax/values}{aux-exponent}{\F{expon}}
-
-.. |utf8| mathdef:: \xref{syntax/values}{syntax-utf8}{\F{utf8}}
 
 
 .. Types, terminals
@@ -377,6 +376,11 @@
 .. |Bcodepoint| mathdef:: \xref{binary/values}{binary-name}{\B{codepoint}}
 .. |Bcodeval| mathdef:: \xref{binary/values}{binary-name}{\B{codeval}}
 .. |Bcodecont| mathdef:: \xref{binary/values}{binary-name}{\B{cont}}
+
+
+.. Values, meta functions
+
+.. |utf8| mathdef:: \xref{binary/values}{binary-utf8}{\F{utf8}}
 
 
 .. Types, non-terminals
@@ -684,7 +688,7 @@
 .. |FITYPE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{type}}
 .. |FIMODULE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{module}}
 .. |FICODE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{code}}
-.. |FIHOST| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{host}}
+.. |FIHOSTCODE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{hostcode}}
 
 .. |TIELEM| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{elem}}
 .. |TIMAX| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{max}}
@@ -704,10 +708,10 @@
 .. |EVGLOBAL| mathdef:: \xref{exec/runtime}{syntax-externval}{\K{global}}
 
 .. |MITYPES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{types}}
-.. |MIFUNCS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{funcs}}
-.. |MITABLES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{tables}}
-.. |MIMEMS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{mems}}
-.. |MIGLOBALS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{globals}}
+.. |MIFUNCS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{funcaddrs}}
+.. |MITABLES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{tableaddrs}}
+.. |MIMEMS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{memaddrs}}
+.. |MIGLOBALS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{globaladdrs}}
 .. |MIEXPORTS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{exports}}
 
 
@@ -862,3 +866,8 @@
 .. |ieee| mathdef:: \xref{exec/numerics}{aux-ieee}{\F{float}}
 .. |nans| mathdef:: \xref{exec/numerics}{aux-nans}{\F{nans}}
 .. |trunc| mathdef:: \xref{exec/numerics}{aux-trunc}{\F{trunc}}
+
+
+.. Other meta functions
+
+.. |invoke| mathdef:: \xref{exec/numerics}{exec-invocation}{\F{invoke}}

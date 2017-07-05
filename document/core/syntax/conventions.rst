@@ -41,8 +41,10 @@ The following conventions are adopted in defining grammar rules for abstract syn
 
 
 
-.. _syntax-record:
-.. _syntax-concat:
+.. _notation-slice:
+.. _notation-replace:
+.. _notation-record:
+.. _notation-concat:
 
 Auxiliary Notation
 ~~~~~~~~~~~~~~~~~~
@@ -55,13 +57,13 @@ When dealing with syntactic constructs the following notation is also used:
 
 * :math:`s[i]` denotes the :math:`i`-th element of a sequence :math:`s`, starting from :math:`0`.
 
-* :math:`s[i:n]` denotes the sub-sequence :math:`s[i]~\dots~s[i+n-1]` of a sequence :math:`s`.
+* :math:`s[i \slice n]` denotes the sub-sequence :math:`s[i]~\dots~s[i+n-1]` of a sequence :math:`s`.
 
 * :math:`s \with [i] = A` denotes the same sequence as :math:`s`,
   except that the :math:`i`-the element is replaced with :math:`A`.
 
-* :math:`s \with [i:n] = A^n` denotes the same sequence as :math:`s`,
-  except that the sub-sequence :math:`s[i:n]` is replaced with :math:`A^n`.
+* :math:`s \with [i \slice n] = A^n` denotes the same sequence as :math:`s`,
+  except that the sub-sequence :math:`s[i \slice n]` is replaced with :math:`A^n`.
 
 * :math:`\concat(s^\ast)` denotes the flat sequence formed by concatenating all sequences :math:`s_i` in :math:`s^\ast`.
 

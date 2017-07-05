@@ -93,10 +93,53 @@ Floating-Point
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{floating-point number} & \BfN &::=&
-     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \bytes_{\fN}^{-1}(\F{reverse}(b^\ast)) \\
+     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \bytes_{\fN}^{-1}(b^\ast) \\
    \end{array}
 
-Here, :math:`\F{reverse}(b^\ast)` denotes the byte sequence :math:`b^\ast` in reversed order.
+
+.. index:: name, byte, Unicode, ! UTF-8
+   pair: binary format; name
+.. _binary-utf8:
+.. _binary-name:
+
+Names
+~~~~~
+
+:ref:`Names <syntax-name>` are encoded as a :ref:`vector <binary-vec>` of bytes containing the `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding of the name's code point sequence.
+
+.. math::
+   \begin{array}{llclll@{\qquad}l}
+   \production{name} & \Bname &::=&
+     b^\ast{:}\Bvec(\Bbyte) &\Rightarrow& \name
+       && (\iff \utf8(\name) = b^\ast) \\
+   \end{array}
+
+The auxiliary |utf8| function expressing this encoding is defined as follows:
+
+.. math::
+   \begin{array}{@{}lcl@{\qquad}l}
+   \utf8(c^\ast) &=& (\utf8(c))^\ast \\[1ex]
+   \utf8(c) &=& b &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & c < \unicode{80} \\
+      \wedge & c = b) \\
+      \end{array} \\
+   \utf8(c) &=& b_1~b_2 &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & \unicode{80} \leq c < \unicode{800} \\
+      \wedge & c = 2^6(b_1-\hex{C0})+(b_2-\hex{80})) \\
+      \end{array} \\
+   \utf8(c) &=& b_1~b_2~b_3 &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & \unicode{800} \leq c < \unicode{10000} \\
+      \wedge & c = 2^{12}(b_1-\hex{C0})+2^6(b_2-\hex{80})+(b_3-\hex{80})) \\
+      \end{array} \\
+   \utf8(c) &=& b_1~b_2~b_3~b_4 &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & \unicode{10000} \leq c < \unicode{110000} \\
+      \wedge & c = 2^{18}(b_1-\hex{C0})+2^{12}(b_2-\hex{80})+2^6(b_3-\hex{80})+(b_4-\hex{80})) \\
+      \end{array} \\
+   \end{array}
 
 
 .. index:: vector
@@ -113,45 +156,3 @@ Vectors
    \production{vector} & \Bvec(\B{B}) &::=&
      n{:}\Bu32~~(x{:}\B{B})^n &\Rightarrow& x^n \\
    \end{array}
-
-
-.. index:: name, byte, Unicode, UTF-8
-   pair: binary format; name
-.. _binary-name:
-
-Names
-~~~~~
-
-:ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vec>` of bytes containing the `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding of the name's code point sequence.
-
-.. math::
-   \begin{array}{llclll@{\qquad}l}
-   \production{name} & \Bname &::=&
-     n{:}\Bu32~~(\X{uc}{:}\Bcodepoint)^\ast &\Rightarrow& \X{uc}^\ast
-       & (\iff |\Bcodepoint^\ast| = n) \\
-   \production{code point} & \Bcodepoint &::=&
-     \X{uv}{:}\Bcodeval_N &\Rightarrow& \X{uv}
-       & (\iff \X{uv} \geq N \wedge (\X{uv} < \unicode{D800} \vee \unicode{E000} \leq \X{uv} < \unicode{110000})) \\
-   \production{code value} & \Bcodeval_N &::=&
-     b_1{:}\Bbyte &\Rightarrow&
-       b_1
-       & (\iff b_1 < \hex{80} \wedge N = \unicode{00}) \\ &&|&
-     b_1{:}\Bbyte~~b_2{:}\Bcodecont &\Rightarrow&
-       2^6\cdot(b_1-\hex{c0}) + b_2
-       & (\iff \hex{c0} \leq b_1 < \hex{e0} \wedge N = \unicode{80}) \\ &&|&
-     b_1{:}\Bbyte~~b_2{:}\Bcodecont~~b_3{:}\Bcodecont &\Rightarrow&
-       2^{12}\cdot(b_1-\hex{e0}) + 2^6\cdot b_2 + b_3
-       & (\iff \hex{e0} \leq b_1 < \hex{f0} \wedge N = \unicode{800}) \\ &&|&
-     b_1{:}\Bbyte~~b_2{:}\Bcodecont~~b_3{:}\Bcodecont~~b_4{:}\Bcodecont
-       &\Rightarrow&
-       2^{18}\cdot(b_1-\hex{f0}) + 2^{12}\cdot b_2 + 2^6\cdot b_3 + b_4
-       & (\iff \hex{f0} \leq b_1 < \hex{f8} \wedge N = \unicode{10000}) \\
-   \production{code continuation} & \Bcodecont &::=&
-     b{:}\Bbyte &\Rightarrow& b - \hex{80} & (\iff b \geq \hex{80}) \\
-   \end{array}
-
-.. note::
-   The :ref:`size <binary-notation>`, :math:`||\Bcodepoint^\ast||` denotes the number of bytes in the encoding of the sequence, not the number of code points.
-
-   The index :math:`N` to |Bcodeval| is the minimum value that a given byte sequence may decode into.
-   The respective side conditions on it exclude encodings using more than the minimal number of bytes to represent a code point.
