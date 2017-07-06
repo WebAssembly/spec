@@ -37,67 +37,34 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
 Tokens
 ~~~~~~
 
-The character stream in the source text is divided, from left to right, into a sequence of *tokens*.
-Tokens are drawn from the set of *pre-tokens*, which are either single parentheses, text :ref:`strings <text-string>` in quotes, or sequences of alphanumeric and symbolic characters, as defined by the following grammar.
-
-.. math::
-   \begin{array}{llll}
-   \production{pre token} & \Tpretoken &::=&
-     \Ttokenchar^+ ~|~ \text{(} ~|~ \text{)} ~|~ \Tstring \\
-   \production{token character} & \Ttokenchar &::=&
-     \text{0} ~~|~~ \dots ~~|~~ \text{9} \\ &&|&
-     \text{A} ~~|~~ \dots ~~|~~ \text{Z} \\ &&|&
-     \text{a} ~~|~~ \dots ~~|~~ \text{z} \\ &&|&
-     \text{!} ~~|~~
-     \text{\#} ~~|~~
-     \text{\$} ~~|~~
-     \text{\%} ~~|~~
-     \text{\&} ~~|~~
-     \text{'} ~~|~~
-     \text{*} ~~|~~
-     \text{+} ~~|~~
-     \text{-} ~~|~~
-     \text{.} ~~|~~
-     \text{/} \\ &&|&
-     \text{:} ~~|~~
-     \text{<} ~~|~~
-     \text{=} ~~|~~
-     \text{>} ~~|~~
-     \text{?} ~~|~~
-     \text{@} ~~|~~
-     \text{\backslash} ~~|~~
-     \text{\hat{~~}} ~~|~~
-     \text{\_} ~~|~~
-     \text{\grave{~~}} ~~|~~
-     \text{|} ~~|~~
-     \text{\tilde{~~}} \\
-   \end{array}
-
-Pre-tokens are formed from the input character stream according to the *longest match* rule.
-That is, the next pre-token always consists of the longest possible sequence of characters that is recognized by the above grammar.
-Pre-tokens can be separated by :ref:`white space <text-space>`;
-except for strings, they cannot themselves contain whitespace.
-
-Tokens are the subset of all pre-tokens that can occur in a syntactically correct source.
-They are defined by the following grammar:
+The character stream in the source text is divided, from left to right, into a sequence of *tokens*, as defined by the following grammar.
 
 .. math::
    \begin{array}{llll}
    \production{token} & \Ttoken &::=&
      \Tkeyword ~|~ \TuN ~|~ \TsN ~|~ \TfN ~|~ \Tstring ~|~ \Tid ~|~
-     \text{(} ~|~ \text{)} \\
+     \text{(} ~|~ \text{)} ~|~ \Treserved \\
    \production{keyword} & \Tkeyword &::=&
-     (\text{a} ~|~ \dots ~|~ \text{z})~\Ttokenchar^\ast
-     \qquad (\mbox{if occurring as a terminal in the grammar}) \\
+     (\text{a} ~|~ \dots ~|~ \text{z})~\Tidchar^\ast
+     \qquad (\mbox{if occurring as a literal terminal in the grammar}) \\
+   \production{reserved} & \Treserved &::=&
+     \Tidchar^+ \\
    \end{array}
 
-Any pre-token that is not a token is considered *reserved*.
-The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:`terminal symbol <text-grammar>` in literal form in the non-lexical grammar of this specification.
+Tokens are formed from the input character stream according to the *longest match* rule.
+That is, the next token always consists of the longest possible sequence of characters that is recognized by the above grammar.
+Tokens can be separated by :ref:`white space <text-space>`;
+except for strings, they cannot themselves contain whitespace.
+
+The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:`terminal symbol <text-grammar>` in literal form in a non-lexical production of this specification.
+
+Any token that does not fall into any of the other categories is considered *reserved*.
 
 .. note::
-   The effect of defining the larger set of pre-tokens is that all tokens must be separated by either parentheses or :ref:`white space <text-space>`.
-   For example, :math:`\text{0\$x}` is a pre-token but not a token.
+   The effect of defining the set of reserved tokens is that all tokens must be separated by either parentheses or :ref:`white space <text-space>`.
+   For example, :math:`\text{0\$x}` is a single reserved token.
    Consequently, it is not recognized as two separate tokens :math:`\text{0}` and :math:`\text{\$x}`, but instead disallowed.
+   This property of tokenization is not affected by the fact that the definition of reserved tokens overlaps with several other token classes.
 
 
 .. index:: ! white space, character, ASCII
