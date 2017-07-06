@@ -78,7 +78,17 @@
     <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
     
 </ul>
-
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Execution</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Execution</a></li>
+      <li>Next: <a href="runtime.html" title="next chapter">Runtime Structure</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -97,7 +107,7 @@
             
   <div class="section" id="conventions">
 <span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
-<p>WebAssembly code is <em>executed</em> when <a class="reference internal" href="../intro/overview.html#instantiation"><span class="std std-ref">instantiating</span></a> a module or <a class="reference internal" href="modules.html#exec-call-export"><span class="std std-ref">invoking</span></a> an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> function on the resulting module <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">instance</span></a>.</p>
+<p>WebAssembly code is <em>executed</em> when <a class="reference internal" href="modules.html#exec-instantiation"><span class="std std-ref">instantiating</span></a> a module or <a class="reference internal" href="modules.html#exec-invocation"><span class="std std-ref">invoking</span></a> an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> function on the resulting module <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">instance</span></a>.</p>
 <p>Execution behavior is defined in terms of an <em>abstract machine</em> that models the <em>program state</em>.
 It includes a <em>stack</em>, which records operand values and control constructs, and an abstract <em>store</em> containing global state.</p>
 <p>For each instruction, there is a rule that specifies the effect of its execution on the program state.
@@ -113,7 +123,6 @@ As with <a class="reference internal" href="../intro/overview.html#validation"><
 so that understanding of the formal notation is <em>not</em> required to read this specification.
 The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.</p>
 </div>
-<p><a class="reference internal" href="runtime.html#store"><span class="std std-ref">Store</span></a>, <a class="reference internal" href="runtime.html#stack"><span class="std std-ref">stack</span></a>, and other <em>runtime structure</em>, such as <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">module instances</span></a>, are made precise in terms of additional auxiliary <a class="reference internal" href="runtime.html#syntax-runtime"><span class="std std-ref">syntax</span></a>.</p>
 <div class="section" id="prose-notation">
 <span id="exec-notation-textual"></span><h2>Prose Notation<a class="headerlink" href="#prose-notation" title="Permalink to this headline">¶</a></h2>
 <p>Execution is specified by stylised, step-wise rules for each <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> of the <a class="reference internal" href="../syntax/index.html#syntax"><span class="std std-ref">abstract syntax</span></a>.
@@ -122,7 +131,7 @@ The following conventions are adopted in stating these rules.</p>
 <li>The execution rules implicitly assume a given <a class="reference internal" href="runtime.html#store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span>.</li>
 <li>The execution rules also assume the presence of an implicit <a class="reference internal" href="runtime.html#stack"><span class="std std-ref">stack</span></a>
 that is modified by <em>pushing</em> or <em>popping</em>
-<a class="reference internal" href="../syntax/values.html#syntax-value"><span class="std std-ref">values</span></a>, <a class="reference internal" href="../syntax/instructions.html#syntax-label"><span class="std std-ref">labels</span></a>, and <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frames</span></a>.</li>
+<a class="reference internal" href="../syntax/values.html#syntax-value"><span class="std std-ref">values</span></a>, <a class="reference internal" href="runtime.html#syntax-label"><span class="std std-ref">labels</span></a>, and <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frames</span></a>.</li>
 <li>Certain rules require the stack to contain at least one frame.
 The most recent frame is referred to as the <em>current</em> frame.</li>
 <li>Both the store and the current frame are mutated by <em>replacing</em> some of its components.
@@ -131,9 +140,9 @@ Such replacement is assumed to apply globally.</li>
 in which case the entire computation is aborted and no further modifications to the store are performed by it. (Other computations can still be initiated afterwards.)</li>
 <li>The execution of an instruction may also end in a <em>jump</em> to a designated target,
 which defines the next instruction to execute.</li>
-<li>Execution can <em>enter</em> and <em>exit</em> <a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">instruction sequences</span></a> in a block-like fashion.</li>
+<li>Execution can <em>enter</em> and <em>exit</em> <a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">instruction sequences</span></a> that form <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">blocks</span></a>.</li>
 <li><a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">Instruction sequences</span></a> are implicitly executed in order, unless a trap or jump occurs.</li>
-<li>In various places the rules contain <em>assertions</em> expressing crucial invariants about the program state, with indications why these are known to hold.</li>
+<li>In various places the rules contain <em>assertions</em> expressing crucial invariants about the program state.</li>
 </ul>
 </div>
 <div class="section" id="formal-notation">
@@ -159,7 +168,7 @@ In particular, <a class="reference internal" href="runtime.html#syntax-val"><spa
 and a sequence of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions can be interpreted as an operand &#8220;stack&#8221; that grows to the right.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>For example, the <a class="reference internal" href="instructions.html#exec-binop"><span class="std std-ref">reduction rule</span></a> for the <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction could be given as follows:</p>
+<p>For example, the <a class="reference internal" href="instructions.html#exec-binop"><span class="std std-ref">reduction rule</span></a> for the <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction can be given as follows:</p>
 <div class="math">
 \[(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n_1)~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n_2)~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} \quad\hookrightarrow\quad (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~(n_1 + n_2) \mathbin{\mathrm{mod}} 2^{32})\]</div>
 <p>Per this rule, two <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions and the <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction itself are removed from the instruction stream and replaced with one new <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instruction.
@@ -168,11 +177,11 @@ This can be interpreted as popping two value off the stack and pushing the resul
 <div class="last math">
 \[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}} \quad\hookrightarrow\quad \epsilon\]</div>
 </div>
-<p><a class="reference internal" href="runtime.html#label"><span class="std std-ref">Labels</span></a> and <a class="reference internal" href="runtime.html#frame"><span class="std std-ref">frames</span></a> are similarly <a class="reference internal" href="runtime.html#syntax-instr-admin"><span class="std std-ref">defined to be part</span></a> of an instruction sequence.</p>
-<p>The order of reduction is determined by the definition of an approporiate <a class="reference internal" href="runtime.html#syntax-ctxt-eval"><span class="std std-ref">evaluation context</span></a>.</p>
+<p><a class="reference internal" href="runtime.html#label"><span class="std std-ref">Labels</span></a> and <a class="reference internal" href="runtime.html#frame"><span class="std std-ref">frames</span></a> are similarly <a class="reference internal" href="runtime.html#syntax-instr-admin"><span class="std std-ref">defined</span></a> to be part of an instruction sequence.</p>
+<p>The order of reduction is determined by the definition of an appropriate <a class="reference internal" href="runtime.html#syntax-ctxt-eval"><span class="std std-ref">evaluation context</span></a>.</p>
 <p>Reduction <em>terminates</em> when no more reduction rules are applicable.
 <a class="reference internal" href="../appendix/properties.html#soundness"><span class="std std-ref">Soundness</span></a> of the WebAssembly <a class="reference internal" href="../valid/conventions.html#type-system"><span class="std std-ref">type system</span></a> guarantees that this is only the case when the original instruction sequence has either been reduced to a sequence of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions, which can be interpreted as the <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> of the resulting operand stack,
-or if a trap occurred.</p>
+or if a <a class="reference internal" href="runtime.html#syntax-trap"><span class="std std-ref">trap</span></a> occurred.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>For example, the following instruction sequence,</p>

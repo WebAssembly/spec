@@ -65,7 +65,14 @@
     <li class="toctree-l1"><a href="./_download/WebAssembly.pdf">Download as PDF</a></li>
     
 </ul>
-
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="intro/index.html" title="next chapter">Introduction</a></li>
+  </ul></li>
+</ul>
+</div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -84,7 +91,7 @@
             
   <div class="section" id="webassembly-specification">
 <h1>WebAssembly Specification<a class="headerlink" href="#webassembly-specification" title="Permalink to this headline">¶</a></h1>
-<p>Release 1.0 (work in progress, last updated Jun 30, 2017)</p>
+<p>Release 1.0 (work in progress, last updated Jul 06, 2017)</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro/index.html">Introduction</a><ul>
@@ -102,15 +109,15 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="syntax/index.html">Structure</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="syntax/conventions.html">Conventions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="syntax/conventions.html#grammar">Grammar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/conventions.html#grammar-notation">Grammar Notation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="syntax/conventions.html#auxiliary-notation">Auxiliary Notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/conventions.html#vectors">Vectors</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="syntax/values.html">Values</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="syntax/values.html#bytes">Bytes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="syntax/values.html#integers">Integers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="syntax/values.html#floating-point">Floating-Point</a></li>
-<li class="toctree-l3"><a class="reference internal" href="syntax/values.html#vectors">Vectors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="syntax/values.html#names">Names</a></li>
 </ul>
 </li>
@@ -157,6 +164,11 @@
 <li class="toctree-l3"><a class="reference internal" href="valid/conventions.html#formal-notation">Formal Notation</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="valid/types.html">Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="valid/types.html#function-types">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/types.html#limits">Limits</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="valid/instructions.html">Instructions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="valid/instructions.html#numeric-instructions">Numeric Instructions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="valid/instructions.html#parametric-instructions">Parametric Instructions</a></li>
@@ -168,7 +180,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="valid/modules.html">Modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#auxiliary-rules">Auxiliary Rules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="valid/modules.html#functions">Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="valid/modules.html#tables">Tables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="valid/modules.html#memories">Memories</a></li>
@@ -217,7 +228,7 @@
 <li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#variable-instructions">Variable Instructions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#memory-instructions">Memory Instructions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#control-instructions">Control Instructions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#instruction-sequences">Instruction Sequences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#blocks">Blocks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#function-calls">Function Calls</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#expressions">Expressions</a></li>
 </ul>
@@ -236,13 +247,13 @@
 <li class="toctree-l2"><a class="reference internal" href="binary/conventions.html">Conventions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="binary/conventions.html#grammar">Grammar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="binary/conventions.html#auxiliary-notation">Auxiliary Notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/conventions.html#vectors">Vectors</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="binary/values.html">Values</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="binary/values.html#bytes">Bytes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="binary/values.html#integers">Integers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="binary/values.html#floating-point">Floating-Point</a></li>
-<li class="toctree-l3"><a class="reference internal" href="binary/values.html#vectors">Vectors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="binary/values.html#names">Names</a></li>
 </ul>
 </li>
@@ -290,6 +301,7 @@
 <li class="toctree-l3"><a class="reference internal" href="text/conventions.html#grammar">Grammar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="text/conventions.html#abbreviations">Abbreviations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="text/conventions.html#contexts">Contexts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/conventions.html#vectors">Vectors</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="text/lexical.html">Lexical Format</a><ul>
@@ -302,7 +314,6 @@
 <li class="toctree-l2"><a class="reference internal" href="text/values.html">Values</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="text/values.html#integers">Integers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="text/values.html#floating-point">Floating-Point</a></li>
-<li class="toctree-l3"><a class="reference internal" href="text/values.html#vectors">Vectors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="text/values.html#strings">Strings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="text/values.html#names">Names</a></li>
 <li class="toctree-l3"><a class="reference internal" href="text/values.html#text-id">Identifiers</a></li>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Validation &#8212; WebAssembly 1.0</title>
+    <title>Types &#8212; WebAssembly 1.0</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -27,8 +27,9 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="next" title="Conventions" href="conventions.html" />
-    <link rel="prev" title="Modules" href="../syntax/modules.html" />
+    <link rel="up" title="Validation" href="index.html" />
+    <link rel="next" title="Instructions" href="instructions.html" />
+    <link rel="prev" title="Conventions" href="conventions.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -47,9 +48,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Validation</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Validation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#function-types">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#limits">Limits</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
@@ -76,8 +81,10 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="../syntax/modules.html" title="previous chapter">Modules</a></li>
-      <li>Next: <a href="conventions.html" title="next chapter">Conventions</a></li>
+  <li><a href="index.html">Validation</a><ul>
+      <li>Previous: <a href="conventions.html" title="previous chapter">Conventions</a></li>
+      <li>Next: <a href="instructions.html" title="next chapter">Instructions</a></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>
@@ -97,45 +104,46 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="validation">
-<span id="valid"></span><h1>Validation<a class="headerlink" href="#validation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="conventions.html#contexts">Contexts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="conventions.html#prose-notation">Prose Notation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="conventions.html#formal-notation">Formal Notation</a></li>
+  <div class="section" id="types">
+<h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
+<p>Most <a class="reference internal" href="../syntax/types.html#syntax-type"><span class="std std-ref">types</span></a> are universally valid.
+However, restrictions apply to <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> and <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a>, which must be checked during validation.</p>
+<div class="section" id="function-types">
+<span id="valid-functype"></span><span id="index-0"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">Function types</span></a> may not specify more than one result.</p>
+<div class="section" id="id1">
+<h3><span class="math">\([t_1^n] \to [t_2^m]\)</span><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The arity <span class="math">\(m\)</span> must not be larger than <span class="math">\(1\)</span>.</li>
+<li>Then the function type is valid.</li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="types.html">Types</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="types.html#function-types">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="types.html#limits">Limits</a></li>
+<div class="math">
+\[\frac{
+}{
+  \vdash [t_1^\ast] \to [t_2^?] \mathrel{\mbox{ok}}
+}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This restriction may be removed in future versions of WebAssembly.</p>
+</div>
+</div>
+</div>
+<div class="section" id="limits">
+<span id="valid-limits"></span><span id="index-1"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">Limits</span></a> must have menaingful bounds.</p>
+<div class="section" id="id2">
+<h3><span class="math">\(\{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^? \}\)</span><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If the maximum <span class="math">\(m^?\)</span> is not empty, then its value must not be smaller than <span class="math">\(n\)</span>.</li>
+<li>Then the limit is valid.</li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html#numeric-instructions">Numeric Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html#parametric-instructions">Parametric Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html#variable-instructions">Variable Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html#memory-instructions">Memory Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html#control-instructions">Control Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html#instruction-sequences">Instruction Sequences</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html#expressions">Expressions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#functions">Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#tables">Tables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#memories">Memories</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#globals">Globals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#element-segments">Element Segments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#data-segments">Data Segments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#start-function">Start Function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#exports">Exports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#imports">Imports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#valid-module">Modules</a></li>
-</ul>
-</li>
-</ul>
+<div class="math">
+\[\frac{
+  (n \leq m)^?
+}{
+  \vdash \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^? \} \mathrel{\mbox{ok}}
+}\]</div>
+</div>
 </div>
 </div>
 

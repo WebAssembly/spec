@@ -75,7 +75,17 @@
     <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
     
 </ul>
-
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Introduction</a><ul>
+      <li>Previous: <a href="introduction.html" title="previous chapter">Introduction</a></li>
+      <li>Next: <a href="../syntax/index.html" title="next chapter">Structure</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -97,18 +107,18 @@
 <div class="section" id="concepts">
 <span id="index-0"></span><span id="id1"></span><h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline">¶</a></h2>
 <p>WebAssembly encodes a low-level, assembly-like programming language.
-This language is structured around the following main concepts.</p>
+This language is structured around the following concepts.</p>
 <dl class="docutils" id="value">
 <dt><strong>Values</strong></dt>
 <dd>WebAssembly provides only four basic <em>value types</em>.
-These are integers and <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE-754 floating point</a> numbers,
+These are integers and <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754 floating-point</a> numbers,
 each in 32 and 64 bit width.
 32 bit integers also serve as Booleans and as memory addresses.
 The usual operations on these types are available,
 including the full matrix of conversions between them.
 There is no distinction between signed and unsigned integer types.
 Instead, integers are interpreted by respective operations
-as either unsigned or signed in 2’s complement representation.</dd>
+as either unsigned or signed in two’s complement representation.</dd>
 </dl>
 <dl class="docutils" id="instruction">
 <dt><strong>Instructions</strong></dt>
@@ -116,7 +126,7 @@ as either unsigned or signed in 2’s complement representation.</dd>
 Code consists of sequences of <em>instructions</em> that are executed in order.
 Instructions manipulate values on an implicit <em>operand stack</em> <a class="footnote-reference" href="#stackmachine" id="id2">[1]</a>
 and fall into two main categories.
-Simple instructions perform basic operations on data.
+<em>Simple</em> instructions perform basic operations on data.
 They pop arguments from the operand stack and push results back to it.
 <em>Control</em> instructions alter control flow.
 Control flow is <em>structured</em>, meaning it is expressed with well-nested constructs such as blocks, loops, and conditionals.
@@ -145,12 +155,12 @@ Functions may also declare mutable <em>local variables</em> that are usable as v
 It allows programs to select such values indirectly through a dynamic index operand.
 Currently, the only available element type is an untyped function reference.
 Thereby, a program can call functions indirectly through a dynamic index into a table.
-For example, this allows emulating function pointers with table indices.</dd>
+For example, this allows emulating function pointers by way of table indices.</dd>
 </dl>
 <dl class="docutils" id="memory">
 <dt><strong>Linear Memory</strong></dt>
-<dd>A <em>linear memory</em> is a contiguous, mutable array of untyped bytes.
-Such a memory is created with an initial size but can be dynamically grown.
+<dd>A <em>linear memory</em> is a contiguous, mutable array of raw bytes.
+Such a memory is created with an initial size but can be grown dynamically.
 A program can load and store values from/to a linear memory at any byte address (including unaligned).
 Integer loads and stores can specify a <em>storage size</em> which is smaller than the size of the respective value type.
 A trap occurs if access is not within the bounds of the current memory size.</dd>
@@ -162,9 +172,9 @@ that contains definitions for functions, tables, and linear memories,
 as well as mutable or immutable <em>global variables</em>.
 Definitions can also be <em>imported</em>, specifying a module/name pair and a suitable type.
 Each definition can optionally be <em>exported</em> under one or more names.
-In addition to definitions, a module can define initialization data for its memory or table
+In addition to definitions, modules can define initialization data for their memories or tables
 that takes the form of <em>segments</em> copied to given offsets.
-It can also define a <em>start function</em> that is automatically executed.</dd>
+They can also define a <em>start function</em> that is automatically executed.</dd>
 </dl>
 <dl class="docutils" id="embedder">
 <dt><strong>Embedder</strong></dt>
@@ -207,13 +217,13 @@ In particular, it performs <em>type checking</em> of functions and the instructi
 <dd><p class="first">Finally, a valid module can be <em>executed</em>.
 Execution can be further divided into two phases:</p>
 <p><strong>Instantiation</strong>.
-An <em>instance</em> is the dynamic representation of a module,
+A module <em>instance</em> is the dynamic representation of a module,
 complete with its own state and execution stack.
-Instantiation executes the module body itself given definitions for all its imports.
+Instantiation executes the module body itself, given definitions for all its imports.
 It initializes globals, memories and tables and invokes the module&#8217;s start function if defined.
 It returns the instances of the module&#8217;s exports.</p>
 <p><strong>Invocation</strong>.
-Once instantiated, further WebAssembly computations can be initiated by <em>invoking</em> an exported function of an instance.
+Once instantiated, further WebAssembly computations can be initiated by <em>invoking</em> an exported function on a module instance.
 Given the required arguments, that executes the respective function and returns its results.</p>
 <p class="last">Instantiation and invocation are operations within the embedding environment.</p>
 </dd>
