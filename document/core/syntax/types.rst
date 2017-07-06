@@ -1,12 +1,15 @@
-.. index:: ! type
+.. index:: ! type, validation, instantiation, execution
    pair: abstract syntax; type
 .. _syntax-type:
 
 Types
 -----
 
+Various entitites in WebAssembly are classified by types.
+Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <syntax-call_indirect>`.
 
-.. index:: ! value type
+
+.. index:: ! value type, integer, floating-point, IEEE 754, bit width
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
@@ -25,19 +28,19 @@ Value Types
 The types |I32| and |I64| classify 32 and 64 bit integers, respectively.
 Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.
 
-The types |F32| and |F64| classify 32 and 64 bit floating points, respectively.
-They correspond to single and double precision floating point types as defined by the `IEEE-754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard
+The types |F32| and |F64| classify 32 and 64 bit floating-point data, respectively.
+They correspond to *single* and *double* precision floating-point types as defined by the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard
 
 Conventions
 ...........
 
 * The meta variable :math:`t` ranges over value types where clear from context.
 
-* The notation :math:`|t|` denotes the *width* of a value type.
-  (That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.)
+* The notation :math:`|t|` denotes the *bit width* of a value type.
+  That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
 
 
-.. index:: ! result type, value type
+.. index:: ! result type, value type, instruction, execution, block
    pair: abstract syntax; result type
    pair: result; type
 .. _syntax-resulttype:
@@ -45,7 +48,7 @@ Conventions
 Result Types
 ~~~~~~~~~~~~
 
-*Result types* classify the results of functions or blocks,
+*Result types* classify the result of :ref:`executing <exec-instr>` :ref:`instructions <syntax-instr>` or :ref:`blocks <syntax-instr-control>`,
 which is a sequence of values.
 
 .. math::
@@ -59,7 +62,7 @@ which is a sequence of values.
    However, this may be generalized to sequences of values in future versions.
 
 
-.. index:: ! function type, value type, result type
+.. index:: ! function type, value type, vector, function, parameter, result
    pair: abstract syntax; function type
    pair: function; type
 .. _syntax-functype:
@@ -67,7 +70,7 @@ which is a sequence of values.
 Function Types
 ~~~~~~~~~~~~~~
 
-*Function types* classify the signature of functions,
+*Function types* classify the signature of :ref:`functions <syntax-func>`,
 mapping a vector of parameters to a vector of results.
 
 .. math::
@@ -91,18 +94,18 @@ mapping a vector of parameters to a vector of results.
 Limits
 ~~~~~~
 
-*Limits* classify the size range of resizeable storage like associated with :ref:`memory types <syntax-memtype>` and :ref:`table types <syntax-tabletype>`.
+*Limits* classify the size range of resizeable storage associated with :ref:`memory types <syntax-memtype>` and :ref:`table types <syntax-tabletype>`.
 
 .. math::
    \begin{array}{llll}
    \production{limits} & \limits &::=&
-     \{ \MIN~\u32, \MAX~\u32^? \} \\
+     \{ \LMIN~\u32, \LMAX~\u32^? \} \\
    \end{array}
 
 If no maximum is given, the respective storage can grow to any size.
 
 
-.. index:: ! memory type, limits, page size
+.. index:: ! memory type, limits, page size, memory
    pair: abstract syntax; memory type
    pair: memory; type
    pair: memory; limits
@@ -111,7 +114,7 @@ If no maximum is given, the respective storage can grow to any size.
 Memory Types
 ~~~~~~~~~~~~
 
-*Memory types* classify linear memories and their size range.
+*Memory types* classify linear :ref:`memories <syntax-mem>` and their size range.
 
 .. math::
    \begin{array}{llll}
@@ -123,7 +126,7 @@ The limits constrain the minimum and optionally the maximum size of a memory.
 The limits are given in units of :ref:`page size <page-size>`.
 
 
-.. index:: ! table type, ! element type, limits
+.. index:: ! table type, ! element type, limits, table, element
    pair: abstract syntax; table type
    pair: abstract syntax; element type
    pair: table; type
@@ -135,7 +138,7 @@ The limits are given in units of :ref:`page size <page-size>`.
 Table Types
 ~~~~~~~~~~~
 
-*Table types* classify tables over elements of *element types* within a given size range.
+*Table types* classify :ref:`tables <syntax-table>` over elements of *element types* within a size range.
 
 .. math::
    \begin{array}{llll}
@@ -148,14 +151,14 @@ Table Types
 Like memories, tables are constrained by limits for their minimum and optionally maximum size.
 The limits are given in numbers of entries.
 
-The element type |ANYFUNC| is the infinite union of all `function types`.
+The element type |ANYFUNC| is the infinite union of all :ref:`function types <syntax-functype>`.
 A table of that type thus contains references to functions of heterogeneous type.
 
 .. note::
    In future versions of WebAssembly, additional element types may be introduced.
 
 
-.. index:: ! global type, ! mutability, value type
+.. index:: ! global type, ! mutability, value type, global, mutability
    pair: abstract syntax; global type
    pair: abstract syntax; mutability
    pair: global; type
@@ -166,7 +169,7 @@ A table of that type thus contains references to functions of heterogeneous type
 Global Types
 ~~~~~~~~~~~~
 
-*Global types* classify global variables, which hold a value and can either be mutable or immutable.
+*Global types* classify :ref:`global <syntax-global>` variables, which hold a value and can either be mutable or immutable.
 
 .. math::
    \begin{array}{llll}
@@ -178,7 +181,7 @@ Global Types
    \end{array}
 
 
-.. index:: ! external type, function type, table type, memory type, global type
+.. index:: ! external type, function type, table type, memory type, global type, import, external value
    pair: abstract syntax; external type
    pair: external; type
 .. _syntax-externtype:
@@ -191,10 +194,10 @@ External Types
 .. math::
    \begin{array}{llll}
    \production{external types} & \externtype &::=&
-     \FUNC~\functype ~|~
-     \TABLE~\tabletype ~|~
-     \MEM~\memtype ~|~
-     \GLOBAL~\globaltype \\
+     \ETFUNC~\functype ~|~
+     \ETTABLE~\tabletype ~|~
+     \ETMEM~\memtype ~|~
+     \ETGLOBAL~\globaltype \\
    \end{array}
 
 
@@ -204,10 +207,10 @@ Conventions
 The following auxiliary notation is defined for sequences of external types.
 It filters out entries of a specific kind in an order-preserving fashion:
 
-.. math::
-   \begin{array}{lcl}
-   \funcs(\externtype^\ast) &=& [\functype ~|~ (\FUNC~\functype) \in \externtype^\ast] \\
-   \tables(\externtype^\ast) &=& [\tabletype ~|~ (\TABLE~\tabletype) \in \externtype^\ast] \\
-   \mems(\externtype^\ast) &=& [\memtype ~|~ (\MEM~\memtype) \in \externtype^\ast] \\
-   \globals(\externtype^\ast) &=& [\globaltype ~|~ (\GLOBAL~\globaltype) \in \externtype^\ast] \\
-   \end{array}
+* :math:`\etfuncs(\externtype^\ast) = [\functype ~|~ (\ETFUNC~\functype) \in \externtype^\ast]`
+
+* :math:`\ettables(\externtype^\ast) = [\tabletype ~|~ (\ETTABLE~\tabletype) \in \externtype^\ast]`
+
+* :math:`\etmems(\externtype^\ast) = [\memtype ~|~ (\ETMEM~\memtype) \in \externtype^\ast]`
+
+* :math:`\etglobals(\externtype^\ast) = [\globaltype ~|~ (\ETGLOBAL~\globaltype) \in \externtype^\ast]`

@@ -24,7 +24,7 @@ Bytes
    \end{array}
 
 
-.. index:: integer, unsigned integer, signed integer, uninterpreted integer, LEB128
+.. index:: integer, unsigned integer, signed integer, uninterpreted integer, LEB128, two's complement
    pair: binary format; integer
    pair: binary format; unsigned integer
    pair: binary format; signed integer
@@ -44,21 +44,21 @@ As an additional constraint, the total number of bytes encoding a value of type 
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{unsigned integer} & \BuN &::=&
-     n{:}\Bbyte &\Rightarrow& n & (n < 2^7 \wedge n < 2^N) \\ &&|&
+     n{:}\Bbyte &\Rightarrow& n & (\iff n < 2^7 \wedge n < 2^N) \\ &&|&
      n{:}\Bbyte~~m{:}\BuX{(N\B{-7})} &\Rightarrow&
-       2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
+       2^7\cdot m + (n-2^7) & (\iff n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
-:ref:`Signed integers <syntax-sint>` are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a 2's complement representation.
+:ref:`Signed integers <syntax-sint>` are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a two's complement representation.
 As an additional constraint, the total number of bytes encoding a value of type :math:`\sN` must not exceed :math:`\F{ceil}(N/7)` bytes.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{signed integer} & \BsN &::=&
-     n{:}\Bbyte &\Rightarrow& n & (n < 2^6 \wedge n < 2^{N-1}) \\ &&|&
-     n{:}\Bbyte &\Rightarrow& n-2^7 & (2^6 \leq n < 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &&|&
+     n{:}\Bbyte &\Rightarrow& n & (\iff n < 2^6 \wedge n < 2^{N-1}) \\ &&|&
+     n{:}\Bbyte &\Rightarrow& n-2^7 & (\iff 2^6 \leq n < 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &&|&
      n{:}\Bbyte~~m{:}\BsX{(N\B{-7})} &\Rightarrow&
-       2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
+       2^7\cdot m + (n-2^7) & (\iff n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
 :ref:`Uninterpreted integers <syntax-int>` are encoded as signed integers.
@@ -66,92 +66,77 @@ As an additional constraint, the total number of bytes encoding a value of type 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{uninterpreted integer} & \BiN &::=&
-     n{:}\BsN &\Rightarrow& i & (n = \signed_{\iN}(i))
+     n{:}\BsN &\Rightarrow& i & (\iff n = \signed_{\iN}(i))
    \end{array}
 
 .. note::
-   While the side conditions :math:`N > 7` in the productions for *non-terminating* bytes restrict the length of the :math:`\uX{}` and :math:`\sX{}` encodings,
-   "trailing zeros" are still allowed within these bounds.
+   The side conditions :math:`N > 7` in the productions for non-terminal bytes of the :math:`\uX{}` and :math:`\sX{}` encodings restrict the encoding's length.
+   However, "trailing zeros" are still allowed within these bounds.
    For example, :math:`\hex{03}` and :math:`\hex{83}~\hex{00}` are both well-formed encodings for the value :math:`3` as a |u8|.
    Similarly, either of :math:`\hex{7e}` and :math:`\hex{FE}~\hex{7F}` and :math:`\hex{FE}~\hex{FF}~\hex{7F}` are well-formed encodings of the value :math:`-2` as a |s16|.
 
-   The side conditions on the value :math:`n` of *terminating* bytes further enforce that
+   The side conditions on the value :math:`n` of terminal bytes further enforce that
    any unused bits in these bytes must be :math:`0` for positive values and :math:`1` for negative ones.
    For example, :math:`\hex{83}~\hex{10}` is malformed as a |u8| encoding.
    Similarly, both :math:`\hex{83}~\hex{3E}` and :math:`\hex{FF}~\hex{7B}` are malformed as |s8| encodings.
 
 
-.. index:: floating-point number
+.. index:: floating-point number, little endian
    pair: binary format; floating-point number
 .. _binary-float:
 
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating point <syntax-float>` values are encoded by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+:ref:`Floating-point <syntax-float>` values are encoded directly by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{floating-point number} & \BfN &::=&
-     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \bytes_{\fN}^{-1}(\F{reverse}(b^\ast)) \\
-   \end{array}
-
-Here, :math:`\F{reverse}(b^\ast)` denotes the byte sequence :math:`b^\ast` in reversed order.
-
-
-.. index:: vector
-   pair: binary format; vector
-.. _binary-vec:
-
-Vectors
-~~~~~~~
-
-:ref:`Vectors <syntax-vec>` are encoded with their length followed by the encoding of their element sequence.
-
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{vector} & \Bvec(\B{B}) &::=&
-     n{:}\Bu32~~(x{:}\B{B})^n &\Rightarrow& x^n \\
+   \production{floating-point value} & \BfN &::=&
+     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \bytes_{\fN}^{-1}(b^\ast) \\
    \end{array}
 
 
-.. index:: name, byte, Unicode, UTF-8
+.. index:: name, byte, Unicode, ! UTF-8
    pair: binary format; name
+.. _binary-utf8:
 .. _binary-name:
 
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are encoded like a :ref:`vector <binary-vec>` of bytes containing the `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding of the name's code point sequence.
+:ref:`Names <syntax-name>` are encoded as a :ref:`vector <binary-vec>` of bytes containing the `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding of the name's code point sequence.
 
 .. math::
-   \begin{array}{llclll@{\qquad}l}
+   \begin{array}{llclllll}
    \production{name} & \Bname &::=&
-     n{:}\Bu32~~(\X{uc}{:}\Bcodepoint)^\ast &\Rightarrow& \X{uc}^\ast
-       & (|\Bcodepoint^\ast| = n) \\
-   \production{code point} & \Bcodepoint &::=&
-     \X{uv}{:}\Bcodeval_N &\Rightarrow& \X{uv}
-       & (\X{uv} \geq N \wedge (\X{uv} < \unicode{D800} \vee \unicode{E000} \leq \X{uv} < \unicode{110000})) \\
-   \production{code value} & \Bcodeval_N &::=&
-     b_1{:}\Bbyte &\Rightarrow&
-       b_1
-       & (b_1 < \hex{80} \wedge N = \unicode{00}) \\ &&|&
-     b_1{:}\Bbyte~~b_2{:}\Bcodecont &\Rightarrow&
-       2^6\cdot(b_1-\hex{c0}) + b_2
-       & (\hex{c0} \leq b_1 < \hex{e0} \wedge N = \unicode{80}) \\ &&|&
-     b_1{:}\Bbyte~~b_2{:}\Bcodecont~~b_3{:}\Bcodecont &\Rightarrow&
-       2^{12}\cdot(b_1-\hex{e0}) + 2^6\cdot b_2 + b_3
-       & (\hex{e0} \leq b_1 < \hex{f0} \wedge N = \unicode{800}) \\ &&|&
-     b_1{:}\Bbyte~~b_2{:}\Bcodecont~~b_3{:}\Bcodecont~~b_4{:}\Bcodecont
-       &\Rightarrow&
-       2^{18}\cdot(b_1-\hex{f0}) + 2^{12}\cdot b_2 + 2^6\cdot b_3 + b_4
-       & (\hex{f0} \leq b_1 < \hex{f8} \wedge N = \unicode{10000}) \\
-   \production{code continuation} & \Bcodecont &::=&
-     b{:}\Bbyte &\Rightarrow& b - \hex{80} & (b \geq \hex{80}) \\
+     b^\ast{:}\Bvec(\Bbyte) &\Rightarrow& \name
+       && (\iff \utf8(\name) = b^\ast) \\
    \end{array}
 
-.. note::
-   The :ref:`size <binary-notation>`, :math:`||\Bcodepoint^\ast||` denotes the number of bytes in the encoding of the sequence, not the number of code points.
+The auxiliary |utf8| function expressing this encoding is defined as follows:
 
-   The index :math:`N` to |Bcodeval| is the minimum value that a given byte sequence may decode into.
-   The respective side conditions on it exclude encodings using more than the minimal number of bytes to represent a code point.
+.. math::
+   \begin{array}{@{}lcl@{\qquad}l}
+   \utf8(c^\ast) &=& (\utf8(c))^\ast \\[1ex]
+   \utf8(c) &=& b &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & c < \unicode{80} \\
+      \wedge & c = b) \\
+      \end{array} \\
+   \utf8(c) &=& b_1~b_2 &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & \unicode{80} \leq c < \unicode{800} \\
+      \wedge & c = 2^6(b_1-\hex{C0})+(b_2-\hex{80})) \\
+      \end{array} \\
+   \utf8(c) &=& b_1~b_2~b_3 &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & \unicode{800} \leq c < \unicode{10000} \\
+      \wedge & c = 2^{12}(b_1-\hex{C0})+2^6(b_2-\hex{80})+(b_3-\hex{80})) \\
+      \end{array} \\
+   \utf8(c) &=& b_1~b_2~b_3~b_4 &
+     (\begin{array}[t]{@{}c@{~}l@{}}
+      \iff & \unicode{10000} \leq c < \unicode{110000} \\
+      \wedge & c = 2^{18}(b_1-\hex{C0})+2^{12}(b_2-\hex{80})+2^6(b_3-\hex{80})+(b_4-\hex{80})) \\
+      \end{array} \\
+   \end{array}

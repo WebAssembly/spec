@@ -25,7 +25,7 @@ Value Types
 
 .. note::
    In future versions of WebAssembly, value types may include types denoted by :ref:`type indices <syntax-typeidx>`.
-   Thus, the binary format for types corresponds to the encodings of small negative :math:`\xref{binary/values}{binary-sint}{\sX{}}` values, so that they can coexist with (positive) type indices.
+   Thus, the binary format for types corresponds to the encodings of small negative :math:`\xref{binary/values}{binary-sint}{\sN}` values, so that they can coexist with (positive) type indices in the future.
 
 
 .. index:: result type, value type
@@ -78,8 +78,8 @@ Limits
 .. math::
    \begin{array}{llclll}
    \production{limits} & \Blimits &::=&
-     \hex{00}~~n{:}\Bu32 &\Rightarrow& \{ \MIN~n, \MAX~\epsilon \} \\ &&|&
-     \hex{01}~~n{:}\Bu32~~m{:}\Bu32 &\Rightarrow& \{ \MIN~n, \MAX~m \} \\
+     \hex{00}~~n{:}\Bu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
+     \hex{01}~~n{:}\Bu32~~m{:}\Bu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
    \end{array}
 
 

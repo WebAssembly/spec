@@ -1,4 +1,4 @@
-.. index:: ! validation, ! type system, function type, table type, memory type, globaltype, valtype, resulttype, index space
+.. index:: ! validation, ! type system, function type, table type, memory type, globaltype, valtype, resulttype, index space, instantiation. module
 .. _type-system:
 
 Conventions
@@ -7,7 +7,7 @@ Conventions
 Validation checks that a WebAssembly module is well-formed.
 Only valid modules can be :ref:`instantiated <exec-instantiation>`.
 
-Validity is defined by a *type system* over the :ref:`abstract syntax <syntax>` of both instructions and modules.
+Validity is defined by a *type system* over the :ref:`abstract syntax <syntax>` of a :ref:`module <syntax-module>` and its contents.
 For each piece of abstract syntax, there is a typing rule that specifies the constraints that apply to it.
 All rules are given in two *equivalent* forms:
 
@@ -24,14 +24,14 @@ That is, they only formulate the constraints, they do not define an algorithm.
 A sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the :ref:`appendix <soundness>`.
 
 
-.. index:: ! context, function type, table type, memory type, global type, value type, result type, index space
+.. index:: ! context, function type, table type, memory type, global type, value type, result type, index space, module, function
 .. _context:
 
 Contexts
 ~~~~~~~~
 
 Validity of an individual definition is specified relative to a *context*,
-which collects relevant information about the surrounding :ref:`module <syntax-module>` and other definitions in scope:
+which collects relevant information about the surrounding :ref:`module <syntax-module>` and the definitions in scope:
 
 * *Types*: the list of types defined in the current module.
 * *Functions*: the list of functions declared in the current module, represented by their function type.
@@ -47,20 +47,20 @@ describing each defined entry in that space.
 Locals, labels and return type are only used for validating :ref:`instructions <syntax-instr>` in :ref:`function bodies <syntax-func>`, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.
 
-It is convenient to define contexts as :ref:`records <syntax-record>` :math:`C` with abstract syntax:
+It is convenient to define contexts as :ref:`records <notation-record>` :math:`C` with abstract syntax:
 
 .. math::
    \begin{array}{llll}
    \production{(context)} & C &::=&
      \begin{array}[t]{l@{~}ll}
-     \{ & \TYPES & \functype^\ast, \\
-        & \FUNCS & \functype^\ast, \\
-        & \TABLES & \tabletype^\ast, \\
-        & \MEMS & \memtype^\ast, \\
-        & \GLOBALS & \globaltype^\ast, \\
-        & \LOCALS & \valtype^\ast, \\
-        & \LABELS & \resulttype^\ast, \\
-        & \LRETURN & \resulttype^? ~\} \\
+     \{ & \CTYPES & \functype^\ast, \\
+        & \CFUNCS & \functype^\ast, \\
+        & \CTABLES & \tabletype^\ast, \\
+        & \CMEMS & \memtype^\ast, \\
+        & \CGLOBALS & \globaltype^\ast, \\
+        & \CLOCALS & \valtype^\ast, \\
+        & \CLABELS & \resulttype^\ast, \\
+        & \CRETURN & \resulttype^? ~\} \\
      \end{array}
    \end{array}
 
@@ -120,7 +120,7 @@ Formal Notation
    For the interested reader, a more thorough introduction can be found in respective text books. [#tapl]_
 
 The proposition that a phrase :math:`A` has a respective type :math:`T` is written :math:`A : T`.
-In general, however, typing is dependent on the context :math:`C`.
+In general, however, typing is dependent on a context :math:`C`.
 To express this explicitly, the complete form is a *judgement* :math:`C \vdash A : T`,
 which says that :math:`A : T` holds under the assumptions encoded in :math:`C`.
 
@@ -150,13 +150,13 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
 
    The instruction is always valid with type :math:`[\I32~\I32] \to [\I32`]
    (saying that it consumes two |I32| values and produces one),
-   independent from any side conditions.
+   independent of any side conditions.
 
    An instruction like |GETLOCAL| can be typed as follows:
 
    .. math::
       \frac{
-        C.\LOCALS[x] = t
+        C.\CLOCALS[x] = t
       }{
         C \vdash \GETLOCAL~x : [] \to [t]
       }
@@ -164,7 +164,7 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
    Here, the premise enforces that the immediate :ref:`local index <syntax-localidx>` :math:`x` exists in the context.
    The instruction produces a value of its respective type :math:`t`
    (and does not consume any values).
-   If :math:`C.\LOCALS[x]` does not exist then the premise does not hold,
+   If :math:`C.\CLOCALS[x]` does not exist then the premise does not hold,
    and the instruction is ill-typed.
 
    Finally, a :ref:`structured <syntax-instr-control>` instruction requires
@@ -178,10 +178,10 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
       }
 
    A |BLOCK| instruction is only valid when the instruction sequence in its body is.
-   Moreover, the result type must match the block's annotation :math:`t^?`.
+   Moreover, the result type must match the block's annotation :math:`[t^?]`.
    If so, then the |BLOCK| instruction has the same type as the body.
    Inside the body an additional label of the same type is available,
-   which is expressed by locally extending the context :math:`C` with the additional label information for the premise.
+   which is expressed by extending the context :math:`C` with the additional label information for the premise.
 
 
 .. [#tapl]

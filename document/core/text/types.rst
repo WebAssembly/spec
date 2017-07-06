@@ -87,8 +87,8 @@ Limits
 .. math::
     \begin{array}{llclll}
     \production{limits} & \Tlimits &::=&
-      n{:}\Tu32 &\Rightarrow& \{ \MIN~n, \MAX~\epsilon \} \\ &&|&
-      n{:}\Tu32~~m{:}\Tu32 &\Rightarrow& \{ \MIN~n, \MAX~m \} \\
+      n{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
+      n{:}\Tu32~~m{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
     \end{array}
 
 

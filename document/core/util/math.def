@@ -27,7 +27,8 @@
 
 .. |mod| mathdef:: \mathbin{\F{mod}}
 
-.. |iff| mathdef:: \mathop{\mbox{if}}
+.. |iff| mathdef:: \mathrel{\mbox{if}}
+.. |otherwise| mathdef:: \mathrel{\mbox{otherwise}}
 .. |where| mathdef:: \mathrel{\mbox{where}}
 
 
@@ -42,16 +43,21 @@
 
 .. Notation for Sequences & Records
 
-.. |concat| mathdef:: \xref{syntax/conventions}{syntax-concat}{\F{concat}}
-
-.. |with| mathdef:: \xref{syntax/conventions}{syntax-record}{\mathrel{\mbox{with}}}
-.. |compose| mathdef:: \xref{syntax/conventions}{syntax-record}{\oplus}
-.. |bigcompose| mathdef:: \xref{syntax/conventions}{syntax-record}{\bigoplus}
+.. |slice| mathdef:: \xref{syntax/conventions}{notation-slice}{\mathrel{\mathbf{:}}}
+.. |with| mathdef:: \xref{syntax/conventions}{notation-replace}{\mathrel{\mbox{with}}}
+.. |concat| mathdef:: \xref{syntax/conventions}{notation-concat}{\F{concat}}
+.. |compose| mathdef:: \xref{syntax/conventions}{notation-compose}{\oplus}
+.. |bigcompose| mathdef:: \xref{syntax/conventions}{notation-compose}{\bigoplus}
 
 
 
 .. Abstract Syntax
 .. ---------------
+
+.. Auxiliary productions
+
+.. |vec| mathdef:: \xref{syntax/conventions}{syntax-vec}{\X{vec}}
+
 
 .. Values, terminals
 
@@ -85,6 +91,8 @@
 .. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\sX{\X{64}}}
 
 .. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\iX{N}}
+.. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{8}}}
+.. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{16}}}
 .. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{32}}}
 .. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{64}}}
 
@@ -93,7 +101,6 @@
 .. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{32}}}
 .. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{64}}}
 
-.. |vec| mathdef:: \xref{syntax/values}{syntax-vec}{\X{vec}}
 .. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
 .. |codepoint| mathdef:: \xref{syntax/values}{syntax-name}{\X{codepoint}}
 
@@ -103,8 +110,6 @@
 .. |canon| mathdef:: \xref{syntax/values}{aux-canon}{\F{canon}}
 .. |significand| mathdef:: \xref{syntax/values}{aux-significand}{\F{signif}}
 .. |exponent| mathdef:: \xref{syntax/values}{aux-exponent}{\F{expon}}
-
-.. |utf8| mathdef:: \xref{syntax/values}{syntax-utf8}{\F{utf8}}
 
 
 .. Types, terminals
@@ -117,11 +122,17 @@
 .. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
 
 .. |ANYFUNC| mathdef:: \xref{syntax/types}{syntax-elemtype}{\K{anyfunc}}
+
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 .. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
 
-.. |MIN| mathdef:: \K{min}
-.. |MAX| mathdef:: \K{max}
+.. |LMIN| mathdef:: \xref{syntax/types}{syntax-limits}{\K{min}}
+.. |LMAX| mathdef:: \xref{syntax/types}{syntax-limits}{\K{max}}
+
+.. |ETFUNC| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{func}}
+.. |ETTABLE| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{table}}
+.. |ETMEM| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{mem}}
+.. |ETGLOBAL| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{global}}
 
 
 .. Types, non-terminals
@@ -133,6 +144,7 @@
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
 .. |elemtype| mathdef:: \xref{syntax/types}{syntax-elemtype}{\X{elemtype}}
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
+
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
 .. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
 
@@ -141,10 +153,10 @@
 
 .. Types, meta functions
 
-.. |funcs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
-.. |tables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}
-.. |mems| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{mems}}
-.. |globals| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{globals}}
+.. |etfuncs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
+.. |ettables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}
+.. |etmems| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{mems}}
+.. |etglobals| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{globals}}
 
 
 .. Indices, non-terminals
@@ -160,19 +172,52 @@
 
 .. Modules, terminals
 
-.. |MODULE| mathdef:: \K{module}
-.. |TYPE| mathdef:: \K{type}
-.. |FUNC| mathdef:: \K{func}
-.. |TABLE| mathdef:: \K{table}
-.. |MEM| mathdef:: \K{mem}
-.. |GLOBAL| mathdef:: \K{global}
-.. |IMPORT| mathdef:: \K{import}
-.. |EXPORT| mathdef:: \K{export}
-.. |CODE| mathdef:: \K{code}
-.. |DATA| mathdef:: \K{data}
-.. |ELEM| mathdef:: \K{elem}
-.. |START| mathdef:: \K{start}
-.. |CUSTOM| mathdef:: \K{custom}
+.. |MTYPES| mathdef:: \xref{syntax/modules}{syntax-module}{\K{types}}
+.. |MFUNCS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{funcs}}
+.. |MTABLES| mathdef:: \xref{syntax/modules}{syntax-module}{\K{tables}}
+.. |MMEMS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{mems}}
+.. |MGLOBALS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{globals}}
+.. |MIMPORTS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{imports}}
+.. |MEXPORTS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{exports}}
+.. |MDATA| mathdef:: \xref{syntax/modules}{syntax-module}{\K{data}}
+.. |MELEM| mathdef:: \xref{syntax/modules}{syntax-module}{\K{elem}}
+.. |MSTART| mathdef:: \xref{syntax/modules}{syntax-module}{\K{start}}
+
+.. |FTYPE| mathdef:: \xref{syntax/modules}{syntax-func}{\K{type}}
+.. |FLOCALS| mathdef:: \xref{syntax/modules}{syntax-func}{\K{locals}}
+.. |FBODY| mathdef:: \xref{syntax/modules}{syntax-func}{\K{body}}
+
+.. |TTYPE| mathdef:: \xref{syntax/modules}{syntax-table}{\K{type}}
+
+.. |MTYPE| mathdef:: \xref{syntax/modules}{syntax-mem}{\K{type}}
+
+.. |GTYPE| mathdef:: \xref{syntax/modules}{syntax-global}{\K{type}}
+.. |GINIT| mathdef:: \xref{syntax/modules}{syntax-global}{\K{init}}
+
+.. |ETABLE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{table}}
+.. |EOFFSET| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{offset}}
+.. |EINIT| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{init}}
+
+.. |DMEM| mathdef:: \xref{syntax/modules}{syntax-data}{\K{data}}
+.. |DOFFSET| mathdef:: \xref{syntax/modules}{syntax-data}{\K{offset}}
+.. |DINIT| mathdef:: \xref{syntax/modules}{syntax-data}{\K{init}}
+
+.. |SFUNC| mathdef:: \xref{syntax/modules}{syntax-start}{\K{func}}
+
+.. |ENAME| mathdef:: \xref{syntax/modules}{syntax-export}{\K{name}}
+.. |EDESC| mathdef:: \xref{syntax/modules}{syntax-export}{\K{desc}}
+.. |EDFUNC| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{func}}
+.. |EDTABLE| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{table}}
+.. |EDMEM| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{mem}}
+.. |EDGLOBAL| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{global}}
+
+.. |IMODULE| mathdef:: \xref{syntax/modules}{syntax-import}{\K{module}}
+.. |INAME| mathdef:: \xref{syntax/modules}{syntax-import}{\K{name}}
+.. |IDESC| mathdef:: \xref{syntax/modules}{syntax-import}{\K{desc}}
+.. |IDFUNC| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{func}}
+.. |IDTABLE| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{table}}
+.. |IDMEM| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{mem}}
+.. |IDGLOBAL| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{global}}
 
 
 .. Modules, non-terminals
@@ -192,10 +237,18 @@
 .. |start| mathdef:: \xref{syntax/modules}{syntax-start}{\X{start}}
 
 
+.. Modules, meta functions
+
+.. |edfuncs| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{funcs}}
+.. |edtables| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{tables}}
+.. |edmems| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{mems}}
+.. |edglobals| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{globals}}
+
+
 .. Instructions, terminals
 
-.. |OFFSET| mathdef:: \K{offset}
-.. |ALIGN| mathdef:: \K{align}
+.. |OFFSET| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{offset}}
+.. |ALIGN| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{align}}
 
 .. |UNREACHABLE| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{unreachable}}
 .. |NOP| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{nop}}
@@ -296,6 +349,11 @@
 .. Binary Format
 .. -------------
 
+.. Auxiliary productions
+
+.. |Bvec| mathdef:: \xref{binary/conventions}{binary-vec}{\B{vec}}
+
+
 .. Values, non-terminals
 
 .. |Bbyte| mathdef:: \xref{binary/values}{binary-byte}{\B{byte}}
@@ -324,11 +382,13 @@
 .. |Bf32| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{32}}}
 .. |Bf64| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{64}}}
 
-.. |Bvec| mathdef:: \xref{binary/values}{binary-vec}{\B{vec}}
 .. |Bname| mathdef:: \xref{binary/values}{binary-name}{\B{name}}
 .. |Bcodepoint| mathdef:: \xref{binary/values}{binary-name}{\B{codepoint}}
-.. |Bcodeval| mathdef:: \xref{binary/values}{binary-name}{\B{codeval}}
-.. |Bcodecont| mathdef:: \xref{binary/values}{binary-name}{\B{cont}}
+
+
+.. Values, meta functions
+
+.. |utf8| mathdef:: \xref{binary/values}{binary-utf8}{\F{utf8}}
 
 
 .. Types, non-terminals
@@ -406,6 +466,11 @@
 .. Text Format
 .. -----------
 
+.. Auxiliary productions
+
+.. |Tvec| mathdef:: \xref{text/conventions}{text-vec}{\T{vec}}
+
+
 .. Lexical grammar, terminals
 
 .. |textl| mathdef:: \mbox{‘}
@@ -435,8 +500,6 @@
 
 
 .. Values, non-terminals
-
-.. |Tbyte| mathdef:: \xref{text/values}{text-byte}{\T{byte}}
 
 .. |Tsign| mathdef:: \xref{text/values}{text-sign}{\T{sign}}
 .. |Tdigit| mathdef:: \xref{text/values}{text-digit}{\T{digit}}
@@ -473,7 +536,6 @@
 .. |Tf32| mathdef:: \xref{text/values}{text-float}{\TfX{\T{32}}}
 .. |Tf64| mathdef:: \xref{text/values}{text-float}{\TfX{\T{64}}}
 
-.. |Tvec| mathdef:: \xref{text/values}{text-vec}{\T{vec}}
 .. |Tstring| mathdef:: \xref{text/values}{text-string}{\T{string}}
 .. |Tstringelem| mathdef:: \xref{text/values}{text-string}{\T{stringelem}}
 .. |Tstringchar| mathdef:: \xref{text/values}{text-string}{\T{stringchar}}
@@ -483,7 +545,7 @@
 .. |Tcodecont| mathdef:: \xref{text/values}{text-name}{\T{cont}}
 
 .. |Tid| mathdef:: \xref{text/values}{text-id}{\T{id}}
-.. |Tidchar| mathdef:: \xref{text/values}{text-id}{\T{idchar}}
+.. |Tidchar| mathdef:: \xref{text/values}{text-idchar}{\T{idchar}}
 
 
 .. Types, non-terminals
@@ -564,7 +626,14 @@
 
 .. Contexts
 
-.. |TYPEDEFS| mathdef:: \K{typedefs}
+.. |ITYPEDEFS| mathdef:: \xref{text/conventions}{text-context}{\K{typedefs}}
+.. |ITYPES| mathdef:: \xref{text/conventions}{text-context}{\K{types}}
+.. |IFUNCS| mathdef:: \xref{text/conventions}{text-context}{\K{funcs}}
+.. |ITABLES| mathdef:: \xref{text/conventions}{text-context}{\K{tables}}
+.. |IMEMS| mathdef:: \xref{text/conventions}{text-context}{\K{mems}}
+.. |IGLOBALS| mathdef:: \xref{text/conventions}{text-context}{\K{globals}}
+.. |ILOCALS| mathdef:: \xref{text/conventions}{text-context}{\K{locals}}
+.. |ILABELS| mathdef:: \xref{text/conventions}{text-context}{\K{labels}}
 
 
 .. Meta Functions
@@ -578,18 +647,21 @@
 .. Validation
 .. ----------
 
+.. Notation
+
+.. |ok| mathdef:: \mathrel{\mbox{ok}}
+
+
 .. Contexts
 
-.. |TYPES| mathdef:: \K{types}
-.. |FUNCS| mathdef:: \K{funcs}
-.. |TABLES| mathdef:: \K{tables}
-.. |MEMS| mathdef:: \K{mems}
-.. |GLOBALS| mathdef:: \K{globals}
-.. |LOCALS| mathdef:: \K{locals}
-.. |LABELS| mathdef:: \K{labels}
-.. |LRETURN| mathdef:: \K{return}
-.. |IMPORTS| mathdef:: \K{imports}
-.. |EXPORTS| mathdef:: \K{exports}
+.. |CTYPES| mathdef:: \xref{valid/conventions}{context}{\K{types}}
+.. |CFUNCS| mathdef:: \xref{valid/conventions}{context}{\K{funcs}}
+.. |CTABLES| mathdef:: \xref{valid/conventions}{context}{\K{tables}}
+.. |CMEMS| mathdef:: \xref{valid/conventions}{context}{\K{mems}}
+.. |CGLOBALS| mathdef:: \xref{valid/conventions}{context}{\K{globals}}
+.. |CLOCALS| mathdef:: \xref{valid/conventions}{context}{\K{locals}}
+.. |CLABELS| mathdef:: \xref{valid/conventions}{context}{\K{labels}}
+.. |CRETURN| mathdef:: \xref{valid/conventions}{context}{\K{return}}
 
 
 
@@ -622,14 +694,34 @@
 
 .. Instances, terminals
 
-.. |VALUE| mathdef:: \K{value}
-.. |INIT| mathdef:: \K{init}
-.. |BODY| mathdef:: \K{body}
-.. |NAME| mathdef:: \K{name}
-.. |DESC| mathdef:: \K{desc}
+.. |FITYPE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{type}}
+.. |FIMODULE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{module}}
+.. |FICODE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{code}}
+.. |FIHOSTCODE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{hostcode}}
 
-.. |MUT| mathdef:: \K{mut}
-.. |HOST| mathdef:: \K{host}
+.. |TIELEM| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{elem}}
+.. |TIMAX| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{max}}
+
+.. |MIDATA| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{data}}
+.. |MIMAX| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{max}}
+
+.. |GIVALUE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{value}}
+.. |GIMUT| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{mut}}
+
+.. |EINAME| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{name}}
+.. |EIVALUE| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{value}}
+
+.. |EVFUNC| mathdef:: \xref{exec/runtime}{syntax-externval}{\K{func}}
+.. |EVTABLE| mathdef:: \xref{exec/runtime}{syntax-externval}{\K{table}}
+.. |EVMEM| mathdef:: \xref{exec/runtime}{syntax-externval}{\K{mem}}
+.. |EVGLOBAL| mathdef:: \xref{exec/runtime}{syntax-externval}{\K{global}}
+
+.. |MITYPES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{types}}
+.. |MIFUNCS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{funcaddrs}}
+.. |MITABLES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{tableaddrs}}
+.. |MIMEMS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{memaddrs}}
+.. |MIGLOBALS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{globaladdrs}}
+.. |MIEXPORTS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{exports}}
 
 
 .. Instances, non-terminals
@@ -647,22 +739,45 @@
 .. |hostfunc| mathdef:: \xref{exec/runtime}{syntax-hostfunc}{\X{hostfunc}}
 
 
-.. Store & Stack, terminals
+.. Instances, meta functions
 
-.. |TRAP| mathdef:: \xref{exec/runtime}{syntax-instr-admin}{\K{trap}}
-.. |LABEL| mathdef:: \xref{exec/runtime}{syntax-instr-admin}{\K{label}}
-.. |FRAME| mathdef:: \xref{exec/runtime}{syntax-instr-admin}{\K{frame}}
+.. |evfuncs| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{funcs}}
+.. |evtables| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{tables}}
+.. |evmems| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{mems}}
+.. |evglobals| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{globals}}
 
 
-.. Store & Stack, non-terminals
+.. Store, terminals
+
+.. |SFUNCS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{funcs}}
+.. |STABLES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{tables}}
+.. |SMEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{mems}}
+.. |SGLOBALS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{globals}}
+
+
+.. Store, non-terminals
 
 .. |store| mathdef:: \xref{exec/runtime}{syntax-store}{\X{store}}
-.. |frame| mathdef:: \xref{exec/runtime}{syntax-frame}{\X{frame}}
+
+
+.. Stack, terminals
+
+.. |LABEL| mathdef:: \xref{exec/runtime}{syntax-label}{\K{label}}
+.. |FRAME| mathdef:: \xref{exec/runtime}{syntax-frame}{\K{frame}}
+
+.. |ALOCALS| mathdef:: \xref{exec/runtime}{syntax-frame}{\K{locals}}
+.. |AMODULE| mathdef:: \xref{exec/runtime}{syntax-frame}{\K{module}}
+
+
+.. Stack, non-terminals
+
 .. |label| mathdef:: \xref{exec/runtime}{syntax-label}{\X{label}}
+.. |frame| mathdef:: \xref{exec/runtime}{syntax-frame}{\X{frame}}
 
 
 .. Administrative Instructions, terminals
 
+.. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
 .. |INSTANTIATE| mathdef:: \xref{exec/runtime}{syntax-instantiate}{\K{instantiate}}
 .. |INITGLOBAL| mathdef:: \xref{exec/runtime}{syntax-init_global}{\K{init\_global}}
@@ -760,3 +875,8 @@
 .. |ieee| mathdef:: \xref{exec/numerics}{aux-ieee}{\F{float}}
 .. |nans| mathdef:: \xref{exec/numerics}{aux-nans}{\F{nans}}
 .. |trunc| mathdef:: \xref{exec/numerics}{aux-trunc}{\F{trunc}}
+
+
+.. Other meta functions
+
+.. |invoke| mathdef:: \xref{exec/modules}{exec-invocation}{\F{invoke}}

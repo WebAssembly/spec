@@ -44,17 +44,26 @@ The character stream in the source text is divided, from left to right, into a s
      \Tkeyword ~|~ \TuN ~|~ \TsN ~|~ \TfN ~|~ \Tstring ~|~ \Tid ~|~
      \text{(} ~|~ \text{)} ~|~ \Treserved \\
    \production{keyword} & \Tkeyword &::=&
-     \mbox{(any terminal symbol in the grammar that is none of the above)} \\
+     (\text{a} ~|~ \dots ~|~ \text{z})~\Tidchar^\ast
+     \qquad (\mbox{if occurring as a literal terminal in the grammar}) \\
    \production{reserved} & \Treserved &::=&
      \Tidchar^+ \\
    \end{array}
 
-In this specification, the set of valid *keyword* tokens is defined implicitly, by their occurrence as a terminal symbols in literal form in the non-lexical grammar.
-Any sequence of alphanumeric or symbolic characters that is not in the other classes is considered a *reserved word*.
-
 Tokens are formed from the input character stream according to the *longest match* rule.
-That is, the next token always consists of the longest possible sequence of characters that is recognized by the above grammar.
-Where necessary, tokens may be separated by :ref:`white space <text-space>`.
+That is, the next token always consists of the longest possible sequence of characters that is recognized by the above lexical grammar.
+Tokens can be separated by :ref:`white space <text-space>`,
+but except for strings, they cannot themselves contain whitespace.
+
+The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:`terminal symbol <text-grammar>` in literal form :math:`\text{keyword}` in a :ref:`syntactic <text-syntactic>` production of this chapter.
+
+Any token that does not fall into any of the other categories is considered *reserved*, and cannot occur in source text.
+
+.. note::
+   The effect of defining the set of reserved tokens is that all tokens must be separated by either parentheses or :ref:`white space <text-space>`.
+   For example, :math:`\text{0\$x}` is a single reserved token.
+   Consequently, it is not recognized as two separate tokens :math:`\text{0}` and :math:`\text{\$x}`, but instead disallowed.
+   This property of tokenization is not affected by the fact that the definition of reserved tokens overlaps with other token classes.
 
 
 .. index:: ! white space, character, ASCII
@@ -97,13 +106,13 @@ Block comments can be nested.
    \production{line comment} & \Tlinecomment &::=&
      \Tcommentd~~\Tlinechar^\ast~~(\unicode{0A} ~|~ \T{eof}) \\
    \production{line character} & \Tlinechar &::=&
-     c{:}\Tchar & (c \neq \unicode{0A}) \\
+     c{:}\Tchar & (\iff c \neq \unicode{0A}) \\
    \production{block comment} & \Tblockcomment &::=&
      \Tcommentl~~\Tblockchar^\ast~~\Tcommentr \\
    \production{block character} & \Tblockchar &::=&
-     c{:}\Tchar & (c \neq \text{;} \wedge c \neq \text{(}) \\ &&|&
-     \text{;} & (\mbox{the next character is not}~\text{)}) \\ &&|&
-     \text{(} & (\mbox{the next character is not}~\text{;}) \\ &&|&
+     c{:}\Tchar & (\iff c \neq \text{;} \wedge c \neq \text{(}) \\ &&|&
+     \text{;} & (\iff~\mbox{the next character is not}~\text{)}) \\ &&|&
+     \text{(} & (\iff~\mbox{the next character is not}~\text{;}) \\ &&|&
      \Tblockcomment \\
    \end{array}
 

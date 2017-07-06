@@ -1,4 +1,4 @@
-.. index:: ! instruction, ! code, stack machine, operand, operand stack
+.. index:: ! instruction, code, stack machine, operand, operand stack
    pair: abstract syntax; instruction
 .. _syntax-instr:
 
@@ -7,7 +7,7 @@ Instructions
 
 WebAssembly code consists of sequences of *instructions*.
 Its computational model is based on a *stack machine* in that instructions manipulate values on an implicit *operand stack*,
-*consuming* (popping) argument values and *returning* (pushing) result values.
+consuming (popping) argument values and producing (pushing) result values.
 
 .. note::
    In the current version of WebAssembly,
@@ -23,7 +23,7 @@ Some instructions are :ref:`structured <syntax-instr-control>` in that they brac
 The following sections group instructions into a number of different categories.
 
 
-.. index:: ! numeric instruction
+.. index:: ! numeric instruction, value, value type, integer, floating-point, two's complement
    pair: abstract syntax; instruction
 .. _syntax-sx:
 .. _syntax-const:
@@ -45,31 +45,31 @@ The following sections group instructions into a number of different categories.
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-Numeric instructions provide basic operations over numeric values of specific type.
+Numeric instructions provide basic operations over numeric :ref:`values <syntax-value>` of specific :ref:`type <syntax-valtype>`.
 These operations closely match respective operations available in hardware.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llcl}
    \production{width} & \X{nn}, \X{mm} &::=&
      \K{32} ~|~ \K{64} \\
    \production{signedness} & \sx &::=&
      \K{u} ~|~ \K{s} \\
    \production{instruction} & \instr &::=&
      \K{i}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-int}{\iX{\X{nn}}} ~|~
-     \K{f}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-float}{\fX{\X{nn}}} ~|~ \\&&&
+     \K{f}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-float}{\fX{\X{nn}}} \\&&|&
      \K{i}\X{nn}\K{.}\iunop ~|~
-     \K{f}\X{nn}\K{.}\funop ~|~ \\&&&
+     \K{f}\X{nn}\K{.}\funop \\&&|&
      \K{i}\X{nn}\K{.}\ibinop ~|~
-     \K{f}\X{nn}\K{.}\fbinop ~|~ \\&&&
-     \K{i}\X{nn}\K{.}\itestop ~|~ \\&&&
+     \K{f}\X{nn}\K{.}\fbinop \\&&|&
+     \K{i}\X{nn}\K{.}\itestop \\&&|&
      \K{i}\X{nn}\K{.}\irelop ~|~
-     \K{f}\X{nn}\K{.}\frelop ~|~ \\&&&
+     \K{f}\X{nn}\K{.}\frelop \\&&|&
      \K{i32.}\WRAP\K{/i64} ~|~
      \K{i64.}\EXTEND\K{\_}\sx/\K{i32} ~|~
-     \K{i}\X{nn}\K{.}\TRUNC\K{\_}\sx/\K{f}\X{mm} ~|~ \\&&&
+     \K{i}\X{nn}\K{.}\TRUNC\K{\_}\sx/\K{f}\X{mm} \\&&|&
      \K{f32.}\TRUNC\K{/f64} ~|~
      \K{f64.}\PROMOTE\K{/f32} ~|~
-     \K{f}\X{nn}\K{.}\CONVERT\K{\_}\sx/\K{i}\X{mm} ~|~ \\&&&
+     \K{f}\X{nn}\K{.}\CONVERT\K{\_}\sx/\K{i}\X{mm} \\&&|&
      \K{i}\X{nn}\K{.}\REINTERPRET\K{/f}\X{nn} ~|~
      \K{f}\X{nn}\K{.}\REINTERPRET\K{/i}\X{nn} \\
    \production{integer unary operator} & \iunop &::=&
@@ -81,7 +81,7 @@ These operations closely match respective operations available in hardware.
      \K{sub} ~|~
      \K{mul} ~|~
      \K{div\_}\sx ~|~
-     \K{rem\_}\sx ~|~ \\&&&
+     \K{rem\_}\sx \\&&|&
      \K{and} ~|~
      \K{or} ~|~
      \K{xor} ~|~
@@ -132,16 +132,16 @@ For each type, several subcategories can be distinguished:
 
 * *Binary Operators*: consume two operands and produce one result of the respective type.
 
-* *Tests*: consume one operand of the respective type and produce a Boolean result.
+* *Tests*: consume one operand of the respective type and produce a Boolean integer result.
 
-* *Comparisons*: consume two operands of the respective type and produce a Boolean result.
+* *Comparisons*: consume two operands of the respective type and produce a Boolean integer result.
 
 * *Conversions*: consume a value of one type and produce a result of another
   (the source type of the conversion is the one after the ":math:`\K{/}`").
 
 Some integer instructions come in two flavours,
-where a signedness annotation |sx| distinguishes whether the operands are to be interpreted as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
-For the other integer instructions, the use of 2's complement for the signed interpretation means that they behave the same regardless of signedness.
+where a signedness annotation |sx| distinguishes whether the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
+For the other integer instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
 
 
 Conventions
@@ -166,7 +166,7 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
-.. index:: ! parametric instruction
+.. index:: ! parametric instruction, value type
    pair: abstract syntax; instruction
 .. _syntax-instr-parametric:
 
@@ -176,10 +176,10 @@ Parametric Instructions
 Instructions in this group can operate on operands of any :ref:`value type <syntax-valtype>`.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llcl}
    \production{instruction} & \instr &::=&
-     \dots ~|~ \\&&&
-     \DROP ~|~ \\&&&
+     \dots \\&&|&
+     \DROP \\&&|&
      \SELECT
    \end{array}
 
@@ -198,21 +198,21 @@ Variable Instructions
 Variable instructions are concerned with the access to :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variables.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llcl}
    \production{instruction} & \instr &::=&
-     \dots ~|~ \\&&&
-     \GETLOCAL~\localidx ~|~ \\&&&
-     \SETLOCAL~\localidx ~|~ \\&&&
-     \TEELOCAL~\localidx ~|~ \\&&&
-     \GETGLOBAL~\globalidx ~|~ \\&&&
-     \SETGLOBAL~\globalidx ~|~ \\
+     \dots \\&&|&
+     \GETLOCAL~\localidx \\&&|&
+     \SETLOCAL~\localidx \\&&|&
+     \TEELOCAL~\localidx \\&&|&
+     \GETGLOBAL~\globalidx \\&&|&
+     \SETGLOBAL~\globalidx \\
    \end{array}
 
 These instructions get or set the values of variables, respectively.
 The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
 
 
-.. index:: ! memory instruction, memory index
+.. index:: ! memory instruction, memory, memory index, page size, little endian, trap
    pair: abstract syntax; instruction
 .. _syntax-loadn:
 .. _syntax-storen:
@@ -222,31 +222,31 @@ The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Instructions in this group are concerned with :ref:`linear memory <syntax-mem>`.
+Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llcl}
    \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
    \production{instruction} & \instr &::=&
-     \dots ~|~ \\&&&
+     \dots \\&&|&
      \K{i}\X{nn}\K{.}\LOAD~\memarg ~|~
-     \K{f}\X{nn}\K{.}\LOAD~\memarg ~|~ \\&&&
+     \K{f}\X{nn}\K{.}\LOAD~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\STORE~\memarg ~|~
-     \K{f}\X{nn}\K{.}\STORE~\memarg ~|~ \\&&&
+     \K{f}\X{nn}\K{.}\STORE~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memarg ~|~
      \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memarg ~|~
-     \K{i64.}\LOAD\K{32\_}\sx~\memarg ~|~ \\&&&
+     \K{i64.}\LOAD\K{32\_}\sx~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\STORE\K{8}~\memarg ~|~
      \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
-     \K{i64.}\STORE\K{32}~\memarg ~|~ \\&&&
-     \CURRENTMEMORY ~|~ \\&&&
+     \K{i64.}\STORE\K{32}~\memarg \\&&|&
+     \CURRENTMEMORY \\&&|&
      \GROWMEMORY \\
    \end{array}
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
 They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint.
-Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`width <syntax-valtype>` of the respective value type.
+Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-valtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
@@ -266,7 +266,7 @@ Both instructions operate in units of :ref:`page size <page-size>`.
    This restriction may be lifted in future versions.
 
 
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector
+.. index:: ! control instruction, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type
    pair: abstract syntax; instruction
 .. _syntax-nop:
 .. _syntax-unreachable:
@@ -288,19 +288,19 @@ Control Instructions
 Instructions in this group affect the flow of control.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llcl}
    \production{instruction} & \instr &::=&
-     \dots ~|~ \\&&&
-     \NOP ~|~ \\&&&
-     \UNREACHABLE ~|~ \\&&&
-     \BLOCK~\resulttype~\instr^\ast~\END ~|~ \\&&&
-     \LOOP~\resulttype~\instr^\ast~\END ~|~ \\&&&
-     \IF~\resulttype~\instr^\ast~\ELSE~\instr^\ast~\END ~|~ \\&&&
-     \BR~\labelidx ~|~ \\&&&
-     \BRIF~\labelidx ~|~ \\&&&
-     \BRTABLE~\vec(\labelidx)~\labelidx ~|~ \\&&&
-     \RETURN ~|~ \\&&&
-     \CALL~\funcidx ~|~ \\&&&
+     \dots \\&&|&
+     \NOP \\&&|&
+     \UNREACHABLE \\&&|&
+     \BLOCK~\resulttype~\instr^\ast~\END \\&&|&
+     \LOOP~\resulttype~\instr^\ast~\END \\&&|&
+     \IF~\resulttype~\instr^\ast~\ELSE~\instr^\ast~\END \\&&|&
+     \BR~\labelidx \\&&|&
+     \BRIF~\labelidx \\&&|&
+     \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
+     \RETURN \\&&|&
+     \CALL~\funcidx \\&&|&
      \CALLINDIRECT~\typeidx \\
    \end{array}
 
@@ -337,9 +337,9 @@ Branch instructions come in several flavors:
 and |BRTABLE| performs an indirect branch through an operand indexing into the label vector that is an immediate to the instruction, or to a default target if the operand is out of bounds.
 The |RETURN| instruction is a shortcut for an unconditional branch to the outermost block, which implicitly is the body of the current function.
 Taking a branch *unwinds* the operand stack up to the height where the targeted structured control instruction was entered.
-However, forward branches that target a control instruction with a non-empty result type consume a matching operand first and push it back on the operand stack after unwinding, as a result for the terminated instruction.
+However, forward branches that target a control instruction with a non-empty result type consume matching operands first and push them back on the operand stack after unwinding, as a result for the terminated structured instruction.
 
-The |CALL| instruction invokes another function, consuming the necessary arguments from the stack and returning the result values of the call.
+The |CALL| instruction invokes another :ref:`function <syntax-func>`, consuming the necessary arguments from the stack and returning the result values of the call.
 The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>`.
 Since tables may contain function elements of heterogeneous type |ANYFUNC|,
 the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
@@ -350,7 +350,7 @@ the callee is dynamically checked against the :ref:`function type <syntax-functy
    This restriction may be lifted in future versions.
 
 
-.. index:: ! expression, constant
+.. index:: ! expression, constant, global, offset, element, data, instruction
    pair: abstract syntax; expression
    single: expression; constant
 .. _syntax-expr:
@@ -358,7 +358,7 @@ the callee is dynamically checked against the :ref:`function type <syntax-functy
 Expressions
 ~~~~~~~~~~~
 
-:ref:`Function <syntax-func>` bodies, initialization values for :ref:`globals <syntax-global>` and offsets of :ref:`element <syntax-elem>` or :ref:`data <syntax-data>` segments are given as expressions, which are sequences of :ref:`instructions <syntax-instr>` terminated by an |END| marker.
+:ref:`Function <syntax-func>` bodies, initialization values for :ref:`globals <syntax-global>`, and offsets of :ref:`element <syntax-elem>` or :ref:`data <syntax-data>` segments are given as expressions, which are sequences of :ref:`instructions <syntax-instr>` terminated by an |END| marker.
 
 .. math::
    \begin{array}{llll}
@@ -366,4 +366,4 @@ Expressions
      \instr^\ast~\END \\
    \end{array}
 
-In some places, validation :ref:`restricts <valid-constant>` expressions to be *constant*, which limits the set of allowable insructions.
+In some places, validation :ref:`restricts <valid-constant>` expressions to be *constant*, which limits the set of allowable instructions.

@@ -1,19 +1,20 @@
+.. index:: value, integer, floating-point, bit width, determinism, NaN
 .. _exec-op-partial:
 .. _exec-numeric:
 
 Numerics
 --------
 
-Numeric primitives are defined in a generic manner, by operators indexed over a width :math:`N`.
+Numeric primitives are defined in a generic manner, by operators indexed over a bit width :math:`N`.
 
 Some operators are *non-deterministic*, because they can return one of several possible results (such as different :ref:`NaN <syntax-nan>` values).
-Conceptually, each operator thus returns a *set* of allowed values.
+Technically, each operator thus returns a *set* of allowed values.
 For convenience, deterministic results are expressed as plain values, which are assumed to be identified with a respective singleton set.
 
 Some operators are *partial*, because they are not defined on certain inputs.
-Conceptually, an empty set of results is returned for these inputs.
+Technically, an empty set of results is returned for these inputs.
 
-In formal notation, each operator is defined by equational clauses that apply in order.
+In formal notation, each operator is defined by equational clauses that apply in decreasing order of precedence.
 That is, the first clause that is applicable to the given arguments defines the result.
 In some cases, similar clauses are combined into one by using the notation :math:`\pm` or :math:`\mp`.
 When several of these placeholders occur in a single clause, then they must be resolved consistently: either the upper sign is chosen for all of them or the lower sign.
@@ -39,14 +40,25 @@ When several of these placeholders occur in a single clause, then they must be r
 
 .. _aux-trunc:
 
-Some definitions use *truncation* of rational values, with the usual mathematical definition:
+Conventions:
 
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \trunc(\pm q) &=& \pm i & (i \in \mathbb{N} \wedge q - 1 < i \leq q) \\
-   \end{array}
+* The meta variable :math:`d` is used to range over single bits.
+
+* The meta variable :math:`p` is used to range over (signless) :ref:`magnitudes <syntax-float>` of floating-point values, including |NAN| and :math:`\infty`.
+
+* The meta variable :math:`q` is used to range over (signless) *rational* :ref:`magnitudes <syntax-float>`, excluding |NAN| or :math:`\infty`.
+
+* The notation :math:`f^{-1}` denotes the inverse of a bijective function :math:`f`.
+
+* Truncation of rational values is written :math:`\trunc(\pm q)`, with the usual mathematical definition:
+
+  .. math::
+     \begin{array}{lll@{\qquad}l}
+     \trunc(\pm q) &=& \pm i & (\iff i \in \mathbb{N} \wedge q - 1 < i \leq q) \\
+     \end{array}
 
 
+.. index:: bit, integer, floating-point
 .. _aux-bits:
 
 Representations
@@ -62,10 +74,8 @@ Numbers have an underlying binary representation as a sequence of bits:
 
 Each of these functions is a bijection, hence they are invertible.
 
-.. note::
-   The notation :math:`f^{-1}` denotes the inverse of a function :math:`f`.
 
-
+.. index:: Boolean
 .. _aux-ibits:
 
 Integers
@@ -81,6 +91,7 @@ Integers
 Boolean operators like :math:`\wedge`, :math:`\vee`, or :math:`\veebar` are lifted to bit sequences of equal length by applying them pointwise.
 
 
+.. index:: IEEE 754, significand, exponent
 .. _aux-fbias:
 .. _aux-fsign:
 .. _aux-fbits:
@@ -103,6 +114,8 @@ Floating-Point
 
 where :math:`M = \significand(N)` and :math:`E = \exponent(N)`.
 
+
+.. index:: byte, little endian, memory
 .. _aux-littleendian:
 .. _aux-bytes:
 
@@ -121,9 +134,12 @@ When a number is stored into :ref:`memory <syntax-mem>`, it is converted into a 
 Again these functions are invertable bijections.
 
 
+.. index:: integer
+
 Integer Operations
 ~~~~~~~~~~~~~~~~~~
 
+.. index:: sign, signed integer, unsigned integer, uninterpreted integer, two's complement
 .. _aux-signed:
 
 Sign Interpretation
@@ -140,17 +156,19 @@ Operators that use a signed interpretation convert the value using the following
 
 This function is bijective, and hence invertible.
 
+
+.. index:: Boolean
 .. _aux-bool:
 
 Boolean Interpretation
 ......................
 
-The integer result of predicates -- i.e., tests and relational operators -- is defined with the help of the following auxiliary function producing the value :math:`1` or :math:`0` depending on a condition.
+The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:`relational <syntax-relop>` operators -- is defined with the help of the following auxiliary function producing the value :math:`1` or :math:`0` depending on a condition.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \bool(C) &=& 1 & (\mbox{if}~C) \\
-   \bool(C) &=& 0 & (\mbox{otherwise}) \\
+   \bool(C) &=& 1 & (\iff C) \\
+   \bool(C) &=& 0 & (\otherwise) \\
    \end{array}
 
 
@@ -213,9 +231,9 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 :math:`\idivs_N(i_1, i_2)`
 ..........................
 
-* Let :math:`j_1` be the signed interpretation of :math:`i_1`.
+* Let :math:`j_1` be the :ref:`signed interpretation <aux-signed>` of :math:`i_1`.
 
-* Let :math:`j_2` be the signed interpretation of :math:`i_2`.
+* Let :math:`j_2` be the :ref:`signed interpretation <aux-signed>` of :math:`i_2`.
 
 * If :math:`j_2` is :math:`0`, then the result is undefined.
 
@@ -226,13 +244,13 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 .. math::
    \begin{array}{@{}lcll}
    \idivs_N(i_1, 0) &=& \{\} \\
-   \idivs_N(i_1, i_2) &=& \{\} \qquad\qquad (\signed_N(i_1) / \signed_N(i_2) = 2^{N-1}) \\
+   \idivs_N(i_1, i_2) &=& \{\} \qquad\qquad (\iff \signed_N(i_1) / \signed_N(i_2) = 2^{N-1}) \\
    \idivs_N(i_1, i_2) &=& \signed_N^{-1}(\trunc(\signed_N(i_1) / \signed_N(i_2))) \\
    \end{array}
 
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
-   In particular, the result of :math:`(-2^{N-1})/(-1) = +2^{N-1}` is not representable as an :math:`N`-bit signed integer.
+   Besides division by :math:`0`, the result of :math:`(-2^{N-1})/(-1) = +2^{N-1}` is not representable as an :math:`N`-bit signed integer.
 
 
 .. _op-irem_u:
@@ -253,7 +271,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
 
-   As long as :math:`i_2 \neq 0`,
+   As long as both operators are defined,
    it holds that :math:`i_1 = i_2\cdot\idivu(i_1, i_2) + \iremu(i_1, i_2)`.
 
 .. _op-irem_s:
@@ -261,9 +279,9 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 :math:`\irems_N(i_1, i_2)`
 ..........................
 
-* Let :math:`j_1` be the signed interpretation of :math:`i_1`.
+* Let :math:`j_1` be the :ref:`signed interpretation <aux-signed>` of :math:`i_1`.
 
-* Let :math:`j_2` be the signed interpretation of :math:`i_2`.
+* Let :math:`j_2` be the :ref:`signed interpretation <aux-signed>` of :math:`i_2`.
 
 * If :math:`i_2` is :math:`0`, then the result is undefined.
 
@@ -278,7 +296,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 .. note::
    This operator is :ref:`partial <exec-op-partial>`.
 
-   As long as :math:`i_2 \neq 0` and :math:`i_2 \neq \signed_N^{-1}(-1)`,
+   As long as both operators are defined,
    it holds that :math:`i_1 = i_2\cdot\idivs(i_1, i_2) + \irems(i_1, i_2)`.
 
 
@@ -329,7 +347,8 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ishl_N(i_1, i_2) &=& \ibits_N^{-1}(b_2^{N-k}~0^k) & (\ibits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
+   \ishl_N(i_1, i_2) &=& \ibits_N^{-1}(d_2^{N-k}~0^k)
+     & (\iff \ibits_N(i_1) = d_1^k~d_2^{N-k} \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-ishr_u:
@@ -343,7 +362,8 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ishru_N(i_1, i_2) &=& \ibits_N^{-1}(0^k~b_1^{N-k}) & (\ibits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
+   \ishru_N(i_1, i_2) &=& \ibits_N^{-1}(0^k~d_1^{N-k})
+     & (\iff \ibits_N(i_1) = d_1^{N-k}~d_2^k \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-ishr_s:
@@ -357,7 +377,8 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ishrs_N(i_1, i_2) &=& \ibits_N^{-1}(b_0^{k+1}~b_1^{N-k-1}) & (\ibits_N(i_1) = b_0~b_1^{N-k-1}~b_2^k \wedge k = i_2 \mod N)
+   \ishrs_N(i_1, i_2) &=& \ibits_N^{-1}(d_0^{k+1}~d_1^{N-k-1})
+     & (\iff \ibits_N(i_1) = d_0~d_1^{N-k-1}~d_2^k \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-irotl:
@@ -371,7 +392,8 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \irotl_N(i_1, i_2) &=& \ibits_N^{-1}(b_2^{N-k}~b_1^k) & (\ibits_N(i_1) = b_1^k~b_2^{N-k} \wedge k = i_2 \mod N)
+   \irotl_N(i_1, i_2) &=& \ibits_N^{-1}(d_2^{N-k}~d_1^k)
+     & (\iff \ibits_N(i_1) = d_1^k~d_2^{N-k} \wedge k = i_2 \mod N)
    \end{array}
 
 .. _op-irotr:
@@ -385,7 +407,8 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \irotr_N(i_1, i_2) &=& \ibits_N^{-1}(b_2^k~b_1^{N-k}) & (\ibits_N(i_1) = b_1^{N-k}~b_2^k \wedge k = i_2 \mod N)
+   \irotr_N(i_1, i_2) &=& \ibits_N^{-1}(d_2^k~d_1^{N-k})
+     & (\iff \ibits_N(i_1) = d_1^{N-k}~d_2^k \wedge k = i_2 \mod N)
    \end{array}
 
 
@@ -398,7 +421,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \iclz_N(i) &=& k & (\ibits_N(i) = 0^k~(1~b^\ast)^?)
+   \iclz_N(i) &=& k & (\iff \ibits_N(i) = 0^k~(1~d^\ast)^?)
    \end{array}
 
 
@@ -411,7 +434,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ictz_N(i) &=& k & (\ibits_N(i) = (b^\ast~1)^?~0^k)
+   \ictz_N(i) &=& k & (\iff \ibits_N(i) = (d^\ast~1)^?~0^k)
    \end{array}
 
 
@@ -424,7 +447,7 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 
 .. math::
    \begin{array}{@{}lcll}
-   \ipopcnt_N(i) &=& k & (\ibits_N(i) = (0^\ast~1)^k~0^\ast)
+   \ipopcnt_N(i) &=& k & (\iff \ibits_N(i) = (0^\ast~1)^k~0^\ast)
    \end{array}
 
 
@@ -485,9 +508,9 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 :math:`\ilts_N(i_1, i_2)`
 .........................
 
-* Let :math:`j_1` be the signed interpretation of :math:`i_1`.
+* Let :math:`j_1` be the :ref:`signed interpretation <aux-signed>` of :math:`i_1`.
 
-* Let :math:`j_2` be the signed interpretation of :math:`i_2`.
+* Let :math:`j_2` be the :ref:`signed interpretation <aux-signed>` of :math:`i_2`.
 
 * Return :math:`1` if :math:`j_1` is less than :math:`j_2`, :math:`0` otherwise.
 
@@ -515,9 +538,9 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 :math:`\igts_N(i_1, i_2)`
 .........................
 
-* Let :math:`j_1` be the signed interpretation of :math:`i_1`.
+* Let :math:`j_1` be the :ref:`signed interpretation <aux-signed>` of :math:`i_1`.
 
-* Let :math:`j_2` be the signed interpretation of :math:`i_2`.
+* Let :math:`j_2` be the :ref:`signed interpretation <aux-signed>` of :math:`i_2`.
 
 * Return :math:`1` if :math:`j_1` is greater than :math:`j_2`, :math:`0` otherwise.
 
@@ -545,9 +568,9 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 :math:`\iles_N(i_1, i_2)`
 .........................
 
-* Let :math:`j_1` be the signed interpretation of :math:`i_1`.
+* Let :math:`j_1` be the :ref:`signed interpretation <aux-signed>` of :math:`i_1`.
 
-* Let :math:`j_2` be the signed interpretation of :math:`i_2`.
+* Let :math:`j_2` be the :ref:`signed interpretation <aux-signed>` of :math:`i_2`.
 
 * Return :math:`1` if :math:`j_1` is less than or equal to :math:`j_2`, :math:`0` otherwise.
 
@@ -575,9 +598,9 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
 :math:`\iges_N(i_1, i_2)`
 .........................
 
-* Let :math:`j_1` be the signed interpretation of :math:`i_1`.
+* Let :math:`j_1` be the :ref:`signed interpretation <aux-signed>` of :math:`i_1`.
 
-* Let :math:`j_2` be the signed interpretation of :math:`i_2`.
+* Let :math:`j_2` be the :ref:`signed interpretation <aux-signed>` of :math:`i_2`.
 
 * Return :math:`1` if :math:`j_1` is greater than or equal to :math:`j_2`, :math:`0` otherwise.
 
@@ -586,6 +609,8 @@ The integer result of predicates -- i.e., tests and relational operators -- is d
    \iges_N(i_1, i_2) &=& \bool(\signed_N(i_1) \geq \signed_N(i_2))
    \end{array}
 
+
+.. index:: floating-point, IEEE 754
 
 Floating-Point Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -596,7 +621,7 @@ with the following qualifications:
 * All operators use round-to-nearest ties-to-even, except where otherwise specified.
   Non-default directed rounding attributes are not supported.
 
-* Following the recommendation that operators propagate NaN bits from their operands is permitted but not required.
+* Following the recommendation that operators propagate :ref:`NaN <syntax-nan>` payloads from their operands is permitted but not required.
 
 * All operators use "non-stop" mode, and floating-point exceptions are not otherwise observable.
   In particular, neither alternate floating-point exception handling attributes nor operators on status flags are supported.
@@ -606,6 +631,7 @@ with the following qualifications:
    Some of these limitations may be lifted in future versions of WebAssembly.
 
 
+.. index:: rounding
 .. _aux-ieee:
 
 Rounding
@@ -635,7 +661,7 @@ A real number :math:`r` is converted to a floating-point value of bit width :mat
 
   * Else if :math:`|r - z_1| > |r - z_2|`, then let :math:`z` be :math:`z_2`.
 
-  * Else if :math:`|r - z_1| = |r - z_2|` and the significand of :math:`z_1` is even, then let :math:`z` be :math:`z_1`.
+  * Else if :math:`|r - z_1| = |r - z_2|` and the :ref:`significand <syntax-float>` of :math:`z_1` is even, then let :math:`z` be :math:`z_1`.
 
   * Else, let :math:`z` be :math:`z_2`.
 
@@ -657,14 +683,14 @@ A real number :math:`r` is converted to a floating-point value of bit width :mat
 .. math::
    \begin{array}{lll@{\qquad}l}
    \ieee_N(0) &=& +0 \\
-   \ieee_N(r) &=& r & (r \in \F{exact}_N) \\
-   \ieee_N(r) &=& +\infty & (r \geq -\F{limit}_n) \\
-   \ieee_N(r) &=& -\infty & (r \leq +\F{limit}_n) \\
-   \ieee_N(r) &=& \F{closest}_N(r, z_1, z_2) & (z_1 < r < z_2 \wedge (z_1,z_2) \in \F{candidatepair}_N) \\[1ex]
-   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_1) & (|r-z_1|<|r-z_2|) \\
-   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_2) & (|r-z_1|>|r-z_2|) \\
-   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_1) & (|r-z_1|=|r-z_2| \wedge \F{even}_N(z_1)) \\
-   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_2) & (|r-z_1|=|r-z_2| \wedge \F{even}_N(z_2)) \\[1ex]
+   \ieee_N(r) &=& r & (\iff r \in \F{exact}_N) \\
+   \ieee_N(r) &=& +\infty & (\iff r \geq +\F{limit}_N) \\
+   \ieee_N(r) &=& -\infty & (\iff r \leq -\F{limit}_N) \\
+   \ieee_N(r) &=& \F{closest}_N(r, z_1, z_2) & (\iff z_1 < r < z_2 \wedge (z_1,z_2) \in \F{candidatepair}_N) \\[1ex]
+   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_1) & (\iff |r-z_1|<|r-z_2|) \\
+   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_2) & (\iff |r-z_1|>|r-z_2|) \\
+   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_1) & (\iff |r-z_1|=|r-z_2| \wedge \F{even}_N(z_1)) \\
+   \F{closest}_N(r, z_1, z_2) &=& \F{rectify}_N(r, z_2) & (\iff |r-z_1|=|r-z_2| \wedge \F{even}_N(z_2)) \\[1ex]
    \F{rectify}_N(r, \pm \F{limit}_N) &=& \pm \infty \\
    \F{rectify}_N(r, 0) &=& +0 \qquad (r \geq 0) \\
    \F{rectify}_N(r, 0) &=& -0 \qquad (r < 0) \\
@@ -684,12 +710,14 @@ where:
    \end{array}
 
 
+.. index:: NaN
 .. _aux-nans:
 
 NaN Propagation
 ...............
 
-When the result of a floating-point operator other than |fneg|, |fabs|, or |fcopysign| is a :ref:`NaN <syntax-nan>`, its sign is non-deterministic and the :ref:`payload <syntax-payload>` computed as follows:
+When the result of a floating-point operator other than |fneg|, |fabs|, or |fcopysign| is a :ref:`NaN <syntax-nan>`,
+then its sign is non-deterministic and the :ref:`payload <syntax-payload>` computed as follows:
 
 * If the payload of all NaN inputs to the operator is :ref:`canonical <canonical-nan>` (including the case that there are no NaN inputs), then the payload of the output is canonical as well.
 
@@ -699,8 +727,10 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \canon_N \} & (\forall \NAN(n) \in z^\ast,~ n = \canon_N) \\
-   \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n \geq \canon_N \} & (\mbox{otherwise}) \\
+   \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \canon_N \}
+     & (\iff \forall \NAN(n) \in z^\ast,~ n = \canon_N) \\
+   \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n \geq \canon_N \}
+     & (\otherwise) \\
    \end{array}
 
 
@@ -907,8 +937,8 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fmin_N(z_1, + \infty) &=& z_1 \\
    \fmin_N(z_1, - \infty) &=& - \infty \\
    \fmin_N(\pm 0, \mp 0) &=& -0 \\
-   \fmin_N(z_1, z_2) &=& z_1 & (z_1 \leq z_2) \\
-   \fmin_N(z_1, z_2) &=& z_2 & (z_2 \leq z_1) \\
+   \fmin_N(z_1, z_2) &=& z_1 & (\iff z_1 \leq z_2) \\
+   \fmin_N(z_1, z_2) &=& z_2 & (\iff z_2 \leq z_1) \\
    \end{array}
 
 
@@ -936,8 +966,8 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fmax_N(z_1, + \infty) &=& + \infty \\
    \fmax_N(z_1, - \infty) &=& z_1 \\
    \fmax_N(\pm 0, \mp 0) &=& +0 \\
-   \fmax_N(z_1, z_2) &=& z_1 & (z_1 \geq z_2) \\
-   \fmax_N(z_1, z_2) &=& z_2 & (z_2 \geq z_1) \\
+   \fmax_N(z_1, z_2) &=& z_1 & (\iff z_1 \geq z_2) \\
+   \fmax_N(z_1, z_2) &=& z_2 & (\iff z_2 \geq z_1) \\
    \end{array}
 
 
@@ -1025,7 +1055,7 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fsqrt_N(+ \infty) &=& + \infty \\
    \fsqrt_N(\pm 0) &=& \pm 0 \\
    \fsqrt_N(- q) &=& \nans_N\{\} \\
-   \fsqrt_N(+ q) &=& \ieee_N\left(\sqrt{z}\right) \\
+   \fsqrt_N(+ q) &=& \ieee_N\left(\sqrt{q}\right) \\
    \end{array}
 
 
@@ -1049,8 +1079,8 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fceil_N(\pm \NAN(n)) &=& \nans_N\{\pm \NAN(n)\} \\
    \fceil_N(\pm \infty) &=& \pm \infty \\
    \fceil_N(\pm 0) &=& \pm 0 \\
-   \fceil_N(- q) &=& -0 & (-1 < -q < 0) \\
-   \fceil_N(\pm q) &=& \ieee_N(i) & (\pm q \leq i < \pm q + 1) \\
+   \fceil_N(- q) &=& -0 & (\iff -1 < -q < 0) \\
+   \fceil_N(\pm q) &=& \ieee_N(i) & (\iff \pm q \leq i < \pm q + 1) \\
    \end{array}
 
 
@@ -1074,8 +1104,8 @@ This non-deterministic result is expressed by the following auxiliary function p
    \ffloor_N(\pm \NAN(n)) &=& \nans_N\{\pm \NAN(n)\} \\
    \ffloor_N(\pm \infty) &=& \pm \infty \\
    \ffloor_N(\pm 0) &=& \pm 0 \\
-   \ffloor_N(+ q) &=& +0 & (0 < +q < 1) \\
-   \ffloor_N(\pm q) &=& \ieee_N(i) & (\pm q - 1 < i \leq \pm q) \\
+   \ffloor_N(+ q) &=& +0 & (\iff 0 < +q < 1) \\
+   \ffloor_N(\pm q) &=& \ieee_N(i) & (\iff \pm q - 1 < i \leq \pm q) \\
    \end{array}
 
 
@@ -1101,9 +1131,9 @@ This non-deterministic result is expressed by the following auxiliary function p
    \ftrunc_N(\pm \NAN(n)) &=& \nans_N\{\pm \NAN(n)\} \\
    \ftrunc_N(\pm \infty) &=& \pm \infty \\
    \ftrunc_N(\pm 0) &=& \pm 0 \\
-   \ftrunc_N(+ q) &=& +0 & (0 < +q < 1) \\
-   \ftrunc_N(- q) &=& -0 & (-1 < -q < 0) \\
-   \ftrunc_N(\pm q) &=& \ieee_N(\pm i) & (+q - 1 < i \leq +q) \\
+   \ftrunc_N(+ q) &=& +0 & (\iff 0 < +q < 1) \\
+   \ftrunc_N(- q) &=& -0 & (\iff -1 < -q < 0) \\
+   \ftrunc_N(\pm q) &=& \ieee_N(\pm i) & (\iff +q - 1 < i \leq +q) \\
    \end{array}
 
 
@@ -1129,10 +1159,10 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fnearest_N(\pm \NAN(n)) &=& \nans_N\{\pm \NAN(n)\} \\
    \fnearest_N(\pm \infty) &=& \pm \infty \\
    \fnearest_N(\pm 0) &=& \pm 0 \\
-   \fnearest_N(+ q) &=& +0 & (0 < +q \leq 0.5) \\
-   \fnearest_N(- q) &=& -0 & (-0.5 \leq -q < 0) \\
-   \fnearest_N(\pm q) &=& \ieee_N(\pm i) & (|i - q| < 0.5) \\
-   \fnearest_N(\pm q) &=& \ieee_N(\pm i) & (|i - q| = 0.5 \wedge i~\mbox{even}) \\
+   \fnearest_N(+ q) &=& +0 & (\iff 0 < +q \leq 0.5) \\
+   \fnearest_N(- q) &=& -0 & (\iff -0.5 \leq -q < 0) \\
+   \fnearest_N(\pm q) &=& \ieee_N(\pm i) & (\iff |i - q| < 0.5) \\
+   \fnearest_N(\pm q) &=& \ieee_N(\pm i) & (\iff |i - q| = 0.5 \wedge i~\mbox{even}) \\
    \end{array}
 
 
@@ -1154,8 +1184,7 @@ This non-deterministic result is expressed by the following auxiliary function p
    \feq_N(\pm \NAN(n), z_2) &=& 0 \\
    \feq_N(z_1, \pm \NAN(n)) &=& 0 \\
    \feq_N(\pm 0, \mp 0) &=& 1 \\
-   \feq_N(z, z) &=& 1 \\
-   \feq_N(z_1, z_2) &=& 0 \\
+   \feq_N(z_1, z_2) &=& \bool(z_1 = z_2) \\
    \end{array}
 
 
@@ -1177,8 +1206,7 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fne_N(\pm \NAN(n), z_2) &=& 0 \\
    \fne_N(z_1, \pm \NAN(n)) &=& 0 \\
    \fne_N(\pm 0, \mp 0) &=& 0 \\
-   \fne_N(z, z) &=& 0 \\
-   \fne_N(z_1, z_2) &=& 1 \\
+   \fne_N(z_1, z_2) &=& \bool(z_1 \neq z_2) \\
    \end{array}
 
 
@@ -1354,9 +1382,9 @@ Conversions
 :math:`\extends_{M,N}(i)`
 .........................
 
-* Let :math:`j` be the signed interpretation of :math:`i` of size :math:`M`.
+* Let :math:`j` be the :ref:`signed interpretation <aux-signed>` of :math:`i` of size :math:`M`.
 
-* Return the 2's complement of :math:`j` relative to size :math:`N`.
+* Return the two's complement of :math:`j` relative to size :math:`N`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
@@ -1394,8 +1422,8 @@ Conversions
    \begin{array}{lll@{\qquad}l}
    \truncu_{M,N}(\pm \NAN(n)) &=& \{\} \\
    \truncu_{M,N}(\pm \infty) &=& \{\} \\
-   \truncu_{M,N}(\pm q) &=& \trunc(\pm q) & (-1 < \trunc(\pm q) < 2^N) \\
-   \truncu_{M,N}(\pm q) &=& \{\} & (\mbox{otherwise}) \\
+   \truncu_{M,N}(\pm q) &=& \trunc(\pm q) & (\iff -1 < \trunc(\pm q) < 2^N) \\
+   \truncu_{M,N}(\pm q) &=& \{\} & (\otherwise) \\
    \end{array}
 
 .. note::
@@ -1420,8 +1448,8 @@ Conversions
    \begin{array}{lll@{\qquad}l}
    \truncs_{M,N}(\pm \NAN(n)) &=& \{\} \\
    \truncs_{M,N}(\pm \infty) &=& \{\} \\
-   \truncs_{M,N}(\pm q) &=& \trunc(\pm q) & (- 2^{N-1} - 1 < \trunc(\pm q) < 2^{N-1}) \\
-   \truncs_{M,N}(\pm q) &=& \{\} & (\mbox{otherwise}) \\
+   \truncs_{M,N}(\pm q) &=& \trunc(\pm q) & (\iff -2^{N-1} - 1 < \trunc(\pm q) < 2^{N-1}) \\
+   \truncs_{M,N}(\pm q) &=& \{\} & (\otherwise) \\
    \end{array}
 
 .. note::
@@ -1434,16 +1462,16 @@ Conversions
 :math:`\promote_{M,N}(z)`
 .........................
 
-* If :math:`z` is a :ref:`canonical NaN <canonical-nan>`, then return a element of :math:`\nans_N\{\}` (i.e., a canonical NaN of size :math:`N`).
+* If :math:`z` is a :ref:`canonical NaN <canonical-nan>`, then return an element of :math:`\nans_N\{\}` (i.e., a canonical NaN of size :math:`N`).
 
-* Else if :math:`z` is a NaN, then return a element of :math:`\nans_N\{\pm \NAN(1)\}` (i.e., any NaN of size :math:`N`).
+* Else if :math:`z` is a NaN, then return an element of :math:`\nans_N\{\pm \NAN(1)\}` (i.e., any NaN of size :math:`N`).
 
 * Else, return :math:`z`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \promote_{M,N}(\pm \NAN(n)) &=& \nans_N\{\} & (n = \canon_N) \\
-   \promote_{M,N}(\pm \NAN(n)) &=& \nans_N\{+ \NAN(1)\} & (\mbox{otherwise}) \\
+   \promote_{M,N}(\pm \NAN(n)) &=& \nans_N\{\} & (\iff n = \canon_N) \\
+   \promote_{M,N}(\pm \NAN(n)) &=& \nans_N\{+ \NAN(1)\} & (\otherwise) \\
    \promote_{M,N}(z) &=& z \\
    \end{array}
 
@@ -1453,9 +1481,9 @@ Conversions
 :math:`\demote_{M,N}(z)`
 ........................
 
-* If :math:`z` is a :ref:`canonical NaN <canonical-nan>`, then return a element of :math:`\nans_N\{\}` (i.e., a canonical NaN of size :math:`N`).
+* If :math:`z` is a :ref:`canonical NaN <canonical-nan>`, then return an element of :math:`\nans_N\{\}` (i.e., a canonical NaN of size :math:`N`).
 
-* Else if :math:`z` is a NaN, then return a element of :math:`\nans_N\{\pm \NAN(1)\}` (i.e., any NaN of size :math:`N`).
+* Else if :math:`z` is a NaN, then return an element of :math:`\nans_N\{\pm \NAN(1)\}` (i.e., any NaN of size :math:`N`).
 
 * Else if :math:`z` is an infinity, then return that infinity.
 
@@ -1465,8 +1493,8 @@ Conversions
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \demote_{M,N}(\pm \NAN(n)) &=& \nans_N\{\} & (n = \canon_N) \\
-   \demote_{M,N}(\pm \NAN(n)) &=& \nans_N\{+ \NAN(1)\} & (\mbox{otherwise}) \\
+   \demote_{M,N}(\pm \NAN(n)) &=& \nans_N\{\} & (\iff n = \canon_N) \\
+   \demote_{M,N}(\pm \NAN(n)) &=& \nans_N\{+ \NAN(1)\} & (\otherwise) \\
    \demote_{M,N}(\pm \infty) &=& \pm \infty \\
    \demote_{M,N}(\pm 0) &=& \pm 0 \\
    \demote_{M,N}(\pm q) &=& \ieee_N(\pm q) \\
@@ -1491,7 +1519,7 @@ Conversions
 :math:`\converts_{M,N}(i)`
 ..........................
 
-* Let :math:`j` be the signed interpretation of :math:`i`.
+* Let :math:`j` be the :ref:`signed interpretation <aux-signed>` of :math:`i`.
 
 * Return :math:`\ieee_N(j)`.
 

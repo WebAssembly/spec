@@ -39,11 +39,8 @@ All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal
    \production{hexadecimal digit} & \Thexdigit &::=&
      d{:}\Tdigit \Rightarrow d \\ &&|&
      \text{A} \Rightarrow 10 ~~|~~ \dots ~~|~~ \text{F} \Rightarrow 15 \\ &&|&
-     \text{a} \Rightarrow 10 ~~|~~ \dots ~~|~~ \text{f} \Rightarrow 15 \\
-   \end{array}
-
-.. math::
-   \begin{array}{llclll@{\qquad}l}
+     \text{a} \Rightarrow 10 ~~|~~ \dots ~~|~~ \text{f} \Rightarrow 15
+   \\[1ex]
    \production{decimal number} & \Tnum &::=&
      d{:}\Tdigit &\Rightarrow& d \\ &&|&
      n{:}\Tnum~~d{:}\Tdigit &\Rightarrow& 10\cdot n + d \\
@@ -58,11 +55,11 @@ Moreover, their value must lie within the range of the respective type.
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{unsigned integer} & \TuN &::=&
-     n{:}\Tnum &\Rightarrow& n & (n < 2^N) \\ &&|&
-     \text{0x}~~n{:}\Thexnum &\Rightarrow& n & (n < 2^N) \\
+     n{:}\Tnum &\Rightarrow& n & (\iff n < 2^N) \\ &&|&
+     \text{0x}~~n{:}\Thexnum &\Rightarrow& n & (\iff n < 2^N) \\
    \production{signed integer} & \TsN &::=&
-     {\pm}{:}\Tsign~~n{:}\Tnum &\Rightarrow& \pm n & (-2^{N-1} \leq \pm n < 2^{N-1}) \\ &&|&
-     {\pm}{:}\Tsign~~\text{0x}~~n{:}\Thexnum &\Rightarrow& \pm n & (-2^{N-1} \leq \pm n < 2^{N-1}) \\
+     {\pm}{:}\Tsign~~n{:}\Tnum &\Rightarrow& \pm n & (\iff -2^{N-1} \leq \pm n < 2^{N-1}) \\ &&|&
+     {\pm}{:}\Tsign~~\text{0x}~~n{:}\Thexnum &\Rightarrow& \pm n & (\iff -2^{N-1} \leq \pm n < 2^{N-1}) \\
    \end{array}
 
 :ref:`Uninterpreted integers <syntax-int>` can be written as either signed or unsigned, and are normalized to unsigned in the abstract syntax.
@@ -71,7 +68,7 @@ Moreover, their value must lie within the range of the respective type.
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{uninterpreted integers} & \TiN &::=&
      n{:}\TuN &\Rightarrow& n \\ &&|&
-     i{:}\TsN &\Rightarrow& n & (i = \signed(n)) \\
+     i{:}\TsN &\Rightarrow& n & (\iff i = \signed(n)) \\
    \end{array}
 
 
@@ -85,16 +82,7 @@ Moreover, their value must lie within the range of the respective type.
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating point <syntax-float>` values can be represented in either decimal or hexadecimal notation.
-The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
-(that is, a numeric value must not overflow to :math:`\pm\mbox{infinity}`),
-but it may be :ref:`rounded <aux-ieee>` to the nearest representable value.
-
-.. note::
-   Rounding can be prevented by using hexadecimal notation with no more significant bits than supported by the required type.
-
-Floating-point values may also be written as constants for *infinity* or *canonical NaN* (*not a number*).
-Furthermore, arbitrary NaN values may be expressed by providing an explicit payload value.
+:ref:`Floating-point <syntax-float>` values can be represented in either decimal or hexadecimal notation.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -117,31 +105,29 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      \text{0x}~p{:}\Thexnum~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum
        &\Rightarrow& p\cdot 2^{\pm e} \\ &&|&
      \text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum
-       &\Rightarrow& (p+q)\cdot 2^{\pm e} \\
-   \production{floating-point value} & \TfNmag &::=&
-     z{:}\Tfloat &\Rightarrow& \ieee_N(z) & (\ieee_N(z) \neq \pm \infty) \\ &&|&
-     z{:}\Thexfloat &\Rightarrow& \ieee_N(z) & (\ieee_N(z) \neq \pm \infty) \\ &&|&
-     \text{inf} &\Rightarrow& \infty \\ &&|&
-     \text{nan} &\Rightarrow& \NAN(2^{\significand(N)-1}) \\ &&|&
-     \text{nan{:}0x}~n{:}\Thexnum &\Rightarrow& \NAN(n) & (1 \leq n < 2^{\significand(N)}) \\
-   \production{floating-point value} & \TfN &::=&
-     {\pm}{:}\Tsign~z{:}\TfNmag &\Rightarrow& \pm z \\
+       &\Rightarrow& (p+q)\cdot 2^{\pm e}
    \end{array}
 
+The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
+(that is, a numeric value must not overflow to :math:`\pm\mbox{infinity}`),
+but it may be :ref:`rounded <aux-ieee>` to the nearest representable value.
 
-.. index:: vector
-   pair: text format; vector
-.. _text-vec:
+.. note::
+   Rounding can be prevented by using hexadecimal notation with no more significant bits than supported by the required type.
 
-Vectors
-~~~~~~~
-
-:ref:`Vectors <syntax-vec>` are written as plain sequences, but with restricted length.
+Floating-point values may also be written as constants for *infinity* or *canonical NaN* (*not a number*).
+Furthermore, arbitrary NaN values may be expressed by providing an explicit payload value.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{vector} & \Tvec(\T{A}) &::=&
-     (x{:}\T{A})^n &\Rightarrow& x^n & (n < 2^{32}) \\
+   \production{floating-point value} & \TfN &::=&
+     {\pm}{:}\Tsign~z{:}\TfNmag &\Rightarrow& \pm z \\
+   \production{floating-point magnitude} & \TfNmag &::=&
+     z{:}\Tfloat &\Rightarrow& \ieee_N(z) & (\iff \ieee_N(z) \neq \pm \infty) \\ &&|&
+     z{:}\Thexfloat &\Rightarrow& \ieee_N(z) & (\iff \ieee_N(z) \neq \pm \infty) \\ &&|&
+     \text{inf} &\Rightarrow& \infty \\ &&|&
+     \text{nan} &\Rightarrow& \NAN(2^{\significand(N)-1}) \\ &&|&
+     \text{nan{:}0x}~n{:}\Thexnum &\Rightarrow& \NAN(n) & (\iff 1 \leq n < 2^{\significand(N)}) \\
    \end{array}
 
 
@@ -159,22 +145,26 @@ They are enclosed in quotation marks
 and may contain any character other than `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\backslash}`),
 except when expressed with an *escape sequence*.
 
-Each character in a string literal represents the byte sequence corresponding to its `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding,
-except for hexadecimal escape sequences :math:`\text{\backslash}hh`, which represent raw bytes of the respective value.
-
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{string} & \Tstring &::=&
      \text{"}~(b^\ast{:}\Tstringelem)^\ast~\text{"}
        &\Rightarrow& \concat((b^\ast)^\ast)
-       & (|\concat((b^\ast)^\ast)| < 2^{32}) \\
+       & (\iff |\concat((b^\ast)^\ast)| < 2^{32}) \\
    \production{string element} & \Tstringelem &::=&
      c{:}\Tstringchar &\Rightarrow& \utf8(c) \\ &&|&
      \text{\backslash}~n{:}\Thexdigit~m{:}\Thexdigit
        &\Rightarrow& 16\cdot n+m \\
+   \end{array}
+
+Each character in a string literal represents the byte sequence corresponding to its `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding,
+except for hexadecimal escape sequences :math:`\textl\backslash hh\textr`, which represent raw bytes of the respective value.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
    \production{string character} & \Tstringchar &::=&
      c{:}\Tchar &\Rightarrow& c \qquad
-       & (c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\backslash}) \\ &&|&
+       & (\iff c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\backslash}) \\ &&|&
      \text{\backslash t} &\Rightarrow& \unicode{09} \\ &&|&
      \text{\backslash n} &\Rightarrow& \unicode{0A} \\ &&|&
      \text{\backslash r} &\Rightarrow& \unicode{0D} \\ &&|&
@@ -182,7 +172,7 @@ except for hexadecimal escape sequences :math:`\text{\backslash}hh`, which repre
      \text{\backslash{'}} &\Rightarrow& \unicode{27} \\ &&|&
      \text{\backslash\backslash} &\Rightarrow& \unicode{5C} \\ &&|&
      \text{\backslash u\{}~n{:}\Thexnum~\text{\}}
-       &\Rightarrow& \unicode{(n)} & (n < \hex{D800} \vee \hex{E000} \leq n < \hex{110000}) \\
+       &\Rightarrow& \unicode{(n)} & (\iff n < \hex{D800} \vee \hex{E000} \leq n < \hex{110000}) \\
    \end{array}
 
 
@@ -199,7 +189,7 @@ A name string must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{name} & \Tname &::=&
-     b^\ast{:}\Tstring &\Rightarrow& c^\ast & (b^\ast = \utf8(c^\ast)) \\
+     b^\ast{:}\Tstring &\Rightarrow& c^\ast & (\iff b^\ast = \utf8(c^\ast)) \\
    \end{array}
 
 .. note::
@@ -209,6 +199,7 @@ A name string must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>
 
 .. index:: ! identifiers
    pair: text format; identifiers
+.. _text-idchar:
 .. _text-id:
 
 Identifiers

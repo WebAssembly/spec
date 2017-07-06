@@ -20,8 +20,6 @@ As with :ref:`validation <validation>`, all rules are given in two *equivalent* 
    so that understanding of the formal notation is *not* required to read this specification.
    The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.
 
-:ref:`Store <store>`, :ref:`stack <stack>`, and other *runtime structure*, such as :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary :ref:`syntax <syntax-runtime>`.
-
 
 .. _exec-notation-textual:
 
@@ -49,14 +47,14 @@ The following conventions are adopted in stating these rules.
 * The execution of an instruction may also end in a *jump* to a designated target,
   which defines the next instruction to execute.
 
-* Execution can *enter* and *exit* :ref:`instruction sequences <syntax-instr-seq>` in a block-like fashion.
+* Execution can *enter* and *exit* :ref:`instruction sequences <syntax-instr-seq>` that form :ref:`blocks <syntax-instr-control>`.
 
 * :ref:`Instruction sequences <syntax-instr-seq>` are implicitly executed in order, unless a trap or jump occurs.
 
-* In various places the rules contain *assertions* expressing crucial invariants about the program state, with indications why these are known to hold.
+* In various places the rules contain *assertions* expressing crucial invariants about the program state.
 
 
-.. index:: ! reduction rules, ! configuration
+.. index:: ! reduction rules, ! configuration, evaluation context
 .. _exec-notation:
 
 Formal Notation
@@ -87,7 +85,7 @@ In particular, :ref:`values <syntax-val>` are defined to coincide with |CONST| i
 and a sequence of |CONST| instructions can be interpreted as an operand "stack" that grows to the right.
 
 .. note::
-   For example, the :ref:`reduction rule <exec-binop>` for the :math:`\I32.\ADD` instruction could be given as follows:
+   For example, the :ref:`reduction rule <exec-binop>` for the :math:`\I32.\ADD` instruction can be given as follows:
 
    .. math::
       (\I32.\CONST~n_1)~(\I32.\CONST~n_2)~\I32.\ADD \quad\stepto\quad (\I32.\CONST~(n_1 + n_2) \mod 2^{32})
@@ -100,13 +98,13 @@ and a sequence of |CONST| instructions can be interpreted as an operand "stack" 
    .. math::
       \NOP \quad\stepto\quad \epsilon
 
-:ref:`Labels <label>` and :ref:`frames <frame>` are similarly :ref:`defined to be part <syntax-instr-admin>` of an instruction sequence.
+:ref:`Labels <label>` and :ref:`frames <frame>` are similarly :ref:`defined <syntax-instr-admin>` to be part of an instruction sequence.
 
-The order of reduction is determined by the definition of an approporiate :ref:`evaluation context <syntax-ctxt-eval>`.
+The order of reduction is determined by the definition of an appropriate :ref:`evaluation context <syntax-ctxt-eval>`.
 
 Reduction *terminates* when no more reduction rules are applicable.
 :ref:`Soundness <soundness>` of the WebAssembly :ref:`type system <type-system>` guarantees that this is only the case when the original instruction sequence has either been reduced to a sequence of |CONST| instructions, which can be interpreted as the :ref:`values <syntax-val>` of the resulting operand stack,
-or if a trap occurred.
+or if a :ref:`trap <syntax-trap>` occurred.
 
 .. note::
    For example, the following instruction sequence,
