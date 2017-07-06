@@ -81,17 +81,7 @@
     <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
     
 </ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="index.html">Execution</a><ul>
-      <li>Previous: <a href="instructions.html" title="previous chapter">Instructions</a></li>
-      <li>Next: <a href="../binary/index.html" title="next chapter">Binary Format</a></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
+
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -281,7 +271,7 @@ In some cases, this allows for a simple form of subtyping, as defined below.</p>
 \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} &amp;=&amp; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}| \\
 \href{../syntax/types.html#syntax-functype}{\mathit{functype}} &amp;=&amp; \href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{types}}[\href{../syntax/modules.html#syntax-func}{\mathit{func}}.\href{../syntax/modules.html#syntax-func}{\mathsf{type}}] \\
 \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{module}}~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}}~\href{../syntax/modules.html#syntax-func}{\mathit{func}} \} \\
-S' &amp;=&amp; S \href{../syntax/conventions.html#notation-record}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}~\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}\} \\
+S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}~\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}\} \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="host-functions">
@@ -302,7 +292,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-record}{\oplus} \{\hr
 \mbox{where:} \hfill \\
 \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} &amp;=&amp; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}| \\
 \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{hostcode}}~\href{../exec/runtime.html#syntax-hostfunc}{\mathit{hostfunc}} \} \\
-S' &amp;=&amp; S \href{../syntax/conventions.html#notation-record}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}~\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\} \\
+S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}~\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -327,7 +317,7 @@ but may be allocated by the <a class="reference internal" href="../intro/overvie
 \href{../syntax/modules.html#syntax-table}{\mathit{table}}.\href{../syntax/modules.html#syntax-table}{\mathsf{type}} &amp;=&amp; \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}} \\
 \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}} &amp;=&amp; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}| \\
 \href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~(\epsilon)^n, \href{../exec/runtime.html#syntax-tableinst}{\mathsf{max}}~m^? \} \\
-S' &amp;=&amp; S \href{../syntax/conventions.html#notation-record}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}~\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\} \\
+S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}~\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\} \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="alloc-mem">
@@ -336,7 +326,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-record}{\oplus} \{\hr
 <li>Let <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memory</span></a> to allocate.</li>
 <li>Let <span class="math">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">table type</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}.\href{../syntax/modules.html#syntax-mem}{\mathsf{type}}\)</span>.</li>
 <li>Let <span class="math">\(a\)</span> be the first free <a class="reference internal" href="runtime.html#syntax-memaddr"><span class="std std-ref">memory address</span></a> in <span class="math">\(S\)</span>.</li>
-<li>Let <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef57#1{\mathtt{0x#1}}\mathdef57{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \}\)</span> that contains <span class="math">\(n\)</span> pages of zeroed <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.</li>
+<li>Let <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef1103#1{\mathtt{0x#1}}\mathdef1103{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \}\)</span> that contains <span class="math">\(n\)</span> pages of zeroed <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.</li>
 <li>Append <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> to the <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}\)</span> of <span class="math">\(S\)</span>.</li>
 <li>Return <span class="math">\(a\)</span>.</li>
 </ol>
@@ -346,8 +336,8 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-record}{\oplus} \{\hr
 \mbox{where:} \hfill \\
 \href{../syntax/modules.html#syntax-mem}{\mathit{mem}}.\href{../syntax/modules.html#syntax-mem}{\mathsf{type}} &amp;=&amp; \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\} \\
 \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}} &amp;=&amp; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}| \\
-\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef58#1{\mathtt{0x#1}}\mathdef58{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \} \\
-S' &amp;=&amp; S \href{../syntax/conventions.html#notation-record}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}~\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\} \\
+\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef1104#1{\mathtt{0x#1}}\mathdef1104{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \} \\
+S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}~\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\} \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="alloc-global">
@@ -367,7 +357,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-record}{\oplus} \{\hr
 \href{../syntax/modules.html#syntax-global}{\mathit{global}}.\href{../syntax/modules.html#syntax-global}{\mathsf{type}} &amp;=&amp; \href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t \\
 \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}} &amp;=&amp; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}| \\
 \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}~(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0), \href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}} \} \\
-S' &amp;=&amp; S \href{../syntax/conventions.html#notation-record}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}~\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}\} \\
+S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}~\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}\} \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="alloc-module">
