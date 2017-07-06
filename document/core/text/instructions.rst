@@ -15,7 +15,7 @@ Instructions are syntactically distinguished into *plain* and *structured* instr
        &\Rightarrow& \X{in} \\
    \end{array}
 
-In addition, as a syntactic abbreviation, instructions can be written in :ref:`folded <text-foldedinstr>` form as S-expressions, to group them visually.
+In addition, as a syntactic abbreviation, instructions can be written as S-expressions in :ref:`folded <text-foldedinstr>` form, to group them visually.
 
 
 .. index:: index, label index
@@ -27,14 +27,14 @@ Labels
 
 :ref:`Structured control instructions <text-instr-control>` can be annotated with a symbolic :ref:`label identifier <text-id>`.
 They are the only :ref:`symbolic identifiers <text-index>` that can be bound locally in an instruction sequence.
-The following grammar handles the corresponding update to the :ref:`identifier context <text-context>` by producing a context with an additional label entry.
+The following grammar handles the corresponding update to the :ref:`identifier context <text-context>` by :ref:`composing <notation-compose>` the context with an additional label entry.
 
 .. math::
    \begin{array}{llcllll}
    \production{label} & \Tlabel_I &::=&
-     \epsilon &\Rightarrow& \{\ILABELS~(\epsilon)\} \compose I \\ &&|&
      v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose I
-       & (\iff v \notin I.\ILABELS) \\
+       & (\iff v \notin I.\ILABELS) \\ &&|&
+     \epsilon &\Rightarrow& \{\ILABELS~(\epsilon)\} \compose I \\
    \end{array}
 
 .. note::
@@ -55,16 +55,17 @@ Control Instructions
 .. _text-block:
 .. _text-loop:
 .. _text-if:
+.. _text-instr-block:
 
 :ref:`Structured control instructions <syntax-instr-control>` can bind an optional symbolic :ref:`label identifier <text-label>`.
-The same identifier may optionally be repeated after the corresponding :math:`\T{end}` and :math:`\T{else}` pseudo instructions.
+The same label identifier may optionally be repeated after the corresponding :math:`\T{end}` and :math:`\T{else}` pseudo instructions, to indicate the matching delimiters.
 
 .. math::
    \begin{array}{llclll}
    \production{block instruction} & \Tblockinstr_I &::=&
      \text{block}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \BLOCK~\X{rt}~\X{in}^\ast~\END
-       \qquad\quad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
+       \qquad\quad~~ (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
      \text{loop}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \LOOP~\X{rt}~\X{in}^\ast~\END
        \qquad\qquad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
@@ -415,11 +416,15 @@ Numeric Instructions
 Folded Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-As a special abbreviation, instructions can be grouped into *folded* S-expression form.
+Instructions can be written as S-expressions by grouping them into *folded* form. In that notation, an instruction is wrapped in parentheses and optionally includes nested folded instructions to indicate its operands.
+
+In the case of :ref:`block instructions <text-instr-block>`, the folded form omits the :math:`\text{end}` delimiter.
+For |IF| instructions, both branches have to wrapped into nested S-expressions, headed by the keywords :math:`\text{then}` and :math:`\text{else}`.
+
 The set of all phrases defined by the following abbreviations recursively forms the auxiliary syntactic class |Tfoldedinstr|.
 Such a folded instruction can appear anywhere a regular instruction can.
 
-.. MathJax doesn't handle LaTex multicolumns, this the spacing hack in the following formula.
+.. MathJax doesn't handle LaTex multicolumns, thus the spacing hack in the following formula.
 
 .. math::
    \begin{array}{lllll}

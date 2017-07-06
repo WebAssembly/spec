@@ -46,13 +46,18 @@
 .. |slice| mathdef:: \xref{syntax/conventions}{notation-slice}{\mathrel{\mathbf{:}}}
 .. |with| mathdef:: \xref{syntax/conventions}{notation-replace}{\mathrel{\mbox{with}}}
 .. |concat| mathdef:: \xref{syntax/conventions}{notation-concat}{\F{concat}}
-.. |compose| mathdef:: \xref{syntax/conventions}{notation-record}{\oplus}
-.. |bigcompose| mathdef:: \xref{syntax/conventions}{notation-record}{\bigoplus}
+.. |compose| mathdef:: \xref{syntax/conventions}{notation-compose}{\oplus}
+.. |bigcompose| mathdef:: \xref{syntax/conventions}{notation-compose}{\bigoplus}
 
 
 
 .. Abstract Syntax
 .. ---------------
+
+.. Auxiliary productions
+
+.. |vec| mathdef:: \xref{syntax/conventions}{syntax-vec}{\X{vec}}
+
 
 .. Values, terminals
 
@@ -96,7 +101,6 @@
 .. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{32}}}
 .. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{64}}}
 
-.. |vec| mathdef:: \xref{syntax/values}{syntax-vec}{\X{vec}}
 .. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
 .. |codepoint| mathdef:: \xref{syntax/values}{syntax-name}{\X{codepoint}}
 
@@ -345,6 +349,11 @@
 .. Binary Format
 .. -------------
 
+.. Auxiliary productions
+
+.. |Bvec| mathdef:: \xref{binary/conventions}{binary-vec}{\B{vec}}
+
+
 .. Values, non-terminals
 
 .. |Bbyte| mathdef:: \xref{binary/values}{binary-byte}{\B{byte}}
@@ -373,11 +382,8 @@
 .. |Bf32| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{32}}}
 .. |Bf64| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{64}}}
 
-.. |Bvec| mathdef:: \xref{binary/values}{binary-vec}{\B{vec}}
 .. |Bname| mathdef:: \xref{binary/values}{binary-name}{\B{name}}
 .. |Bcodepoint| mathdef:: \xref{binary/values}{binary-name}{\B{codepoint}}
-.. |Bcodeval| mathdef:: \xref{binary/values}{binary-name}{\B{codeval}}
-.. |Bcodecont| mathdef:: \xref{binary/values}{binary-name}{\B{cont}}
 
 
 .. Values, meta functions
@@ -460,6 +466,11 @@
 .. Text Format
 .. -----------
 
+.. Auxiliary productions
+
+.. |Tvec| mathdef:: \xref{text/conventions}{text-vec}{\T{vec}}
+
+
 .. Lexical grammar, terminals
 
 .. |textl| mathdef:: \mbox{‘}
@@ -525,7 +536,6 @@
 .. |Tf32| mathdef:: \xref{text/values}{text-float}{\TfX{\T{32}}}
 .. |Tf64| mathdef:: \xref{text/values}{text-float}{\TfX{\T{64}}}
 
-.. |Tvec| mathdef:: \xref{text/values}{text-vec}{\T{vec}}
 .. |Tstring| mathdef:: \xref{text/values}{text-string}{\T{string}}
 .. |Tstringelem| mathdef:: \xref{text/values}{text-string}{\T{stringelem}}
 .. |Tstringchar| mathdef:: \xref{text/values}{text-string}{\T{stringchar}}

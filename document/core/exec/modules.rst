@@ -488,7 +488,7 @@ Instantiation
 
 Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :math:`\module` is instantiated with a list of :ref:`external values <syntax-externval>` :math:`\externval^n` supplying the required imports as follows.
 
-Instantiation may *fail* with an error if the module is not :ref:`valid <valid>` or the imports do not :ref:`match <match>`.
+Instantiation may *fail* with an error if the module is not :ref:`valid <valid>` or the imports do not :ref:`match <match-externtype>`.
 Instantiation can also result in a :ref:`trap <trap>` from executing the start function.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
 

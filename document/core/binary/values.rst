@@ -92,7 +92,7 @@ Floating-Point
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{floating-point number} & \BfN &::=&
+   \production{floating-point value} & \BfN &::=&
      b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \bytes_{\fN}^{-1}(b^\ast) \\
    \end{array}
 
@@ -139,20 +139,4 @@ The auxiliary |utf8| function expressing this encoding is defined as follows:
       \iff & \unicode{10000} \leq c < \unicode{110000} \\
       \wedge & c = 2^{18}(b_1-\hex{C0})+2^{12}(b_2-\hex{80})+2^6(b_3-\hex{80})+(b_4-\hex{80})) \\
       \end{array} \\
-   \end{array}
-
-
-.. index:: vector
-   pair: binary format; vector
-.. _binary-vec:
-
-Vectors
-~~~~~~~
-
-:ref:`Vectors <syntax-vec>` are encoded with their length followed by the encoding of their element sequence.
-
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{vector} & \Bvec(\B{B}) &::=&
-     n{:}\Bu32~~(x{:}\B{B})^n &\Rightarrow& x^n \\
    \end{array}

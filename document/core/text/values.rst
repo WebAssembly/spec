@@ -83,15 +83,6 @@ Floating-Point
 ~~~~~~~~~~~~~~
 
 :ref:`Floating-point <syntax-float>` values can be represented in either decimal or hexadecimal notation.
-The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
-(that is, a numeric value must not overflow to :math:`\pm\mbox{infinity}`),
-but it may be :ref:`rounded <aux-ieee>` to the nearest representable value.
-
-.. note::
-   Rounding can be prevented by using hexadecimal notation with no more significant bits than supported by the required type.
-
-Floating-point values may also be written as constants for *infinity* or *canonical NaN* (*not a number*).
-Furthermore, arbitrary NaN values may be expressed by providing an explicit payload value.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -114,15 +105,29 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      \text{0x}~p{:}\Thexnum~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum
        &\Rightarrow& p\cdot 2^{\pm e} \\ &&|&
      \text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum
-       &\Rightarrow& (p+q)\cdot 2^{\pm e} \\
-   \production{floating-point value} & \TfNmag &::=&
+       &\Rightarrow& (p+q)\cdot 2^{\pm e}
+   \end{array}
+
+The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
+(that is, a numeric value must not overflow to :math:`\pm\mbox{infinity}`),
+but it may be :ref:`rounded <aux-ieee>` to the nearest representable value.
+
+.. note::
+   Rounding can be prevented by using hexadecimal notation with no more significant bits than supported by the required type.
+
+Floating-point values may also be written as constants for *infinity* or *canonical NaN* (*not a number*).
+Furthermore, arbitrary NaN values may be expressed by providing an explicit payload value.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{floating-point value} & \TfN &::=&
+     {\pm}{:}\Tsign~z{:}\TfNmag &\Rightarrow& \pm z \\
+   \production{floating-point magnitude} & \TfNmag &::=&
      z{:}\Tfloat &\Rightarrow& \ieee_N(z) & (\iff \ieee_N(z) \neq \pm \infty) \\ &&|&
      z{:}\Thexfloat &\Rightarrow& \ieee_N(z) & (\iff \ieee_N(z) \neq \pm \infty) \\ &&|&
      \text{inf} &\Rightarrow& \infty \\ &&|&
      \text{nan} &\Rightarrow& \NAN(2^{\significand(N)-1}) \\ &&|&
      \text{nan{:}0x}~n{:}\Thexnum &\Rightarrow& \NAN(n) & (\iff 1 \leq n < 2^{\significand(N)}) \\
-   \production{floating-point value} & \TfN &::=&
-     {\pm}{:}\Tsign~z{:}\TfNmag &\Rightarrow& \pm z \\
    \end{array}
 
 
@@ -140,9 +145,6 @@ They are enclosed in quotation marks
 and may contain any character other than `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\backslash}`),
 except when expressed with an *escape sequence*.
 
-Each character in a string literal represents the byte sequence corresponding to its `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding,
-except for hexadecimal escape sequences :math:`\text{\backslash}hh`, which represent raw bytes of the respective value.
-
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{string} & \Tstring &::=&
@@ -153,6 +155,13 @@ except for hexadecimal escape sequences :math:`\text{\backslash}hh`, which repre
      c{:}\Tstringchar &\Rightarrow& \utf8(c) \\ &&|&
      \text{\backslash}~n{:}\Thexdigit~m{:}\Thexdigit
        &\Rightarrow& 16\cdot n+m \\
+   \end{array}
+
+Each character in a string literal represents the byte sequence corresponding to its `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding,
+except for hexadecimal escape sequences :math:`\textl\backslash hh\textr`, which represent raw bytes of the respective value.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
    \production{string character} & \Tstringchar &::=&
      c{:}\Tchar &\Rightarrow& c \qquad
        & (\iff c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\backslash}) \\ &&|&
@@ -190,6 +199,7 @@ A name string must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>
 
 .. index:: ! identifiers
    pair: text format; identifiers
+.. _text-idchar:
 .. _text-id:
 
 Identifiers
@@ -238,19 +248,3 @@ Conventions
 
 The expansion rules of some abbreviations require insertion of a *fresh* identifier.
 That may be any syntactically valid identifier that does not already occur in the given source text.
-
-
-.. index:: vector
-   pair: text format; vector
-.. _text-vec:
-
-Vectors
-~~~~~~~
-
-:ref:`Vectors <syntax-vec>` are written as plain sequences, but with restricted length.
-
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{vector} & \Tvec(\T{A}) &::=&
-     (x{:}\T{A})^n &\Rightarrow& x^n & (\iff n < 2^{32}) \\
-   \end{array}

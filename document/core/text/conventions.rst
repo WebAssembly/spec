@@ -37,8 +37,6 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 
 * Nonterminal symbols are written in typewriter font: :math:`\T{valtype}, \T{instr}`.
 
-* Arbitrary :ref:`white space <text-space>` is allowed in any place where the grammar contains spaces, except where noted otherwise, such as the :ref:`lexical syntax <text-lexical>`.
-
 * :math:`T^n` is a sequence of :math:`n\geq 0` iterations  of :math:`T`.
 
 * :math:`T^\ast` is a possibly empty sequence of iterations of :math:`T`.
@@ -55,6 +53,10 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 * Productions are written :math:`\T{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots ~|~ T_n \Rightarrow A_n`, where each :math:`A_i` is the attribute that is synthesized for :math:`\T{sym}` in the given case, usually from attribute variables bound in :math:`T_i`.
 
 * Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.
+
+.. _text-syntactic:
+
+* A distinction is made between *lexical* and *syntactic* productions. For the latter, arbitrary :ref:`white space <text-space>` is allowed in any place where the grammar contains spaces. The productions defining :ref:`lexical syntax <text-lexical>` and the syntax of :Ref:`values <text-value>` are considered lexical, all others are syntactic.
 
 .. note::
    For example, the :ref:`textual grammar <text-valtype>` for :ref:`value types <syntax-valtype>` is given as follows:
@@ -137,3 +139,19 @@ Conventions
 
 To avoid unnecessary clutter, empty components are omitted when writing out identifier contexts.
 For example, the record :math:`\{\}` is shorthand for an :ref:`identifier context <text-context>` whose components are all empty.
+
+
+.. index:: vector
+   pair: text format; vector
+.. _text-vec:
+
+Vectors
+~~~~~~~
+
+:ref:`Vectors <syntax-vec>` are written as plain sequences, but with a restriction on the length of these sequence.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{vector} & \Tvec(\T{A}) &::=&
+     (x{:}\T{A})^n &\Rightarrow& x^n & (\iff n < 2^{32}) \\
+   \end{array}

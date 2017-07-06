@@ -30,8 +30,7 @@ Characters are assumed to be represented as valid `Unicode <http://www.unicode.o
 .. index:: ! token, ! keyword, character, white space, comment, source text
    single: text format; token
 .. _text-keyword:
-.. _text-tokenchar:
-.. _text-pretoken:
+.. _text-reserved:
 .. _text-token:
 
 Tokens
@@ -52,19 +51,19 @@ The character stream in the source text is divided, from left to right, into a s
    \end{array}
 
 Tokens are formed from the input character stream according to the *longest match* rule.
-That is, the next token always consists of the longest possible sequence of characters that is recognized by the above grammar.
-Tokens can be separated by :ref:`white space <text-space>`;
-except for strings, they cannot themselves contain whitespace.
+That is, the next token always consists of the longest possible sequence of characters that is recognized by the above lexical grammar.
+Tokens can be separated by :ref:`white space <text-space>`,
+but except for strings, they cannot themselves contain whitespace.
 
-The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:`terminal symbol <text-grammar>` in literal form in a non-lexical production of this specification.
+The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:`terminal symbol <text-grammar>` in literal form :math:`\text{keyword}` in a :ref:`syntactic <text-syntactic>` production of this chapter.
 
-Any token that does not fall into any of the other categories is considered *reserved*.
+Any token that does not fall into any of the other categories is considered *reserved*, and cannot occur in source text.
 
 .. note::
    The effect of defining the set of reserved tokens is that all tokens must be separated by either parentheses or :ref:`white space <text-space>`.
    For example, :math:`\text{0\$x}` is a single reserved token.
    Consequently, it is not recognized as two separate tokens :math:`\text{0}` and :math:`\text{\$x}`, but instead disallowed.
-   This property of tokenization is not affected by the fact that the definition of reserved tokens overlaps with several other token classes.
+   This property of tokenization is not affected by the fact that the definition of reserved tokens overlaps with other token classes.
 
 
 .. index:: ! white space, character, ASCII

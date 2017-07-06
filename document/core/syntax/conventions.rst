@@ -45,6 +45,7 @@ The following conventions are adopted in defining grammar rules for abstract syn
 .. _notation-replace:
 .. _notation-record:
 .. _notation-concat:
+.. _notation-compose:
 
 Auxiliary Notation
 ~~~~~~~~~~~~~~~~~~
@@ -102,3 +103,22 @@ The update notation for sequences and records generalizes recursively to nested 
 * :math:`r \with \K{field}\,\X{pth} = A` is short for :math:`r \with \K{field} = (r.\K{field} \with \X{pth} = A)`.
 
 where :math:`r \with~.\K{field} = A` is shortened to :math:`r \with \K{field} = A`.
+
+
+.. index:: ! vector
+   pair: abstract syntax; vector
+.. _syntax-vec:
+
+Vectors
+~~~~~~~
+
+*Vectors* are bounded sequences of the form :math:`A^n` (or :math:`A^\ast`),
+where the :math:`A` can either be values or complex constructions.
+A vector can have at most :math:`2^{32}-1` elements.
+
+.. math::
+   \begin{array}{lllll}
+   \production{vector} & \vec(A) &::=&
+     A^n
+     & (\iff n < 2^{32})\\
+   \end{array}

@@ -23,7 +23,7 @@ Indices
 ~~~~~~~
 
 :ref:`Indices <syntax-index>` can be given either in raw numeric form or as symbolic :ref:`identifiers <text-id>` when bound by a respective construct.
-Such identifiers are looked up in the suitable space of the :ref:`identifier context <text-context>`.
+Such identifiers are looked up in the suitable space of the :ref:`identifier context <text-context>` :math:`I`.
 
 .. math::
    \begin{array}{llcllllllll}
@@ -84,22 +84,22 @@ If inline declarations are given, then their types must match the referenced :re
    \begin{array}{llcllll}
    \production{type use} & \Ttypeuse_I &::=&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
-       &\Rightarrow& x, I' &
+       \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\iff \begin{array}[t]{@{}l@{}}
         I.\ITYPEDEFS[x] = [t_1^n] \to [t_2^\ast] \wedge
         I' = \{\ILOCALS~(\epsilon)^n\}) \\
-        \end{array} \\ &&|&
+        \end{array} \\[1ex] &&|&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
      ~~(t_1{:}\Tparam)^\ast~~(t_2{:}\Tresult)^\ast
-       &\Rightarrow& x, I' &
+       \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\iff \begin{array}[t]{@{}l@{}}
         I.\ITYPEDEFS[x] = [t_1^\ast] \to [t_2^\ast] \wedge
         I' = \{\ILOCALS~\F{id}(\Tparam)\}^\ast \idcwellformed) \\
         \end{array} \\
    \end{array}
 
-The resulting attribute of a |Ttypeuse| is a pair consisting of both the used :ref:`type index <syntax-typeidx>` and the updated :ref:`identifier context <text-context>` including possible parameter identifiers.
-The following auxiliary notation extracts optional identifiers from parameters:
+The synthesized attribute of a |Ttypeuse| is a pair consisting of both the used :ref:`type index <syntax-typeidx>` and the updated :ref:`identifier context <text-context>` including possible parameter identifiers.
+The following auxiliary function extracts optional identifiers from parameters:
 
 .. math::
    \begin{array}{lcl@{\qquad\qquad}l}
@@ -134,10 +134,9 @@ If no such index exists, then a new :ref:`type definition <text-type>` of the fo
 .. math::
    \text{(}~\text{type}~~\text{(}~\text{func}~~\Tparam^\ast~~\Tresult~\text{)}~\text{)}
 
-is first inserted at the end of the module.
+is inserted at the end of the module.
 
-.. note::
-   Abbreviations are expanded in the order they appear, such that previously inserted type definitions are reused by consecutive expansions.
+Abbreviations are expanded in the order they appear, such that previously inserted type definitions are reused by consecutive expansions.
 
 
 .. index:: import, name, function type, table type, memory type, global type
@@ -153,8 +152,8 @@ The descriptors in imports can bind a symbolic function, table, memory, or globa
 .. math::
    \begin{array}{llclll}
    \production{import} & \Timport_I &::=&
-     \text{(}~\text{import}~~\X{mod}{:}\Tname~~\X{nm}{:}\Tname~~d{:}\Timportdesc_I~\text{)}
-       &\Rightarrow& \{ \IMODULE~\X{mod}, \INAME~\X{nm}, \IDESC~d \} \\
+     \text{(}~\text{import}~~\X{mod}{:}\Tname~~\X{nm}{:}\Tname~~d{:}\Timportdesc_I~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \IMODULE~\X{mod}, \INAME~\X{nm}, \IDESC~d \} \\[1ex]
    \production{import description} & \Timportdesc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~\text{)}
        &\Rightarrow& \IDFUNC~x \\ &&|&
@@ -189,15 +188,15 @@ Function definitions can bind a symbolic :ref:`function identifier <text-id>`, a
    \begin{array}{llclll}
    \production{function} & \Tfunc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
-     (t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)}
-       &\Rightarrow& \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\X{in}^\ast~\END \} \\ &&&&& \qquad
-       (\iff I'' = I' \compose \{\ILOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\
+     (t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\X{in}^\ast~\END \} \\ &&& \qquad\qquad\qquad
+       (\iff I'' = I' \compose \{\ILOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\[1ex]
    \production{local} & \Tlocal &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype~\text{)}
-       &\Rightarrow& t \\
+       \quad\Rightarrow\quad t \\
    \end{array}
 
-The definition of the local :ref:`identifier context <text-context>` :math:`I''` uses the following auxiliary notation to extract optional identifiers from locals:
+The definition of the local :ref:`identifier context <text-context>` :math:`I''` uses the following auxiliary function to extract optional identifiers from locals:
 
 .. math::
    \begin{array}{lcl@{\qquad\qquad}l}
@@ -232,12 +231,12 @@ Moreover, functions can be defined as :ref:`imports <text-import>` or :ref:`expo
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{func}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttypeuse~\text{)} &\equiv&
-       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{func}~~\Tid^?~~\Ttypeuse~\text{)}~\text{)} \\ &
-     \text{(}~\text{func}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} &\equiv&
+     \text{(}~\text{func}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttypeuse~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{func}~~\Tid^?~~\Ttypeuse~\text{)}~\text{)} \\[1ex] &
+     \text{(}~\text{func}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{func}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{func}~~\Tid'~~\dots~\text{)}
-       \\&&& \qquad
+       \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
@@ -279,10 +278,10 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\Telemtype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~~\text{)} &\equiv&
+     \text{(}~\text{table}~~\Tid^?~~\Telemtype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Telemtype~\text{)}~~
        \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
-       \\&&& \qquad
+       \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
@@ -291,12 +290,12 @@ Moreover, tables can be defined as :ref:`imports <text-import>` or :ref:`exports
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttabletype~\text{)} &\equiv&
-       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{table}~~\Tid^?~~\Ttabletype~\text{)}~\text{)} \\ &
-     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} &\equiv&
+     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttabletype~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{table}~~\Tid^?~~\Ttabletype~\text{)}~\text{)} \\[1ex] &
+     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{table}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{table}~~\Tid'~~\dots~\text{)}
-       \\&&& \qquad
+       \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
@@ -338,10 +337,10 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} &\equiv&
+     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)}~~
        \text{(}~\text{data}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
-       \\&&& \qquad
+       \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
    \end{array}
 
@@ -350,13 +349,13 @@ Moreover, memories can be defined as :ref:`imports <text-import>` or :ref:`expor
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tmemtype~\text{)} &\equiv&
+     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tmemtype~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{memory}~~\Tid^?~~\Tmemtype~\text{)}~\text{)}
-       \\ &
-     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} &\equiv&
+       \\[1ex] &
+     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{memory}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{memory}~~\Tid'~~\dots~\text{)}
-       \\ &&& \qquad
+       \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
@@ -394,13 +393,13 @@ Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-ex
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{global}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tglobaltype~\text{)} &\equiv&
+     \text{(}~\text{global}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tglobaltype~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{global}~~\Tid^?~~\Tglobaltype~\text{)}~\text{)}
-       \\ &
-     \text{(}~\text{global}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} &\equiv&
+       \\[1ex] &
+     \text{(}~\text{global}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{global}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{global}~~\Tid'~~\dots~\text{)}
-       \\ &&& \qquad
+       \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
@@ -477,9 +476,9 @@ When omitted, :math:`\T{0}` is assumed.
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~(x{:}\Ttableidx_I)^?~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)}
-       &\Rightarrow& \{ \ETABLE~x', \EOFFSET~e, \EINIT~y^\ast \} \\
-       &&&&& \qquad (\iff x' = x^? \neq \epsilon \vee x' = 0) \\
+     \text{(}~\text{elem}~~(x{:}\Ttableidx_I)^?~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \ETABLE~x', \EOFFSET~e, \EINIT~y^\ast \} \\
+       &&& \qquad\qquad\qquad (\iff x' = x^? \neq \epsilon \vee x' = 0) \\
    \end{array}
 
 .. note::
@@ -510,11 +509,11 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 .. math::
    \begin{array}{llclll}
    \production{data segment} & \Tdata_I &::=&
-     \text{(}~\text{data}~~(x{:}\Tmemidx_I)^?~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)}
-       &\Rightarrow& \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\
-       &&&&& \qquad (\iff x' = x^? \neq \epsilon \vee x' = 0) \\
+     \text{(}~\text{data}~~(x{:}\Tmemidx_I)^?~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\
+       &&& \qquad\qquad\qquad (\iff x' = x^? \neq \epsilon \vee x' = 0) \\[1ex]
    \production{data string} & \Tdatastring &::=&
-     (b^\ast{:}\Tstring)^\ast &\Rightarrow& \concat((b^\ast)^\ast) \\
+     (b^\ast{:}\Tstring)^\ast \quad\Rightarrow\quad \concat((b^\ast)^\ast) \\
    \end{array}
 
 .. note::
@@ -552,9 +551,9 @@ The name serves a documentary role only.
    \begin{array}[t]{@{}cllll}
    ::=&
      \text{(}~\text{module}~~\Tid^?~~(m{:}\Tmodulefield_I)^\ast~\text{)}
-       &\Rightarrow& \bigcompose m^\ast
-       & (\iff I = \bigcompose \F{idc}(\Tmodulefield)^\ast \idcwellformed) \\
-   \end{array} \\
+       \quad\Rightarrow\quad \bigcompose m^\ast \\
+       &\qquad (\iff I = \bigcompose \F{idc}(\Tmodulefield)^\ast \idcwellformed) \\
+   \end{array} \\[1ex]
    \production{module field} & \Tmodulefield_I &
    \begin{array}[t]{@{}clll}
    ::=&
@@ -617,7 +616,7 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
    \F{idc}(\Tmodulebody~\Tmodulefield) &=&
      \F{idc}(\Tmodulebody) \compose \F{idc}(\Tmodulefield) \\[1ex]
 
-   The definition of the :ref:`identifier context <text-context>` :math:`I` uses the following auxiliary notation to filters out optional identifiers from definitions and imports in an order-preserving fashion:
+   The definition of the :ref:`identifier context <text-context>` :math:`I` uses the following auxiliary function to extract optional identifiers from definitions and imports in an order-preserving fashion:
 
    \begin{array}{@{}l@{}}
    \begin{array}{@{}lcl@{\qquad\qquad}l}

@@ -104,7 +104,7 @@ No distinction is made between signalling and quiet NaNs.
 
 .. math::
    \begin{array}{llcll}
-   \production{floating-point number} & \fN &::=&
+   \production{floating-point value} & \fN &::=&
      {+} \fNmag ~|~ {-} \fNmag \\
    \production{floating-point magnitude} & \fNmag &::=&
      (1 + \uM\cdot 2^{-M}) \cdot 2^e & (\iff -2^{E-1}+2 \leq e \leq 2^{E-1}-1) \\ &&|&
@@ -171,22 +171,3 @@ Convention
 ..........
 
 * Code points are sometimes used interchangeably with natural numbers :math:`n < 1114112`.
-
-
-.. index:: ! vector
-   pair: abstract syntax; vector
-.. _syntax-vec:
-
-Vectors
-~~~~~~~
-
-*Vectors* are bounded sequences of the form :math:`A^n` (or :math:`A^\ast`),
-where the :math:`A` can either be values or complex constructions.
-A vector can have at most :math:`2^{32}-1` elements.
-
-.. math::
-   \begin{array}{lllll}
-   \production{vector} & \vec(A) &::=&
-     A^n
-     & (\iff n < 2^{32})\\
-   \end{array}
