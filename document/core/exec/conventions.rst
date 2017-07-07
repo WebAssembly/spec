@@ -54,7 +54,7 @@ The following conventions are adopted in stating these rules.
 * In various places the rules contain *assertions* expressing crucial invariants about the program state.
 
 
-.. index:: ! reduction rules, ! configuration, evaluation context
+.. index:: ! reduction rules, configuration, evaluation context
 .. _exec-notation:
 
 Formal Notation
@@ -75,7 +75,8 @@ Each rule specifies one *step* of execution.
 As long as there is at most one reduction rule applicable to a given configuration, reduction -- and thereby execution -- is *deterministic*.
 WebAssembly has only very few exceptions to this, which are noted explicitly in this specification.
 
-For WebAssembly, a configuration is a tuple :math:`(S; F; \instr^\ast)` consisting of the current :ref:`store <store>` :math:`S`, the :ref:`call frame <frame>` :math:`F` of the current function, and the sequence of :ref:`instructions <syntax-instr>` that is to be executed.
+For WebAssembly, a configuration typically is a tuple :math:`(S; F; \instr^\ast)` consisting of the current :ref:`store <store>` :math:`S`, the :ref:`call frame <frame>` :math:`F` of the current function, and the sequence of :ref:`instructions <syntax-instr>` that is to be executed.
+(A more precise definition is given :ref:`later <syntax-config>`.)
 
 To avoid unnecessary clutter, the store :math:`S` and the frame :math:`F` are omitted from reduction rules that do not touch them.
 

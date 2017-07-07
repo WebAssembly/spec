@@ -51,7 +51,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
    The restriction on the length of the result types :math:`t_2^\ast` may be lifted in future versions of WebAssembly.
 
 
-.. index:: table, table type, limits, element type
+.. index:: table, table type
    pair: validation; table
    single: abstract syntax; table
 .. _valid-table:
@@ -59,27 +59,24 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 Tables
 ~~~~~~
 
-Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>` of the form :math:`\limits~\elemtype`.
-
+Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>`.
 
 :math:`\{ \TTYPE~\tabletype \}`
 ...............................
 
-* Let :math:`\limits~\elemtype` be the :ref:`table types <syntax-tabletype>` :math:`\tabletype`.
-
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>`.
+* The :ref:`table type <syntax-tabletype>` :math:`\tabletype` must be :ref:`valid <valid-tabletype>`.
 
 * Then the table definition is valid with type :math:`\tabletype`.
 
 .. math::
    \frac{
-     \vdash \limits\ok
+     \vdash \tabletype \ok
    }{
-     C \vdash \{ \TTYPE~\limits~\elemtype \} : \limits~\elemtype
+     C \vdash \{ \TTYPE~\tabletype \} : \tabletype
    }
 
 
-.. index:: memory, memory type, limits
+.. index:: memory, memory type
    pair: validation; memory
    single: abstract syntax; memory
 .. _valid-mem:
@@ -87,27 +84,24 @@ Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>` of
 Memories
 ~~~~~~~~
 
-Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>` of the form :math:`\limits`.
-
+Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
 
 :math:`\{ \MTYPE~\memtype \}`
 .............................
 
-* Let :math:`\limits` be the :ref:`memory types <syntax-memtype>` :math:`\memtype`.
-
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>`.
+* The :ref:`memory type <syntax-memtype>` :math:`\memtype` must be :ref:`valid <valid-memtype>`.
 
 * Then the memory definition is valid with type :math:`\memtype`.
 
 .. math::
    \frac{
-     \vdash \limits\ok
+     \vdash \memtype \ok
    }{
-     C \vdash \{ \MTYPE~\limits \} : \limits~\elemtype
+     C \vdash \{ \MTYPE~\memtype \} : \memtype
    }
 
 
-.. index:: global, global type, mutability, expression
+.. index:: global, global type, expression
    pair: validation; global
    single: abstract syntax; global
 .. _valid-global:
@@ -121,6 +115,8 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 :math:`\{ \GTYPE~\mut~t, \GINIT~\expr \}`
 .........................................
 
+* The :ref:`global type <syntax-globaltype>` :math:`\mut~t` must be :ref:`valid <valid-globaltype>`.
+
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
@@ -129,6 +125,8 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 
 .. math::
    \frac{
+     \vdash \mut~t \ok
+     \qquad
      C \vdash \expr : [t]
      \qquad
      C \vdash \expr ~\F{const}

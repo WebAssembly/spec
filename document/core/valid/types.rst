@@ -2,7 +2,7 @@ Types
 -----
 
 Most :ref:`types <syntax-type>` are universally valid.
-However, restrictions apply to :ref:`function types <syntax-functype>` and :ref:`limits <syntax-limits>`, which must be checked during validation.
+However, restrictions apply to :ref:`function types <syntax-functype>` as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
 
 
 .. index:: function type
@@ -54,4 +54,61 @@ Limits
      (n \leq m)^?
    }{
      \vdash \{ \LMIN~n, \LMAX~m^? \} \ok
+   }
+
+
+.. index:: table type, element type, limits
+   pair: validation; table type
+   single: abstract syntax; table type
+.. _valid-tabletype:
+
+:math:`\limits~\elemtype`
+.........................
+
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>`.
+
+* Then the table type is valid.
+
+.. math::
+   \frac{
+     \vdash \limits \ok
+   }{
+     \vdash \limits~\elemtype \ok
+   }
+
+
+.. index:: memory type, limits
+   pair: validation; memory type
+   single: abstract syntax; memory type
+.. _valid-memtype:
+
+:math:`\limits`
+...............
+
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>`.
+
+* Then the memory type is valid.
+
+.. math::
+   \frac{
+     \vdash \limits \ok
+   }{
+     \vdash \limits \ok
+   }
+
+
+.. index:: global type, value type, mutability
+   pair: validation; global type
+   single: abstract syntax; global type
+.. _valid-globaltype:
+
+:math:`\mut~\valtype`
+.....................
+
+* Then the global type is valid.
+
+.. math::
+   \frac{
+   }{
+     \vdash \mut~\valtype \ok
    }

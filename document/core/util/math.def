@@ -671,6 +671,7 @@
 .. Notation
 
 .. |stepto| mathdef:: \hookrightarrow
+.. |extendsto| mathdef:: \prec
 
 
 .. Allocation
@@ -783,6 +784,7 @@
 .. |INITGLOBAL| mathdef:: \xref{exec/runtime}{syntax-init_global}{\K{init\_global}}
 .. |INITTABLE| mathdef:: \xref{exec/runtime}{syntax-init_table}{\K{init\_table}}
 .. |INITMEM| mathdef:: \xref{exec/runtime}{syntax-init_mem}{\K{init\_mem}}
+.. |DO| mathdef:: \xref{exec/runtime}{syntax-do}{\K{do}}
 
 
 .. Values & Administrative Instructions, non-terminals
@@ -792,6 +794,12 @@
 .. |moduleinstr| mathdef:: \xref{exec/runtime}{syntax-moduleinstr}{\X{moduleinstr}}
 
 .. |XB| mathdef:: \xref{exec/runtime}{syntax-ctxt-block}{B}
+
+
+.. Configurations, non-terminals
+
+.. |config| mathdef:: \xref{exec/runtime}{syntax-config}{\X{config}}
+.. |thread| mathdef:: \xref{exec/runtime}{syntax-thread}{\X{thread}}
 
 
 .. Numerics, operators

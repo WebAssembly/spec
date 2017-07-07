@@ -14,7 +14,7 @@ External Typing
 
 For the purpose of checking :ref:`external values <syntax-externval>` against :ref:`imports <syntax-import>`,
 such values are classified by :ref:`external types <syntax-externtype>`.
-The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which the external value lives.
+The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which the referenced instances live.
 
 
 .. index:: function type, function address
@@ -87,7 +87,17 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }{
      S \vdash \EVGLOBAL~a : \ETGLOBAL~(\mut~t)
    }
+   \qquad
+   \frac{
+     S.\SGLOBALS[a] = \{ \GIVALUE~\epsilon, \GIMUT~\mut \}
+   }{
+     S \vdash \EVGLOBAL~a : \ETGLOBAL~(\mut~t)
+   }
 
+.. note::
+   An uninitialized global can have any type.
+   However, this case can never occur for imports.
+   The rule only exists to aid the technical formulation of :ref:`soundness <soundness>`.
 
 
 .. index:: ! matching, external type
@@ -617,7 +627,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      (\INITTABLE~\tableaddr~\X{eo}~\moduleinst~\elem.\EINIT)^\ast \\
      (\INITMEM~\memaddr~\X{do}~\data.\DINIT)^\ast \\
      (\INITGLOBAL~\globaladdr~v)^\ast \\
-     (\INVOKE~\funcaddr)^? \\
+     (\DO~\INVOKE~\funcaddr)^? \\
      \moduleinst \\
      \end{array} \\
    &(\iff

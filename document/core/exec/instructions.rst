@@ -1079,7 +1079,10 @@ Invoking a :ref:`host function <syntax-hostfunc>` has non-deterministic behavior
 It may either terminate with a :ref:`trap <trap>` or return regularly.
 However, in the latter case, it is assumed that it consumes and produces the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
 according to its :ref:`function type <syntax-functype>`.
+
 A host function may also modify the :ref:`store <syntax-store>`.
+However, all store modifications are assumed to result in an :ref:`extension <extend-store>` of the original store, i.e., they only modify mutable contents and must not have instances removed.
+Furthermore, the resulting store is assumed to be :ref:`valid <valid-store>`, i.e., all data in it is well-typed.
 
 .. math::
    ~\\[-1ex]
@@ -1092,7 +1095,8 @@ A host function may also modify the :ref:`store <syntax-store>`.
      (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\dots \} \\
      \wedge & \val_1^n = (t_1.\CONST~c_1)^n \\
      \wedge & \val_2^m = (t_2.\CONST~c_2)^m \\
-     \wedge & S' \succ S) \\
+     \wedge & S' \extendsto S \\
+     \wedge & \vdash S' \ok) \\
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -1101,16 +1105,14 @@ A host function may also modify the :ref:`store <syntax-store>`.
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~\X{ft}, \FIHOSTCODE~\dots \} \\ 
-     \wedge & S' \succ S) \\
+     \wedge & S' \extendsto S \\
+     \wedge & \vdash S' \ok) \\
      \end{array} \\
    \end{array}
 
-Here, :math:`S' \succ S` expresses that the new store :math:`S'` is *reachable* from :math:`S`.
-Such a store must not contain fewer addresses than the original store,
-it must not differ in elements that are not mutable,
-and it must still be well-typed.
-
-.. todo:: Define this relation more precisely.
+Here, :math:`S' \extendsto S` expresses that the new store :math:`S'` is an :ref:`extension <extend>` of :math:`S`.
+Moreover, :math:`\vdash S' \ok` restricts :math:`S'` to be a :ref:`valid <valid-store>` store.
+Both notions are defined in the :ref:`Appendix <properties>`.
 
 .. note::
    A host function can call back into WebAssembly by :ref:`invoking <exec-invocation>` a function :ref:`exported <syntax-export>` from a :ref:`module <syntax-module>`.
