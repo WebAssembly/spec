@@ -1077,12 +1077,12 @@ Host Functions
 
 Invoking a :ref:`host function <syntax-hostfunc>` has non-deterministic behavior.
 It may either terminate with a :ref:`trap <trap>` or return regularly.
-However, in the latter case, it is assumed that it consumes and produces the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
+However, in the latter case, it must consume and produce the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
 according to its :ref:`function type <syntax-functype>`.
 
 A host function may also modify the :ref:`store <syntax-store>`.
-However, all store modifications are assumed to result in an :ref:`extension <extend-store>` of the original store, i.e., they only modify mutable contents and must not have instances removed.
-Furthermore, the resulting store is assumed to be :ref:`valid <valid-store>`, i.e., all data in it is well-typed.
+However, all store modifications must result in an :ref:`extension <extend-store>` of the original store, i.e., they must only modify mutable contents and must not have instances removed.
+Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all data and code in it is well-typed.
 
 .. math::
    ~\\[-1ex]
