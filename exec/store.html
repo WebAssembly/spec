@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Store Validity &#8212; WebAssembly 1.0</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
+    <link rel="up" title="Execution" href="index.html" />
+    <link rel="next" title="Numerics" href="numerics.html" />
+    <link rel="prev" title="Runtime Structure" href="runtime.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Execution</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="runtime.html">Runtime Structure</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Store Validity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#typing">Typing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extension">Extension</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numerics.html">Numerics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/instrindex.html">Index of Instructions</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="store-validity">
+<span id="index-0"></span><h1>Store Validity<a class="headerlink" href="#store-validity" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="typing">
+<span id="valid-instance"></span><h2>Typing<a class="headerlink" href="#typing" title="Permalink to this headline">¶</a></h2>
+<p>The following typing rules specify when a runtime <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">function</span></a>, <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">table</span></a>, <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory</span></a>, <a class="reference internal" href="runtime.html#syntax-globalinst"><span class="std std-ref">global</span></a> or <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">module</span></a> is well-typed, relative to a <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span> in which they live.</p>
+<div class="section" id="function-instance">
+<span id="valid-funcinst"></span><span id="index-1"></span><h3>Function Instance <span class="math">\(\{\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{module}}~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}}~\href{../syntax/modules.html#syntax-func}{\mathit{func}}\}\)</span><a class="headerlink" href="#function-instance" title="Permalink to this headline">¶</a></h3>
+<div class="math">
+\[\frac{
+  \vdash \href{../syntax/types.html#syntax-functype}{\mathit{functype}} \mathrel{\mbox{ok}}
+  \qquad
+  S \vdash \href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} : C
+  \qquad
+  C \vdash \href{../syntax/modules.html#syntax-func}{\mathit{func}} : \href{../syntax/types.html#syntax-functype}{\mathit{functype}}
+}{
+  S \vdash \{\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{module}}~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}}~\href{../syntax/modules.html#syntax-func}{\mathit{func}}\} : \href{../syntax/types.html#syntax-functype}{\mathit{functype}}
+}\]</div>
+</div>
+<div class="section" id="table-instance">
+<span id="valid-tableinst"></span><span id="index-2"></span><h3>Table Instance <span class="math">\(\{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~(\mathit{fa}^?)^n, \href{../exec/runtime.html#syntax-tableinst}{\mathsf{max}}~m^? \}\)</span><a class="headerlink" href="#table-instance" title="Permalink to this headline">¶</a></h3>
+<div class="math">
+\[\frac{
+  (S \vdash \mathit{fa}^? \mathrel{\mbox{ok}})^n
+  \qquad
+  \vdash \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\} \mathrel{\mbox{ok}}
+}{
+  S \vdash \{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~(\mathit{fa}^?)^n, \href{../exec/runtime.html#syntax-tableinst}{\mathsf{max}}~m^? \} : \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}~\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}
+}\]</div>
+<div class="math">
+\[\frac{
+}{
+  S \vdash \epsilon \mathrel{\mbox{ok}}
+}
+\qquad
+\frac{
+  \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} &lt; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}|
+}{
+  S \vdash \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} \mathrel{\mbox{ok}}
+}\]</div>
+</div>
+<div class="section" id="memory-instance">
+<span id="valid-meminst"></span><span id="index-3"></span><h3>Memory Instance <span class="math">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~b^n, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \}\)</span><a class="headerlink" href="#memory-instance" title="Permalink to this headline">¶</a></h3>
+<div class="math">
+\[\frac{
+  \vdash \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\} \mathrel{\mbox{ok}}
+}{
+  S \vdash \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~b^n, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \} : \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}
+}\]</div>
+</div>
+<div class="section" id="global-instance">
+<span id="valid-globalinst"></span><span id="index-4"></span><h3>Global Instance <span class="math">\(\{ \href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}~(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c), \href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}} \}\)</span><a class="headerlink" href="#global-instance" title="Permalink to this headline">¶</a></h3>
+<div class="math">
+\[\frac{
+}{
+  S \vdash \{ \href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}~(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c), \href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}} \} : \href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t
+}\]</div>
+</div>
+<div class="section" id="export-instance">
+<span id="valid-exportinst"></span><span id="index-5"></span><h3>Export Instance <span class="math">\(\{ \href{../exec/runtime.html#syntax-exportinst}{\mathsf{name}}~\href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../exec/runtime.html#syntax-exportinst}{\mathsf{value}}~\href{../exec/runtime.html#syntax-externval}{\mathit{externval}} \}\)</span><a class="headerlink" href="#export-instance" title="Permalink to this headline">¶</a></h3>
+<div class="math">
+\[\frac{
+  S \vdash \href{../exec/runtime.html#syntax-externval}{\mathit{externval}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}
+}{
+  S \vdash \{ \href{../exec/runtime.html#syntax-exportinst}{\mathsf{name}}~\href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../exec/runtime.html#syntax-exportinst}{\mathsf{value}}~\href{../exec/runtime.html#syntax-externval}{\mathit{externval}} \} \mathrel{\mbox{ok}}
+}\]</div>
+</div>
+<div class="section" id="module-instance">
+<span id="valid-moduleinst"></span><span id="index-6"></span><h3>Module Instance<a class="headerlink" href="#module-instance" title="Permalink to this headline">¶</a></h3>
+<div class="math">
+\[\begin{split}\frac{
+  \begin{array}{&#64;{}c&#64;{}}
+  (\vdash \href{../syntax/types.html#syntax-functype}{\mathit{functype}} \mathrel{\mbox{ok}})^\ast
+  \\
+  (S \vdash S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}] : \href{../syntax/types.html#syntax-functype}{\mathit{functype}}')^\ast
+  \qquad
+  (S \vdash S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}] : \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}})^\ast
+  \\
+  (S \vdash S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}] : \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}})^\ast
+  \qquad
+  (S \vdash S.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}] : \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}})^\ast
+  \\
+  (S \vdash \href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}} \mathrel{\mbox{ok}})^\ast
+  \qquad
+  (\href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}}.\href{../exec/runtime.html#syntax-exportinst}{\mathsf{name}})^\ast ~\mbox{disjoint}
+  \\
+  C = \{\href{../valid/conventions.html#context}{\mathsf{types}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \href{../valid/conventions.html#context}{\mathsf{funcs}}~{\href{../syntax/types.html#syntax-functype}{\mathit{functype}}'}^\ast, \href{../valid/conventions.html#context}{\mathsf{tables}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}^\ast, \href{../valid/conventions.html#context}{\mathsf{mems}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}^\ast, \href{../valid/conventions.html#context}{\mathsf{globals}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}^\ast\}
+  \end{array}
+}{
+  S \vdash \{
+    \begin{array}[t]{&#64;{}l&#64;{~}l&#64;{}}
+    \href{../exec/runtime.html#syntax-moduleinst}{\mathsf{types}} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
+    \href{../exec/runtime.html#syntax-moduleinst}{\mathsf{funcaddrs}} &amp; \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^\ast, \\
+    \href{../exec/runtime.html#syntax-moduleinst}{\mathsf{tableaddrs}} &amp; \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}^\ast, \\
+    \href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}} &amp; \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}^\ast, \\
+    \href{../exec/runtime.html#syntax-moduleinst}{\mathsf{globaladdrs}} &amp; \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}^\ast \\
+    \href{../exec/runtime.html#syntax-moduleinst}{\mathsf{exports}} &amp; \href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}}^\ast ~\} : C
+    \end{array}
+}\end{split}\]</div>
+</div>
+<div class="section" id="store">
+<span id="valid-store"></span><span id="index-7"></span><h3>Store<a class="headerlink" href="#store" title="Permalink to this headline">¶</a></h3>
+<div class="math">
+\[\begin{split}\frac{
+  \begin{array}{&#64;{}c&#64;{}}
+  (S \vdash \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}} : \href{../syntax/types.html#syntax-functype}{\mathit{functype}}')^\ast
+  \qquad
+  (S \vdash \href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}} : \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}})^\ast
+  \\
+  (S \vdash \href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}} : \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}})^\ast
+  \qquad
+  (S \vdash \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}} : \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}})^\ast
+  \\
+  S = \{
+    \href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}~\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}^\ast,
+    \href{../exec/runtime.html#syntax-store}{\mathsf{tables}}~\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}^\ast,
+    \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}~\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}^\ast,
+    \href{../exec/runtime.html#syntax-store}{\mathsf{globals}}~\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}^\ast \}
+  \end{array}
+}{
+  \vdash S \mathrel{\mbox{ok}}
+}\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="extension">
+<h2>Extension<a class="headerlink" href="#extension" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="extend-funcinst">
+<span id="index-8"></span><span id="id1"></span><h3><a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">Function Instance</span></a><a class="headerlink" href="#extend-funcinst" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>A function instance must remain unchanged.</li>
+</ul>
+<div class="math">
+\[\frac{
+  \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}_1 = \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}_2
+}{
+  \vdash \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}_1 \prec \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}_2
+}\]</div>
+</div>
+<div class="section" id="extend-tableinst">
+<span id="index-9"></span><span id="id2"></span><h3><a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">Table Instance</span></a><a class="headerlink" href="#extend-tableinst" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The length of <span class="math">\(|\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}|\)</span> must not shrink.</li>
+<li>The value of <span class="math">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{max}}\)</span> must remain unchanged.</li>
+</ul>
+<div class="math">
+\[\frac{
+  |\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}_1.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}| \leq |\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}_2.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}|
+  \qquad
+  \href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}_1.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{max}} = \href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}_2.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{max}}
+}{
+  \vdash \href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}_1 \prec \href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}_2
+}\]</div>
+</div>
+<div class="section" id="extend-meminst">
+<span id="index-10"></span><span id="id3"></span><h3><a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">Memory Instance</span></a><a class="headerlink" href="#extend-meminst" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The length of <span class="math">\(|\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}|\)</span> must not shrink.</li>
+<li>The value of <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}\)</span> must remain unchanged.</li>
+</ul>
+<div class="math">
+\[\frac{
+  |\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}_1.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}| \leq |\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}_2.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}|
+  \qquad
+  \href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}_1.\href{../exec/runtime.html#syntax-meminst}{\mathsf{max}} = \href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}_2.\href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}
+}{
+  \vdash \href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}_1 \prec \href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}_2
+}\]</div>
+</div>
+<div class="section" id="extend-globalinst">
+<span id="index-11"></span><span id="id4"></span><h3><a class="reference internal" href="runtime.html#syntax-globalinst"><span class="std std-ref">Global Instance</span></a><a class="headerlink" href="#extend-globalinst" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <a class="reference internal" href="../syntax/types.html#syntax-mut"><span class="std std-ref">mutability</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}}\)</span> must remain unchanged.</li>
+<li>If <span class="math">\(\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}}\)</span> is <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{const}}\)</span>, then the <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">value</span></a><span class="math">\(\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}\)</span> must also remain unchanged.</li>
+</ul>
+<div class="math">
+\[\begin{split}\frac{
+  \begin{array}{&#64;{}c&#64;{}}
+  \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_1.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}} = \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_2.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}
+  \\
+  \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_1.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}} = \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_2.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}} = \href{../syntax/types.html#syntax-mut}{\mathsf{const}}
+  \end{array}
+}{
+  \vdash \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_1 \prec \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_2
+}
+\qquad
+\frac{
+  \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_1.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}} = \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_2.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}} = \href{../syntax/types.html#syntax-mut}{\mathsf{var}}
+}{
+  \vdash \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_1 \prec \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_2
+}\end{split}\]</div>
+</div>
+<div class="section" id="id5">
+<span id="id6"></span><h3>Store<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="math">
+\[\begin{split}\frac{
+  \begin{array}{&#64;{}ccc&#64;{}}
+  S_1.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}} = \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}_1^\ast &amp;
+  S_2.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}} = {\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}'_1}^\ast~\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}_2^\ast &amp;
+  (\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}_1 \prec \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}'_1)^\ast \\
+  S_1.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}} = \href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}_1^\ast &amp;
+  S_2.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}} = {\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}'_1}^\ast~\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}_2^\ast &amp;
+  (\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}_1 \prec \href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}'_1)^\ast \\
+  S_1.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}} = \href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}_1^\ast &amp;
+  S_2.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}} = {\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}'_1}^\ast~\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}_2^\ast &amp;
+  (\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}_1 \prec \href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}'_1)^\ast \\
+  S_1.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}} = \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_1^\ast &amp;
+  S_2.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}} = {\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}'_1}^\ast~\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_2^\ast &amp;
+  (\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}_1 \prec \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}'_1)^\ast \\
+  \end{array}
+}{
+  \vdash S_1 \prec S_2
+}\end{split}\]</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
