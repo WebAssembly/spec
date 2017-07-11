@@ -189,7 +189,7 @@ In that case, all existing operand types are purged from the operand stack, in o
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Even with the unreachable flag set, consecutive operands are still pushed to and popped from the operand stack.
-That is necessary to detect invalid <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">examples</span></a> like <span class="math">\((\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}})~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.ADD)\)</span>.
+That is necessary to detect invalid <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">examples</span></a> like <span class="math">\((\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}})~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}})\)</span>.
 However, a polymorphic stack cannot underflow, but instead generates <code class="code docutils literal"><span class="pre">Unknown</span></code> types as needed.</p>
 </div>
 </div>
