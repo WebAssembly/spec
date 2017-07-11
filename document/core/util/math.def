@@ -407,6 +407,7 @@
 
 .. Indices, non-terminals
 
+.. |Bidx| mathdef:: \xref{binary/modules}{binary-index}{\B{idx}}
 .. |Btypeidx| mathdef:: \xref{binary/modules}{binary-typeidx}{\B{typeidx}}
 .. |Bfuncidx| mathdef:: \xref{binary/modules}{binary-funcidx}{\B{funcidx}}
 .. |Btableidx| mathdef:: \xref{binary/modules}{binary-tableidx}{\B{tableidx}}
@@ -880,3 +881,23 @@
 .. Other meta functions
 
 .. |invoke| mathdef:: \xref{exec/modules}{exec-invocation}{\F{invoke}}
+
+
+
+.. Custom Sections
+.. ---------------
+
+.. Name section, non-terminals
+
+.. |Bnamesec| mathdef:: \xref{appendix/custom}{binary-namesubsection}{\B{namesec}}
+.. |Bnamedata| mathdef:: \xref{appendix/custom}{binary-namesubsection}{\B{namedata}}
+.. |Bnamesubsection| mathdef:: \xref{appendix/custom}{binary-namesubsection}{\B{namesubsection}}
+
+.. |Bnamemap| mathdef:: \xref{appendix/custom}{binary-namemap}{\B{namemap}}
+.. |Bnameassoc| mathdef:: \xref{appendix/custom}{binary-namemap}{\B{nameassoc}}
+.. |Bindirectnamemap| mathdef:: \xref{appendix/custom}{binary-indirectnamemap}{\B{indirectnamemap}}
+.. |Bindirectnameassoc| mathdef:: \xref{appendix/custom}{binary-indirectnamemap}{\B{indirectnameassoc}}
+
+.. |Bmodulenamesubsec| mathdef:: \xref{appendix/custom}{binary-modulenamesec}{\B{modulenamesubsec}}
+.. |Bfuncnamesubsec| mathdef:: \xref{appendix/custom}{binary-funcnamesec}{\B{funcnamesubsec}}
+.. |Blocalnamesubsec| mathdef:: \xref{appendix/custom}{binary-localnamesec}{\B{localnamesubsec}}

@@ -7,6 +7,6 @@ Appendix
    :maxdepth: 2
 
    implementation
-   names
+   custom
    properties
    algorithm
