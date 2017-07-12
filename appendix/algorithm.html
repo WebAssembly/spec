@@ -54,7 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Appendix</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="implementation.html">Implementation Limitations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom.html">Custom Sections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names.html">Name Section</a></li>
 <li class="toctree-l2"><a class="reference internal" href="properties.html">Formal Properties</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Validation Algorithm</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#data-structures">Data Structures</a></li>
@@ -134,13 +134,13 @@ With the current version of WebAssembly, the <code class="code docutils literal"
 </pre></div>
 </div>
 <p>However, these variables are not manipulated directly by the main checking function, but through a set of auxiliary functions:</p>
-<div class="highlight-pseudo"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">push_opd</span>(<span class="k">type</span> : val_type | Unknown) =
-  opds.push(<span class="k">type</span>)
+<div class="highlight-pseudo"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">push_opd</span>(<span class="nf">type</span> : val_type | Unknown) =
+  opds.push(type)
 
 <span class="k">func</span> <span class="nf">pop_opd</span>() : val_type | Unknown =
   <span class="k">if</span> (opds.size() = ctrls[0].height &amp;&amp; ctrls[0].unreachable) <span class="k">return</span> Unknown
   error_if(opds.size() = ctrls[0].height)
-  <span class="k">return</span> opds.pop(<span class="k">type</span>)
+  <span class="k">return</span> opds.pop(type)
 
 <span class="k">func</span> <span class="nf">pop_opd</span>(<span class="nf">expect</span> : val_type | Unknown) : val_type | Unknown =
   <span class="k">let</span> <span class="nf">actual</span> = pop_opd()
