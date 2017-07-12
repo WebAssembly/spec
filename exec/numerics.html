@@ -192,7 +192,7 @@ When several of these placeholders occur in a single clause, then they must be r
 <span id="index-5"></span><h2>Integer Operations<a class="headerlink" href="#integer-operations" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="sign-interpretation">
 <span id="aux-signed"></span><span id="index-6"></span><h3>Sign Interpretation<a class="headerlink" href="#sign-interpretation" title="Permalink to this headline">¶</a></h3>
-<p>Integer operators are defined on <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1120#1{{\mathit{i}#1}}\mathdef1120{N}}\)</span> values.
+<p>Integer operators are defined on <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1118#1{{\mathit{i}#1}}\mathdef1118{N}}\)</span> values.
 Operators that use a signed interpretation convert the value using the following definition, which takes the two&#8217;s complement when the value lies in the upper half of the value range (i.e., its most significant bit is <span class="math">\(1\)</span>):</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
@@ -620,7 +620,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <p>where:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\mathrm{exact}_N &amp;=&amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1125#1{{\mathit{f}#1}}\mathdef1125{N}} \cap \mathbb{Q} \\
+\mathrm{exact}_N &amp;=&amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1123#1{{\mathit{f}#1}}\mathdef1123{N}} \cap \mathbb{Q} \\
 \mathrm{limit}_N &amp;=&amp; 2^{2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}} \\
 \mathrm{candidate}_N &amp;=&amp; \mathrm{exact}_N \cup \{+\mathrm{limit}_N, -\mathrm{limit}_N\} \\
 \mathrm{candidatepair}_N &amp;=&amp; \{ (z_1, z_2) \in \mathrm{candidate}_N^2 ~|~ z_1 &lt; z_2 \wedge \forall z \in \mathrm{candidate}_N, z \leq z_1 \vee z \geq z_2\} \\[1ex]

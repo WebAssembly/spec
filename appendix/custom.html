@@ -155,7 +155,7 @@ Each subsection consists of a</p>
 <div class="section" id="name-maps">
 <span id="binary-namemap"></span><span id="binary-indirectnamemap"></span><span id="index-2"></span><h3>Name Maps<a class="headerlink" href="#name-maps" title="Permalink to this headline">¶</a></h3>
 <p>A <em>name map</em> assigns <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">names</span></a> to <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a> in a given <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>.
-It consists of a <a class="reference internal" href="../binary/conventions.html#binary-vec"><span class="std std-ref">vector</span></a> of index/name pairs in arbitrary order.
+It consists of a <a class="reference internal" href="../binary/conventions.html#binary-vec"><span class="std std-ref">vector</span></a> of index/name pairs in order of increasing index value.
 Each index is expected to be unique, but the assigned names need not be.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
@@ -165,8 +165,8 @@ Each index is expected to be unique, but the assigned names need not be.</p>
   \href{../binary/modules.html#binary-index}{\mathtt{idx}}~\href{../binary/values.html#binary-name}{\mathtt{name}} \\
 \end{array}\end{split}\]</div>
 <p>An <em>indirect name map</em> assigns <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">names</span></a> to a two-dimensional <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>, where secondary indices are <em>grouped</em> by primary indices.
-It consists of a vector of primary index/name map pairs, where each name map in turn maps secondary indices to names.
-Each primary index is expected to be unique, as is each secondary index in each individual name map.</p>
+It consists of a vector of primary index/name map pairs in order of incresing index value, where each name map in turn maps secondary indices to names.
+Each primary index is expected to be unique, as is each secondary index per individual name map.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef57#1{{}}\mathdef57{indirect name map} &amp; \href{../appendix/custom.html#binary-indirectnamemap}{\mathtt{indirectnamemap}} &amp;::=&amp;

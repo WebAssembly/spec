@@ -108,16 +108,16 @@ Consequently, it can be integrated directly into a decoder.</p>
 <p>The algorithm uses two separate stacks: the <em>operand stack</em> and the <em>control stack</em>.
 The former tracks the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">types</span></a> of operand values on the <a class="reference internal" href="../exec/runtime.html#stack"><span class="std std-ref">stack</span></a>,
 the latter surrounding <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instructions</span></a> and their associated <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">blocks</span></a>.</p>
-<div class="highlight-none"><div class="highlight"><pre><span></span>type val_type = I32 | I64 | F32 | F64
+<div class="highlight-pseudo"><div class="highlight"><pre><span></span><span class="k">type</span> <span class="nf">val_type</span> = I32 | I64 | F32 | F64
 
-type opd_stack = stack(val_type | Unknown)
+<span class="k">type</span> <span class="nf">opd_stack</span> = stack(val_type | Unknown)
 
-type ctrl_stack = stack(ctrl_frame)
-type ctrl_frame = {
-  label_types : list(val_type)
-  end_types : list(val_type)
-  var height : nat
-  var unreachable : bool
+<span class="k">type</span> <span class="nf">ctrl_stack</span> = stack(ctrl_frame)
+<span class="k">type</span> <span class="nf">ctrl_frame</span> = {
+  <span class="nf">label_types</span> : list(val_type)
+  <span class="nf">end_types</span> : list(val_type)
+  <span class="nf">height</span> : nat
+  <span class="nf">unreachable</span> : bool
 }
 </pre></div>
 </div>
@@ -129,28 +129,28 @@ type ctrl_frame = {
 With the current version of WebAssembly, the <code class="code docutils literal"><span class="pre">list</span></code> could be simplified to an optional value.</p>
 </div>
 <p>For the purpose of presenting the algorithm, the operand and control stacks are simply maintained as global variables:</p>
-<div class="highlight-none"><div class="highlight"><pre><span></span>var opds : opd_stack
-var ctrls : ctrl_stack
+<div class="highlight-pseudo"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nf">opds</span> : opd_stack
+<span class="k">var</span> <span class="nf">ctrls</span> : ctrl_stack
 </pre></div>
 </div>
 <p>However, these variables are not manipulated directly by the main checking function, but through a set of auxiliary functions:</p>
-<div class="highlight-none"><div class="highlight"><pre><span></span>func push_opd(type : val_type | Unknown) =
-  opds.push(type)
+<div class="highlight-pseudo"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">push_opd</span>(<span class="k">type</span> : val_type | Unknown) =
+  opds.push(<span class="k">type</span>)
 
-func pop_opd() : val_type | Unknown =
-  if (opds.size() = ctrls[0].height &amp;&amp; ctrls[0].unreachable) return Unknown
+<span class="k">func</span> <span class="nf">pop_opd</span>() : val_type | Unknown =
+  <span class="k">if</span> (opds.size() = ctrls[0].height &amp;&amp; ctrls[0].unreachable) <span class="k">return</span> Unknown
   error_if(opds.size() = ctrls[0].height)
-  return opds.pop(type)
+  <span class="k">return</span> opds.pop(<span class="k">type</span>)
 
-func pop_opd(expect : val_type | Unknown) : val_type | Unknown =
-  let actual = pop_opd()
-  if (actual = Unknown) return expect
-  if (expect = Unknown) return actual
+<span class="k">func</span> <span class="nf">pop_opd</span>(<span class="nf">expect</span> : val_type | Unknown) : val_type | Unknown =
+  <span class="k">let</span> <span class="nf">actual</span> = pop_opd()
+  <span class="k">if</span> (actual = Unknown) <span class="k">return</span> expect
+  <span class="k">if</span> (expect = Unknown) <span class="k">return</span> actual
   error_if(actual =/= expect)
-  return actual
+  <span class="k">return</span> actual
 
-func push_opds(types : list(val_type)) = foreach (t in types) push_opd(t)
-func pop_opds(types : list(val_type)) = foreach (t in reverse(types)) pop_opd(t)
+<span class="k">func</span> <span class="nf">push_opds</span>(<span class="nf">types</span> : list(val_type)) = <span class="k">foreach</span> (t <span class="k">in</span> types) push_opd(t)
+<span class="k">func</span> <span class="nf">pop_opds</span>(<span class="nf">types</span> : list(val_type)) = <span class="k">foreach</span> (t <span class="k">in</span> reverse(types)) pop_opd(t)
 </pre></div>
 </div>
 <p>Pushing an operand simply pushes the respective type to the operand stack.</p>
@@ -162,25 +162,30 @@ In that case, an unknown type is returned.</p>
 The types may differ in case one of them is Unknown.
 The more specific type is returned.</p>
 <p>Finally, there are accumulative functions for pushing or popping multiple operand types.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The notation <code class="code docutils literal"><span class="pre">stack[i]</span></code> is meant to index the stack from the top,
+so that <code class="code docutils literal"><span class="pre">ctrls[0]</span></code> accesses the element pushed last.</p>
+</div>
 <p>The control stack is likewise manipulated through auxiliary functions:</p>
-<div class="highlight-none"><div class="highlight"><pre><span></span>func push_ctrl(label : list(val_type), out : list(val_type)) =
-  let frame = ctrl_frame(label, out, opds.size(), false)
+<div class="highlight-pseudo"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">push_ctrl</span>(<span class="nf">label</span> : list(val_type), <span class="nf">out</span> : list(val_type)) =
+  <span class="k">let</span> <span class="nf">frame</span> = ctrl_frame(label, out, opds.size(), false)
   ctrls.push(frame)
 
-func pop_ctrl() : list(val_type) =
+<span class="k">func</span> <span class="nf">pop_ctrl</span>() : list(val_type) =
   error_if(ctrls.is_empty())
-  let frame = ctrls.pop()
+  <span class="k">let</span> <span class="nf">frame</span> = ctrls.pop()
   pop_opds(frame.end_types)
   error_if(opds.size() =/= frame.height)
-  return frame.end_types
+  <span class="k">return</span> frame.end_types
 
-func unreachable() =
-  opds.resize(ctrl[0].height)
-  ctrl[0].unreachable := true
+<span class="k">func</span> <span class="nf">unreachable</span>() =
+  opds.resize(ctrls[0].height)
+  ctrls[0].unreachable := true
 </pre></div>
 </div>
 <p>Pushing a control frame takes the types of the label and result values.
-It allocates a new frame record recording them along with current height of the operand stack and marks the block as reachable.</p>
+It allocates a new frame record recording them along with the current height of the operand stack and marks the block as reachable.</p>
 <p>Popping a frame first checks that the control stack is not empty.
 It then verifies that the operand stack contains the right types of values expected at the end of the exited block and pops them off the operand stack.
 Afterwards, it checks that the stack has shrunk back to its initial height.</p>
@@ -200,62 +205,69 @@ Other instructions are checked in a similar manner.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Various instructions not shown here will additionally require the presence of a validation <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> for checking uses of <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
-That is an easy addition and therefor omitted from this presentation.</p>
+That is an easy addition and therefore omitted from this presentation.</p>
 </div>
-<div class="highlight-none"><div class="highlight"><pre><span></span>func validate(opcode) =
-  switch (opcode)
-    case (i32.add)
+<div class="highlight-pseudo"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">validate</span>(opcode) =
+  <span class="k">switch</span> (opcode)
+    <span class="k">case</span> (i32.add)
       pop_opd(I32)
       pop_opd(I32)
       push_opd(I32)
 
-    case (drop)
+    <span class="k">case</span> (drop)
       pop_opd()
 
-    case (select)
+    <span class="k">case</span> (select)
       pop_opd(I32)
-      let t1 = pop_opd()
-      let t2 = pop_opd(t1)
+      <span class="k">let</span> <span class="nf">t1</span> = pop_opd()
+      <span class="k">let</span> <span class="nf">t2</span> = pop_opd(t1)
       push_opd(t2)
 
-    case (unreachable)
+    <span class="k">case</span> (unreachable)
       unreachable()
 
-    case (block t*)
+    <span class="k">case</span> (block t*)
       push_ctrl([t*], [t*])
 
-    case (loop t*)
+    <span class="k">case</span> (loop t*)
       push_ctrl([], [t*])
 
-    case (if t*)
+    <span class="k">case</span> (if t*)
       push_ctrl([t*], [t*])
 
-    case (end)
-      let results = pop_ctrl()
+    <span class="k">case</span> (end)
+      <span class="k">let</span> <span class="nf">results</span> = pop_ctrl()
       push_opds(results)
 
-    case (else)
-      let results = pop_ctrl()
+    <span class="k">case</span> (else)
+      <span class="k">let</span> <span class="nf">results</span> = pop_ctrl()
       push_ctrl(results, results)
 
-    case (br n)
+    <span class="k">case</span> (br n)
       error_if(ctrls.size() &lt; n)
       pop_opds(ctrls[n].label_types)
       unreachable()
 
-    case (br_if n)
-      pop_opd(I32)
+    <span class="k">case</span> (br_if n)
       error_if(ctrls.size() &lt; n)
+      pop_opd(I32)
       pop_opds(ctrls[n].label_types)
       push_opds(ctrls[n].label_types)
 
-    case (br_table n* m)
+    <span class="k">case</span> (br_table n* m)
       error_if(ctrls.size() &lt; m)
-      pop_opds(ctrls[m].label_types)
-      foreach (n in n*)
+      <span class="k">foreach</span> (n <span class="k">in</span> n*)
         error_if(ctrls.size() &lt; n || ctrls[n].label_types =/= ctrls[m].label_types)
+      pop_opd(I32)
+      pop_opds(ctrls[m].label_types)
       unreachable()
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is an invariant under the current WebAssembly instruction set that an operand of <code class="code docutils literal"><span class="pre">Unknown</span></code> type is never duplicated on the stack.
+This would change if the language were extended with stack operators like <code class="code docutils literal"><span class="pre">dup</span></code>.
+Under such an extension, the above algorithm would need to be refined by replacing the <code class="code docutils literal"><span class="pre">Unknown</span></code> type with proper <em>type variables</em> to ensure that all uses are consistent.</p>
 </div>
 </div>
 </div>
