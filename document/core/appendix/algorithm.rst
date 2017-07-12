@@ -25,7 +25,7 @@ The algorithm uses two separate stacks: the *operand stack* and the *control sta
 The former tracks the :ref:`types <syntax-valtype>` of operand values on the :ref:`stack <stack>`,
 the latter surrounding :ref:`structured control instructions <syntax-instr-control>` and their associated :ref:`blocks <syntax-instr-control>`.
 
-.. code-block:: none
+.. code-block:: pseudo
 
    type val_type = I32 | I64 | F32 | F64
 
@@ -35,8 +35,8 @@ the latter surrounding :ref:`structured control instructions <syntax-instr-contr
    type ctrl_frame = {
      label_types : list(val_type)
      end_types : list(val_type)
-     var height : nat
-     var unreachable : bool
+     height : nat
+     unreachable : bool
    }
 
 For each value, the operand stack records its :ref:`value type <syntax-valtype>`, or :code:`Unknown` when the type is not known.
@@ -49,14 +49,14 @@ For each entered block, the control stack records a *control frame* with the typ
 
 For the purpose of presenting the algorithm, the operand and control stacks are simply maintained as global variables:
 
-.. code-block:: none
+.. code-block:: pseudo
 
    var opds : opd_stack
    var ctrls : ctrl_stack
 
 However, these variables are not manipulated directly by the main checking function, but through a set of auxiliary functions:
 
-.. code-block:: none
+.. code-block:: pseudo
 
    func push_opd(type : val_type | Unknown) =
      opds.push(type)
@@ -96,7 +96,7 @@ Finally, there are accumulative functions for pushing or popping multiple operan
 
 The control stack is likewise manipulated through auxiliary functions:
 
-.. code-block:: none
+.. code-block:: pseudo
 
    func push_ctrl(label : list(val_type), out : list(val_type)) =
      let frame = ctrl_frame(label, out, opds.size(), false)
@@ -141,7 +141,7 @@ Other instructions are checked in a similar manner.
    Various instructions not shown here will additionally require the presence of a validation :ref:`context <context>` for checking uses of :ref:`indices <syntax-index>`.
    That is an easy addition and therefore omitted from this presentation.
 
-.. code-block:: none
+.. code-block:: pseudo
 
    func validate(opcode) =
      switch (opcode)
