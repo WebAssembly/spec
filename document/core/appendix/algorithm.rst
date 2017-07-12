@@ -89,6 +89,11 @@ The more specific type is returned.
 
 Finally, there are accumulative functions for pushing or popping multiple operand types.
 
+.. note::
+   The notation :code:`stack[i]` is meant to index the stack from the top,
+   so that :code:`ctrls[0]` accesses the element pushed last.
+
+
 The control stack is likewise manipulated through auxiliary functions:
 
 .. code-block:: none
@@ -105,11 +110,11 @@ The control stack is likewise manipulated through auxiliary functions:
      return frame.end_types
 
    func unreachable() =
-     opds.resize(ctrl[0].height)
-     ctrl[0].unreachable := true
+     opds.resize(ctrls[0].height)
+     ctrls[0].unreachable := true
 
 Pushing a control frame takes the types of the label and result values.
-It allocates a new frame record recording them along with current height of the operand stack and marks the block as reachable.
+It allocates a new frame record recording them along with the current height of the operand stack and marks the block as reachable.
 
 Popping a frame first checks that the control stack is not empty.
 It then verifies that the operand stack contains the right types of values expected at the end of the exited block and pops them off the operand stack.
@@ -134,7 +139,7 @@ Other instructions are checked in a similar manner.
 
 .. note::
    Various instructions not shown here will additionally require the presence of a validation :ref:`context <context>` for checking uses of :ref:`indices <syntax-index>`.
-   That is an easy addition and therefor omitted from this presentation.
+   That is an easy addition and therefore omitted from this presentation.
 
 .. code-block:: none
 
@@ -180,14 +185,20 @@ Other instructions are checked in a similar manner.
          unreachable()
 
        case (br_if n)
-         pop_opd(I32)
          error_if(ctrls.size() < n)
+         pop_opd(I32)
          pop_opds(ctrls[n].label_types)
          push_opds(ctrls[n].label_types)
 
        case (br_table n* m)
          error_if(ctrls.size() < m)
-         pop_opds(ctrls[m].label_types)
          foreach (n in n*)
            error_if(ctrls.size() < n || ctrls[n].label_types =/= ctrls[m].label_types)
+         pop_opd(I32)
+         pop_opds(ctrls[m].label_types)
          unreachable()
+
+.. note::
+   It is an invariant under the current WebAssembly instruction set that an operand of :code:`Unknown` type is never duplicated on the stack.
+   This would change if the language were extended with stack operators like :code:`dup`.
+   Under such an extension, the above algorithm would need to be refined by replacing the :code:`Unknown` type with proper *type variables* to ensure that all uses are consistent.
