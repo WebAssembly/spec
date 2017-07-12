@@ -69,7 +69,7 @@ Name Maps
 
 A *name map* assigns :ref:`names <syntax-name>` to :ref:`indices <syntax-index>` in a given :ref:`index space <syntax-index>`.
 It consists of a :ref:`vector <binary-vec>` of index/name pairs in order of increasing index value.
-Each index is expected to be unique, but the assigned names need not be.
+Each index must be unique, but the assigned names need not be.
 
 .. math::
    \begin{array}{llclll}
@@ -80,8 +80,8 @@ Each index is expected to be unique, but the assigned names need not be.
    \end{array}
 
 An *indirect name map* assigns :ref:`names <syntax-name>` to a two-dimensional :ref:`index space <syntax-index>`, where secondary indices are *grouped* by primary indices.
-It consists of a vector of primary index/name map pairs in order of incresing index value, where each name map in turn maps secondary indices to names.
-Each primary index is expected to be unique, as is each secondary index per individual name map.
+It consists of a vector of primary index/name map pairs in order of increasing index value, where each name map in turn maps secondary indices to names.
+Each primary index must be unique, and likewise each secondary index per individual name map.
 
 .. math::
    \begin{array}{llclll}
