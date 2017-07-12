@@ -9,8 +9,8 @@ class PseudoLexer(RegexLexer):
 
   tokens = {
       'root': [
-          (r"\btype\b", Keyword),
-          (r"\bvar\b", Keyword),
+          (r"(?<![(])\btype\b", Keyword),
+          (r"(?<![(])\bvar\b", Keyword),
           (r"\bfunc\b", Keyword),
           (r"(?<![(])\breturn\b", Keyword),
           (r"\blet\b", Keyword),
