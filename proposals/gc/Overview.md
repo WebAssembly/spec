@@ -460,7 +460,7 @@ packed_type    ::=  i8 | i16
 storage_type   ::=  <value_type> | <packed_type>
 field_type     ::=  <storage_type> | (mut <storage_type>)
 
-data_type      ::=  (struct <field_type>*) | (array <fixfield_type>)
+data_type      ::=  (struct <field_type>*) | (array <field_type>)
 func_type      ::=  (func <value_type>* <value_type>*)
 def_type       ::=  <data_type> | <func_type>
 ```
