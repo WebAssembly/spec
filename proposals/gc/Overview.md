@@ -151,7 +151,8 @@ For example, `D.g`:
 
 ### Closures
 
-* Want to represent closures as pairs of typed function pointers and typed environment record.
+* Want to associate a code pointer and its "environment" in a GC-managed object
+* Want to be able to allow compiler of source language to choose appropriate environment representation
 
 Example:
 ```
@@ -169,26 +170,25 @@ function caller() {
 ```
 
 ```
-(type $func-f64-f64 (func (param $env $anyref) (param $y f64) (result f64)))
-(type $clos-f64-f64 (struct (field $code (ref $func-f64-f64)) (field $env anyref)))
-(type $inner-env (struct (field $x i32) (field $a i32)))
+(type $code-f64-f64 (func (param $env (ref $clos-f64-f64)) (param $y f64) (result f64)))
+(type $clos-f64-f64 (struct (field $code (ref $code-f64-f64)))
+(type $inner-clos (struct (extend $clos-f46-f64) (field $x i32) (field $a i32))
 
 (func $outer (param $x f64) (result (ref $clos-f64-f64))
   (ref_func $inner)
   (get_local $x)
   (f64.add (get_local $x) (f64.const 1))
-  (new $inner-env)
   (new $clos-f64-f64)
 )
 
-(func $inner (param $anyenv anyref) (param $y f64) (result f64)
-  (local $env (ref $inner-env))
-  (block $fail (result (ref anyref))
-    (set_local $env (cast_down anyref (ref $inner-env) $fail (get_local _$anyenv)))
+(func $inner (param $clos (ref $clos-f64-f64)) (param $y f64) (result f64)
+  (local $inner-clos (ref $inner-clos))
+  (block $fail (result (ref $clos-f64-f64))
+    (set_local $inner-clos (cast_down (ref $clos-f64-f64) (ref $inner-clos) $fail (get_local $clos)))
     (get_local $y)
-    (get_field $inner-env $a (get_local $env))
+    (get_field $inner-clos $a (get_local $inner-clos))
     (f64.add)
-    (get_field $inner-env $x (get_local $env))
+    (get_field $inner-clos $x (get_local $inner-clos))
     (f64.add)
     (return)
   )
@@ -199,7 +199,7 @@ function caller() {
   (local $clos (ref $clos-f64-f64))
   (set_local $clos (call $outer (f64.const 1)))
   (call_ref
-    (get_field $clos-f64-f64 $env (get_local $clos))
+    (get-local $clos)
     (f64.const 2)
     (get_field $clos-f64-f64 $code (get_local $clos))
   )
@@ -208,12 +208,13 @@ function caller() {
 
 Needs:
 * function pointers
-* universal type of references
+* recursive types
 * down casts
 
 The down cast for the closure environment is necessary because expressing its static type faithfully would require first-class generics and existential types.
 
-An alternative is to provide [primitive support](#closures) for closures.
+Note that this example shows just one way to represent closures ("display closures").
+WebAssembly should provide primitives that allow high-level language compilers to choose specific, efficient representations for closures in their source programs.
 
 
 ### Parametric Polymorphism
@@ -575,11 +576,6 @@ TODO: The ability to import types makes the type and import sections interdepend
 
 
 ## Possible Extension: Variants
-
-TODO
-
-
-## Possible Extension: Closures
 
 TODO
 
