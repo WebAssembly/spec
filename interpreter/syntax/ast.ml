@@ -30,6 +30,7 @@ struct
   type relop = Eq | Ne | LtS | LtU | GtS | GtU | LeS | LeU | GeS | GeU
   type cvtop = ExtendSI32 | ExtendUI32 | WrapI64
              | TruncSF32 | TruncUF32 | TruncSF64 | TruncUF64
+             | TruncSSatF32 | TruncUSatF32 | TruncSSatF64 | TruncUSatF64
              | ReinterpretFloat
 end
 

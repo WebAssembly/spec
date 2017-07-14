@@ -67,6 +67,7 @@ These operations closely match respective operations available in hardware.
      \K{i32.}\WRAP\K{\_i64} ~|~
      \K{i64.}\EXTEND\K{\_i32}\K{\_}\sx ~|~
      \K{i}\X{nn}\K{.}\TRUNC\K{\_f}\X{mm}\K{\_}\sx \\&&|&
+     \K{i}\X{nn}\K{.}\TRUNC\K{\_sat\_f}\X{mm}\K{\_}\sx \\&&|&
      \K{f32.}\DEMOTE\K{\_f64} ~|~
      \K{f64.}\PROMOTE\K{\_f32} ~|~
      \K{f}\X{nn}\K{.}\CONVERT\K{\_i}\X{mm}\K{\_}\sx \\&&|&
@@ -160,6 +161,7 @@ Occasionally, it is convenient to group operators together according to the foll
      \WRAP ~|~
      \EXTEND ~|~
      \TRUNC ~|~
+     \TRUNC\K{\_sat} ~|~
      \CONVERT ~|~
      \DEMOTE ~|~
      \PROMOTE ~|~
