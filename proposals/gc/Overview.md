@@ -437,11 +437,12 @@ To implement any such language efficiently, Wasm would need to provide such a me
 There are only two instructions for converting from and to such reference types:
 ```
 tag : [i32] -> [intref]
-tag : [intref] -> [i32]
+untag : [intref] -> [i32]
 ```
 Being reference types, tagged integers can be casted into `anyref`, and can participate in runtime type dispatch with `cast_down`.
 
 To avoid portability hazards, the value range of `intref` has to be restricted to at most 31 bit.
+The `tag` instruction would tap otherwise. Or it could include a label to branch to in that case.
 
 Alternatively, allow references to any numeric type. There are `ref` and `deref` instructions for all of them. It is up to implementations (and transparent to the semantics) which values they can optimize and represent unboxed. This is a bit more high-level but would allow for maximum performance on all architectures.
 
