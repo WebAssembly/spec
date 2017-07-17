@@ -485,7 +485,7 @@ test(() => {
     var buf = mem.buffer;
     assert_equals(buf.byteLength, WasmPage);
     assert_equals(mem.grow(0), 1);
-    assert_not_equals(buf, mem.buffer)
+    assert_true(buf !== mem.buffer)
     assert_equals(buf.byteLength, 0);
     buf = mem.buffer;
     assert_equals(buf.byteLength, WasmPage);
@@ -500,7 +500,7 @@ test(() => {
     buf = mem.buffer;
     assert_equals(buf.byteLength, 0);
     assert_equals(mem.grow(0), 0);
-    assert_not_equals(buf, mem.buffer)
+    assert_true(buf !== mem.buffer)
     assert_equals(buf.byteLength, 0);
     assert_equals(mem.buffer.byteLength, 0);
 }, "'WebAssembly.Memory.prototype.grow' method");
