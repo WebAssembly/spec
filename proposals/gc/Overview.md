@@ -6,10 +6,10 @@
 
 * Efficient support for high-level languages
   - faster execution
-  - smaller deliverables
+  - smaller modules
   - the vast majority of modern languages need it
 
-* Efficient interoperability with embedder heap
+* Efficient interoperability with embedder
   - for example, DOM objects on the web
   - no space leaks from mapping bidirectional tables
 
@@ -30,58 +30,61 @@
 
 ### Approach
 
-* Only basic but general structure: tuples (structs) and arrays.
-* No heavyweight object model.
-* Accept minimal amount of dynamic overhead (checked casts) as price for simplicity/universality.
-* Independent from linear memory.
-* Pay as you go; in particular, no effect on code not using GC.
-* Don't introduce dependencies on GC for other features (e.g., using resources through tables).
-* Avoid generics or other complex type structure _if possible_.
-* Extend the design iteratively, ship a minimal set of functionality fast.
+* Only basic but general structure: structs and arrays
+* No heavyweight object model
+* Accept minimal amount of dynamic overead (checked casts) as price for simplicity/universality
+* Independent from linear memory
+* Pay as you go; in particular, no effect on code not using GC
+* Don't introduce dependencies on GC for other features (e.g., using resources through tables)
+* Avoid generics or other complex type structure _if possible_
+* Extend the design iteratively, ship a minimal set of functionality fast
 
 
 ### Requirements
 
-* Allocation of structures that are garbage collected.
-* Allocation of unstructured byte arrays that are garbage collected.
-* Handles to heap values from the embedder, garbage collected.
-* Manipulating references to these, as value types.
-* Forming unions of different types, as value types? (future extension?)
+* Allocation of data structures that are garbage collected
+* Allocation of byte arrays that are garbage collected
+* Can reference values (e.g. JavaScript objects) from the embedder that are garbage collected
+* Manipulating references to these as value types
 * Defining, allocating, and indexing structures as extensions to imported types? (future extension)
 * Exceptions (separate proposal)
-* Direct support for strings? (separate proposal)
 * Safe interaction with threads (sharing, atomic access)
+
+### Potential Extensions
+
+* Forming unions of different types, as value types (future extension?)
+* Direct support for strings (separate proposal)
 
 
 ### Efficiency Considerations
 
 GC support should maintain Wasm's efficiency properties as much as possible, namely:
 
-* all operations are very cheap, ideally constant time,
-* structures are contiguous, dense chunks of memory,
-* accessing fields are single-indirection loads and stores,
-* allocation is fast,
-* no implicit boxing operations (i.e. no implicit allocation on the heap),
-* primitive values should not need to be boxed to be stored in managed data structures,
-* allows ahead-of-time compilation and code caching.
+* all operations are very cheap, ideally constant time
+* structures are contiguous, dense chunks of memory
+* field accesses are single-indirection loads and stores
+* allocation is fast
+* no implicit allocation on the heap (e.g. boxing)
+* primitive values should not need to be boxed to be stored in managed data structures
+* allows ahead-of-time compilation and code caching
 
 
 ### Evaluation
 
-Should attempt to implement 2-3 exemplary languages:
+Example languages from three categories should be successfully implemented:
 
-* an object-oriented language (e.g., a subset of Java, with classes, inheritence, interfaces),
+* an object-oriented language with nominal subtyping (e.g., a subset of Java, with classes, inheritance, interfaces)
 * a typed functional language (e.g., a subset of ML, with closures, polymorphism, variant types)
 * an untyped language (e.g., a subset of Scheme or Python or something else)
 
 
 ## Use Cases
 
-### Tuples and Arrays
+### Structs and Arrays
 
-* Want to represent first-class tuples/records/structs with static indexing.
-* Want to represent arrays with dynamic indexing.
-* Possibly want to create arrays with both fixed or dynamic size.
+* Want to represent first-class records/structs with static indexing
+* Want to represent arrays with dynamic indexing
+* Possibly want to create arrays with either fixed or dynamic length
 
 Example (fictional language):
 ```
@@ -92,15 +95,15 @@ type buf = {pos : int, buf : char[]}
 
 Needs:
 
-* user-defined structures and arrays as heap objects,
-* references to those as first-class values.
+* user-defined structures and arrays as heap objects
+* references to those as first-class values
 
 
 ### Objects and Method Tables
 
-* Want to represent instances as structures, whose first field is the method table.
-* Want to represent method tables themselves as structures, whose fields are function pointers.
-* Subtyping is relevant, both on instance types and method table types.
+* Want to represent objects as structures, whose first field is the method table
+* Want to represent method tables themselves as structures, whose fields are function pointers
+* Subtyping is relevant, both on instance types and method table types
 
 Example (Java-ish):
 ```
@@ -129,11 +132,11 @@ class D extends C {
 
 Needs:
 
-* (structural) subtyping,
-* immutable fields (for sound subtyping),
-* universal type of references,
+* (structural) subtyping
+* immutable fields (for sound subtyping)
+* universal type of references
 * down casts
-* dynamic linking might add a whole new dimension.
+* dynamic linking might add a whole new dimension
 
 To emulate the covariance of the `this` parameter, one down cast on `this` is needed in the compilation of each method that overrides a method from a base class.
 For example, `D.g`:
@@ -211,11 +214,11 @@ Needs:
 * (mutually) recursive function types
 * down casts
 
-The down cast for the closure environment is necessary because expressing its static type faithfully would require first-class generics and existential types.
+The down cast for the closure environment is necessary because expressing a static type system would require first-class generics and existential types.
 
 Note that this example shows just one way to represent closures ("display closures").
 WebAssembly should provide primitives that allow high-level language compilers to choose specific, efficient representations for closures in their source programs.
-An alternative is to provide [primitive support](#closures) for closures.
+An alternative is to provide [primitive support](#closures) for closures, e.g. a partial application operator.
 
 
 ### Parametric Polymorphism
@@ -225,19 +228,19 @@ TODO: via type `anyref` and `intref`
 
 ### Type Export/Import
 
-* Want to allow type definitions to be imported from other modules.
-* As much as possible of the above constructions should be allowed with abstract types.
-* More complicated linking patterns might require user-space linking hooks.
+* Want to allow type definitions to be imported from other modules
+* As much as possible of the above constructions should be allowed with abstract types
+* More complicated linking patterns might require user-space linking hooks
 * Possibly: allow abstract type exports (encapsulation)?
 * Lots of tricky details here, mostly ignore for now...
 
 
 ## Basic Functionality: Simple Aggregates
 
-* Extend the Wasm type section with new constructors for aggregate types.
-* Extend the value types with new constructors for references and interior references.
-* Aggregate types are not value types, only references to them are.
-* References are never null; nullable reference types are separate.
+* Extend the Wasm type section with new operators to allocate aggregate types
+* Extend the value types with new constructors for references and interior references
+* Aggregate types are not value types, only references to them are
+* References are never null; nullable reference types are separate
 
 
 ### Structures
@@ -262,7 +265,7 @@ Fields are *accessed* with generic load/store instructions that take a reference
 ```
 All accesses are type-checked at validation time.
 
-Structures are *allocated* witha  `new` instruction that take initialization values for each field.
+Structures are *allocated* with a `new` instruction that accepts initialization values for each field.
 The operator yields a reference to the respective type:
 ```
 (func $g
@@ -275,7 +278,7 @@ Structures can be compared for identity:
 ```
 (same (new $point ...) (new $point ...))  ;; false
 ```
-TODO: Could even allow heterogeneous equality (equality between operands of different type), but that might lead to some discontinueties or even prevent some potential optimizations?
+TODO: Could even allow equality comparisons between operands of different type, but that might lead to some discontinuities or even prevent some potential optimizations?
 
 
 ### Arrays
@@ -285,8 +288,8 @@ TODO: Could even allow heterogeneous equality (equality between operands of diff
 (type $vector (array f64))
 (type $matrix (array (type $vector)))
 ```
-Such types again can be used by forming reference types.
-For now, we assume that all array types have dynamic ([flexible](#flexible-aggregates)) size.
+Array types again can be used by forming reference types.
+For now, we assume that all array types have a ([flexible](#flexible-aggregates)) length computed at allocation time.
 
 Elements are accessed with generic load/store instructions that take a reference to an array:
 ```
@@ -297,20 +300,19 @@ Elements are accessed with generic load/store instructions that take a reference
 )
 ```
 The element type of every access is checked at validation time.
-The index is checked at execution time.
+The index is checked against the array's length at execution time.
 A trap occurs if the index is out of bounds.
 
-Arrays are *allocated* with a `new` instruction that takes a size and an initialization value as operands, yielding a reference:
+Arrays are *allocated* with a `new` instruction that takes a length and an initialization value as operands, yielding a reference:
 ```
 (func $g
   (call $g (new_array $vector (i32.const 0) (i64.const 3.14)))
 )
 ```
-Arrays are garbage-collected.
 
-The *length* of an array, i.e., the number of elements, can be inquired via the `load_length` instruction:
+The *length* of an array, i.e., the number of elements, can be inquired via the `load_array_length` instruction:
 ```
-(load_length $vector (get_local $v))
+(load_array_length $vector (get_local $v))
 ```
 
 Like structures, arrays can be compared for identity.
@@ -323,7 +325,7 @@ Fields and elements can have a packed *storage type* `i8` or `i16`:
 (type $s (struct (field $a i8) (field $b i16)))
 (type $buf (array i8))
 ```
-The order of fields is not observable, so implementations are free to optimize types by reordering fields or adding gaps for alignment.
+The order of fields is not observable, so implementations are free to reorganize the underlying memory for their storage or add alignment.
 
 Packed fields require special load/store instructions:
 ```
@@ -344,6 +346,7 @@ Fields and elements can either be immutable or *mutable*:
 (type $a (array (mut i32)))
 ```
 Store operators are only valid when targeting a mutable field or element.
+Immutable fields can only be stored to as part of an allocation.
 
 Immutability is needed to enable the safe and efficient [subtyping](#subtyping), especially as needed for the [objects](#objects-and-method-tables) use case.
 
@@ -394,8 +397,10 @@ and the original type can be recovered via [down casts](#casting).
 
 ### Host Types
 
-The embedder may define its own set of types (such as DOM objects), or allow the user to create their own types using the embedder API (including a subtype relation between them).
+The embedder may define its own set of types (such as DOM objects) or allow the user to create their own types using the embedder API (including a subtype relation between them).
 Such *host types* can be [imported](import-and-export) into a module, where they are treated as opaque data types.
+
+TODO: we might need to declare whether an imported type is an anyref to allow an engine to compile code ahead of time.
 
 There are no operations to manipulate such types, but a WebAssembly program can receive references to them as parameters or results of imported/exported Wasm functions. Such "foreign" references may point to objects on the _embedder_'s heap. Yet, they can safely be stored in or round-trip through Wasm code.
 
@@ -444,7 +449,7 @@ untag : [intref] -> [i32]
 Being reference types, tagged integers can be casted into `anyref`, and can participate in runtime type dispatch with `cast_down`.
 
 To avoid portability hazards, the value range of `intref` has to be restricted to at most 31 bit.
-The `tag` instruction would tap otherwise. Or it could include a label to branch to in that case.
+The `tag` instruction would trap otherwise. Or it could include a target label for that case.
 
 Alternatively, allow references to any numeric type. There are `ref` and `deref` instructions for all of them. It is up to implementations (and transparent to the semantics) which values they can optimize and represent unboxed. This is a bit more high-level but would allow for maximum performance on all architectures.
 
@@ -539,7 +544,7 @@ On the other hand, it means that immutable fields can still change, preventing v
 
 ### Casting
 
-To minimize typing overhead, all uses of subtyping are _explicit_ through casts.
+To simplify typechecking, all uses of subtyping are _explicit_ through casts.
 The instruction
 ```
 (cast_up <type1> <type2> (...))
@@ -558,7 +563,7 @@ However, a downcast may fail at runtime if the operand's type is not `<type2>`, 
 
 Downcasts can be used to implement runtime type analysis, or to recover the concrete type of an object that has been cast to `anyref` to emulate parametric polymorphism.
 
-Note: Casting could be extended to allow reinterpreting any sequence of _transparent_ (i.e., non-reference) fields of an aggregate type with any other transparent sequence of the same size.
+Note: Casting could be extended to allow reinterpreting any sequence of _transparent_ (i.e., non-reference) fields of an aggregate type with any other transparent sequence of the same length.
 That would require constraining the ability of implementations to reorder or align fields.
 
 
@@ -574,7 +579,7 @@ Imported types are essentially parameters to the module.
 As such, they are entirely abstract, as far as compile-time validation is concerned.
 The only operations possible with them are those that do not require knowledge of their actual definition or size: primarily, passing and storing references to such types.
 
-TODO: The ability to import types makes the type and import sections interdependent.
+TODO: The ability to import types makes the type and import sections interdependent. (we will probably need to add placeholder entries in the types section for imported types, and possibly may need to add assumptions about their representation, even to compile code that uses them as locals, unless we want to restrict imported types to be only reference types).
 
 
 ## Possible Extension: Variants
@@ -668,8 +673,8 @@ TODO: What is the form of the allocation instruction for aggregates that nest ot
 
 ### Fixed Arrays
 
-Arrays can only be nested into other aggregates if they have a *fixed* size.
-Fixed arrays are a second version of array type that has a size (expressed as a constant expression) in addition to an element type:
+Arrays can only be nested into other aggregates if they have a *fixed* length.
+Fixed arrays are a second version of array type that has a length (expressed as a constant expression) in addition to an element type:
 ```
 (type $a (array i32 (i32.const 100)))
 ```
@@ -679,10 +684,10 @@ TODO: The ability to use constant expressions makes the type, global, and import
 
 ### Flexible Aggregates
 
-Arrays without a static size are called *flexible*.
+Arrays without a static length are called *flexible*.
 Flexible aggregates cannot be used as field or element types.
 
-However, it is a common pattern wanting to define structs that end in an array of dynamic size.
+However, it is a common pattern wanting to define structs that end in an array of dynamic length.
 To support this, flexible arrays could be allowed for the _last_ field of a structure:
 ```
 (type $flex-array (array i32))
@@ -691,7 +696,7 @@ To support this, flexible arrays could be allowed for the _last_ field of a stru
 Such a structure is itself called *flexible*.
 This notion can be generalized recursively: flexible aggregates cannot be used as field or member types, except for the last field of a structure.
 
-Like a flexible array, allocating a flexible structure would require giving a dynamic size operand for its flexible tail array (which is a direct or indirect last field).
+Like a flexible array, allocating a flexible structure would require giving a dynamic length operand for its flexible tail array (which is a direct or indirect last field).
 
 
 ### Type Structure
