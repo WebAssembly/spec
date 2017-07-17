@@ -671,7 +671,7 @@
 .. Notation
 
 .. |stepto| mathdef:: \hookrightarrow
-.. |extendsto| mathdef:: \prec
+.. |extendsto| mathdef:: \preceq
 
 
 .. Allocation
@@ -781,9 +781,8 @@
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
 .. |INSTANTIATE| mathdef:: \xref{exec/runtime}{syntax-instantiate}{\K{instantiate}}
-.. |INITGLOBAL| mathdef:: \xref{exec/runtime}{syntax-init_global}{\K{init\_global}}
-.. |INITTABLE| mathdef:: \xref{exec/runtime}{syntax-init_table}{\K{init\_table}}
-.. |INITMEM| mathdef:: \xref{exec/runtime}{syntax-init_mem}{\K{init\_mem}}
+.. |INITELEM| mathdef:: \xref{exec/runtime}{syntax-init_elem}{\K{init\_elem}}
+.. |INITDATA| mathdef:: \xref{exec/runtime}{syntax-init_data}{\K{init\_data}}
 .. |DO| mathdef:: \xref{exec/runtime}{syntax-do}{\K{do}}
 
 

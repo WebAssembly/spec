@@ -349,8 +349,6 @@ Memory Instructions
    }
 
 
-.. _valid-store:
-
 :math:`t\K{.}\STORE~\memarg`
 ............................
 

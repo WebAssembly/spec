@@ -1,3 +1,4 @@
+.. index:: ! soundness, type system
 .. _soundness:
 
 Soundness
@@ -140,20 +141,13 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The :ref:`value type <syntax-valtype>` of the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
 
-* If :math:`\globalinst.\GIMUT` is |MCONST| and :math:`\globalinst.\GIVALUE` is not empty, then the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
+* If :math:`\globalinst.\GIMUT` is |MCONST|, then the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
 
 .. math::
    \frac{
      \mut = \MVAR \vee c_1 = c_2
    }{
      \vdash \{\GIVALUE~(t.\CONST~c_1), \GIMUT~\mut\} \extendsto \{\GIVALUE~(t.\CONST~c_2), \GIMUT~\mut\}
-   }
-
-.. math::
-   ~\\[1ex]
-   \frac{
-   }{
-     \vdash \{\GIVALUE~\epsilon, \GIMUT~\mut\} \extendsto \{\GIVALUE~(t.\CONST~c), \GIMUT~\mut\}
    }
 
 
@@ -290,30 +284,16 @@ A valid store must consist of
 .. index:: global type, global instance, value, mutability
 .. _valid-globalinst:
 
-:ref:`Global Instance <syntax-globalinst>` :math:`\{ \GIVALUE~\val^?, \GIMUT~\mut \}`
-.....................................................................................
+:ref:`Global Instance <syntax-globalinst>` :math:`\{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \}`
+...........................................................................................
 
-* If :math:`\val^?` is a :ref:`value <syntax-val>` :math:`(t.\CONST~c)`, then:
-
-  * The global instance is valid with :ref:`global type <syntax-globaltype>` :math:`\mut~t`.
-
-* Else :math:`\val^?` is empty, and then:
-
-  * The global instance is valid with empty type.
+* The global instance is valid with :ref:`global type <syntax-globaltype>` :math:`\mut~t`.
 
 .. math::
    \frac{
    }{
      S \vdash \{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \} : \mut~t
    }
-   \qquad
-   \frac{
-   }{
-     S \vdash \{ \GIVALUE~\epsilon, \GIMUT~\mut \} : \epsilon
-   }
-
-.. note::
-   An empty type indicates an uninitialized global.
 
 
 .. index:: external type, export instance, name, external value
@@ -402,6 +382,7 @@ A valid store must consist of
    }
 
 
+.. index:: configuration, administrative instruction, store
 .. _valid-config:
 
 Configuration Validity
@@ -411,6 +392,9 @@ To state soundness theorems that relate the WebAssembly :ref:`type system <valid
 which includes :ref:`runtime structures <syntax-runtime>` like the :ref:`store <syntax-store>` as well as :ref:`administrative instructions <syntax-instr-admin>` and  :ref:`module instructions <valid-moduleinstr>`.
 
 To that end, all previous typing judgements :math:`C \vdash \X{prop}` are generalized to include the store, as in :math:`S; C \vdash \X{prop}`, by implicitly adding :math:`S` to all rules -- it is never modified by the pre-existing rules, but is accessed in new rules for :ref:`administrative instructions <valid-instr-admin>` and  :ref:`module instructions <valid-moduleinstr>`.
+
+
+.. index:: result type, thread
 
 :ref:`Configurations <syntax-config>` :math:`S;T`
 .................................................
@@ -431,12 +415,13 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
+.. index:: thread, frame, instruction, result type, context
 .. _valid-thread:
 
 :ref:`Threads <syntax-thread>` :math:`F;\instr^\ast` under return type :math:`\resulttype^?`
 ............................................................................................
 
-* The :ref:`frame <syntax-frame>` :math:`F` must be :ref:`valid <valid-frame>` with :ref:`context <syntax-context>` :math:`C`.
+* The :ref:`frame <syntax-frame>` :math:`F` must be :ref:`valid <valid-frame>` with :ref:`context <context>` :math:`C`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with |CRETURN| set to the optional :ref:`result type <syntax-resulttype>` :math:`\resulttype^?`.
 
@@ -455,6 +440,8 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
+.. index:: thread, module instruction
+
 :ref:`Threads <syntax-thread>` :math:`\moduleinstr^\ast` under return type :math:`\resulttype^?`
 ................................................................................................
 
@@ -472,6 +459,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
+.. index:: frame, local, module instance, value, value type, context
 .. _valid-frame:
 
 :ref:`Frame <syntax-frame>` :math:`\{\ALOCALS~\val^\ast, \AMODULE~\moduleinst\}`
@@ -497,6 +485,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
+.. index:: value, value type
 .. _valid-val:
 
 :ref:`Value <syntax-val>` :math:`t.\CONST~c`
@@ -511,7 +500,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
-
+.. index:: administrative instruction, value type, context, store
 .. _valid-instr-admin:
 
 Administrative Instructions
@@ -519,6 +508,8 @@ Administrative Instructions
 
 Typing rules for :ref:`administrative instructions <syntax-instr-admin>` are specified as follows.
 
+
+.. index:: trap
 
 :math:`\TRAP`
 .............
@@ -531,6 +522,8 @@ Typing rules for :ref:`administrative instructions <syntax-instr-admin>` are spe
      S; C \vdash \TRAP : [t_1^\ast] \to [t_2^\ast]
    }
 
+
+.. index:: function address, extern value, extern type, function type
 
 :math:`\INVOKE~\funcaddr`
 .........................
@@ -546,6 +539,8 @@ Typing rules for :ref:`administrative instructions <syntax-instr-admin>` are spe
      S; C \vdash \INVOKE~\funcaddr : [t_1^\ast] \to [t_2^\ast]
    }
 
+
+.. index:: label, instruction, result type
 
 :math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END`
 ..................................................
@@ -569,11 +564,13 @@ Typing rules for :ref:`administrative instructions <syntax-instr-admin>` are spe
    }
 
 
+.. index:: frame, instruction, result type
+
 :math:`\FRAME_n\{F\}~\instr^\ast~\END`
 ...........................................
 
 * Under the return type :math:`[t^n]`,
-  the :ref:`thread <syntax-frame>` :math:`F; \instr^\ast` must be :ref:`valid <valid-frame>` with type :math:`[t^n]`.
+  the :ref:`thread <syntax-frame>` :math:`F; \instr^\ast` must be :ref:`valid <valid-frame>` with :ref:`result type <syntax-resulttype>` :math:`[t^n]`.
 
 * Then the compound instruction is valid with type :math:`[] \to [t^n]`.
 
@@ -585,6 +582,7 @@ Typing rules for :ref:`administrative instructions <syntax-instr-admin>` are spe
    }
 
 
+.. index:: module instruction, store
 .. _valid-moduleinstr:
 
 Module Instructions
@@ -593,6 +591,8 @@ Module Instructions
 Typing rules for :ref:`module instructions <valid-moduleinstr>` are specified as follows.
 Unlike regular instructions, module instructions do not use the operand stack, and consequently, are not classified by a type.
 
+
+.. index:: instantiation, external value, external type
 
 :math:`\INSTANTIATE~\module~\externval^\ast`
 ............................................
@@ -609,8 +609,10 @@ Unlike regular instructions, module instructions do not use the operand stack, a
    }
 
 
-:math:`\INITTABLE~\tableaddr~o~\moduleinst~x^n`
-...............................................
+.. index:: element, table, table address, module instance, function index
+
+:math:`\INITELEM~\tableaddr~o~\moduleinst~x^n`
+..............................................
 
 * The :ref:`external table value <syntax-externval>` :math:`\EVTABLE~\tableaddr` must be :ref:`valid <valid-externval-table>` with some :ref:`external table type <syntax-externtype>` :math:`\ETTABLE~\limits~\ANYFUNC`.
 
@@ -632,12 +634,14 @@ Unlike regular instructions, module instructions do not use the operand stack, a
      \qquad
      (C.\CFUNCS[x] = \functype)^n
    }{
-     S \vdash \INITTABLE~\tableaddr~o~\moduleinst~x^n \ok
+     S \vdash \INITELEM~\tableaddr~o~\moduleinst~x^n \ok
    }
 
 
-:math:`\INITMEM~\memaddr~o~b^n`
-...............................
+.. index:: data, memory, memory address, byte
+
+:math:`\INITDATA~\memaddr~o~b^n`
+................................
 
 * The :ref:`external memory value <syntax-externval>` :math:`\EVMEM~\memaddr` must be :ref:`valid <valid-externval-mem>` with some :ref:`external memory type <syntax-externtype>` :math:`\ETMEM~\limits`.
 
@@ -651,28 +655,11 @@ Unlike regular instructions, module instructions do not use the operand stack, a
      \qquad
      o + n \leq \limits.\LMIN \cdot 64\,\F{Ki}
    }{
-     S \vdash \INITMEM~\memaddr~o~b^n \ok
+     S \vdash \INITDATA~\memaddr~o~b^n \ok
    }
 
 
-:math:`\INITGLOBAL~\globaladdr~\val`
-.........................................
-
-* The :ref:`external global value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr` must be :ref:`valid <valid-externval-global>` with some :ref:`external global type <syntax-externtype>` :math:`\ETGLOBAL~\mut~t`.
-
-* The :ref:`value <syntax-val>` must be :ref:`valid <valid-val>` with :ref:`value type <syntax-valtype>` :math:`t`.
-
-* Then the module instruction is valid.
-
-.. math::
-   \frac{
-     S \vdash \EVGLOBAL~\globaladdr : \ETGLOBAL~\mut~t
-     \qquad
-     \vdash \val : t
-   }{
-     S \vdash \INITGLOBAL~\globaladdr~\val \ok
-   }
-
+.. index:: instruction, context
 
 :math:`\instr`
 ..............
@@ -686,15 +673,37 @@ Unlike regular instructions, module instructions do not use the operand stack, a
    \frac{
      S; \{\} \vdash \instr : [] \to []
    }{
-     S \vdash \instr : \epsilon
+     S \vdash \instr \ok
    }
 
 
 
-
+.. index:: ! preservation, ! progress, soundness, configuration, thread, terminal configuration, instantiation, invocation, validity, module
 .. _soundness-statement:
 
-Validation
-~~~~~~~~~~
+Theorems
+~~~~~~~~
 
-.. todo:: progress, preservation
+Given the definition of :ref:`valid configurations <valid-config>`,
+the standard soundness theorems hold.
+
+**Theorem (Preservation).**
+If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` with optional :ref:`result type <syntax-resulttype>` :math:`[t^\ast]^?` (i.e., :math:`\vdash S;T : [t^\ast]^?`),
+and steps to :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`),
+then :math:`S';T'` is a valid configuration with the same optional resulttype (i.e., :math:`\vdash S';T' : [t^\ast]^?`).
+Furthermore, :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdash S \extendsto S'`).
+
+A *terminal* :ref:`thread <syntax-thread>` is either an empty sequence of :ref:`module instructions <syntax-moduleinstr>`, a |TRAP| instruction, or a sequence :math:`\val^\ast` of :ref:`values <syntax-val>` (paired with a :ref:`frame <syntax-frame>`).
+A terminal configuration is a configuration whose thread is terminal.
+
+**Theorem (Progress).**
+If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdash S;T : [t^\ast]^?` for some optional :ref:`result type <syntax-resulttype>` `[t^\ast]^?`),
+then either it is terminal,
+or it can step to some configuration :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`).
+
+From Preservation and Progress the soundness of the WebAssembly type system follows directly.
+
+**Corollary (Soundness).**
+Every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
+
+Consequently, given a :ref:`valid store <valid-store>`, no computation defined by :ref:`instantiation <exec-instantiation>` or :ref:`invocation <exec-invocation>` of a valid module can "crash" or otherwise (mis)behave in ways not covered by the :ref:`execution <exec>` semantics given in this specification.

@@ -77,9 +77,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 :math:`\EVGLOBAL~a`
 ...................
 
-* The store entry :math:`S.\SGLOBALS[a]` must be a :ref:`global instance <syntax-globalinst>` :math:`\{\GIVALUE~\val^?, \GIMUT~\mut\}`.
-
-* The optional :ref:`value <syntax-val>` :math:`\val^?` must either be empty or be some value :math:`(t.\CONST~c)`.
+* The store entry :math:`S.\SGLOBALS[a]` must be a :ref:`global instance <syntax-globalinst>` :math:`\{\GIVALUE~(t.\CONST~c), \GIMUT~\mut\}`.
 
 * Then :math:`\EVGLOBAL~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~(\mut~t)`.
 
@@ -89,17 +87,6 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }{
      S \vdash \EVGLOBAL~a : \ETGLOBAL~(\mut~t)
    }
-   \qquad
-   \frac{
-     S.\SGLOBALS[a] = \{ \GIVALUE~\epsilon, \GIMUT~\mut \}
-   }{
-     S \vdash \EVGLOBAL~a : \ETGLOBAL~(\mut~t)
-   }
-
-.. note::
-   An uninitialized global can have any type.
-   However, this case can never occur for imports.
-   The rule only exists to aid the technical formulation of :ref:`soundness <soundness>`.
 
 
 .. index:: ! matching, external type
@@ -359,13 +346,13 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 :ref:`Globals <syntax-globalinst>`
 ..................................
 
-1. Let :math:`\global` be the :ref:`global <syntax-global>` to allocate.
+1. Let :math:`\global` be the :ref:`global <syntax-global>` to allocate and :math:`\val` the :ref:`value <syntax-val>` to initialize it with.
 
 2. Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`\global.\GTYPE`.
 
 3. Let :math:`a` be the first free :ref:`global address <syntax-globaladdr>` in :math:`S`.
 
-4. Let :math:`\globalinst` be the :ref:`global instance <syntax-globalinst>` :math:`\{ \GIVALUE~(t.\CONST~0), \GIMUT~\mut \}` whose contents is a zero :ref:`value <syntax-val>` of :ref:`value type <syntax-valtype>` :math:`t`.
+4. Let :math:`\globalinst` be the :ref:`global instance <syntax-globalinst>` :math:`\{ \GIVALUE~\val, \GIMUT~\mut \}`.
 
 5. Append :math:`\globalinst` to the |SGLOBALS| of :math:`S`.
 
@@ -373,11 +360,11 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 .. math::
    \begin{array}{rlll}
-   \allocglobal(S, \global) &=& S', \globaladdr \\[1ex]
+   \allocglobal(S, \global, \val) &=& S', \globaladdr \\[1ex]
    \mbox{where:} \hfill \\
    \global.\GTYPE &=& \mut~t \\
    \globaladdr &=& |S.\SGLOBALS| \\
-   \globalinst &=& \{ \GIVALUE~\epsilon, \GIMUT~\mut \} \\
+   \globalinst &=& \{ \GIVALUE~\val, \GIMUT~\mut \} \\
    S' &=& S \compose \{\SGLOBALS~\globalinst\} \\
    \end{array}
 
@@ -388,9 +375,11 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 :ref:`Modules <syntax-moduleinst>`
 ..................................
 
-The allocation function for :ref:`modules <syntax-module>` requires a suitable list of :ref:`external values <syntax-externval>` that are assumed to :ref:`match <match-externtype>` the :ref:`import <syntax-import>` vector of the module.
+The allocation function for :ref:`modules <syntax-module>` requires a suitable list of :ref:`external values <syntax-externval>` that are assumed to :ref:`match <match-externtype>` the :ref:`import <syntax-import>` vector of the module,
+and a list of initialization :ref:`values <syntax-val>` for the module's :ref:`globals <syntax-global>`.
 
-1. Let :math:`\module` be the :ref:`module <syntax-module>` to allocate and :math:`\externval_{\F{im}}^\ast` the vector of :ref:`external values <syntax-externval>` providing the module's imports.
+1. Let :math:`\module` be the :ref:`module <syntax-module>` to allocate and :math:`\externval_{\F{im}}^\ast` the vector of :ref:`external values <syntax-externval>` providing the module's imports,
+and :math:`\val^\ast` the initialization :ref:`values <syntax-val>` of the module's :ref:`globals <syntax-global>`.
 
 2. For each :ref:`function <syntax-func>` :math:`\func_i` in :math:`\module.\MFUNCS`, do:
 
@@ -406,7 +395,7 @@ The allocation function for :ref:`modules <syntax-module>` requires a suitable l
 
 5. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
 
-   a. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` resulting from :ref:`allocating <alloc-global>` :math:`\global_i`.
+   a. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` resulting from :ref:`allocating <alloc-global>` :math:`\global_i` with initializer value :math:`\val^\ast[i]`.
 
 6. Let :math:`\funcaddr^\ast` be the the concatenation of the :ref:`function addresses <syntax-funcaddr>` :math:`\funcaddr_i` in index order.
 
@@ -446,7 +435,7 @@ The allocation function for :ref:`modules <syntax-module>` requires a suitable l
 .. math::
    ~\\
    \begin{array}{rlll}
-   \allocmodule(S, \module, \externval_{\F{im}}^\ast) &=& S', \moduleinst    \end{array}
+   \allocmodule(S, \module, \externval_{\F{im}}^\ast, \val^\ast) &=& S', \moduleinst    \end{array}
 
 where:
 
@@ -464,7 +453,7 @@ where:
    S_1, \funcaddr^\ast &=& \allocfunc^\ast(S, \module.\MFUNCS, \moduleinst) \\
    S_2, \tableaddr^\ast &=& \alloctable^\ast(S_1, \module.\MTABLES) \\
    S_3, \memaddr^\ast &=& \allocmem^\ast(S_2, \module.\MMEMS) \\
-   S', \globaladdr^\ast &=& \allocglobal^\ast(S_3, \module.\MGLOBALS) \\[1ex]
+   S', \globaladdr^\ast &=& \allocglobal^\ast(S_3, \module.\MGLOBALS, \val^\ast) \\[1ex]
    \exportinst^\ast &=& \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast
      \quad (\where \export^\ast = \module.\MEXPORTS) \\
    \evfuncs(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
@@ -477,14 +466,26 @@ where:
      \qquad\!\!\! (\where x^\ast = \edglobals(\module.\MEXPORTS)) \\
    \end{array}
 
-Here, the notation :math:`\F{allocX}^\ast` is shorthand for multiple :ref:`allocations <alloc>` of object kind :math:`X`, defined as follows:
+.. scratch
+   Here, in slight abuse of notation, :math:(`\F{allocxyz}(S, \dots))^\ast` is taken to express multiple allocations with the updates to the store :math:`S` being threaded through, i.e.,
+
+  .. math::
+   \begin{array}{rlll}
+   (\F{allocxyz}^\ast(S_0, \dots))^n &=& S_n, a^n \\[1ex]
+   \mbox{where for all $i < n$:} \hfill \\
+   S_{i+1}, a^n[i] &=& \F{allocxyz}(S_i, \dots)
+   \end{array}
+
+Here, the notation :math:`\F{allocx}^\ast` is shorthand for multiple :ref:`allocations <alloc>` of object kind :math:`X`, defined as follows:
 
 .. math::
    \begin{array}{rlll}
-   \F{allocX}^\ast(S_0, X^n, \dots) &=& S_n, a^n \\[1ex]
+   \F{allocx}^\ast(S_0, X^n, \dots) &=& S_n, a^n \\[1ex]
    \mbox{where for all $i < n$:} \hfill \\
-   S_{i+1}, a^n[i] &=& \F{allocX}(S_i, X^n[i], \dots)
+   S_{i+1}, a^n[i] &=& \F{allocx}(S_i, X^n[i], \dots)
    \end{array}
+
+Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals), then the elements of this sequence are passed to the allocation function pointwise.
 
 .. note::
    The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance :math:`\moduleinst` is passed to the function allocator as an argument, in order to form the necessary closures.
@@ -522,79 +523,77 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
       i. Fail.
 
-5. Let :math:`\moduleinst` be a new module instance :ref:`allocated <alloc-module>` from :math:`\module` in store :math:`S`.
+5. Let :math:`\moduleinst_{\F{im}}` be the auxiliary module instance :math:`\{\MIGLOBALS~\evglobals(\externval^\ast)\}` that only consists of the imported globals.
 
-6. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \}`.
+6. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~\moduleinst_{\F{im}}, \ALOCALS~\epsilon \}`.
 
 7. Push the frame :math:`F` to the stack.
 
-8. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
+8. Let :math:`\globalidx_{\F{new}}` be the :ref:`global index <syntax-globalidx>` that corresponds to the number of global :ref:`imports <syntax-import>` in :math:`\module.\MIMPORTS` (i.e., the index of the first non-imported global).
 
-   a. Let :math:`\X{eoval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\elem_i.\EOFFSET`.
+9. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
 
-   b. Assert: due to :ref:`validation <valid-elem>`, :math:`\X{eoval}_i` is of the form :math:`\I32.\CONST~\X{eo}_i`.
+   a. Let :math:`\val_i` be the result of :ref:`evaluating <exec-expr>` the initializer expression :math:`\global_i.\GINIT`.
 
-   c. Let :math:`\tableidx_i` be the :ref:`table index <syntax-tableidx>` :math:`\elem_i.\ETABLE`.
+   b. Let :math:`\globalidx_i` be the :ref:`global index <syntax-globalidx>` :math:`\globalidx_{\F{new}} + i`.
 
-   d. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\MITABLES[\tableidx_i]` exists.
+   c. Assert: due to :ref:`validation <valid-global>`, :math:`\moduleinst.\MIGLOBALS[\globalidx_i]` exists.
 
-   e. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` :math:`\moduleinst.\MITABLES[\tableidx_i]`.
+   d. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` :math:`\moduleinst.\MIGLOBALS[\globalidx_i]`.
 
-   f. Assert: due to :ref:`validation <valid-elem>`, :math:`S.\STABLES[\tableaddr_i]` exists.
+   e. Assert: due to :ref:`validation <valid-global>`, :math:`S.\SGLOBALS[\globaladdr_i]` exists.
 
-   g. Let :math:`\tableinst_i` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\tableaddr_i]`.
+   f. Let :math:`\globalinst_i` be the :ref:`global instance <syntax-globalinst>` :math:`S.\SGLOBALS[\globaladdr_i]`.
 
-   h. Let :math:`\X{eend}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\EINIT`.
+10. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
 
-   i. If :math:`\X{eend}_i` is larger than the length of :math:`\tableinst_i.\TIELEM`, then:
+    a. Let :math:`\X{eoval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\elem_i.\EOFFSET`.
 
-      i. Fail.
+    b. Assert: due to :ref:`validation <valid-elem>`, :math:`\X{eoval}_i` is of the form :math:`\I32.\CONST~\X{eo}_i`.
 
-9. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
+    c. Let :math:`\tableidx_i` be the :ref:`table index <syntax-tableidx>` :math:`\elem_i.\ETABLE`.
 
-   a. Let :math:`\X{doval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\data_i.\DOFFSET`.
+    d. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\MITABLES[\tableidx_i]` exists.
 
-   b. Assert: due to :ref:`validation <valid-data>`, :math:`\X{doval}_i` is of the form :math:`\I32.\CONST~\X{do}_i`.
+    e. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` :math:`\moduleinst.\MITABLES[\tableidx_i]`.
 
-   c. Let :math:`\memidx_i` be the :ref:`memory index <syntax-memidx>` :math:`\data_i.\DMEM`.
+    f. Assert: due to :ref:`validation <valid-elem>`, :math:`S.\STABLES[\tableaddr_i]` exists.
 
-   d. Assert: due to :ref:`validation <valid-data>`, :math:`\moduleinst.\MIMEMS[\memidx_i]` exists.
+    g. Let :math:`\tableinst_i` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\tableaddr_i]`.
 
-   e. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` :math:`\moduleinst.\MIMEMS[\memidx_i]`.
+    h. Let :math:`\X{eend}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\EINIT`.
 
-   f. Assert: due to :ref:`validation <valid-data>`, :math:`S.\SMEMS[\memaddr_i]` exists.
+    i. If :math:`\X{eend}_i` is larger than the length of :math:`\tableinst_i.\TIELEM`, then:
 
-   g. Let :math:`\meminst_i` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[\memaddr_i]`.
+       i. Fail.
 
-   h. Let :math:`\X{dend}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\DINIT`.
+11. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
 
-   i. If :math:`\X{dend}_i` is larger than the length of :math:`\meminst_i.\MIDATA`, then:
+    a. Let :math:`\X{doval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\data_i.\DOFFSET`.
 
-      i. Fail.
+    b. Assert: due to :ref:`validation <valid-data>`, :math:`\X{doval}_i` is of the form :math:`\I32.\CONST~\X{do}_i`.
 
-10. Let :math:`\globalidx_{\F{new}}` be the :ref:`global index <syntax-globalidx>` that corresponds to the number of global :ref:`imports <syntax-import>` in :math:`\module.\MIMPORTS` (i.e., the index of the first non-imported global).
+    c. Let :math:`\memidx_i` be the :ref:`memory index <syntax-memidx>` :math:`\data_i.\DMEM`.
 
-11. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
+    d. Assert: due to :ref:`validation <valid-data>`, :math:`\moduleinst.\MIMEMS[\memidx_i]` exists.
 
-    a. Let :math:`\val_i` be the result of :ref:`evaluating <exec-expr>` the initializer expression :math:`\global_i.\GINIT`.
+    e. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` :math:`\moduleinst.\MIMEMS[\memidx_i]`.
 
-    b. Let :math:`\globalidx_i` be the :ref:`global index <syntax-globalidx>` :math:`\globalidx_{\F{new}} + i`.
+    f. Assert: due to :ref:`validation <valid-data>`, :math:`S.\SMEMS[\memaddr_i]` exists.
 
-    c. Assert: due to :ref:`validation <valid-global>`, :math:`\moduleinst.\MIGLOBALS[\globalidx_i]` exists.
+    g. Let :math:`\meminst_i` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[\memaddr_i]`.
 
-    d. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` :math:`\moduleinst.\MIGLOBALS[\globalidx_i]`.
+    h. Let :math:`\X{dend}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\DINIT`.
 
-    e. Assert: due to :ref:`validation <valid-global>`, :math:`S.\SGLOBALS[\globaladdr_i]` exists.
+    i. If :math:`\X{dend}_i` is larger than the length of :math:`\meminst_i.\MIDATA`, then:
 
-    f. Let :math:`\globalinst_i` be the :ref:`global instance <syntax-globalinst>` :math:`S.\SGLOBALS[\globaladdr_i]`.
+       i. Fail.
 
 12. Assert: due to :ref:`validation <valid-module>`, the frame :math:`F` is now on the top of the stack.
 
 13. Pop the frame from the stack.
 
-14. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
-
-    a. Replace :math:`\globalinst_i.\GIVALUE` with :math:`\val_i`.
+14. Let :math:`\moduleinst` be a new module instance :ref:`allocated <alloc-module>` from :math:`\module` in store :math:`S` with imports :math:`\externval^\ast` and glboal initializer values :math:`\val^\ast`.
 
 15. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
 
@@ -626,9 +625,8 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
    \begin{array}{@{}rcll}
    S; \INSTANTIATE~\module~\externval^n &\stepto& S';
      \begin{array}[t]{@{}l@{}}
-     (\INITGLOBAL~\globaladdr~v)^\ast \\
-     (\INITTABLE~\tableaddr~\X{eo}~\moduleinst~\elem.\EINIT)^\ast \\
-     (\INITMEM~\memaddr~\X{do}~\data.\DINIT)^\ast \\
+     (\INITELEM~\tableaddr~\X{eo}~\moduleinst~\elem.\EINIT)^\ast \\
+     (\INITDATA~\memaddr~\X{do}~\data.\DINIT)^\ast \\
      (\INVOKE~\funcaddr)^? \\
      \end{array} \\
    &(\iff
@@ -639,37 +637,34 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& \module.\MELEM = \elem^\ast \\
      &\wedge& \module.\MDATA = \data^\ast \\
      &\wedge& \module.\MSTART = \start^? \\[1ex]
-     &\wedge& S', \moduleinst = \F{allocmodule}(S, \module, \externval^n) \\
+     &\wedge& S', \moduleinst = \F{allocmodule}(S, \module, \externval^n, v^\ast) \\
      &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
      &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; v)^\ast \\
      &\wedge& (S'; F; \elem.\EOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo})^\ast \\
      &\wedge& (S'; F; \data.\DOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do})^\ast \\[1ex]
-     &\wedge& \globaladdr^\ast = \moduleinst.\MIGLOBALS[|\moduleinst.\MIGLOBALS|-k \slice k] \\
-     &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\
-     &\wedge& (\memaddr = \moduleinst.\MIMEMS[\data.\DMEM])^\ast \\
-     &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^? \\[1ex]
      &\wedge& (\X{eo} + |\elem.\EINIT| \leq |S'.\STABLES[\tableaddr].\TIELEM|)^\ast \\
      &\wedge& (\X{do} + |\data.\DINIT| \leq |S'.\SMEMS[\memaddr].\MIDATA|)^\ast
      )
    \\[1ex]
+     &\wedge& \globaladdr^\ast = \moduleinst.\MIGLOBALS[|\moduleinst.\MIGLOBALS|-k \slice k] \\
+     &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\
+     &\wedge& (\memaddr = \moduleinst.\MIMEMS[\data.\DMEM])^\ast \\
+     &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^?
+   \\[1ex]
    S; \INSTANTIATE~\module~\externval^n &\stepto&
      S'; \TRAP  \qquad (\otherwise)
    \\[2ex]
-   S; \INITTABLE~a~i~m~\epsilon &\stepto&
+   S; \INITELEM~a~i~m~\epsilon &\stepto&
      S; \epsilon \\
-   S; \INITTABLE~a~i~m~(x_0~x^\ast) &\stepto&
-     S'; \INITTABLE~a~(i+1)~m~x^\ast \\ &&
+   S; \INITELEM~a~i~m~(x_0~x^\ast) &\stepto&
+     S'; \INITELEM~a~(i+1)~m~x^\ast \\ &&
      (\iff S' = S \with \STABLES[a].\TIELEM[i] = m.\MIFUNCS[x_0])
    \\[1ex]
-   S; \INITMEM~a~i~\epsilon &\stepto&
+   S; \INITDATA~a~i~\epsilon &\stepto&
      S; \epsilon \\
-   S; \INITMEM~a~i~(b_0~b^\ast) &\stepto&
-     S'; \INITMEM~a~(i+1)~b^\ast \\ &&
+   S; \INITDATA~a~i~(b_0~b^\ast) &\stepto&
+     S'; \INITDATA~a~(i+1)~b^\ast \\ &&
      (\iff S' = S \with \SMEMS[a].\MIDATA[i] = b_0)
-   \\[1ex]
-   S; \INITGLOBAL~a~v &\stepto&
-     S'; \epsilon \\ &&
-     (\iff S' = S \with \SGLOBALS[a] = v) \\
    \end{array}
 
 .. note::

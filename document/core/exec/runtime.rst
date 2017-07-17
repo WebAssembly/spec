@@ -247,11 +247,10 @@ It holds an individual :ref:`value <syntax-val>` and a flag indicating whether i
 .. math::
    \begin{array}{llll}
    \production{(global instance)} & \globalinst &::=&
-     \{ \GIVALUE~\val^?, \GIMUT~\mut \} \\
+     \{ \GIVALUE~\val, \GIMUT~\mut \} \\
    \end{array}
 
 The value of mutable globals can be mutated through :ref:`variable instructions <syntax-instr-variable>` or by external means provided by the :ref:`embedder <embedder>`.
-An empty value indicates an uninitialized global.
 
 
 .. index:: ! export instance, export, name, external value
@@ -497,10 +496,8 @@ This definition allows to index active labels surrounding a :ref:`branch <syntax
 .. index:: ! module instructions, function, function instance, function address, label, frame, instruction, trap, global, global instance, memory, memory instance, table, table instance, invocation, start function
    pair:: abstract syntax; meta instruction
 .. _syntax-instantiate:
-.. _syntax-init_table:
-.. _syntax-init_mem:
-.. _syntax-init_global:
-.. _syntax-do:
+.. _syntax-init_elem:
+.. _syntax-init_data:
 .. _syntax-moduleinstr:
 
 Module Instructions
@@ -513,14 +510,13 @@ It is hence expressed in terms of reduction into smaller steps expressed by a se
    \begin{array}{llcl}
    \production{(module instruction)} & \moduleinstr &::=&
      \INSTANTIATE~\module~\externval^\ast \\ &&|&
-     \INITTABLE~\tableaddr~\u32~\moduleinst~\funcidx^\ast \\ &&|&
-     \INITMEM~\memaddr~\u32~\byte^\ast \\ &&|&
-     \INITGLOBAL~\globaladdr~\val \\ &&|&
+     \INITELEM~\tableaddr~\u32~\moduleinst~\funcidx^\ast \\ &&|&
+     \INITDATA~\memaddr~\u32~\byte^\ast \\ &&|&
      \instr \\
    \end{array}
 
 The |INSTANTIATE| instruction expresses instantiation of a :ref:`module <syntax-module>` itself, requiring a sequence of :ref:`external values <syntax-externval>` for the expected imports.
-It reduces into a sequence of initialization instructions for :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>`,
+It reduces into a sequence of initialization instructions for :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segments,
 and a possible :ref:`invocation <syntax-invoke>` of the :ref:`start function <syntax-start>` that reduces further to a sequence of regular instructions.
 
 .. comment out
@@ -543,7 +539,9 @@ Configurations
 
 A *configuration* consists of the current :ref:`store <syntax-store>` and an executing *thread*.
 
-A thread can either be a regular computation over :ref:`instructions <syntax-instr>`, or a module instantiation, represented as a computation over :ref:`module instructions <syntax-moduleinstr>` that terminates by returning the newly created and initialized :ref:`module instance <syntax-moduleinst>`.
+A thread can either be a regular computation over :ref:`instructions <syntax-instr>`, or a module instantiation, represented as a computation over :ref:`module instructions <syntax-moduleinstr>`.
+Regular computation operates relative to a current :ref:`frame <syntax-frame>` referring to their home :ref:`module instance <syntax-moduleinst>`,
+whereas module computations are not local to a module, and consequently require no frame.
 
 .. math::
    \begin{array}{llcl}
@@ -590,7 +588,7 @@ Finally, the following definition of *evaluation context* and associated structu
      & (\iff M \neq [\_]) \\
    \end{array}
 
-where :math:`F_0 = \{\ALOCALS~\epsilon, \AMODULE~\{\}}` is an empty dummy frame.
+where :math:`F_0 = \{\ALOCALS~\epsilon, \AMODULE~\{\}\}` is an empty dummy frame.
 
 Reduction terminates for a regular thread when its instruction sequence has been reduced to a sequence of :ref:`values <syntax-val>` or to a |TRAP|.
 Reduction terminates for a module thread when its module instruction sequence has been reduced to an empty sequence or to a |TRAP|.

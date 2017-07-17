@@ -40,7 +40,7 @@ Function Types
 Limits
 ~~~~~~
 
-:ref:`Limits <syntax-limits>` must have menaingful bounds.
+:ref:`Limits <syntax-limits>` must have meaningful bounds.
 
 :math:`\{ \LMIN~n, \LMAX~m^? \}`
 ................................
@@ -62,6 +62,9 @@ Limits
    single: abstract syntax; table type
 .. _valid-tabletype:
 
+Table Types
+~~~~~~~~~~~
+
 :math:`\limits~\elemtype`
 .........................
 
@@ -82,6 +85,9 @@ Limits
    single: abstract syntax; memory type
 .. _valid-memtype:
 
+Memory Types
+~~~~~~~~~~~~
+
 :math:`\limits`
 ...............
 
@@ -101,6 +107,9 @@ Limits
    pair: validation; global type
    single: abstract syntax; global type
 .. _valid-globaltype:
+
+Global Types
+~~~~~~~~~~~~
 
 :math:`\mut~\valtype`
 .....................
