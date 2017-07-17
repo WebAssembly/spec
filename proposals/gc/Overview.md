@@ -182,13 +182,13 @@ function caller() {
 )
 
 (func $inner (param $clos (ref $clos-f64-f64)) (param $y f64) (result f64)
-  (local $inner-clos (ref $inner-clos))
+  (local $env (ref $inner-clos))
   (block $fail (result (ref $clos-f64-f64))
-    (set_local $inner-clos (cast_down (ref $clos-f64-f64) (ref $inner-clos) $fail (get_local $clos)))
+    (set_local $env (cast_down (ref $clos-f64-f64) (ref $inner-clos) $fail (get_local $clos)))
     (get_local $y)
-    (get_field $inner-clos $a (get_local $inner-clos))
+    (get_field $env $a (get_local $inner-clos))
     (f64.add)
-    (get_field $inner-clos $x (get_local $inner-clos))
+    (get_field $env $x (get_local $inner-clos))
     (f64.add)
     (return)
   )
@@ -208,13 +208,14 @@ function caller() {
 
 Needs:
 * function pointers
-* recursive types
+* (mutually) recursive function types
 * down casts
 
 The down cast for the closure environment is necessary because expressing its static type faithfully would require first-class generics and existential types.
 
 Note that this example shows just one way to represent closures ("display closures").
 WebAssembly should provide primitives that allow high-level language compilers to choose specific, efficient representations for closures in their source programs.
+An alternative is to provide [primitive support](#closures) for closures.
 
 
 ### Parametric Polymorphism
@@ -576,6 +577,11 @@ TODO: The ability to import types makes the type and import sections interdepend
 
 
 ## Possible Extension: Variants
+
+TODO
+
+
+## Possible Extension: Closures
 
 TODO
 
