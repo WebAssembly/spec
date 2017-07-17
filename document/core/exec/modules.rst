@@ -77,7 +77,9 @@ The following auxiliary typing rules specify this typing relation relative to a 
 :math:`\EVGLOBAL~a`
 ...................
 
-* The store entry :math:`S.\SGLOBALS[a]` must be a :ref:`global instance <syntax-globalinst>` :math:`\{\GIVALUE~(t.\CONST~c), \GIMUT~\mut\}`.
+* The store entry :math:`S.\SGLOBALS[a]` must be a :ref:`global instance <syntax-globalinst>` :math:`\{\GIVALUE~\val^?, \GIMUT~\mut\}`.
+
+* The optional :ref:`value <syntax-val>` :math:`\val^?` must either be empty or be some value :math:`(t.\CONST~c)`.
 
 * Then :math:`\EVGLOBAL~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~(\mut~t)`.
 
@@ -375,7 +377,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    \mbox{where:} \hfill \\
    \global.\GTYPE &=& \mut~t \\
    \globaladdr &=& |S.\SGLOBALS| \\
-   \globalinst &=& \{ \GIVALUE~(t.\CONST~0), \GIMUT~\mut \} \\
+   \globalinst &=& \{ \GIVALUE~\epsilon, \GIMUT~\mut \} \\
    S' &=& S \compose \{\SGLOBALS~\globalinst\} \\
    \end{array}
 
@@ -590,7 +592,11 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 13. Pop the frame from the stack.
 
-14. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
+14. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
+
+    a. Replace :math:`\globalinst_i.\GIVALUE` with :math:`\val_i`.
+
+15. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
 
     a. For each :ref:`function index <syntax-funcidx>` :math:`\funcidx_{ij}` in :math:`\elem_i.\EINIT` (starting with :math:`j = 0`), do:
 
@@ -600,15 +606,11 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
        iii. Replace :math:`\tableinst_i.\TIELEM[\X{eo}_i + j]` with :math:`\funcaddr_{ij}`.
 
-15. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
+16. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
 
     a. For each :ref:`byte <syntax-byte>` :math:`b_{ij}` in :math:`\data_i.\DINIT` (starting with :math:`j = 0`), do:
 
        i. Replace :math:`\meminst_i.\MIDATA[\X{do}_i + j]` with :math:`b_{ij}`.
-
-16. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
-
-    a. Replace :math:`\globalinst_i.\GIVALUE` with :math:`\val_i`.
 
 17. If the :ref:`start function <syntax-start>` :math:`\module.\MSTART` is not empty, then:
 
@@ -624,11 +626,10 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
    \begin{array}{@{}rcll}
    S; \INSTANTIATE~\module~\externval^n &\stepto& S';
      \begin{array}[t]{@{}l@{}}
+     (\INITGLOBAL~\globaladdr~v)^\ast \\
      (\INITTABLE~\tableaddr~\X{eo}~\moduleinst~\elem.\EINIT)^\ast \\
      (\INITMEM~\memaddr~\X{do}~\data.\DINIT)^\ast \\
-     (\INITGLOBAL~\globaladdr~v)^\ast \\
-     (\DO~\INVOKE~\funcaddr)^? \\
-     \moduleinst \\
+     (\INVOKE~\funcaddr)^? \\
      \end{array} \\
    &(\iff
      & \vdash \module : \externtype^n \\
@@ -640,12 +641,12 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& \module.\MSTART = \start^? \\[1ex]
      &\wedge& S', \moduleinst = \F{allocmodule}(S, \module, \externval^n) \\
      &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
+     &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; v)^\ast \\
      &\wedge& (S'; F; \elem.\EOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo})^\ast \\
-     &\wedge& (S'; F; \data.\DOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do})^\ast \\
-     &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; v)^\ast \\[1ex]
+     &\wedge& (S'; F; \data.\DOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do})^\ast \\[1ex]
+     &\wedge& \globaladdr^\ast = \moduleinst.\MIGLOBALS[|\moduleinst.\MIGLOBALS|-k \slice k] \\
      &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\
      &\wedge& (\memaddr = \moduleinst.\MIMEMS[\data.\DMEM])^\ast \\
-     &\wedge& \globaladdr^\ast = \moduleinst.\MIGLOBALS[|\moduleinst.\MIGLOBALS|-k \slice k] \\
      &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^? \\[1ex]
      &\wedge& (\X{eo} + |\elem.\EINIT| \leq |S'.\STABLES[\tableaddr].\TIELEM|)^\ast \\
      &\wedge& (\X{do} + |\data.\DINIT| \leq |S'.\SMEMS[\memaddr].\MIDATA|)^\ast
@@ -675,6 +676,8 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
    All failure conditions are checked before any observable mutation of the store takes place.
    Store mutation is not atomic;
    it happens in individual steps that may be interleaved with other threads.
+
+   Evaluation of :ref:`constant expressions <valid-constant>` does not affect the store.
 
 
 .. index:: ! invocation, module, module instance, function, export, function address, function instance, function type, value, stack, trap, store

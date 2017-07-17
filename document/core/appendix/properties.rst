@@ -146,14 +146,14 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
    \frac{
      \mut = \MVAR \vee c_1 = c_2
    }{
-     \vdash \{\GIVALUE~t.\CONST~c_1, \GIMUT~\mut\} \extendsto \{\GIVALUE~t.\CONST~c_2, \GIMUT~\mut\}
+     \vdash \{\GIVALUE~(t.\CONST~c_1), \GIMUT~\mut\} \extendsto \{\GIVALUE~(t.\CONST~c_2), \GIMUT~\mut\}
    }
 
 .. math::
    ~\\[1ex]
    \frac{
    }{
-     \vdash \{\GIVALUE~\epsilon, \GIMUT~\mut\} \extendsto \{\GIVALUE~t.\CONST~c, \GIMUT~\mut\}
+     \vdash \{\GIVALUE~\epsilon, \GIMUT~\mut\} \extendsto \{\GIVALUE~(t.\CONST~c), \GIMUT~\mut\}
    }
 
 
@@ -178,11 +178,12 @@ A valid store must consist of
 
 * Each :ref:`memory instance <syntax-meminst>` :math:`\meminst_i` in :math:`S.\SMEMS` must be :ref:`valid <valid-meminst>` with some :ref:`memory type <syntax-memtype>` :math:`\memtype_i`.
 
-* Each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in :math:`S.\SGLOBALS` must be :ref:`valid <valid-globalinst>` with some :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
+* Each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in :math:`S.\SGLOBALS` must be :ref:`valid <valid-globalinst>` with some optional  :ref:`global type <syntax-globaltype>` :math:`\globaltype_i^?`.
 
 * Then the store is valid.
 
 .. math::
+   ~\\[-1ex]
    \frac{
      \begin{array}{@{}c@{}}
      (S \vdash \funcinst : \functype)^\ast
@@ -191,7 +192,7 @@ A valid store must consist of
      \\
      (S \vdash \meminst : \memtype)^\ast
      \qquad
-     (S \vdash \globalinst : \globaltype)^\ast
+     (S \vdash \globalinst : \globaltype^?)^\ast
      \\
      S = \{
        \SFUNCS~\funcinst^\ast,
@@ -289,16 +290,30 @@ A valid store must consist of
 .. index:: global type, global instance, value, mutability
 .. _valid-globalinst:
 
-:ref:`Global Instance <syntax-globalinst>` :math:`\{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \}`
-..............................................................................................
+:ref:`Global Instance <syntax-globalinst>` :math:`\{ \GIVALUE~\val^?, \GIMUT~\mut \}`
+.....................................................................................
 
-* The global instance is valid with :ref:`global type <syntax-globaltype>` :math:`\mut~t`.
+* If :math:`\val^?` is a :ref:`value <syntax-val>` :math:`(t.\CONST~c)`, then:
+
+  * The global instance is valid with :ref:`global type <syntax-globaltype>` :math:`\mut~t`.
+
+* Else :math:`\val^?` is empty, and then:
+
+  * The global instance is valid with empty type.
 
 .. math::
    \frac{
    }{
      S \vdash \{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \} : \mut~t
    }
+   \qquad
+   \frac{
+   }{
+     S \vdash \{ \GIVALUE~\epsilon, \GIMUT~\mut \} : \epsilon
+   }
+
+.. note::
+   An empty type indicates an uninitialized global.
 
 
 .. index:: external type, export instance, name, external value
@@ -451,7 +466,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     (S \vdash \moduleinstr \ok)^\ok
+     (S \vdash \moduleinstr \ok)^\ast
    }{
      S; \epsilon \vdash \moduleinstr^\ast : \epsilon
    }
@@ -662,10 +677,8 @@ Unlike regular instructions, module instructions do not use the operand stack, a
 :math:`\instr`
 ..............
 
-.. todo:: Rectify typing (may need stack)
-
 * Under an empty :ref:`context <context>`,
-  the :ref:`instruction <syntax-instr>` :math:`\instr` must be valid with type 
+  the :ref:`instruction <syntax-instr>` :math:`\instr` must be valid with type :math:`[] \to []`.
 
 * Then the module instruction is valid.
 
