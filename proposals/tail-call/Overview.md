@@ -23,7 +23,9 @@ This can be applied to any form of call, that is:
 * Callee may be dynamic (e.g., `call_indirect`)
 
 
-### Design Space
+## Design Space
+
+### Instructions
 
 * Tail calls should be explicit instructions (current instructions explicitly disallow TCE)
 
@@ -32,6 +34,16 @@ This can be applied to any form of call, that is:
   2. introduce single prefix instruction that can be applied to every call instruction
 
 Note: WebAssembly will likely get more call instructions in the future, e.g., `call_ptr`.
+
+
+### Typing
+
+* Two options:
+  1. All functions are tail-callable
+  2. Tail-callable functions are distinguished by type
+
+Option 2 allows different calling conventions for non-tail-callable functions, which may be reduce constraints on ABIs.
+On the other hand, it creates a bifurcated function space, which might lead to difficulties e.g. when using function tables or other forms of dynamic indirection.
 
 
 ## Examples
@@ -108,9 +120,11 @@ The text format is extended with two new instructions in the obvious manner.
 
 ## Open Questions
 
+* Differentiate tail-callable functions by type?
+
 * What about tail calls to host functions?
-  - treat as tail-calling a wrapper, or trap? (probably former)
-  - note: cannot distinguish statically, e.g. with indirect calls
+  - treat as tail-calling a wrapper, use type distinction, or trap?
+  - note: cannot distinguish statically without type system support, e.g. with indirect calls
 
 * Which instruction scheme should be picked?
 
