@@ -32,7 +32,7 @@
 
 * Only basic but general structure: structs and arrays
 * No heavyweight object model
-* Accept minimal amount of dynamic overead (checked casts) as price for simplicity/universality
+* Accept minimal amount of dynamic overhead (checked casts) as price for simplicity/universality
 * Independent from linear memory
 * Pay as you go; in particular, no effect on code not using GC
 * Don't introduce dependencies on GC for other features (e.g., using resources through tables)
@@ -82,7 +82,7 @@ Example languages from three categories should be successfully implemented:
 
 ### Structs and Arrays
 
-* Want to represent first-class records/structs with static indexing
+* Want to represent first-class tuples/records/structs with static indexing
 * Want to represent arrays with dynamic indexing
 * Possibly want to create arrays with either fixed or dynamic length
 
@@ -214,7 +214,7 @@ Needs:
 * (mutually) recursive function types
 * down casts
 
-The down cast for the closure environment is necessary because expressing a static type system would require first-class generics and existential types.
+The down cast for the closure environment is necessary because statically type checking it would require first-class generics and existential types.
 
 Note that this example shows just one way to represent closures ("display closures").
 WebAssembly should provide primitives that allow high-level language compilers to choose specific, efficient representations for closures in their source programs.
@@ -237,7 +237,7 @@ TODO: via type `anyref` and `intref`
 
 ## Basic Functionality: Simple Aggregates
 
-* Extend the Wasm type section with new operators to allocate aggregate types
+* Extend the Wasm type section with type constructors to express aggregate types
 * Extend the value types with new constructors for references and interior references
 * Aggregate types are not value types, only references to them are
 * References are never null; nullable reference types are separate
@@ -325,7 +325,7 @@ Fields and elements can have a packed *storage type* `i8` or `i16`:
 (type $s (struct (field $a i8) (field $b i16)))
 (type $buf (array i8))
 ```
-The order of fields is not observable, so implementations are free to reorganize the underlying memory for their storage or add alignment.
+The order of fields is not observable, so implementations are free to reorganize the underlying storage, e.g. for alignment.
 
 Packed fields require special load/store instructions:
 ```
@@ -579,7 +579,7 @@ Imported types are essentially parameters to the module.
 As such, they are entirely abstract, as far as compile-time validation is concerned.
 The only operations possible with them are those that do not require knowledge of their actual definition or size: primarily, passing and storing references to such types.
 
-TODO: The ability to import types makes the type and import sections interdependent. (we will probably need to add placeholder entries in the types section for imported types, and possibly may need to add assumptions about their representation, even to compile code that uses them as locals, unless we want to restrict imported types to be only reference types).
+TODO: The ability to import types makes the type and import sections interdependent. We may also need to express constraints on an imported type's representation in order to be able to generate code without knowledge of the imported types.
 
 
 ## Possible Extension: Variants
