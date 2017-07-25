@@ -156,8 +156,8 @@ For example, `D.g`:
 
 Example:
 ```
-function outer(x : f64) : float -> float {
-  let a = x + 1
+function outer(x : float) : float -> float {
+  let a = x + 1.0
   function inner(y : float) {
     return y + a + x
   }
@@ -165,20 +165,21 @@ function outer(x : f64) : float -> float {
 }
 
 function caller() {
-  return outer(1)(2)
+  return outer(1.0)(2.0)
 }
 ```
 
 ```
 (type $code-f64-f64 (func (param $env (ref $clos-f64-f64)) (param $y f64) (result f64)))
 (type $clos-f64-f64 (struct (field $code (ref $code-f64-f64)))
-(type $inner-clos (struct (extend $clos-f46-f64) (field $x i32) (field $a i32))
+(type $inner-clos (struct (extend $clos-f64-f64) (field $x f64) (field $a f64))
 
 (func $outer (param $x f64) (result (ref $clos-f64-f64))
   (ref_func $inner)
   (get_local $x)
   (f64.add (get_local $x) (f64.const 1))
-  (new $clos-f64-f64)
+  (new $inner-clos)
+  (cast_up $clos-f64-f64)
 )
 
 (func $inner (param $clos (ref $clos-f64-f64)) (param $y f64) (result f64)
@@ -209,7 +210,7 @@ function caller() {
 Needs:
 * function pointers
 * (mutually) recursive function types
-* down casts
+* up & down casts
 
 The down cast for the closure environment is necessary because expressing its static type faithfully would require first-class generics and existential types.
 
