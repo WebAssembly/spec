@@ -91,8 +91,8 @@ let opt = Lib.Option.get
 let sign = '+' | '-'
 let digit = ['0'-'9']
 let hexdigit = ['0'-'9''a'-'f''A'-'F']
-let num = digit+
-let hexnum = hexdigit+
+let num = digit ('_'? digit)*
+let hexnum = hexdigit ('_'? hexdigit)*
 
 let letter = ['a'-'z''A'-'Z']
 let symbol =
@@ -123,11 +123,13 @@ let character =
 
 let nat = num | "0x" hexnum
 let int = sign nat
+let frac = num
+let hexfrac = hexnum
 let float =
-    sign? num '.' digit*
-  | sign? num ('.' digit*)? ('e' | 'E') sign? num
-  | sign? "0x" hexnum '.' hexdigit*
-  | sign? "0x" hexnum ('.' hexdigit*)? ('p' | 'P') sign? num
+    sign? num '.' frac?
+  | sign? num ('.' frac?)? ('e' | 'E') sign? num
+  | sign? "0x" hexnum '.' hexfrac?
+  | sign? "0x" hexnum ('.' hexfrac?)? ('p' | 'P') sign? num
   | sign? "inf"
   | sign? "nan"
   | sign? "nan:" "0x" hexnum

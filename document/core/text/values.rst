@@ -27,6 +27,7 @@ Integers
 ~~~~~~~~
 
 All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal notation.
+In both cases, digits can optionally be separated by underscores.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
@@ -43,10 +44,10 @@ All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal
    \\[1ex]
    \production{decimal number} & \Tnum &::=&
      d{:}\Tdigit &\Rightarrow& d \\ &&|&
-     n{:}\Tnum~~d{:}\Tdigit &\Rightarrow& 10\cdot n + d \\
+     n{:}\Tnum~~\text{\_}^?~~d{:}\Tdigit &\Rightarrow& 10\cdot n + d \\
    \production{hexadecimal number} & \Thexnum &::=&
      h{:}\Thexdigit &\Rightarrow& h \\ &&|&
-     n{:}\Thexnum~~h{:}\Thexdigit &\Rightarrow& 16\cdot n + h \\
+     n{:}\Thexnum~~\text{\_}^?~~h{:}\Thexdigit &\Rightarrow& 16\cdot n + h \\
    \end{array}
 
 The allowed syntax for integer literals depends on size and signedness.
@@ -88,10 +89,12 @@ Floating-Point
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{decimal floating-point fraction} & \Tfrac &::=&
      \epsilon &\Rightarrow& 0 \\ &&|&
-     d{:}\Tdigit~q{:}\Tfrac &\Rightarrow& (d+q)/10 \\
+     d{:}\Tdigit~~q{:}\Tfrac &\Rightarrow& (d+q)/10 \\ &&|&
+     d{:}\Tdigit~~\text{\_}~~p{:}\Tdigit~~q{:}\Tfrac &\Rightarrow& (d+(p+q)/10)/10 \\
    \production{hexadecimal floating-point fraction} & \Thexfrac &::=&
      \epsilon &\Rightarrow& 0 \\ &&|&
-     h{:}\Thexdigit~q{:}\Thexfrac &\Rightarrow& (h+q)/16 \\
+     h{:}\Thexdigit~~q{:}\Thexfrac &\Rightarrow& (h+q)/16 \\ &&|&
+     h{:}\Thexdigit~~\text{\_}~~~~p{:}\Thexdigit~~q{:}\Thexfrac &\Rightarrow& (h+(p+q)/16)/16 \\
    \production{decimal floating-point number} & \Tfloat &::=&
      p{:}\Tnum~\text{.}~q{:}\Tfrac
        &\Rightarrow& p+q \\ &&|&
