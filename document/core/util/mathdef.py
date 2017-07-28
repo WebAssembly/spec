@@ -17,7 +17,7 @@ import re
 xref_re = re.compile('\\\\xref\{([^}]*)\}\{([^}]*)\}', re.M)
 
 def html_hyperlink(file, id):
-  return '\\href{../%s.html#%s}' % (file, id)
+  return '\\href{../%s.html#%s}' % (file, id.replace('_', '-'))
 
 def html_transform_math_xref(node):
   node['latex'] = \
@@ -31,7 +31,7 @@ def ext_html_visit_displaymath(self, node):
   html_transform_math_xref(node)
   html_visit_displaymath(self, node)
 
-# Mirrors sphinx/writer/latex
+# Mirrors sphinx/writers/latex
 def latex_hyperlink(file, id):
   id = text_type(id).translate(tex_replace_map).\
     encode('ascii', 'backslashreplace').decode('ascii').\
