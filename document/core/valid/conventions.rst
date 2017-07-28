@@ -12,7 +12,7 @@ For each piece of abstract syntax, there is a typing rule that specifies the con
 All rules are given in two *equivalent* forms:
 
 1. In *prose*, describing the meaning in intuitive form.
-2. In *formal notation*, describing the rule in mathematical form.
+2. In *formal notation*, describing the rule in mathematical form. [#pldi2017]_
 
 .. note::
    The prose and formal rules are equivalent,
@@ -183,6 +183,10 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
    Inside the body an additional label of the same type is available,
    which is expressed by extending the context :math:`C` with the additional label information for the premise.
 
+
+.. [#pldi2017]
+   The semantics is derived from the following article:
+   Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. `Bringing the Web up to Speed with WebAssembly <https://dl.acm.org/citation.cfm?doid=3062341.3062363>`_. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
 
 .. [#tapl]
    For example: Benjamin Pierce. `Types and Programming Languages <https://www.cis.upenn.edu/~bcpierce/tapl/>`_. The MIT Press 2002

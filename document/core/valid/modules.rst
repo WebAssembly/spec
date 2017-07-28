@@ -247,6 +247,7 @@ Start function declarations :math:`\start` are not classified by any type.
 .. index:: export, name, index, function index, table index, memory index, global index
    pair: validation; export
    single: abstract syntax; export
+.. _valid-exportdesc:
 .. _valid-export:
 
 Exports
@@ -338,6 +339,7 @@ Export descriptions :math:`\exportdesc` are not classified by any type.
 .. index:: import, name, function type, table type, memory type, global type
    pair: validation; import
    single: abstract syntax; import
+.. _valid-importdesc:
 .. _valid-import:
 
 Imports

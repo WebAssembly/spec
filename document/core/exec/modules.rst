@@ -494,6 +494,7 @@ Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals),
 
 .. index:: ! instantiation, module, instance, store, trap
 .. _exec-module:
+.. _exec-moduleinstr:
 .. _exec-instantiation:
 
 Instantiation

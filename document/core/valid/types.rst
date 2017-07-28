@@ -5,6 +5,31 @@ Most :ref:`types <syntax-type>` are universally valid.
 However, restrictions apply to :ref:`function types <syntax-functype>` as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
 
 
+.. index:: limits
+   pair: validation; limits
+   single: abstract syntax; limits
+.. _valid-limits:
+
+Limits
+~~~~~~
+
+:ref:`Limits <syntax-limits>` must have meaningful bounds.
+
+:math:`\{ \LMIN~n, \LMAX~m^? \}`
+................................
+
+* If the maximum :math:`m^?` is not empty, then its value must not be smaller than :math:`n`.
+
+* Then the limit is valid.
+
+.. math::
+   \frac{
+     (n \leq m)^?
+   }{
+     \vdash \{ \LMIN~n, \LMAX~m^? \} \ok
+   }
+
+
 .. index:: function type
    pair: validation; function type
    single: abstract syntax; function type
@@ -30,31 +55,6 @@ Function Types
 
 .. note::
    This restriction may be removed in future versions of WebAssembly.
-
-
-.. index:: limits
-   pair: validation; limits
-   single: abstract syntax; limits
-.. _valid-limits:
-
-Limits
-~~~~~~
-
-:ref:`Limits <syntax-limits>` must have meaningful bounds.
-
-:math:`\{ \LMIN~n, \LMAX~m^? \}`
-................................
-
-* If the maximum :math:`m^?` is not empty, then its value must not be smaller than :math:`n`.
-
-* Then the limit is valid.
-
-.. math::
-   \frac{
-     (n \leq m)^?
-   }{
-     \vdash \{ \LMIN~n, \LMAX~m^? \} \ok
-   }
 
 
 .. index:: table type, element type, limits

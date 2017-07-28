@@ -371,6 +371,7 @@
 .. |Bu64| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{64}}}
 
 .. |BsN| mathdef:: \xref{binary/values}{binary-int}{\BsX{N}}
+.. |Bs7| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{7}}}
 .. |Bs32| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{32}}}
 .. |Bs64| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{64}}}
 
