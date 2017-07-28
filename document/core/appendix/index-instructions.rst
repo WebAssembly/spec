@@ -1,10 +1,11 @@
-.. _instrindex:
+.. index:: instruction
+.. _index-instr:
 
 Index of Instructions
 ---------------------
 
 ===================================  ================  ==========================================  ========================================  ===============================================================
-Instruction                          Opcode            Type                                        Validation                                Execution
+Instruction                          Binary Opcode     Type                                        Validation                                Execution
 ===================================  ================  ==========================================  ========================================  ===============================================================
 :math:`\UNREACHABLE`                 :math:`\hex{00}`  :math:`[t_1^\ast] \to [t_2^\ast]`           :ref:`validation <valid-unreachable>`     :ref:`execution <exec-unreachable>`
 :math:`\NOP`                         :math:`\hex{01}`  :math:`[] \to []`                           :ref:`validation <valid-nop>`             :ref:`execution <exec-nop>`

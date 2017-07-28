@@ -20,10 +20,14 @@ WebAssembly Specification
 
    .. toctree::
 
-      syntax/instrindex
+      appendix/index-types
+      appendix/index-instructions
+      appendix/index-rules
 
 .. only:: html
 
-   * :ref:`instrindex`
+   * :ref:`index-type`
+   * :ref:`index-instr`
+   * :ref:`index-rules`
 
    * :ref:`genindex`

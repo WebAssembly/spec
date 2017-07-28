@@ -7,150 +7,20 @@ Soundness
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
 
 * All types declared and derived during validation are respected at run time;
-  e.g., every :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variable will only contain type-correct values, every :ref:`instruction <syntax-instr>` will only see operands of the expected type, and every :ref:`function <syntax-func>` :ref:`invocation <exec-invocation>` always evaluates to a result of the right type.
+  e.g., every :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variable will only contain type-correct values, every :ref:`instruction <syntax-instr>` will only be applied to operands of the expected type, and every :ref:`function <syntax-func>` :ref:`invocation <exec-invocation>` always evaluates to a result of the right type.
 
-* No memory location can be read or written except those explicitly defined by the program, i.e., as a :ref:`local <syntax-local>`, a :ref:`global <syntax-global>`, an element in a :ref:`table <syntax-table>`, or a location within a linear :ref:`memory <syntax-mem>`.
+* No memory location will be read or written except those explicitly defined by the program, i.e., as a :ref:`local <syntax-local>`, a :ref:`global <syntax-global>`, an element in a :ref:`table <syntax-table>`, or a location within a linear :ref:`memory <syntax-mem>`.
 
-* There is no undefined behaviour;
-  i.e., the :ref:`execution rules <exec>` cover all possible cases that can occur in a :ref:`valid <valid>` program, and define them consistently.
+* There is no undefined behaviour,
+  i.e., the :ref:`execution rules <exec>` cover all possible cases that can occur in a :ref:`valid <valid>` program, and the rules are mutually consistent.
 
-Soundness also is instrumental in ensuring additional properties, most notably, *encapsulation* at function and module boundaries: no :ref:`locals <syntax-local>` can be accessed outside their own function, and no :ref:`module <syntax-module>` components can be accessed outside their own module, unless they are explicitly :ref:`exported <syntax-export>` or :ref:`imported <syntax-import>`.
+Soundness also is instrumental in ensuring additional properties, most notably, *encapsulation* of function and module scopes: no :ref:`locals <syntax-local>` can be accessed outside their own function and no :ref:`module <syntax-module>` components can be accessed outside their own module unless they are explicitly :ref:`exported <syntax-export>` or :ref:`imported <syntax-import>`.
 
-To state and prove soundness precisely, a few additional definitions concerning the abstract :ref:`runtime <syntax-runtime>` are required.
-
-
-.. index:: ! store extension, store
-.. _extend:
-
-Store Extension
-~~~~~~~~~~~~~~~
-
-The :ref:`store <syntax-store>` and its contained instances can be mutated by programs.
-Any such modification has to respect certain invariants.
-These invariants are inherent to the WebAssembly execution semantics,
-but :ref:`host functions <syntax-hostfunc>` do not automatically adhere to them, so they need to be required explicitly when :ref:`invoking <exec-invoke-host>` a host function.
-
-These restrictions are codified by the notion of store *extension*:
-a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'`, when the rules defined below hold.
-
-.. note::
-   Extension does not imply that the new store is valid, which is defined :ref:`separately <valid-store>`.
+The typing rules defining WebAssembly :ref:`validation <valid>` only cover the *static* components of a WebAssembly program.
+In order to state and prove soundness precisely, the typing rules must be extended to the *dynamic* components of the abstract :ref:`runtime <syntax-runtime>`, that is, the :ref:`store <syntax-store>`, :ref:`configurations <syntax-config>`, and :ref:`administrative instructions <syntax-instr-admin>` as well as :ref:`module instructions <valid-moduleinstr>`. [#pldi2017]_
 
 
-.. index:: store, function instance, table instance, memory instance, global instance
-.. _extend-store:
-
-:ref:`Store <syntax-store>` :math:`S`
-.....................................
-
-* The length of :math:`S.\SFUNCS` must not shrink.
-
-* The length of :math:`S.\STABLES` must not shrink.
-
-* The length of :math:`S.\SMEMS` must not shrink.
-
-* The length of :math:`S.\SGLOBALS` must not shrink.
-
-* For each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in the original :math:`S.\SFUNCS`, the new function instance must be an :ref:`extension <extend-funcinst>` of the old.
-
-* For each :ref:`table instance <syntax-tableinst>` :math:`\tableinst_i` in the original :math:`S.\STABLES`, the new table instance must be an :ref:`extension <extend-tableinst>` of the old.
-
-* For each :ref:`memory instance <syntax-meminst>` :math:`\meminst_i` in the original :math:`S.\SMEMS`, the new memory instance must be an :ref:`extension <extend-meminst>` of the old.
-
-* For each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in the original :math:`S.\SGLOBALS`, the new global instance must be an :ref:`extension <extend-globalinst>` of the old.
-
-.. math::
-   \frac{
-     \begin{array}{@{}ccc@{}}
-     S_1.\SFUNCS = \funcinst_1^\ast &
-     S_2.\SFUNCS = {\funcinst'_1}^\ast~\funcinst_2^\ast &
-     (\funcinst_1 \extendsto \funcinst'_1)^\ast \\
-     S_1.\STABLES = \tableinst_1^\ast &
-     S_2.\STABLES = {\tableinst'_1}^\ast~\tableinst_2^\ast &
-     (\tableinst_1 \extendsto \tableinst'_1)^\ast \\
-     S_1.\SMEMS = \meminst_1^\ast &
-     S_2.\SMEMS = {\meminst'_1}^\ast~\meminst_2^\ast &
-     (\meminst_1 \extendsto \meminst'_1)^\ast \\
-     S_1.\SGLOBALS = \globalinst_1^\ast &
-     S_2.\SGLOBALS = {\globalinst'_1}^\ast~\globalinst_2^\ast &
-     (\globalinst_1 \extendsto \globalinst'_1)^\ast \\
-     \end{array}
-   }{
-     \vdash S_1 \extendsto S_2
-   }
-
-
-.. index:: function instance
-.. _extend-funcinst:
-
-:ref:`Function Instance <syntax-funcinst>` :math:`\funcinst`
-............................................................
-
-* A function instance must remain unchanged.
-
-.. math::
-   \frac{
-   }{
-     \vdash \funcinst \extendsto \funcinst
-   }
-
-
-.. index:: table instance
-.. _extend-tableinst:
-
-:ref:`Table Instance <syntax-tableinst>` :math:`\tableinst`
-...........................................................
-
-* The length of :math:`\tableinst.\TIELEM` must not shrink.
-
-* The value of :math:`\tableinst.\TIMAX` must remain unchanged.
-
-.. math::
-   \frac{
-     n_1 \leq n_2
-   }{
-     \vdash \{\TIELEM~(\X{fa}_1^?)^{n_1}, \TIMAX~m\} \extendsto \{\TIELEM~(\X{fa}_2^?)^{n_2}, \TIMAX~m\}
-   }
-
-
-.. index:: memory instance
-.. _extend-meminst:
-
-:ref:`Memory Instance <syntax-meminst>` :math:`\meminst`
-........................................................
-
-* The length of :math:`\meminst.\MIDATA` must not shrink.
-
-* The value of :math:`\meminst.\MIMAX` must remain unchanged.
-
-.. math::
-   \frac{
-     n_1 \leq n_2
-   }{
-     \vdash \{\MIDATA~b_1^{n_1}, \MIMAX~m\} \extendsto \{\MIDATA~b_2^{n_2}, \MIMAX~m\}
-   }
-
-
-.. index:: global instance, value, mutability
-.. _extend-globalinst:
-
-:ref:`Global Instance <syntax-globalinst>` :math:`\globalinst`
-..............................................................
-
-* The :ref:`mutability <syntax-mut>` :math:`\globalinst.\GIMUT` must remain unchanged.
-
-* The :ref:`value type <syntax-valtype>` of the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
-
-* If :math:`\globalinst.\GIMUT` is |MCONST|, then the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
-
-.. math::
-   \frac{
-     \mut = \MVAR \vee c_1 = c_2
-   }{
-     \vdash \{\GIVALUE~(t.\CONST~c_1), \GIMUT~\mut\} \extendsto \{\GIVALUE~(t.\CONST~c_2), \GIMUT~\mut\}
-   }
-
-
+.. _module-context:
 .. _valid-store:
 
 Store Validity
@@ -159,6 +29,10 @@ Store Validity
 The following typing rules specify when a runtime :ref:`store <syntax-store>` :math:`S` is *valid*.
 A valid store must consist of
 :ref:`function <syntax-funcinst>`, :ref:`table <syntax-tableinst>`, :ref:`memory <syntax-meminst>`, :ref:`global <syntax-globalinst>`, and :ref:`module <syntax-moduleinst>` instances that are themselves valid, relative to :math:`S`.
+
+To that end, each kind of instance is classified by a respective :ref:`function <syntax-functype>`, :ref:`table <syntax-tabletype>`, :ref:`memory <syntax-memtype>`, or :ref:`global <syntax-globaltype>` type.
+Module instances are classified by *module contexts*, which are regular :ref:`contexts <context>` that are repurposed as module types describing the :ref:`index spaces <syntax-index>` defined by a module.
+
 
 
 .. index:: store, function instance, table instance, memory instance, global instance, function type, table type, memory type, global type
@@ -249,6 +123,8 @@ A valid store must consist of
    }{
      S \vdash \{ \TIELEM~(\X{fa}^?)^n, \TIMAX~m^? \} : \{\LMIN~n, \LMAX~m^?\}~\ANYFUNC
    }
+
+where:
 
 .. math::
    \frac{
@@ -382,16 +258,25 @@ A valid store must consist of
    }
 
 
-.. index:: configuration, administrative instruction, store
+.. index:: configuration, administrative instruction, store, frame
+.. _frame-context:
 .. _valid-config:
 
 Configuration Validity
 ~~~~~~~~~~~~~~~~~~~~~~
 
-To state soundness theorems that relate the WebAssembly :ref:`type system <valid>` to its :ref:`execution semantics <exec>`, the :ref:`typing rules <valid-instr>` must be extended to :ref:`configurations <syntax-config>` :math:`S;T`,
-which includes :ref:`runtime structures <syntax-runtime>` like the :ref:`store <syntax-store>` as well as :ref:`administrative instructions <syntax-instr-admin>` and  :ref:`module instructions <valid-moduleinstr>`.
+To relate the WebAssembly :ref:`type system <valid>` to its :ref:`execution semantics <exec>`, the :ref:`typing rules for instructions <valid-instr>` must be extended to :ref:`configurations <syntax-config>` :math:`S;T`,
+which relates the :ref:`store <syntax-store>` to execution :ref:`threads <syntax-thread>`.
 
-To that end, all previous typing judgements :math:`C \vdash \X{prop}` are generalized to include the store, as in :math:`S; C \vdash \X{prop}`, by implicitly adding :math:`S` to all rules -- it is never modified by the pre-existing rules, but is accessed in new rules for :ref:`administrative instructions <valid-instr-admin>` and  :ref:`module instructions <valid-moduleinstr>`.
+Threads may either be regular threads executing sequences of :ref:`instructions <syntax-instr>`, or module threads executing :ref:`module instructions <synax-moduleinstr>` that represent an ongoing module instantiation.
+Regular threads are classified by their :ref:`result type <syntax-resulttype>`.
+Module threads on the other hand have no result, not even an empty one.
+Consequently, threads and configurations are cumutavily classified by an *optional* result type, where :math:`\epsilon` classifies the thread as a module computation.
+
+In addition to the store :math:`S`, threads are typed under an *return type* :math:`\resulttype^?`, which controls whether and with which type a |return| instruction is allowed.
+This type is :math:`\epsilon`, unless typing the instruction sequence inside an administrative |frame| instruction.
+
+Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, which are regular :ref:`contexts <context>` that describe the associated :ref:`module instance <syntax-moduleinst>` plus the :ref:`locals <syntax-local>` that the frame contains.
 
 
 .. index:: result type, thread
@@ -401,7 +286,8 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 * The :ref:`store <syntax-store>` :math:`S` must be :ref:`valid <valid-store>`.
 
-* The :ref:`thread <syntax-thread>` :math:`T` must be :ref:`valid <valid-thread>` under no return type with some optional :ref:`result type <syntax-resulttype>` :math:`[t^?]^?`.
+* Under no allowed return type,
+  the :ref:`thread <syntax-thread>` :math:`T` must be :ref:`valid <valid-thread>` with some optional :ref:`result type <syntax-resulttype>` :math:`[t^?]^?`.
 
 * Then the configuration is valid with the optional :ref:`result type <syntax-resulttype>` :math:`[t^?]^?`.
 
@@ -418,12 +304,14 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 .. index:: thread, frame, instruction, result type, context
 .. _valid-thread:
 
-:ref:`Threads <syntax-thread>` :math:`F;\instr^\ast` under return type :math:`\resulttype^?`
-............................................................................................
+:ref:`Threads <syntax-thread>` :math:`F;\instr^\ast`
+....................................................
 
-* The :ref:`frame <syntax-frame>` :math:`F` must be :ref:`valid <valid-frame>` with :ref:`context <context>` :math:`C`.
+* Let :math:`\resulttype^?` be the current allowed return type.
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with |CRETURN| set to the optional :ref:`result type <syntax-resulttype>` :math:`\resulttype^?`.
+* The :ref:`frame <syntax-frame>` :math:`F` must be :ref:`valid <valid-frame>` with a :ref:`context <context>` :math:`C`.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with |CRETURN| set to :math:`\resulttype^?`.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[] \to [t^?]`.
@@ -442,10 +330,10 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. index:: thread, module instruction
 
-:ref:`Threads <syntax-thread>` :math:`\moduleinstr^\ast` under return type :math:`\resulttype^?`
-................................................................................................
+:ref:`Threads <syntax-thread>` :math:`\moduleinstr^\ast`
+........................................................
 
-* The optional :ref:`result type <syntax-resulttype>` :math:`\resulttype^?` must be empty.
+* The current allowed return type must be empty.
 
 * Each :ref:`module instruction <syntax-moduleinstr>` :math:`\moduleinstr_i` in :math:`\moduleinstr^\ast` must be :ref:`valid <valid-moduleinstr>`.
 
@@ -462,10 +350,10 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 .. index:: frame, local, module instance, value, value type, context
 .. _valid-frame:
 
-:ref:`Frame <syntax-frame>` :math:`\{\ALOCALS~\val^\ast, \AMODULE~\moduleinst\}`
-................................................................................
+:ref:`Frames <syntax-frame>` :math:`\{\ALOCALS~\val^\ast, \AMODULE~\moduleinst\}`
+.................................................................................
 
-* The :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst` must be :ref:`valid <valid-moduleinst>` with some :ref:`context <context>` :math:`C`.
+* The :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst` must be :ref:`valid <valid-moduleinst>` with some :ref:`module context <module context>` :math:`C`.
 
 * Each :ref:`value <syntax-val>` :math:`\val_i` in :math:`\val^\ast` must be :ref:`valid <valid-val>` with some :ref:`value type <syntax-valtype>` :math:`t_i`.
 
@@ -473,7 +361,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`value types <syntax-valtype>` :math:`t^\ast` prepended to the |CLOCALS| vector.
 
-* Then the frame is valid with context :math:`C'`.
+* Then the frame is valid with :ref:`frame context <frame-context>` :math:`C'`.
 
 .. math::
    \frac{
@@ -481,15 +369,15 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
      \qquad
      (\vdash \val : t)^\ast
    }{
-     S \vdash \{\ALOCALS~\val^\ast, \AMODULE~\moduleinst\} : C, \CLOCALS~t^\ast
+     S \vdash \{\ALOCALS~\val^\ast, \AMODULE~\moduleinst\} : (C, \CLOCALS~t^\ast)
    }
 
 
 .. index:: value, value type
 .. _valid-val:
 
-:ref:`Value <syntax-val>` :math:`t.\CONST~c`
-............................................
+:ref:`Values <syntax-val>` :math:`t.\CONST~c`
+.............................................
 
 * The value is valid with :ref:`value type <syntax-valtype>` :math:`t`.
 
@@ -507,6 +395,8 @@ Administrative Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Typing rules for :ref:`administrative instructions <syntax-instr-admin>` are specified as follows.
+In addition to the :ref:`context <contxt>` :math:`C`, typing of these instructions is defined under a given :ref:`store <syntax-store>` :math:`S`.
+To that end, all previous typing judgements :math:`C \vdash \X{prop}` are generalized to include the store, as in :math:`S; C \vdash \X{prop}`, by implicitly adding :math:`S` to all rules -- :math:`S` is never modified by the pre-existing rules, but it is accessed in the new rules for :ref:`administrative instructions <valid-instr-admin>` and  :ref:`module instructions <valid-moduleinstr>` given below.
 
 
 .. index:: trap
@@ -626,13 +516,15 @@ Unlike regular instructions, module instructions do not use the operand stack, a
 
 .. math::
    \frac{
+     \begin{array}{@{}rl@{}}
      S \vdash \EVTABLE~\tableaddr : \ETTABLE~\limits~\ANYFUNC
-     \qquad
+     \qquad&
      o + n \leq \limits.\LMIN
-     \qquad
+     \\
      S \vdash \moduleinst : C
-     \qquad
+     \qquad&
      (C.\CFUNCS[x] = \functype)^n
+     \end{array}
    }{
      S \vdash \INITELEM~\tableaddr~o~\moduleinst~x^n \ok
    }
@@ -667,13 +559,147 @@ Unlike regular instructions, module instructions do not use the operand stack, a
 * Under an empty :ref:`context <context>`,
   the :ref:`instruction <syntax-instr>` :math:`\instr` must be valid with type :math:`[] \to []`.
 
-* Then the module instruction is valid.
+* Then the instruction is valid as a module instruction.
 
 .. math::
    \frac{
      S; \{\} \vdash \instr : [] \to []
    }{
      S \vdash \instr \ok
+   }
+
+
+
+.. index:: ! store extension, store
+.. _extend:
+
+Store Extension
+~~~~~~~~~~~~~~~
+
+Programs can mutate the :ref:`store <syntax-store>` and its contained instances.
+Any such modification must respect certain invariants, such as not removing allocated instances or changing immutable definitions.
+While these invariants are inherent to the execution semantics of WebAssembly :ref:`instructions <exec-instr>` and :ref:`modules <exec-instantiation>`,
+:ref:`host functions <syntax-hostfunc>` do not automatically adhere to them. Consequently, the required invariants must be stated as explicit constraints on the :ref:`invocation <exec-invoke-host>` of host functions.
+Soundness only holds when the :ref:`embedder <embedder>` ensures these constraints.
+
+The necessary constraints are codified by the notion of store *extension*:
+a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'`, when the following rules hold.
+
+.. note::
+   Extension does not imply that the new store is valid, which is defined :ref:separately `above <valid-store>`.
+
+
+.. index:: store, function instance, table instance, memory instance, global instance
+.. _extend-store:
+
+:ref:`Store <syntax-store>` :math:`S`
+.....................................
+
+* The length of :math:`S.\SFUNCS` must not shrink.
+
+* The length of :math:`S.\STABLES` must not shrink.
+
+* The length of :math:`S.\SMEMS` must not shrink.
+
+* The length of :math:`S.\SGLOBALS` must not shrink.
+
+* For each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in the original :math:`S.\SFUNCS`, the new function instance must be an :ref:`extension <extend-funcinst>` of the old.
+
+* For each :ref:`table instance <syntax-tableinst>` :math:`\tableinst_i` in the original :math:`S.\STABLES`, the new table instance must be an :ref:`extension <extend-tableinst>` of the old.
+
+* For each :ref:`memory instance <syntax-meminst>` :math:`\meminst_i` in the original :math:`S.\SMEMS`, the new memory instance must be an :ref:`extension <extend-meminst>` of the old.
+
+* For each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in the original :math:`S.\SGLOBALS`, the new global instance must be an :ref:`extension <extend-globalinst>` of the old.
+
+.. math::
+   \frac{
+     \begin{array}{@{}ccc@{}}
+     S_1.\SFUNCS = \funcinst_1^\ast &
+     S_2.\SFUNCS = {\funcinst'_1}^\ast~\funcinst_2^\ast &
+     (\funcinst_1 \extendsto \funcinst'_1)^\ast \\
+     S_1.\STABLES = \tableinst_1^\ast &
+     S_2.\STABLES = {\tableinst'_1}^\ast~\tableinst_2^\ast &
+     (\tableinst_1 \extendsto \tableinst'_1)^\ast \\
+     S_1.\SMEMS = \meminst_1^\ast &
+     S_2.\SMEMS = {\meminst'_1}^\ast~\meminst_2^\ast &
+     (\meminst_1 \extendsto \meminst'_1)^\ast \\
+     S_1.\SGLOBALS = \globalinst_1^\ast &
+     S_2.\SGLOBALS = {\globalinst'_1}^\ast~\globalinst_2^\ast &
+     (\globalinst_1 \extendsto \globalinst'_1)^\ast \\
+     \end{array}
+   }{
+     \vdash S_1 \extendsto S_2
+   }
+
+
+.. index:: function instance
+.. _extend-funcinst:
+
+:ref:`Function Instance <syntax-funcinst>` :math:`\funcinst`
+............................................................
+
+* A function instance must remain unchanged.
+
+.. math::
+   \frac{
+   }{
+     \vdash \funcinst \extendsto \funcinst
+   }
+
+
+.. index:: table instance
+.. _extend-tableinst:
+
+:ref:`Table Instance <syntax-tableinst>` :math:`\tableinst`
+...........................................................
+
+* The length of :math:`\tableinst.\TIELEM` must not shrink.
+
+* The value of :math:`\tableinst.\TIMAX` must remain unchanged.
+
+.. math::
+   \frac{
+     n_1 \leq n_2
+   }{
+     \vdash \{\TIELEM~(\X{fa}_1^?)^{n_1}, \TIMAX~m\} \extendsto \{\TIELEM~(\X{fa}_2^?)^{n_2}, \TIMAX~m\}
+   }
+
+
+.. index:: memory instance
+.. _extend-meminst:
+
+:ref:`Memory Instance <syntax-meminst>` :math:`\meminst`
+........................................................
+
+* The length of :math:`\meminst.\MIDATA` must not shrink.
+
+* The value of :math:`\meminst.\MIMAX` must remain unchanged.
+
+.. math::
+   \frac{
+     n_1 \leq n_2
+   }{
+     \vdash \{\MIDATA~b_1^{n_1}, \MIMAX~m\} \extendsto \{\MIDATA~b_2^{n_2}, \MIMAX~m\}
+   }
+
+
+.. index:: global instance, value, mutability
+.. _extend-globalinst:
+
+:ref:`Global Instance <syntax-globalinst>` :math:`\globalinst`
+..............................................................
+
+* The :ref:`mutability <syntax-mut>` :math:`\globalinst.\GIMUT` must remain unchanged.
+
+* The :ref:`value type <syntax-valtype>` of the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
+
+* If :math:`\globalinst.\GIMUT` is |MCONST|, then the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
+
+.. math::
+   \frac{
+     \mut = \MVAR \vee c_1 = c_2
+   }{
+     \vdash \{\GIVALUE~(t.\CONST~c_1), \GIMUT~\mut\} \extendsto \{\GIVALUE~(t.\CONST~c_2), \GIMUT~\mut\}
    }
 
 
@@ -697,7 +723,7 @@ A *terminal* :ref:`thread <syntax-thread>` is either an empty sequence of :ref:`
 A terminal configuration is a configuration whose thread is terminal.
 
 **Theorem (Progress).**
-If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdash S;T : [t^\ast]^?` for some optional :ref:`result type <syntax-resulttype>` `[t^\ast]^?`),
+If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdash S;T : [t^\ast]^?` with some optional :ref:`result type <syntax-resulttype>` :math:`[t^\ast]^?`),
 then either it is terminal,
 or it can step to some configuration :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`).
 
@@ -707,3 +733,8 @@ From Preservation and Progress the soundness of the WebAssembly type system foll
 Every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
 
 Consequently, given a :ref:`valid store <valid-store>`, no computation defined by :ref:`instantiation <exec-instantiation>` or :ref:`invocation <exec-invocation>` of a valid module can "crash" or otherwise (mis)behave in ways not covered by the :ref:`execution <exec>` semantics given in this specification.
+
+
+.. [#pldi2017]
+   The formalization is derived from the following article:
+   Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. `Bringing the Web up to Speed with WebAssembly <https://dl.acm.org/citation.cfm?doid=3062341.3062363>`_. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
