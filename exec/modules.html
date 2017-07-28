@@ -549,8 +549,8 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 \begin{array}{&#64;{}rcll}
 S; \href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}~\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^n &amp;\hookrightarrow&amp; S';
   \begin{array}[t]{&#64;{}l&#64;{}}
-  (\href{../exec/runtime.html#syntax-init_elem}{\mathsf{init\_elem}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~\mathit{eo}~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}~\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\href{../syntax/modules.html#syntax-elem}{\mathsf{init}})^\ast \\
-  (\href{../exec/runtime.html#syntax-init_data}{\mathsf{init\_data}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}~\mathit{do}~\href{../syntax/modules.html#syntax-data}{\mathit{data}}.\href{../syntax/modules.html#syntax-data}{\mathsf{init}})^\ast \\
+  (\href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~\mathit{eo}~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}~\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\href{../syntax/modules.html#syntax-elem}{\mathsf{init}})^\ast \\
+  (\href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}~\mathit{do}~\href{../syntax/modules.html#syntax-data}{\mathit{data}}.\href{../syntax/modules.html#syntax-data}{\mathsf{init}})^\ast \\
   (\href{../exec/runtime.html#syntax-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}})^? \\
   \end{array} \\
 &amp;(\mathrel{\mbox{if}}
@@ -578,16 +578,16 @@ S; \href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{..
 S; \href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}~\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^n &amp;\hookrightarrow&amp;
   S'; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}  \qquad (\mathrel{\mbox{otherwise}})
 \\[2ex]
-S; \href{../exec/runtime.html#syntax-init_elem}{\mathsf{init\_elem}}~a~i~m~\epsilon &amp;\hookrightarrow&amp;
+S; \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~a~i~m~\epsilon &amp;\hookrightarrow&amp;
   S; \epsilon \\
-S; \href{../exec/runtime.html#syntax-init_elem}{\mathsf{init\_elem}}~a~i~m~(x_0~x^\ast) &amp;\hookrightarrow&amp;
-  S'; \href{../exec/runtime.html#syntax-init_elem}{\mathsf{init\_elem}}~a~(i+1)~m~x^\ast \\ &amp;&amp;
+S; \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~a~i~m~(x_0~x^\ast) &amp;\hookrightarrow&amp;
+  S'; \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~a~(i+1)~m~x^\ast \\ &amp;&amp;
   (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i] = m.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{funcaddrs}}[x_0])
 \\[1ex]
-S; \href{../exec/runtime.html#syntax-init_data}{\mathsf{init\_data}}~a~i~\epsilon &amp;\hookrightarrow&amp;
+S; \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~a~i~\epsilon &amp;\hookrightarrow&amp;
   S; \epsilon \\
-S; \href{../exec/runtime.html#syntax-init_data}{\mathsf{init\_data}}~a~i~(b_0~b^\ast) &amp;\hookrightarrow&amp;
-  S'; \href{../exec/runtime.html#syntax-init_data}{\mathsf{init\_data}}~a~(i+1)~b^\ast \\ &amp;&amp;
+S; \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~a~i~(b_0~b^\ast) &amp;\hookrightarrow&amp;
+  S'; \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~a~(i+1)~b^\ast \\ &amp;&amp;
   (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[i] = b_0)
 \end{array}\end{split}\]</div>
 <div class="admonition note">

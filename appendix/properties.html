@@ -464,7 +464,7 @@ Unlike regular instructions, module instructions do not use the operand stack, a
 }\]</div>
 </div>
 <div class="section" id="index-21">
-<span id="id9"></span><h3><span class="math">\(\href{../exec/runtime.html#syntax-init_elem}{\mathsf{init\_elem}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~o~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}~x^n\)</span><a class="headerlink" href="#index-21" title="Permalink to this headline">¶</a></h3>
+<span id="id9"></span><h3><span class="math">\(\href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~o~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}~x^n\)</span><a class="headerlink" href="#index-21" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external table value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{table}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}\)</span> must be <a class="reference internal" href="../exec/modules.html#valid-externval-table"><span class="std std-ref">valid</span></a> with some <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external table type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}\)</span>.</li>
 <li>The index <span class="math">\(o + n\)</span> must be smaller than or equal to <span class="math">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}.\href{../syntax/types.html#syntax-limits}{\mathsf{min}}\)</span>.</li>
@@ -484,11 +484,11 @@ Unlike regular instructions, module instructions do not use the operand stack, a
   (C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x] = \href{../syntax/types.html#syntax-functype}{\mathit{functype}})^n
   \end{array}
 }{
-  S \vdash \href{../exec/runtime.html#syntax-init_elem}{\mathsf{init\_elem}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~o~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}~x^n \mathrel{\mbox{ok}}
+  S \vdash \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~o~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}~x^n \mathrel{\mbox{ok}}
 }\end{split}\]</div>
 </div>
 <div class="section" id="index-22">
-<span id="id10"></span><h3><span class="math">\(\href{../exec/runtime.html#syntax-init_data}{\mathsf{init\_data}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}~o~b^n\)</span><a class="headerlink" href="#index-22" title="Permalink to this headline">¶</a></h3>
+<span id="id10"></span><h3><span class="math">\(\href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}~o~b^n\)</span><a class="headerlink" href="#index-22" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external memory value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}\)</span> must be <a class="reference internal" href="../exec/modules.html#valid-externval-mem"><span class="std std-ref">valid</span></a> with some <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external memory type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}\)</span>.</li>
 <li>The index <span class="math">\(o + n\)</span> must be smaller than or equal to <span class="math">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}.\href{../syntax/types.html#syntax-limits}{\mathsf{min}}\)</span> divided by the <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a> <span class="math">\(64\,\mathrm{Ki}\)</span>.</li>
@@ -500,7 +500,7 @@ Unlike regular instructions, module instructions do not use the operand stack, a
   \qquad
   o + n \leq \href{../syntax/types.html#syntax-limits}{\mathit{limits}}.\href{../syntax/types.html#syntax-limits}{\mathsf{min}} \cdot 64\,\mathrm{Ki}
 }{
-  S \vdash \href{../exec/runtime.html#syntax-init_data}{\mathsf{init\_data}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}~o~b^n \mathrel{\mbox{ok}}
+  S \vdash \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}~o~b^n \mathrel{\mbox{ok}}
 }\]</div>
 </div>
 <div class="section" id="index-23">
