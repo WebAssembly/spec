@@ -69,7 +69,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../syntax/instrindex.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
 </ul>
 
 
@@ -252,7 +254,7 @@ In some cases, this allows for a simple form of subtyping, as defined below.</p>
 </div>
 <div class="section" id="allocation">
 <span id="alloc"></span><span id="index-11"></span><h2>Allocation<a class="headerlink" href="#allocation" title="Permalink to this headline">¶</a></h2>
-<p>New instances of <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memories</span></a>, <a class="reference internal" href="runtime.html#syntax-globalinst"><span class="std std-ref">globals</span></a>, and <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">modules</span></a> are <em>allocated</em> in a <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span>, as defined by the following auxiliary functions.</p>
+<p>New instances of <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="runtime.html#syntax-globalinst"><span class="std std-ref">globals</span></a> are <em>allocated</em> in a <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span>, as defined by the following auxiliary functions.</p>
 <div class="section" id="alloc-func">
 <span id="index-12"></span><span id="id5"></span><h3><a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">Functions</span></a><a class="headerlink" href="#alloc-func" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
@@ -326,7 +328,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 <li>Let <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memory</span></a> to allocate.</li>
 <li>Let <span class="math">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">table type</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}.\href{../syntax/modules.html#syntax-mem}{\mathsf{type}}\)</span>.</li>
 <li>Let <span class="math">\(a\)</span> be the first free <a class="reference internal" href="runtime.html#syntax-memaddr"><span class="std std-ref">memory address</span></a> in <span class="math">\(S\)</span>.</li>
-<li>Let <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef1105#1{\mathtt{0x#1}}\mathdef1105{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \}\)</span> that contains <span class="math">\(n\)</span> pages of zeroed <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.</li>
+<li>Let <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef1496#1{\mathtt{0x#1}}\mathdef1496{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \}\)</span> that contains <span class="math">\(n\)</span> pages of zeroed <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.</li>
 <li>Append <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> to the <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}\)</span> of <span class="math">\(S\)</span>.</li>
 <li>Return <span class="math">\(a\)</span>.</li>
 </ol>
@@ -336,7 +338,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 \mbox{where:} \hfill \\
 \href{../syntax/modules.html#syntax-mem}{\mathit{mem}}.\href{../syntax/modules.html#syntax-mem}{\mathsf{type}} &amp;=&amp; \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\} \\
 \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}} &amp;=&amp; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}| \\
-\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef1106#1{\mathtt{0x#1}}\mathdef1106{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \} \\
+\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef1497#1{\mathtt{0x#1}}\mathdef1497{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \} \\
 S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}~\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\} \\
 \end{array}\end{split}\]</div>
 </div>
@@ -450,7 +452,7 @@ In an implementation, this recursion is easily unraveled by mutating one or the 
 </div>
 </div>
 <div class="section" id="instantiation">
-<span id="exec-instantiation"></span><span id="exec-module"></span><span id="index-18"></span><h2>Instantiation<a class="headerlink" href="#instantiation" title="Permalink to this headline">¶</a></h2>
+<span id="exec-instantiation"></span><span id="exec-moduleinstr"></span><span id="exec-module"></span><span id="index-18"></span><h2>Instantiation<a class="headerlink" href="#instantiation" title="Permalink to this headline">¶</a></h2>
 <p>Given a <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span>, a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is instantiated with a list of <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^n\)</span> supplying the required imports as follows.</p>
 <p>Instantiation may <em>fail</em> with an error if the module is not <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">valid</span></a> or the imports do not <a class="reference internal" href="#match-externtype"><span class="std std-ref">match</span></a>.
 Instantiation can also result in a <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> from executing the start function.

@@ -51,8 +51,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Validation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Types</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#function-types">Function Types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#limits">Limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#function-types">Function Types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#table-types">Table Types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#memory-types">Memory Types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#global-types">Global Types</a></li>
@@ -68,7 +68,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../syntax/instrindex.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
 </ul>
 
 
@@ -101,11 +103,28 @@
 <h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
 <p>Most <a class="reference internal" href="../syntax/types.html#syntax-type"><span class="std std-ref">types</span></a> are universally valid.
 However, restrictions apply to <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> as well as the <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> of <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table types</span></a> and <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory types</span></a>, which must be checked during validation.</p>
-<div class="section" id="function-types">
-<span id="valid-functype"></span><span id="index-0"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">Function types</span></a> may not specify more than one result.</p>
+<div class="section" id="limits">
+<span id="valid-limits"></span><span id="index-0"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">Limits</span></a> must have meaningful bounds.</p>
 <div class="section" id="id1">
-<h3><span class="math">\([t_1^n] \to [t_2^m]\)</span><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math">\(\{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^? \}\)</span><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If the maximum <span class="math">\(m^?\)</span> is not empty, then its value must not be smaller than <span class="math">\(n\)</span>.</li>
+<li>Then the limit is valid.</li>
+</ul>
+<div class="math">
+\[\frac{
+  (n \leq m)^?
+}{
+  \vdash \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^? \} \mathrel{\mbox{ok}}
+}\]</div>
+</div>
+</div>
+<div class="section" id="function-types">
+<span id="valid-functype"></span><span id="index-1"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">Function types</span></a> may not specify more than one result.</p>
+<div class="section" id="id2">
+<h3><span class="math">\([t_1^n] \to [t_2^m]\)</span><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The arity <span class="math">\(m\)</span> must not be larger than <span class="math">\(1\)</span>.</li>
 <li>Then the function type is valid.</li>
@@ -119,23 +138,6 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
 <p class="first admonition-title">Note</p>
 <p class="last">This restriction may be removed in future versions of WebAssembly.</p>
 </div>
-</div>
-</div>
-<div class="section" id="limits">
-<span id="valid-limits"></span><span id="index-1"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">Limits</span></a> must have meaningful bounds.</p>
-<div class="section" id="id2">
-<h3><span class="math">\(\{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^? \}\)</span><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>If the maximum <span class="math">\(m^?\)</span> is not empty, then its value must not be smaller than <span class="math">\(n\)</span>.</li>
-<li>Then the limit is valid.</li>
-</ul>
-<div class="math">
-\[\frac{
-  (n \leq m)^?
-}{
-  \vdash \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^? \} \mathrel{\mbox{ok}}
-}\]</div>
 </div>
 </div>
 <div class="section" id="table-types">
