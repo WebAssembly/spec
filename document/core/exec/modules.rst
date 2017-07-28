@@ -319,7 +319,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 1. Let :math:`\mem` be the :ref:`memory <syntax-mem>` to allocate.
 
-2. Let :math:`\{\LMIN~n, \LMAX~m^?\}` be the :ref:`table type <syntax-memtype>` :math:`\mem.\MTYPE`.
+2. Let :math:`\{\LMIN~n, \LMAX~m^?\}` be the :ref:`memory type <syntax-memtype>` :math:`\mem.\MTYPE`.
 
 3. Let :math:`a` be the first free :ref:`memory address <syntax-memaddr>` in :math:`S`.
 
