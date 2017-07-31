@@ -31,7 +31,7 @@ A valid store must consist of
 :ref:`function <syntax-funcinst>`, :ref:`table <syntax-tableinst>`, :ref:`memory <syntax-meminst>`, :ref:`global <syntax-globalinst>`, and :ref:`module <syntax-moduleinst>` instances that are themselves valid, relative to :math:`S`.
 
 To that end, each kind of instance is classified by a respective :ref:`function <syntax-functype>`, :ref:`table <syntax-tabletype>`, :ref:`memory <syntax-memtype>`, or :ref:`global <syntax-globaltype>` type.
-Module instances are classified by *module contexts*, which are regular :ref:`contexts <context>` that are repurposed as module types describing the :ref:`index spaces <syntax-index>` defined by a module.
+Module instances are classified by *module contexts*, which are regular :ref:`contexts <context>` repurposed as module types describing the :ref:`index spaces <syntax-index>` defined by a module.
 
 
 
@@ -54,13 +54,13 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    ~\\[-1ex]
    \frac{
      \begin{array}{@{}c@{}}
-     (S \vdash \funcinst : \functype)^\ast
+     (S \vdashfuncinst \funcinst : \functype)^\ast
      \qquad
-     (S \vdash \tableinst : \tabletype)^\ast
+     (S \vdashtableinst \tableinst : \tabletype)^\ast
      \\
-     (S \vdash \meminst : \memtype)^\ast
+     (S \vdashmeminst \meminst : \memtype)^\ast
      \qquad
-     (S \vdash \globalinst : \globaltype^?)^\ast
+     (S \vdashglobalinst \globalinst : \globaltype^?)^\ast
      \\
      S = \{
        \SFUNCS~\funcinst^\ast,
@@ -69,7 +69,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        \SGLOBALS~\globalinst^\ast \}
      \end{array}
    }{
-     \vdash S \ok
+     \vdashstore S \ok
    }
 
 
@@ -89,13 +89,13 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 .. math::
    \frac{
-     \vdash \functype \ok
+     \vdashfunctype \functype \ok
      \qquad
-     S \vdash \moduleinst : C
+     S \vdashmoduleinst \moduleinst : C
      \qquad
-     C \vdash \func : \functype
+     C \vdashfunc \func : \functype
    }{
-     S \vdash \{\FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func\} : \functype
+     S \vdashfuncinst \{\FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func\} : \functype
    }
 
 
@@ -117,25 +117,11 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 .. math::
    \frac{
-     (S \vdash \X{fa}^? \ok)^n
+     ((S \vdash \EVFUNC~\X{fa} : \ETFUNC~\functype)^?)^n
      \qquad
-     \vdash \{\LMIN~n, \LMAX~m^?\} \ok
+     \vdashlimits \{\LMIN~n, \LMAX~m^?\} \ok
    }{
-     S \vdash \{ \TIELEM~(\X{fa}^?)^n, \TIMAX~m^? \} : \{\LMIN~n, \LMAX~m^?\}~\ANYFUNC
-   }
-
-where:
-
-.. math::
-   \frac{
-   }{
-     S \vdash \epsilon \ok
-   }
-   \qquad
-   \frac{
-     S \vdash \EVFUNC~\funcaddr : \ETFUNC~\functype
-   }{
-     S \vdash \funcaddr \ok
+     S \vdashtableinst \{ \TIELEM~(\X{fa}^?)^n, \TIMAX~m^? \} : \{\LMIN~n, \LMAX~m^?\}~\ANYFUNC
    }
 
 
@@ -151,9 +137,9 @@ where:
 
 .. math::
    \frac{
-     \vdash \{\LMIN~n, \LMAX~m^?\} \ok
+     \vdashlimits \{\LMIN~n, \LMAX~m^?\} \ok
    }{
-     S \vdash \{ \MIDATA~b^n, \MIMAX~m^? \} : \{\LMIN~n, \LMAX~m^?\}
+     S \vdashmeminst \{ \MIDATA~b^n, \MIMAX~m^? \} : \{\LMIN~n, \LMAX~m^?\}
    }
 
 
@@ -168,7 +154,7 @@ where:
 .. math::
    \frac{
    }{
-     S \vdash \{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \} : \mut~t
+     S \vdashglobalinst \{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \} : \mut~t
    }
 
 
@@ -184,9 +170,9 @@ where:
 
 .. math::
    \frac{
-     S \vdash \externval : \externtype
+     S \vdashexternval \externval : \externtype
    }{
-     S \vdash \{ \EINAME~\name, \EIVALUE~\externval \} \ok
+     S \vdashexportinst \{ \EINAME~\name, \EIVALUE~\externval \} \ok
    }
 
 
@@ -224,22 +210,22 @@ where:
    ~\\[-1ex]
    \frac{
      \begin{array}{@{}c@{}}
-     (\vdash \functype \ok)^\ast
+     (\vdashfunctype \functype \ok)^\ast
      \\
-     (S \vdash \EVFUNC~\funcaddr : \ETFUNC~\functype')^\ast
+     (S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype')^\ast
      \qquad
-     (S \vdash \EVTABLE~\tableaddr : \ETTABLE~\tabletype)^\ast
+     (S \vdashexternval \EVTABLE~\tableaddr : \ETTABLE~\tabletype)^\ast
      \\
-     (S \vdash \EVMEM~\memaddr : \ETMEM~\memtype)^\ast
+     (S \vdashexternval \EVMEM~\memaddr : \ETMEM~\memtype)^\ast
      \qquad
-     (S \vdash \EVGLOBAL~\globaladdr : \ETGLOBAL~\globaltype)^\ast
+     (S \vdashexternval \EVGLOBAL~\globaladdr : \ETGLOBAL~\globaltype)^\ast
      \\
-     (S \vdash \exportinst \ok)^\ast
+     (S \vdashexportinst \exportinst \ok)^\ast
      \qquad
      (\exportinst.\EINAME)^\ast ~\mbox{disjoint}
      \end{array}
    }{
-     S \vdash \{
+     S \vdashmoduleinst \{
        \begin{array}[t]{@{}l@{~}l@{}}
        \MITYPES & \functype^\ast, \\
        \MIFUNCS & \funcaddr^\ast, \\
@@ -273,10 +259,10 @@ Regular threads are classified by their :ref:`result type <syntax-resulttype>`.
 Module threads on the other hand have no result, not even an empty one.
 Consequently, threads and configurations are cumutavily classified by an *optional* result type, where :math:`\epsilon` classifies the thread as a module computation.
 
-In addition to the store :math:`S`, threads are typed under an *return type* :math:`\resulttype^?`, which controls whether and with which type a |return| instruction is allowed.
-This type is :math:`\epsilon`, unless typing the instruction sequence inside an administrative |frame| instruction.
+In addition to the store :math:`S`, threads are typed under a *return type* :math:`\resulttype^?`, which controls whether and with which type a |return| instruction is allowed.
+This type is :math:`\epsilon`, except for instruction sequences inside an administrative |FRAME| instruction.
 
-Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, which are regular :ref:`contexts <context>` that describe the associated :ref:`module instance <syntax-moduleinst>` plus the :ref:`locals <syntax-local>` that the frame contains.
+Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, which extend the :ref:`module contexts <module-context>` of a frame's associated :ref:`module instance <syntax-moduleinst>` with the :ref:`locals <syntax-local>` that the frame contains.
 
 
 .. index:: result type, thread
@@ -293,11 +279,11 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 
 .. math::
    \frac{
-     \vdash S \ok
+     \vdashstore S \ok
      \qquad
-     S; \epsilon \vdash T : [t^?]^?
+     S; \epsilon \vdashthread T : [t^?]^?
    }{
-     \vdash S; T : [t^?]^?
+     \vdashconfig S; T : [t^?]^?
    }
 
 
@@ -320,11 +306,11 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 
 .. math::
    \frac{
-     S \vdash F : C
+     S \vdashframe F : C
      \qquad
-     S; C,\CRETURN~\resulttype^? \vdash \instr^\ast : [] \to [t^?]
+     S; C,\CRETURN~\resulttype^? \vdashinstrseq \instr^\ast : [] \to [t^?]
    }{
-     S; \resulttype^? \vdash F; \instr^\ast : [t^?]
+     S; \resulttype^? \vdashthread F; \instr^\ast : [t^?]
    }
 
 
@@ -341,9 +327,9 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 
 .. math::
    \frac{
-     (S \vdash \moduleinstr \ok)^\ast
+     (S \vdashmoduleinstr \moduleinstr \ok)^\ast
    }{
-     S; \epsilon \vdash \moduleinstr^\ast : \epsilon
+     S; \epsilon \vdashthread \moduleinstr^\ast : \epsilon
    }
 
 
@@ -365,11 +351,11 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 
 .. math::
    \frac{
-     S \vdash \moduleinst : C
+     S \vdashmoduleinst \moduleinst : C
      \qquad
-     (\vdash \val : t)^\ast
+     (\vdashval \val : t)^\ast
    }{
-     S \vdash \{\ALOCALS~\val^\ast, \AMODULE~\moduleinst\} : (C, \CLOCALS~t^\ast)
+     S \vdashframe \{\ALOCALS~\val^\ast, \AMODULE~\moduleinst\} : (C, \CLOCALS~t^\ast)
    }
 
 
@@ -384,7 +370,7 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 .. math::
    \frac{
    }{
-     \vdash t.\CONST~c : t
+     \vdashval t.\CONST~c : t
    }
 
 
@@ -409,7 +395,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 .. math::
    \frac{
    }{
-     S; C \vdash \TRAP : [t_1^\ast] \to [t_2^\ast]
+     S; C \vdashadmininstr \TRAP : [t_1^\ast] \to [t_2^\ast]
    }
 
 
@@ -424,9 +410,9 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     S \vdash \EVFUNC~\funcaddr : \ETFUNC~[t_1^\ast] \to [t_2^\ast]
+     S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~[t_1^\ast] \to [t_2^\ast]
    }{
-     S; C \vdash \INVOKE~\funcaddr : [t_1^\ast] \to [t_2^\ast]
+     S; C \vdashadmininstr \INVOKE~\funcaddr : [t_1^\ast] \to [t_2^\ast]
    }
 
 
@@ -446,11 +432,11 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     S; C \vdash \instr_0^\ast : [t_1^n] \to [t_2^?]
+     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \to [t_2^?]
      \qquad
-     S; C,\CLABELS\,[t_1^n] \vdash \instr^\ast : [] \to [t_2^?]
+     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to [t_2^?]
    }{
-     S; C \vdash \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^?]
+     S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^?]
    }
 
 
@@ -466,9 +452,9 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     S; [t^n] \vdash F; \instr^\ast : [t^n]
+     S; [t^n] \vdashinstrseq F; \instr^\ast : [t^n]
    }{
-     S; C \vdash \FRAME_n\{F\}~\instr^\ast~\END : [] \to [t^n]
+     S; C \vdashadmininstr \FRAME_n\{F\}~\instr^\ast~\END : [] \to [t^n]
    }
 
 
@@ -493,9 +479,9 @@ Unlike regular instructions, module instructions do not use the operand stack, a
 
 .. math::
    \frac{
-     (S \vdash \externval : \externtype)^\ast
+     (S \vdashexternval \externval : \externtype)^\ast
    }{
-     S \vdash \INSTANTIATE~\module~\externval^\ast \ok
+     S \vdashmoduleinstr \INSTANTIATE~\module~\externval^\ast \ok
    }
 
 
@@ -517,16 +503,16 @@ Unlike regular instructions, module instructions do not use the operand stack, a
 .. math::
    \frac{
      \begin{array}{@{}rl@{}}
-     S \vdash \EVTABLE~\tableaddr : \ETTABLE~\limits~\ANYFUNC
+     S \vdashexternval \EVTABLE~\tableaddr : \ETTABLE~\limits~\ANYFUNC
      \qquad&
      o + n \leq \limits.\LMIN
      \\
-     S \vdash \moduleinst : C
+     S \vdashmoduleinst \moduleinst : C
      \qquad&
      (C.\CFUNCS[x] = \functype)^n
      \end{array}
    }{
-     S \vdash \INITELEM~\tableaddr~o~\moduleinst~x^n \ok
+     S \vdashmoduleinstr \INITELEM~\tableaddr~o~\moduleinst~x^n \ok
    }
 
 
@@ -543,11 +529,11 @@ Unlike regular instructions, module instructions do not use the operand stack, a
 
 .. math::
    \frac{
-     S \vdash \EVMEM~\memaddr : \ETMEM~\limits
+     S \vdashexternval \EVMEM~\memaddr : \ETMEM~\limits
      \qquad
      o + n \leq \limits.\LMIN \cdot 64\,\F{Ki}
    }{
-     S \vdash \INITDATA~\memaddr~o~b^n \ok
+     S \vdashmoduleinstr \INITDATA~\memaddr~o~b^n \ok
    }
 
 
@@ -563,9 +549,9 @@ Unlike regular instructions, module instructions do not use the operand stack, a
 
 .. math::
    \frac{
-     S; \{\} \vdash \instr : [] \to []
+     S; \{\} \vdashinstr \instr : [] \to []
    }{
-     S \vdash \instr \ok
+     S \vdashmoduleinstr \instr \ok
    }
 
 
@@ -628,7 +614,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
      (\globalinst_1 \extendsto \globalinst'_1)^\ast \\
      \end{array}
    }{
-     \vdash S_1 \extendsto S_2
+     \vdashstoreextends S_1 \extendsto S_2
    }
 
 
@@ -643,7 +629,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 .. math::
    \frac{
    }{
-     \vdash \funcinst \extendsto \funcinst
+     \vdashfuncinstextends \funcinst \extendsto \funcinst
    }
 
 
@@ -661,7 +647,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
    \frac{
      n_1 \leq n_2
    }{
-     \vdash \{\TIELEM~(\X{fa}_1^?)^{n_1}, \TIMAX~m\} \extendsto \{\TIELEM~(\X{fa}_2^?)^{n_2}, \TIMAX~m\}
+     \vdashtableinstextends \{\TIELEM~(\X{fa}_1^?)^{n_1}, \TIMAX~m\} \extendsto \{\TIELEM~(\X{fa}_2^?)^{n_2}, \TIMAX~m\}
    }
 
 
@@ -679,7 +665,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
    \frac{
      n_1 \leq n_2
    }{
-     \vdash \{\MIDATA~b_1^{n_1}, \MIMAX~m\} \extendsto \{\MIDATA~b_2^{n_2}, \MIMAX~m\}
+     \vdashmeminstextends \{\MIDATA~b_1^{n_1}, \MIMAX~m\} \extendsto \{\MIDATA~b_2^{n_2}, \MIMAX~m\}
    }
 
 
@@ -699,7 +685,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
    \frac{
      \mut = \MVAR \vee c_1 = c_2
    }{
-     \vdash \{\GIVALUE~(t.\CONST~c_1), \GIMUT~\mut\} \extendsto \{\GIVALUE~(t.\CONST~c_2), \GIMUT~\mut\}
+     \vdashglobalinstextends \{\GIVALUE~(t.\CONST~c_1), \GIMUT~\mut\} \extendsto \{\GIVALUE~(t.\CONST~c_2), \GIMUT~\mut\}
    }
 
 
@@ -714,16 +700,16 @@ Given the definition of :ref:`valid configurations <valid-config>`,
 the standard soundness theorems hold.
 
 **Theorem (Preservation).**
-If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` with optional :ref:`result type <syntax-resulttype>` :math:`[t^\ast]^?` (i.e., :math:`\vdash S;T : [t^\ast]^?`),
+If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` with optional :ref:`result type <syntax-resulttype>` :math:`[t^\ast]^?` (i.e., :math:`\vdashconfig S;T : [t^\ast]^?`),
 and steps to :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`),
-then :math:`S';T'` is a valid configuration with the same optional resulttype (i.e., :math:`\vdash S';T' : [t^\ast]^?`).
-Furthermore, :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdash S \extendsto S'`).
+then :math:`S';T'` is a valid configuration with the same optional resulttype (i.e., :math:`\vdashconfig S';T' : [t^\ast]^?`).
+Furthermore, :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
 
 A *terminal* :ref:`thread <syntax-thread>` is either an empty sequence of :ref:`module instructions <syntax-moduleinstr>`, a |TRAP| instruction, or a sequence :math:`\val^\ast` of :ref:`values <syntax-val>` (paired with a :ref:`frame <syntax-frame>`).
 A terminal configuration is a configuration whose thread is terminal.
 
 **Theorem (Progress).**
-If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdash S;T : [t^\ast]^?` with some optional :ref:`result type <syntax-resulttype>` :math:`[t^\ast]^?`),
+If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdashconfig S;T : [t^\ast]^?` with some optional :ref:`result type <syntax-resulttype>` :math:`[t^\ast]^?`),
 then either it is terminal,
 or it can step to some configuration :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`).
 
@@ -736,5 +722,5 @@ Consequently, given a :ref:`valid store <valid-store>`, no computation defined b
 
 
 .. [#pldi2017]
-   The formalization is derived from the following article:
+   The formalization and theorems are derived from the following article:
    Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. `Bringing the Web up to Speed with WebAssembly <https://dl.acm.org/citation.cfm?doid=3062341.3062363>`_. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.

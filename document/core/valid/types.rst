@@ -26,7 +26,7 @@ Limits
    \frac{
      (n \leq m)^?
    }{
-     \vdash \{ \LMIN~n, \LMAX~m^? \} \ok
+     \vdashlimits \{ \LMIN~n, \LMAX~m^? \} \ok
    }
 
 
@@ -50,7 +50,7 @@ Function Types
 .. math::
    \frac{
    }{
-     \vdash [t_1^\ast] \to [t_2^?] \ok
+     \vdashfunctype [t_1^\ast] \to [t_2^?] \ok
    }
 
 .. note::
@@ -74,9 +74,9 @@ Table Types
 
 .. math::
    \frac{
-     \vdash \limits \ok
+     \vdashlimits \limits \ok
    }{
-     \vdash \limits~\elemtype \ok
+     \vdashtabletype \limits~\elemtype \ok
    }
 
 
@@ -97,9 +97,9 @@ Memory Types
 
 .. math::
    \frac{
-     \vdash \limits \ok
+     \vdashlimits \limits \ok
    }{
-     \vdash \limits \ok
+     \vdashmemtype \limits \ok
    }
 
 
@@ -119,5 +119,5 @@ Global Types
 .. math::
    \frac{
    }{
-     \vdash \mut~\valtype \ok
+     \vdashglobaltype \mut~\valtype \ok
    }

@@ -31,7 +31,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
    \frac{
      S.\SFUNCS[a] = \{\FITYPE~\functype, \dots\}
    }{
-     S \vdash \EVFUNC~a : \ETFUNC~\functype
+     S \vdashexternval \EVFUNC~a : \ETFUNC~\functype
    }
 
 
@@ -49,7 +49,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
    \frac{
      S.\STABLES[a] = \{ \TIELEM~(\X{fa}^?)^n, \TIMAX~m^? \}
    }{
-     S \vdash \EVTABLE~a : \ETTABLE~(\{\LMIN~n, \LMAX~m^?\}~\ANYFUNC)
+     S \vdashexternval \EVTABLE~a : \ETTABLE~(\{\LMIN~n, \LMAX~m^?\}~\ANYFUNC)
    }
 
 
@@ -67,7 +67,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
    \frac{
      S.\SMEMS[a] = \{ \MIDATA~b^{n\cdot64\,\F{Ki}}, \MIMAX~m^? \}
    }{
-     S \vdash \EVMEM~a : \ETMEM~\{\LMIN~n, \LMAX~m^?\}
+     S \vdashexternval \EVMEM~a : \ETMEM~\{\LMIN~n, \LMAX~m^?\}
    }
 
 
@@ -85,13 +85,13 @@ The following auxiliary typing rules specify this typing relation relative to a 
    \frac{
      S.\SGLOBALS[a] = \{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \}
    }{
-     S \vdash \EVGLOBAL~a : \ETGLOBAL~(\mut~t)
+     S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~(\mut~t)
    }
 
 
 .. index:: ! matching, external type
 .. _exec-import:
-.. _match-externtype:
+.. _match:
 
 Import Matching
 ~~~~~~~~~~~~~~~
@@ -126,7 +126,7 @@ Limits
    \frac{
      n_1 \geq n_2
    }{
-     \vdash \{ \LMIN~n_1, \LMAX~m_1^? \} \leq \{ \LMIN~n_2, \LMAX~\epsilon \}
+     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1^? \} \matches \{ \LMIN~n_2, \LMAX~\epsilon \}
    }
    \quad
    \frac{
@@ -134,9 +134,11 @@ Limits
      \qquad
      m_1 \leq m_2
    }{
-     \vdash \{ \LMIN~n_1, \LMAX~m_1 \} \leq \{ \LMIN~n_2, \LMAX~m_2 \}
+     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1 \} \matches \{ \LMIN~n_2, \LMAX~m_2 \}
    }
 
+
+.. _match-externtype:
 
 .. index:: function type
 .. _match-functype:
@@ -152,7 +154,7 @@ An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches 
    ~\\[-1ex]
    \frac{
    }{
-     \vdash \ETFUNC~\functype \leq \ETFUNC~\functype
+     \vdashexterntypematch \ETFUNC~\functype \matches \ETFUNC~\functype
    }
 
 
@@ -170,9 +172,9 @@ An :ref:`external type <syntax-externtype>` :math:`\ETTABLE~(\limits_1~\elemtype
 
 .. math::
    \frac{
-     \vdash \limits_1 \leq \limits_2
+     \vdashlimitsmatch \limits_1 \matches \limits_2
    }{
-     \vdash \ETTABLE~(\limits_1~\elemtype) \leq \ETTABLE~(\limits_2~\elemtype)
+     \vdashexterntypematch \ETTABLE~(\limits_1~\elemtype) \matches \ETTABLE~(\limits_2~\elemtype)
    }
 
 
@@ -188,9 +190,9 @@ An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\limits_1` matches :ma
 
 .. math::
    \frac{
-     \vdash \limits_1 \leq \limits_2
+     \vdashlimitsmatch \limits_1 \matches \limits_2
    }{
-     \vdash \ETMEM~\limits_1 \leq \ETMEM~\limits_2
+     \vdashexterntypematch \ETMEM~\limits_1 \matches \ETMEM~\limits_2
    }
 
 
@@ -208,7 +210,7 @@ An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_1` matc
    ~\\[-1ex]
    \frac{
    }{
-     \vdash \ETGLOBAL~\globaltype \leq \ETGLOBAL~\globaltype
+     \vdashexterntypematch \ETGLOBAL~\globaltype \matches \ETGLOBAL~\globaltype
    }
 
 
@@ -631,9 +633,9 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      (\INVOKE~\funcaddr)^? \\
      \end{array} \\
    &(\iff
-     & \vdash \module : \externtype^n \\
-     &\wedge& (\vdash \externval : \externtype')^n \\
-     &\wedge& (\vdash \externtype' \leq \externtype)^n \\[1ex]
+     & \vdashmodule \module : \externtype^n \\
+     &\wedge& (\vdashexternval \externval : \externtype')^n \\
+     &\wedge& (\vdashexterntypematch \externtype' \matches \externtype)^n \\[1ex]
      &\wedge& \module.\MGLOBALS = \global^k \\
      &\wedge& \module.\MELEM = \elem^\ast \\
      &\wedge& \module.\MDATA = \data^\ast \\

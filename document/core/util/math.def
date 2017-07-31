@@ -114,6 +114,8 @@
 
 .. Types, terminals
 
+.. |to| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
+
 .. |I8| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i8}}
 .. |I16| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i16}}
 .. |I32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i32}}
@@ -651,6 +653,7 @@
 .. Notation
 
 .. |ok| mathdef:: \mathrel{\mbox{ok}}
+.. |const| mathdef:: \xref{valid/instructions}{valid-constant}{\mathrel{\mbox{const}}}
 
 
 .. Contexts
@@ -665,14 +668,42 @@
 .. |CRETURN| mathdef:: \xref{valid/conventions}{context}{\K{return}}
 
 
+.. Judgments
+
+.. |vdashlimits| mathdef:: \xref{valid/types}{valid-limits}{\vdash}
+.. |vdashfunctype| mathdef:: \xref{valid/types}{valid-functype}{\vdash}
+.. |vdashtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\vdash}
+.. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
+.. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
+
+.. |vdashinstr| mathdef:: \xref{valid/instructions}{valid-instr}{\vdash}
+.. |vdashinstrseq| mathdef:: \xref{valid/instructions}{valid-instr-seq}{\vdash}
+.. |vdashexpr| mathdef:: \xref{valid/instructions}{valid-expr}{\vdash}
+.. |vdashexprconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
+.. |vdashinstrconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
+
+.. |vdashfunc| mathdef:: \xref{valid/modules}{valid-func}{\vdash}
+.. |vdashtable| mathdef:: \xref{valid/modules}{valid-table}{\vdash}
+.. |vdashmem| mathdef:: \xref{valid/modules}{valid-mem}{\vdash}
+.. |vdashglobal| mathdef:: \xref{valid/modules}{valid-global}{\vdash}
+.. |vdashelem| mathdef:: \xref{valid/modules}{valid-elem}{\vdash}
+.. |vdashdata| mathdef:: \xref{valid/modules}{valid-data}{\vdash}
+.. |vdashstart| mathdef:: \xref{valid/modules}{valid-start}{\vdash}
+.. |vdashexport| mathdef:: \xref{valid/modules}{valid-export}{\vdash}
+.. |vdashexportdesc| mathdef:: \xref{valid/modules}{valid-exportdesc}{\vdash}
+.. |vdashimport| mathdef:: \xref{valid/modules}{valid-import}{\vdash}
+.. |vdashimportdesc| mathdef:: \xref{valid/modules}{valid-importdesc}{\vdash}
+.. |vdashmodule| mathdef:: \xref{valid/modules}{valid-module}{\vdash}
+
 
 .. Execution
 .. ---------
 
 .. Notation
 
-.. |stepto| mathdef:: \hookrightarrow
-.. |extendsto| mathdef:: \preceq
+.. |stepto| mathdef:: \xref{exec/conventions}{formal-notation}{\hookrightarrow}
+.. |extendsto| mathdef:: \xref{appendix/properties}{extend}{\preceq}
+.. |matches| mathdef:: \xref{exec/modules}{match}{\leq}
 
 
 .. Allocation
@@ -888,3 +919,39 @@
 .. Other meta functions
 
 .. |invoke| mathdef:: \xref{exec/modules}{exec-invocation}{\F{invoke}}
+
+
+.. Judgements
+
+.. |vdashexternval| mathdef:: \xref{exec/modules}{valid-externval}{\vdash}
+
+.. |vdashlimitsmatch| mathdef:: \xref{exec/modules}{match-limits}{\vdash}
+.. |vdashexterntypematch| mathdef:: \xref{exec/modules}{match-externtype}{\vdash}
+
+
+.. Soundness
+.. ---------
+
+.. Judgements
+
+.. |vdashadmininstr| mathdef:: \xref{appendix/properties}{valid-instr-admin}{\vdash}
+.. |vdashmoduleinstr| mathdef:: \xref{appendix/properties}{valid-moduleinstr}{\vdash}
+
+.. |vdashfuncinst| mathdef:: \xref{appendix/properties}{valid-funcinst}{\vdash}
+.. |vdashtableinst| mathdef:: \xref{appendix/properties}{valid-tableinst}{\vdash}
+.. |vdashmeminst| mathdef:: \xref{appendix/properties}{valid-meminst}{\vdash}
+.. |vdashglobalinst| mathdef:: \xref{appendix/properties}{valid-globalinst}{\vdash}
+.. |vdashexportinst| mathdef:: \xref{appendix/properties}{valid-exportinst}{\vdash}
+.. |vdashmoduleinst| mathdef:: \xref{appendix/properties}{valid-moduleinst}{\vdash}
+
+.. |vdashstore| mathdef:: \xref{appendix/properties}{valid-store}{\vdash}
+.. |vdashconfig| mathdef:: \xref{appendix/properties}{valid-config}{\vdash}
+.. |vdashthread| mathdef:: \xref{appendix/properties}{valid-thread}{\vdash}
+.. |vdashframe| mathdef:: \xref{appendix/properties}{valid-frame}{\vdash}
+.. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
+
+.. |vdashfuncinstextends| mathdef:: \xref{appendix/properties}{extend-funcinst}{\vdash}
+.. |vdashtableinstextends| mathdef:: \xref{appendix/properties}{extend-tableinst}{\vdash}
+.. |vdashmeminstextends| mathdef:: \xref{appendix/properties}{extend-meminst}{\vdash}
+.. |vdashglobalinstextends| mathdef:: \xref{appendix/properties}{extend-globalinst}{\vdash}
+.. |vdashstoreextends| mathdef:: \xref{appendix/properties}{extend-store}{\vdash}

@@ -1095,8 +1095,8 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
      (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\dots \} \\
      \wedge & \val_1^n = (t_1.\CONST~c_1)^n \\
      \wedge & \val_2^m = (t_2.\CONST~c_2)^m \\
-     \wedge & S' \extendsto S \\
-     \wedge & \vdash S' \ok) \\
+     \wedge & \vdashstoreextends S \extendsto S' \\
+     \wedge & \vdashstore S' \ok) \\
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -1105,13 +1105,13 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~\X{ft}, \FIHOSTCODE~\dots \} \\ 
-     \wedge & S' \extendsto S \\
-     \wedge & \vdash S' \ok) \\
+     \wedge & \vdashstoreextends S \extendsto S' \\
+     \wedge & \vdashstore S' \ok) \\
      \end{array} \\
    \end{array}
 
-Here, :math:`S' \extendsto S` expresses that the new store :math:`S'` is an :ref:`extension <extend>` of :math:`S`.
-Moreover, :math:`\vdash S' \ok` restricts :math:`S'` to be a :ref:`valid <valid-store>` store.
+Here, :math:`S \extendsto S'` expresses that the new store :math:`S'` is an :ref:`extension <extend>` of :math:`S`.
+Moreover, :math:`\vdashstore S' \ok` restricts :math:`S'` to be a :ref:`valid <valid-store>` store.
 Both notions are defined in the :ref:`Appendix <properties>`.
 
 .. note::
