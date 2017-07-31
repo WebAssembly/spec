@@ -263,16 +263,16 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 2. Let :math:`a` be the first free :ref:`function address <syntax-funcaddr>` in :math:`S`.
 
-4. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \}`.
+3. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \}`.
 
-5. Append :math:`\funcinst` to the |SFUNCS| of :math:`S`.
+4. Append :math:`\funcinst` to the |SFUNCS| of :math:`S`.
 
-6. Return :math:`a`.
+5. Return :math:`a`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{rlll}
-   \allochostfunc(S, \hostfunc, \functype) &=& S', \funcaddr \\[1ex]
+   \allochostfunc(S, \functype, \hostfunc) &=& S', \funcaddr \\[1ex]
    \mbox{where:} \hfill \\
    \funcaddr &=& |S.\SFUNCS| \\
    \funcinst &=& \{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \} \\
@@ -290,9 +290,9 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 :ref:`Tables <syntax-tableinst>`
 ................................
 
-1. Let :math:`\table` be the :ref:`table <syntax-table>` to allocate.
+1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` to allocate.
 
-2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\elemtype)` be the :ref:`table type <syntax-tabletype>` :math:`\table.\TTYPE`.
+2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\elemtype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
 3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
 
@@ -304,9 +304,9 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 .. math::
    \begin{array}{rlll}
-   \alloctable(S, \table) &=& S', \tableaddr \\[1ex]
+   \alloctable(S, \tabletype) &=& S', \tableaddr \\[1ex]
    \mbox{where:} \hfill \\
-   \table.\TTYPE &=& \{\LMIN~n, \LMAX~m^?\}~\elemtype \\
+   \tabletype &=& \{\LMIN~n, \LMAX~m^?\}~\elemtype \\
    \tableaddr &=& |S.\STABLES| \\
    \tableinst &=& \{ \TIELEM~(\epsilon)^n, \TIMAX~m^? \} \\
    S' &=& S \compose \{\STABLES~\tableinst\} \\
@@ -319,9 +319,9 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 :ref:`Memories <syntax-meminst>`
 ................................
 
-1. Let :math:`\mem` be the :ref:`memory <syntax-mem>` to allocate.
+1. Let :math:`\memtype` be the :ref:`memory type <syntax-memtype>` to allocate.
 
-2. Let :math:`\{\LMIN~n, \LMAX~m^?\}` be the :ref:`memory type <syntax-memtype>` :math:`\mem.\MTYPE`.
+2. Let :math:`\{\LMIN~n, \LMAX~m^?\}` be the structure of :ref:`memory type <syntax-memtype>` :math:`\memtype`.
 
 3. Let :math:`a` be the first free :ref:`memory address <syntax-memaddr>` in :math:`S`.
 
@@ -333,9 +333,9 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 .. math::
    \begin{array}{rlll}
-   \allocmem(S, \mem) &=& S', \memaddr \\[1ex]
+   \allocmem(S, \memtype) &=& S', \memaddr \\[1ex]
    \mbox{where:} \hfill \\
-   \mem.\MTYPE &=& \{\LMIN~n, \LMAX~m^?\} \\
+   \memtype &=& \{\LMIN~n, \LMAX~m^?\} \\
    \memaddr &=& |S.\SMEMS| \\
    \meminst &=& \{ \MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}}, \MIMAX~m^? \} \\
    S' &=& S \compose \{\SMEMS~\meminst\} \\
@@ -348,9 +348,9 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 :ref:`Globals <syntax-globalinst>`
 ..................................
 
-1. Let :math:`\global` be the :ref:`global <syntax-global>` to allocate and :math:`\val` the :ref:`value <syntax-val>` to initialize it with.
+1. Let :math:`\globaltype` be the :ref:`global type <syntax-globaltype>` to allocate and :math:`\val` the :ref:`value <syntax-val>` to initialize the global with.
 
-2. Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`\global.\GTYPE`.
+2. Let :math:`\mut~t` be the structure of :ref:`global type <syntax-globaltype>` :math:`\globaltype`.
 
 3. Let :math:`a` be the first free :ref:`global address <syntax-globaladdr>` in :math:`S`.
 
@@ -362,9 +362,9 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 .. math::
    \begin{array}{rlll}
-   \allocglobal(S, \global, \val) &=& S', \globaladdr \\[1ex]
+   \allocglobal(S, \globaltype, \val) &=& S', \globaladdr \\[1ex]
    \mbox{where:} \hfill \\
-   \global.\GTYPE &=& \mut~t \\
+   \globaltype &=& \mut~t \\
    \globaladdr &=& |S.\SGLOBALS| \\
    \globalinst &=& \{ \GIVALUE~\val, \GIMUT~\mut \} \\
    S' &=& S \compose \{\SGLOBALS~\globalinst\} \\
@@ -389,15 +389,15 @@ and :math:`\val^\ast` the initialization :ref:`values <syntax-val>` of the modul
 
 3. For each :ref:`table <syntax-table>` :math:`\table_i` in :math:`\module.\MTABLES`, do:
 
-   a. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` resulting from :ref:`allocating <alloc-table>` :math:`\table_i`.
+   a. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` resulting from :ref:`allocating <alloc-table>` :math:`\table_i.\TTYPE`.
 
 4. For each :ref:`memory <syntax-mem>` :math:`\mem_i` in :math:`\module.\MMEMS`, do:
 
-   a. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` resulting from :ref:`allocating <alloc-mem>` :math:`\mem_i`.
+   a. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` resulting from :ref:`allocating <alloc-mem>` :math:`\mem_i.\MTYPE`.
 
 5. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
 
-   a. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` resulting from :ref:`allocating <alloc-global>` :math:`\global_i` with initializer value :math:`\val^\ast[i]`.
+   a. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` resulting from :ref:`allocating <alloc-global>` :math:`\global_i.\GTYPE` with initializer value :math:`\val^\ast[i]`.
 
 6. Let :math:`\funcaddr^\ast` be the the concatenation of the :ref:`function addresses <syntax-funcaddr>` :math:`\funcaddr_i` in index order.
 
@@ -453,11 +453,14 @@ where:
      \MIEXPORTS~\exportinst^\ast ~\}
      \end{array} \\[1ex]
    S_1, \funcaddr^\ast &=& \allocfunc^\ast(S, \module.\MFUNCS, \moduleinst) \\
-   S_2, \tableaddr^\ast &=& \alloctable^\ast(S_1, \module.\MTABLES) \\
-   S_3, \memaddr^\ast &=& \allocmem^\ast(S_2, \module.\MMEMS) \\
-   S', \globaladdr^\ast &=& \allocglobal^\ast(S_3, \module.\MGLOBALS, \val^\ast) \\[1ex]
+   S_2, \tableaddr^\ast &=& \alloctable^\ast(S_1, (\table.\TTYPE)^\ast)
+     \qquad\qquad\qquad~ (\where \table^\ast = \module.\MTABLES) \\
+   S_3, \memaddr^\ast &=& \allocmem^\ast(S_2, (\mem.\MTYPE)^\ast)
+     \qquad\qquad\qquad~ (\where \mem^\ast = \module.\MMEMS) \\
+   S', \globaladdr^\ast &=& \allocglobal^\ast(S_3, (\global.\GTYPE)^\ast, \val^\ast)
+     \qquad\quad~ (\where \global^\ast = \module.\MGLOBALS) \\
    \exportinst^\ast &=& \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast
-     \quad (\where \export^\ast = \module.\MEXPORTS) \\
+     \quad (\where \export^\ast = \module.\MEXPORTS) \\[1ex]
    \evfuncs(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
      \qquad~ (\where x^\ast = \edfuncs(\module.\MEXPORTS)) \\
    \evtables(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MITABLES[x])^\ast
