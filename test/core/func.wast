@@ -30,6 +30,21 @@
 
   (func (result i32) (unreachable))
 
+  (type $sig-1 (func))
+  (type $sig-2 (func (result i32)))
+  (type $sig-3 (func (param $x i32)))
+  (type $sig-4 (func (param i32 f64 i32) (result i32)))
+
+  (func (export "type-use-1") (type $sig-1))
+  (func (export "type-use-2") (type $sig-2) (i32.const 0))
+  (func (export "type-use-3") (type $sig-3))
+  (func (export "type-use-4") (type $sig-4) (i32.const 0))
+  (func (export "type-use-5") (type $sig-2) (result i32) (i32.const 0))
+  (func (export "type-use-6") (type $sig-3) (param i32))
+  (func (export "type-use-7")
+    (type $sig-4) (param i32) (param f64 i32) (result i32) (i32.const 0)
+  )
+
   (func (type $sig))
   (func (type $forward))  ;; forward reference
 
@@ -151,6 +166,20 @@
   (func (export "init-local-i64") (result i64) (local i64) (get_local 0))
   (func (export "init-local-f32") (result f32) (local f32) (get_local 0))
   (func (export "init-local-f64") (result f64) (local f64) (get_local 0))
+)
+
+(assert_return (invoke "type-use-1"))
+(assert_return (invoke "type-use-2") (i32.const 0))
+(assert_return (invoke "type-use-3" (i32.const 1)))
+(assert_return
+  (invoke "type-use-4" (i32.const 1) (f64.const 1) (i32.const 1))
+  (i32.const 0)
+)
+(assert_return (invoke "type-use-5") (i32.const 0))
+(assert_return (invoke "type-use-6" (i32.const 1)))
+(assert_return
+  (invoke "type-use-7" (i32.const 1) (f64.const 1) (i32.const 1))
+  (i32.const 0)
 )
 
 (assert_return (invoke "local-first-i32") (i32.const 0))
@@ -350,6 +379,80 @@
 (assert_return (invoke "signature-implicit-reused"))
 (assert_return (invoke "signature-explicit-duplicate"))
 (assert_return (invoke "signature-implicit-duplicate"))
+
+
+;; Malformed type use
+
+(assert_malformed
+  (module quote
+    "(type $sig (func (param i32) (result i32)))"
+    "(func (type $sig) (result i32) (param i32) (i32.const 0))"
+  )
+  "unexpected token"
+)
+(assert_malformed
+  (module quote
+    "(type $sig (func (param i32) (result i32)))"
+    "(func (param i32) (type $sig) (result i32) (i32.const 0))"
+  )
+  "unexpected token"
+)
+(assert_malformed
+  (module quote
+    "(type $sig (func (param i32) (result i32)))"
+    "(func (param i32) (result i32) (type $sig) (i32.const 0))"
+  )
+  "unexpected token"
+)
+(assert_malformed
+  (module quote
+    "(type $sig (func (param i32) (result i32)))"
+    "(func (result i32) (type $sig) (param i32) (i32.const 0))"
+  )
+  "unexpected token"
+)
+(assert_malformed
+  (module quote
+    "(type $sig (func (param i32) (result i32)))"
+    "(func (result i32) (param i32) (type $sig) (i32.const 0))"
+  )
+  "unexpected token"
+)
+(assert_malformed
+  (module quote
+    "(func (result i32) (param i32) (i32.const 0))"
+  )
+  "unexpected token"
+)
+
+(assert_malformed
+  (module quote
+    "(type $sig (func))"
+    "(func (type $sig) (result i32) (i32.const 0))"
+  )
+  "inline function type"
+)
+(assert_malformed
+  (module quote
+    "(type $sig (func (param i32) (result i32)))"
+    "(func (type $sig) (result i32) (i32.const 0))"
+  )
+  "inline function type"
+)
+(assert_malformed
+  (module quote
+    "(type $sig (func (param i32) (result i32)))"
+    "(func (type $sig) (param i32) (i32.const 0))"
+  )
+  "inline function type"
+)
+(assert_malformed
+  (module quote
+    "(type $sig (func (param i32 i32) (result i32)))"
+    "(func (type $sig) (param i32) (result i32) (unreachable))"
+  )
+  "inline function type"
+)
 
 
 ;; Invalid typing of locals
