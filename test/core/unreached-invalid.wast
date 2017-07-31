@@ -627,7 +627,7 @@
 (assert_invalid
   (module (func $tee-local-unreachable-value
     (local i32)
-    tee_local 0 (unreachable))
-  )
+    (tee_local 0 (unreachable))
+  ))
   "type mismatch"
 )
