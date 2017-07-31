@@ -89,9 +89,9 @@
 <span id="index-type"></span><span id="index-0"></span><h1>Index of Types<a class="headerlink" href="#index-of-types" title="Permalink to this headline">¶</a></h1>
 <table border="1" class="docutils">
 <colgroup>
-<col width="30%" />
-<col width="12%" />
-<col width="59%" />
+<col width="25%" />
+<col width="27%" />
+<col width="49%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Category</th>
@@ -133,7 +133,7 @@
 <td><span class="math">\(\def\mathdef601#1{\mathtt{0x#1}}\mathdef601{6F}\)</span> .. <span class="math">\(\def\mathdef602#1{\mathtt{0x#1}}\mathdef602{61}\)</span></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">Function type</span></a></td>
-<td><span class="math">\(\to\)</span></td>
+<td><span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^\ast]\)</span></td>
 <td><span class="math">\(\def\mathdef603#1{\mathtt{0x#1}}\mathdef603{60}\)</span> (-32 as <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef566#1{{\mathtt{s}#1}}\mathdef566{\mathtt{7}}}\)</span>)</td>
 </tr>
 <tr class="row-odd"><td>(reserved)</td>
@@ -145,19 +145,15 @@
 <td><span class="math">\(\def\mathdef606#1{\mathtt{0x#1}}\mathdef606{40}\)</span> (-64 as <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef566#1{{\mathtt{s}#1}}\mathdef566{\mathtt{7}}}\)</span>)</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">Table type</span></a></td>
-<td>&nbsp;</td>
+<td><span class="math">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span></td>
 <td>(none)</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">Memory type</span></a></td>
-<td>&nbsp;</td>
+<td><span class="math">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}\)</span></td>
 <td>(none)</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">Global type</span></a></td>
-<td>&nbsp;</td>
-<td>(none)</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">External type</span></a></td>
-<td>&nbsp;</td>
+<td><span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}\)</span></td>
 <td>(none)</td>
 </tr>
 </tbody>

@@ -224,9 +224,9 @@ and there is one respective rule for each relevant construct <span class="math">
 <div class="math">
 \[\frac{
 }{
-  C \vdash \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
+  C \vdash \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
 }\]</div>
-<p>The instruction is always valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \to [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span>]
+<p>The instruction is always valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span>]
 (saying that it consumes two <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> values and produces one),
 independent of any side conditions.</p>
 <p>An instruction like <span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}\)</span> can be typed as follows:</p>
@@ -234,7 +234,7 @@ independent of any side conditions.</p>
 \[\frac{
   C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x] = t
 }{
-  C \vdash \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~x : [] \to [t]
+  C \vdash \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~x : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
 }\]</div>
 <p>Here, the premise enforces that the immediate <a class="reference internal" href="../syntax/modules.html#syntax-localidx"><span class="std std-ref">local index</span></a> <span class="math">\(x\)</span> exists in the context.
 The instruction produces a value of its respective type <span class="math">\(t\)</span>
@@ -245,9 +245,9 @@ and the instruction is ill-typed.</p>
 a recursive rule, where the premise is itself a typing judgement:</p>
 <div class="math">
 \[\frac{
-  C,\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\,[t^?] \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \to [t^?]
+  C,\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\,[t^?] \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }{
-  C \vdash \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \to [t^?]
+  C \vdash \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }\]</div>
 <p class="last">A <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> instruction is only valid when the instruction sequence in its body is.
 Moreover, the result type must match the block&#8217;s annotation <span class="math">\([t^?]\)</span>.

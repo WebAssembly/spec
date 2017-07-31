@@ -403,13 +403,13 @@ That way, the end of the inner instruction sequence is known when part of an out
 <p class="first admonition-title">Note</p>
 <p>For example, the <a class="reference internal" href="instructions.html#exec-block"><span class="std std-ref">reduction rule</span></a> for <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> is:</p>
 <div class="math">
-\[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^n]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\hookrightarrow\quad
+\[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^n]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad
 \href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\epsilon\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\]</div>
 <p>This replaces the block with a label instruction,
 which can be interpreted as &#8220;pushing&#8221; the label on the stack.
 When <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> is reached, i.e., the inner instruction sequence has been reduced to the empty sequence &#8211; or rather, a sequence of <span class="math">\(n\)</span> <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions representing the resulting values &#8211; then the <span class="math">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> instruction is eliminated courtesy of its own <a class="reference internal" href="instructions.html#exec-label"><span class="std std-ref">reduction rule</span></a>:</p>
 <div class="math">
-\[\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^n\}~\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\hookrightarrow\quad \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n\]</div>
+\[\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^n\}~\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n\]</div>
 <p class="last">This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.</p>
 </div>
 <div class="section" id="block-contexts">
@@ -427,7 +427,7 @@ When <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control
 <p class="first admonition-title">Note</p>
 <p>For example, the <a class="reference internal" href="instructions.html#exec-br"><span class="std std-ref">reduction</span></a> of a simple branch can be defined as follows:</p>
 <div class="math">
-\[\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_0\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~\href{../exec/runtime.html#syntax-ctxt-block}{B}^l[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}~l]~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\hookrightarrow\quad \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\]</div>
+\[\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_0\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~\href{../exec/runtime.html#syntax-ctxt-block}{B}^l[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}~l]~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\]</div>
 <p class="last">Here, the hole <span class="math">\([\_]\)</span> of the context is instantiated with a branch instruction.
 When a branch occurs,
 this rule replaces the targeted label and associated instruction sequence with the label&#8217;s continuation.
@@ -492,13 +492,13 @@ but configurations with multiple threads may be supported in the future.</p>
 \end{array}\end{split}\]</div>
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
-S; F; E[\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast] &amp;\hookrightarrow&amp; S'; F'; E[{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast]
-  &amp; (\mathrel{\mbox{if}} S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \hookrightarrow S'; F'; {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast) \\
-S; F; E[\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}] &amp;\hookrightarrow&amp; S; F; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
+S; F; E[\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast] &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S'; F'; E[{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast]
+  &amp; (\mathrel{\mbox{if}} S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F'; {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast) \\
+S; F; E[\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}] &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S; F; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
   &amp; (\mathrel{\mbox{if}} E \neq [\_]) \\
-S; M[E[\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}]] &amp;\hookrightarrow&amp; S'; M[E[{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast]]
-  &amp; (\mathrel{\mbox{if}} S; F_0; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} \hookrightarrow S'; F_0; {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast) \\
-S; M[\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}] &amp;\hookrightarrow&amp; S; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
+S; M[E[\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}]] &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S'; M[E[{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast]]
+  &amp; (\mathrel{\mbox{if}} S; F_0; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F_0; {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast) \\
+S; M[\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}] &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
   &amp; (\mathrel{\mbox{if}} M \neq [\_]) \\
 \end{array}\end{split}\]</div>
 <p>where <span class="math">\(F_0 = \{\href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\epsilon, \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\{\}\}\)</span> is an empty dummy frame.</p>

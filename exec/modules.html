@@ -119,7 +119,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 \[\frac{
   S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a] = \{\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \dots\}
 }{
-  S \vdash \href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}
+  S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}
 }\]</div>
 </div>
 <div class="section" id="valid-externval-table">
@@ -132,7 +132,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 \[\frac{
   S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a] = \{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~(\mathit{fa}^?)^n, \href{../exec/runtime.html#syntax-tableinst}{\mathsf{max}}~m^? \}
 }{
-  S \vdash \href{../exec/runtime.html#syntax-externval}{\mathsf{table}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}~\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}})
+  S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{table}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}~\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}})
 }\]</div>
 </div>
 <div class="section" id="valid-externval-mem">
@@ -145,7 +145,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 \[\frac{
   S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a] = \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~b^{n\cdot64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \}
 }{
-  S \vdash \href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}
+  S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}
 }\]</div>
 </div>
 <div class="section" id="valid-externval-global">
@@ -158,12 +158,12 @@ The following auxiliary typing rules specify this typing relation relative to a 
 \[\frac{
   S.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[a] = \{ \href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}~(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c), \href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}} \}
 }{
-  S \vdash \href{../exec/runtime.html#syntax-externval}{\mathsf{global}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t)
+  S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{global}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t)
 }\]</div>
 </div>
 </div>
 <div class="section" id="import-matching">
-<span id="match-externtype"></span><span id="exec-import"></span><span id="index-5"></span><h2>Import Matching<a class="headerlink" href="#import-matching" title="Permalink to this headline">¶</a></h2>
+<span id="match"></span><span id="exec-import"></span><span id="index-5"></span><h2>Import Matching<a class="headerlink" href="#import-matching" title="Permalink to this headline">¶</a></h2>
 <p>When <a class="reference internal" href="#exec-module"><span class="std std-ref">instantiating</span></a> a module,
 <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> must be provided whose <a class="reference internal" href="#valid-externval"><span class="std std-ref">types</span></a> are <em>matched</em> against the respective <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> classifying each import.
 In some cases, this allows for a simple form of subtyping, as defined below.</p>
@@ -187,7 +187,7 @@ In some cases, this allows for a simple form of subtyping, as defined below.</p>
 \frac{
   n_1 \geq n_2
 }{
-  \vdash \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n_1, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m_1^? \} \leq \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n_2, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~\epsilon \}
+  \href{../exec/modules.html#match-limits}{\vdash} \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n_1, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m_1^? \} \href{../exec/modules.html#match}{\leq} \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n_2, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~\epsilon \}
 }
 \quad
 \frac{
@@ -195,9 +195,9 @@ In some cases, this allows for a simple form of subtyping, as defined below.</p>
   \qquad
   m_1 \leq m_2
 }{
-  \vdash \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n_1, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m_1 \} \leq \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n_2, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m_2 \}
+  \href{../exec/modules.html#match-limits}{\vdash} \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n_1, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m_1 \} \href{../exec/modules.html#match}{\leq} \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n_2, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m_2 \}
 }\end{split}\]</div>
-</div>
+<span class="target" id="match-externtype"></span></div>
 <div class="section" id="functions">
 <span id="match-functype"></span><span id="index-7"></span><h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
 <p>An <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_1\)</span> matches <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_2\)</span> if and only if:</p>
@@ -208,7 +208,7 @@ In some cases, this allows for a simple form of subtyping, as defined below.</p>
 \[\begin{split}~\\[-1ex]
 \frac{
 }{
-  \vdash \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}} \leq \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}
+  \href{../exec/modules.html#match-externtype}{\vdash} \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}} \href{../exec/modules.html#match}{\leq} \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}
 }\end{split}\]</div>
 </div>
 <div class="section" id="tables">
@@ -220,9 +220,9 @@ In some cases, this allows for a simple form of subtyping, as defined below.</p>
 </ul>
 <div class="math">
 \[\frac{
-  \vdash \href{../syntax/types.html#syntax-limits}{\mathit{limits}}_1 \leq \href{../syntax/types.html#syntax-limits}{\mathit{limits}}_2
+  \href{../exec/modules.html#match-limits}{\vdash} \href{../syntax/types.html#syntax-limits}{\mathit{limits}}_1 \href{../exec/modules.html#match}{\leq} \href{../syntax/types.html#syntax-limits}{\mathit{limits}}_2
 }{
-  \vdash \href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}_1~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}) \leq \href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}_2~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}})
+  \href{../exec/modules.html#match-externtype}{\vdash} \href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}_1~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}) \href{../exec/modules.html#match}{\leq} \href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}_2~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}})
 }\]</div>
 </div>
 <div class="section" id="memories">
@@ -233,9 +233,9 @@ In some cases, this allows for a simple form of subtyping, as defined below.</p>
 </ul>
 <div class="math">
 \[\frac{
-  \vdash \href{../syntax/types.html#syntax-limits}{\mathit{limits}}_1 \leq \href{../syntax/types.html#syntax-limits}{\mathit{limits}}_2
+  \href{../exec/modules.html#match-limits}{\vdash} \href{../syntax/types.html#syntax-limits}{\mathit{limits}}_1 \href{../exec/modules.html#match}{\leq} \href{../syntax/types.html#syntax-limits}{\mathit{limits}}_2
 }{
-  \vdash \href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}_1 \leq \href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}_2
+  \href{../exec/modules.html#match-externtype}{\vdash} \href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}_1 \href{../exec/modules.html#match}{\leq} \href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}_2
 }\]</div>
 </div>
 <div class="section" id="globals">
@@ -248,7 +248,7 @@ In some cases, this allows for a simple form of subtyping, as defined below.</p>
 \[\begin{split}~\\[-1ex]
 \frac{
 }{
-  \vdash \href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} \leq \href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}
+  \href{../exec/modules.html#match-externtype}{\vdash} \href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} \href{../exec/modules.html#match}{\leq} \href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}
 }\end{split}\]</div>
 </div>
 </div>
@@ -326,7 +326,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 <span id="index-15"></span><span id="id7"></span><h3><a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">Memories</span></a><a class="headerlink" href="#alloc-mem" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memory</span></a> to allocate.</li>
-<li>Let <span class="math">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">table type</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}.\href{../syntax/modules.html#syntax-mem}{\mathsf{type}}\)</span>.</li>
+<li>Let <span class="math">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}.\href{../syntax/modules.html#syntax-mem}{\mathsf{type}}\)</span>.</li>
 <li>Let <span class="math">\(a\)</span> be the first free <a class="reference internal" href="runtime.html#syntax-memaddr"><span class="std std-ref">memory address</span></a> in <span class="math">\(S\)</span>.</li>
 <li>Let <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef1496#1{\mathtt{0x#1}}\mathdef1496{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \}\)</span> that contains <span class="math">\(n\)</span> pages of zeroed <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.</li>
 <li>Append <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> to the <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}\)</span> of <span class="math">\(S\)</span>.</li>
@@ -547,25 +547,25 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 <div class="math">
 \[\begin{split}~\\
 \begin{array}{&#64;{}rcll}
-S; \href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}~\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^n &amp;\hookrightarrow&amp; S';
+S; \href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}~\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^n &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S';
   \begin{array}[t]{&#64;{}l&#64;{}}
   (\href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~\mathit{eo}~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}~\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\href{../syntax/modules.html#syntax-elem}{\mathsf{init}})^\ast \\
   (\href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}~\mathit{do}~\href{../syntax/modules.html#syntax-data}{\mathit{data}}.\href{../syntax/modules.html#syntax-data}{\mathsf{init}})^\ast \\
   (\href{../exec/runtime.html#syntax-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}})^? \\
   \end{array} \\
 &amp;(\mathrel{\mbox{if}}
-  &amp; \vdash \href{../syntax/modules.html#syntax-module}{\mathit{module}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^n \\
-  &amp;\wedge&amp; (\vdash \href{../exec/runtime.html#syntax-externval}{\mathit{externval}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}')^n \\
-  &amp;\wedge&amp; (\vdash \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}' \leq \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^n \\[1ex]
+  &amp; \href{../valid/modules.html#valid-module}{\vdash} \href{../syntax/modules.html#syntax-module}{\mathit{module}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^n \\
+  &amp;\wedge&amp; (\href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathit{externval}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}')^n \\
+  &amp;\wedge&amp; (\href{../exec/modules.html#match-externtype}{\vdash} \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}' \href{../exec/modules.html#match}{\leq} \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^n \\[1ex]
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{globals}} = \href{../syntax/modules.html#syntax-global}{\mathit{global}}^k \\
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{elem}} = \href{../syntax/modules.html#syntax-elem}{\mathit{elem}}^\ast \\
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{data}} = \href{../syntax/modules.html#syntax-data}{\mathit{data}}^\ast \\
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{start}} = \href{../syntax/modules.html#syntax-start}{\mathit{start}}^? \\[1ex]
   &amp;\wedge&amp; S', \href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} = \mathrm{allocmodule}(S, \href{../syntax/modules.html#syntax-module}{\mathit{module}}, \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^n, v^\ast) \\
   &amp;\wedge&amp; F = \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}, \href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\epsilon \} \\[1ex]
-  &amp;\wedge&amp; (S'; F; \href{../syntax/modules.html#syntax-global}{\mathit{global}}.\href{../syntax/modules.html#syntax-global}{\mathsf{init}} \hookrightarrow^\ast S'; F; v)^\ast \\
-  &amp;\wedge&amp; (S'; F; \href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\href{../syntax/modules.html#syntax-elem}{\mathsf{offset}} \hookrightarrow^\ast S'; F; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{eo})^\ast \\
-  &amp;\wedge&amp; (S'; F; \href{../syntax/modules.html#syntax-data}{\mathit{data}}.\href{../syntax/modules.html#syntax-data}{\mathsf{offset}} \hookrightarrow^\ast S'; F; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{do})^\ast \\[1ex]
+  &amp;\wedge&amp; (S'; F; \href{../syntax/modules.html#syntax-global}{\mathit{global}}.\href{../syntax/modules.html#syntax-global}{\mathsf{init}} \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; F; v)^\ast \\
+  &amp;\wedge&amp; (S'; F; \href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\href{../syntax/modules.html#syntax-elem}{\mathsf{offset}} \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; F; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{eo})^\ast \\
+  &amp;\wedge&amp; (S'; F; \href{../syntax/modules.html#syntax-data}{\mathit{data}}.\href{../syntax/modules.html#syntax-data}{\mathsf{offset}} \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; F; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{do})^\ast \\[1ex]
   &amp;\wedge&amp; (\mathit{eo} + |\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}.\href{../syntax/modules.html#syntax-elem}{\mathsf{init}}| \leq |S'.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}|)^\ast \\
   &amp;\wedge&amp; (\mathit{do} + |\href{../syntax/modules.html#syntax-data}{\mathit{data}}.\href{../syntax/modules.html#syntax-data}{\mathsf{init}}| \leq |S'.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}|)^\ast
   )
@@ -575,18 +575,18 @@ S; \href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{..
   &amp;\wedge&amp; (\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}} = \href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[\href{../syntax/modules.html#syntax-data}{\mathit{data}}.\href{../syntax/modules.html#syntax-data}{\mathsf{data}}])^\ast \\
   &amp;\wedge&amp; (\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} = \href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{funcaddrs}}[\href{../syntax/modules.html#syntax-start}{\mathit{start}}.\href{../syntax/modules.html#syntax-start}{\mathsf{func}}])^?
 \\[1ex]
-S; \href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}~\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^n &amp;\hookrightarrow&amp;
+S; \href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}~\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^n &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp;
   S'; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}  \qquad (\mathrel{\mbox{otherwise}})
 \\[2ex]
-S; \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~a~i~m~\epsilon &amp;\hookrightarrow&amp;
+S; \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~a~i~m~\epsilon &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp;
   S; \epsilon \\
-S; \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~a~i~m~(x_0~x^\ast) &amp;\hookrightarrow&amp;
+S; \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~a~i~m~(x_0~x^\ast) &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp;
   S'; \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~a~(i+1)~m~x^\ast \\ &amp;&amp;
   (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i] = m.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{funcaddrs}}[x_0])
 \\[1ex]
-S; \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~a~i~\epsilon &amp;\hookrightarrow&amp;
+S; \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~a~i~\epsilon &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp;
   S; \epsilon \\
-S; \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~a~i~(b_0~b^\ast) &amp;\hookrightarrow&amp;
+S; \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~a~i~(b_0~b^\ast) &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp;
   S'; \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~a~(i+1)~b^\ast \\ &amp;&amp;
   (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[i] = b_0)
 \end{array}\end{split}\]</div>
@@ -612,7 +612,7 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 <ol class="arabic simple">
 <li>Assert: <span class="math">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}]\)</span> exists.</li>
 <li>Let <span class="math">\(\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">function instance</span></a> <span class="math">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}]\)</span>.</li>
-<li>Let <span class="math">\([t_1^n] \to [t_2^m]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}\)</span>.</li>
+<li>Let <span class="math">\([t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^m]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}\)</span>.</li>
 <li>If the length <span class="math">\(|\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast|\)</span> of the provided argument values is different from the number <span class="math">\(n\)</span> of expected arguments, then:<ol class="loweralpha">
 <li>Fail.</li>
 </ol>
@@ -637,9 +637,9 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 \[\begin{split}~\\[-1ex]
 \begin{array}{&#64;{}lcl}
 \href{../exec/modules.html#exec-invocation}{\mathrm{invoke}}(S, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n) &amp;=&amp; \href{../exec/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^m / \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}} \\
-  &amp;(\mathrel{\mbox{if}} &amp; S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}].\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}} = [t_1^n] \to [t_2^m] \\
+  &amp;(\mathrel{\mbox{if}} &amp; S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}].\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}} = [t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^m] \\
   &amp;\wedge&amp; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n = (t_1.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)^n \\
-  &amp;\wedge&amp; S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#syntax-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) \hookrightarrow^\ast S'; \href{../exec/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^m / \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}) \\
+  &amp;\wedge&amp; S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#syntax-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; \href{../exec/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^m / \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}) \\
 \end{array}\end{split}\]</div>
 </div>
 </div>
