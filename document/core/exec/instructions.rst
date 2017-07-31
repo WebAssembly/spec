@@ -499,7 +499,7 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & S' = S \with \MIMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c)
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c)
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
