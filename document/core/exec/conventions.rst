@@ -13,7 +13,7 @@ Furthermore, there are rules describing the instantiation of a module.
 As with :ref:`validation <validation>`, all rules are given in two *equivalent* forms:
 
 1. In *prose*, describing the execution in intuitive form.
-2. In *formal notation*, describing the rule in mathematical form.
+2. In *formal notation*, describing the rule in mathematical form. [#pldi2017]_
 
 .. note::
    As with validation, the prose and formal rules are equivalent,
@@ -54,7 +54,7 @@ The following conventions are adopted in stating these rules.
 * In various places the rules contain *assertions* expressing crucial invariants about the program state.
 
 
-.. index:: ! reduction rules, ! configuration, evaluation context
+.. index:: ! reduction rules, configuration, evaluation context
 .. _exec-notation:
 
 Formal Notation
@@ -75,7 +75,8 @@ Each rule specifies one *step* of execution.
 As long as there is at most one reduction rule applicable to a given configuration, reduction -- and thereby execution -- is *deterministic*.
 WebAssembly has only very few exceptions to this, which are noted explicitly in this specification.
 
-For WebAssembly, a configuration is a tuple :math:`(S; F; \instr^\ast)` consisting of the current :ref:`store <store>` :math:`S`, the :ref:`call frame <frame>` :math:`F` of the current function, and the sequence of :ref:`instructions <syntax-instr>` that is to be executed.
+For WebAssembly, a configuration typically is a tuple :math:`(S; F; \instr^\ast)` consisting of the current :ref:`store <store>` :math:`S`, the :ref:`call frame <frame>` :math:`F` of the current function, and the sequence of :ref:`instructions <syntax-instr>` that is to be executed.
+(A more precise definition is given :ref:`later <syntax-config>`.)
 
 To avoid unnecessary clutter, the store :math:`S` and the frame :math:`F` are omitted from reduction rules that do not touch them.
 
@@ -124,6 +125,10 @@ or if a :ref:`trap <syntax-trap>` occurred.
 
    where :math:`x_4 = -x_2` and :math:`x_5 = -x_2 + x_3` and :math:`x_6 = x_1 \cdot (-x_2 + x_3)`.
 
+
+.. [#pldi2017]
+   The semantics is derived from the following article:
+   Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. `Bringing the Web up to Speed with WebAssembly <https://dl.acm.org/citation.cfm?doid=3062341.3062363>`_. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
 
 .. [#tapl]
    For example: Benjamin Pierce. `Types and Programming Languages <https://www.cis.upenn.edu/~bcpierce/tapl/>`_. The MIT Press 2002

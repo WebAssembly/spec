@@ -80,7 +80,7 @@ Numeric Instructions
 .. math::
    \frac{
    }{
-     C \vdash t\K{.}\CONST~c : [] \to [t]
+     C \vdashinstr t\K{.}\CONST~c : [] \to [t]
    }
 
 
@@ -94,7 +94,7 @@ Numeric Instructions
 .. math::
    \frac{
    }{
-     C \vdash t\K{.}\unop : [t] \to [t]
+     C \vdashinstr t\K{.}\unop : [t] \to [t]
    }
 
 
@@ -108,7 +108,7 @@ Numeric Instructions
 .. math::
    \frac{
    }{
-     C \vdash t\K{.}\binop : [t~t] \to [t]
+     C \vdashinstr t\K{.}\binop : [t~t] \to [t]
    }
 
 
@@ -122,7 +122,7 @@ Numeric Instructions
 .. math::
    \frac{
    }{
-     C \vdash t\K{.}\testop : [t] \to [\I32]
+     C \vdashinstr t\K{.}\testop : [t] \to [\I32]
    }
 
 
@@ -136,7 +136,7 @@ Numeric Instructions
 .. math::
    \frac{
    }{
-     C \vdash t\K{.}\relop : [t~t] \to [\I32]
+     C \vdashinstr t\K{.}\relop : [t~t] \to [\I32]
    }
 
 
@@ -150,7 +150,7 @@ Numeric Instructions
 .. math::
    \frac{
    }{
-     C \vdash t_2\K{.}\cvtop/t_1 : [t_1] \to [t_2]
+     C \vdashinstr t_2\K{.}\cvtop/t_1 : [t_1] \to [t_2]
    }
 
 
@@ -172,7 +172,7 @@ Parametric Instructions
 .. math::
    \frac{
    }{
-     C \vdash \DROP : [t] \to []
+     C \vdashinstr \DROP : [t] \to []
    }
 
 
@@ -186,7 +186,7 @@ Parametric Instructions
 .. math::
    \frac{
    }{
-     C \vdash \SELECT : [t~t~\I32] \to [t]
+     C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }
 
 .. note::
@@ -216,7 +216,7 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdash \GETLOCAL~x : [] \to [t]
+     C \vdashinstr \GETLOCAL~x : [] \to [t]
    }
 
 
@@ -235,7 +235,7 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdash \SETLOCAL~x : [t] \to []
+     C \vdashinstr \SETLOCAL~x : [t] \to []
    }
 
 
@@ -254,7 +254,7 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdash \TEELOCAL~x : [t] \to [t]
+     C \vdashinstr \TEELOCAL~x : [t] \to [t]
    }
 
 
@@ -273,7 +273,7 @@ Variable Instructions
    \frac{
      C.\CGLOBALS[x] = \mut~t
    }{
-     C \vdash \GETGLOBAL~x : [] \to [t]
+     C \vdashinstr \GETGLOBAL~x : [] \to [t]
    }
 
 
@@ -294,7 +294,7 @@ Variable Instructions
    \frac{
      C.\CGLOBALS[x] = \MVAR~t
    }{
-     C \vdash \SETGLOBAL~x : [t] \to []
+     C \vdashinstr \SETGLOBAL~x : [t] \to []
    }
 
 
@@ -324,7 +324,7 @@ Memory Instructions
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
-     C \vdash t\K{.load}~\memarg : [\I32] \to [t]
+     C \vdashinstr t\K{.load}~\memarg : [\I32] \to [t]
    }
 
 
@@ -345,11 +345,9 @@ Memory Instructions
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdash t\K{.load}N\K{\_}\sx~\memarg : [\I32] \to [t]
+     C \vdashinstr t\K{.load}N\K{\_}\sx~\memarg : [\I32] \to [t]
    }
 
-
-.. _valid-store:
 
 :math:`t\K{.}\STORE~\memarg`
 ............................
@@ -366,7 +364,7 @@ Memory Instructions
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
-     C \vdash t\K{.store}~\memarg : [\I32~t] \to []
+     C \vdashinstr t\K{.store}~\memarg : [\I32~t] \to []
    }
 
 
@@ -387,7 +385,7 @@ Memory Instructions
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdash t\K{.store}N~\memarg : [\I32~t] \to []
+     C \vdashinstr t\K{.store}N~\memarg : [\I32~t] \to []
    }
 
 
@@ -404,7 +402,7 @@ Memory Instructions
    \frac{
      C.\CMEMS[0] = \memtype
    }{
-     C \vdash \CURRENTMEMORY : [] \to [\I32]
+     C \vdashinstr \CURRENTMEMORY : [] \to [\I32]
    }
 
 
@@ -421,7 +419,7 @@ Memory Instructions
    \frac{
      C.\CMEMS[0] = \memtype
    }{
-     C \vdash \GROWMEMORY : [\I32] \to [\I32]
+     C \vdashinstr \GROWMEMORY : [\I32] \to [\I32]
    }
 
 
@@ -444,7 +442,7 @@ Control Instructions
 .. math::
    \frac{
    }{
-     C \vdash \NOP : [] \to []
+     C \vdashinstr \NOP : [] \to []
    }
 
 
@@ -458,7 +456,7 @@ Control Instructions
 .. math::
    \frac{
    }{
-     C \vdash \UNREACHABLE : [t_1^\ast] \to [t_2^\ast]
+     C \vdashinstr \UNREACHABLE : [t_1^\ast] \to [t_2^\ast]
    }
 
 .. note::
@@ -479,9 +477,9 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\CLABELS\,[t^?] \vdash \instr^\ast : [] \to [t^?]
+     C,\CLABELS\,[t^?] \vdashinstrseq \instr^\ast : [] \to [t^?]
    }{
-     C \vdash \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
+     C \vdashinstr \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
 
 .. note::
@@ -503,9 +501,9 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\CLABELS\,[] \vdash \instr^\ast : [] \to [t^?]
+     C,\CLABELS\,[] \vdashinstrseq \instr^\ast : [] \to [t^?]
    }{
-     C \vdash \LOOP~[t^?]~\instr^\ast~\END : [] \to [t^?]
+     C \vdashinstr \LOOP~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
 
 .. note::
@@ -530,11 +528,11 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\CLABELS\,[t^?] \vdash \instr_1^\ast : [] \to [t^?]
+     C,\CLABELS\,[t^?] \vdashinstrseq \instr_1^\ast : [] \to [t^?]
      \qquad
-     C,\CLABELS\,[t^?] \vdash \instr_2^\ast : [] \to [t^?]
+     C,\CLABELS\,[t^?] \vdashinstrseq \instr_2^\ast : [] \to [t^?]
    }{
-     C \vdash \IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [\I32] \to [t^?]
+     C \vdashinstr \IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [\I32] \to [t^?]
    }
 
 .. note::
@@ -557,7 +555,7 @@ Control Instructions
    \frac{
      C.\CLABELS[l] = [t^?]
    }{
-     C \vdash \BR~l : [t_1^\ast~t^?] \to [t_2^\ast]
+     C \vdashinstr \BR~l : [t_1^\ast~t^?] \to [t_2^\ast]
    }
 
 .. note::
@@ -579,7 +577,7 @@ Control Instructions
    \frac{
      C.\CLABELS[l] = [t^?]
    }{
-     C \vdash \BRIF~l : [t^?~\I32] \to [t^?]
+     C \vdashinstr \BRIF~l : [t^?~\I32] \to [t^?]
    }
 
 
@@ -606,7 +604,7 @@ Control Instructions
      \qquad
      C.\CLABELS[l_N] = [t^?]
    }{
-     C \vdash \BRTABLE~l^\ast~l_N : [t_1^\ast~t^?~\I32] \to [t_2^\ast]
+     C \vdashinstr \BRTABLE~l^\ast~l_N : [t_1^\ast~t^?~\I32] \to [t_2^\ast]
    }
 
 .. note::
@@ -628,7 +626,7 @@ Control Instructions
    \frac{
      C.\CRETURN = [t^?]
    }{
-     C \vdash \RETURN : [t_1^\ast~t^?] \to [t_2^\ast]
+     C \vdashinstr \RETURN : [t_1^\ast~t^?] \to [t_2^\ast]
    }
 
 .. note::
@@ -652,7 +650,7 @@ Control Instructions
    \frac{
      C.\CFUNCS[x] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdash \CALL~x : [t_1^\ast] \to [t_2^\ast]
+     C \vdashinstr \CALL~x : [t_1^\ast] \to [t_2^\ast]
    }
 
 
@@ -677,7 +675,7 @@ Control Instructions
      \qquad
      C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdash \CALLINDIRECT~x : [t_1^\ast] \to [t_2^\ast]
+     C \vdashinstr \CALLINDIRECT~x : [t_1^\ast] \to [t_2^\ast]
    }
 
 
@@ -699,7 +697,7 @@ Empty Instruction Sequence: :math:`\epsilon`
 .. math::
    \frac{
    }{
-     C \vdash \epsilon : [t^\ast] \to [t^\ast]
+     C \vdashinstrseq \epsilon : [t^\ast] \to [t^\ast]
    }
 
 
@@ -719,11 +717,11 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
 
 .. math::
    \frac{
-     C \vdash \instr^\ast : [t_1^\ast] \to [t_0^\ast~t^\ast]
+     C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_0^\ast~t^\ast]
      \qquad
-     C \vdash \instr_N : [t^\ast] \to [t_3^\ast]
+     C \vdashinstr \instr_N : [t^\ast] \to [t_3^\ast]
    }{
-     C \vdash \instr^\ast~\instr_N : [t_1^\ast] \to [t_0^\ast~t_3^\ast]
+     C \vdashinstrseq \instr^\ast~\instr_N : [t_1^\ast] \to [t_0^\ast~t_3^\ast]
    }
 
 
@@ -749,9 +747,9 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
 
 .. math::
    \frac{
-     C \vdash \instr^\ast : [] \to [t^?]
+     C \vdashinstrseq \instr^\ast : [] \to [t^?]
    }{
-     C \vdash \instr^\ast~\END : [t^?]
+     C \vdashexpr \instr^\ast~\END : [t^?]
    }
 
 
@@ -771,20 +769,21 @@ Constant Expressions
 
 .. math::
    \frac{
-     (C \vdash \instr ~\F{const})^\ast
+     (C \vdashinstrconst \instr \const)^\ast
    }{
-     C \vdash \instr~\END ~\F{const}
+     C \vdashexprconst \instr~\END \const
    }
-   \qquad
+
+.. math::
    \frac{
    }{
-     C \vdash t.\CONST~c ~\F{const}
+     C \vdashinstrconst t.\CONST~c \const
    }
    \qquad
    \frac{
      C.\CGLOBALS[x] = \CONST~t
    }{
-     C \vdash \GETGLOBAL~x ~\F{const}
+     C \vdashinstrconst \GETGLOBAL~x \const
    }
 
 .. note::

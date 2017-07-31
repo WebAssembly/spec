@@ -2,7 +2,32 @@ Types
 -----
 
 Most :ref:`types <syntax-type>` are universally valid.
-However, restrictions apply to :ref:`function types <syntax-functype>` and :ref:`limits <syntax-limits>`, which must be checked during validation.
+However, restrictions apply to :ref:`function types <syntax-functype>` as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
+
+
+.. index:: limits
+   pair: validation; limits
+   single: abstract syntax; limits
+.. _valid-limits:
+
+Limits
+~~~~~~
+
+:ref:`Limits <syntax-limits>` must have meaningful bounds.
+
+:math:`\{ \LMIN~n, \LMAX~m^? \}`
+................................
+
+* If the maximum :math:`m^?` is not empty, then its value must not be smaller than :math:`n`.
+
+* Then the limit is valid.
+
+.. math::
+   \frac{
+     (n \leq m)^?
+   }{
+     \vdashlimits \{ \LMIN~n, \LMAX~m^? \} \ok
+   }
 
 
 .. index:: function type
@@ -25,33 +50,74 @@ Function Types
 .. math::
    \frac{
    }{
-     \vdash [t_1^\ast] \to [t_2^?] \ok
+     \vdashfunctype [t_1^\ast] \to [t_2^?] \ok
    }
 
 .. note::
    This restriction may be removed in future versions of WebAssembly.
 
 
-.. index:: limits
-   pair: validation; limits
-   single: abstract syntax; limits
-.. _valid-limits:
+.. index:: table type, element type, limits
+   pair: validation; table type
+   single: abstract syntax; table type
+.. _valid-tabletype:
 
-Limits
-~~~~~~
+Table Types
+~~~~~~~~~~~
 
-:ref:`Limits <syntax-limits>` must have menaingful bounds.
+:math:`\limits~\elemtype`
+.........................
 
-:math:`\{ \LMIN~n, \LMAX~m^? \}`
-................................
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>`.
 
-* If the maximum :math:`m^?` is not empty, then its value must not be smaller than :math:`n`.
-
-* Then the limit is valid.
+* Then the table type is valid.
 
 .. math::
    \frac{
-     (n \leq m)^?
+     \vdashlimits \limits \ok
    }{
-     \vdash \{ \LMIN~n, \LMAX~m^? \} \ok
+     \vdashtabletype \limits~\elemtype \ok
+   }
+
+
+.. index:: memory type, limits
+   pair: validation; memory type
+   single: abstract syntax; memory type
+.. _valid-memtype:
+
+Memory Types
+~~~~~~~~~~~~
+
+:math:`\limits`
+...............
+
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>`.
+
+* Then the memory type is valid.
+
+.. math::
+   \frac{
+     \vdashlimits \limits \ok
+   }{
+     \vdashmemtype \limits \ok
+   }
+
+
+.. index:: global type, value type, mutability
+   pair: validation; global type
+   single: abstract syntax; global type
+.. _valid-globaltype:
+
+Global Types
+~~~~~~~~~~~~
+
+:math:`\mut~\valtype`
+.....................
+
+* Then the global type is valid.
+
+.. math::
+   \frac{
+   }{
+     \vdashglobaltype \mut~\valtype \ok
    }
