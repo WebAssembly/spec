@@ -1,3 +1,5 @@
 **/*~
 **/*.tmproj
-_build
+**/*.pyc
+**/_build
+**/_output
