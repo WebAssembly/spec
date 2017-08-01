@@ -3,7 +3,7 @@ Introduction
 
 WebAssembly (abbreviated Wasm [#wasm]_) is a *safe, portable, low-level code format*
 designed for efficient execution and compact representation.
-Its main goal is to enable high performance applications on the Web, but it does not make any Web-specific assumptions or provide Web-specific features, so can be employed in other environments as well.
+Its main goal is to enable high performance applications on the Web, but it does not make any Web-specific assumptions or provide Web-specific features, so it can be employed in other environments as well.
 
 WebAssembly is an open standard developed by a `W3C Community Group <https://www.w3.org/community/webassembly/>`_ that includes representatives of all major browser vendors.
 
