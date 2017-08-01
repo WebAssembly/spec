@@ -465,7 +465,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mbox{if} &amp; \mathit{ea} = i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}} \\
   \wedge &amp; \mathit{ea} + |t|/8 \leq |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}| \\
-  \wedge &amp; S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[\mathit{ea} \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} |t|/8] = \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_t(c)
+  \wedge &amp; S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[\mathit{ea} \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} |t|/8] = \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_t(c)
   \end{array}
 \\[1ex]
 \begin{array}{lcl&#64;{\qquad}l}
