@@ -108,7 +108,7 @@ No distinction is made between signalling and quiet NaNs.
      {+} \fNmag ~|~ {-} \fNmag \\
    \production{floating-point magnitude} & \fNmag &::=&
      (1 + \uM\cdot 2^{-M}) \cdot 2^e & (\iff -2^{E-1}+2 \leq e \leq 2^{E-1}-1) \\ &&|&
-     (0 + \uM\cdot 2^{-M}) \cdot 2^e & (\iff e = -2^{E-1}+1) \\ &&|&
+     (0 + \uM\cdot 2^{-M}) \cdot 2^e & (\iff e = -2^{E-1}+2) \\ &&|&
      \infty \\ &&|&
      \NAN(n) & (\iff 1 \leq n < 2^M) \\
    \end{array}
