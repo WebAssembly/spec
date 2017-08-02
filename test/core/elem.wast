@@ -162,7 +162,8 @@
   "unknown table 0"
 )
 
-;; Test element sections
+;; Test element sections across multiple modules change the same table
+
 (module $module-1
   (type $out-i32 (func (result i32)))
   (table 10 anyfunc)
