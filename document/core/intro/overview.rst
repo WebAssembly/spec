@@ -71,7 +71,7 @@ This language is structured around the following concepts.
   Such a memory is created with an initial size but can be grown dynamically.
   A program can load and store values from/to a linear memory at any byte address (including unaligned).
   Integer loads and stores can specify a *storage size* which is smaller than the size of the respective value type.
-  A trap occurs if access is not within the bounds of the current memory size.
+  A trap occurs if an access is not within the bounds of the current memory size.
 
 .. _module:
 
