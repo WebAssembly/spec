@@ -174,7 +174,7 @@ Global Types
 .. math::
    \begin{array}{llll}
    \production{global type} & \globaltype &::=&
-     \mut^?~\valtype \\
+     \mut~\valtype \\
    \production{mutability} & \mut &::=&
      \MCONST ~|~
      \MVAR \\
