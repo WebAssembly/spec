@@ -402,7 +402,7 @@ Numeric Instructions
      \text{f64.convert\_u/i32} &\Rightarrow& \F64.\CONVERT\K{\_u/}\I32 \\ &&|&
      \text{f64.convert\_s/i64} &\Rightarrow& \F64.\CONVERT\K{\_s/}\I64 \\ &&|&
      \text{f64.convert\_u/i64} &\Rightarrow& \F64.\CONVERT\K{\_u/}\I64 \\ &&|&
-     \text{f64.demote/f32} &\Rightarrow& \F64.\PROMOTE\K{/}\F32 \\ &&|&
+     \text{f64.promote/f32} &\Rightarrow& \F64.\PROMOTE\K{/}\F32 \\ &&|&
      \text{i32.reinterpret/f32} &\Rightarrow& \I32.\REINTERPRET\K{/}\F32 \\ &&|&
      \text{i64.reinterpret/f64} &\Rightarrow& \I64.\REINTERPRET\K{/}\F64 \\ &&|&
      \text{f32.reinterpret/i32} &\Rightarrow& \F32.\REINTERPRET\K{/}\I32 \\ &&|&

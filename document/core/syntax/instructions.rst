@@ -67,7 +67,7 @@ These operations closely match respective operations available in hardware.
      \K{i32.}\WRAP\K{/i64} ~|~
      \K{i64.}\EXTEND\K{\_}\sx/\K{i32} ~|~
      \K{i}\X{nn}\K{.}\TRUNC\K{\_}\sx/\K{f}\X{mm} \\&&|&
-     \K{f32.}\TRUNC\K{/f64} ~|~
+     \K{f32.}\DEMOTE\K{/f64} ~|~
      \K{f64.}\PROMOTE\K{/f32} ~|~
      \K{f}\X{nn}\K{.}\CONVERT\K{\_}\sx/\K{i}\X{mm} \\&&|&
      \K{i}\X{nn}\K{.}\REINTERPRET\K{/f}\X{nn} ~|~
