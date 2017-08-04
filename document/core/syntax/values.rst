@@ -137,6 +137,8 @@ A *canonical NaN* is a floating-point value :math:`\pm\NAN(\canon_N)` where :mat
 
 An *arithmetic NaN*  is a floating-point value :math:`\pm\NAN(n)` with :math:`n \geq \canon_N`, such that the most significant bit is :math:`1` while all others are arbitrary.
 
+.. note::
+   In the abstract syntax, subnormals are distinguished by the leading 0 of the significand. The exponent of subnormals has the same value as the smallest possible exponent of a normal number. Only in the :ref:`binary representation <binary-float>` the exponent of a subnormal is encoded differently than the exponent of any normal number.
 
 Conventions
 ...........
