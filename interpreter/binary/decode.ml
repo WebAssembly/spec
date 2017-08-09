@@ -72,8 +72,9 @@ let u32 s =
   Int32.(add lo (shift_left hi 16))
 
 let u64 s =
-  let lo = Int64.of_int32 (u32 s) in
-  let hi = Int64.of_int32 (u32 s) in
+  let u64_of_u32 x = Int64.logand (Int64.of_int32 x) 0x00000000ffffffffL in
+  let lo = u64_of_u32 (u32 s) in
+  let hi = u64_of_u32 (u32 s) in
   Int64.(add lo (shift_left hi 32))
 
 let rec vuN n s =
