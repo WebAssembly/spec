@@ -135,6 +135,6 @@ It consists of an :ref:`indirect name map <binary-indirectnamemap>` assigning lo
 
 .. math::
    \begin{array}{llclll}
-   \production{function name subsection} & \Bfuncnamesubsec &::=&
+   \production{local name subsection} & \Blocalnamesubsec &::=&
      \Bnamesubsection_2(\Bindirectnamemap) \\
    \end{array}
