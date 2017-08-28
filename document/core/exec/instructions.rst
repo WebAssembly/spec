@@ -24,6 +24,13 @@ The mapping of numeric instructions to their underlying operators is expressed b
    \X{op}_{\K{f}N}(z) &=& \F{f}\X{op}_N(z) \\
    \end{array}
 
+And for :ref:`conversion operators <exec-cvtop>`:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \X{cvtop}_{t_1,t_2}(c) &=& \X{cvtop}_{|t_1|,|t_2|}(c) \\
+   \end{array}
+
 Where the underlying operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
 Where the underlying operators are non-deterministic, because they may return one of multiple possible :ref:`NaN <syntax-nan>` values, so are the corresponding instructions.
 
