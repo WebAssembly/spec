@@ -72,8 +72,8 @@ let u32 s =
   Int32.(add lo (shift_left hi 16))
 
 let u64 s =
-  let lo = Int64.of_int32 (u32 s) in
-  let hi = Int64.of_int32 (u32 s) in
+  let lo = I64_convert.extend_u_i32 (u32 s) in
+  let hi = I64_convert.extend_u_i32 (u32 s) in
   Int64.(add lo (shift_left hi 32))
 
 let rec vuN n s =
