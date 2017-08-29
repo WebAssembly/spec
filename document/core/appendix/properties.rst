@@ -20,6 +20,58 @@ The typing rules defining WebAssembly :ref:`validation <valid>` only cover the *
 In order to state and prove soundness precisely, the typing rules must be extended to the *dynamic* components of the abstract :ref:`runtime <syntax-runtime>`, that is, the :ref:`store <syntax-store>`, :ref:`configurations <syntax-config>`, and :ref:`administrative instructions <syntax-instr-admin>` as well as :ref:`module instructions <valid-moduleinstr>`. [#pldi2017]_
 
 
+.. index:: value, value type, result, result type, trap
+.. _valid-val:
+.. _valid-result:
+
+Values and Results
+~~~~~~~~~~~~~~~~~~
+
+:ref:`Values <syntax-val>` and :ref:`results <syntax-result>` can be classified by :ref:`value types <syntax-valtype>` and :ref:`result types <syntax-resulttype>` as follows.
+
+:ref:`Values <syntax-val>` :math:`t.\CONST~c`
+.............................................
+
+* The value is valid with :ref:`value type <syntax-valtype>` :math:`t`.
+
+.. math::
+   \frac{
+   }{
+     \vdashval t.\CONST~c : t
+   }
+
+
+:ref:`Results <syntax-result>` :math:`\val^\ast`
+................................................
+
+* For each :ref:`value <syntax-val>` :math:`\val_i` in :math:`\val^\ast`:
+
+  * The value :math:`\val_i` is :ref:`valid <valid-val>` with some :ref:`value type <syntax-valtype>` :math:`t_i`.
+
+* Let :math:`t^\ast` be the concatenation of all :math:`t_i`.
+
+* Then the result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
+
+.. math::
+   \frac{
+     (\vdashval \val : t)^\ast
+   }{
+     \vdashresult \val^\ast : [t^\ast]
+   }
+
+
+:ref:`Results <syntax-result>` :math:`\TRAP`
+............................................
+
+* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`t^\ast` of :ref:`value types <syntax-valtype>`.
+
+.. math::
+   \frac{
+   }{
+     \vdashresult \TRAP : [t^\ast]
+   }
+
+
 .. _module-context:
 .. _valid-store:
 
@@ -76,8 +128,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 .. index:: function type, function instance
 .. _valid-funcinst:
 
-:ref:`Function Instance <syntax-funcinst>` :math:`\{\FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func\}`
-......................................................................................................................
+:ref:`Function Instances <syntax-funcinst>` :math:`\{\FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func\}`
+.......................................................................................................................
 
 * The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
 
@@ -99,11 +151,59 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    }
 
 
+.. index:: function type, function instance, host function
+.. _valid-hostfuncinst:
+
+:ref:`Host Function Instances <syntax-funcinst>` :math:`\{\FITYPE~\functype, \FIHOSTCODE~\X{hf}\}`
+..................................................................................................
+
+* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
+
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`\functype`.
+
+* For every possible :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_1` :ref:`extending <extend-store>` :math:`S` and every sequence :math:`\val^\ast` of :ref:`values <syntax-val>` whose :ref:`types <valid-val>` coincide with :math:`t_1^\ast`:
+
+  * There must exist a :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_2` :ref:`extending <extend-store>` :math:`S_1` and a :ref:`result <syntax-result>` :math:`\result` whose :ref:`type <valid-result>` coincides with :math:`[t_2^\ast]` such that:
+
+    * :ref:`Executing <exec-invoke-host>` :math:`\X{hf}` in store :math:`S_1` with arguments :math:`\val^\ast` produces :math:`\result` and store :math:`S_2`.
+
+* Then the function instance is valid with :ref:`function type <syntax-functype>` :math:`\functype`.
+
+.. math::
+   \frac{
+     \begin{array}[b]{@{}l@{}}
+     \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok \\
+     \end{array}
+     \qquad
+     \begin{array}[b]{@{}l@{}}
+     \forall S_1, \val^\ast,~
+       {\vdashstore S_1 \ok} \wedge
+       {\vdashstoreextends S \extendsto S_1} \wedge
+       {\vdashresult \val^\ast : [t_1^\ast]}
+       \Longrightarrow {} \\ \qquad
+     \exists S_2, \result,~
+       {\vdashstore S_2 \ok} \wedge
+       {\vdashstoreextends S_1 \extendsto S_2} \wedge
+       {\vdashresult \result : [t_2^\ast]} \wedge
+       \X{hf}(S_1; \val_1^\ast) = S_2; \result
+     \end{array}
+   }{
+     S \vdashfuncinst \{\FITYPE~[t_1^\ast] \to [t_2^\ast], \FIHOSTCODE~\X{hf}\} : [t_1^\ast] \to [t_2^\ast]
+   }
+
+.. note::
+   This rule states that, if appropriate pre-conditions about store and arguments are satisfied, then executing the host function must satisfy appropriate post-conditions about store and results.
+   The post-conditions match the ones in the :ref:`execution rule <exec-invoke-host>` for invoking host functions.
+
+   Any store under which the function is invoked is assumed to be an extension of the current store.
+   That way, the function itself is able to make sufficient assumptions about future stores.
+
+
 .. index:: table type, table instance, limits, function address
 .. _valid-tableinst:
 
-:ref:`Table Instance <syntax-tableinst>` :math:`\{ \TIELEM~(\X{fa}^?)^n, \TIMAX~m^? \}`
-.............................................................................................
+:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TIELEM~(\X{fa}^?)^n, \TIMAX~m^? \}`
+..............................................................................................
 
 * For each optional :ref:`function address <syntax-funcaddr>` :math:`\X{fa}^?_i` in the table elements :math:`(\X{fa}^?)^n`:
 
@@ -128,8 +228,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 .. index:: memory type, memory instance, limits, byte
 .. _valid-meminst:
 
-:ref:`Memory Instance <syntax-meminst>` :math:`\{ \MIDATA~b^n, \MIMAX~m^? \}`
-.............................................................................
+:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MIDATA~b^n, \MIMAX~m^? \}`
+..............................................................................
 
 * The :ref:`limits <syntax-limits>` :math:`\{\LMIN~n, \LMAX~m^?\}` must be :ref:`valid <valid-limits>`.
 
@@ -146,8 +246,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 .. index:: global type, global instance, value, mutability
 .. _valid-globalinst:
 
-:ref:`Global Instance <syntax-globalinst>` :math:`\{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \}`
-...........................................................................................
+:ref:`Global Instances <syntax-globalinst>` :math:`\{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \}`
+............................................................................................
 
 * The global instance is valid with :ref:`global type <syntax-globaltype>` :math:`\mut~t`.
 
@@ -161,8 +261,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 .. index:: external type, export instance, name, external value
 .. _valid-exportinst:
 
-:ref:`Export Instance <syntax-exportinst>` :math:`\{ \EINAME~\name, \EIVALUE~\externval \}`
-......................................................................................................
+:ref:`Export Instances <syntax-exportinst>` :math:`\{ \EINAME~\name, \EIVALUE~\externval \}`
+.......................................................................................................
 
 * The :ref:`external value <syntax-externval>` :math:`\externval` must be :ref:`valid <valid-externval>` with some :ref:`external type <syntax-externtype>` :math:`\externtype`.
 
@@ -179,8 +279,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 .. index:: module instance, context
 .. _valid-moduleinst:
 
-:ref:`Module Instance <syntax-moduleinst>` :math:`\moduleinst`
-..............................................................
+:ref:`Module Instances <syntax-moduleinst>` :math:`\moduleinst`
+...............................................................
 
 * Each :ref:`function type <syntax-functype>` :math:`\functype_i` in :math:`\moduleinst.\MITYPES` must be :ref:`valid <valid-functype>`.
 
@@ -254,7 +354,7 @@ Configuration Validity
 To relate the WebAssembly :ref:`type system <valid>` to its :ref:`execution semantics <exec>`, the :ref:`typing rules for instructions <valid-instr>` must be extended to :ref:`configurations <syntax-config>` :math:`S;T`,
 which relates the :ref:`store <syntax-store>` to execution :ref:`threads <syntax-thread>`.
 
-Threads may either be regular threads executing sequences of :ref:`instructions <syntax-instr>`, or module threads executing :ref:`module instructions <synax-moduleinstr>` that represent an ongoing module instantiation.
+Threads may either be regular threads executing sequences of :ref:`instructions <syntax-instr>`, or module threads executing :ref:`module instructions <syntax-moduleinstr>` that represent an ongoing module instantiation.
 Regular threads are classified by their :ref:`result type <syntax-resulttype>`.
 Module threads on the other hand have no result, not even an empty one.
 Consequently, threads and configurations are cumutavily classified by an *optional* result type, where :math:`\epsilon` classifies the thread as a module computation.
@@ -339,7 +439,7 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 :ref:`Frames <syntax-frame>` :math:`\{\ALOCALS~\val^\ast, \AMODULE~\moduleinst\}`
 .................................................................................
 
-* The :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst` must be :ref:`valid <valid-moduleinst>` with some :ref:`module context <module context>` :math:`C`.
+* The :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst` must be :ref:`valid <valid-moduleinst>` with some :ref:`module context <module-context>` :math:`C`.
 
 * Each :ref:`value <syntax-val>` :math:`\val_i` in :math:`\val^\ast` must be :ref:`valid <valid-val>` with some :ref:`value type <syntax-valtype>` :math:`t_i`.
 
@@ -359,21 +459,6 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
    }
 
 
-.. index:: value, value type
-.. _valid-val:
-
-:ref:`Values <syntax-val>` :math:`t.\CONST~c`
-.............................................
-
-* The value is valid with :ref:`value type <syntax-valtype>` :math:`t`.
-
-.. math::
-   \frac{
-   }{
-     \vdashval t.\CONST~c : t
-   }
-
-
 .. index:: administrative instruction, value type, context, store
 .. _valid-instr-admin:
 
@@ -381,7 +466,7 @@ Administrative Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Typing rules for :ref:`administrative instructions <syntax-instr-admin>` are specified as follows.
-In addition to the :ref:`context <contxt>` :math:`C`, typing of these instructions is defined under a given :ref:`store <syntax-store>` :math:`S`.
+In addition to the :ref:`context <context>` :math:`C`, typing of these instructions is defined under a given :ref:`store <syntax-store>` :math:`S`.
 To that end, all previous typing judgements :math:`C \vdash \X{prop}` are generalized to include the store, as in :math:`S; C \vdash \X{prop}`, by implicitly adding :math:`S` to all rules -- :math:`S` is never modified by the pre-existing rules, but it is accessed in the new rules for :ref:`administrative instructions <valid-instr-admin>` and  :ref:`module instructions <valid-moduleinstr>` given below.
 
 

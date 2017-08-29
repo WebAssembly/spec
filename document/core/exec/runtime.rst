@@ -30,6 +30,27 @@ It is convenient to reuse the same notation as for the |CONST| :ref:`instruction
    \end{array}
 
 
+.. index:: ! result, value, trap
+   pair: abstract syntax; result
+.. _syntax-result:
+
+Results
+~~~~~~~
+
+A *result* is the outcome of a computation.
+It is either a sequence of :ref:`values <syntax-val>` or a :ref:`trap <syntax-trap>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{(result)} & \result &::=&
+     \val^\ast \\&&|&
+     \TRAP
+   \end{array}
+
+.. note::
+   In the current version of WebAssembly, a result can consist of at most one value.
+
+
 .. index:: ! store, function instance, table instance, memory instance, global instance, module, allocation
    pair: abstract syntax; store
 .. _syntax-store:
@@ -171,7 +192,8 @@ The module instance is used to resolve references to other definitions during ex
 A *host function* is a function expressed outside WebAssembly but passed to a :ref:`module <syntax-module>` as an :ref:`import <syntax-import>`.
 The definition and behavior of host functions are outside the scope of this specification.
 For the purpose of this specification, it is assumed that when :ref:`invoked <exec-invoke-host>`,
-a host function behaves non-deterministically.
+a host function behaves non-deterministically,
+but within certain :ref:`constraints <exec-invoke-host>` that ensure the integrity of the runtime.
 
 .. note::
    Function instances are immutable, and their identity is not observable by WebAssembly code.

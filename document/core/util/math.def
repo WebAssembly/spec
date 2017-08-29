@@ -819,9 +819,13 @@
 .. |DO| mathdef:: \xref{exec/runtime}{syntax-do}{\K{do}}
 
 
-.. Values & Administrative Instructions, non-terminals
+.. Values & Results, non-terminals
 
 .. |val| mathdef:: \xref{exec/runtime}{syntax-val}{\X{val}}
+.. |result| mathdef:: \xref{exec/runtime}{syntax-result}{\X{result}}
+
+
+.. Administrative Instructions, non-terminals
 
 .. |moduleinstr| mathdef:: \xref{exec/runtime}{syntax-moduleinstr}{\X{moduleinstr}}
 
@@ -938,6 +942,9 @@
 .. |vdashadmininstr| mathdef:: \xref{appendix/properties}{valid-instr-admin}{\vdash}
 .. |vdashmoduleinstr| mathdef:: \xref{appendix/properties}{valid-moduleinstr}{\vdash}
 
+.. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
+.. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}
+
 .. |vdashfuncinst| mathdef:: \xref{appendix/properties}{valid-funcinst}{\vdash}
 .. |vdashtableinst| mathdef:: \xref{appendix/properties}{valid-tableinst}{\vdash}
 .. |vdashmeminst| mathdef:: \xref{appendix/properties}{valid-meminst}{\vdash}
@@ -949,7 +956,6 @@
 .. |vdashconfig| mathdef:: \xref{appendix/properties}{valid-config}{\vdash}
 .. |vdashthread| mathdef:: \xref{appendix/properties}{valid-thread}{\vdash}
 .. |vdashframe| mathdef:: \xref{appendix/properties}{valid-frame}{\vdash}
-.. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
 
 .. |vdashfuncinstextends| mathdef:: \xref{appendix/properties}{extend-funcinst}{\vdash}
 .. |vdashtableinstextends| mathdef:: \xref{appendix/properties}{extend-tableinst}{\vdash}

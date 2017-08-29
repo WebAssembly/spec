@@ -1095,33 +1095,29 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; \val_1^n~(\INVOKE~a) &\stepto& S'; \val_2^m
+   S; \val^\ast~(\INVOKE~a) &\stepto& S'; \result
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\dots \} \\
-     \wedge & \val_1^n = (t_1.\CONST~c_1)^n \\
-     \wedge & \val_2^m = (t_2.\CONST~c_2)^m \\
-     \wedge & \vdashstoreextends S \extendsto S' \\
-     \wedge & \vdashstore S' \ok) \\
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\INVOKE~a) &\stepto& S'; \TRAP
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~\X{ft}, \FIHOSTCODE~\dots \} \\ 
+     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~[t_1^\ast] \to [t_2^\ast], \FIHOSTCODE~\X{hf} \} \\
+     \wedge & \X{hf}(S; \val^\ast) = S'; \result \\
+     \wedge & \vdashresult \result : [t_2^\ast] \\
      \wedge & \vdashstoreextends S \extendsto S' \\
      \wedge & \vdashstore S' \ok) \\
      \end{array} \\
    \end{array}
 
-Here, :math:`S \extendsto S'` expresses that the new store :math:`S'` is an :ref:`extension <extend>` of :math:`S`.
-Moreover, :math:`\vdashstore S' \ok` restricts :math:`S'` to be a :ref:`valid <valid-store>` store.
-Both notions are defined in the :ref:`Appendix <properties>`.
+Here, :math:`\X{hf}(S; \val^\ast)` denotes the implementation-defined execution of host function :math:`\X{hf}` in current store :math:`S` with arguments :math:`\val^\ast`.
+The outcome is a pair of a modified store :math:`S'` and a :ref:`result <syntax-result>`.
+The :ref:`result's type <valid-result>` needs to correspond to the annotated function type :math:`[t_2^\ast]`.
+Furthermore, :math:`S \extendsto S'` expresses that the new store :math:`S'` is an :ref:`extension <extend>` of :math:`S`,
+while :math:`\vdashstore S' \ok` restricts :math:`S'` to be a :ref:`valid <valid-store>` store.
+All these notions are defined in the :ref:`Appendix <soundness>`.
 
 .. note::
+   :ref:`Validation <valid>` and :ref:`soundness <soundness>` guarantee the pre-conditions that a host function is only executed under a well-formed store :math:`S` and with arguments :math:`\val^\ast` matching :math:`[t_1^\ast]`.
+   The additional side conditions in the rule enforce that suitable post-conditions are respected by the called host function.
+
    A host function can call back into WebAssembly by :ref:`invoking <exec-invocation>` a function :ref:`exported <syntax-export>` from a :ref:`module <syntax-module>`.
    However, the effects of any such call are subsumed by the non-deterministic behavior allowed for the host function.
 
