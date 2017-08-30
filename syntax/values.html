@@ -68,7 +68,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="instrindex.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
 </ul>
 
 
@@ -107,8 +109,8 @@ Moreover, in the definition of programs, immutable sequences of values occur to 
 In the abstract syntax they are represented as hexadecimal literals.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef2028#1{{}}\mathdef2028{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
-  \def\mathdef2086#1{\mathtt{0x#1}}\mathdef2086{00} ~|~ \dots ~|~ \def\mathdef2087#1{\mathtt{0x#1}}\mathdef2087{FF} \\
+\def\mathdef2128#1{{}}\mathdef2128{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
+  \def\mathdef2185#1{\mathtt{0x#1}}\mathdef2185{00} ~|~ \dots ~|~ \def\mathdef2186#1{\mathtt{0x#1}}\mathdef2186{FF} \\
 \end{array}\end{split}\]</div>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
@@ -123,19 +125,19 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 <p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>bit width</em> <span class="math">\(N\)</span> and by whether they are <em>unsigned</em> or <em>signed</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef2028#1{{}}\mathdef2028{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef2029#1{{\mathit{u}#1}}\mathdef2029{N}} &amp;::=&amp;
+\def\mathdef2128#1{{}}\mathdef2128{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef2129#1{{\mathit{u}#1}}\mathdef2129{N}} &amp;::=&amp;
   0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
-\def\mathdef2028#1{{}}\mathdef2028{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef2036#1{{\mathit{s}#1}}\mathdef2036{N}} &amp;::=&amp;
+\def\mathdef2128#1{{}}\mathdef2128{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef2136#1{{\mathit{s}#1}}\mathdef2136{N}} &amp;::=&amp;
   -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
-\def\mathdef2028#1{{}}\mathdef2028{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef2042#1{{\mathit{i}#1}}\mathdef2042{N}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-int}{\def\mathdef2029#1{{\mathit{u}#1}}\mathdef2029{N}} \\
+\def\mathdef2128#1{{}}\mathdef2128{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef2141#1{{\mathit{i}#1}}\mathdef2141{N}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-int}{\def\mathdef2129#1{{\mathit{u}#1}}\mathdef2129{N}} \\
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned values.
 However, some operations <a class="reference internal" href="../exec/numerics.html#aux-signed"><span class="std std-ref">convert</span></a> them to signed based on a two&#8217;s complement interpretation.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The main integer types occurring in this specification are <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2034#1{{\mathit{u}#1}}\mathdef2034{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2035#1{{\mathit{u}#1}}\mathdef2035{\mathit{64}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2039#1{{\mathit{s}#1}}\mathdef2039{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2041#1{{\mathit{s}#1}}\mathdef2041{\mathit{64}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2043#1{{\mathit{i}#1}}\mathdef2043{\mathit{8}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2044#1{{\mathit{i}#1}}\mathdef2044{\mathit{16}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2045#1{{\mathit{i}#1}}\mathdef2045{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2046#1{{\mathit{i}#1}}\mathdef2046{\mathit{64}}}\)</span>.
+<p class="last">The main integer types occurring in this specification are <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2134#1{{\mathit{u}#1}}\mathdef2134{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2135#1{{\mathit{u}#1}}\mathdef2135{\mathit{64}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2139#1{{\mathit{s}#1}}\mathdef2139{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2140#1{{\mathit{s}#1}}\mathdef2140{\mathit{64}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2142#1{{\mathit{i}#1}}\mathdef2142{\mathit{8}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2143#1{{\mathit{i}#1}}\mathdef2143{\mathit{16}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2144#1{{\mathit{i}#1}}\mathdef2144{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2145#1{{\mathit{i}#1}}\mathdef2145{\mathit{64}}}\)</span>.
 However, other sizes occur as auxiliary constructions, e.g., in the definition of <a class="reference internal" href="#syntax-float"><span class="std std-ref">floating-point</span></a> numbers.</p>
 </div>
 <div class="section" id="id1">
@@ -153,17 +155,17 @@ In order to distinguish arithmetics like <span class="math">\(2^N\)</span> from 
 Every value has a <em>sign</em> and a <em>magnitude</em>.</p>
 <p>Magnitudes can either be expressed as <em>normal</em> numbers of the form <span class="math">\(m_0.m_1m_2\dots m_M \cdot2^e\)</span>, where <span class="math">\(e\)</span> is the exponent and <span class="math">\(m\)</span> is the <em>significand</em> whose most signifcant bit <span class="math">\(m_0\)</span> is <span class="math">\(1\)</span>,
 or as a <em>subnormal</em> number where the exponent is fixed to the smallest possible value and <span class="math">\(m_0\)</span> is <span class="math">\(0\)</span>; among the subnormals are positive and negative zero values.
-Since the significands are binary values, normals are represented in the form <span class="math">\((1 + m\cdot 2^{-M})\)</span>, where <span class="math">\(M\)</span> is the bit width of <span class="math">\(m\)</span>; similarly for subnormals.</p>
+Since the significands are binary values, normals are represented in the form <span class="math">\((1 + m\cdot 2^{-M}) \cdot 2^e\)</span>, where <span class="math">\(M\)</span> is the bit width of <span class="math">\(m\)</span>; similarly for subnormals.</p>
 <p>Possible magnitudes also include the special values <span class="math">\(\infty\)</span> (infinity) and <span class="math">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> (<em>NaN</em>, not a number).
 NaN values have a <em>payload</em> that describes the mantissa bits in the underlying <a class="reference internal" href="../exec/numerics.html#aux-fbits"><span class="std std-ref">binary representation</span></a>.
 No distinction is made between signalling and quiet NaNs.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcll}
-\def\mathdef2028#1{{}}\mathdef2028{floating-point value} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef2047#1{{\mathit{f}#1}}\mathdef2047{N}} &amp;::=&amp;
-  {+} \href{../syntax/values.html#syntax-float}{\def\mathdef2048#1{{\mathit{f}#1}}\mathdef2048{\mathit{Nmag}}} ~|~ {-} \href{../syntax/values.html#syntax-float}{\def\mathdef2048#1{{\mathit{f}#1}}\mathdef2048{\mathit{Nmag}}} \\
-\def\mathdef2028#1{{}}\mathdef2028{floating-point magnitude} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef2048#1{{\mathit{f}#1}}\mathdef2048{\mathit{Nmag}}} &amp;::=&amp;
-  (1 + \href{../syntax/values.html#syntax-int}{\def\mathdef2030#1{{\mathit{u}#1}}\mathdef2030{M}}\cdot 2^{-M}) \cdot 2^e &amp; (\mathrel{\mbox{if}} -2^{E-1}+2 \leq e \leq 2^{E-1}-1) \\ &amp;&amp;|&amp;
-  (0 + \href{../syntax/values.html#syntax-int}{\def\mathdef2030#1{{\mathit{u}#1}}\mathdef2030{M}}\cdot 2^{-M}) \cdot 2^e &amp; (\mathrel{\mbox{if}} e = -2^{E-1}+2) \\ &amp;&amp;|&amp;
+\def\mathdef2128#1{{}}\mathdef2128{floating-point value} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef2146#1{{\mathit{f}#1}}\mathdef2146{N}} &amp;::=&amp;
+  {+} \href{../syntax/values.html#syntax-float}{\def\mathdef2147#1{{\mathit{f}#1}}\mathdef2147{\mathit{Nmag}}} ~|~ {-} \href{../syntax/values.html#syntax-float}{\def\mathdef2147#1{{\mathit{f}#1}}\mathdef2147{\mathit{Nmag}}} \\
+\def\mathdef2128#1{{}}\mathdef2128{floating-point magnitude} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef2147#1{{\mathit{f}#1}}\mathdef2147{\mathit{Nmag}}} &amp;::=&amp;
+  (1 + \href{../syntax/values.html#syntax-int}{\def\mathdef2130#1{{\mathit{u}#1}}\mathdef2130{M}}\cdot 2^{-M}) \cdot 2^e &amp; (\mathrel{\mbox{if}} -2^{E-1}+2 \leq e \leq 2^{E-1}-1) \\ &amp;&amp;|&amp;
+  (0 + \href{../syntax/values.html#syntax-int}{\def\mathdef2130#1{{\mathit{u}#1}}\mathdef2130{M}}\cdot 2^{-M}) \cdot 2^e &amp; (\mathrel{\mbox{if}} e = -2^{E-1}+2) \\ &amp;&amp;|&amp;
   \infty \\ &amp;&amp;|&amp;
   \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) &amp; (\mathrel{\mbox{if}} 1 \leq n &lt; 2^M) \\
 \end{array}\end{split}\]</div>
@@ -179,6 +181,10 @@ No distinction is made between signalling and quiet NaNs.</p>
 <div class="math">
 \[\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N = 2^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)-1}\]</div>
 <p>An <em>arithmetic NaN</em>  is a floating-point value <span class="math">\(\pm\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\)</span> with <span class="math">\(n \geq \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N\)</span>, such that the most significant bit is <span class="math">\(1\)</span> while all others are arbitrary.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the abstract syntax, subnormals are distinguished by the leading 0 of the significand. The exponent of subnormals has the same value as the smallest possible exponent of a normal number. Only in the <a class="reference internal" href="../binary/values.html#binary-float"><span class="std std-ref">binary representation</span></a> the exponent of a subnormal is encoded differently than the exponent of any normal number.</p>
+</div>
 <div class="section" id="id2">
 <h3>Conventions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -191,11 +197,11 @@ No distinction is made between signalling and quiet NaNs.</p>
 <p><em>Names</em> are sequences of scalar <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> <em>code points</em>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\def\mathdef2028#1{{}}\mathdef2028{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
+\def\mathdef2128#1{{}}\mathdef2128{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast \qquad\qquad (\mathrel{\mbox{if}} |\href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(\href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast)| &lt; 2^{32}) \\
-\def\mathdef2028#1{{}}\mathdef2028{code point} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
-  \def\mathdef2088#1{\mathrm{U{+}#1}}\mathdef2088{00} ~|~ \dots ~|~ \def\mathdef2089#1{\mathrm{U{+}#1}}\mathdef2089{D7FF} ~|~
-  \def\mathdef2090#1{\mathrm{U{+}#1}}\mathdef2090{E000} ~|~ \dots ~|~ \def\mathdef2091#1{\mathrm{U{+}#1}}\mathdef2091{10FFFF} \\
+\def\mathdef2128#1{{}}\mathdef2128{code point} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
+  \def\mathdef2187#1{\mathrm{U{+}#1}}\mathdef2187{00} ~|~ \dots ~|~ \def\mathdef2188#1{\mathrm{U{+}#1}}\mathdef2188{D7FF} ~|~
+  \def\mathdef2189#1{\mathrm{U{+}#1}}\mathdef2189{E000} ~|~ \dots ~|~ \def\mathdef2190#1{\mathrm{U{+}#1}}\mathdef2190{10FFFF} \\
 \end{array}\end{split}\]</div>
 <p>Due to the limitations of the <a class="reference internal" href="../binary/values.html#binary-name"><span class="std std-ref">binary format</span></a>,
 the lengths of a name is bounded by the length of its <a class="reference internal" href="../binary/values.html#binary-utf8"><span class="std std-ref">UTF-8</span></a> encoding.</p>

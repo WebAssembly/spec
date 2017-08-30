@@ -68,7 +68,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../syntax/instrindex.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
 </ul>
 
 
@@ -104,50 +106,50 @@
 <p><a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">Bytes</span></a> encode themselves.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcll&#64;{\qquad}l}
-\def\mathdef805#1{{}}\mathdef805{byte} &amp; \href{../binary/values.html#binary-byte}{\mathtt{byte}} &amp;::=&amp;
-  \def\mathdef863#1{\mathtt{0x#1}}\mathdef863{00} &amp;\Rightarrow&amp; \def\mathdef864#1{\mathtt{0x#1}}\mathdef864{00} \\ &amp;&amp;|&amp;&amp;
+\def\mathdef1170#1{{}}\mathdef1170{byte} &amp; \href{../binary/values.html#binary-byte}{\mathtt{byte}} &amp;::=&amp;
+  \def\mathdef1227#1{\mathtt{0x#1}}\mathdef1227{00} &amp;\Rightarrow&amp; \def\mathdef1228#1{\mathtt{0x#1}}\mathdef1228{00} \\ &amp;&amp;|&amp;&amp;
   \dots \\ &amp;&amp;|&amp;
-  \def\mathdef865#1{\mathtt{0x#1}}\mathdef865{FF} &amp;\Rightarrow&amp; \def\mathdef866#1{\mathtt{0x#1}}\mathdef866{FF} \\
+  \def\mathdef1229#1{\mathtt{0x#1}}\mathdef1229{FF} &amp;\Rightarrow&amp; \def\mathdef1230#1{\mathtt{0x#1}}\mathdef1230{FF} \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="integers">
 <span id="binary-int"></span><span id="binary-uint"></span><span id="binary-sint"></span><span id="index-2"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
 <p>All <a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">integers</span></a> are encoded using the <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128">LEB128</a> variable-length integer encoding, in either unsigned or signed variant.</p>
 <p><a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">Unsigned integers</span></a> are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128">unsigned LEB128</a> format.
-As an additional constraint, the total number of bytes encoding a value of type <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef806#1{{\mathit{u}#1}}\mathdef806{N}}\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
+As an additional constraint, the total number of bytes encoding a value of type <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1171#1{{\mathit{u}#1}}\mathdef1171{N}}\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}
-\def\mathdef805#1{{}}\mathdef805{unsigned integer} &amp; \href{../binary/values.html#binary-int}{\def\mathdef828#1{{\mathtt{u}#1}}\mathdef828{N}} &amp;::=&amp;
+\def\mathdef1170#1{{}}\mathdef1170{unsigned integer} &amp; \href{../binary/values.html#binary-int}{\def\mathdef1192#1{{\mathtt{u}#1}}\mathdef1192{N}} &amp;::=&amp;
   n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}} &amp;\Rightarrow&amp; n &amp; (\mathrel{\mbox{if}} n &lt; 2^7 \wedge n &lt; 2^N) \\ &amp;&amp;|&amp;
-  n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}}~~m{:}\def\mathdef867#1{{\mathtt{u}#1}}\mathdef867{(N\mathtt{-7})} &amp;\Rightarrow&amp;
+  n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}}~~m{:}\def\mathdef1231#1{{\mathtt{u}#1}}\mathdef1231{(N\mathtt{-7})} &amp;\Rightarrow&amp;
     2^7\cdot m + (n-2^7) &amp; (\mathrel{\mbox{if}} n \geq 2^7 \wedge N &gt; 7) \\
 \end{array}\end{split}\]</div>
 <p><a class="reference internal" href="../syntax/values.html#syntax-sint"><span class="std std-ref">Signed integers</span></a> are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Signed_LEB128">signed LEB128</a> format, which uses a two&#8217;s complement representation.
-As an additional constraint, the total number of bytes encoding a value of type <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef813#1{{\mathit{s}#1}}\mathdef813{N}}\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
+As an additional constraint, the total number of bytes encoding a value of type <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1178#1{{\mathit{s}#1}}\mathdef1178{N}}\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}
-\def\mathdef805#1{{}}\mathdef805{signed integer} &amp; \href{../binary/values.html#binary-int}{\def\mathdef834#1{{\mathtt{s}#1}}\mathdef834{N}} &amp;::=&amp;
+\def\mathdef1170#1{{}}\mathdef1170{signed integer} &amp; \href{../binary/values.html#binary-int}{\def\mathdef1198#1{{\mathtt{s}#1}}\mathdef1198{N}} &amp;::=&amp;
   n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}} &amp;\Rightarrow&amp; n &amp; (\mathrel{\mbox{if}} n &lt; 2^6 \wedge n &lt; 2^{N-1}) \\ &amp;&amp;|&amp;
   n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}} &amp;\Rightarrow&amp; n-2^7 &amp; (\mathrel{\mbox{if}} 2^6 \leq n &lt; 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &amp;&amp;|&amp;
-  n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}}~~m{:}\def\mathdef868#1{{\mathtt{s}#1}}\mathdef868{(N\mathtt{-7})} &amp;\Rightarrow&amp;
+  n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}}~~m{:}\def\mathdef1232#1{{\mathtt{s}#1}}\mathdef1232{(N\mathtt{-7})} &amp;\Rightarrow&amp;
     2^7\cdot m + (n-2^7) &amp; (\mathrel{\mbox{if}} n \geq 2^7 \wedge N &gt; 7) \\
 \end{array}\end{split}\]</div>
 <p><a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">Uninterpreted integers</span></a> are encoded as signed integers.</p>
 <div class="math">
 \[\begin{array}{llclll&#64;{\qquad\qquad}l}
-\def\mathdef805#1{{}}\mathdef805{uninterpreted integer} &amp; \href{../binary/values.html#binary-int}{\def\mathdef838#1{{\mathtt{i}#1}}\mathdef838{N}} &amp;::=&amp;
-  n{:}\href{../binary/values.html#binary-int}{\def\mathdef834#1{{\mathtt{s}#1}}\mathdef834{N}} &amp;\Rightarrow&amp; i &amp; (\mathrel{\mbox{if}} n = \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef819#1{{\mathit{i}#1}}\mathdef819{N}}}(i))
+\def\mathdef1170#1{{}}\mathdef1170{uninterpreted integer} &amp; \href{../binary/values.html#binary-int}{\def\mathdef1202#1{{\mathtt{i}#1}}\mathdef1202{N}} &amp;::=&amp;
+  n{:}\href{../binary/values.html#binary-int}{\def\mathdef1198#1{{\mathtt{s}#1}}\mathdef1198{N}} &amp;\Rightarrow&amp; i &amp; (\mathrel{\mbox{if}} n = \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef1183#1{{\mathit{i}#1}}\mathdef1183{N}}}(i))
 \end{array}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>The side conditions <span class="math">\(N &gt; 7\)</span> in the productions for non-terminal bytes of the <span class="math">\(\def\mathdef869#1{{\mathit{u}#1}}\mathdef869{}\)</span> and <span class="math">\(\def\mathdef870#1{{\mathit{s}#1}}\mathdef870{}\)</span> encodings restrict the encoding&#8217;s length.
+<p>The side conditions <span class="math">\(N &gt; 7\)</span> in the productions for non-terminal bytes of the <span class="math">\(\def\mathdef1233#1{{\mathit{u}#1}}\mathdef1233{}\)</span> and <span class="math">\(\def\mathdef1234#1{{\mathit{s}#1}}\mathdef1234{}\)</span> encodings restrict the encoding&#8217;s length.
 However, &#8220;trailing zeros&#8221; are still allowed within these bounds.
-For example, <span class="math">\(\def\mathdef871#1{\mathtt{0x#1}}\mathdef871{03}\)</span> and <span class="math">\(\def\mathdef872#1{\mathtt{0x#1}}\mathdef872{83}~\def\mathdef873#1{\mathtt{0x#1}}\mathdef873{00}\)</span> are both well-formed encodings for the value <span class="math">\(3\)</span> as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef809#1{{\mathit{u}#1}}\mathdef809{\mathit{8}}}\)</span>.
-Similarly, either of <span class="math">\(\def\mathdef874#1{\mathtt{0x#1}}\mathdef874{7e}\)</span> and <span class="math">\(\def\mathdef875#1{\mathtt{0x#1}}\mathdef875{FE}~\def\mathdef876#1{\mathtt{0x#1}}\mathdef876{7F}\)</span> and <span class="math">\(\def\mathdef877#1{\mathtt{0x#1}}\mathdef877{FE}~\def\mathdef878#1{\mathtt{0x#1}}\mathdef878{FF}~\def\mathdef879#1{\mathtt{0x#1}}\mathdef879{7F}\)</span> are well-formed encodings of the value <span class="math">\(-2\)</span> as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef815#1{{\mathit{s}#1}}\mathdef815{\mathit{16}}}\)</span>.</p>
+For example, <span class="math">\(\def\mathdef1235#1{\mathtt{0x#1}}\mathdef1235{03}\)</span> and <span class="math">\(\def\mathdef1236#1{\mathtt{0x#1}}\mathdef1236{83}~\def\mathdef1237#1{\mathtt{0x#1}}\mathdef1237{00}\)</span> are both well-formed encodings for the value <span class="math">\(3\)</span> as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1174#1{{\mathit{u}#1}}\mathdef1174{\mathit{8}}}\)</span>.
+Similarly, either of <span class="math">\(\def\mathdef1238#1{\mathtt{0x#1}}\mathdef1238{7e}\)</span> and <span class="math">\(\def\mathdef1239#1{\mathtt{0x#1}}\mathdef1239{FE}~\def\mathdef1240#1{\mathtt{0x#1}}\mathdef1240{7F}\)</span> and <span class="math">\(\def\mathdef1241#1{\mathtt{0x#1}}\mathdef1241{FE}~\def\mathdef1242#1{\mathtt{0x#1}}\mathdef1242{FF}~\def\mathdef1243#1{\mathtt{0x#1}}\mathdef1243{7F}\)</span> are well-formed encodings of the value <span class="math">\(-2\)</span> as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1180#1{{\mathit{s}#1}}\mathdef1180{\mathit{16}}}\)</span>.</p>
 <p class="last">The side conditions on the value <span class="math">\(n\)</span> of terminal bytes further enforce that
 any unused bits in these bytes must be <span class="math">\(0\)</span> for positive values and <span class="math">\(1\)</span> for negative ones.
-For example, <span class="math">\(\def\mathdef880#1{\mathtt{0x#1}}\mathdef880{83}~\def\mathdef881#1{\mathtt{0x#1}}\mathdef881{10}\)</span> is malformed as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef809#1{{\mathit{u}#1}}\mathdef809{\mathit{8}}}\)</span> encoding.
-Similarly, both <span class="math">\(\def\mathdef882#1{\mathtt{0x#1}}\mathdef882{83}~\def\mathdef883#1{\mathtt{0x#1}}\mathdef883{3E}\)</span> and <span class="math">\(\def\mathdef884#1{\mathtt{0x#1}}\mathdef884{FF}~\def\mathdef885#1{\mathtt{0x#1}}\mathdef885{7B}\)</span> are malformed as <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef814#1{{\mathit{s}#1}}\mathdef814{\mathit{8}}}\)</span> encodings.</p>
+For example, <span class="math">\(\def\mathdef1244#1{\mathtt{0x#1}}\mathdef1244{83}~\def\mathdef1245#1{\mathtt{0x#1}}\mathdef1245{10}\)</span> is malformed as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1174#1{{\mathit{u}#1}}\mathdef1174{\mathit{8}}}\)</span> encoding.
+Similarly, both <span class="math">\(\def\mathdef1246#1{\mathtt{0x#1}}\mathdef1246{83}~\def\mathdef1247#1{\mathtt{0x#1}}\mathdef1247{3E}\)</span> and <span class="math">\(\def\mathdef1248#1{\mathtt{0x#1}}\mathdef1248{FF}~\def\mathdef1249#1{\mathtt{0x#1}}\mathdef1249{7B}\)</span> are malformed as <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1179#1{{\mathit{s}#1}}\mathdef1179{\mathit{8}}}\)</span> encodings.</p>
 </div>
 </div>
 <div class="section" id="floating-point">
@@ -155,8 +157,8 @@ Similarly, both <span class="math">\(\def\mathdef882#1{\mathtt{0x#1}}\mathdef882
 <p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point</span></a> values are encoded directly by their <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> bit pattern in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
-\def\mathdef805#1{{}}\mathdef805{floating-point value} &amp; \href{../binary/values.html#binary-float}{\def\mathdef841#1{{\mathtt{f}#1}}\mathdef841{N}} &amp;::=&amp;
-  b^\ast{:\,}\href{../binary/values.html#binary-byte}{\mathtt{byte}}^{N/8} &amp;\Rightarrow&amp; \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-float}{\def\mathdef824#1{{\mathit{f}#1}}\mathdef824{N}}}^{-1}(b^\ast) \\
+\def\mathdef1170#1{{}}\mathdef1170{floating-point value} &amp; \href{../binary/values.html#binary-float}{\def\mathdef1205#1{{\mathtt{f}#1}}\mathdef1205{N}} &amp;::=&amp;
+  b^\ast{:\,}\href{../binary/values.html#binary-byte}{\mathtt{byte}}^{N/8} &amp;\Rightarrow&amp; \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-float}{\def\mathdef1188#1{{\mathit{f}#1}}\mathdef1188{N}}}^{-1}(b^\ast) \\
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="names">
@@ -164,7 +166,7 @@ Similarly, both <span class="math">\(\def\mathdef882#1{\mathtt{0x#1}}\mathdef882
 <p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are encoded as a <a class="reference internal" href="conventions.html#binary-vec"><span class="std std-ref">vector</span></a> of bytes containing the <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> UTF-8 encoding of the name&#8217;s code point sequence.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclllll}
-\def\mathdef805#1{{}}\mathdef805{name} &amp; \href{../binary/values.html#binary-name}{\mathtt{name}} &amp;::=&amp;
+\def\mathdef1170#1{{}}\mathdef1170{name} &amp; \href{../binary/values.html#binary-name}{\mathtt{name}} &amp;::=&amp;
   b^\ast{:}\href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\href{../binary/values.html#binary-byte}{\mathtt{byte}}) &amp;\Rightarrow&amp; \href{../syntax/values.html#syntax-name}{\mathit{name}}
     &amp;&amp; (\mathrel{\mbox{if}} \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(\href{../syntax/values.html#syntax-name}{\mathit{name}}) = b^\ast) \\
 \end{array}\end{split}\]</div>
@@ -174,23 +176,23 @@ Similarly, both <span class="math">\(\def\mathdef882#1{\mathtt{0x#1}}\mathdef882
 \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c^\ast) &amp;=&amp; (\href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c))^\ast \\[1ex]
 \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b &amp;
   (\begin{array}[t]{&#64;{}c&#64;{~}l&#64;{}}
-   \mathrel{\mbox{if}} &amp; c &lt; \def\mathdef886#1{\mathrm{U{+}#1}}\mathdef886{80} \\
+   \mathrel{\mbox{if}} &amp; c &lt; \def\mathdef1250#1{\mathrm{U{+}#1}}\mathdef1250{80} \\
    \wedge &amp; c = b) \\
    \end{array} \\
 \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2 &amp;
   (\begin{array}[t]{&#64;{}c&#64;{~}l&#64;{}}
-   \mathrel{\mbox{if}} &amp; \def\mathdef887#1{\mathrm{U{+}#1}}\mathdef887{80} \leq c &lt; \def\mathdef888#1{\mathrm{U{+}#1}}\mathdef888{800} \\
-   \wedge &amp; c = 2^6(b_1-\def\mathdef889#1{\mathtt{0x#1}}\mathdef889{C0})+(b_2-\def\mathdef890#1{\mathtt{0x#1}}\mathdef890{80})) \\
+   \mathrel{\mbox{if}} &amp; \def\mathdef1251#1{\mathrm{U{+}#1}}\mathdef1251{80} \leq c &lt; \def\mathdef1252#1{\mathrm{U{+}#1}}\mathdef1252{800} \\
+   \wedge &amp; c = 2^6(b_1-\def\mathdef1253#1{\mathtt{0x#1}}\mathdef1253{C0})+(b_2-\def\mathdef1254#1{\mathtt{0x#1}}\mathdef1254{80})) \\
    \end{array} \\
 \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2~b_3 &amp;
   (\begin{array}[t]{&#64;{}c&#64;{~}l&#64;{}}
-   \mathrel{\mbox{if}} &amp; \def\mathdef891#1{\mathrm{U{+}#1}}\mathdef891{800} \leq c &lt; \def\mathdef892#1{\mathrm{U{+}#1}}\mathdef892{10000} \\
-   \wedge &amp; c = 2^{12}(b_1-\def\mathdef893#1{\mathtt{0x#1}}\mathdef893{C0})+2^6(b_2-\def\mathdef894#1{\mathtt{0x#1}}\mathdef894{80})+(b_3-\def\mathdef895#1{\mathtt{0x#1}}\mathdef895{80})) \\
+   \mathrel{\mbox{if}} &amp; \def\mathdef1255#1{\mathrm{U{+}#1}}\mathdef1255{800} \leq c &lt; \def\mathdef1256#1{\mathrm{U{+}#1}}\mathdef1256{10000} \\
+   \wedge &amp; c = 2^{12}(b_1-\def\mathdef1257#1{\mathtt{0x#1}}\mathdef1257{C0})+2^6(b_2-\def\mathdef1258#1{\mathtt{0x#1}}\mathdef1258{80})+(b_3-\def\mathdef1259#1{\mathtt{0x#1}}\mathdef1259{80})) \\
    \end{array} \\
 \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2~b_3~b_4 &amp;
   (\begin{array}[t]{&#64;{}c&#64;{~}l&#64;{}}
-   \mathrel{\mbox{if}} &amp; \def\mathdef896#1{\mathrm{U{+}#1}}\mathdef896{10000} \leq c &lt; \def\mathdef897#1{\mathrm{U{+}#1}}\mathdef897{110000} \\
-   \wedge &amp; c = 2^{18}(b_1-\def\mathdef898#1{\mathtt{0x#1}}\mathdef898{C0})+2^{12}(b_2-\def\mathdef899#1{\mathtt{0x#1}}\mathdef899{80})+2^6(b_3-\def\mathdef900#1{\mathtt{0x#1}}\mathdef900{80})+(b_4-\def\mathdef901#1{\mathtt{0x#1}}\mathdef901{80})) \\
+   \mathrel{\mbox{if}} &amp; \def\mathdef1260#1{\mathrm{U{+}#1}}\mathdef1260{10000} \leq c &lt; \def\mathdef1261#1{\mathrm{U{+}#1}}\mathdef1261{110000} \\
+   \wedge &amp; c = 2^{18}(b_1-\def\mathdef1262#1{\mathtt{0x#1}}\mathdef1262{C0})+2^{12}(b_2-\def\mathdef1263#1{\mathtt{0x#1}}\mathdef1263{80})+2^6(b_3-\def\mathdef1264#1{\mathtt{0x#1}}\mathdef1264{80})+(b_4-\def\mathdef1265#1{\mathtt{0x#1}}\mathdef1265{80})) \\
    \end{array} \\
 \end{array}\end{split}\]</div>
 </div>
