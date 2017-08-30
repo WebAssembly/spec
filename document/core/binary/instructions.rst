@@ -54,12 +54,15 @@ Control Instructions
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
-     \hex{11}~~x{:}\Btypeidx &\Rightarrow& \CALLINDIRECT~x \\
+     \hex{11}~~x{:}\Btypeidx~~\hex{00} &\Rightarrow& \CALLINDIRECT~x \\
    \end{array}
 
 .. note::
    The |ELSE| opcode :math:`\hex{05}` in the encoding of an |IF| instruction can be omitted if the following instruction sequence is empty.
 
+.. note::
+   In future versions of WebAssembly, the zero byte occurring in the encoding
+   of the |CALLINDIRECT| instruction may be used to index additional tables.
 
 .. index:: value type, polymorphism
    pair: binary format; instruction
