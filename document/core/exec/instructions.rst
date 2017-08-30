@@ -359,6 +359,9 @@ Variable Instructions
    (\iff S' = S \with \SGLOBALS[F.\AMODULE.\MIGLOBALS[x]].\GIVALUE = \val) \\
    \end{array}
 
+.. note::
+   :ref:`Validation <valid-set_global>` ensures that the global is, in fact, marked as mutable.
+
 
 .. index:: memory instruction, memory index, store, frame, address, memory address, memory instance, store, frame, value, integer, limits, value type, bit width
    pair: execution; instruction
