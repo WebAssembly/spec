@@ -174,7 +174,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \begin{array}[b]{@{}l@{}}
      \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok \\
      \end{array}
-     \qquad
+     \quad
      \begin{array}[b]{@{}l@{}}
      \forall S_1, \val^\ast,~
        {\vdashstore S_1 \ok} \wedge
@@ -185,7 +185,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        {\vdashstore S_2 \ok} \wedge
        {\vdashstoreextends S_1 \extendsto S_2} \wedge
        {\vdashresult \result : [t_2^\ast]} \wedge
-       \X{hf}(S_1; \val_1^\ast) = S_2; \result
+       \X{hf}(S_1; \val^\ast) = S_2; \result
      \end{array}
    }{
      S \vdashfuncinst \{\FITYPE~[t_1^\ast] \to [t_2^\ast], \FIHOSTCODE~\X{hf}\} : [t_1^\ast] \to [t_2^\ast]
