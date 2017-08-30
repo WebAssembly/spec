@@ -233,7 +233,7 @@ Module instances are classified by <em>module contexts</em>, which are regular <
   \begin{array}[b]{&#64;{}l&#64;{}}
   \href{../valid/types.html#valid-functype}{\vdash} [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast] \mathrel{\mbox{ok}} \\
   \end{array}
-  \qquad
+  \quad
   \begin{array}[b]{&#64;{}l&#64;{}}
   \forall S_1, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast,~
     {\href{../appendix/properties.html#valid-store}{\vdash} S_1 \mathrel{\mbox{ok}}} \wedge
@@ -244,7 +244,7 @@ Module instances are classified by <em>module contexts</em>, which are regular <
     {\href{../appendix/properties.html#valid-store}{\vdash} S_2 \mathrel{\mbox{ok}}} \wedge
     {\href{../appendix/properties.html#extend-store}{\vdash} S_1 \href{../appendix/properties.html#extend}{\preceq} S_2} \wedge
     {\href{../appendix/properties.html#valid-result}{\vdash} \href{../exec/runtime.html#syntax-result}{\mathit{result}} : [t_2^\ast]} \wedge
-    \mathit{hf}(S_1; \href{../exec/runtime.html#syntax-val}{\mathit{val}}_1^\ast) = S_2; \href{../exec/runtime.html#syntax-result}{\mathit{result}}
+    \mathit{hf}(S_1; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast) = S_2; \href{../exec/runtime.html#syntax-result}{\mathit{result}}
   \end{array}
 }{
   S \href{../appendix/properties.html#valid-funcinst}{\vdash} \{\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}~[t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast], \href{../exec/runtime.html#syntax-funcinst}{\mathsf{hostcode}}~\mathit{hf}\} : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
