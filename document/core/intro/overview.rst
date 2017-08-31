@@ -40,7 +40,7 @@ This language is structured around the following concepts.
 
 **Traps**
   Under some conditions, certain instructions may produce a *trap*,
-  which immediately aborts excecution.
+  which immediately aborts execution.
   Traps cannot be handled by WebAssembly code,
   but are reported to the outside environment,
   where they typically can be caught.
