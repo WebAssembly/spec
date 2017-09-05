@@ -184,7 +184,7 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
      \text{offset{=}}o{:}\Tu32 &\Rightarrow& o \\ &&|&
      \epsilon &\Rightarrow& 0 \\
    \production{memory alignment} & \Talign_N &::=&
-     \text{align{=}}a{:}\Tu32 &\Rightarrow& a \\ &&|&
+     \text{align{=}}a{:}\Tu32 &\Rightarrow& n & (\iff a = 2^n) \\ &&|&
      \epsilon &\Rightarrow& N \\
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{i32.load}~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\LOAD~m \\ &&|&
