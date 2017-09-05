@@ -372,6 +372,13 @@ Variable Instructions
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
+.. note::
+   The alignment component of a :math:`\memarg` immediate does not affect execution of a load or store instruction,
+   it is merely an optimization hint for the engine.
+   Memory access at an offset with less alignment than annotated will succeed regardless,
+   but may be significantly slower on some hardware.
+
+
 .. _exec-load:
 .. _exec-loadn:
 
