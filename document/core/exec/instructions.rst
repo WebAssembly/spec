@@ -373,10 +373,10 @@ Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
 .. note::
-   The alignment component of a :math:`\memarg` immediate does not affect execution of a load or store instruction,
-   it is merely an optimization hint for the engine.
-   Memory access at an offset with less alignment than annotated will succeed regardless,
+   The alignment :math:`\memarg.\ALIGN` in load and store instructions does not affect the semantics.
+   Unaligned access is supported for all types, and succeeds regardless of the annotation,
    but may be significantly slower on some hardware.
+   The only purpose of the annotation is to provide a respective optimizatons hints to the engine.
 
 
 .. _exec-load:
@@ -453,11 +453,6 @@ Memory Instructions
    \\ \qquad
      (\otherwise) \\
    \end{array}
-
-.. note::
-   The alignment :math:`\memarg.\ALIGN` does not affect the semantics.
-   Unaligned access is supported for all types, and succeeds regardless of the annotation.
-   The only purpose of the annotation is to provide optimizatons hints.
 
 
 .. _exec-store:
