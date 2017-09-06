@@ -135,6 +135,7 @@ Again these functions are invertable bijections.
 
 
 .. index:: integer
+.. _int-ops:
 
 Integer Operations
 ~~~~~~~~~~~~~~~~~~
@@ -611,6 +612,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 
 .. index:: floating-point, IEEE 754
+.. _float-ops:
 
 Floating-Point Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1357,6 +1359,8 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fge_N(z_1, z_2) &=& \bool(z_1 \geq z_2) \\
    \end{array}
 
+
+.. _convert-ops:
 
 Conversions
 ~~~~~~~~~~~
