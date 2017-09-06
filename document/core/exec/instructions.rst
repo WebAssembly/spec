@@ -1111,7 +1111,7 @@ For a WebAssembly implementation to be :ref:`sound <soundness>` in the presence 
 every :ref:`host function instance <syntax-funcinst>` must be :ref:`valid <valid-hostfuncinst>`,
 which means that it adheres to suitable pre- and post-conditions:
 under a :ref:`valid store <valid-store>` :math:`S`, and given arguments :math:`\val^n` matching the ascribed parameter types :math:`t_1^n`,
-executing the host function must produce a valid store :math:`S'` that is an :ref:`extension <extend-store>` of :math:`S` and a result matching the ascribed result types :math:`t_2^m`.
+executing the host function must produce a valid store :math:`S'` that is an :ref:`extension <extend-store>` of :math:`S` and a result matching the ascribed return types :math:`t_2^m`.
 All these notions are made precise in the :ref:`Appendix <soundness>`.
 
 .. note::
