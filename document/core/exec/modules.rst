@@ -729,8 +729,8 @@ The values :math:`\val_{\F{res}}^m` are returned as the results of the invocatio
 .. math::
    ~\\[-1ex]
    \begin{array}{@{}lcl}
-   \invoke(S, \funcaddr, \val^n) &=& \val_{\F{res}}^m / \TRAP \\
+   \invoke(S, \funcaddr, \val^n) &=& \result \\
      &(\iff & S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
      &\wedge& \val^n = (t_1.\CONST~c)^n \\
-     &\wedge& S; \val^n~(\INVOKE~\funcaddr) \stepto^\ast S'; \val_{\F{res}}^m / \TRAP) \\
+     &\wedge& S; \val^n~(\INVOKE~\funcaddr) \stepto^\ast S'; \result) \\
    \end{array}

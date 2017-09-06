@@ -1101,31 +1101,24 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; \val_1^n~(\INVOKE~a) &\stepto& S'; \val_2^m
+   S; \val^n~(\INVOKE~a) &\stepto& S'; \result
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\dots \} \\
-     \wedge & \val_1^n = (t_1.\CONST~c_1)^n \\
-     \wedge & \val_2^m = (t_2.\CONST~c_2)^m \\
-     \wedge & \vdashstoreextends S \extendsto S' \\
-     \wedge & \vdashstore S' \ok) \\
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\INVOKE~a) &\stepto& S'; \TRAP
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~\X{ft}, \FIHOSTCODE~\dots \} \\ 
-     \wedge & \vdashstoreextends S \extendsto S' \\
-     \wedge & \vdashstore S' \ok) \\
+     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     \wedge & \X{hf}(S; \val^n) = S'; \result) \\
      \end{array} \\
    \end{array}
 
-Here, :math:`S \extendsto S'` expresses that the new store :math:`S'` is an :ref:`extension <extend>` of :math:`S`.
-Moreover, :math:`\vdashstore S' \ok` restricts :math:`S'` to be a :ref:`valid <valid-store>` store.
-Both notions are defined in the :ref:`Appendix <properties>`.
+Here, :math:`\X{hf}(S; \val^n)` denotes the implementation-defined execution of host function :math:`\X{hf}` in current store :math:`S` with arguments :math:`\val^n`.
+The outcome is a pair of a modified store :math:`S'` and a :ref:`result <syntax-result>`.
+
+For a WebAssembly implementation to be :ref:`sound <soundness>` in the presence of host functions,
+every :ref:`host function instance <syntax-funcinst>` must be :ref:`valid <valid-hostfuncinst>`,
+which means that it adheres to suitable pre- and post-conditions:
+under a :ref:`valid store <valid-store>` :math:`S`, and given arguments :math:`\val^n` matching the ascribed parameter types :math:`t_1^n`,
+executing the host function must produce a valid store :math:`S'` that is an :ref:`extension <extend-store>` of :math:`S` and a result matching the ascribed return types :math:`t_2^m`.
+All these notions are made precise in the :ref:`Appendix <soundness>`.
 
 .. note::
    A host function can call back into WebAssembly by :ref:`invoking <exec-invocation>` a function :ref:`exported <syntax-export>` from a :ref:`module <syntax-module>`.
