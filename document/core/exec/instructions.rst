@@ -372,6 +372,14 @@ Variable Instructions
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
+.. note::
+   The alignment :math:`\memarg.\ALIGN` in load and store instructions does not affect the semantics.
+   It is an indication that the offset :math:`\X{ea}` at which the memory is accessed is intended to satisfy the property :math:`\X{ea} \mod 2^{\memarg.\ALIGN} = 0`.
+   A WebAssembly implementation can use this hint to optimize for the intended use.
+   Unaligned access violating that property is still allowed and must succeed regardless of the annotation.
+   However, it may be substantially slower on some hardware.
+
+
 .. _exec-load:
 .. _exec-loadn:
 
@@ -446,11 +454,6 @@ Memory Instructions
    \\ \qquad
      (\otherwise) \\
    \end{array}
-
-.. note::
-   The alignment :math:`\memarg.\ALIGN` does not affect the semantics.
-   Unaligned access is supported for all types, and succeeds regardless of the annotation.
-   The only purpose of the annotation is to provide optimizatons hints.
 
 
 .. _exec-store:

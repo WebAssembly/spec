@@ -179,7 +179,7 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
 .. math::
    \begin{array}{llclll}
    \production{memory argument} & \Tmemarg_N &::=&
-     o{:}\Toffset~~a{:}\Talign_N &\Rightarrow& \{ \ALIGN~a,~\OFFSET~o \} \\
+     o{:}\Toffset~~a{:}\Talign_N &\Rightarrow& \{ \ALIGN~n,~\OFFSET~o \} & (\iff a = 2^n) \\
    \production{memory offset} & \Toffset &::=&
      \text{offset{=}}o{:}\Tu32 &\Rightarrow& o \\ &&|&
      \epsilon &\Rightarrow& 0 \\
