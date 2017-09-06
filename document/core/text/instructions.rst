@@ -177,7 +177,7 @@ The offset defaults to :math:`\T{0}`, the alignment to the storage size of the r
 Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword token <text-keyword>`, so no :ref:`white space <text-space>` is allowed around the :math:`\text{=}`.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcllll}
    \production{memory argument} & \Tmemarg_N &::=&
      o{:}\Toffset~~a{:}\Talign_N &\Rightarrow& \{ \ALIGN~n,~\OFFSET~o \} & (\iff a = 2^n) \\
    \production{memory offset} & \Toffset &::=&
