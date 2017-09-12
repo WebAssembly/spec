@@ -29,7 +29,7 @@ The types |I32| and |I64| classify 32 and 64 bit integers, respectively.
 Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.
 
 The types |F32| and |F64| classify 32 and 64 bit floating-point data, respectively.
-They correspond to *single* and *double* precision floating-point types as defined by the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard
+They correspond to the respective binary floating-point representations, also known as *single* and *double* precision, as defined by the |IEEE754|_ standard (Section 3.3).
 
 Conventions
 ...........

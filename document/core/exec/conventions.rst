@@ -13,7 +13,7 @@ Furthermore, there are rules describing the instantiation of a module.
 As with :ref:`validation <validation>`, all rules are given in two *equivalent* forms:
 
 1. In *prose*, describing the execution in intuitive form.
-2. In *formal notation*, describing the rule in mathematical form. [#pldi2017]_
+2. In *formal notation*, describing the rule in mathematical form. [#cite-pldi2017]_
 
 .. note::
    As with validation, the prose and formal rules are equivalent,
@@ -62,7 +62,7 @@ Formal Notation
 
 .. note::
    This section gives a brief explanation of the notation for specifying execution formally.
-   For the interested reader, a more thorough introduction can be found in respective text books. [#tapl]_
+   For the interested reader, a more thorough introduction can be found in respective text books. [#cite-tapl]_
 
 The formal execution rules use a standard approach for specifying operational semantics, rendering them into *reduction rules*.
 Every rule has the following general form:
@@ -126,9 +126,9 @@ or if a :ref:`trap <syntax-trap>` occurred.
    where :math:`x_4 = -x_2` and :math:`x_5 = -x_2 + x_3` and :math:`x_6 = x_1 \cdot (-x_2 + x_3)`.
 
 
-.. [#pldi2017]
+.. [#cite-pldi2017]
    The semantics is derived from the following article:
-   Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. `Bringing the Web up to Speed with WebAssembly <https://dl.acm.org/citation.cfm?doid=3062341.3062363>`_. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
+   Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. |PLDI2017|_. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
 
-.. [#tapl]
-   For example: Benjamin Pierce. `Types and Programming Languages <https://www.cis.upenn.edu/~bcpierce/tapl/>`_. The MIT Press 2002
+.. [#cite-tapl]
+   For example: Benjamin Pierce. |TAPL|_. The MIT Press 2002

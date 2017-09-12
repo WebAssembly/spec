@@ -99,7 +99,7 @@ Boolean operators like :math:`\wedge`, :math:`\vee`, or :math:`\veebar` are lift
 Floating-Point
 ..............
 
-:ref:`Floating-point values <syntax-float>` are represented in the respective binary format defined by `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_:
+:ref:`Floating-point values <syntax-float>` are represented in the respective binary format defined by |IEEE754|_ (Section 3.4):
 
 .. math::
    \begin{array}{lll@{\qquad}l}
@@ -122,7 +122,7 @@ where :math:`M = \significand(N)` and :math:`E = \exponent(N)`.
 Storage
 .......
 
-When a number is stored into :ref:`memory <syntax-mem>`, it is converted into a sequence of :ref:`bytes <syntax-byte>` in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+When a number is stored into :ref:`memory <syntax-mem>`, it is converted into a sequence of :ref:`bytes <syntax-byte>` in |LittleEndian|_ byte order:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
@@ -617,7 +617,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 Floating-Point Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Floating-point arithmetic follows the `IEEE 754-2008 <http://ieeexplore.ieee.org/document/4610935/>`_ standard,
+Floating-point arithmetic follows the |IEEE754|_ standard,
 with the following qualifications:
 
 * All operators use round-to-nearest ties-to-even, except where otherwise specified.
@@ -638,6 +638,8 @@ with the following qualifications:
 
 Rounding
 ........
+
+Rounding always is round-to-nearest ties-to-even, in correspondance with |IEEE754|_ (Section 4.3.1).
 
 An *exact* floating-point number is a rational number that is exactly representable as a :ref:`floating-point number <syntax-float>` of given bit width :math:`N`.
 

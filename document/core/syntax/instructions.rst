@@ -250,7 +250,7 @@ Integer loads and stores can optionally specify a *storage size* that is smaller
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
-All values are read and written in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order.
+All values are read and written in |LittleEndian|_ byte order.
 A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside the address range implied by the memory's current size.
 
 .. note::

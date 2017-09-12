@@ -1,3 +1,46 @@
+.. LINK MACROS
+
+.. External Standards
+.. ------------------
+
+.. |IEEE754| replace:: IEEE 754-2008
+.. _IEEE754: http://ieeexplore.ieee.org/document/4610935/
+
+.. |Unicode| replace:: Unicode
+.. _Unicode: http://www.unicode.org/versions/latest/
+
+.. |ASCII| replace:: ASCII
+.. _ASCII: http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d
+
+
+.. External Definitions
+.. --------------------
+
+.. |LittleEndian| replace:: little endian
+.. _LittleEndian: https://en.wikipedia.org/wiki/Endianness#Little-endian
+
+.. |LEB128| replace:: LEB128
+.. _LEB128: https://en.wikipedia.org/wiki/LEB128
+.. |UnsignedLEB128| replace:: unsigned LEB128
+.. _UnsignedLEB128: https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128
+.. |SignedLEB128| replace:: signed LEB128
+.. _SignedLEB128: https://en.wikipedia.org/wiki/LEB128#Signed_LEB128
+
+.. |SExpressions| replace:: S-expressions
+.. _SExpressions: https://en.wikipedia.org/wiki/S-expression
+
+
+.. Literature
+.. ----------
+
+.. |PLDI2017| replace:: Bringing the Web up to Speed with WebAssembly
+.. _PLDI2017: https://dl.acm.org/citation.cfm?doid=3062341.3062363>
+
+.. |TAPL| replace:: Types and Programming Languages
+.. _TAPL: https://www.cis.upenn.edu/~bcpierce/tapl/
+
+
+
 .. MATH MACROS
 
 

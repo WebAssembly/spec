@@ -36,9 +36,9 @@ Bytes
 Integers
 ~~~~~~~~
 
-All :ref:`integers <syntax-int>` are encoded using the `LEB128 <https://en.wikipedia.org/wiki/LEB128>`_ variable-length integer encoding, in either unsigned or signed variant.
+All :ref:`integers <syntax-int>` are encoded using the |LEB128|_ variable-length integer encoding, in either unsigned or signed variant.
 
-:ref:`Unsigned integers <syntax-uint>` are encoded in `unsigned LEB128 <https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128>`_ format.
+:ref:`Unsigned integers <syntax-uint>` are encoded in |UnsignedLEB128|_ format.
 As an additional constraint, the total number of bytes encoding a value of type :math:`\uN` must not exceed :math:`\F{ceil}(N/7)` bytes.
 
 .. math::
@@ -49,7 +49,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
        2^7\cdot m + (n-2^7) & (\iff n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
-:ref:`Signed integers <syntax-sint>` are encoded in `signed LEB128 <https://en.wikipedia.org/wiki/LEB128#Signed_LEB128>`_ format, which uses a two's complement representation.
+:ref:`Signed integers <syntax-sint>` are encoded in |SignedLEB128|_ format, which uses a two's complement representation.
 As an additional constraint, the total number of bytes encoding a value of type :math:`\sN` must not exceed :math:`\F{ceil}(N/7)` bytes.
 
 .. math::
@@ -88,7 +88,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating-point <syntax-float>` values are encoded directly by their `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ bit pattern in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order:
+:ref:`Floating-point <syntax-float>` values are encoded directly by their |IEEE754|_ bit pattern in |LittleEndian|_ byte order:
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -105,7 +105,7 @@ Floating-Point
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are encoded as a :ref:`vector <binary-vec>` of bytes containing the `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding of the name's code point sequence.
+:ref:`Names <syntax-name>` are encoded as a :ref:`vector <binary-vec>` of bytes containing the |Unicode|_ UTF-8 encoding of the name's code point sequence.
 
 .. math::
    \begin{array}{llclllll}

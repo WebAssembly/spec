@@ -91,9 +91,9 @@ Conventions
 Floating-Point
 ~~~~~~~~~~~~~~
 
-*Floating-point* data consists of 32 or 64 bit values according to the `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ standard.
-Every value has a *sign* and a *magnitude*.
+*Floating-point* data represents 32 or 64 bit values that correspond to the respective binary formats of the |IEEE754|_ standard (Section 3.3).
 
+Every value has a *sign* and a *magnitude*.
 Magnitudes can either be expressed as *normal* numbers of the form :math:`m_0.m_1m_2\dots m_M \cdot2^e`, where :math:`e` is the exponent and :math:`m` is the *significand* whose most signifcant bit :math:`m_0` is :math:`1`,
 or as a *subnormal* number where the exponent is fixed to the smallest possible value and :math:`m_0` is :math:`0`; among the subnormals are positive and negative zero values.
 Since the significands are binary values, normals are represented in the form :math:`(1 + m\cdot 2^{-M}) \cdot 2^e`, where :math:`M` is the bit width of :math:`m`; similarly for subnormals.
@@ -154,7 +154,7 @@ Conventions
 Names
 ~~~~~
 
-*Names* are sequences of scalar `Unicode <http://www.unicode.org/versions/latest/>`_ *code points*.
+*Names* are sequences of scalar *code points* as defined by |Unicode|_ (Section 2.4).
 
 .. math::
    \begin{array}{llclll}

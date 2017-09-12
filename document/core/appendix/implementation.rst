@@ -59,9 +59,9 @@ then the implementation may reject the :ref:`validation <valid>`, compilation, o
 
 .. note::
    The last item allows :ref:`embedders <embedder>` that operate in limited environments without support for
-   `Unicode <http://www.unicode.org/versions/latest/>`_ to limit the
+   |Unicode|_ to limit the
    names of :ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`
-   to common subsets like `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_.
+   to common subsets like |ASCII|_.
 
 
 .. index:: binary format, module, section, function, code
