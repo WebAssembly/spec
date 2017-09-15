@@ -112,7 +112,7 @@ that records bound <a class="reference internal" href="values.html#text-id"><spa
 <p>Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
 However, it also defines a number of <em>abbreviations</em> that are &#8220;syntactic sugar&#8221; over the core syntax.</p>
 <p>The recommended extension for source files containing WebAssembly modules in text format is &#8220;<span class="math">\(\mathtt{.wat}\)</span>&#8221;.
-Files with this extension are assumed to be encoded in <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode UTF-8</a>.</p>
+Files with this extension are assumed to be encoded in UTF-8, as per <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5).</p>
 <div class="section" id="grammar">
 <span id="text-grammar"></span><span id="index-1"></span><h2>Grammar<a class="headerlink" href="#grammar" title="Permalink to this headline">¶</a></h2>
 <p>The following conventions are adopted in defining grammar rules for the text format.
@@ -121,7 +121,7 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 <ul class="simple">
 <li>Terminal symbols are either literal strings of characters enclosed in quotes: <span class="math">\(\def\mathdef2248#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2248{module}\)</span>;
 or expressed as <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> code points: <span class="math">\(\def\mathdef2249#1{\mathrm{U{+}#1}}\mathdef2249{0A}\)</span>.
-(All characters written literally are unambiguously drawn from the <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">7-bit ASCII</a> subset of Unicode.)</li>
+(All characters written literally are unambiguously drawn from the 7-bit <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> subset of Unicode.)</li>
 <li>Nonterminal symbols are written in typewriter font: <span class="math">\(\mathtt{valtype}, \mathtt{instr}\)</span>.</li>
 <li><span class="math">\(T^n\)</span> is a sequence of <span class="math">\(n\geq 0\)</span> iterations  of <span class="math">\(T\)</span>.</li>
 <li><span class="math">\(T^\ast\)</span> is a possibly empty sequence of iterations of <span class="math">\(T\)</span>.

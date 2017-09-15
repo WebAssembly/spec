@@ -151,9 +151,9 @@ In order to distinguish arithmetics like <span class="math">\(2^N\)</span> from 
 </div>
 <div class="section" id="floating-point">
 <span id="syntax-float"></span><span id="syntax-payload"></span><span id="syntax-nan"></span><span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
-<p><em>Floating-point</em> data consists of 32 or 64 bit values according to the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> standard.
-Every value has a <em>sign</em> and a <em>magnitude</em>.</p>
-<p>Magnitudes can either be expressed as <em>normal</em> numbers of the form <span class="math">\(m_0.m_1m_2\dots m_M \cdot2^e\)</span>, where <span class="math">\(e\)</span> is the exponent and <span class="math">\(m\)</span> is the <em>significand</em> whose most signifcant bit <span class="math">\(m_0\)</span> is <span class="math">\(1\)</span>,
+<p><em>Floating-point</em> data represents 32 or 64 bit values that correspond to the respective binary formats of the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> standard (Section 3.3).</p>
+<p>Every value has a <em>sign</em> and a <em>magnitude</em>.
+Magnitudes can either be expressed as <em>normal</em> numbers of the form <span class="math">\(m_0.m_1m_2\dots m_M \cdot2^e\)</span>, where <span class="math">\(e\)</span> is the exponent and <span class="math">\(m\)</span> is the <em>significand</em> whose most signifcant bit <span class="math">\(m_0\)</span> is <span class="math">\(1\)</span>,
 or as a <em>subnormal</em> number where the exponent is fixed to the smallest possible value and <span class="math">\(m_0\)</span> is <span class="math">\(0\)</span>; among the subnormals are positive and negative zero values.
 Since the significands are binary values, normals are represented in the form <span class="math">\((1 + m\cdot 2^{-M}) \cdot 2^e\)</span>, where <span class="math">\(M\)</span> is the bit width of <span class="math">\(m\)</span>; similarly for subnormals.</p>
 <p>Possible magnitudes also include the special values <span class="math">\(\infty\)</span> (infinity) and <span class="math">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> (<em>NaN</em>, not a number).
@@ -194,7 +194,7 @@ No distinction is made between signalling and quiet NaNs.</p>
 </div>
 <div class="section" id="names">
 <span id="syntax-name"></span><span id="syntax-codepoint"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
-<p><em>Names</em> are sequences of scalar <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> <em>code points</em>.</p>
+<p><em>Names</em> are sequences of scalar <em>code points</em> as defined by <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.4).</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2128#1{{}}\mathdef2128{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;

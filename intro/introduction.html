@@ -50,6 +50,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#design-goals">Design Goals</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#scope">Scope</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
@@ -150,6 +151,16 @@ It defines the instruction set, binary encoding, validation, and execution seman
 It does not, however, define how WebAssembly programs can interact with a specific environment they execute in, nor how they are invoked from such an environment.</p>
 <p>Instead, this specification is complemented by additional documents defining interfaces to specific embedding environments such as the Web.
 These will each define a WebAssembly <em>application programming interface (API)</em> suitable for a given environment.</p>
+</div>
+<div class="section" id="dependencies">
+<span id="index-1"></span><span id="id4"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>WebAssembly depends on two existing standards:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a>, for the representation of <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point data</span></a> and the semantics of respective <a class="reference internal" href="../exec/numerics.html#float-ops"><span class="std std-ref">numeric operations</span></a>.</li>
+<li><a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a>, for the representation of import/export <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">names</span></a> and the <a class="reference internal" href="../text/index.html#text"><span class="std std-ref">text format</span></a>.</li>
+</ul>
+<p>However, to make this specification self-contained, relevant aspects of the aforementioned standards are defined and formalized as part of this specification,
+such as the <a class="reference internal" href="../exec/numerics.html#aux-fbits"><span class="std std-ref">binary representation</span></a> and <a class="reference internal" href="../exec/numerics.html#aux-ieee"><span class="std std-ref">rounding</span></a> of floating-point values, and the <a class="reference internal" href="../syntax/values.html#syntax-codepoint"><span class="std std-ref">value range</span></a> and <a class="reference internal" href="../binary/values.html#binary-utf8"><span class="std std-ref">UTF-8 encoding</span></a> of Unicode characters.</p>
 </div>
 </div>
 

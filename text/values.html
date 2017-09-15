@@ -176,7 +176,7 @@ Moreover, their value must lie within the range of the respective type.</p>
   \def\mathdef3166#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3166{0x}~p{:}\href{../text/values.html#text-hexnum}{\mathtt{hexnum}}~\def\mathdef3167#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3167{.}~q{:}\href{../text/values.html#text-hexfrac}{\mathtt{hexfrac}}~(\def\mathdef3168#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3168{P}~|~\def\mathdef3169#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3169{p})~{\pm}{:}\href{../text/values.html#text-sign}{\mathtt{sign}}~e{:}\href{../text/values.html#text-num}{\mathtt{num}}
     &amp;\Rightarrow&amp; (p+q)\cdot 2^{\pm e}
 \end{array}\end{split}\]</div>
-<p>The value of a literal must not lie outside the representable range of the corresponding <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754</a> type
+<p>The value of a literal must not lie outside the representable range of the corresponding <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> type
 (that is, a numeric value must not overflow to <span class="math">\(\pm\mbox{infinity}\)</span>),
 but it may be <a class="reference internal" href="../exec/numerics.html#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</p>
 <div class="admonition note">
@@ -214,7 +214,7 @@ except when expressed with an <em>escape sequence</em>.</p>
   \def\mathdef3177#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3177{\backslash}~n{:}\href{../text/values.html#text-hexdigit}{\mathtt{hexdigit}}~m{:}\href{../text/values.html#text-hexdigit}{\mathtt{hexdigit}}
     &amp;\Rightarrow&amp; 16\cdot n+m \\
 \end{array}\end{split}\]</div>
-<p>Each character in a string literal represents the byte sequence corresponding to its <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> UTF-8 encoding,
+<p>Each character in a string literal represents the byte sequence corresponding to its UTF-8 <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5) encoding,
 except for hexadecimal escape sequences <span class="math">\(\mbox{‘}\backslash hh\mbox{’}\)</span>, which represent raw bytes of the respective value.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
@@ -234,7 +234,7 @@ except for hexadecimal escape sequences <span class="math">\(\mbox{‘}\backslas
 <div class="section" id="names">
 <span id="text-name"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are strings denoting a literal character sequence.
-A name string must form a valid <a class="reference external" href="http://www.unicode.org/versions/latest/">UTF-8</a> encoding that is interpreted as a string of Unicode code points.</p>
+A name string must form a valid UTF-8 encoding as defined by <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5) that is interpreted as a string of Unicode code points.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}
 \def\mathdef3084#1{{}}\mathdef3084{name} &amp; \href{../text/values.html#text-name}{\mathtt{name}} &amp;::=&amp;
