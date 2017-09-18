@@ -28,11 +28,11 @@ Construct                                        Judgement
 :ref:`Element segment <valid-elem>`              :math:`C \vdashelem \elem \ok`
 :ref:`Data segment <valid-data>`                 :math:`C \vdashdata \data \ok`
 :ref:`Start function <valid-start>`              :math:`C \vdashstart \start \ok`
-:ref:`Export <valid-export>`                     :math:`C \vdashexport \export : \name`
-:ref:`Export description <valid-exportdesc>`     :math:`C \vdashexportdesc \exportdesc \ok`
+:ref:`Export <valid-export>`                     :math:`C \vdashexport \export : \externtype`
+:ref:`Export description <valid-exportdesc>`     :math:`C \vdashexportdesc \exportdesc : \externtype`
 :ref:`Import <valid-import>`                     :math:`C \vdashimport \import : \externtype`
 :ref:`Import description <valid-importdesc>`     :math:`C \vdashimportdesc \importdesc : \externtype`
-:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast`
+:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast \to \externtype^\ast`
 ===============================================  ===============================================================================
 
 

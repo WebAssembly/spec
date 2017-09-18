@@ -636,7 +636,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      (\INVOKE~\funcaddr)^? \\
      \end{array} \\
    &(\iff
-     & \vdashmodule \module : \externtype^n \\
+     & \vdashmodule \module : \externtype^n \to {\externtype'}^\ast \\
      &\wedge& (\vdashexternval \externval : \externtype')^n \\
      &\wedge& (\vdashexterntypematch \externtype' \matches \externtype)^n \\[1ex]
      &\wedge& \module.\MGLOBALS = \global^k \\
@@ -729,7 +729,7 @@ The values :math:`\val_{\F{res}}^m` are returned as the results of the invocatio
 .. math::
    ~\\[-1ex]
    \begin{array}{@{}lcl}
-   \invoke(S, \funcaddr, \val^n) &=& \result \\
+   \invoke(S, \funcaddr, \val^n) &=& S', \result \\
      &(\iff & S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
      &\wedge& \val^n = (t_1.\CONST~c)^n \\
      &\wedge& S; \val^n~(\INVOKE~\funcaddr) \stepto^\ast S'; \result) \\

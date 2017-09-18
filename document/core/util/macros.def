@@ -531,6 +531,7 @@
 
 .. Lexical grammar, non-terminals
 
+.. |Tsource| mathdef:: \xref{text/lexical}{text-source}{\T{source}}
 .. |Tchar| mathdef:: \xref{text/lexical}{text-char}{\T{char}}
 .. |Tspace| mathdef:: \xref{text/lexical}{text-space}{\T{space}}
 .. |Tformat| mathdef:: \xref{text/lexical}{text-format}{\T{format}}
@@ -1024,3 +1025,10 @@
 .. |Bmodulenamesubsec| mathdef:: \xref{appendix/custom}{binary-modulenamesec}{\B{modulenamesubsec}}
 .. |Bfuncnamesubsec| mathdef:: \xref{appendix/custom}{binary-funcnamesec}{\B{funcnamesubsec}}
 .. |Blocalnamesubsec| mathdef:: \xref{appendix/custom}{binary-localnamesec}{\B{localnamesubsec}}
+
+
+.. Embedding
+.. ---------
+
+.. |error| mathdef:: \xref{appendix/embedding}{embed-error}{\X{error}}
+.. |ERROR| mathdef:: \xref{appendix/embedding}{embed-error}{\K{error}}

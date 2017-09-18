@@ -8,6 +8,7 @@ Lexical Format
 .. index:: ! character, Unicode, ASCII, code point, ! source text
    pair: text format; character
 .. _source:
+.. _text-source:
 .. _text-char:
 
 Characters
@@ -18,6 +19,8 @@ Characters are assumed to be represented as valid |Unicode|_ (Section 2.4) *code
 
 .. math::
    \begin{array}{llll}
+   \production{source} & \Tsource &::=&
+     \Tchar^\ast \\
    \production{character} & \Tchar &::=&
      \unicode{00} ~|~ \dots ~|~ \unicode{D7FF} ~|~ \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
    \end{array}
