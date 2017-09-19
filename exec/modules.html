@@ -326,7 +326,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 <li>Let <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> to allocate.</li>
 <li>Let <span class="math">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}\)</span> be the structure of <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
 <li>Let <span class="math">\(a\)</span> be the first free <a class="reference internal" href="runtime.html#syntax-memaddr"><span class="std std-ref">memory address</span></a> in <span class="math">\(S\)</span>.</li>
-<li>Let <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef1497#1{\mathtt{0x#1}}\mathdef1497{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \}\)</span> that contains <span class="math">\(n\)</span> pages of zeroed <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.</li>
+<li>Let <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef173#1{\mathtt{0x#1}}\mathdef173{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \}\)</span> that contains <span class="math">\(n\)</span> pages of zeroed <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.</li>
 <li>Append <span class="math">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> to the <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}\)</span> of <span class="math">\(S\)</span>.</li>
 <li>Return <span class="math">\(a\)</span>.</li>
 </ol>
@@ -336,7 +336,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 \mbox{where:} \hfill \\
 \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} &amp;=&amp; \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\} \\
 \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}} &amp;=&amp; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}| \\
-\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef1498#1{\mathtt{0x#1}}\mathdef1498{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \} \\
+\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef174#1{\mathtt{0x#1}}\mathdef174{00})^{n \cdot 64\,\mathrm{Ki}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \} \\
 S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}~\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\} \\
 \end{array}\end{split}\]</div>
 </div>
@@ -555,7 +555,7 @@ S; \href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{..
   (\href{../exec/runtime.html#syntax-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}})^? \\
   \end{array} \\
 &amp;(\mathrel{\mbox{if}}
-  &amp; \href{../valid/modules.html#valid-module}{\vdash} \href{../syntax/modules.html#syntax-module}{\mathit{module}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^n \\
+  &amp; \href{../valid/modules.html#valid-module}{\vdash} \href{../syntax/modules.html#syntax-module}{\mathit{module}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^n \href{../syntax/types.html#syntax-functype}{\rightarrow} {\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast \\
   &amp;\wedge&amp; (\href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathit{externval}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}')^n \\
   &amp;\wedge&amp; (\href{../exec/modules.html#match-externtype}{\vdash} \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}' \href{../exec/modules.html#match}{\leq} \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^n \\[1ex]
   &amp;\wedge&amp; \href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{globals}} = \href{../syntax/modules.html#syntax-global}{\mathit{global}}^k \\
@@ -637,7 +637,7 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 <div class="math">
 \[\begin{split}~\\[-1ex]
 \begin{array}{&#64;{}lcl}
-\href{../exec/modules.html#exec-invocation}{\mathrm{invoke}}(S, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n) &amp;=&amp; \href{../exec/runtime.html#syntax-result}{\mathit{result}} \\
+\href{../exec/modules.html#exec-invocation}{\mathrm{invoke}}(S, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n) &amp;=&amp; S', \href{../exec/runtime.html#syntax-result}{\mathit{result}} \\
   &amp;(\mathrel{\mbox{if}} &amp; S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}].\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}} = [t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^m] \\
   &amp;\wedge&amp; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n = (t_1.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)^n \\
   &amp;\wedge&amp; S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#syntax-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; \href{../exec/runtime.html#syntax-result}{\mathit{result}}) \\

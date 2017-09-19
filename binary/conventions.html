@@ -128,7 +128,7 @@ However, such layers are outside the scope of the current specification.</td></t
 They mirror the conventions used for <a class="reference internal" href="../syntax/conventions.html#grammar"><span class="std std-ref">abstract syntax</span></a>.
 In order to distinguish symbols of the binary syntax from symbols of the abstract syntax, <span class="math">\(\mathtt{typewriter}\)</span> font is adopted for the former.</p>
 <ul class="simple">
-<li>Terminal symbols are <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a> expressed in hexadecimal notation: <span class="math">\(\def\mathdef721#1{\mathtt{0x#1}}\mathdef721{0F}\)</span>.</li>
+<li>Terminal symbols are <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a> expressed in hexadecimal notation: <span class="math">\(\def\mathdef778#1{\mathtt{0x#1}}\mathdef778{0F}\)</span>.</li>
 <li>Nonterminal symbols are written in typewriter font: <span class="math">\(\mathtt{valtype}, \mathtt{instr}\)</span>.</li>
 <li><span class="math">\(B^n\)</span> is a sequence of <span class="math">\(n\geq 0\)</span> iterations  of <span class="math">\(B\)</span>.</li>
 <li><span class="math">\(B^\ast\)</span> is a possibly empty sequence of iterations of <span class="math">\(B\)</span>.
@@ -144,25 +144,25 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 <p>For example, the <a class="reference internal" href="types.html#binary-valtype"><span class="std std-ref">binary grammar</span></a> for <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> is given as follows:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcll&#64;{\qquad\qquad}l}
-\def\mathdef664#1{{}}\mathdef664{value types} &amp; \href{../binary/types.html#binary-valtype}{\mathtt{valtype}} &amp;::=&amp;
-  \def\mathdef722#1{\mathtt{0x#1}}\mathdef722{7F} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
-  \def\mathdef723#1{\mathtt{0x#1}}\mathdef723{7E} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
-  \def\mathdef724#1{\mathtt{0x#1}}\mathdef724{7D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
-  \def\mathdef725#1{\mathtt{0x#1}}\mathdef725{7C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\
+\def\mathdef721#1{{}}\mathdef721{value types} &amp; \href{../binary/types.html#binary-valtype}{\mathtt{valtype}} &amp;::=&amp;
+  \def\mathdef779#1{\mathtt{0x#1}}\mathdef779{7F} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef780#1{\mathtt{0x#1}}\mathdef780{7E} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
+  \def\mathdef781#1{\mathtt{0x#1}}\mathdef781{7D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
+  \def\mathdef782#1{\mathtt{0x#1}}\mathdef782{7C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\
 \end{array}\end{split}\]</div>
-<p>Consequently, the byte <span class="math">\(\def\mathdef726#1{\mathtt{0x#1}}\mathdef726{7F}\)</span> encodes the type <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span>,
-<span class="math">\(\def\mathdef727#1{\mathtt{0x#1}}\mathdef727{7E}\)</span> encodes the type <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span>, and so forth.
+<p>Consequently, the byte <span class="math">\(\def\mathdef783#1{\mathtt{0x#1}}\mathdef783{7F}\)</span> encodes the type <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span>,
+<span class="math">\(\def\mathdef784#1{\mathtt{0x#1}}\mathdef784{7E}\)</span> encodes the type <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span>, and so forth.
 No other byte value is allowed as the encoding of a value type.</p>
 <p>The <a class="reference internal" href="types.html#binary-limits"><span class="std std-ref">binary grammar</span></a> for <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> is defined as follows:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll}
-\def\mathdef664#1{{}}\mathdef664{limits} &amp; \href{../binary/types.html#binary-limits}{\mathtt{limits}} &amp;::=&amp;
-  \def\mathdef728#1{\mathtt{0x#1}}\mathdef728{00}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef690#1{{\mathtt{u}#1}}\mathdef690{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~\epsilon \} \\ &amp;&amp;|&amp;
-  \def\mathdef729#1{\mathtt{0x#1}}\mathdef729{01}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef690#1{{\mathtt{u}#1}}\mathdef690{\mathtt{32}}}~~m{:}\href{../binary/values.html#binary-int}{\def\mathdef690#1{{\mathtt{u}#1}}\mathdef690{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m \} \\
+\def\mathdef721#1{{}}\mathdef721{limits} &amp; \href{../binary/types.html#binary-limits}{\mathtt{limits}} &amp;::=&amp;
+  \def\mathdef785#1{\mathtt{0x#1}}\mathdef785{00}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~\epsilon \} \\ &amp;&amp;|&amp;
+  \def\mathdef786#1{\mathtt{0x#1}}\mathdef786{01}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}}~~m{:}\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m \} \\
 \end{array}\end{split}\]</div>
-<p class="last">That is, a limits pair is encoded as either the byte <span class="math">\(\def\mathdef730#1{\mathtt{0x#1}}\mathdef730{00}\)</span> followed by the encoding of a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef670#1{{\mathit{u}#1}}\mathdef670{\mathit{32}}}\)</span> value,
-or the byte <span class="math">\(\def\mathdef731#1{\mathtt{0x#1}}\mathdef731{01}\)</span> followed by two such encodings.
-The variables <span class="math">\(n\)</span> and <span class="math">\(m\)</span> name the attributes of the respective <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef690#1{{\mathtt{u}#1}}\mathdef690{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> those decode into.
+<p class="last">That is, a limits pair is encoded as either the byte <span class="math">\(\def\mathdef787#1{\mathtt{0x#1}}\mathdef787{00}\)</span> followed by the encoding of a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef727#1{{\mathit{u}#1}}\mathdef727{\mathit{32}}}\)</span> value,
+or the byte <span class="math">\(\def\mathdef788#1{\mathtt{0x#1}}\mathdef788{01}\)</span> followed by two such encodings.
+The variables <span class="math">\(n\)</span> and <span class="math">\(m\)</span> name the attributes of the respective <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> those decode into.
 The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.</p>
 </div>
 </div>
@@ -176,11 +176,11 @@ The attribute of the complete production then is the abstract syntax for the lim
 </div>
 <div class="section" id="vectors">
 <span id="binary-vec"></span><span id="index-2"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/conventions.html#syntax-vec"><span class="std std-ref">Vectors</span></a> are encoded with their <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef690#1{{\mathtt{u}#1}}\mathdef690{\mathtt{32}}}\)</span> length followed by the encoding of their element sequence.</p>
+<p><a class="reference internal" href="../syntax/conventions.html#syntax-vec"><span class="std std-ref">Vectors</span></a> are encoded with their <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}}\)</span> length followed by the encoding of their element sequence.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
-\def\mathdef664#1{{}}\mathdef664{vector} &amp; \href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\mathtt{B}) &amp;::=&amp;
-  n{:}\href{../binary/values.html#binary-int}{\def\mathdef690#1{{\mathtt{u}#1}}\mathdef690{\mathtt{32}}}~~(x{:}\mathtt{B})^n &amp;\Rightarrow&amp; x^n \\
+\def\mathdef721#1{{}}\mathdef721{vector} &amp; \href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\mathtt{B}) &amp;::=&amp;
+  n{:}\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}}~~(x{:}\mathtt{B})^n &amp;\Rightarrow&amp; x^n \\
 \end{array}\end{split}\]</div>
 </div>
 </div>

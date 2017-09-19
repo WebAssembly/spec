@@ -153,10 +153,10 @@
 <td><span class="math">\(C \href{../valid/modules.html#valid-start}{\vdash} \href{../syntax/modules.html#syntax-start}{\mathit{start}} \mathrel{\mbox{ok}}\)</span></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../valid/modules.html#valid-export"><span class="std std-ref">Export</span></a></td>
-<td><span class="math">\(C \href{../valid/modules.html#valid-export}{\vdash} \href{../syntax/modules.html#syntax-export}{\mathit{export}} : \href{../syntax/values.html#syntax-name}{\mathit{name}}\)</span></td>
+<td><span class="math">\(C \href{../valid/modules.html#valid-export}{\vdash} \href{../syntax/modules.html#syntax-export}{\mathit{export}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="../valid/modules.html#valid-exportdesc"><span class="std std-ref">Export description</span></a></td>
-<td><span class="math">\(C \href{../valid/modules.html#valid-exportdesc}{\vdash} \href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}} \mathrel{\mbox{ok}}\)</span></td>
+<td><span class="math">\(C \href{../valid/modules.html#valid-exportdesc}{\vdash} \href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../valid/modules.html#valid-import"><span class="std std-ref">Import</span></a></td>
 <td><span class="math">\(C \href{../valid/modules.html#valid-import}{\vdash} \href{../syntax/modules.html#syntax-import}{\mathit{import}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span></td>
@@ -165,7 +165,7 @@
 <td><span class="math">\(C \href{../valid/modules.html#valid-importdesc}{\vdash} \href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">Module</span></a></td>
-<td><span class="math">\(\href{../valid/modules.html#valid-module}{\vdash} \href{../syntax/modules.html#syntax-module}{\mathit{module}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span></td>
+<td><span class="math">\(\href{../valid/modules.html#valid-module}{\vdash} \href{../syntax/modules.html#syntax-module}{\mathit{module}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast \href{../syntax/types.html#syntax-functype}{\rightarrow} \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span></td>
 </tr>
 </tbody>
 </table>
