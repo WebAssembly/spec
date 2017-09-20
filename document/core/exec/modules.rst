@@ -398,9 +398,9 @@ Growing :ref:`memories <syntax-meminst>`
 
 1. Let :math:`\meminst` be the :ref:`memory instance <syntax-meminst>` to grow and :math:`n` the number of :ref:`pages <page-size>` by which to grow it.
 
-2. If :math:`\meminst.\MIMAX` is not empty and smaller than :math:`n` added to the length of :math:`\meminst.\MIDATA` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`, then fail.
+2. Let :math:`\X{len}` be :math:`n` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
-3. Let :math:`\X{len}` be :math:`n` times the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
+3. If :math:`\meminst.\MIMAX` is not empty and its value multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}` is smaller than :math:`\X{len}` added to the length of :math:`\meminst.\MIDATA`, then fail.
 
 4. Append :math:`\X{len}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
 
