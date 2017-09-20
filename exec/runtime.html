@@ -394,7 +394,7 @@ This may be generalized in future versions.</p>
 </div>
 </div>
 <div class="section" id="administrative-instructions">
-<span id="syntax-instr-admin"></span><span id="syntax-invoke"></span><span id="syntax-trap"></span><span id="index-13"></span><h2>Administrative Instructions<a class="headerlink" href="#administrative-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-admin"></span><span id="syntax-init-data"></span><span id="syntax-init-elem"></span><span id="syntax-invoke"></span><span id="syntax-trap"></span><span id="index-13"></span><h2>Administrative Instructions<a class="headerlink" href="#administrative-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This section is only relevant for the <a class="reference internal" href="conventions.html#exec-notation"><span class="std std-ref">formal notation</span></a>.</p>
@@ -406,6 +406,8 @@ This may be generalized in future versions.</p>
   \dots \\ &amp;&amp;|&amp;
   \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}} \\ &amp;&amp;|&amp;
   \href{../exec/runtime.html#syntax-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} \\ &amp;&amp;|&amp;
+  \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1619#1{{\mathit{u}#1}}\mathdef1619{\mathit{32}}}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}^\ast \\ &amp;&amp;|&amp;
+  \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1619#1{{\mathit{u}#1}}\mathdef1619{\mathit{32}}}~\href{../syntax/values.html#syntax-byte}{\mathit{byte}}^\ast \\ &amp;&amp;|&amp;
   \href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\ &amp;&amp;|&amp;
   \href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{\href{../exec/runtime.html#syntax-frame}{\mathit{frame}}\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
 \end{array}\end{split}\]</div>
@@ -413,6 +415,11 @@ This may be generalized in future versions.</p>
 Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single <span class="math">\(\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span> instruction, signalling abrupt termination.</p>
 <p>The <span class="math">\(\href{../exec/runtime.html#syntax-invoke}{\mathsf{invoke}}\)</span> instruction represents the imminent invocation of a <a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">function instance</span></a>, identified by its <a class="reference internal" href="#syntax-funcaddr"><span class="std std-ref">address</span></a>.
 It unifies the handling of different forms of calls.</p>
+<p>The <span class="math">\(\href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}\)</span> and <span class="math">\(\href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}\)</span> instructions perform initialization of <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element</span></a> and <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data</span></a> segments during module <a class="reference internal" href="modules.html#exec-instantiation"><span class="std std-ref">instantiation</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.</p>
+</div>
 <p>The <span class="math">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> and <span class="math">\(\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}\)</span> instructions model <a class="reference internal" href="#syntax-label"><span class="std std-ref">labels</span></a> and <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frames</span></a> <a class="reference internal" href="conventions.html#exec-notation"><span class="std std-ref">&#8220;on the stack&#8221;</span></a>.
 Moreover, the administrative syntax maintains the nesting structure of the original <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instruction</span></a> or <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function body</span></a> and their <a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">instruction sequences</span></a> with an <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> marker.
 That way, the end of the inner instruction sequence is known when part of an outer sequence.</p>
@@ -451,42 +458,17 @@ this rule replaces the targeted label and associated instruction sequence with t
 The selected label is identified through the <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label index</span></a> <span class="math">\(l\)</span>, which corresponds to the number of surrounding <span class="math">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> instructions that must be hopped over &#8211; which is exactly the count encoded in the index of a block context.</p>
 </div>
 </div>
-<div class="section" id="module-instructions">
-<span id="syntax-moduleinstr"></span><span id="syntax-init-data"></span><span id="syntax-init-elem"></span><span id="syntax-instantiate"></span><span id="index-15"></span><h3>Module Instructions<a class="headerlink" href="#module-instructions" title="Permalink to this headline">¶</a></h3>
-<p>Module <a class="reference internal" href="modules.html#exec-instantiation"><span class="std std-ref">instantiation</span></a> is a complex operation.
-It is hence expressed in terms of reduction into smaller steps expressed by a sequence of administrative <em>module instructions</em> that are a superset of ordinary instructions and defined as follow.</p>
-<div class="math">
-\[\begin{split}\begin{array}{llcl}
-\def\mathdef1613#1{{}}\mathdef1613{(module instruction)} &amp; \href{../exec/runtime.html#syntax-moduleinstr}{\mathit{moduleinstr}} &amp;::=&amp;
-  \href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}~\href{../syntax/modules.html#syntax-module}{\mathit{module}}~\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast \\ &amp;&amp;|&amp;
-  \href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1619#1{{\mathit{u}#1}}\mathdef1619{\mathit{32}}}~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}^\ast \\ &amp;&amp;|&amp;
-  \href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1619#1{{\mathit{u}#1}}\mathdef1619{\mathit{32}}}~\href{../syntax/values.html#syntax-byte}{\mathit{byte}}^\ast \\ &amp;&amp;|&amp;
-  \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} \\
-\end{array}\end{split}\]</div>
-<p>The <span class="math">\(\href{../exec/runtime.html#syntax-instantiate}{\mathsf{instantiate}}\)</span> instruction expresses instantiation of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> itself, requiring a sequence of <a class="reference internal" href="#syntax-externval"><span class="std std-ref">external values</span></a> for the expected imports.
-It reduces into a sequence of initialization instructions for <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element</span></a> and <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data</span></a> segments,
-and a possible <a class="reference internal" href="#syntax-invoke"><span class="std std-ref">invocation</span></a> of the <a class="reference internal" href="../syntax/modules.html#syntax-start"><span class="std std-ref">start function</span></a> that reduces further to a sequence of regular instructions.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.</p>
-<p class="last">Unlike the administrative instructions above,
-module instructions <em>embed</em> ordinary instructions <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}\)</span> instead of extending them.
-Consequently, they can only occur at the top-level.</p>
-</div>
-</div>
 <div class="section" id="configurations">
-<span id="syntax-config"></span><span id="syntax-thread"></span><span id="index-16"></span><h3>Configurations<a class="headerlink" href="#configurations" title="Permalink to this headline">¶</a></h3>
+<span id="syntax-config"></span><span id="syntax-thread"></span><span id="index-15"></span><h3>Configurations<a class="headerlink" href="#configurations" title="Permalink to this headline">¶</a></h3>
 <p>A <em>configuration</em> consists of the current <a class="reference internal" href="#syntax-store"><span class="std std-ref">store</span></a> and an executing <em>thread</em>.</p>
-<p>A thread can either be a regular computation over <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a>, or a module instantiation, represented as a computation over <a class="reference internal" href="#syntax-moduleinstr"><span class="std std-ref">module instructions</span></a>.
-Regular computation operates relative to a current <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frame</span></a> referring to their home <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a>,
-whereas module computations are not local to a module, and consequently require no frame.</p>
+<p>A thread is a computation over <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a>
+that operates relative to a current <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frame</span></a> referring to the home <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a> that the computation runs in.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llcl}
 \def\mathdef1613#1{{}}\mathdef1613{(configuration)} &amp; \href{../exec/runtime.html#syntax-config}{\mathit{config}} &amp;::=&amp;
   \href{../exec/runtime.html#syntax-store}{\mathit{store}}; \href{../exec/runtime.html#syntax-thread}{\mathit{thread}} \\
 \def\mathdef1613#1{{}}\mathdef1613{(thread)} &amp; \href{../exec/runtime.html#syntax-thread}{\mathit{thread}} &amp;::=&amp;
-  \href{../exec/runtime.html#syntax-frame}{\mathit{frame}}; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast ~|~
-  \href{../exec/runtime.html#syntax-moduleinstr}{\mathit{moduleinstr}}^\ast \\
+  \href{../exec/runtime.html#syntax-frame}{\mathit{frame}}; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -495,7 +477,7 @@ but configurations with multiple threads may be supported in the future.</p>
 </div>
 </div>
 <div class="section" id="evaluation-contexts">
-<span id="syntax-ctxt-eval"></span><span id="index-17"></span><h3>Evaluation Contexts<a class="headerlink" href="#evaluation-contexts" title="Permalink to this headline">¶</a></h3>
+<span id="syntax-ctxt-eval"></span><span id="index-16"></span><h3>Evaluation Contexts<a class="headerlink" href="#evaluation-contexts" title="Permalink to this headline">¶</a></h3>
 <p>Finally, the following definition of <em>evaluation context</em> and associated structural rules enable reduction inside instruction sequences and administrative forms as well as the propagation of traps:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
@@ -504,8 +486,6 @@ but configurations with multiple threads may be supported in the future.</p>
   \href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast~E~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast ~|~
   \href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~E~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} ~|~
   \href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{\href{../exec/runtime.html#syntax-frame}{\mathit{frame}}\}~E~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
-\def\mathdef1613#1{{}}\mathdef1613{(module evaluation contexts)} &amp; M &amp;::=&amp;
-  [\_]~~\href{../exec/runtime.html#syntax-moduleinstr}{\mathit{moduleinstr}}^\ast \\
 \end{array}\end{split}\]</div>
 <div class="math">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
@@ -513,14 +493,9 @@ S; F; E[\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast] &a
   &amp; (\mathrel{\mbox{if}} S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F'; {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast) \\
 S; F; E[\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}] &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S; F; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
   &amp; (\mathrel{\mbox{if}} E \neq [\_]) \\
-S; M[E[\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}]] &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S'; M[E[{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast]]
-  &amp; (\mathrel{\mbox{if}} S; F_0; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F_0; {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast) \\
-S; M[\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}] &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
-  &amp; (\mathrel{\mbox{if}} M \neq [\_]) \\
 \end{array}\end{split}\]</div>
-<p>where <span class="math">\(F_0 = \{\href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\epsilon, \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\{\}\}\)</span> is an empty dummy frame.</p>
-<p>Reduction terminates for a regular thread when its instruction sequence has been reduced to a sequence of <a class="reference internal" href="#syntax-val"><span class="std std-ref">values</span></a> or to a <span class="math">\(\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span>.
-Reduction terminates for a module thread when its module instruction sequence has been reduced to an empty sequence or to a <span class="math">\(\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span>.</p>
+<p>Reduction terminates when a thread&#8217;s instruction sequence has been reduced to a <a class="reference internal" href="#syntax-result"><span class="std std-ref">result</span></a>,
+that is, either a sequence of <a class="reference internal" href="#syntax-val"><span class="std std-ref">values</span></a> or to a <span class="math">\(\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>For example, the following instruction sequence,</p>
