@@ -47,7 +47,7 @@ Construct                                        Judgement
 :ref:`Value <valid-val>`                         :math:`\vdashval \val : \valtype`
 :ref:`Result <valid-result>`                     :math:`\vdashresult \result : \resulttype`
 :ref:`External value <valid-externval>`          :math:`S \vdashexternval \externval : \externtype`
-:ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \resulttype`
+:ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \functype`
 :ref:`Table instance <valid-tableinst>`          :math:`S \vdashtableinst \tableinst : \tabletype`
 :ref:`Memory instance <valid-meminst>`           :math:`S \vdashmeminst \meminst : \memtype`
 :ref:`Global instance <valid-globalinst>`        :math:`S \vdashglobalinst \globalinst : \globaltype`
@@ -55,7 +55,7 @@ Construct                                        Judgement
 :ref:`Module instance <valid-moduleinst>`        :math:`S \vdashmoduleinst \moduleinst : C`
 :ref:`Store <valid-store>`                       :math:`\vdashstore \store \ok`
 :ref:`Configuration <valid-config>`              :math:`\vdashconfig \config \ok`
-:ref:`Thread <valid-thread>`                     :math:`S;\resulttype^? \vdashthread \thread : \resulttype^?`
+:ref:`Thread <valid-thread>`                     :math:`S;\resulttype^? \vdashthread \thread : \resulttype`
 :ref:`Frame <valid-frame>`                       :math:`S \vdashframe \frame : C`
 ===============================================  ===============================================================================
 
