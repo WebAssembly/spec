@@ -129,8 +129,8 @@ Modules
 
 .. math::
    \begin{array}{lclll}
-   \F{instantiate\_module}(S, m, \X{ev}^\ast) &=& (S', \X{mi}) && (\iff S; \INSTANTIATE~m~\X{ev}^\ast \stepto^\ast S'; \epsilon) \\
-   \F{instantiate\_module}(S, m, \X{ev}^\ast) &=& (S', \ERROR) && (\iff S; \INSTANTIATE~m~\X{ev}^\ast \stepto^\ast S'; \TRAP) \\
+   \F{instantiate\_module}(S, m, \X{ev}^\ast) &=& (S', F.\AMODULE) && (\iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \epsilon) \\
+   \F{instantiate\_module}(S, m, \X{ev}^\ast) &=& (S', \ERROR) && (\iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \TRAP) \\
    \end{array}
 
 .. note::
@@ -242,6 +242,23 @@ Functions
    Regular (non-host) function instances can only be created indirectly through :ref:`module instantiation <embed-instantiate-module>`.
 
 
+.. _embed-type-func:
+
+:math:`\F{type\_func}(\store, \funcaddr) : \functype`
+.....................................................
+
+1. Assert: :math:`\store.\SFUNCS[\funcaddr]` exists.
+
+2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVFUNC~\funcaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype`.
+
+3. Return :math:`\functype`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{type\_func}(S, a) &=& \X{ft} && (\iff S \vdashexternval \EVFUNC~a : \ETFUNC~\X{ft}) \\
+   \end{array}
+
+
 .. index:: invocation, value, result
 .. _embed-invoke-func:
 
@@ -261,29 +278,12 @@ Functions
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{invoke\_func}(S, a, v^\ast) &=& (S', {v'}^\ast) && (\iff \invoke(S, a, v^\ast) = S', {v'}^\ast) \\
-   \F{invoke\_func}(S, a, v^\ast) &=& (S', \ERROR) && (\iff \invoke(S, a, v^\ast) = S', \TRAP) \\
+   \F{invoke\_func}(S, a, v^\ast) &=& (S', {v'}^\ast) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; {v'}^\ast) \\
+   \F{invoke\_func}(S, a, v^\ast) &=& (S', \ERROR) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; \TRAP) \\
    \end{array}
 
 .. note::
    The store may be modified even in case of an error.
-
-
-.. _embed-type-func:
-
-:math:`\F{type\_func}(\store, \funcaddr) : \functype`
-.....................................................
-
-1. Assert: :math:`\store.\SFUNCS[\funcaddr]` exists.
-
-2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVFUNC~\funcaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype`.
-
-3. Return :math:`\functype`.
-
-.. math::
-   \begin{array}{lclll}
-   \F{type\_func}(S, a) &=& \X{ft} && (\iff S \vdashexternval \EVFUNC~a : \ETFUNC~\X{ft}) \\
-   \end{array}
 
 
 .. index:: table, table address, store, table instance, table type, element, function address
@@ -304,6 +304,23 @@ Tables
 .. math::
    \begin{array}{lclll}
    \F{alloc\_table}(S, \X{tt}) &=& (S', \X{a}) && (\iff \alloctable(S, \X{tt}) = S', \X{a}) \\
+   \end{array}
+
+
+.. _embed-type-table:
+
+:math:`\F{type\_table}(\store, \tableaddr) : \tabletype`
+........................................................
+
+1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
+
+2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVTABLE~\tableaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETTABLE~\tabletype`.
+
+3. Return :math:`\tabletype`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{type\_table}(S, a) &=& \X{tt} && (\iff S \vdashexternval \EVTABLE~a : \ETTABLE~\X{tt}) \\
    \end{array}
 
 
@@ -379,23 +396,6 @@ Tables
    \end{array}
 
 
-.. _embed-type-table:
-
-:math:`\F{type\_table}(\store, \tableaddr) : \tabletype`
-........................................................
-
-1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
-
-2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVTABLE~\tableaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETTABLE~\tabletype`.
-
-3. Return :math:`\tabletype`.
-
-.. math::
-   \begin{array}{lclll}
-   \F{type\_table}(S, a) &=& \X{tt} && (\iff S \vdashexternval \EVTABLE~a : \ETTABLE~\X{tt}) \\
-   \end{array}
-
-
 .. index:: memory, memory address, store, memory instance, memory type, byte
 .. _embed-mem:
 
@@ -414,6 +414,23 @@ Memories
 .. math::
    \begin{array}{lclll}
    \F{alloc\_mem}(S, \X{mt}) &=& (S', \X{a}) && (\iff \allocmem(S, \X{mt}) = S', \X{a}) \\
+   \end{array}
+
+
+.. _embed-type-mem:
+
+:math:`\F{type\_mem}(\store, \memaddr) : \memtype`
+..................................................
+
+1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
+
+2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVMEM~\memaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETMEM~\memtype`.
+
+3. Return :math:`\memtype`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{type\_mem}(S, a) &=& \X{mt} && (\iff S \vdashexternval \EVMEM~a : \ETMEM~\X{mt}) \\
    \end{array}
 
 
@@ -487,23 +504,6 @@ Memories
    \end{array}
 
 
-.. _embed-type-mem:
-
-:math:`\F{type\_mem}(\store, \memaddr) : \memtype`
-..................................................
-
-1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
-
-2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVMEM~\memaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETMEM~\memtype`.
-
-3. Return :math:`\memtype`.
-
-.. math::
-   \begin{array}{lclll}
-   \F{type\_mem}(S, a) &=& \X{mt} && (\iff S \vdashexternval \EVMEM~a : \ETMEM~\X{mt}) \\
-   \end{array}
-
-
 
 .. index:: global, global address, store, global instance, global type, value
 .. _embed-global:
@@ -523,6 +523,23 @@ Globals
 .. math::
    \begin{array}{lclll}
    \F{alloc\_global}(S, \X{gt}, v) &=& (S', \X{a}) && (\iff \allocglobal(S, \X{gt}, v) = S', \X{a}) \\
+   \end{array}
+
+
+.. _embed-type-global:
+
+:math:`\F{type\_global}(\store, \globaladdr) : \globaltype`
+...........................................................
+
+1. Assert: :math:`\store.\SGLOBALS[\globaladdr]` exists.
+
+2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype`.
+
+3. Return :math:`\globaltype`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{type\_global}(S, a) &=& \X{gt} && (\iff S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~\X{gt}) \\
    \end{array}
 
 
@@ -563,21 +580,4 @@ Globals
    \begin{array}{lclll}
    \F{write\_global}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GIMUT = \MVAR \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
    \F{write\_global}(S, a, v) &=& \ERROR && (\otherwise) \\
-   \end{array}
-
-
-.. _embed-type-global:
-
-:math:`\F{type\_global}(\store, \globaladdr) : \globaltype`
-...........................................................
-
-1. Assert: :math:`\store.\SGLOBALS[\globaladdr]` exists.
-
-2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype`.
-
-3. Return :math:`\globaltype`.
-
-.. math::
-   \begin{array}{lclll}
-   \F{type\_global}(S, a) &=& \X{gt} && (\iff S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~\X{gt}) \\
    \end{array}

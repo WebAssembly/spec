@@ -860,10 +860,8 @@
 
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
-.. |INSTANTIATE| mathdef:: \xref{exec/runtime}{syntax-instantiate}{\K{instantiate}}
 .. |INITELEM| mathdef:: \xref{exec/runtime}{syntax-init_elem}{\K{init\_elem}}
 .. |INITDATA| mathdef:: \xref{exec/runtime}{syntax-init_data}{\K{init\_data}}
-.. |DO| mathdef:: \xref{exec/runtime}{syntax-do}{\K{do}}
 
 
 .. Values & Results, non-terminals
@@ -873,8 +871,6 @@
 
 
 .. Administrative Instructions, non-terminals
-
-.. |moduleinstr| mathdef:: \xref{exec/runtime}{syntax-moduleinstr}{\X{moduleinstr}}
 
 .. |XB| mathdef:: \xref{exec/runtime}{syntax-ctxt-block}{B}
 
@@ -970,6 +966,7 @@
 
 .. Other meta functions
 
+.. |instantiate| mathdef:: \xref{exec/modules}{exec-instantiation}{\F{instantiate}}
 .. |invoke| mathdef:: \xref{exec/modules}{exec-invocation}{\F{invoke}}
 
 
@@ -987,7 +984,6 @@
 .. Judgements
 
 .. |vdashadmininstr| mathdef:: \xref{appendix/properties}{valid-instr-admin}{\vdash}
-.. |vdashmoduleinstr| mathdef:: \xref{appendix/properties}{valid-moduleinstr}{\vdash}
 
 .. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
 .. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}

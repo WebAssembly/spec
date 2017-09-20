@@ -8,6 +8,6 @@ Appendix
 
    embedding
    implementation
+   algorithm
    custom
    properties
-   algorithm

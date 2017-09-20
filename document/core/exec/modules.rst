@@ -539,7 +539,6 @@ Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals),
 
 .. index:: ! instantiation, module, instance, store, trap
 .. _exec-module:
-.. _exec-moduleinstr:
 .. _exec-instantiation:
 
 Instantiation
@@ -547,7 +546,8 @@ Instantiation
 
 Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :math:`\module` is instantiated with a list of :ref:`external values <syntax-externval>` :math:`\externval^n` supplying the required imports as follows.
 
-Instantiation may *fail* with an error if the module is not :ref:`valid <valid>` or the imports do not :ref:`match <match-externtype>`.
+Instantiation assumes that the module is :ref:`valid <valid>` and the provided imports :ref:`match <match-externtype>` the declared types,
+and may *fail* with an error otherwise.
 Instantiation can also result in a :ref:`trap <trap>` from executing the start function.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
 
@@ -669,9 +669,9 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 .. math::
    ~\\
    \begin{array}{@{}rcll}
-   S; \INSTANTIATE~\module~\externval^n &\stepto& S';
+   \instantiate(S, \module, \externval^n) &=& S'; F;
      \begin{array}[t]{@{}l@{}}
-     (\INITELEM~\tableaddr~\X{eo}~\moduleinst~\elem.\EINIT)^\ast \\
+     (\INITELEM~\tableaddr~\X{eo}~\elem.\EINIT)^\ast \\
      (\INITDATA~\memaddr~\X{do}~\data.\DINIT)^\ast \\
      (\INVOKE~\funcaddr)^? \\
      \end{array} \\
@@ -684,10 +684,10 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& \module.\MDATA = \data^\ast \\
      &\wedge& \module.\MSTART = \start^? \\[1ex]
      &\wedge& S', \moduleinst = \F{allocmodule}(S, \module, \externval^n, v^\ast) \\
-     &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
-     &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; v)^\ast \\
-     &\wedge& (S'; F; \elem.\EOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo})^\ast \\
-     &\wedge& (S'; F; \data.\DOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do})^\ast \\[1ex]
+     &\wedge& F' = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
+     &\wedge& (S'; F'; \global.\GINIT \stepto^\ast S'; F'; v)^\ast \\
+     &\wedge& (S'; F'; \elem.\EOFFSET \stepto^\ast S'; F'; \I32.\CONST~\X{eo})^\ast \\
+     &\wedge& (S'; F'; \data.\DOFFSET \stepto^\ast S'; F'; \I32.\CONST~\X{do})^\ast \\[1ex]
      &\wedge& (\X{eo} + |\elem.\EINIT| \leq |S'.\STABLES[\tableaddr].\TIELEM|)^\ast \\
      &\wedge& (\X{do} + |\data.\DINIT| \leq |S'.\SMEMS[\memaddr].\MIDATA|)^\ast
      )
@@ -695,21 +695,21 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& \globaladdr^\ast = \moduleinst.\MIGLOBALS[|\moduleinst.\MIGLOBALS|-k \slice k] \\
      &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\
      &\wedge& (\memaddr = \moduleinst.\MIMEMS[\data.\DMEM])^\ast \\
-     &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^?
+     &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^?)
    \\[1ex]
-   S; \INSTANTIATE~\module~\externval^n &\stepto&
-     S'; \TRAP  \qquad (\otherwise)
+   \instantiate(S, \module, \externval^n) &=& S; \{\AMODULE~\{\}, \ALOCALS~\epsilon\}; \TRAP
+     \qquad (\otherwise)
    \\[2ex]
-   S; \INITELEM~a~i~m~\epsilon &\stepto&
-     S; \epsilon \\
-   S; \INITELEM~a~i~m~(x_0~x^\ast) &\stepto&
-     S'; \INITELEM~a~(i+1)~m~x^\ast \\ &&
-     (\iff S' = S \with \STABLES[a].\TIELEM[i] = m.\MIFUNCS[x_0])
+   S; F; \INITELEM~a~i~\epsilon &\stepto&
+     S; F; \epsilon \\
+   S; F; \INITELEM~a~i~(x_0~x^\ast) &\stepto&
+     S'; F; \INITELEM~a~(i+1)~x^\ast \\ &&
+     (\iff S' = S \with \STABLES[a].\TIELEM[i] = F.\AMODULE.\MIFUNCS[x_0])
    \\[1ex]
-   S; \INITDATA~a~i~\epsilon &\stepto&
-     S; \epsilon \\
-   S; \INITDATA~a~i~(b_0~b^\ast) &\stepto&
-     S'; \INITDATA~a~(i+1)~b^\ast \\ &&
+   S; F; \INITDATA~a~i~\epsilon &\stepto&
+     S; F; \epsilon \\
+   S; F; \INITDATA~a~i~(b_0~b^\ast) &\stepto&
+     S'; F; \INITDATA~a~(i+1)~b^\ast \\ &&
      (\iff S' = S \with \SMEMS[a].\MIDATA[i] = b_0)
    \end{array}
 
@@ -769,8 +769,7 @@ The values :math:`\val_{\F{res}}^m` are returned as the results of the invocatio
 .. math::
    ~\\[-1ex]
    \begin{array}{@{}lcl}
-   \invoke(S, \funcaddr, \val^n) &=& S', \result \\
+   \invoke(S, \funcaddr, \val^n) &=& S; \val^n~(\INVOKE~\funcaddr) \\
      &(\iff & S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
-     &\wedge& \val^n = (t_1.\CONST~c)^n \\
-     &\wedge& S; \val^n~(\INVOKE~\funcaddr) \stepto^\ast S'; \result) \\
+     &\wedge& \val^n = (t_1.\CONST~c)^n) \\
    \end{array}

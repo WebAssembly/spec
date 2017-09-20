@@ -47,7 +47,6 @@ Construct                                        Judgement
 :ref:`Value <valid-val>`                         :math:`\vdashval \val : \valtype`
 :ref:`Result <valid-result>`                     :math:`\vdashresult \result : \resulttype`
 :ref:`External value <valid-externval>`          :math:`S \vdashexternval \externval : \externtype`
-:ref:`Module instruction <valid-moduleinstr>`    :math:`S \vdashmoduleinstr \moduleinstr \ok`
 :ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \resulttype`
 :ref:`Table instance <valid-tableinst>`          :math:`S \vdashtableinst \tableinst : \tabletype`
 :ref:`Memory instance <valid-meminst>`           :math:`S \vdashmeminst \meminst : \memtype`
@@ -105,5 +104,4 @@ Construct                                        Judgement
 ===============================================  ===============================================================================
 :ref:`Instruction <exec-instr>`                  :math:`S;F;\instr \stepto S';F';{\instr'}^\ast`
 :ref:`Expression <exec-expr>`                    :math:`S;F;\expr \stepto^\ast S';F';\val^\ast`
-:ref:`Module instruction <exec-moduleinstr>`     :math:`S;\moduleinstr \stepto S';{\moduleinstr'}^\ast`
 ===============================================  ===============================================================================
