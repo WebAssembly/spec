@@ -684,10 +684,10 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& \module.\MDATA = \data^\ast \\
      &\wedge& \module.\MSTART = \start^? \\[1ex]
      &\wedge& S', \moduleinst = \F{allocmodule}(S, \module, \externval^n, v^\ast) \\
-     &\wedge& F' = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
-     &\wedge& (S'; F'; \global.\GINIT \stepto^\ast S'; F'; v)^\ast \\
-     &\wedge& (S'; F'; \elem.\EOFFSET \stepto^\ast S'; F'; \I32.\CONST~\X{eo})^\ast \\
-     &\wedge& (S'; F'; \data.\DOFFSET \stepto^\ast S'; F'; \I32.\CONST~\X{do})^\ast \\[1ex]
+     &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
+     &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; v)^\ast \\
+     &\wedge& (S'; F; \elem.\EOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo})^\ast \\
+     &\wedge& (S'; F; \data.\DOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do})^\ast \\[1ex]
      &\wedge& (\X{eo} + |\elem.\EINIT| \leq |S'.\STABLES[\tableaddr].\TIELEM|)^\ast \\
      &\wedge& (\X{do} + |\data.\DINIT| \leq |S'.\SMEMS[\memaddr].\MIDATA|)^\ast
      )
