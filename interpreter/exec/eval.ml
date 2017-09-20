@@ -45,8 +45,8 @@ and admin_instr' =
   | Trapped of string
   | Break of int32 * value stack
   | Label of stack_type * instr list * value stack * admin_instr list
-  | Local of instance * value ref list * value stack * admin_instr list
-  | Invoke of closure
+  | Local of module_inst * value ref list * value stack * admin_instr list
+  | Invoke of func_inst
 
 type config =
 {
@@ -66,11 +66,11 @@ let lookup category list x =
   try Lib.List32.nth list x.it with Failure _ ->
     Crash.error x.at ("undefined " ^ category ^ " " ^ Int32.to_string x.it)
 
-let type_ (inst : instance) x = lookup "type" inst.module_.it.types x
-let func (inst : instance) x = lookup "function" inst.funcs x
-let table (inst : instance) x = lookup "table" inst.tables x
-let memory (inst : instance) x = lookup "memory" inst.memories x
-let global (inst : instance) x = lookup "global" inst.globals x
+let type_ (inst : module_inst) x = lookup "type" inst.types x
+let func (inst : module_inst) x = lookup "function" inst.funcs x
+let table (inst : module_inst) x = lookup "table" inst.tables x
+let memory (inst : module_inst) x = lookup "memory" inst.memories x
+let global (inst : module_inst) x = lookup "global" inst.globals x
 let local (locals : value ref list) x = lookup "local" locals x
 
 let elem inst x i at =
@@ -83,12 +83,8 @@ let elem inst x i at =
 
 let func_elem inst x i at =
   match elem inst x i at with
-  | Func f -> f
+  | FuncElem f -> f
   | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
-
-let func_type_of = function
-  | AstFunc (inst, f) -> (lookup "type" (!inst).module_.it.types f.it.ftype).it
-  | HostFunc (t, _) -> t
 
 let take n (vs : 'a stack) at =
   try Lib.List.take n vs with Failure _ -> Crash.error at "stack underflow"
@@ -108,7 +104,7 @@ let drop n (vs : 'a stack) at =
  *   c : config
  *)
 
-let rec step (inst : instance) (c : config) : config =
+let rec step (inst : module_inst) (c : config) : config =
   let e = List.hd c.instrs in
   let vs', es' =
     match e.it, c.values with
@@ -154,10 +150,10 @@ let rec step (inst : instance) (c : config) : config =
         vs, [Invoke (func inst x) @@ e.at]
 
       | CallIndirect x, I32 i :: vs ->
-        let clos = func_elem inst (0l @@ e.at) i e.at in
-        if (type_ inst x).it <> func_type_of clos then
+        let func = func_elem inst (0l @@ e.at) i e.at in
+        if type_ inst x <> Func.type_of func then
           Trap.error e.at "indirect call signature mismatch";
-        vs, [Invoke clos @@ e.at]
+        vs, [Invoke func @@ e.at]
 
       | Drop, v :: vs' ->
         vs', []
@@ -180,11 +176,11 @@ let rec step (inst : instance) (c : config) : config =
         v :: vs', []
 
       | GetGlobal x, vs ->
-        !(global inst x) :: vs, []
+        Global.load (global inst x) :: vs, []
 
       | SetGlobal x, v :: vs' ->
-        global inst x := v;
-        vs', []
+        (try Global.store (global inst x) v; vs', []
+        with Global.NotMutable -> Crash.error e.at "write to immutable global")
 
       | Load {offset; ty; sz; _}, I32 i :: vs' ->
         let mem = memory inst (0l @@ e.at) in
@@ -192,7 +188,7 @@ let rec step (inst : instance) (c : config) : config =
         (try
           let v =
             match sz with
-            | None -> Memory.load mem addr offset ty
+            | None -> Memory.load_value mem addr offset ty
             | Some (sz, ext) -> Memory.load_packed sz ext mem addr offset ty
           in v :: vs', []
         with exn -> vs', [Trapped (memory_error e.at exn) @@ e.at])
@@ -202,7 +198,7 @@ let rec step (inst : instance) (c : config) : config =
         let addr = I64_convert.extend_u_i32 i in
         (try
           (match sz with
-          | None -> Memory.store mem addr offset v
+          | None -> Memory.store_value mem addr offset v
           | Some sz -> Memory.store_packed sz mem addr offset v
           );
           vs', []
@@ -282,27 +278,27 @@ let rec step (inst : instance) (c : config) : config =
       let c' = step inst' {locals; values; instrs; depth = 0; budget = c.budget - 1} in
       vs, [Local (inst', c'.locals, c'.values, c'.instrs) @@ e.at]
 
-    | Invoke clos, vs when c.budget = 0 ->
+    | Invoke func, vs when c.budget = 0 ->
       Exhaustion.error e.at "call stack exhausted"
 
-    | Invoke clos, vs ->
-      let FuncType (ins, out) = func_type_of clos in
+    | Invoke func, vs ->
+      let FuncType (ins, out) = Func.type_of func in
       let n = List.length ins in
       let args, vs' = take n vs e.at, drop n vs e.at in
-      (match clos with
-      | AstFunc (inst', f) ->
+      (match func with
+      | Func.AstFunc (t, inst', f) ->
         let locals' = List.rev args @ List.map default_value f.it.locals in
         let instrs' = [Plain (Block (out, f.it.body)) @@ f.at] in
         vs', [Local (!inst', List.map ref locals', [], instrs') @@ e.at]
 
-      | HostFunc (t, f) ->
+      | Func.HostFunc (t, f) ->
         try List.rev (f (List.rev args)) @ vs', []
         with Crash (_, msg) -> Crash.error e.at msg
       )
   in {c with values = vs'; instrs = es' @ List.tl c.instrs}
 
 
-let rec eval (inst : instance) (c : config) : value stack =
+let rec eval (inst : module_inst) (c : config) : value stack =
   match c.instrs with
   | [] ->
     c.values
@@ -316,17 +312,16 @@ let rec eval (inst : instance) (c : config) : value stack =
 
 (* Functions & Constants *)
 
-let invoke (clos : closure) (vs : value list) : value list =
-  let at = match clos with AstFunc (_, f) -> f.at | HostFunc _ -> no_region in
-  let FuncType (ins, out) = func_type_of clos in
+let invoke (func : func_inst) (vs : value list) : value list =
+  let at = match func with Func.AstFunc (_,_, f) -> f.at | _ -> no_region in
+  let FuncType (ins, out) = Func.type_of func in
   if List.length vs <> List.length ins then
     Crash.error at "wrong number of arguments";
-  let inst = instance (empty_module @@ at) in
-  let c = config (List.rev vs) [Invoke clos @@ at] in
-  try List.rev (eval inst c)
+  let c = config (List.rev vs) [Invoke func @@ at] in
+  try List.rev (eval empty_module_inst c)
   with Stack_overflow -> Exhaustion.error at "call stack exhausted"
 
-let eval_const (inst : instance) (const : const) : value =
+let eval_const (inst : module_inst) (const : const) : value =
   let c = config [] (List.map plain const.it) in
   match eval inst c with
   | [v] -> v
@@ -340,27 +335,39 @@ let i32 (v : value) at =
 
 (* Modules *)
 
-let create_closure (m : module_) (f : func) =
-  AstFunc (ref (instance m), f)
+let create_func (pre_inst : module_inst) (f : func) : func_inst =
+  Func.alloc (type_ pre_inst f.it.ftype) (ref pre_inst) f
 
-let create_table (tab : table) =
-  let {ttype = TableType (lim, t)} = tab.it in
-  Table.create t lim
+let create_table (tab : table) : table_inst =
+  let {ttype} = tab.it in
+  Table.alloc ttype
 
-let create_memory (mem : memory) =
-  let {mtype = MemoryType lim} = mem.it in
-  Memory.create lim
+let create_memory (mem : memory) : memory_inst =
+  let {mtype} = mem.it in
+  Memory.alloc mtype
 
-let create_global (glob : global) =
-  let {gtype = GlobalType (t, _); _} = glob.it in
-  ref (default_value t)
+let create_global (inst : module_inst) (glob : global) : global_inst =
+  let {gtype; value} = glob.it in
+  let v = eval_const inst value in
+  Global.alloc gtype v
 
-let init_closure (inst : instance) (clos : closure) =
-  match clos with
-  | AstFunc (inst_ref, _) -> inst_ref := inst
+let create_export (inst : module_inst) (ex : export) : export_inst =
+  let {name; edesc} = ex.it in
+  let ext =
+    match edesc.it with
+    | FuncExport x -> ExternFunc (func inst x)
+    | TableExport x -> ExternTable (table inst x)
+    | MemoryExport x -> ExternMemory (memory inst x)
+    | GlobalExport x -> ExternGlobal (global inst x)
+  in name, ext
+
+
+let init_func (inst : module_inst) (func : func_inst) =
+  match func with
+  | Func.AstFunc (_, inst_ref, _) -> inst_ref := inst
   | _ -> assert false
 
-let init_table (inst : instance) (seg : table_segment) =
+let init_table (inst : module_inst) (seg : table_segment) =
   let {index; offset = const; init} = seg.it in
   let tab = table inst index in
   let offset = i32 (eval_const inst const) const.at in
@@ -368,9 +375,10 @@ let init_table (inst : instance) (seg : table_segment) =
   let bound = Table.size tab in
   if I32.lt_u bound end_ || I32.lt_u end_ offset then
     Link.error seg.at "elements segment does not fit table";
-  fun () -> Table.blit tab offset (List.map (fun x -> Func (func inst x)) init)
+  fun () ->
+    Table.blit tab offset (List.map (fun x -> FuncElem (func inst x)) init)
 
-let init_memory (inst : instance) (seg : memory_segment) =
+let init_memory (inst : module_inst) (seg : memory_segment) =
   let {index; offset = const; init} = seg.it in
   let mem = memory inst index in
   let offset' = i32 (eval_const inst const) const.at in
@@ -379,74 +387,44 @@ let init_memory (inst : instance) (seg : memory_segment) =
   let bound = Memory.bound mem in
   if I64.lt_u bound end_ || I64.lt_u end_ offset then
     Link.error seg.at "data segment does not fit memory";
-  fun () -> Memory.blit mem offset init
+  fun () -> Memory.store_bytes mem offset init
 
-let init_global (inst : instance) (ref : value ref) (glob : global) =
-  let {value; _} = glob.it in
-  ref := eval_const inst value
 
-let check_limits actual expected at =
-  if I32.lt_u actual.min expected.min then
-    Link.error at "actual size smaller than declared";
-  if
-    match actual.max, expected.max with
-    | _, None -> false
-    | None, Some _ -> true
-    | Some i, Some j -> I32.gt_u i j
-  then Link.error at "maximum size larger than declared"
+let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
+  : module_inst =
+  if not (match_extern_type (extern_type_of ext) (import_type m im)) then
+    Link.error im.at "incompatible import type";
+  match ext with
+  | ExternFunc func -> {inst with funcs = func :: inst.funcs}
+  | ExternTable tab -> {inst with tables = tab :: inst.tables}
+  | ExternMemory mem -> {inst with memories = mem :: inst.memories}
+  | ExternGlobal glob -> {inst with globals = glob :: inst.globals}
 
-let add_import (ext : extern) (im : import) (inst : instance) : instance =
-  let {idesc; _} = im.it in
-  match ext, idesc.it with
-  | ExternalFunc clos, FuncImport x when func_type_of clos = (type_ inst x).it ->
-    {inst with funcs = clos :: inst.funcs}
-  | ExternalTable tab, TableImport (TableType (lim, t))
-    when Table.elem_type tab = t ->
-    check_limits (Table.limits tab) lim idesc.at;
-    {inst with tables = tab :: inst.tables}
-  | ExternalMemory mem, MemoryImport (MemoryType lim) ->
-    check_limits (Memory.limits mem) lim idesc.at;
-    {inst with memories = mem :: inst.memories}
-  | ExternalGlobal v, GlobalImport (GlobalType (t, _)) when type_of v = t ->
-    {inst with globals = ref v :: inst.globals}
-  | _ ->
-    Link.error idesc.at "type mismatch"
-
-let add_export (inst : instance) (ex : export) (map : extern ExportMap.t)
-  : extern ExportMap.t =
-  let {name; edesc} = ex.it in
-  let ext =
-    match edesc.it with
-    | FuncExport x -> ExternalFunc (func inst x)
-    | TableExport x -> ExternalTable (table inst x)
-    | MemoryExport x -> ExternalMemory (memory inst x)
-    | GlobalExport x -> ExternalGlobal !(global inst x)
-  in ExportMap.add name ext map
-
-let init (m : module_) (exts : extern list) : instance =
+let init (m : module_) (exts : extern list) : module_inst =
   let
-    { imports; tables; memories; globals; funcs;
-      exports; elems; data; start; _
+    { imports; tables; memories; globals; funcs; types;
+      exports; elems; data; start
     } = m.it
   in
   if List.length exts <> List.length imports then
     Link.error m.at "wrong number of imports provided for initialisation";
-  let fs = List.map (create_closure m) funcs in
-  let gs = List.map create_global globals in
-  let inst =
-    List.fold_right2 add_import exts imports
-      { (instance m) with
-        funcs = fs;
-        tables = List.map create_table tables;
-        memories = List.map create_memory memories;
-        globals = gs;
-      }
+  let inst0 =
+    { (List.fold_right2 (add_import m) exts imports empty_module_inst) with
+      types = List.map (fun type_ -> type_.it) types }
   in
-  List.iter2 (init_global inst) gs globals;
-  List.iter (init_closure inst) fs;
+  let fs = List.map (create_func inst0) funcs in
+  let inst =
+    { inst0 with
+      funcs = inst0.funcs @ fs;
+      tables = inst0.tables @ List.map create_table tables;
+      memories = inst0.memories @ List.map create_memory memories;
+      globals = inst0.globals @ List.map (create_global inst0) globals;
+    }
+  in
+  List.iter (init_func inst) fs;
   let init_elems = List.map (init_table inst) elems in
   let init_datas = List.map (init_memory inst) data in
   List.iter (fun f -> f ()) init_elems;
   List.iter (fun f -> f ()) init_datas;
   Lib.Option.app (fun x -> ignore (invoke (func inst x) [])) start;
-  {inst with exports = List.fold_right (add_export inst) exports inst.exports}
+  {inst with exports = List.map (create_export inst) exports}

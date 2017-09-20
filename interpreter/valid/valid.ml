@@ -306,6 +306,43 @@ and check_block (c : context) (es : instr list) (ts : stack_type) at =
      " but stack has " ^ string_of_infer_types (snd s))
 
 
+(* Types *)
+
+let check_limits {min; max} at =
+  match max with
+  | None -> ()
+  | Some max ->
+    require (I32.le_u min max) at
+      "size minimum must not be greater than maximum"
+
+let check_value_type (t : value_type) at =
+  ()
+
+let check_func_type (ft : func_type) at =
+  let FuncType (ins, out) = ft in
+  List.iter (fun t -> check_value_type t at) ins;
+  List.iter (fun t -> check_value_type t at) out;
+  check_arity (List.length out) at
+
+let check_table_type (tt : table_type) at =
+  let TableType (lim, _) = tt in
+  check_limits lim at
+
+let check_memory_size (sz : I32.t) at =
+  require (I32.le_u sz 65536l) at
+    "memory size must be at most 65536 pages (4GiB)"
+
+let check_memory_type (mt : memory_type) at =
+  let MemoryType lim = mt in
+  check_limits lim at;
+  check_memory_size lim.min at;
+  Lib.Option.app (fun max -> check_memory_size max at) lim.max
+
+let check_global_type (gt : global_type) at =
+  let GlobalType (t, mut) = gt in
+  check_value_type t at
+
+
 (* Functions & Constants *)
 
 (*
@@ -321,8 +358,7 @@ and check_block (c : context) (es : instr list) (ts : stack_type) at =
  *)
 
 let check_type (t : type_) =
-  let FuncType (ins, out) = t.it in
-  check_arity (List.length out) t.at
+  check_func_type t.it t.at
 
 let check_func (c : context) (f : func) =
   let {ftype; locals; body} = f.it in
@@ -345,29 +381,9 @@ let check_const (c : context) (const : const) (t : value_type) =
 
 (* Tables, Memories, & Globals *)
 
-let check_table_type (t : table_type) at =
-  let TableType ({min; max}, _) = t in
-  match max with
-  | None -> ()
-  | Some max ->
-    require (I32.le_u min max) at
-      "table size minimum must not be greater than maximum"
-
 let check_table (c : context) (tab : table) =
   let {ttype} = tab.it in
   check_table_type ttype tab.at
-
-let check_memory_type (t : memory_type) at =
-  let MemoryType {min; max} = t in
-  require (I32.le_u min 65536l) at
-    "memory size must be at most 65536 pages (4GiB)";
-  match max with
-  | None -> ()
-  | Some max ->
-    require (I32.le_u max 65536l) at
-      "memory size must be at most 65536 pages (4GiB)";
-    require (I32.le_u min max) at
-      "memory size minimum must not be greater than maximum"
 
 let check_memory (c : context) (mem : memory) =
   let {mtype} = mem.it in
@@ -403,15 +419,18 @@ let check_import (im : import) (c : context) : context =
   match idesc.it with
   | FuncImport x ->
     {c with funcs = type_ c x :: c.funcs}
-  | TableImport t ->
-    check_table_type t idesc.at; {c with tables = t :: c.tables}
-  | MemoryImport t ->
-    check_memory_type t idesc.at; {c with memories = t :: c.memories}
-  | GlobalImport t ->
-    let GlobalType (_, mut) = t in
+  | TableImport tt ->
+    check_table_type tt idesc.at;
+    {c with tables = tt :: c.tables}
+  | MemoryImport mt ->
+    check_memory_type mt idesc.at;
+    {c with memories = mt :: c.memories}
+  | GlobalImport gt ->
+    check_global_type gt idesc.at;
+    let GlobalType (_, mut) = gt in
     require (mut = Immutable) idesc.at
       "mutable globals cannot be imported (yet)";
-    {c with globals = t :: c.globals}
+    {c with globals = gt :: c.globals}
 
 module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
 

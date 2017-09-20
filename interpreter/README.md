@@ -360,6 +360,8 @@ The implementation is split into several directories:
 
 * `valid`: validation of code and modules; corresponds to the "Validation" section of the language specification
 
+* `runtime`: the definition of runtime structures; corresponds to the "Execution/Runtime" section of the language specification
+
 * `exec`: execution and module instantiation; corresponds to the "Execution" section of the language specification
 
 * `binary`: encoding and decoding of the binary format; corresponds to the "Binary Format" section of the language specification
@@ -386,7 +388,7 @@ The implementation consists of the following parts:
 
 * *Validator* (`valid.ml[i]`). Does a recursive walk of the AST, passing down the *expected* type for expressions, and checking each expression against that. An expected empty type can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
 
-* *Evaluator* (`eval.ml[i]`, `values.ml`, `instance.ml`, `eval_numeric.ml[i]`, `int.ml`, `float.ml`, `table.ml[i]`, `memory.ml[i]`, and a few more). Implements evaluation as a small-step semantics that rewrites a program one computation step at a time.
+* *Evaluator* (`eval.ml[i]`, `values.ml`, `func.ml[i]`, `table.ml[i]`, `memory.ml[i]`, `global.ml[i]`, `instance.ml`, `eval_numeric.ml[i]`, `int.ml`, `float.ml`, and a few more). Implements evaluation as a small-step semantics that rewrites a program one computation step at a time.
 
 * *JS Generator* (`js.ml[i]`). Converts a script to equivalent JavaScript.
 

@@ -17,7 +17,7 @@ ZIP =		$(NAME).zip
 JSLIB =		wast.js
 WINMAKE =	winmake.bat
 
-DIRS =		util syntax binary text valid exec script host main
+DIRS =		util syntax binary text valid runtime exec script host main
 LIBS =		bigarray
 FLAGS = 	-cflags '-w +a-4-27-42-44-45 -warn-error +a'
 OCB =		ocamlbuild $(FLAGS) $(DIRS:%=-I %) $(LIBS:%=-libs %)
@@ -120,12 +120,12 @@ debugtest:	$(UNOPT)
 test/%:		$(OPT)
 		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
 debugtest/%:	$(UNOPT)
-		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
+		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(@:debugtest/%=../test/core/%.wast)
 
 run/%:		$(OPT)
 		./$(OPT) $(@:run/%=../test/core/%.wast)
-debugrun/%:		$(UNOPT)
-		./$(UNOPT) $(@:run/%=../test/core/%.wast)
+debug/%:		$(UNOPT)
+		./$(UNOPT) $(@:debug/%=../test/core/%.wast)
 
 
 # Miscellaneous targets

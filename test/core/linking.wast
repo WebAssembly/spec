@@ -26,11 +26,11 @@
 (register "reexport_f")
 (assert_unlinkable
   (module (import "reexport_f" "print" (func (param i64))))
-  "type mismatch"
+  "incompatible import type"
 )
 (assert_unlinkable
   (module (import "reexport_f" "print" (func (param i32) (result i32))))
-  "type mismatch"
+  "incompatible import type"
 )
 
 
