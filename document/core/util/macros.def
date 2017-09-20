@@ -760,6 +760,9 @@
 .. |allocglobal| mathdef:: \xref{exec/modules}{alloc-global}{\F{allocglobal}}
 .. |allocmodule| mathdef:: \xref{exec/modules}{alloc-module}{\F{allocmodule}}
 
+.. |growtable| mathdef:: \xref{exec/modules}{grow-table}{\F{growtable}}
+.. |growmem| mathdef:: \xref{exec/modules}{grow-mem}{\F{growmem}}
+
 
 .. Addresses, non-terminals
 

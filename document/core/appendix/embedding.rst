@@ -47,7 +47,7 @@ Store
 :math:`\F{init\_store}() : \store`
 ..................................
 
-* Return the empty :ref:`store <syntax-store>`.
+1. Return the empty :ref:`store <syntax-store>`.
 
 .. math::
    \begin{array}{lclll}
@@ -68,13 +68,13 @@ Modules
 :math:`\F{decode\_module}(\byte^\ast) : \module ~|~ \error`
 ...........................................................
 
-* If there exists a derivation for the :ref:`byte <syntax-byte>` sequence :math:`\byte^\ast` as a :math:`\Bmodule` according to the :ref:`binary grammar for modules <binary-module>`, yielding a :ref:`module <syntax-module>` :math:`m`, then return :math:`m`.
+1. If there exists a derivation for the :ref:`byte <syntax-byte>` sequence :math:`\byte^\ast` as a :math:`\Bmodule` according to the :ref:`binary grammar for modules <binary-module>`, yielding a :ref:`module <syntax-module>` :math:`m`, then return :math:`m`.
 
-* Else, return :math:`\ERROR`.
+2. Else, return :math:`\ERROR`.
 
 .. math::
    \begin{array}{lclll}
-   \F{decode\_module}(b^\ast) &=& m && (\iff \Bmodule \longrightarrow m{:}b^\ast) \\
+   \F{decode\_module}(b^\ast) &=& m && (\iff \Bmodule \stackrel\ast\Longrightarrow m{:}b^\ast) \\
    \F{decode\_module}(b^\ast) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -85,13 +85,13 @@ Modules
 :math:`\F{parse\_module}(\codepoint^\ast) : \module ~|~ \error`
 ...............................................................
 
-* If there exists a derivation for the :ref:`source <syntax-source>` :math:`\codepoint^\ast` as a :math:`\Tmodule` according to the :ref:`text grammar for modules <text-module>`, yielding a :ref:`module <syntax-module>` :math:`m`, then return :math:`m`.
+1. If there exists a derivation for the :ref:`source <text-source>` :math:`\codepoint^\ast` as a :math:`\Tmodule` according to the :ref:`text grammar for modules <text-module>`, yielding a :ref:`module <syntax-module>` :math:`m`, then return :math:`m`.
 
-* Else, return :math:`\ERROR`.
+2. Else, return :math:`\ERROR`.
 
 .. math::
    \begin{array}{lclll}
-   \F{parse\_module}(c^\ast) &=& m && (\iff \Tmodule \longrightarrow m{:}c^\ast) \\
+   \F{parse\_module}(c^\ast) &=& m && (\iff \Tmodule \stackrel\ast\Longrightarrow m{:}c^\ast) \\
    \F{parse\_module}(c^\ast) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -102,13 +102,13 @@ Modules
 :math:`\F{validate\_module}(\module) : \error^?`
 ................................................
 
-* If :math:`\module` is :ref:`valid <valid-module>`, then return nothing.
+1. If :math:`\module` is :ref:`valid <valid-module>`, then return nothing.
 
-* Else, return :math:`\ERROR`.
+2. Else, return :math:`\ERROR`.
 
 .. math::
    \begin{array}{lclll}
-   \F{validate\_module}(m) &=& \epsilon && (\iff {} \vdashmodule m : \externtype^\ast) \\
+   \F{validate\_module}(m) &=& \epsilon && (\iff {} \vdashmodule m : \externtype^\ast \to {\externtype'}^\ast) \\
    \F{validate\_module}(m) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -119,13 +119,13 @@ Modules
 :math:`\F{instantiate\_module}(\store, \module, \externval^\ast) : (\store, \moduleinst ~|~ \error)`
 ....................................................................................................
 
-* :ref:`Instantiate <exec-instantiation>` :math:`\module` in :math:`\store` with :ref:`external values <syntax-externval>` :math:`\externval^\ast` as imports:
+1. Try :ref:`instantiating <exec-instantiation>` :math:`\module` in :math:`\store` with :ref:`external values <syntax-externval>` :math:`\externval^\ast` as imports:
 
-  * If it succeeds with a :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst`, then let :math:`\X{result}` be :math:`\moduleinst`.
+  a. If it succeeds with a :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst`, then let :math:`\X{result}` be :math:`\moduleinst`.
 
-  * Else, let :math:`\X{result}` be :math:`\ERROR`.
+  b. Else, let :math:`\X{result}` be :math:`\ERROR`.
 
-* Return the new store paired with :math:`\X{result}`.
+2. Return the new store paired with :math:`\X{result}`.
 
 .. math::
    \begin{array}{lclll}
@@ -143,17 +143,17 @@ Modules
 :math:`\F{module\_imports}(\module) : (\name, \name, \externtype)^\ast`
 .......................................................................
 
-* Assert: :math:`\module` is :ref:`valid <valid-module>` with external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
+1. Assert: :math:`\module` is :ref:`valid <valid-module>` with external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
 
-* Let :math:`\import^\ast` be the :ref:`imports <syntax-import>` :math:`\module.\MIMPORTS`.
+2. Let :math:`\import^\ast` be the :ref:`imports <syntax-import>` :math:`\module.\MIMPORTS`.
 
-* Assert: the length of :math:`\import^\ast` equals the length of :math:`\externtype^\ast`.
+3. Assert: the length of :math:`\import^\ast` equals the length of :math:`\externtype^\ast`.
 
-* For each :math:`\import_i` in :math:`\import^\ast` and corresponding :math:`\externtype_i` in :math:`\externtype^\ast`, do:
+4. For each :math:`\import_i` in :math:`\import^\ast` and corresponding :math:`\externtype_i` in :math:`\externtype^\ast`, do:
 
-  * Let :math:`\X{result}_i` be the triple :math:`(\import_i.\IMODULE, \import_i.\INAME, \externtype_i)`.
+  a. Let :math:`\X{result}_i` be the triple :math:`(\import_i.\IMODULE, \import_i.\INAME, \externtype_i)`.
 
-* Return the concatenation of all :math:`\X{result}_i`, in index order.
+5. Return the concatenation of all :math:`\X{result}_i`, in index order.
 
 .. math::
    ~ \\
@@ -169,17 +169,17 @@ Modules
 :math:`\F{module\_exports}(\module) : (\name, \externtype)^\ast`
 ................................................................
 
-* Assert: :math:`\module` is :ref:`valid <valid-module>` with external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
+1. Assert: :math:`\module` is :ref:`valid <valid-module>` with external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
 
-* Let :math:`\export^\ast` be the :ref:`exports <syntax-export>` :math:`\module.\MEXPORTS`.
+2. Let :math:`\export^\ast` be the :ref:`exports <syntax-export>` :math:`\module.\MEXPORTS`.
 
-* Assert: the length of :math:`\export^\ast` equals the length of :math:`\externtype^\ast`.
+3. Assert: the length of :math:`\export^\ast` equals the length of :math:`\externtype^\ast`.
 
-* For each :math:`\export_i` in :math:`\export^\ast` and corresponding :math:`\externtype'_i` in :math:`{\externtype'}^\ast`, do:
+4. For each :math:`\export_i` in :math:`\export^\ast` and corresponding :math:`\externtype'_i` in :math:`{\externtype'}^\ast`, do:
 
-  * Let :math:`\X{result}_i` be the pair :math:`(\export_i.\ENAME, \externtype'_i)`.
+  a. Let :math:`\X{result}_i` be the pair :math:`(\export_i.\ENAME, \externtype'_i)`.
 
-* Return the concatenation of all :math:`\X{result}_i`, in index order.
+5. Return the concatenation of all :math:`\X{result}_i`, in index order.
 
 .. math::
    ~ \\
@@ -200,13 +200,13 @@ Exports
 :math:`\F{get\_export}(\moduleinst, \name) : \externval ~|~ \error`
 ...................................................................
 
-* For each :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS`, do:
+1. Assert: due to :ref:`validity <valid-moduleinst>` of the :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst`, all its :ref:`export names <syntax-exportinst>` are different.
 
-  * If the :ref:`name <syntax-name>` :math:`\exportinst_i.\EINAME` equals :math:`\name`, then:
+2. If there exists an :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS` such that :ref:`name <syntax-name>` :math:`\exportinst_i.\EINAME` equals :math:`\name`, then:
 
-    * Return the :ref:`external value <syntax-externval>` :math:`\exportinst_i.\EIVALUE`.
+   a. Return the :ref:`external value <syntax-externval>` :math:`\exportinst_i.\EIVALUE`.
 
-* Return :math:`\ERROR`.
+3. Else, return :math:`\ERROR`.
 
 .. math::
    ~ \\
@@ -227,13 +227,13 @@ Functions
 :math:`\F{alloc\_func}(\store, \functype, \hostfunc) : (\store, \funcaddr)`
 ...........................................................................
 
-* Let :math:`\funcaddr` be the result of :ref:`allocating a host function <alloc-func>` in :math:`\store` with :ref:`function type <syntax-functype>` :math:`\functype` and host function code :math:`\hostfunc`.
+1. Let :math:`\funcaddr` be the result of :ref:`allocating a host function <alloc-func>` in :math:`\store` with :ref:`function type <syntax-functype>` :math:`\functype` and host function code :math:`\hostfunc`.
 
-* Return the new store paired with :math:`\funcaddr`.
+2. Return the new store paired with :math:`\funcaddr`.
 
 .. math::
    \begin{array}{lclll}
-   \F{alloc\_func}(S, \X{ft}, \X{code}) &=& (S', \X{a}) && (\iff \alloctable(S, \X{ft}, \X{code}) = S', \X{a}) \\
+   \F{alloc\_func}(S, \X{ft}, \X{code}) &=& (S', \X{a}) && (\iff \allochostfunc(S, \X{ft}, \X{code}) = S', \X{a}) \\
    \end{array}
 
 .. note::
@@ -245,18 +245,18 @@ Functions
 .. index:: invocation, value, result
 .. _embed-invoke-func:
 
-:math:`\F{invoke\_func}(\store, \funcaddr, \val^\ast) : (\store, \val^\ast ~|~ \error`)
-.......................................................................................
+:math:`\F{invoke\_func}(\store, \funcaddr, \val^\ast) : (\store, \val^\ast ~|~ \error`)`
+........................................................................................
 
-* Assert: :math:`\store.\SFUNCS[\funcaddr]` exists.
+1. Assert: :math:`\store.\SFUNCS[\funcaddr]` exists.
 
-* :ref:`Invoke <exec-invocation>` the function :math:`\funcaddr` in :math:`\store` with :ref:`values <syntax-val>` :math:`\val^\ast` as arguments:
+2. Try :ref:`invoking <exec-invocation>` the function :math:`\funcaddr` in :math:`\store` with :ref:`values <syntax-val>` :math:`\val^\ast` as arguments:
 
-  * If it succeeds with :ref:`values <syntax-val>` :math:`{\val'}^\ast` as results, then let :math:`\X{result}` be :math:`{\val'}^\ast`.
+  a. If it succeeds with :ref:`values <syntax-val>` :math:`{\val'}^\ast` as results, then let :math:`\X{result}` be :math:`{\val'}^\ast`.
 
-  * Else it has trapped, hence let :math:`\X{result}` be :math:`\ERROR`.
+  b. Else it has trapped, hence let :math:`\X{result}` be :math:`\ERROR`.
 
-* Return the new store paired with :math:`\X{result}`.
+3. Return the new store paired with :math:`\X{result}`.
 
 .. math::
    ~ \\
@@ -267,6 +267,23 @@ Functions
 
 .. note::
    The store may be modified even in case of an error.
+
+
+.. _embed-type-func:
+
+:math:`\F{type\_func}(\store, \funcaddr) : \functype`
+.....................................................
+
+1. Assert: :math:`\store.\SFUNCS[\funcaddr]` exists.
+
+2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVFUNC~\funcaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype`.
+
+3. Return :math:`\functype`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{type\_func}(S, a) &=& \X{ft} && (\iff S \vdashexternval \EVFUNC~a : \ETFUNC~\X{ft}) \\
+   \end{array}
 
 
 .. index:: table, table address, store, table instance, table type, element, function address
@@ -280,9 +297,9 @@ Tables
 :math:`\F{alloc\_table}(\store, \tabletype) : (\store, \tableaddr)`
 ...................................................................
 
-* Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
+1. Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
-* Return the new store paired with :math:`\tableaddr`.
+2. Return the new store paired with :math:`\tableaddr`.
 
 .. math::
    \begin{array}{lclll}
@@ -295,17 +312,17 @@ Tables
 :math:`\F{read\_table}(\store, \tableaddr, i) : \funcaddr ~|~ \error`
 .....................................................................
 
-* Assert: :math:`\store.\STABLES[\tableaddr]` exists.
+1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
 
-* Assert: :math:`i` is a non-negative integer.
+2. Assert: :math:`i` is a non-negative integer.
 
-* Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
+3. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
 
-* If :math:`i` is larger than or equal to the length if :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
+4. If :math:`i` is larger than or equal to the length if :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
 
-* If :math:`\X{ti}.\TIELEM[i]` contains a :ref:`function address <syntax-funcaddr>` :math:`\X{fa}`, then return :math:`\X{fa}`.
+5. If :math:`\X{ti}.\TIELEM[i]` contains a :ref:`function address <syntax-funcaddr>` :math:`\X{fa}`, then return :math:`\X{fa}`.
 
-* Else :math:`\X{ti}.\TIELEM[i]` is empty, hence return :math:`\ERROR`.
+6. Else :math:`\X{ti}.\TIELEM[i]` is empty, hence return :math:`\ERROR`.
 
 .. math::
    \begin{array}{lclll}
@@ -319,17 +336,17 @@ Tables
 :math:`\F{write\_table}(\store, \tableaddr, i, \funcaddr) : \store ~|~ \error`
 ..............................................................................
 
-* Assert: :math:`\store.\STABLES[\tableaddr]` exists.
+1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
 
-* Assert: :math:`i` is a non-negative integer.
+2. Assert: :math:`i` is a non-negative integer.
 
-* Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
+3. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
 
-* If :math:`i` is larger than or equal to the length if :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
+4. If :math:`i` is larger than or equal to the length if :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
 
-* Replace :math:`\X{ti}.\TIELEM[i]` with the :ref:`function address <syntax-funcaddr>` :math:`\X{fa}`.
+5. Replace :math:`\X{ti}.\TIELEM[i]` with the :ref:`function address <syntax-funcaddr>` :math:`\X{fa}`.
 
-* Return the updated store.
+6. Return the updated store.
 
 .. math::
    \begin{array}{lclll}
@@ -343,27 +360,39 @@ Tables
 :math:`\F{grow\_table}(\store, \tableaddr, n) : \store ~|~ \error`
 ..................................................................
 
-* Assert: :math:`\store.\STABLES[\tableaddr]` exists.
+1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
 
-* Assert: :math:`n` is a non-negative integer.
+2. Assert: :math:`n` is a non-negative integer.
 
-* Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
+3. Try :ref:`growing <grow-table>` the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]` by :math:`n` elements:
 
-* If :math:`\X{ti}.\TIMAX` is non-empty and smaller than :math:`n` added to the length of :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
+   a. If it succeeds, return the updated store.
 
-* Append :math:`n` empty elements to :math:`\X{ti}.\TIELEM`.
+   b. Else, return :math:`\ERROR`.
 
-* Return the updated store.
+.. math::
+   ~ \\
+   \begin{array}{lclll}
+   \F{grow\_table}(S, a, n) &=& S' &&
+     (\iff S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n)) \\
+   \F{grow\_table}(S, a, n) &=& \ERROR && (\otherwise) \\
+   \end{array}
+
+
+.. _embed-type-table:
+
+:math:`\F{type\_table}(\store, \tableaddr) : \tabletype`
+........................................................
+
+1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
+
+2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVTABLE~\tableaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETTABLE~\tabletype`.
+
+3. Return :math:`\tabletype`.
 
 .. math::
    \begin{array}{lclll}
-   \F{grow\_table}(S, a, n) &=& S' && (
-     \begin{array}[t]{@{}r@{~}l@{}}
-     \iff & \X{ti} = S.\STABLES[a] \\
-     \wedge & (\X{ti}.\TIMAX = \epsilon \vee |\X{ti}.\TIELEM| + n \leq \X{ti}.\TIMAX) \\
-     \wedge & S' = S \with \STABLES[a].\TIELEM = \X{ti}.\TIELEM~(\epsilon)^n) \\
-     \end{array} \\
-   \F{grow\_table}(S, a, n) &=& \ERROR && (\otherwise) \\
+   \F{type\_table}(S, a) &=& \X{tt} && (\iff S \vdashexternval \EVTABLE~a : \ETTABLE~\X{tt}) \\
    \end{array}
 
 
@@ -378,9 +407,9 @@ Memories
 :math:`\F{alloc\_mem}(\store, \memtype) : (\store, \memaddr)`
 ................................................................
 
-* Let :math:`\memaddr` be the result of :ref:`allocating a memory <alloc-mem>` in :math:`\store` with :ref:`memory type <syntax-memtype>` :math:`\memtype`.
+1. Let :math:`\memaddr` be the result of :ref:`allocating a memory <alloc-mem>` in :math:`\store` with :ref:`memory type <syntax-memtype>` :math:`\memtype`.
 
-* Return the new store paired with :math:`\memaddr`.
+2. Return the new store paired with :math:`\memaddr`.
 
 .. math::
    \begin{array}{lclll}
@@ -393,15 +422,15 @@ Memories
 :math:`\F{read\_mem}(\store, \memaddr, i) : \byte ~|~ \error`
 .............................................................
 
-* Assert: :math:`\store.\SMEMS[\memaddr]` exists.
+1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
 
-* Assert: :math:`i` is a non-negative integer.
+2. Assert: :math:`i` is a non-negative integer.
 
-* Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
+3. Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
 
-* If :math:`i` is larger than or equal to the length if :math:`\X{mi}.\MIDATA`, then return :math:`\ERROR`.
+4. If :math:`i` is larger than or equal to the length if :math:`\X{mi}.\MIDATA`, then return :math:`\ERROR`.
 
-* Else, return the  :ref:`byte <syntax-byte>` :math:`\X{mi}.\MIDATA[i]`.
+5. Else, return the  :ref:`byte <syntax-byte>` :math:`\X{mi}.\MIDATA[i]`.
 
 .. math::
    \begin{array}{lclll}
@@ -415,17 +444,17 @@ Memories
 :math:`\F{write\_mem}(\store, \memaddr, i, \byte) : \store ~|~ \error`
 ......................................................................
 
-* Assert: :math:`\store.\SMEMS[\memaddr]` exists.
+1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
 
-* Assert: :math:`i` is a non-negative integer.
+2. Assert: :math:`i` is a non-negative integer.
 
-* Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
+3. Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
 
-* If :math:`i` is larger than or equal to the length if :math:`\X{mi}.\MIDATA`, then return :math:`\ERROR`.
+4. If :math:`i` is larger than or equal to the length if :math:`\X{mi}.\MIDATA`, then return :math:`\ERROR`.
 
-* Replace :math:`\X{mi}.\MIDATA[i]` with :math:`\byte`.
+5. Replace :math:`\X{mi}.\MIDATA[i]` with :math:`\byte`.
 
-* Return the updated store.
+6. Return the updated store.
 
 .. math::
    \begin{array}{lclll}
@@ -439,28 +468,39 @@ Memories
 :math:`\F{grow\_mem}(\store, \memaddr, n) : \store ~|~ \error`
 ..............................................................
 
-* Assert: :math:`\store.\SMEMS[\memaddr]` exists.
+1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
 
-* Assert: :math:`n` is a non-negative integer.
+2. Assert: :math:`n` is a non-negative integer.
 
-* Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
+3. Try :ref:`growing <grow-mem>` the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]` by :math:`n` :ref:`pages <page-size>`:
 
-* If :math:`\X{mi}.\MIMAX` is non-empty and smaller than :math:`n` added to the length of :math:`\X{mi}.\MIDATA` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`, then return :math:`\ERROR`.
+   a. If it succeeds, return the updated store.
 
-* Append :math:`n` times the :ref:`page size <page-size>` :math:`64\,\F{Ki}` zero :ref:`bytes <syntax-byte>` to :math:`\X{mi}.\MIDATA`.
-
-* Return the updated store.
+   b. Else, return :math:`\ERROR`.
 
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{grow\_mem}(S, a, n) &=& S' && (
-     \begin{array}[t]{@{}r@{~}l@{}}
-     \iff & \X{mi} = S.\SMEMS[a] \\
-     \wedge & (\X{mi}.\MIMAX = \epsilon \vee |\X{mi}.\MIDATA|/64\,\F{Ki} + n \leq \X{mi}.\TIMAX) \\
-     \wedge & S' = S \with \SMEMS[a].\MIDATA = \X{mi}.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}}) \\
-     \end{array} \\
+   \F{grow\_mem}(S, a, n) &=& S' &&
+     (\iff S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\
    \F{grow\_mem}(S, a, n) &=& \ERROR && (\otherwise) \\
+   \end{array}
+
+
+.. _embed-type-mem:
+
+:math:`\F{type\_mem}(\store, \memaddr) : \memtype`
+..................................................
+
+1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
+
+2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVMEM~\memaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETMEM~\memtype`.
+
+3. Return :math:`\memtype`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{type\_mem}(S, a) &=& \X{mt} && (\iff S \vdashexternval \EVMEM~a : \ETMEM~\X{mt}) \\
    \end{array}
 
 
@@ -476,9 +516,9 @@ Globals
 :math:`\F{alloc\_global}(\store, \globaltype, \val) : (\store, \globaladdr)`
 ............................................................................
 
-* Let :math:`\globaladdr` be the result of :ref:`allocating a global <alloc-global>` in :math:`\store` with :ref:`global type <syntax-globaltype>` :math:`\globaltype` and initialization value :math:`\val`.
+1. Let :math:`\globaladdr` be the result of :ref:`allocating a global <alloc-global>` in :math:`\store` with :ref:`global type <syntax-globaltype>` :math:`\globaltype` and initialization value :math:`\val`.
 
-* Return the new store paired with :math:`\globaladdr`.
+2. Return the new store paired with :math:`\globaladdr`.
 
 .. math::
    \begin{array}{lclll}
@@ -491,11 +531,11 @@ Globals
 :math:`\F{read\_global}(\store, \globaladdr) : \val`
 ....................................................
 
-* Assert: :math:`\store.\SGLOBALS[\globaladdr]` exists.
+1. Assert: :math:`\store.\SGLOBALS[\globaladdr]` exists.
 
-* Let :math:`\X{gi}` be the :ref:`global instance <syntax-globalinst>` :math:`\store.\SGLOBALS[\globaladdr]`.
+2. Let :math:`\X{gi}` be the :ref:`global instance <syntax-globalinst>` :math:`\store.\SGLOBALS[\globaladdr]`.
 
-* Return the :ref:`value <syntax-val>` :math:`\X{gi}.\GIVALUE`.
+3. Return the :ref:`value <syntax-val>` :math:`\X{gi}.\GIVALUE`.
 
 .. math::
    \begin{array}{lclll}
@@ -508,19 +548,36 @@ Globals
 :math:`\F{write\_global}(\store, \globaladdr, \val) : \store ~|~ \error`
 ........................................................................
 
-* Assert: :math:`\store.\SGLOBALS[a]` exists.
+1. Assert: :math:`\store.\SGLOBALS[a]` exists.
 
-* Let :math:`\X{gi}` be the :ref:`global instance <syntax-globalinst>` :math:`\store.\SGLOBALS[\globaladdr]`.
+2. Let :math:`\X{gi}` be the :ref:`global instance <syntax-globalinst>` :math:`\store.\SGLOBALS[\globaladdr]`.
 
-* If :math:`\X{gi}.\GIMUT` is not :math:`\MVAR`, then return :math:`\ERROR`.
+3. If :math:`\X{gi}.\GIMUT` is not :math:`\MVAR`, then return :math:`\ERROR`.
 
-* Replace :math:`\X{gi}.\GIVALUE` with the :ref:`value <syntax-val>` :math:`\val`.
+4. Replace :math:`\X{gi}.\GIVALUE` with the :ref:`value <syntax-val>` :math:`\val`.
 
-* Return the updated store.
+5. Return the updated store.
 
 .. math::
    ~ \\
    \begin{array}{lclll}
    \F{write\_global}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GIMUT = \MVAR \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
    \F{write\_global}(S, a, v) &=& \ERROR && (\otherwise) \\
+   \end{array}
+
+
+.. _embed-type-global:
+
+:math:`\F{type\_global}(\store, \globaladdr) : \globaltype`
+...........................................................
+
+1. Assert: :math:`\store.\SGLOBALS[\globaladdr]` exists.
+
+2. Assert: the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype`.
+
+3. Return :math:`\globaltype`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{type\_global}(S, a) &=& \X{gt} && (\iff S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~\X{gt}) \\
    \end{array}

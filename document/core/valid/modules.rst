@@ -499,7 +499,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
     the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\externtype_i`.
 
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
-    the segment :math:`\import_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype> :math:`\externtype'_i`.
+    the segment :math:`\import_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\externtype'_i`.
 
 * The length of :math:`C.\CTABLES` must not be larger than :math:`1`.
 
