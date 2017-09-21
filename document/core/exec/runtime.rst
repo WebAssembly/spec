@@ -422,10 +422,12 @@ Conventions
    This may be generalized in future versions.
 
 
-.. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call
+.. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call, memory, memory instance, table, table instance, element, data, segment
    pair:: abstract syntax; administrative instruction
 .. _syntax-trap:
 .. _syntax-invoke:
+.. _syntax-init_elem:
+.. _syntax-init_data:
 .. _syntax-instr-admin:
 
 Administrative Instructions
@@ -442,6 +444,8 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \dots \\ &&|&
      \TRAP \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
+     \INITELEM~\tableaddr~\u32~\funcidx^\ast \\ &&|&
+     \INITDATA~\memaddr~\u32~\byte^\ast \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
      \FRAME_n\{\frame\}~\instr^\ast~\END \\
    \end{array}
@@ -451,6 +455,11 @@ Traps are bubbled up through nested instruction sequences, ultimately reducing t
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
+
+The |INITELEM| and |INITDATA| instructions perform initialization of :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segments during module :ref:`instantiation <exec-instantiation>`.
+
+.. note::
+   The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.
 
 The |LABEL| and |FRAME| instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
 Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>` with an |END| marker.
@@ -515,43 +524,6 @@ This definition allows to index active labels surrounding a :ref:`branch <syntax
    The selected label is identified through the :ref:`label index <syntax-labelidx>` :math:`l`, which corresponds to the number of surrounding |LABEL| instructions that must be hopped over -- which is exactly the count encoded in the index of a block context.
 
 
-.. index:: ! module instructions, function, function instance, function address, label, frame, instruction, trap, global, global instance, memory, memory instance, table, table instance, invocation, start function
-   pair:: abstract syntax; meta instruction
-.. _syntax-instantiate:
-.. _syntax-init_elem:
-.. _syntax-init_data:
-.. _syntax-moduleinstr:
-
-Module Instructions
-...................
-
-Module :ref:`instantiation <exec-instantiation>` is a complex operation.
-It is hence expressed in terms of reduction into smaller steps expressed by a sequence of administrative *module instructions* that are a superset of ordinary instructions and defined as follow.
-
-.. math::
-   \begin{array}{llcl}
-   \production{(module instruction)} & \moduleinstr &::=&
-     \INSTANTIATE~\module~\externval^\ast \\ &&|&
-     \INITELEM~\tableaddr~\u32~\moduleinst~\funcidx^\ast \\ &&|&
-     \INITDATA~\memaddr~\u32~\byte^\ast \\ &&|&
-     \instr \\
-   \end{array}
-
-The |INSTANTIATE| instruction expresses instantiation of a :ref:`module <syntax-module>` itself, requiring a sequence of :ref:`external values <syntax-externval>` for the expected imports.
-It reduces into a sequence of initialization instructions for :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segments,
-and a possible :ref:`invocation <syntax-invoke>` of the :ref:`start function <syntax-start>` that reduces further to a sequence of regular instructions.
-
-.. comment out
-   The final instruction returns the newly created and initialized :ref:`module instance <syntax-moduleinst>`.
-
-.. note::
-   The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.
-
-   Unlike the administrative instructions above,
-   module instructions *embed* ordinary instructions |instr| instead of extending them.
-   Consequently, they can only occur at the top-level.
-
-
 .. index:: ! configuration, ! thread, store, frame, instruction, module instruction
 .. _syntax-thread:
 .. _syntax-config:
@@ -561,17 +533,15 @@ Configurations
 
 A *configuration* consists of the current :ref:`store <syntax-store>` and an executing *thread*.
 
-A thread can either be a regular computation over :ref:`instructions <syntax-instr>`, or a module instantiation, represented as a computation over :ref:`module instructions <syntax-moduleinstr>`.
-Regular computation operates relative to a current :ref:`frame <syntax-frame>` referring to their home :ref:`module instance <syntax-moduleinst>`,
-whereas module computations are not local to a module, and consequently require no frame.
+A thread is a computation over :ref:`instructions <syntax-instr>`
+that operates relative to a current :ref:`frame <syntax-frame>` referring to the home :ref:`module instance <syntax-moduleinst>` that the computation runs in.
 
 .. math::
    \begin{array}{llcl}
    \production{(configuration)} & \config &::=&
      \store; \thread \\
    \production{(thread)} & \thread &::=&
-     \frame; \instr^\ast ~|~
-     \moduleinstr^\ast \\
+     \frame; \instr^\ast \\
    \end{array}
 
 .. note::
@@ -594,8 +564,6 @@ Finally, the following definition of *evaluation context* and associated structu
      \val^\ast~E~\instr^\ast ~|~
      \LABEL_n\{\instr^\ast\}~E~\END ~|~
      \FRAME_n\{\frame\}~E~\END \\
-   \production{(module evaluation contexts)} & M &::=&
-     [\_]~~\moduleinstr^\ast \\
    \end{array}
 
 .. math::
@@ -604,17 +572,10 @@ Finally, the following definition of *evaluation context* and associated structu
      & (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
    S; F; E[\TRAP] &\stepto& S; F; \TRAP
      & (\iff E \neq [\_]) \\
-   S; M[E[\instr]] &\stepto& S'; M[E[{\instr'}^\ast]]
-     & (\iff S; F_0; \instr \stepto S'; F_0; {\instr'}^\ast) \\
-   S; M[\TRAP] &\stepto& S; \TRAP
-     & (\iff M \neq [\_]) \\
    \end{array}
 
-where :math:`F_0 = \{\ALOCALS~\epsilon, \AMODULE~\{\}\}` is an empty dummy frame.
-
-Reduction terminates for a regular thread when its instruction sequence has been reduced to a sequence of :ref:`values <syntax-val>` or to a |TRAP|.
-Reduction terminates for a module thread when its module instruction sequence has been reduced to an empty sequence or to a |TRAP|.
-
+Reduction terminates when a thread's instruction sequence has been reduced to a :ref:`result <syntax-result>`,
+that is, either a sequence of :ref:`values <syntax-val>` or to a |TRAP|.
 
 .. note::
    For example, the following instruction sequence,

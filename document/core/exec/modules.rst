@@ -371,6 +371,46 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    \end{array}
 
 
+.. index:: table, table instance, table address, grow, limits
+.. _grow-table:
+
+Growing :ref:`tables <syntax-tableinst>`
+........................................
+
+1. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` to grow and :math:`n` the number of elements by which to grow it.
+
+2. If :math:`\tableinst.\TIMAX` is not empty and smaller than :math:`n` added to the length of :math:`\tableinst.\TIELEM`, then fail.
+
+3. Append :math:`n` empty elements to :math:`\tableinst.\TIELEM`.
+
+.. math::
+   \begin{array}{rllll}
+   \growtable(\tableinst, n) &=& \tableinst \with \TIELEM = \tableinst.\TIELEM~(\epsilon)^n \\
+     && (\iff \tableinst.\TIMAX = \epsilon \vee |\tableinst.\TIELEM| + n \leq \tableinst.\TIMAX) \\
+   \end{array}
+
+
+.. index:: memory, memory instance, memory address, grow, limits
+.. _grow-mem:
+
+Growing :ref:`memories <syntax-meminst>`
+........................................
+
+1. Let :math:`\meminst` be the :ref:`memory instance <syntax-meminst>` to grow and :math:`n` the number of :ref:`pages <page-size>` by which to grow it.
+
+2. Let :math:`\X{len}` be :math:`n` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
+
+3. If :math:`\meminst.\MIMAX` is not empty and its value multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}` is smaller than :math:`\X{len}` added to the length of :math:`\meminst.\MIDATA`, then fail.
+
+4. Append :math:`\X{len}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
+
+.. math::
+   \begin{array}{rllll}
+   \growmem(\meminst, n) &=& \meminst \with \MIDATA = \meminst.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
+     && (\iff \meminst.\MIMAX = \epsilon \vee |\meminst.\MIDATA| + n \cdot 64\,\F{Ki} \leq \meminst.\MIMAX \cdot 64\,\F{Ki}) \\
+   \end{array}
+
+
 .. index:: module, module instance, function instance, table instance, memory instance, global instance, export instance, function address, table address, memory address, global address, function index, table index, memory index, global index, type, function, table, memory, global, import, export, external value, external type, matching
 .. _alloc-module:
 
@@ -499,7 +539,6 @@ Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals),
 
 .. index:: ! instantiation, module, instance, store, trap
 .. _exec-module:
-.. _exec-moduleinstr:
 .. _exec-instantiation:
 
 Instantiation
@@ -507,7 +546,8 @@ Instantiation
 
 Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :math:`\module` is instantiated with a list of :ref:`external values <syntax-externval>` :math:`\externval^n` supplying the required imports as follows.
 
-Instantiation may *fail* with an error if the module is not :ref:`valid <valid>` or the imports do not :ref:`match <match-externtype>`.
+Instantiation assumes that the module is :ref:`valid <valid>` and the provided imports :ref:`match <match-externtype>` the declared types,
+and may *fail* with an error otherwise.
 Instantiation can also result in a :ref:`trap <trap>` from executing the start function.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
 
@@ -629,14 +669,14 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 .. math::
    ~\\
    \begin{array}{@{}rcll}
-   S; \INSTANTIATE~\module~\externval^n &\stepto& S';
+   \instantiate(S, \module, \externval^n) &=& S'; F;
      \begin{array}[t]{@{}l@{}}
-     (\INITELEM~\tableaddr~\X{eo}~\moduleinst~\elem.\EINIT)^\ast \\
+     (\INITELEM~\tableaddr~\X{eo}~\elem.\EINIT)^\ast \\
      (\INITDATA~\memaddr~\X{do}~\data.\DINIT)^\ast \\
      (\INVOKE~\funcaddr)^? \\
      \end{array} \\
    &(\iff
-     & \vdashmodule \module : \externtype^n \\
+     & \vdashmodule \module : \externtype^n \to {\externtype'}^\ast \\
      &\wedge& (\vdashexternval \externval : \externtype')^n \\
      &\wedge& (\vdashexterntypematch \externtype' \matches \externtype)^n \\[1ex]
      &\wedge& \module.\MGLOBALS = \global^k \\
@@ -655,21 +695,21 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& \globaladdr^\ast = \moduleinst.\MIGLOBALS[|\moduleinst.\MIGLOBALS|-k \slice k] \\
      &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\
      &\wedge& (\memaddr = \moduleinst.\MIMEMS[\data.\DMEM])^\ast \\
-     &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^?
+     &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^?)
    \\[1ex]
-   S; \INSTANTIATE~\module~\externval^n &\stepto&
-     S'; \TRAP  \qquad (\otherwise)
+   \instantiate(S, \module, \externval^n) &=& S; \{\AMODULE~\{\}, \ALOCALS~\epsilon\}; \TRAP
+     \qquad (\otherwise)
    \\[2ex]
-   S; \INITELEM~a~i~m~\epsilon &\stepto&
-     S; \epsilon \\
-   S; \INITELEM~a~i~m~(x_0~x^\ast) &\stepto&
-     S'; \INITELEM~a~(i+1)~m~x^\ast \\ &&
-     (\iff S' = S \with \STABLES[a].\TIELEM[i] = m.\MIFUNCS[x_0])
+   S; F; \INITELEM~a~i~\epsilon &\stepto&
+     S; F; \epsilon \\
+   S; F; \INITELEM~a~i~(x_0~x^\ast) &\stepto&
+     S'; F; \INITELEM~a~(i+1)~x^\ast \\ &&
+     (\iff S' = S \with \STABLES[a].\TIELEM[i] = F.\AMODULE.\MIFUNCS[x_0])
    \\[1ex]
-   S; \INITDATA~a~i~\epsilon &\stepto&
-     S; \epsilon \\
-   S; \INITDATA~a~i~(b_0~b^\ast) &\stepto&
-     S'; \INITDATA~a~(i+1)~b^\ast \\ &&
+   S; F; \INITDATA~a~i~\epsilon &\stepto&
+     S; F; \epsilon \\
+   S; F; \INITDATA~a~i~(b_0~b^\ast) &\stepto&
+     S'; F; \INITDATA~a~(i+1)~b^\ast \\ &&
      (\iff S' = S \with \SMEMS[a].\MIDATA[i] = b_0)
    \end{array}
 
@@ -729,8 +769,7 @@ The values :math:`\val_{\F{res}}^m` are returned as the results of the invocatio
 .. math::
    ~\\[-1ex]
    \begin{array}{@{}lcl}
-   \invoke(S, \funcaddr, \val^n) &=& \result \\
+   \invoke(S, \funcaddr, \val^n) &=& S; \val^n~(\INVOKE~\funcaddr) \\
      &(\iff & S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
-     &\wedge& \val^n = (t_1.\CONST~c)^n \\
-     &\wedge& S; \val^n~(\INVOKE~\funcaddr) \stepto^\ast S'; \result) \\
+     &\wedge& \val^n = (t_1.\CONST~c)^n) \\
    \end{array}

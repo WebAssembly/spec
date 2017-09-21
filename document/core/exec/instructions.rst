@@ -432,7 +432,7 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & \bytes_t(c) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8])
      \end{array}
@@ -443,7 +443,7 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8])
      \end{array}
@@ -510,7 +510,7 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c)
      \end{array}
@@ -520,7 +520,7 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c))
      \end{array}
@@ -583,21 +583,13 @@ Memory Instructions
 
 8. Pop the value :math:`\I32.\CONST~n` from the stack.
 
-9. If :math:`\X{mem}.\MIMAX` is not empty and :math:`\X{sz} + n` is larger than :math:`\X{mem}.\MIMAX`, then:
+9. Either, try :ref:`growing <grow-mem>` :math:`\X{mem}` by :math:`n` :ref:`pages <page-size>`:
 
-  a. Push the value :math:`\I32.\CONST~(-1)` to the stack.
+   a. If it succeeds, push the value :math:`\I32.\CONST~\X{sz}` to the stack.
 
-10. Else, either:
+   b. Else, push the value :math:`\I32.\CONST~(-1)` to the stack.
 
-    a. Let :math:`\X{len}` be :math:`n` multiplied with the :ref:`page size <page-size>`.
-
-    b. Append :math:`\X{len}` bytes with value :math:`\hex{00}` to :math:`S.\SMEMS[a]`.
-
-    c. Push the value :math:`\I32.\CONST~\X{sz}` to the stack.
-
-11. Or:
-
-    a. Push the value :math:`\I32.\CONST~(-1)` to the stack.
+10. Or, push the value :math:`\I32.\CONST~(-1)` to the stack.
 
 .. math::
    ~\\[-1ex]
@@ -607,10 +599,8 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & F.\AMODULE.\MIMEMS[0] = a \\
-     \wedge & |S.\SMEMS[a].\MIDATA| = \X{sz}\cdot64\,\F{Ki} \\
-     \wedge & (\X{sz} + n \leq S.\SMEMS[a].\MIMAX \vee S.\SMEMS[a].\MIMAX = \epsilon) \\
-     \wedge & S' = S \with \SMEMS[a].\MIDATA = S.\SMEMS[a].\MIDATA~(\hex{00})^{n\cdot64\,\F{Ki}}) \\
+     (\iff & F.\AMODULE.\MIMEMS[0] = a \\
+     \wedge & S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -624,7 +614,7 @@ Memory Instructions
    or fail, returning :math:`{-1}`.
    Failure *must* occur if the referenced memory instance has a maximum size defined that would be exceeded.
    However, failure *can* occur in other cases as well.
-   In practice, the choice depends on the resources available to the :ref:`embedder <embedder>`.
+   In practice, the choice depends on the :ref:`resources <impl-exec>` available to the :ref:`embedder <embedder>`.
 
 
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, address, table address, table instance, store, frame
@@ -930,7 +920,7 @@ Control Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\STABLES[F.\AMODULE.\MITABLES[0]].\TIELEM[i] = a \\
+     (\iff & S.\STABLES[F.\AMODULE.\MITABLES[0]].\TIELEM[i] = a \\
      \wedge & S.\SFUNCS[a] = f \\
      \wedge & F.\AMODULE.\MITYPES[x] = f.\FITYPE)
      \end{array}
@@ -1044,7 +1034,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = f \\
+     (\iff & S.\SFUNCS[a] = f \\
      \wedge & f.\FITYPE = [t_1^n] \to [t_2^m] \\
      \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~t^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(t.\CONST~0)^k \})
@@ -1105,7 +1095,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
      \wedge & \X{hf}(S; \val^n) = S'; \result) \\
      \end{array} \\
    \end{array}

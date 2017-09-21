@@ -531,6 +531,7 @@
 
 .. Lexical grammar, non-terminals
 
+.. |Tsource| mathdef:: \xref{text/lexical}{text-source}{\T{source}}
 .. |Tchar| mathdef:: \xref{text/lexical}{text-char}{\T{char}}
 .. |Tspace| mathdef:: \xref{text/lexical}{text-space}{\T{space}}
 .. |Tformat| mathdef:: \xref{text/lexical}{text-format}{\T{format}}
@@ -759,6 +760,9 @@
 .. |allocglobal| mathdef:: \xref{exec/modules}{alloc-global}{\F{allocglobal}}
 .. |allocmodule| mathdef:: \xref{exec/modules}{alloc-module}{\F{allocmodule}}
 
+.. |growtable| mathdef:: \xref{exec/modules}{grow-table}{\F{growtable}}
+.. |growmem| mathdef:: \xref{exec/modules}{grow-mem}{\F{growmem}}
+
 
 .. Addresses, non-terminals
 
@@ -856,10 +860,8 @@
 
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
-.. |INSTANTIATE| mathdef:: \xref{exec/runtime}{syntax-instantiate}{\K{instantiate}}
 .. |INITELEM| mathdef:: \xref{exec/runtime}{syntax-init_elem}{\K{init\_elem}}
 .. |INITDATA| mathdef:: \xref{exec/runtime}{syntax-init_data}{\K{init\_data}}
-.. |DO| mathdef:: \xref{exec/runtime}{syntax-do}{\K{do}}
 
 
 .. Values & Results, non-terminals
@@ -869,8 +871,6 @@
 
 
 .. Administrative Instructions, non-terminals
-
-.. |moduleinstr| mathdef:: \xref{exec/runtime}{syntax-moduleinstr}{\X{moduleinstr}}
 
 .. |XB| mathdef:: \xref{exec/runtime}{syntax-ctxt-block}{B}
 
@@ -966,6 +966,7 @@
 
 .. Other meta functions
 
+.. |instantiate| mathdef:: \xref{exec/modules}{exec-instantiation}{\F{instantiate}}
 .. |invoke| mathdef:: \xref{exec/modules}{exec-invocation}{\F{invoke}}
 
 
@@ -983,7 +984,6 @@
 .. Judgements
 
 .. |vdashadmininstr| mathdef:: \xref{appendix/properties}{valid-instr-admin}{\vdash}
-.. |vdashmoduleinstr| mathdef:: \xref{appendix/properties}{valid-moduleinstr}{\vdash}
 
 .. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
 .. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}
@@ -1024,3 +1024,10 @@
 .. |Bmodulenamesubsec| mathdef:: \xref{appendix/custom}{binary-modulenamesec}{\B{modulenamesubsec}}
 .. |Bfuncnamesubsec| mathdef:: \xref{appendix/custom}{binary-funcnamesec}{\B{funcnamesubsec}}
 .. |Blocalnamesubsec| mathdef:: \xref{appendix/custom}{binary-localnamesec}{\B{localnamesubsec}}
+
+
+.. Embedding
+.. ---------
+
+.. |error| mathdef:: \xref{appendix/embedding}{embed-error}{\X{error}}
+.. |ERROR| mathdef:: \xref{appendix/embedding}{embed-error}{\K{error}}

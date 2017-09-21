@@ -28,11 +28,11 @@ Construct                                        Judgement
 :ref:`Element segment <valid-elem>`              :math:`C \vdashelem \elem \ok`
 :ref:`Data segment <valid-data>`                 :math:`C \vdashdata \data \ok`
 :ref:`Start function <valid-start>`              :math:`C \vdashstart \start \ok`
-:ref:`Export <valid-export>`                     :math:`C \vdashexport \export : \name`
-:ref:`Export description <valid-exportdesc>`     :math:`C \vdashexportdesc \exportdesc \ok`
+:ref:`Export <valid-export>`                     :math:`C \vdashexport \export : \externtype`
+:ref:`Export description <valid-exportdesc>`     :math:`C \vdashexportdesc \exportdesc : \externtype`
 :ref:`Import <valid-import>`                     :math:`C \vdashimport \import : \externtype`
 :ref:`Import description <valid-importdesc>`     :math:`C \vdashimportdesc \importdesc : \externtype`
-:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast`
+:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast \to \externtype^\ast`
 ===============================================  ===============================================================================
 
 
@@ -47,8 +47,7 @@ Construct                                        Judgement
 :ref:`Value <valid-val>`                         :math:`\vdashval \val : \valtype`
 :ref:`Result <valid-result>`                     :math:`\vdashresult \result : \resulttype`
 :ref:`External value <valid-externval>`          :math:`S \vdashexternval \externval : \externtype`
-:ref:`Module instruction <valid-moduleinstr>`    :math:`S \vdashmoduleinstr \moduleinstr \ok`
-:ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \resulttype`
+:ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \functype`
 :ref:`Table instance <valid-tableinst>`          :math:`S \vdashtableinst \tableinst : \tabletype`
 :ref:`Memory instance <valid-meminst>`           :math:`S \vdashmeminst \meminst : \memtype`
 :ref:`Global instance <valid-globalinst>`        :math:`S \vdashglobalinst \globalinst : \globaltype`
@@ -56,7 +55,7 @@ Construct                                        Judgement
 :ref:`Module instance <valid-moduleinst>`        :math:`S \vdashmoduleinst \moduleinst : C`
 :ref:`Store <valid-store>`                       :math:`\vdashstore \store \ok`
 :ref:`Configuration <valid-config>`              :math:`\vdashconfig \config \ok`
-:ref:`Thread <valid-thread>`                     :math:`S;\resulttype^? \vdashthread \thread : \resulttype^?`
+:ref:`Thread <valid-thread>`                     :math:`S;\resulttype^? \vdashthread \thread : \resulttype`
 :ref:`Frame <valid-frame>`                       :math:`S \vdashframe \frame : C`
 ===============================================  ===============================================================================
 
@@ -105,5 +104,4 @@ Construct                                        Judgement
 ===============================================  ===============================================================================
 :ref:`Instruction <exec-instr>`                  :math:`S;F;\instr \stepto S';F';{\instr'}^\ast`
 :ref:`Expression <exec-expr>`                    :math:`S;F;\expr \stepto^\ast S';F';\val^\ast`
-:ref:`Module instruction <exec-moduleinstr>`     :math:`S;\moduleinstr \stepto S';{\moduleinstr'}^\ast`
 ===============================================  ===============================================================================
