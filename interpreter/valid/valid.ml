@@ -16,7 +16,6 @@ let require b at s = if not b then error at s
 
 type context =
 {
-  module_ : module_;
   types : func_type list;
   funcs : func_type list;
   tables : table_type list;
@@ -27,8 +26,8 @@ type context =
   labels : stack_type list;
 }
 
-let context m =
-  { module_ = m; types = []; funcs = []; tables = []; memories = [];
+let empty_context =
+  { types = []; funcs = []; tables = []; memories = [];
     globals = []; locals = []; results = []; labels = [] }
 
 let lookup category list x =
@@ -37,11 +36,11 @@ let lookup category list x =
 
 let type_ (c : context) x = lookup "type" c.types x
 let func (c : context) x = lookup "function" c.funcs x
-let local (c : context) x = lookup "local" c.locals x
-let global (c : context) x = lookup "global" c.globals x
-let label (c : context) x = lookup "label" c.labels x
 let table (c : context) x = lookup "table" c.tables x
 let memory (c : context) x = lookup "memory" c.memories x
+let global (c : context) x = lookup "global" c.globals x
+let local (c : context) x = lookup "local" c.locals x
+let label (c : context) x = lookup "label" c.labels x
 
 
 (* Stack typing *)
@@ -455,7 +454,7 @@ let check_module (m : module_) =
   in
   let c0 =
     List.fold_right check_import imports
-      {(context m) with types = List.map (fun ty -> ty.it) types}
+      {empty_context with types = List.map (fun ty -> ty.it) types}
   in
   let c1 =
     { c0 with
