@@ -50,6 +50,7 @@ and admin_instr' =
 
 type config =
 {
+  inst : module_inst;
   locals : value ref list;
   values : value stack;
   instrs : admin_instr list;
@@ -57,8 +58,8 @@ type config =
   budget : int;  (* needed to model stack overflow *)
 }
 
-let config vs es =
-  {locals = []; values = vs; instrs = es; depth = 0; budget = 300}
+let config inst vs es =
+  {inst; locals = []; values = vs; instrs = es; depth = 0; budget = 300}
 
 let plain e = Plain e.it @@ e.at
 
@@ -104,7 +105,7 @@ let drop n (vs : 'a stack) at =
  *   c : config
  *)
 
-let rec step (inst : module_inst) (c : config) : config =
+let rec step (c : config) : config =
   let e = List.hd c.instrs in
   let vs', es' =
     match e.it, c.values with
@@ -147,11 +148,11 @@ let rec step (inst : module_inst) (c : config) : config =
         vs, [Plain (Br ((Int32.of_int (c.depth - 1)) @@ e.at)) @@ e.at]
 
       | Call x, vs ->
-        vs, [Invoke (func inst x) @@ e.at]
+        vs, [Invoke (func c.inst x) @@ e.at]
 
       | CallIndirect x, I32 i :: vs ->
-        let func = func_elem inst (0l @@ e.at) i e.at in
-        if type_ inst x <> Func.type_of func then
+        let func = func_elem c.inst (0l @@ e.at) i e.at in
+        if type_ c.inst x <> Func.type_of func then
           Trap.error e.at "indirect call signature mismatch";
         vs, [Invoke func @@ e.at]
 
@@ -176,14 +177,14 @@ let rec step (inst : module_inst) (c : config) : config =
         v :: vs', []
 
       | GetGlobal x, vs ->
-        Global.load (global inst x) :: vs, []
+        Global.load (global c.inst x) :: vs, []
 
       | SetGlobal x, v :: vs' ->
-        (try Global.store (global inst x) v; vs', []
+        (try Global.store (global c.inst x) v; vs', []
         with Global.NotMutable -> Crash.error e.at "write to immutable global")
 
       | Load {offset; ty; sz; _}, I32 i :: vs' ->
-        let mem = memory inst (0l @@ e.at) in
+        let mem = memory c.inst (0l @@ e.at) in
         let addr = I64_convert.extend_u_i32 i in
         (try
           let v =
@@ -194,7 +195,7 @@ let rec step (inst : module_inst) (c : config) : config =
         with exn -> vs', [Trapped (memory_error e.at exn) @@ e.at])
 
       | Store {offset; sz; _}, v :: I32 i :: vs' ->
-        let mem = memory inst (0l @@ e.at) in
+        let mem = memory c.inst (0l @@ e.at) in
         let addr = I64_convert.extend_u_i32 i in
         (try
           (match sz with
@@ -205,11 +206,11 @@ let rec step (inst : module_inst) (c : config) : config =
         with exn -> vs', [Trapped (memory_error e.at exn) @@ e.at]);
 
       | CurrentMemory, vs ->
-        let mem = memory inst (0l @@ e.at) in
+        let mem = memory c.inst (0l @@ e.at) in
         I32 (Memory.size mem) :: vs, []
 
       | GrowMemory, I32 delta :: vs' ->
-        let mem = memory inst (0l @@ e.at) in
+        let mem = memory c.inst (0l @@ e.at) in
         let old_size = Memory.size mem in
         let result =
           try Memory.grow mem delta; old_size
@@ -265,7 +266,7 @@ let rec step (inst : module_inst) (c : config) : config =
       vs, [Break (Int32.sub k 1l, vs0) @@ at]
 
     | Label (ts, es0, values, instrs), vs ->
-      let c' = step inst {c with values; instrs; depth = c.depth + 1} in
+      let c' = step {c with values; instrs; depth = c.depth + 1} in
       vs, [Label (ts, es0, c'.values, c'.instrs) @@ e.at]
 
     | Local (inst', locals, vs', []), vs ->
@@ -275,7 +276,7 @@ let rec step (inst : module_inst) (c : config) : config =
       vs, [Trapped msg @@ at]
 
     | Local (inst', locals, values, instrs), vs ->
-      let c' = step inst' {locals; values; instrs; depth = 0; budget = c.budget - 1} in
+      let c' = step {inst = inst'; locals; values; instrs; depth = 0; budget = c.budget - 1} in
       vs, [Local (inst', c'.locals, c'.values, c'.instrs) @@ e.at]
 
     | Invoke func, vs when c.budget = 0 ->
@@ -298,7 +299,7 @@ let rec step (inst : module_inst) (c : config) : config =
   in {c with values = vs'; instrs = es' @ List.tl c.instrs}
 
 
-let rec eval (inst : module_inst) (c : config) : value stack =
+let rec eval (c : config) : value stack =
   match c.instrs with
   | [] ->
     c.values
@@ -307,7 +308,7 @@ let rec eval (inst : module_inst) (c : config) : value stack =
     Trap.error at msg
 
   | es ->
-    eval inst (step inst c)
+    eval (step c)
 
 
 (* Functions & Constants *)
@@ -317,13 +318,13 @@ let invoke (func : func_inst) (vs : value list) : value list =
   let FuncType (ins, out) = Func.type_of func in
   if List.length vs <> List.length ins then
     Crash.error at "wrong number of arguments";
-  let c = config (List.rev vs) [Invoke func @@ at] in
-  try List.rev (eval empty_module_inst c)
-  with Stack_overflow -> Exhaustion.error at "call stack exhausted"
+  let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
+  try List.rev (eval c) with Stack_overflow ->
+    Exhaustion.error at "call stack exhausted"
 
 let eval_const (inst : module_inst) (const : const) : value =
-  let c = config [] (List.map plain const.it) in
-  match eval inst c with
+  let c = config inst [] (List.map plain const.it) in
+  match eval c with
   | [v] -> v
   | vs -> Crash.error const.at "wrong number of results on stack"
 
@@ -335,14 +336,14 @@ let i32 (v : value) at =
 
 (* Modules *)
 
-let create_func (pre_inst : module_inst) (f : func) : func_inst =
-  Func.alloc (type_ pre_inst f.it.ftype) (ref pre_inst) f
+let create_func (inst : module_inst) (f : func) : func_inst =
+  Func.alloc (type_ inst f.it.ftype) (ref inst) f
 
-let create_table (tab : table) : table_inst =
+let create_table (inst : module_inst) (tab : table) : table_inst =
   let {ttype} = tab.it in
   Table.alloc ttype
 
-let create_memory (mem : memory) : memory_inst =
+let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in
   Memory.alloc mtype
 
@@ -416,8 +417,8 @@ let init (m : module_) (exts : extern list) : module_inst =
   let inst =
     { inst0 with
       funcs = inst0.funcs @ fs;
-      tables = inst0.tables @ List.map create_table tables;
-      memories = inst0.memories @ List.map create_memory memories;
+      tables = inst0.tables @ List.map (create_table inst0) tables;
+      memories = inst0.memories @ List.map (create_memory inst0) memories;
       globals = inst0.globals @ List.map (create_global inst0) globals;
     }
   in
