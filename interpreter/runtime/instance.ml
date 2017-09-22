@@ -2,15 +2,15 @@ open Types
 
 type module_inst =
 {
-  types : func_type list;
-  funcs : func_inst list;
-  tables : table_inst list;
-  memories : memory_inst list;
-  globals : global_inst list;
-  exports : export_inst list;
+  types : func_type list lazy_t;
+  funcs : func_inst list lazy_t;
+  tables : table_inst list lazy_t;
+  memories : memory_inst list lazy_t;
+  globals : global_inst list lazy_t;
+  exports : export_inst list lazy_t;
 }
 
-and func_inst = module_inst ref Func.t
+and func_inst = module_inst Func.t
 and table_inst = Table.t
 and memory_inst = Memory.t
 and global_inst = Global.t
@@ -28,8 +28,8 @@ type Table.elem += FuncElem of func_inst
 (* Auxiliary functions *)
 
 let empty_module_inst =
-  { types = []; funcs = []; tables = []; memories = []; globals = [];
-    exports = [] }
+  { types = lazy []; funcs = lazy []; tables = lazy []; memories = lazy [];
+    globals = lazy []; exports = lazy [] }
 
 let extern_type_of = function
   | ExternFunc func -> ExternFuncType (Func.type_of func)
@@ -37,5 +37,14 @@ let extern_type_of = function
   | ExternMemory mem -> ExternMemoryType (Memory.type_of mem)
   | ExternGlobal glob -> ExternGlobalType (Global.type_of glob)
 
+let extern_funcs =
+  Lib.List.map_filter (function ExternFunc f -> Some f | _ -> None)
+let extern_tables =
+  Lib.List.map_filter (function ExternTable t -> Some t | _ -> None)
+let extern_memories =
+  Lib.List.map_filter (function ExternMemory m -> Some m | _ -> None)
+let extern_globals =
+  Lib.List.map_filter (function ExternGlobal g -> Some g | _ -> None)
+
 let export inst name =
-  try Some (List.assoc name inst.exports) with Not_found -> None
+  try Some (List.assoc name (Lazy.force inst.exports)) with Not_found -> None

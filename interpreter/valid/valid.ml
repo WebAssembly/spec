@@ -1,6 +1,7 @@
 open Ast
 open Source
 open Types
+open Lazy
 
 
 (* Errors *)
@@ -16,29 +17,29 @@ let require b at s = if not b then error at s
 
 type context =
 {
-  types : func_type list;
-  funcs : func_type list;
-  tables : table_type list;
-  memories : memory_type list;
-  globals : global_type list;
+  types : func_type list lazy_t;
+  funcs : func_type list lazy_t;
+  tables : table_type list lazy_t;
+  memories : memory_type list lazy_t;
+  globals : global_type list lazy_t;
   locals : value_type list;
   results : value_type list;
   labels : stack_type list;
 }
 
 let empty_context =
-  { types = []; funcs = []; tables = []; memories = [];
-    globals = []; locals = []; results = []; labels = [] }
+  { types = lazy []; funcs = lazy []; tables = lazy []; memories = lazy [];
+    globals = lazy []; locals = []; results = []; labels = [] }
 
 let lookup category list x =
   try Lib.List32.nth list x.it with Failure _ ->
     error x.at ("unknown " ^ category ^ " " ^ Int32.to_string x.it)
 
-let type_ (c : context) x = lookup "type" c.types x
-let func (c : context) x = lookup "function" c.funcs x
-let table (c : context) x = lookup "table" c.tables x
-let memory (c : context) x = lookup "memory" c.memories x
-let global (c : context) x = lookup "global" c.globals x
+let type_ (c : context) x = lookup "type" (force c.types) x
+let func (c : context) x = lookup "function" (force c.funcs) x
+let table (c : context) x = lookup "table" (force c.tables) x
+let memory (c : context) x = lookup "memory" (force c.memories) x
+let global (c : context) x = lookup "global" (force c.globals) x
 let local (c : context) x = lookup "local" c.locals x
 let label (c : context) x = lookup "label" c.labels x
 
@@ -417,19 +418,20 @@ let check_import (im : import) (c : context) : context =
   let {module_name = _; item_name = _; idesc} = im.it in
   match idesc.it with
   | FuncImport x ->
-    {c with funcs = type_ c x :: c.funcs}
+    let ft = type_ c x in
+    {c with funcs = lazy (ft :: force c.funcs)}
   | TableImport tt ->
     check_table_type tt idesc.at;
-    {c with tables = tt :: c.tables}
+    {c with tables = lazy (tt :: force c.tables)}
   | MemoryImport mt ->
     check_memory_type mt idesc.at;
-    {c with memories = mt :: c.memories}
+    {c with memories = lazy (mt :: force c.memories)}
   | GlobalImport gt ->
     check_global_type gt idesc.at;
     let GlobalType (_, mut) = gt in
     require (mut = Immutable) idesc.at
       "mutable globals cannot be imported (yet)";
-    {c with globals = gt :: c.globals}
+    {c with globals = lazy (gt :: force c.globals)}
 
 module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
 
@@ -454,17 +456,17 @@ let check_module (m : module_) =
   in
   let c0 =
     List.fold_right check_import imports
-      {empty_context with types = List.map (fun ty -> ty.it) types}
+      {empty_context with types = lazy (List.map (fun ty -> ty.it) types)}
   in
   let c1 =
     { c0 with
-      funcs = c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs;
-      tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
-      memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
+      funcs = lazy (force c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs);
+      tables = lazy (force c0.tables @ List.map (fun tab -> tab.it.ttype) tables);
+      memories = lazy (force c0.memories @ List.map (fun mem -> mem.it.mtype) memories);
     }
   in
   let c =
-    { c1 with globals = c1.globals @ List.map (fun g -> g.it.gtype) globals }
+    { c1 with globals = lazy (force c1.globals @ List.map (fun g -> g.it.gtype) globals) }
   in
   List.iter check_type types;
   List.iter (check_global c1) globals;
@@ -475,7 +477,7 @@ let check_module (m : module_) =
   List.iter (check_func c) funcs;
   check_start c start;
   ignore (List.fold_left (check_export c) NameSet.empty exports);
-  require (List.length c.tables <= 1) m.at
+  require (List.length (force c.tables) <= 1) m.at
     "multiple tables are not allowed (yet)";
-  require (List.length c.memories <= 1) m.at
+  require (List.length (force c.memories) <= 1) m.at
     "multiple memories are not allowed (yet)"
