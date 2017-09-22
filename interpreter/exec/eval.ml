@@ -39,27 +39,34 @@ let numeric_error at = function
 
 type 'a stack = 'a list
 
-type admin_instr = admin_instr' phrase
+type frame =
+{
+  inst : module_inst;
+  locals : value ref list;
+}
+
+type code = value stack * admin_instr list
+
+and admin_instr = admin_instr' phrase
 and admin_instr' =
   | Plain of instr'
   | Trapped of string
   | Break of int32 * value stack
-  | Label of stack_type * instr list * value stack * admin_instr list
-  | Local of module_inst * value ref list * value stack * admin_instr list
+  | Label of stack_type * instr list * code
+  | Frame of frame * code
   | Invoke of func_inst
 
 type config =
 {
-  inst : module_inst;
-  locals : value ref list;
-  values : value stack;
-  instrs : admin_instr list;
+  frame : frame;
+  code : code;
   depth : int;   (* needed for return *)
   budget : int;  (* needed to model stack overflow *)
 }
 
+let frame inst locals = {inst; locals}
 let config inst vs es =
-  {inst; locals = []; values = vs; instrs = es; depth = 0; budget = 300}
+  {frame = frame inst []; code = vs, es; depth = 0; budget = 300}
 
 let plain e = Plain e.it @@ e.at
 
@@ -72,7 +79,7 @@ let func (inst : module_inst) x = lookup "function" inst.funcs x
 let table (inst : module_inst) x = lookup "table" inst.tables x
 let memory (inst : module_inst) x = lookup "memory" inst.memories x
 let global (inst : module_inst) x = lookup "global" inst.globals x
-let local (locals : value ref list) x = lookup "local" locals x
+let local (frame : frame) x = lookup "local" frame.locals x
 
 let elem inst x i at =
   match Table.load (table inst x) i with
@@ -106,9 +113,10 @@ let drop n (vs : 'a stack) at =
  *)
 
 let rec step (c : config) : config =
-  let e = List.hd c.instrs in
+  let {frame; code = vs, es; _} = c in
+  let e = List.hd es in
   let vs', es' =
-    match e.it, c.values with
+    match e.it, vs with
     | Plain e', vs ->
       (match e', vs with
       | Unreachable, vs ->
@@ -118,10 +126,10 @@ let rec step (c : config) : config =
         vs, []
 
       | Block (ts, es'), vs ->
-        vs, [Label (ts, [], [], List.map plain es') @@ e.at]
+        vs, [Label (ts, [], ([], List.map plain es')) @@ e.at]
 
       | Loop (ts, es'), vs ->
-        vs, [Label ([], [e' @@ e.at], [], List.map plain es') @@ e.at]
+        vs, [Label ([], [e' @@ e.at], ([], List.map plain es')) @@ e.at]
 
       | If (ts, es1, es2), I32 0l :: vs' ->
         vs', [Plain (Block (ts, es2)) @@ e.at]
@@ -148,11 +156,11 @@ let rec step (c : config) : config =
         vs, [Plain (Br ((Int32.of_int (c.depth - 1)) @@ e.at)) @@ e.at]
 
       | Call x, vs ->
-        vs, [Invoke (func c.inst x) @@ e.at]
+        vs, [Invoke (func frame.inst x) @@ e.at]
 
       | CallIndirect x, I32 i :: vs ->
-        let func = func_elem c.inst (0l @@ e.at) i e.at in
-        if type_ c.inst x <> Func.type_of func then
+        let func = func_elem frame.inst (0l @@ e.at) i e.at in
+        if type_ frame.inst x <> Func.type_of func then
           Trap.error e.at "indirect call signature mismatch";
         vs, [Invoke func @@ e.at]
 
@@ -166,25 +174,25 @@ let rec step (c : config) : config =
         v1 :: vs', []
 
       | GetLocal x, vs ->
-        !(local c.locals x) :: vs, []
+        !(local frame x) :: vs, []
 
       | SetLocal x, v :: vs' ->
-        local c.locals x := v;
+        local frame x := v;
         vs', []
 
       | TeeLocal x, v :: vs' ->
-        local c.locals x := v;
+        local frame x := v;
         v :: vs', []
 
       | GetGlobal x, vs ->
-        Global.load (global c.inst x) :: vs, []
+        Global.load (global frame.inst x) :: vs, []
 
       | SetGlobal x, v :: vs' ->
-        (try Global.store (global c.inst x) v; vs', []
+        (try Global.store (global frame.inst x) v; vs', []
         with Global.NotMutable -> Crash.error e.at "write to immutable global")
 
       | Load {offset; ty; sz; _}, I32 i :: vs' ->
-        let mem = memory c.inst (0l @@ e.at) in
+        let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_u_i32 i in
         (try
           let v =
@@ -195,7 +203,7 @@ let rec step (c : config) : config =
         with exn -> vs', [Trapped (memory_error e.at exn) @@ e.at])
 
       | Store {offset; sz; _}, v :: I32 i :: vs' ->
-        let mem = memory c.inst (0l @@ e.at) in
+        let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_u_i32 i in
         (try
           (match sz with
@@ -206,11 +214,11 @@ let rec step (c : config) : config =
         with exn -> vs', [Trapped (memory_error e.at exn) @@ e.at]);
 
       | CurrentMemory, vs ->
-        let mem = memory c.inst (0l @@ e.at) in
+        let mem = memory frame.inst (0l @@ e.at) in
         I32 (Memory.size mem) :: vs, []
 
       | GrowMemory, I32 delta :: vs' ->
-        let mem = memory c.inst (0l @@ e.at) in
+        let mem = memory frame.inst (0l @@ e.at) in
         let old_size = Memory.size mem in
         let result =
           try Memory.grow mem delta; old_size
@@ -253,31 +261,31 @@ let rec step (c : config) : config =
     | Break (k, vs'), vs ->
       Crash.error e.at "undefined label"
 
-    | Label (ts, es0, vs', []), vs ->
+    | Label (ts, es0, (vs', [])), vs ->
       vs' @ vs, []
 
-    | Label (ts, es0, vs', {it = Trapped msg; at} :: es'), vs ->
+    | Label (ts, es0, (vs', {it = Trapped msg; at} :: es')), vs ->
       vs, [Trapped msg @@ at]
 
-    | Label (ts, es0, vs', {it = Break (0l, vs0); at} :: es'), vs ->
+    | Label (ts, es0, (vs', {it = Break (0l, vs0); at} :: es')), vs ->
       take (List.length ts) vs0 e.at @ vs, List.map plain es0
 
-    | Label (ts, es0, vs', {it = Break (k, vs0); at} :: es'), vs ->
+    | Label (ts, es0, (vs', {it = Break (k, vs0); at} :: es')), vs ->
       vs, [Break (Int32.sub k 1l, vs0) @@ at]
 
-    | Label (ts, es0, values, instrs), vs ->
-      let c' = step {c with values; instrs; depth = c.depth + 1} in
-      vs, [Label (ts, es0, c'.values, c'.instrs) @@ e.at]
+    | Label (ts, es0, code'), vs ->
+      let c' = step {c with code = code'; depth = c.depth + 1} in
+      vs, [Label (ts, es0, c'.code) @@ e.at]
 
-    | Local (inst', locals, vs', []), vs ->
+    | Frame (frame', (vs', [])), vs ->
       vs' @ vs, []
 
-    | Local (inst', locals, vs', {it = Trapped msg; at} :: es'), vs ->
+    | Frame (frame', (vs', {it = Trapped msg; at} :: es')), vs ->
       vs, [Trapped msg @@ at]
 
-    | Local (inst', locals, values, instrs), vs ->
-      let c' = step {inst = inst'; locals; values; instrs; depth = 0; budget = c.budget - 1} in
-      vs, [Local (inst', c'.locals, c'.values, c'.instrs) @@ e.at]
+    | Frame (frame', code'), vs ->
+      let c' = step {frame = frame'; code = code'; depth = 0; budget = c.budget - 1} in
+      vs, [Frame (c'.frame, c'.code) @@ e.at]
 
     | Invoke func, vs when c.budget = 0 ->
       Exhaustion.error e.at "call stack exhausted"
@@ -289,25 +297,26 @@ let rec step (c : config) : config =
       (match func with
       | Func.AstFunc (t, inst', f) ->
         let locals' = List.rev args @ List.map default_value f.it.locals in
-        let instrs' = [Plain (Block (out, f.it.body)) @@ f.at] in
-        vs', [Local (!inst', List.map ref locals', [], instrs') @@ e.at]
+        let code' = [], [Plain (Block (out, f.it.body)) @@ f.at] in
+        let frame' = {inst = !inst'; locals = List.map ref locals'} in
+        vs', [Frame (frame', code') @@ e.at]
 
       | Func.HostFunc (t, f) ->
         try List.rev (f (List.rev args)) @ vs', []
         with Crash (_, msg) -> Crash.error e.at msg
       )
-  in {c with values = vs'; instrs = es' @ List.tl c.instrs}
+  in {c with code = vs', es' @ List.tl es}
 
 
 let rec eval (c : config) : value stack =
-  match c.instrs with
-  | [] ->
-    c.values
+  match c.code with
+  | vs, [] ->
+    vs
 
-  | {it = Trapped msg; at} :: _ ->
+  | vs, {it = Trapped msg; at} :: _ ->
     Trap.error at msg
 
-  | es ->
+  | vs, es ->
     eval (step c)
 
 
