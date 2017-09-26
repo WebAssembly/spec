@@ -114,7 +114,7 @@ Global Types
 :math:`\mut~\valtype`
 .....................
 
-* Then the global type is valid.
+* The global type is valid.
 
 .. math::
    \frac{
