@@ -4,10 +4,11 @@ open Values
 type global = {mutable content : value; mut : mutability}
 type t = global
 
+exception Type
 exception NotMutable
 
 let alloc (GlobalType (t, mut)) v =
-  assert (type_of v = t);
+  if type_of v <> t then raise Type;
   {content = v; mut = mut}
 
 let type_of glob =
@@ -15,6 +16,6 @@ let type_of glob =
 
 let load glob = glob.content
 let store glob v =
-  assert (Values.type_of v = Values.type_of glob.content);
-  if glob.mut = Immutable then raise NotMutable;
+  if glob.mut <> Mutable then raise NotMutable;
+  if Values.type_of v <> Values.type_of glob.content then raise Type;
   glob.content <- v

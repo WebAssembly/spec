@@ -189,7 +189,8 @@ let rec step (c : config) : config =
 
       | SetGlobal x, v :: vs' ->
         (try Global.store (global frame.inst x) v; vs', []
-        with Global.NotMutable -> Crash.error e.at "write to immutable global")
+        with Global.NotMutable -> Crash.error e.at "write to immutable global"
+           | Global.Type -> Crash.error e.at "type mismatch at global write")
 
       | Load {offset; ty; sz; _}, I32 i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
