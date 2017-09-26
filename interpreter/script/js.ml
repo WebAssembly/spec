@@ -138,16 +138,16 @@ let harness =
 
 (* Context *)
 
+module NameMap = Map.Make(struct type t = Ast.name let compare = compare end)
 module Map = Map.Make(String)
-module ExportMap = Instance.ExportMap
 
-type exports = external_type ExportMap.t
+type exports = extern_type NameMap.t
 type modules = {mutable env : exports Map.t; mutable current : int}
 
 let exports m : exports =
   List.fold_left
-    (fun map exp -> ExportMap.add exp.it.name (export_type m exp) map)
-    ExportMap.empty m.it.exports
+    (fun map exp -> NameMap.add exp.it.name (export_type m exp) map)
+    NameMap.empty m.it.exports
 
 let modules () : modules = {env = Map.empty; current = 0}
 
@@ -168,7 +168,7 @@ let lookup (mods : modules) x_opt name at =
       raise (Eval.Crash (at, 
         if x_opt = None then "no module defined within script"
         else "unknown module " ^ of_var_opt mods x_opt ^ " within script"))
-  in try ExportMap.find name exports with Not_found ->
+  in try NameMap.find name exports with Not_found ->
     raise (Eval.Crash (at, "unknown export \"" ^
       string_of_name name ^ "\" within module"))
 
@@ -330,7 +330,7 @@ let of_action mods act =
     "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^
       "[" ^ String.concat ", " (List.map of_literal lits) ^ "])",
     (match lookup mods x_opt name act.at with
-    | ExternalFuncType ft when not (is_js_func_type ft) ->
+    | ExternFuncType ft when not (is_js_func_type ft) ->
       let FuncType (_, out) = ft in
       Some (of_wrapper mods x_opt name (invoke ft lits), out)
     | _ -> None
@@ -338,7 +338,7 @@ let of_action mods act =
   | Get (x_opt, name) ->
     "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ")",
     (match lookup mods x_opt name act.at with
-    | ExternalGlobalType gt when not (is_js_global_type gt) ->
+    | ExternGlobalType gt when not (is_js_global_type gt) ->
       let GlobalType (t, _) = gt in
       Some (of_wrapper mods x_opt name (get gt), [t])
     | _ -> None
