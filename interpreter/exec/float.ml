@@ -213,7 +213,8 @@ struct
       else
         Rep.logor x bare_nan
     else
-      let x = of_float (float_of_string s) in
+      let s' = String.concat "" (String.split_on_char '_' s) in
+      let x = of_float (float_of_string s') in
       if is_inf x then failwith "of_string" else x
 
   let of_string s =
