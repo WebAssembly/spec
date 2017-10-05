@@ -12,16 +12,29 @@ cd $(dirname ${BASH_SOURCE[0]})/../../..
 rm -rf ocaml
 mkdir ocaml
 cd ocaml
-curl https://wasm.storage.googleapis.com/ocaml-4.02.2.tar.gz -O
-CHECKSUM=$(shasum -a 256 ocaml-4.02.2.tar.gz | awk '{ print $1 }')
+curl https://wasm.storage.googleapis.com/ocaml-4.05.0.tar.gz -O
+CHECKSUM=$(shasum -a 256 ocaml-4.05.0.tar.gz | awk '{ print $1 }')
 if [ ${CHECKSUM} != \
-  9d50c91ba2d2040281c6e47254c0c2b74d91315dd85cc59b84c5138c3a7ba78c ]; then
+  7039bf3325bae8936c55f41b0e05df4a53d0f957cf1adc3d44aa0154c88b104e]; then
   echo "Bad checksum ocaml download checksum!"
   exit 1
 fi
-tar xfz ocaml-4.02.2.tar.gz
-cd ocaml-4.02.2
+tar xfz ocaml-4.05.0.tar.gz
+cd ocaml-4.05.0
 ./configure -prefix $PWD/../install
 make world.opt
 mkdir ../install
+make install
+
+cd ..
+curl https://github.com/ocaml/ocamlbuild/archive/0.11.0.tar.gz -OL
+CHECKSUM=$(shasum -a 256 0.11.0.tar.gz | awk '{ print $1 }')
+if [ ${CHECKSUM} != \
+  1717edc841c9b98072e410f1b0bc8b84444b4b35ed3b4949ce2bec17c60103ee ]; then
+  echo "Bad checksum ocaml download checksum!"
+  exit 1
+fi
+tar xfz 0.11.0.tar.gz
+cd ocamlbuild-0.11.0
+make configure
 make install
