@@ -213,7 +213,14 @@ struct
       else
         Rep.logor x bare_nan
     else
+      (* TODO: once we update past 4.02, replace buffer hack with this
       let s' = String.concat "" (String.split_on_char '_' s) in
+      *)
+      let buf = Buffer.create (String.length s) in
+      for i = 0 to String.length s - 1 do
+        if s.[i] <> '_' then Buffer.add_char buf s.[i]
+      done;
+      let s' = Buffer.contents buf in
       let x = of_float (float_of_string s') in
       if is_inf x then failwith "of_string" else x
 
