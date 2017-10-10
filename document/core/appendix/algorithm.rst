@@ -7,7 +7,7 @@ Validation Algorithm
 The specification of WebAssembly :ref:`validation <valid>` is purely *declarative*.
 It describes the constraints that must be met by a :ref:`module <valid-module>` or :ref:`instruction <valid-instr>` sequence to be valid.
 
-This section sketches the skeleton of a sound and complete *algorithm* for validating code, i.e., sequences of :ref:`instructions <syntax-instr>`, effectively.
+This section sketches the skeleton of a sound and complete *algorithm* for effectively validating code, i.e., sequences of :ref:`instructions <syntax-instr>`.
 (Other aspects of validation are straightforward to implement.)
 
 In fact, the algorithm is expressed over the flat sequence of opcodes as occurring in the :ref:`binary format <binary>`, and performs only a single pass over it.
@@ -64,7 +64,7 @@ However, these variables are not manipulated directly by the main checking funct
    func pop_opd() : val_type | Unknown =
      if (opds.size() = ctrls[0].height && ctrls[0].unreachable) return Unknown
      error_if(opds.size() = ctrls[0].height)
-     return opds.pop(type)
+     return opds.pop()
 
    func pop_opd(expect : val_type | Unknown) : val_type | Unknown =
      let actual = pop_opd()
