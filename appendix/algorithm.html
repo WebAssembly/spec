@@ -28,8 +28,8 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="WebAssembly 1.0" href="../index.html" />
     <link rel="up" title="Appendix" href="index.html" />
-    <link rel="next" title="Index of Types" href="index-types.html" />
-    <link rel="prev" title="Soundness" href="properties.html" />
+    <link rel="next" title="Custom Sections" href="custom.html" />
+    <link rel="prev" title="Implementation Limitations" href="implementation.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -55,13 +55,13 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Appendix</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="embedding.html">Embedding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="implementation.html">Implementation Limitations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom.html">Custom Sections</a></li>
-<li class="toctree-l2"><a class="reference internal" href="properties.html">Soundness</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Validation Algorithm</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#data-structures">Data Structures</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#validation-of-opcode-sequences">Validation of Opcode Sequences</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="custom.html">Custom Sections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties.html">Soundness</a></li>
 </ul>
 </li>
 </ul>
@@ -101,7 +101,7 @@
 <span id="algo-valid"></span><span id="index-0"></span><h1>Validation Algorithm<a class="headerlink" href="#validation-algorithm" title="Permalink to this headline">¶</a></h1>
 <p>The specification of WebAssembly <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a> is purely <em>declarative</em>.
 It describes the constraints that must be met by a <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">module</span></a> or <a class="reference internal" href="../valid/instructions.html#valid-instr"><span class="std std-ref">instruction</span></a> sequence to be valid.</p>
-<p>This section sketches the skeleton of a sound and complete <em>algorithm</em> for validating code, i.e., sequences of <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a>, effectively.
+<p>This section sketches the skeleton of a sound and complete <em>algorithm</em> for effectively validating code, i.e., sequences of <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a>.
 (Other aspects of validation are straightforward to implement.)</p>
 <p>In fact, the algorithm is expressed over the flat sequence of opcodes as occurring in the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>, and performs only a single pass over it.
 Consequently, it can be integrated directly into a decoder.</p>
@@ -143,7 +143,7 @@ With the current version of WebAssembly, the <code class="code docutils literal"
 <span class="k">func</span> <span class="nf">pop_opd</span>() : val_type | Unknown =
   <span class="k">if</span> (opds.size() = ctrls[0].height &amp;&amp; ctrls[0].unreachable) <span class="k">return</span> Unknown
   error_if(opds.size() = ctrls[0].height)
-  <span class="k">return</span> opds.pop(type)
+  <span class="k">return</span> opds.pop()
 
 <span class="k">func</span> <span class="nf">pop_opd</span>(<span class="nf">expect</span> : val_type | Unknown) : val_type | Unknown =
   <span class="k">let</span> <span class="nf">actual</span> = pop_opd()
