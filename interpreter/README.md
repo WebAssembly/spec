@@ -268,7 +268,6 @@ exkind:  ( func <var> )
          ( memory <var> )
 
 module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
-         ( module <name>? <string>+ )
          <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>?  ;; =
          ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
 ```
@@ -278,8 +277,6 @@ In particular, WebAssembly is a stack machine, so that all expressions of the fo
 For raw instructions, the syntax allows omitting the parentheses around the operator name and its immediate operands. In the case of control operators (`block`, `loop`, `if`), this requires marking the end of the nested sequence with an explicit `end` keyword.
 
 Any form of naming via `<name>` and `<var>` (including expression labels) is merely notational convenience of this text format. The actual AST has no names, and all bindings are referred to via ordered numeric indices; consequently, names are immediately resolved in the parser and replaced by indices. Indices can also be used directly in the text format.
-
-A module of the form `(module <string>+)` is given in binary form and will be decoded from the (concatenation of the) strings.
 
 The segment strings in the memory field are used to initialize the consecutive memory at the given offset.
 The `<size>` in the expansion of the two short-hand forms for `table` and `memory` is the minimal size that can hold the segment: the number of `<var>`s for tables, and the accumulative length of the strings rounded up to page size for memories.
@@ -312,6 +309,11 @@ module with given failure string
   <assertion>                                ;; assert result of an action
   <meta>                                     ;; meta command
 
+module:
+  ...
+  ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
+  ( module <name>? quote <string>* )         ;; module quoted in text (may be malformed)
+
 action:
   ( invoke <name>? <string> <expr>* )        ;; invoke function export
   ( get <name>? <string> )                   ;; get global export
@@ -335,6 +337,10 @@ meta:
 Commands are executed in sequence. Commands taking an optional module name refer to the most recently defined module if no name is given. They are only possible after a module has been defined.
 
 After a module is _registered_ under a string name it is available for importing in other modules.
+
+The script format supports additional syntax for defining modules.
+A module of the form `(module binary <string>*)` is given in binary form and will be decoded from the (concatenation of the) strings.
+A module of the form `(module quote <string>*)` is given in textual form and will be parsed from the (concatenation of the) strings. In both cases, decoding/parsing happens when the command is executed, not when the script is parsed, so that meta commands like `assert_malformed` can be used to check expected errors.
 
 There are also a number of meta commands.
 The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta are expanded in place (`input`, recursively) or elided (`output`) in the named script.
