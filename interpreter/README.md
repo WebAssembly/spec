@@ -233,7 +233,7 @@ func:    ( func <name>? <func_sig> <local>* <instr>* )
          ( func <name>? ( export <string> )+ <func_sig> <local>* <instr>* ) ;; = (export <string> (func <N>))+ (func <name>? <func_sig> <local>* <instr>*)
          ( func <name>? ( import <string> <string> ) <func_sig>)            ;; = (import <name>? <string> <string> (func <func_sig>))
 param:   ( param <type>* ) | ( param <name> <type> )
-result:  ( result <type> )
+result:  ( result <type>* )
 local:   ( local <type>* ) | ( local <name> <type> )
 
 global:  ( global <name>? <global_sig> <instr>* )
