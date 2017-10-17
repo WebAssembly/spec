@@ -337,21 +337,19 @@ Tables
 
 4. If :math:`i` is larger than or equal to the length if :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
 
-5. If :math:`\X{ti}.\TIELEM[i]` contains a :ref:`function address <syntax-funcaddr>` :math:`\X{fa}`, then return :math:`\X{fa}`.
-
-6. Else :math:`\X{ti}.\TIELEM[i]` is empty, hence return :math:`\ERROR`.
+5. Else, return :math:`\X{ti}.\TIELEM[i]`.
 
 .. math::
    \begin{array}{lclll}
-   \F{read\_table}(S, a, i) &=& \X{fa} && (\iff S.\STABLES[a].\TIELEM[i] = \X{fa}) \\
+   \F{read\_table}(S, a, i) &=& \X{fa}^? && (\iff S.\STABLES[a].\TIELEM[i] = \X{fa}^?) \\
    \F{read\_table}(S, a, i) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
 .. _embed-write-table:
 
-:math:`\F{write\_table}(\store, \tableaddr, i, \funcaddr) : \store ~|~ \error`
-..............................................................................
+:math:`\F{write\_table}(\store, \tableaddr, i, \funcaddr^?) : \store ~|~ \error`
+................................................................................
 
 1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
 
@@ -361,14 +359,14 @@ Tables
 
 4. If :math:`i` is larger than or equal to the length if :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
 
-5. Replace :math:`\X{ti}.\TIELEM[i]` with the :ref:`function address <syntax-funcaddr>` :math:`\X{fa}`.
+5. Replace :math:`\X{ti}.\TIELEM[i]` with the optional :ref:`function address <syntax-funcaddr>` :math:`\X{fa}^?`.
 
 6. Return the updated store.
 
 .. math::
    \begin{array}{lclll}
-   \F{write\_table}(S, a, i, \X{fa}) &=& S' && (\iff S' = S \with \STABLES[a].\TIELEM[i] = \X{fa}) \\
-   \F{write\_table}(S, a, i, \X{fa}) &=& \ERROR && (\otherwise) \\
+   \F{write\_table}(S, a, i, \X{fa}^?) &=& S' && (\iff S' = S \with \STABLES[a].\TIELEM[i] = \X{fa}^?) \\
+   \F{write\_table}(S, a, i, \X{fa}^?) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
