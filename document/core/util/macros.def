@@ -29,6 +29,8 @@
 .. |SExpressions| replace:: S-expressions
 .. _SExpressions: https://en.wikipedia.org/wiki/S-expression
 
+.. |MediaType| replace:: Media Type
+.. _MediaType: https://www.iana.org/assignments/media-types/media-types.xhtml
 
 .. Literature
 .. ----------

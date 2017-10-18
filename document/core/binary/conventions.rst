@@ -21,7 +21,7 @@ Except for a few exceptions, the binary grammar closely mirrors the grammar of t
    implementations of encoders can pick any allowed encoding.
 
 The recommended extension for files containing WebAssembly modules in binary format is ":math:`\T{.wasm}`"
-and the recommended Media Type is ":math:`\T{application/wasm}`".
+and the recommended |MediaType|_ is ":math:`\T{application/wasm}`".
 
 .. [#compression]
    Additional encoding layers -- for example, introducing compression -- may be defined on top of the basic representation defined here.
