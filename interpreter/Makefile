@@ -76,10 +76,10 @@ $(LIB).mlpack:	$(DIRS)
 		| sort | uniq \
 		>$@
 
-_build/$(LIB).cmo: $(LIB).mlpack
+_build/$(LIB).cmo: $(LIB).mlpack _tags
 		$(OCB) -quiet $(LIB).cmo
 
-_build/$(LIB).cmx: $(LIB).mlpack
+_build/$(LIB).cmx: $(LIB).mlpack _tags
 		$(OCB) -quiet $(LIB).cmx
 
 
