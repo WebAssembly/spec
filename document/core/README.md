@@ -18,3 +18,8 @@ To make all:
 ```
 make all
 ```
+Finally, to make all and update webassembly.github.io/spec with it:
+```
+make publish
+```
+Please make sure to only use that once a change has approval.
