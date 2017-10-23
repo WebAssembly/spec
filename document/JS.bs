@@ -330,9 +330,9 @@ Note:
   To <dfn>compile a WebAssembly module</dfn> from a {{BufferSource}} |bytes|, perform the following steps:
     1. Let |module| be [=decode_module=](_bytes_). If |module| is [=error=], throw a {{CompileError}} exception.
     1. If |module| is not [=valid=], throw a {{CompileError}} exception.
-    1. Let |moduleObject| be a new object whose \[[Prototype]] is the [=interface prototype object=] of {{Module}}.
+    1. Let |moduleObject| be a new {{Module}} object.
     1. Set |moduleObject|.\[[Module]] to |module|.
-    1. Set |moduleObject|.\[[Bytes]] to a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
+    1. Set |moduleObject|.\[[Bytes]] to |bytes|.
     1. Return |moduleObject|.
 </div>
 
@@ -341,8 +341,8 @@ Note:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. Let |promise| be [=a new promise=].
     1. Perform the following steps [=in parallel=]:
-        1. [=Compile a WebAssembly module=] from |stableBytes|, and let |module| be the result.  If this throws an exception, catch it, and [=RejectPromise|reject=] |promise| with the exception.
-        1. [=FulfillPromise|Resolve=] |promise| with |module|.
+        1. [=Compile a WebAssembly module=] from |stableBytes|, and let |module| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
+        1. [=Resolve=] |promise| with |module|.
     1. Return |promise|.
 </div>
 
@@ -353,7 +353,10 @@ Note:
     1. Let |funcs| be an empty [=list=] of callable JavaScript objects.
     1. Let |memories| be an empty [=list=] of {{Memory}} objects.
     1. Let |tables| be an empty [=list=] of {{Table}} objects.
-    1. Let |imports| be an empty [=list=] of [=external value=]s.
+
+    Note: The |funcs|, |memories| and |tables| lists are collected and used in order to cache the JavaScript objects corresponding to WebAssembly objects. If a WebAssembly object is exported multiple times, it will appear in exports as the same object instance. Moreover, if a JavaScript wrapper of a WebAssembly object was imported, and then present on the export, a new wrapper will not need to be created. However, if an ordinary JS function is imported, it will appear as wrapped by an {{ExportedFunction}}.
+
+    6. Let |imports| be an empty [=list=] of [=external value=]s.
     1. For each (|moduleName|, |componentName|, |externtype|) in [=module_imports=](|module|), do
       1. Let |o| be ? [=Get=](|importObject|, |moduleName|).
       1. If Type(|o|) is not [=Object=], throw a [=TypeError=] exception.
@@ -418,18 +421,12 @@ Note:
           1. Append |table| to |tables|.
        1. Otherwise:
           1. Let |table| be the element in |tables| where |table|.\[[Table]] is |tableaddr|.
-
-          Note: At most one {{Table}} object is created for any table, so the above |table| is unique, even if there are multiple occurrances in the list. Moreover, if the item was an import, the original object will be found.
-
        1. For each index |i| from 0 to the length of |table|.\[[Values]] - 1, do
           1. Let |funcaddr| be [=read_table=](|store|, |tableaddr|, |i|).
           1. Assert: |funcaddr| is not [=error=] because this read is in bounds.
           1. If |funcaddr| is not empty,
              1. If |funcs| contains any |func| where |func|.\[[ExportedAddress]] is |funcaddr|,
                 1. Let |func| be that function object.
-
-                Note: With this process |func| is created unique, reusing {{ExportedFunction}}s which were provided as imports, present in multiple tables, etc. For imports that are regular JS functions, a new wrapper will be created.
-
              1. Otherwise:
                 1. Let |func| be a [=create an exported function|a new exported function=] created from |funcaddr|.
                 1. Append |func| to |funcs|.
@@ -456,10 +453,7 @@ Note:
          1. Let |value| be [=ToJSValue=]([=read_global=](|store|, |externval|)).
       1. If |externtype| is of the form 𝗆𝖾𝗆  |memtype|,
          1. If there is an element |memory| in |memories| such that |memory|.\[[Memory]] is |externval|, then let |value| be |memory|
-
-         Note: The above step will return the same {{Memory}} object if memory is exported multiple times, and reuse imported {{Memory}} objects.
-
-         2. Otherwise:
+         1. Otherwise:
             1. Let |memory| be [=create a memory object|a new Memory object=] from |externval|.
             1. Append |memory| to |memories|.
             1. Let |value| be |memory|.
@@ -479,10 +473,10 @@ Note:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. Let |promise| be a [=a new promise=].
     1. Run the following steps [=in parallel=]:
-      1. [=Compile a WebAssembly module=] from |stableBytes|, and let |module| be the result.  If this throws an exception, catch it, and [=RejectPromise|reject=] |promise| with the exception.
-      1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=RejectPromise|reject=] |promise| with the exception.
+      1. [=Compile a WebAssembly module=] from |stableBytes|, and let |module| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
+      1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
       1. Let |result| be a {{WebAssemblyInstantiatedSource}} dictionary with {{WebAssemblyInstantiatedSource/module}} set to |module| and {{WebAssemblyInstantiatedSource/instance}} set to |instance|.
-      1. [=FulfillPromise|Resolve=] |promise| with |result|.
+      1. [=Resolve=] |promise| with |result|.
     1. Return |promise|.
 </div>
 
@@ -490,8 +484,8 @@ Note:
   The <dfn method for="WebAssembly">instantiate(moduleObject, importObject)</dfn> method, when invoked, performs the following steps:
     1. Let |promise| be [=a new promise=].
     1. Perform the following steps [=in parallel=]:
-      1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=RejectPromise|reject=] |promise| with the exception.
-      1. [=FulfillPromise|Resolve=] |promise| with |instance|.
+      1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
+      1. [=Resolve=] |promise| with |instance|.
     1. Return |promise|
 </div>
 
@@ -587,7 +581,10 @@ interface Module {
 </div>
 
 <div algorithm>
-    The <dfn constructor for="Module">Module(bytes)</dfn> constructor, when invoked, [=compile a WebAssembly module|compiles the WebAssembly module=] |bytes| and returns the result.
+    The <dfn constructor for="Module">Module(bytes)</dfn> constructor, when invoked, performs the follwing steps:
+
+    1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
+    1. [=Compile a WebAssembly module|compiles the WebAssembly module=] |stableBytes| and returns the result.
 </div>
 
 <h3 id="instances">Instances</h3>
@@ -643,7 +640,8 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The <dfn constructor for="Memory">Memory(descriptor)</dfn> constructor, when invoked, performs the following steps:
-    1. Let |memtype| be { min |descriptor|.initial, max |descriptor|.maximum }
+    1. If |descriptor|.maximum is present, let |maximum| be |descriptor|.maximum; otherwise, let |maximum| be empty.
+    1. Let |memtype| be { min |descriptor|.initial, max |maximum| }
     1. Let |store| be the current agent cluster's [=associated store=].
     1. Let (|store|, |memaddr|) be [=alloc_mem=](|store|, |memtype|). If allocation fails, throw a [=RangeError=] exception.
     1. Set the current agent cluster's [=associated store=] to |store|.
