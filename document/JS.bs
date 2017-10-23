@@ -328,8 +328,14 @@ Note:
 
 <div algorithm>
   To <dfn>compile a WebAssembly module</dfn> from a {{BufferSource}} |bytes|, perform the following steps:
-    1. Let |module| be [=decode_module=](_bytes_). If |module| is [=error=], throw a {{CompileError}} exception.
-    1. If |module| is not [=valid=], throw a {{CompileError}} exception.
+    1. Let |module| be [=decode_module=](_bytes_). If |module| is [=error=], return the string "CompileError".
+    1. If |module| is not [=valid=], return the string "CompileError"
+    1. Return |module|
+</div>
+
+<div algorithm>
+  To <dfn>construct a WebAssembly module object</dfn> from a module |module|, perform the following steps:
+
     1. Let |moduleObject| be a new {{Module}} object.
     1. Set |moduleObject|.\[[Module]] to |module|.
     1. Set |moduleObject|.\[[Bytes]] to |bytes|.
@@ -337,12 +343,21 @@ Note:
 </div>
 
 <div algorithm>
+  To <dfn>asynchronously compile a WebAssembly module</dfn> from a {{BufferSource}} |bytes|, with the promise |promise|, using optional [=task source=] |taskSource|, perform the following steps:
+
+    1. In parallel, [=compile a WebAssembly module|compile the WebAssembly module=] |bytes| and store the result as |module|.
+    1. When the above operation completes, queue a task to perform the following steps. If |taskSource| was provided, queue the task on that task source.
+        1. If |module| is the string "CompileError", throw a {{CompileError}} exception.
+        1. Otherwise,
+            1. [=Construct a WebAssembly module object=] from |module| and let |moduleObject| be the result.
+            1. [=Resolve=] |promise| with |moduleObject|.
+</div>
+
+<div algorithm>
     The <dfn method for="WebAssembly">compile(bytes)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. Let |promise| be [=a new promise=].
-    1. Perform the following steps [=in parallel=]:
-        1. [=Compile a WebAssembly module=] from |stableBytes|, and let |module| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
-        1. [=Resolve=] |promise| with |module|.
+    1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| with |promise|.
     1. Return |promise|.
 </div>
 
@@ -413,7 +428,7 @@ Note:
          1. Append |externtable| to |imports|.
          1. For each element |func| of |v|.\[[Values]],
             1. If |func| is not null, append |func| to |funcs|.
-    1. Let (|store|, |instance|) be [=instantiate_module=](|store|, |module|, |externs|), up through step 16 of [=the instantiation algorithm=], but omitting execution of the start function.
+    1. Let (|store|, |instance|) be [=instantiate_module=](|store|, |module|, |imports|), up through step 16 of [=the instantiation algorithm=], but omitting execution of the start function.
     1. If |instance| is [=error=], throw a {{LinkError}} exception, or other <a href="#errors">appropriate exception type</a>.
     1. For each |tableaddr| in |instance|.𝗍𝖺𝖻𝗅𝖾𝖺𝖽𝖽𝗋𝗌,
        1. If there is no element in |tables| whose |table|.\[[Table]] is |tableaddr|:
@@ -469,15 +484,26 @@ Note:
 </div>
 
 <div algorithm>
+  To <dfn>instantiate a promise of a module</dfn> |promiseOfModule| with imports |importObject|, perform the following steps:
+
+    1. Let |promise| be [=a new promise=]
+    1. [=Upon fulfillment=] of |promiseOfModule| with value |module|:
+       1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, [=reject=] |promise| with the exception, and abort these substeps.
+       1. Let |result| be a {{WebAssemblyInstantiatedSource}} dictionary with {{WebAssemblyInstantiatedSource/module}} set to |module| and {{WebAssemblyInstantiatedSource/instance}} set to |instance|.
+       1. [=Resolve=] |promise| with |result|.
+    1. [=Upon rejection=] of |promiseOfModule| with reason |reason|:
+       1. [=Reject=] |promise| with |reason|.
+    1. Return |promise|.
+
+    Note: It would be valid to perform certain parts of the instantiation [=in parallel=], but several parts need to happen in the event loop, including JavaScript operations to access the |importObject| and execution of the start function.
+</div>
+
+<div algorithm>
   The <dfn method for="WebAssembly">instantiate(bytes, importObject)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
-    1. Let |promise| be a [=a new promise=].
-    1. Run the following steps [=in parallel=]:
-      1. [=Compile a WebAssembly module=] from |stableBytes|, and let |module| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
-      1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
-      1. Let |result| be a {{WebAssemblyInstantiatedSource}} dictionary with {{WebAssemblyInstantiatedSource/module}} set to |module| and {{WebAssemblyInstantiatedSource/instance}} set to |instance|.
-      1. [=Resolve=] |promise| with |result|.
-    1. Return |promise|.
+    1. Let |promiseOfModule| be [=a new promise=].
+    1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| with |promiseOfModule|.
+    1. [=Instantiate a promise of a module|instantiate a promise of a module=] |promiseOfModule| with imports |importObject| and return the result.
 </div>
 
 <div algorithm>
