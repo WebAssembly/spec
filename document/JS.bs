@@ -6,8 +6,7 @@ Group: WebAssembly CG
 Status: w3c/CG-DRAFT
 Level: 1
 ED: https://webassembly.github.io/spec/JS.html
-Editor: Andreas Rossberg
-Editor: Daniel Ehrenberg
+Editor: WebAssembly Community Group
 Repository: WebAssembly/spec
 Abstract: This document provides an explicit JavaScript API for interacting with WebAssembly.
 Markup Shorthands: css no, markdown yes
