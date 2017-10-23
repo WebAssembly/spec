@@ -1,0 +1,390 @@
+<pre class='metadata'>
+Title: WebAssembly Web API
+H1: WebAssembly
+Shortname: wasmweb
+Group: WebAssembly CG
+Status: w3c/CG-DRAFT
+Level: 1
+ED: https://webassembly.github.io/spec/Web.html
+Editor: Andreas Rossberg
+Editor: Daniel Ehrenberg
+Repository: WebAssembly/spec
+Abstract: This document describes the integration of WebAssembly with the broader Web Platform.
+Markup Shorthands: css no, markdown yes
+Ignored Terms: h1, h2, h3, h4, h5, h6, xmp
+</pre>
+
+<pre class='biblio'>
+{
+  "ECMA-262": {
+    "href": "https://tc39.github.io/ecma262",
+    "title": "ECMAScript® 2018 Language Specification",
+    "publisher": "ECMA TC39",
+    "status": "Current Editor's Draft"
+  },
+  "WEBASSEMBLY": {
+    "href": "https://webassembly.github.io/spec/",
+    "title": "WebAssembly Specification",
+    "publisher": "W3C WebAssembly Community Group",
+    "status": "Draft"
+  },
+  "WASMJS": {
+    "href": "https://littledan.github.io/spec/JS.html",
+    "title": "WebAssembly JS Integration Specification",
+    "publisher": "W3C WebAssembly Community Group",
+    "status": "Draft"
+  }
+}
+</pre>
+
+<pre class="anchors">
+urlPrefix: https://tc39.github.io/ecma262/; spec: ECMA-262
+    type: interface; for: ECMAScript
+        text: DataView; url: sec-dataview-objects
+        text: Map; url: sec-map-objects
+        text: Promise; url: sec-promise-objects
+        text: Set; url: sec-set-objects
+        text: SharedArrayBuffer; url: sec-sharedarraybuffer-objects
+    type: exception; for: ECMAScript
+        text: Error; url: sec-error-objects
+        text: NativeError; url: sec-nativeerror-constructors
+    type: dfn
+        text: agent cluster; url: sec-agent-clusters
+        text: ArrayBuffer; url: sec-arraybuffer-objects
+        text: data block; url: sec-data-blocks
+        text: Bound Function; url: sec-bound-function-exotic-objects
+        text: NumericLiteral; url: sec-literals-numeric-literals
+        text: ECMAScript error objects; url: sec-error-objects
+        text: ToBoolean; url: sec-toboolean
+        text: TypeError; url: sec-native-error-types-used-in-this-standard-typeerror
+        text: RangeError; url: sec-native-error-types-used-in-this-standard-rangeeerror
+        text: ToNumber; url: sec-tonumber
+        text: ToUint16; url: sec-touint16
+        text: ToInt32; url: sec-toint32
+        text: ToUint32; url: sec-touint32
+        text: ToString; url: sec-tostring
+        text: ToObject; url: sec-toobject
+        text: isFinite; url: sec-isfinite-number
+        text: IsAccessorDescriptor; url: sec-isaccessordescriptor
+        text: IsDataDescriptor; url: sec-isdatadescriptor
+        url: sec-ecmascript-data-types-and-values
+            text: Type
+            text: Type(x)
+        text: sign; url: eqn-sign
+        text: floor; url: eqn-floor
+        text: min; url: eqn-min
+        text: max; url: eqn-max
+        text: abs; url: eqn-abs
+        text: modulo; url: eqn-modulo
+        url: sec-algorithm-conventions
+            text: ECMA-262 section 5.2
+            text: conventions of the ECMAScript specification
+        url: sec-returnifabrupt-shorthands
+            text: !
+            text: ?
+        text: element; url: sec-ecmascript-language-types-string-type
+        url: sec-iscallable
+            text: IsCallable
+            text: callable; for: ECMAScript
+        url: sec-well-known-intrinsic-objects
+            text: %ArrayPrototype%
+            text: %ArrayProto_values%
+            text: %MapPrototype%
+            text: %SetPrototype%
+            text: %Error%
+            text: %ErrorPrototype%
+            text: %ObjProto_toString%
+            text: %IteratorPrototype%
+        text: %ObjectPrototype%; url: sec-properties-of-the-object-prototype-object
+        text: %FunctionPrototype%; url: sec-properties-of-the-function-prototype-object
+        text: %Promise%; url: sec-promise-constructor
+        text: Property Descriptor; url: sec-property-descriptor-specification-type
+        text: array index; url: sec-array-exotic-objects
+        text: OrdinaryGetOwnProperty; url: sec-ordinarygetownproperty
+        text: OrdinaryDefineOwnProperty; url: sec-ordinarydefineownproperty
+        text: OrdinaryPreventExtensions; url: sec-ordinarypreventextensions
+        text: OrdinarySet; url: sec-ordinaryset
+        text: equally close values; url: sec-ecmascript-language-types-number-type
+        text: internal slot; url: sec-object-internal-methods-and-internal-slots
+        text: JavaScript execution context stack; url: execution-context-stack
+        text: running JavaScript execution context; url: running-execution-context
+        text: GetIterator; url: sec-getiterator
+        text: IteratorStep; url: sec-iteratorstep
+        text: NormalCompletion; url: sec-normalcompletion
+        text: IteratorValue; url: sec-iteratorvalue
+        url: sec-well-known-symbols
+            text: @@iterator
+            text: @@toStringTag
+        text: CreateArrayIterator; url: sec-createarrayiterator
+        text: CreateIterResultObject; url: sec-createiterresultobject
+        text: CreateMapIterator; url: sec-createmapiterator
+        text: CreateSetIterator; url: sec-createsetiterator
+        text: ArrayCreate; url: sec-arraycreate
+        text: CreateDataProperty; url: sec-createdataproperty
+        text: DetachArrayBuffer; url: sec-detacharraybuffer
+        text: IsDetachedBuffer; url: sec-isdetachedbuffer
+        text: IsSharedArrayBuffer; url: sec-issharedarraybuffer
+        text: SetIntegrityLevel; url: sec-setintegritylevel
+        url: sec-array-iterator-objects
+            text: array iterator object
+            text: array iterator objects
+        text: Call; url: sec-call
+        text: Get; url: sec-get-o-p
+        text: Set; url: sec-set-o-p-v-throw
+        text: constructor; url: constructor
+        text: IsConstructor; url: sec-isconstructor
+        text: Construct; url: sec-construct
+        text: own property; url: sec-own-property
+        text: enumerable; url: sec-property-attributes
+        text: DefinePropertyOrThrow; url: sec-definepropertyorthrow
+        url: sec-code-realms
+            text: Realm
+            text: ECMAScript global environment
+        text: current Realm; url: current-realm
+        text: GetActiveScriptOrModule; url: sec-getactivescriptormodule
+        url: sec-completion-record-specification-type
+            text: Completion
+            text: Completion Record
+            text: abrupt completion
+        text: ObjectCreate; url: sec-objectcreate
+        text: CreateBuiltinFunction; url: sec-createbuiltinfunction
+        text: SetFunctionName; url: sec-setfunctionname
+        text: immutable prototype exotic object; url: sec-immutable-prototype-exotic-objects
+        text: sections 9.1; url: sec-ordinary-object-internal-methods-and-internal-slots
+        text: 9.3.1; url: sec-built-in-function-objects-call-thisargument-argumentslist
+        text: ECMA-262 section 9.3; url: sec-built-in-function-objects
+        text: built-in function object; url: sec-built-in-function-objects
+        text: function object; url: function-object
+        text: Array methods; url: sec-properties-of-the-array-prototype-object
+        text: typed arrays; url: sec-typedarray-objects
+        text: GetMethod; url: sec-getmethod
+        text: @@unscopables; url: sec-well-known-symbols
+        text: NewTarget; url: sec-built-in-function-objects
+        text: Number Type; url: sec-ecmascript-language-types-number-type
+        text: JSON.stringify; url: sec-json.stringify
+        text: RejectPromise; url: sec-rejectpromise
+        text: FulfillPromise; url: sec-fulfillpromise
+        text: the Number value; url: sec-ecmascript-language-types-number-type
+        text: NumberToRawBytes; url: sec-numbertorawbytes
+        text: Built-in Function Objects; url: sec-built-in-function-objects
+urlPrefix: https://webassembly.github.io/spec/; spec: WebAssembly; type: dfn
+    text: WebAssembly module validation; url: valid/modules.html#valid-module
+    text: binary format of a module; url: binary/modules.html
+    text: module AST; url: syntax/modules.html
+    text: name section; url: appendix/custom.html#name-section
+    text: import AST; url: syntax/modules.html#imports
+    text: custom section; url: binary/modules.html#custom-section
+    text: customsec; url: binary/modules.html#binary-customsec
+    text: memory instance; url: exec/runtime.html#memory-instances
+    text: grow_memory; url: exec/instructions.html#exec-grow-memory
+    text: table instance; url: exec/runtime.html#table-instances
+    text: allocate a table; url: exec/modules.html#alloc-table
+    text: 𝖿𝗎𝗇𝖼; url: syntax/modules.html#syntax-exportdesc
+    text: function names subsection; url: appendix/custom.html#binary-funcnamesec
+    text: funcnamesubsec; url: appendix/custom.html#binary-funcnamesec
+    text: nameassoc; url: appendix/custom.html#binary-namemap
+    text: trap; url: exec/runtime.html#syntax-trap
+    url: exec/runtime.html#values
+        text: WebAssembly value
+        text: 𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍
+        text: 𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍
+        text: 𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍
+        text: 𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍
+    text: function index; url: syntax/modules.html#syntax-funcidx
+    text: function instance; url: exec/runtime.html#function-instances
+    text: init_store; url: appendix/embedding.html#embed-init-store
+    text: decode_module; url: appendix/embedding.html#embed-decode-module
+    text: validate_module; url: appendix/embedding.html#embed-validate-module
+    text: instantiate_module; url: appendix/embedding.html#embed-instantiate-module
+    text: module_imports; url: appendix/embedding.html#embed-imports
+    text: get_export; url: appendix/embedding.html#embed-get-export
+    text: alloc_func; url: appendix/embedding.html#embed-alloc-func
+    text: type_func; url: appendix/embedding.html#embed-type-func
+    text: invoke_func; url: appendix/embedding.html#embed-invoke-func
+    text: alloc_table; url: appendix/embedding.html#embed-alloc-table
+    text: type_table; url: appendix/embedding.html#embed-type-table
+    text: read_table; url: appendix/embedding.html#embed-read-table
+    text: write_table; url: appendix/embedding.html#embed-write-table
+    text: grow_table; url: appendix/embedding.html#embed-grow-table
+    text: alloc_mem; url: appendix/embedding.html#embed-alloc-mem
+    text: type_mem; url: appendix/embedding.html#embed-type-mem
+    text: read_mem; url: appendix/embedding.html#embed-read-mem
+    text: write_mem; url: appendix/embedding.html#embed-write-mem
+    text: grow_mem; url: appendix/embedding.html#embed-grow-mem
+    text: alloc_global; url: appendix/embedding.html#embed-alloc-global
+    text: type_global; url: appendix/embedding.html#embed-type-global
+    text: read_global; url: appendix/embedding.html#embed-read-global
+    text: write_global; url: appendix/embedding.html#embed-write-global
+    text: module_exports; url: appendix/embedding.html#embed-exports
+    text: error; url: appendix/embedding.html#embed-error
+    text: store; url: exec/runtime.html#syntax-store
+    text: table type; url: syntax/types.html#syntax-tabletype
+    text: table address; url: exec/runtime.html#syntax-tableaddr
+    text: function address; url: exec/runtime.html#syntax-funcaddr
+    text: memory address; url: exec/runtime.html#syntax-memaddr
+    text: i64; url: syntax/types.html#syntax-valtype
+    text: function element; url: exec/runtime.html#syntax-funcelem
+    text: import component; url: syntax/modules.html#imports
+    text: external value; url: exec/runtime.html#syntax-externval
+    text: host function; url: runtime.html#syntax-hostfunc
+    text: the instantiation algorithm; url: exec/modules.html#instantiation
+urlPrefix: https://littledan.github.io/spec/document/JS.html; spec: WASMJS
+    type: namespace
+        text: WebAssembly; url: #namespacedef-webassembly
+        text: CompileError; url: #compileerror
+        text: Module; url: #module
+        text: WebAssemblyInstantiatedSource; url: #dictdef-webassemblyinstantiatedsource
+        text: InstanceExportsMap; url: #typedefdef-instanceexportsmap
+        text: InstanceImportsMap; url: #typedefdef-instanceimportsmap
+        text: ExportedFunction; url: #exportedfunction
+    type: dfn
+        text: compile a WebAssembly module; url: #compile-a-webassembly-module
+        text: instantiate a WebAssembly module; url: #instantiate-a-webassembly-module
+        text: instantiate; url: #dom-webassembly-instantiate
+        text: asynchronously compile a webassembly module; url: #asynchronously-compile-a-webassembly-module
+        text: instantiate a promise of a module; url: #instantiate-a-promise-of-a-module
+</pre>
+
+<pre class='link-defaults'>
+spec:infra; type:dfn; text:list
+spec:ecma-262; type:exception; for:ECMAScript; text:Error
+spec:infra; type:dfn; for:set; text:append
+</pre>
+
+This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and the WebAssembly JavaScript embedding [[WASMJS]].
+
+<h2 id="streaming-modules">Streaming module APIs</h2>
+
+<pre class="idl">
+partial namespace WebAssembly {
+  Promise&lt;Module> compileStreaming(Promise&lt;Response> source);
+  Promise&lt;WebAssemblyInstantiatedSource> instantiateStreaming(
+      Promise&lt;Response> source, optional InstanceImportsMap importObject);
+};
+</pre>
+
+<h3 id="streaming-compliaton">Streaming module compilation</h3>
+
+Note: This method was not included in the initial Wasm specification, so developers may need to provide a code path for the case where it is not present.
+
+Note: This function accepts a {{Response}} object, or a
+promise for one, and compiles the resulting bytes of the response. This compilation can be performed
+in the background and in a streaming manner. If the {{Response}} is not [=CORS-same-origin=],
+does not represent an [=ok status=], or does not match the
+`application/wasm` MIME type, the returned promise will be rejected with a [=TypeError=]; if
+compilation fails, the returned promise will be rejected with a {{CompileError}}.
+
+<div algorithm>
+The <dfn method for="WebAssembly">compileStreaming(source)</dfn> method, when invoked, returns the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source|.
+</div>
+
+<h3 id="streaming-instantiation">`WebAssembly.instantiateStreaming`</h3>
+
+Note: This method was not included in the initial Wasm specification, so developers may need to provide a code path for the case where it is not present.
+
+<div algorithm>
+The <dfn method for="WebAssembly">instantiateStreaming(source, importObject)</dfn> method, when invoked, performs the following steps:
+
+    1. Let |promiseOfModule| be the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source|.
+    1. Return the result of [=instantiate a promise of a module|instantiating the promise of a module=] |promiseOfModule| with imports |importObject|.
+</div>
+
+<h3 id="process-response">Compile a potential WebAssembly response</h3>
+
+Note: This algorithm accepts a {{Response}} object, or a
+    promise for one, and compiles and instantiates the resulting bytes of the response. This compilation
+    can be performed in the background and in a streaming manner. If the {{Response}} is not
+    [=CORS-same-origin=], does not represent an [=ok status=], or does not match the
+    `` `application/wasm` `` MIME type, the returned promise will be rejected with a [=TypeError=]; if
+    compilation or instantiation fails, the returned promise will be rejected with a
+    {{CompileError}} or other relevant error type, depending on the cause of failure.
+
+<div algorithm>
+To <dfn>compile a potential WebAssembly response</dfn> with a promise of a {{Response}} |source|, perform the following steps:
+
+    1. Let |returnValue| be [=a new promise=]
+    1. [=Upon fulfillment=] of |source| with value |unwrappedSource|:
+       1. Let |response| be _unwrappedSource_'s [=Response/response=].
+       1. Let |mimeType| be the result of [=extracting a MIME type=] from |response|'s [=response/header list=].
+       1. If |mimeType| is not `` `application/wasm` ``, reject |returnValue| with a [=TypeError=] and abort these substeps.
+
+       Note: extra parameters are not allowed, including the empty `` `application/wasm;` ``.
+
+       3. If |response| is not [=CORS-same-origin=], [=reject=] |returnValue| with a [=TypeError=] and abort these substeps.
+       1. If |response|'s [=response/status=] is not an [=ok status=], [=reject=] |returnValue| with a [=TypeError=] and abort these substeps.
+       1. [=Consume body|consume=] |response|'s body as an [=ArrayBuffer=], and let |bodyPromise| be the result.
+
+       Note: although it is specified here that the response is consumed entirely before _processingSteps_ proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The different is unobservable, and thus the simpler model is specified.) <!-- Using consume is a bit silly as it creates an ArrayBuffer but then we just want the underlying bytes. This is because of how streams is specced in terms of promises and JS objects whereas we want to operate more directly on the underlying concept. We can revisit this if things change in the Streams/Fetch specs. -->
+
+       6. [=Upon fulfillment=] of |bodyPromise| with value |bodyArrayBuffer|:
+          1. [=Asynchronously compile a WebAssembly module|Asynchronously compile the WebAssembly module=] |bodyArrayBuffer| with |returnValue| using the [=networking task source=].
+       1. [=Upon rejection=] |bodyPromise| with reason |reason|:
+          1. [=Reject=] |returnValue| with |reason|.
+    1. [=Upon rejection=] of |source| with reason |reason|:
+       1. [=Reject=] |returnValue| with |reason|.
+    1. Return |returnValue|.
+</div>
+
+<h2 id="conventions">Developer-facing display conventions</h2>
+
+Browsers, JavaScript engines, and offline tools have common ways of referring to
+JavaScript artifacts and language constructs. For example, locations in
+JavaScript source code are printed in stack traces or error messages, and are
+represented naturally as decimal-format lines and columns in text files. Names
+of functions and variables are taken directly from the sources. Therefore (for
+example) even though the exact format of Error.stack strings does not always
+match, the locations are easily understandable and the same across browsers.
+
+To achive the same goal of a common representations for WebAssembly constructs, the
+following conventions are adopted.
+
+A WebAssembly location is a reference to a particular instruction in the binary, and may be
+displayed by a browser or engine in similar contexts as JavaScript source locations.
+It has the following format:
+
+`${url}:wasm-function[${funcIndex}]:${pcOffset}`
+
+Where
+* `${url}` is the URL associated with the module, if applicable (see notes).
+* `${funcIndex}` is the [=function index=] relative to the module.
+* `${pcOffset}` is the offset in the module binary of the first byte of the instruction, printed in hexadecimal with lower-case digits, with a leading `0x` prefix.
+
+Notes:
+* The URL field may be interpreted differently depending on the
+    context. When the response-based
+    instantiation <a href="#streaming-modules">API</a> is used in a
+    browser, the associated URL should be used; or when the
+    {{ArrayBuffer}}-based instantiation
+    [=instantiate|API=] is used, the browser should represent
+    the location of the API call. This kind of instantiation is analagous to
+    executing JavaScript using `eval`; therefore if the browser has an existing
+    method to represent the location of the `eval` call it can use a similar
+    one for `WebAssembly.instantiate`. For example if the browser uses
+    `foo.js line 10 > eval` or `eval at bar (foo.js:10:3)` for `eval`, it could
+    use `foo.js line 10 > WebAssembly.instantiate` or
+    `WebAssembly.instantiate at bar (foo.js:10:3)`, respectively.
+    Offline tools may use a filename instead.
+* Using hexadecimal for module offsets matches common conventions in native tools
+    such as objdump (where addresses are printed in hex) and makes them visually
+    distinct from JavaScript line numbers. Other numbers are represented in decimal.
+
+While the `name` property of {{ExportedFunction}}
+is specified by the JS API, synthesized function names are also
+displayed in other contexts like devtool callstacks and `Error.stack`.
+If a WebAssembly module contains a ["name" section](BinaryEncoding.md#name-section),
+these names should be used to synthesize a function name as follows:
+* If a function name subsection is present, the displayed name should
+      be `${module_name}.${function_name}` or `${function_name}`, depending
+      on whether the module name is present.
+* Otherwise, the output can be context-dependent:
+  * If the function name is shown alongside its location in a
+    stack trace, then just the module name (if present) or an empty string
+    can be used (because the function index is already in the location).
+  * Otherwise, `${module_name}.wasm-function[${funcIndex}]` or
+    `wasm-function[${funcIndex}]` should be used to convey the function index.
+
+Note that this document does not specify the full format of strings such as
+stack frame representations; this allows engines to continue using their
+existing formats for JavaScript (which existing code may already be depending
+on) while still printing WebAssembly frames in a format consistent with
+JavaScript.
