@@ -10,17 +10,10 @@ Editor: WebAssembly Community Group
 Repository: WebAssembly/spec
 Abstract: This document provides an explicit JavaScript API for interacting with WebAssembly.
 Markup Shorthands: css no, markdown yes
-Ignored Terms: h1, h2, h3, h4, h5, h6, xmp
 </pre>
 
 <pre class='biblio'>
 {
-  "ECMA-262": {
-    "href": "https://tc39.github.io/ecma262",
-    "title": "ECMAScript® 2018 Language Specification",
-    "publisher": "ECMA TC39",
-    "status": "Current Editor's Draft"
-  },
   "WEBASSEMBLY": {
     "href": "https://webassembly.github.io/spec/",
     "title": "WebAssembly Specification",
@@ -31,7 +24,7 @@ Ignored Terms: h1, h2, h3, h4, h5, h6, xmp
 </pre>
 
 <pre class="anchors">
-urlPrefix: https://tc39.github.io/ecma262/; spec: ECMA-262
+urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
     type: interface; for: ECMAScript
         text: DataView; url: sec-dataview-objects
         text: Map; url: sec-map-objects
@@ -234,7 +227,7 @@ Issue: This document is an early draft, porting <a href="https://github.com/WebA
 
 This API is, initially, the only API for accessing WebAssembly [[WEBASSEMBLY]] from the Web Platform, through a bridge to explicitly construct modules from ECMAScript [[ECMASCRIPT]].
 
-Issue: In future versions, WebAssembly
+Issue: In future versions, WebAssembly may
 be loaded and run directly from an HTML `<script type='module'>` tag—and
 any other Web API that loads ES6 modules via URL—as part of
 [ES6 Module integration](https://github.com/WebAssembly/design/issues/1087).)
@@ -245,7 +238,7 @@ Note: WebAssembly JS API declaration file for TypeScript can be found [here](htt
 
 <p><em>This section is non-normative.</em></p>
 
-Given `demo.was` (encoded to `demo.wasm`):
+Given `demo.wat` (encoded to `demo.wasm`):
 
 ```lisp
 (module
@@ -280,7 +273,7 @@ typedef (ExportedFunction or double or
          Memory or Table)
     WebAssemblyRuntimeValue;
 
-typedef (record&lt;DOMString, WebAssemblyRuntimeValue&gt;) InstanceExportsMap;
+typedef record&lt;DOMString, WebAssemblyRuntimeValue&gt; InstanceExportsMap;
 
 typedef record&lt;DOMString, InstanceExportsMap&gt; InstanceImportsMap;
 
@@ -289,7 +282,7 @@ dictionary WebAssemblyInstantiatedSource {
    required Instance instance;
 };
 
-[Exposed=(Window,Worker)]
+[Exposed=(Window,Worker,Worklet)]
 namespace WebAssembly {
   boolean validate(BufferSource bytes);
   Promise&lt;Module> compile(BufferSource bytes);
@@ -313,23 +306,19 @@ Note:
 -->
 
 <div algorithm>
-  A WebAssembly module AST |module| is said to be <dfn>valid</dfn> if:
-    1. [=validate_module=](_module_) is not [=error=], and
-    1. The UTF-8 encoding of all <code>name</code> productions in the binary format, including in a custom <code>name</code> section if present, is valid.
+  To <dfn>compile a WebAssembly module</dfn> from a {{BufferSource}} |bytes|, perform the following steps:
+    1. Let |module| be [=decode_module=](|bytes|). If |module| is [=error=], return [=error=].
+    1. If [=validate_module=](|module|) is [=error=], return [=error=].
+    1. For each <code>name</code> production in |bytes|, including in a custom <code>name</code> section if present, with the subsequence identified as |nameBytes|:
+        1. If running the [=UTF-8 decoder=] algorithm on |nameBytes| leads to an error, return [=error=].
+    1. Return |module|.
 </div>
 
 <div algorithm>
   The <dfn method for="WebAssembly">validate(bytes)</dfn> method, when invoked, performs the following steps:
-    1. Let |module| be [=decode_module=](_bytes_). If |module| is [=error=], return false.
-    1. If |module| is not [=valid=], return false.
+    1. [=Compile a WebAssembly module|compile=] |bytes| as a WebAssembly module and store the results as |module|.
+    1. If |module| is [=error=], return false.
     1. Return true.
-</div>
-
-<div algorithm>
-  To <dfn>compile a WebAssembly module</dfn> from a {{BufferSource}} |bytes|, perform the following steps:
-    1. Let |module| be [=decode_module=](_bytes_). If |module| is [=error=], return the string "CompileError".
-    1. If |module| is not [=valid=], return the string "CompileError"
-    1. Return |module|
 </div>
 
 <div algorithm>
@@ -345,8 +334,8 @@ Note:
   To <dfn>asynchronously compile a WebAssembly module</dfn> from a {{BufferSource}} |bytes|, with the promise |promise|, using optional [=task source=] |taskSource|, perform the following steps:
 
     1. In parallel, [=compile a WebAssembly module|compile the WebAssembly module=] |bytes| and store the result as |module|.
-    1. When the above operation completes, queue a task to perform the following steps. If |taskSource| was provided, queue the task on that task source.
-        1. If |module| is the string "CompileError", throw a {{CompileError}} exception.
+    1. When the above operation completes, [=queue a task=] to perform the following steps. If |taskSource| was provided, queue the task on that task source.
+        1. If |module| is [=error=], reject |promise| with a {{CompileError}} exception.
         1. Otherwise,
             1. [=Construct a WebAssembly module object=] from |module| and let |moduleObject| be the result.
             1. [=Resolve=] |promise| with |moduleObject|.
@@ -372,113 +361,114 @@ Note:
 
     6. Let |imports| be an empty [=list=] of [=external value=]s.
     1. For each (|moduleName|, |componentName|, |externtype|) in [=module_imports=](|module|), do
-      1. Let |o| be ? [=Get=](|importObject|, |moduleName|).
-      1. If Type(|o|) is not [=Object=], throw a [=TypeError=] exception.
-      1. Let |v| be ? [=Get=](|o|, |componentName|)
-      1. If |externtype| is of the form 𝖿𝗎𝗇𝖼 |functype|,
-         1. If [=IsCallable=](|v|) is false, throw a {{LinkError}} exception.
-         1. If |v| is an {{ExportedFunction}},
-             1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
+        1. Let |o| be ? [=Get=](|importObject|, |moduleName|).
+        1. If [=Type=](|o|) is not [=Object=], throw a [=TypeError=] exception.
+        1. Let |v| be ? [=Get=](|o|, |componentName|)
+        1. If |externtype| is of the form 𝖿𝗎𝗇𝖼 |functype|,
+            1. If [=IsCallable=](|v|) is false, throw a {{LinkError}} exception.
+            1. If |v| is an {{ExportedFunction}},
+                1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
 
-             Note: The signature is checked by [=instantiate_module=] below.
+                Note: The signature is checked by [=instantiate_module=] below.
 
-             2. Append |v| to |funcs|.
-         1. Otherwise,
-             1. Let |hostfunc| be a [=host function=] which performs the following steps when called:
-                 1. If the signature contains an [=i64=] (as argument or result), the host function immediately throws a {{TypeError}} when called.
-                 1. Let |arguments| be a [=list=] of the arguments of the invocation of this function.
-                 1. Let |jsArguments| be an empty [=list=].
-                 1. For each |arg| in |arguments|,
-                     1. Append [=ToJSValue=](|arg|) to |jsArguments|.
-                 1. Let |ret| be ? [=Call=](|v|, undefined, |jsArguments|). If an exception is thrown, trigger a WebAssembly trap, and propagate the exception to the enclosing JavaScript.
-                 1. Let [|parameters|] → [|results|] be |functype|.
-                 1. If |results| is empty, return undefined.
-                 1. Otherwise, return [=ToWebAssemblyValue=](|ret|, |results|[0]).
-             1. Let |store| be the current agent cluster's [=associated store=].
-             1. Let (|store|, |funcaddr|) be alloc_func(|store|, |functype|, |hostfunc|).
-             1. Set the current agent cluster's [=associated store=] to |store|.
-         1. Let |externfunc| be the [=external value=] 𝖿𝗎𝗇𝖼 |funcaddr|
-         1. Append |externfunc| to |imports|.
+                2. [=Append=] |v| to |funcs|.
+            1. Otherwise,
+                1. Let |hostfunc| be a [=host function=] which performs the following steps when called:
+                    1. If the signature contains an [=i64=] (as argument or result), the host function immediately throws a {{TypeError}} when called.
+                    1. Let |arguments| be a [=list=] of the arguments of the invocation of this function.
+                    1. Let |jsArguments| be an empty [=list=].
+                    1. For each |arg| in |arguments|,
+                          1. [=Append=] [=ToJSValue=](|arg|) to |jsArguments|.
+                    1. Let |ret| be ? [=Call=](|v|, undefined, |jsArguments|). If an exception is thrown, trigger a WebAssembly trap, and propagate the exception to the enclosing JavaScript.
+                    1. Let [|parameters|] → [|results|] be |functype|.
+                    1. If |results| is empty, return undefined.
+                    1. Otherwise, return [=ToWebAssemblyValue=](|ret|, |results|[0]).
+                1. Let |store| be the current agent cluster's [=associated store=].
+                1. Let (|store|, |funcaddr|) be [=alloc_func=](|store|, |functype|, |hostfunc|).
+                1. Set the current agent cluster's [=associated store=] to |store|.
+            1. Let |externfunc| be the [=external value=] 𝖿𝗎𝗇𝖼 |funcaddr|
+            1. [=Append=] |externfunc| to |imports|.
       1. If |externtype| is of the form 𝗀𝗅𝗈𝖻𝖺𝗅 |globaltype|,
-         1. If |globaltype| is [=i64=] or [=Type=](|v|) is not [=Number=], throw a {{LinkError}} exception.
-         1. Let |value| be [=ToWebAssemblyValue=](|v|, |globaltype|.valtype)
-         1. Assert: |globaltype|.mut is const, as verified by WebAssembly validation.
-         1. Let |store| be the current agent cluster's [=associated store=].
-         1. Let (|store|, |globaladdr|) be [=alloc_global=](|store|, |globaltype|, |value|).
-         1. Set the current agent cluster's [=associated store=] to |store|.
-         1. Let |externglobal| be 𝗀𝗅𝗈𝖻𝖺𝗅 |globaladdr|.
-         1. Append |externglobal| to |imports|.
+          1. If |globaltype| is [=i64=] or [=Type=](|v|) is not [=Number=], throw a {{LinkError}} exception.
+          1. Let |value| be [=ToWebAssemblyValue=](|v|, |globaltype|.valtype)
+          1. Assert: |globaltype|.mut is const, as verified by WebAssembly validation.
+          1. Let |store| be the current agent cluster's [=associated store=].
+          1. Let (|store|, |globaladdr|) be [=alloc_global=](|store|, |globaltype|, |value|).
+          1. Set the current agent cluster's [=associated store=] to |store|.
+          1. Let |externglobal| be 𝗀𝗅𝗈𝖻𝖺𝗅 |globaladdr|.
+          1. [=Append=] |externglobal| to |imports|.
       1. If |externtype| is of the form 𝗆𝖾𝗆  |memtype|,
-         1. If |v| is not a {{Memory}} object, throw a {{LinkError}} exception.
+          1. If |v| is not a {{Memory}} object, throw a {{LinkError}} exception.
 
-         Note: [=instantiate_module=] below will check the imported {{Memory}}'s size against the importing module's requirements.
+          Note: [=instantiate_module=] below will check the imported {{Memory}}'s size against the importing module's requirements.
 
-         2. Append |v| to |memories|.
-         1. Let |externmem| be the [=external value=] 𝗆𝖾𝗆  |v|.\[[Memory]].
-         1. Append |externmem| to |imports|.
+          2. [=Append=] |v| to |memories|.
+          1. Let |externmem| be the [=external value=] 𝗆𝖾𝗆  |v|.\[[Memory]].
+          1. [=Append=] |externmem| to |imports|.
       1. Otherwise, |externtype| is of the form 𝗍𝖺𝖻𝗅𝖾 |tabletype|,
-         1. If |v| is not a {{Table}} instance, throw a {{LinkError}} exception.
+          1. If |v| is not a {{Table}} instance, throw a {{LinkError}} exception.
 
-         Note: The table's length, etc is checked by [=instantiate_module=] below.
+          Note: The table's length, etc is checked by [=instantiate_module=] below.
 
-         2. Append |v| to |tables|.
-         1. Let |tableaddr| be |v|.\[[Table]]
-         1. Let |externtable| be the [=external value=] 𝗍𝖺𝖻𝗅𝖾 |tableaddr|.
-         1. Append |externtable| to |imports|.
-         1. For each element |func| of |v|.\[[Values]],
-            1. If |func| is not null, append |func| to |funcs|.
+          2. [=Append=] |v| to |tables|.
+          1. Let |tableaddr| be |v|.\[[Table]]
+          1. Let |externtable| be the [=external value=] 𝗍𝖺𝖻𝗅𝖾 |tableaddr|.
+          1. [=Append=] |externtable| to |imports|.
+          1. For each element |func| of |v|.\[[Values]],
+              1. If |func| is not null, append |func| to |funcs|.
     1. Let (|store|, |instance|) be [=instantiate_module=](|store|, |module|, |imports|), up through step 16 of [=the instantiation algorithm=], but omitting execution of the start function.
     1. If |instance| is [=error=], throw a {{LinkError}} exception, or other <a href="#errors">appropriate exception type</a>.
     1. For each |tableaddr| in |instance|.𝗍𝖺𝖻𝗅𝖾𝖺𝖽𝖽𝗋𝗌,
-       1. If there is no element in |tables| whose |table|.\[[Table]] is |tableaddr|:
-          1. Let |table| be [=create a table object|a new table object=] from |tableaddr|.
-          1. Append |table| to |tables|.
-       1. Otherwise:
-          1. Let |table| be the element in |tables| where |table|.\[[Table]] is |tableaddr|.
-       1. For each index |i| from 0 to the length of |table|.\[[Values]] - 1, do
-          1. Let |funcaddr| be [=read_table=](|store|, |tableaddr|, |i|).
-          1. Assert: |funcaddr| is not [=error=] because this read is in bounds.
-          1. If |funcaddr| is not empty,
-             1. If |funcs| contains any |func| where |func|.\[[ExportedAddress]] is |funcaddr|,
-                1. Let |func| be that function object.
-             1. Otherwise:
-                1. Let |func| be a [=create an exported function|a new exported function=] created from |funcaddr|.
-                1. Append |func| to |funcs|.
-             1. Set the |table|.\[[Values]]\[|i|] to |func|.
+        1. If there is no element in |tables| whose |table|.\[[Table]] is |tableaddr|:
+            1. Let |table| be [=create a table object|a new table object=] from |tableaddr|.
+            1. [=Append=] |table| to |tables|.
+        1. Otherwise:
+            1. Let |table| be the element in |tables| where |table|.\[[Table]] is |tableaddr|.
+        1. For each index |i| from 0 to the length of |table|.\[[Values]] &minus; 1, do
+            1. Let |funcaddr| be [=read_table=](|store|, |tableaddr|, |i|).
+            1. Assert: |funcaddr| is not [=error=] because this read is in bounds.
+            1. If |funcaddr| is not empty,
+                1. If |funcs| contains any |func| where |func|.\[[ExportedAddress]] is |funcaddr|,
+                    1. Let |func| be that function object.
+                1. Otherwise:
+                    1. Let |func| be a [=create an exported function|a new exported function=] created from |funcaddr|.
+                    1. [=Append=] |func| to |funcs|.
+                1. Set the |table|.\[[Values]][|i|] to |func|.
 
-             Note: The table and function objects created by the above steps are only observable for tables that are either imported or exported.
+                Note: The table and function objects created by the above steps are only observable for tables that are either imported or exported.
 
     1. Let |startfuncaddr| be the start function of |instance|.
     1. Let (|store|, |ret|) be [=invoke_func=](|store|, |startfuncaddr|, empty).
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
     1. Assert: |ret| is empty.
-    1. Let |exportsObject| be  ! ObjectCreate(null).
+    1. Let |exportsObject| be  ! [=ObjectCreate=](null).
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
-      1. Let |externval| be [=get_export=](|instance|, |name|).
-      1. If |externtype| is of the form 𝖿𝗎𝗇𝖼 |functype|,
-         1. If |funcs| contains an entry |func| where |func|.\[[FunctionAddress]] is |externval|, let |value| be |func|
-         1. Otherwise,
-            1. Let |func| be the result of [=create an Exported Function=] from |externval|.
-            1. Append |func| to |funcs|.
-            1. Let |value| be |func|.
-      1. If |externtype| is of the form 𝗀𝗅𝗈𝖻𝖺𝗅 |globaltype|,
-         1. If |globaltype|.valtype is an [=i64=], throw a {{LinkError}} exception.
-         1. Assert: |globaltype|.mut is const.
-         1. Let |value| be [=ToJSValue=]([=read_global=](|store|, |externval|)).
-      1. If |externtype| is of the form 𝗆𝖾𝗆  |memtype|,
-         1. If there is an element |memory| in |memories| such that |memory|.\[[Memory]] is |externval|, then let |value| be |memory|
-         1. Otherwise:
-            1. Let |memory| be [=create a memory object|a new Memory object=] from |externval|.
-            1. Append |memory| to |memories|.
-            1. Let |value| be |memory|.
-      1. Otherwise, |externtype| is of the form 𝗍𝖺𝖻𝗅𝖾 |tabletype|,
-         1. Let |value| be the unique |table| in |tables| such that |table|.\[[Table]] is |externval|.
-      1. Perform ! CreateDataPropertyOrThrow(|exports|, |name|, |value|).
+        1. Let |externval| be [=get_export=](|instance|, |name|).
+        1. If |externtype| is of the form 𝖿𝗎𝗇𝖼 |functype|,
+            1. If |funcs| contains an entry |func| where |func|.\[[FunctionAddress]] is |externval|, let |value| be |func|
+            1. Otherwise,
+                1. Let |func| be the result of [=create an Exported Function=] from |externval|.
+                1. [=Append=] |func| to |funcs|.
+                1. Let |value| be |func|.
+        1. If |externtype| is of the form 𝗀𝗅𝗈𝖻𝖺𝗅 |globaltype|,
+            1. If |globaltype|.valtype is an [=i64=], throw a {{LinkError}} exception.
+            1. Assert: |globaltype|.mut is const.
+            1. Let |value| be [=ToJSValue=]([=read_global=](|store|, |externval|)).
+        1. If |externtype| is of the form 𝗆𝖾𝗆  |memtype|,
+            1. If there is an element |memory| in |memories| such that |memory|.\[[Memory]] is |externval|, then let |value| be |memory|
+            1. Otherwise:
+                1. Let |memory| be [=create a memory object|a new Memory object=] from |externval|.
+                1. [=Append=] |memory| to |memories|.
+                1. Let |value| be |memory|.
+        1. Otherwise, |externtype| is of the form 𝗍𝖺𝖻𝗅𝖾 |tabletype|,
+            1. Let |value| be the unique |table| in |tables| such that |table|.\[[Table]] is |externval|.
+        1. Let |status| be ! [=CreateDataProperty=](|exports|, |name|, |value|).
+        1. Assert: |status| is true.
 
-      Note: the validity and uniqueness checks performed during [=WebAssembly module validation=] ensure that each property name is valid and no properties are defined twice.
+        Note: the validity and uniqueness checks performed during [=WebAssembly module validation=] ensure that each property name is valid and no properties are defined twice.
 
     33. Perform ! [=SetIntegrityLevel=](|exportsObject|, `"frozen"`).
-    1. Let |instanceObject| be a new {{Instance|| object setting whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
+    1. Let |instanceObject| be a new {{Instance}} object setting whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
     1. Return |instanceObject|.
 </div>
 
@@ -503,7 +493,7 @@ Note:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. Let |promiseOfModule| be [=a new promise=].
     1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| with |promiseOfModule|.
-    1. [=Instantiate a promise of a module|instantiate a promise of a module=] |promiseOfModule| with imports |importObject| and return the result.
+    1. [=Instantiate a promise of a module|Instantiate=] |promiseOfModule| with imports |importObject| and return the result.
 </div>
 
 <div algorithm>
@@ -541,7 +531,7 @@ dictionary ModuleImportDescriptor {
   required ImportExportKind kind;
 };
 
-[LegacyNamespace=WebAssembly, Contructor(BufferSource bytes), Exposed=(Window, Worker)]
+[LegacyNamespace=WebAssembly, Constructor(BufferSource bytes), Exposed=(Window, Worker)]
 interface Module {
   static sequence&lt;ModuleExportDescriptor> exports(Module module);
   static sequence&lt;ModuleImportDescriptor> imports(Module module);
@@ -553,78 +543,72 @@ interface Module {
 <div algorithm="name of the export">
     The <dfn>name of the export</dfn> |export| in the module |module| is defined as follows:
     1. If |export| is of the form [=𝖿𝗎𝗇𝖼=] |funcidx| and |module| has a [=name section=] with a [=function names subsection=],
-         1. Within <code>[=funcnamesubsec=]</code>, search for an entry <code>[=nameassoc=]</code> of the form |funcidx| <code>name</code>. If such an entry is found, return <code>name</code> decoded as a UTF-8 into a JavaScript String.
+        1. Within <code>[=funcnamesubsec=]</code>, search for an entry <code>[=nameassoc=]</code> of the form |funcidx| <code>name</code>. If such an entry is found, return <code>name</code> [=UTF-8 decoder|decoded as a UTF-8=] into a JavaScript String.
     1. Return the empty String.
 </div>
 -->
 
 <div algorithm>
-    The <dfn method for="Module">exports(module)</dfn> method, when invoked, performs the following steps:
-    1. Let |ast| be |module|.\[[Module]].
+  The <dfn>string value of the extern type</dfn> |type| is
+    * "function" if |type| is of the form 𝖿𝗎𝗇𝖼 functype
+    * "table" if |type| is of the form 𝗍𝖺𝖻𝗅𝖾 tabletype
+    * "memory" if |type| is of the form 𝗆𝖾𝗆    memtype
+    * "global" if |type| is of the form 𝗀𝗅𝗈𝖻𝖺𝗅 globaltype
+</div>
+
+<div algorithm>
+    The <dfn method for="Module">exports(moduleObject)</dfn> method, when invoked, performs the following steps:
+    1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |exports| be an empty [=list=].
-    1. For each |export| in |ast|.exports:
-        1. Let |name| be |export|.name as a String.
-        1. Let |kind| be
-            * `"function"` if |export|.desc is of the form 𝖿𝗎𝗇𝖼 funcidx
-            * `"table"` if |export|.desc is of the form 𝗍𝖺𝖻𝗅𝖾 tableidx
-            * `"memory"` if |export|.desc is of the form 𝗆𝖾𝗆    memidx
-            * `"global"` if |export|.desc is of the form 𝗀𝗅𝗈𝖻𝖺𝗅 globalidx
-        1. Let |obj| be ! ObjectCreate(%ObjectPrototype%).
-        1. Perform ! CreateDataProperty(obj, `"name"`, |name|).
-        1. Perform ! CreateDataProperty(obj, `"kind"`, |kind|).
-        1. [=Append=] |obj</obj> to the end of |exports|.
-    1. Return ! CreateArrayFromList(|exports|).
+    1. For each (|name|, |type|) in [=module_exports=](|module|)
+        1. Let |kind| be the [=string value of the extern type=] |type|.
+        1. Let |obj| be a new {{ModuleExportDescriptor}} dictionary with {{ModuleExportDescriptor/name}} |name| and {{ModuleExportDescriptor/kind}} |kind|.
+        1. [=Append=] |obj| to the end of |exports|.
+    1. Return |exports|.
 </div>
 
 <div algorithm>
-    The <dfn method for="Module">imports(module)</dfn> method, when invoked, performs the following steps:
-    1. Let |ast| be |module|.\[[Module]].
-    1. Let |imports| be an empty List.
-    1. For each |imports| in |ast|.imports:
-        1. Let |module| be |import|.module as a String.
-        1. Let |name| be |import|.name as a String.
-        1. Let |kind| be
-            * `"function"` if |export| is of the form 𝖿𝗎𝗇𝖼 functype
-            * `"table"` if |export| is of the form 𝗍𝖺𝖻𝗅𝖾 tabletype
-            * `"memory"` if |export| is of the form 𝗆𝖾𝗆  memtype
-            * `"global"` if |export| is of the form 𝗀𝗅𝗈𝖻𝖺𝗅 globaltype
-        1. Let |obj| be ObjectCreate(%ObjectPrototype%).
-        1. Perform ! CreateDataProperty(obj, `"module"`, |module|).
-        1. Perform ! CreateDataProperty(obj, `"name"`, |name|).
-        1. Perform ! CreateDataProperty(obj, `"kind"`, |kind|).
-        1. Append |obj</obj> to the end of |imports|.
-    1. Return ! CreateArrayFromList(|imports|).
+    The <dfn method for="Module">imports(moduleObject)</dfn> method, when invoked, performs the following steps:
+    1. Let |module| be |moduleObject|.\[[Module]].
+    1. Let |imports| be an empty [=list=].
+    1. For each (|module|, |name|, |type|) in [=module_imports=](|module|),
+        1. Let |kind| be the [=string value of the extern type=] |type|.
+        1. Let |obj| be a new {{ModuleImportDescriptor}} dictionary with {{ModuleImportDescriptor/module}} |module|, {{ModuleImportDescriptor/name}} |name| and {{ModuleImportDescriptor/kind}} |kind|.
+        1. [=Append=] |obj| to the end of |imports|.
+    1. Return |imports|.
 </div>
 
 <div algorithm>
-    The <dfn method for="Module">customSections(module, sectionName)</dfn> method, when invoked, performs the following steps:
-    1. Let |bytes| be |module|.\[[Bytes]].
-    1. Let |customSections| be an empty List.
+    The <dfn method for="Module">customSections(moduleObject, sectionName)</dfn> method, when invoked, performs the following steps:
+    1. Let |bytes| be |moduleObject|.\[[Bytes]].
+    1. Let |customSections| be an empty [=list=] of [=ArrayBuffer=]s.
     1. For each [=custom section=] |customSection| in the binary format of |bytes|,
-        1. Let |name| be the <code>name</code> of the custom section, decoded as UTF-8.
-        1. If SameValue(|name|, |sectionName|),
-            1. Append a new ArrayBuffer containing a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes| for the range matched by this [=customsec=] production.
-    1. Return CreateArrayFromList(|customSections|).
+        1. Let |name| be the <code>name</code> of the custom section, [=UTF-8 decoder|decoded as UTF-8=].
+        1. If |name| equals |secondName| as string values,
+            1. [=Append=] a new [=ArrayBuffer=] containing a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes| for the range matched by this [=customsec=] production.
+    1. Return |customSections|.
 </div>
 
 <div algorithm>
     The <dfn constructor for="Module">Module(bytes)</dfn> constructor, when invoked, performs the follwing steps:
 
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
-    1. [=Compile a WebAssembly module|compiles the WebAssembly module=] |stableBytes| and returns the result.
+    1. [=Compile a WebAssembly module|Compile the WebAssembly module=] |stableBytes| and store the result as |module|.
+    1. If |module| is [=error=], throw a {{CompileError}} exception.
+    1. Return |module|.
 </div>
 
 <h3 id="instances">Instances</h3>
 
 <pre class="idl">
-[LegacyNamespace=WebAssembly, Contructor(Module module, optional InstanceImportsMap importObject), Exposed=(Window,Worker)]
+[LegacyNamespace=WebAssembly, Constructor(Module module, optional InstanceImportsMap importObject), Exposed=(Window,Worker,Worklet)]
 interface Instance {
   readonly attribute InstanceExportsMap exports;
 };
 </pre>
 
 <div algorithm>
-    The <dfn constructor for="Instance">Instance(module, importObject)</dfn> constructor, when invoked, instantiates the WebAssembly module |module| importing |importObject| and returns the result.
+    The <dfn constructor for="Instance">Instance(module, importObject)</dfn> constructor, when invoked, [=instantiate a WebAssembly module|instantiates the WebAssembly module=] |module| importing |importObject| and returns the result.
 </div>
 
 <div algorithm>
@@ -639,7 +623,7 @@ dictionary MemoryDescriptor {
   [EnforceRange] unsigned long maximum;
 };
 
-[LegacyNamespace=WebAssembly, Constructor(MemoryDescriptor descriptor), Exposed=(Window,Worker)]
+[LegacyNamespace=WebAssembly, Constructor(MemoryDescriptor descriptor), Exposed=(Window,Worker,Worklet)]
 interface Memory {
   void grow([EnforceRange] unsigned long delta);
   readonly attribute ArrayBuffer buffer;
@@ -652,17 +636,19 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 {{Memory}} object has two internal slots:
 
     * \[[Memory]] : a [=memory address=]
-    * \[[BufferObject]] : an ArrayBuffer whose [=Data Block=] is [=identified with=] the above memory address
+    * \[[BufferObject]] : an [=ArrayBuffer=] whose [=Data Block=] is [=identified with=] the above memory address
+i
 </div>
 
 <div algorithm>
     To <dfn>create a memory object</dfn> from a [=memory instance=] |m|, perform the following steps:
 
     1. Let |block| be a Data Block which is [=identified with=] the underlying memory of |m|.data.
-    1. Let |buffer| be a new ArrayBuffer whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |m|.data.
+    1. Let |buffer| be a new [=ArrayBuffer=] whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |m|.data.
     1. Return a new {{Memory}} instance with \[[Memory]] set to |m| and \[[BufferObject]] set to |buffer|.
 
-    Note: StructuredSerializeWithTransfer will be updated to to prohibit transfers of Memory, throwing a  "DataCloneError" DOMException, similarly to transferring a detached ArrayBuffer.
+    Note: Embedding environments should ensure that any attempt to detach a [=data block=] allocated as {{Memory}} throws an exception.
+    <!-- TODO(littledan): In HTML, update StructuredSerializeWithTransfer to prohibit transfers of Memory, throwing a  "DataCloneError" DOMException, similarly to transferring a detached ArrayBuffer. -->
 </div>
 
 <div algorithm>
@@ -678,16 +664,16 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 <div algorithm>
     The <dfn for="Memory">grow(delta)</dfn> method, when invoked, performs the following steps:
     1. Let |memory| be the memory instance.
-    1. Let |ret| be the length of the memory in Wasm memory pages, namely |memory|.\[[BufferObject]].\[[ArrayBufferLength]] / 2 ** 64.
+    1. Let |ret| be the length of the memory in WebAssembly memory pages, namely |memory|.\[[BufferObject]].\[[ArrayBufferLength]] / 2 ** 64.
     1. Let |memaddr| be |memory|.\[[Memory]].
     1. Let |store| be the current agent cluster's [=associated store=].
     1. Let |store| be [=grow_mem=](|store|, |memaddr|, |delta|).
-    1. If |store| is {{Error}}, throw a [=RangeError=] exception.
+    1. If |store| is [=error=], throw a [=RangeError=] exception.
     1. Set the current agent cluster's [=associated store=] to |store|.
     1. Perform ! [=DetachArrayBuffer=](|memory|.\[[BufferObject]]).
     1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
-    1. Let |buffer| be a new [=ArrayBuffer=] whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to \||m|.data\|.
-    1. Set |memory|.\[[BufferObject]] |buffer|.
+    1. Let |buffer| be a new [=ArrayBuffer=] whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |m|.data.
+    1. Set |memory|.\[[BufferObject]] to |buffer|.
     1. Return |ret|.
 </div>
 
@@ -704,7 +690,7 @@ dictionary TableDescriptor {
   [EnforceRange] unsigned long maximum;
 };
 
-[LegacyNamespace=WebAssembly, Constructor(TableDescriptor descriptor), Exposed=(Window,Worker)]
+[LegacyNamespace=WebAssembly, Constructor(TableDescriptor descriptor), Exposed=(Window,Worker,Worklet)]
 interface Table {
   void grow([EnforceRange] unsigned long delta);
   ExportedFunction? get([EnforceRange] unsigned long delta);
@@ -724,15 +710,15 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     To <dfn>create a table object</dfn> from a [=table instance=] |t|, perform the following steps:
-    1. Let |values| be a list of length \||t|.elem\| where each element is null.
+    1. Let |values| be a list whose length is that of |t|.elem where each element is null.
     1. Return a new {{Table}} instance with \[[Table]] set to |t| and \[[Values]] set to |values|.
 </div>
 
 <div algorithm>
     The <dfn constructor for="Table">Table(descriptor)</dfn> constructor, when invoked, performs the following steps:
     1. Let |n| be |descriptor|.initial.
-    1. Let |m| be |descriptor|.maximum.
-    1. If |m| &lt; |n|, throw a {{RangeError}} exception.
+    1. If |descriptor|.maximum is present, let |m| be |descriptor|.maximum; otherwise, let |m| be empty.
+    1. If |m| is not empty and |m| &lt; |n|, throw a {{RangeError}} exception.
     1. Let |type| be the [=table type=] {𝗆𝗂𝗇 n, 𝗆𝖺𝗑 |m|} 𝖺𝗇𝗒𝖿𝗎𝗇𝖼.
     1. Let |store| be the current agent cluster's [=associated store=].
     1. Let (|store|, |tableaddr|) be [=alloc_table=](|store|, |type|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
@@ -751,12 +737,12 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     Note: The above exception may happen due to either insufficient memory or an invalid size parameter.
 
     6. Set the current agent cluster's [=associated store=] to |store|.
-    1. Append null to the table instance's \[[Values]] internal slot |d| - |initialSize| times.
+    1. [=Append=] null to the table instance's \[[Values]] internal slot |d| &minus; |initialSize| times.
     1. Return |initialSize|.
 </div>
 
 <div algorithm>
-  The getter of the <dfn for="Table">length</dfn> attribute of {{Table}} returns \||t|.elem\| where |t| is the value of the reciever's \[[Table]] internal slot.
+  The getter of the <dfn for="Table">length</dfn> attribute of {{Table}} returns the length of the table's \[[Values]] internal slot.
 </div>
 
 <div algorithm>
@@ -824,9 +810,9 @@ relative to the current agent cluster's [=associated store=].
     5. Let |args| be an empty list of WebAssembly values.
     1. Let |i| be 0.
     1. For each type |t| of |parameters|,
-      1. If the length of |argValues| &gt; |i|, let |arg| be |argValues|[i].
-      1. Otherwise, let |arg| be undefined.
-      1. Append [=ToWebAssemblyValue=](|arg|, |t|) to |args|.
+        1. If the length of |argValues| &gt; |i|, let |arg| be |argValues|[i].
+        1. Otherwise, let |arg| be undefined.
+        1. [=Append=] [=ToWebAssemblyValue=](|arg|, |t|) to |args|.
     1. Let (|store|, |ret|) be the result of [=invoke_func=](|store|, |funcaddr|, |args|).
     1. Set the current agent cluster's [=associated store=] to |store|.
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
@@ -877,9 +863,9 @@ Assert: |type| is not [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=].
 
 <h3 id="error-objects">Error objects</h3>
 
-WebAssembly defines three Error classes. Analogous to {{DOMException}}, WebAssembly errors have the following custom bindings:
-- Unlike normal interface types, the interface prototype object for DOMException must have as its \[[Prototype]] the intrinsic object %ErrorPrototype%.
-- If an implementation gives native Error objects special powers or nonstandard properties (such as a stack property), it should also expose those on DOMException instances.
+WebAssembly defines three Error classes. WebAssembly errors have the following custom bindings:
+- Unlike normal interface types, the interface prototype object for these exception classes must have as its \[[Prototype]] the intrinsic object [=%ErrorPrototype%=].
+- If an implementation gives native Error objects special powers or nonstandard properties (such as a stack property), it should also expose those on these exception instances.
 - The constructor and properties of WebAssembly errors is as specified for {{NativeError}}.
 
 <pre class='idl'>
@@ -898,8 +884,8 @@ interface RuntimeError { };
 Running WebAssembly programs encounter certain events which halt execution of the WebAssembly code.
 WebAssembly code (currently)
 has no way to catch these conditions and thus an exception will necessarily
-propagate to the enclosing non-WebAssembly caller (either the browser or
-JavaScript) where it is handled like a normal JavaScript exception.
+propagate to the enclosing non-WebAssembly caller (whether it is a browser,
+JavaScript or another runtime system) where it is handled like a normal JavaScript exception.
 
 If WebAssembly calls JavaScript via import and the JavaScript throws an
 exception, the exception is propagated through the WebAssembly activation to the
@@ -927,7 +913,7 @@ Note: ECMAScript doesn't specify any sort of behavior on out-of-memory condition
 
 <h2 id="store">Interaction of the WebAssembly Store with JavaScript</h2>
 
-Note: WebAssembly semantics are defined in terms of a [=store=], representing the state of the world, or "memory". Wasm operations take a store and return a new store.
+Note: WebAssembly semantics are defined in terms of a [=store=], representing the state of the world, or "memory". WebAssembly operations take a store and return a new store.
 
 Each [=agent cluster=] has an <dfn>associated store</dfn>. When a new agent cluster is created, its associated store is set to the result of [=init_store=]().
 
