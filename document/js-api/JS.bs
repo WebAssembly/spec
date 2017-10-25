@@ -645,7 +645,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
     1. Let |block| be a Data Block which is [=identified with=] the underlying memory of |memaddr|
     1. Let |buffer| be a new [=ArrayBuffer=] whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
-    1. Any attempts to [=DetachArrayBuffer|detach=] |buffer|, other than the detachment performed by {{Memory/grow}}, will throw a {{TypeError}} exception.
+    1. Any attempts to [=DetachArrayBuffer|detach=] |buffer|, other than the detachment performed by {{Memory/grow(delta)}}, will throw a {{TypeError}} exception.
     1. Return a new {{Memory}} instance with \[[Memory]] set to |memaddr| and \[[BufferObject]] set to |buffer|.
 
     <!-- TODO(littledan): Change the ECMAScript specification to put the detach TypeError logic there more cleanly. -->
