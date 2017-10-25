@@ -370,6 +370,24 @@ Tables
    \end{array}
 
 
+.. _embed-size-table:
+
+:math:`\F{size\_table}(\store, \tableaddr) : \i32`
+..................................................
+
+1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
+
+2. Return the length of :math:`\store.\STABLES[\tableaddr].\TIELEM`.
+
+.. math::
+   ~ \\
+   \begin{array}{lclll}
+   \F{size\_table}(S, a) &=& n &&
+     (\iff |S.\STABLES[a].\TIELEM| = n) \\
+   \end{array}
+
+
+
 .. _embed-grow-table:
 
 :math:`\F{grow\_table}(\store, \tableaddr, n) : \store ~|~ \error`
@@ -476,6 +494,24 @@ Memories
    \F{write\_mem}(S, a, i, b) &=& S' && (\iff S' = S \with \SMEMS[a].\MIDATA[i] = b) \\
    \F{write\_mem}(S, a, i, b) &=& \ERROR && (\otherwise) \\
    \end{array}
+
+
+.. _embed-size-mem:
+
+:math:`\F{size\_mem}(\store, \memaddr) : \i32`
+..............................................
+
+1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
+
+2. Return the length of :math:`\store.\SMEMS[\memaddr].\MIDATA` divided by the :ref:`page size <page-size>`.
+
+.. math::
+   ~ \\
+   \begin{array}{lclll}
+   \F{size\_mem}(S, a) &=& n &&
+     (\iff |S.\SMEMS[a].\MIDATA| = n \cdot 64\,\F{Ki}) \\
+   \end{array}
+
 
 
 .. _embed-grow-mem:
