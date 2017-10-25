@@ -382,8 +382,21 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 \mathrm{write\_table}(S, a, i, \mathit{fa}^?) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
 \end{array}\end{split}\]</div>
 </div>
+<div class="section" id="embed-size-table">
+<span id="id16"></span><h3><span class="math">\(\mathrm{size\_table}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) : \mathit{i32}\)</span><a class="headerlink" href="#embed-size-table" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> exists.</li>
+<li>Return the length of <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{size\_table}(S, a) &amp;=&amp; n &amp;&amp;
+  (\mathrel{\mbox{if}} |S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}| = n) \\
+\end{array}\end{split}\]</div>
+</div>
 <div class="section" id="embed-grow-table">
-<span id="id16"></span><h3><span class="math">\(\mathrm{grow\_table}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, n) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-grow-table" title="Permalink to this headline">¶</a></h3>
+<span id="id17"></span><h3><span class="math">\(\mathrm{grow\_table}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, n) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-grow-table" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> exists.</li>
 <li>Assert: <span class="math">\(n\)</span> is a non-negative integer.</li>
@@ -405,7 +418,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 <div class="section" id="memories">
 <span id="embed-mem"></span><span id="index-13"></span><h2>Memories<a class="headerlink" href="#memories" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="embed-alloc-mem">
-<span id="id17"></span><h3><span class="math">\(\mathrm{alloc\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}})\)</span><a class="headerlink" href="#embed-alloc-mem" title="Permalink to this headline">¶</a></h3>
+<span id="id18"></span><h3><span class="math">\(\mathrm{alloc\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}})\)</span><a class="headerlink" href="#embed-alloc-mem" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math">\(\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}\)</span> be the result of <a class="reference internal" href="../exec/modules.html#alloc-mem"><span class="std std-ref">allocating a memory</span></a> in <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
 <li>Return the new store paired with <span class="math">\(\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}\)</span>.</li>
@@ -416,7 +429,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-type-mem">
-<span id="id18"></span><h3><span class="math">\(\mathrm{type\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) : \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span><a class="headerlink" href="#embed-type-mem" title="Permalink to this headline">¶</a></h3>
+<span id="id19"></span><h3><span class="math">\(\mathrm{type\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) : \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span><a class="headerlink" href="#embed-type-mem" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
 <li>Assert: the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}\)</span> is <a class="reference internal" href="../exec/modules.html#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
@@ -428,7 +441,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-read-mem">
-<span id="id19"></span><h3><span class="math">\(\mathrm{read\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, i) : \href{../syntax/values.html#syntax-byte}{\mathit{byte}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-read-mem" title="Permalink to this headline">¶</a></h3>
+<span id="id20"></span><h3><span class="math">\(\mathrm{read\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, i) : \href{../syntax/values.html#syntax-byte}{\mathit{byte}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-read-mem" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
 <li>Assert: <span class="math">\(i\)</span> is a non-negative integer.</li>
@@ -443,7 +456,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-write-mem">
-<span id="id20"></span><h3><span class="math">\(\mathrm{write\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, i, \href{../syntax/values.html#syntax-byte}{\mathit{byte}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-write-mem" title="Permalink to this headline">¶</a></h3>
+<span id="id21"></span><h3><span class="math">\(\mathrm{write\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, i, \href{../syntax/values.html#syntax-byte}{\mathit{byte}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-write-mem" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
 <li>Assert: <span class="math">\(i\)</span> is a non-negative integer.</li>
@@ -458,8 +471,21 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 \mathrm{write\_mem}(S, a, i, b) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
 \end{array}\end{split}\]</div>
 </div>
+<div class="section" id="embed-size-mem">
+<span id="id22"></span><h3><span class="math">\(\mathrm{size\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) : \mathit{i32}\)</span><a class="headerlink" href="#embed-size-mem" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
+<li>Return the length of <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span> divided by the <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{size\_mem}(S, a) &amp;=&amp; n &amp;&amp;
+  (\mathrel{\mbox{if}} |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}| = n \cdot 64\,\mathrm{Ki}) \\
+\end{array}\end{split}\]</div>
+</div>
 <div class="section" id="embed-grow-mem">
-<span id="id21"></span><h3><span class="math">\(\mathrm{grow\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, n) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-grow-mem" title="Permalink to this headline">¶</a></h3>
+<span id="id23"></span><h3><span class="math">\(\mathrm{grow\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, n) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-grow-mem" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
 <li>Assert: <span class="math">\(n\)</span> is a non-negative integer.</li>
@@ -481,7 +507,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 <div class="section" id="globals">
 <span id="embed-global"></span><span id="index-14"></span><h2>Globals<a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="embed-alloc-global">
-<span id="id22"></span><h3><span class="math">\(\mathrm{alloc\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}})\)</span><a class="headerlink" href="#embed-alloc-global" title="Permalink to this headline">¶</a></h3>
+<span id="id24"></span><h3><span class="math">\(\mathrm{alloc\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}})\)</span><a class="headerlink" href="#embed-alloc-global" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math">\(\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}\)</span> be the result of <a class="reference internal" href="../exec/modules.html#alloc-global"><span class="std std-ref">allocating a global</span></a> in <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> and initialization value <span class="math">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span>.</li>
 <li>Return the new store paired with <span class="math">\(\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}\)</span>.</li>
@@ -492,7 +518,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-type-global">
-<span id="id23"></span><h3><span class="math">\(\mathrm{type\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) : \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span><a class="headerlink" href="#embed-type-global" title="Permalink to this headline">¶</a></h3>
+<span id="id25"></span><h3><span class="math">\(\mathrm{type\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) : \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span><a class="headerlink" href="#embed-type-global" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}]\)</span> exists.</li>
 <li>Assert: the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{global}}~\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}\)</span> is <a class="reference internal" href="../exec/modules.html#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span>.</li>
@@ -504,7 +530,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-read-global">
-<span id="id24"></span><h3><span class="math">\(\mathrm{read\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) : \href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span><a class="headerlink" href="#embed-read-global" title="Permalink to this headline">¶</a></h3>
+<span id="id26"></span><h3><span class="math">\(\mathrm{read\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) : \href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span><a class="headerlink" href="#embed-read-global" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}]\)</span> exists.</li>
 <li>Let <span class="math">\(\mathit{gi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-globalinst"><span class="std std-ref">global instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}]\)</span>.</li>
@@ -516,7 +542,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-write-global">
-<span id="id25"></span><h3><span class="math">\(\mathrm{write\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-write-global" title="Permalink to this headline">¶</a></h3>
+<span id="id27"></span><h3><span class="math">\(\mathrm{write\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-write-global" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[a]\)</span> exists.</li>
 <li>Let <span class="math">\(\mathit{gi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-globalinst"><span class="std std-ref">global instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}]\)</span>.</li>
