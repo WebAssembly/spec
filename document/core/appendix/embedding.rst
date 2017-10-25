@@ -372,8 +372,8 @@ Tables
 
 .. _embed-size-table:
 
-:math:`\F{size\_table}(\store, \tableaddr) : \i32`
-..................................................
+:math:`\F{size\_table}(\store, \tableaddr) : \X{i32}`
+.....................................................
 
 1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
 
@@ -498,8 +498,8 @@ Memories
 
 .. _embed-size-mem:
 
-:math:`\F{size\_mem}(\store, \memaddr) : \i32`
-..............................................
+:math:`\F{size\_mem}(\store, \memaddr) : \X{i32}`
+.................................................
 
 1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
 
