@@ -1,5 +1,5 @@
 <pre class='metadata'>
-Title: WebAssembly JavaScript API
+Title: WebAssembly JavaScript Interface
 H1: WebAssembly
 Shortname: wasmjs
 Group: WebAssembly CG
@@ -365,23 +365,11 @@ Note:
             1. If |v| has a \[[FunctionAddress]] internal slot, and therefore is an [=Exported Function=],
                 1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
 
-                Note: The signature is checked by [=instantiate_module=] below.
+                Note: The signature is checked by [=instantiate_module=] invoked below.
 
                 2. [=Append=] |v| to |funcs|.
             1. Otherwise,
-                1. Let |hostfunc| be a [=host function=] which performs the following steps when called:
-                    1. If the signature contains an [=i64=] (as argument or result), the host function immediately throws a {{TypeError}} when called.
-                    1. Let |arguments| be a [=list=] of the arguments of the invocation of this function.
-                    1. Let |jsArguments| be an empty [=list=].
-                    1. For each |arg| in |arguments|,
-                          1. [=Append=] [=ToJSValue=](|arg|) to |jsArguments|.
-                    1. Let |ret| be ? [=Call=](|v|, undefined, |jsArguments|). If an exception is thrown, trigger a WebAssembly trap, and propagate the exception to the enclosing JavaScript.
-                    1. Let [|parameters|] → [|results|] be |functype|.
-                    1. If |results| is empty, return undefined.
-                    1. Otherwise, return [=ToWebAssemblyValue=](|ret|, |results|[0]).
-                1. Let |store| be the current agent cluster's [=associated store=].
-                1. Let (|store|, |funcaddr|) be [=alloc_func=](|store|, |functype|, |hostfunc|).
-                1. Set the current agent cluster's [=associated store=] to |store|.
+                1. [=Create a host function=] from |v| and let |funcaddr| be the result.
             1. Let |externfunc| be the [=external value=] 𝖿𝗎𝗇𝖼 |funcaddr|
             1. [=Append=] |externfunc| to |imports|.
         1. If |externtype| is of the form 𝗀𝗅𝗈𝖻𝖺𝗅 |globaltype|,
@@ -396,7 +384,7 @@ Note:
         1. If |externtype| is of the form 𝗆𝖾𝗆  |memtype|,
             1. If |v| is not a {{Memory}} object, throw a {{LinkError}} exception.
 
-            Note: [=instantiate_module=] below will check the imported {{Memory}}'s size against the importing module's requirements.
+            Note: [=instantiate_module=] invoked below will check the imported {{Memory}}'s size against the importing module's requirements.
 
             2. [=Append=] |v| to |memories|.
             1. Let |externmem| be the [=external value=] 𝗆𝖾𝗆  |v|.\[[Memory]].
@@ -404,7 +392,7 @@ Note:
         1. Otherwise, |externtype| is of the form 𝗍𝖺𝖻𝗅𝖾 |tabletype|,
             1. If |v| is not a {{Table}} instance, throw a {{LinkError}} exception.
 
-            Note: The table's length, etc. is checked by [=instantiate_module=] below.
+            Note: The table's length, etc. is checked by [=instantiate_module=] invoked below.
 
             2. [=Append=] |v| to |tables|.
             1. Let |tableaddr| be |v|.\[[Table]]
@@ -534,15 +522,6 @@ interface Module {
 };
 </pre>
 
-<!-- Any use for this?
-<div algorithm="name of the export">
-    The <dfn>name of the export</dfn> |export| in the module |module| is defined as follows:
-    1. If |export| is of the form [=𝖿𝗎𝗇𝖼=] |funcidx| and |module| has a [=name section=] with a [=function names subsection=],
-        1. Within <code>[=funcnamesubsec=]</code>, search for an entry <code>[=nameassoc=]</code> of the form |funcidx| <code>name</code>. If such an entry is found, return <code>name</code> [=UTF-8 decoder|decoded as a UTF-8=] into a JavaScript String.
-    1. Return the empty String.
-</div>
--->
-
 <div algorithm>
   The <dfn>string value of the extern type</dfn> |type| is
     * "function" if |type| is of the form 𝖿𝗎𝗇𝖼 functype
@@ -645,10 +624,9 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
     1. Let |block| be a Data Block which is [=identified with=] the underlying memory of |memaddr|
     1. Let |buffer| be a new [=ArrayBuffer=] whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
-    1. Any attempts to [=DetachArrayBuffer|detach=] |buffer|, other than the detachment performed by {{Memory/grow(delta)}}, will throw a {{TypeError}} exception.
     1. Return a new {{Memory}} instance with \[[Memory]] set to |memaddr| and \[[BufferObject]] set to |buffer|.
 
-    <!-- TODO(littledan): Change the ECMAScript specification to put the detach TypeError logic there more cleanly. -->
+    Issue: Any attempts to [=DetachArrayBuffer|detach=] |buffer|, other than the detachment performed by {{Memory/grow(delta)}}, will throw a {{TypeError}} exception. Specifying this behavior <a href="https://github.com/tc39/ecma262/issues/1024">requires changes to the ECMAScript specification</a>.
 </div>
 
 <div algorithm>
@@ -777,6 +755,22 @@ Exported Functions are [=Built-in Function Objects=] which are not constructors,
 This slot holds a [=function address=] relative to the current agent cluster's [=associated store=].
 
 <div algorithm>
+  The <dfn>name of the WebAssembly function</dfn> |funcaddr| is found by performing the following steps:
+
+    1. Let |store| be the current agent cluster's [=associated store=].
+    1. Let |funcinst| be |store|.𝖿𝗎𝗇𝖼𝗌[|funcaddr|].
+    1. If |funcinst| is of the form {𝗍𝗒𝗉𝖾 |functype|, 𝗁𝗈𝗌𝗍𝖼𝗈𝖽𝖾 |hostfunc|},
+      1. Assert: |hostfunc| is a JavaScript object and [=IsCallable=](|hostfunc|) is true.
+      1. Let |name| be ? [=Get=](|hostfunc|, "name").
+      1. Return ? [=ToString=](|name|).
+    1. Otherwise,
+      1. Let |moduleinst| be |funcinst|.𝗆𝗈𝖽𝗎𝗅𝖾.
+      1. Assert: |funcaddr| is contained in |moduleinst|.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌.
+      1. Let |index| be the index of |moduleinst|.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌 where |funcaddr| is found.
+      1. Return ! [=ToString=](|index|).
+</div>
+
+<div algorithm>
   To create <dfn>a new Exported Function</dfn> from a WebAssembly [=function address=] |funcaddr|, perform the following steps:
 
     1. Let |steps| be "[=call an Exported Function|call the Exported Function=] |funcaddr| with arguments."
@@ -788,7 +782,7 @@ This slot holds a [=function address=] relative to the current agent cluster's [
     1. Let [|arguments|] → [|results|] be |functype|.
     1. Let |arity| be the length of |arguments|.
     1. Perform ! [=DefinePropertyOrThrow=](|function|, `"length"`, PropertyDescriptor {\[[Value]]: |arity|, \[[Writable]]: false, \[[Enumerable]]: false, \[[Configurable]]: true}).
-    1. Let |index| be the [=function index=] associated with |funcaddr|.  <!-- TODO: Define more cleanly? -->
+    1. Let |name| be the [=name of the WebAssembly function=] |funcaddr|.
     1. Perform ! [=SetFunctionName=](|function|, ! [=ToString=](|index|)).
     1. Return |function|.
 </div>
@@ -820,9 +814,24 @@ Note: [=call an Exported Function|Calling an Exported Function=] executes in the
 
 Note: Exported Functions do not have a \[[Construct]] method and thus it is not possible to call one with the `new` operator.
 
-<h3 id="conversion functions">Conversion Algorithms</h3>
+<div algorithm>
+  To <dfn>create a host function</dfn> from the JavaScript object |func|, perform the following steps:
 
-<h4 id="ToJSValue">ToJSValue</h4>
+    1. Let |hostfunc| be a [=host function=] which performs the following steps when called:
+        1. If the signature contains an [=i64=] (as argument or result), the host function throws a {{TypeError}} when called.
+        1. Let |arguments| be a [=list=] of the arguments of the invocation of this function.
+        1. Let |jsArguments| be an empty [=list=].
+        1. For each |arg| in |arguments|,
+            1. [=Append=] [=ToJSValue=](|arg|) to |jsArguments|.
+        1. Let |ret| be ? [=Call=](|func|, undefined, |jsArguments|). If an exception is thrown, trigger a WebAssembly trap, and propagate the exception to the enclosing JavaScript.
+        1. Let [|parameters|] → [|results|] be |functype|.
+        1. If |results| is empty, return undefined.
+        1. Otherwise, return [=ToWebAssemblyValue=](|ret|, |results|[0]).
+    1. Let |store| be the current agent cluster's [=associated store=].
+    1. Let (|store|, |funcaddr|) be [=alloc_func=](|store|, |functype|, |hostfunc|).
+    1. Set the current agent cluster's [=associated store=] to |store|.
+    1. Return |funcaddr|
+</div>
 
 <div algorithm>
 The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a JavaScript value performs the following steps:
@@ -836,8 +845,6 @@ Assert: |w| is not of the form [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |i64|.
 
 Note: Implementations may optionally replace the NaN payload with any other NaN payload at this point in the f32 or f64 cases; such a change would not be observable through [=NumberToRawBytes=].
 </div>
-
-<h4 id="ToWebAssemblyValue">ToWebAssemblyValue</h4>
 
 <div algorithm>
 The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerce a JavaScript value to a [=WebAssembly value=]  performs the following steps:
@@ -854,7 +861,6 @@ Assert: |type| is not [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=].
     1. Let |f64| be ? [=ToNumber=](|v|).
     1. Return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |f64|.
 
-<!-- If the value type is optional, then given `None`, the JavaScript value is ignored. -->
 </div>
 
 <h3 id="error-objects">Error Objects</h3>
