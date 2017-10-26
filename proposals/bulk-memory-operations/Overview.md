@@ -38,6 +38,20 @@ This is the core loop:
   let end = performance.now();
 ```
 
+The code for the benchmark can be found [here](https://gist.github.com/binji/b8e8bc0c0121235d9f1668bc447c7f8c).
+Note that this will not run properly without a WebAssembly implementation of `move_memory`. For my tests, I
+hacked a version of v8 to replace any exported function called `memcpy` or `memmove` with a new function with
+the following contents:
+
+```wasm
+(func (param $dst i32) (param $src i32) (param $size i32) (result i32)
+  get_local $dst
+  get_local $src
+  get_local $size
+  move_memory
+  get_local $dst)
+```
+
 Here are the results on my machine (x86_64, 2.9GHz, L1 32k, L2 256k, L3 256k):
 
 | | intrinsic | i64 load/store x 4 | i64 load/store x 2 | i32 load/store x 2 | i32 load/store |
@@ -58,6 +72,7 @@ Here are the results on my machine (x86_64, 2.9GHz, L1 32k, L2 256k, L3 256k):
 | size=256.0Kib, N=4096 | 29.742 Gib/s | 10.116 Gib/s | 7.625 Gib/s | 3.886 Gib/s | 2.781 Gib/s | 
 | size=512.0Kib, N=2048 | 29.994 Gib/s | 10.090 Gib/s | 7.627 Gib/s | 3.985 Gib/s | 2.785 Gib/s | 
 | size=1.0Mib, N=1024 | 11.760 Gib/s | 10.091 Gib/s | 7.959 Gib/s | 3.989 Gib/s | 2.787 Gib/s | 
+
 
 ## Design
 
