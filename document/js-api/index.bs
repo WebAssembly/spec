@@ -5,7 +5,7 @@ Shortname: wasmjs
 Group: WebAssembly CG
 Status: w3c/CG-DRAFT
 Level: 1
-ED: https://webassembly.github.io/spec/JS.html
+ED: https://webassembly.github.io/spec/js-api/index.html
 Editor: WebAssembly Community Group
 Repository: WebAssembly/spec
 Abstract: This document provides an explicit JavaScript API for interacting with WebAssembly.

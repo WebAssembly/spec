@@ -5,7 +5,7 @@ Shortname: wasmweb
 Group: WebAssembly CG
 Status: w3c/CG-DRAFT
 Level: 1
-ED: https://webassembly.github.io/spec/Web.html
+ED: https://webassembly.github.io/spec/html/index.html
 Editor: WebAssembly Community Group
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader Web Platform.
@@ -28,7 +28,7 @@ Ignored Terms: h1, h2, h3, h4, h5, h6, xmp
     "status": "Draft"
   },
   "WASMJS": {
-    "href": "https://littledan.github.io/spec/JS.html",
+    "href": "https://littledan.github.io/spec/js-api/",
     "title": "WebAssembly JS Integration Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
