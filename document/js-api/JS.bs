@@ -428,7 +428,7 @@ Note:
     1. Let |exportsObject| be ! [=ObjectCreate=](null).
     1. For each pair (|nameBytes|, |externtype|) in [=module_exports=](|module|),
         1. Let |name| be |nameBytes| [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
-        1. Assert: The previous operation did not fail, as |module| is [=valid=].
+        1. Assert: |name| is not failure (|module| is [=valid=]).
         1. Let |externval| be [=get_export=](|instance|, |name|).
         1. If |externtype| is of the form 𝖿𝗎𝗇𝖼 |functype|,
             1. If |funcs| contains an entry |func| where |func|.\[[FunctionAddress]] is |externval|, let |value| be |func|
@@ -536,7 +536,7 @@ interface Module {
     1. Let |exports| be an empty [=list=].
     1. For each (|nameBytes|, |type|) in [=module_exports=](|module|)
         1. Let |name| be |nameBytes| [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
-        1. Assert: The previous operation did not fail, as |module| is [=valid=].
+        1. Assert: |name| is not failure (|module| is [=valid=]).
         1. Let |kind| be the [=string value of the extern type=] |type|.
         1. Let |obj| be a new {{ModuleExportDescriptor}} dictionary with {{ModuleExportDescriptor/name}} |name| and {{ModuleExportDescriptor/kind}} |kind|.
         1. [=Append=] |obj| to the end of |exports|.
@@ -563,7 +563,7 @@ interface Module {
     1. Let |customSections| be an empty [=list=] of [=ArrayBuffer=]s.
     1. For each [=custom section=] |customSection| in the binary format of |bytes|,
         1. Let |name| be the <code>name</code> of the custom section, [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
-        1. Assert: The previous operation did not fail, as |bytes| has already succeeded in [=decode_module=].
+        1. Assert: |name| is not failure (|moduleObject|.\[[Module]] is [=valid=]).
         1. If |name| equals |secondName| as string values,
             1. [=Append=] a new [=ArrayBuffer=] containing a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes| for the range matched by this [=customsec=] production.
     1. Return |customSections|.
