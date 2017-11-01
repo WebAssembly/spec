@@ -986,7 +986,7 @@ When the end of a block is reached without a jump or trap aborting it, then the 
 
 .. note::
    This semantics also applies to the instruction sequence contained in a |LOOP| instruction.
-   Therefor, execution of a loop falls off the end, unless a backwards branch is performed explicitly.
+   Therefore, execution of a loop falls off the end, unless a backwards branch is performed explicitly.
 
 
 .. index:: ! call, function, function instance, label, frame
