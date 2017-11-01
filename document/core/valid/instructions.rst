@@ -19,7 +19,7 @@ Such a sequence has a :ref:`function types <syntax-functype>` :math:`[t_1^\ast] 
 .. _polymorphism:
 
 For some instructions, the typing rules do not fully constrain the type,
-and therefor allow for multiple types.
+and therefore allow for multiple types.
 Such instructions are called *polymorphic*.
 Two degrees of polymorphism can be distinguished:
 
