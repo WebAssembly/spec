@@ -245,7 +245,7 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
    \end{array}
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
-They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint.
+They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint (in base 2 logarithmic representation).
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-valtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
