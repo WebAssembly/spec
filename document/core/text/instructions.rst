@@ -87,7 +87,7 @@ The same label identifier may optionally be repeated after the corresponding :ma
 All other control instruction are represented verbatim.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcllll}
    \production{plain instruction} & \Tplaininstr_I &::=&
      \text{unreachable} &\Rightarrow& \UNREACHABLE \\ &&|&
      \text{nop} &\Rightarrow& \NOP \\ &&|&
@@ -97,8 +97,12 @@ All other control instruction are represented verbatim.
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
-     \text{call\_indirect}~~x{:}\Ttypeidx_I &\Rightarrow& \CALLINDIRECT~x \\
+     \text{call\_indirect}~~x,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x
+       & (\iff I' = \{\}) \\
    \end{array}
+
+.. note::
+   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must be empty in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
 
 
 Abbreviations
