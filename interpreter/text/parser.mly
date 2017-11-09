@@ -294,7 +294,7 @@ align_opt :
 
 instr :
   | plain_instr { let at = at () in fun c -> [$1 c @@ at] }
-  | call_instr { let at = at () in fun c -> let e, es = $1 c in (e @@ at) :: es }
+  | call_instr { fun c -> let e, es = $1 c in e :: es }
   | block_instr { let at = at () in fun c -> [$1 c @@ at] }
   | expr { $1 } /* Sugar */
 
@@ -328,7 +328,8 @@ plain_instr :
 
 call_instr :
   | CALL_INDIRECT call_instr_sig
-    { fun c -> let x, es = $2 c in call_indirect x, es }
+    { let at1 = ati 1 in
+      fun c -> let x, es = $2 c in call_indirect x @@ at1, es }
 
 call_instr_sig :
   | type_use call_instr_params
