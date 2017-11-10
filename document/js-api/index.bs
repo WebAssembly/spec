@@ -466,11 +466,11 @@ interface Module {
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |imports| be an empty [=list=].
     1. For each (|moduleBytes|, |nameBytes|, |type|) in [=module_imports=](|module|),
-        1. Let |module| be |moduleBytes| [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
+        1. Let |moduleName| be |moduleBytes| [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
         1. Let |name| be |nameBytes| [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
-        1. Assert: The previous operations did not fail, as |module| is [=valid=].
+        1. Assert: The previous operations are not failure, as |module| is [=valid=].
         1. Let |kind| be the [=string value of the extern type=] |type|.
-        1. Let |obj| be a new {{ModuleImportDescriptor}} dictionary with {{ModuleImportDescriptor/module}} |module|, {{ModuleImportDescriptor/name}} |name| and {{ModuleImportDescriptor/kind}} |kind|.
+        1. Let |obj| be a new {{ModuleImportDescriptor}} dictionary with {{ModuleImportDescriptor/module}} |moduleName|, {{ModuleImportDescriptor/name}} |name| and {{ModuleImportDescriptor/kind}} |kind|.
         1. [=Append=] |obj| to the end of |imports|.
     1. Return |imports|.
 </div>
