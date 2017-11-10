@@ -294,6 +294,7 @@ align_opt :
 
 instr :
   | plain_instr { let at = at () in fun c -> [$1 c @@ at] }
+  | call_instr { fun c -> let e, es = $1 c in e :: es }
   | block_instr { let at = at () in fun c -> [$1 c @@ at] }
   | expr { $1 } /* Sugar */
 
@@ -307,7 +308,6 @@ plain_instr :
       br_table xs x }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
-  | CALL_INDIRECT var { fun c -> call_indirect ($2 c type_) }
   | DROP { fun c -> drop }
   | SELECT { fun c -> select }
   | GET_LOCAL var { fun c -> get_local ($2 c local) }
@@ -325,6 +325,35 @@ plain_instr :
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
+
+call_instr :
+  | CALL_INDIRECT call_instr_sig
+    { let at1 = ati 1 in
+      fun c -> let x, es = $2 c in call_indirect x @@ at1, es }
+
+call_instr_sig :
+  | type_use call_instr_params
+    { let at1 = ati 1 in
+      fun c ->
+      match $2 c with
+      | FuncType ([], []), es -> $1 c type_, es
+      | ft, es -> inline_type_explicit c ($1 c type_) ft at1, es }
+  | call_instr_params
+    { let at1 = ati 1 in
+      fun c -> let ft, es = $1 c in inline_type c ft at1, es }
+
+call_instr_params :
+  | LPAR PARAM value_type_list RPAR call_instr_params
+    { fun c ->
+      let FuncType (ts1, ts2), es = $5 c in FuncType ($3 @ ts1, ts2), es }
+  | call_instr_results
+    { fun c -> let ts, es = $1 c in FuncType ([], ts), es }
+
+call_instr_results :
+  | LPAR RESULT value_type_list RPAR call_instr_results
+    { fun c -> let ts, es = $5 c in $3 @ ts, es }
+  | instr
+    { fun c -> [], $1 c }
 
 block_instr :
   | BLOCK labeling_opt block END labeling_end_opt
@@ -351,6 +380,8 @@ expr :  /* Sugar */
 
 expr1 :  /* Sugar */
   | plain_instr expr_list { fun c -> $2 c, $1 c }
+  | CALL_INDIRECT call_expr_sig
+    { fun c -> let x, es = $2 c in es, call_indirect x }
   | BLOCK labeling_opt block
     { fun c -> let c' = $2 c [] in let ts, es = $3 c' in [], block ts es }
   | LOOP labeling_opt block
@@ -358,6 +389,31 @@ expr1 :  /* Sugar */
   | IF labeling_opt if_block
     { fun c -> let c' = $2 c [] in
       let ts, (es, es1, es2) = $3 c c' in es, if_ ts es1 es2 }
+
+call_expr_sig :
+  | type_use call_expr_params
+    { let at1 = ati 1 in
+      fun c ->
+      match $2 c with
+      | FuncType ([], []), es -> $1 c type_, es
+      | ft, es -> inline_type_explicit c ($1 c type_) ft at1, es }
+  | call_expr_params
+    { let at1 = ati 1 in
+      fun c -> let ft, es = $1 c in inline_type c ft at1, es }
+
+call_expr_params :
+  | LPAR PARAM value_type_list RPAR call_expr_params
+    { fun c ->
+      let FuncType (ts1, ts2), es = $5 c in FuncType ($3 @ ts1, ts2), es }
+  | call_expr_results
+    { fun c -> let ts, es = $1 c in FuncType ([], ts), es }
+
+call_expr_results :
+  | LPAR RESULT value_type_list RPAR call_expr_results
+    { fun c -> let ts, es = $5 c in $3 @ ts, es }
+  | expr_list
+    { fun c -> [], $1 c }
+
 
 if_block :
   | block_sig if_block { fun c c' -> let ts, ess = $2 c c' in $1 @ ts, ess }

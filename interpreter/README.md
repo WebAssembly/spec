@@ -211,7 +211,7 @@ op:
   br_table <var>+
   return
   call <var>
-  call_indirect <var>
+  call_indirect <func_sig>
   drop
   select
   get_local <var>
