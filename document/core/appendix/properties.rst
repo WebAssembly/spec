@@ -712,7 +712,7 @@ Given the definition of :ref:`valid configurations <valid-config>`,
 the standard soundness theorems hold.
 
 **Theorem (Preservation).**
-If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` (i.e., :math:`\vdashconfig S;T : [t^\ast]`),
+If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` (i.e., :math:`\vdashconfig S;T : [t^\ast]`),
 and steps to :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`),
 then :math:`S';T'` is a valid configuration with the same resulttype (i.e., :math:`\vdashconfig S';T' : [t^\ast]`).
 Furthermore, :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
@@ -721,15 +721,18 @@ A *terminal* :ref:`thread <syntax-thread>` is one whose sequence of :ref:`instru
 A terminal configuration is a configuration whose thread is terminal.
 
 **Theorem (Progress).**
-If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdashconfig S;T : [t^\ast]` with some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`),
+If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdashconfig S;T : [t^\ast]` for some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`),
 then either it is terminal,
 or it can step to some configuration :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`).
 
 From Preservation and Progress the soundness of the WebAssembly type system follows directly.
 
 **Corollary (Soundness).**
-Every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
+If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdashconfig S;T : [t^\ast]` for some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`),
+then it either diverges or takes a finite number of steps to reach a terminal configuration :math:`S';T'` (i.e., :math:`S;T \stepto^\ast S';T'`) that is valid with the same resulttype (i.e., :math:`\vdashconfig S';T' : [t^\ast]`)
+and where :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
 
+In other words, every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
 Consequently, given a :ref:`valid store <valid-store>`, no computation defined by :ref:`instantiation <exec-instantiation>` or :ref:`invocation <exec-invocation>` of a valid module can "crash" or otherwise (mis)behave in ways not covered by the :ref:`execution <exec>` semantics given in this specification.
 
 
