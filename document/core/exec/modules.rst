@@ -555,17 +555,17 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
    a. Fail.
 
-2. Assert: :math:`\module` is :ref:`valid <valid-module>` with :ref:`external types <syntax-externtype>` :math:`\externtype^m` classifying its :ref:`imports <syntax-import>`.
+2. Assert: :math:`\module` is :ref:`valid <valid-module>` with :ref:`external types <syntax-externtype>` :math:`\externtype_{\F{im}}^m` classifying its :ref:`imports <syntax-import>`.
 
 3. If the number :math:`m` of :ref:`imports <syntax-import>` is not equal to the number :math:`n` of provided :ref:`external values <syntax-externval>`, then:
 
    a. Fail.
 
-4. For each :ref:`external value <syntax-externval>` :math:`\externval_i` in :math:`\externval^n` and :ref:`external type <syntax-externtype>` :math:`\externtype_i` in :math:`\externtype^n`, do:
+4. For each :ref:`external value <syntax-externval>` :math:`\externval_i` in :math:`\externval^n` and :ref:`external type <syntax-externtype>` :math:`\externtype'_i` in :math:`\externtype_{\F{im}}^n`, do:
 
-   a. Assert: :math:`\externval_i` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\externtype'_i` in store :math:`S`.
+   a. Assert: :math:`\externval_i` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\externtype_i` in store :math:`S`.
 
-   b. If :math:`\externtype'_i` does not :ref:`match <match-externtype>` :math:`\externtype_i`, then:
+   b. If :math:`\externtype_i` does not :ref:`match <match-externtype>` :math:`\externtype'_i`, then:
 
       i. Fail.
 
@@ -676,14 +676,14 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      (\INVOKE~\funcaddr)^? \\
      \end{array} \\
    &(\iff
-     & \vdashmodule \module : \externtype^n \to {\externtype'}^\ast \\
-     &\wedge& (\vdashexternval \externval : \externtype')^n \\
-     &\wedge& (\vdashexterntypematch \externtype' \matches \externtype)^n \\[1ex]
+     & \vdashmodule \module : \externtype_{\F{im}}^n \to \externtype_{\F{ex}}^\ast \\
+     &\wedge& (\vdashexternval \externval : \externtype)^n \\
+     &\wedge& (\vdashexterntypematch \externtype \matches \externtype_{\F{im}})^n \\[1ex]
      &\wedge& \module.\MGLOBALS = \global^k \\
      &\wedge& \module.\MELEM = \elem^\ast \\
      &\wedge& \module.\MDATA = \data^\ast \\
      &\wedge& \module.\MSTART = \start^? \\[1ex]
-     &\wedge& S', \moduleinst = \F{allocmodule}(S, \module, \externval^n, v^\ast) \\
+     &\wedge& S', \moduleinst = \allocmodule(S, \module, \externval^n, v^\ast) \\
      &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
      &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; v)^\ast \\
      &\wedge& (S'; F; \elem.\EOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo})^\ast \\
