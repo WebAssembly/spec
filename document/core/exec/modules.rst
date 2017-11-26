@@ -639,7 +639,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 13. Pop the frame from the stack.
 
-14. Let :math:`\moduleinst` be a new module instance :ref:`allocated <alloc-module>` from :math:`\module` in store :math:`S` with imports :math:`\externval^\ast` and glboal initializer values :math:`\val^\ast`.
+14. Let :math:`\moduleinst` be a new module instance :ref:`allocated <alloc-module>` from :math:`\module` in store :math:`S` with imports :math:`\externval^\ast` and global initializer values :math:`\val^\ast`.
 
 15. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
 
