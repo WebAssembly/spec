@@ -667,7 +667,9 @@ Control Instructions
 
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`C.\CTYPES[x]`.
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+
+* Then the instruction is valid with type :math:`[t_1^\ast~\I32] \to [t_2^\ast]`.
 
 .. math::
    \frac{
@@ -675,7 +677,7 @@ Control Instructions
      \qquad
      C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdashinstr \CALLINDIRECT~x : [t_1^\ast] \to [t_2^\ast]
+     C \vdashinstr \CALLINDIRECT~x : [t_1^\ast~\I32] \to [t_2^\ast]
    }
 
 
