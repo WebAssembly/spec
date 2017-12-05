@@ -327,7 +327,7 @@ Tables
 .. _embed-read-table:
 
 :math:`\F{read\_table}(\store, \tableaddr, i) : \funcaddr^? ~|~ \error`
-.....................................................................
+.......................................................................
 
 1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
 
