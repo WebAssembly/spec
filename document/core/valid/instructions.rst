@@ -586,7 +586,7 @@ Control Instructions
 :math:`\BRTABLE~l^\ast~l_N`
 ...........................
 
-* The label :math:`C.\CLABELS[l]` must be defined in the context.
+* The label :math:`C.\CLABELS[l_N]` must be defined in the context.
 
 * Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l_N]`.
 
