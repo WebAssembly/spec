@@ -365,9 +365,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
     1. Assert: |ret| is empty.
     1. Let |exportsObject| be ! [=ObjectCreate=](null).
-    1. For each pair (|nameBytes|, |externtype|) in [=module_exports=](|module|),
-        1. Let |name| be |nameBytes| [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
-        1. Assert: |name| is not failure (|module| is [=valid=]).
+    1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
         1. Let |externval| be [=get_export=](|instance|, |name|).
         1. If |externtype| is of the form [=𝖿𝗎𝗇𝖼=] |functype|,
             1. If |funcs| contains an entry |func| where 𝖿𝗎𝗇𝖼 |func|.\[[FunctionAddress]] is |externval|, let |value| be |func|
@@ -442,14 +440,14 @@ enum ImportExportKind {
 };
 
 dictionary ModuleExportDescriptor {
-  required DOMString name;
+  required USVString name;
   required ImportExportKind kind;
   // Note: Other fields such as signature may be added in the future.
 };
 
 dictionary ModuleImportDescriptor {
-  required DOMString module;
-  required DOMString name;
+  required USVString module;
+  required USVString name;
   required ImportExportKind kind;
 };
 
@@ -457,7 +455,7 @@ dictionary ModuleImportDescriptor {
 interface Module {
   static sequence&lt;ModuleExportDescriptor> exports(Module module);
   static sequence&lt;ModuleImportDescriptor> imports(Module module);
-  static sequence&lt;ArrayBuffer> customSections(Module module, DOMString sectionName);
+  static sequence&lt;ArrayBuffer> customSections(Module module, USVString sectionName);
 };
 </pre>
 
@@ -473,8 +471,8 @@ interface Module {
     The <dfn method for="Module">exports(moduleObject)</dfn> method, when invoked, performs the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |exports| be an empty [=list=].
-    1. For each (|nameBytes|, |type|) in [=module_exports=](|module|)
-        1. Let |name| be |nameBytes| [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
+    1. For each (|name|, |type|) in [=module_exports=](|module|)
+        1. Let |nameString| be String value consisting of the [=UTF16Encoding=] of each code point of |name|.
         1. Assert: |name| is not failure (|module| is [=valid=]).
         1. Let |kind| be the [=string value of the extern type=] |type|.
         1. Let |obj| be a new {{ModuleExportDescriptor}} dictionary with {{ModuleExportDescriptor/name}} |name| and {{ModuleExportDescriptor/kind}} |kind|.
@@ -486,10 +484,7 @@ interface Module {
     The <dfn method for="Module">imports(moduleObject)</dfn> method, when invoked, performs the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |imports| be an empty [=list=].
-    1. For each (|moduleBytes|, |nameBytes|, |type|) in [=module_imports=](|module|),
-        1. Let |moduleName| be |moduleBytes| [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
-        1. Let |name| be |nameBytes| [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
-        1. Assert: The previous operations are not failure, as |module| is [=valid=].
+    1. For each (|moduleName|, |name|, |type|) in [=module_imports=](|module|),
         1. Let |kind| be the [=string value of the extern type=] |type|.
         1. Let |obj| be a new {{ModuleImportDescriptor}} dictionary with {{ModuleImportDescriptor/module}} |moduleName|, {{ModuleImportDescriptor/name}} |name| and {{ModuleImportDescriptor/kind}} |kind|.
         1. [=Append=] |obj| to the end of |imports|.
