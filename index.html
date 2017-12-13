@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>WebAssembly Specifications</title>
+</head>
+
+<body>
+
+<h1>WebAssembly Specifications</h1>
+
+<p>
+To support the *embedding* of WebAssembly in different environments, its specification is split into *layers* that are specified in separate documents.
+</p>
+
+<ul>
+<li>Core specification: defines the semantics of WebAssembly modules and its instruction set, independent from a concrete embedding.
+  The WebAssembly core is specified in a single document:
+
+  <ul>
+  <li><a href="core/">Core</a>: defines the structure of WebAssembly modules and its representation in binary and text format, as well as the semantics of validation, instantiation, and execution.</li>
+  </ul>
+</li>
+
+<li>API specifications: define *application programming interfaces* enabling the use of WebAssembly modules in concrete embedding environments.
+  Currently, two APIs are specified:
+
+  <ul>
+  <li><a href="s-api/">JavaScript API</a>": defines JavaScript classes and objects for accessing WebAssembly from within JavaScript, including methods for validation, compilation, instantiation, and classes for representing and manipulating imports and exports as JavaScript objects.</li>
+
+  <li><a href="web-api/">Web API</a>: defines extensions to the JavaScript API made available specifically in web browsers, in particular, an interface for streaming compilation and instantiation from origin-bound `Response` types.<li>
+  </ul>
+</li>
+</ul>
+
+</body>
+
+</html>
