@@ -288,13 +288,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
   To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
     1. If |module|.[=𝗂𝗆𝗉𝗈𝗋𝗍𝗌=] is not an empty list, and |importObject| is undefined, throw a {{TypeError}} exception.
-    1. Let |funcs| be an empty [=list=] of callable JavaScript objects.
-    1. Let |memories| be an empty [=list=] of {{Memory}} objects.
-    1. Let |tables| be an empty [=list=] of {{Table}} objects.
-
-        Note: The |funcs|, |memories| and |tables| lists are collected and used in order to cache the JavaScript objects corresponding to WebAssembly objects. If a WebAssembly object is exported multiple times, it will appear in exports as the same object instance. Moreover, if a JavaScript wrapper of a WebAssembly object was imported, and then present on the export, a new wrapper will not need to be created. However, if an ordinary JS function is imported, it will appear as wrapped by an [=Exported Function=].
-
-    6. Let |imports| be an empty [=list=] of [=external value=]s.
+    1. Let |imports| be an empty [=list=] of [=external value=]s.
     1. For each (|moduleName|, |componentName|, |externtype|) in [=module_imports=](|module|), do
         1. Let |o| be ? [=Get=](|importObject|, |moduleName|).
         1. If [=Type=](|o|) is not [=Object=], throw a {{TypeError}} exception.
@@ -305,11 +299,9 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
                 1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
 
                 Note: The signature is checked by [=instantiate_module=] invoked below.
-
-                2. [=Append=] |v| to |funcs|.
             1. Otherwise,
                 1. [=Create a host function=] from |v| and let |funcaddr| be the result.
-            1. Let |externfunc| be the [=external value=] [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|
+            1. Let |externfunc| be the [=external value=] [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
             1. [=Append=] |externfunc| to |imports|.
         1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] |globaltype|,
             1. If |globaltype| is [=𝗂𝟨𝟦=] or [=Type=](|v|) is not [=Number=], throw a {{LinkError}} exception.
@@ -325,72 +317,46 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
             Note: [=instantiate_module=] invoked below will check the imported {{Memory}}'s size against the importing module's requirements.
 
-            2. [=Append=] |v| to |memories|.
-            1. Let |externmem| be the [=external value=] [=external value|𝗆𝖾𝗆=]  |v|.\[[Memory]].
+            2. Let |externmem| be the [=external value=] [=external value|𝗆𝖾𝗆=]  |v|.\[[Memory]].
             1. [=Append=] |externmem| to |imports|.
         1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] |tabletype|,
             1. If |v| is not a {{Table}} instance, throw a {{LinkError}} exception.
 
             Note: The table's length, etc. is checked by [=instantiate_module=] invoked below.
 
-            2. [=Append=] |v| to |tables|.
-            1. Let |tableaddr| be |v|.\[[Table]]
+            2. Let |tableaddr| be |v|.\[[Table]]
             1. Let |externtable| be the [=external value=] [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
             1. [=Append=] |externtable| to |imports|.
-            1. For each element |func| of |v|.\[[Values]],
-                1. If |func| is not null, append |func| to |funcs|.
-    1. Let (|store|, |instance|) be [=instantiate_module=](|store|, |module|, |imports|), up through step 16 of [=the instantiation algorithm=], but omitting execution of the start function.
-    1. If |instance| is [=error=], throw a {{LinkError}} exception, or other <a href="#errors">appropriate exception type</a>.
-    1. For each |tableaddr| in |instance|.𝗍𝖺𝖻𝗅𝖾𝖺𝖽𝖽𝗋𝗌,
-        1. If there is no element in |tables| whose |table|.\[[Table]] is |tableaddr|:
-            1. Let |table| be [=create a table object|a new table object=] from |tableaddr|.
-            1. [=Append=] |table| to |tables|.
-        1. Otherwise:
-            1. Let |table| be the element in |tables| where |table|.\[[Table]] is |tableaddr|.
-        1. For each index |i| from 0 to the length of |table|.\[[Values]] &minus; 1, do
-            1. Let |funcaddr| be [=read_table=](|store|, |tableaddr|, |i|).
-            1. Assert: |funcaddr| is not [=error=] because this read is in bounds.
-            1. If |funcaddr| is not empty,
-                1. If |funcs| contains any |func| where |func|.\[[ExportedAddress]] is |funcaddr|,
-                    1. Let |func| be that function object.
-                1. Otherwise:
-                    1. Let |func| be a [=a new Exported Function=] created from |funcaddr|.
-                    1. [=Append=] |func| to |funcs|.
-                1. Set the |table|.\[[Values]][|i|] to |func|.
-
-                Note: The table and function objects created by the above steps are only observable for tables that are either imported or exported.
-
-    1. Let |startfuncaddr| be the start function of |instance|.
-    1. Let (|store|, |ret|) be [=invoke_func=](|store|, |startfuncaddr|, empty).
-    1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
-    1. Assert: |ret| is empty.
+    1. Let (|store|, |instance|) be [=instantiate_module=](|store|, |module|, |imports|).
+    1. If |instance| is [=error=], throw an appropriate exception type:
+        * A {{LinkError}} exception for most cases which occur during linking.
+        * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
+        * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
     1. Let |exportsObject| be ! [=ObjectCreate=](null).
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
         1. Let |externval| be [=get_export=](|instance|, |name|).
+        1. Assert: |externval| is not [=error=].
         1. If |externtype| is of the form [=𝖿𝗎𝗇𝖼=] |functype|,
-            1. If |funcs| contains an entry |func| where 𝖿𝗎𝗇𝖼 |func|.\[[FunctionAddress]] is |externval|, let |value| be |func|
-            1. Otherwise,
-                1. Let |func| be the result of [=a new Exported Function=] from |externval|.
-                1. [=Append=] |func| to |funcs|.
-                1. Let |value| be |func|.
+            1. Then, |externval| is of the form [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
+            1. Let |func| be the result of [=a new Exported Function=] from |funcaddr|.
+            1. Let |value| be |func|.
         1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] |globaltype|,
             1. If |globaltype|.<em>[=global type|valtype=]</em>) is [=𝗂𝟨𝟦=], throw a {{LinkError}} exception.
             1. Assert: |globaltype|.<em>[=global type|mut=]</em> is [=global type|𝖼𝗈𝗇𝗌𝗍=], as verified by WebAssembly validation.
             1. Let |value| be [=ToJSValue=]([=read_global=](|store|, |externval|)).
         1. If |externtype| is of the form [=𝗆𝖾𝗆=] |memtype|,
-            1. If there is an element |memory| in |memories| such that 𝗆𝖾𝗆  |memory|.\[[Memory]] is |externval|, then let |value| be |memory|
-            1. Otherwise:
-                1. Let |memory| be [=create a memory object|a new Memory object=] from |externval|.
-                1. [=Append=] |memory| to |memories|.
-                1. Let |value| be |memory|.
+            1. Then, |externval| is of the form [=external value|𝗆𝖾𝗆=] |memaddr|.
+            1. Let |memory| be [=create a memory object|a new Memory object=] from |memaddr|.
+            1. Let |value| be |memory|.
         1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] |tabletype|,
-            1. Let |value| be the unique |table| in |tables| such that 𝗍𝖺𝖻𝗅𝖾 |table|.\[[Table]] is |externval|.
+            1. Then, |externval| is of the form [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
+            1. Let |table| be [=create a Table object|a new Table object=] from |tableaddr|.
+            1. Let |value| be |table|.
         1. Let |status| be ! [=CreateDataProperty=](|exportsObject|, |name|, |value|).
         1. Assert: |status| is true.
 
         Note: the validity and uniqueness checks performed during [=WebAssembly module validation=] ensure that each property name is valid and no properties are defined twice.
-
-    33. Perform ! [=SetIntegrityLevel=](|exportsObject|, `"frozen"`).
+    1. Perform ! [=SetIntegrityLevel=](|exportsObject|, `"frozen"`).
     1. Let |instanceObject| be a new {{Instance}} object whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
     1. Return |instanceObject|.
 </div>
@@ -472,8 +438,6 @@ interface Module {
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |exports| be an empty [=list=].
     1. For each (|name|, |type|) in [=module_exports=](|module|)
-        1. Let |nameString| be String value consisting of the [=UTF16Encoding=] of each code point of |name|.
-        1. Assert: |name| is not failure (|module| is [=valid=]).
         1. Let |kind| be the [=string value of the extern type=] |type|.
         1. Let |obj| be a new {{ModuleExportDescriptor}} dictionary with {{ModuleExportDescriptor/name}} |name| and {{ModuleExportDescriptor/kind}} |kind|.
         1. [=Append=] |obj| to the end of |exports|.
@@ -551,22 +515,31 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
     * \[[Memory]] : a [=memory address=]
     * \[[BufferObject]] : an {{ArrayBuffer}} whose [=Data Block=] is [=identified with=] the above memory address
+
+Each [=agent=] has an associated [=ordered map=] known as the <dfn>Memory object cache</dfn> mapping [=memory address=]es to {{Memory}} objects.
+
+Note: This mapping is used to ensure that, for a given [=agent=], there exists at most one {{Memory}} object for a particular [=memory address=].
 </div>
 
 <div algorithm>
     To <dfn>create a memory object</dfn> from a [=memory address=] |memaddr|, perform the following steps:
 
+    1. Let |map| be the current [=agent=]'s associated [=Memory object cache=].
+    1. If |map|[|memaddr|] [=map/exists=],
+        1. Return |map|[|memaddr|].
     1. Let |block| be a Data Block which is [=identified with=] the underlying memory of |memaddr|
     1. Let |buffer| be a new {{ArrayBuffer}} whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
-    1. Return a new {{Memory}} instance with \[[Memory]] set to |memaddr| and \[[BufferObject]] set to |buffer|.
+    1. Let |memory| be a new {{Memory}} instance with \[[Memory]] set to |memaddr| and \[[BufferObject]] set to |buffer|.
+    1. [=map/Set=] |map|[|memaddr|] to |memory|.
+    1. Return |memory|.
 
     Issue: Any attempts to [=DetachArrayBuffer|detach=] |buffer|, other than the detachment performed by {{Memory/grow(delta)}}, will throw a {{TypeError}} exception. Specifying this behavior <a href="https://github.com/tc39/ecma262/issues/1024">requires changes to the ECMAScript specification</a>.
 </div>
 
 <div algorithm>
     The <dfn constructor for="Memory">Memory(descriptor)</dfn> constructor, when invoked, performs the following steps:
-    1. If |descriptor|\["initial"] is [=present=], let |initial| be |descriptor|\["initial"]; otherwise, let |initial| be 0.
-    1. If |descriptor|\["maximum"] is [=present=], let |maximum| be |descriptor|\["maximum"]; otherwise, let |maximum| be empty.
+    1. If |descriptor|["initial"] is [=present=], let |initial| be |descriptor|["initial"]; otherwise, let |initial| be 0.
+    1. If |descriptor|["maximum"] is [=present=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
     1. Let |memtype| be { min |initial|, max |maximum| }
     1. Let |store| be the current agent's [=associated store=].
     1. Let (|store|, |memaddr|) be [=alloc_mem=](|store|, |memtype|). If allocation fails, throw a {{RangeError}} exception.
@@ -621,12 +594,21 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
     * \[[Table]] : a [=table address=]
     * \[[Values]] : a List whose elements are either null or [=Exported Function=]s.
+
+Each [=agent=] has an associated [=ordered map=] known as the <dfn>Table object cache</dfn> mapping [=table address=]es to {{Table}} objects.
+
+Note: This mapping is used to ensure that, for a given [=agent=], there exists at most one {{Table}} object for a particular [=table address=].
 </div>
 
 <div algorithm>
     To <dfn>create a table object</dfn> from a [=table address=] |tableaddr|, perform the following steps:
+    1. Let |map| be the current [=agent=]'s associated [=Table object cache=].
+    1. If |map|[|tableaddr|] [=map/exists=],
+        1. Return |map|[|tableaddr|].
     1. Let |values| be a list whose length is [=size_table=](|store|, |tableaddr|) where each element is null.
-    1. Return a new {{Table}} instance with \[[Table]] set to |tableaddr| and \[[Values]] set to |values|.
+    1. Let |table| be a new {{Table}} instance with \[[Table]] set to |tableaddr| and \[[Values]] set to |values|.
+    1. [=map/Set=] |map|[|tableaddr|] to |table|.
+    1. Return |table|.
 </div>
 
 <div algorithm>
@@ -690,6 +672,10 @@ A WebAssembly function is made available in JavaScript as an <dfn>Exported Funct
 Exported Functions are [=Built-in Function Objects=] which are not constructors, and which have a \[[FunctionAddress]] internal slot.
 This slot holds a [=function address=] relative to the current agent's [=associated store=].
 
+Each [=agent=] has an associated [=ordered map=] known as the <dfn>Exported Function cache</dfn> mapping [=function address=]es to [=Exported Function=] objects.
+
+Note: This mapping is used to ensure that, for a given [=agent=], there exists at most one [=Exported Function=] object for a particular [=function address=].
+
 <div algorithm>
   The <dfn>name of the WebAssembly function</dfn> |funcaddr| is found by performing the following steps:
 
@@ -709,6 +695,9 @@ This slot holds a [=function address=] relative to the current agent's [=associa
 <div algorithm>
   To create <dfn>a new Exported Function</dfn> from a WebAssembly [=function address=] |funcaddr|, perform the following steps:
 
+    1. Let |map| be the current [=agent=]'s associated [=Exported Function cache=].
+    1. If |map|[|funcaddr|] [=map/exists=],
+        1. Return |map|[|funcaddr|].
     1. Let |steps| be "[=call an Exported Function|call the Exported Function=] |funcaddr| with arguments."
     1. Let |realm| be the [=current Realm=].
     1. Let |function| be [=CreateBuiltinFunction=](|realm|, |steps|, [=%FunctionPrototype%=], &laquo; \[[FunctionAddress]]).
@@ -720,6 +709,7 @@ This slot holds a [=function address=] relative to the current agent's [=associa
     1. Perform ! [=DefinePropertyOrThrow=](|function|, `"length"`, PropertyDescriptor {\[[Value]]: |arity|, \[[Writable]]: false, \[[Enumerable]]: false, \[[Configurable]]: true}).
     1. Let |name| be the [=name of the WebAssembly function=] |funcaddr|.
     1. Perform ! [=SetFunctionName=](|function|, |name|).
+    1. [=map/Set=] |map|[|funcaddr|] to |function|.
     1. Return |function|.
 </div>
 
