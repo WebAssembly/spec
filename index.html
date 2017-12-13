@@ -20,18 +20,18 @@
 To support the <em>embedding</em> of WebAssembly in different environments, its specification is split into <em>layers</em> that are specified in separate documents.
 </p>
 
-<ul>
-<li>
-  <p><b>Core specification.</b> Defines the semantics of WebAssembly modules and its instruction set, independent from a concrete embedding.
+<h4>Core specification</h4>
+
+<p>Defines the semantics of WebAssembly modules and its instruction set, independent from a concrete embedding.
   The WebAssembly core is specified in a single document:</p>
 
   <ul>
   <li><p><a href="core/">Core</a>: defines the structure of WebAssembly modules and its representation in binary and text format, as well as the semantics of validation, instantiation, and execution.</p></li>
   </ul>
-</li>
 
-<li>
-  <p><b>API specifications.</b> Define <em>application programming interfaces</em> enabling the use of WebAssembly modules in concrete embedding environments.
+<h4>API specifications</h4>
+
+<p>Define <em>application programming interfaces</em> enabling the use of WebAssembly modules in concrete embedding environments.
   Currently, two APIs are specified:</p>
 
   <ul>
@@ -39,8 +39,6 @@ To support the <em>embedding</em> of WebAssembly in different environments, its 
 
   <li><p><a href="web-api/">Web API</a>: defines extensions to the JavaScript API made available specifically in web browsers, in particular, an interface for streaming compilation and instantiation from origin-bound `Response` types.</p></li>
   </ul>
-</li>
-</ul>
 
 </article>
 </div>
