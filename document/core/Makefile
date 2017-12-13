@@ -8,7 +8,6 @@ PAPER         = a4
 BUILDDIR      = _build
 STATICDIR     = _static
 DOWNLOADDIR   = _download
-GHPAGESDIR    = ../docs
 NAME          = WebAssembly
 
 # Hack until we have moved to more recent Sphinx.
@@ -65,11 +64,8 @@ help:
 	@echo "  dummy      to check syntax errors of document sources"
 
 .PHONY: publish
-publish: all deploy
-
-.PHONY: deploy
-deploy:
-	GIT_DEPLOY_DIR=$(BUILDDIR)/html sh util/deploy.sh
+publish:
+	(cd ..; make publish)
 
 .PHONY: all
 all:	pdf html
