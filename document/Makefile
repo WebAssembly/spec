@@ -20,11 +20,7 @@ deploy:
 	done
 	touch $(BUILDDIR)/.nojekyll
 	GIT_DEPLOY_DIR=$(BUILDDIR) sh deploy.sh
-	#rm -rf $(BUILDDIR)
-
-dep:
-	touch $(BUILDDIR)/.nojekyll
-	GIT_DEPLOY_DIR=$(BUILDDIR) sh deploy.sh
+	rm -rf $(BUILDDIR)
 
 .PHONY: publish
 publish: all deploy
