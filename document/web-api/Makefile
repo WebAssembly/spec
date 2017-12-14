@@ -12,7 +12,7 @@ all:
 
 .PHONY: publish
 publish:
-	(cd ..; make publish)
+	(cd ..; make publish-web-api)
 
 .PHONY: clean
 clean:

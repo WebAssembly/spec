@@ -63,9 +63,13 @@ help:
 	@echo "  coverage   to run coverage check of the documentation (if enabled)"
 	@echo "  dummy      to check syntax errors of document sources"
 
+.PHONY: deploy
+deploy:
+	(cd ..; make deploy-core)
+
 .PHONY: publish
 publish:
-	(cd ..; make publish)
+	(cd ..; make publish-core)
 
 .PHONY: all
 all:	pdf html

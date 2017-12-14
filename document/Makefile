@@ -2,42 +2,58 @@ DIRS     = core js-api web-api
 FILES    = index.html
 BUILDDIR = _build
 
+# Global targets.
+
 .PHONY: all
-all:
-	for dir in $(DIRS); \
-	do \
-	  (cd $$dir; make BUILDDIR=$(BUILDDIR) all) \
-	done
+all: $(DIRS)
+
+$(BUILDDIR):
+	mkdir -p $@
+	cp -f $(FILES) $(BUILDDIR)/
+	touch $(BUILDDIR)/.nojekyll
 
 .PHONY: deploy
 deploy:
-	mkdir -p $(BUILDDIR)
-	cp -f $(FILES) $(BUILDDIR)/
-	for dir in $(DIRS); \
-	do \
-	  mkdir -p $(BUILDDIR)/$$dir; \
-	  cp -R $$dir/$(BUILDDIR)/html/* $(BUILDDIR)/$$dir/; \
-	done
-	touch $(BUILDDIR)/.nojekyll
 	GIT_DEPLOY_DIR=$(BUILDDIR) sh deploy.sh
-	rm -rf $(BUILDDIR)
 
 .PHONY: publish
 publish: all deploy
 
 .PHONY: clean
-clean:
+clean: $(DIRS:%=clean-%)
 	rm -rf $(BUILDDIR)
-	for dir in $(DIRS); \
-	do \
-	  (cd $$dir; make BUILDDIR=$(BUILDDIR) clean) \
-	done
+
+
+# Directory-specific targets.
+
+.PHONY: $(DIRS)
+$(DIRS): %: $(BUILDDIR)
+	(cd $@; make BUILDDIR=$(BUILDDIR) all)
+	mkdir -p $(BUILDDIR)/$@
+	cp -R $@/$(BUILDDIR)/html/* $(BUILDDIR)/$@/
+
+.PHONY: $(DIRS:%=deploy-%)
+$(DIRS:%=deploy-%):
+	GIT_DEPLOY_DIR=$(BUILDDIR) GIT_DEPLOY_SUBDIR=$(@:deploy-%=%) sh deploy.sh
+
+.PHONY: $(DIRS:%=publish-%)
+$(DIRS:%=publish-%): publish-%: % deploy-%
+
+.PHONY: $(DIRS:%=clean-%)
+$(DIRS:%=clean-%):
+	(cd $(@:clean-%=%); make BUILDDIR=$(BUILDDIR) clean)
+	rm -rf $(BUILDDIR)/$(@:clean-%=%)
+
+
+# Help.
 
 .PHONY: help
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
-	@echo "  all        to build all documents"
-	@echo "  publish    to make all and push to gh-pages"
+	@echo "  all             to build all documents"
+	@echo "  publish         to make all and push to gh-pages"
+	@echo "  <dir>           to build a specific subdirectory"
+	@echo "  publish-<dir>   to build and push a specific subdirectory"
 
 .PHONY: usage
 usage: help
