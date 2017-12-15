@@ -569,7 +569,8 @@ Note: This mapping is used to ensure that, for a given [=agent=], there exists a
 <pre class="idl">
 enum TableKind {
   "anyfunc",
-  // Note: More values may be added in future iterations
+  // Note: More values may be added in future iterations,
+  // e.g., typed function references, typed GC references
 };
 
 dictionary TableDescriptor {
