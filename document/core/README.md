@@ -1,6 +1,6 @@
-# WebAssembly Specification
+# WebAssembly Core Specification
 
-This is (meant to become) the official WebAssembly "language" specification.
+This is the official WebAssembly "language" specification.
 
 It uses [Sphinx](http://www.sphinx-doc.org/). To install that:
 ```
