@@ -429,7 +429,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. Return |promise|
 </div>
 
-Note: A follow-on streaming API is documented in the <a href="https://webassembly.github.io/spec/document/web/index.html">WebAssembly Web API</a>.
+Note: A follow-on streaming API is documented in the <a href="https://webassembly.github.io/spec/document/web-api/index.html">WebAssembly Web API</a>.
 
 <h3 id="modules">Modules</h3>
 

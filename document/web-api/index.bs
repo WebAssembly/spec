@@ -4,7 +4,7 @@ Shortname: wasmweb
 Group: WebAssembly CG
 Status: w3c/CG-DRAFT
 Level: 1
-ED: https://webassembly.github.io/spec/web/
+ED: https://webassembly.github.io/spec/web-api/
 Editor: WebAssembly Community Group
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
