@@ -26,7 +26,8 @@ usage:
 	@echo "Please use \`make <target>' where <target> is one of"
 	@echo "  html       to make standalone HTML files"
 	@echo "  pdf        to make standalone PDF file"
-	@echo "  all        to make both"
+	@echo "  bikeshed   to make a bikeshed wrapped single large HTML file"
+	@echo "  all        to make all 3"
 	@echo "  publish    to make all and push to gh-pages"
 	@echo "  help       to see more options"
 
@@ -35,7 +36,8 @@ help:
 	@echo "Usage: \`make <target>' where <target> is one of"
 	@echo "  html       to make standalone HTML files"
 	@echo "  pdf        to make standalone PDF file"
-	@echo "  all        to make both"
+	@echo "  bikeshed   to make a bikeshed wrapped single large HTML file"
+	@echo "  all        to make all 3"
 	@echo "  publish    to make all and push to gh-pages"
 	@echo "  dirhtml    to make HTML files named index.html in directories"
 	@echo "  singlehtml to make a single large HTML file"
@@ -72,12 +74,12 @@ publish:
 	(cd ..; make publish-core)
 
 .PHONY: all
-all:	pdf html
+all:	pdf html bikeshed
 
 .PHONY: pdf
 pdf:	latexpdf
-	mkdir -p $(BUILDDIR)/html/$(DOWNLOADDIR)
-	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(BUILDDIR)/html/$(DOWNLOADDIR)/$(NAME).pdf
+	mkdir -p $(BUILDDIR)/html/multipage/$(DOWNLOADDIR)
+	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(BUILDDIR)/html/multipage/$(DOWNLOADDIR)/$(NAME).pdf
 
 
 .PHONY: clean
@@ -87,15 +89,15 @@ clean:
 
 .PHONY: html
 html:
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
-	for file in `ls $(BUILDDIR)/html/*.html`; \
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html/multipage
+	for file in `ls $(BUILDDIR)/html/multipage/*.html`; \
 	do \
 	  sed s:BASEDIR:.:g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
 	  sed s~$(OLDMATHJAX)~$(NEWMATHJAX)~g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
 	done
-	for file in `ls $(BUILDDIR)/html/*/*.html`; \
+	for file in `ls $(BUILDDIR)/html/multipage/*/*.html`; \
 	do \
 	  sed s:BASEDIR:..:g <$$file >$$file.out; \
 	  sed 's; <body; <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body;' \
@@ -105,7 +107,7 @@ html:
 	  mv -f $$file.out $$file; \
 	done
 	@echo
-	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html."
+	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html/multipage."
 
 .PHONY: dirhtml
 dirhtml:
@@ -118,6 +120,23 @@ singlehtml:
 	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml."
+
+.PHONY: bikeshed
+bikeshed:
+	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
+		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
+	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
+	cp index.bs $(BUILDDIR)/bikeshed_mathjax/
+	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
+	mkdir -p $(BUILDDIR)/html/bikeshed/
+	python util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
+		>$(BUILDDIR)/html/bikeshed/index.html
+	mkdir -p $(BUILDDIR)/html/bikeshed/katex/dist/
+	cp -r util/katex/dist/* $(BUILDDIR)/html/bikeshed/katex/dist/
+	patch -p0 $(BUILDDIR)/html/bikeshed/katex/dist/katex.css \
+		< util/katex_fix.patch
+	@echo
+	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed."
 
 .PHONY: pickle
 pickle:
