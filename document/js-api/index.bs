@@ -204,6 +204,27 @@ fetch('demo.wasm').then(response =>
 );
 ```
 
+<h2 id="webassembly-storage">Internal storage</h2>
+
+<h3 id="store">Interaction of the WebAssembly Store with JavaScript</h3>
+
+Note: WebAssembly semantics are defined in terms of a [=store=], representing the state of the world, or "memory". WebAssembly operations take a store and return a new store.
+
+Each [=agent=] has an <dfn>associated store</dfn>. When a new agent is created, its associated store is set to the result of [=init_store=]().
+
+Note: In this specification, no WebAssembly-related objects, memory or addresses can be shared among agents in an [=agent cluster=]. In a future version of WebAssembly, the <a href="https://github.com/WebAssembly/threads">threads proposal</a> will add such sharing. For the JS binding, this will likely mean that there will be a store per agent cluster, rather than per agent. This specification uses a store per agent in order to limit semantics to how a store operates in a single-threaded manner, as the WebAssembly specification without threads only deals with that case.
+
+Elements of the WebAssembly store may be <dfn>identified with</dfn> JavaScript values. In particular, each WebAssembly [=memory instance=] with a corresponding {{Memory}} object is identified with a JavaScript [=Data Block=]; modifications to this Data Block are identified to updating the agent's store to a store which reflects those changes, and vice versa.
+
+<h3 id="object-caches">WebAssembly JS Object Caches</h3>
+
+Note: There are several WebAssembly objects that may have a corresponding JavaScript object. The correspondence is stored in a per-agent mapping from WebAssembly addresses to JavaScript objects. This mapping is used to ensure that, for a given [=agent=], there exists at most one JavaScript object for a particular WebAssembly address.
+
+Each [=agent=] is associated with the following three [=ordered map=]s:
+    * The <dfn>Memory object cache</dfn>, mapping [=memory address=]es to {{Memory}} objects.
+    * The <dfn>Table object cache</dfn>, mapping [=table address=]es to {{Table}} objects.
+    * The <dfn>Exported Function cache</dfn>, mapping [=function address=]es to [=Exported Function=] objects.
+
 <h2 id="webassembly-namespace">The WebAssembly Namespace</h2>
 
 <pre class="idl">
@@ -520,10 +541,6 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
     * \[[Memory]] : a [=memory address=]
     * \[[BufferObject]] : an {{ArrayBuffer}} whose [=Data Block=] is [=identified with=] the above memory address
-
-Each [=agent=] has an associated [=ordered map=] known as the <dfn>Memory object cache</dfn> mapping [=memory address=]es to {{Memory}} objects.
-
-Note: This mapping is used to ensure that, for a given [=agent=], there exists at most one {{Memory}} object for a particular [=memory address=].
 </div>
 
 <div algorithm>
@@ -600,10 +617,6 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
     * \[[Table]] : a [=table address=]
     * \[[Values]] : a List whose elements are either null or [=Exported Function=]s.
-
-Each [=agent=] has an associated [=ordered map=] known as the <dfn>Table object cache</dfn> mapping [=table address=]es to {{Table}} objects.
-
-Note: This mapping is used to ensure that, for a given [=agent=], there exists at most one {{Table}} object for a particular [=table address=].
 </div>
 
 <div algorithm>
@@ -677,10 +690,6 @@ Note: This mapping is used to ensure that, for a given [=agent=], there exists a
 A WebAssembly function is made available in JavaScript as an <dfn>Exported Function</dfn>.
 Exported Functions are [=Built-in Function Objects=] which are not constructors, and which have a \[[FunctionAddress]] internal slot.
 This slot holds a [=function address=] relative to the current agent's [=associated store=].
-
-Each [=agent=] has an associated [=ordered map=] known as the <dfn>Exported Function cache</dfn> mapping [=function address=]es to [=Exported Function=] objects.
-
-Note: This mapping is used to ensure that, for a given [=agent=], there exists at most one [=Exported Function=] object for a particular [=function address=].
 
 <div algorithm>
   The <dfn>name of the WebAssembly function</dfn> |funcaddr| is found by performing the following steps:
@@ -845,13 +854,3 @@ same class of exception is thrown as for out of memory conditions in JavaScript.
 The particular exception here is implementation-defined in both cases.
 
 Note: ECMAScript doesn't specify any sort of behavior on out-of-memory conditions; implementations have been observed to throw OOMError and to crash. Either is valid here.
-
-<h2 id="store">Interaction of the WebAssembly Store with JavaScript</h2>
-
-Note: WebAssembly semantics are defined in terms of a [=store=], representing the state of the world, or "memory". WebAssembly operations take a store and return a new store.
-
-Each [=agent=] has an <dfn>associated store</dfn>. When a new agent is created, its associated store is set to the result of [=init_store=]().
-
-Note: In this specification, no WebAssembly-related objects, memory or addresses can be shared among agents in an [=agent cluster=]. In a future version of WebAssembly, the <a href="https://github.com/WebAssembly/threads">threads proposal</a> will add such sharing. For the JS binding, this will likely mean that there will be a store per agent cluster, rather than per agent. This specification uses a store per agent in order to limit semantics to how a store operates in a single-threaded manner, as the WebAssembly specification without threads only deals with that case.
-
-Elements of the WebAssembly store may be <dfn>identified with</dfn> JavaScript values. In particular, each WebAssembly [=memory instance=] with a corresponding {{Memory}} object is identified with a JavaScript [=Data Block=]; modifications to this Data Block are identified to updating the agent's store to a store which reflects those changes, and vice versa.
