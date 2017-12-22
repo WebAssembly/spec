@@ -6,8 +6,7 @@ NAME          = WebAssembly
 .PHONY: all
 all:
 	mkdir -p $(BUILDDIR)/html
-	# TODO(littledan): remove dummy and properly build into $(BUILDDIR)/html
-	touch $(BUILDDIR)/html/index.html
+	bikeshed spec index.bs $(BUILDDIR)/html/index.html
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html."
 
 .PHONY: publish
