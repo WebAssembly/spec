@@ -4,8 +4,15 @@ sudo: off
 
 install: ./interpreter/meta/travis/install-ocaml.sh
 
-script: ./interpreter/meta/travis/build-test.sh
+script:
+  - ./interpreter/meta/travis/build-test.sh
+  - bash ./deploy.sh
 
 os:
   - linux
   - osx
+
+env:
+  global:
+    - ENCRYPTION_LABEL: "TODO"
+    - COMMIT_AUTHOR_EMAIL: "noreply@webassembly.org"
