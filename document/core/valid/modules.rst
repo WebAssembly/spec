@@ -473,7 +473,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
     the :ref:`function type <syntax-functype>` :math:`\functype_i` must be :ref:`valid <valid-functype>`.
 
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
-    the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\functype_i`.
+    the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
 
   * For each :math:`\table_i` in :math:`\module.\MTABLES`,
     the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\tabletype_i`.
