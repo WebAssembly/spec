@@ -546,7 +546,7 @@ Instantiation
 
 Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :math:`\module` is instantiated with a list of :ref:`external values <syntax-externval>` :math:`\externval^n` supplying the required imports as follows.
 
-Instantiation assumes that the module is :ref:`valid <valid>` and the provided imports :ref:`match <match-externtype>` the declared types,
+Instantiation checks that the module is :ref:`valid <valid>` and the provided imports :ref:`match <match-externtype>` the declared types,
 and may *fail* with an error otherwise.
 Instantiation can also result in a :ref:`trap <trap>` from executing the start function.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
@@ -677,7 +677,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      \end{array} \\
    &(\iff
      & \vdashmodule \module : \externtype_{\F{im}}^n \to \externtype_{\F{ex}}^\ast \\
-     &\wedge& (\vdashexternval \externval : \externtype)^n \\
+     &\wedge& (S \vdashexternval \externval : \externtype)^n \\
      &\wedge& (\vdashexterntypematch \externtype \matches \externtype_{\F{im}})^n \\[1ex]
      &\wedge& \module.\MGLOBALS = \global^k \\
      &\wedge& \module.\MELEM = \elem^\ast \\
@@ -690,7 +690,6 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& (S'; F; \data.\DOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do})^\ast \\[1ex]
      &\wedge& (\X{eo} + |\elem.\EINIT| \leq |S'.\STABLES[\tableaddr].\TIELEM|)^\ast \\
      &\wedge& (\X{do} + |\data.\DINIT| \leq |S'.\SMEMS[\memaddr].\MIDATA|)^\ast
-     )
    \\[1ex]
      &\wedge& \globaladdr^\ast = \moduleinst.\MIGLOBALS[|\moduleinst.\MIGLOBALS|-k \slice k] \\
      &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\

@@ -262,7 +262,7 @@ Functions
 .. index:: invocation, value, result
 .. _embed-invoke-func:
 
-:math:`\F{invoke\_func}(\store, \funcaddr, \val^\ast) : (\store, \val^\ast ~|~ \error`)`
+:math:`\F{invoke\_func}(\store, \funcaddr, \val^\ast) : (\store, \val^\ast ~|~ \error)`
 ........................................................................................
 
 1. Assert: :math:`\store.\SFUNCS[\funcaddr]` exists.

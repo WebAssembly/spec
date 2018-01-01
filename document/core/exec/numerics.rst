@@ -721,7 +721,7 @@ NaN Propagation
 ...............
 
 When the result of a floating-point operator other than |fneg|, |fabs|, or |fcopysign| is a :ref:`NaN <syntax-nan>`,
-then its sign is non-deterministic and the :ref:`payload <syntax-payload>` computed as follows:
+then its sign is non-deterministic and the :ref:`payload <syntax-payload>` is computed as follows:
 
 * If the payload of all NaN inputs to the operator is :ref:`canonical <canonical-nan>` (including the case that there are no NaN inputs), then the payload of the output is canonical as well.
 
@@ -1403,7 +1403,7 @@ Conversions
 :math:`\wrap_{M,N}(i)`
 ......................
 
-* Return :math:`i` modulo :math:`N`.
+* Return :math:`i` modulo :math:`2^N`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
