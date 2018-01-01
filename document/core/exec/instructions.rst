@@ -400,7 +400,7 @@ Memory Instructions
 
 7. Pop the value :math:`\I32.\CONST~i` from the stack.
 
-8. Let :math:`\X{ea}` be :math:`i + \memarg.\OFFSET`.
+8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
 
 9. If :math:`N` is not part of the instruction, then:
 
@@ -480,7 +480,7 @@ Memory Instructions
 
 9. Pop the value :math:`\I32.\CONST~i` from the stack.
 
-10. Let :math:`\X{ea}` be :math:`i + \memarg.\OFFSET`.
+10. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
 
 11. If :math:`N` is not part of the instruction, then:
 
