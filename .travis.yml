@@ -6,7 +6,7 @@ install: ./interpreter/meta/travis/install-ocaml.sh
 
 script:
   - ./interpreter/meta/travis/build-test.sh
-  - bash ./deploy.sh
+  - bash ./document/travis-deploy.sh
 
 os:
   - linux
