@@ -600,6 +600,7 @@ Memory Instructions
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & F.\AMODULE.\MIMEMS[0] = a \\
+     \wedge & \X{sz} = |S.\SMEMS[a].\MIDATA|/64\,\F{Ki} \\
      \wedge & S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\
      \end{array}
    \\[1ex]
