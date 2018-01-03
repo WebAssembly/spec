@@ -516,7 +516,7 @@ Control Instructions
 :math:`\IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
 ........................................................
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |CLABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
