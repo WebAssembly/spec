@@ -14,7 +14,7 @@ $(BUILDDIR):
 
 .PHONY: deploy
 deploy:
-	GIT_DEPLOY_DIR=$(BUILDDIR) sh deploy.sh
+	GIT_DEPLOY_DIR=$(BUILDDIR) bash deploy.sh
 
 .PHONY: publish
 publish: all deploy
@@ -34,7 +34,7 @@ $(DIRS): %: $(BUILDDIR)
 
 .PHONY: $(DIRS:%=deploy-%)
 $(DIRS:%=deploy-%):
-	GIT_DEPLOY_DIR=$(BUILDDIR) GIT_DEPLOY_SUBDIR=$(@:deploy-%=%) sh deploy.sh
+	GIT_DEPLOY_DIR=$(BUILDDIR) GIT_DEPLOY_SUBDIR=$(@:deploy-%=%) bash deploy.sh
 
 .PHONY: $(DIRS:%=publish-%)
 $(DIRS:%=publish-%): publish-%: % deploy-%
