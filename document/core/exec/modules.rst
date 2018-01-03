@@ -768,7 +768,8 @@ The values :math:`\val_{\F{res}}^m` are returned as the results of the invocatio
 .. math::
    ~\\[-1ex]
    \begin{array}{@{}lcl}
-   \invoke(S, \funcaddr, \val^n) &=& S; \val^n~(\INVOKE~\funcaddr) \\
+   \invoke(S, \funcaddr, \val^n) &=& S; F; \val^n~(\INVOKE~\funcaddr) \\
      &(\iff & S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
      &\wedge& \val^n = (t_1.\CONST~c)^n) \\
+     &\wedge& F = \{ \AMODULE~\{\}, \ALOCALS~\epsilon \} \\
    \end{array}
