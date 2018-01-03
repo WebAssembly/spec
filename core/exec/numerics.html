@@ -194,7 +194,7 @@ When several of these placeholders occur in a single clause, then they must be r
 <span id="int-ops"></span><span id="index-5"></span><h2>Integer Operations<a class="headerlink" href="#integer-operations" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="sign-interpretation">
 <span id="aux-signed"></span><span id="index-6"></span><h3>Sign Interpretation<a class="headerlink" href="#sign-interpretation" title="Permalink to this headline">¶</a></h3>
-<p>Integer operators are defined on <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1569#1{{\mathit{i}#1}}\mathdef1569{N}}\)</span> values.
+<p>Integer operators are defined on <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef189#1{{\mathit{i}#1}}\mathdef189{N}}\)</span> values.
 Operators that use a signed interpretation convert the value using the following definition, which takes the two&#8217;s complement when the value lies in the upper half of the value range (i.e., its most significant bit is <span class="math">\(1\)</span>):</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
@@ -623,7 +623,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <p>where:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\mathrm{exact}_N &amp;=&amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1574#1{{\mathit{f}#1}}\mathdef1574{N}} \cap \mathbb{Q} \\
+\mathrm{exact}_N &amp;=&amp; \href{../syntax/values.html#syntax-float}{\def\mathdef194#1{{\mathit{f}#1}}\mathdef194{N}} \cap \mathbb{Q} \\
 \mathrm{limit}_N &amp;=&amp; 2^{2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}} \\
 \mathrm{candidate}_N &amp;=&amp; \mathrm{exact}_N \cup \{+\mathrm{limit}_N, -\mathrm{limit}_N\} \\
 \mathrm{candidatepair}_N &amp;=&amp; \{ (z_1, z_2) \in \mathrm{candidate}_N^2 ~|~ z_1 &lt; z_2 \wedge \forall z \in \mathrm{candidate}_N, z \leq z_1 \vee z \geq z_2\} \\[1ex]
@@ -634,7 +634,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 <div class="section" id="nan-propagation">
 <span id="aux-nans"></span><span id="index-10"></span><h3>NaN Propagation<a class="headerlink" href="#nan-propagation" title="Permalink to this headline">¶</a></h3>
 <p>When the result of a floating-point operator other than <span class="math">\(\href{../exec/numerics.html#op-fneg}{\mathrm{fneg}}\)</span>, <span class="math">\(\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}\)</span>, or <span class="math">\(\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}\)</span> is a <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a>,
-then its sign is non-deterministic and the <a class="reference internal" href="../syntax/values.html#syntax-payload"><span class="std std-ref">payload</span></a> computed as follows:</p>
+then its sign is non-deterministic and the <a class="reference internal" href="../syntax/values.html#syntax-payload"><span class="std std-ref">payload</span></a> is computed as follows:</p>
 <ul class="simple">
 <li>If the payload of all NaN inputs to the operator is <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical</span></a> (including the case that there are no NaN inputs), then the payload of the output is canonical as well.</li>
 <li>Otherwise the payload is picked non-determinsitically among all <a class="reference internal" href="../syntax/values.html#arithmetic-nan"><span class="std std-ref">arithmetic NaNs</span></a>; that is, its most significant bit is <span class="math">\(1\)</span> and all others are unspecified.</li>
@@ -1131,7 +1131,7 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <div class="section" id="op-wrap">
 <span id="id52"></span><h3><span class="math">\(\href{../exec/numerics.html#op-wrap}{\mathrm{wrap}}_{M,N}(i)\)</span><a class="headerlink" href="#op-wrap" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Return <span class="math">\(i\)</span> modulo <span class="math">\(N\)</span>.</li>
+<li>Return <span class="math">\(i\)</span> modulo <span class="math">\(2^N\)</span>.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}

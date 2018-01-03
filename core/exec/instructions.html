@@ -112,8 +112,8 @@
 The mapping of numeric instructions to their underlying operators is expressed by the following definition:</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\mathit{op}_{\mathsf{i}N}(n) &amp;=&amp; \mathrm{i}\mathit{op}_N(n) \\
-\mathit{op}_{\mathsf{f}N}(z) &amp;=&amp; \mathrm{f}\mathit{op}_N(z) \\
+\mathit{op}_{\mathsf{i}N}(n_1,\dots,n_k) &amp;=&amp; \mathrm{i}\mathit{op}_N(n_1,\dots,n_k) \\
+\mathit{op}_{\mathsf{f}N}(z_1,\dots,z_k) &amp;=&amp; \mathrm{f}\mathit{op}_N(z_1,\dots,z_k) \\
 \end{array}\end{split}\]</div>
 <p>And for <a class="reference internal" href="#exec-cvtop"><span class="std std-ref">conversion operators</span></a>:</p>
 <div class="math">
@@ -382,7 +382,7 @@ However, it may be substantially slower on some hardware.</p>
 <li>Let <span class="math">\(\mathit{mem}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a]\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-loadn"><span class="std std-ref">validation</span></a>, a value of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> is on the top of the stack.</li>
 <li>Pop the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i\)</span> from the stack.</li>
-<li>Let <span class="math">\(\mathit{ea}\)</span> be <span class="math">\(i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}\)</span>.</li>
+<li>Let <span class="math">\(\mathit{ea}\)</span> be the integer <span class="math">\(i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}\)</span>.</li>
 <li>If <span class="math">\(N\)</span> is not part of the instruction, then:<ol class="loweralpha">
 <li>Let <span class="math">\(N\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">bit width</span></a> <span class="math">\(|t|\)</span> of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span>.</li>
 </ol>
@@ -393,7 +393,7 @@ However, it may be substantially slower on some hardware.</p>
 </li>
 <li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\mathit{mem}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[\mathit{ea} \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} N/8]\)</span>.</li>
 <li>If <span class="math">\(N\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> are part of the instruction, then:<ol class="loweralpha">
-<li>Let <span class="math">\(n\)</span> be the integer for which <span class="math">\(\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef1451#1{{\mathit{i}#1}}\mathdef1451{N}}}(n) = b^\ast\)</span>.</li>
+<li>Let <span class="math">\(n\)</span> be the integer for which <span class="math">\(\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef71#1{{\mathit{i}#1}}\mathdef71{N}}}(n) = b^\ast\)</span>.</li>
 <li>Let <span class="math">\(c\)</span> be the result of computing <span class="math">\(\href{../exec/numerics.html#op-extend-u}{\mathrm{extend}}\mathrm{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_{N,|t|}(n)\)</span>.</li>
 </ol>
 </li>
@@ -424,7 +424,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mathrel{\mbox{if}} &amp; \mathit{ea} = i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}} \\
   \wedge &amp; \mathit{ea} + N/8 \leq |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}| \\
-  \wedge &amp; \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef1451#1{{\mathit{i}#1}}\mathdef1451{N}}}(n) = S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[\mathit{ea} \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} N/8])
+  \wedge &amp; \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef71#1{{\mathit{i}#1}}\mathdef71{N}}}(n) = S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[\mathit{ea} \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} N/8])
   \end{array}
 \\[1ex]
 \begin{array}{lcl&#64;{\qquad}l}
@@ -446,7 +446,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 <li>Pop the value <span class="math">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span> from the stack.</li>
 <li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-storen"><span class="std std-ref">validation</span></a>, a value of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> is on the top of the stack.</li>
 <li>Pop the value <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i\)</span> from the stack.</li>
-<li>Let <span class="math">\(\mathit{ea}\)</span> be <span class="math">\(i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}\)</span>.</li>
+<li>Let <span class="math">\(\mathit{ea}\)</span> be the integer <span class="math">\(i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}\)</span>.</li>
 <li>If <span class="math">\(N\)</span> is not part of the instruction, then:<ol class="loweralpha">
 <li>Let <span class="math">\(N\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">bit width</span></a> <span class="math">\(|t|\)</span> of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span>.</li>
 </ol>
@@ -457,7 +457,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 </li>
 <li>If <span class="math">\(N\)</span> is part of the instruction, then:<ol class="loweralpha">
 <li>Let <span class="math">\(n\)</span> be the result of computing <span class="math">\(\href{../exec/numerics.html#op-wrap}{\mathrm{wrap}}_{|t|,N}(c)\)</span>.</li>
-<li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef1451#1{{\mathit{i}#1}}\mathdef1451{N}}}(n)\)</span>.</li>
+<li>Let <span class="math">\(b^\ast\)</span> be the byte sequence <span class="math">\(\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef71#1{{\mathit{i}#1}}\mathdef71{N}}}(n)\)</span>.</li>
 </ol>
 </li>
 <li>Else:<ol class="loweralpha">
@@ -486,7 +486,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mathrel{\mbox{if}} &amp; \mathit{ea} = i + \href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}} \\
   \wedge &amp; \mathit{ea} + N/8 \leq |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}| \\
-  \wedge &amp; S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[\mathit{ea} \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} N/8] = \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef1451#1{{\mathit{i}#1}}\mathdef1451{N}}}(\href{../exec/numerics.html#op-wrap}{\mathrm{wrap}}_{|t|,N}(c))
+  \wedge &amp; S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[\mathit{ea} \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} N/8] = \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\def\mathdef71#1{{\mathit{i}#1}}\mathdef71{N}}}(\href{../exec/numerics.html#op-wrap}{\mathrm{wrap}}_{|t|,N}(c))
   \end{array}
 \\[1ex]
 \begin{array}{lcl&#64;{\qquad}l}
@@ -543,6 +543,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mathrel{\mbox{if}} &amp; F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0] = a \\
+  \wedge &amp; \mathit{sz} = |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}|/64\,\mathrm{Ki} \\
   \wedge &amp; S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a] = \href{../exec/modules.html#grow-mem}{\mathrm{growmem}}(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a], n)) \\
   \end{array}
 \\[1ex]
@@ -848,6 +849,7 @@ and returning from it.</p>
 <li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-call"><span class="std std-ref">validation</span></a>, <span class="math">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a]\)</span> exists.</li>
 <li>Let <span class="math">\(f\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">function instance</span></a>, <span class="math">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a]\)</span>.</li>
 <li>Let <span class="math">\([t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^m]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(f.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}\)</span>.</li>
+<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-call"><span class="std std-ref">validation</span></a>, <span class="math">\(m \leq 1\)</span>.</li>
 <li>Let <span class="math">\(t^\ast\)</span> be the list of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(f.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}}.\href{../syntax/modules.html#syntax-func}{\mathsf{locals}}\)</span>.</li>
 <li>Let <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> be the <a class="reference internal" href="../syntax/instructions.html#syntax-expr"><span class="std std-ref">expression</span></a> <span class="math">\(f.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}}.\href{../syntax/modules.html#syntax-func}{\mathsf{body}}\)</span>.</li>
 <li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-call"><span class="std std-ref">validation</span></a>, <span class="math">\(n\)</span> values are on the top of the stack.</li>
@@ -867,6 +869,7 @@ S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mathrel{\mbox{if}} &amp; S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a] = f \\
   \wedge &amp; f.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}} = [t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^m] \\
+  \wedge &amp; m \leq 1 \\
   \wedge &amp; f.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}} = \{ \href{../syntax/modules.html#syntax-func}{\mathsf{type}}~x, \href{../syntax/modules.html#syntax-func}{\mathsf{locals}}~t^k, \href{../syntax/modules.html#syntax-func}{\mathsf{body}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \} \\
   \wedge &amp; F = \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~f.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{module}}, ~\href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0)^k \})
   \end{array} \\
