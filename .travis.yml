@@ -14,5 +14,5 @@ os:
 
 env:
   global:
-    - ENCRYPTION_LABEL: "TODO"
+    - ENCRYPTION_LABEL: "304454be9d6c"
     - COMMIT_AUTHOR_EMAIL: "noreply@webassembly.org"
