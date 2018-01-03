@@ -20,8 +20,8 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{op}_{\K{i}N}(n) &=& \F{i}\X{op}_N(n) \\
-   \X{op}_{\K{f}N}(z) &=& \F{f}\X{op}_N(z) \\
+   \X{op}_{\K{i}N}(n_1,\dots,n_k) &=& \F{i}\X{op}_N(n_1,\dots,n_k) \\
+   \X{op}_{\K{f}N}(z_1,\dots,z_k) &=& \F{f}\X{op}_N(z_1,\dots,z_k) \\
    \end{array}
 
 And for :ref:`conversion operators <exec-cvtop>`:
