@@ -772,10 +772,5 @@ The values :math:`\val_{\F{res}}^m` are returned as the results of the invocatio
    \invoke(S, \funcaddr, \val^n) &=& S; F; \val^n~(\INVOKE~\funcaddr) \\
      &(\iff & S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
      &\wedge& \val^n = (t_1.\CONST~c)^n) \\
-     &\wedge& \moduleinst = \{~
-       \begin{array}[t]{@{}l@{}}
-       \MITYPES~\epsilon, \MIFUNCS~\epsilon, \MITABLES~\epsilon, \\
-       \MIMEMS~\epsilon, \MIGLOBALS~\epsilon, \MIEXPORTS~\epsilon ~\}
-       \end{array} \\
-     &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\
+     &\wedge& F = \{ \AMODULE~\{\}, \ALOCALS~\epsilon \} \\
    \end{array}
