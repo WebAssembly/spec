@@ -576,12 +576,12 @@ Finally, the following definition of *evaluation context* and associated structu
    S; F_0; \FRAME_n\{F\}~\instr^\ast~\END &\stepto& S'; F_0; \FRAME_n\{F'\}~\instr'^\ast~\END
    \end{array}
    \\ \qquad
-     (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
+     (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; F; E[\TRAP] &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\iff E \neq [\_] \wedge E \neq \epsilon~[\_]~\epsilon) \\
+     &(\iff E \neq [\_]) \\
+   S; F; \FRAME_n\{F'\}~\TRAP~\END &\stepto& S; F; \TRAP
+   \end{array} \\
    \end{array}
 
 Reduction terminates when a thread's instruction sequence has been reduced to a :ref:`result <syntax-result>`,
@@ -599,3 +599,7 @@ that is, either a sequence of :ref:`values <syntax-val>` or to a |TRAP|.
       E = (\F64.\CONST~x_1)~[\_]~(\F64.\CONST~x_3)~\F64.\ADD~\F64.\MUL
 
    Moreover, this is the *only* possible choice of evaluation context where the contents of the hole matches the left-hand side of a reduction rule.
+
+.. note::
+   The restriction on evaluation contexts rules out contexts like :math:`[\_]` and :math:`\epsilon~[\_]~\epsilon` for which :math:`E[\TRAP] = \TRAP`.
+
