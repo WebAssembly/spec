@@ -573,10 +573,10 @@ Finally, the following definition of *evaluation context* and associated structu
    \\ \qquad
      (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
    \begin{array}{lcl@{\qquad}l}
-   S; F_0; \FRAME_n\{F\}~\instr^\ast~\END &\stepto& S'; F_0; \FRAME_n\{F'\}~\instr'^\ast~\END
+   S; F; \FRAME_n\{F'\}~\instr^\ast~\END &\stepto& S'; F; \FRAME_n\{F''\}~\instr'^\ast~\END
    \end{array}
    \\ \qquad
-     (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\[1ex]
+     (\iff S; F'; \instr^\ast \stepto S'; F''; {\instr'}^\ast) \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; F; E[\TRAP] &\stepto& S; F; \TRAP
      &(\iff E \neq [\_]) \\
@@ -588,18 +588,16 @@ Reduction terminates when a thread's instruction sequence has been reduced to a 
 that is, either a sequence of :ref:`values <syntax-val>` or to a |TRAP|.
 
 .. note::
-   For example, the following instruction sequence,
+   The restriction on evaluation contexts rules out contexts like :math:`[\_]` and :math:`\epsilon~[\_]~\epsilon` for which :math:`E[\TRAP] = \TRAP`.
+
+   For an example of reduction under evaluation contexts, consider the following instruction sequence.
 
    .. math::
        (\F64.\CONST~x_1)~(\F64.\CONST~x_2)~\F64.\NEG~(\F64.\CONST~x_3)~\F64.\ADD~\F64.\MUL
 
-   can be decomposed into :math:`E[(\F64.\CONST~x_2)~\F64.\NEG]` where
+   This can be decomposed into :math:`E[(\F64.\CONST~x_2)~\F64.\NEG]` where
 
    .. math::
       E = (\F64.\CONST~x_1)~[\_]~(\F64.\CONST~x_3)~\F64.\ADD~\F64.\MUL
 
    Moreover, this is the *only* possible choice of evaluation context where the contents of the hole matches the left-hand side of a reduction rule.
-
-.. note::
-   The restriction on evaluation contexts rules out contexts like :math:`[\_]` and :math:`\epsilon~[\_]~\epsilon` for which :math:`E[\TRAP] = \TRAP`.
-
