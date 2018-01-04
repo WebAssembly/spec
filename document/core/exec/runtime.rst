@@ -562,16 +562,26 @@ Finally, the following definition of *evaluation context* and associated structu
    \production{(evaluation contexts)} & E &::=&
      [\_] ~|~
      \val^\ast~E~\instr^\ast ~|~
-     \LABEL_n\{\instr^\ast\}~E~\END ~|~
-     \FRAME_n\{\frame\}~E~\END \\
+     \LABEL_n\{\instr^\ast\}~E~\END \\
    \end{array}
 
 .. math::
+   \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
    S; F; E[\instr^\ast] &\stepto& S'; F'; E[{\instr'}^\ast]
-     & (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
+   \end{array}
+   \\ \qquad
+     (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
+   \begin{array}{lcl@{\qquad}l}
+   S; F_0; \FRAME_n\{F\}~\instr^\ast~\END &\stepto& S'; F_0; \FRAME_n\{F'\}~\instr'^\ast~\END
+   \end{array}
+   \\ \qquad
+     (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
+   \begin{array}{lcl@{\qquad}l}
    S; F; E[\TRAP] &\stepto& S; F; \TRAP
-     & (\iff E \neq [\_]) \\
+   \end{array}
+   \\ \qquad
+     (\iff E \neq [\_] \wedge E \neq \epsilon~[\_]~\epsilon) \\
    \end{array}
 
 Reduction terminates when a thread's instruction sequence has been reduced to a :ref:`result <syntax-result>`,
