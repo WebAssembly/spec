@@ -2,15 +2,15 @@ language: c++
 
 sudo: off
 
-install: ./interpreter/meta/travis/install-ocaml.sh
+install:
+  - ./interpreter/meta/travis/install-ocaml.sh
+  - pip install sphinx
 
 script:
   - ./interpreter/meta/travis/build-test.sh
   - bash ./document/travis-deploy.sh
 
-os:
-  - linux
-  - osx
+os: linux
 
 env:
   global:

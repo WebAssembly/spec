@@ -13,6 +13,8 @@ function doCompile {
   make
   cd ../web-api
   make
+  cd ../core
+  make html
   cd ../../out
   if [[ ! -e js-api ]]; then mkdir js-api; fi
   mv ../document/js-api/_build/html/index.html js-api/index.html
@@ -20,6 +22,9 @@ function doCompile {
   if [[ ! -e web-api ]]; then mkdir web-api; fi
   mv ../document/web-api/_build/html/index.html web-api/index.html
   git add web-api/index.html
+  if [[ ! -e core ]]; then mkdir core; fi
+  mv ../document/core/_build/html/* core/
+  git add core/
   cd ../
 }
 
