@@ -1,16 +1,17 @@
 language: c++
 
-sudo: off
+sudo: on
 
-install: ./interpreter/meta/travis/install-ocaml.sh
+install:
+  - ./interpreter/meta/travis/install-ocaml.sh
+  - sudo pip install sphinx
+  - sudo apt-get install texlive-full
 
 script:
   - ./interpreter/meta/travis/build-test.sh
   - bash ./document/travis-deploy.sh
 
-os:
-  - linux
-  - osx
+os: linux
 
 env:
   global:
