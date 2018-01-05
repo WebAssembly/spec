@@ -9,16 +9,12 @@ TARGET_BRANCH="gh-pages"
 
 function doCompile {
   # TODO(littledan): Integrate with document/deploy.sh
-  cd document
-  make
-  cd ../
-  mv document/_build/* out/
+  (cd document; make)
 }
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
 if [[ "$TRAVIS_PULL_REQUEST" != "false" || "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ]]; then
   echo "Skipping deploy; just doing a build."
-  mkdir out
   doCompile
   exit 0
 fi
@@ -40,19 +36,20 @@ ssh-add deploy_key || true
 
 # Clone the existing gh-pages for this repo into out/
 # Create a new empty branch if gh-pages doesn't exist yet (should only happen on first deply)
-git clone $REPO out
-cd out
-git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
+git clone $REPO document/_build
+(
+  cd document/_build
+  git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
 
-# Clean out existing contents
-git reset --hard
+  # Clean out existing contents
+  git reset --hard
+)
 
 # Run our compile script
-cd ..
 doCompile
 
 # Now let's go have some fun with the cloned repo
-cd out
+cd document/_build
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
