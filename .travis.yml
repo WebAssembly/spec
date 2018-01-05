@@ -1,10 +1,10 @@
 language: c++
 
-sudo: off
+sudo: on
 
 install:
   - ./interpreter/meta/travis/install-ocaml.sh
-  - pip install sphinx
+  - sudo pip install sphinx
 
 script:
   - ./interpreter/meta/travis/build-test.sh
