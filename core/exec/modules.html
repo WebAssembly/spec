@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Modules &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Execution" href="index.html" />
     <link rel="next" title="Binary Format" href="../binary/index.html" />
     <link rel="prev" title="Instructions" href="instructions.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -390,9 +386,9 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 <div class="section" id="alloc-module">
 <span id="index-19"></span><span id="id9"></span><h3><a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">Modules</span></a><a class="headerlink" href="#alloc-module" title="Permalink to this headline">¶</a></h3>
 <p>The allocation function for <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">modules</span></a> requires a suitable list of <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> that are assumed to <a class="reference internal" href="#match-externtype"><span class="std std-ref">match</span></a> the <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">import</span></a> vector of the module,
-and a list of initialization <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> for the module&#8217;s <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">globals</span></a>.</p>
-<p>1. Let <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> to allocate and <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast\)</span> the vector of <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> providing the module&#8217;s imports,
-and <span class="math">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span> the initialization <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> of the module&#8217;s <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">globals</span></a>.</p>
+and a list of initialization <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> for the module’s <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">globals</span></a>.</p>
+<p>1. Let <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> to allocate and <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}_{\mathrm{im}}^\ast\)</span> the vector of <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> providing the module’s imports,
+and <span class="math">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span> the initialization <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> of the module’s <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">globals</span></a>.</p>
 <ol class="arabic simple" start="2">
 <li>For each <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{funcs}}\)</span>, do:<ol class="loweralpha">
 <li>Let <span class="math">\(\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}_i\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> resulting from <a class="reference internal" href="#alloc-func"><span class="std std-ref">allocating</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}_i\)</span> for the <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">module instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span> defined below.</li>

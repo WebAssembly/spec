@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Numerics &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Execution" href="index.html" />
     <link rel="next" title="Instructions" href="instructions.html" />
     <link rel="prev" title="Runtime Structure" href="runtime.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -195,7 +191,7 @@ When several of these placeholders occur in a single clause, then they must be r
 <div class="section" id="sign-interpretation">
 <span id="aux-signed"></span><span id="index-6"></span><h3>Sign Interpretation<a class="headerlink" href="#sign-interpretation" title="Permalink to this headline">¶</a></h3>
 <p>Integer operators are defined on <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1569#1{{\mathit{i}#1}}\mathdef1569{N}}\)</span> values.
-Operators that use a signed interpretation convert the value using the following definition, which takes the two&#8217;s complement when the value lies in the upper half of the value range (i.e., its most significant bit is <span class="math">\(1\)</span>):</p>
+Operators that use a signed interpretation convert the value using the following definition, which takes the two’s complement when the value lies in the upper half of the value range (i.e., its most significant bit is <span class="math">\(1\)</span>):</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
 \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i) &amp;=&amp; i &amp; (0 \leq i &lt; 2^{N-1}) \\
@@ -205,7 +201,7 @@ Operators that use a signed interpretation convert the value using the following
 </div>
 <div class="section" id="boolean-interpretation">
 <span id="aux-bool"></span><span id="index-7"></span><h3>Boolean Interpretation<a class="headerlink" href="#boolean-interpretation" title="Permalink to this headline">¶</a></h3>
-<p>The integer result of predicates &#8211; i.e., <a class="reference internal" href="../syntax/instructions.html#syntax-testop"><span class="std std-ref">tests</span></a> and <a class="reference internal" href="../syntax/instructions.html#syntax-relop"><span class="std std-ref">relational</span></a> operators &#8211; is defined with the help of the following auxiliary function producing the value <span class="math">\(1\)</span> or <span class="math">\(0\)</span> depending on a condition.</p>
+<p>The integer result of predicates – i.e., <a class="reference internal" href="../syntax/instructions.html#syntax-testop"><span class="std std-ref">tests</span></a> and <a class="reference internal" href="../syntax/instructions.html#syntax-relop"><span class="std std-ref">relational</span></a> operators – is defined with the help of the following auxiliary function producing the value <span class="math">\(1\)</span> or <span class="math">\(0\)</span> depending on a condition.</p>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
 \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(C) &amp;=&amp; 1 &amp; (\mathrel{\mbox{if}} C) \\
@@ -564,7 +560,7 @@ with the following qualifications:</p>
 <li>All operators use round-to-nearest ties-to-even, except where otherwise specified.
 Non-default directed rounding attributes are not supported.</li>
 <li>Following the recommendation that operators propagate <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a> payloads from their operands is permitted but not required.</li>
-<li>All operators use &#8220;non-stop&#8221; mode, and floating-point exceptions are not otherwise observable.
+<li>All operators use “non-stop” mode, and floating-point exceptions are not otherwise observable.
 In particular, neither alternate floating-point exception handling attributes nor operators on status flags are supported.
 There is no observable difference between quiet and signalling NaNs.</li>
 </ul>
@@ -1121,7 +1117,7 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <span id="id51"></span><h3><span class="math">\(\href{../exec/numerics.html#op-extend-s}{\mathrm{extend\_s}}_{M,N}(i)\)</span><a class="headerlink" href="#op-extend-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Let <span class="math">\(j\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i\)</span> of size <span class="math">\(M\)</span>.</li>
-<li>Return the two&#8217;s complement of <span class="math">\(j\)</span> relative to size <span class="math">\(N\)</span>.</li>
+<li>Return the two’s complement of <span class="math">\(j\)</span> relative to size <span class="math">\(N\)</span>.</li>
 </ul>
 <div class="math">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}

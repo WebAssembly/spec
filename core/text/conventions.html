@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Conventions &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Text Format" href="index.html" />
     <link rel="next" title="Lexical Format" href="lexical.html" />
     <link rel="prev" title="Text Format" href="index.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -110,8 +106,8 @@ Thus, the attribute grammar implicitly defines a <em>parsing</em> function.
 Some productions also take a <a class="reference internal" href="#text-context"><span class="std std-ref">context</span></a> as an inherited attribute
 that records bound <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifers</span></a>.</p>
 <p>Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
-However, it also defines a number of <em>abbreviations</em> that are &#8220;syntactic sugar&#8221; over the core syntax.</p>
-<p>The recommended extension for source files containing WebAssembly modules in text format is &#8220;<span class="math">\(\mathtt{.wat}\)</span>&#8221;.
+However, it also defines a number of <em>abbreviations</em> that are “syntactic sugar” over the core syntax.</p>
+<p>The recommended extension for source files containing WebAssembly modules in text format is “<span class="math">\(\mathtt{.wat}\)</span>”.
 Files with this extension are assumed to be encoded in UTF-8, as per <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5).</p>
 <div class="section" id="grammar">
 <span id="text-grammar"></span><span id="index-1"></span><h2>Grammar<a class="headerlink" href="#grammar" title="Permalink to this headline">¶</a></h2>

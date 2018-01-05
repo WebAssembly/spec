@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Instructions &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Structure" href="index.html" />
     <link rel="next" title="Modules" href="modules.html" />
     <link rel="prev" title="Types" href="types.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -204,11 +200,11 @@ For each type, several subcategories can be distinguished:</p>
 <li><em>Tests</em>: consume one operand of the respective type and produce a Boolean integer result.</li>
 <li><em>Comparisons</em>: consume two operands of the respective type and produce a Boolean integer result.</li>
 <li><em>Conversions</em>: consume a value of one type and produce a result of another
-(the source type of the conversion is the one after the &#8220;<span class="math">\(\mathsf{/}\)</span>&#8221;).</li>
+(the source type of the conversion is the one after the “<span class="math">\(\mathsf{/}\)</span>”).</li>
 </ul>
 <p>Some integer instructions come in two flavours,
 where a signedness annotation <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> distinguishes whether the operands are to be <a class="reference internal" href="../exec/numerics.html#aux-signed"><span class="std std-ref">interpreted</span></a> as <a class="reference internal" href="values.html#syntax-uint"><span class="std std-ref">unsigned</span></a> or <a class="reference internal" href="values.html#syntax-sint"><span class="std std-ref">signed</span></a> integers.
-For the other integer instructions, the use of two&#8217;s complement for the signed interpretation means that they behave the same regardless of signedness.</p>
+For the other integer instructions, the use of two’s complement for the signed interpretation means that they behave the same regardless of signedness.</p>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
 <p>Occasionally, it is convenient to group operators together according to the following grammar shorthands:</p>
@@ -286,7 +282,7 @@ Integer loads and stores can optionally specify a <em>storage size</em> that is 
 In the case of loads, a sign extension mode <span class="math">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> is then required to select appropriate behavior.</p>
 <p>The static address offset is added to the dynamic address operand, yielding a 33 bit <em>effective address</em> that is the zero-based index at which the memory is accessed.
 All values are read and written in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order.
-A <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> results if any of the accessed memory bytes lies outside the address range implied by the memory&#8217;s current size.</p>
+A <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> results if any of the accessed memory bytes lies outside the address range implied by the memory’s current size.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Future version of WebAssembly might provide memory instructions with 64 bit address ranges.</p>
@@ -333,7 +329,7 @@ that is, label <span class="math">\(0\)</span> refers to the innermost structure
 while increasing indices refer to those farther out.
 Consequently, labels can only be referenced from <em>within</em> the associated structured control instruction.
 This also implies that branches can only be directed outwards,
-&#8220;breaking&#8221; from the block of the control construct they target.
+“breaking” from the block of the control construct they target.
 The exact effect depends on that control construct.
 In case of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> or <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> it is a <em>forward jump</em>,
 resuming execution after the matching <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span>.
@@ -354,7 +350,7 @@ However, forward branches that target a control instruction with a non-empty res
 <p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}\)</span> instruction invokes another <a class="reference internal" href="modules.html#syntax-func"><span class="std std-ref">function</span></a>, consuming the necessary arguments from the stack and returning the result values of the call.
 The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> instruction calls a function indirectly through an operand indexing into a <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a>.
 Since tables may contain function elements of heterogeneous type <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}\)</span>,
-the callee is dynamically checked against the <a class="reference internal" href="types.html#syntax-functype"><span class="std std-ref">function type</span></a> indexed by the instruction&#8217;s immediate, and the call aborted with a <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> if it does not match.</p>
+the callee is dynamically checked against the <a class="reference internal" href="types.html#syntax-functype"><span class="std std-ref">function type</span></a> indexed by the instruction’s immediate, and the call aborted with a <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> if it does not match.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In the current version of WebAssembly,

@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Conventions &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Validation" href="index.html" />
     <link rel="next" title="Types" href="types.html" />
     <link rel="prev" title="Validation" href="index.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -176,7 +172,7 @@ The rules not only state constraints defining when a phrase is valid,
 they also classify it with a type.
 The following conventions are adopted in stating these rules.</p>
 <ul>
-<li><p class="first">A phrase <span class="math">\(A\)</span> is said to be &#8220;valid with type <span class="math">\(T\)</span>&#8221;
+<li><p class="first">A phrase <span class="math">\(A\)</span> is said to be “valid with type <span class="math">\(T\)</span>”
 if and only if all constraints expressed by the respective rules are met.
 The form of <span class="math">\(T\)</span> depends on what <span class="math">\(A\)</span> is.</p>
 <div class="admonition note">
@@ -191,7 +187,7 @@ and so on.</p>
 <li><p class="first">The rules implicitly assume a given <a class="reference internal" href="#context"><span class="std std-ref">context</span></a> <span class="math">\(C\)</span>.</p>
 </li>
 <li><p class="first">In some places, this context is locally extended to a context <span class="math">\(C'\)</span> with additional entries.
-The formulation &#8220;Under context <span class="math">\(C'\)</span>, ... <em>statement</em> ...&#8221; is adopted to express that the following statement must apply under the assumptions embodied in the extended context.</p>
+The formulation “Under context <span class="math">\(C'\)</span>, … <em>statement</em> …” is adopted to express that the following statement must apply under the assumptions embodied in the extended context.</p>
 </li>
 </ul>
 </div>
@@ -250,7 +246,7 @@ a recursive rule, where the premise is itself a typing judgement:</p>
   C \vdash \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }\]</div>
 <p class="last">A <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> instruction is only valid when the instruction sequence in its body is.
-Moreover, the result type must match the block&#8217;s annotation <span class="math">\([t^?]\)</span>.
+Moreover, the result type must match the block’s annotation <span class="math">\([t^?]\)</span>.
 If so, then the <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> instruction has the same type as the body.
 Inside the body an additional label of the same type is available,
 which is expressed by extending the context <span class="math">\(C\)</span> with the additional label information for the premise.</p>

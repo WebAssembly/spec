@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Runtime Structure &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Execution" href="index.html" />
     <link rel="next" title="Numerics" href="numerics.html" />
     <link rel="prev" title="Conventions" href="conventions.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -219,7 +215,7 @@ and collects runtime representations of all entities that are imported, defined,
   \href{../exec/runtime.html#syntax-moduleinst}{\mathsf{exports}} &amp; \href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}}^\ast ~\} \\
   \end{array}
 \end{array}\end{split}\]</div>
-<p>Each component references runtime instances corresponding to respective declarations from the original module &#8211; whether imported or defined &#8211; in the order of their static <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
+<p>Each component references runtime instances corresponding to respective declarations from the original module – whether imported or defined – in the order of their static <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
 <a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">Function instances</span></a>, <a class="reference internal" href="#syntax-tableinst"><span class="std std-ref">table instances</span></a>, <a class="reference internal" href="#syntax-meminst"><span class="std std-ref">memory instances</span></a>, and <a class="reference internal" href="#syntax-globalinst"><span class="std std-ref">global instances</span></a> are referenced with an indirection through their respective <a class="reference internal" href="#syntax-addr"><span class="std std-ref">addresses</span></a> in the <a class="reference internal" href="#syntax-store"><span class="std std-ref">store</span></a>.</p>
 <p>It is an invariant of the semantics that all <a class="reference internal" href="#syntax-exportinst"><span class="std std-ref">export instances</span></a> in a given module instance have different <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">names</span></a>.</p>
 </div>
@@ -249,7 +245,7 @@ However, the <a class="reference internal" href="../intro/overview.html#embedder
 <div class="section" id="table-instances">
 <span id="syntax-tableinst"></span><span id="syntax-funcelem"></span><span id="index-7"></span><h2>Table Instances<a class="headerlink" href="#table-instances" title="Permalink to this headline">¶</a></h2>
 <p>A <em>table instance</em> is the runtime representation of a <a class="reference internal" href="../syntax/modules.html#syntax-table"><span class="std std-ref">table</span></a>.
-It holds a vector of <em>function elements</em> and an optional maximum size, if one was specified in the <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> at the table&#8217;s definition site.</p>
+It holds a vector of <em>function elements</em> and an optional maximum size, if one was specified in the <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> at the table’s definition site.</p>
 <p>Each function element is either empty, representing an uninitialized table entry, or a <a class="reference internal" href="#syntax-funcaddr"><span class="std std-ref">function address</span></a>.
 Function elements can be mutated through the execution of an <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segment</span></a> or by external means provided by the <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a>.</p>
 <div class="math">
@@ -274,7 +270,7 @@ It holds a vector of <a class="reference internal" href="../syntax/values.html#s
 \def\mathdef1613#1{{}}\mathdef1613{(memory instance)} &amp; \href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;::=&amp;
   \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~\href{../syntax/conventions.html#syntax-vec}{\mathit{vec}}(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}), \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~\href{../syntax/values.html#syntax-int}{\def\mathdef1619#1{{\mathit{u}#1}}\mathdef1619{\mathit{32}}}^? \} \\
 \end{array}\end{split}\]</div>
-<p>The length of the vector always is a multiple of the WebAssembly <em>page size</em>, which is defined to be the constant <span class="math">\(65536\)</span> &#8211; abbreviated <span class="math">\(64\,\mathrm{Ki}\)</span>.
+<p>The length of the vector always is a multiple of the WebAssembly <em>page size</em>, which is defined to be the constant <span class="math">\(65536\)</span> – abbreviated <span class="math">\(64\,\mathrm{Ki}\)</span>.
 Like in a <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a>, the maximum size in a memory instance is given in units of this page size.</p>
 <p>The bytes can be mutated through <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instructions</span></a>, the execution of a <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data segment</span></a>, or by external means provided by the <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a>.</p>
 <p>It is an invariant of the semantics that the length of the byte vector, divided by page size, never exceeds the maximum size, if present.</p>
@@ -293,7 +289,7 @@ It holds an individual <a class="reference internal" href="#syntax-val"><span cl
 <div class="section" id="export-instances">
 <span id="syntax-exportinst"></span><span id="index-10"></span><h2>Export Instances<a class="headerlink" href="#export-instances" title="Permalink to this headline">¶</a></h2>
 <p>An <em>export instance</em> is the runtime representation of an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">export</span></a>.
-It defines the export&#8217;s <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a> and the associated <a class="reference internal" href="#syntax-externval"><span class="std std-ref">external value</span></a>.</p>
+It defines the export’s <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a> and the associated <a class="reference internal" href="#syntax-externval"><span class="std std-ref">external value</span></a>.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1613#1{{}}\mathdef1613{(export instance)} &amp; \href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}} &amp;::=&amp;
@@ -370,7 +366,7 @@ Conversely, a simple block label has the form</p>
 <h3>Frames<a class="headerlink" href="#frames" title="Permalink to this headline">¶</a></h3>
 <p>Activation frames carry the return arity of the respective function,
 hold the values of its <a class="reference internal" href="../syntax/modules.html#syntax-local"><span class="std std-ref">locals</span></a> (including arguments) in the order corresponding to their static <a class="reference internal" href="../syntax/modules.html#syntax-localidx"><span class="std std-ref">local indices</span></a>,
-and a reference to the function&#8217;s own <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a>:</p>
+and a reference to the function’s own <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a>:</p>
 <div class="math">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1613#1{{}}\mathdef1613{(activation)} &amp; \mathit{activation} &amp;::=&amp;
@@ -420,7 +416,7 @@ It unifies the handling of different forms of calls.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.</p>
 </div>
-<p>The <span class="math">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> and <span class="math">\(\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}\)</span> instructions model <a class="reference internal" href="#syntax-label"><span class="std std-ref">labels</span></a> and <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frames</span></a> <a class="reference internal" href="conventions.html#exec-notation"><span class="std std-ref">&#8220;on the stack&#8221;</span></a>.
+<p>The <span class="math">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> and <span class="math">\(\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}\)</span> instructions model <a class="reference internal" href="#syntax-label"><span class="std std-ref">labels</span></a> and <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frames</span></a> <a class="reference internal" href="conventions.html#exec-notation"><span class="std std-ref">“on the stack”</span></a>.
 Moreover, the administrative syntax maintains the nesting structure of the original <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instruction</span></a> or <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function body</span></a> and their <a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">instruction sequences</span></a> with an <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> marker.
 That way, the end of the inner instruction sequence is known when part of an outer sequence.</p>
 <div class="admonition note">
@@ -430,8 +426,8 @@ That way, the end of the inner instruction sequence is known when part of an out
 \[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^n]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad
 \href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\epsilon\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\]</div>
 <p>This replaces the block with a label instruction,
-which can be interpreted as &#8220;pushing&#8221; the label on the stack.
-When <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> is reached, i.e., the inner instruction sequence has been reduced to the empty sequence &#8211; or rather, a sequence of <span class="math">\(n\)</span> <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions representing the resulting values &#8211; then the <span class="math">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> instruction is eliminated courtesy of its own <a class="reference internal" href="instructions.html#exec-label"><span class="std std-ref">reduction rule</span></a>:</p>
+which can be interpreted as “pushing” the label on the stack.
+When <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> is reached, i.e., the inner instruction sequence has been reduced to the empty sequence – or rather, a sequence of <span class="math">\(n\)</span> <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions representing the resulting values – then the <span class="math">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> instruction is eliminated courtesy of its own <a class="reference internal" href="instructions.html#exec-label"><span class="std std-ref">reduction rule</span></a>:</p>
 <div class="math">
 \[\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^n\}~\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n\]</div>
 <p class="last">This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.</p>
@@ -454,8 +450,8 @@ When <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control
 \[\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_0\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~\href{../exec/runtime.html#syntax-ctxt-block}{B}^l[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}~l]~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\]</div>
 <p class="last">Here, the hole <span class="math">\([\_]\)</span> of the context is instantiated with a branch instruction.
 When a branch occurs,
-this rule replaces the targeted label and associated instruction sequence with the label&#8217;s continuation.
-The selected label is identified through the <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label index</span></a> <span class="math">\(l\)</span>, which corresponds to the number of surrounding <span class="math">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> instructions that must be hopped over &#8211; which is exactly the count encoded in the index of a block context.</p>
+this rule replaces the targeted label and associated instruction sequence with the label’s continuation.
+The selected label is identified through the <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label index</span></a> <span class="math">\(l\)</span>, which corresponds to the number of surrounding <span class="math">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> instructions that must be hopped over – which is exactly the count encoded in the index of a block context.</p>
 </div>
 </div>
 <div class="section" id="configurations">
@@ -484,24 +480,35 @@ but configurations with multiple threads may be supported in the future.</p>
 \def\mathdef1613#1{{}}\mathdef1613{(evaluation contexts)} &amp; E &amp;::=&amp;
   [\_] ~|~
   \href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast~E~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast ~|~
-  \href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~E~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} ~|~
-  \href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{\href{../exec/runtime.html#syntax-frame}{\mathit{frame}}\}~E~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
+  \href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~E~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
 \end{array}\end{split}\]</div>
 <div class="math">
-\[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
+\[\begin{split}\begin{array}{l}
+\begin{array}{lcl&#64;{\qquad}l}
 S; F; E[\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast] &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S'; F'; E[{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast]
-  &amp; (\mathrel{\mbox{if}} S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F'; {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast) \\
+\end{array}
+\\ \qquad
+  (\mathrel{\mbox{if}} S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F'; {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast) \\
+\begin{array}{lcl&#64;{\qquad}l}
+S; F; \href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{F'\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S'; F; \href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{F''\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}
+\end{array}
+\\ \qquad
+  (\mathrel{\mbox{if}} S; F'; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F''; {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast) \\[1ex]
+\begin{array}{lcl&#64;{\qquad}l}
 S; F; E[\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}] &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S; F; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
-  &amp; (\mathrel{\mbox{if}} E \neq [\_]) \\
+  &amp;(\mathrel{\mbox{if}} E \neq [\_]) \\
+S; F; \href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{F'\}~\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S; F; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
+\end{array} \\
 \end{array}\end{split}\]</div>
-<p>Reduction terminates when a thread&#8217;s instruction sequence has been reduced to a <a class="reference internal" href="#syntax-result"><span class="std std-ref">result</span></a>,
+<p>Reduction terminates when a thread’s instruction sequence has been reduced to a <a class="reference internal" href="#syntax-result"><span class="std std-ref">result</span></a>,
 that is, either a sequence of <a class="reference internal" href="#syntax-val"><span class="std std-ref">values</span></a> or to a <span class="math">\(\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>For example, the following instruction sequence,</p>
+<p>The restriction on evaluation contexts rules out contexts like <span class="math">\([\_]\)</span> and <span class="math">\(\epsilon~[\_]~\epsilon\)</span> for which <span class="math">\(E[\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}] = \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span>.</p>
+<p>For an example of reduction under evaluation contexts, consider the following instruction sequence.</p>
 <div class="math">
 \[(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_1)~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_2)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}}~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_3)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}\]</div>
-<p>can be decomposed into <span class="math">\(E[(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_2)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}}]\)</span> where</p>
+<p>This can be decomposed into <span class="math">\(E[(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_2)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}}]\)</span> where</p>
 <div class="math">
 \[E = (\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_1)~[\_]~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_3)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}\]</div>
 <p class="last">Moreover, this is the <em>only</em> possible choice of evaluation context where the contents of the hole matches the left-hand side of a reduction rule.</p>

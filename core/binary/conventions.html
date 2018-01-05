@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Conventions &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Binary Format" href="index.html" />
     <link rel="next" title="Values" href="values.html" />
     <link rel="prev" title="Binary Format" href="index.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -114,12 +110,12 @@ For example, numbers may be encoded as if they had optional leading zeros.
 Implementations of decoders must support all possible alternatives;
 implementations of encoders can pick any allowed encoding.</p>
 </div>
-<p>The recommended extension for files containing WebAssembly modules in binary format is &#8220;<span class="math">\(\mathtt{.wasm}\)</span>&#8221;
-and the recommended <a class="reference external" href="https://www.iana.org/assignments/media-types/media-types.xhtml">Media Type</a> is &#8220;<span class="math">\(\mathtt{application/wasm}\)</span>&#8221;.</p>
+<p>The recommended extension for files containing WebAssembly modules in binary format is “<span class="math">\(\mathtt{.wasm}\)</span>”
+and the recommended <a class="reference external" href="https://www.iana.org/assignments/media-types/media-types.xhtml">Media Type</a> is “<span class="math">\(\mathtt{application/wasm}\)</span>”.</p>
 <table class="docutils footnote" frame="void" id="compression" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Additional encoding layers &#8211; for example, introducing compression &#8211; may be defined on top of the basic representation defined here.
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Additional encoding layers – for example, introducing compression – may be defined on top of the basic representation defined here.
 However, such layers are outside the scope of the current specification.</td></tr>
 </tbody>
 </table>

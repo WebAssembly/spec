@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Values &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Structure" href="index.html" />
     <link rel="next" title="Types" href="types.html" />
     <link rel="prev" title="Conventions" href="conventions.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -134,7 +130,7 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned values.
-However, some operations <a class="reference internal" href="../exec/numerics.html#aux-signed"><span class="std std-ref">convert</span></a> them to signed based on a two&#8217;s complement interpretation.</p>
+However, some operations <a class="reference internal" href="../exec/numerics.html#aux-signed"><span class="std std-ref">convert</span></a> them to signed based on a two’s complement interpretation.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The main integer types occurring in this specification are <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2191#1{{\mathit{u}#1}}\mathdef2191{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2192#1{{\mathit{u}#1}}\mathdef2192{\mathit{64}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2196#1{{\mathit{s}#1}}\mathdef2196{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2197#1{{\mathit{s}#1}}\mathdef2197{\mathit{64}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2199#1{{\mathit{i}#1}}\mathdef2199{\mathit{8}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2200#1{{\mathit{i}#1}}\mathdef2200{\mathit{16}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2201#1{{\mathit{i}#1}}\mathdef2201{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2202#1{{\mathit{i}#1}}\mathdef2202{\mathit{64}}}\)</span>.

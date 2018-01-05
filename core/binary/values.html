@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Values &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Binary Format" href="index.html" />
     <link rel="next" title="Types" href="types.html" />
     <link rel="prev" title="Conventions" href="conventions.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -124,7 +120,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
   n{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}}~~m{:}\def\mathdef1289#1{{\mathtt{u}#1}}\mathdef1289{(N\mathtt{-7})} &amp;\Rightarrow&amp;
     2^7\cdot m + (n-2^7) &amp; (\mathrel{\mbox{if}} n \geq 2^7 \wedge N &gt; 7) \\
 \end{array}\end{split}\]</div>
-<p><a class="reference internal" href="../syntax/values.html#syntax-sint"><span class="std std-ref">Signed integers</span></a> are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Signed_LEB128">signed LEB128</a> format, which uses a two&#8217;s complement representation.
+<p><a class="reference internal" href="../syntax/values.html#syntax-sint"><span class="std std-ref">Signed integers</span></a> are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Signed_LEB128">signed LEB128</a> format, which uses a two’s complement representation.
 As an additional constraint, the total number of bytes encoding a value of type <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1236#1{{\mathit{s}#1}}\mathdef1236{N}}\)</span> must not exceed <span class="math">\(\mathrm{ceil}(N/7)\)</span> bytes.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}
@@ -142,8 +138,8 @@ As an additional constraint, the total number of bytes encoding a value of type 
 \end{array}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>The side conditions <span class="math">\(N &gt; 7\)</span> in the productions for non-terminal bytes of the <span class="math">\(\def\mathdef1291#1{{\mathit{u}#1}}\mathdef1291{}\)</span> and <span class="math">\(\def\mathdef1292#1{{\mathit{s}#1}}\mathdef1292{}\)</span> encodings restrict the encoding&#8217;s length.
-However, &#8220;trailing zeros&#8221; are still allowed within these bounds.
+<p>The side conditions <span class="math">\(N &gt; 7\)</span> in the productions for non-terminal bytes of the <span class="math">\(\def\mathdef1291#1{{\mathit{u}#1}}\mathdef1291{}\)</span> and <span class="math">\(\def\mathdef1292#1{{\mathit{s}#1}}\mathdef1292{}\)</span> encodings restrict the encoding’s length.
+However, “trailing zeros” are still allowed within these bounds.
 For example, <span class="math">\(\def\mathdef1293#1{\mathtt{0x#1}}\mathdef1293{03}\)</span> and <span class="math">\(\def\mathdef1294#1{\mathtt{0x#1}}\mathdef1294{83}~\def\mathdef1295#1{\mathtt{0x#1}}\mathdef1295{00}\)</span> are both well-formed encodings for the value <span class="math">\(3\)</span> as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1232#1{{\mathit{u}#1}}\mathdef1232{\mathit{8}}}\)</span>.
 Similarly, either of <span class="math">\(\def\mathdef1296#1{\mathtt{0x#1}}\mathdef1296{7e}\)</span> and <span class="math">\(\def\mathdef1297#1{\mathtt{0x#1}}\mathdef1297{FE}~\def\mathdef1298#1{\mathtt{0x#1}}\mathdef1298{7F}\)</span> and <span class="math">\(\def\mathdef1299#1{\mathtt{0x#1}}\mathdef1299{FE}~\def\mathdef1300#1{\mathtt{0x#1}}\mathdef1300{FF}~\def\mathdef1301#1{\mathtt{0x#1}}\mathdef1301{7F}\)</span> are well-formed encodings of the value <span class="math">\(-2\)</span> as a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1238#1{{\mathit{s}#1}}\mathdef1238{\mathit{16}}}\)</span>.</p>
 <p class="last">The side conditions on the value <span class="math">\(n\)</span> of terminal bytes further enforce that
@@ -163,7 +159,7 @@ Similarly, both <span class="math">\(\def\mathdef1304#1{\mathtt{0x#1}}\mathdef13
 </div>
 <div class="section" id="names">
 <span id="binary-name"></span><span id="binary-utf8"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are encoded as a <a class="reference internal" href="conventions.html#binary-vec"><span class="std std-ref">vector</span></a> of bytes containing the <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> UTF-8 encoding of the name&#8217;s code point sequence.</p>
+<p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are encoded as a <a class="reference internal" href="conventions.html#binary-vec"><span class="std std-ref">vector</span></a> of bytes containing the <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> UTF-8 encoding of the name’s code point sequence.</p>
 <div class="math">
 \[\begin{split}\begin{array}{llclllll}
 \def\mathdef1228#1{{}}\mathdef1228{name} &amp; \href{../binary/values.html#binary-name}{\mathtt{name}} &amp;::=&amp;

@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Soundness &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Appendix" href="index.html" />
     <link rel="next" title="Index of Types" href="index-types.html" />
     <link rel="prev" title="Custom Sections" href="custom.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -375,7 +371,7 @@ which relates the <a class="reference internal" href="../exec/runtime.html#synta
 <p>Configurations and threads are classified by their <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a>.
 In addition to the store <span class="math">\(S\)</span>, threads are typed under a <em>return type</em> <span class="math">\(\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^?\)</span>, which controls whether and with which type a <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}}\)</span> instruction is allowed.
 This type is absent (<span class="math">\(\epsilon\)</span>) except for instruction sequences inside an administrative <span class="math">\(\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}\)</span> instruction.</p>
-<p>Finally, <a class="reference internal" href="../exec/runtime.html#syntax-frame"><span class="std std-ref">frames</span></a> are classified with <em>frame contexts</em>, which extend the <a class="reference internal" href="#module-context"><span class="std std-ref">module contexts</span></a> of a frame&#8217;s associated <a class="reference internal" href="../exec/runtime.html#syntax-moduleinst"><span class="std std-ref">module instance</span></a> with the <a class="reference internal" href="../syntax/modules.html#syntax-local"><span class="std std-ref">locals</span></a> that the frame contains.</p>
+<p>Finally, <a class="reference internal" href="../exec/runtime.html#syntax-frame"><span class="std std-ref">frames</span></a> are classified with <em>frame contexts</em>, which extend the <a class="reference internal" href="#module-context"><span class="std std-ref">module contexts</span></a> of a frame’s associated <a class="reference internal" href="../exec/runtime.html#syntax-moduleinst"><span class="std std-ref">module instance</span></a> with the <a class="reference internal" href="../syntax/modules.html#syntax-local"><span class="std std-ref">locals</span></a> that the frame contains.</p>
 <div class="section" id="configurations">
 <span id="index-11"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-config"><span class="std std-ref">Configurations</span></a> <span class="math">\(S;T\)</span><a class="headerlink" href="#configurations" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -435,7 +431,7 @@ the instruction sequence <span class="math">\(\href{../syntax/instructions.html#
 <span id="valid-instr-admin"></span><span id="index-14"></span><h2>Administrative Instructions<a class="headerlink" href="#administrative-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Typing rules for <a class="reference internal" href="../exec/runtime.html#syntax-instr-admin"><span class="std std-ref">administrative instructions</span></a> are specified as follows.
 In addition to the <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> <span class="math">\(C\)</span>, typing of these instructions is defined under a given <a class="reference internal" href="../exec/runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span>.
-To that end, all previous typing judgements <span class="math">\(C \vdash \mathit{prop}\)</span> are generalized to include the store, as in <span class="math">\(S; C \vdash \mathit{prop}\)</span>, by implicitly adding <span class="math">\(S\)</span> to all rules &#8211; <span class="math">\(S\)</span> is never modified by the pre-existing rules, but it is accessed in the extra rules for <a class="reference internal" href="#valid-instr-admin"><span class="std std-ref">administrative instructions</span></a> given below.</p>
+To that end, all previous typing judgements <span class="math">\(C \vdash \mathit{prop}\)</span> are generalized to include the store, as in <span class="math">\(S; C \vdash \mathit{prop}\)</span>, by implicitly adding <span class="math">\(S\)</span> to all rules – <span class="math">\(S\)</span> is never modified by the pre-existing rules, but it is accessed in the extra rules for <a class="reference internal" href="#valid-instr-admin"><span class="std std-ref">administrative instructions</span></a> given below.</p>
 <div class="section" id="index-15">
 <span id="id4"></span><h3><span class="math">\(\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span><a class="headerlink" href="#index-15" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -647,7 +643,7 @@ If a <a class="reference internal" href="../exec/runtime.html#syntax-config"><sp
 then it either diverges or takes a finite number of steps to reach a terminal configuration <span class="math">\(S';T'\)</span> (i.e., <span class="math">\(S;T \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S';T'\)</span>) that is valid with the same resulttype (i.e., <span class="math">\(\href{../appendix/properties.html#valid-config}{\vdash} S';T' : [t^\ast]\)</span>)
 and where <span class="math">\(S'\)</span> is an <a class="reference internal" href="#extend-store"><span class="std std-ref">extension</span></a> of <span class="math">\(S\)</span> (i.e., <span class="math">\(\href{../appendix/properties.html#extend-store}{\vdash} S \href{../appendix/properties.html#extend}{\preceq} S'\)</span>).</p>
 <p>In other words, every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
-Consequently, given a <a class="reference internal" href="#valid-store"><span class="std std-ref">valid store</span></a>, no computation defined by <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiation</span></a> or <a class="reference internal" href="../exec/modules.html#exec-invocation"><span class="std std-ref">invocation</span></a> of a valid module can &#8220;crash&#8221; or otherwise (mis)behave in ways not covered by the <a class="reference internal" href="../exec/index.html#exec"><span class="std std-ref">execution</span></a> semantics given in this specification.</p>
+Consequently, given a <a class="reference internal" href="#valid-store"><span class="std std-ref">valid store</span></a>, no computation defined by <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiation</span></a> or <a class="reference internal" href="../exec/modules.html#exec-invocation"><span class="std std-ref">invocation</span></a> of a valid module can “crash” or otherwise (mis)behave in ways not covered by the <a class="reference internal" href="../exec/index.html#exec"><span class="std std-ref">execution</span></a> semantics given in this specification.</p>
 <table class="docutils footnote" frame="void" id="cite-pldi2017" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">

@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Conventions &#8212; WebAssembly 1.0</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +24,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="WebAssembly 1.0" href="../index.html" />
-    <link rel="up" title="Execution" href="index.html" />
     <link rel="next" title="Runtime Structure" href="runtime.html" />
     <link rel="prev" title="Execution" href="index.html" />
    
@@ -37,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body role="document">
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -150,15 +146,15 @@ Every rule has the following general form:</p>
 \[\mathit{configuration} \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad \mathit{configuration}\]</div>
 <p>A <em>configuration</em> is a syntactic description of a program state.
 Each rule specifies one <em>step</em> of execution.
-As long as there is at most one reduction rule applicable to a given configuration, reduction &#8211; and thereby execution &#8211; is <em>deterministic</em>.
+As long as there is at most one reduction rule applicable to a given configuration, reduction – and thereby execution – is <em>deterministic</em>.
 WebAssembly has only very few exceptions to this, which are noted explicitly in this specification.</p>
 <p>For WebAssembly, a configuration typically is a tuple <span class="math">\((S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast)\)</span> consisting of the current <a class="reference internal" href="runtime.html#store"><span class="std std-ref">store</span></a> <span class="math">\(S\)</span>, the <a class="reference internal" href="runtime.html#frame"><span class="std std-ref">call frame</span></a> <span class="math">\(F\)</span> of the current function, and the sequence of <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> that is to be executed.
 (A more precise definition is given <a class="reference internal" href="runtime.html#syntax-config"><span class="std std-ref">later</span></a>.)</p>
 <p>To avoid unnecessary clutter, the store <span class="math">\(S\)</span> and the frame <span class="math">\(F\)</span> are omitted from reduction rules that do not touch them.</p>
 <p>There is no separate representation of the <a class="reference internal" href="runtime.html#stack"><span class="std std-ref">stack</span></a>.
-Instead, it is conveniently represented as part of the configuration&#8217;s instruction sequence.
+Instead, it is conveniently represented as part of the configuration’s instruction sequence.
 In particular, <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> are defined to coincide with <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions,
-and a sequence of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions can be interpreted as an operand &#8220;stack&#8221; that grows to the right.</p>
+and a sequence of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions can be interpreted as an operand “stack” that grows to the right.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>For example, the <a class="reference internal" href="instructions.html#exec-binop"><span class="std std-ref">reduction rule</span></a> for the <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction can be given as follows:</p>
