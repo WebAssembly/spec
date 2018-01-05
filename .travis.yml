@@ -5,6 +5,7 @@ sudo: on
 install:
   - ./interpreter/meta/travis/install-ocaml.sh
   - sudo pip install sphinx
+  - sudo apt-get install texlive-full
 
 script:
   - ./interpreter/meta/travis/build-test.sh

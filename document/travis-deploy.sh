@@ -9,23 +9,10 @@ TARGET_BRANCH="gh-pages"
 
 function doCompile {
   # TODO(littledan): Integrate with document/deploy.sh
-  cd document/js-api
+  cd document
   make
-  cd ../web-api
-  make
-  cd ../core
-  make html
-  cd ../../out
-  if [[ ! -e js-api ]]; then mkdir js-api; fi
-  mv ../document/js-api/_build/html/index.html js-api/index.html
-  git add js-api/index.html
-  if [[ ! -e web-api ]]; then mkdir web-api; fi
-  mv ../document/web-api/_build/html/index.html web-api/index.html
-  git add web-api/index.html
-  if [[ ! -e core ]]; then mkdir core; fi
-  mv ../document/core/_build/html/* core/
-  git add core/
   cd ../
+  mv document/_build/* out/
 }
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
