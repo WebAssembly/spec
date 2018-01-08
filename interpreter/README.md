@@ -164,10 +164,16 @@ The implementation consumes a WebAssembly AST given in S-expression syntax. Here
 
 Note: The grammar is shown here for convenience, the definite source is the [specification of the text format](https://webassembly.github.io/spec/text/).
 ```
-value: <int> | <float>
-var: <int> | <name>
-name: $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
+num:    <digit> (_? <digit>)*
+hexnum: <hexdigit> (_? <hexdigit>)*
+nat:    <num> | 0x<hexnum>
+int:    <nat> | +<nat> | -<nat>
+float:  <num>.<num>?(e|E <num>)? | 0x<hexnum>.<hexnum>?(p|P <num>)?
+name:   $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
+
+value:  <int> | <float>
+var:    <nat> | <name>
 
 type: i32 | i64 | f32 | f64
 elem_type: anyfunc
@@ -175,7 +181,7 @@ elem_type: anyfunc
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
 relop: eq | ne | lt | ...
-sign: s|u
+sign:  s|u
 offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
