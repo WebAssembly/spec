@@ -66,8 +66,6 @@ const EXPECT_INVALID = false;
 
 /* DATA **********************************************************************/
 
-let soft_validate = true;
-
 let $$;
 
 // Default imports.
@@ -155,19 +153,6 @@ function assert_invalid(bytes) {
 }
 
 const assert_malformed = assert_invalid;
-
-function assert_soft_invalid(bytes) {
-    uniqueTest(() => {
-        try {
-            module(bytes, /* valid */ soft_validate);
-            if (soft_validate)
-                throw new Error('did not fail');
-        } catch(e) {
-            if (soft_validate)
-                assert_true(e instanceof WebAssembly.CompileError, "expected soft invalid failure:");
-        }
-    }, "A wast module that *could* be invalid under certain engines.");
-}
 
 function instance(bytes, imports = registry, valid = true) {
     if (imports instanceof Result) {
