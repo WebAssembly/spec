@@ -1424,7 +1424,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2018-01-08">8 January 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2018-01-09">9 January 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1439,7 +1439,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 8 January 2018,
+In addition, as of 9 January 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1636,7 +1636,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
       <p>Return <var>promise</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="instantiate a WebAssembly module">
+   <div class="algorithm" data-algorithm="instantiate">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="instantiate-a-webassembly-module">instantiate a WebAssembly module</dfn> from a <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module⑥">Module</a></code> <var>moduleObject</var> and imports <var>importObject</var>, perform the following steps: 
     <ol>
      <li data-md="">
@@ -1671,6 +1671,8 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
           <ol>
            <li data-md="">
             <p><a data-link-type="dfn" href="#create-a-host-function" id="ref-for-create-a-host-function">Create a host function</a> from <var>v</var> and let <var>funcaddr</var> be the result.</p>
+           <li data-md="">
+            <p>Let <var>index</var> be the number of external functions in <var>imports</var>. This value <var>index</var> is known as the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="index-of-the-host-function">index of the host function</dfn> <var>funcaddr</var>.</p>
           </ol>
          <li data-md="">
           <p>Let <var>externfunc</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①">external value</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval②">𝖿𝗎𝗇𝖼</a> <var>funcaddr</var>.</p>
@@ -2243,22 +2245,24 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p>Let <var>funcinst</var> be <var>store</var>.𝖿𝗎𝗇𝖼𝗌[<var>funcaddr</var>].</p>
      <li data-md="">
       <p>If <var>funcinst</var> is of the form {𝗍𝗒𝗉𝖾 <var>functype</var>, 𝗁𝗈𝗌𝗍𝖼𝗈𝖽𝖾 <var>hostfunc</var>},</p>
-     <li data-md="">
-      <p class="assertion">Assert: <var>hostfunc</var> is a JavaScript object and <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-iscallable" id="ref-for-sec-iscallable①">IsCallable</a>(<var>hostfunc</var>) is true.</p>
-     <li data-md="">
-      <p>Let <var>name</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-get-o-p" id="ref-for-sec-get-o-p②">Get</a>(<var>hostfunc</var>, "name").</p>
-     <li data-md="">
-      <p>Return ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>name</var>).</p>
+      <ol>
+       <li data-md="">
+        <p class="assertion">Assert: <var>hostfunc</var> is a JavaScript object and <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-iscallable" id="ref-for-sec-iscallable①">IsCallable</a>(<var>hostfunc</var>) is true.</p>
+       <li data-md="">
+        <p>Let <var>index</var> be the <a data-link-type="dfn" href="#index-of-the-host-function" id="ref-for-index-of-the-host-function">index of the host function</a> <var>funcaddr</var>.</p>
+      </ol>
      <li data-md="">
       <p>Otherwise,</p>
+      <ol>
+       <li data-md="">
+        <p>Let <var>moduleinst</var> be <var>funcinst</var>.𝗆𝗈𝖽𝗎𝗅𝖾.</p>
+       <li data-md="">
+        <p class="assertion">Assert: <var>funcaddr</var> is contained in <var>moduleinst</var>.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌.</p>
+       <li data-md="">
+        <p>Let <var>index</var> be the index of <var>moduleinst</var>.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌 where <var>funcaddr</var> is found.</p>
+      </ol>
      <li data-md="">
-      <p>Let <var>moduleinst</var> be <var>funcinst</var>.𝗆𝗈𝖽𝗎𝗅𝖾.</p>
-     <li data-md="">
-      <p class="assertion">Assert: <var>funcaddr</var> is contained in <var>moduleinst</var>.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌.</p>
-     <li data-md="">
-      <p>Let <var>index</var> be the index of <var>moduleinst</var>.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌 where <var>funcaddr</var> is found.</p>
-     <li data-md="">
-      <p>Return ! <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tostring" id="ref-for-sec-tostring①">ToString</a>(<var>index</var>).</p>
+      <p>Return ! <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>index</var>).</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="a new Exported Function">
@@ -2652,6 +2656,7 @@ The particular exception here is implementation-defined in both cases.</p>
    <li><a href="#enumdef-importexportkind">ImportExportKind</a><span>, in §3.1</span>
    <li><a href="#dom-module-imports">imports(module)</a><span>, in §3.1</span>
    <li><a href="#dom-module-imports-moduleobject">imports(moduleObject)</a><span>, in §3.1</span>
+   <li><a href="#index-of-the-host-function">index of the host function</a><span>, in §3</span>
    <li>
     initial
     <ul>
@@ -3085,6 +3090,12 @@ any other Web API that loads ES6 modules via URL—as part of <a href="https://g
    <ul>
     <li><a href="#ref-for-instantiate-a-webassembly-module">3. The WebAssembly Namespace</a> <a href="#ref-for-instantiate-a-webassembly-module①">(2)</a>
     <li><a href="#ref-for-instantiate-a-webassembly-module②">3.2. Instances</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="index-of-the-host-function">
+   <b><a href="#index-of-the-host-function">#index-of-the-host-function</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-index-of-the-host-function">3.5. Exported Functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="instantiate-a-promise-of-a-module">
