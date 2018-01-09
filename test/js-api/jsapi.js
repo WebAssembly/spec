@@ -791,4 +791,95 @@ test(() => {
         g:{'⚡':1}});
 }, "'WebAssembly.instantiate' function");
 
+const complexReExportingModuleBinary = (() => {
+    let builder = new WasmModuleBuilder();
+
+    let fIndex = builder.addImport('a', 'f', kSig_i_i);
+    let gIndex = builder.addImport('a', 'g', kSig_i_v);
+    builder.addImportedMemory('c', 'd');
+    builder.addImportedTable('e', 'f');
+
+    builder.addExport('x', fIndex)
+    builder.addExport('y', gIndex)
+    builder.addExportOfKind('z', kExternalMemory, 0)
+    builder.addExportOfKind('w', kExternalTable, 0)
+
+    return builder.toBuffer();
+})();
+
+const complexTableReExportingModuleBinary = (() => {
+    let builder = new WasmModuleBuilder();
+
+    builder.addImport('a', '_', kSig_v_v);
+    let gIndex = builder.addImport('a', 'g', kSig_i_v);
+    let fIndex = builder.addImport('a', 'f', kSig_i_i);
+    let hIndex = builder
+        .addFunction('h', kSig_i_v)
+        .addBody([
+            kExprI32Const,
+            46,
+            kExprEnd
+        ]).index;
+
+    builder.setFunctionTableLength(3);
+    builder.appendToTable([fIndex, gIndex, hIndex]);
+    builder.addExportOfKind('tab', kExternalTable, 0);
+
+    return builder.toBuffer();
+})();
+
+
+test(() => {
+  let module = new WebAssembly.Module(complexReExportingModuleBinary);
+  let memory = new WebAssembly.Memory({initial: 0});
+  let table = new WebAssembly.Table({initial: 0, element: 'anyfunc'});
+  let imports = {
+    a: { f(x) { return x+1; }, g: exportingInstance.exports.f },
+    c: { d: memory },
+    e: { f: table },
+  };
+  let instance = reExportingInstance =
+      new WebAssembly.Instance(module, imports);
+
+  assert_equals(instance.exports.x.name, "0");
+  assert_false(instance.exports.x === imports.a.f);
+
+  // Previously exported Wasm functions are re-exported with the same value
+  assert_equals(instance.exports.y, exportingInstance.exports.f);
+  assert_equals(instance.exports.y.name, "0");
+
+  // Re-exported Memory and Table objects have the same value
+  assert_equals(instance.exports.z, memory);
+  assert_equals(instance.exports.w, table);
+
+  // Importing the same JS function object results in a distinct exported
+  // function object, whereas previously exported Wasm functions are
+  // re-exported with the same identity.
+  let instance2 = new WebAssembly.Instance(module, imports);
+  assert_false(instance.exports.x === instance2.exports.x);
+  assert_equals(instance.exports.y, instance2.exports.y);
+}, "Exported values have cached JS objects");
+
+test(() => {
+  let module = new WebAssembly.Module(complexTableReExportingModuleBinary);
+  let instance = new WebAssembly.Instance(module,
+      { a: { _() { }, f: reExportingInstance.exports.x,
+             g: exportingInstance.exports.f } });
+  let table = instance.exports.tab;
+
+  // The functions that were put in come right back out
+  assert_equals(table.get(0), reExportingInstance.exports.x);
+  assert_equals(table.get(1), exportingInstance.exports.f);
+
+  // The original function indices are reflected in the name
+  assert_equals(table.get(0).name, "0");
+  assert_equals(table.get(1).name, "0");
+  assert_equals(table.get(2).name, "3");
+
+  // All of the functions work
+  assert_equals(table.get(0)(5), 6);
+  assert_equals(table.get(1)(), 42);
+  assert_equals(table.get(2)(), 46);
+}, "Tables export cached ");
+
 })();
