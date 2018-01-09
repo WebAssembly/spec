@@ -306,7 +306,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. Return |promise|.
 </div>
 
-<div algorithm>
+<div algorithm="instantiate">
   To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
     1. If |module|.[=𝗂𝗆𝗉𝗈𝗋𝗍𝗌=] is not an empty list, and |importObject| is undefined, throw a {{TypeError}} exception.
@@ -323,6 +323,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
                 Note: The signature is checked by [=instantiate_module=] invoked below.
             1. Otherwise,
                 1. [=Create a host function=] from |v| and let |funcaddr| be the result.
+                1. Let |index| be the number of external functions in |imports|. This value |index| is known as the <dfn>index of the host function</dfn> |funcaddr|.
             1. Let |externfunc| be the [=external value=] [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
             1. [=Append=] |externfunc| to |imports|.
         1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] |globaltype|,
@@ -698,14 +699,13 @@ This slot holds a [=function address=] relative to the current agent's [=associa
     1. Let |store| be the current agent's [=associated store=].
     1. Let |funcinst| be |store|.𝖿𝗎𝗇𝖼𝗌[|funcaddr|].
     1. If |funcinst| is of the form {𝗍𝗒𝗉𝖾 |functype|, 𝗁𝗈𝗌𝗍𝖼𝗈𝖽𝖾 |hostfunc|},
-      1. Assert: |hostfunc| is a JavaScript object and [=IsCallable=](|hostfunc|) is true.
-      1. Let |name| be ? [=Get=](|hostfunc|, "name").
-      1. Return ? [=ToString=](|name|).
+        1. Assert: |hostfunc| is a JavaScript object and [=IsCallable=](|hostfunc|) is true.
+        1. Let |index| be the [=index of the host function=] |funcaddr|.
     1. Otherwise,
-      1. Let |moduleinst| be |funcinst|.𝗆𝗈𝖽𝗎𝗅𝖾.
-      1. Assert: |funcaddr| is contained in |moduleinst|.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌.
-      1. Let |index| be the index of |moduleinst|.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌 where |funcaddr| is found.
-      1. Return ! [=ToString=](|index|).
+        1. Let |moduleinst| be |funcinst|.𝗆𝗈𝖽𝗎𝗅𝖾.
+        1. Assert: |funcaddr| is contained in |moduleinst|.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌.
+        1. Let |index| be the index of |moduleinst|.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌 where |funcaddr| is found.
+    1. Return ! [=ToString=](|index|).
 </div>
 
 <div algorithm>
