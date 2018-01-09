@@ -596,8 +596,8 @@ dictionary TableDescriptor {
 [LegacyNamespace=WebAssembly, Constructor(TableDescriptor descriptor), Exposed=(Window,Worker,Worklet)]
 interface Table {
   unsigned long grow([EnforceRange] unsigned long delta);
-  Function? get([EnforceRange] unsigned long delta);
-  void set([EnforceRange] unsigned long delta, Function? value);
+  Function? get([EnforceRange] unsigned long index);
+  void set([EnforceRange] unsigned long index, Function? value);
   readonly attribute unsigned long length;
 };
 </pre>
@@ -846,3 +846,9 @@ same class of exception is thrown as for out of memory conditions in JavaScript.
 The particular exception here is implementation-defined in both cases.
 
 Note: ECMAScript doesn't specify any sort of behavior on out-of-memory conditions; implementations have been observed to throw OOMError and to crash. Either is valid here.
+
+<h2 id="appendix-changes">Appendix A: Changes from previous versions</h2>
+
+The WebAssembly JS interface was previously documented in <a href="https://github.com/WebAssembly/design/blob/149ce422f3f4c7bcdec9bba9d489d9b28cb726ce/JS.md">JS.md</a> in the WebAssembly design repository. The notation used in that version was loosely based on the ECMAScript specification [[ECMASCRIPT]], whereas this specification is based on WebIDL [[WEBIDL]]. In the transition, there were a couple of small, normative, observable changes in behavior. This section documents them.
+- Methods were previously unenumerable properties of objects, keeping with ECMAScript conventions; in this specification, the methods are enumerable, keeping with WebIDL conventions.
+- Appropriate integer values were previously through a <a href="https://github.com/WebAssembly/design/blob/149ce422f3f4c7bcdec9bba9d489d9b28cb726ce/JS.md#tononwrappinguint32">ToNonWrappingUint32</a> abstract operation; in this specification, they are enforced through the WebIDL type <code>[EnforceRange] unsigned long</code>. The major difference in semantics is that the latter type will throw a TypeError on NaN and things which convert to NaN under the [=ToNumber=] operation (e.g., undefined, strings that don't parse as numbers). In some places, such values are declared as <code>optional</code> to similar effect; in other places, this is not possible within WebIDL conventions.
