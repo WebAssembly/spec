@@ -5,12 +5,10 @@ BUILDDIR = _build
 # Global targets.
 
 .PHONY: all
-all: $(DIRS)
+all: $(BUILDDIR) root $(DIRS)
 
 $(BUILDDIR):
 	mkdir -p $@
-	cp -f $(FILES) $(BUILDDIR)/
-	touch $(BUILDDIR)/.nojekyll
 
 .PHONY: deploy
 deploy:
@@ -25,6 +23,11 @@ clean: $(DIRS:%=clean-%)
 
 
 # Directory-specific targets.
+
+.PHONY: root
+root: $(BUILDDIR)
+	touch $(BUILDDIR)/.nojekyll
+	cp -f $(FILES) $(BUILDDIR)/
 
 .PHONY: $(DIRS)
 $(DIRS): %: $(BUILDDIR)
