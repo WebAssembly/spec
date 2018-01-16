@@ -61,7 +61,8 @@ let harness =
   "}\n" ^
   "\n" ^
   "function get(instance, name) {\n" ^
-  "  return instance.exports[name];\n" ^
+  "  let v = instance.exports[name];\n" ^
+  "  return (v instanceof WebAssembly.Global) ? v.value : v;\n" ^
   "}\n" ^
   "\n" ^
   "function exports(name, instance) {\n" ^
