@@ -1,3 +1,48 @@
+.. LINK MACROS
+
+.. External Standards
+.. ------------------
+
+.. |IEEE754| replace:: IEEE 754-2008
+.. _IEEE754: http://ieeexplore.ieee.org/document/4610935/
+
+.. |Unicode| replace:: Unicode
+.. _Unicode: http://www.unicode.org/versions/latest/
+
+.. |ASCII| replace:: ASCII
+.. _ASCII: http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d
+
+
+.. External Definitions
+.. --------------------
+
+.. |LittleEndian| replace:: little endian
+.. _LittleEndian: https://en.wikipedia.org/wiki/Endianness#Little-endian
+
+.. |LEB128| replace:: LEB128
+.. _LEB128: https://en.wikipedia.org/wiki/LEB128
+.. |UnsignedLEB128| replace:: unsigned LEB128
+.. _UnsignedLEB128: https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128
+.. |SignedLEB128| replace:: signed LEB128
+.. _SignedLEB128: https://en.wikipedia.org/wiki/LEB128#Signed_LEB128
+
+.. |SExpressions| replace:: S-expressions
+.. _SExpressions: https://en.wikipedia.org/wiki/S-expression
+
+.. |MediaType| replace:: Media Type
+.. _MediaType: https://www.iana.org/assignments/media-types/media-types.xhtml
+
+.. Literature
+.. ----------
+
+.. |PLDI2017| replace:: Bringing the Web up to Speed with WebAssembly
+.. _PLDI2017: https://dl.acm.org/citation.cfm?doid=3062341.3062363>
+
+.. |TAPL| replace:: Types and Programming Languages
+.. _TAPL: https://www.cis.upenn.edu/~bcpierce/tapl/
+
+
+
 .. MATH MACROS
 
 
@@ -488,6 +533,7 @@
 
 .. Lexical grammar, non-terminals
 
+.. |Tsource| mathdef:: \xref{text/lexical}{text-source}{\T{source}}
 .. |Tchar| mathdef:: \xref{text/lexical}{text-char}{\T{char}}
 .. |Tspace| mathdef:: \xref{text/lexical}{text-space}{\T{space}}
 .. |Tformat| mathdef:: \xref{text/lexical}{text-format}{\T{format}}
@@ -716,6 +762,9 @@
 .. |allocglobal| mathdef:: \xref{exec/modules}{alloc-global}{\F{allocglobal}}
 .. |allocmodule| mathdef:: \xref{exec/modules}{alloc-module}{\F{allocmodule}}
 
+.. |growtable| mathdef:: \xref{exec/modules}{grow-table}{\F{growtable}}
+.. |growmem| mathdef:: \xref{exec/modules}{grow-mem}{\F{growmem}}
+
 
 .. Addresses, non-terminals
 
@@ -813,10 +862,8 @@
 
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
-.. |INSTANTIATE| mathdef:: \xref{exec/runtime}{syntax-instantiate}{\K{instantiate}}
 .. |INITELEM| mathdef:: \xref{exec/runtime}{syntax-init_elem}{\K{init\_elem}}
 .. |INITDATA| mathdef:: \xref{exec/runtime}{syntax-init_data}{\K{init\_data}}
-.. |DO| mathdef:: \xref{exec/runtime}{syntax-do}{\K{do}}
 
 
 .. Values & Results, non-terminals
@@ -826,8 +873,6 @@
 
 
 .. Administrative Instructions, non-terminals
-
-.. |moduleinstr| mathdef:: \xref{exec/runtime}{syntax-moduleinstr}{\X{moduleinstr}}
 
 .. |XB| mathdef:: \xref{exec/runtime}{syntax-ctxt-block}{B}
 
@@ -923,6 +968,7 @@
 
 .. Other meta functions
 
+.. |instantiate| mathdef:: \xref{exec/modules}{exec-instantiation}{\F{instantiate}}
 .. |invoke| mathdef:: \xref{exec/modules}{exec-invocation}{\F{invoke}}
 
 
@@ -940,7 +986,6 @@
 .. Judgements
 
 .. |vdashadmininstr| mathdef:: \xref{appendix/properties}{valid-instr-admin}{\vdash}
-.. |vdashmoduleinstr| mathdef:: \xref{appendix/properties}{valid-moduleinstr}{\vdash}
 
 .. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
 .. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}
@@ -981,3 +1026,10 @@
 .. |Bmodulenamesubsec| mathdef:: \xref{appendix/custom}{binary-modulenamesec}{\B{modulenamesubsec}}
 .. |Bfuncnamesubsec| mathdef:: \xref{appendix/custom}{binary-funcnamesec}{\B{funcnamesubsec}}
 .. |Blocalnamesubsec| mathdef:: \xref{appendix/custom}{binary-localnamesec}{\B{localnamesubsec}}
+
+
+.. Embedding
+.. ---------
+
+.. |error| mathdef:: \xref{appendix/embedding}{embed-error}{\X{error}}
+.. |ERROR| mathdef:: \xref{appendix/embedding}{embed-error}{\K{error}}

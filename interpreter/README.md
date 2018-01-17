@@ -107,7 +107,6 @@ The first creates a new test scripts where all embedded modules are converted to
 The last invocation produces an equivalent, self-contained JavaScript test file.
 The flag `-h` can be used to omit the test harness from the converted file;
 it then is the client's responsibility to provide versions of the necessary functions.
-By default, the generated script will not require `assert_soft_invalid` (see below) to detect validation failures. Use the `-c` flag ("checked hard") to activate these assertions for full validity checks.
 
 #### Command Line Expressions
 
@@ -161,13 +160,20 @@ WebAssemblyText.decode(binary)
 
 ## S-Expression Syntax
 
-The implementation consumes a WebAssembly AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/master/Semantics.md):
+The implementation consumes a WebAssembly AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/master/Semantics.md).
 
+Note: The grammar is shown here for convenience, the definite source is the [specification of the text format](https://webassembly.github.io/spec/text/).
 ```
-value: <int> | <float>
-var: <int> | <name>
-name: $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
+num:    <digit> (_? <digit>)*
+hexnum: <hexdigit> (_? <hexdigit>)*
+nat:    <num> | 0x<hexnum>
+int:    <nat> | +<nat> | -<nat>
+float:  <num>.<num>?(e|E <num>)? | 0x<hexnum>.<hexnum>?(p|P <num>)?
+name:   $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
+
+value:  <int> | <float>
+var:    <nat> | <name>
 
 type: i32 | i64 | f32 | f64
 elem_type: anyfunc
@@ -175,7 +181,7 @@ elem_type: anyfunc
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
 relop: eq | ne | lt | ...
-sign: s|u
+sign:  s|u
 offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
@@ -210,7 +216,7 @@ op:
   br_table <var>+
   return
   call <var>
-  call_indirect <var>
+  call_indirect <func_sig>
   drop
   select
   get_local <var>
@@ -230,23 +236,23 @@ op:
   <type>.<cvtop>/<type>
 
 func:    ( func <name>? <func_sig> <local>* <instr>* )
-         ( func <name>? ( export <string> )+ <func_sig> <local>* <instr>* ) ;; = (export <string> (func <N>))+ (func <name>? <func_sig> <local>* <instr>*)
+         ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
          ( func <name>? ( import <string> <string> ) <func_sig>)            ;; = (import <name>? <string> <string> (func <func_sig>))
 param:   ( param <type>* ) | ( param <name> <type> )
-result:  ( result <type> )
+result:  ( result <type>* )
 local:   ( local <type>* ) | ( local <name> <type> )
 
 global:  ( global <name>? <global_sig> <instr>* )
-         ( global <name>? ( export <string> )+ <global_sig> <instr>* )      ;; = (export <string> (global <N>))+ (global <name>? <global_sig> <instr>*)
+         ( global <name>? ( export <string> ) <...> )                       ;; = (export <string> (global <N>)) (global <name>? <...>)
          ( global <name>? ( import <string> <string> ) <global_sig> )       ;; = (import <name>? <string> <string> (global <global_sig>))
 table:   ( table <name>? <table_sig> )
-         ( table <name>? ( export <string> )+ <table_sig> )                 ;; = (export <string> (table <N>))+ (table <name>? <table_sig>)
+         ( table <name>? ( export <string> ) <...> )                        ;; = (export <string> (table <N>)) (table <name>? <...>)
          ( table <name>? ( import <string> <string> ) <table_sig> )         ;; = (import <name>? <string> <string> (table <table_sig>))
          ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )* <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
 elem:    ( elem <var>? (offset <instr>* ) <var>* )
          ( elem <var>? <expr> <var>* )                                      ;; = (elem <var>? (offset <expr>) <var>*)
 memory:  ( memory <name>? <memory_sig> )
-         ( memory <name>? ( export <string> )+ <memory_sig> )               ;; = (export <string> (memory <N>))+ (memory <name>? <memory_sig>)
+         ( memory <name>? ( export <string> ) <...> )                       ;; = (export <string> (memory <N>))+ (memory <name>? <...>)
          ( memory <name>? ( import <string> <string> ) <memory_sig> )       ;; = (import <name>? <string> <string> (memory <memory_sig>))
          ( memory <name>? ( export <string> )* ( data <string>* )           ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
 data:    ( data <var>? ( offset <instr>* ) <string>* )
@@ -268,7 +274,6 @@ exkind:  ( func <var> )
          ( memory <var> )
 
 module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
-         ( module <name>? <string>+ )
          <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>?  ;; =
          ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
 ```
@@ -278,8 +283,6 @@ In particular, WebAssembly is a stack machine, so that all expressions of the fo
 For raw instructions, the syntax allows omitting the parentheses around the operator name and its immediate operands. In the case of control operators (`block`, `loop`, `if`), this requires marking the end of the nested sequence with an explicit `end` keyword.
 
 Any form of naming via `<name>` and `<var>` (including expression labels) is merely notational convenience of this text format. The actual AST has no names, and all bindings are referred to via ordered numeric indices; consequently, names are immediately resolved in the parser and replaced by indices. Indices can also be used directly in the text format.
-
-A module of the form `(module <string>+)` is given in binary form and will be decoded from the (concatenation of the) strings.
 
 The segment strings in the memory field are used to initialize the consecutive memory at the given offset.
 The `<size>` in the expansion of the two short-hand forms for `table` and `memory` is the minimal size that can hold the segment: the number of `<var>`s for tables, and the accumulative length of the strings rounded up to page size for memories.
@@ -312,6 +315,11 @@ module with given failure string
   <assertion>                                ;; assert result of an action
   <meta>                                     ;; meta command
 
+module:
+  ...
+  ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
+  ( module <name>? quote <string>* )         ;; module quoted in text (may be malformed)
+
 action:
   ( invoke <name>? <string> <expr>* )        ;; invoke function export
   ( get <name>? <string> )                   ;; get global export
@@ -323,7 +331,6 @@ assertion:
   ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
-  ( assert_soft_invalid <module> <failure> ) ;; assert module is for cases that are not required to be checked
   ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
@@ -336,6 +343,10 @@ Commands are executed in sequence. Commands taking an optional module name refer
 
 After a module is _registered_ under a string name it is available for importing in other modules.
 
+The script format supports additional syntax for defining modules.
+A module of the form `(module binary <string>*)` is given in binary form and will be decoded from the (concatenation of the) strings.
+A module of the form `(module quote <string>*)` is given in textual form and will be parsed from the (concatenation of the) strings. In both cases, decoding/parsing happens when the command is executed, not when the script is parsed, so that meta commands like `assert_malformed` can be used to check expected errors.
+
 There are also a number of meta commands.
 The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta are expanded in place (`input`, recursively) or elided (`output`) in the named script.
 
@@ -343,7 +354,6 @@ The `input` and `output` meta commands determine the requested file format from 
 
 The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
 It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.
-Finally, "checked hard" mode (flag `-c`), will require `assert_soft_valid` assertions to succeed. When outputing JavaScript scripts, this flag also controls how the created script implements this assertions.
 
 ## Abstract Syntax
 
@@ -359,6 +369,8 @@ The implementation is split into several directories:
 * `syntax`: the definition of abstract syntax; corresponds to the "Structure" section of the language specification
 
 * `valid`: validation of code and modules; corresponds to the "Validation" section of the language specification
+
+* `runtime`: the definition of runtime structures; corresponds to the "Execution/Runtime" section of the language specification
 
 * `exec`: execution and module instantiation; corresponds to the "Execution" section of the language specification
 
@@ -386,7 +398,7 @@ The implementation consists of the following parts:
 
 * *Validator* (`valid.ml[i]`). Does a recursive walk of the AST, passing down the *expected* type for expressions, and checking each expression against that. An expected empty type can be matched by any result, corresponding to implicit dropping of unused values (e.g. in a block).
 
-* *Evaluator* (`eval.ml[i]`, `values.ml`, `instance.ml`, `eval_numeric.ml[i]`, `int.ml`, `float.ml`, `table.ml[i]`, `memory.ml[i]`, and a few more). Implements evaluation as a small-step semantics that rewrites a program one computation step at a time.
+* *Evaluator* (`eval.ml[i]`, `values.ml`, `func.ml[i]`, `table.ml[i]`, `memory.ml[i]`, `global.ml[i]`, `instance.ml`, `eval_numeric.ml[i]`, `int.ml`, `float.ml`, and a few more). Implements evaluation as a small-step semantics that rewrites a program one computation step at a time.
 
 * *JS Generator* (`js.ml[i]`). Converts a script to equivalent JavaScript.
 

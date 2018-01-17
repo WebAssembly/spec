@@ -19,7 +19,7 @@ Such a sequence has a :ref:`function types <syntax-functype>` :math:`[t_1^\ast] 
 .. _polymorphism:
 
 For some instructions, the typing rules do not fully constrain the type,
-and therefor allow for multiple types.
+and therefore allow for multiple types.
 Such instructions are called *polymorphic*.
 Two degrees of polymorphism can be distinguished:
 
@@ -516,7 +516,7 @@ Control Instructions
 :math:`\IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
 ........................................................
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |CLABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
@@ -586,7 +586,7 @@ Control Instructions
 :math:`\BRTABLE~l^\ast~l_N`
 ...........................
 
-* The label :math:`C.\CLABELS[l]` must be defined in the context.
+* The label :math:`C.\CLABELS[l_N]` must be defined in the context.
 
 * Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l_N]`.
 
@@ -667,7 +667,9 @@ Control Instructions
 
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`C.\CTYPES[x]`.
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+
+* Then the instruction is valid with type :math:`[t_1^\ast~\I32] \to [t_2^\ast]`.
 
 .. math::
    \frac{
@@ -675,7 +677,7 @@ Control Instructions
      \qquad
      C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdashinstr \CALLINDIRECT~x : [t_1^\ast] \to [t_2^\ast]
+     C \vdashinstr \CALLINDIRECT~x : [t_1^\ast~\I32] \to [t_2^\ast]
    }
 
 

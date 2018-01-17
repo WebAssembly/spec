@@ -245,12 +245,12 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
    \end{array}
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
-They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint.
+They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint (in base 2 logarithmic representation).
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-valtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
-All values are read and written in `little endian <https://en.wikipedia.org/wiki/Endianness#Little-endian>`_ byte order.
+All values are read and written in |LittleEndian|_ byte order.
 A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside the address range implied by the memory's current size.
 
 .. note::

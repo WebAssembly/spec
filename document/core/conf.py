@@ -475,5 +475,5 @@ epub_exclude_files = ['search.html']
 
 # Macros
 rst_prolog = """
-.. include:: /""" + pwd + """/util/math.def
+.. include:: /""" + pwd + """/util/macros.def
 """

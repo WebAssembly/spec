@@ -25,6 +25,7 @@ Options:
 Variables:
 
   GIT_DEPLOY_DIR      Folder path containing the files to deploy.
+  GIT_DEPLOY_SUBDIR   Subdirectory to deploy.
   GIT_DEPLOY_BRANCH   Commit deployable files to this branch.
   GIT_DEPLOY_REPO     Push the deploy branch to this repository.
 
@@ -74,6 +75,7 @@ parse_args() {
 
 	# Source directory & target branch.
 	deploy_directory=${GIT_DEPLOY_DIR:-dist}
+	deploy_subdirectory=${GIT_DEPLOY_SUBDIR:-}
 	deploy_branch=${GIT_DEPLOY_BRANCH:-gh-pages}
 
 	#if no user identity is already set in the current git environment, use this:
@@ -141,9 +143,14 @@ main() {
 }
 
 initial_deploy() {
-	git --work-tree "$deploy_directory" checkout --orphan $deploy_branch
-	git --work-tree "$deploy_directory" add --all
-	commit_and_push
+	if [[ -z $deploy_subdirectory ]]; then
+		git --work-tree "$deploy_directory" checkout --orphan $deploy_branch
+		git --work-tree "$deploy_directory" add --all
+		commit_and_push
+	else
+		echo "Subdirectory '$deploy_subdirectory' does not exist. Aborting." >&2
+		return 1
+	fi
 }
 
 incremental_deploy() {
@@ -151,7 +158,7 @@ incremental_deploy() {
 	git symbolic-ref HEAD refs/heads/$deploy_branch
 	#put the previously committed contents of deploy_branch into the index
 	git --work-tree "$deploy_directory" reset --mixed --quiet
-	git --work-tree "$deploy_directory" add --all
+	git --work-tree "$deploy_directory" add --all $deploy_subdirectory
 
 	set +o errexit
 	diff=$(git --work-tree "$deploy_directory" diff --exit-code --quiet HEAD --)$?

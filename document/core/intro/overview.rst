@@ -14,7 +14,7 @@ This language is structured around the following concepts.
 
 **Values**
   WebAssembly provides only four basic *value types*.
-  These are integers and `IEEE 754 floating-point <http://ieeexplore.ieee.org/document/4610935/>`_ numbers,
+  These are integers and |IEEE754|_ numbers,
   each in 32 and 64 bit width.
   32 bit integers also serve as Booleans and as memory addresses.
   The usual operations on these types are available,

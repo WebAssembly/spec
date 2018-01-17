@@ -8,23 +8,26 @@ Lexical Format
 .. index:: ! character, Unicode, ASCII, code point, ! source text
    pair: text format; character
 .. _source:
+.. _text-source:
 .. _text-char:
 
 Characters
 ~~~~~~~~~~
 
 The text format assigns meaning to *source text*, which consists of a sequence of *characters*.
-Characters are assumed to be represented as valid `Unicode <http://www.unicode.org/versions/latest/>`_ *code points*.
+Characters are assumed to be represented as valid |Unicode|_ (Section 2.4) *code points*.
 
 .. math::
    \begin{array}{llll}
+   \production{source} & \Tsource &::=&
+     \Tchar^\ast \\
    \production{character} & \Tchar &::=&
      \unicode{00} ~|~ \dots ~|~ \unicode{D7FF} ~|~ \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
    \end{array}
 
 .. note::
    While source text may contain any Unicode character in :ref:`comments <text-comment>` or :ref:`string <text-string>` literals,
-   the rest of the grammar is formed exclusively from the characters supported by the `7-bit ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ subset of Unicode.
+   the rest of the grammar is formed exclusively from the characters supported by the 7-bit |ASCII|_ subset of Unicode.
 
 
 .. index:: ! token, ! keyword, character, white space, comment, source text
@@ -75,7 +78,7 @@ White Space
 ~~~~~~~~~~~
 
 *White space* is any sequence of literal space characters, formatting characters, or :ref:`comments <text-comment>`.
-The allowed formatting characters correspond to a subset of the `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ *format effectors*, namely, *horizontal tabulation* (:math:`\unicode{09}`), *line feed* (:math:`\unicode{0A}`), and *carriage return* (:math:`\unicode{0D}`).
+The allowed formatting characters correspond to a subset of the |ASCII|_ *format effectors*, namely, *horizontal tabulation* (:math:`\unicode{09}`), *line feed* (:math:`\unicode{0A}`), and *carriage return* (:math:`\unicode{0D}`).
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}

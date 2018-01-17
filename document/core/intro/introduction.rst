@@ -73,3 +73,24 @@ It does not, however, define how WebAssembly programs can interact with a specif
 
 Instead, this specification is complemented by additional documents defining interfaces to specific embedding environments such as the Web.
 These will each define a WebAssembly *application programming interface (API)* suitable for a given environment.
+
+
+.. index:: IEEE 754, floating point, Unicode, name, text format, UTF-8, code point
+.. _dependencies:
+
+Dependencies
+~~~~~~~~~~~~
+
+WebAssembly depends on two existing standards:
+
+* |IEEE754|_, for the representation of :ref:`floating-point data <syntax-float>` and the semantics of respective :ref:`numeric operations <float-ops>`.
+
+* |Unicode|_, for the representation of import/export :ref:`names <syntax-name>` and the :ref:`text format <text>`.
+
+However, to make this specification self-contained, relevant aspects of the aforementioned standards are defined and formalized as part of this specification,
+such as the :ref:`binary representation <aux-fbits>` and :ref:`rounding <aux-ieee>` of floating-point values, and the :ref:`value range <syntax-codepoint>` and :ref:`UTF-8 encoding <binary-utf8>` of Unicode characters.
+
+.. note::
+   The aforementioned standards are the authorative source of all respective definitions.
+   Formalizations given in this specification are intended to match these definitions.
+   Any discrepancy in the syntax or semantics described is to be considered an error.

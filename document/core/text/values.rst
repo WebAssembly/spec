@@ -111,7 +111,7 @@ Floating-Point
        &\Rightarrow& (p+q)\cdot 2^{\pm e}
    \end{array}
 
-The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
+The value of a literal must not lie outside the representable range of the corresponding |IEEE754|_ type
 (that is, a numeric value must not overflow to :math:`\pm\mbox{infinity}`),
 but it may be :ref:`rounded <aux-ieee>` to the nearest representable value.
 
@@ -145,7 +145,7 @@ Strings
 
 *Strings* denote sequences of bytes that can represent both textual and binary data.
 They are enclosed in quotation marks
-and may contain any character other than `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\backslash}`),
+and may contain any character other than |ASCII|_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\backslash}`),
 except when expressed with an *escape sequence*.
 
 .. math::
@@ -160,7 +160,7 @@ except when expressed with an *escape sequence*.
        &\Rightarrow& 16\cdot n+m \\
    \end{array}
 
-Each character in a string literal represents the byte sequence corresponding to its `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding,
+Each character in a string literal represents the byte sequence corresponding to its UTF-8 |Unicode|_ (Section 2.5) encoding,
 except for hexadecimal escape sequences :math:`\textl\backslash hh\textr`, which represent raw bytes of the respective value.
 
 .. math::
@@ -187,7 +187,7 @@ Names
 ~~~~~
 
 :ref:`Names <syntax-name>` are strings denoting a literal character sequence. 
-A name string must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding that is interpreted as a string of Unicode code points.
+A name string must form a valid UTF-8 encoding as defined by |Unicode|_ (Section 2.5) that is interpreted as a string of Unicode code points.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
@@ -209,7 +209,7 @@ Identifiers
 ~~~~~~~~~~~
 
 :ref:`Indices <syntax-index>` can be given in both numeric and symbolic form.
-Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}`, followed by any sequence of printable `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket.
+Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}`, followed by any sequence of printable |ASCII|_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}

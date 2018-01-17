@@ -9,22 +9,23 @@ module List :
 sig
   val make : int -> 'a -> 'a list
   val table : int -> (int -> 'a) -> 'a list
-  val take : int -> 'a list -> 'a list (* raise Failure *)
-  val drop : int -> 'a list -> 'a list (* raise Failure *)
+  val take : int -> 'a list -> 'a list (* raises Failure *)
+  val drop : int -> 'a list -> 'a list (* raises Failure *)
 
-  val last : 'a list -> 'a (* raise Failure *)
-  val split_last : 'a list -> 'a list * 'a (* raise Failure *)
+  val last : 'a list -> 'a (* raises Failure *)
+  val split_last : 'a list -> 'a list * 'a (* raises Failure *)
 
   val index_of : 'a -> 'a list -> int option
   val index_where : ('a -> bool) -> 'a list -> int option
+  val map_filter : ('a -> 'b option) -> 'a list -> 'b list
 end
 
 module List32 :
 sig
   val length : 'a list -> int32
-  val nth : 'a list -> int32 -> 'a (* raise Failure *)
-  val take : int32 -> 'a list -> 'a list (* raise Failure *)
-  val drop : int32 -> 'a list -> 'a list (* raise Failure *)
+  val nth : 'a list -> int32 -> 'a (* raises Failure *)
+  val take : int32 -> 'a list -> 'a list (* raises Failure *)
+  val drop : int32 -> 'a list -> 'a list (* raises Failure *)
 end
 
 module Array32 :

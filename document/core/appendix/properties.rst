@@ -17,7 +17,7 @@ The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *t
 Soundness also is instrumental in ensuring additional properties, most notably, *encapsulation* of function and module scopes: no :ref:`locals <syntax-local>` can be accessed outside their own function and no :ref:`module <syntax-module>` components can be accessed outside their own module unless they are explicitly :ref:`exported <syntax-export>` or :ref:`imported <syntax-import>`.
 
 The typing rules defining WebAssembly :ref:`validation <valid>` only cover the *static* components of a WebAssembly program.
-In order to state and prove soundness precisely, the typing rules must be extended to the *dynamic* components of the abstract :ref:`runtime <syntax-runtime>`, that is, the :ref:`store <syntax-store>`, :ref:`configurations <syntax-config>`, and :ref:`administrative instructions <syntax-instr-admin>` as well as :ref:`module instructions <valid-moduleinstr>`. [#pldi2017]_
+In order to state and prove soundness precisely, the typing rules must be extended to the *dynamic* components of the abstract :ref:`runtime <syntax-runtime>`, that is, the :ref:`store <syntax-store>`, :ref:`configurations <syntax-config>`, and :ref:`administrative instructions <syntax-instr-admin>`. [#cite-pldi2017]_
 
 
 .. index:: value, value type, result, result type, trap
@@ -98,7 +98,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`memory instance <syntax-meminst>` :math:`\meminst_i` in :math:`S.\SMEMS` must be :ref:`valid <valid-meminst>` with some :ref:`memory type <syntax-memtype>` :math:`\memtype_i`.
 
-* Each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in :math:`S.\SGLOBALS` must be :ref:`valid <valid-globalinst>` with some optional  :ref:`global type <syntax-globaltype>` :math:`\globaltype_i^?`.
+* Each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in :math:`S.\SGLOBALS` must be :ref:`valid <valid-globalinst>` with some  :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
 
 * Then the store is valid.
 
@@ -112,7 +112,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \\
      (S \vdashmeminst \meminst : \memtype)^\ast
      \qquad
-     (S \vdashglobalinst \globalinst : \globaltype^?)^\ast
+     (S \vdashglobalinst \globalinst : \globaltype)^\ast
      \\
      S = \{
        \SFUNCS~\funcinst^\ast,
@@ -354,13 +354,9 @@ Configuration Validity
 To relate the WebAssembly :ref:`type system <valid>` to its :ref:`execution semantics <exec>`, the :ref:`typing rules for instructions <valid-instr>` must be extended to :ref:`configurations <syntax-config>` :math:`S;T`,
 which relates the :ref:`store <syntax-store>` to execution :ref:`threads <syntax-thread>`.
 
-Threads may either be regular threads executing sequences of :ref:`instructions <syntax-instr>`, or module threads executing :ref:`module instructions <syntax-moduleinstr>` that represent an ongoing module instantiation.
-Regular threads are classified by their :ref:`result type <syntax-resulttype>`.
-Module threads on the other hand have no result, not even an empty one.
-Consequently, threads and configurations are cumutavily classified by an *optional* result type, where :math:`\epsilon` classifies the thread as a module computation.
-
+Configurations and threads are classified by their :ref:`result type <syntax-resulttype>`.
 In addition to the store :math:`S`, threads are typed under a *return type* :math:`\resulttype^?`, which controls whether and with which type a |return| instruction is allowed.
-This type is :math:`\epsilon`, except for instruction sequences inside an administrative |FRAME| instruction.
+This type is absent (:math:`\epsilon`) except for instruction sequences inside an administrative |FRAME| instruction.
 
 Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, which extend the :ref:`module contexts <module-context>` of a frame's associated :ref:`module instance <syntax-moduleinst>` with the :ref:`locals <syntax-local>` that the frame contains.
 
@@ -373,17 +369,17 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 * The :ref:`store <syntax-store>` :math:`S` must be :ref:`valid <valid-store>`.
 
 * Under no allowed return type,
-  the :ref:`thread <syntax-thread>` :math:`T` must be :ref:`valid <valid-thread>` with some optional :ref:`result type <syntax-resulttype>` :math:`[t^?]^?`.
+  the :ref:`thread <syntax-thread>` :math:`T` must be :ref:`valid <valid-thread>` with some :ref:`result type <syntax-resulttype>` :math:`[t^?]`.
 
-* Then the configuration is valid with the optional :ref:`result type <syntax-resulttype>` :math:`[t^?]^?`.
+* Then the configuration is valid with the :ref:`result type <syntax-resulttype>` :math:`[t^?]`.
 
 .. math::
    \frac{
      \vdashstore S \ok
      \qquad
-     S; \epsilon \vdashthread T : [t^?]^?
+     S; \epsilon \vdashthread T : [t^?]
    }{
-     \vdashconfig S; T : [t^?]^?
+     \vdashconfig S; T : [t^?]
    }
 
 
@@ -411,25 +407,6 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
      S; C,\CRETURN~\resulttype^? \vdashinstrseq \instr^\ast : [] \to [t^?]
    }{
      S; \resulttype^? \vdashthread F; \instr^\ast : [t^?]
-   }
-
-
-.. index:: thread, module instruction
-
-:ref:`Threads <syntax-thread>` :math:`\moduleinstr^\ast`
-........................................................
-
-* The current allowed return type must be empty.
-
-* Each :ref:`module instruction <syntax-moduleinstr>` :math:`\moduleinstr_i` in :math:`\moduleinstr^\ast` must be :ref:`valid <valid-moduleinstr>`.
-
-* Then the thread is valid with no :ref:`result type <syntax-resulttype>`.
-
-.. math::
-   \frac{
-     (S \vdashmoduleinstr \moduleinstr \ok)^\ast
-   }{
-     S; \epsilon \vdashthread \moduleinstr^\ast : \epsilon
    }
 
 
@@ -467,7 +444,7 @@ Administrative Instructions
 
 Typing rules for :ref:`administrative instructions <syntax-instr-admin>` are specified as follows.
 In addition to the :ref:`context <context>` :math:`C`, typing of these instructions is defined under a given :ref:`store <syntax-store>` :math:`S`.
-To that end, all previous typing judgements :math:`C \vdash \X{prop}` are generalized to include the store, as in :math:`S; C \vdash \X{prop}`, by implicitly adding :math:`S` to all rules -- :math:`S` is never modified by the pre-existing rules, but it is accessed in the new rules for :ref:`administrative instructions <valid-instr-admin>` and  :ref:`module instructions <valid-moduleinstr>` given below.
+To that end, all previous typing judgements :math:`C \vdash \X{prop}` are generalized to include the store, as in :math:`S; C \vdash \X{prop}`, by implicitly adding :math:`S` to all rules -- :math:`S` is never modified by the pre-existing rules, but it is accessed in the extra rules for :ref:`administrative instructions <valid-instr-admin>` given below.
 
 
 .. index:: trap
@@ -498,6 +475,54 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
      S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~[t_1^\ast] \to [t_2^\ast]
    }{
      S; C \vdashadmininstr \INVOKE~\funcaddr : [t_1^\ast] \to [t_2^\ast]
+   }
+
+
+.. index:: element, table, table address, module instance, function index
+
+:math:`\INITELEM~\tableaddr~o~x^n`
+..................................
+
+* The :ref:`external table value <syntax-externval>` :math:`\EVTABLE~\tableaddr` must be :ref:`valid <valid-externval-table>` with some :ref:`external table type <syntax-externtype>` :math:`\ETTABLE~\limits~\ANYFUNC`.
+
+* The index :math:`o + n` must be smaller than or equal to :math:`\limits.\LMIN`.
+
+* The :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst` must be :ref:`valid <valid-moduleinst>` with some :ref:`context <context>` :math:`C`.
+
+* Each :ref:`function index <syntax-funcidx>` :math:`x_i` in :math:`x^n` must be defined in the context :math:`C`.
+
+* Then the instruction is valid.
+
+.. math::
+   \frac{
+     S \vdashexternval \EVTABLE~\tableaddr : \ETTABLE~\limits~\ANYFUNC
+     \qquad
+     o + n \leq \limits.\LMIN
+     \qquad
+     (C.\CFUNCS[x] = \functype)^n
+   }{
+     S; C \vdashadmininstr \INITELEM~\tableaddr~o~x^n \ok
+   }
+
+
+.. index:: data, memory, memory address, byte
+
+:math:`\INITDATA~\memaddr~o~b^n`
+................................
+
+* The :ref:`external memory value <syntax-externval>` :math:`\EVMEM~\memaddr` must be :ref:`valid <valid-externval-mem>` with some :ref:`external memory type <syntax-externtype>` :math:`\ETMEM~\limits`.
+
+* The index :math:`o + n` must be smaller than or equal to :math:`\limits.\LMIN` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
+
+* Then the instruction is valid.
+
+.. math::
+   \frac{
+     S \vdashexternval \EVMEM~\memaddr : \ETMEM~\limits
+     \qquad
+     o + n \leq \limits.\LMIN \cdot 64\,\F{Ki}
+   }{
+     S; C \vdashadmininstr \INITDATA~\memaddr~o~b^n \ok
    }
 
 
@@ -541,104 +566,6 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }{
      S; C \vdashadmininstr \FRAME_n\{F\}~\instr^\ast~\END : [] \to [t^n]
    }
-
-
-.. index:: module instruction, store
-.. _valid-moduleinstr:
-
-Module Instructions
-~~~~~~~~~~~~~~~~~~~
-
-Typing rules for :ref:`module instructions <valid-moduleinstr>` are specified as follows.
-Unlike regular instructions, module instructions do not use the operand stack, and consequently, are not classified by a type.
-
-
-.. index:: instantiation, external value, external type
-
-:math:`\INSTANTIATE~\module~\externval^\ast`
-............................................
-
-* Each :ref:`external value <syntax-externval>` :math:`\externval_i` in :math:`\externval^\ast` must be :ref:`valid <valid-externval>` with some :ref:`external type <syntax-externtype>` :math:`\externtype_i`.
-
-* Then the module instruction is valid.
-
-.. math::
-   \frac{
-     (S \vdashexternval \externval : \externtype)^\ast
-   }{
-     S \vdashmoduleinstr \INSTANTIATE~\module~\externval^\ast \ok
-   }
-
-
-.. index:: element, table, table address, module instance, function index
-
-:math:`\INITELEM~\tableaddr~o~\moduleinst~x^n`
-..............................................
-
-* The :ref:`external table value <syntax-externval>` :math:`\EVTABLE~\tableaddr` must be :ref:`valid <valid-externval-table>` with some :ref:`external table type <syntax-externtype>` :math:`\ETTABLE~\limits~\ANYFUNC`.
-
-* The index :math:`o + n` must be smaller than or equal to :math:`\limits.\LMIN`.
-
-* The :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst` must be :ref:`valid <valid-moduleinst>` with some :ref:`context <context>` :math:`C`.
-
-* Each :ref:`function index <syntax-funcidx>` :math:`x_i` in :math:`x^n` must be defined in the context :math:`C`.
-
-* Then the module instruction is valid.
-
-.. math::
-   \frac{
-     \begin{array}{@{}rl@{}}
-     S \vdashexternval \EVTABLE~\tableaddr : \ETTABLE~\limits~\ANYFUNC
-     \qquad&
-     o + n \leq \limits.\LMIN
-     \\
-     S \vdashmoduleinst \moduleinst : C
-     \qquad&
-     (C.\CFUNCS[x] = \functype)^n
-     \end{array}
-   }{
-     S \vdashmoduleinstr \INITELEM~\tableaddr~o~\moduleinst~x^n \ok
-   }
-
-
-.. index:: data, memory, memory address, byte
-
-:math:`\INITDATA~\memaddr~o~b^n`
-................................
-
-* The :ref:`external memory value <syntax-externval>` :math:`\EVMEM~\memaddr` must be :ref:`valid <valid-externval-mem>` with some :ref:`external memory type <syntax-externtype>` :math:`\ETMEM~\limits`.
-
-* The index :math:`o + n` must be smaller than or equal to :math:`\limits.\LMIN` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
-
-* Then the module instruction is valid.
-
-.. math::
-   \frac{
-     S \vdashexternval \EVMEM~\memaddr : \ETMEM~\limits
-     \qquad
-     o + n \leq \limits.\LMIN \cdot 64\,\F{Ki}
-   }{
-     S \vdashmoduleinstr \INITDATA~\memaddr~o~b^n \ok
-   }
-
-
-.. index:: instruction, context
-
-:math:`\instr`
-..............
-
-* Under an empty :ref:`context <context>`,
-  the :ref:`instruction <syntax-instr>` :math:`\instr` must be valid with type :math:`[] \to []`.
-
-* Then the instruction is valid as a module instruction.
-
-.. math::
-   \frac{
-     S; \{\} \vdashinstr \instr : [] \to []
-   }{
-     S \vdashmoduleinstr \instr \ok
-   }
-
 
 
 .. index:: ! store extension, store
@@ -785,27 +712,30 @@ Given the definition of :ref:`valid configurations <valid-config>`,
 the standard soundness theorems hold.
 
 **Theorem (Preservation).**
-If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` with optional :ref:`result type <syntax-resulttype>` :math:`[t^\ast]^?` (i.e., :math:`\vdashconfig S;T : [t^\ast]^?`),
+If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` (i.e., :math:`\vdashconfig S;T : [t^\ast]`),
 and steps to :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`),
-then :math:`S';T'` is a valid configuration with the same optional resulttype (i.e., :math:`\vdashconfig S';T' : [t^\ast]^?`).
+then :math:`S';T'` is a valid configuration with the same resulttype (i.e., :math:`\vdashconfig S';T' : [t^\ast]`).
 Furthermore, :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
 
-A *terminal* :ref:`thread <syntax-thread>` is either an empty sequence of :ref:`module instructions <syntax-moduleinstr>`, a |TRAP| instruction, or a sequence :math:`\val^\ast` of :ref:`values <syntax-val>` (paired with a :ref:`frame <syntax-frame>`).
+A *terminal* :ref:`thread <syntax-thread>` is one whose sequence of :ref:`instructions <syntax-instr>` is a :ref:`result <syntax-result>`.
 A terminal configuration is a configuration whose thread is terminal.
 
 **Theorem (Progress).**
-If the :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdashconfig S;T : [t^\ast]^?` with some optional :ref:`result type <syntax-resulttype>` :math:`[t^\ast]^?`),
+If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdashconfig S;T : [t^\ast]` for some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`),
 then either it is terminal,
 or it can step to some configuration :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`).
 
 From Preservation and Progress the soundness of the WebAssembly type system follows directly.
 
 **Corollary (Soundness).**
-Every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
+If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdashconfig S;T : [t^\ast]` for some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`),
+then it either diverges or takes a finite number of steps to reach a terminal configuration :math:`S';T'` (i.e., :math:`S;T \stepto^\ast S';T'`) that is valid with the same resulttype (i.e., :math:`\vdashconfig S';T' : [t^\ast]`)
+and where :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
 
+In other words, every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
 Consequently, given a :ref:`valid store <valid-store>`, no computation defined by :ref:`instantiation <exec-instantiation>` or :ref:`invocation <exec-invocation>` of a valid module can "crash" or otherwise (mis)behave in ways not covered by the :ref:`execution <exec>` semantics given in this specification.
 
 
-.. [#pldi2017]
+.. [#cite-pldi2017]
    The formalization and theorems are derived from the following article:
-   Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. `Bringing the Web up to Speed with WebAssembly <https://dl.acm.org/citation.cfm?doid=3062341.3062363>`_. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
+   Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. |PLDI2017|_. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
