@@ -1,13 +1,13 @@
-# Bulk Memory Operations
+# Bulk Memory Operations and Conditional Segment Initialization
 
-## Motivation
+## Motivation for Bulk Memory Operations
 
 Some people have mentioned that `memcpy` and `memmove` functions are hot
 when profiling some WebAssembly benchmarks. Some examples:
 
 - https://github.com/WebAssembly/design/issues/236#issuecomment-283279499
 
-> I've been looking at perf profiles for wasm unity benchmark a bit recently and see that some 
+> I've been looking at perf profiles for wasm unity benchmark a bit recently and see that some
   of the hottest functions are doing memcpy or memset like things. If this is any indication of
   normal wasm code patterns, I think we could see significant improvement with an intrinsic so
   it may be worth prioritizing.
@@ -17,7 +17,7 @@ when profiling some WebAssembly benchmarks. Some examples:
 > In a number of game engines I've been optimizing and benchmarking, interestingly the performance
   of memcpy() does show up relatively high in profiles. (~2%-5% of total execution time)
 
-## Prototype
+### Bulk Memory Operations Prototype
 
 I implemented a prototype implementation of a `mem.copy` instruction in v8 which just calls out
 to v8's [`MemMove` function](https://cs.chromium.org/chromium/src/v8/src/utils.h?l=446). I compared
@@ -27,7 +27,7 @@ Each test copies `size` bytes from one address to another, non-overlapping. This
 
 This is the core loop:
 
-```
+```javascript
   let mask = Mib - 1;
   let start = performance.now();
   for (let i = 0; i < N; ++i) {
@@ -56,42 +56,192 @@ Here are the results on my machine (x86_64, 2.9GHz, L1 32k, L2 256k, L3 256k):
 
 | | intrinsic | i64 load/store x 4 | i64 load/store x 2 | i32 load/store x 2 | i32 load/store |
 | --- | --- | --- | --- | --- | --- |
-| size=32b, N=33554432 | 1.382 Gib/s | 1.565 Gib/s | 1.493 Gib/s | 1.275 Gib/s | 1.166 Gib/s | 
-| size=64b, N=16777216 | 3.285 Gib/s | 2.669 Gib/s | 2.383 Gib/s | 1.861 Gib/s | 1.639 Gib/s | 
-| size=128b, N=8388608 | 6.162 Gib/s | 3.993 Gib/s | 3.480 Gib/s | 2.433 Gib/s | 2.060 Gib/s | 
-| size=256b, N=4194304 | 9.939 Gib/s | 5.323 Gib/s | 4.462 Gib/s | 2.724 Gib/s | 2.213 Gib/s | 
-| size=512b, N=2097152 | 15.777 Gib/s | 6.377 Gib/s | 4.913 Gib/s | 3.231 Gib/s | 2.457 Gib/s | 
-| size=1.0Kib, N=1048576 | 17.902 Gib/s | 7.010 Gib/s | 6.112 Gib/s | 3.568 Gib/s | 2.614 Gib/s | 
-| size=2.0Kib, N=524288 | 19.870 Gib/s | 8.248 Gib/s | 6.915 Gib/s | 3.764 Gib/s | 2.699 Gib/s | 
-| size=4.0Kib, N=262144 | 20.940 Gib/s | 9.145 Gib/s | 7.400 Gib/s | 3.871 Gib/s | 2.729 Gib/s | 
-| size=8.0Kib, N=131072 | 21.162 Gib/s | 9.258 Gib/s | 7.672 Gib/s | 3.925 Gib/s | 2.763 Gib/s | 
-| size=16.0Kib, N=65536 | 20.991 Gib/s | 9.758 Gib/s | 7.756 Gib/s | 3.945 Gib/s | 2.773 Gib/s | 
-| size=32.0Kib, N=32768 | 22.504 Gib/s | 9.956 Gib/s | 7.861 Gib/s | 3.966 Gib/s | 2.780 Gib/s | 
-| size=64.0Kib, N=16384 | 22.534 Gib/s | 10.088 Gib/s | 7.931 Gib/s | 3.974 Gib/s | 2.782 Gib/s | 
-| size=128.0Kib, N=8192 | 29.728 Gib/s | 10.032 Gib/s | 7.934 Gib/s | 3.975 Gib/s | 2.782 Gib/s | 
-| size=256.0Kib, N=4096 | 29.742 Gib/s | 10.116 Gib/s | 7.625 Gib/s | 3.886 Gib/s | 2.781 Gib/s | 
-| size=512.0Kib, N=2048 | 29.994 Gib/s | 10.090 Gib/s | 7.627 Gib/s | 3.985 Gib/s | 2.785 Gib/s | 
-| size=1.0Mib, N=1024 | 11.760 Gib/s | 10.091 Gib/s | 7.959 Gib/s | 3.989 Gib/s | 2.787 Gib/s | 
+| size=32b, N=33554432 | 1.382 Gib/s | 1.565 Gib/s | 1.493 Gib/s | 1.275 Gib/s | 1.166 Gib/s |
+| size=64b, N=16777216 | 3.285 Gib/s | 2.669 Gib/s | 2.383 Gib/s | 1.861 Gib/s | 1.639 Gib/s |
+| size=128b, N=8388608 | 6.162 Gib/s | 3.993 Gib/s | 3.480 Gib/s | 2.433 Gib/s | 2.060 Gib/s |
+| size=256b, N=4194304 | 9.939 Gib/s | 5.323 Gib/s | 4.462 Gib/s | 2.724 Gib/s | 2.213 Gib/s |
+| size=512b, N=2097152 | 15.777 Gib/s | 6.377 Gib/s | 4.913 Gib/s | 3.231 Gib/s | 2.457 Gib/s |
+| size=1.0Kib, N=1048576 | 17.902 Gib/s | 7.010 Gib/s | 6.112 Gib/s | 3.568 Gib/s | 2.614 Gib/s |
+| size=2.0Kib, N=524288 | 19.870 Gib/s | 8.248 Gib/s | 6.915 Gib/s | 3.764 Gib/s | 2.699 Gib/s |
+| size=4.0Kib, N=262144 | 20.940 Gib/s | 9.145 Gib/s | 7.400 Gib/s | 3.871 Gib/s | 2.729 Gib/s |
+| size=8.0Kib, N=131072 | 21.162 Gib/s | 9.258 Gib/s | 7.672 Gib/s | 3.925 Gib/s | 2.763 Gib/s |
+| size=16.0Kib, N=65536 | 20.991 Gib/s | 9.758 Gib/s | 7.756 Gib/s | 3.945 Gib/s | 2.773 Gib/s |
+| size=32.0Kib, N=32768 | 22.504 Gib/s | 9.956 Gib/s | 7.861 Gib/s | 3.966 Gib/s | 2.780 Gib/s |
+| size=64.0Kib, N=16384 | 22.534 Gib/s | 10.088 Gib/s | 7.931 Gib/s | 3.974 Gib/s | 2.782 Gib/s |
+| size=128.0Kib, N=8192 | 29.728 Gib/s | 10.032 Gib/s | 7.934 Gib/s | 3.975 Gib/s | 2.782 Gib/s |
+| size=256.0Kib, N=4096 | 29.742 Gib/s | 10.116 Gib/s | 7.625 Gib/s | 3.886 Gib/s | 2.781 Gib/s |
+| size=512.0Kib, N=2048 | 29.994 Gib/s | 10.090 Gib/s | 7.627 Gib/s | 3.985 Gib/s | 2.785 Gib/s |
+| size=1.0Mib, N=1024 | 11.760 Gib/s | 10.091 Gib/s | 7.959 Gib/s | 3.989 Gib/s | 2.787 Gib/s |
 
+
+## Motivation for Conditional Segment Initialization
+
+Under the current [threading proposal](https://github.com/WebAssembly/threads),
+to share a module between multiple agents, the module must be instantiated
+multiple times: once per agent. Instantiation initializes linear memory with
+the contents in the module's data segments. If the memory is shared between
+multiple agents, it will be initialized multiple times, potentially overwriting
+stores that occurred after the previous initializations.
+
+For example:
+
+```webassembly
+;; The module.
+(module
+  (memory (export "memory") 1)
+
+  ;; Some value used as a counter.
+  (data (i32.const 0) "\0")
+
+  ;; Add one to the counter.
+  (func (export "addOne")
+    (i32.store8
+      (i32.const 0)
+      (i32.add
+        (i32.load8_u (i32.const 0))
+        (i32.const 1)))
+  )
+)
+```
+
+```javascript
+// main.js
+let moduleBytes = ...;
+
+WebAssembly.instantiate(moduleBytes).then(
+  ({module, instance}) => {
+    // Increment our counter.
+    instance.exports.addOne();
+
+    // Spawn a new Worker.
+    let worker = new Worker('worker.js');
+
+    // Send the module to the new Worker.
+    worker.postMessage(module);
+  });
+
+// worker.js
+
+function onmessage(event) {
+  let module = event.data;
+
+  // Use the module to create another instance.
+  WebAssembly.instantiate(module).then(
+    (instance) => {
+      // Oops, our counter has been clobbered.
+    });
+}
+
+```
+
+This can be worked around by storing the data segments in a separate module
+which is only instantiated once, then exporting this memory to be used by
+another module that contains only code. This works, but it cumbersome since it
+requires two modules where one should be enough.
+
+
+## Motivation for combining Bulk Memory Operations + Conditional Segment Initialization Proposals
+
+When [discussing the design of Conditional Segment Initialization](https://github.com/WebAssembly/threads/issues/62),
+we found that programmatic memory initialization from a read-only data segment
+(via the `mem.init` instruction, described below) has similar behavior to the
+proposed instruction to copy memory regions from linear memory (`mem.copy`,
+also described below.)
 
 ## Design
 
-This proposal introduces 2 new instructions:
+Copying between regions in linear memory or a table is accomplished with the
+new `*.copy` instructions:
 
-`mem.copy`:
+* `mem.copy`: copy from one region of linear memory to another
+* `table.copy`: copy from one region of a table to another
 
-Copy data from a source memory region to destination region;
-these regions may overlap: the copy is performed as if the source region was 
-first copied to a temporary buffer, then the temporary buffer is copied to
-the destination region.
+Filling a memory region can be accomplished with `mem.set`:
+
+* `mem.set`: fill a region of linear memory with a given byte value
+
+TODO: should we provide `mem.clear` and `table.clear` instead?
+
+The [binary format for the data section](https://webassembly.github.io/spec/binary/modules.html#data-section)
+currently has a collection of segments, each of which has a memory index, an
+initializer expression for its offset, and its raw data.
+
+Since WebAssembly currently does not allow for multiple memories, the memory
+index must be zero. We can repurpose this field as a flags field.
+
+When the least-significant bit of the flags field is `1`, this segment is
+_passive_. A passive segment will not be automatically copied into the
+memory or table on instantiation, and must instead be applied manually using
+the following new instructions:
+
+* `mem.init`: copy a region from a data segment
+* `table.init`: copy an region from an element segment
+
+An passive segment has no initializer expression, since it will be specified
+as an operand to `mem.init` or `table.init`.
+
+Passive segments can also be discarded by using the following new instructions:
+
+* `mem.drop`: prevent further use of a data segment
+* `table.drop`: prevent further use of an element segment
+
+Attempting to drop an active segment is a validation error.
+
+The data section is encoded as follows:
+
+```
+datasec ::= seg*:section_11(vec(data))   => seg
+data    ::= 0x00 e:expr b*:vec(byte)     => {data 0, offset e, init b*, active true}
+data    ::= 0x01 b*:vec(byte)            => {data 0, offset empty, init b*, active false}
+```
+
+The element section is encoded similarly.
+
+### `mem.init` instruction
+
+The `mem.init` instruction copies data from a given passive segment into a target
+memory. The source segment and target memory are given as immediates. The
+instruction also has three i32 operands: an offset into the source segment, an
+offset into the target memory, and a length to copy.
+
+When `mem.init` is executed, its behavior matches the steps described in
+step 11 of
+[instantiation](https://webassembly.github.io/spec/exec/modules.html#instantiation),
+but it behaves as though the segment were specified with the source offset,
+target offset, and length as given by the `mem.init` operands.
+
+A trap occurs if:
+* the segment is passive
+* the segment is used after it has been dropped via `mem.drop`
+* any of the accessed bytes lies outside the source data segment or the target memory
+
+Note that it is allowed to use `mem.init` on the same data segment more than
+once.
+
+### `mem.drop` instruction
+
+The `mem.drop` instruction prevents further use of a given segment. After a
+data segment has been dropped, it is no longer valid to use it in a `mem.init`
+instruction. This instruction is intended to be used as an optimization hint to
+the WebAssembly implementation. After a memory segment is dropped its data can
+no longer be retrieved, so the memory used by this segment may be freed.
+
+### `mem.copy` instruction
+
+Copy data from a source memory region to destination region; these regions may
+overlap: the copy is performed as if the source region was first copied to a
+temporary buffer, then the temporary buffer is copied to the destination
+region.
 
 The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in order:
 
 - top-2: destination address
 - top-1: source address
 - top-0: size of memory region in bytes
-  
-`mem.set`: Set all bytes in a memory region to a given byte.
+
+### `mem.set` instruction
+
+Set all bytes in a memory region to a given byte.
 
 The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in order:
 
@@ -99,87 +249,36 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 - top-1: byte value to set
 - top-0: size of memory region in bytes
 
-## Structure
+### `table.init`, `table.drop`, and `table.copy` instructions
 
-Unlike most other memory operations, the bulk operations do not have a `memarg` 
-immediate.
+The `table.*` instructions behave similary to the `mem.*` instructions, with
+the difference that they operate on element segments and tables, instead of
+data segments and memories. The offset and length operands of `table.init` and
+`table.copy` have element units instead of bytes as well.
 
-```
-instr ::== ...
-    | mem.copy
-    | mem.set
-```
+## Conditional Segment Initialization Example
 
-## Validation
+Consider if there are two data sections, the first is always active and the
+second is conditionally active if global 0 has a non-zero value. This could be
+implemented as follows:
 
-`mem.copy`
+```webassembly
+(import "a" "global" (global i32))  ;; global 0
+(memory 1)
+(data (i32.const 0) "hello")   ;; data segment 0, is active so always copied
+(data passive "goodbye")       ;; data segment 1, is passive
 
-* The memory `C.mems[0]` must be defined in the context.
-* Then the instruction is valid with type `[i32 i32 i32] -> []`.
+(func $start
+  (if (get_global 0)
 
-`mem.set`
+    ;; copy data segment 1 into memory
+    (mem.init 1
+      (i32.const 0)     ;; source offset
+      (i32.const 16)    ;; target offset
+      (i32.const 7))    ;; length
 
-* The memory `C.mems[0]` must be defined in the context.
-* Then the instruction is valid with type `[i32 i32 i32] -> []`.
-
-## Execution
-
-`mem.copy`
-
-1. Let `F` be the current frame.
-1. Assert: due to validation, `F.module.memaddrs[0]` exists.
-1. Let `a` be the memory address `F.module.memaddrs[0]`.
-1. Assert: due to validation, `S.mems[a]` exists.
-1. Let `mem` be the memory instance `S.mems[a]`.
-1. Assert: due to validation, a value of value type `i32` is on the top of the stack.
-1. Pop the value `i32.const n` from the stack.
-1. Assert: due to validation, a value of value type `i32` is on the top of the stack.
-1. Pop the value `i32.const s` from the stack.
-1. If `s + n` is larger than the length of `mem.data`, then:
-   1. Trap.
-1. Assert: due to validation, a value of value type `i32` is on the top of the stack.
-1. Pop the value `i32.const d` from the stack.
-1. If `d + n` is larger than the length of `mem.data`, then:
-   1. Trap.
-1. Let `b*` be the byte sequence `mem.data[s:n]`.
-1. Replace the bytes `mem.data[d:n]` with `b*`.
-
-`mem.set`
-
-1. Let `F` be the current frame.
-1. Assert: due to validation, `F.module.memaddrs[0]` exists.
-1. Let `a` be the memory address `F.module.memaddrs[0]`.
-1. Assert: due to validation, `S.mems[a]` exists.
-1. Let `mem` be the memory instance `S.mems[a]`.
-1. Assert: due to validation, a value of value type `i32` is on the top of the stack.
-1. Pop the value `i32.const n` from the stack.
-1. Assert: due to validation, a value of value type `i32` is on the top of the stack.
-1. Pop the value `i32.const c` from the stack.
-1. Assert: due to validation, a value of value type `i32` is on the top of the stack.
-1. Pop the value `i32.const d` from the stack.
-1. If `d + n` is larger than the length of `mem.data`, then:
-   1. Trap.
-1. Let `c_w` be the result of computing `wrap_{32,8}(c)`.
-1. Let `b*` be the byte sequence `{bytes_i8(c_w)}^n`.
-1. Replace the bytes `mem.data[d:n]` with `b*`.
-
-## Binary Format
-
-```
-instr ::= ...
-    | 0xC5 0x00 => mem.copy
-    | 0xC6 0x00 => mem.set
-```
-
-Note that this skips `0xC0..0xC4` because those are currently proposed to be used for the
-new sign-extending operators (see https://github.com/WebAssembly/threads/blob/master/proposals/threads/Overview.md#new-sign-extending-operators).
-
-An immediate byte is included for future extensions. It currently must be zero.
-
-## Text Format
-
-```
-plaininstr_I ::= ...
-    | `mem.copy` => mem.copy
-    | `mem.set` => mem.set
+    ;; The memory used by this segment is no longer needed, so this segment can
+    ;; be dropped.
+    (mem.drop 1))
+)
 ```

@@ -10,12 +10,6 @@ and `memset`) to WebAssembly.
 See the [overview](proposals/bulk-memory-operations/Overview.md) for a summary of the
 proposal.
 
-This proposal also includes functionality to conditionally initialize data and
-elem segments that was previously coupled with the
-[thread proposal](https://github.com/WebAssembly/threads). This is currently in a
-[separate overview document](proposals/bulk-memory-operations/ConditionalSegmentInitialization.md)
-but will combined into the main overview soon.
-
 Original README from upstream repository follows...
 
 # spec
