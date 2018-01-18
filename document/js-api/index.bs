@@ -93,10 +93,10 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: trap; url: exec/runtime.html#syntax-trap
     url: exec/runtime.html#values
         text: WebAssembly value
-        text: 𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍
-        text: 𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍
-        text: 𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍
-        text: 𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍
+        text: 헂ퟨퟦ.햼허헇헌헍
+        text: 헂ퟥퟤ.햼허헇헌헍
+        text: 햿ퟥퟤ.햼허헇헌헍
+        text: 햿ퟨퟦ.햼허헇헌헍
     text: function index; url: syntax/modules.html#syntax-funcidx
     text: function instance; url: exec/runtime.html#function-instances
     text: init_store; url: appendix/embedding.html#embed-init-store
@@ -130,10 +130,10 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: function address; url: exec/runtime.html#syntax-funcaddr
     text: memory address; url: exec/runtime.html#syntax-memaddr
     url: syntax/types.html#syntax-valtype
-        text: 𝗂𝟥𝟤
-        text: 𝗂𝟨𝟦
-        text: 𝖿𝟥𝟤
-        text: 𝖿𝟨𝟦
+        text: 헂ퟥퟤ
+        text: 헂ퟨퟦ
+        text: 햿ퟥퟤ
+        text: 햿ퟨퟦ
     text: function element; url: exec/runtime.html#syntax-funcelem
     text: import component; url: syntax/modules.html#imports
     text: external value; url: exec/runtime.html#syntax-externval
@@ -142,13 +142,13 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: size_table; url: appendix/embedding.html#embed-size-table
     text: size_mem; url: appendix/embedding.html#embed-size-mem
     text: module; url: syntax/modules.html#syntax-module
-    text: 𝗂𝗆𝗉𝗈𝗋𝗍𝗌; url: syntax/modules.html#syntax-module
+    text: 헂헆헉허헋헍헌; url: syntax/modules.html#syntax-module
     url: syntax/types.html#external-types
         text: external type
-        text: 𝖿𝗎𝗇𝖼
-        text: 𝗍𝖺𝖻𝗅𝖾
-        text: 𝗆𝖾𝗆
-        text: 𝗀𝗅𝗈𝖻𝖺𝗅
+        text: 햿헎헇햼
+        text: 헍햺햻헅햾
+        text: 헆햾헆
+        text: 헀헅허햻햺헅
     text: global type; url: syntax/types.html#syntax-globaltype
     text: address; url: exec/runtime.html#addresses
 </pre>
@@ -309,13 +309,13 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 <div algorithm="instantiate">
   To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
-    1. If |module|.[=𝗂𝗆𝗉𝗈𝗋𝗍𝗌=] is not an empty list, and |importObject| is undefined, throw a {{TypeError}} exception.
+    1. If |module|.[=헂헆헉허헋헍헌=] is not an empty list, and |importObject| is undefined, throw a {{TypeError}} exception.
     1. Let |imports| be an empty [=list=] of [=external value=]s.
     1. For each (|moduleName|, |componentName|, |externtype|) in [=module_imports=](|module|), do
         1. Let |o| be ? [=Get=](|importObject|, |moduleName|).
         1. If [=Type=](|o|) is not [=Object=], throw a {{TypeError}} exception.
         1. Let |v| be ? [=Get=](|o|, |componentName|)
-        1. If |externtype| is of the form [=𝖿𝗎𝗇𝖼=] |functype|,
+        1. If |externtype| is of the form [=햿헎헇햼=] |functype|,
             1. If [=IsCallable=](|v|) is false, throw a {{LinkError}} exception.
             1. If |v| has a \[[FunctionAddress]] internal slot, and therefore is an [=Exported Function=],
                 1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
@@ -324,31 +324,31 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. Otherwise,
                 1. [=Create a host function=] from |v| and let |funcaddr| be the result.
                 1. Let |index| be the number of external functions in |imports|. This value |index| is known as the <dfn>index of the host function</dfn> |funcaddr|.
-            1. Let |externfunc| be the [=external value=] [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
+            1. Let |externfunc| be the [=external value=] [=external value|햿헎헇햼=] |funcaddr|.
             1. [=Append=] |externfunc| to |imports|.
-        1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] |globaltype|,
-            1. If |globaltype| is [=𝗂𝟨𝟦=] or [=Type=](|v|) is not [=Number=], throw a {{LinkError}} exception.
+        1. If |externtype| is of the form [=헀헅허햻햺헅=] |globaltype|,
+            1. If |globaltype| is [=헂ퟨퟦ=] or [=Type=](|v|) is not [=Number=], throw a {{LinkError}} exception.
             1. Let |value| be [=ToWebAssemblyValue=](|v|, |globaltype|.<em>[=global type|valtype=]</em>)
-            1. Assert: |globaltype|.<em>[=global type|mut=]</em> is [=global type|𝖼𝗈𝗇𝗌𝗍=], as verified by WebAssembly validation.
+            1. Assert: |globaltype|.<em>[=global type|mut=]</em> is [=global type|햼허헇헌헍=], as verified by WebAssembly validation.
             1. Let |store| be the current agent's [=associated store=].
             1. Let (|store|, |globaladdr|) be [=alloc_global=](|store|, |globaltype|, |value|).
             1. Set the current agent's [=associated store=] to |store|.
-            1. Let |externglobal| be [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr|.
+            1. Let |externglobal| be [=external value|헀헅허햻햺헅=] |globaladdr|.
             1. [=Append=] |externglobal| to |imports|.
-        1. If |externtype| is of the form [=𝗆𝖾𝗆=] |memtype|,
+        1. If |externtype| is of the form [=헆햾헆=] |memtype|,
             1. If |v| is not a {{Memory}} object, throw a {{LinkError}} exception.
 
             Note: [=instantiate_module=] invoked below will check the imported {{Memory}}'s size against the importing module's requirements.
 
-            2. Let |externmem| be the [=external value=] [=external value|𝗆𝖾𝗆=]  |v|.\[[Memory]].
+            2. Let |externmem| be the [=external value=] [=external value|헆햾헆=]  |v|.\[[Memory]].
             1. [=Append=] |externmem| to |imports|.
-        1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] |tabletype|,
+        1. Otherwise, |externtype| is of the form [=헍햺햻헅햾=] |tabletype|,
             1. If |v| is not a {{Table}} instance, throw a {{LinkError}} exception.
 
             Note: The table's length, etc. is checked by [=instantiate_module=] invoked below.
 
             2. Let |tableaddr| be |v|.\[[Table]]
-            1. Let |externtable| be the [=external value=] [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
+            1. Let |externtable| be the [=external value=] [=external value|헍햺햻헅햾=] |tableaddr|.
             1. [=Append=] |externtable| to |imports|.
     1. Let (|store|, |instance|) be [=instantiate_module=](|store|, |module|, |imports|).
     1. If |instance| is [=error=], throw an appropriate exception type:
@@ -359,25 +359,25 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
         1. Let |externval| be [=get_export=](|instance|, |name|).
         1. Assert: |externval| is not [=error=].
-        1. If |externtype| is of the form [=𝖿𝗎𝗇𝖼=] |functype|,
-            1. Assert: |externval| is of the form [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
-            1. Let [=external value|𝖿𝗎𝗇𝖼=] |funcaddr| be |externval|.
+        1. If |externtype| is of the form [=햿헎헇햼=] |functype|,
+            1. Assert: |externval| is of the form [=external value|햿헎헇햼=] |funcaddr|.
+            1. Let [=external value|햿헎헇햼=] |funcaddr| be |externval|.
             1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
             1. Let |value| be |func|.
-        1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] |globaltype|,
-            1. If |globaltype|.<em>[=global type|valtype=]</em>) is [=𝗂𝟨𝟦=], throw a {{LinkError}} exception.
-            1. Assert: |globaltype|.<em>[=global type|mut=]</em> is [=global type|𝖼𝗈𝗇𝗌𝗍=], as verified by WebAssembly validation.
-            1. Assert: |externval| is of the form [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr|.
-            1. Let [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr| be |externval|.
+        1. If |externtype| is of the form [=헀헅허햻햺헅=] |globaltype|,
+            1. If |globaltype|.<em>[=global type|valtype=]</em>) is [=헂ퟨퟦ=], throw a {{LinkError}} exception.
+            1. Assert: |globaltype|.<em>[=global type|mut=]</em> is [=global type|햼허헇헌헍=], as verified by WebAssembly validation.
+            1. Assert: |externval| is of the form [=external value|헀헅허햻햺헅=] |globaladdr|.
+            1. Let [=external value|헀헅허햻햺헅=] |globaladdr| be |externval|.
             1. Let |value| be [=ToJSValue=]([=read_global=](|store|, |globaladdr|)).
-        1. If |externtype| is of the form [=𝗆𝖾𝗆=] |memtype|,
-            1. Assert: |externval| is of the form [=external value|𝗆𝖾𝗆=] |memaddr|.
-            1. Let [=external value|𝗆𝖾𝗆=] |memaddr| be |externval|.
+        1. If |externtype| is of the form [=헆햾헆=] |memtype|,
+            1. Assert: |externval| is of the form [=external value|헆햾헆=] |memaddr|.
+            1. Let [=external value|헆햾헆=] |memaddr| be |externval|.
             1. Let |memory| be [=create a memory object|a new Memory object=] created from |memaddr|.
             1. Let |value| be |memory|.
-        1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] |tabletype|,
-            1. Assert: |externval| is of the form [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
-            1. Let [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr| be |externval|.
+        1. Otherwise, |externtype| is of the form [=헍햺햻헅햾=] |tabletype|,
+            1. Assert: |externval| is of the form [=external value|헍햺햻헅햾=] |tableaddr|.
+            1. Let [=external value|헍햺햻헅햾=] |tableaddr| be |externval|.
             1. Let |table| be [=create a Table object|a new Table object=] created from |tableaddr|.
             1. Let |value| be |table|.
         1. Let |status| be ! [=CreateDataProperty=](|exportsObject|, |name|, |value|).
@@ -455,10 +455,10 @@ interface Module {
 
 <div algorithm>
   The <dfn>string value of the extern type</dfn> |type| is
-    * "function" if |type| is of the form [=𝖿𝗎𝗇𝖼=] functype
-    * "table" if |type| is of the form [=𝗍𝖺𝖻𝗅𝖾=] tabletype
-    * "memory" if |type| is of the form [=𝗆𝖾𝗆=] memtype
-    * "global" if |type| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] globaltype
+    * "function" if |type| is of the form [=햿헎헇햼=] functype
+    * "table" if |type| is of the form [=헍햺햻헅햾=] tabletype
+    * "memory" if |type| is of the form [=헆햾헆=] memtype
+    * "global" if |type| is of the form [=헀헅허햻햺헅=] globaltype
 </div>
 
 <div algorithm>
@@ -637,7 +637,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |descriptor|["initial"] is [=present=], let |n| be |descriptor|["initial"]; otherwise, let |n| be 0.
     1. If |descriptor|["maximum"] is [=present=], let |m| be |descriptor|["maximum"]; otherwise, let |m| be empty.
     1. If |m| is not empty and |m| &lt; |n|, throw a {{RangeError}} exception.
-    1. Let |type| be the [=table type=] {[=table type|𝗆𝗂𝗇=] n, [=table type|𝗆𝖺𝗑=] |m|} [=table type|𝖺𝗇𝗒𝖿𝗎𝗇𝖼=].
+    1. Let |type| be the [=table type=] {[=table type|헆헂헇=] n, [=table type|헆햺헑=] |m|} [=table type|햺헇헒햿헎헇햼=].
     1. Let |store| be the current agent's [=associated store=].
     1. Let (|store|, |tableaddr|) be [=alloc_table=](|store|, |type|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the current agent's [=associated store=] to |store|.
@@ -697,14 +697,14 @@ This slot holds a [=function address=] relative to the current agent's [=associa
   The <dfn>name of the WebAssembly function</dfn> |funcaddr| is found by performing the following steps:
 
     1. Let |store| be the current agent's [=associated store=].
-    1. Let |funcinst| be |store|.𝖿𝗎𝗇𝖼𝗌[|funcaddr|].
-    1. If |funcinst| is of the form {𝗍𝗒𝗉𝖾 |functype|, 𝗁𝗈𝗌𝗍𝖼𝗈𝖽𝖾 |hostfunc|},
+    1. Let |funcinst| be |store|.햿헎헇햼헌[|funcaddr|].
+    1. If |funcinst| is of the form {헍헒헉햾 |functype|, 헁허헌헍햼허햽햾 |hostfunc|},
         1. Assert: |hostfunc| is a JavaScript object and [=IsCallable=](|hostfunc|) is true.
         1. Let |index| be the [=index of the host function=] |funcaddr|.
     1. Otherwise,
-        1. Let |moduleinst| be |funcinst|.𝗆𝗈𝖽𝗎𝗅𝖾.
-        1. Assert: |funcaddr| is contained in |moduleinst|.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌.
-        1. Let |index| be the index of |moduleinst|.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌 where |funcaddr| is found.
+        1. Let |moduleinst| be |funcinst|.헆허햽헎헅햾.
+        1. Assert: |funcaddr| is contained in |moduleinst|.햿헎헇햼햺햽햽헋헌.
+        1. Let |index| be the index of |moduleinst|.햿헎헇햼햺햽햽헋헌 where |funcaddr| is found.
     1. Return ! [=ToString=](|index|).
 </div>
 
@@ -735,7 +735,7 @@ This slot holds a [=function address=] relative to the current agent's [=associa
     1. Let |store| be the current agent's [=associated store=].
     1. Let |functype| be [=type_func=](|store|, |funcaddr|).
     1. Let [|parameters|] → [|results|] be |functype|.
-    1. If |parameters| or |results| contains an [=𝗂𝟨𝟦=], throw a {{TypeError}}.
+    1. If |parameters| or |results| contains an [=헂ퟨퟦ=], throw a {{TypeError}}.
 
         Note: the above error is thrown each time the \[[Call]] method is invoked.
 
@@ -761,7 +761,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
   To <dfn>create a host function</dfn> from the JavaScript object |func|, perform the following steps:
 
     1. Let |hostfunc| be a [=host function=] which performs the following steps when called:
-        1. If the signature contains an [=𝗂𝟨𝟦=] (as argument or result), the host function throws a {{TypeError}} when called.
+        1. If the signature contains an [=헂ퟨퟦ=] (as argument or result), the host function throws a {{TypeError}} when called.
         1. Let |arguments| be a [=list=] of the arguments of the invocation of this function.
         1. Let |jsArguments| be an empty [=list=].
         1. For each |arg| in |arguments|,
@@ -779,10 +779,10 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 <div algorithm>
 The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a JavaScript value performs the following steps:
 
-Assert: |w| is not of the form [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |i64|.
-1. If |w| is of the form [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |i32|, return [=the Number value=] for |i32|.
-1. If |w| is of the form [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |f32|, return [=the Number value=] for |f32|.
-1. If |w| is of the form [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |f64|, return [=the Number value=] for |f64|.
+Assert: |w| is not of the form [=헂ퟨퟦ.햼허헇헌헍=] |i64|.
+1. If |w| is of the form [=헂ퟥퟤ.햼허헇헌헍=] |i32|, return [=the Number value=] for |i32|.
+1. If |w| is of the form [=햿ퟥퟤ.햼허헇헌헍=] |f32|, return [=the Number value=] for |f32|.
+1. If |w| is of the form [=햿ퟨퟦ.햼허헇헌헍=] |f64|, return [=the Number value=] for |f64|.
 
 <!-- If the WebAssembly value is optional, then given `None`, return JavaScript value `undefined`. -->
 
@@ -793,16 +793,16 @@ Note: Implementations may optionally replace the NaN payload with any other NaN 
 The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerce a JavaScript value to a [=WebAssembly value=]  performs the following steps:
 
 
-Assert: |type| is not [=𝗂𝟨𝟦=].
-1. If |type| is [=𝗂𝟥𝟤=],
+Assert: |type| is not [=헂ퟨퟦ=].
+1. If |type| is [=헂ퟥퟤ=],
     1. Let |i32| be ? [=ToInt32=](|v|).
-    1. Return [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |i32|.
-1. If |type| is [=𝖿𝟥𝟤=],
+    1. Return [=헂ퟥퟤ.햼허헇헌헍=] |i32|.
+1. If |type| is [=햿ퟥퟤ=],
     1. Let |f32| be ? [=ToNumber=](|v|) rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode.
-    1. Return [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |f32|.
-1. If |type| is [=𝖿𝟨𝟦=],
+    1. Return [=햿ퟥퟤ.햼허헇헌헍=] |f32|.
+1. If |type| is [=햿ퟨퟦ=],
     1. Let |f64| be ? [=ToNumber=](|v|).
-    1. Return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |f64|.
+    1. Return [=햿ퟨퟦ.햼허헇헌헍=] |f64|.
 
 </div>
 

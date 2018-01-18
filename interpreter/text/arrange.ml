@@ -187,14 +187,14 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let mem_size = function
-  | Memory.Mem8 -> "8"
-  | Memory.Mem16 -> "16"
-  | Memory.Mem32 -> "32"
+let packed_size = function
+  | Mem.Pack8 -> "8"
+  | Mem.Pack16 -> "16"
+  | Mem.Pack32 -> "32"
 
 let extension = function
-  | Memory.SX -> "_s"
-  | Memory.ZX -> "_u"
+  | Mem.SX -> "_s"
+  | Mem.ZX -> "_u"
 
 let memop name {ty; align; offset; _} =
   value_type ty ^ "." ^ name ^
@@ -204,12 +204,12 @@ let memop name {ty; align; offset; _} =
 let loadop op =
   match op.sz with
   | None -> memop "load" op
-  | Some (sz, ext) -> memop ("load" ^ mem_size sz ^ extension ext) op
+  | Some (sz, ext) -> memop ("load" ^ packed_size sz ^ extension ext) op
 
 let storeop op =
   match op.sz with
   | None -> memop "store" op
-  | Some sz -> memop ("store" ^ mem_size sz) op
+  | Some sz -> memop ("store" ^ packed_size sz) op
 
 
 (* Expressions *)
@@ -244,8 +244,8 @@ let rec instr e =
     | SetGlobal x -> "set_global " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
-    | CurrentMemory -> "current_memory", []
-    | GrowMemory -> "grow_memory", []
+    | MemSize -> "mem.size", []
+    | MemGrow -> "mem.grow", []
     | Const lit -> constop lit ^ " " ^ value lit, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
@@ -285,9 +285,9 @@ let table off i tab =
     [atom elem_type t]
   )
 
-let memory off i mem =
-  let {mtype = MemoryType lim} = mem.it in
-  Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
+let mem off i mem =
+  let {mtype = MemType lim} = mem.it in
+  Node ("mem $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
 let segment head dat seg =
   let {index; offset; init} = seg.it in
@@ -310,7 +310,7 @@ let import_desc i d =
   | FuncImport x ->
     Node ("func $" ^ nat i, [Node ("type", [atom var x])])
   | TableImport t -> table 0 i ({ttype = t} @@ d.at)
-  | MemoryImport t -> memory 0 i ({mtype = t} @@ d.at)
+  | MemImport t -> mem 0 i ({mtype = t} @@ d.at)
   | GlobalImport t -> Node ("global $" ^ nat i, [global_type t])
 
 let import i im =
@@ -323,7 +323,7 @@ let export_desc d =
   match d.it with
   | FuncExport x -> Node ("func", [atom var x])
   | TableExport x -> Node ("table", [atom var x])
-  | MemoryExport x -> Node ("memory", [atom var x])
+  | MemExport x -> Node ("mem", [atom var x])
   | GlobalExport x -> Node ("global", [atom var x])
 
 let export ex =
@@ -345,24 +345,24 @@ let is_func_import im =
   match im.it.idesc.it with FuncImport _ -> true | _ -> false
 let is_table_import im =
   match im.it.idesc.it with TableImport _ -> true | _ -> false
-let is_memory_import im =
-  match im.it.idesc.it with MemoryImport _ -> true | _ -> false
+let is_mem_import im =
+  match im.it.idesc.it with MemImport _ -> true | _ -> false
 let is_global_import im =
   match im.it.idesc.it with GlobalImport _ -> true | _ -> false
 
 let module_with_var_opt x_opt m =
   let func_imports = List.filter is_func_import m.it.imports in
   let table_imports = List.filter is_table_import m.it.imports in
-  let memory_imports = List.filter is_memory_import m.it.imports in
+  let mem_imports = List.filter is_mem_import m.it.imports in
   let global_imports = List.filter is_global_import m.it.imports in
   Node ("module" ^ var_opt x_opt,
     listi typedef m.it.types @
     listi import table_imports @
-    listi import memory_imports @
+    listi import mem_imports @
     listi import global_imports @
     listi import func_imports @
     listi (table (List.length table_imports)) m.it.tables @
-    listi (memory (List.length memory_imports)) m.it.memories @
+    listi (mem (List.length mem_imports)) m.it.mems @
     listi (global (List.length global_imports)) m.it.globals @
     listi (func_with_index (List.length func_imports)) m.it.funcs @
     list export m.it.exports @

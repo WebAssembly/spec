@@ -115,8 +115,8 @@ let encode m =
     let table_type = function
       | TableType (lim, t) -> elem_type t; limits vu32 lim
 
-    let memory_type = function
-      | MemoryType lim -> limits vu32 lim
+    let mem_type = function
+      | MemType lim -> limits vu32 lim
 
     let mutability = function
       | Immutable -> u8 0
@@ -130,7 +130,7 @@ let encode m =
     open Source
     open Ast
     open Values
-    open Memory
+    open Mem
 
     let op n = u8 n
     let end_ () = op 0x0b
@@ -171,27 +171,27 @@ let encode m =
       | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
       | Load ({ty = F32Type; sz = None; _} as mo) -> op 0x2a; memop mo
       | Load ({ty = F64Type; sz = None; _} as mo) -> op 0x2b; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem8, SX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack8, SX); _} as mo) ->
         op 0x2c; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem8, ZX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack8, ZX); _} as mo) ->
         op 0x2d; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem16, SX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack16, SX); _} as mo) ->
         op 0x2e; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem16, ZX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack16, ZX); _} as mo) ->
         op 0x2f; memop mo
-      | Load {ty = I32Type; sz = Some (Mem32, _); _} ->
+      | Load {ty = I32Type; sz = Some (Pack32, _); _} ->
         assert false
-      | Load ({ty = I64Type; sz = Some (Mem8, SX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack8, SX); _} as mo) ->
         op 0x30; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem8, ZX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack8, ZX); _} as mo) ->
         op 0x31; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem16, SX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack16, SX); _} as mo) ->
         op 0x32; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem16, ZX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack16, ZX); _} as mo) ->
         op 0x33; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem32, SX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack32, SX); _} as mo) ->
         op 0x34; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem32, ZX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack32, ZX); _} as mo) ->
         op 0x35; memop mo
       | Load {ty = F32Type | F64Type; sz = Some _; _} ->
         assert false
@@ -200,16 +200,16 @@ let encode m =
       | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
       | Store ({ty = F32Type; sz = None; _} as mo) -> op 0x38; memop mo
       | Store ({ty = F64Type; sz = None; _} as mo) -> op 0x39; memop mo
-      | Store ({ty = I32Type; sz = Some Mem8; _} as mo) -> op 0x3a; memop mo
-      | Store ({ty = I32Type; sz = Some Mem16; _} as mo) -> op 0x3b; memop mo
-      | Store {ty = I32Type; sz = Some Mem32; _} -> assert false
-      | Store ({ty = I64Type; sz = Some Mem8; _} as mo) -> op 0x3c; memop mo
-      | Store ({ty = I64Type; sz = Some Mem16; _} as mo) -> op 0x3d; memop mo
-      | Store ({ty = I64Type; sz = Some Mem32; _} as mo) -> op 0x3e; memop mo
+      | Store ({ty = I32Type; sz = Some Pack8; _} as mo) -> op 0x3a; memop mo
+      | Store ({ty = I32Type; sz = Some Pack16; _} as mo) -> op 0x3b; memop mo
+      | Store {ty = I32Type; sz = Some Pack32; _} -> assert false
+      | Store ({ty = I64Type; sz = Some Pack8; _} as mo) -> op 0x3c; memop mo
+      | Store ({ty = I64Type; sz = Some Pack16; _} as mo) -> op 0x3d; memop mo
+      | Store ({ty = I64Type; sz = Some Pack32; _} as mo) -> op 0x3e; memop mo
       | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
 
-      | CurrentMemory -> op 0x3f; u8 0x00
-      | GrowMemory -> op 0x40; u8 0x00
+      | MemSize -> op 0x3f; u8 0x00
+      | MemGrow -> op 0x40; u8 0x00
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c
       | Const {it = I64 c; _} -> op 0x42; vs64 c
@@ -388,7 +388,7 @@ let encode m =
       match d.it with
       | FuncImport x -> u8 0x00; var x
       | TableImport t -> u8 0x01; table_type t
-      | MemoryImport t -> u8 0x02; memory_type t
+      | MemImport t -> u8 0x02; mem_type t
       | GlobalImport t -> u8 0x03; global_type t
 
     let import im =
@@ -413,12 +413,12 @@ let encode m =
       section 4 (vec table) tabs (tabs <> [])
 
     (* Memory section *)
-    let memory mem =
+    let mem mem =
       let {mtype} = mem.it in
-      memory_type mtype
+      mem_type mtype
 
-    let memory_section mems =
-      section 5 (vec memory) mems (mems <> [])
+    let mem_section mems =
+      section 5 (vec mem) mems (mems <> [])
 
     (* Global section *)
     let global g =
@@ -433,7 +433,7 @@ let encode m =
       match d.it with
       | FuncExport x -> u8 0; var x
       | TableExport x -> u8 1; var x
-      | MemoryExport x -> u8 2; var x
+      | MemExport x -> u8 2; var x
       | GlobalExport x -> u8 3; var x
 
     let export ex =
@@ -480,11 +480,11 @@ let encode m =
       section 9 (vec table_segment) elems (elems <> [])
 
     (* Data section *)
-    let memory_segment seg =
+    let mem_segment seg =
       segment string seg
 
     let data_section data =
-      section 11 (vec memory_segment) data (data <> [])
+      section 11 (vec mem_segment) data (data <> [])
 
     (* Module *)
 
@@ -495,7 +495,7 @@ let encode m =
       import_section m.it.imports;
       func_section m.it.funcs;
       table_section m.it.tables;
-      memory_section m.it.memories;
+      mem_section m.it.mems;
       global_section m.it.globals;
       export_section m.it.exports;
       start_section m.it.start;

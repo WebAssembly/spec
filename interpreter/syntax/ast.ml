@@ -56,9 +56,9 @@ type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Values.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
 type 'a memop =
-  {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}
-type loadop = (Memory.mem_size * Memory.extension) memop
-type storeop = Memory.mem_size memop
+  {ty : value_type; align : int; offset : Mem.offset; sz : 'a option}
+type loadop = (Mem.packed_size * Mem.extension) memop
+type storeop = Mem.packed_size memop
 
 
 (* Expressions *)
@@ -89,8 +89,8 @@ and instr' =
   | SetGlobal of var                  (* write global variable *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
-  | CurrentMemory                     (* size of linear memory *)
-  | GrowMemory                        (* grow linear memory *)
+  | MemSize                           (* size of linear memory *)
+  | MemGrow                           (* grow linear memory *)
   | Const of literal                  (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)
@@ -127,10 +127,10 @@ and table' =
   ttype : table_type;
 }
 
-type memory = memory' Source.phrase
-and memory' =
+type mem = mem' Source.phrase
+and mem' =
 {
-  mtype : memory_type;
+  mtype : mem_type;
 }
 
 type 'data segment = 'data segment' Source.phrase
@@ -142,7 +142,7 @@ and 'data segment' =
 }
 
 type table_segment = var list segment
-type memory_segment = string segment
+type mem_segment = string segment
 
 
 (* Modules *)
@@ -153,7 +153,7 @@ type export_desc = export_desc' Source.phrase
 and export_desc' =
   | FuncExport of var
   | TableExport of var
-  | MemoryExport of var
+  | MemExport of var
   | GlobalExport of var
 
 type export = export' Source.phrase
@@ -167,7 +167,7 @@ type import_desc = import_desc' Source.phrase
 and import_desc' =
   | FuncImport of var
   | TableImport of table_type
-  | MemoryImport of memory_type
+  | MemImport of mem_type
   | GlobalImport of global_type
 
 type import = import' Source.phrase
@@ -184,7 +184,7 @@ and module_' =
   types : type_ list;
   globals : global list;
   tables : table list;
-  memories : memory list;
+  mems : mem list;
   funcs : func list;
   start : var option;
   elems : var list segment list;
@@ -201,7 +201,7 @@ let empty_module =
   types = [];
   globals = [];
   tables = [];
-  memories = [];
+  mems = [];
   funcs = [];
   start = None;
   elems  = [];
@@ -220,7 +220,7 @@ let import_type (m : module_) (im : import) : extern_type =
   match idesc.it with
   | FuncImport x -> ExternFuncType (func_type_for m x)
   | TableImport t -> ExternTableType t
-  | MemoryImport t -> ExternMemoryType t
+  | MemImport t -> ExternMemType t
   | GlobalImport t -> ExternGlobalType t
 
 let export_type (m : module_) (ex : export) : extern_type =
@@ -235,9 +235,9 @@ let export_type (m : module_) (ex : export) : extern_type =
   | TableExport x ->
     let tts = tables its @ List.map (fun t -> t.it.ttype) m.it.tables in
     ExternTableType (nth tts x.it)
-  | MemoryExport x ->
-    let mts = memories its @ List.map (fun m -> m.it.mtype) m.it.memories in
-    ExternMemoryType (nth mts x.it)
+  | MemExport x ->
+    let mts = mems its @ List.map (fun m -> m.it.mtype) m.it.mems in
+    ExternMemType (nth mts x.it)
   | GlobalExport x ->
     let gts = globals its @ List.map (fun g -> g.it.gtype) m.it.globals in
     ExternGlobalType (nth gts x.it)

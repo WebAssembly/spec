@@ -19,7 +19,7 @@
 )
 
 (module
-  (memory (data "A"))
+  (mem (data "A"))
   (func $inc
     (i32.store8
       (i32.const 0)
@@ -49,7 +49,7 @@
 (assert_return (invoke "get") (i32.const 70))
 
 (module
-  (memory (data "A"))
+  (mem (data "A"))
   (func $inc
     (i32.store8
       (i32.const 0)

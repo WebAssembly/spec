@@ -168,9 +168,9 @@ let table_type s =
   let lim = limits vu32 s in
   TableType (lim, t)
 
-let memory_type s =
+let mem_type s =
   let lim = limits vu32 s in
-  MemoryType lim
+  MemType lim
 
 let mutability s =
   match u8 s with
@@ -289,10 +289,10 @@ let rec instr s =
 
   | 0x3f ->
     expect 0x00 s "zero flag expected";
-    current_memory
+    mem_size
   | 0x40 ->
     expect 0x00 s "zero flag expected";
-    grow_memory
+    mem_grow
 
   | 0x41 -> i32_const (at vs32 s)
   | 0x42 -> i64_const (at vs64 s)
@@ -460,7 +460,7 @@ let id s =
     | 2 -> `ImportSection
     | 3 -> `FuncSection
     | 4 -> `TableSection
-    | 5 -> `MemorySection
+    | 5 -> `MemSection
     | 6 -> `GlobalSection
     | 7 -> `ExportSection
     | 8 -> `StartSection
@@ -493,7 +493,7 @@ let import_desc s =
   match u8 s with
   | 0x00 -> FuncImport (at var s)
   | 0x01 -> TableImport (table_type s)
-  | 0x02 -> MemoryImport (memory_type s)
+  | 0x02 -> MemImport (mem_type s)
   | 0x03 -> GlobalImport (global_type s)
   | _ -> error s (pos s - 1) "invalid import kind"
 
@@ -525,12 +525,12 @@ let table_section s =
 
 (* Memory section *)
 
-let memory s =
-  let mtype = memory_type s in
+let mem s =
+  let mtype = mem_type s in
   {mtype}
 
-let memory_section s =
-  section `MemorySection (vec (at memory)) [] s
+let mem_section s =
+  section `MemSection (vec (at mem)) [] s
 
 
 (* Global section *)
@@ -550,7 +550,7 @@ let export_desc s =
   match u8 s with
   | 0x00 -> FuncExport (at var s)
   | 0x01 -> TableExport (at var s)
-  | 0x02 -> MemoryExport (at var s)
+  | 0x02 -> MemExport (at var s)
   | 0x03 -> GlobalExport (at var s)
   | _ -> error s (pos s - 1) "invalid export kind"
 
@@ -603,11 +603,11 @@ let elem_section s =
 
 (* Data section *)
 
-let memory_segment s =
+let mem_segment s =
   segment string s
 
 let data_section s =
-  section `DataSection (vec (at memory_segment)) [] s
+  section `DataSection (vec (at mem_segment)) [] s
 
 
 (* Custom section *)
@@ -640,7 +640,7 @@ let module_ s =
   iterate custom_section s;
   let tables = table_section s in
   iterate custom_section s;
-  let memories = memory_section s in
+  let mems = mem_section s in
   iterate custom_section s;
   let globals = global_section s in
   iterate custom_section s;
@@ -660,7 +660,7 @@ let module_ s =
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
       func_types func_bodies
-  in {types; tables; memories; globals; funcs; imports; exports; elems; data; start}
+  in {types; tables; mems; globals; funcs; imports; exports; elems; data; start}
 
 
 let decode name bs = at module_ (stream name bs)

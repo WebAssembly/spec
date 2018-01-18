@@ -240,8 +240,8 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \K{i}\X{nn}\K{.}\STORE\K{8}~\memarg ~|~
      \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
      \K{i64.}\STORE\K{32}~\memarg \\&&|&
-     \CURRENTMEMORY \\&&|&
-     \GROWMEMORY \\
+     \MEMSIZE \\&&|&
+     \MEMGROW \\
    \end{array}
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
@@ -256,8 +256,8 @@ A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside th
 .. note::
    Future version of WebAssembly might provide memory instructions with 64 bit address ranges.
 
-The |CURRENTMEMORY| instruction returns the current size of a memory.
-The |GROWMEMORY| instruction grows memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
+The |MEMSIZE| instruction returns the current size of a memory.
+The |MEMGROW| instruction grows memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
 
 .. note::

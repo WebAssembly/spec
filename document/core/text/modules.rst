@@ -159,7 +159,7 @@ The descriptors in imports can bind a symbolic function, table, memory, or globa
        &\Rightarrow& \IDFUNC~x \\ &&|&
      \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype~\text{)}
        &\Rightarrow& \IDTABLE~\X{tt} \\ &&|&
-     \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype~\text{)}
+     \text{(}~\text{mem}~~\Tid^?~~\X{mt}{:}\Tmemtype~\text{)}
        &\Rightarrow& \IDMEM~~\X{mt} \\ &&|&
      \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype~\text{)}
        &\Rightarrow& \IDGLOBAL~\X{gt} \\
@@ -314,7 +314,7 @@ Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
 .. math::
    \begin{array}{llclll}
    \production{memory} & \Tmem_I &::=&
-     \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype~\text{)}
+     \text{(}~\text{mem}~~\Tid^?~~\X{mt}{:}\Tmemtype~\text{)}
        &\Rightarrow& \{ \MTYPE~\X{mt} \} \\
    \end{array}
 
@@ -337,8 +337,8 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)}~~
+     \text{(}~\text{mem}~~\Tid^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{mem}~~\Tid'~~m~~m~\text{)}~~
        \text{(}~\text{data}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
        \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
@@ -349,12 +349,12 @@ Moreover, memories can be defined as :ref:`imports <text-import>` or :ref:`expor
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tmemtype~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{memory}~~\Tid^?~~\Tmemtype~\text{)}~\text{)}
+     \text{(}~\text{mem}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tmemtype~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{mem}~~\Tid^?~~\Tmemtype~\text{)}~\text{)}
        \\[1ex] &
-     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{export}~~\Tname~~\text{(}~\text{memory}~~\Tid'~\text{)}~\text{)}~~
-       \text{(}~\text{memory}~~\Tid'~~\dots~\text{)}
+     \text{(}~\text{mem}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{mem}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{mem}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
@@ -426,7 +426,7 @@ The syntax for exports mirrors their :ref:`abstract syntax <syntax-export>` dire
        &\Rightarrow& \EDFUNC~x \\ &&|&
      \text{(}~\text{table}~~x{:}\Btableidx_I~\text{)}
        &\Rightarrow& \EDTABLE~x \\ &&|&
-     \text{(}~\text{memory}~~x{:}\Bmemidx_I~\text{)}
+     \text{(}~\text{mem}~~x{:}\Bmemidx_I~\text{)}
        &\Rightarrow& \EDMEM~x \\ &&|&
      \text{(}~\text{global}~~x{:}\Bglobalidx_I~\text{)}
        &\Rightarrow& \EDGLOBAL~x \\
@@ -593,7 +593,7 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
      \{\IFUNCS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{table}~\Tid^?~\dots~\text{)}) &=&
      \{\ITABLES~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{memory}~\Tid^?~\dots~\text{)}) &=&
+   \F{idc}(\text{(}~\text{mem}~\Tid^?~\dots~\text{)}) &=&
      \{\IMEMS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=&
      \{\IGLOBALS~(\Tid^?)\} \\
@@ -601,7 +601,7 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
      \{\IFUNCS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~\Tid^?~\dots~\text{)}~\text{)}) &=&
      \{\ITABLES~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{memory}~\Tid^?~\dots~\text{)}~\text{)}) &=&
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{mem}~\Tid^?~\dots~\text{)}~\text{)}) &=&
      \{\IMEMS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{global}~\Tid^?~\dots~\text{)}~\text{)}) &=&
      \{\IGLOBALS~(\Tid^?)\} \\
@@ -623,11 +623,11 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
    \F{id}(\text{(}~\text{type}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
    \F{id}(\text{(}~\text{func}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
    \F{id}(\text{(}~\text{table}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
-   \F{id}(\text{(}~\text{memory}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
+   \F{id}(\text{(}~\text{mem}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
    \F{id}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\[1ex]
    \F{funcids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{func}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
    \F{tableids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{table}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
-   \F{memids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{memory}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
+   \F{memids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{mem}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
    \F{globalids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{global}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
    \end{array} \\
    \F{desc}(\text{(}~\text{import}~\dots~\Timportdesc~\text{)}) \quad=\quad \Timportdesc

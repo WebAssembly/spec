@@ -389,10 +389,10 @@ Memory Instructions
    }
 
 
-.. _valid-current_memory:
+.. _valid-mem.size:
 
-:math:`\CURRENTMEMORY`
-......................
+:math:`\MEMSIZE`
+................
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
@@ -402,14 +402,14 @@ Memory Instructions
    \frac{
      C.\CMEMS[0] = \memtype
    }{
-     C \vdashinstr \CURRENTMEMORY : [] \to [\I32]
+     C \vdashinstr \MEMSIZE : [] \to [\I32]
    }
 
 
-.. _valid-grow_memory:
+.. _valid-mem.grow:
 
-:math:`\GROWMEMORY`
-...................
+:math:`\MEMGROW`
+................
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
@@ -419,7 +419,7 @@ Memory Instructions
    \frac{
      C.\CMEMS[0] = \memtype
    }{
-     C \vdashinstr \GROWMEMORY : [\I32] \to [\I32]
+     C \vdashinstr \MEMGROW : [\I32] \to [\I32]
    }
 
 

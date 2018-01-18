@@ -46,7 +46,7 @@
   "duplicate export name"
 )
 (assert_invalid
-  (module (func) (memory 0) (export "a" (func 0)) (export "a" (memory 0)))
+  (module (func) (mem 0) (export "a" (func 0)) (export "a" (mem 0)))
   "duplicate export name"
 )
 
@@ -95,7 +95,7 @@
   "duplicate export name"
 )
 (assert_invalid
-  (module (global i32 (i32.const 0)) (memory 0) (export "a" (global 0)) (export "a" (memory 0)))
+  (module (global i32 (i32.const 0)) (mem 0) (export "a" (global 0)) (export "a" (mem 0)))
   "duplicate export name"
 )
 
@@ -144,55 +144,55 @@
   "duplicate export name"
 )
 (assert_invalid
-  (module (table 0 anyfunc) (memory 0) (export "a" (table 0)) (export "a" (memory 0)))
+  (module (table 0 anyfunc) (mem 0) (export "a" (table 0)) (export "a" (mem 0)))
   "duplicate export name"
 )
 
 
 ;; Memories
 
-(module (memory 0) (export "a" (memory 0)))
-(module (memory 0) (export "a" (memory 0)) (export "b" (memory 0)))
+(module (mem 0) (export "a" (mem 0)))
+(module (mem 0) (export "a" (mem 0)) (export "b" (mem 0)))
 ;; No multiple memories yet.
-;; (module (memory 0) (memory 0) (export "a" (memory 0)) (export "b" (memory 1)))
+;; (module (mem 0) (mem 0) (export "a" (mem 0)) (export "b" (mem 1)))
 
-(module (memory (export "a") 0))
-(module (memory (export "a") 0 1))
-(module (memory 0) (export "a" (memory 0)))
-(module (memory 0 1) (export "a" (memory 0)))
-(module (memory $a (export "a") 0))
-(module (memory $a (export "a") 0 1))
-(module (memory $a 0) (export "a" (memory $a)))
-(module (memory $a 0 1) (export "a" (memory $a)))
-(module (export "a" (memory 0)) (memory 0))
-(module (export "a" (memory 0)) (memory 0 1))
-(module (export "a" (memory $a)) (memory $a 0))
-(module (export "a" (memory $a)) (memory $a 0 1))
+(module (mem (export "a") 0))
+(module (mem (export "a") 0 1))
+(module (mem 0) (export "a" (mem 0)))
+(module (mem 0 1) (export "a" (mem 0)))
+(module (mem $a (export "a") 0))
+(module (mem $a (export "a") 0 1))
+(module (mem $a 0) (export "a" (mem $a)))
+(module (mem $a 0 1) (export "a" (mem $a)))
+(module (export "a" (mem 0)) (mem 0))
+(module (export "a" (mem 0)) (mem 0 1))
+(module (export "a" (mem $a)) (mem $a 0))
+(module (export "a" (mem $a)) (mem $a 0 1))
 
 (; TODO: access memory ;)
 
 (assert_invalid
-  (module (memory 0) (export "a" (memory 1)))
+  (module (mem 0) (export "a" (mem 1)))
   "unknown memory"
 )
 (assert_invalid
-  (module (memory 0) (export "a" (memory 0)) (export "a" (memory 0)))
+  (module (mem 0) (export "a" (mem 0)) (export "a" (mem 0)))
   "duplicate export name"
 )
 ;; No multiple memories yet.
 ;; (assert_invalid
-;;   (module (memory 0) (memory 0) (export "a" (memory 0)) (export "a" (memory 1)))
+;;   (module (mem 0) (mem 0) (export "a" (mem 0)) (export "a" (mem 1)))
 ;;   "duplicate export name"
 ;; )
 (assert_invalid
-  (module (memory 0) (func) (export "a" (memory 0)) (export "a" (func 0)))
+  (module (mem 0) (func) (export "a" (mem 0)) (export "a" (func 0)))
   "duplicate export name"
 )
 (assert_invalid
-  (module (memory 0) (global i32 (i32.const 0)) (export "a" (memory 0)) (export "a" (global 0)))
+  (module (mem 0) (global i32 (i32.const 0)) (export "a" (mem 0)) (export "a" (global 0)))
   "duplicate export name"
 )
 (assert_invalid
-  (module (memory 0) (table 0 anyfunc) (export "a" (memory 0)) (export "a" (table 0)))
+  (module (mem 0) (table 0 anyfunc) (export "a" (mem 0)) (export "a" (table 0)))
   "duplicate export name"
 )

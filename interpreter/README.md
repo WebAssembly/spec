@@ -190,7 +190,7 @@ block_sig : ( result <type>* )*
 func_sig:   ( type <var> )? <param>* <result>*
 global_sig: <type> | ( mut <type> )
 table_sig:  <nat> <nat>? <elem_type>
-memory_sig: <nat> <nat>?
+mem_sig: <nat> <nat>?
 
 expr:
   ( <op> )
@@ -226,8 +226,8 @@ op:
   set_global <var>
   <type>.load((8|16|32)_<sign>)? <offset>? <align>?
   <type>.store(8|16|32)? <offset>? <align>?
-  current_memory
-  grow_memory
+  mem.size
+  mem.grow
   <type>.const <value>
   <type>.<unop>
   <type>.<binop>
@@ -251,10 +251,10 @@ table:   ( table <name>? <table_sig> )
          ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )* <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
 elem:    ( elem <var>? (offset <instr>* ) <var>* )
          ( elem <var>? <expr> <var>* )                                      ;; = (elem <var>? (offset <expr>) <var>*)
-memory:  ( memory <name>? <memory_sig> )
-         ( memory <name>? ( export <string> ) <...> )                       ;; = (export <string> (memory <N>))+ (memory <name>? <...>)
-         ( memory <name>? ( import <string> <string> ) <memory_sig> )       ;; = (import <name>? <string> <string> (memory <memory_sig>))
-         ( memory <name>? ( export <string> )* ( data <string>* )           ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
+mem:     ( mem <name>? <mem_sig> )
+         ( mem <name>? ( export <string> ) <...> )                          ;; = (export <string> (mem <N>))+ (mem <name>? <...>)
+         ( mem <name>? ( import <string> <string> ) <mem_sig> )             ;; = (import <name>? <string> <string> (mem <mem_sig>))
+         ( mem <name>? ( export <string> )* ( data <string>* )              ;; = (mem <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
 data:    ( data <var>? ( offset <instr>* ) <string>* )
          ( data <var>? <expr> <string>* )                                   ;; = (data <var>? (offset <expr>) <string>*)
 
@@ -266,16 +266,16 @@ import:  ( import <string> <string> <imkind> )
 imkind:  ( func <name>? <func_sig> )
          ( global <name>? <global_sig> )
          ( table <name>? <table_sig> )
-         ( memory <name>? <memory_sig> )
+         ( mem <name>? <mem_sig> )
 export:  ( export <string> <exkind> )
 exkind:  ( func <var> )
          ( global <var> )
          ( table <var> )
-         ( memory <var> )
+         ( mem <var> )
 
-module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
-         <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>?  ;; =
-         ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
+module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <mem>? <global>* <elem>* <data>* <start>? )
+         <typedef>* <func>* <import>* <export>* <table>? <mem>? <global>* <elem>* <data>* <start>?  ;; =
+         ( module <typedef>* <func>* <import>* <export>* <table>? <mem>? <global>* <elem>* <data>* <start>? )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the AST below).
@@ -285,7 +285,7 @@ For raw instructions, the syntax allows omitting the parentheses around the oper
 Any form of naming via `<name>` and `<var>` (including expression labels) is merely notational convenience of this text format. The actual AST has no names, and all bindings are referred to via ordered numeric indices; consequently, names are immediately resolved in the parser and replaced by indices. Indices can also be used directly in the text format.
 
 The segment strings in the memory field are used to initialize the consecutive memory at the given offset.
-The `<size>` in the expansion of the two short-hand forms for `table` and `memory` is the minimal size that can hold the segment: the number of `<var>`s for tables, and the accumulative length of the strings rounded up to page size for memories.
+The `<size>` in the expansion of the two short-hand forms for `table` and `mem` is the minimal size that can hold the segment: the number of `<var>`s for tables, and the accumulative length of the strings rounded up to page size for memories.
 
 In addition to the grammar rules above, the fields of a module may appear in any order, except that all imports must occur before the first proper definition of a function, table, memory, or global.
 

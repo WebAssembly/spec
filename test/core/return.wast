@@ -148,7 +148,7 @@
     (set_local 0 (return (i32.const 17))) (i32.const -1)
   )
 
-  (memory 1)
+  (mem 1)
   (func (export "as-load-address") (result f32)
     (f32.load (return (f32.const 1.7)))
   )
@@ -196,8 +196,8 @@
     (i32.wrap/i64 (return (i32.const 41)))
   )
 
-  (func (export "as-grow_memory-size") (result i32)
-    (grow_memory (return (i32.const 40)))
+  (func (export "as-mem.grow-size") (result i32)
+    (mem.grow (return (i32.const 40)))
   )
 )
 
@@ -278,7 +278,7 @@
 
 (assert_return (invoke "as-convert-operand") (i32.const 41))
 
-(assert_return (invoke "as-grow_memory-size") (i32.const 40))
+(assert_return (invoke "as-mem.grow-size") (i32.const 40))
 
 (assert_invalid
   (module (func $type-value-empty-vs-num (result f64) (return)))

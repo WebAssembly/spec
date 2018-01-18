@@ -63,11 +63,11 @@ type types = {space : space; mutable list : type_ list}
 let empty_types () = {space = empty (); list = []}
 
 type context =
-  { types : types; tables : space; memories : space;
+  { types : types; tables : space; mems : space;
     funcs : space; locals : space; globals : space; labels : int32 VarMap.t }
 
 let empty_context () =
-  { types = empty_types (); tables = empty (); memories = empty ();
+  { types = empty_types (); tables = empty (); mems = empty ();
     funcs = empty (); locals = empty (); globals = empty ();
     labels = VarMap.empty }
 
@@ -83,7 +83,7 @@ let func (c : context) x = lookup "function" c.funcs x
 let local (c : context) x = lookup "local" c.locals x
 let global (c : context) x = lookup "global" c.globals x
 let table (c : context) x = lookup "table" c.tables x
-let memory (c : context) x = lookup "memory" c.memories x
+let mem (c : context) x = lookup "memory" c.mems x
 let label (c : context) x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
@@ -110,7 +110,7 @@ let bind_func (c : context) x = bind "function" c.funcs x
 let bind_local (c : context) x = bind "local" c.locals x
 let bind_global (c : context) x = bind "global" c.globals x
 let bind_table (c : context) x = bind "table" c.tables x
-let bind_memory (c : context) x = bind "memory" c.memories x
+let bind_mem (c : context) x = bind "memory" c.mems x
 let bind_label (c : context) x =
   {c with labels = VarMap.add x.it 0l (VarMap.map (Int32.add 1l) c.labels)}
 
@@ -129,7 +129,7 @@ let anon_locals (c : context) ts =
   ignore (anon "local" c.locals (Lib.List32.length ts))
 let anon_global (c : context) = anon "global" c.globals 1l
 let anon_table (c : context) = anon "table" c.tables 1l
-let anon_memory (c : context) = anon "memory" c.memories 1l
+let anon_mem (c : context) = anon "memory" c.mems 1l
 let anon_label (c : context) =
   {c with labels = VarMap.map (Int32.add 1l) c.labels}
 
@@ -151,9 +151,9 @@ let inline_type_explicit (c : context) x ft at =
 %token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
+%token UNREACHABLE MEM_SIZE MEM_GROW
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
-%token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
+%token TABLE ELEM MEM DATA OFFSET IMPORT EXPORT TABLE
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
@@ -173,8 +173,8 @@ let inline_type_explicit (c : context) x ft at =
 %token<Ast.instr'> TEST
 %token<Ast.instr'> COMPARE
 %token<Ast.instr'> CONVERT
-%token<int option -> Memory.offset -> Ast.instr'> LOAD
-%token<int option -> Memory.offset -> Ast.instr'> STORE
+%token<int option -> Mem.offset -> Ast.instr'> LOAD
+%token<int option -> Mem.offset -> Ast.instr'> STORE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
 
@@ -229,8 +229,8 @@ func_sig :
 table_sig :
   | limits elem_type { TableType ($1, $2) }
 
-memory_sig :
-  | limits { MemoryType $1 }
+mem_sig :
+  | limits { MemType $1 }
 
 limits :
   | NAT { {min = nat32 $1 (ati 1); max = None} }
@@ -317,8 +317,8 @@ plain_instr :
   | SET_GLOBAL var { fun c -> set_global ($2 c global) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
-  | CURRENT_MEMORY { fun c -> current_memory }
-  | GROW_MEMORY { fun c -> grow_memory }
+  | MEM_SIZE { fun c -> mem_size }
+  | MEM_GROW { fun c -> mem_grow }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
@@ -554,32 +554,32 @@ table_fields :
 data :
   | LPAR DATA var offset string_list RPAR
     { let at = at () in
-      fun c -> {index = $3 c memory; offset = $4 c; init = $5} @@ at }
+      fun c -> {index = $3 c mem; offset = $4 c; init = $5} @@ at }
   | LPAR DATA offset string_list RPAR  /* Sugar */
     { let at = at () in
       fun c -> {index = 0l @@ at; offset = $3 c; init = $4} @@ at }
 
-memory :
-  | LPAR MEMORY bind_var_opt memory_fields RPAR
+mem :
+  | LPAR MEM bind_var_opt mem_fields RPAR
     { let at = at () in
-      fun c -> let x = $3 c anon_memory bind_memory @@ at in
+      fun c -> let x = $3 c anon_mem bind_mem @@ at in
       fun () -> $4 c x at }
 
-memory_fields :
-  | memory_sig
+mem_fields :
+  | mem_sig
     { fun c x at -> [{mtype = $1} @@ at], [], [], [] }
-  | inline_import memory_sig
+  | inline_import mem_sig
     { fun c x at ->
       [], [],
       [{ module_name = fst $1; item_name = snd $1;
-         idesc = MemoryImport $2 @@ at } @@ at], [] }
-  | inline_export memory_fields  /* Sugar */
+         idesc = MemImport $2 @@ at } @@ at], [] }
+  | inline_export mem_fields  /* Sugar */
     { fun c x at -> let mems, data, ims, exs = $2 c x at in
-      mems, data, ims, $1 (MemoryExport x) c :: exs }
+      mems, data, ims, $1 (MemExport x) c :: exs }
   | LPAR DATA string_list RPAR  /* Sugar */
     { fun c x at ->
       let size = Int32.(div (add (of_int (String.length $3)) 65535l) 65536l) in
-      [{mtype = MemoryType {min = size; max = Some size}} @@ at],
+      [{mtype = MemType {min = size; max = Some size}} @@ at],
       [{index = x;
         offset = [i32_const (0l @@ at) @@ at] @@ at; init = $3} @@ at],
       [], [] }
@@ -616,9 +616,9 @@ import_desc :
   | LPAR TABLE bind_var_opt table_sig RPAR
     { fun c -> ignore ($3 c anon_table bind_table);
       fun () -> TableImport $4 }
-  | LPAR MEMORY bind_var_opt memory_sig RPAR
-    { fun c -> ignore ($3 c anon_memory bind_memory);
-      fun () -> MemoryImport $4 }
+  | LPAR MEM bind_var_opt mem_sig RPAR
+    { fun c -> ignore ($3 c anon_mem bind_mem);
+      fun () -> MemImport $4 }
   | LPAR GLOBAL bind_var_opt global_type RPAR
     { fun c -> ignore ($3 c anon_global bind_global);
       fun () -> GlobalImport $4 }
@@ -635,7 +635,7 @@ inline_import :
 export_desc :
   | LPAR FUNC var RPAR { fun c -> FuncExport ($3 c func) }
   | LPAR TABLE var RPAR { fun c -> TableExport ($3 c table) }
-  | LPAR MEMORY var RPAR { fun c -> MemoryExport ($3 c memory) }
+  | LPAR MEM var RPAR { fun c -> MemExport ($3 c mem) }
   | LPAR GLOBAL var RPAR { fun c -> GlobalExport ($3 c global) }
 
 export :
@@ -685,12 +685,12 @@ module_fields1 :
         error (List.hd m.imports).at "import after table definition";
       { m with tables = tabs @ m.tables; elems = elems @ m.elems;
         imports = ims @ m.imports; exports = exs @ m.exports } }
-  | memory module_fields
+  | mem module_fields
     { fun c -> let mmf = $1 c in let mf = $2 c in
       fun () -> let mems, data, ims, exs = mmf () in let m = mf () in
       if mems <> [] && m.imports <> [] then
         error (List.hd m.imports).at "import after memory definition";
-      { m with memories = mems @ m.memories; data = data @ m.data;
+      { m with mems = mems @ m.mems; data = data @ m.data;
         imports = ims @ m.imports; exports = exs @ m.exports } }
   | func module_fields
     { fun c -> let ff = $1 c in let mf = $2 c in

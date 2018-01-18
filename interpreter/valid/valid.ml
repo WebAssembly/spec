@@ -19,7 +19,7 @@ type context =
   types : func_type list;
   funcs : func_type list;
   tables : table_type list;
-  memories : memory_type list;
+  mems : mem_type list;
   globals : global_type list;
   locals : value_type list;
   results : value_type list;
@@ -27,7 +27,7 @@ type context =
 }
 
 let empty_context =
-  { types = []; funcs = []; tables = []; memories = [];
+  { types = []; funcs = []; tables = []; mems = [];
     globals = []; locals = []; results = []; labels = [] }
 
 let lookup category list x =
@@ -37,7 +37,7 @@ let lookup category list x =
 let type_ (c : context) x = lookup "type" c.types x
 let func (c : context) x = lookup "function" c.funcs x
 let table (c : context) x = lookup "table" c.tables x
-let memory (c : context) x = lookup "memory" c.memories x
+let mem (c : context) x = lookup "memory" c.mems x
 let global (c : context) x = lookup "global" c.globals x
 let local (c : context) x = lookup "local" c.locals x
 let label (c : context) x = lookup "label" c.labels x
@@ -138,14 +138,14 @@ let type_cvtop at = function
 (* Expressions *)
 
 let check_memop (c : context) (memop : 'a memop) get_sz at =
-  ignore (memory c (0l @@ at));
+  ignore (mem c (0l @@ at));
   let size =
     match get_sz memop.sz with
     | None -> size memop.ty
     | Some sz ->
-      require (memop.ty = I64Type || sz <> Memory.Mem32) at
+      require (memop.ty = I64Type || sz <> Mem.Pack32) at
         "memory size too big";
-      Memory.mem_size sz
+      Mem.packed_size sz
   in
   require (1 lsl memop.align <= size) at
     "alignment must not be larger than natural"
@@ -254,12 +254,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     check_memop c memop (fun sz -> sz) e.at;
     [I32Type; memop.ty] --> []
 
-  | CurrentMemory ->
-    ignore (memory c (0l @@ e.at));
+  | MemSize ->
+    ignore (mem c (0l @@ e.at));
     [] --> [I32Type]
 
-  | GrowMemory ->
-    ignore (memory c (0l @@ e.at));
+  | MemGrow ->
+    ignore (mem c (0l @@ e.at));
     [I32Type] --> [I32Type]
 
   | Const v ->
@@ -327,15 +327,15 @@ let check_table_type (tt : table_type) at =
   let TableType (lim, _) = tt in
   check_limits lim at
 
-let check_memory_size (sz : I32.t) at =
+let check_mem_size (sz : I32.t) at =
   require (I32.le_u sz 65536l) at
     "memory size must be at most 65536 pages (4GiB)"
 
-let check_memory_type (mt : memory_type) at =
-  let MemoryType lim = mt in
+let check_mem_type (mt : mem_type) at =
+  let MemType lim = mt in
   check_limits lim at;
-  check_memory_size lim.min at;
-  Lib.Option.app (fun max -> check_memory_size max at) lim.max
+  check_mem_size lim.min at;
+  Lib.Option.app (fun max -> check_mem_size max at) lim.max
 
 let check_global_type (gt : global_type) at =
   let GlobalType (t, mut) = gt in
@@ -384,9 +384,9 @@ let check_table (c : context) (tab : table) =
   let {ttype} = tab.it in
   check_table_type ttype tab.at
 
-let check_memory (c : context) (mem : memory) =
+let check_mem (c : context) (mem : mem) =
   let {mtype} = mem.it in
-  check_memory_type mtype mem.at
+  check_mem_type mtype mem.at
 
 let check_elem (c : context) (seg : table_segment) =
   let {index; offset; init} = seg.it in
@@ -394,10 +394,10 @@ let check_elem (c : context) (seg : table_segment) =
   ignore (table c index);
   ignore (List.map (func c) init)
 
-let check_data (c : context) (seg : memory_segment) =
+let check_data (c : context) (seg : mem_segment) =
   let {index; offset; init} = seg.it in
   check_const c offset I32Type;
-  ignore (memory c index)
+  ignore (mem c index)
 
 let check_global (c : context) (glob : global) =
   let {gtype; value} = glob.it in
@@ -421,9 +421,9 @@ let check_import (im : import) (c : context) : context =
   | TableImport tt ->
     check_table_type tt idesc.at;
     {c with tables = tt :: c.tables}
-  | MemoryImport mt ->
-    check_memory_type mt idesc.at;
-    {c with memories = mt :: c.memories}
+  | MemImport mt ->
+    check_mem_type mt idesc.at;
+    {c with mems = mt :: c.mems}
   | GlobalImport gt ->
     check_global_type gt idesc.at;
     let GlobalType (_, mut) = gt in
@@ -438,7 +438,7 @@ let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
   (match edesc.it with
   | FuncExport x -> ignore (func c x)
   | TableExport x -> ignore (table c x)
-  | MemoryExport x -> ignore (memory c x)
+  | MemExport x -> ignore (mem c x)
   | GlobalExport x ->
     let GlobalType (_, mut) = global c x in
     require (mut = Immutable) edesc.at
@@ -449,8 +449,8 @@ let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
 
 let check_module (m : module_) =
   let
-    { types; imports; tables; memories; globals; funcs; start; elems; data;
-      exports } = m.it
+    {types; imports; tables; mems; globals; funcs; start; elems; data; exports}
+      = m.it
   in
   let c0 =
     List.fold_right check_import imports
@@ -460,7 +460,7 @@ let check_module (m : module_) =
     { c0 with
       funcs = c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs;
       tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
-      memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
+      mems = c0.mems @ List.map (fun mem -> mem.it.mtype) mems;
     }
   in
   let c =
@@ -469,7 +469,7 @@ let check_module (m : module_) =
   List.iter check_type types;
   List.iter (check_global c1) globals;
   List.iter (check_table c1) tables;
-  List.iter (check_memory c1) memories;
+  List.iter (check_mem c1) mems;
   List.iter (check_elem c1) elems;
   List.iter (check_data c1) data;
   List.iter (check_func c) funcs;
@@ -477,5 +477,5 @@ let check_module (m : module_) =
   ignore (List.fold_left (check_export c) NameSet.empty exports);
   require (List.length c.tables <= 1) m.at
     "multiple tables are not allowed (yet)";
-  require (List.length c.memories <= 1) m.at
+  require (List.length c.mems <= 1) m.at
     "multiple memories are not allowed (yet)"

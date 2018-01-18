@@ -1,5 +1,5 @@
 (module
-  (memory 1)
+  (mem 1)
   (data (i32.const 0) "abcdefghijklmnopqrstuvwxyz")
 
   (func (export "good1") (param $i i32) (result i32)
@@ -96,7 +96,7 @@
 
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (drop (i32.load offset=4294967296 (i32.const 0))))"
   )
   "i32 constant"

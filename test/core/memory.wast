@@ -1,29 +1,29 @@
 ;; Test memory section structure
-(module (memory 0 0))
-(module (memory 0 1))
-(module (memory 1 256))
-(module (memory 0 65536))
-(module (memory 0 0) (data (i32.const 0)))
-(module (memory 0 0) (data (i32.const 0) ""))
-(module (memory 1 1) (data (i32.const 0) "a"))
-(module (memory 1 2) (data (i32.const 0) "a") (data (i32.const 65535) "b"))
-(module (memory 1 2)
+(module (mem 0 0))
+(module (mem 0 1))
+(module (mem 1 256))
+(module (mem 0 65536))
+(module (mem 0 0) (data (i32.const 0)))
+(module (mem 0 0) (data (i32.const 0) ""))
+(module (mem 1 1) (data (i32.const 0) "a"))
+(module (mem 1 2) (data (i32.const 0) "a") (data (i32.const 65535) "b"))
+(module (mem 1 2)
   (data (i32.const 0) "a") (data (i32.const 1) "b") (data (i32.const 2) "c")
 )
-(module (global (import "spectest" "global") i32) (memory 1) (data (get_global 0) "a"))
-(module (global $g (import "spectest" "global") i32) (memory 1) (data (get_global $g) "a"))
+(module (global (import "spectest" "global") i32) (mem 1) (data (get_global 0) "a"))
+(module (global $g (import "spectest" "global") i32) (mem 1) (data (get_global $g) "a"))
 ;; Use of internal globals in constant expressions is not allowed in MVP.
-;; (module (memory 1) (data (get_global 0) "a") (global i32 (i32.const 0)))
-;; (module (memory 1) (data (get_global $g) "a") (global $g i32 (i32.const 0)))
+;; (module (mem 1) (data (get_global 0) "a") (global i32 (i32.const 0)))
+;; (module (mem 1) (data (get_global $g) "a") (global $g i32 (i32.const 0)))
 
-(assert_invalid (module (memory 0) (memory 0)) "multiple memories")
-(assert_invalid (module (memory (import "spectest" "memory") 0) (memory 0)) "multiple memories")
+(assert_invalid (module (mem 0) (mem 0)) "multiple memories")
+(assert_invalid (module (mem (import "spectest" "memory") 0) (mem 0)) "multiple memories")
 
-(module (memory (data)) (func (export "memsize") (result i32) (current_memory)))
+(module (mem (data)) (func (export "memsize") (result i32) (mem.size)))
 (assert_return (invoke "memsize") (i32.const 0))
-(module (memory (data "")) (func (export "memsize") (result i32) (current_memory)))
+(module (mem (data "")) (func (export "memsize") (result i32) (mem.size)))
 (assert_return (invoke "memsize") (i32.const 0))
-(module (memory (data "x")) (func (export "memsize") (result i32) (current_memory)))
+(module (mem (data "x")) (func (export "memsize") (result i32) (mem.size)))
 (assert_return (invoke "memsize") (i32.const 1))
 
 (assert_invalid (module (data (i32.const 0))) "unknown memory")
@@ -47,160 +47,160 @@
   "unknown memory"
 )
 (assert_invalid
-  (module (func (drop (current_memory))))
+  (module (func (drop (mem.size))))
   "unknown memory"
 )
 (assert_invalid
-  (module (func (drop (grow_memory (i32.const 0)))))
+  (module (func (drop (mem.grow (i32.const 0)))))
   "unknown memory"
 )
 
 (assert_invalid
-  (module (memory 1) (data (i64.const 0)))
+  (module (mem 1) (data (i64.const 0)))
   "type mismatch"
 )
 (assert_invalid
-  (module (memory 1) (data (i32.ctz (i32.const 0))))
+  (module (mem 1) (data (i32.ctz (i32.const 0))))
   "constant expression required"
 )
 (assert_invalid
-  (module (memory 1) (data (nop)))
+  (module (mem 1) (data (nop)))
   "constant expression required"
 )
 ;; Use of internal globals in constant expressions is not allowed in MVP.
 ;; (assert_invalid
-;;   (module (memory 1) (data (get_global $g)) (global $g (mut i32) (i32.const 0)))
+;;   (module (mem 1) (data (get_global $g)) (global $g (mut i32) (i32.const 0)))
 ;;   "constant expression required"
 ;; )
 
 (assert_unlinkable
-  (module (memory 0 0) (data (i32.const 0) "a"))
+  (module (mem 0 0) (data (i32.const 0) "a"))
   "data segment does not fit"
 )
 (assert_unlinkable
-  (module (memory 0 1) (data (i32.const 0) "a"))
+  (module (mem 0 1) (data (i32.const 0) "a"))
   "data segment does not fit"
 )
 (assert_unlinkable
-  (module (memory 1 2) (data (i32.const -1) "a"))
+  (module (mem 1 2) (data (i32.const -1) "a"))
   "data segment does not fit"
 )
 (assert_unlinkable
-  (module (memory 1 2) (data (i32.const -1000) "a"))
+  (module (mem 1 2) (data (i32.const -1000) "a"))
   "data segment does not fit"
 )
 (assert_unlinkable
-  (module (memory 1 2) (data (i32.const 0) "a") (data (i32.const 98304) "b"))
+  (module (mem 1 2) (data (i32.const 0) "a") (data (i32.const 98304) "b"))
   "data segment does not fit"
 )
 (assert_unlinkable
-  (module (memory 0 0) (data (i32.const 1) ""))
+  (module (mem 0 0) (data (i32.const 1) ""))
   "data segment does not fit"
 )
 (assert_unlinkable
-  (module (memory 1) (data (i32.const 0x12000) ""))
+  (module (mem 1) (data (i32.const 0x12000) ""))
   "data segment does not fit"
 )
 (assert_unlinkable
-  (module (memory 1 2) (data (i32.const -1) ""))
+  (module (mem 1 2) (data (i32.const -1) ""))
   "data segment does not fit"
 )
 ;; This seems to cause a time-out on Travis.
 (;assert_unlinkable
-  (module (memory 0x10000) (data (i32.const 0xffffffff) "ab"))
+  (module (mem 0x10000) (data (i32.const 0xffffffff) "ab"))
   ""  ;; either out of memory or segment does not fit
 ;)
 (assert_unlinkable
   (module
     (global (import "spectest" "global") i32)
-    (memory 0) (data (get_global 0) "a")
+    (mem 0) (data (get_global 0) "a")
   )
   "data segment does not fit"
 )
 
-(module (memory 0 0) (data (i32.const 0) ""))
-(module (memory 1 1) (data (i32.const 0x10000) ""))
-(module (memory 1 2) (data (i32.const 0) "abc") (data (i32.const 0) "def"))
-(module (memory 1 2) (data (i32.const 3) "ab") (data (i32.const 0) "de"))
+(module (mem 0 0) (data (i32.const 0) ""))
+(module (mem 1 1) (data (i32.const 0x10000) ""))
+(module (mem 1 2) (data (i32.const 0) "abc") (data (i32.const 0) "def"))
+(module (mem 1 2) (data (i32.const 3) "ab") (data (i32.const 0) "de"))
 (module
-  (memory 1 2)
+  (mem 1 2)
   (data (i32.const 0) "a") (data (i32.const 2) "b") (data (i32.const 1) "c")
 )
 
 (assert_invalid
-  (module (memory 1 0))
+  (module (mem 1 0))
   "size minimum must not be greater than maximum"
 )
 (assert_invalid
-  (module (memory 65537))
+  (module (mem 65537))
   "memory size must be at most 65536 pages (4GiB)"
 )
 (assert_invalid
-  (module (memory 2147483648))
+  (module (mem 2147483648))
   "memory size must be at most 65536 pages (4GiB)"
 )
 (assert_invalid
-  (module (memory 4294967295))
+  (module (mem 4294967295))
   "memory size must be at most 65536 pages (4GiB)"
 )
 (assert_invalid
-  (module (memory 0 65537))
+  (module (mem 0 65537))
   "memory size must be at most 65536 pages (4GiB)"
 )
 (assert_invalid
-  (module (memory 0 2147483648))
+  (module (mem 0 2147483648))
   "memory size must be at most 65536 pages (4GiB)"
 )
 (assert_invalid
-  (module (memory 0 4294967295))
+  (module (mem 0 4294967295))
   "memory size must be at most 65536 pages (4GiB)"
 )
 
 ;; Test alignment annotation rules
-(module (memory 0) (func (drop (i32.load8_u align=1 (i32.const 0)))))
-(module (memory 0) (func (drop (i32.load16_u align=2 (i32.const 0)))))
-(module (memory 0) (func (drop (i32.load align=4 (i32.const 0)))))
-(module (memory 0) (func (drop (f32.load align=4 (i32.const 0)))))
+(module (mem 0) (func (drop (i32.load8_u align=1 (i32.const 0)))))
+(module (mem 0) (func (drop (i32.load16_u align=2 (i32.const 0)))))
+(module (mem 0) (func (drop (i32.load align=4 (i32.const 0)))))
+(module (mem 0) (func (drop (f32.load align=4 (i32.const 0)))))
 
 (assert_invalid
-  (module (memory 0) (func (drop (i64.load align=16 (i32.const 0)))))
+  (module (mem 0) (func (drop (i64.load align=16 (i32.const 0)))))
   "alignment must not be larger than natural"
 )
 (assert_invalid
-  (module (memory 0) (func (drop (i64.load align=32 (i32.const 0)))))
+  (module (mem 0) (func (drop (i64.load align=32 (i32.const 0)))))
   "alignment must not be larger than natural"
 )
 (assert_invalid
-  (module (memory 0) (func (drop (i32.load align=8 (i32.const 0)))))
+  (module (mem 0) (func (drop (i32.load align=8 (i32.const 0)))))
   "alignment must not be larger than natural"
 )
 (assert_invalid
-  (module (memory 0) (func (drop (i32.load16_u align=4 (i32.const 0)))))
+  (module (mem 0) (func (drop (i32.load16_u align=4 (i32.const 0)))))
   "alignment must not be larger than natural"
 )
 (assert_invalid
-  (module (memory 0) (func (drop (i32.load8_u align=2 (i32.const 0)))))
+  (module (mem 0) (func (drop (i32.load8_u align=2 (i32.const 0)))))
   "alignment must not be larger than natural"
 )
 (assert_invalid
-  (module (memory 0) (func (i32.store8 align=2 (i32.const 0) (i32.const 0))))
+  (module (mem 0) (func (i32.store8 align=2 (i32.const 0) (i32.const 0))))
   "alignment must not be larger than natural"
 )
 (assert_invalid
-  (module (memory 0) (func (i32.load16_u align=4 (i32.const 0))))
+  (module (mem 0) (func (i32.load16_u align=4 (i32.const 0))))
   "alignment must not be larger than natural"
 )
 (assert_invalid
-  (module (memory 0) (func (i32.load8_u align=2 (i32.const 0))))
+  (module (mem 0) (func (i32.load8_u align=2 (i32.const 0))))
   "alignment must not be larger than natural"
 )
 (assert_invalid
-  (module (memory 0) (func (i32.store8 align=2 (i32.const 0) (i32.const 0))))
+  (module (mem 0) (func (i32.store8 align=2 (i32.const 0) (i32.const 0))))
   "alignment must not be larger than natural"
 )
 
 (module
-  (memory 1)
+  (mem 1)
   (data (i32.const 0) "ABC\a7D") (data (i32.const 20) "WASM")
 
   ;; Data section
@@ -388,56 +388,56 @@
 
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result i32) (i32.load32 (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result i32) (i32.load32_u (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result i32) (i32.load32_s (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result i32) (i32.load64 (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result i32) (i32.load64_u (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result i32) (i32.load64_s (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (i32.store32 (get_local 0) (i32.const 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (i32.store64 (get_local 0) (i64.const 0)))"
   )
   "unknown operator"
@@ -445,28 +445,28 @@
 
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result i64) (i64.load64 (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result i64) (i64.load64_u (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result i64) (i64.load64_s (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (i64.store64 (get_local 0) (i64.const 0)))"
   )
   "unknown operator"
@@ -474,28 +474,28 @@
 
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result f32) (f32.load32 (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result f32) (f32.load64 (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (f32.store32 (get_local 0) (f32.const 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (f32.store64 (get_local 0) (f64.const 0)))"
   )
   "unknown operator"
@@ -503,28 +503,28 @@
 
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result f64) (f64.load32 (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (result f64) (f64.load64 (get_local 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (f64.store32 (get_local 0) (f32.const 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
-    "(memory 1)"
+    "(mem 1)"
     "(func (param i32) (f64.store64 (get_local 0) (f64.const 0)))"
   )
   "unknown operator"
