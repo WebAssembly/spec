@@ -17,7 +17,7 @@
 ;; (module (mem 1) (data (get_global $g) "a") (global $g i32 (i32.const 0)))
 
 (assert_invalid (module (mem 0) (mem 0)) "multiple memories")
-(assert_invalid (module (mem (import "spectest" "memory") 0) (mem 0)) "multiple memories")
+(assert_invalid (module (mem (import "spectest" "mem") 0) (mem 0)) "multiple memories")
 
 (module (mem (data)) (func (export "memsize") (result i32) (mem.size)))
 (assert_return (invoke "memsize") (i32.const 0))

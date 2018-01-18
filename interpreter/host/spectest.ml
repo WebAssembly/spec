@@ -38,5 +38,5 @@ let lookup name t =
   | "global", ExternGlobalType t -> ExternGlobal (global t)
   | "global", _ -> ExternGlobal (global (GlobalType (I32Type, Immutable)))
   | "table", _ -> ExternTable table
-  | "memory", _ -> ExternMem mem
+  | "mem", _ -> ExternMem mem
   | _ -> raise Not_found

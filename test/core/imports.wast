@@ -190,7 +190,7 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "memory" (func)))
+  (module (import "spectest" "mem" (func)))
   "incompatible import type"
 )
 
@@ -253,7 +253,7 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "memory" (global i32)))
+  (module (import "spectest" "mem" (global i32)))
   "incompatible import type"
 )
 
@@ -371,7 +371,7 @@
 ;; Memories
 
 (module
-  (import "spectest" "memory" (mem 1 2))
+  (import "spectest" "mem" (mem 1 2))
   (data 0 (i32.const 10) "\10")
 
   (func (export "load") (param i32) (result i32) (i32.load (get_local 0)))
@@ -383,7 +383,7 @@
 (assert_trap (invoke "load" (i32.const 1000000)) "out of bounds memory access")
 
 (module
-  (mem (import "spectest" "memory") 1 2)
+  (mem (import "spectest" "mem") 1 2)
   (data 0 (i32.const 10) "\10")
 
   (func (export "load") (param i32) (result i32) (i32.load (get_local 0)))
@@ -409,12 +409,12 @@
 (module (import "test" "memory-2-inf" (mem 2)))
 (module (import "test" "memory-2-inf" (mem 1)))
 (module (import "test" "memory-2-inf" (mem 0)))
-(module (import "spectest" "memory" (mem 1)))
-(module (import "spectest" "memory" (mem 0)))
-(module (import "spectest" "memory" (mem 1 2)))
-(module (import "spectest" "memory" (mem 0 2)))
-(module (import "spectest" "memory" (mem 1 3)))
-(module (import "spectest" "memory" (mem 0 3)))
+(module (import "spectest" "mem" (mem 1)))
+(module (import "spectest" "mem" (mem 0)))
+(module (import "spectest" "mem" (mem 1 2)))
+(module (import "spectest" "mem" (mem 0 2)))
+(module (import "spectest" "mem" (mem 1 3)))
+(module (import "spectest" "mem" (mem 0 3)))
 
 (assert_unlinkable
   (module (import "test" "unknown" (mem 1)))
@@ -434,11 +434,11 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "memory" (mem 2)))
+  (module (import "spectest" "mem" (mem 2)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "memory" (mem 1 1)))
+  (module (import "spectest" "mem" (mem 1 1)))
   "incompatible import type"
 )
 
@@ -468,16 +468,16 @@
 )
 
 (assert_unlinkable
-  (module (import "spectest" "memory" (mem 2)))
+  (module (import "spectest" "mem" (mem 2)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "memory" (mem 1 1)))
+  (module (import "spectest" "mem" (mem 1 1)))
   "incompatible import type"
 )
 
 (module
-  (import "spectest" "memory" (mem 0 3))  ;; actual has max size 2
+  (import "spectest" "mem" (mem 0 3))  ;; actual has max size 2
   (func (export "grow") (param i32) (result i32) (mem.grow (get_local 0)))
 )
 (assert_return (invoke "grow" (i32.const 0)) (i32.const 1))
