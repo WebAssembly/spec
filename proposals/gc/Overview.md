@@ -581,7 +581,17 @@ TODO: The ability to import types makes the type and import sections interdepend
 
 ## Possible Extension: Variants
 
-TODO
+Many language implementations use *pointer tagging* in one form or the other, in order to efficiently distinguish different classes of values or store additional information in pointer values without requiring extra space.
+Other languages provide user-defined tags as an explicit language feature (e.g., variants or algebraic data types).
+
+Unfortunatly, hardware differs in how many tagging bits a pointer can support, and different VMs might have additional constraints on how many of these bits they can mae available to user code.
+In order to provide tagging in a way that is portable but maximally efficient on any given hardware, a somewhat higher level of abstraction is useful.
+
+Such a more high-level solution would be to support a form of sum types (a.k.a. variants a.k.a. disjoint unions) in the type system:
+in addition to structs and arrays, the type section could define variant types, which are also used as reference types.
+Additional instructions would allow constructing and inspecting variant references.
+It is left to the engine to pick an efficent representation for the required tags, and depending on the hardware's word size, the number of tags in a defined type, and other design decisions in the engine, these tags could either be stored as bits in the pointer, in a shared per-type data structure (hidden class), or in an explicit per-value slot within the heap object.
+These decisions can be made by the engine on a per-type basis; validation ensures that it all uses are coherent.
 
 
 ## Possible Extension: Closures
@@ -720,3 +730,13 @@ For example, well-foundedness can be ensured by requiring that the *nesting heig
 |(struct <field_type>*)|       = 1 + max{|<field_type>|*}
 |(array <field_type> <expr>?)| = 1 + |<field_type>|
 ```
+
+
+## Possible Extension: Weak References and Finalisation
+
+Binding to external libraries sometimes requires the use of *weak references* or *finalizers*.
+They also exist in the libraries of various languages in myriads of forms.
+Consequently, it would be beneficial if Wasm could support them.
+
+The main challenge is the large variety of different semantics that existing languages provide.
+Clearly, Wasm cannot built in all of them, so we are looking for a mechanism that can emulate most of them with acceptable performance loss. Unfortunately, it is not clear at this point what a sufficiently simple and efficient account could be.
