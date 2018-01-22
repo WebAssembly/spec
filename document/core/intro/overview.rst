@@ -14,7 +14,7 @@ This language is structured around the following concepts.
 
 **Values**
   WebAssembly provides only four basic *value types*.
-  These are integers and `IEEE 754 floating-point <http://ieeexplore.ieee.org/document/4610935/>`_ numbers,
+  These are integers and |IEEE754|_ numbers,
   each in 32 and 64 bit width.
   32 bit integers also serve as Booleans and as memory addresses.
   The usual operations on these types are available,
@@ -40,7 +40,7 @@ This language is structured around the following concepts.
 
 **Traps**
   Under some conditions, certain instructions may produce a *trap*,
-  which immediately aborts excecution.
+  which immediately aborts execution.
   Traps cannot be handled by WebAssembly code,
   but are reported to the outside environment,
   where they typically can be caught.
@@ -71,7 +71,7 @@ This language is structured around the following concepts.
   Such a memory is created with an initial size but can be grown dynamically.
   A program can load and store values from/to a linear memory at any byte address (including unaligned).
   Integer loads and stores can specify a *storage size* which is smaller than the size of the respective value type.
-  A trap occurs if access is not within the bounds of the current memory size.
+  A trap occurs if an access is not within the bounds of the current memory size.
 
 .. _module:
 

@@ -12,7 +12,7 @@ For each piece of abstract syntax, there is a typing rule that specifies the con
 All rules are given in two *equivalent* forms:
 
 1. In *prose*, describing the meaning in intuitive form.
-2. In *formal notation*, describing the rule in mathematical form.
+2. In *formal notation*, describing the rule in mathematical form. [#cite-pldi2017]_
 
 .. note::
    The prose and formal rules are equivalent,
@@ -21,7 +21,7 @@ All rules are given in two *equivalent* forms:
 
 In both cases, the rules are formulated in a *declarative* manner.
 That is, they only formulate the constraints, they do not define an algorithm.
-A sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the :ref:`appendix <soundness>`.
+The skeleton of a sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the :ref:`appendix <algo-valid>`.
 
 
 .. index:: ! context, function type, table type, memory type, global type, value type, result type, index space, module, function
@@ -117,7 +117,7 @@ Formal Notation
 
 .. note::
    This section gives a brief explanation of the notation for specifying typing rules formally.
-   For the interested reader, a more thorough introduction can be found in respective text books. [#tapl]_
+   For the interested reader, a more thorough introduction can be found in respective text books. [#cite-tapl]_
 
 The proposition that a phrase :math:`A` has a respective type :math:`T` is written :math:`A : T`.
 In general, however, typing is dependent on a context :math:`C`.
@@ -184,5 +184,9 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
    which is expressed by extending the context :math:`C` with the additional label information for the premise.
 
 
-.. [#tapl]
-   For example: Benjamin Pierce. `Types and Programming Languages <https://www.cis.upenn.edu/~bcpierce/tapl/>`_. The MIT Press 2002
+.. [#cite-pldi2017]
+   The semantics is derived from the following article:
+   Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. |PLDI2017|_. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
+
+.. [#cite-tapl]
+   For example: Benjamin Pierce. |TAPL|_. The MIT Press 2002

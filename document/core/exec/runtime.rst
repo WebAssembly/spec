@@ -30,6 +30,27 @@ It is convenient to reuse the same notation as for the |CONST| :ref:`instruction
    \end{array}
 
 
+.. index:: ! result, value, trap
+   pair: abstract syntax; result
+.. _syntax-result:
+
+Results
+~~~~~~~
+
+A *result* is the outcome of a computation.
+It is either a sequence of :ref:`values <syntax-val>` or a :ref:`trap <syntax-trap>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{(result)} & \result &::=&
+     \val^\ast \\&&|&
+     \TRAP
+   \end{array}
+
+.. note::
+   In the current version of WebAssembly, a result can consist of at most one value.
+
+
 .. index:: ! store, function instance, table instance, memory instance, global instance, module, allocation
    pair: abstract syntax; store
 .. _syntax-store:
@@ -136,7 +157,7 @@ and collects runtime representations of all entities that are imported, defined,
      \MIFUNCS & \funcaddr^\ast, \\
      \MITABLES & \tableaddr^\ast, \\
      \MIMEMS & \memaddr^\ast, \\
-     \MIGLOBALS & \globaladdr^\ast \\
+     \MIGLOBALS & \globaladdr^\ast, \\
      \MIEXPORTS & \exportinst^\ast ~\} \\
      \end{array}
    \end{array}
@@ -171,7 +192,8 @@ The module instance is used to resolve references to other definitions during ex
 A *host function* is a function expressed outside WebAssembly but passed to a :ref:`module <syntax-module>` as an :ref:`import <syntax-import>`.
 The definition and behavior of host functions are outside the scope of this specification.
 For the purpose of this specification, it is assumed that when :ref:`invoked <exec-invoke-host>`,
-a host function behaves non-deterministically.
+a host function behaves non-deterministically,
+but within certain :ref:`constraints <exec-invoke-host>` that ensure the integrity of the runtime.
 
 .. note::
    Function instances are immutable, and their identity is not observable by WebAssembly code.
@@ -307,6 +329,7 @@ It filters out entries of a specific kind in an order-preserving fashion:
 * :math:`\evglobals(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
 
 
+
 .. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, local, module instance
    pair: abstract syntax; frame
    pair: abstract syntax; label
@@ -399,10 +422,12 @@ Conventions
    This may be generalized in future versions.
 
 
-.. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call
+.. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call, memory, memory instance, table, table instance, element, data, segment
    pair:: abstract syntax; administrative instruction
 .. _syntax-trap:
 .. _syntax-invoke:
+.. _syntax-init_elem:
+.. _syntax-init_data:
 .. _syntax-instr-admin:
 
 Administrative Instructions
@@ -419,6 +444,8 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \dots \\ &&|&
      \TRAP \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
+     \INITELEM~\tableaddr~\u32~\funcidx^\ast \\ &&|&
+     \INITDATA~\memaddr~\u32~\byte^\ast \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
      \FRAME_n\{\frame\}~\instr^\ast~\END \\
    \end{array}
@@ -428,6 +455,11 @@ Traps are bubbled up through nested instruction sequences, ultimately reducing t
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
+
+The |INITELEM| and |INITDATA| instructions perform initialization of :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segments during module :ref:`instantiation <exec-instantiation>`.
+
+.. note::
+   The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.
 
 The |LABEL| and |FRAME| instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
 Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>` with an |END| marker.
@@ -492,6 +524,31 @@ This definition allows to index active labels surrounding a :ref:`branch <syntax
    The selected label is identified through the :ref:`label index <syntax-labelidx>` :math:`l`, which corresponds to the number of surrounding |LABEL| instructions that must be hopped over -- which is exactly the count encoded in the index of a block context.
 
 
+.. index:: ! configuration, ! thread, store, frame, instruction, module instruction
+.. _syntax-thread:
+.. _syntax-config:
+
+Configurations
+..............
+
+A *configuration* consists of the current :ref:`store <syntax-store>` and an executing *thread*.
+
+A thread is a computation over :ref:`instructions <syntax-instr>`
+that operates relative to a current :ref:`frame <syntax-frame>` referring to the home :ref:`module instance <syntax-moduleinst>` that the computation runs in.
+
+.. math::
+   \begin{array}{llcl}
+   \production{(configuration)} & \config &::=&
+     \store; \thread \\
+   \production{(thread)} & \thread &::=&
+     \frame; \instr^\ast \\
+   \end{array}
+
+.. note::
+   The current version of WebAssembly is single-threaded,
+   but configurations with multiple threads may be supported in the future.
+
+
 .. index:: ! evaluation context, instruction, trap, label, frame, value
 .. _syntax-ctxt-eval:
 
@@ -505,86 +562,42 @@ Finally, the following definition of *evaluation context* and associated structu
    \production{(evaluation contexts)} & E &::=&
      [\_] ~|~
      \val^\ast~E~\instr^\ast ~|~
-     \LABEL_n\{\instr^\ast\}~E~\END ~|~
-     \FRAME_n\{\frame\}~E~\END \\
+     \LABEL_n\{\instr^\ast\}~E~\END \\
    \end{array}
 
 .. math::
+   \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
    S; F; E[\instr^\ast] &\stepto& S'; F'; E[{\instr'}^\ast]
-     & (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
+   \end{array}
+   \\ \qquad
+     (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
+   \begin{array}{lcl@{\qquad}l}
+   S; F; \FRAME_n\{F'\}~\instr^\ast~\END &\stepto& S'; F; \FRAME_n\{F''\}~\instr'^\ast~\END
+   \end{array}
+   \\ \qquad
+     (\iff S; F'; \instr^\ast \stepto S'; F''; {\instr'}^\ast) \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
    S; F; E[\TRAP] &\stepto& S; F; \TRAP
-     & (\iff E \neq [\_]) \\
+     &(\iff E \neq [\_]) \\
+   S; F; \FRAME_n\{F'\}~\TRAP~\END &\stepto& S; F; \TRAP
+   \end{array} \\
    \end{array}
 
+Reduction terminates when a thread's instruction sequence has been reduced to a :ref:`result <syntax-result>`,
+that is, either a sequence of :ref:`values <syntax-val>` or to a |TRAP|.
+
 .. note::
-   For example, the following instruction sequence,
+   The restriction on evaluation contexts rules out contexts like :math:`[\_]` and :math:`\epsilon~[\_]~\epsilon` for which :math:`E[\TRAP] = \TRAP`.
+
+   For an example of reduction under evaluation contexts, consider the following instruction sequence.
 
    .. math::
        (\F64.\CONST~x_1)~(\F64.\CONST~x_2)~\F64.\NEG~(\F64.\CONST~x_3)~\F64.\ADD~\F64.\MUL
 
-   can be decomposed into :math:`E[(\F64.\CONST~x_2)~\F64.\NEG]` where
+   This can be decomposed into :math:`E[(\F64.\CONST~x_2)~\F64.\NEG]` where
 
    .. math::
       E = (\F64.\CONST~x_1)~[\_]~(\F64.\CONST~x_3)~\F64.\ADD~\F64.\MUL
 
    Moreover, this is the *only* possible choice of evaluation context where the contents of the hole matches the left-hand side of a reduction rule.
-
-
-.. index:: ! module instructions, function, function instance, function address, label, frame, instruction, trap, global, global instance, memory, memory instance, table, table instance, invocation, start function
-   pair:: abstract syntax; meta instruction
-.. _syntax-instantiate:
-.. _syntax-init_table:
-.. _syntax-init_mem:
-.. _syntax-init_global:
-.. _syntax-moduleinstr:
-
-Module Instructions
-...................
-
-Module :ref:`instantiation <exec-instantiation>` is a complex operation.
-It is hence expressed in terms of reduction into smaller steps expressed by a sequence of administrative *module instructions* that are a superset of ordinary instructions and defined as follow.
-
-.. math::
-   \begin{array}{llcl}
-   \production{(module instruction)} & \moduleinstr &::=&
-     \instr \\ &&|&
-     \INSTANTIATE~\module~\externval^\ast \\ &&|&
-     \INITTABLE~\tableaddr~\u32~\moduleinst~funcidx^\ast \\ &&|&
-     \INITMEM~\memaddr~\u32~\byte^\ast \\ &&|&
-     \INITGLOBAL~\globaladdr~\val \\ &&|&
-     \moduleinst \\
-   \end{array}
-
-The |INSTANTIATE| instruction expresses instantiation of a :ref:`module <syntax-module>` itself, requiring a sequence of :ref:`external values <syntax-externval>` for the expected imports.
-It reduces into a sequence of initialization instructions for :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>`,
-and a possible :ref:`invocation <syntax-invoke>` of the :ref:`start function <syntax-start>`.
-The final instruction returns the newly created and initialized :ref:`module instance <syntax-moduleinst>`.
-
-.. note::
-   The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.
-
-   Unlike the administrative instructions above,
-   module instructions *embed* ordinary instructions |instr| instead of extending them.
-   Consequently, they can only occur at the top-level.
-
-Evaluation contexts and additional structural reduction rules for module instructions are defined as follows:
-
-.. math::
-   \begin{array}{llll}
-   \production{(module evaluation contexts)} & M &::=&
-     E~~\moduleinstr^\ast~~\moduleinst \\
-   \end{array}
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; M[\moduleinstr] &\stepto& S'; M[{\moduleinstr'}^\ast]
-     & (\iff S; \moduleinstr \stepto S'; {\moduleinstr'}^\ast) \\
-   S; M[\TRAP] &\stepto& S; \TRAP
-     & (\iff M \neq [\_]) \\
-   \end{array}
-
-Reduction terminates when the sequence has been reduced to a |moduleinst| or when a trap occurred.
-
-.. note::
-   A trap may either arise from invocation of a :ref:`start function <syntax-start>` or indicate failure of the |INSTANTIATE| instruction itself.

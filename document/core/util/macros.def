@@ -1,3 +1,48 @@
+.. LINK MACROS
+
+.. External Standards
+.. ------------------
+
+.. |IEEE754| replace:: IEEE 754-2008
+.. _IEEE754: http://ieeexplore.ieee.org/document/4610935/
+
+.. |Unicode| replace:: Unicode
+.. _Unicode: http://www.unicode.org/versions/latest/
+
+.. |ASCII| replace:: ASCII
+.. _ASCII: http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d
+
+
+.. External Definitions
+.. --------------------
+
+.. |LittleEndian| replace:: little endian
+.. _LittleEndian: https://en.wikipedia.org/wiki/Endianness#Little-endian
+
+.. |LEB128| replace:: LEB128
+.. _LEB128: https://en.wikipedia.org/wiki/LEB128
+.. |UnsignedLEB128| replace:: unsigned LEB128
+.. _UnsignedLEB128: https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128
+.. |SignedLEB128| replace:: signed LEB128
+.. _SignedLEB128: https://en.wikipedia.org/wiki/LEB128#Signed_LEB128
+
+.. |SExpressions| replace:: S-expressions
+.. _SExpressions: https://en.wikipedia.org/wiki/S-expression
+
+.. |MediaType| replace:: Media Type
+.. _MediaType: https://www.iana.org/assignments/media-types/media-types.xhtml
+
+.. Literature
+.. ----------
+
+.. |PLDI2017| replace:: Bringing the Web up to Speed with WebAssembly
+.. _PLDI2017: https://dl.acm.org/citation.cfm?doid=3062341.3062363>
+
+.. |TAPL| replace:: Types and Programming Languages
+.. _TAPL: https://www.cis.upenn.edu/~bcpierce/tapl/
+
+
+
 .. MATH MACROS
 
 
@@ -113,6 +158,8 @@
 
 
 .. Types, terminals
+
+.. |to| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
 
 .. |I8| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i8}}
 .. |I16| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i16}}
@@ -371,6 +418,7 @@
 .. |Bu64| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{64}}}
 
 .. |BsN| mathdef:: \xref{binary/values}{binary-int}{\BsX{N}}
+.. |Bs7| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{7}}}
 .. |Bs32| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{32}}}
 .. |Bs64| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{64}}}
 
@@ -407,6 +455,7 @@
 
 .. Indices, non-terminals
 
+.. |Bidx| mathdef:: \xref{binary/modules}{binary-index}{\B{idx}}
 .. |Btypeidx| mathdef:: \xref{binary/modules}{binary-typeidx}{\B{typeidx}}
 .. |Bfuncidx| mathdef:: \xref{binary/modules}{binary-funcidx}{\B{funcidx}}
 .. |Btableidx| mathdef:: \xref{binary/modules}{binary-tableidx}{\B{tableidx}}
@@ -484,6 +533,7 @@
 
 .. Lexical grammar, non-terminals
 
+.. |Tsource| mathdef:: \xref{text/lexical}{text-source}{\T{source}}
 .. |Tchar| mathdef:: \xref{text/lexical}{text-char}{\T{char}}
 .. |Tspace| mathdef:: \xref{text/lexical}{text-space}{\T{space}}
 .. |Tformat| mathdef:: \xref{text/lexical}{text-format}{\T{format}}
@@ -650,6 +700,7 @@
 .. Notation
 
 .. |ok| mathdef:: \mathrel{\mbox{ok}}
+.. |const| mathdef:: \xref{valid/instructions}{valid-constant}{\mathrel{\mbox{const}}}
 
 
 .. Contexts
@@ -664,13 +715,42 @@
 .. |CRETURN| mathdef:: \xref{valid/conventions}{context}{\K{return}}
 
 
+.. Judgments
+
+.. |vdashlimits| mathdef:: \xref{valid/types}{valid-limits}{\vdash}
+.. |vdashfunctype| mathdef:: \xref{valid/types}{valid-functype}{\vdash}
+.. |vdashtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\vdash}
+.. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
+.. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
+
+.. |vdashinstr| mathdef:: \xref{valid/instructions}{valid-instr}{\vdash}
+.. |vdashinstrseq| mathdef:: \xref{valid/instructions}{valid-instr-seq}{\vdash}
+.. |vdashexpr| mathdef:: \xref{valid/instructions}{valid-expr}{\vdash}
+.. |vdashexprconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
+.. |vdashinstrconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
+
+.. |vdashfunc| mathdef:: \xref{valid/modules}{valid-func}{\vdash}
+.. |vdashtable| mathdef:: \xref{valid/modules}{valid-table}{\vdash}
+.. |vdashmem| mathdef:: \xref{valid/modules}{valid-mem}{\vdash}
+.. |vdashglobal| mathdef:: \xref{valid/modules}{valid-global}{\vdash}
+.. |vdashelem| mathdef:: \xref{valid/modules}{valid-elem}{\vdash}
+.. |vdashdata| mathdef:: \xref{valid/modules}{valid-data}{\vdash}
+.. |vdashstart| mathdef:: \xref{valid/modules}{valid-start}{\vdash}
+.. |vdashexport| mathdef:: \xref{valid/modules}{valid-export}{\vdash}
+.. |vdashexportdesc| mathdef:: \xref{valid/modules}{valid-exportdesc}{\vdash}
+.. |vdashimport| mathdef:: \xref{valid/modules}{valid-import}{\vdash}
+.. |vdashimportdesc| mathdef:: \xref{valid/modules}{valid-importdesc}{\vdash}
+.. |vdashmodule| mathdef:: \xref{valid/modules}{valid-module}{\vdash}
+
 
 .. Execution
 .. ---------
 
 .. Notation
 
-.. |stepto| mathdef:: \hookrightarrow
+.. |stepto| mathdef:: \xref{exec/conventions}{formal-notation}{\hookrightarrow}
+.. |extendsto| mathdef:: \xref{appendix/properties}{extend}{\preceq}
+.. |matches| mathdef:: \xref{exec/modules}{match}{\leq}
 
 
 .. Allocation
@@ -681,6 +761,9 @@
 .. |allocmem| mathdef:: \xref{exec/modules}{alloc-mem}{\F{allocmem}}
 .. |allocglobal| mathdef:: \xref{exec/modules}{alloc-global}{\F{allocglobal}}
 .. |allocmodule| mathdef:: \xref{exec/modules}{alloc-module}{\F{allocmodule}}
+
+.. |growtable| mathdef:: \xref{exec/modules}{grow-table}{\F{growtable}}
+.. |growmem| mathdef:: \xref{exec/modules}{grow-mem}{\F{growmem}}
 
 
 .. Addresses, non-terminals
@@ -779,19 +862,25 @@
 
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
-.. |INSTANTIATE| mathdef:: \xref{exec/runtime}{syntax-instantiate}{\K{instantiate}}
-.. |INITGLOBAL| mathdef:: \xref{exec/runtime}{syntax-init_global}{\K{init\_global}}
-.. |INITTABLE| mathdef:: \xref{exec/runtime}{syntax-init_table}{\K{init\_table}}
-.. |INITMEM| mathdef:: \xref{exec/runtime}{syntax-init_mem}{\K{init\_mem}}
+.. |INITELEM| mathdef:: \xref{exec/runtime}{syntax-init_elem}{\K{init\_elem}}
+.. |INITDATA| mathdef:: \xref{exec/runtime}{syntax-init_data}{\K{init\_data}}
 
 
-.. Values & Administrative Instructions, non-terminals
+.. Values & Results, non-terminals
 
 .. |val| mathdef:: \xref{exec/runtime}{syntax-val}{\X{val}}
+.. |result| mathdef:: \xref{exec/runtime}{syntax-result}{\X{result}}
 
-.. |moduleinstr| mathdef:: \xref{exec/runtime}{syntax-moduleinstr}{\X{moduleinstr}}
+
+.. Administrative Instructions, non-terminals
 
 .. |XB| mathdef:: \xref{exec/runtime}{syntax-ctxt-block}{B}
+
+
+.. Configurations, non-terminals
+
+.. |config| mathdef:: \xref{exec/runtime}{syntax-config}{\X{config}}
+.. |thread| mathdef:: \xref{exec/runtime}{syntax-thread}{\X{thread}}
 
 
 .. Numerics, operators
@@ -879,4 +968,68 @@
 
 .. Other meta functions
 
+.. |instantiate| mathdef:: \xref{exec/modules}{exec-instantiation}{\F{instantiate}}
 .. |invoke| mathdef:: \xref{exec/modules}{exec-invocation}{\F{invoke}}
+
+
+.. Judgements
+
+.. |vdashexternval| mathdef:: \xref{exec/modules}{valid-externval}{\vdash}
+
+.. |vdashlimitsmatch| mathdef:: \xref{exec/modules}{match-limits}{\vdash}
+.. |vdashexterntypematch| mathdef:: \xref{exec/modules}{match-externtype}{\vdash}
+
+
+.. Soundness
+.. ---------
+
+.. Judgements
+
+.. |vdashadmininstr| mathdef:: \xref{appendix/properties}{valid-instr-admin}{\vdash}
+
+.. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
+.. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}
+
+.. |vdashfuncinst| mathdef:: \xref{appendix/properties}{valid-funcinst}{\vdash}
+.. |vdashtableinst| mathdef:: \xref{appendix/properties}{valid-tableinst}{\vdash}
+.. |vdashmeminst| mathdef:: \xref{appendix/properties}{valid-meminst}{\vdash}
+.. |vdashglobalinst| mathdef:: \xref{appendix/properties}{valid-globalinst}{\vdash}
+.. |vdashexportinst| mathdef:: \xref{appendix/properties}{valid-exportinst}{\vdash}
+.. |vdashmoduleinst| mathdef:: \xref{appendix/properties}{valid-moduleinst}{\vdash}
+
+.. |vdashstore| mathdef:: \xref{appendix/properties}{valid-store}{\vdash}
+.. |vdashconfig| mathdef:: \xref{appendix/properties}{valid-config}{\vdash}
+.. |vdashthread| mathdef:: \xref{appendix/properties}{valid-thread}{\vdash}
+.. |vdashframe| mathdef:: \xref{appendix/properties}{valid-frame}{\vdash}
+
+.. |vdashfuncinstextends| mathdef:: \xref{appendix/properties}{extend-funcinst}{\vdash}
+.. |vdashtableinstextends| mathdef:: \xref{appendix/properties}{extend-tableinst}{\vdash}
+.. |vdashmeminstextends| mathdef:: \xref{appendix/properties}{extend-meminst}{\vdash}
+.. |vdashglobalinstextends| mathdef:: \xref{appendix/properties}{extend-globalinst}{\vdash}
+.. |vdashstoreextends| mathdef:: \xref{appendix/properties}{extend-store}{\vdash}
+
+
+.. Custom Sections
+.. ---------------
+
+.. Name section, non-terminals
+
+.. |Bnamesec| mathdef:: \xref{appendix/custom}{binary-namesubsection}{\B{namesec}}
+.. |Bnamedata| mathdef:: \xref{appendix/custom}{binary-namesubsection}{\B{namedata}}
+.. |Bnamesubsection| mathdef:: \xref{appendix/custom}{binary-namesubsection}{\B{namesubsection}}
+
+.. |Bnamemap| mathdef:: \xref{appendix/custom}{binary-namemap}{\B{namemap}}
+.. |Bnameassoc| mathdef:: \xref{appendix/custom}{binary-namemap}{\B{nameassoc}}
+.. |Bindirectnamemap| mathdef:: \xref{appendix/custom}{binary-indirectnamemap}{\B{indirectnamemap}}
+.. |Bindirectnameassoc| mathdef:: \xref{appendix/custom}{binary-indirectnamemap}{\B{indirectnameassoc}}
+
+.. |Bmodulenamesubsec| mathdef:: \xref{appendix/custom}{binary-modulenamesec}{\B{modulenamesubsec}}
+.. |Bfuncnamesubsec| mathdef:: \xref{appendix/custom}{binary-funcnamesec}{\B{funcnamesubsec}}
+.. |Blocalnamesubsec| mathdef:: \xref{appendix/custom}{binary-localnamesec}{\B{localnamesubsec}}
+
+
+.. Embedding
+.. ---------
+
+.. |error| mathdef:: \xref{appendix/embedding}{embed-error}{\X{error}}
+.. |ERROR| mathdef:: \xref{appendix/embedding}{embed-error}{\K{error}}

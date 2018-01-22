@@ -20,8 +20,15 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{op}_{\K{i}N}(n) &=& \F{i}\X{op}_N(n) \\
-   \X{op}_{\K{f}N}(z) &=& \F{f}\X{op}_N(z) \\
+   \X{op}_{\K{i}N}(n_1,\dots,n_k) &=& \F{i}\X{op}_N(n_1,\dots,n_k) \\
+   \X{op}_{\K{f}N}(z_1,\dots,z_k) &=& \F{f}\X{op}_N(z_1,\dots,z_k) \\
+   \end{array}
+
+And for :ref:`conversion operators <exec-cvtop>`:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \X{cvtop}_{t_1,t_2}(c) &=& \X{cvtop}_{|t_1|,|t_2|}(c) \\
    \end{array}
 
 Where the underlying operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
@@ -352,6 +359,9 @@ Variable Instructions
    (\iff S' = S \with \SGLOBALS[F.\AMODULE.\MIGLOBALS[x]].\GIVALUE = \val) \\
    \end{array}
 
+.. note::
+   :ref:`Validation <valid-set_global>` ensures that the global is, in fact, marked as mutable.
+
 
 .. index:: memory instruction, memory index, store, frame, address, memory address, memory instance, store, frame, value, integer, limits, value type, bit width
    pair: execution; instruction
@@ -361,6 +371,14 @@ Variable Instructions
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
+
+.. note::
+   The alignment :math:`\memarg.\ALIGN` in load and store instructions does not affect the semantics.
+   It is an indication that the offset :math:`\X{ea}` at which the memory is accessed is intended to satisfy the property :math:`\X{ea} \mod 2^{\memarg.\ALIGN} = 0`.
+   A WebAssembly implementation can use this hint to optimize for the intended use.
+   Unaligned access violating that property is still allowed and must succeed regardless of the annotation.
+   However, it may be substantially slower on some hardware.
+
 
 .. _exec-load:
 .. _exec-loadn:
@@ -382,7 +400,7 @@ Memory Instructions
 
 7. Pop the value :math:`\I32.\CONST~i` from the stack.
 
-8. Let :math:`\X{ea}` be :math:`i + \memarg.\OFFSET`.
+8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
 
 9. If :math:`N` is not part of the instruction, then:
 
@@ -414,7 +432,7 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & \bytes_t(c) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8])
      \end{array}
@@ -425,7 +443,7 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8])
      \end{array}
@@ -436,11 +454,6 @@ Memory Instructions
    \\ \qquad
      (\otherwise) \\
    \end{array}
-
-.. note::
-   The alignment :math:`\memarg.\ALIGN` does not affect the semantics.
-   Unaligned access is supported for all types, and succeeds regardless of the annotation.
-   The only purpose of the annotation is to provide optimizatons hints.
 
 
 .. _exec-store:
@@ -467,7 +480,7 @@ Memory Instructions
 
 9. Pop the value :math:`\I32.\CONST~i` from the stack.
 
-10. Let :math:`\X{ea}` be :math:`i + \memarg.\OFFSET`.
+10. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
 
 11. If :math:`N` is not part of the instruction, then:
 
@@ -497,9 +510,9 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & S' = S \with \MIMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c)
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c)
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -507,7 +520,7 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & \X{ea} = i + \memarg.\OFFSET \\
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c))
      \end{array}
@@ -570,21 +583,13 @@ Memory Instructions
 
 8. Pop the value :math:`\I32.\CONST~n` from the stack.
 
-9. If :math:`\X{mem}.\MIMAX` is not empty and :math:`\X{sz} + n` is larger than :math:`\X{mem}.\MIMAX`, then:
+9. Either, try :ref:`growing <grow-mem>` :math:`\X{mem}` by :math:`n` :ref:`pages <page-size>`:
 
-  a. Push the value :math:`\I32.\CONST~(-1)` to the stack.
+   a. If it succeeds, push the value :math:`\I32.\CONST~\X{sz}` to the stack.
 
-10. Else, either:
+   b. Else, push the value :math:`\I32.\CONST~(-1)` to the stack.
 
-    a. Let :math:`\X{len}` be :math:`n` multiplied with the :ref:`page size <page-size>`.
-
-    b. Append :math:`\X{len}` bytes with value :math:`\hex{00}` to :math:`S.\SMEMS[a]`.
-
-    c. Push the value :math:`\I32.\CONST~\X{sz}` to the stack.
-
-11. Or:
-
-    a. Push the value :math:`\I32.\CONST~(-1)` to the stack.
+10. Or, push the value :math:`\I32.\CONST~(-1)` to the stack.
 
 .. math::
    ~\\[-1ex]
@@ -594,10 +599,9 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & F.\AMODULE.\MIMEMS[0] = a \\
-     \wedge & |S.\SMEMS[a].\MIDATA| = \X{sz}\cdot64\,\F{Ki} \\
-     \wedge & (\X{sz} + n \leq S.\SMEMS[a].\MIMAX \vee S.\SMEMS[a].\MIMAX = \epsilon) \\
-     \wedge & S' = S \with \SMEMS[a].\MIDATA = S.\SMEMS[a].\MIDATA~(\hex{00})^{n\cdot64\,\F{Ki}}) \\
+     (\iff & F.\AMODULE.\MIMEMS[0] = a \\
+     \wedge & \X{sz} = |S.\SMEMS[a].\MIDATA|/64\,\F{Ki} \\
+     \wedge & S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -611,7 +615,7 @@ Memory Instructions
    or fail, returning :math:`{-1}`.
    Failure *must* occur if the referenced memory instance has a maximum size defined that would be exceeded.
    However, failure *can* occur in other cases as well.
-   In practice, the choice depends on the resources available to the :ref:`embedder <embedder>`.
+   In practice, the choice depends on the :ref:`resources <impl-exec>` available to the :ref:`embedder <embedder>`.
 
 
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, address, table address, table instance, store, frame
@@ -917,7 +921,7 @@ Control Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\STABLES[F.\AMODULE.\MITABLES[0]].\TIELEM[i] = a \\
+     (\iff & S.\STABLES[F.\AMODULE.\MITABLES[0]].\TIELEM[i] = a \\
      \wedge & S.\SFUNCS[a] = f \\
      \wedge & F.\AMODULE.\MITYPES[x] = f.\FITYPE)
      \end{array}
@@ -961,29 +965,27 @@ Exiting :math:`\instr^\ast` with label :math:`L`
 
 When the end of a block is reached without a jump or trap aborting it, then the following steps are performed.
 
-1. Let :math:`n` be the arity of :math:`L`.
+1. Let :math:`m` be the number of values on the top of the stack.
 
-2. Assert: due to :ref:`validation <valid-instr-seq>`, there are :math:`n` values on the top of the stack.
+2. Pop the values :math:`\val^m` from the stack.
 
-3. Pop the results :math:`\val^n` from the stack.
+3. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
 
-4. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
+4. Pop the label from the stack.
 
-5. Pop the label from the stack.
+5. Push :math:`\val^m` back to the stack.
 
-6. Push :math:`\val^n` back to the stack.
-
-7. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
+6. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \LABEL_n\{\instr^\ast\}~\val^n~\END &\stepto& \val^n
+   \LABEL_n\{\instr^\ast\}~\val^m~\END &\stepto& \val^m
    \end{array}
 
 .. note::
    This semantics also applies to the instruction sequence contained in a |LOOP| instruction.
-   Therefor, execution of a loop falls off the end, unless a backwards branch is performed explicitly.
+   Therefore, execution of a loop falls off the end, unless a backwards branch is performed explicitly.
 
 
 .. index:: ! call, function, function instance, label, frame
@@ -1007,21 +1009,23 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 3. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\FITYPE`.
 
-4. Let :math:`t^\ast` be the list of :ref:`value types <syntax-valtype>` :math:`f.\FICODE.\FLOCALS`.
+4. Assert: due to :ref:`validation <valid-call>`, :math:`m \leq 1`.
 
-5. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
+5. Let :math:`t^\ast` be the list of :ref:`value types <syntax-valtype>` :math:`f.\FICODE.\FLOCALS`.
 
-6. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
+6. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
 
-7. Pop the values :math:`\val^n` from the stack.
+7. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
 
-8. Let :math:`\val_0^\ast` be the list of zero values of types :math:`t^\ast`.
+8. Pop the values :math:`\val^n` from the stack.
 
-9. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~\val_0^\ast \}`.
+9. Let :math:`\val_0^\ast` be the list of zero values of types :math:`t^\ast`.
 
-10. Push the activation of :math:`F` with arity :math:`m` to the stack.
+10. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~\val_0^\ast \}`.
 
-11. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
+11. Push the activation of :math:`F` with arity :math:`m` to the stack.
+
+12. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
 
 .. math::
    ~\\[-1ex]
@@ -1031,8 +1035,9 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = f \\
+     (\iff & S.\SFUNCS[a] = f \\
      \wedge & f.\FITYPE = [t_1^n] \to [t_2^m] \\
+     \wedge & m \leq 1 \\
      \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~t^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(t.\CONST~0)^k \})
      \end{array} \\
@@ -1077,40 +1082,35 @@ Host Functions
 
 Invoking a :ref:`host function <syntax-hostfunc>` has non-deterministic behavior.
 It may either terminate with a :ref:`trap <trap>` or return regularly.
-However, in the latter case, it is assumed that it consumes and produces the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
+However, in the latter case, it must consume and produce the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
 according to its :ref:`function type <syntax-functype>`.
+
 A host function may also modify the :ref:`store <syntax-store>`.
+However, all store modifications must result in an :ref:`extension <extend-store>` of the original store, i.e., they must only modify mutable contents and must not have instances removed.
+Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all data and code in it is well-typed.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; \val_1^n~(\INVOKE~a) &\stepto& S'; \val_2^m
+   S; \val^n~(\INVOKE~a) &\stepto& S'; \result
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\dots \} \\
-     \wedge & \val_1^n = (t_1.\CONST~c_1)^n \\
-     \wedge & \val_2^m = (t_2.\CONST~c_2)^m \\
-     \wedge & S' \succ S) \\
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\INVOKE~a) &\stepto& S'; \TRAP
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\SFUNCS[a] = \{ \FITYPE~\X{ft}, \FIHOSTCODE~\dots \} \\ 
-     \wedge & S' \succ S) \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     \wedge & \X{hf}(S; \val^n) = S'; \result) \\
      \end{array} \\
    \end{array}
 
-Here, :math:`S' \succ S` expresses that the new store :math:`S'` is *reachable* from :math:`S`.
-Such a store must not contain fewer addresses than the original store,
-it must not differ in elements that are not mutable,
-and it must still be well-typed.
+Here, :math:`\X{hf}(S; \val^n)` denotes the implementation-defined execution of host function :math:`\X{hf}` in current store :math:`S` with arguments :math:`\val^n`.
+The outcome is a pair of a modified store :math:`S'` and a :ref:`result <syntax-result>`.
 
-.. todo:: Define this relation more precisely.
+For a WebAssembly implementation to be :ref:`sound <soundness>` in the presence of host functions,
+every :ref:`host function instance <syntax-funcinst>` must be :ref:`valid <valid-hostfuncinst>`,
+which means that it adheres to suitable pre- and post-conditions:
+under a :ref:`valid store <valid-store>` :math:`S`, and given arguments :math:`\val^n` matching the ascribed parameter types :math:`t_1^n`,
+executing the host function must produce a valid store :math:`S'` that is an :ref:`extension <extend-store>` of :math:`S` and a result matching the ascribed return types :math:`t_2^m`.
+All these notions are made precise in the :ref:`Appendix <soundness>`.
 
 .. note::
    A host function can call back into WebAssembly by :ref:`invoking <exec-invocation>` a function :ref:`exported <syntax-export>` from a :ref:`module <syntax-module>`.

@@ -210,10 +210,10 @@ let print_import m im =
   let open Types in
   let category, annotation =
     match Ast.import_type m im with
-    | ExternalFuncType t -> "func", string_of_func_type t
-    | ExternalTableType t -> "table", string_of_table_type t
-    | ExternalMemoryType t -> "memory", string_of_memory_type t
-    | ExternalGlobalType t -> "global", string_of_global_type t
+    | ExternFuncType t -> "func", string_of_func_type t
+    | ExternTableType t -> "table", string_of_table_type t
+    | ExternMemoryType t -> "memory", string_of_memory_type t
+    | ExternGlobalType t -> "global", string_of_global_type t
   in
   Printf.printf "  import %s \"%s\" \"%s\" : %s\n"
     category (Ast.string_of_name im.it.Ast.module_name)
@@ -223,10 +223,10 @@ let print_export m ex =
   let open Types in
   let category, annotation =
     match Ast.export_type m ex with
-    | ExternalFuncType t -> "func", string_of_func_type t
-    | ExternalTableType t -> "table", string_of_table_type t
-    | ExternalMemoryType t -> "memory", string_of_memory_type t
-    | ExternalGlobalType t -> "global", string_of_global_type t
+    | ExternFuncType t -> "func", string_of_func_type t
+    | ExternTableType t -> "table", string_of_table_type t
+    | ExternMemoryType t -> "memory", string_of_memory_type t
+    | ExternGlobalType t -> "global", string_of_global_type t
   in
   Printf.printf "  export %s \"%s\" : %s\n"
     category (Ast.string_of_name ex.it.Ast.name) annotation
@@ -252,8 +252,8 @@ module Map = Map.Make(String)
 let quote : script ref = ref []
 let scripts : script Map.t ref = ref Map.empty
 let modules : Ast.module_ Map.t ref = ref Map.empty
-let instances : Instance.instance Map.t ref = ref Map.empty
-let registry : Instance.instance Map.t ref = ref Map.empty
+let instances : Instance.module_inst Map.t ref = ref Map.empty
+let registry : Instance.module_inst Map.t ref = ref Map.empty
 
 let bind map x_opt y =
   let map' =
@@ -298,7 +298,7 @@ let run_action act =
     trace ("Invoking function \"" ^ Ast.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
-    | Some (Instance.ExternalFunc f) ->
+    | Some (Instance.ExternFunc f) ->
       Eval.invoke f (List.map (fun v -> v.it) vs)
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"
@@ -308,7 +308,7 @@ let run_action act =
     trace ("Getting global \"" ^ Ast.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
-    | Some (Instance.ExternalGlobal v) -> [v]
+    | Some (Instance.ExternGlobal gl) -> [Global.load gl]
     | Some _ -> Assert.error act.at "export is not a global"
     | None -> Assert.error act.at "undefined export"
     )

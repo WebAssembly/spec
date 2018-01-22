@@ -82,6 +82,13 @@ struct
     | x::xs' -> index_where' p xs' (i+1)
 
   let index_of x = index_where ((=) x)
+
+  let rec map_filter f = function
+    | [] -> []
+    | x::xs ->
+      match f x with
+      | None -> map_filter f xs
+      | Some y -> y :: map_filter f xs
 end
 
 module List32 =

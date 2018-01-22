@@ -245,12 +245,14 @@ struct
     let len = String.length s in
     let rec parse_hex i num =
       if i = len then num else
+      if s.[i] = '_' then parse_hex (i + 1) num else
       let digit = of_int (hex_digit s.[i]) in
       require (le_u num (shr_u minus_one (of_int 4)));
       parse_hex (i + 1) (logor (shift_left num 4) digit)
     in
     let rec parse_dec i num =
       if i = len then num else
+      if s.[i] = '_' then parse_dec (i + 1) num else
       let digit = of_int (dec_digit s.[i]) in
       require (lt_u num max_upper || num = max_upper && le_u digit max_lower);
       parse_dec (i + 1) (add (mul num ten) digit)

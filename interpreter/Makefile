@@ -17,7 +17,7 @@ ZIP =		$(NAME).zip
 JSLIB =		wast.js
 WINMAKE =	winmake.bat
 
-DIRS =		util syntax binary text valid exec script host main
+DIRS =		util syntax binary text valid runtime exec script host main
 LIBS =		bigarray
 FLAGS = 	-cflags '-w +a-4-27-42-44-45 -warn-error +a'
 OCB =		ocamlbuild $(FLAGS) $(DIRS:%=-I %) $(LIBS:%=-libs %)
@@ -76,10 +76,10 @@ $(LIB).mlpack:	$(DIRS)
 		| sort | uniq \
 		>$@
 
-_build/$(LIB).cmo: $(LIB).mlpack
+_build/$(LIB).cmo: $(LIB).mlpack _tags
 		$(OCB) -quiet $(LIB).cmo
 
-_build/$(LIB).cmx: $(LIB).mlpack
+_build/$(LIB).cmx: $(LIB).mlpack _tags
 		$(OCB) -quiet $(LIB).cmx
 
 
@@ -120,12 +120,12 @@ debugtest:	$(UNOPT)
 test/%:		$(OPT)
 		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
 debugtest/%:	$(UNOPT)
-		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
+		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(@:debugtest/%=../test/core/%.wast)
 
 run/%:		$(OPT)
 		./$(OPT) $(@:run/%=../test/core/%.wast)
-debugrun/%:		$(UNOPT)
-		./$(UNOPT) $(@:run/%=../test/core/%.wast)
+debug/%:		$(UNOPT)
+		./$(UNOPT) $(@:debug/%=../test/core/%.wast)
 
 
 # Miscellaneous targets
@@ -136,9 +136,8 @@ $(ZIP):		$(WINMAKE)
 		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 clean:
-		rm -rf _build/jslib wasm.mlpack _tags
+		rm -rf _build/jslib $(LIB).mlpack _tags
 		$(OCB) -clean
-
 
 # Opam support
 
@@ -150,9 +149,9 @@ check:
 		ocamlfind query $(LIBS)
 
 install:	_build/$(LIB).cmx _build/$(LIB).cmo
-		ocamlfind install wasm meta/findlib/META _build/wasm.o \
+		ocamlfind install $(LIB) meta/findlib/META _build/$(LIB).o \
 		  $(wildcard _build/$(LIB).cm*) \
 		  $(wildcard $(DIRS:%=%/*.mli))
 
 uninstall:
-		ocamlfind remove wasm
+		ocamlfind remove $(LIB)

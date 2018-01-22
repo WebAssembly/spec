@@ -27,6 +27,7 @@ Integers
 ~~~~~~~~
 
 All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal notation.
+In both cases, digits can optionally be separated by underscores.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
@@ -43,10 +44,10 @@ All :ref:`integers <syntax-int>` can be written in either decimal or hexadecimal
    \\[1ex]
    \production{decimal number} & \Tnum &::=&
      d{:}\Tdigit &\Rightarrow& d \\ &&|&
-     n{:}\Tnum~~d{:}\Tdigit &\Rightarrow& 10\cdot n + d \\
+     n{:}\Tnum~~\text{\_}^?~~d{:}\Tdigit &\Rightarrow& 10\cdot n + d \\
    \production{hexadecimal number} & \Thexnum &::=&
      h{:}\Thexdigit &\Rightarrow& h \\ &&|&
-     n{:}\Thexnum~~h{:}\Thexdigit &\Rightarrow& 16\cdot n + h \\
+     n{:}\Thexnum~~\text{\_}^?~~h{:}\Thexdigit &\Rightarrow& 16\cdot n + h \\
    \end{array}
 
 The allowed syntax for integer literals depends on size and signedness.
@@ -88,10 +89,12 @@ Floating-Point
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{decimal floating-point fraction} & \Tfrac &::=&
      \epsilon &\Rightarrow& 0 \\ &&|&
-     d{:}\Tdigit~q{:}\Tfrac &\Rightarrow& (d+q)/10 \\
+     d{:}\Tdigit~~q{:}\Tfrac &\Rightarrow& (d+q)/10 \\ &&|&
+     d{:}\Tdigit~~\text{\_}~~p{:}\Tdigit~~q{:}\Tfrac &\Rightarrow& (d+(p+q)/10)/10 \\
    \production{hexadecimal floating-point fraction} & \Thexfrac &::=&
      \epsilon &\Rightarrow& 0 \\ &&|&
-     h{:}\Thexdigit~q{:}\Thexfrac &\Rightarrow& (h+q)/16 \\
+     h{:}\Thexdigit~~q{:}\Thexfrac &\Rightarrow& (h+q)/16 \\ &&|&
+     h{:}\Thexdigit~~\text{\_}~~~~p{:}\Thexdigit~~q{:}\Thexfrac &\Rightarrow& (h+(p+q)/16)/16 \\
    \production{decimal floating-point number} & \Tfloat &::=&
      p{:}\Tnum~\text{.}~q{:}\Tfrac
        &\Rightarrow& p+q \\ &&|&
@@ -108,7 +111,7 @@ Floating-Point
        &\Rightarrow& (p+q)\cdot 2^{\pm e}
    \end{array}
 
-The value of a literal must not lie outside the representable range of the corresponding `IEEE 754 <http://ieeexplore.ieee.org/document/4610935/>`_ type
+The value of a literal must not lie outside the representable range of the corresponding |IEEE754|_ type
 (that is, a numeric value must not overflow to :math:`\pm\mbox{infinity}`),
 but it may be :ref:`rounded <aux-ieee>` to the nearest representable value.
 
@@ -142,7 +145,7 @@ Strings
 
 *Strings* denote sequences of bytes that can represent both textual and binary data.
 They are enclosed in quotation marks
-and may contain any character other than `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\backslash}`),
+and may contain any character other than |ASCII|_ control characters, quotation marks (:math:`\text{"}`), or backslash (:math:`\text{\backslash}`),
 except when expressed with an *escape sequence*.
 
 .. math::
@@ -157,7 +160,7 @@ except when expressed with an *escape sequence*.
        &\Rightarrow& 16\cdot n+m \\
    \end{array}
 
-Each character in a string literal represents the byte sequence corresponding to its `Unicode <http://www.unicode.org/versions/latest/>`_ UTF-8 encoding,
+Each character in a string literal represents the byte sequence corresponding to its UTF-8 |Unicode|_ (Section 2.5) encoding,
 except for hexadecimal escape sequences :math:`\textl\backslash hh\textr`, which represent raw bytes of the respective value.
 
 .. math::
@@ -184,7 +187,7 @@ Names
 ~~~~~
 
 :ref:`Names <syntax-name>` are strings denoting a literal character sequence. 
-A name string must form a valid `UTF-8 <http://www.unicode.org/versions/latest/>`_ encoding that is interpreted as a string of Unicode code points.
+A name string must form a valid UTF-8 encoding as defined by |Unicode|_ (Section 2.5) that is interpreted as a string of Unicode code points.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
@@ -206,7 +209,7 @@ Identifiers
 ~~~~~~~~~~~
 
 :ref:`Indices <syntax-index>` can be given in both numeric and symbolic form.
-Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}`, followed by any sequence of printable `ASCII <http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d>`_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket.
+Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}`, followed by any sequence of printable |ASCII|_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}

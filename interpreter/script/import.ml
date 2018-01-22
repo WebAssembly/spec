@@ -4,7 +4,7 @@ open Ast
 module Unknown = Error.Make ()
 exception Unknown = Unknown.Error  (* indicates unknown import name *)
 
-module Registry = Instance.ExportMap
+module Registry = Map.Make(struct type t = Ast.name let compare = compare end)
 let registry = ref Registry.empty
 
 let register name lookup = registry := Registry.add name lookup !registry

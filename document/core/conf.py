@@ -36,6 +36,7 @@ extensions = [
   'sphinx.ext.ifconfig',
   'sphinx.ext.githubpages',
   'mathdef',
+  'pseudo-lexer'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -474,5 +475,5 @@ epub_exclude_files = ['search.html']
 
 # Macros
 rst_prolog = """
-.. include:: /""" + pwd + """/util/math.def
+.. include:: /""" + pwd + """/util/macros.def
 """

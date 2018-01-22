@@ -6,7 +6,8 @@ Appendix
 .. toctree::
    :maxdepth: 2
 
+   embedding
    implementation
-   names
-   properties
    algorithm
+   custom
+   properties

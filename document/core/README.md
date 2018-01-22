@@ -1,6 +1,6 @@
-# WebAssembly Specification
+# WebAssembly Core Specification
 
-This is (meant to become) the official WebAssembly "language" specification.
+This is the official WebAssembly "language" specification.
 
 It uses [Sphinx](http://www.sphinx-doc.org/). To install that:
 ```
@@ -18,3 +18,8 @@ To make all:
 ```
 make all
 ```
+Finally, to make all and update webassembly.github.io/spec with it:
+```
+make publish
+```
+Please make sure to only use that once a change has approval.
