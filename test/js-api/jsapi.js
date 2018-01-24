@@ -880,6 +880,6 @@ test(() => {
   assert_equals(table.get(0)(5), 6);
   assert_equals(table.get(1)(), 42);
   assert_equals(table.get(2)(), 46);
-}, "Tables export cached ");
+}, "Tables export cached");
 
 })();
