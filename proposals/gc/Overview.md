@@ -591,7 +591,7 @@ Such a more high-level solution would be to support a form of sum types (a.k.a. 
 in addition to structs and arrays, the type section could define variant types, which are also used as reference types.
 Additional instructions would allow constructing and inspecting variant references.
 It is left to the engine to pick an efficent representation for the required tags, and depending on the hardware's word size, the number of tags in a defined type, and other design decisions in the engine, these tags could either be stored as bits in the pointer, in a shared per-type data structure (hidden class), or in an explicit per-value slot within the heap object.
-These decisions can be made by the engine on a per-type basis; validation ensures that it all uses are coherent.
+These decisions can be made by the engine on a per-type basis; validation ensures that all uses are coherent.
 
 
 ## Possible Extension: Closures
