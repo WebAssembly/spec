@@ -20,7 +20,7 @@
 (assert_return (invoke $Nf "call Mf.call") (i32.const 2))
 
 (module
-  (import "spectest" "print" (func $f (param i32)))
+  (import "spectest" "print_i32" (func $f (param i32)))
   (export "print" (func $f))
 )
 (register "reexport_f")
@@ -289,7 +289,7 @@
 
 (assert_unlinkable
   (module
-    (func $host (import "spectest" "print"))
+    (func $host (import "spectest" "print_hello"))
     (memory (import "Mm" "mem") 1)
     (table (import "Mm" "tab") 0 anyfunc)  ;; does not exist
     (data (i32.const 0) "abc")
