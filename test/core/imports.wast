@@ -556,3 +556,28 @@
   (module quote "(memory 0) (import \"\" \"\" (memory 1 2))")
   "import after memory"
 )
+
+;; This module is required to validate, regardless of whether it can be
+;; linked. Overloading is not possible in wasm itself, but it is possible
+;; in modules from which wasm can import.
+(assert_unlinkable
+  (module
+    (import "not wasm" "overloaded" (func))
+    (import "not wasm" "overloaded" (func (param i32)))
+    (import "not wasm" "overloaded" (func (param i32 i32)))
+    (import "not wasm" "overloaded" (func (param i64)))
+    (import "not wasm" "overloaded" (func (param f32)))
+    (import "not wasm" "overloaded" (func (param f64)))
+    (import "not wasm" "overloaded" (func (result i32)))
+    (import "not wasm" "overloaded" (func (result i64)))
+    (import "not wasm" "overloaded" (func (result f32)))
+    (import "not wasm" "overloaded" (func (result f64)))
+    (import "not wasm" "overloaded" (global i32))
+    (import "not wasm" "overloaded" (global i64))
+    (import "not wasm" "overloaded" (global f32))
+    (import "not wasm" "overloaded" (global f64))
+    (import "not wasm" "overloaded" (table 0 anyfunc))
+    (import "not wasm" "overloaded" (memory 0))
+  )
+  "unknown import"
+)
