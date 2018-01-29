@@ -7,12 +7,12 @@ type size = int32  (* number of pages *)
 type address = int64
 type offset = int32
 
-type mem_size = Mem8 | Mem16 | Mem32
+type packed_size = Pack8 | Pack16 | Pack32
 type extension = SX | ZX
 
-type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
-type memory = {mutable content : memory'; max : size option}
-type t = memory
+type mem' = (int, int8_unsigned_elt, c_layout) Array1.t
+type mem = {mutable content : mem'; max : size option}
+type t = mem
 
 exception Type
 exception Bounds
@@ -22,10 +22,10 @@ exception OutOfMemory
 
 let page_size = 0x10000L (* 64 KiB *)
 
-let mem_size = function
-  | Mem8 -> 1
-  | Mem16 -> 2
-  | Mem32 -> 4
+let packed_size = function
+  | Pack8 -> 1
+  | Pack16 -> 2
+  | Pack32 -> 4
 
 let within_limits n = function
   | None -> true
@@ -40,7 +40,7 @@ let create n =
     mem
   with Out_of_memory -> raise OutOfMemory
 
-let alloc (MemoryType {min; max}) =
+let alloc (MemType {min; max}) =
   assert (within_limits min max);
   {content = create min; max}
 
@@ -51,7 +51,7 @@ let size mem =
   Int64.(to_int32 (div (bound mem) page_size))
 
 let type_of mem =
-  MemoryType {min = size mem; max = mem.max}
+  MemType {min = size mem; max = mem.max}
 
 let grow mem delta =
   let old_size = size mem in
@@ -126,8 +126,8 @@ let extend x n = function
   | SX -> let sh = 64 - 8 * n in Int64.(shift_right (shift_left x sh) sh)
 
 let load_packed sz ext mem a o t =
-  assert (mem_size sz <= Types.size t);
-  let n = mem_size sz in
+  assert (packed_size sz <= Types.size t);
+  let n = packed_size sz in
   let x = extend (loadn mem a o n) n ext in
   match t with
   | I32Type -> I32 (Int64.to_int32 x)
@@ -135,8 +135,8 @@ let load_packed sz ext mem a o t =
   | _ -> raise Type
 
 let store_packed sz mem a o v =
-  assert (mem_size sz <= Types.size (Values.type_of v));
-  let n = mem_size sz in
+  assert (packed_size sz <= Types.size (Values.type_of v));
+  let n = packed_size sz in
   let x =
     match v with
     | I32 x -> Int64.of_int32 x

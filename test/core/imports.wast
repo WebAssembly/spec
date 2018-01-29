@@ -12,8 +12,8 @@
   (global (export "global-f32") f32 (f32.const 44))
   (table (export "table-10-inf") 10 anyfunc)
   ;; (table (export "table-10-20") 10 20 anyfunc)
-  (memory (export "memory-2-inf") 2)
-  ;; (memory (export "memory-2-4") 2 4)
+  (mem (export "memory-2-inf") 2)
+  ;; (mem (export "memory-2-4") 2 4)
 )
 
 (register "test")
@@ -190,7 +190,7 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "memory" (func)))
+  (module (import "spectest" "mem" (func)))
   "incompatible import type"
 )
 
@@ -253,7 +253,7 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "memory" (global i32)))
+  (module (import "spectest" "mem" (global i32)))
   "incompatible import type"
 )
 
@@ -371,7 +371,7 @@
 ;; Memories
 
 (module
-  (import "spectest" "memory" (memory 1 2))
+  (import "spectest" "mem" (mem 1 2))
   (data 0 (i32.const 10) "\10")
 
   (func (export "load") (param i32) (result i32) (i32.load (get_local 0)))
@@ -383,7 +383,7 @@
 (assert_trap (invoke "load" (i32.const 1000000)) "out of bounds memory access")
 
 (module
-  (memory (import "spectest" "memory") 1 2)
+  (mem (import "spectest" "mem") 1 2)
   (data 0 (i32.const 10) "\10")
 
   (func (export "load") (param i32) (result i32) (i32.load (get_local 0)))
@@ -394,91 +394,91 @@
 (assert_trap (invoke "load" (i32.const 1000000)) "out of bounds memory access")
 
 (assert_invalid
-  (module (import "" "" (memory 1)) (import "" "" (memory 1)))
+  (module (import "" "" (mem 1)) (import "" "" (mem 1)))
   "multiple memories"
 )
 (assert_invalid
-  (module (import "" "" (memory 1)) (memory 0))
+  (module (import "" "" (mem 1)) (mem 0))
   "multiple memories"
 )
 (assert_invalid
-  (module (memory 0) (memory 0))
+  (module (mem 0) (mem 0))
   "multiple memories"
 )
 
-(module (import "test" "memory-2-inf" (memory 2)))
-(module (import "test" "memory-2-inf" (memory 1)))
-(module (import "test" "memory-2-inf" (memory 0)))
-(module (import "spectest" "memory" (memory 1)))
-(module (import "spectest" "memory" (memory 0)))
-(module (import "spectest" "memory" (memory 1 2)))
-(module (import "spectest" "memory" (memory 0 2)))
-(module (import "spectest" "memory" (memory 1 3)))
-(module (import "spectest" "memory" (memory 0 3)))
+(module (import "test" "memory-2-inf" (mem 2)))
+(module (import "test" "memory-2-inf" (mem 1)))
+(module (import "test" "memory-2-inf" (mem 0)))
+(module (import "spectest" "mem" (mem 1)))
+(module (import "spectest" "mem" (mem 0)))
+(module (import "spectest" "mem" (mem 1 2)))
+(module (import "spectest" "mem" (mem 0 2)))
+(module (import "spectest" "mem" (mem 1 3)))
+(module (import "spectest" "mem" (mem 0 3)))
 
 (assert_unlinkable
-  (module (import "test" "unknown" (memory 1)))
+  (module (import "test" "unknown" (mem 1)))
   "unknown import"
 )
 (assert_unlinkable
-  (module (import "spectest" "unknown" (memory 1)))
+  (module (import "spectest" "unknown" (mem 1)))
   "unknown import"
 )
 
 (assert_unlinkable
-  (module (import "test" "memory-2-inf" (memory 3)))
+  (module (import "test" "memory-2-inf" (mem 3)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "memory-2-inf" (memory 2 3)))
+  (module (import "test" "memory-2-inf" (mem 2 3)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "memory" (memory 2)))
+  (module (import "spectest" "mem" (mem 2)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "memory" (memory 1 1)))
-  "incompatible import type"
-)
-
-(assert_unlinkable
-  (module (import "test" "func-i32" (memory 1)))
-  "incompatible import type"
-)
-(assert_unlinkable
-  (module (import "test" "global-i32" (memory 1)))
-  "incompatible import type"
-)
-(assert_unlinkable
-  (module (import "test" "table-10-inf" (memory 1)))
-  "incompatible import type"
-)
-(assert_unlinkable
-  (module (import "spectest" "print" (memory 1)))
-  "incompatible import type"
-)
-(assert_unlinkable
-  (module (import "spectest" "global" (memory 1)))
-  "incompatible import type"
-)
-(assert_unlinkable
-  (module (import "spectest" "table" (memory 1)))
+  (module (import "spectest" "mem" (mem 1 1)))
   "incompatible import type"
 )
 
 (assert_unlinkable
-  (module (import "spectest" "memory" (memory 2)))
+  (module (import "test" "func-i32" (mem 1)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "memory" (memory 1 1)))
+  (module (import "test" "global-i32" (mem 1)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "table-10-inf" (mem 1)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "spectest" "print" (mem 1)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "spectest" "global" (mem 1)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "spectest" "table" (mem 1)))
+  "incompatible import type"
+)
+
+(assert_unlinkable
+  (module (import "spectest" "mem" (mem 2)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "spectest" "mem" (mem 1 1)))
   "incompatible import type"
 )
 
 (module
-  (import "spectest" "memory" (memory 0 3))  ;; actual has max size 2
-  (func (export "grow") (param i32) (result i32) (grow_memory (get_local 0)))
+  (import "spectest" "mem" (mem 0 3))  ;; actual has max size 2
+  (func (export "grow") (param i32) (result i32) (mem.grow (get_local 0)))
 )
 (assert_return (invoke "grow" (i32.const 0)) (i32.const 1))
 (assert_return (invoke "grow" (i32.const 1)) (i32.const 1))
@@ -502,7 +502,7 @@
   "import after function"
 )
 (assert_malformed
-  (module quote "(func) (import \"\" \"\" (memory 0))")
+  (module quote "(func) (import \"\" \"\" (mem 0))")
   "import after function"
 )
 
@@ -519,7 +519,7 @@
   "import after global"
 )
 (assert_malformed
-  (module quote "(global i64 (i64.const 0)) (import \"\" \"\" (memory 0))")
+  (module quote "(global i64 (i64.const 0)) (import \"\" \"\" (mem 0))")
   "import after global"
 )
 
@@ -536,23 +536,23 @@
   "import after table"
 )
 (assert_malformed
-  (module quote "(table 0 anyfunc) (import \"\" \"\" (memory 0))")
+  (module quote "(table 0 anyfunc) (import \"\" \"\" (mem 0))")
   "import after table"
 )
 
 (assert_malformed
-  (module quote "(memory 0) (import \"\" \"\" (func))")
+  (module quote "(mem 0) (import \"\" \"\" (func))")
   "import after memory"
 )
 (assert_malformed
-  (module quote "(memory 0) (import \"\" \"\" (global i32))")
+  (module quote "(mem 0) (import \"\" \"\" (global i32))")
   "import after memory"
 )
 (assert_malformed
-  (module quote "(memory 0) (import \"\" \"\" (table 1 3 anyfunc))")
+  (module quote "(mem 0) (import \"\" \"\" (table 1 3 anyfunc))")
   "import after memory"
 )
 (assert_malformed
-  (module quote "(memory 0) (import \"\" \"\" (memory 1 2))")
+  (module quote "(mem 0) (import \"\" \"\" (mem 1 2))")
   "import after memory"
 )

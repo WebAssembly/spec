@@ -57,7 +57,7 @@
 (assert_trap (invoke "no_dce.i64.trunc_u_f64" (f64.const nan)) "invalid conversion to integer")
 
 (module
-    (memory 1)
+    (mem 1)
 
     (func (export "no_dce.i32.load") (param $i i32) (drop (i32.load (get_local $i))))
     (func (export "no_dce.i32.load16_s") (param $i i32) (drop (i32.load16_s (get_local $i))))

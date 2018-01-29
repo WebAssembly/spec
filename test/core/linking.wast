@@ -182,7 +182,7 @@
 (assert_unlinkable
   (module
     (table (import "Mt" "tab") 10 anyfunc)
-    (memory (import "Mt" "mem") 1)  ;; does not exist
+    (mem (import "Mt" "mem") 1)  ;; does not exist
     (func $f (result i32) (i32.const 0))
     (elem (i32.const 7) $f)
     (elem (i32.const 9) $f)
@@ -207,7 +207,7 @@
     (table (import "Mt" "tab") 10 anyfunc)
     (func $f (result i32) (i32.const 0))
     (elem (i32.const 7) $f)
-    (memory 1)
+    (mem 1)
     (data (i32.const 0x10000) "d") ;; out of bounds
   )
   "data segment does not fit"
@@ -218,7 +218,7 @@
 ;; Memories
 
 (module $Mm
-  (memory (export "mem") 1 5)
+  (mem (export "mem") 1 5)
   (data (i32.const 10) "\00\01\02\03\04\05\06\07\08\09")
 
   (func (export "load") (param $a i32) (result i32)
@@ -230,7 +230,7 @@
 (module $Nm
   (func $loadM (import "Mm" "load") (param i32) (result i32))
 
-  (memory 1)
+  (mem 1)
   (data (i32.const 10) "\f0\f1\f2\f3\f4\f5")
 
   (export "Mm.load" (func $loadM))
@@ -244,7 +244,7 @@
 (assert_return (invoke $Nm "load" (i32.const 12)) (i32.const 0xf2))
 
 (module $Om
-  (memory (import "Mm" "mem") 1)
+  (mem (import "Mm" "mem") 1)
   (data (i32.const 5) "\a0\a1\a2\a3\a4\a5\a6\a7")
 
   (func (export "load") (param $a i32) (result i32)
@@ -258,23 +258,23 @@
 (assert_return (invoke $Om "load" (i32.const 12)) (i32.const 0xa7))
 
 (module
-  (memory (import "Mm" "mem") 0)
+  (mem (import "Mm" "mem") 0)
   (data (i32.const 0xffff) "a")
 )
 
 (assert_unlinkable
   (module
-    (memory (import "Mm" "mem") 0)
+    (mem (import "Mm" "mem") 0)
     (data (i32.const 0x10000) "a")
   )
   "data segment does not fit"
 )
 
 (module $Pm
-  (memory (import "Mm" "mem") 1 8)
+  (mem (import "Mm" "mem") 1 8)
 
   (func (export "grow") (param $a i32) (result i32)
-    (grow_memory (get_local 0))
+    (mem.grow (get_local 0))
   )
 )
 
@@ -290,7 +290,7 @@
 (assert_unlinkable
   (module
     (func $host (import "spectest" "print"))
-    (memory (import "Mm" "mem") 1)
+    (mem (import "Mm" "mem") 1)
     (table (import "Mm" "tab") 0 anyfunc)  ;; does not exist
     (data (i32.const 0) "abc")
   )
@@ -300,7 +300,7 @@
 
 (assert_unlinkable
   (module
-    (memory (import "Mm" "mem") 1)
+    (mem (import "Mm" "mem") 1)
     (data (i32.const 0) "abc")
     (data (i32.const 0x50000) "d") ;; out of bounds
   )
@@ -310,7 +310,7 @@
 
 (assert_unlinkable
   (module
-    (memory (import "Mm" "mem") 1)
+    (mem (import "Mm" "mem") 1)
     (data (i32.const 0) "abc")
     (table 0 anyfunc)
     (func)

@@ -1028,7 +1028,7 @@
     )
   )
 
-  (memory 1)
+  (mem 1)
   (func (export "as-load-address") (result f32)
     (block (result f32) (f32.load (br_table 0 (f32.const 1.7) (i32.const 1))))
   )
@@ -1098,8 +1098,8 @@
     )
   )
 
-  (func (export "as-grow_memory-size") (result i32)
-    (block (result i32) (grow_memory (br_table 0 (i32.const 40) (i32.const 0))))
+  (func (export "as-mem.grow-size") (result i32)
+    (block (result i32) (mem.grow (br_table 0 (i32.const 40) (i32.const 0))))
   )
 
   (func (export "nested-block-value") (param i32) (result i32)
@@ -1363,7 +1363,7 @@
 
 (assert_return (invoke "as-convert-operand") (i32.const 41))
 
-(assert_return (invoke "as-grow_memory-size") (i32.const 40))
+(assert_return (invoke "as-mem.grow-size") (i32.const 40))
 
 (assert_return (invoke "nested-block-value" (i32.const 0)) (i32.const 19))
 (assert_return (invoke "nested-block-value" (i32.const 1)) (i32.const 17))

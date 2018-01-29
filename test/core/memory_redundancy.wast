@@ -3,7 +3,7 @@
 ;; and to non-identical addresses.
 
 (module
-  (memory 1 1)
+  (mem 1 1)
 
   (func (export "zero_everything")
     (i32.store (i32.const 0) (i32.const 0))

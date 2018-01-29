@@ -17,11 +17,11 @@ exception Trap = Trap.Error
 exception Crash = Crash.Error (* failure that cannot happen in valid code *)
 exception Exhaustion = Exhaustion.Error
 
-let memory_error at = function
-  | Memory.Bounds -> "out of bounds memory access"
-  | Memory.SizeOverflow -> "memory size overflow"
-  | Memory.SizeLimit -> "memory size limit reached"
-  | Memory.Type -> Crash.error at "type mismatch at memory access"
+let mem_error at = function
+  | Mem.Bounds -> "out of bounds memory access"
+  | Mem.SizeOverflow -> "memory size overflow"
+  | Mem.SizeLimit -> "memory size limit reached"
+  | Mem.Type -> Crash.error at "type mismatch at memory access"
   | exn -> raise exn
 
 let numeric_error at = function
@@ -77,7 +77,7 @@ let lookup category list x =
 let type_ (inst : module_inst) x = lookup "type" inst.types x
 let func (inst : module_inst) x = lookup "function" inst.funcs x
 let table (inst : module_inst) x = lookup "table" inst.tables x
-let memory (inst : module_inst) x = lookup "memory" inst.memories x
+let mem (inst : module_inst) x = lookup "memory" inst.mems x
 let global (inst : module_inst) x = lookup "global" inst.globals x
 let local (frame : frame) x = lookup "local" frame.locals x
 
@@ -193,37 +193,37 @@ let rec step (c : config) : config =
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
       | Load {offset; ty; sz; _}, I32 i :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
+        let mem = mem frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_u_i32 i in
         (try
           let v =
             match sz with
-            | None -> Memory.load_value mem addr offset ty
-            | Some (sz, ext) -> Memory.load_packed sz ext mem addr offset ty
+            | None -> Mem.load_value mem addr offset ty
+            | Some (sz, ext) -> Mem.load_packed sz ext mem addr offset ty
           in v :: vs', []
-        with exn -> vs', [Trapped (memory_error e.at exn) @@ e.at])
+        with exn -> vs', [Trapped (mem_error e.at exn) @@ e.at])
 
       | Store {offset; sz; _}, v :: I32 i :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
+        let mem = mem frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_u_i32 i in
         (try
           (match sz with
-          | None -> Memory.store_value mem addr offset v
-          | Some sz -> Memory.store_packed sz mem addr offset v
+          | None -> Mem.store_value mem addr offset v
+          | Some sz -> Mem.store_packed sz mem addr offset v
           );
           vs', []
-        with exn -> vs', [Trapped (memory_error e.at exn) @@ e.at]);
+        with exn -> vs', [Trapped (mem_error e.at exn) @@ e.at]);
 
-      | CurrentMemory, vs ->
-        let mem = memory frame.inst (0l @@ e.at) in
-        I32 (Memory.size mem) :: vs, []
+      | MemSize, vs ->
+        let mem = mem frame.inst (0l @@ e.at) in
+        I32 (Mem.size mem) :: vs, []
 
-      | GrowMemory, I32 delta :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
-        let old_size = Memory.size mem in
+      | MemGrow, I32 delta :: vs' ->
+        let mem = mem frame.inst (0l @@ e.at) in
+        let old_size = Mem.size mem in
         let result =
-          try Memory.grow mem delta; old_size
-          with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
+          try Mem.grow mem delta; old_size
+          with Mem.SizeOverflow | Mem.SizeLimit | Mem.OutOfMemory -> -1l
         in I32 result :: vs', []
 
       | Const v, vs ->
@@ -353,9 +353,9 @@ let create_table (inst : module_inst) (tab : table) : table_inst =
   let {ttype} = tab.it in
   Table.alloc ttype
 
-let create_memory (inst : module_inst) (mem : memory) : memory_inst =
+let create_mem (inst : module_inst) (mem : mem) : mem_inst =
   let {mtype} = mem.it in
-  Memory.alloc mtype
+  Mem.alloc mtype
 
 let create_global (inst : module_inst) (glob : global) : global_inst =
   let {gtype; value} = glob.it in
@@ -368,7 +368,7 @@ let create_export (inst : module_inst) (ex : export) : export_inst =
     match edesc.it with
     | FuncExport x -> ExternFunc (func inst x)
     | TableExport x -> ExternTable (table inst x)
-    | MemoryExport x -> ExternMemory (memory inst x)
+    | MemExport x -> ExternMem (mem inst x)
     | GlobalExport x -> ExternGlobal (global inst x)
   in name, ext
 
@@ -389,16 +389,16 @@ let init_table (inst : module_inst) (seg : table_segment) =
   fun () ->
     Table.blit tab offset (List.map (fun x -> FuncElem (func inst x)) init)
 
-let init_memory (inst : module_inst) (seg : memory_segment) =
+let init_mem (inst : module_inst) (seg : mem_segment) =
   let {index; offset = const; init} = seg.it in
-  let mem = memory inst index in
+  let mem = mem inst index in
   let offset' = i32 (eval_const inst const) const.at in
   let offset = I64_convert.extend_u_i32 offset' in
   let end_ = Int64.(add offset (of_int (String.length init))) in
-  let bound = Memory.bound mem in
+  let bound = Mem.bound mem in
   if I64.lt_u bound end_ || I64.lt_u end_ offset then
     Link.error seg.at "data segment does not fit memory";
-  fun () -> Memory.store_bytes mem offset init
+  fun () -> Mem.store_bytes mem offset init
 
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
@@ -408,12 +408,12 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   match ext with
   | ExternFunc func -> {inst with funcs = func :: inst.funcs}
   | ExternTable tab -> {inst with tables = tab :: inst.tables}
-  | ExternMemory mem -> {inst with memories = mem :: inst.memories}
+  | ExternMem mem -> {inst with mems = mem :: inst.mems}
   | ExternGlobal glob -> {inst with globals = glob :: inst.globals}
 
 let init (m : module_) (exts : extern list) : module_inst =
   let
-    { imports; tables; memories; globals; funcs; types;
+    { imports; tables; mems; globals; funcs; types;
       exports; elems; data; start
     } = m.it
   in
@@ -428,13 +428,13 @@ let init (m : module_) (exts : extern list) : module_inst =
     { inst0 with
       funcs = inst0.funcs @ fs;
       tables = inst0.tables @ List.map (create_table inst0) tables;
-      memories = inst0.memories @ List.map (create_memory inst0) memories;
+      mems = inst0.mems @ List.map (create_mem inst0) mems;
       globals = inst0.globals @ List.map (create_global inst0) globals;
     }
   in
   List.iter (init_func inst) fs;
   let init_elems = List.map (init_table inst) elems in
-  let init_datas = List.map (init_memory inst) data in
+  let init_datas = List.map (init_mem inst) data in
   List.iter (fun f -> f ()) init_elems;
   List.iter (fun f -> f ()) init_datas;
   Lib.Option.app (fun x -> ignore (invoke (func inst x) [])) start;

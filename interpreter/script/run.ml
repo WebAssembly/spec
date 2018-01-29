@@ -212,7 +212,7 @@ let print_import m im =
     match Ast.import_type m im with
     | ExternFuncType t -> "func", string_of_func_type t
     | ExternTableType t -> "table", string_of_table_type t
-    | ExternMemoryType t -> "memory", string_of_memory_type t
+    | ExternMemType t -> "mem", string_of_mem_type t
     | ExternGlobalType t -> "global", string_of_global_type t
   in
   Printf.printf "  import %s \"%s\" \"%s\" : %s\n"
@@ -225,7 +225,7 @@ let print_export m ex =
     match Ast.export_type m ex with
     | ExternFuncType t -> "func", string_of_func_type t
     | ExternTableType t -> "table", string_of_table_type t
-    | ExternMemoryType t -> "memory", string_of_memory_type t
+    | ExternMemType t -> "mem", string_of_mem_type t
     | ExternGlobalType t -> "global", string_of_global_type t
   in
   Printf.printf "  export %s \"%s\" : %s\n"

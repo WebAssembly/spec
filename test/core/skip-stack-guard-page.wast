@@ -1,6 +1,6 @@
 ;; This tests that the stack overflow guard page can't be skipped by a function with more than a page of locals.
 (module
-  (memory 1)
+  (mem 1)
   (export "test-guard-page-skip" (func $test-guard-page-skip))
 
   (func $test-guard-page-skip

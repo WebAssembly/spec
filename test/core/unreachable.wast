@@ -155,7 +155,7 @@
     (set_local 0 (unreachable))
   )
 
-  (memory 1)
+  (mem 1)
   (func (export "as-load-address") (result f32)
     (f32.load (unreachable))
   )
@@ -203,8 +203,8 @@
     (i32.wrap/i64 (unreachable))
   )
 
-  (func (export "as-grow_memory-size") (result i32)
-    (grow_memory (unreachable))
+  (func (export "as-mem.grow-size") (result i32)
+    (mem.grow (unreachable))
   )
 )
 
@@ -286,5 +286,5 @@
 
 (assert_trap (invoke "as-convert-operand") "unreachable")
 
-(assert_trap (invoke "as-grow_memory-size") "unreachable")
+(assert_trap (invoke "as-mem.grow-size") "unreachable")
 

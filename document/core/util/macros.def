@@ -322,8 +322,8 @@
 
 .. |LOAD| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{load}}
 .. |STORE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{store}}
-.. |CURRENTMEMORY| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{current\_memory}}
-.. |GROWMEMORY| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{grow\_memory}}
+.. |MEMSIZE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{mem.size}}
+.. |MEMGROW| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{mem.grow}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
 .. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}

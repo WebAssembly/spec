@@ -533,18 +533,18 @@ Memory Instructions
    \end{array}
 
 
-.. _exec-current_memory:
+.. _exec-mem.size:
 
-:math:`\CURRENTMEMORY`
-......................
+:math:`\MEMSIZE`
+................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-current_memory>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-mem.size>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
 
 3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
 
-4. Assert: due to :ref:`validation <valid-current_memory>`, :math:`S.\SMEMS[a]` exists.
+4. Assert: due to :ref:`validation <valid-mem.size>`, :math:`S.\SMEMS[a]` exists.
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
 
@@ -555,31 +555,31 @@ Memory Instructions
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; \CURRENTMEMORY &\stepto& S; F; (\I32.\CONST~\X{sz})
+   S; F; \MEMSIZE &\stepto& S; F; (\I32.\CONST~\X{sz})
    \end{array}
    \\ \qquad
      (\iff |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| = \X{sz}\cdot64\,\F{Ki}) \\
    \end{array}
 
 
-.. _exec-grow_memory:
+.. _exec-mem.grow:
 
-:math:`\GROWMEMORY`
-...................
+:math:`\MEMGROW`
+................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-grow_memory>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-mem.grow>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
 
 3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
 
-4. Assert: due to :ref:`validation <valid-grow_memory>`, :math:`S.\SMEMS[a]` exists.
+4. Assert: due to :ref:`validation <valid-mem.grow>`, :math:`S.\SMEMS[a]` exists.
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
 
 6. Let :math:`\X{sz}` be the length of :math:`S.\SMEMS[a]` divided by the :ref:`page size <page-size>`.
 
-7. Assert: due to :ref:`validation <valid-grow_memory>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+7. Assert: due to :ref:`validation <valid-mem.grow>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 8. Pop the value :math:`\I32.\CONST~n` from the stack.
 
@@ -595,7 +595,7 @@ Memory Instructions
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~\GROWMEMORY &\stepto& S'; F; (\I32.\CONST~\X{sz})
+   S; F; (\I32.\CONST~n)~\MEMGROW &\stepto& S'; F; (\I32.\CONST~\X{sz})
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -605,12 +605,12 @@ Memory Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~\GROWMEMORY &\stepto& S; F; (\I32.\CONST~{-1})
+   S; F; (\I32.\CONST~n)~\MEMGROW &\stepto& S; F; (\I32.\CONST~{-1})
    \end{array}
    \end{array}
 
 .. note::
-   The |GROWMEMORY| instruction is non-deterministic.
+   The |MEMGROW| instruction is non-deterministic.
    It may either succeed, returning the old memory size :math:`\X{sz}`,
    or fail, returning :math:`{-1}`.
    Failure *must* occur if the referenced memory instance has a maximum size defined that would be exceeded.
