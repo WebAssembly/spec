@@ -221,7 +221,7 @@ Elements of the WebAssembly store may be <dfn>identified with</dfn> JavaScript v
 
 Note: There are several WebAssembly objects that may have a corresponding JavaScript object. The correspondence is stored in a per-agent mapping from WebAssembly [=address=]es to JavaScript objects. This mapping is used to ensure that, for a given [=agent=], there exists at most one JavaScript object for a particular WebAssembly address.
 
-Each [=agent=] is associated with the following three [=ordered map=]s:
+Each [=agent=] is associated with the following [=ordered map=]s:
     * The <dfn>Memory object cache</dfn>, mapping [=memory address=]es to {{Memory}} objects.
     * The <dfn>Table object cache</dfn>, mapping [=table address=]es to {{Table}} objects.
     * The <dfn>Exported Function cache</dfn>, mapping [=function address=]es to [=Exported Function=] objects.
@@ -272,7 +272,7 @@ Note:
 </div>
 
 <div>
-A {{Module}} object represents a single WebAssembly module. Each {{Module}} object has two internal slots:
+A {{Module}} object represents a single WebAssembly module. Each {{Module}} object has the following internal slots:
 
     * \[[Module]] : a WebAssembly [=module=]
     * \[[Bytes]] : an {{ArrayBuffer}} which is source bytes of \[[Module]].
@@ -539,7 +539,7 @@ interface Memory {
 <div>
 A {{Memory}} object represents a single [=memory instance=]
 which can be simultaneously referenced by multiple {{Instance}} objects. Each
-{{Memory}} object has two internal slots:
+{{Memory}} object has the following internal slots:
 
     * \[[Memory]] : a [=memory address=]
     * \[[BufferObject]] : an {{ArrayBuffer}} whose [=Data Block=] is [=identified with=] the above memory address
@@ -615,7 +615,7 @@ interface Table {
 <div>
 A {{Table}} object represents a single [=table instance=]
 which can be simultaneously referenced by multiple {{Instance}} objects. Each
-{{Table}} object has two internal slots:
+{{Table}} object has the following internal slots:
 
     * \[[Table]] : a [=table address=]
     * \[[Values]] : a List whose elements are either null or [=Exported Function=]s.
@@ -808,7 +808,7 @@ Assert: |type| is not [=𝗂𝟨𝟦=].
 
 <h3 id="error-objects">Error Objects</h3>
 
-WebAssembly defines three Error classes. WebAssembly errors have the following custom bindings:
+WebAssembly defines the following Error classes: {{CompileError}}, {{LinkError}}, and {{RuntimeError}}. WebAssembly errors have the following custom bindings:
 - Unlike normal interface types, the interface prototype object for these exception classes must have as its \[[Prototype]] the intrinsic object [=%ErrorPrototype%=].
 - The constructor and properties of WebAssembly errors is as specified for {{NativeError}}.
 - If an implementation gives native Error objects special powers or nonstandard properties (such as a stack property), it should also expose those on these exception instances.
