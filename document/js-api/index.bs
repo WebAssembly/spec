@@ -37,6 +37,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: data block; url: sec-data-blocks
         text: Bound Function; url: sec-bound-function-exotic-objects
         text: NumericLiteral; url: sec-literals-numeric-literals
+        text: surrounding agent; url: surrounding-agent
         text: ToNumber; url: sec-tonumber
         text: ToInt32; url: sec-toint32
         text: ToString; url: sec-tostring
@@ -330,9 +331,9 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. If |globaltype| is [=𝗂𝟨𝟦=] or [=Type=](|v|) is not [=Number=], throw a {{LinkError}} exception.
             1. Let |value| be [=ToWebAssemblyValue=](|v|, |globaltype|.<em>[=global type|valtype=]</em>)
             1. Assert: |globaltype|.<em>[=global type|mut=]</em> is [=global type|𝖼𝗈𝗇𝗌𝗍=], as verified by WebAssembly validation.
-            1. Let |store| be the current agent's [=associated store=].
+            1. Let |store| be the [=surrounding agent=]'s [=associated store=].
             1. Let (|store|, |globaladdr|) be [=alloc_global=](|store|, |globaltype|, |value|).
-            1. Set the current agent's [=associated store=] to |store|.
+            1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
             1. Let |externglobal| be [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr|.
             1. [=Append=] |externglobal| to |imports|.
         1. If |externtype| is of the form [=𝗆𝖾𝗆=] |memtype|,
@@ -548,7 +549,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 <div algorithm>
     To <dfn>create a memory object</dfn> from a [=memory address=] |memaddr|, perform the following steps:
 
-    1. Let |map| be the current [=agent=]'s associated [=Memory object cache=].
+    1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
     1. If |map|[|memaddr|] [=map/exists=],
         1. Return |map|[|memaddr|].
     1. Let |block| be a Data Block which is [=identified with=] the underlying memory of |memaddr|
@@ -565,21 +566,21 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |descriptor|["initial"] is [=present=], let |initial| be |descriptor|["initial"]; otherwise, let |initial| be 0.
     1. If |descriptor|["maximum"] is [=present=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
     1. Let |memtype| be { min |initial|, max |maximum| }
-    1. Let |store| be the current agent's [=associated store=].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |memaddr|) be [=alloc_mem=](|store|, |memtype|). If allocation fails, throw a {{RangeError}} exception.
-    1. Set the current agent's [=associated store=] to |store|.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. [=Create a memory object=] from the memory address |memaddr| and return the result.
 </div>
 
 <div algorithm>
     The <dfn method for="Memory">grow(delta)</dfn> method, when invoked, performs the following steps:
     1. Let |memory| be the Memory instance.
-    1. Let |store| be the current agent's [=associated store=].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |memaddr| be |memory|.\[[Memory]].
     1. Let |ret| be the [=size_mem=](|store|, |memaddr|).
     1. Let |store| be [=grow_mem=](|store|, |memaddr|, |delta|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
-    1. Set the current agent's [=associated store=] to |store|.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. Perform ! [=DetachArrayBuffer=](|memory|.\[[BufferObject]]).
     1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
     1. Assert: The size of |block| is the same as [=size_mem=](|store|, |memaddr|) * 64 Ki
@@ -623,7 +624,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     To <dfn>create a table object</dfn> from a [=table address=] |tableaddr|, perform the following steps:
-    1. Let |map| be the current [=agent=]'s associated [=Table object cache=].
+    1. Let |map| be the [=surrounding agent=]'s associated [=Table object cache=].
     1. If |map|[|tableaddr|] [=map/exists=],
         1. Return |map|[|tableaddr|].
     1. Let |values| be a list whose length is [=size_table=](|store|, |tableaddr|) where each element is null.
@@ -638,9 +639,9 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |descriptor|["maximum"] is [=present=], let |m| be |descriptor|["maximum"]; otherwise, let |m| be empty.
     1. If |m| is not empty and |m| &lt; |n|, throw a {{RangeError}} exception.
     1. Let |type| be the [=table type=] {[=table type|𝗆𝗂𝗇=] n, [=table type|𝗆𝖺𝗑=] |m|} [=table type|𝖺𝗇𝗒𝖿𝗎𝗇𝖼=].
-    1. Let |store| be the current agent's [=associated store=].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |tableaddr|) be [=alloc_table=](|store|, |type|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
-    1. Set the current agent's [=associated store=] to |store|.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. [=Create a table object=] from the table address |tableaddr| and return the result.
 </div>
 
@@ -648,13 +649,13 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     The <dfn method for="Table">grow(d)</dfn> method, when invoked, performs the following steps:
     1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
     1. Let |initialSize| be the length of the Table instance's \[[Values]] internal slot.
-    1. Let |store| be the current agent's [=associated store=].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |result| be [=grow_table=](|store|, |tableaddr|, |d|).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
 
         Note: The above exception may happen due to either insufficient memory or an invalid size parameter.
 
-    6. Set the current agent's [=associated store=] to |store|.
+    6. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. [=Append=] null to the Table instance's \[[Values]] internal slot |d| times.
     1. Return |initialSize|.
 </div>
@@ -679,10 +680,10 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Otherwise,
         1. If |value| does not have a \[[FunctionAddress]] internal slot, throw a {{TypeError}} exception.
         1. Let |funcaddr| be |value|.\[[FunctionAddress]].
-    1. Let |store| be the current agent's [=associated store=].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |store| be [=write_table=](|store|, |tableaddr|, |index|, |funcaddr|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
-    1. Set the current agent's [=associated store=] to |store|.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. Set |values|[|index|] to |value|.
     1. Return undefined.
 </div>
@@ -691,12 +692,12 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 A WebAssembly function is made available in JavaScript as an <dfn>Exported Function</dfn>.
 Exported Functions are [=Built-in Function Objects=] which are not constructors, and which have a \[[FunctionAddress]] internal slot.
-This slot holds a [=function address=] relative to the current agent's [=associated store=].
+This slot holds a [=function address=] relative to the [=surrounding agent=]'s [=associated store=].
 
 <div algorithm>
   The <dfn>name of the WebAssembly function</dfn> |funcaddr| is found by performing the following steps:
 
-    1. Let |store| be the current agent's [=associated store=].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |funcinst| be |store|.𝖿𝗎𝗇𝖼𝗌[|funcaddr|].
     1. If |funcinst| is of the form {𝗍𝗒𝗉𝖾 |functype|, 𝗁𝗈𝗌𝗍𝖼𝗈𝖽𝖾 |hostfunc|},
         1. Assert: |hostfunc| is a JavaScript object and [=IsCallable=](|hostfunc|) is true.
@@ -711,14 +712,14 @@ This slot holds a [=function address=] relative to the current agent's [=associa
 <div algorithm>
   To create <dfn>a new Exported Function</dfn> from a WebAssembly [=function address=] |funcaddr|, perform the following steps:
 
-    1. Let |map| be the current [=agent=]'s associated [=Exported Function cache=].
+    1. Let |map| be the [=surrounding agent=]'s associated [=Exported Function cache=].
     1. If |map|[|funcaddr|] [=map/exists=],
         1. Return |map|[|funcaddr|].
     1. Let |steps| be "[=call an Exported Function|call the Exported Function=] |funcaddr| with arguments."
     1. Let |realm| be the [=current Realm=].
     1. Let |function| be [=CreateBuiltinFunction=](|realm|, |steps|, [=%FunctionPrototype%=], &laquo; \[[FunctionAddress]]).
     1. Set |function|.\[[FunctionAddress]] to |funcaddr|.
-    1. Let |store| be the current agent's [=associated store=].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=type_func=](|store|, |funcaddr|).
     1. Let [|arguments|] → [|results|] be |functype|.
     1. Let |arity| be the length of |arguments|.
@@ -732,7 +733,7 @@ This slot holds a [=function address=] relative to the current agent's [=associa
 <div algorithm>
   To <dfn>call an Exported Function</dfn> with [=function address=] |funcaddr| and a [=list=] of JavaScript arguments |argValues|, perform the following steps:
 
-    1. Let |store| be the current agent's [=associated store=].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=type_func=](|store|, |funcaddr|).
     1. Let [|parameters|] → [|results|] be |functype|.
     1. If |parameters| or |results| contains an [=𝗂𝟨𝟦=], throw a {{TypeError}}.
@@ -747,7 +748,7 @@ This slot holds a [=function address=] relative to the current agent's [=associa
         1. [=Append=] [=ToWebAssemblyValue=](|arg|, |t|) to |args|.
         1. Set |i| to |i| + 1.
     1. Let (|store|, |ret|) be the result of [=invoke_func=](|store|, |funcaddr|, |args|).
-    1. Set the current agent's [=associated store=] to |store|.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
     1. If |outArity| is 0, return undefined.
     1. Otherwise, return [=ToJSValue=](|v|), where |v| is the singular element of |ret|.
@@ -770,9 +771,9 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
         1. Let [|parameters|] → [|results|] be |functype|.
         1. If |results| is empty, return undefined.
         1. Otherwise, return [=ToWebAssemblyValue=](|ret|, |results|[0]).
-    1. Let |store| be the current agent's [=associated store=].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |funcaddr|) be [=alloc_func=](|store|, |functype|, |hostfunc|).
-    1. Set the current agent cluster's [=associated store=] to |store|.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. Return |funcaddr|
 </div>
 
