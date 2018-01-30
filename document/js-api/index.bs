@@ -615,7 +615,7 @@ interface Table {
 <div>
 A {{Table}} object represents a single [=table instance=]
 which can be simultaneously referenced by multiple {{Instance}} objects. Each
-{{Table}} object has one internal slots:
+{{Table}} object has two internal slots:
 
     * \[[Table]] : a [=table address=]
     * \[[Values]] : a List whose elements are either null or [=Exported Function=]s.
