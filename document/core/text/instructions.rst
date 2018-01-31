@@ -423,7 +423,7 @@ Folded Instructions
 Instructions can be written as S-expressions by grouping them into *folded* form. In that notation, an instruction is wrapped in parentheses and optionally includes nested folded instructions to indicate its operands.
 
 In the case of :ref:`block instructions <text-instr-block>`, the folded form omits the :math:`\text{end}` delimiter.
-For |IF| instructions, both branches have to wrapped into nested S-expressions, headed by the keywords :math:`\text{then}` and :math:`\text{else}`.
+For |IF| instructions, both branches have to be wrapped into nested S-expressions, headed by the keywords :math:`\text{then}` and :math:`\text{else}`.
 
 The set of all phrases defined by the following abbreviations recursively forms the auxiliary syntactic class |Tfoldedinstr|.
 Such a folded instruction can appear anywhere a regular instruction can.
