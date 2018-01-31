@@ -1176,7 +1176,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 6183b7307468d4ebe91020ec360b3be2140e71df" name="generator">
+  <meta content="Bikeshed version 1760a0346ebf3096d8d47b818b15ffcad41e99a0" name="generator">
   <link href="https://webassembly.github.io/spec/js-api/" rel="canonical">
 <style>/* style-md-lists */
 
@@ -1424,7 +1424,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2018-01-29">29 January 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2018-01-30">30 January 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1439,7 +1439,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 29 January 2018,
+In addition, as of 30 January 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1531,7 +1531,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
    <p>Elements of the WebAssembly store may be <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="identified-with">identified with</dfn> JavaScript values. In particular, each WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances">memory instance</a> with a corresponding <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory">Memory</a></code> object is identified with a JavaScript <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-data-blocks" id="ref-for-sec-data-blocks">Data Block</a>; modifications to this Data Block are identified to updating the agent’s store to a store which reflects those changes, and vice versa.</p>
    <h3 class="heading settled" data-level="2.2" id="object-caches"><span class="secno">2.2. </span><span class="content">WebAssembly JS Object Caches</span><a class="self-link" href="#object-caches"></a></h3>
    <p class="note" role="note"><span>Note:</span> There are several WebAssembly objects that may have a corresponding JavaScript object. The correspondence is stored in a per-agent mapping from WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#addresses" id="ref-for-addresses">address</a>es to JavaScript objects. This mapping is used to ensure that, for a given <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#agent" id="ref-for-agent①">agent</a>, there exists at most one JavaScript object for a particular WebAssembly address.</p>
-   <p>Each <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#agent" id="ref-for-agent②">agent</a> is associated with the following three <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a>s:</p>
+   <p>Each <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#agent" id="ref-for-agent②">agent</a> is associated with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a>s:</p>
    <ul>
     <li data-md="">
      <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="memory-object-cache">Memory object cache</dfn>, mapping <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr">memory address</a>es to <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory①">Memory</a></code> objects.</p>
@@ -1581,7 +1581,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
     </ol>
    </div>
    <div>
-     A <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module③">Module</a></code> object represents a single WebAssembly module. Each <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module④">Module</a></code> object has two internal slots: 
+     A <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module③">Module</a></code> object represents a single WebAssembly module. Each <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module④">Module</a></code> object has the following internal slots: 
     <ul>
      <li data-md="">
       <p>[[Module]] : a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module" id="ref-for-syntax-module">module</a></p>
@@ -2011,7 +2011,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
 };
 </pre>
    <div>
-     A <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory④">Memory</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances①">memory instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance④">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑤">Memory</a></code> object has two internal slots: 
+     A <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory④">Memory</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances①">memory instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance④">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑤">Memory</a></code> object has the following internal slots: 
     <ul>
      <li data-md="">
       <p>[[Memory]] : a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr①">memory address</a></p>
@@ -2115,7 +2115,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
 };
 </pre>
    <div>
-     A <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table②">Table</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#table-instances" id="ref-for-table-instances">table instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑤">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table③">Table</a></code> object has two internal slots: 
+     A <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table②">Table</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#table-instances" id="ref-for-table-instances">table instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑤">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table③">Table</a></code> object has the following internal slots: 
     <ul>
      <li data-md="">
       <p>[[Table]] : a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr" id="ref-for-syntax-tableaddr①">table address</a></p>
@@ -2427,7 +2427,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
     </ol>
    </div>
    <h3 class="heading settled" data-level="3.6" id="error-objects"><span class="secno">3.6. </span><span class="content">Error Objects</span><a class="self-link" href="#error-objects"></a></h3>
-   <p>WebAssembly defines three Error classes. WebAssembly errors have the following custom bindings:</p>
+   <p>WebAssembly defines the following Error classes: <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror②">CompileError</a></code>, <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror⑥">LinkError</a></code>, and <code class="idl"><a data-link-type="idl" href="#runtimeerror" id="ref-for-runtimeerror②">RuntimeError</a></code>. WebAssembly errors have the following custom bindings:</p>
    <ul>
     <li data-md="">
      <p>Unlike normal interface types, the interface prototype object for these exception classes must have as its [[Prototype]] the intrinsic object <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-well-known-intrinsic-objects" id="ref-for-sec-well-known-intrinsic-objects">%ErrorPrototype%</a>.</p>
@@ -3329,12 +3329,14 @@ any other Web API that loads ES6 modules via URL—as part of <a href="https://g
    <ul>
     <li><a href="#ref-for-compileerror">3. The WebAssembly Namespace</a>
     <li><a href="#ref-for-compileerror①">3.1. Modules</a>
+    <li><a href="#ref-for-compileerror②">3.6. Error Objects</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="linkerror">
    <b><a href="#linkerror">#linkerror</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-linkerror">3. The WebAssembly Namespace</a> <a href="#ref-for-linkerror①">(2)</a> <a href="#ref-for-linkerror②">(3)</a> <a href="#ref-for-linkerror③">(4)</a> <a href="#ref-for-linkerror④">(5)</a> <a href="#ref-for-linkerror⑤">(6)</a>
+    <li><a href="#ref-for-linkerror⑥">3.6. Error Objects</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="runtimeerror">
@@ -3342,6 +3344,7 @@ any other Web API that loads ES6 modules via URL—as part of <a href="https://g
    <ul>
     <li><a href="#ref-for-runtimeerror">3. The WebAssembly Namespace</a>
     <li><a href="#ref-for-runtimeerror①">3.5. Exported Functions</a>
+    <li><a href="#ref-for-runtimeerror②">3.6. Error Objects</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
