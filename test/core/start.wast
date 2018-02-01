@@ -90,7 +90,7 @@
 )
 
 (module
-  (func $print (import "spectest" "print_hello"))
+  (func $print (import "spectest" "print"))
   (start $print)
 )
 
