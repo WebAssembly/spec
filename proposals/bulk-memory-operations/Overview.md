@@ -156,9 +156,9 @@ new `*.copy` instructions:
 * `mem.copy`: copy from one region of linear memory to another
 * `table.copy`: copy from one region of a table to another
 
-Filling a memory region can be accomplished with `mem.set`:
+Filling a memory region can be accomplished with `mem.fill`:
 
-* `mem.set`: fill a region of linear memory with a given byte value
+* `mem.fill`: fill a region of linear memory with a given byte value
 
 TODO: should we provide `mem.clear` and `table.clear` instead?
 
@@ -239,7 +239,7 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 - top-1: source address
 - top-0: size of memory region in bytes
 
-### `mem.set` instruction
+### `mem.fill` instruction
 
 Set all bytes in a memory region to a given byte.
 
