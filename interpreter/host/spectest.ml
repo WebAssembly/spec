@@ -34,8 +34,10 @@ let lookup name t =
   match Utf8.encode name, t with
   | "print", _ -> ExternFunc (func print (FuncType ([], [])))
   | "print_i32", _ -> ExternFunc (func print (FuncType ([I32Type], [])))
-  | "print_i32_f32", _ -> ExternFunc (func print (FuncType ([I32Type; F32Type], [])))
-  | "print_f64_f64", _ -> ExternFunc (func print (FuncType ([F64Type; F64Type], [])))
+  | "print_i32_f32", _ ->
+    ExternFunc (func print (FuncType ([I32Type; F32Type], [])))
+  | "print_f64_f64", _ ->
+    ExternFunc (func print (FuncType ([F64Type; F64Type], [])))
   | "print_f32", _ -> ExternFunc (func print (FuncType ([F32Type], [])))
   | "print_f64", _ -> ExternFunc (func print (FuncType ([F64Type], [])))
   | "global_i32", _ -> ExternGlobal (global (GlobalType (I32Type, Immutable)))
