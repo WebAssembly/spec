@@ -1126,21 +1126,19 @@ All these notions are made precise in the :ref:`Appendix <soundness>`.
 Expressions
 ~~~~~~~~~~~
 
-An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>`.
+An :ref:`expression <syntax-expr>` is executed relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>`.
 
 1. Jump to the start of the instruction sequence :math:`\instr^\ast` of the expression.
 
-2. Execute of the instruction sequence.
-
-3. Assert: due to :ref:`validation <valid-expr>`, the top of the stack contains a :ref:`value <syntax-val>`.
-
-4. Pop the the :ref:`value <syntax-val>` :math:`\val` from the stack.
-
-The value :math:`\val` is the result of the evaluation.
+2. Execute the instruction sequence.
 
 .. math::
    \frac{
-     S; F; \instr^\ast \stepto^\ast S'; F'; v
+     S; F; \instr^\ast \stepto S'; F'; \instr'^\ast
    }{
-     S; F; \instr^\ast~\END \stepto^\ast S'; F'; v
+     S; F; \instr^\ast~\END \stepto S'; F'; \instr'^\ast~\END
    }
+
+.. note::
+   This formal reduction rule is used during :ref:`instantiation <exec-instantiation>` to execute :ref:`global <syntax-global>` initializer expressions as well as :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segment offset expressions.
+   Expressions constituting :ref:`function <syntax-func>` bodies, by contrast, are executed during function :ref:`invocation <exec-invoke>`.
