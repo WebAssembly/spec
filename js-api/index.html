@@ -1176,7 +1176,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 1760a0346ebf3096d8d47b818b15ffcad41e99a0" name="generator">
+  <meta content="Bikeshed version 166744eb86a34dbc5493268ea410dc65275aa964" name="generator">
   <link href="https://webassembly.github.io/spec/js-api/" rel="canonical">
 <style>/* style-md-lists */
 
@@ -1424,7 +1424,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2018-01-31">31 January 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2018-02-06">6 February 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1439,7 +1439,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 31 January 2018,
+In addition, as of 6 February 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1618,7 +1618,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
          <li data-md="">
           <p><a data-link-type="dfn" href="#construct-a-webassembly-module-object" id="ref-for-construct-a-webassembly-module-object">Construct a WebAssembly module object</a> from <var>module</var> and <var>bytes</var>, and let <var>moduleObject</var> be the result.</p>
          <li data-md="">
-          <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise">Resolve</a> <var>promise</var> with <var>moduleObject</var>.</p>
+          <p><a data-link-type="dfn" href="https://w3c.github.io/FileAPI/#blob-url-resolve" id="ref-for-blob-url-resolve">Resolve</a> <var>promise</var> with <var>moduleObject</var>.</p>
         </ol>
       </ol>
     </ol>
@@ -1826,7 +1826,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
        <li data-md="">
         <p>Let <var>result</var> be a <code class="idl"><a data-link-type="idl" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a></code> dictionary with <code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-module" id="ref-for-dom-webassemblyinstantiatedsource-module">module</a></code> set to <var>module</var> and <code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-instance" id="ref-for-dom-webassemblyinstantiatedsource-instance">instance</a></code> set to <var>instance</var>.</p>
        <li data-md="">
-        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise①">Resolve</a> <var>promise</var> with <var>result</var>.</p>
+        <p><a data-link-type="dfn" href="https://w3c.github.io/FileAPI/#blob-url-resolve" id="ref-for-blob-url-resolve①">Resolve</a> <var>promise</var> with <var>result</var>.</p>
       </ol>
      <li data-md="">
       <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>promiseOfModule</var> with reason <var>reason</var>:</p>
@@ -1863,7 +1863,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
        <li data-md="">
         <p><a data-link-type="dfn" href="#instantiate-a-webassembly-module" id="ref-for-instantiate-a-webassembly-module①">Instantiate the WebAssembly module</a> <var>module</var> importing <var>importObject</var>, and let <var>instance</var> be the result.  If this throws an exception, catch it, and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise②">reject</a> <var>promise</var> with the exception.</p>
        <li data-md="">
-        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise②">Resolve</a> <var>promise</var> with <var>instance</var>.</p>
+        <p><a data-link-type="dfn" href="https://w3c.github.io/FileAPI/#blob-url-resolve" id="ref-for-blob-url-resolve②">Resolve</a> <var>promise</var> with <var>instance</var>.</p>
       </ol>
      <li data-md="">
       <p>Return <var>promise</var></p>
@@ -2771,6 +2771,11 @@ The particular exception here is implementation-defined in both cases.</p>
      <li><a href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail">utf-8 decode without bom or fail</a>
     </ul>
    <li>
+    <a data-link-type="biblio">[FileAPI]</a> defines the following terms:
+    <ul>
+     <li><a href="https://w3c.github.io/FileAPI/#blob-url-resolve">resolve</a>
+    </ul>
+   <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">in parallel</a>
@@ -2791,7 +2796,6 @@ The particular exception here is implementation-defined in both cases.</p>
     <ul>
      <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise">a new promise</a>
      <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise">reject</a>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise">resolve</a>
      <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment">upon fulfillment</a>
      <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection">upon rejection</a>
     </ul>
@@ -2880,6 +2884,8 @@ The particular exception here is implementation-defined in both cases.</p>
    <dd><a href="https://tc39.github.io/ecma262/">ECMAScript Language Specification</a>. URL: <a href="https://tc39.github.io/ecma262/">https://tc39.github.io/ecma262/</a>
    <dt id="biblio-encoding">[ENCODING]
    <dd>Anne van Kesteren. <a href="https://encoding.spec.whatwg.org/">Encoding Standard</a>. Living Standard. URL: <a href="https://encoding.spec.whatwg.org/">https://encoding.spec.whatwg.org/</a>
+   <dt id="biblio-fileapi">[FileAPI]
+   <dd>Marijn Kruisselbrink. <a href="https://www.w3.org/TR/FileAPI/">File API</a>. 26 October 2017. WD. URL: <a href="https://www.w3.org/TR/FileAPI/">https://www.w3.org/TR/FileAPI/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
