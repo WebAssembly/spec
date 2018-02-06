@@ -10,8 +10,8 @@
 (module (memory 1 2)
   (data (i32.const 0) "a") (data (i32.const 1) "b") (data (i32.const 2) "c")
 )
-(module (global (import "spectest" "global") i32) (memory 1) (data (get_global 0) "a"))
-(module (global $g (import "spectest" "global") i32) (memory 1) (data (get_global $g) "a"))
+(module (global (import "spectest" "global_i32") i32) (memory 1) (data (get_global 0) "a"))
+(module (global $g (import "spectest" "global_i32") i32) (memory 1) (data (get_global $g) "a"))
 ;; Use of internal globals in constant expressions is not allowed in MVP.
 ;; (module (memory 1) (data (get_global 0) "a") (global i32 (i32.const 0)))
 ;; (module (memory 1) (data (get_global $g) "a") (global $g i32 (i32.const 0)))
@@ -112,7 +112,7 @@
 ;)
 (assert_unlinkable
   (module
-    (global (import "spectest" "global") i32)
+    (global (import "spectest" "global_i32") i32)
     (memory 0) (data (get_global 0) "a")
   )
   "data segment does not fit"
