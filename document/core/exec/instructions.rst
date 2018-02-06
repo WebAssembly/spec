@@ -1140,5 +1140,6 @@ An :ref:`expression <syntax-expr>` is executed relative to a :ref:`current <exec
    }
 
 .. note::
-   This formal reduction rule is used during :ref:`instantiation <exec-instantiation>` to execute :ref:`global <syntax-global>` initializer expressions as well as :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segment offset expressions.
-   Expressions constituting :ref:`function <syntax-func>` bodies, by contrast, are executed during function :ref:`invocation <exec-invoke>`.
+   By iterating this reduction rule, we can *evaluate* some expressions to values.
+   This is always possible, for example, with :ref:`constant expressions <valid-constant>`.
+   Expressions constituting :ref:`function <syntax-func>` bodies, by contrast, need not terminate with a value are executed during function :ref:`invocation <exec-invoke>`.
