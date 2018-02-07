@@ -1126,11 +1126,17 @@ All these notions are made precise in the :ref:`Appendix <soundness>`.
 Expressions
 ~~~~~~~~~~~
 
-An :ref:`expression <syntax-expr>` is executed relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>`.
+An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>`.
 
 1. Jump to the start of the instruction sequence :math:`\instr^\ast` of the expression.
 
 2. Execute the instruction sequence.
+
+3. Assert: due to :ref:`validation <valid-expr>`, the top of the stack contains a :ref:`value <syntax-val>`.
+
+4. Pop the :ref:`value <syntax-val>` :math:`\val` from the stack.
+
+The value :math:`\val` is the result of the evaluation.
 
 .. math::
    \frac{
@@ -1140,6 +1146,5 @@ An :ref:`expression <syntax-expr>` is executed relative to a :ref:`current <exec
    }
 
 .. note::
-   By iterating this reduction rule, we can *evaluate* some expressions to values.
-   This is always possible, for example, with :ref:`constant expressions <valid-constant>`.
-   Expressions constituting :ref:`function <syntax-func>` bodies, by contrast, need not terminate with a value are executed during function :ref:`invocation <exec-invoke>`.
+   Evaluation iterates this reduction rule until reaching a value.
+   Expressions constituting :ref:`function <syntax-func>` bodies need not terminate with a value are executed during function :ref:`invocation <exec-invoke>`.
