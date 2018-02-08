@@ -1,5 +1,17 @@
 ;; Test the element section
 
+;; Syntax
+(module
+  (table 10 anyfunc)
+  (elem (i32.const 0))
+  (elem (i32.const 0) $f $f)
+  (elem (offset (i32.const 0)))
+  (elem (offset (i32.const 0)) $f $f)
+  (func $f)
+)
+
+;; Basic use
+
 (module
   (table 10 anyfunc)
   (elem (i32.const 0) $f)
@@ -118,7 +130,7 @@
 
 (assert_unlinkable
   (module
-  (import "spectest" "table" (table 10 anyfunc))
+    (import "spectest" "table" (table 10 anyfunc))
     (elem (i32.const 10) $f)
     (func $f)
   )
@@ -127,7 +139,7 @@
 
 (assert_unlinkable
   (module
-  (import "spectest" "table" (table 10 20 anyfunc))
+    (import "spectest" "table" (table 10 20 anyfunc))
     (elem (i32.const 10) $f)
     (func $f)
   )
@@ -136,7 +148,7 @@
 
 (assert_unlinkable
   (module
-  (import "spectest" "table" (table 10 anyfunc))
+    (import "spectest" "table" (table 10 anyfunc))
     (elem (i32.const -1) $f)
     (func $f)
   )
@@ -145,7 +157,7 @@
 
 (assert_unlinkable
   (module
-  (import "spectest" "table" (table 10 anyfunc))
+    (import "spectest" "table" (table 10 anyfunc))
     (elem (i32.const -10) $f)
     (func $f)
   )

@@ -489,7 +489,16 @@ When omitted, :math:`\T{0}` is assumed.
 Abbreviations
 .............
 
-As an abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
+As an abbreviation, a single instruction may occur in place of the offset:
+
+.. math:
+   \begin{array}{llcll}
+   \production{element offset} &
+     \Tinstr &\equiv&
+     \text{(}~\text{offset}~~\Tinstr~\text{)}
+   \end{array}
+
+As another abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
 
 
 .. index:: data, memory, memory index, expression, byte
@@ -524,7 +533,16 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 Abbreviations
 .............
 
-As an abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.
+As an abbreviation, a single instruction may occur in place of the offset:
+
+.. math:
+   \begin{array}{llcll}
+   \production{data offset} &
+     \Tinstr &\equiv&
+     \text{(}~\text{offset}~~\Tinstr~\text{)}
+   \end{array}
+
+As another abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.
 
 
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, identifier context, identifier, name section
