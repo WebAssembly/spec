@@ -931,17 +931,22 @@ However, the effects of any such call are subsumed by the non-deterministic beha
 <p>An <a class="reference internal" href="../syntax/instructions.html#syntax-expr"><span class="std std-ref">expression</span></a> is <em>evaluated</em> relative to a <a class="reference internal" href="conventions.html#exec-notation-textual"><span class="std std-ref">current</span></a> <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a> pointing to its containing <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">module instance</span></a>.</p>
 <ol class="arabic simple">
 <li>Jump to the start of the instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> of the expression.</li>
-<li>Execute of the instruction sequence.</li>
+<li>Execute the instruction sequence.</li>
 <li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-expr"><span class="std std-ref">validation</span></a>, the top of the stack contains a <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">value</span></a>.</li>
-<li>Pop the the <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span> from the stack.</li>
+<li>Pop the <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span> from the stack.</li>
 </ol>
 <p>The value <span class="math">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span> is the result of the evaluation.</p>
 <div class="math">
 \[\frac{
-  S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; F'; v
+  S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F'; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'^\ast
 }{
-  S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; F'; v
+  S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F'; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}
 }\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Evaluation iterates this reduction rule until reaching a value.
+Expressions constituting <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a> bodies are executed during function <a class="reference internal" href="#exec-invoke"><span class="std std-ref">invocation</span></a>.</p>
+</div>
 </div>
 </div>
 
