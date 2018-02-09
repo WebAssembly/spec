@@ -15,7 +15,7 @@ layers, and either:
 ## Overview
 
 Exception handling allows code to break control flow when an exception is
-thrown.  The execption can be any exception known by the WebAssembly module, or
+thrown.  The exception can be any exception known by the WebAssembly module, or
 it may an unknown exception that was thrown by a called imported function.
 
 One of the problems with exception handling is that both WebAssembly and the
