@@ -563,35 +563,39 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 4. For each :ref:`external value <syntax-externval>` :math:`\externval_i` in :math:`\externval^n` and :ref:`external type <syntax-externtype>` :math:`\externtype'_i` in :math:`\externtype_{\F{im}}^n`, do:
 
-   a. Assert: :math:`\externval_i` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\externtype_i` in store :math:`S`.
+   a. If :math:`\externval_i` is not :ref:`valid <valid-externval>` with an :ref:`external type <syntax-externtype>` :math:`\externtype_i` in store :math:`S`, then:
+
+      i. Fail.
 
    b. If :math:`\externtype_i` does not :ref:`match <match-externtype>` :math:`\externtype'_i`, then:
 
       i. Fail.
 
-5. Let :math:`\moduleinst_{\F{im}}` be the auxiliary module instance :math:`\{\MIGLOBALS~\evglobals(\externval^\ast)\}` that only consists of the imported globals.
+.. _exec-initvals:
 
-6. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~\moduleinst_{\F{im}}, \ALOCALS~\epsilon \}`.
+5. Let :math:`\val^\ast` be the vector of :ref:`global <syntax-global>` initialization :ref:`values <syntax-val>` determined by :math:`\module` and :math:`\externval^n`. These may be calculated as follows.
 
-7. Push the frame :math:`F` to the stack.
+   a. Let :math:`\moduleinst_{\F{im}}` be the auxiliary module :ref:`instance <syntax-moduleinst>` :math:`\{\MIGLOBALS~\evglobals(\externval^n)\}` that only consists of the imported globals.
 
-8. Let :math:`\globalidx_{\F{new}}` be the :ref:`global index <syntax-globalidx>` that corresponds to the number of global :ref:`imports <syntax-import>` in :math:`\module.\MIMPORTS` (i.e., the index of the first non-imported global).
+   b. Let :math:`F_{\F{im}}` be the auxiliary :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~\moduleinst_{\F{im}}, \ALOCALS~\epsilon \}`.
 
-9. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
+   c. Push the frame :math:`F_{\F{im}}` to the stack.
 
-   a. Let :math:`\val_i` be the result of :ref:`evaluating <exec-expr>` the initializer expression :math:`\global_i.\GINIT`.
+   d. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
 
-   b. Let :math:`\globalidx_i` be the :ref:`global index <syntax-globalidx>` :math:`\globalidx_{\F{new}} + i`.
+      i. Let :math:`\val_i` be the result of :ref:`evaluating <exec-expr>` the initializer expression :math:`\global_i.\GINIT`.
 
-   c. Assert: due to :ref:`validation <valid-global>`, :math:`\moduleinst.\MIGLOBALS[\globalidx_i]` exists.
+   e. Assert: due to :ref:`validation <valid-module>`, the frame :math:`F_{\F{im}}` is now on the top of the stack.
 
-   d. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` :math:`\moduleinst.\MIGLOBALS[\globalidx_i]`.
+   f. Pop the frame :math:`F_{\F{im}}` from the stack.
 
-   e. Assert: due to :ref:`validation <valid-global>`, :math:`S.\SGLOBALS[\globaladdr_i]` exists.
+6. Let :math:`\moduleinst` be a new module instance :ref:`allocated <alloc-module>` from :math:`\module` in store :math:`S` with imports :math:`\externval^n` and global initializer values :math:`\val^\ast`, and let :math:`S'` be the extended store produced by module allocation.
 
-   f. Let :math:`\globalinst_i` be the :ref:`global instance <syntax-globalinst>` :math:`S.\SGLOBALS[\globaladdr_i]`.
+7. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \}`.
 
-10. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
+8. Push the frame :math:`F` to the stack.
+
+9. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
 
     a. Let :math:`\X{eoval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\elem_i.\EOFFSET`.
 
@@ -603,9 +607,9 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
     e. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` :math:`\moduleinst.\MITABLES[\tableidx_i]`.
 
-    f. Assert: due to :ref:`validation <valid-elem>`, :math:`S.\STABLES[\tableaddr_i]` exists.
+    f. Assert: due to :ref:`validation <valid-elem>`, :math:`S'.\STABLES[\tableaddr_i]` exists.
 
-    g. Let :math:`\tableinst_i` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\tableaddr_i]`.
+    g. Let :math:`\tableinst_i` be the :ref:`table instance <syntax-tableinst>` :math:`S'.\STABLES[\tableaddr_i]`.
 
     h. Let :math:`\X{eend}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\EINIT`.
 
@@ -613,7 +617,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
        i. Fail.
 
-11. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
+10. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
 
     a. Let :math:`\X{doval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\data_i.\DOFFSET`.
 
@@ -625,9 +629,9 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
     e. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` :math:`\moduleinst.\MIMEMS[\memidx_i]`.
 
-    f. Assert: due to :ref:`validation <valid-data>`, :math:`S.\SMEMS[\memaddr_i]` exists.
+    f. Assert: due to :ref:`validation <valid-data>`, :math:`S'.\SMEMS[\memaddr_i]` exists.
 
-    g. Let :math:`\meminst_i` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[\memaddr_i]`.
+    g. Let :math:`\meminst_i` be the :ref:`memory instance <syntax-meminst>` :math:`S'.\SMEMS[\memaddr_i]`.
 
     h. Let :math:`\X{dend}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\DINIT`.
 
@@ -635,13 +639,11 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
        i. Fail.
 
-12. Assert: due to :ref:`validation <valid-module>`, the frame :math:`F` is now on the top of the stack.
+11. Assert: due to :ref:`validation <valid-module>`, the frame :math:`F` is now on the top of the stack.
 
-13. Pop the frame from the stack.
+12. Pop the frame from the stack.
 
-14. Let :math:`\moduleinst` be a new module instance :ref:`allocated <alloc-module>` from :math:`\module` in store :math:`S` with imports :math:`\externval^\ast` and global initializer values :math:`\val^\ast`.
-
-15. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
+13. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
 
     a. For each :ref:`function index <syntax-funcidx>` :math:`\funcidx_{ij}` in :math:`\elem_i.\EINIT` (starting with :math:`j = 0`), do:
 
@@ -651,13 +653,13 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
        iii. Replace :math:`\tableinst_i.\TIELEM[\X{eo}_i + j]` with :math:`\funcaddr_{ij}`.
 
-16. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
+14. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
 
     a. For each :ref:`byte <syntax-byte>` :math:`b_{ij}` in :math:`\data_i.\DINIT` (starting with :math:`j = 0`), do:
 
        i. Replace :math:`\meminst_i.\MIDATA[\X{do}_i + j]` with :math:`b_{ij}`.
 
-17. If the :ref:`start function <syntax-start>` :math:`\module.\MSTART` is not empty, then:
+15. If the :ref:`start function <syntax-start>` :math:`\module.\MSTART` is not empty, then:
 
     a. Assert: due to :ref:`validation <valid-start>`, :math:`\moduleinst.\MIFUNCS[\module.\MSTART.\SFUNC]` exists.
 
@@ -679,25 +681,21 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      & \vdashmodule \module : \externtype_{\F{im}}^n \to \externtype_{\F{ex}}^\ast \\
      &\wedge& (S \vdashexternval \externval : \externtype)^n \\
      &\wedge& (\vdashexterntypematch \externtype \matches \externtype_{\F{im}})^n \\[1ex]
-     &\wedge& \module.\MGLOBALS = \global^k \\
+     &\wedge& \module.\MGLOBALS = \global^\ast \\
      &\wedge& \module.\MELEM = \elem^\ast \\
      &\wedge& \module.\MDATA = \data^\ast \\
      &\wedge& \module.\MSTART = \start^? \\[1ex]
-     &\wedge& S', \moduleinst = \allocmodule(S, \module, \externval^n, v^\ast) \\
+     &\wedge& S', \moduleinst = \allocmodule(S, \module, \externval^n, \val^\ast) \\
      &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
-     &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; v)^\ast \\
-     &\wedge& (S'; F; \elem.\EOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo})^\ast \\
-     &\wedge& (S'; F; \data.\DOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do})^\ast \\[1ex]
+     &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; \val~\END)^\ast \\
+     &\wedge& (S'; F; \elem.\EOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo}~\END)^\ast \\
+     &\wedge& (S'; F; \data.\DOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do}~\END)^\ast \\[1ex]
      &\wedge& (\X{eo} + |\elem.\EINIT| \leq |S'.\STABLES[\tableaddr].\TIELEM|)^\ast \\
      &\wedge& (\X{do} + |\data.\DINIT| \leq |S'.\SMEMS[\memaddr].\MIDATA|)^\ast
    \\[1ex]
-     &\wedge& \globaladdr^\ast = \moduleinst.\MIGLOBALS[|\moduleinst.\MIGLOBALS|-k \slice k] \\
      &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\
      &\wedge& (\memaddr = \moduleinst.\MIMEMS[\data.\DMEM])^\ast \\
      &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^?)
-   \\[1ex]
-   \instantiate(S, \module, \externval^n) &=& S; \{\AMODULE~\{\}, \ALOCALS~\epsilon\}; \TRAP
-     \qquad (\otherwise)
    \\[2ex]
    S; F; \INITELEM~a~i~\epsilon &\stepto&
      S; F; \epsilon \\
@@ -713,11 +711,15 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
    \end{array}
 
 .. note::
+   Module :ref:`allocation <alloc-module>` and the :ref:`evaluation <exec-expr>` of :ref:`global <syntax-global>` initializers are mutually recursive because the global initialization :ref:`values <syntax-val>` :math:`\val^\ast` are passed to the module allocator but depend on the store :math:`S'` and module instance :math:`\moduleinst` returned by allocation.
+   However, this recursion is just a specification device.
+   Due to :ref:`validation <valid-module>`, the initialization values can easily :ref:`be determined <exec-initvals>` from a simple pre-pass that evaluates global initializers in the initial store.
+
    All failure conditions are checked before any observable mutation of the store takes place.
    Store mutation is not atomic;
    it happens in individual steps that may be interleaved with other threads.
 
-   Evaluation of :ref:`constant expressions <valid-constant>` does not affect the store.
+   :ref:`Evaluation <exec-expr>` of :ref:`constant expressions <valid-constant>` does not affect the store.
 
 
 .. index:: ! invocation, module, module instance, function, export, function address, function instance, function type, value, stack, trap, store
