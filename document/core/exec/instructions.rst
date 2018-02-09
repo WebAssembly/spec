@@ -1147,4 +1147,4 @@ The value :math:`\val` is the result of the evaluation.
 
 .. note::
    Evaluation iterates this reduction rule until reaching a value.
-   Expressions constituting :ref:`function <syntax-func>` bodies need not terminate with a value are executed during function :ref:`invocation <exec-invoke>`.
+   Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`invocation <exec-invoke>`.
