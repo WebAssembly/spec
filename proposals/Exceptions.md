@@ -1,8 +1,8 @@
 THIS DOCUMENT IS OBSOLETE!
 
-Please see The new [Layer 1 MVP Proposal] instead.
+Please see The new [Level 1 MVP Proposal] instead.
 
-[Layer 1 MVP Proposal]: https://github.com/WebAssembly/exception-handling/blob/master/proposals/Layer-1.md
+[Level 1 MVP Proposal]: https://github.com/WebAssembly/exception-handling/blob/master/proposals/Level-1.md
 
 The original proposal is preserved here for reference.
 

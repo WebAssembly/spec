@@ -1,14 +1,14 @@
-# Layer 1 exception handling
+# Level 1 exception handling
 
-Layer 1 of exception handling is the MVP (minimal viable proposal) for
+Level 1 of exception handling is the MVP (minimal viable proposal) for
 implementing exceptions in WebAssembly. As such, it doesn't include higher-level
 concepts and structures. These concept and structures are introduced in later
-layers, and either:
+levels, and either:
 
-1. Improves readability by combining concepts in layer 1 into higher-level
+1. Improves readability by combining concepts in Level 1 into higher-level
    constructs, thereby reducing code size.
 2. Allow performance improvements in the VM.
-3. Introduce additional new functionality not available in layer 1.
+3. Introduce additional new functionality not available in Level 1.
 
 This document supersedes the original [Exceptions Proposal].
 
