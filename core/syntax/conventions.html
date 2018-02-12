@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Conventions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -32,8 +24,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  </head><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -80,12 +71,14 @@
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -105,71 +98,71 @@ All parts of this specification are defined in terms of this abstract syntax.</p
 <span id="grammar"></span><span id="index-1"></span><h2>Grammar Notation<a class="headerlink" href="#grammar-notation" title="Permalink to this headline">¶</a></h2>
 <p>The following conventions are adopted in defining grammar rules for abstract syntax.</p>
 <ul class="simple">
-<li>Terminal symbols (atoms) are written in sans-serif font: <span class="math">\(\mathsf{i32}, \mathsf{end}\)</span>.</li>
-<li>Nonterminal symbols are written in italic font: <span class="math">\(\mathit{valtype}, \mathit{instr}\)</span>.</li>
-<li><span class="math">\(A^n\)</span> is a sequence of <span class="math">\(n\geq 0\)</span> iterations  of <span class="math">\(A\)</span>.</li>
-<li><span class="math">\(A^\ast\)</span> is a possibly empty sequence of iterations of <span class="math">\(A\)</span>.
-(This is a shorthand for <span class="math">\(A^n\)</span> used where <span class="math">\(n\)</span> is not relevant.)</li>
-<li><span class="math">\(A^+\)</span> is a non-empty sequence of iterations of <span class="math">\(A\)</span>.
-(This is a shorthand for <span class="math">\(A^n\)</span> where <span class="math">\(n \geq 1\)</span>.)</li>
-<li><span class="math">\(A^?\)</span> is an optional occurrence of <span class="math">\(A\)</span>.
-(This is a shorthand for <span class="math">\(A^n\)</span> where <span class="math">\(n \leq 1\)</span>.)</li>
-<li>Productions are written <span class="math">\(\mathit{sym} ::= A_1 ~|~ \dots ~|~ A_n\)</span>.</li>
-<li>Some productions are augmented with side conditions in parentheses, “<span class="math">\((\mathrel{\mbox{if}} \mathit{condition})\)</span>”, that provide a shorthand for a combinatorial expansion of the production into many separate cases.</li>
+<li>Terminal symbols (atoms) are written in sans-serif font: <span class="math notranslate">\(\mathsf{i32}, \mathsf{end}\)</span>.</li>
+<li>Nonterminal symbols are written in italic font: <span class="math notranslate">\(\mathit{valtype}, \mathit{instr}\)</span>.</li>
+<li><span class="math notranslate">\(A^n\)</span> is a sequence of <span class="math notranslate">\(n\geq 0\)</span> iterations  of <span class="math notranslate">\(A\)</span>.</li>
+<li><span class="math notranslate">\(A^\ast\)</span> is a possibly empty sequence of iterations of <span class="math notranslate">\(A\)</span>.
+(This is a shorthand for <span class="math notranslate">\(A^n\)</span> used where <span class="math notranslate">\(n\)</span> is not relevant.)</li>
+<li><span class="math notranslate">\(A^+\)</span> is a non-empty sequence of iterations of <span class="math notranslate">\(A\)</span>.
+(This is a shorthand for <span class="math notranslate">\(A^n\)</span> where <span class="math notranslate">\(n \geq 1\)</span>.)</li>
+<li><span class="math notranslate">\(A^?\)</span> is an optional occurrence of <span class="math notranslate">\(A\)</span>.
+(This is a shorthand for <span class="math notranslate">\(A^n\)</span> where <span class="math notranslate">\(n \leq 1\)</span>.)</li>
+<li>Productions are written <span class="math notranslate">\(\mathit{sym} ::= A_1 ~|~ \dots ~|~ A_n\)</span>.</li>
+<li>Some productions are augmented with side conditions in parentheses, “<span class="math notranslate">\((\mathrel{\mbox{if}} \mathit{condition})\)</span>”, that provide a shorthand for a combinatorial expansion of the production into many separate cases.</li>
 </ul>
 </div>
 <div class="section" id="auxiliary-notation">
 <span id="notation-compose"></span><span id="notation-concat"></span><span id="notation-record"></span><span id="notation-replace"></span><span id="notation-slice"></span><h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
 <p>When dealing with syntactic constructs the following notation is also used:</p>
 <ul class="simple">
-<li><span class="math">\(\epsilon\)</span> denotes the empty sequence.</li>
-<li><span class="math">\(|s|\)</span> denotes the length of a sequence <span class="math">\(s\)</span>.</li>
-<li><span class="math">\(s[i]\)</span> denotes the <span class="math">\(i\)</span>-th element of a sequence <span class="math">\(s\)</span>, starting from <span class="math">\(0\)</span>.</li>
-<li><span class="math">\(s[i \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} n]\)</span> denotes the sub-sequence <span class="math">\(s[i]~\dots~s[i+n-1]\)</span> of a sequence <span class="math">\(s\)</span>.</li>
-<li><span class="math">\(s \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} [i] = A\)</span> denotes the same sequence as <span class="math">\(s\)</span>,
-except that the <span class="math">\(i\)</span>-the element is replaced with <span class="math">\(A\)</span>.</li>
-<li><span class="math">\(s \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} [i \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} n] = A^n\)</span> denotes the same sequence as <span class="math">\(s\)</span>,
-except that the sub-sequence <span class="math">\(s[i \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} n]\)</span> is replaced with <span class="math">\(A^n\)</span>.</li>
-<li><span class="math">\(\href{../syntax/conventions.html#notation-concat}{\mathrm{concat}}(s^\ast)\)</span> denotes the flat sequence formed by concatenating all sequences <span class="math">\(s_i\)</span> in <span class="math">\(s^\ast\)</span>.</li>
+<li><span class="math notranslate">\(\epsilon\)</span> denotes the empty sequence.</li>
+<li><span class="math notranslate">\(|s|\)</span> denotes the length of a sequence <span class="math notranslate">\(s\)</span>.</li>
+<li><span class="math notranslate">\(s[i]\)</span> denotes the <span class="math notranslate">\(i\)</span>-th element of a sequence <span class="math notranslate">\(s\)</span>, starting from <span class="math notranslate">\(0\)</span>.</li>
+<li><span class="math notranslate">\(s[i \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} n]\)</span> denotes the sub-sequence <span class="math notranslate">\(s[i]~\dots~s[i+n-1]\)</span> of a sequence <span class="math notranslate">\(s\)</span>.</li>
+<li><span class="math notranslate">\(s \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} [i] = A\)</span> denotes the same sequence as <span class="math notranslate">\(s\)</span>,
+except that the <span class="math notranslate">\(i\)</span>-the element is replaced with <span class="math notranslate">\(A\)</span>.</li>
+<li><span class="math notranslate">\(s \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} [i \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} n] = A^n\)</span> denotes the same sequence as <span class="math notranslate">\(s\)</span>,
+except that the sub-sequence <span class="math notranslate">\(s[i \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} n]\)</span> is replaced with <span class="math notranslate">\(A^n\)</span>.</li>
+<li><span class="math notranslate">\(\href{../syntax/conventions.html#notation-concat}{\mathrm{concat}}(s^\ast)\)</span> denotes the flat sequence formed by concatenating all sequences <span class="math notranslate">\(s_i\)</span> in <span class="math notranslate">\(s^\ast\)</span>.</li>
 </ul>
 <p>Moreover, the following conventions are employed:</p>
 <ul class="simple">
-<li>The notation <span class="math">\(x^n\)</span>, where <span class="math">\(x\)</span> is a non-terminal symbol, is treated as a meta variable ranging over respective sequences of <span class="math">\(x\)</span> (similarly for <span class="math">\(x^\ast\)</span>, <span class="math">\(x^+\)</span>, <span class="math">\(x^?\)</span>).</li>
-<li>When given a sequence <span class="math">\(x^n\)</span>,
-then the occurrences of <span class="math">\(x\)</span> in a sequence written <span class="math">\((A_1~x~A_2)^n\)</span> are assumed to be in point-wise correspondence with <span class="math">\(x^n\)</span>
-(similarly for <span class="math">\(x^\ast\)</span>, <span class="math">\(x^+\)</span>, <span class="math">\(x^?\)</span>).
+<li>The notation <span class="math notranslate">\(x^n\)</span>, where <span class="math notranslate">\(x\)</span> is a non-terminal symbol, is treated as a meta variable ranging over respective sequences of <span class="math notranslate">\(x\)</span> (similarly for <span class="math notranslate">\(x^\ast\)</span>, <span class="math notranslate">\(x^+\)</span>, <span class="math notranslate">\(x^?\)</span>).</li>
+<li>When given a sequence <span class="math notranslate">\(x^n\)</span>,
+then the occurrences of <span class="math notranslate">\(x\)</span> in a sequence written <span class="math notranslate">\((A_1~x~A_2)^n\)</span> are assumed to be in point-wise correspondence with <span class="math notranslate">\(x^n\)</span>
+(similarly for <span class="math notranslate">\(x^\ast\)</span>, <span class="math notranslate">\(x^+\)</span>, <span class="math notranslate">\(x^?\)</span>).
 This implicitly expresses a form of mapping syntactic constructions over a sequence.</li>
 </ul>
-<p>Productions of the following form are interpreted as <em>records</em> that map a fixed set of fields <span class="math">\(\mathsf{field}_i\)</span> to “values” <span class="math">\(A_i\)</span>, respectively:</p>
-<div class="math">
+<p>Productions of the following form are interpreted as <em>records</em> that map a fixed set of fields <span class="math notranslate">\(\mathsf{field}_i\)</span> to “values” <span class="math notranslate">\(A_i\)</span>, respectively:</p>
+<div class="math notranslate">
 \[\mathit{r} ~::=~ \{ \mathsf{field}_1~A_1, \mathsf{field}_2~A_2, \dots \}\]</div>
 <p>The following notation is adopted for manipulating such records:</p>
 <ul>
-<li><p class="first"><span class="math">\(r.\mathsf{field}\)</span> denotes the contents of the <span class="math">\(\mathsf{field}\)</span> component of <span class="math">\(r\)</span>.</p>
+<li><p class="first"><span class="math notranslate">\(r.\mathsf{field}\)</span> denotes the contents of the <span class="math notranslate">\(\mathsf{field}\)</span> component of <span class="math notranslate">\(r\)</span>.</p>
 </li>
-<li><p class="first"><span class="math">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathsf{field} = A\)</span> denotes the same record as <span class="math">\(r\)</span>,
-except that the contents of the <span class="math">\(\mathsf{field}\)</span> component is replaced with <span class="math">\(A\)</span>.</p>
+<li><p class="first"><span class="math notranslate">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathsf{field} = A\)</span> denotes the same record as <span class="math notranslate">\(r\)</span>,
+except that the contents of the <span class="math notranslate">\(\mathsf{field}\)</span> component is replaced with <span class="math notranslate">\(A\)</span>.</p>
 </li>
-<li><p class="first"><span class="math">\(r_1 \href{../syntax/conventions.html#notation-compose}{\oplus} r_2\)</span> denotes the composition of two records with the same fields of sequences by appending each sequence point-wise:</p>
-<div class="math">
+<li><p class="first"><span class="math notranslate">\(r_1 \href{../syntax/conventions.html#notation-compose}{\oplus} r_2\)</span> denotes the composition of two records with the same fields of sequences by appending each sequence point-wise:</p>
+<div class="math notranslate">
 \[\{ \mathsf{field}_1\,A_1^\ast, \mathsf{field}_2\,A_2^\ast, \dots \} \href{../syntax/conventions.html#notation-compose}{\oplus} \{ \mathsf{field}_1\,B_1^\ast, \mathsf{field}_2\,B_2^\ast, \dots \} = \{ \mathsf{field}_1\,A_1^\ast~B_1^\ast, \mathsf{field}_2\,A_2^\ast~B_2^\ast, \dots \}\]</div>
 </li>
-<li><p class="first"><span class="math">\(\href{../syntax/conventions.html#notation-compose}{\bigoplus} r^\ast\)</span> denotes the composition of a sequence of records, respectively; if the sequence is empty, then all fields of the resulting record are empty.</p>
+<li><p class="first"><span class="math notranslate">\(\href{../syntax/conventions.html#notation-compose}{\bigoplus} r^\ast\)</span> denotes the composition of a sequence of records, respectively; if the sequence is empty, then all fields of the resulting record are empty.</p>
 </li>
 </ul>
-<p>The update notation for sequences and records generalizes recursively to nested components accessed by “paths” <span class="math">\(\mathit{pth} ::= ([\dots] \;| \;.\mathsf{field})^+\)</span>:</p>
+<p>The update notation for sequences and records generalizes recursively to nested components accessed by “paths” <span class="math notranslate">\(\mathit{pth} ::= ([\dots] \;| \;.\mathsf{field})^+\)</span>:</p>
 <ul class="simple">
-<li><span class="math">\(s \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} [i]\,\mathit{pth} = A\)</span> is short for <span class="math">\(s \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} [i] = (s[i] \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathit{pth} = A)\)</span>.</li>
-<li><span class="math">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathsf{field}\,\mathit{pth} = A\)</span> is short for <span class="math">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathsf{field} = (r.\mathsf{field} \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathit{pth} = A)\)</span>.</li>
+<li><span class="math notranslate">\(s \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} [i]\,\mathit{pth} = A\)</span> is short for <span class="math notranslate">\(s \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} [i] = (s[i] \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathit{pth} = A)\)</span>.</li>
+<li><span class="math notranslate">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathsf{field}\,\mathit{pth} = A\)</span> is short for <span class="math notranslate">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathsf{field} = (r.\mathsf{field} \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathit{pth} = A)\)</span>.</li>
 </ul>
-<p>where <span class="math">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}}~.\mathsf{field} = A\)</span> is shortened to <span class="math">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathsf{field} = A\)</span>.</p>
+<p>where <span class="math notranslate">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}}~.\mathsf{field} = A\)</span> is shortened to <span class="math notranslate">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathsf{field} = A\)</span>.</p>
 </div>
 <div class="section" id="vectors">
 <span id="syntax-vec"></span><span id="index-2"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
-<p><em>Vectors</em> are bounded sequences of the form <span class="math">\(A^n\)</span> (or <span class="math">\(A^\ast\)</span>),
-where the <span class="math">\(A\)</span> can either be values or complex constructions.
-A vector can have at most <span class="math">\(2^{32}-1\)</span> elements.</p>
-<div class="math">
+<p><em>Vectors</em> are bounded sequences of the form <span class="math notranslate">\(A^n\)</span> (or <span class="math notranslate">\(A^\ast\)</span>),
+where the <span class="math notranslate">\(A\)</span> can either be values or complex constructions.
+A vector can have at most <span class="math notranslate">\(2^{32}-1\)</span> elements.</p>
+<div class="math notranslate">
 \[\begin{split}\begin{array}{lllll}
 \def\mathdef1898#1{{}}\mathdef1898{vector} &amp; \href{../syntax/conventions.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
   A^n
