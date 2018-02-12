@@ -205,7 +205,7 @@ end
 if_except block_type except_index
   Instruction*
 else
-  Instructions*
+  Instruction*
 end
 ```
 
@@ -240,11 +240,11 @@ This section describes change in the
 The following rules are added to *instructions*:
 
 ```
-  try resulttype instructions* catch instructions* end |
+  try resulttype instruction* catch instruction* end |
   except except_index |
   throw |
-  if_except resulttype except_index then Instructions* end |
-  if_except resulttype except_index then Instructions* else Instructions* end
+  if_except resulttype except_index then instruction* end |
+  if_except resulttype except_index then instruction* else instruction* end
 ```
 
 Like the `block`, `loop`, and `if` instructions, the `try` and `if_except`
@@ -290,7 +290,7 @@ is fixed, but unknown in WebAssembly (the host defines the size in bytes).
 
 #### value_type
 
-A `varint7` indicating a a `value type` is extended to include `except_ref` as
+A `varint7` indicating a `value_type` is extended to include `except_ref` as
 encoded above.
 
 #### Other Types
@@ -383,7 +383,7 @@ throws, and rethrows as follows:
 | `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
 | `catch` | `0x07` | | begins the catch block of the try block |
 | `throw` | `0x08` | |Throws the exception on top of the stack |
-| `except` | `0x09` | tag : varuint32 | Creates an exception defined by the exception tag and pushes reference on stack |
+| `except` | `0x09` | tag : `varuint32` | Creates an exception defined by the exception tag and pushes reference on stack |
 | `if_except` | `0x0a` | sig : `block_type` , tag : `varuint32` | Begin exception data extraction if exception on stack was created using the corresponding exception tag |
 
 The *sig* fields of `block`, `if`, `try` and `if_except` operators are block
