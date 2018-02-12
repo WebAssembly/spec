@@ -1,4 +1,7 @@
 language: c++
+language: python
+python:
+  - "2.7"
 
 sudo: on
 
@@ -6,6 +9,9 @@ install:
   - ./interpreter/meta/travis/install-ocaml.sh
   - sudo pip install sphinx
   - sudo apt-get install texlive-full
+  - git clone https://github.com/tabatkins/bikeshed.git
+  - pip install --editable $PWD/bikeshed
+  - bikeshed update
 
 script:
   - ./interpreter/meta/travis/build-test.sh
