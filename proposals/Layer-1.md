@@ -7,11 +7,13 @@ layers, and either:
 
 1. Improves readability by combining concepts in layer 1 into higher-level
    constructs, thereby reducing code size.
-
 2. Allow performance improvements in the VM.
-
 3. Introduce additional new functionality not available in layer 1.
-   
+
+This document supersedes the original [Exceptions Proposal].
+
+[Exceptions Proposal]: https://github.com/WebAssembly/exception-handling/blob/master/proposals/Exceptions.md
+
 ## Overview
 
 Exception handling allows code to break control flow when an exception is

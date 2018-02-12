@@ -1,3 +1,11 @@
+THIS DOCUMENT IS OBSOLETE!
+
+Please see The new [Layer 1 MVP Proposal] instead.
+
+[Layer 1 MVP Proposal]: https://github.com/WebAssembly/exception-handling/blob/master/proposals/Layer-1.md
+
+The original proposal is preserved here for reference.
+
 # Exception handling
 
 There are four sections to this proposal
