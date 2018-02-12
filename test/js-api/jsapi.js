@@ -66,7 +66,7 @@ const complexExportingModuleBinary = (() => {
     builder.addMemory(1, 1, /* exported */ false);
     builder.exportMemoryAs('b');
 
-    builder.setFunctionTableLength(1);
+    builder.setFunctionTableBounds(1, 1);
     builder.addExportOfKind('c', kExternalTable, 0);
 
     // Default init for global values is 0. Keep that.
@@ -821,7 +821,7 @@ const complexTableReExportingModuleBinary = (() => {
             kExprEnd
         ]).index;
 
-    builder.setFunctionTableLength(3);
+    builder.setFunctionTableBounds(3, 3);
     builder.appendToTable([fIndex, gIndex, hIndex]);
     builder.addExportOfKind('tab', kExternalTable, 0);
 
