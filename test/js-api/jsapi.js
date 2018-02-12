@@ -817,8 +817,7 @@ const complexTableReExportingModuleBinary = (() => {
         .addFunction('h', kSig_i_v)
         .addBody([
             kExprI32Const,
-            46,
-            kExprEnd
+            46
         ]).index;
 
     builder.setFunctionTableLength(3);
