@@ -25,6 +25,9 @@ included with the initial exception proposal. The goal is to make sure each set
 of features can be discussed in terms of its own merits independent of the other
 features.
 
+Please note that everything in here should be considered fluid and subject to
+change.
+
 # Level 2
 
 ## Specific Catch
@@ -67,3 +70,34 @@ end
 One downside of this form is that it does not directly support running different
 code for different exception types. This can still be accomplished, however, by
 dyanmically inspecting the exception inside the catch block.
+
+# Level 3
+
+## Resumable Exceptions
+
+This proposal allows exception handlers to return a value to the site where the
+exception was thrown. Resumable exceptions enable or are equivalent to a number
+of advanced control flow features such as generators, coroutines, delimited
+continuations and effect handlers.
+
+In high level code, this would enable programs such as:
+
+```
+Exception FileNotFound: string -> string
+
+try {
+  filename = "foo.txt"
+  while(!(file = open(filename))) {
+    filename = throw FileNotFound(filename);
+  }
+} catch (FileNotFound e) {
+  new_file_name = ask_user_for_filename();
+  resume e(new_file_name)
+}
+```
+
+The key changes are that exception types are now allowed to include return
+values, `throw` can return a value (we might want to introduce a different
+opcode for this version, such as `raise` or `throw_resumable`), and there is a
+`resume` instruction that returns values back to where the exception was thrown
+from.
