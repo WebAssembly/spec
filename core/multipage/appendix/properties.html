@@ -618,7 +618,7 @@ a store state <span class="math notranslate">\(S'\)</span> extends state <span c
 <div class="section" id="theorems">
 <span id="soundness-statement"></span><span id="index-27"></span><h2>Theorems<a class="headerlink" href="#theorems" title="Permalink to this headline">¶</a></h2>
 <p>Given the definition of <a class="reference internal" href="#valid-config"><span class="std std-ref">valid configurations</span></a>,
-the standard soundness theorems hold.</p>
+the standard soundness theorems hold. <a class="footnote-reference" href="#cite-cpp2018" id="id11">[2]</a></p>
 <p><strong>Theorem (Preservation).</strong>
 If a <a class="reference internal" href="../exec/runtime.html#syntax-config"><span class="std std-ref">configuration</span></a> <span class="math notranslate">\(S;T\)</span> is <a class="reference internal" href="#valid-config"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate">\([t^\ast]\)</span> (i.e., <span class="math notranslate">\(\href{../appendix/properties.html#valid-config}{\vdash} S;T : [t^\ast]\)</span>),
 and steps to <span class="math notranslate">\(S';T'\)</span> (i.e., <span class="math notranslate">\(S;T \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S';T'\)</span>),
@@ -642,6 +642,13 @@ Consequently, given a <a class="reference internal" href="#valid-store"><span cl
 <tbody valign="top">
 <tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>The formalization and theorems are derived from the following article:
 Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. <a class="reference external" href="https://dl.acm.org/citation.cfm?doid=3062341.3062363">Bringing the Web up to Speed with WebAssembly</a>. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="cite-cpp2018" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id11">[2]</a></td><td>A machine-verified version of the formalization and soundness proof is described in the following article:
+Conrad Watt. <a class="reference external" href="https://dl.acm.org/citation.cfm?id=3167082">Mechanising and Verifying the WebAssembly Specification</a>. Proceedings of the 7th ACM SIGPLAN Conference on Certified Programs and Proofs (CPP 2018). ACM 2018.</td></tr>
 </tbody>
 </table>
 </div>

@@ -9,7 +9,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-WD" rel="stylesheet" type="text/css">
   <meta content="Bikeshed version 405e5d97c9744a2182892308d7a95a41731f9220" name="generator">
   <link href="https://www.w3.org/TR/2018/WD-wasm-core-1/" rel="canonical">
-  <meta content="9b5f6620994c253084137bbc825af911eea47930" name="document-revision">
+  <meta content="4653fc002a510b4f207af07f2c7c61b13dba78d9" name="document-revision">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   
   
@@ -167,11 +167,11 @@ pre .property::before, pre .property::after {
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">WebAssembly Core Specification</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C First Public Working Draft, <time class="dt-updated" datetime="2018-02-12">12 February 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C First Public Working Draft, <time class="dt-updated" datetime="2018-02-13">13 February 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="https://www.w3.org/TR/2018/WD-wasm-core-1-20180212/">https://www.w3.org/TR/2018/WD-wasm-core-1-20180212/</a>
+     <dd><a class="u-url" href="https://www.w3.org/TR/2018/WD-wasm-core-1-20180213/">https://www.w3.org/TR/2018/WD-wasm-core-1-20180213/</a>
      <dt>Latest published version:
      <dd><a href="https://www.w3.org/TR/2018/WD-wasm-core-1/">https://www.w3.org/TR/2018/WD-wasm-core-1/</a>
      <dt>Editor's Draft:
@@ -1087,7 +1087,7 @@ pre .property::before, pre .property::after {
      <div class="body" role="main">
       <div class="section" id="webassembly-specification">
        <h1>WebAssembly Specification</h1>
-       <p>Release 1.0 (Draft, last updated Feb 12, 2018)</p>
+       <p>Release 1.0 (Draft, last updated Feb 13, 2018)</p>
        <div class="toctree-wrapper compound">
          <span id="document-intro/index"></span>
         <div class="section" id="introduction">
@@ -10250,7 +10250,7 @@ a store state <span class="math notranslate">\(S'\)</span> extends state <span c
              <span id="soundness-statement"></span><span id="index-27"></span>
             <h4 class="heading settled" data-level="7.5.6" id="theorems①"><span class="secno">7.5.6. </span><span class="content">Theorems</span><a class="self-link" href="#theorems①"></a></h4>
             <p>Given the definition of <a class="reference internal" href="#valid-config"><span class="std std-ref">valid configurations</span></a>,
-the standard soundness theorems hold.</p>
+the standard soundness theorems hold. <a class="footnote-reference" href="#cite-cpp2018" id="id11⑤">[2]</a></p>
             <p><strong>Theorem (Preservation).</strong> If a <a class="reference internal" href="index.html#syntax-config"><span class="std std-ref">configuration</span></a> <span class="math notranslate">\(S;T\)</span> is <a class="reference internal" href="#valid-config"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="index.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate">\([t^\ast]\)</span> (i.e., <span class="math notranslate">\(\href{../appendix/properties.html#valid-config}{\vdash} S;T : [t^\ast]\)</span>),
 and steps to <span class="math notranslate">\(S';T'\)</span> (i.e., <span class="math notranslate">\(S;T \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S';T'\)</span>),
 then <span class="math notranslate">\(S';T'\)</span> is a valid configuration with the same resulttype (i.e., <span class="math notranslate">\(\href{../appendix/properties.html#valid-config}{\vdash} S';T' : [t^\ast]\)</span>).
@@ -10275,6 +10275,16 @@ Consequently, given a <a class="reference internal" href="#valid-store"><span cl
                <td class="label"><a class="fn-backref" href="#id2">[1]</a>
                <td>The formalization and theorems are derived from the following article:
 Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. <a class="reference external" href="https://dl.acm.org/citation.cfm?doid=3062341.3062363">Bringing the Web up to Speed with WebAssembly</a>. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
+            </table>
+            <table class="docutils footnote" id="cite-cpp2018">
+             <colgroup>
+              <col class="label">
+              <col>
+             <tbody>
+              <tr>
+               <td class="label"><a class="fn-backref" href="#id11">[2]</a>
+               <td>A machine-verified version of the formalization and soundness proof is described in the following article:
+Conrad Watt. <a class="reference external" href="https://dl.acm.org/citation.cfm?id=3167082">Mechanising and Verifying the WebAssembly Specification</a>. Proceedings of the 7th ACM SIGPLAN Conference on Certified Programs and Proofs (CPP 2018). ACM 2018.
             </table>
            </div>
           </div>
