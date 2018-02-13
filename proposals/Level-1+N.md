@@ -101,3 +101,40 @@ values, `throw` can return a value (we might want to introduce a different
 opcode for this version, such as `raise` or `throw_resumable`), and there is a
 `resume` instruction that returns values back to where the exception was thrown
 from.
+
+Below are several examples showing how other control flow patterns can be
+expressed in terms of resumable exceptions.
+
+### Example: Algebraic Effect Handlers
+
+Consider the following example, taken from http://www.eff-lang.org/try/:
+
+```
+handle
+    std#print "A";
+    std#print "B";
+    std#print "C";
+    std#print "D"
+with
+| std#print msg k ->
+    std#print ("I see you tried to print " ^ msg ^ ". Okay, you may.\n");
+    k ()
+```
+
+This could be lowered to Wasm resumable exception pseudo-code like this:
+
+```
+Exception StdPrint: string -> ()
+
+import function RealPrint: string -> ()
+
+try:
+  throw StdPrint("A")
+  throw StdPrint("B")
+  throw StdPrint("C")
+  throw StdPrint("D")
+catch e: StdPrint(msg):
+  RealPrint("I see you tried to print " + msg + ". Okay, you may.\n")
+  resume e()
+end
+```
