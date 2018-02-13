@@ -183,17 +183,17 @@ function consume():
 
 function run():
   // Start the producer
-  c1 = try:
+  try:
     produce()
   catch e: yield():
-    e
+    c1 = e
   end
 
   // Start the consumer
-  c2 = try:
+  try:
     consume()
-  catch e: yeild():
-    e
+  catch e: yield():
+    c2 = e
   end
 
   loop:
