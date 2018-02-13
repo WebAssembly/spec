@@ -138,3 +138,67 @@ catch e: StdPrint(msg):
   resume e()
 end
 ```
+
+### Example: Coroutines
+
+Consider the example below taken from https://en.wikipedia.org/wiki/Coroutine:
+
+```
+var q := new queue
+
+coroutine produce
+    loop
+        while q is not full
+            create some new items
+            add the items to q
+        yield to consume
+
+coroutine consume
+    loop
+        while q is not empty
+            remove some items from q
+            use the items
+        yield to produce
+```
+
+Using similar high level pseudo code, we can convert this as follows to use
+resumable exceptions:
+
+```
+Exception yield: () -> ()
+
+function produce():
+  loop:
+    while q is not full:
+      create some new items
+      add the items to q
+    throw yield()
+
+function consume():
+  loop:
+    while q is not empty:
+      remove some items from q
+      use the items
+    throw yield()
+
+function run():
+  // Start the producer
+  c1 = try:
+    produce()
+  catch e: yield():
+    e
+  end
+
+  // Start the consumer
+  c2 = try:
+    consume()
+  catch e: yeild():
+    e
+  end
+
+  loop:
+    // Run the producer
+    c1 = resume c1();
+    // Run the consumer
+    c2 = resume c2();
+```
