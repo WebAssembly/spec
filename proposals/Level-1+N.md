@@ -202,3 +202,37 @@ function run():
     // Run the consumer
     c2 = resume c2();
 ```
+
+### Example: Generators
+
+Consider the following generator example in JavaScript:
+
+```javascript
+function* simpleIterator() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+for (let i of simpleIterator()) {
+  print(i);
+}
+```
+
+In our WebAssembly pseudo code, this could become:
+
+```
+Exception yield: i32 -> ()
+
+function simpleIterator():
+  throw yield(1)
+  throw yield(2)
+  throw yield(3)
+
+function main():
+  try:
+    simpleIterator()
+  catch e: yield(i):
+    print(i)
+    resume e()
+```
