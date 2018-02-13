@@ -9,6 +9,7 @@ TARGET_BRANCH="gh-pages"
 
 function doCompile {
   # TODO(littledan): Integrate with document/deploy.sh
+  (cd document; make clean)
   (cd document; make)
 }
 
