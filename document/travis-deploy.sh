@@ -35,21 +35,27 @@ chmod 600 deploy_key
 eval `ssh-agent -s`
 ssh-add deploy_key || true
 
-# Clone the existing gh-pages for this repo into out/
-# Create a new empty branch if gh-pages doesn't exist yet (should only happen on first deply)
+# Clone the existing gh-pages for this repo into _build/
+# Create a new empty branch if gh-pages doesn't exist yet (should only happen
+# on first deploy).
+# Ensure no checkout in _build.
+rm -rf document/_build
+# Clone a second checkout of our repo to _build.
 git clone $REPO document/_build
 (
+  # Checkout a parentless branch of gh-pages.
   cd document/_build
   git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
 
-  # Clean out existing contents
-  git reset --hard
+  # Clean out existing contents (to be replaced with output from the build
+  # that happens after this).
+  rm -rf ./*
 )
 
-# Run our compile script
+# Run our compile script (output into _build).
 doCompile
 
-# Now let's go have some fun with the cloned repo
+# Set user info on the gh-pages repo in _build.
 cd document/_build
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
