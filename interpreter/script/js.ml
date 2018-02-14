@@ -22,12 +22,12 @@ let harness =
   "  table: new WebAssembly.Table({initial: 10, maximum: 20, element: 'anyfunc'}),\n" ^
   "  memory: new WebAssembly.Memory({initial: 1, maximum: 2})\n" ^
   "};\n" ^
-  "let spectest_handler = {\n" ^
+  "let handler = {\n" ^
   "  get(target, prop) {\n" ^
   "    return (prop in target) ?  target[prop] : {};\n" ^
   "  }\n" ^
   "};\n" ^
-  "let registry = new Proxy({spectest}, spectest_handler);\n" ^
+  "let registry = new Proxy({spectest}, handler);\n" ^
   "\n" ^
   "function register(name, instance) {\n" ^
   "  registry[name] = instance.exports;\n" ^
