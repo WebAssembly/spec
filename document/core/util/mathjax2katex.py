@@ -137,8 +137,8 @@ def Main():
   # Bad duplicate meta.
   data = ''.join(data.rsplit(
       '<meta content="text/html; charset=utf-8" http-equiv="Content-Type">', 1))
-  # Drop all scripts.
-  data = re.sub('<script[^>]*>[^<]*</script>', '', data)
+  # Drop several scripts.
+  data = re.sub('<script[^>]*text/javascript[^>]*>[^<]*</script>', '', data)
   data = data.replace(
       '<head>\n', '<head>\n<link rel="stylesheet" href="katex/dist/katex.css">')
   # Drop duplicate title.

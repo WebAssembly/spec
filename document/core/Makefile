@@ -126,7 +126,6 @@ bikeshed:
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
 		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
-	cp index.bs $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
 	python util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
