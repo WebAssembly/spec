@@ -188,7 +188,7 @@ If the selected catch block does not throw an exception, it must yield the
 value(s) expected by the corresponding catching try block. This includes popping
 the caught exception.
 
-Note that a caught exception value can be rethrown using the `throw`
+Note that a caught exception value can be rethrown using the `rethrow`
 instruction.
 
 ### Rethrowing an exception
@@ -327,10 +327,6 @@ which corresponds to the data fields of the exception.
 |-------|------|-------------|
 | `count` | `varuint32` | The number of types in the signature |
 | `type` | `value_type*` | The type of each element in the signature |
-
-Note: An `except_type` is not actually a type, just an exception definition that
-corresponds to an exception tag. It is listed under `Other types` for
-simplicity.
 
 ##### external_kind
 
