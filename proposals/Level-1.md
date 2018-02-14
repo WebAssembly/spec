@@ -69,9 +69,8 @@ can't be stored into linear memory. The rationale for this is twofold:
 Hence, while an exception reference is a new first class type, this proposal
 disallows their usage in linear memory.
 
-A WebAssembly exception is created by the `except` instruction. Once an
-exception is created, you can throw it with the `throw` instruction. Thrown
-exceptions are handled as follows:
+A WebAssembly exception is created when you throw it with the `throw`
+instruction. Thrown exceptions are handled as follows:
 
 1. They can be caught by a catch block in an enclosing try block of a function
    body. The caught exception is pushed onto the stack.
@@ -87,35 +86,41 @@ exceptions are handled as follows:
 An `exception` is an internal construct in WebAssembly that is maintained by the
 host. WebAssembly exceptions (as opposed to host exceptions) are defined by a
 new `exception section` of a WebAssembly module. The exception section is a list
-of exception types, from which exceptions can be created.
+of exception definitions, from which exceptions can be created.
 
-Each exception type has a `type signature`. The type signature defines the list
-of values associated with the exception.
+Each exception definition describe the structure of corresponding exception
+values that can be generated from it. Exception definitions may also appear in
+the import section of a module.
 
-Within the module, exception types are identified by an index into the
-[exception index space](#exception-index-space). This index is referred to as
-the `exception tag`. The `tagged exception type` is the corresponding
-exception type refered to by the exception tag.
+Each exception definition has a `type signature`. The type signature defines the
+list of values associated with corresponding thrown exception values.
 
-Exception types can be imported and exported by adding the appropriate entries
-to the import and export sections of the module. All imported/exported exception
-types must be named to reconcile exception tags between modules.
+Within the module, exception definitions are identified by an index into the
+[exception index space](#exception-index-space). This static index refers to the
+corresponding runtime tag that uniquely identifies exception values created
+using the exception definition, and is called the `exception tag`.
 
-Exception tags are used by:
+Each exception definition within a module (i.e. in the exception and import
+section) are associated with unique exception tags.
 
-1. The `except` instruction which creates a WebAssembly instance of the
-   corresponding tagged exception type, and pushes a reference to it onto the
-   stack.
+Exception tags can also be exported by adding the appropriate descriptors in the
+export section of the module. All imported/exported indices must be named to
+reconcile the corresponding exception tag referenced by exception indices
+between modules.
 
-2. The `if_except` instruction that queries an exception to see if it is an
-   instance of the corresponding tagged exception class, and if true it pushes
-   the corresponding values of the exception onto the stack.
+Exception indices are used by:
+
+1. The `throw` instruction which creates a WebAssembly exception value
+   with the corresponding exception tag, and then throws it.
+
+2. The `if_except` instruction that queries an exception value to see if the
+   exception tag corresponding to the module's exception index. If true it
+   pushes the corresponding values of the exception onto the stack.
    
 ### The exception reference data type
 
 Data types are extended to have a new `except_ref` type. The representation of
-an exception type is left to the host VM, but its size must be fixed. The actual
-number of bytes it takes to represent any `except_ref` is left to the host VM.
+an exception value is left to the host VM.
 
 ### Try and catch blocks
 
@@ -143,22 +148,19 @@ block.
 
 In the initial implementation, try blocks may only yield 0 or 1 values.
 
-### Exception creation
+### Throwing an exception
 
-A `except` instruction has a single immediate argument, an exception tag.  The
-corresponding tagged exception type is used to define the data fields of the
-created exception. The values for the data fields must be on top of the operand
-stack, and must correspond to the exception's type signature.  These values are
-popped off the stack and an instance of the exception is then created. A
-reference to the created exception is then pushed onto the stack.
+The `throw` instruction takes an exception index as an immediate argument.  That
+index is used to identify the exception tag to use to create and throw the
+corresponding exception value.
 
-### Throws
+The values on top of the stack must correspond to the the type signature
+associated with the exception index. These values are popped of the stack and
+are used (along with the corresponding exception tag) to create the
+corresponding exception value. That exception value is then thrown.
 
-The `throw` throws the exception on top of the stack. The exception is popped
-off the top of the stack before throwing.
-
-When an exception is thrown, the host VM searches for nearest enclosing try
-block body that execution is in. That try block is called the _catching_ try
+When an exception value is thrown, the host VM searches for nearest enclosing
+try block body that execution is in. That try block is called the _catching_ try
 block.
 
 If the throw appears within the body of a try block, it is the catching try
@@ -174,9 +176,10 @@ A throw inside the body of a catch block is never caught by the corresponding
 try block of the catch block, since instructions in the body of the catch block
 are not in the body of the try block.
 
-Once a catching try block is found for the throw, the operand stack is popped back
-to the size the operand stack had when the try block was entered, and then
-the caught exception is pushed onto the stack.
+Once a catching try block is found for the thrown exception value, the operand
+stack is popped back to the size the operand stack had when the try block was
+entered, and then the values of the caught exception value is pushed onto the
+stack.
 
 If control is transferred to the body of a catch block, and the last instruction
 in the body is executed, control then exits the try block.
@@ -185,16 +188,24 @@ If the selected catch block does not throw an exception, it must yield the
 value(s) expected by the corresponding catching try block. This includes popping
 the caught exception.
 
-Note that a caught exception can be rethrown using the `throw` instruction.
+Note that a caught exception value can be rethrown using the `rethrow`
+instruction.
+
+### Rethrowing an exception
+
+The `rethrow` instruction takes the exception value associated with the
+`except_ref` on top of the stack, and rethrows the exception. A rethrow has the
+same effect as a throw, other than an exception is not created. Rather, the
+referenced exception value on top of the stack is popped and then thrown.
 
 ### Exception data extraction
 
-The `if_except block` defines a conditional query of the exception on top of the
-stack. The exception is not popped when queried. The if_except block has two
-subblocks, the `then` and `else` subblocks, like that of an `if` block. The then
-block is a sequence of instructions following the `if_except` instruction. The
-else block is optional, and if it appears, it begins with the `else`
-instruction.  The scope of the if_except block is from the `if_except`
+The `if_except block` defines a conditional query of the exception value on top
+of the stack. The exception value is not popped when queried. The if_except
+block has two subblocks, the `then` and `else` subblocks, like that of an `if`
+block. The then block is a sequence of instructions following the `if_except`
+instruction. The else block is optional, and if it appears, it begins with the
+`else` instruction.  The scope of the if_except block is from the `if_except`
 instruction to the corresponding `end` instruction.
 
 That is, the forms of an if_except block is:
@@ -211,13 +222,12 @@ else
 end
 ```
 
-The conditional query of an exception succeeds when the exception on the top of
-the stack is an instance of the corresponding tagged exception type (defined by
-`except_index`).
+The conditional query of an exception succeeds when the exception value on the
+top of the stack has the corresponding exception tag (defined by `except_index`).
 
-If the query succeeds, the data values (associated with the type signature of
-the exception class) are extracted and pushed onto the stack, and control
-transfers to the instructions in the then block.
+If the query succeeds, the values (associated with the exception value) are
+extracted and pushed onto the stack, and control transfers to the instructions
+in the then block.
 
 If the query fails, it either enters the else block, or transfer control to the
 end of the if_except block if there is no else block.
@@ -244,7 +254,8 @@ The following rules are added to *instructions*:
 ```
   try resulttype instruction* catch instruction* end |
   except except_index |
-  throw |
+  throw except_index |
+  rethrow |
   if_except resulttype except_index then instruction* end |
   if_except resulttype except_index then instruction* else instruction* end
 ```
@@ -253,9 +264,10 @@ Like the `block`, `loop`, and `if` instructions, the `try` and `if_except`
 instructions are *structured* control flow instructions, and can be
 labeled. This allows branch instructions to exit try and `if_except` blocks.
 
-The `except_index` of the `except` and `if_except` instructions defines the
-exception type to create/extract form. See [exception index
-space](#exception-index-space) for further clarification of exception tags.
+The `except_index` of the `throw` and `if_except` instructions defines the
+exception value (and hence, exception tag) to create/extract form. See
+[exception index space](#exception-index-space) for further clarification of
+exception tags.
 
 ## Changes to Modules document.
 
@@ -270,6 +282,15 @@ defined in the import and exception sections. Thus, the index space starts at
 zero with imported exceptions followed by internally-defined exceptions in
 the [exception section](#exception-section).
 
+The exception index space defines the (module) static version of runtine
+exception tags. For exception indicies that are not imported/exported, the
+corresponding exception tag is guaranteed to be unique over all loaded
+modules.
+
+For exception indices imported/exported, unique exception tags are created for
+each unique name imported/exported, and are aliased to the corresponding
+exception index defined in each module.
+
 ## Changes to the binary model
 
 This section describes changes in
@@ -281,7 +302,7 @@ the
 
 #### except_ref
 
-An exception reference pointing to an instance of an exception. The size
+An exception reference points to an exception value. The size
 is fixed, but unknown in WebAssembly (the host defines the size in bytes).
 
 ### Language Types
@@ -299,14 +320,13 @@ encoded above.
 
 ##### except_type
 
-An exception is described by its exception type signature, which corresponds to
-the data fields of the exception.
+Each exception definition (defining an exception tag) has a type signature,
+which corresponds to the data fields of the exception.
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `count` | `varuint32` | The number of types in the signature |
 | `type` | `value_type*` | The type of each element in the signature |
-
 
 ##### external_kind
 
@@ -317,30 +337,29 @@ or defined:
 * `1` indicating a `Table` [import](Modules.md#imports) or [definition](Modules.md#table-section)
 * `2` indicating a `Memory` [import](Modules.md#imports) or [definition](Modules.md#linear-memory-section)
 * `3` indicating a `Global` [import](Modules.md#imports) or [definition](Modules.md#global-section)
-* `4` indicating an `Exception` [import](#import-section) or [definition](#exception-sectio)
+* `4` indicating an `Exception` [import](#import-section) or [definition](#exception-section)
 
 ### Module structure
 
 #### High-level structure
 
 A new `exception` section is introduced and is named `exception`. If included,
-it must appear between the `Export` and `Start` sections of the module.
-
+it must appear after immediately after the global section.
 
 ##### Exception section
 
 The `exception` section is the named section 'exception'. The exception section
-declares exception types using exception type signatures.
+declares a list of exception definitions, defining corresponding exception tags.
 
 | Field | Type | Description |
 |-------|------|-------------|
 | count | `varuint32` | count of the number of exceptions to follow |
-| sig | `except_type*` | The type signature of the data fields for each exception |
+| sig | `except_type*` | The type signature of the data fields for the tagged exception value |
 
 
 ##### Import section
 
-The import section is extended to include exception types by extending an
+The import section is extended to include exception definitions by extending an
 `import_entry` as follows:
 
 If the `kind` is `Exception`:
@@ -351,11 +370,11 @@ If the `kind` is `Exception`:
 
 ##### Export section
 
-The export section is extended to include exception types by extending an
-`export_entry` as follows:
+The export section is extended to reference exception definitions by by
+extending an `export_entry` as follows:
 
 If the `kind` is `Exception`, then the `index` is into the corresponding
-exception in the [exception index space](#exception-index-space).
+exception index in the [exception index space](#exception-index-space).
 
 
 ##### Name section
@@ -384,9 +403,9 @@ throws, and rethrows as follows:
 | ---- | ---- | ---- | ---- |
 | `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
 | `catch` | `0x07` | | begins the catch block of the try block |
-| `throw` | `0x08` | |Throws the exception on top of the stack |
-| `except` | `0x09` | tag : `varuint32` | Creates an exception defined by the exception tag and pushes reference on stack |
-| `if_except` | `0x0a` | sig : `block_type` , tag : `varuint32` | Begin exception data extraction if exception on stack was created using the corresponding exception tag |
+| `throw` | `0x08` | index : `varint32` | Creates an exception defined by the exception `index`and then throws it |
+| `rethrow` | `0x09` | | Pops the `except_ref` on top of the stack and throws it |
+| `if_except` | `0x0a` | sig : `block_type` , index : `varuint32` | Begin exception data extraction if exception on stack was created using the corresponding exception `index` |
 
 The *sig* fields of `block`, `if`, `try` and `if_except` operators are block
 signatures which describe their use of the operand stack.
