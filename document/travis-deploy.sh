@@ -9,7 +9,6 @@ TARGET_BRANCH="gh-pages"
 
 function doCompile {
   # TODO(littledan): Integrate with document/deploy.sh
-  (cd document; make clean)
   (cd document; make)
 }
 
@@ -42,6 +41,8 @@ set -x
 # Clone the existing gh-pages for this repo into _build/
 # Create a new empty branch if gh-pages doesn't exist yet (should only happen
 # on first deploy).
+# Clean document/*/_build.
+(cd document; make clean)
 # Ensure no checkout in _build.
 rm -rf document/_build
 # Clone a second checkout of our repo to _build.
