@@ -354,7 +354,7 @@ The |MIMPORTS| component of a module defines a set of *imports* that are require
      \IDGLOBAL~\globaltype \\
    \end{array}
 
-Each import is identified by a two-level :ref:`name <syntax-name>` space, consisting of a |IMODULE| name and a unique |INAME| for an entity within that module.
+Each import is identified by a two-level :ref:`name <syntax-name>` space, consisting of a |IMODULE| name and a |INAME| for an entity within that module.
 Importable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
 Each import is specified by a descriptor with a respective type that a definition provided during instantiation is required to match.
 
@@ -363,3 +363,9 @@ In each index space, the indices of imports go before the first index of any def
 
 .. note::
    In the current version of WebAssembly, only *immutable* globals may be imported.
+
+   Unlike export names, import names are not necessarily unique.
+   It is possible to import the same |IMODULE|/|INAME| pair multiple times.
+   Even if such imports have different types a module can still be instantiated by :ref:`embedders <embedder>` for which the type difference is irrelevant or that take the expected types into account when resolving imports.
+   However, embedders are not required to support such "overloading",
+   and a WebAssembly module itself cannot implement an overloaded name.
