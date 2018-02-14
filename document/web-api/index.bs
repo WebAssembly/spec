@@ -1,15 +1,16 @@
 <pre class='metadata'>
 Title: WebAssembly Web API
 Shortname: wasm-web-api
-Group: WebAssembly Working Group
-Status: w3c/FPWD
+Group: wasm
+Status: FPWD
 Level: 1
-TR: https://www.w3.org/TR/2018/WD-wasm-web-api-1/
+TR: https://www.w3.org/TR/wasm-web-api-1/
 ED: https://webassembly.github.io/spec/web-api/
 Editor: Daniel Ehrenberg (Igalia)
 Repository: WebAssembly/spec
-Abstract: This document describes the integration of WebAssembly with the broader web platform. To be used in coordination with the <a href="https://www.w3.org/TR/2018/WD-wasm-core-1/">WebAssembly Core Specification</a> and the <a href="https://www.w3.org/TR/2018/WD-wasm-js-api-1/">WebAssembly JavaScript Interface</a>.
+Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes
+Prepare For TR: true
 </pre>
 
 <pre class='biblio'>
@@ -41,9 +42,10 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMA-262
         text: TypeError; url: sec-native-error-types-used-in-this-standard-typeerror
     type: interface
         text: ArrayBuffer; url: sec-arraybuffer-objects
-urlPrefix: https://webassembly.github.io/spec/; spec: WebAssembly; type: dfn
+urlPrefix: https://webassembly.github.io/spec/core/multipage/; spec: WebAssembly; type: dfn
     text: function index; url: syntax/modules.html#syntax-funcidx
-urlPrefix: https://webassembly.github.io/spec/document/js-api/; spec: WASMJS
+    text: "name" section; url: appendix/custom.html?highlight=name%20section#binary-namesec
+urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
     type: namespace
         text: WebAssembly; url: #namespacedef-webassembly
     type: interface
@@ -64,42 +66,6 @@ url:https://fetch.spec.whatwg.org/#concept-body-consume-body;text:consume body;t
 <pre class='link-defaults'>
 spec:ecma-262; type:exception; for:ECMAScript; text:TypeError
 </pre>
-
-<div boilerplate='status'>
-<p>
-  This section describes the status of this document at the time of
-  its publication. Other documents may supersede this document. A list of
-  current W3C publications and the latest revision of this technical report
-  can be found in the <a href="https://www.w3.org/TR/">W3C technical reports
-  index at https://www.w3.org/TR/</a>.
-</p>
-
-<p>This document is a <b>First Public Working Draft</b>.</p>
-<p>
-  Publication as a First Public Working Draft does not imply endorsement
-  by the W3C Membership. This is a draft document and may be updated,
-  replaced or obsoleted by other documents at any time. It is inappropriate
-  to cite this document as other than work in progress.
-</p>
-<p>
-  <a href="https://github.com/WebAssembly/spec/issues">GitHub Issues</a>
-  are preferred for discussion of this specification.
-  All issues and comments are
-  <a href="https://github.com/WebAssembly/spec/issues?utf8=%E2%9C%93&q=is%3Aissue++">archived</a>.
-</p>
-<p>This document was produced by the <a href="https://www.w3.org/wasm/">WebAssembly Working Group</a>.</p>
-<p>This document was produced by a group operating under the
-  <a href="https://www.w3.org/Consortium/Patent-Policy/">W3C Patent Policy</a>.
-  W3C maintains a <a href="https://www.w3.org/2004/01/pp-impl/101196/status" rel="disclosure">public list of any patent disclosures</a> made in
-  connection with the deliverables of the group; that page also includes
-  instructions for disclosing a patent. An individual who has actual
-  knowledge of a patent which the individual believes contains
-  <a href="https://www.w3.org/Consortium/Patent-Policy/#def-essential">Essential Claim(s)</a> must disclose the information in accordance with <a href="https://www.w3.org/Consortium/Patent-Policy/#sec-Disclosure">section
-  6 of the W3C Patent Policy</a>.
-</p>
-<p>This document is governed by the <a href="https://www.w3.org/2018/Process-20180201/" id="w3c_process_revision">1 February 2018 W3C Process Document</a>. </p>
-<p></p>
-</div>
 
 This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and the WebAssembly JavaScript embedding [[WASMJS]].
 
@@ -207,7 +173,7 @@ While the "name" property of an [=Exported Function=] instance
 is specified by the [[WASMJS|JS API]], synthesized function names are also
 displayed in other contexts like call stacks in debuggers and string representations
 of stack traces.
-If a WebAssembly module contains a ["name" section](BinaryEncoding.md#name-section),
+If a WebAssembly module contains a [="name" section=],
 these names should be used to synthesize a function name as follows:
 * If a function name subsection is present, the displayed name should
       be `${module_name}.${function_name}` or `${function_name}`, depending
