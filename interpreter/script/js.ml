@@ -10,20 +10,24 @@ let harness =
   "'use strict';\n" ^
   "\n" ^
   "let spectest = {\n" ^
-  "  print: console.log.bind(console)," ^
-  "  print_i32: console.log.bind(console)," ^
-  "  print_i32_f32: console.log.bind(console)," ^
-  "  print_f64_f64: console.log.bind(console)," ^
-  "  print_f32: console.log.bind(console)," ^
-  "  print_f64: console.log.bind(console)," ^
-  "  global_i32: 666," ^
-  "  global_f32: 666," ^
-  "  global_f64: 666," ^
-  "  table: new WebAssembly.Table({initial: 10, maximum: 20, element: 'anyfunc'})," ^
-  "  memory: new WebAssembly.Memory({initial: 1, maximum: 2})" ^
+  "  print: console.log.bind(console),\n" ^
+  "  print_i32: console.log.bind(console),\n" ^
+  "  print_i32_f32: console.log.bind(console),\n" ^
+  "  print_f64_f64: console.log.bind(console),\n" ^
+  "  print_f32: console.log.bind(console),\n" ^
+  "  print_f64: console.log.bind(console),\n" ^
+  "  global_i32: 666,\n" ^
+  "  global_f32: 666,\n" ^
+  "  global_f64: 666,\n" ^
+  "  table: new WebAssembly.Table({initial: 10, maximum: 20, element: 'anyfunc'}),\n" ^
+  "  memory: new WebAssembly.Memory({initial: 1, maximum: 2})\n" ^
   "};\n" ^
-  "\n" ^
-  "let registry = {spectest};\n" ^
+  "let handler = {\n" ^
+  "  get(target, prop) {\n" ^
+  "    return (prop in target) ?  target[prop] : {};\n" ^
+  "  }\n" ^
+  "};\n" ^
+  "let registry = new Proxy({spectest}, handler);\n" ^
   "\n" ^
   "function register(name, instance) {\n" ^
   "  registry[name] = instance.exports;\n" ^
