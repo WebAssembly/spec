@@ -27,28 +27,28 @@
   (type $func_f32 (func (param f32)))
   (type $func_f64 (func (param f64)))
 
-  (import "spectest" "print" (func (param i32)))
+  (import "spectest" "print_i32" (func (param i32)))
   ;; JavaScript can't handle i64 yet.
-  ;; (func (import "spectest" "print") (param i64))
-  (import "spectest" "print" (func $print_i32 (param i32)))
+  ;; (func (import "spectest" "print_i64") (param i64))
+  (import "spectest" "print_i32" (func $print_i32 (param i32)))
   ;; JavaScript can't handle i64 yet.
-  ;; (import "spectest" "print" (func $print_i64 (param i64)))
-  (import "spectest" "print" (func $print_f32 (param f32)))
-  (import "spectest" "print" (func $print_f64 (param f64)))
-  (import "spectest" "print" (func $print_i32_f32 (param i32 f32)))
-  (import "spectest" "print" (func $print_f64_f64 (param f64 f64)))
-  (func $print_i32-2 (import "spectest" "print") (param i32))
-  (func $print_f64-2 (import "spectest" "print") (param f64))
+  ;; (import "spectest" "print_i64" (func $print_i64 (param i64)))
+  (import "spectest" "print_f32" (func $print_f32 (param f32)))
+  (import "spectest" "print_f64" (func $print_f64 (param f64)))
+  (import "spectest" "print_i32_f32" (func $print_i32_f32 (param i32 f32)))
+  (import "spectest" "print_f64_f64" (func $print_f64_f64 (param f64 f64)))
+  (func $print_i32-2 (import "spectest" "print_i32") (param i32))
+  (func $print_f64-2 (import "spectest" "print_f64") (param f64))
   (import "test" "func-i64->i64" (func $i64->i64 (param i64) (result i64)))
 
-  (func (export "p1") (import "spectest" "print") (param i32))
-  (func $p (export "p2") (import "spectest" "print") (param i32))
-  (func (export "p3") (export "p4") (import "spectest" "print") (param i32))
-  (func (export "p5") (import "spectest" "print") (type 0))
-  (func (export "p6") (import "spectest" "print") (type 0) (param i32) (result))
+  (func (export "p1") (import "spectest" "print_i32") (param i32))
+  (func $p (export "p2") (import "spectest" "print_i32") (param i32))
+  (func (export "p3") (export "p4") (import "spectest" "print_i32") (param i32))
+  (func (export "p5") (import "spectest" "print_i32") (type 0))
+  (func (export "p6") (import "spectest" "print_i32") (type 0) (param i32) (result))
 
-  (import "spectest" "print" (func (type $forward)))
-  (func (import "spectest" "print") (type $forward))
+  (import "spectest" "print_i32" (func (type $forward)))
+  (func (import "spectest" "print_i32") (type $forward))
   (type $forward (func (param i32)))
 
   (table anyfunc (elem $print_i32 $print_f64))
@@ -182,7 +182,7 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "global" (func)))
+  (module (import "spectest" "global_i32" (func)))
   "incompatible import type"
 )
 (assert_unlinkable
@@ -198,16 +198,16 @@
 ;; Globals
 
 (module
-  (import "spectest" "global" (global i32))
-  (global (import "spectest" "global") i32)
+  (import "spectest" "global_i32" (global i32))
+  (global (import "spectest" "global_i32") i32)
 
-  (import "spectest" "global" (global $x i32))
-  (global $y (import "spectest" "global") i32)
+  (import "spectest" "global_i32" (global $x i32))
+  (global $y (import "spectest" "global_i32") i32)
 
   ;; JavaScript can't handle i64 yet.
-  ;; (import "spectest" "global" (global i64))
-  (import "spectest" "global" (global f32))
-  (import "spectest" "global" (global f64))
+  ;; (import "spectest" "global_i64" (global i64))
+  (import "spectest" "global_f32" (global f32))
+  (import "spectest" "global_f64" (global f64))
 
   (func (export "get-0") (result i32) (get_global 0))
   (func (export "get-1") (result i32) (get_global 1))
@@ -245,7 +245,7 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "print" (global i32)))
+  (module (import "spectest" "print_i32" (global i32)))
   "incompatible import type"
 )
 (assert_unlinkable
@@ -362,7 +362,7 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "print" (table 10 anyfunc)))
+  (module (import "spectest" "print_i32" (table 10 anyfunc)))
   "incompatible import type"
 )
 
@@ -455,11 +455,11 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "print" (memory 1)))
+  (module (import "spectest" "print_i32" (memory 1)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "global" (memory 1)))
+  (module (import "spectest" "global_i32" (memory 1)))
   "incompatible import type"
 )
 (assert_unlinkable
@@ -555,4 +555,29 @@
 (assert_malformed
   (module quote "(memory 0) (import \"\" \"\" (memory 1 2))")
   "import after memory"
+)
+
+;; This module is required to validate, regardless of whether it can be
+;; linked. Overloading is not possible in wasm itself, but it is possible
+;; in modules from which wasm can import.
+(assert_unlinkable
+  (module
+    (import "not wasm" "overloaded" (func))
+    (import "not wasm" "overloaded" (func (param i32)))
+    (import "not wasm" "overloaded" (func (param i32 i32)))
+    (import "not wasm" "overloaded" (func (param i64)))
+    (import "not wasm" "overloaded" (func (param f32)))
+    (import "not wasm" "overloaded" (func (param f64)))
+    (import "not wasm" "overloaded" (func (result i32)))
+    (import "not wasm" "overloaded" (func (result i64)))
+    (import "not wasm" "overloaded" (func (result f32)))
+    (import "not wasm" "overloaded" (func (result f64)))
+    (import "not wasm" "overloaded" (global i32))
+    (import "not wasm" "overloaded" (global i64))
+    (import "not wasm" "overloaded" (global f32))
+    (import "not wasm" "overloaded" (global f64))
+    (import "not wasm" "overloaded" (table 0 anyfunc))
+    (import "not wasm" "overloaded" (memory 0))
+  )
+  "unknown import"
 )

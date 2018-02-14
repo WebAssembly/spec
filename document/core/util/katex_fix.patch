@@ -1,0 +1,29 @@
+diff --git a/dist/katex.css b/dist/katex.css
+index f0c5040..0edb55a 100644
+--- a/dist/katex.css
++++ b/dist/katex.css
+@@ -111,12 +111,14 @@
+   font-style: normal;
+ }
+ .katex-display {
++  /*
+   display: block;
+   margin: 1em 0;
+   text-align: center;
++  */
+ }
+ .katex-display > .katex {
+-  display: inline-block;
++/*  display: inline-block; */
+   text-align: initial;
+ }
+ .katex {
+@@ -130,7 +132,7 @@
+   -ms-high-contrast-adjust: none !important;
+ }
+ .katex .katex-html {
+-  display: inline-block;
++/*  display: inline-block; */
+ }
+ .katex .katex-mathml {
+   position: absolute;

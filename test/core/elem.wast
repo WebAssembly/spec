@@ -51,14 +51,14 @@
 )
 
 (module
-  (global (import "spectest" "global") i32)
+  (global (import "spectest" "global_i32") i32)
   (table 1000 anyfunc)
   (func $f)
   (elem (get_global 0) $f)
 )
 
 (module
-  (global $g (import "spectest" "global") i32)
+  (global $g (import "spectest" "global_i32") i32)
   (table 1000 anyfunc)
   (func $f)
   (elem (get_global $g) $f)
