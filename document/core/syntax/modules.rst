@@ -367,6 +367,6 @@ In each index space, the indices of imports go before the first index of any def
    Unlike export names, import names are not necessarily unique.
    It is possible to import the same |IMODULE|/|INAME| pair multiple times;
    such imports may even have different type descriptions, including different kinds of entities.
-   A module with such imports can still be instantiated as long as the :ref:`embedder <embedder>` is either agnostic to a specific typing difference or it takes the expected types into account when resolving imports.
+   A module with such imports can still be instantiated depending on the specifics of how an :ref:`embedder <embedder>` allows resolving and supplying imports.
    However, embedders are not required to support such overloading,
    and a WebAssembly module itself cannot implement an overloaded name.
