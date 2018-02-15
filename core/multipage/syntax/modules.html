@@ -281,7 +281,7 @@ Consequently, the only valid <span class="math notranslate">\(\href{../syntax/mo
   \href{../syntax/modules.html#syntax-exportdesc}{\mathsf{mem}}~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} \\&amp;&amp;|&amp;
   \href{../syntax/modules.html#syntax-exportdesc}{\mathsf{global}}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} \\
 \end{array}\end{split}\]</div>
-<p>Each export is identified by a unique <a class="reference internal" href="values.html#syntax-name"><span class="std std-ref">name</span></a>.
+<p>Each export is labeled by a unique <a class="reference internal" href="values.html#syntax-name"><span class="std std-ref">name</span></a>.
 Exportable definitions are <a class="reference internal" href="#syntax-func"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="#syntax-table"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="#syntax-global"><span class="std std-ref">globals</span></a>,
 which are referenced through a respective descriptor.</p>
 <div class="admonition note">
@@ -312,14 +312,20 @@ which are referenced through a respective descriptor.</p>
   \href{../syntax/modules.html#syntax-importdesc}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} \\&amp;&amp;|&amp;
   \href{../syntax/modules.html#syntax-importdesc}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} \\
 \end{array}\end{split}\]</div>
-<p>Each import is identified by a two-level <a class="reference internal" href="values.html#syntax-name"><span class="std std-ref">name</span></a> space, consisting of a <span class="math notranslate">\(\href{../syntax/modules.html#syntax-import}{\mathsf{module}}\)</span> name and a unique <span class="math notranslate">\(\href{../syntax/modules.html#syntax-import}{\mathsf{name}}\)</span> for an entity within that module.
+<p>Each import is labeled by a two-level <a class="reference internal" href="values.html#syntax-name"><span class="std std-ref">name</span></a> space, consisting of a <span class="math notranslate">\(\href{../syntax/modules.html#syntax-import}{\mathsf{module}}\)</span> name and a <span class="math notranslate">\(\href{../syntax/modules.html#syntax-import}{\mathsf{name}}\)</span> for an entity within that module.
 Importable definitions are <a class="reference internal" href="#syntax-func"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="#syntax-table"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="#syntax-global"><span class="std std-ref">globals</span></a>.
 Each import is specified by a descriptor with a respective type that a definition provided during instantiation is required to match.</p>
 <p>Every import defines an index in the respective <a class="reference internal" href="#syntax-index"><span class="std std-ref">index space</span></a>.
 In each index space, the indices of imports go before the first index of any definition contained in the module itself.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly, only <em>immutable</em> globals may be imported.</p>
+<p>In the current version of WebAssembly, only <em>immutable</em> globals may be imported.</p>
+<p class="last">Unlike export names, import names are not necessarily unique.
+It is possible to import the same <span class="math notranslate">\(\href{../syntax/modules.html#syntax-import}{\mathsf{module}}\)</span>/<span class="math notranslate">\(\href{../syntax/modules.html#syntax-import}{\mathsf{name}}\)</span> pair multiple times;
+such imports may even have different type descriptions, including different kinds of entities.
+A module with such imports can still be instantiated depending on the specifics of how an <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a> allows resolving and supplying imports.
+However, embedders are not required to support such overloading,
+and a WebAssembly module itself cannot implement an overloaded name.</p>
 </div>
 </div>
 </div>
