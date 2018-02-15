@@ -307,7 +307,7 @@ The |MEXPORTS| component of a module defines a set of *exports* that become acce
      \EDGLOBAL~\globalidx \\
    \end{array}
 
-Each export is identified by a unique :ref:`name <syntax-name>`.
+Each export is labeled by a unique :ref:`name <syntax-name>`.
 Exportable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`,
 which are referenced through a respective descriptor.
 
@@ -354,7 +354,7 @@ The |MIMPORTS| component of a module defines a set of *imports* that are require
      \IDGLOBAL~\globaltype \\
    \end{array}
 
-Each import is identified by a two-level :ref:`name <syntax-name>` space, consisting of a |IMODULE| name and a unique |INAME| for an entity within that module.
+Each import is labeled by a two-level :ref:`name <syntax-name>` space, consisting of a |IMODULE| name and a |INAME| for an entity within that module.
 Importable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
 Each import is specified by a descriptor with a respective type that a definition provided during instantiation is required to match.
 
@@ -363,3 +363,10 @@ In each index space, the indices of imports go before the first index of any def
 
 .. note::
    In the current version of WebAssembly, only *immutable* globals may be imported.
+
+   Unlike export names, import names are not necessarily unique.
+   It is possible to import the same |IMODULE|/|INAME| pair multiple times;
+   such imports may even have different type descriptions, including different kinds of entities.
+   A module with such imports can still be instantiated depending on the specifics of how an :ref:`embedder <embedder>` allows resolving and supplying imports.
+   However, embedders are not required to support such overloading,
+   and a WebAssembly module itself cannot implement an overloaded name.
