@@ -4,11 +4,10 @@
   <title>WebAssembly Web API</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="WD" name="w3c-status">
-  <meta content="This document describes the integration of WebAssembly with the broader web platform. To be used in coordination with the <a href=&quot;https://www.w3.org/TR/2018/WD-wasm-core-1/&quot;>WebAssembly Core Specification</a> and the <a href=&quot;https://www.w3.org/TR/2018/WD-wasm-js-api-1/&quot;>WebAssembly JavaScript Interface</a>." name="abstract">
-  <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-WD" rel="stylesheet" type="text/css">
-  <meta content="Bikeshed version 405e5d97c9744a2182892308d7a95a41731f9220" name="generator">
-  <link href="https://www.w3.org/TR/2018/WD-wasm-web-api-1/" rel="canonical">
-  <meta content="1a0384476e36251fde96c7375b23d8b6f1315079" name="document-revision">
+  <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
+  <meta content="Bikeshed version ae5d415446a9edf0c07d32303ac1d21767d86d57" name="generator">
+  <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
+  <meta content="ed0eec5e4d0c2809714b75fd38c9afcfc9d39e8a" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -251,54 +250,58 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
 .highlight .vi { color: #0077aa } /* Name.Variable.Instance */
 .highlight .il { color: #000000 } /* Literal.Number.Integer.Long */
 </style>
+  <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-WD" rel="stylesheet" type="text/css">
  <body class="h-entry">
   <div class="head">
-   <p data-fill-with="logo"></p>
+   <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C First Public Working Draft, <time class="dt-updated" datetime="2018-02-14">14 February 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C First Public Working Draft, <time class="dt-updated" datetime="2018-02-15">15 February 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="https://www.w3.org/TR/2018/WD-wasm-web-api-1-20180214/">https://www.w3.org/TR/2018/WD-wasm-web-api-1-20180214/</a>
+     <dd><a class="u-url" href="https://www.w3.org/TR/2018/WD-wasm-web-api-1-20180215/">https://www.w3.org/TR/2018/WD-wasm-web-api-1-20180215/</a>
      <dt>Latest published version:
-     <dd><a href="https://www.w3.org/TR/2018/WD-wasm-web-api-1/">https://www.w3.org/TR/2018/WD-wasm-web-api-1/</a>
+     <dd><a href="https://www.w3.org/TR/wasm-web-api-1/">https://www.w3.org/TR/wasm-web-api-1/</a>
      <dt>Editor's Draft:
      <dd><a href="https://webassembly.github.io/spec/web-api/">https://webassembly.github.io/spec/web-api/</a>
-     <dt>Issue Tracking:
-     <dd><a href="https://github.com/WebAssembly/spec/issues/">GitHub</a>
      <dt class="editor">Editor:
      <dd class="editor p-author h-card vcard"><span class="p-name fn">Daniel Ehrenberg (Igalia)</span>
+     <dt>Issue Tracking:
+     <dd><a href="https://github.com/WebAssembly/spec/labels/wasm-web-api-1">GitHub Issues</a>
     </dl>
    </div>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2018 <a href="http://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="http://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document">permissive document license</a> rules apply. </p>
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2018 <a href="https://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="http://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document">permissive document license</a> rules apply. </p>
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
    <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
-   <p>This document describes the integration of WebAssembly with the broader web platform. To be used in coordination with the <a href="https://www.w3.org/TR/2018/WD-wasm-core-1/">WebAssembly Core Specification</a> and the <a href="https://www.w3.org/TR/2018/WD-wasm-js-api-1/">WebAssembly JavaScript Interface</a>.</p>
+   <p>This document describes the integration of WebAssembly with the broader web platform.</p>
+    Part of a collection of related documents:
+the <a href="https://www.w3.org/TR/wasm-core/">Core WebAssembly Specification</a>,
+the <a href="https://www.w3.org/TR/wasm-js-api/">WebAssembly JS Interface</a>,
+and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>. 
   </div>
   <h2 class="no-num no-toc no-ref heading settled" id="status"><span class="content">Status of this document</span></h2>
   <div data-fill-with="status">
-   <p> This section describes the status of this document at the time of
-  its publication. Other documents may supersede this document. A list of
-  current W3C publications and the latest revision of this technical report
-  can be found in the <a href="https://www.w3.org/TR/">W3C technical reports
-  index at https://www.w3.org/TR/</a>. </p>
+   <p><em>This section describes the status of this document at the time of
+   its publication. Other documents may supersede this document. A list of
+   current W3C publications and the latest revision of this technical report
+   can be found in the <a href="https://www.w3.org/TR/">W3C technical reports
+   index at https://www.w3.org/TR/.</a></em> </p>
    <p>This document is a <b>First Public Working Draft</b>.</p>
    <p> Publication as a First Public Working Draft does not imply endorsement
-  by the W3C Membership. This is a draft document and may be updated,
-  replaced or obsoleted by other documents at any time. It is inappropriate
-  to cite this document as other than work in progress. </p>
+    by the W3C Membership. This is a draft document and may be updated,
+    replaced or obsoleted by other documents at any time. It is inappropriate
+    to cite this document as other than work in progress. </p>
    <p> <a href="https://github.com/WebAssembly/spec/issues">GitHub Issues</a> are preferred for discussion of this specification.
-  All issues and comments are <a href="https://github.com/WebAssembly/spec/issues?utf8=%E2%9C%93&amp;q=is%3Aissue++">archived</a>. </p>
-   <p>This document was produced by the <a href="https://www.w3.org/wasm/">WebAssembly Working Group</a>.</p>
-   <p>This document was produced by a group operating under the <a href="https://www.w3.org/Consortium/Patent-Policy/">W3C Patent Policy</a>.
-  W3C maintains a <a href="https://www.w3.org/2004/01/pp-impl/101196/status" rel="disclosure">public list of any patent disclosures</a> made in
-  connection with the deliverables of the group; that page also includes
-  instructions for disclosing a patent. An individual who has actual
-  knowledge of a patent which the individual believes contains <a href="https://www.w3.org/Consortium/Patent-Policy/#def-essential">Essential Claim(s)</a> must disclose the information in accordance with <a href="https://www.w3.org/Consortium/Patent-Policy/#sec-Disclosure">section
-  6 of the W3C Patent Policy</a>. </p>
+    All issues and comments are <a href="https://github.com/WebAssembly/spec/issues?utf8=%E2%9C%93&amp;q=is%3Aissue++">archived</a>. </p>
+   <p> This document was produced by the <a href="https://www.w3.org/wasm/">WebAssembly Working Group</a>. </p>
+   <p> This document was produced by a group operating under the <a href="https://www.w3.org/Consortium/Patent-Policy/"> W3C Patent Policy</a>.
+    W3C maintains a <a href="https://www.w3.org/2004/01/pp-impl/101196/status" rel="disclosure">public list of any patent disclosures</a> made in
+    connection with the deliverables of the group; that page also includes
+    instructions for disclosing a patent. An individual who has actual
+    knowledge of a patent which the individual believes contains <a href="https://www.w3.org/Consortium/Patent-Policy/#def-essential"> Essential Claim(s)</a> must disclose the information in accordance with <a href="https://www.w3.org/Consortium/Patent-Policy/#sec-Disclosure"> section 6 of the W3C Patent Policy</a>. </p>
    <p>This document is governed by the <a href="https://www.w3.org/2018/Process-20180201/" id="w3c_process_revision">1 February 2018 W3C Process Document</a>. </p>
    <p></p>
   </div>
@@ -330,9 +333,9 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <main>
    <p>This document builds off of the WebAssembly specification <a data-link-type="biblio" href="#biblio-webassembly">[WEBASSEMBLY]</a> and the WebAssembly JavaScript embedding <a data-link-type="biblio" href="#biblio-wasmjs">[WASMJS]</a>.</p>
    <h2 class="heading settled" data-level="1" id="streaming-modules"><span class="secno">1. </span><span class="content">Streaming Module Compilation and Instantiation</span><a class="self-link" href="#streaming-modules"></a></h2>
-<pre class="idl highlight def"><span class="kt">partial</span> <span class="kt">namespace</span> <a class="nv idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/document/js-api/#namespacedef-webassembly" id="ref-for-namespacedef-webassembly">WebAssembly</a> {
-  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/document/js-api/#module" id="ref-for-module">Module</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming">compileStreaming</a>(<span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response">Response</a>> <dfn class="nv idl-code" data-dfn-for="WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export="" id="dom-webassembly-compilestreaming-source-source"><code>source</code><a class="self-link" href="#dom-webassembly-compilestreaming-source-source"></a></dfn>);
-  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/document/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming">instantiateStreaming</a>(
+<pre class="idl highlight def"><span class="kt">partial</span> <span class="kt">namespace</span> <a class="nv idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly" id="ref-for-namespacedef-webassembly">WebAssembly</a> {
+  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module">Module</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming">compileStreaming</a>(<span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response">Response</a>> <dfn class="nv idl-code" data-dfn-for="WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export="" id="dom-webassembly-compilestreaming-source-source"><code>source</code><a class="self-link" href="#dom-webassembly-compilestreaming-source-source"></a></dfn>);
+  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming">instantiateStreaming</a>(
       <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①">Response</a>> <dfn class="nv idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export="" id="dom-webassembly-instantiatestreaming-source-importobject-source"><code>source</code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-source"></a></dfn>, <span class="kt">optional</span> <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object" id="ref-for-idl-object"><span class="kt">object</span></a> <dfn class="nv idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export="" id="dom-webassembly-instantiatestreaming-source-importobject-importobject"><code>importObject</code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"></a></dfn>);
 };
 </pre>
@@ -343,7 +346,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
      <li data-md="">
       <p>Let <var>promiseOfModule</var> be the result of <a data-link-type="dfn" href="#compile-a-potential-webassembly-response" id="ref-for-compile-a-potential-webassembly-response①">compiling a potential WebAssembly response</a> with <var>source</var>.</p>
      <li data-md="">
-      <p>Return the result of <a data-link-type="dfn" href="https://webassembly.github.io/spec/document/js-api/#instantiate-a-promise-of-a-module" id="ref-for-instantiate-a-promise-of-a-module">instantiating the promise of a module</a> <var>promiseOfModule</var> with imports <var>importObject</var>.</p>
+      <p>Return the result of <a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module" id="ref-for-instantiate-a-promise-of-a-module">instantiating the promise of a module</a> <var>promiseOfModule</var> with imports <var>importObject</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="compile a potential WebAssembly response">
@@ -351,7 +354,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
     <p class="note" role="note"><span>Note:</span> This algorithm accepts a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response③">Response</a></code> object, or a
     promise for one, and compiles and instantiates the resulting bytes of the response. This compilation
     can be performed in the background and in a streaming manner. If the <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response④">Response</a></code> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/#cors-same-origin" id="ref-for-cors-same-origin">CORS-same-origin</a>, does not represent an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status">ok status</a>, or does not match the <code>`application/wasm`</code> MIME type, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code>; if
-    compilation or instantiation fails, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/document/js-api/#compileerror" id="ref-for-compileerror">CompileError</a></code> or other relevant error type, depending on the cause of failure.</p>
+    compilation or instantiation fails, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/js-api/#compileerror" id="ref-for-compileerror">CompileError</a></code> or other relevant error type, depending on the cause of failure.</p>
     <ol>
      <li data-md="">
       <p>Let <var>returnValue</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise">a new promise</a></p>
@@ -380,7 +383,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
         <ol>
          <li data-md="">
-          <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/document/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>bodyArrayBuffer</var> with <var>returnValue</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a>.</p>
+          <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>bodyArrayBuffer</var> with <var>returnValue</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a>.</p>
         </ol>
        <li data-md="">
         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>bodyPromise</var> with reason <var>reason</var>:</p>
@@ -419,7 +422,7 @@ It has the following format:</p>
     <li data-md="">
      <p><code>${url}</code> is the URL associated with the module, if applicable (see notes).</p>
     <li data-md="">
-     <p><code>${funcIndex}</code> is the <a data-link-type="dfn" href="https://webassembly.github.io/spec/syntax/modules.html#syntax-funcidx" id="ref-for-syntax-funcidx">function index</a> relative to the module.</p>
+     <p><code>${funcIndex}</code> is the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/multipage/syntax/modules.html#syntax-funcidx" id="ref-for-syntax-funcidx">function index</a> relative to the module.</p>
     <li data-md="">
      <p><code>${pcOffset}</code> is the offset in the module binary of the first byte of the instruction, printed in hexadecimal with lower-case digits, with a leading <code>0x</code> prefix.</p>
    </ul>
@@ -429,7 +432,7 @@ It has the following format:</p>
      <p>The URL field may be interpreted differently depending on the
 context. When the response-based
 instantiation <a href="#streaming-modules">API</a> is used in a
-browser, the associated URL should be used; or when the <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects①">ArrayBuffer</a></code>-based instantiation <a data-link-type="dfn" href="https://webassembly.github.io/spec/document/js-api/#dom-webassembly-instantiate" id="ref-for-dom-webassembly-instantiate">API</a> is used, the browser should represent
+browser, the associated URL should be used; or when the <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects①">ArrayBuffer</a></code>-based instantiation <a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate" id="ref-for-dom-webassembly-instantiate">API</a> is used, the browser should represent
 the location of the API call. This kind of instantiation is analagous to
 executing JavaScript using <code>eval</code>; therefore if the browser has an existing
 method to represent the location of the <code>eval</code> call it can use a similar
@@ -441,11 +444,11 @@ Offline tools may use a filename instead.</p>
 such as objdump (where addresses are printed in hex) and makes them visually
 distinct from JavaScript line numbers. Other numbers are represented in decimal.</p>
    </ul>
-   <p>While the "name" property of an <a data-link-type="dfn" href="https://webassembly.github.io/spec/document/js-api/#exported-function" id="ref-for-exported-function">Exported Function</a> instance
+   <p>While the "name" property of an <a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#exported-function" id="ref-for-exported-function">Exported Function</a> instance
 is specified by the [[WASMJS|JS API]], synthesized function names are also
 displayed in other contexts like call stacks in debuggers and string representations
 of stack traces.
-If a WebAssembly module contains a <a href="BinaryEncoding.md#name-section">"name" section</a>,
+If a WebAssembly module contains a [="name" section=],
 these names should be used to synthesize a function name as follows:</p>
    <ul>
     <li data-md="">
@@ -535,19 +538,19 @@ JavaScript.</p>
    <li>
     <a data-link-type="biblio">[WASMJS]</a> defines the following terms:
     <ul>
-     <li><a href="https://webassembly.github.io/spec/document/js-api/#compileerror">CompileError</a>
-     <li><a href="https://webassembly.github.io/spec/document/js-api/#module">Module</a>
-     <li><a href="https://webassembly.github.io/spec/document/js-api/#namespacedef-webassembly">WebAssembly</a>
-     <li><a href="https://webassembly.github.io/spec/document/js-api/#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a>
-     <li><a href="https://webassembly.github.io/spec/document/js-api/#asynchronously-compile-a-webassembly-module">asynchronously compile a webassembly module</a>
-     <li><a href="https://webassembly.github.io/spec/document/js-api/#exported-function">exported function</a>
-     <li><a href="https://webassembly.github.io/spec/document/js-api/#dom-webassembly-instantiate">instantiate</a>
-     <li><a href="https://webassembly.github.io/spec/document/js-api/#instantiate-a-promise-of-a-module">instantiate a promise of a module</a>
+     <li><a href="https://webassembly.github.io/spec/js-api/#compileerror">CompileError</a>
+     <li><a href="https://webassembly.github.io/spec/js-api/#module">Module</a>
+     <li><a href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly">WebAssembly</a>
+     <li><a href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a>
+     <li><a href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module">asynchronously compile a webassembly module</a>
+     <li><a href="https://webassembly.github.io/spec/js-api/#exported-function">exported function</a>
+     <li><a href="https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate">instantiate</a>
+     <li><a href="https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module">instantiate a promise of a module</a>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBASSEMBLY]</a> defines the following terms:
     <ul>
-     <li><a href="https://webassembly.github.io/spec/syntax/modules.html#syntax-funcidx">function index</a>
+     <li><a href="https://webassembly.github.io/spec/core/multipage/syntax/modules.html#syntax-funcidx">function index</a>
     </ul>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
@@ -576,9 +579,9 @@ JavaScript.</p>
    <dd>Cameron McCormack; Boris Zbarsky; Tobie Langel. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-<pre class="idl highlight def"><span class="kt">partial</span> <span class="kt">namespace</span> <a class="nv idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/document/js-api/#namespacedef-webassembly" id="ref-for-namespacedef-webassembly①">WebAssembly</a> {
-  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/document/js-api/#module" id="ref-for-module①">Module</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming①">compileStreaming</a>(<span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response⑤">Response</a>> <a class="nv" href="#dom-webassembly-compilestreaming-source-source"><code>source</code></a>);
-  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/document/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming①">instantiateStreaming</a>(
+<pre class="idl highlight def"><span class="kt">partial</span> <span class="kt">namespace</span> <a class="nv idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly" id="ref-for-namespacedef-webassembly①">WebAssembly</a> {
+  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module①">Module</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming①">compileStreaming</a>(<span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response⑤">Response</a>> <a class="nv" href="#dom-webassembly-compilestreaming-source-source"><code>source</code></a>);
+  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming①">instantiateStreaming</a>(
       <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①①">Response</a>> <a class="nv" href="#dom-webassembly-instantiatestreaming-source-importobject-source"><code>source</code></a>, <span class="kt">optional</span> <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object" id="ref-for-idl-object①"><span class="kt">object</span></a> <a class="nv" href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"><code>importObject</code></a>);
 };
 

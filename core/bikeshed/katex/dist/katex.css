@@ -126,7 +126,6 @@
   line-height: 1.2;
   white-space: nowrap;
   text-indent: 0;
-  text-rendering: auto;
 }
 .katex * {
   -ms-high-contrast-adjust: none !important;
@@ -1058,12 +1057,6 @@
   display: block;
   position: absolute;
   width: 100%;
-}
-.katex svg path {
-  fill: currentColor;
-}
-.katex svg line {
-  stroke: currentColor;
 }
 .katex .stretchy {
   width: 100%;
