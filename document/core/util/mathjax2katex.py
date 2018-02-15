@@ -97,7 +97,7 @@ def Main():
 
   def ExtractMath(match):
     fixups.append(
-        (match.group(1), match.group(2), match.group(3),
+        (match.group(1), match.group(2), match.group(3), match.group(4),
          match.start(), match.end()))
     return 'x' * len(match.group())
 
@@ -161,20 +161,22 @@ def Main():
 
   # Pull out math fragments.
   data = re.sub(
-      'class="([^"]*)math"[^>]*>((?:[ ]*<span[^>]*>[^<]*</span>)*)([^<]*)<',
+      'class="([^"]*)math([^"]*)"[^>]*>'
+      '((?:[ ]*<span[^>]*>[^<]*</span>)*)([^<]*)<',
       ExtractMath, data)
+
+  sys.stderr.write('Processing %d fragments.\n' % len(fixups))
 
   done_fixups = []
 
   def Worker():
     while True:
-      cls, spans, mth, start, end = q.get()
-      fixed = 'class="' + cls + '">' + spans + ReplaceMath(cache, mth) + '<'
+      cls_before, cls_after, spans, mth, start, end = q.get()
+      fixed = ('class="' + cls_before + ' ' + cls_after + '">' +
+               spans + ReplaceMath(cache, mth) + '<')
       done_fixups.append((start, end, fixed))
       q.task_done()
-      left = q.qsize()
-      if left > 0:
-        sys.stderr.write('Remaining: ' + str(left) + '            \r')
+      sys.stderr.write('.')
 
   q = Queue.Queue()
   for i in range(40):
@@ -194,7 +196,7 @@ def Main():
     last = end
   result.append(data[last:])
 
-  sys.stderr.write('Done.             \n')
+  sys.stderr.write('\nProcessing Done.\n')
   sys.stdout.write(''.join(result))
   cache.close()
 
