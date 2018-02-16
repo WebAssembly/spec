@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Values &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -32,8 +24,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-   <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  </head> <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -83,12 +74,14 @@
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -105,7 +98,7 @@ hence no <a class="reference internal" href="lexical.html#text-space"><span clas
 <span id="text-int"></span><span id="text-uint"></span><span id="text-sint"></span><span id="text-hexnum"></span><span id="text-num"></span><span id="text-hexdigit"></span><span id="text-digit"></span><span id="text-sign"></span><span id="index-1"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
 <p>All <a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">integers</span></a> can be written in either decimal or hexadecimal notation.
 In both cases, digits can optionally be separated by underscores.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}
 \def\mathdef3141#1{{}}\mathdef3141{sign} &amp; \href{../text/values.html#text-sign}{\mathtt{sign}} &amp;::=&amp;
   \epsilon \Rightarrow {+} ~~|~~
@@ -127,7 +120,7 @@ In both cases, digits can optionally be separated by underscores.</p>
 \end{array}\end{split}\]</div>
 <p>The allowed syntax for integer literals depends on size and signedness.
 Moreover, their value must lie within the range of the respective type.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}
 \def\mathdef3141#1{{}}\mathdef3141{unsigned integer} &amp; \href{../text/values.html#text-int}{\def\mathdef3182#1{{\mathtt{u}#1}}\mathdef3182{N}} &amp;::=&amp;
   n{:}\href{../text/values.html#text-num}{\mathtt{num}} &amp;\Rightarrow&amp; n &amp; (\mathrel{\mbox{if}} n &lt; 2^N) \\ &amp;&amp;|&amp;
@@ -137,7 +130,7 @@ Moreover, their value must lie within the range of the respective type.</p>
   {\pm}{:}\href{../text/values.html#text-sign}{\mathtt{sign}}~~\def\mathdef3209#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3209{0x}~~n{:}\href{../text/values.html#text-hexnum}{\mathtt{hexnum}} &amp;\Rightarrow&amp; \pm n &amp; (\mathrel{\mbox{if}} -2^{N-1} \leq \pm n &lt; 2^{N-1}) \\
 \end{array}\end{split}\]</div>
 <p><a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">Uninterpreted integers</span></a> can be written as either signed or unsigned, and are normalized to unsigned in the abstract syntax.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef3141#1{{}}\mathdef3141{uninterpreted integers} &amp; \href{../text/values.html#text-int}{\def\mathdef3191#1{{\mathtt{i}#1}}\mathdef3191{N}} &amp;::=&amp;
   n{:}\href{../text/values.html#text-int}{\def\mathdef3182#1{{\mathtt{u}#1}}\mathdef3182{N}} &amp;\Rightarrow&amp; n \\ &amp;&amp;|&amp;
@@ -147,7 +140,7 @@ Moreover, their value must lie within the range of the respective type.</p>
 <div class="section" id="floating-point">
 <span id="text-float"></span><span id="text-hexfloat"></span><span id="text-hexfrac"></span><span id="text-frac"></span><span id="index-2"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point</span></a> values can be represented in either decimal or hexadecimal notation.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef3141#1{{}}\mathdef3141{decimal floating-point fraction} &amp; \href{../text/values.html#text-frac}{\mathtt{frac}} &amp;::=&amp;
   \epsilon &amp;\Rightarrow&amp; 0 \\ &amp;&amp;|&amp;
@@ -173,7 +166,7 @@ Moreover, their value must lie within the range of the respective type.</p>
     &amp;\Rightarrow&amp; (p+q)\cdot 2^{\pm e}
 \end{array}\end{split}\]</div>
 <p>The value of a literal must not lie outside the representable range of the corresponding <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> type
-(that is, a numeric value must not overflow to <span class="math">\(\pm\mbox{infinity}\)</span>),
+(that is, a numeric value must not overflow to <span class="math notranslate">\(\pm\mbox{infinity}\)</span>),
 but it may be <a class="reference internal" href="../exec/numerics.html#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -181,7 +174,7 @@ but it may be <a class="reference internal" href="../exec/numerics.html#aux-ieee
 </div>
 <p>Floating-point values may also be written as constants for <em>infinity</em> or <em>canonical NaN</em> (<em>not a number</em>).
 Furthermore, arbitrary NaN values may be expressed by providing an explicit payload value.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef3141#1{{}}\mathdef3141{floating-point value} &amp; \href{../text/values.html#text-float}{\def\mathdef3194#1{{\mathtt{f}#1}}\mathdef3194{N}} &amp;::=&amp;
   {\pm}{:}\href{../text/values.html#text-sign}{\mathtt{sign}}~z{:}\href{../text/values.html#text-float}{\def\mathdef3195#1{{\mathtt{f}#1}}\mathdef3195{N}\mathtt{mag}} &amp;\Rightarrow&amp; \pm z \\
@@ -197,9 +190,9 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
 <span id="text-string"></span><span id="text-byte"></span><span id="index-3"></span><h2>Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
 <p><em>Strings</em> denote sequences of bytes that can represent both textual and binary data.
 They are enclosed in quotation marks
-and may contain any character other than <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> control characters, quotation marks (<span class="math">\(\def\mathdef3230#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3230{&quot;}\)</span>), or backslash (<span class="math">\(\def\mathdef3231#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3231{\backslash}\)</span>),
+and may contain any character other than <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> control characters, quotation marks (<span class="math notranslate">\(\def\mathdef3230#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3230{&quot;}\)</span>), or backslash (<span class="math notranslate">\(\def\mathdef3231#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3231{\backslash}\)</span>),
 except when expressed with an <em>escape sequence</em>.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef3141#1{{}}\mathdef3141{string} &amp; \href{../text/values.html#text-string}{\mathtt{string}} &amp;::=&amp;
   \def\mathdef3232#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3232{&quot;}~(b^\ast{:}\href{../text/values.html#text-string}{\mathtt{stringelem}})^\ast~\def\mathdef3233#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3233{&quot;}
@@ -211,8 +204,8 @@ except when expressed with an <em>escape sequence</em>.</p>
     &amp;\Rightarrow&amp; 16\cdot n+m \\
 \end{array}\end{split}\]</div>
 <p>Each character in a string literal represents the byte sequence corresponding to its UTF-8 <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5) encoding,
-except for hexadecimal escape sequences <span class="math">\(\mbox{‘}\backslash hh\mbox{’}\)</span>, which represent raw bytes of the respective value.</p>
-<div class="math">
+except for hexadecimal escape sequences <span class="math notranslate">\(\mbox{‘}\backslash hh\mbox{’}\)</span>, which represent raw bytes of the respective value.</p>
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef3141#1{{}}\mathdef3141{string character} &amp; \href{../text/values.html#text-string}{\mathtt{stringchar}} &amp;::=&amp;
   c{:}\href{../text/lexical.html#text-char}{\mathtt{char}} &amp;\Rightarrow&amp; c \qquad
@@ -231,7 +224,7 @@ except for hexadecimal escape sequences <span class="math">\(\mbox{‘}\backslas
 <span id="text-name"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are strings denoting a literal character sequence.
 A name string must form a valid UTF-8 encoding as defined by <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5) that is interpreted as a string of Unicode code points.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}
 \def\mathdef3141#1{{}}\mathdef3141{name} &amp; \href{../text/values.html#text-name}{\mathtt{name}} &amp;::=&amp;
   b^\ast{:}\href{../text/values.html#text-string}{\mathtt{string}} &amp;\Rightarrow&amp; c^\ast &amp; (\mathrel{\mbox{if}} b^\ast = \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c^\ast)) \\
@@ -245,8 +238,8 @@ strings that do not contain any uses of hexadecimal byte escapes are always vali
 <div class="section" id="text-id">
 <span id="text-idchar"></span><span id="index-5"></span><span id="identifiers"></span><h2>Identifiers<a class="headerlink" href="#text-id" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">Indices</span></a> can be given in both numeric and symbolic form.
-Symbolic <em>identifiers</em> that stand in lieu of indices start with <span class="math">\(\def\mathdef3257#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3257{\$}\)</span>, followed by any sequence of printable <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> characters that does not contain a space, quotation mark, comma, semicolon, or bracket.</p>
-<div class="math">
+Symbolic <em>identifiers</em> that stand in lieu of indices start with <span class="math notranslate">\(\def\mathdef3257#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3257{\$}\)</span>, followed by any sequence of printable <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> characters that does not contain a space, quotation mark, comma, semicolon, or bracket.</p>
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}
 \def\mathdef3141#1{{}}\mathdef3141{identifier} &amp; \href{../text/values.html#text-id}{\mathtt{id}} &amp;::=&amp;
   \def\mathdef3258#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3258{\$}~\href{../text/values.html#text-idchar}{\mathtt{idchar}}^+ \\

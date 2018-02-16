@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Modules &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -32,8 +24,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-   <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  </head> <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -86,12 +77,14 @@
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -106,24 +99,24 @@
 Furthermore, most definitions are themselves classified with a suitable type.</p>
 <div class="section" id="functions">
 <span id="valid-func"></span><span id="valid-local"></span><span id="index-0"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<p>Functions <span class="math">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> of the form <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span>.</p>
+<p>Functions <span class="math notranslate">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> of the form <span class="math notranslate">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span>.</p>
 <div class="section" id="id1">
-<h3><span class="math">\(\{ \href{../syntax/modules.html#syntax-func}{\mathsf{type}}~x, \href{../syntax/modules.html#syntax-func}{\mathsf{locals}}~t^\ast, \href{../syntax/modules.html#syntax-func}{\mathsf{body}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\{ \href{../syntax/modules.html#syntax-func}{\mathsf{type}}~x, \href{../syntax/modules.html#syntax-func}{\mathsf{locals}}~t^\ast, \href{../syntax/modules.html#syntax-func}{\mathsf{body}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The type <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span> must be defined in the context.</li>
-<li>Let <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span>.</li>
-<li>Let <span class="math">\(C'\)</span> be the same <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> as <span class="math">\(C\)</span>,
+<li>The type <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span> must be defined in the context.</li>
+<li>Let <span class="math notranslate">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span>.</li>
+<li>Let <span class="math notranslate">\(C'\)</span> be the same <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> as <span class="math notranslate">\(C\)</span>,
 but with:<ul>
-<li><span class="math">\(\href{../valid/conventions.html#context}{\mathsf{locals}}\)</span> set to the sequence of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(t_1^\ast~t^\ast\)</span>, concatenating parameters and locals,</li>
-<li><span class="math">\(\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> set to the singular sequence containing only <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">result type</span></a> <span class="math">\([t_2^?]\)</span>.</li>
-<li><span class="math">\(\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> set to the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">result type</span></a> <span class="math">\([t_2^?]\)</span>.</li>
+<li><span class="math notranslate">\(\href{../valid/conventions.html#context}{\mathsf{locals}}\)</span> set to the sequence of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math notranslate">\(t_1^\ast~t^\ast\)</span>, concatenating parameters and locals,</li>
+<li><span class="math notranslate">\(\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> set to the singular sequence containing only <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">result type</span></a> <span class="math notranslate">\([t_2^?]\)</span>.</li>
+<li><span class="math notranslate">\(\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> set to the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">result type</span></a> <span class="math notranslate">\([t_2^?]\)</span>.</li>
 </ul>
 </li>
-<li>Under the context <span class="math">\(C'\)</span>,
-the expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be valid with type <span class="math">\(t_2^?\)</span>.</li>
-<li>Then the function definition is valid with type <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span>.</li>
+<li>Under the context <span class="math notranslate">\(C'\)</span>,
+the expression <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be valid with type <span class="math notranslate">\(t_2^?\)</span>.</li>
+<li>Then the function definition is valid with type <span class="math notranslate">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C.\href{../valid/conventions.html#context}{\mathsf{types}}[x] = [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]
   \qquad
@@ -133,20 +126,20 @@ the expression <span class="math">\(\href{../syntax/instructions.html#syntax-exp
 }\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The restriction on the length of the result types <span class="math">\(t_2^\ast\)</span> may be lifted in future versions of WebAssembly.</p>
+<p class="last">The restriction on the length of the result types <span class="math notranslate">\(t_2^\ast\)</span> may be lifted in future versions of WebAssembly.</p>
 </div>
 </div>
 </div>
 <div class="section" id="tables">
 <span id="valid-table"></span><span id="index-1"></span><h2>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h2>
-<p>Tables <span class="math">\(\href{../syntax/modules.html#syntax-table}{\mathit{table}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table types</span></a>.</p>
+<p>Tables <span class="math notranslate">\(\href{../syntax/modules.html#syntax-table}{\mathit{table}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table types</span></a>.</p>
 <div class="section" id="id2">
-<h3><span class="math">\(\{ \href{../syntax/modules.html#syntax-table}{\mathsf{type}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} \}\)</span><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\{ \href{../syntax/modules.html#syntax-table}{\mathsf{type}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} \}\)</span><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span> must be <a class="reference internal" href="types.html#valid-tabletype"><span class="std std-ref">valid</span></a>.</li>
-<li>Then the table definition is valid with type <span class="math">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span>.</li>
+<li>The <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span> must be <a class="reference internal" href="types.html#valid-tabletype"><span class="std std-ref">valid</span></a>.</li>
+<li>Then the table definition is valid with type <span class="math notranslate">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   \href{../valid/types.html#valid-tabletype}{\vdash} \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} \mathrel{\mbox{ok}}
 }{
@@ -156,14 +149,14 @@ the expression <span class="math">\(\href{../syntax/instructions.html#syntax-exp
 </div>
 <div class="section" id="memories">
 <span id="valid-mem"></span><span id="index-2"></span><h2>Memories<a class="headerlink" href="#memories" title="Permalink to this headline">¶</a></h2>
-<p>Memories <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory types</span></a>.</p>
+<p>Memories <span class="math notranslate">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory types</span></a>.</p>
 <div class="section" id="id3">
-<h3><span class="math">\(\{ \href{../syntax/modules.html#syntax-mem}{\mathsf{type}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} \}\)</span><a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\{ \href{../syntax/modules.html#syntax-mem}{\mathsf{type}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} \}\)</span><a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span> must be <a class="reference internal" href="types.html#valid-memtype"><span class="std std-ref">valid</span></a>.</li>
-<li>Then the memory definition is valid with type <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
+<li>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span> must be <a class="reference internal" href="types.html#valid-memtype"><span class="std std-ref">valid</span></a>.</li>
+<li>Then the memory definition is valid with type <span class="math notranslate">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   \href{../valid/types.html#valid-memtype}{\vdash} \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} \mathrel{\mbox{ok}}
 }{
@@ -173,16 +166,16 @@ the expression <span class="math">\(\href{../syntax/instructions.html#syntax-exp
 </div>
 <div class="section" id="globals">
 <span id="valid-global"></span><span id="index-3"></span><h2>Globals<a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h2>
-<p>Globals <span class="math">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global types</span></a> of the form <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span>.</p>
+<p>Globals <span class="math notranslate">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global types</span></a> of the form <span class="math notranslate">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span>.</p>
 <div class="section" id="id4">
-<h3><span class="math">\(\{ \href{../syntax/modules.html#syntax-global}{\mathsf{type}}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t, \href{../syntax/modules.html#syntax-global}{\mathsf{init}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\{ \href{../syntax/modules.html#syntax-global}{\mathsf{type}}~\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t, \href{../syntax/modules.html#syntax-global}{\mathsf{init}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span> must be <a class="reference internal" href="types.html#valid-globaltype"><span class="std std-ref">valid</span></a>.</li>
-<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([t]\)</span>.</li>
-<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-constant"><span class="std std-ref">constant</span></a>.</li>
-<li>Then the global definition is valid with type <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span>.</li>
+<li>The <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span> must be <a class="reference internal" href="types.html#valid-globaltype"><span class="std std-ref">valid</span></a>.</li>
+<li>The expression <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate">\([t]\)</span>.</li>
+<li>The expression <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-constant"><span class="std std-ref">constant</span></a>.</li>
+<li>Then the global definition is valid with type <span class="math notranslate">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   \href{../valid/types.html#valid-globaltype}{\vdash} \href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t \mathrel{\mbox{ok}}
   \qquad
@@ -196,20 +189,20 @@ the expression <span class="math">\(\href{../syntax/instructions.html#syntax-exp
 </div>
 <div class="section" id="element-segments">
 <span id="valid-elem"></span><span id="index-4"></span><h2>Element Segments<a class="headerlink" href="#element-segments" title="Permalink to this headline">¶</a></h2>
-<p>Element segments <span class="math">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}\)</span> are not classified by a type.</p>
+<p>Element segments <span class="math notranslate">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}\)</span> are not classified by a type.</p>
 <div class="section" id="id5">
-<h3><span class="math">\(\{ \href{../syntax/modules.html#syntax-elem}{\mathsf{table}}~x, \href{../syntax/modules.html#syntax-elem}{\mathsf{offset}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \href{../syntax/modules.html#syntax-elem}{\mathsf{init}}~y^\ast \}\)</span><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\{ \href{../syntax/modules.html#syntax-elem}{\mathsf{table}}~x, \href{../syntax/modules.html#syntax-elem}{\mathsf{offset}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \href{../syntax/modules.html#syntax-elem}{\mathsf{init}}~y^\ast \}\)</span><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The table <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}[x]\)</span> must be defined in the context.</li>
-<li>Let <span class="math">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}[x]\)</span>.</li>
-<li>The <a class="reference internal" href="../syntax/types.html#syntax-elemtype"><span class="std std-ref">element type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}\)</span>.</li>
-<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
-<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-constant"><span class="std std-ref">constant</span></a>.</li>
-<li>For each <span class="math">\(y_i\)</span> in <span class="math">\(y^\ast\)</span>,
-the function <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[y]\)</span> must be defined in the context.</li>
+<li>The table <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}[x]\)</span> must be defined in the context.</li>
+<li>Let <span class="math notranslate">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}[x]\)</span>.</li>
+<li>The <a class="reference internal" href="../syntax/types.html#syntax-elemtype"><span class="std std-ref">element type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span> must be <span class="math notranslate">\(\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}\)</span>.</li>
+<li>The expression <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
+<li>The expression <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-constant"><span class="std std-ref">constant</span></a>.</li>
+<li>For each <span class="math notranslate">\(y_i\)</span> in <span class="math notranslate">\(y^\ast\)</span>,
+the function <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[y]\)</span> must be defined in the context.</li>
 <li>Then the element segment is valid.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C.\href{../valid/conventions.html#context}{\mathsf{tables}}[x] = \href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}
   \qquad
@@ -225,16 +218,16 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 </div>
 <div class="section" id="data-segments">
 <span id="valid-data"></span><span id="index-5"></span><h2>Data Segments<a class="headerlink" href="#data-segments" title="Permalink to this headline">¶</a></h2>
-<p>Data segments <span class="math">\(\href{../syntax/modules.html#syntax-data}{\mathit{data}}\)</span> are not classified by any type.</p>
+<p>Data segments <span class="math notranslate">\(\href{../syntax/modules.html#syntax-data}{\mathit{data}}\)</span> are not classified by any type.</p>
 <div class="section" id="id6">
-<h3><span class="math">\(\{ \href{../syntax/modules.html#syntax-data}{\mathsf{data}}~x, \href{../syntax/modules.html#syntax-data}{\mathsf{offset}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \href{../syntax/modules.html#syntax-data}{\mathsf{init}}~b^\ast \}\)</span><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\{ \href{../syntax/modules.html#syntax-data}{\mathsf{data}}~x, \href{../syntax/modules.html#syntax-data}{\mathsf{offset}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}, \href{../syntax/modules.html#syntax-data}{\mathsf{init}}~b^\ast \}\)</span><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The memory <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[x]\)</span> must be defined in the context.</li>
-<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
-<li>The expression <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-constant"><span class="std std-ref">constant</span></a>.</li>
+<li>The memory <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[x]\)</span> must be defined in the context.</li>
+<li>The expression <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
+<li>The expression <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-constant"><span class="std std-ref">constant</span></a>.</li>
 <li>Then the data segment is valid.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C.\href{../valid/conventions.html#context}{\mathsf{mems}}[x] = \href{../syntax/types.html#syntax-limits}{\mathit{limits}}
   \qquad
@@ -248,15 +241,15 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 </div>
 <div class="section" id="start-function">
 <span id="valid-start"></span><span id="index-6"></span><h2>Start Function<a class="headerlink" href="#start-function" title="Permalink to this headline">¶</a></h2>
-<p>Start function declarations <span class="math">\(\href{../syntax/modules.html#syntax-start}{\mathit{start}}\)</span> are not classified by any type.</p>
+<p>Start function declarations <span class="math notranslate">\(\href{../syntax/modules.html#syntax-start}{\mathit{start}}\)</span> are not classified by any type.</p>
 <div class="section" id="id7">
-<h3><span class="math">\(\{ \href{../syntax/modules.html#syntax-start}{\mathsf{func}}~x \}\)</span><a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\{ \href{../syntax/modules.html#syntax-start}{\mathsf{func}}~x \}\)</span><a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The function <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x]\)</span> must be defined in the context.</li>
-<li>The type of <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x]\)</span> must be <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.</li>
+<li>The function <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x]\)</span> must be defined in the context.</li>
+<li>The type of <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x]\)</span> must be <span class="math notranslate">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.</li>
 <li>Then the start function is valid.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x] = [] \href{../syntax/types.html#syntax-functype}{\rightarrow} []
 }{
@@ -266,14 +259,14 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 </div>
 <div class="section" id="exports">
 <span id="valid-export"></span><span id="valid-exportdesc"></span><span id="index-7"></span><h2>Exports<a class="headerlink" href="#exports" title="Permalink to this headline">¶</a></h2>
-<p>Exports <span class="math">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}\)</span> and export descriptions <span class="math">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}\)</span> are classified by their their <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a>.</p>
+<p>Exports <span class="math notranslate">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}\)</span> and export descriptions <span class="math notranslate">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}\)</span> are classified by their their <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a>.</p>
 <div class="section" id="id8">
-<h3><span class="math">\(\{ \href{../syntax/modules.html#syntax-export}{\mathsf{name}}~\href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/modules.html#syntax-export}{\mathsf{desc}}~\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}} \}\)</span><a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\{ \href{../syntax/modules.html#syntax-export}{\mathsf{name}}~\href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/modules.html#syntax-export}{\mathsf{desc}}~\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}} \}\)</span><a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The export description <span class="math">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}\)</span> must be valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span>.</li>
-<li>Then the export is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span>.</li>
+<li>The export description <span class="math notranslate">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}}\)</span> must be valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span>.</li>
+<li>Then the export is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C \href{../valid/modules.html#valid-exportdesc}{\vdash} \href{../syntax/modules.html#syntax-exportdesc}{\mathit{exportdesc}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}
 }{
@@ -281,12 +274,12 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 }\]</div>
 </div>
 <div class="section" id="id9">
-<h3><span class="math">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathsf{func}}~x\)</span><a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathsf{func}}~x\)</span><a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The function <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x]\)</span> must be defined in the context.</li>
-<li>Then the export description is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x]\)</span>.</li>
+<li>The function <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x]\)</span> must be defined in the context.</li>
+<li>Then the export description is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x]\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x] = \href{../syntax/types.html#syntax-functype}{\mathit{functype}}
 }{
@@ -294,12 +287,12 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 }\]</div>
 </div>
 <div class="section" id="id10">
-<h3><span class="math">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathsf{table}}~x\)</span><a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathsf{table}}~x\)</span><a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The table <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}[x]\)</span> must be defined in the context.</li>
-<li>Then the export description is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~C.\href{../valid/conventions.html#context}{\mathsf{tables}}[x]\)</span>.</li>
+<li>The table <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}[x]\)</span> must be defined in the context.</li>
+<li>Then the export description is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~C.\href{../valid/conventions.html#context}{\mathsf{tables}}[x]\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C.\href{../valid/conventions.html#context}{\mathsf{tables}}[x] = \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}
 }{
@@ -307,12 +300,12 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 }\]</div>
 </div>
 <div class="section" id="id11">
-<h3><span class="math">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathsf{mem}}~x\)</span><a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathsf{mem}}~x\)</span><a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The memory <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[x]\)</span> must be defined in the context.</li>
-<li>Then the export description is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~C.\href{../valid/conventions.html#context}{\mathsf{mems}}[x]\)</span>.</li>
+<li>The memory <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[x]\)</span> must be defined in the context.</li>
+<li>Then the export description is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~C.\href{../valid/conventions.html#context}{\mathsf{mems}}[x]\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C.\href{../valid/conventions.html#context}{\mathsf{mems}}[x] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
 }{
@@ -320,14 +313,14 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 }\]</div>
 </div>
 <div class="section" id="id12">
-<h3><span class="math">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathsf{global}}~x\)</span><a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathsf{global}}~x\)</span><a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The global <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span> must be defined in the context.</li>
-<li>Let <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span>.</li>
-<li>The mutability <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{const}}\)</span>.</li>
-<li>Then the export description is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span>.</li>
+<li>The global <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span> must be defined in the context.</li>
+<li>Let <span class="math notranslate">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span>.</li>
+<li>The mutability <span class="math notranslate">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math notranslate">\(\href{../syntax/types.html#syntax-mut}{\mathsf{const}}\)</span>.</li>
+<li>Then the export description is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x] = \href{../syntax/types.html#syntax-mut}{\mathsf{const}}~t
 }{
@@ -337,14 +330,14 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 </div>
 <div class="section" id="imports">
 <span id="valid-import"></span><span id="valid-importdesc"></span><span id="index-8"></span><h2>Imports<a class="headerlink" href="#imports" title="Permalink to this headline">¶</a></h2>
-<p>Imports <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}\)</span> and import descriptions <span class="math">\(\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a>.</p>
+<p>Imports <span class="math notranslate">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}\)</span> and import descriptions <span class="math notranslate">\(\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a>.</p>
 <div class="section" id="id13">
-<h3><span class="math">\(\{ \href{../syntax/modules.html#syntax-import}{\mathsf{module}}~\href{../syntax/values.html#syntax-name}{\mathit{name}}_1, \href{../syntax/modules.html#syntax-import}{\mathsf{name}}~\href{../syntax/values.html#syntax-name}{\mathit{name}}_2, \href{../syntax/modules.html#syntax-import}{\mathsf{desc}}~\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}} \}\)</span><a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\{ \href{../syntax/modules.html#syntax-import}{\mathsf{module}}~\href{../syntax/values.html#syntax-name}{\mathit{name}}_1, \href{../syntax/modules.html#syntax-import}{\mathsf{name}}~\href{../syntax/values.html#syntax-name}{\mathit{name}}_2, \href{../syntax/modules.html#syntax-import}{\mathsf{desc}}~\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}} \}\)</span><a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The import description <span class="math">\(\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}\)</span> must be valid with type <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span>.</li>
-<li>Then the import is valid with type <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span>.</li>
+<li>The import description <span class="math notranslate">\(\href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}}\)</span> must be valid with type <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span>.</li>
+<li>Then the import is valid with type <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C \href{../valid/modules.html#valid-importdesc}{\vdash} \href{../syntax/modules.html#syntax-importdesc}{\mathit{importdesc}} : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}
 }{
@@ -352,13 +345,13 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 }\]</div>
 </div>
 <div class="section" id="id14">
-<h3><span class="math">\(\href{../syntax/modules.html#syntax-importdesc}{\mathsf{func}}~x\)</span><a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\href{../syntax/modules.html#syntax-importdesc}{\mathsf{func}}~x\)</span><a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The function <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span> must be defined in the context.</li>
-<li>Let <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span>.</li>
-<li>Then the import description is valid with type <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~[t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>.</li>
+<li>The function <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span> must be defined in the context.</li>
+<li>Let <span class="math notranslate">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span>.</li>
+<li>Then the import description is valid with type <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~[t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   C.\href{../valid/conventions.html#context}{\mathsf{types}}[x] = [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
 }{
@@ -366,12 +359,12 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 }\]</div>
 </div>
 <div class="section" id="id15">
-<h3><span class="math">\(\href{../syntax/modules.html#syntax-importdesc}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span><a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\href{../syntax/modules.html#syntax-importdesc}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span><a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The table type <span class="math">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span> must be <a class="reference internal" href="types.html#valid-tabletype"><span class="std std-ref">valid</span></a>.</li>
-<li>Then the import description is valid with type <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span>.</li>
+<li>The table type <span class="math notranslate">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span> must be <a class="reference internal" href="types.html#valid-tabletype"><span class="std std-ref">valid</span></a>.</li>
+<li>Then the import description is valid with type <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   \href{../valid/modules.html#valid-table}{\vdash} \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} \mathrel{\mbox{ok}}
 }{
@@ -379,12 +372,12 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 }\]</div>
 </div>
 <div class="section" id="id16">
-<h3><span class="math">\(\href{../syntax/modules.html#syntax-importdesc}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span><a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\href{../syntax/modules.html#syntax-importdesc}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span><a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The memory type <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span> must be <a class="reference internal" href="types.html#valid-memtype"><span class="std std-ref">valid</span></a>.</li>
-<li>Then the import description is valid with type <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
+<li>The memory type <span class="math notranslate">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span> must be <a class="reference internal" href="types.html#valid-memtype"><span class="std std-ref">valid</span></a>.</li>
+<li>Then the import description is valid with type <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   \href{../valid/types.html#valid-memtype}{\vdash} \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} \mathrel{\mbox{ok}}
 }{
@@ -392,13 +385,13 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 }\]</div>
 </div>
 <div class="section" id="id17">
-<h3><span class="math">\(\href{../syntax/modules.html#syntax-importdesc}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span><a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<h3><span class="math notranslate">\(\href{../syntax/modules.html#syntax-importdesc}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span><a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The global type <span class="math">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> must be <a class="reference internal" href="types.html#valid-globaltype"><span class="std std-ref">valid</span></a>.</li>
-<li>The mutability of <span class="math">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{const}}\)</span>.</li>
-<li>Then the import description is valid with type <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span>.</li>
+<li>The global type <span class="math notranslate">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> must be <a class="reference internal" href="types.html#valid-globaltype"><span class="std std-ref">valid</span></a>.</li>
+<li>The mutability of <span class="math notranslate">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> must be <span class="math notranslate">\(\href{../syntax/types.html#syntax-mut}{\mathsf{const}}\)</span>.</li>
+<li>Then the import description is valid with type <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\frac{
   \href{../valid/types.html#valid-globaltype}{\vdash} \href{../syntax/types.html#syntax-mut}{\mathsf{const}}~t \mathrel{\mbox{ok}}
 }{
@@ -412,59 +405,59 @@ the function <span class="math">\(C.\href{../valid/conventions.html#context}{\ma
 <p>A module is entirely <em>closed</em>,
 that is, its components can only refer to definitions that appear in the module itself.
 Consequently, no initial <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> is required.
-Instead, the context <span class="math">\(C\)</span> for validation of the module’s content is constructed from the definitions in the module.</p>
+Instead, the context <span class="math notranslate">\(C\)</span> for validation of the module’s content is constructed from the definitions in the module.</p>
 <ul class="simple">
-<li>Let <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> be the module to validate.</li>
-<li>Let <span class="math">\(C\)</span> be a <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> where:<ul>
-<li><span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}\)</span> is <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{types}}\)</span>,</li>
-<li><span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}\)</span> is <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast)\)</span> concatenated with <span class="math">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_i^\ast\)</span>,
-with the type sequences <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast\)</span> and <span class="math">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_i^\ast\)</span> as determined below,</li>
-<li><span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}\)</span> is <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast)\)</span> concatenated with <span class="math">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}_i^\ast\)</span>,
-with the type sequences <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast\)</span> and <span class="math">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}_i^\ast\)</span> as determined below,</li>
-<li><span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}\)</span> is <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast)\)</span> concatenated with <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}_i^\ast\)</span>,
-with the type sequences <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast\)</span> and <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}_i^\ast\)</span> as determined below,</li>
-<li><span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}\)</span> is <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast)\)</span> concatenated with <span class="math">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}_i^\ast\)</span>,
-with the type sequences <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast\)</span> and <span class="math">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}_i^\ast\)</span> as determined below.</li>
-<li><span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{locals}}\)</span> is empty,</li>
-<li><span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> is empty.</li>
-<li><span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> is empty.</li>
+<li>Let <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> be the module to validate.</li>
+<li>Let <span class="math notranslate">\(C\)</span> be a <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> where:<ul>
+<li><span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}\)</span> is <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{types}}\)</span>,</li>
+<li><span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}\)</span> is <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast)\)</span> concatenated with <span class="math notranslate">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_i^\ast\)</span>,
+with the type sequences <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast\)</span> and <span class="math notranslate">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_i^\ast\)</span> as determined below,</li>
+<li><span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}\)</span> is <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast)\)</span> concatenated with <span class="math notranslate">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}_i^\ast\)</span>,
+with the type sequences <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast\)</span> and <span class="math notranslate">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}_i^\ast\)</span> as determined below,</li>
+<li><span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}\)</span> is <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast)\)</span> concatenated with <span class="math notranslate">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}_i^\ast\)</span>,
+with the type sequences <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast\)</span> and <span class="math notranslate">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}_i^\ast\)</span> as determined below,</li>
+<li><span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}\)</span> is <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast)\)</span> concatenated with <span class="math notranslate">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}_i^\ast\)</span>,
+with the type sequences <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast\)</span> and <span class="math notranslate">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}_i^\ast\)</span> as determined below.</li>
+<li><span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{locals}}\)</span> is empty,</li>
+<li><span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> is empty.</li>
+<li><span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> is empty.</li>
 </ul>
 </li>
-<li>Let <span class="math">\(C'\)</span> be the <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> where <span class="math">\(C'.\href{../valid/conventions.html#context}{\mathsf{globals}}\)</span> is the sequence <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast)\)</span> and all other fields are empty.</li>
-<li>Under the context <span class="math">\(C\)</span>:<ul>
-<li>For each <span class="math">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{types}}\)</span>,
-the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_i\)</span> must be <a class="reference internal" href="types.html#valid-functype"><span class="std std-ref">valid</span></a>.</li>
-<li>For each <span class="math">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{funcs}}\)</span>,
-the definition <span class="math">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}_i\)</span> must be <a class="reference internal" href="#valid-func"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(\mathit{ft}_i\)</span>.</li>
-<li>For each <span class="math">\(\href{../syntax/modules.html#syntax-table}{\mathit{table}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{tables}}\)</span>,
-the definition <span class="math">\(\href{../syntax/modules.html#syntax-table}{\mathit{table}}_i\)</span> must be <a class="reference internal" href="#valid-table"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}_i\)</span>.</li>
-<li>For each <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{mems}}\)</span>,
-the definition <span class="math">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}_i\)</span> must be <a class="reference internal" href="#valid-mem"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}_i\)</span>.</li>
-<li>For each <span class="math">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{globals}}\)</span>:<ul>
-<li>Under the context <span class="math">\(C'\)</span>,
-the definition <span class="math">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}_i\)</span> must be <a class="reference internal" href="#valid-global"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}_i\)</span>.</li>
+<li>Let <span class="math notranslate">\(C'\)</span> be the <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> where <span class="math notranslate">\(C'.\href{../valid/conventions.html#context}{\mathsf{globals}}\)</span> is the sequence <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i^\ast)\)</span> and all other fields are empty.</li>
+<li>Under the context <span class="math notranslate">\(C\)</span>:<ul>
+<li>For each <span class="math notranslate">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_i\)</span> in <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{types}}\)</span>,
+the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_i\)</span> must be <a class="reference internal" href="types.html#valid-functype"><span class="std std-ref">valid</span></a>.</li>
+<li>For each <span class="math notranslate">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}_i\)</span> in <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{funcs}}\)</span>,
+the definition <span class="math notranslate">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}_i\)</span> must be <a class="reference internal" href="#valid-func"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate">\(\mathit{ft}_i\)</span>.</li>
+<li>For each <span class="math notranslate">\(\href{../syntax/modules.html#syntax-table}{\mathit{table}}_i\)</span> in <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{tables}}\)</span>,
+the definition <span class="math notranslate">\(\href{../syntax/modules.html#syntax-table}{\mathit{table}}_i\)</span> must be <a class="reference internal" href="#valid-table"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}_i\)</span>.</li>
+<li>For each <span class="math notranslate">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}_i\)</span> in <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{mems}}\)</span>,
+the definition <span class="math notranslate">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}_i\)</span> must be <a class="reference internal" href="#valid-mem"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}_i\)</span>.</li>
+<li>For each <span class="math notranslate">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}_i\)</span> in <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{globals}}\)</span>:<ul>
+<li>Under the context <span class="math notranslate">\(C'\)</span>,
+the definition <span class="math notranslate">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}_i\)</span> must be <a class="reference internal" href="#valid-global"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}_i\)</span>.</li>
 </ul>
 </li>
-<li>For each <span class="math">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{elem}}\)</span>,
-the segment <span class="math">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> must be <a class="reference internal" href="#valid-elem"><span class="std std-ref">valid</span></a>.</li>
-<li>For each <span class="math">\(\href{../syntax/modules.html#syntax-data}{\mathit{data}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{data}}\)</span>,
-the segment <span class="math">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> must be <a class="reference internal" href="#valid-data"><span class="std std-ref">valid</span></a>.</li>
-<li>If <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{start}}\)</span> is non-empty,
-then <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{start}}\)</span> must be <a class="reference internal" href="#valid-start"><span class="std std-ref">valid</span></a>.</li>
-<li>For each <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{imports}}\)</span>,
-the segment <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> must be <a class="reference internal" href="#valid-import"><span class="std std-ref">valid</span></a> with an <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i\)</span>.</li>
-<li>For each <span class="math">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{exports}}\)</span>,
-the segment <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> must be <a class="reference internal" href="#valid-export"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'_i\)</span>.</li>
+<li>For each <span class="math notranslate">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> in <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{elem}}\)</span>,
+the segment <span class="math notranslate">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> must be <a class="reference internal" href="#valid-elem"><span class="std std-ref">valid</span></a>.</li>
+<li>For each <span class="math notranslate">\(\href{../syntax/modules.html#syntax-data}{\mathit{data}}_i\)</span> in <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{data}}\)</span>,
+the segment <span class="math notranslate">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> must be <a class="reference internal" href="#valid-data"><span class="std std-ref">valid</span></a>.</li>
+<li>If <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{start}}\)</span> is non-empty,
+then <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{start}}\)</span> must be <a class="reference internal" href="#valid-start"><span class="std std-ref">valid</span></a>.</li>
+<li>For each <span class="math notranslate">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> in <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{imports}}\)</span>,
+the segment <span class="math notranslate">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> must be <a class="reference internal" href="#valid-import"><span class="std std-ref">valid</span></a> with an <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i\)</span>.</li>
+<li>For each <span class="math notranslate">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}_i\)</span> in <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{exports}}\)</span>,
+the segment <span class="math notranslate">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> must be <a class="reference internal" href="#valid-export"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'_i\)</span>.</li>
 </ul>
 </li>
-<li>The length of <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}\)</span> must not be larger than <span class="math">\(1\)</span>.</li>
-<li>The length of <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}\)</span> must not be larger than <span class="math">\(1\)</span>.</li>
-<li>All export names <span class="math">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}_i.\href{../syntax/modules.html#syntax-export}{\mathsf{name}}\)</span> must be different.</li>
-<li>Let <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span> be the concatenation of <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i\)</span> of the imports, in index order.</li>
-<li>Let <span class="math">\({\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span> be the concatenation of <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'_i\)</span> of the exports, in index order.</li>
-<li>Then the module is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast \href{../syntax/types.html#syntax-functype}{\rightarrow} {\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span>.</li>
+<li>The length of <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}\)</span> must not be larger than <span class="math notranslate">\(1\)</span>.</li>
+<li>The length of <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}\)</span> must not be larger than <span class="math notranslate">\(1\)</span>.</li>
+<li>All export names <span class="math notranslate">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}_i.\href{../syntax/modules.html#syntax-export}{\mathsf{name}}\)</span> must be different.</li>
+<li>Let <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span> be the concatenation of <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i\)</span> of the imports, in index order.</li>
+<li>Let <span class="math notranslate">\({\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span> be the concatenation of <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'_i\)</span> of the exports, in index order.</li>
+<li>Then the module is valid with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast \href{../syntax/types.html#syntax-functype}{\rightarrow} {\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span>.</li>
 </ul>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\frac{
   \begin{array}{&#64;{}c&#64;{}}
   (\href{../valid/types.html#valid-functype}{\vdash} \href{../syntax/types.html#syntax-functype}{\mathit{functype}} \mathrel{\mbox{ok}})^\ast
@@ -523,13 +516,13 @@ the segment <span class="math">\(\href{../syntax/modules.html#syntax-import}{\ma
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Most definitions in a module – particularly functions – are mutually recursive.
-Consequently, the definition of the <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> <span class="math">\(C\)</span> in this rule is recursive:
+Consequently, the definition of the <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> <span class="math notranslate">\(C\)</span> in this rule is recursive:
 it depends on the outcome of validation of the function, table, memory, and global definitions contained in the module,
-which itself depends on <span class="math">\(C\)</span>.
+which itself depends on <span class="math notranslate">\(C\)</span>.
 However, this recursion is just a specification device.
-All types needed to construct <span class="math">\(C\)</span> can easily be determined from a simple pre-pass over the module that does not perform any actual validation.</p>
+All types needed to construct <span class="math notranslate">\(C\)</span> can easily be determined from a simple pre-pass over the module that does not perform any actual validation.</p>
 <p class="last">Globals, however, are not recursive.
-The effect of defining the limited context <span class="math">\(C'\)</span> for validating the module’s globals is that their initialization expressions can only access imported globals and nothing else.</p>
+The effect of defining the limited context <span class="math notranslate">\(C'\)</span> for validating the module’s globals is that their initialization expressions can only access imported globals and nothing else.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
