@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Instructions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -32,8 +24,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-   <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  </head> <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -86,12 +77,14 @@
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -103,7 +96,7 @@
   <div class="section" id="instructions">
 <span id="text-instr"></span><span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
 <p>Instructions are syntactically distinguished into <em>plain</em> and <em>structured</em> instructions.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2368#1{{}}\mathdef2368{instruction} &amp; \href{../text/instructions.html#text-instr}{\mathtt{instr}}_I &amp;::=&amp;
   \mathit{in}{:}\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I
@@ -117,7 +110,7 @@
 <p><a class="reference internal" href="#text-instr-control"><span class="std std-ref">Structured control instructions</span></a> can be annotated with a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">label identifier</span></a>.
 They are the only <a class="reference internal" href="modules.html#text-index"><span class="std std-ref">symbolic identifiers</span></a> that can be bound locally in an instruction sequence.
 The following grammar handles the corresponding update to the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> by <a class="reference internal" href="../syntax/conventions.html#notation-compose"><span class="std std-ref">composing</span></a> the context with an additional label entry.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llcllll}
 \def\mathdef2368#1{{}}\mathdef2368{label} &amp; \href{../text/instructions.html#text-label}{\mathtt{label}}_I &amp;::=&amp;
   v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; \{\href{../text/conventions.html#text-context}{\mathsf{labels}}~v\} \href{../syntax/conventions.html#notation-compose}{\oplus} I
@@ -134,8 +127,8 @@ mirroring the fact that control instructions are indexed relatively not absolute
 <div class="section" id="control-instructions">
 <span id="text-instr-control"></span><span id="text-plaininstr"></span><span id="text-blockinstr"></span><span id="index-2"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
 <p id="text-instr-block"><span id="text-if"></span><span id="text-loop"></span><span id="text-block"></span><a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">Structured control instructions</span></a> can bind an optional symbolic <a class="reference internal" href="#text-label"><span class="std std-ref">label identifier</span></a>.
-The same label identifier may optionally be repeated after the corresponding <span class="math">\(\mathtt{end}\)</span> and <span class="math">\(\mathtt{else}\)</span> pseudo instructions, to indicate the matching delimiters.</p>
-<div class="math">
+The same label identifier may optionally be repeated after the corresponding <span class="math notranslate">\(\mathtt{end}\)</span> and <span class="math notranslate">\(\mathtt{else}\)</span> pseudo instructions, to indicate the matching delimiters.</p>
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2368#1{{}}\mathdef2368{block instruction} &amp; \href{../text/instructions.html#text-blockinstr}{\mathtt{blockinstr}}_I &amp;::=&amp;
   \def\mathdef2425#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2425{block}~~I'{:}\href{../text/instructions.html#text-label}{\mathtt{label}}_I~~\mathit{rt}{:}\href{../text/types.html#text-resulttype}{\mathtt{resulttype}}~~(\mathit{in}{:}\href{../text/instructions.html#text-instr}{\mathtt{instr}}_{I'})^\ast~~\def\mathdef2426#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2426{end}~~\href{../text/values.html#text-id}{\mathtt{id}}^?
@@ -150,7 +143,7 @@ The same label identifier may optionally be repeated after the corresponding <sp
     \qquad (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}_1^? = \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}_1^? = \href{../text/instructions.html#text-label}{\mathtt{label}}, \href{../text/values.html#text-id}{\mathtt{id}}_2^? = \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}_2^? = \href{../text/instructions.html#text-label}{\mathtt{label}}) \\
 \end{array}\end{split}\]</div>
 <p id="text-call-indirect"><span id="text-call"></span><span id="text-return"></span><span id="text-br-table"></span><span id="text-br-if"></span><span id="text-br"></span><span id="text-unreachable"></span><span id="text-nop"></span>All other control instruction are represented verbatim.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llcllll}
 \def\mathdef2368#1{{}}\mathdef2368{plain instruction} &amp; \href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I &amp;::=&amp;
   \def\mathdef2432#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2432{unreachable} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}} \\ &amp;&amp;|&amp;
@@ -166,12 +159,12 @@ The same label identifier may optionally be repeated after the corresponding <sp
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The side condition stating that the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math">\(I'\)</span> must be empty in the rule for <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> enforces that no identifier can be bound in any <span class="math">\(\href{../text/types.html#text-functype}{\mathtt{param}}\)</span> declaration appearing in the type annotation.</p>
+<p class="last">The side condition stating that the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate">\(I'\)</span> must be empty in the rule for <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> enforces that no identifier can be bound in any <span class="math notranslate">\(\href{../text/types.html#text-functype}{\mathtt{param}}\)</span> declaration appearing in the type annotation.</p>
 </div>
 <div class="section" id="abbreviations">
 <h3>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this headline">¶</a></h3>
-<p>The <span class="math">\(\def\mathdef2440#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2440{else}\)</span> keyword of an <span class="math">\(\def\mathdef2441#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2441{if}\)</span> instruction can be omitted if the following instruction sequence is empty.</p>
-<div class="math">
+<p>The <span class="math notranslate">\(\def\mathdef2440#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2440{else}\)</span> keyword of an <span class="math notranslate">\(\def\mathdef2441#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2441{if}\)</span> instruction can be omitted if the following instruction sequence is empty.</p>
+<div class="math notranslate">
 \[\begin{array}{llclll}
 \def\mathdef2368#1{{}}\mathdef2368{block instruction} &amp;
   \def\mathdef2442#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2442{if}~~\href{../text/instructions.html#text-label}{\mathtt{label}}~~\href{../text/types.html#text-resulttype}{\mathtt{resulttype}}~~\href{../text/instructions.html#text-instr}{\mathtt{instr}}^\ast~~\def\mathdef2443#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2443{end}
@@ -182,7 +175,7 @@ The same label identifier may optionally be repeated after the corresponding <sp
 </div>
 <div class="section" id="parametric-instructions">
 <span id="text-instr-parametric"></span><span id="index-3"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
-<div class="math" id="text-select">
+<div class="math notranslate" id="text-select">
 <span id="text-drop"></span>\[\begin{split}\begin{array}{llclll}
 \def\mathdef2368#1{{}}\mathdef2368{instruction} &amp; \href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
   \def\mathdef2447#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2447{drop} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}} \\ &amp;&amp;|&amp;
@@ -191,7 +184,7 @@ The same label identifier may optionally be repeated after the corresponding <sp
 </div>
 <div class="section" id="variable-instructions">
 <span id="text-instr-variable"></span><span id="index-4"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
-<div class="math" id="text-set-global">
+<div class="math notranslate" id="text-set-global">
 <span id="text-get-global"></span><span id="text-tee-local"></span><span id="text-set-local"></span><span id="text-get-local"></span>\[\begin{split}\begin{array}{llclll}
 \def\mathdef2368#1{{}}\mathdef2368{instruction} &amp; \href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
   \def\mathdef2449#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2449{get\_local}~~x{:}\href{../text/modules.html#text-localidx}{\mathtt{localidx}}_I &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~x \\ &amp;&amp;|&amp;
@@ -204,9 +197,9 @@ The same label identifier may optionally be repeated after the corresponding <sp
 <div class="section" id="memory-instructions">
 <span id="text-instr-memory"></span><span id="index-5"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
 <p id="text-grow-memory"><span id="text-current-memory"></span><span id="text-storen"></span><span id="text-store"></span><span id="text-loadn"></span><span id="text-load"></span><span id="text-memarg"></span>The offset and alignment immediates to memory instructions are optional.
-The offset defaults to <span class="math">\(\mathtt{0}\)</span>, the alignment to the storage size of the respective memory access, which is its <em>natural alignment</em>.
-Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{\mathtt{offset}}\)</span> or <span class="math">\(\href{../text/instructions.html#text-memarg}{\mathtt{align}}\)</span> phrase is considered a single <a class="reference internal" href="lexical.html#text-keyword"><span class="std std-ref">keyword token</span></a>, so no <a class="reference internal" href="lexical.html#text-space"><span class="std std-ref">white space</span></a> is allowed around the <span class="math">\(\def\mathdef2454#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2454{=}\)</span>.</p>
-<div class="math">
+The offset defaults to <span class="math notranslate">\(\mathtt{0}\)</span>, the alignment to the storage size of the respective memory access, which is its <em>natural alignment</em>.
+Lexically, an <span class="math notranslate">\(\href{../text/instructions.html#text-memarg}{\mathtt{offset}}\)</span> or <span class="math notranslate">\(\href{../text/instructions.html#text-memarg}{\mathtt{align}}\)</span> phrase is considered a single <a class="reference internal" href="lexical.html#text-keyword"><span class="std std-ref">keyword token</span></a>, so no <a class="reference internal" href="lexical.html#text-space"><span class="std std-ref">white space</span></a> is allowed around the <span class="math notranslate">\(\def\mathdef2454#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2454{=}\)</span>.</p>
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llcllll}
 \def\mathdef2368#1{{}}\mathdef2368{memory argument} &amp; \href{../text/instructions.html#text-memarg}{\mathtt{memarg}}_N &amp;::=&amp;
   o{:}\href{../text/instructions.html#text-memarg}{\mathtt{offset}}~~a{:}\href{../text/instructions.html#text-memarg}{\mathtt{align}}_N &amp;\Rightarrow&amp; \{ \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}~n,~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}~o \} &amp; (\mathrel{\mbox{if}} a = 2^n) \\
@@ -246,7 +239,7 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
 </div>
 <div class="section" id="numeric-instructions">
 <span id="text-instr-numeric"></span><span id="index-6"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
-<div class="math" id="text-const">
+<div class="math notranslate" id="text-const">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2368#1{{}}\mathdef2368{instruction} &amp; \href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I &amp;::=&amp; \dots \\&amp;&amp;|&amp;
   \def\mathdef2482#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2482{i32.const}~~n{:}\href{../text/values.html#text-int}{\def\mathdef2419#1{{\mathtt{i}#1}}\mathdef2419{\mathtt{32}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n \\ &amp;&amp;|&amp;
@@ -254,7 +247,7 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2484#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2484{f32.const}~~z{:}\href{../text/values.html#text-float}{\def\mathdef2423#1{{\mathtt{f}#1}}\mathdef2423{\mathtt{32}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~z \\ &amp;&amp;|&amp;
   \def\mathdef2485#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2485{f64.const}~~z{:}\href{../text/values.html#text-float}{\def\mathdef2424#1{{\mathtt{f}#1}}\mathdef2424{\mathtt{64}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~z \\
 \end{array}\end{split}\]</div>
-<div class="math" id="text-binop">
+<div class="math notranslate" id="text-binop">
 <span id="text-unop"></span>\[\begin{split}\begin{array}{llclll}
 \phantom{\def\mathdef2368#1{{}}\mathdef2368{instruction}} &amp; \phantom{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I} &amp;\phantom{::=}&amp; \phantom{thisisenough} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef2486#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2486{i32.clz} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{clz}} \\ &amp;&amp;|&amp;
@@ -276,7 +269,7 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2502#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2502{i32.rotl} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotl}} \\ &amp;&amp;|&amp;
   \def\mathdef2503#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2503{i32.rotr} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotr}} \\
 \end{array}\end{split}\]</div>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \phantom{\def\mathdef2368#1{{}}\mathdef2368{instruction}} &amp; \phantom{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I} &amp;\phantom{::=}&amp; \phantom{thisisenough} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef2504#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2504{i64.clz} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{clz}} \\ &amp;&amp;|&amp;
@@ -298,7 +291,7 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2520#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2520{i64.rotl} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotl}} \\ &amp;&amp;|&amp;
   \def\mathdef2521#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2521{i64.rotr} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotr}} \\
 \end{array}\end{split}\]</div>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \phantom{\def\mathdef2368#1{{}}\mathdef2368{instruction}} &amp; \phantom{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I} &amp;\phantom{::=}&amp; \phantom{thisisenough} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef2522#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2522{f32.abs} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{abs}} \\ &amp;&amp;|&amp;
@@ -316,7 +309,7 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2534#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2534{f32.max} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{max}} \\ &amp;&amp;|&amp;
   \def\mathdef2535#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2535{f32.copysign} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{copysign}} \\
 \end{array}\end{split}\]</div>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \phantom{\def\mathdef2368#1{{}}\mathdef2368{instruction}} &amp; \phantom{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I} &amp;\phantom{::=}&amp; \phantom{thisisenough} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef2536#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2536{f64.abs} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{abs}} \\ &amp;&amp;|&amp;
@@ -334,7 +327,7 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2548#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2548{f64.max} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{max}} \\ &amp;&amp;|&amp;
   \def\mathdef2549#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2549{f64.copysign} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{copysign}} \\
 \end{array}\end{split}\]</div>
-<div class="math" id="text-relop">
+<div class="math notranslate" id="text-relop">
 <span id="text-testop"></span>\[\begin{split}\begin{array}{llclll}
 \phantom{\def\mathdef2368#1{{}}\mathdef2368{instruction}} &amp; \phantom{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I} &amp;\phantom{::=}&amp; \phantom{thisisenough} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef2550#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2550{i32.eqz} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eqz}} \\ &amp;&amp;|&amp;
@@ -349,7 +342,7 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2559#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2559{i32.ge\_s} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_s} \\ &amp;&amp;|&amp;
   \def\mathdef2560#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2560{i32.ge\_u} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_u} \\
 \end{array}\end{split}\]</div>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \phantom{\def\mathdef2368#1{{}}\mathdef2368{instruction}} &amp; \phantom{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I} &amp;\phantom{::=}&amp; \phantom{thisisenough} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef2561#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2561{i64.eqz} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eqz}} \\ &amp;&amp;|&amp;
@@ -364,7 +357,7 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2570#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2570{i64.ge\_s} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_s} \\ &amp;&amp;|&amp;
   \def\mathdef2571#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2571{i64.ge\_u} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_u} \\
 \end{array}\end{split}\]</div>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \phantom{\def\mathdef2368#1{{}}\mathdef2368{instruction}} &amp; \phantom{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I} &amp;\phantom{::=}&amp; \phantom{thisisenough} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef2572#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2572{f32.eq} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} \\ &amp;&amp;|&amp;
@@ -374,7 +367,7 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2576#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2576{f32.le} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}} \\ &amp;&amp;|&amp;
   \def\mathdef2577#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2577{f32.ge} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}} \\
 \end{array}\end{split}\]</div>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \phantom{\def\mathdef2368#1{{}}\mathdef2368{instruction}} &amp; \phantom{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I} &amp;\phantom{::=}&amp; \phantom{thisisenough} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef2578#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2578{f64.eq} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} \\ &amp;&amp;|&amp;
@@ -384,7 +377,7 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
   \def\mathdef2582#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2582{f64.le} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}} \\ &amp;&amp;|&amp;
   \def\mathdef2583#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2583{f64.ge} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}} \\
 \end{array}\end{split}\]</div>
-<div class="math" id="text-cvtop">
+<div class="math notranslate" id="text-cvtop">
 \[\begin{split}\begin{array}{llclll}
 \phantom{\def\mathdef2368#1{{}}\mathdef2368{instruction}} &amp; \phantom{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I} &amp;\phantom{::=}&amp; \phantom{thisisenough} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
   \def\mathdef2584#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2584{i32.wrap/i64} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{wrap}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
@@ -417,11 +410,11 @@ Lexically, an <span class="math">\(\href{../text/instructions.html#text-memarg}{
 <div class="section" id="folded-instructions">
 <span id="text-foldedinstr"></span><span id="index-7"></span><h2>Folded Instructions<a class="headerlink" href="#folded-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Instructions can be written as S-expressions by grouping them into <em>folded</em> form. In that notation, an instruction is wrapped in parentheses and optionally includes nested folded instructions to indicate its operands.</p>
-<p>In the case of <a class="reference internal" href="#text-instr-block"><span class="std std-ref">block instructions</span></a>, the folded form omits the <span class="math">\(\def\mathdef2609#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2609{end}\)</span> delimiter.
-For <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> instructions, both branches have to be wrapped into nested S-expressions, headed by the keywords <span class="math">\(\def\mathdef2610#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2610{then}\)</span> and <span class="math">\(\def\mathdef2611#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2611{else}\)</span>.</p>
-<p>The set of all phrases defined by the following abbreviations recursively forms the auxiliary syntactic class <span class="math">\(\href{../text/instructions.html#text-foldedinstr}{\mathtt{foldedinstr}}\)</span>.
+<p>In the case of <a class="reference internal" href="#text-instr-block"><span class="std std-ref">block instructions</span></a>, the folded form omits the <span class="math notranslate">\(\def\mathdef2609#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2609{end}\)</span> delimiter.
+For <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> instructions, both branches have to be wrapped into nested S-expressions, headed by the keywords <span class="math notranslate">\(\def\mathdef2610#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2610{then}\)</span> and <span class="math notranslate">\(\def\mathdef2611#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2611{else}\)</span>.</p>
+<p>The set of all phrases defined by the following abbreviations recursively forms the auxiliary syntactic class <span class="math notranslate">\(\href{../text/instructions.html#text-foldedinstr}{\mathtt{foldedinstr}}\)</span>.
 Such a folded instruction can appear anywhere a regular instruction can.</p>
-<div class="math">
+<div class="math notranslate">
 \[\begin{split}\begin{array}{lllll}
 \def\mathdef2368#1{{}}\mathdef2368{instruction} &amp;
   \def\mathdef2612#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2612{(}~\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}~~\href{../text/instructions.html#text-foldedinstr}{\mathtt{foldedinstr}}^\ast~\def\mathdef2613#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2613{)}
@@ -444,8 +437,8 @@ no additional syntactic or type-based checking is implied.</p>
 <div class="section" id="expressions">
 <span id="text-expr"></span><span id="index-8"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
 <p>Expressions are written as instruction sequences.
-No explicit <span class="math">\(\def\mathdef2636#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2636{end}\)</span> keyword is included, since they only occur in bracketed positions.</p>
-<div class="math">
+No explicit <span class="math notranslate">\(\def\mathdef2636#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2636{end}\)</span> keyword is included, since they only occur in bracketed positions.</p>
+<div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2368#1{{}}\mathdef2368{expression} &amp; \href{../text/instructions.html#text-expr}{\mathtt{expr}} &amp;::=&amp;
   (\mathit{in}{:}\href{../text/instructions.html#text-instr}{\mathtt{instr}})^\ast &amp;\Rightarrow&amp; \mathit{in}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
