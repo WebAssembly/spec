@@ -72,24 +72,28 @@ deploy:
 .PHONY: publish
 publish: clean all deploy
 
+.PHONY: publish-main
+publish-main: clean main bikeshed-keep deploy
+
 .PHONY: all
 all:	pdf html bikeshed
-
-.PHONY: deploy-main
-deploy-main:
-	(cd ..; make dir-core)
-	(cd ..; GIT_DEPLOY_DIR=$(BUILDDIR) GIT_DEPLOY_SUBDIR=core/multipage bash deploy.sh)
-
-.PHONY: publish-main
-publish-main: clean main deploy-main
 
 .PHONY: main
 main:	pdf html
 
+# Dirty hack to avoid rebuilding the Bikeshed version for every push.
+.PHONY: bikeshed-keep
+bikeshed-keep:
+	test -e $(BUILDDIR)/html/bikeshed || \
+	  wget -r -nH --cut-dirs=2 -P $(BUILDDIR)/html --no-check-certificate \
+	    https://webassembly.github.io/spec/core/bikeshed || \
+	  echo Downloaded Bikeshed.
+
+
 .PHONY: pdf
 pdf:	latexpdf
-	mkdir -p $(BUILDDIR)/html/multipage/$(DOWNLOADDIR)
-	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(BUILDDIR)/html/multipage/$(DOWNLOADDIR)/$(NAME).pdf
+	mkdir -p $(BUILDDIR)/html/$(DOWNLOADDIR)
+	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(BUILDDIR)/html/$(DOWNLOADDIR)/$(NAME).pdf
 
 
 .PHONY: clean
@@ -99,15 +103,15 @@ clean:
 
 .PHONY: html
 html:
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html/multipage
-	for file in `ls $(BUILDDIR)/html/multipage/*.html`; \
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	for file in `ls $(BUILDDIR)/html/*.html`; \
 	do \
 	  sed s:BASEDIR:.:g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
 	  sed s~$(OLDMATHJAX)~$(NEWMATHJAX)~g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
 	done
-	for file in `ls $(BUILDDIR)/html/multipage/*/*.html`; \
+	for file in `ls $(BUILDDIR)/html/*/*.html`; \
 	do \
 	  sed s:BASEDIR:..:g <$$file >$$file.out; \
 	  sed 's;<body; <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body;' \
@@ -117,7 +121,7 @@ html:
 	  mv -f $$file.out $$file; \
 	done
 	@echo
-	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html/multipage."
+	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html/."
 
 .PHONY: dirhtml
 dirhtml:
@@ -145,7 +149,7 @@ bikeshed:
 	patch -p0 $(BUILDDIR)/html/bikeshed/katex/dist/katex.css \
 		< util/katex_fix.patch
 	@echo
-	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed."
+	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
 
 .PHONY: pickle
 pickle:
