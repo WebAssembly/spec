@@ -16,7 +16,7 @@ let pos s = !(s.pos)
 let eos s = (pos s = len s)
 
 let check n s = if pos s + n > len s then raise EOS
-let skip n s = check n s; s.pos := !(s.pos) + n
+let skip n s = if n < 0 then raise EOS else check n s; s.pos := !(s.pos) + n
 
 let read s = Char.code (s.bytes.[!(s.pos)])
 let peek s = if eos s then None else Some (read s)
@@ -39,7 +39,7 @@ let error s pos msg = raise (Code (region s pos pos, msg))
 let require b s pos msg = if not b then error s pos msg
 
 let guard f s =
-  try f s with EOS -> error s (len s) "unexpected end of binary or function"
+  try f s with EOS -> error s (len s) "unexpected end of section or function"
 
 let get = guard get
 let get_string n = guard (get_string n)
