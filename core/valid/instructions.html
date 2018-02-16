@@ -1,0 +1,715 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Instructions &#8212; WebAssembly 1.0</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modules" href="modules.html" />
+    <link rel="prev" title="Types" href="types.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Validation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numeric-instructions">Numeric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parametric-instructions">Parametric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variable-instructions">Variable Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-instructions">Memory Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#control-instructions">Control Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instruction-sequences">Instruction Sequences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expressions">Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="instructions">
+<span id="valid-instr"></span><span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">Instructions</span></a> are classified by <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>
+that describe how they manipulate the <a class="reference internal" href="../exec/runtime.html#stack"><span class="std std-ref">operand stack</span></a>.
+The types describe the required input stack with argument values of types <span class="math">\(t_1^\ast\)</span> that an instruction pops off
+and the provided output stack with result values of types <span class="math">\(t_2^\ast\)</span> that it pushes back.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For example, the instruction <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> has type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>,
+consuming two <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> values and producing one.</p>
+</div>
+<p>Typing extends to <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">instruction sequences</span></a> <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span>.
+Such a sequence has a <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span> if the accumulative effect of executing the instructions is consuming values of types <span class="math">\(t_1^\ast\)</span> off the operand stack and pushing new values of types <span class="math">\(t_2^\ast\)</span>.</p>
+<p id="polymorphism">For some instructions, the typing rules do not fully constrain the type,
+and therefore allow for multiple types.
+Such instructions are called <em>polymorphic</em>.
+Two degrees of polymorphism can be distinguished:</p>
+<ul class="simple">
+<li><em>value-polymorphic</em>:
+the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span> of one or several individual operands is unconstrained.
+That is the case for all <a class="reference internal" href="#valid-instr-parametric"><span class="std std-ref">parametric instructions</span></a> like <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span>.</li>
+<li><em>stack-polymorphic</em>:
+the entire (or most of the) <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span> of the instruction is unconstrained.
+That is the case for all <a class="reference internal" href="#valid-instr-control"><span class="std std-ref">control instructions</span></a> that perform an <em>unconditional control transfer</em>, such as <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span>, <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}\)</span>, <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}\)</span>, and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}}\)</span>.</li>
+</ul>
+<p>In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they meet the constraints imposed for the surrounding parts of the program.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>For example, the <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span> instruction is valid with type <span class="math">\([t~t~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>, for any possible <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span>.   Consequently, both instruction sequences</p>
+<div class="math">
+\[(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~1)~~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~2)~~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~3)~~\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}{}\]</div>
+<p>and</p>
+<div class="math">
+\[(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~1.0)~~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~2.0)~~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~3)~~\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}{}\]</div>
+<p>are valid, with <span class="math">\(t\)</span> in the typing of <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span> being instantiated to <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> or <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\)</span>, respectively.</p>
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span> instruction is valid with type <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span> for any possible sequences of value types <span class="math">\(t_1^\ast\)</span> and <span class="math">\(t_2^\ast\)</span>.
+Consequently,</p>
+<div class="math">
+\[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}~~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\]</div>
+<p>is valid by assuming type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span> for the <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span> instruction.
+In contrast,</p>
+<div class="math">
+\[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}~~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0)~~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\]</div>
+<p class="last">is invalid, because there is no possible type to pick for the <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span> instruction that would make the sequence well-typed.</p>
+</div>
+<div class="section" id="numeric-instructions">
+<span id="valid-instr-numeric"></span><span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="valid-const">
+<span id="id1"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span><a class="headerlink" href="#valid-const" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction is valid with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
+}\]</div>
+</div>
+<div class="section" id="valid-unop">
+<span id="id2"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}\)</span><a class="headerlink" href="#valid-unop" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction is valid with type <span class="math">\([t] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} t\mathsf{.}\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}} : [t] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
+}\]</div>
+</div>
+<div class="section" id="valid-binop">
+<span id="id3"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}\)</span><a class="headerlink" href="#valid-binop" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction is valid with type <span class="math">\([t~t] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} t\mathsf{.}\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}} : [t~t] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
+}\]</div>
+</div>
+<div class="section" id="valid-testop">
+<span id="id4"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-testop}{\mathit{testop}}\)</span><a class="headerlink" href="#valid-testop" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction is valid with type <span class="math">\([t] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} t\mathsf{.}\href{../syntax/instructions.html#syntax-testop}{\mathit{testop}} : [t] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
+}\]</div>
+</div>
+<div class="section" id="valid-relop">
+<span id="id5"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-relop}{\mathit{relop}}\)</span><a class="headerlink" href="#valid-relop" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction is valid with type <span class="math">\([t~t] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} t\mathsf{.}\href{../syntax/instructions.html#syntax-relop}{\mathit{relop}} : [t~t] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
+}\]</div>
+</div>
+<div class="section" id="valid-cvtop">
+<span id="id6"></span><h3><span class="math">\(t_2\mathsf{.}\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}/t_1\)</span><a class="headerlink" href="#valid-cvtop" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction is valid with type <span class="math">\([t_1] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} t_2\mathsf{.}\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}/t_1 : [t_1] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2]
+}\]</div>
+</div>
+</div>
+<div class="section" id="parametric-instructions">
+<span id="valid-instr-parametric"></span><span id="index-2"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="valid-drop">
+<span id="id7"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}}\)</span><a class="headerlink" href="#valid-drop" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction is valid with type <span class="math">\([t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>, for any <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}} : [t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []
+}\]</div>
+</div>
+<div class="section" id="valid-select">
+<span id="id8"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span><a class="headerlink" href="#valid-select" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction is valid with type <span class="math">\([t~t~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>, for any <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}} : [t~t~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
+}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Both <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span> are <a class="reference internal" href="#polymorphism"><span class="std std-ref">value-polymorphic</span></a> instructions.</p>
+</div>
+</div>
+</div>
+<div class="section" id="variable-instructions">
+<span id="valid-instr-variable"></span><span id="index-3"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="valid-get-local">
+<span id="id9"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~x\)</span><a class="headerlink" href="#valid-get-local" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The local <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x]\)</span> must be defined in the context.</li>
+<li>Let <span class="math">\(t\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x]\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x] = t
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~x : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
+}\]</div>
+</div>
+<div class="section" id="valid-set-local">
+<span id="id10"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_local}}~x\)</span><a class="headerlink" href="#valid-set-local" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The local <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x]\)</span> must be defined in the context.</li>
+<li>Let <span class="math">\(t\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x]\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x] = t
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_local}}~x : [t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []
+}\]</div>
+</div>
+<div class="section" id="valid-tee-local">
+<span id="id11"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{tee\_local}}~x\)</span><a class="headerlink" href="#valid-tee-local" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The local <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x]\)</span> must be defined in the context.</li>
+<li>Let <span class="math">\(t\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x]\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([t] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x] = t
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{tee\_local}}~x : [t] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
+}\]</div>
+</div>
+<div class="section" id="valid-get-global">
+<span id="id12"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_global}}~x\)</span><a class="headerlink" href="#valid-get-global" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The global <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span> must be defined in the context.</li>
+<li>Let <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x] = \href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_global}}~x : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
+}\]</div>
+</div>
+<div class="section" id="valid-set-global">
+<span id="id13"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_global}}~x\)</span><a class="headerlink" href="#valid-set-global" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The global <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span> must be defined in the context.</li>
+<li>Let <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span>.</li>
+<li>The mutability <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{var}}\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x] = \href{../syntax/types.html#syntax-mut}{\mathsf{var}}~t
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_global}}~x : [t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []
+}\]</div>
+</div>
+</div>
+<div class="section" id="memory-instructions">
+<span id="valid-instr-memory"></span><span id="valid-memarg"></span><span id="index-4"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="valid-load">
+<span id="id14"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#valid-load" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The memory <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0]\)</span> must be defined in the context.</li>
+<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> of <span class="math">\(t\)</span> divided by <span class="math">\(8\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
+  \qquad
+  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}} \leq |t|/8
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} t\mathsf{.load}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
+}\]</div>
+</div>
+<div class="section" id="valid-loadn">
+<span id="id15"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{N}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#valid-loadn" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The memory <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0]\)</span> must be defined in the context.</li>
+<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than <span class="math">\(N/8\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
+  \qquad
+  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}} \leq N/8
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} t\mathsf{.load}N\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
+}\]</div>
+</div>
+<div class="section" id="id16">
+<h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The memory <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0]\)</span> must be defined in the context.</li>
+<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> of <span class="math">\(t\)</span> divided by <span class="math">\(8\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
+  \qquad
+  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}} \leq |t|/8
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} t\mathsf{.store}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []
+}\]</div>
+</div>
+<div class="section" id="valid-storen">
+<span id="id17"></span><h3><span class="math">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}{N}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#valid-storen" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The memory <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0]\)</span> must be defined in the context.</li>
+<li>The alignment <span class="math">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than <span class="math">\(N/8\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
+  \qquad
+  2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}} \leq N/8
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} t\mathsf{.store}N~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []
+}\]</div>
+</div>
+<div class="section" id="valid-current-memory">
+<span id="id18"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}}\)</span><a class="headerlink" href="#valid-current-memory" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The memory <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0]\)</span> must be defined in the context.</li>
+<li>Then the instruction is valid with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
+}\]</div>
+</div>
+<div class="section" id="valid-grow-memory">
+<span id="id19"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}}\)</span><a class="headerlink" href="#valid-grow-memory" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The memory <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0]\)</span> must be defined in the context.</li>
+<li>Then the instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0] = \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
+}\]</div>
+</div>
+</div>
+<div class="section" id="control-instructions">
+<span id="valid-instr-control"></span><span id="valid-label"></span><span id="index-5"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="valid-nop">
+<span id="id20"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}}\)</span><a class="headerlink" href="#valid-nop" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction is valid with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} []
+}\]</div>
+</div>
+<div class="section" id="valid-unreachable">
+<span id="id21"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span><a class="headerlink" href="#valid-unreachable" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction is valid with type <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>, for any sequences of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(t_1^\ast\)</span> and <span class="math">\(t_2^\ast\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}} : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}\)</span> instruction is <a class="reference internal" href="#polymorphism"><span class="std std-ref">stack-polymorphic</span></a>.</p>
+</div>
+</div>
+<div class="section" id="valid-block">
+<span id="id22"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span><a class="headerlink" href="#valid-block" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(C'\)</span> be the same <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> as <span class="math">\(C\)</span>, but with the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([t^?]\)</span> prepended to the <span class="math">\(\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> vector.</li>
+<li>Under context <span class="math">\(C'\)</span>,
+the instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span>.</li>
+<li>Then the compound instruction is valid with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The fact that the nested instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must have type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span> implies that it cannot access operands that have been pushed on the stack before the block was entered.
+This may be generalized in future versions of WebAssembly.</p>
+</div>
+</div>
+<div class="section" id="valid-loop">
+<span id="id23"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span><a class="headerlink" href="#valid-loop" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(C'\)</span> be the same <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> as <span class="math">\(C\)</span>, but with the empty <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([]\)</span> prepended to the <span class="math">\(\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> vector.</li>
+<li>Under context <span class="math">\(C'\)</span>,
+the instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span>.</li>
+<li>Then the compound instruction is valid with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The fact that the nested instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must have type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span> implies that it cannot access operands that have been pushed on the stack before the loop was entered.
+This may be generalized in future versions of WebAssembly.</p>
+</div>
+</div>
+<div class="section" id="valid-if">
+<span id="id24"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span><a class="headerlink" href="#valid-if" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(C'\)</span> be the same <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> as <span class="math">\(C\)</span>, but with the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([t^?]\)</span> prepended to the <span class="math">\(\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> vector.</li>
+<li>Under context <span class="math">\(C'\)</span>,
+the instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast\)</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span>.</li>
+<li>Under context <span class="math">\(C'\)</span>,
+the instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast\)</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span>.</li>
+<li>Then the compound instruction is valid with type <span class="math">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  \qquad
+  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The fact that the nested instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must have type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span> implies that it cannot access operands that have been pushed on the stack before the conditional was entered.
+This may be generalized in future versions of WebAssembly.</p>
+</div>
+</div>
+<div class="section" id="valid-br">
+<span id="id25"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}~l\)</span><a class="headerlink" href="#valid-br" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The label <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l]\)</span> must be defined in the context.</li>
+<li>Let <span class="math">\([t^?]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l]\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([t_1^\ast~t^?] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>, for any sequences of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(t_1^\ast\)</span> and <span class="math">\(t_2^\ast\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l] = [t^?]
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}~l : [t_1^\ast~t^?] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}\)</span> instruction is <a class="reference internal" href="#polymorphism"><span class="std std-ref">stack-polymorphic</span></a>.</p>
+</div>
+</div>
+<div class="section" id="valid-br-if">
+<span id="id26"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_if}}~l\)</span><a class="headerlink" href="#valid-br-if" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The label <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l]\)</span> must be defined in the context.</li>
+<li>Let <span class="math">\([t^?]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l]\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([t^?~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l] = [t^?]
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_if}}~l : [t^?~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+}\]</div>
+</div>
+<div class="section" id="valid-br-table">
+<span id="id27"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}~l^\ast~l_N\)</span><a class="headerlink" href="#valid-br-table" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The label <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_N]\)</span> must be defined in the context.</li>
+<li>Let <span class="math">\([t^?]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_N]\)</span>.</li>
+<li>For all <span class="math">\(l_i\)</span> in <span class="math">\(l^\ast\)</span>,
+the label <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_i]\)</span> must be defined in the context.</li>
+<li>For all <span class="math">\(l_i\)</span> in <span class="math">\(l^\ast\)</span>,
+<span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_i]\)</span> must be <span class="math">\(t^?\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([t_1^\ast~t^?~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>, for any sequences of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(t_1^\ast\)</span> and <span class="math">\(t_2^\ast\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  (C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l] = [t^?])^\ast
+  \qquad
+  C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_N] = [t^?]
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}~l^\ast~l_N : [t_1^\ast~t^?~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}\)</span> instruction is <a class="reference internal" href="#polymorphism"><span class="std std-ref">stack-polymorphic</span></a>.</p>
+</div>
+</div>
+<div class="section" id="valid-return">
+<span id="id28"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}}\)</span><a class="headerlink" href="#valid-return" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The return type <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> must not be empty in the context.</li>
+<li>Let <span class="math">\([t^?]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> of <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{return}}\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([t_1^\ast~t^?] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>, for any sequences of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(t_1^\ast\)</span> and <span class="math">\(t_2^\ast\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{return}} = [t^?]
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}} : [t_1^\ast~t^?] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}}\)</span> instruction is <a class="reference internal" href="#polymorphism"><span class="std std-ref">stack-polymorphic</span></a>.</p>
+<p class="last"><span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> is empty (<span class="math">\(\epsilon\)</span>) when validating an <a class="reference internal" href="#valid-expr"><span class="std std-ref">expression</span></a> that is not a function body.
+This differs from it being set to the empty result type (<span class="math">\([]\)</span>),
+which is the case for functions not returning anything.</p>
+</div>
+</div>
+<div class="section" id="valid-call">
+<span id="id29"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}~x\)</span><a class="headerlink" href="#valid-call" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The function <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x]\)</span> must be defined in the context.</li>
+<li>Then the instruction is valid with type <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{funcs}}[x] = [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}~x : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+}\]</div>
+</div>
+<div class="section" id="valid-call-indirect">
+<span id="id30"></span><h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~x\)</span><a class="headerlink" href="#valid-call-indirect" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The table <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}[0]\)</span> must be defined in the context.</li>
+<li>Let <span class="math">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}[0]\)</span>.</li>
+<li>The <a class="reference internal" href="../syntax/types.html#syntax-elemtype"><span class="std std-ref">element type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span> must be <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}\)</span>.</li>
+<li>The type <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span> must be defined in the context.</li>
+<li>Let <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span>.</li>
+<li>Then the instruction is valid with type <span class="math">\([t_1^\ast~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{tables}}[0] = \href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}
+  \qquad
+  C.\href{../valid/conventions.html#context}{\mathsf{types}}[x] = [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+}{
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~x : [t_1^\ast~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+}\]</div>
+</div>
+</div>
+<div class="section" id="instruction-sequences">
+<span id="valid-instr-seq"></span><span id="index-6"></span><h2>Instruction Sequences<a class="headerlink" href="#instruction-sequences" title="Permalink to this headline">¶</a></h2>
+<p>Typing of instruction sequences is defined recursively.</p>
+<div class="section" id="empty-instruction-sequence">
+<h3>Empty Instruction Sequence: <span class="math">\(\epsilon\)</span><a class="headerlink" href="#empty-instruction-sequence" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The empty instruction sequence is valid with type <span class="math">\([t^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^\ast]\)</span>,
+for any sequence of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(t^\ast\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \epsilon : [t^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^\ast]
+}\]</div>
+</div>
+<div class="section" id="non-empty-instruction-sequence">
+<h3>Non-empty Instruction Sequence: <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_N\)</span><a class="headerlink" href="#non-empty-instruction-sequence" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be valid with type <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>,
+for some sequences of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(t_1^\ast\)</span> and <span class="math">\(t_2^\ast\)</span>.</li>
+<li>The instruction <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_N\)</span> must be valid with type <span class="math">\([t^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_3^\ast]\)</span>,
+for some sequences of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(t^\ast\)</span> and <span class="math">\(t_3^\ast\)</span>.</li>
+<li>There must be a sequence of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math">\(t_0^\ast\)</span>,
+such that <span class="math">\(t_2^\ast = t_0^\ast~t^\ast\)</span>.</li>
+<li>Then the combined instruction sequence is valid with type <span class="math">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_0^\ast~t_3^\ast]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_0^\ast~t^\ast]
+  \qquad
+  C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_N : [t^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_3^\ast]
+}{
+  C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_N : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_0^\ast~t_3^\ast]
+}\]</div>
+</div>
+</div>
+<div class="section" id="expressions">
+<span id="valid-expr"></span><span id="index-7"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
+<p>Expressions <span class="math">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result types</span></a> of the form <span class="math">\([t^?]\)</span>.</p>
+<div class="section" id="id31">
+<h3><span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span><a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The instruction sequence <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span>,
+for some optional <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math">\(t^?\)</span>.</li>
+<li>Then the expression is valid with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math">\([t^?]\)</span>.</li>
+</ul>
+<div class="math">
+\[\frac{
+  C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+}{
+  C \href{../valid/instructions.html#valid-expr}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [t^?]
+}\]</div>
+</div>
+<div class="section" id="constant-expressions">
+<span id="valid-constant"></span><span id="index-8"></span><h3>Constant Expressions<a class="headerlink" href="#constant-expressions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>In a <em>constant</em> expression <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> all instructions in <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be constant.</li>
+<li>A constant instruction <span class="math">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}\)</span> must be:<ul>
+<li>either of the form <span class="math">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span>,</li>
+<li>or of the form <span class="math">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_global}}~x\)</span>, in which case <span class="math">\(C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x]\)</span> must be a <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> of the form <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~t\)</span>.</li>
+</ul>
+</li>
+</ul>
+<div class="math">
+\[\frac{
+  (C \href{../valid/instructions.html#valid-constant}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} \href{../valid/instructions.html#valid-constant}{\mathrel{\mbox{const}}})^\ast
+}{
+  C \href{../valid/instructions.html#valid-constant}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \href{../valid/instructions.html#valid-constant}{\mathrel{\mbox{const}}}
+}\]</div>
+<div class="math">
+\[\frac{
+}{
+  C \href{../valid/instructions.html#valid-constant}{\vdash} t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c \href{../valid/instructions.html#valid-constant}{\mathrel{\mbox{const}}}
+}
+\qquad
+\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{globals}}[x] = \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~t
+}{
+  C \href{../valid/instructions.html#valid-constant}{\vdash} \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_global}}~x \href{../valid/instructions.html#valid-constant}{\mathrel{\mbox{const}}}
+}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The definition of constant expression may be extended in future versions of WebAssembly.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

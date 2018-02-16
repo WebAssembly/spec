@@ -1,0 +1,406 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Instructions &#8212; WebAssembly 1.0</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modules" href="modules.html" />
+    <link rel="prev" title="Types" href="types.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Binary Format</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#control-instructions">Control Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parametric-instructions">Parametric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variable-instructions">Variable Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-instructions">Memory Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#numeric-instructions">Numeric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expressions">Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="instructions">
+<span id="binary-instr"></span><span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">Instructions</span></a> are encoded by <em>opcodes</em>.
+Each opcode is represented by a single byte,
+and is followed by the instruction’s immediate arguments, where present.
+The only exception are <a class="reference internal" href="#binary-instr-control"><span class="std std-ref">structured control instructions</span></a>, which consist of several opcodes bracketing their nested instruction sequences.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Gaps in the byte code ranges for encoding instructions are reserved for future extensions.</p>
+</div>
+<div class="section" id="control-instructions">
+<span id="binary-instr-control"></span><span id="index-1"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">Control instructions</span></a> have varying encodings. For structured instructions, the instruction sequences forming nested blocks are terminated with explicit opcodes for <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span>.</p>
+<div class="math" id="binary-call-indirect">
+<span id="binary-call"></span><span id="binary-return"></span><span id="binary-br-table"></span><span id="binary-br-if"></span><span id="binary-br"></span><span id="binary-if"></span><span id="binary-loop"></span><span id="binary-block"></span><span id="binary-unreachable"></span><span id="binary-nop"></span>\[\begin{split}\begin{array}{llclll}
+\def\mathdef846#1{{}}\mathdef846{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp;
+  \def\mathdef903#1{\mathtt{0x#1}}\mathdef903{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}} \\ &amp;&amp;|&amp;
+  \def\mathdef904#1{\mathtt{0x#1}}\mathdef904{01} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}} \\ &amp;&amp;|&amp;
+  \def\mathdef905#1{\mathtt{0x#1}}\mathdef905{02}~~\mathit{rt}{:}\href{../binary/types.html#binary-blocktype}{\mathtt{blocktype}}~~(\mathit{in}{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~\def\mathdef906#1{\mathtt{0x#1}}\mathdef906{0B}
+    &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~\mathit{rt}~\mathit{in}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\ &amp;&amp;|&amp;
+  \def\mathdef907#1{\mathtt{0x#1}}\mathdef907{03}~~\mathit{rt}{:}\href{../binary/types.html#binary-blocktype}{\mathtt{blocktype}}~~(\mathit{in}{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~\def\mathdef908#1{\mathtt{0x#1}}\mathdef908{0B}
+    &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~\mathit{rt}~\mathit{in}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\ &amp;&amp;|&amp;
+  \def\mathdef909#1{\mathtt{0x#1}}\mathdef909{04}~~\mathit{rt}{:}\href{../binary/types.html#binary-blocktype}{\mathtt{blocktype}}~~(\mathit{in}{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~\def\mathdef910#1{\mathtt{0x#1}}\mathdef910{0B}
+    &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}~\mathit{rt}~\mathit{in}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}~\epsilon~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\ &amp;&amp;|&amp;
+  \def\mathdef911#1{\mathtt{0x#1}}\mathdef911{04}~~\mathit{rt}{:}\href{../binary/types.html#binary-blocktype}{\mathtt{blocktype}}~~(\mathit{in}_1{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~
+    \def\mathdef912#1{\mathtt{0x#1}}\mathdef912{05}~~(\mathit{in}_2{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~\def\mathdef913#1{\mathtt{0x#1}}\mathdef913{0B}
+    &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}~\mathit{rt}~\mathit{in}_1^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}~\mathit{in}_2^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\ &amp;&amp;|&amp;
+  \def\mathdef914#1{\mathtt{0x#1}}\mathdef914{0C}~~l{:}\href{../binary/modules.html#binary-labelidx}{\mathtt{labelidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}~l \\ &amp;&amp;|&amp;
+  \def\mathdef915#1{\mathtt{0x#1}}\mathdef915{0D}~~l{:}\href{../binary/modules.html#binary-labelidx}{\mathtt{labelidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_if}}~l \\ &amp;&amp;|&amp;
+  \def\mathdef916#1{\mathtt{0x#1}}\mathdef916{0E}~~l^\ast{:}\href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\href{../binary/modules.html#binary-labelidx}{\mathtt{labelidx}})~~l_N{:}\href{../binary/modules.html#binary-labelidx}{\mathtt{labelidx}}
+    &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}~l^\ast~l_N \\ &amp;&amp;|&amp;
+  \def\mathdef917#1{\mathtt{0x#1}}\mathdef917{0F} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}} \\ &amp;&amp;|&amp;
+  \def\mathdef918#1{\mathtt{0x#1}}\mathdef918{10}~~x{:}\href{../binary/modules.html#binary-funcidx}{\mathtt{funcidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}~x \\ &amp;&amp;|&amp;
+  \def\mathdef919#1{\mathtt{0x#1}}\mathdef919{11}~~x{:}\href{../binary/modules.html#binary-typeidx}{\mathtt{typeidx}}~~\def\mathdef920#1{\mathtt{0x#1}}\mathdef920{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~x \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span> opcode <span class="math">\(\def\mathdef921#1{\mathtt{0x#1}}\mathdef921{05}\)</span> in the encoding of an <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> instruction can be omitted if the following instruction sequence is empty.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In future versions of WebAssembly, the zero byte occurring in the encoding
+of the <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> instruction may be used to index additional tables.</p>
+</div>
+</div>
+<div class="section" id="parametric-instructions">
+<span id="binary-instr-parametric"></span><span id="index-2"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-parametric"><span class="std std-ref">Parametric instructions</span></a> are represented by single byte codes.</p>
+<div class="math" id="binary-select">
+<span id="binary-drop"></span>\[\begin{split}\begin{array}{llclll}
+\def\mathdef846#1{{}}\mathdef846{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
+  \def\mathdef922#1{\mathtt{0x#1}}\mathdef922{1A} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{drop}} \\ &amp;&amp;|&amp;
+  \def\mathdef923#1{\mathtt{0x#1}}\mathdef923{1B} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}} \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="variable-instructions">
+<span id="binary-instr-variable"></span><span id="index-3"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-variable"><span class="std std-ref">Variable instructions</span></a> are represented by byte codes followed by the encoding of the respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index</span></a>.</p>
+<div class="math" id="binary-set-global">
+<span id="binary-get-global"></span><span id="binary-tee-local"></span><span id="binary-set-local"></span><span id="binary-get-local"></span>\[\begin{split}\begin{array}{llclll}
+\def\mathdef846#1{{}}\mathdef846{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
+  \def\mathdef924#1{\mathtt{0x#1}}\mathdef924{20}~~x{:}\href{../binary/modules.html#binary-localidx}{\mathtt{localidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_local}}~x \\ &amp;&amp;|&amp;
+  \def\mathdef925#1{\mathtt{0x#1}}\mathdef925{21}~~x{:}\href{../binary/modules.html#binary-localidx}{\mathtt{localidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_local}}~x \\ &amp;&amp;|&amp;
+  \def\mathdef926#1{\mathtt{0x#1}}\mathdef926{22}~~x{:}\href{../binary/modules.html#binary-localidx}{\mathtt{localidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{tee\_local}}~x \\ &amp;&amp;|&amp;
+  \def\mathdef927#1{\mathtt{0x#1}}\mathdef927{23}~~x{:}\href{../binary/modules.html#binary-globalidx}{\mathtt{globalidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_global}}~x \\ &amp;&amp;|&amp;
+  \def\mathdef928#1{\mathtt{0x#1}}\mathdef928{24}~~x{:}\href{../binary/modules.html#binary-globalidx}{\mathtt{globalidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{set\_global}}~x \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="memory-instructions">
+<span id="binary-instr-memory"></span><span id="index-4"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
+<p>Each variant of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instruction</span></a> is encoded with a different byte code. Loads and stores are followed by the encoding of their <span class="math">\(\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span> immediate.</p>
+<div class="math" id="binary-grow-memory">
+<span id="binary-current-memory"></span><span id="binary-storen"></span><span id="binary-store"></span><span id="binary-loadn"></span><span id="binary-load"></span><span id="binary-memarg"></span>\[\begin{split}\begin{array}{llclll}
+\def\mathdef846#1{{}}\mathdef846{memory argument} &amp; \href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;::=&amp;
+  a{:}\href{../binary/values.html#binary-int}{\def\mathdef872#1{{\mathtt{u}#1}}\mathdef872{\mathtt{32}}}~~o{:}\href{../binary/values.html#binary-int}{\def\mathdef872#1{{\mathtt{u}#1}}\mathdef872{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}~a,~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}~o \} \\
+\def\mathdef846#1{{}}\mathdef846{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
+  \def\mathdef929#1{\mathtt{0x#1}}\mathdef929{28}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~m \\ &amp;&amp;|&amp;
+  \def\mathdef930#1{\mathtt{0x#1}}\mathdef930{29}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~m \\ &amp;&amp;|&amp;
+  \def\mathdef931#1{\mathtt{0x#1}}\mathdef931{2A}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~m \\ &amp;&amp;|&amp;
+  \def\mathdef932#1{\mathtt{0x#1}}\mathdef932{2B}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~m \\ &amp;&amp;|&amp;
+  \def\mathdef933#1{\mathtt{0x#1}}\mathdef933{2C}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{8\_s}~m \\ &amp;&amp;|&amp;
+  \def\mathdef934#1{\mathtt{0x#1}}\mathdef934{2D}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{8\_u}~m \\ &amp;&amp;|&amp;
+  \def\mathdef935#1{\mathtt{0x#1}}\mathdef935{2E}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{16\_s}~m \\ &amp;&amp;|&amp;
+  \def\mathdef936#1{\mathtt{0x#1}}\mathdef936{2F}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{16\_u}~m \\ &amp;&amp;|&amp;
+  \def\mathdef937#1{\mathtt{0x#1}}\mathdef937{30}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{8\_s}~m \\ &amp;&amp;|&amp;
+  \def\mathdef938#1{\mathtt{0x#1}}\mathdef938{31}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{8\_u}~m \\ &amp;&amp;|&amp;
+  \def\mathdef939#1{\mathtt{0x#1}}\mathdef939{32}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{16\_s}~m \\ &amp;&amp;|&amp;
+  \def\mathdef940#1{\mathtt{0x#1}}\mathdef940{33}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{16\_u}~m \\ &amp;&amp;|&amp;
+  \def\mathdef941#1{\mathtt{0x#1}}\mathdef941{34}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{32\_s}~m \\ &amp;&amp;|&amp;
+  \def\mathdef942#1{\mathtt{0x#1}}\mathdef942{35}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\mathsf{32\_u}~m \\ &amp;&amp;|&amp;
+  \def\mathdef943#1{\mathtt{0x#1}}\mathdef943{36}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~m \\ &amp;&amp;|&amp;
+  \def\mathdef944#1{\mathtt{0x#1}}\mathdef944{37}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~m \\ &amp;&amp;|&amp;
+  \def\mathdef945#1{\mathtt{0x#1}}\mathdef945{38}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~m \\ &amp;&amp;|&amp;
+  \def\mathdef946#1{\mathtt{0x#1}}\mathdef946{39}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~m \\ &amp;&amp;|&amp;
+  \def\mathdef947#1{\mathtt{0x#1}}\mathdef947{3A}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{8}~m \\ &amp;&amp;|&amp;
+  \def\mathdef948#1{\mathtt{0x#1}}\mathdef948{3B}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{16}~m \\ &amp;&amp;|&amp;
+  \def\mathdef949#1{\mathtt{0x#1}}\mathdef949{3C}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{8}~m \\ &amp;&amp;|&amp;
+  \def\mathdef950#1{\mathtt{0x#1}}\mathdef950{3D}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{16}~m \\ &amp;&amp;|&amp;
+  \def\mathdef951#1{\mathtt{0x#1}}\mathdef951{3E}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{32}~m \\ &amp;&amp;|&amp;
+  \def\mathdef952#1{\mathtt{0x#1}}\mathdef952{3F}~~\def\mathdef953#1{\mathtt{0x#1}}\mathdef953{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}} \\ &amp;&amp;|&amp;
+  \def\mathdef954#1{\mathtt{0x#1}}\mathdef954{40}~~\def\mathdef955#1{\mathtt{0x#1}}\mathdef955{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}}\)</span> and <span class="math">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}}\)</span> instructions may be used to index additional memories.</p>
+</div>
+</div>
+<div class="section" id="numeric-instructions">
+<span id="binary-instr-numeric"></span><span id="index-5"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
+<p>All variants of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-numeric"><span class="std std-ref">numeric instructions</span></a> are represented by separate byte codes.</p>
+<p>The <span class="math">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions are followed by the respective literal.</p>
+<div class="math" id="binary-const">
+\[\begin{split}\begin{array}{llclll}
+\def\mathdef846#1{{}}\mathdef846{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\&amp;&amp;|&amp;
+  \def\mathdef956#1{\mathtt{0x#1}}\mathdef956{41}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef879#1{{\mathtt{i}#1}}\mathdef879{\mathtt{32}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n \\ &amp;&amp;|&amp;
+  \def\mathdef957#1{\mathtt{0x#1}}\mathdef957{42}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef880#1{{\mathtt{i}#1}}\mathdef880{\mathtt{64}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n \\ &amp;&amp;|&amp;
+  \def\mathdef958#1{\mathtt{0x#1}}\mathdef958{43}~~z{:}\href{../binary/values.html#binary-float}{\def\mathdef882#1{{\mathtt{f}#1}}\mathdef882{\mathtt{32}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~z \\ &amp;&amp;|&amp;
+  \def\mathdef959#1{\mathtt{0x#1}}\mathdef959{44}~~z{:}\href{../binary/values.html#binary-float}{\def\mathdef883#1{{\mathtt{f}#1}}\mathdef883{\mathtt{64}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~z \\
+\end{array}\end{split}\]</div>
+<p>All other numeric instructions are plain opcodes without any immediates.</p>
+<div class="math" id="binary-relop">
+<span id="binary-testop"></span>\[\begin{split}\begin{array}{llclll}
+\def\mathdef846#1{{}}\mathdef846{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots &amp;&amp; \phantom{thisshouldbeenough} \\&amp;&amp;|&amp;
+  \def\mathdef960#1{\mathtt{0x#1}}\mathdef960{45} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eqz}} \\ &amp;&amp;|&amp;
+  \def\mathdef961#1{\mathtt{0x#1}}\mathdef961{46} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} \\ &amp;&amp;|&amp;
+  \def\mathdef962#1{\mathtt{0x#1}}\mathdef962{47} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}} \\ &amp;&amp;|&amp;
+  \def\mathdef963#1{\mathtt{0x#1}}\mathdef963{48} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef964#1{\mathtt{0x#1}}\mathdef964{49} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef965#1{\mathtt{0x#1}}\mathdef965{4A} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef966#1{\mathtt{0x#1}}\mathdef966{4B} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef967#1{\mathtt{0x#1}}\mathdef967{4C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef968#1{\mathtt{0x#1}}\mathdef968{4D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef969#1{\mathtt{0x#1}}\mathdef969{4E} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef970#1{\mathtt{0x#1}}\mathdef970{4F} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_u} \\
+\end{array}\end{split}\]</div>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
+\phantom{\def\mathdef846#1{{}}\mathdef846{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+  \def\mathdef971#1{\mathtt{0x#1}}\mathdef971{50} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eqz}} \\ &amp;&amp;|&amp;
+  \def\mathdef972#1{\mathtt{0x#1}}\mathdef972{51} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} \\ &amp;&amp;|&amp;
+  \def\mathdef973#1{\mathtt{0x#1}}\mathdef973{52} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}} \\ &amp;&amp;|&amp;
+  \def\mathdef974#1{\mathtt{0x#1}}\mathdef974{53} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef975#1{\mathtt{0x#1}}\mathdef975{54} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef976#1{\mathtt{0x#1}}\mathdef976{55} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef977#1{\mathtt{0x#1}}\mathdef977{56} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef978#1{\mathtt{0x#1}}\mathdef978{57} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef979#1{\mathtt{0x#1}}\mathdef979{58} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef980#1{\mathtt{0x#1}}\mathdef980{59} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef981#1{\mathtt{0x#1}}\mathdef981{5A} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}}\mathsf{\_u} \\
+\end{array}\end{split}\]</div>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
+\phantom{\def\mathdef846#1{{}}\mathdef846{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+  \def\mathdef982#1{\mathtt{0x#1}}\mathdef982{5B} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} \\ &amp;&amp;|&amp;
+  \def\mathdef983#1{\mathtt{0x#1}}\mathdef983{5C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}} \\ &amp;&amp;|&amp;
+  \def\mathdef984#1{\mathtt{0x#1}}\mathdef984{5D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}} \\ &amp;&amp;|&amp;
+  \def\mathdef985#1{\mathtt{0x#1}}\mathdef985{5E} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}} \\ &amp;&amp;|&amp;
+  \def\mathdef986#1{\mathtt{0x#1}}\mathdef986{5F} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}} \\ &amp;&amp;|&amp;
+  \def\mathdef987#1{\mathtt{0x#1}}\mathdef987{60} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}} \\
+\end{array}\end{split}\]</div>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
+\phantom{\def\mathdef846#1{{}}\mathdef846{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+  \def\mathdef988#1{\mathtt{0x#1}}\mathdef988{61} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{eq}} \\ &amp;&amp;|&amp;
+  \def\mathdef989#1{\mathtt{0x#1}}\mathdef989{62} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ne}} \\ &amp;&amp;|&amp;
+  \def\mathdef990#1{\mathtt{0x#1}}\mathdef990{63} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{lt}} \\ &amp;&amp;|&amp;
+  \def\mathdef991#1{\mathtt{0x#1}}\mathdef991{64} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{gt}} \\ &amp;&amp;|&amp;
+  \def\mathdef992#1{\mathtt{0x#1}}\mathdef992{65} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{le}} \\ &amp;&amp;|&amp;
+  \def\mathdef993#1{\mathtt{0x#1}}\mathdef993{66} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ge}} \\
+\end{array}\end{split}\]</div>
+<div class="math" id="binary-binop">
+<span id="binary-unop"></span>\[\begin{split}\begin{array}{llclll}
+\phantom{\def\mathdef846#1{{}}\mathdef846{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+  \def\mathdef994#1{\mathtt{0x#1}}\mathdef994{67} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{clz}} \\ &amp;&amp;|&amp;
+  \def\mathdef995#1{\mathtt{0x#1}}\mathdef995{68} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ctz}} \\ &amp;&amp;|&amp;
+  \def\mathdef996#1{\mathtt{0x#1}}\mathdef996{69} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{popcnt}} \\ &amp;&amp;|&amp;
+  \def\mathdef997#1{\mathtt{0x#1}}\mathdef997{6A} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} \\ &amp;&amp;|&amp;
+  \def\mathdef998#1{\mathtt{0x#1}}\mathdef998{6B} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}} \\ &amp;&amp;|&amp;
+  \def\mathdef999#1{\mathtt{0x#1}}\mathdef999{6C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}} \\ &amp;&amp;|&amp;
+  \def\mathdef1000#1{\mathtt{0x#1}}\mathdef1000{6D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef1001#1{\mathtt{0x#1}}\mathdef1001{6E} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef1002#1{\mathtt{0x#1}}\mathdef1002{6F} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rem}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef1003#1{\mathtt{0x#1}}\mathdef1003{70} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rem}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef1004#1{\mathtt{0x#1}}\mathdef1004{71} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{and}} \\ &amp;&amp;|&amp;
+  \def\mathdef1005#1{\mathtt{0x#1}}\mathdef1005{72} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{or}} \\ &amp;&amp;|&amp;
+  \def\mathdef1006#1{\mathtt{0x#1}}\mathdef1006{73} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{xor}} \\ &amp;&amp;|&amp;
+  \def\mathdef1007#1{\mathtt{0x#1}}\mathdef1007{74} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shl}} \\ &amp;&amp;|&amp;
+  \def\mathdef1008#1{\mathtt{0x#1}}\mathdef1008{75} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shr}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef1009#1{\mathtt{0x#1}}\mathdef1009{76} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shr}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef1010#1{\mathtt{0x#1}}\mathdef1010{77} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotl}} \\ &amp;&amp;|&amp;
+  \def\mathdef1011#1{\mathtt{0x#1}}\mathdef1011{78} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotr}} \\
+\end{array}\end{split}\]</div>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
+\phantom{\def\mathdef846#1{{}}\mathdef846{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+  \def\mathdef1012#1{\mathtt{0x#1}}\mathdef1012{79} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{clz}} \\ &amp;&amp;|&amp;
+  \def\mathdef1013#1{\mathtt{0x#1}}\mathdef1013{7A} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ctz}} \\ &amp;&amp;|&amp;
+  \def\mathdef1014#1{\mathtt{0x#1}}\mathdef1014{7B} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{popcnt}} \\ &amp;&amp;|&amp;
+  \def\mathdef1015#1{\mathtt{0x#1}}\mathdef1015{7C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} \\ &amp;&amp;|&amp;
+  \def\mathdef1016#1{\mathtt{0x#1}}\mathdef1016{7D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}} \\ &amp;&amp;|&amp;
+  \def\mathdef1017#1{\mathtt{0x#1}}\mathdef1017{7E} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}} \\ &amp;&amp;|&amp;
+  \def\mathdef1018#1{\mathtt{0x#1}}\mathdef1018{7F} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef1019#1{\mathtt{0x#1}}\mathdef1019{80} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef1020#1{\mathtt{0x#1}}\mathdef1020{81} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rem}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef1021#1{\mathtt{0x#1}}\mathdef1021{82} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rem}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef1022#1{\mathtt{0x#1}}\mathdef1022{83} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{and}} \\ &amp;&amp;|&amp;
+  \def\mathdef1023#1{\mathtt{0x#1}}\mathdef1023{84} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{or}} \\ &amp;&amp;|&amp;
+  \def\mathdef1024#1{\mathtt{0x#1}}\mathdef1024{85} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{xor}} \\ &amp;&amp;|&amp;
+  \def\mathdef1025#1{\mathtt{0x#1}}\mathdef1025{86} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shl}} \\ &amp;&amp;|&amp;
+  \def\mathdef1026#1{\mathtt{0x#1}}\mathdef1026{87} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shr}}\mathsf{\_s} \\ &amp;&amp;|&amp;
+  \def\mathdef1027#1{\mathtt{0x#1}}\mathdef1027{88} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{shr}}\mathsf{\_u} \\ &amp;&amp;|&amp;
+  \def\mathdef1028#1{\mathtt{0x#1}}\mathdef1028{89} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotl}} \\ &amp;&amp;|&amp;
+  \def\mathdef1029#1{\mathtt{0x#1}}\mathdef1029{8A} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{rotr}} \\
+\end{array}\end{split}\]</div>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
+\phantom{\def\mathdef846#1{{}}\mathdef846{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+  \def\mathdef1030#1{\mathtt{0x#1}}\mathdef1030{8B} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{abs}} \\ &amp;&amp;|&amp;
+  \def\mathdef1031#1{\mathtt{0x#1}}\mathdef1031{8C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}} \\ &amp;&amp;|&amp;
+  \def\mathdef1032#1{\mathtt{0x#1}}\mathdef1032{8D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ceil}} \\ &amp;&amp;|&amp;
+  \def\mathdef1033#1{\mathtt{0x#1}}\mathdef1033{8E} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{floor}} \\ &amp;&amp;|&amp;
+  \def\mathdef1034#1{\mathtt{0x#1}}\mathdef1034{8F} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}} \\ &amp;&amp;|&amp;
+  \def\mathdef1035#1{\mathtt{0x#1}}\mathdef1035{90} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{nearest}} \\ &amp;&amp;|&amp;
+  \def\mathdef1036#1{\mathtt{0x#1}}\mathdef1036{91} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sqrt}} \\ &amp;&amp;|&amp;
+  \def\mathdef1037#1{\mathtt{0x#1}}\mathdef1037{92} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} \\ &amp;&amp;|&amp;
+  \def\mathdef1038#1{\mathtt{0x#1}}\mathdef1038{93} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}} \\ &amp;&amp;|&amp;
+  \def\mathdef1039#1{\mathtt{0x#1}}\mathdef1039{94} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}} \\ &amp;&amp;|&amp;
+  \def\mathdef1040#1{\mathtt{0x#1}}\mathdef1040{95} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}} \\ &amp;&amp;|&amp;
+  \def\mathdef1041#1{\mathtt{0x#1}}\mathdef1041{96} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{min}} \\ &amp;&amp;|&amp;
+  \def\mathdef1042#1{\mathtt{0x#1}}\mathdef1042{97} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{max}} \\ &amp;&amp;|&amp;
+  \def\mathdef1043#1{\mathtt{0x#1}}\mathdef1043{98} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{copysign}} \\
+\end{array}\end{split}\]</div>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
+\phantom{\def\mathdef846#1{{}}\mathdef846{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+  \def\mathdef1044#1{\mathtt{0x#1}}\mathdef1044{99} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{abs}} \\ &amp;&amp;|&amp;
+  \def\mathdef1045#1{\mathtt{0x#1}}\mathdef1045{9A} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}} \\ &amp;&amp;|&amp;
+  \def\mathdef1046#1{\mathtt{0x#1}}\mathdef1046{9B} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{ceil}} \\ &amp;&amp;|&amp;
+  \def\mathdef1047#1{\mathtt{0x#1}}\mathdef1047{9C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{floor}} \\ &amp;&amp;|&amp;
+  \def\mathdef1048#1{\mathtt{0x#1}}\mathdef1048{9D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}} \\ &amp;&amp;|&amp;
+  \def\mathdef1049#1{\mathtt{0x#1}}\mathdef1049{9E} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{nearest}} \\ &amp;&amp;|&amp;
+  \def\mathdef1050#1{\mathtt{0x#1}}\mathdef1050{9F} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sqrt}} \\ &amp;&amp;|&amp;
+  \def\mathdef1051#1{\mathtt{0x#1}}\mathdef1051{A0} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} \\ &amp;&amp;|&amp;
+  \def\mathdef1052#1{\mathtt{0x#1}}\mathdef1052{A1} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}} \\ &amp;&amp;|&amp;
+  \def\mathdef1053#1{\mathtt{0x#1}}\mathdef1053{A2} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}} \\ &amp;&amp;|&amp;
+  \def\mathdef1054#1{\mathtt{0x#1}}\mathdef1054{A3} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{div}} \\ &amp;&amp;|&amp;
+  \def\mathdef1055#1{\mathtt{0x#1}}\mathdef1055{A4} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{min}} \\ &amp;&amp;|&amp;
+  \def\mathdef1056#1{\mathtt{0x#1}}\mathdef1056{A5} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{max}} \\ &amp;&amp;|&amp;
+  \def\mathdef1057#1{\mathtt{0x#1}}\mathdef1057{A6} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{copysign}} \\
+\end{array}\end{split}\]</div>
+<div class="math" id="binary-cvtop">
+\[\begin{split}\begin{array}{llclll}
+\phantom{\def\mathdef846#1{{}}\mathdef846{instruction}} &amp; \phantom{\href{../binary/instructions.html#binary-instr}{\mathtt{instr}}} &amp;\phantom{::=}&amp; \phantom{\dots} &amp;&amp; \phantom{thisshouldbeenough} \\[-2ex] &amp;&amp;|&amp;
+  \def\mathdef1058#1{\mathtt{0x#1}}\mathdef1058{A7} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{wrap}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1059#1{\mathtt{0x#1}}\mathdef1059{A8} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1060#1{\mathtt{0x#1}}\mathdef1060{A9} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1061#1{\mathtt{0x#1}}\mathdef1061{AA} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1062#1{\mathtt{0x#1}}\mathdef1062{AB} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1063#1{\mathtt{0x#1}}\mathdef1063{AC} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1064#1{\mathtt{0x#1}}\mathdef1064{AD} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1065#1{\mathtt{0x#1}}\mathdef1065{AE} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1066#1{\mathtt{0x#1}}\mathdef1066{AF} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1067#1{\mathtt{0x#1}}\mathdef1067{B0} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1068#1{\mathtt{0x#1}}\mathdef1068{B1} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1069#1{\mathtt{0x#1}}\mathdef1069{B2} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1070#1{\mathtt{0x#1}}\mathdef1070{B3} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1071#1{\mathtt{0x#1}}\mathdef1071{B4} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1072#1{\mathtt{0x#1}}\mathdef1072{B5} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1073#1{\mathtt{0x#1}}\mathdef1073{B6} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{demote}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1074#1{\mathtt{0x#1}}\mathdef1074{B7} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1075#1{\mathtt{0x#1}}\mathdef1075{B8} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1076#1{\mathtt{0x#1}}\mathdef1076{B9} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_s/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1077#1{\mathtt{0x#1}}\mathdef1077{BA} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{convert}}\mathsf{\_u/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1078#1{\mathtt{0x#1}}\mathdef1078{BB} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{promote}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1079#1{\mathtt{0x#1}}\mathdef1079{BC} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1080#1{\mathtt{0x#1}}\mathdef1080{BD} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\ &amp;&amp;|&amp;
+  \def\mathdef1081#1{\mathtt{0x#1}}\mathdef1081{BE} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef1082#1{\mathtt{0x#1}}\mathdef1082{BF} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{reinterpret}}\mathsf{/}\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="expressions">
+<span id="binary-expr"></span><span id="index-6"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/instructions.html#syntax-expr"><span class="std std-ref">Expressions</span></a> are encoded by their instruction sequence terminated with an explicit <span class="math">\(\def\mathdef1083#1{\mathtt{0x#1}}\mathdef1083{0B}\)</span> opcode for <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span>.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
+\def\mathdef846#1{{}}\mathdef846{expression} &amp; \href{../binary/instructions.html#binary-expr}{\mathtt{expr}} &amp;::=&amp;
+  (\mathit{in}{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~\def\mathdef1084#1{\mathtt{0x#1}}\mathdef1084{0B} &amp;\Rightarrow&amp; \mathit{in}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,574 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Embedding &#8212; WebAssembly 1.0</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Implementation Limitations" href="implementation.html" />
+    <link rel="prev" title="Appendix" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Appendix</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Embedding</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#store">Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modules">Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exports">Exports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tables">Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memories">Memories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#globals">Globals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html">Implementation Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm.html">Validation Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom.html">Custom Sections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties.html">Soundness</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="embedding">
+<span id="embed"></span><span id="index-0"></span><h1>Embedding<a class="headerlink" href="#embedding" title="Permalink to this headline">¶</a></h1>
+<p>A WebAssembly implementation will typically be <em>embedded</em> into a <em>host</em> environment.
+An <em>embedder</em> implements the connection between such a host environment and the WebAssembly semantics as defined in the main body of this specification.
+An embedder is expected to interact with the semantics in well-defined ways.</p>
+<p>This section defines a suitable interface to the WebAssembly semantics in the form of entry points through which an embedder can access it.
+The interface is intended to be complete, in the sense that an embedder does not need to reference other functional parts of the WebAssembly specification directly.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">On the other hand, an embedder does not need to provide the host environment with access to all functionality defined in this interface.
+For example, an implementation may not support <a class="reference internal" href="#embed-parse-module"><span class="std std-ref">parsing</span></a> of the <a class="reference internal" href="../text/index.html#text"><span class="std std-ref">text format</span></a>.</p>
+</div>
+<p>In the description of the embedder interface, syntactic classes from the <a class="reference internal" href="../syntax/index.html#syntax"><span class="std std-ref">abstract syntax</span></a> and the <a class="reference internal" href="../exec/runtime.html#syntax-runtime"><span class="std std-ref">runtime’s abstract machine</span></a> are used as names for variables that range over the possible objects from that class.
+Hence, these syntactic classes can also be interpreted as types.</p>
+<p id="embed-error">Failure of an interface operation is indicated by an auxiliary syntactic class:</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef117#1{{}}\mathdef117{(error)} &amp; \href{../appendix/embedding.html#embed-error}{\mathit{error}} &amp;::=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} \\
+\end{array}\end{split}\]</div>
+<p>In addition to the error conditions specified explicitly in this section, implementations may also return errors when specific <a class="reference internal" href="implementation.html#impl"><span class="std std-ref">implementation limitations</span></a> are reached.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Errors are abstract and unspecific with this definition.
+Implementations can refine it to carry suitable classifications and diagnostic messages.</p>
+</div>
+<div class="section" id="store">
+<span id="embed-store"></span><span id="index-1"></span><h2>Store<a class="headerlink" href="#store" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="embed-init-store">
+<span id="id1"></span><h3><span class="math">\(\mathrm{init\_store}() : \href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span><a class="headerlink" href="#embed-init-store" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Return the empty <a class="reference internal" href="../exec/runtime.html#syntax-store"><span class="std std-ref">store</span></a>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{init\_store}() &amp;=&amp; \{ \href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}~\epsilon,~ \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}~\epsilon,~ \href{../exec/runtime.html#syntax-store}{\mathsf{tables}}~\epsilon,~ \href{../exec/runtime.html#syntax-store}{\mathsf{globals}}~\epsilon \} \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="modules">
+<span id="embed-module"></span><span id="index-2"></span><h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="embed-decode-module">
+<span id="index-3"></span><span id="id2"></span><h3><span class="math">\(\mathrm{decode\_module}(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}^\ast) : \href{../syntax/modules.html#syntax-module}{\mathit{module}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-decode-module" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>If there exists a derivation for the <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">byte</span></a> sequence <span class="math">\(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}^\ast\)</span> as a <span class="math">\(\href{../binary/modules.html#binary-module}{\mathtt{module}}\)</span> according to the <a class="reference internal" href="../binary/modules.html#binary-module"><span class="std std-ref">binary grammar for modules</span></a>, yielding a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> <span class="math">\(m\)</span>, then return <span class="math">\(m\)</span>.</li>
+<li>Else, return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{decode\_module}(b^\ast) &amp;=&amp; m &amp;&amp; (\mathrel{\mbox{if}} \href{../binary/modules.html#binary-module}{\mathtt{module}} \stackrel\ast\Longrightarrow m{:}b^\ast) \\
+\mathrm{decode\_module}(b^\ast) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-parse-module">
+<span id="index-4"></span><span id="id3"></span><h3><span class="math">\(\mathrm{parse\_module}(\href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast) : \href{../syntax/modules.html#syntax-module}{\mathit{module}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-parse-module" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>If there exists a derivation for the <a class="reference internal" href="../text/lexical.html#text-source"><span class="std std-ref">source</span></a> <span class="math">\(\href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast\)</span> as a <span class="math">\(\href{../text/modules.html#text-module}{\mathtt{module}}\)</span> according to the <a class="reference internal" href="../text/modules.html#text-module"><span class="std std-ref">text grammar for modules</span></a>, yielding a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> <span class="math">\(m\)</span>, then return <span class="math">\(m\)</span>.</li>
+<li>Else, return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{parse\_module}(c^\ast) &amp;=&amp; m &amp;&amp; (\mathrel{\mbox{if}} \href{../text/modules.html#text-module}{\mathtt{module}} \stackrel\ast\Longrightarrow m{:}c^\ast) \\
+\mathrm{parse\_module}(c^\ast) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-validate-module">
+<span id="index-5"></span><span id="id4"></span><h3><span class="math">\(\mathrm{validate\_module}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}) : \href{../appendix/embedding.html#embed-error}{\mathit{error}}^?\)</span><a class="headerlink" href="#embed-validate-module" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>If <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">valid</span></a>, then return nothing.</li>
+<li>Else, return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{validate\_module}(m) &amp;=&amp; \epsilon &amp;&amp; (\mathrel{\mbox{if}} {} \href{../valid/modules.html#valid-module}{\vdash} m : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast \href{../syntax/types.html#syntax-functype}{\rightarrow} {\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast) \\
+\mathrm{validate\_module}(m) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-instantiate-module">
+<span id="index-6"></span><span id="id5"></span><h3><span class="math">\(\mathrm{instantiate\_module}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/modules.html#syntax-module}{\mathit{module}}, \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}})\)</span><a class="headerlink" href="#embed-instantiate-module" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Try <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiating</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> in <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast\)</span> as imports:</li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>If it succeeds with a <a class="reference internal" href="../exec/runtime.html#syntax-moduleinst"><span class="std std-ref">module instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span>, then let <span class="math">\(\mathit{result}\)</span> be <span class="math">\(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span>.</li>
+<li>Else, let <span class="math">\(\mathit{result}\)</span> be <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Return the new store paired with <span class="math">\(\mathit{result}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{instantiate\_module}(S, m, \mathit{ev}^\ast) &amp;=&amp; (S', F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}) &amp;&amp; (\mathrel{\mbox{if}} \href{../exec/modules.html#exec-instantiation}{\mathrm{instantiate}}(S, m, \mathit{ev}^\ast) \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; F; \epsilon) \\
+\mathrm{instantiate\_module}(S, m, \mathit{ev}^\ast) &amp;=&amp; (S', \href{../appendix/embedding.html#embed-error}{\mathsf{error}}) &amp;&amp; (\mathrel{\mbox{if}} \href{../exec/modules.html#exec-instantiation}{\mathrm{instantiate}}(S, m, \mathit{ev}^\ast) \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; F; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The store may be modified even in case of an error.</p>
+</div>
+</div>
+<div class="section" id="embed-imports">
+<span id="index-7"></span><span id="id6"></span><h3><span class="math">\(\mathrm{module\_imports}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}) : (\href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^\ast\)</span><a class="headerlink" href="#embed-imports" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">valid</span></a> with external import types <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span> and external export types <span class="math">\({\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span>.</li>
+<li>Let <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}^\ast\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">imports</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{imports}}\)</span>.</li>
+<li>Assert: the length of <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}^\ast\)</span> equals the length of <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span>.</li>
+<li>For each <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}^\ast\)</span> and corresponding <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i\)</span> in <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span>, do:</li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>Let <span class="math">\(\mathit{result}_i\)</span> be the triple <span class="math">\((\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i.\href{../syntax/modules.html#syntax-import}{\mathsf{module}}, \href{../syntax/modules.html#syntax-import}{\mathit{import}}_i.\href{../syntax/modules.html#syntax-import}{\mathsf{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}_i)\)</span>.</li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li>Return the concatenation of all <span class="math">\(\mathit{result}_i\)</span>, in index order.</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{module\_imports}(m) &amp;=&amp; (\mathit{im}.\href{../syntax/modules.html#syntax-import}{\mathsf{module}}, \mathit{im}.\href{../syntax/modules.html#syntax-import}{\mathsf{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^\ast \\
+  &amp;&amp; \qquad (\mathrel{\mbox{if}} \mathit{im}^\ast = m.\href{../syntax/modules.html#syntax-module}{\mathsf{imports}} \wedge {} \href{../valid/modules.html#valid-module}{\vdash} m : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast \href{../syntax/types.html#syntax-functype}{\rightarrow} {\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-exports">
+<span id="index-8"></span><span id="id7"></span><h3><span class="math">\(\mathrm{module\_exports}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}) : (\href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^\ast\)</span><a class="headerlink" href="#embed-exports" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">valid</span></a> with external import types <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span> and external export types <span class="math">\({\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span>.</li>
+<li>Let <span class="math">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exports</span></a> <span class="math">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{exports}}\)</span>.</li>
+<li>Assert: the length of <span class="math">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast\)</span> equals the length of <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span>.</li>
+<li>For each <span class="math">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}_i\)</span> in <span class="math">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast\)</span> and corresponding <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'_i\)</span> in <span class="math">\({\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span>, do:</li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>Let <span class="math">\(\mathit{result}_i\)</span> be the pair <span class="math">\((\href{../syntax/modules.html#syntax-export}{\mathit{export}}_i.\href{../syntax/modules.html#syntax-export}{\mathsf{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'_i)\)</span>.</li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li>Return the concatenation of all <span class="math">\(\mathit{result}_i\)</span>, in index order.</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{module\_exports}(m) &amp;=&amp; (\mathit{ex}.\href{../syntax/modules.html#syntax-export}{\mathsf{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}')^\ast \\
+  &amp;&amp; \qquad (\mathrel{\mbox{if}} \mathit{ex}^\ast = m.\href{../syntax/modules.html#syntax-module}{\mathsf{exports}} \wedge {} \href{../valid/modules.html#valid-module}{\vdash} m : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast \href{../syntax/types.html#syntax-functype}{\rightarrow} {\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast) \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="exports">
+<span id="embed-export"></span><span id="index-9"></span><h2>Exports<a class="headerlink" href="#exports" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="embed-get-export">
+<span id="id8"></span><h3><span class="math">\(\mathrm{get\_export}(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}, \href{../syntax/values.html#syntax-name}{\mathit{name}}) : \href{../exec/runtime.html#syntax-externval}{\mathit{externval}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-get-export" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: due to <a class="reference internal" href="properties.html#valid-moduleinst"><span class="std std-ref">validity</span></a> of the <a class="reference internal" href="../exec/runtime.html#syntax-moduleinst"><span class="std std-ref">module instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span>, all its <a class="reference internal" href="../exec/runtime.html#syntax-exportinst"><span class="std std-ref">export names</span></a> are different.</li>
+<li>If there exists an <span class="math">\(\href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}}_i\)</span> in <span class="math">\(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{exports}}\)</span> such that <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}}_i.\href{../exec/runtime.html#syntax-exportinst}{\mathsf{name}}\)</span> equals <span class="math">\(\href{../syntax/values.html#syntax-name}{\mathit{name}}\)</span>, then:<ol class="loweralpha">
+<li>Return the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}}_i.\href{../exec/runtime.html#syntax-exportinst}{\mathsf{value}}\)</span>.</li>
+</ol>
+</li>
+<li>Else, return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{get\_export}(m, \href{../syntax/values.html#syntax-name}{\mathit{name}}) &amp;=&amp; m.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{exports}}[i].\href{../exec/runtime.html#syntax-exportinst}{\mathsf{value}} &amp;&amp; (\mathrel{\mbox{if}} m.\href{../syntax/modules.html#syntax-module}{\mathsf{exports}}[i].\href{../exec/runtime.html#syntax-exportinst}{\mathsf{name}} = \href{../syntax/values.html#syntax-name}{\mathit{name}}) \\
+\mathrm{get\_export}(m, \href{../syntax/values.html#syntax-name}{\mathit{name}}) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="functions">
+<span id="embed-func"></span><span id="index-10"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="embed-alloc-func">
+<span id="id9"></span><h3><span class="math">\(\mathrm{alloc\_func}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \href{../exec/runtime.html#syntax-hostfunc}{\mathit{hostfunc}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}})\)</span><a class="headerlink" href="#embed-alloc-func" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Let <span class="math">\(\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> be the result of <a class="reference internal" href="../exec/modules.html#alloc-func"><span class="std std-ref">allocating a host function</span></a> in <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span> and host function code <span class="math">\(\href{../exec/runtime.html#syntax-hostfunc}{\mathit{hostfunc}}\)</span>.</li>
+<li>Return the new store paired with <span class="math">\(\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{alloc\_func}(S, \mathit{ft}, \mathit{code}) &amp;=&amp; (S', \mathit{a}) &amp;&amp; (\mathrel{\mbox{if}} \href{../exec/modules.html#alloc-hostfunc}{\mathrm{allochostfunc}}(S, \mathit{ft}, \mathit{code}) = S', \mathit{a}) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This operation assumes that <span class="math">\(\href{../exec/runtime.html#syntax-hostfunc}{\mathit{hostfunc}}\)</span> satisfies the <a class="reference internal" href="../exec/instructions.html#exec-invoke-host"><span class="std std-ref">pre- and post-conditions</span></a> required for a function instance with type <span class="math">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span>.</p>
+<p class="last">Regular (non-host) function instances can only be created indirectly through <a class="reference internal" href="#embed-instantiate-module"><span class="std std-ref">module instantiation</span></a>.</p>
+</div>
+</div>
+<div class="section" id="embed-type-func">
+<span id="id10"></span><h3><span class="math">\(\mathrm{type\_func}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) : \href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span><a class="headerlink" href="#embed-type-func" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}]\)</span> exists.</li>
+<li>Assert: the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> is <a class="reference internal" href="../exec/modules.html#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span>.</li>
+<li>Return <span class="math">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{type\_func}(S, a) &amp;=&amp; \mathit{ft} &amp;&amp; (\mathrel{\mbox{if}} S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\mathit{ft}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-invoke-func">
+<span id="index-11"></span><span id="id11"></span><h3><span class="math">\(\mathrm{invoke\_func}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}})\)</span><a class="headerlink" href="#embed-invoke-func" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}]\)</span> exists.</li>
+<li>Try <a class="reference internal" href="../exec/modules.html#exec-invocation"><span class="std std-ref">invoking</span></a> the function <span class="math">\(\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> in <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">values</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span> as arguments:</li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>If it succeeds with <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">values</span></a> <span class="math">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}'}^\ast\)</span> as results, then let <span class="math">\(\mathit{result}\)</span> be <span class="math">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}'}^\ast\)</span>.</li>
+<li>Else it has trapped, hence let <span class="math">\(\mathit{result}\)</span> be <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li>Return the new store paired with <span class="math">\(\mathit{result}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{invoke\_func}(S, a, v^\ast) &amp;=&amp; (S', {v'}^\ast) &amp;&amp; (\mathrel{\mbox{if}} \href{../exec/modules.html#exec-invocation}{\mathrm{invoke}}(S, a, v^\ast) \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; F; {v'}^\ast) \\
+\mathrm{invoke\_func}(S, a, v^\ast) &amp;=&amp; (S', \href{../appendix/embedding.html#embed-error}{\mathsf{error}}) &amp;&amp; (\mathrel{\mbox{if}} \href{../exec/modules.html#exec-invocation}{\mathrm{invoke}}(S, a, v^\ast) \href{../exec/conventions.html#formal-notation}{\hookrightarrow}^\ast S'; F; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The store may be modified even in case of an error.</p>
+</div>
+</div>
+</div>
+<div class="section" id="tables">
+<span id="embed-table"></span><span id="index-12"></span><h2>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="embed-alloc-table">
+<span id="id12"></span><h3><span class="math">\(\mathrm{alloc\_table}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}})\)</span><a class="headerlink" href="#embed-alloc-table" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Let <span class="math">\(\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}\)</span> be the result of <a class="reference internal" href="../exec/modules.html#alloc-table"><span class="std std-ref">allocating a table</span></a> in <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span>.</li>
+<li>Return the new store paired with <span class="math">\(\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{alloc\_table}(S, \mathit{tt}) &amp;=&amp; (S', \mathit{a}) &amp;&amp; (\mathrel{\mbox{if}} \href{../exec/modules.html#alloc-table}{\mathrm{alloctable}}(S, \mathit{tt}) = S', \mathit{a}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-type-table">
+<span id="id13"></span><h3><span class="math">\(\mathrm{type\_table}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) : \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span><a class="headerlink" href="#embed-type-table" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> exists.</li>
+<li>Assert: the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{table}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}\)</span> is <a class="reference internal" href="../exec/modules.html#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span>.</li>
+<li>Return <span class="math">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{type\_table}(S, a) &amp;=&amp; \mathit{tt} &amp;&amp; (\mathrel{\mbox{if}} S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{table}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\mathit{tt}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-read-table">
+<span id="id14"></span><h3><span class="math">\(\mathrm{read\_table}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, i) : \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^? ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-read-table" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> exists.</li>
+<li>Assert: <span class="math">\(i\)</span> is a non-negative integer.</li>
+<li>Let <span class="math">\(\mathit{ti}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span>.</li>
+<li>If <span class="math">\(i\)</span> is larger than or equal to the length if <span class="math">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>, then return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+<li>Else, return <span class="math">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i]\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{read\_table}(S, a, i) &amp;=&amp; \mathit{fa}^? &amp;&amp; (\mathrel{\mbox{if}} S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i] = \mathit{fa}^?) \\
+\mathrm{read\_table}(S, a, i) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-write-table">
+<span id="id15"></span><h3><span class="math">\(\mathrm{write\_table}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, i, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^?) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-write-table" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> exists.</li>
+<li>Assert: <span class="math">\(i\)</span> is a non-negative integer.</li>
+<li>Let <span class="math">\(\mathit{ti}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span>.</li>
+<li>If <span class="math">\(i\)</span> is larger than or equal to the length if <span class="math">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>, then return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+<li>Replace <span class="math">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i]\)</span> with the optional <a class="reference internal" href="../exec/runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math">\(\mathit{fa}^?\)</span>.</li>
+<li>Return the updated store.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{write\_table}(S, a, i, \mathit{fa}^?) &amp;=&amp; S' &amp;&amp; (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i] = \mathit{fa}^?) \\
+\mathrm{write\_table}(S, a, i, \mathit{fa}^?) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-size-table">
+<span id="id16"></span><h3><span class="math">\(\mathrm{size\_table}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) : \mathit{i32}\)</span><a class="headerlink" href="#embed-size-table" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> exists.</li>
+<li>Return the length of <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{size\_table}(S, a) &amp;=&amp; n &amp;&amp;
+  (\mathrel{\mbox{if}} |S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}| = n) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-grow-table">
+<span id="id17"></span><h3><span class="math">\(\mathrm{grow\_table}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, n) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-grow-table" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> exists.</li>
+<li>Assert: <span class="math">\(n\)</span> is a non-negative integer.</li>
+<li>Try <a class="reference internal" href="../exec/modules.html#grow-table"><span class="std std-ref">growing</span></a> the <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> by <span class="math">\(n\)</span> elements:<ol class="loweralpha">
+<li>If it succeeds, return the updated store.</li>
+<li>Else, return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+</ol>
+</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{grow\_table}(S, a, n) &amp;=&amp; S' &amp;&amp;
+  (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a] = \href{../exec/modules.html#grow-table}{\mathrm{growtable}}(S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a], n)) \\
+\mathrm{grow\_table}(S, a, n) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="memories">
+<span id="embed-mem"></span><span id="index-13"></span><h2>Memories<a class="headerlink" href="#memories" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="embed-alloc-mem">
+<span id="id18"></span><h3><span class="math">\(\mathrm{alloc\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}})\)</span><a class="headerlink" href="#embed-alloc-mem" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Let <span class="math">\(\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}\)</span> be the result of <a class="reference internal" href="../exec/modules.html#alloc-mem"><span class="std std-ref">allocating a memory</span></a> in <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
+<li>Return the new store paired with <span class="math">\(\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{alloc\_mem}(S, \mathit{mt}) &amp;=&amp; (S', \mathit{a}) &amp;&amp; (\mathrel{\mbox{if}} \href{../exec/modules.html#alloc-mem}{\mathrm{allocmem}}(S, \mathit{mt}) = S', \mathit{a}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-type-mem">
+<span id="id19"></span><h3><span class="math">\(\mathrm{type\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) : \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span><a class="headerlink" href="#embed-type-mem" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
+<li>Assert: the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}\)</span> is <a class="reference internal" href="../exec/modules.html#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
+<li>Return <span class="math">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{type\_mem}(S, a) &amp;=&amp; \mathit{mt} &amp;&amp; (\mathrel{\mbox{if}} S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\mathit{mt}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-read-mem">
+<span id="id20"></span><h3><span class="math">\(\mathrm{read\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, i) : \href{../syntax/values.html#syntax-byte}{\mathit{byte}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-read-mem" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
+<li>Assert: <span class="math">\(i\)</span> is a non-negative integer.</li>
+<li>Let <span class="math">\(\mathit{mi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span>.</li>
+<li>If <span class="math">\(i\)</span> is larger than or equal to the length if <span class="math">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span>, then return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+<li>Else, return the  <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">byte</span></a> <span class="math">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[i]\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{read\_mem}(S, a, i) &amp;=&amp; b &amp;&amp; (\mathrel{\mbox{if}} S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[i] = b) \\
+\mathrm{read\_mem}(S, a, i) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-write-mem">
+<span id="id21"></span><h3><span class="math">\(\mathrm{write\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, i, \href{../syntax/values.html#syntax-byte}{\mathit{byte}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-write-mem" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
+<li>Assert: <span class="math">\(i\)</span> is a non-negative integer.</li>
+<li>Let <span class="math">\(\mathit{mi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span>.</li>
+<li>If <span class="math">\(i\)</span> is larger than or equal to the length if <span class="math">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span>, then return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+<li>Replace <span class="math">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[i]\)</span> with <span class="math">\(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}\)</span>.</li>
+<li>Return the updated store.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{write\_mem}(S, a, i, b) &amp;=&amp; S' &amp;&amp; (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[i] = b) \\
+\mathrm{write\_mem}(S, a, i, b) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-size-mem">
+<span id="id22"></span><h3><span class="math">\(\mathrm{size\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) : \mathit{i32}\)</span><a class="headerlink" href="#embed-size-mem" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
+<li>Return the length of <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span> divided by the <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{size\_mem}(S, a) &amp;=&amp; n &amp;&amp;
+  (\mathrel{\mbox{if}} |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}| = n \cdot 64\,\mathrm{Ki}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-grow-mem">
+<span id="id23"></span><h3><span class="math">\(\mathrm{grow\_mem}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, n) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-grow-mem" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
+<li>Assert: <span class="math">\(n\)</span> is a non-negative integer.</li>
+<li>Try <a class="reference internal" href="../exec/modules.html#grow-mem"><span class="std std-ref">growing</span></a> the <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> by <span class="math">\(n\)</span> <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">pages</span></a>:<ol class="loweralpha">
+<li>If it succeeds, return the updated store.</li>
+<li>Else, return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+</ol>
+</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{grow\_mem}(S, a, n) &amp;=&amp; S' &amp;&amp;
+  (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a] = \href{../exec/modules.html#grow-mem}{\mathrm{growmem}}(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a], n)) \\
+\mathrm{grow\_mem}(S, a, n) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="globals">
+<span id="embed-global"></span><span id="index-14"></span><h2>Globals<a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="embed-alloc-global">
+<span id="id24"></span><h3><span class="math">\(\mathrm{alloc\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}})\)</span><a class="headerlink" href="#embed-alloc-global" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Let <span class="math">\(\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}\)</span> be the result of <a class="reference internal" href="../exec/modules.html#alloc-global"><span class="std std-ref">allocating a global</span></a> in <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> and initialization value <span class="math">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span>.</li>
+<li>Return the new store paired with <span class="math">\(\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{alloc\_global}(S, \mathit{gt}, v) &amp;=&amp; (S', \mathit{a}) &amp;&amp; (\mathrel{\mbox{if}} \href{../exec/modules.html#alloc-global}{\mathrm{allocglobal}}(S, \mathit{gt}, v) = S', \mathit{a}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-type-global">
+<span id="id25"></span><h3><span class="math">\(\mathrm{type\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) : \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span><a class="headerlink" href="#embed-type-global" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}]\)</span> exists.</li>
+<li>Assert: the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{global}}~\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}\)</span> is <a class="reference internal" href="../exec/modules.html#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span>.</li>
+<li>Return <span class="math">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{type\_global}(S, a) &amp;=&amp; \mathit{gt} &amp;&amp; (\mathrel{\mbox{if}} S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{global}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\mathit{gt}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-read-global">
+<span id="id26"></span><h3><span class="math">\(\mathrm{read\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) : \href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span><a class="headerlink" href="#embed-read-global" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}]\)</span> exists.</li>
+<li>Let <span class="math">\(\mathit{gi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-globalinst"><span class="std std-ref">global instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}]\)</span>.</li>
+<li>Return the <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math">\(\mathit{gi}.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}\)</span>.</li>
+</ol>
+<div class="math">
+\[\begin{split}\begin{array}{lclll}
+\mathrm{read\_global}(S, a) &amp;=&amp; v &amp;&amp; (\mathrel{\mbox{if}} S.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[a].\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}} = v) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="embed-write-global">
+<span id="id27"></span><h3><span class="math">\(\mathrm{write\_global}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-write-global" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Assert: <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[a]\)</span> exists.</li>
+<li>Let <span class="math">\(\mathit{gi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-globalinst"><span class="std std-ref">global instance</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}]\)</span>.</li>
+<li>If <span class="math">\(\mathit{gi}.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}}\)</span> is not <span class="math">\(\href{../syntax/types.html#syntax-mut}{\mathsf{var}}\)</span>, then return <span class="math">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+<li>Replace <span class="math">\(\mathit{gi}.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}\)</span> with the <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span>.</li>
+<li>Return the updated store.</li>
+</ol>
+<div class="math">
+\[\begin{split}~ \\
+\begin{array}{lclll}
+\mathrm{write\_global}(S, a, v) &amp;=&amp; S' &amp;&amp; (\mathrel{\mbox{if}} S.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[a].\href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}} = \href{../syntax/types.html#syntax-mut}{\mathsf{var}} \wedge S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[a].\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}} = v) \\
+\mathrm{write\_global}(S, a, v) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

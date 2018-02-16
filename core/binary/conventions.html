@@ -1,0 +1,200 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Conventions &#8212; WebAssembly 1.0</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Values" href="values.html" />
+    <link rel="prev" title="Binary Format" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Binary Format</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grammar">Grammar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auxiliary-notation">Auxiliary Notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vectors">Vectors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="conventions">
+<span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
+<p>The binary format for WebAssembly <a class="reference internal" href="../intro/overview.html#module"><span class="std std-ref">modules</span></a> is a dense linear <em>encoding</em> of their <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">abstract syntax</span></a>.
+<a class="footnote-reference" href="#compression" id="id1">[1]</a></p>
+<p>The format is defined by an <em>attribute grammar</em> whose only terminal symbols are <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.
+A byte sequence is a well-formed encoding of a module if and only if it is generated by the grammar.</p>
+<p>Each production of this grammar has exactly one synthesized attribute: the abstract syntax that the respective byte sequence encodes.
+Thus, the attribute grammar implicitly defines a <em>decoding</em> function.</p>
+<p>Except for a few exceptions, the binary grammar closely mirrors the grammar of the abstract syntax.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Some phrases of abstract syntax have multiple possible encodings in the binary format.
+For example, numbers may be encoded as if they had optional leading zeros.
+Implementations of decoders must support all possible alternatives;
+implementations of encoders can pick any allowed encoding.</p>
+</div>
+<p>The recommended extension for files containing WebAssembly modules in binary format is “<span class="math">\(\mathtt{.wasm}\)</span>”
+and the recommended <a class="reference external" href="https://www.iana.org/assignments/media-types/media-types.xhtml">Media Type</a> is “<span class="math">\(\mathtt{application/wasm}\)</span>”.</p>
+<table class="docutils footnote" frame="void" id="compression" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Additional encoding layers – for example, introducing compression – may be defined on top of the basic representation defined here.
+However, such layers are outside the scope of the current specification.</td></tr>
+</tbody>
+</table>
+<div class="section" id="grammar">
+<span id="binary-grammar"></span><span id="index-1"></span><h2>Grammar<a class="headerlink" href="#grammar" title="Permalink to this headline">¶</a></h2>
+<p>The following conventions are adopted in defining grammar rules for the binary format.
+They mirror the conventions used for <a class="reference internal" href="../syntax/conventions.html#grammar"><span class="std std-ref">abstract syntax</span></a>.
+In order to distinguish symbols of the binary syntax from symbols of the abstract syntax, <span class="math">\(\mathtt{typewriter}\)</span> font is adopted for the former.</p>
+<ul class="simple">
+<li>Terminal symbols are <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a> expressed in hexadecimal notation: <span class="math">\(\def\mathdef778#1{\mathtt{0x#1}}\mathdef778{0F}\)</span>.</li>
+<li>Nonterminal symbols are written in typewriter font: <span class="math">\(\mathtt{valtype}, \mathtt{instr}\)</span>.</li>
+<li><span class="math">\(B^n\)</span> is a sequence of <span class="math">\(n\geq 0\)</span> iterations  of <span class="math">\(B\)</span>.</li>
+<li><span class="math">\(B^\ast\)</span> is a possibly empty sequence of iterations of <span class="math">\(B\)</span>.
+(This is a shorthand for <span class="math">\(B^n\)</span> used where <span class="math">\(n\)</span> is not relevant.)</li>
+<li><span class="math">\(B^?\)</span> is an optional occurrence of <span class="math">\(B\)</span>.
+(This is a shorthand for <span class="math">\(B^n\)</span> where <span class="math">\(n \leq 1\)</span>.)</li>
+<li><span class="math">\(x{:}B\)</span> denotes the same language as the nonterminal <span class="math">\(B\)</span>, but also binds the variable <span class="math">\(x\)</span> to the attribute synthesized for <span class="math">\(B\)</span>.</li>
+<li>Productions are written <span class="math">\(\mathtt{sym} ::= B_1 \Rightarrow A_1 ~|~ \dots ~|~ B_n \Rightarrow A_n\)</span>, where each <span class="math">\(A_i\)</span> is the attribute that is synthesized for <span class="math">\(\mathtt{sym}\)</span> in the given case, usually from attribute variables bound in <span class="math">\(B_i\)</span>.</li>
+<li>Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>For example, the <a class="reference internal" href="types.html#binary-valtype"><span class="std std-ref">binary grammar</span></a> for <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> is given as follows:</p>
+<div class="math">
+\[\begin{split}\begin{array}{llcll&#64;{\qquad\qquad}l}
+\def\mathdef721#1{{}}\mathdef721{value types} &amp; \href{../binary/types.html#binary-valtype}{\mathtt{valtype}} &amp;::=&amp;
+  \def\mathdef779#1{\mathtt{0x#1}}\mathdef779{7F} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef780#1{\mathtt{0x#1}}\mathdef780{7E} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
+  \def\mathdef781#1{\mathtt{0x#1}}\mathdef781{7D} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
+  \def\mathdef782#1{\mathtt{0x#1}}\mathdef782{7C} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\
+\end{array}\end{split}\]</div>
+<p>Consequently, the byte <span class="math">\(\def\mathdef783#1{\mathtt{0x#1}}\mathdef783{7F}\)</span> encodes the type <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span>,
+<span class="math">\(\def\mathdef784#1{\mathtt{0x#1}}\mathdef784{7E}\)</span> encodes the type <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span>, and so forth.
+No other byte value is allowed as the encoding of a value type.</p>
+<p>The <a class="reference internal" href="types.html#binary-limits"><span class="std std-ref">binary grammar</span></a> for <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> is defined as follows:</p>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
+\def\mathdef721#1{{}}\mathdef721{limits} &amp; \href{../binary/types.html#binary-limits}{\mathtt{limits}} &amp;::=&amp;
+  \def\mathdef785#1{\mathtt{0x#1}}\mathdef785{00}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~\epsilon \} \\ &amp;&amp;|&amp;
+  \def\mathdef786#1{\mathtt{0x#1}}\mathdef786{01}~~n{:}\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}}~~m{:}\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m \} \\
+\end{array}\end{split}\]</div>
+<p class="last">That is, a limits pair is encoded as either the byte <span class="math">\(\def\mathdef787#1{\mathtt{0x#1}}\mathdef787{00}\)</span> followed by the encoding of a <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef727#1{{\mathit{u}#1}}\mathdef727{\mathit{32}}}\)</span> value,
+or the byte <span class="math">\(\def\mathdef788#1{\mathtt{0x#1}}\mathdef788{01}\)</span> followed by two such encodings.
+The variables <span class="math">\(n\)</span> and <span class="math">\(m\)</span> name the attributes of the respective <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> those decode into.
+The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.</p>
+</div>
+</div>
+<div class="section" id="auxiliary-notation">
+<span id="binary-notation"></span><h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
+<p>When dealing with binary encodings the following notation is also used:</p>
+<ul class="simple">
+<li><span class="math">\(\epsilon\)</span> denotes the empty byte sequence.</li>
+<li><span class="math">\(||B||\)</span> is the length of the byte sequence generated from the production <span class="math">\(B\)</span> in a derivation.</li>
+</ul>
+</div>
+<div class="section" id="vectors">
+<span id="binary-vec"></span><span id="index-2"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/conventions.html#syntax-vec"><span class="std std-ref">Vectors</span></a> are encoded with their <span class="math">\(\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}}\)</span> length followed by the encoding of their element sequence.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
+\def\mathdef721#1{{}}\mathdef721{vector} &amp; \href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\mathtt{B}) &amp;::=&amp;
+  n{:}\href{../binary/values.html#binary-int}{\def\mathdef747#1{{\mathtt{u}#1}}\mathdef747{\mathtt{32}}}~~(x{:}\mathtt{B})^n &amp;\Rightarrow&amp; x^n \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

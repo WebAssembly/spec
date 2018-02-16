@@ -1,0 +1,228 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Values &#8212; WebAssembly 1.0</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Types" href="types.html" />
+    <link rel="prev" title="Conventions" href="conventions.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Values</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bytes">Bytes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integers">Integers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#floating-point">Floating-Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#names">Names</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="values">
+<span id="syntax-value"></span><span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
+<p>WebAssembly programs operate on primitive numeric <em>values</em>.
+Moreover, in the definition of programs, immutable sequences of values occur to represent more complex data, such as text strings or other vectors.</p>
+<div class="section" id="bytes">
+<span id="syntax-byte"></span><span id="index-1"></span><h2>Bytes<a class="headerlink" href="#bytes" title="Permalink to this headline">¶</a></h2>
+<p>The simplest form of value are raw uninterpreted <em>bytes</em>.
+In the abstract syntax they are represented as hexadecimal literals.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2185#1{{}}\mathdef2185{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
+  \def\mathdef2242#1{\mathtt{0x#1}}\mathdef2242{00} ~|~ \dots ~|~ \def\mathdef2243#1{\mathtt{0x#1}}\mathdef2243{FF} \\
+\end{array}\end{split}\]</div>
+<div class="section" id="conventions">
+<h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The meta variable <span class="math">\(b\)</span> ranges over bytes.</li>
+<li>Bytes are sometimes interpreted as natural numbers <span class="math">\(n &lt; 256\)</span>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="integers">
+<span id="syntax-int"></span><span id="syntax-uint"></span><span id="syntax-sint"></span><span id="index-2"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
+<p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>bit width</em> <span class="math">\(N\)</span> and by whether they are <em>unsigned</em> or <em>signed</em>.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2185#1{{}}\mathdef2185{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef2186#1{{\mathit{u}#1}}\mathdef2186{N}} &amp;::=&amp;
+  0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
+\def\mathdef2185#1{{}}\mathdef2185{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef2193#1{{\mathit{s}#1}}\mathdef2193{N}} &amp;::=&amp;
+  -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
+\def\mathdef2185#1{{}}\mathdef2185{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\def\mathdef2198#1{{\mathit{i}#1}}\mathdef2198{N}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-int}{\def\mathdef2186#1{{\mathit{u}#1}}\mathdef2186{N}} \\
+\end{array}\end{split}\]</div>
+<p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
+In the abstract syntax, they are represented as unsigned values.
+However, some operations <a class="reference internal" href="../exec/numerics.html#aux-signed"><span class="std std-ref">convert</span></a> them to signed based on a two’s complement interpretation.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The main integer types occurring in this specification are <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2191#1{{\mathit{u}#1}}\mathdef2191{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2192#1{{\mathit{u}#1}}\mathdef2192{\mathit{64}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2196#1{{\mathit{s}#1}}\mathdef2196{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2197#1{{\mathit{s}#1}}\mathdef2197{\mathit{64}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2199#1{{\mathit{i}#1}}\mathdef2199{\mathit{8}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2200#1{{\mathit{i}#1}}\mathdef2200{\mathit{16}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2201#1{{\mathit{i}#1}}\mathdef2201{\mathit{32}}}\)</span>, <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef2202#1{{\mathit{i}#1}}\mathdef2202{\mathit{64}}}\)</span>.
+However, other sizes occur as auxiliary constructions, e.g., in the definition of <a class="reference internal" href="#syntax-float"><span class="std std-ref">floating-point</span></a> numbers.</p>
+</div>
+<div class="section" id="id1">
+<h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The meta variables <span class="math">\(m, n, i\)</span> range over integers.</li>
+<li>Numbers may be denoted by simple arithmetics, as in the grammar above.
+In order to distinguish arithmetics like <span class="math">\(2^N\)</span> from sequences like <span class="math">\((1)^N\)</span>, the latter is distinguished with parentheses.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="floating-point">
+<span id="syntax-float"></span><span id="syntax-payload"></span><span id="syntax-nan"></span><span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
+<p><em>Floating-point</em> data represents 32 or 64 bit values that correspond to the respective binary formats of the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> standard (Section 3.3).</p>
+<p>Every value has a <em>sign</em> and a <em>magnitude</em>.
+Magnitudes can either be expressed as <em>normal</em> numbers of the form <span class="math">\(m_0.m_1m_2\dots m_M \cdot2^e\)</span>, where <span class="math">\(e\)</span> is the exponent and <span class="math">\(m\)</span> is the <em>significand</em> whose most signifcant bit <span class="math">\(m_0\)</span> is <span class="math">\(1\)</span>,
+or as a <em>subnormal</em> number where the exponent is fixed to the smallest possible value and <span class="math">\(m_0\)</span> is <span class="math">\(0\)</span>; among the subnormals are positive and negative zero values.
+Since the significands are binary values, normals are represented in the form <span class="math">\((1 + m\cdot 2^{-M}) \cdot 2^e\)</span>, where <span class="math">\(M\)</span> is the bit width of <span class="math">\(m\)</span>; similarly for subnormals.</p>
+<p>Possible magnitudes also include the special values <span class="math">\(\infty\)</span> (infinity) and <span class="math">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> (<em>NaN</em>, not a number).
+NaN values have a <em>payload</em> that describes the mantissa bits in the underlying <a class="reference internal" href="../exec/numerics.html#aux-fbits"><span class="std std-ref">binary representation</span></a>.
+No distinction is made between signalling and quiet NaNs.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llcll}
+\def\mathdef2185#1{{}}\mathdef2185{floating-point value} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef2203#1{{\mathit{f}#1}}\mathdef2203{N}} &amp;::=&amp;
+  {+} \href{../syntax/values.html#syntax-float}{\def\mathdef2204#1{{\mathit{f}#1}}\mathdef2204{\mathit{Nmag}}} ~|~ {-} \href{../syntax/values.html#syntax-float}{\def\mathdef2204#1{{\mathit{f}#1}}\mathdef2204{\mathit{Nmag}}} \\
+\def\mathdef2185#1{{}}\mathdef2185{floating-point magnitude} &amp; \href{../syntax/values.html#syntax-float}{\def\mathdef2204#1{{\mathit{f}#1}}\mathdef2204{\mathit{Nmag}}} &amp;::=&amp;
+  (1 + \href{../syntax/values.html#syntax-int}{\def\mathdef2187#1{{\mathit{u}#1}}\mathdef2187{M}}\cdot 2^{-M}) \cdot 2^e &amp; (\mathrel{\mbox{if}} -2^{E-1}+2 \leq e \leq 2^{E-1}-1) \\ &amp;&amp;|&amp;
+  (0 + \href{../syntax/values.html#syntax-int}{\def\mathdef2187#1{{\mathit{u}#1}}\mathdef2187{M}}\cdot 2^{-M}) \cdot 2^e &amp; (\mathrel{\mbox{if}} e = -2^{E-1}+2) \\ &amp;&amp;|&amp;
+  \infty \\ &amp;&amp;|&amp;
+  \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) &amp; (\mathrel{\mbox{if}} 1 \leq n &lt; 2^M) \\
+\end{array}\end{split}\]</div>
+<p>where <span class="math">\(M = \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)\)</span> and <span class="math">\(E = \href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)\)</span> with</p>
+<div class="math" id="aux-exponent">
+<span id="aux-significand"></span>\[\begin{split}\begin{array}{lclllllcl}
+\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(32) &amp;=&amp; 23 &amp;&amp;&amp;&amp;
+\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(32) &amp;=&amp; 8 \\
+\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(64) &amp;=&amp; 52 &amp;&amp;&amp;&amp;
+\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(64) &amp;=&amp; 11 \\
+\end{array}\end{split}\]</div>
+<p id="aux-canon"><span id="arithmetic-nan"></span><span id="canonical-nan"></span>A <em>canonical NaN</em> is a floating-point value <span class="math">\(\pm\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N)\)</span> where <span class="math">\(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N\)</span> is a payload whose most significant bit is <span class="math">\(1\)</span> while all others are <span class="math">\(0\)</span>:</p>
+<div class="math">
+\[\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N = 2^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)-1}\]</div>
+<p>An <em>arithmetic NaN</em>  is a floating-point value <span class="math">\(\pm\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\)</span> with <span class="math">\(n \geq \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N\)</span>, such that the most significant bit is <span class="math">\(1\)</span> while all others are arbitrary.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the abstract syntax, subnormals are distinguished by the leading 0 of the significand. The exponent of subnormals has the same value as the smallest possible exponent of a normal number. Only in the <a class="reference internal" href="../binary/values.html#binary-float"><span class="std std-ref">binary representation</span></a> the exponent of a subnormal is encoded differently than the exponent of any normal number.</p>
+</div>
+<div class="section" id="id2">
+<h3>Conventions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The meta variable <span class="math">\(z\)</span> ranges over floating-point values where clear from context.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="names">
+<span id="syntax-name"></span><span id="syntax-codepoint"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
+<p><em>Names</em> are sequences of scalar <em>code points</em> as defined by <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.4).</p>
+<div class="math">
+\[\begin{split}\begin{array}{llclll}
+\def\mathdef2185#1{{}}\mathdef2185{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast \qquad\qquad (\mathrel{\mbox{if}} |\href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(\href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast)| &lt; 2^{32}) \\
+\def\mathdef2185#1{{}}\mathdef2185{code point} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
+  \def\mathdef2244#1{\mathrm{U{+}#1}}\mathdef2244{00} ~|~ \dots ~|~ \def\mathdef2245#1{\mathrm{U{+}#1}}\mathdef2245{D7FF} ~|~
+  \def\mathdef2246#1{\mathrm{U{+}#1}}\mathdef2246{E000} ~|~ \dots ~|~ \def\mathdef2247#1{\mathrm{U{+}#1}}\mathdef2247{10FFFF} \\
+\end{array}\end{split}\]</div>
+<p>Due to the limitations of the <a class="reference internal" href="../binary/values.html#binary-name"><span class="std std-ref">binary format</span></a>,
+the lengths of a name is bounded by the length of its <a class="reference internal" href="../binary/values.html#binary-utf8"><span class="std std-ref">UTF-8</span></a> encoding.</p>
+<div class="section" id="convention">
+<h3>Convention<a class="headerlink" href="#convention" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Code points are sometimes used interchangeably with natural numbers <span class="math">\(n &lt; 1114112\)</span>.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

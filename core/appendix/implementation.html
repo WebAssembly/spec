@@ -1,0 +1,226 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Implementation Limitations &#8212; WebAssembly 1.0</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Validation Algorithm" href="algorithm.html" />
+    <link rel="prev" title="Embedding" href="embedding.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Appendix</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="embedding.html">Embedding</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Implementation Limitations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#syntactic-limits">Syntactic Limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validation">Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#execution">Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm.html">Validation Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom.html">Custom Sections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties.html">Soundness</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="implementation-limitations">
+<span id="impl"></span><span id="index-0"></span><h1>Implementation Limitations<a class="headerlink" href="#implementation-limitations" title="Permalink to this headline">¶</a></h1>
+<p>Implementations typically impose additional restrictions on a number of aspects of a WebAssembly module or execution.
+These may stem from:</p>
+<ul class="simple">
+<li>physical resource limits,</li>
+<li>constraints imposed by the embedder or its environment,</li>
+<li>limitations of selected implementation strategies.</li>
+</ul>
+<p>This section lists allowed limitations.
+Where restrictions take the form of numeric limits, no minimum requirements are given,
+nor are the limits assumed to be concrete, fixed numbers.
+However, it is expected that all implementations have “reasonably” large limits  to enable common applications.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A conforming implementation is not allowed to leave out individual <em>features</em>.
+However, designated subsets of WebAssembly may be specified in the future.</p>
+</div>
+<div class="section" id="syntactic-limits">
+<h2>Syntactic Limits<a class="headerlink" href="#syntactic-limits" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="structure">
+<span id="impl-syntax"></span><span id="index-1"></span><h3>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h3>
+<p>An implementation may impose restrictions on the following dimensions of a module:</p>
+<ul class="simple">
+<li>the number of <a class="reference internal" href="../syntax/types.html#syntax-type"><span class="std std-ref">types</span></a> in a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a></li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">functions</span></a> in a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>, including imports</li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-table"><span class="std std-ref">tables</span></a> in a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>, including imports</li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memories</span></a> in a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>, including imports</li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">globals</span></a> in a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a>, including imports</li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segments</span></a> in a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a></li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data segments</span></a> in a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a></li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">imports</span></a> to a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a></li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exports</span></a> form a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a></li>
+<li>the number of parameters in a <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a></li>
+<li>the number of results in a <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a></li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-local"><span class="std std-ref">locals</span></a> in a <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a></li>
+<li>the size of a <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a> body</li>
+<li>the size of a <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instruction</span></a></li>
+<li>the number of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instructions</span></a> in a <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a></li>
+<li>the nesting depth of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instructions</span></a></li>
+<li>the number of <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label indices</span></a> in a <span class="math">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}\)</span> instruction</li>
+<li>the length of an <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segment</span></a></li>
+<li>the length of a <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data segment</span></a></li>
+<li>the length of a <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a></li>
+<li>the range of <a class="reference internal" href="../syntax/values.html#syntax-codepoint"><span class="std std-ref">code points</span></a> in a <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a></li>
+</ul>
+<p>If the limits of an implementation are exceeded for a given module,
+then the implementation may reject the <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a>, compilation, or <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiation</span></a> of that module with an embedder-specific error.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The last item allows <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedders</span></a> that operate in limited environments without support for
+<a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> to limit the
+names of <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">imports</span></a> and <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exports</span></a>
+to common subsets like <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a>.</p>
+</div>
+</div>
+<div class="section" id="binary-format">
+<span id="impl-binary"></span><span id="index-2"></span><h3>Binary Format<a class="headerlink" href="#binary-format" title="Permalink to this headline">¶</a></h3>
+<p>For a module given in <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>, additional limitations may be imposed on the following dimensions:</p>
+<ul class="simple">
+<li>the size of a <a class="reference internal" href="../binary/modules.html#binary-module"><span class="std std-ref">module</span></a></li>
+<li>the size of any <a class="reference internal" href="../binary/modules.html#binary-section"><span class="std std-ref">section</span></a></li>
+<li>the size of an individual function’s <a class="reference internal" href="../binary/modules.html#binary-code"><span class="std std-ref">code</span></a></li>
+<li>the number of <a class="reference internal" href="../binary/modules.html#binary-section"><span class="std std-ref">sections</span></a></li>
+</ul>
+</div>
+<div class="section" id="text-format">
+<span id="impl-text"></span><span id="index-3"></span><h3>Text Format<a class="headerlink" href="#text-format" title="Permalink to this headline">¶</a></h3>
+<p>For a module given in <a class="reference internal" href="../text/index.html#text"><span class="std std-ref">text format</span></a>, additional limitations may be imposed on the following dimensions:</p>
+<ul class="simple">
+<li>the size of the <a class="reference internal" href="../text/lexical.html#source"><span class="std std-ref">source text</span></a></li>
+<li>the size of any syntactic element</li>
+<li>the size of an individual <a class="reference internal" href="../text/lexical.html#text-token"><span class="std std-ref">token</span></a></li>
+<li>the nesting depth of <a class="reference internal" href="../text/instructions.html#text-foldedinstr"><span class="std std-ref">folded instructions</span></a></li>
+<li>the length of symbolic <a class="reference internal" href="../text/values.html#text-id"><span class="std std-ref">identifiers</span></a></li>
+<li>the range of literal <a class="reference internal" href="../text/lexical.html#text-char"><span class="std std-ref">characters</span></a> (code points) allowed in the <a class="reference internal" href="../text/lexical.html#source"><span class="std std-ref">source text</span></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="validation">
+<span id="impl-valid"></span><span id="index-4"></span><h2>Validation<a class="headerlink" href="#validation" title="Permalink to this headline">¶</a></h2>
+<p>An implementation may defer <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a> of individual <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">functions</span></a> until they are first <a class="reference internal" href="../exec/instructions.html#exec-invoke"><span class="std std-ref">invoked</span></a>.</p>
+<p>If a function turns out to be invalid, then the invocation, and every consecutive call to the same function, results in a <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is to allow implementations to use interpretation or just-in-time compilation for functions.
+The function must still be fully validated before execution of its body begins.</p>
+</div>
+</div>
+<div class="section" id="execution">
+<span id="impl-exec"></span><span id="index-5"></span><h2>Execution<a class="headerlink" href="#execution" title="Permalink to this headline">¶</a></h2>
+<p>Restrictions on the following dimensions may be imposed during <a class="reference internal" href="../exec/index.html#exec"><span class="std std-ref">execution</span></a> of a WebAssembly program:</p>
+<ul class="simple">
+<li>the number of allocated <a class="reference internal" href="../exec/runtime.html#syntax-moduleinst"><span class="std std-ref">module instances</span></a></li>
+<li>the number of allocated <a class="reference internal" href="../exec/runtime.html#syntax-funcinst"><span class="std std-ref">function instances</span></a></li>
+<li>the number of allocated <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instances</span></a></li>
+<li>the number of allocated <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instances</span></a></li>
+<li>the number of allocated <a class="reference internal" href="../exec/runtime.html#syntax-globalinst"><span class="std std-ref">global instances</span></a></li>
+<li>the size of a <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a></li>
+<li>the size of a <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a></li>
+<li>the number of <a class="reference internal" href="../exec/runtime.html#syntax-frame"><span class="std std-ref">frames</span></a> on the <a class="reference internal" href="../exec/runtime.html#stack"><span class="std std-ref">stack</span></a></li>
+<li>the number of <a class="reference internal" href="../exec/runtime.html#syntax-label"><span class="std std-ref">labels</span></a> on the <a class="reference internal" href="../exec/runtime.html#stack"><span class="std std-ref">stack</span></a></li>
+<li>the number of <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">values</span></a> on the <a class="reference internal" href="../exec/runtime.html#stack"><span class="std std-ref">stack</span></a></li>
+</ul>
+<p>If the runtime limits of an implementation are exceeded during execution of a computation,
+then it may terminate that computation and report an embedder-specific error to the invoking code.</p>
+<p>Some of the above limits may already be verified during instantiation, in which case an implementation may report exceedance in the same manner as for <a class="reference internal" href="#impl-syntax"><span class="std std-ref">syntactic limits</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Concrete limits are usually not fixed but may be dependent on specifics, interdependent, vary over time, or depend on other implementation- or embedder-specific situations or events.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

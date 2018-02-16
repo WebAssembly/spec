@@ -1,0 +1,250 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Types &#8212; WebAssembly 1.0</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Instructions" href="instructions.html" />
+    <link rel="prev" title="Values" href="values.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#value-types">Value Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#result-types">Result Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#function-types">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#limits">Limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-types">Memory Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#table-types">Table Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-types">Global Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#external-types">External Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="types">
+<span id="syntax-type"></span><span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
+<p>Various entitites in WebAssembly are classified by types.
+Types are checked during <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a>, <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiation</span></a>, and possibly <a class="reference internal" href="instructions.html#syntax-call-indirect"><span class="std std-ref">execution</span></a>.</p>
+<div class="section" id="value-types">
+<span id="syntax-valtype"></span><span id="index-1"></span><h2>Value Types<a class="headerlink" href="#value-types" title="Permalink to this headline">¶</a></h2>
+<p><em>Value types</em> classify the individual values that WebAssembly code can compute with and the values that a variable accepts.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2128#1{{}}\mathdef2128{value type} &amp; \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}} &amp;::=&amp;
+  \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} ~|~ \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} ~|~ \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} ~|~ \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\
+\end{array}\end{split}\]</div>
+<p>The types <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> and <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}\)</span> classify 32 and 64 bit integers, respectively.
+Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.</p>
+<p>The types <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}\)</span> and <span class="math">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\)</span> classify 32 and 64 bit floating-point data, respectively.
+They correspond to the respective binary floating-point representations, also known as <em>single</em> and <em>double</em> precision, as defined by the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> standard (Section 3.3).</p>
+<div class="section" id="conventions">
+<h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The meta variable <span class="math">\(t\)</span> ranges over value types where clear from context.</li>
+<li>The notation <span class="math">\(|t|\)</span> denotes the <em>bit width</em> of a value type.
+That is, <span class="math">\(|\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}| = |\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}| = 32\)</span> and <span class="math">\(|\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}| = |\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}| = 64\)</span>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="result-types">
+<span id="syntax-resulttype"></span><span id="index-2"></span><h2>Result Types<a class="headerlink" href="#result-types" title="Permalink to this headline">¶</a></h2>
+<p><em>Result types</em> classify the result of <a class="reference internal" href="../exec/instructions.html#exec-instr"><span class="std std-ref">executing</span></a> <a class="reference internal" href="instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> or <a class="reference internal" href="instructions.html#syntax-instr-control"><span class="std std-ref">blocks</span></a>,
+which is a sequence of values.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2128#1{{}}\mathdef2128{result type} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}} &amp;::=&amp;
+  [\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^?] \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the current version of WebAssembly, at most one value is allowed as a result.
+However, this may be generalized to sequences of values in future versions.</p>
+</div>
+</div>
+<div class="section" id="function-types">
+<span id="syntax-functype"></span><span id="index-3"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
+<p><em>Function types</em> classify the signature of <a class="reference internal" href="modules.html#syntax-func"><span class="std std-ref">functions</span></a>,
+mapping a vector of parameters to a vector of results.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2128#1{{}}\mathdef2128{function type} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}} &amp;::=&amp;
+  [\href{../syntax/conventions.html#syntax-vec}{\mathit{vec}}(\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}})] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/conventions.html#syntax-vec}{\mathit{vec}}(\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}})] \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the current version of WebAssembly,
+the length of the result type vector of a <a class="reference internal" href="../valid/types.html#valid-functype"><span class="std std-ref">valid</span></a> function type may be at most <span class="math">\(1\)</span>.
+This restriction may be removed in future versions.</p>
+</div>
+</div>
+<div class="section" id="limits">
+<span id="syntax-limits"></span><span id="index-4"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
+<p><em>Limits</em> classify the size range of resizeable storage associated with <a class="reference internal" href="#syntax-memtype"><span class="std std-ref">memory types</span></a> and <a class="reference internal" href="#syntax-tabletype"><span class="std std-ref">table types</span></a>.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2128#1{{}}\mathdef2128{limits} &amp; \href{../syntax/types.html#syntax-limits}{\mathit{limits}} &amp;::=&amp;
+  \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~\href{../syntax/values.html#syntax-int}{\def\mathdef2134#1{{\mathit{u}#1}}\mathdef2134{\mathit{32}}}, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~\href{../syntax/values.html#syntax-int}{\def\mathdef2134#1{{\mathit{u}#1}}\mathdef2134{\mathit{32}}}^? \} \\
+\end{array}\end{split}\]</div>
+<p>If no maximum is given, the respective storage can grow to any size.</p>
+</div>
+<div class="section" id="memory-types">
+<span id="syntax-memtype"></span><span id="index-5"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
+<p><em>Memory types</em> classify linear <a class="reference internal" href="modules.html#syntax-mem"><span class="std std-ref">memories</span></a> and their size range.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2128#1{{}}\mathdef2128{memory type} &amp; \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} &amp;::=&amp;
+  \href{../syntax/types.html#syntax-limits}{\mathit{limits}} \\
+\end{array}\end{split}\]</div>
+<p>The limits constrain the minimum and optionally the maximum size of a memory.
+The limits are given in units of <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
+</div>
+<div class="section" id="table-types">
+<span id="syntax-tabletype"></span><span id="syntax-elemtype"></span><span id="index-6"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
+<p><em>Table types</em> classify <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">tables</span></a> over elements of <em>element types</em> within a size range.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2128#1{{}}\mathdef2128{table type} &amp; \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} &amp;::=&amp;
+  \href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}} \\
+\def\mathdef2128#1{{}}\mathdef2128{element type} &amp; \href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}} &amp;::=&amp;
+  \href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}} \\
+\end{array}\end{split}\]</div>
+<p>Like memories, tables are constrained by limits for their minimum and optionally maximum size.
+The limits are given in numbers of entries.</p>
+<p>The element type <span class="math">\(\href{../syntax/types.html#syntax-elemtype}{\mathsf{anyfunc}}\)</span> is the infinite union of all <a class="reference internal" href="#syntax-functype"><span class="std std-ref">function types</span></a>.
+A table of that type thus contains references to functions of heterogeneous type.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In future versions of WebAssembly, additional element types may be introduced.</p>
+</div>
+</div>
+<div class="section" id="global-types">
+<span id="syntax-globaltype"></span><span id="syntax-mut"></span><span id="index-7"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
+<p><em>Global types</em> classify <a class="reference internal" href="modules.html#syntax-global"><span class="std std-ref">global</span></a> variables, which hold a value and can either be mutable or immutable.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2128#1{{}}\mathdef2128{global type} &amp; \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} &amp;::=&amp;
+  \href{../syntax/types.html#syntax-mut}{\mathit{mut}}~\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}} \\
+\def\mathdef2128#1{{}}\mathdef2128{mutability} &amp; \href{../syntax/types.html#syntax-mut}{\mathit{mut}} &amp;::=&amp;
+  \href{../syntax/types.html#syntax-mut}{\mathsf{const}} ~|~
+  \href{../syntax/types.html#syntax-mut}{\mathsf{var}} \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="external-types">
+<span id="syntax-externtype"></span><span id="index-8"></span><h2>External Types<a class="headerlink" href="#external-types" title="Permalink to this headline">¶</a></h2>
+<p><em>External types</em> classify <a class="reference internal" href="modules.html#syntax-import"><span class="std std-ref">imports</span></a> and <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> with their respective types.</p>
+<div class="math">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2128#1{{}}\mathdef2128{external types} &amp; \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}} &amp;::=&amp;
+  \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}} ~|~
+  \href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} ~|~
+  \href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} ~|~
+  \href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} \\
+\end{array}\end{split}\]</div>
+<div class="section" id="id1">
+<h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The following auxiliary notation is defined for sequences of external types.
+It filters out entries of a specific kind in an order-preserving fashion:</p>
+<ul class="simple">
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{funcs}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) = [\href{../syntax/types.html#syntax-functype}{\mathit{functype}} ~|~ (\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}) \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast]\)</span></li>
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{tables}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) = [\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} ~|~ (\href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}) \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast]\)</span></li>
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{mems}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) = [\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} ~|~ (\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}) \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast]\)</span></li>
+<li><span class="math">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast) = [\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} ~|~ (\href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}) \in \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast]\)</span></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

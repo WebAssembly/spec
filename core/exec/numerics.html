@@ -1,0 +1,1261 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Numerics &#8212; WebAssembly 1.0</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Instructions" href="instructions.html" />
+    <link rel="prev" title="Runtime Structure" href="runtime.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Execution</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="runtime.html">Runtime Structure</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Numerics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#representations">Representations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integer-operations">Integer Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#floating-point-operations">Floating-Point Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conversions">Conversions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="numerics">
+<span id="exec-numeric"></span><span id="exec-op-partial"></span><span id="index-0"></span><h1>Numerics<a class="headerlink" href="#numerics" title="Permalink to this headline">¶</a></h1>
+<p>Numeric primitives are defined in a generic manner, by operators indexed over a bit width <span class="math">\(N\)</span>.</p>
+<p>Some operators are <em>non-deterministic</em>, because they can return one of several possible results (such as different <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a> values).
+Technically, each operator thus returns a <em>set</em> of allowed values.
+For convenience, deterministic results are expressed as plain values, which are assumed to be identified with a respective singleton set.</p>
+<p>Some operators are <em>partial</em>, because they are not defined on certain inputs.
+Technically, an empty set of results is returned for these inputs.</p>
+<p>In formal notation, each operator is defined by equational clauses that apply in decreasing order of precedence.
+That is, the first clause that is applicable to the given arguments defines the result.
+In some cases, similar clauses are combined into one by using the notation <span class="math">\(\pm\)</span> or <span class="math">\(\mp\)</span>.
+When several of these placeholders occur in a single clause, then they must be resolved consistently: either the upper sign is chosen for all of them or the lower sign.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>For example, the <span class="math">\(\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}\)</span> operator is defined as follows:</p>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(\pm p_1, \pm p_2) &amp;=&amp; \pm p_1 \\
+\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(\pm p_1, \mp p_2) &amp;=&amp; \mp p_1 \\
+\end{array}\end{split}\]</div>
+<p>This definition is to be read as a shorthand for the following expansion of each clause into two separate ones:</p>
+<div class="last math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(+ p_1, + p_2) &amp;=&amp; + p_1 \\
+\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(- p_1, - p_2) &amp;=&amp; - p_1 \\
+\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(+ p_1, - p_2) &amp;=&amp; - p_1 \\
+\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(- p_1, + p_2) &amp;=&amp; + p_1 \\
+\end{array}\end{split}\]</div>
+</div>
+<p id="aux-trunc">Conventions:</p>
+<ul>
+<li><p class="first">The meta variable <span class="math">\(d\)</span> is used to range over single bits.</p>
+</li>
+<li><p class="first">The meta variable <span class="math">\(p\)</span> is used to range over (signless) <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">magnitudes</span></a> of floating-point values, including <span class="math">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> and <span class="math">\(\infty\)</span>.</p>
+</li>
+<li><p class="first">The meta variable <span class="math">\(q\)</span> is used to range over (signless) <em>rational</em> <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">magnitudes</span></a>, excluding <span class="math">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> or <span class="math">\(\infty\)</span>.</p>
+</li>
+<li><p class="first">The notation <span class="math">\(f^{-1}\)</span> denotes the inverse of a bijective function <span class="math">\(f\)</span>.</p>
+</li>
+<li><p class="first">Truncation of rational values is written <span class="math">\(\href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q)\)</span>, with the usual mathematical definition:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp;=&amp; \pm i &amp; (\mathrel{\mbox{if}} i \in \mathbb{N} \wedge q - 1 &lt; i \leq q) \\
+\end{array}\end{split}\]</div>
+</li>
+</ul>
+<div class="section" id="representations">
+<span id="aux-bits"></span><span id="index-1"></span><h2>Representations<a class="headerlink" href="#representations" title="Permalink to this headline">¶</a></h2>
+<p>Numbers have an underlying binary representation as a sequence of bits:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{\mathsf{i}N}(i) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) \\
+\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{\mathsf{f}N}(z) &amp;=&amp; \href{../exec/numerics.html#aux-fbits}{\mathrm{fbits}}_N(z) \\
+\end{array}\end{split}\]</div>
+<p>Each of these functions is a bijection, hence they are invertible.</p>
+<div class="section" id="integers">
+<span id="aux-ibits"></span><span id="index-2"></span><h3>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">Integers</span></a> are represented as base two unsigned numbers:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) &amp;=&amp; d_{N-1}~\dots~d_0 &amp; (i = 2^{N-1}\cdot d_{N-1} + \dots + 2^0\cdot d_0) \\
+\end{array}\end{split}\]</div>
+<p>Boolean operators like <span class="math">\(\wedge\)</span>, <span class="math">\(\vee\)</span>, or <span class="math">\(\veebar\)</span> are lifted to bit sequences of equal length by applying them pointwise.</p>
+</div>
+<div class="section" id="floating-point">
+<span id="aux-fbits"></span><span id="aux-fsign"></span><span id="aux-fbias"></span><span id="index-3"></span><h3>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point values</span></a> are represented in the respective binary format defined by <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> (Section 3.4):</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm (1+m\cdot 2^{-M})\cdot 2^e) &amp;=&amp; \href{../exec/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_E(e+\href{../exec/numerics.html#aux-fbias}{\mathrm{fbias}}_N)~\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_M(m) \\
+\href{../exec/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm (0+m\cdot 2^{-M})\cdot 2^e) &amp;=&amp; \href{../exec/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~(0)^E~\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_M(m) \\
+\href{../exec/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm \infty) &amp;=&amp; \href{../exec/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~(1)^E~(0)^M \\
+\href{../exec/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~(1)^E~\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_M(n) \\[1ex]
+\href{../exec/numerics.html#aux-fbias}{\mathrm{fbias}}_N &amp;=&amp; 2^{E-1}-1 \\
+\href{../exec/numerics.html#aux-fsign}{\mathrm{fsign}}({+}) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#aux-fsign}{\mathrm{fsign}}({-}) &amp;=&amp; 1 \\
+\end{array}\end{split}\]</div>
+<p>where <span class="math">\(M = \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)\)</span> and <span class="math">\(E = \href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)\)</span>.</p>
+</div>
+<div class="section" id="storage">
+<span id="aux-bytes"></span><span id="aux-littleendian"></span><span id="index-4"></span><h3>Storage<a class="headerlink" href="#storage" title="Permalink to this headline">¶</a></h3>
+<p>When a number is stored into <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memory</span></a>, it is converted into a sequence of <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a> in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_t(i) &amp;=&amp; \href{../exec/numerics.html#aux-littleendian}{\mathrm{littleendian}}(\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_t(i)) \\[1ex]
+\href{../exec/numerics.html#aux-littleendian}{\mathrm{littleendian}}(\epsilon) &amp;=&amp; \epsilon \\
+\href{../exec/numerics.html#aux-littleendian}{\mathrm{littleendian}}(d_1^8~d_2^{N-8}) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_8^{-1}(d_1^8)~\href{../exec/numerics.html#aux-littleendian}{\mathrm{littleendian}}(d_2^{N-8}) \\
+\end{array}\end{split}\]</div>
+<p>Again these functions are invertable bijections.</p>
+</div>
+</div>
+<div class="section" id="integer-operations">
+<span id="int-ops"></span><span id="index-5"></span><h2>Integer Operations<a class="headerlink" href="#integer-operations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sign-interpretation">
+<span id="aux-signed"></span><span id="index-6"></span><h3>Sign Interpretation<a class="headerlink" href="#sign-interpretation" title="Permalink to this headline">¶</a></h3>
+<p>Integer operators are defined on <span class="math">\(\href{../syntax/values.html#syntax-int}{\def\mathdef1569#1{{\mathit{i}#1}}\mathdef1569{N}}\)</span> values.
+Operators that use a signed interpretation convert the value using the following definition, which takes the two’s complement when the value lies in the upper half of the value range (i.e., its most significant bit is <span class="math">\(1\)</span>):</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i) &amp;=&amp; i &amp; (0 \leq i &lt; 2^{N-1}) \\
+\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i) &amp;=&amp; i - 2^N &amp; (2^{N-1} \leq i &lt; 2^N) \\
+\end{array}\end{split}\]</div>
+<p>This function is bijective, and hence invertible.</p>
+</div>
+<div class="section" id="boolean-interpretation">
+<span id="aux-bool"></span><span id="index-7"></span><h3>Boolean Interpretation<a class="headerlink" href="#boolean-interpretation" title="Permalink to this headline">¶</a></h3>
+<p>The integer result of predicates – i.e., <a class="reference internal" href="../syntax/instructions.html#syntax-testop"><span class="std std-ref">tests</span></a> and <a class="reference internal" href="../syntax/instructions.html#syntax-relop"><span class="std std-ref">relational</span></a> operators – is defined with the help of the following auxiliary function producing the value <span class="math">\(1\)</span> or <span class="math">\(0\)</span> depending on a condition.</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(C) &amp;=&amp; 1 &amp; (\mathrel{\mbox{if}} C) \\
+\href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(C) &amp;=&amp; 0 &amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-iadd">
+<span id="id1"></span><h3><span class="math">\(\href{../exec/numerics.html#op-iadd}{\mathrm{iadd}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-iadd" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return the result of adding <span class="math">\(i_1\)</span> and <span class="math">\(i_2\)</span> modulo <span class="math">\(2^N\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-iadd}{\mathrm{iadd}}_N(i_1, i_2) &amp;=&amp; (i_1 + i_2) \mathbin{\mathrm{mod}} 2^N
+\end{array}\]</div>
+</div>
+<div class="section" id="op-isub">
+<span id="id2"></span><h3><span class="math">\(\href{../exec/numerics.html#op-isub}{\mathrm{isub}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-isub" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return the result of subtracting <span class="math">\(i_2\)</span> from <span class="math">\(i_1\)</span> modulo <span class="math">\(2^N\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-isub}{\mathrm{isub}}_N(i_1, i_2) &amp;=&amp; (i_1 - i_2 + 2^N) \mathbin{\mathrm{mod}} 2^N
+\end{array}\]</div>
+</div>
+<div class="section" id="op-imul">
+<span id="id3"></span><h3><span class="math">\(\href{../exec/numerics.html#op-imul}{\mathrm{imul}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-imul" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return the result of multiplying <span class="math">\(i_1\)</span> and <span class="math">\(i_2\)</span> modulo <span class="math">\(2^N\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-imul}{\mathrm{imul}}_N(i_1, i_2) &amp;=&amp; (i_1 \cdot i_2) \mathbin{\mathrm{mod}} 2^N
+\end{array}\]</div>
+</div>
+<div class="section" id="op-idiv-u">
+<span id="id4"></span><h3><span class="math">\(\href{../exec/numerics.html#op-idiv-u}{\mathrm{idiv\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-idiv-u" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(i_2\)</span> is <span class="math">\(0\)</span>, then the result is undefined.</li>
+<li>Else, return the result of dividing <span class="math">\(i_1\)</span> by <span class="math">\(i_2\)</span>, truncated toward zero.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-idiv-u}{\mathrm{idiv\_u}}_N(i_1, 0) &amp;=&amp; \{\} \\
+\href{../exec/numerics.html#op-idiv-u}{\mathrm{idiv\_u}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(i_1 / i_2) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This operator is <a class="reference internal" href="#exec-op-partial"><span class="std std-ref">partial</span></a>.</p>
+</div>
+</div>
+<div class="section" id="op-idiv-s">
+<span id="id5"></span><h3><span class="math">\(\href{../exec/numerics.html#op-idiv-s}{\mathrm{idiv\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-idiv-s" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j_1\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_1\)</span>.</li>
+<li>Let <span class="math">\(j_2\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_2\)</span>.</li>
+<li>If <span class="math">\(j_2\)</span> is <span class="math">\(0\)</span>, then the result is undefined.</li>
+<li>Else if <span class="math">\(j_1\)</span> divided by <span class="math">\(j_2\)</span> is <span class="math">\(2^{N-1}\)</span>, then the result is undefined.</li>
+<li>Else, return the result of dividing <span class="math">\(j_1\)</span> by <span class="math">\(j_2\)</span>, truncated toward zero.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-idiv-s}{\mathrm{idiv\_s}}_N(i_1, 0) &amp;=&amp; \{\} \\
+\href{../exec/numerics.html#op-idiv-s}{\mathrm{idiv\_s}}_N(i_1, i_2) &amp;=&amp; \{\} \qquad\qquad (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) / \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2) = 2^{N-1}) \\
+\href{../exec/numerics.html#op-idiv-s}{\mathrm{idiv\_s}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N^{-1}(\href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) / \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This operator is <a class="reference internal" href="#exec-op-partial"><span class="std std-ref">partial</span></a>.
+Besides division by <span class="math">\(0\)</span>, the result of <span class="math">\((-2^{N-1})/(-1) = +2^{N-1}\)</span> is not representable as an <span class="math">\(N\)</span>-bit signed integer.</p>
+</div>
+</div>
+<div class="section" id="op-irem-u">
+<span id="id6"></span><h3><span class="math">\(\href{../exec/numerics.html#op-irem-u}{\mathrm{irem\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-irem-u" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(i_2\)</span> is <span class="math">\(0\)</span>, then the result is undefined.</li>
+<li>Else, return the remainder of dividing <span class="math">\(i_1\)</span> by <span class="math">\(i_2\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-irem-u}{\mathrm{irem\_u}}_N(i_1, 0) &amp;=&amp; \{\} \\
+\href{../exec/numerics.html#op-irem-u}{\mathrm{irem\_u}}_N(i_1, i_2) &amp;=&amp; i_1 - i_2 \cdot \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(i_1 / i_2) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This operator is <a class="reference internal" href="#exec-op-partial"><span class="std std-ref">partial</span></a>.</p>
+<p class="last">As long as both operators are defined,
+it holds that <span class="math">\(i_1 = i_2\cdot\href{../exec/numerics.html#op-idiv-u}{\mathrm{idiv\_u}}(i_1, i_2) + \href{../exec/numerics.html#op-irem-u}{\mathrm{irem\_u}}(i_1, i_2)\)</span>.</p>
+</div>
+</div>
+<div class="section" id="op-irem-s">
+<span id="id7"></span><h3><span class="math">\(\href{../exec/numerics.html#op-irem-s}{\mathrm{irem\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-irem-s" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j_1\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_1\)</span>.</li>
+<li>Let <span class="math">\(j_2\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_2\)</span>.</li>
+<li>If <span class="math">\(i_2\)</span> is <span class="math">\(0\)</span>, then the result is undefined.</li>
+<li>Else, return the remainder of dividing <span class="math">\(j_1\)</span> by <span class="math">\(j_2\)</span>, with the sign of the dividend <span class="math">\(j_1\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-irem-s}{\mathrm{irem\_s}}_N(i_1, 0) &amp;=&amp; \{\} \\
+\href{../exec/numerics.html#op-irem-s}{\mathrm{irem\_s}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N^{-1}(i_1 - i_2 \cdot \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) / \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This operator is <a class="reference internal" href="#exec-op-partial"><span class="std std-ref">partial</span></a>.</p>
+<p class="last">As long as both operators are defined,
+it holds that <span class="math">\(i_1 = i_2\cdot\href{../exec/numerics.html#op-idiv-s}{\mathrm{idiv\_s}}(i_1, i_2) + \href{../exec/numerics.html#op-irem-s}{\mathrm{irem\_s}}(i_1, i_2)\)</span>.</p>
+</div>
+</div>
+<div class="section" id="op-iand">
+<span id="id8"></span><h3><span class="math">\(\href{../exec/numerics.html#op-iand}{\mathrm{iand}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-iand" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return the bitwise conjunction of <span class="math">\(i_1\)</span> and <span class="math">\(i_2\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-iand}{\mathrm{iand}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) \wedge \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_2))
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ior">
+<span id="id9"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ior}{\mathrm{ior}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ior" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return the bitwise disjunction of <span class="math">\(i_1\)</span> and <span class="math">\(i_2\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ior}{\mathrm{ior}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) \vee \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_2))
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ixor">
+<span id="id10"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ixor}{\mathrm{ixor}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ixor" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return the bitwise exclusive disjunction of <span class="math">\(i_1\)</span> and <span class="math">\(i_2\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ixor}{\mathrm{ixor}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) \veebar \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_2))
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ishl">
+<span id="id11"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ishl}{\mathrm{ishl}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ishl" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(k\)</span> be <span class="math">\(i_2\)</span> modulo <span class="math">\(N\)</span>.</li>
+<li>Return the result of shifting <span class="math">\(i_1\)</span> left by <span class="math">\(k\)</span> bits, modulo <span class="math">\(2^N\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ishl}{\mathrm{ishl}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(d_2^{N-k}~0^k)
+  &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = d_1^k~d_2^{N-k} \wedge k = i_2 \mathbin{\mathrm{mod}} N)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ishr-u">
+<span id="id12"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ishr-u}{\mathrm{ishr\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ishr-u" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j_2\)</span> be <span class="math">\(i_2\)</span> modulo <span class="math">\(N\)</span>.</li>
+<li>Return the result of shifting <span class="math">\(i_1\)</span> right by <span class="math">\(j_2\)</span> bits, extended with <span class="math">\(0\)</span> bits.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ishr-u}{\mathrm{ishr\_u}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(0^k~d_1^{N-k})
+  &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = d_1^{N-k}~d_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ishr-s">
+<span id="id13"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ishr-s}{\mathrm{ishr\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ishr-s" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j_2\)</span> be <span class="math">\(i_2\)</span> modulo <span class="math">\(N\)</span>.</li>
+<li>Return the result of shifting <span class="math">\(i_1\)</span> right by <span class="math">\(j_2\)</span> bits, extended with the most significant bit of the original value.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ishr-s}{\mathrm{ishr\_s}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(d_0^{k+1}~d_1^{N-k-1})
+  &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = d_0~d_1^{N-k-1}~d_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-irotl">
+<span id="id14"></span><h3><span class="math">\(\href{../exec/numerics.html#op-irotl}{\mathrm{irotl}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-irotl" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j_2\)</span> be <span class="math">\(i_2\)</span> modulo <span class="math">\(N\)</span>.</li>
+<li>Return the result of rotating <span class="math">\(i_1\)</span> left by <span class="math">\(j_2\)</span> bits.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-irotl}{\mathrm{irotl}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(d_2^{N-k}~d_1^k)
+  &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = d_1^k~d_2^{N-k} \wedge k = i_2 \mathbin{\mathrm{mod}} N)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-irotr">
+<span id="id15"></span><h3><span class="math">\(\href{../exec/numerics.html#op-irotr}{\mathrm{irotr}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-irotr" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j_2\)</span> be <span class="math">\(i_2\)</span> modulo <span class="math">\(N\)</span>.</li>
+<li>Return the result of rotating <span class="math">\(i_1\)</span> right by <span class="math">\(j_2\)</span> bits.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-irotr}{\mathrm{irotr}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N^{-1}(d_2^k~d_1^{N-k})
+  &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i_1) = d_1^{N-k}~d_2^k \wedge k = i_2 \mathbin{\mathrm{mod}} N)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-iclz">
+<span id="id16"></span><h3><span class="math">\(\href{../exec/numerics.html#op-iclz}{\mathrm{iclz}}_N(i)\)</span><a class="headerlink" href="#op-iclz" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return the count of leading zero bits in <span class="math">\(i\)</span>; all bits are considered leading zeros if <span class="math">\(i\)</span> is <span class="math">\(0\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-iclz}{\mathrm{iclz}}_N(i) &amp;=&amp; k &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) = 0^k~(1~d^\ast)^?)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ictz">
+<span id="id17"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ictz}{\mathrm{ictz}}_N(i)\)</span><a class="headerlink" href="#op-ictz" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return the count of trailing zero bits in <span class="math">\(i\)</span>; all bits are considered trailing zeros if <span class="math">\(i\)</span> is <span class="math">\(0\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ictz}{\mathrm{ictz}}_N(i) &amp;=&amp; k &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) = (d^\ast~1)^?~0^k)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ipopcnt">
+<span id="id18"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ipopcnt}{\mathrm{ipopcnt}}_N(i)\)</span><a class="headerlink" href="#op-ipopcnt" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return the count of non-zero bits in <span class="math">\(i\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ipopcnt}{\mathrm{ipopcnt}}_N(i) &amp;=&amp; k &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) = (0^\ast~1)^k~0^\ast)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ieqz">
+<span id="id19"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ieqz}{\mathrm{ieqz}}_N(i)\)</span><a class="headerlink" href="#op-ieqz" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(i\)</span> is zero, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ieqz}{\mathrm{ieqz}}_N(i) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(i = 0)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ieq">
+<span id="id20"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ieq}{\mathrm{ieq}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ieq" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> equals <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ieq}{\mathrm{ieq}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(i_1 = i_2)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ine">
+<span id="id21"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ine}{\mathrm{ine}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ine" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> does not equal <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ine}{\mathrm{ine}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(i_1 \neq i_2)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ilt-u">
+<span id="id22"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ilt-u}{\mathrm{ilt\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ilt-u" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> is less than <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ilt-u}{\mathrm{ilt\_u}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(i_1 &lt; i_2)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ilt-s">
+<span id="id23"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ilt-s}{\mathrm{ilt\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ilt-s" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j_1\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_1\)</span>.</li>
+<li>Let <span class="math">\(j_2\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_2\)</span>.</li>
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(j_1\)</span> is less than <span class="math">\(j_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ilt-s}{\mathrm{ilt\_s}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) &lt; \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))
+\end{array}\]</div>
+</div>
+<div class="section" id="op-igt-u">
+<span id="id24"></span><h3><span class="math">\(\href{../exec/numerics.html#op-igt-u}{\mathrm{igt\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-igt-u" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> is greater than <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-igt-u}{\mathrm{igt\_u}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(i_1 &gt; i_2)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-igt-s">
+<span id="id25"></span><h3><span class="math">\(\href{../exec/numerics.html#op-igt-s}{\mathrm{igt\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-igt-s" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j_1\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_1\)</span>.</li>
+<li>Let <span class="math">\(j_2\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_2\)</span>.</li>
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(j_1\)</span> is greater than <span class="math">\(j_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-igt-s}{\mathrm{igt\_s}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) &gt; \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ile-u">
+<span id="id26"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ile-u}{\mathrm{ile\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ile-u" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> is less than or equal to <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ile-u}{\mathrm{ile\_u}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(i_1 \leq i_2)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ile-s">
+<span id="id27"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ile-s}{\mathrm{ile\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ile-s" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j_1\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_1\)</span>.</li>
+<li>Let <span class="math">\(j_2\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_2\)</span>.</li>
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(j_1\)</span> is less than or equal to <span class="math">\(j_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ile-s}{\mathrm{ile\_s}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) \leq \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ige-u">
+<span id="id28"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ige-u}{\mathrm{ige\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ige-u" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(i_1\)</span> is greater than or equal to <span class="math">\(i_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ige-u}{\mathrm{ige\_u}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(i_1 \geq i_2)
+\end{array}\]</div>
+</div>
+<div class="section" id="op-ige-s">
+<span id="id29"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ige-s}{\mathrm{ige\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ige-s" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j_1\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_1\)</span>.</li>
+<li>Let <span class="math">\(j_2\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i_2\)</span>.</li>
+<li>Return <span class="math">\(1\)</span> if <span class="math">\(j_1\)</span> is greater than or equal to <span class="math">\(j_2\)</span>, <span class="math">\(0\)</span> otherwise.</li>
+</ul>
+<div class="math">
+\[\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ige-s}{\mathrm{ige\_s}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) \geq \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))
+\end{array}\]</div>
+</div>
+</div>
+<div class="section" id="floating-point-operations">
+<span id="float-ops"></span><span id="index-8"></span><h2>Floating-Point Operations<a class="headerlink" href="#floating-point-operations" title="Permalink to this headline">¶</a></h2>
+<p>Floating-point arithmetic follows the <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> standard,
+with the following qualifications:</p>
+<ul class="simple">
+<li>All operators use round-to-nearest ties-to-even, except where otherwise specified.
+Non-default directed rounding attributes are not supported.</li>
+<li>Following the recommendation that operators propagate <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a> payloads from their operands is permitted but not required.</li>
+<li>All operators use “non-stop” mode, and floating-point exceptions are not otherwise observable.
+In particular, neither alternate floating-point exception handling attributes nor operators on status flags are supported.
+There is no observable difference between quiet and signalling NaNs.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Some of these limitations may be lifted in future versions of WebAssembly.</p>
+</div>
+<div class="section" id="rounding">
+<span id="aux-ieee"></span><span id="index-9"></span><h3>Rounding<a class="headerlink" href="#rounding" title="Permalink to this headline">¶</a></h3>
+<p>Rounding always is round-to-nearest ties-to-even, in correspondance with <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> (Section 4.3.1).</p>
+<p>An <em>exact</em> floating-point number is a rational number that is exactly representable as a <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point number</span></a> of given bit width <span class="math">\(N\)</span>.</p>
+<p>A <em>limit</em> number for a given floating-point bit width <span class="math">\(N\)</span> is a positive or negative number whose magnitude is the smallest power of <span class="math">\(2\)</span> that is not exactly representable as a floating-point number of width <span class="math">\(N\)</span> (that magnitude is <span class="math">\(2^{128}\)</span> for <span class="math">\(N = 32\)</span> and <span class="math">\(2^{1024}\)</span> for <span class="math">\(N = 64\)</span>).</p>
+<p>A <em>candidate</em> number is either an exact floating-point number or a positive or negative limit number for the given bit width <span class="math">\(N\)</span>.</p>
+<p>A <em>candidate pair</em> is a pair <span class="math">\(z_1,z_2\)</span> of candidate numbers, such that no candidate number exists that lies between the two.</p>
+<p>A real number <span class="math">\(r\)</span> is converted to a floating-point value of bit width <span class="math">\(N\)</span> as follows:</p>
+<ul class="simple">
+<li>If <span class="math">\(r\)</span> is <span class="math">\(0\)</span>, then return <span class="math">\(+0\)</span>.</li>
+<li>Else if <span class="math">\(r\)</span> is an exact floating-point number, then return <span class="math">\(r\)</span>.</li>
+<li>Else if <span class="math">\(r\)</span> greater than or equal to the positive limit, then return <span class="math">\(+\infty\)</span>.</li>
+<li>Else if <span class="math">\(r\)</span> is less than or equal to the negative limit, then return <span class="math">\(-\infty\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are a candidate pair such that <span class="math">\(z_1 &lt; r &lt; z_2\)</span>, then:<ul>
+<li>If <span class="math">\(|r - z_1| &lt; |r - z_2|\)</span>, then let <span class="math">\(z\)</span> be <span class="math">\(z_1\)</span>.</li>
+<li>Else if <span class="math">\(|r - z_1| &gt; |r - z_2|\)</span>, then let <span class="math">\(z\)</span> be <span class="math">\(z_2\)</span>.</li>
+<li>Else if <span class="math">\(|r - z_1| = |r - z_2|\)</span> and the <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">significand</span></a> of <span class="math">\(z_1\)</span> is even, then let <span class="math">\(z\)</span> be <span class="math">\(z_1\)</span>.</li>
+<li>Else, let <span class="math">\(z\)</span> be <span class="math">\(z_2\)</span>.</li>
+</ul>
+</li>
+<li>If <span class="math">\(z\)</span> is <span class="math">\(0\)</span>, then:<ul>
+<li>If <span class="math">\(r &lt; 0\)</span>, then return <span class="math">\(-0\)</span>.</li>
+<li>Else, return <span class="math">\(+0\)</span>.</li>
+</ul>
+</li>
+<li>Else if <span class="math">\(z\)</span> is a limit number, then:<ul>
+<li>If <span class="math">\(r &lt; 0\)</span>, then return <span class="math">\(-\infty\)</span>.</li>
+<li>Else, return <span class="math">\(+\infty\)</span>.</li>
+</ul>
+</li>
+<li>Else, return <span class="math">\(z\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(0) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(r) &amp;=&amp; r &amp; (\mathrel{\mbox{if}} r \in \mathrm{exact}_N) \\
+\href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(r) &amp;=&amp; +\infty &amp; (\mathrel{\mbox{if}} r \geq +\mathrm{limit}_N) \\
+\href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(r) &amp;=&amp; -\infty &amp; (\mathrel{\mbox{if}} r \leq -\mathrm{limit}_N) \\
+\href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(r) &amp;=&amp; \mathrm{closest}_N(r, z_1, z_2) &amp; (\mathrel{\mbox{if}} z_1 &lt; r &lt; z_2 \wedge (z_1,z_2) \in \mathrm{candidatepair}_N) \\[1ex]
+\mathrm{closest}_N(r, z_1, z_2) &amp;=&amp; \mathrm{rectify}_N(r, z_1) &amp; (\mathrel{\mbox{if}} |r-z_1|&lt;|r-z_2|) \\
+\mathrm{closest}_N(r, z_1, z_2) &amp;=&amp; \mathrm{rectify}_N(r, z_2) &amp; (\mathrel{\mbox{if}} |r-z_1|&gt;|r-z_2|) \\
+\mathrm{closest}_N(r, z_1, z_2) &amp;=&amp; \mathrm{rectify}_N(r, z_1) &amp; (\mathrel{\mbox{if}} |r-z_1|=|r-z_2| \wedge \mathrm{even}_N(z_1)) \\
+\mathrm{closest}_N(r, z_1, z_2) &amp;=&amp; \mathrm{rectify}_N(r, z_2) &amp; (\mathrel{\mbox{if}} |r-z_1|=|r-z_2| \wedge \mathrm{even}_N(z_2)) \\[1ex]
+\mathrm{rectify}_N(r, \pm \mathrm{limit}_N) &amp;=&amp; \pm \infty \\
+\mathrm{rectify}_N(r, 0) &amp;=&amp; +0 \qquad (r \geq 0) \\
+\mathrm{rectify}_N(r, 0) &amp;=&amp; -0 \qquad (r &lt; 0) \\
+\mathrm{rectify}_N(r, z) &amp;=&amp; z \\
+\end{array}\end{split}\]</div>
+<p>where:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\mathrm{exact}_N &amp;=&amp; \href{../syntax/values.html#syntax-float}{\def\mathdef1574#1{{\mathit{f}#1}}\mathdef1574{N}} \cap \mathbb{Q} \\
+\mathrm{limit}_N &amp;=&amp; 2^{2^{\href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)-1}} \\
+\mathrm{candidate}_N &amp;=&amp; \mathrm{exact}_N \cup \{+\mathrm{limit}_N, -\mathrm{limit}_N\} \\
+\mathrm{candidatepair}_N &amp;=&amp; \{ (z_1, z_2) \in \mathrm{candidate}_N^2 ~|~ z_1 &lt; z_2 \wedge \forall z \in \mathrm{candidate}_N, z \leq z_1 \vee z \geq z_2\} \\[1ex]
+\mathrm{even}_N((d + m\cdot 2^{-M}) \cdot 2^e) &amp;\Leftrightarrow&amp; m \mathbin{\mathrm{mod}} 2 = 0 \\
+\mathrm{even}_N(\pm \mathrm{limit}_N) &amp;\Leftrightarrow&amp; \mathrm{true} \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="nan-propagation">
+<span id="aux-nans"></span><span id="index-10"></span><h3>NaN Propagation<a class="headerlink" href="#nan-propagation" title="Permalink to this headline">¶</a></h3>
+<p>When the result of a floating-point operator other than <span class="math">\(\href{../exec/numerics.html#op-fneg}{\mathrm{fneg}}\)</span>, <span class="math">\(\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}\)</span>, or <span class="math">\(\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}\)</span> is a <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a>,
+then its sign is non-deterministic and the <a class="reference internal" href="../syntax/values.html#syntax-payload"><span class="std std-ref">payload</span></a> is computed as follows:</p>
+<ul class="simple">
+<li>If the payload of all NaN inputs to the operator is <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical</span></a> (including the case that there are no NaN inputs), then the payload of the output is canonical as well.</li>
+<li>Otherwise the payload is picked non-determinsitically among all <a class="reference internal" href="../syntax/values.html#arithmetic-nan"><span class="std std-ref">arithmetic NaNs</span></a>; that is, its most significant bit is <span class="math">\(1\)</span> and all others are unspecified.</li>
+</ul>
+<p>This non-deterministic result is expressed by the following auxiliary function producing a set of allowed outputs from a set of inputs:</p>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) ~|~ n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N \}
+  &amp; (\mathrel{\mbox{if}} \forall \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) \in z^\ast,~ n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \\
+\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) ~|~ n \geq \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N \}
+  &amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fadd">
+<span id="id30"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fadd" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of opposite signs, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of equal sign, then return that infinity.</li>
+<li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is an infinity, then return that infinity.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of opposite sign, then return positive zero.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of equal sign, then return that zero.</li>
+<li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a zero, then return the other operand.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are values with the same magnitude but opposite signs, then return positive zero.</li>
+<li>Else return the result of adding <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span>, <a class="reference internal" href="#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm \infty, \mp \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm \infty, \pm \infty) &amp;=&amp; \pm \infty \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, \pm \infty) &amp;=&amp; \pm \infty \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm \infty, z_2) &amp;=&amp; \pm \infty \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm 0, \mp 0) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm 0, \pm 0) &amp;=&amp; \pm 0 \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, \pm 0) &amp;=&amp; z_1 \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm 0, z_2) &amp;=&amp; z_2 \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(\pm q, \mp q) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z_1 + z_2) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fsub">
+<span id="id31"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fsub" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of equal signs, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of opposite sign, then return <span class="math">\(z_1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is an infinity, then return that infinity.</li>
+<li>Else if <span class="math">\(z_2\)</span> is an infinity, then return that infinity negated.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of equal sign, then return positive zero.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of opposite sign, then return <span class="math">\(z_1\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is a zero, then return <span class="math">\(z_1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is a zero, then return <span class="math">\(z_2\)</span> negated.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return positive zero.</li>
+<li>Else return the result of subtracting <span class="math">\(z_2\)</span> from <span class="math">\(z_1\)</span>, <a class="reference internal" href="#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm \infty, \pm \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm \infty, \mp \infty) &amp;=&amp; \pm \infty \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, \pm \infty) &amp;=&amp; \mp \infty \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm \infty, z_2) &amp;=&amp; \pm \infty \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm 0, \pm 0) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm 0, \mp 0) &amp;=&amp; \pm 0 \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, \pm 0) &amp;=&amp; z_1 \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm 0, \pm q_2) &amp;=&amp; \mp q_2 \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(\pm q, \pm q) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z_1 - z_2) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Up to the non-determinism regarding NaNs, it always holds that <span class="math">\(\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, z_2) = \href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, \href{../exec/numerics.html#op-fneg}{\mathrm{fneg}}_N(z_2))\)</span>.</p>
+</div>
+</div>
+<div class="section" id="op-fmul">
+<span id="id32"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fmul" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if one of <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> is a zero and the other an infinity, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of equal sign, then return positive infinity.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities of opposite sign, then return negative infinity.</li>
+<li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is an infinity and the other a value with equal sign, then return positive infinity.</li>
+<li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is an infinity and the other a value with opposite sign, then return negative infinity.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of equal sign, then return positive zero.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of opposite sign, then return negative zero.</li>
+<li>Else return the result of multiplying <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span>, <a class="reference internal" href="#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \pm 0) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \mp 0) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \pm \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \mp \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \pm \infty) &amp;=&amp; +\infty \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \mp \infty) &amp;=&amp; -\infty \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm q_1, \pm \infty) &amp;=&amp; +\infty \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm q_1, \mp \infty) &amp;=&amp; -\infty \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \pm q_2) &amp;=&amp; +\infty \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \mp q_2) &amp;=&amp; -\infty \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \pm 0) &amp;=&amp; + 0 \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \mp 0) &amp;=&amp; - 0 \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z_1 \cdot z_2) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fdiv">
+<span id="id33"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fdiv" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are infinities, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is an infinity and <span class="math">\(z_2\)</span> a value with equal sign, then return positive infinity.</li>
+<li>Else if <span class="math">\(z_1\)</span> is an infinity and <span class="math">\(z_2\)</span> a value with opposite sign, then return negative infinity.</li>
+<li>Else if <span class="math">\(z_2\)</span> is an infinity and <span class="math">\(z_1\)</span> a value with equal sign, then return positive zero.</li>
+<li>Else if <span class="math">\(z_2\)</span> is an infinity and <span class="math">\(z_1\)</span> a value with opposite sign, then return negative zero.</li>
+<li>Else if <span class="math">\(z_1\)</span> is a zero and <span class="math">\(z_2\)</span> a value with equal sign, then return positive zero.</li>
+<li>Else if <span class="math">\(z_1\)</span> is a zero and <span class="math">\(z_2\)</span> a value with opposite sign, then return negative zero.</li>
+<li>Else if <span class="math">\(z_2\)</span> is a zero and <span class="math">\(z_1\)</span> a value with equal sign, then return positive infinity.</li>
+<li>Else if <span class="math">\(z_2\)</span> is a zero and <span class="math">\(z_1\)</span> a value with opposite sign, then return negative infinity.</li>
+<li>Else return the result of dividing <span class="math">\(z_2\)</span> by <span class="math">\(z_1\)</span>, <a class="reference internal" href="#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \infty, \pm \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \infty, \mp \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm 0, \pm 0) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm 0, \mp 0) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \infty, \pm q_2) &amp;=&amp; +\infty \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm \infty, \mp q_2) &amp;=&amp; -\infty \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm q_1, \pm \infty) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm q_1, \mp \infty) &amp;=&amp; -0 \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm 0, \pm q_2) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm 0, \mp q_2) &amp;=&amp; -0 \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm q_1, \pm 0) &amp;=&amp; +\infty \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(\pm q_1, \mp 0) &amp;=&amp; -\infty \\
+\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z_1 / z_2) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fmin">
+<span id="id34"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fmin" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a negative infinity, then return negative infinity.</li>
+<li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a positive infinity, then return the other value.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of opposite signs, then return negative zero.</li>
+<li>Else return the smaller value of <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(+ \infty, z_2) &amp;=&amp; z_2 \\
+\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(- \infty, z_2) &amp;=&amp; - \infty \\
+\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, + \infty) &amp;=&amp; z_1 \\
+\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, - \infty) &amp;=&amp; - \infty \\
+\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(\pm 0, \mp 0) &amp;=&amp; -0 \\
+\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, z_2) &amp;=&amp; z_1 &amp; (\mathrel{\mbox{if}} z_1 \leq z_2) \\
+\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, z_2) &amp;=&amp; z_2 &amp; (\mathrel{\mbox{if}} z_2 \leq z_1) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fmax">
+<span id="id35"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fmax" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a positive infinity, then return positive infinity.</li>
+<li>Else if one of <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a negative infinity, then return the other value.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes of opposite signs, then return positive zero.</li>
+<li>Else return the larger value of <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\} \\
+\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1\} \\
+\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(+ \infty, z_2) &amp;=&amp; + \infty \\
+\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(- \infty, z_2) &amp;=&amp; z_2 \\
+\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, + \infty) &amp;=&amp; + \infty \\
+\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, - \infty) &amp;=&amp; z_1 \\
+\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(\pm 0, \mp 0) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, z_2) &amp;=&amp; z_1 &amp; (\mathrel{\mbox{if}} z_1 \geq z_2) \\
+\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, z_2) &amp;=&amp; z_2 &amp; (\mathrel{\mbox{if}} z_2 \geq z_1) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fcopysign">
+<span id="id36"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fcopysign" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> have the same sign, then return <span class="math">\(z_1\)</span>.</li>
+<li>Else return <span class="math">\(z_1\)</span> with negated sign.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(\pm p_1, \pm p_2) &amp;=&amp; \pm p_1 \\
+\href{../exec/numerics.html#op-fcopysign}{\mathrm{fcopysign}}_N(\pm p_1, \mp p_2) &amp;=&amp; \mp p_1 \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fabs">
+<span id="id37"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(z)\)</span><a class="headerlink" href="#op-fabs" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a NaN, then return <span class="math">\(z\)</span> with positive sign.</li>
+<li>Else if <span class="math">\(z\)</span> is an infinity, then return positive infinity.</li>
+<li>Else if <span class="math">\(z\)</span> is a zero, then return positive zero.</li>
+<li>Else if <span class="math">\(z\)</span> is a positive value, then <span class="math">\(z\)</span>.</li>
+<li>Else return <span class="math">\(z\)</span> negated.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; +\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) \\
+\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(\pm \infty) &amp;=&amp; +\infty \\
+\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(\pm 0) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(\pm q) &amp;=&amp; +q \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fneg">
+<span id="id38"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fneg}{\mathrm{fneg}}_N(z)\)</span><a class="headerlink" href="#op-fneg" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a NaN, then return <span class="math">\(z\)</span> with negated sign.</li>
+<li>Else if <span class="math">\(z\)</span> is an infinity, then return that infinity negated.</li>
+<li>Else if <span class="math">\(z\)</span> is a zero, then return that zero negated.</li>
+<li>Else return <span class="math">\(z\)</span> negated.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fneg}{\mathrm{fneg}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \mp \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) \\
+\href{../exec/numerics.html#op-fneg}{\mathrm{fneg}}_N(\pm \infty) &amp;=&amp; \mp \infty \\
+\href{../exec/numerics.html#op-fneg}{\mathrm{fneg}}_N(\pm 0) &amp;=&amp; \mp 0 \\
+\href{../exec/numerics.html#op-fneg}{\mathrm{fneg}}_N(\pm q) &amp;=&amp; \mp q \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fsqrt">
+<span id="id39"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(z)\)</span><a class="headerlink" href="#op-fsqrt" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> has a negative sign, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is positive infinity, then return positive infinity.</li>
+<li>Else if <span class="math">\(z\)</span> is a zero, then return that zero.</li>
+<li>Else return the square root of <span class="math">\(z\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
+\href{../exec/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(- \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(+ \infty) &amp;=&amp; + \infty \\
+\href{../exec/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(\pm 0) &amp;=&amp; \pm 0 \\
+\href{../exec/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(- q) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+\href{../exec/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(+ q) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N\left(\sqrt{q}\right) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fceil">
+<span id="id40"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fceil}{\mathrm{fceil}}_N(z)\)</span><a class="headerlink" href="#op-fceil" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is an infinity, then return <span class="math">\(z\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is a zero, then return <span class="math">\(z\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is smaller than <span class="math">\(0\)</span> but greater than <span class="math">\(-1\)</span>, then return negative zero.</li>
+<li>Else return the smallest integral value that is not smaller than <span class="math">\(z\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fceil}{\mathrm{fceil}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
+\href{../exec/numerics.html#op-fceil}{\mathrm{fceil}}_N(\pm \infty) &amp;=&amp; \pm \infty \\
+\href{../exec/numerics.html#op-fceil}{\mathrm{fceil}}_N(\pm 0) &amp;=&amp; \pm 0 \\
+\href{../exec/numerics.html#op-fceil}{\mathrm{fceil}}_N(- q) &amp;=&amp; -0 &amp; (\mathrel{\mbox{if}} -1 &lt; -q &lt; 0) \\
+\href{../exec/numerics.html#op-fceil}{\mathrm{fceil}}_N(\pm q) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(i) &amp; (\mathrel{\mbox{if}} \pm q \leq i &lt; \pm q + 1) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-ffloor">
+<span id="id41"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(z)\)</span><a class="headerlink" href="#op-ffloor" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is an infinity, then return <span class="math">\(z\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is a zero, then return <span class="math">\(z\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is greater than <span class="math">\(0\)</span> but smaller than <span class="math">\(1\)</span>, then return positive zero.</li>
+<li>Else return the largest integral value that is not larger than <span class="math">\(z\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
+\href{../exec/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(\pm \infty) &amp;=&amp; \pm \infty \\
+\href{../exec/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(\pm 0) &amp;=&amp; \pm 0 \\
+\href{../exec/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(+ q) &amp;=&amp; +0 &amp; (\mathrel{\mbox{if}} 0 &lt; +q &lt; 1) \\
+\href{../exec/numerics.html#op-ffloor}{\mathrm{ffloor}}_N(\pm q) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(i) &amp; (\mathrel{\mbox{if}} \pm q - 1 &lt; i \leq \pm q) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-ftrunc">
+<span id="id42"></span><h3><span class="math">\(\href{../exec/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(z)\)</span><a class="headerlink" href="#op-ftrunc" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is an infinity, then return <span class="math">\(z\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is a zero, then return <span class="math">\(z\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is greater than <span class="math">\(0\)</span> but smaller than <span class="math">\(1\)</span>, then return positive zero.</li>
+<li>Else if <span class="math">\(z\)</span> is smaller than <span class="math">\(0\)</span> but greater than <span class="math">\(-1\)</span>, then return negative zero.</li>
+<li>Else return the integral value with the same sign as <span class="math">\(z\)</span> and the largest magnitude that is not larger than the magnitude of <span class="math">\(z\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
+\href{../exec/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(\pm \infty) &amp;=&amp; \pm \infty \\
+\href{../exec/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(\pm 0) &amp;=&amp; \pm 0 \\
+\href{../exec/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(+ q) &amp;=&amp; +0 &amp; (\mathrel{\mbox{if}} 0 &lt; +q &lt; 1) \\
+\href{../exec/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(- q) &amp;=&amp; -0 &amp; (\mathrel{\mbox{if}} -1 &lt; -q &lt; 0) \\
+\href{../exec/numerics.html#op-ftrunc}{\mathrm{ftrunc}}_N(\pm q) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(\pm i) &amp; (\mathrel{\mbox{if}} +q - 1 &lt; i \leq +q) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fnearest">
+<span id="id43"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(z)\)</span><a class="headerlink" href="#op-fnearest" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is an infinity, then return <span class="math">\(z\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is a zero, then return <span class="math">\(z\)</span>.</li>
+<li>Else if <span class="math">\(z\)</span> is greater than <span class="math">\(0\)</span> but smaller than or equal to <span class="math">\(0.5\)</span>, then return positive zero.</li>
+<li>Else if <span class="math">\(z\)</span> is smaller than <span class="math">\(0\)</span> but greater than or equal to <span class="math">\(-0.5\)</span>, then return negative zero.</li>
+<li>Else return the integral value that is nearest to <span class="math">\(z\)</span>; if two values are equally near, return the even one.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\} \\
+\href{../exec/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(\pm \infty) &amp;=&amp; \pm \infty \\
+\href{../exec/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(\pm 0) &amp;=&amp; \pm 0 \\
+\href{../exec/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(+ q) &amp;=&amp; +0 &amp; (\mathrel{\mbox{if}} 0 &lt; +q \leq 0.5) \\
+\href{../exec/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(- q) &amp;=&amp; -0 &amp; (\mathrel{\mbox{if}} -0.5 \leq -q &lt; 0) \\
+\href{../exec/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(\pm q) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(\pm i) &amp; (\mathrel{\mbox{if}} |i - q| &lt; 0.5) \\
+\href{../exec/numerics.html#op-fnearest}{\mathrm{fnearest}}_N(\pm q) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(\pm i) &amp; (\mathrel{\mbox{if}} |i - q| = 0.5 \wedge i~\mbox{even}) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-feq">
+<span id="id44"></span><h3><span class="math">\(\href{../exec/numerics.html#op-feq}{\mathrm{feq}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-feq" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return <span class="math">\(0\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return <span class="math">\(1\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return <span class="math">\(1\)</span>.</li>
+<li>Else return <span class="math">\(0\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-feq}{\mathrm{feq}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-feq}{\mathrm{feq}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-feq}{\mathrm{feq}}_N(\pm 0, \mp 0) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-feq}{\mathrm{feq}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(z_1 = z_2) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fne">
+<span id="id45"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fne" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return <span class="math">\(0\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return <span class="math">\(0\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return <span class="math">\(0\)</span>.</li>
+<li>Else return <span class="math">\(1\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(\pm 0, \mp 0) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(z_1 \neq z_2) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-flt">
+<span id="id46"></span><h3><span class="math">\(\href{../exec/numerics.html#op-flt}{\mathrm{flt}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-flt" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is positive infinity, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is negative infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is positive infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is negative infinity, then return <span class="math">\(0\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is smaller than <span class="math">\(z_2\)</span>, then return <span class="math">\(1\)</span>.</li>
+<li>Else return <span class="math">\(0\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-flt}{\mathrm{flt}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-flt}{\mathrm{flt}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-flt}{\mathrm{flt}}_N(z, z) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-flt}{\mathrm{flt}}_N(+ \infty, z_2) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-flt}{\mathrm{flt}}_N(- \infty, z_2) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-flt}{\mathrm{flt}}_N(z_1, + \infty) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-flt}{\mathrm{flt}}_N(z_1, - \infty) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-flt}{\mathrm{flt}}_N(\pm 0, \mp 0) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-flt}{\mathrm{flt}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(z_1 &lt; z_2) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fgt">
+<span id="id47"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fgt}{\mathrm{fgt}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fgt" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is positive infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is negative infinity, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is positive infinity, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is negative infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is larger than <span class="math">\(z_2\)</span>, then return <span class="math">\(1\)</span>.</li>
+<li>Else return <span class="math">\(0\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fgt}{\mathrm{fgt}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fgt}{\mathrm{fgt}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fgt}{\mathrm{fgt}}_N(z, z) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fgt}{\mathrm{fgt}}_N(+ \infty, z_2) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fgt}{\mathrm{fgt}}_N(- \infty, z_2) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fgt}{\mathrm{fgt}}_N(z_1, + \infty) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fgt}{\mathrm{fgt}}_N(z_1, - \infty) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fgt}{\mathrm{fgt}}_N(\pm 0, \mp 0) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fgt}{\mathrm{fgt}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(z_1 &gt; z_2) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fle">
+<span id="id48"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fle}{\mathrm{fle}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fle" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is positive infinity, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is negative infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is positive infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is negative infinity, then return <span class="math">\(0\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is smaller than or equal to <span class="math">\(z_2\)</span>, then return <span class="math">\(1\)</span>.</li>
+<li>Else return <span class="math">\(0\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fle}{\mathrm{fle}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fle}{\mathrm{fle}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fle}{\mathrm{fle}}_N(z, z) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fle}{\mathrm{fle}}_N(+ \infty, z_2) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fle}{\mathrm{fle}}_N(- \infty, z_2) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fle}{\mathrm{fle}}_N(z_1, + \infty) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fle}{\mathrm{fle}}_N(z_1, - \infty) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fle}{\mathrm{fle}}_N(\pm 0, \mp 0) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fle}{\mathrm{fle}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(z_1 \leq z_2) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-fge">
+<span id="id49"></span><h3><span class="math">\(\href{../exec/numerics.html#op-fge}{\mathrm{fge}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fge" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If either <span class="math">\(z_1\)</span> or <span class="math">\(z_2\)</span> is a NaN, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are the same value, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is positive infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is negative infinity, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is positive infinity, then return <span class="math">\(0\)</span>.</li>
+<li>Else if <span class="math">\(z_2\)</span> is negative infinity, then return <span class="math">\(1\)</span>.</li>
+<li>Else if both <span class="math">\(z_1\)</span> and <span class="math">\(z_2\)</span> are zeroes, then return <span class="math">\(1\)</span>.</li>
+<li>Else if <span class="math">\(z_1\)</span> is smaller than or equal to <span class="math">\(z_2\)</span>, then return <span class="math">\(1\)</span>.</li>
+<li>Else return <span class="math">\(0\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-fge}{\mathrm{fge}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fge}{\mathrm{fge}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fge}{\mathrm{fge}}_N(z, z) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fge}{\mathrm{fge}}_N(+ \infty, z_2) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fge}{\mathrm{fge}}_N(- \infty, z_2) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fge}{\mathrm{fge}}_N(z_1, + \infty) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fge}{\mathrm{fge}}_N(z_1, - \infty) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fge}{\mathrm{fge}}_N(\pm 0, \mp 0) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fge}{\mathrm{fge}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(z_1 \geq z_2) \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="conversions">
+<span id="convert-ops"></span><h2>Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="op-extend-u">
+<span id="id50"></span><h3><span class="math">\(\href{../exec/numerics.html#op-extend-u}{\mathrm{extend\_u}}_{M,N}(i)\)</span><a class="headerlink" href="#op-extend-u" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return <span class="math">\(i\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#op-extend-u}{\mathrm{extend\_u}}_{M,N}(i) &amp;=&amp; i \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the abstract syntax, unsigned extension just reinterprets the same value.</p>
+</div>
+</div>
+<div class="section" id="op-extend-s">
+<span id="id51"></span><h3><span class="math">\(\href{../exec/numerics.html#op-extend-s}{\mathrm{extend\_s}}_{M,N}(i)\)</span><a class="headerlink" href="#op-extend-s" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i\)</span> of size <span class="math">\(M\)</span>.</li>
+<li>Return the two’s complement of <span class="math">\(j\)</span> relative to size <span class="math">\(N\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#op-extend-s}{\mathrm{extend\_s}}_{M,N}(i) &amp;=&amp; \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N^{-1}(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_M(i)) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-wrap">
+<span id="id52"></span><h3><span class="math">\(\href{../exec/numerics.html#op-wrap}{\mathrm{wrap}}_{M,N}(i)\)</span><a class="headerlink" href="#op-wrap" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return <span class="math">\(i\)</span> modulo <span class="math">\(2^N\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#op-wrap}{\mathrm{wrap}}_{M,N}(i) &amp;=&amp; i \mathbin{\mathrm{mod}} 2^N \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-trunc-u">
+<span id="id53"></span><h3><span class="math">\(\href{../exec/numerics.html#op-trunc-u}{\mathrm{trunc\_u}}_{M,N}(z)\)</span><a class="headerlink" href="#op-trunc-u" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a NaN, then the result is undefined.</li>
+<li>Else if <span class="math">\(z\)</span> is an infinity, then the result is undefined.</li>
+<li>Else if <span class="math">\(z\)</span> is a number and <span class="math">\(\href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(z)\)</span> is a value within range of the target type, then return that value.</li>
+<li>Else the result is undefined.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#op-trunc-u}{\mathrm{trunc\_u}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \{\} \\
+\href{../exec/numerics.html#op-trunc-u}{\mathrm{trunc\_u}}_{M,N}(\pm \infty) &amp;=&amp; \{\} \\
+\href{../exec/numerics.html#op-trunc-u}{\mathrm{trunc\_u}}_{M,N}(\pm q) &amp;=&amp; \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp; (\mathrel{\mbox{if}} -1 &lt; \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &lt; 2^N) \\
+\href{../exec/numerics.html#op-trunc-u}{\mathrm{trunc\_u}}_{M,N}(\pm q) &amp;=&amp; \{\} &amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This operator is <a class="reference internal" href="#exec-op-partial"><span class="std std-ref">partial</span></a>.
+It is not defined for NaNs, infinities, or values for which the result is out of range.</p>
+</div>
+</div>
+<div class="section" id="op-trunc-s">
+<span id="id54"></span><h3><span class="math">\(\href{../exec/numerics.html#op-trunc-s}{\mathrm{trunc\_s}}_{M,N}(z)\)</span><a class="headerlink" href="#op-trunc-s" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a NaN, then the result is undefined.</li>
+<li>Else if <span class="math">\(z\)</span> is an infinity, then the result is undefined.</li>
+<li>If <span class="math">\(z\)</span> is a number and <span class="math">\(\href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(z)\)</span> is a value within range of the target type, then return that value.</li>
+<li>Else the result is undefined.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#op-trunc-s}{\mathrm{trunc\_s}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \{\} \\
+\href{../exec/numerics.html#op-trunc-s}{\mathrm{trunc\_s}}_{M,N}(\pm \infty) &amp;=&amp; \{\} \\
+\href{../exec/numerics.html#op-trunc-s}{\mathrm{trunc\_s}}_{M,N}(\pm q) &amp;=&amp; \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp; (\mathrel{\mbox{if}} -2^{N-1} - 1 &lt; \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &lt; 2^{N-1}) \\
+\href{../exec/numerics.html#op-trunc-s}{\mathrm{trunc\_s}}_{M,N}(\pm q) &amp;=&amp; \{\} &amp; (\mathrel{\mbox{otherwise}}) \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This operator is <a class="reference internal" href="#exec-op-partial"><span class="std std-ref">partial</span></a>.
+It is not defined for NaNs, infinities, or values for which the result is out of range.</p>
+</div>
+</div>
+<div class="section" id="op-promote">
+<span id="id55"></span><h3><span class="math">\(\href{../exec/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(z)\)</span><a class="headerlink" href="#op-promote" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical NaN</span></a>, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span> (i.e., a canonical NaN of size <span class="math">\(N\)</span>).</li>
+<li>Else if <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\}\)</span> (i.e., any NaN of size <span class="math">\(N\)</span>).</li>
+<li>Else, return <span class="math">\(z\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} &amp; (\mathrel{\mbox{if}} n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \\
+\href{../exec/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{+ \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\} &amp; (\mathrel{\mbox{otherwise}}) \\
+\href{../exec/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(z) &amp;=&amp; z \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-demote">
+<span id="id56"></span><h3><span class="math">\(\href{../exec/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(z)\)</span><a class="headerlink" href="#op-demote" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If <span class="math">\(z\)</span> is a <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical NaN</span></a>, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span> (i.e., a canonical NaN of size <span class="math">\(N\)</span>).</li>
+<li>Else if <span class="math">\(z\)</span> is a NaN, then return an element of <span class="math">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\}\)</span> (i.e., any NaN of size <span class="math">\(N\)</span>).</li>
+<li>Else if <span class="math">\(z\)</span> is an infinity, then return that infinity.</li>
+<li>Else if <span class="math">\(z\)</span> is a zero, then return that zero.</li>
+<li>Else, return <span class="math">\(\href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z)\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} &amp; (\mathrel{\mbox{if}} n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \\
+\href{../exec/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{+ \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\} &amp; (\mathrel{\mbox{otherwise}}) \\
+\href{../exec/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm \infty) &amp;=&amp; \pm \infty \\
+\href{../exec/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm 0) &amp;=&amp; \pm 0 \\
+\href{../exec/numerics.html#op-demote}{\mathrm{demote}}_{M,N}(\pm q) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(\pm q) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-convert-u">
+<span id="id57"></span><h3><span class="math">\(\href{../exec/numerics.html#op-convert-u}{\mathrm{convert\_u}}_{M,N}(i)\)</span><a class="headerlink" href="#op-convert-u" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Return <span class="math">\(\href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(i)\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#op-convert-u}{\mathrm{convert\_u}}_{M,N}(i) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(i) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-convert-s">
+<span id="id58"></span><h3><span class="math">\(\href{../exec/numerics.html#op-convert-s}{\mathrm{convert\_s}}_{M,N}(i)\)</span><a class="headerlink" href="#op-convert-s" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(j\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math">\(i\)</span>.</li>
+<li>Return <span class="math">\(\href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(j)\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#op-convert-u}{\mathrm{convert\_u}}_{M,N}(i) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_M(i)) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="section" id="op-reinterpret">
+<span id="id59"></span><h3><span class="math">\(\href{../exec/numerics.html#op-reinterpret}{\mathrm{reinterpret}}_{t_1,t_2}(c)\)</span><a class="headerlink" href="#op-reinterpret" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Let <span class="math">\(d^\ast\)</span> be the bit sequence <span class="math">\(\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{t_1}(c)\)</span>.</li>
+<li>Return the constant <span class="math">\(c'\)</span> for which <span class="math">\(\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{t_2}(c') = d^\ast\)</span>.</li>
+</ul>
+<div class="math">
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\href{../exec/numerics.html#op-reinterpret}{\mathrm{reinterpret}}_{t_1,t_2}(c) &amp;=&amp; \href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{t_2}^{-1}(\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{t_1}(c)) \\
+\end{array}\end{split}\]</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,184 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Introduction &#8212; WebAssembly 1.0</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Overview" href="overview.html" />
+    <link rel="prev" title="Introduction" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Introduction</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#design-goals">Design Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scope">Scope</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>WebAssembly (abbreviated Wasm <a class="footnote-reference" href="#wasm" id="id1">[1]</a>) is a <em>safe, portable, low-level code format</em>
+designed for efficient execution and compact representation.
+Its main goal is to enable high performance applications on the Web, but it does not make any Web-specific assumptions or provide Web-specific features, so it can be employed in other environments as well.</p>
+<p>WebAssembly is an open standard developed by a <a class="reference external" href="https://www.w3.org/community/webassembly/">W3C Community Group</a> that includes representatives of all major browser vendors.</p>
+<p>This document describes version 1.0 of the <a class="reference internal" href="#scope"><span class="std std-ref">core</span></a> WebAssembly standard.
+It is intended that it will be superseded by new incremental releases with additional features in the future.</p>
+<div class="section" id="design-goals">
+<span id="goals"></span><h2>Design Goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">¶</a></h2>
+<p id="index-0">The design goals of WebAssembly are the following:</p>
+<ul class="simple">
+<li>Fast, safe, and portable <em>semantics</em>:<ul>
+<li><strong>Fast</strong>: executes with near native code performance, taking advantage of capabilities common to all contemporary hardware.</li>
+<li><strong>Safe</strong>: code is validated and executes in a memory-safe <a class="footnote-reference" href="#memorysafe" id="id2">[2]</a>, sandboxed environment preventing data corruption or security breaches.</li>
+<li><strong>Well-defined</strong>: fully and precisely defines valid programs and their behavior in a way that is easy to reason about informally and formally.</li>
+<li><strong>Hardware-independent</strong>: can be compiled on all modern architectures, desktop or mobile devices and embedded systems alike.</li>
+<li><strong>Language-independent</strong>: does not privilege any particular language, programming model, or object model.</li>
+<li><strong>Platform-independent</strong>: can be embedded in browsers, run as a stand-alone VM, or integrated in other environments.</li>
+<li><strong>Open</strong>: programs can interoperate with their environment in a simple and universal manner.</li>
+</ul>
+</li>
+<li>Efficient and portable <em>representation</em>:<ul>
+<li><strong>Compact</strong>: has a binary format that is fast to transmit by being smaller than typical text or native code formats.</li>
+<li><strong>Modular</strong>: programs can be split up in smaller parts that can be transmitted, cached, and consumed separately.</li>
+<li><strong>Efficient</strong>: can be decoded, validated, and compiled in a fast single pass, equally with either just-in-time (JIT) or ahead-of-time (AOT) compilation.</li>
+<li><strong>Streamable</strong>: allows decoding, validation, and compilation to begin as soon as possible, before all data has been seen.</li>
+<li><strong>Parallelizable</strong>: allows decoding, validation, and compilation to be split into many independent parallel tasks.</li>
+<li><strong>Portable</strong>: makes no architectural assumptions that are not broadly supported across modern hardware.</li>
+</ul>
+</li>
+</ul>
+<p>WebAssembly code is also intended to be easy to inspect and debug, especially in environments like web browsers, but such features are beyond the scope of this specification.</p>
+<table class="docutils footnote" frame="void" id="wasm" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>A contraction of “WebAssembly”, not an acronym, hence not using all-caps.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="memorysafe" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>No program can break WebAssembly’s memory model. Of course, it cannot guarantee that an unsafe language compiling to WebAssembly does not corrupt its own memory layout, e.g. inside WebAssembly’s linear memory.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="scope">
+<span id="id3"></span><h2>Scope<a class="headerlink" href="#scope" title="Permalink to this headline">¶</a></h2>
+<p>At its core, WebAssembly is a <em>virtual instruction set architecture (virtual ISA)</em>.
+As such, it has many use cases and can be embedded in many different environments.
+To encompass their variety and enable maximum reuse, the WebAssembly specification is split and layered into several documents.</p>
+<p>This document is concerned with the core ISA layer of WebAssembly.
+It defines the instruction set, binary encoding, validation, and execution semantics, as well as a textual representation.
+It does not, however, define how WebAssembly programs can interact with a specific environment they execute in, nor how they are invoked from such an environment.</p>
+<p>Instead, this specification is complemented by additional documents defining interfaces to specific embedding environments such as the Web.
+These will each define a WebAssembly <em>application programming interface (API)</em> suitable for a given environment.</p>
+</div>
+<div class="section" id="dependencies">
+<span id="index-1"></span><span id="id4"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>WebAssembly depends on two existing standards:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a>, for the representation of <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point data</span></a> and the semantics of respective <a class="reference internal" href="../exec/numerics.html#float-ops"><span class="std std-ref">numeric operations</span></a>.</li>
+<li><a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a>, for the representation of import/export <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">names</span></a> and the <a class="reference internal" href="../text/index.html#text"><span class="std std-ref">text format</span></a>.</li>
+</ul>
+<p>However, to make this specification self-contained, relevant aspects of the aforementioned standards are defined and formalized as part of this specification,
+such as the <a class="reference internal" href="../exec/numerics.html#aux-fbits"><span class="std std-ref">binary representation</span></a> and <a class="reference internal" href="../exec/numerics.html#aux-ieee"><span class="std std-ref">rounding</span></a> of floating-point values, and the <a class="reference internal" href="../syntax/values.html#syntax-codepoint"><span class="std std-ref">value range</span></a> and <a class="reference internal" href="../binary/values.html#binary-utf8"><span class="std std-ref">UTF-8 encoding</span></a> of Unicode characters.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The aforementioned standards are the authorative source of all respective definitions.
+Formalizations given in this specification are intended to match these definitions.
+Any discrepancy in the syntax or semantics described is to be considered an error.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

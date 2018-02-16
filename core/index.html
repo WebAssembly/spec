@@ -1,0 +1,420 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>WebAssembly Specification &#8212; WebAssembly 1.0</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction" href="intro/index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="./genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="./_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="webassembly-specification">
+<h1>WebAssembly Specification<a class="headerlink" href="#webassembly-specification" title="Permalink to this headline">¶</a></h1>
+<p>Release 1.0 (Draft, last updated Feb 08, 2018)</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro/index.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro/introduction.html">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro/introduction.html#design-goals">Design Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro/introduction.html#scope">Scope</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro/introduction.html#dependencies">Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="intro/overview.html">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro/overview.html#concepts">Concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro/overview.html#semantic-phases">Semantic Phases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="syntax/index.html">Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="syntax/conventions.html">Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="syntax/conventions.html#grammar-notation">Grammar Notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/conventions.html#auxiliary-notation">Auxiliary Notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/conventions.html#vectors">Vectors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="syntax/values.html">Values</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="syntax/values.html#bytes">Bytes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/values.html#integers">Integers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/values.html#floating-point">Floating-Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/values.html#names">Names</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="syntax/types.html">Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="syntax/types.html#value-types">Value Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/types.html#result-types">Result Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/types.html#function-types">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/types.html#limits">Limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/types.html#memory-types">Memory Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/types.html#table-types">Table Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/types.html#global-types">Global Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/types.html#external-types">External Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="syntax/instructions.html">Instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="syntax/instructions.html#numeric-instructions">Numeric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/instructions.html#parametric-instructions">Parametric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/instructions.html#variable-instructions">Variable Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/instructions.html#memory-instructions">Memory Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/instructions.html#control-instructions">Control Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/instructions.html#expressions">Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="syntax/modules.html">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#indices">Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#types">Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#tables">Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#memories">Memories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#globals">Globals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#element-segments">Element Segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#data-segments">Data Segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#start-function">Start Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#exports">Exports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="syntax/modules.html#imports">Imports</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="valid/index.html">Validation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="valid/conventions.html">Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="valid/conventions.html#contexts">Contexts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/conventions.html#prose-notation">Prose Notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/conventions.html#formal-notation">Formal Notation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="valid/types.html">Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="valid/types.html#limits">Limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/types.html#function-types">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/types.html#table-types">Table Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/types.html#memory-types">Memory Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/types.html#global-types">Global Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="valid/instructions.html">Instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="valid/instructions.html#numeric-instructions">Numeric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/instructions.html#parametric-instructions">Parametric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/instructions.html#variable-instructions">Variable Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/instructions.html#memory-instructions">Memory Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/instructions.html#control-instructions">Control Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/instructions.html#instruction-sequences">Instruction Sequences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/instructions.html#expressions">Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="valid/modules.html">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#tables">Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#memories">Memories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#globals">Globals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#element-segments">Element Segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#data-segments">Data Segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#start-function">Start Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#exports">Exports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#imports">Imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="valid/modules.html#valid-module">Modules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="exec/index.html">Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="exec/conventions.html">Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="exec/conventions.html#prose-notation">Prose Notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/conventions.html#formal-notation">Formal Notation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="exec/runtime.html">Runtime Structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#values">Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#results">Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#store">Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#addresses">Addresses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#module-instances">Module Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#function-instances">Function Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#table-instances">Table Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#memory-instances">Memory Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#global-instances">Global Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#export-instances">Export Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#external-values">External Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#stack">Stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/runtime.html#administrative-instructions">Administrative Instructions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="exec/numerics.html">Numerics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="exec/numerics.html#representations">Representations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/numerics.html#integer-operations">Integer Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/numerics.html#floating-point-operations">Floating-Point Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/numerics.html#conversions">Conversions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="exec/instructions.html">Instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#numeric-instructions">Numeric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#parametric-instructions">Parametric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#variable-instructions">Variable Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#memory-instructions">Memory Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#control-instructions">Control Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#blocks">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#function-calls">Function Calls</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/instructions.html#expressions">Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="exec/modules.html">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="exec/modules.html#external-typing">External Typing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/modules.html#import-matching">Import Matching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/modules.html#allocation">Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/modules.html#instantiation">Instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exec/modules.html#invocation">Invocation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="binary/index.html">Binary Format</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="binary/conventions.html">Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="binary/conventions.html#grammar">Grammar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/conventions.html#auxiliary-notation">Auxiliary Notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/conventions.html#vectors">Vectors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="binary/values.html">Values</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="binary/values.html#bytes">Bytes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/values.html#integers">Integers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/values.html#floating-point">Floating-Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/values.html#names">Names</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="binary/types.html">Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="binary/types.html#value-types">Value Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/types.html#result-types">Result Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/types.html#function-types">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/types.html#limits">Limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/types.html#memory-types">Memory Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/types.html#table-types">Table Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/types.html#global-types">Global Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="binary/instructions.html">Instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="binary/instructions.html#control-instructions">Control Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/instructions.html#parametric-instructions">Parametric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/instructions.html#variable-instructions">Variable Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/instructions.html#memory-instructions">Memory Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/instructions.html#numeric-instructions">Numeric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/instructions.html#expressions">Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="binary/modules.html">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#indices">Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#sections">Sections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#custom-section">Custom Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#type-section">Type Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#import-section">Import Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#function-section">Function Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#table-section">Table Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#memory-section">Memory Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#global-section">Global Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#export-section">Export Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#start-section">Start Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#element-section">Element Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#code-section">Code Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#data-section">Data Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary/modules.html#binary-module">Modules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="text/index.html">Text Format</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="text/conventions.html">Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="text/conventions.html#grammar">Grammar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/conventions.html#abbreviations">Abbreviations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/conventions.html#contexts">Contexts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/conventions.html#vectors">Vectors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="text/lexical.html">Lexical Format</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="text/lexical.html#characters">Characters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/lexical.html#tokens">Tokens</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/lexical.html#white-space">White Space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/lexical.html#comments">Comments</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="text/values.html">Values</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="text/values.html#integers">Integers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/values.html#floating-point">Floating-Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/values.html#strings">Strings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/values.html#names">Names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/values.html#text-id">Identifiers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="text/types.html">Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="text/types.html#value-types">Value Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/types.html#result-types">Result Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/types.html#function-types">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/types.html#limits">Limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/types.html#memory-types">Memory Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/types.html#table-types">Table Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/types.html#global-types">Global Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="text/instructions.html">Instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="text/instructions.html#labels">Labels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/instructions.html#control-instructions">Control Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/instructions.html#parametric-instructions">Parametric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/instructions.html#variable-instructions">Variable Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/instructions.html#memory-instructions">Memory Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/instructions.html#numeric-instructions">Numeric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/instructions.html#folded-instructions">Folded Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/instructions.html#expressions">Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="text/modules.html">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#indices">Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#types">Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#type-uses">Type Uses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#imports">Imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#tables">Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#memories">Memories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#globals">Globals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#exports">Exports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#start-function">Start Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#element-segments">Element Segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#data-segments">Data Segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="text/modules.html#text-module">Modules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/index.html">Appendix</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="appendix/embedding.html">Embedding</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="appendix/embedding.html#store">Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/embedding.html#modules">Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/embedding.html#exports">Exports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/embedding.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/embedding.html#tables">Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/embedding.html#memories">Memories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/embedding.html#globals">Globals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/implementation.html">Implementation Limitations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="appendix/implementation.html#syntactic-limits">Syntactic Limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/implementation.html#validation">Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/implementation.html#execution">Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/algorithm.html">Validation Algorithm</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="appendix/algorithm.html#data-structures">Data Structures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/algorithm.html#validation-of-opcode-sequences">Validation of Opcode Sequences</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/custom.html">Custom Sections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="appendix/custom.html#name-section">Name Section</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/properties.html">Soundness</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="appendix/properties.html#values-and-results">Values and Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/properties.html#store-validity">Store Validity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/properties.html#configuration-validity">Configuration Validity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/properties.html#administrative-instructions">Administrative Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/properties.html#store-extension">Store Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="appendix/properties.html#theorems">Theorems</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<ul class="simple">
+<li><a class="reference internal" href="appendix/index-types.html#index-type"><span class="std std-ref">Index of Types</span></a></li>
+<li><a class="reference internal" href="appendix/index-instructions.html#index-instr"><span class="std std-ref">Index of Instructions</span></a></li>
+<li><a class="reference internal" href="appendix/index-rules.html#index-rules"><span class="std std-ref">Index of Semantic Rules</span></a></li>
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
