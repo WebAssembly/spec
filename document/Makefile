@@ -30,20 +30,27 @@ root: $(BUILDDIR)
 	cp -f $(FILES) $(BUILDDIR)/
 
 .PHONY: $(DIRS)
-$(DIRS): %: $(BUILDDIR)
-	(cd $@; make BUILDDIR=$(BUILDDIR) all)
-	mkdir -p $(BUILDDIR)/$@
-	cp -R $@/$(BUILDDIR)/html/* $(BUILDDIR)/$@/
+$(DIRS): %: $(BUILDDIR) $(DIRS:%=build-%) $(DIRS:%=dir-%)
+
+.PHONY: $(DIRS:%=build-%)
+$(DIRS:%=build-%): build-%:
+	(cd $(@:build-%=%); make BUILDDIR=$(BUILDDIR) all)
+
+.PHONY: $(DIRS:%=dir-%)
+$(DIRS:%=dir-%): dir-%:
+	mkdir -p $(BUILDDIR)/$(@:dir-%=%)
+	rm -rf $(BUILDDIR)/$(@:dir-%=%)/*
+	cp -R $(@:dir-%=%)/$(BUILDDIR)/html/* $(BUILDDIR)/$(@:dir-%=%)/
 
 .PHONY: $(DIRS:%=deploy-%)
-$(DIRS:%=deploy-%):
+$(DIRS:%=deploy-%): deploy-%:
 	GIT_DEPLOY_DIR=$(BUILDDIR) GIT_DEPLOY_SUBDIR=$(@:deploy-%=%) bash deploy.sh
 
 .PHONY: $(DIRS:%=publish-%)
 $(DIRS:%=publish-%): publish-%: % deploy-%
 
 .PHONY: $(DIRS:%=clean-%)
-$(DIRS:%=clean-%):
+$(DIRS:%=clean-%): clean-%:
 	(cd $(@:clean-%=%); make BUILDDIR=$(BUILDDIR) clean)
 	rm -rf $(BUILDDIR)/$(@:clean-%=%)
 

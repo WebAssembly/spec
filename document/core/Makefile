@@ -67,14 +67,24 @@ help:
 
 .PHONY: deploy
 deploy:
-	(cd ..; make deploy-core)
+	(cd ..; make dir-core deploy-core)
 
 .PHONY: publish
-publish:
-	(cd ..; make publish-core)
+publish: clean all deploy
 
 .PHONY: all
 all:	pdf html bikeshed
+
+.PHONY: deploy-main
+deploy-main:
+	(cd ..; make dir-core)
+	(cd ..; GIT_DEPLOY_DIR=$(BUILDDIR) GIT_DEPLOY_SUBDIR=core/multipage bash deploy.sh)
+
+.PHONY: publish-main
+publish-main: clean main deploy-main
+
+.PHONY: main
+main:	pdf html
 
 .PHONY: pdf
 pdf:	latexpdf
