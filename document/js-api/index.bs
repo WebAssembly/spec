@@ -167,16 +167,7 @@ spec:ecmascript; type:interface; for:ECMAScript; text:ArrayBuffer
 spec:promises-guide-1; type:dfn; text:resolve
 </pre>
 
-Issue: This document is an early draft, porting <a href="https://github.com/WebAssembly/design/blob/master/JS.md">the official JS/WebAssembly interface specification</a> to WebIDL and Bikeshed. It should currently not be used as the WebAssembly specification.
-
-This API is, initially, the only API for accessing WebAssembly [[WEBASSEMBLY]] from the web platform, through a bridge to explicitly construct modules from ECMAScript [[ECMASCRIPT]].
-
-Issue: In future versions, WebAssembly may
-be loaded and run directly from an HTML `<script type='module'>` tag—and
-any other Web API that loads ES6 modules via URL—as part of
-[ES6 Module integration](https://github.com/WebAssembly/design/issues/1087).)
-
-Note: WebAssembly JS API declaration file for TypeScript can be found [here](https://github.com/01alchemist/webassembly-types/blob/master/webassembly.d.ts) which enable autocompletion and make TypeScript compiler happy.
+This API privides a way to access WebAssembly [[WEBASSEMBLY]] from the web platform or other JavaScript environments such as Node.js, through a bridge to explicitly construct modules from ECMAScript [[ECMASCRIPT]].
 
 <p>See the [[#issues-index]] for complete list of issues.</p>
 
