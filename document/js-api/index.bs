@@ -603,8 +603,8 @@ dictionary TableDescriptor {
 [LegacyNamespace=WebAssembly, Constructor(TableDescriptor descriptor), Exposed=(Window,Worker,Worklet)]
 interface Table {
   unsigned long grow([EnforceRange] unsigned long delta);
-  Function? get([EnforceRange] unsigned long delta);
-  void set([EnforceRange] unsigned long delta, Function? value);
+  Function? get([EnforceRange] unsigned long index);
+  void set([EnforceRange] unsigned long index, Function? value);
   readonly attribute unsigned long length;
 };
 </pre>
