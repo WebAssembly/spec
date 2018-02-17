@@ -90,6 +90,17 @@ const moduleBinaryWithMemSectionAndMemImport = (() => {
     return builder.toBuffer();
 })();
 
+const exportingModuleIdentityFn = (() => {
+    let builder = new WasmModuleBuilder();
+
+    builder
+        .addFunction('id', kSig_i_i)
+        .addBody([])
+        .exportFunc();
+
+    return builder.toBuffer();
+})();
+
 let Module;
 let Instance;
 let CompileError;
@@ -880,5 +891,14 @@ test(() => {
   assert_equals(table.get(1)(), 42);
   assert_equals(table.get(2)(), 46);
 }, "Tables export cached");
+
+test(() => {
+  let module = new WebAssembly.Module(exportingModuleIdentityFn );
+  let instance new WebAssembly.Instance(module);
+
+  let value = 2 ** 31;
+  let output = instance.exports.id(value);
+  assert_equals(output, - (2 ** 31));
+}, "WebAssembly integers are converted to JavaScript as if by ToInt32");
 
 })();

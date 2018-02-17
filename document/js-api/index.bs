@@ -154,6 +154,7 @@ urlPrefix: https://webassembly.github.io/spec/core/multipage/; spec: WebAssembly
         text: 𝗀𝗅𝗈𝖻𝖺𝗅
     text: global type; url: syntax/types.html#syntax-globaltype
     text: address; url: exec/runtime.html#addresses
+    text: signed_32; url: exec/numerics.html#aux-signed
 </pre>
 
 <pre class='link-defaults'>
@@ -786,7 +787,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a JavaScript value performs the following steps:
 
 Assert: |w| is not of the form [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |i64|.
-1. If |w| is of the form [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |i32|, return [=the Number value=] for |i32|.
+1. If |w| is of the form [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |i32|, return [=the Number value=] for [=signed_32=](|i32|).
 1. If |w| is of the form [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |f32|, return [=the Number value=] for |f32|.
 1. If |w| is of the form [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |f64|, return [=the Number value=] for |f64|.
 
