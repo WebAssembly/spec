@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version ae5d415446a9edf0c07d32303ac1d21767d86d57" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="d67fb92f6ddf792f5ae0444695f074eaaf83b1d4" name="document-revision">
+  <meta content="87135777bce91aed05810caada3b102f4ac64e8d" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -354,12 +354,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
    </ol>
   </nav>
   <main>
-   <p class="issue" id="issue-c7cfa6e1"><a class="self-link" href="#issue-c7cfa6e1"></a> This document is an early draft, porting <a href="https://github.com/WebAssembly/design/blob/master/JS.md">the official JS/WebAssembly interface specification</a> to WebIDL and Bikeshed. It should currently not be used as the WebAssembly specification.</p>
-   <p>This API is, initially, the only API for accessing WebAssembly <a data-link-type="biblio" href="#biblio-webassembly">[WEBASSEMBLY]</a> from the web platform, through a bridge to explicitly construct modules from ECMAScript <a data-link-type="biblio" href="#biblio-ecmascript">[ECMASCRIPT]</a>.</p>
-   <p class="issue" id="issue-2e648004"><a class="self-link" href="#issue-2e648004"></a> In future versions, WebAssembly may
-be loaded and run directly from an HTML <code>&lt;script type='module'></code> tag—and
-any other Web API that loads ES6 modules via URL—as part of <a href="https://github.com/WebAssembly/design/issues/1087">ES6 Module integration</a>.)</p>
-   <p class="note" role="note"><span>Note:</span> WebAssembly JS API declaration file for TypeScript can be found <a href="https://github.com/01alchemist/webassembly-types/blob/master/webassembly.d.ts">here</a> which enable autocompletion and make TypeScript compiler happy.</p>
+   <p>This API privides a way to access WebAssembly <a data-link-type="biblio" href="#biblio-webassembly">[WEBASSEMBLY]</a> through a bridge to explicitly construct modules from JavaScript <a data-link-type="biblio" href="#biblio-ecmascript">[ECMASCRIPT]</a>.</p>
    <p>See the <a href="#issues-index">Issues Index</a> for complete list of issues.</p>
    <h2 class="heading settled" data-level="1" id="sample"><span class="secno">1. </span><span class="content">Sample API Usage</span><a class="self-link" href="#sample"></a></h2>
    <p><em>This section is non-normative.</em></p>
@@ -971,8 +966,8 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
 [<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace③">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly③">WebAssembly</a>, <a class="nv idl-code" data-link-type="constructor" href="#dom-table-table" id="ref-for-dom-table-table">Constructor</a>(<a class="n" data-link-type="idl-name" href="#dictdef-tabledescriptor" id="ref-for-dictdef-tabledescriptor">TableDescriptor</a> <dfn class="nv idl-code" data-dfn-for="Table/Table(descriptor)" data-dfn-type="argument" data-export="" id="dom-table-table-descriptor-descriptor"><code>descriptor</code><a class="self-link" href="#dom-table-table-descriptor-descriptor"></a></dfn>), <a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed④">Exposed</a>=(<span class="n">Window</span>,<span class="n">Worker</span>,<span class="n">Worklet</span>)]
 <span class="kt">interface</span> <dfn class="nv dfn-paneled idl-code" data-dfn-type="interface" data-export="" id="table"><code>Table</code></dfn> {
   <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑥"><span class="kt">unsigned</span> <span class="kt">long</span></a> <dfn class="nv idl-code" data-dfn-for="Table" data-dfn-type="method" data-export="" data-lt="grow(delta)" id="dom-table-grow"><code>grow</code><a class="self-link" href="#dom-table-grow"></a></dfn>([<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑤">EnforceRange</a>] <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑦"><span class="kt">unsigned</span> <span class="kt">long</span></a> <dfn class="nv idl-code" data-dfn-for="Table/grow(delta)" data-dfn-type="argument" data-export="" id="dom-table-grow-delta-delta"><code>delta</code><a class="self-link" href="#dom-table-grow-delta-delta"></a></dfn>);
-  <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function">Function</a>? <dfn class="nv idl-code" data-dfn-for="Table" data-dfn-type="method" data-export="" data-lt="get(delta)" id="dom-table-get"><code>get</code><a class="self-link" href="#dom-table-get"></a></dfn>([<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑥">EnforceRange</a>] <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑧"><span class="kt">unsigned</span> <span class="kt">long</span></a> <dfn class="nv idl-code" data-dfn-for="Table/get(delta)" data-dfn-type="argument" data-export="" id="dom-table-get-delta-delta"><code>delta</code><a class="self-link" href="#dom-table-get-delta-delta"></a></dfn>);
-  <span class="kt">void</span> <dfn class="nv idl-code" data-dfn-for="Table" data-dfn-type="method" data-export="" data-lt="set(delta, value)" id="dom-table-set"><code>set</code><a class="self-link" href="#dom-table-set"></a></dfn>([<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑦">EnforceRange</a>] <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑨"><span class="kt">unsigned</span> <span class="kt">long</span></a> <dfn class="nv idl-code" data-dfn-for="Table/set(delta, value)" data-dfn-type="argument" data-export="" id="dom-table-set-delta-value-delta"><code>delta</code><a class="self-link" href="#dom-table-set-delta-value-delta"></a></dfn>, <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function①">Function</a>? <dfn class="nv idl-code" data-dfn-for="Table/set(delta, value)" data-dfn-type="argument" data-export="" id="dom-table-set-delta-value-value"><code>value</code><a class="self-link" href="#dom-table-set-delta-value-value"></a></dfn>);
+  <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function">Function</a>? <a class="nv idl-code" data-link-type="method" href="#dom-table-get" id="ref-for-dom-table-get">get</a>([<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑥">EnforceRange</a>] <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑧"><span class="kt">unsigned</span> <span class="kt">long</span></a> <dfn class="nv idl-code" data-dfn-for="Table/get(index)" data-dfn-type="argument" data-export="" id="dom-table-get-index-index"><code>index</code><a class="self-link" href="#dom-table-get-index-index"></a></dfn>);
+  <span class="kt">void</span> <a class="nv idl-code" data-link-type="method" href="#dom-table-set" id="ref-for-dom-table-set">set</a>([<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑦">EnforceRange</a>] <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑨"><span class="kt">unsigned</span> <span class="kt">long</span></a> <dfn class="nv idl-code" data-dfn-for="Table/set(index, value)" data-dfn-type="argument" data-export="" id="dom-table-set-index-value-index"><code>index</code><a class="self-link" href="#dom-table-set-index-value-index"></a></dfn>, <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function①">Function</a>? <dfn class="nv idl-code" data-dfn-for="Table/set(index, value)" data-dfn-type="argument" data-export="" id="dom-table-set-index-value-value"><code>value</code><a class="self-link" href="#dom-table-set-index-value-value"></a></dfn>);
   <span class="kt">readonly</span> <span class="kt">attribute</span> <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long①⓪"><span class="kt">unsigned</span> <span class="kt">long</span></a> <a class="nv idl-code" data-link-type="attribute" data-readonly="" data-type="unsigned long" href="#dom-table-length" id="ref-for-dom-table-length">length</a>;
 };
 </pre>
@@ -1051,7 +1046,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
    </div>
    <div class="algorithm" data-algorithm="length"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Table" data-dfn-type="attribute" data-export="" id="dom-table-length"><code>length</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table⑤">Table</a></code> returns the length of the table’s [[Values]] internal slot. </div>
    <div class="algorithm" data-algorithm="get(index)">
-     The <dfn class="idl-code" data-dfn-for="Table" data-dfn-type="method" data-export="" id="dom-table-get-index"><code>get(index)</code><a class="self-link" href="#dom-table-get-index"></a></dfn> method, when invoked, performs the following steps: 
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="Table" data-dfn-type="method" data-export="" id="dom-table-get"><code>get(index)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md="">
       <p>Let <var>values</var> be the Table instance’s [[Values]] internal slot.</p>
@@ -1064,7 +1059,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
     </ol>
    </div>
    <div class="algorithm" data-algorithm="set(index, value)">
-     The <dfn class="idl-code" data-dfn-for="Table" data-dfn-type="method" data-export="" id="dom-table-set-index-value"><code>set(index, value)</code><a class="self-link" href="#dom-table-set-index-value"></a></dfn> method, when invoked, performs the following steps: 
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="Table" data-dfn-type="method" data-export="" id="dom-table-set"><code>set(index, value)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md="">
       <p>Let <var>tableaddr</var> be the Table instance’s [[Table]] internal slot.</p>
@@ -1381,8 +1376,7 @@ The particular exception here is implementation-defined in both cases.</p>
    <li><a href="#dom-module-exports-moduleobject">exports(moduleObject)</a><span>, in §3.1</span>
    <li><a href="#dom-importexportkind-function">"function"</a><span>, in §3.1</span>
    <li><a href="#dom-importexportkind-function">function</a><span>, in §3.1</span>
-   <li><a href="#dom-table-get">get(delta)</a><span>, in §3.4</span>
-   <li><a href="#dom-table-get-index">get(index)</a><span>, in §3.4</span>
+   <li><a href="#dom-table-get">get(index)</a><span>, in §3.4</span>
    <li><a href="#dom-importexportkind-global">global</a><span>, in §3.1</span>
    <li><a href="#dom-importexportkind-global">"global"</a><span>, in §3.1</span>
    <li><a href="#dom-table-grow-d">grow(d)</a><span>, in §3.4</span>
@@ -1450,8 +1444,7 @@ The particular exception here is implementation-defined in both cases.</p>
     </ul>
    <li><a href="#name-of-the-webassembly-function">name of the WebAssembly function</a><span>, in §3.5</span>
    <li><a href="#runtimeerror">RuntimeError</a><span>, in §3.6</span>
-   <li><a href="#dom-table-set">set(delta, value)</a><span>, in §3.4</span>
-   <li><a href="#dom-table-set-index-value">set(index, value)</a><span>, in §3.4</span>
+   <li><a href="#dom-table-set">set(index, value)</a><span>, in §3.4</span>
    <li><a href="#string-value-of-the-extern-type">string value of the extern type</a><span>, in §3.1</span>
    <li><a href="#dom-importexportkind-table">table</a><span>, in §3.1</span>
    <li><a href="#dom-importexportkind-table">"table"</a><span>, in §3.1</span>
@@ -1711,8 +1704,8 @@ The particular exception here is implementation-defined in both cases.</p>
 [<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace③①">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly③①">WebAssembly</a>, <a class="nv idl-code" data-link-type="constructor" href="#dom-table-table" id="ref-for-dom-table-table①">Constructor</a>(<a class="n" data-link-type="idl-name" href="#dictdef-tabledescriptor" id="ref-for-dictdef-tabledescriptor①">TableDescriptor</a> <a class="nv" href="#dom-table-table-descriptor-descriptor"><code>descriptor</code></a>), <a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed④①">Exposed</a>=(<span class="n">Window</span>,<span class="n">Worker</span>,<span class="n">Worklet</span>)]
 <span class="kt">interface</span> <a class="nv" href="#table"><code>Table</code></a> {
   <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑥①"><span class="kt">unsigned</span> <span class="kt">long</span></a> <a class="nv" href="#dom-table-grow"><code>grow</code></a>([<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑤①">EnforceRange</a>] <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑦①"><span class="kt">unsigned</span> <span class="kt">long</span></a> <a class="nv" href="#dom-table-grow-delta-delta"><code>delta</code></a>);
-  <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function②">Function</a>? <a class="nv" href="#dom-table-get"><code>get</code></a>([<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑥①">EnforceRange</a>] <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑧①"><span class="kt">unsigned</span> <span class="kt">long</span></a> <a class="nv" href="#dom-table-get-delta-delta"><code>delta</code></a>);
-  <span class="kt">void</span> <a class="nv" href="#dom-table-set"><code>set</code></a>([<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑦①">EnforceRange</a>] <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑨①"><span class="kt">unsigned</span> <span class="kt">long</span></a> <a class="nv" href="#dom-table-set-delta-value-delta"><code>delta</code></a>, <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function①①">Function</a>? <a class="nv" href="#dom-table-set-delta-value-value"><code>value</code></a>);
+  <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function②">Function</a>? <a class="nv idl-code" data-link-type="method" href="#dom-table-get" id="ref-for-dom-table-get①">get</a>([<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑥①">EnforceRange</a>] <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑧①"><span class="kt">unsigned</span> <span class="kt">long</span></a> <a class="nv" href="#dom-table-get-index-index"><code>index</code></a>);
+  <span class="kt">void</span> <a class="nv idl-code" data-link-type="method" href="#dom-table-set" id="ref-for-dom-table-set①">set</a>([<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑦①">EnforceRange</a>] <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑨①"><span class="kt">unsigned</span> <span class="kt">long</span></a> <a class="nv" href="#dom-table-set-index-value-index"><code>index</code></a>, <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function①①">Function</a>? <a class="nv" href="#dom-table-set-index-value-value"><code>value</code></a>);
   <span class="kt">readonly</span> <span class="kt">attribute</span> <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long①⓪①"><span class="kt">unsigned</span> <span class="kt">long</span></a> <a class="nv idl-code" data-link-type="attribute" data-readonly="" data-type="unsigned long" href="#dom-table-length" id="ref-for-dom-table-length①">length</a>;
 };
 
@@ -1728,10 +1721,6 @@ The particular exception here is implementation-defined in both cases.</p>
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue"> This document is an early draft, porting <a href="https://github.com/WebAssembly/design/blob/master/JS.md">the official JS/WebAssembly interface specification</a> to WebIDL and Bikeshed. It should currently not be used as the WebAssembly specification.<a href="#issue-c7cfa6e1"> ↵ </a></div>
-   <div class="issue"> In future versions, WebAssembly may
-be loaded and run directly from an HTML <code>&lt;script type='module'></code> tag—and
-any other Web API that loads ES6 modules via URL—as part of <a href="https://github.com/WebAssembly/design/issues/1087">ES6 Module integration</a>.)<a href="#issue-2e648004"> ↵ </a></div>
    <div class="issue"> Any attempts to <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-detacharraybuffer">detach</a> <var>buffer</var>, other than the detachment performed by <code class="idl"><a data-link-type="idl" href="#dom-memory-grow">grow(delta)</a></code>, will throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> exception. Specifying this behavior <a href="https://github.com/tc39/ecma262/issues/1024">requires changes to the ECMAScript specification</a>.<a href="#issue-cb23e866"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="associated-store">
@@ -2018,6 +2007,18 @@ any other Web API that loads ES6 modules via URL—as part of <a href="https://g
    <b><a href="#dom-table-length">#dom-table-length</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-table-length">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dom-table-get">
+   <b><a href="#dom-table-get">#dom-table-get</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-table-get">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dom-table-set">
+   <b><a href="#dom-table-set">#dom-table-set</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-table-set">3.4. Tables</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="exported-function">
