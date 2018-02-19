@@ -166,7 +166,7 @@ spec:ecmascript; type:interface; for:ECMAScript; text:ArrayBuffer
 spec:promises-guide-1; type:dfn; text:resolve
 </pre>
 
-This API privides a way to access WebAssembly [[WEBASSEMBLY]] from the web platform or other JavaScript environments such as Node.js, through a bridge to explicitly construct modules from ECMAScript [[ECMASCRIPT]].
+This API privides a way to access WebAssembly [[WEBASSEMBLY]] through a bridge to explicitly construct modules from JavaScript [[ECMASCRIPT]].
 
 <p>See the [[#issues-index]] for complete list of issues.</p>
 
