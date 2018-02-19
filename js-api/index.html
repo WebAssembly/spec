@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version ae5d415446a9edf0c07d32303ac1d21767d86d57" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="8a0c449d5973361b6980d25e92463a4f735ee317" name="document-revision">
+  <meta content="d67fb92f6ddf792f5ae0444695f074eaaf83b1d4" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -255,11 +255,11 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C First Public Working Draft, <time class="dt-updated" datetime="2018-02-16">16 February 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C First Public Working Draft, <time class="dt-updated" datetime="2018-02-19">19 February 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="https://www.w3.org/TR/2018/WD-wasm-js-api-1-20180216/">https://www.w3.org/TR/2018/WD-wasm-js-api-1-20180216/</a>
+     <dd><a class="u-url" href="https://www.w3.org/TR/2018/WD-wasm-js-api-1-20180219/">https://www.w3.org/TR/2018/WD-wasm-js-api-1-20180219/</a>
      <dt>Latest published version:
      <dd><a href="https://www.w3.org/TR/wasm-js-api-1/">https://www.w3.org/TR/wasm-js-api-1/</a>
      <dt>Editor's Draft:
@@ -1250,7 +1250,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
     <p class="assertion">Assert: <var>w</var> is not of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/multipage/exec/runtime.html#values" id="ref-for-values①">𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>i64</var>.</p>
     <ol>
      <li data-md="">
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/multipage/exec/runtime.html#values" id="ref-for-values②">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>i32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type">the Number value</a> for <var>i32</var>.</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/multipage/exec/runtime.html#values" id="ref-for-values②">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>i32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type">the Number value</a> for <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/multipage/exec/numerics.html#aux-signed" id="ref-for-aux-signed">signed_32</a>(<var>i32</var>).</p>
      <li data-md="">
       <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/multipage/exec/runtime.html#values" id="ref-for-values③">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>f32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type①">the Number value</a> for <var>f32</var>.</p>
      <li data-md="">
@@ -1569,6 +1569,7 @@ The particular exception here is implementation-defined in both cases.</p>
      <li><a href="https://webassembly.github.io/spec/core/multipage/appendix/embedding.html#embed-exports">module_exports</a>
      <li><a href="https://webassembly.github.io/spec/core/multipage/appendix/embedding.html#embed-imports">module_imports</a>
      <li><a href="https://webassembly.github.io/spec/core/multipage/appendix/embedding.html#embed-read-global">read_global</a>
+     <li><a href="https://webassembly.github.io/spec/core/multipage/exec/numerics.html#aux-signed">signed_32</a>
      <li><a href="https://webassembly.github.io/spec/core/multipage/appendix/embedding.html#embed-size-mem">size_mem</a>
      <li><a href="https://webassembly.github.io/spec/core/multipage/appendix/embedding.html#embed-size-table">size_table</a>
      <li><a href="https://webassembly.github.io/spec/core/multipage/exec/runtime.html#syntax-store">store</a>
