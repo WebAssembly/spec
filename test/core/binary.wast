@@ -55,7 +55,47 @@
     ;; function 0
     "\07\00"
     "\41\00"                   ;; i32.const 0
-    "\11\00\01"                ;; call_indirect (type 0). But reserved byte not zero!
+    "\11\00"                   ;; call_indirect (type 0)
+    "\01"                      ;; call_indirect reserved byte is not equal to zero!
+    "\0b"                      ;; end
+  )
+  "zero flag expected"
+)
+
+;; grow_memory reserved byte equal to zero.
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section
+    "\03\02\01\00"             ;; Function section
+    "\05\03\01\00\00"          ;; Memory section
+    "\0a\09\01"                ;; Code section
+
+    ;; function 0
+    "\07\00"
+    "\41\00"                   ;; i32.const 0
+    "\40"                      ;; grow_memory
+    "\01"                      ;; grow_memory reserved byte is not equal to zero!
+    "\1a"                      ;; drop
+    "\0b"                      ;; end
+  )
+  "zero flag expected"
+)
+
+;; current_memory reserved byte equal to zero.
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section
+    "\03\02\01\00"             ;; Function section
+    "\05\03\01\00\00"          ;; Memory section
+    "\0a\07\01"                ;; Code section
+
+    ;; function 0
+    "\05\00"
+    "\3f"                      ;; current_memory
+    "\01"                      ;; current_memory reserved byte is not equal to zero!
+    "\1a"                      ;; drop
     "\0b"                      ;; end
   )
   "zero flag expected"
