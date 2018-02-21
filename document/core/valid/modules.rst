@@ -253,7 +253,7 @@ Start function declarations :math:`\start` are not classified by any type.
 Exports
 ~~~~~~~
 
-Exports :math:`\export` and export descriptions :math:`\exportdesc` are classified by their their :ref:`external type <syntax-externtype>`.
+Exports :math:`\export` and export descriptions :math:`\exportdesc` are classified by their :ref:`external type <syntax-externtype>`.
 
 
 :math:`\{ \ENAME~\name, \EDESC~\exportdesc \}`
