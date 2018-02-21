@@ -1197,7 +1197,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fne_N(z_1, z_2)`
 ........................
 
-* If either :math:`z_1` or :math:`z_2` is a NaN, then return :math:`0`.
+* If either :math:`z_1` or :math:`z_2` is a NaN, then return :math:`1`.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes, then return :math:`0`.
 
