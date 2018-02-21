@@ -972,15 +972,15 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <div class="section" id="op-fne">
 <span id="id45"></span><h3><span class="math notranslate">\(\href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fne" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If either <span class="math notranslate">\(z_1\)</span> or <span class="math notranslate">\(z_2\)</span> is a NaN, then return <span class="math notranslate">\(0\)</span>.</li>
+<li>If either <span class="math notranslate">\(z_1\)</span> or <span class="math notranslate">\(z_2\)</span> is a NaN, then return <span class="math notranslate">\(1\)</span>.</li>
 <li>Else if both <span class="math notranslate">\(z_1\)</span> and <span class="math notranslate">\(z_2\)</span> are zeroes, then return <span class="math notranslate">\(0\)</span>.</li>
 <li>Else if both <span class="math notranslate">\(z_1\)</span> and <span class="math notranslate">\(z_2\)</span> are the same value, then return <span class="math notranslate">\(0\)</span>.</li>
 <li>Else return <span class="math notranslate">\(1\)</span>.</li>
 </ul>
 <div class="math notranslate">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; 0 \\
-\href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 0 \\
+\href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; 1 \\
+\href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; 1 \\
 \href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(\pm 0, \mp 0) &amp;=&amp; 0 \\
 \href{../exec/numerics.html#op-fne}{\mathrm{fne}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-bool}{\mathrm{bool}}(z_1 \neq z_2) \\
 \end{array}\end{split}\]</div>
