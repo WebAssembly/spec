@@ -147,13 +147,7 @@ The [=serialization steps=], given |value|, |serialized| and |forStorage|, are:
 
     1. Set |serialized|.\[[Bytes]] to |value|.\[[Bytes]].
 
-    1. Set |serialized|.\[[AgentCluster]] to the [=current Realm=]'s corresponding [=agent cluster=].
-
 The [=deserialization steps=], given |serialized| and |value|, are:
-
-    1. If |targetRealm|'s corresponding [=agent cluster=] is not
-        |serialized|.\[[AgentCluster]], then throw a
-        "<a exception>DataCloneError</a>" {{DOMException}}.
 
     1. Let |bytes| be |serialized|.\[[Bytes]].
 
