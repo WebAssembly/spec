@@ -1197,7 +1197,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 :math:`\fne_N(z_1, z_2)`
 ........................
 
-* If either :math:`z_1` or :math:`z_2` is a NaN, then return :math:`0`.
+* If either :math:`z_1` or :math:`z_2` is a NaN, then return :math:`1`.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes, then return :math:`0`.
 
@@ -1207,8 +1207,8 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \fne_N(\pm \NAN(n), z_2) &=& 0 \\
-   \fne_N(z_1, \pm \NAN(n)) &=& 0 \\
+   \fne_N(\pm \NAN(n), z_2) &=& 1 \\
+   \fne_N(z_1, \pm \NAN(n)) &=& 1 \\
    \fne_N(\pm 0, \mp 0) &=& 0 \\
    \fne_N(z_1, z_2) &=& \bool(z_1 \neq z_2) \\
    \end{array}
