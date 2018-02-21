@@ -32,6 +32,12 @@ Prepare For TR: true
     "title": "WebAssembly JS Integration Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
+  },
+  "SECURECONTEXTS": {
+    "href": "https://w3c.github.io/webappsec-secure-contexts/",
+    "title": "Secure Contexts",
+    "publisher": "WebAppSec WG",
+    "status": "Candidate Recommendation"
   }
 }
 </pre>
@@ -42,6 +48,9 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMA-262
         text: TypeError; url: sec-native-error-types-used-in-this-standard-typeerror
     type: interface
         text: ArrayBuffer; url: sec-arraybuffer-objects
+    type: dfn
+        text: agent cluster; url: sec-agent-clusters
+        text: current Realm; url: current-realm
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     text: function index; url: syntax/modules.html#syntax-funcidx
     text: name section; url: appendix/custom.html?highlight=name%20section#binary-namesec
@@ -61,6 +70,7 @@ urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
         text: Exported Function; url: #exported-function
 url:https://html.spec.whatwg.org/#cors-same-origin;text:CORS-same-origin;type:dfn;spec:HTML
 url:https://fetch.spec.whatwg.org/#concept-body-consume-body;text:consume body;type:dfn;spec:FETCH
+url:https://w3c.github.io/webappsec-secure-contexts/#environment-settings-object-contextually-secure; text:contextually secure; type: dfn; spec: SECURECONTEXTS
 </pre>
 
 <pre class='link-defaults'>
@@ -124,6 +134,42 @@ Note: This algorithm accepts a {{Response}} object, or a
          1. [=Reject=] |returnValue| with |reason|.
      1. Return |returnValue|.
 </div>
+
+<h2 id="serialization">Serialization</h2>
+
+On the Web, {{Module}} has the <code>[<a extended-attribute>Serializable</a>]</code> extended attribute.
+
+The [=serialization steps=], given |value|, |serialized| and |forStorage|, are:
+
+    1. If |forStorage| is true and the [=relevant settings object=]
+        of |value| is not [=contextually secure=], throw a
+        "<a exception>DataCloneError</a>" {{DOMException}}
+
+    1. Set |serialized|.\[[Bytes]] to |value|.\[[Bytes]].
+
+    1. Set |serialized|.\[[AgentCluster]] to the [=current Realm=]'s corresponding [=agent cluster=].
+
+The [=deserialization steps=], given |serialized| and |value|, are:
+
+    1. If |targetRealm|'s corresponding [=agent cluster=] is not
+        |serialized|.\[[AgentCluster]], then throw a
+        "<a exception>DataCloneError</a>" {{DOMException}}.
+
+    1. Let |bytes| be |serialized|.\[[Bytes]].
+
+    1. Set |value|.\[[Bytes]] to |bytes|.
+
+    1. [=Compile a WebAssembly module=] from |bytes| and set |value|.\[[Module]] to the result.
+
+The semantics of a structured serialization is as-if the binary source, from which the
+{{Module}} was compiled, is serialized, then deserialized, and recompiled into the target realm.
+Engines should attempt to share/reuse internal compiled code when performing
+a structured serialization, although in corner cases like CPU upgrade or browser
+update, this might not be possible and full recompilation may be necessary.
+
+Given the above engine optimizations, structured serialization provides developers
+explicit control over both compiled-code caching and cross-window/worker code
+sharing.
 
 <h2 id="conventions">Developer-Facing Display Conventions</h2>
 
