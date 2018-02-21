@@ -1207,8 +1207,8 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 .. math::
    \begin{array}{@{}lcll}
-   \fne_N(\pm \NAN(n), z_2) &=& 0 \\
-   \fne_N(z_1, \pm \NAN(n)) &=& 0 \\
+   \fne_N(\pm \NAN(n), z_2) &=& 1 \\
+   \fne_N(z_1, \pm \NAN(n)) &=& 1 \\
    \fne_N(\pm 0, \mp 0) &=& 0 \\
    \fne_N(z_1, z_2) &=& \bool(z_1 \neq z_2) \\
    \end{array}
