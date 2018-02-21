@@ -145,11 +145,11 @@ The [=serialization steps=], given |value|, |serialized| and |forStorage|, are:
         of |value| is not [=contextually secure=], throw a
         "<a exception>DataCloneError</a>" {{DOMException}}
 
-    1. Set |serialized|.\[[Bytes]] to |value|.\[[Bytes]].
+    1. Set |serialized|.\[[Bytes]] to the [=sub-serialization=] of |value|.\[[Bytes]].
 
 The [=deserialization steps=], given |serialized| and |value|, are:
 
-    1. Let |bytes| be |serialized|.\[[Bytes]].
+    1. Let |bytes| be the [=sub-deserialization=] of |serialized|.\[[Bytes]].
 
     1. Set |value|.\[[Bytes]] to |bytes|.
 
