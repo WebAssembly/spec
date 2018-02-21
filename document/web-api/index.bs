@@ -137,7 +137,7 @@ Note: This algorithm accepts a {{Response}} object, or a
 
 <h2 id="serialization">Serialization</h2>
 
-On the Web, {{Module}} has the <code>[<a extended-attribute>Serializable</a>]</code> extended attribute.
+Web user agents must augment the {{Module}} interface with the <code>[<a extended-attribute>Serializable</a>]</code> extended attribute.
 
 The [=serialization steps=], given |value|, |serialized|, and |forStorage|, are:
 
