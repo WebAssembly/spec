@@ -555,11 +555,10 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
         1. Return |map|[|memaddr|].
     1. Let |block| be a Data Block which is [=identified with=] the underlying memory of |memaddr|
     1. Let |buffer| be a new {{ArrayBuffer}} whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
+    1. Set |buffer|.\[[ArrayBufferDetachKey]] to "WebAssembly.Memory".
     1. Let |memory| be a new {{Memory}} instance with \[[Memory]] set to |memaddr| and \[[BufferObject]] set to |buffer|.
     1. [=map/Set=] |map|[|memaddr|] to |memory|.
     1. Return |memory|.
-
-    Issue: Any attempts to [=DetachArrayBuffer|detach=] |buffer|, other than the detachment performed by {{Memory/grow(delta)}}, will throw a {{TypeError}} exception. Specifying this behavior <a href="https://github.com/tc39/ecma262/issues/1024">requires changes to the ECMAScript specification</a>.
 </div>
 
 <div algorithm>
@@ -579,7 +578,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
     1. Assert: |map|[|memaddr|] [=map/exists=]
     1. Let |memory| be |map|[|memaddr|].
-    1. Perform ! [=DetachArrayBuffer=](|memory|.\[[BufferObject]]).
+    1. Perform ! [=ForceDetachArrayBuffer=](|memory|.\[[BufferObject]], "WebAssembly.Memory").
     1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
     1. Let |buffer| be a new {{ArrayBuffer}} whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
     1. Set |memory|.\[[BufferObject]] to |buffer|.
