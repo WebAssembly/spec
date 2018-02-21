@@ -139,7 +139,7 @@ Note: This algorithm accepts a {{Response}} object, or a
 
 On the Web, {{Module}} has the <code>[<a extended-attribute>Serializable</a>]</code> extended attribute.
 
-The [=serialization steps=], given |value|, |serialized| and |forStorage|, are:
+The [=serialization steps=], given |value|, |serialized|, and |forStorage|, are:
 
     1. If |forStorage| is true and the [=relevant settings object=]
         of |value| is not [=contextually secure=], throw a
@@ -155,12 +155,12 @@ The [=deserialization steps=], given |serialized| and |value|, are:
 
     1. [=Compile a WebAssembly module=] from |bytes| and set |value|.\[[Module]] to the result.
 
-The semantics of a structured serialization is as-if the binary source, from which the
-{{Module}} was compiled, is serialized, then deserialized, and recompiled into the target realm.
 Engines should attempt to share/reuse internal compiled code when performing
 a structured serialization, although in corner cases like CPU upgrade or browser
 update, this might not be possible and full recompilation may be necessary.
 
+Note: The semantics of a structured serialization is as-if the binary source, from which the
+{{Module}} was compiled, is serialized, then deserialized, and recompiled into the target realm.
 Given the above engine optimizations, structured serialization provides developers
 explicit control over both compiled-code caching and cross-window/worker code
 sharing.
