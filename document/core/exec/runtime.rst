@@ -359,7 +359,6 @@ Stack entries are described by abstract syntax as follows.
    However, because the stacks are interdependent, additional book keeping about associated stack heights would be required.
    For the purpose of this specification, an interleaved representation is simpler.
 
-
 Values
 ......
 
