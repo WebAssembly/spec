@@ -3,11 +3,11 @@
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <title>WebAssembly JavaScript Interface</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-  <meta content="WD" name="w3c-status">
+  <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version ae5d415446a9edf0c07d32303ac1d21767d86d57" name="generator">
+  <meta content="Bikeshed version 99dbf96ce505492f693417c26ca7a3e853bab702" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="f6d962a42767882a8ecd01112de24fe2899f41d8" name="document-revision">
+  <meta content="0cc2a1014b9bf9bbc5fe8f193dc2c23edfd49dd2" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -250,20 +250,18 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
 .highlight .vi { color: #0077aa } /* Name.Variable.Instance */
 .highlight .il { color: #000000 } /* Literal.Number.Integer.Long */
 </style>
-  <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-WD" rel="stylesheet" type="text/css">
+  <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet" type="text/css">
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C First Public Working Draft, <time class="dt-updated" datetime="2018-02-23">23 February 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-02-24">24 February 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="https://www.w3.org/TR/2018/WD-wasm-js-api-1-20180223/">https://www.w3.org/TR/2018/WD-wasm-js-api-1-20180223/</a>
+     <dd><a class="u-url" href="https://webassembly.github.io/spec/js-api/">https://webassembly.github.io/spec/js-api/</a>
      <dt>Latest published version:
      <dd><a href="https://www.w3.org/TR/wasm-js-api-1/">https://www.w3.org/TR/wasm-js-api-1/</a>
-     <dt>Editor's Draft:
-     <dd><a href="https://webassembly.github.io/spec/js-api/">https://webassembly.github.io/spec/js-api/</a>
      <dt>Issue Tracking:
      <dd><a href="#issues-index">Inline In Spec</a>
      <dd><a href="https://github.com/WebAssembly/spec/labels/wasm-js-api-1">GitHub Issues</a>
@@ -285,25 +283,19 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
   </div>
   <h2 class="no-num no-toc no-ref heading settled" id="status"><span class="content">Status of this document</span></h2>
   <div data-fill-with="status">
-   <p><em>This section describes the status of this document at the time of
-   its publication. Other documents may supersede this document. A list of
-   current W3C publications and the latest revision of this technical report
-   can be found in the <a href="https://www.w3.org/TR/">W3C technical reports
-   index at https://www.w3.org/TR/.</a></em> </p>
-   <p>This document is a <b>First Public Working Draft</b>.</p>
-   <p> Publication as a First Public Working Draft does not imply endorsement
-    by the W3C Membership. This is a draft document and may be updated,
-    replaced or obsoleted by other documents at any time. It is inappropriate
-    to cite this document as other than work in progress. </p>
+   <p> This is a public copy of the editors’ draft.
+	It is provided for discussion only and may change at any moment.
+	Its publication here does not imply endorsement of its contents by W3C.
+	Don’t cite this document other than as work in progress. </p>
    <p> <a href="https://github.com/WebAssembly/spec/issues">GitHub Issues</a> are preferred for discussion of this specification.
-    All issues and comments are <a href="https://github.com/WebAssembly/spec/issues?utf8=%E2%9C%93&amp;q=is%3Aissue++">archived</a>. </p>
+  All issues and comments are <a href="https://github.com/WebAssembly/spec/issues?utf8=%E2%9C%93&amp;q=is%3Aissue++">archived</a>. </p>
    <p> This document was produced by the <a href="https://www.w3.org/wasm/">WebAssembly Working Group</a>. </p>
-   <p> This document was produced by a group operating under the <a href="https://www.w3.org/Consortium/Patent-Policy/"> W3C Patent Policy</a>.
-    W3C maintains a <a href="https://www.w3.org/2004/01/pp-impl/101196/status" rel="disclosure">public list of any patent disclosures</a> made in
-    connection with the deliverables of the group; that page also includes
-    instructions for disclosing a patent. An individual who has actual
-    knowledge of a patent which the individual believes contains <a href="https://www.w3.org/Consortium/Patent-Policy/#def-essential"> Essential Claim(s)</a> must disclose the information in accordance with <a href="https://www.w3.org/Consortium/Patent-Policy/#sec-Disclosure"> section 6 of the W3C Patent Policy</a>. </p>
-   <p>This document is governed by the <a href="https://www.w3.org/2018/Process-20180201/" id="w3c_process_revision">1 February 2018 W3C Process Document</a>. </p>
+   <p> This document was produced by a group operating under
+	the <a href="https://www.w3.org/Consortium/Patent-Policy/">W3C Patent Policy</a>.
+	W3C maintains a <a href="https://www.w3.org/2004/01/pp-impl/32061/status" rel="disclosure">public list of any patent disclosures</a> made in connection with the deliverables of the group;
+	that page also includes instructions for disclosing a patent.
+	An individual who has actual knowledge of a patent which the individual believes contains <a href="https://www.w3.org/Consortium/Patent-Policy/#def-essential">Essential Claim(s)</a> must disclose the information in accordance with <a href="https://www.w3.org/Consortium/Patent-Policy/#sec-Disclosure">section 6 of the W3C Patent Policy</a>. </p>
+   <p> This document is governed by the <a href="https://www.w3.org/2018/Process-20180201/" id="w3c_process_revision">1 February 2018 W3C Process Document</a>. </p>
    <p></p>
   </div>
   <div data-fill-with="at-risk"></div>
@@ -540,7 +532,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
         <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①">𝗀𝗅𝗈𝖻𝖺𝗅</a> <var>globaltype</var>,</p>
         <ol>
          <li data-md="">
-          <p>If <var>globaltype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype">𝗂𝟨𝟦</a> or <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values①">Type</a>(<var>v</var>) is not <a data-link-type="dfn" href="https://www.w3.org/TR/css3-values/#number" id="ref-for-number">Number</a>, throw a <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror①">LinkError</a></code> exception.</p>
+          <p>If <var>globaltype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype">𝗂𝟨𝟦</a> or <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values①">Type</a>(<var>v</var>) is not <a data-link-type="dfn" href="https://drafts.csswg.org/css-values-4/#number" id="ref-for-number">Number</a>, throw a <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror①">LinkError</a></code> exception.</p>
          <li data-md="">
           <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue">ToWebAssemblyValue</a>(<var>v</var>, <var>globaltype</var>.<em><a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-globaltype" id="ref-for-syntax-globaltype">valtype</a></em>)</p>
          <li data-md="">
@@ -1464,7 +1456,7 @@ The particular exception here is implementation-defined in both cases.</p>
    <li>
     <a data-link-type="biblio">[css-values-3]</a> defines the following terms:
     <ul>
-     <li><a href="https://www.w3.org/TR/css3-values/#number">number</a>
+     <li><a href="https://drafts.csswg.org/css-values-4/#number">number</a>
     </ul>
    <li>
     <a data-link-type="biblio">[ECMASCRIPT]</a> defines the following terms:
