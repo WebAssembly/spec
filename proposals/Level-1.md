@@ -21,49 +21,49 @@ thrown.  The exception can be any exception known by the WebAssembly module, or
 it may an unknown exception that was thrown by a called imported function.
 
 One of the problems with exception handling is that both WebAssembly and the
-embedder probably have different notions of what exceptions are, but both must
-be aware of the other.
+host VM probably have different notions of what exceptions are, but both must be
+aware of the other.
 
-It is difficult to define exceptions in WebAssembly because (in general) it
-doesn't have knowledge of the embedder. Further, adding such knowledge to
-WebAssembly would limit the ability for other embedders to support WebAssembly
+It is difficult to define exceptions in WebAssembly because (in general)
+it doesn't have knowledge of the host VM. Further, adding such knowledge to
+WebAssembly would limit the ability for other host VMs to support WebAssembly
 exceptions.
 
 One issue is that both sides need to know if an exception was thrown by the
 other, because cleanup may need to be performed.
 
-Another problem is that WebAssembly doesn't have direct access to the embedder's
-memory.  As a result, WebAssembly defers the handling of exceptions to the
-embedder.
+Another problem is that WebAssembly doesn't have direct access to the host VM's
+memory.  As a result, WebAssembly defers the handling of exceptions to the host
+VM.
 
 To access exceptions, WebAssembly provides instructions to check if the
 exception is one that WebAssembly understands. If so, the data of the
-WebAssembly exception data is extracted and copied onto the stack, allowing
+WebAssembly exceptions's data is extracted and copied onto the stack, allowing
 succeeding instructions to process the data.
 
-Lastly, exception lifetimes must be maintained by the embedder, so that it can
-collect and reuse the memory used by exceptions. This implies that the embedder
-must know where exceptions are stored, so that it can determine when an
-exception can be garbage collected.
+Lastly, exception lifetimes must be maintained by the host VM, so that it can
+collect and reuse the memory used by exceptions. This implies that the host must
+know where exceptions are stored, so that it can determine when an exception can
+be garbage collected.
 
-This also implies that the embedder must provide a garbage collector for
-exceptions.  For embedders that have garbage collection (such as JavaScript),
+This also implies that the host VM must provide a garbage collector for
+exceptions.  For host VMs that have garbage collection (such as JavaScript),
 this is not a problem.
 
-However, not all embedders may have a garbage collector. For this reason,
-WebAssembly exceptions are designed to allow the use of reference counters (to
-exceptions) to perform the the garbage collection in the embedder.
+However, not all host VMs may have a garbage collector. For this reason,
+WebAssembly exceptions are designed to allow the use of reference counters to
+perform the the garbage collection in the host VM.
 
-To do this, WebAssembly exceptions are immutable once created. This avoids
-cyclic data structures that can't be garbage collected. It also means that
-exceptions can't be stored into WebAssembly's linear memory. The rationale for
-this is twofold:
+To do this, WebAssembly exceptions are immutable once created, to avoid cyclic
+data structures that can't be garbage collected. It also means that exceptions
+can't be stored into linear memory. The rationale for this is twofold:
 
-* For security. Loads and stores do not guarantee that the data read was of the
-  same type as stored. This allows spoofing of exception references that may
-  allow a WebAssembly module to access data it should not know in the embedder.
+* For security. Loads
+  and stores do not guarantee that the data read was of the same type as
+  stored. This allows spoofing of exception references that may allow a
+  WebAssembly module to access data it should not know in the host VM.
   
-* The embedder does not know the layout of data in linear memory, so it can't
+* The host VM does not know the layout of data in linear memory, so it can't
   find places where exception references are stored.
 
 Hence, while an exception reference is a new first class type, this proposal
@@ -78,94 +78,92 @@ instruction. Thrown exceptions are handled as follows:
 1. Throws not caught within a function body continue up the call stack, popping
    call frames, until an enclosing try block is found.
    
-1. If the call stack is exhausted without any enclosing try blocks, embedder
+1. If the call stack is exhausted without any enclosing try blocks, the host VM
    defines how to handle the uncaught exception.
    
 ### Event handling
 
 This proposal focusses on adding exception handling, but tries to be more
-general in its specification. This allows future generalizations to WebAssembly
-without having to redo exception handling.
+general in its specification such that more general kinds of event handling can
+be added to WebAssembly in the future without having to redo exception handling.
 
-Events are generated by event yielding instructions. They yeild to an
-appropriate event handler. The event handler is then run. That event handler
-can either resume control at the point of the event handler, or optionally
-resume by sending values back to the yielding instruction allow the
-originating code to resume.
+An event handler allows one to process an event generated by a block of
+code. Events yield the current execution and look for an enclosing try block to
+handle the event. If found, the corresponding event handler is run.  The event
+handler can optionally resume by sending values back to the yielded instruction,
+allowing the originating code to resume.
 
 Exceptions are a special case of an event in that they never resume. Similarly,
-a throw instruction is the yielding instruction of an exception, and the
-corresponding catching block is the event handler of the exception.
+a throw instruction is the yielding event of an exception. The catch block
+associated with a try block defines how to handle the throw.
 
-An `event` is an internal construct in WebAssembly that is maintained by the
-embedder. WebAssembly events are defined by a new `event section` of a
-WebAssembly module.
+An `event` (such as an exception) is an internal construct in WebAssembly that
+is maintained by the host. WebAssembly events are defined by a new `handler`
+section` of a WebAssembly module. The handler section is a list of event types
+that are defined by the module.
 
-The event section defines a list of event types that may be handled by the
-module.  Each `event type` has (at a minimum) an `event specifier` and a `type
-signature`. The event specifier defines the kind of event while the type
-signature defines the list of values associated with the event.  Depending on
+Each `event type` has a `event specifier` and a `type signature`. Depending on
 the value of the event specifier, additional values may be specified in the
 event type.
 
-For level 1, the only event specifier is the constant 0, and denotes that the
-event is an `exception`. It has no additional values specified (other than the
-type signature). Future extensions my add additional event specifiers, such as
-resumable events.
+For level 1, the only event specifier is the constant 0 which denotes that the
+event is an exception. Future extensions my add additional event specifiers.
 
-The `type signature` of an event type is an index into the `type` section.  The
-type signature is defined by a function type. The parameter list of the type
-signature defines the list of values returned to the corresponding enclosing
-catch. The result type defines the list of values to be used when resuming on an
-event. For exceptions, that can't resume, the result type must always be type
-'void'.
+The type signature of an event type is an index to the corresponding function
+signature defined in the `type` section. The parameter of the function signature
+defines the list of values associated with the thrown exception. The return
+value(s) of the signature defines what is passed back to the throw so that
+execution may resume.
 
-Note: Resumable events may not use the `throw` instruction. Rather, they may use
-a new (yet to be defined) `yeild` instruction that passes value(s) to its
-enclosing contexts. Such an instruction would allow the calling context to
-return values back, and resume with the instruction following the yeild
-instruction, based on the values returned.
+Note: Resumable events may not use the `throw` instruction, and may use new (yet
+to be defined) `yeild` instructions for which value(s) may be passed back to it
+and allow it to resume with the instruction following the yeild instruction.
 
 Within a module, event types are identified by an `event index` to the [event
-index space](#event-index-space). Each event index refers to a corresponding
-runtime tag that uniquely identifies the corresponding event to be handled.  The
-corresponding runtime tag is called an `event tag`.
-
-Event types are numbered numerically, starting with the import section, and then
-followed by event types in the event section.  Each event type within a module
-are associated with unique event tags.
-
-Event types can also be exported by adding appropriate descriptors in the export
-section of the module. Each imported/exported event index must be named to
-reconcile the corresponding (runtime) event tag.
+index space](#event-index-space). This (module specific) index identifies the
+corresponding identify runtime `event tag` that uniquely identifies the
+corresponding event type.
 
 ### Exceptions
 
-An `exception` is a WebAssembly event that can be thrown and caught.  That is,
-an `exception type` is an event type whose event specifier is 0.  The `type
-signature` of the exception is the corresponding type signature of the event
-type. That is, the parameter list of the type signature defines the list of
-values associated with the exception, and the result type must be type `void`.
+An `exception` is an internal construct in WebAssembly that is maintained by the
+host. WebAssembly exceptions (as opposed to host exceptions) are defined by a
+new `exception section` of a WebAssembly module. The exception section is a list
+of exception definitions, from which exceptions can be created.
 
-Exceptions are identified by the by the corresponding event index, and is called
-an `exception index`. The corresponding (runtime) event tag is called the
-`exception tag`.  Like all event types, each exception type within a module
-(i.e. in the event and import sections) are associated with unique exception
-tags.
+Each exception definition describe the structure of corresponding exception
+values that can be generated from it. Exception definitions may also appear in
+the import section of a module.
+
+Each exception definition has a `type signature`. The type signature defines the
+list of values associated with corresponding thrown exception values.
+
+Within the module, exception definitions are identified by an index into the
+[exception index space](#exception-index-space). This static index refers to the
+corresponding runtime tag that uniquely identifies exception values created
+using the exception definition, and is called the `exception tag`.
+
+Each exception definition within a module (i.e. in the exception and import
+section) are associated with unique exception tags.
+
+Exception tags can also be exported by adding the appropriate descriptors in the
+export section of the module. All imported/exported indices must be named to
+reconcile the corresponding exception tag referenced by exception indices
+between modules.
 
 Exception indices are used by:
 
-1. The `throw` instruction which creates a WebAssembly exception with the
-   corresponding exception tag, and then throws it.
+1. The `throw` instruction which creates a WebAssembly exception value
+   with the corresponding exception tag, and then throws it.
 
-2. The `if_except` instruction that queries an exception to see if the exception
-   tag corresponding to the module's exception index. If true it pushes the
-   corresponding values of the exception onto the stack.
+2. The `if_except` instruction that queries an exception value to see if the
+   exception tag corresponding to the module's exception index. If true it
+   pushes the corresponding values of the exception onto the stack.
    
 ### The exception reference data type
 
-Data types are extended to have a new `except_ref` type. The representation is
-left to the embedder.
+Data types are extended to have a new `except_ref` type. The representation of
+an exception value is left to the host VM.
 
 ### Try and catch blocks
 
@@ -184,8 +182,7 @@ end
 ```
 
 A try block ends with a `catch block` that is defined by the list of
-instructions after the `catch` instruction. The catch block is the event handler
-for all exceptions thrown in the try block.
+instructions after the `catch` instruction.
 
 Try blocks, like control-flow blocks, have a _block type_. The block type of a
 try block defines the values yielded by the evaluation the try block when either
@@ -198,16 +195,15 @@ In the initial implementation, try blocks may only yield 0 or 1 values.
 
 The `throw` instruction takes an exception index as an immediate argument.  That
 index is used to identify the exception tag to use to create and throw the
-corresponding exception.
+corresponding exception value.
 
 The values on top of the stack must correspond to the the type signature
 associated with the exception index. These values are popped of the stack and
 are used (along with the corresponding exception tag) to create the
-corresponding exception value. Along with the values, a stack trace is also
-associated with the exception. That exception is then thrown.
+corresponding exception value. That exception value is then thrown.
 
-When an exception is thrown, the embedder searches for nearest enclosing try
-block body that execution is in. That try block is called the _catching_ try
+When an exception value is thrown, the host VM searches for nearest enclosing
+try block body that execution is in. That try block is called the _catching_ try
 block.
 
 If the throw appears within the body of a try block, it is the catching try
@@ -216,47 +212,52 @@ block.
 If a throw occurs within a function body, and it doesn't appear inside the body
 of a try block, the throw continues up the call stack until it is in the body of
 an an enclosing try block, or the call stack is flushed. If the call stack is
-flushed, the embeddder defines how to handle uncaught exceptions.  Otherwise, the
+flushed, the host VM defines how to handle uncaught exceptions.  Otherwise, the
 found enclosing try block is the catching try block.
 
 A throw inside the body of a catch block is never caught by the corresponding
 try block of the catch block, since instructions in the body of the catch block
 are not in the body of the try block.
 
-Once a catching try block is found for the thrown exception, the operand stack
-is popped back to the size the operand stack had when the try block was entered,
-and then an except_ref (for the exception) is pushed back onto the stack.
+Once a catching try block is found for the thrown exception value, the operand
+stack is popped back to the size the operand stack had when the try block was
+entered, and then the values of the caught exception value is pushed onto the
+stack.
 
 If control is transferred to the body of a catch block, and the last instruction
 in the body is executed, control then exits the try block.
 
 If the selected catch block does not throw an exception, it must yield the
 value(s) expected by the corresponding catching try block. This includes popping
-the caught except_ref.
+the caught exception.
 
-Note that a caught exception except_ref value can be rethrown using the
-`rethrow` instruction.
+Note that a caught exception value can be rethrown using the `rethrow`
+instruction.
 
 ### Rethrowing an exception
 
-The `rethrow` instruction takes the exception associated with the `except_ref`
-on top of the stack, and rethrows that exception. A rethrow has the same effect
-as a throw, other than an exception is not created. Rather, the referenced
-exception on top of the stack is popped and then thrown.
+The `rethrow` instruction takes the exception value associated with the
+`except_ref` on top of the stack, and rethrows the exception. A rethrow has the
+same effect as a throw, other than an exception is not created. Rather, the
+referenced exception value on top of the stack is popped and then thrown.
 
 ### Exception data extraction
 
-The `if_except block` defines a conditional query of the exception in the
-except_ref on top of the stack. The except_ref is popped when queried. The
-if_except block has two subblocks, the `then` and `else` subblocks, like that of
-an `if` block. The then block is a sequence of instructions following the
-`if_except` instruction. The else block begins with the `else` instruction.  The
-scope of the if_except block is from the `if_except` instruction to the
-corresponding `end` instruction.
+The `if_except block` defines a conditional query of the exception value on top
+of the stack. The exception value is not popped when queried. The if_except
+block has two subblocks, the `then` and `else` subblocks, like that of an `if`
+block. The then block is a sequence of instructions following the `if_except`
+instruction. The else block is optional, and if it appears, it begins with the
+`else` instruction.  The scope of the if_except block is from the `if_except`
+instruction to the corresponding `end` instruction.
 
 That is, the forms of an if_except block is:
 
 ```
+if_except block_type except_index
+  Instruction*
+end
+
 if_except block_type except_index
   Instruction*
 else
@@ -264,19 +265,25 @@ else
 end
 ```
 
-The conditional query of an exception succeeds when the exception in the
-except_ref on the top of the stack has the corresponding exception tag (defined
-by `except_index`). After the query, the except_ref is popped from the stack.
+The conditional query of an exception succeeds when the exception value on the
+top of the stack has the corresponding exception tag (defined by `except_index`).
 
 If the query succeeds, the values (associated with the exception value) are
 extracted and pushed onto the stack, and control transfers to the instructions
-in the then block. If the query fails, control is transfertd to the else block.
+in the then block.
 
-### Stack traces
+If the query fails, it either enters the else block, or transfer control to the
+end of the if_except block if there is no else block.
 
-When an exception is thrown, conceptually a runtime stack is associated with the
-exception. However, WebAssembly does not have (direct) access to the stack
-trace. Hence, it is left to the embedder to maintain and use at it sees fit.
+### Debugging
+
+Earlier discussion implied that when an exception is thrown, the runtime will
+pop the operand stack across function calls until a corresponding, enclosing try
+block is found. The implementation may actually not do this. Rather, it may
+first search up the call stack to see if there is an enclosing try. If none are
+found, it could terminate the thread at the point of the throw. This would
+allow better debugging capability, since the corresponding call stack is still
+there to query.
 
 ## Changes to the text format.
 
@@ -292,6 +299,7 @@ The following rules are added to *instructions*:
   except except_index |
   throw except_index |
   rethrow |
+  if_except resulttype except_index then instruction* end |
   if_except resulttype except_index then instruction* else instruction* end
 ```
 
@@ -300,49 +308,51 @@ instructions are *structured* control flow instructions, and can be
 labeled. This allows branch instructions to exit try and `if_except` blocks.
 
 The `except_index` of the `throw` and `if_except` instructions defines the
-exception type (and hence, exception tag) to create/extract form. See [event
-index space](#event-index-space) for further clarification of exception
-tags.
+exception value (and hence, exception tag) to create/extract form. See
+[exception index space](#exception-index-space) for further clarification of
+exception tags.
 
 ## Changes to Modules document.
 
 This section describes change in the
 [Modules document](https://github.com/WebAssembly/design/blob/master/Modules.md).
 
-### Event index space
+### Exception index space
 
-The `event index space` indexes all imported and internally-defined events,
-assigning monotonically-increasing indices based on the order defined in the
-import and event sections. Thus, the index space starts at zero with imported
-events followed by internally-defined events in the [event
-section](#event-section).
+The _exception index space_ indexes all imported and internally-defined
+exceptions, assigning monotonically-increasing indices based on the order
+defined in the import and exception sections. Thus, the index space starts at
+zero with imported exceptions followed by internally-defined exceptions in
+the [exception section](#exception-section).
 
-The event index space defines the (module) static version of runtine event
-tags. These (runtime) event tags are guaranteed to be unique over all loaded
+The exception index space defines the (module) static version of runtine
+exception tags. For exception indicies that are not imported/exported, the
+corresponding exception tag is guaranteed to be unique over all loaded
 modules.
 
-For event indices imported/exported, unique event tags are created for
+For exception indices imported/exported, unique exception tags are created for
 each unique name imported/exported, and are aliased to the corresponding
-event index defined in each module.
+exception index defined in each module.
 
 ## Changes to the binary model
 
-This section describes changes in the [binary encoding design
-document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
+This section describes changes in
+the
+[binary encoding design document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
 
 
 ### Data Types
 
 #### except_ref
 
-An exception reference points to an exception. The size is fixed, but unknown in
-WebAssembly.
+An exception reference points to an exception value. The size
+is fixed, but unknown in WebAssembly (the host defines the size in bytes).
 
 ### Language Types
 
 | Opcode | Type constructor |
 |--------|------------------|
-| -0x0x5 |  `except_ref`    |
+| -0x41  |  `except_ref`    |
 
 #### value_type
 
@@ -351,28 +361,15 @@ encoded above.
 
 #### Other Types
 
-##### event_type
+##### except_type
 
-An event specifier specifies the kind of event an event type represents. Currently,
-the only value event specifier is:
+Each exception definition (defining an exception tag) has a type signature,
+which corresponds to the data fields of the exception.
 
-| Name      | Value |
-|-----------|-------|
-| exception | 0     |
-
-
-Each event type (defining an event tag) has (at a minimum) an event specifier
-and a type signature.  Each event type begins with the fields
-
-| Field       | Type        | Description                                    |
-|-------------|-------------|------------------------------------------------|
-| `specifier` | `varuint32` | The kind of event.                             |
-| `type`      | `varuint32` | Index to the type defining its type signature. |
-
-
-Followed by (based on specifier):
-
-`exception`: No additional fields.
+| Field | Type | Description |
+|-------|------|-------------|
+| `count` | `varuint32` | The number of types in the signature |
+| `type` | `value_type*` | The type of each element in the signature |
 
 ##### external_kind
 
@@ -383,61 +380,62 @@ or defined:
 * `1` indicating a `Table` [import](Modules.md#imports) or [definition](Modules.md#table-section)
 * `2` indicating a `Memory` [import](Modules.md#imports) or [definition](Modules.md#linear-memory-section)
 * `3` indicating a `Global` [import](Modules.md#imports) or [definition](Modules.md#global-section)
-* `4` indicating an `Event` [import](#import-section) or [definition](#event-section)
+* `4` indicating an `Exception` [import](#import-section) or [definition](#exception-section)
 
 ### Module structure
 
 #### High-level structure
 
-A new event section is introduced and is named `event`. If included,
+A new `exception` section is introduced and is named `exception`. If included,
 it must appear after immediately after the global section.
 
-##### Event section
+##### Exception section
 
-The `event` section is the named section 'event'. The event section declares a
-list of event types for a module.
+The `exception` section is the named section 'exception'. The exception section
+declares a list of exception definitions, defining corresponding exception tags.
 
-Currently, event kinds are:
+| Field | Type | Description |
+|-------|------|-------------|
+| count | `varuint32` | count of the number of exceptions to follow |
+| sig | `except_type*` | The type signature of the data fields for the tagged exception value |
 
-| Field   | Type         | Description                               |
-|---------|--------------|-------------------------------------------|
-| count   | `varuint32`  | count of the number of events to follow   |
-| entries | `event_type* | list of defined event types.              |
 
 ##### Import section
 
 The import section is extended to include exception definitions by extending an
 `import_entry` as follows:
 
-If the `kind` is `event`:
+If the `kind` is `Exception`:
 
-| Field | Type       | Description         |
-|-------|------------|---------------------|
-| event | event_type | The event to import |
+| Field | Type | Description |
+|-------|------|-------------|
+| `sig`  | `except_type` | the type signature of the exception |
 
 ##### Export section
 
-The export section is extended to reference event types by extending an
-`export_entry` as follows:
+The export section is extended to reference exception definitions by by
+extending an `export_entry` as follows:
 
-If the `kind` is `Event`, then the `index` is into the corresponding
-event index in the [event index space](#event-index-space).
+If the `kind` is `Exception`, then the `index` is into the corresponding
+exception index in the [exception index space](#exception-index-space).
+
 
 ##### Name section
 
 The set of known values for `name_type` of a name section is extended as
 follows:
 
-| Name Type                   | Code | Description                          |
-|-----------------------------|------|--------------------------------------|
-| [Function](#function-names) | `1`  | Assigns names to functions           |
-| [Local](#local-names)       | `2`  | Assigns names to locals in functions |
-| [Event](#event-names)       | `3`  | Assigns names to event types         |
+| Name Type | Code | Description |
+| --------- | ---- | ----------- |
+| [Function](#function-names) | `1` | Assigns names to functions |
+| [Local](#local-names) | `2` | Assigns names to locals in functions |
+| [Exception](#exception-names) | `3` | Assigns names to exception types |
 
-###### Event names
+###### Exception names
 
-The event names subsection is a `name_map` which assigns names to a subset
-of the event indices, defined in the import and event sections of the module.
+The exception names subsection is a `name_map` which assigns names to a subset
+of the _exception_ indices from the exception section. (Used for both imports
+and module-defined).
 
 ### Control flow operators
 
