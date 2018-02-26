@@ -236,3 +236,42 @@ function main():
     print(i)
     resume e()
 ```
+
+### Example: Delimited Continuations
+
+Consider the following example taken from
+https://en.wikipedia.org/wiki/Delimited_continuation:
+
+```scheme
+(* 2 (reset (+ 1 (shift k (k 5)))))
+```
+
+This can be translated into a resumable exceptions program. We'll start by
+rewriting the program so that it's closer to the high level syntax we've been
+using. Note that this program uses WebAssembly's stack machine nature.
+
+```
+function main():
+  2
+  reset:
+    1
+    shift k:
+      k(5)
+    +
+  *
+```
+
+Now we can convert the program to use resumable exceptions:
+
+```
+
+
+function main():
+  2
+  reset:
+    1
+    shift k:
+      k(5)
+    +
+  *
+```
