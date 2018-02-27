@@ -895,7 +895,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if :math:`z_2` is a zero and :math:`z_1` a value with opposite sign, then return negative infinity.
 
-* Else return the result of dividing :math:`z_2` by :math:`z_1`, :ref:`rounded <aux-ieee>` to the nearest representable value.
+* Else return the result of dividing :math:`z_1` by :math:`z_2`, :ref:`rounded <aux-ieee>` to the nearest representable value.
 
 .. math::
    \begin{array}{@{}lcll}
