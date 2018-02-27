@@ -124,8 +124,8 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 .. _binary-loadn:
 .. _binary-store:
 .. _binary-storen:
-.. _binary-current_memory:
-.. _binary-grow_memory:
+.. _binary-memory.size:
+.. _binary-memory.grow:
 
 .. math::
    \begin{array}{llclll}
@@ -155,12 +155,12 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
      \hex{3C}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{8}~m \\ &&|&
      \hex{3D}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
      \hex{3E}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
-     \hex{3F}~~\hex{00} &\Rightarrow& \CURRENTMEMORY \\ &&|&
-     \hex{40}~~\hex{00} &\Rightarrow& \GROWMEMORY \\
+     \hex{3F}~~\hex{00} &\Rightarrow& \MEMORYSIZE \\ &&|&
+     \hex{40}~~\hex{00} &\Rightarrow& \MEMORYGROW \\
    \end{array}
 
 .. note::
-   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |CURRENTMEMORY| and |GROWMEMORY| instructions may be used to index additional memories.
+   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |MEMORYSIZE| and |MEMORYGROW| instructions may be used to index additional memories.
 
 
 .. index:: numeric instruction

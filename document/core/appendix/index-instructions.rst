@@ -70,8 +70,8 @@ Instruction                          Binary Opcode     Type                     
 :math:`\I64.\STORE\K{8}~\memarg`     :math:`\hex{3C}`  :math:`[\I32~\I64] \to []`                  :ref:`validation <valid-storen>`          :ref:`execution <exec-storen>`
 :math:`\I64.\STORE\K{16}~\memarg`    :math:`\hex{3D}`  :math:`[\I32~\I64] \to []`                  :ref:`validation <valid-storen>`          :ref:`execution <exec-storen>`
 :math:`\I64.\STORE\K{32}~\memarg`    :math:`\hex{3E}`  :math:`[\I32~\I64] \to []`                  :ref:`validation <valid-storen>`          :ref:`execution <exec-storen>`
-:math:`\CURRENTMEMORY`               :math:`\hex{3F}`  :math:`[] \to [\I32]`                       :ref:`validation <valid-current_memory>`  :ref:`execution <exec-current_memory>`
-:math:`\GROWMEMORY`                  :math:`\hex{40}`  :math:`[\I32] \to [\I32]`                   :ref:`validation <valid-grow_memory>`     :ref:`execution <exec-grow_memory>`
+:math:`\MEMORYSIZE`                  :math:`\hex{3F}`  :math:`[] \to [\I32]`                       :ref:`validation <valid-memory.size>`     :ref:`execution <exec-memory.size>`
+:math:`\MEMORYGROW`                  :math:`\hex{40}`  :math:`[\I32] \to [\I32]`                   :ref:`validation <valid-memory.grow>`     :ref:`execution <exec-memory.grow>`
 :math:`\I32.\CONST~\i32`             :math:`\hex{41}`  :math:`[] \to [\I32]`                       :ref:`validation <valid-const>`           :ref:`execution <exec-const>`
 :math:`\I64.\CONST~\i64`             :math:`\hex{42}`  :math:`[] \to [\I64]`                       :ref:`validation <valid-const>`           :ref:`execution <exec-const>`
 :math:`\F32.\CONST~\f32`             :math:`\hex{43}`  :math:`[] \to [\F32]`                       :ref:`validation <valid-const>`           :ref:`execution <exec-const>`

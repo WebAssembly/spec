@@ -151,7 +151,7 @@ let inline_type_explicit (c : context) x ft at =
 %token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
+%token UNREACHABLE MEMORY_SIZE MEMORY_GROW
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
 %token MODULE BIN QUOTE
@@ -317,8 +317,8 @@ plain_instr :
   | SET_GLOBAL var { fun c -> set_global ($2 c global) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
-  | CURRENT_MEMORY { fun c -> current_memory }
-  | GROW_MEMORY { fun c -> grow_memory }
+  | MEMORY_SIZE { fun c -> memory_size }
+  | MEMORY_GROW { fun c -> memory_grow }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }

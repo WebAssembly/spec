@@ -289,10 +289,10 @@ let rec instr s =
 
   | 0x3f ->
     expect 0x00 s "zero flag expected";
-    current_memory
+    memory_size
   | 0x40 ->
     expect 0x00 s "zero flag expected";
-    grow_memory
+    memory_grow
 
   | 0x41 -> i32_const (at vs32 s)
   | 0x42 -> i64_const (at vs64 s)
