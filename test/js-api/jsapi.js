@@ -95,7 +95,7 @@ const exportingModuleIdentityFn = (() => {
 
     builder
         .addFunction('id', kSig_i_i)
-        .addBody([])
+        .addBody([kExprGetLocal, 0])
         .exportFunc();
 
     return builder.toBuffer();
@@ -894,7 +894,7 @@ test(() => {
 
 test(() => {
   let module = new WebAssembly.Module(exportingModuleIdentityFn );
-  let instance new WebAssembly.Instance(module);
+  let instance = new WebAssembly.Instance(module);
 
   let value = 2 ** 31;
   let output = instance.exports.id(value);
