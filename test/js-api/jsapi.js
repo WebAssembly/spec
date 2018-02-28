@@ -408,6 +408,7 @@ test(() => {
     assert_equals(f.length, 0);
     assert_equals('name' in f, true);
     assert_equals(Function.prototype.call.call(f), 42);
+    assert_equals('prototype' in f, false);
     assertThrows(() => new f(), TypeError);
 }, "Exported WebAssembly functions");
 
