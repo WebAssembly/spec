@@ -491,7 +491,7 @@ Abbreviations
 
 As an abbreviation, a single instruction may occur in place of the offset:
 
-.. math:
+.. math::
    \begin{array}{llcll}
    \production{element offset} &
      \Tinstr &\equiv&
@@ -535,7 +535,7 @@ Abbreviations
 
 As an abbreviation, a single instruction may occur in place of the offset:
 
-.. math:
+.. math::
    \begin{array}{llcll}
    \production{data offset} &
      \Tinstr &\equiv&
