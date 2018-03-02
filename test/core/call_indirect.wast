@@ -80,38 +80,6 @@
     ))
   )
 
-  (func
-    (block i32.const 0 call_indirect)
-    (loop i32.const 0 call_indirect)
-    (if (i32.const 0) (then i32.const 0 call_indirect))
-    (if (i32.const 0)
-      (then i32.const 0 call_indirect)
-      (else i32.const 0 call_indirect)
-    )
-    (block i32.const 0 i32.const 0 call_indirect (param i32))
-    (loop i32.const 0 i32.const 0 call_indirect (param i32))
-    (if (i32.const 0) (then i32.const 0 i32.const 0 call_indirect (param i32)))
-    (if (i32.const 0)
-      (then i32.const 0 i32.const 0 call_indirect (param i32))
-      (else i32.const 0 i32.const 0 call_indirect (param i32))
-    )
-
-    block i32.const 0 call_indirect end
-    loop i32.const 0 call_indirect end
-    i32.const 0 if i32.const 0 call_indirect end
-    i32.const 0 if i32.const 0 call_indirect else i32.const 0 call_indirect end
-    block i32.const 0 i32.const 0 call_indirect (param i32) end
-    loop i32.const 0 i32.const 0 call_indirect (param i32) end
-    i32.const 0 if i32.const 0 i32.const 0 call_indirect (param i32) end
-    i32.const 0
-    if
-      i32.const 0 i32.const 0 call_indirect (param i32)
-    else
-      i32.const 0 i32.const 0 call_indirect (param i32)
-    end
-    i32.const 0 call_indirect
-  )
-
   ;; Typing
 
   (func (export "type-i32") (result i32)
