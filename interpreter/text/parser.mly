@@ -294,7 +294,7 @@ align_opt :
 
 instr :
   | plain_instr { let at = at () in fun c -> [$1 c @@ at] }
-  | call_instr { fun c -> let e, es = $1 c in e :: es }
+  | call_instr_instr { fun c -> let e, es = $1 c in e :: es }
   | block_instr { let at = at () in fun c -> [$1 c @@ at] }
   | expr { $1 } /* Sugar */
 
@@ -326,34 +326,63 @@ plain_instr :
   | BINARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
 
+
 call_instr :
   | CALL_INDIRECT call_instr_type
-    { let at1 = ati 1 in
-      fun c -> let x, es = $2 c in call_indirect x @@ at1, es }
+    { let at = at () in fun c -> call_indirect ($2 c) @@ at }
 
 call_instr_type :
   | type_use call_instr_params
     { let at1 = ati 1 in
       fun c ->
       match $2 c with
-      | FuncType ([], []), es -> $1 c type_, es
-      | ft, es -> inline_type_explicit c ($1 c type_) ft at1, es }
+      | FuncType ([], []) -> $1 c type_
+      | ft -> inline_type_explicit c ($1 c type_) ft at1 }
   | call_instr_params
-    { let at1 = ati 1 in
-      fun c -> let ft, es = $1 c in inline_type c ft at1, es }
+    { let at = at () in fun c -> inline_type c ($1 c) at }
 
 call_instr_params :
   | LPAR PARAM value_type_list RPAR call_instr_params
-    { fun c ->
-      let FuncType (ts1, ts2), es = $5 c in FuncType ($3 @ ts1, ts2), es }
+    { fun c -> let FuncType (ts1, ts2) = $5 c in FuncType ($3 @ ts1, ts2) }
   | call_instr_results
-    { fun c -> let ts, es = $1 c in FuncType ([], ts), es }
+    { fun c -> FuncType ([], $1 c) }
 
 call_instr_results :
   | LPAR RESULT value_type_list RPAR call_instr_results
+    { fun c -> $3 @ $5 c }
+  | /* empty */
+    { fun c -> [] }
+
+
+call_instr_instr :
+  | CALL_INDIRECT call_instr_type_instr
+    { let at1 = ati 1 in
+      fun c -> let x, es = $2 c in call_indirect x @@ at1, es }
+
+call_instr_type_instr :
+  | type_use call_instr_params_instr
+    { let at1 = ati 1 in
+      fun c ->
+      match $2 c with
+      | FuncType ([], []), es -> $1 c type_, es
+      | ft, es -> inline_type_explicit c ($1 c type_) ft at1, es }
+  | call_instr_params_instr
+    { let at = at () in
+      fun c -> let ft, es = $1 c in inline_type c ft at, es }
+
+call_instr_params_instr :
+  | LPAR PARAM value_type_list RPAR call_instr_params_instr
+    { fun c ->
+      let FuncType (ts1, ts2), es = $5 c in FuncType ($3 @ ts1, ts2), es }
+  | call_instr_results_instr
+    { fun c -> let ts, es = $1 c in FuncType ([], ts), es }
+
+call_instr_results_instr :
+  | LPAR RESULT value_type_list RPAR call_instr_results_instr
     { fun c -> let ts, es = $5 c in $3 @ ts, es }
   | instr
     { fun c -> [], $1 c }
+
 
 block_instr :
   | BLOCK labeling_opt block END labeling_end_opt
@@ -430,6 +459,7 @@ if_ :
 
 instr_list :
   | /* empty */ { fun c -> [] }
+  | call_instr { fun c -> [$1 c] }
   | instr instr_list { fun c -> $1 c @ $2 c }
 
 expr_list :
