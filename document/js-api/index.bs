@@ -155,6 +155,10 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: global type; url: syntax/types.html#syntax-globaltype
     text: address; url: exec/runtime.html#addresses
     text: signed_32; url: exec/numerics.html#aux-signed
+    text: grow_memory; url: exec/instructions.html#exec-grow-memory
+    text: current frame; url: exec/conventions.html#exec-notation-textual
+    text: 𝗆𝗈𝖽𝗎𝗅𝖾; url: exec/runtime.html#syntax-frame
+    text: 𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌; url: exec/runtime.html#syntax-moduleinst
 </pre>
 
 <pre class='link-defaults'>
@@ -570,6 +574,18 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
+    To <dfn>reset the Memory buffer</dfn> of |memaddr|, perform the following steps:
+
+    1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
+    1. Assert: |map|[|memaddr|] [=map/exists=]
+    1. Let |memory| be |map|[|memaddr|].
+    1. Perform ! [=DetachArrayBuffer=](|memory|.\[[BufferObject]]).
+    1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
+    1. Let |buffer| be a new {{ArrayBuffer}} whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
+    1. Set |memory|.\[[BufferObject]] to |buffer|.
+</div>
+
+<div algorithm>
     The <dfn method for="Memory">grow(delta)</dfn> method, when invoked, performs the following steps:
     1. Let |memory| be the Memory instance.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
@@ -578,12 +594,18 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be [=grow_mem=](|store|, |memaddr|, |delta|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-    1. Perform ! [=DetachArrayBuffer=](|memory|.\[[BufferObject]]).
-    1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
-    1. Assert: The size of |block| is the same as [=size_mem=](|store|, |memaddr|) * 64 Ki
-    1. Let |buffer| be a new {{ArrayBuffer}} whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
-    1. Set |memory|.\[[BufferObject]] to |buffer|.
+    1. [=Reset the memory buffer=] of |memaddr|.
     1. Return |ret|.
+</div>
+
+Immediately after a WebAssembly [=grow_memory=] instruction executes, perform the following steps:
+
+<div algorithm="grow_memory">
+    1. If the top of the stack is not [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] (−1), then:
+        1. Let |frame| be the [=current frame=].
+        1. Assert: due to validation, |frame|.[=𝗆𝗈𝖽𝗎𝗅𝖾=].[=𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌=][0] exists.
+        1. Let |memaddr| be the memory address |frame|.[=𝗆𝗈𝖽𝗎𝗅𝖾=].[=𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌=][0].
+        1. [=Reset the memory buffer=] of |memaddr|.
 </div>
 
 <h3 id="tables">Tables</h3>
