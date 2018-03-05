@@ -2,6 +2,9 @@
 
 ## Introduction
 
+Note: Basic support for simple host reference types has been carved out into a [separate proposal](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md) that should become the future basis for this proposal.
+
+
 ### Motivation
 
 * Efficient support for high-level languages
