@@ -97,11 +97,10 @@ Table extensions:
 
 API extensions:
 
-* Any JS object (non-primitive value) or `null` can be passed as `anyref` to a Wasm function, stored in a global, or in a table.
+* Any JS object (non-primitive value) or string or symbol or `null` can be passed as `anyref` to a Wasm function, stored in a global, or in a table.
+  - It may be possible to allow all other non-primitive values as well, depending on details of existing engines.
 
 * Any JS function object or `null` can be passed as `anyfunc` to a Wasm function, stored in a global, or in a table.
-
-* Only `null` can be passed as a `nullref` to a Wasm function, stored in a global, or in a table.
 
 
 ## Possible Future Extensions
@@ -124,6 +123,10 @@ Additions:
   - `nullref < eqref`
 * Add `ref.eq` instruction.
   - `ref.eq : [eqref eqref] -> [i32]`
+
+API changes:
+
+* Any JS object (non-primitive value) or `null` can be passed as `eqref` to a Wasm function, stored in a global, or in a table.
 
 
 Questions:
