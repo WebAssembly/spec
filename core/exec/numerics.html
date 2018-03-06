@@ -297,7 +297,8 @@ it holds that <span class="math notranslate">\(i_1 = i_2\cdot\href{../exec/numer
 <div class="math notranslate">
 \[\begin{split}\begin{array}{&#64;{}lcll}
 \href{../exec/numerics.html#op-irem-s}{\mathrm{irem\_s}}_N(i_1, 0) &amp;=&amp; \{\} \\
-\href{../exec/numerics.html#op-irem-s}{\mathrm{irem\_s}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N^{-1}(i_1 - i_2 \cdot \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) / \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2))) \\
+\href{../exec/numerics.html#op-irem-s}{\mathrm{irem\_s}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N^{-1}(j_1 - j_2 \cdot \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(j_1 / j_2)) \\
+  &amp;&amp; (\mathrel{\mbox{where}} j_1 = \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_1) \wedge j_2 = \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_2)) \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
