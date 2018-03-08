@@ -59,7 +59,7 @@ Typing extensions:
 
 * Introduce a simple subtype relation between reference types.
   - reflexive transitive closure of the following rules
-  - `n < anyref` for all reftypes `t`
+  - `t < anyref` for all reftypes `t`
   - `anyfunc < anyref`
   - Note: No rule `nullref < t` for all reftypes `t` -- while that is derivable from the above given the current set of types it might not hold for future reference types which don't allow null.
 
