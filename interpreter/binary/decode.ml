@@ -86,7 +86,7 @@ let rec vuN n s =
 let rec vsN n s =
   require (n > 0) s (pos s) "integer representation too long";
   let b = u8 s in
-  let mask = (-1 lsl n) land 0x7f in
+  let mask = (-1 lsl (n - 1)) land 0x7f in
   require (n >= 7 || b land mask = 0 || b land mask = mask) s (pos s - 1)
     "integer too large";
   let x = Int64.of_int (b land 0x7f) in
