@@ -7,7 +7,7 @@ TODO: more text, motivation, explanation
 Motivation:
 
 * Easier and more efficient interop with host environment (see the [host bindings proposal](https://github.com/WebAssembly/host-bindings/blob/master/proposals/host-bindings/Overview.md))
-  - allow host references to be represented directly by type `anyref` (see WebAssembly/host-bindings#9)
+  - allow host references to be represented directly by type `anyref` (see [here](https://github.com/WebAssembly/host-bindings/issues/9))
   - without having to go through tables, allocating slots, and maintaining index bijections at the boundaries
 
 * Basic manipulation of tables inside Wasm
@@ -18,7 +18,7 @@ by repurposing tables as a general memory for opaque data types
 * Set the stage for later additions:
 
   - Typed function references (see [below](#typed-function-references))
-  - Exception references (see the [exception handling proposal](https://github.com/WebAssembly/exception-handling/blob/master/proposals/Exceptions.md) and WebAssembly/host-bindings#10)
+  - Exception references (see the [exception handling proposal](https://github.com/WebAssembly/exception-handling/blob/master/proposals/Exceptions.md) and [here](https://github.com/WebAssembly/host-bindings/issues/10))
   - A smoother transition path to GC (see the [GC proposal](https://github.com/WebAssembly/gc/blob/master/proposals/GC.md))
 
 Get the most important parts soon!
