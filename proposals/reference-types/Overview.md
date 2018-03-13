@@ -6,8 +6,8 @@ TODO: more text, motivation, explanation
 
 Motivation:
 
-* Easier and more efficient interop with host environment
-  - allow host references to be represented directly by type `anyref`
+* Easier and more efficient interop with host environment (see the [host bindings proposal](https://github.com/WebAssembly/host-bindings/blob/master/proposals/host-bindings/Overview.md))
+  - allow host references to be represented directly by type `anyref` (see WebAssembly/host-bindings#9)
   - without having to go through tables, allocating slots, and maintaining index bijections at the boundaries
 
 * Basic manipulation of tables inside Wasm
@@ -17,9 +17,9 @@ by repurposing tables as a general memory for opaque data types
 
 * Set the stage for later additions:
 
-  - Typed function references (see below)
-  - Exception references (see exception handling proposal)
-  - A smoother transition path to GC (see GC proposal)
+  - Typed function references (see [below](#typed-function-references))
+  - Exception references (see the [exception handling proposal](https://github.com/WebAssembly/exception-handling/blob/master/proposals/Exceptions.md) and WebAssembly/host-bindings#10)
+  - A smoother transition path to GC (see the [GC proposal](https://github.com/WebAssembly/gc/blob/master/proposals/GC.md))
 
 Get the most important parts soon!
 
@@ -158,7 +158,7 @@ Additions:
 
 * Typed function references cannot be null!
 
-* The `table.grow` instruction (see bulk operation proposal) needs to take an initialisation argument.
+* The `table.grow` instruction (see the [bulk operation proposal](https://github.com/WebAssembly/bulk-memory-operations/blob/master/proposals/bulk-memory-operations/Overview.md)) needs to take an initialisation argument.
 
 * Likewise `WebAssembly.Table#grow` takes an additional initialisation argument.
   - optional for backwards compatibility, defaults to `null`
@@ -230,7 +230,7 @@ Note:
 
 ### GC Types
 
-See GC proposal.
+See [GC proposal](https://github.com/WebAssembly/gc/blob/master/proposals/GC.md).
 
 
 ### Further possible generalisations
