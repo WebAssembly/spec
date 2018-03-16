@@ -20,7 +20,7 @@
 (assert_return (invoke $Nf "call Mf.call") (i32.const 2))
 
 (module
-  (import "spectest" "print" (func $f (param i32)))
+  (import "spectest" "print_i32" (func $f (param i32)))
   (export "print" (func $f))
 )
 (register "reexport_f")

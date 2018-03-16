@@ -433,7 +433,7 @@ let init (m : module_) (exts : extern list) : module_inst =
       types = List.map (fun type_ -> type_.it) types }
   in
   let fs = List.map (create_func inst0) funcs in
-  let inst =
+  let inst1 =
     { inst0 with
       funcs = inst0.funcs @ fs;
       tables = inst0.tables @ List.map (create_table inst0) tables;
@@ -441,10 +441,11 @@ let init (m : module_) (exts : extern list) : module_inst =
       globals = inst0.globals @ List.map (create_global inst0) globals;
     }
   in
+  let inst = {inst1 with exports = List.map (create_export inst1) exports} in
   List.iter (init_func inst) fs;
   let init_elems = List.map (init_table inst) elems in
   let init_datas = List.map (init_memory inst) data in
   List.iter (fun f -> f ()) init_elems;
   List.iter (fun f -> f ()) init_datas;
   Lib.Option.app (fun x -> ignore (invoke (func inst x) [])) start;
-  {inst with exports = List.map (create_export inst) exports}
+  inst

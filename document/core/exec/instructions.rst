@@ -1130,17 +1130,21 @@ An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <e
 
 1. Jump to the start of the instruction sequence :math:`\instr^\ast` of the expression.
 
-2. Execute of the instruction sequence.
+2. Execute the instruction sequence.
 
 3. Assert: due to :ref:`validation <valid-expr>`, the top of the stack contains a :ref:`value <syntax-val>`.
 
-4. Pop the the :ref:`value <syntax-val>` :math:`\val` from the stack.
+4. Pop the :ref:`value <syntax-val>` :math:`\val` from the stack.
 
 The value :math:`\val` is the result of the evaluation.
 
 .. math::
    \frac{
-     S; F; \instr^\ast \stepto^\ast S'; F'; v
+     S; F; \instr^\ast \stepto S'; F'; \instr'^\ast
    }{
-     S; F; \instr^\ast~\END \stepto^\ast S'; F'; v
+     S; F; \instr^\ast~\END \stepto S'; F'; \instr'^\ast~\END
    }
+
+.. note::
+   Evaluation iterates this reduction rule until reaching a value.
+   Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`invocation <exec-invoke>`.

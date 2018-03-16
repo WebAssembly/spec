@@ -169,6 +169,7 @@ Other instructions are checked in a similar manner.
          push_ctrl([], [t*])
 
        case (if t*)
+         pop_opd(I32)
          push_ctrl([t*], [t*])
 
        case (end)

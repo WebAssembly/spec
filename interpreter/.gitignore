@@ -9,4 +9,5 @@
 *.mlpack
 _build
 wasm
+wasm.debug
 

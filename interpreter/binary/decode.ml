@@ -16,7 +16,7 @@ let pos s = !(s.pos)
 let eos s = (pos s = len s)
 
 let check n s = if pos s + n > len s then raise EOS
-let skip n s = check n s; s.pos := !(s.pos) + n
+let skip n s = if n < 0 then raise EOS else check n s; s.pos := !(s.pos) + n
 
 let read s = Char.code (s.bytes.[!(s.pos)])
 let peek s = if eos s then None else Some (read s)
@@ -39,7 +39,7 @@ let error s pos msg = raise (Code (region s pos pos, msg))
 let require b s pos msg = if not b then error s pos msg
 
 let guard f s =
-  try f s with EOS -> error s (len s) "unexpected end of binary or function"
+  try f s with EOS -> error s (len s) "unexpected end of section or function"
 
 let get = guard get
 let get_string n = guard (get_string n)
@@ -86,7 +86,7 @@ let rec vuN n s =
 let rec vsN n s =
   require (n > 0) s (pos s) "integer representation too long";
   let b = u8 s in
-  let mask = (-1 lsl n) land 0x7f in
+  let mask = (-1 lsl (n - 1)) land 0x7f in
   require (n >= 7 || b land mask = 0 || b land mask = mask) s (pos s - 1)
     "integer too large";
   let x = Int64.of_int (b land 0x7f) in

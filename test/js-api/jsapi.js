@@ -90,6 +90,17 @@ const moduleBinaryWithMemSectionAndMemImport = (() => {
     return builder.toBuffer();
 })();
 
+const exportingModuleIdentityFn = (() => {
+    let builder = new WasmModuleBuilder();
+
+    builder
+        .addFunction('id', kSig_i_i)
+        .addBody([kExprGetLocal, 0])
+        .exportFunc();
+
+    return builder.toBuffer();
+})();
+
 let Module;
 let Instance;
 let CompileError;
@@ -397,6 +408,7 @@ test(() => {
     assert_equals(f.length, 0);
     assert_equals('name' in f, true);
     assert_equals(Function.prototype.call.call(f), 42);
+    assert_equals('prototype' in f, false);
     assertThrows(() => new f(), TypeError);
 }, "Exported WebAssembly functions");
 
@@ -817,8 +829,7 @@ const complexTableReExportingModuleBinary = (() => {
         .addFunction('h', kSig_i_v)
         .addBody([
             kExprI32Const,
-            46,
-            kExprEnd
+            46
         ]).index;
 
     builder.setFunctionTableLength(3);
@@ -881,5 +892,14 @@ test(() => {
   assert_equals(table.get(1)(), 42);
   assert_equals(table.get(2)(), 46);
 }, "Tables export cached");
+
+test(() => {
+  let module = new WebAssembly.Module(exportingModuleIdentityFn );
+  let instance = new WebAssembly.Instance(module);
+
+  let value = 2 ** 31;
+  let output = instance.exports.id(value);
+  assert_equals(output, - (2 ** 31));
+}, "WebAssembly integers are converted to JavaScript as if by ToInt32");
 
 })();
