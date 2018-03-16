@@ -40,14 +40,14 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Globals*: the list of globals declared in the current module, represented by their global type.
 * *Locals*: the list of locals declared in the current function (including parameters), represented by their value type.
 * *Labels*: the stack of labels accessible from the current position, represented by their result type.
-* *Return*: the return type of the current function, represented as a result type.
+* *Return*: the return type of the current function, represented as a result type, or a special marker |NORETURN| indicating that no return is allowed, as in free-standing expressions.
 
 In other words, a context contains a sequence of suitable :ref:`types <syntax-type>` for each :ref:`index space <syntax-index>`,
 describing each defined entry in that space.
 Locals, labels and return type are only used for validating :ref:`instructions <syntax-instr>` in :ref:`function bodies <syntax-func>`, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.
 
-It is convenient to define contexts as :ref:`records <notation-record>` :math:`C` with abstract syntax:
+More concretely, contexts are defined as :ref:`records <notation-record>` :math:`C` with abstract syntax:
 
 .. math::
    \begin{array}{llll}
@@ -60,17 +60,14 @@ It is convenient to define contexts as :ref:`records <notation-record>` :math:`C
         & \CGLOBALS & \globaltype^\ast, \\
         & \CLOCALS & \valtype^\ast, \\
         & \CLABELS & \resulttype^\ast, \\
-        & \CRETURN & \resulttype^? ~\} \\
+        & \CRETURN & (\resulttype ~|~ \NORETURN) ~\} \\
      \end{array}
    \end{array}
 
-.. note::
-   The fields of a context are not defined as :ref:`vectors <syntax-vec>`,
-   since their lengths are not bounded by the maximum vector size.
-
-In addition to field access :math:`C.\K{field}` the following notation is adopted for manipulating contexts:
+In addition to field access written :math:`C.\K{field}` the following notation is adopted for manipulating contexts:
 
 * When spelling out a context, empty fields are omitted.
+  Likewise, the |CRETURN| field may be omitted when it is |NORETURN|.
 
 * :math:`C,\K{field}\,A^\ast` denotes the same context as :math:`C` but with the elements :math:`A^\ast` prepended to its :math:`\K{field}` component sequence.
 

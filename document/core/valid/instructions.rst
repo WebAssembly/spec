@@ -314,7 +314,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
@@ -354,7 +354,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
@@ -616,7 +616,7 @@ Control Instructions
 :math:`\RETURN`
 ...............
 
-* The return type :math:`C.\CRETURN` must not be empty in the context.
+* The return type :math:`C.\CRETURN` must not be |NORETURN| in the context.
 
 * Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
@@ -632,9 +632,7 @@ Control Instructions
 .. note::
    The |RETURN| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-   :math:`C.\CRETURN` is empty (:math:`\epsilon`) when validating an :ref:`expression <valid-expr>` that is not a function body.
-   This differs from it being set to the empty result type (:math:`[]`),
-   which is the case for functions not returning anything.
+   :math:`C.\CRETURN` is |NORETURN| when validating an :ref:`expression <valid-expr>` that is not a function body.
 
 
 .. _valid-call:
@@ -773,7 +771,7 @@ Constant Expressions
    \frac{
      (C \vdashinstrconst \instr \const)^\ast
    }{
-     C \vdashexprconst \instr~\END \const
+     C \vdashexprconst \instr^\ast~\END \const
    }
 
 .. math::

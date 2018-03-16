@@ -54,7 +54,7 @@ Function Types
    }
 
 .. note::
-   This restriction may be removed in future versions of WebAssembly.
+   The restriction to at most one result may be removed in future versions of WebAssembly.
 
 
 .. index:: table type, element type, limits

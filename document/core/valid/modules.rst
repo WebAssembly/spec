@@ -334,6 +334,9 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
      C \vdashexportdesc \EDGLOBAL~x : \ETGLOBAL~(\MCONST~t)
    }
 
+.. note::
+   In future versions of WebAssembly, the restriction to exporting only immutable globals may be removed.
+
 
 .. index:: import, name, function type, table type, memory type, global type
    pair: validation; import
@@ -425,6 +428,9 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
      C \vdashimportdesc \IDGLOBAL~\MCONST~t : \ETGLOBAL~\MCONST~t
    }
 
+.. note::
+   In future versions of WebAssembly, the restriction to importing only immutable globals may be removed.
+
 
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
    pair: validation; module
@@ -447,25 +453,25 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CTYPES` is :math:`\module.\MTYPES`,
 
-  * :math:`C.\CFUNCS` is :math:`\etfuncs(\externtype_i^\ast)` concatenated with :math:`\functype_i^\ast`,
-    with the type sequences :math:`\externtype_i^\ast` and :math:`\functype_i^\ast` as determined below,
+  * :math:`C.\CFUNCS` is :math:`\etfuncs(\X{it}^\ast)` concatenated with :math:`\X{ft}^\ast`,
+    with the import's :ref:`external types <syntax-extentype>` :math:`\X{it}^\ast` and the internal :math:`function types <syntax-functype>` :math:`\X{ft}^\ast` as determined below,
 
-  * :math:`C.\CTABLES` is :math:`\ettables(\externtype_i^\ast)` concatenated with :math:`\tabletype_i^\ast`,
-    with the type sequences :math:`\externtype_i^\ast` and :math:`\tabletype_i^\ast` as determined below,
+  * :math:`C.\CTABLES` is :math:`\ettables(\X{it}^\ast)` concatenated with :math:`\X{tt}^\ast`,
+    with the import's :ref:`external types <syntax-extentype>` :math:`\X{it}^\ast` and the internal :math:`table types <syntax-tabletype>` :math:`\X{tt}^\ast` as determined below,
 
-  * :math:`C.\CMEMS` is :math:`\etmems(\externtype_i^\ast)` concatenated with :math:`\memtype_i^\ast`,
-    with the type sequences :math:`\externtype_i^\ast` and :math:`\memtype_i^\ast` as determined below,
+  * :math:`C.\CMEMS` is :math:`\etmems(\X{it}^\ast)` concatenated with :math:`\X{mt}^\ast`,
+    with the import's :ref:`external types <syntax-extentype>` :math:`\X{it}^\ast` and the internal :math:`memory types <syntax-memtype>` :math:`\X{mt}^\ast` as determined below,
 
-  * :math:`C.\CGLOBALS` is :math:`\etglobals(\externtype_i^\ast)` concatenated with :math:`\globaltype_i^\ast`,
-    with the type sequences :math:`\externtype_i^\ast` and :math:`\globaltype_i^\ast` as determined below.
+  * :math:`C.\CGLOBALS` is :math:`\etglobals(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
+    with the import's :ref:`external types <syntax-extentype>` :math:`\X{it}^\ast` and the internal :math:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
 
   * :math:`C.\CLOCALS` is empty,
 
-  * :math:`C.\CLABELS` is empty.
+  * :math:`C.\CLABELS` is empty,
 
-  * :math:`C.\CRETURN` is empty.
+  * :math:`C.\CRETURN` is |NORETURN|.
 
-* Let :math:`C'` be the :ref:`context <context>` where :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\externtype_i^\ast)` and all other fields are empty.
+* Let :math:`C'` be the :ref:`context <context>` where :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\externtype_i^\ast)`, :math:`C.\CRETURN` is |NORETURN| and all other fields are empty.
 
 * Under the context :math:`C`:
 
@@ -476,15 +482,15 @@ Instead, the context :math:`C` for validation of the module's content is constru
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
 
   * For each :math:`\table_i` in :math:`\module.\MTABLES`,
-    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\tabletype_i`.
+    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
 
   * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
-    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\memtype_i`.
+    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
 
   * For each :math:`\global_i` in :math:`\module.\MGLOBALS`:
 
     * Under the context :math:`C'`,
-      the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
+      the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
 
   * For each :math:`\elem_i` in :math:`\module.\MELEM`,
     the segment :math:`\elem_i` must be :ref:`valid <valid-elem>`.
@@ -496,10 +502,10 @@ Instead, the context :math:`C` for validation of the module's content is constru
     then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
 
   * For each :math:`\import_i` in :math:`\module.\MIMPORTS`,
-    the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\externtype_i`.
+    the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\X{it}_i`.
 
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
-    the segment :math:`\import_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\externtype'_i`.
+    the segment :math:`\import_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
 
 * The length of :math:`C.\CTABLES` must not be larger than :math:`1`.
 
@@ -507,11 +513,19 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
 * All export names :math:`\export_i.\ENAME` must be different.
 
-* Let :math:`\externtype^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\externtype_i` of the imports, in index order.
+* Let :math:`\X{ft}^\ast` be the concatenation of the internal :ref:`function types <syntax-functype>` :math:`\X{ft}_i`, in index order.
 
-* Let :math:`{\externtype'}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\externtype'_i` of the exports, in index order.
+* Let :math:`\X{tt}^\ast` be the concatenation of the internal :ref:`table types <syntax-tabletype>` :math:`\X{tt}_i`, in index order.
 
-* Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\externtype^\ast \to {\externtype'}^\ast`.
+* Let :math:`\X{mt}^\ast` be the concatenation of the internal :ref:`memory types <syntax-memtype>` :math:`\X{mt}_i`, in index order.
+
+* Let :math:`\X{gt}^\ast` be the concatenation of the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}_i`, in index order.
+
+* Let :math:`\X{it}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{it}_i` of the imports, in index order.
+
+* Let :math:`\X{et}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{et}_i` of the exports, in index order.
+
+* Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast \to \X{et}^\ast`.
 
 .. math::
    \frac{
