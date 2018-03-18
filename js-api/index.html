@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 5afc3ab5248efd53ff0fd6d61ad878a3dc5a357a" name="generator">
+  <meta content="Bikeshed version d377965d771c89e5a624bbce80b9382913b6aed7" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="7b7911eba79c06fe0511f4af65771c8e4325ebf4" name="document-revision">
+  <meta content="bd027d6eb3449d1cd26ffcca6c4b074b9b0221af" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -255,7 +255,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-03-14">14 March 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-03-18">18 March 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -890,7 +890,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
      <li data-md="">
       <p>Return <var>memory</var>.</p>
     </ol>
-    <p class="issue" id="issue-cb23e866"><a class="self-link" href="#issue-cb23e866"></a> Any attempts to <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer">detach</a> <var>buffer</var>, other than the detachment performed by <code class="idl"><a data-link-type="idl" href="#dom-memory-grow" id="ref-for-dom-memory-grow①">grow(delta)</a></code>, will throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②">TypeError</a></code> exception. Specifying this behavior <a href="https://github.com/tc39/ecma262/issues/1024">requires changes to the ECMAScript specification</a>.</p>
+    <p class="issue" id="issue-cfae9335"><a class="self-link" href="#issue-cfae9335"></a> Any attempts to <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer">detach</a> <var>buffer</var>, other than the detachment performed by <code class="idl"><a data-link-type="idl" href="#dom-memory-grow" id="ref-for-dom-memory-grow①">grow(delta)</a></code>, will throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②">TypeError</a></code> exception. Specifying this behavior <a href="https://github.com/tc39/ecma262/issues/1024">requires changes to the ECMAScript specification</a>.</p>
    </div>
    <div class="algorithm" data-algorithm="Memory(descriptor)">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="constructor" data-export="" id="dom-memory-memory"><code>Memory(descriptor)</code></dfn> constructor, when invoked, performs the following steps: 
@@ -1359,8 +1359,8 @@ The particular exception here is implementation-defined in both cases.</p>
   <p>Examples in this specification are introduced with the words “for example”
 	or are set apart from the normative text with <code>class="example"</code>,
 	like this: </p>
-  <div class="example" id="example-52448c84">
-   <a class="self-link" href="#example-52448c84"></a> 
+  <div class="example" id="example-c9096732">
+   <a class="self-link" href="#example-c9096732"></a> 
    <p>This is an example of an informative example. </p>
   </div>
   <p>Informative notes begin with the word “Note” and are set apart from the
@@ -1449,8 +1449,8 @@ The particular exception here is implementation-defined in both cases.</p>
    <li>
     module
     <ul>
-     <li><a href="#dom-webassemblyinstantiatedsource-module">dict-member for WebAssemblyInstantiatedSource</a><span>, in §3</span>
      <li><a href="#dom-moduleimportdescriptor-module">dict-member for ModuleImportDescriptor</a><span>, in §3.1</span>
+     <li><a href="#dom-webassemblyinstantiatedsource-module">dict-member for WebAssemblyInstantiatedSource</a><span>, in §3</span>
     </ul>
    <li><a href="#module">Module</a><span>, in §3.1</span>
    <li><a href="#dom-module-module">Module(bytes)</a><span>, in §3.1</span>
@@ -1746,7 +1746,7 @@ The particular exception here is implementation-defined in both cases.</p>
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue"> Any attempts to <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-detacharraybuffer">detach</a> <var>buffer</var>, other than the detachment performed by <code class="idl"><a data-link-type="idl" href="#dom-memory-grow">grow(delta)</a></code>, will throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> exception. Specifying this behavior <a href="https://github.com/tc39/ecma262/issues/1024">requires changes to the ECMAScript specification</a>.<a href="#issue-cb23e866"> ↵ </a></div>
+   <div class="issue"> Any attempts to <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-detacharraybuffer">detach</a> <var>buffer</var>, other than the detachment performed by <code class="idl"><a data-link-type="idl" href="#dom-memory-grow">grow(delta)</a></code>, will throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> exception. Specifying this behavior <a href="https://github.com/tc39/ecma262/issues/1024">requires changes to the ECMAScript specification</a>.<a href="#issue-cfae9335"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="associated-store">
    <b><a href="#associated-store">#associated-store</a></b><b>Referenced in:</b>
