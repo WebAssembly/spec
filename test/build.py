@@ -108,7 +108,7 @@ HTML_HEADER = """<!doctype html>
 
         <script src={WPT_PREFIX}/testharness.js></script>
         <script src={WPT_PREFIX}/testharnessreport.js></script>
-        <script src={PREFIX}/index.js></script>
+        <script src={PREFIX}/{JS_HARNESS}></script>
         <script src={PREFIX}/wasm-constants.js></script>
         <script src={PREFIX}/wasm-module-builder.js></script>
 
@@ -137,27 +137,31 @@ def build_html_js(out_dir, js_dir, include_harness=False):
     for js_file in glob.glob(os.path.join(HTML_TESTS_DIR, '*.js')):
         shutil.copy(js_file, out_dir)
 
-def build_html_from_js(js_html_dir, html_dir):
+def build_html_from_js(js_html_dir, html_dir, use_sync):
     for js_file in glob.glob(os.path.join(js_html_dir, '*.js')):
         js_filename = os.path.basename(js_file)
         html_filename = js_filename + '.html'
         html_file = os.path.join(html_dir, html_filename)
+        js_harness = "sync_index.js" if use_sync else "async_index.js"
         with open(html_file, 'w+') as f:
             content = HTML_HEADER.replace('{PREFIX}', './js/harness') \
-                                 .replace('{WPT_PREFIX}', WPT_URL_PREFIX)
+                                 .replace('{WPT_PREFIX}', './js/harness') \
+                                 .replace('{JS_HARNESS}', js_harness)
             content += "        <script src=./js/{SCRIPT}></script>".replace('{SCRIPT}', js_filename)
             content += HTML_BOTTOM
             f.write(content)
 
-def build_html(html_dir, js_dir):
+def build_html(html_dir, js_dir, use_sync):
     print("Building HTML tests...")
 
     js_html_dir = os.path.join(html_dir, 'js')
 
-    build_html_js(js_html_dir, js_dir)
+    build_html_js(js_html_dir, js_dir, include_harness=True)
+    for js_file in glob.glob(os.path.join(js_html_dir, '*.js')):
+        wrap_single_test(js_file)
 
     print('Building WPT tests from JS tests...')
-    build_html_from_js(js_html_dir, html_dir)
+    build_html_from_js(js_html_dir, html_dir, use_sync)
 
     print("Done building HTML tests.")
 
@@ -175,7 +179,7 @@ def wrap_single_test(js_file):
     with open(js_file, 'w') as f:
         f.write('\n'.join(content))
 
-def build_front_page(out_dir, js_dir):
+def build_front_page(out_dir, js_dir, use_sync):
     print('Building front page containing all the HTML tests...')
 
     js_out_dir = os.path.join(out_dir, 'js')
@@ -185,9 +189,11 @@ def build_front_page(out_dir, js_dir):
         wrap_single_test(js_file)
 
     front_page = os.path.join(out_dir, 'index.html')
+    js_harness = "sync_index.js" if use_sync else "async_index.js"
     with open(front_page, 'w+') as f:
         content = HTML_HEADER.replace('{PREFIX}', './js/harness') \
-                             .replace('{WPT_PREFIX}', './js/harness')
+                             .replace('{WPT_PREFIX}', './js/harness')\
+                             .replace('{JS_HARNESS}', js_harness)
         for js_file in glob.glob(os.path.join(js_out_dir, '*.js')):
             filename = os.path.basename(js_file)
             content += "        <script src=./js/{SCRIPT}></script>\n".replace('{SCRIPT}', filename)
@@ -223,6 +229,13 @@ def process_args():
                         const=False,
                         default=True)
 
+    parser.add_argument('--use-sync',
+                        action="store_const",
+                        dest="use_sync",
+                        help="Let the tests use the synchronous JS API (by default, it does not)",
+                        const=True,
+                        default=False)
+
     return parser.parse_args(), parser
 
 if __name__ == '__main__':
@@ -248,10 +261,10 @@ if __name__ == '__main__':
 
     if html_dir is not None:
         ensure_empty_dir(html_dir)
-        build_html(html_dir, js_dir)
+        build_html(html_dir, js_dir, args.use_sync)
 
     if front_dir is not None:
         ensure_empty_dir(front_dir)
-        build_front_page(front_dir, js_dir)
+        build_front_page(front_dir, js_dir, args.use_sync)
 
     print('Done!')
