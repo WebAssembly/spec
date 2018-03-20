@@ -120,22 +120,15 @@ HTML_BOTTOM = """
 </html>
 """
 
-def build_html_js(out_dir, js_dir, include_harness=False):
-    if js_dir is None:
-        ensure_empty_dir(out_dir)
-        build_js(out_dir, include_harness)
-    else:
-        print('Copying JS files into the HTML dir...')
-        ensure_remove_dir(out_dir)
-        def ignore(_src, names):
-            if include_harness:
-                return []
-            return [name for name in names if os.path.basename(name) in HARNESS_FILES]
-        shutil.copytree(js_dir, out_dir, ignore=ignore)
-        print('Done copying JS files into the HTML dir.')
+def build_html_js(out_dir):
+    ensure_empty_dir(out_dir)
+    build_js(out_dir, True)
 
     for js_file in glob.glob(os.path.join(HTML_TESTS_DIR, '*.js')):
         shutil.copy(js_file, out_dir)
+
+    for js_file in glob.glob(os.path.join(out_dir, '*.js')):
+        wrap_single_test(js_file)
 
 def build_html_from_js(js_html_dir, html_dir, use_sync):
     for js_file in glob.glob(os.path.join(js_html_dir, '*.js')):
@@ -156,9 +149,7 @@ def build_html(html_dir, js_dir, use_sync):
 
     js_html_dir = os.path.join(html_dir, 'js')
 
-    build_html_js(js_html_dir, js_dir, include_harness=True)
-    for js_file in glob.glob(os.path.join(js_html_dir, '*.js')):
-        wrap_single_test(js_file)
+    build_html_js(js_html_dir)
 
     print('Building WPT tests from JS tests...')
     build_html_from_js(js_html_dir, html_dir, use_sync)
@@ -184,7 +175,7 @@ def build_front_page(out_dir, js_dir, use_sync):
 
     js_out_dir = os.path.join(out_dir, 'js')
 
-    build_html_js(js_out_dir, js_dir, include_harness=True)
+    build_html_js(js_out_dir)
     for js_file in glob.glob(os.path.join(js_out_dir, '*.js')):
         wrap_single_test(js_file)
 
