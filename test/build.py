@@ -120,6 +120,18 @@ HTML_BOTTOM = """
 </html>
 """
 
+def wrap_single_test(js_file):
+    test_func_name = os.path.basename(js_file).replace('.', '_').replace('-', '_')
+
+    content = ["(function {}() {{".format(test_func_name)]
+    with open(js_file, 'r') as f:
+        content += f.readlines()
+    content.append('reinitializeRegistry();')
+    content.append('})();')
+
+    with open(js_file, 'w') as f:
+        f.write('\n'.join(content))
+
 def build_html_js(out_dir):
     ensure_empty_dir(out_dir)
     build_js(out_dir, True)
@@ -158,26 +170,12 @@ def build_html(html_dir, js_dir, use_sync):
 
 
 # Front page harness.
-def wrap_single_test(js_file):
-    test_func_name = os.path.basename(js_file).replace('.', '_').replace('-', '_')
-
-    content = ["(function {}() {{".format(test_func_name)]
-    with open(js_file, 'r') as f:
-        content += f.readlines()
-    content.append('reinitializeRegistry();')
-    content.append('})();')
-
-    with open(js_file, 'w') as f:
-        f.write('\n'.join(content))
-
 def build_front_page(out_dir, js_dir, use_sync):
     print('Building front page containing all the HTML tests...')
 
     js_out_dir = os.path.join(out_dir, 'js')
 
     build_html_js(js_out_dir)
-    for js_file in glob.glob(os.path.join(js_out_dir, '*.js')):
-        wrap_single_test(js_file)
 
     front_page = os.path.join(out_dir, 'index.html')
     js_harness = "sync_index.js" if use_sync else "async_index.js"
