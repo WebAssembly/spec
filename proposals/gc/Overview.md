@@ -125,10 +125,11 @@ class D extends C {
 (type $h-sig (func (param (ref $D)) (result i32)))
 
 (type $C (struct (ref $C-vt) (mut i32))
-(type $C-vt (struct (ref $f-sig) (ref $gh-sig)))    ;; all immutable
-(type $D (struct (ref $D-vt) (mut i32) (mut f64)))  ;; subtype of $C
-(type $D-vt (struct (extend $C-vt) (ref $g-sig)))   ;; immutable, subtype of $C-vt
+(type $C-vt (struct (ref $f-sig) (ref $g-sig)))    ;; all immutable
+(type $D (struct (ref $D-vt) (mut i32) (mut f64))) ;; subtype of $C
+(type $D-vt (struct (extend $C-vt) (ref $h-sig)))  ;; immutable, subtype of $C-vt
 ```
+
 (Note: the use of `extend` in this example and others is assumed to be simple syntactic sugar for expanding the referenced structure type in place; subtyping still is meant to defined [structurally](#subtyping).)
 
 Needs:
@@ -136,7 +137,7 @@ Needs:
 * (structural) subtyping,
 * immutable fields (for sound subtyping),
 * universal type of references,
-* down casts
+* down casts,
 * dynamic linking might add a whole new dimension.
 
 To emulate the covariance of the `this` parameter, one down cast on `this` is needed in the compilation of each method that overrides a method from a base class.
@@ -204,7 +205,7 @@ function caller() {
   (local $clos (ref $clos-f64-f64))
   (set_local $clos (call $outer (f64.const 1)))
   (call_ref
-    (get-local $clos)
+    (get_local $clos)
     (f64.const 2)
     (get_field $clos-f64-f64 $code (get_local $clos))
   )
@@ -267,11 +268,11 @@ Fields are *accessed* with generic load/store instructions that take a reference
 ```
 All accesses are type-checked at validation time.
 
-Structures are *allocated* witha  `new` instruction that take initialization values for each field.
+Structures are *allocated* with a `new` instruction that take initialization values for each field.
 The operator yields a reference to the respective type:
 ```
 (func $g
-  (call $g (new_struct $point (i32.const 1) (i32.const 2) (i32.const 3)))
+  (call $g (new $point (i32.const 1) (i32.const 2) (i32.const 3)))
 )
 ```
 Structures are garbage-collected.
@@ -308,7 +309,7 @@ A trap occurs if the index is out of bounds.
 Arrays are *allocated* with a `new` instruction that takes a size and an initialization value as operands, yielding a reference:
 ```
 (func $g
-  (call $g (new_array $vector (i32.const 0) (i64.const 3.14)))
+  (call $f (new $vector (i32.const 0) (f64.const 3.14)))
 )
 ```
 Arrays are garbage-collected.
@@ -437,7 +438,7 @@ Values of function reference type are formed with the `ref_func` operator:
 
 ### Tagged Integers
 
-Efficient implentations of untyped languages or languages with parametric polymorphism often rely on a _universal representation_, meaning that all values are word-sized.
+Efficient implementations of untyped languages or languages with parametric polymorphism often rely on a _universal representation_, meaning that all values are word-sized.
 At the same time, they want to avoid the cost of boxing wherever possible, by passing around integers unboxed, and using a tagging scheme to distinguish them from pointers in the GC.
 
 To implement any such language efficiently, Wasm would need to provide such a mechanism by introducing a built-in reference type `intref` that represents tagged integers.
@@ -446,10 +447,10 @@ There are only two instructions for converting from and to such reference types:
 tag : [i32] -> [intref]
 untag : [intref] -> [i32]
 ```
-Being reference types, tagged integers can be casted into `anyref`, and can participate in runtime type dispatch with `cast_down`.
+Being reference types, tagged integers can be cast into `anyref`, and can participate in runtime type dispatch with `cast_down`.
 
-To avoid portability hazards, the value range of `intref` has to be restricted to at most 31 bit.
-The `tag` instruction would tap otherwise. Or it could include a label to branch to in that case.
+To avoid portability hazards, the value range of `intref` has to be restricted to at most 31 bits.
+The `tag` instruction would trap otherwise. Or it could include a label to branch to in that case.
 
 Alternatively, allow references to any numeric type. There are `ref` and `deref` instructions for all of them. It is up to implementations (and transparent to the semantics) which values they can optimize and represent unboxed. This is a bit more high-level but would allow for maximum performance on all architectures.
 
@@ -483,7 +484,7 @@ Through references, aggregate types can be *recursive*:
 ```
 Mutual recursion is possible as well:
 ```
-(type $tree (struct (field i32) (fiedl (ref $forest))))
+(type $tree (struct (field i32) (field (ref $forest))))
 (type $forest (struct (field (ref $tree)) (field (ref $forest))))
 ```
 
@@ -518,7 +519,7 @@ Subtyping is designed to be _non-coercive_, i.e., never requires any underlying 
 The subtyping relation is the reflexive transitive closure of a few basic rules:
 
 1. The `anyref` type is a supertype of every reference type (top reference type).
-2. The ` anyfunc` type is a supertype of every function type.
+2. The `anyfunc` type is a supertype of every function type.
 3. A structure type is a supertype of another structure type if its field list is a prefix of the other (width subtyping).
 4. A structure type is a supertype of another structure type if they have the same fields and for each field type:
    - The field is mutable in both types and the storage types are the same.
@@ -587,19 +588,14 @@ TODO: The ability to import types makes the type and import sections interdepend
 Many language implementations use *pointer tagging* in one form or the other, in order to efficiently distinguish different classes of values or store additional information in pointer values without requiring extra space.
 Other languages provide user-defined tags as an explicit language feature (e.g., variants or algebraic data types).
 
-Unfortunatly, hardware differs in how many tagging bits a pointer can support, and different VMs might have additional constraints on how many of these bits they can mae available to user code.
+Unfortunately, hardware differs in how many tagging bits a pointer can support, and different VMs might have additional constraints on how many of these bits they can make available to user code.
 In order to provide tagging in a way that is portable but maximally efficient on any given hardware, a somewhat higher level of abstraction is useful.
 
 Such a more high-level solution would be to support a form of sum types (a.k.a. variants a.k.a. disjoint unions) in the type system:
 in addition to structs and arrays, the type section could define variant types, which are also used as reference types.
 Additional instructions would allow constructing and inspecting variant references.
-It is left to the engine to pick an efficent representation for the required tags, and depending on the hardware's word size, the number of tags in a defined type, and other design decisions in the engine, these tags could either be stored as bits in the pointer, in a shared per-type data structure (hidden class), or in an explicit per-value slot within the heap object.
+It is left to the engine to pick an efficient representation for the required tags, and depending on the hardware's word size, the number of tags in a defined type, and other design decisions in the engine, these tags could either be stored as bits in the pointer, in a shared per-type data structure (hidden class), or in an explicit per-value slot within the heap object.
 These decisions can be made by the engine on a per-type basis; validation ensures that all uses are coherent.
-
-
-## Possible Extension: Closures
-
-TODO
 
 
 ## Possible Extension: Nesting
@@ -672,7 +668,7 @@ Every regular reference can be converted into an interior reference (but not vic
   (load_field (load_field (new $colored-point) 0) 0)
   ```
 
-* It is not possible to store to a fields or elements that have aggregate type.
+* It is not possible to store to a field or elements that have aggregate type.
   Writing to a nested structure or array requires combined uses of `load_field`/`load_elem` to acquire the interior reference and `store_field`/`store_elem` to its contents:
   ```
   (store_field (load_field (new $color-point) 0) 0 (f64.const 1.2))
