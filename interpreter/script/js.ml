@@ -9,7 +9,23 @@ open Source
 let harness =
   "'use strict';\n" ^
   "\n" ^
+  "let hostrefs = {};\n" ^
+  "let hostsym = Symbol(\"hostref\");\n" ^
+  "function hostref(s) {\n" ^
+  "  if (! (s in hostrefs)) hostrefs[s] = {[hostsym]: s};\n" ^
+  "  return hostrefs[s];\n" ^
+  "}\n" ^
+  "function is_hostref(x) {\n" ^
+  "  return (x !== null && hostsym in x) ? 1 : 0;\n" ^
+  "}\n" ^
+  "function is_funcref(x) {\n" ^
+  "  return typeof x === \"function\" ? 1 : 0;\n" ^
+  "}\n" ^
+  "\n" ^
   "let spectest = {\n" ^
+  "  hostref: hostref,\n" ^
+  "  is_hostref: is_hostref,\n" ^
+  "  is_funcref: is_funcref,\n" ^
   "  print: console.log.bind(console),\n" ^
   "  print_i32: console.log.bind(console),\n" ^
   "  print_i32_f32: console.log.bind(console),\n" ^
@@ -22,6 +38,7 @@ let harness =
   "  table: new WebAssembly.Table({initial: 10, maximum: 20, element: 'anyfunc'}),\n" ^
   "  memory: new WebAssembly.Memory({initial: 1, maximum: 2})\n" ^
   "};\n" ^
+  "\n" ^
   "let handler = {\n" ^
   "  get(target, prop) {\n" ^
   "    return (prop in target) ?  target[prop] : {};\n" ^
@@ -64,8 +81,8 @@ let harness =
   "  return instance.exports[name];\n" ^
   "}\n" ^
   "\n" ^
-  "function exports(name, instance) {\n" ^
-  "  return {[name]: instance.exports};\n" ^
+  "function exports(instance) {\n" ^
+  "  return {module: instance.exports, host: {ref: hostref}};\n" ^
   "}\n" ^
   "\n" ^
   "function run(action) {\n" ^
@@ -143,6 +160,20 @@ let harness =
   "    throw new Error(\"Wasm return value NaN expected, got \" + actual);\n" ^
   "  };\n" ^
   "}\n" ^
+  "\n" ^
+  "function assert_return_ref(action) {\n" ^
+  "  let actual = action();\n" ^
+  "  if (actual === null || typeof actual !== \"object\" && typeof actual !== \"function\") {\n" ^
+  "    throw new Error(\"Wasm reference return value expected, got \" + actual);\n" ^
+  "  };\n" ^
+  "}\n" ^
+  "\n" ^
+  "function assert_return_func(action) {\n" ^
+  "  let actual = action();\n" ^
+  "  if (typeof actual !== \"function\") {\n" ^
+  "    throw new Error(\"Wasm function return value expected, got \" + actual);\n" ^
+  "  };\n" ^
+  "}\n" ^
   "\n"
 
 
@@ -185,6 +216,12 @@ let lookup (mods : modules) x_opt name at =
 
 (* Wrappers *)
 
+let subject_idx = 0l
+let hostref_idx = 1l
+let _is_hostref_idx = 2l
+let is_funcref_idx = 3l
+let subject_type_idx = 4l
+
 let eq_of = function
   | I32Type -> Values.I32 I32Op.Eq
   | I64Type -> Values.I64 I64Op.Eq
@@ -209,53 +246,103 @@ let abs_mask_of = function
   | I32Type | F32Type -> Values.I32 Int32.max_int
   | I64Type | F64Type -> Values.I64 Int64.max_int
 
-let invoke ft lits at =
-  [ft @@ at], FuncImport (1l @@ at) @@ at,
-  List.map (fun lit -> Const lit @@ at) lits @ [Call (0l @@ at) @@ at]
+let value v =
+  match v.it with
+  | Values.Num num -> [Const (num @@ v.at) @@ v.at]
+  | Values.Ref Values.NullRef -> [Null @@ v.at]
+  | Values.Ref (HostRef n) ->
+    [Const (Values.I32 n @@ v.at) @@ v.at; Call (hostref_idx @@ v.at) @@ v.at]
+  | Values.Ref _ -> assert false
+
+let invoke ft vs at =
+  [ft @@ at], FuncImport (subject_type_idx @@ at) @@ at,
+  List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
 
 let get t at =
-  [], GlobalImport t @@ at, [GetGlobal (0l @@ at) @@ at]
+  [], GlobalImport t @@ at, [GetGlobal (subject_idx @@ at) @@ at]
 
 let run ts at =
   [], []
 
-let assert_return lits ts at =
-  let test lit =
-    let t', reinterpret = reinterpret_of (Values.type_of lit.it) in
-    [ reinterpret @@ at;
-      Const lit @@ at;
-      reinterpret @@ at;
-      Compare (eq_of t') @@ at;
-      Test (Values.I32 I32Op.Eqz) @@ at;
-      BrIf (0l @@ at) @@ at ]
-  in [], List.flatten (List.rev_map test lits)
+let assert_return vs ts at =
+  let test v =
+    match v.it with
+    | Values.Num num ->
+      let t', reinterpret = reinterpret_of (Values.type_of_num num) in
+      [ reinterpret @@ at;
+        Const (num @@ v.at) @@ at;
+        reinterpret @@ at;
+        Compare (eq_of t') @@ at;
+        Test (Values.I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+    | Values.Ref Values.NullRef ->
+      [ IsNull @@ at;
+        Test (Values.I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+    | Values.Ref (HostRef n) ->
+      [ Const (Values.I32 n @@ at) @@ at;
+        Call (hostref_idx @@ at) @@ at;
+        Same @@ at;
+        Test (Values.I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+    | _ -> assert false
+  in [], List.flatten (List.rev_map test vs)
 
 let assert_return_nan_bitpattern nan_bitmask_of ts at =
-  let test t =
-    let t', reinterpret = reinterpret_of t in
-    [ reinterpret @@ at;
-      Const (nan_bitmask_of t' @@ at) @@ at;
-      Binary (and_of t') @@ at;
-      Const (canonical_nan_of t' @@ at) @@ at;
-      Compare (eq_of t') @@ at;
-      Test (Values.I32 I32Op.Eqz) @@ at;
-      BrIf (0l @@ at) @@ at ]
+  let test = function
+    | NumType t ->
+      let t', reinterpret = reinterpret_of t in
+      [ reinterpret @@ at;
+        Const (nan_bitmask_of t' @@ at) @@ at;
+        Binary (and_of t') @@ at;
+        Const (canonical_nan_of t' @@ at) @@ at;
+        Compare (eq_of t') @@ at;
+        Test (Values.I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+    | RefType _ -> [Br (0l @@ at) @@ at]
   in [], List.flatten (List.rev_map test ts)
 
-let assert_return_canonical_nan =
-  (* The result may only differ from the canonical NaN in its sign bit *)
-  assert_return_nan_bitpattern abs_mask_of
+let assert_return_canonical_nan = assert_return_nan_bitpattern abs_mask_of
+let assert_return_arithmetic_nan = assert_return_nan_bitpattern canonical_nan_of
 
-let assert_return_arithmetic_nan =
-  (* The result can be any NaN that's one everywhere the canonical NaN is one *)
-  assert_return_nan_bitpattern canonical_nan_of
+let assert_return_ref ts at =
+  let test = function
+    | NumType _ -> [Br (0l @@ at) @@ at]
+    | RefType _ ->
+      [ Null @@ at;
+        Same @@ at;
+        BrIf (0l @@ at) @@ at ]
+  in [], List.flatten (List.rev_map test ts)
 
-let wrap module_name item_name wrap_action wrap_assertion at =
+let assert_return_func ts at =
+  let test = function
+    | NumType _ -> [Br (0l @@ at) @@ at]
+    | RefType _ ->
+      [ Call (is_funcref_idx @@ at) @@ at;
+        Test (Values.I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+  in [], List.flatten (List.rev_map test ts)
+
+let wrap item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let item = Lib.List32.length itypes @@ at in
-  let types = (FuncType ([], []) @@ at) :: itypes in
-  let imports = [{module_name; item_name; idesc} @@ at] in
+  let types =
+    (FuncType ([], []) @@ at) ::
+    (FuncType ([NumType I32Type], [RefType AnyEqRefType]) @@ at) ::
+    (FuncType ([RefType AnyEqRefType], [NumType I32Type]) @@ at) ::
+    (FuncType ([RefType AnyEqRefType], [NumType I32Type]) @@ at) ::
+    itypes
+  in
+  let imports =
+    [ {module_name = Utf8.decode "module"; item_name; idesc} @@ at;
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "hostref";
+       idesc = FuncImport (1l @@ at) @@ at} @@ at;
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_hostref";
+       idesc = FuncImport (2l @@ at) @@ at} @@ at;
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_funcref";
+       idesc = FuncImport (3l @@ at) @@ at} @@ at ]
+  in
   let edesc = FuncExport item @@ at in
   let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
   let body =
@@ -267,9 +354,13 @@ let wrap module_name item_name wrap_action wrap_assertion at =
   Encode.encode m
 
 
-let is_js_value_type = function
+let is_js_num_type = function
   | I32Type -> true
   | I64Type | F32Type | F64Type -> false
+
+let is_js_value_type = function
+  | NumType t -> is_js_num_type t
+  | RefType t -> true
 
 let is_js_global_type = function
   | GlobalType (t, mut) -> is_js_value_type t && mut = Immutable
@@ -302,7 +393,6 @@ let of_string_with iter add_char s =
   Buffer.contents buf
 
 let of_bytes = of_string_with String.iter add_hex_char
-let of_string = of_string_with String.iter add_char
 let of_name = of_string_with List.iter add_unicode_char
 
 let of_float z =
@@ -313,12 +403,16 @@ let of_float z =
   | "-inf" -> "-Infinity"
   | s -> s
 
-let of_literal lit =
-  match lit.it with
-  | Values.I32 i -> I32.to_string_s i
-  | Values.I64 i -> "int64(\"" ^ I64.to_string_s i ^ "\")"
-  | Values.F32 z -> of_float (F32.to_float z)
-  | Values.F64 z -> of_float (F64.to_float z)
+let of_value v =
+  let open Values in
+  match v.it with
+  | Num (I32 i) -> I32.to_string_s i
+  | Num (I64 i) -> "int64(\"" ^ I64.to_string_s i ^ "\")"
+  | Num (F32 z) -> of_float (F32.to_float z)
+  | Num (F64 z) -> of_float (F64.to_float z)
+  | Ref NullRef -> "null"
+  | Ref (HostRef n) -> "hostref(" ^ Int32.to_string n ^ ")"
+  | _ -> assert false
 
 let rec of_definition def =
   match def.it with
@@ -330,19 +424,19 @@ let rec of_definition def =
 
 let of_wrapper mods x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt mods x_opt in
-  let bs = wrap (Utf8.decode x) name wrap_action wrap_assertion at in
+  let bs = wrap name wrap_action wrap_assertion at in
   "call(instance(" ^ of_bytes bs ^ ", " ^
-    "exports(" ^ of_string x ^ ", " ^ x ^ ")), " ^ " \"run\", [])"
+    "exports(" ^ x ^ ")), " ^ " \"run\", [])"
 
 let of_action mods act =
   match act.it with
-  | Invoke (x_opt, name, lits) ->
+  | Invoke (x_opt, name, vs) ->
     "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^
-      "[" ^ String.concat ", " (List.map of_literal lits) ^ "])",
+      "[" ^ String.concat ", " (List.map of_value vs) ^ "])",
     (match lookup mods x_opt name act.at with
     | ExternFuncType ft when not (is_js_func_type ft) ->
       let FuncType (_, out) = ft in
-      Some (of_wrapper mods x_opt name (invoke ft lits), out)
+      Some (of_wrapper mods x_opt name (invoke ft vs), out)
     | _ -> None
     )
   | Get (x_opt, name) ->
@@ -376,13 +470,19 @@ let of_assertion mods ass =
     "assert_unlinkable(" ^ of_definition def ^ ");"
   | AssertUninstantiable (def, _) ->
     "assert_uninstantiable(" ^ of_definition def ^ ");"
-  | AssertReturn (act, lits) ->
-    of_assertion' mods act "assert_return" (List.map of_literal lits)
-      (Some (assert_return lits))
+  | AssertReturn (act, vs) ->
+    of_assertion' mods act "assert_return" (List.map of_value vs)
+      (Some (assert_return vs))
   | AssertReturnCanonicalNaN act ->
-    of_assertion' mods act "assert_return_canonical_nan" [] (Some assert_return_canonical_nan)
+    of_assertion' mods act "assert_return_canonical_nan" []
+      (Some assert_return_canonical_nan)
   | AssertReturnArithmeticNaN act ->
-    of_assertion' mods act "assert_return_arithmetic_nan" [] (Some assert_return_arithmetic_nan)
+    of_assertion' mods act "assert_return_arithmetic_nan" []
+      (Some assert_return_arithmetic_nan)
+  | AssertReturnRef act ->
+    of_assertion' mods act "assert_return_ref" [] (Some assert_return_ref)
+  | AssertReturnFunc act ->
+    of_assertion' mods act "assert_return_func" [] (Some assert_return_func)
   | AssertTrap (act, _) ->
     of_assertion' mods act "assert_trap" [] None
   | AssertExhaustion (act, _) ->

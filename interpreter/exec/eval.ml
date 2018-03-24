@@ -17,6 +17,13 @@ exception Trap = Trap.Error
 exception Crash = Crash.Error (* failure that cannot happen in valid code *)
 exception Exhaustion = Exhaustion.Error
 
+let table_error at = function
+  | Table.Bounds -> "out of bounds table access"
+  | Table.SizeOverflow -> "table size overflow"
+  | Table.SizeLimit -> "table size limit reached"
+  | Table.Type -> Crash.error at "type mismatch at table access"
+  | exn -> raise exn
+
 let memory_error at = function
   | Memory.Bounds -> "out of bounds memory access"
   | Memory.SizeOverflow -> "memory size overflow"
@@ -30,8 +37,8 @@ let numeric_error at = function
   | Numeric_error.InvalidConversionToInteger -> "invalid conversion to integer"
   | Eval_numeric.TypeError (i, v, t) ->
     Crash.error at
-      ("type error, expected " ^ Types.string_of_value_type t ^ " as operand " ^
-       string_of_int i ^ ", got " ^ Types.string_of_value_type (type_of v))
+      ("type error, expected " ^ Types.string_of_num_type t ^ " as operand " ^
+       string_of_int i ^ ", got " ^ Types.string_of_num_type (type_of_num v))
   | exn -> raise exn
 
 
@@ -80,17 +87,14 @@ let memory (inst : module_inst) x = lookup "memory" inst.memories x
 let global (inst : module_inst) x = lookup "global" inst.globals x
 let local (frame : frame) x = lookup "local" frame.locals x
 
-let elem inst x i at =
-  match Table.load (table inst x) i with
-  | Table.Uninitialized ->
-    Trap.error at ("uninitialized element " ^ Int32.to_string i)
-  | f -> f
-  | exception Table.Bounds ->
+let any_ref inst x i at =
+  try Table.load (table inst x) i with Table.Bounds ->
     Trap.error at ("undefined element " ^ Int32.to_string i)
 
-let func_elem inst x i at =
-  match elem inst x i at with
-  | FuncElem f -> f
+let func_ref inst x i at =
+  match any_ref inst x i at with
+  | FuncRef f -> f
+  | NullRef -> Trap.error at ("uninitialized element " ^ Int32.to_string i)
   | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
 
 let take n (vs : 'a stack) at =
@@ -130,25 +134,26 @@ let rec step (c : config) : config =
       | Loop (ts, es'), vs ->
         vs, [Label (0, [e' @@ e.at], ([], List.map plain es')) @@ e.at]
 
-      | If (ts, es1, es2), I32 0l :: vs' ->
+      | If (ts, es1, es2), Num (I32 0l) :: vs' ->
         vs', [Plain (Block (ts, es2)) @@ e.at]
 
-      | If (ts, es1, es2), I32 i :: vs' ->
+      | If (ts, es1, es2), Num (I32 i) :: vs' ->
         vs', [Plain (Block (ts, es1)) @@ e.at]
 
       | Br x, vs ->
         [], [Breaking (x.it, vs) @@ e.at]
 
-      | BrIf x, I32 0l :: vs' ->
+      | BrIf x, Num (I32 0l) :: vs' ->
         vs', []
 
-      | BrIf x, I32 i :: vs' ->
+      | BrIf x, Num (I32 i) :: vs' ->
         vs', [Plain (Br x) @@ e.at]
 
-      | BrTable (xs, x), I32 i :: vs' when I32.ge_u i (Lib.List32.length xs) ->
+      | BrTable (xs, x), Num (I32 i) :: vs'
+        when I32.ge_u i (Lib.List32.length xs) ->
         vs', [Plain (Br x) @@ e.at]
 
-      | BrTable (xs, x), I32 i :: vs' ->
+      | BrTable (xs, x), Num (I32 i) :: vs' ->
         vs', [Plain (Br (Lib.List32.nth xs i)) @@ e.at]
 
       | Return, vs ->
@@ -157,9 +162,9 @@ let rec step (c : config) : config =
       | Call x, vs ->
         vs, [Invoke (func frame.inst x) @@ e.at]
 
-      | CallIndirect x, I32 i :: vs ->
-        let func = func_elem frame.inst (0l @@ e.at) i e.at in
-        if type_ frame.inst x <> Func.type_of func then
+      | CallIndirect (x, y), Num (I32 i) :: vs ->
+        let func = func_ref frame.inst x i e.at in
+        if type_ frame.inst y <> Func.type_of func then
           vs, [Trapping "indirect call type mismatch" @@ e.at]
         else
           vs, [Invoke func @@ e.at]
@@ -167,10 +172,10 @@ let rec step (c : config) : config =
       | Drop, v :: vs' ->
         vs', []
 
-      | Select, I32 0l :: v2 :: v1 :: vs' ->
+      | Select, Num (I32 0l) :: v2 :: v1 :: vs' ->
         v2 :: vs', []
 
-      | Select, I32 i :: v2 :: v1 :: vs' ->
+      | Select, Num (I32 i) :: v2 :: v1 :: vs' ->
         v1 :: vs', []
 
       | GetLocal x, vs ->
@@ -192,66 +197,89 @@ let rec step (c : config) : config =
         with Global.NotMutable -> Crash.error e.at "write to immutable global"
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
-      | Load {offset; ty; sz; _}, I32 i :: vs' ->
+      | GetTable x, Num (I32 i) :: vs' ->
+        (try Ref (Table.load (table frame.inst x) i) :: vs', []
+        with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+
+      | SetTable x, Ref r :: Num (I32 i) :: vs' ->
+        (try Table.store (table frame.inst x) i r; vs', []
+        with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+
+      | Load {offset; ty; sz; _}, Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_u_i32 i in
         (try
-          let v =
+          let n =
             match sz with
-            | None -> Memory.load_value mem addr offset ty
+            | None -> Memory.load_num mem addr offset ty
             | Some (sz, ext) -> Memory.load_packed sz ext mem addr offset ty
-          in v :: vs', []
+          in Num n :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | Store {offset; sz; _}, v :: I32 i :: vs' ->
+      | Store {offset; sz; _}, Num n :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_u_i32 i in
         (try
           (match sz with
-          | None -> Memory.store_value mem addr offset v
-          | Some sz -> Memory.store_packed sz mem addr offset v
+          | None -> Memory.store_num mem addr offset n
+          | Some sz -> Memory.store_packed sz mem addr offset n
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
       | CurrentMemory, vs ->
         let mem = memory frame.inst (0l @@ e.at) in
-        I32 (Memory.size mem) :: vs, []
+        Num (I32 (Memory.size mem)) :: vs, []
 
-      | GrowMemory, I32 delta :: vs' ->
+      | GrowMemory, Num (I32 delta) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let old_size = Memory.size mem in
         let result =
           try Memory.grow mem delta; old_size
           with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
-        in I32 result :: vs', []
+        in Num (I32 result) :: vs', []
 
-      | Const v, vs ->
-        v.it :: vs, []
+      | Null, vs' ->
+        Ref NullRef :: vs', []
 
-      | Test testop, v :: vs' ->
-        (try value_of_bool (Eval_numeric.eval_testop testop v) :: vs', []
+      | IsNull, Ref NullRef :: vs' ->
+        Num (I32 1l) :: vs', []
+
+      | IsNull, v :: vs' ->
+        Num (I32 0l) :: vs', []
+
+      | Same, Ref r2 :: Ref r1 :: vs' when r1 = r2 ->
+        Num (I32 1l) :: vs', []
+
+      | Same, Ref r2 :: Ref r1 :: vs' ->
+        Num (I32 0l) :: vs', []
+
+      | Const n, vs ->
+        Num n.it :: vs, []
+
+      | Test testop, Num n :: vs' ->
+        (try value_of_bool (Eval_numeric.eval_testop testop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | Compare relop, v2 :: v1 :: vs' ->
-        (try value_of_bool (Eval_numeric.eval_relop relop v1 v2) :: vs', []
+      | Compare relop, Num n2 :: Num n1 :: vs' ->
+        (try value_of_bool (Eval_numeric.eval_relop relop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | Unary unop, v :: vs' ->
-        (try Eval_numeric.eval_unop unop v :: vs', []
+      | Unary unop, Num n :: vs' ->
+        (try Num (Eval_numeric.eval_unop unop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | Binary binop, v2 :: v1 :: vs' ->
-        (try Eval_numeric.eval_binop binop v1 v2 :: vs', []
+      | Binary binop, Num n2 :: Num n1 :: vs' ->
+        (try Num (Eval_numeric.eval_binop binop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | Convert cvtop, v :: vs' ->
-        (try Eval_numeric.eval_cvtop cvtop v :: vs', []
+      | Convert cvtop, Num n :: vs' ->
+        (try Num (Eval_numeric.eval_cvtop cvtop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | _ ->
         let s1 = string_of_values (List.rev vs) in
-        let s2 = string_of_value_types (List.map type_of (List.rev vs)) in
+        let s2 = string_of_value_types (List.map type_of_value (List.rev vs)) in
         Crash.error e.at
           ("missing or ill-typed operand on stack (" ^ s1 ^ " : " ^ s2 ^ ")")
       )
@@ -349,7 +377,7 @@ let eval_const (inst : module_inst) (const : const) : value =
 
 let i32 (v : value) at =
   match v with
-  | I32 i -> i
+  | Num (I32 i) -> i
   | _ -> Crash.error at "type error: i32 value expected"
 
 
@@ -396,7 +424,7 @@ let init_table (inst : module_inst) (seg : table_segment) =
   if I32.lt_u bound end_ || I32.lt_u end_ offset then
     Link.error seg.at "elements segment does not fit table";
   fun () ->
-    Table.blit tab offset (List.map (fun x -> FuncElem (func inst x)) init)
+    Table.blit tab offset (List.map (fun x -> FuncRef (func inst x)) init)
 
 let init_memory (inst : module_inst) (seg : memory_segment) =
   let {index; offset = const; init} = seg.it in

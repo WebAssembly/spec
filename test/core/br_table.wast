@@ -1228,6 +1228,43 @@
       (i32.const 3)
     )
   )
+
+  (func (export "meet-anyref") (param i32) (param anyref) (result anyref)
+    (block $l1 (result anyref)
+      (block $l2 (result anyref)
+        (br_table $l1 $l2 $l1 (get_local 1) (get_local 0))
+      )
+    )
+  )
+
+  (func (export "meet-anyeqref") (param i32) (param anyeqref) (result anyref)
+    (block $l1 (result anyref)
+      (block $l2 (result anyeqref)
+        (br_table $l1 $l2 $l1 (get_local 1) (get_local 0))
+      )
+    )
+  )
+
+  (func (export "meet-anyfunc") (param i32) (result anyref)
+    (block $l1 (result anyref)
+      (block $l2 (result anyfunc)
+        (br_table $l2 $l1 $l2 (get_table 0 (i32.const 0)) (get_local 0))
+      )
+    )
+  )
+
+  (func (export "meet-nullref") (param i32) (result anyref)
+    (block $l1 (result anyref)
+      (block $l2 (result anyeqref)
+        (drop
+          (block $l3 (result anyfunc)
+            (br_table $l1 $l2 $l3 (ref.null) (get_local 0))
+          )
+        )
+        (ref.null)
+      )
+    )
+  )
 )
 
 (assert_return (invoke "type-i32"))
@@ -1409,6 +1446,22 @@
 
 (assert_return (invoke "nested-br_table-loop-block" (i32.const 1)) (i32.const 3))
 
+(assert_return (invoke "meet-anyref" (i32.const 0) (ref.host 1)) (ref.host 1))
+(assert_return (invoke "meet-anyref" (i32.const 1) (ref.host 1)) (ref.host 1))
+(assert_return (invoke "meet-anyref" (i32.const 2) (ref.host 1)) (ref.host 1))
+
+(assert_return (invoke "meet-anyeqref" (i32.const 0) (ref.host 1)) (ref.host 1))
+(assert_return (invoke "meet-anyeqref" (i32.const 1) (ref.host 1)) (ref.host 1))
+(assert_return (invoke "meet-anyeqref" (i32.const 2) (ref.host 1)) (ref.host 1))
+
+(assert_return_func (invoke "meet-anyfunc" (i32.const 0)))
+(assert_return_func (invoke "meet-anyfunc" (i32.const 1)))
+(assert_return_func (invoke "meet-anyfunc" (i32.const 2)))
+
+(assert_return (invoke "meet-nullref" (i32.const 0)) (ref.null))
+(assert_return (invoke "meet-nullref" (i32.const 1)) (ref.null))
+(assert_return (invoke "meet-nullref" (i32.const 2)) (ref.null))
+
 (assert_invalid
   (module (func $type-arg-void-vs-num (result i32)
     (block (br_table 0 (i32.const 1)) (i32.const 1))
@@ -1470,6 +1523,20 @@
   (module (func $type-arg-index-num-vs-i32 (result i32)
     (block (result i32)
       (br_table 0 0 (i32.const 0) (i64.const 0)) (i32.const 1)
+    )
+  ))
+  "type mismatch"
+)
+
+(assert_invalid
+  (module (func $meet-bottom (param i32) (result anyref)
+    (block $l1 (result anyref)
+      (drop
+        (block $l2 (result i32)
+          (br_table $l2 $l1 $l2 (ref.null) (get_local 0))
+        )
+      )
+      (ref.null)
     )
   ))
   "type mismatch"

@@ -9,6 +9,10 @@ let i32_const n = Const (I32 n.it @@ n.at)
 let i64_const n = Const (I64 n.it @@ n.at)
 let f32_const n = Const (F32 n.it @@ n.at)
 let f64_const n = Const (F64 n.it @@ n.at)
+let ref_null = Null
+
+let ref_isnull = IsNull
+let ref_eq = Same
 
 let unreachable = Unreachable
 let nop = Nop
@@ -23,13 +27,15 @@ let if_ ts es1 es2 = If (ts, es1, es2)
 let select = Select
 
 let call x = Call x
-let call_indirect x = CallIndirect x
+let call_indirect x y = CallIndirect (x, y)
 
 let get_local x = GetLocal x
 let set_local x = SetLocal x
 let tee_local x = TeeLocal x
 let get_global x = GetGlobal x
 let set_global x = SetGlobal x
+let get_table x = GetTable x
+let set_table x = SetTable x
 
 let i32_load align offset = Load {ty = I32Type; align; offset; sz = None}
 let i64_load align offset = Load {ty = I64Type; align; offset; sz = None}

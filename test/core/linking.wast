@@ -58,6 +58,23 @@
 (assert_return (invoke $Ng "Mg.get") (i32.const 42))
 (assert_return (invoke $Ng "get") (i32.const 43))
 
+(module $Mref-ex
+  (global (export "g-const") anyeqref (ref.null))
+  ;; Mutable globals cannot be exported yet
+  ;; (global (export "g-var") (mut anyeqref) (ref.null))
+)
+(register "Mref-ex" $Mref-ex)
+
+(module $Mref-im
+  (global (import "Mref-ex" "g-const") anyref)
+)
+
+;; Mutable globals cannot be imported yet
+;;(assert_unlinkable
+;;  (module (global (import "Mref-ex" "g-var") (mut anyref)))
+;;  "type mismatch"
+;;)
+
 
 ;; Tables
 

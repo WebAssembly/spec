@@ -54,6 +54,7 @@ end
 module Option :
 sig
   val get : 'a option -> 'a -> 'a
+  val force : 'a option -> 'a (* raises Invalid_argument *)
   val map : ('a -> 'b) -> 'a option -> 'b option
   val app : ('a -> unit) -> 'a option -> unit
 end

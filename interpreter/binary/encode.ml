@@ -90,14 +90,21 @@ let encode m =
 
     open Types
 
-    let value_type = function
+    let num_type = function
       | I32Type -> vs7 (-0x01)
       | I64Type -> vs7 (-0x02)
       | F32Type -> vs7 (-0x03)
       | F64Type -> vs7 (-0x04)
 
-    let elem_type = function
+    let ref_type = function
       | AnyFuncType -> vs7 (-0x10)
+      | AnyRefType -> vs7 (-0x11)
+      | AnyEqRefType -> vs7 (-0x12)
+      | NullRefType -> assert false
+
+    let value_type = function
+      | NumType t -> num_type t
+      | RefType t -> ref_type t
 
     let stack_type = function
       | [] -> vs7 (-0x40)
@@ -107,13 +114,14 @@ let encode m =
           "cannot encode stack type with arity > 1 (yet)"
 
     let func_type = function
-      | FuncType (ins, out) -> vs7 (-0x20); vec value_type ins; vec value_type out
+      | FuncType (ins, out) ->
+        vs7 (-0x20); vec value_type ins; vec value_type out
 
     let limits vu {min; max} =
       bool (max <> None); vu min; opt vu max
 
     let table_type = function
-      | TableType (lim, t) -> elem_type t; limits vu32 lim
+      | TableType (lim, t) -> ref_type t; limits vu32 lim
 
     let memory_type = function
       | MemoryType lim -> limits vu32 lim
@@ -156,7 +164,7 @@ let encode m =
       | BrTable (xs, x) -> op 0x0e; vec var xs; var x
       | Return -> op 0x0f
       | Call x -> op 0x10; var x
-      | CallIndirect x -> op 0x11; var x; u8 0x00
+      | CallIndirect (x, y) -> op 0x11; var y; var x
 
       | Drop -> op 0x1a
       | Select -> op 0x1b
@@ -166,6 +174,8 @@ let encode m =
       | TeeLocal x -> op 0x22; var x
       | GetGlobal x -> op 0x23; var x
       | SetGlobal x -> op 0x24; var x
+      | GetTable x -> op 0x25; var x
+      | SetTable x -> op 0x26; var x
 
       | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x28; memop mo
       | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
@@ -362,6 +372,11 @@ let encode m =
       | Convert (F64 F64Op.PromoteF32) -> op 0xbb
       | Convert (F64 F64Op.DemoteF64) -> assert false
       | Convert (F64 F64Op.ReinterpretInt) -> op 0xbf
+
+      (* TODO: Allocate more adequate opcodes *)
+      | Null -> op 0xd0
+      | IsNull -> op 0xd1
+      | Same -> op 0xd2
 
     let const c =
       list instr c.it; end_ ()

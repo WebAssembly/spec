@@ -1,16 +1,15 @@
 open Types
+open Values
 
 type size = int32
 type index = int32
 
-type elem = ..
-type elem += Uninitialized
-
-type table' = elem array
+type table' = ref_ array
 type table =
-  {mutable content : table'; max : size option; elem_type : elem_type}
+  {mutable content : table'; max : size option; elem_type : ref_type}
 type t = table
 
+exception Type
 exception Bounds
 exception SizeOverflow
 exception SizeLimit
@@ -20,7 +19,7 @@ let within_limits size = function
   | Some max -> I32.le_u size max
 
 let create size =
-  try Lib.Array32.make size Uninitialized
+  try Lib.Array32.make size NullRef
   with Invalid_argument _ -> raise Out_of_memory
 
 let alloc (TableType ({min; max}, elem_type)) =
@@ -45,10 +44,11 @@ let grow tab delta =
 let load tab i =
   try Lib.Array32.get tab.content i with Invalid_argument _ -> raise Bounds
 
-let store tab i v =
-  try Lib.Array32.set tab.content i v with Invalid_argument _ -> raise Bounds
+let store tab i r =
+  if not (match_ref_type (type_of_ref r) tab.elem_type) then raise Type;
+  try Lib.Array32.set tab.content i r with Invalid_argument _ -> raise Bounds
 
-let blit tab offset elems =
-  let data = Array.of_list elems in
+let blit tab offset rs =
+  let data = Array.of_list rs in
   try Lib.Array32.blit data 0l tab.content offset (Lib.Array32.length data)
   with Invalid_argument _ -> raise Bounds

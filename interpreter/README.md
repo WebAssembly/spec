@@ -172,8 +172,8 @@ float:  <num>.<num>?(e|E <num>)? | 0x<hexnum>.<hexnum>?(p|P <num>)?
 name:   $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
 
-value:  <int> | <float>
-var:    <nat> | <name>
+num: <int> | <float>
+var: <nat> | <name>
 
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
@@ -183,12 +183,13 @@ offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
-val_type: i32 | i64 | f32 | f64
-elem_type: anyfunc
+num_type: i32 | i64 | f32 | f64
+ref_type: anyref | anyfunc | anyeqref
+val_type: num_type | ref_type
 block_type : ( result <val_type>* )*
 func_type:   ( type <var> )? <param>* <result>*
 global_type: <val_type> | ( mut <val_type> )
-table_type:  <nat> <nat>? <elem_type>
+table_type:  <nat> <nat>? <ref_type>
 memory_type: <nat> <nat>?
 
 expr:
@@ -223,16 +224,21 @@ op:
   tee_local <var>
   get_global <var>
   set_global <var>
-  <val_type>.load((8|16|32)_<sign>)? <offset>? <align>?
-  <val_type>.store(8|16|32)? <offset>? <align>?
+  get_table <var>
+  set_table <var>
+  <num_type>.load((8|16|32)_<sign>)? <offset>? <align>?
+  <num_type>.store(8|16|32)? <offset>? <align>?
   current_memory
   grow_memory
-  <val_type>.const <value>
-  <val_type>.<unop>
-  <val_type>.<binop>
-  <val_type>.<testop>
-  <val_type>.<relop>
-  <val_type>.<cvtop>/<val_type>
+  ref.null
+  ref.isnull
+  ref.eq
+  <num_type>.const <num>
+  <num_type>.<unop>
+  <num_type>.<binop>
+  <num_type>.<testop>
+  <num_type>.<relop>
+  <num_type>.<cvtop>/<num_type>
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
@@ -247,7 +253,7 @@ global:  ( global <name>? <global_type> <instr>* )
 table:   ( table <name>? <table_type> )
          ( table <name>? ( export <string> ) <...> )                        ;; = (export <string> (table <N>)) (table <name>? <...>)
          ( table <name>? ( import <string> <string> ) <table_type> )        ;; = (import <name>? <string> <string> (table <table_type>))
-         ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )* <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
+         ( table <name>? ( export <string> )* <ref_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )* <size> <size> <ref_type>) (elem (i32.const 0) <var>*)
 elem:    ( elem <var>? (offset <instr>* ) <var>* )
          ( elem <var>? <expr> <var>* )                                      ;; = (elem <var>? (offset <expr>) <var>*)
 memory:  ( memory <name>? <memory_type> )
@@ -272,9 +278,9 @@ exkind:  ( func <var> )
          ( table <var> )
          ( memory <var> )
 
-module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
-         <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>?  ;; =
-         ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
+module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>* <memory>? <global>* <elem>* <data>* <start>? )
+         <typedef>* <func>* <import>* <export>* <table>* <memory>? <global>* <elem>* <data>* <start>?  ;; =
+         ( module <typedef>* <func>* <import>* <export>* <table>* <memory>? <global>* <elem>* <data>* <start>? )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the AST below).
@@ -320,11 +326,16 @@ module:
   ( module <name>? quote <string>* )         ;; module quoted in text (may be malformed)
 
 action:
-  ( invoke <name>? <string> <expr>* )        ;; invoke function export
+  ( invoke <name>? <string> <const>* )       ;; invoke function export
   ( get <name>? <string> )                   ;; get global export
 
+const:
+  ( <num_type>.const <num> )                 ;; number value
+  ( ref.null )                               ;; null reference
+  ( ref.host <nat> )                         ;; host reference
+
 assertion:
-  ( assert_return <action> <expr>* )         ;; assert action has expected results
+  ( assert_return <action> <const>* )        ;; assert action has expected results
   ( assert_return_canonical_nan <action> )   ;; assert action results in NaN in a canonical form
   ( assert_return_arithmetic_nan <action> )  ;; assert action results in NaN with 1 in MSB of fraction field
   ( assert_trap <action> <failure> )         ;; assert action traps with given failure string

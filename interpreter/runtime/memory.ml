@@ -104,7 +104,7 @@ let storen mem a o n x =
     end
   in loop (effective_address a o) n x
 
-let load_value mem a o t =
+let load_num mem a o t =
   let n = loadn mem a o (Types.size t) in
   match t with
   | I32Type -> I32 (Int64.to_int32 n)
@@ -112,14 +112,14 @@ let load_value mem a o t =
   | F32Type -> F32 (F32.of_bits (Int64.to_int32 n))
   | F64Type -> F64 (F64.of_bits n)
 
-let store_value mem a o v =
+let store_num mem a o n =
   let x =
-    match v with
+    match n with
     | I32 x -> Int64.of_int32 x
     | I64 x -> x
     | F32 x -> Int64.of_int32 (F32.to_bits x)
     | F64 x -> F64.to_bits x
-  in storen mem a o (Types.size (Values.type_of v)) x
+  in storen mem a o (Types.size (Values.type_of_num n)) x
 
 let extend x n = function
   | ZX -> x
@@ -127,19 +127,19 @@ let extend x n = function
 
 let load_packed sz ext mem a o t =
   assert (mem_size sz <= Types.size t);
-  let n = mem_size sz in
-  let x = extend (loadn mem a o n) n ext in
+  let w = mem_size sz in
+  let x = extend (loadn mem a o w) w ext in
   match t with
   | I32Type -> I32 (Int64.to_int32 x)
   | I64Type -> I64 x
   | _ -> raise Type
 
-let store_packed sz mem a o v =
-  assert (mem_size sz <= Types.size (Values.type_of v));
-  let n = mem_size sz in
+let store_packed sz mem a o n =
+  assert (mem_size sz <= Types.size (Values.type_of_num n));
+  let w = mem_size sz in
   let x =
-    match v with
+    match n with
     | I32 x -> Int64.of_int32 x
     | I64 x -> x
     | _ -> raise Type
-  in storen mem a o n x
+  in storen mem a o w x
