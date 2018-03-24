@@ -616,7 +616,7 @@ Control Instructions
 :math:`\RETURN`
 ...............
 
-* The return type :math:`C.\CRETURN` must not be |NORETURN| in the context.
+* The return type :math:`C.\CRETURN` must not be absent in the context.
 
 * Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
@@ -632,7 +632,9 @@ Control Instructions
 .. note::
    The |RETURN| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-   :math:`C.\CRETURN` is |NORETURN| when validating an :ref:`expression <valid-expr>` that is not a function body.
+   :math:`C.\CRETURN` is absent (set to :math:`\epsilon`) when validating an :ref:`expression <valid-expr>` that is not a function body.
+   This differs from it being set to the empty result type (:math:`[\epsilon]`),
+   which is the case for functions not returning anything.
 
 
 .. _valid-call:

@@ -717,8 +717,6 @@
 .. |CLABELS| mathdef:: \xref{valid/conventions}{context}{\K{labels}}
 .. |CRETURN| mathdef:: \xref{valid/conventions}{context}{\K{return}}
 
-.. |NORETURN| mathdef:: \xref{valid/conventions}{context}{\K{noreturn}}
-
 
 .. Judgments
 

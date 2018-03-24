@@ -40,7 +40,7 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Globals*: the list of globals declared in the current module, represented by their global type.
 * *Locals*: the list of locals declared in the current function (including parameters), represented by their value type.
 * *Labels*: the stack of labels accessible from the current position, represented by their result type.
-* *Return*: the return type of the current function, represented as a result type, or a special marker |NORETURN| indicating that no return is allowed, as in free-standing expressions.
+* *Return*: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.
 
 In other words, a context contains a sequence of suitable :ref:`types <syntax-type>` for each :ref:`index space <syntax-index>`,
 describing each defined entry in that space.
@@ -60,14 +60,13 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
         & \CGLOBALS & \globaltype^\ast, \\
         & \CLOCALS & \valtype^\ast, \\
         & \CLABELS & \resulttype^\ast, \\
-        & \CRETURN & (\resulttype ~|~ \NORETURN) ~\} \\
+        & \CRETURN & \resulttype^? ~\} \\
      \end{array}
    \end{array}
 
 In addition to field access written :math:`C.\K{field}` the following notation is adopted for manipulating contexts:
 
 * When spelling out a context, empty fields are omitted.
-  Likewise, the |CRETURN| field may be omitted when it is |NORETURN|.
 
 * The notation :math:`\K{field}\,A^\ast, C` denotes the same context as :math:`C` but with the elements :math:`A^\ast` prepended to its :math:`\K{field}` component sequence.
 
