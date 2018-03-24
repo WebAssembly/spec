@@ -42,7 +42,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
    \frac{
      C.\CTYPES[x] = [t_1^\ast] \to [t_2^?]
      \qquad
-     C,\CLOCALS\,t_1^\ast~t^\ast,\CLABELS~[t_2^?],\CRETURN~[t_2^?] \vdashexpr \expr : [t_2^?]
+     \CLOCALS\,t_1^\ast~t^\ast,\CLABELS~[t_2^?],\CRETURN~[t_2^?], C \vdashexpr \expr : [t_2^?]
    }{
      C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : [t_1^\ast] \to [t_2^?]
    }
@@ -454,16 +454,16 @@ Instead, the context :math:`C` for validation of the module's content is constru
   * :math:`C.\CTYPES` is :math:`\module.\MTYPES`,
 
   * :math:`C.\CFUNCS` is :math:`\etfuncs(\X{it}^\ast)` concatenated with :math:`\X{ft}^\ast`,
-    with the import's :ref:`external types <syntax-extentype>` :math:`\X{it}^\ast` and the internal :math:`function types <syntax-functype>` :math:`\X{ft}^\ast` as determined below,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :math:`function types <syntax-functype>` :math:`\X{ft}^\ast` as determined below,
 
   * :math:`C.\CTABLES` is :math:`\ettables(\X{it}^\ast)` concatenated with :math:`\X{tt}^\ast`,
-    with the import's :ref:`external types <syntax-extentype>` :math:`\X{it}^\ast` and the internal :math:`table types <syntax-tabletype>` :math:`\X{tt}^\ast` as determined below,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :math:`table types <syntax-tabletype>` :math:`\X{tt}^\ast` as determined below,
 
   * :math:`C.\CMEMS` is :math:`\etmems(\X{it}^\ast)` concatenated with :math:`\X{mt}^\ast`,
-    with the import's :ref:`external types <syntax-extentype>` :math:`\X{it}^\ast` and the internal :math:`memory types <syntax-memtype>` :math:`\X{mt}^\ast` as determined below,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :math:`memory types <syntax-memtype>` :math:`\X{mt}^\ast` as determined below,
 
   * :math:`C.\CGLOBALS` is :math:`\etglobals(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
-    with the import's :ref:`external types <syntax-extentype>` :math:`\X{it}^\ast` and the internal :math:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :math:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
 
   * :math:`C.\CLOCALS` is empty,
 

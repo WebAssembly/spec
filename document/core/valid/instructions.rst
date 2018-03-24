@@ -477,7 +477,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\CLABELS\,[t^?] \vdashinstrseq \instr^\ast : [] \to [t^?]
+     \CLABELS\,[t^?], C \vdashinstrseq \instr^\ast : [] \to [t^?]
    }{
      C \vdashinstr \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
@@ -501,7 +501,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\CLABELS\,[] \vdashinstrseq \instr^\ast : [] \to [t^?]
+     \CLABELS\,[], C \vdashinstrseq \instr^\ast : [] \to [t^?]
    }{
      C \vdashinstr \LOOP~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
@@ -528,9 +528,9 @@ Control Instructions
 
 .. math::
    \frac{
-     C,\CLABELS\,[t^?] \vdashinstrseq \instr_1^\ast : [] \to [t^?]
+     \CLABELS\,[t^?], C \vdashinstrseq \instr_1^\ast : [] \to [t^?]
      \qquad
-     C,\CLABELS\,[t^?] \vdashinstrseq \instr_2^\ast : [] \to [t^?]
+     \CLABELS\,[t^?], C \vdashinstrseq \instr_2^\ast : [] \to [t^?]
    }{
      C \vdashinstr \IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [\I32] \to [t^?]
    }
@@ -787,4 +787,7 @@ Constant Expressions
    }
 
 .. note::
+   Currently, constant expressions occurring as initializers of :ref:`globals <syntax-global>` are further constrained in that contained |GETGLOBAL| instructions are only allowed to refer to *imported* globals.
+   This is enforced in the :ref:`validation rule for modules <valid-module>` by constraining the context :math:`C` accordingly.
+
    The definition of constant expression may be extended in future versions of WebAssembly.

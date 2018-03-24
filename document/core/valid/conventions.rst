@@ -69,14 +69,12 @@ In addition to field access written :math:`C.\K{field}` the following notation i
 * When spelling out a context, empty fields are omitted.
   Likewise, the |CRETURN| field may be omitted when it is |NORETURN|.
 
-* :math:`C,\K{field}\,A^\ast` denotes the same context as :math:`C` but with the elements :math:`A^\ast` prepended to its :math:`\K{field}` component sequence.
+* The notation :math:`\K{field}\,A^\ast, C` denotes the same context as :math:`C` but with the elements :math:`A^\ast` prepended to its :math:`\K{field}` component sequence.
 
 .. note::
-   This notation is defined to *prepend* not *append*.
-   It is only used in situations where the original :math:`C.\K{field}` is either empty
+   The notation for context extension is only used in situations where the original :math:`C.\K{field}` is either empty
    or :math:`\K{field}` is :math:`\K{labels}`.
-   In the latter case adding to the front is desired
-   because the :ref:`label index <syntax-labelidx>` space is indexed relatively, that is, in reverse order of addition.
+   It is reversed from usual conventions because it *prepends* not *appends*, in accordance with the use of relative indexing to look up a label in the context's label list.
 
 
 .. _valid-notation-textual:
