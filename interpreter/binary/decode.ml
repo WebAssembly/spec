@@ -572,9 +572,9 @@ let start_section s =
 (* Code section *)
 
 let local s =
-  let n = len32 s in
+  let n = vu32 s in
   let t = value_type s in
-  Lib.List.make n t
+  Lib.List32.make n t
 
 let code _ s =
   let locals = List.flatten (vec local s) in
