@@ -19,73 +19,12 @@
     <link rel="next" title="Modules" href="modules.html" />
     <link rel="prev" title="Types" href="types.html" />
    
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
 
-  </head> <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
-  <div class="document">
-    
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
-            </a></p><h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Validation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Instructions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#numeric-instructions">Numeric Instructions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#parametric-instructions">Parametric Instructions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#variable-instructions">Variable Instructions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#memory-instructions">Memory Instructions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#control-instructions">Control Instructions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#instruction-sequences">Instruction Sequences</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#expressions">Expressions</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
-</ul>
+  </head> <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>  
 
-
-<hr />
-<ul>
-    
-    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
-    
-    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
-    
-</ul>
-
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
+    <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
@@ -313,7 +252,7 @@ In contrast,</p>
 <span id="id14"></span><h3><span class="math notranslate">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#valid-load" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The memory <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0]\)</span> must be defined in the context.</li>
-<li>The alignment <span class="math notranslate">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> of <span class="math notranslate">\(t\)</span> divided by <span class="math notranslate">\(8\)</span>.</li>
+<li>The alignment <span class="math notranslate">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">bit width</span></a> of <span class="math notranslate">\(t\)</span> divided by <span class="math notranslate">\(8\)</span>.</li>
 <li>Then the instruction is valid with type <span class="math notranslate">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>.</li>
 </ul>
 <div class="math notranslate">
@@ -345,7 +284,7 @@ In contrast,</p>
 <h3><span class="math notranslate">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The memory <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0]\)</span> must be defined in the context.</li>
-<li>The alignment <span class="math notranslate">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">width</span></a> of <span class="math notranslate">\(t\)</span> divided by <span class="math notranslate">\(8\)</span>.</li>
+<li>The alignment <span class="math notranslate">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">bit width</span></a> of <span class="math notranslate">\(t\)</span> divided by <span class="math notranslate">\(8\)</span>.</li>
 <li>Then the instruction is valid with type <span class="math notranslate">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.</li>
 </ul>
 <div class="math notranslate">
@@ -438,7 +377,7 @@ the instruction sequence <span class="math notranslate">\(\href{../syntax/instru
 </ul>
 <div class="math notranslate">
 \[\frac{
-  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  \href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?], C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }{
   C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }\]</div>
@@ -458,7 +397,7 @@ the instruction sequence <span class="math notranslate">\(\href{../syntax/instru
 </ul>
 <div class="math notranslate">
 \[\frac{
-  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  \href{../valid/conventions.html#context}{\mathsf{labels}}\,[], C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }{
   C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }\]</div>
@@ -480,9 +419,9 @@ the instruction sequence <span class="math notranslate">\(\href{../syntax/instru
 </ul>
 <div class="math notranslate">
 \[\frac{
-  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  \href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?], C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
   \qquad
-  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  \href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?], C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }{
   C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }\]</div>
@@ -551,7 +490,7 @@ the label <span class="math notranslate">\(C.\href{../valid/conventions.html#con
 <div class="section" id="valid-return">
 <span id="id28"></span><h3><span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}}\)</span><a class="headerlink" href="#valid-return" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The return type <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> must not be empty in the context.</li>
+<li>The return type <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> must not be absent in the context.</li>
 <li>Let <span class="math notranslate">\([t^?]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> of <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{return}}\)</span>.</li>
 <li>Then the instruction is valid with type <span class="math notranslate">\([t_1^\ast~t^?] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>, for any sequences of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math notranslate">\(t_1^\ast\)</span> and <span class="math notranslate">\(t_2^\ast\)</span>.</li>
 </ul>
@@ -564,8 +503,8 @@ the label <span class="math notranslate">\(C.\href{../valid/conventions.html#con
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>The <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}}\)</span> instruction is <a class="reference internal" href="#polymorphism"><span class="std std-ref">stack-polymorphic</span></a>.</p>
-<p class="last"><span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> is empty (<span class="math notranslate">\(\epsilon\)</span>) when validating an <a class="reference internal" href="#valid-expr"><span class="std std-ref">expression</span></a> that is not a function body.
-This differs from it being set to the empty result type (<span class="math notranslate">\([]\)</span>),
+<p class="last"><span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> is absent (set to <span class="math notranslate">\(\epsilon\)</span>) when validating an <a class="reference internal" href="#valid-expr"><span class="std std-ref">expression</span></a> that is not a function body.
+This differs from it being set to the empty result type (<span class="math notranslate">\([\epsilon]\)</span>),
 which is the case for functions not returning anything.</p>
 </div>
 </div>
@@ -669,7 +608,7 @@ for some optional <a class="reference internal" href="../syntax/types.html#synta
 \[\frac{
   (C \href{../valid/instructions.html#valid-constant}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} \href{../valid/instructions.html#valid-constant}{\mathrel{\mbox{const}}})^\ast
 }{
-  C \href{../valid/instructions.html#valid-constant}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \href{../valid/instructions.html#valid-constant}{\mathrel{\mbox{const}}}
+  C \href{../valid/instructions.html#valid-constant}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \href{../valid/instructions.html#valid-constant}{\mathrel{\mbox{const}}}
 }\]</div>
 <div class="math notranslate">
 \[\frac{
@@ -684,6 +623,8 @@ for some optional <a class="reference internal" href="../syntax/types.html#synta
 }\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
+<p>Currently, constant expressions occurring as initializers of <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">globals</span></a> are further constrained in that contained <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{get\_global}}\)</span> instructions are only allowed to refer to <em>imported</em> globals.
+This is enforced in the <a class="reference internal" href="modules.html#valid-module"><span class="std std-ref">validation rule for modules</span></a> by constraining the context <span class="math notranslate">\(C\)</span> accordingly.</p>
 <p class="last">The definition of constant expression may be extended in future versions of WebAssembly.</p>
 </div>
 </div>
@@ -694,8 +635,67 @@ for some optional <a class="reference internal" href="../syntax/types.html#synta
           </div>
         </div>
       </div>
-    <div class="clearer"></div>
-  </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Validation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numeric-instructions">Numeric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parametric-instructions">Parametric Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variable-instructions">Variable Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-instructions">Memory Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#control-instructions">Control Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instruction-sequences">Instruction Sequences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expressions">Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
     <div class="footer">
       &copy;2017, WebAssembly Community Group.
       
