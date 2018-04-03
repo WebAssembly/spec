@@ -105,7 +105,7 @@ let f64 s = F64.of_bits (u64 s)
 let len32 s =
   let pos = pos s in
   let n = vu32 s in
-  if n <= Int32.of_int (len s) then Int32.to_int n else
+  if I32.le_u n (Int32.of_int (len s)) then Int32.to_int n else
     error s pos "length out of bounds"
 
 let bool s = (vu1 s = 1)
@@ -572,9 +572,9 @@ let start_section s =
 (* Code section *)
 
 let local s =
-  let n = len32 s in
+  let n = vu32 s in
   let t = value_type s in
-  Lib.List.make n t
+  Lib.List32.make n t
 
 let code _ s =
   let locals = List.flatten (vec local s) in

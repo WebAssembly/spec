@@ -87,6 +87,14 @@
 (assert_return (invoke "print32" (i32.const 13)))
 (assert_return (invoke "print64" (i64.const 24)))
 
+(assert_invalid
+  (module 
+    (type (func (result i32)))
+    (import "test" "func" (func (type 1)))
+  )
+  "unknown type"
+)
+
 (module (import "test" "func" (func)))
 (module (import "test" "func-i32" (func (param i32))))
 (module (import "test" "func-f32" (func (param f32))))
