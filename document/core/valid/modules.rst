@@ -129,7 +129,7 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
      \qquad
      C \vdashexpr \expr : [t]
      \qquad
-     C \vdashexprconst \expr ~\F{const}
+     C \vdashexprconst \expr \const
    }{
      C \vdashglobal \{ \GTYPE~\mut~t, \GINIT~\expr \} : \mut~t
    }
@@ -172,7 +172,7 @@ Element segments :math:`\elem` are not classified by a type.
      \qquad
      C \vdashexpr \expr : [\I32]
      \qquad
-     C \vdashexprconst \expr ~\F{const}
+     C \vdashexprconst \expr \const
      \qquad
      (C.\CFUNCS[y] = \functype)^\ast
    }{
@@ -210,7 +210,7 @@ Data segments :math:`\data` are not classified by any type.
      \qquad
      C \vdashexpr \expr : [\I32]
      \qquad
-     C \vdashexprconst \expr ~\F{const}
+     C \vdashexprconst \expr \const
    }{
      C \vdashdata \{ \DMEM~x, \DOFFSET~\expr, \DINIT~b^\ast \} \ok
    }
