@@ -54,17 +54,39 @@ Control Instructions
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
-     \hex{11}~~x{:}\Btypeidx~~\hex{00} &\Rightarrow& \CALLINDIRECT~x \\
+     \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\
    \end{array}
 
 .. note::
    The |ELSE| opcode :math:`\hex{05}` in the encoding of an |IF| instruction can be omitted if the following instruction sequence is empty.
 
-.. note::
-   In future versions of WebAssembly, the zero byte occurring in the encoding
-   of the |CALLINDIRECT| instruction may be used to index additional tables.
 
-.. index:: value type, polymorphism
+.. index:: reference instruction
+   pair: binary format; instruction
+.. _binary-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+:ref:`Reference instructions <syntax-instr-ref>` are represented by single byte codes.
+
+.. _binary-ref_null:
+.. _binary-ref_isnull:
+.. _binary-ref_eq:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Binstr &::=& \dots \\ &&|&
+     \hex{D0} &\Rightarrow& \REFNULL \\ &&|&
+     \hex{D1} &\Rightarrow& \REFISNULL \\ &&|&
+     \hex{D2} &\Rightarrow& \REFEQ \\
+   \end{array}
+
+.. note::
+   These opcode assignments are preliminary.
+
+
+.. index:: parametric instruction, value type, polymorphism
    pair: binary format; instruction
 .. _binary-instr-parametric:
 
@@ -108,6 +130,29 @@ Variable Instructions
      \hex{23}~~x{:}\Bglobalidx &\Rightarrow& \GETGLOBAL~x \\ &&|&
      \hex{24}~~x{:}\Bglobalidx &\Rightarrow& \SETGLOBAL~x \\
    \end{array}
+
+
+.. index:: table instruction, table index
+   pair: binary format; instruction
+.. _binary-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+:ref:`Table instructions <syntax-instr-table>` are represented by single byte codes.
+
+.. _binary-get_table:
+.. _binary-set_table:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Binstr &::=& \dots \\ &&|&
+     \hex{25}~~x{:}\Btableidx &\Rightarrow& \GETTABLE~x \\ &&|&
+     \hex{26}~~x{:}\Btableidx &\Rightarrow& \SETTABLE~x \\
+   \end{array}
+
+.. note::
+   These opcode assignments are preliminary.
 
 
 .. index:: memory instruction, memory index

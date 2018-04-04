@@ -9,7 +9,74 @@ Various entitites in WebAssembly are classified by types.
 Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <syntax-call_indirect>`.
 
 
-.. index:: ! value type, integer, floating-point, IEEE 754, bit width
+.. index:: ! number type, integer, floating-point, IEEE 754, bit width, memory
+   pair: abstract syntax; number type
+   pair: number; type
+.. _syntax-numtype:
+
+Number Types
+~~~~~~~~~~~~
+
+*Number types* classify numeric values.
+
+.. math::
+   \begin{array}{llll}
+   \production{number type} & \numtype &::=&
+     \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 \\
+   \end{array}
+
+The types |I32| and |I64| classify 32 and 64 bit integers, respectively.
+Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.
+
+The types |F32| and |F64| classify 32 and 64 bit floating-point data, respectively.
+They correspond to the respective binary floating-point representations, also known as *single* and *double* precision, as defined by the |IEEE754|_ standard (Section 3.3).
+
+Number types are *transparent*, meaning that their bit patterns can be observed.
+Values of number type can be stored in :ref:`memories <syntax-mem>`.
+
+Conventions
+...........
+
+* The notation :math:`|t|` denotes the *bit width* of a number type :math:`t`.
+  That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
+
+
+.. index:: ! reference type, reference, table, function, function type, null
+   pair: abstract syntax; reference type
+   pair: reference; type
+.. _syntax-reftype:
+
+Reference Types
+~~~~~~~~~~~~~~~
+
+*Reference types* classify first-class references to objects in the runtime :ref:`store <store>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{reference type} & \reftype &::=&
+     \ANYREF ~|~ \ANYFUNC ~|~ \ANYEQREF ~|~ \NULLREF \\
+   \end{array}
+
+The type |ANYREF| denotes the infinite union of all references, and thereby a :ref:`supertype <match-reftype>` of all other reference types.
+
+The type |ANYFUNC| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
+
+The type |ANYEQREF| denotes the infinite union of all references that can be compared for equality;
+in order to avoid exposing implementation details, some reference types, such as |ANYFUNC|, do not admit equality, and therefore are not :ref:`subtypes <match-reftype>` of |ANYEQREF|.
+
+The type |NULLREF| only contains a single value: the :ref:`null <syntax-ref_null>` reference.
+It is a :ref:`subtype <match-reftype>` of all other reference types.
+By virtue of not being representable in either the :ref:`binary format <binary-reftype>` nor the :ref:`text format <text-reftype>`, the |NULLREF| type cannot be used in a program;
+it only occurs during :ref:`validation <valid>`.
+
+.. note::
+   Future versions of WebAssembly may include reference types that do not include null and hence are not supertypes of |NULLREF|.
+
+Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
+Values of reference type can be stored in :ref:`tables <syntax-table>`.
+
+
+.. index:: ! value type, number type, reference type
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
@@ -22,22 +89,13 @@ Value Types
 .. math::
    \begin{array}{llll}
    \production{value type} & \valtype &::=&
-     \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 \\
+     \numtype ~|~ \reftype \\
    \end{array}
-
-The types |I32| and |I64| classify 32 and 64 bit integers, respectively.
-Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.
-
-The types |F32| and |F64| classify 32 and 64 bit floating-point data, respectively.
-They correspond to the respective binary floating-point representations, also known as *single* and *double* precision, as defined by the |IEEE754|_ standard (Section 3.3).
 
 Conventions
 ...........
 
-* The meta variable :math:`t` ranges over value types where clear from context.
-
-* The notation :math:`|t|` denotes the *bit width* of a value type.
-  That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
+* The meta variable :math:`t` ranges over value types or subclasses thereof where clear from context.
 
 
 .. index:: ! result type, value type, instruction, execution, block
@@ -126,33 +184,25 @@ The limits constrain the minimum and optionally the maximum size of a memory.
 The limits are given in units of :ref:`page size <page-size>`.
 
 
-.. index:: ! table type, ! element type, limits, table, element
+.. index:: ! table type, reference type, limits, table, element
    pair: abstract syntax; table type
-   pair: abstract syntax; element type
    pair: table; type
    pair: table; limits
-   pair: element; type
-.. _syntax-elemtype:
 .. _syntax-tabletype:
 
 Table Types
 ~~~~~~~~~~~
 
-*Table types* classify :ref:`tables <syntax-table>` over elements of *element types* within a size range.
+*Table types* classify :ref:`tables <syntax-table>` over elements of :ref:`reference type <syntax-reftype>` within a size range.
 
 .. math::
    \begin{array}{llll}
    \production{table type} & \tabletype &::=&
-     \limits~\elemtype \\
-   \production{element type} & \elemtype &::=&
-     \ANYFUNC \\
+     \limits~\reftype \\
    \end{array}
 
 Like memories, tables are constrained by limits for their minimum and optionally maximum size.
 The limits are given in numbers of entries.
-
-The element type |ANYFUNC| is the infinite union of all :ref:`function types <syntax-functype>`.
-A table of that type thus contains references to functions of heterogeneous type.
 
 .. note::
    In future versions of WebAssembly, additional element types may be introduced.

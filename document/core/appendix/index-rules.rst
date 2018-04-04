@@ -71,14 +71,15 @@ Construct                                        Judgement
 ===============================================  ===============================================================================
 
 
-Import Matching
-~~~~~~~~~~~~~~~
+Matching
+~~~~~~~~
 
 ===============================================  ===============================================================================
 Construct                                        Judgement
 ===============================================  ===============================================================================
-:ref:`Limits <match-limits>`                     :math:`\vdashlimitsmatch \limits_1 \matches \limits_2`
-:ref:`External type <match-externtype>`          :math:`\vdashexterntypematch \externtype_1 \matches \externtype_2`
+:ref:`Value type <match-valtype>`                :math:`\vdashvaltypematch \valtype_1 \matchesvaltype \valtype_2`
+:ref:`External type <match-externtype>`          :math:`\vdashexterntypematch \externtype_1 \matchesexterntype \externtype_2`
+:ref:`Limits <match-limits>`                     :math:`\vdashlimitsmatch \limits_1 \matcheslimits \limits_2`
 ===============================================  ===============================================================================
 
 

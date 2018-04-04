@@ -152,9 +152,9 @@ Element segments :math:`\elem` are not classified by a type.
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |ANYFUNC|.
+* The :ref:`reference type <syntax-reftype>` :math:`t` must be |ANYFUNC|.
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
@@ -501,8 +501,6 @@ Instead, the context :math:`C` for validation of the module's content is constru
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
     the segment :math:`\import_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\externtype'_i`.
 
-* The length of :math:`C.\CTABLES` must not be larger than :math:`1`.
-
 * The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
 
 * All export names :math:`\export_i.\ENAME` must be different.
@@ -548,8 +546,6 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \\
      C' = \{ \CGLOBALS~\X{igt}^\ast \}
      \qquad
-     |C.\CTABLES| \leq 1
-     \qquad
      |C.\CMEMS| \leq 1
      \qquad
      (\export.\ENAME)^\ast ~\F{disjoint}
@@ -582,4 +578,4 @@ Instead, the context :math:`C` for validation of the module's content is constru
    The effect of defining the limited context :math:`C'` for validating the module's globals is that their initialization expressions can only access imported globals and nothing else.
 
 .. note::
-   The restriction on the number of tables and memories may be lifted in future versions of WebAssembly.
+   The restriction on the number of memories may be lifted in future versions of WebAssembly.
