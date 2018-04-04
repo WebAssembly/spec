@@ -225,8 +225,8 @@ op:
   set_global <var>
   <val_type>.load((8|16|32)_<sign>)? <offset>? <align>?
   <val_type>.store(8|16|32)? <offset>? <align>?
-  current_memory
-  grow_memory
+  memory.size
+  memory.grow
   <val_type>.const <value>
   <val_type>.<unop>
   <val_type>.<binop>

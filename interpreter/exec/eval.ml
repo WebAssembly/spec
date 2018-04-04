@@ -214,11 +214,11 @@ let rec step (c : config) : config =
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | CurrentMemory, vs ->
+      | MemorySize, vs ->
         let mem = memory frame.inst (0l @@ e.at) in
         I32 (Memory.size mem) :: vs, []
 
-      | GrowMemory, I32 delta :: vs' ->
+      | MemoryGrow, I32 delta :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let old_size = Memory.size mem in
         let result =

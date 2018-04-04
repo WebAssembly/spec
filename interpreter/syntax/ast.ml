@@ -57,8 +57,8 @@ type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
 type 'a memop =
   {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}
-type loadop = (Memory.mem_size * Memory.extension) memop
-type storeop = Memory.mem_size memop
+type loadop = (Memory.pack_size * Memory.extension) memop
+type storeop = Memory.pack_size memop
 
 
 (* Expressions *)
@@ -89,8 +89,8 @@ and instr' =
   | SetGlobal of var                  (* write global variable *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
-  | CurrentMemory                     (* size of linear memory *)
-  | GrowMemory                        (* grow linear memory *)
+  | MemorySize                        (* size of linear memory *)
+  | MemoryGrow                        (* grow linear memory *)
   | Const of literal                  (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)

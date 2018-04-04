@@ -187,10 +187,10 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let mem_size = function
-  | Memory.Mem8 -> "8"
-  | Memory.Mem16 -> "16"
-  | Memory.Mem32 -> "32"
+let pack_size = function
+  | Memory.Pack8 -> "8"
+  | Memory.Pack16 -> "16"
+  | Memory.Pack32 -> "32"
 
 let extension = function
   | Memory.SX -> "_s"
@@ -204,12 +204,12 @@ let memop name {ty; align; offset; _} =
 let loadop op =
   match op.sz with
   | None -> memop "load" op
-  | Some (sz, ext) -> memop ("load" ^ mem_size sz ^ extension ext) op
+  | Some (sz, ext) -> memop ("load" ^ pack_size sz ^ extension ext) op
 
 let storeop op =
   match op.sz with
   | None -> memop "store" op
-  | Some sz -> memop ("store" ^ mem_size sz) op
+  | Some sz -> memop ("store" ^ pack_size sz) op
 
 
 (* Expressions *)
@@ -244,8 +244,8 @@ let rec instr e =
     | SetGlobal x -> "set_global " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
-    | CurrentMemory -> "current_memory", []
-    | GrowMemory -> "grow_memory", []
+    | MemorySize -> "memory.size", []
+    | MemoryGrow -> "memory.grow", []
     | Const lit -> constop lit ^ " " ^ value lit, []
     | Test op -> testop op, []
     | Compare op -> relop op, []

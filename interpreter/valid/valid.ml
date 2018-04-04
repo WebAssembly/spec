@@ -143,9 +143,9 @@ let check_memop (c : context) (memop : 'a memop) get_sz at =
     match get_sz memop.sz with
     | None -> size memop.ty
     | Some sz ->
-      require (memop.ty = I64Type || sz <> Memory.Mem32) at
+      require (memop.ty = I64Type || sz <> Memory.Pack32) at
         "memory size too big";
-      Memory.mem_size sz
+      Memory.packed_size sz
   in
   require (1 lsl memop.align <= size) at
     "alignment must not be larger than natural"
@@ -256,11 +256,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     check_memop c memop (fun sz -> sz) e.at;
     [I32Type; memop.ty] --> []
 
-  | CurrentMemory ->
+  | MemorySize ->
     ignore (memory c (0l @@ e.at));
     [] --> [I32Type]
 
-  | GrowMemory ->
+  | MemoryGrow ->
     ignore (memory c (0l @@ e.at));
     [I32Type] --> [I32Type]
 
