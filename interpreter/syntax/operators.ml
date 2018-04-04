@@ -13,15 +13,15 @@ let f64_const n = Const (F64 n.it @@ n.at)
 let unreachable = Unreachable
 let nop = Nop
 let drop = Drop
+let select = Select
 let block ts es = Block (ts, es)
 let loop ts es = Loop (ts, es)
 let br x = Br x
 let br_if x = BrIf x
 let br_table xs x = BrTable (xs, x)
-let return = Return
 let if_ ts es1 es2 = If (ts, es1, es2)
-let select = Select
 
+let return = Return
 let call x = Call x
 let call_indirect x = CallIndirect x
 

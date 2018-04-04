@@ -50,12 +50,12 @@ type code = value stack * admin_instr list
 and admin_instr = admin_instr' phrase
 and admin_instr' =
   | Plain of instr'
+  | Invoke of func_inst
   | Trapping of string
   | Returning of value stack
   | Breaking of int32 * value stack
   | Label of int * instr list * code
   | Frame of int * frame * code
-  | Invoke of func_inst
 
 type config =
 {

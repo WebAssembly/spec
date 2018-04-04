@@ -223,6 +223,8 @@ let rec instr e =
     match e.it with
     | Unreachable -> "unreachable", []
     | Nop -> "nop", []
+    | Drop -> "drop", []
+    | Select -> "select", []
     | Block (ts, es) -> "block", stack_type ts @ list instr es
     | Loop (ts, es) -> "loop", stack_type ts @ list instr es
     | If (ts, es1, es2) ->
@@ -235,8 +237,6 @@ let rec instr e =
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallIndirect x -> "call_indirect", [Node ("type " ^ var x, [])]
-    | Drop -> "drop", []
-    | Select -> "select", []
     | GetLocal x -> "get_local " ^ var x, []
     | SetLocal x -> "set_local " ^ var x, []
     | TeeLocal x -> "tee_local " ^ var x, []
