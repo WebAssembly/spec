@@ -377,7 +377,7 @@ the instruction sequence <span class="math notranslate">\(\href{../syntax/instru
 </ul>
 <div class="math notranslate">
 \[\frac{
-  \href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?], C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }{
   C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }\]</div>
@@ -397,7 +397,7 @@ the instruction sequence <span class="math notranslate">\(\href{../syntax/instru
 </ul>
 <div class="math notranslate">
 \[\frac{
-  \href{../valid/conventions.html#context}{\mathsf{labels}}\,[], C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }{
   C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }\]</div>
@@ -419,9 +419,9 @@ the instruction sequence <span class="math notranslate">\(\href{../syntax/instru
 </ul>
 <div class="math notranslate">
 \[\frac{
-  \href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?], C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
   \qquad
-  \href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?], C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t^?] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }{
   C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }\]</div>

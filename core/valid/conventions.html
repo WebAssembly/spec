@@ -85,13 +85,13 @@ The label stack is the only part of the context that changes as validation of an
 <p>In addition to field access written <span class="math notranslate">\(C.\mathsf{field}\)</span> the following notation is adopted for manipulating contexts:</p>
 <ul class="simple">
 <li>When spelling out a context, empty fields are omitted.</li>
-<li>The notation <span class="math notranslate">\(\mathsf{field}\,A^\ast, C\)</span> denotes the same context as <span class="math notranslate">\(C\)</span> but with the elements <span class="math notranslate">\(A^\ast\)</span> prepended to its <span class="math notranslate">\(\mathsf{field}\)</span> component sequence.</li>
+<li><span class="math notranslate">\(C,\mathsf{field}\,A^\ast\)</span> denotes the same context as <span class="math notranslate">\(C\)</span> but with the elements <span class="math notranslate">\(A^\ast\)</span> prepended to its <span class="math notranslate">\(\mathsf{field}\)</span> component sequence.</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The notation for context extension is only used in situations where the original <span class="math notranslate">\(C.\mathsf{field}\)</span> is either empty
-or <span class="math notranslate">\(\mathsf{field}\)</span> is <span class="math notranslate">\(\mathsf{labels}\)</span>.
-It is reversed from usual conventions because it <em>prepends</em> not <em>appends</em>, in accordance with the use of relative indexing to look up a label in the context’s label list.</p>
+<p class="last">We use <a class="reference internal" href="../syntax/conventions.html#notation-index"><span class="std std-ref">indexing notation</span></a> like <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[x]\)</span> to look up indices in their respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a> in the context.
+Context extension notation <span class="math notranslate">\(C,\mathsf{field}\,A\)</span> is primarily used to locally extend <em>relative</em> index spaces, such as <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label indices</span></a>.
+Accordingly, the notation is defined to append at the <em>front</em> of the respective sequence, introducing a new relative index <span class="math notranslate">\(0\)</span> and shifting the existing ones.</p>
 </div>
 </div>
 <div class="section" id="prose-notation">
