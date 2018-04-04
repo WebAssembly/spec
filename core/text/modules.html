@@ -407,9 +407,8 @@ When omitted, <span class="math notranslate">\(\mathtt{0}\)</span> is assumed.</
 <div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{element segment} &amp; \href{../text/modules.html#text-elem}{\mathtt{elem}}_I &amp;::=&amp;
-  \def\mathdef2996#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2996{(}~\def\mathdef2997#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2997{elem}~~(x{:}\href{../text/modules.html#text-tableidx}{\mathtt{tableidx}}_I)^?~~\def\mathdef2998#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2998{(}~\def\mathdef2999#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2999{offset}~~e{:}\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3000#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3000{)}~~y^\ast{:}\href{../text/conventions.html#text-vec}{\mathtt{vec}}(\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}_I)~\def\mathdef3001#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3001{)} \\ &amp;&amp;&amp; \qquad
-    \Rightarrow\quad \{ \href{../syntax/modules.html#syntax-elem}{\mathsf{table}}~x', \href{../syntax/modules.html#syntax-elem}{\mathsf{offset}}~e, \href{../syntax/modules.html#syntax-elem}{\mathsf{init}}~y^\ast \} \\
-    &amp;&amp;&amp; \qquad\qquad\qquad (\mathrel{\mbox{if}} x' = x^? \neq \epsilon \vee x' = 0) \\
+  \def\mathdef2996#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2996{(}~\def\mathdef2997#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2997{elem}~~x{:}\href{../text/modules.html#text-tableidx}{\mathtt{tableidx}}_I~~\def\mathdef2998#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2998{(}~\def\mathdef2999#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2999{offset}~~e{:}\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3000#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3000{)}~~y^\ast{:}\href{../text/conventions.html#text-vec}{\mathtt{vec}}(\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}_I)~\def\mathdef3001#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3001{)} \\ &amp;&amp;&amp; \qquad
+    \Rightarrow\quad \{ \href{../syntax/modules.html#syntax-elem}{\mathsf{table}}~x, \href{../syntax/modules.html#syntax-elem}{\mathsf{offset}}~e, \href{../syntax/modules.html#syntax-elem}{\mathsf{init}}~y^\ast \} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -425,6 +424,14 @@ or a symbolic <a class="reference internal" href="values.html#text-id"><span cla
   \href{../text/instructions.html#text-instr}{\mathtt{instr}} &amp;\equiv&amp;
   \def\mathdef3002#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3002{(}~\def\mathdef3003#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3003{offset}~~\href{../text/instructions.html#text-instr}{\mathtt{instr}}~\def\mathdef3004#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3004{)}
 \end{array}\]</div>
+<p>Also, the table index can be omitted, defaulting to <span class="math notranslate">\(0\)</span>.</p>
+<div class="math notranslate">
+\[\begin{array}{llclll}
+\def\mathdef2721#1{{}}\mathdef2721{element segment} &amp;
+ \def\mathdef3005#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3005{(}~\def\mathdef3006#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3006{elem}~~\def\mathdef3007#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3007{(}~\def\mathdef3008#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3008{offset}~~\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3009#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3009{)}~~\dots~\def\mathdef3010#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3010{)}
+    &amp;\equiv&amp;
+  \def\mathdef3011#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3011{(}~\def\mathdef3012#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3012{elem}~~0~~\def\mathdef3013#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3013{(}~\def\mathdef3014#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3014{offset}~~\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3015#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3015{)}~~\dots~\def\mathdef3016#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3016{)}
+\end{array}\]</div>
 <p>As another abbreviation, element segments may also be specified inline with <a class="reference internal" href="#text-table"><span class="std std-ref">table</span></a> definitions; see the respective section.</p>
 </div>
 </div>
@@ -436,9 +443,8 @@ The data is written as a <a class="reference internal" href="values.html#text-st
 <div class="math notranslate">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{data segment} &amp; \href{../text/modules.html#text-data}{\mathtt{data}}_I &amp;::=&amp;
-  \def\mathdef3005#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3005{(}~\def\mathdef3006#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3006{data}~~(x{:}\href{../text/modules.html#text-memidx}{\mathtt{memidx}}_I)^?~~\def\mathdef3007#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3007{(}~\def\mathdef3008#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3008{offset}~~e{:}\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3009#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3009{)}~~b^\ast{:}\href{../text/modules.html#text-datastring}{\mathtt{datastring}}~\def\mathdef3010#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3010{)} \\ &amp;&amp;&amp; \qquad
-    \Rightarrow\quad \{ \href{../syntax/modules.html#syntax-data}{\mathsf{data}}~x', \href{../syntax/modules.html#syntax-data}{\mathsf{offset}}~e, \href{../syntax/modules.html#syntax-data}{\mathsf{init}}~b^\ast \} \\
-    &amp;&amp;&amp; \qquad\qquad\qquad (\mathrel{\mbox{if}} x' = x^? \neq \epsilon \vee x' = 0) \\[1ex]
+  \def\mathdef3017#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3017{(}~\def\mathdef3018#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3018{data}~~x{:}\href{../text/modules.html#text-memidx}{\mathtt{memidx}}_I~~\def\mathdef3019#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3019{(}~\def\mathdef3020#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3020{offset}~~e{:}\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3021#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3021{)}~~b^\ast{:}\href{../text/modules.html#text-datastring}{\mathtt{datastring}}~\def\mathdef3022#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3022{)} \\ &amp;&amp;&amp; \qquad
+    \Rightarrow\quad \{ \href{../syntax/modules.html#syntax-data}{\mathsf{data}}~x', \href{../syntax/modules.html#syntax-data}{\mathsf{offset}}~e, \href{../syntax/modules.html#syntax-data}{\mathsf{init}}~b^\ast \} \\[1ex]
 \def\mathdef2721#1{{}}\mathdef2721{data string} &amp; \href{../text/modules.html#text-datastring}{\mathtt{datastring}} &amp;::=&amp;
   (b^\ast{:}\href{../text/values.html#text-string}{\mathtt{string}})^\ast \quad\Rightarrow\quad \href{../syntax/conventions.html#notation-concat}{\mathrm{concat}}((b^\ast)^\ast) \\
 \end{array}\end{split}\]</div>
@@ -454,7 +460,15 @@ or a symbolic <a class="reference internal" href="values.html#text-id"><span cla
 \[\begin{array}{llcll}
 \def\mathdef2721#1{{}}\mathdef2721{data offset} &amp;
   \href{../text/instructions.html#text-instr}{\mathtt{instr}} &amp;\equiv&amp;
-  \def\mathdef3011#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3011{(}~\def\mathdef3012#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3012{offset}~~\href{../text/instructions.html#text-instr}{\mathtt{instr}}~\def\mathdef3013#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3013{)}
+  \def\mathdef3023#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3023{(}~\def\mathdef3024#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3024{offset}~~\href{../text/instructions.html#text-instr}{\mathtt{instr}}~\def\mathdef3025#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3025{)}
+\end{array}\]</div>
+<p>Also, the memory index can be omitted, defaulting to <span class="math notranslate">\(0\)</span>.</p>
+<div class="math notranslate">
+\[\begin{array}{llclll}
+\def\mathdef2721#1{{}}\mathdef2721{data segment} &amp;
+ \def\mathdef3026#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3026{(}~\def\mathdef3027#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3027{data}~~\def\mathdef3028#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3028{(}~\def\mathdef3029#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3029{offset}~~\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3030#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3030{)}~~\dots~\def\mathdef3031#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3031{)}
+    &amp;\equiv&amp;
+  \def\mathdef3032#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3032{(}~\def\mathdef3033#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3033{data}~~0~~\def\mathdef3034#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3034{(}~\def\mathdef3035#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3035{offset}~~\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3036#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3036{)}~~\dots~\def\mathdef3037#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3037{)}
 \end{array}\]</div>
 <p>As another abbreviation, data segments may also be specified inline with <a class="reference internal" href="#text-mem"><span class="std std-ref">memory</span></a> definitions; see the respective section.</p>
 </div>
@@ -474,7 +488,7 @@ The name serves a documentary role only.</p>
 \def\mathdef2721#1{{}}\mathdef2721{module} &amp; \href{../text/modules.html#text-module}{\mathtt{module}} &amp;
 \begin{array}[t]{&#64;{}cllll}
 ::=&amp;
-  \def\mathdef3014#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3014{(}~\def\mathdef3015#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3015{module}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~(m{:}\href{../text/modules.html#text-modulefield}{\mathtt{modulefield}}_I)^\ast~\def\mathdef3016#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3016{)}
+  \def\mathdef3038#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3038{(}~\def\mathdef3039#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3039{module}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~(m{:}\href{../text/modules.html#text-modulefield}{\mathtt{modulefield}}_I)^\ast~\def\mathdef3040#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3040{)}
     \quad\Rightarrow\quad \href{../syntax/conventions.html#notation-compose}{\bigoplus} m^\ast \\
     &amp;\qquad (\mathrel{\mbox{if}} I = \href{../syntax/conventions.html#notation-compose}{\bigoplus} \mathrm{idc}(\href{../text/modules.html#text-modulefield}{\mathtt{modulefield}})^\ast ~\href{../text/conventions.html#text-context-wf}{\mbox{well-formed}}) \\
 \end{array} \\[1ex]
@@ -508,25 +522,25 @@ thereby maintaining the ordering of the respective <a class="reference internal"
 <p>The definition of the initial <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate">\(I\)</span> uses the following auxiliary definition which maps each relevant definition to a singular context with one (possibly empty) identifier:</p>
 <div class="math notranslate">
 \[\begin{split}\begin{array}{&#64;{}lcl&#64;{\qquad\qquad}l}
-\mathrm{idc}(\def\mathdef3017#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3017{(}~\def\mathdef3018#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3018{type}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\mathit{ft}{:}\href{../text/types.html#text-functype}{\mathtt{functype}}~\def\mathdef3019#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3019{)}) &amp;=&amp;
+\mathrm{idc}(\def\mathdef3041#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3041{(}~\def\mathdef3042#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3042{type}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\mathit{ft}{:}\href{../text/types.html#text-functype}{\mathtt{functype}}~\def\mathdef3043#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3043{)}) &amp;=&amp;
   \{\href{../text/conventions.html#text-context}{\mathsf{types}}~(\href{../text/values.html#text-id}{\mathtt{id}}^?), \href{../text/conventions.html#text-context}{\mathsf{typedefs}}~\mathit{ft}\} \\
-\mathrm{idc}(\def\mathdef3020#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3020{(}~\def\mathdef3021#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3021{func}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3022#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3022{)}) &amp;=&amp;
+\mathrm{idc}(\def\mathdef3044#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3044{(}~\def\mathdef3045#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3045{func}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3046#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3046{)}) &amp;=&amp;
   \{\href{../text/conventions.html#text-context}{\mathsf{funcs}}~(\href{../text/values.html#text-id}{\mathtt{id}}^?)\} \\
-\mathrm{idc}(\def\mathdef3023#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3023{(}~\def\mathdef3024#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3024{table}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3025#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3025{)}) &amp;=&amp;
+\mathrm{idc}(\def\mathdef3047#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3047{(}~\def\mathdef3048#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3048{table}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3049#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3049{)}) &amp;=&amp;
   \{\href{../text/conventions.html#text-context}{\mathsf{tables}}~(\href{../text/values.html#text-id}{\mathtt{id}}^?)\} \\
-\mathrm{idc}(\def\mathdef3026#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3026{(}~\def\mathdef3027#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3027{memory}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3028#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3028{)}) &amp;=&amp;
+\mathrm{idc}(\def\mathdef3050#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3050{(}~\def\mathdef3051#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3051{memory}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3052#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3052{)}) &amp;=&amp;
   \{\href{../text/conventions.html#text-context}{\mathsf{mems}}~(\href{../text/values.html#text-id}{\mathtt{id}}^?)\} \\
-\mathrm{idc}(\def\mathdef3029#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3029{(}~\def\mathdef3030#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3030{global}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3031#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3031{)}) &amp;=&amp;
+\mathrm{idc}(\def\mathdef3053#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3053{(}~\def\mathdef3054#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3054{global}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3055#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3055{)}) &amp;=&amp;
   \{\href{../text/conventions.html#text-context}{\mathsf{globals}}~(\href{../text/values.html#text-id}{\mathtt{id}}^?)\} \\
-\mathrm{idc}(\def\mathdef3032#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3032{(}~\def\mathdef3033#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3033{import}~\dots~\def\mathdef3034#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3034{(}~\def\mathdef3035#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3035{func}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3036#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3036{)}~\def\mathdef3037#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3037{)}) &amp;=&amp;
+\mathrm{idc}(\def\mathdef3056#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3056{(}~\def\mathdef3057#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3057{import}~\dots~\def\mathdef3058#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3058{(}~\def\mathdef3059#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3059{func}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3060#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3060{)}~\def\mathdef3061#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3061{)}) &amp;=&amp;
   \{\href{../text/conventions.html#text-context}{\mathsf{funcs}}~(\href{../text/values.html#text-id}{\mathtt{id}}^?)\} \\
-\mathrm{idc}(\def\mathdef3038#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3038{(}~\def\mathdef3039#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3039{import}~\dots~\def\mathdef3040#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3040{(}~\def\mathdef3041#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3041{table}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3042#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3042{)}~\def\mathdef3043#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3043{)}) &amp;=&amp;
+\mathrm{idc}(\def\mathdef3062#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3062{(}~\def\mathdef3063#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3063{import}~\dots~\def\mathdef3064#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3064{(}~\def\mathdef3065#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3065{table}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3066#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3066{)}~\def\mathdef3067#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3067{)}) &amp;=&amp;
   \{\href{../text/conventions.html#text-context}{\mathsf{tables}}~(\href{../text/values.html#text-id}{\mathtt{id}}^?)\} \\
-\mathrm{idc}(\def\mathdef3044#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3044{(}~\def\mathdef3045#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3045{import}~\dots~\def\mathdef3046#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3046{(}~\def\mathdef3047#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3047{memory}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3048#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3048{)}~\def\mathdef3049#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3049{)}) &amp;=&amp;
+\mathrm{idc}(\def\mathdef3068#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3068{(}~\def\mathdef3069#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3069{import}~\dots~\def\mathdef3070#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3070{(}~\def\mathdef3071#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3071{memory}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3072#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3072{)}~\def\mathdef3073#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3073{)}) &amp;=&amp;
   \{\href{../text/conventions.html#text-context}{\mathsf{mems}}~(\href{../text/values.html#text-id}{\mathtt{id}}^?)\} \\
-\mathrm{idc}(\def\mathdef3050#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3050{(}~\def\mathdef3051#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3051{import}~\dots~\def\mathdef3052#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3052{(}~\def\mathdef3053#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3053{global}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3054#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3054{)}~\def\mathdef3055#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3055{)}) &amp;=&amp;
+\mathrm{idc}(\def\mathdef3074#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3074{(}~\def\mathdef3075#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3075{import}~\dots~\def\mathdef3076#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3076{(}~\def\mathdef3077#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3077{global}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef3078#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3078{)}~\def\mathdef3079#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3079{)}) &amp;=&amp;
   \{\href{../text/conventions.html#text-context}{\mathsf{globals}}~(\href{../text/values.html#text-id}{\mathtt{id}}^?)\} \\
-\mathrm{idc}(\def\mathdef3056#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3056{(}~\dots~\def\mathdef3057#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3057{)}) &amp;=&amp;
+\mathrm{idc}(\def\mathdef3080#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3080{(}~\dots~\def\mathdef3081#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3081{)}) &amp;=&amp;
   \{\} \\
 \end{array}\end{split}\]</div>
 <div class="section" id="id10">
@@ -536,7 +550,7 @@ thereby maintaining the ordering of the respective <a class="reference internal"
 \[\begin{array}{llcll}
 \def\mathdef2721#1{{}}\mathdef2721{module} &amp;
   \href{../text/modules.html#text-modulefield}{\mathtt{modulefield}}^\ast &amp;\equiv&amp;
-  \def\mathdef3058#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3058{(}~\def\mathdef3059#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3059{module}~~\href{../text/modules.html#text-modulefield}{\mathtt{modulefield}}^\ast~\def\mathdef3060#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3060{)}
+  \def\mathdef3082#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3082{(}~\def\mathdef3083#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3083{module}~~\href{../text/modules.html#text-modulefield}{\mathtt{modulefield}}^\ast~\def\mathdef3084#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3084{)}
 \end{array}\]</div>
 </div>
 </div>
