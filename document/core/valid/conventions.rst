@@ -64,16 +64,18 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
      \end{array}
    \end{array}
 
+.. _notation-extend:
+
 In addition to field access written :math:`C.\K{field}` the following notation is adopted for manipulating contexts:
 
 * When spelling out a context, empty fields are omitted.
 
-* The notation :math:`\K{field}\,A^\ast, C` denotes the same context as :math:`C` but with the elements :math:`A^\ast` prepended to its :math:`\K{field}` component sequence.
+* :math:`C,\K{field}\,A^\ast` denotes the same context as :math:`C` but with the elements :math:`A^\ast` prepended to its :math:`\K{field}` component sequence.
 
 .. note::
-   The notation for context extension is only used in situations where the original :math:`C.\K{field}` is either empty
-   or :math:`\K{field}` is :math:`\K{labels}`.
-   It is reversed from usual conventions because it *prepends* not *appends*, in accordance with the use of relative indexing to look up a label in the context's label list.
+   We use :ref:`indexing notation <notation-index>` like :math:`C.\CLABELS[i]` to look up indices in their respective :ref:`index space <syntax-index>` in the context.
+   Context extension notation :math:`C,\K{field}\,A` is primarily used to locally extend *relative* index spaces, such as :ref:`label indices <syntax-labelidx>`.
+   Accordingly, the notation is defined to append at the *front* of the respective sequence, introducing a new relative index :math:`0` and shifting the existing ones.
 
 
 .. _valid-notation-textual:

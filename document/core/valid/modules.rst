@@ -42,7 +42,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
    \frac{
      C.\CTYPES[x] = [t_1^\ast] \to [t_2^?]
      \qquad
-     \CLOCALS\,t_1^\ast~t^\ast,\CLABELS~[t_2^?],\CRETURN~[t_2^?], C \vdashexpr \expr : [t_2^?]
+     C,\CLOCALS\,t_1^\ast~t^\ast,\CLABELS~[t_2^?],\CRETURN~[t_2^?] \vdashexpr \expr : [t_2^?]
    }{
      C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : [t_1^\ast] \to [t_2^?]
    }

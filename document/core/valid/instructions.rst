@@ -477,12 +477,14 @@ Control Instructions
 
 .. math::
    \frac{
-     \CLABELS\,[t^?], C \vdashinstrseq \instr^\ast : [] \to [t^?]
+     C,\CLABELS\,[t^?] \vdashinstrseq \instr^\ast : [] \to [t^?]
    }{
      C \vdashinstr \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
 
 .. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
+
    The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the block was entered.
    This may be generalized in future versions of WebAssembly.
 
@@ -501,12 +503,14 @@ Control Instructions
 
 .. math::
    \frac{
-     \CLABELS\,[], C \vdashinstrseq \instr^\ast : [] \to [t^?]
+     C,\CLABELS\,[] \vdashinstrseq \instr^\ast : [] \to [t^?]
    }{
      C \vdashinstr \LOOP~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
 
 .. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
+
    The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the loop was entered.
    This may be generalized in future versions of WebAssembly.
 
@@ -528,14 +532,16 @@ Control Instructions
 
 .. math::
    \frac{
-     \CLABELS\,[t^?], C \vdashinstrseq \instr_1^\ast : [] \to [t^?]
+     C,\CLABELS\,[t^?] \vdashinstrseq \instr_1^\ast : [] \to [t^?]
      \qquad
-     \CLABELS\,[t^?], C \vdashinstrseq \instr_2^\ast : [] \to [t^?]
+     C,\CLABELS\,[t^?] \vdashinstrseq \instr_2^\ast : [] \to [t^?]
    }{
      C \vdashinstr \IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [\I32] \to [t^?]
    }
 
 .. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
+
    The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the conditional was entered.
    This may be generalized in future versions of WebAssembly.
 
@@ -559,6 +565,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
+
    The |BR| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
@@ -579,6 +587,9 @@ Control Instructions
    }{
      C \vdashinstr \BRIF~l : [t^?~\I32] \to [t^?]
    }
+
+.. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
 
 
 .. _valid-br_table:
@@ -608,6 +619,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l_i]` performs a relative lookup as expected.
+
    The |BRTABLE| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
