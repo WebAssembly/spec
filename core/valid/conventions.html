@@ -19,12 +19,69 @@
     <link rel="next" title="Types" href="types.html" />
     <link rel="prev" title="Validation" href="index.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head> <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>  
+  </head> <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Validation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#contexts">Contexts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prose-notation">Prose Notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formal-notation">Formal Notation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
 
-    <div class="document">
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
@@ -61,16 +118,16 @@ which collects relevant information about the surrounding <a class="reference in
 <li><em>Globals</em>: the list of globals declared in the current module, represented by their global type.</li>
 <li><em>Locals</em>: the list of locals declared in the current function (including parameters), represented by their value type.</li>
 <li><em>Labels</em>: the stack of labels accessible from the current position, represented by their result type.</li>
-<li><em>Return</em>: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.</li>
+<li><em>Return</em>: the return type of the current function, represented as a result type.</li>
 </ul>
 <p>In other words, a context contains a sequence of suitable <a class="reference internal" href="../syntax/types.html#syntax-type"><span class="std std-ref">types</span></a> for each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>,
 describing each defined entry in that space.
 Locals, labels and return type are only used for validating <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> in <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function bodies</span></a>, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.</p>
-<p>More concretely, contexts are defined as <a class="reference internal" href="../syntax/conventions.html#notation-record"><span class="std std-ref">records</span></a> <span class="math notranslate">\(C\)</span> with abstract syntax:</p>
+<p>It is convenient to define contexts as <a class="reference internal" href="../syntax/conventions.html#notation-record"><span class="std std-ref">records</span></a> <span class="math notranslate">\(C\)</span> with abstract syntax:</p>
 <div class="math notranslate">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef3318#1{{}}\mathdef3318{(context)} &amp; C &amp;::=&amp;
+\def\mathdef3294#1{{}}\mathdef3294{(context)} &amp; C &amp;::=&amp;
   \begin{array}[t]{l&#64;{~}ll}
   \{ &amp; \href{../valid/conventions.html#context}{\mathsf{types}} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
      &amp; \href{../valid/conventions.html#context}{\mathsf{funcs}} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
@@ -82,16 +139,23 @@ The label stack is the only part of the context that changes as validation of an
      &amp; \href{../valid/conventions.html#context}{\mathsf{return}} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^? ~\} \\
   \end{array}
 \end{array}\end{split}\]</div>
-<p id="notation-extend">In addition to field access written <span class="math notranslate">\(C.\mathsf{field}\)</span> the following notation is adopted for manipulating contexts:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The fields of a context are not defined as <a class="reference internal" href="../syntax/conventions.html#syntax-vec"><span class="std std-ref">vectors</span></a>,
+since their lengths are not bounded by the maximum vector size.</p>
+</div>
+<p>In addition to field access <span class="math notranslate">\(C.\mathsf{field}\)</span> the following notation is adopted for manipulating contexts:</p>
 <ul class="simple">
 <li>When spelling out a context, empty fields are omitted.</li>
 <li><span class="math notranslate">\(C,\mathsf{field}\,A^\ast\)</span> denotes the same context as <span class="math notranslate">\(C\)</span> but with the elements <span class="math notranslate">\(A^\ast\)</span> prepended to its <span class="math notranslate">\(\mathsf{field}\)</span> component sequence.</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">We use <a class="reference internal" href="../syntax/conventions.html#notation-index"><span class="std std-ref">indexing notation</span></a> like <span class="math notranslate">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[i]\)</span> to look up indices in their respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a> in the context.
-Context extension notation <span class="math notranslate">\(C,\mathsf{field}\,A\)</span> is primarily used to locally extend <em>relative</em> index spaces, such as <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label indices</span></a>.
-Accordingly, the notation is defined to append at the <em>front</em> of the respective sequence, introducing a new relative index <span class="math notranslate">\(0\)</span> and shifting the existing ones.</p>
+<p class="last">This notation is defined to <em>prepend</em> not <em>append</em>.
+It is only used in situations where the original <span class="math notranslate">\(C.\mathsf{field}\)</span> is either empty
+or <span class="math notranslate">\(\mathsf{field}\)</span> is <span class="math notranslate">\(\mathsf{labels}\)</span>.
+In the latter case adding to the front is desired
+because the <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label index</span></a> space is indexed relatively, that is, in reverse order of addition.</p>
 </div>
 </div>
 <div class="section" id="prose-notation">
@@ -200,63 +264,8 @@ Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagne
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
-            </a></p><h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Validation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#contexts">Contexts</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#prose-notation">Prose Notation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#formal-notation">Formal Notation</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
-</ul>
-
-
-<hr />
-<ul>
-    
-    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
-    
-    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
-    
-</ul>
-
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
+    <div class="clearer"></div>
+  </div>
     <div class="footer">
       &copy;2017, WebAssembly Community Group.
       
