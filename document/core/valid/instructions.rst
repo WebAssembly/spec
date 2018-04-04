@@ -314,7 +314,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
@@ -354,7 +354,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
@@ -483,6 +483,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
+
    The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the block was entered.
    This may be generalized in future versions of WebAssembly.
 
@@ -507,6 +509,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
+
    The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the loop was entered.
    This may be generalized in future versions of WebAssembly.
 
@@ -536,6 +540,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
+
    The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the conditional was entered.
    This may be generalized in future versions of WebAssembly.
 
@@ -559,6 +565,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
+
    The |BR| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
@@ -579,6 +587,9 @@ Control Instructions
    }{
      C \vdashinstr \BRIF~l : [t^?~\I32] \to [t^?]
    }
+
+.. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
 
 
 .. _valid-br_table:
@@ -608,6 +619,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l_i]` performs a relative lookup as expected.
+
    The |BRTABLE| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
@@ -616,7 +629,7 @@ Control Instructions
 :math:`\RETURN`
 ...............
 
-* The return type :math:`C.\CRETURN` must not be empty in the context.
+* The return type :math:`C.\CRETURN` must not be absent in the context.
 
 * Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
@@ -632,8 +645,8 @@ Control Instructions
 .. note::
    The |RETURN| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-   :math:`C.\CRETURN` is empty (:math:`\epsilon`) when validating an :ref:`expression <valid-expr>` that is not a function body.
-   This differs from it being set to the empty result type (:math:`[]`),
+   :math:`C.\CRETURN` is absent (set to :math:`\epsilon`) when validating an :ref:`expression <valid-expr>` that is not a function body.
+   This differs from it being set to the empty result type (:math:`[\epsilon]`),
    which is the case for functions not returning anything.
 
 
@@ -773,7 +786,7 @@ Constant Expressions
    \frac{
      (C \vdashinstrconst \instr \const)^\ast
    }{
-     C \vdashexprconst \instr~\END \const
+     C \vdashexprconst \instr^\ast~\END \const
    }
 
 .. math::
@@ -789,4 +802,7 @@ Constant Expressions
    }
 
 .. note::
+   Currently, constant expressions occurring as initializers of :ref:`globals <syntax-global>` are further constrained in that contained |GETGLOBAL| instructions are only allowed to refer to *imported* globals.
+   This is enforced in the :ref:`validation rule for modules <valid-module>` by constraining the context :math:`C` accordingly.
+
    The definition of constant expression may be extended in future versions of WebAssembly.
