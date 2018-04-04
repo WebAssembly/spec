@@ -182,6 +182,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | Nop ->
     [] --> []
 
+  | Drop ->
+    [peek 0 s] -~> []
+
+  | Select ->
+    let t = peek 1 s in
+    [t; t; Some I32Type] -~> [t]
+
   | Block (ts, es) ->
     check_arity (List.length ts) e.at;
     check_block {c with labels = ts :: c.labels} es ts e.at;
@@ -221,12 +228,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let FuncType (ins, out) = type_ c x in
     (ins @ [I32Type]) --> out
 
-  | Drop ->
-    [peek 0 s] -~> []
 
-  | Select ->
-    let t = peek 1 s in
-    [t; t; Some I32Type] -~> [t]
 
   | GetLocal x ->
     [] --> [local c x]

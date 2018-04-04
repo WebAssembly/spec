@@ -301,6 +301,8 @@ instr :
 plain_instr :
   | UNREACHABLE { fun c -> unreachable }
   | NOP { fun c -> nop }
+  | DROP { fun c -> drop }
+  | SELECT { fun c -> select }
   | BR var { fun c -> br ($2 c label) }
   | BR_IF var { fun c -> br_if ($2 c label) }
   | BR_TABLE var var_list
@@ -308,8 +310,6 @@ plain_instr :
       br_table xs x }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
-  | DROP { fun c -> drop }
-  | SELECT { fun c -> select }
   | GET_LOCAL var { fun c -> get_local ($2 c local) }
   | SET_LOCAL var { fun c -> set_local ($2 c local) }
   | TEE_LOCAL var { fun c -> tee_local ($2 c local) }

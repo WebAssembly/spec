@@ -823,7 +823,7 @@ Control Instructions
 
 2. Let :math:`n` be the arity of :math:`F`.
 
-3. Assert: due to :ref:`validation <valid-br>`, there are at least :math:`n` values on the top of the stack.
+3. Assert: due to :ref:`validation <valid-return>`, there are at least :math:`n` values on the top of the stack.
 
 4. Pop the results :math:`\val^n` from the stack.
 
@@ -1049,7 +1049,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 Returning from a function
 .........................
 
-When the end of a funtion is reached without a jump (i.e., |RETURN|) or trap aborting it, then the following steps are performed.
+When the end of a function is reached without a jump (i.e., |RETURN|) or trap aborting it, then the following steps are performed.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
