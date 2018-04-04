@@ -301,7 +301,9 @@ Instructions in this group affect the flow of control.
      \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
-     \CALLINDIRECT~\typeidx \\
+     \CALLINDIRECT~\typeidx \\&&|&
+     \RETURNCALL~\funcidx \\&&|&
+     \RETURNCALLINDIRECT~\typeidx \\
    \end{array}
 
 The |NOP| instruction does nothing.
@@ -344,9 +346,13 @@ The |CALLINDIRECT| instruction calls a function indirectly through an operand in
 Since tables may contain function elements of heterogeneous type |ANYFUNC|,
 the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
 
+The |RETURNCALL| and |RETURNCALLINDIRECT| instructions are *tail-call* variants of the previous ones.
+That is, they first return from the current function before actually performing the respective call.
+It is guaranteed that no sequence of nested calls using only these instructions can cause resource exhaustion due to hitting an :ref:`implementation's limit <impl-exec>` on the number of active calls.
+
 .. note::
    In the current version of WebAssembly,
-   |CALLINDIRECT| implicitly operates on :ref:`table <syntax-table>` :ref:`index <syntax-tableidx>` :math:`0`.
+   |CALLINDIRECT| and |RETURNCALLINDIRECT| implicitly operate on :ref:`table <syntax-table>` :ref:`index <syntax-tableidx>` :math:`0`.
    This restriction may be lifted in future versions.
 
 

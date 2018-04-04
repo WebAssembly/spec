@@ -228,7 +228,16 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let FuncType (ins, out) = type_ c x in
     (ins @ [I32Type]) --> out
 
+  | ReturnCall x ->
+    let FuncType (ins, out) = func c x in
+    require (out = c.results) e.at "type mismatch in function result";
+    ins -->... []
 
+  | ReturnCallIndirect x ->
+    ignore (table c (0l @@ e.at));
+    let FuncType (ins, out) = type_ c x in
+    require (out = c.results) e.at "type mismatch in function result";
+    (ins @ [I32Type]) -->... []
 
   | GetLocal x ->
     [] --> [local c x]
