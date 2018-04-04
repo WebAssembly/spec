@@ -485,13 +485,13 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   (\mathrel{\mbox{otherwise}}) \\
 \end{array}\end{split}\]</div>
 </div>
-<div class="section" id="exec-current-memory">
-<span id="id15"></span><h3><span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}}\)</span><a class="headerlink" href="#exec-current-memory" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="exec-memory-size">
+<span id="id15"></span><h3><span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}}\)</span><a class="headerlink" href="#exec-memory-size" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math notranslate">\(F\)</span> be the <a class="reference internal" href="conventions.html#exec-notation-textual"><span class="std std-ref">current</span></a> <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a>.</li>
-<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-current-memory"><span class="std std-ref">validation</span></a>, <span class="math notranslate">\(F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]\)</span> exists.</li>
+<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-memory-size"><span class="std std-ref">validation</span></a>, <span class="math notranslate">\(F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]\)</span> exists.</li>
 <li>Let <span class="math notranslate">\(a\)</span> be the <a class="reference internal" href="runtime.html#syntax-memaddr"><span class="std std-ref">memory address</span></a> <span class="math notranslate">\(F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]\)</span>.</li>
-<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-current-memory"><span class="std std-ref">validation</span></a>, <span class="math notranslate">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a]\)</span> exists.</li>
+<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-memory-size"><span class="std std-ref">validation</span></a>, <span class="math notranslate">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a]\)</span> exists.</li>
 <li>Let <span class="math notranslate">\(\mathit{mem}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math notranslate">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a]\)</span>.</li>
 <li>Let <span class="math notranslate">\(\mathit{sz}\)</span> be the length of <span class="math notranslate">\(\mathit{mem}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span> divided by the <a class="reference internal" href="runtime.html#page-size"><span class="std std-ref">page size</span></a>.</li>
 <li>Push the value <span class="math notranslate">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz}\)</span> to the stack.</li>
@@ -499,22 +499,22 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 <div class="math notranslate">
 \[\begin{split}\begin{array}{l}
 \begin{array}{lcl&#64;{\qquad}l}
-S; F; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz})
+S; F; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz})
 \end{array}
 \\ \qquad
   (\mathrel{\mbox{if}} |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}| = \mathit{sz}\cdot64\,\mathrm{Ki}) \\
 \end{array}\end{split}\]</div>
 </div>
-<div class="section" id="exec-grow-memory">
-<span id="id16"></span><h3><span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}}\)</span><a class="headerlink" href="#exec-grow-memory" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="exec-memory-grow">
+<span id="id16"></span><h3><span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}}\)</span><a class="headerlink" href="#exec-memory-grow" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math notranslate">\(F\)</span> be the <a class="reference internal" href="conventions.html#exec-notation-textual"><span class="std std-ref">current</span></a> <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a>.</li>
-<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-grow-memory"><span class="std std-ref">validation</span></a>, <span class="math notranslate">\(F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]\)</span> exists.</li>
+<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-memory-grow"><span class="std std-ref">validation</span></a>, <span class="math notranslate">\(F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]\)</span> exists.</li>
 <li>Let <span class="math notranslate">\(a\)</span> be the <a class="reference internal" href="runtime.html#syntax-memaddr"><span class="std std-ref">memory address</span></a> <span class="math notranslate">\(F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]\)</span>.</li>
-<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-grow-memory"><span class="std std-ref">validation</span></a>, <span class="math notranslate">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a]\)</span> exists.</li>
+<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-memory-grow"><span class="std std-ref">validation</span></a>, <span class="math notranslate">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a]\)</span> exists.</li>
 <li>Let <span class="math notranslate">\(\mathit{mem}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math notranslate">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a]\)</span>.</li>
 <li>Let <span class="math notranslate">\(\mathit{sz}\)</span> be the length of <span class="math notranslate">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a]\)</span> divided by the <a class="reference internal" href="runtime.html#page-size"><span class="std std-ref">page size</span></a>.</li>
-<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-grow-memory"><span class="std std-ref">validation</span></a>, a value of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> is on the top of the stack.</li>
+<li>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-memory-grow"><span class="std std-ref">validation</span></a>, a value of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math notranslate">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> is on the top of the stack.</li>
 <li>Pop the value <span class="math notranslate">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n\)</span> from the stack.</li>
 <li>Either, try <a class="reference internal" href="modules.html#grow-mem"><span class="std std-ref">growing</span></a> <span class="math notranslate">\(\mathit{mem}\)</span> by <span class="math notranslate">\(n\)</span> <a class="reference internal" href="runtime.html#page-size"><span class="std std-ref">pages</span></a>:<ol class="loweralpha">
 <li>If it succeeds, push the value <span class="math notranslate">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz}\)</span> to the stack.</li>
@@ -527,7 +527,7 @@ S; F; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_me
 \[\begin{split}~\\[-1ex]
 \begin{array}{l}
 \begin{array}{lcl&#64;{\qquad}l}
-S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S'; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz})
+S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S'; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz})
 \end{array}
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
@@ -537,12 +537,12 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   \end{array}
 \\[1ex]
 \begin{array}{lcl&#64;{\qquad}l}
-S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~{-1})
+S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~{-1})
 \end{array}
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}}\)</span> instruction is non-deterministic.
+<p class="last">The <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}}\)</span> instruction is non-deterministic.
 It may either succeed, returning the old memory size <span class="math notranslate">\(\mathit{sz}\)</span>,
 or fail, returning <span class="math notranslate">\({-1}\)</span>.
 Failure <em>must</em> occur if the referenced memory instance has a maximum size defined that would be exceeded.

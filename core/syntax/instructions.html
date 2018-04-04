@@ -266,8 +266,8 @@ The <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-in
   \mathsf{i}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{8}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{16}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} ~|~
   \mathsf{i64.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{32}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}} \\&amp;&amp;|&amp;
-  \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}} \\&amp;&amp;|&amp;
-  \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} \\
+  \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}} \\&amp;&amp;|&amp;
+  \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}} \\
 \end{array}\end{split}\]</div>
 <p>Memory is accessed with <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\)</span> and <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\)</span> instructions for the different <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value types</span></a>.
 They all take a <em>memory immediate</em> <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span> that contains an address <em>offset</em> and an <em>alignment</em> hint (in base 2 logarithmic representation).
@@ -280,8 +280,8 @@ A <a class="reference internal" href="../intro/overview.html#trap"><span class="
 <p class="first admonition-title">Note</p>
 <p class="last">Future version of WebAssembly might provide memory instructions with 64 bit address ranges.</p>
 </div>
-<p>The <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}}\)</span> instruction returns the current size of a memory.
-The <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}}\)</span> instruction grows memory by a given delta and returns the previous size, or <span class="math notranslate">\(-1\)</span> if enough memory cannot be allocated.
+<p>The <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}}\)</span> instruction returns the current size of a memory.
+The <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}}\)</span> instruction grows memory by a given delta and returns the previous size, or <span class="math notranslate">\(-1\)</span> if enough memory cannot be allocated.
 Both instructions operate in units of <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>

@@ -161,8 +161,8 @@ of the <span class="math notranslate">\(\href{../syntax/instructions.html#syntax
 <div class="section" id="memory-instructions">
 <span id="binary-instr-memory"></span><span id="index-4"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Each variant of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instruction</span></a> is encoded with a different byte code. Loads and stores are followed by the encoding of their <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span> immediate.</p>
-<div class="math notranslate" id="binary-grow-memory">
-<span id="binary-current-memory"></span><span id="binary-storen"></span><span id="binary-store"></span><span id="binary-loadn"></span><span id="binary-load"></span><span id="binary-memarg"></span>\[\begin{split}\begin{array}{llclll}
+<div class="math notranslate" id="binary-memory-grow">
+<span id="binary-memory-size"></span><span id="binary-storen"></span><span id="binary-store"></span><span id="binary-loadn"></span><span id="binary-load"></span><span id="binary-memarg"></span>\[\begin{split}\begin{array}{llclll}
 \def\mathdef846#1{{}}\mathdef846{memory argument} &amp; \href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;::=&amp;
   a{:}\href{../binary/values.html#binary-int}{\def\mathdef872#1{{\mathtt{u}#1}}\mathdef872{\mathtt{32}}}~~o{:}\href{../binary/values.html#binary-int}{\def\mathdef872#1{{\mathtt{u}#1}}\mathdef872{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}~a,~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}~o \} \\
 \def\mathdef846#1{{}}\mathdef846{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
@@ -189,12 +189,12 @@ of the <span class="math notranslate">\(\href{../syntax/instructions.html#syntax
   \def\mathdef949#1{\mathtt{0x#1}}\mathdef949{3C}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{8}~m \\ &amp;&amp;|&amp;
   \def\mathdef950#1{\mathtt{0x#1}}\mathdef950{3D}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{16}~m \\ &amp;&amp;|&amp;
   \def\mathdef951#1{\mathtt{0x#1}}\mathdef951{3E}~~m{:}\href{../binary/instructions.html#binary-memarg}{\mathtt{memarg}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\mathsf{32}~m \\ &amp;&amp;|&amp;
-  \def\mathdef952#1{\mathtt{0x#1}}\mathdef952{3F}~~\def\mathdef953#1{\mathtt{0x#1}}\mathdef953{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}} \\ &amp;&amp;|&amp;
-  \def\mathdef954#1{\mathtt{0x#1}}\mathdef954{40}~~\def\mathdef955#1{\mathtt{0x#1}}\mathdef955{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}} \\
+  \def\mathdef952#1{\mathtt{0x#1}}\mathdef952{3F}~~\def\mathdef953#1{\mathtt{0x#1}}\mathdef953{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}} \\ &amp;&amp;|&amp;
+  \def\mathdef954#1{\mathtt{0x#1}}\mathdef954{40}~~\def\mathdef955#1{\mathtt{0x#1}}\mathdef955{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{current\_memory}}\)</span> and <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{grow\_memory}}\)</span> instructions may be used to index additional memories.</p>
+<p class="last">In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}}\)</span> and <span class="math notranslate">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}}\)</span> instructions may be used to index additional memories.</p>
 </div>
 </div>
 <div class="section" id="numeric-instructions">
