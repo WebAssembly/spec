@@ -367,7 +367,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
             1. Let |value| be |func|.
         1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] |globaltype|,
-            1. If |globaltype|.<em>[=global type|valtype=]</em>) is [=𝗂𝟨𝟦=], throw a {{LinkError}} exception.
+            1. If |globaltype|.<em>[=global type|valtype=]</em> is [=𝗂𝟨𝟦=], throw a {{LinkError}} exception.
             1. Assert: |globaltype|.<em>[=global type|mut=]</em> is [=global type|𝖼𝗈𝗇𝗌𝗍=], as verified by WebAssembly validation.
             1. Assert: |externval| is of the form [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr|.
             1. Let [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr| be |externval|.
