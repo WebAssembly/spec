@@ -70,8 +70,8 @@ New/extended instructions:
   - `ref.null : [] -> [nullref]`
   - allowed in constant expressions
 
-* The new instruction `ref.is_null` checks for null.
-  - `ref.is_null : [anyref] -> [i32]`
+* The new instruction `ref.isnull` checks for null.
+  - `ref.isnull : [anyref] -> [i32]`
 
 * The new instructions `table.get` and `table.set` access tables.
   - `table.get $x : [i32] -> [t]` iff `t` is the element type of table `$x`
@@ -116,17 +116,17 @@ Motivation:
 
 Additions:
 
-* Add `eqref` as the type of comparable references
-  - `reftype ::= ... | eqref`
+* Add `anyeqref` as the type of comparable references
+  - `reftype ::= ... | anyeqref`
 * It is a subtype of `anyref`
-  - `eqref < anyref`
-  - `nullref < eqref`
+  - `anyeqref < anyref`
+  - `nullref < anyeqref`
 * Add `ref.eq` instruction.
-  - `ref.eq : [eqref eqref] -> [i32]`
+  - `ref.eq : [anyeqref anyeqref] -> [i32]`
 
 API changes:
 
-* Any JS object (non-primitive value) or `null` can be passed as `eqref` to a Wasm function, stored in a global, or in a table.
+* Any JS object (non-primitive value) or `null` can be passed as `anyeqref` to a Wasm function, stored in a global, or in a table.
 
 
 Questions:
@@ -154,7 +154,7 @@ Additions:
 * Subtying between concrete and universal reference types
   - `ref $t < anyref`
   - `ref <functype> < anyfunc`
-  - Note: reference types are not necessarily subtypes of `eqref`, including functions
+  - Note: reference types are not necessarily subtypes of `anyeqref`, including functions
 
 * Typed function references cannot be null!
 
