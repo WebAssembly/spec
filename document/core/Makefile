@@ -139,6 +139,8 @@ singlehtml:
 bikeshed:
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
 		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
+	python util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
+		>$(BUILDDIR)/bikeshed_singlehtml/index_fixed.html
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/

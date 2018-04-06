@@ -25,5 +25,5 @@ Prepare For TR: true
 </pre>
 
 <pre class=include>
-path: _build/bikeshed_singlehtml/index.html
+path: _build/bikeshed_singlehtml/index_fixed.html
 </pre>
