@@ -11,7 +11,7 @@
   (global (export "global-i32") i32 (i32.const 55))
   (global (export "global-f32") f32 (f32.const 44))
   (table (export "table-10-inf") 10 anyfunc)
-  ;; (table (export "table-10-20") 10 20 anyfunc)
+  (table (export "table-10-20") 10 20 anyfunc)
   (memory (export "memory-2-inf") 2)
   ;; (memory (export "memory-2-4") 2 4)
 )
@@ -298,22 +298,18 @@
 (assert_trap (invoke "call" (i32.const 100)) "undefined element")
 
 
-(assert_invalid
-  (module (import "" "" (table 10 anyfunc)) (import "" "" (table 10 anyfunc)))
-  "multiple tables"
-)
-(assert_invalid
-  (module (import "" "" (table 10 anyfunc)) (table 10 anyfunc))
-  "multiple tables"
-)
-(assert_invalid
-  (module (table 10 anyfunc) (table 10 anyfunc))
-  "multiple tables"
-)
-
 (module (import "test" "table-10-inf" (table 10 anyfunc)))
 (module (import "test" "table-10-inf" (table 5 anyfunc)))
 (module (import "test" "table-10-inf" (table 0 anyfunc)))
+(module (import "test" "table-10-20" (table 10 anyfunc)))
+(module (import "test" "table-10-20" (table 5 anyfunc)))
+(module (import "test" "table-10-20" (table 0 anyfunc)))
+(module (import "test" "table-10-20" (table 10 20 anyfunc)))
+(module (import "test" "table-10-20" (table 5 20 anyfunc)))
+(module (import "test" "table-10-20" (table 0 20 anyfunc)))
+(module (import "test" "table-10-20" (table 10 25 anyfunc)))
+(module (import "test" "table-10-20" (table 5 25 anyfunc)))
+(module (import "test" "table-10-20" (table 0 25 anyfunc)))
 (module (import "spectest" "table" (table 10 anyfunc)))
 (module (import "spectest" "table" (table 5 anyfunc)))
 (module (import "spectest" "table" (table 0 anyfunc)))
@@ -338,6 +334,14 @@
 )
 (assert_unlinkable
   (module (import "test" "table-10-inf" (table 10 20 anyfunc)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "table-10-20" (table 12 20 anyfunc)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "table-10-20" (table 10 18 anyfunc)))
   "incompatible import type"
 )
 (assert_unlinkable

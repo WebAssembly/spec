@@ -147,7 +147,7 @@ The |MTABLES| component of a module defines a vector of *tables* described by th
      \{ \TTYPE~\tabletype \} \\
    \end{array}
 
-A table is a vector of opaque values of a particular table :ref:`element type <syntax-elemtype>`.
+A table is a vector of opaque values of a particular :ref:`reference type <syntax-reftype>`.
 The |LMIN| size in the :ref:`limits <syntax-limits>` of the table type specifies the initial size of that table, while its |LMAX|, if present, restricts the size to which it can grow later.
 
 Tables can be initialized through :ref:`element segments <syntax-elem>`.
@@ -237,8 +237,8 @@ The |MELEM| component of a module defines a vector of *element segments* that in
 The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
 
 .. note::
-   In the current version of WebAssembly, at most one table is allowed in a module.
-   Consequently, the only valid |tableidx| is :math:`0`.
+   In the current version of WebAssembly, only tables of element type |ANYFUNC| can be initialized with an element segment.
+   This limitation may be lifted in the future.
 
 
 .. index:: ! data, memory, memory index, expression, constant, byte, vector

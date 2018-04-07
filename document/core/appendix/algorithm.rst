@@ -21,15 +21,49 @@ The algorithm is expressed in typed pseudo code whose semantics is intended to b
 Data Structures
 ~~~~~~~~~~~~~~~
 
+Types are representable as an enumeration.
+In addition to the plain types from the WebAssembly validation semantics, an extended notion of operand type includes a bottom type `Unknown` that is used as the type of :ref:`polymorphic <polymorphism>` operands.
+
+A simple subtyping check can be defined on these types.
+In addition, corresponding functions computing the join (least upper bound) and meet (greatest lower bound) of two types are used.
+Because there is no top type, a join does not exist in all cases.
+Similarly, a meet must always be defined on known value types that exclude the auxiliary bottom type `Unknown`,
+hence a meet does not exist in all cases either.
+A type error is encountered if a join or meet is required when it does not exist.
+
+.. code-block:: pseudo
+
+   type val_type = I32 | I64 | F32 | F64 | Anyref | Anyfunc | Anyeqref | Nullref
+   type opd_type = val_type | Unknown
+
+   func is_ref(t : opd_type) : bool =
+     return t = Anyref || t = Anyfunc || t = Anyeqref || t = Nullref
+
+   func matches(t1 : opd_type, t2 : opd_type) : bool =
+     return t1 = t2 || t1 = Unknown ||
+       (t1 = Nullref && is_ref(t2)) || (is_ref(t1) && t2 = Anyref)
+
+   func join(t1 : opd_type, t2 : opd_type) : opd_type =
+     if (t1 = t2) return t1
+     if (matches(t1, t2)) return t2
+     if (matches(t2, t1)) return t1
+     error_if(not (is_ref(t1) && is_ref(t2)))
+     return Anyref
+
+   func meet(t1 : val_type, t2 : val_type) : val_type =
+     if (t1 = t2) return t1
+     if (matches(t1, t2)) return t1
+     if (matches(t2, t1)) return t2
+     error_if(not (is_ref(t1) && is_ref(t2)))
+     return Nullref
+
 The algorithm uses two separate stacks: the *operand stack* and the *control stack*.
 The former tracks the :ref:`types <syntax-valtype>` of operand values on the :ref:`stack <stack>`,
 the latter surrounding :ref:`structured control instructions <syntax-instr-control>` and their associated :ref:`blocks <syntax-instr-control>`.
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64
-
-   type opd_stack = stack(val_type | Unknown)
+   type opd_stack = stack(opd_type)
 
    type ctrl_stack = stack(ctrl_frame)
    type ctrl_frame = {
@@ -58,20 +92,17 @@ However, these variables are not manipulated directly by the main checking funct
 
 .. code-block:: pseudo
 
-   func push_opd(type : val_type | Unknown) =
+   func push_opd(type : opd_type) =
      opds.push(type)
 
-   func pop_opd() : val_type | Unknown =
+   func pop_opd() : opd_type =
      if (opds.size() = ctrls[0].height && ctrls[0].unreachable) return Unknown
      error_if(opds.size() = ctrls[0].height)
      return opds.pop()
 
-   func pop_opd(expect : val_type | Unknown) : val_type | Unknown =
+   func pop_opd(expect : val_type) =
      let actual = pop_opd()
-     if (actual = Unknown) return expect
-     if (expect = Unknown) return actual
-     error_if(actual =/= expect)
-     return actual
+     error_if(not matches(actual, expect))
 
    func push_opds(types : list(val_type)) = foreach (t in types) push_opd(t)
    func pop_opds(types : list(val_type)) = foreach (t in reverse(types)) pop_opd(t)
@@ -83,9 +114,8 @@ But first, a special case is handled where the block contains no known operands,
 That can occur after an unconditional branch, when the stack is typed :ref:`polymorphically <polymorphism>`.
 In that case, an unknown type is returned.
 
-A second function for popping an operand takes an expected type, which the actual operand type is checked against.
-The types may differ in case one of them is Unknown.
-The more specific type is returned.
+A second function for popping an operand takes an expected (known) type, which the actual operand type is checked against.
+The types may differ by subtyping, inlcuding the case where the actual type is unknown.
 
 Finally, there are accumulative functions for pushing or popping multiple operand types.
 
@@ -150,14 +180,19 @@ Other instructions are checked in a similar manner.
          pop_opd(I32)
          push_opd(I32)
 
+       case (ref.eq)
+         pop_opd(Anyeqref)
+         pop_opd(Anyeqref)
+         push_opd(I32)
+
        case (drop)
          pop_opd()
 
        case (select)
          pop_opd(I32)
          let t1 = pop_opd()
-         let t2 = pop_opd(t1)
-         push_opd(t2)
+         let t2 = pop_opd()
+         push_opd(join(t1, t2))
 
        case (unreachable)
          unreachable()
@@ -193,10 +228,12 @@ Other instructions are checked in a similar manner.
 
        case (br_table n* m)
          error_if(ctrls.size() < m)
+         var ts = ctrls[m].label_types
          foreach (n in n*)
-           error_if(ctrls.size() < n || ctrls[n].label_types =/= ctrls[m].label_types)
+           error_if(ctrls.size() < n)
+           ts := meet(ts, ctrls[n].label_types)
          pop_opd(I32)
-         pop_opds(ctrls[m].label_types)
+         pop_opds(ts)
          unreachable()
 
 .. note::

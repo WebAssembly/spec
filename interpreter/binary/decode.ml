@@ -131,18 +131,25 @@ let sized f s =
 
 open Types
 
-let value_type s =
+let num_type s =
   match vs7 s with
   | -0x01 -> I32Type
   | -0x02 -> I64Type
   | -0x03 -> F32Type
   | -0x04 -> F64Type
-  | _ -> error s (pos s - 1) "invalid value type"
+  | _ -> error s (pos s - 1) "invalid number type"
 
-let elem_type s =
+let ref_type s =
   match vs7 s with
   | -0x10 -> AnyFuncType
-  | _ -> error s (pos s - 1) "invalid element type"
+  | -0x11 -> AnyRefType
+  | -0x12 -> AnyEqRefType
+  | _ -> error s (pos s - 1) "invalid reference type"
+
+let value_type s =
+  match peek s with
+  | Some n when n > 0x70 -> NumType (num_type s)
+  | _ -> RefType (ref_type s)
 
 let stack_type s =
   match peek s with
@@ -164,7 +171,7 @@ let limits vu s =
   {min; max}
 
 let table_type s =
-  let t = elem_type s in
+  let t = ref_type s in
   let lim = limits vu32 s in
   TableType (lim, t)
 
@@ -243,9 +250,9 @@ let rec instr s =
 
   | 0x10 -> call (at var s)
   | 0x11 ->
+    let y = at var s in
     let x = at var s in
-    expect 0x00 s "zero flag expected";
-    call_indirect x
+    call_indirect x y
 
   | 0x12 | 0x13 | 0x14 | 0x15 | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
@@ -259,8 +266,10 @@ let rec instr s =
   | 0x22 -> tee_local (at var s)
   | 0x23 -> get_global (at var s)
   | 0x24 -> set_global (at var s)
+  | 0x25 -> get_table (at var s)
+  | 0x26 -> set_table (at var s)
 
-  | 0x25 | 0x26 | 0x27 as b -> illegal s pos b
+  | 0x27 as b -> illegal s pos b
 
   | 0x28 -> let a, o = memop s in i32_load a o
   | 0x29 -> let a, o = memop s in i64_load a o
@@ -431,6 +440,14 @@ let rec instr s =
   | 0xbd -> i64_reinterpret_f64
   | 0xbe -> f32_reinterpret_i32
   | 0xbf -> f64_reinterpret_i64
+
+  | 0xc0 | 0xc1 | 0xc2 | 0xc3 | 0xc4 | 0xc5 | 0xc6 | 0xc7
+  | 0xc8 | 0xc9 | 0xca | 0xcb | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
+
+  (* TODO: Allocate more adequate opcodes *)
+  | 0xd0 -> ref_null
+  | 0xd1 -> ref_isnull
+  | 0xd2 -> ref_eq
 
   | b -> illegal s pos b
 

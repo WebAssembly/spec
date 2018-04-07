@@ -166,6 +166,30 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
+.. index:: ! reference instruction, reference, null
+   pair: abstract syntax; instruction
+.. _syntax-ref_null:
+.. _syntax-ref_isnull:
+.. _syntax-ref_eq:
+.. _syntax-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+Instructions in this group are concerned with accessing :ref:`references <syntax-reftype>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \REFNULL \\&&|&
+     \REFISNULL \\&&|&
+     \REFEQ \\
+   \end{array}
+
+These instruction produce a null value, check for a null value, or compare two references, respectively.
+
+
 .. index:: ! parametric instruction, value type
    pair: abstract syntax; instruction
 .. _syntax-instr-parametric:
@@ -210,6 +234,30 @@ Variable instructions are concerned with the access to :ref:`local <syntax-local
 
 These instructions get or set the values of variables, respectively.
 The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
+
+
+.. index:: ! table instruction, table, table index, trap
+   pair: abstract syntax; instruction
+.. _syntax-get_table:
+.. _syntax-set_table:
+.. _syntax-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+Instructions in this group are concerned with accessing :ref:`tables <syntax-table>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \GETTABLE~\tableidx \\&&|&
+     \SETTABLE~\tableidx \\
+   \end{array}
+
+These instructions get or set an element in a table, respectively.
+
+An additional instruction that accesses a table is the :ref:`control instruction <syntax-instr-control>` |CALLINDIRECT|.
 
 
 .. index:: ! memory instruction, memory, memory index, page size, little endian, trap
@@ -301,7 +349,7 @@ Instructions in this group affect the flow of control.
      \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
-     \CALLINDIRECT~\typeidx \\
+     \CALLINDIRECT~\tableidx~\typeidx \\
    \end{array}
 
 The |NOP| instruction does nothing.
@@ -340,14 +388,9 @@ Taking a branch *unwinds* the operand stack up to the height where the targeted 
 However, forward branches that target a control instruction with a non-empty result type consume matching operands first and push them back on the operand stack after unwinding, as a result for the terminated structured instruction.
 
 The |CALL| instruction invokes another :ref:`function <syntax-func>`, consuming the necessary arguments from the stack and returning the result values of the call.
-The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>`.
-Since tables may contain function elements of heterogeneous type |ANYFUNC|,
-the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
-
-.. note::
-   In the current version of WebAssembly,
-   |CALLINDIRECT| implicitly operates on :ref:`table <syntax-table>` :ref:`index <syntax-tableidx>` :math:`0`.
-   This restriction may be lifted in future versions.
+The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must have type |ANYFUNC|.
+Since it may contain functions of heterogeneous type,
+the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's second immediate, and the call is aborted with a :ref:`trap <trap>` if it does not match.
 
 
 .. index:: ! expression, constant, global, offset, element, data, instruction

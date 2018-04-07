@@ -32,13 +32,13 @@ val store_byte : memory -> address -> int -> unit (* raises Bounds *)
 val load_bytes : memory -> address -> int -> string (* raises Bounds *)
 val store_bytes : memory -> address -> string -> unit (* raises Bounds *)
 
-val load_value :
-  memory -> address -> offset -> value_type -> value (* raises Bounds *)
-val store_value :
-  memory -> address -> offset -> value -> unit (* raises Bounds *)
+val load_num :
+  memory -> address -> offset -> num_type -> num (* raises Bounds *)
+val store_num :
+  memory -> address -> offset -> num -> unit (* raises Bounds *)
 val load_packed :
-  mem_size -> extension -> memory -> address -> offset -> value_type -> value
+  mem_size -> extension -> memory -> address -> offset -> num_type -> num
     (* raises Type, Bounds *)
 val store_packed :
-  mem_size -> memory -> address -> offset -> value -> unit
+  mem_size -> memory -> address -> offset -> num -> unit
     (* raises Type, Bounds *)

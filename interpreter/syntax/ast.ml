@@ -56,7 +56,7 @@ type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Values.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
 type 'a memop =
-  {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}
+  {ty : num_type; align : int; offset : Memory.offset; sz : 'a option}
 type loadop = (Memory.mem_size * Memory.extension) memop
 type storeop = Memory.mem_size memop
 
@@ -64,7 +64,7 @@ type storeop = Memory.mem_size memop
 (* Expressions *)
 
 type var = int32 Source.phrase
-type literal = Values.value Source.phrase
+type literal = Values.num Source.phrase
 type name = int list
 
 type instr = instr' Source.phrase
@@ -79,7 +79,7 @@ and instr' =
   | BrTable of var list * var         (* indexed break *)
   | Return                            (* break from function body *)
   | Call of var                       (* call function *)
-  | CallIndirect of var               (* call function through table *)
+  | CallIndirect of var * var         (* call function through table *)
   | Drop                              (* forget a value *)
   | Select                            (* branchless conditional *)
   | GetLocal of var                   (* read local variable *)
@@ -87,10 +87,15 @@ and instr' =
   | TeeLocal of var                   (* write local variable and keep value *)
   | GetGlobal of var                  (* read global variable *)
   | SetGlobal of var                  (* write global variable *)
+  | GetTable of var                   (* read table element *)
+  | SetTable of var                   (* write table element *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
   | CurrentMemory                     (* size of linear memory *)
   | GrowMemory                        (* grow linear memory *)
+  | Null                              (* null reference *)
+  | IsNull                            (* null test *)
+  | Same                              (* reference equality *)
   | Const of literal                  (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)

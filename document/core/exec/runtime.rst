@@ -7,27 +7,61 @@ Runtime Structure
 :ref:`Store <store>`, :ref:`stack <stack>`, and other *runtime structure* forming the WebAssembly abstract machine, such as :ref:`values <syntax-val>` or :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary syntax.
 
 
-.. index:: ! value, constant, value type, integer, floating-point
+.. index:: ! value, number, reference, constant, number type, reference type, ! host address, value type, integer, floating-point, ! default value
    pair: abstract syntax; value
+.. _syntax-num:
+.. _syntax-ref:
+.. _syntax-ref_func:
+.. _syntax-ref_host:
 .. _syntax-val:
 
 Values
 ~~~~~~
 
-WebAssembly computations manipulate *values* of the four basic :ref:`value types <syntax-valtype>`: :ref:`integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each, respectively.
+WebAssembly computations manipulate *values* of either the four basic :ref:`number types <syntax-numtype>`, i.e., :ref:`integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each, or of :ref:`reference type <syntax-reftype>`.
 
 In most places of the semantics, values of different types can occur.
 In order to avoid ambiguities, values are therefore represented with an abstract syntax that makes their type explicit.
-It is convenient to reuse the same notation as for the |CONST| :ref:`instructions <syntax-const>` producing them:
+It is convenient to reuse the same notation as for the |CONST| :ref:`instructions <syntax-const>` and |REFNULL| producing them.
+
+References other than null are represented with additional :ref:`administrative instructions <syntax-instr-admin>`.
+They either are *function references*, pointing to a specific :ref:`function address <syntax-funcaddr>`,
+or *host references* pointing to an uninterpreted form of :ref:`host address <syntax-hostaddr>` that can be defined by the :ref:`embedder <embedder>`.
 
 .. math::
    \begin{array}{llcl}
-   \production{(value)} & \val &::=&
+   \production{(number)} & \num &::=&
      \I32.\CONST~\i32 \\&&|&
      \I64.\CONST~\i64 \\&&|&
      \F32.\CONST~\f32 \\&&|&
-     \F64.\CONST~\f64
+     \F64.\CONST~\f64 \\
+   \production{(reference)} & \reff &::=&
+     \REFNULL \\&&|&
+     \REFFUNC~\funcaddr \\&&|&
+     \REFHOST~\hostaddr \\
+   \production{(value)} & \val &::=&
+     \num ~|~ \reff \\
    \end{array}
+
+.. note::
+   Future versions of WebAssembly may add additional forms of reference.
+
+.. _default-val:
+
+Each :ref:`value type <syntax-valtype>` has an associated *default value*;
+it is the respective value :math:`0` for :ref:`number types <syntax-numtype>` and null for :ref:`reference types <syntax-reftype>`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \default_t &=& t{.}\CONST~0 & (\iff t = \numtype) \\
+   \default_t &=& \REFNULL & (\iff t = \reftype) \\
+   \end{array}
+
+
+Convention
+..........
+
+* The meta variable :math:`r` ranges over reference values where clear from context.
 
 
 .. index:: ! result, value, trap
@@ -92,14 +126,17 @@ Convention
    pair: abstract syntax; table address
    pair: abstract syntax; memory address
    pair: abstract syntax; global address
+   pair: abstract syntax; host address
    pair: function; address
    pair: table; address
    pair: memory; address
    pair: global; address
+   pair: host; address
 .. _syntax-funcaddr:
 .. _syntax-tableaddr:
 .. _syntax-memaddr:
 .. _syntax-globaladdr:
+.. _syntax-hostaddr:
 .. _syntax-addr:
 
 Addresses
@@ -107,6 +144,7 @@ Addresses
 
 :ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
+In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *host addresses*.
 
 .. math::
    \begin{array}{llll}
@@ -119,6 +157,8 @@ These are simply indices into the respective store component.
    \production{(memory address)} & \memaddr &::=&
      \addr \\
    \production{(global address)} & \globaladdr &::=&
+     \addr \\
+   \production{(host address)} & \hostaddr &::=&
      \addr \\
    \end{array}
 
@@ -212,21 +252,16 @@ Table Instances
 A *table instance* is the runtime representation of a :ref:`table <syntax-table>`.
 It holds a vector of *function elements* and an optional maximum size, if one was specified in the :ref:`table type <syntax-tabletype>` at the table's definition site.
 
-Each function element is either empty, representing an uninitialized table entry, or a :ref:`function address <syntax-funcaddr>`.
-Function elements can be mutated through the execution of an :ref:`element segment <syntax-elem>` or by external means provided by the :ref:`embedder <embedder>`.
+Each table element is a :ref:`reference value <syntax-ref>`.
+Table elements can be mutated through :ref:`table instructions <syntax-instr-table>`, the execution of an :ref:`element segment <syntax-elem>`, or by external means provided by the :ref:`embedder <embedder>`.
 
 .. math::
    \begin{array}{llll}
    \production{(table instance)} & \tableinst &::=&
-     \{ \TIELEM~\vec(\funcelem), \TIMAX~\u32^? \} \\
-   \production{(function element)} & \funcelem &::=&
-     \funcaddr^? \\
+     \{ \TIELEM~\vec(\reff), \TIMAX~\u32^? \} \\
    \end{array}
 
 It is an invariant of the semantics that the length of the element vector never exceeds the maximum size, if present.
-
-.. note::
-   Other table elements may be added in future versions of WebAssembly.
 
 
 .. index:: ! memory instance, memory, byte, ! page size, memory type, embedder, data segment, instruction
@@ -442,6 +477,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
    \production{(administrative instruction)} & \instr &::=&
      \dots \\ &&|&
      \TRAP \\ &&|&
+     \REFFUNC~\funcaddr \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
      \INITELEM~\tableaddr~\u32~\funcidx^\ast \\ &&|&
      \INITDATA~\memaddr~\u32~\byte^\ast \\ &&|&
@@ -451,6 +487,8 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
 
 The |TRAP| instruction represents the occurrence of a trap.
 Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction, signalling abrupt termination.
+
+The |REFFUNC| instruction represents :ref:`function reference values <syntax-ref_func>`.
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.

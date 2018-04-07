@@ -22,7 +22,22 @@ and extern =
   | ExternMemory of memory_inst
   | ExternGlobal of global_inst
 
-type Table.elem += FuncElem of func_inst
+
+(* Reference type extensions *)
+
+type Values.ref_ += FuncRef of func_inst
+
+let () =
+  let type_of_ref' = !Values.type_of_ref' in
+  Values.type_of_ref' := function
+    | FuncRef _ -> AnyFuncType
+    | r -> type_of_ref' r
+
+let () =
+  let string_of_ref' = !Values.string_of_ref' in
+  Values.string_of_ref' := function
+    | FuncRef _ -> "func"
+    | r -> string_of_ref' r
 
 
 (* Auxiliary functions *)

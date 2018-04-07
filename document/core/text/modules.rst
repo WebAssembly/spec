@@ -278,8 +278,8 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\Telemtype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{table}~~\Tid'~~n~~n~~\Telemtype~\text{)}~~
+     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)}~~
        \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
        \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
@@ -471,14 +471,12 @@ Element Segments
 ~~~~~~~~~~~~~~~~
 
 Element segments allow for an optional :ref:`table index <text-tableidx>` to identify the table to initialize.
-When omitted, :math:`\T{0}` is assumed.
 
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~(x{:}\Ttableidx_I)^?~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETABLE~x', \EOFFSET~e, \EINIT~y^\ast \} \\
-       &&& \qquad\qquad\qquad (\iff x' = x^? \neq \epsilon \vee x' = 0) \\
+     \text{(}~\text{elem}~~x{:}\Ttableidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\
    \end{array}
 
 .. note::
@@ -491,11 +489,21 @@ Abbreviations
 
 As an abbreviation, a single instruction may occur in place of the offset:
 
-.. math:
+.. math::
    \begin{array}{llcll}
    \production{element offset} &
      \Tinstr &\equiv&
      \text{(}~\text{offset}~~\Tinstr~\text{)}
+   \end{array}
+
+Also, the table index can be omitted, defaulting to :math:`0`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{element segment} &
+    \text{(}~\text{elem}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+       &\equiv&
+     \text{(}~\text{elem}~~0~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
    \end{array}
 
 As another abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
@@ -535,7 +543,7 @@ Abbreviations
 
 As an abbreviation, a single instruction may occur in place of the offset:
 
-.. math:
+.. math::
    \begin{array}{llcll}
    \production{data offset} &
      \Tinstr &\equiv&

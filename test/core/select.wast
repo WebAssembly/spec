@@ -1,4 +1,8 @@
 (module
+  ;; Auxiliary
+  (func $dummy)
+  (table $tab anyfunc (elem $dummy))
+
   (func (export "select_i32") (param $lhs i32) (param $rhs i32) (param $cond i32) (result i32)
    (select (get_local $lhs) (get_local $rhs) (get_local $cond)))
 
@@ -25,6 +29,22 @@
     (unreachable) (i32.const 0) (i32.const 0) (select)
     (unreachable) (f32.const 0) (i32.const 0) (select)
     (unreachable)
+  )
+
+  (func (export "join-nullref") (param i32) (result anyref)
+    (select (ref.null) (ref.null) (get_local 0))
+  )
+
+  (func (export "join-anyeqref") (param i32) (param anyeqref) (result anyref)
+    (select (get_local 1) (ref.null) (get_local 0))
+  )
+
+  (func (export "join-anyfunc") (param i32) (result anyref)
+    (select (get_table $tab (i32.const 0)) (ref.null) (get_local 0))
+  )
+
+  (func (export "join-anyref") (param i32) (param anyeqref) (result anyref)
+    (select (get_table $tab (i32.const 0)) (get_local 1) (get_local 0))
   )
 )
 
@@ -55,6 +75,18 @@
 (assert_return (invoke "select_f64" (f64.const 2) (f64.const nan:0x20304) (i32.const 1)) (f64.const 2))
 (assert_return (invoke "select_f64" (f64.const 2) (f64.const nan) (i32.const 0)) (f64.const nan))
 (assert_return (invoke "select_f64" (f64.const 2) (f64.const nan:0x20304) (i32.const 0)) (f64.const nan:0x20304))
+
+(assert_return (invoke "join-nullref" (i32.const 1)) (ref.null))
+(assert_return (invoke "join-nullref" (i32.const 0)) (ref.null))
+
+(assert_return (invoke "join-anyeqref" (i32.const 1) (ref.host 1)) (ref.host 1))
+(assert_return (invoke "join-anyeqref" (i32.const 0) (ref.host 1)) (ref.null))
+
+(assert_return_func (invoke "join-anyfunc" (i32.const 1)))
+(assert_return (invoke "join-anyfunc" (i32.const 0)) (ref.null))
+
+(assert_return_func (invoke "join-anyref" (i32.const 1) (ref.host 1)))
+(assert_return (invoke "join-anyref" (i32.const 0) (ref.host 1)) (ref.host 1))
 
 (assert_trap (invoke "select_trap_l" (i32.const 1)) "unreachable executed")
 (assert_trap (invoke "select_trap_l" (i32.const 0)) "unreachable executed")

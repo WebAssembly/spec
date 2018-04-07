@@ -97,7 +97,7 @@ All other control instruction are represented verbatim.
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
-     \text{call\_indirect}~~x,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x
+     \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
        & (\iff I' = \{\}) \\
    \end{array}
 
@@ -118,8 +118,38 @@ The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitt
      \text{if}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{else}~~\text{end}
    \end{array}
 
+Also, for backwards compatibility, the table index to :math:`\text{call\_indirect}` can be omitted, defaulting to :math:`0`.
 
-.. index:: value type, polymorphism
+.. math::
+   \begin{array}{llclll}
+   \production{plain instruction} &
+     \text{call\_indirect}~~\Ttypeuse
+       &\equiv&
+     \text{call\_indirect}~~0~~\Ttypeuse
+   \end{array}
+
+
+.. index:: reference instruction
+   pair: text format; instruction
+.. _text-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. _text-ref_null:
+.. _text-ref_isnull:
+.. _text-ref_eq:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{ref.null} &\Rightarrow& \REFNULL \\ &&|&
+     \text{ref.isnull} &\Rightarrow& \REFISNULL \\ &&|&
+     \text{ref.eq} &\Rightarrow& \REFEQ \\
+   \end{array}
+
+
+.. index:: parametric instruction, value type, polymorphism
    pair: text format; instruction
 .. _text-instr-parametric:
 
@@ -158,6 +188,24 @@ Variable Instructions
      \text{tee\_local}~~x{:}\Tlocalidx_I &\Rightarrow& \TEELOCAL~x \\ &&|&
      \text{get\_global}~~x{:}\Tglobalidx_I &\Rightarrow& \GETGLOBAL~x \\ &&|&
      \text{set\_global}~~x{:}\Tglobalidx_I &\Rightarrow& \SETGLOBAL~x \\
+   \end{array}
+
+
+.. index:: table instructions, table index
+   pair: text format; instruction
+.. _text-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+.. _text-get_table:
+.. _text-set_table:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{get\_table}~~x{:}\Ttableidx_I &\Rightarrow& \GETTABLE~x \\ &&|&
+     \text{set\_table}~~x{:}\Ttableidx_I &\Rightarrow& \SETTABLE~x \\
    \end{array}
 
 

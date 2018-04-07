@@ -126,7 +126,7 @@ Limits
    \frac{
      n_1 \geq n_2
    }{
-     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1^? \} \matches \{ \LMIN~n_2, \LMAX~\epsilon \}
+     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1^? \} \matcheslimits \{ \LMIN~n_2, \LMAX~\epsilon \}
    }
    \quad
    \frac{
@@ -134,7 +134,7 @@ Limits
      \qquad
      m_1 \leq m_2
    }{
-     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1 \} \matches \{ \LMIN~n_2, \LMAX~m_2 \}
+     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1 \} \matcheslimits \{ \LMIN~n_2, \LMAX~m_2 \}
    }
 
 
@@ -154,7 +154,7 @@ An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches 
    ~\\[-1ex]
    \frac{
    }{
-     \vdashexterntypematch \ETFUNC~\functype \matches \ETFUNC~\functype
+     \vdashexterntypematch \ETFUNC~\functype \matchesexterntype \ETFUNC~\functype
    }
 
 
@@ -164,17 +164,17 @@ An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches 
 Tables
 ......
 
-An :ref:`external type <syntax-externtype>` :math:`\ETTABLE~(\limits_1~\elemtype_1)` matches :math:`\ETTABLE~(\limits_2~\elemtype_2)` if and only if:
+An :ref:`external type <syntax-externtype>` :math:`\ETTABLE~(\limits_1~\reftype_1)` matches :math:`\ETTABLE~(\limits_2~\reftype_2)` if and only if:
 
 * Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
-* Both :math:`\elemtype_1` and :math:`\elemtype_2` are the same.
+* Both :math:`\reftype_1` and :math:`\reftype_2` are the same.
 
 .. math::
    \frac{
-     \vdashlimitsmatch \limits_1 \matches \limits_2
+     \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
    }{
-     \vdashexterntypematch \ETTABLE~(\limits_1~\elemtype) \matches \ETTABLE~(\limits_2~\elemtype)
+     \vdashexterntypematch \ETTABLE~(\limits_1~\reftype) \matchesexterntype \ETTABLE~(\limits_2~\reftype)
    }
 
 
@@ -190,9 +190,9 @@ An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\limits_1` matches :ma
 
 .. math::
    \frac{
-     \vdashlimitsmatch \limits_1 \matches \limits_2
+     \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
    }{
-     \vdashexterntypematch \ETMEM~\limits_1 \matches \ETMEM~\limits_2
+     \vdashexterntypematch \ETMEM~\limits_1 \matchesexterntype \ETMEM~\limits_2
    }
 
 
@@ -202,15 +202,23 @@ An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\limits_1` matches :ma
 Globals
 .......
 
-An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_1` matches :math:`\ETGLOBAL~\globaltype_2` if and only if:
+An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~(\mut_1~t_1)` matches :math:`\ETGLOBAL~(\mut_2~t_2)` if and only if:
 
-* Both :math:`\globaltype_1` and :math:`\globaltype_2` are the same.
+* Either both :math:`\mut_1` and :math:`\mut_2` are |MVAR| and :math:`t_1` and :math:`t_2` are the same.
+
+* Or both :math:`\mut_1` and :math:`\mut_2` are |MCONST| and :math:`t_1` :ref:`matches <match-valtype>` :math:`t_2`.
 
 .. math::
    ~\\[-1ex]
    \frac{
    }{
-     \vdashexterntypematch \ETGLOBAL~\globaltype \matches \ETGLOBAL~\globaltype
+     \vdashexterntypematch \ETGLOBAL~(\MVAR~t) \matchesexterntype \ETGLOBAL~(\MVAR~t)
+   }
+   \qquad
+   \frac{
+     \vdashvaltypematch t_1 \matchesvaltype t_2
+   }{
+     \vdashexterntypematch \ETGLOBAL~(\MCONST~t_1) \matchesexterntype \ETGLOBAL~(\MCONST~t_2)
    }
 
 
@@ -292,11 +300,11 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` to allocate.
 
-2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\elemtype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
+2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
 3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
 
-4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TIELEM~(\epsilon)^n, \TIMAX~m^? \}` with :math:`n` empty elements.
+4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TIELEM~\REFNULL^n, \TIMAX~m^? \}` with :math:`n` empty elements.
 
 5. Append :math:`\tableinst` to the |STABLES| of :math:`S`.
 
@@ -306,9 +314,9 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    \begin{array}{rlll}
    \alloctable(S, \tabletype) &=& S', \tableaddr \\[1ex]
    \mbox{where:} \hfill \\
-   \tabletype &=& \{\LMIN~n, \LMAX~m^?\}~\elemtype \\
+   \tabletype &=& \{\LMIN~n, \LMAX~m^?\}~\reftype \\
    \tableaddr &=& |S.\STABLES| \\
-   \tableinst &=& \{ \TIELEM~(\epsilon)^n, \TIMAX~m^? \} \\
+   \tableinst &=& \{ \TIELEM~\REFNULL^n, \TIMAX~m^? \} \\
    S' &=& S \compose \{\STABLES~\tableinst\} \\
    \end{array}
 
@@ -381,11 +389,11 @@ Growing :ref:`tables <syntax-tableinst>`
 
 2. If :math:`\tableinst.\TIMAX` is not empty and smaller than :math:`n` added to the length of :math:`\tableinst.\TIELEM`, then fail.
 
-3. Append :math:`n` empty elements to :math:`\tableinst.\TIELEM`.
+3. Append :math:`\REFNULL^n` to :math:`\tableinst.\TIELEM`.
 
 .. math::
    \begin{array}{rllll}
-   \growtable(\tableinst, n) &=& \tableinst \with \TIELEM = \tableinst.\TIELEM~(\epsilon)^n \\
+   \growtable(\tableinst, n) &=& \tableinst \with \TIELEM = \tableinst.\TIELEM~\REFNULL^n \\
      && (\iff \tableinst.\TIMAX = \epsilon \vee |\tableinst.\TIELEM| + n \leq \tableinst.\TIMAX) \\
    \end{array}
 
@@ -651,7 +659,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
        ii. Let :math:`\funcaddr_{ij}` be the :ref:`function address <syntax-funcaddr>` :math:`\moduleinst.\MIFUNCS[\funcidx_{ij}]`.
 
-       iii. Replace :math:`\tableinst_i.\TIELEM[\X{eo}_i + j]` with :math:`\funcaddr_{ij}`.
+       iii. Replace :math:`\tableinst_i.\TIELEM[\X{eo}_i + j]` with :math:`\REFFUNC~\funcaddr_{ij}`.
 
 14. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
 
@@ -680,7 +688,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
    &(\iff
      & \vdashmodule \module : \externtype_{\F{im}}^n \to \externtype_{\F{ex}}^\ast \\
      &\wedge& (S \vdashexternval \externval : \externtype)^n \\
-     &\wedge& (\vdashexterntypematch \externtype \matches \externtype_{\F{im}})^n \\[1ex]
+     &\wedge& (\vdashexterntypematch \externtype \matchesexterntype \externtype_{\F{im}})^n \\[1ex]
      &\wedge& \module.\MGLOBALS = \global^\ast \\
      &\wedge& \module.\MELEM = \elem^\ast \\
      &\wedge& \module.\MDATA = \data^\ast \\
@@ -701,7 +709,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      S; F; \epsilon \\
    S; F; \INITELEM~a~i~(x_0~x^\ast) &\stepto&
      S'; F; \INITELEM~a~(i+1)~x^\ast \\ &&
-     (\iff S' = S \with \STABLES[a].\TIELEM[i] = F.\AMODULE.\MIFUNCS[x_0])
+     (\iff S' = S \with \STABLES[a].\TIELEM[i] = \REFFUNC~F.\AMODULE.\MIFUNCS[x_0])
    \\[1ex]
    S; F; \INITDATA~a~i~\epsilon &\stepto&
      S; F; \epsilon \\

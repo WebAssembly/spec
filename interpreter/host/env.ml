@@ -14,7 +14,7 @@ let error msg = raise (Eval.Crash (Source.no_region, msg))
 let type_error v t =
   error
     ("type error, expected " ^ string_of_value_type t ^
-     ", got " ^ string_of_value_type (type_of v))
+     ", got " ^ string_of_value_type (type_of_value v))
 
 let empty = function
   | [] -> ()
@@ -26,8 +26,8 @@ let single = function
   | vs -> error "type error, too many arguments"
 
 let int = function
-  | I32 i -> Int32.to_int i
-  | v -> type_error v I32Type
+  | Num (I32 i) -> Int32.to_int i
+  | v -> type_error v (NumType I32Type)
 
 
 let abort vs =

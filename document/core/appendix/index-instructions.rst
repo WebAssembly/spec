@@ -24,7 +24,7 @@ Instruction                          Binary Opcode     Type                     
 :math:`\BRTABLE~l^\ast~l`            :math:`\hex{0E}`  :math:`[t_1^\ast~t^?~\I32] \to [t_2^\ast]`  :ref:`validation <valid-br_table>`        :ref:`execution <exec-br_table>`
 :math:`\RETURN`                      :math:`\hex{0F}`  :math:`[t_1^\ast~t^?] \to [t_2^\ast]`       :ref:`validation <valid-return>`          :ref:`execution <exec-return>`
 :math:`\CALL~x`                      :math:`\hex{10}`  :math:`[t_1^\ast] \to [t_2^\ast]`           :ref:`validation <valid-call>`            :ref:`execution <exec-call>`
-:math:`\CALLINDIRECT~x`              :math:`\hex{11}`  :math:`[t_1^\ast~\I32] \to [t_2^\ast]`      :ref:`validation <valid-call_indirect>`   :ref:`execution <exec-call_indirect>`
+:math:`\CALLINDIRECT~x~y`            :math:`\hex{11}`  :math:`[t_1^\ast~\I32] \to [t_2^\ast]`      :ref:`validation <valid-call_indirect>`   :ref:`execution <exec-call_indirect>`
 (reserved)                           :math:`\hex{12}`                                                  
 (reserved)                           :math:`\hex{13}`                                                  
 (reserved)                           :math:`\hex{14}`                                                  
@@ -44,8 +44,8 @@ Instruction                          Binary Opcode     Type                     
 :math:`\TEELOCAL~x`                  :math:`\hex{22}`  :math:`[t] \to [t]`                         :ref:`validation <valid-tee_local>`       :ref:`execution <exec-tee_local>`
 :math:`\GETGLOBAL~x`                 :math:`\hex{23}`  :math:`[] \to [t]`                          :ref:`validation <valid-get_global>`      :ref:`execution <exec-get_global>`
 :math:`\SETGLOBAL~x`                 :math:`\hex{24}`  :math:`[t] \to []`                          :ref:`validation <valid-set_global>`      :ref:`execution <exec-set_global>`
-(reserved)                           :math:`\hex{25}`                                                  
-(reserved)                           :math:`\hex{26}`                                                  
+:math:`\GETTABLE~x`                  :math:`\hex{25}`  :math:`[\I32] \to [t]`                      :ref:`validation <valid-get_table>`       :ref:`execution <exec-get_table>`
+:math:`\SETTABLE~x`                  :math:`\hex{26}`  :math:`[\I32~t] \to []`                     :ref:`validation <valid-set_table>`       :ref:`execution <exec-set_table>`
 (reserved)                           :math:`\hex{27}`                                                  
 :math:`\I32.\LOAD~\memarg`           :math:`\hex{28}`  :math:`[\I32] \to [\I32]`                   :ref:`validation <valid-load>`            :ref:`execution <exec-load>`
 :math:`\I64.\LOAD~\memarg`           :math:`\hex{29}`  :math:`[\I32] \to [\I64]`                   :ref:`validation <valid-load>`            :ref:`execution <exec-load>`
@@ -199,5 +199,24 @@ Instruction                          Binary Opcode     Type                     
 :math:`\I64.\REINTERPRET\K{/}\F64`   :math:`\hex{BD}`  :math:`[\F64] \to [\I64]`                   :ref:`validation <valid-cvtop>`           :ref:`execution <exec-cvtop>`, :ref:`operator <op-reinterpret>`
 :math:`\F32.\REINTERPRET\K{/}\I32`   :math:`\hex{BE}`  :math:`[\I32] \to [\F32]`                   :ref:`validation <valid-cvtop>`           :ref:`execution <exec-cvtop>`, :ref:`operator <op-reinterpret>`
 :math:`\F64.\REINTERPRET\K{/}\I64`   :math:`\hex{BF}`  :math:`[\I64] \to [\F64]`                   :ref:`validation <valid-cvtop>`           :ref:`execution <exec-cvtop>`, :ref:`operator <op-reinterpret>`
+(reserved)                           :math:`\hex{C0}`                                                  
+(reserved)                           :math:`\hex{C1}`                                                  
+(reserved)                           :math:`\hex{C2}`                                                  
+(reserved)                           :math:`\hex{C3}`                                                  
+(reserved)                           :math:`\hex{C4}`                                                  
+(reserved)                           :math:`\hex{C5}`                                                  
+(reserved)                           :math:`\hex{C6}`                                                  
+(reserved)                           :math:`\hex{C7}`                                                  
+(reserved)                           :math:`\hex{C8}`                                                  
+(reserved)                           :math:`\hex{C9}`                                                  
+(reserved)                           :math:`\hex{CA}`                                                  
+(reserved)                           :math:`\hex{CB}`                                                  
+(reserved)                           :math:`\hex{CC}`                                                  
+(reserved)                           :math:`\hex{CD}`                                                  
+(reserved)                           :math:`\hex{CE}`                                                  
+(reserved)                           :math:`\hex{CF}`                                                  
+:math:`\REFNULL`                     :math:`\hex{D0}`  :math:`[] \to [\NULLREF]`                   :ref:`validation <valid-ref_null>`        :ref:`execution <exec-ref_null>`
+:math:`\REFISNULL`                   :math:`\hex{D1}`  :math:`[\ANYREF] \to [\I32]`                :ref:`validation <valid-ref_isnull>`        :ref:`execution <exec-ref_isnull>`
+:math:`\REFEQ`                       :math:`\hex{D2}`  :math:`[\ANYEQREF~\ANYEQREF] \to [\I32]`    :ref:`validation <valid-ref_eq>`          :ref:`execution <exec-ref_eq>`
 ===================================  ================  ==========================================  ========================================  ===============================================================
 

@@ -145,11 +145,14 @@ let inline_type_explicit (c : context) x ft at =
 
 %}
 
-%token NAT INT FLOAT STRING VAR VALUE_TYPE ANYFUNC MUT LPAR RPAR
+%token LPAR RPAR
+%token NAT INT FLOAT STRING VAR
+%token ANYREF ANYEQREF ANYFUNC NUM_TYPE MUT
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
-%token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
+%token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL GET_TABLE SET_TABLE
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
+%token REF_NULL REF_HOST REF_ISNULL REF_EQ
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
@@ -157,7 +160,8 @@ let inline_type_explicit (c : context) x ft at =
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
-%token ASSERT_RETURN ASSERT_RETURN_CANONICAL_NAN ASSERT_RETURN_ARITHMETIC_NAN ASSERT_TRAP ASSERT_EXHAUSTION
+%token ASSERT_RETURN ASSERT_RETURN_CANONICAL_NAN ASSERT_RETURN_ARITHMETIC_NAN
+%token ASSERT_RETURN_REF ASSERT_RETURN_FUNC ASSERT_TRAP ASSERT_EXHAUSTION
 %token INPUT OUTPUT
 %token EOF
 
@@ -166,8 +170,8 @@ let inline_type_explicit (c : context) x ft at =
 %token<string> FLOAT
 %token<string> STRING
 %token<string> VAR
-%token<Types.value_type> VALUE_TYPE
-%token<string Source.phrase -> Ast.instr' * Values.value> CONST
+%token<Types.num_type> NUM_TYPE
+%token<string Source.phrase -> Ast.instr' * Values.num> CONST
 %token<Ast.instr'> UNARY
 %token<Ast.instr'> BINARY
 %token<Ast.instr'> TEST
@@ -200,16 +204,22 @@ string_list :
 
 /* Types */
 
-value_type_list :
-  | /* empty */ { [] }
-  | VALUE_TYPE value_type_list { $1 :: $2 }
-
-elem_type :
+ref_type :
+  | ANYREF { AnyRefType }
+  | ANYEQREF { AnyEqRefType }
   | ANYFUNC { AnyFuncType }
 
+value_type :
+  | NUM_TYPE { NumType $1 }
+  | ref_type { RefType $1 }
+
+value_type_list :
+  | /* empty */ { [] }
+  | value_type value_type_list { $1 :: $2 }
+
 global_type :
-  | VALUE_TYPE { GlobalType ($1, Immutable) }
-  | LPAR MUT VALUE_TYPE RPAR { GlobalType ($3, Mutable) }
+  | value_type { GlobalType ($1, Immutable) }
+  | LPAR MUT value_type RPAR { GlobalType ($3, Mutable) }
 
 def_type :
   | LPAR FUNC func_type RPAR { $3 }
@@ -223,11 +233,11 @@ func_type :
       FuncType (ins, $3 @ out) }
   | LPAR PARAM value_type_list RPAR func_type
     { let FuncType (ins, out) = $5 in FuncType ($3 @ ins, out) }
-  | LPAR PARAM bind_var VALUE_TYPE RPAR func_type  /* Sugar */
+  | LPAR PARAM bind_var value_type RPAR func_type  /* Sugar */
     { let FuncType (ins, out) = $6 in FuncType ($4 :: ins, out) }
 
 table_type :
-  | limits elem_type { TableType ($1, $2) }
+  | limits ref_type { TableType ($1, $2) }
 
 memory_type :
   | limits { MemoryType $1 }
@@ -315,10 +325,15 @@ plain_instr :
   | TEE_LOCAL var { fun c -> tee_local ($2 c local) }
   | GET_GLOBAL var { fun c -> get_global ($2 c global) }
   | SET_GLOBAL var { fun c -> set_global ($2 c global) }
+  | GET_TABLE var { fun c -> get_table ($2 c table) }
+  | SET_TABLE var { fun c -> set_table ($2 c table) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
   | CURRENT_MEMORY { fun c -> current_memory }
   | GROW_MEMORY { fun c -> grow_memory }
+  | REF_NULL { fun c -> ref_null }
+  | REF_ISNULL { fun c -> ref_isnull }
+  | REF_EQ { fun c -> ref_eq }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
@@ -327,9 +342,12 @@ plain_instr :
   | CONVERT { fun c -> $1 }
 
 call_instr :
-  | CALL_INDIRECT call_instr_type
+  | CALL_INDIRECT var call_instr_type
     { let at1 = ati 1 in
-      fun c -> let x, es = $2 c in call_indirect x @@ at1, es }
+      fun c -> let x, es = $3 c in call_indirect ($2 c table) x @@ at1, es }
+  | CALL_INDIRECT call_instr_type  /* Sugar */
+    { let at1 = ati 1 in
+      fun c -> let x, es = $2 c in call_indirect (0l @@ at1) x @@ at1, es }
 
 call_instr_type :
   | type_use call_instr_params
@@ -367,7 +385,7 @@ block_instr :
       let ts, es1 = $3 c' in if_ ts es1 ($6 c') }
 
 block_type :
-  | LPAR RESULT VALUE_TYPE RPAR { [$3] }
+  | LPAR RESULT value_type RPAR { [$3] }
 
 block :
   | block_type instr_list
@@ -380,8 +398,11 @@ expr :  /* Sugar */
 
 expr1 :  /* Sugar */
   | plain_instr expr_list { fun c -> $2 c, $1 c }
-  | CALL_INDIRECT call_expr_type
-    { fun c -> let x, es = $2 c in es, call_indirect x }
+  | CALL_INDIRECT var call_expr_type
+    { fun c -> let x, es = $3 c in es, call_indirect ($2 c table) x }
+  | CALL_INDIRECT call_expr_type  /* Sugar */
+    { let at1 = ati 1 in
+      fun c -> let x, es = $2 c in es, call_indirect (0l @@ at1) x }
   | BLOCK labeling_opt block
     { fun c -> let c' = $2 c [] in let ts, es = $3 c' in [], block ts es }
   | LOOP labeling_opt block
@@ -476,7 +497,7 @@ func_fields_import :  /* Sugar */
   | func_fields_import_result { $1 }
   | LPAR PARAM value_type_list RPAR func_fields_import
     { let FuncType (ins, out) = $5 in FuncType ($3 @ ins, out) }
-  | LPAR PARAM bind_var VALUE_TYPE RPAR func_fields_import  /* Sugar */
+  | LPAR PARAM bind_var value_type RPAR func_fields_import  /* Sugar */
     { let FuncType (ins, out) = $6 in FuncType ($4 :: ins, out) }
 
 func_fields_import_result :  /* Sugar */
@@ -490,7 +511,7 @@ func_fields_body :
     { let FuncType (ins, out) = fst $5 in
       FuncType ($3 @ ins, out),
       fun c -> ignore (anon_locals c $3); snd $5 c }
-  | LPAR PARAM bind_var VALUE_TYPE RPAR func_fields_body  /* Sugar */
+  | LPAR PARAM bind_var value_type RPAR func_fields_body  /* Sugar */
     { let FuncType (ins, out) = fst $6 in
       FuncType ($4 :: ins, out),
       fun c -> ignore (bind_local c $3); snd $6 c }
@@ -508,7 +529,7 @@ func_body :
   | LPAR LOCAL value_type_list RPAR func_body
     { fun c -> ignore (anon_locals c $3); let f = $5 c in
       {f with locals = $3 @ f.locals} }
-  | LPAR LOCAL bind_var VALUE_TYPE RPAR func_body  /* Sugar */
+  | LPAR LOCAL bind_var value_type RPAR func_body  /* Sugar */
     { fun c -> ignore (bind_local c $3); let f = $6 c in
       {f with locals = $4 :: f.locals} }
 
@@ -544,7 +565,7 @@ table_fields :
   | inline_export table_fields  /* Sugar */
     { fun c x at -> let tabs, elems, ims, exs = $2 c x at in
       tabs, elems, ims, $1 (TableExport x) c :: exs }
-  | elem_type LPAR ELEM var_list RPAR  /* Sugar */
+  | ref_type LPAR ELEM var_list RPAR  /* Sugar */
     { fun c x at ->
       let init = $4 c func in let size = Int32.of_int (List.length init) in
       [{ttype = TableType ({min = size; max = Some size}, $1)} @@ at],
@@ -768,6 +789,8 @@ assertion :
   | LPAR ASSERT_RETURN action const_list RPAR { AssertReturn ($3, $4) @@ at () }
   | LPAR ASSERT_RETURN_CANONICAL_NAN action RPAR { AssertReturnCanonicalNaN $3 @@ at () }
   | LPAR ASSERT_RETURN_ARITHMETIC_NAN action RPAR { AssertReturnArithmeticNaN $3 @@ at () }
+  | LPAR ASSERT_RETURN_REF action RPAR { AssertReturnRef $3 @@ at () }
+  | LPAR ASSERT_RETURN_FUNC action RPAR { AssertReturnFunc $3 @@ at () }
   | LPAR ASSERT_TRAP action STRING RPAR { AssertTrap ($3, $4) @@ at () }
   | LPAR ASSERT_EXHAUSTION action STRING RPAR { AssertExhaustion ($3, $4) @@ at () }
 
@@ -789,7 +812,9 @@ meta :
   | LPAR OUTPUT script_var_opt RPAR { Output ($3, None) @@ at () }
 
 const :
-  | LPAR CONST literal RPAR { snd (literal $2 $3) @@ ati 3 }
+  | LPAR CONST literal RPAR { Values.Num (snd (literal $2 $3)) @@ at () }
+  | LPAR REF_NULL RPAR { Values.Ref Values.NullRef @@ at () }
+  | LPAR REF_HOST NAT RPAR { Values.Ref (HostRef (nat32 $3 (ati 3))) @@ at () }
 
 const_list :
   | /* empty */ { [] }

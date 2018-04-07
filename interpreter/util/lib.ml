@@ -168,6 +168,11 @@ struct
     | Some y -> y
     | None -> x
 
+  let force o =
+    match o with
+    | Some y -> y
+    | None -> raise (Invalid_argument "Option.force")
+
   let map f = function
     | Some x -> Some (f x)
     | None -> None
