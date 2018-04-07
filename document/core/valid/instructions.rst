@@ -681,6 +681,71 @@ Control Instructions
    }
 
 
+.. _valid-return_call:
+
+:math:`\RETURNCALL~x`
+.....................
+
+* The return type :math:`C.\CRETURN` must not be absent in the context.
+
+* The function :math:`C.\CFUNCS[x]` must be defined in the context.
+
+* Let :math:`[t_1^\ast] \to [t_2^?]` be the :ref:`function type <syntax-functype>` :math:`C.\CFUNCS[x]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^?]` must be the same as :math:`C.\CRETURN`.
+
+* Then the instruction is valid with type :math:`[t_3^\ast~t_1^\ast] \to [t_4^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_3^\ast` and :math:`t_4^\ast`.
+
+.. math::
+   \frac{
+     C.\CFUNCS[x] = [t_1^\ast] \to [t_2^?]
+     \qquad
+     C.\CRETURN = [t_2^?]
+   }{
+     C \vdashinstr \RETURNCALL~x : [t_3^\ast~t_1^\ast] \to [t_4^\ast]
+   }
+
+.. note::
+   The |RETURNCALL| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+
+.. _valid-return_call_indirect:
+
+:math:`\RETURNCALLINDIRECT~x`
+.............................
+
+* The return type :math:`C.\CRETURN` must not be empty in the context.
+
+* The table :math:`C.\CTABLES[0]` must be defined in the context.
+
+* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[0]`.
+
+* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |ANYFUNC|.
+
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
+
+* Let :math:`[t_1^\ast] \to [t_2^?]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^?]` must be the same as :math:`C.\CRETURN`.
+
+* Then the instruction is valid with type :math:`[t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_3^\ast` and :math:`t_4^\ast`.
+
+
+.. math::
+   \frac{
+     C.\CTABLES[0] = \limits~\ANYFUNC
+     \qquad
+     C.\CTYPES[x] = [t_1^\ast] \to [t_2^?]
+     \qquad
+     C.\CRETURN = [t_2^?]
+   }{
+     C \vdashinstr \RETURNCALLINDIRECT~x : [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]
+   }
+
+.. note::
+   The |RETURNCALLINDIRECT| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+
 .. index:: instruction, instruction sequence
 .. _valid-instr-seq:
 

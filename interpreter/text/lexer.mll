@@ -192,6 +192,8 @@ rule token = parse
   | "select" { SELECT }
   | "call" { CALL }
   | "call_indirect" { CALL_INDIRECT }
+  | "return_call" { RETURN_CALL }
+  | "return_call_indirect" { RETURN_CALL_INDIRECT }
 
   | "get_local" { GET_LOCAL }
   | "set_local" { SET_LOCAL }

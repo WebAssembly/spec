@@ -246,8 +246,13 @@ let rec instr s =
     let x = at var s in
     expect 0x00 s "zero flag expected";
     call_indirect x
+  | 0x12 -> return_call (at var s)
+  | 0x13 ->
+    let x = at var s in
+    expect 0x00 s "zero flag expected";
+    return_call_indirect x
 
-  | 0x12 | 0x13 | 0x14 | 0x15 | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
+  | 0x14 | 0x15 | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
   | 0x1a -> drop
   | 0x1b -> select

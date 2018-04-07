@@ -443,6 +443,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \dots \\ &&|&
      \TRAP \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
+     \RETURNINVOKE~\funcaddr \\ &&|&
      \INITELEM~\tableaddr~\u32~\funcidx^\ast \\ &&|&
      \INITDATA~\memaddr~\u32~\byte^\ast \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
@@ -454,6 +455,7 @@ Traps are bubbled up through nested instruction sequences, ultimately reducing t
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
+Analogously, |RETURNINVOKE| represents the imminent tail invocation of a function instance.
 
 The |INITELEM| and |INITDATA| instructions perform initialization of :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segments during module :ref:`instantiation <exec-instantiation>`.
 

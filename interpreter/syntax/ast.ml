@@ -82,6 +82,8 @@ and instr' =
   | Return                            (* break from function body *)
   | Call of var                       (* call function *)
   | CallIndirect of var               (* call function through table *)
+  | ReturnCall of var                 (* tail-call function *)
+  | ReturnCallIndirect of var         (* tail-call function through table *)
   | GetLocal of var                   (* read local variable *)
   | SetLocal of var                   (* write local variable *)
   | TeeLocal of var                   (* write local variable and keep value *)

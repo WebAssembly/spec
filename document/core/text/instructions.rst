@@ -83,6 +83,8 @@ The same label identifier may optionally be repeated after the corresponding :ma
 .. _text-return:
 .. _text-call:
 .. _text-call_indirect:
+.. _text-return_call:
+.. _text-return_call_indirect:
 
 All other control instruction are represented verbatim.
 
@@ -98,6 +100,9 @@ All other control instruction are represented verbatim.
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
      \text{call\_indirect}~~x,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x
+       & (\iff I' = \{\}) \\ &&|&
+     \text{return\_call}~~x{:}\Tfuncidx_I &\Rightarrow& \RETURNCALL~x \\ &&|&
+     \text{return\_call\_indirect}~~x,I'{:}\Ttypeuse_I &\Rightarrow& \RETURNCALLINDIRECT~x
        & (\iff I' = \{\}) \\
    \end{array}
 

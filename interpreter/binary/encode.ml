@@ -157,6 +157,8 @@ let encode m =
       | Return -> op 0x0f
       | Call x -> op 0x10; var x
       | CallIndirect x -> op 0x11; var x; u8 0x00
+      | ReturnCall x -> op 0x12; var x
+      | ReturnCallIndirect x -> op 0x13; var x; u8 0x00
 
       | Drop -> op 0x1a
       | Select -> op 0x1b

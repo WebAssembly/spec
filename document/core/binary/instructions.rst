@@ -33,6 +33,8 @@ Control Instructions
 .. _binary-return:
 .. _binary-call:
 .. _binary-call_indirect:
+.. _binary-return_call:
+.. _binary-return_call_indirect:
 
 .. math::
    \begin{array}{llclll}
@@ -54,7 +56,9 @@ Control Instructions
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
-     \hex{11}~~x{:}\Btypeidx~~\hex{00} &\Rightarrow& \CALLINDIRECT~x \\
+     \hex{11}~~x{:}\Btypeidx~~\hex{00} &\Rightarrow& \CALLINDIRECT~x \\ &&|&
+     \hex{12}~~x{:}\Bfuncidx &\Rightarrow& \RETURNCALL~x \\ &&|&
+     \hex{13}~~x{:}\Btypeidx~~\hex{00} &\Rightarrow& \RETURNCALLINDIRECT~x \\
    \end{array}
 
 .. note::
@@ -62,7 +66,7 @@ Control Instructions
 
 .. note::
    In future versions of WebAssembly, the zero byte occurring in the encoding
-   of the |CALLINDIRECT| instruction may be used to index additional tables.
+   of the |CALLINDIRECT| and |RETURNCALLINDIRECT| instructions may be used to index additional tables.
 
 .. index:: value type, polymorphism
    pair: binary format; instruction
