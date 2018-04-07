@@ -19,78 +19,12 @@
     <link rel="next" title="Validation" href="../valid/index.html" />
     <link rel="prev" title="Instructions" href="instructions.html" />
    
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
 
-  </head> <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>
-  <div class="document">
-    
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
-            </a></p><h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
-<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#indices">Indices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#types">Types</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tables">Tables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#memories">Memories</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#globals">Globals</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#element-segments">Element Segments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#data-segments">Data Segments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#start-function">Start Function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#exports">Exports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#imports">Imports</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
-</ul>
+  </head> <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body>  
 
-
-<hr />
-<ul>
-    
-    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
-    
-    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
-    
-</ul>
-
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
+    <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
@@ -133,13 +67,13 @@ Each class of definition has its own <em>index space</em>, as distinguished by t
 \end{array}\end{split}\]</div>
 <p>The index space for <a class="reference internal" href="#syntax-func"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="#syntax-table"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memories</span></a> and <a class="reference internal" href="#syntax-global"><span class="std std-ref">globals</span></a> includes respective <a class="reference internal" href="#syntax-import"><span class="std std-ref">imports</span></a> declared in the same module.
 The indices of these imports precede the indices of other definitions in the same index space.</p>
-<p>The index space for <a class="reference internal" href="#syntax-local"><span class="std std-ref">locals</span></a> is only accessible inside a <a class="reference internal" href="#syntax-func"><span class="std std-ref">function</span></a> and includes the parameters and local variables of that function, which precede the other locals.</p>
+<p>The index space for <a class="reference internal" href="#syntax-local"><span class="std std-ref">locals</span></a> is only accessible inside a <a class="reference internal" href="#syntax-func"><span class="std std-ref">function</span></a> and includes the parameters of that function, which precede the local variables.</p>
 <p>Label indices reference <a class="reference internal" href="instructions.html#syntax-instr-control"><span class="std std-ref">structured control instructions</span></a> inside an instruction sequence.</p>
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The meta variable <span class="math notranslate">\(l\)</span> ranges over label indices.</li>
-<li>The meta variables <span class="math notranslate">\(x, y\)</span> ranges over indices in any of the other index spaces.</li>
+<li>The meta variables <span class="math notranslate">\(x, y\)</span> range over indices in any of the other index spaces.</li>
 </ul>
 </div>
 </div>
@@ -162,7 +96,7 @@ They are referenced by <a class="reference internal" href="#syntax-typeidx"><spa
   \{ \href{../syntax/modules.html#syntax-func}{\mathsf{type}}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}, \href{../syntax/modules.html#syntax-func}{\mathsf{locals}}~\href{../syntax/conventions.html#syntax-vec}{\mathit{vec}}(\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}), \href{../syntax/modules.html#syntax-func}{\mathsf{body}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \} \\
 \end{array}\end{split}\]</div>
 <p>The <span class="math notranslate">\(\href{../syntax/modules.html#syntax-func}{\mathsf{type}}\)</span> of a function declares its signature by reference to a <a class="reference internal" href="types.html#syntax-type"><span class="std std-ref">type</span></a> defined in the module.
-The parameters of the function are referenced through 0-based <a class="reference internal" href="#syntax-localidx"><span class="std std-ref">local indices</span></a> in the function’s body.</p>
+The parameters of the function are referenced through 0-based <a class="reference internal" href="#syntax-localidx"><span class="std std-ref">local indices</span></a> in the function’s body; they are mutable.</p>
 <p>The <span class="math notranslate">\(\href{../syntax/modules.html#syntax-func}{\mathsf{locals}}\)</span> declare a vector of mutable local variables and their types.
 These variables are referenced through <a class="reference internal" href="#syntax-localidx"><span class="std std-ref">local indices</span></a> in the function’s body.
 The index of the first local is the smallest index not referencing a parameter.</p>
@@ -230,7 +164,7 @@ starting with the smallest index not referencing a global <a class="reference in
 <div class="section" id="element-segments">
 <span id="syntax-elem"></span><span id="index-7"></span><h2>Element Segments<a class="headerlink" href="#element-segments" title="Permalink to this headline">¶</a></h2>
 <p>The initial contents of a table is uninitialized.
-The <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathsf{elem}}\)</span> component of a module defines a vector of <em>element segments</em> that initialize a subrange of a table at a given offset from a static <a class="reference internal" href="conventions.html#syntax-vec"><span class="std std-ref">vector</span></a> of elements.</p>
+The <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathsf{elem}}\)</span> component of a module defines a vector of <em>element segments</em> that initialize a subrange of a table, at a given offset, from a static <a class="reference internal" href="conventions.html#syntax-vec"><span class="std std-ref">vector</span></a> of elements.</p>
 <div class="math notranslate">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef2071#1{{}}\mathdef2071{element segment} &amp; \href{../syntax/modules.html#syntax-elem}{\mathit{elem}} &amp;::=&amp;
@@ -245,8 +179,8 @@ Consequently, the only valid <span class="math notranslate">\(\href{../syntax/mo
 </div>
 <div class="section" id="data-segments">
 <span id="syntax-data"></span><span id="index-8"></span><h2>Data Segments<a class="headerlink" href="#data-segments" title="Permalink to this headline">¶</a></h2>
-<p>The initial contents of a <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memory</span></a> are zero bytes.
-The <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathsf{data}}\)</span> component of a module defines a vector of <em>data segments</em> that initialize a range of memory at a given offset with a static <a class="reference internal" href="conventions.html#syntax-vec"><span class="std std-ref">vector</span></a> of <a class="reference internal" href="values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.</p>
+<p>The initial contents of a <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memory</span></a> are zero-valued bytes.
+The <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathsf{data}}\)</span> component of a module defines a vector of <em>data segments</em> that initialize a range of memory, at a given offset, with a static <a class="reference internal" href="conventions.html#syntax-vec"><span class="std std-ref">vector</span></a> of <a class="reference internal" href="values.html#syntax-byte"><span class="std std-ref">bytes</span></a>.</p>
 <div class="math notranslate">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef2071#1{{}}\mathdef2071{data segment} &amp; \href{../syntax/modules.html#syntax-data}{\mathit{data}} &amp;::=&amp;
@@ -261,7 +195,7 @@ Consequently, the only valid <span class="math notranslate">\(\href{../syntax/mo
 </div>
 <div class="section" id="start-function">
 <span id="syntax-start"></span><span id="index-9"></span><h2>Start Function<a class="headerlink" href="#start-function" title="Permalink to this headline">¶</a></h2>
-<p>The <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathsf{start}}\)</span> component of a module optionally declares the <a class="reference internal" href="#syntax-funcidx"><span class="std std-ref">function index</span></a> of a <em>start function</em> that is automatically invoked when the module is <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiated</span></a>, after <a class="reference internal" href="#syntax-table"><span class="std std-ref">tables</span></a> and <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memories</span></a> have been initialized.</p>
+<p>The <span class="math notranslate">\(\href{../syntax/modules.html#syntax-module}{\mathsf{start}}\)</span> component of a module declares the <a class="reference internal" href="#syntax-funcidx"><span class="std std-ref">function index</span></a> of a <em>start function</em> that is automatically invoked when the module is <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiated</span></a>, after <a class="reference internal" href="#syntax-table"><span class="std std-ref">tables</span></a> and <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memories</span></a> have been initialized.</p>
 <div class="math notranslate">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef2071#1{{}}\mathdef2071{start function} &amp; \href{../syntax/modules.html#syntax-start}{\mathit{start}} &amp;::=&amp;
@@ -334,8 +268,72 @@ and a WebAssembly module itself cannot implement an overloaded name.</p>
           </div>
         </div>
       </div>
-    <div class="clearer"></div>
-  </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Structure</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conventions.html">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#indices">Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#types">Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tables">Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memories">Memories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#globals">Globals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#element-segments">Element Segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-segments">Data Segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#start-function">Start Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exports">Exports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#imports">Imports</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
     <div class="footer">
       &copy;2017, WebAssembly Community Group.
       
