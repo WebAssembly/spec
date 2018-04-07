@@ -844,7 +844,7 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \FRAME_n\{F\}~\XB^k[\val^n~\RETURN]~\END &\stepto& \val^n
+   \FRAME_n\{F\}~B^\ast[\val^n~\RETURN]~\END &\stepto& \val^n
    \end{array}
 
 
@@ -938,6 +938,8 @@ Control Instructions
 
 :math:`\RETURNCALL~x`
 .....................
+
+.. todo: find a way to reuse call/call_indirect prose for tail call versions
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -1127,11 +1129,11 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
+2. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
 
 3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`m` values on the top of the stack.
 
-4. Pop the results :math:`\val^m` from the stack.
+4. Pop the results :math:`\val^n` from the stack.
 
 5. Assert: due to :ref:`validation <valid-return_call>`, the stack contains at least one :ref:`frame <syntax-frame>`.
 
@@ -1143,16 +1145,16 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 8. Pop the frame from the stack.
 
-9. Push :math:`\val^m` to the stack.
+9. Push :math:`\val^n` to the stack.
 
 10. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-    S; \FRAME_n\{F\}~B^*[\val^m~(\RETURNINVOKE~a)]~\END &\stepto&
-      \val^m~(\INVOKE~a)
-      & (\iff S.\SFUNCS[a].\FITYPE = [t_1^m] \to [t_2^n])
+    S; \FRAME_m\{F\}~B^\ast[\val^n~(\RETURNINVOKE~a)]~\END &\stepto&
+      \val^n~(\INVOKE~a)
+      & (\iff S.\SFUNCS[a].\FITYPE = [t_1^n] \to [t_2^m])
    \end{array}
 
 

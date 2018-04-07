@@ -1,4 +1,4 @@
-;; Test `call_indirect` operator
+;; Test `return_call_indirect` operator
 
 (module
   ;; Auxiliary definitions

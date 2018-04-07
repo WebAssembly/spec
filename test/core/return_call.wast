@@ -1,4 +1,4 @@
-;; Test `call` operator
+;; Test `return_call` operator
 
 (module
   ;; Auxiliary definitions
@@ -19,15 +19,15 @@
 
   ;; Typing
 
-  (func (export "type-i32") (result i32) (call $const-i32))
-  (func (export "type-i64") (result i64) (call $const-i64))
-  (func (export "type-f32") (result f32) (call $const-f32))
-  (func (export "type-f64") (result f64) (call $const-f64))
+  (func (export "type-i32") (result i32) (return_call $const-i32))
+  (func (export "type-i64") (result i64) (return_call $const-i64))
+  (func (export "type-f32") (result f32) (return_call $const-f32))
+  (func (export "type-f64") (result f64) (return_call $const-f64))
 
-  (func (export "type-first-i32") (result i32) (call $id-i32 (i32.const 32)))
-  (func (export "type-first-i64") (result i64) (call $id-i64 (i64.const 64)))
-  (func (export "type-first-f32") (result f32) (call $id-f32 (f32.const 1.32)))
-  (func (export "type-first-f64") (result f64) (call $id-f64 (f64.const 1.64)))
+  (func (export "type-first-i32") (result i32) (return_call $id-i32 (i32.const 32)))
+  (func (export "type-first-i64") (result i64) (return_call $id-i64 (i64.const 64)))
+  (func (export "type-first-f32") (result f32) (return_call $id-f32 (f32.const 1.32)))
+  (func (export "type-first-f64") (result f64) (return_call $id-f64 (f64.const 1.64)))
 
   (func (export "type-second-i32") (result i32)
     (return_call $f32-i32 (f32.const 32.1) (i32.const 32))
