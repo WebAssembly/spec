@@ -14,7 +14,8 @@ WASM_EXEC = os.path.join(INTERPRETER_DIR, 'wasm')
 
 WAST_TESTS_DIR = os.path.join(SCRIPT_DIR, 'core')
 JS_TESTS_DIR = os.path.join(SCRIPT_DIR, 'js-api')
-HTML_TESTS_DIR = os.path.join(SCRIPT_DIR, 'html')
+WEB_TESTS_DIR = os.path.join(SCRIPT_DIR, 'web-api')
+WASM_TESTS_DIR = os.path.join(WEB_TESTS_DIR, 'wasm')
 HARNESS_DIR = os.path.join(SCRIPT_DIR, 'harness')
 
 HARNESS_FILES = ['testharness.js', 'testharnessreport.js', 'testharness.css']
@@ -136,11 +137,17 @@ def build_html_js(out_dir):
     ensure_empty_dir(out_dir)
     build_js(out_dir, True)
 
-    for js_file in glob.glob(os.path.join(HTML_TESTS_DIR, '*.js')):
+    for js_file in glob.glob(os.path.join(WEB_TESTS_DIR, '*.js')):
         shutil.copy(js_file, out_dir)
 
     for js_file in glob.glob(os.path.join(out_dir, '*.js')):
         wrap_single_test(js_file)
+
+def build_html_wasm(out_dir):
+    ensure_empty_dir(out_dir)
+
+    for wasm_file in glob.glob(os.path.join(WASM_TESTS_DIR, '*.wasm')):
+        shutil.copy(wasm_file, out_dir)
 
 def build_html_from_js(js_html_dir, html_dir, use_sync):
     for js_file in glob.glob(os.path.join(js_html_dir, '*.js')):
@@ -156,15 +163,17 @@ def build_html_from_js(js_html_dir, html_dir, use_sync):
             content += HTML_BOTTOM
             f.write(content)
 
-def build_html(html_dir, js_dir, use_sync):
+def build_html(web_dir, js_dir, use_sync):
     print("Building HTML tests...")
 
-    js_html_dir = os.path.join(html_dir, 'js')
+    js_html_dir = os.path.join(web_dir, 'js')
+    wasm_html_dir = os.path.join(web_dir, 'wasm')
 
     build_html_js(js_html_dir)
+    build_html_wasm(wasm_html_dir)
 
     print('Building WPT tests from JS tests...')
-    build_html_from_js(js_html_dir, html_dir, use_sync)
+    build_html_from_js(js_html_dir, web_dir, use_sync)
 
     print("Done building HTML tests.")
 
@@ -201,9 +210,14 @@ def process_args():
                         help="Relative path to the output directory for the pure JS tests.",
                         type=str)
 
-    parser.add_argument('--html',
-                        dest="html_dir",
+    parser.add_argument('--web',
+                        dest="web_dir",
                         help="Relative path to the output directory for the Web Platform tests.",
+                        type=str)
+
+    parser.add_argument('--wasm',
+                        dest="wasm_dir",
+                        help="Relative path to the output directory for the WASM tests.",
                         type=str)
 
     parser.add_argument('--front',
@@ -231,10 +245,10 @@ if __name__ == '__main__':
     args, parser = process_args()
 
     js_dir = args.js_dir
-    html_dir = args.html_dir
-    front_dir = args.front_dir
+    web_dir = args.web_dir
+    front_dir = args.front_dir    
 
-    if front_dir is None and js_dir is None and html_dir is None:
+    if front_dir is None and js_dir is None and web_dir is None:
         print('At least one mode must be selected.\n')
         parser.print_help()
         sys.exit(1)
@@ -248,9 +262,9 @@ if __name__ == '__main__':
         ensure_empty_dir(js_dir)
         build_js(js_dir)
 
-    if html_dir is not None:
-        ensure_empty_dir(html_dir)
-        build_html(html_dir, js_dir, args.use_sync)
+    if web_dir is not None:
+        ensure_empty_dir(web_dir)
+        build_html(web_dir, js_dir, args.use_sync)
 
     if front_dir is not None:
         ensure_empty_dir(front_dir)
