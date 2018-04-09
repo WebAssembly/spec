@@ -25,7 +25,10 @@ def Main():
       'Implementation Limitations',
       'Validation Algorithm',
       'Custom Sections',
-      'Soundness']:
+      'Soundness',
+      'Index of Types',
+      'Index of Instructions',
+      'Index of Semantic Rules']:
     data = data.replace(
         '<h3>' + section + '</h3>',
         '<h3>A.' + str(number) + ' ' + section + '</h3>')
