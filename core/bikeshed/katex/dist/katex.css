@@ -110,19 +110,18 @@
   font-weight: normal;
   font-style: normal;
 }
-.katex-display {
-  /*
+div > .katex-display {
   display: block;
   margin: 1em 0;
   text-align: center;
-  */
 }
 .katex-display > .katex {
-/*  display: inline-block; */
+  display: inline-block;
   text-align: initial;
 }
 .katex {
-  font: normal 1.21em KaTeX_Main, Times New Roman, serif;
+  /* font: normal 1.21em KaTeX_Main, Times New Roman, serif; */
+  font: normal KaTeX_Main, Times New Roman, serif;
   line-height: 1.2;
   white-space: nowrap;
   text-indent: 0;
