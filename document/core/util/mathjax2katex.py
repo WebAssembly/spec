@@ -93,6 +93,14 @@ def ReplaceMath(cache, data):
   # Fix stray spans that come out of katex.
   ret = re.sub('[<]span class="vlist" style="height:[0-9.]+em;"[>]',
                '<span class="vlist">', ret)
+  # Drop bad italic font adjustment.
+  # https://github.com/WebAssembly/spec/issues/669
+  # https://github.com/Khan/KaTeX/issues/1259
+  ret = re.sub(
+      'mathit" style="margin-right:0.[0-9]+em', 'mathit" style="', ret)
+  ret = re.sub(
+      'mainit" style="margin-right:0.[0-9]+em', 'mathit" style="', ret)
+
   cache[old] = ' ' + ret + ' '
   return ret
 
