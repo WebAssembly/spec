@@ -13,10 +13,19 @@
 <   display: inline-block;
 ---
 > /*  display: inline-block; */
-1059,1064d1058
-< }
+1060,1065d1059
 < .katex svg path {
 <   fill: currentColor;
 < }
 < .katex svg line {
 <   stroke: currentColor;
+< }
+1143a1138,1145
+> /* Force borders on tables */
+> table {
+>   border-collapse: collapse;
+> }
+> th, td {
+>   border: 1px solid;
+>   padding: .4em;
+> };
