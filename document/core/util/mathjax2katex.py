@@ -57,7 +57,6 @@ def ReplaceMath(cache, data):
   data = data.replace('@{\\qquad}', '')
   data = data.replace('@{\\qquad\\qquad}', '')
   data = re.sub('([^\\\\])[$]', '\\1', data)
-  data = re.sub('[\\\\]href{[^}]*}', '', data)
   macros = {}
   while True:
     start, end = FindMatching(data, '\\def\\')
@@ -88,7 +87,13 @@ def ReplaceMath(cache, data):
   ret = '<span class="katex-display"><span class="katex">' + ret + '</span>'
   # w3c validator does not like negative em.
   ret = re.sub('height:[-][0-9][.][0-9]+em', 'height:0em', ret)
-  cache[old] = ret
+  # Fix ahref -> a href bug (fixed in next release).
+  # Also work around W3C forcing links to have underline.
+  ret = ret.replace('<ahref="<a', '<a style="border-bottom: 0px" href="')
+  # Fix stray spans that come out of katex.
+  ret = re.sub('[<]span class="vlist" style="height:[0-9.]+em;"[>]',
+               '<span class="vlist">', ret)
+  cache[old] = ' ' + ret + ' '
   return ret
 
 
