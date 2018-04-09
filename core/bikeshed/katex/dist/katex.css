@@ -1135,3 +1135,11 @@ div > .katex-display {
   border-bottom-style: solid;
   border-bottom-width: 0.08em;
 }
+/* Force borders on tables */
+table {
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid;
+  padding: .4em;
+};
