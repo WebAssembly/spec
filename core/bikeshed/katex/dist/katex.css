@@ -1139,7 +1139,13 @@ div > .katex-display {
 table {
   border-collapse: collapse;
 }
-th, td {
+.docutils th, td {
   border: 1px solid;
   padding: .4em;
-};
+}
+.footnote td {
+  border: 0; !important
+}
+blockquote {
+  border-color: transparent;
+}
