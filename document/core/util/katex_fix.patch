@@ -20,12 +20,18 @@
 < .katex svg line {
 <   stroke: currentColor;
 < }
-1143a1138,1145
+1142a1137,1150
+> }
 > /* Force borders on tables */
 > table {
 >   border-collapse: collapse;
 > }
-> th, td {
+> .docutils th, td {
 >   border: 1px solid;
 >   padding: .4em;
-> };
+> }
+> .footnote td {
+>   border: 0; !important
+> }
+> blockquote {
+>   border-color: transparent;
