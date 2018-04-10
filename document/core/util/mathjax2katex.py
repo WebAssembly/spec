@@ -32,8 +32,6 @@ def FindMatching(data, prefix):
 
 
 def ReplaceMath(cache, data):
-  if cache.has_key(data):
-    return cache[data]
   old = data
   data = data.replace('\\\\', '\\DOUBLESLASH')
   data = data.replace('\\(', '')
@@ -44,7 +42,7 @@ def ReplaceMath(cache, data):
   data = data.replace('’', '\\text{’}')
   data = data.replace('‘', '\\text{‘}')
   data = data.replace('\\hfill', '')
-  data = data.replace('\\mbox', '')
+  data = data.replace('\\mbox', '\\mathrel')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
   data = data.replace('\\end{split}', '\\end{aligned}')
   data = data.replace('&amp;', '&')
@@ -57,6 +55,11 @@ def ReplaceMath(cache, data):
   data = data.replace('@{\\qquad}', '')
   data = data.replace('@{\\qquad\\qquad}', '')
   data = re.sub('([^\\\\])[$]', '\\1', data)
+  data = '\\mathrm{' + data + '}'
+
+  if cache.has_key(data):
+    return cache[data]
+
   macros = {}
   while True:
     start, end = FindMatching(data, '\\def\\')
@@ -76,7 +79,7 @@ def ReplaceMath(cache, data):
         break
       data = data[:start] + v.replace('#1', data[start+len(k):end]) + data[end:]
   p = subprocess.Popen(
-      ['node', os.path.join(SCRIPT_DIR, 'katex/cli.js')],
+      ['node', os.path.join(SCRIPT_DIR, 'katex/cli.js'), '--display-mode'],
       stdin=subprocess.PIPE, stdout=subprocess.PIPE)
   ret = p.communicate(input=data)[0]
   if p.returncode != 0:
@@ -101,7 +104,7 @@ def ReplaceMath(cache, data):
   ret = re.sub(
       'mainit" style="margin-right:0.[0-9]+em', 'mathit" style="', ret)
 
-  cache[old] = ' ' + ret + ' '
+  cache[data] = ' ' + ret + ' '
   return ret
 
 
