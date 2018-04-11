@@ -147,11 +147,19 @@ The [=serialization steps=], given |value|, |serialized|, and |forStorage|, are:
 
     1. Set |serialized|.\[[Bytes]] to the [=sub-serialization=] of |value|.\[[Bytes]].
 
+    1. If |forStorage| is *false*, set |serialized|.\[[AgentCluster]] to the
+       [=current Realm=]'s corresponding [=agent cluster=].
+
 The [=deserialization steps=], given |serialized| and |value|, are:
 
     1. Let |bytes| be the [=sub-deserialization=] of |serialized|.\[[Bytes]].
 
     1. Set |value|.\[[Bytes]] to |bytes|.
+
+    1. If |serialized| has an \[[AgentCluster]] field, and if |targetRealm|'s
+        corresponding [=agent cluster=] is not
+        |serialized|.\[[AgentCluster]], then throw a
+        "<a exception>DataCloneError</a>" {{DOMException}}.
 
     1. [=Compile a WebAssembly module=] from |bytes| and set |value|.\[[Module]] to the result.
 
@@ -164,6 +172,10 @@ Note: The semantics of a structured serialization is as-if the binary source, fr
 Given the above engine optimizations, structured serialization provides developers
 explicit control over both compiled-code caching and cross-window/worker code
 sharing.
+
+Note: The web platform does not permit cross-origin sharing of serialized Modules: in the
+case of |forStorage| being true, IndexedDB separates storage per origin; in the case of
+|forStorage| being false, agent clusters in HTML do not span multiple origins.
 
 <h2 id="conventions">Developer-Facing Display Conventions</h2>
 
