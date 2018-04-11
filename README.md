@@ -4,7 +4,7 @@
 
 This repository
 holds a
-[propsal](https://github.com/WebAssembly/exception-handling/blob/master/proposals/Exceptions.md) for
+[proposal](https://github.com/WebAssembly/exception-handling/blob/master/proposals/Exceptions.md) for
 adding exception handling to WebAssembly.
 
 The repository is a copy
