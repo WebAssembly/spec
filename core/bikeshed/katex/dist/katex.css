@@ -1146,6 +1146,6 @@ table {
 .footnote td {
   border: 0;
 }
-blockquote {
-  border-color: transparent;
+.codepre {
+  whitespace: pre;
 }
