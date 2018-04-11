@@ -14,7 +14,7 @@ def Main():
   # Don't add more than 3 levels to TOC.
   data = data.replace('<h5>', '<h5 class="no-toc">')
 
-  # TODO(bradnelson/tabadkins): Fix when bikeshed can do letters.
+  # TODO(bradnelson/tabatkins): Fix when bikeshed can do letters.
   # Don't number the Appendix.
   data = data.replace(
       '<h2>Appendix</h2>',

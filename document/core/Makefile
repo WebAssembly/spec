@@ -150,6 +150,8 @@ bikeshed:
 	cp -r util/katex/dist/* $(BUILDDIR)/html/bikeshed/katex/dist/
 	patch -p0 $(BUILDDIR)/html/bikeshed/katex/dist/katex.css \
 		< util/katex_fix.patch
+	cp $(BUILDDIR)/bikeshed_singlehtml/_static/pygments.css \
+		$(BUILDDIR)/html/bikeshed/
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
 
