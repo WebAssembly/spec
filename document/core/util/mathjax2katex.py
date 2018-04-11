@@ -86,6 +86,7 @@ def ReplaceMath(cache, data):
     sys.stderr.write('BEFORE:\n' + old + '\n')
     sys.stderr.write('AFTER:\n' + data + '\n')
     return ''
+  ret = ret.strip()
   ret = ret[ret.find('<span class="katex-html"'):]
   ret = '<span class="katex-display"><span class="katex">' + ret + '</span>'
   # w3c validator does not like negative em.
@@ -104,12 +105,20 @@ def ReplaceMath(cache, data):
   ret = re.sub(
       'mainit" style="margin-right:0.[0-9]+em', 'mathit" style="', ret)
 
-  cache[data] = ' ' + ret + ' '
+  cache[data] = ret
   return ret
 
 
 def Main():
   fixups = []
+
+  # TODO(bradnelson, tabatkins): Fix bikeshed to not muck up <pre>.
+  def StripParas(match):
+    ret = match.group(1)
+    ret = ret.replace('\n<p><span class="k">case', '\n   <span class="k">case')
+    ret = ret.replace('<p>', '')
+    ret = ret.replace('</p>', '')
+    return ret
 
   def ExtractMath(match):
     fixups.append(
@@ -147,9 +156,10 @@ def Main():
   # Drop sphinx css.
   data = data.replace(
       '<link href="_static/classic.css" rel="stylesheet" type="text/css">', '')
+  # Fix sphinx css
   data = data.replace(
       '<link href="_static/pygments.css" rel="stylesheet" type="text/css">',
-      '')
+      '<link href="pygments.css" rel="stylesheet" type="text/css">')
   # Bad duplicate meta.
   data = ''.join(data.rsplit(
       '<meta content="text/html; charset=utf-8" http-equiv="Content-Type">', 1))
@@ -167,13 +177,15 @@ def Main():
   data = data.replace(' frame="void"', '')
   # rules="none" fails w3c validator.
   data = data.replace(' rules="none"', '')
-  # <pre> makes w3c valdiator angry (w/ <p> nested)
-  data = data.replace('<pre>', '<div>')
-  data = data.replace('</pre>', '</div>')
   # width="*" angers w3c validator.
   data = re.sub(' width="[0-9]+%"', '', data)
   # border="1" angers w3c validator.
   data = data.replace(' border="1"', '')
+  # Get rid of gray bars.
+  data = data.replace(
+      '<blockquote>', '<blockquote style="border-color: transparent">')
+  # Strip <p> in <pre>
+  data = re.sub('(<pre>.*?</pre>)', StripParas, data, 0, re.DOTALL)
 
   # Pull out math fragments.
   data = re.sub(
