@@ -52,7 +52,7 @@ try resulttype
 end
 ```
 
-Note that the `catch exteption_index` and `catch` forms of the catch clause should be given different opcodes.
+Note that the `catch exception_index` and `catch` forms of the catch clause should be given different opcodes.
 
 ### Alternate Form: Catch Lists
 
@@ -69,7 +69,7 @@ end
 
 One downside of this form is that it does not directly support running different
 code for different exception types. This can still be accomplished, however, by
-dyanmically inspecting the exception inside the catch block.
+dynamically inspecting the exception inside the catch block.
 
 # Level 3
 
