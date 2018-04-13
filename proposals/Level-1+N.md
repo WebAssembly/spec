@@ -186,14 +186,14 @@ function run():
   try:
     produce()
   catch e: yield():
-    c1 = e
+    e
   end
 
   // Start the consumer
   try:
     consume()
   catch e: yield():
-    c2 = e
+    e
   end
 
   loop:
@@ -248,30 +248,23 @@ https://en.wikipedia.org/wiki/Delimited_continuation:
 
 This can be translated into a resumable exceptions program. We'll start by
 rewriting the program so that it's closer to the high level syntax we've been
-using. Note that this program uses WebAssembly's stack machine nature.
+using.
 
 ```
 function main():
-  2
-  reset:
-    1
-    shift k:
-      k(5)
-    +
-  *
+  2 * (reset => 1 + (shift k => k(5)))
 ```
 
-Now we can convert the program to use resumable exceptions:
+Now we can convert the program to use resumable exceptions. For convenience, we
+use JavaScript-style lambdas (e.g. `(x, y) => x + y`) and assume a later pass
+will compile this away.
 
 ```
-
+Exception shift_k: (fn (i32) -> i32) -> i32
 
 function main():
-  2
-  reset:
-    1
-    shift k:
-      k(5)
-    +
-  *
+  2 * (try:
+         1 + (throw shift_k((k) => k(5)))
+       catch e: shift_k(f):
+         f((v) => resume e(v)))
 ```
