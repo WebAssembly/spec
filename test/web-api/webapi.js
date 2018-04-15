@@ -55,57 +55,57 @@
         return new Response(wire_bytes, {headers:{"Content-Type":"application/wasm"}});
     }
       
-    test(() => {
+    promise_test(() => {
         fetch(incrementer_url)
             .then(WebAssembly.compileStreaming)
             .then(m => new WebAssembly.Instance(m))
             .then(i => assert_equals(5, i.exports.increment(4)));
     }, "Test streamed Compile");
 
-    test(() => {
+    promise_test(() => {
         fetch(incrementer_url)
             .then(WebAssembly.compileStreaming)
             .then(assert_unreached, AssertTypeError);
     }, "Compile mime type is checked");
 
-    test(() => {
+    promise_test(() => {
         fetch(incrementer_url)
             .then(WebAssembly.instantiateStreaming)
             .then(assert_unreached, AssertTypeError);
     }, "Instantiate mime type is checked");
 
-    test(() => {
+    promise_test(() => {
         WebAssembly.compileStreaming(fetch(incrementer_url))
             .then(m => new WebAssembly.Instance(m))
             .then(i => assert_equals(5, i.exports.increment(4)));
     }, "Short form streamed Compile");
 
-    test(() => {
+    promise_test(() => {
         WebAssembly.compileStreaming(Promise.resolve(5))
             .then(assert_unreached, AssertTypeError);
     }, "Negative streamed compile promise");
 
-    test(() => {
+    promise_test(() => {
         WebAssembly.compileStreaming(new Response())
             .then(assert_unreached, AssertTypeError);
     }, "Compile blank response");
 
-    test(() => {
+    promise_test(() => {
         WebAssembly.instantiateStreaming(new Response())
             .then(assert_unreached, AssertTypeError);
     }, "Instantiate blank response");
 
-    test(() => {
+    promise_test(() => {
         WebAssembly.compileStreaming()
             .then(assert_unreached, AssertTypeError);
     }, "Compile empty");
 
-    test(() => {
+    promise_test(() => {
         WebAssembly.instantiateStreaming()
             .then(assert_unreached, AssertTypeError);
     }, "Instantiate empty");
 
-    test(() => {
+    promise_test(() => {
         fetch(incrementer_url)
             .then(r => r.arrayBuffer())
             .then(arr => new Response(arr, {headers:{"Content-Type":"application/wasm"}}))
@@ -114,7 +114,7 @@
             .then(i => assert_equals(6, i.exports.increment(5)));
     }, "Compile from array buffer");
 
-    test(() => {
+    promise_test(() => {
         const arr = new ArrayBuffer(10);
         const view = new Uint8Array(arr);
         for (let i = 0; i < view.length; ++i) view[i] = i;
@@ -123,7 +123,7 @@
           .then(assert_unreached, AssertTypeError);
     }, "Compile from invalid array buffer");
 
-    test(() => {
+    promise_test(() => {
         const arr = new ArrayBuffer(10);
         const view = new Uint8Array(arr);
         for (let i = 0; i < view.length; ++i) view[i] = i;
@@ -132,33 +132,33 @@
             .then(assert_unreached, AssertTypeError);
     }, "Instantiate from invalid array buffer");
 
-    test(() => {        
+    promise_test(() => {        
         return fetch(incrementer_url)
             .then(response => response.arrayBuffer())
             .then(WebAssembly.instantiateStreaming)
             .then(assert_unreached, AssertTypeError);
     }, "Instantiate from array buffer");
 
-    test(() => {        
+    promise_test(() => {        
         return WebAssembly.instantiateStreaming(fetch(incrementer_url))
             .then(pair => assert_equals(5, pair.instance.exports.increment(4)));
     }, "Short form streamed instantiate");
 
-    test(() => {        
+    promise_test(() => {        
         return fetch(incrementer_url)
             .then(response => response.arrayBuffer())
             .then(WebAssembly.instantiateStreaming)
             .then(assert_unreached, AssertTypeError);
     }, "Instantiate from array buffer");
 
-    test(() => {        
+    promise_test(() => {        
         return fetch(incrementer_url)
             .then(response => response.arrayBuffer())
             .then(WebAssembly.instantiateStreaming)
             .then(assert_unreached, AssertTypeError);
     }, "Instantiate from array buffer");
 
-    test(() => {
+    promise_test(() => {
         const mem_1 = new WebAssembly.Memory({initial: 1});
         const view_1 = new Int32Array(mem_1.buffer);
         view_1[0] = 42;
@@ -174,19 +174,19 @@
           .then(pair => AssertType(pair.instance, WebAssembly.Instance));
       }, "Instantiate complex module");
       
-      test (() => {
+      promise_test(() => {
         return WebAssembly.compileStreaming(fetch(invalid_wasm_url))
           .then(assert_unreached,
                 AssertCompileError);
       }, "Compile from invalid download");
       
-      test (() => {
+      promise_test(() => {
         return WebAssembly.instantiateStreaming(fetch(invalid_wasm_url))
           .then(assert_unreached,
                 AssertCompileError);
       }, "Instantiate from invalid download");
       
-      test (() => {
+      promise_test(() => {
         let resolve;
         // Create a promise which fulfills when the worker finishes.
         let promise = new Promise(function(res, rej) {
@@ -211,7 +211,7 @@
         return promise.then(exists => assert_true(exists));
       }, "Streaming compile exists in worker");
       
-      test (() => {
+      promise_test(() => {
         let resolve;
         // Create a promise which fulfills when the worker finishes.
         let promise = new Promise(function(res, rej) {
