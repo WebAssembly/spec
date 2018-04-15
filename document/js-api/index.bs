@@ -143,7 +143,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: 𝖿𝟨𝟦
     url: syntax/types.html#syntax-reftype
         text: anyref
-        text: anyeqref
+        text: eqref
         text: anyfunc
     text: function element; url: exec/runtime.html#syntax-funcelem
     text: import component; url: syntax/modules.html#imports
@@ -600,7 +600,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 <pre class="idl">
 enum TableKind {
   "anyref",
-  "anyeqref",
+  "eqref",
   "anyfunc",
   // Note: More values may be added in future iterations,
   // e.g., typed function references, typed GC references
@@ -823,9 +823,8 @@ Assert: |type| is not [=𝗂𝟨𝟦=].
     1. Let |f64| be ? [=ToNumber=](|v|).
     1. Return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |f64|.
 1. If |type| is [=anyref=],
-    1. If |v| is a primitive value but not a string, symbol, or null, throw |error|.
     1. Return the result of [=allocating a host address=] for |v|.
-1. If |type| is [=anyeqref=],
+1. If |type| is [=eqref=],
     1. If |v| is a primitive value but not a symbol or null, throw |error|.
     1. Return the result of [=allocating a host address=] for |v|.
 1. If |type| is [=anyfunc=],

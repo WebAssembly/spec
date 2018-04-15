@@ -34,7 +34,7 @@ Reference Types
    \production{reference type} & \Treftype &::=&
      \text{anyref} &\Rightarrow& \ANYREF \\ &&|&
      \text{anyfunc} &\Rightarrow& \ANYFUNC \\ &&|&
-     \text{anyeqref} &\Rightarrow& \ANYEQREF \\
+     \text{eqref} &\Rightarrow& \EQREF \\
    \end{array}
 
 

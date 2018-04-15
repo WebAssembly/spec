@@ -74,11 +74,17 @@ let match_type t1 t2 =
   | Some t1, Some t2 -> match_value_type t1 t2
   | _, _ -> true
 
-let join_type t1 t2 =
+let join_type t1 t2 at =
   match t1, t2 with
   | _, None -> t1
   | None, _ -> t2
-  | Some t1, Some t2 -> join_value_type t1 t2
+  | Some t1', Some t2' ->
+    let t = join_value_type t1' t2' in
+    require (t <> None) at
+      ("type mismatch: operator requires common supertype for " ^
+       string_of_infer_type t1 ^ " and " ^ string_of_infer_type t2 ^
+       " but none exists");
+    t
 
 let check_stack ts1 ts2 at =
   require
@@ -217,7 +223,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | BrTable (xs, x) ->
     let ts =
-      List.fold_left (fun t1 t2 -> Lib.Option.get (meet_stack_type t1 t2) t1)
+      List.fold_left (fun t1 t2 ->
+          let t = meet_stack_type t1 t2 in
+          require (t <> None) e.at
+            ("type mismatch: operator requires common subtype for " ^
+             string_of_stack_type t1 ^ " and " ^ string_of_stack_type t2 ^
+             " but none exists");
+          Lib.Option.force t)
         (label c x) (List.map (label c) xs)
     in
     check_stack (known ts) (known (label c x)) x.at;
@@ -243,9 +255,9 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [peek 0 s] -~> []
 
   | Select ->
-    let t1 = peek 1 s in
-    let t2 = peek 0 s in
-    let t = join_type t1 t2 in
+    let t1 = peek 2 s in
+    let t2 = peek 1 s in
+    let t = join_type t1 t2 e.at in
     [t; t; Some (NumType I32Type)] -~> [t]
 
   | GetLocal x ->
@@ -297,7 +309,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [RefType AnyRefType] --> [NumType I32Type]
 
   | Same ->
-    [RefType AnyEqRefType; RefType AnyEqRefType] --> [NumType I32Type]
+    [RefType EqRefType; RefType EqRefType] --> [NumType I32Type]
 
   | Const v ->
     let t = NumType (type_num v.it) in

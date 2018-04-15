@@ -43,7 +43,7 @@ Reference Types
    \production{reference type} & \Breftype &::=&
      \hex{70} &\Rightarrow& \ANYFUNC \\ &&|&
      \hex{6F} &\Rightarrow& \ANYREF \\ &&|&
-     \hex{6E} &\Rightarrow& \ANYEQREF \\
+     \hex{6E} &\Rightarrow& \EQREF \\
    \end{array}
 
 

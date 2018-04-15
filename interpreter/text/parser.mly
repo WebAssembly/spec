@@ -147,7 +147,7 @@ let inline_type_explicit (c : context) x ft at =
 
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
-%token ANYREF ANYEQREF ANYFUNC NUM_TYPE MUT
+%token EQREF ANYREF ANYFUNC NUM_TYPE MUT
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL GET_TABLE SET_TABLE
@@ -205,8 +205,8 @@ string_list :
 /* Types */
 
 ref_type :
+  | EQREF { EqRefType }
   | ANYREF { AnyRefType }
-  | ANYEQREF { AnyEqRefType }
   | ANYFUNC { AnyFuncType }
 
 value_type :

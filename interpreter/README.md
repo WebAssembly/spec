@@ -184,7 +184,7 @@ align: align=(1|2|4|8|...)
 cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
 
 num_type: i32 | i64 | f32 | f64
-ref_type: anyref | anyfunc | anyeqref
+ref_type: anyref | anyfunc | eqref
 val_type: num_type | ref_type
 block_type : ( result <val_type>* )*
 func_type:   ( type <var> )? <param>* <result>*

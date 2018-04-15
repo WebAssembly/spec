@@ -99,7 +99,7 @@ let encode m =
     let ref_type = function
       | AnyFuncType -> vs7 (-0x10)
       | AnyRefType -> vs7 (-0x11)
-      | AnyEqRefType -> vs7 (-0x12)
+      | EqRefType -> vs7 (-0x12)
       | NullRefType -> assert false
 
     let value_type = function

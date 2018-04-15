@@ -1237,9 +1237,9 @@
     )
   )
 
-  (func (export "meet-anyeqref") (param i32) (param anyeqref) (result anyref)
+  (func (export "meet-eqref") (param i32) (param eqref) (result anyref)
     (block $l1 (result anyref)
-      (block $l2 (result anyeqref)
+      (block $l2 (result eqref)
         (br_table $l1 $l2 $l1 (get_local 1) (get_local 0))
       )
     )
@@ -1255,7 +1255,7 @@
 
   (func (export "meet-nullref") (param i32) (result anyref)
     (block $l1 (result anyref)
-      (block $l2 (result anyeqref)
+      (block $l2 (result eqref)
         (drop
           (block $l3 (result anyfunc)
             (br_table $l1 $l2 $l3 (ref.null) (get_local 0))
@@ -1450,9 +1450,9 @@
 (assert_return (invoke "meet-anyref" (i32.const 1) (ref.host 1)) (ref.host 1))
 (assert_return (invoke "meet-anyref" (i32.const 2) (ref.host 1)) (ref.host 1))
 
-(assert_return (invoke "meet-anyeqref" (i32.const 0) (ref.host 1)) (ref.host 1))
-(assert_return (invoke "meet-anyeqref" (i32.const 1) (ref.host 1)) (ref.host 1))
-(assert_return (invoke "meet-anyeqref" (i32.const 2) (ref.host 1)) (ref.host 1))
+(assert_return (invoke "meet-eqref" (i32.const 0) (ref.host 1)) (ref.host 1))
+(assert_return (invoke "meet-eqref" (i32.const 1) (ref.host 1)) (ref.host 1))
+(assert_return (invoke "meet-eqref" (i32.const 2) (ref.host 1)) (ref.host 1))
 
 (assert_return_func (invoke "meet-anyfunc" (i32.const 0)))
 (assert_return_func (invoke "meet-anyfunc" (i32.const 1)))

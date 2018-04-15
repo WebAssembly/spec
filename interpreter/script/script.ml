@@ -50,7 +50,7 @@ exception Syntax of Source.region * string
 let () =
   let type_of_ref' = !Values.type_of_ref' in
   Values.type_of_ref' := function
-    | HostRef _ -> Types.AnyEqRefType
+    | HostRef _ -> Types.EqRefType
     | r -> type_of_ref' r
 
 let () =

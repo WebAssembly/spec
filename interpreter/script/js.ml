@@ -329,9 +329,9 @@ let wrap item_name wrap_action wrap_assertion at =
   let item = Lib.List32.length itypes @@ at in
   let types =
     (FuncType ([], []) @@ at) ::
-    (FuncType ([NumType I32Type], [RefType AnyEqRefType]) @@ at) ::
-    (FuncType ([RefType AnyEqRefType], [NumType I32Type]) @@ at) ::
-    (FuncType ([RefType AnyEqRefType], [NumType I32Type]) @@ at) ::
+    (FuncType ([NumType I32Type], [RefType EqRefType]) @@ at) ::
+    (FuncType ([RefType EqRefType], [NumType I32Type]) @@ at) ::
+    (FuncType ([RefType EqRefType], [NumType I32Type]) @@ at) ::
     itypes
   in
   let imports =

@@ -173,7 +173,7 @@
 
 .. |ANYREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyref}}
 .. |ANYFUNC| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyfunc}}
-.. |ANYEQREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyeqref}}
+.. |EQREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{eqref}}
 .. |NULLREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{nullref}}
 
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}

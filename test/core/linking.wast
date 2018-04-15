@@ -59,9 +59,9 @@
 (assert_return (invoke $Ng "get") (i32.const 43))
 
 (module $Mref-ex
-  (global (export "g-const") anyeqref (ref.null))
+  (global (export "g-const") eqref (ref.null))
   ;; Mutable globals cannot be exported yet
-  ;; (global (export "g-var") (mut anyeqref) (ref.null))
+  ;; (global (export "g-var") (mut eqref) (ref.null))
 )
 (register "Mref-ex" $Mref-ex)
 

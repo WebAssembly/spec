@@ -54,15 +54,15 @@ Reference Types
 .. math::
    \begin{array}{llll}
    \production{reference type} & \reftype &::=&
-     \ANYREF ~|~ \ANYFUNC ~|~ \ANYEQREF ~|~ \NULLREF \\
+     \ANYREF ~|~ \ANYFUNC ~|~ \EQREF ~|~ \NULLREF \\
    \end{array}
 
 The type |ANYREF| denotes the infinite union of all references, and thereby a :ref:`supertype <match-reftype>` of all other reference types.
 
 The type |ANYFUNC| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
 
-The type |ANYEQREF| denotes the infinite union of all references that can be compared for equality;
-in order to avoid exposing implementation details, some reference types, such as |ANYFUNC|, do not admit equality, and therefore are not :ref:`subtypes <match-reftype>` of |ANYEQREF|.
+The type |EQREF| denotes the infinite union of all references that can be compared for equality;
+in order to avoid exposing implementation details, some reference types, such as |ANYFUNC|, do not admit equality, and therefore are not :ref:`subtypes <match-reftype>` of |EQREF|.
 
 The type |NULLREF| only contains a single value: the :ref:`null <syntax-ref_null>` reference.
 It is a :ref:`subtype <match-reftype>` of all other reference types.

@@ -97,8 +97,8 @@ Table extensions:
 
 API extensions:
 
-* Any JS object (non-primitive value) or string or symbol or `null` can be passed as `anyref` to a Wasm function, stored in a global, or in a table.
-  - It may be possible to allow all other non-primitive values as well, depending on details of existing engines.
+* Any JS value can be passed as `anyref` to a Wasm function, stored in a global, or in a table.
+  - Is it worth considering that restricting this to non-primitive values might allow engines to use techniques like pointer compression.
 
 * Any Wasm exported function object or `null` can be passed as `anyfunc` to a Wasm function, stored in a global, or in a table.
 
@@ -116,17 +116,17 @@ Motivation:
 
 Additions:
 
-* Add `anyeqref` as the type of comparable references
-  - `reftype ::= ... | anyeqref`
+* Add `eqref` as the type of comparable references
+  - `reftype ::= ... | eqref`
 * It is a subtype of `anyref`
-  - `anyeqref < anyref`
-  - `nullref < anyeqref`
+  - `eqref < anyref`
+  - `nullref < eqref`
 * Add `ref.eq` instruction.
-  - `ref.eq : [anyeqref anyeqref] -> [i32]`
+  - `ref.eq : [eqref eqref] -> [i32]`
 
 API changes:
 
-* Any JS object (non-primitive value) or `null` can be passed as `anyeqref` to a Wasm function, stored in a global, or in a table.
+* Any JS object (non-primitive value) or symbol or `null` can be passed as `eqref` to a Wasm function, stored in a global, or in a table.
 
 
 Questions:
@@ -154,7 +154,7 @@ Additions:
 * Subtying between concrete and universal reference types
   - `ref $t < anyref`
   - `ref <functype> < anyfunc`
-  - Note: reference types are not necessarily subtypes of `anyeqref`, including functions
+  - Note: reference types are not necessarily subtypes of `eqref`, including functions
 
 * Typed function references cannot be null!
 

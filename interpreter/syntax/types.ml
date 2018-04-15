@@ -1,7 +1,7 @@
 (* Types *)
 
 type num_type = I32Type | I64Type | F32Type | F64Type
-type ref_type = NullRefType | AnyEqRefType | AnyRefType | AnyFuncType
+type ref_type = NullRefType | EqRefType | AnyRefType | AnyFuncType
 type value_type = NumType of num_type | RefType of ref_type
 type stack_type = value_type list
 type func_type = FuncType of stack_type * stack_type
@@ -137,7 +137,7 @@ let string_of_num_type = function
 
 let string_of_ref_type = function
   | NullRefType -> "nullref"
-  | AnyEqRefType -> "anyeqref"
+  | EqRefType -> "eqref"
   | AnyRefType -> "anyref"
   | AnyFuncType -> "anyfunc"
 

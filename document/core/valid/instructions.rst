@@ -195,12 +195,12 @@ Reference Instructions
 :math:`\REFEQ`
 ..............
 
-* The instruction is valid with type :math:`[\ANYEQREF~\ANYEQREF] \to [\I32]`.
+* The instruction is valid with type :math:`[\EQREF~\EQREF] \to [\I32]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \REFEQ : [\ANYEQREF~\ANYEQREF] \to [\I32]
+     C \vdashinstr \REFEQ : [\EQREF~\EQREF] \to [\I32]
    }
 
 
