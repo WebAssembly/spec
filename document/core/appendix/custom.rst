@@ -16,7 +16,7 @@ Currently, only one dedicated custom section is defined, the :ref:`name section<
 Name Section
 ~~~~~~~~~~~~
 
-The *name section* is a :ref:`custom sections <binary-customsec>` whose name string is itself :math:`\text{name}`.
+The *name section* is a :ref:`custom section <binary-customsec>` whose name string is itself :math:`\text{name}`.
 The name section should appear only once in a module, and only after the :ref:`data section <binary-datasec>`.
 
 The purpose of this section is to attach printable names to definitions in a module, which e.g. can be used by a debugger or when parts of the module are to be rendered in :ref:`text form <text>`.
