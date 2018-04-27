@@ -989,3 +989,31 @@ same class of exception is thrown as for out of memory conditions in JavaScript.
 The particular exception here is implementation-defined in both cases.
 
 Note: ECMAScript doesn't specify any sort of behavior on out-of-memory conditions; implementations have been observed to throw OOMError and to crash. Either is valid here.
+
+<h2 id="limits">Implementation-defined Limits</h2>
+
+The WebAssembly core specification allows an implementation to define limits on the syntactic structure of the module.
+The standard WebAssembly JavaScript Interface described in this document hereby defines a set of standard limits on the syntactic module structure as below.
+Modules that exceed these limits are invalid and are rejected with a {{CompileError}}.
+
+<ul>
+<li>The maximum size of a module is 1073741824 bytes (1 GiB).</li>
+<li>The maximum number of types defined in the types section is 1000000.</li>
+<li>The maximum number of functions defined in a module is 1000000.</li>
+<li>The maximum number of imports declared in a module is 100000.</li>
+<li>The maximum number of exports declared in a module is 100000.</li>
+<li>The maximum number of globals defined in a module is 1000000.</li>
+<li>The maximum number of data segments defined in a module is 100000.</li>
+
+<li>The maximum number of tables, including declared or imported tables, is 1.</li>
+<li>The maximum size of a table is 10000000.</li>
+<li>The maximum number of table entries in any table initialization is 10000000.</li>
+<li>The maximum number of memories, including declared or imported memories, is 1.</li>
+<li>The initial or maximum number of pages for any memory, declared or imported, is at most 32767.</li>
+
+<li>The maximum number of parameters to any function is 1000.</li>
+<li>The maximum number of return types for any function is 1.</li>
+<li>The maximum size of a function body, including locals declarations, is 7654321 bytes.</li>
+<li>The maximum number of locals declared in a function is 50000.</li>
+
+</ul>
