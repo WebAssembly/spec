@@ -136,7 +136,7 @@ example) even though the exact format of implementation-dependent stack trace
 strings does not always match, the locations are easily understandable and the
 same across browsers.
 
-To achive the same goal of a common representations for WebAssembly constructs, the
+To achieve the same goal of a common representations for WebAssembly constructs, the
 following conventions are adopted.
 
 A WebAssembly location is a reference to a particular instruction in the binary, and may be

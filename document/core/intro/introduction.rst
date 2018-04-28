@@ -91,6 +91,6 @@ However, to make this specification self-contained, relevant aspects of the afor
 such as the :ref:`binary representation <aux-fbits>` and :ref:`rounding <aux-ieee>` of floating-point values, and the :ref:`value range <syntax-codepoint>` and :ref:`UTF-8 encoding <binary-utf8>` of Unicode characters.
 
 .. note::
-   The aforementioned standards are the authorative source of all respective definitions.
+   The aforementioned standards are the authoritative source of all respective definitions.
    Formalizations given in this specification are intended to match these definitions.
    Any discrepancy in the syntax or semantics described is to be considered an error.
