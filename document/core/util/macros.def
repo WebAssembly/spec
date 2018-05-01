@@ -36,7 +36,10 @@
 .. ----------
 
 .. |PLDI2017| replace:: Bringing the Web up to Speed with WebAssembly
-.. _PLDI2017: https://dl.acm.org/citation.cfm?doid=3062341.3062363>
+.. _PLDI2017: https://dl.acm.org/citation.cfm?doid=3062341.3062363
+
+.. |CPP2018| replace:: Mechanising and Verifying the WebAssembly Specification
+.. _CPP2018: https://dl.acm.org/citation.cfm?id=3167082
 
 .. |TAPL| replace:: Types and Programming Languages
 .. _TAPL: https://www.cis.upenn.edu/~bcpierce/tapl/
@@ -322,8 +325,8 @@
 
 .. |LOAD| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{load}}
 .. |STORE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{store}}
-.. |CURRENTMEMORY| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{current\_memory}}
-.. |GROWMEMORY| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{grow\_memory}}
+.. |MEMORYSIZE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.size}}
+.. |MEMORYGROW| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.grow}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
 .. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}

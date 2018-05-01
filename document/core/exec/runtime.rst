@@ -355,10 +355,9 @@ These entries can occur on the stack in any order during the execution of a prog
 Stack entries are described by abstract syntax as follows.
 
 .. note::
-   It is possible to model the WebAssebmly semantics using separate stacks for operands, control constructs, and calls.
+   It is possible to model the WebAssembly semantics using separate stacks for operands, control constructs, and calls.
    However, because the stacks are interdependent, additional book keeping about associated stack heights would be required.
    For the purpose of this specification, an interleaved representation is simpler.
-
 
 Values
 ......

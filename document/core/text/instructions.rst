@@ -173,8 +173,8 @@ Memory Instructions
 .. _text-loadn:
 .. _text-store:
 .. _text-storen:
-.. _text-current_memory:
-.. _text-grow_memory:
+.. _text-memory.size:
+.. _text-memory.grow:
 
 The offset and alignment immediates to memory instructions are optional.
 The offset defaults to :math:`\T{0}`, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
@@ -214,8 +214,8 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
      \text{i64.store8}~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\STORE\K{8}~m \\ &&|&
      \text{i64.store16}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
      \text{i64.store32}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
-     \text{current\_memory} &\Rightarrow& \CURRENTMEMORY \\ &&|&
-     \text{grow\_memory} &\Rightarrow& \GROWMEMORY \\
+     \text{memory.size} &\Rightarrow& \MEMORYSIZE \\ &&|&
+     \text{memory.grow} &\Rightarrow& \MEMORYGROW \\
    \end{array}
 
 
@@ -423,7 +423,7 @@ Folded Instructions
 Instructions can be written as S-expressions by grouping them into *folded* form. In that notation, an instruction is wrapped in parentheses and optionally includes nested folded instructions to indicate its operands.
 
 In the case of :ref:`block instructions <text-instr-block>`, the folded form omits the :math:`\text{end}` delimiter.
-For |IF| instructions, both branches have to wrapped into nested S-expressions, headed by the keywords :math:`\text{then}` and :math:`\text{else}`.
+For |IF| instructions, both branches have to be wrapped into nested S-expressions, headed by the keywords :math:`\text{then}` and :math:`\text{else}`.
 
 The set of all phrases defined by the following abbreviations recursively forms the auxiliary syntactic class |Tfoldedinstr|.
 Such a folded instruction can appear anywhere a regular instruction can.

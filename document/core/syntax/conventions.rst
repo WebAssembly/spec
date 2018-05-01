@@ -41,9 +41,13 @@ The following conventions are adopted in defining grammar rules for abstract syn
 
 
 
+.. _notation-epsilon:
+.. _notation-length:
+.. _notation-index:
 .. _notation-slice:
 .. _notation-replace:
 .. _notation-record:
+.. _notation-project:
 .. _notation-concat:
 .. _notation-compose:
 

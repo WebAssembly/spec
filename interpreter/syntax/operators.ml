@@ -13,15 +13,15 @@ let f64_const n = Const (F64 n.it @@ n.at)
 let unreachable = Unreachable
 let nop = Nop
 let drop = Drop
+let select = Select
 let block ts es = Block (ts, es)
 let loop ts es = Loop (ts, es)
 let br x = Br x
 let br_if x = BrIf x
 let br_table xs x = BrTable (xs, x)
-let return = Return
 let if_ ts es1 es2 = If (ts, es1, es2)
-let select = Select
 
+let return = Return
 let call x = Call x
 let call_indirect x = CallIndirect x
 
@@ -36,40 +36,40 @@ let i64_load align offset = Load {ty = I64Type; align; offset; sz = None}
 let f32_load align offset = Load {ty = F32Type; align; offset; sz = None}
 let f64_load align offset = Load {ty = F64Type; align; offset; sz = None}
 let i32_load8_s align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Mem8, SX)}
+  Load {ty = I32Type; align; offset; sz = Some (Pack8, SX)}
 let i32_load8_u align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Mem8, ZX)}
+  Load {ty = I32Type; align; offset; sz = Some (Pack8, ZX)}
 let i32_load16_s align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Mem16, SX)}
+  Load {ty = I32Type; align; offset; sz = Some (Pack16, SX)}
 let i32_load16_u align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Mem16, ZX)}
+  Load {ty = I32Type; align; offset; sz = Some (Pack16, ZX)}
 let i64_load8_s align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Mem8, SX)}
+  Load {ty = I64Type; align; offset; sz = Some (Pack8, SX)}
 let i64_load8_u align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Mem8, ZX)}
+  Load {ty = I64Type; align; offset; sz = Some (Pack8, ZX)}
 let i64_load16_s align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Mem16, SX)}
+  Load {ty = I64Type; align; offset; sz = Some (Pack16, SX)}
 let i64_load16_u align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Mem16, ZX)}
+  Load {ty = I64Type; align; offset; sz = Some (Pack16, ZX)}
 let i64_load32_s align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Mem32, SX)}
+  Load {ty = I64Type; align; offset; sz = Some (Pack32, SX)}
 let i64_load32_u align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Mem32, ZX)}
+  Load {ty = I64Type; align; offset; sz = Some (Pack32, ZX)}
 
 let i32_store align offset = Store {ty = I32Type; align; offset; sz = None}
 let i64_store align offset = Store {ty = I64Type; align; offset; sz = None}
 let f32_store align offset = Store {ty = F32Type; align; offset; sz = None}
 let f64_store align offset = Store {ty = F64Type; align; offset; sz = None}
 let i32_store8 align offset =
-  Store {ty = I32Type; align; offset; sz = Some Mem8}
+  Store {ty = I32Type; align; offset; sz = Some Pack8}
 let i32_store16 align offset =
-  Store {ty = I32Type; align; offset; sz = Some Mem16}
+  Store {ty = I32Type; align; offset; sz = Some Pack16}
 let i64_store8 align offset =
-  Store {ty = I64Type; align; offset; sz = Some Mem8}
+  Store {ty = I64Type; align; offset; sz = Some Pack8}
 let i64_store16 align offset =
-  Store {ty = I64Type; align; offset; sz = Some Mem16}
+  Store {ty = I64Type; align; offset; sz = Some Pack16}
 let i64_store32 align offset =
-  Store {ty = I64Type; align; offset; sz = Some Mem32}
+  Store {ty = I64Type; align; offset; sz = Some Pack32}
 
 let i32_clz = Unary (I32 I32Op.Clz)
 let i32_ctz = Unary (I32 I32Op.Ctz)
@@ -199,6 +199,6 @@ let i64_reinterpret_f64 = Convert (I64 I64Op.ReinterpretFloat)
 let f32_reinterpret_i32 = Convert (F32 F32Op.ReinterpretInt)
 let f64_reinterpret_i64 = Convert (F64 F64Op.ReinterpretInt)
 
-let current_memory = CurrentMemory
-let grow_memory = GrowMemory
+let memory_size = MemorySize
+let memory_grow = MemoryGrow
 

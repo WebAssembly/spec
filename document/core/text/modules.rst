@@ -476,9 +476,8 @@ When omitted, :math:`\T{0}` is assumed.
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~(x{:}\Ttableidx_I)^?~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETABLE~x', \EOFFSET~e, \EINIT~y^\ast \} \\
-       &&& \qquad\qquad\qquad (\iff x' = x^? \neq \epsilon \vee x' = 0) \\
+     \text{(}~\text{elem}~~x{:}\Ttableidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\
    \end{array}
 
 .. note::
@@ -489,7 +488,26 @@ When omitted, :math:`\T{0}` is assumed.
 Abbreviations
 .............
 
-As an abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
+As an abbreviation, a single instruction may occur in place of the offset:
+
+.. math::
+   \begin{array}{llcll}
+   \production{element offset} &
+     \Tinstr &\equiv&
+     \text{(}~\text{offset}~~\Tinstr~\text{)}
+   \end{array}
+
+Also, the table index can be omitted, defaulting to :math:`0`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{element segment} &
+    \text{(}~\text{elem}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+       &\equiv&
+     \text{(}~\text{elem}~~0~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+   \end{array}
+
+As another abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
 
 
 .. index:: data, memory, memory index, expression, byte
@@ -509,9 +527,8 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 .. math::
    \begin{array}{llclll}
    \production{data segment} & \Tdata_I &::=&
-     \text{(}~\text{data}~~(x{:}\Tmemidx_I)^?~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\
-       &&& \qquad\qquad\qquad (\iff x' = x^? \neq \epsilon \vee x' = 0) \\[1ex]
+     \text{(}~\text{data}~~x{:}\Tmemidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\[1ex]
    \production{data string} & \Tdatastring &::=&
      (b^\ast{:}\Tstring)^\ast \quad\Rightarrow\quad \concat((b^\ast)^\ast) \\
    \end{array}
@@ -524,7 +541,26 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 Abbreviations
 .............
 
-As an abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.
+As an abbreviation, a single instruction may occur in place of the offset:
+
+.. math::
+   \begin{array}{llcll}
+   \production{data offset} &
+     \Tinstr &\equiv&
+     \text{(}~\text{offset}~~\Tinstr~\text{)}
+   \end{array}
+
+Also, the memory index can be omitted, defaulting to :math:`0`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{data segment} &
+    \text{(}~\text{data}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+       &\equiv&
+     \text{(}~\text{data}~~0~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+   \end{array}
+
+As another abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.
 
 
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, identifier context, identifier, name section

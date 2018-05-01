@@ -26,7 +26,8 @@ usage:
 	@echo "Please use \`make <target>' where <target> is one of"
 	@echo "  html       to make standalone HTML files"
 	@echo "  pdf        to make standalone PDF file"
-	@echo "  all        to make both"
+	@echo "  bikeshed   to make a bikeshed wrapped single large HTML file"
+	@echo "  all        to make all 3"
 	@echo "  publish    to make all and push to gh-pages"
 	@echo "  help       to see more options"
 
@@ -35,7 +36,8 @@ help:
 	@echo "Usage: \`make <target>' where <target> is one of"
 	@echo "  html       to make standalone HTML files"
 	@echo "  pdf        to make standalone PDF file"
-	@echo "  all        to make both"
+	@echo "  bikeshed   to make a bikeshed wrapped single large HTML file"
+	@echo "  all        to make all 3"
 	@echo "  publish    to make all and push to gh-pages"
 	@echo "  dirhtml    to make HTML files named index.html in directories"
 	@echo "  singlehtml to make a single large HTML file"
@@ -65,14 +67,28 @@ help:
 
 .PHONY: deploy
 deploy:
-	(cd ..; make deploy-core)
+	(cd ..; make dir-core deploy-core)
 
 .PHONY: publish
-publish:
-	(cd ..; make publish-core)
+publish: clean all deploy
+
+.PHONY: publish-main
+publish-main: clean main bikeshed-keep deploy
 
 .PHONY: all
-all:	pdf html
+all:	pdf html bikeshed
+
+.PHONY: main
+main:	pdf html
+
+# Dirty hack to avoid rebuilding the Bikeshed version for every push.
+.PHONY: bikeshed-keep
+bikeshed-keep:
+	test -e $(BUILDDIR)/html/bikeshed || \
+	  wget -r -nH --cut-dirs=2 -P $(BUILDDIR)/html --no-check-certificate \
+	    https://webassembly.github.io/spec/core/bikeshed || \
+	  echo Downloaded Bikeshed.
+
 
 .PHONY: pdf
 pdf:	latexpdf
@@ -98,14 +114,14 @@ html:
 	for file in `ls $(BUILDDIR)/html/*/*.html`; \
 	do \
 	  sed s:BASEDIR:..:g <$$file >$$file.out; \
-	  sed 's; <body; <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body;' \
+	  sed 's;<body; <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body;' \
 	    <$$file.out >$$file; \
 	  rm -f $$file.out; \
 	  sed s~$(OLDMATHJAX)~$(NEWMATHJAX)~g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
 	done
 	@echo
-	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html."
+	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html/."
 
 .PHONY: dirhtml
 dirhtml:
@@ -118,6 +134,26 @@ singlehtml:
 	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml."
+
+.PHONY: bikeshed
+bikeshed:
+	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
+		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
+	python util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
+		>$(BUILDDIR)/bikeshed_singlehtml/index_fixed.html
+	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
+	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
+	mkdir -p $(BUILDDIR)/html/bikeshed/
+	python util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
+		>$(BUILDDIR)/html/bikeshed/index.html
+	mkdir -p $(BUILDDIR)/html/bikeshed/katex/dist/
+	cp -r util/katex/dist/* $(BUILDDIR)/html/bikeshed/katex/dist/
+	patch -p0 $(BUILDDIR)/html/bikeshed/katex/dist/katex.css \
+		< util/katex_fix.patch
+	cp $(BUILDDIR)/bikeshed_singlehtml/_static/pygments.css \
+		$(BUILDDIR)/html/bikeshed/
+	@echo
+	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
 
 .PHONY: pickle
 pickle:

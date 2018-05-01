@@ -6,7 +6,7 @@ NAME          = WebAssembly
 .PHONY: all
 all:
 	mkdir -p $(BUILDDIR)/html
-	curl https://api.csswg.org/bikeshed/ -F file=@index.bs > $(BUILDDIR)/html/index.html
+	bikeshed spec index.bs $(BUILDDIR)/html/index.html
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html."
 
 .PHONY: publish

@@ -50,23 +50,22 @@ type code = value stack * admin_instr list
 and admin_instr = admin_instr' phrase
 and admin_instr' =
   | Plain of instr'
-  | Trapped of string
-  | Break of int32 * value stack
-  | Label of stack_type * instr list * code
-  | Frame of frame * code
   | Invoke of func_inst
+  | Trapping of string
+  | Returning of value stack
+  | Breaking of int32 * value stack
+  | Label of int * instr list * code
+  | Frame of int * frame * code
 
 type config =
 {
   frame : frame;
   code : code;
-  depth : int;   (* needed for return *)
-  budget : int;  (* needed to model stack overflow *)
+  budget : int;  (* to model stack overflow *)
 }
 
 let frame inst locals = {inst; locals}
-let config inst vs es =
-  {frame = frame inst []; code = vs, es; depth = 0; budget = 300}
+let config inst vs es = {frame = frame inst []; code = vs, es; budget = 300}
 
 let plain e = Plain e.it @@ e.at
 
@@ -120,16 +119,16 @@ let rec step (c : config) : config =
     | Plain e', vs ->
       (match e', vs with
       | Unreachable, vs ->
-        vs, [Trapped "unreachable executed" @@ e.at]
+        vs, [Trapping "unreachable executed" @@ e.at]
 
       | Nop, vs ->
         vs, []
 
       | Block (ts, es'), vs ->
-        vs, [Label (ts, [], ([], List.map plain es')) @@ e.at]
+        vs, [Label (List.length ts, [], ([], List.map plain es')) @@ e.at]
 
       | Loop (ts, es'), vs ->
-        vs, [Label ([], [e' @@ e.at], ([], List.map plain es')) @@ e.at]
+        vs, [Label (0, [e' @@ e.at], ([], List.map plain es')) @@ e.at]
 
       | If (ts, es1, es2), I32 0l :: vs' ->
         vs', [Plain (Block (ts, es2)) @@ e.at]
@@ -138,7 +137,7 @@ let rec step (c : config) : config =
         vs', [Plain (Block (ts, es1)) @@ e.at]
 
       | Br x, vs ->
-        [], [Break (x.it, vs) @@ e.at]
+        [], [Breaking (x.it, vs) @@ e.at]
 
       | BrIf x, I32 0l :: vs' ->
         vs', []
@@ -153,7 +152,7 @@ let rec step (c : config) : config =
         vs', [Plain (Br (Lib.List32.nth xs i)) @@ e.at]
 
       | Return, vs ->
-        vs, [Plain (Br ((Int32.of_int (c.depth - 1)) @@ e.at)) @@ e.at]
+        vs, [Returning vs @@ e.at]
 
       | Call x, vs ->
         vs, [Invoke (func frame.inst x) @@ e.at]
@@ -161,8 +160,9 @@ let rec step (c : config) : config =
       | CallIndirect x, I32 i :: vs ->
         let func = func_elem frame.inst (0l @@ e.at) i e.at in
         if type_ frame.inst x <> Func.type_of func then
-          Trap.error e.at "indirect call signature mismatch";
-        vs, [Invoke func @@ e.at]
+          vs, [Trapping "indirect call type mismatch" @@ e.at]
+        else
+          vs, [Invoke func @@ e.at]
 
       | Drop, v :: vs' ->
         vs', []
@@ -201,7 +201,7 @@ let rec step (c : config) : config =
             | None -> Memory.load_value mem addr offset ty
             | Some (sz, ext) -> Memory.load_packed sz ext mem addr offset ty
           in v :: vs', []
-        with exn -> vs', [Trapped (memory_error e.at exn) @@ e.at])
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
       | Store {offset; sz; _}, v :: I32 i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
@@ -212,13 +212,13 @@ let rec step (c : config) : config =
           | Some sz -> Memory.store_packed sz mem addr offset v
           );
           vs', []
-        with exn -> vs', [Trapped (memory_error e.at exn) @@ e.at]);
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | CurrentMemory, vs ->
+      | MemorySize, vs ->
         let mem = memory frame.inst (0l @@ e.at) in
         I32 (Memory.size mem) :: vs, []
 
-      | GrowMemory, I32 delta :: vs' ->
+      | MemoryGrow, I32 delta :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let old_size = Memory.size mem in
         let result =
@@ -231,23 +231,23 @@ let rec step (c : config) : config =
 
       | Test testop, v :: vs' ->
         (try value_of_bool (Eval_numeric.eval_testop testop v) :: vs', []
-        with exn -> vs', [Trapped (numeric_error e.at exn) @@ e.at])
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Compare relop, v2 :: v1 :: vs' ->
         (try value_of_bool (Eval_numeric.eval_relop relop v1 v2) :: vs', []
-        with exn -> vs', [Trapped (numeric_error e.at exn) @@ e.at])
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Unary unop, v :: vs' ->
         (try Eval_numeric.eval_unop unop v :: vs', []
-        with exn -> vs', [Trapped (numeric_error e.at exn) @@ e.at])
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Binary binop, v2 :: v1 :: vs' ->
         (try Eval_numeric.eval_binop binop v1 v2 :: vs', []
-        with exn -> vs', [Trapped (numeric_error e.at exn) @@ e.at])
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Convert cvtop, v :: vs' ->
         (try Eval_numeric.eval_cvtop cvtop v :: vs', []
-        with exn -> vs', [Trapped (numeric_error e.at exn) @@ e.at])
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | _ ->
         let s1 = string_of_values (List.rev vs) in
@@ -256,37 +256,46 @@ let rec step (c : config) : config =
           ("missing or ill-typed operand on stack (" ^ s1 ^ " : " ^ s2 ^ ")")
       )
 
-    | Trapped msg, vs ->
+    | Trapping msg, vs ->
       assert false
 
-    | Break (k, vs'), vs ->
+    | Returning vs', vs ->
+      Crash.error e.at "undefined frame"
+
+    | Breaking (k, vs'), vs ->
       Crash.error e.at "undefined label"
 
-    | Label (ts, es0, (vs', [])), vs ->
+    | Label (n, es0, (vs', [])), vs ->
       vs' @ vs, []
 
-    | Label (ts, es0, (vs', {it = Trapped msg; at} :: es')), vs ->
-      vs, [Trapped msg @@ at]
+    | Label (n, es0, (vs', {it = Trapping msg; at} :: es')), vs ->
+      vs, [Trapping msg @@ at]
 
-    | Label (ts, es0, (vs', {it = Break (0l, vs0); at} :: es')), vs ->
-      take (List.length ts) vs0 e.at @ vs, List.map plain es0
+    | Label (n, es0, (vs', {it = Returning vs0; at} :: es')), vs ->
+      vs, [Returning vs0 @@ at]
 
-    | Label (ts, es0, (vs', {it = Break (k, vs0); at} :: es')), vs ->
-      vs, [Break (Int32.sub k 1l, vs0) @@ at]
+    | Label (n, es0, (vs', {it = Breaking (0l, vs0); at} :: es')), vs ->
+      take n vs0 e.at @ vs, List.map plain es0
 
-    | Label (ts, es0, code'), vs ->
-      let c' = step {c with code = code'; depth = c.depth + 1} in
-      vs, [Label (ts, es0, c'.code) @@ e.at]
+    | Label (n, es0, (vs', {it = Breaking (k, vs0); at} :: es')), vs ->
+      vs, [Breaking (Int32.sub k 1l, vs0) @@ at]
 
-    | Frame (frame', (vs', [])), vs ->
+    | Label (n, es0, code'), vs ->
+      let c' = step {c with code = code'} in
+      vs, [Label (n, es0, c'.code) @@ e.at]
+
+    | Frame (n, frame', (vs', [])), vs ->
       vs' @ vs, []
 
-    | Frame (frame', (vs', {it = Trapped msg; at} :: es')), vs ->
-      vs, [Trapped msg @@ at]
+    | Frame (n, frame', (vs', {it = Trapping msg; at} :: es')), vs ->
+      vs, [Trapping msg @@ at]
 
-    | Frame (frame', code'), vs ->
-      let c' = step {frame = frame'; code = code'; depth = 0; budget = c.budget - 1} in
-      vs, [Frame (c'.frame, c'.code) @@ e.at]
+    | Frame (n, frame', (vs', {it = Returning vs0; at} :: es')), vs ->
+      take n vs0 e.at @ vs, []
+
+    | Frame (n, frame', code'), vs ->
+      let c' = step {frame = frame'; code = code'; budget = c.budget - 1} in
+      vs, [Frame (n, c'.frame, c'.code) @@ e.at]
 
     | Invoke func, vs when c.budget = 0 ->
       Exhaustion.error e.at "call stack exhausted"
@@ -300,7 +309,7 @@ let rec step (c : config) : config =
         let locals' = List.rev args @ List.map default_value f.it.locals in
         let code' = [], [Plain (Block (out, f.it.body)) @@ f.at] in
         let frame' = {inst = !inst'; locals = List.map ref locals'} in
-        vs', [Frame (frame', code') @@ e.at]
+        vs', [Frame (List.length out, frame', code') @@ e.at]
 
       | Func.HostFunc (t, f) ->
         try List.rev (f (List.rev args)) @ vs', []
@@ -314,7 +323,7 @@ let rec eval (c : config) : value stack =
   | vs, [] ->
     vs
 
-  | vs, {it = Trapped msg; at} :: _ ->
+  | vs, {it = Trapping msg; at} :: _ ->
     Trap.error at msg
 
   | vs, es ->
@@ -424,7 +433,7 @@ let init (m : module_) (exts : extern list) : module_inst =
       types = List.map (fun type_ -> type_.it) types }
   in
   let fs = List.map (create_func inst0) funcs in
-  let inst =
+  let inst1 =
     { inst0 with
       funcs = inst0.funcs @ fs;
       tables = inst0.tables @ List.map (create_table inst0) tables;
@@ -432,10 +441,11 @@ let init (m : module_) (exts : extern list) : module_inst =
       globals = inst0.globals @ List.map (create_global inst0) globals;
     }
   in
+  let inst = {inst1 with exports = List.map (create_export inst1) exports} in
   List.iter (init_func inst) fs;
   let init_elems = List.map (init_table inst) elems in
   let init_datas = List.map (init_memory inst) data in
   List.iter (fun f -> f ()) init_elems;
   List.iter (fun f -> f ()) init_datas;
   Lib.Option.app (fun x -> ignore (invoke (func inst x) [])) start;
-  {inst with exports = List.map (create_export inst) exports}
+  inst

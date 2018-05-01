@@ -171,27 +171,27 @@ let encode m =
       | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
       | Load ({ty = F32Type; sz = None; _} as mo) -> op 0x2a; memop mo
       | Load ({ty = F64Type; sz = None; _} as mo) -> op 0x2b; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem8, SX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack8, SX); _} as mo) ->
         op 0x2c; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem8, ZX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack8, ZX); _} as mo) ->
         op 0x2d; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem16, SX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack16, SX); _} as mo) ->
         op 0x2e; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem16, ZX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack16, ZX); _} as mo) ->
         op 0x2f; memop mo
-      | Load {ty = I32Type; sz = Some (Mem32, _); _} ->
+      | Load {ty = I32Type; sz = Some (Pack32, _); _} ->
         assert false
-      | Load ({ty = I64Type; sz = Some (Mem8, SX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack8, SX); _} as mo) ->
         op 0x30; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem8, ZX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack8, ZX); _} as mo) ->
         op 0x31; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem16, SX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack16, SX); _} as mo) ->
         op 0x32; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem16, ZX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack16, ZX); _} as mo) ->
         op 0x33; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem32, SX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack32, SX); _} as mo) ->
         op 0x34; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem32, ZX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack32, ZX); _} as mo) ->
         op 0x35; memop mo
       | Load {ty = F32Type | F64Type; sz = Some _; _} ->
         assert false
@@ -200,16 +200,16 @@ let encode m =
       | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
       | Store ({ty = F32Type; sz = None; _} as mo) -> op 0x38; memop mo
       | Store ({ty = F64Type; sz = None; _} as mo) -> op 0x39; memop mo
-      | Store ({ty = I32Type; sz = Some Mem8; _} as mo) -> op 0x3a; memop mo
-      | Store ({ty = I32Type; sz = Some Mem16; _} as mo) -> op 0x3b; memop mo
-      | Store {ty = I32Type; sz = Some Mem32; _} -> assert false
-      | Store ({ty = I64Type; sz = Some Mem8; _} as mo) -> op 0x3c; memop mo
-      | Store ({ty = I64Type; sz = Some Mem16; _} as mo) -> op 0x3d; memop mo
-      | Store ({ty = I64Type; sz = Some Mem32; _} as mo) -> op 0x3e; memop mo
+      | Store ({ty = I32Type; sz = Some Pack8; _} as mo) -> op 0x3a; memop mo
+      | Store ({ty = I32Type; sz = Some Pack16; _} as mo) -> op 0x3b; memop mo
+      | Store {ty = I32Type; sz = Some Pack32; _} -> assert false
+      | Store ({ty = I64Type; sz = Some Pack8; _} as mo) -> op 0x3c; memop mo
+      | Store ({ty = I64Type; sz = Some Pack16; _} as mo) -> op 0x3d; memop mo
+      | Store ({ty = I64Type; sz = Some Pack32; _} as mo) -> op 0x3e; memop mo
       | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
 
-      | CurrentMemory -> op 0x3f; u8 0x00
-      | GrowMemory -> op 0x40; u8 0x00
+      | MemorySize -> op 0x3f; u8 0x00
+      | MemoryGrow -> op 0x40; u8 0x00
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c
       | Const {it = I64 c; _} -> op 0x42; vs64 c

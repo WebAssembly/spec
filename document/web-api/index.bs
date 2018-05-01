@@ -1,14 +1,16 @@
 <pre class='metadata'>
 Title: WebAssembly Web API
-Shortname: wasmweb
-Group: WebAssembly CG
-Status: w3c/CG-DRAFT
+Shortname: wasm-web-api
+Group: wasm
+Status: ED
 Level: 1
+TR: https://www.w3.org/TR/wasm-web-api-1/
 ED: https://webassembly.github.io/spec/web-api/
-Editor: WebAssembly Community Group
+Editor: Daniel Ehrenberg (Igalia)
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes
+Prepare For TR: true
 </pre>
 
 <pre class='biblio'>
@@ -20,13 +22,13 @@ Markup Shorthands: css no, markdown yes
     "status": "Current Editor's Draft"
   },
   "WEBASSEMBLY": {
-    "href": "https://webassembly.github.io/spec/",
-    "title": "WebAssembly Specification",
+    "href": "https://webassembly.github.io/spec/core/",
+    "title": "WebAssembly Core Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
   },
   "WASMJS": {
-    "href": "https://webassembly.github.io/spec/document/js-api/",
+    "href": "https://webassembly.github.io/spec/js-api/",
     "title": "WebAssembly JS Integration Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
@@ -40,9 +42,10 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMA-262
         text: TypeError; url: sec-native-error-types-used-in-this-standard-typeerror
     type: interface
         text: ArrayBuffer; url: sec-arraybuffer-objects
-urlPrefix: https://webassembly.github.io/spec/; spec: WebAssembly; type: dfn
+urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     text: function index; url: syntax/modules.html#syntax-funcidx
-urlPrefix: https://webassembly.github.io/spec/document/js-api/; spec: WASMJS
+    text: "name" section; url: appendix/custom.html?highlight=name%20section#binary-namesec
+urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
     type: namespace
         text: WebAssembly; url: #namespacedef-webassembly
     type: interface
@@ -133,7 +136,7 @@ example) even though the exact format of implementation-dependent stack trace
 strings does not always match, the locations are easily understandable and the
 same across browsers.
 
-To achive the same goal of a common representations for WebAssembly constructs, the
+To achieve the same goal of a common representations for WebAssembly constructs, the
 following conventions are adopted.
 
 A WebAssembly location is a reference to a particular instruction in the binary, and may be
@@ -170,7 +173,7 @@ While the "name" property of an [=Exported Function=] instance
 is specified by the [[WASMJS|JS API]], synthesized function names are also
 displayed in other contexts like call stacks in debuggers and string representations
 of stack traces.
-If a WebAssembly module contains a ["name" section](BinaryEncoding.md#name-section),
+If a WebAssembly module contains a [="name" section=],
 these names should be used to synthesize a function name as follows:
 * If a function name subsection is present, the displayed name should
       be `${module_name}.${function_name}` or `${function_name}`, depending
