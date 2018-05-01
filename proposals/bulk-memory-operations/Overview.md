@@ -175,9 +175,9 @@ memory or table on instantiation, and must instead be applied manually using
 the following new instructions:
 
 * `mem.init`: copy a region from a data segment
-* `table.init`: copy an region from an element segment
+* `table.init`: copy a region from an element segment
 
-An passive segment has no initializer expression, since it will be specified
+A passive segment has no initializer expression, since it will be specified
 as an operand to `mem.init` or `table.init`.
 
 Passive segments can also be discarded by using the following new instructions:
@@ -282,3 +282,15 @@ implemented as follows:
     (mem.drop 1))
 )
 ```
+
+### Instruction encoding
+
+| Name | Opcode | Immediate | Description |
+| ---- | ---- | ---- | ---- |
+| `mem.init` | `0xfc` | `0x08` | :thinking: copy from a passive data segment to linear memory |
+| `mem.drop` | `0xfc` | `0x09` | :thinking: prevent further use of passive data segment |
+| `mem.copy` | `0xfc` | `0x0a` | :thinking: copy from one region of linear memory to another region |
+| `mem.fill` | `0xfc` | `0x0b` | :thinking: fill a region of linear memory with a given byte value |
+| `table.init` | `0xfc` | `0x0c` | :thinking: copy from a passive element segment to a table |
+| `table.drop` | `0xfc` | `0x0d` | :thinking: prevent further use of a passive element segment |
+| `table.copy` | `0xfc` | `0x0e` | :thinking: copy from one region of a table to another region |
