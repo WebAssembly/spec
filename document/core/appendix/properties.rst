@@ -161,11 +161,15 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`\functype`.
 
-* For every possible :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_1` :ref:`extending <extend-store>` :math:`S` and every sequence :math:`\val^\ast` of :ref:`values <syntax-val>` whose :ref:`types <valid-val>` coincide with :math:`t_1^\ast`:
+* For every :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_1` :ref:`extending <extend-store>` :math:`S` and every sequence :math:`\val^\ast` of :ref:`values <syntax-val>` whose :ref:`types <valid-val>` coincide with :math:`t_1^\ast`:
 
-  * There must exist a :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_2` :ref:`extending <extend-store>` :math:`S_1` and a :ref:`result <syntax-result>` :math:`\result` whose :ref:`type <valid-result>` coincides with :math:`[t_2^\ast]` such that:
+  * :ref:`Executing <exec-invoke-host>` :math:`\X{hf}` in store :math:`S_1` with arguments :math:`\val^\ast` has a non-empty set of possible outcomes.
 
-    * :ref:`Executing <exec-invoke-host>` :math:`\X{hf}` in store :math:`S_1` with arguments :math:`\val^\ast` produces :math:`\result` and store :math:`S_2`.
+  * For every element :math:`R` of this set:
+
+    * Either :math:`R` must be :math:`\bot` (i.e., divergence).
+
+    * Or :math:`R` consists of a :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_2` :ref:`extending <extend-store>` :math:`S_1` and a :ref:`result <syntax-result>` :math:`\result` whose :ref:`type <valid-result>` coincides with :math:`[t_2^\ast]`.
 
 * Then the function instance is valid with :ref:`function type <syntax-functype>` :math:`\functype`.
 
@@ -176,15 +180,19 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \end{array}
      \quad
      \begin{array}[b]{@{}l@{}}
-     \forall S_1, S_2, \val^\ast, \result,~
+     \forall S_1, \val^\ast,~
        {\vdashstore S_1 \ok} \wedge
        {\vdashstoreextends S \extendsto S_1} \wedge
-       {\vdashresult \val^\ast : [t_1^\ast]} \wedge
-       \X{hf}(S_1; \val^\ast) = S_2; \result
-     \Longrightarrow {} \\ \qquad
+       {\vdashresult \val^\ast : [t_1^\ast]}
+       \Longrightarrow {} \\ \qquad
+       \X{hf}(S_1; \val^\ast) \supset \emptyset \wedge {} \\ \qquad
+     \forall R \in \X{hf}(S_1; \val^\ast),~
+       R = \bot \vee {} \\ \qquad\qquad
+       \exists S_2, \result,~
        {\vdashstore S_2 \ok} \wedge
        {\vdashstoreextends S_1 \extendsto S_2} \wedge
        {\vdashresult \result : [t_2^\ast]} \wedge
+       R = (S_2; \result)
      \end{array}
    }{
      S \vdashfuncinst \{\FITYPE~[t_1^\ast] \to [t_2^\ast], \FIHOSTCODE~\X{hf}\} : [t_1^\ast] \to [t_2^\ast]
