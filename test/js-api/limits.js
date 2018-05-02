@@ -35,6 +35,8 @@ let kJSEmbeddingMaxMemories = 1;
 if (typeof(assert_equals) != "function" && typeof(assertEquals) == "function") {
   // TODO(titzer): local standalone hack
   assert_equals = assertEquals;
+} else {
+    throw "No assertEquals() equivalent found.";
 }
 
 function testLimit(name, min, limit, gen) {
@@ -100,7 +102,8 @@ testLimit("data segments", 1, kJSEmbeddingMaxDataSegments, (builder, count) => {
         }
     });
 
-testLimit("memory pages", 1, kJSEmbeddingMaxMemoryPages, (builder, count) => {
+// TODO(titzer): some engines (e.g. V8) have a lower limit on max memory pages.
+DISABLED.testLimit("memory pages", 1, kJSEmbeddingMaxMemoryPages, (builder, count) => {
         builder.addMemory(count, count, false, false);
     });
 
@@ -127,6 +130,13 @@ testLimit("function params", 1, kJSEmbeddingMaxFunctionParams, (builder, count) 
         let array = new Array(count);
         for (let i = 0; i < count; i++) array[i] = kWasmI32;
         let type = builder.addType({params: array, results: []});
+    });
+
+testLimit("function params+locals", 1, kJSEmbeddingMaxFunctionLocals - 2, (builder, count) => {
+        let type = builder.addType(kSig_i_ii);
+        builder.addFunction(undefined, type)
+          .addLocals({i32_count: count})
+          .addBody([kExprUnreachable]);
     });
 
 testLimit("function returns", 0, kJSEmbeddingMaxFunctionReturns, (builder, count) => {
