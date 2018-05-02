@@ -15,7 +15,7 @@ that records bound :ref:`identifers <text-id>`.
 Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
 However, it also defines a number of *abbreviations* that are "syntactic sugar" over the core syntax.
 
-The recommended extension for source files containing WebAssembly modules in text format is ":math:`\T{.wat}`".
+The recommended extension for files containing WebAssembly modules in text format is ":math:`\T{.wat}`".
 Files with this extension are assumed to be encoded in UTF-8, as per |Unicode|_ (Section 2.5).
 
 
@@ -27,12 +27,12 @@ Files with this extension are assumed to be encoded in UTF-8, as per |Unicode|_ 
 Grammar
 ~~~~~~~
 
-The following conventions are adopted in defining grammar rules for the text format.
+The following conventions are adopted in defining grammar rules of the text format.
 They mirror the conventions used for :ref:`abstract syntax <grammar>` and for the :ref:`binary format <binary>`.
 In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, :math:`\mathtt{typewriter}` font is adopted for the former.
 
-* Terminal symbols are either literal strings of characters enclosed in quotes: :math:`\text{module}`;
-  or expressed as |Unicode|_ code points: :math:`\unicode{0A}`.
+* Terminal symbols are either literal strings of characters enclosed in quotes
+  or expressed as |Unicode|_ code points: :math:`\text{module}`, :math:`\unicode{0A}`.
   (All characters written literally are unambiguously drawn from the 7-bit |ASCII|_ subset of Unicode.)
 
 * Nonterminal symbols are written in typewriter font: :math:`\T{valtype}, \T{instr}`.
@@ -106,7 +106,7 @@ These expansions are assumed to be applied, recursively and in order of appearan
 Contexts
 ~~~~~~~~
 
-The text format allows to use symbolic :ref:`identifiers <text-id>` in place of :ref:`indices <syntax-index>`.
+The text format allows the use of symbolic :ref:`identifiers <text-id>` in place of :ref:`indices <syntax-index>`.
 To resolve these identifiers into concrete indices,
 some grammar production are indexed by an *identifier context* :math:`I` as a synthesized attribute that records the declared identifiers in each :ref:`index space <syntax-index>`.
 In addition, the context records the types defined in the module, so that :ref:`parameter <text-param>` indices can be computed for :ref:`functions <text-func>`.
