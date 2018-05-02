@@ -7,7 +7,7 @@ Soundness
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
 
 * All types declared and derived during validation are respected at run time;
-  e.g., every :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variable will only contain type-correct values, every :ref:`instruction <syntax-instr>` will only be applied to operands of the expected type, and every :ref:`function <syntax-func>` :ref:`invocation <exec-invocation>` always evaluates to a result of the right type (if it does not :ref:`trap <trap>`).
+  e.g., every :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variable will only contain type-correct values, every :ref:`instruction <syntax-instr>` will only be applied to operands of the expected type, and every :ref:`function <syntax-func>` :ref:`invocation <exec-invocation>` always evaluates to a result of the right type (if it does not :ref:`trap <trap>` or diverge).
 
 * No memory location will be read or written except those explicitly defined by the program, i.e., as a :ref:`local <syntax-local>`, a :ref:`global <syntax-global>`, an element in a :ref:`table <syntax-table>`, or a location within a linear :ref:`memory <syntax-mem>`.
 
@@ -176,16 +176,15 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \end{array}
      \quad
      \begin{array}[b]{@{}l@{}}
-     \forall S_1, \val^\ast,~
+     \forall S_1, S_2, \val^\ast, \result,~
        {\vdashstore S_1 \ok} \wedge
        {\vdashstoreextends S \extendsto S_1} \wedge
-       {\vdashresult \val^\ast : [t_1^\ast]}
-       \Longrightarrow {} \\ \qquad
-     \exists S_2, \result,~
+       {\vdashresult \val^\ast : [t_1^\ast]} \wedge
+       \X{hf}(S_1; \val^\ast) = S_2; \result
+     \Longrightarrow {} \\ \qquad
        {\vdashstore S_2 \ok} \wedge
        {\vdashstoreextends S_1 \extendsto S_2} \wedge
        {\vdashresult \result : [t_2^\ast]} \wedge
-       \X{hf}(S_1; \val^\ast) = S_2; \result
      \end{array}
    }{
      S \vdashfuncinst \{\FITYPE~[t_1^\ast] \to [t_2^\ast], \FIHOSTCODE~\X{hf}\} : [t_1^\ast] \to [t_2^\ast]
@@ -584,7 +583,7 @@ The necessary constraints are codified by the notion of store *extension*:
 a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'`, when the following rules hold.
 
 .. note::
-   Extension does not imply that the new store is valid, which is defined :ref:separately `above <valid-store>`.
+   Extension does not imply that the new store is valid, which is defined separately :ref:`above <valid-store>`.
 
 
 .. index:: store, function instance, table instance, memory instance, global instance
