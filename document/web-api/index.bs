@@ -157,7 +157,7 @@ Notes:
     browser, the associated URL should be used; or when the
     {{ArrayBuffer}}-based instantiation
     [=instantiate|API=] is used, the browser should represent
-    the location of the API call. This kind of instantiation is analagous to
+    the location of the API call. This kind of instantiation is analogous to
     executing JavaScript using `eval`; therefore if the browser has an existing
     method to represent the location of the `eval` call it can use a similar
     one for `WebAssembly.instantiate`. For example if the browser uses
@@ -166,7 +166,7 @@ Notes:
     `WebAssembly.instantiate at bar (foo.js:10:3)`, respectively.
     Offline tools may use a filename instead.
 * Using hexadecimal for module offsets matches common conventions in native tools
-    such as objdump (where addresses are printed in hex) and makes them visually
+    such as `objdump` (where addresses are printed in hex) and makes them visually
     distinct from JavaScript line numbers. Other numbers are represented in decimal.
 
 While the "name" property of an [=Exported Function=] instance
