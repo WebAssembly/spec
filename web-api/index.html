@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version 4ed3ee986a8d1722dd7c6bb819b1a2484c3cfb47" name="generator">
+  <meta content="Bikeshed version af8f71ed1c6012ba67249925cb054b5a6e3ca528" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="1726d9694b3aab918f99e6e454b3914c0624aecb" name="document-revision">
+  <meta content="4730de7cd26b26132e6e16c704a56c49faa8a322" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -93,6 +93,17 @@ figcaption {
 figcaption:not(.no-marker)::before {
     content: "Figure " counter(figure) " ";
 }</style>
+<style>/* style-var-click-highlighting */
+
+    var { cursor: pointer; }
+    var.selected0 { background-color: hsl(60deg, 50%, 90%); }
+    var.selected1 { background-color: hsl(0deg, 50%, 90%); }
+    var.selected2 { background-color: hsl(120deg, 50%, 90%); }
+    var.selected3 { background-color: hsl(180deg, 50%, 90%); }
+    var.selected4 { background-color: hsl(30deg, 50%, 90%); }
+    var.selected5 { background-color: hsl(240deg, 50%, 90%); }
+    var.selected6 { background-color: hsl(330deg, 80%, 93%); }
+    </style>
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -255,7 +266,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-04-11">11 April 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-05-03">3 May 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -403,7 +414,7 @@ of functions and variables are taken directly from the sources. Therefore (for
 example) even though the exact format of implementation-dependent stack trace
 strings does not always match, the locations are easily understandable and the
 same across browsers.</p>
-   <p>To achive the same goal of a common representations for WebAssembly constructs, the
+   <p>To achieve the same goal of a common representations for WebAssembly constructs, the
 following conventions are adopted.</p>
    <p>A WebAssembly location is a reference to a particular instruction in the binary, and may be
 displayed by a browser or engine in similar contexts as JavaScript source locations.
@@ -425,7 +436,7 @@ It has the following format:</p>
 context. When the response-based
 instantiation <a href="#streaming-modules">API</a> is used in a
 browser, the associated URL should be used; or when the <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects①">ArrayBuffer</a></code>-based instantiation <a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate" id="ref-for-dom-webassembly-instantiate">API</a> is used, the browser should represent
-the location of the API call. This kind of instantiation is analagous to
+the location of the API call. This kind of instantiation is analogous to
 executing JavaScript using <code>eval</code>; therefore if the browser has an existing
 method to represent the location of the <code>eval</code> call it can use a similar
 one for <code>WebAssembly.instantiate</code>. For example if the browser uses <code>foo.js line 10 > eval</code> or <code>eval at bar (foo.js:10:3)</code> for <code>eval</code>, it could
@@ -433,7 +444,7 @@ use <code>foo.js line 10 > WebAssembly.instantiate</code> or <code>WebAssembly.i
 Offline tools may use a filename instead.</p>
     <li data-md="">
      <p>Using hexadecimal for module offsets matches common conventions in native tools
-such as objdump (where addresses are printed in hex) and makes them visually
+such as <code>objdump</code> (where addresses are printed in hex) and makes them visually
 distinct from JavaScript line numbers. Other numbers are represented in decimal.</p>
    </ul>
    <p>While the "name" property of an <a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#exported-function" id="ref-for-exported-function">Exported Function</a> instance
@@ -476,8 +487,8 @@ JavaScript.</p>
   <p>Examples in this specification are introduced with the words “for example”
 	or are set apart from the normative text with <code>class="example"</code>,
 	like this: </p>
-  <div class="example" id="example-c9096732">
-   <a class="self-link" href="#example-c9096732"></a> 
+  <div class="example" id="example-ae2b6bc0">
+   <a class="self-link" href="#example-ae2b6bc0"></a> 
    <p>This is an example of an informative example. </p>
   </div>
   <p>Informative notes begin with the word “Note” and are set apart from the
@@ -596,6 +607,89 @@ JavaScript.</p>
     <li><a href="#ref-for-compile-a-potential-webassembly-response">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-compile-a-potential-webassembly-response①">(2)</a>
    </ul>
   </aside>
+<script>/* script-var-click-highlighting */
+
+    document.addEventListener("click", e=>{
+        if(e.target.nodeName == "VAR") {
+            highlightSameAlgoVars(e.target);
+        }
+    });
+    {
+        const indexCounts = new Map();
+        const indexNames = new Map();
+        function highlightSameAlgoVars(v) {
+            // Find the algorithm container.
+            let algoContainer = null;
+            let searchEl = v;
+            while(algoContainer == null && searchEl != document.body) {
+                searchEl = searchEl.parentNode;
+                if(searchEl.hasAttribute("data-algorithm")) {
+                    algoContainer = searchEl;
+                }
+            }
+
+            // Not highlighting document-global vars,
+            // too likely to be unrelated.
+            if(algoContainer == null) return;
+
+            const algoName = algoContainer.getAttribute("data-algorithm");
+            const varName = v.innerHTML;
+            const addClass = !v.classList.contains("selected");
+            let highlightClass = null;
+            if(addClass) {
+                const index = chooseHighlightIndex(algoName, varName);
+                console.log("add", index);
+                indexCounts.get(algoName)[index] += 1;
+                indexNames.set(algoName+"///"+varName, index);
+                highlightClass = nameFromIndex(index);
+            } else {
+                const index = previousHighlightIndex(algoName, varName);
+                console.log("remove", index);
+                indexCounts.get(algoName)[index] -= 1;
+                highlightClass = nameFromIndex(index);
+            }
+
+            // Find all same-name vars, and toggle their class appropriately.
+            for(const el of algoContainer.querySelectorAll("var")) {
+                if(el.innerHTML == varName) {
+                    el.classList.toggle("selected", addClass);
+                    el.classList.toggle(highlightClass, addClass);
+                }
+            }
+        }
+        function chooseHighlightIndex(algoName, varName) {
+            let indexes = null;
+            if(indexCounts.has(algoName)) {
+                indexes = indexCounts.get(algoName);
+            } else {
+                // 7 classes right now
+                indexes = [0,0,0,0,0,0,0];
+                indexCounts.set(algoName, indexes);
+            }
+
+            // If the element was recently unclicked,
+            // *and* that color is still unclaimed,
+            // give it back the same color.
+            const lastIndex = previousHighlightIndex(algoName, varName);
+            if(indexes[lastIndex] === 0) return lastIndex;
+
+            // Find the earliest index with the lowest count.
+            const minCount = Math.min.apply(null, indexes);
+            let index = null;
+            for(var i = 0; i < indexes.length; i++) {
+                if(indexes[i] == minCount) {
+                    return i;
+                }
+            }
+        }
+        function previousHighlightIndex(algoName, varName) {
+            return indexNames.get(algoName+"///"+varName);
+        }
+        function nameFromIndex(index) {
+            return "selected" + index;
+        }
+    }
+    </script>
 <script>/* script-dfn-panel */
 
         document.body.addEventListener("click", function(e) {
@@ -630,7 +724,6 @@ JavaScript.</p>
                 // open the panel
                 var dfnPanel = document.querySelector(".dfn-panel[data-for='" + el.id + "']");
                 if(dfnPanel) {
-                    console.log(dfnPanel);
                     dfnPanel.classList.add("on");
                     var rect = el.getBoundingClientRect();
                     dfnPanel.style.left = window.scrollX + rect.right + 5 + "px";

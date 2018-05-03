@@ -103,8 +103,8 @@
 <div class="section" id="indices">
 <span id="text-index"></span><span id="text-labelidx"></span><span id="text-localidx"></span><span id="text-globalidx"></span><span id="text-memidx"></span><span id="text-tableidx"></span><span id="text-funcidx"></span><span id="text-typeidx"></span><span id="index-0"></span><h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">Indices</span></a> can be given either in raw numeric form or as symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> when bound by a respective construct.
-Such identifiers are looked up in the suitable space of the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate">\(I\)</span>.</p>
-<div class="math notranslate">
+Such identifiers are looked up in the suitable space of the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate nohighlight">\(I\)</span>.</p>
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcllllllll}
 \def\mathdef2721#1{{}}\mathdef2721{type index} &amp; \href{../text/modules.html#text-typeidx}{\mathtt{typeidx}}_I &amp;::=&amp;
   x{:}\href{../text/values.html#text-int}{\def\mathdef2766#1{{\mathtt{u}#1}}\mathdef2766{\mathtt{32}}} &amp;\Rightarrow&amp; x \\&amp;&amp;|&amp;
@@ -132,7 +132,7 @@ Such identifiers are looked up in the suitable space of the <a class="reference 
 <div class="section" id="types">
 <span id="text-typedef"></span><span id="index-1"></span><h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
 <p>Type definitions can bind a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">type identifier</span></a>.</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{type definition} &amp; \href{../text/modules.html#text-typedef}{\mathtt{type}} &amp;::=&amp;
   \def\mathdef2778#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2778{(}~\def\mathdef2779#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2779{type}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~\mathit{ft}{:}\href{../text/types.html#text-functype}{\mathtt{functype}}~\def\mathdef2780#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2780{)}
@@ -145,7 +145,7 @@ Such identifiers are looked up in the suitable space of the <a class="reference 
 It may optionally be augmented by explicit inlined <a class="reference internal" href="types.html#text-param"><span class="std std-ref">parameter</span></a> and <a class="reference internal" href="types.html#text-result"><span class="std std-ref">result</span></a> declarations.
 That allows binding symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> to name the <a class="reference internal" href="#text-localidx"><span class="std std-ref">local indices</span></a> of parameters.
 If inline declarations are given, then their types must match the referenced <a class="reference internal" href="types.html#text-type"><span class="std std-ref">function type</span></a>.</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcllll}
 \def\mathdef2721#1{{}}\mathdef2721{type use} &amp; \href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}_I &amp;::=&amp;
   \def\mathdef2781#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2781{(}~\def\mathdef2782#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2782{type}~~x{:}\href{../text/modules.html#text-typeidx}{\mathtt{typeidx}}_I~\def\mathdef2783#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2783{)}
@@ -162,31 +162,31 @@ If inline declarations are given, then their types must match the referenced <a 
      I' = \{\href{../text/conventions.html#text-context}{\mathsf{locals}}~\mathrm{id}(\href{../text/types.html#text-functype}{\mathtt{param}})\}^\ast ~\href{../text/conventions.html#text-context-wf}{\mbox{well-formed}}) \\
      \end{array} \\
 \end{array}\end{split}\]</div>
-<p>The synthesized attribute of a <span class="math notranslate">\(\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}\)</span> is a pair consisting of both the used <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> and the updated <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> including possible parameter identifiers.
+<p>The synthesized attribute of a <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}\)</span> is a pair consisting of both the used <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> and the updated <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> including possible parameter identifiers.
 The following auxiliary function extracts optional identifiers from parameters:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad\qquad}l}
 \mathrm{id}(\def\mathdef2787#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2787{(}~\def\mathdef2788#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2788{param}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef2789#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2789{)}) &amp;=&amp; \href{../text/values.html#text-id}{\mathtt{id}}^? \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>Both productions overlap for the case that the function type is <span class="math notranslate">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.
+<p>Both productions overlap for the case that the function type is <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.
 However, in that case, they also produce the same results, so that the choice is immaterial.</p>
-<p class="last">The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate">\(I'\)</span> ensures that the parameters do not contain duplicate identifier.</p>
+<p class="last">The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I'\)</span> ensures that the parameters do not contain duplicate identifier.</p>
 </div>
 <div class="section" id="abbreviations">
 <span id="text-typeuse-abbrev"></span><h3>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this headline">¶</a></h3>
-<p>A <span class="math notranslate">\(\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}\)</span> may also be replaced entirely by inline <a class="reference internal" href="types.html#text-param"><span class="std std-ref">parameter</span></a> and <a class="reference internal" href="types.html#text-result"><span class="std std-ref">result</span></a> declarations.
+<p>A <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}\)</span> may also be replaced entirely by inline <a class="reference internal" href="types.html#text-param"><span class="std std-ref">parameter</span></a> and <a class="reference internal" href="types.html#text-result"><span class="std std-ref">result</span></a> declarations.
 In that case, a <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> is automatically inserted:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{type use} &amp;
   (t_1{:}\href{../text/types.html#text-functype}{\mathtt{param}})^\ast~~(t_2{:}\href{../text/types.html#text-functype}{\mathtt{result}})^\ast &amp;\equiv&amp;
   \def\mathdef2790#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2790{(}~\def\mathdef2791#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2791{type}~~x~\def\mathdef2792#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2792{)}~~\href{../text/types.html#text-functype}{\mathtt{param}}^\ast~~\href{../text/types.html#text-functype}{\mathtt{result}}^\ast \\
 \end{array}\end{split}\]</div>
-<p>where <span class="math notranslate">\(x\)</span> is the smallest existing <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> whose definition in the current module is the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>.
+<p>where <span class="math notranslate nohighlight">\(x\)</span> is the smallest existing <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> whose definition in the current module is the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>.
 If no such index exists, then a new <a class="reference internal" href="types.html#text-type"><span class="std std-ref">type definition</span></a> of the form</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\def\mathdef2793#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2793{(}~\def\mathdef2794#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2794{type}~~\def\mathdef2795#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2795{(}~\def\mathdef2796#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2796{func}~~\href{../text/types.html#text-functype}{\mathtt{param}}^\ast~~\href{../text/types.html#text-functype}{\mathtt{result}}~\def\mathdef2797#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2797{)}~\def\mathdef2798#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2798{)}\]</div>
 <p>is inserted at the end of the module.</p>
 <p>Abbreviations are expanded in the order they appear, such that previously inserted type definitions are reused by consecutive expansions.</p>
@@ -195,7 +195,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
 <div class="section" id="imports">
 <span id="text-import"></span><span id="text-importdesc"></span><span id="index-3"></span><h2>Imports<a class="headerlink" href="#imports" title="Permalink to this headline">¶</a></h2>
 <p>The descriptors in imports can bind a symbolic function, table, memory, or global <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifier</span></a>.</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{import} &amp; \href{../text/modules.html#text-import}{\mathtt{import}}_I &amp;::=&amp;
   \def\mathdef2799#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2799{(}~\def\mathdef2800#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2800{import}~~\mathit{mod}{:}\href{../text/values.html#text-name}{\mathtt{name}}~~\mathit{nm}{:}\href{../text/values.html#text-name}{\mathtt{name}}~~d{:}\href{../text/modules.html#text-importdesc}{\mathtt{importdesc}}_I~\def\mathdef2801#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2801{)} \\ &amp;&amp;&amp; \qquad
@@ -218,7 +218,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
 <div class="section" id="functions">
 <span id="text-func"></span><span id="text-local"></span><span id="index-4"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <p>Function definitions can bind a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">function identifier</span></a>, and <a class="reference internal" href="values.html#text-id"><span class="std std-ref">local identifiers</span></a> for its <a class="reference internal" href="#text-typeuse"><span class="std std-ref">parameters</span></a> and locals.</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{function} &amp; \href{../text/modules.html#text-func}{\mathtt{func}}_I &amp;::=&amp;
   \def\mathdef2814#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2814{(}~\def\mathdef2815#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2815{func}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~x,I'{:}\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}_I~~
@@ -229,26 +229,26 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
   \def\mathdef2817#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2817{(}~\def\mathdef2818#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2818{local}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~t{:}\href{../text/types.html#text-valtype}{\mathtt{valtype}}~\def\mathdef2819#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2819{)}
     \quad\Rightarrow\quad t \\
 \end{array}\end{split}\]</div>
-<p>The definition of the local <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate">\(I''\)</span> uses the following auxiliary function to extract optional identifiers from locals:</p>
-<div class="math notranslate">
+<p>The definition of the local <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate nohighlight">\(I''\)</span> uses the following auxiliary function to extract optional identifiers from locals:</p>
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad\qquad}l}
 \mathrm{id}(\def\mathdef2820#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2820{(}~\def\mathdef2821#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2821{local}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef2822#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2822{)}) &amp;=&amp; \href{../text/values.html#text-id}{\mathtt{id}}^? \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate">\(I''\)</span> ensures that parameters and locals do not contain duplicate identifiers.</p>
+<p class="last">The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I''\)</span> ensures that parameters and locals do not contain duplicate identifiers.</p>
 </div>
 <span class="target" id="index-5"></span><div class="section" id="text-func-abbrev">
 <span id="index-6"></span><span id="id2"></span><h3>Abbreviations<a class="headerlink" href="#text-func-abbrev" title="Permalink to this headline">¶</a></h3>
 <p>Multiple anonymous locals may be combined into a single declaration:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{local} &amp;
   \def\mathdef2823#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2823{(}~~\def\mathdef2824#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2824{local}~~\href{../text/types.html#text-valtype}{\mathtt{valtype}}^\ast~~\def\mathdef2825#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2825{)} &amp;\equiv&amp;
   (\def\mathdef2826#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2826{(}~~\def\mathdef2827#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2827{local}~~\href{../text/types.html#text-valtype}{\mathtt{valtype}}~~\def\mathdef2828#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2828{)})^\ast \\
 \end{array}\end{split}\]</div>
 <p>Moreover, functions can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
   \def\mathdef2829#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2829{(}~\def\mathdef2830#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2830{func}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~\def\mathdef2831#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2831{(}~\def\mathdef2832#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2832{import}~~\href{../text/values.html#text-name}{\mathtt{name}}_1~~\href{../text/values.html#text-name}{\mathtt{name}}_2~\def\mathdef2833#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2833{)}~~\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}~\def\mathdef2834#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2834{)} \quad\equiv \\ &amp; \qquad
@@ -259,13 +259,13 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\ &amp; \qquad\qquad
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
-<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate">\(\dots\)</span>” containing another import or export.</p>
+<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export.</p>
 </div>
 </div>
 <div class="section" id="tables">
 <span id="text-table"></span><span id="index-7"></span><h2>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h2>
 <p>Table definitions can bind a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">table identifier</span></a>.</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{table} &amp; \href{../text/modules.html#text-table}{\mathtt{table}}_I &amp;::=&amp;
   \def\mathdef2856#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2856{(}~\def\mathdef2857#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2857{table}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~\mathit{tt}{:}\href{../text/types.html#text-tabletype}{\mathtt{tabletype}}~\def\mathdef2858#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2858{)}
@@ -274,7 +274,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
 <span class="target" id="index-8"></span><span class="target" id="index-9"></span><div class="section" id="text-table-abbrev">
 <span id="index-10"></span><span id="id3"></span><h3>Abbreviations<a class="headerlink" href="#text-table-abbrev" title="Permalink to this headline">¶</a></h3>
 <p>An <a class="reference internal" href="#text-elem"><span class="std std-ref">element segment</span></a> can be given inline with a table definition, in which case the <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">limits</span></a> of the <a class="reference internal" href="types.html#text-tabletype"><span class="std std-ref">table type</span></a> are inferred from the length of the given segment:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
   \def\mathdef2859#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2859{(}~\def\mathdef2860#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2860{table}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~\href{../text/types.html#text-elemtype}{\mathtt{elemtype}}~~\def\mathdef2861#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2861{(}~\def\mathdef2862#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2862{elem}~~x^n{:}\href{../text/conventions.html#text-vec}{\mathtt{vec}}(\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}})~\def\mathdef2863#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2863{)}~~\def\mathdef2864#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2864{)} \quad\equiv \\ &amp; \qquad
@@ -284,7 +284,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
 <p>Moreover, tables can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
   \def\mathdef2875#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2875{(}~\def\mathdef2876#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2876{table}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~\def\mathdef2877#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2877{(}~\def\mathdef2878#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2878{import}~~\href{../text/values.html#text-name}{\mathtt{name}}_1~~\href{../text/values.html#text-name}{\mathtt{name}}_2~\def\mathdef2879#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2879{)}~~\href{../text/types.html#text-tabletype}{\mathtt{tabletype}}~\def\mathdef2880#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2880{)} \quad\equiv \\ &amp; \qquad
@@ -295,13 +295,13 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\ &amp; \qquad\qquad
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
-<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate">\(\dots\)</span>” containing another import or export or an inline elements segment.</p>
+<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export or an inline elements segment.</p>
 </div>
 </div>
 <div class="section" id="memories">
 <span id="text-mem"></span><span id="index-11"></span><h2>Memories<a class="headerlink" href="#memories" title="Permalink to this headline">¶</a></h2>
 <p>Memory definitions can bind a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">memory identifier</span></a>.</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{memory} &amp; \href{../text/modules.html#text-mem}{\mathtt{mem}}_I &amp;::=&amp;
   \def\mathdef2902#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2902{(}~\def\mathdef2903#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2903{memory}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~\mathit{mt}{:}\href{../text/types.html#text-memtype}{\mathtt{memtype}}~\def\mathdef2904#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2904{)}
@@ -310,7 +310,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
 <span class="target" id="index-12"></span><span class="target" id="index-13"></span><div class="section" id="text-mem-abbrev">
 <span id="index-14"></span><span id="id4"></span><h3>Abbreviations<a class="headerlink" href="#text-mem-abbrev" title="Permalink to this headline">¶</a></h3>
 <p>A <a class="reference internal" href="#text-data"><span class="std std-ref">data segment</span></a> can be given inline with a memory definition, in which case the <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">limits</span></a> of the <a class="reference internal" href="types.html#text-memtype"><span class="std std-ref">memory type</span></a> are inferred from the length of the data, rounded up to <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
   \def\mathdef2905#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2905{(}~\def\mathdef2906#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2906{memory}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~\def\mathdef2907#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2907{(}~\def\mathdef2908#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2908{data}~~b^n{:}\href{../text/modules.html#text-datastring}{\mathtt{datastring}}~\def\mathdef2909#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2909{)}~~\def\mathdef2910#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2910{)} \quad\equiv \\ &amp; \qquad
@@ -320,7 +320,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}, m = \mathrm{ceil}(n / 64\mathrm{Ki})) \\
 \end{array}\end{split}\]</div>
 <p>Moreover, memories can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
   \def\mathdef2921#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2921{(}~\def\mathdef2922#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2922{memory}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~\def\mathdef2923#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2923{(}~\def\mathdef2924#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2924{import}~~\href{../text/values.html#text-name}{\mathtt{name}}_1~~\href{../text/values.html#text-name}{\mathtt{name}}_2~\def\mathdef2925#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2925{)}~~\href{../text/types.html#text-memtype}{\mathtt{memtype}}~\def\mathdef2926#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2926{)} \quad\equiv \\ &amp; \qquad
@@ -332,13 +332,13 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\ &amp; \qquad\qquad
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
-<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate">\(\dots\)</span>” containing another import or export or an inline data segment.</p>
+<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export or an inline data segment.</p>
 </div>
 </div>
 <div class="section" id="globals">
 <span id="text-global"></span><span id="index-15"></span><h2>Globals<a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h2>
 <p>Global definitions can bind a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">global identifier</span></a>.</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{global} &amp; \href{../text/modules.html#text-global}{\mathtt{global}}_I &amp;::=&amp;
   \def\mathdef2948#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2948{(}~\def\mathdef2949#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2949{global}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~\mathit{gt}{:}\href{../text/types.html#text-globaltype}{\mathtt{globaltype}}~~e{:}\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef2950#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2950{)}
@@ -347,7 +347,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
 <span class="target" id="index-16"></span><div class="section" id="text-global-abbrev">
 <span id="index-17"></span><span id="id5"></span><h3>Abbreviations<a class="headerlink" href="#text-global-abbrev" title="Permalink to this headline">¶</a></h3>
 <p>Globals can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
   \def\mathdef2951#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2951{(}~\def\mathdef2952#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2952{global}~~\href{../text/values.html#text-id}{\mathtt{id}}^?~~\def\mathdef2953#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2953{(}~\def\mathdef2954#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2954{import}~~\href{../text/values.html#text-name}{\mathtt{name}}_1~~\href{../text/values.html#text-name}{\mathtt{name}}_2~\def\mathdef2955#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2955{)}~~\href{../text/types.html#text-globaltype}{\mathtt{globaltype}}~\def\mathdef2956#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2956{)} \quad\equiv \\ &amp; \qquad
@@ -359,13 +359,13 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\ &amp; \qquad\qquad
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
-<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate">\(\dots\)</span>” containing another import or export.</p>
+<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export.</p>
 </div>
 </div>
 <div class="section" id="exports">
 <span id="text-export"></span><span id="text-exportdesc"></span><span id="index-18"></span><h2>Exports<a class="headerlink" href="#exports" title="Permalink to this headline">¶</a></h2>
 <p>The syntax for exports mirrors their <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">abstract syntax</span></a> directly.</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{export} &amp; \href{../text/modules.html#text-export}{\mathtt{export}}_I &amp;::=&amp;
   \def\mathdef2978#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2978{(}~\def\mathdef2979#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2979{export}~~\mathit{nm}{:}\href{../text/values.html#text-name}{\mathtt{name}}~~d{:}\href{../text/modules.html#text-exportdesc}{\mathtt{exportdesc}}_I~\def\mathdef2980#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2980{)}
@@ -388,7 +388,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
 <div class="section" id="start-function">
 <span id="text-start"></span><span id="index-19"></span><h2>Start Function<a class="headerlink" href="#start-function" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference internal" href="../syntax/modules.html#syntax-start"><span class="std std-ref">start function</span></a> is defined in terms of its index.</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{start function} &amp; \href{../text/modules.html#text-start}{\mathtt{start}}_I &amp;::=&amp;
   \def\mathdef2993#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2993{(}~\def\mathdef2994#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2994{start}~~x{:}\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}_I~\def\mathdef2995#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2995{)}
@@ -397,14 +397,14 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">At most one start function may occur in a module,
-which is ensured by a suitable side condition on the <span class="math notranslate">\(\href{../text/modules.html#text-module}{\mathtt{module}}\)</span> grammar.</p>
+which is ensured by a suitable side condition on the <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-module}{\mathtt{module}}\)</span> grammar.</p>
 </div>
 </div>
 <div class="section" id="element-segments">
 <span id="text-elem"></span><span id="index-20"></span><h2>Element Segments<a class="headerlink" href="#element-segments" title="Permalink to this headline">¶</a></h2>
 <p>Element segments allow for an optional <a class="reference internal" href="#text-tableidx"><span class="std std-ref">table index</span></a> to identify the table to initialize.
-When omitted, <span class="math notranslate">\(\mathtt{0}\)</span> is assumed.</p>
-<div class="math notranslate">
+When omitted, <span class="math notranslate nohighlight">\(\mathtt{0}\)</span> is assumed.</p>
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{element segment} &amp; \href{../text/modules.html#text-elem}{\mathtt{elem}}_I &amp;::=&amp;
   \def\mathdef2996#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2996{(}~\def\mathdef2997#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2997{elem}~~x{:}\href{../text/modules.html#text-tableidx}{\mathtt{tableidx}}_I~~\def\mathdef2998#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2998{(}~\def\mathdef2999#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2999{offset}~~e{:}\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3000#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3000{)}~~y^\ast{:}\href{../text/conventions.html#text-vec}{\mathtt{vec}}(\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}_I)~\def\mathdef3001#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3001{)} \\ &amp;&amp;&amp; \qquad
@@ -418,14 +418,14 @@ or a symbolic <a class="reference internal" href="values.html#text-id"><span cla
 <div class="section" id="id7">
 <h3>Abbreviations<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>As an abbreviation, a single instruction may occur in place of the offset:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{array}{llcll}
 \def\mathdef2721#1{{}}\mathdef2721{element offset} &amp;
   \href{../text/instructions.html#text-instr}{\mathtt{instr}} &amp;\equiv&amp;
   \def\mathdef3002#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3002{(}~\def\mathdef3003#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3003{offset}~~\href{../text/instructions.html#text-instr}{\mathtt{instr}}~\def\mathdef3004#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3004{)}
 \end{array}\]</div>
-<p>Also, the table index can be omitted, defaulting to <span class="math notranslate">\(0\)</span>.</p>
-<div class="math notranslate">
+<p>Also, the table index can be omitted, defaulting to <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<div class="math notranslate nohighlight">
 \[\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{element segment} &amp;
  \def\mathdef3005#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3005{(}~\def\mathdef3006#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3006{elem}~~\def\mathdef3007#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3007{(}~\def\mathdef3008#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3008{offset}~~\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3009#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3009{)}~~\dots~\def\mathdef3010#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3010{)}
@@ -438,9 +438,9 @@ or a symbolic <a class="reference internal" href="values.html#text-id"><span cla
 <div class="section" id="data-segments">
 <span id="text-data"></span><span id="text-datastring"></span><span id="index-21"></span><h2>Data Segments<a class="headerlink" href="#data-segments" title="Permalink to this headline">¶</a></h2>
 <p>Data segments allow for an optional <a class="reference internal" href="#text-memidx"><span class="std std-ref">memory index</span></a> to identify the memory to initialize.
-When omitted, <span class="math notranslate">\(\mathtt{0}\)</span> is assumed.
+When omitted, <span class="math notranslate nohighlight">\(\mathtt{0}\)</span> is assumed.
 The data is written as a <a class="reference internal" href="values.html#text-string"><span class="std std-ref">string</span></a>, which may be split up into a possibly empty sequence of individual string literals.</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{data segment} &amp; \href{../text/modules.html#text-data}{\mathtt{data}}_I &amp;::=&amp;
   \def\mathdef3017#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3017{(}~\def\mathdef3018#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3018{data}~~x{:}\href{../text/modules.html#text-memidx}{\mathtt{memidx}}_I~~\def\mathdef3019#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3019{(}~\def\mathdef3020#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3020{offset}~~e{:}\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3021#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3021{)}~~b^\ast{:}\href{../text/modules.html#text-datastring}{\mathtt{datastring}}~\def\mathdef3022#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3022{)} \\ &amp;&amp;&amp; \qquad
@@ -456,14 +456,14 @@ or a symbolic <a class="reference internal" href="values.html#text-id"><span cla
 <div class="section" id="id8">
 <h3>Abbreviations<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <p>As an abbreviation, a single instruction may occur in place of the offset:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{array}{llcll}
 \def\mathdef2721#1{{}}\mathdef2721{data offset} &amp;
   \href{../text/instructions.html#text-instr}{\mathtt{instr}} &amp;\equiv&amp;
   \def\mathdef3023#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3023{(}~\def\mathdef3024#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3024{offset}~~\href{../text/instructions.html#text-instr}{\mathtt{instr}}~\def\mathdef3025#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3025{)}
 \end{array}\]</div>
-<p>Also, the memory index can be omitted, defaulting to <span class="math notranslate">\(0\)</span>.</p>
-<div class="math notranslate">
+<p>Also, the memory index can be omitted, defaulting to <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<div class="math notranslate nohighlight">
 \[\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{data segment} &amp;
  \def\mathdef3026#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3026{(}~\def\mathdef3027#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3027{data}~~\def\mathdef3028#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3028{(}~\def\mathdef3029#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3029{offset}~~\href{../text/instructions.html#text-expr}{\mathtt{expr}}_I~\def\mathdef3030#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3030{)}~~\dots~\def\mathdef3031#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3031{)}
@@ -483,7 +483,7 @@ The name serves a documentary role only.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Tools may include the module name in the <a class="reference internal" href="../appendix/custom.html#binary-namesec"><span class="std std-ref">name section</span></a> of the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>.</p>
 </div>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lll}
 \def\mathdef2721#1{{}}\mathdef2721{module} &amp; \href{../text/modules.html#text-module}{\mathtt{module}} &amp;
 \begin{array}[t]{&#64;{}cllll}
@@ -507,20 +507,20 @@ The name serves a documentary role only.</p>
   \mathit{da}{:}\href{../text/modules.html#text-data}{\mathtt{data}}_I &amp;\Rightarrow&amp; \{\href{../syntax/modules.html#syntax-module}{\mathsf{data}}~\mathit{da}\} \\
 \end{array}
 \end{array}\end{split}\]</div>
-<p>The following restrictions are imposed on the composition of <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">modules</span></a>: <span class="math notranslate">\(m_1 \href{../syntax/conventions.html#notation-compose}{\oplus} m_2\)</span> is defined if and only if</p>
+<p>The following restrictions are imposed on the composition of <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">modules</span></a>: <span class="math notranslate nohighlight">\(m_1 \href{../syntax/conventions.html#notation-compose}{\oplus} m_2\)</span> is defined if and only if</p>
 <ul class="simple">
-<li><span class="math notranslate">\(m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{start}} = \epsilon \vee m_2.\href{../syntax/modules.html#syntax-module}{\mathsf{start}} = \epsilon\)</span></li>
-<li><span class="math notranslate">\(m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{funcs}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{tables}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{mems}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{globals}} = \epsilon \vee m_2.\href{../syntax/modules.html#syntax-module}{\mathsf{imports}} = \epsilon\)</span></li>
+<li><span class="math notranslate nohighlight">\(m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{start}} = \epsilon \vee m_2.\href{../syntax/modules.html#syntax-module}{\mathsf{start}} = \epsilon\)</span></li>
+<li><span class="math notranslate nohighlight">\(m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{funcs}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{tables}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{mems}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{globals}} = \epsilon \vee m_2.\href{../syntax/modules.html#syntax-module}{\mathsf{imports}} = \epsilon\)</span></li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>The first condition ensures that there is at most one start function.
 The second condition enforces that all <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> must occur before any regular definition of a <a class="reference internal" href="#text-func"><span class="std std-ref">function</span></a>, <a class="reference internal" href="#text-table"><span class="std std-ref">table</span></a>, <a class="reference internal" href="#text-mem"><span class="std std-ref">memory</span></a>, or <a class="reference internal" href="#text-global"><span class="std std-ref">global</span></a>,
 thereby maintaining the ordering of the respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index spaces</span></a>.</p>
-<p class="last">The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate">\(I\)</span> in the grammar for <span class="math notranslate">\(\href{../text/modules.html#text-module}{\mathtt{module}}\)</span> ensures that no namespace contains duplicate identifiers.</p>
+<p class="last">The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I\)</span> in the grammar for <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-module}{\mathtt{module}}\)</span> ensures that no namespace contains duplicate identifiers.</p>
 </div>
-<p>The definition of the initial <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate">\(I\)</span> uses the following auxiliary definition which maps each relevant definition to a singular context with one (possibly empty) identifier:</p>
-<div class="math notranslate">
+<p>The definition of the initial <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate nohighlight">\(I\)</span> uses the following auxiliary definition which maps each relevant definition to a singular context with one (possibly empty) identifier:</p>
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}lcl&#64;{\qquad\qquad}l}
 \mathrm{idc}(\def\mathdef3041#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3041{(}~\def\mathdef3042#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3042{type}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\mathit{ft}{:}\href{../text/types.html#text-functype}{\mathtt{functype}}~\def\mathdef3043#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3043{)}) &amp;=&amp;
   \{\href{../text/conventions.html#text-context}{\mathsf{types}}~(\href{../text/values.html#text-id}{\mathtt{id}}^?), \href{../text/conventions.html#text-context}{\mathsf{typedefs}}~\mathit{ft}\} \\
@@ -545,8 +545,8 @@ thereby maintaining the ordering of the respective <a class="reference internal"
 \end{array}\end{split}\]</div>
 <div class="section" id="id10">
 <h3>Abbreviations<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
-<p>In a source file, the toplevel <span class="math notranslate">\(\mathtt{(module}~\dots\mathtt{)}\)</span> surrounding the module body may be omitted.</p>
-<div class="math notranslate">
+<p>In a source file, the toplevel <span class="math notranslate nohighlight">\(\mathtt{(module}~\dots\mathtt{)}\)</span> surrounding the module body may be omitted.</p>
+<div class="math notranslate nohighlight">
 \[\begin{array}{llcll}
 \def\mathdef2721#1{{}}\mathdef2721{module} &amp;
   \href{../text/modules.html#text-modulefield}{\mathtt{modulefield}}^\ast &amp;\equiv&amp;
