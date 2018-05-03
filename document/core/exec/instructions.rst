@@ -1098,18 +1098,28 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
-     \wedge & \X{hf}(S; \val^n) = S'; \result) \\
+     \wedge & (S'; \result) \in \X{hf}(S; \val^n)) \\
+     \end{array} \\
+   \begin{array}{lcl@{\qquad}l}
+   S; \val^n~(\INVOKE~a) &\stepto& S; \val^n~(\INVOKE~a)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     \wedge & \bot \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \end{array}
 
 Here, :math:`\X{hf}(S; \val^n)` denotes the implementation-defined execution of host function :math:`\X{hf}` in current store :math:`S` with arguments :math:`\val^n`.
-The outcome is a pair of a modified store :math:`S'` and a :ref:`result <syntax-result>`.
+It yields a set of possible outcomes, where each element is either a pair of a modified store :math:`S'` and a :ref:`result <syntax-result>`
+or the special value :math:`\bot` indicating divergence.
+A host function is non-deterministic if there is at least one argument for which the set of outcomes is not singular.
 
 For a WebAssembly implementation to be :ref:`sound <soundness>` in the presence of host functions,
 every :ref:`host function instance <syntax-funcinst>` must be :ref:`valid <valid-hostfuncinst>`,
 which means that it adheres to suitable pre- and post-conditions:
 under a :ref:`valid store <valid-store>` :math:`S`, and given arguments :math:`\val^n` matching the ascribed parameter types :math:`t_1^n`,
-executing the host function must produce a valid store :math:`S'` that is an :ref:`extension <extend-store>` of :math:`S` and a result matching the ascribed return types :math:`t_2^m`.
+executing the host function must yield a non-empty set of possible outcomes each of which is either divergence or consists of a valid store :math:`S'` that is an :ref:`extension <extend-store>` of :math:`S` and a result matching the ascribed return types :math:`t_2^m`.
 All these notions are made precise in the :ref:`Appendix <soundness>`.
 
 .. note::

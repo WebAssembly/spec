@@ -7,11 +7,11 @@ Soundness
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
 
 * All types declared and derived during validation are respected at run time;
-  e.g., every :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variable will only contain type-correct values, every :ref:`instruction <syntax-instr>` will only be applied to operands of the expected type, and every :ref:`function <syntax-func>` :ref:`invocation <exec-invocation>` always evaluates to a result of the right type (if it does not :ref:`trap <trap>`).
+  e.g., every :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variable will only contain type-correct values, every :ref:`instruction <syntax-instr>` will only be applied to operands of the expected type, and every :ref:`function <syntax-func>` :ref:`invocation <exec-invocation>` always evaluates to a result of the right type (if it does not :ref:`trap <trap>` or diverge).
 
 * No memory location will be read or written except those explicitly defined by the program, i.e., as a :ref:`local <syntax-local>`, a :ref:`global <syntax-global>`, an element in a :ref:`table <syntax-table>`, or a location within a linear :ref:`memory <syntax-mem>`.
 
-* There is no undefined behaviour,
+* There is no undefined behavior,
   i.e., the :ref:`execution rules <exec>` cover all possible cases that can occur in a :ref:`valid <valid>` program, and the rules are mutually consistent.
 
 Soundness also is instrumental in ensuring additional properties, most notably, *encapsulation* of function and module scopes: no :ref:`locals <syntax-local>` can be accessed outside their own function and no :ref:`module <syntax-module>` components can be accessed outside their own module unless they are explicitly :ref:`exported <syntax-export>` or :ref:`imported <syntax-import>`.
@@ -161,11 +161,15 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`\functype`.
 
-* For every possible :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_1` :ref:`extending <extend-store>` :math:`S` and every sequence :math:`\val^\ast` of :ref:`values <syntax-val>` whose :ref:`types <valid-val>` coincide with :math:`t_1^\ast`:
+* For every :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_1` :ref:`extending <extend-store>` :math:`S` and every sequence :math:`\val^\ast` of :ref:`values <syntax-val>` whose :ref:`types <valid-val>` coincide with :math:`t_1^\ast`:
 
-  * There must exist a :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_2` :ref:`extending <extend-store>` :math:`S_1` and a :ref:`result <syntax-result>` :math:`\result` whose :ref:`type <valid-result>` coincides with :math:`[t_2^\ast]` such that:
+  * :ref:`Executing <exec-invoke-host>` :math:`\X{hf}` in store :math:`S_1` with arguments :math:`\val^\ast` has a non-empty set of possible outcomes.
 
-    * :ref:`Executing <exec-invoke-host>` :math:`\X{hf}` in store :math:`S_1` with arguments :math:`\val^\ast` produces :math:`\result` and store :math:`S_2`.
+  * For every element :math:`R` of this set:
+
+    * Either :math:`R` must be :math:`\bot` (i.e., divergence).
+
+    * Or :math:`R` consists of a :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_2` :ref:`extending <extend-store>` :math:`S_1` and a :ref:`result <syntax-result>` :math:`\result` whose :ref:`type <valid-result>` coincides with :math:`[t_2^\ast]`.
 
 * Then the function instance is valid with :ref:`function type <syntax-functype>` :math:`\functype`.
 
@@ -181,11 +185,14 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        {\vdashstoreextends S \extendsto S_1} \wedge
        {\vdashresult \val^\ast : [t_1^\ast]}
        \Longrightarrow {} \\ \qquad
-     \exists S_2, \result,~
+       \X{hf}(S_1; \val^\ast) \supset \emptyset \wedge {} \\ \qquad
+     \forall R \in \X{hf}(S_1; \val^\ast),~
+       R = \bot \vee {} \\ \qquad\qquad
+       \exists S_2, \result,~
        {\vdashstore S_2 \ok} \wedge
        {\vdashstoreextends S_1 \extendsto S_2} \wedge
        {\vdashresult \result : [t_2^\ast]} \wedge
-       \X{hf}(S_1; \val^\ast) = S_2; \result
+       R = (S_2; \result)
      \end{array}
    }{
      S \vdashfuncinst \{\FITYPE~[t_1^\ast] \to [t_2^\ast], \FIHOSTCODE~\X{hf}\} : [t_1^\ast] \to [t_2^\ast]
@@ -584,7 +591,7 @@ The necessary constraints are codified by the notion of store *extension*:
 a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'`, when the following rules hold.
 
 .. note::
-   Extension does not imply that the new store is valid, which is defined :ref:separately `above <valid-store>`.
+   Extension does not imply that the new store is valid, which is defined separately :ref:`above <valid-store>`.
 
 
 .. index:: store, function instance, table instance, memory instance, global instance
@@ -714,7 +721,7 @@ the standard soundness theorems hold. [#cite-cpp2018]_
 **Theorem (Preservation).**
 If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` (i.e., :math:`\vdashconfig S;T : [t^\ast]`),
 and steps to :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`),
-then :math:`S';T'` is a valid configuration with the same resulttype (i.e., :math:`\vdashconfig S';T' : [t^\ast]`).
+then :math:`S';T'` is a valid configuration with the same result type (i.e., :math:`\vdashconfig S';T' : [t^\ast]`).
 Furthermore, :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
 
 A *terminal* :ref:`thread <syntax-thread>` is one whose sequence of :ref:`instructions <syntax-instr>` is a :ref:`result <syntax-result>`.
@@ -729,7 +736,7 @@ From Preservation and Progress the soundness of the WebAssembly type system foll
 
 **Corollary (Soundness).**
 If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdashconfig S;T : [t^\ast]` for some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`),
-then it either diverges or takes a finite number of steps to reach a terminal configuration :math:`S';T'` (i.e., :math:`S;T \stepto^\ast S';T'`) that is valid with the same resulttype (i.e., :math:`\vdashconfig S';T' : [t^\ast]`)
+then it either diverges or takes a finite number of steps to reach a terminal configuration :math:`S';T'` (i.e., :math:`S;T \stepto^\ast S';T'`) that is valid with the same result type (i.e., :math:`\vdashconfig S';T' : [t^\ast]`)
 and where :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
 
 In other words, every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
