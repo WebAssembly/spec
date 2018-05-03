@@ -394,7 +394,7 @@ It decodes into a vector of <a class="reference internal" href="../syntax/module
 </div>
 <div class="section" id="binary-module">
 <span id="binary-version"></span><span id="binary-magic"></span><span id="index-14"></span><span id="id1"></span><h2>Modules<a class="headerlink" href="#binary-module" title="Permalink to this headline">¶</a></h2>
-<p>The encoding of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> starts with a preamble containing a 4-byte magic number and a version field.
+<p>The encoding of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> starts with a preamble containing a 4-byte magic number (the string <span class="math notranslate nohighlight">\(\def\mathdef1150#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1150{\backslash0asm}\)</span>) and a version field.
 The current version of the WebAssembly binary format is 1.</p>
 <p>The preamble is followed by a sequence of <a class="reference internal" href="#binary-section"><span class="std std-ref">sections</span></a>.
 <a class="reference internal" href="#binary-customsec"><span class="std std-ref">Custom sections</span></a> may be inserted at any place in this sequence,
@@ -404,9 +404,9 @@ The lengths of vectors produced by the (possibly empty) <a class="reference inte
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcllll}
 \def\mathdef1085#1{{}}\mathdef1085{magic} &amp; \href{../binary/modules.html#binary-magic}{\mathtt{magic}} &amp;::=&amp;
-  \def\mathdef1150#1{\mathtt{0x#1}}\mathdef1150{00}~\def\mathdef1151#1{\mathtt{0x#1}}\mathdef1151{61}~\def\mathdef1152#1{\mathtt{0x#1}}\mathdef1152{73}~\def\mathdef1153#1{\mathtt{0x#1}}\mathdef1153{6D} \\
+  \def\mathdef1151#1{\mathtt{0x#1}}\mathdef1151{00}~\def\mathdef1152#1{\mathtt{0x#1}}\mathdef1152{61}~\def\mathdef1153#1{\mathtt{0x#1}}\mathdef1153{73}~\def\mathdef1154#1{\mathtt{0x#1}}\mathdef1154{6D} \\
 \def\mathdef1085#1{{}}\mathdef1085{version} &amp; \href{../binary/modules.html#binary-version}{\mathtt{version}} &amp;::=&amp;
-  \def\mathdef1154#1{\mathtt{0x#1}}\mathdef1154{01}~\def\mathdef1155#1{\mathtt{0x#1}}\mathdef1155{00}~\def\mathdef1156#1{\mathtt{0x#1}}\mathdef1156{00}~\def\mathdef1157#1{\mathtt{0x#1}}\mathdef1157{00} \\
+  \def\mathdef1155#1{\mathtt{0x#1}}\mathdef1155{01}~\def\mathdef1156#1{\mathtt{0x#1}}\mathdef1156{00}~\def\mathdef1157#1{\mathtt{0x#1}}\mathdef1157{00}~\def\mathdef1158#1{\mathtt{0x#1}}\mathdef1158{00} \\
 \def\mathdef1085#1{{}}\mathdef1085{module} &amp; \href{../binary/modules.html#binary-module}{\mathtt{module}} &amp;::=&amp;
   \href{../binary/modules.html#binary-magic}{\mathtt{magic}} \\ &amp;&amp;&amp;
   \href{../binary/modules.html#binary-version}{\mathtt{version}} \\ &amp;&amp;&amp;
