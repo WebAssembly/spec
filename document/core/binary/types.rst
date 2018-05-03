@@ -25,7 +25,7 @@ Value Types
 
 .. note::
    In future versions of WebAssembly, value types may include types denoted by :ref:`type indices <syntax-typeidx>`.
-   Thus, the binary format for types corresponds to the :ref:`encoding <binary-sint>` of small negative :math:`\sN` values, so that they can coexist with (positive) type indices in the future.
+   Thus, the binary format for types corresponds to the |SignedLEB128|_ :ref:`encoding <binary-sint>` of small negative :math:`\sN` values, so that they can coexist with (positive) type indices in the future.
 
 
 .. index:: result type, value type
