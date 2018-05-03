@@ -565,7 +565,7 @@ Finally, the following definition of *evaluation context* and associated structu
    \end{array}
 
 .. math::
-   \begin{array}{lll}
+   \begin{array}{rcl}
    S; F; E[\instr^\ast] &\stepto& S'; F'; E[{\instr'}^\ast] \\
      && (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
    S; F; \FRAME_n\{F'\}~\instr^\ast~\END &\stepto& S'; F; \FRAME_n\{F''\}~\instr'^\ast~\END \\

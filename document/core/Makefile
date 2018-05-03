@@ -139,6 +139,8 @@ singlehtml:
 bikeshed:
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
 		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
+	python util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
+		>$(BUILDDIR)/bikeshed_singlehtml/index_fixed.html
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
@@ -148,6 +150,8 @@ bikeshed:
 	cp -r util/katex/dist/* $(BUILDDIR)/html/bikeshed/katex/dist/
 	patch -p0 $(BUILDDIR)/html/bikeshed/katex/dist/katex.css \
 		< util/katex_fix.patch
+	cp $(BUILDDIR)/bikeshed_singlehtml/_static/pygments.css \
+		$(BUILDDIR)/html/bikeshed/
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
 
