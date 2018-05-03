@@ -94,7 +94,7 @@ If inline declarations are given, then their types must match the referenced :re
        \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\iff \begin{array}[t]{@{}l@{}}
         I.\ITYPEDEFS[x] = [t_1^\ast] \to [t_2^\ast] \wedge
-        I' = \{\ILOCALS~\F{id}(\Tparam)\}^\ast \idcwellformed) \\
+        I' = \{\ILOCALS~\F{id}(\Tparam)^\ast\} \idcwellformed) \\
         \end{array} \\
    \end{array}
 
@@ -226,7 +226,7 @@ Multiple anonymous locals may be combined into a single declaration:
      (\text{(}~~\text{local}~~\Tvaltype~~\text{)})^\ast \\
    \end{array}
 
-Moreover, functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+Functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
 
 .. math::
    \begin{array}{llclll}
@@ -273,7 +273,7 @@ Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
 Abbreviations
 .............
 
-An :ref:`element segment <text-elem>` can be given inline with a table definition, in which case the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>` are inferred from the length of the given segment:
+An :ref:`element segment <text-elem>` can be given inline with a table definition, in which case its offset is :math:`0` and the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>` are inferred from the length of the given segment:
 
 .. math::
    \begin{array}{llclll}
@@ -285,7 +285,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
-Moreover, tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
 
 .. math::
    \begin{array}{llclll}
@@ -332,7 +332,7 @@ Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
 Abbreviations
 .............
 
-A :ref:`data segment <text-data>` can be given inline with a memory definition, in which case the :ref:`limits <text-limits>` of the :ref:`memory type <text-memtype>` are inferred from the length of the data, rounded up to :ref:`page size <page-size>`:
+A :ref:`data segment <text-data>` can be given inline with a memory definition, in which case its offset is :math:`0` the :ref:`limits <text-limits>` of the :ref:`memory type <text-memtype>` are inferred from the length of the data, rounded up to :ref:`page size <page-size>`:
 
 .. math::
    \begin{array}{llclll}
@@ -344,7 +344,7 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
    \end{array}
 
-Moreover, memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
 
 .. math::
    \begin{array}{llclll}
@@ -471,7 +471,6 @@ Element Segments
 ~~~~~~~~~~~~~~~~
 
 Element segments allow for an optional :ref:`table index <text-tableidx>` to identify the table to initialize.
-When omitted, :math:`\T{0}` is assumed.
 
 .. math::
    \begin{array}{llclll}
@@ -497,7 +496,7 @@ As an abbreviation, a single instruction may occur in place of the offset:
      \text{(}~\text{offset}~~\Tinstr~\text{)}
    \end{array}
 
-Also, the table index can be omitted, defaulting to :math:`0`.
+Also, the table index can be omitted, defaulting to :math:`\T{0}`.
 
 .. math::
    \begin{array}{llclll}
@@ -521,7 +520,6 @@ Data Segments
 ~~~~~~~~~~~~~
 
 Data segments allow for an optional :ref:`memory index <text-memidx>` to identify the memory to initialize.
-When omitted, :math:`\T{0}` is assumed.
 The data is written as a :ref:`string <text-string>`, which may be split up into a possibly empty sequence of individual string literals.
 
 .. math::
@@ -550,7 +548,7 @@ As an abbreviation, a single instruction may occur in place of the offset:
      \text{(}~\text{offset}~~\Tinstr~\text{)}
    \end{array}
 
-Also, the memory index can be omitted, defaulting to :math:`0`.
+Also, the memory index can be omitted, defaulting to :math:`\T{0}`.
 
 .. math::
    \begin{array}{llclll}

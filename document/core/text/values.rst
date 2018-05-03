@@ -167,7 +167,7 @@ except for hexadecimal escape sequences :math:`\textl\backslash hh\textr`, which
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{string character} & \Tstringchar &::=&
      c{:}\Tchar &\Rightarrow& c \qquad
-       & (\iff c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\backslash}) \\ &&|&
+       & (\iff c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} \wedge c \neq \text{\backslash}) \\ &&|&
      \text{\backslash t} &\Rightarrow& \unicode{09} \\ &&|&
      \text{\backslash n} &\Rightarrow& \unicode{0A} \\ &&|&
      \text{\backslash r} &\Rightarrow& \unicode{0D} \\ &&|&
@@ -187,7 +187,7 @@ Names
 ~~~~~
 
 :ref:`Names <syntax-name>` are strings denoting a literal character sequence. 
-A name string must form a valid UTF-8 encoding as defined by |Unicode|_ (Section 2.5) that is interpreted as a string of Unicode code points.
+A name string must form a valid UTF-8 encoding as defined by |Unicode|_ (Section 2.5) and is interpreted as a string of Unicode code points.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
