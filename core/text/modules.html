@@ -159,7 +159,7 @@ If inline declarations are given, then their types must match the referenced <a 
     \quad\Rightarrow\quad x, I' \\ &amp;&amp;&amp; \qquad
     (\mathrel{\mbox{if}} \begin{array}[t]{&#64;{}l&#64;{}}
      I.\href{../text/conventions.html#text-context}{\mathsf{typedefs}}[x] = [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast] \wedge
-     I' = \{\href{../text/conventions.html#text-context}{\mathsf{locals}}~\mathrm{id}(\href{../text/types.html#text-functype}{\mathtt{param}})\}^\ast ~\href{../text/conventions.html#text-context-wf}{\mbox{well-formed}}) \\
+     I' = \{\href{../text/conventions.html#text-context}{\mathsf{locals}}~\mathrm{id}(\href{../text/types.html#text-functype}{\mathtt{param}})^\ast\} ~\href{../text/conventions.html#text-context-wf}{\mbox{well-formed}}) \\
      \end{array} \\
 \end{array}\end{split}\]</div>
 <p>The synthesized attribute of a <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}\)</span> is a pair consisting of both the used <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> and the updated <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> including possible parameter identifiers.
@@ -247,7 +247,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
   \def\mathdef2823#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2823{(}~~\def\mathdef2824#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2824{local}~~\href{../text/types.html#text-valtype}{\mathtt{valtype}}^\ast~~\def\mathdef2825#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2825{)} &amp;\equiv&amp;
   (\def\mathdef2826#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2826{(}~~\def\mathdef2827#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2827{local}~~\href{../text/types.html#text-valtype}{\mathtt{valtype}}~~\def\mathdef2828#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2828{)})^\ast \\
 \end{array}\end{split}\]</div>
-<p>Moreover, functions can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
+<p>Functions can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
@@ -273,7 +273,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
 \end{array}\end{split}\]</div>
 <span class="target" id="index-8"></span><span class="target" id="index-9"></span><div class="section" id="text-table-abbrev">
 <span id="index-10"></span><span id="id3"></span><h3>Abbreviations<a class="headerlink" href="#text-table-abbrev" title="Permalink to this headline">¶</a></h3>
-<p>An <a class="reference internal" href="#text-elem"><span class="std std-ref">element segment</span></a> can be given inline with a table definition, in which case the <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">limits</span></a> of the <a class="reference internal" href="types.html#text-tabletype"><span class="std std-ref">table type</span></a> are inferred from the length of the given segment:</p>
+<p>An <a class="reference internal" href="#text-elem"><span class="std std-ref">element segment</span></a> can be given inline with a table definition, in which case its offset is <span class="math notranslate nohighlight">\(0\)</span> and the <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">limits</span></a> of the <a class="reference internal" href="types.html#text-tabletype"><span class="std std-ref">table type</span></a> are inferred from the length of the given segment:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
@@ -283,7 +283,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\ &amp; \qquad\qquad
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
-<p>Moreover, tables can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
+<p>Tables can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
@@ -309,7 +309,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
 \end{array}\end{split}\]</div>
 <span class="target" id="index-12"></span><span class="target" id="index-13"></span><div class="section" id="text-mem-abbrev">
 <span id="index-14"></span><span id="id4"></span><h3>Abbreviations<a class="headerlink" href="#text-mem-abbrev" title="Permalink to this headline">¶</a></h3>
-<p>A <a class="reference internal" href="#text-data"><span class="std std-ref">data segment</span></a> can be given inline with a memory definition, in which case the <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">limits</span></a> of the <a class="reference internal" href="types.html#text-memtype"><span class="std std-ref">memory type</span></a> are inferred from the length of the data, rounded up to <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>:</p>
+<p>A <a class="reference internal" href="#text-data"><span class="std std-ref">data segment</span></a> can be given inline with a memory definition, in which case its offset is <span class="math notranslate nohighlight">\(0\)</span> the <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">limits</span></a> of the <a class="reference internal" href="types.html#text-memtype"><span class="std std-ref">memory type</span></a> are inferred from the length of the data, rounded up to <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
@@ -319,7 +319,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\ &amp; \qquad\qquad
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}, m = \mathrm{ceil}(n / 64\mathrm{Ki})) \\
 \end{array}\end{split}\]</div>
-<p>Moreover, memories can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
+<p>Memories can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{module field} &amp;
@@ -402,8 +402,7 @@ which is ensured by a suitable side condition on the <span class="math notransla
 </div>
 <div class="section" id="element-segments">
 <span id="text-elem"></span><span id="index-20"></span><h2>Element Segments<a class="headerlink" href="#element-segments" title="Permalink to this headline">¶</a></h2>
-<p>Element segments allow for an optional <a class="reference internal" href="#text-tableidx"><span class="std std-ref">table index</span></a> to identify the table to initialize.
-When omitted, <span class="math notranslate nohighlight">\(\mathtt{0}\)</span> is assumed.</p>
+<p>Element segments allow for an optional <a class="reference internal" href="#text-tableidx"><span class="std std-ref">table index</span></a> to identify the table to initialize.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{element segment} &amp; \href{../text/modules.html#text-elem}{\mathtt{elem}}_I &amp;::=&amp;
@@ -424,7 +423,7 @@ or a symbolic <a class="reference internal" href="values.html#text-id"><span cla
   \href{../text/instructions.html#text-instr}{\mathtt{instr}} &amp;\equiv&amp;
   \def\mathdef3002#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3002{(}~\def\mathdef3003#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3003{offset}~~\href{../text/instructions.html#text-instr}{\mathtt{instr}}~\def\mathdef3004#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3004{)}
 \end{array}\]</div>
-<p>Also, the table index can be omitted, defaulting to <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<p>Also, the table index can be omitted, defaulting to <span class="math notranslate nohighlight">\(\mathtt{0}\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{element segment} &amp;
@@ -438,7 +437,6 @@ or a symbolic <a class="reference internal" href="values.html#text-id"><span cla
 <div class="section" id="data-segments">
 <span id="text-data"></span><span id="text-datastring"></span><span id="index-21"></span><h2>Data Segments<a class="headerlink" href="#data-segments" title="Permalink to this headline">¶</a></h2>
 <p>Data segments allow for an optional <a class="reference internal" href="#text-memidx"><span class="std std-ref">memory index</span></a> to identify the memory to initialize.
-When omitted, <span class="math notranslate nohighlight">\(\mathtt{0}\)</span> is assumed.
 The data is written as a <a class="reference internal" href="values.html#text-string"><span class="std std-ref">string</span></a>, which may be split up into a possibly empty sequence of individual string literals.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
@@ -462,7 +460,7 @@ or a symbolic <a class="reference internal" href="values.html#text-id"><span cla
   \href{../text/instructions.html#text-instr}{\mathtt{instr}} &amp;\equiv&amp;
   \def\mathdef3023#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3023{(}~\def\mathdef3024#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3024{offset}~~\href{../text/instructions.html#text-instr}{\mathtt{instr}}~\def\mathdef3025#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3025{)}
 \end{array}\]</div>
-<p>Also, the memory index can be omitted, defaulting to <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<p>Also, the memory index can be omitted, defaulting to <span class="math notranslate nohighlight">\(\mathtt{0}\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{llclll}
 \def\mathdef2721#1{{}}\mathdef2721{data segment} &amp;

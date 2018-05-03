@@ -100,16 +100,16 @@ Some productions also take a <a class="reference internal" href="#text-context">
 that records bound <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifers</span></a>.</p>
 <p>Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
 However, it also defines a number of <em>abbreviations</em> that are “syntactic sugar” over the core syntax.</p>
-<p>The recommended extension for source files containing WebAssembly modules in text format is “<span class="math notranslate nohighlight">\(\mathtt{.wat}\)</span>”.
+<p>The recommended extension for files containing WebAssembly modules in text format is “<span class="math notranslate nohighlight">\(\mathtt{.wat}\)</span>”.
 Files with this extension are assumed to be encoded in UTF-8, as per <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5).</p>
 <div class="section" id="grammar">
 <span id="text-grammar"></span><span id="index-1"></span><h2>Grammar<a class="headerlink" href="#grammar" title="Permalink to this headline">¶</a></h2>
-<p>The following conventions are adopted in defining grammar rules for the text format.
+<p>The following conventions are adopted in defining grammar rules of the text format.
 They mirror the conventions used for <a class="reference internal" href="../syntax/conventions.html#grammar"><span class="std std-ref">abstract syntax</span></a> and for the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>.
 In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, <span class="math notranslate nohighlight">\(\mathtt{typewriter}\)</span> font is adopted for the former.</p>
 <ul class="simple">
-<li>Terminal symbols are either literal strings of characters enclosed in quotes: <span class="math notranslate nohighlight">\(\def\mathdef2305#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2305{module}\)</span>;
-or expressed as <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> code points: <span class="math notranslate nohighlight">\(\def\mathdef2306#1{\mathrm{U{+}#1}}\mathdef2306{0A}\)</span>.
+<li>Terminal symbols are either literal strings of characters enclosed in quotes
+or expressed as <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> code points: <span class="math notranslate nohighlight">\(\def\mathdef2305#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2305{module}\)</span>, <span class="math notranslate nohighlight">\(\def\mathdef2306#1{\mathrm{U{+}#1}}\mathdef2306{0A}\)</span>.
 (All characters written literally are unambiguously drawn from the 7-bit <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> subset of Unicode.)</li>
 <li>Nonterminal symbols are written in typewriter font: <span class="math notranslate nohighlight">\(\mathtt{valtype}, \mathtt{instr}\)</span>.</li>
 <li><span class="math notranslate nohighlight">\(T^n\)</span> is a sequence of <span class="math notranslate nohighlight">\(n\geq 0\)</span> iterations  of <span class="math notranslate nohighlight">\(T\)</span>.</li>
@@ -158,7 +158,7 @@ The attribute of the complete production then is the abstract syntax for the lim
 </div>
 <div class="section" id="contexts">
 <span id="text-context"></span><span id="text-context-wf"></span><span id="index-3"></span><h2>Contexts<a class="headerlink" href="#contexts" title="Permalink to this headline">¶</a></h2>
-<p>The text format allows to use symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> in place of <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
+<p>The text format allows the use of symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> in place of <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
 To resolve these identifiers into concrete indices,
 some grammar production are indexed by an <em>identifier context</em> <span class="math notranslate nohighlight">\(I\)</span> as a synthesized attribute that records the declared identifiers in each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>.
 In addition, the context records the types defined in the module, so that <a class="reference internal" href="types.html#text-param"><span class="std std-ref">parameter</span></a> indices can be computed for <a class="reference internal" href="modules.html#text-func"><span class="std std-ref">functions</span></a>.</p>
