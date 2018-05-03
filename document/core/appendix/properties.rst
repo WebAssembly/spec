@@ -721,7 +721,7 @@ the standard soundness theorems hold. [#cite-cpp2018]_
 **Theorem (Preservation).**
 If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` (i.e., :math:`\vdashconfig S;T : [t^\ast]`),
 and steps to :math:`S';T'` (i.e., :math:`S;T \stepto S';T'`),
-then :math:`S';T'` is a valid configuration with the same resulttype (i.e., :math:`\vdashconfig S';T' : [t^\ast]`).
+then :math:`S';T'` is a valid configuration with the same result type (i.e., :math:`\vdashconfig S';T' : [t^\ast]`).
 Furthermore, :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
 
 A *terminal* :ref:`thread <syntax-thread>` is one whose sequence of :ref:`instructions <syntax-instr>` is a :ref:`result <syntax-result>`.
@@ -736,7 +736,7 @@ From Preservation and Progress the soundness of the WebAssembly type system foll
 
 **Corollary (Soundness).**
 If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` (i.e., :math:`\vdashconfig S;T : [t^\ast]` for some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`),
-then it either diverges or takes a finite number of steps to reach a terminal configuration :math:`S';T'` (i.e., :math:`S;T \stepto^\ast S';T'`) that is valid with the same resulttype (i.e., :math:`\vdashconfig S';T' : [t^\ast]`)
+then it either diverges or takes a finite number of steps to reach a terminal configuration :math:`S';T'` (i.e., :math:`S;T \stepto^\ast S';T'`) that is valid with the same result type (i.e., :math:`\vdashconfig S';T' : [t^\ast]`)
 and where :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
 
 In other words, every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
