@@ -173,8 +173,6 @@ spec:promises-guide-1; type:dfn; text:resolve
 
 This API privides a way to access WebAssembly [[WEBASSEMBLY]] through a bridge to explicitly construct modules from JavaScript [[ECMASCRIPT]].
 
-<p>See the [[#issues-index]] for complete list of issues.</p>
-
 <h2 id="sample">Sample API Usage</h2>
 
 <p><em>This section is non-normative.</em></p>
