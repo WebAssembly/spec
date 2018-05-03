@@ -11,7 +11,7 @@ The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *t
 
 * No memory location will be read or written except those explicitly defined by the program, i.e., as a :ref:`local <syntax-local>`, a :ref:`global <syntax-global>`, an element in a :ref:`table <syntax-table>`, or a location within a linear :ref:`memory <syntax-mem>`.
 
-* There is no undefined behaviour,
+* There is no undefined behavior,
   i.e., the :ref:`execution rules <exec>` cover all possible cases that can occur in a :ref:`valid <valid>` program, and the rules are mutually consistent.
 
 Soundness also is instrumental in ensuring additional properties, most notably, *encapsulation* of function and module scopes: no :ref:`locals <syntax-local>` can be accessed outside their own function and no :ref:`module <syntax-module>` components can be accessed outside their own module unless they are explicitly :ref:`exported <syntax-export>` or :ref:`imported <syntax-import>`.
