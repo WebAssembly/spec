@@ -97,8 +97,8 @@ Table extensions:
 
 API extensions:
 
-* Any JS value can be passed as `anyref` to a Wasm function, stored in a global, or in a table.
-  - Is it worth considering that restricting this to non-primitive values might allow engines to use techniques like pointer compression.
+* Any JS object (non-primitive value) or string or symbol or `null` can be passed as `anyref` to a Wasm function, stored in a global, or in a table.
+  - It may be possible to allow all JS values into `anyref`, but or some engines that would imply possible boxing at the boundary.
 
 * Any Wasm exported function object or `null` can be passed as `anyfunc` to a Wasm function, stored in a global, or in a table.
 

@@ -190,20 +190,6 @@ Reference Instructions
    }
 
 
-.. _valid-ref_eq:
-
-:math:`\REFEQ`
-..............
-
-* The instruction is valid with type :math:`[\EQREF~\EQREF] \to [\I32]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \REFEQ : [\EQREF~\EQREF] \to [\I32]
-   }
-
-
 
 .. index:: parametric instructions, value type, polymorphism
    pair: validation; instruction

@@ -251,7 +251,6 @@ let rec instr e =
     | GrowMemory -> "grow_memory", []
     | Null -> "ref.null", []
     | IsNull -> "ref.isnull", []
-    | Same -> "ref.eq", []
     | Const lit -> constop lit ^ " " ^ num lit, []
     | Test op -> testop op, []
     | Compare op -> relop op, []

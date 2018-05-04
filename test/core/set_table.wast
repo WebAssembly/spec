@@ -1,12 +1,8 @@
 (module
-  (table $t1 1 eqref)
   (table $t2 1 anyref)
   (table $t3 2 anyfunc) (elem $t3 (i32.const 1) $dummy)
   (func $dummy)
 
-  (func (export "get-eqref") (param $i i32) (result eqref)
-    (get_table $t1 (get_local $i))
-  )
   (func (export "get-anyref") (param $i i32) (result anyref)
     (get_table $t2 (get_local $i))
   )
@@ -14,9 +10,6 @@
     (get_table $t3 (get_local $i))
   )
 
-  (func (export "set-eqref") (param $i i32) (param $r eqref)
-    (set_table $t1 (get_local $i) (get_local $r))
-  )
   (func (export "set-anyref") (param $i i32) (param $r anyref)
     (set_table $t2 (get_local $i) (get_local $r))
   )
@@ -32,12 +25,6 @@
   )
 )
 
-(assert_return (invoke "get-eqref" (i32.const 0)) (ref.null))
-(assert_return (invoke "set-eqref" (i32.const 0) (ref.host 1)))
-(assert_return (invoke "get-eqref" (i32.const 0)) (ref.host 1))
-(assert_return (invoke "set-eqref" (i32.const 0) (ref.null)))
-(assert_return (invoke "get-eqref" (i32.const 0)) (ref.null))
-
 (assert_return (invoke "get-anyref" (i32.const 0)) (ref.null))
 (assert_return (invoke "set-anyref" (i32.const 0) (ref.host 1)))
 (assert_return (invoke "get-anyref" (i32.const 0)) (ref.host 1))
@@ -50,16 +37,12 @@
 (assert_return (invoke "set-anyfunc" (i32.const 0) (ref.null)))
 (assert_return (invoke "get-anyfunc" (i32.const 0)) (ref.null))
 
-(assert_trap (invoke "set-eqref" (i32.const 2) (ref.null)) "out of bounds")
 (assert_trap (invoke "set-anyref" (i32.const 2) (ref.null)) "out of bounds")
 (assert_trap (invoke "set-anyfunc" (i32.const 3) (ref.null)) "out of bounds")
-(assert_trap (invoke "set-eqref" (i32.const -1) (ref.null)) "out of bounds")
 (assert_trap (invoke "set-anyref" (i32.const -1) (ref.null)) "out of bounds")
 (assert_trap (invoke "set-anyfunc" (i32.const -1) (ref.null)) "out of bounds")
 
-(assert_trap (invoke "set-eqref" (i32.const 2) (ref.host 0)) "out of bounds")
 (assert_trap (invoke "set-anyref" (i32.const 2) (ref.host 0)) "out of bounds")
 (assert_trap (invoke "set-anyfunc-from" (i32.const 3) (i32.const 1)) "out of bounds")
-(assert_trap (invoke "set-eqref" (i32.const -1) (ref.host 0)) "out of bounds")
 (assert_trap (invoke "set-anyref" (i32.const -1) (ref.host 0)) "out of bounds")
 (assert_trap (invoke "set-anyfunc-from" (i32.const -1) (i32.const 1)) "out of bounds")

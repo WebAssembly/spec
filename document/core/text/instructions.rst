@@ -138,14 +138,12 @@ Reference Instructions
 
 .. _text-ref_null:
 .. _text-ref_isnull:
-.. _text-ref_eq:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{ref.null} &\Rightarrow& \REFNULL \\ &&|&
-     \text{ref.isnull} &\Rightarrow& \REFISNULL \\ &&|&
-     \text{ref.eq} &\Rightarrow& \REFEQ \\
+     \text{ref.isnull} &\Rightarrow& \REFISNULL \\
    \end{array}
 
 

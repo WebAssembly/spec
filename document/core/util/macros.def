@@ -173,7 +173,6 @@
 
 .. |ANYREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyref}}
 .. |ANYFUNC| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyfunc}}
-.. |EQREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{eqref}}
 .. |NULLREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{nullref}}
 
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
@@ -337,7 +336,6 @@
 
 .. |REFNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}null}}
 .. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}isnull}}
-.. |REFEQ| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}eq}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
 .. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}

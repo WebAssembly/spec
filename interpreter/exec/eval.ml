@@ -248,12 +248,6 @@ let rec step (c : config) : config =
       | IsNull, v :: vs' ->
         Num (I32 0l) :: vs', []
 
-      | Same, Ref r2 :: Ref r1 :: vs' when r1 = r2 ->
-        Num (I32 1l) :: vs', []
-
-      | Same, Ref r2 :: Ref r1 :: vs' ->
-        Num (I32 0l) :: vs', []
-
       | Const n, vs ->
         Num n.it :: vs, []
 

@@ -147,12 +147,12 @@ let inline_type_explicit (c : context) x ft at =
 
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
-%token EQREF ANYREF ANYFUNC NUM_TYPE MUT
+%token ANYREF ANYFUNC NUM_TYPE MUT
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
 %token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL GET_TABLE SET_TABLE
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
-%token REF_NULL REF_HOST REF_ISNULL REF_EQ
+%token REF_NULL REF_HOST REF_ISNULL
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
@@ -205,7 +205,6 @@ string_list :
 /* Types */
 
 ref_type :
-  | EQREF { EqRefType }
   | ANYREF { AnyRefType }
   | ANYFUNC { AnyFuncType }
 
@@ -333,7 +332,6 @@ plain_instr :
   | GROW_MEMORY { fun c -> grow_memory }
   | REF_NULL { fun c -> ref_null }
   | REF_ISNULL { fun c -> ref_isnull }
-  | REF_EQ { fun c -> ref_eq }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }

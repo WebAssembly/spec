@@ -13,17 +13,14 @@
 
   (global $r anyref (ref.null))
   (global anyfunc (ref.null))
-  (global $z (mut eqref) (ref.null))
 
   (func (export "get-a") (result i32) (get_global $a))
   (func (export "get-b") (result i64) (get_global $b))
   (func (export "get-r") (result anyref) (get_global $r))
   (func (export "get-x") (result i32) (get_global $x))
   (func (export "get-y") (result i64) (get_global $y))
-  (func (export "get-z") (result eqref) (get_global $z))
   (func (export "set-x") (param i32) (set_global $x (get_local 0)))
   (func (export "set-y") (param i64) (set_global $y (get_local 0)))
-  (func (export "set-z") (param eqref) (set_global $z (get_local 0)))
 
   (func (export "get-1") (result f32) (get_global 1))
   (func (export "get-2") (result f64) (get_global 2))
@@ -38,7 +35,6 @@
 (assert_return (invoke "get-r") (ref.null))
 (assert_return (invoke "get-x") (i32.const -12))
 (assert_return (invoke "get-y") (i64.const -15))
-(assert_return (invoke "get-z") (ref.null))
 
 (assert_return (invoke "get-1") (f32.const -3))
 (assert_return (invoke "get-2") (f64.const -4))
@@ -47,13 +43,11 @@
 
 (assert_return (invoke "set-x" (i32.const 6)))
 (assert_return (invoke "set-y" (i64.const 7)))
-(assert_return (invoke "set-z" (ref.host 33)))
 (assert_return (invoke "set-5" (f32.const 8)))
 (assert_return (invoke "set-6" (f64.const 9)))
 
 (assert_return (invoke "get-x") (i32.const 6))
 (assert_return (invoke "get-y") (i64.const 7))
-(assert_return (invoke "get-z") (ref.host 33))
 (assert_return (invoke "get-5") (f32.const 8))
 (assert_return (invoke "get-6") (f64.const 9))
 
@@ -123,7 +117,7 @@
 )
 
 (assert_invalid
-  (module (global (import "" "") anyref) (global eqref (get_global 0)))
+  (module (global (import "" "") anyref) (global anyfunc (get_global 0)))
   "type mismatch"
 )
 

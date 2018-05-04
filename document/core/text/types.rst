@@ -33,8 +33,7 @@ Reference Types
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{reference type} & \Treftype &::=&
      \text{anyref} &\Rightarrow& \ANYREF \\ &&|&
-     \text{anyfunc} &\Rightarrow& \ANYFUNC \\ &&|&
-     \text{eqref} &\Rightarrow& \EQREF \\
+     \text{anyfunc} &\Rightarrow& \ANYFUNC \\
    \end{array}
 
 

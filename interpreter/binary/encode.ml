@@ -99,7 +99,6 @@ let encode m =
     let ref_type = function
       | AnyFuncType -> vs7 (-0x10)
       | AnyRefType -> vs7 (-0x11)
-      | EqRefType -> vs7 (-0x12)
       | NullRefType -> assert false
 
     let value_type = function
@@ -376,7 +375,6 @@ let encode m =
       (* TODO: Allocate more adequate opcodes *)
       | Null -> op 0xd0
       | IsNull -> op 0xd1
-      | Same -> op 0xd2
 
     let const c =
       list instr c.it; end_ ()

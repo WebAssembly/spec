@@ -33,11 +33,11 @@ A type error is encountered if a join or meet is required when it does not exist
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64 | Anyref | Anyfunc | Eqref | Nullref
+   type val_type = I32 | I64 | F32 | F64 | Anyref | Anyfunc | Nullref
    type opd_type = val_type | Unknown
 
    func is_ref(t : opd_type) : bool =
-     return t = Anyref || t = Anyfunc || t = Eqref || t = Nullref
+     return t = Anyref || t = Anyfunc || t = Nullref
 
    func matches(t1 : opd_type, t2 : opd_type) : bool =
      return t1 = t2 || t1 = Unknown ||
@@ -178,11 +178,6 @@ Other instructions are checked in a similar manner.
        case (i32.add)
          pop_opd(I32)
          pop_opd(I32)
-         push_opd(I32)
-
-       case (ref.eq)
-         pop_opd(Eqref)
-         pop_opd(Eqref)
          push_opd(I32)
 
        case (drop)

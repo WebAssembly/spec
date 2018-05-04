@@ -143,7 +143,6 @@ let ref_type s =
   match vs7 s with
   | -0x10 -> AnyFuncType
   | -0x11 -> AnyRefType
-  | -0x12 -> EqRefType
   | _ -> error s (pos s - 1) "invalid reference type"
 
 let value_type s =
@@ -447,7 +446,6 @@ let rec instr s =
   (* TODO: Allocate more adequate opcodes *)
   | 0xd0 -> ref_null
   | 0xd1 -> ref_isnull
-  | 0xd2 -> ref_eq
 
   | b -> illegal s pos b
 

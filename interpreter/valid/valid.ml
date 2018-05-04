@@ -308,9 +308,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | IsNull ->
     [RefType AnyRefType] --> [NumType I32Type]
 
-  | Same ->
-    [RefType EqRefType; RefType EqRefType] --> [NumType I32Type]
-
   | Const v ->
     let t = NumType (type_num v.it) in
     [] --> [t]

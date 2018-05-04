@@ -219,34 +219,6 @@ Reference Instructions
    \end{array}
 
 
-.. _exec-ref_eq:
-
-:math:`\REFEQ`
-..............
-
-1. Assert: due to :ref:`validation <valid-ref_eq>`, two :ref:`reference values <syntax-ref>` are on the top of the stack.
-
-2. Pop the value :math:`\val_2` from the stack.
-
-3. Pop the value :math:`\val_1` from the stack.
-
-3. If :math:`\val_1` is the same as :math:`\val_2`, then:
-
-   a. Push the value :math:`\I32.\CONST~1` to the stack.
-
-4. Else:
-
-   a. Push the value :math:`\I32.\CONST~0` to the stack.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \val_1~\val_2~\REFEQ &\stepto& \I32.\CONST~1
-     & (\iff \val_1 = \val_2) \\
-   \val_1~\val_2~\REFEQ &\stepto& \I32.\CONST~0
-     & (\iff \val_1 \neq \val_2) \\
-   \end{array}
-
-
 .. index:: parametric instructions, value
    pair: execution; instruction
    single: abstract syntax; instruction

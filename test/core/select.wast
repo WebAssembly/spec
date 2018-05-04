@@ -35,15 +35,11 @@
     (select (ref.null) (ref.null) (get_local 0))
   )
 
-  (func (export "join-eqref") (param i32) (param eqref) (result anyref)
-    (select (get_local 1) (ref.null) (get_local 0))
-  )
-
   (func (export "join-anyfunc") (param i32) (result anyref)
     (select (get_table $tab (i32.const 0)) (ref.null) (get_local 0))
   )
 
-  (func (export "join-anyref") (param i32) (param eqref) (result anyref)
+  (func (export "join-anyref") (param i32) (param anyref) (result anyref)
     (select (get_table $tab (i32.const 0)) (get_local 1) (get_local 0))
   )
 )
@@ -78,9 +74,6 @@
 
 (assert_return (invoke "join-nullref" (i32.const 1)) (ref.null))
 (assert_return (invoke "join-nullref" (i32.const 0)) (ref.null))
-
-(assert_return (invoke "join-eqref" (i32.const 1) (ref.host 1)) (ref.host 1))
-(assert_return (invoke "join-eqref" (i32.const 0) (ref.host 1)) (ref.null))
 
 (assert_return_func (invoke "join-anyfunc" (i32.const 1)))
 (assert_return (invoke "join-anyfunc" (i32.const 0)) (ref.null))

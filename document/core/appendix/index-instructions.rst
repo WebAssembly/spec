@@ -217,6 +217,5 @@ Instruction                          Binary Opcode     Type                     
 (reserved)                           :math:`\hex{CF}`                                                  
 :math:`\REFNULL`                     :math:`\hex{D0}`  :math:`[] \to [\NULLREF]`                   :ref:`validation <valid-ref_null>`        :ref:`execution <exec-ref_null>`
 :math:`\REFISNULL`                   :math:`\hex{D1}`  :math:`[\ANYREF] \to [\I32]`                :ref:`validation <valid-ref_isnull>`      :ref:`execution <exec-ref_isnull>`
-:math:`\REFEQ`                       :math:`\hex{D2}`  :math:`[\EQREF~\EQREF] \to [\I32]`          :ref:`validation <valid-ref_eq>`          :ref:`execution <exec-ref_eq>`
 ===================================  ================  ==========================================  ========================================  ===============================================================
 
