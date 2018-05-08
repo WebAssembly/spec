@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version af8f71ed1c6012ba67249925cb054b5a6e3ca528" name="generator">
+  <meta content="Bikeshed version 150b038a54cb926cf8e3d36fd8b108c226cb94b8" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="1f00d57d009ec4098b60fb6ca138e8e2787accef" name="document-revision">
+  <meta content="67e109e4fbaae11a91f56bfd22f644c96b6ec0ba" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-05-03">3 May 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-05-08">8 May 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -729,10 +729,10 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
    <p class="note" role="note"><span>Note:</span> A follow-on streaming API is documented in the <a href="https://webassembly.github.io/spec/web-api/index.html">WebAssembly Web API</a>.</p>
    <h3 class="heading settled" data-level="3.1" id="modules"><span class="secno">3.1. </span><span class="content">Modules</span><a class="self-link" href="#modules"></a></h3>
 <pre class="idl highlight def"><span class="kt">enum</span> <dfn class="nv dfn-paneled idl-code" data-dfn-type="enum" data-export="" id="enumdef-importexportkind"><code>ImportExportKind</code></dfn> {
-  <dfn class="s idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export="" data-lt="&quot;function&quot;|function" id="dom-importexportkind-function"><code>"function"</code><a class="self-link" href="#dom-importexportkind-function"></a></dfn>,
-  <dfn class="s idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export="" data-lt="&quot;table&quot;|table" id="dom-importexportkind-table"><code>"table"</code><a class="self-link" href="#dom-importexportkind-table"></a></dfn>,
-  <dfn class="s idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export="" data-lt="&quot;memory&quot;|memory" id="dom-importexportkind-memory"><code>"memory"</code><a class="self-link" href="#dom-importexportkind-memory"></a></dfn>,
-  <dfn class="s idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export="" data-lt="&quot;global&quot;|global" id="dom-importexportkind-global"><code>"global"</code><a class="self-link" href="#dom-importexportkind-global"></a></dfn>
+  <dfn class="s idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export="" id="dom-importexportkind-function"><code>"function"</code><a class="self-link" href="#dom-importexportkind-function"></a></dfn>,
+  <dfn class="s idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export="" id="dom-importexportkind-table"><code>"table"</code><a class="self-link" href="#dom-importexportkind-table"></a></dfn>,
+  <dfn class="s idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export="" id="dom-importexportkind-memory"><code>"memory"</code><a class="self-link" href="#dom-importexportkind-memory"></a></dfn>,
+  <dfn class="s idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export="" id="dom-importexportkind-global"><code>"global"</code><a class="self-link" href="#dom-importexportkind-global"></a></dfn>
 };
 
 <span class="kt">dictionary</span> <dfn class="nv dfn-paneled idl-code" data-dfn-type="dictionary" data-export="" id="dictdef-moduleexportdescriptor"><code>ModuleExportDescriptor</code></dfn> {
@@ -981,7 +981,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
    </div>
    <h3 class="heading settled" data-level="3.4" id="tables"><span class="secno">3.4. </span><span class="content">Tables</span><a class="self-link" href="#tables"></a></h3>
 <pre class="idl highlight def"><span class="kt">enum</span> <dfn class="nv dfn-paneled idl-code" data-dfn-type="enum" data-export="" id="enumdef-tablekind"><code>TableKind</code></dfn> {
-  <dfn class="s idl-code" data-dfn-for="TableKind" data-dfn-type="enum-value" data-export="" data-lt="&quot;anyfunc&quot;|anyfunc" id="dom-tablekind-anyfunc"><code>"anyfunc"</code><a class="self-link" href="#dom-tablekind-anyfunc"></a></dfn>,
+  <dfn class="s idl-code" data-dfn-for="TableKind" data-dfn-type="enum-value" data-export="" id="dom-tablekind-anyfunc"><code>"anyfunc"</code><a class="self-link" href="#dom-tablekind-anyfunc"></a></dfn>,
   // Note: More values may be added in future iterations,
   // e.g., typed function references, typed GC references
 };
@@ -1383,7 +1383,6 @@ The particular exception here is implementation-defined in both cases.</p>
   <ul class="index">
    <li><a href="#a-new-exported-function">a new Exported Function</a><span>, in §3.5</span>
    <li><a href="#dom-tablekind-anyfunc">"anyfunc"</a><span>, in §3.4</span>
-   <li><a href="#dom-tablekind-anyfunc">anyfunc</a><span>, in §3.4</span>
    <li><a href="#associated-store">associated store</a><span>, in §2.1</span>
    <li><a href="#asynchronously-compile-a-webassembly-module">asynchronously compile a WebAssembly module</a><span>, in §3</span>
    <li><a href="#dom-memory-buffer">buffer</a><span>, in §3.3</span>
@@ -1404,9 +1403,7 @@ The particular exception here is implementation-defined in both cases.</p>
    <li><a href="#dom-module-exports">exports(module)</a><span>, in §3.1</span>
    <li><a href="#dom-module-exports-moduleobject">exports(moduleObject)</a><span>, in §3.1</span>
    <li><a href="#dom-importexportkind-function">"function"</a><span>, in §3.1</span>
-   <li><a href="#dom-importexportkind-function">function</a><span>, in §3.1</span>
    <li><a href="#dom-table-get">get(index)</a><span>, in §3.4</span>
-   <li><a href="#dom-importexportkind-global">global</a><span>, in §3.1</span>
    <li><a href="#dom-importexportkind-global">"global"</a><span>, in §3.1</span>
    <li><a href="#dom-table-grow-d">grow(d)</a><span>, in §3.4</span>
    <li>
@@ -1450,7 +1447,6 @@ The particular exception here is implementation-defined in both cases.</p>
      <li><a href="#dom-tabledescriptor-maximum">dict-member for TableDescriptor</a><span>, in §3.4</span>
     </ul>
    <li><a href="#dom-importexportkind-memory">"memory"</a><span>, in §3.1</span>
-   <li><a href="#dom-importexportkind-memory">memory</a><span>, in §3.1</span>
    <li><a href="#memory">Memory</a><span>, in §3.3</span>
    <li><a href="#dictdef-memorydescriptor">MemoryDescriptor</a><span>, in §3.3</span>
    <li><a href="#dom-memory-memory">Memory(descriptor)</a><span>, in §3.3</span>
@@ -1476,7 +1472,6 @@ The particular exception here is implementation-defined in both cases.</p>
    <li><a href="#runtimeerror">RuntimeError</a><span>, in §3.6</span>
    <li><a href="#dom-table-set">set(index, value)</a><span>, in §3.4</span>
    <li><a href="#string-value-of-the-extern-type">string value of the extern type</a><span>, in §3.1</span>
-   <li><a href="#dom-importexportkind-table">table</a><span>, in §3.1</span>
    <li><a href="#dom-importexportkind-table">"table"</a><span>, in §3.1</span>
    <li><a href="#table">Table</a><span>, in §3.4</span>
    <li><a href="#dom-table-table">Table(descriptor)</a><span>, in §3.4</span>
@@ -2157,13 +2152,11 @@ The particular exception here is implementation-defined in both cases.</p>
             let highlightClass = null;
             if(addClass) {
                 const index = chooseHighlightIndex(algoName, varName);
-                console.log("add", index);
                 indexCounts.get(algoName)[index] += 1;
                 indexNames.set(algoName+"///"+varName, index);
                 highlightClass = nameFromIndex(index);
             } else {
                 const index = previousHighlightIndex(algoName, varName);
-                console.log("remove", index);
                 indexCounts.get(algoName)[index] -= 1;
                 highlightClass = nameFromIndex(index);
             }

@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version af8f71ed1c6012ba67249925cb054b5a6e3ca528" name="generator">
+  <meta content="Bikeshed version 150b038a54cb926cf8e3d36fd8b108c226cb94b8" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="1f00d57d009ec4098b60fb6ca138e8e2787accef" name="document-revision">
+  <meta content="67e109e4fbaae11a91f56bfd22f644c96b6ec0ba" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-05-03">3 May 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-05-08">8 May 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -638,13 +638,11 @@ JavaScript.</p>
             let highlightClass = null;
             if(addClass) {
                 const index = chooseHighlightIndex(algoName, varName);
-                console.log("add", index);
                 indexCounts.get(algoName)[index] += 1;
                 indexNames.set(algoName+"///"+varName, index);
                 highlightClass = nameFromIndex(index);
             } else {
                 const index = previousHighlightIndex(algoName, varName);
-                console.log("remove", index);
                 indexCounts.get(algoName)[index] -= 1;
                 highlightClass = nameFromIndex(index);
             }
