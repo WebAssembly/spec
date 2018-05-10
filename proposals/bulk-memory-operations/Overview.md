@@ -210,8 +210,9 @@ step 11 of
 but it behaves as though the segment were specified with the source offset,
 target offset, and length as given by the `memory.init` operands.
 
+It is a validation error to use `memory.init` with an active segment.
+
 A trap occurs if:
-* the segment is passive
 * the segment is used after it has been dropped via `memory.drop`
 * any of the accessed bytes lies outside the source data segment or the target memory
 
@@ -225,6 +226,8 @@ data segment has been dropped, it is no longer valid to use it in a `memory.init
 instruction. This instruction is intended to be used as an optimization hint to
 the WebAssembly implementation. After a memory segment is dropped its data can
 no longer be retrieved, so the memory used by this segment may be freed.
+
+It is a validation error to use `memory.drop` with an active segment.
 
 ### `memory.copy` instruction
 
