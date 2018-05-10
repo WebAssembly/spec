@@ -7,7 +7,7 @@
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
   <meta content="Bikeshed version 150b038a54cb926cf8e3d36fd8b108c226cb94b8" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="f820395384c308a78e72e19a6a7f4bee01317c33" name="document-revision">
+  <meta content="214f743d94f1c49901e55daba5af1af9a309caab" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-05-09">9 May 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-05-10">10 May 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -406,6 +406,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
     </ol>
    </div>
    <h2 class="heading settled" data-level="2" id="conventions"><span class="secno">2. </span><span class="content">Developer-Facing Display Conventions</span><a class="self-link" href="#conventions"></a></h2>
+   <p><em>This section is non-normative.</em></p>
    <p>Browsers, JavaScript engines, and offline tools have common ways of referring to
 JavaScript artifacts and language constructs. For example, locations in
 JavaScript source code are printed in stack traces or error messages, and are
@@ -451,21 +452,19 @@ distinct from JavaScript line numbers. Other numbers are represented in decimal.
 is specified by the <a data-link-type="biblio" href="#biblio-wasmjs">JS API</a>, synthesized function names are also
 displayed in other contexts like call stacks in debuggers and string representations
 of stack traces.
-If a WebAssembly module contains a [="name" section=],
+If a WebAssembly module contains a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec" id="ref-for-binary-namesec">name section</a>,
 these names should be used to synthesize a function name as follows:</p>
    <ul>
     <li data-md="">
-     <p>If a function name subsection is present, the displayed name should
-  be <code>${module_name}.${function_name}</code> or <code>${function_name}</code>, depending
-  on whether the module name is present.</p>
+     <p>If a function name subsection is present, the displayed name should be <code>${module_name}.${function_name}</code> or <code>${function_name}</code>, depending on whether the module name is present.</p>
     <li data-md="">
      <p>Otherwise, the output can be context-dependent:</p>
-    <li data-md="">
-     <p>If the function name is shown alongside its location in a
-stack trace, then just the module name (if present) or an empty string
-can be used (because the function index is already in the location).</p>
-    <li data-md="">
-     <p>Otherwise, <code>${module_name}.wasm-function[${funcIndex}]</code> or <code>wasm-function[${funcIndex}]</code> should be used to convey the function index.</p>
+     <ul>
+      <li data-md="">
+       <p>If the function name is shown alongside its location in a stack trace, then just the module name (if present) or an empty string can be used (because the function index is already in the location).</p>
+      <li data-md="">
+       <p>Otherwise, <code>${module_name}.wasm-function[${funcIndex}]</code> or <code>wasm-function[${funcIndex}]</code> should be used to convey the function index.</p>
+     </ul>
    </ul>
    <p>Note that this document does not specify the full format of strings such as
 stack frame representations; this allows engines to continue using their
@@ -554,6 +553,7 @@ JavaScript.</p>
     <a data-link-type="biblio">[WEBASSEMBLY]</a> defines the following terms:
     <ul>
      <li><a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx">function index</a>
+     <li><a href="https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec">name section</a>
     </ul>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
