@@ -140,3 +140,6 @@ The auxiliary |utf8| function expressing this encoding is defined as follows:
       \wedge & c = 2^{18}(b_1-\hex{C0})+2^{12}(b_2-\hex{80})+2^6(b_3-\hex{80})+(b_4-\hex{80})) \\
       \end{array} \\
    \end{array}
+
+.. note::
+   Unlike in some other formats, name strings are not 0-terminated.

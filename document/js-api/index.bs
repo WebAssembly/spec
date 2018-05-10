@@ -173,8 +173,6 @@ spec:promises-guide-1; type:dfn; text:resolve
 
 This API privides a way to access WebAssembly [[WEBASSEMBLY]] through a bridge to explicitly construct modules from JavaScript [[ECMASCRIPT]].
 
-<p>See the [[#issues-index]] for complete list of issues.</p>
-
 <h2 id="sample">Sample API Usage</h2>
 
 <p><em>This section is non-normative.</em></p>
@@ -578,7 +576,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
     1. Assert: |map|[|memaddr|] [=map/exists=]
     1. Let |memory| be |map|[|memaddr|].
-    1. Perform ! [=ForceDetachArrayBuffer=](|memory|.\[[BufferObject]], "WebAssembly.Memory").
+    1. Perform ! [=DetachArrayBuffer=](|memory|.\[[BufferObject]], "WebAssembly.Memory").
     1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
     1. Let |buffer| be a new {{ArrayBuffer}} whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
     1. Set |memory|.\[[BufferObject]] to |buffer|.

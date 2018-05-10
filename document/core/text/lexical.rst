@@ -58,7 +58,7 @@ That is, the next token always consists of the longest possible sequence of char
 Tokens can be separated by :ref:`white space <text-space>`,
 but except for strings, they cannot themselves contain whitespace.
 
-The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:`terminal symbol <text-grammar>` in literal form :math:`\text{keyword}` in a :ref:`syntactic <text-syntactic>` production of this chapter.
+The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:`terminal symbol <text-grammar>` in literal form, such as :math:`\text{keyword}`, in a :ref:`syntactic <text-syntactic>` production of this chapter.
 
 Any token that does not fall into any of the other categories is considered *reserved*, and cannot occur in source text.
 
@@ -88,7 +88,7 @@ The allowed formatting characters correspond to a subset of the |ASCII|_ *format
      \unicode{09} ~|~ \unicode{0A} ~|~ \unicode{0D} \\
    \end{array}
 
-The only relevance of white space is to separate :ref:`tokens <text-token>`, it is ignored otherwise.
+The only relevance of white space is to separate :ref:`tokens <text-token>`. It is otherwise ignored.
 
 
 .. index:: ! comment, character

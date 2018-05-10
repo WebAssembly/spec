@@ -37,8 +37,9 @@ The following conventions are adopted in defining grammar rules for abstract syn
 
 * Productions are written :math:`\X{sym} ::= A_1 ~|~ \dots ~|~ A_n`.
 
-* Some productions are augmented with side conditions in parentheses, ":math:`(\iff \X{condition})`", that provide a shorthand for a combinatorial expansion of the production into many separate cases.
+* Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, :math:`\X{sym} ::= A_1 ~|~ \dots`, and starting continuations with ellipses, :math:`\X{sym} ::= \dots ~|~ A_2`.
 
+* Some productions are augmented with side conditions in parentheses, ":math:`(\iff \X{condition})`", that provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
 
 .. _notation-epsilon:

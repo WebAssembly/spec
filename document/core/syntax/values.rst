@@ -166,7 +166,7 @@ Names
    \end{array}
 
 Due to the limitations of the :ref:`binary format <binary-name>`,
-the lengths of a name is bounded by the length of its :ref:`UTF-8 <binary-utf8>` encoding.
+the length of a name is bounded by the length of its :ref:`UTF-8 <binary-utf8>` encoding.
 
 
 Convention

@@ -85,7 +85,7 @@ Element indices reference :ref:`element segments <syntax-elem>`.
 
 Data indices reference :ref:`data segments <syntax-data>`.
 
-The index space for :ref:`locals <syntax-local>` is only accessible inside a :ref:`function <syntax-func>` and includes the parameters and local variables of that function, which precede the other locals.
+The index space for :ref:`locals <syntax-local>` is only accessible inside a :ref:`function <syntax-func>` and includes the parameters of that function, which precede the local variables.
 
 Label indices reference :ref:`structured control instructions <syntax-instr-control>` inside an instruction sequence.
 
@@ -95,7 +95,7 @@ Conventions
 
 * The meta variable :math:`l` ranges over label indices.
 
-* The meta variables :math:`x, y` ranges over indices in any of the other index spaces.
+* The meta variables :math:`x, y` range over indices in any of the other index spaces.
 
 
 .. index:: ! type definition, type index, function type
@@ -132,7 +132,7 @@ The |MFUNCS| component of a module defines a vector of *functions* with the foll
    \end{array}
 
 The |FTYPE| of a function declares its signature by reference to a :ref:`type <syntax-type>` defined in the module.
-The parameters of the function are referenced through 0-based :ref:`local indices <syntax-localidx>` in the function's body.
+The parameters of the function are referenced through 0-based :ref:`local indices <syntax-localidx>` in the function's body; they are mutable.
 
 The |FLOCALS| declare a vector of mutable local variables and their types.
 These variables are referenced through :ref:`local indices <syntax-localidx>` in the function's body.
@@ -297,7 +297,7 @@ Data segments are referenced through :ref:`data indices <syntax-dataidx>`.
 Start Function
 ~~~~~~~~~~~~~~
 
-The |MSTART| component of a module optionally declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` have been initialized.
+The |MSTART| component of a module declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` have been initialized.
 
 .. math::
    \begin{array}{llll}

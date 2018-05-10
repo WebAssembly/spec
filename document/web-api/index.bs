@@ -44,7 +44,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMA-262
         text: ArrayBuffer; url: sec-arraybuffer-objects
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     text: function index; url: syntax/modules.html#syntax-funcidx
-    text: "name" section; url: appendix/custom.html?highlight=name%20section#binary-namesec
+    text: name section; url: appendix/custom.html?highlight=name%20section#binary-namesec
 urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
     type: namespace
         text: WebAssembly; url: #namespacedef-webassembly
@@ -127,6 +127,8 @@ Note: This algorithm accepts a {{Response}} object, or a
 
 <h2 id="conventions">Developer-Facing Display Conventions</h2>
 
+<em>This section is non-normative.</em>
+
 Browsers, JavaScript engines, and offline tools have common ways of referring to
 JavaScript artifacts and language constructs. For example, locations in
 JavaScript source code are printed in stack traces or error messages, and are
@@ -157,7 +159,7 @@ Notes:
     browser, the associated URL should be used; or when the
     {{ArrayBuffer}}-based instantiation
     [=instantiate|API=] is used, the browser should represent
-    the location of the API call. This kind of instantiation is analagous to
+    the location of the API call. This kind of instantiation is analogous to
     executing JavaScript using `eval`; therefore if the browser has an existing
     method to represent the location of the `eval` call it can use a similar
     one for `WebAssembly.instantiate`. For example if the browser uses
@@ -166,24 +168,19 @@ Notes:
     `WebAssembly.instantiate at bar (foo.js:10:3)`, respectively.
     Offline tools may use a filename instead.
 * Using hexadecimal for module offsets matches common conventions in native tools
-    such as objdump (where addresses are printed in hex) and makes them visually
+    such as `objdump` (where addresses are printed in hex) and makes them visually
     distinct from JavaScript line numbers. Other numbers are represented in decimal.
 
 While the "name" property of an [=Exported Function=] instance
 is specified by the [[WASMJS|JS API]], synthesized function names are also
 displayed in other contexts like call stacks in debuggers and string representations
 of stack traces.
-If a WebAssembly module contains a [="name" section=],
+If a WebAssembly module contains a [=name section=],
 these names should be used to synthesize a function name as follows:
-* If a function name subsection is present, the displayed name should
-      be `${module_name}.${function_name}` or `${function_name}`, depending
-      on whether the module name is present.
+* If a function name subsection is present, the displayed name should be `${module_name}.${function_name}` or `${function_name}`, depending on whether the module name is present.
 * Otherwise, the output can be context-dependent:
-  * If the function name is shown alongside its location in a
-    stack trace, then just the module name (if present) or an empty string
-    can be used (because the function index is already in the location).
-  * Otherwise, `${module_name}.wasm-function[${funcIndex}]` or
-    `wasm-function[${funcIndex}]` should be used to convey the function index.
+    * If the function name is shown alongside its location in a stack trace, then just the module name (if present) or an empty string can be used (because the function index is already in the location).
+    * Otherwise, `${module_name}.wasm-function[${funcIndex}]` or `wasm-function[${funcIndex}]` should be used to convey the function index.
 
 Note that this document does not specify the full format of strings such as
 stack frame representations; this allows engines to continue using their
