@@ -496,7 +496,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
     the segment :math:`\elem_i` must be :ref:`valid <valid-elem>`.
 
   * For each :math:`\data_i` in :math:`\module.\MDATA`,
-    the segment :math:`\elem_i` must be :ref:`valid <valid-data>`.
+    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
 
   * If :math:`\module.\MSTART` is non-empty,
     then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
@@ -505,7 +505,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
     the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\X{it}_i`.
 
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
-    the segment :math:`\import_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
+    the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
 
 * The length of :math:`C.\CTABLES` must not be larger than :math:`1`.
 
