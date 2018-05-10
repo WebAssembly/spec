@@ -216,6 +216,8 @@
 .. |tableidx| mathdef:: \xref{syntax/modules}{syntax-tableidx}{\X{tableidx}}
 .. |memidx| mathdef:: \xref{syntax/modules}{syntax-memidx}{\X{memidx}}
 .. |globalidx| mathdef:: \xref{syntax/modules}{syntax-globalidx}{\X{globalidx}}
+.. |elemidx| mathdef:: \xref{syntax/modules}{syntax-elemidx}{\X{elemidx}}
+.. |dataidx| mathdef:: \xref{syntax/modules}{syntax-dataidx}{\X{dataidx}}
 .. |localidx| mathdef:: \xref{syntax/modules}{syntax-localidx}{\X{localidx}}
 .. |labelidx| mathdef:: \xref{syntax/modules}{syntax-labelidx}{\X{labelidx}}
 
@@ -327,6 +329,14 @@
 .. |STORE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{store}}
 .. |MEMORYSIZE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.size}}
 .. |MEMORYGROW| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.grow}}
+.. |MEMORYINIT| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.init}}
+.. |MEMORYDROP| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.drop}}
+.. |MEMORYCOPY| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.copy}}
+.. |MEMORYFILL| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.fill}}
+
+.. |TABLEINIT| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.init}}
+.. |TABLEDROP| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.drop}}
+.. |TABLECOPY| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.copy}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
 .. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}

@@ -241,7 +241,11 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
      \K{i64.}\STORE\K{32}~\memarg \\&&|&
      \MEMORYSIZE \\&&|&
-     \MEMORYGROW \\
+     \MEMORYGROW \\&&|&
+     \MEMORYINIT~\dataidx \\&&|&
+     \MEMORYDROP~\dataidx \\&&|&
+     \MEMORYCOPY \\&&|&
+     \MEMORYFILL \\
    \end{array}
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
@@ -260,9 +264,42 @@ The |MEMORYSIZE| instruction returns the current size of a memory.
 The |MEMORYGROW| instruction grows memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
 
+The |MEMORYINIT| instruction copies data from a :ref:`passive data segment <syntax-activeness>` into a memory.
+The |MEMORYDROP| instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
+The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region.
+The |MEMORYFILL| instruction sets all values in a region to a given byte.
+
 .. note::
    In the current version of WebAssembly,
    all memory instructions implicitly operate on :ref:`memory <syntax-mem>` :ref:`index <syntax-memidx>` :math:`0`.
+   This restriction may be lifted in future versions.
+
+
+.. index:: ! table instruction, table, table index
+   pair: abstract syntax; instruction
+.. _syntax-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+Instructions in this group are concerned with tables :ref:`table <syntax-table>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \TABLEINIT~\elemidx \\&&|&
+     \TABLEDROP~\elemidx \\&&|&
+     \TABLECOPY \\
+   \end{array}
+
+The |TABLEINIT| instruction copies elements from a :ref:`passive element segment <syntax-activeness>` into a table.
+The |TABLEDROP| instruction prevents further use of a passive element segment. This instruction is intended to be used as an optimization hint. After an element segment is dropped its elements can no longer be retrieved, so the memory used by this segment may be freed.
+The |TABLECOPY| instruction copies elements from a source table region to a possibly overlapping destination region.
+
+.. note::
+   In the current version of WebAssembly,
+   all table instructions implicitly operate on :ref:`table <syntax-table>` :ref:`index <syntax-tableidx>` :math:`0`.
    This restriction may be lifted in future versions.
 
 
