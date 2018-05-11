@@ -181,6 +181,25 @@ Global Types
    \end{array}
 
 
+.. index:: ! segtype, ! active, ! passive
+   pair: abstract syntax; segtype
+.. _syntax-segtype:
+.. _syntax-active:
+.. _syntax-passive:
+
+Segment Types
+~~~~~~~~~~~~~
+
+*Segment types* classify :ref:`data segments <syntax-data>` and :ref:`element segments <syntax-elem>`, which can either be *active* or *passive*.
+
+.. math::
+   \begin{array}{llll}
+   \production{segment type} & \segtype &::=&
+     \SACTIVE ~|~
+     \SPASSIVE \\
+   \end{array}
+
+
 .. index:: ! external type, function type, table type, memory type, global type, import, external value
    pair: abstract syntax; external type
    pair: external; type

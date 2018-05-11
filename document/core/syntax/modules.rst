@@ -9,7 +9,7 @@ WebAssembly programs are organized into *modules*,
 which are the unit of deployment, loading, and compilation.
 A module collects definitions for :ref:`types <syntax-type>`, :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
 In addition, it can declare :ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`
-and provide initialization logic in the form of active and passive :ref:`data <syntax-data>` and :ref:`element <syntax-elem>` segments, or a :ref:`start function <syntax-start>`.
+and provide initialization in the form of :ref:`active <syntax-active>` and :ref:`passive <syntax-passive>` :ref:`data <syntax-data>` and :ref:`element <syntax-elem>` segments, or a :ref:`start function <syntax-start>`.
 
 .. math::
    \begin{array}{lllll}
@@ -228,7 +228,7 @@ Globals are referenced through :ref:`global indices <syntax-globalidx>`,
 starting with the smallest index not referencing a global :ref:`import <syntax-import>`.
 
 
-.. index:: ! element, ! active, ! passive, element index, table, table index, expression, constant, function index, vector
+.. index:: ! element, active, passive, element index, table, table index, expression, constant, function index, vector
    pair: abstract syntax; element
    single: table; element
    single: element; segment
@@ -239,7 +239,7 @@ Element Segments
 
 The initial contents of a table is uninitialized. *Element segments* can be used to initialize a subrange of a table from a static :ref:`vector <syntax-vec>` of elements.
 
-Element segments can be *active* or *passive*. An active element segment copies its elements into a table during :ref:`instantiation <exec-instantiation>`. A passive element segment's elements can be copied using the |TABLEINIT| instruction.
+Element segments can be :ref:`active <syntax-active>` or :ref:`passive <syntax-passive>`. An active element segment copies its elements into a table during :ref:`instantiation <exec-instantiation>`. A passive element segment's elements can be copied using the |TABLEINIT| instruction.
 
 The |MELEM| component of a module defines a vector of element segments. Each active element segment defines the |ETABLE| and the starting |EOFFSET| in that table to initialize. Each passive element segment only defines its contents.
 
@@ -270,7 +270,7 @@ Data Segments
 
 The initial contents of a :ref:`memory <syntax-mem>` are zero bytes. *Data segments* can be used to initialize a range of memory from a static :ref:`vector <syntax-vec>` of :ref:`bytes <syntax-byte>`.
 
-Like element segments, data segments can be active or passive. An active data segment copies its contents into a table during :ref:`instantiation <exec-instantiation>`. A passive data segment's contents can be copied using the |MEMORYINIT| instruction.
+Like element segments, data segments can be :ref:`active <syntax-active>` or :ref:`passive <syntax-passive>`. An active data segment copies its contents into a table during :ref:`instantiation <exec-instantiation>`. A passive data segment's contents can be copied using the |MEMORYINIT| instruction.
 
 The |MDATA| component of a module defines a vector of data segments. Each active data segment defines the memory to initialize, and the starting |DOFFSET| in that memory to initialize. Each passive data segment only defines its contents.
 

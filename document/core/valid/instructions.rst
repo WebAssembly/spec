@@ -423,6 +423,149 @@ Memory Instructions
    }
 
 
+.. _valid-memory.init:
+
+:math:`\MEMORYINIT~x`
+.....................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The data segment :math:`C.\CDATA[x]` must be defined in the context.
+
+* The :ref:`segment type <syntax-segtype>` :math:`C.\CDATA[x]` must be |SPASSIVE|.
+
+* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+     \qquad
+     C.\CDATA[x] = \SPASSIVE
+   }{
+     C \vdashinstr \MEMORYINIT~x : [\I32~\I32~\I32] \to []
+   }
+
+
+.. _valid-memory.drop:
+
+:math:`\MEMORYDROP~x`
+.....................
+
+* The data segment :math:`C.\CDATA[x]` must be defined in the context.
+
+* The :ref:`segment type <syntax-segtype>` :math:`C.\CDATA[x]` must be |SPASSIVE|.
+
+* Then the instruction is valid with type :math:`[] \to []`.
+
+.. math::
+   \frac{
+     C.\CDATA[x] = \SPASSIVE
+   }{
+     C \vdashinstr \MEMORYDROP~x : [] \to []
+   }
+
+
+.. _valid-memory.copy:
+
+:math:`\MEMORYCOPY`
+.....................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+   }{
+     C \vdashinstr \MEMORYCOPY : [\I32~\I32~\I32] \to []
+   }
+
+
+.. _valid-memory.fill:
+
+:math:`\MEMORYFILL`
+.....................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+   }{
+     C \vdashinstr \MEMORYFILL : [\I32~\I32~\I32] \to []
+   }
+
+
+.. index:: table instruction, table index, context
+   pair: validation; instruction
+   single: abstract syntax; instruction
+.. _valid-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+.. _valid-table.init:
+
+:math:`\TABLEINIT~x`
+.....................
+
+* The table :math:`C.\CTABLES[0]` must be defined in the context.
+
+* The element segment :math:`C.\CELEM[x]` must be defined in the context.
+
+* The :ref:`segment type <syntax-segtype>` :math:`C.\CELEM[x]` must be |SPASSIVE|.
+
+* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CTABLES[0] = \tabletype
+     \qquad
+     C.\CELEM[x] = \SPASSIVE
+   }{
+     C \vdashinstr \TABLEINIT~x : [\I32~\I32~\I32] \to []
+   }
+
+
+.. _valid-table.drop:
+
+:math:`\TABLEDROP~x`
+.....................
+
+* The element segment :math:`C.\CELEM[x]` must be defined in the context.
+
+* The :ref:`segment type <syntax-segtype>` :math:`C.\CELEM[x]` must be |SPASSIVE|.
+
+* Then the instruction is valid with type :math:`[] \to []`.
+
+.. math::
+   \frac{
+     C.\CELEM[x] = \SPASSIVE
+   }{
+     C \vdashinstr \TABLEDROP~x : [] \to []
+   }
+
+
+.. _valid-table.copy:
+
+:math:`\TABLECOPY`
+.....................
+
+* The table :math:`C.\CTABLES[0]` must be defined in the context.
+
+* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CTABLES[0] = \tabletype
+   }{
+     C \vdashinstr \TABLECOPY : [\I32~\I32~\I32] \to []
+   }
+
+
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism, context
    pair: validation; instruction
    single: abstract syntax; instruction

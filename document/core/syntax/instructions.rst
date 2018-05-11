@@ -265,7 +265,7 @@ The |MEMORYSIZE| instruction returns the current size of a memory.
 The |MEMORYGROW| instruction grows memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
 
-The |MEMORYINIT| instruction copies data from a :ref:`passive data segment <syntax-activeness>` into a memory.
+The |MEMORYINIT| instruction copies data from a :ref:`passive data segment <syntax-data>` into a memory.
 The |MEMORYDROP| instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
 The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region.
 The |MEMORYFILL| instruction sets all values in a region to a given byte.
@@ -294,7 +294,7 @@ Instructions in this group are concerned with tables :ref:`table <syntax-table>`
      \TABLECOPY \\
    \end{array}
 
-The |TABLEINIT| instruction copies elements from a :ref:`passive element segment <syntax-activeness>` into a table.
+The |TABLEINIT| instruction copies elements from a :ref:`passive element segment <syntax-elem>` into a table.
 The |TABLEDROP| instruction prevents further use of a passive element segment. This instruction is intended to be used as an optimization hint. After an element segment is dropped its elements can no longer be retrieved, so the memory used by this segment may be freed.
 The |TABLECOPY| instruction copies elements from a source table region to a possibly overlapping destination region.
 
