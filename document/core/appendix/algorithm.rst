@@ -104,9 +104,10 @@ The control stack is likewise manipulated through auxiliary functions:
 
    func pop_ctrl() : list(val_type) =
      error_if(ctrls.is_empty())
-     let frame = ctrls.pop()
+     let frame = ctrls[0]
      pop_opds(frame.end_types)
      error_if(opds.size() =/= frame.height)
+     ctrls.pop()
      return frame.end_types
 
    func unreachable() =
