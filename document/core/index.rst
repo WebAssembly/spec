@@ -3,7 +3,7 @@ WebAssembly Specification
 
 .. only:: html
 
-   Release |release| (Draft, last updated |today|)
+   Release |release| + tail calls (Draft, last updated |today|)
 
 .. toctree::
    :maxdepth: 3
