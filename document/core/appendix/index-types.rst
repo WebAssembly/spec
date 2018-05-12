@@ -17,7 +17,7 @@ Category                                  Constructor                           
 (reserved)                                                                             :math:`\hex{6F}` .. :math:`\hex{61}`
 :ref:`Function type <syntax-functype>`    :math:`[\valtype^\ast] \to [\valtype^\ast]`  :math:`\hex{60}` (-32 as |Bs7|)
 (reserved)                                                                             :math:`\hex{5F}` .. :math:`\hex{41}`
-:ref:`Result type <syntax-resulttype>`    :math:`\epsilon`                             :math:`\hex{40}` (-64 as |Bs7|)
+:ref:`Result type <syntax-resulttype>`    :math:`[\epsilon]`                           :math:`\hex{40}` (-64 as |Bs7|)
 :ref:`Table type <syntax-tabletype>`      :math:`\limits~\elemtype`                    (none)
 :ref:`Memory type <syntax-memtype>`       :math:`\limits`                              (none)
 :ref:`Global type <syntax-globaltype>`    :math:`\mut~\valtype`                        (none)
