@@ -166,9 +166,10 @@ so that <code class="code docutils literal notranslate"><span class="pre">ctrls[
 
 <span class="k">func</span> <span class="nf">pop_ctrl</span>() : list(val_type) =
   error_if(ctrls.is_empty())
-  <span class="k">let</span> <span class="nf">frame</span> = ctrls.pop()
+  <span class="k">let</span> <span class="nf">frame</span> = ctrls[0]
   pop_opds(frame.end_types)
   error_if(opds.size() =/= frame.height)
+  ctrls.pop()
   <span class="k">return</span> frame.end_types
 
 <span class="k">func</span> <span class="nf">unreachable</span>() =
