@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version b740b15097946bf1d13405dc6d7ca5a72fa2530d" name="generator">
+  <meta content="Bikeshed version 650c7f090a7031056e48b2cf26f91e72b5c14a32" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="45be3f0f1612eb74d2cd803627e96c407c8535f5" name="document-revision">
+  <meta content="4a36cd4fc02fe479ca1afd05f9f13ea2b7348153" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -96,13 +96,13 @@ figcaption:not(.no-marker)::before {
 <style>/* style-var-click-highlighting */
 
     var { cursor: pointer; }
-    var.selected0 { background-color: #F4D200 }
-    var.selected1 { background-color: #FF87A2 }
-    var.selected2 { background-color: #96E885 }
-    var.selected3 { background-color: #3EEED2 }
-    var.selected4 { background-color: #EACFB6 }
-    var.selected5 { background-color: #82DDFF }
-    var.selected6 { background-color: #FFBCF2 }
+    var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+    var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+    var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+    var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+    var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+    var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+    var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
     </style>
 <style>/* style-autolinks */
 
@@ -168,41 +168,41 @@ pre .property::before, pre .property::after {
 }</style>
 <style>/* style-dfn-panel */
 
-        .dfn-panel {
-            position: absolute;
-            z-index: 35;
-            height: auto;
-            width: -webkit-fit-content;
-            width: fit-content;
-            max-width: 300px;
-            max-height: 500px;
-            overflow: auto;
-            padding: 0.5em 0.75em;
-            font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
-            background: #DDDDDD;
-            color: black;
-            border: outset 0.2em;
-        }
-        .dfn-panel:not(.on) { display: none; }
-        .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
-        .dfn-panel > b { display: block; }
-        .dfn-panel a { color: black; }
-        .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
-        .dfn-panel > b + b { margin-top: 0.25em; }
-        .dfn-panel ul { padding: 0; }
-        .dfn-panel li { list-style: inside; }
-        .dfn-panel.activated {
-            display: inline-block;
-            position: fixed;
-            left: .5em;
-            bottom: 2em;
-            margin: 0 auto;
-            max-width: calc(100vw - 1.5em - .4em - .5em);
-            max-height: 30vh;
-        }
+.dfn-panel {
+    position: absolute;
+    z-index: 35;
+    height: auto;
+    width: -webkit-fit-content;
+    width: fit-content;
+    max-width: 300px;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.75em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: #DDDDDD;
+    color: black;
+    border: outset 0.2em;
+}
+.dfn-panel:not(.on) { display: none; }
+.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+.dfn-panel > b { display: block; }
+.dfn-panel a { color: black; }
+.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel > b + b { margin-top: 0.25em; }
+.dfn-panel ul { padding: 0; }
+.dfn-panel li { list-style: inside; }
+.dfn-panel.activated {
+    display: inline-block;
+    position: fixed;
+    left: .5em;
+    bottom: 2em;
+    margin: 0 auto;
+    max-width: calc(100vw - 1.5em - .4em - .5em);
+    max-height: 30vh;
+}
 
-        .dfn-paneled { cursor: pointer; }
-        </style>
+.dfn-paneled { cursor: pointer; }
+</style>
 <style>/* style-syntax-highlighting */
 pre.idl.highlight { color: #708090; }
 .highlight:not(.idl) { background: hsl(24, 20%, 95%); }
@@ -266,7 +266,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-05-10">10 May 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-05-12">12 May 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1484,154 +1484,880 @@ The particular exception here is implementation-defined in both cases.</p>
    <li><a href="#namespacedef-webassembly">WebAssembly</a><span>, in §3</span>
    <li><a href="#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a><span>, in §3</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-number">
+   <a href="https://drafts.csswg.org/css-values-4/#number">https://drafts.csswg.org/css-values-4/#number</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-number">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-well-known-intrinsic-objects">
+   <a href="https://tc39.github.io/ecma262/#sec-well-known-intrinsic-objects">https://tc39.github.io/ecma262/#sec-well-known-intrinsic-objects</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-well-known-intrinsic-objects">3.6. Error Objects</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-properties-of-the-function-prototype-object">
+   <a href="https://tc39.github.io/ecma262/#sec-properties-of-the-function-prototype-object">https://tc39.github.io/ecma262/#sec-properties-of-the-function-prototype-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-properties-of-the-function-prototype-object">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-arraybuffer-objects">
+   <a href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects">https://tc39.github.io/ecma262/#sec-arraybuffer-objects</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-arraybuffer-objects">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-sec-arraybuffer-objects①">3.1. Modules</a> <a href="#ref-for-sec-arraybuffer-objects②">(2)</a> <a href="#ref-for-sec-arraybuffer-objects③">(3)</a>
+    <li><a href="#ref-for-sec-arraybuffer-objects④">3.3. Memories</a> <a href="#ref-for-sec-arraybuffer-objects⑤">(2)</a> <a href="#ref-for-sec-arraybuffer-objects⑥">(3)</a> <a href="#ref-for-sec-arraybuffer-objects⑦">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-nativeerror-constructors">
+   <a href="https://tc39.github.io/ecma262/#sec-nativeerror-constructors">https://tc39.github.io/ecma262/#sec-nativeerror-constructors</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-nativeerror-constructors">3.6. Error Objects</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-native-error-types-used-in-this-standard-rangeerror">
+   <a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror">https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror">3.3. Memories</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror①">(2)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror②">3.4. Tables</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror④">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑤">(4)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑥">4.1. Stack Overflow</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-native-error-types-used-in-this-standard-typeerror">
+   <a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror">3. The WebAssembly Namespace</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror①">(2)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror②">3.4. Tables</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror③">3.5. Exported Functions</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror④">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-agent">
+   <a href="https://tc39.github.io/ecma262/#agent">https://tc39.github.io/ecma262/#agent</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-agent">2.1. Interaction of the WebAssembly Store with JavaScript</a>
+    <li><a href="#ref-for-agent①">2.2. WebAssembly JS Object Caches</a> <a href="#ref-for-agent②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-agent-clusters">
+   <a href="https://tc39.github.io/ecma262/#sec-agent-clusters">https://tc39.github.io/ecma262/#sec-agent-clusters</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-agent-clusters">2.1. Interaction of the WebAssembly Store with JavaScript</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-built-in-function-objects">
+   <a href="https://tc39.github.io/ecma262/#sec-built-in-function-objects">https://tc39.github.io/ecma262/#sec-built-in-function-objects</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-built-in-function-objects">3.5. Exported Functions</a> <a href="#ref-for-sec-built-in-function-objects①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-call">
+   <a href="https://tc39.github.io/ecma262/#sec-call">https://tc39.github.io/ecma262/#sec-call</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-call">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-createbuiltinfunction">
+   <a href="https://tc39.github.io/ecma262/#sec-createbuiltinfunction">https://tc39.github.io/ecma262/#sec-createbuiltinfunction</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-createbuiltinfunction">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-createdataproperty">
+   <a href="https://tc39.github.io/ecma262/#sec-createdataproperty">https://tc39.github.io/ecma262/#sec-createdataproperty</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-createdataproperty">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-current-realm">
+   <a href="https://tc39.github.io/ecma262/#current-realm">https://tc39.github.io/ecma262/#current-realm</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-current-realm">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-data-blocks">
+   <a href="https://tc39.github.io/ecma262/#sec-data-blocks">https://tc39.github.io/ecma262/#sec-data-blocks</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-data-blocks">2.1. Interaction of the WebAssembly Store with JavaScript</a>
+    <li><a href="#ref-for-sec-data-blocks①">3.3. Memories</a> <a href="#ref-for-sec-data-blocks②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-definepropertyorthrow">
+   <a href="https://tc39.github.io/ecma262/#sec-definepropertyorthrow">https://tc39.github.io/ecma262/#sec-definepropertyorthrow</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-definepropertyorthrow">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-detacharraybuffer">
+   <a href="https://tc39.github.io/ecma262/#sec-detacharraybuffer">https://tc39.github.io/ecma262/#sec-detacharraybuffer</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-detacharraybuffer">3.3. Memories</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-get-o-p">
+   <a href="https://tc39.github.io/ecma262/#sec-get-o-p">https://tc39.github.io/ecma262/#sec-get-o-p</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-get-o-p">3. The WebAssembly Namespace</a> <a href="#ref-for-sec-get-o-p①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-iscallable">
+   <a href="https://tc39.github.io/ecma262/#sec-iscallable">https://tc39.github.io/ecma262/#sec-iscallable</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-iscallable">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-sec-iscallable①">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-numbertorawbytes">
+   <a href="https://tc39.github.io/ecma262/#sec-numbertorawbytes">https://tc39.github.io/ecma262/#sec-numbertorawbytes</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-numbertorawbytes">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-objectcreate">
+   <a href="https://tc39.github.io/ecma262/#sec-objectcreate">https://tc39.github.io/ecma262/#sec-objectcreate</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-objectcreate">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-setfunctionname">
+   <a href="https://tc39.github.io/ecma262/#sec-setfunctionname">https://tc39.github.io/ecma262/#sec-setfunctionname</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-setfunctionname">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-setintegritylevel">
+   <a href="https://tc39.github.io/ecma262/#sec-setintegritylevel">https://tc39.github.io/ecma262/#sec-setintegritylevel</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-setintegritylevel">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-surrounding-agent">
+   <a href="https://tc39.github.io/ecma262/#surrounding-agent">https://tc39.github.io/ecma262/#surrounding-agent</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-surrounding-agent">3. The WebAssembly Namespace</a> <a href="#ref-for-surrounding-agent①">(2)</a>
+    <li><a href="#ref-for-surrounding-agent②">3.3. Memories</a> <a href="#ref-for-surrounding-agent③">(2)</a> <a href="#ref-for-surrounding-agent④">(3)</a> <a href="#ref-for-surrounding-agent⑤">(4)</a> <a href="#ref-for-surrounding-agent⑥">(5)</a> <a href="#ref-for-surrounding-agent⑦">(6)</a>
+    <li><a href="#ref-for-surrounding-agent⑧">3.4. Tables</a> <a href="#ref-for-surrounding-agent⑨">(2)</a> <a href="#ref-for-surrounding-agent①⓪">(3)</a> <a href="#ref-for-surrounding-agent①①">(4)</a> <a href="#ref-for-surrounding-agent①②">(5)</a> <a href="#ref-for-surrounding-agent①③">(6)</a> <a href="#ref-for-surrounding-agent①④">(7)</a>
+    <li><a href="#ref-for-surrounding-agent①⑤">3.5. Exported Functions</a> <a href="#ref-for-surrounding-agent①⑥">(2)</a> <a href="#ref-for-surrounding-agent①⑦">(3)</a> <a href="#ref-for-surrounding-agent①⑧">(4)</a> <a href="#ref-for-surrounding-agent①⑨">(5)</a> <a href="#ref-for-surrounding-agent②⓪">(6)</a> <a href="#ref-for-surrounding-agent②①">(7)</a> <a href="#ref-for-surrounding-agent②②">(8)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-ecmascript-language-types-number-type">
+   <a href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type">https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-ecmascript-language-types-number-type">3.5. Exported Functions</a> <a href="#ref-for-sec-ecmascript-language-types-number-type①">(2)</a> <a href="#ref-for-sec-ecmascript-language-types-number-type②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-toint32">
+   <a href="https://tc39.github.io/ecma262/#sec-toint32">https://tc39.github.io/ecma262/#sec-toint32</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-toint32">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-tonumber">
+   <a href="https://tc39.github.io/ecma262/#sec-tonumber">https://tc39.github.io/ecma262/#sec-tonumber</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-tonumber">3.5. Exported Functions</a> <a href="#ref-for-sec-tonumber①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-tostring">
+   <a href="https://tc39.github.io/ecma262/#sec-tostring">https://tc39.github.io/ecma262/#sec-tostring</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-tostring">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-ecmascript-data-types-and-values">
+   <a href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values">https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-ecmascript-data-types-and-values">3. The WebAssembly Namespace</a> <a href="#ref-for-sec-ecmascript-data-types-and-values①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-utf-8-decode-without-bom-or-fail">
+   <a href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail">https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-utf-8-decode-without-bom-or-fail">3.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-in-parallel">
+   <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-in-parallel">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-queue-a-task">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task">https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-queue-a-task">3. The WebAssembly Namespace</a> <a href="#ref-for-queue-a-task①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-task-source">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#task-source">https://html.spec.whatwg.org/multipage/webappapis.html#task-source</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-task-source">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-set-append">
+   <a href="https://infra.spec.whatwg.org/#set-append">https://infra.spec.whatwg.org/#set-append</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-set-append">3. The WebAssembly Namespace</a> <a href="#ref-for-set-append①">(2)</a> <a href="#ref-for-set-append②">(3)</a> <a href="#ref-for-set-append③">(4)</a>
+    <li><a href="#ref-for-set-append④">3.1. Modules</a> <a href="#ref-for-set-append⑤">(2)</a> <a href="#ref-for-set-append⑥">(3)</a>
+    <li><a href="#ref-for-set-append⑦">3.4. Tables</a>
+    <li><a href="#ref-for-set-append⑧">3.5. Exported Functions</a> <a href="#ref-for-set-append⑨">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-map-exists">
+   <a href="https://infra.spec.whatwg.org/#map-exists">https://infra.spec.whatwg.org/#map-exists</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-map-exists">3.3. Memories</a> <a href="#ref-for-map-exists①">(2)</a>
+    <li><a href="#ref-for-map-exists②">3.4. Tables</a>
+    <li><a href="#ref-for-map-exists③">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list">
+   <a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-list①">3.1. Modules</a> <a href="#ref-for-list②">(2)</a> <a href="#ref-for-list③">(3)</a>
+    <li><a href="#ref-for-list④">3.5. Exported Functions</a> <a href="#ref-for-list⑤">(2)</a> <a href="#ref-for-list⑥">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-ordered-map">
+   <a href="https://infra.spec.whatwg.org/#ordered-map">https://infra.spec.whatwg.org/#ordered-map</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-ordered-map">2.2. WebAssembly JS Object Caches</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-map-set">
+   <a href="https://infra.spec.whatwg.org/#map-set">https://infra.spec.whatwg.org/#map-set</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-map-set">3.3. Memories</a>
+    <li><a href="#ref-for-map-set①">3.4. Tables</a>
+    <li><a href="#ref-for-map-set②">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-a-new-promise">
+   <a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise">https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-a-new-promise">3. The WebAssembly Namespace</a> <a href="#ref-for-a-new-promise①">(2)</a> <a href="#ref-for-a-new-promise②">(3)</a> <a href="#ref-for-a-new-promise③">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-reject-promise">
+   <a href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise">https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-reject-promise">3. The WebAssembly Namespace</a> <a href="#ref-for-reject-promise①">(2)</a> <a href="#ref-for-reject-promise②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-resolve-promise">
+   <a href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise">https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-resolve-promise">3. The WebAssembly Namespace</a> <a href="#ref-for-resolve-promise①">(2)</a> <a href="#ref-for-resolve-promise②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-upon-fulfillment">
+   <a href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment">https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-upon-fulfillment">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-upon-rejection">
+   <a href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection">https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-upon-rejection">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-object">
+   <a href="https://url.spec.whatwg.org/#concept-url-object">https://url.spec.whatwg.org/#concept-url-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-object">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-addresses">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#addresses">https://webassembly.github.io/spec/core/exec/runtime.html#addresses</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-addresses">2.2. WebAssembly JS Object Caches</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-alloc-func">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-func">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-func</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-alloc-func">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-alloc-global">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-global">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-global</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-alloc-global">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-alloc-mem">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-mem">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-mem</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-alloc-mem">3.3. Memories</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-alloc-table">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-table">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-table</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-alloc-table">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-exec-notation-textual">
+   <a href="https://webassembly.github.io/spec/core/exec/conventions.html#exec-notation-textual">https://webassembly.github.io/spec/core/exec/conventions.html#exec-notation-textual</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-exec-notation-textual">3.3. Memories</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-custom-section">
+   <a href="https://webassembly.github.io/spec/core/binary/modules.html#custom-section">https://webassembly.github.io/spec/core/binary/modules.html#custom-section</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-custom-section">3.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-binary-customsec">
+   <a href="https://webassembly.github.io/spec/core/binary/modules.html#binary-customsec">https://webassembly.github.io/spec/core/binary/modules.html#binary-customsec</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-binary-customsec">3.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-decode-module">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-decode-module">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-decode-module</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-decode-module">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-error">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-error">3. The WebAssembly Namespace</a> <a href="#ref-for-embed-error①">(2)</a> <a href="#ref-for-embed-error②">(3)</a> <a href="#ref-for-embed-error③">(4)</a> <a href="#ref-for-embed-error④">(5)</a> <a href="#ref-for-embed-error⑤">(6)</a> <a href="#ref-for-embed-error⑥">(7)</a> <a href="#ref-for-embed-error⑦">(8)</a>
+    <li><a href="#ref-for-embed-error⑧">3.1. Modules</a>
+    <li><a href="#ref-for-embed-error⑨">3.3. Memories</a>
+    <li><a href="#ref-for-embed-error①⓪">3.4. Tables</a> <a href="#ref-for-embed-error①①">(2)</a>
+    <li><a href="#ref-for-embed-error①②">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-externval">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-externval">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-externval①">(2)</a> <a href="#ref-for-syntax-externval②">(3)</a> <a href="#ref-for-syntax-externval③">(4)</a> <a href="#ref-for-syntax-externval④">(5)</a> <a href="#ref-for-syntax-externval⑤">(6)</a> <a href="#ref-for-syntax-externval⑥">(7)</a> <a href="#ref-for-syntax-externval⑦">(8)</a> <a href="#ref-for-syntax-externval⑧">(9)</a> <a href="#ref-for-syntax-externval⑨">(10)</a> <a href="#ref-for-syntax-externval①⓪">(11)</a> <a href="#ref-for-syntax-externval①①">(12)</a> <a href="#ref-for-syntax-externval①②">(13)</a> <a href="#ref-for-syntax-externval①③">(14)</a> <a href="#ref-for-syntax-externval①④">(15)</a> <a href="#ref-for-syntax-externval①⑤">(16)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-funcaddr">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-funcaddr">2.2. WebAssembly JS Object Caches</a>
+    <li><a href="#ref-for-syntax-funcaddr①">3.5. Exported Functions</a> <a href="#ref-for-syntax-funcaddr②">(2)</a> <a href="#ref-for-syntax-funcaddr③">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-funcelem">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcelem">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcelem</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-funcelem">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-get-export">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-get-export">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-get-export</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-get-export">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-globaltype">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-globaltype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-globaltype</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-globaltype">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-globaltype①">(2)</a> <a href="#ref-for-syntax-globaltype②">(3)</a> <a href="#ref-for-syntax-globaltype③">(4)</a> <a href="#ref-for-syntax-globaltype④">(5)</a> <a href="#ref-for-syntax-globaltype⑤">(6)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-grow-mem">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-grow-mem">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-grow-mem</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-grow-mem">3.3. Memories</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-exec-grow-memory">
+   <a href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-grow-memory">https://webassembly.github.io/spec/core/exec/instructions.html#exec-grow-memory</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-exec-grow-memory">3.3. Memories</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-grow-table">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-grow-table">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-grow-table</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-grow-table">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-hostfunc">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostfunc">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostfunc</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-hostfunc">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-init-store">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-init-store">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-init-store</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-init-store">2.1. Interaction of the WebAssembly Store with JavaScript</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-instantiate-module">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instantiate-module">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instantiate-module</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-instantiate-module">3. The WebAssembly Namespace</a> <a href="#ref-for-embed-instantiate-module①">(2)</a> <a href="#ref-for-embed-instantiate-module②">(3)</a> <a href="#ref-for-embed-instantiate-module③">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-invoke-func">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-invoke-func">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-invoke-func</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-invoke-func">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-memaddr">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-memaddr">2.2. WebAssembly JS Object Caches</a>
+    <li><a href="#ref-for-syntax-memaddr①">3.3. Memories</a> <a href="#ref-for-syntax-memaddr②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-memory-instances">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances">https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-memory-instances">2.1. Interaction of the WebAssembly Store with JavaScript</a>
+    <li><a href="#ref-for-memory-instances①">3.3. Memories</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-module">
+   <a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-module">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-module①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-exports">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-exports">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-exports</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-exports">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-embed-exports①">3.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-imports">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-imports">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-imports</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-imports">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-embed-imports①">3.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-read-global">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-read-global">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-read-global</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-read-global">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-aux-signed">
+   <a href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed">https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-aux-signed">3.5. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-size-mem">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-size-mem">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-size-mem</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-size-mem">3.3. Memories</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-size-table">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-size-table">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-size-table</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-size-table">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-store">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-store">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-store</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-store">2.1. Interaction of the WebAssembly Store with JavaScript</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-tableaddr">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-tableaddr">2.2. WebAssembly JS Object Caches</a>
+    <li><a href="#ref-for-syntax-tableaddr①">3.4. Tables</a> <a href="#ref-for-syntax-tableaddr②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-table-instances">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#table-instances">https://webassembly.github.io/spec/core/exec/runtime.html#table-instances</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-table-instances">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-tabletype">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-tabletype">3.4. Tables</a> <a href="#ref-for-syntax-tabletype①">(2)</a> <a href="#ref-for-syntax-tabletype②">(3)</a> <a href="#ref-for-syntax-tabletype③">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-type-func">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-type-func">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-type-func</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-type-func">3.5. Exported Functions</a> <a href="#ref-for-embed-type-func①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-valid-module">
+   <a href="https://webassembly.github.io/spec/core/valid/modules.html#valid-module">https://webassembly.github.io/spec/core/valid/modules.html#valid-module</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-valid-module">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-valid-module①">3.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-validate-module">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-validate-module">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-validate-module</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-validate-module">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-valid-module">
+   <a href="https://webassembly.github.io/spec/core/valid/modules.html#valid-module">https://webassembly.github.io/spec/core/valid/modules.html#valid-module</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-valid-module">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-valid-module①">3.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-values">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-values">3.3. Memories</a>
+    <li><a href="#ref-for-values①">3.5. Exported Functions</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a> <a href="#ref-for-values⑥">(6)</a> <a href="#ref-for-values⑦">(7)</a> <a href="#ref-for-values⑧">(8)</a> <a href="#ref-for-values⑨">(9)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-write-table">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-write-table">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-write-table</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-write-table">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-external-types">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
+    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-valtype①">(2)</a>
+    <li><a href="#ref-for-syntax-valtype②">3.5. Exported Functions</a> <a href="#ref-for-syntax-valtype③">(2)</a> <a href="#ref-for-syntax-valtype④">(3)</a> <a href="#ref-for-syntax-valtype⑤">(4)</a> <a href="#ref-for-syntax-valtype⑥">(5)</a> <a href="#ref-for-syntax-valtype⑦">(6)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-values">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-values">3.3. Memories</a>
+    <li><a href="#ref-for-values①">3.5. Exported Functions</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a> <a href="#ref-for-values⑥">(6)</a> <a href="#ref-for-values⑦">(7)</a> <a href="#ref-for-values⑧">(8)</a> <a href="#ref-for-values⑨">(9)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-valtype①">(2)</a>
+    <li><a href="#ref-for-syntax-valtype②">3.5. Exported Functions</a> <a href="#ref-for-syntax-valtype③">(2)</a> <a href="#ref-for-syntax-valtype④">(3)</a> <a href="#ref-for-syntax-valtype⑤">(4)</a> <a href="#ref-for-syntax-valtype⑥">(5)</a> <a href="#ref-for-syntax-valtype⑦">(6)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-values">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-values">3.3. Memories</a>
+    <li><a href="#ref-for-values①">3.5. Exported Functions</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a> <a href="#ref-for-values⑥">(6)</a> <a href="#ref-for-values⑦">(7)</a> <a href="#ref-for-values⑧">(8)</a> <a href="#ref-for-values⑨">(9)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-external-types">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
+    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-module">
+   <a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-module">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-module①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-valtype①">(2)</a>
+    <li><a href="#ref-for-syntax-valtype②">3.5. Exported Functions</a> <a href="#ref-for-syntax-valtype③">(2)</a> <a href="#ref-for-syntax-valtype④">(3)</a> <a href="#ref-for-syntax-valtype⑤">(4)</a> <a href="#ref-for-syntax-valtype⑥">(5)</a> <a href="#ref-for-syntax-valtype⑦">(6)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-values">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-values">3.3. Memories</a>
+    <li><a href="#ref-for-values①">3.5. Exported Functions</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a> <a href="#ref-for-values⑥">(6)</a> <a href="#ref-for-values⑦">(7)</a> <a href="#ref-for-values⑧">(8)</a> <a href="#ref-for-values⑨">(9)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-valtype①">(2)</a>
+    <li><a href="#ref-for-syntax-valtype②">3.5. Exported Functions</a> <a href="#ref-for-syntax-valtype③">(2)</a> <a href="#ref-for-syntax-valtype④">(3)</a> <a href="#ref-for-syntax-valtype⑤">(4)</a> <a href="#ref-for-syntax-valtype⑥">(5)</a> <a href="#ref-for-syntax-valtype⑦">(6)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-values">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-values">3.3. Memories</a>
+    <li><a href="#ref-for-values①">3.5. Exported Functions</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a> <a href="#ref-for-values⑥">(6)</a> <a href="#ref-for-values⑦">(7)</a> <a href="#ref-for-values⑧">(8)</a> <a href="#ref-for-values⑨">(9)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-external-types">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
+    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-moduleinst">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-moduleinst">3.3. Memories</a> <a href="#ref-for-syntax-moduleinst①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-frame">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-frame">3.3. Memories</a> <a href="#ref-for-syntax-frame①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-external-types">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
+    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-BufferSource">
+   <a href="https://heycam.github.io/webidl/#BufferSource">https://heycam.github.io/webidl/#BufferSource</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-BufferSource">3. The WebAssembly Namespace</a> <a href="#ref-for-BufferSource①">(2)</a> <a href="#ref-for-BufferSource②">(3)</a> <a href="#ref-for-BufferSource③">(4)</a> <a href="#ref-for-BufferSource④">(5)</a>
+    <li><a href="#ref-for-BufferSource⑤">3.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-EnforceRange">
+   <a href="https://heycam.github.io/webidl/#EnforceRange">https://heycam.github.io/webidl/#EnforceRange</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-EnforceRange">3.3. Memories</a> <a href="#ref-for-EnforceRange①">(2)</a> <a href="#ref-for-EnforceRange②">(3)</a>
+    <li><a href="#ref-for-EnforceRange③">3.4. Tables</a> <a href="#ref-for-EnforceRange④">(2)</a> <a href="#ref-for-EnforceRange⑤">(3)</a> <a href="#ref-for-EnforceRange⑥">(4)</a> <a href="#ref-for-EnforceRange⑦">(5)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-Exposed">
+   <a href="https://heycam.github.io/webidl/#Exposed">https://heycam.github.io/webidl/#Exposed</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-Exposed">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-Exposed①">3.1. Modules</a>
+    <li><a href="#ref-for-Exposed②">3.2. Instances</a>
+    <li><a href="#ref-for-Exposed③">3.3. Memories</a>
+    <li><a href="#ref-for-Exposed④">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-Function">
+   <a href="https://heycam.github.io/webidl/#Function">https://heycam.github.io/webidl/#Function</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-Function">3.4. Tables</a> <a href="#ref-for-Function①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-LegacyNamespace">
+   <a href="https://heycam.github.io/webidl/#LegacyNamespace">https://heycam.github.io/webidl/#LegacyNamespace</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-LegacyNamespace">3.1. Modules</a>
+    <li><a href="#ref-for-LegacyNamespace①">3.2. Instances</a>
+    <li><a href="#ref-for-LegacyNamespace②">3.3. Memories</a>
+    <li><a href="#ref-for-LegacyNamespace③">3.4. Tables</a>
+    <li><a href="#ref-for-LegacyNamespace④">3.6. Error Objects</a> <a href="#ref-for-LegacyNamespace⑤">(2)</a> <a href="#ref-for-LegacyNamespace⑥">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-USVString">
+   <a href="https://heycam.github.io/webidl/#idl-USVString">https://heycam.github.io/webidl/#idl-USVString</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-USVString">3.1. Modules</a> <a href="#ref-for-idl-USVString①">(2)</a> <a href="#ref-for-idl-USVString②">(3)</a> <a href="#ref-for-idl-USVString③">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-boolean">
+   <a href="https://heycam.github.io/webidl/#idl-boolean">https://heycam.github.io/webidl/#idl-boolean</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-boolean">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-get-buffer-source-copy">
+   <a href="https://heycam.github.io/webidl/#dfn-get-buffer-source-copy">https://heycam.github.io/webidl/#dfn-get-buffer-source-copy</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-get-buffer-source-copy">3. The WebAssembly Namespace</a> <a href="#ref-for-dfn-get-buffer-source-copy①">(2)</a>
+    <li><a href="#ref-for-dfn-get-buffer-source-copy②">3.1. Modules</a> <a href="#ref-for-dfn-get-buffer-source-copy③">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-object">
+   <a href="https://heycam.github.io/webidl/#idl-object">https://heycam.github.io/webidl/#idl-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-object">3. The WebAssembly Namespace</a> <a href="#ref-for-idl-object①">(2)</a>
+    <li><a href="#ref-for-idl-object②">3.2. Instances</a> <a href="#ref-for-idl-object③">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-present">
+   <a href="https://heycam.github.io/webidl/#dfn-present">https://heycam.github.io/webidl/#dfn-present</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-present">3.3. Memories</a> <a href="#ref-for-dfn-present①">(2)</a>
+    <li><a href="#ref-for-dfn-present②">3.4. Tables</a> <a href="#ref-for-dfn-present③">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-unsigned-long">
+   <a href="https://heycam.github.io/webidl/#idl-unsigned-long">https://heycam.github.io/webidl/#idl-unsigned-long</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-unsigned-long">3.3. Memories</a> <a href="#ref-for-idl-unsigned-long①">(2)</a> <a href="#ref-for-idl-unsigned-long②">(3)</a> <a href="#ref-for-idl-unsigned-long③">(4)</a>
+    <li><a href="#ref-for-idl-unsigned-long④">3.4. Tables</a> <a href="#ref-for-idl-unsigned-long⑤">(2)</a> <a href="#ref-for-idl-unsigned-long⑥">(3)</a> <a href="#ref-for-idl-unsigned-long⑦">(4)</a> <a href="#ref-for-idl-unsigned-long⑧">(5)</a> <a href="#ref-for-idl-unsigned-long⑨">(6)</a> <a href="#ref-for-idl-unsigned-long①⓪">(7)</a>
+   </ul>
+  </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[css-values-4]</a> defines the following terms:
     <ul>
-     <li><a href="https://drafts.csswg.org/css-values-4/#number">number</a>
+     <li><span class="dfn-paneled" id="term-for-number" style="color:initial">number</span>
     </ul>
    <li>
     <a data-link-type="biblio">[ECMASCRIPT]</a> defines the following terms:
     <ul>
-     <li><a href="https://tc39.github.io/ecma262/#sec-well-known-intrinsic-objects">%errorprototype%</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-properties-of-the-function-prototype-object">%functionprototype%</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects">ArrayBuffer</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-nativeerror-constructors">NativeError</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror">RangeError</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a>
-     <li><a href="https://tc39.github.io/ecma262/#agent">agent</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-agent-clusters">agent cluster</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-built-in-function-objects">built-in function objects</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-call">call</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-createbuiltinfunction">createbuiltinfunction</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-createdataproperty">createdataproperty</a>
-     <li><a href="https://tc39.github.io/ecma262/#current-realm">current realm</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-data-blocks">data block</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-definepropertyorthrow">definepropertyorthrow</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-detacharraybuffer">detacharraybuffer</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-get-o-p">get</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-iscallable">iscallable</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-numbertorawbytes">numbertorawbytes</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-objectcreate">objectcreate</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-setfunctionname">setfunctionname</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-setintegritylevel">setintegritylevel</a>
-     <li><a href="https://tc39.github.io/ecma262/#surrounding-agent">surrounding agent</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type">the number value</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-toint32">toint32</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-tonumber">tonumber</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-tostring">tostring</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values">type</a>
+     <li><span class="dfn-paneled" id="term-for-sec-well-known-intrinsic-objects" style="color:initial">%errorprototype%</span>
+     <li><span class="dfn-paneled" id="term-for-sec-properties-of-the-function-prototype-object" style="color:initial">%functionprototype%</span>
+     <li><span class="dfn-paneled" id="term-for-sec-arraybuffer-objects" style="color:initial">ArrayBuffer</span>
+     <li><span class="dfn-paneled" id="term-for-sec-nativeerror-constructors" style="color:initial">NativeError</span>
+     <li><span class="dfn-paneled" id="term-for-sec-native-error-types-used-in-this-standard-rangeerror" style="color:initial">RangeError</span>
+     <li><span class="dfn-paneled" id="term-for-sec-native-error-types-used-in-this-standard-typeerror" style="color:initial">TypeError</span>
+     <li><span class="dfn-paneled" id="term-for-agent" style="color:initial">agent</span>
+     <li><span class="dfn-paneled" id="term-for-sec-agent-clusters" style="color:initial">agent cluster</span>
+     <li><span class="dfn-paneled" id="term-for-sec-built-in-function-objects" style="color:initial">built-in function objects</span>
+     <li><span class="dfn-paneled" id="term-for-sec-call" style="color:initial">call</span>
+     <li><span class="dfn-paneled" id="term-for-sec-createbuiltinfunction" style="color:initial">createbuiltinfunction</span>
+     <li><span class="dfn-paneled" id="term-for-sec-createdataproperty" style="color:initial">createdataproperty</span>
+     <li><span class="dfn-paneled" id="term-for-current-realm" style="color:initial">current realm</span>
+     <li><span class="dfn-paneled" id="term-for-sec-data-blocks" style="color:initial">data block</span>
+     <li><span class="dfn-paneled" id="term-for-sec-definepropertyorthrow" style="color:initial">definepropertyorthrow</span>
+     <li><span class="dfn-paneled" id="term-for-sec-detacharraybuffer" style="color:initial">detacharraybuffer</span>
+     <li><span class="dfn-paneled" id="term-for-sec-get-o-p" style="color:initial">get</span>
+     <li><span class="dfn-paneled" id="term-for-sec-iscallable" style="color:initial">iscallable</span>
+     <li><span class="dfn-paneled" id="term-for-sec-numbertorawbytes" style="color:initial">numbertorawbytes</span>
+     <li><span class="dfn-paneled" id="term-for-sec-objectcreate" style="color:initial">objectcreate</span>
+     <li><span class="dfn-paneled" id="term-for-sec-setfunctionname" style="color:initial">setfunctionname</span>
+     <li><span class="dfn-paneled" id="term-for-sec-setintegritylevel" style="color:initial">setintegritylevel</span>
+     <li><span class="dfn-paneled" id="term-for-surrounding-agent" style="color:initial">surrounding agent</span>
+     <li><span class="dfn-paneled" id="term-for-sec-ecmascript-language-types-number-type" style="color:initial">the number value</span>
+     <li><span class="dfn-paneled" id="term-for-sec-toint32" style="color:initial">toint32</span>
+     <li><span class="dfn-paneled" id="term-for-sec-tonumber" style="color:initial">tonumber</span>
+     <li><span class="dfn-paneled" id="term-for-sec-tostring" style="color:initial">tostring</span>
+     <li><span class="dfn-paneled" id="term-for-sec-ecmascript-data-types-and-values" style="color:initial">type</span>
     </ul>
    <li>
     <a data-link-type="biblio">[ENCODING]</a> defines the following terms:
     <ul>
-     <li><a href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail">utf-8 decode without bom or fail</a>
+     <li><span class="dfn-paneled" id="term-for-utf-8-decode-without-bom-or-fail" style="color:initial">utf-8 decode without bom or fail</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
-     <li><a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">in parallel</a>
-     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task">queue a task</a>
-     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#task-source">task source</a>
+     <li><span class="dfn-paneled" id="term-for-in-parallel" style="color:initial">in parallel</span>
+     <li><span class="dfn-paneled" id="term-for-queue-a-task" style="color:initial">queue a task</span>
+     <li><span class="dfn-paneled" id="term-for-task-source" style="color:initial">task source</span>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
-     <li><a href="https://infra.spec.whatwg.org/#set-append">append</a>
-     <li><a href="https://infra.spec.whatwg.org/#map-exists">exist</a>
-     <li><a href="https://infra.spec.whatwg.org/#list">list</a>
-     <li><a href="https://infra.spec.whatwg.org/#ordered-map">ordered map</a>
-     <li><a href="https://infra.spec.whatwg.org/#map-set">set</a>
+     <li><span class="dfn-paneled" id="term-for-set-append" style="color:initial">append</span>
+     <li><span class="dfn-paneled" id="term-for-map-exists" style="color:initial">exist</span>
+     <li><span class="dfn-paneled" id="term-for-list" style="color:initial">list</span>
+     <li><span class="dfn-paneled" id="term-for-ordered-map" style="color:initial">ordered map</span>
+     <li><span class="dfn-paneled" id="term-for-map-set" style="color:initial">set</span>
     </ul>
    <li>
     <a data-link-type="biblio">[promises-guide]</a> defines the following terms:
     <ul>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise">a new promise</a>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise">reject</a>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise">resolve</a>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment">upon fulfillment</a>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection">upon rejection</a>
+     <li><span class="dfn-paneled" id="term-for-a-new-promise" style="color:initial">a new promise</span>
+     <li><span class="dfn-paneled" id="term-for-reject-promise" style="color:initial">reject</span>
+     <li><span class="dfn-paneled" id="term-for-resolve-promise" style="color:initial">resolve</span>
+     <li><span class="dfn-paneled" id="term-for-upon-fulfillment" style="color:initial">upon fulfillment</span>
+     <li><span class="dfn-paneled" id="term-for-upon-rejection" style="color:initial">upon rejection</span>
     </ul>
    <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
-     <li><a href="https://url.spec.whatwg.org/#concept-url-object">object</a>
+     <li><span class="dfn-paneled" id="term-for-concept-url-object" style="color:initial">object</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBASSEMBLY]</a> defines the following terms:
     <ul>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#addresses">address</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-func">alloc_func</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-global">alloc_global</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-mem">alloc_mem</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-table">alloc_table</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/conventions.html#exec-notation-textual">current frame</a>
-     <li><a href="https://webassembly.github.io/spec/core/binary/modules.html#custom-section">custom section</a>
-     <li><a href="https://webassembly.github.io/spec/core/binary/modules.html#binary-customsec">customsec</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-decode-module">decode_module</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error">error</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval">external value</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr">function address</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcelem">function element</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-get-export">get_export</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-globaltype">global type</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-grow-mem">grow_mem</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-grow-memory">grow_memory</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-grow-table">grow_table</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostfunc">host function</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-init-store">init_store</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instantiate-module">instantiate_module</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-invoke-func">invoke_func</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr">memory address</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances">memory instance</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module">module</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-exports">module_exports</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-imports">module_imports</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-read-global">read_global</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed">signed_32</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-size-mem">size_mem</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-size-table">size_table</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-store">store</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr">table address</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#table-instances">table instance</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype">table type</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-type-func">type_func</a>
-     <li><a href="https://webassembly.github.io/spec/core/valid/modules.html#valid-module">valid</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-validate-module">validate_module</a>
-     <li><a href="https://webassembly.github.io/spec/core/valid/modules.html#valid-module">webassembly module validation</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">webassembly value</a>
-     <li><a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-write-table">write_table</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">𝖿𝗎𝗇𝖼</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">𝖿𝟥𝟤</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">𝖿𝟨𝟦</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">𝗀𝗅𝗈𝖻𝖺𝗅</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module">𝗂𝗆𝗉𝗈𝗋𝗍𝗌</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">𝗂𝟥𝟤</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">𝗂𝟨𝟦</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">𝗆𝖾𝗆</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst">𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌</a>
-     <li><a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame">𝗆𝗈𝖽𝗎𝗅𝖾</a>
-     <li><a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">𝗍𝖺𝖻𝗅𝖾</a>
+     <li><span class="dfn-paneled" id="term-for-addresses" style="color:initial">address</span>
+     <li><span class="dfn-paneled" id="term-for-embed-alloc-func" style="color:initial">alloc_func</span>
+     <li><span class="dfn-paneled" id="term-for-embed-alloc-global" style="color:initial">alloc_global</span>
+     <li><span class="dfn-paneled" id="term-for-embed-alloc-mem" style="color:initial">alloc_mem</span>
+     <li><span class="dfn-paneled" id="term-for-embed-alloc-table" style="color:initial">alloc_table</span>
+     <li><span class="dfn-paneled" id="term-for-exec-notation-textual" style="color:initial">current frame</span>
+     <li><span class="dfn-paneled" id="term-for-custom-section" style="color:initial">custom section</span>
+     <li><span class="dfn-paneled" id="term-for-binary-customsec" style="color:initial">customsec</span>
+     <li><span class="dfn-paneled" id="term-for-embed-decode-module" style="color:initial">decode_module</span>
+     <li><span class="dfn-paneled" id="term-for-embed-error" style="color:initial">error</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-externval" style="color:initial">external value</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-funcaddr" style="color:initial">function address</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-funcelem" style="color:initial">function element</span>
+     <li><span class="dfn-paneled" id="term-for-embed-get-export" style="color:initial">get_export</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-globaltype" style="color:initial">global type</span>
+     <li><span class="dfn-paneled" id="term-for-embed-grow-mem" style="color:initial">grow_mem</span>
+     <li><span class="dfn-paneled" id="term-for-exec-grow-memory" style="color:initial">grow_memory</span>
+     <li><span class="dfn-paneled" id="term-for-embed-grow-table" style="color:initial">grow_table</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-hostfunc" style="color:initial">host function</span>
+     <li><span class="dfn-paneled" id="term-for-embed-init-store" style="color:initial">init_store</span>
+     <li><span class="dfn-paneled" id="term-for-embed-instantiate-module" style="color:initial">instantiate_module</span>
+     <li><span class="dfn-paneled" id="term-for-embed-invoke-func" style="color:initial">invoke_func</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-memaddr" style="color:initial">memory address</span>
+     <li><span class="dfn-paneled" id="term-for-memory-instances" style="color:initial">memory instance</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-module" style="color:initial">module</span>
+     <li><span class="dfn-paneled" id="term-for-embed-exports" style="color:initial">module_exports</span>
+     <li><span class="dfn-paneled" id="term-for-embed-imports" style="color:initial">module_imports</span>
+     <li><span class="dfn-paneled" id="term-for-embed-read-global" style="color:initial">read_global</span>
+     <li><span class="dfn-paneled" id="term-for-aux-signed" style="color:initial">signed_32</span>
+     <li><span class="dfn-paneled" id="term-for-embed-size-mem" style="color:initial">size_mem</span>
+     <li><span class="dfn-paneled" id="term-for-embed-size-table" style="color:initial">size_table</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-store" style="color:initial">store</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-tableaddr" style="color:initial">table address</span>
+     <li><span class="dfn-paneled" id="term-for-table-instances" style="color:initial">table instance</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-tabletype" style="color:initial">table type</span>
+     <li><span class="dfn-paneled" id="term-for-embed-type-func" style="color:initial">type_func</span>
+     <li><span class="dfn-paneled" id="term-for-valid-module" style="color:initial">valid</span>
+     <li><span class="dfn-paneled" id="term-for-embed-validate-module" style="color:initial">validate_module</span>
+     <li><span class="dfn-paneled" id="term-for-valid-module①" style="color:initial">webassembly module validation</span>
+     <li><span class="dfn-paneled" id="term-for-values" style="color:initial">webassembly value</span>
+     <li><span class="dfn-paneled" id="term-for-embed-write-table" style="color:initial">write_table</span>
+     <li><span class="dfn-paneled" id="term-for-external-types" style="color:initial">𝖿𝗎𝗇𝖼</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-valtype" style="color:initial">𝖿𝟥𝟤</span>
+     <li><span class="dfn-paneled" id="term-for-values①" style="color:initial">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-valtype①" style="color:initial">𝖿𝟨𝟦</span>
+     <li><span class="dfn-paneled" id="term-for-values②" style="color:initial">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</span>
+     <li><span class="dfn-paneled" id="term-for-external-types①" style="color:initial">𝗀𝗅𝗈𝖻𝖺𝗅</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-module①" style="color:initial">𝗂𝗆𝗉𝗈𝗋𝗍𝗌</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-valtype②" style="color:initial">𝗂𝟥𝟤</span>
+     <li><span class="dfn-paneled" id="term-for-values③" style="color:initial">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-valtype③" style="color:initial">𝗂𝟨𝟦</span>
+     <li><span class="dfn-paneled" id="term-for-values④" style="color:initial">𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</span>
+     <li><span class="dfn-paneled" id="term-for-external-types②" style="color:initial">𝗆𝖾𝗆</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-moduleinst" style="color:initial">𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-frame" style="color:initial">𝗆𝗈𝖽𝗎𝗅𝖾</span>
+     <li><span class="dfn-paneled" id="term-for-external-types③" style="color:initial">𝗍𝖺𝖻𝗅𝖾</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
-     <li><a href="https://heycam.github.io/webidl/#BufferSource">BufferSource</a>
-     <li><a href="https://heycam.github.io/webidl/#EnforceRange">EnforceRange</a>
-     <li><a href="https://heycam.github.io/webidl/#Exposed">Exposed</a>
-     <li><a href="https://heycam.github.io/webidl/#Function">Function</a>
-     <li><a href="https://heycam.github.io/webidl/#LegacyNamespace">LegacyNamespace</a>
-     <li><a href="https://heycam.github.io/webidl/#idl-USVString">USVString</a>
-     <li><a href="https://heycam.github.io/webidl/#idl-boolean">boolean</a>
-     <li><a href="https://heycam.github.io/webidl/#dfn-get-buffer-source-copy">get a copy of the buffer source</a>
-     <li><a href="https://heycam.github.io/webidl/#idl-object">object</a>
-     <li><a href="https://heycam.github.io/webidl/#dfn-present">present</a>
-     <li><a href="https://heycam.github.io/webidl/#idl-unsigned-long">unsigned long</a>
+     <li><span class="dfn-paneled" id="term-for-BufferSource" style="color:initial">BufferSource</span>
+     <li><span class="dfn-paneled" id="term-for-EnforceRange" style="color:initial">EnforceRange</span>
+     <li><span class="dfn-paneled" id="term-for-Exposed" style="color:initial">Exposed</span>
+     <li><span class="dfn-paneled" id="term-for-Function" style="color:initial">Function</span>
+     <li><span class="dfn-paneled" id="term-for-LegacyNamespace" style="color:initial">LegacyNamespace</span>
+     <li><span class="dfn-paneled" id="term-for-idl-USVString" style="color:initial">USVString</span>
+     <li><span class="dfn-paneled" id="term-for-idl-boolean" style="color:initial">boolean</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-get-buffer-source-copy" style="color:initial">get a copy of the buffer source</span>
+     <li><span class="dfn-paneled" id="term-for-idl-object" style="color:initial">object</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-present" style="color:initial">present</span>
+     <li><span class="dfn-paneled" id="term-for-idl-unsigned-long" style="color:initial">unsigned long</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -2147,7 +2873,7 @@ The particular exception here is implementation-defined in both cases.</p>
             if(algoContainer == null) return;
 
             const algoName = algoContainer.getAttribute("data-algorithm");
-            const varName = v.innerHTML;
+            const varName = getVarName(v);
             const addClass = !v.classList.contains("selected");
             let highlightClass = null;
             if(addClass) {
@@ -2163,11 +2889,14 @@ The particular exception here is implementation-defined in both cases.</p>
 
             // Find all same-name vars, and toggle their class appropriately.
             for(const el of algoContainer.querySelectorAll("var")) {
-                if(el.innerHTML == varName) {
+                if(getVarName(el) == varName) {
                     el.classList.toggle("selected", addClass);
                     el.classList.toggle(highlightClass, addClass);
                 }
             }
+        }
+        function getVarName(el) {
+            return el.textContent.replace(/(\s| )+/, " ").trim();
         }
         function chooseHighlightIndex(algoName, varName) {
             let indexes = null;
@@ -2204,57 +2933,57 @@ The particular exception here is implementation-defined in both cases.</p>
     </script>
 <script>/* script-dfn-panel */
 
-        document.body.addEventListener("click", function(e) {
-            var queryAll = function(sel) { return [].slice.call(document.querySelectorAll(sel)); }
-            // Find the dfn element or panel, if any, that was clicked on.
-            var el = e.target;
-            var target;
-            var hitALink = false;
-            while(el.parentElement) {
-                if(el.tagName == "A") {
-                    // Clicking on a link in a <dfn> shouldn't summon the panel
-                    hitALink = true;
-                }
-                if(el.classList.contains("dfn-paneled")) {
-                    target = "dfn";
-                    break;
-                }
-                if(el.classList.contains("dfn-panel")) {
-                    target = "dfn-panel";
-                    break;
-                }
-                el = el.parentElement;
-            }
-            if(target != "dfn-panel") {
-                // Turn off any currently "on" or "activated" panels.
-                queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(function(el){
-                    el.classList.remove("on");
-                    el.classList.remove("activated");
-                });
-            }
-            if(target == "dfn" && !hitALink) {
-                // open the panel
-                var dfnPanel = document.querySelector(".dfn-panel[data-for='" + el.id + "']");
-                if(dfnPanel) {
-                    dfnPanel.classList.add("on");
-                    var rect = el.getBoundingClientRect();
-                    dfnPanel.style.left = window.scrollX + rect.right + 5 + "px";
-                    dfnPanel.style.top = window.scrollY + rect.top + "px";
-                    var panelRect = dfnPanel.getBoundingClientRect();
-                    var panelWidth = panelRect.right - panelRect.left;
-                    if(panelRect.right > document.body.scrollWidth && (rect.left - (panelWidth + 5)) > 0) {
-                        // Reposition, because the panel is overflowing
-                        dfnPanel.style.left = window.scrollX + rect.left - (panelWidth + 5) + "px";
-                    }
-                } else {
-                    console.log("Couldn't find .dfn-panel[data-for='" + el.id + "']");
-                }
-            } else if(target == "dfn-panel") {
-                // Switch it to "activated" state, which pins it.
-                el.classList.add("activated");
-                el.style.left = null;
-                el.style.top = null;
-            }
-
+document.body.addEventListener("click", function(e) {
+    var queryAll = function(sel) { return [].slice.call(document.querySelectorAll(sel)); }
+    // Find the dfn element or panel, if any, that was clicked on.
+    var el = e.target;
+    var target;
+    var hitALink = false;
+    while(el.parentElement) {
+        if(el.tagName == "A") {
+            // Clicking on a link in a <dfn> shouldn't summon the panel
+            hitALink = true;
+        }
+        if(el.classList.contains("dfn-paneled")) {
+            target = "dfn";
+            break;
+        }
+        if(el.classList.contains("dfn-panel")) {
+            target = "dfn-panel";
+            break;
+        }
+        el = el.parentElement;
+    }
+    if(target != "dfn-panel") {
+        // Turn off any currently "on" or "activated" panels.
+        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(function(el){
+            el.classList.remove("on");
+            el.classList.remove("activated");
         });
-        </script>
+    }
+    if(target == "dfn" && !hitALink) {
+        // open the panel
+        var dfnPanel = document.querySelector(".dfn-panel[data-for='" + el.id + "']");
+        if(dfnPanel) {
+            dfnPanel.classList.add("on");
+            var rect = el.getBoundingClientRect();
+            dfnPanel.style.left = window.scrollX + rect.right + 5 + "px";
+            dfnPanel.style.top = window.scrollY + rect.top + "px";
+            var panelRect = dfnPanel.getBoundingClientRect();
+            var panelWidth = panelRect.right - panelRect.left;
+            if(panelRect.right > document.body.scrollWidth && (rect.left - (panelWidth + 5)) > 0) {
+                // Reposition, because the panel is overflowing
+                dfnPanel.style.left = window.scrollX + rect.left - (panelWidth + 5) + "px";
+            }
+        } else {
+            console.log("Couldn't find .dfn-panel[data-for='" + el.id + "']");
+        }
+    } else if(target == "dfn-panel") {
+        // Switch it to "activated" state, which pins it.
+        el.classList.add("activated");
+        el.style.left = null;
+        el.style.top = null;
+    }
+
+});
+</script>
