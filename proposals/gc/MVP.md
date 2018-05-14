@@ -247,7 +247,7 @@ Based on the JS type reflection proposal.
 
 #### `Table`
 
-* The `Table` constructor gets an additional optional argument `init` that is used to initialise the table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table type is not defaultable.
+* The `Table` constructor gets an additional optional argument `init` that is used to initialise the table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
 
 #### `Type`
 
@@ -256,12 +256,4 @@ TODO.
 
 ## Questions
 
-### Equality Types
-
-* Interaction with type imports/exports: do they need to distinguish equality types from non-equality now?
-
-* Similarly, the JS API for `WebAssembly.Type` would need to enable the distinction.
-
-### Casts
-
-* Distinguish reference types that are castable?
+* Distinguish reference types that are castable (and therefore have RTTI)?
