@@ -119,8 +119,8 @@ Greatest fixpoint of the reflexive transitive closure of the given rules (co-ind
 #### Functions
 
 * `ref.func` creates a function reference from a function index
-  - `ref.func $f : [] -> (ref $t) 
-     - iff $f : $t`
+  - `ref.func $f : [] -> (ref $t)`
+     - iff `$f : $t`
 
 * `call_ref` calls a function through a reference
   - `call_ref : [t1* (ref $t)] -> [t2*]`
