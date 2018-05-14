@@ -44,8 +44,8 @@ Based on reference types proposal.
 
 #### Imports
 
-* `type <typetype>` is an import description
-  - `importdesc ::= ... | type`
+* `type <typetype>` is an import description with an upper bound
+  - `importdesc ::= ... | type <reftype>`
   - Note: `type` may get additional parameters in the future
 
 
@@ -79,7 +79,8 @@ Greatest fixpoint of the reflexive transitive closure of the given rules (co-ind
 
 * Any concrete reference type is a subtype of `eqref` if its not a function
   - `ref $t <: eqref`
-     - iff `$t = <structtype>` or `$t = <arraytype>`
+     - if `$t = <structtype>` or `$t = <arraytype>`
+     - or `$t = type rt` and `rt <: eqref`
 
 * Concrete reference types are covariant
   - `ref $t1 <: ref $t2`
@@ -151,11 +152,11 @@ Greatest fixpoint of the reflexive transitive closure of the given rules (co-ind
 #### Arrays
 
 * `array.new <typeidx>` allocates an array of type `$t` and initialises its fields with a given value
-  - `struct.new $t : [t i32] -> [(ref $t)]`
+  - `array.new $t : [t i32] -> [(ref $t)]`
     - iff `$t = array (mut t)`
 
 * `array.new_default <typeidx>` allocates an array of type `$t` and initialises its fields with the default value
-  - `data.new_default $t : [i32] -> [(ref $t)]`
+  - `array.new_default $t : [i32] -> [(ref $t)]`
     - iff `$t = array (mut t)`
     - and `t` is defaultable
 
