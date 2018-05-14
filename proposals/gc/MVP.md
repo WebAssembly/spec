@@ -88,10 +88,11 @@ Greatest fixpoint of the reflexive transitive closure of the given rules (co-ind
 
 * Structure types support width and depth subtyping
   - `struct <fieldtype1>* <fieldtype1'>* <: struct <fieldtype2>*`
-    - iff `(<fieldtype1>* <: <fieldtype2>)*`
+    - iff `(<fieldtype1> <: <fieldtype2>)*`
 
 * Array types support depth subtyping
-  - `array <fieldtype1> <: array <fieldtype2>*`
+  - `array <fieldtype1> <: array <fieldtype2>`
+    - iff `<fieldtype1> <: <fieldtype2>`
 
 * Field types are covariant if they are immutable, invariant otherwise
   - `const <valtype1> <: const <valtype2>`
