@@ -9,12 +9,14 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
-.. index:: index, type index, function index, table index, memory index, global index, local index, label index
+.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index
    pair: binary format; type index
    pair: binary format; function index
    pair: binary format; table index
    pair: binary format; memory index
    pair: binary format; global index
+   pair: binary format; element index
+   pair: binary format; data index
    pair: binary format; local index
    pair: binary format; label index
 .. _binary-typeidx:
@@ -22,6 +24,8 @@ except that :ref:`function definitions <syntax-func>` are split into two section
 .. _binary-tableidx:
 .. _binary-memidx:
 .. _binary-globalidx:
+.. _binary-elemidx:
+.. _binary-dataidx:
 .. _binary-localidx:
 .. _binary-labelidx:
 .. _binary-index:
@@ -38,6 +42,8 @@ All :ref:`indices <syntax-index>` are encoded with their respective value.
    \production{table index} & \Btableidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{memory index} & \Bmemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{global index} & \Bglobalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{element index} & \Belemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{data index} & \Bdataidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{local index} & \Blocalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{label index} & \Blabelidx &::=& l{:}\Bu32 &\Rightarrow& l \\
    \end{array}
@@ -319,9 +325,17 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    \production{element section} & \Belemsec &::=&
      \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg} \\
    \production{element segment} & \Belem &::=&
-     x{:}\Btableidx~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\
+     \hex{00}~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
+       &\Rightarrow& \{ \ETABLE~0, \EOFFSET~e, \EINIT~y^\ast \} \\
+   \production{element segment} & \Belem &::=&
+     \hex{01}~~y^\ast{:}\Bvec(\Bfuncidx)
+       &\Rightarrow& \{ \EINIT~y^\ast \} \\
    \end{array}
+
+.. note::
+   In the current version of WebAssembly, at most one table may be defined or
+   imported in a single module, so all valid :ref:`active <syntax-active>`
+   element segments have a |ETABLE| value of :math:`0`.
 
 
 .. index:: ! code section, function, local, type index, function type
@@ -400,9 +414,17 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
    \production{data section} & \Bdatasec &::=&
      \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg} \\
    \production{data segment} & \Bdata &::=&
-     x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
-       &\Rightarrow& \{ \DMEM~x, \DOFFSET~e, \DINIT~b^\ast \} \\
+     \hex{00}~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
+       &\Rightarrow& \{ \DMEM~0, \DOFFSET~e, \DINIT~b^\ast \} \\
+   \production{data segment} & \Bdata &::=&
+     \hex{01}~~b^\ast{:}\Bvec(\Bbyte)
+       &\Rightarrow& \{ \DINIT~b^\ast \} \\
    \end{array}
+
+.. note::
+   In the current version of WebAssembly, at most one memory may be defined or
+   imported in a single module, so all valid :ref:`active <syntax-active>` data
+   segments have a |DMEM| value of :math:`0`.
 
 
 .. index:: module, section, type definition, function type, function, table, memory, global, element, data, start function, import, export, context, version
