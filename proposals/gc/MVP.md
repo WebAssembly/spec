@@ -16,8 +16,8 @@ Based on reference types proposal.
   - `reftype ::= ... | ref <typeidx>`
   - `ref $t ok` iff `$t` is defined in the context
 
-* `intref` is a new reference type
-  - `reftype ::= ... | intref`
+* `int31ref` is a new reference type
+  - `reftype ::= ... | int31ref`
 
 
 #### Type Definitions
@@ -64,14 +64,15 @@ Greatest fixpoint of the reflexive transitive closure of the given rules (co-ind
   - `eqref <: anyref`
   - `nullref <: eqref`
   - Note: `anyfunc` is *not* a subtype of `eqref`
+  - Note: `int31ref` is *not* a subtype of `eqref`
 
-* `intref` is a subtype of `eqref` (and thereby `anyref`)
-  - `intref <: eqref`
-  - Note: `intref` is *not* a supertype of `nullref`
+* `int31ref` is a subtype of `anyref`
+  - `int31ref <: anyref`
+  - Note: `int31ref` is *not* a supertypes of `nullref`, i.e., nut nullable
 
 * Any concrete reference type is a subtype of `anyref`
   - `ref $t <: anyref`
-  - Note: concrete reference types are *not* a supertypes of `nullref`
+  - Note: concrete reference types are *not* a supertypes of `nullref`, i.e., nut nullable
 
 * Any function reference type is a subtype of `anyfunc`
   - `ref $t <: anyfunc`
@@ -81,6 +82,7 @@ Greatest fixpoint of the reflexive transitive closure of the given rules (co-ind
   - `ref $t <: eqref`
      - if `$t = <structtype>` or `$t = <arraytype>`
      - or `$t = type rt` and `rt <: eqref`
+  - TODO: provide a way to make data types non-eq, especially immutable ones
 
 * Concrete reference types are covariant
   - `ref $t1 <: ref $t2`
@@ -178,12 +180,14 @@ Greatest fixpoint of the reflexive transitive closure of the given rules (co-ind
 
 #### Integer references
 
-* `intref.new` creates an `intref` from a 32 bit value
-  - `intref : [i32] -> [intref]`
-  - traps when value is not representable?
+* `int31ref.new` creates an `int31ref` from a 32 bit value, truncating high bit
+  - `int31ref : [i32] -> [int31ref]`
 
-* `intref.get` extracts the value
-  - `intref.get : [intref] -> [i32]`
+* `int31ref.get_u` extracts the value, zero-extending
+  - `int31ref.get_u : [int31ref] -> [i32]`
+
+* `int31ref.get_s` extracts the value, sign-extending
+  - `int31ref.get_s : [int31ref] -> [i32]`
 
 
 #### Casts
@@ -258,3 +262,5 @@ TODO.
 ## Questions
 
 * Distinguish reference types that are castable (and therefore have RTTI)?
+
+* Provide a way to make data types non-eq, especially immutable ones?
