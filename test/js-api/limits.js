@@ -21,7 +21,7 @@ let kJSEmbeddingMaxExports = 100000;
 let kJSEmbeddingMaxGlobals = 1000000;
 let kJSEmbeddingMaxDataSegments = 100000;
 
-let kJSEmbeddingMaxMemoryPages = 32767;  // ~ 2 GiB
+let kJSEmbeddingMaxMemoryPages = 65536;
 let kJSEmbeddingMaxModuleSize = 1024 * 1024 * 1024;  // = 1 GiB
 let kJSEmbeddingMaxFunctionSize = 7654321;
 let kJSEmbeddingMaxFunctionLocals = 50000;
@@ -32,26 +32,104 @@ let kJSEmbeddingMaxTableEntries = 10000000;
 let kJSEmbeddingMaxTables = 1;
 let kJSEmbeddingMaxMemories = 1;
 
-if (typeof(assert_equals) != "function" && typeof(assertEquals) == "function") {
-  // TODO(titzer): local standalone hack
-  assert_equals = assertEquals;
-} else {
-    throw "No assertEquals() equivalent found.";
+function verbose(...args) {
+  if (false) print(...args);
 }
 
-function testLimit(name, min, limit, gen) {
-    print("test max " + name + " = " + limit);
-    function run(count) {
-        var expected = (count <= limit) ? "(expect ok)  " : "(expect fail)";
-        print("  " + expected + " " + count + "...");
-        // TODO(titzer): the builder is pretty inefficient for large modules; do manually?
-        let builder = new WasmModuleBuilder();
-        gen(builder, count);
-        return WebAssembly.validate(builder.toBuffer());
+//=======================================================================
+// HARNESS SNIPPET, DO NOT COMMIT
+//=======================================================================
+const known_failures = {
+  // Enter failing tests like follows:
+  // "'WebAssembly.Instance.prototype.exports' accessor property":
+  //  'https://bugs.chromium.org/p/v8/issues/detail?id=5507',
+};
+
+let failures = [];
+let unexpected_successes = [];
+
+function test(func, description) {
+  let maybeErr;
+  try { func(); }
+  catch(e) { maybeErr = e; }
+  if (typeof maybeErr !== 'undefined') {
+    var known = "";
+    if (known_failures[description]) {
+      known = " (known)";
     }
-    assert_equals(true, run(min));
-    assert_equals(true, run(limit));
-    assert_equals(false, run(limit+1));
+    print(`${description}: FAIL${known}. ${maybeErr}`);
+    failures.push(description);
+  } else {
+    if (known_failures[description]) {
+      unexpected_successes.push(description);
+    }
+    print(`${description}: PASS.`);
+  }
+}
+//=======================================================================
+
+function testLimit(name, min, limit, gen) {
+  print(`==== Test ${name} limit = ${limit} ====`);
+  function run_validate(count) {
+    let expected = count <= limit;
+    verbose(`  ${expected ? "(expect ok)  " : "(expect fail)"} = ${count}...`);
+
+    // TODO(titzer): builder is slow for large modules; make manual?
+    let builder = new WasmModuleBuilder();
+    gen(builder, count);
+    let result = WebAssembly.validate(builder.toBuffer());
+    
+    if (result != expected) {
+      let msg = `UNEXPECTED ${expected ? "FAIL" : "PASS"}: ${name} == ${count}`;
+      verbose(`=====> UNEXPECTED ${msg}`);
+      throw new Error(msg);
+    }
+  }
+
+  function run_compile(count) {
+    let expected = count <= limit;
+    verbose(`  ${expected ? "(expect ok)  " : "(expect fail)"} = ${count}...`);
+
+    // TODO(titzer): builder is slow for large modules; make manual?
+    let builder = new WasmModuleBuilder();
+    gen(builder, count);
+    try {
+      let result = new WebAssembly.Module(builder.toBuffer());
+    } catch (e) {
+      if (expected) {
+        let msg = `UNEXPECTED FAIL: ${name} == ${count} (${e})`;
+        verbose(`=====> UNEXPECTED ${msg}`);
+        throw new Error(msg);
+      }
+      return;
+    }
+    if (!expected) {
+      let msg = `UNEXPECTED PASS: ${name} == ${count}`;
+      verbose(`=====> UNEXPECTED ${msg}`);
+      throw new Error(msg);
+    }
+  }
+  
+  test(() => {
+    run_validate(min);
+  }, `Validate ${name} mininum`);
+  test(() => {
+    run_validate(limit);
+  }, `Validate ${name} limit`);
+  test(() => {
+    run_validate(limit+1);
+  }, `Validate ${name} over limit`);
+
+  test(() => {
+    run_compile(min);
+  }, `Compile ${name} mininum`);
+  test(() => {
+    run_compile(limit);
+  }, `Compile ${name} limit`);
+  test(() => {
+    run_compile(limit+1);
+  }, `Compile ${name} over limit`);
+  
 }
 
 // A little doodad to disable a test easily
@@ -102,14 +180,30 @@ testLimit("data segments", 1, kJSEmbeddingMaxDataSegments, (builder, count) => {
         }
     });
 
-// TODO(titzer): some engines (e.g. V8) have a lower limit on max memory pages.
-DISABLED.testLimit("memory pages", 1, kJSEmbeddingMaxMemoryPages, (builder, count) => {
-        builder.addMemory(count, count, false, false);
-    });
+testLimit("initial declared memory pages", 1, kJSEmbeddingMaxMemoryPages,
+          (builder, count) => {
+            builder.addMemory(count, undefined, false, false);
+          });
+
+testLimit("maximum declared memory pages", 1, kJSEmbeddingMaxMemoryPages,
+          (builder, count) => {
+            builder.addMemory(1, count, false, false);
+          });
+
+testLimit("initial imported memory pages", 1, kJSEmbeddingMaxMemoryPages,
+          (builder, count) => {
+            builder.addImportedMemory("mod", "mem", count, undefined);
+          });
+
+testLimit("maximum imported memory pages", 1, kJSEmbeddingMaxMemoryPages,
+          (builder, count) => {
+            builder.addImportedMemory("mod", "mem", 1, count);
+          });
 
 // TODO(titzer): ugh, that's hard to test.
-DISABLED.testLimit("module size", 1, kJSEmbeddingMaxModuleSize, (builder, count) => {
-    });
+DISABLED.testLimit("module size", 1, kJSEmbeddingMaxModuleSize,
+                   (builder, count) => {
+                   });
 
 testLimit("function size", 2, kJSEmbeddingMaxFunctionSize, (builder, count) => {
         let type = builder.addType(kSig_v_v);
@@ -145,8 +239,12 @@ testLimit("function returns", 0, kJSEmbeddingMaxFunctionReturns, (builder, count
         let type = builder.addType({params: [], results: array});
     });
 
-testLimit("table size", 1, kJSEmbeddingMaxTableSize, (builder, count) => {
-        builder.setFunctionTableBounds(count, count);
+testLimit("initial table size", 1, kJSEmbeddingMaxTableSize, (builder, count) => {
+        builder.setFunctionTableBounds(count, undefined);
+    });
+
+testLimit("maximum table size", 1, kJSEmbeddingMaxTableSize, (builder, count) => {
+        builder.setFunctionTableBounds(1, count);
     });
 
 testLimit("table entries", 1, kJSEmbeddingMaxTableEntries, (builder, count) => {
@@ -168,3 +266,11 @@ testLimit("memories", 0, kJSEmbeddingMaxMemories, (builder, count) => {
             builder.addImportedMemory("", "", 1, 1, false);
         }
     });
+
+//=======================================================================
+// HARNESS SNIPPET, DO NOT COMMIT
+//=======================================================================
+if (failures.length > 0) {
+  throw failures[0];
+}
+//=======================================================================
