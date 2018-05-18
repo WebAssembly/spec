@@ -376,9 +376,11 @@ class WasmModuleBuilder {
       binary.emit_section(kTableSectionCode, section => {
         section.emit_u8(1);  // one table entry
         section.emit_u8(kWasmAnyFunctionTypeForm);
-        section.emit_u8(1);
+        const max = wasm.function_table_length_max;
+        const has_max = max !== undefined;
+        section.emit_u8(has_max ? kResizableMaximumFlag : 0);
         section.emit_u32v(wasm.function_table_length_min);
-        section.emit_u32v(wasm.function_table_length_max);
+        if (has_max) section.emit_u32v(max);
       });
     }
 
@@ -387,10 +389,11 @@ class WasmModuleBuilder {
       if (debug) print("emitting memory @ " + binary.length);
       binary.emit_section(kMemorySectionCode, section => {
         section.emit_u8(1);  // one memory entry
-        const has_max = wasm.memory.max !== undefined;
+        const max = wasm.memory.max;
+        const has_max = max !== undefined;
         section.emit_u32v(has_max ? kResizableMaximumFlag : 0);
         section.emit_u32v(wasm.memory.min);
-        if (has_max) section.emit_u32v(wasm.memory.max);
+        if (has_max) section.emit_u32v(max);
       });
     }
 
