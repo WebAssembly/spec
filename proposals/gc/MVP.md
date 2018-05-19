@@ -58,17 +58,18 @@ Based on reference types proposal.
 
 #### Subtyping
 
-Greatest fixpoint of the reflexive transitive closure of the given rules (co-inductive definition).
+Greatest fixpoint (co-inductive interpretation) of the given rules (implying reflexivity and transitivity).
 
-* `eqref` is a subtype of `anyref` and a supertype of `nullref`
+* `eqref` is a subtype of `anyref`
   - `eqref <: anyref`
+  - Note: `int31ref` and `anyfunc` are *not* a subtypes of `eqref`, i.e., those types do not expose reference equality
+
+* `nullref` is a subtype of `eqref`
   - `nullref <: eqref`
-  - Note: `anyfunc` is *not* a subtype of `eqref`
-  - Note: `int31ref` is *not* a subtype of `eqref`
+  - Note: `nullref` is *not* a subtype of `anyfunc`, `int31ref`or any concrete reference type, i.e., those types are not nullable
 
 * `int31ref` is a subtype of `anyref`
   - `int31ref <: anyref`
-  - Note: `int31ref` is *not* a supertypes of `nullref`, i.e., nut nullable
 
 * Any concrete reference type is a subtype of `anyref`
   - `ref $t <: anyref`
@@ -100,6 +101,7 @@ Greatest fixpoint of the reflexive transitive closure of the given rules (co-ind
   - `const <valtype1> <: const <valtype2>`
     - iff `<valtype1> <: <valtype2>`
   - `var <valtype> <: var <valtype>`
+  - Note: mutable fields are *not* subtypes of immutable ones, so `const` really means constant, not read-only
 
 
 #### Defaultability
@@ -197,6 +199,8 @@ Greatest fixpoint of the reflexive transitive closure of the given rules (co-ind
      - iff `t <: t' <: anyref`
   - traps if the operand is not of type `t` at runtime
 
+Question: Have explicit runtime type representations as cast operands?
+
 
 #### Local Bindings
 
@@ -260,6 +264,8 @@ TODO.
 
 
 ## Questions
+
+* Have explicit runtime type representations?
 
 * Distinguish reference types that are castable (and therefore have RTTI)?
 
