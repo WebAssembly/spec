@@ -194,10 +194,17 @@ Greatest fixpoint (co-inductive interpretation) of the given rules (implying ref
 
 #### Casts
 
-* `ref.cast <reftype>` casts a value down to a given reference type
-  - `ref.cast t : [t'] -> [t]`
-     - iff `t <: t' <: anyref`
-  - traps if the operand is not of type `t` at runtime
+* `cast <reftype> <reftype>` casts a value down to a given reference type
+  - `cast t t' : [t] -> [t']`
+     - iff `t' <: t <: anyref`
+  - traps if the operand is not of type `t'` at runtime
+  - equivalent to `block [t]->[t'] (br_on_cast 0 t t') unreachable end`
+
+* `br_on_cast <labelidx> <reftype> <reftype>` branches if a value can be cast down to a given reference type
+  - `br_on_cast $l t t' : [t] -> [t]`
+    - iff `t' <: t <: anyref`
+    - and `$l : [t']`
+  - passes cast operand along with branch
 
 Question: Have explicit runtime type representations as cast operands?
 
