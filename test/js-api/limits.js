@@ -36,6 +36,10 @@ function verbose(...args) {
   if (false) print(...args);
 }
 
+let kTestValidate = true;
+let kTestSyncCompile = true;
+let kTestAsyncCompile = true;
+
 //=======================================================================
 // HARNESS SNIPPET, DO NOT COMMIT
 //=======================================================================
@@ -47,6 +51,8 @@ const known_failures = {
 
 let failures = [];
 let unexpected_successes = [];
+
+let last_promise = new Promise((resolve, reject) => { resolve(); });
 
 function test(func, description) {
   let maybeErr;
@@ -65,6 +71,24 @@ function test(func, description) {
     }
     print(`${description}: PASS.`);
   }
+}
+
+function promise_test(func, description) {
+  last_promise = last_promise.then(func)
+  .then(_ => {
+    if (known_failures[description]) {
+      unexpected_successes.push(description);
+    }
+    print(`${description}: PASS.`);
+  })
+  .catch(err => {
+    var known = "";
+    if (known_failures[description]) {
+      known = " (known)";
+    }
+    print(`${description}: FAIL${known}. ${err}`);
+    failures.push(description);
+  });
 }
 //=======================================================================
 
@@ -109,27 +133,67 @@ function testLimit(name, min, limit, gen) {
       throw new Error(msg);
     }
   }
-  
-  test(() => {
-    run_validate(min);
-  }, `Validate ${name} mininum`);
-  test(() => {
-    run_validate(limit);
-  }, `Validate ${name} limit`);
-  test(() => {
-    run_validate(limit+1);
-  }, `Validate ${name} over limit`);
 
-  test(() => {
-    run_compile(min);
-  }, `Compile ${name} mininum`);
-  test(() => {
-    run_compile(limit);
-  }, `Compile ${name} limit`);
-  test(() => {
-    run_compile(limit+1);
-  }, `Compile ${name} over limit`);
-  
+  function run_async_compile(count) {
+    let expected = count <= limit;
+    verbose(`  ${expected ? "(expect ok)  " : "(expect fail)"} = ${count}...`);
+
+    // TODO(titzer): builder is slow for large modules; make manual?
+    let builder = new WasmModuleBuilder();
+    gen(builder, count);
+    let buffer = builder.toBuffer();
+    WebAssembly.compile(buffer)
+      .then(result => {
+        if (!expected) {
+          let msg = `UNEXPECTED PASS: ${name} == ${count}`;
+          verbose(`=====> UNEXPECTED ${msg}`);
+          throw new Error(msg);
+        }
+      })
+      .catch(err => {
+        if (expected) {
+          let msg = `UNEXPECTED FAIL: ${name} == ${count} (${e})`;
+          verbose(`=====> UNEXPECTED ${msg}`);
+          throw new Error(msg);
+        }
+      })
+  }
+
+  if (kTestValidate) {
+    test(() => {
+      run_validate(min);
+    }, `Validate ${name} mininum`);
+    test(() => {
+      run_validate(limit);
+    }, `Validate ${name} limit`);
+    test(() => {
+      run_validate(limit+1);
+    }, `Validate ${name} over limit`);
+  }
+
+  if (kTestSyncCompile) {
+    test(() => {
+      run_compile(min);
+    }, `Compile ${name} mininum`);
+    test(() => {
+      run_compile(limit);
+    }, `Compile ${name} limit`);
+    test(() => {
+      run_compile(limit+1);
+    }, `Compile ${name} over limit`);
+  }
+
+  if (kTestAsyncCompile) {
+    promise_test(() => {
+      run_async_compile(min);
+    }, `Async compile ${name} mininum`);
+    promise_test(() => {
+      run_async_compile(limit);
+    }, `Async compile ${name} limit`);
+    promise_test(() => {
+      run_async_compile(limit+1);
+    }, `Async compile ${name} over limit`);
+  }
 }
 
 // A little doodad to disable a test easily
