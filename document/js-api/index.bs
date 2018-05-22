@@ -900,6 +900,6 @@ Modules that exceed these limits are invalid and are rejected with a {{CompileEr
 <li>The maximum number of parameters to any function is 1000.</li>
 <li>The maximum number of return types for any function is 1.</li>
 <li>The maximum size of a function body, including locals declarations, is 7654321 bytes.</li>
-<li>The maximum number of locals declared in a function is 50000.</li>
+<li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50000.</li>
 
 </ul>
