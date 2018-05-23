@@ -16,13 +16,17 @@ Based on reference types proposal.
   - `reftype ::= ... | ref <typeidx>`
   - `ref $t ok` iff `$t` is defined in the context
 
+* `optref <typeidx>` is a new reference type
+  - `reftype ::= ... | optref <typeidx>`
+  - `optref $t ok` iff `$t` is defined in the context
+
 * `int31ref` is a new reference type
   - `reftype ::= ... | int31ref`
 
 
 #### Type Definitions
 
-* `deftype` is the new category of types that can occur as type definitions
+* `deftype` is a new category of types that generalises the existing type definitions in the type section
   - `deftype ::= <functype> | <structtype> | <arraytype>`
   - `module ::= {..., types vec(<deftype>)}`
 
@@ -48,6 +52,9 @@ Based on reference types proposal.
   - `importdesc ::= ... | type <reftype>`
   - Note: `type` may get additional parameters in the future
 
+* Type imports have indices prepended to the type index space, similar to other imports.
+  - Note: due to bounds, type imports can be mutually recursive with other type imports as well as regular type definitions. Hence they have to be validated together with the type section.
+
 
 #### Exports
 
@@ -60,33 +67,41 @@ Based on reference types proposal.
 
 Greatest fixpoint (co-inductive interpretation) of the given rules (implying reflexivity and transitivity).
 
+In addition to the rules for basic reference types:
+
 * `eqref` is a subtype of `anyref`
   - `eqref <: anyref`
   - Note: `int31ref` and `anyfunc` are *not* a subtypes of `eqref`, i.e., those types do not expose reference equality
 
 * `nullref` is a subtype of `eqref`
   - `nullref <: eqref`
-  - Note: `nullref` is *not* a subtype of `anyfunc`, `int31ref`or any concrete reference type, i.e., those types are not nullable
 
 * `int31ref` is a subtype of `anyref`
   - `int31ref <: anyref`
+  - Note: `int31ref` is *not* a supertype of `nullref`, i.e., nut nullable
 
-* Any concrete reference type is a subtype of `anyref`
-  - `ref $t <: anyref`
-  - Note: concrete reference types are *not* a supertypes of `nullref`, i.e., nut nullable
+* Any nullable reference type is a subtype of `anyref` and a supertype of `nullref`
+  - `optref $t <: anyref`
+  - `nullref <: optref $t`
+
+* Any concrete reference type is a subtype of the respective nullable reference type (and thereby of `anyref`)
+  - `ref $t <: optref $t`
+  - Note: concrete reference types are *not* supertypes of `nullref`, i.e., not nullable
 
 * Any function reference type is a subtype of `anyfunc`
   - `ref $t <: anyfunc`
      - iff `$t = <functype>`
 
-* Any concrete reference type is a subtype of `eqref` if its not a function
-  - `ref $t <: eqref`
+* Any optional reference type (and thereby respective concrete reference type) is a subtype of `eqref` if its not a function
+  - `optref $t <: eqref`
      - if `$t = <structtype>` or `$t = <arraytype>`
      - or `$t = type rt` and `rt <: eqref`
   - TODO: provide a way to make data types non-eq, especially immutable ones
 
-* Concrete reference types are covariant
+* Concrete and optional reference types are covariant
   - `ref $t1 <: ref $t2`
+     - iff `$t1 <: $t2`
+  - `optref $t1 <: optref $t2`
      - iff `$t1 <: $t2`
 
 * Structure types support width and depth subtyping
@@ -182,6 +197,8 @@ Greatest fixpoint (co-inductive interpretation) of the given rules (implying ref
 
 #### Integer references
 
+Tentatively, support a type of plain tagged integers.
+
 * `int31ref.new` creates an `int31ref` from a 32 bit value, truncating high bit
   - `int31ref : [i32] -> [int31ref]`
 
@@ -228,8 +245,8 @@ Based on the JS type reflection proposal.
 
 ### Type Representation
 
-* A `ValueType` can be described by an object of the form `{ref: DefType}`
-  - `type ValueType = ... | {ref: DefType}`
+* A `ValueType` can be described by an object of the form `{ref: DefType}` and `{optref: DefType}`
+  - `type ValueType = ... | {ref: DefType} | {optref: DefType}`
 
 * A `ValueType` can be described by the string `eqref`
   - `type ValueType = ... | "eqref"`
@@ -245,7 +262,11 @@ Based on the JS type reflection proposal.
 
 #### Reference Types
 
-* Any function that is an instance of `WebAssembly.Function` with type `<functype>` is a subtype of `ref <functype>`.
+In addition to the rules for basic reference types:
+
+* Any function that is an instance of `WebAssembly.Function` with type `<functype>` is allowed as `ref <functype>`.
+
+* The `null` value is allowed as `eqref` and `optref $t`.
 
 * TODO: ...rules for structure and array types.
 
@@ -272,8 +293,12 @@ TODO.
 
 ## Questions
 
-* Have explicit runtime type representations?
+* Have explicit RTTI representations?
 
 * Distinguish reference types that are castable (and therefore have RTTI)?
 
 * Provide a way to make data types non-eq, especially immutable ones?
+
+* Allow closures into function reference types, via a `func.bind` operator?
+
+* Should we rename `anyfunc` to `funcref` for more consistency?
