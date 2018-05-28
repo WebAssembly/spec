@@ -276,7 +276,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    \mbox{where:} \hfill \\
    \funcaddr &=& |S.\SFUNCS| \\
    \funcinst &=& \{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \} \\
-   S' &=& S \compose \{\SFUNCS~\tableinst\} \\
+   S' &=& S \compose \{\SFUNCS~\funcinst\} \\
    \end{array}
 
 .. note::
@@ -771,7 +771,7 @@ The values :math:`\val_{\F{res}}^m` are returned as the results of the invocatio
    ~\\[-1ex]
    \begin{array}{@{}lcl}
    \invoke(S, \funcaddr, \val^n) &=& S; F; \val^n~(\INVOKE~\funcaddr) \\
-     &(\iff & S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
-     &\wedge& \val^n = (t_1.\CONST~c)^n) \\
+     &\wedge& & S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
+     &\wedge& \val^n = (t_1.\CONST~c)^n \\
      &\wedge& F = \{ \AMODULE~\{\}, \ALOCALS~\epsilon \} \\
    \end{array}
