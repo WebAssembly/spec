@@ -646,7 +646,7 @@ Control Instructions
    The |RETURN| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
    :math:`C.\CRETURN` is absent (set to :math:`\epsilon`) when validating an :ref:`expression <valid-expr>` that is not a function body.
-   This differs from it being set to the empty result type (:math:`[]`),
+   This differs from it being set to the empty result type (:math:`[\epsilon]`),
    which is the case for functions not returning anything.
 
 
