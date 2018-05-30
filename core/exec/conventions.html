@@ -9,7 +9,7 @@
     <title>Conventions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -115,7 +115,7 @@ that is modified by <em>pushing</em> or <em>popping</em>
 <a class="reference internal" href="../syntax/values.html#syntax-value"><span class="std std-ref">values</span></a>, <a class="reference internal" href="runtime.html#syntax-label"><span class="std std-ref">labels</span></a>, and <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frames</span></a>.</li>
 <li>Certain rules require the stack to contain at least one frame.
 The most recent frame is referred to as the <em>current</em> frame.</li>
-<li>Both the store and the current frame are mutated by <em>replacing</em> some of its components.
+<li>Both the store and the current frame are mutated by <em>replacing</em> some of their components.
 Such replacement is assumed to apply globally.</li>
 <li>The execution of an instruction may <em>trap</em>,
 in which case the entire computation is aborted and no further modifications to the store are performed by it. (Other computations can still be initiated afterwards.)</li>

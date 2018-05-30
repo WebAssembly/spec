@@ -9,7 +9,7 @@
     <title>Conventions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -121,7 +121,7 @@ All parts of this specification are defined in terms of this abstract syntax.</p
 <li><span class="math notranslate nohighlight">\(s[i]\)</span> denotes the <span class="math notranslate nohighlight">\(i\)</span>-th element of a sequence <span class="math notranslate nohighlight">\(s\)</span>, starting from <span class="math notranslate nohighlight">\(0\)</span>.</li>
 <li><span class="math notranslate nohighlight">\(s[i \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} n]\)</span> denotes the sub-sequence <span class="math notranslate nohighlight">\(s[i]~\dots~s[i+n-1]\)</span> of a sequence <span class="math notranslate nohighlight">\(s\)</span>.</li>
 <li><span class="math notranslate nohighlight">\(s \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} [i] = A\)</span> denotes the same sequence as <span class="math notranslate nohighlight">\(s\)</span>,
-except that the <span class="math notranslate nohighlight">\(i\)</span>-the element is replaced with <span class="math notranslate nohighlight">\(A\)</span>.</li>
+except that the <span class="math notranslate nohighlight">\(i\)</span>-th element is replaced with <span class="math notranslate nohighlight">\(A\)</span>.</li>
 <li><span class="math notranslate nohighlight">\(s \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} [i \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} n] = A^n\)</span> denotes the same sequence as <span class="math notranslate nohighlight">\(s\)</span>,
 except that the sub-sequence <span class="math notranslate nohighlight">\(s[i \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} n]\)</span> is replaced with <span class="math notranslate nohighlight">\(A^n\)</span>.</li>
 <li><span class="math notranslate nohighlight">\(\href{../syntax/conventions.html#notation-concat}{\mathrm{concat}}(s^\ast)\)</span> denotes the flat sequence formed by concatenating all sequences <span class="math notranslate nohighlight">\(s_i\)</span> in <span class="math notranslate nohighlight">\(s^\ast\)</span>.</li>

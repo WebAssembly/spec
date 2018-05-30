@@ -9,7 +9,7 @@
     <title>Embedding &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -219,7 +219,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 <ol class="arabic simple">
 <li>Assert: <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">valid</span></a> with external import types <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span> and external export types <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span>.</li>
 <li>Let <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exports</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{exports}}\)</span>.</li>
-<li>Assert: the length of <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast\)</span> equals the length of <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span>.</li>
+<li>Assert: the length of <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast\)</span> equals the length of <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span>.</li>
 <li>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast\)</span> and corresponding <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'_i\)</span> in <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span>, do:</li>
 </ol>
 <blockquote>
@@ -346,7 +346,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 <li>Assert: <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> exists.</li>
 <li>Assert: <span class="math notranslate nohighlight">\(i\)</span> is a non-negative integer.</li>
 <li>Let <span class="math notranslate nohighlight">\(\mathit{ti}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span>.</li>
-<li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length if <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+<li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
 <li>Else, return <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i]\)</span>.</li>
 </ol>
 <div class="math notranslate nohighlight">
@@ -361,7 +361,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 <li>Assert: <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> exists.</li>
 <li>Assert: <span class="math notranslate nohighlight">\(i\)</span> is a non-negative integer.</li>
 <li>Let <span class="math notranslate nohighlight">\(\mathit{ti}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span>.</li>
-<li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length if <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+<li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
 <li>Replace <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i]\)</span> with the optional <a class="reference internal" href="../exec/runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math notranslate nohighlight">\(\mathit{fa}^?\)</span>.</li>
 <li>Return the updated store.</li>
 </ol>
@@ -435,7 +435,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 <li>Assert: <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
 <li>Assert: <span class="math notranslate nohighlight">\(i\)</span> is a non-negative integer.</li>
 <li>Let <span class="math notranslate nohighlight">\(\mathit{mi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span>.</li>
-<li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length if <span class="math notranslate nohighlight">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+<li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
 <li>Else, return the  <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">byte</span></a> <span class="math notranslate nohighlight">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[i]\)</span>.</li>
 </ol>
 <div class="math notranslate nohighlight">
@@ -450,7 +450,7 @@ Implementations can refine it to carry suitable classifications and diagnostic m
 <li>Assert: <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> exists.</li>
 <li>Assert: <span class="math notranslate nohighlight">\(i\)</span> is a non-negative integer.</li>
 <li>Let <span class="math notranslate nohighlight">\(\mathit{mi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span>.</li>
-<li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length if <span class="math notranslate nohighlight">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
+<li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
 <li>Replace <span class="math notranslate nohighlight">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}[i]\)</span> with <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}\)</span>.</li>
 <li>Return the updated store.</li>
 </ol>

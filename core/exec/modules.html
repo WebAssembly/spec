@@ -9,7 +9,7 @@
     <title>Modules &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -281,7 +281,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 \mbox{where:} \hfill \\
 \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} &amp;=&amp; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}| \\
 \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{hostcode}}~\href{../exec/runtime.html#syntax-hostfunc}{\mathit{hostfunc}} \} \\
-S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}~\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\} \\
+S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}~\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}\} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -673,8 +673,8 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 \begin{array}{&#64;{}lcl}
 \href{../exec/modules.html#exec-invocation}{\mathrm{invoke}}(S, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n) &amp;=&amp; S; F; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#syntax-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) \\
   &amp;(\mathrel{\mbox{if}} &amp; S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}].\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}} = [t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^m] \\
-  &amp;\wedge&amp; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n = (t_1.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)^n) \\
-  &amp;\wedge&amp; F = \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\{\}, \href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\epsilon \} \\
+  &amp;\wedge&amp; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n = (t_1.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)^n \\
+  &amp;\wedge&amp; F = \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\{\}, \href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\epsilon \}) \\
 \end{array}\end{split}\]</div>
 </div>
 </div>

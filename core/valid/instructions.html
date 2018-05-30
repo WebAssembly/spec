@@ -9,7 +9,7 @@
     <title>Instructions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -102,7 +102,7 @@ and the provided output stack with result values of types <span class="math notr
 consuming two <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> values and producing one.</p>
 </div>
 <p>Typing extends to <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">instruction sequences</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span>.
-Such a sequence has a <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> <span class="math notranslate nohighlight">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span> if the accumulative effect of executing the instructions is consuming values of types <span class="math notranslate nohighlight">\(t_1^\ast\)</span> off the operand stack and pushing new values of types <span class="math notranslate nohighlight">\(t_2^\ast\)</span>.</p>
+Such a sequence has a <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span> if the accumulative effect of executing the instructions is consuming values of types <span class="math notranslate nohighlight">\(t_1^\ast\)</span> off the operand stack and pushing new values of types <span class="math notranslate nohighlight">\(t_2^\ast\)</span>.</p>
 <p id="polymorphism">For some instructions, the typing rules do not fully constrain the type,
 and therefore allow for multiple types.
 Such instructions are called <em>polymorphic</em>.
@@ -540,7 +540,7 @@ This may be generalized in future versions of WebAssembly.</p>
 <li>For all <span class="math notranslate nohighlight">\(l_i\)</span> in <span class="math notranslate nohighlight">\(l^\ast\)</span>,
 the label <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_i]\)</span> must be defined in the context.</li>
 <li>For all <span class="math notranslate nohighlight">\(l_i\)</span> in <span class="math notranslate nohighlight">\(l^\ast\)</span>,
-<span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_i]\)</span> must be <span class="math notranslate nohighlight">\(t^?\)</span>.</li>
+<span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_i]\)</span> must be <span class="math notranslate nohighlight">\([t^?]\)</span>.</li>
 <li>Then the instruction is valid with type <span class="math notranslate nohighlight">\([t_1^\ast~t^?~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>, for any sequences of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math notranslate nohighlight">\(t_1^\ast\)</span> and <span class="math notranslate nohighlight">\(t_2^\ast\)</span>.</li>
 </ul>
 <div class="math notranslate nohighlight">

@@ -9,7 +9,7 @@
     <title>Instructions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -141,7 +141,7 @@ Where the underlying operators are non-deterministic, because they may return on
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t\mathsf{.}\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
   &amp; (\mathrel{\mbox{if}} c \in \href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}_t(c_1)) \\
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t\mathsf{.}\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
-  &amp; (\mathrel{\mbox{if}} \href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}_{t_1,t_2}(c_1) = \{\})
+  &amp; (\mathrel{\mbox{if}} \href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}_{t}(c_1) = \{\})
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="exec-binop">
@@ -165,7 +165,7 @@ Where the underlying operators are non-deterministic, because they may return on
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)~t\mathsf{.}\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
   &amp; (\mathrel{\mbox{if}} c \in \href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}_t(c_1,c_2)) \\
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)~t\mathsf{.}\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
-  &amp; (\mathrel{\mbox{if}} \href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}_{t_1,t_2}(c_1) = \{\})
+  &amp; (\mathrel{\mbox{if}} \href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}_{t}(c_1,c2) = \{\})
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="exec-testop">
@@ -214,9 +214,9 @@ Where the underlying operators are non-deterministic, because they may return on
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
-(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t_2\mathsf{.}\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}\mathsf{/}t_1 &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; (t_2\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)
+(t_1\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t_2\mathsf{.}\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}\mathsf{/}t_1 &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; (t_2\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)
   &amp; (\mathrel{\mbox{if}} c_2 \in \href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}_{t_1,t_2}(c_1)) \\
-(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t_2\mathsf{.}\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}\mathsf{/}t_1 &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
+(t_1\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t_2\mathsf{.}\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}\mathsf{/}t_1 &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
   &amp; (\mathrel{\mbox{if}} \href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}_{t_1,t_2}(c_1) = \{\})
 \end{array}\end{split}\]</div>
 </div>
