@@ -102,7 +102,7 @@
   "i32 constant"
 )
 
-;; Test that load/store addreses are full int32 (or int64), and not OCaml int
+;; Test that load/store addreses are full int32 (or int64)
 
 (module
   (memory 1)
