@@ -70,7 +70,7 @@ Where the underlying operators are non-deterministic, because they may return on
    (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& (t\K{.}\CONST~c)
      & (\iff c \in \unop_t(c_1)) \\
    (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& \TRAP
-     & (\iff \unop_{t_1,t_2}(c_1) = \{\})
+     & (\iff \unop_{t}(c_1) = \{\})
    \end{array}
 
 
@@ -100,7 +100,7 @@ Where the underlying operators are non-deterministic, because they may return on
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& (t\K{.}\CONST~c)
      & (\iff c \in \binop_t(c_1,c_2)) \\
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& \TRAP
-     & (\iff \binop_{t_1,t_2}(c_1) = \{\})
+     & (\iff \binop_{t}(c_1,c2) = \{\})
    \end{array}
 
 
@@ -167,9 +167,9 @@ Where the underlying operators are non-deterministic, because they may return on
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& (t_2\K{.}\CONST~c_2)
+   (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& (t_2\K{.}\CONST~c_2)
      & (\iff c_2 \in \cvtop_{t_1,t_2}(c_1)) \\
-   (t\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& \TRAP
+   (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& \TRAP
      & (\iff \cvtop_{t_1,t_2}(c_1) = \{\})
    \end{array}
 

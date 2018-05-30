@@ -66,7 +66,7 @@ When dealing with syntactic constructs the following notation is also used:
 * :math:`s[i \slice n]` denotes the sub-sequence :math:`s[i]~\dots~s[i+n-1]` of a sequence :math:`s`.
 
 * :math:`s \with [i] = A` denotes the same sequence as :math:`s`,
-  except that the :math:`i`-the element is replaced with :math:`A`.
+  except that the :math:`i`-th element is replaced with :math:`A`.
 
 * :math:`s \with [i \slice n] = A^n` denotes the same sequence as :math:`s`,
   except that the sub-sequence :math:`s[i \slice n]` is replaced with :math:`A^n`.

@@ -173,7 +173,7 @@ Modules
 
 2. Let :math:`\export^\ast` be the :ref:`exports <syntax-export>` :math:`\module.\MEXPORTS`.
 
-3. Assert: the length of :math:`\export^\ast` equals the length of :math:`\externtype^\ast`.
+3. Assert: the length of :math:`\export^\ast` equals the length of :math:`{\externtype'}^\ast`.
 
 4. For each :math:`\export_i` in :math:`\export^\ast` and corresponding :math:`\externtype'_i` in :math:`{\externtype'}^\ast`, do:
 
@@ -335,7 +335,7 @@ Tables
 
 3. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
 
-4. If :math:`i` is larger than or equal to the length if :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
+4. If :math:`i` is larger than or equal to the length of :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
 
 5. Else, return :math:`\X{ti}.\TIELEM[i]`.
 
@@ -357,7 +357,7 @@ Tables
 
 3. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
 
-4. If :math:`i` is larger than or equal to the length if :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
+4. If :math:`i` is larger than or equal to the length of :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
 
 5. Replace :math:`\X{ti}.\TIELEM[i]` with the optional :ref:`function address <syntax-funcaddr>` :math:`\X{fa}^?`.
 
@@ -461,7 +461,7 @@ Memories
 
 3. Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
 
-4. If :math:`i` is larger than or equal to the length if :math:`\X{mi}.\MIDATA`, then return :math:`\ERROR`.
+4. If :math:`i` is larger than or equal to the length of :math:`\X{mi}.\MIDATA`, then return :math:`\ERROR`.
 
 5. Else, return the  :ref:`byte <syntax-byte>` :math:`\X{mi}.\MIDATA[i]`.
 
@@ -483,7 +483,7 @@ Memories
 
 3. Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
 
-4. If :math:`i` is larger than or equal to the length if :math:`\X{mi}.\MIDATA`, then return :math:`\ERROR`.
+4. If :math:`i` is larger than or equal to the length of :math:`\X{mi}.\MIDATA`, then return :math:`\ERROR`.
 
 5. Replace :math:`\X{mi}.\MIDATA[i]` with :math:`\byte`.
 
