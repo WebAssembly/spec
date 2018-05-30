@@ -101,3 +101,25 @@
   )
   "i32 constant"
 )
+
+;; Test that load/store addreses are full int32 (or int64), and not OCaml int
+
+(module
+  (memory 1)
+  (func (export "load") (param i32) (result i32) (i32.load (get_local 0)))
+  (func (export "store") (param i32 i32) (i32.store (get_local 0) (get_local 1)))
+)
+
+(assert_return (invoke "load" (i32.const 0)) (i32.const 0))
+(assert_return (invoke "store" (i32.const 0) (i32.const 0x80000000)))
+(assert_return (invoke "load" (i32.const 0)) (i32.const 0x80000000))
+(assert_return (invoke "store" (i32.const 0) (i32.const 0x80000001)))
+(assert_return (invoke "load" (i32.const 0)) (i32.const 0x80000001))
+(assert_return (invoke "store" (i32.const 0) (i32.const 0x80000002)))
+(assert_return (invoke "load" (i32.const 0)) (i32.const 0x80000002))
+(assert_return (invoke "store" (i32.const 0) (i32.const 4294967293)))
+(assert_return (invoke "load" (i32.const 0)) (i32.const 4294967293))
+(assert_return (invoke "store" (i32.const 0) (i32.const 4294967294)))
+(assert_return (invoke "load" (i32.const 0)) (i32.const 4294967294))
+(assert_return (invoke "store" (i32.const 0) (i32.const 4294967295)))
+(assert_return (invoke "load" (i32.const 0)) (i32.const 4294967295))

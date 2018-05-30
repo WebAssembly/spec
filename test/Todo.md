@@ -6,7 +6,6 @@ welcome.
 Linear memory semantics:
  - test that newly allocated memory (program start and `memory.grow`) is zeroed
  - test that `memory.grow` does a full 32-bit unsigned check for page-size divisibility
- - test that load/store addreses are full int32 (or int64), and not OCaml int
  - test that when allocating 4GiB, accessing index -1 fails
  - test that too-big `memory.grow` fails appropriately
  - test that too-big linear memory initial allocation fails
