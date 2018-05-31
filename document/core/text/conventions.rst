@@ -122,6 +122,8 @@ It is convenient to define identifier contexts as :ref:`records <notation-record
         & \ITABLES & (\Tid^?)^\ast, \\
         & \IMEMS & (\Tid^?)^\ast, \\
         & \IGLOBALS & (\Tid^?)^\ast, \\
+        & \IELEM & (\Tid^?)^\ast, \\
+        & \IDATA & (\Tid^?)^\ast, \\
         & \ILOCALS & (\Tid^?)^\ast, \\
         & \ILABELS & (\Tid^?)^\ast, \\
         & \ITYPEDEFS & \functype^\ast ~\} \\

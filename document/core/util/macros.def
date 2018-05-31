@@ -639,6 +639,8 @@
 .. |Ttableidx| mathdef:: \xref{text/modules}{text-tableidx}{\T{tableidx}}
 .. |Tmemidx| mathdef:: \xref{text/modules}{text-memidx}{\T{memidx}}
 .. |Tglobalidx| mathdef:: \xref{text/modules}{text-globalidx}{\T{globalidx}}
+.. |Telemidx| mathdef:: \xref{text/modules}{text-elemidx}{\T{elemidx}}
+.. |Tdataidx| mathdef:: \xref{text/modules}{text-dataidx}{\T{dataidx}}
 .. |Tlocalidx| mathdef:: \xref{text/modules}{text-localidx}{\T{localidx}}
 .. |Tlabelidx| mathdef:: \xref{text/modules}{text-labelidx}{\T{labelidx}}
 
@@ -701,6 +703,8 @@
 .. |ITABLES| mathdef:: \xref{text/conventions}{text-context}{\K{tables}}
 .. |IMEMS| mathdef:: \xref{text/conventions}{text-context}{\K{mems}}
 .. |IGLOBALS| mathdef:: \xref{text/conventions}{text-context}{\K{globals}}
+.. |IELEM| mathdef:: \xref{text/conventions}{text-context}{\K{elem}}
+.. |IDATA| mathdef:: \xref{text/conventions}{text-context}{\K{data}}
 .. |ILOCALS| mathdef:: \xref{text/conventions}{text-context}{\K{locals}}
 .. |ILABELS| mathdef:: \xref{text/conventions}{text-context}{\K{labels}}
 

@@ -2,12 +2,14 @@ Modules
 -------
 
 
-.. index:: index, type index, function index, table index, memory index, global index, local index, label index
+.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index
    pair: text format; type index
    pair: text format; function index
    pair: text format; table index
    pair: text format; memory index
    pair: text format; global index
+   pair: text format; element index
+   pair: text format; data index
    pair: text format; local index
    pair: text format; label index
 .. _text-typeidx:
@@ -42,6 +44,12 @@ Such identifiers are looked up in the suitable space of the :ref:`identifier con
    \production{global index} & \Tglobalidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x \\&&|&
      v{:}\Tid &\Rightarrow& x & (\iff I.\IGLOBALS[x] = v) \\
+   \production{element index} & \Telemidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\IELEM[x] = v) \\
+   \production{data index} & \Tdataidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\IDATA[x] = v) \\
    \production{local index} & \Tlocalidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x \\&&|&
      v{:}\Tid &\Rightarrow& x & (\iff I.\ILOCALS[x] = v) \\
@@ -475,8 +483,10 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~x{:}\Ttableidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\
+     \text{(}~\text{elem}~~\Tid^?~~x{:}\Ttableidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\ &&|&
+     \text{(}~\text{elem}~~\Tid^?~~\text{passive}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \EINIT~y^\ast \} \\
    \end{array}
 
 .. note::
@@ -525,8 +535,10 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 .. math::
    \begin{array}{llclll}
    \production{data segment} & \Tdata_I &::=&
-     \text{(}~\text{data}~~x{:}\Tmemidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\[1ex]
+     \text{(}~\text{data}~~\Tid^?~~x{:}\Tmemidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\ &&|&
+     \text{(}~\text{data}~~\Tid^?~~\text{passive}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \DINIT~b^\ast \} \\
    \production{data string} & \Tdatastring &::=&
      (b^\ast{:}\Tstring)^\ast \quad\Rightarrow\quad \concat((b^\ast)^\ast) \\
    \end{array}
@@ -631,6 +643,10 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
      \{\IMEMS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=&
      \{\IGLOBALS~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{elem}~\Tid^?~\dots~\text{)}) &=&
+     \{\IELEM~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{data}~\Tid^?~\dots~\text{)}) &=&
+     \{\IDATA~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{func}~\Tid^?~\dots~\text{)}~\text{)}) &=&
      \{\IFUNCS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~\Tid^?~\dots~\text{)}~\text{)}) &=&
