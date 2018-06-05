@@ -20,8 +20,8 @@ Based on reference types proposal.
   - `reftype ::= ... | optref <typeidx>`
   - `optref $t ok` iff `$t` is defined in the context
 
-* `int31ref` is a new reference type
-  - `reftype ::= ... | int31ref`
+* `i31ref` is a new reference type
+  - `reftype ::= ... | i31ref`
 
 
 #### Type Definitions
@@ -71,14 +71,14 @@ In addition to the rules for basic reference types:
 
 * `eqref` is a subtype of `anyref`
   - `eqref <: anyref`
-  - Note: `int31ref` and `anyfunc` are *not* a subtypes of `eqref`, i.e., those types do not expose reference equality
+  - Note: `i31ref` and `anyfunc` are *not* a subtypes of `eqref`, i.e., those types do not expose reference equality
 
 * `nullref` is a subtype of `eqref`
   - `nullref <: eqref`
 
-* `int31ref` is a subtype of `anyref`
-  - `int31ref <: anyref`
-  - Note: `int31ref` is *not* a supertype of `nullref`, i.e., nut nullable
+* `i31ref` is a subtype of `anyref`
+  - `i31ref <: anyref`
+  - Note: `i31ref` is *not* a supertype of `nullref`, i.e., nut nullable
 
 * Any nullable reference type is a subtype of `anyref` and a supertype of `nullref`
   - `optref $t <: anyref`
@@ -199,14 +199,14 @@ In addition to the rules for basic reference types:
 
 Tentatively, support a type of plain tagged integers.
 
-* `int31ref.new` creates an `int31ref` from a 32 bit value, truncating high bit
-  - `int31ref : [i32] -> [int31ref]`
+* `i31ref.new` creates an `i31ref` from a 32 bit value, truncating high bit
+  - `i31ref : [i32] -> [i31ref]`
 
-* `int31ref.get_u` extracts the value, zero-extending
-  - `int31ref.get_u : [int31ref] -> [i32]`
+* `i31ref.get_u` extracts the value, zero-extending
+  - `i31ref.get_u : [i31ref] -> [i32]`
 
-* `int31ref.get_s` extracts the value, sign-extending
-  - `int31ref.get_s : [int31ref] -> [i32]`
+* `i31ref.get_s` extracts the value, sign-extending
+  - `i31ref.get_s : [i31ref] -> [i32]`
 
 
 #### Casts
