@@ -127,6 +127,8 @@ In addition to the rules for basic reference types:
 
 * Locals must have a type that is defaultable.
 
+* Table definitions with non-zero minimum size must have an element type that is defaultable. (Imports are not affected.)
+
 
 ### Instructions
 
@@ -143,8 +145,9 @@ In addition to the rules for basic reference types:
      - iff `$f : $t`
 
 * `call_ref` calls a function through a reference
-  - `call_ref : [t1* (ref $t)] -> [t2*]`
+  - `call_ref : [t1* (optref $t)] -> [t2*]`
      - iff `$t = [t1*] -> [t2*]`
+  - traps on `null`
 
 
 #### Structures
@@ -159,14 +162,16 @@ In addition to the rules for basic reference types:
     - and all `t*` are defaultable
 
 * `struct.get <typeidx> <fieldidx>` reads field `$x` from a structure
-  - `struct.get $t i : [(ref $t)] -> [t]`
+  - `struct.get $t i : [(optref $t)] -> [t]`
     - iff `$t = struct (mut1 t1)^i (mut ti) (mut2 t2)*`
     - and `t = unpacked(ti)`
+  - traps on `null`
 
 * `struct.set <typeidx> <fieldidx>` writes field `$x` of a structure
-  - `struct.set $t i : [(ref $t) ti] -> []`
+  - `struct.set $t i : [(optref $t) ti] -> []`
     - iff `$t = struct (mut1 t1)^i (var ti) (mut2 t2)*`
     - and `t = unpacked(ti)`
+  - traps on `null`
 
 
 #### Arrays
@@ -181,18 +186,21 @@ In addition to the rules for basic reference types:
     - and `t` is defaultable
 
 * `array.get <typeidx>` reads an element from an array
-  - `array.get $t : [(ref $t) i32] -> [t]`
+  - `array.get $t : [(optref $t) i32] -> [t]`
     - iff `$t = array (mut t')`
     - and `t = unpacked(t')`
+  - traps on `null`
 
 * `array.set <typeidx>` writes an element to an array
-  - `array.set $t : [(ref $t) i32 t] -> []`
+  - `array.set $t : [(optref $t) i32 t] -> []`
     - iff `$t = array (var t')`
     - and `t = unpacked(t')`
+  - traps on `null`
 
 * `array.len <typeidx>` inquires the length of an array
-  - `array.len $t : [(ref $t)] -> [i32]`
+  - `array.len $t : [(optref $t)] -> [i32]`
     - iff `$t = array (mut t)`
+  - traps on `null`
 
 
 #### Integer references
