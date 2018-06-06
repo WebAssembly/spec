@@ -321,17 +321,13 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 
-* Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\CGLOBALS[x]`.
-
-* The mutability :math:`\mut` must be |MCONST|.
-
 * Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~C.\CGLOBALS[x]`.
 
 .. math::
    \frac{
-     C.\CGLOBALS[x] = \MCONST~t
+     C.\CGLOBALS[x] = \globaltype
    }{
-     C \vdashexportdesc \EDGLOBAL~x : \ETGLOBAL~(\MCONST~t)
+     C \vdashexportdesc \EDGLOBAL~x : \ETGLOBAL~\globaltype
    }
 
 .. note::
@@ -417,15 +413,13 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 * The global type :math:`\globaltype` must be :ref:`valid <valid-globaltype>`.
 
-* The mutability of :math:`\globaltype` must be |MCONST|.
-
 * Then the import description is valid with type :math:`\ETGLOBAL~\globaltype`.
 
 .. math::
    \frac{
-     \vdashglobaltype \MCONST~t \ok
+     \vdashglobaltype \globaltype \ok
    }{
-     C \vdashimportdesc \IDGLOBAL~\MCONST~t : \ETGLOBAL~\MCONST~t
+     C \vdashimportdesc \IDGLOBAL~\globaltype : \ETGLOBAL~\globaltype
    }
 
 .. note::
