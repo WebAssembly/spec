@@ -325,7 +325,7 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 .. math::
    \frac{
-     C.\CGLOBALS[x] = \ETGLOBAL~\globaltype
+     C.\CGLOBALS[x] = \globaltype
    }{
      C \vdashexportdesc \EDGLOBAL~x : \ETGLOBAL~\globaltype
    }
