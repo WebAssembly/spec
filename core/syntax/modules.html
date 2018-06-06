@@ -284,10 +284,6 @@ Consequently, the only valid <span class="math notranslate nohighlight">\(\href{
 <p>Each export is labeled by a unique <a class="reference internal" href="values.html#syntax-name"><span class="std std-ref">name</span></a>.
 Exportable definitions are <a class="reference internal" href="#syntax-func"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="#syntax-table"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="#syntax-mem"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="#syntax-global"><span class="std std-ref">globals</span></a>,
 which are referenced through a respective descriptor.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly, only <em>immutable</em> globals may be exported.</p>
-</div>
 <div class="section" id="id1">
 <h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The following auxiliary notation is defined for sequences of exports, filtering out indices of a specific kind in an order-preserving fashion:</p>
@@ -319,7 +315,6 @@ Each import is specified by a descriptor with a respective type that a definitio
 In each index space, the indices of imports go before the first index of any definition contained in the module itself.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>In the current version of WebAssembly, only <em>immutable</em> globals may be imported.</p>
 <p class="last">Unlike export names, import names are not necessarily unique.
 It is possible to import the same <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-import}{\mathsf{module}}\)</span>/<span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-import}{\mathsf{name}}\)</span> pair multiple times;
 such imports may even have different type descriptions, including different kinds of entities.
