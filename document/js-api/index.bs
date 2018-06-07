@@ -754,7 +754,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    The algorithm <dfn>DefaultGlobalValue</dfn>(|valuetype|) performs the following steps:
+    The algorithm <dfn>DefaultValue</dfn>(|valuetype|) performs the following steps:
     1. If |valuetype| equals [=𝗂𝟥𝟤=], return [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟥𝟤=], return [=𝖿𝟥𝟤=.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟨𝟦=], return [=𝖿𝟨𝟦=.𝖼𝗈𝗇𝗌𝗍=] 0.
@@ -765,7 +765,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     The <dfn constructor for="Global">Global(descriptor, v)</dfn> constructor, when invoked, performs the following steps:
     1. Let |mutable| be |descriptor|["mutable"].
     1. Let |valuetype| be [=ToValueType=](|descriptor|["value"]).
-    1. If |v| is undefined, let |value| be [=DefaultGlobalValue=](|valuetype|); otherwise, let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
+    1. If |v| is undefined, let |value| be [=DefaultValue=](|valuetype|); otherwise, let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
     1. If |mutable| is true, let |globaltype| be [=var=] |valuetype|; otherwise, let |globaltype| be [=const=] |valuetype|.
     1. Let |store| be the current agent's [=associated store=].
     1. Let (|store|, |globaladdr|) be [=alloc_global=](|store|, |globaltype|, |value|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
