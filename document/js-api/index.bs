@@ -498,7 +498,7 @@ interface Module {
     1. For each [=custom section=] |customSection| in the binary format of |bytes|,
         1. Let |name| be the <code>name</code> of the custom section, [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
         1. Assert: |name| is not failure (|moduleObject|.\[[Module]] is [=valid=]).
-        1. If |name| equals |secondName| as string values,
+        1. If |name| equals |sectionName| as string values,
             1. [=Append=] a new {{ArrayBuffer}} containing a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes| for the range matched by this [=customsec=] production.
     1. Return |customSections|.
 </div>
