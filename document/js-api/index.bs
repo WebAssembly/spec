@@ -756,8 +756,8 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 <div algorithm>
     The algorithm <dfn>DefaultValue</dfn>(|valuetype|) performs the following steps:
     1. If |valuetype| equals [=𝗂𝟥𝟤=], return [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] 0.
-    1. If |valuetype| equals [=𝖿𝟥𝟤=], return [=𝖿𝟥𝟤=.𝖼𝗈𝗇𝗌𝗍=] 0.
-    1. If |valuetype| equals [=𝖿𝟨𝟦=], return [=𝖿𝟨𝟦=.𝖼𝗈𝗇𝗌𝗍=] 0.
+    1. If |valuetype| equals [=𝖿𝟥𝟤=], return [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] 0.
+    1. If |valuetype| equals [=𝖿𝟨𝟦=], return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. Otherwise, throw a {{TypeError}} exception.
 </div>
 
