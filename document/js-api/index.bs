@@ -720,7 +720,7 @@ dictionary GlobalDescriptor {
   boolean mutable = false;
 };
 
-[LegacyNamespace=WebAssembly, Constructor(GlobalDescriptor descriptor, optional any value = undefined), Exposed=(Window,Worker,Worklet)]
+[LegacyNamespace=WebAssembly, Constructor(GlobalDescriptor descriptor, optional any value), Exposed=(Window,Worker,Worklet)]
 interface Global {
   any valueOf();
   attribute any value;
