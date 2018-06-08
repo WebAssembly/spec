@@ -496,8 +496,8 @@ interface Module {
     The <dfn method for="Module">customSections(|moduleObject|, |sectionName|)</dfn> method, when invoked, performs the following steps:
     1. Let |bytes| be |moduleObject|.\[[Bytes]].
     1. Let |customSections| be an empty [=list=] of {{ArrayBuffer}}s.
-    1. For each [=custom section=] <var ignore>customSection</var> in the binary format of |bytes|,
-        1. Let |name| be the <code>name</code> of the custom section, [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
+    1. For each [=custom section=] |customSection| in the binary format of |bytes|,
+        1. Let |name| be the <code>name</code> of |customSection|, [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
         1. Assert: |name| is not failure (|moduleObject|.\[[Module]] is [=valid=]).
         1. If |name| equals |sectionName| as string values,
             1. [=Append=] a new {{ArrayBuffer}} containing a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes| for the range matched by this [=customsec=] production.
