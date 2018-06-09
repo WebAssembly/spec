@@ -139,7 +139,7 @@
 
 ;; Invalid bounds for elements
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 0 anyfunc)
     (func $f)
@@ -148,7 +148,7 @@
   "elements segment does not fit"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 0 0 anyfunc)
     (func $f)
@@ -157,7 +157,7 @@
   "elements segment does not fit"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 0 1 anyfunc)
     (func $f)
@@ -166,7 +166,7 @@
   "elements segment does not fit"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 0 anyfunc)
     (elem (i32.const 1))
@@ -174,7 +174,7 @@
   "elements segment does not fit"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 10 anyfunc)
     (func $f)
@@ -182,7 +182,7 @@
   )
   "elements segment does not fit"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "table" (table 10 anyfunc))
     (func $f)
@@ -191,7 +191,7 @@
   "elements segment does not fit"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 10 20 anyfunc)
     (func $f)
@@ -199,7 +199,7 @@
   )
   "elements segment does not fit"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "table" (table 10 anyfunc))
     (func $f)
@@ -208,7 +208,7 @@
   "elements segment does not fit"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 10 anyfunc)
     (func $f)
@@ -216,7 +216,7 @@
   )
   "elements segment does not fit"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "table" (table 10 anyfunc))
     (func $f)
@@ -225,7 +225,7 @@
   "elements segment does not fit"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 10 anyfunc)
     (func $f)
@@ -233,7 +233,7 @@
   )
   "elements segment does not fit"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "table" (table 10 anyfunc))
     (func $f)

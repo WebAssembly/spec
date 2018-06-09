@@ -203,7 +203,7 @@
 )
 (assert_return (get $G2 "g") (i32.const 5))
 
-(assert_unlinkable
+(assert_trap
   (module
     (table (import "Mt" "tab") 0 anyfunc)
     (elem (i32.const 10) $f)
@@ -224,29 +224,54 @@
 )
 (assert_trap (invoke $Mt "call" (i32.const 7)) "uninitialized")
 
-(assert_unlinkable
+(assert_trap
   (module
     (table (import "Mt" "tab") 10 anyfunc)
     (func $f (result i32) (i32.const 0))
+    (elem (i32.const 12) $f)  ;; out of bounds
     (elem (i32.const 7) $f)
+  )
+  "elements segment does not fit"
+)
+(assert_trap (invoke $Mt "call" (i32.const 7)) "uninitialized element 7")
+(assert_trap (invoke $Mt "call" (i32.const 12)) "undefined element 12")
+
+(assert_trap
+  (module
+    (table (import "Mt" "tab") 10 anyfunc)
+    (func $f (result i32) (i32.const 0))
+    (elem (i32.const 5) $f)
     (elem (i32.const 12) $f)  ;; out of bounds
   )
   "elements segment does not fit"
 )
-(assert_trap (invoke $Mt "call" (i32.const 7)) "uninitialized")
+;; elem initialisation takes place in declaration order
+(assert_return (invoke $Mt "call" (i32.const 5)) (i32.const 0))
 
-(assert_unlinkable
+(assert_trap
   (module
     (table (import "Mt" "tab") 10 anyfunc)
     (func $f (result i32) (i32.const 0))
-    (elem (i32.const 7) $f)
+    (elem (i32.const 6) $f)
     (memory 1)
     (data (i32.const 0x10000) "d") ;; out of bounds
   )
   "data segment does not fit"
 )
-(assert_trap (invoke $Mt "call" (i32.const 7)) "uninitialized")
+(assert_return (invoke $Mt "call" (i32.const 6)) (i32.const 0))
 
+(assert_trap
+  (module
+    (table (import "Mt" "tab") 10 anyfunc)
+    (func $f (result i32) (i32.const 0))
+    (memory 1)
+    (data (i32.const 0x10000) "d") ;; out of bounds
+    (elem (i32.const 7) $f)
+  )
+  "data segment does not fit"
+)
+;; elem initialisation takes place before data initialisation
+(assert_return (invoke $Mt "call" (i32.const 7)) (i32.const 0))
 
 ;; Memories
 
@@ -295,7 +320,7 @@
   (data (i32.const 0xffff) "a")
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory (import "Mm" "mem") 0)
     (data (i32.const 0x10000) "a")
@@ -331,17 +356,7 @@
 )
 (assert_return (invoke $Mm "load" (i32.const 0)) (i32.const 0))
 
-(assert_unlinkable
-  (module
-    (memory (import "Mm" "mem") 1)
-    (data (i32.const 0) "abc")
-    (data (i32.const 0x50000) "d") ;; out of bounds
-  )
-  "data segment does not fit"
-)
-(assert_return (invoke $Mm "load" (i32.const 0)) (i32.const 0))
-
-(assert_unlinkable
+(assert_trap
   (module
     (memory (import "Mm" "mem") 1)
     (data (i32.const 0) "abc")
@@ -351,4 +366,26 @@
   )
   "elements segment does not fit"
 )
+;; elem initialisation takes place before data initialisation
 (assert_return (invoke $Mm "load" (i32.const 0)) (i32.const 0))
+
+(assert_trap
+  (module
+    (memory (import "Mm" "mem") 1)
+    (data (i32.const 0x50000) "d") ;; out of bounds
+    (data (i32.const 0) "abc")
+  )
+  "data segment does not fit"
+)
+(assert_return (invoke $Mm "load" (i32.const 0)) (i32.const 0))
+
+(assert_trap
+  (module
+    (memory (import "Mm" "mem") 1)
+    (data (i32.const 0) "abc")
+    (data (i32.const 0x50000) "d") ;; out of bounds
+  )
+  "data segment does not fit"
+)
+;; data initialisation takes place in declaration order
+(assert_return (invoke $Mm "load" (i32.const 0)) (i32.const 97))

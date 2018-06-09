@@ -362,7 +362,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. Let (|store|, |instance|) be [=instantiate_module=](|store|, |module|, |imports|).
     1. If |instance| is [=error=], throw an appropriate exception type:
         * A {{LinkError}} exception for most cases which occur during linking.
-        * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
+        * If the error came when copying initial values to the table or memory, or when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
         * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
     1. Let |exportsObject| be ! [=ObjectCreate=](null).
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),

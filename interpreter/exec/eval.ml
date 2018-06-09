@@ -394,9 +394,8 @@ let init_table (inst : module_inst) (seg : table_segment) =
   let end_ = Int32.(add offset (of_int (List.length init))) in
   let bound = Table.size tab in
   if I32.lt_u bound end_ || I32.lt_u end_ offset then
-    Link.error seg.at "elements segment does not fit table";
-  fun () ->
-    Table.blit tab offset (List.map (fun x -> FuncElem (func inst x)) init)
+    Trap.error seg.at "elements segment does not fit table";
+  Table.blit tab offset (List.map (fun x -> FuncElem (func inst x)) init)
 
 let init_memory (inst : module_inst) (seg : memory_segment) =
   let {index; offset = const; init} = seg.it in
@@ -406,8 +405,8 @@ let init_memory (inst : module_inst) (seg : memory_segment) =
   let end_ = Int64.(add offset (of_int (String.length init))) in
   let bound = Memory.bound mem in
   if I64.lt_u bound end_ || I64.lt_u end_ offset then
-    Link.error seg.at "data segment does not fit memory";
-  fun () -> Memory.store_bytes mem offset init
+    Trap.error seg.at "data segment does not fit memory";
+  Memory.store_bytes mem offset init
 
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
@@ -443,9 +442,7 @@ let init (m : module_) (exts : extern list) : module_inst =
   in
   let inst = {inst1 with exports = List.map (create_export inst1) exports} in
   List.iter (init_func inst) fs;
-  let init_elems = List.map (init_table inst) elems in
-  let init_datas = List.map (init_memory inst) data in
-  List.iter (fun f -> f ()) init_elems;
-  List.iter (fun f -> f ()) init_datas;
+  List.iter (init_table inst) elems;
+  List.iter (init_memory inst) data;
   Lib.Option.app (fun x -> ignore (invoke (func inst x) [])) start;
   inst

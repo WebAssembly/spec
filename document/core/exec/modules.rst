@@ -548,7 +548,7 @@ Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :
 
 Instantiation checks that the module is :ref:`valid <valid>` and the provided imports :ref:`match <match-externtype>` the declared types,
 and may *fail* with an error otherwise.
-Instantiation can also result in a :ref:`trap <trap>` from executing the start function.
+Instantiation can also result in a :ref:`trap <trap>` from initializing :ref:`element <syntax-elem>` or :ref:`data <syntax-data>` segments, or from executing the start function.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
 
 1. If :math:`\module` is not :ref:`valid <valid-module>`, then:
@@ -613,10 +613,6 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
     h. Let :math:`\X{eend}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\EINIT`.
 
-    i. If :math:`\X{eend}_i` is larger than the length of :math:`\tableinst_i.\TIELEM`, then:
-
-       i. Fail.
-
 10. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
 
     a. Let :math:`\X{doval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\data_i.\DOFFSET`.
@@ -635,17 +631,17 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
     h. Let :math:`\X{dend}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\DINIT`.
 
-    i. If :math:`\X{dend}_i` is larger than the length of :math:`\meminst_i.\MIDATA`, then:
-
-       i. Fail.
-
 11. Assert: due to :ref:`validation <valid-module>`, the frame :math:`F` is now on the top of the stack.
 
 12. Pop the frame from the stack.
 
 13. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
 
-    a. For each :ref:`function index <syntax-funcidx>` :math:`\funcidx_{ij}` in :math:`\elem_i.\EINIT` (starting with :math:`j = 0`), do:
+    a. If :math:`\X{eend}_i` is larger than the length of :math:`\tableinst_i.\TIELEM`, then:
+
+       i. Trap.
+
+    b. For each :ref:`function index <syntax-funcidx>` :math:`\funcidx_{ij}` in :math:`\elem_i.\EINIT` (starting with :math:`j = 0`), do:
 
        i. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\MIFUNCS[\funcidx_{ij}]` exists.
 
@@ -655,7 +651,11 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 14. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
 
-    a. For each :ref:`byte <syntax-byte>` :math:`b_{ij}` in :math:`\data_i.\DINIT` (starting with :math:`j = 0`), do:
+    a. If :math:`\X{dend}_i` is larger than the length of :math:`\meminst_i.\MIDATA`, then:
+
+       i. Trap.
+
+    b. For each :ref:`byte <syntax-byte>` :math:`b_{ij}` in :math:`\data_i.\DINIT` (starting with :math:`j = 0`), do:
 
        i. Replace :math:`\meminst_i.\MIDATA[\X{do}_i + j]` with :math:`b_{ij}`.
 
@@ -690,24 +690,43 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; \val~\END)^\ast \\
      &\wedge& (S'; F; \elem.\EOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{eo}~\END)^\ast \\
      &\wedge& (S'; F; \data.\DOFFSET \stepto^\ast S'; F; \I32.\CONST~\X{do}~\END)^\ast \\[1ex]
-     &\wedge& (\X{eo} + |\elem.\EINIT| \leq |S'.\STABLES[\tableaddr].\TIELEM|)^\ast \\
-     &\wedge& (\X{do} + |\data.\DINIT| \leq |S'.\SMEMS[\memaddr].\MIDATA|)^\ast
-   \\[1ex]
      &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\
      &\wedge& (\memaddr = \moduleinst.\MIMEMS[\data.\DMEM])^\ast \\
      &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^?)
    \\[2ex]
+   S; F; \INITELEM~a~i~x^\ast &\stepto&
+     S; F; \TRAP \\ &&
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & (i + |x^\ast| > |S'.\STABLES[a].\TIELEM|)^\ast)
+     \end{array} \\[1ex]
    S; F; \INITELEM~a~i~\epsilon &\stepto&
-     S; F; \epsilon \\
+     S; F; \epsilon \\ &&
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & (i + |(x_0~x^\ast)| \leq |S'.\STABLES[a].\TIELEM|)^\ast)
+     \end{array} \\[1ex]
    S; F; \INITELEM~a~i~(x_0~x^\ast) &\stepto&
      S'; F; \INITELEM~a~(i+1)~x^\ast \\ &&
-     (\iff S' = S \with \STABLES[a].\TIELEM[i] = F.\AMODULE.\MIFUNCS[x_0])
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & (i + |(x_0~x^\ast)| \leq |S'.\STABLES[a].\TIELEM|)^\ast \\
+      \wedge & S' = S \with \STABLES[a].\TIELEM[i] = F.\AMODULE.\MIFUNCS[x_0])
+     \end{array}
    \\[1ex]
+   S; F; \INITDATA~a~i~b^\ast &\stepto&
+     S; F; \TRAP \\ &&
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & (i + |b^\ast| > |S'.\SMEMS[a].\MIDATA|)^\ast
+     \end{array} \\[1ex]
    S; F; \INITDATA~a~i~\epsilon &\stepto&
-     S; F; \epsilon \\
+     S; F; \epsilon \\ &&
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & (i + |(b_0~b^\ast)| \leq |S'.\SMEMS[a].\MIDATA|)^\ast
+     \end{array} \\[1ex]
    S; F; \INITDATA~a~i~(b_0~b^\ast) &\stepto&
      S'; F; \INITDATA~a~(i+1)~b^\ast \\ &&
-     (\iff S' = S \with \SMEMS[a].\MIDATA[i] = b_0)
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & (i + |(b_0~b^\ast)| \leq |S'.\SMEMS[a].\MIDATA|)^\ast \\
+      \wedge & S' = S \with \SMEMS[a].\MIDATA[i] = b_0)
+     \end{array}
    \end{array}
 
 .. note::
