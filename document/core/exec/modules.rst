@@ -601,35 +601,11 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
     b. Assert: due to :ref:`validation <valid-elem>`, :math:`\X{eoval}_i` is of the form :math:`\I32.\CONST~\X{eo}_i`.
 
-    c. Let :math:`\tableidx_i` be the :ref:`table index <syntax-tableidx>` :math:`\elem_i.\ETABLE`.
-
-    d. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\MITABLES[\tableidx_i]` exists.
-
-    e. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` :math:`\moduleinst.\MITABLES[\tableidx_i]`.
-
-    f. Assert: due to :ref:`validation <valid-elem>`, :math:`S'.\STABLES[\tableaddr_i]` exists.
-
-    g. Let :math:`\tableinst_i` be the :ref:`table instance <syntax-tableinst>` :math:`S'.\STABLES[\tableaddr_i]`.
-
-    h. Let :math:`\X{eend}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\EINIT`.
-
 10. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
 
     a. Let :math:`\X{doval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\data_i.\DOFFSET`.
 
     b. Assert: due to :ref:`validation <valid-data>`, :math:`\X{doval}_i` is of the form :math:`\I32.\CONST~\X{do}_i`.
-
-    c. Let :math:`\memidx_i` be the :ref:`memory index <syntax-memidx>` :math:`\data_i.\DMEM`.
-
-    d. Assert: due to :ref:`validation <valid-data>`, :math:`\moduleinst.\MIMEMS[\memidx_i]` exists.
-
-    e. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` :math:`\moduleinst.\MIMEMS[\memidx_i]`.
-
-    f. Assert: due to :ref:`validation <valid-data>`, :math:`S'.\SMEMS[\memaddr_i]` exists.
-
-    g. Let :math:`\meminst_i` be the :ref:`memory instance <syntax-meminst>` :math:`S'.\SMEMS[\memaddr_i]`.
-
-    h. Let :math:`\X{dend}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\DINIT`.
 
 11. Assert: due to :ref:`validation <valid-module>`, the frame :math:`F` is now on the top of the stack.
 
@@ -637,11 +613,23 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 13. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
 
-    a. If :math:`\X{eend}_i` is larger than the length of :math:`\tableinst_i.\TIELEM`, then:
+    a. Let :math:`\tableidx_i` be the :ref:`table index <syntax-tableidx>` :math:`\elem_i.\ETABLE`.
+
+    b. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\MITABLES[\tableidx_i]` exists.
+
+    c. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` :math:`\moduleinst.\MITABLES[\tableidx_i]`.
+
+    d. Assert: due to :ref:`validation <valid-elem>`, :math:`S'.\STABLES[\tableaddr_i]` exists.
+
+    e. Let :math:`\tableinst_i` be the :ref:`table instance <syntax-tableinst>` :math:`S'.\STABLES[\tableaddr_i]`.
+
+    f. Let :math:`\X{eend}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\EINIT`.
+
+    g. If :math:`\X{eend}_i` is larger than the length of :math:`\tableinst_i.\TIELEM`, then:
 
        i. Trap.
 
-    b. For each :ref:`function index <syntax-funcidx>` :math:`\funcidx_{ij}` in :math:`\elem_i.\EINIT` (starting with :math:`j = 0`), do:
+    h. For each :ref:`function index <syntax-funcidx>` :math:`\funcidx_{ij}` in :math:`\elem_i.\EINIT` (starting with :math:`j = 0`), do:
 
        i. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\MIFUNCS[\funcidx_{ij}]` exists.
 
@@ -651,11 +639,23 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 14. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
 
-    a. If :math:`\X{dend}_i` is larger than the length of :math:`\meminst_i.\MIDATA`, then:
+    a. Let :math:`\memidx_i` be the :ref:`memory index <syntax-memidx>` :math:`\data_i.\DMEM`.
+
+    b. Assert: due to :ref:`validation <valid-data>`, :math:`\moduleinst.\MIMEMS[\memidx_i]` exists.
+
+    c. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` :math:`\moduleinst.\MIMEMS[\memidx_i]`.
+
+    d. Assert: due to :ref:`validation <valid-data>`, :math:`S'.\SMEMS[\memaddr_i]` exists.
+
+    e. Let :math:`\meminst_i` be the :ref:`memory instance <syntax-meminst>` :math:`S'.\SMEMS[\memaddr_i]`.
+
+    f. Let :math:`\X{dend}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\DINIT`.
+
+    g. If :math:`\X{dend}_i` is larger than the length of :math:`\meminst_i.\MIDATA`, then:
 
        i. Trap.
 
-    b. For each :ref:`byte <syntax-byte>` :math:`b_{ij}` in :math:`\data_i.\DINIT` (starting with :math:`j = 0`), do:
+    h. For each :ref:`byte <syntax-byte>` :math:`b_{ij}` in :math:`\data_i.\DINIT` (starting with :math:`j = 0`), do:
 
        i. Replace :math:`\meminst_i.\MIDATA[\X{do}_i + j]` with :math:`b_{ij}`.
 
