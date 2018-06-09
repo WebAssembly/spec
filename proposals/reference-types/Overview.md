@@ -18,8 +18,8 @@ by repurposing tables as a general memory for opaque data types
 * Set the stage for later additions:
 
   - Typed function references (see [below](#typed-function-references))
-  - Exception references (see the [exception handling proposal](https://github.com/WebAssembly/exception-handling/blob/master/proposals/Exceptions.md) and [here](https://github.com/WebAssembly/host-bindings/issues/10))
-  - A smoother transition path to GC (see the [GC proposal](https://github.com/WebAssembly/gc/blob/master/proposals/GC.md))
+  - Exception references (see the [exception handling proposal](https://github.com/WebAssembly/exception-handling/blob/master/proposals/Level-1.md) and [here](https://github.com/WebAssembly/host-bindings/issues/10))
+  - A smoother transition path to GC (see the [GC proposal](https://github.com/WebAssembly/gc/blob/master/proposals/gc/Overview.md))
 
 Get the most important parts soon!
 
