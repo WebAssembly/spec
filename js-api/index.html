@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 60c7cf64c0efdd39a8c0261dfad14adb1da62902" name="generator">
+  <meta content="Bikeshed version df6f00ec561f1e8fff7063158d3e7f9805a1d338" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="626e231e2f01e2fe4c14eba851f13819b318777a" name="document-revision">
+  <meta content="61a547be4030d476067cd5a6e74d0a45f481ffc2" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-06-07">7 June 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-06-11">11 June 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1134,15 +1134,15 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
     </ol>
    </div>
    <h3 class="heading settled" data-level="3.5" id="globals"><span class="secno">3.5. </span><span class="content">Globals</span><a class="self-link" href="#globals"></a></h3>
-<pre class="idl highlight def"><span class="kt">dictionary</span> <dfn class="nv idl-code" data-dfn-type="dictionary" data-export="" id="dictdef-globaldescriptor"><code>GlobalDescriptor</code><a class="self-link" href="#dictdef-globaldescriptor"></a></dfn> {
+<pre class="idl highlight def"><span class="kt">dictionary</span> <dfn class="nv dfn-paneled idl-code" data-dfn-type="dictionary" data-export="" id="dictdef-globaldescriptor"><code>GlobalDescriptor</code></dfn> {
   <span class="kt">required</span> <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString④"><span class="kt">USVString</span></a> <dfn class="nv idl-code" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export="" data-type="USVString " id="dom-globaldescriptor-value"><code>value</code><a class="self-link" href="#dom-globaldescriptor-value"></a></dfn>;
   <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean①"><span class="kt">boolean</span></a> <dfn class="nv idl-code" data-default="false" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export="" data-type="boolean " id="dom-globaldescriptor-mutable"><code>mutable</code><a class="self-link" href="#dom-globaldescriptor-mutable"></a></dfn> = <span class="kt">false</span>;
 };
 
-[<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace④">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly④">WebAssembly</a>, Constructor(GlobalDescriptor descriptor, unrestricted double value = 0), <a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑤">Exposed</a>=(<span class="n">Window</span>,<span class="n">Worker</span>,<span class="n">Worklet</span>)]
+[<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace④">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly④">WebAssembly</a>, <dfn class="nv idl-code" data-dfn-for="Global" data-dfn-type="constructor" data-export="" data-lt="Global(descriptor, value)|Global(descriptor)" id="dom-global-global"><code>Constructor</code><a class="self-link" href="#dom-global-global"></a></dfn>(<a class="n" data-link-type="idl-name" href="#dictdef-globaldescriptor" id="ref-for-dictdef-globaldescriptor">GlobalDescriptor</a> <dfn class="nv idl-code" data-dfn-for="Global/Global(descriptor, value)" data-dfn-type="argument" data-export="" id="dom-global-global-descriptor-value-descriptor"><code>descriptor</code><a class="self-link" href="#dom-global-global-descriptor-value-descriptor"></a></dfn>, <span class="kt">optional</span> <span class="kt">any</span> <dfn class="nv idl-code" data-dfn-for="Global/Global(descriptor, value)" data-dfn-type="argument" data-export="" id="dom-global-global-descriptor-value-value"><code>value</code><a class="self-link" href="#dom-global-global-descriptor-value-value"></a></dfn>), <a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑤">Exposed</a>=(<span class="n">Window</span>,<span class="n">Worker</span>,<span class="n">Worklet</span>)]
 <span class="kt">interface</span> <dfn class="nv dfn-paneled idl-code" data-dfn-type="interface" data-export="" id="global"><code>Global</code></dfn> {
-  <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unrestricted-double" id="ref-for-idl-unrestricted-double"><span class="kt">unrestricted</span> <span class="kt">double</span></a> <a class="nv idl-code" data-link-type="method" href="#dom-global-valueof" id="ref-for-dom-global-valueof">valueOf</a>();
-  <span class="kt">attribute</span> <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unrestricted-double" id="ref-for-idl-unrestricted-double①"><span class="kt">unrestricted</span> <span class="kt">double</span></a> <a class="nv idl-code" data-link-type="attribute" data-type="unrestricted double" href="#dom-global-value" id="ref-for-dom-global-value">value</a>;
+  <span class="kt">any</span> <a class="nv idl-code" data-link-type="method" href="#dom-global-valueof" id="ref-for-dom-global-valueof">valueOf</a>();
+  <span class="kt">attribute</span> <span class="kt">any</span> <a class="nv idl-code" data-link-type="attribute" data-type="any" href="#dom-global-value" id="ref-for-dom-global-value">value</a>;
 };
 </pre>
    <div>
@@ -1184,15 +1184,28 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
       <p>Otherwise, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a></code> exception.</p>
     </ol>
    </div>
+   <div class="algorithm" data-algorithm="DefaultValue">
+     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="defaultvalue">DefaultValue</dfn>(<var>valuetype</var>) performs the following steps: 
+    <ol>
+     <li data-md="">
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype④">𝗂𝟥𝟤</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> 0.</p>
+     <li data-md="">
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑤">𝖿𝟥𝟤</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> 0.</p>
+     <li data-md="">
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑥">𝖿𝟨𝟦</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values③">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> 0.</p>
+     <li data-md="">
+      <p>Otherwise, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a></code> exception.</p>
+    </ol>
+   </div>
    <div class="algorithm" data-algorithm="Global(descriptor, v)">
-     The <dfn class="idl-code" data-dfn-for="Global" data-dfn-type="constructor" data-export="" id="dom-global-global"><code>Global(descriptor, v)</code><a class="self-link" href="#dom-global-global"></a></dfn> constructor, when invoked, performs the following steps: 
+     The <dfn class="idl-code" data-dfn-for="Global" data-dfn-type="constructor" data-export="" id="dom-global-global-descriptor-v"><code>Global(descriptor, v)</code><a class="self-link" href="#dom-global-global-descriptor-v"></a></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md="">
       <p>Let <var>mutable</var> be <var>descriptor</var>["mutable"].</p>
      <li data-md="">
       <p>Let <var>valuetype</var> be <a data-link-type="dfn" href="#tovaluetype" id="ref-for-tovaluetype">ToValueType</a>(<var>descriptor</var>["value"]).</p>
      <li data-md="">
-      <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①">ToWebAssemblyValue</a>(<var>v</var>, <var>valuetype</var>).</p>
+      <p>If <var>v</var> is undefined, let <var>value</var> be <a data-link-type="dfn" href="#defaultvalue" id="ref-for-defaultvalue">DefaultValue</a>(<var>valuetype</var>); otherwise, let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①">ToWebAssemblyValue</a>(<var>v</var>, <var>valuetype</var>).</p>
      <li data-md="">
       <p>If <var>mutable</var> is true, let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut①">var</a> <var>valuetype</var>; otherwise, let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut②">const</a> <var>valuetype</var>.</p>
      <li data-md="">
@@ -1215,7 +1228,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
      <li data-md="">
       <p>Let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-type-global" id="ref-for-embed-type-global">type_global</a>(<var>store</var>, <var>globaladdr</var>).</p>
      <li data-md="">
-      <p>If <var>globaltype</var> is of the form <var>mut</var> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype④">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a></code>.</p>
+      <p>If <var>globaltype</var> is of the form <var>mut</var> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑦">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">TypeError</a></code>.</p>
      <li data-md="">
       <p>Let <var>value</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-read-global" id="ref-for-embed-read-global">read_global</a>(<var>store</var>, <var>globaladdr</var>).</p>
      <li data-md="">
@@ -1243,7 +1256,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
      <li data-md="">
       <p>If <var>mut</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut③">const</a>, throw a {{TypeError}.</p>
      <li data-md="">
-      <p>If <var>valuetype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑤">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">TypeError</a></code>.</p>
+      <p>If <var>valuetype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑧">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">TypeError</a></code>.</p>
      <li data-md="">
       <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue②">ToWebAssemblyValue</a>(<var>v</var>, <var>valuetype</var>).</p>
      <li data-md="">
@@ -1345,7 +1358,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md="">
       <p>Let [<var>parameters</var>] → [<var>results</var>] be <var>functype</var>.</p>
      <li data-md="">
-      <p>If <var>parameters</var> or <var>results</var> contains an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑥">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">TypeError</a></code>.</p>
+      <p>If <var>parameters</var> or <var>results</var> contains an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑨">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">TypeError</a></code>.</p>
       <p class="note" role="note"><span>Note:</span> the above error is thrown each time the [[Call]] method is invoked.</p>
      <li data-md="">
       <p>Let <var>args</var> be an empty list of WebAssembly values.</p>
@@ -1384,7 +1397,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p>Let <var>hostfunc</var> be a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostfunc" id="ref-for-syntax-hostfunc">host function</a> which performs the following steps when called:</p>
       <ol>
        <li data-md="">
-        <p>If the signature contains an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑦">𝗂𝟨𝟦</a> (as argument or result), the host function throws a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">TypeError</a></code> when called.</p>
+        <p>If the signature contains an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⓪">𝗂𝟨𝟦</a> (as argument or result), the host function throws a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">TypeError</a></code> when called.</p>
        <li data-md="">
         <p>Let <var>arguments</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a> of the arguments of the invocation of this function.</p>
        <li data-md="">
@@ -1415,45 +1428,45 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
     </ol>
    </div>
    <div class="algorithm" data-algorithm="ToJSValue">
-     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="tojsvalue">ToJSValue</dfn>(<var>w</var>) coerces a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①">WebAssembly value</a> to a JavaScript value performs the following steps: 
-    <p class="assertion">Assert: <var>w</var> is not of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②">𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>i64</var>.</p>
+     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="tojsvalue">ToJSValue</dfn>(<var>w</var>) coerces a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values④">WebAssembly value</a> to a JavaScript value performs the following steps: 
+    <p class="assertion">Assert: <var>w</var> is not of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑤">𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>i64</var>.</p>
     <ol>
      <li data-md="">
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values③">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>i32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type">the Number value</a> for <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed">signed_32</a>(<var>i32</var>).</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑥">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>i32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type">the Number value</a> for <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed">signed_32</a>(<var>i32</var>).</p>
      <li data-md="">
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values④">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>f32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type①">the Number value</a> for <var>f32</var>.</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑦">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>f32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type①">the Number value</a> for <var>f32</var>.</p>
      <li data-md="">
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑤">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>f64</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type②">the Number value</a> for <var>f64</var>.</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑧">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>f64</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type②">the Number value</a> for <var>f64</var>.</p>
     </ol>
     <p class="note" role="note"><span>Note:</span> Implementations may optionally replace the NaN payload with any other NaN payload at this point in the f32 or f64 cases; such a change would not be observable through <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-numbertorawbytes" id="ref-for-sec-numbertorawbytes">NumberToRawBytes</a>.</p>
    </div>
    <div class="algorithm" data-algorithm="ToWebAssemblyValue">
-     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="towebassemblyvalue">ToWebAssemblyValue</dfn>(<var>v</var>, <var>type</var>) coerce a JavaScript value to a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑥">WebAssembly value</a> performs the following steps: 
-    <p class="assertion">Assert: <var>type</var> is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑧">𝗂𝟨𝟦</a>.</p>
+     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="towebassemblyvalue">ToWebAssemblyValue</dfn>(<var>v</var>, <var>type</var>) coerce a JavaScript value to a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑨">WebAssembly value</a> performs the following steps: 
+    <p class="assertion">Assert: <var>type</var> is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①①">𝗂𝟨𝟦</a>.</p>
     <ol>
      <li data-md="">
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑨">𝗂𝟥𝟤</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①②">𝗂𝟥𝟤</a>,</p>
       <ol>
        <li data-md="">
         <p>Let <var>i32</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-toint32" id="ref-for-sec-toint32">ToInt32</a>(<var>v</var>).</p>
        <li data-md="">
-        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑦">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>i32</var>.</p>
+        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⓪">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>i32</var>.</p>
       </ol>
      <li data-md="">
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⓪">𝖿𝟥𝟤</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①③">𝖿𝟥𝟤</a>,</p>
       <ol>
        <li data-md="">
         <p>Let <var>f32</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tonumber" id="ref-for-sec-tonumber">ToNumber</a>(<var>v</var>) rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode.</p>
        <li data-md="">
-        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑧">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>f32</var>.</p>
+        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①①">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>f32</var>.</p>
       </ol>
      <li data-md="">
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①①">𝖿𝟨𝟦</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①④">𝖿𝟨𝟦</a>,</p>
       <ol>
        <li data-md="">
         <p>Let <var>f64</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tonumber" id="ref-for-sec-tonumber①">ToNumber</a>(<var>v</var>).</p>
        <li data-md="">
-        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑨">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>f64</var>.</p>
+        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①②">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>f64</var>.</p>
       </ol>
     </ol>
    </div>
@@ -1542,6 +1555,7 @@ The particular exception here is implementation-defined in both cases.</p>
    <li><a href="#create-a-table-object">create a table object</a><span>, in §3.4</span>
    <li><a href="#dom-module-customsections-moduleobject-sectionname">customSections(moduleObject, sectionName)</a><span>, in §3.1</span>
    <li><a href="#dom-module-customsections">customSections(module, sectionName)</a><span>, in §3.1</span>
+   <li><a href="#defaultvalue">DefaultValue</a><span>, in §3.5</span>
    <li><a href="#dom-tabledescriptor-element">element</a><span>, in §3.4</span>
    <li><a href="#exported-function">Exported Function</a><span>, in §3.6</span>
    <li><a href="#exported-function-cache">Exported Function cache</a><span>, in §2.2</span>
@@ -1554,7 +1568,9 @@ The particular exception here is implementation-defined in both cases.</p>
    <li><a href="#dom-importexportkind-global">"global"</a><span>, in §3.1</span>
    <li><a href="#global">Global</a><span>, in §3.5</span>
    <li><a href="#dictdef-globaldescriptor">GlobalDescriptor</a><span>, in §3.5</span>
-   <li><a href="#dom-global-global">Global(descriptor, v)</a><span>, in §3.5</span>
+   <li><a href="#dom-global-global">Global(descriptor)</a><span>, in §3.5</span>
+   <li><a href="#dom-global-global-descriptor-v">Global(descriptor, v)</a><span>, in §3.5</span>
+   <li><a href="#dom-global-global">Global(descriptor, value)</a><span>, in §3.5</span>
    <li><a href="#global-object-cache">Global object cache</a><span>, in §2.2</span>
    <li><a href="#dom-table-grow-d">grow(d)</a><span>, in §3.4</span>
    <li>
@@ -1690,8 +1706,8 @@ The particular exception here is implementation-defined in both cases.</p>
    <ul>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror">3. The WebAssembly Namespace</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror①">(2)</a>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror②">3.4. Tables</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror③">3.5. Globals</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror④">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">(3)</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">3.6. Exported Functions</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">(2)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror③">3.5. Globals</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror④">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">(4)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">3.6. Exported Functions</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-agent">
@@ -2207,7 +2223,8 @@ The particular exception here is implementation-defined in both cases.</p>
    <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-values">3.3. Memories</a>
-    <li><a href="#ref-for-values①">3.6. Exported Functions</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a> <a href="#ref-for-values⑥">(6)</a> <a href="#ref-for-values⑦">(7)</a> <a href="#ref-for-values⑧">(8)</a> <a href="#ref-for-values⑨">(9)</a>
+    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a>
+    <li><a href="#ref-for-values④">3.6. Exported Functions</a> <a href="#ref-for-values⑤">(2)</a> <a href="#ref-for-values⑥">(3)</a> <a href="#ref-for-values⑦">(4)</a> <a href="#ref-for-values⑧">(5)</a> <a href="#ref-for-values⑨">(6)</a> <a href="#ref-for-values①⓪">(7)</a> <a href="#ref-for-values①①">(8)</a> <a href="#ref-for-values①②">(9)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-embed-write-global">
@@ -2233,30 +2250,32 @@ The particular exception here is implementation-defined in both cases.</p>
    <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
-    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a>
-    <li><a href="#ref-for-syntax-valtype⑥">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype⑦">(2)</a> <a href="#ref-for-syntax-valtype⑧">(3)</a> <a href="#ref-for-syntax-valtype⑨">(4)</a> <a href="#ref-for-syntax-valtype①⓪">(5)</a> <a href="#ref-for-syntax-valtype①①">(6)</a>
+    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a>
+    <li><a href="#ref-for-syntax-valtype⑨">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①⓪">(2)</a> <a href="#ref-for-syntax-valtype①①">(3)</a> <a href="#ref-for-syntax-valtype①②">(4)</a> <a href="#ref-for-syntax-valtype①③">(5)</a> <a href="#ref-for-syntax-valtype①④">(6)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-values">
    <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-values">3.3. Memories</a>
-    <li><a href="#ref-for-values①">3.6. Exported Functions</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a> <a href="#ref-for-values⑥">(6)</a> <a href="#ref-for-values⑦">(7)</a> <a href="#ref-for-values⑧">(8)</a> <a href="#ref-for-values⑨">(9)</a>
+    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a>
+    <li><a href="#ref-for-values④">3.6. Exported Functions</a> <a href="#ref-for-values⑤">(2)</a> <a href="#ref-for-values⑥">(3)</a> <a href="#ref-for-values⑦">(4)</a> <a href="#ref-for-values⑧">(5)</a> <a href="#ref-for-values⑨">(6)</a> <a href="#ref-for-values①⓪">(7)</a> <a href="#ref-for-values①①">(8)</a> <a href="#ref-for-values①②">(9)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-syntax-valtype">
    <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
-    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a>
-    <li><a href="#ref-for-syntax-valtype⑥">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype⑦">(2)</a> <a href="#ref-for-syntax-valtype⑧">(3)</a> <a href="#ref-for-syntax-valtype⑨">(4)</a> <a href="#ref-for-syntax-valtype①⓪">(5)</a> <a href="#ref-for-syntax-valtype①①">(6)</a>
+    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a>
+    <li><a href="#ref-for-syntax-valtype⑨">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①⓪">(2)</a> <a href="#ref-for-syntax-valtype①①">(3)</a> <a href="#ref-for-syntax-valtype①②">(4)</a> <a href="#ref-for-syntax-valtype①③">(5)</a> <a href="#ref-for-syntax-valtype①④">(6)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-values">
    <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-values">3.3. Memories</a>
-    <li><a href="#ref-for-values①">3.6. Exported Functions</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a> <a href="#ref-for-values⑥">(6)</a> <a href="#ref-for-values⑦">(7)</a> <a href="#ref-for-values⑧">(8)</a> <a href="#ref-for-values⑨">(9)</a>
+    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a>
+    <li><a href="#ref-for-values④">3.6. Exported Functions</a> <a href="#ref-for-values⑤">(2)</a> <a href="#ref-for-values⑥">(3)</a> <a href="#ref-for-values⑦">(4)</a> <a href="#ref-for-values⑧">(5)</a> <a href="#ref-for-values⑨">(6)</a> <a href="#ref-for-values①⓪">(7)</a> <a href="#ref-for-values①①">(8)</a> <a href="#ref-for-values①②">(9)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-external-types">
@@ -2276,30 +2295,32 @@ The particular exception here is implementation-defined in both cases.</p>
    <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
-    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a>
-    <li><a href="#ref-for-syntax-valtype⑥">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype⑦">(2)</a> <a href="#ref-for-syntax-valtype⑧">(3)</a> <a href="#ref-for-syntax-valtype⑨">(4)</a> <a href="#ref-for-syntax-valtype①⓪">(5)</a> <a href="#ref-for-syntax-valtype①①">(6)</a>
+    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a>
+    <li><a href="#ref-for-syntax-valtype⑨">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①⓪">(2)</a> <a href="#ref-for-syntax-valtype①①">(3)</a> <a href="#ref-for-syntax-valtype①②">(4)</a> <a href="#ref-for-syntax-valtype①③">(5)</a> <a href="#ref-for-syntax-valtype①④">(6)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-values">
    <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-values">3.3. Memories</a>
-    <li><a href="#ref-for-values①">3.6. Exported Functions</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a> <a href="#ref-for-values⑥">(6)</a> <a href="#ref-for-values⑦">(7)</a> <a href="#ref-for-values⑧">(8)</a> <a href="#ref-for-values⑨">(9)</a>
+    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a>
+    <li><a href="#ref-for-values④">3.6. Exported Functions</a> <a href="#ref-for-values⑤">(2)</a> <a href="#ref-for-values⑥">(3)</a> <a href="#ref-for-values⑦">(4)</a> <a href="#ref-for-values⑧">(5)</a> <a href="#ref-for-values⑨">(6)</a> <a href="#ref-for-values①⓪">(7)</a> <a href="#ref-for-values①①">(8)</a> <a href="#ref-for-values①②">(9)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-syntax-valtype">
    <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
-    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a>
-    <li><a href="#ref-for-syntax-valtype⑥">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype⑦">(2)</a> <a href="#ref-for-syntax-valtype⑧">(3)</a> <a href="#ref-for-syntax-valtype⑨">(4)</a> <a href="#ref-for-syntax-valtype①⓪">(5)</a> <a href="#ref-for-syntax-valtype①①">(6)</a>
+    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a>
+    <li><a href="#ref-for-syntax-valtype⑨">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①⓪">(2)</a> <a href="#ref-for-syntax-valtype①①">(3)</a> <a href="#ref-for-syntax-valtype①②">(4)</a> <a href="#ref-for-syntax-valtype①③">(5)</a> <a href="#ref-for-syntax-valtype①④">(6)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-values">
    <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-values">3.3. Memories</a>
-    <li><a href="#ref-for-values①">3.6. Exported Functions</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a> <a href="#ref-for-values⑥">(6)</a> <a href="#ref-for-values⑦">(7)</a> <a href="#ref-for-values⑧">(8)</a> <a href="#ref-for-values⑨">(9)</a>
+    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a>
+    <li><a href="#ref-for-values④">3.6. Exported Functions</a> <a href="#ref-for-values⑤">(2)</a> <a href="#ref-for-values⑥">(3)</a> <a href="#ref-for-values⑦">(4)</a> <a href="#ref-for-values⑧">(5)</a> <a href="#ref-for-values⑨">(6)</a> <a href="#ref-for-values①⓪">(7)</a> <a href="#ref-for-values①①">(8)</a> <a href="#ref-for-values①②">(9)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-external-types">
@@ -2403,12 +2424,6 @@ The particular exception here is implementation-defined in both cases.</p>
    <ul>
     <li><a href="#ref-for-dfn-present">3.3. Memories</a> <a href="#ref-for-dfn-present①">(2)</a>
     <li><a href="#ref-for-dfn-present②">3.4. Tables</a> <a href="#ref-for-dfn-present③">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-unrestricted-double">
-   <a href="https://heycam.github.io/webidl/#idl-unrestricted-double">https://heycam.github.io/webidl/#idl-unrestricted-double</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-unrestricted-double">3.5. Globals</a> <a href="#ref-for-idl-unrestricted-double①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-unsigned-long">
@@ -2569,7 +2584,6 @@ The particular exception here is implementation-defined in both cases.</p>
      <li><span class="dfn-paneled" id="term-for-dfn-get-buffer-source-copy" style="color:initial">get a copy of the buffer source</span>
      <li><span class="dfn-paneled" id="term-for-idl-object" style="color:initial">object</span>
      <li><span class="dfn-paneled" id="term-for-dfn-present" style="color:initial">present</span>
-     <li><span class="dfn-paneled" id="term-for-idl-unrestricted-double" style="color:initial">unrestricted double</span>
      <li><span class="dfn-paneled" id="term-for-idl-unsigned-long" style="color:initial">unsigned long</span>
     </ul>
   </ul>
@@ -2682,10 +2696,10 @@ The particular exception here is implementation-defined in both cases.</p>
   <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean①①"><span class="kt">boolean</span></a> <a class="nv" data-default="false" data-type="boolean " href="#dom-globaldescriptor-mutable"><code>mutable</code></a> = <span class="kt">false</span>;
 };
 
-[<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace④①">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly④①">WebAssembly</a>, Constructor(GlobalDescriptor descriptor, unrestricted double value = 0), <a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑤①">Exposed</a>=(<span class="n">Window</span>,<span class="n">Worker</span>,<span class="n">Worklet</span>)]
+[<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace④①">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly④①">WebAssembly</a>, <a class="nv" href="#dom-global-global"><code>Constructor</code></a>(<a class="n" data-link-type="idl-name" href="#dictdef-globaldescriptor" id="ref-for-dictdef-globaldescriptor①">GlobalDescriptor</a> <a class="nv" href="#dom-global-global-descriptor-value-descriptor"><code>descriptor</code></a>, <span class="kt">optional</span> <span class="kt">any</span> <a class="nv" href="#dom-global-global-descriptor-value-value"><code>value</code></a>), <a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑤①">Exposed</a>=(<span class="n">Window</span>,<span class="n">Worker</span>,<span class="n">Worklet</span>)]
 <span class="kt">interface</span> <a class="nv" href="#global"><code>Global</code></a> {
-  <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unrestricted-double" id="ref-for-idl-unrestricted-double②"><span class="kt">unrestricted</span> <span class="kt">double</span></a> <a class="nv idl-code" data-link-type="method" href="#dom-global-valueof" id="ref-for-dom-global-valueof①">valueOf</a>();
-  <span class="kt">attribute</span> <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unrestricted-double" id="ref-for-idl-unrestricted-double①①"><span class="kt">unrestricted</span> <span class="kt">double</span></a> <a class="nv idl-code" data-link-type="attribute" data-type="unrestricted double" href="#dom-global-value" id="ref-for-dom-global-value①">value</a>;
+  <span class="kt">any</span> <a class="nv idl-code" data-link-type="method" href="#dom-global-valueof" id="ref-for-dom-global-valueof①">valueOf</a>();
+  <span class="kt">attribute</span> <span class="kt">any</span> <a class="nv idl-code" data-link-type="attribute" data-type="any" href="#dom-global-value" id="ref-for-dom-global-value①">value</a>;
 };
 
 [<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑤①">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑤①">WebAssembly</a>]
@@ -3011,6 +3025,12 @@ The particular exception here is implementation-defined in both cases.</p>
     <li><a href="#ref-for-dom-table-set">3.4. Tables</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="dictdef-globaldescriptor">
+   <b><a href="#dictdef-globaldescriptor">#dictdef-globaldescriptor</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dictdef-globaldescriptor">3.5. Globals</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="global">
    <b><a href="#global">#global</a></b><b>Referenced in:</b>
    <ul>
@@ -3030,6 +3050,12 @@ The particular exception here is implementation-defined in both cases.</p>
    <b><a href="#tovaluetype">#tovaluetype</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-tovaluetype">3.5. Globals</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="defaultvalue">
+   <b><a href="#defaultvalue">#defaultvalue</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-defaultvalue">3.5. Globals</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="getglobalvalue">
