@@ -325,3 +325,20 @@
   )
   "zero flag expected"
 )
+
+;; One can not declare more than 2^32 locals.
+(assert_invalid 
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section
+    "\03\02\01\00"             ;; Function section
+    "\0a\0c\01"                ;; Code section
+
+    ;; function 0
+    "\0a\02"
+    "\ff\ff\ff\ff\0f\7f"       ;; 0xFFFFFFFF i32
+    "\01\7e"                   ;; 0x00000001 i64
+    "\0b"                      ;; end
+  )
+  "message"
+)
