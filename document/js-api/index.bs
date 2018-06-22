@@ -81,6 +81,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: ObjectCreate; url: sec-objectcreate
         text: CreateBuiltinFunction; url: sec-createbuiltinfunction
         text: SetFunctionName; url: sec-setfunctionname
+        text: SetFunctionLength; url: sec-setfunctionlength
         text: the Number value; url: sec-ecmascript-language-types-number-type
         text: NumberToRawBytes; url: sec-numbertorawbytes
         text: Built-in Function Objects; url: sec-built-in-function-objects
@@ -847,7 +848,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let |functype| be [=type_func=](|store|, |funcaddr|).
     1. Let [|paramTypes|] → [|resultTypes|] be |functype|.
     1. Let |arity| be the length of |paramTypes|.
-    1. Perform ! [=DefinePropertyOrThrow=](|function|, `"length"`, PropertyDescriptor {\[[Value]]: |arity|, \[[Writable]]: false, \[[Enumerable]]: false, \[[Configurable]]: true}).
+    1. Perform ! [=SetFunctionLength=](|function|, |arity|).
     1. Let |name| be the [=name of the WebAssembly function=] |funcaddr|.
     1. Perform ! [=SetFunctionName=](|function|, |name|).
     1. [=map/Set=] |map|[|funcaddr|] to |function|.
