@@ -333,7 +333,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
                 1. Let |index| be the number of external functions in |imports|. This value |index| is known as the <dfn>index of the host function</dfn> |funcaddr|.
             1. Let |externfunc| be the [=external value=] [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
             1. [=Append=] |externfunc| to |imports|.
-        1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] |mut| |valtype|,
+        1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] <var ignore>mut</var> |valtype|,
             1. If [=Type=](|v|) is [=Number=],
                 1. If |valtype| is [=𝗂𝟨𝟦=], throw a {{LinkError}} exception.
                 1. Let |value| be [=ToWebAssemblyValue=](|v|, |valtype|)
@@ -375,7 +375,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. Let [=external value|𝖿𝗎𝗇𝖼=] |funcaddr| be |externval|.
             1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
             1. Let |value| be |func|.
-        1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] |globaltype|,
+        1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] <var ignore>globaltype</var>,
             1. Assert: |externval| is of the form [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr|.
             1. Let [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr| be |externval|.
             1. Let |global| be [=create a global object|a new Global object=] created from |globaladdr|.
@@ -496,7 +496,7 @@ interface Module {
     The <dfn method for="Module">customSections(|moduleObject|, |sectionName|)</dfn> method, when invoked, performs the following steps:
     1. Let |bytes| be |moduleObject|.\[[Bytes]].
     1. Let |customSections| be an empty [=list=] of {{ArrayBuffer}}s.
-    1. For each [=custom section=] |customSection| in the binary format of |bytes|,
+    1. For each [=custom section=] <var ignore>customSection</var> in the binary format of |bytes|,
         1. Let |name| be the <code>name</code> of the custom section, [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
         1. Assert: |name| is not failure (|moduleObject|.\[[Module]] is [=valid=]).
         1. If |name| equals |sectionName| as string values,
@@ -785,7 +785,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be |global|.\[[Global]].
     1. Let |globaltype| be [=type_global=](|store|, |globaladdr|).
-    1. If |globaltype| is of the form |mut| [=𝗂𝟨𝟦=], throw a {{TypeError}}.
+    1. If |globaltype| is of the form <var ignore>mut</var> [=𝗂𝟨𝟦=], throw a {{TypeError}}.
     1. Let |value| be [=read_global=](|store|, |globaladdr|).
     1. Return [=ToJSValue=](|value|).
 </div>
@@ -825,7 +825,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
 
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |funcinst| be |store|.𝖿𝗎𝗇𝖼𝗌[|funcaddr|].
-    1. If |funcinst| is of the form {𝗍𝗒𝗉𝖾 |functype|, 𝗁𝗈𝗌𝗍𝖼𝗈𝖽𝖾 |hostfunc|},
+    1. If |funcinst| is of the form {𝗍𝗒𝗉𝖾 <var ignore>functype</var>, 𝗁𝗈𝗌𝗍𝖼𝗈𝖽𝖾 |hostfunc|},
         1. Assert: |hostfunc| is a JavaScript object and [=IsCallable=](|hostfunc|) is true.
         1. Let |index| be the [=index of the host function=] |funcaddr|.
     1. Otherwise,
@@ -847,7 +847,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Set |function|.\[[FunctionAddress]] to |funcaddr|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=type_func=](|store|, |funcaddr|).
-    1. Let [|paramTypes|] → [|resultTypes|] be |functype|.
+    1. Let [|paramTypes|] → [<var ignore>resultTypes</var>] be |functype|.
     1. Let |arity| be the length of |paramTypes|.
     1. Perform ! [=SetFunctionLength=](|function|, |arity|).
     1. Let |name| be the [=name of the WebAssembly function=] |funcaddr|.
@@ -894,7 +894,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
         1. For each |arg| in |arguments|,
             1. [=Append=] [=ToJSValue=](|arg|) to |jsArguments|.
         1. Let |ret| be ? [=Call=](|func|, undefined, |jsArguments|). If an exception is thrown, trigger a WebAssembly trap, and propagate the exception to the enclosing JavaScript.
-        1. Let [|parameters|] → [|results|] be |functype|.
+        1. Let [<var ignore>parameters</var>] → [|results|] be |functype|.
         1. If |results| is empty, return undefined.
         1. Otherwise, return [=ToWebAssemblyValue=](|ret|, |results|[0]).
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
@@ -906,7 +906,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 <div algorithm>
 The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a JavaScript value performs the following steps:
 
-Assert: |w| is not of the form [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |i64|.
+Assert: |w| is not of the form [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] <var ignore>i64</var>.
 1. If |w| is of the form [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |i32|, return [=the Number value=] for [=signed_32=](|i32|).
 1. If |w| is of the form [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |f32|, return [=the Number value=] for |f32|.
 1. If |w| is of the form [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |f64|, return [=the Number value=] for |f64|.
