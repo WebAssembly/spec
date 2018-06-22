@@ -877,7 +877,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let (|store|, |ret|) be the result of [=invoke_func=](|store|, |funcaddr|, |args|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
-    1. If |outArity| is 0, return undefined.
+    1. If |ret| is empty, return undefined.
     1. Otherwise, return [=ToJSValue=](|v|), where |v| is the singular element of |ret|.
 </div>
 
