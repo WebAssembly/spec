@@ -94,6 +94,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: customsec; url: binary/modules.html#binary-customsec
     text: memory instance; url: exec/runtime.html#memory-instances
     text: table instance; url: exec/runtime.html#table-instances
+    text: global instance; url: exec/runtime.html#global-instances
     text: trap; url: exec/runtime.html#syntax-trap
     url: exec/runtime.html#values
         text: WebAssembly value
