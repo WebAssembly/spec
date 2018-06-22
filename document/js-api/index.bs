@@ -424,7 +424,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
   The <dfn method for="WebAssembly">instantiate(moduleObject, importObject)</dfn> method, when invoked, performs the following steps:
     1. Let |promise| be [=a new promise=].
     1. [=Queue a task=] to perform the following steps:
-        1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
+        1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |moduleObject| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
         1. [=Resolve=] |promise| with |instance|.
     1. Return |promise|
 </div>
