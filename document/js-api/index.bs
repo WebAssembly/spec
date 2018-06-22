@@ -652,6 +652,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |map| be the [=surrounding agent=]'s associated [=Table object cache=].
     1. If |map|[|tableaddr|] [=map/exists=],
         1. Return |map|[|tableaddr|].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |values| be a list whose length is [=size_table=](|store|, |tableaddr|) where each element is null.
     1. Let |table| be a new {{Table}} instance with \[[Table]] set to |tableaddr| and \[[Values]] set to |values|.
     1. [=map/Set=] |map|[|tableaddr|] to |table|.
