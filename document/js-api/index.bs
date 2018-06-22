@@ -272,7 +272,7 @@ Note:
 </div>
 
 <div algorithm>
-  The <dfn method for="WebAssembly">validate(bytes)</dfn> method, when invoked, performs the following steps:
+  The <dfn method for="WebAssembly">validate(|bytes|)</dfn> method, when invoked, performs the following steps:
     1. [=Compile a WebAssembly module|Compile=] |bytes| as a WebAssembly module and store the results as |module|.
     1. If |module| is [=error=], return false.
     1. Return true.
@@ -308,7 +308,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 </div>
 
 <div algorithm>
-    The <dfn method for="WebAssembly">compile(bytes)</dfn> method, when invoked, performs the following steps:
+    The <dfn method for="WebAssembly">compile(|bytes|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| and return the result.
 </div>
@@ -415,14 +415,14 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 </div>
 
 <div algorithm>
-  The <dfn method for="WebAssembly">instantiate(bytes, importObject)</dfn> method, when invoked, performs the following steps:
+  The <dfn method for="WebAssembly">instantiate(|bytes|, |importObject|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| and let |promiseOfModule| be the result.
     1. [=Instantiate a promise of a module|Instantiate=] |promiseOfModule| with imports |importObject| and return the result.
 </div>
 
 <div algorithm>
-  The <dfn method for="WebAssembly">instantiate(moduleObject, importObject)</dfn> method, when invoked, performs the following steps:
+  The <dfn method for="WebAssembly">instantiate(|moduleObject|, |importObject|)</dfn> method, when invoked, performs the following steps:
     1. Let |promise| be [=a new promise=].
     1. [=Queue a task=] to perform the following steps:
         1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |moduleObject| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
@@ -471,7 +471,7 @@ interface Module {
 </div>
 
 <div algorithm>
-    The <dfn method for="Module">exports(moduleObject)</dfn> method, when invoked, performs the following steps:
+    The <dfn method for="Module">exports(|moduleObject|)</dfn> method, when invoked, performs the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |exports| be an empty [=list=].
     1. For each (|name|, |type|) in [=module_exports=](|module|)
@@ -482,7 +482,7 @@ interface Module {
 </div>
 
 <div algorithm>
-    The <dfn method for="Module">imports(moduleObject)</dfn> method, when invoked, performs the following steps:
+    The <dfn method for="Module">imports(|moduleObject|)</dfn> method, when invoked, performs the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |imports| be an empty [=list=].
     1. For each (|moduleName|, |name|, |type|) in [=module_imports=](|module|),
@@ -493,7 +493,7 @@ interface Module {
 </div>
 
 <div algorithm>
-    The <dfn method for="Module">customSections(moduleObject, sectionName)</dfn> method, when invoked, performs the following steps:
+    The <dfn method for="Module">customSections(|moduleObject|, |sectionName|)</dfn> method, when invoked, performs the following steps:
     1. Let |bytes| be |moduleObject|.\[[Bytes]].
     1. Let |customSections| be an empty [=list=] of {{ArrayBuffer}}s.
     1. For each [=custom section=] |customSection| in the binary format of |bytes|,
@@ -505,7 +505,7 @@ interface Module {
 </div>
 
 <div algorithm>
-    The <dfn constructor for="Module">Module(bytes)</dfn> constructor, when invoked, performs the follwing steps:
+    The <dfn constructor for="Module">Module(|bytes|)</dfn> constructor, when invoked, performs the follwing steps:
 
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile the WebAssembly module=] |stableBytes| and store the result as |module|.
@@ -523,7 +523,7 @@ interface Instance {
 </pre>
 
 <div algorithm>
-    The <dfn constructor for="Instance">Instance(module, importObject)</dfn> constructor, when invoked, [=instantiate a WebAssembly module|instantiates the WebAssembly module=] |module| importing |importObject| and returns the result.
+    The <dfn constructor for="Instance">Instance(|module|, |importObject|)</dfn> constructor, when invoked, [=instantiate a WebAssembly module|instantiates the WebAssembly module=] |module| importing |importObject| and returns the result.
 </div>
 
 <div algorithm>
@@ -569,7 +569,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    The <dfn constructor for="Memory">Memory(descriptor)</dfn> constructor, when invoked, performs the following steps:
+    The <dfn constructor for="Memory">Memory(|descriptor|)</dfn> constructor, when invoked, performs the following steps:
     1. If |descriptor|["initial"] is [=present=], let |initial| be |descriptor|["initial"]; otherwise, let |initial| be 0.
     1. If |descriptor|["maximum"] is [=present=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
     1. Let |memtype| be { min |initial|, max |maximum| }
@@ -592,7 +592,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    The <dfn method for="Memory">grow(delta)</dfn> method, when invoked, performs the following steps:
+    The <dfn method for="Memory">grow(|delta|)</dfn> method, when invoked, performs the following steps:
     1. Let |memory| be the Memory instance.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |memaddr| be |memory|.\[[Memory]].
@@ -659,7 +659,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    The <dfn constructor for="Table">Table(descriptor)</dfn> constructor, when invoked, performs the following steps:
+    The <dfn constructor for="Table">Table(|descriptor|)</dfn> constructor, when invoked, performs the following steps:
     1. If |descriptor|["initial"] is [=present=], let |n| be |descriptor|["initial"]; otherwise, let |n| be 0.
     1. If |descriptor|["maximum"] is [=present=], let |m| be |descriptor|["maximum"]; otherwise, let |m| be empty.
     1. If |m| is not empty and |m| &lt; |n|, throw a {{RangeError}} exception.
@@ -671,7 +671,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    The <dfn method for="Table">grow(d)</dfn> method, when invoked, performs the following steps:
+    The <dfn method for="Table">grow(|d|)</dfn> method, when invoked, performs the following steps:
     1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
     1. Let |initialSize| be the length of the Table instance's \[[Values]] internal slot.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
@@ -690,7 +690,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    The <dfn method for="Table">get(index)</dfn> method, when invoked, performs the following steps:
+    The <dfn method for="Table">get(|index|)</dfn> method, when invoked, performs the following steps:
     1. Let |values| be the Table instance's \[[Values]] internal slot.
     1. Let |size| be the length of |values|.
     1. If |index| &ge; |size|, throw a {{RangeError}} exception.
@@ -698,7 +698,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    The <dfn method for="Table">set(index, value)</dfn> method, when invoked, performs the following steps:
+    The <dfn method for="Table">set(|index|, |value|)</dfn> method, when invoked, performs the following steps:
     1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
     1. Let |values| be the Table instance's \[[Values]] internal slot.
     1. If |value| is null, let |funcaddr| be an empty [=function element=].
@@ -765,7 +765,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    The <dfn constructor for="Global">Global(descriptor, v)</dfn> constructor, when invoked, performs the following steps:
+    The <dfn constructor for="Global">Global(|descriptor|, |v|)</dfn> constructor, when invoked, performs the following steps:
     1. Let |mutable| be |descriptor|["mutable"].
     1. Let |valuetype| be [=ToValueType=](|descriptor|["value"]).
     1. If |v| is undefined,
