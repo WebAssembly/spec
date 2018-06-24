@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version ee4bd4642f06996491f80990f7b1050ff9dcf622" name="generator">
+  <meta content="Bikeshed version 6abc9f98f620481a5031cd9b44944d60af9b79b9" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="04b810a7d9f48024ef51581942f4533e041d88ba" name="document-revision">
+  <meta content="dd81ac6db134b2f314c58ac5fca9c683c2401841" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-06-18">18 June 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-06-24">24 June 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -386,7 +386,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
         <ol>
          <li data-md="">
-          <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>bodyArrayBuffer</var> with <var>returnValue</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a>.</p>
+          <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>bodyArrayBuffer</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a> and <a data-link-type="dfn" href="https://w3c.github.io/FileAPI/#blob-url-resolve" id="ref-for-blob-url-resolve">resolve</a> <var>returnValue</var> with the result.</p>
         </ol>
        <li data-md="">
         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>bodyPromise</var> with reason <var>reason</var>:</p>
@@ -559,6 +559,12 @@ JavaScript.</p>
     <li><a href="#ref-for-concept-response-status">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-blob-url-resolve">
+   <a href="https://w3c.github.io/FileAPI/#blob-url-resolve">https://w3c.github.io/FileAPI/#blob-url-resolve</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-blob-url-resolve">1. Streaming Module Compilation and Instantiation</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-cors-same-origin">
    <a href="https://html.spec.whatwg.org/#cors-same-origin">https://html.spec.whatwg.org/#cors-same-origin</a><b>Referenced in:</b>
    <ul>
@@ -681,6 +687,11 @@ JavaScript.</p>
      <li><span class="dfn-paneled" id="term-for-concept-response-status" style="color:initial">status</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[FileAPI]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-blob-url-resolve" style="color:initial">resolve</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-cors-same-origin" style="color:initial">cors-same-origin</span>
@@ -725,6 +736,8 @@ JavaScript.</p>
    <dd><a href="https://tc39.github.io/ecma262">ECMAScript® 2018 Language Specification</a>. Current Editor's Draft. URL: <a href="https://tc39.github.io/ecma262">https://tc39.github.io/ecma262</a>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-fileapi">[FileAPI]
+   <dd>Marijn Kruisselbrink. <a href="https://www.w3.org/TR/FileAPI/">File API</a>. 26 October 2017. WD. URL: <a href="https://www.w3.org/TR/FileAPI/">https://www.w3.org/TR/FileAPI/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-promises-guide">[PROMISES-GUIDE]

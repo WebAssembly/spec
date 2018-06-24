@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version ee4bd4642f06996491f80990f7b1050ff9dcf622" name="generator">
+  <meta content="Bikeshed version 6abc9f98f620481a5031cd9b44944d60af9b79b9" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="04b810a7d9f48024ef51581942f4533e041d88ba" name="document-revision">
+  <meta content="dd81ac6db134b2f314c58ac5fca9c683c2401841" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-06-18">18 June 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-06-24">24 June 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -463,8 +463,10 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
     </ol>
    </div>
    <div class="algorithm" data-algorithm="asynchronously compile a WebAssembly module">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="asynchronously-compile-a-webassembly-module">asynchronously compile a WebAssembly module</dfn> from a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource④">BufferSource</a></code> <var>bytes</var>, with the promise <var>promise</var>, using optional <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#task-source" id="ref-for-task-source">task source</a> <var>taskSource</var>, perform the following steps: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="asynchronously-compile-a-webassembly-module">asynchronously compile a WebAssembly module</dfn> from a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource④">BufferSource</a></code> <var>bytes</var>, using optional <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#task-source" id="ref-for-task-source">task source</a> <var>taskSource</var>, perform the following steps: 
     <ol>
+     <li data-md="">
+      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
      <li data-md="">
       <p>In parallel, <a data-link-type="dfn" href="#compile-a-webassembly-module" id="ref-for-compile-a-webassembly-module①">compile the WebAssembly module</a> <var>bytes</var> and store the result as <var>module</var>.</p>
      <li data-md="">
@@ -481,6 +483,8 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
           <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise">Resolve</a> <var>promise</var> with <var>moduleObject</var>.</p>
         </ol>
       </ol>
+     <li data-md="">
+      <p>Return <var>promise</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="compile(bytes)">
@@ -489,11 +493,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
      <li data-md="">
       <p>Let <var>stableBytes</var> be a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-get-buffer-source-copy" id="ref-for-dfn-get-buffer-source-copy">copy of the bytes held by the buffer</a> <var>bytes</var>.</p>
      <li data-md="">
-      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
-     <li data-md="">
-      <p><a data-link-type="dfn" href="#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile a WebAssembly module</a> from <var>stableBytes</var> with <var>promise</var>.</p>
-     <li data-md="">
-      <p>Return <var>promise</var>.</p>
+      <p><a data-link-type="dfn" href="#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile a WebAssembly module</a> from <var>stableBytes</var> and return the result.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="instantiate">
@@ -717,9 +717,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
      <li data-md="">
       <p>Let <var>stableBytes</var> be a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-get-buffer-source-copy" id="ref-for-dfn-get-buffer-source-copy①">copy of the bytes held by the buffer</a> <var>bytes</var>.</p>
      <li data-md="">
-      <p>Let <var>promiseOfModule</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise②">a new promise</a>.</p>
-     <li data-md="">
-      <p><a data-link-type="dfn" href="#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module①">Asynchronously compile a WebAssembly module</a> from <var>stableBytes</var> with <var>promiseOfModule</var>.</p>
+      <p><a data-link-type="dfn" href="#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module①">Asynchronously compile a WebAssembly module</a> from <var>stableBytes</var> and let <var>promiseOfModule</var> be the result.</p>
      <li data-md="">
       <p><a data-link-type="dfn" href="#instantiate-a-promise-of-a-module" id="ref-for-instantiate-a-promise-of-a-module">Instantiate</a> <var>promiseOfModule</var> with imports <var>importObject</var> and return the result.</p>
     </ol>
@@ -728,7 +726,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export="" data-lt="instantiate(moduleObject, importObject)|instantiate(moduleObject)" id="dom-webassembly-instantiate-moduleobject-importobject"><code>instantiate(moduleObject, importObject)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md="">
-      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise③">a new promise</a>.</p>
+      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise②">a new promise</a>.</p>
      <li data-md="">
       <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task①">Queue a task</a> to perform the following steps:</p>
       <ol>
@@ -859,7 +857,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
      <li data-md="">
       <p>If <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑧">error</a>, throw a <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror①">CompileError</a></code> exception.</p>
      <li data-md="">
-      <p><a data-link-type="dfn" href="#construct-a-webassembly-module-object" id="ref-for-construct-a-webassembly-module-object①">Construct a WebAssembly module object</a> from <var>module</var> and <var>bytes</var>, and return the result.</p>
+      <p><a data-link-type="dfn" href="#construct-a-webassembly-module-object" id="ref-for-construct-a-webassembly-module-object①">Construct a WebAssembly module object</a> from <var>module</var> and <var>stableBytes</var>, and return the result.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="3.2" id="instances"><span class="secno">3.2. </span><span class="content">Instances</span><a class="self-link" href="#instances"></a></h3>
@@ -1081,7 +1079,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
       <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①⓪">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">RangeError</a></code> exception.</p>
       <p class="note" role="note"><span>Note:</span> The above exception may happen due to either insufficient memory or an invalid size parameter.</p>
      <li data-md="">
-      <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent①①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑨">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent①①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑨">associated store</a> to <var>result</var>.</p>
      <li data-md="">
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#set-append" id="ref-for-set-append⑦">Append</a> null to the Table instance’s [[Values]] internal slot <var>d</var> times.</p>
      <li data-md="">
@@ -1333,9 +1331,9 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md="">
       <p>Let <var>functype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-type-func" id="ref-for-embed-type-func">type_func</a>(<var>store</var>, <var>funcaddr</var>).</p>
      <li data-md="">
-      <p>Let [<var>arguments</var>] → [<var>results</var>] be <var>functype</var>.</p>
+      <p>Let [<var>paramTypes</var>] → [<var>resultTypes</var>] be <var>functype</var>.</p>
      <li data-md="">
-      <p>Let <var>arity</var> be the length of <var>arguments</var>.</p>
+      <p>Let <var>arity</var> be the length of <var>paramTypes</var>.</p>
      <li data-md="">
       <p>Perform ! <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-definepropertyorthrow" id="ref-for-sec-definepropertyorthrow">DefinePropertyOrThrow</a>(<var>function</var>, <code>"length"</code>, PropertyDescriptor {[[Value]]: <var>arity</var>, [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true}).</p>
      <li data-md="">
@@ -1438,7 +1436,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md="">
       <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑧">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>f64</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type②">the Number value</a> for <var>f64</var>.</p>
     </ol>
-    <p class="note" role="note"><span>Note:</span> Implementations may optionally replace the NaN payload with any other NaN payload at this point in the f32 or f64 cases; such a change would not be observable through <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-numbertorawbytes" id="ref-for-sec-numbertorawbytes">NumberToRawBytes</a>.</p>
+    <p class="note" role="note"><span>Note:</span> Number values which are equal to NaN may have various observable NaN payloads; see <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-numbertorawbytes" id="ref-for-sec-numbertorawbytes">NumberToRawBytes</a>.for details.</p>
    </div>
    <div class="algorithm" data-algorithm="ToWebAssemblyValue">
      The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="towebassemblyvalue">ToWebAssemblyValue</dfn>(<var>v</var>, <var>type</var>) coerce a JavaScript value to a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑨">WebAssembly value</a> performs the following steps: 
@@ -1917,7 +1915,7 @@ The particular exception here is implementation-defined in both cases.</p>
   <aside class="dfn-panel" data-for="term-for-a-new-promise">
    <a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise">https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-a-new-promise">3. The WebAssembly Namespace</a> <a href="#ref-for-a-new-promise①">(2)</a> <a href="#ref-for-a-new-promise②">(3)</a> <a href="#ref-for-a-new-promise③">(4)</a>
+    <li><a href="#ref-for-a-new-promise">3. The WebAssembly Namespace</a> <a href="#ref-for-a-new-promise①">(2)</a> <a href="#ref-for-a-new-promise②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-reject-promise">
