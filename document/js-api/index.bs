@@ -772,7 +772,6 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Otherwise,
        1. If |valuetype| is [=𝗂𝟨𝟦=], throw a {{TypeError}} exception.
        1. Let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
-    1. If |v| is undefined, let |value| be [=DefaultValue=](|valuetype|); otherwise, let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
     1. If |mutable| is true, let |globaltype| be [=var=] |valuetype|; otherwise, let |globaltype| be [=const=] |valuetype|.
     1. Let |store| be the current agent's [=associated store=].
     1. Let (|store|, |globaladdr|) be [=alloc_global=](|store|, |globaltype|, |value|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
