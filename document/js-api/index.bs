@@ -844,7 +844,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. Return |map|[|funcaddr|].
     1. Let |steps| be "[=call an Exported Function|call the Exported Function=] |funcaddr| with arguments."
     1. Let |realm| be the [=current Realm=].
-    1. Let |function| be [=CreateBuiltinFunction=](|realm|, |steps|, [=%FunctionPrototype%=], &laquo; \[[FunctionAddress]]).
+    1. Let |function| be [=CreateBuiltinFunction=](|realm|, |steps|, [=%FunctionPrototype%=], &laquo; \[[FunctionAddress]] &raquo;).
     1. Set |function|.\[[FunctionAddress]] to |funcaddr|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=type_func=](|store|, |funcaddr|).
