@@ -870,7 +870,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     5. Let |args| be an empty list of WebAssembly values.
     1. Let |i| be 0.
     1. For each type |t| of |parameters|,
-        1. If the length of |argValues| &gt; |i|, let |arg| be |argValues|[i].
+        1. If the length of |argValues| &gt; |i|, let |arg| be |argValues|[|i|].
         1. Otherwise, let |arg| be undefined.
         1. [=Append=] [=ToWebAssemblyValue=](|arg|, |t|) to |args|.
         1. Set |i| to |i| + 1.
