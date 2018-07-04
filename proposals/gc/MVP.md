@@ -1,9 +1,11 @@
 # GC v1 Extensions
 
+See [overview](Overview.md) for background.
+
 
 ## Language
 
-Based on reference types proposal.
+Based on [reference types proposal](https://github.com/WebAssembly/reference-types), which introduces type `anyref` etc.
 
 ### Types
 
@@ -205,7 +207,7 @@ In addition to the rules for basic reference types:
 
 #### Integer references
 
-Tentatively, support a type of plain tagged integers.
+Tentatively, support a type of guaranteed unboxed scalars.
 
 * `i31ref.new` creates an `i31ref` from a 32 bit value, truncating high bit
   - `i31ref : [i32] -> [i31ref]`
@@ -219,19 +221,19 @@ Tentatively, support a type of plain tagged integers.
 
 #### Casts
 
+TODO. Want to introduce explicit runtime type values to support casts in a pay-as-you-go manner. Deferred to a separate PR. Casts themselves could then look something like this:
+
 * `cast <reftype> <reftype>` casts a value down to a given reference type
-  - `cast t t' : [t] -> [t']`
+  - `cast t t' : [t (rtti t')] -> [t']`
      - iff `t' <: t <: anyref`
   - traps if the operand is not of type `t'` at runtime
-  - equivalent to `block [t]->[t'] (br_on_cast 0 t t') unreachable end`
+  - equivalent to `block [t (rtti t')]->[t'] (br_on_cast 0 t t') unreachable end`
 
 * `br_on_cast <labelidx> <reftype> <reftype>` branches if a value can be cast down to a given reference type
-  - `br_on_cast $l t t' : [t] -> [t]`
+  - `br_on_cast $l t t' : [t (rtti t')] -> [t]`
     - iff `t' <: t <: anyref`
     - and `$l : [t']`
   - passes cast operand along with branch
-
-Question: Have explicit runtime type representations as cast operands?
 
 
 #### Local Bindings
