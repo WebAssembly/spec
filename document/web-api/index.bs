@@ -141,13 +141,11 @@ Web user agents must augment the {{Module}} interface with the <code>[<a extende
 
 The [=serialization steps=], given |value|, |serialized|, and |forStorage|, are:
 
-    1. If |forStorage| is true, throw a
-        "<a exception>DataCloneError</a>" {{DOMException}}
+    1. If |forStorage| is true, throw a "<a exception>DataCloneError</a>" {{DOMException}}
 
     1. Set |serialized|.\[[Bytes]] to the [=sub-serialization=] of |value|.\[[Bytes]].
 
-    1. Set |serialized|.\[[AgentCluster]] to the
-       [=current Realm=]'s corresponding [=agent cluster=].
+    1. Set |serialized|.\[[AgentCluster]] to the [=current Realm=]'s corresponding [=agent cluster=].
 
 The [=deserialization steps=], given |serialized| and |value|, are:
 
@@ -155,9 +153,7 @@ The [=deserialization steps=], given |serialized| and |value|, are:
 
     1. Set |value|.\[[Bytes]] to |bytes|.
 
-    1. If |targetRealm|'s corresponding [=agent cluster=] is not
-        |serialized|.\[[AgentCluster]], then throw a
-        "<a exception>DataCloneError</a>" {{DOMException}}.
+    1. If |targetRealm|'s corresponding [=agent cluster=] is not |serialized|.\[[AgentCluster]], then throw a "<a exception>DataCloneError</a>" {{DOMException}}.
 
     1. [=Compile a WebAssembly module=] from |bytes| and set |value|.\[[Module]] to the result.
 
