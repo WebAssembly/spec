@@ -1,5 +1,8 @@
 module Fun =
 struct
+  let curry f x y = f (x, y)
+  let uncurry f (x, y) = f x y
+
   let rec repeat n f x =
     if n = 0 then () else (f x; repeat (n - 1) f x)
 end

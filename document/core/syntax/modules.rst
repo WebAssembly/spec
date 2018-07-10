@@ -311,9 +311,6 @@ Each export is labeled by a unique :ref:`name <syntax-name>`.
 Exportable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`,
 which are referenced through a respective descriptor.
 
-.. note::
-   In the current version of WebAssembly, only *immutable* globals may be exported.
-
 
 Conventions
 ...........
@@ -362,8 +359,6 @@ Every import defines an index in the respective :ref:`index space <syntax-index>
 In each index space, the indices of imports go before the first index of any definition contained in the module itself.
 
 .. note::
-   In the current version of WebAssembly, only *immutable* globals may be imported.
-
    Unlike export names, import names are not necessarily unique.
    It is possible to import the same |IMODULE|/|INAME| pair multiple times;
    such imports may even have different type descriptions, including different kinds of entities.
