@@ -101,32 +101,3 @@
   )
   "i32 constant"
 )
-
-;; Test that load/store addreses are full int32
-
-(module
-  (memory 65536)
-  (func (export "load") (param i32) (result i32) (i32.load (get_local 0)))
-  (func (export "store") (param i32 i32) (i32.store (get_local 0) (get_local 1)))
-)
-
-(assert_return (invoke "store" (i32.const 2147483647) (i32.const 1)))
-(assert_return (invoke "load" (i32.const 2147483647)) (i32.const 1))
-(assert_return (invoke "store" (i32.const 2147483648) (i32.const 1)))
-(assert_return (invoke "load" (i32.const 2147483648)) (i32.const 1))
-(assert_return (invoke "store" (i32.const 2147483649) (i32.const 1)))
-(assert_return (invoke "load" (i32.const 2147483649)) (i32.const 1))
-(assert_return (invoke "store" (i32.const 2147483650) (i32.const 1)))
-(assert_return (invoke "load" (i32.const 2147483650)) (i32.const 1))
-(assert_return (invoke "store" (i32.const 4294967290) (i32.const 1)))
-(assert_return (invoke "load" (i32.const 4294967290)) (i32.const 1))
-(assert_return (invoke "store" (i32.const 4294967291) (i32.const 1)))
-(assert_return (invoke "load" (i32.const 4294967291)) (i32.const 1))
-(assert_return (invoke "store" (i32.const 4294967292) (i32.const 1)))
-(assert_return (invoke "load" (i32.const 4294967292)) (i32.const 1))
-(assert_trap (invoke "store" (i32.const 4294967293) (i32.const 1)) "out of bounds memory access")
-(assert_trap (invoke "load" (i32.const 4294967293)) "out of bounds memory access")
-(assert_trap (invoke "store" (i32.const 4294967294) (i32.const 1)) "out of bounds memory access")
-(assert_trap (invoke "load" (i32.const 4294967294)) "out of bounds memory access")
-(assert_trap (invoke "store" (i32.const 4294967295) (i32.const 1)) "out of bounds memory access")
-(assert_trap (invoke "load" (i32.const 4294967295)) "out of bounds memory access")
