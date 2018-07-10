@@ -4,8 +4,6 @@ have a link to an open issue/PR, or be obvious. Comments/corrections/additions
 welcome.
 
 Linear memory semantics:
- - test that load/store addreses are full int32 (or int64), and not OCaml int
- - test that when allocating 4GiB, accessing index -1 fails
  - test that too-big `memory.grow` fails appropriately
  - test that too-big linear memory initial allocation fails
  - test that one can clobber the entire contents of the linear memory without corrupting: call stack, local variables, program execution.
