@@ -38,9 +38,24 @@ let abort vs =
 let exit vs =
   exit (int (single vs))
 
-
 let lookup name t =
   match Utf8.encode name, t with
-  | "abort", ExternFuncType t -> ExternFunc (Func.alloc_host t abort)
-  | "exit", ExternFuncType t -> ExternFunc (Func.alloc_host t exit)
+  | "abort", ExternalFuncType t -> ExternalFunc (HostFunc (t, abort))
+  | "exit", ExternalFuncType t -> ExternalFunc (HostFunc (t, exit))
+  | "STACKTOP", ExternalGlobalType t -> ExternalGlobal (I32 0l)
+  | "DYNAMICTOP_PTR", ExternalGlobalType t -> ExternalGlobal (I32 0l)
+  | "STACK_MAX", ExternalGlobalType t -> ExternalGlobal (I32 1024l)
+  | "tempDoublePtr", ExternalGlobalType t -> ExternalGlobal (I32 0l)
+  | "ABORT", ExternalGlobalType t -> ExternalGlobal (I32 0l)
+  | "memoryBase", ExternalGlobalType t -> ExternalGlobal (I32 0l)
+  | "tableBase", ExternalGlobalType t -> ExternalGlobal (I32 0l)
+  | "__environ", ExternalGlobalType t -> ExternalGlobal (I32 0l)
+  | "___environ", ExternalGlobalType t -> ExternalGlobal (I32 0l)
+  | "___dso_handle", ExternalGlobalType t -> ExternalGlobal (I32 0l)
+  | "__dso_handle", ExternalGlobalType t -> ExternalGlobal (I32 0l)
+  | _, ExternalFuncType t -> ExternalFunc (HostFunc (t, abort))
+  | "memory", ExternalMemoryType (MemoryType {min;max}) -> ExternalMemory (Memory.create {min;max})
+  | "table", ExternalTableType (TableType ({min;max}, t)) -> ExternalTable (Table.create t {min;max})
   | _ -> raise Not_found
+
+

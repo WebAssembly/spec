@@ -158,6 +158,14 @@ struct
   let shr_u x y =
     shift Rep.shift_right_logical x y
 
+(*
+  let shl x y = Rep.shift_left x (Rep.to_int y)
+
+  let shr_s x y = Rep.shift_right x (Rep.to_int y)
+
+  let shr_u x y = Rep.shift_right_logical x (Rep.to_int y)
+*)
+
   (* We must mask the count to implement rotates via shifts. *)
   let clamp_rotate_count n =
     Rep.to_int (Rep.logand n (Rep.of_int (Rep.bitwidth - 1)))

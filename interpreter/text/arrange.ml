@@ -187,10 +187,10 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let pack_size = function
-  | Memory.Pack8 -> "8"
-  | Memory.Pack16 -> "16"
-  | Memory.Pack32 -> "32"
+let mem_size = function
+  | Memory.Mem8 -> "8"
+  | Memory.Mem16 -> "16"
+  | Memory.Mem32 -> "32"
 
 let extension = function
   | Memory.SX -> "_s"
@@ -204,12 +204,12 @@ let memop name {ty; align; offset; _} =
 let loadop op =
   match op.sz with
   | None -> memop "load" op
-  | Some (sz, ext) -> memop ("load" ^ pack_size sz ^ extension ext) op
+  | Some (sz, ext) -> memop ("load" ^ mem_size sz ^ extension ext) op
 
 let storeop op =
   match op.sz with
   | None -> memop "store" op
-  | Some sz -> memop ("store" ^ pack_size sz) op
+  | Some sz -> memop ("store" ^ mem_size sz) op
 
 
 (* Expressions *)
@@ -223,8 +223,6 @@ let rec instr e =
     match e.it with
     | Unreachable -> "unreachable", []
     | Nop -> "nop", []
-    | Drop -> "drop", []
-    | Select -> "select", []
     | Block (ts, es) -> "block", stack_type ts @ list instr es
     | Loop (ts, es) -> "loop", stack_type ts @ list instr es
     | If (ts, es1, es2) ->
@@ -236,7 +234,9 @@ let rec instr e =
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
-    | CallIndirect x -> "call_indirect", [Node ("type " ^ var x, [])]
+    | CallIndirect x -> "call_indirect " ^ var x, []
+    | Drop -> "drop", []
+    | Select -> "select", []
     | GetLocal x -> "get_local " ^ var x, []
     | SetLocal x -> "set_local " ^ var x, []
     | TeeLocal x -> "tee_local " ^ var x, []
@@ -244,8 +244,8 @@ let rec instr e =
     | SetGlobal x -> "set_global " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
-    | MemorySize -> "memory.size", []
-    | MemoryGrow -> "memory.grow", []
+    | CurrentMemory -> "current_memory", []
+    | GrowMemory -> "grow_memory", []
     | Const lit -> constop lit ^ " " ^ value lit, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
@@ -445,6 +445,7 @@ let assertion mode ass =
 let command mode cmd =
   match cmd.it with
   | Module (x_opt, def) -> definition mode x_opt def
+  | Merkle def -> definition mode None def
   | Register (n, x_opt) ->
     Node ("register " ^ name n ^ var_opt x_opt, [])
   | Action act -> action act

@@ -1,7 +1,6 @@
 open Script
 open Source
 
-
 (* Errors & Tracing *)
 
 module Abort = Error.Make ()
@@ -210,10 +209,10 @@ let print_import m im =
   let open Types in
   let category, annotation =
     match Ast.import_type m im with
-    | ExternFuncType t -> "func", string_of_func_type t
-    | ExternTableType t -> "table", string_of_table_type t
-    | ExternMemoryType t -> "memory", string_of_memory_type t
-    | ExternGlobalType t -> "global", string_of_global_type t
+    | ExternalFuncType t -> "func", string_of_func_type t
+    | ExternalTableType t -> "table", string_of_table_type t
+    | ExternalMemoryType t -> "memory", string_of_memory_type t
+    | ExternalGlobalType t -> "global", string_of_global_type t
   in
   Printf.printf "  import %s \"%s\" \"%s\" : %s\n"
     category (Ast.string_of_name im.it.Ast.module_name)
@@ -223,10 +222,10 @@ let print_export m ex =
   let open Types in
   let category, annotation =
     match Ast.export_type m ex with
-    | ExternFuncType t -> "func", string_of_func_type t
-    | ExternTableType t -> "table", string_of_table_type t
-    | ExternMemoryType t -> "memory", string_of_memory_type t
-    | ExternGlobalType t -> "global", string_of_global_type t
+    | ExternalFuncType t -> "func", string_of_func_type t
+    | ExternalTableType t -> "table", string_of_table_type t
+    | ExternalMemoryType t -> "memory", string_of_memory_type t
+    | ExternalGlobalType t -> "global", string_of_global_type t
   in
   Printf.printf "  export %s \"%s\" : %s\n"
     category (Ast.string_of_name ex.it.Ast.name) annotation
@@ -252,13 +251,15 @@ module Map = Map.Make(String)
 let quote : script ref = ref []
 let scripts : script Map.t ref = ref Map.empty
 let modules : Ast.module_ Map.t ref = ref Map.empty
-let instances : Instance.module_inst Map.t ref = ref Map.empty
-let registry : Instance.module_inst Map.t ref = ref Map.empty
+let instances : Instance.instance Map.t ref = ref Map.empty
+let registry : Instance.instance Map.t ref = ref Map.empty
+
+let anon = ref 0
 
 let bind map x_opt y =
   let map' =
     match x_opt with
-    | None -> !map
+    | None -> incr anon; Map.add ("anon_" ^ string_of_int !anon) y !map
     | Some x -> Map.add x.it y !map
   in map := Map.add "" y map'
 
@@ -292,23 +293,255 @@ let rec run_definition def =
     let def' = Parse.string_to_module s in
     run_definition def'
 
+let values_from_arr arr start len =
+  let res = ref [] in
+  for i = 0 to len-1 do
+    res := arr.(start+i) :: !res
+  done;
+  List.rev !res
+
+let task_number = ref 0
+
+let terminate str =
+  let res = Bytes.make 256 (Char.chr 0) in
+  for i = 0 to String.length str-1 do
+    Bytes.set res i str.[i]
+  done;
+  (* prerr_endline ("Hashing " ^ str ^ Mproof.to_hex (Mbinary.string_to_root res)); *)
+  res
+
+let hash_file fname =
+  let ch = open_in_bin fname in
+  let sz = in_channel_length ch in
+  let dta = Bytes.create sz in
+  really_input ch dta 0 sz;
+  close_in ch;
+  Printf.printf "{\"size\": %i, \"root\": %s}\n" sz (Mproof.to_hex (Mbinary.bytes_to_root dta));
+  exit 0
+
+let add_input vm i fname =
+  let open Mrun in
+  vm.input.file_name.(i) <- terminate fname;
+  let fname = if !Flags.input_out then fname ^ ".out" else fname in
+  let ch = open_in_bin fname in
+  let sz = in_channel_length ch in
+  vm.input.file_size.(i) <- sz;
+  let dta = Bytes.create sz in
+  really_input ch dta 0 sz;
+  close_in ch;
+  vm.input.file_data.(i) <- dta;
+  trace ("Added file " ^ fname ^ ", " ^ string_of_int sz ^ " bytes")
+
+let output_files vm =
+  let open Mrun in
+  for i = 0 to Array.length vm.input.file_name - 1 do
+    let fname = Mbinary.string_from_bytes vm.input.file_name.(i) in
+    if String.length fname > 0 then begin
+      let ch = open_out_bin (fname ^ ".out") in
+      output ch vm.input.file_data.(i) 0 vm.input.file_size.(i);
+      close_out ch
+    end
+  done
+
+let do_output_file vm i =
+  let open Mrun in
+  let fname = Mbinary.string_from_bytes vm.input.file_name.(i) in
+  let sz = vm.input.file_size.(i) in
+  let dta = vm.input.file_data.(i) in
+  if String.length fname > 0 then begin
+      Printf.printf "{\"size\": %i, \"root\": %s, \"name\": \"%s\", \"data\": \"%s\"}\n" sz
+         (Mproof.to_hex (Mbinary.bytes_to_root dta))
+         (String.escaped fname)
+         (String.escaped (Bytes.to_string dta));
+  end
+
+let print_file_names vm =
+  let open Mrun in
+  let res = ref [] in
+  for i = 0 to Array.length vm.input.file_name - 1 do
+    if vm.input.file_size.(i) > 0 then begin
+      res := ("\"" ^ Mbinary.string_from_bytes vm.input.file_name.(i) ^ ".out\"") :: !res
+    end
+  done;
+  "[" ^ String.concat "," !res ^ "]"
+
+let (@) a b = List.rev_append (List.rev a) b
+
+let setup_vm inst mdle func vs =
+(*  prerr_endline "Setting up"; *)
+  let open Merkle in
+  let open Values in
+  let init =
+    try Merkle.make_args mdle inst (["/home/truebit/program.wasm"] @ List.rev !Flags.arguments)
+    with Not_found -> if !Flags.run_wasm then [PUSH (I32 0l); PUSH (I32 0l)] else [] in
+  let table_init = Mrun.init_calltable mdle inst in
+  let init2 = Merkle.init_system mdle inst in
+(*  prerr_endline "Compiling"; *)
+  let cxx_init = Merkle.make_cxx_init mdle inst in
+  let g_init = Mrun.setup_globals mdle inst in
+  let mem_init = Mrun.init_memory mdle inst in
+  trace ("Initing " ^ string_of_int (List.length mem_init));
+  let inits = vm_init mdle @ table_init@mem_init@g_init@init2@init@cxx_init in
+  trace "Compiling";
+  let code, f_resolve = Merkle.compile_test mdle func vs (inits) inst in
+  trace "Compiled";
+  let vm = Mrun.create_vm code in
+  Mrun.setup_memory vm mdle inst;
+  Mrun.setup_calltable vm mdle inst f_resolve (List.length (vm_init mdle));
+  List.iteri (add_input vm) !Flags.input_files;
+(*  prerr_endline "Initialized"; *)
+  vm
+
+let handle_exit vm =
+  let open Mrun in
+  let vm = vm in
+  ( if !task_number - 1 = !Flags.case then match !Flags.output_file_proof with
+    | Some x ->
+       let loc = Mproof.find_file vm x in
+       Printf.printf "{\"vm\": %s, \"loc\": %s}\n" (Mproof.vm_to_string (Mbinary.vm_to_bin vm)) (Mproof.loc_to_string loc)
+    | None -> () );
+  if !task_number - 1 = !Flags.case && !Flags.output_all_file_proofs then begin
+       let lst = Mproof.find_files vm in
+       let print_file (p1, p2, idx, fname) = Printf.sprintf "{\"data\": %s, \"name\": %s, \"loc\": %i, \"file\": \"%s\"}\n" (Mproof.list_to_string p1) (Mproof.list_to_string p2) idx fname in
+       Printf.printf "[%s]\n" (String.concat ", " (List.map print_file lst))
+  end;
+  if  !task_number - 1 = !Flags.case then output_files vm;
+  if !task_number = !Flags.case + 1 && !Flags.result then Printf.printf "{\"result\": %s, \"steps\": %i}\n" (Mproof.to_hex (Mbinary.hash_vm vm)) vm.step;
+  if !task_number = !Flags.case + 1 && !Flags.output_proof then begin
+     let vm_bin = Mbinary.vm_to_bin vm in
+      Printf.printf "{\"vm\": %s, \"hash\": %s, \"steps\": %i, \"files\": %s}\n" (Mproof.vm_to_string vm_bin) (Mproof.to_hex (Mbinary.hash_io_bin vm_bin)) vm.step (print_file_names vm)
+  end
+
+let run_test inst mdle func vs =
+  let open Mrun in
+  let vm = setup_vm inst mdle func vs in
+  if !task_number = !Flags.case && !Flags.init then
+    ( let vm_bin = Mbinary.vm_to_bin vm in
+      Printf.printf "{\"vm\": %s, \"hash\": %s}\n" (Mproof.vm_to_string vm_bin) (Mproof.to_hex (Mbinary.hash_vm_bin vm_bin)) );
+  if !task_number = !Flags.case && !Flags.input_proof then
+    ( let vm_bin = Mbinary.vm_to_bin vm in
+      Printf.printf "{\"vm\": %s, \"hash\": %s}\n" (Mproof.vm_to_string vm_bin) (Mproof.to_hex (Mbinary.hash_io_bin vm_bin));
+      exit 0 );
+  if !task_number = !Flags.case && !Flags.input_all_file_proofs then begin
+       let lst = Mproof.find_files vm in
+       let print_file (p1, p2, idx, fname) = Printf.sprintf "{\"data\": %s, \"name\": %s, \"loc\": %i, \"file\": \"%s\"}\n" (Mproof.list_to_string p1) (Mproof.list_to_string p2) idx fname in
+       Printf.printf "[%s]\n" (String.concat ", " (List.map print_file lst));
+       exit 0
+  end;
+  if !task_number = !Flags.case && !Flags.init_vm then Printf.printf "%s\n" (Mproof.whole_vm_to_string vm);
+  ( if !task_number = !Flags.case then match !Flags.input_file_proof with
+  | Some x ->
+    let vm_bin = Mbinary.vm_to_bin vm in
+    let loc = Mproof.find_file vm x in
+    Printf.printf "{\"hash\": %s, \"vm\": %s, \"loc\": %s}\n" (Mproof.to_hex (Mbinary.hash_vm_bin vm_bin)) (Mproof.vm_to_string vm_bin) (Mproof.loc_to_string loc)
+  | None -> () );
+  incr task_number;
+(*  if !Flags.trace then Printf.printf "%s\n" (Mproof.vm_to_string (Mbinary.vm_to_bin vm)); *)
+  try begin
+    (* while true do Mrun.vm_step vm done; *)
+    while true do
+      let i = vm.step in
+      if !Flags.trace_stack then begin
+        trace (stack_to_string vm 10);
+        (* trace (string_of_int i ^ ": " ^ Mproof.to_hex (Mbinary.hash_stack vm.stack)) *)
+      end;
+      (* if i > 560019251 then begin  Flags.trace := true end; *)
+      if i = !Flags.trace_from then Flags.trace := true;
+      if !Flags.trace (* || i mod 1000000 = 0 *) then begin
+        (* trace (string_of_int vm.pc ^ ": " ^ trace_step vm); *)
+        Printf.printf "Step %d, stack ptr %d, PC %d: %s\n" i vm.stack_ptr vm.pc (trace_step vm);
+      end;
+      if i = !Flags.location && !task_number - 1 = !Flags.case then Printf.printf "%s\n" (Mproof.to_hex (Mbinary.hash_vm vm));
+      if i = !Flags.checkfinal && !task_number - 1 = !Flags.case then Mproof.print_fetch (Mproof.make_fetch_code vm);
+      if i = !Flags.output_file_at && !task_number - 1 = !Flags.case then do_output_file vm !Flags.output_file_number;
+      if i = !Flags.checkerror && !task_number - 1 = !Flags.case then Mproof.micro_step_states vm
+      else if i = !Flags.checkstep && !task_number - 1 = !Flags.case then begin
+         let proof =
+           if i = !Flags.insert_error && !task_number - 1 = !Flags.case then Mproof.micro_step_proofs_with_error vm
+           else Mproof.micro_step_proofs vm in
+         Mproof.check_proof proof
+      end else ( test_errors vm ; Mrun.vm_step vm );
+      ( if i = !Flags.insert_error && !task_number - 1 = !Flags.case then Mrun.set_input_name vm 1023 10 (Values.I32 1l) ); 
+      vm.step <- vm.step + 1;
+      (* if i mod 10000000 = 0 then prerr_endline "."; *)
+      (* test_errors vm *)
+    done;
+    raise (Failure "takes too long")
+  end
+  with VmTrap -> (* check stack pointer, get values *)
+    handle_exit vm;
+    values_from_arr vm.stack 0 vm.stack_ptr
+   | a ->
+   (* Print error result *)
+    if !Flags.debug_error then begin
+      prerr_endline ("Error at step " ^ string_of_int vm.step);
+      prerr_endline (stack_to_string vm 10);
+      prerr_endline (string_of_int vm.pc ^ ": " ^ trace_clean vm);
+      prerr_endline (string_of_int vm.pc ^ ": " ^ trace_step vm);
+      vm.pc <- vm.pc - 1;
+      prerr_endline (string_of_int vm.pc ^ ": " ^ trace_step vm);
+      test_errors vm;
+    end;
+    vm.pc <- magic_pc;
+    handle_exit vm;
+   ( match a with
+   | Numeric_error.IntegerOverflow -> raise (Eval.Trap (no_region, "integer overflow"))
+   | Numeric_error.InvalidConversionToInteger -> raise (Eval.Trap (no_region, "invalid conversion to integer"))
+   | Numeric_error.IntegerDivideByZero -> raise (Eval.Trap (no_region, "integer divide by zero"))
+   | a -> raise a )
+
+let run_test_micro inst mdle func vs =
+  let open Mrun in
+  let vm = setup_vm inst mdle func vs in
+  try begin
+    for i = 0 to 100000000 do
+      ignore i;
+      (* if !Flags.trace_stack then trace (stack_to_string vm); *)
+      trace (string_of_int vm.pc ^ ": " ^ trace_step vm);
+      Mrun.micro_step vm;
+      test_errors vm
+    done;
+    raise (Failure "takes too long")
+  end
+  with VmTrap -> (* check stack pointer, get values *)
+(*    trace (Printexc.to_string a);
+    Printexc.print_backtrace stderr; *)
+    values_from_arr vm.stack 0 vm.stack_ptr
+
 let run_action act =
   match act.it with
   | Invoke (x_opt, name, vs) ->
     trace ("Invoking function \"" ^ Ast.string_of_name name ^ "\"...");
-    let inst = lookup_instance x_opt act.at in
-    (match Instance.export inst name with
-    | Some (Instance.ExternFunc f) ->
-      Eval.invoke f (List.map (fun v -> v.it) vs)
-    | Some _ -> Assert.error act.at "export is not a function"
-    | None -> Assert.error act.at "undefined export"
-    )
-
+    if !Flags.microstep then begin
+      let inst = lookup_instance x_opt act.at in
+      ( match Instance.export inst name with
+      | Some (Instance.ExternalFunc (Instance.AstFunc (_, func))) ->
+        run_test_micro inst inst.Instance.module_.it func (List.map (fun v -> v.it) vs)
+      | Some _ -> Assert.error act.at "export is not a function"
+      | None -> Assert.error act.at "undefined export" )
+    end else
+    if !Flags.merkle then begin
+      let inst = lookup_instance x_opt act.at in
+      ( match Instance.export inst name with
+      | Some (Instance.ExternalFunc (Instance.AstFunc (_, func))) ->
+        run_test inst inst.Instance.module_.it func (List.map (fun v -> v.it) vs)
+      | Some _ -> Assert.error act.at "export is not a function"
+      | None -> Assert.error act.at "undefined export" )
+    end else
+    begin
+      let inst = lookup_instance x_opt act.at in
+      (match Instance.export inst name with
+      | Some (Instance.ExternalFunc f) ->
+        Eval.invoke f (List.map (fun v -> v.it) vs)
+      | Some _ -> Assert.error act.at "export is not a function"
+      | None -> Assert.error act.at "undefined export"
+      )
+    end
  | Get (x_opt, name) ->
     trace ("Getting global \"" ^ Ast.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
-    | Some (Instance.ExternGlobal gl) -> [Global.load gl]
+    | Some (Instance.ExternalGlobal v) -> [v]
     | Some _ -> Assert.error act.at "export is not a global"
     | None -> Assert.error act.at "undefined export"
     )
@@ -329,6 +562,7 @@ let assert_message at name msg re =
     print_endline ("Expect: \"" ^ re ^ "\"");
     Assert.error at ("wrong " ^ name ^ " error")
   end
+
 
 let run_assertion ass =
   match ass.it with
@@ -443,6 +677,7 @@ let rec run_command cmd =
       let inst = Eval.init m imports in
       bind instances x_opt inst
     end
+  | Merkle _ -> () (* remove this *)
 
   | Register (name, x_opt) ->
     quote := cmd :: !quote;
@@ -456,8 +691,9 @@ let rec run_command cmd =
   | Action act ->
     quote := cmd :: !quote;
     if not !Flags.dry then begin
-      let vs = run_action act in
-      if vs <> [] then print_result vs
+       ignore (run_action act)
+(*      let vs = run_action act in
+      if vs <> [] then print_result vs *)
     end
 
   | Assertion ass ->

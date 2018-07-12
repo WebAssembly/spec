@@ -26,6 +26,7 @@ and assertion' =
 type command = command' Source.phrase
 and command' =
   | Module of var option * definition
+  | Merkle of definition
   | Register of Ast.name * var option
   | Action of action
   | Assertion of assertion
