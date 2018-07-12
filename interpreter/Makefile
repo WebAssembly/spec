@@ -17,19 +17,17 @@ ZIP =		$(NAME).zip
 JSLIB =		wast.js
 WINMAKE =	winmake.bat
 
-DIRS =		util syntax binary text valid runtime exec script host main
+DIRS =		util syntax binary text valid merkle exec script host main
 LIBS =		bigarray
-FLAGS = 	-cflags '-w +a-4-27-42-44-45 -warn-error +a'
-OCB =		ocamlbuild $(FLAGS) $(DIRS:%=-I %) $(LIBS:%=-libs %)
+FLAGS = 	-cflags '-w +a-4-27-42-44-45'
+OCB =		ocamlbuild -package cryptokit -package yojson $(FLAGS) $(DIRS:%=-I %) $(LIBS:%=-libs %)
 JS =		# set to JS shell command to run JS tests
-
 
 # Main targets
 
 .PHONY:		default opt unopt libopt libunopt jslib all land zip
 
 default:	opt
-debug:		unopt
 opt:		$(OPT)
 unopt:		$(UNOPT)
 libopt:		_build/$(LIB).cmx
@@ -49,21 +47,20 @@ comma =		,
 .INTERMEDIATE:	_tags
 _tags:
 		echo >$@ "true: bin_annot"
-		echo >>$@ "true: debug"
 		echo >>$@ "<{$(subst $(space),$(comma),$(DIRS))}/*.cmx>: for-pack($(PACK))"
 
-$(UNOPT):	main.byte
+$(UNOPT):	main.d.byte
 		mv $< $@
 
 $(OPT):		main.native
 		mv $< $@
 
-.PHONY:		main.byte main.native
-main.byte:	_tags
+.PHONY:		main.d.byte main.native
+main.d.byte:	_tags
 		$(OCB) -quiet $@
 
 main.native:	_tags
-		$(OCB) -quiet $@
+		$(OCB) $@
 
 
 # Building library
@@ -78,10 +75,10 @@ $(LIB).mlpack:	$(DIRS)
 		| sort | uniq \
 		>$@
 
-_build/$(LIB).cmo: $(LIB).mlpack _tags
+_build/$(LIB).cmo: $(LIB).mlpack
 		$(OCB) -quiet $(LIB).cmo
 
-_build/$(LIB).cmx: $(LIB).mlpack _tags
+_build/$(LIB).cmx: $(LIB).mlpack
 		$(OCB) -quiet $(LIB).cmx
 
 
@@ -122,12 +119,12 @@ debugtest:	$(UNOPT)
 test/%:		$(OPT)
 		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
 debugtest/%:	$(UNOPT)
-		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(@:debugtest/%=../test/core/%.wast)
+		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
 
 run/%:		$(OPT)
 		./$(OPT) $(@:run/%=../test/core/%.wast)
-debug/%:		$(UNOPT)
-		./$(UNOPT) $(@:debug/%=../test/core/%.wast)
+debugrun/%:		$(UNOPT)
+		./$(UNOPT) $(@:run/%=../test/core/%.wast)
 
 
 # Miscellaneous targets
@@ -138,8 +135,9 @@ $(ZIP):		$(WINMAKE)
 		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 clean:
-		rm -rf _build/jslib $(LIB).mlpack _tags
+		rm -rf _build/jslib wasm.mlpack _tags
 		$(OCB) -clean
+
 
 # Opam support
 
@@ -151,9 +149,9 @@ check:
 		ocamlfind query $(LIBS)
 
 install:	_build/$(LIB).cmx _build/$(LIB).cmo
-		ocamlfind install $(LIB) meta/findlib/META _build/$(LIB).o \
+		ocamlfind install wasm meta/findlib/META _build/wasm.o \
 		  $(wildcard _build/$(LIB).cm*) \
 		  $(wildcard $(DIRS:%=%/*.mli))
 
 uninstall:
-		ocamlfind remove $(LIB)
+		ocamlfind remove wasm

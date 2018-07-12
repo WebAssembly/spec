@@ -30,9 +30,9 @@ let value_of_bool b = I32 (if b then 1l else 0l)
 
 let string_of_value = function
   | I32 i -> I32.to_string_s i
-  | I64 i -> I64.to_string_s i
+  | I64 i -> I64.to_string_s i ^ "L"
   | F32 z -> F32.to_string z
-  | F64 z -> F64.to_string z
+  | F64 z -> F64.to_string z ^ "L"
 
 let string_of_values = function
   | [v] -> string_of_value v

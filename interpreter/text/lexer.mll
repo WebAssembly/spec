@@ -314,8 +314,8 @@ rule token = parse
   | "i32.reinterpret/f32" { CONVERT i32_reinterpret_f32 }
   | "i64.reinterpret/f64" { CONVERT i64_reinterpret_f64 }
 
-  | "memory.size" { MEMORY_SIZE }
-  | "memory.grow" { MEMORY_GROW }
+  | "current_memory" { CURRENT_MEMORY }
+  | "grow_memory" { GROW_MEMORY }
 
   | "type" { TYPE }
   | "func" { FUNC }
@@ -333,6 +333,7 @@ rule token = parse
   | "export" { EXPORT }
 
   | "module" { MODULE }
+  | "merkle" { MERKLE }
   | "binary" { BIN }
   | "quote" { QUOTE }
 

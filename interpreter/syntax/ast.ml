@@ -57,8 +57,8 @@ type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
 type 'a memop =
   {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}
-type loadop = (Memory.pack_size * Memory.extension) memop
-type storeop = Memory.pack_size memop
+type loadop = (Memory.mem_size * Memory.extension) memop
+type storeop = Memory.mem_size memop
 
 
 (* Expressions *)
@@ -71,8 +71,6 @@ type instr = instr' Source.phrase
 and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
-  | Drop                              (* forget a value *)
-  | Select                            (* branchless conditional *)
   | Block of stack_type * instr list  (* execute in sequence *)
   | Loop of stack_type * instr list   (* loop header *)
   | If of stack_type * instr list * instr list  (* conditional *)
@@ -82,6 +80,8 @@ and instr' =
   | Return                            (* break from function body *)
   | Call of var                       (* call function *)
   | CallIndirect of var               (* call function through table *)
+  | Drop                              (* forget a value *)
+  | Select                            (* branchless conditional *)
   | GetLocal of var                   (* read local variable *)
   | SetLocal of var                   (* write local variable *)
   | TeeLocal of var                   (* write local variable and keep value *)
@@ -89,8 +89,8 @@ and instr' =
   | SetGlobal of var                  (* write global variable *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
-  | MemorySize                        (* size of linear memory *)
-  | MemoryGrow                        (* grow linear memory *)
+  | CurrentMemory                     (* size of linear memory *)
+  | GrowMemory                        (* grow linear memory *)
   | Const of literal                  (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)
@@ -212,35 +212,32 @@ let empty_module =
 
 open Source
 
-let func_type_for (m : module_) (x : var) : func_type =
-  (Lib.List32.nth m.it.types x.it).it
-
-let import_type (m : module_) (im : import) : extern_type =
+let import_type (m : module_) (im : import) : external_type =
   let {idesc; _} = im.it in
   match idesc.it with
-  | FuncImport x -> ExternFuncType (func_type_for m x)
-  | TableImport t -> ExternTableType t
-  | MemoryImport t -> ExternMemoryType t
-  | GlobalImport t -> ExternGlobalType t
+  | FuncImport x -> ExternalFuncType (Lib.List32.nth m.it.types x.it).it
+  | TableImport t -> ExternalTableType t
+  | MemoryImport t -> ExternalMemoryType t
+  | GlobalImport t -> ExternalGlobalType t
 
-let export_type (m : module_) (ex : export) : extern_type =
+let export_type (m : module_) (ex : export) : external_type =
   let {edesc; _} = ex.it in
   let its = List.map (import_type m) m.it.imports in
   let open Lib.List32 in
   match edesc.it with
   | FuncExport x ->
     let fts =
-      funcs its @ List.map (fun f -> func_type_for m f.it.ftype) m.it.funcs
-    in ExternFuncType (nth fts x.it)
+      funcs its @ List.map (fun f -> (nth m.it.types f.it.ftype.it).it) m.it.funcs
+    in ExternalFuncType (nth fts x.it)
   | TableExport x ->
     let tts = tables its @ List.map (fun t -> t.it.ttype) m.it.tables in
-    ExternTableType (nth tts x.it)
+    ExternalTableType (nth tts x.it)
   | MemoryExport x ->
     let mts = memories its @ List.map (fun m -> m.it.mtype) m.it.memories in
-    ExternMemoryType (nth mts x.it)
+    ExternalMemoryType (nth mts x.it)
   | GlobalExport x ->
     let gts = globals its @ List.map (fun g -> g.it.gtype) m.it.globals in
-    ExternGlobalType (nth gts x.it)
+    ExternalGlobalType (nth gts x.it)
 
 let string_of_name n =
   let b = Buffer.create 16 in

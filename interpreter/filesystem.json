@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+
+    },
+    "output": "filesystem.wasm",
+    "interface": "filesystem.idl",
+    "files": [
+        "filesystem.c"
+    ],
+    "options": {
+        "EXPORTED_RUNTIME_METHODS": [],
+        "EXPORTED_FUNCTIONS": []
+    }
+}
