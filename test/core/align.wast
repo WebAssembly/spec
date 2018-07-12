@@ -848,3 +848,13 @@
 (assert_return (invoke "i64_align_switch" (i32.const 6) (i32.const 2)) (i64.const 10))
 (assert_return (invoke "i64_align_switch" (i32.const 6) (i32.const 4)) (i64.const 10))
 (assert_return (invoke "i64_align_switch" (i32.const 6) (i32.const 8)) (i64.const 10))
+
+;; Test that an i64 store with 4-byte alignment that's 4 bytes out of bounds traps without storing anything
+
+(module
+  (memory 1)
+  (func (export "store") (param i32 i64)
+    (i64.store align=4 (get_local 0) (get_local 1))
+  )
+)
+(assert_trap (invoke "store" (i32.const 65531) (i64.const 1)) "out of bounds memory access")
