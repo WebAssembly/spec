@@ -5,6 +5,7 @@ welcome.
 
 Linear memory semantics:
  - test that one can clobber the entire contents of the linear memory without corrupting: call stack, local variables, program execution.
+ - test that an i64 store with 4-byte alignment that's 4 bytes out of bounds traps without storing anything.
 
 Misc optimizer bait:
  - test that the scheduler doesn't move a trapping div past a call which may not return
