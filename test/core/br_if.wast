@@ -147,12 +147,6 @@
       )
     )
   )
-
-  (func (export "br_if-multi-values") (param i32) (result i32)
-    (block (result i32)
-      (drop (br_if 0 (i32.const 10) (i32.const 100) (get_local 0))) (return (i32.const 11))
-    )
-  )
 )
 
 (assert_return (invoke "as-block-first" (i32.const 0)) (i32.const 2))
@@ -197,9 +191,6 @@
 (assert_return (invoke "nested-br_table-value" (i32.const 1)) (i32.const 9))
 (assert_return (invoke "nested-br_table-value-index" (i32.const 0)) (i32.const 5))
 (assert_return (invoke "nested-br_table-value-index" (i32.const 1)) (i32.const 9))
-
-(assert_return (invoke "br_if-multi-values" (i32.const 0)) (i32.const 11))
-(assert_return (invoke "br_if-multi-values" (i32.const 1)) (i32.const 100))
 
 (assert_invalid
   (module (func $type-false-i32 (block (i32.ctz (br_if 0 (i32.const 0))))))
@@ -332,3 +323,4 @@
   (module (func $large-label (br_if 0x10000001 (i32.const 1))))
   "unknown label"
 )
+

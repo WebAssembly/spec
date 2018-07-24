@@ -70,6 +70,11 @@
       (i32.const 3) (block (i64.const 1) (return (i32.const 9)))
     )
   )
+  (func (export "br_if-unwind-by-last-value") (param i32) (result i32)
+    (block (result i32)
+      (br_if 0 (i32.const 100) (i32.const 10) (get_local 0)) (return (i32.const 9))
+    )
+  )
 
   (func (export "unary-after-unreachable") (result i32)
     (f32.const 0) (unreachable) (i64.eqz)
@@ -176,6 +181,8 @@
 (assert_return (invoke "block-nested-unwind-by-br_table") (i32.const 9))
 (assert_return (invoke "block-nested-unwind-by-br_table-value") (i32.const 9))
 (assert_return (invoke "block-nested-unwind-by-return") (i32.const 9))
+(assert_return (invoke "br_if-unwind-by-last-value" (i32.const 0)) (i32.const 9))
+(assert_return (invoke "br_if-unwind-by-last-value" (i32.const 1)) (i32.const 10))
 
 (assert_trap (invoke "unary-after-unreachable") "unreachable")
 (assert_return (invoke "unary-after-br") (i32.const 9))
