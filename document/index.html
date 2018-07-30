@@ -22,31 +22,44 @@ To support the <em>embedding</em> of WebAssembly into different environments, it
 
 <h3>Core specification</h3>
 
-<p>Defines the semantics of WebAssembly modules and its instruction set, independent from a concrete embedding.
+<p>Defines the semantics of WebAssembly modules independent from a concrete embedding.
   The WebAssembly core is specified in a single document:</p>
 
   <ul>
     <li>
-      <p><a href="core/index.html">Core</a>:
-      defines the structure of WebAssembly modules and its representation
+      <p><b>WebAssembly</b>:
+      defines the structure of WebAssembly modules, their instruction set, and their representation
       in binary and text format, as well as the semantics of validation,
       instantiation, and execution.
-      Alternate versions:
-      <a href="core/bikeshed/index.html">W3C Editor's Draft</a>,
-      <a href="core/_download/WebAssembly.pdf">PDF</a>.
       </p>
+      <ul>
+        <li><a href="core/index.html">Browser version</a> (multi-page)</li>
+        <li><a href="core/bikeshed/index.html">W3C version</a> (single-page)</li>
+        <li><a href="core/_download/WebAssembly.pdf">PDF version</a></li>
+        <!-- <li><a href="https://github.com/WebAssembly/spec/document/core/">Sources</a></li> -->
+      </ul>
     </li>
   </ul>
 
-<h3>API specifications</h3>
+<h3>Embedder specifications</h3>
 
-<p>Define <em>application programming interfaces</em> enabling the use of WebAssembly modules in concrete embedding environments.
+<p>Define <em>application programming interfaces</em> (APIs) enabling the use of WebAssembly modules in concrete embedding environments.
   Currently, two APIs are specified:</p>
 
   <ul>
-  <li><p><a href="js-api/index.html">JavaScript API</a>: defines JavaScript classes and objects for accessing WebAssembly from within JavaScript, including methods for validation, compilation, instantiation, and classes for representing and manipulating imports and exports as JavaScript objects.</p></li>
+  <li><p><b>JavaScript Embedding</b>: defines JavaScript classes and objects for accessing WebAssembly from within JavaScript, including methods for validation, compilation, instantiation, and classes for representing and manipulating imports and exports as JavaScript objects.</p>
+    <ul>
+      <li><a href="js-api/index.html">W3C version</a></li>
+      <!-- <li><a href="https://github.com/WebAssembly/spec/document/js-api/">Sources</a></li> -->
+    </ul>
+  </li>
 
-  <li><p><a href="web-api/index.html">Web API</a>: defines extensions to the JavaScript API made available specifically in web browsers, in particular, an interface for streaming compilation and instantiation from origin-bound <code>Response</code> types.</p></li>
+  <li><p><b>Web Embedding</b>: defines extensions to the JavaScript API made available specifically in web browsers, in particular, an interface for streaming compilation and instantiation from origin-bound <code>Response</code> types.</p>
+    <ul>
+      <li><a href="web-api/index.html">W3C version</a></li>
+      <!-- <li><a href="https://github.com/WebAssembly/spec/document/web-api/">Sources</a></li> -->
+    </ul>
+  </li>
   </ul>
 
 <p>
