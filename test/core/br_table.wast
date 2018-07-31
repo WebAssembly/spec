@@ -873,7 +873,7 @@
   )
 
   (func (export "as-br-value") (result i32)
-    (block (result i32) (br 0 (br 0 (i32.const 9))))
+    (block (result i32) (br 0 (br_table 0 (i32.const 9) (i32.const 0))))
   )
 
   (func (export "as-br_if-cond")
