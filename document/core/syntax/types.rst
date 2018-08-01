@@ -5,7 +5,7 @@
 Types
 -----
 
-Various entitites in WebAssembly are classified by types.
+Various entities in WebAssembly are classified by types.
 Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <syntax-call_indirect>`.
 
 
