@@ -121,7 +121,9 @@ div > .katex-display {
 }
 .katex {
   /* font: normal 1.21em KaTeX_Main, Times New Roman, serif; */
-  font: normal KaTeX_Main, Times New Roman, serif;
+  font-weight: normal;
+  font-size: 1.21em;
+  font-family: KaTeX_Main, Times New Roman, serif;
   line-height: 1.2;
   white-space: nowrap;
   text-indent: 0;
@@ -1147,5 +1149,5 @@ table {
   border: 0;
 }
 .codepre {
-  whitespace: pre;
+  white-space: pre;
 }
