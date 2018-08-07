@@ -123,7 +123,7 @@
   )
   (func (export "binary-after-br_if") (result i32)
     (block (result i32)
-      (i64.const 0) (i64.const 1) (drop (drop (br_if 0 (i32.const 9) (i32.const 1))))
+      (i64.const 0) (i64.const 1) (drop (br_if 0 (i32.const 9) (i32.const 1)))
       (i64.eq)
     )
   )
