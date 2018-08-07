@@ -90,11 +90,11 @@ partial namespace WebAssembly {
 </pre>
 
 <div algorithm>
-The <dfn method for="WebAssembly">compileStreaming(source)</dfn> method, when invoked, returns the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source|.
+The <dfn method for="WebAssembly">compileStreaming(|source|)</dfn> method, when invoked, returns the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source|.
 </div>
 
 <div algorithm>
-The <dfn method for="WebAssembly">instantiateStreaming(source, importObject)</dfn> method, when invoked, performs the following steps:
+The <dfn method for="WebAssembly">instantiateStreaming(|source|, |importObject|)</dfn> method, when invoked, performs the following steps:
 
     1. Let |promiseOfModule| be the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source|.
     1. Return the result of [=instantiate a promise of a module|instantiating the promise of a module=] |promiseOfModule| with imports |importObject|.
