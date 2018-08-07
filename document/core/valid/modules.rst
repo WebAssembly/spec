@@ -330,9 +330,6 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
      C \vdashexportdesc \EDGLOBAL~x : \ETGLOBAL~\globaltype
    }
 
-.. note::
-   In future versions of WebAssembly, the restriction to exporting only immutable globals may be removed.
-
 
 .. index:: import, name, function type, table type, memory type, global type
    pair: validation; import
@@ -421,9 +418,6 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
    }{
      C \vdashimportdesc \IDGLOBAL~\globaltype : \ETGLOBAL~\globaltype
    }
-
-.. note::
-   In future versions of WebAssembly, the restriction to importing only immutable globals may be removed.
 
 
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
