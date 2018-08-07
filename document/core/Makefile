@@ -27,6 +27,7 @@ usage:
 	@echo "  html       to make standalone HTML files"
 	@echo "  pdf        to make standalone PDF file"
 	@echo "  bikeshed   to make a bikeshed wrapped single large HTML file"
+	@echo "  diff       to make a diff of the bikeshed HTML file with the latest TR"
 	@echo "  all        to make all 3"
 	@echo "  publish    to make all and push to gh-pages"
 	@echo "  help       to see more options"
@@ -154,6 +155,15 @@ bikeshed:
 		$(BUILDDIR)/html/bikeshed/
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
+
+.PHONY: diff
+diff: bikeshed
+	@echo "Downloading the old single-file html spec..."
+	curl `grep "^TR" index.bs | cut -d' ' -f2` -o $(BUILDDIR)/html/bikeshed/old.html
+	@echo "Done."
+	@echo "Diffing new against old (go get a coffee)..."
+	perl util/htmldiff.pl $(BUILDDIR)/html/bikeshed/old.html $(BUILDDIR)/html/bikeshed/index.html $(BUILDDIR)/html/bikeshed/diff.html
+	@echo "Done. The diff is at $(BUILDDIR)/html/bikeshed/diff.html"
 
 .PHONY: pickle
 pickle:
