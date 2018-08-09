@@ -901,18 +901,28 @@ Note: [=call an Exported Function|Calling an Exported Function=] executes in the
 Note: Exported Functions do not have a \[[Construct]] method and thus it is not possible to call one with the `new` operator.
 
 <div algorithm>
+  To <dfn>run a host function</dfn> from the JavaScript object |func| and type |functype|, perform the following steps:
+
+    1. Let [|parameters|] → [|results|] be |functype|.
+    1. Assert: |results|'s [=list/size=] is at most one.
+    1. If either |parameters| or |results| contains [=𝗂𝟨𝟦=], throw a {{TypeError}}.
+    1. Let |arguments| be a [=list=] of the arguments of the invocation of this function.
+    1. Let |jsArguments| be an empty [=list=].
+    1. For each |arg| in |arguments|,
+        1. [=list/Append=] ! [=ToJSValue=](|arg|) to |jsArguments|.
+    1. Let |ret| be ? [=Call=](|func|, undefined, |jsArguments|).
+    1. If |results| is [=list/empty=], return undefined.
+    1. Otherwise, return ? [=ToWebAssemblyValue=](|ret|, |results|[0]).
+</div>
+
+<div algorithm>
   To <dfn>create a host function</dfn> from the JavaScript object |func| and type |functype|, perform the following steps:
 
     1. Let |hostfunc| be a [=host function=] which performs the following steps when called:
-        1. If the signature contains an [=𝗂𝟨𝟦=] (as argument or result), the host function throws a {{TypeError}} when called.
-        1. Let |arguments| be a [=list=] of the arguments of the invocation of this function.
-        1. Let |jsArguments| be an empty [=list=].
-        1. For each |arg| in |arguments|,
-            1. [=Append=] [=ToJSValue=](|arg|) to |jsArguments|.
-        1. Let |ret| be ? [=Call=](|func|, undefined, |jsArguments|). If an exception is thrown, trigger a WebAssembly trap, and propagate the exception to the enclosing JavaScript.
-        1. Let [<var ignore>parameters</var>] → [|results|] be |functype|.
-        1. If |results| is empty, return undefined.
-        1. Otherwise, return [=ToWebAssemblyValue=](|ret|, |results|[0]).
+        1. Let |result| be the result of [=run a host function|running a host function=] from |func| and |functype|.
+        1. Assert: |result|.\[[Type]] is throw or return.
+        1. If |result|.\[[Type]] is [=throw=], then trigger a WebAssembly trap, and propagate |result|.\[[Value]] to the enclosing JavaScript.
+        1. Otherwise, return |result|.\[[Value]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |funcaddr|) be [=alloc_func=](|store|, |functype|, |hostfunc|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
