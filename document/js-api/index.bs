@@ -332,7 +332,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
                 Note: The signature is checked by [=instantiate_module=] invoked below.
             1. Otherwise,
-                1. [=Create a host function=] from |v| and let |funcaddr| be the result.
+                1. [=Create a host function=] from |v| and |functype|, and let |funcaddr| be the result.
                 1. Let |index| be the number of external functions in |imports|. This value |index| is known as the <dfn>index of the host function</dfn> |funcaddr|.
             1. Let |externfunc| be the [=external value=] [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
             1. [=Append=] |externfunc| to |imports|.
@@ -901,7 +901,7 @@ Note: [=call an Exported Function|Calling an Exported Function=] executes in the
 Note: Exported Functions do not have a \[[Construct]] method and thus it is not possible to call one with the `new` operator.
 
 <div algorithm>
-  To <dfn>create a host function</dfn> from the JavaScript object |func|, perform the following steps:
+  To <dfn>create a host function</dfn> from the JavaScript object |func| and type |functype|, perform the following steps:
 
     1. Let |hostfunc| be a [=host function=] which performs the following steps when called:
         1. If the signature contains an [=𝗂𝟨𝟦=] (as argument or result), the host function throws a {{TypeError}} when called.
