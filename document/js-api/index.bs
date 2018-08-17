@@ -801,7 +801,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be |global|.\[[Global]].
     1. Let |globaltype| be [=type_global=](|store|, |globaladdr|), where |globaltype| is of the form |mut| |valuetype|.
-    1. If |mut| is [=const=], throw a {{TypeError}.
+    1. If |mut| is [=const=], throw a {{TypeError}}.
     1. If |valuetype| is [=𝗂𝟨𝟦=], throw a {{TypeError}}.
     1. Let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
     1. Let |store| be [=write_global=](|store|, |globaladdr|, |value|).
