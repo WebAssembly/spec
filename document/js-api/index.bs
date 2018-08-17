@@ -921,7 +921,7 @@ Note: Number values which are equal to NaN may have various observable NaN paylo
 The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerce a JavaScript value to a [=WebAssembly value=]  performs the following steps:
 
 
-Assert: |type| is not [=𝗂𝟨𝟦=].
+1. Assert: |type| is not [=𝗂𝟨𝟦=].
 1. If |type| is [=𝗂𝟥𝟤=],
     1. Let |i32| be ? [=ToInt32=](|v|).
     1. Return [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |i32|.
