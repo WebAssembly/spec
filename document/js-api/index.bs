@@ -762,7 +762,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |valuetype| equals [=𝗂𝟨𝟦=], return [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟥𝟤=], return [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟨𝟦=], return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
-    1. Otherwise, throw a {{TypeError}} exception.
+    1. Assert: This step is not reached.
 </div>
 
 <div algorithm>
