@@ -162,7 +162,7 @@ diff: bikeshed
 	curl `grep "^TR" index.bs | cut -d' ' -f2` -o $(BUILDDIR)/html/bikeshed/old.html
 	@echo "Done."
 	@echo "Diffing new against old (go get a coffee)..."
-	perl util/htmldiff.pl $(BUILDDIR)/html/bikeshed/old.html $(BUILDDIR)/html/bikeshed/index.html $(BUILDDIR)/html/bikeshed/diff.html
+	perl ../util/htmldiff.pl $(BUILDDIR)/html/bikeshed/old.html $(BUILDDIR)/html/bikeshed/index.html $(BUILDDIR)/html/bikeshed/diff.html
 	@echo "Done. The diff is at $(BUILDDIR)/html/bikeshed/diff.html"
 
 .PHONY: pickle
