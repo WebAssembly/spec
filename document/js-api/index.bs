@@ -591,7 +591,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Set |memory|.\[[BufferObject]] to |buffer|.
 </div>
 
-<div algorithm>
+<div algorithm=dom-Memory-grow>
     The <dfn method for="Memory">grow(|delta|)</dfn> method, when invoked, performs the following steps:
     1. Let |memory| be the Memory instance.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
@@ -671,18 +671,18 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. [=Create a table object=] from the table address |tableaddr| and return the result.
 </div>
 
-<div algorithm>
-    The <dfn method for="Table">grow(|d|)</dfn> method, when invoked, performs the following steps:
+<div algorithm=dom-Table-grow>
+    The <dfn method for="Table">grow(|delta|)</dfn> method, when invoked, performs the following steps:
     1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
     1. Let |initialSize| be the length of the Table instance's \[[Values]] internal slot.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |result| be [=grow_table=](|store|, |tableaddr|, |d|).
+    1. Let |result| be [=grow_table=](|store|, |tableaddr|, |delta|).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
 
         Note: The above exception may happen due to either insufficient memory or an invalid size parameter.
 
     6. Set the [=surrounding agent=]'s [=associated store=] to |result|.
-    1. [=Append=] null to the Table instance's \[[Values]] internal slot |d| times.
+    1. [=Append=] null to the Table instance's \[[Values]] internal slot |delta| times.
     1. Return |initialSize|.
 </div>
 
