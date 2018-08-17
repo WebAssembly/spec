@@ -914,7 +914,7 @@ The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a Jav
 
 <!-- If the WebAssembly value is optional, then given `None`, return JavaScript value `undefined`. -->
 
-Note: Number values which are equal to NaN may have various observable NaN payloads; see [=NumberToRawBytes=].for details.
+Note: Number values which are equal to NaN may have various observable NaN payloads; see [=NumberToRawBytes=] for details.
 </div>
 
 <div algorithm>
