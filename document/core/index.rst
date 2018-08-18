@@ -15,6 +15,7 @@ WebAssembly Specification
    binary/index
    text/index
    appendix/index
+   changes
 
 .. only:: latex
 

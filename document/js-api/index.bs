@@ -2,7 +2,7 @@
 Title: WebAssembly JavaScript Interface
 Shortname: wasm-js-api
 Group: wasm
-Status: ED
+Status: WD
 Level: 1
 TR: https://www.w3.org/TR/wasm-js-api-1/
 ED: https://webassembly.github.io/spec/js-api/
@@ -983,3 +983,7 @@ same class of exception is thrown as for out of memory conditions in JavaScript.
 The particular exception here is implementation-defined in both cases.
 
 Note: ECMAScript doesn't specify any sort of behavior on out-of-memory conditions; implementations have been observed to throw OOMError and to crash. Either is valid here.
+
+<pre class=include>
+path: changes.html
+</pre>

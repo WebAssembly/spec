@@ -1,0 +1,17 @@
+<h2 class="no-num" id="changes">Changes</h2>
+
+Changes since the previous <a href="https://www.w3.org/TR/2018/WD-wasm-js-api-1-20180215/">Working Draft</a>:
+
+* [=Global object cache=]. Added a Global object cache.
+* [=Asynchronously compile a WebAssembly module=]. Added step 1 "Let promise be a new promise".
+* [=Asynchronously compile a WebAssembly module=]. Added step 4 "Return promise".
+* [=Compile a WebAssembly module=]. Changed step 2 to unwrap the promise.
+* [=Instantiate a WebAssembly module=]. Added support for imported and exported mutable globals.
+* [=create a memory object=]. Removed note "Any attempts to detach buffer...".
+* [=reset the Memory buffer=]. Added algorithm to reset the Memory buffer; refactored {{Memory/grow(delta)}} and [=grow_memory=] instruction to use this.
+* [=create a table object=]. Added a step to fetch the associated store.
+* [[#globals]]. Added a Globals section.
+* [=a new Exported Function=]. Changed step 11 to call [=SetFunctionLength=].
+* [=call an Exported Function=]. Changed step 11 to "if ret is empty, ...".
+* [=ToJSValue=]. Changed step 1 to "... return [=the Number value=] for [=signed_32=](|i32|)".
+* [=ToJsValue=]. Clarified the note about NaN playloads.

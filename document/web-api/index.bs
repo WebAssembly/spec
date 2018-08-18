@@ -2,7 +2,7 @@
 Title: WebAssembly Web API
 Shortname: wasm-web-api
 Group: wasm
-Status: ED
+Status: WD
 Level: 1
 TR: https://www.w3.org/TR/wasm-web-api-1/
 ED: https://webassembly.github.io/spec/web-api/
@@ -230,3 +230,7 @@ stack frame representations; this allows engines to continue using their
 existing formats for JavaScript (which existing code may already be depending
 on) while still printing WebAssembly frames in a format consistent with
 JavaScript.
+
+<pre class=include>
+path: changes.html
+</pre>
