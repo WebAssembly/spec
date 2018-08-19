@@ -171,7 +171,7 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\05\04\01"                          ;; Memory section with 1 entry
+    "\05\07\01"                          ;; Memory section with 1 entry
     "\00\82\80\80\80\70"                 ;; no max, minimum 2 with unused bits set
   )
   "integer too large"
@@ -179,7 +179,7 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\05\04\01"                          ;; Memory section with 1 entry
+    "\05\07\01"                          ;; Memory section with 1 entry
     "\00\82\80\80\80\40"                 ;; no max, minimum 2 with some unused bits set
   )
   "integer too large"
