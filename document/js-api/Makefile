@@ -17,3 +17,12 @@ publish:
 clean:
 	rm -rf $(BUILDDIR)
 	rm -rf $(STATICDIR)
+
+.PHONY: diff
+diff: all
+	@echo "Downloading the old single-file html spec..."
+	curl `grep "^TR" index.bs | cut -d' ' -f2` -o $(BUILDDIR)/html/old.html
+	@echo "Done."
+	@echo "Diffing new against old..."
+	perl ../util/htmldiff.pl $(BUILDDIR)/html/old.html $(BUILDDIR)/html/index.html $(BUILDDIR)/html/diff.html
+	@echo "Done. The diff is at $(BUILDDIR)/html/diff.html"
