@@ -1,5 +1,7 @@
 # GC v1 Extensions
 
+*Note: This design is still in flux!*
+
 See [overview](Overview.md) for background.
 
 
@@ -208,6 +210,7 @@ In addition to the rules for basic reference types:
 #### Integer references
 
 Tentatively, support a type of guaranteed unboxed scalars.
+TODO: Is 31 bit value range the right choice?
 
 * `i31ref.new` creates an `i31ref` from a 32 bit value, truncating high bit
   - `i31ref : [i32] -> [i31ref]`
