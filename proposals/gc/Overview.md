@@ -4,6 +4,8 @@
 
 Note: Basic support for simple host reference types has been carved out into a [separate proposal](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md) that should become the future basis for this proposal.
 
+See [MVP](MVP.md) for a concrete v1 proposal.
+
 
 ### Motivation
 
@@ -33,10 +35,10 @@ Note: Basic support for simple host reference types has been carved out into a [
 
 ### Approach
 
-* Only basic but general structure: structs and arrays
+* Only basic but general structure: tuples (structs) and arrays
 * No heavyweight object model
-* Accept minimal amount of dynamic overhead (checked casts) as price for simplicity/universality
 * Independent from linear memory
+* Accept minimal amount of dynamic overhead (checked casts) as price for simplicity/universality
 * Pay as you go; in particular, no effect on code not using GC
 * Don't introduce dependencies on GC for other features (e.g., using resources through tables)
 * Avoid generics or other complex type structure _if possible_
