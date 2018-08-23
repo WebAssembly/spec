@@ -30,9 +30,9 @@ Limits
 
 .. math::
    \frac{
-     n < k
+     n \leq k
      \qquad
-     (m < k)^?
+     (m \leq k)^?
      \qquad
      (n \leq m)^?
    }{
