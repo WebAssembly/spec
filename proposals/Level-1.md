@@ -109,7 +109,7 @@ The type of an event is denoted by an index to a function signature defined in
 the `type` section. The parameters of the function signature defines the list of
 values associated with the exception event. The result type must be 'void'.
 
-An `event tag` is a value to distinguish different events, while an `event index
+An `event tag` is a value to distinguish different events, while an `event index`
 is a numeric name to refer to an (imported or defined) event tag within a module
 (see [event index space](#event-index-space) for details).
 
