@@ -89,7 +89,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     url: valid/modules.html#valid-module
         text: valid
         text: WebAssembly module validation
-    text: binary format of a module; url: binary/modules.html
+    text: module grammar; url: binary/modules.html#binary-module
     text: custom section; url: binary/modules.html#custom-section
     text: customsec; url: binary/modules.html#binary-customsec
     text: memory instance; url: exec/runtime.html#memory-instances
@@ -265,7 +265,7 @@ Note:
 -->
 
 <div algorithm>
-  To <dfn>compile a WebAssembly module</dfn> from a {{BufferSource}} |bytes|, perform the following steps:
+  To <dfn>compile a WebAssembly module</dfn> from source bytes |bytes|, perform the following steps:
     1. Let |module| be [=decode_module=](|bytes|). If |module| is [=error=], return [=error=].
     1. If [=validate_module=](|module|) is [=error=], return [=error=].
     1. Return |module|.
@@ -273,7 +273,8 @@ Note:
 
 <div algorithm>
   The <dfn method for="WebAssembly">validate(|bytes|)</dfn> method, when invoked, performs the following steps:
-    1. [=Compile a WebAssembly module|Compile=] |bytes| as a WebAssembly module and store the results as |module|.
+    1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
+    1. [=Compile a WebAssembly module|Compile=] |stableBytes| as a WebAssembly module and store the results as |module|.
     1. If |module| is [=error=], return false.
     1. Return true.
 </div>
@@ -282,7 +283,7 @@ Note:
 A {{Module}} object represents a single WebAssembly module. Each {{Module}} object has the following internal slots:
 
     * \[[Module]] : a WebAssembly [=module=]
-    * \[[Bytes]] : an {{ArrayBuffer}} which is source bytes of \[[Module]].
+    * \[[Bytes]] : the source bytes of \[[Module]].
 </div>
 
 <div algorithm>
@@ -295,7 +296,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 </div>
 
 <div algorithm>
-  To <dfn>asynchronously compile a WebAssembly module</dfn> from a {{BufferSource}} |bytes|, using optional [=task source=] |taskSource|, perform the following steps:
+  To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes|, using optional [=task source=] |taskSource|, perform the following steps:
 
     1. Let |promise| be [=a new promise=].
     1. In parallel, [=compile a WebAssembly module|compile the WebAssembly module=] |bytes| and store the result as |module|.
@@ -496,11 +497,11 @@ interface Module {
     The <dfn method for="Module">customSections(|moduleObject|, |sectionName|)</dfn> method, when invoked, performs the following steps:
     1. Let |bytes| be |moduleObject|.\[[Bytes]].
     1. Let |customSections| be an empty [=list=] of {{ArrayBuffer}}s.
-    1. For each [=custom section=] |customSection| in the binary format of |bytes|,
+    1. For each [=custom section=] |customSection| in |bytes|, interpreted according to the [=module grammar=],
         1. Let |name| be the <code>name</code> of |customSection|, [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
         1. Assert: |name| is not failure (|moduleObject|.\[[Module]] is [=valid=]).
         1. If |name| equals |sectionName| as string values,
-            1. [=Append=] a new {{ArrayBuffer}} containing a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes| for the range matched by this [=customsec=] production.
+            1. [=Append=] a new {{ArrayBuffer}} containing a copy of the bytes in |bytes| for the range matched by this [=customsec=] production.
     1. Return |customSections|.
 </div>
 
