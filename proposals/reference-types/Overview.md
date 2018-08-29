@@ -229,7 +229,7 @@ Note:
 
 ### GC Types
 
-See [GC proposal](https://github.com/WebAssembly/gc/blob/master/proposals/GC.md).
+See [GC proposal](https://github.com/WebAssembly/gc/blob/master/proposals/gc/Overview.md).
 
 
 ### Further possible generalisations
