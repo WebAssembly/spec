@@ -65,7 +65,8 @@
                 .addBody([
                     kExprI32Const,
                     42,
-                    kExprReturn
+                    kExprReturn,
+                    kExprEnd,
                 ])
                 .exportFunc();
             let source = builder.toBuffer();
