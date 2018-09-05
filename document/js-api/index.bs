@@ -457,9 +457,9 @@ dictionary ModuleImportDescriptor {
 
 [LegacyNamespace=WebAssembly, Constructor(BufferSource bytes), Exposed=(Window,Worker,Worklet)]
 interface Module {
-  static sequence&lt;ModuleExportDescriptor> exports(Module module);
-  static sequence&lt;ModuleImportDescriptor> imports(Module module);
-  static sequence&lt;ArrayBuffer> customSections(Module module, USVString sectionName);
+  static sequence&lt;ModuleExportDescriptor> exports(Module moduleObject);
+  static sequence&lt;ModuleImportDescriptor> imports(Module moduleObject);
+  static sequence&lt;ArrayBuffer> customSections(Module moduleObject, USVString sectionName);
 };
 </pre>
 
@@ -592,7 +592,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Set |memory|.\[[BufferObject]] to |buffer|.
 </div>
 
-<div algorithm>
+<div algorithm=dom-Memory-grow>
     The <dfn method for="Memory">grow(|delta|)</dfn> method, when invoked, performs the following steps:
     1. Let |memory| be the Memory instance.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
@@ -672,18 +672,18 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. [=Create a table object=] from the table address |tableaddr| and return the result.
 </div>
 
-<div algorithm>
-    The <dfn method for="Table">grow(|d|)</dfn> method, when invoked, performs the following steps:
+<div algorithm=dom-Table-grow>
+    The <dfn method for="Table">grow(|delta|)</dfn> method, when invoked, performs the following steps:
     1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
     1. Let |initialSize| be the length of the Table instance's \[[Values]] internal slot.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |result| be [=grow_table=](|store|, |tableaddr|, |d|).
+    1. Let |result| be [=grow_table=](|store|, |tableaddr|, |delta|).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
 
         Note: The above exception may happen due to either insufficient memory or an invalid size parameter.
 
-    6. Set the [=surrounding agent=]'s [=associated store=] to |result|.
-    1. [=Append=] null to the Table instance's \[[Values]] internal slot |d| times.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |result|.
+    1. [=Append=] null to the Table instance's \[[Values]] internal slot |delta| times.
     1. Return |initialSize|.
 </div>
 
@@ -723,7 +723,7 @@ dictionary GlobalDescriptor {
   boolean mutable = false;
 };
 
-[LegacyNamespace=WebAssembly, Constructor(GlobalDescriptor descriptor, optional any value), Exposed=(Window,Worker,Worklet)]
+[LegacyNamespace=WebAssembly, Constructor(GlobalDescriptor descriptor, optional any v), Exposed=(Window,Worker,Worklet)]
 interface Global {
   any valueOf();
   attribute any value;
@@ -763,7 +763,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |valuetype| equals [=𝗂𝟨𝟦=], return [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟥𝟤=], return [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟨𝟦=], return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
-    1. Otherwise, throw a {{TypeError}} exception.
+    1. Assert: This step is not reached.
 </div>
 
 <div algorithm>
@@ -802,7 +802,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be |global|.\[[Global]].
     1. Let |globaltype| be [=type_global=](|store|, |globaladdr|), where |globaltype| is of the form |mut| |valuetype|.
-    1. If |mut| is [=const=], throw a {{TypeError}.
+    1. If |mut| is [=const=], throw a {{TypeError}}.
     1. If |valuetype| is [=𝗂𝟨𝟦=], throw a {{TypeError}}.
     1. Let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
     1. Let |store| be [=write_global=](|store|, |globaladdr|, |value|).
@@ -908,21 +908,21 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 <div algorithm>
 The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a JavaScript value performs the following steps:
 
-Assert: |w| is not of the form [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] <var ignore>i64</var>.
+1. Assert: |w| is not of the form [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] <var ignore>i64</var>.
 1. If |w| is of the form [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |i32|, return [=the Number value=] for [=signed_32=](|i32|).
 1. If |w| is of the form [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |f32|, return [=the Number value=] for |f32|.
 1. If |w| is of the form [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |f64|, return [=the Number value=] for |f64|.
 
 <!-- If the WebAssembly value is optional, then given `None`, return JavaScript value `undefined`. -->
 
-Note: Number values which are equal to NaN may have various observable NaN payloads; see [=NumberToRawBytes=].for details.
+Note: Number values which are equal to NaN may have various observable NaN payloads; see [=NumberToRawBytes=] for details.
 </div>
 
 <div algorithm>
 The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerce a JavaScript value to a [=WebAssembly value=]  performs the following steps:
 
 
-Assert: |type| is not [=𝗂𝟨𝟦=].
+1. Assert: |type| is not [=𝗂𝟨𝟦=].
 1. If |type| is [=𝗂𝟥𝟤=],
     1. Let |i32| be ? [=ToInt32=](|v|).
     1. Return [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |i32|.
