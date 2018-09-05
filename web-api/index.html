@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version cc50c9833ae46d7b8ae15b7144139db05797d724" name="generator">
+  <meta content="Bikeshed version d0d8d87ffe296a92b247fe143aae4c1411ba5f79" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="b9af968f325f27999a393bd2207edca60083208d" name="document-revision">
+  <meta content="2311cf29acdea58b6041095ca82be90dcdbda749" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-08-24">24 August 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-09-05">5 September 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -383,7 +383,9 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
         <ol>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>bodyArrayBuffer</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a> and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise">resolve</a> <var>returnValue</var> with the result.</p>
+          <p>Let <var>stableBytes</var> be a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-get-buffer-source-copy" id="ref-for-dfn-get-buffer-source-copy">copy of the bytes held by the buffer</a> <var>bodyArrayBuffer</var>.</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>stableBytes</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a> and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise">resolve</a> <var>returnValue</var> with the result.</p>
         </ol>
        <li data-md>
         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>bodyPromise</var> with reason <var>reason</var>:</p>
@@ -748,6 +750,12 @@ JavaScript.</p>
     <li><a href="#ref-for-datacloneerror">2. Serialization</a> <a href="#ref-for-datacloneerror①">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-get-buffer-source-copy">
+   <a href="https://heycam.github.io/webidl/#dfn-get-buffer-source-copy">https://heycam.github.io/webidl/#dfn-get-buffer-source-copy</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-get-buffer-source-copy">1. Streaming Module Compilation and Instantiation</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-idl-object">
    <a href="https://heycam.github.io/webidl/#idl-object">https://heycam.github.io/webidl/#idl-object</a><b>Referenced in:</b>
    <ul>
@@ -819,6 +827,7 @@ JavaScript.</p>
     <ul>
      <li><span class="dfn-paneled" id="term-for-idl-DOMException" style="color:initial">DOMException</span>
      <li><span class="dfn-paneled" id="term-for-datacloneerror" style="color:initial">DataCloneError</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-get-buffer-source-copy" style="color:initial">get a copy of the buffer source</span>
      <li><span class="dfn-paneled" id="term-for-idl-object" style="color:initial">object</span>
     </ul>
   </ul>
