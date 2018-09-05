@@ -681,7 +681,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
         Note: The above exception may happen due to either insufficient memory or an invalid size parameter.
 
-    6. Set the [=surrounding agent=]'s [=associated store=] to |result|.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |result|.
     1. [=Append=] null to the Table instance's \[[Values]] internal slot |delta| times.
     1. Return |initialSize|.
 </div>
