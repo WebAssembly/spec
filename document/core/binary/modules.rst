@@ -330,6 +330,9 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    \production{element segment} & \Belem &::=&
      \hex{01}~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \{ \EINIT~y^\ast \} \\
+   \production{element segment} & \Belem &::=&
+     \hex{02}~~x{:}\Btableidx~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
+       &\Rightarrow& \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\
    \end{array}
 
 .. note::
@@ -419,6 +422,9 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
    \production{data segment} & \Bdata &::=&
      \hex{01}~~b^\ast{:}\Bvec(\Bbyte)
        &\Rightarrow& \{ \DINIT~b^\ast \} \\
+   \production{data segment} & \Bdata &::=&
+     \hex{02}~~x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
+       &\Rightarrow& \{ \DMEM~x, \DOFFSET~e, \DINIT~b^\ast \} \\
    \end{array}
 
 .. note::

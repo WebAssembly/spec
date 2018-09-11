@@ -190,9 +190,10 @@ Attempting to drop an active segment is a validation error.
 The data section is encoded as follows:
 
 ```
-datasec ::= seg*:section_11(vec(data))   => seg
-data    ::= 0x00 e:expr b*:vec(byte)     => {data 0, offset e, init b*, active true}
-data    ::= 0x01 b*:vec(byte)            => {data 0, offset empty, init b*, active false}
+datasec ::= seg*:section_11(vec(data))        => seg
+data    ::= 0x00 e:expr b*:vec(byte)          => {data 0, offset e,     init b*, active true }
+data    ::= 0x01 b*:vec(byte)                 => {data 0, offset empty, init b*, active false}
+data    ::= 0x02 x:memidx e:expr b*:vec(byte) => {data x, offset e,     init b*, active true }
 ```
 
 The element section is encoded similarly.
