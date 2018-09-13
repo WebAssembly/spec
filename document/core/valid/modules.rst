@@ -321,21 +321,14 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 
-* Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\CGLOBALS[x]`.
-
-* The mutability :math:`\mut` must be |MCONST|.
-
 * Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~C.\CGLOBALS[x]`.
 
 .. math::
    \frac{
-     C.\CGLOBALS[x] = \MCONST~t
+     C.\CGLOBALS[x] = \globaltype
    }{
-     C \vdashexportdesc \EDGLOBAL~x : \ETGLOBAL~(\MCONST~t)
+     C \vdashexportdesc \EDGLOBAL~x : \ETGLOBAL~\globaltype
    }
-
-.. note::
-   In future versions of WebAssembly, the restriction to exporting only immutable globals may be removed.
 
 
 .. index:: import, name, function type, table type, memory type, global type
@@ -417,19 +410,14 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 * The global type :math:`\globaltype` must be :ref:`valid <valid-globaltype>`.
 
-* The mutability of :math:`\globaltype` must be |MCONST|.
-
 * Then the import description is valid with type :math:`\ETGLOBAL~\globaltype`.
 
 .. math::
    \frac{
-     \vdashglobaltype \MCONST~t \ok
+     \vdashglobaltype \globaltype \ok
    }{
-     C \vdashimportdesc \IDGLOBAL~\MCONST~t : \ETGLOBAL~\MCONST~t
+     C \vdashimportdesc \IDGLOBAL~\globaltype : \ETGLOBAL~\globaltype
    }
-
-.. note::
-   In future versions of WebAssembly, the restriction to importing only immutable globals may be removed.
 
 
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
@@ -454,16 +442,16 @@ Instead, the context :math:`C` for validation of the module's content is constru
   * :math:`C.\CTYPES` is :math:`\module.\MTYPES`,
 
   * :math:`C.\CFUNCS` is :math:`\etfuncs(\X{it}^\ast)` concatenated with :math:`\X{ft}^\ast`,
-    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :math:`function types <syntax-functype>` :math:`\X{ft}^\ast` as determined below,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`function types <syntax-functype>` :math:`\X{ft}^\ast` as determined below,
 
   * :math:`C.\CTABLES` is :math:`\ettables(\X{it}^\ast)` concatenated with :math:`\X{tt}^\ast`,
-    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :math:`table types <syntax-tabletype>` :math:`\X{tt}^\ast` as determined below,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`table types <syntax-tabletype>` :math:`\X{tt}^\ast` as determined below,
 
   * :math:`C.\CMEMS` is :math:`\etmems(\X{it}^\ast)` concatenated with :math:`\X{mt}^\ast`,
-    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :math:`memory types <syntax-memtype>` :math:`\X{mt}^\ast` as determined below,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`memory types <syntax-memtype>` :math:`\X{mt}^\ast` as determined below,
 
   * :math:`C.\CGLOBALS` is :math:`\etglobals(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
-    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :math:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
 
   * :math:`C.\CLOCALS` is empty,
 
@@ -471,7 +459,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CRETURN` is empty.
 
-* Let :math:`C'` be the :ref:`context <context>` where :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\externtype_i^\ast)` and all other fields are empty.
+* Let :math:`C'` be the :ref:`context <context>` where :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)` and all other fields are empty.
 
 * Under the context :math:`C`:
 
@@ -496,7 +484,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
     the segment :math:`\elem_i` must be :ref:`valid <valid-elem>`.
 
   * For each :math:`\data_i` in :math:`\module.\MDATA`,
-    the segment :math:`\elem_i` must be :ref:`valid <valid-data>`.
+    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
 
   * If :math:`\module.\MSTART` is non-empty,
     then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
@@ -505,7 +493,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
     the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\X{it}_i`.
 
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
-    the segment :math:`\import_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
+    the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
 
 * The length of :math:`C.\CTABLES` must not be larger than :math:`1`.
 

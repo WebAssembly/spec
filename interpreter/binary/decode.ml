@@ -574,10 +574,15 @@ let start_section s =
 let local s =
   let n = vu32 s in
   let t = value_type s in
-  Lib.List32.make n t
+  n, t
 
 let code _ s =
-  let locals = List.flatten (vec local s) in
+  let pos = pos s in
+  let nts = vec local s in
+  let ns = List.map (fun (n, _) -> I64_convert.extend_u_i32 n) nts in
+  require (I64.lt_u (List.fold_left I64.add 0L ns) 0x1_0000_0000L)
+    s pos "too many locals";
+  let locals = List.flatten (List.map (Lib.Fun.uncurry Lib.List32.make) nts) in
   let body = instr_block s in
   end_ s;
   {locals; body; ftype = Source.((-1l) @@ Source.no_region)}

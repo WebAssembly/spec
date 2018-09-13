@@ -309,10 +309,12 @@ and check_block (c : context) (es : instr list) (ts : stack_type) at =
 
 (* Types *)
 
-let check_limits {min; max} at =
+let check_limits {min; max} range at msg =
+  require (I64.le_u (Int64.of_int32 min) range) at msg;
   match max with
   | None -> ()
   | Some max ->
+    require (I64.le_u (Int64.of_int32 max) range) at msg;
     require (I32.le_u min max) at
       "size minimum must not be greater than maximum"
 
@@ -327,17 +329,12 @@ let check_func_type (ft : func_type) at =
 
 let check_table_type (tt : table_type) at =
   let TableType (lim, _) = tt in
-  check_limits lim at
-
-let check_memory_size (sz : I32.t) at =
-  require (I32.le_u sz 65536l) at
-    "memory size must be at most 65536 pages (4GiB)"
+  check_limits lim 0x1_0000_0000L at "table size must be at most 2^32"
 
 let check_memory_type (mt : memory_type) at =
   let MemoryType lim = mt in
-  check_limits lim at;
-  check_memory_size lim.min at;
-  Lib.Option.app (fun max -> check_memory_size max at) lim.max
+  check_limits lim 0x1_0000L at
+    "memory size must be at most 65536 pages (4GiB)"
 
 let check_global_type (gt : global_type) at =
   let GlobalType (t, mut) = gt in
@@ -428,9 +425,6 @@ let check_import (im : import) (c : context) : context =
     {c with memories = mt :: c.memories}
   | GlobalImport gt ->
     check_global_type gt idesc.at;
-    let GlobalType (_, mut) = gt in
-    require (mut = Immutable) idesc.at
-      "mutable globals cannot be imported (yet)";
     {c with globals = gt :: c.globals}
 
 module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
@@ -441,10 +435,7 @@ let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
   | FuncExport x -> ignore (func c x)
   | TableExport x -> ignore (table c x)
   | MemoryExport x -> ignore (memory c x)
-  | GlobalExport x ->
-    let GlobalType (_, mut) = global c x in
-    require (mut = Immutable) edesc.at
-      "mutable globals cannot be exported (yet)"
+  | GlobalExport x -> ignore (global c x)
   );
   require (not (NameSet.mem name set)) ex.at "duplicate export name";
   NameSet.add name set

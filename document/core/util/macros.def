@@ -474,7 +474,7 @@
 .. |Bversion| mathdef:: \xref{binary/modules}{binary-version}{\B{version}}
 .. |Bmodule| mathdef:: \xref{binary/modules}{binary-module}{\B{module}}
 
-.. |Bsection| mathdef:: \xref{binary/modules}{binary-module}{\B{section}}
+.. |Bsection| mathdef:: \xref{binary/modules}{binary-section}{\B{section}}
 .. |Bcustomsec| mathdef:: \xref{binary/modules}{binary-customsec}{\B{customsec}}
 .. |Btypesec| mathdef:: \xref{binary/modules}{binary-typesec}{\B{typesec}}
 .. |Bfuncsec| mathdef:: \xref{binary/modules}{binary-funcsec}{\B{funcsec}}
