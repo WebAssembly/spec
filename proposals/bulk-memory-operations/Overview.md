@@ -180,12 +180,14 @@ the following new instructions:
 A passive segment has no initializer expression, since it will be specified
 as an operand to `memory.init` or `table.init`.
 
-Passive segments can also be discarded by using the following new instructions:
+Segments can also be discarded by using the following new instructions:
 
 * `memory.drop`: prevent further use of a data segment
 * `table.drop`: prevent further use of an element segment
 
-Attempting to drop an active segment is a validation error.
+An active segment is equivalent to a passive segment, but with an implicit
+`memory.init` followed by a `memory.drop` (or `table.init` followed by a
+`table.drop`) that is prepended to the module's start function.
 
 The data section is encoded as follows:
 
@@ -200,7 +202,7 @@ The element section is encoded similarly.
 
 ### `memory.init` instruction
 
-The `memory.init` instruction copies data from a given passive segment into a target
+The `memory.init` instruction copies data from a given segment into a target
 memory. The source segment and target memory are given as immediates. The
 instruction also has three i32 operands: an offset into the source segment, an
 offset into the target memory, and a length to copy.
@@ -211,10 +213,12 @@ step 11 of
 but it behaves as though the segment were specified with the source offset,
 target offset, and length as given by the `memory.init` operands.
 
-It is a validation error to use `memory.init` with an active segment.
+It is a validation error to use `memory.init` with an out-of-bounds segment index.
 
 A trap occurs if:
-* the segment is used after it has been dropped via `memory.drop`
+* the segment is used after it has been dropped via `memory.drop`. This includes
+  active segments that were dropped after being copied into memory during module
+  instantiation.
 * any of the accessed bytes lies outside the source data segment or the target memory
 
 Note that it is allowed to use `memory.init` on the same data segment more than
@@ -228,7 +232,10 @@ instruction. This instruction is intended to be used as an optimization hint to
 the WebAssembly implementation. After a memory segment is dropped its data can
 no longer be retrieved, so the memory used by this segment may be freed.
 
-It is a validation error to use `memory.drop` with an active segment.
+It is a validation error to use `memory.drop` with an out-of-bounds segment index.
+
+A trap occurs if the segment was already dropped. This includes active segments
+that were dropped after being copied into memory during module instantiation.
 
 ### `memory.copy` instruction
 
@@ -260,7 +267,7 @@ the difference that they operate on element segments and tables, instead of
 data segments and memories. The offset and length operands of `table.init` and
 `table.copy` have element units instead of bytes as well.
 
-## Conditional Segment Initialization Example
+## Passive Segment Initialization Example
 
 Consider if there are two data sections, the first is always active and the
 second is conditionally active if global 0 has a non-zero value. This could be

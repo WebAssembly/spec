@@ -432,15 +432,13 @@ Memory Instructions
 
 * The data segment :math:`C.\CDATA[x]` must be defined in the context.
 
-* The :ref:`segment type <syntax-segtype>` :math:`C.\CDATA[x]` must be |SPASSIVE|.
-
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
      C.\CMEMS[0] = \memtype
      \qquad
-     C.\CDATA[x] = \SPASSIVE
+     C.\CDATA[x] = \segtype
    }{
      C \vdashinstr \MEMORYINIT~x : [\I32~\I32~\I32] \to []
    }
@@ -459,7 +457,7 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CDATA[x] = \SPASSIVE
+     C.\CDATA[x] = \segtype
    }{
      C \vdashinstr \MEMORYDROP~x : [] \to []
    }
@@ -516,15 +514,13 @@ Table Instructions
 
 * The element segment :math:`C.\CELEM[x]` must be defined in the context.
 
-* The :ref:`segment type <syntax-segtype>` :math:`C.\CELEM[x]` must be |SPASSIVE|.
-
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
      C.\CTABLES[0] = \tabletype
      \qquad
-     C.\CELEM[x] = \SPASSIVE
+     C.\CELEM[x] = \segtype
    }{
      C \vdashinstr \TABLEINIT~x : [\I32~\I32~\I32] \to []
    }
@@ -537,13 +533,11 @@ Table Instructions
 
 * The element segment :math:`C.\CELEM[x]` must be defined in the context.
 
-* The :ref:`segment type <syntax-segtype>` :math:`C.\CELEM[x]` must be |SPASSIVE|.
-
 * Then the instruction is valid with type :math:`[] \to []`.
 
 .. math::
    \frac{
-     C.\CELEM[x] = \SPASSIVE
+     C.\CELEM[x] = \segtype
    }{
      C \vdashinstr \TABLEDROP~x : [] \to []
    }
