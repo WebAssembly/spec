@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 090ef96cbce74475c89e94394cc8fa4fbc08b477" name="generator">
+  <meta content="Bikeshed version 591bea59cf8238bb54df5a264359f29d0d039368" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="3dd64b7ae0781bf3905c7e1ecee7e78b928557f5" name="document-revision">
+  <meta content="db9cd40808a90ecc5f4a23e88fb375c8f60b8d52" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-09-13">13 September 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-09-23">23 September 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -924,11 +924,13 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      <li data-md>
       <p>If <var>descriptor</var>["maximum"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present①">present</a>, let <var>maximum</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>maximum</var> be empty.</p>
      <li data-md>
+      <p>If <var>maximum</var> is not empty and <var>maximum</var> &lt; <var>initial</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror">RangeError</a></code> exception.</p>
+     <li data-md>
       <p>Let <var>memtype</var> be { min <var>initial</var>, max <var>maximum</var> }</p>
      <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent③">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②">associated store</a>.</p>
      <li data-md>
-      <p>Let (<var>store</var>, <var>memaddr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-mem" id="ref-for-embed-alloc-mem">alloc_mem</a>(<var>store</var>, <var>memtype</var>). If allocation fails, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror">RangeError</a></code> exception.</p>
+      <p>Let (<var>store</var>, <var>memaddr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-alloc-mem" id="ref-for-embed-alloc-mem">alloc_mem</a>(<var>store</var>, <var>memtype</var>). If allocation fails, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①">RangeError</a></code> exception.</p>
      <li data-md>
       <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent④">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store③">associated store</a> to <var>store</var>.</p>
      <li data-md>
@@ -968,7 +970,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      <li data-md>
       <p>Let <var>store</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-grow-mem" id="ref-for-embed-grow-mem">grow_mem</a>(<var>store</var>, <var>memaddr</var>, <var>delta</var>).</p>
      <li data-md>
-      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑨">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①">RangeError</a></code> exception.</p>
+      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑨">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror②">RangeError</a></code> exception.</p>
      <li data-md>
       <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent⑦">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑤">associated store</a> to <var>store</var>.</p>
      <li data-md>
@@ -1051,13 +1053,13 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Table" data-dfn-type="constructor" data-export id="dom-table-table"><code>Table(<var>descriptor</var>)</code></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md>
-      <p>If <var>descriptor</var>["initial"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present②">present</a>, let <var>n</var> be <var>descriptor</var>["initial"]; otherwise, let <var>n</var> be 0.</p>
+      <p>If <var>descriptor</var>["initial"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present②">present</a>, let <var>initial</var> be <var>descriptor</var>["initial"]; otherwise, let <var>initial</var> be 0.</p>
      <li data-md>
-      <p>If <var>descriptor</var>["maximum"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present③">present</a>, let <var>m</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>m</var> be empty.</p>
+      <p>If <var>descriptor</var>["maximum"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present③">present</a>, let <var>maximum</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>maximum</var> be empty.</p>
      <li data-md>
-      <p>If <var>m</var> is not empty and <var>m</var> &lt; <var>n</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror②">RangeError</a></code> exception.</p>
+      <p>If <var>maximum</var> is not empty and <var>maximum</var> &lt; <var>initial</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Let <var>type</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype">table type</a> {<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype①">𝗆𝗂𝗇</a> n, <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype②">𝗆𝖺𝗑</a> <var>m</var>} <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype③">𝖺𝗇𝗒𝖿𝗎𝗇𝖼</a>.</p>
+      <p>Let <var>type</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype">table type</a> {<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype①">𝗆𝗂𝗇</a> n, <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype②">𝗆𝖺𝗑</a> <var>maximum</var>} <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype③">𝖺𝗇𝗒𝖿𝗎𝗇𝖼</a>.</p>
      <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent①⓪">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑦">associated store</a>.</p>
      <li data-md>
@@ -1080,7 +1082,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      <li data-md>
       <p>Let <var>result</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-grow-table" id="ref-for-embed-grow-table">grow_table</a>(<var>store</var>, <var>tableaddr</var>, <var>delta</var>).</p>
      <li data-md>
-      <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①⓪">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">RangeError</a></code> exception.</p>
+      <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①⓪">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror④">RangeError</a></code> exception.</p>
       <p class="note" role="note"><span>Note:</span> The above exception may happen due to either insufficient memory or an invalid size parameter.</p>
      <li data-md>
       <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent①③">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⓪">associated store</a> to <var>result</var>.</p>
@@ -1099,7 +1101,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      <li data-md>
       <p>Let <var>size</var> be the length of <var>values</var>.</p>
      <li data-md>
-      <p>If <var>index</var> ≥ <var>size</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror④">RangeError</a></code> exception.</p>
+      <p>If <var>index</var> ≥ <var>size</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑤">RangeError</a></code> exception.</p>
      <li data-md>
       <p>Return <var>values</var>[<var>index</var>].</p>
     </ol>
@@ -1126,7 +1128,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      <li data-md>
       <p>Let <var>store</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-write-table" id="ref-for-embed-write-table">write_table</a>(<var>store</var>, <var>tableaddr</var>, <var>index</var>, <var>funcaddr</var>).</p>
      <li data-md>
-      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①①">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑤">RangeError</a></code> exception.</p>
+      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①①">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑥">RangeError</a></code> exception.</p>
      <li data-md>
       <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent①⑤">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①②">associated store</a> to <var>store</var>.</p>
      <li data-md>
@@ -1280,7 +1282,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      <li data-md>
       <p>Let <var>store</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-write-global" id="ref-for-embed-write-global">write_global</a>(<var>store</var>, <var>globaladdr</var>, <var>value</var>).</p>
      <li data-md>
-      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①②">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑥">RangeError</a></code> exception.</p>
+      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①②">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑦">RangeError</a></code> exception.</p>
      <li data-md>
       <p>Set the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑦">associated store</a> to <var>store</var>.</p>
     </ol>
@@ -1525,7 +1527,7 @@ general, prevent future execution.</p>
    <p>Whenever a stack overflow occurs in
 WebAssembly code, the same class of exception is thrown as for a stack overflow in
 JavaScript. The particular exception here is implementation-defined in both cases.</p>
-   <p class="note" role="note"><span>Note:</span> ECMAScript doesn’t specify any sort of behavior on stack overflow; implementations have been observed to throw <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑦">RangeError</a></code>, InternalError or Error. Any is valid here.</p>
+   <p class="note" role="note"><span>Note:</span> ECMAScript doesn’t specify any sort of behavior on stack overflow; implementations have been observed to throw <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">RangeError</a></code>, InternalError or Error. Any is valid here.</p>
    <h3 class="heading settled" data-level="4.2" id="out-of-memory"><span class="secno">4.2. </span><span class="content">Out of Memory</span><a class="self-link" href="#out-of-memory"></a></h3>
    <p>Whenever validation, compilation or instantiation run out of memory, the
 same class of exception is thrown as for out of memory conditions in JavaScript.
@@ -1708,10 +1710,10 @@ The particular exception here is implementation-defined in both cases.</p>
   <aside class="dfn-panel" data-for="term-for-sec-native-error-types-used-in-this-standard-rangeerror">
    <a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror">https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror">3.3. Memories</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror①">(2)</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror②">3.4. Tables</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror④">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑤">(4)</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑥">3.5. Globals</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑦">4.1. Stack Overflow</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror">3.3. Memories</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror①">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror②">(3)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">3.4. Tables</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror④">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑤">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑥">(4)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑦">3.5. Globals</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">4.1. Stack Overflow</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-native-error-types-used-in-this-standard-typeerror">
