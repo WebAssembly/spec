@@ -28,7 +28,7 @@ let kJSEmbeddingMaxFunctionLocals = 50000;
 let kJSEmbeddingMaxFunctionParams = 1000;
 let kJSEmbeddingMaxFunctionReturns = 1;
 let kJSEmbeddingMaxTableSize = 10000000;
-let kJSEmbeddingMaxTableEntries = 10000000;
+let kJSEmbeddingMaxElementSegments = 10000000;
 let kJSEmbeddingMaxTables = 1;
 let kJSEmbeddingMaxMemories = 1;
 
@@ -92,6 +92,9 @@ function promise_test(func, description) {
 }
 //=======================================================================
 
+// This function runs the {gen} function with the values {min}, {limit}, and
+// {limit+1}, assuming that values below and including the limit should
+// pass. {name} is used for debugging output.
 function testLimit(name, min, limit, gen) {
   print(`==== Test ${name} limit = ${limit} ====`);
   function run_validate(count) {
@@ -196,10 +199,6 @@ function testLimit(name, min, limit, gen) {
   }
 }
 
-// A little doodad to disable a test easily
-let DISABLED = {testLimit: () => 0};
-let X = DISABLED;
-
 testLimit("types", 1, kJSEmbeddingMaxTypes, (builder, count) => {
         for (let i = 0; i < count; i++) {
             builder.addType(kSig_i_i);
@@ -264,11 +263,6 @@ testLimit("maximum imported memory pages", 1, kJSEmbeddingMaxMemoryPages,
             builder.addImportedMemory("mod", "mem", 1, count);
           });
 
-// TODO(titzer): ugh, that's hard to test.
-DISABLED.testLimit("module size", 1, kJSEmbeddingMaxModuleSize,
-                   (builder, count) => {
-                   });
-
 testLimit("function size", 2, kJSEmbeddingMaxFunctionSize, (builder, count) => {
         let type = builder.addType(kSig_v_v);
         let nops = count-2;
@@ -311,7 +305,7 @@ testLimit("maximum table size", 1, kJSEmbeddingMaxTableSize, (builder, count) =>
         builder.setFunctionTableBounds(1, count);
     });
 
-testLimit("table entries", 1, kJSEmbeddingMaxTableEntries, (builder, count) => {
+testLimit("element segments", 1, kJSEmbeddingMaxElementSegments, (builder, count) => {
         builder.setFunctionTableBounds(1, 1);
         let array = [];
         for (let i = 0; i < count; i++) {
