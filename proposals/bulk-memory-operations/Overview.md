@@ -162,14 +162,16 @@ Filling a memory region can be accomplished with `memory.fill`:
 
 TODO: should we provide `memory.clear` and `table.clear` instead?
 
-The [binary format for the data section](https://webassembly.github.io/spec/binary/modules.html#data-section)
+The [binary format for the data
+section](https://webassembly.github.io/spec/core/binary/modules.html#binary-datasec)
 currently has a collection of segments, each of which has a memory index, an
 initializer expression for its offset, and its raw data.
 
 Since WebAssembly currently does not allow for multiple memories, the memory
-index must be zero. We can repurpose this field as a flags field.
+index of each segment must be zero, which when represented as a `varuint32` is
+a single zero byte. We can repurpose this byte as a flags field.
 
-When the least-significant bit of the flags field is `1`, this segment is
+When the least-significant bit of this new flags field is `1`, this segment is
 _passive_. A passive segment will not be automatically copied into the
 memory or table on instantiation, and must instead be applied manually using
 the following new instructions:
@@ -189,23 +191,29 @@ An active segment is equivalent to a passive segment, but with an implicit
 `memory.init` followed by a `memory.drop` (or `table.init` followed by a
 `table.drop`) that is prepended to the module's start function.
 
-The data section is encoded as follows:
+The new encoding of a data segment is now:
 
-```
-datasec ::= seg*:section_11(vec(data))        => seg
-data    ::= 0x00 e:expr b*:vec(byte)          => {data 0, offset e,     init b*, active true }
-data    ::= 0x01 b*:vec(byte)                 => {data 0, offset empty, init b*, active false}
-data    ::= 0x02 x:memidx e:expr b*:vec(byte) => {data x, offset e,     init b*, active true }
-```
+| Field | Type | Description |
+|------|-------|-------------|
+| flags | `uint8` | Flags for passive and presence of fields below, only values of 0, 1, and 2 are valid |
+| index | `varuint32`? | Memory index this segment is for, only present if `flags` is 2, otherwise the index is implicitly 0 |
+| offset | `init_expr`? | an `i32` initializer expression for offset, not present if `flags & 0x1` is set |
+| size | `varuint32` | size of `data` (in bytes) |
+| data | `bytes` | sequence of `size` bytes |
 
-The element section is encoded similarly.
+An element segment (for tables) is encoded similarly by repurposing its table
+index (which is required to be zero) as a flags field.
 
 ### `memory.init` instruction
 
-The `memory.init` instruction copies data from a given segment into a target
-memory. The source segment and target memory are given as immediates. The
-instruction also has three i32 operands: an offset into the source segment, an
-offset into the target memory, and a length to copy.
+The `memory.init` instruction copies data from a given passive segment into a target
+memory. The target memory and source segment are given as immediates.
+
+The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in order:
+
+- top-2: destination address
+- top-1: offset into the source segment
+- top-0: size of memory region in bytes
 
 When `memory.init` is executed, its behavior matches the steps described in
 step 11 of
@@ -242,7 +250,8 @@ that were dropped after being copied into memory during module instantiation.
 Copy data from a source memory region to destination region; these regions may
 overlap: the copy is performed as if the source region was first copied to a
 temporary buffer, then the temporary buffer is copied to the destination
-region.
+region. This instruction has an immediate argument of which memory to operate
+on, and it must be zero for now.
 
 The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in order:
 
@@ -252,7 +261,8 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 
 ### `memory.fill` instruction
 
-Set all bytes in a memory region to a given byte.
+Set all bytes in a memory region to a given byte. This instruction has an
+immediate argument of which memory to operate on, and it must be zero for now.
 
 The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in order:
 
@@ -282,10 +292,10 @@ implemented as follows:
 (func $start
   (if (get_global 0)
 
-    ;; copy data segment 1 into memory
+    ;; copy data segment 1 into memory 0 (the 0 is implicit)
     (memory.init 1
-      (i32.const 0)     ;; source offset
       (i32.const 16)    ;; target offset
+      (i32.const 0)     ;; source offset
       (i32.const 7))    ;; length
 
     ;; The memory used by this segment is no longer needed, so this segment can
@@ -296,12 +306,20 @@ implemented as follows:
 
 ### Instruction encoding
 
+All bulk memory instructions are encoded as a 0xfc prefix byte, followed by
+another opcode, optionally followed by more immediates:
+
+```
+instr ::= ...
+        | 0xfc operation:uint8 ...
+```
+
 | Name | Opcode | Immediate | Description |
 | ---- | ---- | ---- | ---- |
-| `memory.init` | `0xfc` | `0x08` | :thinking: copy from a passive data segment to linear memory |
-| `memory.drop` | `0xfc` | `0x09` | :thinking: prevent further use of passive data segment |
-| `memory.copy` | `0xfc` | `0x0a` | :thinking: copy from one region of linear memory to another region |
-| `memory.fill` | `0xfc` | `0x0b` | :thinking: fill a region of linear memory with a given byte value |
-| `table.init` | `0xfc` | `0x0c` | :thinking: copy from a passive element segment to a table |
-| `table.drop` | `0xfc` | `0x0d` | :thinking: prevent further use of a passive element segment |
-| `table.copy` | `0xfc` | `0x0e` | :thinking: copy from one region of a table to another region |
+| `memory.init` | `0xfc 0x08` | `memory:0x00`, `segment:varuint32` | :thinking: copy from a passive data segment to linear memory |
+| `memory.drop` | `0xfc 0x09` | `segment:varuint32` | :thinking: prevent further use of passive data segment |
+| `memory.copy` | `0xfc 0x0a` | `memory:0x00` | :thinking: copy from one region of linear memory to another region |
+| `memory.fill` | `0xfc 0x0b` | `memory:0x00` | :thinking: fill a region of linear memory with a given byte value |
+| `table.init` | `0xfc 0x0c` | `memory:0x00`, `segment:varuint32` | :thinking: copy from a passive element segment to a table |
+| `table.drop` | `0xfc 0x0d` | `segment:varuint32` | :thinking: prevent further use of a passive element segment |
+| `table.copy` | `0xfc 0x0e` | `memory:0x00` | :thinking: copy from one region of a table to another region |
