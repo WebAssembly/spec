@@ -616,6 +616,10 @@ Immediately after a WebAssembly [=grow_memory=] instruction executes, perform th
         1. [=Reset the memory buffer=] of |memaddr|.
 </div>
 
+<div algorithm>
+    The getter of the <dfn attribute for="Memory">buffer</dfn> attribute of {{Memory}} returns the receiver's \[[BufferObject]] internal slot.
+</div>
+
 <h3 id="tables">Tables</h3>
 
 <pre class="idl">
