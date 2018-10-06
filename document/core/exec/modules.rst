@@ -379,14 +379,23 @@ Growing :ref:`tables <syntax-tableinst>`
 
 1. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` to grow and :math:`n` the number of elements by which to grow it.
 
-2. If :math:`\tableinst.\TIMAX` is not empty and smaller than :math:`n` added to the length of :math:`\tableinst.\TIELEM`, then fail.
+2. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\tableinst.\TIELEM`.
 
-3. Append :math:`n` empty elements to :math:`\tableinst.\TIELEM`.
+3. If :math:`\X{len}` is larger than :math:`2^{32}`, then fail.
+
+4. If :math:`\tableinst.\TIMAX` is not empty and smaller than :math:`\X{len}`, then fail.
+
+5. Append :math:`n` empty elements to :math:`\tableinst.\TIELEM`.
 
 .. math::
    \begin{array}{rllll}
    \growtable(\tableinst, n) &=& \tableinst \with \TIELEM = \tableinst.\TIELEM~(\epsilon)^n \\
-     && (\iff \tableinst.\TIMAX = \epsilon \vee |\tableinst.\TIELEM| + n \leq \tableinst.\TIMAX) \\
+     && (
+       \begin{array}[t]{@{}r@{~}l@{}}
+       \iff & \X{len} = n + |\tableinst.\TIELEM| \\
+       \wedge & \X{len} \leq 2^{32} \\
+       \wedge & (\tableinst.\TIMAX = \epsilon \vee \X{len} \leq \tableinst.\TIMAX)) \\
+       \end{array} \\
    \end{array}
 
 
@@ -398,16 +407,25 @@ Growing :ref:`memories <syntax-meminst>`
 
 1. Let :math:`\meminst` be the :ref:`memory instance <syntax-meminst>` to grow and :math:`n` the number of :ref:`pages <page-size>` by which to grow it.
 
-2. Let :math:`\X{len}` be :math:`n` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
+2. Assert: The length of :math:`\meminst.\MIDATA` is divisible by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
-3. If :math:`\meminst.\MIMAX` is not empty and its value multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}` is smaller than :math:`\X{len}` added to the length of :math:`\meminst.\MIDATA`, then fail.
+3. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\meminst.\MIDATA` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
-4. Append :math:`\X{len}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
+4. If :math:`\X{len}` is larger than :math:`2^{16}`, then fail.
+
+5. If :math:`\meminst.\MIMAX` is not empty and its value is smaller than :math:`\X{len}`, then fail.
+
+6. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
 
 .. math::
    \begin{array}{rllll}
    \growmem(\meminst, n) &=& \meminst \with \MIDATA = \meminst.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
-     && (\iff \meminst.\MIMAX = \epsilon \vee |\meminst.\MIDATA| + n \cdot 64\,\F{Ki} \leq \meminst.\MIMAX \cdot 64\,\F{Ki}) \\
+     && (
+       \begin{array}[t]{@{}r@{~}l@{}}
+       \iff & \X{len} = n + |\meminst.\MIDATA| / 64\,\F{Ki} \\
+       \wedge & \X{len} \leq 2^{16} \\
+       \wedge & (\meminst.\MIMAX = \epsilon \vee \X{len} \leq \meminst.\MIMAX)) \\
+       \end{array} \\
    \end{array}
 
 

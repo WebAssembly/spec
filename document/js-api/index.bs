@@ -89,7 +89,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     url: valid/modules.html#valid-module
         text: valid
         text: WebAssembly module validation
-    text: binary format of a module; url: binary/modules.html
+    text: module grammar; url: binary/modules.html#binary-module
     text: custom section; url: binary/modules.html#custom-section
     text: customsec; url: binary/modules.html#binary-customsec
     text: memory instance; url: exec/runtime.html#memory-instances
@@ -265,7 +265,7 @@ Note:
 -->
 
 <div algorithm>
-  To <dfn>compile a WebAssembly module</dfn> from a {{BufferSource}} |bytes|, perform the following steps:
+  To <dfn>compile a WebAssembly module</dfn> from source bytes |bytes|, perform the following steps:
     1. Let |module| be [=decode_module=](|bytes|). If |module| is [=error=], return [=error=].
     1. If [=validate_module=](|module|) is [=error=], return [=error=].
     1. Return |module|.
@@ -273,7 +273,8 @@ Note:
 
 <div algorithm>
   The <dfn method for="WebAssembly">validate(|bytes|)</dfn> method, when invoked, performs the following steps:
-    1. [=Compile a WebAssembly module|Compile=] |bytes| as a WebAssembly module and store the results as |module|.
+    1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
+    1. [=Compile a WebAssembly module|Compile=] |stableBytes| as a WebAssembly module and store the results as |module|.
     1. If |module| is [=error=], return false.
     1. Return true.
 </div>
@@ -282,7 +283,7 @@ Note:
 A {{Module}} object represents a single WebAssembly module. Each {{Module}} object has the following internal slots:
 
     * \[[Module]] : a WebAssembly [=module=]
-    * \[[Bytes]] : an {{ArrayBuffer}} which is source bytes of \[[Module]].
+    * \[[Bytes]] : the source bytes of \[[Module]].
 </div>
 
 <div algorithm>
@@ -295,7 +296,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 </div>
 
 <div algorithm>
-  To <dfn>asynchronously compile a WebAssembly module</dfn> from a {{BufferSource}} |bytes|, using optional [=task source=] |taskSource|, perform the following steps:
+  To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes|, using optional [=task source=] |taskSource|, perform the following steps:
 
     1. Let |promise| be [=a new promise=].
     1. In parallel, [=compile a WebAssembly module|compile the WebAssembly module=] |bytes| and store the result as |module|.
@@ -456,9 +457,9 @@ dictionary ModuleImportDescriptor {
 
 [LegacyNamespace=WebAssembly, Constructor(BufferSource bytes), Exposed=(Window,Worker,Worklet)]
 interface Module {
-  static sequence&lt;ModuleExportDescriptor> exports(Module module);
-  static sequence&lt;ModuleImportDescriptor> imports(Module module);
-  static sequence&lt;ArrayBuffer> customSections(Module module, USVString sectionName);
+  static sequence&lt;ModuleExportDescriptor> exports(Module moduleObject);
+  static sequence&lt;ModuleImportDescriptor> imports(Module moduleObject);
+  static sequence&lt;ArrayBuffer> customSections(Module moduleObject, USVString sectionName);
 };
 </pre>
 
@@ -496,11 +497,11 @@ interface Module {
     The <dfn method for="Module">customSections(|moduleObject|, |sectionName|)</dfn> method, when invoked, performs the following steps:
     1. Let |bytes| be |moduleObject|.\[[Bytes]].
     1. Let |customSections| be an empty [=list=] of {{ArrayBuffer}}s.
-    1. For each [=custom section=] |customSection| in the binary format of |bytes|,
+    1. For each [=custom section=] |customSection| in |bytes|, interpreted according to the [=module grammar=],
         1. Let |name| be the <code>name</code> of |customSection|, [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
         1. Assert: |name| is not failure (|moduleObject|.\[[Module]] is [=valid=]).
         1. If |name| equals |sectionName| as string values,
-            1. [=Append=] a new {{ArrayBuffer}} containing a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes| for the range matched by this [=customsec=] production.
+            1. [=Append=] a new {{ArrayBuffer}} containing a copy of the bytes in |bytes| for the range matched by this [=customsec=] production.
     1. Return |customSections|.
 </div>
 
@@ -572,6 +573,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     The <dfn constructor for="Memory">Memory(|descriptor|)</dfn> constructor, when invoked, performs the following steps:
     1. If |descriptor|["initial"] is [=present=], let |initial| be |descriptor|["initial"]; otherwise, let |initial| be 0.
     1. If |descriptor|["maximum"] is [=present=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
+    1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
     1. Let |memtype| be { min |initial|, max |maximum| }
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |memaddr|) be [=alloc_mem=](|store|, |memtype|). If allocation fails, throw a {{RangeError}} exception.
@@ -591,7 +593,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Set |memory|.\[[BufferObject]] to |buffer|.
 </div>
 
-<div algorithm>
+<div algorithm=dom-Memory-grow>
     The <dfn method for="Memory">grow(|delta|)</dfn> method, when invoked, performs the following steps:
     1. Let |memory| be the Memory instance.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
@@ -661,28 +663,28 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The <dfn constructor for="Table">Table(|descriptor|)</dfn> constructor, when invoked, performs the following steps:
-    1. If |descriptor|["initial"] is [=present=], let |n| be |descriptor|["initial"]; otherwise, let |n| be 0.
-    1. If |descriptor|["maximum"] is [=present=], let |m| be |descriptor|["maximum"]; otherwise, let |m| be empty.
-    1. If |m| is not empty and |m| &lt; |n|, throw a {{RangeError}} exception.
-    1. Let |type| be the [=table type=] {[=table type|𝗆𝗂𝗇=] n, [=table type|𝗆𝖺𝗑=] |m|} [=table type|𝖺𝗇𝗒𝖿𝗎𝗇𝖼=].
+    1. If |descriptor|["initial"] is [=present=], let |initial| be |descriptor|["initial"]; otherwise, let |initial| be 0.
+    1. If |descriptor|["maximum"] is [=present=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
+    1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
+    1. Let |type| be the [=table type=] {[=table type|𝗆𝗂𝗇=] n, [=table type|𝗆𝖺𝗑=] |maximum|} [=table type|𝖺𝗇𝗒𝖿𝗎𝗇𝖼=].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |tableaddr|) be [=alloc_table=](|store|, |type|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. [=Create a table object=] from the table address |tableaddr| and return the result.
 </div>
 
-<div algorithm>
-    The <dfn method for="Table">grow(|d|)</dfn> method, when invoked, performs the following steps:
+<div algorithm=dom-Table-grow>
+    The <dfn method for="Table">grow(|delta|)</dfn> method, when invoked, performs the following steps:
     1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
     1. Let |initialSize| be the length of the Table instance's \[[Values]] internal slot.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |result| be [=grow_table=](|store|, |tableaddr|, |d|).
+    1. Let |result| be [=grow_table=](|store|, |tableaddr|, |delta|).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
 
         Note: The above exception may happen due to either insufficient memory or an invalid size parameter.
 
-    6. Set the [=surrounding agent=]'s [=associated store=] to |result|.
-    1. [=Append=] null to the Table instance's \[[Values]] internal slot |d| times.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |result|.
+    1. [=Append=] null to the Table instance's \[[Values]] internal slot |delta| times.
     1. Return |initialSize|.
 </div>
 
@@ -722,7 +724,7 @@ dictionary GlobalDescriptor {
   boolean mutable = false;
 };
 
-[LegacyNamespace=WebAssembly, Constructor(GlobalDescriptor descriptor, optional any value), Exposed=(Window,Worker,Worklet)]
+[LegacyNamespace=WebAssembly, Constructor(GlobalDescriptor descriptor, optional any v), Exposed=(Window,Worker,Worklet)]
 interface Global {
   any valueOf();
   attribute any value;
@@ -762,7 +764,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |valuetype| equals [=𝗂𝟨𝟦=], return [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟥𝟤=], return [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟨𝟦=], return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
-    1. Otherwise, throw a {{TypeError}} exception.
+    1. Assert: This step is not reached.
 </div>
 
 <div algorithm>
@@ -801,7 +803,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be |global|.\[[Global]].
     1. Let |globaltype| be [=type_global=](|store|, |globaladdr|), where |globaltype| is of the form |mut| |valuetype|.
-    1. If |mut| is [=const=], throw a {{TypeError}.
+    1. If |mut| is [=const=], throw a {{TypeError}}.
     1. If |valuetype| is [=𝗂𝟨𝟦=], throw a {{TypeError}}.
     1. Let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
     1. Let |store| be [=write_global=](|store|, |globaladdr|, |value|).
@@ -907,21 +909,21 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 <div algorithm>
 The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a JavaScript value performs the following steps:
 
-Assert: |w| is not of the form [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] <var ignore>i64</var>.
+1. Assert: |w| is not of the form [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] <var ignore>i64</var>.
 1. If |w| is of the form [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |i32|, return [=the Number value=] for [=signed_32=](|i32|).
 1. If |w| is of the form [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |f32|, return [=the Number value=] for |f32|.
 1. If |w| is of the form [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |f64|, return [=the Number value=] for |f64|.
 
 <!-- If the WebAssembly value is optional, then given `None`, return JavaScript value `undefined`. -->
 
-Note: Number values which are equal to NaN may have various observable NaN payloads; see [=NumberToRawBytes=].for details.
+Note: Number values which are equal to NaN may have various observable NaN payloads; see [=NumberToRawBytes=] for details.
 </div>
 
 <div algorithm>
 The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerce a JavaScript value to a [=WebAssembly value=]  performs the following steps:
 
 
-Assert: |type| is not [=𝗂𝟨𝟦=].
+1. Assert: |type| is not [=𝗂𝟨𝟦=].
 1. If |type| is [=𝗂𝟥𝟤=],
     1. Let |i32| be ? [=ToInt32=](|v|).
     1. Return [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] |i32|.
