@@ -39,9 +39,10 @@ See [MVP](MVP.md) for a concrete v1 proposal.
 * No heavyweight object model
 * Independent from linear memory
 * Accept minimal amount of dynamic overhead (checked casts) as price for simplicity/universality
-* Pay as you go; in particular, no effect on code not using GC
+* Pay as you go; in particular, no effect on code not using GC, no runtime type information unless requested
 * Don't introduce dependencies on GC for other features (e.g., using resources through tables)
 * Avoid generics or other complex type structure _if possible_
+* Make runtime type information explicit
 * Extend the design iteratively, ship a minimal set of functionality fast
 
 
@@ -49,8 +50,10 @@ See [MVP](MVP.md) for a concrete v1 proposal.
 
 * Allocation of data structures that are garbage collected
 * Allocation of byte arrays that are garbage collected
-* Can reference values (e.g. JavaScript objects) from the embedder that are garbage collected
+* Allow heap values from the embedder (e.g. JavaScript objects) that are garbage collected
 * Manipulating references to these as value types
+* Down casts as an escape hatch
+* Forming unions of different types, as value types? (future extension?)
 * Defining, allocating, and indexing structures as extensions to imported types? (future extension)
 * Exceptions (separate proposal)
 * Safe interaction with threads (sharing, atomic access)
@@ -71,6 +74,7 @@ GC support should maintain Wasm's efficiency properties as much as possible, nam
 * allocation is fast
 * no implicit allocation on the heap (e.g. boxing)
 * primitive values should not need to be boxed to be stored in managed data structures
+* unboxed scalars are interchangeable with references
 * allows ahead-of-time compilation and code caching
 
 
@@ -102,6 +106,13 @@ Needs:
 
 * user-defined structures and arrays as heap objects
 * references to those as first-class values
+
+The above could map to
+```
+(type $tup (struct i64 i64 i32))
+(type $vec3d (array f64))
+(type $buf (struct (field $pos i64) (field $buf (array $char))))
+```
 
 
 ### Objects and Method Tables
@@ -231,7 +242,76 @@ An alternative is to provide [primitive support](#closures) for closures, e.g. a
 
 ### Parametric Polymorphism
 
-TODO: via type `anyref` and `intref`
+* Dynamic languages or static languages with sufficiently expressive parametric polymorphism (generics) often require a *uniform representation*, where all its data types are represented in a single word.
+* Typically, pointer tagging is used to unbox small scalars.
+* Want to be able to represent this with type `anyref`.
+
+Contrived example (fictional language):
+```
+function make_pair<A, B>(a : A, b : B) : (A, B) {
+  return (a, b);
+}
+
+class C {...};
+function f() {
+  make_pair<Bool, Bool>(true, false);
+  make_pair<C, C>(new C, new C);
+}
+
+function fst<A>(p : (A, A)) : A { let (a, _) = p; return a }
+function snd<A>(p : (A, A)) : A { let (_, a) = p; return a }
+
+function g(p1 : (Bool, Bool), p2 : (C, C), pick : <A> ((A, A)) -> A) : C {
+  if (pick<Bool>(p1))
+    return pick<C>(p2);
+  else
+    return new C;
+}
+```
+
+Here, `make_pair` as well as `fst` and `snd` need to be able to operate on any type of pair. Furthermore, `fst` and `snd` cannot simply be type-specialised at compile time, because that would be insufficient to compile `g`, which takes a polymorphic function as an argument and instantiates it with multiple different types. Such *first-class* polymorphism is not expressible with compile time techniques such as C++ templates, but common-place in many languages (including OO ones like Java or C#, where it can be emulated via generic methods). Untyped languages like JavaScript or Scheme trivially allow such programs as well.
+
+The usual implementation technique is a uniform representation, potentially refined with local unboxing and type specialisation optimisations.
+
+A uniform representation can be achieved in this proposal by consistently using the type  `anyref`, which is the super type of all references:
+```
+(type $pair (struct anyref anyref))
+
+(func $make_pair (param $a anyref) (param $b anyref) (result (ref $pair))
+  (struct.new $pair (get_local $a) (get_local $b))
+)
+
+(type $C (struct ...))
+(func $new_C (result (ref $C)) ...)
+(func $f
+  (drop (call $make_pair (i31ref.new 1) (i32ref.new 0)))
+  (drop (call $make_pair (call $new_C) (call $new_C)))
+)
+
+(func $fst (param $p (ref $pair)) (result anyref)
+  (struct.get $pair 0 (get_local $p))
+)
+(func $snd (param $p (ref $pair)) (result anyref)
+  (struct.get $pair 1 (get_local $p))
+)
+
+(type $pick (func (param $pair) (result anyref)))
+(func $g
+  (param $p1 (ref $pair)) (param $p2 (ref $pair)) (param $pick (ref $pick))
+  (result (ref $C))
+  (if (i31ref.get_u (cast_down i31ref (get_local $p1)))
+    (then (cast_down (ref $C) (call_ref $pick (get_local $p2))))
+    (else (call $new_C))
+  )
+)
+```
+Note how type [`i31ref`](#tagged-integers) avoids Boolean values to be heap-allocated.
+Also note how a down cast is necessary to recover the original type after a value has been passed through (the compiled form of) a polymorphic function like `g`. (Future versions of Wasm should support simple polymorphism to make such use cases more efficient and avoid the excessive use of runtime types to express polymorphism, but for the GC MVP this provides the necessary expressiveness.)
+
+Needs:
+* `anyref`
+* `i31ref`
+* down casts
 
 
 ### Type Export/Import
@@ -445,21 +525,23 @@ Values of function reference type are formed with the `ref_func` operator:
 
 ### Tagged Integers
 
-Efficient implementations of untyped languages or languages with parametric polymorphism often rely on a _universal representation_, meaning that all values are word-sized.
-At the same time, they want to avoid the cost of boxing wherever possible, by passing around integers unboxed, and using a tagging scheme to distinguish them from pointers in the GC.
+Efficient implementations of untyped languages or languages with [parametric polymorphism](#parametric-polymorphism) often rely on a _uniform representation_, meaning that all values are represented in a single machine word -- usually a pointer.
+At the same time, they want to avoid the cost of boxing as much as possible, by passing around small scalar values unboxed and using a tagging scheme to distinguish them from pointers in the GC.
 
-To implement any such language efficiently, Wasm would need to provide such a mechanism by introducing a built-in reference type `intref` that represents tagged integers.
-There are only two instructions for converting from and to such reference types:
+To implement any such language efficiently, Wasm needs to provide such a mechanism by introducing a built-in reference type `i31ref` that represents tagged integers.
+There are only three instructions for converting from and to such reference types:
 ```
-tag : [i32] -> [intref]
-untag : [intref] -> [i32]
+i31ref.new : [i32] -> [i31ref]
+i31ref.get_u : [i31ref] -> [i32]
+i31ref.get_s : [i31ref] -> [i32]
 ```
-Being reference types, tagged integers can be cast into `anyref`, and can participate in runtime type dispatch with `cast_down`.
+The first is essentially a "tag" instruction, while the other two are two variants of the inverse "untag" operation, either with or without sign extension to 32 bits.
 
-To avoid portability hazards, the value range of `intref` has to be restricted to at most 31 bits.
-The `tag` instruction would trap otherwise. Or it could include a label to branch to in that case.
+Being reference types, tagged integers can be cast into `anyref`, and can participate in runtime type checks and dispatch with `cast` or `br_on_cast`.
 
-Alternatively, allow references to any numeric type. There are `ref` and `deref` instructions for all of them. It is up to implementations (and transparent to the semantics) which values they can optimize and represent unboxed. This is a bit more high-level but would allow for maximum performance on all architectures.
+To avoid portability hazards, the value range of `i31ref` has to be restricted to at most 31 bits, since that is the widest range that can be guaranteed to be efficiently representable on all platforms.
+
+Note: As a future extension, Wasm could also introduce wider integer references, such as `i32ref`. However, these sometimes will have to be boxed on some platforms, introducing the unpredictable cost of possible "hidden" allocation upon creation or branching upon access. They hence serve a different use case. Note also that such values can already equivalently be expressed in this proposal as structs with a single `i32` field, which implementations may choose to optimise accordingly (singleton structs that have no [runtime type information](#casting-and-runtime-types) can be flattened by engines).
 
 
 ## Type Structure
@@ -469,7 +551,7 @@ Alternatively, allow references to any numeric type. There are `ref` and `deref`
 The type syntax can be captured in the following grammar:
 ```
 num_type       ::=  i32 | i64 | f32 | f64
-ref_type       ::=  (ref <def_type>) | intref | anyref | anyfunc
+ref_type       ::=  (ref <def_type>) | i31ref | anyref | anyfunc
 value_type     ::=  <num_type> | <ref_type>
 
 packed_type    ::=  i8 | i16
@@ -550,29 +632,51 @@ On the other hand, it means that immutable fields can still change, preventing v
 (Another alternative would be a three-state mutability algebra.)
 
 
-### Casting
+### Casting and Runtime Types
 
-To simplify typechecking, all uses of subtyping are _explicit_ through casts.
-The instruction
-```
-(cast_up <type1> <type2> (...))
-```
-casts the operand of type `<type1>` to type `<type2>`.
-An upcast is always safe.
-It is a validation error if the operand's type is not `<type1>`, or if `<type1>` is not a subtype of `<type2>`.
+In order to allow the use of type `anyref` to represent values of [polymorphic type](#parametric-polymorphism), the ability to down cast to a concrete type is provided. For safety, down casts are checked at runtime.
 
-Casting is also possible in the reverse direction:
+Down casts hence require runtime types (RTT). To avoid hidden cost and make RTTs optional, all runtime types are explicit operand values (*witnesses*). For example:
 ```
-(cast_down <type1> <type2> $label (...))
+(cast <type1> <type2> (<operand>) (<rtt>))
 ```
-also casts the operand of type `<type1>` to type `<type2>`.
-It is a validation error if the operand's type is not `<type1>`, or if `<type2>` is not a subtype of `<type1>`.
-However, a downcast may fail at runtime if the operand's type is not `<type2>`, in which case control branches to `$label`, with the operand as argument.
+This checks whether the runtime type stored in `<operand>` (which has static type `<type1>`) is a runtime subtype of the runtime type represented by the second operand (which must be a runtime representation of `<type2>`).
 
-Downcasts can be used to implement runtime type analysis, or to recover the concrete type of an object that has been cast to `anyref` to emulate parametric polymorphism.
+In order to cast down the type of a struct or array, the aggregate itself must also be equipped with a suitable RTT. Attaching runtime type information to aggregates happens at allocation time but is optional. If no RTT is attached then their runtime type is treated as if it was `anyref` and a down cast to a more specific type will fail. Such aggregates can prevent client code from rediscovering their real type, enforcing a form of parametricity. They can also be optimised more aggressively (e.g., via flattening optimisations), since the VM knows that any possible additional fields forgotten via subtyping can never be rediscovered.
 
-Note: Casting could be extended to allow reinterpreting any sequence of _transparent_ (i.e., non-reference) fields of an aggregate type with any other transparent sequence of the same length.
-That would require constraining the ability of implementations to reorder or align fields.
+A runtime type is an expression of type `rtt <type>`, which is another form of opaque reference type. It denotes the static type `<type>`.
+
+Runtime type checks verify the subtype relation between runtime types.
+In order to make these checks cheap, runtime subtyping follows a *nominal* semantics. To that and, every RTT value not only represents a given type, it also records a subtype relation to another (runtime) type (possibly `anyref`) defined when constructing the RTT value:
+```
+(rtt.new <type1> <type2> (<rtt>))
+```
+This creates a new witness for `<type1>` and defines it to be a subtype of the runtime type expressed by `<rtt>` representing `<type2>`.
+Validation ensures that `<type1>` is a static subtype of the type `<type2>`. Consequently, runtime subtyping is always a subrelation of static subtyping, as required for soundness.
+
+The above form of cast traps in case of a type mismatch. This form is useful when using casts to work around limitations of the Wasm type system, in cases where the producer knows that it will succeed.
+
+Another variant of down cast avoids the trap:
+```
+(br_on_cast $label <type1> <type2> (<operand>) (<rtt>))
+```
+This branches to `$label` if the check is successful, with the operand as an argument, but using its refined type. Otherwise, the operand remains on the stack. By chaining multiple of these instructions, runtime type analysis ("typecase") can be implemented:
+```
+(block $l1 (result (ref $t1))
+  (block $l2 (result (ref $t2))
+    (block $l3 (result (ref $t3))
+      (get_local $operand)  ;; has type (ref $t)
+      (br_on_cast $l1 (ref $t) (ref $t1) (get_global $rtt-t1))
+      (br_on_cast $l2 (ref $t) (ref $t2) (get_global $rtt-t2))
+      (br_on_cast $l3 (ref $t) (ref $t3) (get_global $rtt-t3))
+      ... ;; (ref $t) still on stack here
+    )
+    ... ;; (ref $t3) on stack here
+  )
+  ... ;; (ref $t2) on stack here
+)
+... ;; (ref $t1) on stack here
+```
 
 
 ### Import and Export
