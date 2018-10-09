@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version e9290f0f6bc01459c8b7bdfa2bb91f6985fc5c67" name="generator">
+  <meta content="Bikeshed version 1e757f3ee68e638e030f32dc3e8d2e3234d3aed5" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="2de3fb0ce193d98d8ceb23394620edd86c9fa041" name="document-revision">
+  <meta content="f5e1fd138ccfe588abde7d8438bcc8f391576a28" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-10-05">5 October 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-10-09">9 October 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -879,7 +879,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace②"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly②"><c- n>WebAssembly</c-></a>, <a class="idl-code" data-link-type="constructor" href="#dom-memory-memory" id="ref-for-dom-memory-memory"><c- g>Constructor</c-></a>(<a class="n" data-link-type="idl-name" href="#dictdef-memorydescriptor" id="ref-for-dictdef-memorydescriptor"><c- n>MemoryDescriptor</c-></a> <dfn class="idl-code" data-dfn-for="Memory/Memory(descriptor)" data-dfn-type="argument" data-export id="dom-memory-memory-descriptor-descriptor"><code><c- g>descriptor</c-></code><a class="self-link" href="#dom-memory-memory-descriptor-descriptor"></a></dfn>), <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed③"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->,<c- n>Worklet</c->)]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="memory"><code><c- g>Memory</c-></code></dfn> {
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long②"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-grow" id="ref-for-dom-memory-grow"><c- g>grow</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange②"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long③"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="Memory/grow(delta)" data-dfn-type="argument" data-export id="dom-memory-grow-delta-delta"><code><c- g>delta</c-></code><a class="self-link" href="#dom-memory-grow-delta-delta"></a></dfn>);
-  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects③"><c- b>ArrayBuffer</c-></a> <dfn class="idl-code" data-dfn-for="Memory" data-dfn-type="attribute" data-export data-readonly data-type="ArrayBuffer" id="dom-memory-buffer"><code><c- g>buffer</c-></code><a class="self-link" href="#dom-memory-buffer"></a></dfn>;
+  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects③"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="ArrayBuffer" href="#dom-memory-buffer" id="ref-for-dom-memory-buffer"><c- g>buffer</c-></a>;
 };
 </pre>
    <div>
@@ -996,6 +996,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
       </ol>
     </ol>
    </div>
+   <div class="algorithm" data-algorithm="buffer"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="attribute" data-export id="dom-memory-buffer"><code>buffer</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑦">Memory</a></code> returns the receiver’s [[BufferObject]] internal slot. </div>
    <h3 class="heading settled" data-level="3.4" id="tables"><span class="secno">3.4. </span><span class="content">Tables</span><a class="self-link" href="#tables"></a></h3>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-tablekind"><code><c- g>TableKind</c-></code></dfn> {
   <dfn class="idl-code" data-dfn-for="TableKind" data-dfn-type="enum-value" data-export id="dom-tablekind-anyfunc"><code><c- s>"anyfunc"</c-></code><a class="self-link" href="#dom-tablekind-anyfunc"></a></dfn>,
@@ -2697,7 +2698,7 @@ The particular exception here is implementation-defined in both cases.</p>
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace②①"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly②①"><c- n>WebAssembly</c-></a>, <a class="idl-code" data-link-type="constructor" href="#dom-memory-memory" id="ref-for-dom-memory-memory①"><c- g>Constructor</c-></a>(<a class="n" data-link-type="idl-name" href="#dictdef-memorydescriptor" id="ref-for-dictdef-memorydescriptor①"><c- n>MemoryDescriptor</c-></a> <a href="#dom-memory-memory-descriptor-descriptor"><code><c- g>descriptor</c-></code></a>), <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed③①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->,<c- n>Worklet</c->)]
 <c- b>interface</c-> <a href="#memory"><code><c- g>Memory</c-></code></a> {
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long②①"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-grow" id="ref-for-dom-memory-grow①"><c- g>grow</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange②①"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long③①"><c- b>unsigned</c-> <c- b>long</c-></a> <a href="#dom-memory-grow-delta-delta"><code><c- g>delta</c-></code></a>);
-  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects③①"><c- b>ArrayBuffer</c-></a> <a data-readonly data-type="ArrayBuffer" href="#dom-memory-buffer"><code><c- g>buffer</c-></code></a>;
+  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects③①"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="ArrayBuffer" href="#dom-memory-buffer" id="ref-for-dom-memory-buffer①"><c- g>buffer</c-></a>;
 };
 
 <c- b>enum</c-> <a href="#enumdef-tablekind"><code><c- g>TableKind</c-></code></a> {
@@ -2993,7 +2994,7 @@ The particular exception here is implementation-defined in both cases.</p>
     <li><a href="#ref-for-memory">2.1. Interaction of the WebAssembly Store with JavaScript</a>
     <li><a href="#ref-for-memory①">2.2. WebAssembly JS Object Caches</a>
     <li><a href="#ref-for-memory②">3. The WebAssembly Namespace</a> <a href="#ref-for-memory③">(2)</a>
-    <li><a href="#ref-for-memory④">3.3. Memories</a> <a href="#ref-for-memory⑤">(2)</a> <a href="#ref-for-memory⑥">(3)</a>
+    <li><a href="#ref-for-memory④">3.3. Memories</a> <a href="#ref-for-memory⑤">(2)</a> <a href="#ref-for-memory⑥">(3)</a> <a href="#ref-for-memory⑦">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="create-a-memory-object">
@@ -3019,6 +3020,12 @@ The particular exception here is implementation-defined in both cases.</p>
    <b><a href="#dom-memory-grow">#dom-memory-grow</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-memory-grow">3.3. Memories</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dom-memory-buffer">
+   <b><a href="#dom-memory-buffer">#dom-memory-buffer</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-memory-buffer">3.3. Memories</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enumdef-tablekind">
