@@ -273,7 +273,8 @@ Here, `make_pair` as well as `fst` and `snd` need to be able to operate on any t
 
 The usual implementation technique is a uniform representation, potentially refined with local unboxing and type specialisation optimisations.
 
-A uniform representation can be achieved in this proposal by consistently using the type  `anyref`, which is the super type of all references:
+The MVP proposal does not directly support parametric polymorphism (yet).
+However, a uniform representation can still be achieved in this proposal by consistently using the type  `anyref`, which is the super type of all references, and then down-cast from there:
 ```
 (type $pair (struct anyref anyref))
 
@@ -306,7 +307,9 @@ A uniform representation can be achieved in this proposal by consistently using 
 )
 ```
 Note how type [`i31ref`](#tagged-integers) avoids Boolean values to be heap-allocated.
-Also note how a down cast is necessary to recover the original type after a value has been passed through (the compiled form of) a polymorphic function like `g`. (Future versions of Wasm should support simple polymorphism to make such use cases more efficient and avoid the excessive use of runtime types to express polymorphism, but for the GC MVP this provides the necessary expressiveness.)
+Also note how a down cast is necessary to recover the original type after a value has been passed through (the compiled form of) a polymorphic function like `g`.
+
+(Future versions of Wasm should support simple polymorphism to make such use cases more efficient and avoid the excessive use of runtime types to express polymorphism, but for the GC MVP this provides the necessary expressiveness.)
 
 Needs:
 * `anyref`
