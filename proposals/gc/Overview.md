@@ -271,10 +271,13 @@ function g(p1 : (Bool, Bool), p2 : (C, C), pick : <A> ((A, A)) -> A) : C {
 
 Here, `make_pair` as well as `fst` and `snd` need to be able to operate on any type of pair. Furthermore, `fst` and `snd` cannot simply be type-specialised at compile time, because that would be insufficient to compile `g`, which takes a polymorphic function as an argument and instantiates it with multiple different types. Such *first-class* polymorphism is not expressible with compile time techniques such as C++ templates, but common-place in many languages (including OO ones like Java or C#, where it can be emulated via generic methods). Untyped languages like JavaScript or Scheme trivially allow such programs as well.
 
+The problem is that the compilation of `fst` and `snd` must not depend on the type they are instantiated with because with first-class polymorphism it is not generally possible to tell, at compile time, the set of all such types (static analysis can do that in many cases but not all).
+Unless willing to implement runtime compilation and type specialisation (like C# / .NET) a type-agnostic compilation scheme is necessary.
+
 The usual implementation technique is a uniform representation, potentially refined with local unboxing and type specialisation optimisations.
 
 The MVP proposal does not directly support parametric polymorphism (yet).
-However, a uniform representation can still be achieved in this proposal by consistently using the type  `anyref`, which is the super type of all references, and then down-cast from there:
+However, compilation with a uniform representation can still be achieved in this proposal by consistently using the type  `anyref`, which is the super type of all references, and then down-cast from there:
 ```
 (type $pair (struct anyref anyref))
 
@@ -307,7 +310,7 @@ However, a uniform representation can still be achieved in this proposal by cons
 )
 ```
 Note how type [`i31ref`](#tagged-integers) avoids Boolean values to be heap-allocated.
-Also note how a down cast is necessary to recover the original type after a value has been passed through (the compiled form of) a polymorphic function like `g`.
+Also note how a down cast is necessary to recover the original type after a value has been passed through (the compiled form of) a polymorphic function like `g` -- the compiler knows the type but Wasm does not.
 
 (Future versions of Wasm should support simple polymorphism to make such use cases more efficient and avoid the excessive use of runtime types to express polymorphism, but for the GC MVP this provides the necessary expressiveness.)
 
