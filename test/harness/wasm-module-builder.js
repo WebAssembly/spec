@@ -415,7 +415,6 @@ class WasmModuleBuilder {
       binary.emit_section(kMemorySectionCode, section => {
         section.emit_u8(1);  // one memory entry
         const has_max = wasm.memory.max !== undefined;
-        const is_shared = wasm.memory.shared !== undefined;
         section.emit_u8(has_max ? kHasMaximumFlag : 0);
         section.emit_u32v(wasm.memory.min);
         if (has_max) section.emit_u32v(wasm.memory.max);
