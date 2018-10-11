@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 1e757f3ee68e638e030f32dc3e8d2e3234d3aed5" name="generator">
+  <meta content="Bikeshed version 0ee2c67fbf201121f085570dc4f88f005ee8a92a" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="f5e1fd138ccfe588abde7d8438bcc8f391576a28" name="document-revision">
+  <meta content="9af41ee4d04f644c62739122970c78faad3aa4b9" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-10-09">9 October 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-10-11">11 October 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -336,6 +336,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
       <li><a href="#stack-overflow"><span class="secno">4.1</span> <span class="content">Stack Overflow</span></a>
       <li><a href="#out-of-memory"><span class="secno">4.2</span> <span class="content">Out of Memory</span></a>
      </ol>
+    <li><a href="#limits"><span class="secno">5</span> <span class="content">Implementation-defined Limits</span></a>
     <li>
      <a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
      <ol class="toc">
@@ -1534,6 +1535,29 @@ JavaScript. The particular exception here is implementation-defined in both case
 same class of exception is thrown as for out of memory conditions in JavaScript.
 The particular exception here is implementation-defined in both cases.</p>
    <p class="note" role="note"><span>Note:</span> ECMAScript doesn’t specify any sort of behavior on out-of-memory conditions; implementations have been observed to throw OOMError and to crash. Either is valid here.</p>
+   <h2 class="heading settled" data-level="5" id="limits"><span class="secno">5. </span><span class="content">Implementation-defined Limits</span><a class="self-link" href="#limits"></a></h2>
+   <p>The WebAssembly core specification allows an implementation to define limits on the syntactic structure of the module.
+While each embedding of WebAssembly may choose to define its own limits, for predictability the standard WebAssembly JavaScript Interface described in this document defines the following exact limits.
+An implementation must reject a module that exceeds these limits with a <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror③">CompileError</a></code>.
+In practice, an implementation may run out of resources for valid modules below these limits.</p>
+   <ul>
+    <li>The maximum size of a module is 1073741824 bytes (1 GiB).
+    <li>The maximum number of types defined in the types section is 1000000.
+    <li>The maximum number of functions defined in a module is 1000000.
+    <li>The maximum number of imports declared in a module is 100000.
+    <li>The maximum number of exports declared in a module is 100000.
+    <li>The maximum number of globals defined in a module is 1000000.
+    <li>The maximum number of data segments defined in a module is 100000.
+    <li>The maximum number of tables, including declared or imported tables, is 1.
+    <li>The maximum size of a table is 10000000.
+    <li>The maximum number of table entries in any table initialization is 10000000.
+    <li>The maximum number of memories, including declared or imported memories, is 1.
+    <li>The initial or maximum number of pages for any memory, declared or imported, is at most 32767.
+    <li>The maximum number of parameters to any function is 1000.
+    <li>The maximum number of return values for any function is 1.
+    <li>The maximum size of a function body, including locals declarations, is 7654321 bytes.
+    <li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50000.
+   </ul>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="heading settled" id="document-conventions"><span class="content"> Document conventions</span><a class="self-link" href="#document-conventions"></a></h3>
@@ -2621,7 +2645,7 @@ The particular exception here is implementation-defined in both cases.</p>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
    <dt id="biblio-css-values-4">[CSS-VALUES-4]
-   <dd>Tab Atkins Jr.; Elika Etemad. <a href="https://www.w3.org/TR/css-values-4/">CSS Values and Units Module Level 4</a>. 14 August 2018. WD. URL: <a href="https://www.w3.org/TR/css-values-4/">https://www.w3.org/TR/css-values-4/</a>
+   <dd>Tab Atkins Jr.; Elika Etemad. <a href="https://www.w3.org/TR/css-values-4/">CSS Values and Units Module Level 4</a>. 10 October 2018. WD. URL: <a href="https://www.w3.org/TR/css-values-4/">https://www.w3.org/TR/css-values-4/</a>
    <dt id="biblio-ecmascript">[ECMASCRIPT]
    <dd><a href="https://tc39.github.io/ecma262/">ECMAScript Language Specification</a>. URL: <a href="https://tc39.github.io/ecma262/">https://tc39.github.io/ecma262/</a>
    <dt id="biblio-encoding">[ENCODING]
@@ -3195,6 +3219,7 @@ The particular exception here is implementation-defined in both cases.</p>
     <li><a href="#ref-for-compileerror">3. The WebAssembly Namespace</a>
     <li><a href="#ref-for-compileerror①">3.1. Modules</a>
     <li><a href="#ref-for-compileerror②">3.7. Error Objects</a>
+    <li><a href="#ref-for-compileerror③">5. Implementation-defined Limits</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="linkerror">
