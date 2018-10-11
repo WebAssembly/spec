@@ -298,18 +298,18 @@ testLimit("function returns", 0, kJSEmbeddingMaxFunctionReturns, (builder, count
     });
 
 testLimit("initial table size", 1, kJSEmbeddingMaxTableSize, (builder, count) => {
-        builder.setFunctionTableBounds(count, undefined);
+        builder.setTableBounds(count, undefined);
     });
 
 testLimit("maximum table size", 1, kJSEmbeddingMaxTableSize, (builder, count) => {
-        builder.setFunctionTableBounds(1, count);
+        builder.setTableBounds(1, count);
     });
 
 testLimit("element segments", 1, kJSEmbeddingMaxElementSegments, (builder, count) => {
-        builder.setFunctionTableBounds(1, 1);
+        builder.setTableBounds(1, 1);
         let array = [];
         for (let i = 0; i < count; i++) {
-            builder.addFunctionTableInit(0, false, array, false);
+            builder.addElementSegment(0, false, array, false);
         }
     });
 
