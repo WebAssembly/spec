@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 0ee2c67fbf201121f085570dc4f88f005ee8a92a" name="generator">
+  <meta content="Bikeshed version 018be3f805d3272ce699a232398d6e3902d1ea8d" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="9af41ee4d04f644c62739122970c78faad3aa4b9" name="document-revision">
+  <meta content="423c6f87267daf65d62f5ef709307aa4ab47f0f7" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-10-11">11 October 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-10-12">12 October 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -892,8 +892,21 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
       <p>[[BufferObject]] : an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects④">ArrayBuffer</a></code> whose <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-data-blocks" id="ref-for-sec-data-blocks①">Data Block</a> is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with">identified with</a> the above memory address</p>
     </ul>
    </div>
+   <div class="algorithm" data-algorithm="create a memory buffer">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-memory-buffer">create a memory buffer</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr②">memory address</a> <var>memaddr</var>, perform the following steps: 
+    <ol>
+     <li data-md>
+      <p>Let <var>block</var> be a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-data-blocks" id="ref-for-sec-data-blocks②">Data Block</a> which is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with①">identified with</a> the underlying memory of <var>memaddr</var>.</p>
+     <li data-md>
+      <p>Let <var>buffer</var> be a new <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑤">ArrayBuffer</a></code> whose [[ArrayBufferData]] is <var>block</var> and [[ArrayBufferByteLength]] is set to the length of <var>block</var>.</p>
+     <li data-md>
+      <p>Set <var>buffer</var>.[[ArrayBufferDetachKey]] to "WebAssembly.Memory".</p>
+     <li data-md>
+      <p>Return <var>buffer</var>.</p>
+    </ol>
+   </div>
    <div class="algorithm" data-algorithm="create a memory object">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-memory-object">create a memory object</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr②">memory address</a> <var>memaddr</var>, perform the following steps: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-memory-object">create a memory object</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr③">memory address</a> <var>memaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent②">surrounding agent</a>'s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache">Memory object cache</a>.</p>
@@ -904,11 +917,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
         <p>Return <var>map</var>[<var>memaddr</var>].</p>
       </ol>
      <li data-md>
-      <p>Let <var>block</var> be a Data Block which is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with①">identified with</a> the underlying memory of <var>memaddr</var></p>
-     <li data-md>
-      <p>Let <var>buffer</var> be a new <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑤">ArrayBuffer</a></code> whose [[ArrayBufferData]] is <var>block</var> and [[ArrayBufferByteLength]] is set to the length of <var>block</var>.</p>
-     <li data-md>
-      <p>Set <var>buffer</var>.[[ArrayBufferDetachKey]] to "WebAssembly.Memory".</p>
+      <p>Let <var>buffer</var> be a the result of <a data-link-type="dfn" href="#create-a-memory-buffer" id="ref-for-create-a-memory-buffer">creating a memory buffer</a> from <var>memaddr</var>.</p>
      <li data-md>
       <p>Let <var>memory</var> be a new <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑥">Memory</a></code> instance with [[Memory]] set to <var>memaddr</var> and [[BufferObject]] set to <var>buffer</var>.</p>
      <li data-md>
@@ -950,9 +959,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      <li data-md>
       <p>Perform ! <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer">DetachArrayBuffer</a>(<var>memory</var>.[[BufferObject]], "WebAssembly.Memory").</p>
      <li data-md>
-      <p>Let <var>block</var> be a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-data-blocks" id="ref-for-sec-data-blocks②">Data Block</a> which is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with②">identified with</a> the underlying memory of <var>memaddr</var>.</p>
-     <li data-md>
-      <p>Let <var>buffer</var> be a new <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑥">ArrayBuffer</a></code> whose [[ArrayBufferData]] is <var>block</var> and [[ArrayBufferByteLength]] is set to the length of <var>block</var>.</p>
+      <p>Let <var>buffer</var> be a the result of <a data-link-type="dfn" href="#create-a-memory-buffer" id="ref-for-create-a-memory-buffer①">creating a memory buffer</a> from <var>memaddr</var>.</p>
      <li data-md>
       <p>Set <var>memory</var>.[[BufferObject]] to <var>buffer</var>.</p>
     </ol>
@@ -1598,6 +1605,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#construct-a-webassembly-module-object">construct a WebAssembly module object</a><span>, in §3</span>
    <li><a href="#create-a-global-object">create a global object</a><span>, in §3.5</span>
    <li><a href="#create-a-host-function">create a host function</a><span>, in §3.6</span>
+   <li><a href="#create-a-memory-buffer">create a memory buffer</a><span>, in §3.3</span>
    <li><a href="#create-a-memory-object">create a memory object</a><span>, in §3.3</span>
    <li><a href="#create-a-table-object">create a table object</a><span>, in §3.4</span>
    <li><a href="#dom-module-customsections">customSections(moduleObject, sectionName)</a><span>, in §3.1</span>
@@ -1723,7 +1731,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <a href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects">https://tc39.github.io/ecma262/#sec-arraybuffer-objects</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-arraybuffer-objects">3.1. Modules</a> <a href="#ref-for-sec-arraybuffer-objects①">(2)</a> <a href="#ref-for-sec-arraybuffer-objects②">(3)</a>
-    <li><a href="#ref-for-sec-arraybuffer-objects③">3.3. Memories</a> <a href="#ref-for-sec-arraybuffer-objects④">(2)</a> <a href="#ref-for-sec-arraybuffer-objects⑤">(3)</a> <a href="#ref-for-sec-arraybuffer-objects⑥">(4)</a>
+    <li><a href="#ref-for-sec-arraybuffer-objects③">3.3. Memories</a> <a href="#ref-for-sec-arraybuffer-objects④">(2)</a> <a href="#ref-for-sec-arraybuffer-objects⑤">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-nativeerror-constructors">
@@ -2147,7 +2155,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-syntax-memaddr">2.2. WebAssembly JS Object Caches</a>
-    <li><a href="#ref-for-syntax-memaddr①">3.3. Memories</a> <a href="#ref-for-syntax-memaddr②">(2)</a>
+    <li><a href="#ref-for-syntax-memaddr①">3.3. Memories</a> <a href="#ref-for-syntax-memaddr②">(2)</a> <a href="#ref-for-syntax-memaddr③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-memory-instances">
@@ -2706,7 +2714,7 @@ In practice, an implementation may run out of resources for valid modules below 
 <c- b>interface</c-> <a href="#module"><code><c- g>Module</c-></code></a> {
   <c- b>static</c-> <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleexportdescriptor" id="ref-for-dictdef-moduleexportdescriptor②"><c- n>ModuleExportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-exports" id="ref-for-dom-module-exports①"><c- g>exports</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑦①"><c- n>Module</c-></a> <a href="#dom-module-exports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code></a>);
   <c- b>static</c-> <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleimportdescriptor" id="ref-for-dictdef-moduleimportdescriptor②"><c- n>ModuleImportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-imports" id="ref-for-dom-module-imports①"><c- g>imports</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑧①"><c- n>Module</c-></a> <a href="#dom-module-imports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code></a>);
-  <c- b>static</c-> <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑦"><c- b>ArrayBuffer</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-customsections" id="ref-for-dom-module-customsections①"><c- g>customSections</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑨①"><c- n>Module</c-></a> <a href="#dom-module-customsections-moduleobject-sectionname-moduleobject"><code><c- g>moduleObject</c-></code></a>, <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③①"><c- b>USVString</c-></a> <a href="#dom-module-customsections-moduleobject-sectionname-sectionname"><code><c- g>sectionName</c-></code></a>);
+  <c- b>static</c-> <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑥"><c- b>ArrayBuffer</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-customsections" id="ref-for-dom-module-customsections①"><c- g>customSections</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑨①"><c- n>Module</c-></a> <a href="#dom-module-customsections-moduleobject-sectionname-moduleobject"><code><c- g>moduleObject</c-></code></a>, <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③①"><c- b>USVString</c-></a> <a href="#dom-module-customsections-moduleobject-sectionname-sectionname"><code><c- g>sectionName</c-></code></a>);
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace①①"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly①①"><c- n>WebAssembly</c-></a>, <a class="idl-code" data-link-type="constructor" href="#dom-instance-instance" id="ref-for-dom-instance-instance①"><c- g>Constructor</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module①⓪①"><c- n>Module</c-></a> <a href="#dom-instance-instance-module-importobject-module"><code><c- g>module</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object" id="ref-for-idl-object②①"><c- b>object</c-></a> <a href="#dom-instance-instance-module-importobject-importobject"><code><c- g>importObject</c-></code></a>), <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed②①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->,<c- n>Worklet</c->)]
@@ -2779,7 +2787,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="identified-with">
    <b><a href="#identified-with">#identified-with</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-identified-with">3.3. Memories</a> <a href="#ref-for-identified-with①">(2)</a> <a href="#ref-for-identified-with②">(3)</a>
+    <li><a href="#ref-for-identified-with">3.3. Memories</a> <a href="#ref-for-identified-with①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="memory-object-cache">
@@ -3019,6 +3027,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-memory①">2.2. WebAssembly JS Object Caches</a>
     <li><a href="#ref-for-memory②">3. The WebAssembly Namespace</a> <a href="#ref-for-memory③">(2)</a>
     <li><a href="#ref-for-memory④">3.3. Memories</a> <a href="#ref-for-memory⑤">(2)</a> <a href="#ref-for-memory⑥">(3)</a> <a href="#ref-for-memory⑦">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="create-a-memory-buffer">
+   <b><a href="#create-a-memory-buffer">#create-a-memory-buffer</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-create-a-memory-buffer">3.3. Memories</a> <a href="#ref-for-create-a-memory-buffer①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="create-a-memory-object">
