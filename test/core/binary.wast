@@ -114,6 +114,26 @@
   "\0b"                                ;; end
 )
 
+;; Data segment memory index can have non-minimal length
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\05\03\01"                          ;; Memory section with 1 entry
+  "\00\00"                             ;; no max, minimum 0
+  "\0b\07\01"                          ;; Data section with 1 entry
+  "\80\00"                             ;; Memory index 0, encoded with 2 bytes
+  "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
+)
+
+;; Element segment table index can have non-minimal length
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\04\04\01"                          ;; Table section with 1 entry
+  "\70\00\00"                          ;; no max, minimum 0, anyfunc
+  "\09\07\01"                          ;; Element section with 1 entry
+  "\80\00"                             ;; Table index 0, encoded with 2 bytes
+  "\41\00\0b\00"                       ;; (i32.const 0) with no elements
+)
+
 ;; Unsigned LEB128 must not be overlong
 (assert_malformed
   (module binary
