@@ -653,7 +653,7 @@ In order to cast down the type of a struct or array, the aggregate itself must a
 A runtime type is an expression of type `rtt <type>`, which is another form of opaque reference type. It denotes the static type `<type>`.
 
 Runtime type checks verify the subtype relation between runtime types.
-In order to make these checks cheap, runtime subtyping follows a *nominal* semantics. To that and, every RTT value not only represents a given type, it also records a subtype relation to another (runtime) type (possibly `anyref`) defined when constructing the RTT value:
+In order to make these checks cheap, runtime subtyping follows a *nominal* semantics. To that end, every RTT value not only represents a given type, it also records a subtype relation to another (runtime) type (possibly `anyref`) defined when constructing the RTT value:
 ```
 (rtt.new <type1> <type2> (<rtt>))
 ```

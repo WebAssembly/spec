@@ -27,7 +27,7 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 * `i31ref` is a new reference type
   - `reftype ::= ... | i31ref`
 
-* `rtt <reftype>` is a new reference type that is a runtime representation of type `<reftype>`
+* `rtt <reftype>` is a new reference type that is a runtime representation of type `<reftype>` (see [overview](Overview.md#casting-and-runtime-types))
   - `reftype ::= ... | rtt <reftype>`
   - `rtt t ok` iff `t ok`
 
@@ -131,7 +131,7 @@ In addition to the rules for basic reference types:
 
 * `rtt t` is a subtype of `anyref`
   - `rtt t <: anyref`
-  - Note: `rtt t1` is *not* a subtype of `rtt t2`, even if `t1` is a subtype of `t2`; such subtyping would be unsound, since RTTs are used in both co- and contravariant roles
+  - Note: `rtt t1` is *not* a subtype of `rtt t2`, even if `t1` is a subtype of `t2`; such subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
 
 
 #### Defaultability
