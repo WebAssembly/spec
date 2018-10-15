@@ -16,6 +16,9 @@
 
 const kC0DEFEFE = new Uint8Array([0xC0, 0xDE, 0xFE, 0xFE]);
 
+// Polyfill `globalThis` proposal.
+this.globalThis = this;
+
 (function testJSAPI() {
 
 const WasmPage = 64 * 1024;
@@ -133,7 +136,7 @@ let importingModule;
 // Start of tests.
 
 test(() => {
-    const wasmDesc = Object.getOwnPropertyDescriptor(this, 'WebAssembly');
+    const wasmDesc = Object.getOwnPropertyDescriptor(globalThis, 'WebAssembly');
     assert_equals(typeof wasmDesc.value, "object");
     assert_true(wasmDesc.writable);
     assert_false(wasmDesc.enumerable);
@@ -141,7 +144,7 @@ test(() => {
 }, "'WebAssembly' data property on global object");
 
 test(() => {
-    const wasmDesc = Object.getOwnPropertyDescriptor(this, 'WebAssembly');
+    const wasmDesc = Object.getOwnPropertyDescriptor(globalThis, 'WebAssembly');
     assert_equals(WebAssembly, wasmDesc.value);
     assert_equals(String(WebAssembly), "[object WebAssembly]");
 }, "'WebAssembly' object");
@@ -404,7 +407,9 @@ test(() => {
     assert_equals(Object.isExtensible(exportsObj), false);
     assert_equals(Object.getPrototypeOf(exportsObj), null);
     assert_equals(Object.keys(exportsObj).join(), "f");
-    exportsObj.g = 1;
+    try {
+      exportsObj.g = 1;
+    } catch { /* fails in strict mode, ignore */ }
     assert_equals(Object.keys(exportsObj).join(), "f");
     assertThrows(() => Object.setPrototypeOf(exportsObj, {}), TypeError);
     assert_equals(Object.getPrototypeOf(exportsObj), null);
@@ -1117,7 +1122,7 @@ const complexTableReExportingModuleBinary = (() => {
     return builder.toBuffer();
 })();
 
-
+let reExportingInstance;
 test(() => {
   let module = new WebAssembly.Module(complexReExportingModuleBinary);
   let memory = new WebAssembly.Memory({initial: 0});
