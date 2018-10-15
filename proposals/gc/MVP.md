@@ -136,13 +136,21 @@ In addition to the rules for basic reference types:
 
 #### Defaultability
 
-* Any numeric value type is defaultable
+* Any numeric value type is defaultable (to 0)
 
-* A reference value type is defaultable if it is not of the form `ref $t`
+* A reference value type is defaultable (to `null`) if it is not of the form `ref $t`
 
 * Locals must have a type that is defaultable.
 
 * Table definitions with non-zero minimum size must have an element type that is defaultable. (Imports are not affected.)
+
+
+### Values
+
+* Each reference value has an associated runtime type:
+  - For structures or arrays, it is the RTT value given upon creation, or `anyref` if none.
+  - For `i31ref` references it is `i31ref`.
+  - For `null` it is `nullref`.
 
 
 ### Instructions
@@ -156,8 +164,17 @@ In addition to the rules for basic reference types:
 #### Functions
 
 * `ref.func` creates a function reference from a function index
-  - `ref.func $f : [] -> (ref $t)`
+  - `ref.func $f : [] -> [(ref $t)]`
      - iff `$f : $t`
+
+* `ref.is_func` checks whether a reference is a function
+  - `ref.is_func : [anyref] -> [i32]`
+  - equivalent to `(rtt.funcref) (ref.test anyref funcref)`
+
+* `ref.as_func` converts to a function reference
+  - `ref.as_func : [anyref] -> [funcref]`
+  - traps if reference is not a function
+  - equivalent to `(rtt.funcref) (ref.cast anyref funcref)`
 
 * `call_ref` calls a function through a reference
   - `call_ref : [t1* (optref $t)] -> [t2*]`
@@ -236,7 +253,16 @@ Tentatively, support a type of guaranteed unboxed scalars.
 TODO: Is 31 bit value range the right choice?
 
 * `i31ref.new` creates an `i31ref` from a 32 bit value, truncating high bit
-  - `i31ref : [i32] -> [i31ref]`
+  - `i31ref.new : [i32] -> [i31ref]`
+
+* `ref.is_i31` checks whether a reference is an i31
+  - `ref.is_i31 : [anyref] -> [i32]`
+  - equivalent to `(rtt.i31ref) (ref.test anyref i31ref)`
+
+* `ref.as_i31` converts to an integer reference
+  - `ref.as_i31 : [anyref] -> [i31ref]`
+  - traps if reference is not an integer
+  - equivalent to `(rtt.i31ref) (ref.cast anyref i31ref)`
 
 * `i31ref.get_u` extracts the value, zero-extending
   - `i31ref.get_u : [i31ref] -> [i32]`
@@ -245,16 +271,32 @@ TODO: Is 31 bit value range the right choice?
   - `i31ref.get_s : [i31ref] -> [i32]`
 
 
+#### Optional references
+
+* `optref.as_nonnull` converts an optional reference to a non-optional one
+  - `optref.as_nonnull : [(optref $t)] -> [(ref $t)]`
+    - iff `$t` is defined
+  - traps on `null`
+
+* `br_on_null` checks for null and branches
+  - `br_on_null $l : [(optref $t)] -> [(ref $t)]`
+    - iff `$t` is defined
+  - branches to on `null`, otherwise returns operand as non-optional
+
+
 #### Runtime Types
 
 * `rtt.anyref` returns the RTT of type `anyref` as a subtype of only itself
   - `rtt.anyref : [] -> [(rtt anyref)]`
 
+* `rtt.eqref` returns the RTT of type `eqref` as a subtype of `anyref`
+  - `rtt.eqref : [] -> [(rtt eqref)]`
+
 * `rtt.funcref` returns the RTT of type `funcref` as a subtype of `anyref`
   - `rtt.funcref : [] -> [(rtt funcref)]`
 
-* `rtt.eqref` returns the RTT of type `eqref` as a subtype of `anyref`
-  - `rtt.eqref : [] -> [(rtt eqref)]`
+* `rtt.i31ref` returns the RTT of type `i31ref` as a subtype of `anyref`
+  - `rtt.i31ref : [] -> [(rtt eqref)]`
 
 * `rtt.new <reftype> <reftype>` returns the RTT of the specified type as a subtype of a given RTT operand
   - `rtt.new t t' : [(rtt t')] -> [(rtt t)]`
@@ -266,10 +308,15 @@ TODO: Is 31 bit value range the right choice?
 
 #### Casts
 
-* `cast <reftype> <reftype>` casts a reference value down to a type given by a RTT representation
-  - `cast t t' : [t (rtt t')] -> [t']`
+* `ref.test <reftype> <reftype>` tests whether a reference value is of a type given by a RTT representation
+  - `ref.test t t' : [t (rtt t')] -> [i32]`
      - iff `t' <: t <: anyref`
-  - traps if the operand's (runtime) type is not defined to be a (transitive) subtype of `t`
+  - returns 1 if the operand's runtime type is defined to be a (transitive) subtype of `t`, 0 otherwise
+
+* `ref.cast <reftype> <reftype>` casts a reference value down to a type given by a RTT representation
+  - `ref.cast t t' : [t (rtt t')] -> [t']`
+     - iff `t' <: t <: anyref`
+  - traps if the operand's runtime type is not defined to be a (transitive) subtype of `t`
 
 * `br_on_cast <labelidx> <reftype> <reftype>` branches if a value can be cast down to a given reference type
   - `br_on_cast $l t t' : [t (rtt t')] -> [t]`
