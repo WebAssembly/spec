@@ -168,13 +168,12 @@ currently has a collection of segments, each of which has a memory index, an
 initializer expression for its offset, and its raw data.
 
 Since WebAssembly currently does not allow for multiple memories, the memory
-index of each segment must be zero, which when represented as a `varuint32` is
-a single zero byte. We can repurpose this byte as a flags field.
+index of each segment must be zero. We can repurpose this 32-bit integer as a
+flags field where new meaning is attached to nonzero values.
 
-When the least-significant bit of this new flags field is `1`, this segment is
-_passive_. A passive segment will not be automatically copied into the
-memory or table on instantiation, and must instead be applied manually using
-the following new instructions:
+When the new flags field is `1`, this segment is _passive_. A passive segment
+will not be automatically copied into the memory or table on instantiation, and
+must instead be applied manually using the following new instructions:
 
 * `memory.init`: copy a region from a data segment
 * `table.init`: copy a region from an element segment
@@ -195,7 +194,7 @@ The new encoding of a data segment is now:
 
 | Field | Type | Description |
 |------|-------|-------------|
-| flags | `uint8` | Flags for passive and presence of fields below, only values of 0, 1, and 2 are valid |
+| flags | `varuint32` | Flags for passive and presence of fields below, only values of 0, 1, and 2 are valid |
 | index | `varuint32`? | Memory index this segment is for, only present if `flags` is 2, otherwise the index is implicitly 0 |
 | offset | `init_expr`? | an `i32` initializer expression for offset, not present if `flags & 0x1` is set |
 | size | `varuint32` | size of `data` (in bytes) |
