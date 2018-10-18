@@ -161,7 +161,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: const
     text: address; url: exec/runtime.html#addresses
     text: signed_32; url: exec/numerics.html#aux-signed
-    text: grow_memory; url: exec/instructions.html#exec-grow-memory
+    text: memory.grow; url: exec/instructions.html#exec-memory-grow
     text: current frame; url: exec/conventions.html#exec-notation-textual
     text: 𝗆𝗈𝖽𝗎𝗅𝖾; url: exec/runtime.html#syntax-frame
     text: 𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌; url: exec/runtime.html#syntax-moduleinst
@@ -612,9 +612,9 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Return |ret|.
 </div>
 
-Immediately after a WebAssembly [=grow_memory=] instruction executes, perform the following steps:
+Immediately after a WebAssembly [=memory.grow=] instruction executes, perform the following steps:
 
-<div algorithm="grow_memory">
+<div algorithm="memory.grow">
     1. If the top of the stack is not [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] (−1), then:
         1. Let |frame| be the [=current frame=].
         1. Assert: due to validation, |frame|.[=𝗆𝗈𝖽𝗎𝗅𝖾=].[=𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌=][0] exists.
@@ -995,6 +995,16 @@ same class of exception is thrown as for out of memory conditions in JavaScript.
 The particular exception here is implementation-defined in both cases.
 
 Note: ECMAScript doesn't specify any sort of behavior on out-of-memory conditions; implementations have been observed to throw OOMError and to crash. Either is valid here.
+
+<div class="issue">
+    A failed allocation of a large table or memory may either result in
+        - a {{RangeError}}, as specified in the {{Memory}} {{Memory/grow()}} and {{Table}} {{Table/grow()}} operations
+        - returning -1 as the [=memory.grow=] instruction
+        - UA-specific OOM behavior as described in this section.
+    In a future revision, we may reconsider more reliable and recoverable errors for allocations of large amounts of memory.
+
+    See [Issue 879](https://github.com/WebAssembly/spec/issues/879) for further discussion.
+</div>
 
 <h2 id="limits">Implementation-defined Limits</h2>
 
