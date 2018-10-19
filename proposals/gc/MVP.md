@@ -350,46 +350,7 @@ TODO.
 
 ## JS API
 
-Based on the JS type reflection proposal.
-
-### Type Representation
-
-* A `ValueType` can be described by an object of the form `{ref: DefType}` and `{optref: DefType}`
-  - `type ValueType = ... | {ref: DefType} | {optref: DefType}`
-
-* A `ValueType` can be described by the string `eqref`
-  - `type ValueType = ... | "eqref"`
-
-* A `DefType` is described by a kind and a definition
-  - `type DefKind = "func" | "struct" | "array"`
-  - `type DefType = {kind: DefKind, definition: FuncType | StructType | ArrayType}`
-
-* TODO: ...`StructType` and `ArrayType`...
-
-
-### Value Conversions
-
-#### Reference Types
-
-In addition to the rules for basic and function reference types:
-
-* The `null` value is allowed as `eqref` and `optref $t`.
-
-* TODO: ...rules for structure and array types.
-
-
-#### Equality Types
-
-* Any JS object (non-primitive value) or symbol or `null` can be passed as `eqref` to a Wasm function, stored in a global, or in a table.
-
-
-### Constructors
-
-#### `Type`
-
-* The `Type` constructor constructs an RTT value.
-
-TODO.
+See [GC JS API document](MVP-JS.md).
 
 
 ## Questions
