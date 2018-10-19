@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version 018be3f805d3272ce699a232398d6e3902d1ea8d" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="f20e40f0437956b7a902d140c6c565d2d21db5e6" name="document-revision">
+  <meta content="64bf5c7a2447416f4690dae7c8ea9d7e2b841366" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,17 +266,18 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-10-17">17 October 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-10-19">19 October 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
      <dd><a class="u-url" href="https://webassembly.github.io/spec/js-api/">https://webassembly.github.io/spec/js-api/</a>
      <dt>Latest published version:
      <dd><a href="https://www.w3.org/TR/wasm-js-api-1/">https://www.w3.org/TR/wasm-js-api-1/</a>
+     <dt>Issue Tracking:
+     <dd><a href="#issues-index">Inline In Spec</a>
+     <dd><a href="https://github.com/WebAssembly/spec/labels/wasm-js-api-1">GitHub Issues</a>
      <dt class="editor">Editor:
      <dd class="editor p-author h-card vcard"><span class="p-name fn">Daniel Ehrenberg (Igalia)</span>
-     <dt>Issue Tracking:
-     <dd><a href="https://github.com/WebAssembly/spec/labels/wasm-js-api-1">GitHub Issues</a>
     </dl>
    </div>
    <div data-fill-with="warning"></div>
@@ -354,6 +355,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
       <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
      </ol>
     <li><a href="#idl-index"><span class="secno"></span> <span class="content">IDL Index</span></a>
+    <li><a href="#issues-index"><span class="secno"></span> <span class="content">Issues Index</span></a>
    </ol>
   </nav>
   <main>
@@ -987,8 +989,8 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
       <p>Return <var>ret</var>.</p>
     </ol>
    </div>
-   <p>Immediately after a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-grow-memory" id="ref-for-exec-grow-memory">grow_memory</a> instruction executes, perform the following steps:</p>
-   <div class="algorithm" data-algorithm="grow_memory">
+   <p>Immediately after a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-memory-grow" id="ref-for-exec-memory-grow">memory.grow</a> instruction executes, perform the following steps:</p>
+   <div class="algorithm" data-algorithm="memory.grow">
     <ol>
      <li data-md>
       <p>If the top of the stack is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> (−1), then:</p>
@@ -1542,6 +1544,19 @@ JavaScript. The particular exception here is implementation-defined in both case
 same class of exception is thrown as for out of memory conditions in JavaScript.
 The particular exception here is implementation-defined in both cases.</p>
    <p class="note" role="note"><span>Note:</span> ECMAScript doesn’t specify any sort of behavior on out-of-memory conditions; implementations have been observed to throw OOMError and to crash. Either is valid here.</p>
+   <div class="issue" id="issue-7eafcf54">
+    <a class="self-link" href="#issue-7eafcf54"></a> A failed allocation of a large table or memory may either result in 
+    <ul>
+     <li data-md>
+      <p>a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑨">RangeError</a></code>, as specified in the <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑧">Memory</a></code> <code class="idl"><a data-link-type="idl" href="#dom-memory-grow" id="ref-for-dom-memory-grow①">grow()</a></code> and <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table⑥">Table</a></code> <code class="idl"><a data-link-type="idl" href="#dom-table-grow" id="ref-for-dom-table-grow①">grow()</a></code> operations</p>
+     <li data-md>
+      <p>returning -1 as the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-memory-grow" id="ref-for-exec-memory-grow①">memory.grow</a> instruction</p>
+     <li data-md>
+      <p>UA-specific OOM behavior as described in this section.</p>
+    </ul>
+     In a future revision, we may reconsider more reliable and recoverable errors for allocations of large amounts of memory. 
+    <p>See <a href="https://github.com/WebAssembly/spec/issues/879">Issue 879</a> for further discussion.</p>
+   </div>
    <h2 class="heading settled" data-level="5" id="limits"><span class="secno">5. </span><span class="content">Implementation-defined Limits</span><a class="self-link" href="#limits"></a></h2>
    <p>The WebAssembly core specification allows an implementation to define limits on the syntactic structure of the module.
 While each embedding of WebAssembly may choose to define its own limits, for predictability the standard WebAssembly JavaScript Interface described in this document defines the following exact limits.
@@ -1747,6 +1762,7 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">3.4. Tables</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror④">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑤">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑥">(4)</a>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑦">3.5. Globals</a>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">4.1. Stack Overflow</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑨">4.2. Out of Memory</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-native-error-types-used-in-this-standard-typeerror">
@@ -2115,12 +2131,6 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-embed-grow-mem">3.3. Memories</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-exec-grow-memory">
-   <a href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-grow-memory">https://webassembly.github.io/spec/core/exec/instructions.html#exec-grow-memory</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-exec-grow-memory">3.3. Memories</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-embed-grow-table">
    <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-grow-table">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-grow-table</a><b>Referenced in:</b>
    <ul>
@@ -2163,6 +2173,13 @@ In practice, an implementation may run out of resources for valid modules below 
    <ul>
     <li><a href="#ref-for-memory-instances">2.1. Interaction of the WebAssembly Store with JavaScript</a>
     <li><a href="#ref-for-memory-instances①">3.3. Memories</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-exec-memory-grow">
+   <a href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-memory-grow">https://webassembly.github.io/spec/core/exec/instructions.html#exec-memory-grow</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-exec-memory-grow">3.3. Memories</a>
+    <li><a href="#ref-for-exec-memory-grow①">4.2. Out of Memory</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-syntax-module">
@@ -2588,7 +2605,6 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-syntax-globaladdr" style="color:initial">global address</span>
      <li><span class="dfn-paneled" id="term-for-global-instances" style="color:initial">global instance</span>
      <li><span class="dfn-paneled" id="term-for-embed-grow-mem" style="color:initial">grow_mem</span>
-     <li><span class="dfn-paneled" id="term-for-exec-grow-memory" style="color:initial">grow_memory</span>
      <li><span class="dfn-paneled" id="term-for-embed-grow-table" style="color:initial">grow_table</span>
      <li><span class="dfn-paneled" id="term-for-syntax-hostfunc" style="color:initial">host function</span>
      <li><span class="dfn-paneled" id="term-for-embed-init-store" style="color:initial">init_store</span>
@@ -2596,6 +2612,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-embed-invoke-func" style="color:initial">invoke_func</span>
      <li><span class="dfn-paneled" id="term-for-syntax-memaddr" style="color:initial">memory address</span>
      <li><span class="dfn-paneled" id="term-for-memory-instances" style="color:initial">memory instance</span>
+     <li><span class="dfn-paneled" id="term-for-exec-memory-grow" style="color:initial">memory.grow</span>
      <li><span class="dfn-paneled" id="term-for-syntax-module" style="color:initial">module</span>
      <li><span class="dfn-paneled" id="term-for-binary-module" style="color:initial">module grammar</span>
      <li><span class="dfn-paneled" id="term-for-embed-exports" style="color:initial">module_exports</span>
@@ -2729,7 +2746,7 @@ In practice, an implementation may run out of resources for valid modules below 
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace②①"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly②①"><c- n>WebAssembly</c-></a>, <a class="idl-code" data-link-type="constructor" href="#dom-memory-memory" id="ref-for-dom-memory-memory①"><c- g>Constructor</c-></a>(<a class="n" data-link-type="idl-name" href="#dictdef-memorydescriptor" id="ref-for-dictdef-memorydescriptor①"><c- n>MemoryDescriptor</c-></a> <a href="#dom-memory-memory-descriptor-descriptor"><code><c- g>descriptor</c-></code></a>), <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed③①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->,<c- n>Worklet</c->)]
 <c- b>interface</c-> <a href="#memory"><code><c- g>Memory</c-></code></a> {
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long②①"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-grow" id="ref-for-dom-memory-grow①"><c- g>grow</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange②①"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long③①"><c- b>unsigned</c-> <c- b>long</c-></a> <a href="#dom-memory-grow-delta-delta"><code><c- g>delta</c-></code></a>);
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long②①"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-grow" id="ref-for-dom-memory-grow②"><c- g>grow</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange②①"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long③①"><c- b>unsigned</c-> <c- b>long</c-></a> <a href="#dom-memory-grow-delta-delta"><code><c- g>delta</c-></code></a>);
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects③①"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="ArrayBuffer" href="#dom-memory-buffer" id="ref-for-dom-memory-buffer①"><c- g>buffer</c-></a>;
 };
 
@@ -2747,7 +2764,7 @@ In practice, an implementation may run out of resources for valid modules below 
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace③①"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly③①"><c- n>WebAssembly</c-></a>, <a class="idl-code" data-link-type="constructor" href="#dom-table-table" id="ref-for-dom-table-table①"><c- g>Constructor</c-></a>(<a class="n" data-link-type="idl-name" href="#dictdef-tabledescriptor" id="ref-for-dictdef-tabledescriptor①"><c- n>TableDescriptor</c-></a> <a href="#dom-table-table-descriptor-descriptor"><code><c- g>descriptor</c-></code></a>), <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed④①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->,<c- n>Worklet</c->)]
 <c- b>interface</c-> <a href="#table"><code><c- g>Table</c-></code></a> {
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑥①"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="method" href="#dom-table-grow" id="ref-for-dom-table-grow①"><c- g>grow</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑤①"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑦①"><c- b>unsigned</c-> <c- b>long</c-></a> <a href="#dom-table-grow-delta-delta"><code><c- g>delta</c-></code></a>);
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑥①"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="method" href="#dom-table-grow" id="ref-for-dom-table-grow②"><c- g>grow</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑤①"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑦①"><c- b>unsigned</c-> <c- b>long</c-></a> <a href="#dom-table-grow-delta-delta"><code><c- g>delta</c-></code></a>);
   <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function②"><c- n>Function</c-></a>? <a class="idl-code" data-link-type="method" href="#dom-table-get" id="ref-for-dom-table-get①"><c- g>get</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑥①"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑧①"><c- b>unsigned</c-> <c- b>long</c-></a> <a href="#dom-table-get-index-index"><code><c- g>index</c-></code></a>);
   <c- b>void</c-> <a class="idl-code" data-link-type="method" href="#dom-table-set" id="ref-for-dom-table-set①"><c- g>set</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange⑦①"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑨①"><c- b>unsigned</c-> <c- b>long</c-></a> <a href="#dom-table-set-index-value-index"><code><c- g>index</c-></code></a>, <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function①①"><c- n>Function</c-></a>? <a href="#dom-table-set-index-value-value"><code><c- g>value</c-></code></a>);
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long①⓪①"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="unsigned long" href="#dom-table-length" id="ref-for-dom-table-length①"><c- g>length</c-></a>;
@@ -2774,6 +2791,23 @@ In practice, an implementation may run out of resources for valid modules below 
 <c- b>interface</c-> <a href="#runtimeerror"><code><c- g>RuntimeError</c-></code></a> { };
 
 </pre>
+  <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
+  <div style="counter-reset:issue">
+   <div class="issue">
+     A failed allocation of a large table or memory may either result in 
+    <ul>
+     <li data-md>
+      <p>a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror">RangeError</a></code>, as specified in the <code class="idl"><a data-link-type="idl" href="#memory">Memory</a></code> <code class="idl"><a data-link-type="idl" href="#dom-memory-grow">grow()</a></code> and <code class="idl"><a data-link-type="idl" href="#table">Table</a></code> <code class="idl"><a data-link-type="idl" href="#dom-table-grow">grow()</a></code> operations</p>
+     <li data-md>
+      <p>returning -1 as the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-memory-grow">memory.grow</a> instruction</p>
+     <li data-md>
+      <p>UA-specific OOM behavior as described in this section.</p>
+    </ul>
+     In a future revision, we may reconsider more reliable and recoverable errors for allocations of large amounts of memory. 
+    <p>See <a href="https://github.com/WebAssembly/spec/issues/879">Issue 879</a> for further discussion.</p>
+     <a href="#issue-7eafcf54"> ↵ </a>
+   </div>
+  </div>
   <aside class="dfn-panel" data-for="associated-store">
    <b><a href="#associated-store">#associated-store</a></b><b>Referenced in:</b>
    <ul>
@@ -3027,6 +3061,7 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-memory①">2.2. WebAssembly JS Object Caches</a>
     <li><a href="#ref-for-memory②">3. The WebAssembly Namespace</a> <a href="#ref-for-memory③">(2)</a>
     <li><a href="#ref-for-memory④">3.3. Memories</a> <a href="#ref-for-memory⑤">(2)</a> <a href="#ref-for-memory⑥">(3)</a> <a href="#ref-for-memory⑦">(4)</a>
+    <li><a href="#ref-for-memory⑧">4.2. Out of Memory</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="create-a-memory-buffer">
@@ -3058,6 +3093,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <b><a href="#dom-memory-grow">#dom-memory-grow</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-memory-grow">3.3. Memories</a>
+    <li><a href="#ref-for-dom-memory-grow①">4.2. Out of Memory</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-memory-buffer">
@@ -3084,6 +3120,7 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-table">2.2. WebAssembly JS Object Caches</a>
     <li><a href="#ref-for-table①">3. The WebAssembly Namespace</a>
     <li><a href="#ref-for-table②">3.4. Tables</a> <a href="#ref-for-table③">(2)</a> <a href="#ref-for-table④">(3)</a> <a href="#ref-for-table⑤">(4)</a>
+    <li><a href="#ref-for-table⑥">4.2. Out of Memory</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="create-a-table-object">
@@ -3103,6 +3140,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <b><a href="#dom-table-grow">#dom-table-grow</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-table-grow">3.4. Tables</a>
+    <li><a href="#ref-for-dom-table-grow①">4.2. Out of Memory</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-table-length">
