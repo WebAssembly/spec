@@ -300,12 +300,13 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
   To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes|, using optional [=task source=] |taskSource|, perform the following steps:
 
     1. Let |promise| be [=a new promise=].
-    1. In parallel, [=compile a WebAssembly module|compile the WebAssembly module=] |bytes| and store the result as |module|.
-    1. When the above operation completes, [=queue a task=] to perform the following steps. If |taskSource| was provided, queue the task on that task source.
-        1. If |module| is [=error=], reject |promise| with a {{CompileError}} exception.
-        1. Otherwise,
-            1. [=Construct a WebAssembly module object=] from |module| and |bytes|, and let |moduleObject| be the result.
-            1. [=Resolve=] |promise| with |moduleObject|.
+    1. Run the following steps [=in parallel=]:
+        1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
+        1. [=Queue a task=] to perform the following steps. If |taskSource| was provided, queue the task on that task source.
+            1. If |module| is [=error=], reject |promise| with a {{CompileError}} exception.
+            1. Otherwise,
+                1. [=Construct a WebAssembly module object=] from |module| and |bytes|, and let |moduleObject| be the result.
+                1. [=Resolve=] |promise| with |moduleObject|.
     1. Return |promise|.
 </div>
 
