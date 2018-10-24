@@ -675,8 +675,12 @@ appear immediately after the global section.
 
 ##### Event section
 
-The `event` section is the named section 'event'. The event section declares a
-list of event types as follows:
+The `event` section is the named section 'event'. For ease of validation, this
+section comes after the [import
+section(https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#import-section)
+and before the [export
+section](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#export-section).
+The event section declares a list of event types as follows:
 
 | Field | Type | Description |
 |-------|------|-------------|
