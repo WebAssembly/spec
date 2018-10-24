@@ -724,3 +724,30 @@ follows:
 
 The event names subsection is a `name_map` which assigns names to a subset of
 the event indices (Used for both imports and module-defined).
+
+
+---
+
+## Comparisons of the two proposals
+
+- Proposal 2 is more expressive and possibly provides more flexibility
+  for future frontend developers for other languages.
+
+- As Proposal 2 introduces first-class exception reference type, we have to
+  manage lifetime of exception objects, from which arises several questions.
+  - How do we manage exception objects' lifetime in non-GC embeddings? Do we
+    make reference counting mandatory?
+  - Who is responsible for deleting exception objects?
+  - What should we do for except_ref values of invalid exception objects already
+    deleted?
+  - How should exception reference type be related to the existing reference
+    type or GC proposal?
+
+- In Proposal 2, the unwinder must stop at every call stack frame with `catch`
+  instruction because the tag matching happens within a `catch` block, whereas
+  in Proposal 1 the unwinder does not need to stop at call stack frames that
+  do not contain `catch`s with the current exception's tag. Stopping at every
+  call frame might degrade performance.
+
+- It is suggested that Proposal 2 may be more compatible with effect handlers,
+  which can be might be added to wasm in the future.
