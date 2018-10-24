@@ -271,6 +271,23 @@
     )
     (get_local 0)
   )
+  (func (export "as-tee_local-value") (param i32) (result i32)
+    (tee_local 0
+      (if (result i32) (get_local 0)
+        (then (i32.const 1))
+        (else (i32.const 0))
+      )
+    )
+  )
+  (global $a (mut i32) (i32.const 10))
+  (func (export "as-set_global-value") (param i32) (result i32)
+    (set_global $a
+      (if (result i32) (get_local 0)
+        (then (i32.const 1))
+        (else (i32.const 0))
+      )
+    ) (get_global $a)
+  )
   (func (export "as-load-operand") (param i32) (result i32)
     (i32.load
       (if (result i32) (get_local 0)
@@ -444,6 +461,12 @@
 
 (assert_return (invoke "as-set_local-value" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "as-set_local-value" (i32.const 1)) (i32.const 1))
+
+(assert_return (invoke "as-tee_local-value" (i32.const 0)) (i32.const 0))
+(assert_return (invoke "as-tee_local-value" (i32.const 1)) (i32.const 1))
+
+(assert_return (invoke "as-set_global-value" (i32.const 0)) (i32.const 0))
+(assert_return (invoke "as-set_global-value" (i32.const 1)) (i32.const 1))
 
 (assert_return (invoke "as-load-operand" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "as-load-operand" (i32.const 1)) (i32.const 0))

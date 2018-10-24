@@ -186,6 +186,14 @@
   (func (export "as-set_local-value") (result i32)
     (local i32) (set_local 0 (call $const-i32)) (get_local 0)
   )
+  (func (export "as-tee_local-value") (result i32)
+    (local i32) (tee_local 0 (call $const-i32))
+  )
+  (global $a (mut i32) (i32.const 10))
+  (func (export "as-set_global-value") (result i32)
+    (set_global $a (call $const-i32))
+    (get_global $a)
+  )
   (func (export "as-load-operand") (result i32)
     (i32.load (call $const-i32))
   )
@@ -260,6 +268,8 @@
 (assert_return (invoke "as-drop-operand"))
 (assert_return (invoke "as-br-value") (i32.const 0x132))
 (assert_return (invoke "as-set_local-value") (i32.const 0x132))
+(assert_return (invoke "as-tee_local-value") (i32.const 0x132))
+(assert_return (invoke "as-set_global-value") (i32.const 0x132))
 (assert_return (invoke "as-load-operand") (i32.const 1))
 
 ;; Invalid typing

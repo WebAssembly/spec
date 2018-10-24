@@ -257,6 +257,28 @@
     (nop) (nop) (i32.const 2) (nop) (nop) (set_local 0) (get_local 0)
   )
 
+  (func (export "as-tee_local-first") (param i32) (result i32)
+    (nop) (i32.const 2) (tee_local 0)
+  )
+  (func (export "as-tee_local-last") (param i32) (result i32)
+    (i32.const 2) (nop) (tee_local 0)
+  )
+  (func (export "as-tee_local-everywhere") (param i32) (result i32)
+    (nop) (nop) (i32.const 2) (nop) (nop) (tee_local 0)
+  )
+
+  (global $a (mut i32) (i32.const 0))
+  (func (export "as-set_global-first") (result i32)
+    (nop) (i32.const 2) (set_global $a) (get_global $a)
+  )
+  (func (export "as-set_global-last") (result i32)
+    (i32.const 2) (nop) (set_global $a) (get_global $a)
+  )
+  (func (export "as-set_global-everywhere") (result i32)
+    (nop) (nop) (i32.const 2) (nop) (nop) (set_global 0)
+    (get_global $a)
+  )
+
   (func (export "as-load-first") (param i32) (result i32)
     (nop) (get_local 0) (i32.load)
   )
@@ -368,6 +390,14 @@
 (assert_return (invoke "as-set_local-first" (i32.const 1)) (i32.const 2))
 (assert_return (invoke "as-set_local-last" (i32.const 1)) (i32.const 2))
 (assert_return (invoke "as-set_local-everywhere" (i32.const 1)) (i32.const 2))
+
+(assert_return (invoke "as-tee_local-first" (i32.const 1)) (i32.const 2))
+(assert_return (invoke "as-tee_local-last" (i32.const 1)) (i32.const 2))
+(assert_return (invoke "as-tee_local-everywhere" (i32.const 1)) (i32.const 2))
+
+(assert_return (invoke "as-set_global-first") (i32.const 2))
+(assert_return (invoke "as-set_global-last") (i32.const 2))
+(assert_return (invoke "as-set_global-everywhere") (i32.const 2))
 
 (assert_return (invoke "as-load-first" (i32.const 100)) (i32.const 0))
 (assert_return (invoke "as-load-last" (i32.const 100)) (i32.const 0))
