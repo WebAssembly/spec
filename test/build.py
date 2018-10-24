@@ -84,7 +84,7 @@ def build_js(out_js_dir, include_harness=False):
 
     print('Copying JS tests to the JS out dir...')
     for path in os.listdir(JS_TESTS_DIR):
-        abspath = os.path.join(JS_TESTS_DIR, js_file)
+        abspath = os.path.join(JS_TESTS_DIR, path)
         if os.path.isdir(abspath):
             shutil.copytree(abspath, os.path.join(out_js_dir, path))
         else:
