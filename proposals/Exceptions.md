@@ -109,7 +109,8 @@ Try blocks, like control-flow blocks, have a _block type_. The block type of a
 try block defines the values yielded by the evaluation the try block when either
 no exception is thrown, or the exception is successfully caught by one of its
 catch blocks, and the instructions within the catch block can recover from the
-throw.
+throw. Because `try` and `end` instructions define a control-flow block, they
+can be targets for branches (`br` and `br_if`) as well.
 
 In the initial implementation, try blocks may only yield 0 or 1 values.
 
@@ -443,6 +444,11 @@ Try blocks, like control-flow blocks, have a _block type_. The block type of a
 try block defines the values yielded by the evaluation the try block when either
 no exception is thrown, or the exception is successfully caught by the catch
 block.
+Try blocks, like control-flow blocks, have a _block type_. The block type of a
+try block defines the values yielded by the evaluation the try block when either
+no exception is thrown, or the exception is successfully caught by the catch
+block. Because `try` and `end` instructions define a control-flow block, they
+can be targets for branches (`br` and `br_if`) as well.
 
 In the initial implementation, try blocks may only yield 0 or 1 values.
 
