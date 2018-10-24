@@ -476,8 +476,9 @@ def S.all_true(a):
 
 ## Comparisons
 
-The comparison operations all compare two vectors lane-wise, and produce a
-mask vector with the same number of lanes as the input interpretation.
+The comparison operations all compare two vectors lane-wise, and produce a mask
+vector with the same number of lanes as the input interpretation where the bits
+in each lane are `0` for `false` and all ones for `true`.
 
 ### Equality
 * `i8x16.eq(a: v128, b: v128) -> v128`
