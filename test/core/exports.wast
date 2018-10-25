@@ -120,7 +120,21 @@
 (module (export "a" (table $a)) (table $a 0 anyfunc))
 (module (export "a" (table $a)) (table $a 0 1 anyfunc))
 
-(; TODO: access table ;)
+;; access table
+(module $Table
+  (func $func (param i32) (result i32) (get_local 0))
+  (type $check (func (param i32) (result i32)))
+  (table 1 anyfunc)
+  (elem (i32.const 0) $func)
+  (func (export "e") (result i32)
+    (call_indirect (type $check) (i32.const 1) (i32.const 0))
+  )
+)
+(assert_return (invoke "e") (i32.const 1))
+(assert_return (invoke $Table "e") (i32.const 1))
+(module)
+(module $Other3)
+(assert_return (invoke $Table "e") (i32.const 1))
 
 (assert_invalid
   (module (table 0 anyfunc) (export "a" (table 1)))
@@ -169,7 +183,20 @@
 (module (export "a" (memory $a)) (memory $a 0))
 (module (export "a" (memory $a)) (memory $a 0 1))
 
-(; TODO: access memory ;)
+;; access memory
+(module $Memory
+  (memory 1)
+  (func (export "store") (param i32 i32) (i32.store8 (get_local 0) (get_local 1)))
+  (func (export "load") (param i32) (result i32) (i32.load8_s (get_local 0)))
+)
+(assert_return (invoke "store" (i32.const 0) (i32.const 1)))
+(assert_return (invoke "load" (i32.const 0)) (i32.const 1))
+(assert_return (invoke $Memory "store" (i32.const 0) (i32.const 1)))
+(assert_return (invoke $Memory "load" (i32.const 0)) (i32.const 1))
+(module)
+(module $Other4)
+(assert_return (invoke $Memory "store" (i32.const 0) (i32.const 1)))
+(assert_return (invoke $Memory "load" (i32.const 0)) (i32.const 1))
 
 (assert_invalid
   (module (memory 0) (export "a" (memory 1)))
