@@ -60,8 +60,8 @@ let kMemorySectionCode = 5;    // Memory attributes
 let kGlobalSectionCode = 6;    // Global declarations
 let kExportSectionCode = 7;    // Exports
 let kStartSectionCode = 8;     // Start function declaration
-let kElementSectionCode = 9;  // Elements section
-let kCodeSectionCode = 10;      // Function code
+let kElementSectionCode = 9;   // Elements section
+let kCodeSectionCode = 10;     // Function code
 let kDataSectionCode = 11;     // Data segments
 let kNameSectionCode = 12;     // Name section (encoded as string)
 
@@ -319,57 +319,19 @@ let kExprI64ReinterpretF64 = 0xbd;
 let kExprF32ReinterpretI32 = 0xbe;
 let kExprF64ReinterpretI64 = 0xbf;
 
-let kTrapUnreachable          = 0;
-let kTrapMemOutOfBounds       = 1;
-let kTrapDivByZero            = 2;
-let kTrapDivUnrepresentable   = 3;
-let kTrapRemByZero            = 4;
-let kTrapFloatUnrepresentable = 5;
-let kTrapFuncInvalid          = 6;
-let kTrapFuncSigMismatch      = 7;
-let kTrapInvalidIndex         = 8;
-
-let kTrapMsgs = [
-  "unreachable",
-  "memory access out of bounds",
-  "divide by zero",
-  "divide result unrepresentable",
-  "remainder by zero",
-  "integer result unrepresentable",
-  "invalid function",
-  "function signature mismatch",
-  "invalid index into function table"
-];
-
-function assertTraps(trap, code) {
-  try {
-    if (typeof code === 'function') {
-      code();
-    } else {
-      eval(code);
-    }
-  } catch (e) {
-    assertEquals('object', typeof e);
-    assertEquals(kTrapMsgs[trap], e.message);
-    // Success.
-    return;
+function wasmI32Const(val) {
+  let bytes = [kExprI32Const];
+  for (let i = 0; i < 4; ++i) {
+    bytes.push(0x80 | ((val >> (7 * i)) & 0x7f));
   }
-  throw new MjsUnitAssertionError('Did not trap, expected: ' + kTrapMsgs[trap]);
+  bytes.push((val >> (7 * 4)) & 0x7f);
+  return bytes;
 }
 
-function assertWasmThrows(value, code) {
-  assertEquals('number', typeof value);
-  try {
-    if (typeof code === 'function') {
-      code();
-    } else {
-      eval(code);
-    }
-  } catch (e) {
-    assertEquals('number', typeof e);
-    assertEquals(value, e);
-    // Success.
-    return;
-  }
-  throw new MjsUnitAssertionError('Did not throw, expected: ' + value);
+function wasmF32Const(f) {
+  return [kExprF32Const].concat(Array.from(new Uint8Array((new Float32Array([f])).buffer)));
+}
+
+function wasmF64Const(f) {
+  return [kExprF64Const].concat(Array.from(new Uint8Array((new Float64Array([f])).buffer)));
 }

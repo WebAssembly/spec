@@ -74,9 +74,7 @@ class Binary extends Array {
     // Emit section length.
     this.emit_u32v(section.length);
     // Copy the temporary buffer.
-    for (const b of section) {
-      this.push(b);
-    }
+    this.push(...section);
   }
 }
 
@@ -86,10 +84,11 @@ class WasmFunctionBuilder {
     this.name = name;
     this.type_index = type_index;
     this.body = [];
+    this.locals = [];
+    this.local_names = [];
   }
 
   numLocalNames() {
-    if (this.local_names === undefined) return 0;
     let num_local_names = 0;
     for (let loc_name of this.local_names) {
       if (loc_name !== undefined) ++num_local_names;
@@ -125,7 +124,7 @@ class WasmFunctionBuilder {
 
   getNumLocals() {
     let total_locals = 0;
-    for (let l of this.locals || []) {
+    for (let l of this.locals) {
       for (let type of ["i32", "i64", "f32", "f64"]) {
         total_locals += l[type + "_count"] || 0;
       }
@@ -135,10 +134,8 @@ class WasmFunctionBuilder {
 
   addLocals(locals, names) {
     const old_num_locals = this.getNumLocals();
-    if (!this.locals) this.locals = []
     this.locals.push(locals);
     if (names) {
-      if (!this.local_names) this.local_names = [];
       const missing_names = old_num_locals - this.local_names.length;
       this.local_names.push(...new Array(missing_names), ...names);
     }
@@ -214,8 +211,9 @@ class WasmModuleBuilder {
   }
 
   addType(type) {
-    // TODO: canonicalize types?
     this.types.push(type);
+    var pl = type.params.length;  // should have params
+    var rl = type.results.length; // should have results
     return this.types.length - 1;
   }
 
@@ -234,7 +232,7 @@ class WasmModuleBuilder {
     return func;
   }
 
-  addImport(module = "", name, type) {
+  addImport(module, name, type) {
     if (this.functions.length != 0) {
       throw new Error('Imported functions must be declared before local ones');
     }
@@ -244,7 +242,7 @@ class WasmModuleBuilder {
     return this.num_imported_funcs++;
   }
 
-  addImportedGlobal(module = "", name, type, mutable = false) {
+  addImportedGlobal(module, name, type, mutable = false) {
     if (this.globals.length != 0) {
       throw new Error('Imported globals must be declared before local ones');
     }
@@ -254,14 +252,14 @@ class WasmModuleBuilder {
     return this.num_imported_globals++;
   }
 
-  addImportedMemory(module = "", name, initial = 0, maximum) {
+  addImportedMemory(module, name, initial = 0, maximum) {
     let o = {module: module, name: name, kind: kExternalMemory,
              initial: initial, maximum: maximum};
     this.imports.push(o);
     return this;
   }
 
-  addImportedTable(module = "", name, initial, maximum) {
+  addImportedTable(module, name, initial, maximum) {
     let o = {module: module, name: name, kind: kExternalTable, initial: initial,
              maximum: maximum};
     this.imports.push(o);
