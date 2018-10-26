@@ -736,11 +736,8 @@ the event indices (Used for both imports and module-defined).
 
 ## Comparisons of the two proposals
 
-- Proposal 2 is more expressive and possibly provides more flexibility
-  for future frontend developers for other languages.
-
-- As Proposal 2 introduces first-class exception reference type, we have to
-  manage lifetime of exception objects, from which arises several questions.
+- Proposal 2 introduces a first-class exception reference type. This raises several
+  questions about exception lifetime management:
   - How do we manage exception objects' lifetime in non-GC embeddings? Do we
     make reference counting mandatory?
   - Who is responsible for deleting exception objects?
@@ -748,6 +745,15 @@ the event indices (Used for both imports and module-defined).
     deleted?
   - How should exception reference type be related to the existing reference
     type or GC proposal?
+   
+  Consequently, Proposal 1 would be simpler to implement for VMs which do not need
+  reference types or related functionality such as GC objects.
+  
+- The first-class exception type makes Proposal 2 more expressive, possibly providing
+  more flexibility for frontend developers for non-C langauges. In particular, allowing
+  exception objects to escape catch blocks may simplify control flow translation.
+  Conversely, it is slightly more complex for languages which do not have convenient ways to model
+  reference types.
 
 - In Proposal 2, the unwinder must stop at every call stack frame with `catch`
   instruction because the tag matching happens within a `catch` block, whereas
