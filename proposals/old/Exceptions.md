@@ -2,7 +2,7 @@ THIS DOCUMENT IS OBSOLETE!
 
 Please see The new [Level 1 MVP Proposal] instead.
 
-[Level 1 MVP Proposal]: https://github.com/WebAssembly/exception-handling/blob/master/proposals/Level-1.md
+[Level 1 MVP Proposal]: https://github.com/WebAssembly/exception-handling/blob/master/proposals/old/Level-1.md
 
 The original proposal is preserved here for reference.
 
