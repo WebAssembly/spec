@@ -691,7 +691,7 @@ The event section declares a list of event types as follows:
 | Field | Type | Description |
 |-------|------|-------------|
 | count | `varuint32` | count of the number of events to follow |
-| type | `except_type*` | The definitions of the event types |
+| type | `event_type*` | The definitions of the event types |
 
 ##### Import section
 
