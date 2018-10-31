@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version 04b354547d55896d854a81cffb3965bd6f8758ec" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="c90bc9686f1a90b76fb2ec782256d26323164c91" name="document-revision">
+  <meta content="a56cf2ec042da382f0196fe14dcbd7ff2e973466" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-10-25">25 October 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-10-31">31 October 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1408,7 +1408,9 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>Set <var>i</var> to <var>i</var> + 1.</p>
       </ol>
      <li data-md>
-      <p>Let (<var>store</var>, <var>ret</var>) be the result of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-invoke-func" id="ref-for-embed-invoke-func">invoke_func</a>(<var>store</var>, <var>funcaddr</var>, <var>args</var>).</p>
+      <p>Let <var>argsSeq</var> be a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/conventions.html#grammar-notation" id="ref-for-grammar-notation">sequence</a> containing the elements of <var>args</var>.</p>
+     <li data-md>
+      <p>Let (<var>store</var>, <var>ret</var>) be the result of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-invoke-func" id="ref-for-embed-invoke-func">invoke_func</a>(<var>store</var>, <var>funcaddr</var>, <var>argsSeq</var>).</p>
      <li data-md>
       <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent②①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②②">associated store</a> to <var>store</var>.</p>
      <li data-md>
@@ -2214,6 +2216,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-embed-read-global">3.5. Globals</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-grammar-notation">
+   <a href="https://webassembly.github.io/spec/core/syntax/conventions.html#grammar-notation">https://webassembly.github.io/spec/core/syntax/conventions.html#grammar-notation</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-grammar-notation">3.6. Exported Functions</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-aux-signed">
    <a href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed">https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed</a><b>Referenced in:</b>
    <ul>
@@ -2618,6 +2626,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-embed-exports" style="color:initial">module_exports</span>
      <li><span class="dfn-paneled" id="term-for-embed-imports" style="color:initial">module_imports</span>
      <li><span class="dfn-paneled" id="term-for-embed-read-global" style="color:initial">read_global</span>
+     <li><span class="dfn-paneled" id="term-for-grammar-notation" style="color:initial">sequence</span>
      <li><span class="dfn-paneled" id="term-for-aux-signed" style="color:initial">signed_32</span>
      <li><span class="dfn-paneled" id="term-for-embed-size-mem" style="color:initial">size_mem</span>
      <li><span class="dfn-paneled" id="term-for-embed-size-table" style="color:initial">size_table</span>
