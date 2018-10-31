@@ -319,6 +319,6 @@ instr ::= ...
 | `memory.drop` | `0xfc 0x09` | `segment:varuint32` | :thinking: prevent further use of passive data segment |
 | `memory.copy` | `0xfc 0x0a` | `memory:0x00` | :thinking: copy from one region of linear memory to another region |
 | `memory.fill` | `0xfc 0x0b` | `memory:0x00` | :thinking: fill a region of linear memory with a given byte value |
-| `table.init` | `0xfc 0x0c` | `memory:0x00`, `segment:varuint32` | :thinking: copy from a passive element segment to a table |
+| `table.init` | `0xfc 0x0c` | `table:0x00`, `segment:varuint32` | :thinking: copy from a passive element segment to a table |
 | `table.drop` | `0xfc 0x0d` | `segment:varuint32` | :thinking: prevent further use of a passive element segment |
-| `table.copy` | `0xfc 0x0e` | `memory:0x00` | :thinking: copy from one region of a table to another region |
+| `table.copy` | `0xfc 0x0e` | `table:0x00` | :thinking: copy from one region of a table to another region |
