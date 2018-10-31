@@ -165,6 +165,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: current frame; url: exec/conventions.html#exec-notation-textual
     text: 𝗆𝗈𝖽𝗎𝗅𝖾; url: exec/runtime.html#syntax-frame
     text: 𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌; url: exec/runtime.html#syntax-moduleinst
+    text: sequence; url: syntax/conventions.html#grammar-notation
 </pre>
 
 <pre class='link-defaults'>
@@ -886,7 +887,8 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. Otherwise, let |arg| be undefined.
         1. [=Append=] [=ToWebAssemblyValue=](|arg|, |t|) to |args|.
         1. Set |i| to |i| + 1.
-    1. Let (|store|, |ret|) be the result of [=invoke_func=](|store|, |funcaddr|, |args|).
+    1. Let |argsSeq| be a WebAssembly [=sequence=] containing the elements of |args|.
+    1. Let (|store|, |ret|) be the result of [=invoke_func=](|store|, |funcaddr|, |argsSeq|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
     1. If |ret| is empty, return undefined.
