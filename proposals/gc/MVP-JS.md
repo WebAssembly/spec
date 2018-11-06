@@ -111,7 +111,7 @@ and [arrays](https://github.com/WebAssembly/gc/blob/master/proposals/gc/MVP.md#a
 of the WebAssembly GC proposal, the JS Typed Object proposal defines a new kind of Exotic Object
 called a [typed object](https://github.com/tschneidereit/proposal-typed-objects/blob/master/explainer.md#instantiation).
 Typed objects can be both created from JS by calling a Type Definition object
-as a constructor and created wasm from wasm by executing [`struct.new`](https://github.com/WebAssembly/gc/blob/master/proposals/gc/MVP.md#structures)
+as a constructor and created from wasm by executing [`struct.new`](https://github.com/WebAssembly/gc/blob/master/proposals/gc/MVP.md#structures)
 and [`array.new`](https://github.com/WebAssembly/gc/blob/master/proposals/gc/MVP.md#arrays)
 instructions. A typed object's state is exclusively [read](https://github.com/tschneidereit/proposal-typed-objects/blob/master/explainer.md#reading-from-typed-fields)
 and [written](https://github.com/tschneidereit/proposal-typed-objects/blob/master/explainer.md#writing-to-typed-fields)
