@@ -383,6 +383,65 @@
   (func (export "as-load-operand") (result i32)
     (i32.load (call_indirect (type $out-i32) (i32.const 0)))
   )
+
+  (func (export "as-unary-operand") (result f32)
+    (block (result f32)
+      (f32.sqrt
+        (call_indirect (type $over-f32) (f32.const 0x0p+0) (i32.const 6))
+      )
+    )
+  )
+
+  (func (export "as-binary-left") (result i32)
+    (block (result i32)
+      (i32.add
+        (call_indirect (type $over-i32) (i32.const 1) (i32.const 4))
+        (i32.const 10)
+      )
+    )
+  )
+  (func (export "as-binary-right") (result i32)
+    (block (result i32)
+      (i32.sub
+        (i32.const 10)
+        (call_indirect (type $over-i32) (i32.const 1) (i32.const 4))
+      )
+    )
+  )
+
+  (func (export "as-test-operand") (result i32)
+    (block (result i32)
+      (i32.eqz
+        (call_indirect (type $over-i32) (i32.const 1) (i32.const 4))
+      )
+    )
+  )
+
+  (func (export "as-compare-left") (result i32)
+    (block (result i32)
+      (i32.le_u
+        (call_indirect (type $over-i32) (i32.const 1) (i32.const 4))
+        (i32.const 10)
+      )
+    )
+  )
+  (func (export "as-compare-right") (result i32)
+    (block (result i32)
+      (i32.ne
+        (i32.const 10)
+        (call_indirect (type $over-i32) (i32.const 1) (i32.const 4))
+      )
+    )
+  )
+
+  (func (export "as-convert-operand") (result i64)
+    (block (result i64)
+      (i64.extend_s/i32
+        (call_indirect (type $over-i32) (i32.const 1) (i32.const 4))
+      )
+    )
+  )
+
 )
 
 (assert_return (invoke "type-i32") (i32.const 0x132))
@@ -520,6 +579,14 @@
 (assert_return (invoke "as-tee_local-value") (f64.const 1))
 (assert_return (invoke "as-set_global-value") (f64.const 1.0))
 (assert_return (invoke "as-load-operand") (i32.const 1))
+
+(assert_return (invoke "as-unary-operand") (f32.const 0x0p+0))
+(assert_return (invoke "as-binary-left") (i32.const 11))
+(assert_return (invoke "as-binary-right") (i32.const 9))
+(assert_return (invoke "as-test-operand") (i32.const 0))
+(assert_return (invoke "as-compare-left") (i32.const 1))
+(assert_return (invoke "as-compare-right") (i32.const 1))
+(assert_return (invoke "as-convert-operand") (i64.const 1))
 
 ;; Invalid syntax
 

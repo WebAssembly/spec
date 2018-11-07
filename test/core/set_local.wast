@@ -63,6 +63,45 @@
       )
     )
   )
+
+  ;; As parameter of control constructs and instructions
+
+  (func (export "as-block-value") (param i32)
+    (block (set_local 0 (i32.const 1)))
+  )
+  (func (export "as-loop-value") (param i32)
+    (loop (set_local 0 (i32.const 3)))
+  )
+
+  (func (export "as-br-value") (param i32)
+    (block (br 0 (set_local 0 (i32.const 9))))
+  )
+  (func (export "as-br_if-value") (param i32)
+    (block
+      (br_if 0 (set_local 0 (i32.const 8)) (i32.const 1))
+    )
+  )
+  (func (export "as-br_if-value-cond") (param i32)
+    (block
+      (br_if 0 (i32.const 6) (set_local 0 (i32.const 9)))
+    )
+  )
+  (func (export "as-br_table-value") (param i32)
+    (block
+      (br_table 0 (set_local 0 (i32.const 10)) (i32.const 1))
+    )
+  )
+
+  (func (export "as-return-value") (param i32)
+    (return (set_local 0 (i32.const 7)))
+  )
+
+  (func (export "as-if-then") (param i32)
+    (if (get_local 0) (then (set_local 0 (i32.const 3))))
+  )
+  (func (export "as-if-else") (param i32)
+    (if (get_local 0) (then) (else (set_local 0 (i32.const 1))))
+  )
 )
 
 (assert_return (invoke "type-local-i32"))
@@ -74,6 +113,19 @@
 (assert_return (invoke "type-param-i64" (i64.const 3)))
 (assert_return (invoke "type-param-f32" (f32.const 4.4)))
 (assert_return (invoke "type-param-f64" (f64.const 5.5)))
+
+(assert_return (invoke "as-block-value" (i32.const 0)))
+(assert_return (invoke "as-loop-value" (i32.const 0)))
+
+(assert_return (invoke "as-br-value" (i32.const 0)))
+(assert_return (invoke "as-br_if-value" (i32.const 0)))
+(assert_return (invoke "as-br_if-value-cond" (i32.const 0)))
+(assert_return (invoke "as-br_table-value" (i32.const 0)))
+
+(assert_return (invoke "as-return-value" (i32.const 0)))
+
+(assert_return (invoke "as-if-then" (i32.const 1)))
+(assert_return (invoke "as-if-else" (i32.const 0)))
 
 (assert_return
   (invoke "type-mixed"
