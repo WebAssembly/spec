@@ -1,302 +1,18 @@
 # Exception handling
 
-So far there have been two proposals ([first proposal](old/Exceptions.md),
-[second proposal](old/Level-1.md)) proposed. We are going to use the second
-proposal for the binary section spec, but we have not decided on which one to
-use for the instruction part of the spec. This document describes status quo of
-the exception handling proposal: for some parts we present both candidate
-options until we fully decide.
+There were two alternative proposals
+([1st](https://github.com/WebAssembly/exception-handling/blob/master/proposals/old/Exceptions.md)
+and
+[2nd](https://github.com/WebAssembly/exception-handling/blob/master/proposals/old/Level-1.md))
+for the design of exception handling and we
+[decided](https://github.com/WebAssembly/meetings/blob/master/2018/TPAC.md#exception-handling-ben-titzer)
+on the second proposal, which uses first-class exception types, mainly based on
+the reasoning that it is more expressive and also more extendible to other kinds
+of events.
 
 ---
 
-## First Proposal - Instruction Part
-
-Exception handling allows code to break control flow when an exception is
-thrown. The exception can be an exception known by the WebAssembly module, or it
-may be an unknown exception thrown by an imported call.
-
-Thrown exceptions are handled as follows:
-
-1. They can be caught by a catch block in an enclosing try block of a function
-   body.
-
-1. Throws not caught within a function body continue up the call stack until an
-   enclosing try block is found.
-
-1. If the call stack is exhausted without any enclosing try blocks, it
-   terminates the application.
-
-This proposal looks at the changes needed to incorporate these concepts into the
-portable binary encoding of WebAssembly modules.
-
-At the specification level, these changes do not infer whether an implementation
-must implement lightweight or heavyweight exceptions. Rather, it defers that
-choice to the runtime implementation.
-
-Exception handling is defined using *exceptions*, *try blocks*, *catch blocks*,
-and the instructions `throw` and `rethrow`.
-
-### Exceptions
-
-An _exception_ is an internal construct in WebAssembly. Exceptions are defined
-by a new _exception_ section of a WebAssembly module. The exception section is a
-list of exceptions. Each exception has a _type signature_. The type signature
-defines the list of values associated with an exception.
-
-Within the module, exceptions are identified by an index into the [exception
-index space](#exception-index-space). This index references an _exception tag_.
-
-Exceptions can be imported and exported by adding the appropriate entries to the
-import and export sections of the module. All imported/exported exceptions must
-be named to reconcile exception tags between modules.
-
-Exception tags are used by throw and catch instructions. The throw instruction
-uses the tag to allocate the exception with the corresponding data fields
-defined by the exception's type signature. The catch instruction uses the tag to
-identify if the thrown exception is one it can catch.
-
-Exceptions can also be thrown by called, imported functions. If it corresponds
-to an imported exception, it can be caught by an appropriate catch instruction.
-If the exception is not imported, it still can be caught to allow code clean-up,
-but the data of the exception can't be accessed.
-
-### Try and catch blocks.
-
-A _try_ block defines a list of instructions that may need to catch exceptions
-and/or clean up state when an exception is thrown. Like other higher-level
-constructs, a try block begins with a `try` instruction, and ends with an `end`
-instruction. That is, a try block is sequence of instructions having the
-following form:
-
-```
-try
-  instruction*
-catch i
-  instruction*
-catch j
-  instruction*
-...
-catch n
-  instruction*
-catch_all
-    instruction*
-end
-```
-
-A try block also contains one or more catch blocks, and all but the last catch
-block must begin with a`catch` instruction. The last catch block can begin with
-either a `catch` or `catch_all` instruction. The `catch`/`catch_all`
-instructions (within the try construct) are called the _catching_ instructions.
-
-The _body_ of the try block is the list of instructions before the first
-catching instruction. The _body_ of each catch block is the sequence of
-instructions following the corresponding catching instruction, and the next
-catching instruction (or the `end` instruction if it is the last catching
-block).
-
-The `catch` instruction has an exception tag associated with it. The tag
-identifies what exceptions it can catch. That is, any exception created with the
-corresponding exception tag. Catch blocks that begin with a `catch` instruction
-are considered _tagged_ catch blocks.
-
-The last catch block of an exception can be a tagged catch block. Alternatively,
-it can begin with the `catch_all` instruction. If it begins with the `catch_all`
-instruction, it defines the _default_ catch block. The default catch block has
-no exception type, and is used to catch all exceptions not caught by any of the
-tagged catch blocks.
-
-Try blocks, like control-flow blocks, have a _block type_. The block type of a
-try block defines the values yielded by the evaluation the try block when either
-no exception is thrown, or the exception is successfully caught by one of its
-catch blocks, and the instructions within the catch block can recover from the
-throw. Because `try` and `end` instructions define a control-flow block, they
-can be targets for branches (`br` and `br_if`) as well.
-
-In the initial implementation, try blocks may only yield 0 or 1 values.
-
-### Throws
-
-The `throw` instruction has a single immediate argument, an exception tag. The
-exception tag is used to define the data fields of the allocated exception. The
-values for the data fields must be on top of the operand stack, and must
-correspond to the exception type signature for the exception.
-
-When an exception is thrown, the exception is allocated and the values on the
-stack (corresponding to the type signature) are popped off and assigned to the
-allocated exception. The exception is stored internally for access when the
-exception is caught. The runtime then searches for nearest enclosing try block
-body that execution is in. That try block is called the _catching_ try block.
-
-If the throw appears within the body of a try block, it is the catching try
-block.
-
-If a throw occurs within a function body, and it doesn't appear inside the body
-of a try block, the throw continues up the call stack until it is in the body of
-an an enclosing try block, or the call stack is flushed. If the call stack is
-flushed, execution is terminated. Otherwise, the found enclosing try block is
-the catching try block.
-
-A throw inside a the body of a catch block is never caught by the corresponding
-try block of the catch block, since instructions in the body of the catch block
-are not in the body of the try block.
-
-Once a catching try block is found for the throw, the operand stack is popped
-back to the size the operand stack had when the try block was entered. Then,
-tagged catch blocks are tried in the order they appear in the catching try
-block, until one matches.
-
-If a matched tagged catch block is found, control is transferred to the body of
-the catch block, and the data fields of the exception are pushed back onto the
-stack.
-
-Otherwise, control is transferred to the body of the default catch block.
-However, unlike tagged catch blocks, the constructor arguments are not copied
-back onto the operand stack.
-
-If no tagged catch blocks were matched, and the catching try block doesn't have
-a default catch block, the exception is rethrown to the next enclosing try
-block.
-
-If control is transferred to the body of a catch block, and the last instruction
-in the body is executed, control then exits the try block.
-
-Also note that when the thrown exception is caught by a catch block, it is not
-destroyed until the catch block is exited. This is done so that the catch block
-can rethrow the exception.
-
-If the selected catch block does not rethrow an exception, it must yield the
-value(s) expected by the enclosing try block. For tagged catch blocks, they must
-also be sure to also pop off the caught exception values.
-
-### Rethrows
-
-The `rethrow` instruction can only appear in the body of a catch block. The
-`rethrow` instruction always re-throws the exception caught by an enclosing
-catch block. This allows the catch block to clean up state before the exception
-is passed back to the next enclosing try block.
-
-Associated with the `rethrow` instruction is a _label_. The label is used to
-disambiguate which exception is to be rethrown, when inside nested catch blocks.
-
-The label is the relative block depth to the corresponding try block for which
-the catching block appears.
-
-For example consider the following:
-
-```
-try
-  ...
-catch 1
-  ...
-  block
-    ...
-    try
-      ...
-    catch 2
-      ...
-      try
-        ...
-      catch 3
-        ...
-        rethrow N
-      end
-    end
-  end
-  ...
-end
-```
-
-In this example, `N` is used to disambiguate which caught exception is being
-rethrown. It could rethrow any of the three caught expceptions. Hence, `rethrow
-0` corresponds to the exception caught by `catch 3`, `rethrow 1` corresponds to
-the exception caught by `catch 2`, and `rethrow 3` corresponds to the exception
-caught by `catch 1`.
-
-Note that `rethrow 2` is not allowed because it does not reference a `try`
-instruction. Rather, it references a `block` instruction.
-
-### Debugging
-
-Earlier discussion implied that when an exception is thrown, the runtime will
-pop the operand stack across function calls until a corresponding, enclosing try
-block is found. The implementation may actually not do this. Rather, it may
-first search up the call stack to see if there is an enclosing try. If none are
-found, it could terminate the thread at the point of the throw. This would allow
-better debugging capability, since the corresponding call stack is still there
-to query.
-
-## Changes to the text format.
-
-This section describes change in the [instruction syntax
-document](https://github.com/WebAssembly/spec/blob/master/document/text/instructions.rst).
-
-### Control Instructions
-
-The following rule is added to *instructions*:
-
-```
-instructions ::=
-  ...
-  try resulttype instr* catch+ end |
-  throw except_index |
-  rethrow label
-
-catch ::=
-  catch except_index inst* |
-  catch_all inst*
-```
-
-Like the `block`, `loop`, and `if` instructions, the `try` instruction is a
-*structured* instruction, and is implicitly labeled. This allows branch
-instructions to exit try blocks.
-
-The `except_index` of the `catch` instruction denotes the exception tag for the
-caught exception. Similarly, the `except_index` of the `throw` instruction
-denotes the tag for the constructed exception. See [exception index
-space](#exception-index-space) for further clarification of exception tags.
-
-The `label` of the `rethrow` instruction is the label to the corresponding try
-block, defining the catch to rethrow.
-
-## Changes to the binary model
-
-This section describes changes in the [binary encoding design
-document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
-
-### Control flow operators
-
-The control flow operators are extended to define try blocks, catch blocks,
-throws, and rethrows as follows:
-
-| Name | Opcode | Immediates | Description |
-| ---- | ---- | ---- | ---- |
-| `unreachable` | `0x00` | | trap immediately |
-| `nop` | `0x01` | | no operation |
-| `block` | `0x02` | sig : `block_type` | begin a sequence of expressions, yielding 0 or 1 values |
-| `loop` | `0x03` |  sig : `block_type` | begin a block which can also form control flow loops |
-| `if` | `0x04` | sig : `block_type` | begin if expression |
-| `else` | `0x05` | | begin else expression of if or try  |
-| `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
-| `catch` | `0x07` | tag : `varuint32` | begins a block when the exception `tag` is caught |
-| `throw` | `0x08` | tag : `varuint32` | Throws an exception defined by the exception `tag` |
-| `rethrow` | `0x09` | relative_depth : `varuint32` | re-throws the exception caught by the corresponding try block |
-| `end` | `0x0b` | | end a block, loop, if, and try |
-| `br` | `0x0c` | relative_depth : `varuint32` | break that targets an outer nested block |
-| `br_if` | `0x0d` | relative_depth : `varuint32` | conditional break that targets an outer nested block |
-| `br_table` | `0x0e` | see below | branch table control flow construct |
-| `return` | `0x0f` | | return zero or one value from this function |
-
-The *sig* fields of `block`, `if`, and `try` operators are block signatures
-which describe their use of the operand stack.
-
-Note that the textual `catch_all` instruction is implemented using the `else`
-operator. Since the `else` operator is always unambiguous in the binary format,
-there is no need to tie up a separate opcode for the `catch_all` instruction.
-
-
----
-
-## Second Proposal - Instruction Part
+## Overview
 
 Exception handling allows code to break control flow when an exception is
 thrown. The exception can be any exception known by the WebAssembly module, or
@@ -441,14 +157,10 @@ A try block ends with a `catch block` that is defined by the list of
 instructions after the `catch` instruction.
 
 Try blocks, like control-flow blocks, have a _block type_. The block type of a
-try block defines the values yielded by the evaluation the try block when either
-no exception is thrown, or the exception is successfully caught by the catch
-block.
-Try blocks, like control-flow blocks, have a _block type_. The block type of a
-try block defines the values yielded by the evaluation the try block when either
-no exception is thrown, or the exception is successfully caught by the catch
-block. Because `try` and `end` instructions define a control-flow block, they
-can be targets for branches (`br` and `br_if`) as well.
+try block defines the values yielded by evaluating the try block when either no
+exception is thrown, or the exception is successfully caught by the catch block.
+Because `try` and `end` instructions define a control-flow block, they can be
+targets for branches (`br` and `br_if`) as well.
 
 In the initial implementation, try blocks may only yield 0 or 1 values.
 
@@ -544,7 +256,7 @@ calls until a corresponding, enclosing try block is found. It may also associate
 a stack trace that can be used to report uncaught exceptions. However, the
 details of this is left to the embedder.
 
-## Changes to the text format.
+## Changes to the text format
 
 This section describes change in the [instruction syntax
 document](https://github.com/WebAssembly/spec/blob/master/document/core/instructions.rst).
@@ -570,53 +282,7 @@ exception (and hence, exception tag) to create/extract from. See [exception
 index space](#exception-index-space) for further clarification of exception
 tags.
 
-## Changes to the binary model
-
-This section describes changes in the [binary encoding design
-document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
-
-### Data Types
-
-#### except_ref
-
-An exception reference points to an exception.
-
-### Language Types
-
-| Opcode | Type constructor |
-|--------|------------------|
-| -0x18  |  `except_ref`    |
-
-#### value_type
-
-A `varint7` indicating a `value_type` is extended to include `except_ref` as
-encoded above.
-
-### Control flow operators
-
-The control flow operators are extended to define try blocks, catch blocks,
-throws, and rethrows as follows:
-
-| Name | Opcode | Immediates | Description |
-| ---- | ---- | ---- | ---- |
-| `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
-| `catch` | `0x07` | | begins the catch block of the try block |
-| `throw` | `0x08` | index : `varint32` | Creates an exception defined by the exception `index`and then throws it |
-| `rethrow` | `0x09` | | Pops the `except_ref` on top of the stack and throws it |
-| `if_except` | `0x0a` |  index : `varuint32`, sig : `block_type` | Begin exception data extraction if exception on stack was created using the corresponding exception `index` |
-
-The *sig* fields of `block`, `if`, `try` and `if_except` operators are block
-signatures which describe their use of the operand stack.
-
-
----
-
-## Common part
-
-This part describes changes to the module and binary model. This part comes from
-the [second proposal](old/Level-1.md) and we are going to use it for this part.
-
-## Changes to Modules document.
+## Changes to Modules document
 
 This section describes change in the [Modules
 document](https://github.com/WebAssembly/design/blob/master/Modules.md).
@@ -638,6 +304,23 @@ exported alias the respective events defined elsewhere, and use the same tag.
 
 This section describes changes in the [binary encoding design
 document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
+
+### Data Types
+
+#### except_ref
+
+An exception reference points to an exception.
+
+### Language Types
+
+| Opcode | Type constructor |
+|--------|------------------|
+| -0x18  |  `except_ref`    |
+
+#### value_type
+
+A `varint7` indicating a `value_type` is extended to include `except_ref` as
+encoded above.
 
 #### Other Types
 
@@ -731,35 +414,18 @@ follows:
 The event names subsection is a `name_map` which assigns names to a subset of
 the event indices (Used for both imports and module-defined).
 
+### Control flow operators
 
----
+The control flow operators are extended to define try blocks, catch blocks,
+throws, and rethrows as follows:
 
-## Comparisons of the two proposals
+| Name | Opcode | Immediates | Description |
+| ---- | ---- | ---- | ---- |
+| `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
+| `catch` | `0x07` | | begins the catch block of the try block |
+| `throw` | `0x08` | index : `varint32` | Creates an exception defined by the exception `index`and then throws it |
+| `rethrow` | `0x09` | | Pops the `except_ref` on top of the stack and throws it |
+| `if_except` | `0x0a` |  index : `varuint32`, sig : `block_type` | Begin exception data extraction if exception on stack was created using the corresponding exception `index` |
 
-- Proposal 2 introduces a first-class exception reference type. This raises several
-  questions about exception lifetime management:
-  - How do we manage exception objects' lifetime in non-GC embeddings? Do we
-    make reference counting mandatory?
-  - Who is responsible for deleting exception objects?
-  - What should we do for except_ref values of invalid exception objects already
-    deleted?
-  - How should exception reference type be related to the existing reference
-    type or GC proposal?
-   
-  Consequently, Proposal 1 would be simpler to implement for VMs which do not need
-  reference types or related functionality such as GC objects.
-  
-- The first-class exception type makes Proposal 2 more expressive, possibly providing
-  more flexibility for frontend developers for non-C langauges. In particular, allowing
-  exception objects to escape catch blocks may simplify control flow translation.
-  Conversely, it is slightly more complex for languages which do not have convenient ways to model
-  reference types.
-
-- In Proposal 2, the unwinder must stop at every call stack frame with `catch`
-  instruction because the tag matching happens within a `catch` block, whereas
-  in Proposal 1 the unwinder does not need to stop at call stack frames that
-  do not contain `catch`s with the current exception's tag. Stopping at every
-  call frame might degrade performance.
-
-- It is suggested that Proposal 2 may be more compatible with effect handlers,
-  which can be might be added to wasm in the future.
+The *sig* fields of `block`, `if`, `try` and `if_except` operators are block
+signatures which describe their use of the operand stack.
