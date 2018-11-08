@@ -1,5 +1,7 @@
 # GC v1 JS API
 
+*Note: This design is still in flux!*
+
 This document describes the proposed changes to the
 [WebAssembly JS API spec](http://webassembly.github.io/spec/js-api/) that are
 associated with the [changes to the WebAssembly core spec](MVP.md).
@@ -346,7 +348,8 @@ field types of `$R`.
 ```js
 WebAssembly.instantiateStreaming(fetch('example3.wasm'))
 .then(({instance}) => {
-    instance.exports.goWild(new Rect(new Point(1,2), new Point(3,4)));  // throws
+    let r = new Rect(new Point(1,2), new Point(3,4));
+    instance.exports.goWild(r);  // throws at call boundary
 });
 ```
 
@@ -358,9 +361,9 @@ function signatures:
 ;; example4.wat --> example4.wasm
 (module
     (type $Point (import "" "Point") (eq (struct (field $x i32) (field $y i32))))
-    (type $Rect (struct (field (ref $Point)) (field (ref $Point))))
+    (type $Rect (struct (field $x1 (ref $Point)) (field $x2 (ref $Point))))
     (func (export "goWild") (param (ref $Rect))
-        (struct.set $R $x1
+        (struct.set $Rect $x1
             (get_local 0)
             (struct.new $Point (i32.const 10) (i32.const 20)))
     )
@@ -389,7 +392,8 @@ WebAssembly.instantiateStreaming(fetch('example4.wasm'), {'':{Point}})
     assert(rect.x1.y === 20);
 
     const {Point2:Point, Rect2:Rect} = makeTypes();
-    instance.exports.goWild(new Rect2(new Point2(1,2), new Point2(3,4)));  // throws
+    let r = new Rect2(new Point2(1,2), new Point2(3,4));
+    instance.exports.goWild(r);  // throws at call boundary
 });
 ```
 
@@ -472,8 +476,9 @@ WebAssembly.instantiateStreaming(fetch('example5.wasm'), {'':{Point1, Rect}});
 ```
 
 This instantiation-time checking would extend to the signatures of imported
-typed functions as an extension of the existing wasm-to-wasm import type checking
-performed by [instantiate_module](https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instantiate-module).
+typed functions. These additional instantiation-time checks would be defined as
+part of the [JS API spec](https://webassembly.github.io/spec/js-api/index.html),
+refining the [core spec's instantiation checks](https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instantiate-module).)
 
 Additionally, using type imports of [Web IDL interface objects](https://heycam.github.io/webidl/#interface-object),
 the signatures of [Web IDL methods](https://heycam.github.io/webidl/#idl-operations) could
@@ -494,7 +499,7 @@ reflect all the other field types in the GC proposal:
 * `WebAssembly.optref(T)` : constructor function reflecting [`optref <typeidx>`](https://github.com/WebAssembly/gc/blob/master/proposals/gc/MVP.md#value-types),
   for a given type definition `T`.
 * `WebAssembly.i31ref` : singleton reflecting [`i31ref`](https://github.com/WebAssembly/gc/blob/master/proposals/gc/MVP.md#value-types)
-  whose `[[Write]]` only accepts integral `Number` and `BigInt` values in the range [-2<sup>31</sup>, 2<sup>31</sup>-1].
+  whose `[[Write]]` only accepts integral `Number` and `BigInt` values in the range [-2<sup>30</sup>, 2<sup>30</sup>-1].
 * `WebAssembly.rtt(T)` : constructor function reflecting [`rtt <typeidx>`](https://github.com/WebAssembly/gc/blob/master/proposals/gc/MVP.md#value-types),
   for a given type definition `T`.
 
