@@ -104,6 +104,65 @@ operations. This means that any subnormal operand is treated as 0, and any
 subnormal result is rounded to 0. Note that this differs from WebAssembly
 scalar floating-point semantics which require correct subnormal handling.
 
+# JavaScript API and SIMD Values
+
+Accessing WebAssembly module imports or exports containing SIMD Type from JavaScript will throw.
+
+### Module Function Imports
+
+Calling an imported function from JavaScript when the function arguments or result is of type v128 will cause the host function to immidiately throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror).
+
+### Exported Function Exotic Objects
+
+Invoking the [[Call]] method of an Exported Function Exotic Object when the function type of its [[Closure]] has an argument or result of type v128 will cause the host function to immidiately throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror).
+
+
+## WebAssembly Module Instatiation
+
+Instantiating a WebAssembly Module from a Module moduleObject will throw a LinkError exception, when the global's valtype is v128 and the imported objects type is not WebAssembly.Global. 
+
+## Exported Functions
+
+### Exported Function Call
+
+Calling an Exported Function will throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror), when parameters or results contains a v128. This error is thrown each time the [[Call]] method is invoked.
+
+### Creating a host function
+
+Creating a host function from JavaScript object will throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror), when the host function signature contains a v128.
+
+### Global constructor
+
+If Global(descriptor, v) constructor will throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror), when invoked with v of valuetype v128.
+
+## JavaScript coercion
+
+### ToJSValue
+
+The algorithm toJSValue(w) should have an assertion ensuring w is not of the form v128.const v128.
+
+### ToWebAssemblyValue
+
+The algorithm ToWebAssemblyValue(v, type)  should have an assertion ensuring type is not v128.
+
+## JavaScript API Global Object algorithms
+
+### ToValueType
+
+The algorithm ToValueType(s) will return 'v128' if s equals "v128".
+
+### DefaultValue 
+
+The algorithm DefaultValueType(valueType) will return v128.const 0.
+
+### GetGlobalValue
+
+The algorithm GetGlobalValue(Global global) will throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror), when type_global(store, global.[[Global]]) is of the form mut v128.
+
+### Global value attribute Setter
+
+The setter of the value attribute of Global will throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror), when invoked with a value v of valuetype v128.
+
 # Operations
 
 The SIMD operations described in this sections are generally named
