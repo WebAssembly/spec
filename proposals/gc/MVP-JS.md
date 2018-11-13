@@ -222,7 +222,7 @@ WebAssembly.instantiateStreaming(fetch('example1.wasm'))
 });
 ```
 
-Moreover, repeated instantations of `example1.wasm` will produce distinct Type
+Moreover, repeated instantiations of `example1.wasm` will produce distinct Type
 Definition objects for `WasmPoint` (just like repeated calls to the `StructType`
 constructor will produce distinct Type Definition objects, even if passed the
 same components).
