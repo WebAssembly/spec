@@ -79,7 +79,7 @@ are broken into two categories:
 
 * *Primitive* Value Types, exposed as singleton objects: `uint8`,
   `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`, `float32`,
-  `float64`, `any`, `string`.
+  `float64`, `any`, `string`, `object`.
 
 * *Compound* Value Types, which are produced via the `ref` property
    on another kind of object...
