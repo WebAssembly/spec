@@ -385,15 +385,15 @@ const {Point, Rect} = makeTypes();
 
 WebAssembly.instantiateStreaming(fetch('example4.wasm'), {'':{Point}})
 .then(({instance}) => {
-    var rect = new Rect(new Point(1,2), new Point(3,4));
-    instance.exports.goWild(rect);  // succeeds
-    assert(rect.x1 instanceof Point);
-    assert(rect.x1.x === 10);
-    assert(rect.x1.y === 20);
+    const r = new Rect(new Point(1,2), new Point(3,4));
+    instance.exports.goWild(r);  // succeeds
+    assert(r.x1 instanceof Point);
+    assert(r.x1.x === 10);
+    assert(r.x1.y === 20);
 
     const {Point2:Point, Rect2:Rect} = makeTypes();
-    let r = new Rect2(new Point2(1,2), new Point2(3,4));
-    instance.exports.goWild(r);  // throws at call boundary
+    const r2 = new Rect2(new Point2(1,2), new Point2(3,4));
+    instance.exports.goWild(r2);  // throws at call boundary
 });
 ```
 
