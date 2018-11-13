@@ -428,6 +428,7 @@ WebAssembly.instantiateStreaming(fetch('example3.wasm'))
 
     const {Point2:Point, Rect2:Rect} = makeTypes();
     var rect2 = new Rect2(new Point2(1,2), new Point2(3,4));
+    assert(rect.__proto__ !== rect2.__proto__);
     instance.exports.goWild(rect2);  // ok: structurally equivalent
 });
 ```
@@ -478,7 +479,7 @@ WebAssembly.instantiateStreaming(fetch('example5.wasm'), {'':{Point1, Rect}});
 This instantiation-time checking would extend to the signatures of imported
 typed functions. These additional instantiation-time checks would be defined as
 part of the [JS API spec](https://webassembly.github.io/spec/js-api/index.html),
-refining the [core spec's instantiation checks](https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instantiate-module).)
+refining the [core spec's instantiation checks](https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instantiate-module).
 
 Additionally, using type imports of [Web IDL interface objects](https://heycam.github.io/webidl/#interface-object),
 the signatures of [Web IDL methods](https://heycam.github.io/webidl/#idl-operations) could
