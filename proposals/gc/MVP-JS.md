@@ -326,7 +326,7 @@ property names. This would be surprising from a JS perspective and would also
 give up future WebAssembly Host Binding optimizations that are mentioned
 at the end of this section.
 
-To avoid problem, as a starting point, the following WebAssembly module:
+To avoid the problem, as a starting point, the following WebAssembly module:
 
 ```wat
 ;; example3.wat --> example3.wasm
