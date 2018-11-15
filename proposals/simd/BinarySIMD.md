@@ -93,10 +93,10 @@ The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 | `f64x2.gt`                |    `0x49`| -                  |
 | `f64x2.le`                |    `0x4a`| -                  |
 | `f64x2.ge`                |    `0x4b`| -                  |
-| `v128.and`                |    `0x4c`| -                  |
-| `v128.or`                 |    `0x4d`| -                  |
-| `v128.xor`                |    `0x4e`| -                  |
-| `v128.not`                |    `0x4f`| -                  |
+| `v128.not`                |    `0x4c`| -                  |
+| `v128.and`                |    `0x4d`| -                  |
+| `v128.or`                 |    `0x4e`| -                  |
+| `v128.xor`                |    `0x4f`| -                  |
 | `v128.bitselect`          |    `0x50`| -                  |
 | `i8x16.neg`               |    `0x51`| -                  |
 | `i8x16.any_true`          |    `0x52`| -                  |
