@@ -442,10 +442,10 @@ variant might use structural typing for fields with [Tuple Type](https://flow.or
 and nominal typing for fields with [Class Type](https://flow.org/en/docs/types/classes/).)
 
 In addition to the dynamic checks necessary when JS passes a value to
-WebAssembly (either as an argument to a wasm exported function or a return value
-from a wasm imported function), the instantiation algorithm must ensure that
-imported type definitions' fields' types are compatible. For example, given the
-following module:
+WebAssembly (as an argument to a wasm exported function, a return value
+from a wasm imported function, [etc.](#other-webassembly-uses-of-value-type-objects)),
+the instantiation algorithm must ensure that imported type definitions' fields'
+types are compatible. For example, given the following module:
 
 ```wat
 ;; example5.wat --> example5.wasm
