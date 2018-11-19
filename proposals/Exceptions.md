@@ -44,7 +44,7 @@ collect and reuse the memory used by exceptions. This implies that an embedder
 needs to know where exceptions are stored, so that it can determine when an
 exception can be garbage collected.
 
-This also implies that that embedders must provide a garbage collector for
+This also implies that embedders must provide a garbage collector for
 exceptions. For embedders that have garbage collection (such as JavaScript),
 this is not a problem.
 
