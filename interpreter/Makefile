@@ -106,7 +106,7 @@ $(WINMAKE):	clean
 		| grep -v ocamldep \
 		| grep -v mkdir \
 		| sed s:`which ocaml`:ocaml:g \
-		| sed s:host/main.d.byte:%NAME%.exe: \
+		| sed s:main/main.d.byte:%NAME%.exe: \
 		>>$@
 
 
