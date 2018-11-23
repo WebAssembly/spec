@@ -117,6 +117,26 @@
 )
 
 
+;; get_local should have retval
+
+(assert_invalid
+  (module (func (local i32) (get_local 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (local i64) (get_local 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (local f32) (get_local 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (local f64) (get_local 0)))
+  "type mismatch"
+)
+
+
 ;; Invalid local index
 
 (assert_invalid
@@ -144,23 +164,5 @@
 (assert_invalid
   (module (func $large-mixed (param i64) (local i32 i64) (get_local 214324343)))
   "unknown local"
-)
-
-;; get_local should have retval
-(assert_invalid
-  (module (func (local i32) (get_local 0)))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func (local i64) (get_local 0)))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func (local f32) (get_local 0)))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func (local f64) (get_local 0)))
-  "type mismatch"
 )
 
