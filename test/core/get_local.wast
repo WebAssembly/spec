@@ -146,3 +146,21 @@
   "unknown local"
 )
 
+;; get_local should have retval
+(assert_invalid
+  (module (func (local i32) (get_local 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (local i64) (get_local 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (local f32) (get_local 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (local f64) (get_local 0)))
+  "type mismatch"
+)
+

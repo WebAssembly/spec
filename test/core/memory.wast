@@ -622,3 +622,99 @@
   )
   "unknown operator"
 )
+
+;; store should have no retval
+(assert_invalid
+  (module (memory 1) (func (param i32) (result i32) (i32.store (i32.const 0) (i32.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func (param i64) (result i64) (i64.store (i32.const 0) (i64.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func (param f32) (result f32) (f32.store (i32.const 0) (f32.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func (param f64) (result f64) (f64.store (i32.const 0) (f64.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func (param i32) (result i32) (i32.store8 (i32.const 0) (i32.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func (param i32) (result i32) (i32.store16 (i32.const 0) (i32.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func (param i64) (result i64) (i64.store8 (i32.const 0) (i64.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func (param i64) (result i64) (i64.store16 (i32.const 0) (i64.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func (param i64) (result i64) (i64.store32 (i32.const 0) (i64.const 1))))
+  "type mismatch"
+)
+
+;; load should have retval
+(assert_invalid
+  (module (memory 1) (func $load_i32 (i32.load (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load8_s_i32 (i32.load8_s (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load8_u_i32 (i32.load8_u (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load16_s_i32 (i32.load16_s (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load16_u_i32 (i32.load16_u (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load_i64 (i64.load (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load8_s_i64 (i64.load8_s (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load8_u_i64 (i64.load8_u (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load16_s_i64 (i64.load16_s (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load16_u_i64 (i64.load16_u (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load32_s_i64 (i64.load32_s (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load32_u_i64 (i64.load32_u (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load_f32 (f32.load (i32.const 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 1) (func $load_f64 (f64.load (i32.const 0))))
+  "type mismatch"
+)
