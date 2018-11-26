@@ -192,16 +192,54 @@ An active segment is equivalent to a passive segment, but with an implicit
 
 The new encoding of a data segment is now:
 
-| Field | Type | Description |
-|------|-------|-------------|
-| flags | `varuint32` | Flags for passive and presence of fields below, only values of 0, 1, and 2 are valid |
-| index | `varuint32`? | Memory index this segment is for, only present if `flags` is 2, otherwise the index is implicitly 0 |
-| offset | `init_expr`? | an `i32` initializer expression for offset, not present if `flags & 0x1` is set |
-| size | `varuint32` | size of `data` (in bytes) |
-| data | `bytes` | sequence of `size` bytes |
+| Field | Type | Present? | Description |
+| - | - | - | - |
+| flags | `varuint32` | always | Flags for passive and presence of fields below, only values of 0, 1, and 2 are valid |
+| index | `varuint32`? | flags = 2 | Memory index; 0 if the field is not present |
+| offset | `init_expr`? | flags != 1 | an `i32` initializer expression for offset |
+| size | `varuint32` | always | size of `data` (in bytes) |
+| data | `bytes` | always | sequence of `size` bytes |
 
-An element segment (for tables) is encoded similarly by repurposing its table
-index (which is required to be zero) as a flags field.
+Another way of looking at it:
+
+| Flags | Active? | index | offset |
+| - | - | - | - |
+| 0 | Active | Always 0 | Present |
+| 1 | Passive | - | -  |
+| 2 | Active | Present | Present |
+
+### Element segments
+
+The new binary format for element segments is similar to the new format for data segments, but
+also includes an element type when the segment is passive. A passive segment also has a sequence
+of `expr`s instead of function indices.
+
+| Field | Type | Present? | Description |
+| - | - | - | - |
+| flags | `varuint32` | always | Flags for passive and presence of fields below, only values of 0, 1, and 2 are valid |
+| index | `varuint32`? | flags = 2 |  Table index; 0 if the field is not present  |
+| element_type | `elem_type`? | flags = 1 | element type of this segment; `anyfunc` if not present |
+| offset | `init_expr`? | flags != 1 | an `i32` initializer expression for offset |
+| count | `varuint32` | always | number of elements |
+| elems | `varuint32*` | flags != 1 | sequence of function indices |
+| elems | `elem_expr*` | flags = 1 | sequence of element expressions |
+
+Another way of looking at it:
+
+| Flags | Active? | index | element_type | offset |
+| - | - | - | - | - |
+| 0 | Active | Always 0 | Always `anyfunc` | Present |
+| 1 | Passive | - | Present | - |
+| 2 | Active | Present | Always `anyfunc` | Present |
+
+An `elem_expr` is like an `init_expr`, but can only contain expressions of the following sequences:
+
+| Binary | Text | Description |
+| - | - | - |
+| `0xd0 0x0b` | `ref.null end` | Returns a null reference |
+| `0xd2 varuint32 0x0b` | `ref.func $funcidx end` | Returns a reference to function `$funcidx` |
+
+TODO: coordinate with other proposals to determine the binary encoding for `ref.null` and `ref.func`.
 
 ### `memory.init` instruction
 
