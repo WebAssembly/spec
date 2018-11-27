@@ -212,6 +212,23 @@
   "type mismatch"
 )
 
+(assert_invalid
+  (module (func $i32-vs-empty (param i32) (result i32) (set_local 0 (i32.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $i64-vs-empty (param i64) (result i64) (set_local 0 (i64.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $f32-vs-empty (param f32) (result f32) (set_local 0 (f32.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $f64-vs-empty (param f64) (result f64) (set_local 0 (f64.const 1))))
+  "type mismatch"
+)
+
 
 ;; Invalid local index
 
