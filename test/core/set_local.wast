@@ -212,23 +212,20 @@
   "type mismatch"
 )
 
-
-;; set_local should have no retval
-
 (assert_invalid
-  (module (func (param i32) (result i32) (set_local 0 (i32.const 1))))
+  (module (func $i32-vs-empty (param i32) (result i32) (set_local 0 (i32.const 1))))
   "type mismatch"
 )
 (assert_invalid
-  (module (func (param i64) (result i64) (set_local 0 (i64.const 1))))
+  (module (func $i64-vs-empty (param i64) (result i64) (set_local 0 (i64.const 1))))
   "type mismatch"
 )
 (assert_invalid
-  (module (func (param f32) (result f32) (set_local 0 (f32.const 1))))
+  (module (func $f32-vs-empty (param f32) (result f32) (set_local 0 (f32.const 1))))
   "type mismatch"
 )
 (assert_invalid
-  (module (func (param f64) (result f64) (set_local 0 (f64.const 1))))
+  (module (func $f64-vs-empty (param f64) (result f64) (set_local 0 (f64.const 1))))
   "type mismatch"
 )
 
