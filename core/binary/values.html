@@ -171,13 +171,13 @@ Similarly, both <span class="math notranslate nohighlight">\(\def\mathdef1305#1{
    \end{array} \\
 \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2~b_3 &amp;
   (\begin{array}[t]{&#64;{}c&#64;{~}l&#64;{}}
-   \mathrel{\mbox{if}} &amp; \def\mathdef1314#1{\mathrm{U{+}#1}}\mathdef1314{800} \leq c &lt; \def\mathdef1315#1{\mathrm{U{+}#1}}\mathdef1315{10000} \\
-   \wedge &amp; c = 2^{12}(b_1-\def\mathdef1316#1{\mathtt{0x#1}}\mathdef1316{E0})+2^6(b_2-\def\mathdef1317#1{\mathtt{0x#1}}\mathdef1317{80})+(b_3-\def\mathdef1318#1{\mathtt{0x#1}}\mathdef1318{80})) \\
+   \mathrel{\mbox{if}} &amp; \def\mathdef1314#1{\mathrm{U{+}#1}}\mathdef1314{800} \leq c &lt; \def\mathdef1315#1{\mathrm{U{+}#1}}\mathdef1315{D800} \vee \def\mathdef1316#1{\mathrm{U{+}#1}}\mathdef1316{E000} \leq c &lt; \def\mathdef1317#1{\mathrm{U{+}#1}}\mathdef1317{10000} \\
+   \wedge &amp; c = 2^{12}(b_1-\def\mathdef1318#1{\mathtt{0x#1}}\mathdef1318{E0})+2^6(b_2-\def\mathdef1319#1{\mathtt{0x#1}}\mathdef1319{80})+(b_3-\def\mathdef1320#1{\mathtt{0x#1}}\mathdef1320{80})) \\
    \end{array} \\
 \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b_1~b_2~b_3~b_4 &amp;
   (\begin{array}[t]{&#64;{}c&#64;{~}l&#64;{}}
-   \mathrel{\mbox{if}} &amp; \def\mathdef1319#1{\mathrm{U{+}#1}}\mathdef1319{10000} \leq c &lt; \def\mathdef1320#1{\mathrm{U{+}#1}}\mathdef1320{110000} \\
-   \wedge &amp; c = 2^{18}(b_1-\def\mathdef1321#1{\mathtt{0x#1}}\mathdef1321{F0})+2^{12}(b_2-\def\mathdef1322#1{\mathtt{0x#1}}\mathdef1322{80})+2^6(b_3-\def\mathdef1323#1{\mathtt{0x#1}}\mathdef1323{80})+(b_4-\def\mathdef1324#1{\mathtt{0x#1}}\mathdef1324{80})) \\
+   \mathrel{\mbox{if}} &amp; \def\mathdef1321#1{\mathrm{U{+}#1}}\mathdef1321{10000} \leq c &lt; \def\mathdef1322#1{\mathrm{U{+}#1}}\mathdef1322{110000} \\
+   \wedge &amp; c = 2^{18}(b_1-\def\mathdef1323#1{\mathtt{0x#1}}\mathdef1323{F0})+2^{12}(b_2-\def\mathdef1324#1{\mathtt{0x#1}}\mathdef1324{80})+2^6(b_3-\def\mathdef1325#1{\mathtt{0x#1}}\mathdef1325{80})+(b_4-\def\mathdef1326#1{\mathtt{0x#1}}\mathdef1326{80})) \\
    \end{array} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
