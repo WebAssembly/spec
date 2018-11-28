@@ -131,7 +131,7 @@ The auxiliary |utf8| function expressing this encoding is defined as follows:
       \end{array} \\
    \utf8(c) &=& b_1~b_2~b_3 &
      (\begin{array}[t]{@{}c@{~}l@{}}
-      \iff & \unicode{800} \leq c < \unicode{10000} \\
+      \iff & \unicode{800} \leq c < \unicode{D800} \vee \unicode{E000} \leq c < \unicode{10000} \\
       \wedge & c = 2^{12}(b_1-\hex{E0})+2^6(b_2-\hex{80})+(b_3-\hex{80})) \\
       \end{array} \\
    \utf8(c) &=& b_1~b_2~b_3~b_4 &
