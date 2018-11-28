@@ -573,7 +573,7 @@
 )
 
 ;; No more than 2^32 locals.
-(assert_malformed 
+(assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
     "\01\04\01\60\00\00"       ;; Type section
@@ -587,4 +587,26 @@
     "\0b"                      ;; end
   )
   "too many locals"
+)
+
+;; Function section has non-zero count, but code section is missing.
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"  ;; Type section
+    "\03\03\02\00\00"     ;; Function section with 2 functions
+  )
+  "function and code section have inconsistent lengths"
+)
+
+;; Function section has zero count, and code section is absent.
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\03\01\00"  ;; Function section with 0 functions
+)
+
+;; Code section has zero count, and function section is absent.
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\0a\01\00"  ;; Code section with 0 functions
 )
