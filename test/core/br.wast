@@ -242,7 +242,7 @@
   )
 
   (func (export "as-convert-operand") (result i32)
-    (block (result i32) (i32.wrap/i64 (br 0 (i32.const 41))))
+    (block (result i32) (i32.wrap_i64 (br 0 (i32.const 41))))
   )
 
   (func (export "as-memory.grow-size") (result i32)

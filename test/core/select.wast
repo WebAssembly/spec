@@ -171,7 +171,7 @@
 
   (func (export "as-convert-operand") (param i32) (result i32)
     (block (result i32)
-      (i32.wrap/i64 (select (i64.const 1) (i64.const 0) (local.get 0)))
+      (i32.wrap_i64 (select (i64.const 1) (i64.const 0) (local.get 0)))
     )
   )
 

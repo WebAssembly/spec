@@ -207,7 +207,7 @@
   )
 
   (func (export "as-convert-operand") (result i32)
-    (i32.wrap/i64 (unreachable))
+    (i32.wrap_i64 (unreachable))
   )
 
   (func (export "as-memory.grow-size") (result i32)

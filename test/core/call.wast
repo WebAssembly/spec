@@ -223,7 +223,7 @@
   )
 
   (func (export "as-convert-operand") (result i64)
-    (block (result i64) (i64.extend_s/i32 (call $dummy (i32.const 1))))
+    (block (result i64) (i64.extend_i32_s (call $dummy (i32.const 1))))
   )
 )
 

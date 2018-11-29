@@ -58,7 +58,7 @@
                       (block $1
                         (block $0
                           (br_table $0 $1 $2 $3 $4 $5 $6 $7 $default
-                            (i32.wrap/i64 (local.get $i))
+                            (i32.wrap_i64 (local.get $i))
                           )
                         ) ;; 0
                         (return (local.get $i))

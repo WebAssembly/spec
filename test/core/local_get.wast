@@ -34,21 +34,21 @@
     (local.set 6 (i64.const 6))
     (local.set 8 (f64.const 8))
     (f64.add
-      (f64.convert_u/i64 (local.get 0))
+      (f64.convert_i64_u (local.get 0))
       (f64.add
-        (f64.promote/f32 (local.get 1))
+        (f64.promote_f32 (local.get 1))
         (f64.add
           (local.get 2)
           (f64.add
-            (f64.convert_u/i32 (local.get 3))
+            (f64.convert_i32_u (local.get 3))
             (f64.add
-              (f64.convert_s/i32 (local.get 4))
+              (f64.convert_i32_s (local.get 4))
               (f64.add
-                (f64.promote/f32 (local.get 5))
+                (f64.promote_f32 (local.get 5))
                 (f64.add
-                  (f64.convert_u/i64 (local.get 6))
+                  (f64.convert_i64_u (local.get 6))
                   (f64.add
-                    (f64.convert_u/i64 (local.get 7))
+                    (f64.convert_i64_u (local.get 7))
                     (local.get 8)
                   )
                 )

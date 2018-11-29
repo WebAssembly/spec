@@ -489,17 +489,17 @@
 (assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.ba4c5p+13)) (f32.const 0x1.136f16p-7))
 (assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.4a5be2p+104)) (f32.const 0x1.c2b5bp-53))
 
-;; Test that converting i32/i64 to f32/f64 and back isn't folded away.
+;; Test that converting i32_i64 to f32_f64 and back isn't folded away.
 
 (module
   (func (export "i32.no_fold_f32_s") (param i32) (result i32)
-    (i32.trunc_s/f32 (f32.convert_s/i32 (local.get 0))))
+    (i32.trunc_f32_s (f32.convert_i32_s (local.get 0))))
   (func (export "i32.no_fold_f32_u") (param i32) (result i32)
-    (i32.trunc_u/f32 (f32.convert_u/i32 (local.get 0))))
+    (i32.trunc_f32_u (f32.convert_i32_u (local.get 0))))
   (func (export "i64.no_fold_f64_s") (param i64) (result i64)
-    (i64.trunc_s/f64 (f64.convert_s/i64 (local.get 0))))
+    (i64.trunc_f64_s (f64.convert_i64_s (local.get 0))))
   (func (export "i64.no_fold_f64_u") (param i64) (result i64)
-    (i64.trunc_u/f64 (f64.convert_u/i64 (local.get 0))))
+    (i64.trunc_f64_u (f64.convert_i64_u (local.get 0))))
 )
 
 (assert_return (invoke "i32.no_fold_f32_s" (i32.const 0x1000000)) (i32.const 0x1000000))
@@ -618,7 +618,7 @@
 
 (module
   (func (export "no_fold_demote_promote") (param $x f64) (result f64)
-    (f64.promote/f32 (f32.demote/f64 (local.get $x))))
+    (f64.promote_f32 (f32.demote_f64 (local.get $x))))
 )
 
 (assert_return (invoke "no_fold_demote_promote" (f64.const -0x1.dece272390f5dp-133)) (f64.const -0x1.decep-133))
@@ -632,7 +632,7 @@
 
 (module
   (func (export "no_fold_promote_demote") (param $x f32) (result f32)
-    (f32.demote/f64 (f64.promote/f32 (local.get $x))))
+    (f32.demote_f64 (f64.promote_f32 (local.get $x))))
 )
 
 (assert_return_arithmetic_nan (invoke "no_fold_promote_demote" (f32.const nan:0x200000)))
@@ -653,9 +653,9 @@
 
 (module
   (func (export "no_demote_mixed_add") (param $x f64) (param $y f32) (result f32)
-    (f32.demote/f64 (f64.add (local.get $x) (f64.promote/f32 (local.get $y)))))
+    (f32.demote_f64 (f64.add (local.get $x) (f64.promote_f32 (local.get $y)))))
   (func (export "no_demote_mixed_add_commuted") (param $y f32) (param $x f64) (result f32)
-    (f32.demote/f64 (f64.add (f64.promote/f32 (local.get $y)) (local.get $x))))
+    (f32.demote_f64 (f64.add (f64.promote_f32 (local.get $y)) (local.get $x))))
 )
 
 (assert_return (invoke "no_demote_mixed_add" (f64.const 0x1.f51a9d04854f9p-95) (f32.const 0x1.3f4e9cp-119)) (f32.const 0x1.f51a9ep-95))
@@ -674,7 +674,7 @@
 
 (module
   (func (export "no_demote_mixed_sub") (param $x f64) (param $y f32) (result f32)
-    (f32.demote/f64 (f64.sub (local.get $x) (f64.promote/f32 (local.get $y)))))
+    (f32.demote_f64 (f64.sub (local.get $x) (f64.promote_f32 (local.get $y)))))
 )
 
 (assert_return (invoke "no_demote_mixed_sub" (f64.const 0x1.a0a183220e9b1p+82) (f32.const 0x1.c5acf8p+61)) (f32.const 0x1.a0a174p+82))
@@ -687,37 +687,37 @@
 
 (module
   (func (export "f32.i32.no_fold_trunc_s_convert_s") (param $x f32) (result f32)
-    (f32.convert_s/i32 (i32.trunc_s/f32 (local.get $x))))
+    (f32.convert_i32_s (i32.trunc_f32_s (local.get $x))))
   (func (export "f32.i32.no_fold_trunc_u_convert_s") (param $x f32) (result f32)
-    (f32.convert_s/i32 (i32.trunc_u/f32 (local.get $x))))
+    (f32.convert_i32_s (i32.trunc_f32_u (local.get $x))))
   (func (export "f32.i32.no_fold_trunc_s_convert_u") (param $x f32) (result f32)
-    (f32.convert_u/i32 (i32.trunc_s/f32 (local.get $x))))
+    (f32.convert_i32_u (i32.trunc_f32_s (local.get $x))))
   (func (export "f32.i32.no_fold_trunc_u_convert_u") (param $x f32) (result f32)
-    (f32.convert_u/i32 (i32.trunc_u/f32 (local.get $x))))
+    (f32.convert_i32_u (i32.trunc_f32_u (local.get $x))))
   (func (export "f64.i32.no_fold_trunc_s_convert_s") (param $x f64) (result f64)
-    (f64.convert_s/i32 (i32.trunc_s/f64 (local.get $x))))
+    (f64.convert_i32_s (i32.trunc_f64_s (local.get $x))))
   (func (export "f64.i32.no_fold_trunc_u_convert_s") (param $x f64) (result f64)
-    (f64.convert_s/i32 (i32.trunc_u/f64 (local.get $x))))
+    (f64.convert_i32_s (i32.trunc_f64_u (local.get $x))))
   (func (export "f64.i32.no_fold_trunc_s_convert_u") (param $x f64) (result f64)
-    (f64.convert_u/i32 (i32.trunc_s/f64 (local.get $x))))
+    (f64.convert_i32_u (i32.trunc_f64_s (local.get $x))))
   (func (export "f64.i32.no_fold_trunc_u_convert_u") (param $x f64) (result f64)
-    (f64.convert_u/i32 (i32.trunc_u/f64 (local.get $x))))
+    (f64.convert_i32_u (i32.trunc_f64_u (local.get $x))))
   (func (export "f32.i64.no_fold_trunc_s_convert_s") (param $x f32) (result f32)
-    (f32.convert_s/i64 (i64.trunc_s/f32 (local.get $x))))
+    (f32.convert_i64_s (i64.trunc_f32_s (local.get $x))))
   (func (export "f32.i64.no_fold_trunc_u_convert_s") (param $x f32) (result f32)
-    (f32.convert_s/i64 (i64.trunc_u/f32 (local.get $x))))
+    (f32.convert_i64_s (i64.trunc_f32_u (local.get $x))))
   (func (export "f32.i64.no_fold_trunc_s_convert_u") (param $x f32) (result f32)
-    (f32.convert_u/i64 (i64.trunc_s/f32 (local.get $x))))
+    (f32.convert_i64_u (i64.trunc_f32_s (local.get $x))))
   (func (export "f32.i64.no_fold_trunc_u_convert_u") (param $x f32) (result f32)
-    (f32.convert_u/i64 (i64.trunc_u/f32 (local.get $x))))
+    (f32.convert_i64_u (i64.trunc_f32_u (local.get $x))))
   (func (export "f64.i64.no_fold_trunc_s_convert_s") (param $x f64) (result f64)
-    (f64.convert_s/i64 (i64.trunc_s/f64 (local.get $x))))
+    (f64.convert_i64_s (i64.trunc_f64_s (local.get $x))))
   (func (export "f64.i64.no_fold_trunc_u_convert_s") (param $x f64) (result f64)
-    (f64.convert_s/i64 (i64.trunc_u/f64 (local.get $x))))
+    (f64.convert_i64_s (i64.trunc_f64_u (local.get $x))))
   (func (export "f64.i64.no_fold_trunc_s_convert_u") (param $x f64) (result f64)
-    (f64.convert_u/i64 (i64.trunc_s/f64 (local.get $x))))
+    (f64.convert_i64_u (i64.trunc_f64_s (local.get $x))))
   (func (export "f64.i64.no_fold_trunc_u_convert_u") (param $x f64) (result f64)
-    (f64.convert_u/i64 (i64.trunc_u/f64 (local.get $x))))
+    (f64.convert_i64_u (i64.trunc_f64_u (local.get $x))))
 )
 
 (assert_return (invoke "f32.i32.no_fold_trunc_s_convert_s" (f32.const 1.5)) (f32.const 1.0))
@@ -1201,7 +1201,7 @@
 
 (module
   (func (export "llvm_pr27153") (param $x i32) (result f32)
-    (f32.add (f32.convert_s/i32 (i32.and (local.get $x) (i32.const 268435455))) (f32.const -8388608.0))
+    (f32.add (f32.convert_i32_s (i32.and (local.get $x) (i32.const 268435455))) (f32.const -8388608.0))
   )
 )
 
@@ -1212,8 +1212,8 @@
 
 (module
   (func (export "llvm_pr27036") (param $x i32) (param $y i32) (result f32)
-    (f32.add (f32.convert_s/i32 (i32.or (local.get $x) (i32.const -25034805)))
-             (f32.convert_s/i32 (i32.and (local.get $y) (i32.const 14942208))))
+    (f32.add (f32.convert_i32_s (i32.or (local.get $x) (i32.const -25034805)))
+             (f32.convert_i32_s (i32.and (local.get $y) (i32.const 14942208))))
   )
 )
 
@@ -1883,7 +1883,7 @@
     (f64.lt (f64.mul (local.get $x) (local.get $y)) (local.get $x)))
 
   (func (export "recoding_demote") (param $x f64) (param $y f32) (result f32)
-    (f32.mul (f32.demote/f64 (local.get $x)) (local.get $y)))
+    (f32.mul (f32.demote_f64 (local.get $x)) (local.get $y)))
 )
 
 (assert_return (invoke "f32.recoding_eq" (f32.const -inf) (f32.const 3.0)) (i32.const 1))
@@ -2250,79 +2250,79 @@
 (module
   (func (export "f32.arithmetic_nan_bitpattern")
         (param $x i32) (param $y i32) (result i32)
-    (i32.and (i32.reinterpret/f32
+    (i32.and (i32.reinterpret_f32
                (f32.div
-                 (f32.reinterpret/i32 (local.get $x))
-                 (f32.reinterpret/i32 (local.get $y))))
+                 (f32.reinterpret_i32 (local.get $x))
+                 (f32.reinterpret_i32 (local.get $y))))
              (i32.const 0x7fc00000)))
   (func (export "f32.canonical_nan_bitpattern")
         (param $x i32) (param $y i32) (result i32)
-    (i32.and (i32.reinterpret/f32
+    (i32.and (i32.reinterpret_f32
                (f32.div
-                 (f32.reinterpret/i32 (local.get $x))
-                 (f32.reinterpret/i32 (local.get $y))))
+                 (f32.reinterpret_i32 (local.get $x))
+                 (f32.reinterpret_i32 (local.get $y))))
              (i32.const 0x7fffffff)))
   (func (export "f32.nonarithmetic_nan_bitpattern")
         (param $x i32) (result i32)
-    (i32.reinterpret/f32 (f32.neg (f32.reinterpret/i32 (local.get $x)))))
+    (i32.reinterpret_f32 (f32.neg (f32.reinterpret_i32 (local.get $x)))))
 
   (func (export "f64.arithmetic_nan_bitpattern")
         (param $x i64) (param $y i64) (result i64)
-    (i64.and (i64.reinterpret/f64
+    (i64.and (i64.reinterpret_f64
                (f64.div
-                 (f64.reinterpret/i64 (local.get $x))
-                 (f64.reinterpret/i64 (local.get $y))))
+                 (f64.reinterpret_i64 (local.get $x))
+                 (f64.reinterpret_i64 (local.get $y))))
              (i64.const 0x7ff8000000000000)))
   (func (export "f64.canonical_nan_bitpattern")
         (param $x i64) (param $y i64) (result i64)
-    (i64.and (i64.reinterpret/f64
+    (i64.and (i64.reinterpret_f64
                (f64.div
-                 (f64.reinterpret/i64 (local.get $x))
-                 (f64.reinterpret/i64 (local.get $y))))
+                 (f64.reinterpret_i64 (local.get $x))
+                 (f64.reinterpret_i64 (local.get $y))))
              (i64.const 0x7fffffffffffffff)))
   (func (export "f64.nonarithmetic_nan_bitpattern")
         (param $x i64) (result i64)
-    (i64.reinterpret/f64 (f64.neg (f64.reinterpret/i64 (local.get $x)))))
+    (i64.reinterpret_f64 (f64.neg (f64.reinterpret_i64 (local.get $x)))))
 
   ;; Versions of no_fold testcases that only care about NaN bitpatterns.
   (func (export "f32.no_fold_sub_zero") (param $x i32) (result i32)
-    (i32.and (i32.reinterpret/f32 (f32.sub (f32.reinterpret/i32 (local.get $x)) (f32.const 0.0)))
+    (i32.and (i32.reinterpret_f32 (f32.sub (f32.reinterpret_i32 (local.get $x)) (f32.const 0.0)))
              (i32.const 0x7fc00000)))
   (func (export "f32.no_fold_neg0_sub") (param $x i32) (result i32)
-    (i32.and (i32.reinterpret/f32 (f32.sub (f32.const -0.0) (f32.reinterpret/i32 (local.get $x))))
+    (i32.and (i32.reinterpret_f32 (f32.sub (f32.const -0.0) (f32.reinterpret_i32 (local.get $x))))
              (i32.const 0x7fc00000)))
   (func (export "f32.no_fold_mul_one") (param $x i32) (result i32)
-    (i32.and (i32.reinterpret/f32 (f32.mul (f32.reinterpret/i32 (local.get $x)) (f32.const 1.0)))
+    (i32.and (i32.reinterpret_f32 (f32.mul (f32.reinterpret_i32 (local.get $x)) (f32.const 1.0)))
              (i32.const 0x7fc00000)))
   (func (export "f32.no_fold_neg1_mul") (param $x i32) (result i32)
-    (i32.and (i32.reinterpret/f32 (f32.mul (f32.const -1.0) (f32.reinterpret/i32 (local.get $x))))
+    (i32.and (i32.reinterpret_f32 (f32.mul (f32.const -1.0) (f32.reinterpret_i32 (local.get $x))))
              (i32.const 0x7fc00000)))
   (func (export "f32.no_fold_div_one") (param $x i32) (result i32)
-    (i32.and (i32.reinterpret/f32 (f32.div (f32.reinterpret/i32 (local.get $x)) (f32.const 1.0)))
+    (i32.and (i32.reinterpret_f32 (f32.div (f32.reinterpret_i32 (local.get $x)) (f32.const 1.0)))
              (i32.const 0x7fc00000)))
   (func (export "f32.no_fold_div_neg1") (param $x i32) (result i32)
-    (i32.and (i32.reinterpret/f32 (f32.div (f32.reinterpret/i32 (local.get $x)) (f32.const -1.0)))
+    (i32.and (i32.reinterpret_f32 (f32.div (f32.reinterpret_i32 (local.get $x)) (f32.const -1.0)))
              (i32.const 0x7fc00000)))
   (func (export "f64.no_fold_sub_zero") (param $x i64) (result i64)
-    (i64.and (i64.reinterpret/f64 (f64.sub (f64.reinterpret/i64 (local.get $x)) (f64.const 0.0)))
+    (i64.and (i64.reinterpret_f64 (f64.sub (f64.reinterpret_i64 (local.get $x)) (f64.const 0.0)))
              (i64.const 0x7ff8000000000000)))
   (func (export "f64.no_fold_neg0_sub") (param $x i64) (result i64)
-    (i64.and (i64.reinterpret/f64 (f64.sub (f64.const -0.0) (f64.reinterpret/i64 (local.get $x))))
+    (i64.and (i64.reinterpret_f64 (f64.sub (f64.const -0.0) (f64.reinterpret_i64 (local.get $x))))
              (i64.const 0x7ff8000000000000)))
   (func (export "f64.no_fold_mul_one") (param $x i64) (result i64)
-    (i64.and (i64.reinterpret/f64 (f64.mul (f64.reinterpret/i64 (local.get $x)) (f64.const 1.0)))
+    (i64.and (i64.reinterpret_f64 (f64.mul (f64.reinterpret_i64 (local.get $x)) (f64.const 1.0)))
              (i64.const 0x7ff8000000000000)))
   (func (export "f64.no_fold_neg1_mul") (param $x i64) (result i64)
-    (i64.and (i64.reinterpret/f64 (f64.mul (f64.const -1.0) (f64.reinterpret/i64 (local.get $x))))
+    (i64.and (i64.reinterpret_f64 (f64.mul (f64.const -1.0) (f64.reinterpret_i64 (local.get $x))))
              (i64.const 0x7ff8000000000000)))
   (func (export "f64.no_fold_div_one") (param $x i64) (result i64)
-    (i64.and (i64.reinterpret/f64 (f64.div (f64.reinterpret/i64 (local.get $x)) (f64.const 1.0)))
+    (i64.and (i64.reinterpret_f64 (f64.div (f64.reinterpret_i64 (local.get $x)) (f64.const 1.0)))
              (i64.const 0x7ff8000000000000)))
   (func (export "f64.no_fold_div_neg1") (param $x i64) (result i64)
-    (i64.and (i64.reinterpret/f64 (f64.div (f64.reinterpret/i64 (local.get $x)) (f64.const -1.0)))
+    (i64.and (i64.reinterpret_f64 (f64.div (f64.reinterpret_i64 (local.get $x)) (f64.const -1.0)))
              (i64.const 0x7ff8000000000000)))
   (func (export "no_fold_promote_demote") (param $x i32) (result i32)
-    (i32.and (i32.reinterpret/f32 (f32.demote/f64 (f64.promote/f32 (f32.reinterpret/i32 (local.get $x)))))
+    (i32.and (i32.reinterpret_f32 (f32.demote_f64 (f64.promote_f32 (f32.reinterpret_i32 (local.get $x)))))
              (i32.const 0x7fc00000)))
 )
 

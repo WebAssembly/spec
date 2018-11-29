@@ -436,7 +436,7 @@
 
   (func (export "as-convert-operand") (result i64)
     (block (result i64)
-      (i64.extend_s/i32
+      (i64.extend_i32_s
         (call_indirect (type $over-i32) (i32.const 1) (i32.const 4))
       )
     )

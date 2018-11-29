@@ -336,31 +336,31 @@ All other numeric instructions are plain opcodes without any immediates.
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
-     \hex{A7} &\Rightarrow& \I32.\WRAP\K{/}\I64 \\ &&|&
-     \hex{A8} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F32 \\ &&|&
-     \hex{A9} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F32 \\ &&|&
-     \hex{AA} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F64 \\ &&|&
-     \hex{AB} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F64 \\ &&|&
-     \hex{AC} &\Rightarrow& \I64.\EXTEND\K{\_s/}\I32 \\ &&|&
-     \hex{AD} &\Rightarrow& \I64.\EXTEND\K{\_u/}\I32 \\ &&|&
-     \hex{AE} &\Rightarrow& \I64.\TRUNC\K{\_s/}\F32 \\ &&|&
-     \hex{AF} &\Rightarrow& \I64.\TRUNC\K{\_u/}\F32 \\ &&|&
-     \hex{B0} &\Rightarrow& \I64.\TRUNC\K{\_s/}\F64 \\ &&|&
-     \hex{B1} &\Rightarrow& \I64.\TRUNC\K{\_u/}\F64 \\ &&|&
-     \hex{B2} &\Rightarrow& \F32.\CONVERT\K{\_s/}\I32 \\ &&|&
-     \hex{B3} &\Rightarrow& \F32.\CONVERT\K{\_u/}\I32 \\ &&|&
-     \hex{B4} &\Rightarrow& \F32.\CONVERT\K{\_s/}\I64 \\ &&|&
-     \hex{B5} &\Rightarrow& \F32.\CONVERT\K{\_u/}\I64 \\ &&|&
-     \hex{B6} &\Rightarrow& \F32.\DEMOTE\K{/}\F64 \\ &&|&
-     \hex{B7} &\Rightarrow& \F64.\CONVERT\K{\_s/}\I32 \\ &&|&
-     \hex{B8} &\Rightarrow& \F64.\CONVERT\K{\_u/}\I32 \\ &&|&
-     \hex{B9} &\Rightarrow& \F64.\CONVERT\K{\_s/}\I64 \\ &&|&
-     \hex{BA} &\Rightarrow& \F64.\CONVERT\K{\_u/}\I64 \\ &&|&
-     \hex{BB} &\Rightarrow& \F64.\PROMOTE\K{/}\F32 \\ &&|&
-     \hex{BC} &\Rightarrow& \I32.\REINTERPRET\K{/}\F32 \\ &&|&
-     \hex{BD} &\Rightarrow& \I64.\REINTERPRET\K{/}\F64 \\ &&|&
-     \hex{BE} &\Rightarrow& \F32.\REINTERPRET\K{/}\I32 \\ &&|&
-     \hex{BF} &\Rightarrow& \F64.\REINTERPRET\K{/}\I64 \\
+     \hex{A7} &\Rightarrow& \I32.\WRAP\K{\_}\I64 \\ &&|&
+     \hex{A8} &\Rightarrow& \I32.\TRUNC\K{\_}\F32\K{\_s} \\ &&|&
+     \hex{A9} &\Rightarrow& \I32.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
+     \hex{AA} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
+     \hex{AB} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
+     \hex{AC} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_s} \\ &&|&
+     \hex{AD} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_u} \\ &&|&
+     \hex{AE} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_s} \\ &&|&
+     \hex{AF} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
+     \hex{B0} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
+     \hex{B1} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
+     \hex{B2} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_s} \\ &&|&
+     \hex{B3} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_u} \\ &&|&
+     \hex{B4} &\Rightarrow& \F32.\CONVERT\K{\_}\I64\K{\_s} \\ &&|&
+     \hex{B5} &\Rightarrow& \F32.\CONVERT\K{\_}\I64\K{\_u} \\ &&|&
+     \hex{B6} &\Rightarrow& \F32.\DEMOTE\K{\_}\F64 \\ &&|&
+     \hex{B7} &\Rightarrow& \F64.\CONVERT\K{\_}\I32\K{\_s} \\ &&|&
+     \hex{B8} &\Rightarrow& \F64.\CONVERT\K{\_}\I32\K{\_u} \\ &&|&
+     \hex{B9} &\Rightarrow& \F64.\CONVERT\K{\_}\I64\K{\_s} \\ &&|&
+     \hex{BA} &\Rightarrow& \F64.\CONVERT\K{\_}\I64\K{\_u} \\ &&|&
+     \hex{BB} &\Rightarrow& \F64.\PROMOTE\K{\_}\F32 \\ &&|&
+     \hex{BC} &\Rightarrow& \I32.\REINTERPRET\K{\_}\F32 \\ &&|&
+     \hex{BD} &\Rightarrow& \I64.\REINTERPRET\K{\_}\F64 \\ &&|&
+     \hex{BE} &\Rightarrow& \F32.\REINTERPRET\K{\_}\I32 \\ &&|&
+     \hex{BF} &\Rightarrow& \F64.\REINTERPRET\K{\_}\I64 \\
    \end{array}
 
 

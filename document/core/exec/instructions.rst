@@ -28,7 +28,7 @@ And for :ref:`conversion operators <exec-cvtop>`:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{cvtop}_{t_1,t_2}(c) &=& \X{cvtop}_{|t_1|,|t_2|}(c) \\
+   \X{cvtop}^{\sx^?}_{t_1,t_2}(c) &=& \X{cvtop}^{\sx^?}_{|t_1|,|t_2|}(c) \\
    \end{array}
 
 Where the underlying operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
@@ -148,16 +148,16 @@ Where the underlying operators are non-deterministic, because they may return on
 
 .. _exec-cvtop:
 
-:math:`t_2\K{.}\cvtop/t_1`
-..........................
+:math:`t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^?`
+..........................................
 
 1. Assert: due to :ref:`validation <valid-cvtop>`, a value of :ref:`value type <syntax-valtype>` :math:`t_1` is on the top of the stack.
 
 2. Pop the value :math:`t_1.\CONST~c_1` from the stack.
 
-3. If :math:`\cvtop_{t_1,t_2}(c_1)` is defined:
+3. If :math:`\cvtop^{\sx^?}_{t_1,t_2}(c_1)` is defined:
 
-   a. Let :math:`c_2` be a possible result of computing :math:`\cvtop_{t_1,t_2}(c_1)`.
+   a. Let :math:`c_2` be a possible result of computing :math:`\cvtop^{\sx^?}_{t_1,t_2}(c_1)`.
 
    b. Push the value :math:`t_2.\CONST~c_2` to the stack.
 
@@ -167,10 +167,10 @@ Where the underlying operators are non-deterministic, because they may return on
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& (t_2\K{.}\CONST~c_2)
-     & (\iff c_2 \in \cvtop_{t_1,t_2}(c_1)) \\
-   (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& \TRAP
-     & (\iff \cvtop_{t_1,t_2}(c_1) = \{\})
+   (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^? &\stepto& (t_2\K{.}\CONST~c_2)
+     & (\iff c_2 \in \cvtop^{\sx^?}_{t_1,t_2}(c_1)) \\
+   (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^? &\stepto& \TRAP
+     & (\iff \cvtop^{\sx^?}_{t_1,t_2}(c_1) = \{\})
    \end{array}
 
 

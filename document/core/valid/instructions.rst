@@ -142,15 +142,15 @@ Numeric Instructions
 
 .. _valid-cvtop:
 
-:math:`t_2\K{.}\cvtop/t_1`
-..........................
+:math:`t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^?`
+..........................................
 
 * The instruction is valid with type :math:`[t_1] \to [t_2]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr t_2\K{.}\cvtop/t_1 : [t_1] \to [t_2]
+     C \vdashinstr t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^? : [t_1] \to [t_2]
    }
 
 

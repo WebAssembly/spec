@@ -1108,7 +1108,7 @@
 
   (func (export "as-convert-operand") (result i32)
     (block (result i32)
-      (i32.wrap/i64 (br_table 0 (i32.const 41) (i32.const 0)))
+      (i32.wrap_i64 (br_table 0 (i32.const 41) (i32.const 0)))
     )
   )
 

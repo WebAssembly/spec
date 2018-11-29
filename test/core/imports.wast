@@ -55,7 +55,7 @@
 
   (func (export "print32") (param $i i32)
     (local $x f32)
-    (local.set $x (f32.convert_s/i32 (local.get $i)))
+    (local.set $x (f32.convert_i32_s (local.get $i)))
     (call 0 (local.get $i))
     (call $print_i32_f32
       (i32.add (local.get $i) (i32.const 1))
@@ -69,7 +69,7 @@
 
   (func (export "print64") (param $i i64)
     (local $x f64)
-    (local.set $x (f64.convert_s/i64 (call $i64->i64 (local.get $i))))
+    (local.set $x (f64.convert_i64_s (call $i64->i64 (local.get $i))))
     ;; JavaScript can't handle i64 yet.
     ;; (call 1 (local.get $i))
     (call $print_f64_f64

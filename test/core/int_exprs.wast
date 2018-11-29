@@ -24,7 +24,7 @@
 
 (module
   (func (export "i64.no_fold_wrap_extend_s") (param $x i64) (result i64)
-    (i64.extend_s/i32 (i32.wrap/i64 (local.get $x))))
+    (i64.extend_i32_s (i32.wrap_i64 (local.get $x))))
 )
 
 (assert_return (invoke "i64.no_fold_wrap_extend_s" (i64.const 0x0010203040506070)) (i64.const 0x0000000040506070))
@@ -34,7 +34,7 @@
 
 (module
   (func (export "i64.no_fold_wrap_extend_u") (param $x i64) (result i64)
-    (i64.extend_u/i32 (i32.wrap/i64 (local.get $x))))
+    (i64.extend_i32_u (i32.wrap_i64 (local.get $x))))
 )
 
 (assert_return (invoke "i64.no_fold_wrap_extend_u" (i64.const 0x0010203040506070)) (i64.const 0x0000000040506070))

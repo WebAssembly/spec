@@ -110,7 +110,7 @@
     (if
       (f64.eq
         (f64.load (i32.const 8))
-        (f64.reinterpret/i64 (i64.const -12345))
+        (f64.reinterpret_i64 (i64.const -12345))
       )
       (then (return (f64.const 0)))
     )
