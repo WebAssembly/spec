@@ -163,7 +163,7 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
      \hex{40}~~\hex{00} &\Rightarrow& \MEMORYGROW \\ &&|&
      \hex{FC}~\hex{08}~~\hex{00}~x{:}\Bdataidx &\Rightarrow& \MEMORYINIT~x \\ &&|&
      \hex{FC}~\hex{09}~~x{:}\Bdataidx &\Rightarrow& \MEMORYDROP~x \\ &&|&
-     \hex{FC}~\hex{0A}~~\hex{00} &\Rightarrow& \MEMORYCOPY \\ &&|&
+     \hex{FC}~\hex{0A}~~\hex{00}~~\hex{00} &\Rightarrow& \MEMORYCOPY \\ &&|&
      \hex{FC}~\hex{0B}~~\hex{00} &\Rightarrow& \MEMORYFILL \\
    \end{array}
 
@@ -185,11 +185,11 @@ Each variant of :ref:`table instruction <syntax-instr-table>` is encoded with a 
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{FC}~\hex{0C}~~\hex{00}~x{:}\Belemidx &\Rightarrow& \TABLEINIT~x \\ &&|&
      \hex{FC}~\hex{0D}~~x{:}\Belemidx &\Rightarrow& \TABLEDROP~x \\ &&|&
-     \hex{FC}~\hex{0E}~~\hex{00} &\Rightarrow& \TABLECOPY \\
+     \hex{FC}~\hex{0E}~~\hex{00}~~\hex{00} &\Rightarrow& \TABLECOPY \\
    \end{array}
 
 .. note::
-   In future versions of WebAssembly, the additional zero byte occurring in the encoding of the |TABLECOPY| instruction may be used to index an additional table.
+   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |TABLECOPY| instruction may be used to index additional tables.
 
 
 .. index:: numeric instruction
