@@ -325,7 +325,7 @@
 
   (type $empty-sig-duplicate (func))
   (type $complex-sig-duplicate (func (param i64 i64 f64 i64 f64 i64 f32 i32)))
-  (table anyfunc
+  (table funcref
     (elem
       $complex-sig-3 $empty-sig-2 $complex-sig-1 $complex-sig-3 $empty-sig-1
       $complex-sig-4 $complex-sig-5

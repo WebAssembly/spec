@@ -342,7 +342,7 @@ However, forward branches that target a control instruction with a non-empty res
 
 The |CALL| instruction invokes another :ref:`function <syntax-func>`, consuming the necessary arguments from the stack and returning the result values of the call.
 The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>`.
-Since tables may contain function elements of heterogeneous type |ANYFUNC|,
+Since tables may contain function elements of heterogeneous type |FUNCREF|,
 the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
 
 .. note::

@@ -141,7 +141,7 @@ let value_type s =
 
 let elem_type s =
   match vs7 s with
-  | -0x10 -> AnyFuncType
+  | -0x10 -> FuncRefType
   | _ -> error s (pos s - 1) "invalid element type"
 
 let stack_type s =

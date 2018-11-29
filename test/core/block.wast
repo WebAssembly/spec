@@ -116,7 +116,7 @@
 
   (func $func (param i32 i32) (result i32) (local.get 0))
   (type $check (func (param i32 i32) (result i32)))
-  (table anyfunc (elem $func))
+  (table funcref (elem $func))
   (func (export "as-call_indirect-first") (result i32)
     (block (result i32)
       (call_indirect (type $check)

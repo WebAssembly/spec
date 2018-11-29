@@ -98,7 +98,7 @@
   (type (func (result i32)))
   (type (func))
 
-  (table (export "tab") 10 anyfunc)
+  (table (export "tab") 10 funcref)
   (elem (i32.const 2) $g $g $g $g)
   (func $g (result i32) (i32.const 4))
   (func (export "h") (result i32) (i32.const -4))
@@ -116,7 +116,7 @@
   (func $f (import "Mt" "call") (param i32) (result i32))
   (func $h (import "Mt" "h") (result i32))
 
-  (table anyfunc (elem $g $g $g $h $f))
+  (table funcref (elem $g $g $g $h $f))
   (func $g (result i32) (i32.const 5))
 
   (export "Mt.call" (func $f))
@@ -155,7 +155,7 @@
   (type (func (result i32)))
 
   (func $h (import "Mt" "h") (result i32))
-  (table (import "Mt" "tab") 5 anyfunc)
+  (table (import "Mt" "tab") 5 funcref)
   (elem (i32.const 1) $i $h)
   (func $i (result i32) (i32.const 6))
 
@@ -190,7 +190,7 @@
 (assert_trap (invoke $Ot "call" (i32.const 20)) "undefined")
 
 (module
-  (table (import "Mt" "tab") 0 anyfunc)
+  (table (import "Mt" "tab") 0 funcref)
   (elem (i32.const 9) $f)
   (func $f)
 )
@@ -205,7 +205,7 @@
 
 (assert_unlinkable
   (module
-    (table (import "Mt" "tab") 0 anyfunc)
+    (table (import "Mt" "tab") 0 funcref)
     (elem (i32.const 10) $f)
     (func $f)
   )
@@ -214,7 +214,7 @@
 
 (assert_unlinkable
   (module
-    (table (import "Mt" "tab") 10 anyfunc)
+    (table (import "Mt" "tab") 10 funcref)
     (memory (import "Mt" "mem") 1)  ;; does not exist
     (func $f (result i32) (i32.const 0))
     (elem (i32.const 7) $f)
@@ -226,7 +226,7 @@
 
 (assert_unlinkable
   (module
-    (table (import "Mt" "tab") 10 anyfunc)
+    (table (import "Mt" "tab") 10 funcref)
     (func $f (result i32) (i32.const 0))
     (elem (i32.const 7) $f)
     (elem (i32.const 12) $f)  ;; out of bounds
@@ -237,7 +237,7 @@
 
 (assert_unlinkable
   (module
-    (table (import "Mt" "tab") 10 anyfunc)
+    (table (import "Mt" "tab") 10 funcref)
     (func $f (result i32) (i32.const 0))
     (elem (i32.const 7) $f)
     (memory 1)
@@ -324,7 +324,7 @@
   (module
     (func $host (import "spectest" "print"))
     (memory (import "Mm" "mem") 1)
-    (table (import "Mm" "tab") 0 anyfunc)  ;; does not exist
+    (table (import "Mm" "tab") 0 funcref)  ;; does not exist
     (data (i32.const 0) "abc")
   )
   "unknown import"
@@ -345,7 +345,7 @@
   (module
     (memory (import "Mm" "mem") 1)
     (data (i32.const 0) "abc")
-    (table 0 anyfunc)
+    (table 0 funcref)
     (func)
     (elem (i32.const 0) 0) ;; out of bounds
   )

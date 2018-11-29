@@ -33,15 +33,15 @@
 (assert_invalid (module (elem (i32.const 0) 0) (func)) "unknown table")
 
 (assert_invalid
-  (module (table 1 anyfunc) (elem (i64.const 0)))
+  (module (table 1 funcref) (elem (i64.const 0)))
   "type mismatch"
 )
 (assert_invalid
-  (module (table 1 anyfunc) (elem (i32.ctz (i32.const 0))))
+  (module (table 1 funcref) (elem (i32.ctz (i32.const 0))))
   "constant expression required"
 )
 (assert_invalid
-  (module (table 1 anyfunc) (elem (nop)))
+  (module (table 1 funcref) (elem (nop)))
   "constant expression required"
 )
 
@@ -51,7 +51,7 @@
 (module
   (type $T (func (param) (result i32)))
   (type $U (func (param) (result i32)))
-  (table anyfunc (elem $t1 $t2 $t3 $u1 $u2 $t1 $t3))
+  (table funcref (elem $t1 $t2 $t3 $u1 $u2 $t1 $t3))
 
   (func $t1 (type $T) (i32.const 1))
   (func $t2 (type $T) (i32.const 2))
@@ -92,7 +92,7 @@
 
 (module
   (type $T (func (result i32)))
-  (table anyfunc (elem 0 1))
+  (table funcref (elem 0 1))
 
   (func $t1 (type $T) (i32.const 1))
   (func $t2 (type $T) (i32.const 2))

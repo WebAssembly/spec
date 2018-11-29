@@ -115,7 +115,7 @@ Table Types
    \production{table type} & \Btabletype &::=&
      \X{et}{:}\Belemtype~~\X{lim}{:}\Blimits &\Rightarrow& \X{lim}~\X{et} \\
    \production{element type} & \Belemtype &::=&
-     \hex{70} &\Rightarrow& \ANYFUNC \\
+     \hex{70} &\Rightarrow& \FUNCREF \\
    \end{array}
 
 

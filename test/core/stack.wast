@@ -136,7 +136,7 @@
 
 (module
   (type $proc (func))
-  (table 1 anyfunc)
+  (table 1 funcref)
 
   (func
     (block i32.const 0 call_indirect)

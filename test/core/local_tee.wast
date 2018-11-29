@@ -190,7 +190,7 @@
   )
 
   (type $sig (func (param i32 i32 i32) (result i32)))
-  (table anyfunc (elem $f))
+  (table funcref (elem $f))
   (func (export "as-call_indirect-first") (param i32) (result i32)
     (call_indirect (type $sig)
       (local.tee 0 (i32.const 1)) (i32.const 2) (i32.const 3) (i32.const 0)

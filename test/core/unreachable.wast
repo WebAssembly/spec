@@ -129,7 +129,7 @@
   )
 
   (type $sig (func (param i32 i32 i32)))
-  (table anyfunc (elem $dummy3))
+  (table funcref (elem $dummy3))
   (func (export "as-call_indirect-func")
     (call_indirect (type $sig)
       (unreachable) (i32.const 1) (i32.const 2) (i32.const 3)

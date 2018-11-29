@@ -1,7 +1,7 @@
 (* Types *)
 
 type value_type = I32Type | I64Type | F32Type | F64Type
-type elem_type = AnyFuncType
+type elem_type = FuncRefType
 type stack_type = value_type list
 type func_type = FuncType of stack_type * stack_type
 
@@ -79,7 +79,7 @@ let string_of_value_types = function
   | ts -> "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
 
 let string_of_elem_type = function
-  | AnyFuncType -> "anyfunc"
+  | FuncRefType -> "funcref"
 
 let string_of_limits {min; max} =
   I32.to_string_u min ^

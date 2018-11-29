@@ -173,7 +173,7 @@ rule token = parse
         (fun s -> let n = F64.of_string s.it in
           f64_const (n @@ s.at), Values.F64 n))
     }
-  | "anyfunc" { ANYFUNC }
+  | "funcref" { FUNCREF }
   | "mut" { MUT }
 
   | "nop" { NOP }

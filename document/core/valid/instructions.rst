@@ -676,7 +676,7 @@ Control Instructions
 
 * Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[0]`.
 
-* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |ANYFUNC|.
+* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |FUNCREF|.
 
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
@@ -686,7 +686,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[0] = \limits~\ANYFUNC
+     C.\CTABLES[0] = \limits~\FUNCREF
      \qquad
      C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
    }{

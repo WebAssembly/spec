@@ -97,7 +97,7 @@ let encode m =
       | F64Type -> vs7 (-0x04)
 
     let elem_type = function
-      | AnyFuncType -> vs7 (-0x10)
+      | FuncRefType -> vs7 (-0x10)
 
     let stack_type = function
       | [] -> vs7 (-0x40)

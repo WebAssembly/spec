@@ -232,7 +232,7 @@
   (module
     (type (func (param i32)))
     (func (type 0))
-    (table 0 anyfunc)
+    (table 0 funcref)
     (func
       (call_indirect (type 0) (i32.const 0) (f32.const 0))))
   "type mismatch")
@@ -242,7 +242,7 @@
   (module
     (type (func))
     (func (type 0))
-    (table 0 anyfunc)
+    (table 0 funcref)
     (func (call_indirect (type 0) (f32.const 0))))
   "type mismatch")
 

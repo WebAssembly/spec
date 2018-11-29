@@ -145,7 +145,7 @@ let inline_type_explicit (c : context) x ft at =
 
 %}
 
-%token NAT INT FLOAT STRING VAR VALUE_TYPE ANYFUNC MUT LPAR RPAR
+%token NAT INT FLOAT STRING VAR VALUE_TYPE FUNCREF MUT LPAR RPAR
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
@@ -205,7 +205,7 @@ value_type_list :
   | VALUE_TYPE value_type_list { $1 :: $2 }
 
 elem_type :
-  | ANYFUNC { AnyFuncType }
+  | FUNCREF { FuncRefType }
 
 global_type :
   | VALUE_TYPE { GlobalType ($1, Immutable) }

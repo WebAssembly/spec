@@ -10,8 +10,8 @@
   (func (export "func-i64->i64") (param i64) (result i64) (local.get 0))
   (global (export "global-i32") i32 (i32.const 55))
   (global (export "global-f32") f32 (f32.const 44))
-  (table (export "table-10-inf") 10 anyfunc)
-  ;; (table (export "table-10-20") 10 20 anyfunc)
+  (table (export "table-10-inf") 10 funcref)
+  ;; (table (export "table-10-20") 10 20 funcref)
   (memory (export "memory-2-inf") 2)
   ;; (memory (export "memory-2-4") 2 4)
 )
@@ -51,7 +51,7 @@
   (func (import "spectest" "print_i32") (type $forward))
   (type $forward (func (param i32)))
 
-  (table anyfunc (elem $print_i32 $print_f64))
+  (table funcref (elem $print_i32 $print_f64))
 
   (func (export "print32") (param $i i32)
     (local $x f32)
@@ -270,7 +270,7 @@
 
 (module
   (type (func (result i32)))
-  (import "spectest" "table" (table 10 20 anyfunc))
+  (import "spectest" "table" (table 10 20 funcref))
   (elem 0 (i32.const 1) $f $g)
 
   (func (export "call") (param i32) (result i32)
@@ -289,7 +289,7 @@
 
 (module
   (type (func (result i32)))
-  (table (import "spectest" "table") 10 20 anyfunc)
+  (table (import "spectest" "table") 10 20 funcref)
   (elem 0 (i32.const 1) $f $g)
 
   (func (export "call") (param i32) (result i32)
@@ -307,70 +307,70 @@
 
 
 (assert_invalid
-  (module (import "" "" (table 10 anyfunc)) (import "" "" (table 10 anyfunc)))
+  (module (import "" "" (table 10 funcref)) (import "" "" (table 10 funcref)))
   "multiple tables"
 )
 (assert_invalid
-  (module (import "" "" (table 10 anyfunc)) (table 10 anyfunc))
+  (module (import "" "" (table 10 funcref)) (table 10 funcref))
   "multiple tables"
 )
 (assert_invalid
-  (module (table 10 anyfunc) (table 10 anyfunc))
+  (module (table 10 funcref) (table 10 funcref))
   "multiple tables"
 )
 
-(module (import "test" "table-10-inf" (table 10 anyfunc)))
-(module (import "test" "table-10-inf" (table 5 anyfunc)))
-(module (import "test" "table-10-inf" (table 0 anyfunc)))
-(module (import "spectest" "table" (table 10 anyfunc)))
-(module (import "spectest" "table" (table 5 anyfunc)))
-(module (import "spectest" "table" (table 0 anyfunc)))
-(module (import "spectest" "table" (table 10 20 anyfunc)))
-(module (import "spectest" "table" (table 5 20 anyfunc)))
-(module (import "spectest" "table" (table 0 20 anyfunc)))
-(module (import "spectest" "table" (table 10 25 anyfunc)))
-(module (import "spectest" "table" (table 5 25 anyfunc)))
+(module (import "test" "table-10-inf" (table 10 funcref)))
+(module (import "test" "table-10-inf" (table 5 funcref)))
+(module (import "test" "table-10-inf" (table 0 funcref)))
+(module (import "spectest" "table" (table 10 funcref)))
+(module (import "spectest" "table" (table 5 funcref)))
+(module (import "spectest" "table" (table 0 funcref)))
+(module (import "spectest" "table" (table 10 20 funcref)))
+(module (import "spectest" "table" (table 5 20 funcref)))
+(module (import "spectest" "table" (table 0 20 funcref)))
+(module (import "spectest" "table" (table 10 25 funcref)))
+(module (import "spectest" "table" (table 5 25 funcref)))
 
 (assert_unlinkable
-  (module (import "test" "unknown" (table 10 anyfunc)))
+  (module (import "test" "unknown" (table 10 funcref)))
   "unknown import"
 )
 (assert_unlinkable
-  (module (import "spectest" "unknown" (table 10 anyfunc)))
+  (module (import "spectest" "unknown" (table 10 funcref)))
   "unknown import"
 )
 
 (assert_unlinkable
-  (module (import "test" "table-10-inf" (table 12 anyfunc)))
+  (module (import "test" "table-10-inf" (table 12 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "table-10-inf" (table 10 20 anyfunc)))
+  (module (import "test" "table-10-inf" (table 10 20 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "table" (table 12 anyfunc)))
+  (module (import "spectest" "table" (table 12 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "table" (table 10 15 anyfunc)))
+  (module (import "spectest" "table" (table 10 15 funcref)))
   "incompatible import type"
 )
 
 (assert_unlinkable
-  (module (import "test" "func" (table 10 anyfunc)))
+  (module (import "test" "func" (table 10 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "global-i32" (table 10 anyfunc)))
+  (module (import "test" "global-i32" (table 10 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "memory-2-inf" (table 10 anyfunc)))
+  (module (import "test" "memory-2-inf" (table 10 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "spectest" "print_i32" (table 10 anyfunc)))
+  (module (import "spectest" "print_i32" (table 10 funcref)))
   "incompatible import type"
 )
 
@@ -506,7 +506,7 @@
   "import after function"
 )
 (assert_malformed
-  (module quote "(func) (import \"\" \"\" (table 0 anyfunc))")
+  (module quote "(func) (import \"\" \"\" (table 0 funcref))")
   "import after function"
 )
 (assert_malformed
@@ -523,7 +523,7 @@
   "import after global"
 )
 (assert_malformed
-  (module quote "(global i64 (i64.const 0)) (import \"\" \"\" (table 0 anyfunc))")
+  (module quote "(global i64 (i64.const 0)) (import \"\" \"\" (table 0 funcref))")
   "import after global"
 )
 (assert_malformed
@@ -532,19 +532,19 @@
 )
 
 (assert_malformed
-  (module quote "(table 0 anyfunc) (import \"\" \"\" (func))")
+  (module quote "(table 0 funcref) (import \"\" \"\" (func))")
   "import after table"
 )
 (assert_malformed
-  (module quote "(table 0 anyfunc) (import \"\" \"\" (global i32))")
+  (module quote "(table 0 funcref) (import \"\" \"\" (global i32))")
   "import after table"
 )
 (assert_malformed
-  (module quote "(table 0 anyfunc) (import \"\" \"\" (table 0 anyfunc))")
+  (module quote "(table 0 funcref) (import \"\" \"\" (table 0 funcref))")
   "import after table"
 )
 (assert_malformed
-  (module quote "(table 0 anyfunc) (import \"\" \"\" (memory 0))")
+  (module quote "(table 0 funcref) (import \"\" \"\" (memory 0))")
   "import after table"
 )
 
@@ -557,7 +557,7 @@
   "import after memory"
 )
 (assert_malformed
-  (module quote "(memory 0) (import \"\" \"\" (table 1 3 anyfunc))")
+  (module quote "(memory 0) (import \"\" \"\" (table 1 3 funcref))")
   "import after memory"
 )
 (assert_malformed
@@ -584,7 +584,7 @@
     (import "not wasm" "overloaded" (global i64))
     (import "not wasm" "overloaded" (global f32))
     (import "not wasm" "overloaded" (global f64))
-    (import "not wasm" "overloaded" (table 0 anyfunc))
+    (import "not wasm" "overloaded" (table 0 funcref))
     (import "not wasm" "overloaded" (memory 0))
   )
   "unknown import"
