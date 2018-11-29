@@ -254,11 +254,11 @@ let rec instr s =
 
   | 0x1c | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
 
-  | 0x20 -> get_local (at var s)
-  | 0x21 -> set_local (at var s)
-  | 0x22 -> tee_local (at var s)
-  | 0x23 -> get_global (at var s)
-  | 0x24 -> set_global (at var s)
+  | 0x20 -> local_get (at var s)
+  | 0x21 -> local_set (at var s)
+  | 0x22 -> local_tee (at var s)
+  | 0x23 -> global_get (at var s)
+  | 0x24 -> global_set (at var s)
 
   | 0x25 | 0x26 | 0x27 as b -> illegal s pos b
 

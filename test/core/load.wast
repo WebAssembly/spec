@@ -56,10 +56,10 @@
   )
 
   (func (export "as-select-first") (param i32 i32) (result i32)
-    (select (i32.load (i32.const 0)) (get_local 0) (get_local 1))
+    (select (i32.load (i32.const 0)) (local.get 0) (local.get 1))
   )
   (func (export "as-select-second") (param i32 i32) (result i32)
-    (select (get_local 0) (i32.load (i32.const 0)) (get_local 1))
+    (select (local.get 0) (i32.load (i32.const 0)) (local.get 1))
   )
   (func (export "as-select-cond") (result i32)
     (select (i32.const 0) (i32.const 1) (i32.load (i32.const 0)))
@@ -99,15 +99,15 @@
     )
   )
 
-  (func (export "as-set_local-value") (local i32)
-    (set_local 0 (i32.load (i32.const 0)))
+  (func (export "as-local.set-value") (local i32)
+    (local.set 0 (i32.load (i32.const 0)))
   )
-  (func (export "as-tee_local-value") (result i32) (local i32)
-    (tee_local 0 (i32.load (i32.const 0)))
+  (func (export "as-local.tee-value") (result i32) (local i32)
+    (local.tee 0 (i32.load (i32.const 0)))
   )
   (global $g (mut i32) (i32.const 0))
-  (func (export "as-set_global-value") (local i32)
-    (set_global $g (i32.load (i32.const 0)))
+  (func (export "as-global.set-value") (local i32)
+    (global.set $g (i32.load (i32.const 0)))
   )
 
   (func (export "as-load-address") (result i32)
@@ -187,9 +187,9 @@
 (assert_return (invoke "as-call_indirect-last") (i32.const -1))
 (assert_return (invoke "as-call_indirect-index") (i32.const -1))
 
-(assert_return (invoke "as-set_local-value"))
-(assert_return (invoke "as-tee_local-value") (i32.const 0))
-(assert_return (invoke "as-set_global-value"))
+(assert_return (invoke "as-local.set-value"))
+(assert_return (invoke "as-local.tee-value") (i32.const 0))
+(assert_return (invoke "as-global.set-value"))
 
 (assert_return (invoke "as-load-address") (i32.const 0))
 (assert_return (invoke "as-loadN-address") (i32.const 0))
@@ -213,64 +213,42 @@
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (result i32) (i32.load32 (get_local 0)))"
+    "(func (param i32) (result i32) (i32.load32 (local.get 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (result i32) (i32.load32_u (get_local 0)))"
+    "(func (param i32) (result i32) (i32.load32_u (local.get 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (result i32) (i32.load32_s (get_local 0)))"
+    "(func (param i32) (result i32) (i32.load32_s (local.get 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (result i32) (i32.load64 (get_local 0)))"
+    "(func (param i32) (result i32) (i32.load64 (local.get 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (result i32) (i32.load64_u (get_local 0)))"
+    "(func (param i32) (result i32) (i32.load64_u (local.get 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (result i32) (i32.load64_s (get_local 0)))"
-  )
-  "unknown operator"
-)
-
-(assert_malformed
-  (module quote
-    "(memory 1)"
-    "(func (param i32) (result i64) (i64.load64 (get_local 0)))"
-  )
-  "unknown operator"
-)
-(assert_malformed
-  (module quote
-    "(memory 1)"
-    "(func (param i32) (result i64) (i64.load64_u (get_local 0)))"
-  )
-  "unknown operator"
-)
-(assert_malformed
-  (module quote
-    "(memory 1)"
-    "(func (param i32) (result i64) (i64.load64_s (get_local 0)))"
+    "(func (param i32) (result i32) (i32.load64_s (local.get 0)))"
   )
   "unknown operator"
 )
@@ -278,14 +256,21 @@
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (result f32) (f32.load32 (get_local 0)))"
+    "(func (param i32) (result i64) (i64.load64 (local.get 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (result f32) (f32.load64 (get_local 0)))"
+    "(func (param i32) (result i64) (i64.load64_u (local.get 0)))"
+  )
+  "unknown operator"
+)
+(assert_malformed
+  (module quote
+    "(memory 1)"
+    "(func (param i32) (result i64) (i64.load64_s (local.get 0)))"
   )
   "unknown operator"
 )
@@ -293,14 +278,29 @@
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (result f64) (f64.load32 (get_local 0)))"
+    "(func (param i32) (result f32) (f32.load32 (local.get 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (result f64) (f64.load64 (get_local 0)))"
+    "(func (param i32) (result f32) (f32.load64 (local.get 0)))"
+  )
+  "unknown operator"
+)
+
+(assert_malformed
+  (module quote
+    "(memory 1)"
+    "(func (param i32) (result f64) (f64.load32 (local.get 0)))"
+  )
+  "unknown operator"
+)
+(assert_malformed
+  (module quote
+    "(memory 1)"
+    "(func (param i32) (result f64) (f64.load64 (local.get 0)))"
   )
   "unknown operator"
 )

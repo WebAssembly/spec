@@ -202,15 +202,15 @@ Variable instructions are concerned with access to :ref:`local <syntax-local>` o
    \begin{array}{llcl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
-     \GETLOCAL~\localidx \\&&|&
-     \SETLOCAL~\localidx \\&&|&
-     \TEELOCAL~\localidx \\&&|&
-     \GETGLOBAL~\globalidx \\&&|&
-     \SETGLOBAL~\globalidx \\
+     \LOCALGET~\localidx \\&&|&
+     \LOCALSET~\localidx \\&&|&
+     \LOCALTEE~\localidx \\&&|&
+     \GLOBALGET~\globalidx \\&&|&
+     \GLOBALSET~\globalidx \\
    \end{array}
 
 These instructions get or set the values of variables, respectively.
-The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
+The |LOCALTEE| instruction is like |LOCALSET| but also returns its argument.
 
 
 .. index:: ! memory instruction, memory, memory index, page size, little endian, trap

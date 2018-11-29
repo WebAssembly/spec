@@ -249,8 +249,8 @@
 ;; return
 (assert_invalid (module (func (result i32) (return (f32.const 0)))) "type mismatch")
 
-;; set_local
-(assert_invalid (module (func (local i32) (set_local 0 (f32.const 0)))) "type mismatch")
+;; local.set
+(assert_invalid (module (func (local i32) (local.set 0 (f32.const 0)))) "type mismatch")
 
 ;; load index
 (assert_invalid (module (memory 1) (func (i32.load (f32.const 0)))) "type mismatch")

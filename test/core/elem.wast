@@ -54,14 +54,14 @@
   (global (import "spectest" "global_i32") i32)
   (table 1000 anyfunc)
   (func $f)
-  (elem (get_global 0) $f)
+  (elem (global.get 0) $f)
 )
 
 (module
   (global $g (import "spectest" "global_i32") i32)
   (table 1000 anyfunc)
   (func $f)
-  (elem (get_global $g) $f)
+  (elem (global.get $g) $f)
 )
 
 (module
@@ -296,7 +296,7 @@
 
 ;; Use of internal globals in constant expressions is not allowed in MVP.
 ;; (assert_invalid
-;;   (module (memory 1) (data (get_global $g)) (global $g (mut i32) (i32.const 0)))
+;;   (module (memory 1) (data (global.get $g)) (global $g (mut i32) (i32.const 0)))
 ;;   "constant expression required"
 ;; )
 

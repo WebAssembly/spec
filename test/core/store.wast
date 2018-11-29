@@ -57,22 +57,14 @@
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (i32.store32 (get_local 0) (i32.const 0)))"
+    "(func (param i32) (i32.store32 (local.get 0) (i32.const 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (i32.store64 (get_local 0) (i64.const 0)))"
-  )
-  "unknown operator"
-)
-
-(assert_malformed
-  (module quote
-    "(memory 1)"
-    "(func (param i32) (i64.store64 (get_local 0) (i64.const 0)))"
+    "(func (param i32) (i32.store64 (local.get 0) (i64.const 0)))"
   )
   "unknown operator"
 )
@@ -80,14 +72,7 @@
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (f32.store32 (get_local 0) (f32.const 0)))"
-  )
-  "unknown operator"
-)
-(assert_malformed
-  (module quote
-    "(memory 1)"
-    "(func (param i32) (f32.store64 (get_local 0) (f64.const 0)))"
+    "(func (param i32) (i64.store64 (local.get 0) (i64.const 0)))"
   )
   "unknown operator"
 )
@@ -95,14 +80,29 @@
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (f64.store32 (get_local 0) (f32.const 0)))"
+    "(func (param i32) (f32.store32 (local.get 0) (f32.const 0)))"
   )
   "unknown operator"
 )
 (assert_malformed
   (module quote
     "(memory 1)"
-    "(func (param i32) (f64.store64 (get_local 0) (f64.const 0)))"
+    "(func (param i32) (f32.store64 (local.get 0) (f64.const 0)))"
+  )
+  "unknown operator"
+)
+
+(assert_malformed
+  (module quote
+    "(memory 1)"
+    "(func (param i32) (f64.store32 (local.get 0) (f32.const 0)))"
+  )
+  "unknown operator"
+)
+(assert_malformed
+  (module quote
+    "(memory 1)"
+    "(func (param i32) (f64.store64 (local.get 0) (f64.const 0)))"
   )
   "unknown operator"
 )

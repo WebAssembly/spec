@@ -39,11 +39,11 @@ Instruction                          Binary Opcode     Type                     
 (reserved)                           :math:`\hex{1D}`                                                  
 (reserved)                           :math:`\hex{1E}`                                                  
 (reserved)                           :math:`\hex{1F}`                                                  
-:math:`\GETLOCAL~x`                  :math:`\hex{20}`  :math:`[] \to [t]`                          :ref:`validation <valid-get_local>`       :ref:`execution <exec-get_local>`
-:math:`\SETLOCAL~x`                  :math:`\hex{21}`  :math:`[t] \to []`                          :ref:`validation <valid-set_local>`       :ref:`execution <exec-set_local>`
-:math:`\TEELOCAL~x`                  :math:`\hex{22}`  :math:`[t] \to [t]`                         :ref:`validation <valid-tee_local>`       :ref:`execution <exec-tee_local>`
-:math:`\GETGLOBAL~x`                 :math:`\hex{23}`  :math:`[] \to [t]`                          :ref:`validation <valid-get_global>`      :ref:`execution <exec-get_global>`
-:math:`\SETGLOBAL~x`                 :math:`\hex{24}`  :math:`[t] \to []`                          :ref:`validation <valid-set_global>`      :ref:`execution <exec-set_global>`
+:math:`\LOCALGET~x`                  :math:`\hex{20}`  :math:`[] \to [t]`                          :ref:`validation <valid-local.get>`       :ref:`execution <exec-local.get>`
+:math:`\LOCALSET~x`                  :math:`\hex{21}`  :math:`[t] \to []`                          :ref:`validation <valid-local.set>`       :ref:`execution <exec-local.set>`
+:math:`\LOCALTEE~x`                  :math:`\hex{22}`  :math:`[t] \to [t]`                         :ref:`validation <valid-local.tee>`       :ref:`execution <exec-local.tee>`
+:math:`\GLOBALGET~x`                 :math:`\hex{23}`  :math:`[] \to [t]`                          :ref:`validation <valid-global.get>`      :ref:`execution <exec-global.get>`
+:math:`\GLOBALSET~x`                 :math:`\hex{24}`  :math:`[t] \to []`                          :ref:`validation <valid-global.set>`      :ref:`execution <exec-global.set>`
 (reserved)                           :math:`\hex{25}`                                                  
 (reserved)                           :math:`\hex{26}`                                                  
 (reserved)                           :math:`\hex{27}`                                                  

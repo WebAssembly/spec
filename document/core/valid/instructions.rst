@@ -201,9 +201,9 @@ Parametric Instructions
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-get_local:
+.. _valid-local.get:
 
-:math:`\GETLOCAL~x`
+:math:`\LOCALGET~x`
 ...................
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
@@ -216,13 +216,13 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdashinstr \GETLOCAL~x : [] \to [t]
+     C \vdashinstr \LOCALGET~x : [] \to [t]
    }
 
 
-.. _valid-set_local:
+.. _valid-local.set:
 
-:math:`\SETLOCAL~x`
+:math:`\LOCALSET~x`
 ...................
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
@@ -235,13 +235,13 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdashinstr \SETLOCAL~x : [t] \to []
+     C \vdashinstr \LOCALSET~x : [t] \to []
    }
 
 
-.. _valid-tee_local:
+.. _valid-local.tee:
 
-:math:`\TEELOCAL~x`
+:math:`\LOCALTEE~x`
 ...................
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
@@ -254,13 +254,13 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdashinstr \TEELOCAL~x : [t] \to [t]
+     C \vdashinstr \LOCALTEE~x : [t] \to [t]
    }
 
 
-.. _valid-get_global:
+.. _valid-global.get:
 
-:math:`\GETGLOBAL~x`
+:math:`\GLOBALGET~x`
 ....................
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
@@ -273,13 +273,13 @@ Variable Instructions
    \frac{
      C.\CGLOBALS[x] = \mut~t
    }{
-     C \vdashinstr \GETGLOBAL~x : [] \to [t]
+     C \vdashinstr \GLOBALGET~x : [] \to [t]
    }
 
 
-.. _valid-set_global:
+.. _valid-global.set:
 
-:math:`\SETGLOBAL~x`
+:math:`\GLOBALSET~x`
 ....................
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
@@ -294,7 +294,7 @@ Variable Instructions
    \frac{
      C.\CGLOBALS[x] = \MVAR~t
    }{
-     C \vdashinstr \SETGLOBAL~x : [t] \to []
+     C \vdashinstr \GLOBALSET~x : [t] \to []
    }
 
 
@@ -780,7 +780,7 @@ Constant Expressions
 
   * either of the form :math:`t.\CONST~c`,
 
-  * or of the form :math:`\GETGLOBAL~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
+  * or of the form :math:`\GLOBALGET~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
 
 .. math::
    \frac{
@@ -798,11 +798,11 @@ Constant Expressions
    \frac{
      C.\CGLOBALS[x] = \CONST~t
    }{
-     C \vdashinstrconst \GETGLOBAL~x \const
+     C \vdashinstrconst \GLOBALGET~x \const
    }
 
 .. note::
-   Currently, constant expressions occurring as initializers of :ref:`globals <syntax-global>` are further constrained in that contained |GETGLOBAL| instructions are only allowed to refer to *imported* globals.
+   Currently, constant expressions occurring as initializers of :ref:`globals <syntax-global>` are further constrained in that contained |GLOBALGET| instructions are only allowed to refer to *imported* globals.
    This is enforced in the :ref:`validation rule for modules <valid-module>` by constraining the context :math:`C` accordingly.
 
    The definition of constant expression may be extended in future versions of WebAssembly.

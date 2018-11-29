@@ -93,20 +93,20 @@ Variable Instructions
 
 :ref:`Variable instructions <syntax-instr-variable>` are represented by byte codes followed by the encoding of the respective :ref:`index <syntax-index>`.
 
-.. _binary-get_local:
-.. _binary-set_local:
-.. _binary-tee_local:
-.. _binary-get_global:
-.. _binary-set_global:
+.. _binary-local.get:
+.. _binary-local.set:
+.. _binary-local.tee:
+.. _binary-global.get:
+.. _binary-global.set:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
-     \hex{20}~~x{:}\Blocalidx &\Rightarrow& \GETLOCAL~x \\ &&|&
-     \hex{21}~~x{:}\Blocalidx &\Rightarrow& \SETLOCAL~x \\ &&|&
-     \hex{22}~~x{:}\Blocalidx &\Rightarrow& \TEELOCAL~x \\ &&|&
-     \hex{23}~~x{:}\Bglobalidx &\Rightarrow& \GETGLOBAL~x \\ &&|&
-     \hex{24}~~x{:}\Bglobalidx &\Rightarrow& \SETGLOBAL~x \\
+     \hex{20}~~x{:}\Blocalidx &\Rightarrow& \LOCALGET~x \\ &&|&
+     \hex{21}~~x{:}\Blocalidx &\Rightarrow& \LOCALSET~x \\ &&|&
+     \hex{22}~~x{:}\Blocalidx &\Rightarrow& \LOCALTEE~x \\ &&|&
+     \hex{23}~~x{:}\Bglobalidx &\Rightarrow& \GLOBALGET~x \\ &&|&
+     \hex{24}~~x{:}\Bglobalidx &\Rightarrow& \GLOBALSET~x \\
    \end{array}
 
 

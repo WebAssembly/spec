@@ -144,20 +144,20 @@ Parametric Instructions
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _text-get_local:
-.. _text-set_local:
-.. _text-tee_local:
-.. _text-get_global:
-.. _text-set_global:
+.. _text-local.get:
+.. _text-local.set:
+.. _text-local.tee:
+.. _text-global.get:
+.. _text-global.set:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
-     \text{get\_local}~~x{:}\Tlocalidx_I &\Rightarrow& \GETLOCAL~x \\ &&|&
-     \text{set\_local}~~x{:}\Tlocalidx_I &\Rightarrow& \SETLOCAL~x \\ &&|&
-     \text{tee\_local}~~x{:}\Tlocalidx_I &\Rightarrow& \TEELOCAL~x \\ &&|&
-     \text{get\_global}~~x{:}\Tglobalidx_I &\Rightarrow& \GETGLOBAL~x \\ &&|&
-     \text{set\_global}~~x{:}\Tglobalidx_I &\Rightarrow& \SETGLOBAL~x \\
+     \text{local.get}~~x{:}\Tlocalidx_I &\Rightarrow& \LOCALGET~x \\ &&|&
+     \text{local.set}~~x{:}\Tlocalidx_I &\Rightarrow& \LOCALSET~x \\ &&|&
+     \text{local.tee}~~x{:}\Tlocalidx_I &\Rightarrow& \LOCALTEE~x \\ &&|&
+     \text{global.get}~~x{:}\Tglobalidx_I &\Rightarrow& \GLOBALGET~x \\ &&|&
+     \text{global.set}~~x{:}\Tglobalidx_I &\Rightarrow& \GLOBALSET~x \\
    \end{array}
 
 

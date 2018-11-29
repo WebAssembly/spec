@@ -6,8 +6,8 @@
   (func (export "func-f32") (param f32))
   (func (export "func->i32") (result i32) (i32.const 22))
   (func (export "func->f32") (result f32) (f32.const 11))
-  (func (export "func-i32->i32") (param i32) (result i32) (get_local 0))
-  (func (export "func-i64->i64") (param i64) (result i64) (get_local 0))
+  (func (export "func-i32->i32") (param i32) (result i32) (local.get 0))
+  (func (export "func-i64->i64") (param i64) (result i64) (local.get 0))
   (global (export "global-i32") i32 (i32.const 55))
   (global (export "global-f32") f32 (f32.const 44))
   (table (export "table-10-inf") 10 anyfunc)
@@ -55,32 +55,32 @@
 
   (func (export "print32") (param $i i32)
     (local $x f32)
-    (set_local $x (f32.convert_s/i32 (get_local $i)))
-    (call 0 (get_local $i))
+    (local.set $x (f32.convert_s/i32 (local.get $i)))
+    (call 0 (local.get $i))
     (call $print_i32_f32
-      (i32.add (get_local $i) (i32.const 1))
+      (i32.add (local.get $i) (i32.const 1))
       (f32.const 42)
     )
-    (call $print_i32 (get_local $i))
-    (call $print_i32-2 (get_local $i))
-    (call $print_f32 (get_local $x))
-    (call_indirect (type $func_i32) (get_local $i) (i32.const 0))
+    (call $print_i32 (local.get $i))
+    (call $print_i32-2 (local.get $i))
+    (call $print_f32 (local.get $x))
+    (call_indirect (type $func_i32) (local.get $i) (i32.const 0))
   )
 
   (func (export "print64") (param $i i64)
     (local $x f64)
-    (set_local $x (f64.convert_s/i64 (call $i64->i64 (get_local $i))))
+    (local.set $x (f64.convert_s/i64 (call $i64->i64 (local.get $i))))
     ;; JavaScript can't handle i64 yet.
-    ;; (call 1 (get_local $i))
+    ;; (call 1 (local.get $i))
     (call $print_f64_f64
-      (f64.add (get_local $x) (f64.const 1))
+      (f64.add (local.get $x) (f64.const 1))
       (f64.const 53)
     )
     ;; JavaScript can't handle i64 yet.
-    ;; (call $print_i64 (get_local $i))
-    (call $print_f64 (get_local $x))
-    (call $print_f64-2 (get_local $x))
-    (call_indirect (type $func_f64) (get_local $x) (i32.const 1))
+    ;; (call $print_i64 (local.get $i))
+    (call $print_f64 (local.get $x))
+    (call $print_f64-2 (local.get $x))
+    (call_indirect (type $func_f64) (local.get $x) (i32.const 1))
   )
 )
 
@@ -217,10 +217,10 @@
   (import "spectest" "global_f32" (global f32))
   (import "spectest" "global_f64" (global f64))
 
-  (func (export "get-0") (result i32) (get_global 0))
-  (func (export "get-1") (result i32) (get_global 1))
-  (func (export "get-x") (result i32) (get_global $x))
-  (func (export "get-y") (result i32) (get_global $y))
+  (func (export "get-0") (result i32) (global.get 0))
+  (func (export "get-1") (result i32) (global.get 1))
+  (func (export "get-x") (result i32) (global.get $x))
+  (func (export "get-y") (result i32) (global.get $y))
 )
 
 (assert_return (invoke "get-0") (i32.const 666))
@@ -274,7 +274,7 @@
   (elem 0 (i32.const 1) $f $g)
 
   (func (export "call") (param i32) (result i32)
-    (call_indirect (type 0) (get_local 0))
+    (call_indirect (type 0) (local.get 0))
   )
   (func $f (result i32) (i32.const 11))
   (func $g (result i32) (i32.const 22))
@@ -293,7 +293,7 @@
   (elem 0 (i32.const 1) $f $g)
 
   (func (export "call") (param i32) (result i32)
-    (call_indirect (type 0) (get_local 0))
+    (call_indirect (type 0) (local.get 0))
   )
   (func $f (result i32) (i32.const 11))
   (func $g (result i32) (i32.const 22))
@@ -382,7 +382,7 @@
   (import "spectest" "memory" (memory 1 2))
   (data 0 (i32.const 10) "\10")
 
-  (func (export "load") (param i32) (result i32) (i32.load (get_local 0)))
+  (func (export "load") (param i32) (result i32) (i32.load (local.get 0)))
 )
 
 (assert_return (invoke "load" (i32.const 0)) (i32.const 0))
@@ -394,7 +394,7 @@
   (memory (import "spectest" "memory") 1 2)
   (data 0 (i32.const 10) "\10")
 
-  (func (export "load") (param i32) (result i32) (i32.load (get_local 0)))
+  (func (export "load") (param i32) (result i32) (i32.load (local.get 0)))
 )
 (assert_return (invoke "load" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "load" (i32.const 10)) (i32.const 16))
@@ -486,7 +486,7 @@
 
 (module
   (import "spectest" "memory" (memory 0 3))  ;; actual has max size 2
-  (func (export "grow") (param i32) (result i32) (memory.grow (get_local 0)))
+  (func (export "grow") (param i32) (result i32) (memory.grow (local.get 0)))
 )
 (assert_return (invoke "grow" (i32.const 0)) (i32.const 1))
 (assert_return (invoke "grow" (i32.const 1)) (i32.const 1))

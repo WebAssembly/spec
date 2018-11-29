@@ -25,11 +25,11 @@ let return = Return
 let call x = Call x
 let call_indirect x = CallIndirect x
 
-let get_local x = GetLocal x
-let set_local x = SetLocal x
-let tee_local x = TeeLocal x
-let get_global x = GetGlobal x
-let set_global x = SetGlobal x
+let local_get x = LocalGet x
+let local_set x = LocalSet x
+let local_tee x = LocalTee x
+let global_get x = GlobalGet x
+let global_set x = GlobalSet x
 
 let i32_load align offset = Load {ty = I32Type; align; offset; sz = None}
 let i64_load align offset = Load {ty = I64Type; align; offset; sz = None}

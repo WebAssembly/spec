@@ -317,11 +317,11 @@
 .. |DROP| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{drop}}
 .. |SELECT| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{select}}
 
-.. |GETLOCAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{get\_local}}
-.. |SETLOCAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{set\_local}}
-.. |TEELOCAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{tee\_local}}
-.. |GETGLOBAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{get\_global}}
-.. |SETGLOBAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{set\_global}}
+.. |LOCALGET| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{local.get}}
+.. |LOCALSET| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{local.set}}
+.. |LOCALTEE| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{local.tee}}
+.. |GLOBALGET| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{global.get}}
+.. |GLOBALSET| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{global.set}}
 
 .. |LOAD| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{load}}
 .. |STORE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{store}}

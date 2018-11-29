@@ -193,11 +193,11 @@ rule token = parse
   | "call" { CALL }
   | "call_indirect" { CALL_INDIRECT }
 
-  | "get_local" { GET_LOCAL }
-  | "set_local" { SET_LOCAL }
-  | "tee_local" { TEE_LOCAL }
-  | "get_global" { GET_GLOBAL }
-  | "set_global" { SET_GLOBAL }
+  | "local.get" { LOCAL_GET }
+  | "local.set" { LOCAL_SET }
+  | "local.tee" { LOCAL_TEE }
+  | "global.get" { GLOBAL_GET }
+  | "global.set" { GLOBAL_SET }
 
   | (nxx as t)".load"
     { LOAD (fun a o ->

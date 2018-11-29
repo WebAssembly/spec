@@ -215,7 +215,7 @@ let invoke ft lits at =
   List.map (fun lit -> Const lit @@ at) lits @ [Call (0l @@ at) @@ at]
 
 let get t at =
-  [], GlobalImport t @@ at, [GetGlobal (0l @@ at) @@ at]
+  [], GlobalImport t @@ at, [GlobalGet (0l @@ at) @@ at]
 
 let run ts at =
   [], []

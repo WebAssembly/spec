@@ -38,12 +38,12 @@
 
 (module $Mg
   (global $glob (export "glob") i32 (i32.const 42))
-  (func (export "get") (result i32) (get_global $glob))
+  (func (export "get") (result i32) (global.get $glob))
 
   ;; export mutable globals
   (global $mut_glob (export "mut_glob") (mut i32) (i32.const 142))
-  (func (export "get_mut") (result i32) (get_global $mut_glob))
-  (func (export "set_mut") (param i32) (set_global $mut_glob (get_local 0)))
+  (func (export "get_mut") (result i32) (global.get $mut_glob))
+  (func (export "set_mut") (param i32) (global.set $mut_glob (local.get 0)))
 )
 (register "Mg" $Mg)
 
@@ -57,7 +57,7 @@
   (export "Mg.glob" (global $x))
   (export "Mg.get" (func $f))
   (global $glob (export "glob") i32 (i32.const 43))
-  (func (export "get") (result i32) (get_global $glob))
+  (func (export "get") (result i32) (global.get $glob))
 
   (export "Mg.mut_glob" (global $mut_glob))
   (export "Mg.get_mut" (func $get_mut))
@@ -104,7 +104,7 @@
   (func (export "h") (result i32) (i32.const -4))
 
   (func (export "call") (param i32) (result i32)
-    (call_indirect (type 0) (get_local 0))
+    (call_indirect (type 0) (local.get 0))
   )
 )
 (register "Mt" $Mt)
@@ -121,10 +121,10 @@
 
   (export "Mt.call" (func $f))
   (func (export "call Mt.call") (param i32) (result i32)
-    (call $f (get_local 0))
+    (call $f (local.get 0))
   )
   (func (export "call") (param i32) (result i32)
-    (call_indirect (type 1) (get_local 0))
+    (call_indirect (type 1) (local.get 0))
   )
 )
 
@@ -160,7 +160,7 @@
   (func $i (result i32) (i32.const 6))
 
   (func (export "call") (param i32) (result i32)
-    (call_indirect (type 0) (get_local 0))
+    (call_indirect (type 0) (local.get 0))
   )
 )
 
@@ -199,7 +199,7 @@
 (register "G1" $G1)
 (module $G2
   (global (import "G1" "g") i32)
-  (global (export "g") i32 (get_global 0))
+  (global (export "g") i32 (global.get 0))
 )
 (assert_return (get $G2 "g") (i32.const 5))
 
@@ -255,7 +255,7 @@
   (data (i32.const 10) "\00\01\02\03\04\05\06\07\08\09")
 
   (func (export "load") (param $a i32) (result i32)
-    (i32.load8_u (get_local 0))
+    (i32.load8_u (local.get 0))
   )
 )
 (register "Mm" $Mm)
@@ -268,7 +268,7 @@
 
   (export "Mm.load" (func $loadM))
   (func (export "load") (param $a i32) (result i32)
-    (i32.load8_u (get_local 0))
+    (i32.load8_u (local.get 0))
   )
 )
 
@@ -281,7 +281,7 @@
   (data (i32.const 5) "\a0\a1\a2\a3\a4\a5\a6\a7")
 
   (func (export "load") (param $a i32) (result i32)
-    (i32.load8_u (get_local 0))
+    (i32.load8_u (local.get 0))
   )
 )
 
@@ -307,7 +307,7 @@
   (memory (import "Mm" "mem") 1 8)
 
   (func (export "grow") (param $a i32) (result i32)
-    (memory.grow (get_local 0))
+    (memory.grow (local.get 0))
   )
 )
 
