@@ -147,8 +147,8 @@ In addition to the rules for basic reference types:
 
 ### Values
 
-* Each reference value has an associated runtime type:
-  - For structures or arrays, it is the RTT value given upon creation, or `anyref` if none.
+* Each reference value has an associated *runtime type*, which is a runtime description of its type:
+  - For structures or arrays, it is determined by an [RTT](#runtime-types) value provided upon creation, or `anyref` if none.
   - For `i31ref` references it is `i31ref`.
   - For `null` it is `nullref`.
 
@@ -301,7 +301,7 @@ TODO: Is 31 bit value range the right choice?
 * `rtt.new <reftype> <reftype>` returns the RTT of the specified type as a subtype of a given RTT operand
   - `rtt.new t t' : [(rtt t')] -> [(rtt t)]`
     - iff `t <: t'`
-  - multiple invocations of this instruction yield fresh RTTs
+  - multiple invocations of this instruction with the same operand yield the same RTTs
 
 * All RTT instructions are considered *constant expressions*.
 
