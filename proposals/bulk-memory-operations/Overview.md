@@ -360,3 +360,47 @@ instr ::= ...
 | `table.init` | `0xfc 0x0c` | `table:0x00`, `segment:varuint32` | :thinking: copy from a passive element segment to a table |
 | `table.drop` | `0xfc 0x0d` | `segment:varuint32` | :thinking: prevent further use of a passive element segment |
 | `table.copy` | `0xfc 0x0e` | `table:0x00` | :thinking: copy from one region of a table to another region |
+
+### `DataCount` section
+
+The WebAssembly binary format is designed to be validated in a single pass. If
+a section requires information to validate, it is guaranteed that this
+information will be present in a previous section.
+
+The `memory.{init,drop}` instructions break this guarantee. Both of these
+instructions are used in the `Code` section. They each have a data segment
+index immediate, but the vector of data segments is not available until the
+`Data` section is parsed, which occurs after the `Code` section.
+
+To keep single-pass validation, the number of data segments defined in the
+`Data` section must be available before the `Code` section. This information is
+provided in a new `DataCount` section with the code `12`.
+
+Like all sections, the `DataCount` section is optional. If present, it must
+appear in the following order:
+
+| Section Name | Code | Description |
+| ------------ | ---- | ----------- |
+| Type | `1` | Function signature declarations |
+| Import | `2` | Import declarations |
+| Function | `3` | Function declarations |
+| Table | `4` | Indirect function table and other tables |
+| Memory | `5` | Memory attributes |
+| Global | `6` | Global declarations |
+| Export | `7` | Exports |
+| Start | `8` | Start function declaration |
+| Element | `9` | Elements section |
+| DataCount | `13` | Data segment count |
+| Code | `10` | Function bodies (code) |
+| Data | `11` | Data segments |
+
+The `DataCount` section has just one field that specifies the number of data
+segments in the `Data` section:
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| count | `varuint32` | count of data segments in `Data` section |
+
+It is a validation error if `count` is not equal to the number of data segments
+in the `Data` section. It is also a validation error if the `DataCount` section
+is omitted and a `memory.init` or `memory.drop` instruction is used.
