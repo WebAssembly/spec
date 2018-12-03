@@ -10,6 +10,11 @@ on the second proposal, which uses first-class exception types, mainly based on
 the reasoning that it is more expressive and also more extendible to other kinds
 of events.
 
+This proposal requires the [reference types
+proposal](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md)
+as a prerequisite, since the [`except_ref`](#the-exception-reference-data-type)
+type should be represented as a subtype of `anyref`.
+
 ---
 
 ## Overview
